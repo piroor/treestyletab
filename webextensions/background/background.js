@@ -196,8 +196,9 @@ async function onMessage(aMessage, aSender, aRespond) {
       aRespond({ movedTabs: movedTabs.map(aTab => aTab.id) });
     }; break;
 
-    case kCOMMAND_MOVE_TABS_ACROSS_WINDOWS: {
-      let movedTabs = await moveTabsAcrossWindows(aMessage.tabs.map(getTabById), aMessage.destinationWindowId, aMessage);
+    case kCOMMAND_MOVE_TABS: {
+      log('move tabs requested: ', aMessage);
+      let movedTabs = await moveTabs(aMessage.tabs.map(getTabById), aMessage);
       aRespond({ movedTabs: movedTabs.map(aTab => aTab.id) });
     }; break;
 
@@ -258,6 +259,16 @@ async function onMessage(aMessage, aSender, aRespond) {
       let tab = getTabById(aMessage.tab);
       if (tab)
         await detachTab(tab, aMessage);
+      aRespond();
+    }; break;
+
+    case kCOMMAND_PERFORM_TABS_DRAG_DROP: {
+      log('perform tabs dragdrop requested: ', aMessage);
+      await performTabsDragDrop(clone(aMessage, {
+        attachTo:     getTabById(aMessage.attachTo),
+        insertBefore: getTabById(aMessage.insertBefore),
+        insertAfter:  getTabById(aMessage.insertAfter)
+      }));
       aRespond();
     }; break;
   }

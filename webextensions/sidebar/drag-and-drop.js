@@ -99,7 +99,7 @@ function getDropAction(aEvent) {
     var isCopy = isCopyAction(aEvent);
     if (isCopy)
       info.action |= kACTION_DUPLICATE;
-    if (!isCopy && info.draggedTab.ownerDocument != document)
+    if (!isCopy && !info.dragData.tabNode)
       info.action |= kACTION_IMPORT;
 
     if (info.action & kACTION_AFFECTS_TO_DESTINATION) {
@@ -146,7 +146,7 @@ function getDropActionInternal(aEvent) {
     targetTab    : targetTab,
     dropPosition : null,
     action       : null,
-    newParent    : null,
+    parent       : null,
     insertBefore : null,
     insertAfter  : null
   };
@@ -166,23 +166,24 @@ function getDropActionInternal(aEvent) {
                         window: dragData.windowId
                       })).filter(aTab => !!aTab);
   info.draggedTabs = draggedTabs;
-  var isRemoteTab = draggedTab && draggedTab.ownerDocument != document;
-  var isNewTabAction = !draggedTab || draggedTab.ownerDocument != document;
+  var isRemoteTab = !draggedTab && !!dragData.tabId;
+  var isNewTabAction = !draggedTab && !dragData.tabId;
 
   if (!targetTab) {
     //log('dragging on non-tab element');
     let action = isRemoteTab ? kACTION_STAY : (kACTION_MOVE | kACTION_DETACH) ;
-    if (isNewTabAction) action |= kACTION_NEWTAB;
+    if (isNewTabAction)
+      action |= kACTION_NEWTAB;
     if (aEvent.clientY < firstTargetTab.getBoundingClientRect().top) {
       //log('dragging above the first tab');
-      info.targetTab = info.newParent = info.insertBefore = firstTargetTab;
+      info.targetTab = info.parent = info.insertBefore = firstTargetTab;
       info.dropPosition = kDROP_BEFORE;
       info.action   = action;
       return info;
     }
     else if (aEvent.clientY > lastTargetTab.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
-      info.targetTab = info.newParent = lastTargetTab;
+      info.targetTab = info.parent = lastTargetTab;
       info.dropPosition = kDROP_AFTER;
       info.action   = action;
       return info;
@@ -254,7 +255,7 @@ function getDropActionInternal(aEvent) {
       //log('drop position = on the tab');
       let visibleNext = getNextVisibleTab(targetTab);
       info.action       = kACTION_STAY | kACTION_ATTACH;
-      info.newParent = targetTab;
+      info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == kINSERT_FISRT ?
           (getFirstChildTab(targetTab) || visibleNext) :
           (getNextSiblingTab(targetTab) || getNextTab(getLastDescendantTab(targetTab) || targetTab));
@@ -297,8 +298,8 @@ function getDropActionInternal(aEvent) {
       else {
         let prevLevel   = Number(prevTab.getAttribute(kNEST) || 0);
         let targetLevel = Number(targetTab.getAttribute(kNEST) || 0);
-        info.newParent    = (prevLevel < targetLevel) ? prevTab : getParentTab(targetTab) ;
-        info.action       = kACTION_MOVE | (info.newParent ? kACTION_ATTACH : kACTION_DETACH );
+        info.parent       = (prevLevel < targetLevel) ? prevTab : getParentTab(targetTab) ;
+        info.action       = kACTION_MOVE | (info.parent ? kACTION_ATTACH : kACTION_DETACH );
         info.insertBefore = targetTab;
       }
       //if (info.insertBefore)
@@ -328,13 +329,13 @@ function getDropActionInternal(aEvent) {
       let nextTab = getNextVisibleTab(targetTab);
       if (!nextTab) {
         info.action = kACTION_MOVE | kACTION_ATTACH;
-        info.newParent = getParentTab(targetTab);
+        info.parent = getParentTab(targetTab);
       }
       else {
         var targetLevel = Number(targetTab.getAttribute(kNEST) || 0);
         var nextLevel   = Number(nextTab.getAttribute(kNEST) || 0);
-        info.newParent    = (targetLevel < nextLevel) ? targetTab : getParentTab(targetTab) ;
-        info.action       = kACTION_MOVE | (info.newParent ? kACTION_ATTACH : kACTION_DETACH );
+        info.parent       = (targetLevel < nextLevel) ? targetTab : getParentTab(targetTab) ;
+        info.action       = kACTION_MOVE | (info.parent ? kACTION_ATTACH : kACTION_DETACH );
         info.insertBefore = nextTab;
         info.insertAfter  = targetTab;
 /* strategy
@@ -346,10 +347,10 @@ function getDropActionInternal(aEvent) {
 */
         if (draggedTab == nextTab) {
           info.action = kACTION_MOVE | kACTION_ATTACH;
-          info.newParent = getParentTab(targetTab);
+          info.parent = getParentTab(targetTab);
           info.insertBefore = getNextSiblingTab(targetTab);
           info.insertAfter  = targetTab;
-          let ancestor = info.newParent;
+          let ancestor = info.parent;
           while (ancestor && !info.insertBefore) {
             info.insertBefore = getNextSiblingTab(ancestor);
             ancestor = getParentTab(ancestor);
@@ -396,162 +397,6 @@ function collapseAutoExpandedTabsWhileDragging() {
   gAutoExpandedTabs = [];
 }
 
-async function performDrop(aDropActionInfo) {
-  log('performDrop: start');
-  if (!aDropActionInfo.draggedTab) {
-    log('=> no dragged tab');
-    return false;
-  }
-
-  var draggedTabs = aDropActionInfo.draggedTabs;
-  var draggedRoots = collectRootTabs(draggedTabs);
-
-  var targetTabs = getTabs(gTargetWindow);
-
-  var draggedWholeTree = [].concat(draggedRoots);
-  for (let draggedRoot of draggedRoots) {
-    let descendants = getDescendantTabs(draggedRoot);
-    for (let descendant of descendants) {
-      if (draggedWholeTree.indexOf(descendant) < 0)
-        draggedWholeTree.push(descendant);
-    }
-  }
-  log('=> draggedTabs: ', draggedTabs.map(dumpTab).join(' / '));
-
-  var selectedTabs = draggedTabs.filter(isSelected);
-  if (draggedWholeTree.length != selectedTabs.length &&
-      selectedTabs.length > 0) {
-    log('=> partially dragged');
-    draggedTabs = draggedRoots = selectedTabs;
-    if (aDropActionInfo.action & kACTION_AFFECTS_TO_SOURCE)
-      detachTabs(selectedTabs);
-  }
-
-  while (aDropActionInfo.insertBefore &&
-         draggedWholeTree.indexOf(aDropActionInfo.insertBefore) > -1) {
-    aDropActionInfo.insertBefore = getNextTab(aDropActionInfo.insertBefore);
-  }
-  while (aDropActionInfo.insertAfter &&
-         draggedWholeTree.indexOf(aDropActionInfo.insertAfter) > -1) {
-    aDropActionInfo.insertAfter = getPreviousTab(aDropActionInfo.insertAfter);
-  }
-
-  if (aDropActionInfo.action & kACTION_AFFECTS_TO_SOURCE) {
-    log('=> action for source tabs');
-    if (aDropActionInfo.action & kACTION_DETACH) {
-      log('=> detach');
-      detachTabsOnDrop(draggedRoots);
-    }
-    else if (aDropActionInfo.action & kACTION_ATTACH) {
-      log('=> attach');
-      attachTabsOnDrop(draggedRoots, aDropActionInfo.newParent, {
-        insertBefore: aDropActionInfo.insertBefore,
-        insertAfter:  aDropActionInfo.insertAfter
-      });
-    }
-    else {
-      log('=> just moved');
-    }
-
-    if ((aDropActionInfo.insertBefore &&
-         isAllTabsPlacedBefore(draggedTabs, aDropActionInfo.insertBefore)) ||
-        (aDropActionInfo.insertAfter &&
-         isAllTabsPlacedAfter(draggedTabs, aDropActionInfo.insertAfter))) {
-      log('=> already placed at expected position');
-    }
-    else {
-      log('=> moving dragged tabs');
-      if (aDropActionInfo.insertBefore)
-        await moveTabInternallyBefore(aDropActionInfo.draggedTab, aDropActionInfo.insertBefore, {
-          inRemote: true
-        });
-      else
-        await moveTabInternallyAfter(aDropActionInfo.draggedTab, aDropActionInfo.insertAfter, {
-          inRemote: true
-        });
-      await moveTabsInternallyAfter(
-        draggedTabs.filter(aTab => aTab != aDropActionInfo.draggedTab),
-        aDropActionInfo.draggedTab,
-        { inRemote: true }
-      );
-    }
-
-    // if this move will cause no change...
-    if (getNextVisibleTab(draggedTabs[draggedTabs.length-1]) == aDropActionInfo.insertBefore ||
-        getPreviousVisibleTab(draggedTabs[0]) == aDropActionInfo.insertAfter) {
-      log('=> no change: do nothing');
-      return true;
-    }
-  }
-
-  var treeStructure = getTreeStructureFromTabs(draggedTabs);
-
-  var newTabs;
-/*
-  var replacedGroupTabs = doAndGetNewTabs(() => {
-    newTabs = moveTabsInternal(draggedTabs, {
-      duplicate    : aDropActionInfo.action & kACTION_DUPLICATE,
-      insertBefore : aDropActionInfo.insertBefore,
-      insertAfter  : aDropActionInfo.insertAfter,
-      inRemote     : true
-    });
-  });
-  log('=> opened group tabs: ', replacedGroupTabs);
-  aDropActionInfo.draggedTab.ownerDocument.defaultView.setTimeout(() => {
-    log('closing needless group tabs');
-    replacedGroupTabs.reverse().forEach(function(aTab) {
-      log(' check: ', aTab.label+'('+aTab._tPos+') '+getLoadingURI(aTab));
-      if (isGroupTab(aTab) &&
-        !hasChildTabs(aTab))
-        removeTab(aTab);
-    }, this);
-  }, 0);
-*/
-
-/*
-  if (newTabs.length && aDropActionInfo.action & kACTION_ATTACH) {
-    Promise.all(newTabs.map((aTab) => aTab.__treestyletab__promisedDuplicatedTab))
-      .then((function() {
-        log('   => attach (last)');
-        await attachTabsOnDrop(
-          newTabs.filter(function(aTab, aIndex) {
-            return treeStructure[aIndex] == -1;
-          }),
-          aDropActionInfo.newParent,
-          { insertBefore: aDropActionInfo.insertBefore,
-            insertAfter:  aDropActionInfo.insertAfter }
-        );
-      }).bind(this));
-  }
-*/
-
-  log('=> finished');
-  return true;
-}
-
-function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
-  log('attachTabsOnDrop: start');
-  for (let tab of aTabs) {
-    if (aParent)
-      attachTabTo(tab, aParent, {
-        insertBefore: aOptions.insertBefore,
-        insertAfter:  aOptions.insertAfter,
-        inRemote: true
-      });
-    else
-      detachTab(tab, { inRemote: true });
-    collapseExpandTab(tab, { collapsed: false });
-  }
-}
-
-function detachTabsOnDrop(aTabs) {
-  log('detachTabsOnDrop: start');
-  for (let tab of aTabs) {
-    detachTab(tab, { inRemote: true });
-    collapseExpandTab(tab, { collapsed: false });
-  }
-}
-
 async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
   aEvent.stopPropagation();
 
@@ -578,7 +423,7 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
     });
   }
   await openURIsInTabs(uris, {
-    parent:       aDropActionInfo.newParent,
+    parent:       aDropActionInfo.parent,
     insertBefore: aDropActionInfo.insertBefore,
     insertAfter:  aDropActionInfo.insertAfter,
     inRemote:     true
@@ -796,50 +641,35 @@ function onDragLeave(aEvent) {
 
 async function onDrop(aEvent) {
   setTimeout(() => collapseAutoExpandedTabsWhileDragging(), 0);
+  clearDropPosition();
 
-  /**
-   * We must calculate drop action before clearing "dragging"
-   * state, because the drop position depends on tabs' actual
-   * positions (they are applied only while tab dragging.)
-   */
   var dropActionInfo = getDropAction(aEvent);
   var dt = aEvent.dataTransfer;
-
-  clearDropPosition();
-  var container = dropActionInfo.targetTab.parentNode;
-  container.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
-  log('onDrop', {
-    dropEffect: dt.dropEffect,
-    draggedTab: dumpTab(dropActionInfo.draggedTab)
-  });
-
   if (dt.dropEffect != 'link' &&
       dt.dropEffect != 'move' &&
-      !dropActionInfo.draggedTab) {
+      !dropActionInfo.dragData.tabId) {
     log('invalid drop');
-    aEvent.stopPropagation();
     return;
   }
 
-  if (!dropActionInfo.draggedTab) {
-    log('link or bookmark item is dropped');
-    handleDroppedNonTabItems(aEvent, dropActionInfo);
+  if (dropActionInfo.dragData.tabId) {
+    log('there ar tabs drag');
+    performTabsDragDrop({
+      windowId:     dropActionInfo.dragData.windowId,
+      tabIds:       dropActionInfo.dragData.tabIds,
+      action:       dropActionInfo.action,
+      attachTo:     dropActionInfo.parent,
+      insertBefore: dropActionInfo.insertBefore,
+      insertAfter:  dropActionInfo.insertAfter,
+      destinationWindowId: gTargetWindow,
+      duplicate:    dt.dropEffect == 'copy',
+      inRemote:     true
+    });
     return;
   }
 
-  if (await performDrop(dropActionInfo)) {
-    log('dropped tab is performed.');
-    aEvent.stopPropagation();
-    return;
-  }
-
-  // duplicating of tabs
-  if ((dt.dropEffect == 'copy' ||
-       dropActionInfo.draggedTab.ownerDocument != document) &&
-      dropActionInfo.dropPosition == kDROP_ON) {
-    log('duplicate dropped tabs as children of the tab: ', dumpTab(dropActionInfo.targetTab));
-    // attachTabTo(newTabs[0], dropActionInfo.targetTab, { inRemote: true });
-  }
+  log('link or bookmark item is dropped');
+  handleDroppedNonTabItems(aEvent, dropActionInfo);
 }
 
 function onDragEnd(aEvent) {

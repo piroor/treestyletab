@@ -278,11 +278,13 @@ function detachTab(aChild, aOptions = {}) {
   }
 }
 
-function detachTabs(aTabs, aOptions = {}) {
+function detachParent(aTabs, aOptions = {}) {
+  if (!Array.isArray(aTabs))
+    aTabs = [aTabs];
   for (let tab of aTabs) {
     if (aTabs.indexOf(getParentTab(tab)) > -1)
       continue;
-    detachAllChildren(tab, inherit(aOptions, {
+    detachAllChildren(tab, clone(aOptions, {
       behavior : getCloseParentBehaviorForTab(
         tab,
         kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
@@ -717,87 +719,104 @@ async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
   container.subTreeMovingCount--;
 }
 
-async function moveTabsAcrossWindows(aTabs, aDestinationWindowId, aOptions = {}) {
-  if (aTabs.length == 0 ||
-      !aDestinationWindowId)
+async function moveTabs(aTabs, aOptions = {}) {
+  if (aTabs.length == 0)
     return [];
 
-  log('moveTabsAcrossWindows: ', aTabs.map(dumpTab), aDestinationWindowId, aOptions);
+  log('moveTabs: ', aTabs.map(dumpTab), aOptions);
 
   var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
+  var destinationWindowId = aOptions.destinationWindowId || gTargetWindow;
+
   if (aOptions.inRemote) {
-    let response = await browser.runtime.sendMessage(inherit(aOptions, {
-      type:      kCOMMAND_MOVE_TABS_ACROSS_WINDOWS,
-      windowId:  windowId,
-      tabs:      aTabs.map(aTab => aTab.id),
-      duplicate: !!aOptions.duplicate,
-      destinationWindowId: aDestinationWindowId
+    let response = await browser.runtime.sendMessage(clone(aOptions, {
+      type:         kCOMMAND_MOVE_TABS,
+      windowId:     windowId,
+      tabs:         aTabs.map(aTab => aTab.id),
+      insertBefore: aParams.insertBefore && aParams.insertBefore.id,
+      insertAfter:  aParams.insertAfter && aParams.insertAfter.id,
+      duplicate:    !!aOptions.duplicate,
+      destinationWindowId: destinationWindowId
     }));
     let movedTabs = response.movedTabs || [];
     return movedTabs.map(getTabById).filter(aTab => !!aTab);
   }
 
-  // blockUserOperationsIn(windowId);
+  var movedTabs = aTabs;
 
   var structure = getTreeStructureFromTabs(aTabs);
   log('structure: ', structure);
 
   log('preparing container');
-  var container = getTabsContainer(aDestinationWindowId);
+  var container = getTabsContainer(destinationWindowId);
   if (!container) {
-    container = buildTabsContainerFor(aDestinationWindowId);
+    container = buildTabsContainerFor(destinationWindowId);
     gAllTabs.appendChild(container);
   }
 
-  container.toBeOpenedTabsWithPositionsCount += aTabs.length;
-  container.toBeOpenedOrphanTabs += aTabs.length;
-  if (aOptions.duplicate) {
-    let sourceContainer = aTabs[0].parentNode;
-    sourceContainer.toBeOpenedTabsWithPositionsCount += aTabs.length;
-    sourceContainer.toBeOpenedOrphanTabs += aTabs.length;
-  }
+  if (windowId != destinationWindowId ||
+      aOptions.duplicate) {
+    //blockUserOperationsIn(windowId);
 
-  log('moving tabs');
-  var movedApiTabs = await Promise.all(aTabs.map(async (aTab, aIndex) => {
-    let tabId = aTab.apiTab.id;
+    container.toBeOpenedTabsWithPositionsCount += aTabs.length;
+    container.toBeOpenedOrphanTabs += aTabs.length;
     if (aOptions.duplicate) {
-      let tab = await browser.tabs.duplicate(tabId);
-      tabId = tab.id;
+      let sourceContainer = aTabs[0].parentNode;
+      sourceContainer.toBeOpenedTabsWithPositionsCount += aTabs.length;
+      sourceContainer.toBeOpenedOrphanTabs += aTabs.length;
     }
-    let movedTabs = await browser.tabs.move(tabId, {
-      windowId: aDestinationWindowId,
-      index:    aIndex + 1
-    });
-    return movedTabs[0];
-  }));
-  log('moved: ', movedApiTabs);
 
-  log('applying tree structure');
-  // wait until tabs.onCreated are processed (for safety)
-  var movedTabs;
-  var retryUntil = 10;
-  while (retryUntil >= 0) {
-    movedTabs = movedApiTabs.map(aApiTab => getTabById({
-                                  tab: aApiTab.id,
-                                  window: aDestinationWindowId
-                                 }))
-                            .filter(aTab => !!aTab);
-    if (movedTabs.length < aTabs.length) {
-      log('retryling: ', movedTabs.length, aTabs.length);
-      retryUntil--;
-      await wait(100);
-      continue;
+    log('preparing tabs');
+    let movedApiTabs = await Promise.all(aTabs.map(async (aTab, aIndex) => {
+      let tabId = aTab.apiTab.id;
+      if (aOptions.duplicate) {
+        let tab = await browser.tabs.duplicate(tabId);
+        tabId = tab.id;
+      }
+      let movedTabs = await browser.tabs.move(tabId, {
+        windowId: destinationWindowId,
+        index:    aIndex + 1
+      });
+      return movedTabs[0];
+    }));
+    log('moved: ', movedApiTabs);
+
+    log('applying tree structure');
+    // wait until tabs.onCreated are processed (for safety)
+    let newTabs;
+    let retryUntil = 10;
+    while (retryUntil >= 0) {
+      newTabs = movedApiTabs.map(aApiTab => getTabById({
+                 tab:    aApiTab.id,
+                 window: destinationWindowId
+                })).filter(aTab => !!aTab);
+      if (newTabs.length < aTabs.length) {
+        log('retryling: ', newTabs.length, aTabs.length);
+        retryUntil--;
+        await wait(100);
+        continue;
+      }
+      applyTreeStructureToTabs(newTabs, structure);
+      break;
     }
-    applyTreeStructureToTabs(movedTabs, structure);
-    break;
+
+    //unblockUserOperationsIn(windowId);
+
+    if (!newTabs) {
+      log('failed to move tabs (timeout)');
+      newTabs = [];
+    }
+    movedTabs = newTabs;
   }
 
-  // unblockUserOperationsIn(windowId);
-
-  if (!movedTabs) {
-    log('failed to move tabs across windows (timeout)');
-    movedTabs = [];
-  }
+  if (aOptions.insertBefore &&
+      !isAllTabsPlacedBefore(movedTabs, aOptions.insertBefore))
+    await moveTabsInternallyAfter(movedTabs, aOptions.insertBefore, aOptions);
+  else if (aOptions.insertAfter &&
+           !isAllTabsPlacedAfter(movedTabs, aOptions.insertAfter))
+    await moveTabsInternallyAfter(movedTabs, aOptions.insertAfter, aOptions);
+  else
+    log('no move: just duplicate or import');
 
   return movedTabs;
 }
@@ -834,7 +853,9 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   var newWindow = await browser.windows.create(windowParams);
   log('new window: ', newWindow);
 
-  var movedTabs = await moveTabsAcrossWindows(aTabs, newWindow.id, aOptions);
+  var movedTabs = await moveTabs(aTabs, clone(aOptions, {
+                          destinationWindowId: newWindow.id
+                        }));
 
   log('closing needless tab');
   browser.windows.get(newWindow.id, { populate: true })
@@ -843,6 +864,179 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
     });
 
   return movedTabs;
+}
+
+
+// drag and drop helper
+
+async function performTabsDragDrop(aParams = {}) {
+  var windowId = aParams.windowId || gTargetWindow;
+  var destinationWindowId = aParams.destinationWindowId || windowId;
+
+  if (aParams.inRemote) {
+    browser.runtime.sendMessage(clone(aParams, {
+      type:         kCOMMAND_PERFORM_TABS_DRAG_DROP,
+      windowId:     windowId,
+      attachTo:     aParams.attachTo && aParams.attachTo.id,
+      insertBefore: aParams.insertBefore && aParams.insertBefore.id,
+      insertAfter:  aParams.insertAfter && aParams.insertAfter.id,
+      destinationWindowId,
+      inRemote: false
+    }));
+    return;
+  }
+
+  log('performTabsDragDrop ', {
+    tabIds: aParams.tabIds,
+    windowId: aParams.windowId,
+    destinationWindowId: aParams.destinationWindowId,
+    action: aParams.action
+  });
+
+  var draggedTabs = aParams.tabIds.map(aTabId => getTabById({
+                      tab:    aTabId,
+                      window: windowId
+                    })).filter(aTab => !!aTab);
+  if (!draggedTabs.length)
+    return;
+
+  var draggedRoots = collectRootTabs(draggedTabs);
+  var targetTabs = getTabs(windowId);
+
+  var draggedWholeTree = [].concat(draggedRoots);
+  for (let draggedRoot of draggedRoots) {
+    let descendants = getDescendantTabs(draggedRoot);
+    for (let descendant of descendants) {
+      if (draggedWholeTree.indexOf(descendant) < 0)
+        draggedWholeTree.push(descendant);
+    }
+  }
+  log('=> draggedTabs: ', draggedTabs.map(dumpTab).join(' / '));
+
+  var selectedTabs = draggedTabs.filter(isSelected);
+  if (draggedWholeTree.length != selectedTabs.length &&
+      selectedTabs.length > 0) {
+    log('=> partially dragged');
+    draggedTabs = draggedRoots = selectedTabs;
+    if (!aParams.duplicate)
+      detachParent(selectedTabs);
+  }
+
+  while (aParams.insertBefore &&
+         draggedWholeTree.indexOf(aParams.insertBefore) > -1) {
+    aParams.insertBefore = getNextTab(aParams.insertBefore);
+  }
+  while (aParams.insertAfter &&
+         draggedWholeTree.indexOf(aParams.insertAfter) > -1) {
+    aParams.insertAfter = getPreviousTab(aParams.insertAfter);
+  }
+
+  if (aParams.duplicate ||
+      windowId != destinationWindowId) {
+    draggedTabs = await moveTabs(draggedTabs, {
+      destinationWindowId,
+      duplicate:    aParams.duplicate,
+      insertBefore: aParams.insertBefore,
+      insertAfter:  aParams.insertAfter
+    });
+    draggedRoots = collectRootTabs(draggedTabs);
+  }
+
+  log('try attach/detach');
+  if (aParams.action & kACTION_DETACH) {
+    log('=> detach');
+    detachTabsOnDrop(draggedRoots, {
+      broadcast: true
+    });
+  }
+  else if (aParams.action & kACTION_ATTACH &&
+           aParams.attachTo) {
+    log('=> attach');
+    attachTabsOnDrop(draggedRoots, aParams.attachTo, {
+      insertBefore: aParams.insertBefore,
+      insertAfter:  aParams.insertAfter,
+      broadcast: true
+    });
+  }
+  else {
+    log('=> just moved');
+  }
+
+  log('=> moving dragged tabs');
+  if (aParams.insertBefore &&
+      !isAllTabsPlacedBefore(draggedTabs, aParams.insertBefore))
+    await moveTabsInternallyBefore(draggedTabs, aParams.insertBefore);
+  else if (aParams.insertAfter &&
+           !isAllTabsPlacedAfter(draggedTabs, aParams.insertAfter))
+    await moveTabsInternallyAfter(draggedTabs, aParams.insertAfter);
+  else
+    log('=> already placed at expected position');
+
+  var treeStructure = getTreeStructureFromTabs(draggedTabs);
+
+  var newTabs;
+/*
+  var replacedGroupTabs = doAndGetNewTabs(() => {
+    newTabs = moveTabsInternal(draggedTabs, {
+      duplicate    : aParams.action & kACTION_DUPLICATE,
+      insertBefore : aParams.insertBefore,
+      insertAfter  : aParams.insertAfter,
+      inRemote     : true
+    });
+  });
+  log('=> opened group tabs: ', replacedGroupTabs);
+  aParams.draggedTab.ownerDocument.defaultView.setTimeout(() => {
+    log('closing needless group tabs');
+    replacedGroupTabs.reverse().forEach(function(aTab) {
+      log(' check: ', aTab.label+'('+aTab._tPos+') '+getLoadingURI(aTab));
+      if (isGroupTab(aTab) &&
+        !hasChildTabs(aTab))
+        removeTab(aTab);
+    }, this);
+  }, 0);
+*/
+
+/*
+  if (newTabs.length && aParams.action & kACTION_ATTACH) {
+    Promise.all(newTabs.map((aTab) => aTab.__treestyletab__promisedDuplicatedTab))
+      .then((function() {
+        log('   => attach (last)');
+        await attachTabsOnDrop(
+          newTabs.filter(function(aTab, aIndex) {
+            return treeStructure[aIndex] == -1;
+          }),
+          aParams.attachTo,
+          { insertBefore: aParams.insertBefore,
+            insertAfter:  aParams.insertAfter }
+        );
+      }).bind(this));
+  }
+*/
+
+  log('=> finished');
+}
+
+function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
+  log('attachTabsOnDrop: start');
+  for (let tab of aTabs) {
+    if (aParent)
+      attachTabTo(tab, aParent, aOptions);
+    else
+      detachTab(tab, aOptions);
+    collapseExpandTab(tab, clone(aOptions, {
+      collapsed: false
+    }));
+  }
+}
+
+function detachTabsOnDrop(aTabs, aOptions = {}) {
+  log('detachTabsOnDrop: start');
+  for (let tab of aTabs) {
+    detachTab(tab, aOptions);
+    collapseExpandTab(tab, clone(aOptions, {
+      collapsed: false
+    }));
+  }
 }
 
 

@@ -18,7 +18,8 @@ const kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE = 'treestyletab:request-move-tabs-int
 const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:request-move-tabs-internally-after';
 const kCOMMAND_LOAD_URI = 'treestyletab:request-load-uri';
 const kCOMMAND_NEW_WINDOW_FROM_TABS = 'treestyletab:request-new-window-from-tabs';
-const kCOMMAND_MOVE_TABS_ACROSS_WINDOWS = 'treestyletab:request-move-tabs-across-windows';
+const kCOMMAND_MOVE_TABS = 'treestyletab:request-move-tabs';
+const kCOMMAND_PERFORM_TABS_DRAG_DROP = 'treestyletab:request-perform-tabs-drag-drop';
 
 const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT   = 'data-parent-id';
