@@ -5,7 +5,7 @@
 */
 'use strict';
 
-gLogContext = 'Sidebar';
+gLogContext = 'Sidebar-?';
 
 var gTabBar;
 var gAfterTabsForOverflowTabBar;
@@ -60,6 +60,7 @@ function destroy() {
 async function rebuildAll() {
   var apiTabs = await browser.tabs.query({ currentWindow: true });
   gTargetWindow = apiTabs[0].windowId;
+  gLogContext = `Sidebar-${gTargetWindow}`;
   clearAllTabsContainers();
   var container = buildTabsContainerFor(gTargetWindow);
   for (let apiTab of apiTabs) {
