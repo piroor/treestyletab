@@ -796,19 +796,36 @@ async function moveTabs(aTabs, aOptions = {}) {
       sourceContainer.toBeDetachedTabs += aTabs.length;
 
     log('preparing tabs');
-    let offset = getAllTabs(container).length;
-    let movedApiTabs = await Promise.all(aTabs.map(async (aTab, aIndex) => {
-      let tabId = aTab.apiTab.id;
-      if (aOptions.duplicate) {
-        let tab = await browser.tabs.duplicate(tabId);
-        tabId = tab.id;
-      }
-      let movedTabs = await browser.tabs.move(tabId, {
+    let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
+    if (aOptions.duplicate) {
+      apiTabs = await Promise.all(apiTabIds.map(async (aId, aIndex) => {
+        return (await browser.tabs.duplicate(aId)).id;
+      }));
+    }
+    let toIndex = getAllTabs(container).length;
+    if (aOptions.insertBefore) {
+      toIndex = aOptions.insertBefore.apiTab.index;
+      if (!isAcrossWindows &&
+          aTabs[0].apiTab.index < toIndex)
+          toIndex--;
+    }
+    else if (aOptions.insertAfter) {
+      toIndex = aOptions.insertAfter.apiTab.index;
+      if (!isAcrossWindows &&
+          aTabs[0].apiTab.index > toIndex)
+          toIndex++;
+    }
+    let movedApiTabs;
+    if (isAcrossWindows)
+      movedApiTabs = await safeMoveApiTabsAcrossWindows(apiTabIds, {
         windowId: destinationWindowId,
-        index:    aIndex + offset
+        index:    toIndex
       });
-      return movedTabs[0];
-    }));
+    else
+      movedApiTabs = await browser.tabs.move(apiTabIds, {
+        windowId: destinationWindowId,
+        index:    toIndex
+      });
     log('moved: ', movedApiTabs);
 
     log('applying tree structure', structure);
