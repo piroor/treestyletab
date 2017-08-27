@@ -788,7 +788,7 @@ async function moveTabs(aTabs, aOptions = {}) {
     log('preparing tabs');
     let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
     if (aOptions.duplicate) {
-      apiTabs = await Promise.all(apiTabIds.map(async (aId, aIndex) => {
+      apiTabIds = await Promise.all(apiTabIds.map(async (aId, aIndex) => {
         return (await browser.tabs.duplicate(aId)).id;
       }));
     }
