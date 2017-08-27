@@ -519,9 +519,14 @@ function onDragStart(aEvent) {
 
   dragData.tabNodes.map((aDraggedTab, aIndex) => {
     aDraggedTab.classList.add(kTAB_STATE_DRAGGING);
-    // this type will be used to create multiple bookmarks
-    dt.mozSetDataAt('text/x-moz-url',
-      `${aDraggedTab.apiTab.url}\n${aDraggedTab.apiTab.title}`, aIndex);
+    if (aEvent.shiftKey) {
+      // this type will be used to create multiple bookmarks
+      // but do not add by default, beause dropping this data into
+      // the content area will produce both "new tabs from URL" and
+      // "tear off".
+      dt.mozSetDataAt('text/x-moz-url',
+        `${aDraggedTab.apiTab.url}\n${aDraggedTab.apiTab.title}`, aIndex);
+    }
   });
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
 }
@@ -702,7 +707,8 @@ function onDragEnd(aEvent) {
   getTabsContainer(aEvent.target).classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   collapseAutoExpandedTabsWhileDragging();
 
-  if (aEvent.dataTransfer.dropEffect != 'none') {
+  if (aEvent.dataTransfer.dropEffect != 'none' ||
+      aEvent.shiftKey) {
     log('dragged items are processed by someone: ', aEvent.dataTransfer.dropEffect);
     return;
   }
