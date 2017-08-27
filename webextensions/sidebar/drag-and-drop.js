@@ -109,25 +109,25 @@ function getDropAction(aEvent) {
         info.action ^= kACTION_STAY;
     }
 
-    if (info.target &&
-        isPinned(info.draggedTab) != isPinned(info.target)) {
+    if (info.dragOverTab &&
+        isPinned(info.draggedTab) != isPinned(info.dragOverTab)) {
       info.canDrop = false;
     }
     else if (info.action & kACTION_ATTACH) {
       if (info.parent == info.draggedTab) {
         info.canDrop = false;
       }
-      else if (info.target &&
-               getAncestorTabs(info.target).indexOf(info.draggedTab) > -1) {
+      else if (info.dragOverTab &&
+               getAncestorTabs(info.dragOverTab).indexOf(info.draggedTab) > -1) {
         info.canDrop = false;
       }
     }
   }
 
-  if (info.target &&
-      (isHidden(info.target) ||
-       (isCollapsed(info.target) &&
-        info.position != kDROP_AFTER)))
+  if (info.dragOverTab &&
+      (isHidden(info.dragOverTab) ||
+       (isCollapsed(info.dragOverTab) &&
+        info.dropPosition != kDROP_AFTER)))
     info.canDrop = false;
 
   return info;
