@@ -318,7 +318,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         parent:       aOptions.parent && aOptions.parent.id,
         opener:       aOptions.opener && aOptions.opener.id,
         insertBefore: aOptions.insertBefore && aOptions.insertBefore.id,
-        insertAfter:  aOptions.insertAfter && aOptions.insertAfter.id
+        insertAfter:  aOptions.insertAfter && aOptions.insertAfter.id,
+        inRemote:     false
       }));
     }
     else {

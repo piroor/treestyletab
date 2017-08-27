@@ -736,7 +736,8 @@ async function moveTabs(aTabs, aOptions = {}) {
       insertBefore: aParams.insertBefore && aParams.insertBefore.id,
       insertAfter:  aParams.insertAfter && aParams.insertAfter.id,
       duplicate:    !!aOptions.duplicate,
-      destinationWindowId: destinationWindowId
+      destinationWindowId: destinationWindowId,
+      inRemote:     false
     }));
     let movedTabs = response.movedTabs || [];
     return movedTabs.map(getTabById).filter(aTab => !!aTab);
@@ -838,7 +839,8 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       tabs:         aTabs.map(aTab => aTab.id),
       duplicate:    !!aOptions.duplicate,
       left:         'left' in aOptions ? parseInt(aOptions.left) : null,
-      top:          'top' in aOptions ? parseInt(aOptions.top) : null
+      top:          'top' in aOptions ? parseInt(aOptions.top) : null,
+      inRemote:     false
     }));
     let movedTabs = response.movedTabs || [];
     return movedTabs.map(getTabById).filter(aTab => !!aTab);
