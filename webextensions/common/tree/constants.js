@@ -20,6 +20,8 @@ const kCOMMAND_LOAD_URI = 'treestyletab:request-load-uri';
 const kCOMMAND_NEW_WINDOW_FROM_TABS = 'treestyletab:request-new-window-from-tabs';
 const kCOMMAND_MOVE_TABS = 'treestyletab:request-move-tabs';
 const kCOMMAND_PERFORM_TABS_DRAG_DROP = 'treestyletab:request-perform-tabs-drag-drop';
+const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:request-block-user-operations';
+const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:request-unblock-user-operations';
 
 const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT   = 'data-parent-id';
@@ -63,6 +65,7 @@ const kTAB_STATE_DRAGGING = 'dragging';
 
 const kTABBAR_STATE_OVERFLOW = 'overflow';
 const kTABBAR_STATE_TAB_DRAGGING = 'tab-dragging';
+const kTABBAR_STATE_BLOCKING = 'blocking';
 
 const kCOUNTER_ROLE_ALL_TABS = 1;
 const kCOUNTER_ROLE_CONTAINED_TABS = 2;

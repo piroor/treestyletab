@@ -1,0 +1,29 @@
+@charset "UTF-8";
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#blocking-screen {
+  background: rgba(0, 0, 0, 0.25);
+  bottom: 0;
+  color: white;
+  display: none;
+  left: 0;
+  position: fixed;
+  right: 0;
+  text-shadow: 0 0 0.5em black,
+               0 0 0.5em black;
+  top: 0;
+}
+
+#blocking-screen .throbber {
+  position: absolute;
+  top: calc(50% - var(--favicon-size) / 2);
+  left: calc(50% - var(--favicon-size) / 2);
+}
+
+:root.blocking #blocking-screen {
+  display: block;
+}

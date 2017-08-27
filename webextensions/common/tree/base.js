@@ -359,3 +359,46 @@ function makeGroupTabURI(aTitle) {
   var base = kGROUP_TAB_URI;
   return `${base}?title=${encodeURIComponent(aTitle)}`;
 }
+
+var gBlockingCount = 0;
+
+function blockUserOperations() {
+  gBlockingCount++;
+  document.documentElement.classList.add(kTABBAR_STATE_BLOCKING);
+}
+
+function blockUserOperationsIn(aWindowId) {
+  if (gTargetWindow && gTargetWindow != aWindowId)
+    return;
+
+  if (!gTargetWindow) {
+    browser.runtime.sendMessage({
+      type: kCOMMAND_BLOCK_USER_OPERATIONS,
+      windowId: aWindowId
+    });
+    return;
+  }
+  blockUserOperations();
+}
+
+function unblockUserOperations() {
+  gBlockingCount--;
+  if (gBlockingCount < 0)
+    gBlockingCount = 0;
+  if (gBlockingCount == 0)
+    document.documentElement.classList.remove(kTABBAR_STATE_BLOCKING);
+}
+
+function unblockUserOperationsIn(aWindowId) {
+  if (gTargetWindow && gTargetWindow != aWindowId)
+    return;
+
+  if (!gTargetWindow) {
+    browser.runtime.sendMessage({
+      type: kCOMMAND_UNBLOCK_USER_OPERATIONS,
+      windowId: aWindowId
+    });
+    return;
+  }
+  unblockUserOperations();
+}

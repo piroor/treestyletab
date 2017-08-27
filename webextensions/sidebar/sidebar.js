@@ -12,6 +12,8 @@ var gAfterTabsForOverflowTabBar;
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
+blockUserOperations();
+
 async function init() {
   log('initialize sidebar');
   window.addEventListener('unload', destroy, { once: true });
@@ -38,6 +40,7 @@ async function init() {
   startListenDragEvents(window);
 
   await inheritTreeStructure();
+  unblockUserOperations();
 }
 
 function destroy() {
@@ -120,6 +123,16 @@ function onMessage(aMessage, aSender, aRespond) {
         if (tab)
           detachTab(tab);
       }
+    }; break;
+
+    case kCOMMAND_BLOCK_USER_OPERATIONS: {
+      if (aMessage.windowId == gTargetWindow)
+        blockUserOperationsIn(gTargetWindow);
+    }; break;
+
+    case kCOMMAND_UNBLOCK_USER_OPERATIONS: {
+      if (aMessage.windowId == gTargetWindow)
+        unblockUserOperationsIn(gTargetWindow);
     }; break;
   }
 }

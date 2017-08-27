@@ -754,9 +754,9 @@ async function moveTabs(aTabs, aOptions = {}) {
     gAllTabs.appendChild(container);
   }
 
-  if (windowId != destinationWindowId ||
-      aOptions.duplicate) {
-    //blockUserOperationsIn(windowId);
+  var inNewWindow = windowId != destinationWindowId;
+  if (inNewWindow || aOptions.duplicate) {
+    blockUserOperationsIn(windowId);
 
     container.toBeOpenedTabsWithPositionsCount += aTabs.length;
     container.toBeOpenedOrphanTabs += aTabs.length;
@@ -803,7 +803,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       break;
     }
 
-    //unblockUserOperationsIn(windowId);
+    unblockUserOperationsIn(windowId);
 
     if (!newTabs) {
       log('failed to move tabs (timeout)');
@@ -857,6 +857,8 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   var newWindow = await browser.windows.create(windowParams);
   log('new window: ', newWindow);
 
+  blockUserOperationsIn(newWindow.id);
+
   var movedTabs = await moveTabs(aTabs, clone(aOptions, {
                           destinationWindowId: newWindow.id
                         }));
@@ -865,6 +867,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   browser.windows.get(newWindow.id, { populate: true })
     .then(aApiWindow => {
       browser.tabs.remove(aApiWindow.tabs[0].id);
+      unblockUserOperationsIn(newWindow.id);
     });
 
   return movedTabs;
