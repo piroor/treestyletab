@@ -250,19 +250,20 @@ function detachTab(aChild, aOptions = {}) {
   log('detachTab: ', dumpTab(aChild), aOptions,
     new Error().stack.split('\n')[1]);
   var parent = getParentTab(aChild);
-  if (!parent) {
-    log('canceled for an orphan tab');
-    return;
-  }
+  if (!parent)
+    log('parent is already removed, or orphan tab');
 
-  var childIds = (parent.getAttribute(kCHILDREN) || '').split('|').filter((aId) => aId && aId != aChild.id);
-  if (childIds.length == 0) {
-    parent.removeAttribute(kCHILDREN);
-    log('no more child');
-  }
-  else {
-    parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
-    log('rest children: ', childIds);
+
+  if (parent) {
+    let childIds = (parent.getAttribute(kCHILDREN) || '').split('|').filter((aId) => aId && aId != aChild.id);
+    if (childIds.length == 0) {
+      parent.removeAttribute(kCHILDREN);
+      log('no more child');
+    }
+    else {
+      parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
+      log('rest children: ', childIds);
+    }
   }
   aChild.removeAttribute(kPARENT);
 
