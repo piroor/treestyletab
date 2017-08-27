@@ -182,7 +182,7 @@ async function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_NEW_TABS: {
       log('new tabs requested: ', aMessage);
-      await openURIsInTabs(aMessage.uris, inherit(aMessage, {
+      await openURIsInTabs(aMessage.uris, clone(aMessage, {
         parent:       getTabById(aMessage.parent),
         insertBefore: getTabById(aMessage.insertBefore),
         insertAfter:  getTabById(aMessage.insertAfter)
@@ -249,7 +249,7 @@ async function onMessage(aMessage, aSender, aRespond) {
       let insertBefore = getTabById(aMessage.insertBefore);
       let insertAfter = getTabById(aMessage.insertAfter);
       if (child && parent)
-        await attachTabTo(child, parent, inherit(aMessage, {
+        await attachTabTo(child, parent, clone(aMessage, {
           insertBefore, insertAfter
         }));
       aRespond();

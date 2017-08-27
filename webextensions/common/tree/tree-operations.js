@@ -170,7 +170,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     await moveTabSubtreeAfter(aChild, prevTab, aOptions);
 
   if (aOptions.forceExpand) {
-    collapseExpandSubtree(aParent, inherit(aOptions, {
+    collapseExpandSubtree(aParent, clone(aOptions, {
       collapsed: false,
       inRemote: false
     }));
@@ -184,7 +184,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     if (configs.autoCollapseExpandSubtreeOnSelect) {
       newAncestors.forEach(aAncestor => {
         if (shouldTabAutoExpanded(aAncestor))
-          collapseExpandSubtree(aAncestor, inherit(aOptions, {
+          collapseExpandSubtree(aAncestor, clone(aOptions, {
             collapsed: false,
             inRemote: false
           }));
@@ -194,27 +194,27 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       if (configs.autoExpandSubtreeOnAppendChild) {
         newAncestors.forEach(aAncestor => {
           if (shouldTabAutoExpanded(aAncestor))
-            collapseExpandSubtree(aAncestor, inherit(aOptions, {
+            collapseExpandSubtree(aAncestor, clone(aOptions, {
               collapsed: false,
               inRemote: false
             }));
         });
       }
       else
-        collapseExpandTab(aChild, inherit(aOptions, {
+        collapseExpandTab(aChild, clone(aOptions, {
           collapsed: true,
           inRemote: false
         }));
     }
     if (isCollapsed(aParent))
-      collapseExpandTab(aChild, inherit(aOptions, {
+      collapseExpandTab(aChild, clone(aOptions, {
         collapsed: true,
         inRemote: false
       }));
   }
   else if (shouldTabAutoExpanded(aParent) ||
            isCollapsed(aParent)) {
-    collapseExpandTab(aChild, inherit(aOptions, {
+    collapseExpandTab(aChild, clone(aOptions, {
       collapsed: true,
       inRemote: false
     }));
@@ -333,23 +333,23 @@ function detachAllChildren(aTab, aOptions = {}) {
       detachTab(child, aOptions);
       if (i == 0) {
         if (parent) {
-          attachTabTo(child, parent, inherit(aOptions, {
+          attachTabTo(child, parent, clone(aOptions, {
             dontExpand : true,
             dontMove   : true
           }));
         }
-        collapseExpandSubtree(child, inherit(aOptions, { collapsed: false }));
+        collapseExpandSubtree(child, clone(aOptions, { collapsed: false }));
         //deleteTabValue(child, kTAB_STATE_SUBTREE_COLLAPSED);
       }
       else {
-        attachTabTo(child, children[0], inherit(aOptions, {
+        attachTabTo(child, children[0], clone(aOptions, {
           dontExpand : true,
           dontMove   : true
         }));
       }
     }
     else if (aOptions.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
-      attachTabTo(child, parent, inherit(aOptions, {
+      attachTabTo(child, parent, clone(aOptions, {
         dontExpand : true,
         dontMove   : true
       }));
@@ -558,12 +558,12 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
     let manuallyExpanded = collapseTab.classList.contains(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
-      collapseExpandSubtree(collapseTab, inherit(aOptions, {
+      collapseExpandSubtree(collapseTab, clone(aOptions, {
         collapsed: true
       }));
   }
 
-  collapseExpandSubtree(aTab, inherit(aOptions, {
+  collapseExpandSubtree(aTab, clone(aOptions, {
     collapsed: false
   }));
 }
@@ -830,7 +830,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
 
   if (aOptions.inRemote) {
-    let response = await browser.runtime.sendMessage(inherit(aOptions, {
+    let response = await browser.runtime.sendMessage(clone(aOptions, {
       type:         kCOMMAND_NEW_WINDOW_FROM_TABS,
       windowId:     windowId,
       tabs:         aTabs.map(aTab => aTab.id),
