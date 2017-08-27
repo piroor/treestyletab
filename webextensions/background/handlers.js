@@ -320,6 +320,8 @@ function handleNewActiveTab(aTab) {
    * were processed.
    */
   handleNewActiveTab.timer = setTimeout(() => {
+    if (!aTab.parentNode) // it was removed while waiting
+      return;
     delete handleNewActiveTab.timer;
     var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
     var canCollapseTree = shouldCollapseExpandNow;

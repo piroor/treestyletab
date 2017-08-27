@@ -169,6 +169,9 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   else
     await moveTabSubtreeAfter(aChild, prevTab, aOptions);
 
+  if (!aChild.parentNode) // it is removed while waiting
+    return;
+
   if (aOptions.forceExpand) {
     collapseExpandSubtree(aParent, clone(aOptions, {
       collapsed: false,
@@ -406,6 +409,8 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     if (aParams.inRemote)
       return;
   }
+  if (!aTab.parentNode) // it was removed while waiting
+    return;
   //log('collapseExpandSubtree: ', dumpTab(aTab), aParams);
   var container = aTab.parentNode;
   container.doingCollapseExpandCount++;
@@ -679,12 +684,16 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   container.subTreeMovingCount++;
   try {
     await moveTabInternallyBefore(aTab, aNextTab, aOptions);
+    if (!aTab.parentNode) // it is removed while waiting
+      throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
   }
   catch(e) {
     log(`failed to move subtree: ${String(e)}`);
   }
   await wait(0);
+  if (!container.parentNode) // it was removed while waiting
+    return;
   container.subTreeMovingCount--;
 }
 
@@ -697,12 +706,16 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
   container.subTreeMovingCount++;
   try {
     await moveTabInternallyAfter(aTab, aPreviousTab, aOptions);
+    if (!aTab.parentNode) // it is removed while waiting
+      throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
   }
   catch(e) {
     log(`failed to move subtree: ${String(e)}`);
   }
   await wait(0);
+  if (!container.parentNode) // it was removed while waiting
+    return;
   container.subTreeMovingCount--;
 }
 
@@ -738,7 +751,11 @@ async function moveTabs(aTabs, aOptions = {}) {
       duplicate:    !!aOptions.duplicate,
       destinationWindowId: destinationWindowId,
       inRemote:     false
-    }));
+    })).catch(e => {
+      log('moveTabs:FATAL ERROR: failed to get response. ',
+          String(e));
+      throw e;
+    });
     let movedTabs = response.movedTabs || [];
     return movedTabs.map(getTabById).filter(aTab => !!aTab);
   }
@@ -841,7 +858,11 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       left:         'left' in aOptions ? parseInt(aOptions.left) : null,
       top:          'top' in aOptions ? parseInt(aOptions.top) : null,
       inRemote:     false
-    }));
+    })).catch(e => {
+      log('openNewWindowFromTabs:FATAL ERROR: failed to get response. ',
+          String(e));
+      throw e;
+    });
     let movedTabs = response.movedTabs || [];
     return movedTabs.map(getTabById).filter(aTab => !!aTab);
   }
@@ -995,6 +1016,8 @@ async function performTabsDragDrop(aParams = {}) {
   });
   log('=> opened group tabs: ', replacedGroupTabs);
   aParams.draggedTab.ownerDocument.defaultView.setTimeout(() => {
+    if (!aTab.parentNode) // it was removed while waiting
+      return;
     log('closing needless group tabs');
     replacedGroupTabs.reverse().forEach(function(aTab) {
       log(' check: ', aTab.label+'('+aTab._tPos+') '+getLoadingURI(aTab));

@@ -317,6 +317,8 @@ function onTabOpening(aTab) {
 function onTabOpened(aTab) {
   if (configs.animation) {
     window.requestAnimationFrame(() => {
+      if (!aTab.parentNode) // it was removed while waiting
+        return;
       aTab.classList.add(kTAB_STATE_ANIMATION_READY);
       onTabCollapsedStateChanging(aTab, {
         collapsed: false,
@@ -354,7 +356,8 @@ async function onTabCompletelyClosed(aTab) {
     aTab.addEventListener('transitionend', aTab.onEndRemoveAnimation, { once: true });
     aTab.style.marginTop = `-${aTab.getBoundingClientRect().height}px`;
     let backupTimer = setTimeout(() => {
-      if (!aTab || !aTab.onEndRemoveAnimation)
+      if (!aTab || !aTab.onEndRemoveAnimation ||
+          !aTab.parentNode) // it was removed while waiting
         return;
       backupTimer = null
       aTab.removeEventListener('transitionend', aTab.onEndRemoveAnimation, { once: true });
@@ -372,6 +375,8 @@ function onTabMoving(aTab) {
       justNow:   true
     });
     window.requestAnimationFrame(() => {
+      if (!aTab.parentNode) // it was removed while waiting
+        return;
       onTabCollapsedStateChanging(aTab, {
         collapsed: false
       });
@@ -388,12 +393,18 @@ function onTabLevelChanged(aTab) {
   if (gIndent < 0)
     baseIndent = configs.baseIndent;
   window.requestAnimationFrame(() => {
+    if (!aTab.parentNode) // it was removed while waiting
+      return;
     var level = parseInt(aTab.getAttribute(kNEST) || 0);
     var indent = level * baseIndent;
     var expected = indent == 0 ? 0 : indent + 'px' ;
     log('setting indent: ', { tab: dumpTab(aTab), expected: expected, level: level });
     if (aTab.style[gIndentProp] != expected) {
-      window.requestAnimationFrame(() => aTab.style[gIndentProp] = expected);
+      window.requestAnimationFrame(() => {
+        if (!aTab.parentNode) // it was removed while waiting
+          return;
+        aTab.style[gIndentProp] = expected
+      });
     }
   });
 }
@@ -453,6 +464,9 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
   window.requestAnimationFrame(() => {
+    if (!aTab.parentNode) // it was removed while waiting
+      return;
+
     //log('start animation for ', dumpTab(aTab));
     if (aInfo.last)
       onExpandedTreeReadyToScroll(aTab);
@@ -478,6 +492,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
           // This is workaround for the issue:
           //   https://github.com/piroor/treestyletab/issues/1202
           setTimeout(function() {
+            if (!aTab.parentNode) // it was removed while waiting
+              return;
             aTab.style.opacity = '';
             aTab = null;
           }, 0);
@@ -487,7 +503,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     });
     aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
     var backupTimer = setTimeout(() => {
-      if (!aTab || !aTab.onEndCollapseExpandAnimation)
+      if (!aTab || !aTab.onEndCollapseExpandAnimation ||
+          !aTab.parentNode) // it was removed while waiting
         return;
       backupTimer = null
       aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
@@ -527,7 +544,11 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
           if (stillOver) {
             stillOver = false;
           }
-          setTimeout(() => aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true), 0);
+          setTimeout(() => {
+            if (!aTab.parentNode) // it was removed while waiting
+              return;
+            aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true);
+          }, 0);
           return;
         } else if (stillOver) {
           return;

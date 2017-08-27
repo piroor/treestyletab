@@ -201,6 +201,8 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 }
 function onApiTabRemovedComplete(aTab) {
   var container = aTab.parentNode;
+  if (!container) // it was removed while waiting
+    return;
   container.removeChild(aTab);
   if (!container.hasChildNodes())
     container.parentNode.removeChild(container);
@@ -217,7 +219,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   log('onMoved: ', dumpTab(movedTab), aMoveInfo);
 
   var canceled = await window.onTabMoving && onTabMoving(movedTab, aMoveInfo);
-  if (canceled)
+  if (canceled ||
+      !movedTab.parentNode) // it is removed while waiting
     return;
 
   var newNextIndex = aMoveInfo.toIndex;

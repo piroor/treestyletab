@@ -74,8 +74,11 @@ async function inheritTreeStructure() {
   var response = await browser.runtime.sendMessage({
     type:     kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
+  }).catch(e => {
+    log('inheritTreeStructure: failed to get response. ',
+        String(e));
+    //throw e;
   });
-  log('response: ', response);
   if (response && response.structure)
     applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
