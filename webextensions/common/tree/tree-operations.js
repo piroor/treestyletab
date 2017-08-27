@@ -743,9 +743,8 @@ async function moveTabs(aTabs, aOptions = {}) {
   }
 
   var movedTabs = aTabs;
-
   var structure = getTreeStructureFromTabs(aTabs);
-  log('structure: ', structure);
+  log('original tree structure: ', structure);
 
   log('preparing container');
   var container = getTabsContainer(destinationWindowId);
@@ -782,7 +781,7 @@ async function moveTabs(aTabs, aOptions = {}) {
     }));
     log('moved: ', movedApiTabs);
 
-    log('applying tree structure');
+    log('applying tree structure', structure);
     // wait until tabs.onCreated are processed (for safety)
     let newTabs;
     let retryUntil = 10;
@@ -797,7 +796,9 @@ async function moveTabs(aTabs, aOptions = {}) {
         await wait(100);
         continue;
       }
-      applyTreeStructureToTabs(newTabs, structure);
+      applyTreeStructureToTabs(newTabs, structure, {
+        broadcast: true
+      });
       break;
     }
 
@@ -1091,27 +1092,25 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   return aTreeStructure;
 }
 
-async function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates = []) {
-  log('applyTreeStructureToTabs: ', aTabs.map(dumpTab), aTreeStructure, aExpandStates);
+async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
+  log('applyTreeStructureToTabs: ', aTabs.map(dumpTab), aTreeStructure, aOptions);
   aTabs = aTabs.slice(0, aTreeStructure.length);
   aTreeStructure = aTreeStructure.slice(0, aTabs.length);
 
-  aExpandStates = (aExpandStates && typeof aExpandStates == 'object') ?
-            aExpandStates :
-            aTabs.map(aTab => !!aExpandStates);
-  aExpandStates = aExpandStates.slice(0, aTabs.length);
-  while (aExpandStates.length < aTabs.length)
-    aExpandStates.push(-1);
+  var expandStates = aTabs.map(aTab => !!aTab);
+  expandStates = expandStates.slice(0, aTabs.length);
+  while (expandStates.length < aTabs.length)
+    expandStates.push(-1);
 
   var parentTab = null;
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let tab = aTabs[i];
 /*
     if (isCollapsed(tab))
-      collapseExpandTab(tab, {
+      collapseExpandTab(tab, clone(aOptions, {
         collapsed: false,
         justNow: true
-      });
+      }));
 */
     detachTab(tab, { justNow: true });
 
@@ -1122,7 +1121,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates = [
     }
     else {
       parentIndexInTree = structureInfo.parent;
-      aExpandStates[i]  = !structureInfo.collapsed;
+      expandStates[i]   = !structureInfo.collapsed;
     }
     if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
       parentTab = tab.id;
@@ -1137,22 +1136,22 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aExpandStates = [
       parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
     }
     if (parent) {
-      attachTabTo(tab, parent, {
+      attachTabTo(tab, parent, clone(aOptions, {
         dontExpand : true,
         dontMove   : true,
         justNow    : true
-      });
+      }));
     }
   }
 
-  log('aExpandStates: ', aExpandStates);
+  log('expandStates: ', expandStates);
   for (let i = aTabs.length-1; i > -1; i--) {
     let tab = aTabs[i];
-    let expanded = aExpandStates[i];
-    collapseExpandSubtree(tab, {
+    let expanded = expandStates[i];
+    collapseExpandSubtree(tab, clone(aOptions, {
       collapsed: expanded === undefined ? !hasChildTabs(tab) : !expanded ,
       justNow:   true
-    });
+    }));
   }
 }
 
