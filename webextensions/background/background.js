@@ -192,8 +192,13 @@ async function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_NEW_WINDOW_FROM_TABS: {
       log('new window requested: ', aMessage);
-      await openNewWindowFromTabs(aMessage.tabs.map(getTabById), aMessage);
-      aRespond();
+      let movedTabs = await openNewWindowFromTabs(aMessage.tabs.map(getTabById), aMessage);
+      aRespond({ movedTabs: movedTabs.map(aTab => aTab.id) });
+    }; break;
+
+    case kCOMMAND_MOVE_TABS_ACROSS_WINDOWS: {
+      let movedTabs = await moveTabsAcrossWindows(aMessage.tabs.map(getTabById), aMessage.destinationWindowId, aMessage);
+      aRespond({ movedTabs: movedTabs.map(aTab => aTab.id) });
     }; break;
 
     case kCOMMAND_REMOVE_TAB: {
