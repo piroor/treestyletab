@@ -256,8 +256,6 @@ function onApiTabDetached(aTabId, aDetachInfo) {
   }
   //updateLastScrollPosition();
 
-  window.onTabClosed && onTabClosed(oldTab);
-
   var container = oldTab.parentNode;
   container.removeChild(oldTab);
   if (!container.hasChildNodes())
