@@ -244,7 +244,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
       aAttachInfo.newWindowId != gTargetWindow)
     return;
 
-  log('onApiTabAttached, id: ', aTabId);
+  log('onApiTabAttached, id: ', aTabId, aAttachInfo);
   var apiTab = await browser.tabs.get(aTabId);
   if (!apiTab)
     return;
@@ -258,7 +258,7 @@ function onApiTabDetached(aTabId, aDetachInfo) {
       aDetachInfo.oldWindowId != gTargetWindow)
     return;
 
-  log('onApiTabDetached, id: ', aTabId);
+  log('onApiTabDetached, id: ', aTabId, aDetachInfo);
   var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (!oldTab)
     return;

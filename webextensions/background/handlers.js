@@ -171,6 +171,7 @@ async function onTabMoved(aTab, aMoveInfo) {
 }
 
 async function moveBack(aTab, aMoveInfo) {
+  log('Move back tab from unexpected move: ', dumpTab(aTab), aMoveInfo);
   var container = aTab.parentNode;
   container.internalMovingCount++;
   await browser.tabs.move(aTab.apiTab.id, {
