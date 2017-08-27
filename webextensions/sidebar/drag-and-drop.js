@@ -510,11 +510,17 @@ function retrieveURIsFromData(aData, aType) {
 function onDragStart(aEvent) {
   var tab = aEvent.target;
   var dragData = getDragDataFromOneTab(tab);
-  for (let draggedTab of dragData.tabNodes) {
-    draggedTab.classList.add(kTAB_STATE_DRAGGING);
-  }
-  aEvent.dataTransfer.setData(kTREE_DROP_TYPE,
-    JSON.stringify(sanitizeDragData(dragData)));
+
+  var dt = aEvent.dataTransfer;
+
+  dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizeDragData(dragData)));
+
+  dragData.tabNodes.map((aDraggedTab, aIndex) => {
+    aDraggedTab.classList.add(kTAB_STATE_DRAGGING);
+    // this type will be used to create multiple bookmarks
+    dt.mozSetDataAt('text/x-moz-url',
+      `${aDraggedTab.apiTab.url}\n${aDraggedTab.apiTab.title}`, aIndex);
+  });
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
 }
 
