@@ -191,7 +191,6 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
     return;
 
-  aTabs = aTabs.slice(0).reverse();
   var container = aTabs[0].parentNode;
   container.internalMovingCount++;
   if (aOptions.inRemote) {
@@ -206,21 +205,14 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   }
 
   try {
-    var lastMoved = aReferenceTab;
-    var count = 0;
-    for (let tab of aTabs) {
-      let [toIndex, fromIndex] = await getApiTabIndex(lastMoved.apiTab.id, tab.apiTab.id);
-      if (fromIndex < toIndex)
+    var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, aTabs[0].apiTab.id);
+    if (fromIndex < toIndex)
         toIndex--;
-      log(`moving tab ${dumpTab(tab)} to ${toIndex}`);
-      if (fromIndex != toIndex)
-        await browser.tabs.move(tab.apiTab.id, {
-          windowId: container.windowId,
-          index: toIndex
-        });
-      lastMoved = tab;
-      // tab will be moved by handling of API event
-    }
+    await browser.tabs.move(aTabs.map(aTab => aTab.apiTab.id), {
+      windowId: container.windowId,
+      index: toIndex
+    });
+    // tab will be moved by handling of API event
   }
   catch(e) {
     log('moveTabsInternallyBefore failed: ', String(e));
@@ -249,21 +241,14 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   }
 
   try {
-    var lastMoved = aReferenceTab;
-    var count = 0;
-    for (let tab of aTabs) {
-      let [toIndex, fromIndex] = await getApiTabIndex(lastMoved.apiTab.id, tab.apiTab.id);
-      if (fromIndex > toIndex)
-        toIndex++;
-      log(`moving tab ${dumpTab(tab)} to ${toIndex}`);
-      if (fromIndex != toIndex)
-        await browser.tabs.move(tab.apiTab.id, {
-          windowId: container.windowId,
-          index: toIndex
-        });
-      lastMoved = tab;
-      // tab will be moved by handling of API event
-    }
+    var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, aTabs[0].apiTab.id);
+    if (fromIndex > toIndex)
+      toIndex++;
+    await browser.tabs.move(aTabs.map(aTab => aTab.apiTab.id), {
+      windowId: container.windowId,
+      index: toIndex
+    });
+    // tab will be moved by handling of API event
   }
   catch(e) {
     log('moveTabsInternallyAfter failed: ', String(e));
