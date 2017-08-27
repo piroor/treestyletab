@@ -139,6 +139,16 @@ function onMessage(aMessage, aSender, aRespond) {
       if (aMessage.windowId == gTargetWindow)
         unblockUserOperationsIn(gTargetWindow);
     }; break;
+
+    case kCOMMAND_BROADCAST_TAB_STATE: {
+      let tab = getTabById(aMessage.tab);
+      if (tab) {
+        if (aMessage.add && aMessage.add.length > 0)
+          aMessage.add.forEach(aState => tab.classList.add(aState));
+        if (aMessage.remove && aMessage.remove.length > 0)
+          aMessage.remove.forEach(aState => tab.classList.remove(aState));
+      }
+    }; break;
   }
 }
 

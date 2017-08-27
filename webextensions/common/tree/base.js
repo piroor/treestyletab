@@ -395,3 +395,12 @@ function unblockUserOperationsIn(aWindowId) {
   }
   unblockUserOperations();
 }
+
+function broadcastTabState(aTab, aOptions = {}) {
+  browser.runtime.sendMessage({
+    type:   kCOMMAND_BROADCAST_TAB_STATE,
+    tab:    aTab.id,
+    add:    aOptions.add || [],
+    remove: aOptions.remove || []
+  });
+}

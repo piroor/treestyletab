@@ -22,6 +22,7 @@ const kCOMMAND_MOVE_TABS = 'treestyletab:request-move-tabs';
 const kCOMMAND_PERFORM_TABS_DRAG_DROP = 'treestyletab:request-perform-tabs-drag-drop';
 const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:request-block-user-operations';
 const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:request-unblock-user-operations';
+const kCOMMAND_BROADCAST_TAB_STATE = 'treestyletab:broadcast-tab-state';
 
 const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT   = 'data-parent-id';
