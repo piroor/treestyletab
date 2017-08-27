@@ -765,7 +765,7 @@ async function moveTabsAcrossWindows(aTabs, aDestinationWindowId, aOptions = {})
       tabId = tab.id;
     }
     let movedTabs = await browser.tabs.move(tabId, {
-      windowId: newWindow.id,
+      windowId: aDestinationWindowId,
       index:    aIndex + 1
     });
     return movedTabs[0];
@@ -777,7 +777,10 @@ async function moveTabsAcrossWindows(aTabs, aDestinationWindowId, aOptions = {})
   var movedTabs;
   var retryUntil = 10;
   while (retryUntil >= 0) {
-    movedTabs = movedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: newWindow.id }))
+    movedTabs = movedApiTabs.map(aApiTab => getTabById({
+                                  tab: aApiTab.id,
+                                  window: aDestinationWindowId
+                                 }))
                             .filter(aTab => !!aTab);
     if (movedTabs.length < aTabs.length) {
       log('retryling: ', movedTabs.length, aTabs.length);
