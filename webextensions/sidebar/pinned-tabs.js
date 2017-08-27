@@ -49,8 +49,7 @@ function positionPinnedTabs(aOptions = {}) {
   var containerWidth = gTabBar.getBoundingClientRect().width;
   var maxWidth = containerWidth;
   var faviconized = configs.faviconizePinnedTabs;
-  var referenceTab = getFirstNormalTab(gTargetWindow) || getFirstVisibleTab(gTargetWindow);
-  var faviconizedSize = Math.min(referenceTab.getBoundingClientRect().height, configs.maxFaviconizedSize);
+  var faviconizedSize = configs.faviconizedTabSize;
 
   var width  = faviconized ? faviconizedSize : maxWidth ;
   var height = faviconizedSize;

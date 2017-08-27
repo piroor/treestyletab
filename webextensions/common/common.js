@@ -101,7 +101,7 @@ configs = new Configs({
   insertNewChildAt: kINSERT_LAST, // extensions.treestyletab.insertNewChildAt
 
   acceptableDelayForInternalFocusMoving: 150,
-  maxFaviconizedSize: 32,
+  faviconizedTabSize: 32,
 
   autoGroupNewTabs: true,
   autoGroupNewTabsTimeout: 100,
