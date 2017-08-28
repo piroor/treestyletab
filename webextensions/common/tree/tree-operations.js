@@ -729,7 +729,12 @@ async function moveTabs(aTabs, aOptions = {}) {
   log('moveTabs: ', aTabs.map(dumpTab), aOptions);
 
   var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
-  var destinationWindowId = aOptions.destinationWindowId || gTargetWindow;
+
+  var newWindow = aOptions.destinationPromisedNewWindow;
+  var destinationWindowId = aOptions.destinationWindowId;
+  if (!destinationWindowId && !newWindow)
+    destinationWindowId = gTargetWindow;
+  var isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
   if (aOptions.inRemote) {
     let response = await browser.runtime.sendMessage(clone(aOptions, {
@@ -763,19 +768,30 @@ async function moveTabs(aTabs, aOptions = {}) {
   var structure = getTreeStructureFromTabs(aTabs);
   log('original tree structure: ', structure);
 
-  log('preparing container');
-  var container = getTabsContainer(destinationWindowId);
-  if (!container) {
-    container = buildTabsContainerFor(destinationWindowId);
-    gAllTabs.appendChild(container);
-  }
-
-  var isAcrossWindows = windowId != destinationWindowId;
   if (isAcrossWindows || aOptions.duplicate) {
     blockUserOperationsIn(windowId);
 
-    container.toBeOpenedTabsWithPositions += aTabs.length;
-    container.toBeOpenedOrphanTabs += aTabs.length;
+    let container;
+    let prepareContainer = () => {
+      container = getTabsContainer(destinationWindowId);
+      if (!container) {
+        container = buildTabsContainerFor(destinationWindowId);
+        gAllTabs.appendChild(container);
+      }
+      container.toBeOpenedTabsWithPositions += aTabs.length;
+      container.toBeOpenedOrphanTabs += aTabs.length;
+    };
+    if (newWindow) {
+      newWindow = newWindow.then(aWindow => {
+        log('moveTabs: destination window is ready, ', aWindow);
+        destinationWindowId = aWindow.id;
+        prepareContainer();
+        return aWindow;
+      });
+    }
+    else {
+      prepareContainer();
+    }
 
     let sourceContainer = aTabs[0].parentNode;
     if (aOptions.duplicate) {
@@ -792,6 +808,9 @@ async function moveTabs(aTabs, aOptions = {}) {
         return (await browser.tabs.duplicate(aId)).id;
       }));
     }
+    if (newWindow)
+      await newWindow;
+    log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
     let toIndex = getAllTabs(container).length;
     if (aOptions.insertBefore) {
       toIndex = aOptions.insertBefore.apiTab.index;
@@ -908,19 +927,22 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
 
   log('opening new window');
   var windowParams = {
-    //focused: true  // not supported in Firefox...
+    //focused: true,  // not supported in Firefox...
+    url: 'about:blank'
   };
   if ('left' in aOptions && aOptions.left !== null)
     windowParams.left = aOptions.left;
   if ('top' in aOptions && aOptions.top !== null)
     windowParams.top = aOptions.top;
-  var newWindow = await browser.windows.create(windowParams);
-  log('new window: ', newWindow);
-
-  blockUserOperationsIn(newWindow.id);
-
+  var newWindow;
+  var promsiedNewWindow = browser.windows.create(windowParams).then(aNewWindow => {
+                            newWindow = aNewWindow;
+                            log('openNewWindowFromTabs: new window is ready, ', newWindow);
+                            blockUserOperationsIn(newWindow.id);
+                            return newWindow;
+                          });
   var movedTabs = await moveTabs(aTabs, clone(aOptions, {
-                          destinationWindowId: newWindow.id
+                          destinationPromisedNewWindow: promsiedNewWindow
                         }));
 
   log('closing needless tab');
