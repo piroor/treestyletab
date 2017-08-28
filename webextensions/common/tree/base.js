@@ -139,6 +139,26 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     else
       aTab.classList.remove(kTAB_STATE_MUTED);
   }
+
+/*
+  // On Firefox, "highlighted" is same to "activated" for now...
+  // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/onHighlighted
+  if (aOptions.forceApply ||
+      aNewState.highlighted != oldState.highlighted) {
+    if (aNewState.highlighted)
+      aTab.classList.add(kTAB_STATE_HIGHLIGHTED);
+    else
+      aTab.classList.remove(kTAB_STATE_HIGHLIGHTED);
+  }
+*/
+
+  if (aOptions.forceApply ||
+      aNewState.selected != oldState.selected) {
+    if (aNewState.selected)
+      aTab.classList.add(kTAB_STATE_SELECTED);
+    else
+      aTab.classList.remove(kTAB_STATE_SELECTED);
+  }
 }
 
 function updateParentTab(aParent) {

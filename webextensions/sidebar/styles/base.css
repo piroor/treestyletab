@@ -21,9 +21,13 @@
                    opacity       var(--collapse-animation),
                    right         var(--collapse-animation),
                    top           var(--collapse-animation);
+
   --button-opacity: 0.75;
   --button-hover-opacity: 1;
   --button-active-opacity: 0.5;
+
+  --tab-highlighted-base: ThreeDHighlight;
+  --tab-highlighted-highlight: Highlight;
 }
 
 :root.debug * {
@@ -146,6 +150,12 @@ li.tab.pinned {
 
 li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   display: none;
+}
+
+li.tab.highlighted {
+  background-image: radial-gradient(circle farthest-corner at 50% 3px,
+                                    var(--tab-highlighted-base) 3%,
+                                    var(--tab-highlighted-highlight) 80%);
 }
 
 
