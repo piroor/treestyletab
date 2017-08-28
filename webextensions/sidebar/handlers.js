@@ -414,6 +414,14 @@ function onTabLevelChanged(aTab) {
   });
 }
 
+function onTabDetachedFromWindow(aTab) {
+  // We don't need to update children because they are controlled by bacgkround.
+  // However we still need to update the parent itself.
+  detachTab(aTab, {
+    dontUpdateIndent: true
+  });
+}
+
 function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   var collapsed = aInfo.collapsed;
 
