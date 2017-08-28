@@ -47,6 +47,10 @@ var gNeedRestoreTree = false;
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
+function makeTabId(aApiTab) {
+  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
+}
+
 function buildTab(aApiTab, aOptions = {}) {
   log('build tab for ', aApiTab);
 
@@ -158,12 +162,6 @@ function updateParentTab(aParent) {
   updateParentTab(getParentTab(aParent));
 }
 
-function getTitleFromGroupTabURI(aURI) {
-  var title = aURI.match(/title=([^&;]*)/);
-  return title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab.label.default');
-}
-
 function buildTabsContainerFor(aWindowId) {
   var container = document.createElement('ul');
   container.windowId = aWindowId;
@@ -194,6 +192,7 @@ function clearAllTabsContainers() {
   range.detach();
 }
 
+
 async function selectTabInternally(aTab, aOptions = {}) {
   log('selectTabInternally: ', dumpTab(aTab));
   var container = aTab.parentNode;
@@ -220,6 +219,9 @@ async function selectTabInternally(aTab, aOptions = {}) {
     container.internalFocusCount--;
   }, configs.acceptableDelayForInternalFocusMoving);
 }
+
+
+/* move tabs */
 
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
@@ -294,6 +296,9 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
 async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions = {});
 }
+
+
+/* open something in tabs */
 
 async function loadURI(aURI, aOptions = {}) {
   if (!aOptions.windowId && gTargetWindow)
@@ -382,10 +387,22 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
   });
 }
 
+
+/* group tab */
+
 function makeGroupTabURI(aTitle) {
   var base = kGROUP_TAB_URI;
   return `${base}?title=${encodeURIComponent(aTitle)}`;
 }
+
+function getTitleFromGroupTabURI(aURI) {
+  var title = aURI.match(/title=([^&;]*)/);
+  return title && decodeURIComponent(title[1]) ||
+           browser.i18n.getMessage('groupTab.label.default');
+}
+
+
+/* blocking/unblocking */
 
 var gBlockingCount = 0;
 
@@ -429,6 +446,7 @@ function unblockUserOperationsIn(aWindowId) {
   }
   unblockUserOperations();
 }
+
 
 function broadcastTabState(aTab, aOptions = {}) {
   browser.runtime.sendMessage({

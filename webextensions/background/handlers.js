@@ -445,3 +445,181 @@ function onTabDetachedFromWindow(aTab) {
   });
   //restoreTabAttributes(aTab, backupAttributes);
 }
+
+
+/* message observer */
+
+async function onMessage(aMessage, aSender, aRespond) {
+  //log('onMessage: ', aMessage, aSender);
+  switch (aMessage.type) {
+    case kCOMMAND_PULL_TREE_STRUCTURE: {
+      log(`tree structure is requested from ${aMessage.windowId}`);
+      let structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
+      // By some reason the requestor can receive "undefined" as the response...
+      // For safely we resend the information as a "PUSH" message.
+      browser.runtime.sendMessage({
+        type:      kCOMMAND_PUSH_TREE_STRUCTURE,
+        windowId:  aMessage.windowId,
+        structure: structure
+      });
+      aRespond({ structure: structure });
+    }; break;
+
+    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
+      let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
+      let params = {
+        collapsed: aMessage.collapsed,
+        justNow:   true,
+        broadcast: true
+      };
+      if (aMessage.manualOperation)
+        manualCollapseExpandSubtree(tab, params);
+      else
+        collapseExpandSubtree(tab, params);
+      reserveToSaveTreeStructure(tab);
+    }; break;
+
+    case kCOMMAND_NEW_TABS: {
+      log('new tabs requested: ', aMessage);
+      await openURIsInTabs(aMessage.uris, clone(aMessage, {
+        parent:       getTabById(aMessage.parent),
+        insertBefore: getTabById(aMessage.insertBefore),
+        insertAfter:  getTabById(aMessage.insertAfter)
+      }));
+      aRespond();
+    }; break;
+
+    case kCOMMAND_NEW_WINDOW_FROM_TABS: {
+      log('new window requested: ', aMessage);
+      let movedTabs = await openNewWindowFromTabs(aMessage.tabs.map(getTabById), aMessage);
+      aRespond({ movedTabs: movedTabs.map(aTab => aTab.id) });
+    }; break;
+
+    case kCOMMAND_MOVE_TABS: {
+      log('move tabs requested: ', aMessage);
+      let movedTabs = await moveTabs(aMessage.tabs.map(getTabById), aMessage);
+      aRespond({ movedTabs: movedTabs.map(aTab => aTab.id) });
+    }; break;
+
+    case kCOMMAND_REMOVE_TAB: {
+      let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
+      if (isActive(tab))
+        await tryMoveFocusFromClosingCurrentTab(tab);
+      browser.tabs.remove(tab.apiTab.id)
+        .catch(handleMissingTabError);
+    }; break;
+
+    case kCOMMAND_SELECT_TAB: {
+      let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
+      browser.tabs.update(tab.apiTab.id, { active: true })
+        .catch(handleMissingTabError);
+    }; break;
+
+    case kCOMMAND_SELECT_TAB_INTERNALLY: {
+      let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
+      selectTabInternally(tab);
+    }; break;
+
+    case kCOMMAND_SET_SUBTREE_MUTED: {
+      log('set muted state: ', aMessage);
+      let root = getTabById(aMessage.tab);
+      if (!root)
+        return;
+      let tabs = [root].concat(getDescendantTabs(root));
+      for (let tab of tabs) {
+        let playing = isSoundPlaying(tab);
+        let muted = isMuted(tab);
+        log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
+        if (playing != aMessage.muted)
+          continue;
+
+        log(` => set muted=${aMessage.muted}`);
+
+        browser.tabs.update(tab.apiTab.id, {
+          muted: aMessage.muted
+        }).catch(handleMissingTabError);
+
+        let add = [];
+        let remove = [];
+        if (aMessage.muted) {
+          add.push(kTAB_STATE_MUTED);
+          tab.classList.add(kTAB_STATE_MUTED);
+        }
+        else {
+          remove.push(kTAB_STATE_MUTED);
+          tab.classList.remove(kTAB_STATE_MUTED);
+        }
+
+        if (isAudible(tab) && !aMessage.muted) {
+          add.push(kTAB_STATE_SOUND_PLAYING);
+          tab.classList.add(kTAB_STATE_SOUND_PLAYING);
+        }
+        else {
+          remove.push(kTAB_STATE_SOUND_PLAYING);
+          tab.classList.remove(kTAB_STATE_SOUND_PLAYING);
+        }
+
+        // tabs.onUpdated is too slow, so users will be confused
+        // from still-not-updated tabs (in other words, they tabs
+        // are unresponsive for quick-clicks).
+        broadcastTabState(tab, {
+          add, remove,
+          bubbles: !hasChildTabs(tab)
+        });
+      }
+    }; break;
+
+    case kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE: {
+      await moveTabsInternallyBefore(
+        aMessage.tabs.map(getTabById),
+        getTabById(aMessage.nextTab)
+      );
+      aRespond();
+    }; break;
+
+    case kCOMMAND_MOVE_TABS_INTERNALLY_AFTER: {
+      await moveTabsInternallyAfter(
+        aMessage.tabs.map(getTabById),
+        getTabById(aMessage.previousTab)
+      );
+      aRespond();
+    }; break;
+
+    case kCOMMAND_ATTACH_TAB_TO: {
+      let child = getTabById(aMessage.child);
+      let parent = getTabById(aMessage.parent);
+      let insertBefore = getTabById(aMessage.insertBefore);
+      let insertAfter = getTabById(aMessage.insertAfter);
+      if (child && parent)
+        await attachTabTo(child, parent, clone(aMessage, {
+          insertBefore, insertAfter
+        }));
+      aRespond();
+    }; break;
+
+    case kCOMMAND_DETACH_TAB: {
+      let tab = getTabById(aMessage.tab);
+      if (tab)
+        await detachTab(tab, aMessage);
+      aRespond();
+    }; break;
+
+    case kCOMMAND_PERFORM_TABS_DRAG_DROP: {
+      log('perform tabs dragdrop requested: ', aMessage);
+      await performTabsDragDrop(clone(aMessage, {
+        attachTo:     getTabById(aMessage.attachTo),
+        insertBefore: getTabById(aMessage.insertBefore),
+        insertAfter:  getTabById(aMessage.insertAfter)
+      }));
+      aRespond();
+    }; break;
+  }
+}

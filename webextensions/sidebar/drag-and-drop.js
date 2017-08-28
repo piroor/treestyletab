@@ -62,6 +62,8 @@ function endListenDragEvents(aTarget) {
 }
 
 
+/* helpers */
+
 function getDragDataFromOneTab(aTab) {
   aTab = getTabFromChild(aTab);
   if (!aTab)
@@ -508,6 +510,9 @@ function retrieveURIsFromData(aData, aType) {
   }
   return [];
 }
+
+
+/* DOM event listeners */
 
 var gDraggingOnSelfWindow = false;
 

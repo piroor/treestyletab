@@ -5,10 +5,6 @@
 */
 'use strict';
 
-function makeTabId(aApiTab) {
-  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
-}
-
 async function getApiTabIndex(...aQueriedTabIds) {
   if (aQueriedTabIds.length == 0)
     return -1;

@@ -109,6 +109,13 @@ function isLocked(aTab) {
   return false;
 }
 
+function hasChildTabs(aParent) {
+  if (!aParent)
+    return false;
+  return aParent.hasAttribute(kCHILDREN);
+}
+
+
 // if all tabs are aldeardy placed at there, we don't need to move them.
 function isAllTabsPlacedBefore(aTabs, aNextTab) {
   aTabs = Array.slice(aTabs);

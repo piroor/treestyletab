@@ -136,6 +136,47 @@ function isTabInViewport(aTab) {
   );
 }
 
+
+function getTabFromEvent(aEvent) {
+  return getTabFromChild(aEvent.target);
+}
+
+function getTabsContainerFromEvent(aEvent) {
+  return getTabsContainer(aEvent.target);
+}
+
+function getTabFromTabbarEvent(aEvent) {
+  if (!configs.shouldDetectClickOnIndentSpaces ||
+      isEventFiredOnClickable(aEvent))
+    return null;
+  return getTabFromCoordinates(aEvent);
+}
+
+function getTabFromCoordinates(aEvent) {
+  var tab = document.elementFromPoint(aEvent.clientX, aEvent.clientY);
+  tab = getTabFromChild(tab);
+  if (tab)
+    return tab;
+
+  var container = getTabsContainerFromEvent(aEvent);
+  if (!container)
+    return null;
+
+  var rect = container.getBoundingClientRect();
+  for (let x = 0, maxx = rect.width, step = Math.floor(rect.width / 10);
+       x < maxx; x += step) {
+    tab = document.elementFromPoint(x, aEvent.clientY);
+    tab = getTabFromChild(tab);
+    if (tab)
+      return tab;
+  }
+
+  return null;
+}
+
+
+/* handlers for DOM events */
+
 function onResize(aEvent) {
   reserveToUpdateTabbarLayout();
 }
@@ -251,17 +292,7 @@ function onDblClick(aEvent) {
 }
 
 
-function onConfigChange(aChangedKey) {
-  switch (aChangedKey) {
-    case 'debug':
-      if (configs.debug)
-        document.documentElement.classList.add('debug');
-      else
-        document.documentElement.classList.remove('debug');
-  }
-}
-
-// raw event handlers
+/* raw event handlers */
 
 function onTabBuilt(aTab) {
   var label = getTabLabel(aTab);
@@ -654,4 +685,91 @@ function onTabUnpinned(aTab) {
   clearPinnedStyle(aTab);
   //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();
+}
+
+
+/* message observer */
+
+function onMessage(aMessage, aSender, aRespond) {
+  //log('onMessage: ', aMessage, aSender);
+  switch (aMessage.type) {
+    case kCOMMAND_PUSH_TREE_STRUCTURE:
+      if (aMessage.windowId == gTargetWindow)
+        applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
+      break;
+
+    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
+      if (aMessage.windowId == gTargetWindow) {
+        let tab = getTabById(aMessage.tab);
+        if (!tab)
+          return;
+        let params = {
+          collapsed: aMessage.collapsed,
+          justNow:   !aMessage.manualOperation
+        };
+        if (aMessage.manualOperation)
+          manualCollapseExpandSubtree(tab, params);
+        else
+          collapseExpandSubtree(tab, params);
+      }
+      break;
+
+    case kCOMMAND_ATTACH_TAB_TO: {
+      if (aMessage.windowId == gTargetWindow) {
+        let child = getTabById(aMessage.child);
+        let parent = getTabById(aMessage.parent);
+        if (child && parent)
+          attachTabTo(child, parent, clone(aMessage, {
+            insertBefore: getTabById(aMessage.insertBefore),
+            insertAfter: getTabById(aMessage.insertAfter),
+            inRemote: false,
+            broadcast: false
+          }));
+      }
+    }; break;
+
+    case kCOMMAND_DETACH_TAB: {
+      if (aMessage.windowId == gTargetWindow) {
+        let tab = getTabById(aMessage.tab);
+        if (tab)
+          detachTab(tab);
+      }
+    }; break;
+
+    case kCOMMAND_BLOCK_USER_OPERATIONS: {
+      if (aMessage.windowId == gTargetWindow)
+        blockUserOperationsIn(gTargetWindow);
+    }; break;
+
+    case kCOMMAND_UNBLOCK_USER_OPERATIONS: {
+      if (aMessage.windowId == gTargetWindow)
+        unblockUserOperationsIn(gTargetWindow);
+    }; break;
+
+    case kCOMMAND_BROADCAST_TAB_STATE: {
+      let tab = getTabById(aMessage.tab);
+      if (tab) {
+        let add = aMessage.add || [];
+        let remove = aMessage.remove || [];
+        log('apply broadcasted tab state ', tab.id, {
+          add:    add.join(','),
+          remove: remove.join(',')
+        });
+        add.forEach(aState => tab.classList.add(aState));
+        remove.forEach(aState => tab.classList.remove(aState));
+        if (aMessage.bubbles)
+          updateParentTab(getParentTab(tab));
+      }
+    }; break;
+  }
+}
+
+function onConfigChange(aChangedKey) {
+  switch (aChangedKey) {
+    case 'debug':
+      if (configs.debug)
+        document.documentElement.classList.add('debug');
+      else
+        document.documentElement.classList.remove('debug');
+  }
 }

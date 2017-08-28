@@ -247,12 +247,6 @@ function getPreviousSiblingTab(aTab) {
   ).singleNodeValue;
 }
 
-function hasChildTabs(aParent) {
-  if (!aParent)
-    return false;
-  return aParent.hasAttribute(kCHILDREN);
-}
-
 function getChildTabs(aParent) {
   if (!aParent)
     return [];
@@ -443,52 +437,4 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
 
 function getNextFocusedTab(aTab) { // if the current tab is closed...
   return getNextSiblingTab(aTab) || getPreviousVisibleTab(aTab);
-}
-
-
-// from event
-
-function getTabFromEvent(aEvent) {
-  return getTabFromChild(aEvent.target);
-}
-
-function getTabsContainerFromEvent(aEvent) {
-  return getTabsContainer(aEvent.target);
-}
-
-function getTabFromTabbarEvent(aEvent) {
-  if (!configs.shouldDetectClickOnIndentSpaces ||
-      isEventFiredOnClickable(aEvent))
-    return null;
-  return getTabFromCoordinates(aEvent);
-}
-
-function getTabFromCoordinates(aEvent) {
-  var tab = document.elementFromPoint(aEvent.clientX, aEvent.clientY);
-  tab = getTabFromChild(tab);
-  if (tab)
-    return tab;
-
-  var container = getTabsContainerFromEvent(aEvent);
-  if (!container)
-    return null;
-
-  var rect = container.getBoundingClientRect();
-  for (let x = 0, maxx = rect.width, step = Math.floor(rect.width / 10);
-       x < maxx; x += step) {
-    tab = document.elementFromPoint(x, aEvent.clientY);
-    tab = getTabFromChild(tab);
-    if (tab)
-      return tab;
-  }
-
-  return null;
-}
-
-function getNewTabButtonFromEvent(aEvent) {
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass('newtab-button')}][1]`,
-    aEvent.originalTarget,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
 }
