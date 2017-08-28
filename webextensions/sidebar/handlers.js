@@ -341,6 +341,11 @@ function onTabOpened(aTab) {
 }
 
 function onTabClosed(aTab) {
+  // We don't need to update children because they are controlled by bacgkround.
+  // However we still need to update the parent itself.
+  detachTab(aTab, {
+    dontUpdateIndent: true
+  });
   reserveToUpdateTabbarLayout();
 }
 
