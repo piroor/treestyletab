@@ -93,6 +93,9 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       label != oldState.title) {
     getTabLabel(aTab).textContent = label;
     aTab.setAttribute('title', label);
+    if (label != oldState.title &&
+        !isActive(aTab))
+      aTab.classList.add(kTAB_STATE_UNREAD);
   }
 
   if (aOptions.forceApply ||

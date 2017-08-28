@@ -71,6 +71,7 @@ function onApiTabActivated(aActiveInfo) {
 
   var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId)
   newTab.classList.add(kTAB_STATE_ACTIVE);
+  newTab.classList.remove(kTAB_STATE_UNREAD);
 
   log('onSelect: ', dumpTab(newTab));
 

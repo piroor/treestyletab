@@ -66,6 +66,7 @@ const kTAB_STATE_COLLAPSED_DONE = 'collapsed-completely';
 const kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
 const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 const kTAB_STATE_FAVICONIZED = 'faviconized';
+const kTAB_STATE_UNREAD = 'unread';
 const kTAB_STATE_HIGHLIGHTED = 'highlighted';
 const kTAB_STATE_SELECTED = 'selected';
 const kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';

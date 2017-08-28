@@ -152,7 +152,7 @@ ul {
   display: none;
 }
 
-.tab.pinned.highlighted {
+.tab.pinned.unread {
   background-image: radial-gradient(circle farthest-corner at 50% 3px,
                                     var(--tab-highlighted-base) 3%,
                                     var(--tab-highlighted-highlight) 80%);
@@ -167,6 +167,10 @@ ul {
   padding: 0.25em 0;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.tab.unread .label {
+  font-style: italic;
 }
 
 .tab:not([data-child-ids]) .counter,
