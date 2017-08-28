@@ -208,9 +208,10 @@ function onClick(aEvent) {
     aEvent.preventDefault();
     log('clicked on sound button');
     browser.runtime.sendMessage({
-      type:     kCOMMAND_TOGGLE_TAB_MUTED,
+      type:     kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
-      tab:      tab.id
+      tab:      tab.id,
+      muted:    !maybeMuted(tab)
     });
     return;
   }

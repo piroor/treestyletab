@@ -229,13 +229,22 @@ async function onMessage(aMessage, aSender, aRespond) {
       selectTabInternally(tab);
     }; break;
 
-    case kCOMMAND_TOGGLE_TAB_MUTED: {
-      let tab = getTabById(aMessage.tab);
-      if (!tab)
+    case kCOMMAND_SET_SUBTREE_MUTED: {
+      log('set muted state: ', aMessage);
+      let root = getTabById(aMessage.tab);
+      if (!root)
         return;
-      browser.tabs.update(tab.apiTab.id, {
-        muted: !tab.apiTab.mutedInfo.muted
-      }).catch(handleMissingTabError);
+      let tabs = [root].concat(getDescendantTabs(root));
+      log('tabs: ', tabs.length);
+      for (let tab of tabs) {
+      log('audible: ', tab.apiTab.audible);
+        if (!tab.apiTab.audible &&
+            !tab.apiTab.mutedInfo.muted)
+          continue;
+        browser.tabs.update(tab.apiTab.id, {
+          muted: aMessage.muted
+        }).catch(handleMissingTabError);
+      }
     }; break;
 
     case kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE: {
