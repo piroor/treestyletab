@@ -1,0 +1,45 @@
+@charset "UTF-8";
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+.sound-button {
+  background: none transparent;
+  border: none 0 transparent;
+  display: none;
+  margin: 0;
+  opacity: 0.75;
+  padding: 0.1em;
+}
+
+.sound-button:hover {
+  opacity: var(--button-hover-opacity);
+}
+
+.sound-button:active {
+  opacity: var(--button-active-opacity);
+}
+
+.tab.audible .sound-button,
+.tab.muted .sound-button {
+  display: inline-block;
+}
+
+.tab.audible .sound-button::before {
+  content: "🔈";
+}
+
+.tab.muted .sound-button::before {
+  content: "🔇";
+}
+
+li.tab.pinned .sound-button {
+  font-size: 90%;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 100;
+}

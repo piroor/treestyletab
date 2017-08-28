@@ -21,6 +21,9 @@
                    opacity       var(--collapse-animation),
                    right         var(--collapse-animation),
                    top           var(--collapse-animation);
+  --button-opacity: 0.75;
+  --button-hover-opacity: 1;
+  --button-active-opacity: 0.5;
 }
 
 :root.debug * {
@@ -45,6 +48,9 @@ button {
   flex-wrap: nowrap;
   justify-content: flex-start;
 }
+
+
+/* tabbar */
 
 #tabbar {
   bottom: 0;
@@ -76,6 +82,9 @@ ul {
   margin: 0;
   padding: 0;
 }
+
+
+/* tabs */
 
 li.tab {
   align-items: center;
@@ -125,6 +134,8 @@ li.collapsed-completely {
 }
 
 
+/* pinned tabs */
+
 li.tab.pinned {
   border-top: none;
   border-left: none;
@@ -137,6 +148,8 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   display: none;
 }
 
+
+/* tab label */
 
 .tab .label {
   flex-grow: 1;
@@ -151,12 +164,14 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   display: none;
 }
 
-.closebox,
-.sound-button {
+
+/* closebox */
+
+.closebox {
   background: none transparent;
-  border: 1px solid transparent;
+  border: none 0 transparent;
   margin: 0;
-  opacity: 0.75;
+  opacity: var(--button-opacity);
   padding: 0.1em;
 }
 
@@ -164,38 +179,16 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   content: "✖";
 }
 
-.sound-button {
-  display: none;
-}
-.tab.audible .sound-button,
-.tab.muted .sound-button {
-  display: inline-block;
-}
-.tab.audible .sound-button::before {
-  content: "🔈";
-}
-.tab.muted .sound-button::before {
-  content: "🔇";
-}
-li.tab.pinned .sound-button {
-  font-size: 90%;
-  padding: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 100;
+.closebox:hover {
+  opacity: var(--button-hover-opacity);
 }
 
-.closebox:hover,
-.sound-button:hover {
-  opacity: 1;
+.closebox:active {
+  opacity: var(--button-active-opacity);
 }
 
-.closebox:active,
-.sound-button:active {
-  opacity: 0.5;
-}
 
+/* non-tab items */
 
 #tabbar.overflow .after-tabs,
 #tabbar:not(.overflow) ~ .after-tabs {
