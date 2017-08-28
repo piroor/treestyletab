@@ -1012,14 +1012,13 @@ async function performTabsDragDrop(aParams = {}) {
   }
 
   log('try attach/detach');
-  if (aParams.action & kACTION_DETACH) {
+  if (!aParams.attachTo) {
     log('=> detach');
     detachTabsOnDrop(draggedRoots, {
       broadcast: true
     });
   }
-  else if (aParams.action & kACTION_ATTACH &&
-           aParams.attachTo) {
+  else if (aParams.action & kACTION_ATTACH) {
     log('=> attach');
     attachTabsOnDrop(draggedRoots, aParams.attachTo, {
       insertBefore: aParams.insertBefore,
