@@ -38,6 +38,10 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+function isMiddleClick(aEvent) {
+  return aEvent.button == 1;
+}
+
 function isAccelAction(aEvent) {
   return aEvent.button == 1 || (aEvent.button == 0 && isAccelKeyPressed(aEvent));
 }
@@ -184,7 +188,7 @@ function onResize(aEvent) {
 
 function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
-  if (isAccelAction(aEvent)) {
+  if (isMiddleClick(aEvent)) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       log('middle-click to close');
       browser.runtime.sendMessage({
