@@ -55,7 +55,15 @@ async function onNewTabsTimeout(aContainer) {
   }
 }
 
-function onTabOpened(aTab) {
+function onTabOpened(aTab, aInfo) {
+  // if the tab is opened inside existing tree by someone, we must fixup the tree.
+  if (!aInfo.openedWithPosition &&
+      aTab.nextSibling)
+    tryFixupTreeForInsertedTab(aTab, {
+      toIndex:   aTab.apiTab.index,
+      fromIndex: getTabIndex(aTab.nextSibling)
+    });
+
   reserveToSaveTreeStructure(aTab);
 }
 
@@ -177,35 +185,41 @@ async function onTabMoved(aTab, aMoveInfo) {
   //var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
   if (/* !restored && */
       //!positionControlled &&
-      container.internalMovingCount == 0) {
-    log('the tab is moved unexpectedly, so now we are trying to fixup tree.');
-    let action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
-    if (action) {
-      log('action: ', action);
-      switch (action.action) {
-        case 'moveBack':
-          moveBack(aTab, aMoveInfo);
-          return;
+      container.internalMovingCount == 0)
+    tryFixupTreeForInsertedTab(aTab, aMoveInfo);
+}
 
-        case 'attach': {
-          attachTabTo(aTab, getTabById(action.parent), {
-            insertBefore: getTabById(action.insertBefore),
-            insertAfter:  getTabById(action.insertAfter),
-            broadcast: true
-          });
-          followDescendantsToMovedRoot(aTab);
-        }; break;
+async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
+  log('the tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
+  var action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
+  if (!action) {
+    log('no action');
+    return;
+  }
 
-        case 'detach': {
-          detachTab(aTab, { broadcast: true });
-          followDescendantsToMovedRoot(aTab);
-        }; break;
+  log('action: ', action);
+  switch (action.action) {
+    case 'moveBack':
+      moveBack(aTab, aMoveInfo);
+      return;
 
-        default:
-          followDescendantsToMovedRoot(aTab);
-          break;
-      }
-    }
+    case 'attach': {
+      attachTabTo(aTab, getTabById(action.parent), {
+        insertBefore: getTabById(action.insertBefore),
+        insertAfter:  getTabById(action.insertAfter),
+        broadcast: true
+      });
+      followDescendantsToMovedRoot(aTab);
+    }; break;
+
+    case 'detach': {
+      detachTab(aTab, { broadcast: true });
+      followDescendantsToMovedRoot(aTab);
+    }; break;
+
+    default:
+      followDescendantsToMovedRoot(aTab);
+      break;
   }
 }
 
