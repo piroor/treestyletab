@@ -10,16 +10,16 @@
   --dropmarker-size-negative: -0.15em;
 }
 
-li.tab.dragging {
+.tab.dragging {
   opacity: 0.5 !important;
 }
 
-li.tab[data-drop-position="self"] {
+.tab[data-drop-position="self"] {
   outline: var(--dropmarker-size) solid black !important;
   outline-offset: var(--dropmarker-size-negative);
 }
 
-li.tab[data-drop-position]:not([data-drop-position="self"])::before {
+.tab[data-drop-position]:not([data-drop-position="self"])::before {
   content: "";
   display: block;
   max-height: var(--dropmarker-size);
@@ -29,32 +29,32 @@ li.tab[data-drop-position]:not([data-drop-position="self"])::before {
   position: absolute;
   z-index: 2;
 }
-li.tab[data-drop-position]:not([data-drop-position="self"]).pinned::before {
+.tab[data-drop-position]:not([data-drop-position="self"]).pinned::before {
   max-height: none;
   max-width: var(--dropmarker-size);
   min-height: 0;
   min-width: var(--dropmarker-size);
 }
 
-li.tab:not(.pinned)[data-drop-position="before"]::before {
+.tab:not(.pinned)[data-drop-position="before"]::before {
   left: 0;
   right: 0;
   top: 0;
 }
 
-li.tab:not(.pinned)[data-drop-position="after"]::before {
+.tab:not(.pinned)[data-drop-position="after"]::before {
   bottom: 0;
   left: 0;
   right: 0;
 }
 
-li.tab.pinned[data-drop-position="before"]::before {
+.tab.pinned[data-drop-position="before"]::before {
   bottom: 0;
   left: 0;
   top: 0;
 }
 
-li.tab.pinned[data-drop-position="after"]::before {
+.tab.pinned[data-drop-position="after"]::before {
   bottom: 0;
   right: 0;
   top: 0;

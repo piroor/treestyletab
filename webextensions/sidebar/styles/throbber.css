@@ -33,10 +33,10 @@
   content: "⏳";
 }
 
-li.tab:not(.loading) .throbber {
+.tab:not(.loading) .throbber {
   display: none !important;
 }
 
-li.tab.loading:not(.collapsed) .throbber {
+.tab.loading:not(.collapsed) .throbber {
   animation: rotation 3s ease-in-out infinite;
 }

@@ -39,9 +39,9 @@
   content: "🌐";
 }
 
-li.tab[data-content-location^="about:"] .favicon-default::before,
-li.tab[data-content-location^="chrome:"] .favicon-default::before,
-li.tab[data-content-location^="resource:"] .favicon-default::before {
+.tab[data-content-location^="about:"] .favicon-default::before,
+.tab[data-content-location^="chrome:"] .favicon-default::before,
+.tab[data-content-location^="resource:"] .favicon-default::before {
   background-image: url("chrome://branding/content/icon32.png");
   background-size: 100%;
   content: "";
@@ -52,18 +52,18 @@ li.tab[data-content-location^="resource:"] .favicon-default::before {
   min-width: var(--favicon-size);
 }
 
-li.tab[data-content-location^="file:"] .favicon-default::before,
-li.tab[data-content-location^="moz-extension:"] .favicon-default::before {
+.tab[data-content-location^="file:"] .favicon-default::before,
+.tab[data-content-location^="moz-extension:"] .favicon-default::before {
   content: "📄";
 }
 
-li.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
+.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
   background: none;
   content: "📂";
 }
 
-li.tab.group-tab.subtree-collapsed .favicon-default::before,
-li.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::before {
+.tab.group-tab.subtree-collapsed .favicon-default::before,
+.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::before {
   background: none;
   content: "📁";
 }
@@ -72,7 +72,7 @@ li.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::befor
 .favicon-image.error,
 .favicon-image:not([src]),
 .favicon-image[src]:not(.error) ~ .favicon-default::before,
-li.tab.loading .favicon-image,
-li.tab.loading .favicon-default::before {
+.tab.loading .favicon-image,
+.tab.loading .favicon-default::before {
   display: none !important;
 }

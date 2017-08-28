@@ -22,28 +22,28 @@
 }
 
 :root[data-twisty-style^="modern"]
-  li.tab.subtree-collapsed
+  .tab.subtree-collapsed
   .twisty {
   transform: rotatez(-90deg);
   transform-origin: 50% 0.55em;
 }
 :root[data-twisty-style^="modern"].tab-contents-inverted
-  li.tab.subtree-collapsed
+  .tab.subtree-collapsed
   .twisty {
   transform: rotatez(90deg);
 }
 :root[data-twisty-style^="modern"]
-  li.tab.subtree-collapsed
+  .tab.subtree-collapsed
   .twisty:hover {
   text-shadow: -0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 :root[data-twisty-style^="modern"].tab-contents-inverted
-  li.tab.subtree-collapsed
+  .tab.subtree-collapsed
   .twisty:hover {
   text-shadow: 0.1em -0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
-li.tab:not(.subtree-collapsed) .twisty:hover {
+.tab:not(.subtree-collapsed) .twisty:hover {
   text-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
   transform: rotatez(0);
 }
@@ -65,12 +65,12 @@ li.tab:not(.subtree-collapsed) .twisty:hover {
 
 
 :root[data-twisty-style="osx"]
-  li.tab.subtree-collapsed
+  .tab.subtree-collapsed
   .twisty {
   transform: rotatez(-90deg);
 }
 :root[data-twisty-style="osx"].tab-contents-inverted
-  li.tab.subtree-collapsed
+  .tab.subtree-collapsed
   .twisty {
   transform: rotatez(90deg);
 }

@@ -90,7 +90,7 @@ ul {
 
 /* tabs */
 
-li.tab {
+.tab {
   align-items: center;
   border: 1px solid gray;
   display: flex;
@@ -110,29 +110,29 @@ li.tab {
   position: relative;
 }
 
-li.tab,
-li.tab * {
+.tab,
+.tab * {
   vertical-align: middle;
 }
 
-li.tab.animation-ready {
+.tab.animation-ready {
   transition: var(--tab-animation);
 }
 
-li.active {
+.tab.active {
   background: Highlight;
   color: HighlightText;
   font-weight: bold;
 }
 
-li.removing {
+.tab.removing {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
   pointer-events: none;
 }
 
-li.collapsed-completely {
+.tab.collapsed-completely {
   pointer-events: none;
   visibility: collapse;
 }
@@ -140,7 +140,7 @@ li.collapsed-completely {
 
 /* pinned tabs */
 
-li.tab.pinned {
+.tab.pinned {
   border-top: none;
   border-left: none;
   margin: 0;
@@ -148,11 +148,11 @@ li.tab.pinned {
   z-index: 1; /* this is required to make pinned tabs clickable */
 }
 
-li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
+.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   display: none;
 }
 
-li.tab.highlighted {
+.tab.pinned.highlighted {
   background-image: radial-gradient(circle farthest-corner at 50% 3px,
                                     var(--tab-highlighted-base) 3%,
                                     var(--tab-highlighted-highlight) 80%);
