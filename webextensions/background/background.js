@@ -56,8 +56,10 @@ async function rebuildAll() {
   });
   windows.forEach((aWindow) => {
     var container = buildTabsContainerFor(aWindow.id);
-    for (let tab of aWindow.tabs) {
-      container.appendChild(buildTab(tab, { existing: true }));
+    for (let apiTab of aWindow.tabs) {
+      let newTab = buildTab(apiTab, { existing: true });
+      container.appendChild(newTab);
+      updateTab(newTab, apiTab, { forceApply: true });
     }
     gAllTabs.appendChild(container);
   });
@@ -225,6 +227,15 @@ async function onMessage(aMessage, aSender, aRespond) {
       if (!tab)
         return;
       selectTabInternally(tab);
+    }; break;
+
+    case kCOMMAND_TOGGLE_TAB_MUTED: {
+      let tab = getTabById(aMessage.tab);
+      if (!tab)
+        return;
+      browser.tabs.update(tab.apiTab.id, {
+        muted: !tab.apiTab.mutedInfo.muted
+      }).catch(handleMissingTabError);
     }; break;
 
     case kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE: {

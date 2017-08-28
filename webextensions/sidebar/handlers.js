@@ -80,6 +80,14 @@ function isEventFiredOnTwisty(aEvent) {
   return false;
 }
 
+function isEventFiredOnSoundButton(aEvent) {
+  return evaluateXPath(
+      `ancestor-or-self::*[${hasClass(kSOUND_BUTTON)}]`,
+      aEvent.originalTarget || aEvent.target,
+      XPathResult.BOOLEAN_TYPE
+    ).booleanValue;
+}
+
 function isEventFiredOnClosebox(aEvent) {
   return evaluateXPath(
       `ancestor-or-self::*[${hasClass(kCLOSEBOX)}]`,
@@ -171,9 +179,10 @@ function onMouseDown(aEvent) {
     return;
   }
 
-  if (isEventFiredOnClosebox(aEvent) &&
+  if ((isEventFiredOnSoundButton(aEvent) ||
+       isEventFiredOnClosebox(aEvent)) &&
       aEvent.button == 0) {
-    log('mousedown on closebox');
+    log('mousedown on button in tab');
     return;
   }
 
@@ -192,24 +201,36 @@ function onClick(aEvent) {
     return;
   }
 
-  if (!isEventFiredOnClosebox(aEvent))
-    return;
-
-  aEvent.stopPropagation();
-  aEvent.preventDefault();
-
-  log('clicked on closebox');
   var tab = getTabFromEvent(aEvent);
-  //if (!warnAboutClosingTabSubtreeOf(tab)) {
-  //  aEvent.stopPropagation();
-  //  aEvent.preventDefault();
-  //  return;
-  //}
-  browser.runtime.sendMessage({
-    type:     kCOMMAND_REMOVE_TAB,
-    windowId: gTargetWindow,
-    tab:      tab.id
-  });
+
+  if (isEventFiredOnSoundButton(aEvent)) {
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    log('clicked on sound button');
+    browser.runtime.sendMessage({
+      type:     kCOMMAND_TOGGLE_TAB_MUTED,
+      windowId: gTargetWindow,
+      tab:      tab.id
+    });
+    return;
+  }
+
+  if (isEventFiredOnClosebox(aEvent)) {
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    log('clicked on closebox');
+    //if (!warnAboutClosingTabSubtreeOf(tab)) {
+    //  aEvent.stopPropagation();
+    //  aEvent.preventDefault();
+    //  return;
+    //}
+    browser.runtime.sendMessage({
+      type:     kCOMMAND_REMOVE_TAB,
+      windowId: gTargetWindow,
+      tab:      tab.id
+    });
+    return;
+  }
 }
 
 function handleNewTabAction(aEvent) {
@@ -262,6 +283,10 @@ function onTabBuilt(aTab) {
   var counter = document.createElement('span');
   counter.classList.add(kCOUNTER);
   aTab.appendChild(counter);
+
+  var soundButton = document.createElement('button');
+  soundButton.classList.add(kSOUND_BUTTON);
+  aTab.appendChild(soundButton);
 
   var closebox = document.createElement('button');
   closebox.classList.add(kCLOSEBOX);

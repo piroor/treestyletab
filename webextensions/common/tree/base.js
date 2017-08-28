@@ -54,26 +54,14 @@ function buildTab(aApiTab, aOptions = {}) {
   tab.apiTab = aApiTab;
   tab.setAttribute('id', makeTabId(aApiTab));
   //tab.setAttribute(kCHILDREN, '');
-  tab.setAttribute(kCONTENT_LOCATION, aApiTab.url);
   tab.classList.add('tab');
   if (aApiTab.active)
     tab.classList.add(kTAB_STATE_ACTIVE);
-  if (aApiTab.pinned)
-    tab.classList.add(kTAB_STATE_PINNED);
   tab.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
 
-  var title = aApiTab.title;
-  if (aApiTab.url && aApiTab.url.indexOf(kGROUP_TAB_URI) == 0) {
-    tab.classList.add(kTAB_STATE_GROUP_TAB);
-    title = getTitleFromGroupTabURI(aApiTab.url);
-  }
   var label = document.createElement('span');
   label.classList.add(kLABEL);
-  label.appendChild(document.createTextNode(title));
   tab.appendChild(label);
-  tab.setAttribute('title', title);
-
-  tab.classList.add(aApiTab.status);
 
   window.onTabBuilt && onTabBuilt(tab);
 
@@ -84,7 +72,7 @@ function buildTab(aApiTab, aOptions = {}) {
   return tab;
 }
 
-function updateTab(aTab, aNewState) {
+function updateTab(aTab, aNewState, aOptions = {}) {
   var oldState = aTab.apiTab;
   var label = aNewState.title;
   if (aNewState.url && aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
@@ -95,24 +83,30 @@ function updateTab(aTab, aNewState) {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
   }
 
-  if (oldState.url != aNewState.url)
+  if (aOptions.forceApply ||
+      oldState.url != aNewState.url)
     aTab.setAttribute(kCONTENT_LOCATION, aNewState.url);
 
-  if (label != oldState.title) {
+  if (aOptions.forceApply ||
+      label != oldState.title) {
     getTabLabel(aTab).textContent = label;
     aTab.setAttribute('title', label);
   }
 
-  if (aNewState.favIconUrl != oldState.favIconUrl)
+  if (aOptions.forceApply ||
+      aNewState.favIconUrl != oldState.favIconUrl)
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(aTab, aNewState.favIconUrl);
 
-  if (aNewState.status != oldState.status) {
-    aTab.classList.remove(oldState.status);
+  if (aOptions.forceApply ||
+      aNewState.status != oldState.status) {
+    if (oldState)
+      aTab.classList.remove(oldState.status);
     aTab.classList.add(aNewState.status);
   }
 
-  if (aNewState.pinned != oldState.pinned) {
+  if (aOptions.forceApply ||
+      aNewState.pinned != oldState.pinned) {
     if (aNewState.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
       window.onTabPinned && onTabPinned(aTab);
@@ -121,6 +115,22 @@ function updateTab(aTab, aNewState) {
       aTab.classList.remove(kTAB_STATE_PINNED);
       window.onTabUnpinned && onTabUnpinned(aTab);
     }
+  }
+
+  if (aOptions.forceApply ||
+      aNewState.audible != oldState.audible) {
+    if (aNewState.audible)
+      aTab.classList.add(kTAB_STATE_AUDIBLE);
+    else
+      aTab.classList.remove(kTAB_STATE_AUDIBLE);
+  }
+
+  if (aOptions.forceApply ||
+      aNewState.mutedInfo.muted != oldState.mutedInfo.muted) {
+    if (aNewState.mutedInfo.muted)
+      aTab.classList.add(kTAB_STATE_MUTED);
+    else
+      aTab.classList.remove(kTAB_STATE_MUTED);
   }
 }
 

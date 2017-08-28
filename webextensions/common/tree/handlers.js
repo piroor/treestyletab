@@ -134,6 +134,8 @@ async function onNewTabTracked(aTab) {
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
+  updateTab(newTab, aTab, { forceApply: true });
+
   await window.onTabOpening && onTabOpening(newTab);
 
   var openedWithPosition = container.toBeOpenedTabsWithPositions > 0;

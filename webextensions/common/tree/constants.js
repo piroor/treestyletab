@@ -10,6 +10,7 @@ const kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
 const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
 const kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
 const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
+const kCOMMAND_TOGGLE_TAB_MUTED = 'treestyletab:toggle-tab-muted';
 const kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
 const kCOMMAND_NEW_TABS = 'treestyletab:request-new-tabs';
 const kCOMMAND_ATTACH_TAB_TO = 'treestyletab:request-attach-tab-to';
@@ -52,6 +53,8 @@ const kNEWTAB_BUTTON = 'newtab-button';
 
 const kTAB_STATE_ACTIVE = 'active';
 const kTAB_STATE_PINNED = 'pinned';
+const kTAB_STATE_AUDIBLE = 'audible';
+const kTAB_STATE_MUTED = 'muted';
 const kTAB_STATE_HIDDEN = 'hidden';
 const kTAB_STATE_ANIMATION_READY = 'animation-ready';
 const kTAB_STATE_REMOVING = 'removing';

@@ -151,22 +151,48 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   display: none;
 }
 
-.closebox {
+.closebox,
+.sound-button {
   background: none transparent;
   border: 1px solid transparent;
   margin: 0;
   opacity: 0.75;
   padding: 0.1em;
 }
+
 .closebox::before {
   content: "✖";
 }
 
-.closebox:hover {
+.sound-button {
+  display: none;
+}
+.tab.audible .sound-button,
+.tab.muted .sound-button {
+  display: inline-block;
+}
+.tab.audible .sound-button::before {
+  content: "🔈";
+}
+.tab.muted .sound-button::before {
+  content: "🔇";
+}
+li.tab.pinned .sound-button {
+  font-size: 80%;
+  max-height: 1em;
+  max-width: 1em;
+  left: -1em;
+  position: relative;
+  z-index: 100;
+}
+
+.closebox:hover,
+.sound-button:hover {
   opacity: 1;
 }
 
-.closebox:active {
+.closebox:active,
+.sound-button:active {
   opacity: 0.5;
 }
 

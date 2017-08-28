@@ -64,8 +64,9 @@ async function rebuildAll() {
   clearAllTabsContainers();
   var container = buildTabsContainerFor(gTargetWindow);
   for (let apiTab of apiTabs) {
-    let tab = buildTab(apiTab, { existing: true });
-    container.appendChild(tab);
+    let newTab = buildTab(apiTab, { existing: true });
+    container.appendChild(newTab);
+    updateTab(newTab, apiTab, { forceApply: true });
   }
   gAllTabs.appendChild(container);
   startObserveApiTabs();
