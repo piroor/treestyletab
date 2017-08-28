@@ -24,10 +24,10 @@ async function onTabOpening(aTab) {
     );
   }
 
-  var opener = getTabById({ tab: aTab.openerTabId, window: aTab.windowId });
+  var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
   if (opener) {
     log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositions);
-    await attachTabTo(newTab, opener, {
+    await attachTabTo(aTab, opener, {
       dontMove: container.toBeOpenedTabsWithPositions > 0,
       broadcast: true
     });
