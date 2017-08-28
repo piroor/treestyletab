@@ -134,6 +134,25 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 }
 
+function updateParentTab(aParent) {
+  if (!aParent)
+    return;
+
+  var children = getChildTabs(aParent);
+
+  if (children.some(maybeAudible))
+    aParent.classList.add(kTAB_STATE_HAS_AUDIBLE_MEMBER);
+  else
+    aParent.classList.remove(kTAB_STATE_HAS_AUDIBLE_MEMBER);
+
+  if (children.some(maybeMuted))
+    aParent.classList.add(kTAB_STATE_HAS_MUTED_MEMBER);
+  else
+    aParent.classList.remove(kTAB_STATE_HAS_MUTED_MEMBER);
+
+  updateParentTab(getParentTab(aParent));
+}
+
 function getTitleFromGroupTabURI(aURI) {
   var title = aURI.match(/title=([^&;]*)/);
   return title && decodeURIComponent(title[1]) ||

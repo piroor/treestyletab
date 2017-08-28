@@ -46,6 +46,24 @@ function isPinned(aTab) {
   return aTab.classList.contains(kTAB_STATE_PINNED);
 }
 
+function isAudible(aTab) {
+  return aTab.classList.contains(kTAB_STATE_AUDIBLE);
+}
+
+function maybeAudible(aTab) {
+  return aTab.classList.contains(kTAB_STATE_AUDIBLE) ||
+         aTab.classList.contains(kTAB_STATE_HAS_AUDIBLE_MEMBER);
+}
+
+function isMuted(aTab) {
+  return aTab.classList.contains(kTAB_STATE_MUTED);
+}
+
+function maybeMuted(aTab) {
+  return aTab.classList.contains(kTAB_STATE_MUTED) ||
+         aTab.classList.contains(kTAB_STATE_HAS_MUTED_MEMBER);
+}
+
 function isHidden(aTab) {
   return aTab.classList.contains(kTAB_STATE_HIDDEN);
 }

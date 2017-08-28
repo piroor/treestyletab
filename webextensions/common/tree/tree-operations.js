@@ -225,6 +225,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
   //promoteTooDeepLevelTabs(aChild);
 
+  updateParentTab(aParent);
+
   window.onTabAttached && onTabAttached(aChild, {
     parent: aParent
   });
@@ -264,6 +266,7 @@ function detachTab(aChild, aOptions = {}) {
       parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
       log('rest children: ', childIds);
     }
+    updateParentTab(parent);
   }
   aChild.removeAttribute(kPARENT);
 

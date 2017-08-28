@@ -108,6 +108,7 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
 
   updateTab(updatedTab, aTab);
   updatedTab.apiTab = aTab;
+  updateParentTab(getParentTab(updatedTab));
 
   window.onTabUpdated && onTabUpdated(updatedTab);
 }

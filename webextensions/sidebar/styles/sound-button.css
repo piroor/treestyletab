@@ -23,15 +23,23 @@
 }
 
 .tab.audible .sound-button,
-.tab.muted .sound-button {
+.tab.has-audible-member.subtree-collapsed[data-child-ids]
+  .sound-button,
+.tab.muted .sound-button,
+.tab.has-muted-member.subtree-collapsed[data-child-ids]
+  .sound-button {
   display: inline-block;
 }
 
-.tab.audible .sound-button::before {
+.tab.audible .sound-button::before,
+.tab.has-audible-member.subtree-collapsed[data-child-ids]
+  .sound-button::before {
   content: "🔈";
 }
 
-.tab.muted .sound-button::before {
+.tab.muted .sound-button::before,
+.tab.has-muted-member.subtree-collapsed[data-child-ids]
+  .sound-button::before {
   content: "🔇";
 }
 
