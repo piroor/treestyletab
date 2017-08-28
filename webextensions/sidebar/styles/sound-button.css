@@ -22,8 +22,8 @@
   opacity: var(--button-active-opacity);
 }
 
-.tab.audible .sound-button,
-.tab.has-audible-member.subtree-collapsed[data-child-ids]
+.tab.sound-playing .sound-button,
+.tab.has-sound-playing-member.subtree-collapsed[data-child-ids]
   .sound-button,
 .tab.muted .sound-button,
 .tab.has-muted-member.subtree-collapsed[data-child-ids]
@@ -31,16 +31,19 @@
   display: inline-block;
 }
 
-.tab.audible .sound-button::before,
-.tab.has-audible-member.subtree-collapsed[data-child-ids]
-  .sound-button::before {
-  content: "🔈";
-}
-
 .tab.muted .sound-button::before,
 .tab.has-muted-member.subtree-collapsed[data-child-ids]
   .sound-button::before {
   content: "🔇";
+}
+
+/* put style definition for sound-playing tab after muted tab,
+   because "sound-playing" is more important than muted for
+   mixed state tree. */
+.tab.sound-playing:not(.muted) .sound-button::before,
+.tab.has-sound-playing-member.subtree-collapsed[data-child-ids]
+  .sound-button::before {
+  content: "🔈";
 }
 
 li.tab.pinned .sound-button {

@@ -144,10 +144,16 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_TAB_STATE: {
       let tab = getTabById(aMessage.tab);
       if (tab) {
-        if (aMessage.add && aMessage.add.length > 0)
-          aMessage.add.forEach(aState => tab.classList.add(aState));
-        if (aMessage.remove && aMessage.remove.length > 0)
-          aMessage.remove.forEach(aState => tab.classList.remove(aState));
+        let add = aMessage.add || [];
+        let remove = aMessage.remove || [];
+        log('apply broadcasted tab state ', tab.id, {
+          add:    add.join(','),
+          remove: remove.join(',')
+        });
+        add.forEach(aState => tab.classList.add(aState));
+        remove.forEach(aState => tab.classList.remove(aState));
+        if (aMessage.bubbles)
+          updateParentTab(getParentTab(tab));
       }
     }; break;
   }

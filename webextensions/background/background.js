@@ -235,15 +235,46 @@ async function onMessage(aMessage, aSender, aRespond) {
       if (!root)
         return;
       let tabs = [root].concat(getDescendantTabs(root));
-      log('tabs: ', tabs.length);
       for (let tab of tabs) {
-      log('audible: ', tab.apiTab.audible);
-        if (!tab.apiTab.audible &&
-            !tab.apiTab.mutedInfo.muted)
+        let playing = isSoundPlaying(tab);
+        let muted = isMuted(tab);
+        log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
+        if (playing != aMessage.muted)
           continue;
+
+        log(` => set muted=${aMessage.muted}`);
+
         browser.tabs.update(tab.apiTab.id, {
           muted: aMessage.muted
         }).catch(handleMissingTabError);
+
+        let add = [];
+        let remove = [];
+        if (aMessage.muted) {
+          add.push(kTAB_STATE_MUTED);
+          tab.classList.add(kTAB_STATE_MUTED);
+        }
+        else {
+          remove.push(kTAB_STATE_MUTED);
+          tab.classList.remove(kTAB_STATE_MUTED);
+        }
+
+        if (isAudible(tab) && !aMessage.muted) {
+          add.push(kTAB_STATE_SOUND_PLAYING);
+          tab.classList.add(kTAB_STATE_SOUND_PLAYING);
+        }
+        else {
+          remove.push(kTAB_STATE_SOUND_PLAYING);
+          tab.classList.remove(kTAB_STATE_SOUND_PLAYING);
+        }
+
+        // tabs.onUpdated is too slow, so users will be confused
+        // from still-not-updated tabs (in other words, they tabs
+        // are unresponsive for quick-clicks).
+        broadcastTabState(tab, {
+          add, remove,
+          bubbles: !hasChildTabs(tab)
+        });
       }
     }; break;
 

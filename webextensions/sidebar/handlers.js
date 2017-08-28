@@ -211,7 +211,7 @@ function onClick(aEvent) {
       type:     kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
       tab:      tab.id,
-      muted:    !maybeMuted(tab)
+      muted:    maybeSoundPlaying(tab)
     });
     return;
   }

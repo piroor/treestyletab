@@ -50,9 +50,14 @@ function isAudible(aTab) {
   return aTab.classList.contains(kTAB_STATE_AUDIBLE);
 }
 
-function maybeAudible(aTab) {
-  return aTab.classList.contains(kTAB_STATE_AUDIBLE) ||
-         aTab.classList.contains(kTAB_STATE_HAS_AUDIBLE_MEMBER);
+function isSoundPlaying(aTab) {
+  return aTab.classList.contains(kTAB_STATE_SOUND_PLAYING);
+}
+
+function maybeSoundPlaying(aTab) {
+  return aTab.classList.contains(kTAB_STATE_SOUND_PLAYING) ||
+         (aTab.classList.contains(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+          aTab.hasAttribute(kCHILDREN));
 }
 
 function isMuted(aTab) {
@@ -61,7 +66,8 @@ function isMuted(aTab) {
 
 function maybeMuted(aTab) {
   return aTab.classList.contains(kTAB_STATE_MUTED) ||
-         aTab.classList.contains(kTAB_STATE_HAS_MUTED_MEMBER);
+         (aTab.classList.contains(kTAB_STATE_HAS_MUTED_MEMBER) &&
+          aTab.hasAttribute(kCHILDREN));
 }
 
 function isHidden(aTab) {

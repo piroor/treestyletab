@@ -123,6 +123,11 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aTab.classList.add(kTAB_STATE_AUDIBLE);
     else
       aTab.classList.remove(kTAB_STATE_AUDIBLE);
+
+    if (aNewState.audible && !aNewState.mutedInfo.muted)
+      aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
+    else
+      aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
   }
 
   if (aOptions.forceApply ||
@@ -140,10 +145,10 @@ function updateParentTab(aParent) {
 
   var children = getChildTabs(aParent);
 
-  if (children.some(maybeAudible))
-    aParent.classList.add(kTAB_STATE_HAS_AUDIBLE_MEMBER);
+  if (children.some(maybeSoundPlaying))
+    aParent.classList.add(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
   else
-    aParent.classList.remove(kTAB_STATE_HAS_AUDIBLE_MEMBER);
+    aParent.classList.remove(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
   if (children.some(maybeMuted))
     aParent.classList.add(kTAB_STATE_HAS_MUTED_MEMBER);
@@ -430,6 +435,7 @@ function broadcastTabState(aTab, aOptions = {}) {
     type:   kCOMMAND_BROADCAST_TAB_STATE,
     tab:    aTab.id,
     add:    aOptions.add || [],
-    remove: aOptions.remove || []
+    remove: aOptions.remove || [],
+    bubbles: !!aOptions.bubbles
   });
 }
