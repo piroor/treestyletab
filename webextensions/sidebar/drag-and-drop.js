@@ -509,10 +509,15 @@ function retrieveURIsFromData(aData, aType) {
   return [];
 }
 
+var gDraggingOnSelfWindow = false;
 
 function onDragStart(aEvent) {
   var tab = aEvent.target;
   var dragData = getDragDataFromOneTab(tab);
+  if (!dragData.tabNode)
+    return;
+
+  gDraggingOnSelfWindow = true;
 
   var dt = aEvent.dataTransfer;
 
@@ -611,7 +616,17 @@ try{
 }catch(e){log(String(e));}
 }
 
+var gDelayedDragEnter;
+
 function onDragEnter(aEvent) {
+  gDelayedDragEnter = setTimeout(() => {
+    gDraggingOnSelfWindow = true;
+    if (gDelayedDragLeave) {
+      clearTimeout(gDelayedDragLeave);
+      gDelayedDragLeave = null;
+    }
+  }, 10);
+
   var info = getDropAction(aEvent);
   var dt = aEvent.dataTransfer;
   if (info.action & kACTION_NEWTAB)
@@ -661,7 +676,13 @@ function onDragEnter(aEvent) {
   }, 0, info.targetTab.id, info.draggedTab && info.draggedTab.id);
 }
 
+var gDelayedDragLeave;
+
 function onDragLeave(aEvent) {
+  gDelayedDragLeave = setTimeout(() => {
+    gDraggingOnSelfWindow = false;
+  }, configs.preventTearOffTabsTimeout);
+
   clearDropPosition();
   clearTimeout(gAutoExpandWhileDNDTimer);
   gAutoExpandWhileDNDTimer = null;
@@ -701,9 +722,11 @@ async function onDrop(aEvent) {
 }
 
 function onDragEnd(aEvent) {
-  log('onDragEnd');
+  log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = JSON.parse(dragData);
+  var stillInSelfWindow = !!gDraggingOnSelfWindow;
+  gDraggingOnSelfWindow = false;
 
   if (Array.isArray(dragData.tabIds)) {
     dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
@@ -729,9 +752,21 @@ function onDragEnd(aEvent) {
   aEvent.stopPropagation();
   aEvent.preventDefault();
 
-  if (gLastDragOverTimestamp &&
-      Date.now() - gLastDragOverTimestamp < configs.preventTearOffTabsTimeout) {
+  if (stillInSelfWindow) {
     log('dropped at tab bar: detaching is canceled');
+    return;
+  }
+
+  var now = Date.now();
+  var delta = now - gLastDragOverTimestamp;
+  log('LastDragOverTimestamp: ', {
+    last: gLastDragOverTimestamp,
+    now, delta,
+    timeout: configs.preventTearOffTabsTimeout
+  });
+  if (gLastDragOverTimestamp &&
+      delta < configs.preventTearOffTabsTimeout) {
+    log('dropped near the tab bar: detaching is canceled');
     return;
   }
 
