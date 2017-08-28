@@ -6,7 +6,7 @@ xpi: ../extlib/webextensions-lib-configs/Configs.js ../extlib/webextensions-lib-
 	cp ../extlib/webextensions-lib-options/Options.js options/
 	cp ../extlib/webextensions-lib-l10n/l10n.js common/
 	cp ../extlib/JavaScript-MD5/js/md5.min.js common/
-	zip -r -0 treestyletab-we.xpi *.json *.js _locales common options
+	zip -r -0 treestyletab-we.xpi *.json *.js _locales common options background sidebar resources
 
 ../extlib/webextensions-lib-configs/Configs.js:
 	cd .. && git submodule update --init
