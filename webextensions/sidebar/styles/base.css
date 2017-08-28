@@ -192,3 +192,18 @@ li.tab.pinned :-moz-any(.twisty, .label, .closebox) {
   margin: 0;
   text-align: center;
 }
+
+
+#blocking-screen {
+  bottom: 0;
+  display: none;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10000;
+}
+
+:root.blocking #blocking-screen {
+  display: block;
+}

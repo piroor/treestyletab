@@ -136,8 +136,9 @@ async function onNewTabTracked(aTab) {
 
   await window.onTabOpening && onTabOpening(newTab);
 
+  var openedWithPosition = container.toBeOpenedTabsWithPositions > 0;
   if (container.parentNode) { // it can be removed while waiting
-    if (container.toBeOpenedTabsWithPositions > 0)
+    if (openedWithPosition)
       container.toBeOpenedTabsWithPositions--;
 
     if (container.toBeOpenedOrphanTabs > 0)
@@ -154,7 +155,9 @@ async function onNewTabTracked(aTab) {
   }
 
   if (newTab.parentNode) // it can be removed while waiting
-    window.onTabOpened && onTabOpened(newTab);
+    window.onTabOpened && onTabOpened(newTab, {
+      openedWithPosition
+    });
 }
 
 async function onApiTabRemoved(aTabId, aRemoveInfo) {

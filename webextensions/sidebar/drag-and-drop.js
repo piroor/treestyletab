@@ -37,6 +37,7 @@
 'use strict';
 
 const kTREE_DROP_TYPE = 'application/x-treestyletab-tree';
+const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 
 var gAutoExpandedTabs = [];
 var gAutoExpandWhileDNDTimer;
@@ -437,7 +438,7 @@ function retrieveURIsFromDragEvent(aEvent) {
   var dt = aEvent.dataTransfer;
   var urls = [];
   var types = [
-      'text/x-moz-place',
+      kTYPE_X_MOZ_PLACE,
       'text/uri-list',
       'text/x-moz-text-internal',
       'text/x-moz-url',
@@ -470,7 +471,7 @@ const kBOOKMARK_FOLDER = 'x-moz-place:';
 function retrieveURIsFromData(aData, aType) {
   log('retrieveURIsFromData: ', aType, aData);
   switch (aType) {
-    case 'text/x-moz-place': {
+    case kTYPE_X_MOZ_PLACE: {
       let item = JSON.parse(aData);
       if (item.type == 'text/x-moz-place-container') {
         let children = item.children;
@@ -508,10 +509,15 @@ function retrieveURIsFromData(aData, aType) {
   return [];
 }
 
+var gDraggingOnSelfWindow = false;
 
 function onDragStart(aEvent) {
   var tab = aEvent.target;
   var dragData = getDragDataFromOneTab(tab);
+  if (!dragData.tabNode)
+    return;
+
+  gDraggingOnSelfWindow = true;
 
   var dt = aEvent.dataTransfer;
 
@@ -519,6 +525,17 @@ function onDragStart(aEvent) {
 
   dragData.tabNodes.map((aDraggedTab, aIndex) => {
     aDraggedTab.classList.add(kTAB_STATE_DRAGGING);
+    // this type will be...
+    //  * droppable on bookmark toolbar and other Places based UI
+    //  * undroppable on content area, desktop, and other application
+    // so this won't block tearing off of tabs by drag-and-drop.
+    dt.mozSetDataAt(kTYPE_X_MOZ_PLACE,
+      JSON.stringify({
+        type:  kTYPE_X_MOZ_PLACE,
+        uri:   aDraggedTab.apiTab.url,
+        title: aDraggedTab.apiTab.title
+      }),
+      aIndex);
     if (aEvent.shiftKey) {
       // this type will be used to create multiple bookmarks
       // but do not add by default, beause dropping this data into
@@ -599,7 +616,17 @@ try{
 }catch(e){log(String(e));}
 }
 
+var gDelayedDragEnter;
+
 function onDragEnter(aEvent) {
+  gDelayedDragEnter = setTimeout(() => {
+    gDraggingOnSelfWindow = true;
+    if (gDelayedDragLeave) {
+      clearTimeout(gDelayedDragLeave);
+      gDelayedDragLeave = null;
+    }
+  }, 10);
+
   var info = getDropAction(aEvent);
   var dt = aEvent.dataTransfer;
   if (info.action & kACTION_NEWTAB)
@@ -649,7 +676,13 @@ function onDragEnter(aEvent) {
   }, 0, info.targetTab.id, info.draggedTab && info.draggedTab.id);
 }
 
+var gDelayedDragLeave;
+
 function onDragLeave(aEvent) {
+  gDelayedDragLeave = setTimeout(() => {
+    gDraggingOnSelfWindow = false;
+  }, configs.preventTearOffTabsTimeout);
+
   clearDropPosition();
   clearTimeout(gAutoExpandWhileDNDTimer);
   gAutoExpandWhileDNDTimer = null;
@@ -689,9 +722,11 @@ async function onDrop(aEvent) {
 }
 
 function onDragEnd(aEvent) {
-  log('onDragEnd');
+  log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = JSON.parse(dragData);
+  var stillInSelfWindow = !!gDraggingOnSelfWindow;
+  gDraggingOnSelfWindow = false;
 
   if (Array.isArray(dragData.tabIds)) {
     dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
@@ -717,9 +752,21 @@ function onDragEnd(aEvent) {
   aEvent.stopPropagation();
   aEvent.preventDefault();
 
-  if (gLastDragOverTimestamp &&
-      Date.now() - gLastDragOverTimestamp < configs.preventTearOffTabsTimeout) {
+  if (stillInSelfWindow) {
     log('dropped at tab bar: detaching is canceled');
+    return;
+  }
+
+  var now = Date.now();
+  var delta = now - gLastDragOverTimestamp;
+  log('LastDragOverTimestamp: ', {
+    last: gLastDragOverTimestamp,
+    now, delta,
+    timeout: configs.preventTearOffTabsTimeout
+  });
+  if (gLastDragOverTimestamp &&
+      delta < configs.preventTearOffTabsTimeout) {
+    log('dropped near the tab bar: detaching is canceled');
     return;
   }
 
