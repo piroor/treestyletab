@@ -364,6 +364,17 @@ function collectRootTabs(aTabs) {
   });
 }
 
+function getIndentedTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  return container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${kPARENT}]`);
+}
+
+function getVisibleIndentedTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  return container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}[${kPARENT}]`);
+}
+
+
 
 // misc.
 

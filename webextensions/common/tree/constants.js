@@ -117,5 +117,7 @@ const kINSERT_NO_CONTROL = -1;
 const kINSERT_FISRT = 0;
 const kINSERT_LAST = 1;
 
+const kDEFAULT_MIN_INDENT = 3;
+
 const kTAB_STATE_GROUP_TAB = 'group-tab';
 const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');

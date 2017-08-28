@@ -9,6 +9,8 @@ gLogContext = 'Sidebar-?';
 
 var gTabBar;
 var gAfterTabsForOverflowTabBar;
+var gIndent = -1;
+var gIndentProp = 'marginLeft';
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
@@ -96,6 +98,54 @@ function collapseExpandAllSubtree(aParams = {}) {
     collapseExpandSubtree(tab, aParams);
   }
 }
+
+
+function reserveToUpdateIndent() {
+  log('reserveToUpdateIndent');
+  if (reserveToUpdateIndent.waiting)
+    clearTimeout(reserveToUpdateIndent.waiting);
+  reserveToUpdateIndent.waiting = setTimeout(() => {
+    delete reserveToUpdateIndent.waiting;
+    updateIndent();
+  }, 100);
+}
+
+function updateIndent() {
+  var tabs = configs.indentAutoShrinkOnlyForVisible ?
+               getVisibleIndentedTabs(gTargetWindow) :
+               getIndentedTabs(gTargetWindow) ;
+  log('updateIndent ', tabs.length);
+  if (!tabs.length)
+    return;
+
+  Array.slice(tabs).sort((aA, aB) => Number(aA.getAttribute(kNEST)) - Number(aB.getAttribute(kNEST)));
+  var maxLevel = tabs[tabs.length-1].getAttribute(kNEST);
+  log('maxLevel ', maxLevel);
+  if (configs.maxTreeLevel > -1)
+    maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
+  if (maxLevel <= 0)
+    return;
+
+  var oldIndent = gIndent;
+  var indent    = (oldIndent < 0 ? configs.baseIndent : oldIndent ) * maxLevel;
+  var maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
+
+  var minIndent= Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
+  var indentUnit = Math.max(Math.floor(maxIndent / maxLevel), minIndent);
+  log('calculated result: ', { oldIndent, indent, maxIndent, minIndent, indentUnit });
+  if (indent > maxIndent) {
+    gIndent = indentUnit;
+  }
+  else {
+    gIndent = -1;
+    if ((configs.baseIndent * maxLevel) > maxIndent)
+      gIndent = indentUnit;
+  }
+
+  if (oldIndent != gIndent)
+    tabs.forEach(onTabLevelChanged);
+}
+
 
 function reserveToUpdateTabbarLayout() {
   log('reserveToUpdateTabbarLayout');

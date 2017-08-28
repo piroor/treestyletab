@@ -41,8 +41,6 @@
 var gAllTabs;
 var gTargetWindow = null;
 var gRestoringTree = false;
-var gIndent = -1;
-var gIndentProp = 'marginLeft';
 var gNeedRestoreTree = false;
 
 var gIsMac = /Darwin/.test(navigator.platform);

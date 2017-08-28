@@ -92,6 +92,8 @@ configs = new Configs({
 
   indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
   indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
+  maxTreeLevel: -1, // extensions.treestyletab.maxTreeLevel.vertical
+  minIndent: kDEFAULT_MIN_INDENT, // extensions.treestyletab.indent.min.vertical
 
   closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeParentBehavior
   closeParentBehaviorMoveDetachedTabsToBottom: false, // extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom

@@ -179,6 +179,7 @@ function getTabFromCoordinates(aEvent) {
 
 function onResize(aEvent) {
   reserveToUpdateTabbarLayout();
+  reserveToUpdateIndent();
 }
 
 function onMouseDown(aEvent) {
@@ -468,6 +469,8 @@ function onTabLevelChanged(aTab) {
         aTab.style[gIndentProp] = expected
       });
     }
+    if (configs.indentAutoShrink)
+      reserveToUpdateIndent();
   });
 }
 
@@ -485,6 +488,10 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   //log('updateTabCollapsed ', dumpTab(aTab));
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
+
+  if (configs.indentAutoShrink &&
+      configs.indentAutoShrinkOnlyForVisible)
+    reserveToUpdateIndent();
 
   if (aTab.onEndCollapseExpandAnimation) {
     aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });

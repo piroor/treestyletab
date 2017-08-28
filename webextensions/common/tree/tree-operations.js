@@ -460,10 +460,6 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
     aTab.classList.remove(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     //deleteTabValue(aTab, kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
   }
-
-  //if (configs.indentAutoShrink &&
-  //    configs.indentAutoShrinkOnlyForVisible)
-  //  checkTabsIndentOverflow();
 }
 
 function manualCollapseExpandSubtree(aTab, aParams = {}) {
