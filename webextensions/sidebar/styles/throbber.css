@@ -33,7 +33,7 @@
   content: "⏳";
 }
 
-li.tab:not(.loading) .throbber::before {
+li.tab:not(.loading) .throbber {
   display: none !important;
 }
 
