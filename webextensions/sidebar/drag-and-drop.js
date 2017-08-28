@@ -37,6 +37,7 @@
 'use strict';
 
 const kTREE_DROP_TYPE = 'application/x-treestyletab-tree';
+const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 
 var gAutoExpandedTabs = [];
 var gAutoExpandWhileDNDTimer;
@@ -437,7 +438,7 @@ function retrieveURIsFromDragEvent(aEvent) {
   var dt = aEvent.dataTransfer;
   var urls = [];
   var types = [
-      'text/x-moz-place',
+      kTYPE_X_MOZ_PLACE,
       'text/uri-list',
       'text/x-moz-text-internal',
       'text/x-moz-url',
@@ -470,7 +471,7 @@ const kBOOKMARK_FOLDER = 'x-moz-place:';
 function retrieveURIsFromData(aData, aType) {
   log('retrieveURIsFromData: ', aType, aData);
   switch (aType) {
-    case 'text/x-moz-place': {
+    case kTYPE_X_MOZ_PLACE: {
       let item = JSON.parse(aData);
       if (item.type == 'text/x-moz-place-container') {
         let children = item.children;
@@ -519,6 +520,17 @@ function onDragStart(aEvent) {
 
   dragData.tabNodes.map((aDraggedTab, aIndex) => {
     aDraggedTab.classList.add(kTAB_STATE_DRAGGING);
+    // this type will be...
+    //  * droppable on bookmark toolbar and other Places based UI
+    //  * undroppable on content area, desktop, and other application
+    // so this won't block tearing off of tabs by drag-and-drop.
+    dt.mozSetDataAt(kTYPE_X_MOZ_PLACE,
+      JSON.stringify({
+        type:  kTYPE_X_MOZ_PLACE,
+        uri:   aDraggedTab.apiTab.url,
+        title: aDraggedTab.apiTab.title
+      }),
+      aIndex);
     if (aEvent.shiftKey) {
       // this type will be used to create multiple bookmarks
       // but do not add by default, beause dropping this data into
