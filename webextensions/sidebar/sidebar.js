@@ -13,21 +13,26 @@ var gIndent = -1;
 var gIndentProp = 'margin-left';
 var gTabHeight = 0;
 
-window.addEventListener('DOMContentLoaded', init, { once: true });
+window.addEventListener('DOMContentLoaded', earlyInit, { once: true });
+window.addEventListener('load', init, { once: true });
 
 blockUserOperations();
 
 var gSizeDefinition;
 
-async function init() {
-  log('initialize sidebar');
+function earlyInit() {
+  log('initialize sidebar on DOMContentLoaded');
   window.addEventListener('unload', destroy, { once: true });
-  window.addEventListener('resize', onResize);
 
   gTabBar = document.querySelector('#tabbar');
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
   gAllTabs = document.querySelector('#all-tabs');
   gSizeDefinition = document.querySelector('#size-definition');
+}
+
+async function init() {
+  log('initialize sidebar on load');
+  window.addEventListener('resize', onResize);
 
   gTabBar.addEventListener('mousedown', onMouseDown);
   gTabBar.addEventListener('click', onClick);
