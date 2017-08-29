@@ -350,8 +350,8 @@ async function loadURI(aURI, aOptions = {}) {
   }
 }
 
-async function openNewTab(aOptions = {}) {
-  return await openURIInTab(null, aOptions);
+function openNewTab(aOptions = {}) {
+  return openURIInTab(null, aOptions);
 }
 
 async function openURIInTab(aURI, aOptions = {}) {
