@@ -77,12 +77,9 @@ function calculateDefaultSizes() {
   }, { forceApply: true });
 
   gTabHeight = dummyTab.getBoundingClientRect().height;
-  var throbberRect = getTabThrobber(dummyTab).getBoundingClientRect();
   gSizeDefinition.textContent = `:root {
     --tab-height: ${gTabHeight}px;
     --tab-negative-height: -${gTabHeight}px;
-    --throbber-height: ${throbberRect.height}px;
-    --throbber-width: ${throbberRect.width}px;
   }`;
 }
 

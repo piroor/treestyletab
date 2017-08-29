@@ -16,11 +16,15 @@
 
 .throbber {
   display: inline-block;
+  height: var(--favicon-size);
   line-height: 1;
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
+  min-height: var(--favicon-size);
+  min-width: var(--favicon-size);
   position: relative;
   text-align: center;
-  transform-origin: calc(var(--throbber-width) / 2)
-                    calc(var(--throbber-height) / 2);
+  transform-origin: 50% 50%;
   vertical-align: top;
   width: var(--favicon-size);
 }
@@ -28,12 +32,11 @@
 .throbber::before {
   content: "⏳";
   display: inline-box;
-  left: calc(var(--favicon-size) - var(--throbber-width));
+  left: calc((var(--favicon-size) - 1em) / 2);
   line-height: 1;
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-  position: relative;
-  top: calc(var(--favicon-size) - var(--throbber-height));
+  position: absolute;
+  right: calc((var(--favicon-size) - 1em) / 2);
+  top: calc((var(--favicon-size) - 1em) / 2);
 }
 
 .tab:not(.loading) .throbber {

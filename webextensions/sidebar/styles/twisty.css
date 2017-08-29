@@ -11,8 +11,7 @@
   transition: transform 0.2s ease-out,
               opacity 0.15s ease-out,
               text-shadow 0.15s ease-out;
-  transform-origin: calc(var(--favicon-size) / 2)
-                    calc(var(--favicon-size) / 2);
+  transform-origin: 50% 50%;
   vertical-align: top;
   width: var(--favicon-size);
 }
@@ -25,10 +24,13 @@
 
 .twisty::before {
   display: inline-box;
+  left: calc((var(--favicon-size) - 1em) / 2);
   line-height: 1;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
-  position: relative;
+  position: absolute;
+  right: calc((var(--favicon-size) - 1em) / 2);
+  top: calc((var(--favicon-size) - 1em) / 2);
 }
 
 :root[data-twisty-style^="modern"]
@@ -77,7 +79,6 @@
 :root[data-twisty-style^="modern"]
   .twisty::before {
   content: "▼";
-  top: 0.25em;
 }
 
 :root[data-twisty-style*="-black"]
