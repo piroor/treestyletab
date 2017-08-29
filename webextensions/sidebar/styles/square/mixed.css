@@ -33,7 +33,7 @@
 }
 
 .tab.active {
-  background-color: var(--tab-surface-selected);
+  background-color: var(--tab-surface-active);
   background-image: -moz-linear-gradient(
                       top,
                       rgba(4, 83, 227, 0.04) 0,
@@ -42,7 +42,7 @@
 }
 
 .tab.active:hover {
-  background-color: var(--tab-surface-selected-hover);
+  background-color: var(--tab-surface-active-hover);
   background-image: -moz-linear-gradient(
                       top,
                       rgba(199, 219, 252, 1) 0,
