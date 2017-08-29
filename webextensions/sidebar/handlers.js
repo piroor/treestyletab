@@ -657,7 +657,7 @@ function updateTabsCount(aTab) {
   var count = descendants.length;
   if (configs.counterRole == kCOUNTER_ROLE_ALL_TABS)
     count += 1;
-  counter.textContent = `(${count})`;
+  counter.textContent = count;
 }
 
 function onTabPinned(aTab) {

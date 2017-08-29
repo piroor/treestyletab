@@ -1,0 +1,216 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ * 
+ * The contents of these files are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use these files except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ * 
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ * 
+ * The Original Code is the SidebarStyleTab.
+ * 
+ * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
+ * Portions created by the Initial Developer are Copyright (C) 2010-2017
+ * the Initial Developer. All Rights Reserved.
+ * 
+ * Contributor(s): Philipp von Weitershausen <philipp@weitershausen.de>
+ *                 YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
+ * 
+ * Alternatively, the contents of these files may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of these files only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of these files under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of these files under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ * 
+ * ***** END LICENSE BLOCK ***** */
+
+/* Unset bottom border, instead let's have a border on the right-hand
+   side, much like the sidebar does. */
+#tabbar {
+  border-top: 1px solid #404040;
+}
+
+/* Background colour for the tree sidebar (light blue when window is
+   active, grey otherwise) */
+:root {
+  background: #d4dde5;
+}
+
+:root:-moz-window-inactive {
+  background: #e8e8e8;
+}
+
+/* Use the splitter to display the border of .tabs */
+:root.left {
+  border-right: 1px solid #404040;
+}
+:root:-moz-window-inactive.left {
+  border-right-color: #868686;
+}
+
+:root.right {
+  border-left: 1px solid #404040;
+}
+:root:-moz-window-inactive.right {
+  border-left-color: #868686;
+}
+
+/* Style tabs themselves.  Get rid of most of the initial XUL styling */
+.tab {
+  height: 24px !important;     /* height including border! */
+  padding: 6px 3px 6px 10px;
+  z-index: 0;
+}
+
+.tab.active {
+  border-top: 1px solid #94A1C0;
+  background: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x;
+}
+
+:-moz-window-inactive .tab.active {
+  border-top: 1px solid #979797;
+  background: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x;  
+}
+
+/* Keep the close button at a safe distance from the tab label. */
+.closebox::before {
+  display: none;
+}
+.closebox {
+  width: 22px;
+  height: 22px;
+  margin-left: 3px;
+  background: url("closetab.png") center center no-repeat;
+  opacity: 0.27;  /* turn black into #b9b9b9 */
+  border: 0 none;
+}
+
+.closebox:active {
+  opacity: 0.46;  /* turn black into #8a8a8a */
+}
+
+.tab.active .closebox {
+  background-image: url("closetab-white.png");
+  opacity: 1;
+}
+
+.tab:not(.active):not(:hover) .closebox {
+  display: none;
+}
+
+/* Tab label is without special decoration except when selected: then
+   the text is white and bold. */
+.label {
+  font-size: 95%;
+  font-weight: normal;
+  color: #000000;
+  text-align: start;
+  text-shadow: none;
+  margin-bottom: 1px;
+}
+
+.tab.active .label {
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 1px #404040;
+}
+
+/* Make the tab counter look like the bubbles in Mail.app et.al. */
+.counter::before,
+.counter::after {
+  display: none;
+}
+
+.counter {
+  background-color: #91a0c0;
+  border-radius: 8px;
+  padding: 2px 4px;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: none;
+}
+
+.tab.active .counter {
+  background-color: #ffffff;
+  color: #91a0c0;
+}
+
+:-moz-window-inactive .counter {
+  background-color: #b5b5b5;
+}
+:-moz-window-inactive .tab.active .counter {
+  background-color: #ffffff;
+  color: #929292;
+}
+
+
+
+/* Drag'n'drop styling */
+
+/* Round blue rectangle around tabs that are dropping targets. */
+.tab[data-drop-position="self"] {
+  background: #d0def5;
+  border: 2px solid #577bf3; /* not OSX's colour but Firefox's */
+  border-radius: 8px;
+  padding: 0 1px 0 8px;
+  outline: none !important;
+}
+
+/* White-blue-white separator for drop indicator. */
+.tab[data-drop-position]:not([data-drop-position="self"])::before {
+  background: transparent !important;
+  max-height: 6px;
+  min-height: 6px;
+  border-image: url("dropmarker.png") 12 0 0 11 fill / 12px 0 0 11px;
+  border-image-outset: 6px 0 0 0;
+  z-index: 10000;
+}
+
+.tab:not(.pinned)[data-drop-position="before"]::before {
+  top: 6px;
+}
+
+
+
+/* changed from original SidebarStyleTab */
+
+.after-tabs button {
+  background: transparent;
+  border: 0 none;
+}
+
+/* for rightside tab bar: "display:none" breaks the order of tab contents. */
+:root
+  .tab:not(:hover):not(.active)
+  .closebox {
+  display: -moz-box !important;
+  visibility: collapse !important;
+}
+
+
+/* highlighted pinned tabs */
+.tab.pinned.unread:not(.active) {
+  background-image: radial-gradient(circle farthest-corner at 50% 3px,
+                                    Highlight 3%,
+                                    rgba(255, 255, 255, 0) 80%);
+.tab.pinned.unread:not(.active):hover {
+  background-image: radial-gradient(circle farthest-corner at 50% 3px,
+                                    Highlight 3%,
+                                    rgba(255, 255, 255, 0) 100%);
+}
+
+
+/* for Multiple Tab Handler */
+.tab:not(:hover):not(.active)[multipletab-ready-to-close="true"] .closebox {
+  visibility: visible;
+}

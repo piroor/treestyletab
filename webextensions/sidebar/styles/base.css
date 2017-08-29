@@ -208,6 +208,14 @@ ul {
   display: none;
 }
 
+.counter::before {
+  content: "(";
+}
+
+.counter::after {
+  content: ")";
+}
+
 
 /* closebox */
 
