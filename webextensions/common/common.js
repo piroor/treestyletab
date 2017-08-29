@@ -75,6 +75,9 @@ configs = new Configs({
   counterRole: kCOUNTER_ROLE_CONTAINED_TABS, // extensions.treestyletab.counter.role.vertical
 
   style: null, // extensions.treestyletab.tabbar.style
+  defaultStyle: 'mixed', // extensions.treestyletab.platform.default.tabbar.style
+  defaultStyleOnDarwin: 'sidebar', // extensions.treestyletab.platform.default.tabbar.style
+  defaultStyleOnLinux: 'plain', // extensions.treestyletab.platform.Linux.tabbar.style
 
   faviconizePinnedTabs: true, // extensions.treestyletab.pinnedTab.faviconized
 

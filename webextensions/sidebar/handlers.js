@@ -750,5 +750,17 @@ function onConfigChange(aChangedKey) {
         document.documentElement.classList.add('debug');
       else
         document.documentElement.classList.remove('debug');
+      break;
+
+    case 'twistyStyle':
+      document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
+      break;
+
+    case 'style':
+    case 'defaultStyle':
+    case 'defaultStyleDarwin':
+    case 'defaultStyleLinux':
+      applyStyle();
+      break;
   }
 }

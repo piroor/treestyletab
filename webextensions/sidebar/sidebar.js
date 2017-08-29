@@ -18,6 +18,7 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 blockUserOperations();
 
 var gSizeDefinition;
+var gStyleLoader;
 
 async function init() {
   log('initialize sidebar');
@@ -28,19 +29,23 @@ async function init() {
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
   gAllTabs = document.querySelector('#all-tabs');
   gSizeDefinition = document.querySelector('#size-definition');
+  gStyleLoader = document.querySelector('#style-loader');
 
   gTabBar.addEventListener('mousedown', onMouseDown);
   gTabBar.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
 
+  await configs.$loaded;
+
+  applyStyle();
+  document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
+
   calculateDefaultSizes();
 
-  await configs.$loaded;
   await rebuildAll();
   log('initialize sidebar: post process');
   updateTabbarLayout({ justNow: true });
   browser.runtime.onMessage.addListener(onMessage);
-  document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
 
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
@@ -63,6 +68,33 @@ function destroy() {
   gTabBar.removeEventListener('dblclick', onDblClick);
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
+}
+
+function applyStyle() {
+  var style = configs.style;
+  if (!style && navigator.platform.indexOf('Linux') == 0)
+    style = configs.defaultStyleLinux;
+  if (!style && navigator.platform.indexOf('Darwin') == 0)
+    style = configs.defaultStyleDarwin;
+  if (!style)
+    style = configs.defaultStyle;
+  document.documentElement.setAttribute(kSTYLE, style);
+
+  switch (style) {
+    case 'metal':
+      gStyleLoader.setAttribute('href', 'styles/metal/metal.css');
+      break;
+    case 'sidebar':
+      gStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
+      break;
+    case 'mixed':
+      gStyleLoader.setAttribute('href', 'styles/square/mixed.css');
+    case 'vertigo':
+      gStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
+    default:
+      gStyleLoader.setAttribute('href', 'styles/square/plain.css');
+      break;
+  }
 }
 
 function calculateDefaultSizes() {
