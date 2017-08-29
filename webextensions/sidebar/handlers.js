@@ -613,15 +613,6 @@ function updateTabsCount(aTab) {
 }
 
 function onTabPinned(aTab) {
-  collapseExpandSubtree(aTab, { collapsed: false });
-  detachAllChildren(aTab, {
-    behavior: getCloseParentBehaviorForTab(
-      aTab,
-      kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-    )
-  });
-  detachTab(aTab);
-  collapseExpandTab(aTab, { collapsed: false });
   reserveToPositionPinnedTabs();
 }
 

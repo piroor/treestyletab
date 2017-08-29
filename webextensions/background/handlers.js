@@ -446,6 +446,24 @@ function onTabDetachedFromWindow(aTab) {
   //restoreTabAttributes(aTab, backupAttributes);
 }
 
+function onTabPinned(aTab) {
+  collapseExpandSubtree(aTab, {
+    collapsed: false,
+    broadcast: true
+  });
+  detachAllChildren(aTab, {
+    behavior: getCloseParentBehaviorForTab(
+      aTab,
+      kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    ),
+    broadcast: true
+  });
+  detachTab(aTab, {
+    broadcast: true
+  });
+  collapseExpandTab(aTab, { collapsed: false });
+}
+
 
 /* message observer */
 
