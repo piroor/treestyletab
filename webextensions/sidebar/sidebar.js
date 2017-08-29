@@ -114,18 +114,9 @@ var gIndentDefinition;
 var gLastMaxLevel;
 
 function updateIndent() {
-  var tabCondition = configs.indentAutoShrinkOnlyForVisible ?
-                      `${kXPATH_VISIBLE_TAB}[@${kPARENT}]` :
-                      `${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}]`;
-  var maxLevel = evaluateXPath(
-                   `descendant::${tabCondition}[
-                     not(preceding-sibling::${tabCondition}/@${kNEST} > @${kNEST})
-                   ][
-                     not(following-sibling::${tabCondition}/@${kNEST} > @${kNEST})
-                   ]/@${kNEST}`,
-                   document,
-                   XPathResult.NUMBER_TYPE
-                 ).numberValue;
+  var maxLevel = getMaxTreeLevel(gTargetWindow, {
+                   onlyVisible: configs.indentAutoShrinkOnlyForVisible
+                 });
   if (isNaN(maxLevel))
     maxLevel = 0;
   if (configs.maxTreeLevel > -1)
@@ -159,10 +150,11 @@ function updateIndent() {
     document.head.appendChild(gIndentDefinition);
   }
 
+  var definitionsMaxLevel = getMaxTreeLevel(gTargetWindow);
   var definitions = [];
   // default indent for unhandled (deep) level tabs
-  definitions.push(`.tab[${kPARENT}]:not([${kNEST}="0"]) { margin-left: ${maxLevel + 1 * indentUnit}px; }`);
-  for (let level = 1; level <= maxLevel; level++) {
+  definitions.push(`.tab[${kPARENT}]:not([${kNEST}="0"]) { margin-left: ${definitionsMaxLevel + 1 * indentUnit}px; }`);
+  for (let level = 1; level <= definitionsMaxLevel; level++) {
     definitions.push(`.tab[${kPARENT}][${kNEST}="${level}"] { margin-left: ${level * indentUnit}px; }`);
   }
   gIndentDefinition.textContent = definitions.join('\n');

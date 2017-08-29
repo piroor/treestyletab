@@ -115,6 +115,24 @@ function hasChildTabs(aParent) {
   return aParent.hasAttribute(kCHILDREN);
 }
 
+function getMaxTreeLevel(aHint, aOptions = {}) {
+  var tabCondition = aOptions.onlyVisible ?
+                      `${kXPATH_VISIBLE_TAB}[@${kPARENT}]` :
+                      `${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}]`;
+  var maxLevel = evaluateXPath(
+                   `descendant::${tabCondition}[
+                     not(preceding-sibling::${tabCondition}/@${kNEST} > @${kNEST})
+                   ][
+                     not(following-sibling::${tabCondition}/@${kNEST} > @${kNEST})
+                   ]/@${kNEST}`,
+                   getTabsContainer(aHint) || document,
+                   XPathResult.NUMBER_TYPE
+                 ).numberValue;
+  if (isNaN(maxLevel))
+    return 0;
+  else
+    return maxLevel;
+}
 
 // if all tabs are aldeardy placed at there, we don't need to move them.
 function isAllTabsPlacedBefore(aTabs, aNextTab) {
