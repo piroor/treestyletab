@@ -118,8 +118,18 @@ function updateIndent() {
   if (!tabs.length)
     return;
 
-  Array.slice(tabs).sort((aA, aB) => Number(aA.getAttribute(kNEST)) - Number(aB.getAttribute(kNEST)));
-  var maxLevel = tabs[tabs.length-1].getAttribute(kNEST);
+  var tab = configs.indentAutoShrinkOnlyForVisible ?
+              `${kXPATH_VISIBLE_TAB}[@${kPARENT}]` :
+              `${kSELECTOR_CONTROLLABLE_TAB}[@${kPARENT}]`;
+  var maxLevel = evaluateXPath(`descendant::${tab}[
+                     not(preceding-sibling::${tab}/@${kNEST} >= @${kNEST})
+                   ][
+                     not(following-sibling::${tab}/@${kNEST} >= @${kNEST})
+                   ]/@${kNEST}`,
+                 document,
+                 XPathResult.NUMBER_TYPE).numberValue;
+  if (isNaN(maxLevel))
+    maxLevel = 0;
   log('maxLevel ', maxLevel);
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
