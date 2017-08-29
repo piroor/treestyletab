@@ -72,13 +72,17 @@ function calculateDefaultSizes() {
   updateTab(dummyTab, {
     title: 'dummy',
     url: 'about:blank',
+    status: 'loading',
     mutedInfo: { muted: false }
   }, { forceApply: true });
 
   gTabHeight = dummyTab.getBoundingClientRect().height;
+  var throbberRect = getTabThrobber(dummyTab).getBoundingClientRect();
   gSizeDefinition.textContent = `:root {
     --tab-height: ${gTabHeight}px;
     --tab-negative-height: -${gTabHeight}px;
+    --throbber-height: ${throbberRect.height}px;
+    --throbber-width: ${throbberRect.width}px;
   }`;
 }
 
@@ -108,6 +112,26 @@ async function inheritTreeStructure() {
   });
   if (response && response.structure)
     applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+}
+
+
+function getTabTwisty(aTab) {
+  return aTab.querySelector(`.${kTWISTY}`);
+}
+function getTabFavicon(aTab) {
+  return aTab.querySelector(`.${kFAVICON}`);
+}
+function getTabThrobber(aTab) {
+  return aTab.querySelector(`.${kTHROBBER}`);
+}
+function getTabSoundButton(aTab) {
+  return aTab.querySelector(`.${kSOUND_BUTTON}`);
+}
+function getTabCounter(aTab) {
+  return aTab.querySelector(`.${kCOUNTER}`);
+}
+function getTabClosebox(aTab) {
+  return aTab.querySelector(`.${kCLOSEBOX}`);
 }
 
 

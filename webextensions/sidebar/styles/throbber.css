@@ -17,20 +17,19 @@
 .throbber {
   display: inline-block;
   line-height: 1;
-  height: var(--favicon-size);
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-  min-height: var(--favicon-size);
-  min-width: var(--favicon-size);
   position: relative;
   text-align: center;
-  transform-origin: 50% 0.55em;
-  vertical-align: 50%;
+  transform-origin: calc(var(--throbber-width) / 2)
+                    calc(var(--throbber-height) / 2);
+  vertical-align: top;
   width: var(--favicon-size);
 }
 
 .throbber::before {
   content: "⏳";
+  position: relative;
+  top: calc(var(--favicon-size) - var(--throbber-height));
+  left: calc(var(--favicon-size) - var(--throbber-width));
 }
 
 .tab:not(.loading) .throbber {
@@ -39,4 +38,7 @@
 
 .tab.loading:not(.collapsed) .throbber {
   animation: rotation 3s ease-in-out infinite;
+}
+#dummy-tabs .throbber {
+  animation: none !important;
 }

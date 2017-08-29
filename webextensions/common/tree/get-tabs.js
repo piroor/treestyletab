@@ -102,23 +102,8 @@ function getTabById(aIdOrInfo) {
   return document.querySelector(aIdOrInfo);
 }
 
-function getTabTwisty(aTab) {
-  return aTab.querySelector(`.${kTWISTY}`);
-}
-function getTabFavicon(aTab) {
-  return aTab.querySelector(`.${kFAVICON}`);
-}
-function getTabSoundButton(aTab) {
-  return aTab.querySelector(`.${kSOUND_BUTTON}`);
-}
 function getTabLabel(aTab) {
   return aTab.querySelector(`.${kLABEL}`);
-}
-function getTabCounter(aTab) {
-  return aTab.querySelector(`.${kCOUNTER}`);
-}
-function getTabClosebox(aTab) {
-  return aTab.querySelector(`.${kCLOSEBOX}`);
 }
 
 function getNextTab(aTab) {
