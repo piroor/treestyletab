@@ -150,6 +150,9 @@ function updateIndent() {
     document.head.appendChild(gIndentDefinition);
   }
 
+  // prepare definitions for all tabs including collapsed.
+  // otherwise, we'll see odd animation for expanded tabs
+  // from indent=0 to indent=expected.
   var definitionsMaxLevel = getMaxTreeLevel(gTargetWindow);
   var definitions = [];
   // default indent for unhandled (deep) level tabs
