@@ -1,0 +1,44 @@
+:root {
+  --tab-surface: -moz-dialog;
+  --tab-text: -moz-dialogtext;
+  --tab-border: ThreeDShadow;
+  --tab-side-border: ThreeDLightShadow;
+  --tab-surface-hover: ThreeDHighlight;
+  --tab-dropmarker: -moz-dialogtext;
+
+  --tabbar-bg: darkgray;
+}
+
+:root {
+  background: var(--tabbar-bg);
+}
+
+.tab,
+.after-tabs button {
+  background: var(--tab-surface);
+  color: var(--tab-text);
+}
+
+.tab:not(.active):hover,
+.after-tabs:not(.active) button:hover {
+  background: var(--tab-surface-hover);
+  color: var(--tab-text);
+}
+
+.tab.active {
+  background: Highlight;
+}
+
+.tab.active .label,
+.tab.active .counter {
+  color: HighlightText;
+  font-weight: bold;
+}
+
+
+.closebox {
+  background: none transparent;
+  border: none 0 transparent;
+  margin: 0;
+  padding: 0.1em;
+}

@@ -1,0 +1,31 @@
+:root.left .tab:not(.pinned):not(collapsed) {
+  box-shadow: -0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
+}
+
+:root.right .tab:not(.pinned):not(collapsed) {
+  box-shadow: 0.3em 0.3em 0.2em rgba(0, 0, 0, 0.15);
+}
+
+.after-tabs button {
+  box-shadow: 0 0.3em 0.2em rgba(0, 0, 0, 0.15);
+}
+
+
+:root.left #tabbar {
+  box-shadow: inset -0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15);
+}
+
+:root.right #tabbar {
+  box-shadow: inset 0.2em 0.2em 0.3em rgba(0, 0, 0, 0.15);
+}
+
+
+/* Transparent tabs are shown above solid tabs.
+   We have to set z-index to show all tabs in the same layer. */
+.tab {
+  z-index: auto;
+}
+
+.after-tabs button {
+  z-index: 100;
+}
