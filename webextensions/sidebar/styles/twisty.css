@@ -104,11 +104,11 @@
 :root[data-twisty-style="osx"]
   .twisty::before {
   content: "▼";
-  font-size: 0.8em;
 }
 :root[data-twisty-style="osx"]
   .twisty {
   opacity: 0.38;
+  font-size: 0.8em;
 }
 :root[data-twisty-style="osx"]
   .twisty:active,
