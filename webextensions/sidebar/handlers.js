@@ -365,7 +365,12 @@ async function loadImageTo(aImageElement, aURL) {
   var loader = new Image();
   loader.addEventListener('load', onLoad, { once: true });
   loader.addEventListener('error', onError, { once: true });
+  try {
     loader.src = aURL;
+  }
+  catch(e) {
+    onError(e);
+  }
 }
 
 function onTabOpening(aTab) {
