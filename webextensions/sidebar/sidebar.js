@@ -209,14 +209,14 @@ function updateIndent() {
 }
 
 
-function reserveToUpdateTabbarLayout() {
+function reserveToUpdateTabbarLayout(aTimeout) {
   log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
     updateTabbarLayout();
-  }, 10);
+  }, aTimeout || 10);
 }
 
 function updateTabbarLayout(aParams = {}) {
