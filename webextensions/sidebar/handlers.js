@@ -306,6 +306,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
 
       case kNEWTAB_OPEN_AS_SIBLING:
         parent = getParentTab(current);
+        insertAfter = getLastDescendantTab(parent);
         break;
 
       case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
@@ -317,7 +318,8 @@ function handleNewTabAction(aEvent, aOptions = {}) {
   }
   openNewTab({
     inBackground: aEvent.shiftKey,
-    parent, insertBefore, insertAfter
+    parent, insertBefore, insertAfter,
+    inRemote: true
   });
 }
 
