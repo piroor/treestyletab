@@ -346,25 +346,25 @@ async function loadImageTo(aImageElement, aURL) {
     aImageElement.classList.add('error');
     return;
   }
-    var onLoad = (() => {
-      aImageElement.src = aURL;
-      aImageElement.classList.remove('loading');
-      clear();
-    });
-    var onError = ((aError) => {
-      aImageElement.removeAttribute('src');
-      aImageElement.classList.remove('loading');
-      aImageElement.classList.add('error');
-      clear();
-    });
-    var clear = (() => {
-      loader.removeEventListener('load', onLoad, { once: true });
-      loader.removeEventListener('error', onError, { once: true });
-      loader = onLoad = onError = undefined;
-    });
-    var loader = new Image();
-    loader.addEventListener('load', onLoad, { once: true });
-    loader.addEventListener('error', onError, { once: true });
+  var onLoad = (() => {
+    aImageElement.src = aURL;
+    aImageElement.classList.remove('loading');
+    clear();
+  });
+  var onError = ((aError) => {
+    aImageElement.removeAttribute('src');
+    aImageElement.classList.remove('loading');
+    aImageElement.classList.add('error');
+    clear();
+  });
+  var clear = (() => {
+    loader.removeEventListener('load', onLoad, { once: true });
+    loader.removeEventListener('error', onError, { once: true });
+    loader = onLoad = onError = undefined;
+  });
+  var loader = new Image();
+  loader.addEventListener('load', onLoad, { once: true });
+  loader.addEventListener('error', onError, { once: true });
     loader.src = aURL;
 }
 
