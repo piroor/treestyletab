@@ -27,8 +27,7 @@
   max-width: var(--favicon-size);
 }
 
-.favicon-default::before,
-.throbber::before {
+.favicon-default::before {
   display: inline-box;
   line-height: 1;
   max-height: var(--favicon-size);
