@@ -66,6 +66,7 @@ async function onTabOpening(aTab) {
     }
   }
 }
+
 async function onNewTabsTimeout(aContainer) {
   var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById));
   aContainer.openedNewTabs = [];
