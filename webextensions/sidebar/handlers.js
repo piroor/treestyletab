@@ -456,26 +456,7 @@ function onTabMoved(aTab) {
 }
 
 function onTabLevelChanged(aTab) {
-  var baseIndent = gIndent;
-  if (gIndent < 0)
-    baseIndent = configs.baseIndent;
-  window.requestAnimationFrame(() => {
-    if (!aTab.parentNode) // it was removed while waiting
-      return;
-    var level = parseInt(aTab.getAttribute(kNEST) || 0);
-    var indent = level * baseIndent;
-    var expected = indent == 0 ? 0 : indent + 'px' ;
-    log('setting indent: ', { tab: dumpTab(aTab), expected: expected, level: level });
-    if (aTab.style[gIndentProp] != expected) {
-      window.requestAnimationFrame(() => {
-        if (!aTab.parentNode) // it was removed while waiting
-          return;
-        aTab.style[gIndentProp] = expected
-      });
-    }
-    if (configs.indentAutoShrink)
-      reserveToUpdateIndent();
-  });
+  reserveToUpdateIndent();
 }
 
 function onTabDetachedFromWindow(aTab) {
