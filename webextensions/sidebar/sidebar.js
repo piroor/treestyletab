@@ -11,10 +11,13 @@ var gTabBar;
 var gAfterTabsForOverflowTabBar;
 var gIndent = -1;
 var gIndentProp = 'margin-left';
+var gTabHeight = 0;
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 blockUserOperations();
+
+var gSizeDefinition;
 
 async function init() {
   log('initialize sidebar');
@@ -24,10 +27,13 @@ async function init() {
   gTabBar = document.querySelector('#tabbar');
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
   gAllTabs = document.querySelector('#all-tabs');
+  gSizeDefinition = document.querySelector('#size-definition');
 
   gTabBar.addEventListener('mousedown', onMouseDown);
   gTabBar.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
+
+  calculateDefaultSizes();
 
   await configs.$loaded;
   await rebuildAll();
@@ -57,6 +63,23 @@ function destroy() {
   gTabBar.removeEventListener('dblclick', onDblClick);
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
+}
+
+function calculateDefaultSizes() {
+  var dummyContainer = document.querySelector('#dummy-tabs');
+  var dummyTab = buildTab({}, { existing: true });
+  dummyContainer.appendChild(dummyTab);
+  updateTab(dummyTab, {
+    title: 'dummy',
+    url: 'about:blank',
+    mutedInfo: { muted: false }
+  }, { forceApply: true });
+
+  gTabHeight = dummyTab.getBoundingClientRect().height;
+  gSizeDefinition.textContent = `:root {
+    --tab-height: ${gTabHeight}px;
+    --tab-negative-height: -${gTabHeight}px;
+  }`;
 }
 
 async function rebuildAll() {

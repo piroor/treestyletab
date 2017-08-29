@@ -36,10 +36,6 @@ const kCLOSED_SET_ID = 'data-closed-set-id';
 const kTWISTY_STYLE = 'data-twisty-style';
 const kDROP_POSITION = 'data-drop-position';
 
-const kCOLLAPSING_PHASE = 'data-collapsing-phase';
-const kCOLLAPSING_PHASE_TO_BE_COLLAPSED = 'collapse';
-const kCOLLAPSING_PHASE_TO_BE_EXPANDED  = 'expand';
-
 const kFAVICON  = 'favicon';
 const kFAVICON_IMAGE = 'favicon-image';
 const kFAVICON_DEFAULT = 'favicon-default';

@@ -6,6 +6,9 @@
 */
 
 :root {
+  --default-tab-height: 32px;
+  --default-tab-negative-height: -32px;
+
   --indent-animation: 0.2s ease-out;
   --collapse-animation: 0.15s ease-out;
   --tab-animation: bottom        var(--collapse-animation),
@@ -87,6 +90,13 @@ ul {
   padding: 0;
 }
 
+#dummy-tabs {
+  bottom: 0;
+  pointer-events: none;
+  position: fixed;
+  visibility: hidden;
+}
+
 
 /* tabs */
 
@@ -132,8 +142,13 @@ ul {
   pointer-events: none;
 }
 
-.tab.collapsed-completely {
+.tab.collapsed {
+  margin-top: var(--tab-negative-height, var(--default-tab-negative-height));
+  opacity: 0;
   pointer-events: none;
+}
+
+.tab.collapsed-completely {
   visibility: collapse;
 }
 
@@ -146,6 +161,13 @@ ul {
   margin: 0;
   position: fixed;
   z-index: 1; /* this is required to make pinned tabs clickable */
+}
+
+.tab.pinned.faviconized {
+  height: var(--tab-height, var(--default-tab-height));
+  max-height: var(--tab-height, var(--default-tab-height));
+  max-width: var(--tab-height, var(--default-tab-height));
+  width: var(--tab-height, var(--default-tab-height));
 }
 
 .tab.pinned :-moz-any(.twisty, .label, .closebox) {

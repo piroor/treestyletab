@@ -49,10 +49,9 @@ function positionPinnedTabs(aOptions = {}) {
   var containerWidth = gTabBar.getBoundingClientRect().width;
   var maxWidth = containerWidth;
   var faviconized = configs.faviconizePinnedTabs;
-  var faviconizedSize = configs.faviconizedTabSize;
 
-  var width  = faviconized ? faviconizedSize : maxWidth ;
-  var height = faviconizedSize;
+  var width  = faviconized ? gTabHeight : maxWidth ;
+  var height = gTabHeight;
   var maxCol = Math.max(1, Math.floor(maxWidth / width));
   var maxRow = Math.ceil(pinnedTabs.length / maxCol);
   var col    = 0;
@@ -69,8 +68,6 @@ function positionPinnedTabs(aOptions = {}) {
     else
       item.classList.remove(kTAB_STATE_FAVICONIZED);
 
-    style.maxWidth = style.width = `${width}px`;
-    style.maxHeight = style.height = `${height}px`;
     style.bottom = 'auto';
     style.left = `${width * col}px`;
     style.right = 'auto';
@@ -116,8 +113,6 @@ function resetPinnedTabs(aHint) {
 
 function clearPinnedStyle(aTab) {
   let style = aTab.style;
-  style.maxWidth = style.width =
-    style.maxHeight = style.height =
-    style.left = style.right = style.top = style.bottom =
+  style.left = style.right = style.top = style.bottom =
     style.marginLeft = style.marginRight = style.marginTop = '';
 }

@@ -483,19 +483,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     delete aTab.onEndCollapseExpandAnimation;
   }
 
-  aTab.setAttribute(kCOLLAPSING_PHASE, collapsed ? kCOLLAPSING_PHASE_TO_BE_COLLAPSED : kCOLLAPSING_PHASE_TO_BE_EXPANDED );
-
-  var endMargin, endOpacity;
-  if (collapsed) {
-    let firstTab = getFirstNormalTab(aTab) || getFirstTab(aTab);
-    endMargin  = firstTab.getBoundingClientRect().height;
-    endOpacity = 0;
-  }
-  else {
-    endMargin  = 0;
-    endOpacity = 1;
-  }
-
   if (!configs.animation ||
       aInfo.justNow ||
       configs.collapseDuration < 1) {
@@ -504,18 +491,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
     else
       aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
-    aTab.removeAttribute(kCOLLAPSING_PHASE);
-
-    // Pinned tabs are positioned by "margin-top", so
-    // we must not reset the property for pinned tabs.
-    // (However, we still must update "opacity".)
-    if (!isPinned(aTab))
-      aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
-
-    if (endOpacity == 0)
-      aTab.style.opacity = 0;
-    else
-      aTab.style.opacity = '';
 
     if (aInfo.last)
       onExpandedTreeReadyToScroll(aTab);
@@ -540,27 +515,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       //log('=> finish animation for ', dumpTab(aTab));
       if (collapsed)
         aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
-      aTab.removeAttribute(kCOLLAPSING_PHASE);
-      if (endOpacity > 0) {
-        if (window.getComputedStyle(aTab).opacity > 0) {
-          aTab.style.opacity = '';
-          aTab = null;
-        }
-        else {
-          // If we clear its "opacity" before it becomes "1"
-          // by CSS transition, the calculated opacity will
-          // become 0 after we set an invalid value to clear it.
-          // So we have to clear it with delay.
-          // This is workaround for the issue:
-          //   https://github.com/piroor/treestyletab/issues/1202
-          setTimeout(function() {
-            if (!aTab.parentNode) // it was removed while waiting
-              return;
-            aTab.style.opacity = '';
-            aTab = null;
-          }, 0);
-        }
-      }
+
       reserveToUpdateTabbarLayout();
     });
     aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
@@ -572,9 +527,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
       aTab.onEndCollapseExpandAnimation();
     }, configs.collapseDuration);
-
-    aTab.style.marginTop = endMargin ? `-${endMargin}px` : '';
-    aTab.style.opacity   = endOpacity;
   });
 }
 
