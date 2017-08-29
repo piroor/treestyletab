@@ -7,6 +7,8 @@
 
 gLogContext = 'BG';
 
+var gInitializing = true;
+
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
@@ -21,6 +23,7 @@ async function init() {
 
   await waitUntilCompletelyRestored();
   await loadTreeStructure();
+  gInitializing = false;
 }
 
 function waitUntilCompletelyRestored() {
@@ -71,6 +74,9 @@ async function rebuildAll() {
 var gTreeStructures = {};
 
 function reserveToSaveTreeStructure(aHint) {
+  if (gInitializing)
+    return;
+
   var container = getTabsContainer(aHint);
   if (!container)
     return;
