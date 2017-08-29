@@ -61,3 +61,33 @@
   --tab-surface-selected: #1a4666;
   --tab-surface-selected-hover: #1f5981;
 }
+
+:root {
+  background: var(--tab-surface);
+}
+
+.tab,
+.after-tabs button {
+  background: var(--tab-surface);
+  color: var(--tab-text);
+}
+
+.tab:not(.active):hover,
+.after-tabs:not(.active) button:hover {
+  background: var(--tab-surface-hover);
+  color: var(--tab-text);
+}
+
+.tab.active {
+  background: var(--tab-surface-selected);
+}
+.tab.active:hover {
+  background: var(--tab-surface-selected-hover);
+}
+
+.closebox {
+  background: none transparent;
+  border: none 0 transparent;
+  margin: 0;
+  padding: 0.1em;
+}

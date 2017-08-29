@@ -1,4 +1,51 @@
+@import url("base.css");
 @import url("border.css");
 @import url("normal-color.css");
 @import url("vertigo-color.css");
 @import url("shadow.css");
+
+:root {
+  background: var(--tabbar-bg);
+}
+
+.tab.active .label,
+.tab.active .counter {
+  color: var(--tab-text);
+}
+
+
+.tab {
+  background-color: var(--tab-surface);
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(0, 0, 0, 0.02) 0,
+                      rgba(0, 0, 0, 0) 50%
+                    );
+}
+
+.tab:hover {
+  background-color: var(--tab-surface-hover);
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(213, 224, 245, 1) 0,
+                      rgba(213, 224, 245, 0.4) 50%
+                    );
+}
+
+.tab.active {
+  background-color: var(--tab-surface-selected);
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(4, 83, 227, 0.04) 0,
+                      rgba(4, 83, 227, 0) 50%
+                    );
+}
+
+.tab.active:hover {
+  background-color: var(--tab-surface-selected-hover);
+  background-image: -moz-linear-gradient(
+                      top,
+                      rgba(199, 219, 252, 1) 0,
+                      rgba(199, 219, 252, 0.4) 50%
+                    );
+}

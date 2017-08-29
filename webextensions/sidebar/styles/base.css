@@ -134,7 +134,8 @@ ul {
   vertical-align: middle;
 }
 
-.tab.animation-ready {
+.tab.animation-ready,
+.after-tabs button {
   transition: var(--tab-animation);
 }
 
