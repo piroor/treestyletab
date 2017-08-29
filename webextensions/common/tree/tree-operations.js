@@ -79,19 +79,27 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     if (!aOptions.insertBefore)
       aOptions.insertAfter = getPreviousTab(aChild);
   }
+
+  if (!aOptions.insertBefore && !aOptions.insertAfter) {
+    let refTabs = getReferenceTabsForNewChild(aParent);
+    aOptions.insertBefore = refTabs.insertBefore;
+    aOptions.insertAfter  = refTabs.insertAfter;
+  }
   if (aOptions.insertBefore) {
     log('insertBefore: ', dumpTab(aOptions.insertBefore));
     newIndex = getTabIndex(aOptions.insertBefore);
   }
-  else if (aOptions.insertAfter) {
+  else {
+    aOptions.insertAfter = aOptions.insertAfter || aParent;
     log('insertAfter: ', dumpTab(aOptions.insertAfter));
     newIndex = getTabIndex(aOptions.insertAfter) + 1;
   }
-  var childIds = [];
-  if (newIndex > -1) {
-    log('newIndex (from insertBefore/insertAfter): ', newIndex);
-    let expectedAllTabs = getAllTabs(aChild).filter((aTab) => aTab != aChild);
 
+  log('newIndex: ', newIndex);
+
+  var childIds;
+  {
+    let expectedAllTabs = getAllTabs(aChild).filter((aTab) => aTab != aChild);
     let refIndex = aOptions.insertBefore ?
                      expectedAllTabs.indexOf(aOptions.insertBefore) :
                      expectedAllTabs.indexOf(aOptions.insertAfter) + 1;
@@ -106,31 +114,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       return aTab.id;
     });
   }
-  else {
-    let descendants = getDescendantTabs(aParent);
-    log('descendants: ', descendants.map(dumpTab));
-    if (descendants.length) {
-      switch (configs.insertNewChildAt) {
-        case kINSERT_LAST:
-        default:
-          newIndex = getTabIndex(descendants[descendants.length-1]) + 1;
-          break;
-        case kINSERT_FIRST:
-          newIndex = getTabIndex(descendants[descendants.length]);
-          break;
-      }
-    }
-    else {
-      newIndex = getTabIndex(aParent) + 1;
-    }
-    log('newIndex (from existing children): ', newIndex);
-    // update and cleanup
-    let children = getChildTabs(aParent);
-    children.push(aChild);
-    childIds = children.map((aTab) => aTab.id);
-  }
-
   log('new children: ', childIds);
+
   if (childIds.length == 0)
     aParent.removeAttribute(kCHILDREN);
   else
@@ -246,6 +231,26 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       justNow:          !!aOptions.justNow
     });
   }
+}
+
+function getReferenceTabsForNewChild(aParent) {
+  var descendants = getDescendantTabs(aParent);
+  var insertBefore, insertAfter;
+  if (descendants.length) {
+    switch (configs.insertNewChildAt) {
+      case kINSERT_LAST:
+      default:
+        insertAfter = descendants[descendants.length-1];
+        break;
+      case kINSERT_FIRST:
+        insertBefore = descendants[0];
+        break;
+    }
+  }
+  else {
+    insertAfter = aParent;
+  }
+  return { insertBefore, insertAfter };
 }
 
 function detachTab(aChild, aOptions = {}) {
@@ -884,6 +889,11 @@ async function moveTabs(aTabs, aOptions = {}) {
                 .filter(aTab => !!aTab);
 
   return movedTabs;
+}
+
+async function moveTab(aTab, aOptions = {}) {
+  var tabs = await moveTabs([aTab], aOptions);
+  return tabs[0];
 }
 
 async function openNewWindowFromTabs(aTabs, aOptions = {}) {

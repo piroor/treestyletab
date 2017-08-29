@@ -294,9 +294,12 @@ function handleNewTabAction(aEvent, aOptions = {}) {
       default:
         break;
 
-      case kNEWTAB_OPEN_AS_CHILD:
+      case kNEWTAB_OPEN_AS_CHILD: {
         parent = current;
-        break;
+        let refTabs = getReferenceTabsForNewChild(parent);
+        insertBefore = refTabs.insertBefore;
+        insertAfter  = refTabs.insertAfter;
+      }; break;
 
       case kNEWTAB_OPEN_AS_SIBLING:
         parent = getParentTab(current);
@@ -305,7 +308,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
       case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
         parent = getParentTab(current);
         insertBefore = getNextSiblingTab(current);
-        insertAfter = current;
+        insertAfter  = current;
       }; break;
     }
   }

@@ -30,7 +30,7 @@ async function onTabOpening(aTab) {
     log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositions);
     switch (configs.autoAttachOnOpenedWithOwner) {
       case kNEWTAB_OPEN_AS_ORPHAN:
-        // NOT IMPLEMENTED YET
+      default:
         break;
 
       case kNEWTAB_OPEN_AS_CHILD:
@@ -40,13 +40,29 @@ async function onTabOpening(aTab) {
         });
         break;
 
-      case kNEWTAB_OPEN_AS_SIBLING:
-        // NOT IMPLEMENTED YET
-        break;
+      case kNEWTAB_OPEN_AS_SIBLING: {
+        let parent = getParentTab(opener);
+        if (parent) {
+          await attachTabTo(aTab, parent, {
+            broadcast: true
+          });
+        }
+      }; break;
 
-      case kNEWTAB_OPEN_AS_NEXT_SIBLING:
-        // NOT IMPLEMENTED YET
-        break;
+      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+        let parent = getParentTab(opener);
+        if (parent) {
+          await attachTabTo(aTab, parent, {
+            insertAfter: opener,
+            broadcast: true
+          });
+        }
+        else {
+          moveTab(aTab, {
+            insertBefore: opener
+          });
+        }
+      }; break;
     }
   }
 }
