@@ -205,11 +205,18 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
 
+  /* When a tab is pinned, tabs.onMoved may be notified before
+     tabs.onUpdated(pinned=true) is notified. As the result,
+     descendant tabs are unexpectedly moved to the top of the
+     tab bar to follow their parent pinning tab. To avoid this
+     problem, we have to wait for a while with this "async" and
+     do following processes after the tab is completely pinned. */
+  var movedApiTab = await browser.tabs.get(aTabId);
   var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab)
     return;
 
-  log('onMoved: ', dumpTab(movedTab), aMoveInfo);
+  log('onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
 
   var canceled = await window.onTabMoving && onTabMoving(movedTab, aMoveInfo);
   if (canceled ||
