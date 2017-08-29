@@ -242,6 +242,7 @@ function onMouseDown(aEvent) {
 }
 
 function onClick(aEvent) {
+  log('onClick', String(aEvent.target));
   if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
@@ -285,6 +286,7 @@ function onClick(aEvent) {
 }
 
 function handleNewTabAction(aEvent, aOptions = {}) {
+  log('handleNewTabAction');
   var parent, insertBefore, insertAfter;
   if (configs.autoAttach) {
     let current = getCurrentTab(gTargetWindow);
@@ -299,6 +301,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
         let refTabs = getReferenceTabsForNewChild(parent);
         insertBefore = refTabs.insertBefore;
         insertAfter  = refTabs.insertAfter;
+        log('detected reference tabs: ', dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
       }; break;
 
       case kNEWTAB_OPEN_AS_SIBLING:
