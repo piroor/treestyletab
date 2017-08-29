@@ -78,6 +78,12 @@ configs = new Configs({
 
   faviconizePinnedTabs: true, // extensions.treestyletab.pinnedTab.faviconized
 
+  autoAttach: true, // extensions.treestyletab.autoAttach
+  autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.fromCurrent
+  autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN, // extensions.treestyletab.autoAttach.newTabCommand
+  autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.newTabButton
+  //autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING, // extensions.treestyletab.autoAttach.duplicateTabCommand
+
   autoCollapseExpandSubtreeOnAttach: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnAttach
   autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
   autoCollapseExpandSubtreeOnSelectWhileFocusMovingByShortcut: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut

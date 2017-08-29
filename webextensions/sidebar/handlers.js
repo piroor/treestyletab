@@ -202,7 +202,9 @@ function onMouseDown(aEvent) {
     else if (isEventFiredOnNewTabButton(aEvent)) {
       aEvent.stopPropagation();
       aEvent.preventDefault();
-      handleNewTabAction(aEvent);
+      handleNewTabAction(aEvent, {
+        action: configs.autoAttachOnNewTabButtonMiddleClick
+      });
     }
     return;
   }
@@ -243,7 +245,9 @@ function onClick(aEvent) {
   if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    handleNewTabAction(aEvent);
+    handleNewTabAction(aEvent, {
+      action: configs.autoAttachOnNewTabCommand
+    });
     return;
   }
 
@@ -280,9 +284,34 @@ function onClick(aEvent) {
   }
 }
 
-function handleNewTabAction(aEvent) {
+function handleNewTabAction(aEvent, aOptions = {}) {
+  var parent, insertBefore, insertAfter;
+  if (configs.autoAttach) {
+    let current = getCurrentTab(gTargetWindow);
+    switch (aOptions.action) {
+      case kNEWTAB_DO_NOTHING:
+      case kNEWTAB_OPEN_AS_ORPHAN:
+      default:
+        break;
+
+      case kNEWTAB_OPEN_AS_CHILD:
+        parent = current;
+        break;
+
+      case kNEWTAB_OPEN_AS_SIBLING:
+        parent = getParentTab(current);
+        break;
+
+      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+        parent = getParentTab(current);
+        insertBefore = getNextSiblingTab(current);
+        insertAfter = current;
+      }; break;
+    }
+  }
   openNewTab({
-    inBackground: isAccelAction(aEvent)
+    inBackground: aEvent.shiftKey,
+    parent, insertBefore, insertAfter
   });
 }
 
@@ -293,7 +322,9 @@ function onDblClick(aEvent) {
 
   aEvent.stopPropagation();
   aEvent.preventDefault();
-  handleNewTabAction(aEvent);
+  handleNewTabAction(aEvent, {
+    action: configs.autoAttachOnNewTabCommand
+  });
 }
 
 

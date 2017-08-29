@@ -25,12 +25,29 @@ async function onTabOpening(aTab) {
   }
 
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
-  if (opener) {
+  if (opener &&
+      configs.autoAttach) {
     log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositions);
-    await attachTabTo(aTab, opener, {
-      dontMove: container.toBeOpenedTabsWithPositions > 0,
-      broadcast: true
-    });
+    switch (configs.autoAttachOnOpenedWithOwner) {
+      case kNEWTAB_OPEN_AS_ORPHAN:
+        // NOT IMPLEMENTED YET
+        break;
+
+      case kNEWTAB_OPEN_AS_CHILD:
+        await attachTabTo(aTab, opener, {
+          dontMove: container.toBeOpenedTabsWithPositions > 0,
+          broadcast: true
+        });
+        break;
+
+      case kNEWTAB_OPEN_AS_SIBLING:
+        // NOT IMPLEMENTED YET
+        break;
+
+      case kNEWTAB_OPEN_AS_NEXT_SIBLING:
+        // NOT IMPLEMENTED YET
+        break;
+    }
   }
 }
 async function onNewTabsTimeout(aContainer) {

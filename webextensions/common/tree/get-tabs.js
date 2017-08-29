@@ -106,6 +106,11 @@ function getTabLabel(aTab) {
   return aTab.querySelector(`.${kLABEL}`);
 }
 
+function getCurrentTab(aHint) {
+  var container = getTabsContainer(aHint);
+  return container.querySelector(`.${kTAB_STATE_ACTIVE}`);
+}
+
 function getNextTab(aTab) {
   if (!aTab || !aTab.id)
     return null;

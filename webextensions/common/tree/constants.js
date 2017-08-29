@@ -115,6 +115,12 @@ const kINSERT_NO_CONTROL = -1;
 const kINSERT_FISRT = 0;
 const kINSERT_LAST = 1;
 
+const kNEWTAB_DO_NOTHING           = -1;
+const kNEWTAB_OPEN_AS_ORPHAN       = 0;
+const kNEWTAB_OPEN_AS_CHILD        = 1;
+const kNEWTAB_OPEN_AS_SIBLING      = 2;
+const kNEWTAB_OPEN_AS_NEXT_SIBLING = 3;
+
 const kDEFAULT_MIN_INDENT = 3;
 
 const kTAB_STATE_GROUP_TAB = 'group-tab';
