@@ -335,6 +335,10 @@ function onDblClick(aEvent) {
   });
 }
 
+function onTransisionEnd() {
+  reserveToUpdateTabbarLayout();
+}
+
 
 /* raw event handlers */
 

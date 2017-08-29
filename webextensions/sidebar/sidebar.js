@@ -37,6 +37,7 @@ async function init() {
   gTabBar.addEventListener('mousedown', onMouseDown);
   gTabBar.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
+  gTabBar.addEventListener('transitionend', onTransisionEnd);
 
   calculateDefaultSizes();
 
@@ -66,6 +67,7 @@ function destroy() {
   gTabBar.removeEventListener('mousedown', onMouseDown);
   gTabBar.removeEventListener('click', onClick);
   gTabBar.removeEventListener('dblclick', onDblClick);
+  gTabBar.removeEventListener('transitionend', onTransisionEnd);
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
