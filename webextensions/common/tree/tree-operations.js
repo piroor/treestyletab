@@ -1191,7 +1191,7 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   return aTreeStructure;
 }
 
-async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
+function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   log('applyTreeStructureToTabs: ', aTabs.map(dumpTab), aTreeStructure, aOptions);
   aTabs = aTabs.slice(0, aTreeStructure.length);
   aTreeStructure = aTreeStructure.slice(0, aTabs.length);
