@@ -43,8 +43,18 @@
 }
 :root[data-twisty-style^="modern"]
   .tab.subtree-collapsed
+  .twisty {
+  text-shadow: -0.1em 0.1em 0.1em transparent;
+}
+:root[data-twisty-style^="modern"]
+  .tab.subtree-collapsed
   .twisty:hover {
   text-shadow: -0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
+}
+:root[data-twisty-style^="modern"].tab-contents-inverted
+  .tab.subtree-collapsed
+  .twisty {
+  text-shadow: 0.1em -0.1em 0.1em transparent;
 }
 :root[data-twisty-style^="modern"].tab-contents-inverted
   .tab.subtree-collapsed
@@ -52,9 +62,12 @@
   text-shadow: 0.1em -0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
+.tab:not(.subtree-collapsed) .twisty {
+  text-shadow: 0.1em 0.1em 0.1em transparent;
+  transform: rotatez(0);
+}
 .tab:not(.subtree-collapsed) .twisty:hover {
   text-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
-  transform: rotatez(0);
 }
 
 :root[data-twisty-style^="modern"]
