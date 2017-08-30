@@ -523,7 +523,7 @@ async function onMessage(aMessage, aSender, aRespond) {
         return;
       let params = {
         collapsed: aMessage.collapsed,
-        justNow:   true,
+        justNow:   aMessage.justNow,
         broadcast: true
       };
       if (aMessage.manualOperation)

@@ -204,7 +204,6 @@ function onMouseDown(aEvent) {
     if (hasChildTabs(tab))
       collapseExpandSubtree(tab, {
         collapsed:       !isSubtreeCollapsed(tab),
-        justNow:         true,
         manualOperation: true,
         inRemote:        true
       });
