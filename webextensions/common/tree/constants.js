@@ -50,6 +50,7 @@ const kNEWTAB_BUTTON = 'newtab-button';
 
 const kTAB_STATE_ACTIVE = 'active';
 const kTAB_STATE_PINNED = 'pinned';
+const kTAB_STATE_LAST_ROW = 'last-row';
 const kTAB_STATE_AUDIBLE = 'audible';
 const kTAB_STATE_SOUND_PLAYING = 'sound-playing';
 const kTAB_STATE_HAS_SOUND_PLAYING_MEMBER = 'has-sound-playing-member';

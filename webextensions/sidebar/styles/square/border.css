@@ -32,6 +32,6 @@
   padding: 0.25em 0 0.25em 0.25em;
 }
 
-.tab.pinned {
+.tab.pinned.last-row {
   border-bottom: 0 none transparent;
 }
