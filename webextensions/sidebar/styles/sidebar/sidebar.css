@@ -34,12 +34,6 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
-/* Unset bottom border, instead let's have a border on the right-hand
-   side, much like the sidebar does. */
-#tabbar {
-  border-top: 1px solid #404040;
-}
-
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
 :root {
@@ -67,8 +61,8 @@
 
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 .tab {
-  height: 24px !important;     /* height including border! */
-  padding: 6px 3px 6px 10px;
+  height: 1.8em !important;     /* height including border! */
+  padding: 0.075em 3px 0.075em 10px;
   z-index: 0;
 }
 
@@ -87,8 +81,8 @@
   display: none;
 }
 .closebox {
-  width: 22px;
-  height: 22px;
+  width: 1.5em;
+  height: 1.5em;
   margin-left: 3px;
   background: url("closetab.png") center center no-repeat;
   opacity: 0.27;  /* turn black into #b9b9b9 */
@@ -110,9 +104,9 @@
 
 /* Tab label is without special decoration except when selected: then
    the text is white and bold. */
-.label {
-  font-size: 95%;
+.tab .label {
   font-weight: normal;
+  line-height: 1.4;
   color: #000000;
   text-align: start;
   text-shadow: none;
@@ -132,6 +126,7 @@
 }
 
 .counter {
+  font-size: 85%;
   background-color: #91a0c0;
   border-radius: 8px;
   padding: 2px 4px;
@@ -161,7 +156,7 @@
 .tab[data-drop-position="self"] {
   background: #d0def5;
   border: 2px solid #577bf3; /* not OSX's colour but Firefox's */
-  border-radius: 8px;
+  border-radius: 0.3em;
   padding: 0 1px 0 8px;
   outline: none !important;
 }
