@@ -21,3 +21,10 @@
 .tab .label {
   padding: 0.25em 0 0.25em 0.25em;
 }
+
+/* expand closebox to fill full height of tab */
+.tab .closebox {
+  margin-bottom: calc((1em - var(--tab-height)) / 2);
+  margin-top: calc((1em - var(--tab-height)) / 2);
+  padding: calc((var(--tab-height) - 1em) / 2) 0.25em;
+}
