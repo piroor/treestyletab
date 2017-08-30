@@ -7,6 +7,7 @@
 
 :root {
   --dropmarker-size: 0.15em;
+  --dropmarker-color: -moz-fieldtext;
 }
 
 .tab.dragging {
@@ -14,7 +15,7 @@
 }
 
 .tab[data-drop-position="self"] {
-  outline: var(--dropmarker-size) solid black !important;
+  outline: var(--dropmarker-size) solid var(--dropmarker-color) !important;
   outline-offset: calc(0px - var(--dropmarker-size));
   -moz-outline-radius: calc(var(--dropmarker-size) * 2);
 }
@@ -24,7 +25,7 @@
   display: block;
   max-height: var(--dropmarker-size);
   min-height: var(--dropmarker-size);
-  background: black !important;
+  background: var(--dropmarker-color) !important;
   overflow: hidden;
   position: absolute;
   z-index: 2;

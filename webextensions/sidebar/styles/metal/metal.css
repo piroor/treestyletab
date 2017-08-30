@@ -1,5 +1,9 @@
 /* tabs */
 
+:root {
+  --dropmarker-color: white;
+}
+
 .tab,
 .tab:hover,
 .after-tabs button {
