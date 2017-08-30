@@ -167,9 +167,10 @@ function scrollToTab(aTab, aOptions = {}) {
   }
 
   window.requestAnimationFrame(() => {
-    var activeTab = getCurrentTab();
-    if (activeTab == aTab ||
-        !isTabInViewport(activeTab)) {
+    var anchorTab = aOptions.anchor || getCurrentTab();
+    if (anchorTab == aTab ||
+        (!isPinned(anchorTab) &&
+         !isTabInViewport(anchorTab))) {
       log('=> direct scroll');
       scrollTo(clone(aOptions, {
         tab: aTab
@@ -178,13 +179,13 @@ function scrollToTab(aTab, aOptions = {}) {
     }
 
     var targetTabRect = aTab.getBoundingClientRect();
-    var activeTabRect = activeTab.getBoundingClientRect();
+    var anchorTabRect = anchorTab.getBoundingClientRect();
     var containerRect = gTabBar.getBoundingClientRect();
     var offset = getOffsetForAnimatingTab(aTab);
     var delta = calculateScrollDeltaForTab(aTab);
-    if (targetTabRect.top > activeTabRect.top) {
+    if (targetTabRect.top > anchorTabRect.top) {
       log('=> will scroll down');
-      let boundingHeight = targetTabRect.bottom - activeTabRect.top + offset;
+      let boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
       let overHeight = boundingHeight - containerRect.height;
       if (overHeight > 0)
         delta -= overHeight;
@@ -193,9 +194,9 @@ function scrollToTab(aTab, aOptions = {}) {
         container: containerRect.height
       });
     }
-    else if (targetTabRect.bottom < activeTabRect.bottom) {
+    else if (targetTabRect.bottom < anchorTabRect.bottom) {
       log('=> will scroll up');
-      let boundingHeight = activeTabRect.bottom - targetTabRect.top + offset;
+      let boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
       let overHeight = boundingHeight - containerRect.height;
       if (overHeight > 0)
         delta += overHeight;

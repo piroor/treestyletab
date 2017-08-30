@@ -451,6 +451,7 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
       collapseExpandTab(childTab, {
          collapsed: aParams.collapsed,
          justNow:   aParams.justNow,
+         anchor:    aTab,
          last:      true
       });
     }
@@ -495,6 +496,7 @@ function collapseExpandTab(aTab, aParams = {}) {
     window.onTabCollapsedStateChanging(aTab, {
       collapsed: aParams.collapsed,
       justNow: aParams.justNow,
+      anchor: aParams.anchor,
       last: aParams.last &&
             (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab))
     });
@@ -523,6 +525,7 @@ function collapseExpandTab(aTab, aParams = {}) {
       collapseExpandTab(aChild, clone(aParams, {
         collapsed: aParams.collapsed,
         justNow:   aParams.justNow,
+        anchor:    aParams.anchor,
         last:      aParams.last &&
                    (aIndex == children.length - 1)
       }));

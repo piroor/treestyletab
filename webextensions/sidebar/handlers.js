@@ -528,7 +528,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
     if (aInfo.last)
-      scrollToTab(aTab);
+      scrollToTab(aTab, { anchor: aInfo.anchor });
     return;
   }
 
@@ -546,7 +546,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
     //log('start animation for ', dumpTab(aTab));
     if (aInfo.last)
-      scrollToTab(aTab);
+      scrollToTab(aTab, { anchor: aInfo.anchor });
 
     aTab.onEndCollapseExpandAnimation = (() => {
       delete aTab.onEndCollapseExpandAnimation;
