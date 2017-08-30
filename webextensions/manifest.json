@@ -11,14 +11,15 @@
     "tabs"
   ],
   "icons": {
-    "94": "resources/icon.png"
+    "64": "resources/icon64.png",
+    "94": "resources/icon94.png"
   },
   "background": {
     "page": "background/background.html"
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "default_icon": "resources/icon.png",
+    "default_icon": "resources/icon64.png",
     "default_panel": "sidebar/sidebar.html"
   },
   "options_ui": {
