@@ -679,7 +679,7 @@ function onMessage(aMessage, aSender, aRespond) {
           return;
         let params = {
           collapsed: aMessage.collapsed,
-          justNow:   !aMessage.manualOperation
+          justNow:   aMessage.justNow
         };
         if (aMessage.manualOperation)
           manualCollapseExpandSubtree(tab, params);

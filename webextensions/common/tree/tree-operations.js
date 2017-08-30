@@ -415,7 +415,8 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
       windowId:  aTab.parentNode.windowId,
       tab:       aTab.id,
       collapsed: aParams.collapsed,
-      manualOperation: !!aParams.manualOperation
+      manualOperation: !!aParams.manualOperation,
+      justNow:   !!aParams.justNow
     });
     if (aParams.inRemote)
       return;
