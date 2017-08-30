@@ -296,5 +296,5 @@ function updateTabbarLayout(aParams = {}) {
     gTabBar.style.bottom = '';
   }
 
-  positionPinnedTabs(aParams);
+  reserveToPositionPinnedTabs(aParams);
 }

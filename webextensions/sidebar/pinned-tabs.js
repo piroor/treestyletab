@@ -99,11 +99,11 @@ function positionPinnedTabs(aOptions = {}) {
 
 function reserveToPositionPinnedTabs(aOptions = {}) {
   if (reserveToPositionPinnedTabs.waiting)
-    return;
+    clearTimeout(reserveToPositionPinnedTabs.waiting);
   reserveToPositionPinnedTabs.waiting = setTimeout(() => {
     delete reserveToPositionPinnedTabs.waiting;
     positionPinnedTabs(aOptions);
-  }, 0);
+  }, 10);
 }
 
 function resetPinnedTabs(aHint) {
