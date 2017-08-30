@@ -29,6 +29,7 @@
   background: Highlight;
 }
 
+.tab.active .twisty,
 .tab.active .label,
 .tab.active .counter {
   color: HighlightText;
