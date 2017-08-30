@@ -7,7 +7,6 @@
 
 :root {
   --dropmarker-size: 0.15em;
-  --dropmarker-size-negative: -0.15em;
 }
 
 .tab.dragging {
@@ -16,7 +15,7 @@
 
 .tab[data-drop-position="self"] {
   outline: var(--dropmarker-size) solid black !important;
-  outline-offset: var(--dropmarker-size-negative);
+  outline-offset: calc(0px - var(--dropmarker-size));
 }
 
 .tab[data-drop-position]:not([data-drop-position="self"])::before {

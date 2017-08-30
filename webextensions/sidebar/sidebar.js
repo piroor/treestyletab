@@ -135,7 +135,6 @@ function calculateDefaultSizes() {
   gTabHeight = dummyTab.getBoundingClientRect().height;
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
-    --tab-negative-height: -${gTabHeight}px;
   }`;
 }
 

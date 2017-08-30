@@ -6,9 +6,9 @@
 */
 
 :root {
-  --favicon-size: 16px; /* default size, this can be overridden. */
-  --default-tab-height: 32px;
-  --default-tab-negative-height: -32px;
+  /* default size, they will be overridden. */
+  --favicon-size: 16px;
+  --tab-height: 32px;
 
   --color-animation: 0.25s ease-out;
   --indent-animation: 0.2s ease-out;
@@ -158,7 +158,7 @@ ul {
 }
 
 .tab.collapsed {
-  margin-top: var(--tab-negative-height, var(--default-tab-negative-height));
+  margin-top: calc(0px - var(--tab-height));
   opacity: 0;
   pointer-events: none;
 }
@@ -179,11 +179,11 @@ ul {
 }
 
 .tab.pinned.faviconized {
-  height: var(--tab-height, var(--default-tab-height));
-  max-height: var(--tab-height, var(--default-tab-height));
-  max-width: var(--tab-height, var(--default-tab-height));
-  width: var(--tab-height, var(--default-tab-height));
-  padding: calc((var(--tab-height, var(--default-tab-height)) - var(--favicon-size)) / 2);
+  height: var(--tab-height);
+  max-height: var(--tab-height);
+  max-width: var(--tab-height);
+  width: var(--tab-height);
+  padding: calc((var(--tab-height) - var(--favicon-size)) / 2);
 }
 
 .tab.pinned :-moz-any(.twisty, .label, .closebox) {
