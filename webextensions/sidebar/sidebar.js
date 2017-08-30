@@ -76,7 +76,7 @@ function destroy() {
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
 
-function applyStyle() {
+function getChosenStyle() {
   var style = configs.style;
   if (!style && navigator.platform.indexOf('Linux') == 0)
     style = configs.defaultStyleLinux;
@@ -84,6 +84,11 @@ function applyStyle() {
     style = configs.defaultStyleDarwin;
   if (!style)
     style = configs.defaultStyle;
+  return style;
+}
+
+function applyStyle() {
+  var style = getChosenStyle();
   document.documentElement.setAttribute(kSTYLE, style);
 
   switch (style) {
