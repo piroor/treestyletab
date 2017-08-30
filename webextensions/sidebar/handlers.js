@@ -335,6 +335,10 @@ function onDblClick(aEvent) {
   });
 }
 
+function onTransisionEnd() {
+  reserveToUpdateTabbarLayout();
+}
+
 
 /* raw event handlers */
 
@@ -443,7 +447,7 @@ function onTabOpened(aTab) {
     scrollToNewTab(aTab);
   }
 
-  reserveToUpdateTabbarLayout();
+  reserveToUpdateTabbarLayout(configs.collapseDuration);
 }
 
 function onTabClosed(aTab) {
@@ -452,7 +456,7 @@ function onTabClosed(aTab) {
   detachTab(aTab, {
     dontUpdateIndent: true
   });
-  reserveToUpdateTabbarLayout();
+  reserveToUpdateTabbarLayout(configs.collapseDuration);
 }
 
 async function onTabCompletelyClosed(aTab) {
@@ -496,7 +500,7 @@ function onTabMoving(aTab) {
 }
 
 function onTabMoved(aTab) {
-  reserveToUpdateTabbarLayout();
+  reserveToUpdateTabbarLayout(configs.collapseDuration);
 }
 
 function onTabLevelChanged(aTab) {
@@ -560,7 +564,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       if (collapsed)
         aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
 
-      reserveToUpdateTabbarLayout();
+      reserveToUpdateTabbarLayout(configs.collapseDuration);
     });
     aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
     var backupTimer = setTimeout(() => {
@@ -653,7 +657,7 @@ function updateTabsCount(aTab) {
   var count = descendants.length;
   if (configs.counterRole == kCOUNTER_ROLE_ALL_TABS)
     count += 1;
-  counter.textContent = `(${count})`;
+  counter.textContent = count;
 }
 
 function onTabPinned(aTab) {

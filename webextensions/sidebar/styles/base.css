@@ -9,9 +9,12 @@
   --default-tab-height: 32px;
   --default-tab-negative-height: -32px;
 
+  --color-animation: 0.25s ease-out;
   --indent-animation: 0.2s ease-out;
   --collapse-animation: 0.15s ease-out;
-  --tab-animation: bottom        var(--collapse-animation),
+  --tab-animation: background    var(--color-animation),
+                   bottom        var(--collapse-animation),
+                   color         var(--color-animation),
                    left          var(--collapse-animation),
                    margin-bottom var(--collapse-animation),
                    margin-left   var(--indent-animation),
@@ -31,6 +34,15 @@
 
   --tab-highlighted-base: ThreeDHighlight;
   --tab-highlighted-highlight: Highlight;
+
+  --unread-pinned-gradient: radial-gradient(circle farthest-corner at 50% 3px,
+                                            var(--tab-highlighted-base) 3%,
+                                            var(--tab-highlighted-highlight) 80%);
+  --unread-pinned-color: var(--tab-highlighted-base);
+  --unread-pinned-gradient-hover: radial-gradient(circle farthest-corner at 50% 3px,
+                                            var(--tab-highlighted-base) 3%,
+                                            var(--tab-highlighted-highlight) 100%);
+  --unread-pinned-color-hover: var(--tab-highlighted-base);
 }
 
 :root.debug * {
@@ -102,21 +114,18 @@ ul {
 
 .tab {
   align-items: center;
-  border: 1px solid gray;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
   line-height: 1;
   list-style: none;
-  margin-bottom: -1px;
   margin-left: 0;
   margin-right: 0;
   /* margin-top: 0; *//* don't set for animation */
   max-width: 100%;
   overflow: hidden;
   opacity: 1;
-  padding: 0.25em;
   position: relative;
 }
 
@@ -125,14 +134,9 @@ ul {
   vertical-align: middle;
 }
 
-.tab.animation-ready {
+.tab.animation-ready,
+.after-tabs button {
   transition: var(--tab-animation);
-}
-
-.tab.active {
-  background: Highlight;
-  color: HighlightText;
-  font-weight: bold;
 }
 
 .tab.removing {
@@ -168,16 +172,21 @@ ul {
   max-height: var(--tab-height, var(--default-tab-height));
   max-width: var(--tab-height, var(--default-tab-height));
   width: var(--tab-height, var(--default-tab-height));
+  padding: calc((var(--tab-height, var(--default-tab-height)) - var(--favicon-size)) / 2);
 }
 
 .tab.pinned :-moz-any(.twisty, .label, .closebox) {
   display: none;
 }
 
-.tab.pinned.unread {
-  background-image: radial-gradient(circle farthest-corner at 50% 3px,
-                                    var(--tab-highlighted-base) 3%,
-                                    var(--tab-highlighted-highlight) 80%);
+.tab.pinned.unread:not(.active) {
+  background-color: var(--unread-pinned-color);
+  background-image: var(--unread-pinned-gradient);
+}
+
+.tab.pinned.unread:not(.active):hover {
+  background-color: var(--unread-pinned-color-hover);
+  background-image: var(--unread-pinned-gradient-hover);
 }
 
 
@@ -186,7 +195,6 @@ ul {
 .tab .label {
   flex-grow: 1;
   overflow: hidden;
-  padding: 0.25em 0;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -200,15 +208,19 @@ ul {
   display: none;
 }
 
+.counter::before {
+  content: "(";
+}
+
+.counter::after {
+  content: ")";
+}
+
 
 /* closebox */
 
 .closebox {
-  background: none transparent;
-  border: none 0 transparent;
-  margin: 0;
   opacity: var(--button-opacity);
-  padding: 0.1em;
 }
 
 .closebox::before {
@@ -243,7 +255,6 @@ ul {
 
 .newtab-button {
   background: none transparent;
-  border: 1px solid;
   margin: 0;
   text-align: center;
 }

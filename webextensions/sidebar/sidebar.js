@@ -13,27 +13,33 @@ var gIndent = -1;
 var gIndentProp = 'margin-left';
 var gTabHeight = 0;
 
-window.addEventListener('DOMContentLoaded', init, { once: true });
+window.addEventListener('DOMContentLoaded', earlyInit, { once: true });
+window.addEventListener('load', init, { once: true });
 
 blockUserOperations();
 
 var gSizeDefinition;
 var gStyleLoader;
 
-async function init() {
-  log('initialize sidebar');
+function earlyInit() {
+  log('initialize sidebar on DOMContentLoaded');
   window.addEventListener('unload', destroy, { once: true });
-  window.addEventListener('resize', onResize);
 
   gTabBar = document.querySelector('#tabbar');
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
   gAllTabs = document.querySelector('#all-tabs');
   gSizeDefinition = document.querySelector('#size-definition');
   gStyleLoader = document.querySelector('#style-loader');
+}
+
+async function init() {
+  log('initialize sidebar on load');
+  window.addEventListener('resize', onResize);
 
   gTabBar.addEventListener('mousedown', onMouseDown);
   gTabBar.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
+  gTabBar.addEventListener('transitionend', onTransisionEnd);
 
   await configs.$loaded;
 
@@ -66,6 +72,7 @@ function destroy() {
   gTabBar.removeEventListener('mousedown', onMouseDown);
   gTabBar.removeEventListener('click', onClick);
   gTabBar.removeEventListener('dblclick', onDblClick);
+  gTabBar.removeEventListener('transitionend', onTransisionEnd);
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
@@ -109,12 +116,9 @@ function calculateDefaultSizes() {
   }, { forceApply: true });
 
   gTabHeight = dummyTab.getBoundingClientRect().height;
-  var throbberRect = getTabThrobber(dummyTab).getBoundingClientRect();
   gSizeDefinition.textContent = `:root {
     --tab-height: ${gTabHeight}px;
     --tab-negative-height: -${gTabHeight}px;
-    --throbber-height: ${throbberRect.height}px;
-    --throbber-width: ${throbberRect.width}px;
   }`;
 }
 
@@ -244,14 +248,14 @@ function updateIndent() {
 }
 
 
-function reserveToUpdateTabbarLayout() {
+function reserveToUpdateTabbarLayout(aTimeout) {
   log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
     updateTabbarLayout();
-  }, 10);
+  }, aTimeout || 10);
 }
 
 function updateTabbarLayout(aParams = {}) {
