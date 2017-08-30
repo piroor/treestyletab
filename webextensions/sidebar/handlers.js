@@ -740,10 +740,6 @@ function onConfigChange(aChangedKey) {
         document.documentElement.classList.remove('debug');
       break;
 
-    case 'twistyStyle':
-      document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
-      break;
-
     case 'style':
     case 'defaultStyle':
     case 'defaultStyleDarwin':

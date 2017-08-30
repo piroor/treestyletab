@@ -68,7 +68,6 @@ configs = new Configs({
   indentDuration:   200, // extensions.treestyletab.animation.indent.duration
   collapseDuration: 150, // extensions.treestyletab.animation.collapse.duration
 
-  twistyStyle: 'modern', // extensions.treestyletab.twisty.style
   shouldExpandTwistyArea: false, // extensions.treestyletab.twisty.expandSensitiveArea
 
   scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_BOTH_ACTIVE_AND_NEW_ARE_VISIBLE, // extensions.treestyletab.tabbar.scrollToNewTab.mode

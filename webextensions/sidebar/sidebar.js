@@ -33,7 +33,6 @@ async function earlyInit() {
 
   await configs.$loaded;
   await applyStyle();
-  document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
 }
 
 async function init() {
