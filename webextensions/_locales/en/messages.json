@@ -10,6 +10,14 @@
     }},
   "groupTab.label.default": { "message": "Group" },
 
+  "config.style.caption": { "message": "Theme" },
+  "config.style.plain": { "message": "Plain" },
+  "config.style.flat": { "message": "Flat" },
+  "config.style.vertigo": { "message": "Vertigo" },
+  "config.style.mixed": { "message": "Mixed" },
+  "config.style.metal": { "message": "Metal" },
+  "config.style.sidebar": { "message": "Sidebar" },
+
   "config.animation.label": { "message": "Enable animation effects" },
   "config.debug.label": { "message": "Print debug log" }
 }
