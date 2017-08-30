@@ -61,6 +61,8 @@ const kTAB_STATE_ANIMATION_READY = 'animation-ready';
 const kTAB_STATE_REMOVING = 'removing';
 const kTAB_STATE_COLLAPSED = 'collapsed';
 const kTAB_STATE_COLLAPSED_DONE = 'collapsed-completely';
+const kTAB_STATE_COLLAPSING = 'collapsing';
+const kTAB_STATE_EXPANDING = 'expanding';
 const kTAB_STATE_SUBTREE_COLLAPSED = 'subtree-collapsed';
 const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 const kTAB_STATE_FAVICONIZED = 'faviconized';
@@ -124,8 +126,7 @@ const kNEWTAB_OPEN_AS_SIBLING      = 2;
 const kNEWTAB_OPEN_AS_NEXT_SIBLING = 3;
 
 const kSCROLL_TO_NEW_TAB_IGNORE = 0;
-const kSCROLL_TO_NEW_TAB_IF_BOTH_ACTIVE_AND_NEW_ARE_VISIBLE = 1;
-const kSCROLL_TO_NEW_TAB_ALWAYS = 2;
+const kSCROLL_TO_NEW_TAB_IF_POSSIBLE = 1;
 
 const kDEFAULT_MIN_INDENT = 3;
 

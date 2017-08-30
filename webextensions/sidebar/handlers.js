@@ -400,6 +400,10 @@ async function loadImageTo(aImageElement, aURL) {
   }
 }
 
+function onTabFocused(aTab) {
+  scrollToTab(aTab);
+}
+
 function onTabOpening(aTab) {
   if (configs.animation)
     onTabCollapsedStateChanging(aTab, {
@@ -525,12 +529,17 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
     if (aInfo.last)
-      onExpandedTreeReadyToScroll(aTab);
+      scrollToTab(aTab);
     return;
   }
 
-  if (!collapsed)
+  if (!collapsed) {
+    aTab.classList.add(kTAB_STATE_COLLAPSING);
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+  }
+  else {
+    aTab.classList.add(kTAB_STATE_EXPANDING);
+  }
 
   window.requestAnimationFrame(() => {
     if (!aTab.parentNode) // it was removed while waiting
@@ -538,13 +547,15 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
     //log('start animation for ', dumpTab(aTab));
     if (aInfo.last)
-      onExpandedTreeReadyToScroll(aTab);
+      scrollToTab(aTab);
 
     aTab.onEndCollapseExpandAnimation = (() => {
       delete aTab.onEndCollapseExpandAnimation;
       if (backupTimer)
         clearTimeout(backupTimer);
       //log('=> finish animation for ', dumpTab(aTab));
+      aTab.classList.remove(kTAB_STATE_COLLAPSING);
+      aTab.classList.remove(kTAB_STATE_EXPANDING);
       if (collapsed)
         aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
 
@@ -560,10 +571,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.onEndCollapseExpandAnimation();
     }, configs.collapseDuration);
   });
-}
-
-function onExpandedTreeReadyToScroll(aEvent) {
-  //scrollToTabSubtree(aEvent.target);
 }
 
 /*

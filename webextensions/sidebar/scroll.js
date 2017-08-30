@@ -83,12 +83,16 @@ async function smoothScrollTo(aParams = {}) {
 
   smoothScrollTo.stopped = false;
 
-  if (aParams.tab)
-    aParams.delta = calculateScrollDeltaForTab(aParams.tab);
-
-  var delta = aParams.delta || 0;
   var startPosition = gTabBar.scrollTop;
-  var endPosition = startPosition + delta;
+  var delta, endPosition;
+  if (aParams.tab) {
+    delta = calculateScrollDeltaForTab(aParams.tab);
+    endPosition = startPosition + delta;
+  }
+  else {
+    endPosition = aParams.position;
+    delta = endPosition - startPosition;
+  }
 
   var duration = aParams.duration || configs.smoothScrollDuration;
   var startTime = Date.now();
@@ -137,45 +141,95 @@ function scrollToNewTab(aTab) {
   if (!canScrollToTab(aTab))
     return;
 
-  if (configs.scrollToNewTabMode > kSCROLL_TO_NEW_TAB_IGNORE)
-    scrollToTab(aTab, {
-      keepActiveTabVisible: configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_BOTH_ACTIVE_AND_NEW_ARE_VISIBLE
-    });
+  if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE)
+    scrollToTab(aTab);
 }
 
 function canScrollToTab(aTab) {
   return (aTab &&
           aTab.parentNode &&
-          isHidden(aTab));
+          !isHidden(aTab));
 }
 
 function scrollToTab(aTab, aOptions = {}) {
   log('scrollToTab to ', dumpTab(aTab), aOptions);
   if (!canScrollToTab(aTab)) {
-    log('  => unscrollable');
+    log('=> unscrollable');
     return;
   }
 
   //cancelPerformingAutoScroll(true);
 
   if (isTabInViewport(aTab)) {
-    log('  => already visible');
+    log('=> already visible');
     return;
   }
 
-  var activeTab = getCurrentTab();
-/* cancel if the current tab is going to be outside of the viewport
-  if (aOptions.keepActiveTabVisible && activeTab != aTab) {
-    let box = b.selectedTab.getBoundingClientRect();
-    if (targetTabBox.screenX - box.screenX + baseTabBox.width > scrollBoxObject.width ||
-      targetTabBox.screenY - box.screenY + baseTabBox.height > scrollBoxObject.height)
+  window.requestAnimationFrame(() => {
+    var activeTab = getCurrentTab();
+    if (activeTab == aTab ||
+        !isTabInViewport(activeTab)) {
+      log('=> direct scroll');
+      scrollTo(clone(aOptions, {
+        tab: aTab
+      }));
       return;
-  }
-*/
+    }
 
-  scrollTo(clone(aOptions, {
-    tab: aTab
-  }));
+    var targetTabRect = aTab.getBoundingClientRect();
+    var activeTabRect = activeTab.getBoundingClientRect();
+    var containerRect = gTabBar.getBoundingClientRect();
+    var offset = getOffsetForAnimatingTab(aTab);
+    var delta = calculateScrollDeltaForTab(aTab);
+    if (targetTabRect.top > activeTabRect.top) {
+      log('=> will scroll down');
+      let boundingHeight = targetTabRect.bottom - activeTabRect.top + offset;
+      let overHeight = boundingHeight - containerRect.height;
+      if (overHeight > 0)
+        delta -= overHeight;
+      log('calculated result: ', {
+        boundingHeight, overHeight, delta,
+        container: containerRect.height
+      });
+    }
+    else {
+      log('=> will scroll up');
+      let boundingHeight = activeTabRect.bottom - targetTabRect.top + offset;
+      let overHeight = boundingHeight - containerRect.height;
+      if (overHeight > 0)
+        delta += overHeight;
+      log('calculated result: ', {
+        boundingHeight, overHeight, delta,
+        container: containerRect.height
+      });
+    }
+    scrollTo(clone(aOptions, {
+      position:   gTabBar.scrollTop + delta,
+      retryUntil: offset != 0 ? configs.smoothScrollDuration : 0 
+    }));
+  });
+}
+
+function getOffsetForAnimatingTab(aTab) {
+  var numExpandingTabs = evaluateXPath(
+    `count(self::*[${hasClass(kTAB_STATE_EXPANDING)}] |
+           preceding-sibling::${kSELECTOR_NORMAL_TAB}[${hasClass(kTAB_STATE_EXPANDING)}])`,
+    aTab,
+    XPathResult.NUMBER_TYPE
+  ).numberValue;
+  if (isNaN(numExpandingTabs))
+    numExpandingTabs = 0;
+
+  var numCollapsingTabs = evaluateXPath(
+    `count(self::*[${hasClass(kTAB_STATE_EXPANDING)}] |
+           preceding-sibling::${kSELECTOR_NORMAL_TAB}[${hasClass(kTAB_STATE_COLLAPSING)}])`,
+    aTab,
+    XPathResult.NUMBER_TYPE
+  ).numberValue;
+  if (isNaN(numCollapsingTabs))
+    numCollapsingTabs = 0;
+
+  return (numExpandingTabs * gTabHeight) - (numCollapsingTabs * gTabHeight);
 }
 
 function scrollToTabSubtree(aTab) {

@@ -75,17 +75,16 @@ function onApiTabActivated(aActiveInfo) {
 
   log('onSelect: ', dumpTab(newTab));
 
-  var focusChanged = window.onTabFocusing && onTabFocusing(newTab);
+  window.onTabFocusing && onTabFocusing(newTab);
 
   newTab.parentNode.focusChangedByCurrentTabRemove = false;
 
   //if (!isTabInViewport(newTab))
   //  scrollToTab(newTab);
 
-  if (focusChanged && oldTabs.length > 0)
-    window.onTabFocused && onTabFocused(newTab, {
-      previouslyFocusedTab: oldTabs[0]
-    });
+  window.onTabFocused && onTabFocused(newTab, {
+    previouslyFocusedTab: oldTabs.length > 0 ? oldTabs[0] : null
+  });
 }
 
 function clearOldActiveStateInWindow(aWindowId) {

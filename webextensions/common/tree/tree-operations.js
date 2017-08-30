@@ -1254,10 +1254,6 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   }
 }
 
-
-function scrollToNewTab(aTab) {
-}
-
 function updateInsertionPositionInfo(aTab) {
 }
 
