@@ -71,7 +71,7 @@ configs = new Configs({
   twistyStyle: 'modern', // extensions.treestyletab.twisty.style
   shouldExpandTwistyArea: false, // extensions.treestyletab.twisty.expandSensitiveArea
 
-  scrollToNewTabMode: null, // extensions.treestyletab.tabbar.scrollToNewTab.mode
+  scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_BOTH_ACTIVE_AND_NEW_ARE_VISIBLE, // extensions.treestyletab.tabbar.scrollToNewTab.mode
   counterRole: kCOUNTER_ROLE_CONTAINED_TABS, // extensions.treestyletab.counter.role.vertical
 
   style: null, // extensions.treestyletab.tabbar.style

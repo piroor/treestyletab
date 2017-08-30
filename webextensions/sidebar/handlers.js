@@ -124,22 +124,6 @@ function isEventFiredOnScrollbar(aEvent) {
     ).booleanValue;
 }
 
-function isTabInViewport(aTab) {
-  if (!aTab)
-    return false;
-
-  if (isPinned(aTab))
-    return true;
-
-  var tabRect = aTab.getBoundingClientRect();
-  var containerRect = aTab.parentNode.getBoundingClientRect();
-
-  return (
-    containerRect.top >= barBox.top &&
-    containerRect.bottom <= barBox.bottom
-  );
-}
-
 
 function getTabFromEvent(aEvent) {
   return getTabFromChild(aEvent.target);
