@@ -4,8 +4,8 @@
   line-height: 1;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
-  min-height: var(--favicon-size);
-  min-width: var(--favicon-size);
+  min-height: var(--favicon-min-size);
+  min-width: var(--favicon-min-size);
   position: relative;
   text-align: center;
   transition: transform 0.2s ease-out,

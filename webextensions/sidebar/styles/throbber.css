@@ -21,8 +21,8 @@
   margin: 0;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
-  min-height: var(--favicon-size);
-  min-width: var(--favicon-size);
+  min-height: var(--favicon-min-size);
+  min-width: var(--favicon-min-size);
   padding: 0;
   text-align: center;
   transform-origin: 50% 50%;
