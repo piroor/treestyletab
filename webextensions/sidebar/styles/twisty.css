@@ -24,13 +24,13 @@
 
 .twisty::before {
   display: inline-box;
-  left: calc((var(--favicon-size) - 1em) / 2);
+  left: calc((100% - var(--favicon-size)) / 2);
   line-height: 1;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
   position: absolute;
-  right: calc((var(--favicon-size) - 1em) / 2);
-  top: calc((var(--favicon-size) - 1em) / 2);
+  right: calc((100% - var(--favicon-size)) / 2);
+  top: calc((100% - var(--favicon-size)) / 2);
 }
 
 :root[data-twisty-style^="modern"]
@@ -75,6 +75,10 @@
 :root[data-twisty-style^="modern"]
   .twisty {
   font-size: 0.65em;
+  height: calc(1.5em);
+  max-height: calc(1.5em);
+  max-width: calc(1.5em);
+  width: calc(1.5em);
 }
 :root[data-twisty-style^="modern"]
   .twisty::before {
@@ -109,6 +113,10 @@
   .twisty {
   opacity: 0.38;
   font-size: 0.8em;
+  height: calc(1.25em);
+  max-height: calc(1.25em);
+  max-width: calc(1.25em);
+  width: calc(1.25em);
 }
 :root[data-twisty-style="osx"]
   .twisty:active,

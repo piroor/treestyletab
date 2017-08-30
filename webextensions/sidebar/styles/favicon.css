@@ -6,20 +6,25 @@
 */
 
 :root {
-  --favicon-size: 16px;
+  --favicon-size: 1em;
 }
 
 .favicon {
-  display: inline-box;
+  display: inline-block;
+  font-size: var(--favicon-size);
   height: var(--favicon-size);
+  margin: 0;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
   min-height: var(--favicon-size);
   min-width: var(--favicon-size);
+  padding: 0;
   white-space: pre;
   width: var(--favicon-size);
-  margin: 0;
-  padding: 0;
+}
+.tab .favicon,
+.tab .favicon * {
+  vertical-align: baseline;
 }
 
 .favicon-image {
@@ -28,7 +33,7 @@
 }
 
 .favicon-default::before {
-  display: inline-box;
+  display: inline-block;
   line-height: 1;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
