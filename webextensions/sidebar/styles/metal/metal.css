@@ -2,6 +2,8 @@
 
 :root {
   --dropmarker-color: white;
+  --tab-surface: #9d9d9d;
+  --tab-surface-active: #b3b2b3;
 }
 
 .tab,
@@ -65,23 +67,23 @@
   padding: 2px 4px 2px 3px;
 }
 .tab.pinned:not(.unread) {
-  background: #9d9d9d;
+  background: var(--tab-surface);
 }
 
 .tab.pinned:not(.unread).active {
-  background-color: #b3b2b3;
+  background-color: var(--tab-surface-active);
 }
 
 /* highlighted pinned tabs */
 .tab.pinned.unread:not(.active) {
   background-image: radial-gradient(circle farthest-corner at 50% 3px,
-                                    Highlight 3%,
-                                    #b3b2b3 80%);
+                                    white 3%,
+                                    var(--tab-surface-active) 80%);
 }
 .tab.pinned.unread:not(.active):hover {
   background-image: radial-gradient(circle farthest-corner at 50% 3px,
-                                    Highlight 3%,
-                                    #b3b2b3 100%);
+                                    white 3%,
+                                    var(--tab-surface-active) 100%);
 }
 
 
