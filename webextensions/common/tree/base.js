@@ -86,7 +86,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 
   if (aOptions.forceApply ||
-      oldState.url != aNewState.url)
+      aNewState.url != oldState.url)
     aTab.setAttribute(kCONTENT_LOCATION, aNewState.url);
 
   if (aOptions.forceApply ||
@@ -99,9 +99,16 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 
   if (aOptions.forceApply ||
-      aNewState.favIconUrl != oldState.favIconUrl)
+      aNewState.favIconUrl != oldState.favIconUrl ||
+      (maybeImageUrl(aNewState.url) &&
+       aNewState.url != oldState.url)) {
     window.onTabFaviconUpdated &&
-      onTabFaviconUpdated(aTab, aNewState.favIconUrl);
+      onTabFaviconUpdated(
+        aTab,
+        aNewState.favIconUrl ||
+          (maybeImageUrl(aNewState.url) && aNewState.url)
+      );
+  }
 
   if (aOptions.forceApply ||
       aNewState.status != oldState.status) {
@@ -162,6 +169,10 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     else
       aTab.classList.remove(kTAB_STATE_SELECTED);
   }
+}
+
+function maybeImageUrl(aURL) {
+  return /\.(jpe?g|png|gif|bmp|svg)/i.test(aURL);
 }
 
 function updateParentTab(aParent) {
