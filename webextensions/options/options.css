@@ -4,8 +4,20 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-li {
+#style-radiogroup {
+  padding: 0;
+}
+
+#style-radiogroup + * {
+  clear: both;
+}
+
+#style-radiogroup li {
+  float: left;
   list-style: none;
+  margin: 0;
+  padding: 0;
+  width: calc(1em + 52px + 8em); /* radio + image + label */
 }
 
 li label img {
