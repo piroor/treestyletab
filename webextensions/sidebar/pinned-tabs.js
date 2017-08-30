@@ -78,10 +78,6 @@ function positionPinnedTabs(aOptions = {}) {
     style.right = 'auto';
     style.top = `${height * row}px`;
 
-    style.marginLeft = '';
-    style.marginRight = '';
-    style.marginTop = '';
-
     if (aOptions.justNow)
       item.classList.add(kTAB_STATE_ANIMATION_READY);
 
@@ -120,6 +116,5 @@ function clearPinnedStyle(aTab) {
   aTab.classList.remove(kTAB_STATE_FAVICONIZED);
   aTab.classList.remove(kTAB_STATE_LAST_ROW);
   let style = aTab.style;
-  style.left = style.right = style.top = style.bottom =
-    style.marginLeft = style.marginRight = style.marginTop = '';
+  style.left = style.right = style.top = style.bottom;
 }
