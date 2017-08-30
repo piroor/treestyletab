@@ -75,10 +75,13 @@ button {
 #tabbar {
   bottom: 0;
   left: 0;
+  margin: 0;
   overflow: auto;
+  padding: 0;
   position: fixed;
   right: 0;
   top: 0;
+  transition: margin-top var(--collapse-animation);
 }
 
 /* put scrollbar leftside */
@@ -129,6 +132,7 @@ ul {
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
+  left: 0;
   line-height: 1;
   list-style: none;
   margin-left: 0;
@@ -138,6 +142,7 @@ ul {
   overflow: hidden;
   opacity: 1;
   position: relative;
+  top: 0;
 }
 
 .tab,
