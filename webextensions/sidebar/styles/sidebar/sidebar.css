@@ -84,7 +84,7 @@
 
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 .tab {
-  height: 1.8em !important;     /* height including border! */
+  height: 2.2em;     /* height including border! */
   padding: 0.075em 3px 0.075em 10px;
   z-index: 0;
 }
@@ -134,12 +134,17 @@
   text-align: start;
   text-shadow: none;
   margin-bottom: 1px;
+  padding: 0.2em 0 0.2em 0.25em;
 }
 
 .tab.active .label {
   font-weight: bold;
   color: var(--tab-text-active);
   text-shadow: 0 1px var(--shadow-color);
+}
+
+.tab.active .twisty {
+  color: white;
 }
 
 /* Make the tab counter look like the bubbles in Mail.app et.al. */
