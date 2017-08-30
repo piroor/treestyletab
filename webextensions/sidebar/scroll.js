@@ -54,13 +54,14 @@ function scrollTo(aParams = {}) {
 }
 
 function calculateScrollDeltaForTab(aTab) {
-  let tabRect = aTab.getBoundingClientRect();
-  let containerRect = gTabBar.getBoundingClientRect();
-  if (containerRect.bottom < tabRect.bottom) { // should scroll down
-    return tabRect.bottom - containerRect.bottom;
+  var tabRect = aTab.getBoundingClientRect();
+  var containerRect = gTabBar.getBoundingClientRect();
+  var offset = getOffsetForAnimatingTab(aTab);
+  if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
+    return tabRect.bottom - containerRect.bottom + offset;
   }
-  else if (containerRect.top > tabRect.top) { // should scroll up
-    return tabRect.top - containerRect.top;
+  else if (containerRect.top > tabRect.top + offset) { // should scroll up
+    return tabRect.top - containerRect.top + offset;
   }
   else {
     return 0;
@@ -192,7 +193,7 @@ function scrollToTab(aTab, aOptions = {}) {
         container: containerRect.height
       });
     }
-    else {
+    else if (targetTabRect.bottom < activeTabRect.bottom) {
       log('=> will scroll up');
       let boundingHeight = activeTabRect.bottom - targetTabRect.top + offset;
       let overHeight = boundingHeight - containerRect.height;
@@ -213,7 +214,7 @@ function scrollToTab(aTab, aOptions = {}) {
 function getOffsetForAnimatingTab(aTab) {
   var numExpandingTabs = evaluateXPath(
     `count(self::*[${hasClass(kTAB_STATE_EXPANDING)}] |
-           preceding-sibling::${kSELECTOR_NORMAL_TAB}[${hasClass(kTAB_STATE_EXPANDING)}])`,
+           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_EXPANDING)}])`,
     aTab,
     XPathResult.NUMBER_TYPE
   ).numberValue;
@@ -221,8 +222,8 @@ function getOffsetForAnimatingTab(aTab) {
     numExpandingTabs = 0;
 
   var numCollapsingTabs = evaluateXPath(
-    `count(self::*[${hasClass(kTAB_STATE_EXPANDING)}] |
-           preceding-sibling::${kSELECTOR_NORMAL_TAB}[${hasClass(kTAB_STATE_COLLAPSING)}])`,
+    `count(self::*[${hasClass(kTAB_STATE_COLLAPSING)}] |
+           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_COLLAPSING)}])`,
     aTab,
     XPathResult.NUMBER_TYPE
   ).numberValue;

@@ -493,7 +493,9 @@ function collapseExpandTab(aTab, aParams = {}) {
   window.onTabCollapsedStateChanging &&
     window.onTabCollapsedStateChanging(aTab, {
       collapsed: aParams.collapsed,
-      justNow: aParams.justNow
+      justNow: aParams.justNow,
+      last: aParams.last &&
+            (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab))
     });
 
   //var data = {
@@ -515,12 +517,15 @@ function collapseExpandTab(aTab, aParams = {}) {
   }
 
   if (!isSubtreeCollapsed(aTab)) {
-    for (let tab of getChildTabs(aTab)) {
-      collapseExpandTab(tab, {
+    let children = getChildTabs(aTab);
+    children.forEach((aChild, aIndex) => {
+      collapseExpandTab(aChild, clone(aParams, {
         collapsed: aParams.collapsed,
-        justNow:   aParams.justNow
-      });
-    }
+        justNow:   aParams.justNow,
+        last:      aParams.last &&
+                   (aIndex == children.length - 1)
+      }));
+    });
   }
 }
 

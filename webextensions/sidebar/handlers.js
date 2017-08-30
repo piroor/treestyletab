@@ -533,11 +533,11 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     return;
   }
 
-  if (!collapsed) {
+  if (collapsed) {
     aTab.classList.add(kTAB_STATE_COLLAPSING);
-    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
   }
   else {
+    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
     aTab.classList.add(kTAB_STATE_EXPANDING);
   }
 
