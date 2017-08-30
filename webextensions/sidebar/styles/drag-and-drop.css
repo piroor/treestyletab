@@ -26,6 +26,7 @@
   max-height: var(--dropmarker-size);
   min-height: var(--dropmarker-size);
   background: var(--dropmarker-color) !important;
+  border-radius: var(--dropmarker-size);
   overflow: hidden;
   position: absolute;
   z-index: 2;
