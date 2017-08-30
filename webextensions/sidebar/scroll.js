@@ -205,8 +205,7 @@ function scrollToTab(aTab, aOptions = {}) {
       });
     }
     scrollTo(clone(aOptions, {
-      position:   gTabBar.scrollTop + delta,
-      retryUntil: offset != 0 ? configs.smoothScrollDuration : 0 
+      position: gTabBar.scrollTop + delta
     }));
   });
 }
