@@ -1,6 +1,6 @@
 .tab,
 .after-tabs button {
-  padding: 0.25em;
+  padding: 0.35em 0.25em;
 }
 
 .after-tabs button {
@@ -22,9 +22,19 @@
   padding: 0.25em 0 0.25em 0.25em;
 }
 
+.tab .favicon {
+  margin-bottom: 0.25em;
+  margin-top: 0.25em;
+}
+
+.tab {
+  --tab-closebox-offset: calc((var(--tab-height) - 1em) / 2);
+  --tab-closebox-negative-offset: calc((1em - var(--tab-height)) / 2);
+}
+
 /* expand closebox to fill full height of tab */
 .tab .closebox {
-  margin-bottom: calc((1em - var(--tab-height)) / 2);
-  margin-top: calc((1em - var(--tab-height)) / 2);
-  padding: calc((var(--tab-height) - 1em) / 2) 0.25em;
+  margin-bottom: var(--tab-closebox-negative-offset);
+  margin-top: var(--tab-closebox-negative-offset);
+  padding: var(--tab-closebox-offset) 0.25em;
 }
