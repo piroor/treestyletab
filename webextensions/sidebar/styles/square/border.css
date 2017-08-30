@@ -19,6 +19,9 @@
   border-top: none;
 }
 
+#tabbar + .after-tabs button {
+  border-bottom: none;
+}
 
 :root.left .tab:not(.pinned) {
   padding-right: 0.65em;
