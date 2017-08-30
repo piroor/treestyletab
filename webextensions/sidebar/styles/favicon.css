@@ -5,11 +5,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-:root {
-  --favicon-size: 1em;
-  --favicon-min-size: 16px;
-}
-
 .favicon {
   display: inline-block;
   font-size: var(--favicon-size);
@@ -17,8 +12,8 @@
   margin: 0;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
-  min-height: var(--favicon-min-size);
-  min-width: var(--favicon-min-size);
+  min-height: var(--favicon-size);
+  min-width: var(--favicon-size);
   padding: 0;
   white-space: pre;
   width: var(--favicon-size);
@@ -31,8 +26,6 @@
 .favicon-image {
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
-  min-height: var(--favicon-min-size);
-  min-width: var(--favicon-min-size);
 }
 
 .favicon-default::before {
@@ -55,8 +48,8 @@
   display: inline-block;
   max-height: var(--favicon-size);
   max-width: var(--favicon-size);
-  min-height: var(--favicon-min-size);
-  min-width: var(--favicon-min-size);
+  min-height: var(--favicon-size);
+  min-width: var(--favicon-size);
 }
 
 .tab[data-content-location^="file:"] .favicon-default::before,

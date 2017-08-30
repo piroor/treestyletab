@@ -6,6 +6,7 @@
 */
 
 :root {
+  --favicon-size: 16px; /* default size, this can be overridden. */
   --default-tab-height: 32px;
   --default-tab-negative-height: -32px;
 
@@ -107,6 +108,16 @@ ul {
   pointer-events: none;
   position: fixed;
   visibility: hidden;
+}
+
+#dummy-favicon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  max-width: 1em;
+  max-height: 1em;
+  min-width: 16px;
+  min-height: 16px;
 }
 
 

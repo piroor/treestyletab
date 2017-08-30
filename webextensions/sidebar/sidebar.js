@@ -127,8 +127,13 @@ function calculateDefaultSizes() {
     mutedInfo: { muted: false }
   }, { forceApply: true });
 
-  gTabHeight = dummyTab.getBoundingClientRect().height;
+  // first, calculate actual favicon size.
+  var throbberHeight = document.querySelector('#dummy-favicon').getBoundingClientRect().height;
   gSizeDefinition.textContent = `:root {
+    --favicon-size: ${throbberHeight}px;
+  }`;
+  gTabHeight = dummyTab.getBoundingClientRect().height;
+  gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
     --tab-negative-height: -${gTabHeight}px;
   }`;
