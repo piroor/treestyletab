@@ -84,6 +84,7 @@
 
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
 .tab {
+  border-top: 1px solid transparent;
   height: 2.2em;     /* height including border! */
   padding: 0.075em 3px 0.075em 10px;
   z-index: 0;
