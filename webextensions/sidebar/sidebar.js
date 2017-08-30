@@ -96,6 +96,8 @@ function applyStyle() {
       break;
     case 'mixed':
       gStyleLoader.setAttribute('href', 'styles/square/mixed.css');
+    case 'flat':
+      gStyleLoader.setAttribute('href', 'styles/square/flat.css');
     case 'vertigo':
       gStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
     default:
