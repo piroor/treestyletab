@@ -34,29 +34,44 @@
  * 
  * ***** END LICENSE BLOCK ***** */
 
+:root {
+  --bg-color: #d4dde5;
+  --bg-color-nactive: #e8e8e8;
+  --shadow-color: #404040;
+  --shadow-color-inactive: #868686;
+  --tab-surfece-active-color: #94A1C0;
+  --tab-surface-active-gradient: -moz-linear-gradient(top, #A0B0CF, #7386AB);
+  --tab-surface-active-gradient-inactive: -moz-linear-gradient(top, #B4B4B4, #8A8A8A);
+  --tab-text: black;
+  --tab-text-active: white;
+  --badge-bg-color: #91a0c0;
+  --badge-color-inactive: #b5b5b5;
+  --badge-bg-color-inactive: #929292;
+}
+
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
 :root {
-  background: #d4dde5;
+  background: var(--bg-color);
 }
 
 :root:-moz-window-inactive {
-  background: #e8e8e8;
+  background: var(--bg-color-nactive);
 }
 
 /* Use the splitter to display the border of .tabs */
 :root.left {
-  border-right: 1px solid #404040;
+  border-right: 1px solid var(--shadow-color);
 }
 :root:-moz-window-inactive.left {
-  border-right-color: #868686;
+  border-right-color: var(--shadow-color-inactive);
 }
 
 :root.right {
-  border-left: 1px solid #404040;
+  border-left: 1px solid var(--shadow-color);
 }
 :root:-moz-window-inactive.right {
-  border-left-color: #868686;
+  border-left-color: var(--shadow-color-inactive);
 }
 
 /* Style tabs themselves.  Get rid of most of the initial XUL styling */
@@ -67,13 +82,13 @@
 }
 
 .tab.active {
-  border-top: 1px solid #94A1C0;
-  background: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x;
+  border-top: 1px solid var(--tab-surfece-active-color);
+  background: var(--tab-surface-active-gradient) repeat-x;
 }
 
 :-moz-window-inactive .tab.active {
-  border-top: 1px solid #979797;
-  background: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x;  
+  border-top: 1px solid var(--tab-surfece-active-color-inactive);
+  background: var(--tab-surface-active-gradient-inactive) repeat-x;
 }
 
 /* Keep the close button at a safe distance from the tab label. */
@@ -107,7 +122,7 @@
 .tab .label {
   font-weight: normal;
   line-height: 1.4;
-  color: #000000;
+  color: var(--tab-text);
   text-align: start;
   text-shadow: none;
   margin-bottom: 1px;
@@ -115,8 +130,8 @@
 
 .tab.active .label {
   font-weight: bold;
-  color: #ffffff;
-  text-shadow: 0 1px #404040;
+  color: var(--tab-text-active);
+  text-shadow: 0 1px var(--shadow-color);
 }
 
 /* Make the tab counter look like the bubbles in Mail.app et.al. */
@@ -127,25 +142,25 @@
 
 .counter {
   font-size: 85%;
-  background-color: #91a0c0;
+  background-color: var(--badge-bg-color);
   border-radius: 8px;
   padding: 2px 4px;
-  color: #ffffff;
+  color: var(--tab-text-active);
   font-weight: bold;
   text-shadow: none;
 }
 
 .tab.active .counter {
-  background-color: #ffffff;
-  color: #91a0c0;
+  background-color: var(--tab-text-active);
+  color: var(--badge-bg-color);
 }
 
 :-moz-window-inactive .counter {
-  background-color: #b5b5b5;
+  background-color: var(--badge-bg-color-inactive);
 }
 :-moz-window-inactive .tab.active .counter {
-  background-color: #ffffff;
-  color: #929292;
+  background-color: var(--tab-text-active);
+  color: var(--badge-color-inactive);
 }
 
 
