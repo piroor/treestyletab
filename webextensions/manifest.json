@@ -10,11 +10,15 @@
     "storage",
     "tabs"
   ],
+  "icons": {
+    "94": "resources/icon.png"
+  },
   "background": {
     "page": "background/background.html"
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
+    "default_icon": "resources/icon.png",
     "default_panel": "sidebar/sidebar.html"
   },
   "options_ui": {
