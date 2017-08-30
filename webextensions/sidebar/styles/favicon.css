@@ -36,13 +36,7 @@
 }
 
 .favicon-default::before {
-  content: "🌐";
-}
-
-.tab[data-content-location^="about:"] .favicon-default::before,
-.tab[data-content-location^="chrome:"] .favicon-default::before,
-.tab[data-content-location^="resource:"] .favicon-default::before {
-  background: url("chrome://branding/content/icon32.png") center center no-repeat;
+  background: url("moon.svg") center center no-repeat;
   background-size: 100%;
   content: "";
   display: inline-block;
@@ -50,11 +44,6 @@
   max-width: var(--favicon-size);
   min-height: var(--favicon-size);
   min-width: var(--favicon-size);
-}
-
-.tab[data-content-location^="file:"] .favicon-default::before,
-.tab[data-content-location^="moz-extension:"] .favicon-default::before {
-  content: "📄";
 }
 
 .tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
