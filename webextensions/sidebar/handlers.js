@@ -764,7 +764,7 @@ function onConfigChange(aChangedKey) {
     case 'defaultStyle':
     case 'defaultStyleDarwin':
     case 'defaultStyleLinux':
-      applyStyle();
+      location.reload();
       break;
   }
 }
