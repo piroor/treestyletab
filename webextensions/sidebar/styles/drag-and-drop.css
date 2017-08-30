@@ -16,6 +16,7 @@
 .tab[data-drop-position="self"] {
   outline: var(--dropmarker-size) solid black !important;
   outline-offset: calc(0px - var(--dropmarker-size));
+  -moz-outline-radius: calc(var(--dropmarker-size) * 2);
 }
 
 .tab[data-drop-position]:not([data-drop-position="self"])::before {
