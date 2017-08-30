@@ -40,13 +40,21 @@
   --shadow-color: #404040;
   --shadow-color-inactive: #868686;
   --tab-surfece-active-color: #94A1C0;
-  --tab-surface-active-gradient: -moz-linear-gradient(top, #A0B0CF, #7386AB);
-  --tab-surface-active-gradient-inactive: -moz-linear-gradient(top, #B4B4B4, #8A8A8A);
+  --tab-surface-active-gradient: -moz-linear-gradient(top, #A0B0CF, #7386AB) repeat-x;
+  --tab-surface-active-gradient-inactive: -moz-linear-gradient(top, #B4B4B4, #8A8A8A) repeat-x;
   --tab-text: black;
   --tab-text-active: white;
   --badge-bg-color: #91a0c0;
   --badge-color-inactive: #b5b5b5;
   --badge-bg-color-inactive: #929292;
+  --dropmarker-border-color: #577bf3;
+  --dropmarker-bg-color: #d0def5;
+  --throbber-color: var(--dropmarker-border-color);
+  --throbber-shadow-color: white;
+
+  --tab-highlighted-highlight: white;
+  --tab-highlighted-glow: var(--dropmarker-border-color);
+  --tab-highlighted-base: var(--bg-color);
 }
 
 /* Background colour for the tree sidebar (light blue when window is
@@ -83,12 +91,12 @@
 
 .tab.active {
   border-top: 1px solid var(--tab-surfece-active-color);
-  background: var(--tab-surface-active-gradient) repeat-x;
+  background: var(--tab-surface-active-gradient);
 }
 
 :-moz-window-inactive .tab.active {
   border-top: 1px solid var(--tab-surfece-active-color-inactive);
-  background: var(--tab-surface-active-gradient-inactive) repeat-x;
+  background: var(--tab-surface-active-gradient-inactive);
 }
 
 /* Keep the close button at a safe distance from the tab label. */
@@ -169,8 +177,8 @@
 
 /* Round blue rectangle around tabs that are dropping targets. */
 .tab[data-drop-position="self"] {
-  background: #d0def5;
-  border: 2px solid #577bf3; /* not OSX's colour but Firefox's */
+  background: var(--dropmarker-bg-color);
+  border: 2px solid var(--dropmarker-border-color); /* not OSX's colour but Firefox's */
   border-radius: 0.3em;
   padding: 0 1px 0 8px;
   outline: none !important;
@@ -205,18 +213,6 @@
   .closebox {
   display: -moz-box !important;
   visibility: collapse !important;
-}
-
-
-/* highlighted pinned tabs */
-.tab.pinned.unread:not(.active) {
-  background-image: radial-gradient(circle farthest-corner at 50% 3px,
-                                    Highlight 3%,
-                                    rgba(255, 255, 255, 0) 80%);
-.tab.pinned.unread:not(.active):hover {
-  background-image: radial-gradient(circle farthest-corner at 50% 3px,
-                                    Highlight 3%,
-                                    rgba(255, 255, 255, 0) 100%);
 }
 
 

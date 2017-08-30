@@ -2,8 +2,14 @@
 
 :root {
   --dropmarker-color: white;
+  --throbber-color: white;
+  --throbber-shadow-color: rgba(0, 0, 0, 0.45);
   --tab-surface: #9d9d9d;
   --tab-surface-active: #b3b2b3;
+
+  --tab-highlighted-highlight: white;
+  --tab-highlighted-glow: var(--tab-surface-active);
+  --tab-highlighted-base: var(--tab-surface);
 }
 
 .tab,
@@ -72,18 +78,6 @@
 
 .tab.pinned:not(.unread).active {
   background-color: var(--tab-surface-active);
-}
-
-/* highlighted pinned tabs */
-.tab.pinned.unread:not(.active) {
-  background-image: radial-gradient(circle farthest-corner at 50% 3px,
-                                    white 3%,
-                                    var(--tab-surface-active) 80%);
-}
-.tab.pinned.unread:not(.active):hover {
-  background-image: radial-gradient(circle farthest-corner at 50% 3px,
-                                    white 3%,
-                                    var(--tab-surface-active) 100%);
 }
 
 

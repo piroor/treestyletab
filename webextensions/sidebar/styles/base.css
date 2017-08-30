@@ -33,17 +33,17 @@
   --button-hover-opacity: 1;
   --button-active-opacity: 0.5;
 
-  --tab-highlighted-base: ThreeDHighlight;
-  --tab-highlighted-highlight: Highlight;
-
-  --unread-pinned-gradient: radial-gradient(circle farthest-corner at 50% 3px,
-                                            var(--tab-highlighted-base) 3%,
-                                            var(--tab-highlighted-highlight) 80%);
-  --unread-pinned-color: var(--tab-highlighted-base);
-  --unread-pinned-gradient-hover: radial-gradient(circle farthest-corner at 50% 3px,
-                                            var(--tab-highlighted-base) 3%,
-                                            var(--tab-highlighted-highlight) 100%);
-  --unread-pinned-color-hover: var(--tab-highlighted-base);
+  --tab-highlighted-highlight: white;
+  --tab-highlighted-glow: Highlight;
+  --tab-highlighted-base: transparent;
+  --unread-pinned-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                            var(--tab-highlighted-highlight) 3%,
+                                            var(--tab-highlighted-glow) 10%,
+                                            var(--tab-highlighted-base) 20%);
+  --unread-pinned-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                            var(--tab-highlighted-highlight) 3%,
+                                            var(--tab-highlighted-glow) 10%,
+                                            var(--tab-highlighted-base) 23%);
 }
 
 :root.debug * {
@@ -190,13 +190,11 @@ ul {
   display: none;
 }
 
-.tab.pinned.unread:not(.active) {
-  background-color: var(--unread-pinned-color);
+.tab.pinned.unread:not(.active):not(:hover) {
   background-image: var(--unread-pinned-gradient);
 }
 
 .tab.pinned.unread:not(.active):hover {
-  background-color: var(--unread-pinned-color-hover);
   background-image: var(--unread-pinned-gradient-hover);
 }
 

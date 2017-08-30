@@ -5,10 +5,14 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+:root {
+  --throbber-color: Highlight;
+  --throbber-shadow-color: transparent;
+}
+
 .throbber {
   --throbber-size: 0.3em;
   --throbber-half-size: calc(0.3em / 2);
-  --throbber-color: Highlight;
 }
 
 @keyframes throbber {
@@ -43,6 +47,7 @@
 }
 
 .throbber::before {
+  box-shadow: 0 0 2px var(--throbber-shadow-color);
   content: "";
   width: 0;
   height: 0;
