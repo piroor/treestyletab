@@ -39,8 +39,8 @@ async function init() {
   log('initialize sidebar on load');
   window.addEventListener('resize', onResize);
 
-  gTabBar.addEventListener('mousedown', onMouseDown);
-  gTabBar.addEventListener('click', onClick);
+  window.addEventListener('mousedown', onMouseDown);
+  window.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
   gTabBar.addEventListener('transitionend', onTransisionEnd);
 
@@ -67,8 +67,8 @@ function destroy() {
   endObserveApiTabs();
   window.removeEventListener('resize', onResize);
 
-  gTabBar.removeEventListener('mousedown', onMouseDown);
-  gTabBar.removeEventListener('click', onClick);
+  window.removeEventListener('mousedown', onMouseDown);
+  window.removeEventListener('click', onClick);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
 
