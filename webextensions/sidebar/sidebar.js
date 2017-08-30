@@ -21,7 +21,7 @@ blockUserOperations();
 var gSizeDefinition;
 var gStyleLoader;
 
-function earlyInit() {
+async function earlyInit() {
   log('initialize sidebar on DOMContentLoaded');
   window.addEventListener('unload', destroy, { once: true });
 
@@ -30,6 +30,10 @@ function earlyInit() {
   gAllTabs = document.querySelector('#all-tabs');
   gSizeDefinition = document.querySelector('#size-definition');
   gStyleLoader = document.querySelector('#style-loader');
+
+  await configs.$loaded;
+  await applyStyle();
+  document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
 }
 
 async function init() {
@@ -40,11 +44,6 @@ async function init() {
   gTabBar.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
   gTabBar.addEventListener('transitionend', onTransisionEnd);
-
-  await configs.$loaded;
-
-  applyStyle();
-  document.documentElement.setAttribute(kTWISTY_STYLE, configs.twistyStyle);
 
   calculateDefaultSizes();
 
@@ -96,14 +95,20 @@ function applyStyle() {
       break;
     case 'mixed':
       gStyleLoader.setAttribute('href', 'styles/square/mixed.css');
+      break;
     case 'flat':
       gStyleLoader.setAttribute('href', 'styles/square/flat.css');
+      break;
     case 'vertigo':
       gStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
+      break;
     default:
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
   }
+  return new Promise((aResolve, aReject) => {
+    gStyleLoader.addEventListener('load', aResolve, { once: true });
+  });
 }
 
 function calculateDefaultSizes() {
