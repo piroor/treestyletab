@@ -39,47 +39,49 @@
 'use strict';
 
 function isActive(aTab) {
-  return aTab.classList.contains(kTAB_STATE_ACTIVE);
+  return aTab && aTab.classList.contains(kTAB_STATE_ACTIVE);
 }
 
 function isPinned(aTab) {
-  return aTab.classList.contains(kTAB_STATE_PINNED);
+  return aTab && aTab.classList.contains(kTAB_STATE_PINNED);
 }
 
 function isAudible(aTab) {
-  return aTab.classList.contains(kTAB_STATE_AUDIBLE);
+  return aTab && aTab.classList.contains(kTAB_STATE_AUDIBLE);
 }
 
 function isSoundPlaying(aTab) {
-  return aTab.classList.contains(kTAB_STATE_SOUND_PLAYING);
+  return aTab && aTab.classList.contains(kTAB_STATE_SOUND_PLAYING);
 }
 
 function maybeSoundPlaying(aTab) {
-  return aTab.classList.contains(kTAB_STATE_SOUND_PLAYING) ||
-         (aTab.classList.contains(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
-          aTab.hasAttribute(kCHILDREN));
+  return aTab &&
+         (aTab.classList.contains(kTAB_STATE_SOUND_PLAYING) ||
+          (aTab.classList.contains(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+           aTab.hasAttribute(kCHILDREN)));
 }
 
 function isMuted(aTab) {
-  return aTab.classList.contains(kTAB_STATE_MUTED);
+  return aTab && aTab.classList.contains(kTAB_STATE_MUTED);
 }
 
 function maybeMuted(aTab) {
-  return aTab.classList.contains(kTAB_STATE_MUTED) ||
-         (aTab.classList.contains(kTAB_STATE_HAS_MUTED_MEMBER) &&
-          aTab.hasAttribute(kCHILDREN));
+  return aTab &&
+         (aTab.classList.contains(kTAB_STATE_MUTED) ||
+          (aTab.classList.contains(kTAB_STATE_HAS_MUTED_MEMBER) &&
+           aTab.hasAttribute(kCHILDREN)));
 }
 
 function isHidden(aTab) {
-  return aTab.classList.contains(kTAB_STATE_HIDDEN);
+  return aTab && aTab.classList.contains(kTAB_STATE_HIDDEN);
 }
 
 function isCollapsed(aTab) {
-  return aTab.classList.contains(kTAB_STATE_COLLAPSED);
+  return aTab && aTab.classList.contains(kTAB_STATE_COLLAPSED);
 }
 
 function isSubtreeCollapsed(aTab) {
-  return aTab.classList.contains(kTAB_STATE_SUBTREE_COLLAPSED);
+  return aTab && aTab.classList.contains(kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
 function shouldCloseTabSubtreeOf(aTab) {
