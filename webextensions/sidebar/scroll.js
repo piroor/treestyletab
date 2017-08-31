@@ -143,7 +143,7 @@ function scrollToNewTab(aTab) {
     return;
 
   if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE)
-    scrollToTab(aTab);
+    scrollToTab(aTab, { anchor: getCurrentTab() });
 }
 
 function canScrollToTab(aTab) {
@@ -153,7 +153,7 @@ function canScrollToTab(aTab) {
 }
 
 function scrollToTab(aTab, aOptions = {}) {
-  log('scrollToTab to ', dumpTab(aTab), aOptions);
+  log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions);
   if (!canScrollToTab(aTab)) {
     log('=> unscrollable');
     return;
@@ -167,11 +167,12 @@ function scrollToTab(aTab, aOptions = {}) {
   }
 
   window.requestAnimationFrame(() => {
-    var anchorTab = aOptions.anchor || getCurrentTab();
-    if (anchorTab == aTab ||
-        (!isPinned(anchorTab) &&
-         !isTabInViewport(anchorTab))) {
-      log('=> direct scroll');
+    var anchorTab = aOptions.anchor;
+    if (!anchorTab ||
+        !anchorTab.parentNode ||
+        anchorTab == aTab ||
+        isPinned(anchorTab)) {
+      log('=> no available anchor, direct scroll');
       scrollTo(clone(aOptions, {
         tab: aTab
       }));
