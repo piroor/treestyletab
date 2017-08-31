@@ -456,7 +456,8 @@ async function onTabCompletelyClosed(aTab) {
       aResolve();
     });
     aTab.addEventListener('transitionend', aTab.onEndRemoveAnimation, { once: true });
-    aTab.style.marginTop = `-${aTab.getBoundingClientRect().height}px`;
+    let tabRect = aTab.getBoundingClientRect();
+    aTab.style.marginLeft = `${tabRect.width}px`;
     let backupTimer = setTimeout(() => {
       if (!aTab || !aTab.onEndRemoveAnimation ||
           !aTab.parentNode) // it was removed while waiting

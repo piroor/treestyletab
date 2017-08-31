@@ -155,13 +155,7 @@ ul {
   transition: var(--tab-animation);
 }
 
-.tab.removing {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
+.tab.removing,
 .tab.collapsed {
   margin-top: calc(0px - var(--tab-height));
   opacity: 0;
