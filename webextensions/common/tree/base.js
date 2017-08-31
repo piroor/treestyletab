@@ -54,12 +54,23 @@ async function getOrGenerateTabId(aApiTab, aOptions = {}) {
 
   if (aOptions.inRemote) {
     gWaitingForTabIdGenerated++;
+    aOptions.retryCount = 0;
     let response = await browser.runtime.sendMessage({
       type:     kCOMMAND_GET_OR_GENERATE_UNIQUE_ID,
       windowId: aApiTab.windowId,
       tabId:    aApiTab.id
     });
     gWaitingForTabIdGenerated--;
+    if (!response || !response.id) {
+      log('FATAL ERROR: failed to get unique id from background.');
+      if (aOptions.retryCount < 10) {
+        aOptions.retryCount++;
+        return getOrGenerateTabId(aApiTab, aOptions);
+      }
+      else {
+        throw new Error('FATAL ERROR: failed to get unique id from background.');
+      }
+    }
     return response && response.id;
   }
 
