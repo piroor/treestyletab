@@ -280,7 +280,7 @@ function detachTab(aChild, aOptions = {}) {
   updateTabsIndent(aChild);
 
   window.onTabDetached && onTabDetached(aChild, {
-    oldParent: parent
+    oldParentTab: parent
   });
 
   if (aOptions.inRemote || aOptions.broadcast) {

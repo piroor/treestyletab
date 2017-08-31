@@ -132,3 +132,111 @@ async function loadTreeStructure() {
     }
   }));
 }
+
+
+function reserveToUpdateInsertionPosition(aTabOrTabs) {
+  var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
+  for (let tab of tabs) {
+    if (!tab || !tab.parentNode)
+      continue;
+    if (tab.reservedUpdateInsertionPosition)
+      clearTimeout(tab.reservedUpdateInsertionPosition);
+    tab.reservedUpdateInsertionPosition = setTimeout(() => {
+      delete tab.reservedUpdateInsertionPosition;
+      updateInsertionPosition(tab);
+    }, 100);
+  }
+}
+
+async function updateInsertionPosition(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+
+  var prev = getPreviousTab(aTab);
+  if (prev)
+    getOrGenerateUniqueId(prev.apiTab.id).then(aId =>
+      browser.sessions.setTabValue(
+        aTab.apiTab.id,
+        kPERSISTENT_INSERT_AFTER,
+        aId
+      )
+    );
+  else
+    browser.sessions.removeTabValue(
+      aTab.apiTab.id,
+      kPERSISTENT_INSERT_AFTER
+    );
+
+  var next = getNextTab(aTab);
+  if (next)
+    getOrGenerateUniqueId(next.apiTab.id).then(aId =>
+      browser.sessions.setTabValue(
+        aTab.apiTab.id,
+        kPERSISTENT_INSERT_BEFORE,
+        aId
+      )
+    );
+  else
+    browser.sessions.removeTabValue(
+      aTab.apiTab.id,
+      kPERSISTENT_INSERT_BEFORE
+    );
+}
+
+function reserveToUpdateAncestors(aTabOrTabs) {
+  var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
+  for (let tab of tabs) {
+    if (!tab || !tab.parentNode)
+      continue;
+    if (tab.reservedUpdateAncestors)
+      clearTimeout(tab.reservedUpdateAncestors);
+    tab.reservedUpdateAncestors = setTimeout(() => {
+      delete tab.reservedUpdateAncestors;
+      updateAncestors(tab);
+    }, 100);
+  }
+}
+
+async function updateAncestors(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+
+  var ancestorIds = await Promise.all(
+    getAncestorTabs(aTab)
+      .map(aAncestor => getOrGenerateUniqueId(aAncestor.apiTab.id))
+  );
+  browser.sessions.setTabValue(
+    aTab.apiTab.id,
+    kPERSISTENT_ANCESTORS,
+    ancestorIds
+  );
+}
+
+function reserveToUpdateChildren(aTabOrTabs) {
+  var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
+  for (let tab of tabs) {
+    if (!tab || !tab.parentNode)
+      continue;
+    if (tab.reservedUpdateChildren)
+      clearTimeout(tab.reservedUpdateChildren);
+    tab.reservedUpdateChildren = setTimeout(() => {
+      delete tab.reservedUpdateChildren;
+      updateChildren(tab);
+    }, 100);
+  }
+}
+
+async function updateChildren(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+
+  var childIds = await Promise.all(
+    getChildTabs(aTab)
+      .map(aChild => getOrGenerateUniqueId(aChild.apiTab.id))
+  );
+  browser.sessions.setTabValue(
+    aTab.apiTab.id,
+    kPERSISTENT_CHILDREN,
+    childIds
+  );
+}

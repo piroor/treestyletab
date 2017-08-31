@@ -256,7 +256,9 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   log('onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
 
   var moveInfo = clone(aMoveInfo, {
-    byInternalOperation
+    byInternalOperation,
+    oldPreviousTab: getPreviousTab(movedTab),
+    oldNextTab:     getNextTab(movedTab)
   });
   var canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
   if (!canceled &&

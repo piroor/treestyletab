@@ -153,6 +153,13 @@ function onTabMoving(aTab, aMoveInfo) {
 }
 
 async function onTabMoved(aTab, aMoveInfo) {
+  reserveToSaveTreeStructure(aTab);
+  reserveToUpdateInsertionPosition([
+    aTab,
+    aMoveInfo.oldPreviousTab,
+    aMoveInfo.oldNextTab
+  ]);
+
   var container = getTabsContainer(aTab);
   if (aMoveInfo.byInternalOperation) {
     log('internal move');
@@ -161,8 +168,6 @@ async function onTabMoved(aTab, aMoveInfo) {
   log('process moved tab');
 
   //updateTabAsParent(aTab);
-
-  reserveToSaveTreeStructure(aTab);
 
 /*
   var tabsToBeUpdated = [aTab];
@@ -460,10 +465,14 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
 function onTabAttached(aTab) {
   reserveToSaveTreeStructure(aTab);
+  reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
+  reserveToUpdateChildren(getParentTab(aTab));
 }
 
-function onTabDetached(aTab) {
+function onTabDetached(aTab, aDetachInfo) {
   reserveToSaveTreeStructure(aTab);
+  reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
+  reserveToUpdateChildren(aDetachInfo.oldParentTab);
 }
 
 function onTabDetachedFromWindow(aTab) {

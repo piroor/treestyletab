@@ -616,7 +616,7 @@ function onTabAttached(aTab) {
 }
 
 function onTabDetached(aTab, aDetachInfo = {}) {
-  var parent = aDetachInfo.oldParent;
+  var parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
   var ancestors = [parent].concat(getAncestorTabs(parent));

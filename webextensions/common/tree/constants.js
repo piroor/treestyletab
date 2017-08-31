@@ -40,6 +40,8 @@ const kDROP_POSITION = 'data-drop-position';
 const kPERSISTENT_ID        = 'unique-id';
 const kPERSISTENT_ANCESTORS = 'ancestors';
 const kPERSISTENT_CHILDREN  = 'children';
+const kPERSISTENT_INSERT_BEFORE = 'insert-before';
+const kPERSISTENT_INSERT_AFTER  = 'isnert-after';
 
 const kFAVICON  = 'favicon';
 const kFAVICON_IMAGE = 'favicon-image';
