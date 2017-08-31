@@ -51,8 +51,7 @@ function makeTabId(aApiTab) {
 
 async function requestUniqueId(aTabId, aOptions = {}) {
   if (aOptions.inRemote) {
-    aOptions.retryCount = 0;
-    let response = await browser.runtime.sendMessage({
+    let response = await sendMessageAndGetResponseWithRetry({
       type:     kCOMMAND_REQUEST_UNIQUE_ID,
       id:       aTabId,
       forceNew: !!aOptions.forceNew
@@ -137,21 +136,15 @@ function buildTab(aApiTab, aOptions = {}) {
   }
 
   if (aApiTab.id)
-    tab.uniqueId = requestUniqueId(aApiTab.id, aOptions)
-      .then(aUniqueId => {
-        if (!configs.debug)
-          return aUniqueId;
-
-        tab.setAttribute('title',
-          tab.getAttribute('title')
-            .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
-            .replace(`<%originalId%>`, aUniqueId.originalId)
-            .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
-            .replace(`<%duplicated%>`, !!aUniqueId.originalId));
-        return aUniqueId;
-      });
+    tab.uniqueId = requestUniqueId(aApiTab.id, {
+      inRemote: !!gTargetWindow
+    });
   else
-    tab.uniqueId = Promise.resolve({ id: null, duplicated: false });
+    tab.uniqueId = Promise.resolve({
+      id: null,
+      originalId: null,
+      originalTabId: null
+    });
 
   return tab;
 }
@@ -252,7 +245,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_SELECTED);
   }
 
-  if (configs.debug)
+  if (configs.debug) {
     aTab.setAttribute('title',
       `
 ${label}
@@ -263,6 +256,19 @@ duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
 tabId = ${aNewState.id}
 windowId = ${aNewState.windowId}
 `.trim());
+    aTab.uniqueId.then(aUniqueId => {
+        // reget it because it can be removed from document.
+        var aTab = getTabById({ tab: aNewState.id, window: aNewState.windowId });
+        if (!aTab)
+          return;
+        aTab.setAttribute('title',
+          aTab.getAttribute('title')
+            .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
+            .replace(`<%originalId%>`, aUniqueId.originalId)
+            .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
+            .replace(`<%duplicated%>`, !!aUniqueId.originalId));
+      });
+  }
 }
 
 function maybeImageUrl(aURL) {

@@ -754,7 +754,7 @@ async function moveTabs(aTabs, aOptions = {}) {
   var isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
   if (aOptions.inRemote) {
-    let response = await browser.runtime.sendMessage(clone(aOptions, {
+    let response = await sendMessageAndGetResponseWithRetry(clone(aOptions, {
       type:         kCOMMAND_MOVE_TABS,
       windowId:     windowId,
       tabs:         aTabs.map(aTab => aTab.id),
@@ -763,20 +763,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       duplicate:    !!aOptions.duplicate,
       destinationWindowId: destinationWindowId,
       inRemote:     false
-    })).catch(e => {
-      log('moveTabs:FATAL ERROR: failed to get response. ',
-          String(e));
-      throw e;
-    });
-    if (!response) {
-      log('moveTabs:FATAL ERROR: failed to get response. Fallback to manual collection.');
-      response = {
-        movedTabs: aTabs.map(aTab => makeTabId({
-                     id:       aTab.apiTab.id,
-                     windowId: destinationWindowId
-                   }))
-      };
-    }
+    }));
     let movedTabs = response.movedTabs || [];
     movedTabs = movedTabs.map(getTabById);
     return movedTabs.filter(aTab => !!aTab);
@@ -920,7 +907,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
 
   if (aOptions.inRemote) {
-    let response = await browser.runtime.sendMessage(clone(aOptions, {
+    let response = await sendMessageAndGetResponseWithRetry(clone(aOptions, {
       type:         kCOMMAND_NEW_WINDOW_FROM_TABS,
       windowId:     windowId,
       tabs:         aTabs.map(aTab => aTab.id),
@@ -928,23 +915,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       left:         'left' in aOptions ? parseInt(aOptions.left) : null,
       top:          'top' in aOptions ? parseInt(aOptions.top) : null,
       inRemote:     false
-    })).catch(e => {
-      log('openNewWindowFromTabs:FATAL ERROR: failed to get response. ',
-          String(e));
-      throw e;
-    });
-    if (!response) {
-      log('openNewWindowFromTabs:FATAL ERROR: failed to get response. Fallback to manual collection.');
-      let newWindowId = (await browser.windows.getLastFocused({
-                          windowTypes: ['normal' ]
-                        })).id;
-      response = {
-        movedTabs: aTabs.map(aTab => makeTabId({
-                     id:       aTab.apiTab.id,
-                     windowId: newWindowId
-                   }))
-      };
-    }
+    }));
     let movedTabs = response.movedTabs || [];
     movedTabs = movedTabs.map(getTabById);
     return movedTabs.filter(aTab => !!aTab);

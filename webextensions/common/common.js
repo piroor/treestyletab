@@ -56,6 +56,31 @@ function clone(aOriginalObject, aExtraProperties) {
   return cloned;
 }
 
+async function sendMessageAndGetResponseWithRetry(...aParams) {
+  try {
+    var retryCount = 0;
+    var response;
+    do {
+      response = await browser.runtime.sendMessage(...aParams);
+    }
+    while (!response &&
+           sendMessageAndGetResponseWithRetry.maxRetryCount > retryCount++);
+
+    if (!response) {
+      log(`FATAL ERROR: failed to get response in ${sendMessageAndGetResponseWithRetry.maxRetryCount} times.`,
+          aParams);
+    }
+
+    return response;
+  }
+  catch(e) {
+    log('FATAL ERROR: failed to send message / get response.',
+        aParams, String(e), e.stack);
+    throw e;
+  }
+}
+sendMessageAndGetResponseWithRetry.maxRetryCount = 10;
+
 configs = new Configs({
   treeStructure: [],
 
