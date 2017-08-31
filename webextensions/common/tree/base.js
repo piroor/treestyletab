@@ -50,7 +50,7 @@ function makeTabId(aApiTab) {
 }
 
 async function getOrGenerateUniqueId(aTabId, aOptions = {}) {
-  var oldId = await browser.sessions.getTabValue(aTabId, kID);
+  var oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
   if (oldId)
     return oldId;
 
@@ -67,7 +67,7 @@ async function getOrGenerateUniqueId(aTabId, aOptions = {}) {
   var noun = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
   var randomValue = Math.floor(Math.random() * 1000);
   var id = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  await browser.sessions.setTabValue(aTabId, kID, id);
+  await browser.sessions.setTabValue(aTabId, kPERSISTENT_ID, id);
   return id;
 }
 
@@ -95,12 +95,15 @@ function buildTab(aApiTab, aOptions = {}) {
   }
 
   if (aApiTab.id)
-    getOrGenerateUniqueId(aApiTab.id, aOptions)
+    tab.uniqueId = getOrGenerateUniqueId(aApiTab.id, aOptions)
       .then(aUniqueId => {
-        tab.setAttribute(kID, aUniqueId);
+        tab.setAttribute(kPERSISTENT_ID, aUniqueId);
         if (configs.debug)
-          tab.setAttribute('title', tab.getAttribute('title').replace(`<${kID}>`, aUniqueId));
+          tab.setAttribute('title', tab.getAttribute('title').replace(`<${kPERSISTENT_ID}>`, aUniqueId));
+        return aUniqueId;
       });
+  else
+    tab.uniqueId = Promise.resolve(null);
 
   return tab;
 }
@@ -207,7 +210,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 ${label}
 #${aTab.id}
 (${aTab.className})
-uniqueId = <${kID}>
+uniqueId = <${kPERSISTENT_ID}>
 tabId = ${aNewState.id}
 windowId = ${aNewState.windowId}
 `.trim());

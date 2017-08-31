@@ -26,18 +26,20 @@ const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:request-block-user-operatio
 const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:request-unblock-user-operations';
 const kCOMMAND_BROADCAST_TAB_STATE = 'treestyletab:broadcast-tab-state';
 
-const kID = 'data-unique-id';
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';
 const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT   = 'data-parent-id';
 const kCHILDREN = 'data-child-ids';
-const kANCESTORS = 'data-ancestor-ids';
 const kLEVEL = 'data-level';
 const kINSERT_BEFORE = 'data-insert-before-id';
 const kINSERT_AFTER  = 'data-insert-after-id';
 const kCLOSED_SET_ID = 'data-closed-set-id';
 const kDROP_POSITION = 'data-drop-position';
+
+const kPERSISTENT_ID        = 'unique-id';
+const kPERSISTENT_ANCESTORS = 'ancestors';
+const kPERSISTENT_CHILDREN  = 'children';
 
 const kFAVICON  = 'favicon';
 const kFAVICON_IMAGE = 'favicon-image';
