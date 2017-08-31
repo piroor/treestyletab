@@ -76,6 +76,8 @@ const kTABBAR_STATE_OVERFLOW = 'overflow';
 const kTABBAR_STATE_TAB_DRAGGING = 'tab-dragging';
 const kTABBAR_STATE_BLOCKING = 'blocking';
 
+const kWINDOW_STATE_TREE_STRUCTURE = 'tree-structure';
+
 const kCOUNTER_ROLE_ALL_TABS = 1;
 const kCOUNTER_ROLE_CONTAINED_TABS = 2;
 

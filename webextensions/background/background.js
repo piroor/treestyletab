@@ -71,8 +71,6 @@ async function rebuildAll() {
 
 // save/load tree structure
 
-var gTreeStructures = {};
-
 function reserveToSaveTreeStructure(aHint) {
   if (gInitializing)
     return;
@@ -90,67 +88,47 @@ function reserveToSaveTreeStructure(aHint) {
 async function saveTreeStructure(aWindowId) {
   var container = getTabsContainer(aWindowId);
   if (!container) {
-    delete gTreeStructures[aWindowId];
+    browser.sessions.removeWindowValue(
+      aWindowId,
+      kWINDOW_STATE_TREE_STRUCTURE
+    );
   }
   else {
-    container.waitingToSaveTreeStructure = null;
     let window = await browser.windows.get(aWindowId, {
       populate: true,
       windowTypes: ['normal']
     });
-    gTreeStructures[aWindowId] = {
-      signature: getTabsSignature(window.tabs),
-      structure: getTreeStructureFromTabs(getAllTabs(aWindowId))
-    };
+    let structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
+    browser.sessions.setWindowValue(
+      aWindowId,
+      kWINDOW_STATE_TREE_STRUCTURE,
+      structure
+    );
   }
-  var sanitizedStructure = {};
-  Object.keys(gTreeStructures).forEach(aId => {
-    var structure = gTreeStructures[aId];
-    sanitizedStructure[structure.signature] = structure.structure;
-  });
-  configs.treeStructure = sanitizedStructure;
 }
 
 async function loadTreeStructure() {
-  var structures = configs.treeStructure;
-  if (!structures)
-    return;
-
-  log('loadTreeStructure: ', structures);
+  log('loadTreeStructure');
   var windows = await browser.windows.getAll({
     populate: true,
     windowTypes: ['normal']
   });
-  for (let window of windows) {
-    let signature = getTabsSignature(window.tabs);
-    let structure = structures[signature];
+  return Promise.all(windows.map(async aWindow => {
+    var structure = await browser.sessions.getWindowValue(
+      aWindow.id,
+      kWINDOW_STATE_TREE_STRUCTURE
+    );
     if (structure) {
-      log(`tree information for window ${window.id} is available.`);
-      applyTreeStructureToTabs(getAllTabs(window.id), structure);
+      log(`tree information for window ${aWindow.id} is available.`);
+      applyTreeStructureToTabs(getAllTabs(aWindow.id), structure);
       browser.runtime.sendMessage({
         type:      kCOMMAND_PUSH_TREE_STRUCTURE,
-        windowId:  window.id,
+        windowId:  aWindow.id,
         structure: structure
       });
     }
     else {
-      log(`no tree information for the window ${window.id}. `, signature, getTabsSignatureSource(window.tabs));
+      log(`no tree information for the window ${aWindow.id}.`);
     }
-  }
-}
-
-function getTabsSignatureSource(aApiTabs) {
-  return aApiTabs.map(aTab => {
-    return {
-      audible:   aTab.audible,
-      incognito: aTab.incognito,
-      pinned:    aTab.pinned,
-      title:     aTab.title,
-      url:       aTab.url
-    };
-  })
-};
-
-function getTabsSignature(aApiTabs) {
-  return md5(JSON.stringify(getTabsSignatureSource(aApiTabs)));
+  }));
 }
