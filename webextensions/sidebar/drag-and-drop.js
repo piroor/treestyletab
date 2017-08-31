@@ -619,7 +619,7 @@ try{
     dropPositionTargetTab.setAttribute(kDROP_POSITION, dropPosition);
     //log('set drop position to ', dropPosition);
   }
-}catch(e){log(String(e));}
+}catch(e){log(String(e), e.stack);}
 }
 
 var gDelayedDragEnter;
