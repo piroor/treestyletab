@@ -503,7 +503,7 @@ function onTabDetachedFromWindow(aTab) {
 }
 
 function onTabCollapsedStateChanging(aTab, aInfo = {}) {
-  var collapsed = aInfo.collapsed;
+  var toBeCollapsed = aInfo.collapsed;
 
   //log('updateTabCollapsed ', dumpTab(aTab));
   if (!aTab.parentNode) // do nothing for closed tab!
@@ -522,7 +522,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aInfo.justNow ||
       configs.collapseDuration < 1) {
     //log('=> skip animation');
-    if (collapsed)
+    if (toBeCollapsed)
       aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
     else
       aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
@@ -532,7 +532,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     return;
   }
 
-  if (collapsed) {
+  if (toBeCollapsed) {
     aTab.classList.add(kTAB_STATE_COLLAPSING);
   }
   else {
@@ -555,7 +555,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       //log('=> finish animation for ', dumpTab(aTab));
       aTab.classList.remove(kTAB_STATE_COLLAPSING);
       aTab.classList.remove(kTAB_STATE_EXPANDING);
-      if (collapsed)
+      if (toBeCollapsed)
         aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
 
       reserveToUpdateTabbarLayout(configs.collapseDuration);
