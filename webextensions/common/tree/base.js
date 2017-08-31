@@ -59,11 +59,13 @@ async function requestUniqueId(aTabId, aOptions = {}) {
     });
     return {
       id: response.id,
-      originalId: response.originalId
+      originalId: response.originalId,
+      originalTabId: response.originalTabId
     };
   }
 
   var originalId = null;
+  var originalTabId = null;
   if (!aOptions.forceNew) {
     let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
@@ -73,7 +75,8 @@ async function requestUniqueId(aTabId, aOptions = {}) {
       if (aTabId == oldId.tabId)
         return {
           id: oldId.id,
-          originalId: null
+          originalId: null,
+          originalTabId: null
         };
 
       // If the stored tabId is different, it is possibly duplicated tab.
@@ -88,12 +91,14 @@ async function requestUniqueId(aTabId, aOptions = {}) {
         });
         return {
           id: oldId.id,
-          originalId: null
+          originalId: null,
+          originalTabId: null
         };
       }
 
       aOptions.forceNew = true;
       originalId = oldId.id;
+      originalTabId = oldId.tabId;
     }
   }
 
@@ -105,7 +110,7 @@ async function requestUniqueId(aTabId, aOptions = {}) {
     id:    id,
     tabId: aTabId // for detecttion of duplicated tabs
   });
-  return { id, originalId };
+  return { id, originalId, originalTabId };
 }
 
 function buildTab(aApiTab, aOptions = {}) {
@@ -141,6 +146,7 @@ function buildTab(aApiTab, aOptions = {}) {
           tab.getAttribute('title')
             .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
             .replace(`<%originalId%>`, aUniqueId.originalId)
+            .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
             .replace(`<%duplicated%>`, !!aUniqueId.originalId));
         return aUniqueId;
       });
@@ -253,7 +259,7 @@ ${label}
 #${aTab.id}
 (${aTab.className})
 uniqueId = <%${kPERSISTENT_ID}%>
-duplicated = <%duplicated%> / <%originalId%>
+duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
 tabId = ${aNewState.id}
 windowId = ${aNewState.windowId}
 `.trim());
