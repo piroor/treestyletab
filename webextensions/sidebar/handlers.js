@@ -747,8 +747,7 @@ function onConfigChange(aChangedKey) {
     case 'defaultStyle':
     case 'defaultStyleDarwin':
     case 'defaultStyleLinux': {
-      let style = getChosenStyle();
-      if (style != document.documentElement.getAttribute(kSTYLE))
+      if (getChosenStyle() != gStyle)
         location.reload();
     }; break;
   }

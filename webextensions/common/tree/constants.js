@@ -33,8 +33,6 @@ const kLEVEL = 'data-level';
 const kINSERT_BEFORE = 'data-insert-before-id';
 const kINSERT_AFTER  = 'data-insert-after-id';
 const kCLOSED_SET_ID = 'data-closed-set-id';
-const kSTYLE = 'data-style';
-const kTWISTY_STYLE = 'data-twisty-style';
 const kDROP_POSITION = 'data-drop-position';
 
 const kFAVICON  = 'favicon';

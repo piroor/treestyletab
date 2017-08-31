@@ -12,6 +12,7 @@ var gAfterTabsForOverflowTabBar;
 var gIndent = -1;
 var gIndentProp = 'margin-left';
 var gTabHeight = 0;
+var gStyle;
 
 window.addEventListener('DOMContentLoaded', earlyInit, { once: true });
 window.addEventListener('load', init, { once: true });
@@ -87,10 +88,8 @@ function getChosenStyle() {
 }
 
 function applyStyle() {
-  var style = getChosenStyle();
-  document.documentElement.setAttribute(kSTYLE, style);
-
-  switch (style) {
+  gStyle = getChosenStyle();
+  switch (gStyle) {
     case 'metal':
       gStyleLoader.setAttribute('href', 'styles/metal/metal.css');
       break;
