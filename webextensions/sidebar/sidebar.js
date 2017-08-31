@@ -254,9 +254,9 @@ function updateIndent() {
   var definitionsMaxLevel = getMaxTreeLevel(gTargetWindow);
   var definitions = [];
   // default indent for unhandled (deep) level tabs
-  definitions.push(`.tab[${kPARENT}]:not([${kNEST}="0"]) { ${gIndentProp}: ${definitionsMaxLevel + 1 * indentUnit}px; }`);
+  definitions.push(`.tab[${kPARENT}]:not([${kLEVEL}="0"]) { ${gIndentProp}: ${definitionsMaxLevel + 1 * indentUnit}px; }`);
   for (let level = 1; level <= definitionsMaxLevel; level++) {
-    definitions.push(`.tab[${kPARENT}][${kNEST}="${level}"] { ${gIndentProp}: ${level * indentUnit}px; }`);
+    definitions.push(`.tab[${kPARENT}][${kLEVEL}="${level}"] { ${gIndentProp}: ${level * indentUnit}px; }`);
   }
   gIndentDefinition.textContent = definitions.join('\n');
   log('updated indent definition: ', gIndentDefinition.textContent);

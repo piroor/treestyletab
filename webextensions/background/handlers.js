@@ -293,8 +293,8 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   var prevParent = getParentTab(prevTab);
   var nextParent = getParentTab(nextTab);
 
-  var prevLevel  = prevTab ? Number(prevTab.getAttribute(kNEST)) : -1 ;
-  var nextLevel  = nextTab ? Number(nextTab.getAttribute(kNEST)) : -1 ;
+  var prevLevel  = prevTab ? Number(prevTab.getAttribute(kLEVEL)) : -1 ;
+  var nextLevel  = nextTab ? Number(nextTab.getAttribute(kLEVEL)) : -1 ;
   log('prevLevel: '+prevLevel);
   log('nextLevel: '+nextLevel);
 

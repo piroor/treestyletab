@@ -128,7 +128,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   });
 
   aChild.setAttribute(kPARENT, aParent.id);
-  var parentLevel = parseInt(aParent.getAttribute(kNEST) || 0);
+  var parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
   if (!aOptions.dontUpdateIndent) {
     updateTabsIndent(aChild, parentLevel + 1);
     //checkTabsIndentOverflow();
@@ -393,7 +393,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
       continue;
 
     window.onTabLevelChanged && onTabLevelChanged(item);
-    item.setAttribute(kNEST, aLevel);
+    item.setAttribute(kLEVEL, aLevel);
     updateTabsIndent(getChildTabs(item), aLevel + 1);
   }
 }

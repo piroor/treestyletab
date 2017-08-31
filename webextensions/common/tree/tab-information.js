@@ -121,10 +121,10 @@ function getMaxTreeLevel(aHint, aOptions = {}) {
                       `${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}]`;
   var maxLevel = evaluateXPath(
                    `descendant::${tabCondition}[
-                     not(preceding-sibling::${tabCondition}/@${kNEST} > @${kNEST})
+                     not(preceding-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
                    ][
-                     not(following-sibling::${tabCondition}/@${kNEST} > @${kNEST})
-                   ]/@${kNEST}`,
+                     not(following-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
+                   ]/@${kLEVEL}`,
                    getTabsContainer(aHint) || document,
                    XPathResult.NUMBER_TYPE
                  ).numberValue;

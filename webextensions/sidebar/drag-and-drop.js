@@ -301,8 +301,8 @@ function getDropActionInternal(aEvent) {
         }
       }
       else {
-        let prevLevel   = Number(prevTab.getAttribute(kNEST) || 0);
-        let targetLevel = Number(targetTab.getAttribute(kNEST) || 0);
+        let prevLevel   = Number(prevTab.getAttribute(kLEVEL) || 0);
+        let targetLevel = Number(targetTab.getAttribute(kLEVEL) || 0);
         info.parent       = (prevLevel < targetLevel) ? prevTab : getParentTab(targetTab) ;
         info.action       = kACTION_MOVE | (info.parent ? kACTION_ATTACH : kACTION_DETACH );
         info.insertBefore = targetTab;
@@ -337,8 +337,8 @@ function getDropActionInternal(aEvent) {
         info.parent = getParentTab(targetTab);
       }
       else {
-        var targetLevel = Number(targetTab.getAttribute(kNEST) || 0);
-        var nextLevel   = Number(nextTab.getAttribute(kNEST) || 0);
+        var targetLevel = Number(targetTab.getAttribute(kLEVEL) || 0);
+        var nextLevel   = Number(nextTab.getAttribute(kLEVEL) || 0);
         info.parent       = (targetLevel < nextLevel) ? targetTab : getParentTab(targetTab) ;
         info.action       = kACTION_MOVE | (info.parent ? kACTION_ATTACH : kACTION_DETACH );
         info.insertBefore = nextTab;
