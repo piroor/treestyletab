@@ -197,6 +197,10 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     else
       aTab.classList.remove(kTAB_STATE_SELECTED);
   }
+
+  if (configs.debug)
+    aTab.setAttribute('title',
+      `${label}\n#${aTab.id}\n${aTab.className}`);
 }
 
 function maybeImageUrl(aURL) {

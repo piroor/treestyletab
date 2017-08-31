@@ -742,12 +742,15 @@ async function onMessage(aMessage, aSender) {
 
 function onConfigChange(aChangedKey) {
   switch (aChangedKey) {
-    case 'debug':
+    case 'debug': {
+      for (let tab of getAllTabs()) {
+        updateTab(tab, tab.apiTab);
+      }
       if (configs.debug)
         document.documentElement.classList.add('debug');
       else
         document.documentElement.classList.remove('debug');
-      break;
+    }; break;
 
     case 'style':
     case 'defaultStyle':
