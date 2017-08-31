@@ -1,7 +1,5 @@
 *.xpi
-**/inherit.jsm
 **/Configs.js
 **/Options.js
 **/l10n.js
-**/md5.min.js
 
