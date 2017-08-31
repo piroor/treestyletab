@@ -49,26 +49,63 @@ function makeTabId(aApiTab) {
   return `tab-${aApiTab.windowId}-${aApiTab.id}`;
 }
 
-async function getOrGenerateUniqueId(aTabId, aOptions = {}) {
-  var oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
-  if (oldId)
-    return oldId;
-
+async function requestUniqueId(aTabId, aOptions = {}) {
   if (aOptions.inRemote) {
     aOptions.retryCount = 0;
     let response = await browser.runtime.sendMessage({
-      type: kCOMMAND_GET_OR_GENERATE_UNIQUE_ID,
-      id:   aTabId
+      type:     kCOMMAND_REQUEST_UNIQUE_ID,
+      id:       aTabId,
+      forceNew: !!aOptions.forceNew
     });
-    return response && response.id;
+    return {
+      id: response.id,
+      originalId: response.originalId
+    };
+  }
+
+  var originalId = null;
+  if (!aOptions.forceNew) {
+    let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
+    if (oldId && !oldId.tabId) // ignore broken information!
+      oldId = null;
+
+    if (oldId) {
+      if (aTabId == oldId.tabId)
+        return {
+          id: oldId.id,
+          originalId: null
+        };
+
+      // If the stored tabId is different, it is possibly duplicated tab.
+      let original = browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
+      if (!original) {
+        // There is no live tab for the tabId, thus
+        // this seems to be a tab restored from session.
+        // We need to update the related tab id.
+        await browser.sessions.setTabValue(aTabId, kPERSISTENT_ID, {
+          id:    oldId.id,
+          tabId: aTabId
+        });
+        return {
+          id: oldId.id,
+          originalId: null
+        };
+      }
+
+      aOptions.forceNew = true;
+      originalId = oldId.id;
+    }
   }
 
   var adjective = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
   var noun = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
   var randomValue = Math.floor(Math.random() * 1000);
   var id = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  await browser.sessions.setTabValue(aTabId, kPERSISTENT_ID, id);
-  return id;
+  await browser.sessions.setTabValue(aTabId, kPERSISTENT_ID, {
+    id:    id,
+    tabId: aTabId // for detecttion of duplicated tabs
+  });
+  return { id, originalId };
 }
 
 function buildTab(aApiTab, aOptions = {}) {
@@ -95,15 +132,20 @@ function buildTab(aApiTab, aOptions = {}) {
   }
 
   if (aApiTab.id)
-    tab.uniqueId = getOrGenerateUniqueId(aApiTab.id, aOptions)
+    tab.uniqueId = requestUniqueId(aApiTab.id, aOptions)
       .then(aUniqueId => {
-        tab.setAttribute(kPERSISTENT_ID, aUniqueId);
-        if (configs.debug)
-          tab.setAttribute('title', tab.getAttribute('title').replace(`<${kPERSISTENT_ID}>`, aUniqueId));
+        if (!configs.debug)
+          return aUniqueId;
+
+        tab.setAttribute('title',
+          tab.getAttribute('title')
+            .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
+            .replace(`<%originalId%>`, aUniqueId.originalId)
+            .replace(`<%duplicated%>`, !!aUniqueId.originalId));
         return aUniqueId;
       });
   else
-    tab.uniqueId = Promise.resolve(null);
+    tab.uniqueId = Promise.resolve({ id: null, duplicated: false });
 
   return tab;
 }
@@ -210,7 +252,8 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 ${label}
 #${aTab.id}
 (${aTab.className})
-uniqueId = <${kPERSISTENT_ID}>
+uniqueId = <%${kPERSISTENT_ID}%>
+duplicated = <%duplicated%> / <%originalId%>
 tabId = ${aNewState.id}
 windowId = ${aNewState.windowId}
 `.trim());

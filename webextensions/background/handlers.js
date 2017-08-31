@@ -516,10 +516,11 @@ function onTabPinned(aTab) {
 async function onMessage(aMessage, aSender) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_GET_OR_GENERATE_UNIQUE_ID: {
-      log(kCOMMAND_GET_OR_GENERATE_UNIQUE_ID, aMessage);
-      let id = await getOrGenerateUniqueId(aMessage.id);
-      return { id: id };
+    case kCOMMAND_REQUEST_UNIQUE_ID: {
+      log(kCOMMAND_REQUEST_UNIQUE_ID, aMessage);
+      return await requestUniqueId(aMessage.id, {
+        forceNew: aMessage.forceNew
+      });
     }; break;
 
     case kCOMMAND_PULL_TREE_STRUCTURE: {

@@ -5,7 +5,7 @@
 */
 'use strict';
 
-const kCOMMAND_GET_OR_GENERATE_UNIQUE_ID = 'treestyletab:get-or-generate-unique-id';
+const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request-unique-id';
 const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
 const kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
 const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';

@@ -154,11 +154,11 @@ async function updateInsertionPosition(aTab) {
 
   var prev = getPreviousTab(aTab);
   if (prev)
-    getOrGenerateUniqueId(prev.apiTab.id).then(aId =>
+    requestUniqueId(prev.apiTab.id).then(aId =>
       browser.sessions.setTabValue(
         aTab.apiTab.id,
         kPERSISTENT_INSERT_AFTER,
-        aId
+        aId.id
       )
     );
   else
@@ -169,11 +169,11 @@ async function updateInsertionPosition(aTab) {
 
   var next = getNextTab(aTab);
   if (next)
-    getOrGenerateUniqueId(next.apiTab.id).then(aId =>
+    requestUniqueId(next.apiTab.id).then(aId =>
       browser.sessions.setTabValue(
         aTab.apiTab.id,
         kPERSISTENT_INSERT_BEFORE,
-        aId
+        aId.id
       )
     );
   else
@@ -203,12 +203,12 @@ async function updateAncestors(aTab) {
 
   var ancestorIds = await Promise.all(
     getAncestorTabs(aTab)
-      .map(aAncestor => getOrGenerateUniqueId(aAncestor.apiTab.id))
+      .map(aAncestor => requestUniqueId(aAncestor.apiTab.id))
   );
   browser.sessions.setTabValue(
     aTab.apiTab.id,
     kPERSISTENT_ANCESTORS,
-    ancestorIds
+    ancestorIds.map(aId => aId.id)
   );
 }
 
@@ -232,11 +232,11 @@ async function updateChildren(aTab) {
 
   var childIds = await Promise.all(
     getChildTabs(aTab)
-      .map(aChild => getOrGenerateUniqueId(aChild.apiTab.id))
+      .map(aChild => requestUniqueId(aChild.apiTab.id))
   );
   browser.sessions.setTabValue(
     aTab.apiTab.id,
     kPERSISTENT_CHILDREN,
-    childIds
+    childIds.map(aId => aId.id)
   );
 }
