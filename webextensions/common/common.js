@@ -26,7 +26,7 @@ function dumpTab(aTab) {
     return '';
   if (!aTab || !aTab.apiTab)
     return '<NULL>';
-  return `${getTabIndex(aTab)} #${aTab.id}.${aTab.className} ${JSON.stringify(aTab.apiTab.title)}`;
+  return `<li#${aTab.id}>}`;
 }
 
 async function wait(aTask = 0, aTimeout = 0) {
