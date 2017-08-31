@@ -51,7 +51,7 @@ function makeTabId(aApiTab) {
 
 async function requestUniqueId(aTabId, aOptions = {}) {
   if (aOptions.inRemote) {
-    let response = await sendMessageAndGetResponseWithRetry({
+    let response = await browser.runtime.sendMessage({
       type:     kCOMMAND_REQUEST_UNIQUE_ID,
       id:       aTabId,
       forceNew: !!aOptions.forceNew

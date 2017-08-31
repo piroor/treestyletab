@@ -150,7 +150,7 @@ async function rebuildAll() {
 }
 
 async function inheritTreeStructure() {
-  var response = await sendMessageAndGetResponseWithRetry({
+  var response = await browser.runtime.sendMessage({
     type:     kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
   });

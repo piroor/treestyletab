@@ -5,25 +5,25 @@
 */
 'use strict';
 
-const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request-unique-id';
-const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
-const kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
-const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
-const kCOMMAND_SELECT_TAB = 'treestyletab:request-select-tab';
-const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request-select-tab-internally';
+const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request:get-unique-id';
+const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:request:pull-tree-structure';
+const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:request:change-subtree-collapsed-state';
+const kCOMMAND_LOAD_URI = 'treestyletab:request:load-uri';
+const kCOMMAND_NEW_WINDOW_FROM_TABS = 'treestyletab:request:open-new-window-from-tabs';
+const kCOMMAND_MOVE_TABS = 'treestyletab:request:move-tabs';
+const kCOMMAND_NEW_TABS = 'treestyletab:request:open-new-tabs';
+const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request:select-tab-internally';
+const kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE = 'treestyletab:request:move-tabs-internally-before';
+const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:request:move-tabs-internally-after';
+
+const kCOMMAND_SELECT_TAB = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED = 'treestyletab:set-subtree-muted';
-const kCOMMAND_REMOVE_TAB = 'treestyletab:request-remove-tab';
-const kCOMMAND_NEW_TABS = 'treestyletab:request-new-tabs';
-const kCOMMAND_ATTACH_TAB_TO = 'treestyletab:request-attach-tab-to';
-const kCOMMAND_DETACH_TAB = 'treestyletab:request-detach-tab';
-const kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE = 'treestyletab:request-move-tabs-internally-before';
-const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:request-move-tabs-internally-after';
-const kCOMMAND_LOAD_URI = 'treestyletab:request-load-uri';
-const kCOMMAND_NEW_WINDOW_FROM_TABS = 'treestyletab:request-new-window-from-tabs';
-const kCOMMAND_MOVE_TABS = 'treestyletab:request-move-tabs';
-const kCOMMAND_PERFORM_TABS_DRAG_DROP = 'treestyletab:request-perform-tabs-drag-drop';
-const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:request-block-user-operations';
-const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:request-unblock-user-operations';
+const kCOMMAND_REMOVE_TAB = 'treestyletab:remove-tab';
+const kCOMMAND_ATTACH_TAB_TO = 'treestyletab:attach-tab-to';
+const kCOMMAND_DETACH_TAB = 'treestyletab:detach-tab';
+const kCOMMAND_PERFORM_TABS_DRAG_DROP = 'treestyletab:perform-tabs-drag-drop';
+const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:block-user-operations';
+const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';
 const kCOMMAND_BROADCAST_TAB_STATE = 'treestyletab:broadcast-tab-state';
 
 const kAPI_TAB_ID = 'data-tab-id';

@@ -656,8 +656,12 @@ function onMessage(aMessage, aSender, aRespond) {
       aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
-  handleInternalMessage(aMessage, aSender).then(aRespond);
-  return true;
+  if (aMessage.type.indexOf('treestyletab:request:') == 0) {
+    handleInternalMessage(aMessage, aSender).then(aRespond);
+    return true;
+  }
+  else
+    handleInternalMessage(aMessage, aSender);
 }
 
 async function handleInternalMessage(aMessage, aSender) {
@@ -667,11 +671,6 @@ async function handleInternalMessage(aMessage, aSender) {
 
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_PUSH_TREE_STRUCTURE:
-      if (aMessage.windowId == gTargetWindow)
-        await applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
-      break;
-
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);

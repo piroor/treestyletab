@@ -519,8 +519,12 @@ function onMessage(aMessage, aSender, aRespond) {
       aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
-  handleInternalMessage(aMessage, aSender).then(aRespond);
-  return true;
+  if (aMessage.type.indexOf('treestyletab:request:') == 0) {
+    handleInternalMessage(aMessage, aSender).then(aRespond);
+    return true;
+  }
+  else
+    handleInternalMessage(aMessage, aSender);
 }
 
 async function handleInternalMessage(aMessage, aSender) {
@@ -568,7 +572,7 @@ async function handleInternalMessage(aMessage, aSender) {
 
     case kCOMMAND_NEW_TABS: {
       log('new tabs requested: ', aMessage);
-      await openURIsInTabs(aMessage.uris, clone(aMessage, {
+      return await openURIsInTabs(aMessage.uris, clone(aMessage, {
         parent:       getTabById(aMessage.parent),
         insertBefore: getTabById(aMessage.insertBefore),
         insertAfter:  getTabById(aMessage.insertAfter)

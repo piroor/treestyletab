@@ -754,7 +754,7 @@ async function moveTabs(aTabs, aOptions = {}) {
   var isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
   if (aOptions.inRemote) {
-    let response = await sendMessageAndGetResponseWithRetry(clone(aOptions, {
+    let response = await browser.runtime.sendMessage(clone(aOptions, {
       type:         kCOMMAND_MOVE_TABS,
       windowId:     windowId,
       tabs:         aTabs.map(aTab => aTab.id),
@@ -907,7 +907,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
 
   if (aOptions.inRemote) {
-    let response = await sendMessageAndGetResponseWithRetry(clone(aOptions, {
+    let response = await browser.runtime.sendMessage(clone(aOptions, {
       type:         kCOMMAND_NEW_WINDOW_FROM_TABS,
       windowId:     windowId,
       tabs:         aTabs.map(aTab => aTab.id),
