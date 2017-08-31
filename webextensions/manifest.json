@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
   "version": "0.1",
-  "author": "YUKI \"Piro\" Hiroshi, Sebastian Tschan (JavaScript-MD5)",
+  "author": "YUKI \"Piro\" Hiroshi",
   "description": "__MSG_extensionDescription__",
   "permissions": [
     "activeTab",
