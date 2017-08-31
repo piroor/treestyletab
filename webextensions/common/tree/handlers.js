@@ -79,9 +79,6 @@ function onApiTabActivated(aActiveInfo) {
 
   newTab.parentNode.focusChangedByCurrentTabRemove = false;
 
-  //if (!isTabInViewport(newTab))
-  //  scrollToTab(newTab);
-
   window.onTabFocused && onTabFocused(newTab, {
     previouslyFocusedTab: oldTabs.length > 0 ? oldTabs[0] : null
   });
