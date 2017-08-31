@@ -57,13 +57,13 @@ async function rebuildAll() {
     populate: true,
     windowTypes: ['normal']
   });
-  windows.forEach((aWindow) => {
+  windows.forEach(async aWindow => {
     var container = buildTabsContainerFor(aWindow.id);
-    for (let apiTab of aWindow.tabs) {
-      let newTab = buildTab(apiTab, { existing: true });
+    await Promise.all(aWindow.tabs.map(async aApiTab => {
+      var newTab = await buildTab(aApiTab, { existing: true });
       container.appendChild(newTab);
-      updateTab(newTab, apiTab, { forceApply: true });
-    }
+      updateTab(newTab, aApiTab, { forceApply: true });
+    }));
     gAllTabs.appendChild(container);
   });
 }
@@ -120,7 +120,7 @@ async function loadTreeStructure() {
     );
     if (structure) {
       log(`tree information for window ${aWindow.id} is available.`);
-      applyTreeStructureToTabs(getAllTabs(aWindow.id), structure);
+      await applyTreeStructureToTabs(getAllTabs(aWindow.id), structure);
       browser.runtime.sendMessage({
         type:      kCOMMAND_PUSH_TREE_STRUCTURE,
         windowId:  aWindow.id,

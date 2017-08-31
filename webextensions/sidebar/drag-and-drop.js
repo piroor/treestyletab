@@ -135,7 +135,7 @@ function getDropAction(aEvent) {
 
   return info;
 }
-function getDropActionInternal(aEvent) {
+async function getDropActionInternal(aEvent) {
   //log('getDropActionInternal: start');
   var targetTab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent) || aEvent.target;
   var targetTabs = getAllTabs(targetTab);
@@ -157,17 +157,18 @@ function getDropActionInternal(aEvent) {
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   info.dragData = dragData = dragData && JSON.parse(dragData);
 
-  var draggedTab = getTabById(dragData && {
+  var draggedTab = await getTabById(dragData && {
                      tab:    dragData.tabId,
                      window: dragData.windowId
                    });
   info.draggedTab = draggedTab;
   var draggedTabs = (!dragData || !dragData.tabIds) ?
                       [] :
-                      dragData.tabIds.map(aTabId => getTabById({
+                      await Promise.all(dragData.tabIds.map(aTabId => getTabById({
                         tab:    aTabId,
                         window: dragData.windowId
-                      })).filter(aTab => !!aTab);
+                      })));
+  draggedTab = draggedTabs.filter(aTab => !!aTab);
   info.draggedTabs = draggedTabs;
   var isRemoteTab = !draggedTab && !!dragData.tabId;
   var isNewTabAction = !draggedTab && !dragData.tabId;
@@ -659,12 +660,12 @@ function onDragEnter(aEvent) {
 
   gAutoExpandWhileDNDTimerNext = setTimeout((aTargetId, aDraggedId) => {
     gAutoExpandWhileDNDTimerNext = null;
-    gAutoExpandWhileDNDTimer = setTimeout(() => {
-        let targetTab = getTabById(aTargetId);
+    gAutoExpandWhileDNDTimer = setTimeout(async () => {
+        let targetTab = await getTabById(aTargetId);
         if (targetTab &&
             shouldTabAutoExpanded(targetTab) &&
             targetTab.getAttribute(kDROP_POSITION) == 'self') {
-          let draggedTab = aDraggedId && getTabById(aDraggedId);
+          let draggedTab = aDraggedId && await getTabById(aDraggedId);
           if (configs.autoExpandIntelligently) {
             collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
           }
@@ -726,7 +727,7 @@ async function onDrop(aEvent) {
   handleDroppedNonTabItems(aEvent, dropActionInfo);
 }
 
-function onDragEnd(aEvent) {
+async function onDragEnd(aEvent) {
   log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = JSON.parse(dragData);
@@ -734,10 +735,10 @@ function onDragEnd(aEvent) {
   gDraggingOnSelfWindow = false;
 
   if (Array.isArray(dragData.tabIds)) {
-    dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
+    dragData.tabNodes = await Promise.all(dragData.tabIds.map(aTabId => getTabById({
                           tab:    aTabId,
                           window: dragData.windowId
-                        }));
+                        })));
     for (let draggedTab of dragData.tabNodes) {
       draggedTab.classList.remove(kTAB_STATE_DRAGGING);
     }

@@ -172,6 +172,7 @@ function onResize(aEvent) {
 
 function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
+  log('mousedown tab: ', tab);
   if (isMiddleClick(aEvent)) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       log('middle-click to close');
@@ -194,6 +195,7 @@ function onMouseDown(aEvent) {
   }
 
   tab = tab || getTabFromTabbarEvent(aEvent);
+  log('found target tab: ', tab);
   if (!tab)
     return;
 
@@ -217,6 +219,7 @@ function onMouseDown(aEvent) {
     return;
   }
 
+  log('give focus to ', tab.id);
   browser.runtime.sendMessage({
     type:     kCOMMAND_SELECT_TAB,
     windowId: gTargetWindow,
@@ -236,6 +239,7 @@ function onClick(aEvent) {
   }
 
   var tab = getTabFromEvent(aEvent);
+  log('clicked tab: ', tab);
 
   if (isEventFiredOnSoundButton(aEvent)) {
     aEvent.stopPropagation();
@@ -660,17 +664,17 @@ function onTabUnpinned(aTab) {
 
 /* message observer */
 
-function onMessage(aMessage, aSender, aRespond) {
+async function onMessage(aMessage, aSender) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PUSH_TREE_STRUCTURE:
       if (aMessage.windowId == gTargetWindow)
-        applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
+        await applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
       break;
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
-        let tab = getTabById(aMessage.tab);
+        let tab = await getTabById(aMessage.tab);
         if (!tab)
           return;
         let params = {
@@ -686,12 +690,13 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
-        let child = getTabById(aMessage.child);
-        let parent = getTabById(aMessage.parent);
+        log('attach tab from remote ', aMessage);
+        let child = await getTabById(aMessage.child);
+        let parent = await getTabById(aMessage.parent);
         if (child && parent)
           attachTabTo(child, parent, clone(aMessage, {
-            insertBefore: getTabById(aMessage.insertBefore),
-            insertAfter: getTabById(aMessage.insertAfter),
+            insertBefore: await getTabById(aMessage.insertBefore),
+            insertAfter: await getTabById(aMessage.insertAfter),
             inRemote: false,
             broadcast: false
           }));
@@ -700,7 +705,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_DETACH_TAB: {
       if (aMessage.windowId == gTargetWindow) {
-        let tab = getTabById(aMessage.tab);
+        let tab = await getTabById(aMessage.tab);
         if (tab)
           detachTab(tab);
       }
@@ -717,7 +722,7 @@ function onMessage(aMessage, aSender, aRespond) {
     }; break;
 
     case kCOMMAND_BROADCAST_TAB_STATE: {
-      let tab = getTabById(aMessage.tab);
+      let tab = await getTabById(aMessage.tab);
       if (tab) {
         let add = aMessage.add || [];
         let remove = aMessage.remove || [];

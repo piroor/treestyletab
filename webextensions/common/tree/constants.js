@@ -5,6 +5,7 @@
 */
 'use strict';
 
+const kCOMMAND_GET_OR_GENERATE_UNIQUE_ID = 'treestyletab:get-or-generate-unique-id';
 const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
 const kCOMMAND_PUSH_TREE_STRUCTURE = 'treestyletab:push-tree-structure';
 const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
@@ -25,6 +26,9 @@ const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:request-block-user-operatio
 const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:request-unblock-user-operations';
 const kCOMMAND_BROADCAST_TAB_STATE = 'treestyletab:broadcast-tab-state';
 
+const kID = 'data-unique-id';
+const kAPI_TAB_ID = 'data-tab-id';
+const kAPI_WINDOW_ID = 'data-window-id';
 const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT   = 'data-parent-id';
 const kCHILDREN = 'data-child-ids';
@@ -132,3 +136,61 @@ const kDEFAULT_MIN_INDENT = 3;
 
 const kTAB_STATE_GROUP_TAB = 'group-tab';
 const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
+
+// for generated IDs
+const kID_ADJECTIVES = `
+Agile
+Breezy
+Cheerful
+Dapper
+Edgy
+Feisty
+Gutsy
+Hoary
+Intrepid
+Jaunty
+Karmic
+Lucid
+Marveric
+Natty
+Oneiric
+Precise
+Quantal
+Raring
+Saucy
+Trusty
+Utopic
+Vivid
+Warty
+Xenial
+Yakkety
+Zesty
+`.toLowerCase().trim().split(/\s+/);
+const kID_NOUNS = `
+Alpaca
+Badger
+Cat
+Drake
+Eft
+Fawn
+Gibbon
+Heron
+Ibis
+Jackalope
+Koala
+Lynx
+Meerkat
+Narwhal
+Ocelot
+Pangolin
+Quetzal
+Ringtail
+Salamander
+Tahr
+Unicorn
+Vervet
+Werwolf
+Xerus
+Yak
+Zapus
+`.toLowerCase().trim().split(/\s+/);

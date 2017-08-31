@@ -45,16 +45,44 @@ var gNeedRestoreTree = false;
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
-function makeTabId(aApiTab) {
-  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
+var gWaitingForTabIdGenerated = 0;
+
+async function getOrGenerateTabId(aApiTab, aOptions = {}) {
+  var oldId = await browser.sessions.getTabValue(aApiTab.id, kID);
+  if (oldId)
+    return oldId;
+
+  if (aOptions.inRemote) {
+    gWaitingForTabIdGenerated++;
+    let response = await browser.runtime.sendMessage({
+      type:     kCOMMAND_GET_OR_GENERATE_UNIQUE_ID,
+      windowId: aApiTab.windowId,
+      tabId:    aApiTab.id
+    });
+    gWaitingForTabIdGenerated--;
+    return response && response.id;
+  }
+
+  var adjective = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
+  var noun = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
+  var randomValue = Math.floor(Math.random() * 1000);
+  var id = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
+  await browser.sessions.setTabValue(aApiTab.id, kID, id);
+  return id;
 }
 
-function buildTab(aApiTab, aOptions = {}) {
-  log('build tab for ', aApiTab);
+async function buildTab(aApiTab, aOptions = {}) {
+  var id = await getOrGenerateTabId(aApiTab, aOptions);
+  return syncBuildTabWithId(aApiTab, id, aOptions);
+}
 
+function syncBuildTabWithId(aApiTab, aId, aOptions = {}) {
+  log('build tab for ', aApiTab, aId);
   var tab = document.createElement('li');
   tab.apiTab = aApiTab;
-  tab.setAttribute('id', makeTabId(aApiTab));
+  tab.setAttribute('id', aId || Math.floor(Math.random() * 65000));
+  tab.setAttribute(kAPI_TAB_ID, aApiTab.id || -1);
+  tab.setAttribute(kAPI_WINDOW_ID, aApiTab.windowId || -1);
   //tab.setAttribute(kCHILDREN, '');
   tab.classList.add('tab');
   if (aApiTab.active)
@@ -405,7 +433,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         if (startIndex > -1)
           params.index = startIndex + aIndex;
         var apiTab = await browser.tabs.create(params);
-        var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
+        var tab = await getTabById({ tab: apiTab.id, window: apiTab.windowId });
         if (!aOptions.opener &&
             aOptions.parent &&
             tab)

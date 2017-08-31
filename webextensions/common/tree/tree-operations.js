@@ -53,7 +53,9 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     dontMove: aOptions.dontMove,
     dontUpdateIndent: aOptions.dontUpdateIndent,
     forceExpand: aOptions.forceExpand,
-    dontExpand: aOptions.forceExpand
+    dontExpand: aOptions.forceExpand,
+    inRemote: aOptions.inRemote,
+    broadcast: aOptions.broadcast
   });
   if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
     log('=> already attached');
@@ -776,7 +778,8 @@ async function moveTabs(aTabs, aOptions = {}) {
       };
     }
     let movedTabs = response.movedTabs || [];
-    return movedTabs.map(getTabById).filter(aTab => !!aTab);
+    movedTabs = await Promise.all(movedTabs.map(getTabById));
+    return movedTabs.filter(aTab => !!aTab);
   }
 
   var movedTabs = aTabs;
@@ -857,17 +860,18 @@ async function moveTabs(aTabs, aOptions = {}) {
     let newTabs;
     let retryUntil = 10;
     while (retryUntil >= 0) {
-      newTabs = movedApiTabs.map(aApiTab => getTabById({
+      newTabs = await Promise.all(movedApiTabs.map(aApiTab => getTabById({
                   tab:    aApiTab.id,
                   window: destinationWindowId
-                })).filter(aTab => !!aTab);
+                })));
+      newTabs = newTabs.filter(aTab => !!aTab);
       if (newTabs.length < aTabs.length) {
         log('retryling: ', newTabs.length, aTabs.length);
         retryUntil--;
         await wait(100);
         continue;
       }
-      applyTreeStructureToTabs(newTabs, structure, {
+      await applyTreeStructureToTabs(newTabs, structure, {
         broadcast: true
       });
       break;
@@ -896,8 +900,8 @@ async function moveTabs(aTabs, aOptions = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = movedTabs.map(aTab => getTabById(aTab.id))
-                .filter(aTab => !!aTab);
+  movedTabs = await Promise.all(movedTabs.map(aTab => getTabById(aTab.id)));
+  movedTabs = movedTabs.filter(aTab => !!aTab);
 
   return movedTabs;
 }
@@ -942,7 +946,8 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       };
     }
     let movedTabs = response.movedTabs || [];
-    return movedTabs.map(getTabById).filter(aTab => !!aTab);
+    movedTabs = await Promise.all(movedTabs.map(getTabById));
+    return movedTabs.filter(aTab => !!aTab);
   }
 
   log('opening new window');
@@ -1002,10 +1007,11 @@ async function performTabsDragDrop(aParams = {}) {
     action: aParams.action
   });
 
-  var draggedTabs = aParams.tabIds.map(aTabId => getTabById({
+  var draggedTabs = await Promise.all(aParams.tabIds.map(aTabId => getTabById({
                       tab:    aTabId,
                       window: windowId
-                    })).filter(aTab => !!aTab);
+                    })));
+  draggedTabs = draggedTabs.filter(aTab => !!aTab);
   if (!draggedTabs.length)
     return;
 
@@ -1202,7 +1208,7 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   return aTreeStructure;
 }
 
-function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
+async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   log('applyTreeStructureToTabs: ', aTabs.map(dumpTab), aTreeStructure, aOptions);
   aTabs = aTabs.slice(0, aTreeStructure.length);
   aTreeStructure = aTreeStructure.slice(0, aTabs.length);
@@ -1236,7 +1242,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
       parentTab = tab.id;
 
-    let parent = getTabById(parentTab);
+    let parent = await getTabById(parentTab);
     if (parent) {
       let tabs = [parent].concat(getDescendantTabs(parent));
       //log('existing tabs in tree: ', {

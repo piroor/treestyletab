@@ -116,7 +116,7 @@ function applyStyle() {
 
 function calculateDefaultSizes() {
   var dummyContainer = document.querySelector('#dummy-tabs');
-  var dummyTab = buildTab({}, { existing: true });
+  var dummyTab = syncBuildTabWithId({}, 'dummy-tab', { existing: true });
   dummyContainer.appendChild(dummyTab);
   updateTab(dummyTab, {
     title: 'dummy',
@@ -142,11 +142,11 @@ async function rebuildAll() {
   gLogContext = `Sidebar-${gTargetWindow}`;
   clearAllTabsContainers();
   var container = buildTabsContainerFor(gTargetWindow);
-  for (let apiTab of apiTabs) {
-    let newTab = buildTab(apiTab, { existing: true });
+  await Promise.all(apiTabs.map(async aApiTab => {
+    var newTab = await buildTab(aApiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
-    updateTab(newTab, apiTab, { forceApply: true });
-  }
+    updateTab(newTab, aApiTab, { forceApply: true });
+  }));
   gAllTabs.appendChild(container);
   startObserveApiTabs();
 }
@@ -161,7 +161,7 @@ async function inheritTreeStructure() {
     //throw e;
   });
   if (response && response.structure)
-    applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+    await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 
 

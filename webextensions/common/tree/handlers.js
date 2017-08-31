@@ -59,11 +59,11 @@ function endObserveApiTabs() {
 }
 
 
-function onApiTabActivated(aActiveInfo) {
+async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
-  var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
+  var newTab = await getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab)
     return;
 
@@ -95,11 +95,11 @@ function clearOldActiveStateInWindow(aWindowId) {
   return oldTabs;
 }
 
-function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
+async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
-  var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
+  var updatedTab = await getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
     return;
 
@@ -128,7 +128,7 @@ async function onNewTabTracked(aTab) {
     container = buildTabsContainerFor(aTab.windowId);
     gAllTabs.appendChild(container);
   }
-  var newTab = buildTab(aTab);
+  var newTab = await buildTab(aTab, { inRemote: !!gTargetWindow });
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
@@ -164,7 +164,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
 
-  var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
+  var oldTab = await getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;
 
@@ -208,7 +208,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
      problem, we have to wait for a while with this "async" and
      do following processes after the tab is completely pinned. */
   var movedApiTab = await browser.tabs.get(aTabId);
-  var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
+  var movedTab = await getTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab)
     return;
 
@@ -242,13 +242,13 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   onNewTabTracked(apiTab);
 }
 
-function onApiTabDetached(aTabId, aDetachInfo) {
+async function onApiTabDetached(aTabId, aDetachInfo) {
   if (gTargetWindow &&
       aDetachInfo.oldWindowId != gTargetWindow)
     return;
 
   log('onApiTabDetached, id: ', aTabId, aDetachInfo);
-  var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
+  var oldTab = await getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (!oldTab)
     return;
 
