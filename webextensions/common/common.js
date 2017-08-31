@@ -26,7 +26,7 @@ function dumpTab(aTab) {
     return '';
   if (!aTab || !aTab.apiTab)
     return '<NULL>';
-  return `<li#${aTab.id}>}`;
+  return `#${aTab.id}`;
 }
 
 async function wait(aTask = 0, aTimeout = 0) {
