@@ -50,14 +50,14 @@ async function init() {
   await rebuildAll();
   log('initialize sidebar: post process');
   updateTabbarLayout({ justNow: true });
-  browser.runtime.onMessage.addListener(onMessage);
 
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
 
   startListenDragEvents(window);
-
   await inheritTreeStructure();
+
+  browser.runtime.onMessage.addListener(onMessage);
   unblockUserOperations();
 }
 
