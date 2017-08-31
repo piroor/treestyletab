@@ -62,26 +62,11 @@ function isEventFiredOnTwisty(aEvent) {
   if (!tab || !hasChildTabs(tab))
     return false;
 
-  var twisty = evaluateXPath(
+  return evaluateXPath(
     `ancestor-or-self::*[${hasClass(kTWISTY)}]`,
     aEvent.originalTarget || aEvent.target,
     XPathResult.BOOLEAN_TYPE
   ).booleanValue;
-  if (twisty)
-    return true;
-
-  if (!configs.shouldExpandTwistyArea)
-    return false;
-
-  var favicon = evaluateXPath(
-    `ancestor-or-self::*[${hasClass(kFAVICON)}]`,
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
-  if (favicon)
-    return true;
-
-  return false;
 }
 
 function isEventFiredOnSoundButton(aEvent) {
