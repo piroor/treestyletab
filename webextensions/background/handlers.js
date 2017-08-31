@@ -514,13 +514,18 @@ function onTabPinned(aTab) {
 /* message observer */
 
 async function onMessage(aMessage, aSender) {
+  var timeout = setTimeout(() => {
+    log('onMessage: timeout! ', aMessage, aSender);
+  }, 10 * 1000);
+
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_REQUEST_UNIQUE_ID: {
-      log(kCOMMAND_REQUEST_UNIQUE_ID, aMessage);
-      return await requestUniqueId(aMessage.id, {
+      let id = await requestUniqueId(aMessage.id, {
         forceNew: aMessage.forceNew
       });
+      clearTimeout(timeout);
+      return id;
     }; break;
 
     case kCOMMAND_PULL_TREE_STRUCTURE: {
@@ -533,13 +538,16 @@ async function onMessage(aMessage, aSender) {
         windowId:  aMessage.windowId,
         structure: structure
       });
+      clearTimeout(timeout);
       return { structure: structure };
     }; break;
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       let tab = getTabById(aMessage.tab);
-      if (!tab)
+      if (!tab) {
+        clearTimeout(timeout);
         return;
+      }
       let params = {
         collapsed: aMessage.collapsed,
         justNow:   aMessage.justNow,
@@ -567,6 +575,7 @@ async function onMessage(aMessage, aSender) {
                               aMessage.tabs.map(getTabById),
                               aMessage
                             );
+      clearTimeout(timeout);
       return { movedTabs: movedTabs.map(aTab => aTab.id) };
     }; break;
 
@@ -576,13 +585,16 @@ async function onMessage(aMessage, aSender) {
                               aMessage.tabs.map(getTabById),
                               aMessage
                             );
+      clearTimeout(timeout);
       return { movedTabs: movedTabs.map(aTab => aTab.id) };
     }; break;
 
     case kCOMMAND_REMOVE_TAB: {
       let tab = getTabById(aMessage.tab);
-      if (!tab)
+      if (!tab) {
+        clearTimeout(timeout);
         return;
+      }
       if (isActive(tab))
         await tryMoveFocusFromClosingCurrentTab(tab);
       browser.tabs.remove(tab.apiTab.id)
@@ -591,24 +603,30 @@ async function onMessage(aMessage, aSender) {
 
     case kCOMMAND_SELECT_TAB: {
       let tab = getTabById(aMessage.tab);
-      if (!tab)
+      if (!tab) {
+        clearTimeout(timeout);
         return;
+      }
       browser.tabs.update(tab.apiTab.id, { active: true })
         .catch(handleMissingTabError);
     }; break;
 
     case kCOMMAND_SELECT_TAB_INTERNALLY: {
       let tab = getTabById(aMessage.tab);
-      if (!tab)
+      if (!tab) {
+        clearTimeout(timeout);
         return;
+      }
       selectTabInternally(tab);
     }; break;
 
     case kCOMMAND_SET_SUBTREE_MUTED: {
       log('set muted state: ', aMessage);
       let root = getTabById(aMessage.tab);
-      if (!root)
+      if (!root) {
+        clearTimeout(timeout);
         return;
+      }
       let tabs = [root].concat(getDescendantTabs(root));
       for (let tab of tabs) {
         let playing = isSoundPlaying(tab);
@@ -693,4 +711,5 @@ async function onMessage(aMessage, aSender) {
       }));
     }; break;
   }
+  clearTimeout(timeout);
 }

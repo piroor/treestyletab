@@ -651,6 +651,10 @@ function onTabUnpinned(aTab) {
 /* message observer */
 
 async function onMessage(aMessage, aSender) {
+  var timeout = setTimeout(() => {
+    log('onMessage: timeout! ', aMessage, aSender);
+  }, 10 * 1000);
+
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PUSH_TREE_STRUCTURE:
@@ -661,8 +665,10 @@ async function onMessage(aMessage, aSender) {
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);
-        if (!tab)
+        if (!tab) {
+          clearTimeout(timeout);
           return;
+        }
         let params = {
           collapsed: aMessage.collapsed,
           justNow:   aMessage.justNow
@@ -723,6 +729,7 @@ async function onMessage(aMessage, aSender) {
       }
     }; break;
   }
+  clearTimeout(timeout);
 }
 
 function onConfigChange(aChangedKey) {
