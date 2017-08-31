@@ -172,10 +172,10 @@ function onResize(aEvent) {
 
 function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
-  log('mousedown tab: ', tab);
+  //log('mousedown tab: ', tab);
   if (isMiddleClick(aEvent)) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
-      log('middle-click to close');
+      //log('middle-click to close');
       browser.runtime.sendMessage({
         type:     kCOMMAND_REMOVE_TAB,
         windowId: gTargetWindow,
@@ -195,12 +195,12 @@ function onMouseDown(aEvent) {
   }
 
   tab = tab || getTabFromTabbarEvent(aEvent);
-  log('found target tab: ', tab);
+  //log('found target tab: ', tab);
   if (!tab)
     return;
 
   if (isEventFiredOnTwisty(aEvent)) {
-    log('clicked on twisty');
+    //log('clicked on twisty');
     aEvent.stopPropagation();
     aEvent.preventDefault();
     if (hasChildTabs(tab))
@@ -215,11 +215,11 @@ function onMouseDown(aEvent) {
   if ((isEventFiredOnSoundButton(aEvent) ||
        isEventFiredOnClosebox(aEvent)) &&
       aEvent.button == 0) {
-    log('mousedown on button in tab');
+    //log('mousedown on button in tab');
     return;
   }
 
-  log('give focus to ', tab.id);
+  //log('give focus to ', tab.id);
   browser.runtime.sendMessage({
     type:     kCOMMAND_SELECT_TAB,
     windowId: gTargetWindow,
@@ -228,7 +228,7 @@ function onMouseDown(aEvent) {
 }
 
 function onClick(aEvent) {
-  log('onClick', String(aEvent.target));
+  //log('onClick', String(aEvent.target));
   if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
@@ -239,12 +239,12 @@ function onClick(aEvent) {
   }
 
   var tab = getTabFromEvent(aEvent);
-  log('clicked tab: ', tab);
+  //log('clicked tab: ', tab);
 
   if (isEventFiredOnSoundButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    log('clicked on sound button');
+    //log('clicked on sound button');
     browser.runtime.sendMessage({
       type:     kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
@@ -257,7 +257,7 @@ function onClick(aEvent) {
   if (isEventFiredOnClosebox(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    log('clicked on closebox');
+    //log('clicked on closebox');
     //if (!warnAboutClosingTabSubtreeOf(tab)) {
     //  aEvent.stopPropagation();
     //  aEvent.preventDefault();
@@ -273,7 +273,7 @@ function onClick(aEvent) {
 }
 
 function handleNewTabAction(aEvent, aOptions = {}) {
-  log('handleNewTabAction');
+  //log('handleNewTabAction');
   var parent, insertBefore, insertAfter;
   if (configs.autoAttach) {
     let current = getCurrentTab(gTargetWindow);
@@ -288,7 +288,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
         let refTabs = getReferenceTabsForNewChild(parent);
         insertBefore = refTabs.insertBefore;
         insertAfter  = refTabs.insertAfter;
-        log('detected reference tabs: ', dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
+        //log('detected reference tabs: ', dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
       }; break;
 
       case kNEWTAB_OPEN_AS_SIBLING:

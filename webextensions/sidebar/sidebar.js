@@ -198,7 +198,7 @@ function collapseExpandAllSubtree(aParams = {}) {
 
 
 function reserveToUpdateIndent() {
-  log('reserveToUpdateIndent');
+  //log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)
     clearTimeout(reserveToUpdateIndent.waiting);
   reserveToUpdateIndent.waiting = setTimeout(() => {
@@ -219,14 +219,14 @@ function updateIndent() {
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
 
-  log('maxLevel ', maxLevel);
+  //log('maxLevel ', maxLevel);
 
   var oldIndent = gIndent;
   var indent    = (oldIndent < 0 ? configs.baseIndent : oldIndent ) * maxLevel;
   var maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
   var minIndent= Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
   var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(maxIndent / maxLevel), minIndent));
-  log('calculated result: ', { oldIndent, indent, maxIndent, minIndent, indentUnit });
+  //log('calculated result: ', { oldIndent, indent, maxIndent, minIndent, indentUnit });
   if (indent > maxIndent) {
     gIndent = indentUnit;
   }
@@ -258,12 +258,12 @@ function updateIndent() {
     definitions.push(`.tab[${kPARENT}][${kLEVEL}="${level}"] { ${gIndentProp}: ${level * indentUnit}px; }`);
   }
   gIndentDefinition.textContent = definitions.join('\n');
-  log('updated indent definition: ', gIndentDefinition.textContent);
+  //log('updated indent definition: ', gIndentDefinition.textContent);
 }
 
 
 function reserveToUpdateTabbarLayout(aTimeout) {
-  log('reserveToUpdateTabbarLayout');
+  //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
@@ -273,15 +273,15 @@ function reserveToUpdateTabbarLayout(aTimeout) {
 }
 
 function updateTabbarLayout(aParams = {}) {
-  log('updateTabbarLayout');
+  //log('updateTabbarLayout');
   var range = document.createRange();
   range.selectNodeContents(gTabBar);
   var containerHeight = gTabBar.getBoundingClientRect().height;
   var contentHeight = range.getBoundingClientRect().height;
-  log('height: ', { container: containerHeight, content: contentHeight });
+  //log('height: ', { container: containerHeight, content: contentHeight });
   var overflow = containerHeight < contentHeight;
   if (overflow && !gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
-    log('overflow');
+    //log('overflow');
     gTabBar.classList.add(kTABBAR_STATE_OVERFLOW);
     let range = document.createRange();
     range.selectNodeContents(gAfterTabsForOverflowTabBar);
@@ -290,7 +290,7 @@ function updateTabbarLayout(aParams = {}) {
     gTabBar.style.bottom = `${offset}px`;
   }
   else if (!overflow && gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
-    log('underflow');
+    //log('underflow');
     gTabBar.classList.remove(kTABBAR_STATE_OVERFLOW);
     gTabBar.style.bottom = '';
   }

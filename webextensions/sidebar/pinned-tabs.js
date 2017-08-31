@@ -39,7 +39,7 @@
 'use strict';
 
 function positionPinnedTabs(aOptions = {}) {
-  log('positionPinnedTabs');
+  //log('positionPinnedTabs');
   var pinnedTabs = getPinnedTabs(gTargetWindow);
   if (!pinnedTabs.length) {
     resetPinnedTabs();
@@ -81,18 +81,20 @@ function positionPinnedTabs(aOptions = {}) {
     if (aOptions.justNow)
       item.classList.add(kTAB_STATE_ANIMATION_READY);
 
+/*
     log('pinned tab: ', {
       tab:    dumpTab(item),
       col:    col,
       width:  width,
       height: height
     });
+*/
 
     col++;
     if (col >= maxCol) {
       col = 0;
       row++;
-      log('=> new row');
+      //log('=> new row');
     }
   }
 }
