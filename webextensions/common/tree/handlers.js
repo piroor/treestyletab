@@ -63,6 +63,8 @@ async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
+  await ensureAllTabsAreTracked(aActiveInfo.windowId);
+
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
   var byInternalOperation = container.internalFocusCount > 0;
   var byCurrentTabRemove = container.focusChangedByCurrentTabRemoveCount > 0;
@@ -88,7 +90,7 @@ async function onApiTabActivated(aActiveInfo) {
     byInternalOperation
   });
 
-  if (byCurrentTabRemove > 0)
+  if (byCurrentTabRemove)
     container.focusChangedByCurrentTabRemoveCount--;
 
   window.onTabFocused && await onTabFocused(newTab, {
@@ -115,6 +117,8 @@ function clearOldActiveStateInWindow(aWindowId) {
 async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
+
+  await ensureAllTabsAreTracked(aTab.windowId);
 
   var updatedTab = await getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
@@ -180,9 +184,18 @@ async function onNewTabTracked(aTab) {
   container.processingNewTabsCount--;
 }
 
+async function ensureAllTabsAreTracked(aWindowId) {
+  var container = getOrBuildTabsContainer(aWindowId);
+  while (container.processingNewTabsCount > 0) {
+    await wait();
+  }
+}
+
 async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
+
+  await ensureAllTabsAreTracked(aRemoveInfo.windowId);
 
   var oldTab = await getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
@@ -220,7 +233,9 @@ function onApiTabRemovedComplete(aTab) {
 async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
-  
+
+  await ensureAllTabsAreTracked(aMoveInfo.windowId);
+
   var container = getOrBuildTabsContainer(aMoveInfo.windowId);
   var byInternalOperation = container.internalMovingCount > 0;
   //await waitUntilNewTabsAreOpened(aMoveInfo.windowId);
@@ -257,17 +272,12 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   container.internalMovingCount--;
 }
 
-async function waitUntilNewTabsAreOpened(aWindowId) {
-  var container = getOrBuildTabsContainer(aWindowId);
-  while (container.processingNewTabsCount > 0) {
-    await wait();
-  }
-}
-
 async function onApiTabAttached(aTabId, aAttachInfo) {
   if (gTargetWindow &&
       aAttachInfo.newWindowId != gTargetWindow)
     return;
+
+  await ensureAllTabsAreTracked(aAttachInfo.newWindowId);
 
   log('onApiTabAttached, id: ', aTabId, aAttachInfo);
   var apiTab = await browser.tabs.get(aTabId);
@@ -282,6 +292,8 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
   if (gTargetWindow &&
       aDetachInfo.oldWindowId != gTargetWindow)
     return;
+
+  await ensureAllTabsAreTracked(aDetachInfo.oldWindowId);
 
   log('onApiTabDetached, id: ', aTabId, aDetachInfo);
   var oldTab = await getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
