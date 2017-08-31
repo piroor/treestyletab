@@ -513,7 +513,17 @@ function onTabPinned(aTab) {
 
 /* message observer */
 
-async function onMessage(aMessage, aSender) {
+function onMessage(aMessage, aSender, aRespond) {
+  if (!aMessage ||
+      typeof aMessage.type != 'string' ||
+      aMessage.type.indexOf('treestyletab:'))
+    return;
+
+  handleInternalMessage(aMessage, aSender).then(aRespond);
+  return true;
+}
+
+async function handleInternalMessage(aMessage, aSender) {
   var timeout = setTimeout(() => {
     log('onMessage: timeout! ', aMessage, aSender);
   }, 10 * 1000);
