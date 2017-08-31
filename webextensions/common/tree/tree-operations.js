@@ -970,10 +970,12 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
                           destinationPromisedNewWindow: promsiedNewWindow
                         }));
 
-  log('closing needless tab');
+  log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
     .then(aApiWindow => {
-      browser.tabs.remove(aApiWindow.tabs[0].id);
+      var movedTabIds = movedTabs.map(aTab => aTab.apiTab.id);
+      var removeIds = aApiWindow.tabs.map(aTab => aTab.id).filter(aId => movedTabIds.indexOf(aId) < 0);
+      browser.tabs.remove(removeIds);
       unblockUserOperationsIn(newWindow.id);
     });
 
