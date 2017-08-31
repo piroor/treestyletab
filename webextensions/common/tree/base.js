@@ -257,29 +257,18 @@ function clearAllTabsContainers() {
 
 async function selectTabInternally(aTab, aOptions = {}) {
   log('selectTabInternally: ', dumpTab(aTab));
-  var container = aTab.parentNode;
-  container.internalFocusCount++;
   if (aOptions.inRemote) {
     await browser.runtime.sendMessage({
       type:     kCOMMAND_SELECT_TAB_INTERNALLY,
       windowId: aTab.apiTab.windowId,
       tab:      aTab.id
     });
-    container.internalFocusCount--
     return;
   }
-
+  var container = aTab.parentNode;
+  container.internalFocusCount++;
   await browser.tabs.update(aTab.apiTab.id, { active: true })
           .catch(handleMissingTabError);
-  /**
-   * Note: enough large delay is truly required to wait various
-   * tab-related operations are processed in background and sidebar.
-   */
-  setTimeout(() => {
-    if (!container.parentNode) // it was removed while waiting
-      return;
-    container.internalFocusCount--;
-  }, configs.acceptableDelayForInternalFocusMoving);
 }
 
 
@@ -290,8 +279,6 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     return;
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  var container = aTabs[0].parentNode;
-  container.internalMovingCount++;
   if (aOptions.inRemote) {
     await browser.runtime.sendMessage({
       type:     kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE,
@@ -299,10 +286,11 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       tabs:     aTabs.map(aTab => aTab.id),
       nextTab:  aReferenceTab.id
     });
-    container.internalMovingCount--;
     return;
   }
 
+  var container = aTabs[0].parentNode;
+  container.internalMovingCount += aTabs.length;
   try {
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, aTabs[0].apiTab.id);
     if (fromIndex < toIndex)
@@ -316,7 +304,6 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   catch(e) {
     log('moveTabsInternallyBefore failed: ', String(e));
   }
-  container.internalMovingCount--;
 }
 async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions = {});
@@ -327,8 +314,6 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     return;
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  var container = aTabs[0].parentNode;
-  container.internalMovingCount++;
   if (aOptions.inRemote) {
     await browser.runtime.sendMessage({
       type:        kCOMMAND_MOVE_TABS_INTERNALLY_AFTER,
@@ -336,10 +321,11 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       tabs:        aTabs.map(aTab => aTab.id),
       previousTab: aReferenceTab.id
     });
-    container.internalMovingCount--;
     return;
   }
 
+  var container = aTabs[0].parentNode;
+  container.internalMovingCount += aTabs.length;
   try {
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, aTabs[0].apiTab.id);
     if (fromIndex > toIndex)
@@ -353,7 +339,6 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   catch(e) {
     log('moveTabsInternallyAfter failed: ', String(e));
   }
-  container.internalMovingCount--;
 }
 async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions = {});

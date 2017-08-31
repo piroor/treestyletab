@@ -64,10 +64,16 @@ async function onApiTabActivated(aActiveInfo) {
     return;
 
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
+  var byInternalOperation = container.internalFocusCount > 0;
   var byCurrentTabRemove = container.focusChangedByCurrentTabRemoveCount > 0;
   var newTab = await getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newTab)
+  if (!newTab) {
+    if (byInternalOperation)
+      container.internalFocusCount--;
+    if (byCurrentTabRemove)
+      container.focusChangedByCurrentTabRemoveCount--;
     return;
+  }
 
   //cancelDelayedExpandOnTabSelect(); // for Ctrl-Tab
 
@@ -78,16 +84,21 @@ async function onApiTabActivated(aActiveInfo) {
   log('onSelect: ', dumpTab(newTab));
 
   window.onTabFocusing && onTabFocusing(newTab, {
-    byCurrentTabRemove
+    byCurrentTabRemove,
+    byInternalOperation
   });
 
-  if (container.focusChangedByCurrentTabRemoveCount > 0)
+  if (byCurrentTabRemove > 0)
     container.focusChangedByCurrentTabRemoveCount--;
 
-  window.onTabFocused && onTabFocused(newTab, {
+  window.onTabFocused && await onTabFocused(newTab, {
     byCurrentTabRemove,
+    byInternalOperation,
     previouslyFocusedTab: oldTabs.length > 0 ? oldTabs[0] : null
   });
+
+  if (byInternalOperation)
+    container.internalFocusCount--;
 }
 
 function clearOldActiveStateInWindow(aWindowId) {
@@ -139,7 +150,7 @@ async function onNewTabTracked(aTab) {
 
   var openedWithPosition = container.toBeOpenedTabsWithPositions > 0;
 
-  window.onTabOpening && await onTabOpening(newTab, {
+  var moved = window.onTabOpening && await onTabOpening(newTab, {
     maybeOpenedWithPosition: openedWithPosition,
     maybeOrphan: container.toBeOpenedOrphanTabs > 0
   });
@@ -163,7 +174,7 @@ async function onNewTabTracked(aTab) {
 
   if (newTab.parentNode) // it can be removed while waiting
     window.onTabOpened && onTabOpened(newTab, {
-      openedWithPosition
+      openedWithPosition : openedWithPosition || moved
     });
 
   container.processingNewTabsCount--;
@@ -209,8 +220,10 @@ function onApiTabRemovedComplete(aTab) {
 async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
-
-  await waitUntilNewTabsAreOpened(aMoveInfo.windowId);
+  
+  var container = getOrBuildTabsContainer(aMoveInfo.windowId);
+  var byInternalOperation = container.internalMovingCount > 0;
+  //await waitUntilNewTabsAreOpened(aMoveInfo.windowId);
 
   /* When a tab is pinned, tabs.onMoved may be notified before
      tabs.onUpdated(pinned=true) is notified. As the result,
@@ -220,23 +233,28 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
      do following processes after the tab is completely pinned. */
   var movedApiTab = await browser.tabs.get(aTabId);
   var movedTab = await getTabById({ tab: aTabId, window: aMoveInfo.windowId });
-  if (!movedTab)
+  if (!movedTab) {
+    container.internalMovingCount--;
     return;
+  }
 
   log('onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
 
-  var canceled = window.onTabMoving && await onTabMoving(movedTab, aMoveInfo);
-  if (canceled ||
-      !movedTab.parentNode) // it is removed while waiting
-    return;
+  var moveInfo = clone(aMoveInfo, {
+    byInternalOperation
+  });
+  var canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
+  if (!canceled &&
+      movedTab.parentNode) { // it is removed while waiting
+    let newNextIndex = aMoveInfo.toIndex;
+    if (aMoveInfo.fromIndex < newNextIndex)
+      newNextIndex++;
+    let nextTab = getTabs(movedTab)[newNextIndex];
+    movedTab.parentNode.insertBefore(movedTab, nextTab);
 
-  var newNextIndex = aMoveInfo.toIndex;
-  if (aMoveInfo.fromIndex < newNextIndex)
-    newNextIndex++;
-  var nextTab = getTabs(movedTab)[newNextIndex];
-  movedTab.parentNode.insertBefore(movedTab, nextTab);
-
-  window.onTabMoved && await onTabMoved(movedTab, aMoveInfo);
+    window.onTabMoved && await onTabMoved(movedTab, moveInfo);
+  }
+  container.internalMovingCount--;
 }
 
 async function waitUntilNewTabsAreOpened(aWindowId) {

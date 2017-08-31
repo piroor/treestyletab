@@ -39,6 +39,7 @@ async function onTabOpening(aTab, aInfo = {}) {
           dontMove: aInfo.maybeOpenedWithPosition,
           broadcast: true
         });
+        return true;
         break;
 
       case kNEWTAB_OPEN_AS_SIBLING: {
@@ -48,6 +49,7 @@ async function onTabOpening(aTab, aInfo = {}) {
             broadcast: true
           });
         }
+        return true;
       }; break;
 
       case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
@@ -142,7 +144,7 @@ function onTabMoving(aTab, aMoveInfo) {
   var container = getTabsContainer(aTab);
   var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
   if (container.openingCount > 0 &&
-      container.internalMovingCount == 0 &&
+      !aMoveInfo.byInternalOperation &&
       positionControlled) {
     log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
     moveBack(aTab, aMoveInfo);
@@ -152,7 +154,7 @@ function onTabMoving(aTab, aMoveInfo) {
 
 async function onTabMoved(aTab, aMoveInfo) {
   var container = getTabsContainer(aTab);
-  if (container.internalMovingCount > 0) {
+  if (aMoveInfo.byInternalOperation) {
     log('internal move');
     return;
   }
@@ -205,23 +207,23 @@ async function onTabMoved(aTab, aMoveInfo) {
   updatedTabs = undefined;
 */
 
-  log('status of move: ', {
-    subTreeMovingCount: container.subTreeMovingCount,
-    internalMovingCount: container.internalMovingCount
-  });
-  if (container.subTreeMovingCount > 0 ||
-      container.internalMovingCount > 0 /*||
-      // We don't have to fixup tree structure for a NEW TAB
-      // which has already been structured.
-      (newlyOpened && getParentTab(aTab))*/) {
-    log('=> ignore internal move');
-    return;
-  }
+//  log('status of move: ', {
+//    subTreeMovingCount: container.subTreeMovingCount,
+//    internalMovingCount: container.internalMovingCount
+//  });
+//  if (container.subTreeMovingCount > 0 ||
+//      container.internalMovingCount > 0 /*||
+//      // We don't have to fixup tree structure for a NEW TAB
+//      // which has already been structured.
+//      (newlyOpened && getParentTab(aTab))*/) {
+//    log('=> ignore internal move');
+//    return;
+//  }
 
-  //var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
-  if (/* !restored && */
-      //!positionControlled &&
-      container.internalMovingCount == 0)
+//  //var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
+//  if (/* !restored && */
+//      //!positionControlled &&
+//      container.internalMovingCount == 0)
     tryFixupTreeForInsertedTab(aTab, aMoveInfo);
 }
 
@@ -267,11 +269,10 @@ async function moveBack(aTab, aMoveInfo) {
     windowId: aMoveInfo.windowId,
     index: aMoveInfo.fromIndex
   });
-  container.internalMovingCount--;
 }
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
-  log('attachTabFromPosition: ', dumpTab(aTab), aMoveInfo);
+  log('detectTabActionFromNewPosition: ', dumpTab(aTab), aMoveInfo);
   var toIndex = aMoveInfo.toIndex;
   var fromIndex = aMoveInfo.fromIndex;
   var delta;
@@ -376,7 +377,7 @@ function onTabFocusing(aTab, aInfo = {}) {
           broadcast: true
         });
       }
-      handleNewActiveTab(aTab);
+      handleNewActiveTab(aTab, aInfo);
     }
     else {
       selectTabInternally(getRootTab(aTab));
@@ -392,11 +393,11 @@ function onTabFocusing(aTab, aInfo = {}) {
     return true;
   }
   else if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab)) {
-    handleNewActiveTab(aTab);
+    handleNewActiveTab(aTab, aInfo);
   }
   return false;
 }
-function handleNewActiveTab(aTab) {
+function handleNewActiveTab(aTab, aInfo = {}) {
   if (aTab.parentNode.doingCollapseExpandCount != 0)
     return;
 
@@ -415,9 +416,9 @@ function handleNewActiveTab(aTab) {
     delete handleNewActiveTab.timer;
     var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
     var canCollapseTree = shouldCollapseExpandNow;
-    var canExpandTree   = shouldCollapseExpandNow && aTab.parentNode.internalFocusCount == 0;
+    var canExpandTree   = shouldCollapseExpandNow && !aInfo.byInternalOperation;
     log('handleNewActiveTab[delayed]: ', dumpTab(aTab), {
-      canCollapseTree, canExpandTree, internalFocusCount: aTab.parentNode.internalFocusCount });
+      canCollapseTree, canExpandTree, byInternalOperation: aInfo.byInternalOperation });
     if (canExpandTree) {
       if (canCollapseTree &&
           configs.autoExpandIntelligently)
