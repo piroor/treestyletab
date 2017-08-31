@@ -40,22 +40,20 @@ async function init() {
   log('initialize sidebar on load');
   window.addEventListener('resize', onResize);
 
+  calculateDefaultSizes();
+  await rebuildAll();
+  updateTabbarLayout({ justNow: true });
+
+  await inheritTreeStructure();
+
   window.addEventListener('mousedown', onMouseDown);
   window.addEventListener('click', onClick);
   gTabBar.addEventListener('dblclick', onDblClick);
   gTabBar.addEventListener('transitionend', onTransisionEnd);
-
-  calculateDefaultSizes();
-
-  await rebuildAll();
-  log('initialize sidebar: post process');
-  updateTabbarLayout({ justNow: true });
+  startListenDragEvents(window);
 
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
-
-  startListenDragEvents(window);
-  await inheritTreeStructure();
 
   browser.runtime.onMessage.addListener(onMessage);
   unblockUserOperations();
