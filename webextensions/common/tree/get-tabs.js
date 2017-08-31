@@ -82,6 +82,19 @@ function getTabsContainer(aHint) {
   return null;
 }
 
+function getOrBuildTabsContainer(aHint) {
+  var container = getTabsContainer(aHint);
+  if (container)
+    return container;
+
+  if (typeof aHint != 'number')
+    throw new Error(`The given ID seems invalid as an window id: ${aHint}`);
+
+  container = buildTabsContainerFor(aHint);
+  gAllTabs.appendChild(container);
+  return container;
+}
+
 function getTabFromChild(aNode) {
   if (!aNode)
     return null;
@@ -100,12 +113,14 @@ async function getTabById(aIdOrInfo) {
     selector = `${kSELECTOR_LIVE_TAB}#${aIdOrInfo}`;
   else
     selector = `${kSELECTOR_LIVE_TAB}[${kAPI_WINDOW_ID}="${aIdOrInfo.window}"][${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`;
-  await (async () => {
-    while (gWaitingForTabIdGenerated > 0) {
-      await wait();
-    }
-  })();
+  await waitUntilGeneratedIdIsReady();
   return document.querySelector(selector);
+}
+
+async function waitUntilGeneratedIdIsReady() {
+  while (gWaitingForTabIdGenerated > 0) {
+    await wait();
+  }
 }
 
 function getTabLabel(aTab) {

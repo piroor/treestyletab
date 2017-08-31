@@ -7,7 +7,8 @@
 
 // raw event handlers
 
-async function onTabOpening(aTab) {
+async function onTabOpening(aTab, aInfo = {}) {
+  log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
   if (container.openedNewTabsTimeout)
     clearTimeout(container.openedNewTabsTimeout);
@@ -15,7 +16,7 @@ async function onTabOpening(aTab) {
   // ignore tabs opened from others
   if (configs.autoGroupNewTabs &&
       !aTab.apiTab.openerTabId &&
-      container.toBeOpenedOrphanTabs == 0) {
+      !aInfo.maybeOrphan) {
     container.openedNewTabs.push(aTab.id);
     container.openedNewTabsTimeout = setTimeout(
       onNewTabsTimeout,
@@ -27,7 +28,7 @@ async function onTabOpening(aTab) {
   var opener = await getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
   if (opener &&
       configs.autoAttach) {
-    log('opener: ', dumpTab(opener), container.toBeOpenedTabsWithPositions);
+    log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
     switch (configs.autoAttachOnOpenedWithOwner) {
       case kNEWTAB_OPEN_AS_ORPHAN:
       default:
@@ -35,7 +36,7 @@ async function onTabOpening(aTab) {
 
       case kNEWTAB_OPEN_AS_CHILD:
         await attachTabTo(aTab, opener, {
-          dontMove: container.toBeOpenedTabsWithPositions > 0,
+          dontMove: aInfo.maybeOpenedWithPosition,
           broadcast: true
         });
         break;
@@ -89,7 +90,8 @@ async function onNewTabsTimeout(aContainer) {
   }
 }
 
-function onTabOpened(aTab, aInfo) {
+function onTabOpened(aTab, aInfo = {}) {
+  log('onTabOpened ', dumpTab(aTab), aInfo);
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!aInfo.openedWithPosition &&
       aTab.nextSibling)
@@ -238,7 +240,7 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
       return;
 
     case 'attach': {
-      attachTabTo(aTab, await getTabById(action.parent), {
+      await attachTabTo(aTab, await getTabById(action.parent), {
         insertBefore: await getTabById(action.insertBefore),
         insertAfter:  await getTabById(action.insertAfter),
         broadcast: true
@@ -365,7 +367,7 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   return { action: 'move' };
 }
 
-function onTabFocusing(aTab) {
+function onTabFocusing(aTab, aInfo = {}) {
   if (isCollapsed(aTab)) {
     if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
       for (let ancestor of getAncestorTabs(aTab)) {
@@ -385,7 +387,7 @@ function onTabFocusing(aTab) {
             * Focus movings by closing of the old current tab should be handled
             * only when it is activated by user preference expressly.
             */
-           aTab.parentNode.focusChangedByCurrentTabRemove &&
+           aInfo.byCurrentTabRemove &&
            !configs.autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove) {
     return true;
   }

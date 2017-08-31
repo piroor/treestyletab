@@ -651,7 +651,7 @@ async function tryMoveFocusFromClosingCurrentTab(aTab) {
   //if (!canFocus)
   //  return;
 
-  nextFocusedTab.parentNode.focusChangedByCurrentTabRemove = true;
+  nextFocusedTab.parentNode.focusChangedByCurrentTabRemoveCount++;
   await selectTabInternally(nextFocusedTab);
   return true;
 }

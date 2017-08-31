@@ -233,6 +233,8 @@ function buildTabsContainerFor(aWindowId) {
   container.subTreeChildrenMovingCount = 0;
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
+  container.focusChangedByCurrentTabRemoveCount = 0;
+  container.processingNewTabsCount = 0;
 
   container.openingCount = 0;
   container.openedNewTabs = [];

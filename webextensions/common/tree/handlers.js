@@ -63,9 +63,14 @@ async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
+  var container = getOrBuildTabsContainer(aActiveInfo.windowId);
+  container.processingNewTabsCount++;
+  var byCurrentTabRemove = container.focusChangedByCurrentTabRemoveCount > 0;
   var newTab = await getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newTab)
+  if (!newTab) {
+    container.processingNewTabsCount--;
     return;
+  }
 
   //cancelDelayedExpandOnTabSelect(); // for Ctrl-Tab
 
@@ -75,13 +80,19 @@ async function onApiTabActivated(aActiveInfo) {
 
   log('onSelect: ', dumpTab(newTab));
 
-  window.onTabFocusing && onTabFocusing(newTab);
+  window.onTabFocusing && onTabFocusing(newTab, {
+    byCurrentTabRemove
+  });
 
-  newTab.parentNode.focusChangedByCurrentTabRemove = false;
+  if (container.focusChangedByCurrentTabRemoveCount > 0)
+    container.focusChangedByCurrentTabRemoveCount--;
 
   window.onTabFocused && onTabFocused(newTab, {
+    byCurrentTabRemove,
     previouslyFocusedTab: oldTabs.length > 0 ? oldTabs[0] : null
   });
+
+  container.processingNewTabsCount--;
 }
 
 function clearOldActiveStateInWindow(aWindowId) {
@@ -123,22 +134,22 @@ async function onNewTabTracked(aTab) {
     return;
 
   log('onNewTabTracked: ', aTab.id);
-  var container = getTabsContainer(aTab.windowId);
-  if (!container) {
-    container = buildTabsContainerFor(aTab.windowId);
-    gAllTabs.appendChild(container);
-  }
+  var container = getOrBuildTabsContainer(aTab.windowId);
   var newTab = await buildTab(aTab, { inRemote: !!gTargetWindow });
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
   updateTab(newTab, aTab, { forceApply: true });
 
-  await window.onTabOpening && onTabOpening(newTab);
-
   var openedWithPosition = container.toBeOpenedTabsWithPositions > 0;
+
+  window.onTabOpening && await onTabOpening(newTab, {
+    maybeOpenedWithPosition: openedWithPosition,
+    maybeOrphan: container.toBeOpenedOrphanTabs > 0
+  });
+
   if (container.parentNode) { // it can be removed while waiting
-    if (openedWithPosition)
+    if (container.toBeOpenedTabsWithPositions > 0)
       container.toBeOpenedTabsWithPositions--;
 
     if (container.toBeOpenedOrphanTabs > 0)
@@ -214,7 +225,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
 
   log('onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
 
-  var canceled = await window.onTabMoving && onTabMoving(movedTab, aMoveInfo);
+  var canceled = window.onTabMoving && await onTabMoving(movedTab, aMoveInfo);
   if (canceled ||
       !movedTab.parentNode) // it is removed while waiting
     return;
@@ -225,7 +236,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   var nextTab = getTabs(movedTab)[newNextIndex];
   movedTab.parentNode.insertBefore(movedTab, nextTab);
 
-  await window.onTabMoved && onTabMoved(movedTab, aMoveInfo);
+  window.onTabMoved && await onTabMoved(movedTab, aMoveInfo);
 }
 
 async function onApiTabAttached(aTabId, aAttachInfo) {
