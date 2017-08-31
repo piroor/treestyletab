@@ -675,7 +675,7 @@ async function onMessage(aMessage, aSender) {
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
-        let tab = await getTabById(aMessage.tab);
+        let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
         let params = {
@@ -692,12 +692,12 @@ async function onMessage(aMessage, aSender) {
     case kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
         log('attach tab from remote ', aMessage);
-        let child = await getTabById(aMessage.child);
-        let parent = await getTabById(aMessage.parent);
+        let child = getTabById(aMessage.child);
+        let parent = getTabById(aMessage.parent);
         if (child && parent)
           attachTabTo(child, parent, clone(aMessage, {
-            insertBefore: await getTabById(aMessage.insertBefore),
-            insertAfter: await getTabById(aMessage.insertAfter),
+            insertBefore: getTabById(aMessage.insertBefore),
+            insertAfter: getTabById(aMessage.insertAfter),
             inRemote: false,
             broadcast: false
           }));
@@ -706,7 +706,7 @@ async function onMessage(aMessage, aSender) {
 
     case kCOMMAND_DETACH_TAB: {
       if (aMessage.windowId == gTargetWindow) {
-        let tab = await getTabById(aMessage.tab);
+        let tab = getTabById(aMessage.tab);
         if (tab)
           detachTab(tab);
       }
@@ -723,7 +723,7 @@ async function onMessage(aMessage, aSender) {
     }; break;
 
     case kCOMMAND_BROADCAST_TAB_STATE: {
-      let tab = await getTabById(aMessage.tab);
+      let tab = getTabById(aMessage.tab);
       if (tab) {
         let add = aMessage.add || [];
         let remove = aMessage.remove || [];

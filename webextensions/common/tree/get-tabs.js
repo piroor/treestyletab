@@ -105,22 +105,15 @@ function getTabFromChild(aNode) {
   ).singleNodeValue;
 }
 
-async function getTabById(aIdOrInfo) {
+function getTabById(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
   var selector;
   if (typeof aIdOrInfo == 'string')
     selector = `${kSELECTOR_LIVE_TAB}#${aIdOrInfo}`;
   else
-    selector = `${kSELECTOR_LIVE_TAB}[${kAPI_WINDOW_ID}="${aIdOrInfo.window}"][${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`;
-  await waitUntilGeneratedIdIsReady();
+    selector = `${kSELECTOR_LIVE_TAB}#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
   return document.querySelector(selector);
-}
-
-async function waitUntilGeneratedIdIsReady() {
-  while (gWaitingForTabIdGenerated > 0) {
-    await wait();
-  }
 }
 
 function getTabLabel(aTab) {
@@ -449,13 +442,11 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
       tabsQueryOptions.windowId = container.windowId;
   }
   var beforeApiTabs = await browser.tabs.query(tabsQueryOptions);
-  var beforeApiIds = await Promise.all(beforeApiTabs.map(getOrGenerateTabId));
+  var beforeApiIds = beforeApiTabs.map(aApiTab => aApiTab.id);
   await aAsyncTask();
   var afterApiTabs = await browser.tabs.query(tabsQueryOptions);
-  var afterApiIds = await Promise.all(afterApiTabs.map(getOrGenerateTabId));
-  var addedApiTabs = afterApiIds.filter(aAfterApiId => beforeApiIds.indexOf(aAfterApiId) < 0);
-  var addedTabs = await Promise.all(
-    addedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId }))
+  var addedApiTabs = afterApiTabs.filter(aAfterApiTab => beforeApiIds.indexOf(aAfterApiTab.id) < 0);
+  var addedTabs = addedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId })
   );
   return addedTabs;
 }

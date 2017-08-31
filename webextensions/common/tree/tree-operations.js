@@ -778,7 +778,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       };
     }
     let movedTabs = response.movedTabs || [];
-    movedTabs = await Promise.all(movedTabs.map(getTabById));
+    movedTabs = movedTabs.map(getTabById);
     return movedTabs.filter(aTab => !!aTab);
   }
 
@@ -860,10 +860,10 @@ async function moveTabs(aTabs, aOptions = {}) {
     let newTabs;
     let retryUntil = 10;
     while (retryUntil >= 0) {
-      newTabs = await Promise.all(movedApiTabs.map(aApiTab => getTabById({
+      newTabs = movedApiTabs.map(aApiTab => getTabById({
                   tab:    aApiTab.id,
                   window: destinationWindowId
-                })));
+                }));
       newTabs = newTabs.filter(aTab => !!aTab);
       if (newTabs.length < aTabs.length) {
         log('retryling: ', newTabs.length, aTabs.length);
@@ -900,7 +900,7 @@ async function moveTabs(aTabs, aOptions = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = await Promise.all(movedTabs.map(aTab => getTabById(aTab.id)));
+  movedTabs = movedTabs.map(aTab => getTabById(aTab.id));
   movedTabs = movedTabs.filter(aTab => !!aTab);
 
   return movedTabs;
@@ -946,7 +946,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       };
     }
     let movedTabs = response.movedTabs || [];
-    movedTabs = await Promise.all(movedTabs.map(getTabById));
+    movedTabs = movedTabs.map(getTabById);
     return movedTabs.filter(aTab => !!aTab);
   }
 
@@ -1009,10 +1009,10 @@ async function performTabsDragDrop(aParams = {}) {
     action: aParams.action
   });
 
-  var draggedTabs = await Promise.all(aParams.tabIds.map(aTabId => getTabById({
+  var draggedTabs = aParams.tabIds.map(aTabId => getTabById({
                       tab:    aTabId,
                       window: windowId
-                    })));
+                    }));
   draggedTabs = draggedTabs.filter(aTab => !!aTab);
   if (!draggedTabs.length)
     return;
@@ -1244,7 +1244,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
       parentTab = tab.id;
 
-    let parent = await getTabById(parentTab);
+    let parent = getTabById(parentTab);
     if (parent) {
       let tabs = [parent].concat(getDescendantTabs(parent));
       //log('existing tabs in tree: ', {

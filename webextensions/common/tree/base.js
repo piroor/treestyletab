@@ -45,32 +45,21 @@ var gNeedRestoreTree = false;
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
-var gWaitingForTabIdGenerated = 0;
+function makeTabId(aApiTab) {
+  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
+}
 
-async function getOrGenerateTabId(aApiTab, aOptions = {}) {
-  var oldId = await browser.sessions.getTabValue(aApiTab.id, kID);
+async function getOrGenerateUniqueId(aTabId, aOptions = {}) {
+  var oldId = await browser.sessions.getTabValue(aTabId, kID);
   if (oldId)
     return oldId;
 
   if (aOptions.inRemote) {
-    gWaitingForTabIdGenerated++;
     aOptions.retryCount = 0;
     let response = await browser.runtime.sendMessage({
-      type:     kCOMMAND_GET_OR_GENERATE_UNIQUE_ID,
-      windowId: aApiTab.windowId,
-      tabId:    aApiTab.id
+      type: kCOMMAND_GET_OR_GENERATE_UNIQUE_ID,
+      id:   aTabId
     });
-    gWaitingForTabIdGenerated--;
-    if (!response || !response.id) {
-      log('FATAL ERROR: failed to get unique id from background.');
-      if (aOptions.retryCount < 10) {
-        aOptions.retryCount++;
-        return getOrGenerateTabId(aApiTab, aOptions);
-      }
-      else {
-        throw new Error('FATAL ERROR: failed to get unique id from background.');
-      }
-    }
     return response && response.id;
   }
 
@@ -78,20 +67,15 @@ async function getOrGenerateTabId(aApiTab, aOptions = {}) {
   var noun = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
   var randomValue = Math.floor(Math.random() * 1000);
   var id = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  await browser.sessions.setTabValue(aApiTab.id, kID, id);
+  await browser.sessions.setTabValue(aTabId, kID, id);
   return id;
 }
 
-async function buildTab(aApiTab, aOptions = {}) {
-  var id = await getOrGenerateTabId(aApiTab, aOptions);
-  return syncBuildTabWithId(aApiTab, id, aOptions);
-}
-
-function syncBuildTabWithId(aApiTab, aId, aOptions = {}) {
-  log('build tab for ', aApiTab, aId);
+function buildTab(aApiTab, aOptions = {}) {
+  log('build tab for ', aApiTab);
   var tab = document.createElement('li');
   tab.apiTab = aApiTab;
-  tab.setAttribute('id', aId || Math.floor(Math.random() * 65000));
+  tab.setAttribute('id', makeTabId(aApiTab));
   tab.setAttribute(kAPI_TAB_ID, aApiTab.id || -1);
   tab.setAttribute(kAPI_WINDOW_ID, aApiTab.windowId || -1);
   //tab.setAttribute(kCHILDREN, '');
@@ -109,6 +93,14 @@ function syncBuildTabWithId(aApiTab, aId, aOptions = {}) {
   if (aOptions.existing) {
     tab.classList.add(kTAB_STATE_ANIMATION_READY);
   }
+
+  if (aApiTab.id)
+    getOrGenerateUniqueId(aApiTab.id, aOptions)
+      .then(aUniqueId => {
+        tab.setAttribute(kID, aUniqueId);
+        if (configs.debug)
+          tab.setAttribute('title', tab.getAttribute('title').replace(`<${kID}>`, aUniqueId));
+      });
 
   return tab;
 }
@@ -214,7 +206,8 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       `
 ${label}
 #${aTab.id}
-${aTab.className}
+(${aTab.className})
+uniqueId = <${kID}>
 tabId = ${aNewState.id}
 windowId = ${aNewState.windowId}
 `.trim());
@@ -441,7 +434,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         if (startIndex > -1)
           params.index = startIndex + aIndex;
         var apiTab = await browser.tabs.create(params);
-        var tab = await getTabById({ tab: apiTab.id, window: apiTab.windowId });
+        var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
         if (!aOptions.opener &&
             aOptions.parent &&
             tab)

@@ -116,7 +116,7 @@ function applyStyle() {
 
 function calculateDefaultSizes() {
   var dummyContainer = document.querySelector('#dummy-tabs');
-  var dummyTab = syncBuildTabWithId({}, 'dummy-tab', { existing: true });
+  var dummyTab = buildTab({}, { existing: true });
   dummyContainer.appendChild(dummyTab);
   updateTab(dummyTab, {
     title: 'dummy',
@@ -142,11 +142,11 @@ async function rebuildAll() {
   gLogContext = `Sidebar-${gTargetWindow}`;
   clearAllTabsContainers();
   var container = buildTabsContainerFor(gTargetWindow);
-  await Promise.all(apiTabs.map(async aApiTab => {
-    var newTab = await buildTab(aApiTab, { existing: true, inRemote: true });
+  for (let apiTab of apiTabs) {
+    let newTab = buildTab(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
-    updateTab(newTab, aApiTab, { forceApply: true });
-  }));
+    updateTab(newTab, apiTab, { forceApply: true });
+  }
   gAllTabs.appendChild(container);
   startObserveApiTabs();
 }

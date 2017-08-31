@@ -135,14 +135,17 @@ function getDropAction(aEvent) {
 
   return info;
 }
-async function getDropActionInternal(aEvent) {
+function getDropActionInternal(aEvent) {
   //log('getDropActionInternal: start');
-  var targetTab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent) || aEvent.target;
-  var targetTabs = getAllTabs(targetTab);
-  var firstTargetTab = getFirstNormalTab(targetTab) || targetTabs[0];
+  var targetTab          = getTabFromEvent(aEvent) ||
+                             getTabFromTabbarEvent(aEvent) ||
+                             aEvent.target;
+  var targetTabs         = getAllTabs(targetTab);
+  var firstTargetTab     = getFirstNormalTab(targetTab) ||
+                             targetTabs[0];
   var lastTargetTabIndex = targetTabs.length - 1;
   var lastTargetTab      = targetTabs[lastTargetTabIndex];
-  var info       = {
+  var info = {
     dragOverTab  : targetTab,
     draggedTab   : null,
     draggedTabs  : [],
@@ -157,24 +160,24 @@ async function getDropActionInternal(aEvent) {
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   info.dragData = dragData = dragData && JSON.parse(dragData);
 
-  var draggedTab = await getTabById(dragData && {
+  var draggedTab = dragData && getTabById({
                      tab:    dragData.tabId,
                      window: dragData.windowId
                    });
   info.draggedTab = draggedTab;
   var draggedTabs = (!dragData || !dragData.tabIds) ?
                       [] :
-                      await Promise.all(dragData.tabIds.map(aTabId => getTabById({
+                      dragData.tabIds.map(aTabId => getTabById({
                         tab:    aTabId,
                         window: dragData.windowId
-                      })));
+                      }));
   draggedTab = draggedTabs.filter(aTab => !!aTab);
   info.draggedTabs = draggedTabs;
   var isRemoteTab = !draggedTab && !!dragData.tabId;
   var isNewTabAction = !draggedTab && !dragData.tabId;
 
   if (!targetTab) {
-    //log('dragging on non-tab element');
+    log('dragging on non-tab element');
     let action = isRemoteTab ? kACTION_STAY : (kACTION_MOVE | kACTION_DETACH) ;
     if (isNewTabAction)
       action |= kACTION_NEWTAB;
@@ -211,11 +214,6 @@ async function getDropActionInternal(aEvent) {
       }
       //log('info.targetTab = ', dumpTab(info.targetTab));
     }
-  }
-  else {
-    //log('on the tab ', dumpTab(targetTab));
-    //ensureTabInitialized(targetTab);
-    info.targetTab = targetTab;
   }
 
   /**
@@ -609,7 +607,6 @@ try{
   }
   if (!dropPositionTargetTab)
     dropPositionTargetTab = info.targetTab;
-  //log('drop position tab: ', dumpTab(dropPositionTargetTab));
 
   var dropPosition = info.dropPosition == kDROP_BEFORE ? 'before' :
                      info.dropPosition == kDROP_AFTER ? 'after' :
@@ -617,7 +614,7 @@ try{
   if (dropPositionTargetTab != info.draggedTab) {
     clearDropPosition();
     dropPositionTargetTab.setAttribute(kDROP_POSITION, dropPosition);
-    //log('set drop position to ', dropPosition);
+    log('set drop position to ', dropPosition);
   }
 }catch(e){log(String(e), e.stack);}
 }
@@ -661,11 +658,11 @@ function onDragEnter(aEvent) {
   gAutoExpandWhileDNDTimerNext = setTimeout((aTargetId, aDraggedId) => {
     gAutoExpandWhileDNDTimerNext = null;
     gAutoExpandWhileDNDTimer = setTimeout(async () => {
-        let targetTab = await getTabById(aTargetId);
+        let targetTab = getTabById(aTargetId);
         if (targetTab &&
             shouldTabAutoExpanded(targetTab) &&
             targetTab.getAttribute(kDROP_POSITION) == 'self') {
-          let draggedTab = aDraggedId && await getTabById(aDraggedId);
+          let draggedTab = aDraggedId && getTabById(aDraggedId);
           if (configs.autoExpandIntelligently) {
             collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
           }
@@ -694,7 +691,7 @@ function onDragLeave(aEvent) {
   gAutoExpandWhileDNDTimer = null;
 }
 
-async function onDrop(aEvent) {
+function onDrop(aEvent) {
   setTimeout(() => collapseAutoExpandedTabsWhileDragging(), 0);
   clearDropPosition();
 
@@ -702,12 +699,14 @@ async function onDrop(aEvent) {
   var dt = aEvent.dataTransfer;
   if (dt.dropEffect != 'link' &&
       dt.dropEffect != 'move' &&
+      dropActionInfo.dragData &&
       !dropActionInfo.dragData.tabId) {
     log('invalid drop');
     return;
   }
 
-  if (dropActionInfo.dragData.tabId) {
+  if (dropActionInfo.dragData &&
+      dropActionInfo.dragData.tabId) {
     log('there ar tabs drag');
     performTabsDragDrop({
       windowId:     dropActionInfo.dragData.windowId,
@@ -727,7 +726,7 @@ async function onDrop(aEvent) {
   handleDroppedNonTabItems(aEvent, dropActionInfo);
 }
 
-async function onDragEnd(aEvent) {
+function onDragEnd(aEvent) {
   log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = JSON.parse(dragData);
@@ -735,10 +734,10 @@ async function onDragEnd(aEvent) {
   gDraggingOnSelfWindow = false;
 
   if (Array.isArray(dragData.tabIds)) {
-    dragData.tabNodes = await Promise.all(dragData.tabIds.map(aTabId => getTabById({
+    dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
                           tab:    aTabId,
                           window: dragData.windowId
-                        })));
+                        }));
     for (let draggedTab of dragData.tabNodes) {
       draggedTab.classList.remove(kTAB_STATE_DRAGGING);
     }

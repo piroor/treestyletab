@@ -39,49 +39,57 @@
 'use strict';
 
 function isActive(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_ACTIVE);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_ACTIVE);
 }
 
 function isPinned(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_PINNED);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_PINNED);
 }
 
 function isAudible(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_AUDIBLE);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_AUDIBLE);
 }
 
 function isSoundPlaying(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_SOUND_PLAYING);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_SOUND_PLAYING);
 }
 
 function maybeSoundPlaying(aTab) {
-  return aTab &&
+  return aTab && aTab.parentNode &&
          (aTab.classList.contains(kTAB_STATE_SOUND_PLAYING) ||
           (aTab.classList.contains(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
            aTab.hasAttribute(kCHILDREN)));
 }
 
 function isMuted(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_MUTED);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_MUTED);
 }
 
 function maybeMuted(aTab) {
-  return aTab &&
+  return aTab && aTab.parentNode &&
          (aTab.classList.contains(kTAB_STATE_MUTED) ||
           (aTab.classList.contains(kTAB_STATE_HAS_MUTED_MEMBER) &&
            aTab.hasAttribute(kCHILDREN)));
 }
 
 function isHidden(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_HIDDEN);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_HIDDEN);
 }
 
 function isCollapsed(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_COLLAPSED);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_COLLAPSED);
 }
 
 function isSubtreeCollapsed(aTab) {
-  return aTab && aTab.classList.contains(kTAB_STATE_SUBTREE_COLLAPSED);
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
 function shouldCloseTabSubtreeOf(aTab) {
@@ -91,7 +99,7 @@ function shouldCloseTabSubtreeOf(aTab) {
 }
 
 function shouldCloseLastTabSubtreeOf(aTab) {
-  return (aTab &&
+  return (aTab && aTab.parentNode &&
           shouldCloseTabSubtreeOf(aTab) &&
           getDescendantTabs(aTab).length + 1 == getAllTabs(aTab).length);
 }
@@ -112,7 +120,7 @@ function isLocked(aTab) {
 }
 
 function hasChildTabs(aParent) {
-  if (!aParent)
+  if (!aParent || !aParent.parentNode)
     return false;
   return aParent.hasAttribute(kCHILDREN);
 }

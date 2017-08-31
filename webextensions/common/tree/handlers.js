@@ -68,7 +68,7 @@ async function onApiTabActivated(aActiveInfo) {
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
   var byInternalOperation = container.internalFocusCount > 0;
   var byCurrentTabRemove = container.focusChangedByCurrentTabRemoveCount > 0;
-  var newTab = await getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
+  var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab) {
     if (byInternalOperation)
       container.internalFocusCount--;
@@ -120,7 +120,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
 
   await ensureAllTabsAreTracked(aTab.windowId);
 
-  var updatedTab = await getTabById({ tab: aTabId, window: aTab.windowId });
+  var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
     return;
 
@@ -146,7 +146,7 @@ async function onNewTabTracked(aTab) {
   log('onNewTabTracked: ', aTab.id);
   var container = getOrBuildTabsContainer(aTab.windowId);
   container.processingNewTabsCount++;
-  var newTab = await buildTab(aTab, { inRemote: !!gTargetWindow });
+  var newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
@@ -197,7 +197,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 
   await ensureAllTabsAreTracked(aRemoveInfo.windowId);
 
-  var oldTab = await getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
+  var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;
 
@@ -247,7 +247,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
      problem, we have to wait for a while with this "async" and
      do following processes after the tab is completely pinned. */
   var movedApiTab = await browser.tabs.get(aTabId);
-  var movedTab = await getTabById({ tab: aTabId, window: aMoveInfo.windowId });
+  var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab) {
     container.internalMovingCount--;
     return;
@@ -296,7 +296,7 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
   await ensureAllTabsAreTracked(aDetachInfo.oldWindowId);
 
   log('onApiTabDetached, id: ', aTabId, aDetachInfo);
-  var oldTab = await getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
+  var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (!oldTab)
     return;
 

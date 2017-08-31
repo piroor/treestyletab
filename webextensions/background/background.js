@@ -59,11 +59,11 @@ async function rebuildAll() {
   });
   windows.forEach(async aWindow => {
     var container = buildTabsContainerFor(aWindow.id);
-    await Promise.all(aWindow.tabs.map(async aApiTab => {
-      var newTab = await buildTab(aApiTab, { existing: true });
+    for (let apiTab of aWindow.tabs) {
+      let newTab = buildTab(apiTab, { existing: true });
       container.appendChild(newTab);
-      updateTab(newTab, aApiTab, { forceApply: true });
-    }));
+      updateTab(newTab, apiTab, { forceApply: true });
+    }
     gAllTabs.appendChild(container);
   });
 }
