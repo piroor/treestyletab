@@ -492,13 +492,14 @@ function collapseExpandTab(aTab, aParams = {}) {
     aTab.classList.remove(kTAB_STATE_COLLAPSED);
   //setTabValue(aTab, kTAB_STATE_COLLAPSED, aParams.collapsed);
 
+  var last = aParams.last &&
+               (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
   window.onTabCollapsedStateChanging &&
     window.onTabCollapsedStateChanging(aTab, {
       collapsed: aParams.collapsed,
       justNow: aParams.justNow,
-      anchor: aParams.anchor,
-      last: aParams.last &&
-            (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab))
+      anchor: last && aParams.anchor,
+      last: last
     });
 
   //var data = {
@@ -522,12 +523,13 @@ function collapseExpandTab(aTab, aParams = {}) {
   if (!isSubtreeCollapsed(aTab)) {
     let children = getChildTabs(aTab);
     children.forEach((aChild, aIndex) => {
+      var last = aParams.last &&
+                   (aIndex == children.length - 1);
       collapseExpandTab(aChild, clone(aParams, {
         collapsed: aParams.collapsed,
         justNow:   aParams.justNow,
-        anchor:    aParams.anchor,
-        last:      aParams.last &&
-                   (aIndex == children.length - 1)
+        anchor:    last && aParams.anchor,
+        last:      last
       }));
     });
   }
