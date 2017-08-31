@@ -64,13 +64,10 @@ async function onApiTabActivated(aActiveInfo) {
     return;
 
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
-  container.processingNewTabsCount++;
   var byCurrentTabRemove = container.focusChangedByCurrentTabRemoveCount > 0;
   var newTab = await getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newTab) {
-    container.processingNewTabsCount--;
+  if (!newTab)
     return;
-  }
 
   //cancelDelayedExpandOnTabSelect(); // for Ctrl-Tab
 
@@ -91,8 +88,6 @@ async function onApiTabActivated(aActiveInfo) {
     byCurrentTabRemove,
     previouslyFocusedTab: oldTabs.length > 0 ? oldTabs[0] : null
   });
-
-  container.processingNewTabsCount--;
 }
 
 function clearOldActiveStateInWindow(aWindowId) {
@@ -135,6 +130,7 @@ async function onNewTabTracked(aTab) {
 
   log('onNewTabTracked: ', aTab.id);
   var container = getOrBuildTabsContainer(aTab.windowId);
+  container.processingNewTabsCount++;
   var newTab = await buildTab(aTab, { inRemote: !!gTargetWindow });
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
@@ -169,6 +165,8 @@ async function onNewTabTracked(aTab) {
     window.onTabOpened && onTabOpened(newTab, {
       openedWithPosition
     });
+
+  container.processingNewTabsCount--;
 }
 
 async function onApiTabRemoved(aTabId, aRemoveInfo) {
@@ -212,6 +210,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
 
+  await waitUntilNewTabsAreOpened(aMoveInfo.windowId);
+
   /* When a tab is pinned, tabs.onMoved may be notified before
      tabs.onUpdated(pinned=true) is notified. As the result,
      descendant tabs are unexpectedly moved to the top of the
@@ -237,6 +237,13 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   movedTab.parentNode.insertBefore(movedTab, nextTab);
 
   window.onTabMoved && await onTabMoved(movedTab, aMoveInfo);
+}
+
+async function waitUntilNewTabsAreOpened(aWindowId) {
+  var container = getOrBuildTabsContainer(aWindowId);
+  while (container.processingNewTabsCount > 0) {
+    await wait();
+  }
 }
 
 async function onApiTabAttached(aTabId, aAttachInfo) {
