@@ -530,14 +530,10 @@ async function onMessage(aMessage, aSender) {
 
     case kCOMMAND_PULL_TREE_STRUCTURE: {
       log(`tree structure is requested from ${aMessage.windowId}`);
+      while (gInitializing) {
+        await wait(10);
+      }
       let structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
-      // By some reason the requestor can receive "undefined" as the response...
-      // For safely we resend the information as a "PUSH" message.
-      browser.runtime.sendMessage({
-        type:      kCOMMAND_PUSH_TREE_STRUCTURE,
-        windowId:  aMessage.windowId,
-        structure: structure
-      });
       clearTimeout(timeout);
       return { structure: structure };
     }; break;

@@ -119,13 +119,7 @@ async function loadTreeStructure() {
       kWINDOW_STATE_TREE_STRUCTURE
     );
     if (structure) {
-      log(`tree information for window ${aWindow.id} is available.`);
       await applyTreeStructureToTabs(getAllTabs(aWindow.id), structure);
-      browser.runtime.sendMessage({
-        type:      kCOMMAND_PUSH_TREE_STRUCTURE,
-        windowId:  aWindow.id,
-        structure: structure
-      });
     }
     else {
       log(`no tree information for the window ${aWindow.id}.`);
