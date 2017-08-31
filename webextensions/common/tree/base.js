@@ -211,7 +211,13 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 
   if (configs.debug)
     aTab.setAttribute('title',
-      `${label}\n#${aTab.id}\n${aTab.className}`);
+      `
+${label}
+#${aTab.id}
+${aTab.className}
+tabId = ${aNewState.id}
+windowId = ${aNewState.windowId}
+`.trim());
 }
 
 function maybeImageUrl(aURL) {
