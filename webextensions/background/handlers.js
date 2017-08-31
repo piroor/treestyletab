@@ -519,7 +519,17 @@ function onMessage(aMessage, aSender, aRespond) {
       aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
-  if (aMessage.type.indexOf('treestyletab:request:') == 0) {
+  if ([
+       kCOMMAND_REQUEST_UNIQUE_ID,
+       kCOMMAND_PULL_TREE_STRUCTURE,
+       kCOMMAND_NEW_WINDOW_FROM_TABS,
+       kCOMMAND_MOVE_TABS,
+       kCOMMAND_NEW_TABS,
+       kCOMMAND_LOAD_URI,
+       kCOMMAND_SELECT_TAB_INTERNALLY,
+       kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE,
+       kCOMMAND_MOVE_TABS_INTERNALLY_AFTER
+      ].indexOf(aMessage.type) > -1) {
     handleInternalMessage(aMessage, aSender).then(aRespond);
     return true;
   }
@@ -568,6 +578,10 @@ async function handleInternalMessage(aMessage, aSender) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
+    }; break;
+
+    case kCOMMAND_LOAD_URI: {
+      // not implemented yet.
     }; break;
 
     case kCOMMAND_NEW_TABS: {

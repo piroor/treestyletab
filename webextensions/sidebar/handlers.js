@@ -656,7 +656,9 @@ function onMessage(aMessage, aSender, aRespond) {
       aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
-  if (aMessage.type.indexOf('treestyletab:request:') == 0) {
+  if ([
+       kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE
+      ].indexOf(aMessage.type) > -1) {
     handleInternalMessage(aMessage, aSender).then(aRespond);
     return true;
   }
