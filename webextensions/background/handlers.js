@@ -516,7 +516,7 @@ function onTabPinned(aTab) {
 function onMessage(aMessage, aSender, aRespond) {
   if (!aMessage ||
       typeof aMessage.type != 'string' ||
-      aMessage.type.indexOf('treestyletab:'))
+      aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
   handleInternalMessage(aMessage, aSender).then(aRespond);
