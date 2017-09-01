@@ -4,6 +4,16 @@
 
   "sidebarTitle": { "message": "ツリー型タブ" },
 
+  "tab.closebox.expanded.tooltip": { "message": "タブを展開する" },
+  "tab.closebox.collapsed.tooltip": { "message": "ツリーをたたむ" },
+  "tab.twisty.expanded.tooltip": { "message": "ツリーを展開する" },
+  "tab.twisty.collapsed.tooltip": { "message": "ツリーをたたむ" },
+  "tab.tree.tooltip": { "message": "$TREE$\n  ...（省略されたタブ：$COUNT$個）",
+    "placeholders": {
+      "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
+      "count": { "content": "$2", "example": "3" }
+    }},
+
   "groupTab.label": { "message": "$TITLE$ など",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" }

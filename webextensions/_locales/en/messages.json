@@ -4,6 +4,16 @@
 
   "sidebarTitle": { "message": "Tree Style Tab" },
 
+  "tab.closebox.expanded.tooltip": { "message": "Close tab" },
+  "tab.closebox.collapsed.tooltip": { "message": "Close tree" },
+  "tab.twisty.expanded.tooltip": { "message": "Collapse tree" },
+  "tab.twisty.collapsed.tooltip": { "message": "Expand tree" },
+  "tab.tree.tooltip": { "message": "$TREE$\n  ...and $COUNT$ more tab(s)",
+    "placeholders": {
+      "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
+      "count": { "content": "$2", "example": "3" }
+    }},
+
   "groupTab.label": { "message": "$TITLE$ and more",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
