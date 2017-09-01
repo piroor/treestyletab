@@ -60,6 +60,7 @@ async function init() {
   onConfigChange('animation');
 
   browser.runtime.onMessage.addListener(onMessage);
+  document.documentElement.classList.remove('initializing');
   unblockUserOperations();
 }
 

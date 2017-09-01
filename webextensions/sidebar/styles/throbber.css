@@ -63,9 +63,24 @@
   display: none !important;
 }
 
-.tab.loading:not(.collapsed) .throbber::before {
+.tab.loading:not(.collapsed) .throbber::before,
+:root.initializing #blocking-screen .throbber::before {
   animation: throbber 1.1s ease-in-out infinite;
 }
+
+:root.initializing #blocking-screen .throbber {
+  position: absolute;
+  top: calc(50% - var(--favicon-size));
+  left: calc(50% - var(--favicon-size));
+  transform: scale(2, 2);
+}
+
+:root.initializing #blocking-screen .throbber::before {
+  border-color: white;
+  background-color: white;
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
+}
+
 #dummy-tabs .throbber {
   animation: none !important;
 }

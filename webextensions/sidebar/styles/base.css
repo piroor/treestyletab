@@ -281,6 +281,11 @@ ul {
   z-index: 10000;
 }
 
+:root.initializing #blocking-screen {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+:root.initializing #blocking-screen,
 :root.blocking #blocking-screen {
   display: block;
 }
