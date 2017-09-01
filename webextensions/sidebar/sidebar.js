@@ -118,22 +118,15 @@ function applyStyle() {
 }
 
 function calculateDefaultSizes() {
-  var dummyContainer = document.querySelector('#dummy-tabs');
-  var dummyTab = buildTab({}, { existing: true });
-  dummyContainer.appendChild(dummyTab);
-  updateTab(dummyTab, {
-    title: 'dummy',
-    url: 'about:blank',
-    status: 'loading',
-    mutedInfo: { muted: false }
-  }, { forceApply: true });
-
   // first, calculate actual favicon size.
-  var throbberHeight = document.querySelector('#dummy-favicon').getBoundingClientRect().height;
+  var faviconSize = document.querySelector('#dummy-favicon').getBoundingClientRect().height;
+  log('faviconHeight ', faviconSize);
   gSizeDefinition.textContent = `:root {
-    --favicon-size: ${throbberHeight}px;
+    --favicon-size: ${faviconSize}px;
   }`;
+  var dummyTab = document.querySelector('#dummy-tab');
   gTabHeight = dummyTab.getBoundingClientRect().height;
+  log('gTabHeight ', gTabHeight);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
   }`;
