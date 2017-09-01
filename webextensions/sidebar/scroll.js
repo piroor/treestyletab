@@ -168,50 +168,50 @@ async function scrollToTab(aTab, aOptions = {}) {
 
   await nextFrame();
 
-    var anchorTab = aOptions.anchor;
-    if (!anchorTab ||
-        !anchorTab.parentNode ||
-        anchorTab == aTab ||
-        isPinned(anchorTab)) {
-      log('=> no available anchor, direct scroll');
-      scrollTo(clone(aOptions, {
-        tab: aTab
-      }));
-      return;
-    }
-
-    var targetTabRect = aTab.getBoundingClientRect();
-    var anchorTabRect = anchorTab.getBoundingClientRect();
-    var containerRect = gTabBar.getBoundingClientRect();
-    var offset = getOffsetForAnimatingTab(aTab);
-    var delta = calculateScrollDeltaForTab(aTab);
-    if (targetTabRect.top > anchorTabRect.top) {
-      log('=> will scroll down');
-      let boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
-      let overHeight = boundingHeight - containerRect.height;
-      if (overHeight > 0) {
-        delta -= overHeight;
-        notifyInvisibleTab();
-      }
-      log('calculated result: ', {
-        boundingHeight, overHeight, delta,
-        container: containerRect.height
-      });
-    }
-    else if (targetTabRect.bottom < anchorTabRect.bottom) {
-      log('=> will scroll up');
-      let boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
-      let overHeight = boundingHeight - containerRect.height;
-      if (overHeight > 0)
-        delta += overHeight;
-      log('calculated result: ', {
-        boundingHeight, overHeight, delta,
-        container: containerRect.height
-      });
-    }
+  var anchorTab = aOptions.anchor;
+  if (!anchorTab ||
+      !anchorTab.parentNode ||
+      anchorTab == aTab ||
+      isPinned(anchorTab)) {
+    log('=> no available anchor, direct scroll');
     scrollTo(clone(aOptions, {
-      position: gTabBar.scrollTop + delta
+      tab: aTab
     }));
+    return;
+  }
+
+  var targetTabRect = aTab.getBoundingClientRect();
+  var anchorTabRect = anchorTab.getBoundingClientRect();
+  var containerRect = gTabBar.getBoundingClientRect();
+  var offset = getOffsetForAnimatingTab(aTab);
+  var delta = calculateScrollDeltaForTab(aTab);
+  if (targetTabRect.top > anchorTabRect.top) {
+    log('=> will scroll down');
+    let boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
+    let overHeight = boundingHeight - containerRect.height;
+    if (overHeight > 0) {
+      delta -= overHeight;
+      notifyInvisibleTab();
+    }
+    log('calculated result: ', {
+      boundingHeight, overHeight, delta,
+      container: containerRect.height
+    });
+  }
+  else if (targetTabRect.bottom < anchorTabRect.bottom) {
+    log('=> will scroll up');
+    let boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
+    let overHeight = boundingHeight - containerRect.height;
+    if (overHeight > 0)
+      delta += overHeight;
+    log('calculated result: ', {
+      boundingHeight, overHeight, delta,
+      container: containerRect.height
+    });
+  }
+  scrollTo(clone(aOptions, {
+    position: gTabBar.scrollTop + delta
+  }));
 }
 
 function getOffsetForAnimatingTab(aTab) {
