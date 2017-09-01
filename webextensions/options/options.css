@@ -5,17 +5,21 @@
 */
 
 #style-radiogroup {
+  align-content: flex-start;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   padding: 0;
 }
 
-#style-radiogroup + * {
-  clear: both;
-}
-
 #style-radiogroup li {
-  float: left;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   list-style: none;
-  margin: 0;
+  margin-bottom: 0.5em;
   padding: 0;
   width: calc(1em + 100px + 8em); /* radio + image + label */
 }
