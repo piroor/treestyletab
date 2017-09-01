@@ -112,7 +112,9 @@ function applyStyle() {
       break;
   }
   return new Promise((aResolve, aReject) => {
-    gStyleLoader.addEventListener('load', aResolve, { once: true });
+    gStyleLoader.addEventListener('load', () => {
+      nextFrame().then(aResolve);
+    }, { once: true });
   });
 }
 

@@ -43,6 +43,12 @@ async function wait(aTask = 0, aTimeout = 0) {
   });
 }
 
+function nextFrame() {
+  return new Promise((aResolve, aReject) => {
+    window.requestAnimationFrame(aResolve);
+  });
+}
+
 function clone(aOriginalObject, aExtraProperties) {
   var cloned = {};
   for (let key of Object.keys(aOriginalObject)) {
