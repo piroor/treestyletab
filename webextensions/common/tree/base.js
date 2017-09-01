@@ -51,16 +51,11 @@ function makeTabId(aApiTab) {
 
 async function requestUniqueId(aTabId, aOptions = {}) {
   if (aOptions.inRemote) {
-    let response = await browser.runtime.sendMessage({
+    return await browser.runtime.sendMessage({
       type:     kCOMMAND_REQUEST_UNIQUE_ID,
       id:       aTabId,
       forceNew: !!aOptions.forceNew
     });
-    return {
-      id: response.id,
-      originalId: response.originalId,
-      originalTabId: response.originalTabId
-    };
   }
 
   var originalId = null;
