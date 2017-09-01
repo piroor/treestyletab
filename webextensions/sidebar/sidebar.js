@@ -348,3 +348,10 @@ function updateTabbarLayout(aParams = {}) {
 
   reserveToPositionPinnedTabs(aParams);
 }
+
+
+async function notifyInvisibleTab() {
+  gInvisibleTabNotifier.classList.add('notifying');
+  await wait(configs.invisibleTabNotifyDuration);
+  gInvisibleTabNotifier.classList.remove('notifying');
+}

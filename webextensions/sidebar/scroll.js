@@ -152,7 +152,7 @@ function canScrollToTab(aTab) {
           !isHidden(aTab));
 }
 
-function scrollToTab(aTab, aOptions = {}) {
+async function scrollToTab(aTab, aOptions = {}) {
   log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions);
   if (!canScrollToTab(aTab)) {
     log('=> unscrollable');
@@ -166,7 +166,8 @@ function scrollToTab(aTab, aOptions = {}) {
     return;
   }
 
-  window.requestAnimationFrame(() => {
+  await nextFrame();
+
     var anchorTab = aOptions.anchor;
     if (!anchorTab ||
         !anchorTab.parentNode ||
@@ -190,10 +191,7 @@ function scrollToTab(aTab, aOptions = {}) {
       let overHeight = boundingHeight - containerRect.height;
       if (overHeight > 0) {
         delta -= overHeight;
-        gInvisibleTabNotifier.classList.add('notifying');
-        setTimeout(() => {
-          gInvisibleTabNotifier.classList.remove('notifying');
-        }, configs.invisibleTabNotifyDuration);
+        notifyInvisibleTab();
       }
       log('calculated result: ', {
         boundingHeight, overHeight, delta,
@@ -204,13 +202,8 @@ function scrollToTab(aTab, aOptions = {}) {
       log('=> will scroll up');
       let boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
       let overHeight = boundingHeight - containerRect.height;
-      if (overHeight > 0) {
+      if (overHeight > 0)
         delta += overHeight;
-        gInvisibleTabNotifier.classList.add('notifying');
-        setTimeout(() => {
-          gInvisibleTabNotifier.classList.remove('notifying');
-        }, configs.invisibleTabNotifyDuration);
-      }
       log('calculated result: ', {
         boundingHeight, overHeight, delta,
         container: containerRect.height
@@ -219,7 +212,6 @@ function scrollToTab(aTab, aOptions = {}) {
     scrollTo(clone(aOptions, {
       position: gTabBar.scrollTop + delta
     }));
-  });
 }
 
 function getOffsetForAnimatingTab(aTab) {
