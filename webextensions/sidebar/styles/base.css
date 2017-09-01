@@ -280,7 +280,6 @@ ul {
 }
 
 #invisible-tab-notifier {
-  animation: blink var(--invisible-tab-notify-duration) ease-in-out 1;
   background: transparent repeat-x bottom;
   background-image: -moz-linear-gradient(
                       bottom,
@@ -296,6 +295,7 @@ ul {
 }
 
 #invisible-tab-notifier.notifying {
+  animation: blink var(--invisible-tab-notify-duration) ease-in-out 1;
   display: block;
 }
 
