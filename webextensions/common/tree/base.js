@@ -135,6 +135,10 @@ function buildTab(aApiTab, aOptions = {}) {
   if (aApiTab.id)
     tab.uniqueId = requestUniqueId(aApiTab.id, {
       inRemote: !!gTargetWindow
+    }).then(aUniqueId => {
+      if (tab && tab.parentNode) // possibly removed from document
+        tab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
+      return aUniqueId;
     });
   else
     tab.uniqueId = Promise.resolve({

@@ -37,7 +37,7 @@ const kINSERT_AFTER  = 'data-insert-after-id';
 const kCLOSED_SET_ID = 'data-closed-set-id';
 const kDROP_POSITION = 'data-drop-position';
 
-const kPERSISTENT_ID        = 'unique-id';
+const kPERSISTENT_ID        = 'data-persistent-id';
 const kPERSISTENT_ANCESTORS = 'ancestors';
 const kPERSISTENT_CHILDREN  = 'children';
 const kPERSISTENT_INSERT_BEFORE = 'insert-before';
