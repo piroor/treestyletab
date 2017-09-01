@@ -136,7 +136,8 @@ function applyStyle() {
 function calculateDefaultSizes() {
   // first, calculate actual favicon size.
   gFaviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
-  gFaviconizedTabSize = parseInt(gFaviconSize * 1.75);
+  var scale = Math.max(configs.faviconizedTabScale, 1);
+  gFaviconizedTabSize = parseInt(gFaviconSize * scale);
   log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
   gSizeDefinition.textContent = `:root {
     --favicon-size: ${gFaviconSize}px;
