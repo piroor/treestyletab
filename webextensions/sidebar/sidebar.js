@@ -41,8 +41,8 @@ async function init() {
   window.addEventListener('resize', onResize);
 
   calculateDefaultSizes();
-
   await waitUntilBackgroundIsReady();
+  document.documentElement.classList.remove('initializing');
 
   await rebuildAll();
   updateTabbarLayout({ justNow: true });
@@ -60,7 +60,6 @@ async function init() {
   onConfigChange('animation');
 
   browser.runtime.onMessage.addListener(onMessage);
-  document.documentElement.classList.remove('initializing');
   unblockUserOperations();
 }
 
