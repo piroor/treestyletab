@@ -106,7 +106,7 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 async function onTabRestored(aTab) {
-  log('restored ', dumpTab(aTab));
+  log('restored ', dumpTab(aTab), aTab.apiTab);
   var insertBefore, insertAfter, ancestors, children;
   [insertBefore, insertAfter, ancestors, children] = await Promise.all([
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
@@ -114,15 +114,30 @@ async function onTabRestored(aTab) {
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN)
   ]);
-  ancestors = ancestors ||[];
-  children = children || [];
-  log('persistent: ', dumpTab(insertBefore), dumpTab(insertAfter), ancestors.map(dumpTab), children.map(dumpTab));
-/*
+  ancestors = ancestors || [];
+  children  = children  || [];
+  log('persistent references: ', insertBefore, insertAfter, ancestors, children);
+  insertBefore = getTabByUniqueId(insertBefore);
+  insertAfter  = getTabByUniqueId(insertAfter);
+  ancestors    = ancestors.map(getTabByUniqueId);
+  children     = children.map(getTabByUniqueId);
   for (let ancestor of ancestors) {
-    ancestor = getTabByUniqueId(ancestor);
+    if (!ancestor)
+      continue;
+    await attachTabTo(aTab, ancestor, {
+      broadcast: true,
+      insertBefore: insertBefore,
+      insertAfter:  insertAfter
+    });
+    break;
   }
-  var children = await browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN);
-*/
+  for (let child of children) {
+    if (!child)
+      continue;
+    await attachTabTo(child, aTab, {
+      broadcast: true
+    });
+  }
 }
 
 function onTabClosed(aTab) {
