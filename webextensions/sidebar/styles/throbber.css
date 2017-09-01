@@ -59,6 +59,7 @@
   position: absolute;
 }
 
+:root:not(.initializing) #blocking-screen .throbber,
 .tab:not(.loading) .throbber {
   display: none !important;
 }
