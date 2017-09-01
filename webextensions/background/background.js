@@ -87,13 +87,9 @@ function reserveToSaveTreeStructure(aHint) {
 }
 async function saveTreeStructure(aWindowId) {
   var container = getTabsContainer(aWindowId);
-  if (!container) {
-    browser.sessions.removeWindowValue(
-      aWindowId,
-      kWINDOW_STATE_TREE_STRUCTURE
-    );
-  }
-  else {
+  if (!container)
+    return;
+
     let window = await browser.windows.get(aWindowId, {
       populate: true,
       windowTypes: ['normal']
@@ -104,7 +100,6 @@ async function saveTreeStructure(aWindowId) {
       kWINDOW_STATE_TREE_STRUCTURE,
       structure
     );
-  }
 }
 
 async function loadTreeStructure() {
