@@ -390,6 +390,24 @@ async function loadImageTo(aImageElement, aURL) {
   }
 }
 
+function onTabUpdated(aTab) {
+  updateTabSoundButtonTooltip(aTab);
+}
+
+function onParentTabUpdated(aTab) {
+  updateTabSoundButtonTooltip(aTab);
+}
+
+function updateTabSoundButtonTooltip(aTab) {
+  var tooltip = '';
+  if (maybeMuted(aTab))
+    tooltip = browser.i18n.getMessage('tab.soundButton.muted.tooltip');
+  else if (maybeSoundPlaying(aTab))
+    tooltip = browser.i18n.getMessage('tab.soundButton.playing.tooltip');
+
+  getTabSoundButton(aTab).setAttribute('title', tooltip);
+}
+
 function onTabFocused(aTab) {
   scrollToTab(aTab);
 }
@@ -735,6 +753,7 @@ async function handleInternalMessage(aMessage, aSender) {
         });
         add.forEach(aState => tab.classList.add(aState));
         remove.forEach(aState => tab.classList.remove(aState));
+        updateTabSoundButtonTooltip(tab);
         if (aMessage.bubbles)
           updateParentTab(getParentTab(tab));
       }

@@ -292,6 +292,8 @@ function updateParentTab(aParent) {
     aParent.classList.remove(kTAB_STATE_HAS_MUTED_MEMBER);
 
   updateParentTab(getParentTab(aParent));
+
+  window.onParentTabUpdated && onParentTabUpdated(aParent);
 }
 
 function buildTabsContainerFor(aWindowId) {
