@@ -120,6 +120,7 @@ configs = new Configs({
   autoGroupNewTabs: true,
   autoGroupNewTabsTimeout: 100,
   preventTearOffTabsTimeout: 100,
+  invisibleTabNotifyDuration: 750,
 
   animation: true,
   debug:     false

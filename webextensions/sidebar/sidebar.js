@@ -9,6 +9,7 @@ gLogContext = 'Sidebar-?';
 
 var gTabBar;
 var gAfterTabsForOverflowTabBar;
+var gInvisibleTabNotifier;
 var gIndent = -1;
 var gIndentProp = 'margin-left';
 var gTabHeight = 0;
@@ -28,6 +29,7 @@ async function earlyInit() {
 
   gTabBar = document.querySelector('#tabbar');
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
+  gInvisibleTabNotifier = document.querySelector('#invisible-tab-notifier');
   gAllTabs = document.querySelector('#all-tabs');
   gSizeDefinition = document.querySelector('#size-definition');
   gStyleLoader = document.querySelector('#style-loader');
@@ -144,6 +146,7 @@ function calculateDefaultSizes() {
 
     --indent-duration: ${configs.indentDuration}ms;
     --collapse-duration: ${configs.collapseDuration}ms;
+    --invisible-tab-notify-duration: ${configs.invisibleTabNotifyDuration}ms;
   }`;
 }
 
@@ -332,6 +335,7 @@ function updateTabbarLayout(aParams = {}) {
     gTabBar.classList.add(kTABBAR_STATE_OVERFLOW);
     let range = document.createRange();
     range.selectNodeContents(gAfterTabsForOverflowTabBar);
+    range.setStartAfter(gInvisibleTabNotifier);
     let offset = range.getBoundingClientRect().height;
     range.detach();
     gTabBar.style.bottom = `${offset}px`;

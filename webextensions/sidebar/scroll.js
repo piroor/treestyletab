@@ -188,8 +188,13 @@ function scrollToTab(aTab, aOptions = {}) {
       log('=> will scroll down');
       let boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
       let overHeight = boundingHeight - containerRect.height;
-      if (overHeight > 0)
+      if (overHeight > 0) {
         delta -= overHeight;
+        gInvisibleTabNotifier.classList.add('notifying');
+        setTimeout(() => {
+          gInvisibleTabNotifier.classList.remove('notifying');
+        }, configs.invisibleTabNotifyDuration);
+      }
       log('calculated result: ', {
         boundingHeight, overHeight, delta,
         container: containerRect.height
@@ -199,8 +204,13 @@ function scrollToTab(aTab, aOptions = {}) {
       log('=> will scroll up');
       let boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
       let overHeight = boundingHeight - containerRect.height;
-      if (overHeight > 0)
+      if (overHeight > 0) {
         delta += overHeight;
+        gInvisibleTabNotifier.classList.add('notifying');
+        setTimeout(() => {
+          gInvisibleTabNotifier.classList.remove('notifying');
+        }, configs.invisibleTabNotifyDuration);
+      }
       log('calculated result: ', {
         boundingHeight, overHeight, delta,
         container: containerRect.height

@@ -46,6 +46,12 @@
                                             var(--tab-highlighted-base) 23%);
 }
 
+@keyframes blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 :root.debug * {
   outline: 1px dotted rgba(255, 0, 0, 0.5);
 }
@@ -268,6 +274,26 @@ ul {
   background: none transparent;
   margin: 0;
   text-align: center;
+}
+
+#invisible-tab-notifier {
+  animation: blink var(--invisible-tab-notify-duration) ease-in-out 1;
+  background: transparent repeat-x bottom;
+  background-image: -moz-linear-gradient(
+                      bottom,
+                      var(--tab-highlighted-glow) 0,
+                      transparent 100%
+                    );
+  display: none;
+  margin-top: calc(0 - var(--tab-height));
+  min-height: var(--tab-height);
+  pointer-events: none;
+  position: relative;
+  opacity: 0;
+}
+
+#invisible-tab-notifier.notifying {
+  display: block;
 }
 
 
