@@ -74,7 +74,7 @@ async function requestUniqueId(aTabId, aOptions = {}) {
         };
 
       // If the stored tabId is different, it is possibly duplicated tab.
-      let original = browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
+      let original = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
       if (!original) {
         // There is no live tab for the tabId, thus
         // this seems to be a tab restored from session.
