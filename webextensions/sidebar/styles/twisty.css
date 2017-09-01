@@ -9,12 +9,15 @@
   min-width: var(--favicon-size);
   position: relative;
   text-align: center;
-  transition: transform 0.2s ease-out,
-              opacity 0.15s ease-out,
-              text-shadow 0.15s ease-out;
   transform-origin: 50% 50%;
   vertical-align: top;
   width: 1.5em;
+}
+
+:root.animation .tab .twisty {
+  transition: transform 0.2s ease-out,
+              opacity 0.15s ease-out,
+              text-shadow 0.15s ease-out;
 }
 
 .tab:not([data-child-ids]) .twisty,

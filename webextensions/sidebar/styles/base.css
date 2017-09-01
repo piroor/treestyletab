@@ -81,6 +81,9 @@ button {
   position: fixed;
   right: 0;
   top: 0;
+}
+
+:root.animation #tabbar {
   transition: margin-top var(--collapse-animation);
 }
 
@@ -150,8 +153,8 @@ ul {
   vertical-align: middle;
 }
 
-.tab.animation-ready,
-.after-tabs button {
+:root.animation .tab.animation-ready,
+:root.animation .after-tabs button {
   transition: var(--tab-animation);
 }
 

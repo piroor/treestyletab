@@ -755,6 +755,13 @@ function onConfigChange(aChangedKey) {
         document.documentElement.classList.remove('debug');
     }; break;
 
+    case 'animation':
+      if (configs.animation)
+        document.documentElement.classList.add('animation');
+      else
+        document.documentElement.classList.remove('animation');
+      break;
+
     case 'style':
     case 'defaultStyle':
     case 'defaultStyleDarwin':

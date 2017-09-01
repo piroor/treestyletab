@@ -54,6 +54,7 @@ async function init() {
 
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
+  onConfigChange('aimation');
 
   browser.runtime.onMessage.addListener(onMessage);
   unblockUserOperations();
