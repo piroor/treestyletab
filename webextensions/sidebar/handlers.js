@@ -433,16 +433,16 @@ function onTabOpened(aTab) {
         anchor:    focused && getCurrentTab(),
         last:      focused
       });
-      if (!isTabInViewport(aTab))
-        notifyInvisibleTab();
+      if (!focused)
+        notifyInvisibleTab(aTab);
     });
   }
   else {
     aTab.classList.add(kTAB_STATE_ANIMATION_READY);
     if (isActive(aTab))
       scrollToNewTab(aTab);
-    if (!isTabInViewport(aTab))
-      notifyInvisibleTab();
+    else
+      notifyInvisibleTab(aTab);
   }
 
   reserveToUpdateTabbarLayout(configs.collapseDuration);
@@ -646,6 +646,8 @@ function onTabAttached(aTab) {
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
+  if (isActive(getParentTab(aTab)))
+    scrollToNewTab(aTab);
 }
 
 function onTabDetached(aTab, aDetachInfo = {}) {

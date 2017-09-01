@@ -57,6 +57,7 @@ function calculateScrollDeltaForTab(aTab) {
   var tabRect = aTab.getBoundingClientRect();
   var containerRect = gTabBar.getBoundingClientRect();
   var offset = getOffsetForAnimatingTab(aTab);
+  offset += smoothScrollTo.currentOffset;
   if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
     return tabRect.bottom - containerRect.bottom + offset;
   }
@@ -94,6 +95,7 @@ async function smoothScrollTo(aParams = {}) {
     endPosition = aParams.position;
     delta = endPosition - startPosition;
   }
+  smoothScrollTo.currentOffset = delta;
 
   var duration = aParams.duration || configs.smoothScrollDuration;
   var startTime = Date.now();
@@ -102,6 +104,7 @@ async function smoothScrollTo(aParams = {}) {
     var radian = 90 * Math.PI / 180;
     var scrollStep = () => {
       if (smoothScrollTo.stopped) {
+        smoothScrollTo.currentOffset= 0;
         aReject();
         return;
       }
@@ -113,20 +116,24 @@ async function smoothScrollTo(aParams = {}) {
           justNow: true
         });
         smoothScrollTo.stopped = true;
+        smoothScrollTo.currentOffset= 0;
         aResolve();
         return;
       }
       var power = Math.sin(spentTime / duration * radian);
-      var newPosition = startPosition + parseInt(delta * power);
+      var currentDelta = parseInt(delta * power);
+      var newPosition = startPosition + currentDelta;
       scrollTo({
         position: newPosition,
         justNow: true
       });
+      smoothScrollTo.currentOffset = currentDelta;
       nextFrame().then(scrollStep);
     };
     nextFrame().then(scrollStep);
   });
 }
+smoothScrollTo.currentOffset= 0;
 
 function stopSmoothScroll() {
   smoothScrollTo.stopped = true;
@@ -138,12 +145,12 @@ function isSmoothScrolling() {
 
 /* applications */
 
-function scrollToNewTab(aTab) {
+function scrollToNewTab(aTab, aOptions = {}) {
   if (!canScrollToTab(aTab))
     return;
 
   if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE)
-    scrollToTab(aTab, { anchor: getCurrentTab() });
+    scrollToTab(aTab, clone(aOptions, { anchor: getCurrentTab() }));
 }
 
 function canScrollToTab(aTab) {
@@ -159,9 +166,11 @@ async function scrollToTab(aTab, aOptions = {}) {
     return;
   }
 
+  cancelNotifyInvisibleTab();
   //cancelPerformingAutoScroll(true);
 
   await nextFrame();
+  cancelNotifyInvisibleTab();
 
   if (isTabInViewport(aTab)) {
     log('=> already visible');
@@ -182,6 +191,7 @@ async function scrollToTab(aTab, aOptions = {}) {
 
   // wait for one more frame, to start collapse/expand animation
   await nextFrame();
+  cancelNotifyInvisibleTab();
 
   var targetTabRect = aTab.getBoundingClientRect();
   var anchorTabRect = anchorTab.getBoundingClientRect();
@@ -194,7 +204,7 @@ async function scrollToTab(aTab, aOptions = {}) {
     let overHeight = boundingHeight - containerRect.height;
     if (overHeight > 0) {
       delta -= overHeight;
-      notifyInvisibleTab();
+      notifyInvisibleTab(aTab);
     }
     log('calculated result: ', {
       boundingHeight, overHeight, delta,

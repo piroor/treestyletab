@@ -350,8 +350,17 @@ function updateTabbarLayout(aParams = {}) {
 }
 
 
-async function notifyInvisibleTab() {
+async function notifyInvisibleTab(aTab) {
+  await nextFrame();
+  cancelNotifyInvisibleTab();
+  if (aTab && isTabInViewport(aTab))
+    return;
   gInvisibleTabNotifier.classList.add('notifying');
   await wait(configs.invisibleTabNotifyDuration);
+  cancelNotifyInvisibleTab();
+}
+
+function cancelNotifyInvisibleTab() {
   gInvisibleTabNotifier.classList.remove('notifying');
 }
+
