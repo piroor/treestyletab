@@ -11,8 +11,8 @@
   --tab-height: 32px;
 
   --color-animation: 0.25s ease-out;
-  --indent-animation: 0.2s ease-out;
-  --collapse-animation: 0.15s ease-out;
+  --indent-animation: var(--indent-duration) ease-out;
+  --collapse-animation: var(--collapse-duration) ease-out;
   --tab-animation: background    var(--color-animation),
                    bottom        var(--collapse-animation),
                    color         var(--color-animation),

@@ -141,6 +141,9 @@ function calculateDefaultSizes() {
   log('gTabHeight ', gTabHeight);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
+
+    --indent-duration: ${configs.indentDuration}ms;
+    --collapse-duration: ${configs.collapseDuration}ms;
   }`;
 }
 
