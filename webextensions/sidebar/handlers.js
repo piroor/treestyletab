@@ -422,7 +422,7 @@ function onTabOpening(aTab) {
 
 function onTabOpened(aTab) {
   if (configs.animation) {
-    window.requestAnimationFrame(() => {
+    nextFrame().then(() => {
       if (!aTab.parentNode) // it was removed while waiting
         return;
       aTab.classList.add(kTAB_STATE_ANIMATION_READY);
@@ -482,7 +482,7 @@ function onTabMoving(aTab) {
       collapsed: true,
       justNow:   true
     });
-    window.requestAnimationFrame(() => {
+    nextFrame().then(() => {
       if (!aTab.parentNode) // it was removed while waiting
         return;
       onTabCollapsedStateChanging(aTab, {
@@ -551,7 +551,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.add(kTAB_STATE_EXPANDING);
   }
 
-  window.requestAnimationFrame(() => {
+  nextFrame().then(() => {
     if (!aTab.parentNode) // it was removed while waiting
       return;
 

@@ -122,9 +122,9 @@ async function smoothScrollTo(aParams = {}) {
         position: newPosition,
         justNow: true
       });
-      window.requestAnimationFrame(scrollStep);
+      nextFrame().then(scrollStep);
     };
-    window.requestAnimationFrame(scrollStep);
+    nextFrame().then(scrollStep);
   });
 }
 
