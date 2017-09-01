@@ -5,6 +5,7 @@
 */
 'use strict';
 
+const kCOMMAND_PING = 'treestyletab:request:ping';
 const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request:get-unique-id';
 const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:request:pull-tree-structure';
 const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:request:change-subtree-collapsed-state';

@@ -41,6 +41,9 @@ async function init() {
   window.addEventListener('resize', onResize);
 
   calculateDefaultSizes();
+
+  await waitUntilBackgroundIsReady();
+
   await rebuildAll();
   updateTabbarLayout({ justNow: true });
 
@@ -157,6 +160,17 @@ async function inheritTreeStructure() {
   });
   if (response.structure)
     await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+}
+
+async function waitUntilBackgroundIsReady() {
+  while (true) {
+    let response = await browser.runtime.sendMessage({
+      type: kCOMMAND_PING
+    });
+    if (response)
+      break;
+    await wait();
+  }
 }
 
 

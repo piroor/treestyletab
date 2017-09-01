@@ -560,6 +560,9 @@ function onMessage(aMessage, aSender) {
 
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
+    case kCOMMAND_PING:
+      return Promise.resolve(true);
+
     case kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
       let id = await requestUniqueId(aMessage.id, {
