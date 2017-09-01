@@ -116,6 +116,12 @@ function getTabById(aIdOrInfo) {
   return document.querySelector(selector);
 }
 
+function getTabByUniqueId(aId) {
+  if (!aId)
+    return null;
+  return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kPERSISTENT_ID}="${aId}"]`);
+}
+
 function getTabLabel(aTab) {
   return aTab.querySelector(`.${kLABEL}`);
 }

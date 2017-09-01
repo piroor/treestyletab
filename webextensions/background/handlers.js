@@ -105,8 +105,24 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToSaveTreeStructure(aTab);
 }
 
-function onTabRestored(aTab) {
+async function onTabRestored(aTab) {
   log('restored ', dumpTab(aTab));
+  var insertBefore, insertAfter, ancestors, children;
+  [insertBefore, insertAfter, ancestors, children] = await Promise.all([
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN)
+  ]);
+  ancestors = ancestors ||[];
+  children = children || [];
+  log('persistent: ', dumpTab(insertBefore), dumpTab(insertAfter), ancestors.map(dumpTab), children.map(dumpTab));
+/*
+  for (let ancestor of ancestors) {
+    ancestor = getTabByUniqueId(ancestor);
+  }
+  var children = await browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN);
+*/
 }
 
 function onTabClosed(aTab) {
