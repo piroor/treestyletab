@@ -180,6 +180,9 @@ async function scrollToTab(aTab, aOptions = {}) {
     return;
   }
 
+  // wait for one more frame, to start collapse/expand animation
+  await nextFrame();
+
   var targetTabRect = aTab.getBoundingClientRect();
   var anchorTabRect = anchorTab.getBoundingClientRect();
   var containerRect = gTabBar.getBoundingClientRect();
