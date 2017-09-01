@@ -115,6 +115,9 @@ ul {
   padding: 0;
 }
 
+
+/* dummy elements to calculate actual size of boxes */
+
 #dummy-tabs {
   bottom: 0;
   pointer-events: none;

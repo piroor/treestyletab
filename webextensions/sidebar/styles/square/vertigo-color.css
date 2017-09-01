@@ -45,7 +45,7 @@
   --tab-surface-active-hover: #d1e2fe;
 
   --tab-highlighted-highlight: white;
-  --tab-highlighted-glow: #3890f3;
+  --tab-highlighted-glow: #3890f3; /* = rgb(56, 144, 243) */
   --tab-highlighted-base: var(--tab-surface);
 
   --throbber-color: var(--tab-highlighted-glow);
