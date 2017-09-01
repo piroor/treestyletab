@@ -195,13 +195,16 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 
   if (aOptions.forceApply ||
       aNewState.pinned != oldState.pinned) {
+    let reallyChanged = (aNewState && isPinned(aTab) != aNewState.pinned);
     if (aNewState.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
-      window.onTabPinned && onTabPinned(aTab);
+      if (reallyChanged)
+        window.onTabPinned && onTabPinned(aTab);
     }
     else {
       aTab.classList.remove(kTAB_STATE_PINNED);
-      window.onTabUnpinned && onTabUnpinned(aTab);
+      if (reallyChanged)
+        window.onTabUnpinned && onTabUnpinned(aTab);
     }
   }
 
