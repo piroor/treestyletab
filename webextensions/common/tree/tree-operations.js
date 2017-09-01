@@ -437,10 +437,13 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
 
   var container = getTabsContainer(aTab);
 
-  if (aParams.collapsed)
+  if (aParams.collapsed) {
     aTab.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
-  else
+    aTab.classList.remove(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+  }
+  else {
     aTab.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED);
+  }
   //setTabValue(aTab, kTAB_STATE_SUBTREE_COLLAPSED, aParams.collapsed);
 
   var childTabs = getChildTabs(aTab);
@@ -465,10 +468,8 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
     }
   }
 
-  if (aParams.collapsed) {
-    aTab.classList.remove(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
-    //deleteTabValue(aTab, kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
-  }
+  window.onTabSubtreeCollapsedStateChanging &&
+    onTabSubtreeCollapsedStateChanging(aTab);
 }
 
 function manualCollapseExpandSubtree(aTab, aParams = {}) {

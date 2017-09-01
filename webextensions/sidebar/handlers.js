@@ -319,6 +319,7 @@ function onTabBuilt(aTab) {
 
   var twisty = document.createElement('span');
   twisty.classList.add(kTWISTY);
+  twisty.setAttribute('title', browser.i18n.getMessage('tab.twisty.collapsed.tooltip'));
   aTab.insertBefore(twisty, label);
 
   var favicon = document.createElement('span');
@@ -342,6 +343,7 @@ function onTabBuilt(aTab) {
 
   var closebox = document.createElement('button');
   closebox.classList.add(kCLOSEBOX);
+  closebox.setAttribute('title', browser.i18n.getMessage('tab.closebox.tab.tooltip'));
   aTab.appendChild(closebox);
 
   aTab.setAttribute('draggable', true);
@@ -488,6 +490,11 @@ function onTabDetachedFromWindow(aTab) {
   });
 }
 
+function onTabSubtreeCollapsedStateChanging(aTab, aInfo = {}) {
+  updateTabTwisty(aTab);
+  updateTabClosebox(aTab);
+}
+
 function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
 
@@ -609,6 +616,8 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 */
 
 function onTabAttached(aTab) {
+  updateTabTwisty(aTab);
+  updateTabClosebox(aTab);
   var ancestors = [aTab].concat(getAncestorTabs(aTab));
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
@@ -619,21 +628,12 @@ function onTabDetached(aTab, aDetachInfo = {}) {
   var parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
+  updateTabTwisty(parent);
+  updateTabClosebox(parent);
   var ancestors = [parent].concat(getAncestorTabs(parent));
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
-}
-
-function updateTabsCount(aTab) {
-  var counter = getTabCounter(aTab);
-  if (!counter)
-    return;
-  var descendants = getDescendantTabs(aTab);
-  var count = descendants.length;
-  if (configs.counterRole == kCOUNTER_ROLE_ALL_TABS)
-    count += 1;
-  counter.textContent = count;
 }
 
 function onTabPinned(aTab) {

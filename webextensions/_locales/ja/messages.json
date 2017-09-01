@@ -4,10 +4,12 @@
 
   "sidebarTitle": { "message": "ツリー型タブ" },
 
-  "tab.closebox.expanded.tooltip": { "message": "タブを展開する" },
-  "tab.closebox.collapsed.tooltip": { "message": "ツリーをたたむ" },
-  "tab.twisty.expanded.tooltip": { "message": "ツリーを展開する" },
-  "tab.twisty.collapsed.tooltip": { "message": "ツリーをたたむ" },
+  "tab.closebox.tab.tooltip": { "message": "タブを閉じる" },
+  "tab.closebox.tree.tooltip": { "message": "ツリーを閉じる" },
+  "tab.soundButton.muted.tooltip": { "message": "タブのミュートを解除" },
+  "tab.soundButton.playing.tooltip": { "message": "タブをミュート" },
+  "tab.twisty.expanded.tooltip": { "message": "ツリーをたたむ" },
+  "tab.twisty.collapsed.tooltip": { "message": "ツリーを展開する" },
   "tab.tree.tooltip": { "message": "$TREE$\n  ...（省略されたタブ：$COUNT$個）",
     "placeholders": {
       "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },

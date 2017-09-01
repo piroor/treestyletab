@@ -180,6 +180,35 @@ function getTabClosebox(aTab) {
 }
 
 
+function updateTabTwisty(aTab) {
+  var tooltip;
+  if (isSubtreeCollapsed(aTab))
+    tooltip = browser.i18n.getMessage('tab.twisty.collapsed.tooltip');
+  else
+    tooltip = browser.i18n.getMessage('tab.twisty.expanded.tooltip');
+  getTabTwisty(aTab).setAttribute('title', tooltip);
+}
+
+function updateTabClosebox(aTab) {
+  var tooltip;
+  if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab))
+    tooltip = browser.i18n.getMessage('tab.closebox.tree.tooltip');
+  else
+    tooltip = browser.i18n.getMessage('tab.closebox.tab.tooltip');
+  getTabClosebox(aTab).setAttribute('title', tooltip);
+}
+
+function updateTabsCount(aTab) {
+  var counter = getTabCounter(aTab);
+  if (!counter)
+    return;
+  var descendants = getDescendantTabs(aTab);
+  var count = descendants.length;
+  if (configs.counterRole == kCOUNTER_ROLE_ALL_TABS)
+    count += 1;
+  counter.textContent = count;
+}
+
 function collapseExpandAllSubtree(aParams = {}) {
   var container = getTabsContainer(gTargetWindow);
   var subtreeCondition = aParams.collapsed ?

@@ -4,8 +4,10 @@
 
   "sidebarTitle": { "message": "Tree Style Tab" },
 
-  "tab.closebox.expanded.tooltip": { "message": "Close tab" },
-  "tab.closebox.collapsed.tooltip": { "message": "Close tree" },
+  "tab.closebox.tab.tooltip": { "message": "Close tab" },
+  "tab.closebox.tree.tooltip": { "message": "Close tree" },
+  "tab.soundButton.muted.tooltip": { "message": "Unmute tab" },
+  "tab.soundButton.playing.tooltip": { "message": "Mute tab" },
   "tab.twisty.expanded.tooltip": { "message": "Collapse tree" },
   "tab.twisty.collapsed.tooltip": { "message": "Expand tree" },
   "tab.tree.tooltip": { "message": "$TREE$\n  ...and $COUNT$ more tab(s)",
