@@ -45,6 +45,12 @@ async function init() {
   document.documentElement.classList.remove('initializing');
 
   await rebuildAll();
+
+  browser.runtime.sendMessage({
+    type:     kCOMMAND_SIDEBAR_OPENED,
+    windowId: gTargetWindow
+  });
+
   updateTabbarLayout({ justNow: true });
 
   await inheritTreeStructure();
@@ -64,6 +70,11 @@ async function init() {
 }
 
 function destroy() {
+  browser.runtime.sendMessage({
+    type:     kCOMMAND_SIDEBAR_CLOSED,
+    windowId: gTargetWindow
+  });
+
   configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
   endListenDragEvents(gTabBar);

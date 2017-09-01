@@ -8,11 +8,13 @@
 gLogContext = 'BG';
 
 var gInitializing = true;
+var gSidebarOpenState = {};
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
+  browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
   await waitUntilCompletelyRestored();
@@ -44,6 +46,7 @@ function waitUntilCompletelyRestored() {
 
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
+  browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
   endObserveApiTabs();
   gAllTabs = undefined;
 }

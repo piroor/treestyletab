@@ -5,6 +5,17 @@
 */
 'use strict';
 
+function onToolbarButtonClick(aTab) {
+  if (gSidebarOpenState[aTab.windowId]) {
+    // "unload" event doesn't fire for sidebar closed by this method,
+    // thus we need update the flag manually for now...
+    delete gSidebarOpenState[aTab.windowId];
+    browser.sidebarAction.close();
+  }
+  else
+    browser.sidebarAction.open();
+}
+
 // raw event handlers
 
 async function onTabOpening(aTab, aInfo = {}) {
@@ -562,6 +573,14 @@ function onMessage(aMessage, aSender) {
   switch (aMessage.type) {
     case kCOMMAND_PING:
       return Promise.resolve(true);
+
+    case kCOMMAND_SIDEBAR_OPENED:
+      gSidebarOpenState[aMessage.windowId] = true;
+      break;
+
+    case kCOMMAND_SIDEBAR_CLOSED:
+      delete gSidebarOpenState[aMessage.windowId];
+      break;
 
     case kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {

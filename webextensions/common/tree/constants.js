@@ -26,6 +26,8 @@ const kCOMMAND_PERFORM_TABS_DRAG_DROP = 'treestyletab:perform-tabs-drag-drop';
 const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:block-user-operations';
 const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';
 const kCOMMAND_BROADCAST_TAB_STATE = 'treestyletab:broadcast-tab-state';
+const kCOMMAND_SIDEBAR_OPENED = 'treestyletab:sidebar-opened';
+const kCOMMAND_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';

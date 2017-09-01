@@ -17,10 +17,16 @@
   "background": {
     "page": "background/background.html"
   },
+  "browser_action": {
+    "default_title": "__MSG_sidebarTitle__",
+    "default_icon": "resources/icon64.png",
+    "browser_style": true
+  },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
     "default_icon": "resources/icon64.png",
-    "default_panel": "sidebar/sidebar.html"
+    "default_panel": "sidebar/sidebar.html",
+    "browser_style": true
   },
   "options_ui": {
     "page": "options/options.html",
