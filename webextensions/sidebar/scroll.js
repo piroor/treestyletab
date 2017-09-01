@@ -166,11 +166,11 @@ async function scrollToTab(aTab, aOptions = {}) {
     return;
   }
 
-  cancelNotifyInvisibleTab();
+  cancelNotifyOutOfViewTab();
   //cancelPerformingAutoScroll(true);
 
   await nextFrame();
-  cancelNotifyInvisibleTab();
+  cancelNotifyOutOfViewTab();
 
   if (isTabInViewport(aTab)) {
     log('=> already visible');
@@ -191,7 +191,7 @@ async function scrollToTab(aTab, aOptions = {}) {
 
   // wait for one more frame, to start collapse/expand animation
   await nextFrame();
-  cancelNotifyInvisibleTab();
+  cancelNotifyOutOfViewTab();
 
   var targetTabRect = aTab.getBoundingClientRect();
   var anchorTabRect = anchorTab.getBoundingClientRect();
@@ -204,7 +204,7 @@ async function scrollToTab(aTab, aOptions = {}) {
     let overHeight = boundingHeight - containerRect.height;
     if (overHeight > 0) {
       delta -= overHeight;
-      notifyInvisibleTab(aTab);
+      notifyOutOfViewTab(aTab);
     }
     log('calculated result: ', {
       boundingHeight, overHeight, delta,

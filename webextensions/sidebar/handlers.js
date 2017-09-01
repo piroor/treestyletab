@@ -434,7 +434,7 @@ function onTabOpened(aTab) {
         last:      focused
       });
       if (!focused)
-        notifyInvisibleTab(aTab);
+        notifyOutOfViewTab(aTab);
     });
   }
   else {
@@ -442,7 +442,7 @@ function onTabOpened(aTab) {
     if (isActive(aTab))
       scrollToNewTab(aTab);
     else
-      notifyInvisibleTab(aTab);
+      notifyOutOfViewTab(aTab);
   }
 
   reserveToUpdateTabbarLayout(configs.collapseDuration);

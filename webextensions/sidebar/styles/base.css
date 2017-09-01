@@ -279,7 +279,7 @@ ul {
   text-align: center;
 }
 
-#invisible-tab-notifier {
+#out-of-view-tab-notifier {
   background: transparent repeat-x bottom;
   background-image: -moz-linear-gradient(
                       bottom,
@@ -294,8 +294,8 @@ ul {
   opacity: 0;
 }
 
-#invisible-tab-notifier.notifying {
-  animation: blink var(--invisible-tab-notify-duration) ease-in-out 1;
+#out-of-view-tab-notifier.notifying {
+  animation: blink var(--out-of-view-tab-notify-duration) ease-in-out 1;
   display: block;
 }
 
