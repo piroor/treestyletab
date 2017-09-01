@@ -565,22 +565,21 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
-      let id = await requestUniqueId(aMessage.id, {
-        forceNew: aMessage.forceNew
-      });
-      clearTimeout(timeout);
-      return id;
+        let id = await requestUniqueId(aMessage.id, {
+          forceNew: aMessage.forceNew
+        });
+        clearTimeout(timeout);
+        return id;
       })();
 
     case kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
-      log(`tree structure is requested from ${aMessage.windowId}`);
-      while (gInitializing) {
-        await wait(10);
-      }
-      let structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
-      clearTimeout(timeout);
-      return { structure: structure };
+        while (gInitializing) {
+          await wait(10);
+        }
+        let structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
+        clearTimeout(timeout);
+        return { structure: structure };
       })();
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
@@ -607,47 +606,47 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_NEW_TABS:
       return (async () => {
-      log('new tabs requested: ', aMessage);
-      return await openURIsInTabs(aMessage.uris, clone(aMessage, {
-        parent:       getTabById(aMessage.parent),
-        insertBefore: getTabById(aMessage.insertBefore),
-        insertAfter:  getTabById(aMessage.insertAfter)
-      }));
+        log('new tabs requested: ', aMessage);
+        return await openURIsInTabs(aMessage.uris, clone(aMessage, {
+          parent:       getTabById(aMessage.parent),
+          insertBefore: getTabById(aMessage.insertBefore),
+          insertAfter:  getTabById(aMessage.insertAfter)
+        }));
       })();
 
     case kCOMMAND_NEW_WINDOW_FROM_TABS:
       return (async () => {
-      log('new window requested: ', aMessage);
-      let movedTabs = await openNewWindowFromTabs(
-                              aMessage.tabs.map(getTabById),
-                              aMessage
-                            );
-      clearTimeout(timeout);
-      return { movedTabs: movedTabs.map(aTab => aTab.id) };
+        log('new window requested: ', aMessage);
+        let movedTabs = await openNewWindowFromTabs(
+                                aMessage.tabs.map(getTabById),
+                                aMessage
+                              );
+        clearTimeout(timeout);
+        return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
 
     case kCOMMAND_MOVE_TABS:
       return (async () => {
-      log('move tabs requested: ', aMessage);
-      let movedTabs = await moveTabs(
-                              aMessage.tabs.map(getTabById),
-                              aMessage
-                            );
-      clearTimeout(timeout);
-      return { movedTabs: movedTabs.map(aTab => aTab.id) };
+        log('move tabs requested: ', aMessage);
+        let movedTabs = await moveTabs(
+                                aMessage.tabs.map(getTabById),
+                                aMessage
+                              );
+        clearTimeout(timeout);
+        return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
 
     case kCOMMAND_REMOVE_TAB:
       return (async () => {
-      let tab = getTabById(aMessage.tab);
-      if (!tab) {
-        clearTimeout(timeout);
-        return;
-      }
-      if (isActive(tab))
-        await tryMoveFocusFromClosingCurrentTab(tab);
-      browser.tabs.remove(tab.apiTab.id)
-        .catch(handleMissingTabError);
+        let tab = getTabById(aMessage.tab);
+        if (!tab) {
+          clearTimeout(timeout);
+          return;
+        }
+        if (isActive(tab))
+          await tryMoveFocusFromClosingCurrentTab(tab);
+        browser.tabs.remove(tab.apiTab.id)
+          .catch(handleMissingTabError);
       })();
 
     case kCOMMAND_SELECT_TAB: {
@@ -734,21 +733,21 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
-      let child = getTabById(aMessage.child);
-      let parent = getTabById(aMessage.parent);
-      let insertBefore = getTabById(aMessage.insertBefore);
-      let insertAfter = getTabById(aMessage.insertAfter);
-      if (child && parent)
-        await attachTabTo(child, parent, clone(aMessage, {
-          insertBefore, insertAfter
-        }));
+        let child = getTabById(aMessage.child);
+        let parent = getTabById(aMessage.parent);
+        let insertBefore = getTabById(aMessage.insertBefore);
+        let insertAfter = getTabById(aMessage.insertAfter);
+        if (child && parent)
+          await attachTabTo(child, parent, clone(aMessage, {
+            insertBefore, insertAfter
+          }));
       })();
 
     case kCOMMAND_DETACH_TAB:
       return (async () => {
-      let tab = getTabById(aMessage.tab);
-      if (tab)
-        await detachTab(tab, aMessage);
+        let tab = getTabById(aMessage.tab);
+        if (tab)
+          await detachTab(tab, aMessage);
       })();
 
     case kCOMMAND_PERFORM_TABS_DRAG_DROP:
