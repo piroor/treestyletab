@@ -433,12 +433,16 @@ function onTabOpened(aTab) {
         anchor:    focused && getCurrentTab(),
         last:      focused
       });
+      if (!isTabInViewport(aTab))
+        notifyInvisibleTab();
     });
   }
   else {
     aTab.classList.add(kTAB_STATE_ANIMATION_READY);
     if (isActive(aTab))
       scrollToNewTab(aTab);
+    if (!isTabInViewport(aTab))
+      notifyInvisibleTab();
   }
 
   reserveToUpdateTabbarLayout(configs.collapseDuration);
