@@ -90,16 +90,16 @@ async function saveTreeStructure(aWindowId) {
   if (!container)
     return;
 
-    let window = await browser.windows.get(aWindowId, {
-      populate: true,
-      windowTypes: ['normal']
-    });
-    let structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
-    browser.sessions.setWindowValue(
-      aWindowId,
-      kWINDOW_STATE_TREE_STRUCTURE,
-      structure
-    );
+  var window = await browser.windows.get(aWindowId, {
+    populate: true,
+    windowTypes: ['normal']
+  });
+  var structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
+  browser.sessions.setWindowValue(
+    aWindowId,
+    kWINDOW_STATE_TREE_STRUCTURE,
+    structure
+  );
 }
 
 async function loadTreeStructure() {
