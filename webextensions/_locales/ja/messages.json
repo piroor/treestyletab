@@ -13,6 +13,7 @@
       "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
       "count": { "content": "$2", "example": "3" }
     }},
+  "tabbar.newTabButton.tooltip": { "message": "新しいタブを開く" },
 
   "groupTab.label": { "message": "$TITLE$ など",
     "placeholders": {
