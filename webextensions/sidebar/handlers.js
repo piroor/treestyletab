@@ -674,17 +674,6 @@ function onMessage(aMessage, aSender, aRespond) {
       aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
-  if ([
-       kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE
-      ].indexOf(aMessage.type) > -1) {
-    handleInternalMessage(aMessage, aSender).then(aRespond);
-    return true;
-  }
-  else
-    handleInternalMessage(aMessage, aSender);
-}
-
-async function handleInternalMessage(aMessage, aSender) {
   var timeout = setTimeout(() => {
     log('onMessage: timeout! ', aMessage, aSender);
   }, 10 * 1000);

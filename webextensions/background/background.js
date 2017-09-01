@@ -14,15 +14,12 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
   gAllTabs = document.querySelector('#all-tabs');
-
   await configs.$loaded;
+  await waitUntilCompletelyRestored();
   await rebuildAll();
-
+  await loadTreeStructure();
   startObserveApiTabs();
   browser.runtime.onMessage.addListener(onMessage);
-
-  await waitUntilCompletelyRestored();
-  await loadTreeStructure();
   gInitializing = false;
 }
 
