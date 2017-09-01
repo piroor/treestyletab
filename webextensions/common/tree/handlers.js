@@ -182,6 +182,15 @@ async function onNewTabTracked(aTab) {
     });
 
   container.processingNewTabsCount--;
+
+  newTab.uniqueId.then(aUniqueId => {
+    if (!newTab || !newTab.parentNode)
+      return;
+    if (!aUniqueId.originalId &&
+        aUniqueId.originalTabId &&
+        aUniqueId.originalTabId != aTab.id)
+      window.onTabRestored && onTabRestored(newTab);
+  });
 }
 
 async function ensureAllTabsAreTracked(aWindowId) {

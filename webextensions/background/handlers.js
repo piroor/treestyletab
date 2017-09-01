@@ -105,6 +105,10 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToSaveTreeStructure(aTab);
 }
 
+function onTabRestored(aTab) {
+  log('restored ', dumpTab(aTab));
+}
+
 function onTabClosed(aTab) {
   //var backupAttributes = collectBackupAttributes(aTab);
   //log('onTabClose: backupAttributes = ', backupAttributes);
