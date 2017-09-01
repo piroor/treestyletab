@@ -12,6 +12,8 @@ var gAfterTabsForOverflowTabBar;
 var gOutOfViewTabNotifier;
 var gIndent = -1;
 var gIndentProp = 'margin-left';
+var gFaviconSize = 0;
+var gFaviconizedTabSize = 0;
 var gTabHeight = 0;
 var gStyle;
 
@@ -133,10 +135,12 @@ function applyStyle() {
 
 function calculateDefaultSizes() {
   // first, calculate actual favicon size.
-  var faviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
-  log('faviconHeight ', faviconSize);
+  gFaviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
+  gFaviconizedTabSize = parseInt(gFaviconSize * 1.75);
+  log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
   gSizeDefinition.textContent = `:root {
-    --favicon-size: ${faviconSize}px;
+    --favicon-size: ${gFaviconSize}px;
+    --faviconized-tab-size: ${gFaviconizedTabSize}px;
   }`;
   var dummyTab = document.querySelector('#dummy-tab');
   gTabHeight = dummyTab.getBoundingClientRect().height;

@@ -9,6 +9,7 @@
   /* default size, they will be overridden. */
   --favicon-size: 16px;
   --tab-height: 32px;
+  --faviconized-tab-size: 28px;
 
   --color-animation: 0.25s ease-out;
   --indent-animation: var(--indent-duration) ease-out;
@@ -190,11 +191,11 @@ ul {
 }
 
 .tab.pinned.faviconized {
-  height: var(--tab-height);
-  max-height: var(--tab-height);
-  max-width: var(--tab-height);
-  width: var(--tab-height);
-  padding: calc((var(--tab-height) - var(--favicon-size)) / 2);
+  height: var(--faviconized-tab-size);
+  max-height: var(--faviconized-tab-size);
+  max-width: var(--faviconized-tab-size);
+  width: var(--faviconized-tab-size);
+  padding: calc((var(--faviconized-tab-size) - var(--favicon-size)) / 2);
 }
 
 .tab.pinned :-moz-any(.twisty, .label, .closebox) {
