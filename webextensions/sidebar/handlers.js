@@ -426,17 +426,19 @@ function onTabOpened(aTab) {
       if (!aTab.parentNode) // it was removed while waiting
         return;
       aTab.classList.add(kTAB_STATE_ANIMATION_READY);
+      var focused = isActive(aTab);
       onTabCollapsedStateChanging(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
-        anchor:    getCurrentTab(),
-        last:      true
+        anchor:    focused && getCurrentTab(),
+        last:      focused
       });
     });
   }
   else {
     aTab.classList.add(kTAB_STATE_ANIMATION_READY);
-    scrollToNewTab(aTab);
+    if (isActive(aTab))
+      scrollToNewTab(aTab);
   }
 
   reserveToUpdateTabbarLayout(configs.collapseDuration);
