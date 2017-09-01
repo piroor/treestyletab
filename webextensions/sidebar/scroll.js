@@ -161,12 +161,12 @@ async function scrollToTab(aTab, aOptions = {}) {
 
   //cancelPerformingAutoScroll(true);
 
+  await nextFrame();
+
   if (isTabInViewport(aTab)) {
     log('=> already visible');
     return;
   }
-
-  await nextFrame();
 
   var anchorTab = aOptions.anchor;
   if (!anchorTab ||
