@@ -31,14 +31,14 @@ async function earlyInit() {
   gAllTabs = document.querySelector('#all-tabs');
   gSizeDefinition = document.querySelector('#size-definition');
   gStyleLoader = document.querySelector('#style-loader');
-
-  await configs.$loaded;
-  await applyStyle();
 }
 
 async function init() {
   log('initialize sidebar on load');
   window.addEventListener('resize', onResize);
+
+  await configs.$loaded;
+  await applyStyle();
 
   calculateDefaultSizes();
   await waitUntilBackgroundIsReady();
