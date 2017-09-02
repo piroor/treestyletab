@@ -226,6 +226,8 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	get splitter() 
 	{
+		if (this._splitter)
+			return this._splitter;
 		var d = this.document;
 		return d.getAnonymousElementByAttribute(this.mTabBrowser, 'class', this.kSPLITTER) ||
 				d.getAnonymousElementByAttribute(this.mTabBrowser, 'id', 'tabkit-splitter'); // Tab Kit
@@ -1902,7 +1904,7 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		var ref = this.mTabBrowser.mPanelContainer;
 		ref.parentNode.insertBefore(splitter, ref);
 
-		this.splitter = splitter;
+		this._splitter = splitter;
 		return splitter;
 	},
  
