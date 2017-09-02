@@ -51,7 +51,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 17;
+	const currentRevision = 18;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -128,7 +128,7 @@ if (typeof window == 'undefined' ||
 		setPref : function(aPrefstring, aNewValue) 
 		{
 			var branch = this.Prefs;
-			var interface = null;
+			var dataTypeInterface = null;
 			if (arguments.length > 2) {
 				for (let i = 2; i < arguments.length; i++)
 				{
@@ -138,12 +138,12 @@ if (typeof window == 'undefined' ||
 					if (arg instanceof Ci.nsIPrefBranch)
 						branch = arg;
 					else
-						interface = arg;
+						dataTypeInterface = arg;
 				}
 			}
-			if (interface &&
+			if (dataTypeInterface &&
 				aNewValue instanceof Ci.nsISupports) {
-				return branch.setComplexValue(aPrefstring, interface, aNewValue);
+				return branch.setComplexValue(aPrefstring, dataTypeInterface, aNewValue);
 			}
 			switch (typeof aNewValue)
 			{
