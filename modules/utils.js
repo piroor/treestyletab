@@ -50,10 +50,7 @@ XPCOMUtils.defineLazyGetter(this, 'window', function() {
 	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
 	return getNamespaceFor('piro.sakura.ne.jp');
 });
-XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
-	Cu.import('resource://treestyletab-modules/lib/prefs.js');
-	return window['piro.sakura.ne.jp'].prefs;
-});
+Cu.import('resource://treestyletab-modules/lib/prefs.js');
 XPCOMUtils.defineLazyGetter(this, 'stringBundle', function() {
 	Cu.import('resource://treestyletab-modules/lib/stringBundle.js', {});
 	return window['piro.sakura.ne.jp'].stringBundle;

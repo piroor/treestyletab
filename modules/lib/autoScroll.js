@@ -11,39 +11,16 @@
    http://github.com/piroor/fxaddonlib-autoscroll
 */
 
-/* To work as a JS Code Module */
-if (typeof window == 'undefined' ||
-	(window && typeof window.constructor == 'function')) {
-	this.EXPORTED_SYMBOLS = ['autoScroll'];
-
-	// If namespace.jsm is available, export symbols to the shared namespace.
-	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
-	try {
-		let ns = {};
-		Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm', ns);
-		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
-	}
-	catch(e) {
-		window = {};
-	}
-}
+var EXPORTED_SYMBOLS = ['autoScroll'];
+var autoScroll;
 
 (function() {
 	const currentRevision = 7;
 
-	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
-
-	var loadedRevision = 'autoScroll' in window['piro.sakura.ne.jp'] ?
-			window['piro.sakura.ne.jp'].autoScroll.revision :
-			0 ;
-	if (loadedRevision && loadedRevision > currentRevision) {
-		return;
-	}
-
 	const Cc = Components.classes;
 	const Ci = Components.interfaces;
 
-	window['piro.sakura.ne.jp'].autoScroll = {
+	autoScroll = {
 		revision : currentRevision,
 
 		processAutoScroll : function(aEvent)
@@ -214,7 +191,3 @@ if (typeof window == 'undefined' ||
 
 	};
 })();
-
-if (window != this) { // work as a JS Code Module
-	this.autoScroll = window['piro.sakura.ne.jp'].autoScroll;
-}

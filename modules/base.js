@@ -45,23 +45,10 @@ Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/Timer.jsm');
 Cu.import('resource://treestyletab-modules/lib/inherit.jsm');
 Cu.import('resource://treestyletab-modules/constants.js');
+Cu.import('resource://treestyletab-modules/lib/prefs.js');
 
-XPCOMUtils.defineLazyGetter(this, 'window', function() {
-	Cu.import('resource://treestyletab-modules/lib/namespace.jsm');
-	return getNamespaceFor('piro.sakura.ne.jp');
-});
-XPCOMUtils.defineLazyGetter(this, 'prefs', function() {
-	Cu.import('resource://treestyletab-modules/lib/prefs.js');
-	return window['piro.sakura.ne.jp'].prefs;
-});
-XPCOMUtils.defineLazyGetter(this, 'animationManager', function() {
-	Cu.import('resource://treestyletab-modules/lib/animationManager.js', {});
-	return window['piro.sakura.ne.jp'].animationManager;
-});
-XPCOMUtils.defineLazyGetter(this, 'autoScroll', function() {
-	Cu.import('resource://treestyletab-modules/lib/autoScroll.js', {});
-	return window['piro.sakura.ne.jp'].autoScroll;
-});
+Cu.import('resource://treestyletab-modules/lib/animationManager.js');
+Cu.import('resource://treestyletab-modules/lib/autoScroll.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'UninstallationListener',
   'resource://treestyletab-modules/lib/UninstallationListener.js');
 XPCOMUtils.defineLazyModuleGetter(this, 'confirmWithPopup', 'resource://treestyletab-modules/lib/confirmWithPopup.js');

@@ -2,7 +2,7 @@
  Animation Task Manager
 
  Usage:
-   window['piro.sakura.ne.jp'].animationManager.addTask(
+   animationManager.addTask(
      function(aTime, aBeginningValue, aTotalChange, aDuration) {
        // some animation task runned by interval
        var current = someEasingFunction(aTime, aBeginningValue, aTotalChange, aDuration);
@@ -15,52 +15,25 @@
      window // the window (used by Firefox 4 animation frame API)
    );
    // stop all
-   window['piro.sakura.ne.jp'].animationManager.stop();
+   animationManager.stop();
    // restart after doing something
-   window['piro.sakura.ne.jp'].animationManager.start();
+   animationManager.start();
 
  license: The MIT License, Copyright (c) 2009-2015 YUKI "Piro" Hiroshi
  original:
    http://github.com/piroor/fxaddonlib-animation-manager
 */
 
-if (typeof window == 'undefined' ||
-	(window && typeof window.constructor == 'function')) {
-	this.EXPORTED_SYMBOLS = ['animationManager'];
-
-	// If namespace.jsm is available, export symbols to the shared namespace.
-	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
-	let ns = {};
-	try {
-		Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm', ns);
-		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
-	}
-	catch(e) {
-		window = {};
-	}
-}
+var EXPORTED_SYMBOLS = ['animationManager'];
+var animationManager;
 
 (function() {
 	const currentRevision = 20;
 
-	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
-
-	var loadedRevision = 'animationManager' in window['piro.sakura.ne.jp'] ?
-			window['piro.sakura.ne.jp'].animationManager.revision :
-			0 ;
-	var tasks = !loadedRevision ? [] : window['piro.sakura.ne.jp'].animationManager.tasks ;
-	var windows = !loadedRevision ? [] : window['piro.sakura.ne.jp'].animationManager._windows || [] ;
-	if (loadedRevision && loadedRevision > currentRevision) {
-		return;
-	}
-
 	var Cc = Components.classes;
 	var Ci = Components.interfaces;
 
-	if (tasks.length)
-		window['piro.sakura.ne.jp'].animationManager.stop();
-
-	window['piro.sakura.ne.jp'].animationManager = {
+	animationManager = {
 		revision : currentRevision,
 
 		running : false,
@@ -142,8 +115,8 @@ if (typeof window == 'undefined' ||
 			this._windows = [];
 		},
 
-		tasks    : tasks,
-		_windows : windows,
+		tasks    : [],
+		_windows : [],
 		_animatingWindows : [],
 
 		_cleanUpWindows : function()
@@ -208,11 +181,5 @@ if (typeof window == 'undefined' ||
 		}
 
 	};
-
-	if (tasks.length)
-		window['piro.sakura.ne.jp'].animationManager.start();
 })();
 
-if (window != this) { // work as a JS Code Module
-	this.animationManager = window['piro.sakura.ne.jp'].animationManager;
-}
