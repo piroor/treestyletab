@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+ - 0.19.2017090201
+   * Tab bar position is updated after visibility of a toolbar is changed with animation effect.
+   * Initialize itself correctly on lately versions of Firefox.
+   * Duplicated bookmarks won't be created.
+   * "ru" locale is updated by Infocatcher. Thanks!
+   * "fr-FR" locale is updated by AxlMun. Thanks!
  - 0.19.2017061601
    * Works on Nightly 56.0a1.
    * Allow to drop multiple local files to the tab bar, on Firefox 52 and later.
