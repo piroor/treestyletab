@@ -46,12 +46,12 @@ if (typeof window == 'undefined' ||
 		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
 	}
 	catch(e) {
-		window = {};
+		var window = {};
 	}
 }
 
 (function() {
-	const currentRevision = 18;
+	const currentRevision = 19;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
