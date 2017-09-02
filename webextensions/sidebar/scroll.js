@@ -250,65 +250,14 @@ function getOffsetForAnimatingTab(aTab) {
 }
 
 function scrollToTabSubtree(aTab) {
-  if (!canScrollToTab(aTab))
-    return;
-  var descendants = getDescendantTabs(aTab);
-  return scrollToTabs([aTab].concat(descendants));
+  return scrollToTab(getLastDescendantTabs(aTab), {
+    anchor: aTab
+  });
 }
 
 function scrollToTabs(aTabs) {
-  var firstTab = aTabs[0];
-  if (!canScrollToTab(firstTab))
-    return;
-/*
-  var containerPosition = this.tabStrip.getBoundingClientRect()[this.screenY];
-  var containerSize     = this.tabStrip.getBoundingClientRect()[this.height];
-  var parentPosition    = parentTabBox[this.screenY];
-
-  var lastVisible = firstTab;
-  for (let i = aTabs.length-1; i > -1; i--)
-  {
-    let tab = aTabs[i];
-    if (this.isCollapsed(tab))
-      continue;
-
-    let box = this.getFutureBoxObject(tab);
-    if (box[this.screenY] + box[this.height] - parentPosition > containerSize)
-      continue;
-
-    lastVisible = tab;
-    break;
-  }
-
-  this.cancelPerformingAutoScroll(true);
-
-  if (this.isTabInViewport(firstTab) && this.isTabInViewport(lastVisible))
-    return;
-
-  var lastVisibleBox = this.getFutureBoxObject(lastVisible);
-  var lastPosition = lastVisibleBox[this.screenY];
-  var tabSize      = lastVisibleBox[this.height];
-
-  var treeHeight = lastPosition - parentPosition + tabSize;
-  var treeIsLargerThanViewport = treeHeight > containerSize - tabSize;
-  if (treeIsLargerThanViewport) {
-    var endPos = parentPosition - this.getFirstNormalTab(b).getBoundingClientRect()[this.screenY] - tabSize * 0.5;
-    var endX = 0 ;
-    var endY = endPos;
-    this.scrollTo(endX, endY);
-  }
-  else if (!this.isTabInViewport(firstTab) && this.isTabInViewport(lastVisible)) {
-    this.scrollToTab(firstTab);
-  }
-  else if (this.isTabInViewport(firstTab) && !this.isTabInViewport(lastVisible)) {
-    this.scrollToTab(lastVisible);
-  }
-  else if (parentPosition < containerPosition) {
-    this.scrollToTab(firstTab);
-  }
-  else {
-    this.scrollToTab(lastVisible);
-  }
-*/
+  return scrollToTab(aTabs[aTabs.length - 1], {
+    anchor: aTabs[0]
+  });
 }
 
