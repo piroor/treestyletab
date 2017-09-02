@@ -19,11 +19,11 @@ Please enjoy as you like!
 
 TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XUL-based), and one more extra line: "migration".
 
- * (In development) "Renewed", version 1.0 and later: supports Firefox 57 and later.
+ * ([In development](https://github.com/piroor/treestyletab/issues/1224#issuecomment-326467198)) "Renewed", version 2.0 and later: supports Firefox 57 and later.
    By technical reasons, some fatures are dropped from the legacy version.
  * (Currently released) "Legacy", version 0.19.x supports only Firefox 52-56.
    Just maintained for people who are not migrated to Firefox 57 or later yet.
- * (Not available yet) "Migration", version 0.99.x will support only Firefox 56.
+ * ([Not available yet](https://github.com/piroor/treestyletab/issues/1344)) "Migration", version 0.99.x will support only Firefox 56.
    This will just migrate configuration and tree information from legacy to renewed.
    It will be updated to the renewed version to complete the migration process.
 
