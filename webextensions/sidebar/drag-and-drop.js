@@ -558,7 +558,7 @@ function onDragOver(aEvent) {
   gLastDragOverTimestamp = Date.now();
   aEvent.preventDefault(); // this is required to override default dragover actions!
 try{
-  //autoScroll.processAutoScroll(aEvent);
+  autoScrollOnMouseEvent(aEvent);
   var info = getDropAction(aEvent);
 
 /*

@@ -261,3 +261,20 @@ function scrollToTabs(aTabs) {
   });
 }
 
+function autoScrollOnMouseEvent(aEvent) {
+  if (!gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW))
+    return;
+
+  var tabbarRect = gTabBar.getBoundingClientRect();
+  var scrollPixels = Math.round(gTabHeight * 0.5);
+  if (aEvent.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
+    if (gTabBar.scrollTop > 0)
+      box.scrollTop -= scrollPixels;
+  }
+  else if (aEvent.clientY > tabbarRect.bottom - autoScrollOnMouseEvent.areaSize) {
+    if (gTabBar.scrollTop < gTabBar.scrollTopMax)
+      box.scrollTop += scrollPixels;
+  }
+}
+autoScrollOnMouseEvent.areaSize = 20;
+
