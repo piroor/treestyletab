@@ -540,8 +540,10 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 		});
 
 		var toolbox = this.browserToolbox;
-		if (toolbox)
+		if (toolbox) {
 			this.browserToolboxObserver = new BrowserUIShowHideObserver(this, toolbox);
+			toolbox.addEventListener('transitionend', this, false);
+		}
 
 		var browserBox = this.browserBox;
 		if (browserBox)
@@ -624,6 +626,7 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				if (this.browserToolboxObserver) {
 					this.browserToolboxObserver.destroy();
 					delete this.browserToolboxObserver;
+					this.browserToolbox.removeEventListener('transitionend', this, false);
 				}
 				if (this.browserBoxObserver) {
 					this.browserBoxObserver.destroy();
@@ -752,6 +755,11 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 					this.onTabbarSplitterClick(aEvent);
 				else
 					this.handleNewTabActionOnButton(aEvent);
+				return;
+
+			case 'transitionend':
+				if (!this.getTabbarFromChild(aEvent.target))
+					this.browser.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 				return;
 
 
