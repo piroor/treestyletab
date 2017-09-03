@@ -651,9 +651,11 @@ function onDragEnter(aEvent) {
     gAutoExpandWhileDNDTimerNext = null;
     gAutoExpandWhileDNDTimer = setTimeout(async () => {
       let targetTab = getTabById(aTargetId);
-      if (targetTab &&
-          shouldTabAutoExpanded(targetTab) &&
-          targetTab.getAttribute(kDROP_POSITION) == 'self') {
+      if (!targetTab ||
+          !shouldTabAutoExpanded(targetTab) ||
+          targetTab.getAttribute(kDROP_POSITION) != 'self')
+        return;
+
         let draggedTab = aDraggedId && getTabById(aDraggedId);
         if (configs.autoExpandIntelligently) {
           collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
@@ -666,7 +668,6 @@ function onDragEnter(aEvent) {
             inRemote: true
           });
         }
-      }
     }, configs.autoExpandDelay);
   }, 0, info.targetTab.id, info.draggedTab && info.draggedTab.id);
 }
