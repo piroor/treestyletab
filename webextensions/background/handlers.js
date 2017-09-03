@@ -38,7 +38,8 @@ async function onTabOpening(aTab, aInfo = {}) {
 
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
   if (opener &&
-      configs.autoAttach) {
+      configs.autoAttach &&
+      !aInfo.duplicatedInternally) {
     log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
     behaveAutoAttachedTab(aTab, {
       baseTab:  opener,

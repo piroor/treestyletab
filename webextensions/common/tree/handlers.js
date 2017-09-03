@@ -153,10 +153,12 @@ async function onNewTabTracked(aTab) {
   updateTab(newTab, aTab, { forceApply: true });
 
   var openedWithPosition = container.toBeOpenedTabsWithPositions > 0;
+  var duplicatedInternally = container.duplicatingTabsCount > 0;
 
   var moved = window.onTabOpening && await onTabOpening(newTab, {
     maybeOpenedWithPosition: openedWithPosition,
-    maybeOrphan: container.toBeOpenedOrphanTabs > 0
+    maybeOrphan: container.toBeOpenedOrphanTabs > 0,
+    duplicatedInternally
   });
 
   if (container.parentNode) { // it can be removed while waiting
@@ -166,7 +168,8 @@ async function onNewTabTracked(aTab) {
     if (container.toBeOpenedOrphanTabs > 0)
       container.toBeOpenedOrphanTabs--;
 
-    //updateInsertionPositionInfo(newTab);
+    if (duplicatedInternally)
+      container.duplicatingTabsCount--;
 
     container.openingCount++;
     setTimeout(() => {
@@ -183,13 +186,7 @@ async function onNewTabTracked(aTab) {
   if (!newTab.parentNode) // it can be removed while waiting
     return;
 
-  var duplicated = !!uniqueId.originalId;
-  var duplicatedInternally = false;
-  if (duplicated) {
-    duplicatedInternally = container.duplicatingTabsCount > 0;
-    if (duplicatedInternally)
-      container.duplicatingTabsCount--;
-  }
+  var duplicated = duplicatedInternally || !!uniqueId.originalId;
 
   window.onTabOpened && onTabOpened(newTab, {
     openedWithPosition: openedWithPosition || moved,
