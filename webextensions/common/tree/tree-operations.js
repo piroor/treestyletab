@@ -754,6 +754,8 @@ async function moveTabs(aTabs, aOptions = {}) {
     destinationWindowId = gTargetWindow;
   var isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
+  aOptions.insertAfter = aOptions.insertAfter || getLastTab(destinationWindowId);
+
   if (aOptions.inRemote) {
     let response = await browser.runtime.sendMessage(clone(aOptions, {
       type:         kCOMMAND_MOVE_TABS,
@@ -850,28 +852,20 @@ async function moveTabs(aTabs, aOptions = {}) {
           aTabs[0].apiTab.index > toIndex)
           toIndex++;
     }
-    let movedApiTabs;
-    if (isAcrossWindows)
-      movedApiTabs = await safeMoveApiTabsAcrossWindows(apiTabIds, {
+    if (isAcrossWindows) {
+      apiTabIds = await safeMoveApiTabsAcrossWindows(apiTabIds, {
         windowId: destinationWindowId,
         index:    toIndex
       });
-    else
-      movedApiTabs = await browser.tabs.move(apiTabIds, {
-        windowId: destinationWindowId,
-        index:    toIndex
-      });
-    log('moved: ', movedApiTabs);
+      log('moved across windows: ', apiTabIds);
+    }
 
     log('applying tree structure', structure);
     // wait until tabs.onCreated are processed (for safety)
     let newTabs;
     let retryUntil = 10;
     while (retryUntil >= 0) {
-      newTabs = movedApiTabs.map(aApiTab => getTabById({
-                  tab:    aApiTab.id,
-                  window: destinationWindowId
-                }));
+      newTabs = apiTabIds.map(getTabById);
       newTabs = newTabs.filter(aTab => !!aTab);
       if (newTabs.length < aTabs.length) {
         log('retryling: ', newTabs.length, aTabs.length);
