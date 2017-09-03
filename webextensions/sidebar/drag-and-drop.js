@@ -557,7 +557,6 @@ var gLastDragOverTimestamp = null;
 function onDragOver(aEvent) {
   gLastDragOverTimestamp = Date.now();
   aEvent.preventDefault(); // this is required to override default dragover actions!
-try{
   autoScrollOnMouseEvent(aEvent);
   var info = getDropAction(aEvent);
 
@@ -589,13 +588,7 @@ try{
   }
 */
 
-/*
-  let effects = '_setEffectAllowedForDataTransfer' in observer ?
-            observer._setEffectAllowedForDataTransfer(aEvent) :
-            observer._getDropEffectForTabDrag(aEvent) ;
-*/
-  if (!info.canDrop/* ||
-      effects == 'none'*/) {
+  if (!info.canDrop) {
     aEvent.dataTransfer.effectAllowed = 'none';
     clearDropPosition();
     return;
@@ -616,7 +609,6 @@ try{
     dropPositionTargetTab.setAttribute(kDROP_POSITION, dropPosition);
     log('set drop position to ', dropPosition);
   }
-}catch(e){log(String(e), e.stack);}
 }
 
 var gDelayedDragEnter;
