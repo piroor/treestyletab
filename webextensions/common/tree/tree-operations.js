@@ -776,6 +776,7 @@ async function moveTabs(aTabs, aOptions = {}) {
 
   if (isAcrossWindows || aOptions.duplicate) {
     blockUserOperationsIn(windowId);
+    try {
 
     let container;
     let prepareContainer = () => {
@@ -892,13 +893,18 @@ async function moveTabs(aTabs, aOptions = {}) {
       break;
     }
 
-    unblockUserOperationsIn(windowId);
-
     if (!newTabs) {
       log('failed to move tabs (timeout)');
       newTabs = [];
     }
     movedTabs = newTabs;
+    }
+    catch(e) {
+      throw e;
+    }
+    finally {
+      unblockUserOperationsIn(windowId);
+    }
   }
 
 
