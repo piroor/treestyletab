@@ -380,7 +380,7 @@ function onTabFocusing(aTab, aInfo = {}) {
             * only when it is activated by user preference expressly.
             */
            aInfo.byCurrentTabRemove &&
-           !configs.autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove) {
+           configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove) {
     return true;
   }
   else if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab)) {
