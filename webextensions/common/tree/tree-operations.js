@@ -839,29 +839,29 @@ async function moveTabs(aTabs, aOptions = {}) {
         return aIds;
       });
       if (configs.acccelaratedTabDuplication) {
-      // So, I collect duplicating tabs in different way.
-      // This promise will be resolved when they actually
-      // appear in the tab bar. This hack should be removed
-      // after the bug 1394376 is fixed.
-      let promisedDuplicatingIds = (async () => {
-        while (true) {
-          await wait(100);
-          let tabs = getDuplicatingTabs(windowId);
-          if (tabs.length < apiTabIds.length)
-            continue; // not opened yet
-          let tabIds = tabs.map(aTab => aTab.apiTab.id);
-          if (tabIds.join(',') == tabIds.sort().join(','))
-            continue; // not sorted yet
-          return tabIds;
-        }
-      })().then(aIds => {
-        log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
-        return aIds;
-      });
-      apiTabIds = await Promise.race([
-        promisedDuplicatedIds,
-        promisedDuplicatingIds
-      ]);
+        // So, I collect duplicating tabs in different way.
+        // This promise will be resolved when they actually
+        // appear in the tab bar. This hack should be removed
+        // after the bug 1394376 is fixed.
+        let promisedDuplicatingIds = (async () => {
+          while (true) {
+            await wait(100);
+            let tabs = getDuplicatingTabs(windowId);
+            if (tabs.length < apiTabIds.length)
+              continue; // not opened yet
+            let tabIds = tabs.map(aTab => aTab.apiTab.id);
+            if (tabIds.join(',') == tabIds.sort().join(','))
+              continue; // not sorted yet
+            return tabIds;
+          }
+        })().then(aIds => {
+          log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
+          return aIds;
+        });
+        apiTabIds = await Promise.race([
+          promisedDuplicatedIds,
+          promisedDuplicatingIds
+        ]);
       }
       else {
         apiTabIds = await promisedDuplicatedIds;
