@@ -58,13 +58,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     broadcast: aOptions.broadcast
   });
 
-  var oldParent = getParentTab(aChild);
-  if ('expectedParent' in aOptions &&
-      aOptions.expectedParent != oldParent) {
-    log('maybe expired request');
-    return;
-  }
-
   if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
     log('=> already attached');
     if (!aOptions.dontMove && !aOptions.inRemote)
@@ -234,7 +227,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       parent:      aParent.id,
       insertBefore:     aOptions.insertBefore && aOptions.insertBefore.id,
       insertAfter:      aOptions.insertAfter && aOptions.insertAfter.id,
-      expectedParent:   oldParent && oldParent.id,
       dontMove:         !!aOptions.dontMove,
       dontUpdateIndent: !!aOptions.dontUpdateIndent,
       forceExpand:      !!aOptions.forceExpand,
@@ -268,11 +260,6 @@ function detachTab(aChild, aOptions = {}) {
   log('detachTab: ', dumpTab(aChild), aOptions,
     new Error().stack.split('\n')[1]);
   var parent = getParentTab(aChild);
-  if ('expectedParent' in aOptions &&
-      aOptions.expectedParent != parent) {
-    log('maybe expired request');
-    return;
-  }
 
   if (!parent)
     log('parent is already removed, or orphan tab');
@@ -301,8 +288,7 @@ function detachTab(aChild, aOptions = {}) {
     browser.runtime.sendMessage({
       type:     kCOMMAND_DETACH_TAB,
       windowId: aChild.apiTab.windowId,
-      tab:      aChild.id,
-      expectedParent: parent && parent.id
+      tab:      aChild.id
     });
   }
 }

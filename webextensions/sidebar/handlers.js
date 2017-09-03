@@ -715,7 +715,6 @@ function onMessage(aMessage, aSender, aRespond) {
           attachTabTo(child, parent, clone(aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
             insertAfter: getTabById(aMessage.insertAfter),
-            expectedParent: getTabById(aMessage.expectedParent),
             inRemote: false,
             broadcast: false
           }));
@@ -725,11 +724,8 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_DETACH_TAB: {
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);
-        let expectedParent = getTabById(aMessage.expectedParent);
         if (tab)
-          detachTab(tab, {
-            expectedParent
-          });
+          detachTab(tab);
       }
     }; break;
 
