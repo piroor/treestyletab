@@ -75,16 +75,19 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
     }; break;
 
     case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+      let nextSibling = getNextSiblingTab(baseTab);
       let parent = getParentTab(baseTab);
       if (parent) {
         await attachTabTo(aTab, parent, {
-          insertAfter: baseTab,
+          insertBefore: nextSibling,
+          insertAfter: !nextSibling && baseTab,
           broadcast: true
         });
       }
       else {
         moveTab(aTab, {
-          insertAfter: baseTab
+          insertBefore: nextSibling,
+          insertAfter: !nextSibling && baseTab
         });
       }
     }; break;
