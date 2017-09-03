@@ -166,7 +166,6 @@ async function onTabClosed(aTab) {
     let firstChild = getFirstChildTab(aTab);
     let label = browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title);
     let uri = makeGroupTabURI(label);
-    let groupTab = b.addTab(uri);
     let groupTab = await openURIInTab(uri, {
       insertBefore: firstChild
     });
