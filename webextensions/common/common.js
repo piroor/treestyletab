@@ -117,10 +117,9 @@ configs = new Configs({
 
   // behavior around closed tab
   closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeParentBehavior
+  promoteFirstChildForClosedRoot: true, // extensions.treestyletab.closeRootBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
   moveTabsToBottomWhenDetachedFromClosedParent: false, // extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom
   promoteAllChildrenWhenClosedParentIsLastChild: true, // extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild
-
-  closeRootBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeRootBehavior
 
 
   // animation

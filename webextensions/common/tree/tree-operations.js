@@ -662,15 +662,16 @@ function getCloseParentBehaviorForTab(aTab, aDefaultBehavior) {
     return kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
   var closeParentBehavior = configs.closeParentBehavior;
-  var closeRootBehavior = configs.closeRootBehavior;
 
   var parentTab = getParentTab(aTab);
   var behavior = aDefaultBehavior ?
                    aDefaultBehavior :
-                 (!parentTab &&
-                  closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN) ?
-                   closeRootBehavior :
                    closeParentBehavior ;
+  if (!parentTab &&
+      closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN &&
+      configs.promoteFirstChildForClosedRoot)
+    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+
   // Promote all children to upper level, if this is the last child of the parent.
   // This is similar to "taking by representation".
   if (behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
