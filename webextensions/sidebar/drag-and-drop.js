@@ -640,7 +640,6 @@ function onDragEnter(aEvent) {
       !configs.autoExpandEnabled)
     return;
 
-  var container = info.targetTab.parentNode;
   clearTimeout(gAutoExpandWhileDNDTimer);
   clearTimeout(gAutoExpandWhileDNDTimerNext);
 
@@ -661,6 +660,7 @@ function onDragEnter(aEvent) {
         collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
       }
       else {
+        let container = targetTab.parentNode;
         if (container.autoExpandedTabs.indexOf(aTargetId) < 0)
             container.autoExpandedTabs.push(aTargetId);
         collapseExpandSubtree(targetTab, {
