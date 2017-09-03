@@ -537,27 +537,39 @@ function getTitleFromGroupTabURI(aURI) {
 /* blocking/unblocking */
 
 var gBlockingCount = 0;
+var gBlockingThrobberCount = 0;
 
-function blockUserOperations() {
+function blockUserOperations(aOptions = {}) {
   gBlockingCount++;
   document.documentElement.classList.add(kTABBAR_STATE_BLOCKING);
+  if (aOptions.throbber) {
+    gBlockingThrobberCount++;
+    document.documentElement.classList.add(kTABBAR_STATE_BLOCKING_WITH_THROBBER);
+  }
 }
 
-function blockUserOperationsIn(aWindowId) {
+function blockUserOperationsIn(aWindowId, aOptions = {}) {
   if (gTargetWindow && gTargetWindow != aWindowId)
     return;
 
   if (!gTargetWindow) {
     browser.runtime.sendMessage({
       type: kCOMMAND_BLOCK_USER_OPERATIONS,
-      windowId: aWindowId
+      windowId: aWindowId,
+      throbber: !!aOptions.throbber
     });
     return;
   }
-  blockUserOperations();
+  blockUserOperations(aOptions);
 }
 
-function unblockUserOperations() {
+function unblockUserOperations(aOptions = {}) {
+  gBlockingThrobberCount--;
+  if (gBlockingThrobberCount < 0)
+    gBlockingThrobberCount = 0;
+  if (gBlockingThrobberCount == 0)
+    document.documentElement.classList.remove(kTABBAR_STATE_BLOCKING_WITH_THROBBER);
+
   gBlockingCount--;
   if (gBlockingCount < 0)
     gBlockingCount = 0;
@@ -565,18 +577,19 @@ function unblockUserOperations() {
     document.documentElement.classList.remove(kTABBAR_STATE_BLOCKING);
 }
 
-function unblockUserOperationsIn(aWindowId) {
+function unblockUserOperationsIn(aWindowId, aOptions = {}) {
   if (gTargetWindow && gTargetWindow != aWindowId)
     return;
 
   if (!gTargetWindow) {
     browser.runtime.sendMessage({
       type: kCOMMAND_UNBLOCK_USER_OPERATIONS,
-      windowId: aWindowId
+      windowId: aWindowId,
+      throbber: !!aOptions.throbber
     });
     return;
   }
-  unblockUserOperations();
+  unblockUserOperations(aOptions);
 }
 
 

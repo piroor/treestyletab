@@ -735,12 +735,12 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case kCOMMAND_BLOCK_USER_OPERATIONS: {
       if (aMessage.windowId == gTargetWindow)
-        blockUserOperationsIn(gTargetWindow);
+        blockUserOperationsIn(gTargetWindow, aMessage);
     }; break;
 
     case kCOMMAND_UNBLOCK_USER_OPERATIONS: {
       if (aMessage.windowId == gTargetWindow)
-        unblockUserOperationsIn(gTargetWindow);
+        unblockUserOperationsIn(gTargetWindow, aMessage);
     }; break;
 
     case kCOMMAND_BROADCAST_TAB_STATE: {

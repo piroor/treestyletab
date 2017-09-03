@@ -792,7 +792,7 @@ async function moveTabs(aTabs, aOptions = {}) {
   log('original tree structure: ', structure);
 
   if (isAcrossWindows || aOptions.duplicate) {
-    blockUserOperationsIn(windowId);
+    blockUserOperationsIn(windowId, { throbber: true });
     try {
 
     let container;
@@ -921,7 +921,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       throw e;
     }
     finally {
-      unblockUserOperationsIn(windowId);
+      unblockUserOperationsIn(windowId, { throbber: true });
     }
   }
 

@@ -85,6 +85,7 @@ const kTAB_STATE_DUPLICATING = 'duplicating';
 const kTABBAR_STATE_OVERFLOW = 'overflow';
 const kTABBAR_STATE_TAB_DRAGGING = 'tab-dragging';
 const kTABBAR_STATE_BLOCKING = 'blocking';
+const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 
 const kWINDOW_STATE_TREE_STRUCTURE = 'tree-structure';
 

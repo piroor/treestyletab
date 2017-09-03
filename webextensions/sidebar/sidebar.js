@@ -20,7 +20,7 @@ var gStyle;
 window.addEventListener('DOMContentLoaded', earlyInit, { once: true });
 window.addEventListener('load', init, { once: true });
 
-blockUserOperations();
+blockUserOperations({ throbber: true });
 
 var gSizeDefinition;
 var gStyleLoader;
@@ -71,7 +71,7 @@ async function init() {
   onConfigChange('animation');
 
   browser.runtime.onMessage.addListener(onMessage);
-  unblockUserOperations();
+  unblockUserOperations({ throbber: true });
 }
 
 function destroy() {
