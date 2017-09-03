@@ -894,13 +894,13 @@ async function moveTabs(aTabs, aOptions = {}) {
     log('applying tree structure', structure);
     // wait until tabs.onCreated are processed (for safety)
     let newTabs;
-    let retryUntil = 100;
-    while (retryUntil >= 0) {
+    let startTime = Date.now();
+    let maxDelay = configs.maximumAcceptableDelayForTabDuplication;
+    while (Date.now() - startTime < maxDelay) {
       newTabs = apiTabIds.map(getTabById);
       newTabs = newTabs.filter(aTab => !!aTab);
       if (newTabs.length < aTabs.length) {
         log('retryling: ', newTabs.length, aTabs.length);
-        retryUntil--;
         await wait(100);
         continue;
       }
