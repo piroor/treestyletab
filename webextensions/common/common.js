@@ -88,7 +88,7 @@ configs = new Configs({
 
   autoCollapseExpandSubtreeOnAttach: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnAttach
   autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
-  autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove: false, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove (inverted)
+  autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove (inverted)
 
   autoExpandIntelligently: true, // extensions.treestyletab.autoExpand.intelligently
   autoExpandOnAttached: true, // extensions.treestyletab.autoExpandSubtreeOnAppendChild
