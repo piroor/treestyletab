@@ -153,9 +153,6 @@ function onTabRestored(aTab) {
 }
 
 function onTabClosed(aTab) {
-  //var backupAttributes = collectBackupAttributes(aTab);
-  //log('onTabClose: backupAttributes = ', backupAttributes);
-
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeChildTabs(aTab);
@@ -169,7 +166,6 @@ function onTabClosed(aTab) {
     dontUpdateIndent: true,
     broadcast: true
   });
-  //restoreTabAttributes(oldTab, backupAttributes);
 
   reserveToSaveTreeStructure(aTab);
 }

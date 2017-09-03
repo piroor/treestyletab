@@ -228,8 +228,6 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
     tryMoveFocusFromClosingCurrentTab(oldTab);
 
-  //updateLastScrollPosition();
-
   window.onTabClosed && onTabClosed(oldTab);
 
   oldTab.classList.add(kTAB_STATE_REMOVING);
@@ -324,9 +322,6 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
   if (!oldTab)
     return;
 
-  //var backupAttributes = collectBackupAttributes(oldTab);
-  //log('onTabClose: backupAttributes = ', backupAttributes);
-
   if (isActive(oldTab))
     tryMoveFocusFromClosingCurrentTab(oldTab);
 
@@ -336,7 +331,6 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
   else {
     window.onTabDetachedFromWindow && onTabDetachedFromWindow(oldTab);
   }
-  //updateLastScrollPosition();
 
   var container = oldTab.parentNode;
   container.removeChild(oldTab);
