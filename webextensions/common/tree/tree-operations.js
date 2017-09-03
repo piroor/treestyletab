@@ -81,8 +81,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     return;
   }
 
-  detachTab(aChild, aOptions);
-
   var newIndex = -1;
   if (aOptions.dontMove) {
     aOptions.insertBefore = getNextTab(aChild);
@@ -136,6 +134,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     current: currentIndex,
     new: newIndex
   });
+
+  detachTab(aChild, aOptions);
 
   aChild.setAttribute(kPARENT, aParent.id);
   var parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
