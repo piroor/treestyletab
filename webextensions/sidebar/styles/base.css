@@ -180,6 +180,21 @@ ul {
 }
 
 
+:root.left .tab .twisty {
+  order: -1;
+}
+:root.left .tab .closebox {
+  order: 10000;
+}
+
+:root.right .tab .twisty {
+  order: 10000;
+}
+:root.right .tab .closebox {
+  order: -1;
+}
+
+
 /* pinned tabs */
 
 .tab.pinned {
