@@ -51,6 +51,9 @@
   "config.insertNewChildAt.first": { "message": "Insert to the top of the tree, as the first child" },
   "config.insertNewChildAt.last": { "message": "Append to the last of the tree" },
 
+  "config.autoGroupNewTabs.before": { "message": "Auto-group tabs opened within" },
+  "config.autoGroupNewTabs.after": { "message": "msec" },
+
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "When a new tree appears, collapse others automatically" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
   "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "Except focus moving caused by current tab closing" },

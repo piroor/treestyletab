@@ -51,6 +51,9 @@
   "config.insertNewChildAt.first": { "message": "ツリーの最初の位置に挿入する" },
   "config.insertNewChildAt.last": { "message": "ツリーの末尾に追加する" },
 
+  "config.autoGroupNewTabs.before": { "message": "" },
+  "config.autoGroupNewTabs.after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
+
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
