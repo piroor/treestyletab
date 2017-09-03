@@ -707,7 +707,7 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         let tab = getTabById(aMessage.tab);
         if (tab)
-          await detachTab(tab, aMessage);
+          await detachTab(tab);
       })();
 
     case kCOMMAND_PERFORM_TABS_DRAG_DROP:
