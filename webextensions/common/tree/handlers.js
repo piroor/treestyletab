@@ -188,7 +188,9 @@ async function onNewTabTracked(aTab) {
     return;
 
   if (uniqueId.originalId) {
-    window.onTabDuplicated && onTabDuplicated(newTab);
+    window.onTabDuplicated && onTabDuplicated(newTab, {
+      originalTab: getTabById({ tab: uniqueId.originalTabId })
+    });
   }
   else if (uniqueId.originalTabId &&
            uniqueId.originalTabId != aTab.id) {
