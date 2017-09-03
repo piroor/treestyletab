@@ -24,6 +24,8 @@
   "groupTab.label.default": { "message": "Group" },
 
 
+  "config.appearance.caption": { "message": "Appearance" },
+
   "config.sidebarPosition.caption": { "message": "Style of contents for the sidebar position" },
   "config.sidebarPosition.left": { "message": "Left side" },
   "config.sidebarPosition.right": { "message": "Right side" },
@@ -37,6 +39,9 @@
   "config.style.sidebar": { "message": "Sidebar" },
 
   "config.animation.label": { "message": "Enable animation effects" },
+
+
+  "config.debug.caption": { "message": "Development" },
   "config.debug.label": { "message": "Debug mode" },
   "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },

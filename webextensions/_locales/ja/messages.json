@@ -24,6 +24,8 @@
   "groupTab.label.default": { "message": "グループ" },
 
 
+  "config.appearance.caption": { "message": "外観" },
+
   "config.sidebarPosition.caption": { "message": "サイドバーの位置に合わせたスタイル" },
   "config.sidebarPosition.left": { "message": "左側用" },
   "config.sidebarPosition.right": { "message": "右側用" },
@@ -37,6 +39,9 @@
   "config.style.sidebar": { "message": "Sidebar" },
 
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
+
+
+  "config.debug.caption": { "message": "開発用" },
   "config.debug.label": { "message": "デバッグモード" },
   "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },

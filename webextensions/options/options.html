@@ -14,15 +14,16 @@
     <link rel="stylesheet" type="text/css" href="options.css"/>
   </head>
   <body>
-    <p>__MSG_config.sidebarPosition.caption__</p>
-    <ul id="style-radiogroup">
-      <li><label><input type="radio"
-                        name="sidebarPosition" value="1">
-            __MSG_config.sidebarPosition.left__</label></li>
-      <li><label><input type="radio"
-                        name="sidebarPosition" value="2">
-            __MSG_config.sidebarPosition.right__</label></li>
-    </ul>
+    <h1>__MSG_config.appearance.caption__</h1>
+
+    <p>__MSG_config.sidebarPosition.caption__
+       <br /><label><input type="radio"
+                           name="sidebarPosition" value="1">
+               __MSG_config.sidebarPosition.left__</label>
+             <label><input type="radio"
+                           name="sidebarPosition" value="2">
+               __MSG_config.sidebarPosition.right__</label>
+    </p>
     <p>__MSG_config.style.caption__</p>
     <ul id="style-radiogroup">
       <li><label><input type="radio"
@@ -50,10 +51,13 @@
             <img src="style-sidebar.png"/>
             __MSG_config.style.sidebar__</label></li>
     </ul>
-    <hr/>
     <p><label><input id="animation"
                      type="checkbox">
              __MSG_config.animation.label__</label></p>
+
+    <hr/>
+
+    <h1>__MSG_config.debug.caption__</h1>
     <p><label><input id="debug"
                      type="checkbox">
              __MSG_config.debug.label__</label></p>
