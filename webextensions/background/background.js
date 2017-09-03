@@ -120,10 +120,49 @@ async function loadTreeStructure() {
     else {
       log(`Tree information for the window ${aWindow.id} is not available. Fallback to restoration from tab relations.`);
       for (let tab of tabs) {
-        await onTabRestored(tab);
+        await attachTabFromRestoredInfo(tab);
       }
     }
   }));
+}
+
+async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
+  log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
+  await aTab.uniqueId;
+  var insertBefore, insertAfter, ancestors, children;
+  [insertBefore, insertAfter, ancestors, children] = await Promise.all([
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN)
+  ]);
+  ancestors = ancestors || [];
+  children  = children  || [];
+  log('persistent references: ', insertBefore, insertAfter, ancestors, children);
+  insertBefore = getTabByUniqueId(insertBefore);
+  insertAfter  = getTabByUniqueId(insertAfter);
+  ancestors    = ancestors.map(getTabByUniqueId);
+  children     = children.map(getTabByUniqueId);
+  for (let ancestor of ancestors) {
+    if (!ancestor)
+      continue;
+    await attachTabTo(aTab, ancestor, {
+      broadcast: true,
+      dontMove: insertBefore || insertAfter,
+      insertBefore: insertBefore,
+      insertAfter:  insertAfter
+    });
+    break;
+  }
+  if (aOptions.chilren) {
+    for (let child of children) {
+      if (!child)
+        continue;
+      await attachTabTo(child, aTab, {
+        broadcast: true
+      });
+    }
+  }
 }
 
 

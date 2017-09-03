@@ -116,39 +116,11 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToSaveTreeStructure(aTab);
 }
 
-async function onTabRestored(aTab) {
+function onTabRestored(aTab) {
   log('restored ', dumpTab(aTab), aTab.apiTab);
-  var insertBefore, insertAfter, ancestors, children;
-  [insertBefore, insertAfter, ancestors, children] = await Promise.all([
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN)
-  ]);
-  ancestors = ancestors || [];
-  children  = children  || [];
-  log('persistent references: ', insertBefore, insertAfter, ancestors, children);
-  insertBefore = getTabByUniqueId(insertBefore);
-  insertAfter  = getTabByUniqueId(insertAfter);
-  ancestors    = ancestors.map(getTabByUniqueId);
-  children     = children.map(getTabByUniqueId);
-  for (let ancestor of ancestors) {
-    if (!ancestor)
-      continue;
-    await attachTabTo(aTab, ancestor, {
-      broadcast: true,
-      insertBefore: insertBefore,
-      insertAfter:  insertAfter
-    });
-    break;
-  }
-  for (let child of children) {
-    if (!child)
-      continue;
-    await attachTabTo(child, aTab, {
-      broadcast: true
-    });
-  }
+  return attachTabFromRestoredInfo(aTab, {
+           children: true
+         });
 }
 
 function onTabClosed(aTab) {
@@ -513,6 +485,11 @@ function onTabAttached(aTab) {
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(getParentTab(aTab));
+  reserveToUpdateInsertionPosition([
+    aTab,
+    getNextTab(aTab),
+    getPreviousTab(aTab)
+  ]);
 }
 
 function onTabDetached(aTab, aDetachInfo) {
