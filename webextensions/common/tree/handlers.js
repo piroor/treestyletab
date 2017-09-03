@@ -68,6 +68,7 @@ async function onApiTabActivated(aActiveInfo) {
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
   var byInternalOperation = container.internalFocusCount > 0;
   var byCurrentTabRemove = container.focusChangedByCurrentTabRemoveCount > 0;
+  var byTabDuplication = container.duplicatingTabsCount > 0;
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab) {
     if (byInternalOperation)
@@ -77,9 +78,8 @@ async function onApiTabActivated(aActiveInfo) {
     return;
   }
 
-  //cancelDelayedExpandOnTabSelect(); // for Ctrl-Tab
-
   var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId)
+  var previouslyFocusedTab = oldTabs.length > 0 ? oldTabs[0] : null ;
   newTab.classList.add(kTAB_STATE_ACTIVE);
   newTab.classList.remove(kTAB_STATE_UNREAD);
 
@@ -87,7 +87,9 @@ async function onApiTabActivated(aActiveInfo) {
 
   window.onTabFocusing && onTabFocusing(newTab, {
     byCurrentTabRemove,
-    byInternalOperation
+    byTabDuplication,
+    byInternalOperation,
+    previouslyFocusedTab
   });
 
   if (byCurrentTabRemove)
@@ -95,8 +97,9 @@ async function onApiTabActivated(aActiveInfo) {
 
   window.onTabFocused && await onTabFocused(newTab, {
     byCurrentTabRemove,
+    byTabDuplication,
     byInternalOperation,
-    previouslyFocusedTab: oldTabs.length > 0 ? oldTabs[0] : null
+    previouslyFocusedTab
   });
 
   if (byInternalOperation)
