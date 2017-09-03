@@ -838,8 +838,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
         return aIds;
       });
-      apiTabIds = await promisedDuplicatedIds;
-/*
+//      apiTabIds = await promisedDuplicatedIds;
       // So, I collect duplicating tabs in different way.
       // This promise will be resolved when they actually
       // appear in the tab bar. This hack should be removed
@@ -863,7 +862,6 @@ async function moveTabs(aTabs, aOptions = {}) {
         promisedDuplicatedIds,
         promisedDuplicatingIds
       ]);
-*/
     }
     if (newWindow)
       await newWindow;
