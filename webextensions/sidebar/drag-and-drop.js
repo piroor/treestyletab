@@ -560,34 +560,6 @@ function onDragOver(aEvent) {
   autoScrollOnMouseEvent(aEvent);
   var info = getDropAction(aEvent);
 
-/*
-  // auto-switch for staying on tabs
-  if (
-    info.dropPosition == kDROP_ON &&
-    info.targetTab &&
-    !isActive(info.targetTab) &&
-    '_dragTime' in observer && '_dragOverDelay' in observer
-    ) {
-    let time = observer.mDragTime || observer._dragTime || 0;
-    let delay = observer.mDragOverDelay || observer._dragOverDelay || 0;
-    let effects = '_setEffectAllowedForDataTransfer' in observer ?
-            observer._setEffectAllowedForDataTransfer(aEvent) :
-            observer._getDropEffectForTabDrag(aEvent) ;
-    if (effects == 'link') {
-      let now = Date.now();
-      if (!time) {
-        time = now;
-        if ('mDragTime' in observer)
-          observer.mDragTime = time;
-        else
-          observer._dragTime = time;
-      }
-      if (now >= time + delay)
-        b.selectedTab = info.targetTab;
-    }
-  }
-*/
-
   if (!info.canDrop) {
     aEvent.dataTransfer.effectAllowed = 'none';
     clearDropPosition();
@@ -624,12 +596,11 @@ function onDragEnter(aEvent) {
 
   var info = getDropAction(aEvent);
   var dt = aEvent.dataTransfer;
-  if (info.action & kACTION_NEWTAB)
-      dt.effectAllowed = dt.dropEffect = (
-      !info.draggedTab ? 'link' :
-      isCopyAction(aEvent) ? 'copy' :
-      'move'
-    );
+  dt.effectAllowed = dt.dropEffect = (
+    !info.draggedTab ? 'link' :
+    isCopyAction(aEvent) ? 'copy' :
+    'move'
+  );
 
   if (!info.canDrop) {
     dt.effectAllowed = dt.dropEffect = 'none';
@@ -640,36 +611,51 @@ function onDragEnter(aEvent) {
       !configs.autoExpandEnabled)
     return;
 
-  clearTimeout(gLongHoverTimer);
-  clearTimeout(gLongHoverTimerNext);
+  reserveToProcessLongHover.cancel();
 
   if (aEvent.target == info.draggedTab)
     return;
 
-  reserveToProcessLongHover(
-    info.targetTab.id,
-    info.draggedTab && info.draggedTab.id
-  );
+  reserveToProcessLongHover({
+    dragOverTabId: info.targetTab.id,
+    draggedTabId: info.draggedTab && info.draggedTab.id,
+    dropEffect: info.canDrop ? dt.dropEffect : 'none'
+  });
 }
 
-function reserveToProcessLongHover(aDragOverTabId, aDraggedTabId) {
+function reserveToProcessLongHover(aParams = {}) {
   gLongHoverTimerNext = setTimeout(() => {
     gLongHoverTimerNext = null;
     gLongHoverTimer = setTimeout(async () => {
-      let dragOverTab = getTabById(aDragOverTabId);
+      log('reservedProcessLongHover: ', aParams);
+
+      let dragOverTab = getTabById(aParams.dragOverTabId);
       if (!dragOverTab ||
-          !shouldTabAutoExpanded(dragOverTab) ||
           dragOverTab.getAttribute(kDROP_POSITION) != 'self')
         return;
 
-      let draggedTab = aDraggedTabId && getTabById(aDraggedTabId);
+      // auto-switch for staying on tabs
+      if (!isActive(dragOverTab) &&
+          aParams.dropEffect == 'link') {
+        browser.runtime.sendMessage({
+          type:     kCOMMAND_SELECT_TAB,
+          windowId: gTargetWindow,
+          tab:      dragOverTab.id
+        });
+      }
+
+      if (!shouldTabAutoExpanded(dragOverTab))
+        return;
+
+      // auto-expand for staying on a parent
+      let draggedTab = aDraggedTabId && getTabById(aParams.draggedTabId);
       if (configs.autoExpandIntelligently) {
         collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
       else {
         let container = dragOverTab.parentNode;
-        if (container.autoExpandedTabs.indexOf(aDragOverTabId) < 0)
-            container.autoExpandedTabs.push(aDragOverTabId);
+        if (container.autoExpandedTabs.indexOf(aParams.dragOverTabId) < 0)
+            container.autoExpandedTabs.push(aParams.dragOverTabId);
         collapseExpandSubtree(dragOverTab, {
           collapsed: false,
           inRemote: true
@@ -678,6 +664,10 @@ function reserveToProcessLongHover(aDragOverTabId, aDraggedTabId) {
     }, configs.autoExpandDelay);
   }, 0);
 }
+reserveToProcessLongHover.cancel = function() {
+  clearTimeout(gLongHoverTimer);
+  clearTimeout(gLongHoverTimerNext);
+};
 
 var gDelayedDragLeave;
 
