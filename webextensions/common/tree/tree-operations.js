@@ -134,7 +134,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   var parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
   if (!aOptions.dontUpdateIndent) {
     updateTabsIndent(aChild, parentLevel + 1);
-    //checkTabsIndentOverflow();
   }
   //updateTabAsParent(aParent);
   //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
