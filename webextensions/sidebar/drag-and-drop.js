@@ -99,19 +99,6 @@ function getDropAction(aEvent) {
   var info = getDropActionInternal(aEvent);
   info.canDrop = true;
   if (info.draggedTab) {
-    var isCopy = isCopyAction(aEvent);
-    if (isCopy)
-      info.action |= kACTION_DUPLICATE;
-    if (!isCopy && !info.dragData.tabNode)
-      info.action |= kACTION_IMPORT;
-
-    if (info.action & kACTION_AFFECTS_TO_DESTINATION) {
-      if (info.action & kACTION_MOVE)
-        info.action ^= kACTION_MOVE;
-      if (info.action & kACTION_STAY)
-        info.action ^= kACTION_STAY;
-    }
-
     if (info.dragOverTab &&
         isPinned(info.draggedTab) != isPinned(info.dragOverTab)) {
       info.canDrop = false;
@@ -178,9 +165,7 @@ function getDropActionInternal(aEvent) {
 
   if (!targetTab) {
     log('dragging on non-tab element');
-    let action = isRemoteTab ? kACTION_STAY : (kACTION_MOVE | kACTION_DETACH) ;
-    if (isNewTabAction)
-      action |= kACTION_NEWTAB;
+    let action = kACTION_MOVE | kACTION_DETACH;
     if (aEvent.clientY < firstTargetTab.getBoundingClientRect().top) {
       //log('dragging above the first tab');
       info.targetTab = info.parent = info.insertBefore = firstTargetTab;
@@ -258,7 +243,7 @@ function getDropActionInternal(aEvent) {
     case kDROP_ON: {
       //log('drop position = on the tab');
       let visibleNext = getNextVisibleTab(targetTab);
-      info.action       = kACTION_STAY | kACTION_ATTACH;
+      info.action       = kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == kINSERT_FISRT ?
           (getFirstChildTab(targetTab) || visibleNext) :
@@ -365,9 +350,6 @@ function getDropActionInternal(aEvent) {
       //  log('insertBefore = ', dumpTab(info.insertBefore));
     }; break;
   }
-
-  if (isNewTabAction)
-    info.action |= kACTION_NEWTAB;
 
   return info;
 }

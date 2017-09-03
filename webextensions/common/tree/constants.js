@@ -94,15 +94,9 @@ const kDROP_BEFORE = -1;
 const kDROP_ON = 0;
 const kDROP_AFTER = 1;
 
-const kACTION_MOVE = 1 << 0;
-const kACTION_STAY = 1 << 1;
-const kACTION_DUPLICATE = 1 << 2;
-const kACTION_IMPORT = 1 << 3;
-const kACTION_NEWTAB = 1 << 4;
+const kACTION_MOVE   = 1 << 0;
 const kACTION_ATTACH = 1 << 10;
 const kACTION_DETACH = 1 << 11;
-const kACTION_AFFECTS_TO_SOURCE = (1 << 0) | (1 << 1);
-const kACTION_AFFECTS_TO_DESTINATION = (1 << 2) | (1 << 3);
 
 const kDROPLINK_ASK = 0;
 const kDROPLINK_LOAD = 1 << 0;
