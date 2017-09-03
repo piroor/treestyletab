@@ -878,7 +878,7 @@ async function moveTabs(aTabs, aOptions = {}) {
     log('applying tree structure', structure);
     // wait until tabs.onCreated are processed (for safety)
     let newTabs;
-    let retryUntil = 10;
+    let retryUntil = 100;
     while (retryUntil >= 0) {
       newTabs = apiTabIds.map(getTabById);
       newTabs = newTabs.filter(aTab => !!aTab);
