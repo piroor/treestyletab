@@ -656,18 +656,18 @@ function onDragEnter(aEvent) {
           targetTab.getAttribute(kDROP_POSITION) != 'self')
         return;
 
-        let draggedTab = aDraggedId && getTabById(aDraggedId);
-        if (configs.autoExpandIntelligently) {
-          collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
-        }
-        else {
-          if (container.autoExpandedTabs.indexOf(aTargetId) < 0)
-              container.autoExpandedTabs.push(aTargetId);
-          collapseExpandSubtree(targetTab, {
-            collapsed: false,
-            inRemote: true
-          });
-        }
+      let draggedTab = aDraggedId && getTabById(aDraggedId);
+      if (configs.autoExpandIntelligently) {
+        collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
+      }
+      else {
+        if (container.autoExpandedTabs.indexOf(aTargetId) < 0)
+            container.autoExpandedTabs.push(aTargetId);
+        collapseExpandSubtree(targetTab, {
+          collapsed: false,
+          inRemote: true
+        });
+      }
     }, configs.autoExpandDelay);
   }, 0, info.targetTab.id, info.draggedTab && info.draggedTab.id);
 }
