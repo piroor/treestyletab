@@ -40,8 +40,8 @@ const kTREE_DROP_TYPE = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 
 var gAutoExpandedTabs = [];
-var gAutoExpandWhileDNDTimer;
-var gAutoExpandWhileDNDTimerNext;
+var gLongHoverTimer;
+var gLongHoverTimerNext;
 
 function startListenDragEvents(aTarget) {
   aTarget.addEventListener('dragstart', onDragStart);
@@ -640,36 +640,43 @@ function onDragEnter(aEvent) {
       !configs.autoExpandEnabled)
     return;
 
-  clearTimeout(gAutoExpandWhileDNDTimer);
-  clearTimeout(gAutoExpandWhileDNDTimerNext);
+  clearTimeout(gLongHoverTimer);
+  clearTimeout(gLongHoverTimerNext);
 
   if (aEvent.target == info.draggedTab)
     return;
 
-  gAutoExpandWhileDNDTimerNext = setTimeout((aTargetId, aDraggedId) => {
-    gAutoExpandWhileDNDTimerNext = null;
-    gAutoExpandWhileDNDTimer = setTimeout(async () => {
-      let targetTab = getTabById(aTargetId);
-      if (!targetTab ||
-          !shouldTabAutoExpanded(targetTab) ||
-          targetTab.getAttribute(kDROP_POSITION) != 'self')
+  reserveToProcessLongHover(
+    info.targetTab.id,
+    info.draggedTab && info.draggedTab.id
+  );
+}
+
+function reserveToProcessLongHover(aDragOverTabId, aDraggedTabId) {
+  gLongHoverTimerNext = setTimeout(() => {
+    gLongHoverTimerNext = null;
+    gLongHoverTimer = setTimeout(async () => {
+      let dragOverTab = getTabById(aDragOverTabId);
+      if (!dragOverTab ||
+          !shouldTabAutoExpanded(dragOverTab) ||
+          dragOverTab.getAttribute(kDROP_POSITION) != 'self')
         return;
 
-      let draggedTab = aDraggedId && getTabById(aDraggedId);
+      let draggedTab = aDraggedTabId && getTabById(aDraggedTabId);
       if (configs.autoExpandIntelligently) {
-        collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
+        collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
       else {
-        let container = targetTab.parentNode;
-        if (container.autoExpandedTabs.indexOf(aTargetId) < 0)
-            container.autoExpandedTabs.push(aTargetId);
-        collapseExpandSubtree(targetTab, {
+        let container = dragOverTab.parentNode;
+        if (container.autoExpandedTabs.indexOf(aDragOverTabId) < 0)
+            container.autoExpandedTabs.push(aDragOverTabId);
+        collapseExpandSubtree(dragOverTab, {
           collapsed: false,
           inRemote: true
         });
       }
     }, configs.autoExpandDelay);
-  }, 0, info.targetTab.id, info.draggedTab && info.draggedTab.id);
+  }, 0);
 }
 
 var gDelayedDragLeave;
@@ -680,8 +687,8 @@ function onDragLeave(aEvent) {
   }, configs.preventTearOffTabsTimeout);
 
   clearDropPosition();
-  clearTimeout(gAutoExpandWhileDNDTimer);
-  gAutoExpandWhileDNDTimer = null;
+  clearTimeout(gLongHoverTimer);
+  gLongHoverTimer = null;
 }
 
 function onDrop(aEvent) {
