@@ -186,10 +186,14 @@ async function onNewTabTracked(aTab) {
   var uniqueId = await newTab.uniqueId;
   if (!newTab || !newTab.parentNode)
     return;
-  if (!uniqueId.originalId &&
-      uniqueId.originalTabId &&
-      uniqueId.originalTabId != aTab.id)
+
+  if (uniqueId.originalId) {
+    window.onTabDuplicated && onTabDuplicated(newTab);
+  }
+  else if (uniqueId.originalTabId &&
+           uniqueId.originalTabId != aTab.id) {
     window.onTabRestored && onTabRestored(newTab);
+  }
 }
 
 async function ensureAllTabsAreTracked(aWindowId) {
