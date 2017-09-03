@@ -134,7 +134,7 @@ configs = new Configs({
 
 
   // misc.
-  acccelaratedTabDuplication: true,
+  acccelaratedTabDuplication: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   acceptableDelayForInternalFocusMoving: 150,
   preventTearOffTabsTimeout: 100,

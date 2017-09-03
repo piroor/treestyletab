@@ -34,3 +34,13 @@ li label img {
   margin-top: 0.15em;
   margin-bottom: 0.15em;
 }
+
+:root:not(.debugging) #debug-configs {
+  max-height: 0;
+  overflow: hidden;
+}
+
+:root:not(.debugging) #debug-configs * {
+  -moz-user-focus: ignore;
+  -moz-user-input: disabled;
+}

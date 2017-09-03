@@ -37,5 +37,8 @@
   "config.style.sidebar": { "message": "Sidebar" },
 
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
-  "config.debug.label": { "message": "デバッグログを出力" }
+  "config.debug.label": { "message": "デバッグモード" },
+  "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
+  "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
+  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" }
 }

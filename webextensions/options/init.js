@@ -7,3 +7,19 @@
 
 gLogContext = 'Options';
 var options = new Options(configs);
+
+function onConfigChanged(aKey) {
+  switch (aKey) {
+    case 'debug':
+      if (configs.debug)
+        document.documentElement.classList.add('debugging');
+      else
+        document.documentElement.classList.remove('debugging');
+      break;
+  }
+}
+
+configs.$addObserver(onConfigChanged);
+configs.$loaded.then(() => {
+  onConfigChanged('debug');
+});
