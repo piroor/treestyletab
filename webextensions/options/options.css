@@ -4,8 +4,18 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+ul,
+ul li {
+  list-style: none;
+}
+
 p.sub {
   margin-left: 2em;
+}
+
+ul p.sub {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 #style-radiogroup {
@@ -22,7 +32,6 @@ p.sub {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  list-style: none;
   margin-bottom: 0.5em;
   padding: 0;
   width: calc(1em + 100px + 8em); /* radio + image + label */
