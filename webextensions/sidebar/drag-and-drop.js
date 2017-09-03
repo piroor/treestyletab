@@ -678,7 +678,7 @@ function onDrop(aEvent) {
 
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.tabId) {
-    log('there ar tabs drag');
+    log('there are dragged tabs');
     performTabsDragDrop({
       windowId:     dropActionInfo.dragData.windowId,
       tabIds:       dropActionInfo.dragData.tabIds,
