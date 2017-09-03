@@ -39,7 +39,7 @@
 const kTREE_DROP_TYPE = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 
-var gAutoExpandedTabs = [];
+var gLongHoverExpandedTabs = [];
 var gLongHoverTimer;
 var gLongHoverTimerNext;
 
@@ -370,9 +370,9 @@ function isDraggingAllCurrentTabs(aTab) {
 }
 
 function collapseAutoExpandedTabsWhileDragging() {
-  if (gAutoExpandedTabs.length > 0 &&
+  if (gLongHoverExpandedTabs.length > 0 &&
       configs.autoExpandOnLongHoverRestoreIniitalState) {
-    for (let tab of gAutoExpandedTabs) {
+    for (let tab of gLongHoverExpandedTabs) {
       collapseExpandSubtree(tab, {
         collapsed: false,
         justNow:   true,
@@ -380,7 +380,7 @@ function collapseAutoExpandedTabsWhileDragging() {
       });
     }
   }
-  gAutoExpandedTabs = [];
+  gLongHoverExpandedTabs = [];
 }
 
 async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
@@ -635,9 +635,8 @@ function reserveToProcessLongHover(aParams = {}) {
         collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
       else {
-        let container = dragOverTab.parentNode;
-        if (container.autoExpandedTabs.indexOf(aParams.dragOverTabId) < 0)
-            container.autoExpandedTabs.push(aParams.dragOverTabId);
+        if (gLongHoverExpandedTabs.indexOf(aParams.dragOverTabId) < 0)
+            gLongHoverExpandedTabs.push(aParams.dragOverTabId);
         collapseExpandSubtree(dragOverTab, {
           collapsed: false,
           inRemote: true
