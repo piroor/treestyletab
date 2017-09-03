@@ -23,6 +23,11 @@
     }},
   "groupTab.label.default": { "message": "Group" },
 
+
+  "config.sidebarPosition.caption": { "message": "Style of contents for the sidebar position" },
+  "config.sidebarPosition.left": { "message": "Left side" },
+  "config.sidebarPosition.right": { "message": "Right side" },
+
   "config.style.caption": { "message": "Theme" },
   "config.style.plain": { "message": "Plain" },
   "config.style.flat": { "message": "Flat" },

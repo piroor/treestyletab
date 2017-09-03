@@ -63,8 +63,6 @@ function clone(aOriginalObject, aExtraProperties) {
 }
 
 configs = new Configs({
-  treeStructure: [],
-
   baseIndent: 12, // extensions.treestyletab.indent.vertical
   shouldDetectClickOnIndentSpaces: true, // extensions.treestyletab.clickOnIndentSpaces.enabled
   
@@ -77,6 +75,7 @@ configs = new Configs({
   scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE, // extensions.treestyletab.tabbar.scrollToNewTab.mode
   counterRole: kCOUNTER_ROLE_CONTAINED_TABS, // extensions.treestyletab.counter.role.vertical
 
+  sidebarPosition: kTABBAR_POSITION_LEFT,
   style: null, // extensions.treestyletab.tabbar.style
   defaultStyle: 'mixed', // extensions.treestyletab.platform.default.tabbar.style
   defaultStyleOnDarwin: 'sidebar', // extensions.treestyletab.platform.default.tabbar.style

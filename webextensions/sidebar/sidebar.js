@@ -67,6 +67,7 @@ async function init() {
 
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
+  onConfigChange('sidebarPosition');
   onConfigChange('animation');
 
   browser.runtime.onMessage.addListener(onMessage);
@@ -265,7 +266,7 @@ function reserveToUpdateIndent() {
 var gIndentDefinition;
 var gLastMaxLevel;
 
-function updateIndent() {
+function updateIndent(aOptions = {}) {
   var maxLevel = getMaxTreeLevel(gTargetWindow, {
                    onlyVisible: configs.indentAutoShrinkOnlyForVisible
                  });
@@ -291,7 +292,10 @@ function updateIndent() {
       gIndent = indentUnit;
   }
 
-  if (oldIndent == gIndent && gIndentDefinition && maxLevel == gLastMaxLevel)
+  if (!aOptions.force &&
+      oldIndent == gIndent &&
+      gIndentDefinition &&
+      maxLevel == gLastMaxLevel)
     return;
 
   gLastMaxLevel = maxLevel;

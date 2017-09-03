@@ -760,22 +760,37 @@ function onMessage(aMessage, aSender, aRespond) {
 }
 
 function onConfigChange(aChangedKey) {
+  var rootClasses = document.documentElement.classList;
   switch (aChangedKey) {
     case 'debug': {
       for (let tab of getAllTabs()) {
         updateTab(tab, tab.apiTab);
       }
       if (configs.debug)
-        document.documentElement.classList.add('debug');
+        rootClasses.add('debug');
       else
-        document.documentElement.classList.remove('debug');
+        rootClasses.remove('debug');
     }; break;
 
     case 'animation':
       if (configs.animation)
-        document.documentElement.classList.add('animation');
+        rootClasses.add('animation');
       else
-        document.documentElement.classList.remove('animation');
+        rootClasses.remove('animation');
+      break;
+
+    case 'sidebarPosition':
+      if (configs.sidebarPosition == kTABBAR_POSITION_RIGHT) {
+        rootClasses.add('right');
+        rootClasses.remove('left');
+        gIndentProp = 'margin-right';
+      }
+      else {
+        rootClasses.add('left');
+        rootClasses.remove('right');
+        gIndentProp = 'margin-left';
+      }
+      updateIndent({ force: true });
       break;
 
     case 'style':

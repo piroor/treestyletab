@@ -90,6 +90,9 @@ const kWINDOW_STATE_TREE_STRUCTURE = 'tree-structure';
 const kCOUNTER_ROLE_ALL_TABS = 1;
 const kCOUNTER_ROLE_CONTAINED_TABS = 2;
 
+const kTABBAR_POSITION_LEFT = 1;
+const kTABBAR_POSITION_RIGHT = 2;
+
 const kDROP_BEFORE = -1;
 const kDROP_ON = 0;
 const kDROP_AFTER = 1;
