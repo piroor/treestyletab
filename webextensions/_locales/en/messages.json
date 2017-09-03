@@ -46,10 +46,23 @@
 
   "config.treeBehavior.caption": { "message": "Behaviors around Tree" },
 
+  "config.insertNewChildAt.caption": { "message": "Insertion position of new child tabs" },
+  "config.insertNewChildAt.noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
+  "config.insertNewChildAt.first": { "message": "Insert to the top of the tree, as the first child" },
+  "config.insertNewChildAt.last": { "message": "Append to the last of the tree" },
+
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "When a new tree appears, collapse others automatically" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
   "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "Except focus moving caused by current tab closing" },
   "config.autoExpandOnAttached.label": { "message": "Expand tree automatically, when tabs are inserted into the tree" },
+
+  "config.closeParentBehavior.caption": { "message": "When a parent tab is closed" },
+  "config.closeParentBehavior.close": { "message": "Close child tabs too" },
+  "config.closeParentBehavior.replaceWithGroupTab": { "message": "Replace closed parent with a dummy tab and keep the tree" },
+  "config.closeParentBehavior.promoteFirst": { "message": "Promote the first child tab as the new parent" },
+  "config.closeParentBehavior.promoteAll": { "message": "Promote all child tabs as the level of the closed parent tab" },
+  "config.promoteFirstChildForClosedRoot.label": { "message": "Promote the first child tab as the new parent, if the closed parent has no parent" },
+  "config.closeParentBehavior.detach": { "message": "Liberate child tabs from the tree" },
 
 
   "config.advanced.caption": { "message": "Advanced" },

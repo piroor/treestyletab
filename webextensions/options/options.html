@@ -63,6 +63,19 @@
 
     <h1>__MSG_config.treeBehavior.caption__</h1>
 
+    <p>__MSG_config.insertNewChildAt.caption__</p>
+    <ul>
+      <li><label><input type="radio"
+                        name="insertNewChildAt" value="-1">
+            __MSG_config.insertNewChildAt.noControl__</label></li>
+      <li><label><input type="radio"
+                        name="insertNewChildAt" value="0">
+            __MSG_config.insertNewChildAt.first__</label></li>
+      <li><label><input type="radio"
+                        name="insertNewChildAt" value="1">
+            __MSG_config.insertNewChildAt.last__</label></li>
+    </ul>
+
     <p><label><input id="autoCollapseExpandSubtreeOnAttach"
                      type="checkbox">
              __MSG_config.autoCollapseExpandSubtreeOnAttach.label__</label></p>
@@ -76,6 +89,29 @@
     <p><label><input id="autoExpandOnAttached"
                      type="checkbox">
              __MSG_config.autoExpandOnAttached.label__</label></p>
+
+    <p>__MSG_config.closeParentBehavior.caption__</p>
+    <ul>
+      <li><label><input type="radio"
+                        name="closeParentBehavior" value="2">
+            __MSG_config.closeParentBehavior.close__</label></li>
+      <li><label><input type="radio"
+                        name="closeParentBehavior" value="5">
+            __MSG_config.closeParentBehavior.replaceWithGroupTab__</label></li>
+      <li><label><input type="radio"
+                        name="closeParentBehavior" value="3">
+            __MSG_config.closeParentBehavior.promoteFirst__</label></li>
+      <li><label><input type="radio"
+                        name="closeParentBehavior" value="0">
+            __MSG_config.closeParentBehavior.promoteAll__</label>
+          <p class="sub">
+             <label><input id="promoteFirstChildForClosedRoot"
+                           type="checkbox">
+                   __MSG_config.promoteFirstChildForClosedRoot.label__</label></p></li>
+      <li><label><input type="radio"
+                        name="closeParentBehavior" value="1">
+            __MSG_config.closeParentBehavior.detach__</label></li>
+    </ul>
 
 
     <h1>__MSG_config.advanced.caption__</h1>

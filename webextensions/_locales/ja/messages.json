@@ -46,10 +46,23 @@
 
   "config.treeBehavior.caption": { "message": "ツリーの挙動" },
 
+  "config.insertNewChildAt.caption": { "message": "新しい子タブを開く位置" },
+  "config.insertNewChildAt.noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
+  "config.insertNewChildAt.first": { "message": "ツリーの最初の位置に挿入する" },
+  "config.insertNewChildAt.last": { "message": "ツリーの末尾に追加する" },
+
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
   "config.autoExpandOnAttached.label": { "message": "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する" },
+
+  "config.closeParentBehavior.caption": { "message": "親のタブを閉じた時の挙動" },
+  "config.closeParentBehavior.close": { "message": "子孫のタブも一緒に閉じる" },
+  "config.closeParentBehavior.replaceWithGroupTab": { "message": "代わりにグループ化用のダミーのタブを開いてツリーを維持する" },
+  "config.closeParentBehavior.promoteFirst": { "message": "最初の子タブを新しい親にする" },
+  "config.closeParentBehavior.promoteAll": { "message": "閉じた親タブの階層に子孫のタブを移動する" },
+  "config.promoteFirstChildForClosedRoot.label": { "message": "最上位の親タブを閉じた時だけは、最初の子タブを新しい親にする" },
+  "config.closeParentBehavior.detach": { "message": "子孫のタブをツリーから解放する" },
 
 
   "config.advanced.caption": { "message": "詳細設定" },
