@@ -193,6 +193,7 @@ async function onNewTabTracked(aTab) {
       container.duplicatingTabsCount--;
     window.onTabDuplicated && onTabDuplicated(newTab, {
       byInternalOperation,
+      maybeOpenedWithPosition: openedWithPosition,
       originalTab: getTabById({ tab: uniqueId.originalTabId })
     });
   }

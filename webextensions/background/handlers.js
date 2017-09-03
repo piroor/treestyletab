@@ -40,21 +40,31 @@ async function onTabOpening(aTab, aInfo = {}) {
   if (opener &&
       configs.autoAttach) {
     log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
-    switch (configs.autoAttachOnOpenedWithOwner) {
+    behaveAutoAttachedTab(aTab, {
+      baseTab:  opener,
+      behavior: configs.autoAttachOnOpenedWithOwner,
+      dontMove: aInfo.maybeOpenedWithPosition
+    });
+  }
+}
+
+async function behaveAutoAttachedTab(aTab, aOptions = {}) {
+  var baseTab = aOptions.baseTab || getCurrentTab();
+    switch (aOptions.behavior) {
       case kNEWTAB_OPEN_AS_ORPHAN:
       default:
         break;
 
       case kNEWTAB_OPEN_AS_CHILD:
-        await attachTabTo(aTab, opener, {
-          dontMove: aInfo.maybeOpenedWithPosition,
+        await attachTabTo(aTab, baseTab, {
+          dontMove: aOptions.dontMove,
           broadcast: true
         });
         return true;
         break;
 
       case kNEWTAB_OPEN_AS_SIBLING: {
-        let parent = getParentTab(opener);
+        let parent = getParentTab(baseTab);
         if (parent) {
           await attachTabTo(aTab, parent, {
             broadcast: true
@@ -64,21 +74,20 @@ async function onTabOpening(aTab, aInfo = {}) {
       }; break;
 
       case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-        let parent = getParentTab(opener);
+        let parent = getParentTab(baseTab);
         if (parent) {
           await attachTabTo(aTab, parent, {
-            insertAfter: opener,
+            insertAfter: baseTab,
             broadcast: true
           });
         }
         else {
           moveTab(aTab, {
-            insertAfter: opener
+            insertAfter: baseTab
           });
         }
       }; break;
     }
-  }
 }
 
 async function onNewTabsTimeout(aContainer) {
@@ -124,6 +133,13 @@ function onTabDuplicated(aTab, aDuplicationInfo) {
     aTab.classList.add(kTAB_STATE_DUPLICATING);
     broadcastTabState(aTab, {
       add: [kTAB_STATE_DUPLICATING]
+    });
+  }
+  else {
+    behaveAutoAttachedTab(aTab, {
+      baseTab:  original,
+      behavior: configs.autoAttachOnDuplicated,
+      dontMove: aInfo.maybeOpenedWithPosition
     });
   }
 }
