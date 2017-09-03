@@ -355,34 +355,41 @@ async function selectTabInternally(aTab, aOptions = {}) {
 
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
-    return;
+    return [];
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote) {
-    await browser.runtime.sendMessage({
+    let tabIds = await browser.runtime.sendMessage({
       type:     kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE,
       windowId: gTargetWindow,
       tabs:     aTabs.map(aTab => aTab.id),
       nextTab:  aReferenceTab.id
     });
-    return;
+    return tabIds.map(getTabById);
   }
 
   var container = aTabs[0].parentNode;
   container.internalMovingCount += aTabs.length;
+
+  var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
-    var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, aTabs[0].apiTab.id);
-    if (fromIndex < toIndex)
-        toIndex--;
-    await browser.tabs.move(aTabs.map(aTab => aTab.apiTab.id), {
-      windowId: container.windowId,
-      index: toIndex
-    });
-    // tab will be moved by handling of API event
+    var referenceTabId = aReferenceTab.apiTab.id;
+    for (let apiTabId of apiTabIds.reverse()) {
+      let [toIndex, fromIndex] = await getApiTabIndex(referenceTabId, apiTabId);
+      if (fromIndex < toIndex)
+          toIndex--;
+      await browser.tabs.move(apiTabId, {
+        windowId: container.windowId,
+        index: toIndex
+      });
+      // tab will be moved by handling of API event
+      referenceTabId = apiTabId;
+    }
   }
   catch(e) {
     log('moveTabsInternallyBefore failed: ', String(e));
   }
+  return apiTabIds.map(getTabById);
 }
 async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions = {});
@@ -390,34 +397,41 @@ async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
 
 async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
-    return;
+    return [];
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote) {
-    await browser.runtime.sendMessage({
+    let tabIds = await browser.runtime.sendMessage({
       type:        kCOMMAND_MOVE_TABS_INTERNALLY_AFTER,
       windowId:    gTargetWindow,
       tabs:        aTabs.map(aTab => aTab.id),
       previousTab: aReferenceTab.id
     });
-    return;
+    return tabIds.map(getTabById);
   }
 
   var container = aTabs[0].parentNode;
   container.internalMovingCount += aTabs.length;
+
+  var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
-    var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, aTabs[0].apiTab.id);
-    if (fromIndex > toIndex)
-      toIndex++;
-    await browser.tabs.move(aTabs.map(aTab => aTab.apiTab.id), {
-      windowId: container.windowId,
-      index: toIndex
-    });
-    // tab will be moved by handling of API event
+    var referenceTabId = aReferenceTab.apiTab.id;
+    for (let apiTabId of apiTabIds) {
+      let [toIndex, fromIndex] = await getApiTabIndex(referenceTabId, apiTabId);
+      if (fromIndex > toIndex)
+        toIndex++;
+      await browser.tabs.move(apiTabId, {
+        windowId: container.windowId,
+        index: toIndex
+      });
+      // tab will be moved by handling of API event
+      referenceTabId = apiTabId;
+    }
   }
   catch(e) {
     log('moveTabsInternallyAfter failed: ', String(e));
   }
+  return apiTabIds.map(getTabById);
 }
 async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions = {});

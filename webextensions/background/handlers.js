@@ -683,13 +683,13 @@ function onMessage(aMessage, aSender) {
       return moveTabsInternallyBefore(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.nextTab)
-      );
+      ).map(aTab => aTab.id);
 
     case kCOMMAND_MOVE_TABS_INTERNALLY_AFTER:
       return moveTabsInternallyAfter(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.previousTab)
-      );
+      ).map(aTab => aTab.id);
 
     case kCOMMAND_ATTACH_TAB_TO:
       return (async () => {

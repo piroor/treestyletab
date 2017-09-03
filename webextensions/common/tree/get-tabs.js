@@ -111,10 +111,12 @@ function getTabById(aIdOrInfo) {
   var selector;
   if (typeof aIdOrInfo == 'string')
     selector = `${kSELECTOR_LIVE_TAB}#${aIdOrInfo}`;
-  else if (aIdOrInfo.window)
-    selector = `${kSELECTOR_LIVE_TAB}#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
-  else
+  else if (typeof aIdOrInfo == 'number')
+    selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo}"]`;
+  else if (!aIdOrInfo.window)
     selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`;
+  else
+    selector = `${kSELECTOR_LIVE_TAB}#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
   return document.querySelector(selector);
 }
 
