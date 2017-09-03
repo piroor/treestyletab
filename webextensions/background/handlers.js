@@ -50,44 +50,44 @@ async function onTabOpening(aTab, aInfo = {}) {
 
 async function behaveAutoAttachedTab(aTab, aOptions = {}) {
   var baseTab = aOptions.baseTab || getCurrentTab();
-    switch (aOptions.behavior) {
-      case kNEWTAB_OPEN_AS_ORPHAN:
-      default:
-        break;
+  switch (aOptions.behavior) {
+    case kNEWTAB_OPEN_AS_ORPHAN:
+    default:
+      break;
 
-      case kNEWTAB_OPEN_AS_CHILD:
-        await attachTabTo(aTab, baseTab, {
-          dontMove: aOptions.dontMove,
+    case kNEWTAB_OPEN_AS_CHILD:
+      await attachTabTo(aTab, baseTab, {
+        dontMove: aOptions.dontMove,
+        broadcast: true
+      });
+      return true;
+      break;
+
+    case kNEWTAB_OPEN_AS_SIBLING: {
+      let parent = getParentTab(baseTab);
+      if (parent) {
+        await attachTabTo(aTab, parent, {
           broadcast: true
         });
-        return true;
-        break;
+      }
+      return true;
+    }; break;
 
-      case kNEWTAB_OPEN_AS_SIBLING: {
-        let parent = getParentTab(baseTab);
-        if (parent) {
-          await attachTabTo(aTab, parent, {
-            broadcast: true
-          });
-        }
-        return true;
-      }; break;
-
-      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-        let parent = getParentTab(baseTab);
-        if (parent) {
-          await attachTabTo(aTab, parent, {
-            insertAfter: baseTab,
-            broadcast: true
-          });
-        }
-        else {
-          moveTab(aTab, {
-            insertAfter: baseTab
-          });
-        }
-      }; break;
-    }
+    case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+      let parent = getParentTab(baseTab);
+      if (parent) {
+        await attachTabTo(aTab, parent, {
+          insertAfter: baseTab,
+          broadcast: true
+        });
+      }
+      else {
+        moveTab(aTab, {
+          insertAfter: baseTab
+        });
+      }
+    }; break;
+  }
 }
 
 async function onNewTabsTimeout(aContainer) {
