@@ -73,7 +73,7 @@ async function onTabOpening(aTab, aInfo = {}) {
         }
         else {
           moveTab(aTab, {
-            insertBefore: opener
+            insertAfter: opener
           });
         }
       }; break;
