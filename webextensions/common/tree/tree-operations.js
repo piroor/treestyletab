@@ -811,9 +811,27 @@ async function moveTabs(aTabs, aOptions = {}) {
     log('preparing tabs');
     let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
     if (aOptions.duplicate) {
-      apiTabIds = await Promise.all(apiTabIds.map(async (aId, aIndex) => {
+      // This promise will be resolved with very large delay.
+      // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
+      let promisedApiTabIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
         return (await browser.tabs.duplicate(aId)).id;
       }));
+      // So, I collect duplicating tabs in different way.
+      // This promise will be resolved when they actually
+      // appear in the tab bar. This hack should be removed
+      // after the bug 1394376 is fixed.
+      let promisedDuplicatingTabIds = (async () => {
+        while (true) {
+          let tabs = getDuplicatingTabs(windowId);
+          if (tabs.length >= apiTabIds.length)
+            return tabs.map(aTab => aTab.apiTab.id);
+          await wait(10);
+        }
+      })();
+      apiTabIds = await Promise.race([
+        promisedApiTabIds,
+        promisedDuplicatingTabIds
+      ]);
     }
     if (newWindow)
       await newWindow;

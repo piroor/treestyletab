@@ -386,6 +386,11 @@ function getVisibleIndentedTabs(aHint) {
   return container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}[${kPARENT}]`);
 }
 
+function getDuplicatingTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${kTAB_STATE_DUPLICATING}`));
+}
+
 
 
 // misc.
