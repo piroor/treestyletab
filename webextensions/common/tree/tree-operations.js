@@ -829,12 +829,13 @@ async function moveTabs(aTabs, aOptions = {}) {
     log('preparing tabs');
     let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
     if (aOptions.duplicate) {
+      let startTime = Date.now();
       // This promise will be resolved with very large delay.
       // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
       let promisedDuplicatedIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
         return (await browser.tabs.duplicate(aId)).id;
       })).then(aIds => {
-        log('ids from API responses are resolved: ', aIds);
+        log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
         return aIds;
       });
       apiTabIds = await promisedDuplicatedIds;
@@ -851,7 +852,7 @@ async function moveTabs(aTabs, aOptions = {}) {
           await wait(10);
         }
       })().then(aIds => {
-        log('ids from duplicating tabs are resolved: ', aIds);
+        log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
         return aIds;
       });
       apiTabIds = await Promise.race([
