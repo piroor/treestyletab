@@ -116,6 +116,18 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToSaveTreeStructure(aTab);
 }
 
+function onTabDuplicated(aTab, aDuplicationInfo) {
+  var original = aDuplicationInfo.originalTab;
+  log('duplicated ', dumpTab(aTab), dumpTab(original));
+  if (aDuplicationInfo.byInternalOperation) {
+    log('duplicated by internal operation');
+    aTab.classList.add(kTAB_STATE_DUPLICATING);
+    broadcastTabState(aTab, {
+      add: [kTAB_STATE_DUPLICATING]
+    });
+  }
+}
+
 function onTabRestored(aTab) {
   log('restored ', dumpTab(aTab), aTab.apiTab);
   return attachTabFromRestoredInfo(aTab, {

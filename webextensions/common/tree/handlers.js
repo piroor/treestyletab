@@ -188,7 +188,11 @@ async function onNewTabTracked(aTab) {
     return;
 
   if (uniqueId.originalId) {
+    let byInternalOperation = container.duplicatingTabsCount > 0;
+    if (byInternalOperation)
+      container.duplicatingTabsCount--;
     window.onTabDuplicated && onTabDuplicated(newTab, {
+      byInternalOperation,
       originalTab: getTabById({ tab: uniqueId.originalTabId })
     });
   }

@@ -803,6 +803,7 @@ async function moveTabs(aTabs, aOptions = {}) {
     if (aOptions.duplicate) {
       sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
       sourceContainer.toBeOpenedOrphanTabs += aTabs.length;
+      sourceContainer.duplicatingTabsCount += aTabs.length;
     }
     if (isAcrossWindows)
       sourceContainer.toBeDetachedTabs += aTabs.length;
@@ -862,6 +863,14 @@ async function moveTabs(aTabs, aOptions = {}) {
       await applyTreeStructureToTabs(newTabs, structure, {
         broadcast: true
       });
+      if (aOptions.duplicate) {
+        for (let tab of newTabs) {
+          tab.classList.remove(kTAB_STATE_DUPLICATING);
+          broadcastTabState(tab, {
+            remove: [kTAB_STATE_DUPLICATING]
+          });
+        }
+      }
       break;
     }
 

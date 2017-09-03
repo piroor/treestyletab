@@ -80,6 +80,7 @@ const kTAB_STATE_HIGHLIGHTED = 'highlighted';
 const kTAB_STATE_SELECTED = 'selected';
 const kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
 const kTAB_STATE_DRAGGING = 'dragging';
+const kTAB_STATE_DUPLICATING = 'duplicating';
 
 const kTABBAR_STATE_OVERFLOW = 'overflow';
 const kTABBAR_STATE_TAB_DRAGGING = 'tab-dragging';

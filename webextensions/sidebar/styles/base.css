@@ -169,7 +169,8 @@ ul {
 }
 
 .tab.removing,
-.tab.collapsed {
+.tab.collapsed,
+.tab.duplicating {
   margin-top: calc(0px - var(--tab-height));
   opacity: 0;
   pointer-events: none;
@@ -177,6 +178,10 @@ ul {
 
 .tab.collapsed-completely {
   visibility: collapse;
+}
+
+.tab.duplicating {
+  transition: none;
 }
 
 
