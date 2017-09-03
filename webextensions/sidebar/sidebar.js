@@ -24,6 +24,7 @@ blockUserOperations({ throbber: true });
 
 var gSizeDefinition;
 var gStyleLoader;
+var gUserStyleRules;
 
 async function earlyInit() {
   log('initialize sidebar on DOMContentLoaded');
@@ -35,6 +36,7 @@ async function earlyInit() {
   gAllTabs = document.querySelector('#all-tabs');
   gSizeDefinition = document.querySelector('#size-definition');
   gStyleLoader = document.querySelector('#style-loader');
+  gUserStyleRules = document.querySelector('#user-style-rules');
 }
 
 async function init() {
@@ -43,6 +45,7 @@ async function init() {
 
   await configs.$loaded;
   await applyStyle();
+  await applyUserStyleRules();
 
   calculateDefaultSizes();
   await waitUntilBackgroundIsReady();
@@ -132,6 +135,10 @@ function applyStyle() {
       nextFrame().then(aResolve);
     }, { once: true });
   });
+}
+
+function applyUserStyleRules() {
+  gUserStyleRules.textContent = configs.userStyleRules || '';
 }
 
 function calculateDefaultSizes() {

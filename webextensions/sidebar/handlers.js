@@ -800,5 +800,9 @@ function onConfigChange(aChangedKey) {
       if (getChosenStyle() != gStyle)
         location.reload();
     }; break;
+
+    case 'userStyleRules':
+      applyUserStyleRules()
+      break;
   }
 }

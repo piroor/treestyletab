@@ -138,5 +138,6 @@ configs = new Configs({
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   acceptableDelayForInternalFocusMoving: 150,
   preventTearOffTabsTimeout: 100,
+  userStyleRules: '',
   debug:     false
 });

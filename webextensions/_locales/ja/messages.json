@@ -41,6 +41,10 @@
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
 
 
+  "config.advanced.caption": { "message": "詳細設定" },
+  "config.userStyleRules.label": { "message": "サイドバー内用の追加のスタイル指定" },
+
+
   "config.debug.caption": { "message": "開発用" },
   "config.debug.label": { "message": "デバッグモード" },
   "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },

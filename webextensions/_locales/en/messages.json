@@ -41,6 +41,10 @@
   "config.animation.label": { "message": "Enable animation effects" },
 
 
+  "config.advanced.caption": { "message": "Advanced" },
+  "config.userStyleRules.label": { "message": "Extra style rules for sidebar contents" },
+
+
   "config.debug.caption": { "message": "Development" },
   "config.debug.label": { "message": "Debug mode" },
   "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
