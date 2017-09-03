@@ -846,10 +846,14 @@ async function moveTabs(aTabs, aOptions = {}) {
       // after the bug 1394376 is fixed.
       let promisedDuplicatingIds = (async () => {
         while (true) {
+          await wait(100);
           let tabs = getDuplicatingTabs(windowId);
-          if (tabs.length >= apiTabIds.length)
-            return tabs.map(aTab => aTab.apiTab.id);
-          await wait(10);
+          if (tabs.length < apiTabIds.length)
+            continue; // not opened yet
+          let tabIds = tabs.map(aTab => aTab.apiTab.id);
+          if (tabIds.join(',') == tabIds.sort().join(','))
+            continue; // not sorted yet
+          return tabIds;
         }
       })().then(aIds => {
         log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
