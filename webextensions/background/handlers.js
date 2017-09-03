@@ -156,10 +156,25 @@ function onTabRestored(aTab) {
          });
 }
 
-function onTabClosed(aTab) {
+async function onTabClosed(aTab) {
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeChildTabs(aTab);
+
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
+      hasChildTabs(aTab)) {
+    let firstChild = getFirstChildTab(aTab);
+    let label = browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title);
+    let uri = makeGroupTabURI(label);
+    let groupTab = b.addTab(uri);
+    let groupTab = await openURIInTab(uri, {
+      insertBefore: firstChild
+    });
+    attachTabTo(groupTab, aTab, {
+      insertBefore: firstChild
+    });
+    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  }
 
   detachAllChildren(aTab, {
     behavior: closeParentBehavior,
