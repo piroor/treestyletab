@@ -650,23 +650,23 @@ function onDragEnter(aEvent) {
   gAutoExpandWhileDNDTimerNext = setTimeout((aTargetId, aDraggedId) => {
     gAutoExpandWhileDNDTimerNext = null;
     gAutoExpandWhileDNDTimer = setTimeout(async () => {
-        let targetTab = getTabById(aTargetId);
-        if (targetTab &&
-            shouldTabAutoExpanded(targetTab) &&
-            targetTab.getAttribute(kDROP_POSITION) == 'self') {
-          let draggedTab = aDraggedId && getTabById(aDraggedId);
-          if (configs.autoExpandIntelligently) {
-            collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
-          }
-          else {
-            if (container.autoExpandedTabs.indexOf(aTargetId) < 0)
-                container.autoExpandedTabs.push(aTargetId);
-            collapseExpandSubtree(targetTab, {
-              collapsed: false,
-              inRemote: true
-            });
-          }
+      let targetTab = getTabById(aTargetId);
+      if (targetTab &&
+          shouldTabAutoExpanded(targetTab) &&
+          targetTab.getAttribute(kDROP_POSITION) == 'self') {
+        let draggedTab = aDraggedId && getTabById(aDraggedId);
+        if (configs.autoExpandIntelligently) {
+          collapseExpandTreesIntelligentlyFor(targetTab, { inRemote: true });
         }
+        else {
+          if (container.autoExpandedTabs.indexOf(aTargetId) < 0)
+              container.autoExpandedTabs.push(aTargetId);
+          collapseExpandSubtree(targetTab, {
+            collapsed: false,
+            inRemote: true
+          });
+        }
+      }
     }, configs.autoExpandDelay);
   }, 0, info.targetTab.id, info.draggedTab && info.draggedTab.id);
 }
