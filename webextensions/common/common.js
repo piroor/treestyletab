@@ -113,7 +113,7 @@ configs = new Configs({
   autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.fromCurrent
   autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN, // extensions.treestyletab.autoAttach.newTabCommand
   autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.newTabButton
-  //autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING, // extensions.treestyletab.autoAttach.duplicateTabCommand
+  autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING, // extensions.treestyletab.autoAttach.duplicateTabCommand
 
 
   // behavior around closed tab
