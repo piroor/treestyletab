@@ -378,7 +378,7 @@ function collectRootTabs(aTabs) {
 
 function getIndentedTabs(aHint) {
   var container = getTabsContainer(aHint);
-  return container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${kPARENT}]`);
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${kPARENT}]`));
 }
 
 function getVisibleIndentedTabs(aHint) {
