@@ -114,34 +114,35 @@ async function onNewTabsTimeout(aContainer) {
 
 function onTabOpened(aTab, aInfo = {}) {
   log('onTabOpened ', dumpTab(aTab), aInfo);
-  // if the tab is opened inside existing tree by someone, we must fixup the tree.
-  if (!aInfo.openedWithPosition &&
-      aTab.nextSibling)
-    tryFixupTreeForInsertedTab(aTab, {
-      toIndex:   aTab.apiTab.index,
-      fromIndex: getTabIndex(aTab.nextSibling)
-    });
-
-  reserveToSaveTreeStructure(aTab);
-}
-
-function onTabDuplicated(aTab, aDuplicationInfo) {
-  var original = aDuplicationInfo.originalTab;
-  log('duplicated ', dumpTab(aTab), dumpTab(original));
-  if (aDuplicationInfo.byInternalOperation) {
-    log('duplicated by internal operation');
-    aTab.classList.add(kTAB_STATE_DUPLICATING);
-    broadcastTabState(aTab, {
-      add: [kTAB_STATE_DUPLICATING]
-    });
+  if (aInfo.duplicated) {
+    let original = aInfo.originalTab;
+    log('duplicated ', dumpTab(aTab), dumpTab(original));
+    if (aInfo.duplicatedInternally) {
+      log('duplicated by internal operation');
+      aTab.classList.add(kTAB_STATE_DUPLICATING);
+      broadcastTabState(aTab, {
+        add: [kTAB_STATE_DUPLICATING]
+      });
+    }
+    else {
+      behaveAutoAttachedTab(aTab, {
+        baseTab:  original,
+        behavior: configs.autoAttachOnDuplicated,
+        dontMove: aInfo.openedWithPosition
+      });
+    }
   }
   else {
-    behaveAutoAttachedTab(aTab, {
-      baseTab:  original,
-      behavior: configs.autoAttachOnDuplicated,
-      dontMove: aInfo.maybeOpenedWithPosition
-    });
+    // if the tab is opened inside existing tree by someone, we must fixup the tree.
+    if (!aInfo.openedWithPosition &&
+        aTab.nextSibling)
+      tryFixupTreeForInsertedTab(aTab, {
+        toIndex:   aTab.apiTab.index,
+        fromIndex: getTabIndex(aTab.nextSibling)
+      });
   }
+
+  reserveToSaveTreeStructure(aTab);
 }
 
 function onTabRestored(aTab) {
@@ -207,75 +208,14 @@ async function onTabMoved(aTab, aMoveInfo) {
   ]);
 
   var container = getTabsContainer(aTab);
-  if (aMoveInfo.byInternalOperation) {
+  if (aMoveInfo.byInternalOperation ||
+      isDuplicating(aTab)) {
     log('internal move');
     return;
   }
   log('process moved tab');
 
-  //updateTabAsParent(aTab);
-
-/*
-  var tabsToBeUpdated = [aTab];
-
-  var allTabs = getAllTabs(container);
-  tabsToBeUpdated.push(allTabs[aMoveInfo.fromIndex]);
-  if (aMoveInfo.fromIndex > aMoveInfo.toIndex) { // from bottom to top
-    if (aMoveInfo.fromIndex < allTabs.length - 1)
-      tabsToBeUpdated.push(allTabs[aMoveInfo.fromIndex + 1]);
-  }
-  else { // from top to bottom
-    if (aMoveInfo.fromIndex > 0)
-      tabsToBeUpdated.push(allTabs[aMoveInfo.fromIndex - 1]);
-  }
-
-  var parentTab = getParentTab(aTab);
-  if (parentTab) {
-    let children = getChildTabs(parentTab);
-    let oldChildIndex = children.indexOf(aTab);
-    if (oldChildIndex > -1) {
-      if (oldChildIndex > 0) {
-        let oldPrevTab = children[oldChildIndex - 1];
-        tabsToBeUpdated.push(oldPrevTab);
-      }
-      if (oldChildIndex < children.lenght - 1) {
-        let oldNextTab = children[oldChildIndex + 1];
-        tabsToBeUpdated.push(oldNextTab);
-      }
-    }
-    //if (container.subTreeChildrenMovingCount == 0)
-    //  updateChildrenArray(parentTab);
-  }
-  log('tabsToBeUpdated: '+tabsToBeUpdated.map(dumpTab));
-
-  var updatedTabs = new WeakMap();
-  for (let tab of tabsToBeUpdated) {
-    if (updatedTabs.has(tab))
-      continue;
-    updatedTabs.set(tab, true);
-    //updateInsertionPositionInfo(tab);
-  }
-  updatedTabs = undefined;
-*/
-
-//  log('status of move: ', {
-//    subTreeMovingCount: container.subTreeMovingCount,
-//    internalMovingCount: container.internalMovingCount
-//  });
-//  if (container.subTreeMovingCount > 0 ||
-//      container.internalMovingCount > 0 /*||
-//      // We don't have to fixup tree structure for a NEW TAB
-//      // which has already been structured.
-//      (newlyOpened && getParentTab(aTab))*/) {
-//    log('=> ignore internal move');
-//    return;
-//  }
-
-//  //var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
-//  if (/* !restored && */
-//      //!positionControlled &&
-//      container.internalMovingCount == 0)
-    tryFixupTreeForInsertedTab(aTab, aMoveInfo);
+  tryFixupTreeForInsertedTab(aTab, aMoveInfo);
 }
 
 async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {

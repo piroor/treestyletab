@@ -176,31 +176,34 @@ async function onNewTabTracked(aTab) {
     }, 0);
   }
 
-  if (newTab.parentNode) // it can be removed while waiting
-    window.onTabOpened && onTabOpened(newTab, {
-      openedWithPosition : openedWithPosition || moved
-    });
+  if (!newTab.parentNode) // it can be removed while waiting
+    return;
+
+  var uniqueId = await newTab.uniqueId;
+  if (!newTab.parentNode) // it can be removed while waiting
+    return;
+
+  var duplicated = !!uniqueId.originalId;
+  var duplicatedInternally = false;
+  if (duplicated) {
+    duplicatedInternally = container.duplicatingTabsCount > 0;
+    if (duplicatedInternally)
+      container.duplicatingTabsCount--;
+  }
+
+  window.onTabOpened && onTabOpened(newTab, {
+    openedWithPosition: openedWithPosition || moved,
+    duplicated,
+    duplicatedInternally,
+    originalTab: duplicated && getTabById({ tab: uniqueId.originalTabId })
+  });
 
   container.processingNewTabsCount--;
 
-  var uniqueId = await newTab.uniqueId;
-  if (!newTab || !newTab.parentNode)
-    return;
-
-  if (uniqueId.originalId) {
-    let byInternalOperation = container.duplicatingTabsCount > 0;
-    if (byInternalOperation)
-      container.duplicatingTabsCount--;
-    window.onTabDuplicated && onTabDuplicated(newTab, {
-      byInternalOperation,
-      maybeOpenedWithPosition: openedWithPosition,
-      originalTab: getTabById({ tab: uniqueId.originalTabId })
-    });
-  }
-  else if (uniqueId.originalTabId &&
-           uniqueId.originalTabId != aTab.id) {
+  if (!duplicated &&
+      uniqueId.originalTabId &&
+      uniqueId.originalTabId != aTab.id)
     window.onTabRestored && onTabRestored(newTab);
-  }
 }
 
 async function ensureAllTabsAreTracked(aWindowId) {
