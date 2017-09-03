@@ -38,10 +38,22 @@
   "config.style.metal": { "message": "Metal" },
   "config.style.sidebar": { "message": "Sidebar" },
 
+  "config.maxTreeLevel.before": { "message": "Indent tabs until" },
+  "config.maxTreeLevel.after": { "message": "level(s) (*Negative value means \"infinite\")" },
+
   "config.animation.label": { "message": "Enable animation effects" },
 
 
+  "config.treeBehavior.caption": { "message": "Behaviors around Tree" },
+
+  "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "When a new tree appears, collapse others automatically" },
+  "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
+  "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "Except focus moving caused by current tab closing" },
+  "config.autoExpandOnAttached.label": { "message": "Expand tree automatically, when tabs are inserted into the tree" },
+
+
   "config.advanced.caption": { "message": "Advanced" },
+
   "config.userStyleRules.label": { "message": "Extra style rules for sidebar contents" },
 
 

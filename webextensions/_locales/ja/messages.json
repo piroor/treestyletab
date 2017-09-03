@@ -38,7 +38,18 @@
   "config.style.metal": { "message": "Metal" },
   "config.style.sidebar": { "message": "Sidebar" },
 
+  "config.maxTreeLevel.before": { "message": "ツリーを" },
+  "config.maxTreeLevel.after": { "message": "階層までインデント表示する（※負の値を指定した場合は無制限）" },
+
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
+
+
+  "config.treeBehavior.caption": { "message": "ツリーの挙動" },
+
+  "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
+  "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
+  "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
+  "config.autoExpandOnAttached.label": { "message": "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する" },
 
 
   "config.advanced.caption": { "message": "詳細設定" },
