@@ -63,25 +63,51 @@ function clone(aOriginalObject, aExtraProperties) {
 }
 
 configs = new Configs({
-  baseIndent: 12, // extensions.treestyletab.indent.vertical
-  shouldDetectClickOnIndentSpaces: true, // extensions.treestyletab.clickOnIndentSpaces.enabled
-  
-  smoothScrollEnabled:  true, // extensions.treestyletab.tabbar.scroll.smooth
-  smoothScrollDuration: 150, // extensions.treestyletab.tabbar.scroll.duration
-
-  indentDuration:   200, // extensions.treestyletab.animation.indent.duration
-  collapseDuration: 150, // extensions.treestyletab.animation.collapse.duration
-
-  scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE, // extensions.treestyletab.tabbar.scrollToNewTab.mode
-  counterRole: kCOUNTER_ROLE_CONTAINED_TABS, // extensions.treestyletab.counter.role.vertical
-
+  // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
+
   style: null, // extensions.treestyletab.tabbar.style
   defaultStyle: 'mixed', // extensions.treestyletab.platform.default.tabbar.style
   defaultStyleOnDarwin: 'sidebar', // extensions.treestyletab.platform.default.tabbar.style
   defaultStyleOnLinux: 'plain', // extensions.treestyletab.platform.Linux.tabbar.style
 
   faviconizePinnedTabs: true, // extensions.treestyletab.pinnedTab.faviconized
+  faviconizedTabScale: 1.75,
+
+  counterRole: kCOUNTER_ROLE_CONTAINED_TABS, // extensions.treestyletab.counter.role.vertical
+
+  baseIndent: 12, // extensions.treestyletab.indent.vertical
+  minIndent: kDEFAULT_MIN_INDENT, // extensions.treestyletab.indent.min.vertical
+  maxTreeLevel: -1, // extensions.treestyletab.maxTreeLevel.vertical
+  indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
+  indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
+
+
+  // tree behavior
+  shouldDetectClickOnIndentSpaces: true, // extensions.treestyletab.clickOnIndentSpaces.enabled
+
+  autoCollapseExpandSubtreeOnAttach: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnAttach
+  autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
+  autoCollapseExpandSubtreeOnSelectWhileFocusMovingByShortcut: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut
+  autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove: false, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove
+
+  autoExpandIntelligently: true, // extensions.treestyletab.autoExpand.intelligently
+  autoExpandOnAttached: true, // extensions.treestyletab.autoExpandSubtreeOnAppendChild
+  autoExpandOnCollapsedChildFocused : true, // extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused
+  autoExpandOnLongHover: true, // extensions.treestyletab.autoExpand.enabled
+  autoExpandOnLongHoverDelay: 500, // extensions.treestyletab.autoExpand.delay
+  autoExpandOnLongHoverRestoreIniitalState: true, // extensions.treestyletab.autoExpand.collapseFinally
+
+
+  // grouping
+  autoGroupNewTabs: true,
+  autoGroupNewTabsTimeout: 100,
+
+
+  // behavior around newly opened tabs
+  insertNewChildAt: kINSERT_LAST, // extensions.treestyletab.insertNewChildAt
+
+  scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE, // extensions.treestyletab.tabbar.scrollToNewTab.mode
 
   autoAttach: true, // extensions.treestyletab.autoAttach
   autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.fromCurrent
@@ -89,38 +115,26 @@ configs = new Configs({
   autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.newTabButton
   //autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING, // extensions.treestyletab.autoAttach.duplicateTabCommand
 
-  autoCollapseExpandSubtreeOnAttach: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnAttach
-  autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
-  autoCollapseExpandSubtreeOnSelectWhileFocusMovingByShortcut: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.whileFocusMovingByShortcut
-  autoCollapseExpandSubtreeOnSelectOnCurrentTabRemove: false, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove
-  autoExpandSubtreeOnAppendChild: true, // extensions.treestyletab.autoExpandSubtreeOnAppendChild
-  autoExpandSubtreeOnCollapsedChildFocused : true, // extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused
-  autoExpandIntelligently: true, // extensions.treestyletab.autoExpand.intelligently
 
-  autoExpandEnabled: true, // extensions.treestyletab.autoExpand.enabled
-  autoExpandDelay: 500, // extensions.treestyletab.autoExpand.delay
-  autoExpandCollapseFinally: true, // extensions.treestyletab.autoExpand.collapseFinally
-
-  indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
-  indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
-  maxTreeLevel: -1, // extensions.treestyletab.maxTreeLevel.vertical
-  minIndent: kDEFAULT_MIN_INDENT, // extensions.treestyletab.indent.min.vertical
-
+  // behavior around closed tab
   closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeParentBehavior
-  closeParentBehaviorMoveDetachedTabsToBottom: false, // extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom
-  closeParentBehaviorPromoteAllChildrenWhenParentIsLastChild: true, // extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild
+  moveTabsToBottomWhenDetachedFromClosedParent: false, // extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom
+  promoteAllChildrenWhenClosedParentIsLastChild: true, // extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild
+
   closeRootBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeRootBehavior
 
-  insertNewChildAt: kINSERT_LAST, // extensions.treestyletab.insertNewChildAt
 
-  acceptableDelayForInternalFocusMoving: 150,
-  faviconizedTabScale: 1.75,
-
-  autoGroupNewTabs: true,
-  autoGroupNewTabsTimeout: 100,
-  preventTearOffTabsTimeout: 100,
+  // animation
+  animation: true,
+  smoothScrollEnabled:  true, // extensions.treestyletab.tabbar.scroll.smooth
+  smoothScrollDuration: 150, // extensions.treestyletab.tabbar.scroll.duration
+  indentDuration:   200, // extensions.treestyletab.animation.indent.duration
+  collapseDuration: 150, // extensions.treestyletab.animation.collapse.duration
   outOfViewTabNotifyDuration: 750,
 
-  animation: true,
+
+  // misc.
+  acceptableDelayForInternalFocusMoving: 150,
+  preventTearOffTabsTimeout: 100,
   debug:     false
 });

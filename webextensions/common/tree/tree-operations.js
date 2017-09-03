@@ -181,7 +181,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       });
     }
     else if (shouldTabAutoExpanded(aParent)) {
-      if (configs.autoExpandSubtreeOnAppendChild) {
+      if (configs.autoExpandOnAttached) {
         newAncestors.forEach(aAncestor => {
           if (shouldTabAutoExpanded(aAncestor))
             collapseExpandSubtree(aAncestor, clone(aOptions, {
@@ -327,8 +327,8 @@ function detachAllChildren(aTab, aOptions = {}) {
   }
 
   var nextTab = null;
-  if (aOptions.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN/* &&
-      !utils.getTreePref('closeParentBehavior.moveDetachedTabsToBottom')*/) {
+  if (aOptions.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
+      !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
     nextTab = getNextSiblingTab(getRootTab(aTab));
   }
 
@@ -676,7 +676,7 @@ function getCloseParentBehaviorForTab(aTab, aDefaultBehavior) {
   if (behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
       parentTab &&
       getChildTabs(parentTab).length == 1 &&
-      configs.closeParentBehaviorPromoteAllChildrenWhenParentIsLastChild)
+      configs.promoteAllChildrenWhenClosedParentIsLastChild)
     behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
 
   return behavior;

@@ -393,7 +393,7 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
 
 function onTabFocusing(aTab, aInfo = {}) {
   if (isCollapsed(aTab)) {
-    if (configs.autoExpandSubtreeOnCollapsedChildFocused) {
+    if (configs.autoExpandOnCollapsedChildFocused) {
       for (let ancestor of getAncestorTabs(aTab)) {
         collapseExpandSubtree(ancestor, {
           collapsed: false,

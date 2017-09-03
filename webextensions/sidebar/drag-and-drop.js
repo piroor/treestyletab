@@ -371,7 +371,7 @@ function isDraggingAllCurrentTabs(aTab) {
 
 function collapseAutoExpandedTabsWhileDragging() {
   if (gAutoExpandedTabs.length > 0 &&
-      configs.autoExpandCollapseFinally) {
+      configs.autoExpandOnLongHoverRestoreIniitalState) {
     for (let tab of gAutoExpandedTabs) {
       collapseExpandSubtree(tab, {
         collapsed: false,
@@ -590,7 +590,7 @@ function onDragEnter(aEvent) {
   }
 
   if (!info.dragOverTab ||
-      !configs.autoExpandEnabled)
+      !configs.autoExpandOnLongHover)
     return;
 
   reserveToProcessLongHover.cancel();
@@ -643,7 +643,7 @@ function reserveToProcessLongHover(aParams = {}) {
           inRemote: true
         });
       }
-    }, configs.autoExpandDelay);
+    }, configs.autoExpandOnLongHoverDelay);
   }, 0);
 }
 reserveToProcessLongHover.cancel = function() {
