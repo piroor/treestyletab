@@ -21,5 +21,6 @@ function onConfigChanged(aKey) {
 
 configs.$addObserver(onConfigChanged);
 configs.$loaded.then(() => {
+  options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
   onConfigChanged('debug');
 });

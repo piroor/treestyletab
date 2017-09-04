@@ -128,5 +128,7 @@
   "config.debug.label": { "message": "Debug mode" },
   "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
-  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." }
+  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." },
+
+  "config.all.caption": { "message": "All Configs" }
 }
