@@ -149,7 +149,7 @@ configs = new Configs({
   debug:     false,
 
   importedConfigsFromLegacy: null,
-  legacyConfigsMigrated: false,
+  legacyConfigsMigratedVersion: 0,
   importedTreeStructureFromLegacy: null,
   legacyTreeStructureMigrated: false
 });
