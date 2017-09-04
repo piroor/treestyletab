@@ -27,6 +27,12 @@ TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XU
    This will just migrate configuration and tree information from legacy to renewed.
    It will be updated to the renewed version to complete the migration process.
 
+## Development build
+
+There are [automated builds from latest codes](http://piro.sakura.ne.jp/xul/xpi/nightly/).
+Packages are not signed so you cannot try them on your Firefox if it is a released or beta version.
+On Nightly, you can try it by setting a secret preference `xpinstall.signatures.required` to `false` via `about:config`.
+
 ## Similar projects
 
  * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/):
