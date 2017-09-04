@@ -17,6 +17,9 @@ async function init() {
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
+
+  migrateLegacyConfigs();
+
   await waitUntilCompletelyRestored();
   await rebuildAll();
   await loadTreeStructure();

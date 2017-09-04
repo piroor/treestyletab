@@ -63,50 +63,47 @@ function clone(aOriginalObject, aExtraProperties) {
 }
 
 configs = new Configs({
-  // appearance
-  sidebarPosition: kTABBAR_POSITION_LEFT,
+  style: '',
+  defaultStyle: 'mixed',
+  defaultStyleOnDarwin: 'sidebar',
+  defaultStyleOnLinux: 'plain',
 
-  style: null, // extensions.treestyletab.tabbar.style
-  defaultStyle: 'mixed', // extensions.treestyletab.platform.default.tabbar.style
-  defaultStyleOnDarwin: 'sidebar', // extensions.treestyletab.platform.default.tabbar.style
-  defaultStyleOnLinux: 'plain', // extensions.treestyletab.platform.Linux.tabbar.style
-
-  faviconizePinnedTabs: true, // extensions.treestyletab.pinnedTab.faviconized
+  faviconizePinnedTabs: true,
   faviconizedTabScale: 1.75,
 
-  counterRole: kCOUNTER_ROLE_CONTAINED_TABS, // extensions.treestyletab.counter.role.vertical
+  counterRole: kCOUNTER_ROLE_CONTAINED_TABS,
 
-  baseIndent: 12, // extensions.treestyletab.indent.vertical
-  minIndent: kDEFAULT_MIN_INDENT, // extensions.treestyletab.indent.min.vertical
-  maxTreeLevel: -1, // extensions.treestyletab.maxTreeLevel.vertical
-  indentAutoShrink: true, // extensions.treestyletab.indent.autoShrink
-  indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
+  baseIndent: 12,
+  minIndent: kDEFAULT_MIN_INDENT,
+  maxTreeLevel: -1,
+  indentAutoShrink: true,
+  indentAutoShrinkOnlyForVisible: true,
 
 
   // context menu
-  context_reloadTree: true, // extensions.treestyletab.show.context-item-reloadTabSubtree
-  context_reloadDescendants: false, // extensions.treestyletab.show.context-item-reloadDescendantTabs
-  context_closeTree: true, // extensions.treestyletab.show.context-item-removeTabSubtree
-  context_closeDescendants: false, // extensions.treestyletab.show.context-item-removeDescendantTabs
-  context_closeOthers: false, // extensions.treestyletab.show.context-item-removeAllTabsButThisTree
-  context_collapseAll: true, // extensions.treestyletab.show.context-item-collapseAllSubtree
-  context_expandAll: true, // extensions.treestyletab.show.context-item-expandAllSubtree
-  context_bookmarkTree: true, // extensions.treestyletab.show.context-item-bookmarkTabSubtree
+  context_reloadTree: true,
+  context_reloadDescendants: false,
+  context_closeTree: true,
+  context_closeDescendants: false,
+  context_closeOthers: false,
+  context_collapseAll: true,
+  context_expandAll: true,
+  context_bookmarkTree: true,
 
 
   // tree behavior
-  shouldDetectClickOnIndentSpaces: true, // extensions.treestyletab.clickOnIndentSpaces.enabled
+  shouldDetectClickOnIndentSpaces: true,
 
-  autoCollapseExpandSubtreeOnAttach: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnAttach
-  autoCollapseExpandSubtreeOnSelect: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect
-  autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove: true, // extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove (inverted)
+  autoCollapseExpandSubtreeOnAttach: true,
+  autoCollapseExpandSubtreeOnSelect: true,
+  autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove: true,
 
-  autoExpandIntelligently: true, // extensions.treestyletab.autoExpand.intelligently
-  autoExpandOnAttached: true, // extensions.treestyletab.autoExpandSubtreeOnAppendChild
-  autoExpandOnCollapsedChildFocused : true, // extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused
-  autoExpandOnLongHover: true, // extensions.treestyletab.autoExpand.enabled
-  autoExpandOnLongHoverDelay: 500, // extensions.treestyletab.autoExpand.delay
-  autoExpandOnLongHoverRestoreIniitalState: true, // extensions.treestyletab.autoExpand.collapseFinally
+  autoExpandIntelligently: true,
+  autoExpandOnAttached: true,
+  autoExpandOnCollapsedChildFocused : true,
+  autoExpandOnLongHover: true,
+  autoExpandOnLongHoverDelay: 500,
+  autoExpandOnLongHoverRestoreIniitalState: true,
 
 
   // grouping
@@ -115,30 +112,30 @@ configs = new Configs({
 
 
   // behavior around newly opened tabs
-  insertNewChildAt: kINSERT_LAST, // extensions.treestyletab.insertNewChildAt
+  insertNewChildAt: kINSERT_LAST,
 
-  scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE, // extensions.treestyletab.tabbar.scrollToNewTab.mode
+  scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
 
-  autoAttach: true, // extensions.treestyletab.autoAttach
-  autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.fromCurrent
-  autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN, // extensions.treestyletab.autoAttach.newTabCommand
-  autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD, // extensions.treestyletab.autoAttach.newTabButton
-  autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING, // extensions.treestyletab.autoAttach.duplicateTabCommand
+  autoAttach: true,
+  autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN,
+  autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING,
 
 
   // behavior around closed tab
-  closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD, // extensions.treestyletab.closeParentBehavior
-  promoteFirstChildForClosedRoot: true, // extensions.treestyletab.closeRootBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-  moveTabsToBottomWhenDetachedFromClosedParent: false, // extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom
-  promoteAllChildrenWhenClosedParentIsLastChild: true, // extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild
+  closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  promoteFirstChildForClosedRoot: true,
+  moveTabsToBottomWhenDetachedFromClosedParent: false,
+  promoteAllChildrenWhenClosedParentIsLastChild: true,
 
 
   // animation
   animation: true,
-  smoothScrollEnabled:  true, // extensions.treestyletab.tabbar.scroll.smooth
-  smoothScrollDuration: 150, // extensions.treestyletab.tabbar.scroll.duration
-  indentDuration:   200, // extensions.treestyletab.animation.indent.duration
-  collapseDuration: 150, // extensions.treestyletab.animation.collapse.duration
+  smoothScrollEnabled:  true,
+  smoothScrollDuration: 150,
+  indentDuration:   200,
+  collapseDuration: 150,
   outOfViewTabNotifyDuration: 750,
 
 
@@ -149,5 +146,10 @@ configs = new Configs({
   preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
   userStyleRules: '',
-  debug:     false
+  debug:     false,
+
+  importedConfigsFromLegacy: '',
+  legacyConfigsMigrated: false,
+  importedTreeStructureFromLegacy: '',
+  legacyTreeStructureMigrated: false
 });
