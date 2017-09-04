@@ -71,26 +71,34 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           broadcast: true
         });
       }
+      else {
+        detachTab(aTab, {
+          broadcast: true
+        });
+        await moveTabInternallyAfter(aTab, baseTab || getLastTab());
+      }
       return true;
     }; break;
 
     case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       let nextSibling = getNextSiblingTab(baseTab);
       let parent = getParentTab(baseTab);
-      if (parent) {
+      if (parent)
         await attachTabTo(aTab, parent, {
           insertBefore: nextSibling,
           insertAfter: !nextSibling && baseTab,
           broadcast: true
         });
-      }
       else {
-        moveTab(aTab, {
-          insertBefore: nextSibling,
-          insertAfter: !nextSibling && baseTab
+        detachTab(aTab, {
+          broadcast: true
         });
+        if (nextSibling)
+          await moveTabInternallyBefore(aTab, nextSibling);
+        else
+          await moveTabInternallyAfter(aTab, baseTab);
       }
-    }; break;
+   }; break;
   }
 }
 
