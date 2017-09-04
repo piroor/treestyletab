@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "version": "0.1",
+  "version": "2.0a",
   "author": "YUKI \"Piro\" Hiroshi",
   "description": "__MSG_extensionDescription__",
   "permissions": [
@@ -38,7 +38,7 @@
   "default_locale": "en",
   "applications": {
     "gecko": {
-      "id": "treestyletab-we@piro.sakura.ne.jp",
+      "id": "treestyletab@piro.sakura.ne.jp",
       "strict_min_version": "57.0"
     }
   }
