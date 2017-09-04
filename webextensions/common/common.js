@@ -148,8 +148,8 @@ configs = new Configs({
   userStyleRules: '',
   debug:     false,
 
-  importedConfigsFromLegacy: '',
+  importedConfigsFromLegacy: null,
   legacyConfigsMigrated: false,
-  importedTreeStructureFromLegacy: '',
+  importedTreeStructureFromLegacy: null,
   legacyTreeStructureMigrated: false
 });

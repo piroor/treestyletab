@@ -7,16 +7,6 @@
 
 function migrateLegacyConfigs() {
   var values = configs.importedConfigsFromLegacy;
-  if (!values)
-    return;
-
-  try {
-    values = JSON.parse(values);
-  }
-  catch(e) {
-    return;
-  }
-
   if (!values ||
       typeof values != 'object')
     return;
