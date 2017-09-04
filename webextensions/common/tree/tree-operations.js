@@ -1371,5 +1371,16 @@ async function bookmarkTree(aRoot, aOptions = {}) {
       url:      tab.apiTab.url
     });
   }
+  browser.bookmarks.get(folder.parentId).then(aFolders => {
+    notify({
+      title:   browser.i18n.getMessage('bookmarkTree.notification.title'),
+      message: browser.i18n.getMessage('bookmarkTree.notification.message', [
+        aRoot.apiTab.title,
+        tabs.length,
+        aFolders[0].title
+      ]),
+      icon:   '/resources/icon64.png'
+    });
+  });
   return folder;
 }

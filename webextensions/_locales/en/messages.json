@@ -29,6 +29,14 @@
     }},
   "bookmarkFolder.label.default": { "message": "Bookmarked Tree" },
 
+  "bookmarkTree.notification.title": { "message": "Tree is Successfully Bookmarked" },
+  "bookmarkTree.notification.message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
+    "placeholders": {
+      "title": { "content": "$1", "example": "Title" },
+      "count": { "content": "$2", "example": "2" },
+      "parent": { "content": "$3", "example": "Parent Folder" }
+    }},
+
 
   "context.reloadTree.label": { "message": "Reload this Tree" },
   "context.reloadDescendants.label": { "message": "Reload Descendants" },

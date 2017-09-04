@@ -613,3 +613,15 @@ function broadcastTabState(aTab, aOptions = {}) {
     bubbles: !!aOptions.bubbles
   });
 }
+
+
+async function notify(aParams = {}) {
+  var id = await browser.notifications.create({
+    type:    'basic',
+    iconUrl: aParams.icon,
+    title:   aParams.title,
+    message: aParams.message
+  });
+  await wait(aParams.timeout || configs.notificationTimeout);
+  await browser.notifications.clear(id);
+}
