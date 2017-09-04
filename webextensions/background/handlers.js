@@ -110,7 +110,9 @@ async function onNewTabsTimeout(aContainer) {
 
   log(`onNewTabsTimeout: ${newRootTabs.length} root tabs are opened`);
   var title = browser.i18n.getMessage('groupTab.label', newRootTabs[0].apiTab.title);
-  var uri = makeGroupTabURI(title);
+  var uri = makeGroupTabURI(title, {
+    temporary: true
+  });
   var groupTab = await openURIInTab(uri, {
     windowId: aContainer.windowId,
     insertBefore: newRootTabs[0],
@@ -174,7 +176,9 @@ async function onTabClosed(aTab) {
     log('trying to replace the closing tab with a new group tab');
     let firstChild = getFirstChildTab(aTab);
     let label = browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title);
-    let uri = makeGroupTabURI(label);
+    let uri = makeGroupTabURI(label, {
+      temporary: true
+    });
     let groupTab = await openURIInTab(uri, {
       insertBefore: aTab // not firstChild, because the "aTab" is disappeared from tree.
     });

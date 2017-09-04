@@ -116,6 +116,12 @@ function isGroupTab(aTab) {
          aTab.apiTab.url.indexOf(kGROUP_TAB_URI) == 0;
 }
 
+function isTemporaryGroupTab(aTab) {
+  if (!isGroupTab(aTab))
+    return false;
+  return aTab.apiTab.url.indexOf('&temporary=true') > -1;
+}
+
 function isSelected(aTab) {
   return false;
 }
