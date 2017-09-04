@@ -24,7 +24,8 @@
                            name="sidebarPosition" value="2">
                __MSG_config.sidebarPosition.right__</label>
     </p>
-    <p>__MSG_config.style.caption__</p>
+    <fieldset>
+      <legend>__MSG_config.style.caption__</legend>
     <ul id="style-radiogroup">
       <li><label><input type="radio"
                         name="style" value="plain">
@@ -51,6 +52,7 @@
             <img src="style-sidebar.png"/>
             __MSG_config.style.sidebar__</label></li>
     </ul>
+    </fieldset>
     <p><label>__MSG_config.maxTreeLevel.before__
               <input id="maxTreeLevel"
                      type="number"
@@ -88,7 +90,8 @@
               </select>
               __MSG_config.autoAttachOnDuplicated.after__</label>
 
-    <p>__MSG_config.insertNewChildAt.caption__</p>
+    <fieldset>
+      <legend>__MSG_config.insertNewChildAt.caption__</legend>
     <ul>
       <li><label><input type="radio"
                         name="insertNewChildAt" value="-1">
@@ -100,6 +103,7 @@
                         name="insertNewChildAt" value="1">
             __MSG_config.insertNewChildAt.last__</label></li>
     </ul>
+    </fieldset>
 
     <p><label><input id="autoGroupNewTabs"
                      type="checkbox">
@@ -126,7 +130,8 @@
                      type="checkbox">
              __MSG_config.autoExpandOnAttached.label__</label></p>
 
-    <p>__MSG_config.closeParentBehavior.caption__</p>
+    <fieldset>
+      <legend>__MSG_config.closeParentBehavior.caption__</legend>
     <ul>
       <li><label><input type="radio"
                         name="closeParentBehavior" value="2">
@@ -148,13 +153,16 @@
                         name="closeParentBehavior" value="1">
             __MSG_config.closeParentBehavior.detach__</label></li>
     </ul>
+    </fieldset>
 
 
     <h1>__MSG_config.advanced.caption__</h1>
-    <p><label>__MSG_config.userStyleRules.label__</label></p>
+    <fieldset>
+      <legend>__MSG_config.userStyleRules.label__</legend>
     <textarea id="userStyleRules"
               rows="10"
               style="width: 100%"></textarea>
+    </fieldset>
 
     <hr/>
 
