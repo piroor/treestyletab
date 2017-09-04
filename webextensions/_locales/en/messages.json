@@ -57,7 +57,7 @@
   "config.context.caption": { "message": "Additional Context Menu Items" },
 
 
-  "config.newTab.caption": { "message": "Behaviors around New Tabs" },
+  "config.newTab.caption": { "message": "New Tabs Behavior" },
 
   "config.autoAttachOnNewTabCommand.before": { "message": "Open new blank tab as" },
   "config.autoAttachOnNewTabCommand.independent": { "message": "an independent tab" },
@@ -89,7 +89,7 @@
   "config.autoGroupNewTabs.after": { "message": "msec" },
 
 
-  "config.treeBehavior.caption": { "message": "Behaviors around Tree" },
+  "config.treeBehavior.caption": { "message": "Tree Behavior" },
 
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "When a new tree appears, collapse others automatically" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
