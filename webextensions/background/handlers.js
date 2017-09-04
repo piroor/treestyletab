@@ -167,6 +167,7 @@ function onTabRestored(aTab) {
 }
 
 async function onTabClosed(aTab) {
+  var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(aTab);
@@ -198,6 +199,25 @@ async function onTabClosed(aTab) {
     dontUpdateIndent: true,
     broadcast: true
   });
+
+  setTimeout(() => {
+    log('trying to clanup needless temporary group tabs from ', ancestors.map(dumpTab));
+    var tabsToBeRemoved = [];
+    for (let ancestor of ancestors) {
+      if (!isTemporaryGroupTab(ancestor))
+        break;
+      if (getChildTabs(ancestor).length > 1)
+        break;
+      let lastChild = getFirstChildTab(ancestor);
+      if (lastChild && !isTemporaryGroupTab(lastChild))
+        break;
+      tabsToBeRemoved.push(ancestor);
+    }
+    log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
+    for (let tab of tabsToBeRemoved) {
+      browser.tabs.remove(tab.apiTab.id);
+    }
+  }, 0);
 
   reserveToSaveTreeStructure(aTab);
 }
