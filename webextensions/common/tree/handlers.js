@@ -219,6 +219,11 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 
   await ensureAllTabsAreTracked(aRemoveInfo.windowId);
 
+  var container = getOrBuildTabsContainer(aRemoveInfo.windowId);
+  var byInternalOperation = container.toBeClosedTabs > 0;
+  if (byInternalOperation)
+    container.toBeClosedTabs--;
+
   var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;
@@ -228,13 +233,17 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
     tryMoveFocusFromClosingCurrentTab(oldTab);
 
-  window.onTabClosed && await onTabClosed(oldTab);
+  window.onTabClosed && await onTabClosed(oldTab, {
+    byInternalOperation
+  });
 
   oldTab.classList.add(kTAB_STATE_REMOVING);
 
   if (!isCollapsed(oldTab) &&
       window.onTabCompletelyClosed) {
-    await onTabCompletelyClosed(oldTab);
+    await onTabCompletelyClosed(oldTab, {
+      byInternalOperation
+    });
     onApiTabRemovedComplete(oldTab);
   }
   else {

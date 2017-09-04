@@ -331,6 +331,7 @@ function buildTabsContainerFor(aWindowId) {
   container.toBeOpenedTabsWithPositions = 0;
   container.toBeOpenedOrphanTabs = 0;
   container.toBeDetachedTabs = 0;
+  container.toBeClosedTabs = 0;
 
   return container;
 }

@@ -166,7 +166,7 @@ function onTabRestored(aTab) {
          });
 }
 
-async function onTabClosed(aTab) {
+async function onTabClosed(aTab, aCloseInfo = {}) {
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
@@ -226,6 +226,8 @@ async function closeChildTabs(aParent) {
   var tabs = getDescendantTabs(aParent);
   //if (!fireTabSubtreeClosingEvent(aParent, tabs))
   //  return;
+
+  aParent.parentNode.toBeClosedTabs += tabs.length;
 
   //markAsClosedSet([aParent].concat(tabs));
   await Promise.all(tabs.reverse().map(aTab => {
