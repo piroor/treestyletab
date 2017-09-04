@@ -56,26 +56,75 @@ configs.$addObserver(aKey => {
 });
 
 browser.contextMenus.onClicked.addListener((aInfo, aTab) => {
+  log('context menu item clicked: ', aInfo, aTab);
+
+  var contextTab = getTabById(aTab.id);
+  var container = contextTab.parentNode;
+
   switch (aInfo.menuItemId) {
-    case 'reloadTree':
-      break;
-    case 'reloadDescendants':
-      break;
+    case 'reloadTree': {
+      let tabs = [contextTab].concat(getDescendantTabs(contextTab));
+      for (let tab of tabs) {
+        browser.tabs.reload(tab.apiTab.id);
+      }
+    }; break;
+    case 'reloadDescendants': {
+      let tabs = getDescendantTabs(contextTab);
+      for (let tab of tabs) {
+        browser.tabs.reload(tab.apiTab.id);
+      }
+    }; break;
 
-    case 'closeTree':
-      break;
-    case 'closeDescendants':
-      break;
-    case 'closeOthers':
-      break;
+    case 'closeTree': {
+      let tabs = [contextTab].concat(getDescendantTabs(contextTab));
+      container.toBeClosedTabs += tabs.length;
+      tabs.reverse(); // close bottom to top!
+      for (let tab of tabs) {
+        browser.tabs.remove(tab.apiTab.id);
+      }
+    }; break;
+    case 'closeDescendants': {
+      let tabs = getDescendantTabs(contextTab);
+      container.toBeClosedTabs += tabs.length;
+      tabs.reverse(); // close bottom to top!
+      for (let tab of tabs) {
+        browser.tabs.remove(tab.apiTab.id);
+      }
+    }; break;
+    case 'closeOthers': {
+      let exceptionTabs = [contextTab].concat(getDescendantTabs(contextTab));
+      let tabs = getNormalTabs(container); // except pinned or hidden tabs
+      container.toBeClosedTabs += tabs.length;
+      tabs.reverse(); // close bottom to top!
+      for (let tab of tabs) {
+        if (exceptionTabs.indexOf(tab) < 0)
+          browser.tabs.remove(tab.apiTab.id);
+      }
+    }; break;
 
-    case 'collapseAll':
-      break;
-    case 'expandAll':
-      break;
+    case 'collapseAll': {
+      let tabs = getNormalTabs(container);
+      for (let tab of tabs) {
+        if (hasChildTabs(tab) && !isSubtreeCollapsed(tab))
+          collapseExpandSubtree(tab, {
+            collapsed: true,
+            broadcast: true
+          });
+      }
+    }; break;
+    case 'expandAll': {
+      let tabs = getNormalTabs(container);
+      for (let tab of tabs) {
+        if (hasChildTabs(tab) && isSubtreeCollapsed(tab))
+          collapseExpandSubtree(tab, {
+            collapsed: false,
+            broadcast: true
+          });
+      }
+    }; break;
 
-    case 'bookmarkTree':
-      break;
+    case 'bookmarkTree': {
+    }; break;
 
     default:
       break;
