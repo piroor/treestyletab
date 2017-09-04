@@ -186,12 +186,21 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       );
   }
 
-  if (aOptions.forceApply ||
-      aNewState.status != oldState.status) {
-    if (oldState)
+  // The tab can be become "completely loaded" immediately
+  // after it is opened, but TST's onApiTabUpdated fails to
+  // handle the event from some reasons - maybe complexed
+  // async operations. As a workaround, I update the loading
+  // status with delay for now.
+  wait(0).then(async () => {
+    oldState = oldState || aTab.apiTab || aNewState;
+    var newState = aNewState;
+    if (oldState) {
+      newState = await browser.tabs.get(oldState.id);
       aTab.classList.remove(oldState.status);
-    aTab.classList.add(aNewState.status);
-  }
+    }
+    if (newState)
+      aTab.classList.add(newState.status);
+  });
 
   if (aOptions.forceApply ||
       aNewState.pinned != oldState.pinned) {
