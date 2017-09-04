@@ -228,7 +228,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
     tryMoveFocusFromClosingCurrentTab(oldTab);
 
-  window.onTabClosed && onTabClosed(oldTab);
+  window.onTabClosed && await onTabClosed(oldTab);
 
   oldTab.classList.add(kTAB_STATE_REMOVING);
 

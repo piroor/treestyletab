@@ -167,17 +167,19 @@ function onTabRestored(aTab) {
 async function onTabClosed(aTab) {
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    closeChildTabs(aTab);
+    await closeChildTabs(aTab);
 
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
-      hasChildTabs(aTab)) {
+      getChildTabs(aTab).length > 1) {
+    log('trying to replace the closing tab with a new group tab');
     let firstChild = getFirstChildTab(aTab);
     let label = browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title);
     let uri = makeGroupTabURI(label);
     let groupTab = await openURIInTab(uri, {
-      insertBefore: firstChild
+      insertBefore: aTab // not firstChild, because the "aTab" is disappeared from tree.
     });
-    attachTabTo(groupTab, aTab, {
+    log('group tab: ', dumpTab(groupTab));
+    await attachTabTo(groupTab, aTab, {
       insertBefore: firstChild
     });
     closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
@@ -196,16 +198,16 @@ async function onTabClosed(aTab) {
   reserveToSaveTreeStructure(aTab);
 }
 
-function closeChildTabs(aParent) {
+async function closeChildTabs(aParent) {
   var tabs = getDescendantTabs(aParent);
   //if (!fireTabSubtreeClosingEvent(aParent, tabs))
   //  return;
 
   //markAsClosedSet([aParent].concat(tabs));
-  tabs.reverse().forEach(aTab => {
-    browser.tabs.remove(aTab.apiTab.id)
-      .catch(handleMissingTabError);
-  });
+  await Promise.all(tabs.reverse().map(aTab => {
+    return browser.tabs.remove(aTab.apiTab.id)
+             .catch(handleMissingTabError);
+  }));
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
 
