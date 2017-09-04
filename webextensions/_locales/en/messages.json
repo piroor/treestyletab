@@ -44,7 +44,28 @@
   "config.animation.label": { "message": "Enable animation effects" },
 
 
-  "config.treeBehavior.caption": { "message": "Behaviors around Tree" },
+  "config.newTab.caption": { "message": "Behaviors around New Tabs" },
+
+  "config.autoAttachOnNewTabCommand.before": { "message": "Open new blank tab as" },
+  "config.autoAttachOnNewTabCommand.independent": { "message": "an independent tab" },
+  "config.autoAttachOnNewTabCommand.child": { "message": "a child of the current tab" },
+  "config.autoAttachOnNewTabCommand.sibling": { "message": "a sibling of the current tab" },
+  "config.autoAttachOnNewTabCommand.nextSibling": { "message": "the next sibling of the current tab" },
+  "config.autoAttachOnNewTabCommand.after": { "message": "" },
+
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "For middle click on the \"New Tab\" button, open new blank tab as" },
+  "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "an independent tab" },
+  "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "a child of the current tab" },
+  "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "a sibling of the current tab" },
+  "config.autoAttachOnNewTabButtonMiddleClick.nextSibling": { "message": "the next sibling of the current tab" },
+  "config.autoAttachOnNewTabButtonMiddleClick.after": { "message": "" },
+
+  "config.autoAttachOnDuplicated.before": { "message": "For middle click on the \"Reload\" button, duplicate the tab as" },
+  "config.autoAttachOnDuplicated.independent": { "message": "an independent tab" },
+  "config.autoAttachOnDuplicated.child": { "message": "a child of the current tab" },
+  "config.autoAttachOnDuplicated.sibling": { "message": "a sibling of the current tab" },
+  "config.autoAttachOnDuplicated.nextSibling": { "message": "the next sibling of the current tab" },
+  "config.autoAttachOnDuplicated.after": { "message": "" },
 
   "config.insertNewChildAt.caption": { "message": "Insertion position of new child tabs" },
   "config.insertNewChildAt.noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
@@ -53,6 +74,9 @@
 
   "config.autoGroupNewTabs.before": { "message": "Auto-group tabs opened within" },
   "config.autoGroupNewTabs.after": { "message": "msec" },
+
+
+  "config.treeBehavior.caption": { "message": "Behaviors around Tree" },
 
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "When a new tree appears, collapse others automatically" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },

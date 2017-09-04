@@ -44,7 +44,28 @@
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
 
 
-  "config.treeBehavior.caption": { "message": "ツリーの挙動" },
+  "config.newTabs.caption": { "message": "新しいタブの挙動" },
+
+  "config.autoAttachOnNewTabCommand.before": { "message": "新しい空のタブを" },
+  "config.autoAttachOnNewTabCommand.independent": { "message": "独立したタブとして" },
+  "config.autoAttachOnNewTabCommand.child": { "message": "現在のタブの子として" },
+  "config.autoAttachOnNewTabCommand.sibling": { "message": "現在のタブと同階層に" },
+  "config.autoAttachOnNewTabCommand.nextSibling": { "message": "現在のタブと同階層で隣に" },
+  "config.autoAttachOnNewTabCommand.after": { "message": "開く" },
+
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "「新しいタブ」ボタンを中クリックした時、新しい空のタブを" },
+  "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "独立したタブとして" },
+  "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "現在のタブの子として" },
+  "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "現在のタブと同階層に" },
+  "config.autoAttachOnNewTabButtonMiddleClick.nextSibling": { "message": "現在のタブと同階層で隣に" },
+  "config.autoAttachOnNewTabButtonMiddleClick.after": { "message": "開く" },
+
+  "config.autoAttachOnDuplicated.before": { "message": "「再読み込み」ボタンを中クリックした時、複製されたタブを" },
+  "config.autoAttachOnDuplicated.independent": { "message": "独立したタブとして" },
+  "config.autoAttachOnDuplicated.child": { "message": "現在のタブの子として" },
+  "config.autoAttachOnDuplicated.sibling": { "message": "現在のタブと同階層に" },
+  "config.autoAttachOnDuplicated.nextSibling": { "message": "現在のタブと同階層で隣に" },
+  "config.autoAttachOnDuplicated.after": { "message": "開く" },
 
   "config.insertNewChildAt.caption": { "message": "新しい子タブを開く位置" },
   "config.insertNewChildAt.noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
@@ -53,6 +74,9 @@
 
   "config.autoGroupNewTabs.before": { "message": "" },
   "config.autoGroupNewTabs.after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
+
+
+  "config.treeBehavior.caption": { "message": "ツリーの挙動" },
 
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
