@@ -23,6 +23,12 @@
     }},
   "groupTab.label.default": { "message": "Group" },
 
+  "bookmarkFolder.label": { "message": "$TITLE$ and more",
+    "placeholders": {
+      "title": { "content": "$1", "example": "title" }
+    }},
+  "bookmarkFolder.label.default": { "message": "Bookmarked Tree" },
+
 
   "context.reloadTree.label": { "message": "Reload this Tree" },
   "context.reloadDescendants.label": { "message": "Reload Descendants" },

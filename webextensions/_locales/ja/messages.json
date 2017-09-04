@@ -23,6 +23,12 @@
     }},
   "groupTab.label.default": { "message": "グループ" },
 
+  "bookmarkFolder.label": { "message": "$TITLE$ など",
+    "placeholders": {
+      "title": { "content": "$1", "example": "タイトル" }
+    }},
+  "bookmarkFolder.label.default": { "message": "ブックマークされたツリー" },
+
 
   "context.reloadTree.label": { "message": "このツリーを再読み込み" },
   "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み" },

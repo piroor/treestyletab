@@ -9,7 +9,8 @@
     "sessions",
     "storage",
     "tabs",
-    "contextMenus"
+    "contextMenus",
+    "bookmarks"
   ],
   "icons": {
     "64": "resources/icon64.png",

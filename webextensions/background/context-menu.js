@@ -124,6 +124,7 @@ browser.contextMenus.onClicked.addListener((aInfo, aTab) => {
     }; break;
 
     case 'bookmarkTree': {
+      bookmarkTree(contextTab);
     }; break;
 
     default:
