@@ -24,6 +24,16 @@
   "groupTab.label.default": { "message": "グループ" },
 
 
+  "context.reloadTree.label": { "message": "このツリーを再読み込み" },
+  "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み" },
+  "context.closeTree.label": { "message": "このツリーを閉じる" },
+  "context.closeDescendants.label": { "message": "このタブの配下のタブをすべて閉じる" },
+  "context.closeOthers.label": { "message": "このツリー以外の他のタブをすべて閉じる" },
+  "context.collapseAll.label": { "message": "ツリーをすべてたたむ" },
+  "context.expandAll.label": { "message": "ツリーをすべて展開する" },
+  "context.bookmarkTree.label": { "message": "このツリーをブックマーク..." },
+
+
   "config.appearance.caption": { "message": "外観" },
 
   "config.sidebarPosition.caption": { "message": "サイドバーの位置に合わせたスタイル" },
@@ -42,6 +52,9 @@
   "config.maxTreeLevel.after": { "message": "階層までインデント表示する（※負の値を指定した場合は無制限）" },
 
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
+
+
+  "config.context.caption": { "message": "コンテキストメニューに追加する項目" },
 
 
   "config.newTabs.caption": { "message": "新しいタブの挙動" },

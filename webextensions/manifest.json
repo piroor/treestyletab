@@ -8,7 +8,8 @@
     "activeTab",
     "sessions",
     "storage",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ],
   "icons": {
     "64": "resources/icon64.png",

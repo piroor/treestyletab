@@ -24,6 +24,16 @@
   "groupTab.label.default": { "message": "Group" },
 
 
+  "context.reloadTree.label": { "message": "Reload this Tree" },
+  "context.reloadDescendants.label": { "message": "Reload Descendants" },
+  "context.closeTree.label": { "message": "Close this Tree" },
+  "context.closeDescendants.label": { "message": "Close Descendants" },
+  "context.closeOthers.label": { "message": "Close Other Tabs except this Tree" },
+  "context.collapseAll.label": { "message": "Collapse All" },
+  "context.expandAll.label": { "message": "Expand All" },
+  "context.bookmarkTree.label": { "message": "Bookmark this Tree…" },
+
+
   "config.appearance.caption": { "message": "Appearance" },
 
   "config.sidebarPosition.caption": { "message": "Style of contents for the sidebar position" },
@@ -42,6 +52,9 @@
   "config.maxTreeLevel.after": { "message": "level(s) (*Negative value means \"infinite\")" },
 
   "config.animation.label": { "message": "Enable animation effects" },
+
+
+  "config.context.caption": { "message": "Additional Context Menu Items" },
 
 
   "config.newTab.caption": { "message": "Behaviors around New Tabs" },

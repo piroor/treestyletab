@@ -83,6 +83,17 @@ configs = new Configs({
   indentAutoShrinkOnlyForVisible: true, // extensions.treestyletab.indent.autoShrink.onlyForVisible
 
 
+  // context menu
+  context_reloadTree: true, // extensions.treestyletab.show.context-item-reloadTabSubtree
+  context_reloadDescendants: false, // extensions.treestyletab.show.context-item-reloadDescendantTabs
+  context_closeTree: true, // extensions.treestyletab.show.context-item-removeTabSubtree
+  context_closeDescendants: false, // extensions.treestyletab.show.context-item-removeDescendantTabs
+  context_closeOthers: false, // extensions.treestyletab.show.context-item-removeAllTabsButThisTree
+  context_collapseAll: true, // extensions.treestyletab.show.context-item-collapseAllSubtree
+  context_expandAll: true, // extensions.treestyletab.show.context-item-expandAllSubtree
+  context_bookmarkTree: true, // extensions.treestyletab.show.context-item-bookmarkTabSubtree
+
+
   // tree behavior
   shouldDetectClickOnIndentSpaces: true, // extensions.treestyletab.clickOnIndentSpaces.enabled
 
