@@ -594,15 +594,6 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   }));
 }
 
-async function forceExpandTabs(aTabs) {
-  var collapsedStates = aTabs.map(isSubtreeCollapsed);
-  await Promise.all(aTabs.map(aTab => {
-    collapseExpandSubtree(aTab, { collapsed: false, justNow: true });
-    collapseExpandTab(aTab, { collapsed: false, justNow: true });
-  }));
-  return collapsedStates;
-}
-
 
 // operate tabs based on tree information
 
@@ -1287,9 +1278,6 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       justNow:   true
     }));
   }
-}
-
-function updateInsertionPositionInfo(aTab) {
 }
 
 
