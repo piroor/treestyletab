@@ -169,6 +169,6 @@ function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
       return false;
     nextTab = tab;
   }
-  return !aPreviousTab || nextTab.previousSibling == aPreviousTab;
+  return !aPreviousTab || !nextTab || nextTab.previousSibling == aPreviousTab;
 }
 
