@@ -23,6 +23,9 @@ async function init() {
   await waitUntilCompletelyRestored();
   await rebuildAll();
   await loadTreeStructure();
+
+  migrateLegacyTreeStructure();
+
   startObserveApiTabs();
   browser.runtime.onMessage.addListener(onMessage);
   gInitializing = false;
