@@ -78,6 +78,7 @@ const kTAB_STATE_FAVICONIZED = 'faviconized';
 const kTAB_STATE_UNREAD = 'unread';
 const kTAB_STATE_HIGHLIGHTED = 'highlighted';
 const kTAB_STATE_SELECTED = 'selected';
+const kTAB_STATE_READY_TO_CLOSE = 'ready-to-close';
 const kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
 const kTAB_STATE_DRAGGING = 'dragging';
 const kTAB_STATE_DUPLICATING = 'duplicating';
