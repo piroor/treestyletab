@@ -94,7 +94,6 @@ async function saveTreeStructure(aWindowId) {
     return;
 
   var window = await browser.windows.get(aWindowId, {
-    populate: true,
     windowTypes: ['normal']
   });
   var structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
@@ -108,7 +107,6 @@ async function saveTreeStructure(aWindowId) {
 async function loadTreeStructure() {
   log('loadTreeStructure');
   var windows = await browser.windows.getAll({
-    populate: true,
     windowTypes: ['normal']
   });
   return Promise.all(windows.map(async aWindow => {
