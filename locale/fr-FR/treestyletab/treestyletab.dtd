@@ -158,6 +158,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Ajouter l'onglet et tous ses enfants">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Ajouter uniquement l'onglet glissé">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

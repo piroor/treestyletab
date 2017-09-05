@@ -158,6 +158,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Přidat do záložek všechny panely ve stromě">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Přidat do záložek pouze daný panel">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

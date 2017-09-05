@@ -819,9 +819,23 @@
 			</vbox>
 		</deck>
 	</groupbox>
+	<groupbox>
+		<caption label="&config.migration.caption;"/>
+		<hbox>
+			<button flex="1" oncommand="saveConfigsToFile()">
+				&config.migration.saveConfigs;
+			</button>
+		</hbox>
+		<hbox>
+			<button flex="1" oncommand="saveTreeToFile()">
+				&config.migration.saveTree;
+			</button>
+		</hbox>
+	</groupbox>
 </prefpane>
 
 <script src="config.js" type="application/javascript"/>
+<stringbundle id="treestyletab-bundle" src="chrome://treestyletab/locale/treestyletab.properties"/>
 
 </prefwindow>
 

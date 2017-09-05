@@ -171,6 +171,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "将该树中的所有标签加入书签">
 <!ENTITY config.bookmarkDroppedTabs.parent  "仅将这一标签加入书签">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

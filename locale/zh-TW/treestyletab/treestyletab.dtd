@@ -160,6 +160,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "將樹中的所有分頁加入書籤">
 <!ENTITY config.bookmarkDroppedTabs.parent  "只將拖曳的分頁加入書籤">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 <!ENTITY selection.removeTabSubtree.label     "關閉所有選取的樹">

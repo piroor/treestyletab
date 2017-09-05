@@ -545,7 +545,7 @@ var TreeStyleTabUtils = {
 
 
  
-	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs) 
+	getTreeStructureFromTabs : function TSTUtils_getTreeStructureFromTabs(aTabs, aFullData) 
 	{
 		if (!aTabs || !aTabs.length)
 			return [];
@@ -559,7 +559,7 @@ var TreeStyleTabUtils = {
 		    [F]   => 0 (parent is 1st item in this another tree)
 		*/
 		var browser = this.getTabBrowserFromChild(aTabs[0]);
-		return this.cleanUpTreeStructureArray(
+		var structure = this.cleanUpTreeStructureArray(
 				aTabs.map(function(aTab, aIndex) {
 					let tab = browser.treeStyleTab.getParentTab(aTab);
 					let index = tab ? aTabs.indexOf(tab) : -1 ;
@@ -567,6 +567,20 @@ var TreeStyleTabUtils = {
 				}, this),
 				-1
 			);
+
+		if (aFullData)
+			structure = structure.map(function(aParent, aIndex) {
+				var tab = aTabs[aIndex];
+				return {
+					parent:    aParent,
+					collapsed: browser.treeStyleTab.isSubtreeCollapsed(tab),
+					pinned:    tab.pinned,
+					title:     tab.label,
+					url:       tab.linkedBrowser.currentURI.spec
+				};
+			});
+
+		return structure;
 	},
 	cleanUpTreeStructureArray : function TSTUtils_cleanUpTreeStructureArray(aTreeStructure, aDefaultParent)
 	{

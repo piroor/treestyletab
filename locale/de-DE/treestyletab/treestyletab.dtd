@@ -157,6 +157,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Alle Tabs im Zweig als Lesezeichen speichern">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Nur dem gezogenen Tab als Lesezeichen speichern">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

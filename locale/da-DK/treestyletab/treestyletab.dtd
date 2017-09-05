@@ -172,6 +172,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all "Bogmærk alle træets faner">
 <!ENTITY config.bookmarkDroppedTabs.parent "Bogmærk kun hovedfanen">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

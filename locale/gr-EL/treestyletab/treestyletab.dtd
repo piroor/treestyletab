@@ -157,6 +157,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Προσθήκη σελιδοδείκτη για όλες τις καρτέλες στο δέντρο">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Προσθήκη σελιδοδείκτη μόνο για την συρώμενη καρτέλα">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

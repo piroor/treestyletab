@@ -162,6 +162,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Добавить в закладки все вкладки в дереве">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Добавить в закладки только перетаскиваемую вкладку">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

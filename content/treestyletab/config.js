@@ -4,12 +4,15 @@ const XULAppInfo = Services.appinfo;
 const comparator = Services.vc;
 var Prefs = Services.prefs;
 
-Components.utils.import('resource://treestyletab-modules/lib/animationManager.js', {});
-Components.utils.import('resource://treestyletab-modules/lib/prefs.js', {});
-Components.utils.import('resource://treestyletab-modules/lib/namespace.jsm');
-var animationManager = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].animationManager;
-var prefs = getNamespaceFor('piro.sakura.ne.jp')['piro.sakura.ne.jp'].prefs;
+const Cc = Components.classes;
+const Ci = Components.interfaces;
+const Cu = Components.utils;
 
+Components.utils.import('resource://treestyletab-modules/lib/animationManager.js');
+Components.utils.import('resource://treestyletab-modules/lib/prefs.js');
+Components.utils.import('resource://treestyletab-modules/utils.js');
+
+var gStringBundle;
 
 function syncEnabledState(aElement, aEnabled)
 {
@@ -51,6 +54,8 @@ function ensureGroupBookmarkItems()
 function init()
 {
 	ensureGroupBookmarkItems();
+
+	gStringBundle = document.getElementById('treestyletab-bundle');
 
 //	sizeToContent();
 }
@@ -335,6 +340,108 @@ function initAdvancedPane()
 		'undoCloseTabSet-deck',
 		1
 	);
+}
+
+function saveConfigsToFile() {
+	var configs = {};
+
+	prefs.getDescendant('extensions.treestyletab.').forEach(function(aKey) {
+		var value = prefs.getPref(aKey);
+		var defaultPref = prefs.getDefaultPref(aKey);
+		if (value !== null &&
+			value !== defaultPref)
+			configs[aKey] = value;
+	});
+
+	pickFile(gStringBundle.getString('migration.configsSaved.choose'), 'tst-config.txt')
+		.then(function(aFile) {
+			writeTo(JSON.stringify(configs), aFile, 'UTF-8');
+			Services.prompt.alert(window,
+				gStringBundle.getString('migration.configsSaved.title'),
+				gStringBundle.getString('migration.configsSaved.text')
+			);
+		});
+}
+
+function saveTreeToFile() {
+	var structures = [];
+
+	var windows = Services.wm.getEnumerator('navigator:browser');
+	while (windows.hasMoreElements())
+	{
+		let window = windows.getNext().QueryInterface(Ci.nsIDOMWindow);
+		let tabs = Array.slice(window.gBrowser.tabs);
+		let structure = TreeStyleTabUtils.getTreeStructureFromTabs(tabs, true);
+		structures.push(structure);
+	}
+
+	pickFile(gStringBundle.getString('migration.treeSaved.choose'), 'tst-tree.txt')
+		.then(function(aFile) {
+			writeTo(JSON.stringify(structures), aFile, 'UTF-8');
+			Services.prompt.alert(window,
+				gStringBundle.getString('migration.treeSaved.title'),
+				gStringBundle.getString('migration.treeSaved.text')
+			);
+		});
+}
+
+function pickFile(aTitle, aDefaultFileName) 
+{
+	const nsIFilePicker = Ci.nsIFilePicker;
+
+	var picker = Cc['@mozilla.org/filepicker;1']
+		.createInstance(nsIFilePicker);
+	picker.defaultExtension = '.txt';
+	picker.defaultString = aDefaultFileName;
+	picker.init(window, aTitle, nsIFilePicker.modeSave);
+	picker.appendFilters(nsIFilePicker.filterAll);
+	return new Promise(function(aResolve, aReject) {
+		picker.open({ done: function(aResult) {
+			if (aResult == nsIFilePicker.returnOK ||
+				aResult == nsIFilePicker.returnReplace) {
+				aResolve(picker.file.QueryInterface(Ci.nsIFile));
+			}
+			else {
+				aResolve(null);
+			}
+		}});
+	});
+}
+
+function writeTo(aContent, aFile, aEncoding)
+{
+	(function createDir(aDir) {
+		try {
+			if (aDir.parent) createDir(aDir.parent);
+			if (aDir.exists()) return;
+			aDir.create(aDir.DIRECTORY_TYPE, 0755);
+		}
+		catch(e) {
+		}
+	})(aFile.parent);
+
+	if (aFile.exists()) aFile.remove(true);
+	aFile.create(aFile.NORMAL_FILE_TYPE, 0666);
+
+	var stream = Cc['@mozilla.org/network/file-output-stream;1']
+			.createInstance(Ci.nsIFileOutputStream);
+	stream.init(aFile, 2, 0x200, false); // open as "write only"
+
+	if (aEncoding) {
+		var converterStream = Cc['@mozilla.org/intl/converter-output-stream;1']
+				.createInstance(Ci.nsIConverterOutputStream);
+		var buffer = aContent.length;
+		converterStream.init(stream, aEncoding, buffer, Ci.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER);
+		converterStream.writeString(aContent);
+		converterStream.close();
+	}
+	else {
+		stream.write(aContent, aContent.length);
+	}
+
+	stream.close();
+
+	return aFile;
 }
 
 

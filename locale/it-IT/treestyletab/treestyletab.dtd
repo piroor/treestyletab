@@ -168,6 +168,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Bookmark all tabs in the tree">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Bookmark only the dragged one tab">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

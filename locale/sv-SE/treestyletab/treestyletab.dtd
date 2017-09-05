@@ -171,6 +171,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Bokmärke för alla flikar i trädet">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Bokmärke endast för den dragna fliken">
 
+<!ENTITY config.migration.caption "Migration for Future Versions">
+<!ENTITY config.migration.saveConfigs "Save Migration Data for Configurations to file">
+<!ENTITY config.migration.saveTree "Save Migration Data for Tree to file">
+
 
 
 

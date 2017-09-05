@@ -158,6 +158,10 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "ツリーに含まれるすべてのタブをブックマークする">
 <!ENTITY config.bookmarkDroppedTabs.parent  "ドラッグされたタブだけをブックマークする">
 
+<!ENTITY config.migration.caption     "新しいバージョンへの移行">
+<!ENTITY config.migration.saveConfigs "設定の移行用データをファイルに保存する">
+<!ENTITY config.migration.saveTree    "ツリーの移行用データをファイルに保存する">
+
 
 
 <!ENTITY selection.removeTabSubtree.label       "すべてのツリーを閉じる">
