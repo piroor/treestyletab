@@ -1169,7 +1169,7 @@ function detachTabsOnDrop(aTabs, aOptions = {}) {
 
 // set/get tree structure
 
-function getTreeStructureFromTabs(aTabs) {
+function getTreeStructureFromTabs(aTabs, aOptions = {}) {
   if (!aTabs || !aTabs.length)
     return [];
 
@@ -1189,10 +1189,17 @@ function getTreeStructureFromTabs(aTabs) {
       }),
       -1
     ).map((aParentIndex, aIndex) => {
-      return {
+      var tab = aTabs[aIndex];
+      var item = {
         parent:    aParentIndex,
-        collapsed: isSubtreeCollapsed(aTabs[aIndex])
+        collapsed: isSubtreeCollapsed(tab)
       };
+      if (aOptions.full) {
+        item.title  = tab.apiTab.title;
+        item.url    = tab.apiTab.url;
+        item.pinned = isPinned(tab);
+      }
+      return item;
     });
 }
 function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {

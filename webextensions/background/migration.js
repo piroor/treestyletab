@@ -90,3 +90,94 @@ function migrateLegacyConfig(aKey, aValue) {
     return;
   configs[aKey] = aValue;
 }
+
+async function migrateLegacyTreeStructure() {
+  var structures = configs.importedTreeStructureFromLegacy;
+  if (!structures ||
+      !Array.isArray(structures) ||
+      configs.legacyTreeStructureMigrated)
+    return;
+
+  /*
+    Expected format of the "structures":
+    [ // top level: array of windows
+      [ // second level: array of tabs
+        { title:     "Example.com",
+          url:       "http://www.example.com/",
+          pinned:    true },
+        { title:     "Example.net",
+          url:       "http://www.example.net/",
+          pinned:    false,
+          parent:    -1,
+          collapsed: false },
+        { title:     "Example.jp",
+          url:       "http://www.example.jp/",
+          pinned:    false,
+          parent:    0,
+          collapsed: false }
+      ],
+      [...],
+      [...]
+    ]
+    "parent" and "collapsed" are compatible to the format of
+    getTreeStructureFromTabs() / applyTreeStructureToTabs().
+  */
+
+  var getWindowSignatureFromTabs = (aTabs) => {
+    return aTabs.map(aTab =>
+             `${aTab.title}\n${aTab.url}\npinned=${aTab.pinned}`
+           ).join('\n');
+  };
+
+  var structureSignatures = structures.map(getWindowSignatureFromTabs);
+
+  var apiWindows = await browser.windows.getAll({
+    populate: true,
+    windowTypes: ['normal']
+  });
+  for (let apiWindow of apiWindows) {
+    let signature = getWindowSignatureFromTabs(apiWindow.tabs);
+    let index = structureSignatures.indexOf(signature);
+    if (index < 0)
+      continue;
+
+    // found: apply only structure case
+    let structure = structures[index];
+    let tabs = getAllTabs(apiWindow.id);
+    applyTreeStructureToTabs(tabs, structure);
+
+    structureSignatures.splice(index, 1);
+    structures.splice(index, 1);
+  }
+
+  // not found: try to restore windows from structures
+  await Promise.all(structures.map(async aStructure => {
+    // prepare new window with tabs
+    var apiWindow = await browser.windows.create({
+      url: 'about:blank'
+    });
+    var container = getTabsContainer(apiWindow.id);
+    container.toBeOpenedOrphanTabs += aStructure.length;
+    // restore tree
+    var tabs = await openURIsInTabs(aStructure.map(aItem => aItem.url), {
+      windowId: apiWindow.id
+    });
+    applyTreeStructureToTabs(tabs, aStructure);
+    // close initial blank tab
+    apiWindow = await browser.windows.get(apiWindow.id, {
+      populate: true
+    });
+    var restApiTabs = apiWindow.tabs.slice(1);
+    await browser.tabs.remove(apiWindow.tabs[0].id);
+    // apply pinned state
+    for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
+      if (!aStructure[i].pinned)
+        break;
+      await browser.tabs.update(restApiTabs[i].id, {
+        pinned: true
+      });
+    }
+  }));
+
+  configs.legacyTreeStructureMigrated = true;
+}
