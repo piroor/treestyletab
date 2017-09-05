@@ -145,7 +145,16 @@ configs = new Configs({
   acceptableDelayForInternalFocusMoving: 150,
   preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
-  userStyleRules: '',
+
+  userStyleRules: `
+/* Show title of unread tabs with italic font */
+/*
+.tab.unread .label {
+  font-style: italic;
+}
+*/
+`.trim(),
+
   debug:     false,
 
   importedConfigsFromLegacy: null,

@@ -240,10 +240,6 @@ ul {
   white-space: nowrap;
 }
 
-.tab.unread .label {
-  font-style: italic;
-}
-
 .tab:not([data-child-ids]) .counter,
 .tab:not(.subtree-collapsed) .counter {
   display: none;
