@@ -13,7 +13,7 @@ function migrateLegacyConfigs() {
       typeof values != 'object')
     return;
 
-  sitch (configs.legacyConfigsMigratedVersion) {
+  switch (configs.legacyConfigsMigratedVersion) {
     case 0:
       // appearance
       migrateLegacyConfig('style', values['extensions.treestyletab.tabbar.style']);
