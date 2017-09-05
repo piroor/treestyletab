@@ -1,0 +1,156 @@
+{
+  "extensionName": { "message": "Tree Style Tab (WE)" },
+  "extensionDescription": { "message": "树状显示标签页。" },
+
+  "sidebarTitle": { "message": "Tree Style Tab" },
+
+  "tab.closebox.tab.tooltip": { "message": "关闭标签页" },
+  "tab.closebox.tree.tooltip": { "message": "关闭树" },
+  "tab.soundButton.muted.tooltip": { "message": "取消静音标签页" },
+  "tab.soundButton.playing.tooltip": { "message": "静音标签页" },
+  "tab.twisty.expanded.tooltip": { "message": "折叠树" },
+  "tab.twisty.collapsed.tooltip": { "message": "展开树" },
+  "tab.tree.tooltip": { "message": "$TREE$\n  ...和其余 $COUNT$ 个标签页",
+    "placeholders": {
+      "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
+      "count": { "content": "$2", "example": "3" }
+    }},
+  "tabbar.newTabButton.tooltip": { "message": "打开一个新标签页" },
+
+  "groupTab.label": { "message": "$TITLE$ 及更多",
+    "placeholders": {
+      "title": { "content": "$1", "example": "title" }
+    }},
+  "groupTab.label.default": { "message": "组" },
+
+  "bookmarkFolder.label": { "message": "$TITLE$ 及更多",
+    "placeholders": {
+      "title": { "content": "$1", "example": "title" }
+    }},
+  "bookmarkFolder.label.default": { "message": "已加书签的树" },
+
+  "bookmarkTree.notification.title": { "message": "已成功将树加为书签" },
+  "bookmarkTree.notification.message": { "message": "包括“$TITLE$”在内的 $COUNT$ 个标签页已添加为“$PARENT$”下的书签文件夹",
+    "placeholders": {
+      "title": { "content": "$1", "example": "Title" },
+      "count": { "content": "$2", "example": "2" },
+      "parent": { "content": "$3", "example": "Parent Folder" }
+    }},
+
+
+  "context.reloadTree.label": { "message": "重新载入此树" },
+  "context.reloadDescendants.label": { "message": "重新载入子项" },
+  "context.closeTree.label": { "message": "关闭此树" },
+  "context.closeDescendants.label": { "message": "关闭子项" },
+  "context.closeOthers.label": { "message": "关闭其他标签页（不含此树）" },
+  "context.collapseAll.label": { "message": "全部折叠" },
+  "context.expandAll.label": { "message": "全部展开" },
+  "context.bookmarkTree.label": { "message": "将此树加为书签…" },
+
+
+  "config.appearance.caption": { "message": "外观" },
+
+  "config.sidebarPosition.caption": { "message": "侧栏内容的外观（适配侧栏位置）" },
+  "config.sidebarPosition.left": { "message": "左侧" },
+  "config.sidebarPosition.right": { "message": "右侧" },
+
+  "config.style.caption": { "message": "主题" },
+  "config.style.plain": { "message": "朴素" },
+  "config.style.flat": { "message": "平坦" },
+  "config.style.vertigo": { "message": "眩晕" },
+  "config.style.mixed": { "message": "错综" },
+  "config.style.metal": { "message": "金属" },
+  "config.style.sidebar": { "message": "侧栏" },
+
+  "config.maxTreeLevel.before": { "message": "缩进标签页，最多" },
+  "config.maxTreeLevel.after": { "message": "层（负值则为无限）" },
+
+  "config.animation.label": { "message": "启用动画效果" },
+
+
+  "config.context.caption": { "message": "增加上下文菜单项" },
+
+
+  "config.newTab.caption": { "message": "新建标签页行为" },
+
+  "config.autoAttachOnNewTabCommand.before": { "message": "新建空白标签页打开为" },
+  "config.autoAttachOnNewTabCommand.independent": { "message": "一个独立的标签页" },
+  "config.autoAttachOnNewTabCommand.child": { "message": "当前标签页的子项" },
+  "config.autoAttachOnNewTabCommand.sibling": { "message": "当前标签页的同级节点" },
+  "config.autoAttachOnNewTabCommand.nextSibling": { "message": "当前标签页的下方（同级）" },
+  "config.autoAttachOnNewTabCommand.after": { "message": "" },
+
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "中键单击“新建标签页”按钮时，新建空白标签页为" },
+  "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "一个独立的标签页" },
+  "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "当前标签页的子项" },
+  "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "当前标签页的同级节点" },
+  "config.autoAttachOnNewTabButtonMiddleClick.nextSibling": { "message": "当前标签页的下方（同级）" },
+  "config.autoAttachOnNewTabButtonMiddleClick.after": { "message": "" },
+
+  "config.autoAttachOnDuplicated.before": { "message": "中键单击“重新载入”按钮时，复制标签页为" },
+  "config.autoAttachOnDuplicated.independent": { "message": "一个独立的标签页" },
+  "config.autoAttachOnDuplicated.child": { "message": "当前标签页的子项" },
+  "config.autoAttachOnDuplicated.sibling": { "message": "当前标签页的同级节点" },
+  "config.autoAttachOnDuplicated.nextSibling": { "message": "当前标签页的下方（同级）" },
+  "config.autoAttachOnDuplicated.after": { "message": "" },
+
+  "config.insertNewChildAt.caption": { "message": "新建标签页的插入位置" },
+  "config.insertNewChildAt.noControl": { "message": "不控制（尊重 Firefox 或其他标签页扩展的决定）" },
+  "config.insertNewChildAt.first": { "message": "插入到树的顶端，作为其首个子标签页" },
+  "config.insertNewChildAt.last": { "message": "放在树的最后" },
+
+  "config.autoGroupNewTabs.before": { "message": "" },
+  "config.autoGroupNewTabs.after": { "message": "毫秒后自动分组打开的标签页" },
+
+
+  "config.treeBehavior.caption": { "message": "树行为" },
+
+  "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新树展开时，自动折叠其他树" },
+  "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "标签页获得焦点时，自动展开该树并折叠其他树" },
+  "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "排除当前标签页关闭引发的焦点改变" },
+  "config.autoExpandOnAttached.label": { "message": "标签页插入树时，自动展开该树" },
+
+  "config.closeParentBehavior.caption": { "message": "父标签页关闭时" },
+  "config.closeParentBehavior.close": { "message": "关闭子标签页" },
+  "config.closeParentBehavior.replaceWithGroupTab": { "message": "用虚构标签页替换已关闭的父标签页从而保留树" },
+  "config.closeParentBehavior.promoteFirst": { "message": "将第一个子标签页作为新的父标签页" },
+  "config.closeParentBehavior.promoteAll": { "message": "所有子标签页的级别按被关闭的父标签页级别提升" },
+  "config.promoteFirstChildForClosedRoot.label": { "message": "如果被关闭的父标签页没有父项，则将首个子标签页提升为父项" },
+  "config.closeParentBehavior.detach": { "message": "释放该树的子标签页" },
+
+
+  "config.advanced.caption": { "message": "高级" },
+
+  "config.userStyleRules.label": { "message": "侧栏内容的额外样式规则" },
+
+  "config.importedConfigsFromLegacy.label": { "message": "迁移旧配置" },
+  "config.legacyConfigsNextMigrationVersion.before": { "message": "下次启动时迁移" },
+  "config.legacyConfigsNextMigrationVersion.after": { "message": "级配置" },
+  "config.legacyConfigsNextMigrationVersion.currentLevel.before": { "message": "（目前可用的配置级别为" },
+  "config.legacyConfigsNextMigrationVersion.currentLevel.after": { "message": " 或更低）" },
+  "config.importedConfigsFromLegacy.placeholder": { "message": "在这里粘贴旧的配置数据" },
+  "migration.configs.notification.title": { "message": "Tree Style Tab：配置已成功迁移" },
+  "migration.configs.notification.message": { "message": "旧版本的配置已成功应用。" },
+
+  "config.importedTreeStructureFromLegacy.label": { "message": "迁移旧树" },
+  "config.migrateLegacyTreeStructure.label": { "message": "下次启动时迁移旧树" },
+  "config.importedTreeStructureFromLegacy.placeholder": { "message": "在这里粘贴旧树的迁移数据" },
+  "migration.tree.notification.title": { "message": "Tree Style Tab：标签页树迁移成功" },
+  "migration.tree.notification.message.withSession": { "message": "$COUNT$ 个窗口已成功恢复，具有先前的会话信息。",
+    "placeholders": {
+      "count": { "content": "$1", "example": "2" }
+    }},
+  "migration.tree.notification.message.withoutSession": { "message": "$COUNT$ 个窗口的树结构已恢复。没有恢复这些窗口中的标签页的会话信息。",
+    "placeholders": {
+      "count": { "content": "$1", "example": "2" }
+    }},
+
+
+  "config.debug.caption": { "message": "开发" },
+  "config.debug.label": { "message": "调试模式" },
+  "config.acccelaratedTabDuplication.label": { "message": "加速标签页复制操作（过程中会看到非稳定的变化）" },
+  "config.maximumAcceptableDelayForTabDuplication.before": { "message": "中止复制标签页，如果按住超过" },
+  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "毫秒。" },
+
+  "config.all.caption": { "message": "所有配置" }
+}
