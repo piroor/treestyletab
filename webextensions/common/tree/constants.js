@@ -143,6 +143,8 @@ const kDEFAULT_MIN_INDENT = 3;
 const kTAB_STATE_GROUP_TAB = 'group-tab';
 const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
 
+const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';
+
 // for generated IDs
 const kID_ADJECTIVES = `
 Agile

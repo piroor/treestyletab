@@ -622,6 +622,12 @@ async function notify(aParams = {}) {
     title:   aParams.title,
     message: aParams.message
   });
-  await wait(aParams.timeout || configs.notificationTimeout);
+
+  var timeout = 'timeout' in aParams ?
+                  aParams.timeout :
+                  configs.notificationTimeout ;
+  if (timeout >= 0)
+    await wait(timeout);
+
   await browser.notifications.clear(id);
 }

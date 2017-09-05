@@ -82,6 +82,13 @@ function migrateLegacyConfigs() {
       break;
   }
 
+  notify({
+    title:   browser.i18n.getMessage('migration.configs.notification.title'),
+    message: browser.i18n.getMessage('migration.configs.notification.message'),
+    icon:    kNOTIFICATION_DEFAULT_ICON,
+    timeout: -1
+  });
+
   configs.legacyConfigsMigratedVersion = kLEGACY_CONFIGS_MIGRATED_VERSION;
 }
 
@@ -131,10 +138,13 @@ async function migrateLegacyTreeStructure() {
 
   var structureSignatures = structures.map(getWindowSignatureFromTabs);
 
+  var messages = [];
+
   var apiWindows = await browser.windows.getAll({
     populate: true,
     windowTypes: ['normal']
   });
+  var restoredCountWithSession = 0;
   for (let apiWindow of apiWindows) {
     let signature = getWindowSignatureFromTabs(apiWindow.tabs);
     let index = structureSignatures.indexOf(signature);
@@ -146,9 +156,18 @@ async function migrateLegacyTreeStructure() {
     let tabs = getAllTabs(apiWindow.id);
     applyTreeStructureToTabs(tabs, structure);
 
+    restoredCountWithSession++;
+
     structureSignatures.splice(index, 1);
     structures.splice(index, 1);
   }
+  if (restoredCountWithSession > 0)
+    messages.push(
+      browser.i18n.getMessage(
+        'migration.tree.notification.message.withSession',
+        restoredCountWithSession
+      )
+    );
 
   // not found: try to restore windows from structures
   await Promise.all(structures.map(async aStructure => {
@@ -178,6 +197,20 @@ async function migrateLegacyTreeStructure() {
       });
     }
   }));
+  if (structures.length > 0)
+    messages.push(
+      browser.i18n.getMessage(
+        'migration.tree.notification.message.withoutSession',
+        structures.length
+      )
+    );
+
+  notify({
+    title:   browser.i18n.getMessage('migration.tree.notification.title'),
+    message: messages.join('\n'),
+    icon:    kNOTIFICATION_DEFAULT_ICON,
+    timeout: -1
+  });
 
   configs.legacyTreeStructureMigrated = true;
 }

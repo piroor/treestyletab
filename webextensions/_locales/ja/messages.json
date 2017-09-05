@@ -127,5 +127,19 @@
   "config.debug.label": { "message": "デバッグモード" },
   "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
-  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" }
+  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
+
+
+  "migration.configs.notification.title": { "message": "ツリー型タブ：設定の移行に成功しました" },
+  "migration.configs.notification.message": { "message": "旧バージョンで使用されていた設定を反映しました。" },
+
+  "migration.tree.notification.title": { "message": "ツリー型タブ：ツリー情報の移行に成功しました" },
+  "migration.tree.notification.message.withSession": { "message": "$COUNT$個のウィンドウについて、引き継がれたツリー構造を反映しました。これらのウィンドウのタブは前回終了時の状態を完全に保持しています。",
+    "placeholders": {
+      "count": { "content": "$1", "example": "2" }
+    }},
+  "migration.tree.notification.message.withoutSession": { "message": "対応するウィンドウが見つからなかった$COUNT$個のウィンドウのツリー構造について、ウィンドウ全体を復元しました。これらのウィンドウのタブは前回終了時の情報が失われていますのでご注意下さい。",
+    "placeholders": {
+      "count": { "content": "$1", "example": "2" }
+    }}
 }

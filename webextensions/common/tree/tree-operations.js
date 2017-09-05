@@ -1386,7 +1386,7 @@ async function bookmarkTree(aRoot, aOptions = {}) {
         tabs.length,
         aFolders[0].title
       ]),
-      icon:   '/resources/icon64.png'
+      icon:    kNOTIFICATION_DEFAULT_ICON
     });
   });
   return folder;
