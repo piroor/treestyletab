@@ -130,6 +130,8 @@
   "config.importedConfigsFromLegacy.placeholder": { "message": "旧バージョンからの設定移行用データをここに貼り付けてください" },
   "migration.configs.notification.title": { "message": "ツリー型タブ：設定の移行に成功しました" },
   "migration.configs.notification.message": { "message": "旧バージョンで使用されていた設定を反映しました。" },
+  "migration.configsFailed.notification.title": { "message": "ツリー型タブ：設定の移行に失敗しました" },
+  "migration.configsFailed.notification.message": { "message": "設定の移行中に想定外の問題が発生したため、移行処理を中断しました。" },
 
   "config.importedTreeStructureFromLegacy.label": { "message": "旧バージョンからのツリー情報の移行" },
   "config.migrateLegacyTreeStructure.label": { "message": "次回初期化時にツリー情報を復元する" },
@@ -143,6 +145,8 @@
     "placeholders": {
       "count": { "content": "$1", "example": "2" }
     }},
+  "migration.treeFailed.notification.title": { "message": "ツリー型タブ：ツリー情報の移行に失敗しました" },
+  "migration.treeFailed.notification.message": { "message": "ツリー構造の移行中に想定外の問題が発生したため、移行処理を中断しました。" },
 
 
   "config.debug.caption": { "message": "開発用" },

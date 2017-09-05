@@ -13,6 +13,8 @@ function migrateLegacyConfigs() {
       typeof values != 'object')
     return;
 
+  try {
+
   var migrated = false;
   switch (configs.legacyConfigsNextMigrationVersion) {
     case 0:
@@ -96,6 +98,18 @@ function migrateLegacyConfigs() {
       timeout: -1
     });
 
+  }
+  catch(e) {
+    log('failed to migrate tree: ', String(e), e.stack);
+    notify({
+      title:   browser.i18n.getMessage('migration.configsFailed.notification.title'),
+      message: browser.i18n.getMessage('migration.configsFailed.notification.message')
+               + '\n' + String(e),
+      icon:    kNOTIFICATION_DEFAULT_ICON,
+      timeout: -1
+    });
+  }
+
   configs.legacyConfigsNextMigrationVersion = kLEGACY_CONFIGS_MIGRATION_VERSION + 1;
 }
 
@@ -137,6 +151,7 @@ async function migrateLegacyTreeStructure() {
     getTreeStructureFromTabs() / applyTreeStructureToTabs().
   */
 
+  try {
   var getWindowSignatureFromTabs = (aTabs) => {
     return aTabs.map(aTab =>
              `${aTab.title}\n${aTab.url}\npinned=${aTab.pinned}`
@@ -185,7 +200,13 @@ async function migrateLegacyTreeStructure() {
     var container = getTabsContainer(apiWindow.id);
     container.toBeOpenedOrphanTabs += aStructure.length;
     // restore tree
-    var tabs = await openURIsInTabs(aStructure.map(aItem => aItem.url), {
+    var uris = aStructure.map(aItem => aItem.url);
+    uris = uris.map(aURI => {
+      if (!/^about:blank($|\?|#)/.test(aURI) &&
+          /^(about|resource|chrome|file):/.test(aURI))
+        return `about:blank?${aURI}`;
+    });
+    var tabs = await openURIsInTabs(uris, {
       windowId: apiWindow.id
     });
     applyTreeStructureToTabs(tabs, aStructure);
@@ -218,6 +239,18 @@ async function migrateLegacyTreeStructure() {
     icon:    kNOTIFICATION_DEFAULT_ICON,
     timeout: -1
   });
+
+  }
+  catch(e) {
+    log('failed to migrate tree: ', String(e), e.stack);
+    notify({
+      title:   browser.i18n.getMessage('migration.treeFailed.notification.title'),
+      message: browser.i18n.getMessage('migration.treeFailed.notification.message')
+               + '\n' + String(e),
+      icon:    kNOTIFICATION_DEFAULT_ICON,
+      timeout: -1
+    });
+  }
 
   configs.migrateLegacyTreeStructure = false;
 }

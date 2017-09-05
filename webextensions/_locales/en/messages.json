@@ -131,6 +131,8 @@
   "config.importedConfigsFromLegacy.placeholder": { "message": "Paste migration data for old configuration here" },
   "migration.configs.notification.title": { "message": "Tree Style Tab: Configurations are successfully migrated" },
   "migration.configs.notification.message": { "message": "Configurations are applied from the old version." },
+  "migration.configsFailed.notification.title": { "message": "Tree Style Tab: Failed to migrate configurations" },
+  "migration.configsFailed.notification.message": { "message": "Migration process is aborted due to unexpected problem." },
 
   "config.importedTreeStructureFromLegacy.label": { "message": "Migration of Old Tree" },
   "config.migrateLegacyTreeStructure.label": { "message": "Migrate tree of tabs at the next startup" },
@@ -144,6 +146,8 @@
     "placeholders": {
       "count": { "content": "$1", "example": "2" }
     }},
+  "migration.treeFailed.notification.title": { "message": "Tree Style Tab: Failed to migrate tree of tabs" },
+  "migration.treeFailed.notification.message": { "message": "Migration process is aborted due to unexpected problem." },
 
 
   "config.debug.caption": { "message": "Development" },
