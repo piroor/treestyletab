@@ -5,7 +5,7 @@
 */
 'use strict';
 
-const kLEGACY_CONFIGS_MIGRATED_VERSION = 1;
+const kLEGACY_CONFIGS_MIGRATION_VERSION = 1;
 
 function migrateLegacyConfigs() {
   var values = configs.importedConfigsFromLegacy;
@@ -13,8 +13,10 @@ function migrateLegacyConfigs() {
       typeof values != 'object')
     return;
 
-  switch (configs.legacyConfigsMigratedVersion) {
+  var migrated = false;
+  switch (configs.legacyConfigsNextMigrationVersion) {
     case 0:
+    case 1:
       // appearance
       migrateLegacyConfig('style', values['extensions.treestyletab.tabbar.style']);
       migrateLegacyConfig('defaultStyle', values['extensions.treestyletab.platform.default.tabbar.style']);
@@ -78,18 +80,23 @@ function migrateLegacyConfigs() {
       migrateLegacyConfig('indentDuration', values['extensions.treestyletab.animation.indent.duration']);
       migrateLegacyConfig('collapseDuration', values['extensions.treestyletab.animation.collapse.duration']);
 
+    // case 2:
+    // case 3:
+      migrated = true;
+
     default:
       break;
   }
 
-  notify({
-    title:   browser.i18n.getMessage('migration.configs.notification.title'),
-    message: browser.i18n.getMessage('migration.configs.notification.message'),
-    icon:    kNOTIFICATION_DEFAULT_ICON,
-    timeout: -1
-  });
+  if (migrated)
+    notify({
+      title:   browser.i18n.getMessage('migration.configs.notification.title'),
+      message: browser.i18n.getMessage('migration.configs.notification.message'),
+      icon:    kNOTIFICATION_DEFAULT_ICON,
+      timeout: -1
+    });
 
-  configs.legacyConfigsMigratedVersion = kLEGACY_CONFIGS_MIGRATED_VERSION;
+  configs.legacyConfigsNextMigrationVersion = kLEGACY_CONFIGS_MIGRATION_VERSION + 1;
 }
 
 function migrateLegacyConfig(aKey, aValue) {
@@ -102,7 +109,7 @@ async function migrateLegacyTreeStructure() {
   var structures = configs.importedTreeStructureFromLegacy;
   if (!structures ||
       !Array.isArray(structures) ||
-      configs.legacyTreeStructureMigrated)
+      !configs.migrateLegacyTreeStructure)
     return;
 
   /*
@@ -212,5 +219,5 @@ async function migrateLegacyTreeStructure() {
     timeout: -1
   });
 
-  configs.legacyTreeStructureMigrated = true;
+  configs.migrateLegacyTreeStructure = false;
 }

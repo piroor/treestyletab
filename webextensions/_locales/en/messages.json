@@ -123,19 +123,18 @@
 
   "config.userStyleRules.label": { "message": "Extra style rules for sidebar contents" },
 
-
-  "config.debug.caption": { "message": "Development" },
-  "config.debug.label": { "message": "Debug mode" },
-  "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
-  "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
-  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." },
-
-  "config.all.caption": { "message": "All Configs" },
-
-
+  "config.importedConfigsFromLegacy.label": { "message": "Migration of Old Configuration" },
+  "config.legacyConfigsNextMigrationVersion.before": { "message": "Migrate configurations from the config level" },
+  "config.legacyConfigsNextMigrationVersion.after": { "message": "at the next startup" },
+  "config.legacyConfigsNextMigrationVersion.currentLevel.before": { "message": "(Available config level is " },
+  "config.legacyConfigsNextMigrationVersion.currentLevel.after": { "message": " or less for now)" },
+  "config.importedConfigsFromLegacy.placeholder": { "message": "Paste migration data for old configuration here" },
   "migration.configs.notification.title": { "message": "Tree Style Tab: Configurations are successfully migrated" },
   "migration.configs.notification.message": { "message": "Configurations are applied from the old version." },
 
+  "config.importedTreeStructureFromLegacy.label": { "message": "Migration of Old Tree" },
+  "config.migrateLegacyTreeStructure.label": { "message": "Migrate tree of tabs at the next startup" },
+  "config.importedTreeStructureFromLegacy.placeholder": { "message": "Paste migration data for old tree here" },
   "migration.tree.notification.title": { "message": "Tree Style Tab: Tree of tabs are successfully migrated" },
   "migration.tree.notification.message.withSession": { "message": "$COUNT$ window(s) are restored completely, with previous session information.",
     "placeholders": {
@@ -144,5 +143,14 @@
   "migration.tree.notification.message.withoutSession": { "message": "$COUNT$ window(s) are restored only their tree structure. Tabs in those windows don't have any previous session information.",
     "placeholders": {
       "count": { "content": "$1", "example": "2" }
-    }}
+    }},
+
+
+  "config.debug.caption": { "message": "Development" },
+  "config.debug.label": { "message": "Debug mode" },
+  "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
+  "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
+  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." },
+
+  "config.all.caption": { "message": "All Configs" }
 }

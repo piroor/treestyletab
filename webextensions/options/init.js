@@ -21,6 +21,7 @@ function onConfigChanged(aKey) {
 
 configs.$addObserver(onConfigChanged);
 configs.$loaded.then(() => {
+  document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
   options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
   onConfigChanged('debug');
 });

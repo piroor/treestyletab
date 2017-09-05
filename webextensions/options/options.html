@@ -11,6 +11,7 @@
     <script type="application/javascript" src="/options/Options.js"></script>
     <script type="application/javascript" src="/common/l10n.js"></script>
     <script type="application/javascript" src="/options/init.js"></script>
+    <script type="application/javascript" src="/background/migration.js"></script>
     <link rel="stylesheet" type="text/css" href="options.css"/>
   </head>
   <body>
@@ -189,6 +190,31 @@
       <textarea id="userStyleRules"
                 rows="10"
                 style="width: 100%"></textarea>
+    </fieldset>
+    <fieldset>
+      <legend>__MSG_config.importedConfigsFromLegacy.label__</legend>
+      <p><label>__MSG_config.legacyConfigsNextMigrationVersion.before__
+                <input id="legacyConfigsNextMigrationVersion"
+                       type="number"
+                       size="3">
+                 __MSG_config.legacyConfigsNextMigrationVersion.after__
+                 __MSG_config.legacyConfigsNextMigrationVersion.currentLevel.before__
+                 <span id="legacyConfigsNextMigrationVersion-currentLevel"></span>
+                 __MSG_config.legacyConfigsNextMigrationVersion.currentLevel.after__</label></p>
+      <textarea id="importedConfigsFromLegacy"
+                rows="3"
+                style="width: 100%"
+                placeholder="__MSG_config.importedConfigsFromLegacy.placeholder__">></textarea>
+    </fieldset>
+    <fieldset>
+      <legend>__MSG_config.importedTreeStructureFromLegacy.label__</legend>
+      <p><label><input id="migrateLegacyTreeStructure"
+                       type="checkbox">
+               __MSG_config.migrateLegacyTreeStructure.label__</label></p>
+      <textarea id="importedTreeStructureFromLegacy"
+                rows="3"
+                style="width: 100%"
+                placeholder="__MSG_config.importedTreeStructureFromLegacy.placeholder__"></textarea>
     </fieldset>
 
     <hr/>
