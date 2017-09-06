@@ -168,7 +168,7 @@ function onTabRestored(aTab) {
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
   var ancestors = getAncestorTabs(aTab);
-  var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
+  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(aTab);
 
@@ -269,6 +269,17 @@ async function onTabMoved(aTab, aMoveInfo) {
 }
 
 async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
+  if (configs.parentTabBehaviorForChanges == kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE &&
+      !gSidebarOpenState.has(aTab.apiTab.windowId)) {
+    detachAllChildren(aTab, {
+      behavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+      broadcast: true
+    });
+    detachTab(aTab, {
+      broadcast: true
+    });
+  }
+
   log('the tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
   var action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
   if (!action) {
@@ -517,7 +528,7 @@ function onTabDetached(aTab, aDetachInfo) {
 }
 
 function onTabDetachedFromWindow(aTab) {
-  var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
+  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
@@ -539,7 +550,7 @@ function onTabPinned(aTab) {
     broadcast: true
   });
   detachAllChildren(aTab, {
-    behavior: getCloseParentBehaviorForTab(
+    behavior: getCloseParentBehaviorForTabWithSidebarOpenState(
       aTab,
       kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     ),

@@ -337,6 +337,11 @@ function detachAllChildren(aTab, aOptions = {}) {
     aOptions.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
   }
 
+  if (aOptions.behavior != kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN)
+    collapseExpandSubtree(aTab, clone(aOptions, {
+      collapsed: false
+    }));
+
   for (let i = 0, maxi = children.length; i < maxi; i++) {
     let child = children[i];
     if (aOptions.behavior == kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN) {
