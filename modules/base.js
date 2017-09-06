@@ -574,6 +574,15 @@ var TreeStyleTabBase = inherit(TreeStyleTabConstants, {
 			bottom : Math.max(throbberRect.bottom, iconRect.bottom)
 		};
 	},
+ 
+	isEventFiredInToolbarItems : function TSTBase_isEventFiredInToolbarItems(aEvent) 
+	{
+		return utils.evaluateXPath(
+				'ancestor-or-self::*[local-name()="toolbaritem" or local-name()="toolbarbutton"]',
+				aEvent.originalTarget,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE
+			).booleanValue;
+	},
 	
 	// called with target(nsIDOMEventTarget), document(nsIDOMDocument), type(string) and data(object) 
 	fireCustomEvent : function TSTBase_fireCustomEvent(...aArgs)

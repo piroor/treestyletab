@@ -758,7 +758,8 @@ TreeStyleTabWindow.prototype = inherit(TreeStyleTabBase, {
 				return;
 
 			case 'transitionend':
-				if (!this.getTabbarFromChild(aEvent.target))
+				if (!this.getTabbarFromChild(aEvent.originalTarget) &&
+					!this.isEventFiredInToolbarItems(aEvent))
 					this.browser.treeStyleTab.updateFloatingTabbar(this.kTABBAR_UPDATE_BY_WINDOW_RESIZE);
 				return;
 
