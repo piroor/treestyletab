@@ -48,6 +48,11 @@ On Nightly, you can try them by setting a secret preference `xpinstall.signature
  * [sidebarTabs](https://github.com/asamuzaK/sidebarTabs):
    Vertical tab bar with grouped tabs.
 
+Some Google Chrome extensions also provides similar feature.
+
+ * [Sidewise Tree Style Tabs](https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo)
+ * [Tabs Outliner](https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl)
+
 ## If you have any request, proposal, or unexpected trouble from bugs?
 
 All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).
