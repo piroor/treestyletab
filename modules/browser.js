@@ -881,6 +881,13 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		this.needRestoreTree = w.__treestyletab__WindowStateBusy || false;
 		this.isWindowBusy = w.__treestyletab__WindowStateBusy || false;
 		delete w.__treestyletab__WindowStateBusy;
+		if (w.__treestyletab__WindowStateReady) {
+			setTimeout(() => {
+				this.isWindowBusy = false;
+				this.restoreTree()
+			}, 0);
+		}
+		delete w.__treestyletab__WindowStateReady;
 
 		this._initTabbrowserExtraContents();
 
@@ -934,10 +941,12 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.add('w,tabviewframeinitialized,TSTBrowser,false');
 		w.addEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 		ReferenceCounter.add('w,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,TSTBrowser,false');
-		w.addEventListener('SSWindowStateBusy', this, false);
-		ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
-		w.addEventListener('SSWindowStateReady', this, false);
-		ReferenceCounter.add('w,SSWindowStateReady,TSTBrowser,false');
+		if (!this.needRestoreTree) {
+			w.addEventListener('SSWindowStateBusy', this, false);
+			ReferenceCounter.add('w,SSWindowStateBusy,TSTBrowser,false');
+			w.addEventListener('SSWindowStateReady', this, false);
+			ReferenceCounter.add('w,SSWindowStateReady,TSTBrowser,false');
+		}
 
 		for (let container of this.notificationBoxContainers)
 		{
@@ -2514,10 +2523,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 		ReferenceCounter.remove('w,tabviewframeinitialized,TSTBrowser,false');
 		w.removeEventListener(this.kEVENT_TYPE_TAB_FOCUS_SWITCHING_END, this, false);
 		ReferenceCounter.remove('w,kEVENT_TYPE_TAB_FOCUS_SWITCHING_END,TSTBrowser,false');
-		w.removeEventListener('SSWindowStateBusy', this, false);
-		ReferenceCounter.remove('w,SSWindowStateBusy,TSTBrowser,false');
-		w.removeEventListener('SSWindowStateReady', this, false);
-		ReferenceCounter.remove('w,SSWindowStateReady,TSTBrowser,false');
 
 		for (let container of this.notificationBoxContainers)
 		{
@@ -3239,9 +3244,16 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			case 'SSWindowStateBusy':
 				this.isWindowBusy = true;
 				this.needRestoreTree = true;
+				this.window.removeEventListener('SSWindowStateBusy', this, false);
+				ReferenceCounter.remove('w,SSWindowStateBusy,TSTBrowser,false');
 				return;
 			case 'SSWindowStateReady':
 				this.isWindowBusy = false;
+				setTimeout(() => {
+					this.restoreTree()
+				}, 0);
+				this.window.removeEventListener('SSWindowStateReady', this, false);
+				ReferenceCounter.remove('w,SSWindowStateReady,TSTBrowser,false');
 				return;
 
 
@@ -4279,8 +4291,6 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
  
 	onTabRestoring : function TSTBrowser_onTabRestoring(aEvent) 
 	{
-		this.restoreTree();
-
 		var tab = aEvent.originalTarget;
 		log('onTabRestoring ', tab._tPos);
 
@@ -7485,29 +7495,11 @@ TreeStyleTabBrowser.prototype = inherit(TreeStyleTabWindow.prototype, {
 			return;
 
 		var level = utils.getTreePref('restoreTree.level');
-
 		var tabs = this.getAllTabs(this.mTabBrowser);
-		var tabsToRestore = 0; // it is the number of pending tabs.
-		if (utils.SessionStoreInternal &&
-			utils.SessionStoreInternal._browserEpochs) {
-			let browserEpochs = utils.SessionStoreInternal._browserEpochs;
-			tabsToRestore = tabs.filter(function(aTab) {
-				return aTab.__SS_lazyData ||
-						browserEpochs.has(aTab.linkedBrowser.permanentKey);
-			}).length;
-		}
-		else {
-			Components.utils.reportError(new Error('There is no property named "_browserEpochs"!!'));
-		}
-
 		log('TSTBrowser::restoreTree');
 		log('  level = '+level);
-		log('  tabsToRestore = '+tabsToRestore);
 
-		if (
-			level <= this.kRESTORE_TREE_LEVEL_NONE ||
-			tabsToRestore <= 1
-			)
+		if (level <= this.kRESTORE_TREE_LEVEL_NONE)
 			return;
 
 		var onlyVisible = level <= this.kRESTORE_TREE_ONLY_VISIBLE;
