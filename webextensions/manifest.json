@@ -6,12 +6,14 @@
   "description": "__MSG_extensionDescription__",
   "permissions": [
     "activeTab",
+    "bookmarks",
+    "contextMenus",
+    "contextualIdentities",
+    "cookies",
+    "notifications",
     "sessions",
     "storage",
-    "tabs",
-    "contextMenus",
-    "bookmarks",
-    "notifications"
+    "tabs"
   ],
   "icons": {
     "64": "resources/icon64.png",
