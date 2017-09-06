@@ -322,19 +322,22 @@ ul {
 }
 
 .newtab-button-box:hover .contextual-identities-selector {
-  display: block;
+  pointer-events: auto;
+  opacity: 1;
 }
 
 .contextual-identities-selector {
   background: none;
   border: none;
   bottom: 0;
-  display: none;
   max-width: 1.5em;
+  opacity: 0;
   overflow: hidden;
+  pointer-events: none;
   position: absolute;
   right: 0;
   top: 0;
+  transition: opacity var(--collapse-animation);
   z-index: 100;
 }
 
