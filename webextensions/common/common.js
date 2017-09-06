@@ -63,6 +63,9 @@ function clone(aOriginalObject, aExtraProperties) {
 }
 
 configs = new Configs({
+  // appearance
+  sidebarPosition: kTABBAR_POSITION_LEFT,
+
   style: '',
   defaultStyle: 'mixed',
   defaultStyleOnDarwin: 'sidebar',
