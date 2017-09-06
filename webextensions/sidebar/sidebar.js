@@ -250,7 +250,7 @@ async function inheritTreeStructure() {
 async function waitUntilBackgroundIsReady() {
   while (true) {
     let response = await browser.runtime.sendMessage({
-      type: kCOMMAND_PING
+      type: kCOMMAND_PING_TO_BACKGROUND
     });
     if (response)
       break;

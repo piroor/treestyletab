@@ -8,7 +8,8 @@
 gLogContext = 'BG';
 
 var gInitializing = true;
-var gSidebarOpenState = {};
+var gSidebarOpenState = new Map();
+var gSidebarOpenStateUpdateTimer;
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
@@ -29,6 +30,7 @@ async function init() {
 
   migrateLegacyTreeStructure();
 
+  startWatchSidebarOpenState();
   startObserveApiTabs();
   startObserveContextualIdentities();
   browser.runtime.onMessage.addListener(onMessage);
@@ -57,6 +59,7 @@ function waitUntilCompletelyRestored() {
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
+  endWatchSidebarOpenState();
   endObserveApiTabs();
   endObserveContextualIdentities();
   gAllTabs = undefined;
@@ -77,6 +80,35 @@ async function rebuildAll() {
     }
     gAllTabs.appendChild(container);
   });
+}
+
+function startWatchSidebarOpenState() {
+  if (gSidebarOpenStateUpdateTimer)
+    return;
+
+  gSidebarOpenStateUpdateTimer = setInterval(async () => {
+    let windows = await browser.windows.getAll({
+      windowTypes: ['normal']
+    });
+    windows.forEach(async aWindow => {
+      var response = await browser.runtime.sendMessage({
+        type:     kCOMMAND_PING_TO_SIDEBAR,
+        windowId: aWindow.id
+      });
+      if (response)
+        gSidebarOpenState.set(aWindow.id, true);
+      else
+        gSidebarOpenState.delete(aWindow.id);
+    });
+  }, configs.sidebarOpenStateUpdateInterval);
+}
+
+function endWatchSidebarOpenState() {
+  if (!gSidebarOpenStateUpdateTimer)
+    return;
+
+  clearInterval(gSidebarOpenStateUpdateTimer);
+  gSidebarOpenStateUpdateTimer = null;
 }
 
 

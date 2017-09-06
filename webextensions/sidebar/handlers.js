@@ -753,6 +753,11 @@ function onMessage(aMessage, aSender, aRespond) {
 
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
+    case kCOMMAND_PING_TO_SIDEBAR: {
+      if (aMessage.windowId == gTargetWindow)
+        return Promise.resolve(true);
+    }; break;
+
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);
