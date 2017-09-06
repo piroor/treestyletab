@@ -16,6 +16,7 @@
       "count": { "content": "$2", "example": "3" }
     }},
   "tabbar.newTabButton.tooltip": { "message": "新しいタブを開く" },
+  "tabbar.newTabWithContexualIdentity.tooltip": { "message": "新しいコンテナータブ" },
 
   "groupTab.label": { "message": "$TITLE$ など",
     "placeholders": {

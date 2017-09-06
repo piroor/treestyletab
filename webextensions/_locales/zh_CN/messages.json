@@ -16,6 +16,7 @@
       "count": { "content": "$2", "example": "3" }
     }},
   "tabbar.newTabButton.tooltip": { "message": "打开一个新标签页" },
+  "tabbar.newTabWithContexualIdentity.tooltip": { "message": "新建身份标签页" },
 
   "groupTab.label": { "message": "$TITLE$ 及更多",
     "placeholders": {

@@ -16,6 +16,7 @@
       "count": { "content": "$2", "example": "3" }
     }},
   "tabbar.newTabButton.tooltip": { "message": "Open a new tab" },
+  "tabbar.newTabWithContexualIdentity.tooltip": { "message": "New Container Tab" },
 
   "groupTab.label": { "message": "$TITLE$ and more",
     "placeholders": {
