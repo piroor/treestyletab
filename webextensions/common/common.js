@@ -156,6 +156,13 @@ configs = new Configs({
   font-style: italic;
 }
 */
+
+/* Add private browsing indicator per tab */
+/*
+.tab.private-browsing .label:before {
+  content: "🕶";
+}
+*/
 `.trim(),
 
   debug:     false,
