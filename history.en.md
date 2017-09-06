@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 0.19.2017090601
    * Tree Style Tab's configurations and tree information are now exportable, as a migration assistance for Firefox 57 and later. See the "Advanced" section in the configuration dialog.
    * Tree restoration on the startup or restored window is just triggered by SSWindowReady now. TST don't wait SSTabRestoring event anymore.
    * Fix too frequently redrawing of the tab bar by any animation effect in Firefox's toolbar.
