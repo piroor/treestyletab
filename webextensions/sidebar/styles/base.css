@@ -98,7 +98,8 @@ button {
 :root.left #tabbar {
   direction: rtl;
 }
-:root.left #all-tabs {
+:root.left #all-tabs,
+:root.left #tabbar .after-tabs {
   direction: ltr;
 }
 
