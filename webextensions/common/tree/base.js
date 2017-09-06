@@ -265,6 +265,14 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 
   if (aOptions.forceApply ||
+      aNewState.incognito != oldState.incognito) {
+    if (aNewState.incognito)
+      aTab.classList.add(kTAB_STATE_PRIVATE_BROWSING);
+    else
+      aTab.classList.remove(kTAB_STATE_PRIVATE_BROWSING);
+  }
+
+  if (aOptions.forceApply ||
       aNewState.selected != oldState.selected) {
     if (aNewState.selected)
       aTab.classList.add(kTAB_STATE_SELECTED);

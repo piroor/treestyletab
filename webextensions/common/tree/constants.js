@@ -67,6 +67,7 @@ const kTAB_STATE_SOUND_PLAYING = 'sound-playing';
 const kTAB_STATE_HAS_SOUND_PLAYING_MEMBER = 'has-sound-playing-member';
 const kTAB_STATE_MUTED = 'muted';
 const kTAB_STATE_HAS_MUTED_MEMBER = 'has-muted-member';
+const kTAB_STATE_PRIVATE_BROWSING: 'private-browsing';
 const kTAB_STATE_HIDDEN = 'hidden';
 const kTAB_STATE_ANIMATION_READY = 'animation-ready';
 const kTAB_STATE_REMOVING = 'removing';
