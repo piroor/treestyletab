@@ -507,6 +507,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         opener:       aOptions.opener && aOptions.opener.id,
         insertBefore: aOptions.insertBefore && aOptions.insertBefore.id,
         insertAfter:  aOptions.insertAfter && aOptions.insertAfter.id,
+        cookieStoreId: aOptions.cookieStoreId || null,
         inRemote:     false
       }));
     }
@@ -528,6 +529,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
           params.openerTabId = aOptions.opener.apiTab.id;
         if (startIndex > -1)
           params.index = startIndex + aIndex;
+        if (aOptions.cookieStoreId)
+          params.cookieStoreId = aOptions.cookieStoreId;
         var apiTab = await browser.tabs.create(params);
         var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
         if (!aOptions.opener &&

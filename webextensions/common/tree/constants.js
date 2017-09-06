@@ -57,6 +57,7 @@ const kCOUNTER  = 'counter';
 const kCLOSEBOX = 'closebox';
 const kCONTEXTUAL_IDENTITY_MARKER = 'contextual-identity-marker';
 const kNEWTAB_BUTTON = 'newtab-button';
+const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
 
 const kTAB_STATE_ACTIVE = 'active';
 const kTAB_STATE_PINNED = 'pinned';

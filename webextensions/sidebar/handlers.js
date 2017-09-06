@@ -93,9 +93,17 @@ function isEventFiredOnNewTabButton(aEvent) {
     ).booleanValue;
 }
 
+function isEventFiredOnContextualIdentitySelector(aEvent) {
+  return evaluateXPath(
+      `ancestor-or-self::*[${hasClass(kCONTEXTUAL_IDENTITY_SELECTOR)}]`,
+      aEvent.originalTarget || aEvent.target,
+      XPathResult.BOOLEAN_TYPE
+    ).booleanValue;
+}
+
 function isEventFiredOnClickable(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[contains(" button scrollbar textbox ", concat(" ", local-name(), " "))]',
+      'ancestor-or-self::*[contains(" button scrollbar select ", concat(" ", local-name(), " "))]',
       aEvent.originalTarget || aEvent.target,
       XPathResult.BOOLEAN_TYPE
     ).booleanValue;
@@ -123,6 +131,14 @@ function getTabFromTabbarEvent(aEvent) {
       isEventFiredOnClickable(aEvent))
     return null;
   return getTabFromCoordinates(aEvent);
+}
+
+function getClickedOptionFromEvent(aEvent) {
+  return evaluateXPath(
+      'ancestor-or-self::*[contains(" option ", concat(" ", local-name(), " "))]',
+      aEvent.originalTarget || aEvent.target,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue;
 }
 
 function getTabFromCoordinates(aEvent) {
@@ -176,6 +192,27 @@ function onMouseDown(aEvent) {
         action: configs.autoAttachOnNewTabButtonMiddleClick
       });
     }
+    else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
+      aEvent.stopPropagation();
+      aEvent.preventDefault();
+      let option = getClickedOptionFromEvent(aEvent);
+      if (option) {
+        /*
+          *NOTE: This block will never work because Firefox
+          always eats mousedown events fired on selectbox's
+          drowdown menu...
+        */
+        handleNewTabAction(aEvent, {
+          action: configs.autoAttachOnNewTabButtonMiddleClick,
+          cookieStoreId: option.getAttribute('value')
+        });
+      }
+      else { // treat as middle click on new tab button
+        handleNewTabAction(aEvent, {
+          action: configs.autoAttachOnNewTabButtonMiddleClick
+        });
+      }
+    }
     return;
   }
 
@@ -213,7 +250,14 @@ function onMouseDown(aEvent) {
 }
 
 function onClick(aEvent) {
+  if (aEvent.button == 2) // ignore right click
+    return;
+
   //log('onClick', String(aEvent.target));
+
+  if (isEventFiredOnContextualIdentitySelector(aEvent))
+    return;
+
   if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
@@ -291,6 +335,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
   openNewTab({
     inBackground: aEvent.shiftKey,
     parent, insertBefore, insertAfter,
+    cookieStoreId: aOptions.cookieStoreId,
     inRemote: true
   });
 }
@@ -309,6 +354,16 @@ function onDblClick(aEvent) {
 
 function onTransisionEnd() {
   reserveToUpdateTabbarLayout();
+}
+
+function onChange(aEvent) {
+  var selector = aEvent.target;
+
+  handleNewTabAction(aEvent, {
+    cookieStoreId: selector.value
+  });
+
+  selector.value = '';
 }
 
 
@@ -680,6 +735,7 @@ function onTabUnpinned(aTab) {
 
 function onContextualIdentitiesUpdated() {
   updateContextualIdentitiesStyle();
+  updateContextualIdentitiesSelector();
 }
 
 

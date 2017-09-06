@@ -60,6 +60,7 @@ async function init() {
   await rebuildAll();
 
   updateContextualIdentitiesStyle();
+  updateContextualIdentitiesSelector();
   startObserveContextualIdentities();
 
   browser.runtime.sendMessage({
@@ -71,8 +72,9 @@ async function init() {
 
   await inheritTreeStructure();
 
-  window.addEventListener('mousedown', onMouseDown);
+  window.addEventListener('mousedown', onMouseDown, { capture: true });
   window.addEventListener('click', onClick);
+  window.addEventListener('change', onChange);
   gTabBar.addEventListener('dblclick', onDblClick);
   gTabBar.addEventListener('transitionend', onTransisionEnd);
   startListenDragEvents(window);
@@ -99,8 +101,9 @@ function destroy() {
   endObserveContextualIdentities();
   window.removeEventListener('resize', onResize);
 
-  window.removeEventListener('mousedown', onMouseDown);
+  window.removeEventListener('mousedown', onMouseDown, { capture: true });
   window.removeEventListener('click', onClick);
+  window.removeEventListener('change', onChange);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
 
@@ -184,6 +187,40 @@ function updateContextualIdentitiesStyle() {
     `);
   }
   gContextualIdentitiesStyle.textContent = definitions.join('\n');
+}
+
+function updateContextualIdentitiesSelector() {
+  var selectors = Array.slice(document.querySelectorAll(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`));
+  var range = document.createRange();
+  for (let selector of selectors) {
+    range.selectNodeContents(selector);
+    range.deleteContents();
+    let fragment = document.createDocumentFragment();
+    let defaultItem = document.createElement('option');
+    defaultItem.setAttribute('value', '');
+    fragment.appendChild(defaultItem);
+    for (let id of Object.keys(gContextualIdentities)) {
+      let identity = gContextualIdentities[id];
+      let item = document.createElement('option');
+      item.setAttribute('value', id);
+      item.style.color = getReadableForegroundColorFromBGColor(identity.colorCode);
+      item.style.backgroundColor = identity.colorCode;
+      item.textContent = identity.name;
+      fragment.appendChild(item);
+    }
+    range.insertNode(fragment);
+  }
+  range.detach();
+}
+
+function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGGBB' or 'RGB'
+  var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/) ||
+              aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/);
+  var red   = parseInt(parts[1], 16);
+  var green = parseInt(parts[2], 16);
+  var blue  = parseInt(parts[3], 16);
+  var brightness = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
+  return brightness < 0.5 ? 'white' : 'black';
 }
 
 async function rebuildAll() {

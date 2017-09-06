@@ -309,11 +309,38 @@ ul {
   right: 0;
 }
 
+
+.newtab-button-box {
+  position: relative;
+}
+
 .newtab-button {
   background: none transparent;
   margin: 0;
   text-align: center;
 }
+
+.newtab-button-box:hover .contextual-identities-selector {
+  display: block;
+}
+
+.contextual-identities-selector {
+  background: none;
+  border: none;
+  bottom: 0;
+  display: none;
+  max-width: 1.5em;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.contextual-identities-selector option[value=""] {
+  display: none;
+}
+
 
 #out-of-view-tab-notifier {
   background: transparent repeat-x bottom;
