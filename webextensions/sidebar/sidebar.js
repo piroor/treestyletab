@@ -23,6 +23,7 @@ window.addEventListener('load', init, { once: true });
 blockUserOperations({ throbber: true });
 
 var gSizeDefinition;
+var gContextualIdentitiesStyle;
 var gStyleLoader;
 var gUserStyleRules;
 
@@ -37,6 +38,7 @@ async function earlyInit() {
   gSizeDefinition = document.querySelector('#size-definition');
   gStyleLoader = document.querySelector('#style-loader');
   gUserStyleRules = document.querySelector('#user-style-rules');
+  gContextualIdentitiesStyle = document.querySelector('#contextual-identity-styling');
 }
 
 async function init() {
@@ -45,13 +47,20 @@ async function init() {
 
   await configs.$loaded;
   await applyStyle();
-  await applyUserStyleRules();
+  applyUserStyleRules();
 
   calculateDefaultSizes();
-  await waitUntilBackgroundIsReady();
+
+  await Promise.all([
+    waitUntilBackgroundIsReady(),
+    retrieveAllContextualIdentities()
+  ]);
   document.documentElement.classList.remove('initializing');
 
   await rebuildAll();
+
+  updateContextualIdentitiesStyle();
+  startObserveContextualIdentities();
 
   browser.runtime.sendMessage({
     type:     kCOMMAND_SIDEBAR_OPENED,
@@ -87,6 +96,7 @@ function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   endListenDragEvents(gTabBar);
   endObserveApiTabs();
+  endObserveContextualIdentities();
   window.removeEventListener('resize', onResize);
 
   window.removeEventListener('mousedown', onMouseDown);
@@ -161,6 +171,19 @@ function calculateDefaultSizes() {
     --collapse-duration: ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
   }`;
+}
+
+function updateContextualIdentitiesStyle() {
+  var definitions = [];
+  for (let id of Object.keys(gContextualIdentities)) {
+    let identity = gContextualIdentities[id];
+    definitions.push(`
+      .tab.contextual-identity-${id} .contextual-identity-marker {
+        background-color: ${identity.colorCode};
+      }
+    `);
+  }
+  gContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
 
 async function rebuildAll() {

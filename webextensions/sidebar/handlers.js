@@ -346,6 +346,10 @@ function onTabBuilt(aTab) {
   closebox.setAttribute('title', browser.i18n.getMessage('tab.closebox.tab.tooltip'));
   aTab.appendChild(closebox);
 
+  var identityMarker = document.createElement('span');
+  identityMarker.classList.add(kCONTEXTUAL_IDENTITY_MARKER);
+  aTab.appendChild(identityMarker);
+
   aTab.setAttribute('draggable', true);
 }
 
@@ -671,6 +675,11 @@ function onTabUnpinned(aTab) {
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();
+}
+
+
+function onContextualIdentitiesUpdated() {
+  updateContextualIdentitiesStyle();
 }
 
 

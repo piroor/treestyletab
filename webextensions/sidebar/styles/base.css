@@ -274,6 +274,24 @@ ul {
 }
 
 
+/* contextual identity */
+
+.contextual-identity-marker {
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 0.25em;
+}
+
+:root.left .contextual-identity-marker {
+  left: 0;
+}
+
+:root.right .contextual-identity-marker {
+  right: 0;
+}
+
+
 /* non-tab items */
 
 #tabbar.overflow .after-tabs,

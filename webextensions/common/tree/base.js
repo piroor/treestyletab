@@ -168,7 +168,13 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   if (aOptions.forceApply ||
       label != oldState.title) {
     getTabLabel(aTab).textContent = label;
-    aTab.setAttribute('title', label);
+    let visibleLabel = label;
+    if (aNewState && aNewState.cookieStoreId) {
+      let identity = gContextualIdentities[aNewState.cookieStoreId];
+      if (identity)
+        visibleLabel = `${label} - ${identity.name}`;
+    }
+    aTab.setAttribute('title', visibleLabel);
     if (label != oldState.title &&
         !isActive(aTab))
       aTab.classList.add(kTAB_STATE_UNREAD);
@@ -249,6 +255,14 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_HIGHLIGHTED);
   }
 */
+
+  if (aOptions.forceApply ||
+      aNewState.cookieStoreId != oldState.cookieStoreId) {
+    if (oldState && oldState.cookieStoreId)
+      aTab.classList.remove(`contextual-identity-${oldState.cookieStoreId}`);
+    if (aNewState.cookieStoreId)
+      aTab.classList.add(`contextual-identity-${aNewState.cookieStoreId}`);
+  }
 
   if (aOptions.forceApply ||
       aNewState.selected != oldState.selected) {

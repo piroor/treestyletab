@@ -55,6 +55,7 @@ const kTWISTY   = 'twisty';
 const kLABEL    = 'label';
 const kCOUNTER  = 'counter';
 const kCLOSEBOX = 'closebox';
+const kCONTEXTUAL_IDENTITY_MARKER = 'contextual-identity-marker';
 const kNEWTAB_BUTTON = 'newtab-button';
 
 const kTAB_STATE_ACTIVE = 'active';

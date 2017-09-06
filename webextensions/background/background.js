@@ -20,13 +20,17 @@ async function init() {
 
   migrateLegacyConfigs();
 
-  await waitUntilCompletelyRestored();
+  await Promise.all([
+    waitUntilCompletelyRestored(),
+    retrieveAllContextualIdentities()
+  ]);
   await rebuildAll();
   await loadTreeStructure();
 
   migrateLegacyTreeStructure();
 
   startObserveApiTabs();
+  startObserveContextualIdentities();
   browser.runtime.onMessage.addListener(onMessage);
   gInitializing = false;
 }
@@ -54,6 +58,7 @@ function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
   endObserveApiTabs();
+  endObserveContextualIdentities();
   gAllTabs = undefined;
 }
 
