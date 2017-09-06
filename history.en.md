@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Tree Style Tab's configurations and tree information are now exportable, as a migration assistance for Firefox 57 and later. See the "Advanced" section in the configuration dialog.
  - 0.19.2017090201
    * Tab bar position is updated after visibility of a toolbar is changed with animation effect.
    * Initialize itself correctly on lately versions of Firefox.
