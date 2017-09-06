@@ -272,7 +272,9 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
   if (configs.parentTabBehaviorForChanges == kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE &&
       !gSidebarOpenState.has(aTab.apiTab.windowId)) {
     detachAllChildren(aTab, {
-      behavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+      behavior: getCloseParentBehaviorForTab(aTab, {
+        keepChildren: true
+      }),
       broadcast: true
     });
     detachTab(aTab, {
@@ -550,10 +552,9 @@ function onTabPinned(aTab) {
     broadcast: true
   });
   detachAllChildren(aTab, {
-    behavior: getCloseParentBehaviorForTabWithSidebarOpenState(
-      aTab,
-      kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-    ),
+    behavior: getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
+      keepChildren: true
+    }),
     broadcast: true
   });
   detachTab(aTab, {

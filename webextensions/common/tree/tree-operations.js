@@ -299,10 +299,9 @@ function detachParent(aTabs, aOptions = {}) {
     if (aTabs.indexOf(getParentTab(tab)) > -1)
       continue;
     detachAllChildren(tab, clone(aOptions, {
-      behavior : getCloseParentBehaviorForTab(
-        tab,
-        kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-      )
+      behavior : getCloseParentBehaviorForTab(tab, {
+        keepChildren: true
+      })
     }));
   }
 }
@@ -653,20 +652,23 @@ async function tryMoveFocusFromClosingCurrentTab(aTab) {
   return true;
 }
 
-function getCloseParentBehaviorForTab(aTab, aDefaultBehavior) {
-  if (isSubtreeCollapsed(aTab))
+function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
+  if (!aOptions.asIndividualTab &&
+      isSubtreeCollapsed(aTab))
     return kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
-  var closeParentBehavior = configs.closeParentBehavior;
-
+  var behavior = configs.closeParentBehavior;
   var parentTab = getParentTab(aTab);
-  var behavior = aDefaultBehavior ?
-                   aDefaultBehavior :
-                   closeParentBehavior ;
+
+  if (aOptions.keepChildren &&
+      behavior != kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
+      behavior != kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN)
+    behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+
   if (!parentTab &&
-      closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN &&
+      behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN &&
       configs.promoteFirstChildForClosedRoot)
-    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
   // Promote all children to upper level, if this is the last child of the parent.
   // This is similar to "taking by representation".

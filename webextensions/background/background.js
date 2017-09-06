@@ -112,11 +112,10 @@ function endWatchSidebarOpenState() {
 }
 
 function getCloseParentBehaviorForTabWithSidebarOpenState(aTab) {
-  if (configs.parentTabBehaviorForChanges == kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE &&
-      !gSidebarOpenState.has(aTab.apiTab.windowId))
-    return kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
-
-  return getCloseParentBehaviorForTab(aTab);
+  return getCloseParentBehaviorForTab(aTab, {
+    keepChildren: configs.parentTabBehaviorForChanges == kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE &&
+                  !gSidebarOpenState.has(aTab.apiTab.windowId)
+  });
 }
 
 
