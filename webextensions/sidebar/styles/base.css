@@ -275,20 +275,28 @@ ul {
 }
 
 
-/* contextual identity */
+/* contextual identity (aka Container Tab) */
 
 .contextual-identity-marker {
   bottom: 0;
   position: absolute;
-  top: 0;
-  width: 0.25em;
 }
 
-:root.left .contextual-identity-marker {
+:root.left .tab:not(.pinned) .contextual-identity-marker {
   left: 0;
+  top: 0;
+  width: calc(var(--favicon-size) / 6);
 }
 
-:root.right .contextual-identity-marker {
+:root.right .tab:not(.pinned) .contextual-identity-marker {
+  right: 0;
+  top: 0;
+  width: calc(var(--favicon-size) / 6);
+}
+
+.tab.pinned .contextual-identity-marker {
+  height: calc(var(--favicon-size) / 6);
+  left: 0;
   right: 0;
 }
 
