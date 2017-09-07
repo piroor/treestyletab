@@ -3,6 +3,7 @@
   "extensionDescription": { "message": "Show tabs like a tree." },
 
   "sidebarTitle": { "message": "Tree Style Tab" },
+  "sidebarToggleDescription": { "message": "Toggle \"Tree Style Tab\" Sidebar" },
 
   "tab.closebox.tab.tooltip": { "message": "Close tab" },
   "tab.closebox.tree.tooltip": { "message": "Close tree" },

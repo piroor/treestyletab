@@ -3,6 +3,7 @@
   "extensionDescription": { "message": "タブをツリー状に表示します。" },
 
   "sidebarTitle": { "message": "ツリー型タブ" },
+  "sidebarToggleDescription": { "message": "ツリー型タブのサイドバーの表示・非表示を切り替える" },
 
   "tab.closebox.tab.tooltip": { "message": "タブを閉じる" },
   "tab.closebox.tree.tooltip": { "message": "ツリーを閉じる" },

@@ -33,6 +33,12 @@
     "default_panel": "sidebar/sidebar.html",
     "browser_style": true
   },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": { "default": "F1" },
+      "description": "__MSG_sidebarToggleDescription__"
+    }
+  },
   "options_ui": {
     "page": "options/options.html",
     "browser_style": true
