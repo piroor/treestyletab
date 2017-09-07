@@ -118,6 +118,8 @@ function getChosenStyle() {
     style = configs.defaultStyleDarwin;
   if (!style)
     style = configs.defaultStyle;
+  if (!configs.style)
+    configs.style = style; // cache auto-detected default
   return style;
 }
 
