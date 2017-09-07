@@ -180,6 +180,8 @@ function updateContextualIdentitiesStyle() {
   var definitions = [];
   for (let id of Object.keys(gContextualIdentities)) {
     let identity = gContextualIdentities[id];
+    if (!identity.colorCode)
+      continue;
     definitions.push(`
       .tab.contextual-identity-${id} .contextual-identity-marker {
         background-color: ${identity.colorCode};
@@ -191,20 +193,28 @@ function updateContextualIdentitiesStyle() {
 
 function updateContextualIdentitiesSelector() {
   var selectors = Array.slice(document.querySelectorAll(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`));
+  var identityIds = Object.keys(gContextualIdentities);
   var range = document.createRange();
   for (let selector of selectors) {
     range.selectNodeContents(selector);
     range.deleteContents();
+    if (identityIds.length == 0) {
+      selector.setAttribute('disabled', true);
+      continue;
+    }
+    selector.removeAttribute('disabled');
     let fragment = document.createDocumentFragment();
     let defaultItem = document.createElement('option');
     defaultItem.setAttribute('value', '');
     fragment.appendChild(defaultItem);
-    for (let id of Object.keys(gContextualIdentities)) {
+    for (let id of identityIds) {
       let identity = gContextualIdentities[id];
       let item = document.createElement('option');
       item.setAttribute('value', id);
-      item.style.color = getReadableForegroundColorFromBGColor(identity.colorCode);
-      item.style.backgroundColor = identity.colorCode;
+      if (identity.colorCode) {
+        item.style.color = getReadableForegroundColorFromBGColor(identity.colorCode);
+        item.style.backgroundColor = identity.colorCode;
+      }
       item.textContent = identity.name;
       fragment.appendChild(item);
     }
@@ -216,6 +226,8 @@ function updateContextualIdentitiesSelector() {
 function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGGBB' or 'RGB'
   var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/) ||
               aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/);
+  if (!parts)
+    return '-moz-fieldtext';
   var red   = parseInt(parts[1], 16);
   var green = parseInt(parts[2], 16);
   var blue  = parseInt(parts[3], 16);

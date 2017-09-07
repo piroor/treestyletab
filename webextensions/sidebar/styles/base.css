@@ -348,7 +348,7 @@ ul {
   text-align: center;
 }
 
-.newtab-button-box:hover .contextual-identities-selector {
+.newtab-button-box:hover .contextual-identities-selector:not([disabled="true"]) {
   pointer-events: auto;
   opacity: 1;
 }

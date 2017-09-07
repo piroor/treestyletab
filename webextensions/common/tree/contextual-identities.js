@@ -8,18 +8,24 @@
 var gContextualIdentities = {};
 
 function startObserveContextualIdentities() {
+  if (!browser.contextualIdentities)
+    return;
   browser.contextualIdentities.onCreated.addListener(onContextualIdentityCreated);
   browser.contextualIdentities.onRemoved.addListener(onContextualIdentityRemoved);
   browser.contextualIdentities.onUpdated.addListener(onContextualIdentityUpdated);
 }
 
 function endObserveContextualIdentities() {
+  if (!browser.contextualIdentities)
+    return;
   browser.contextualIdentities.onCreated.removeListener(onContextualIdentityCreated);
   browser.contextualIdentities.onRemoved.removeListener(onContextualIdentityRemoved);
   browser.contextualIdentities.onUpdated.removeListener(onContextualIdentityUpdated);
 }
 
 async function retrieveAllContextualIdentities() {
+  if (!browser.contextualIdentities)
+    return;
   var identities = await browser.contextualIdentities.query({});
   for (let identity of identities) {
     gContextualIdentities[identity.cookieStoreId] = identity;
