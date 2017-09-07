@@ -29,10 +29,10 @@ TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XU
 
 ## Development builds
 
-There are [automated builds from latest codes](http://piro.sakura.ne.jp/xul/xpi/nightly/).
+There are [automated builds from latest codes](https://piro.sakura.ne.jp/xul/xpi/nightly/).
 
- * ["Renewed" version 2.0a](http://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
- * ["Legacy" version 0.19.x](http://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab.xpi)
+ * ["Renewed" version 2.0a](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
+ * ["Legacy" version 0.19.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab.xpi)
 
 Packages are not signed so you cannot try them on your Firefox if it is a released or beta version.
 On Nightly, you can try them by setting a secret preference `xpinstall.signatures.required` to `false` via `about:config`.
