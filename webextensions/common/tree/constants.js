@@ -57,6 +57,7 @@ const kLABEL    = 'label';
 const kCOUNTER  = 'counter';
 const kCLOSEBOX = 'closebox';
 const kCONTEXTUAL_IDENTITY_MARKER = 'contextual-identity-marker';
+const kEXTRA_ITEMS_CONTAINER = 'extra-items-container';
 const kNEWTAB_BUTTON = 'newtab-button';
 const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
 

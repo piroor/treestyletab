@@ -164,6 +164,11 @@ ul {
   vertical-align: middle;
 }
 
+.tab > * {
+  position: relative;
+  z-index: 100;
+}
+
 :root.animation .tab.animation-ready,
 :root.animation .after-tabs button {
   transition: var(--tab-animation);
@@ -200,6 +205,15 @@ ul {
   order: -1;
 }
 
+.tab .extra-items-container.behind {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
 
 /* pinned tabs */
 
@@ -219,7 +233,12 @@ ul {
   padding: calc((var(--faviconized-tab-size) - var(--favicon-size)) / 2);
 }
 
-.tab.pinned :-moz-any(.twisty, .label, .closebox) {
+.tab.pinned :-moz-any(
+  .twisty,
+  .label,
+  .closebox,
+  .extra-items-container.behind
+) {
   display: none;
 }
 
@@ -346,7 +365,7 @@ ul {
   right: 0;
   top: 0;
   transition: opacity var(--collapse-animation);
-  z-index: 100;
+  z-index: 200;
 }
 
 .contextual-identities-selector option[value=""] {

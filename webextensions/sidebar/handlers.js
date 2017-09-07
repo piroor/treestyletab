@@ -405,6 +405,11 @@ function onTabBuilt(aTab) {
   identityMarker.classList.add(kCONTEXTUAL_IDENTITY_MARKER);
   aTab.appendChild(identityMarker);
 
+  var extraItemsContainerBehind = document.createElement('span');
+  extraItemsContainerBehind.classList.add(kEXTRA_ITEMS_CONTAINER);
+  extraItemsContainerBehind.classList.add('behind');
+  aTab.appendChild(extraItemsContainerBehind);
+
   aTab.setAttribute('draggable', true);
 }
 

@@ -197,7 +197,6 @@
   min-height: 6px;
   border-image: url("dropmarker.png") 12 0 0 11 fill / 12px 0 0 11px;
   border-image-outset: 6px 0 0 0;
-  z-index: 10000;
 }
 
 .tab:not(.pinned)[data-drop-position="before"]::before {

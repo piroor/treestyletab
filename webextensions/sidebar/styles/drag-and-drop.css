@@ -29,7 +29,7 @@
   border-radius: var(--dropmarker-size);
   overflow: hidden;
   position: absolute;
-  z-index: 2;
+  z-index: 10000;
 }
 .tab[data-drop-position]:not([data-drop-position="self"]).pinned::before {
   max-height: none;
