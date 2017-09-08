@@ -312,6 +312,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
 
   log('onApiTabAttached, id: ', aTabId, aAttachInfo);
   var apiTab = await browser.tabs.get(aTabId);
+  log(`New apiTab for attached tab ${aTabId}: `, apiTab);
   if (!apiTab)
     return;
 
