@@ -125,15 +125,14 @@ function getDropAction(aEvent) {
 function getDropActionInternal(aEvent) {
   //log('getDropActionInternal: start');
   var targetTab          = getTabFromEvent(aEvent) ||
-                             getTabFromTabbarEvent(aEvent) ||
-                             aEvent.target;
+                             getTabFromTabbarEvent(aEvent);
   var targetTabs         = getAllTabs(targetTab);
   var firstTargetTab     = getFirstNormalTab(targetTab) ||
                              targetTabs[0];
   var lastTargetTabIndex = targetTabs.length - 1;
   var lastTargetTab      = targetTabs[lastTargetTabIndex];
   var info = {
-    dragOverTab  : targetTab,
+    dragOverTab  : getTabFromEvent(aEvent),
     draggedTab   : null,
     draggedTabs  : [],
     targetTab    : targetTab,
@@ -164,18 +163,18 @@ function getDropActionInternal(aEvent) {
   var isNewTabAction = !draggedTab && !dragData.tabId;
 
   if (!targetTab) {
-    log('dragging on non-tab element');
+    //log('dragging on non-tab element');
     let action = kACTION_MOVE | kACTION_DETACH;
     if (aEvent.clientY < firstTargetTab.getBoundingClientRect().top) {
       //log('dragging above the first tab');
-      info.targetTab = info.parent = info.insertBefore = firstTargetTab;
+      info.targetTab = info.insertBefore = firstTargetTab;
       info.dropPosition = kDROP_BEFORE;
       info.action   = action;
       return info;
     }
     else if (aEvent.clientY > lastTargetTab.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
-      info.targetTab = info.parent = lastTargetTab;
+      info.targetTab = info.insertAfter = lastTargetTab;
       info.dropPosition = kDROP_AFTER;
       info.action   = action;
       return info;
