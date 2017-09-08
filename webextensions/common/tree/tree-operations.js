@@ -872,6 +872,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         windowId: destinationWindowId,
         index:    toIndex
       });
+      apiTabIds = apiTabIds.map(aApiTab => aApiTab.id);
       log('moved across windows: ', apiTabIds);
     }
 
@@ -884,7 +885,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       newTabs = apiTabIds.map(getTabById);
       newTabs = newTabs.filter(aTab => !!aTab);
       if (newTabs.length < aTabs.length) {
-        log('retryling: ', newTabs.length, aTabs.length);
+        log('retryling: ', apiTabIds, newTabs.length, aTabs.length);
         await wait(100);
         continue;
       }
