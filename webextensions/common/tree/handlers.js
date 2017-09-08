@@ -38,6 +38,10 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+var gTabIdWrongToCorrect = new Map();
+var gTabIdCorrectToWrong = new Map();
+
 function startObserveApiTabs() {
   browser.tabs.onActivated.addListener(onApiTabActivated);
   browser.tabs.onUpdated.addListener(onApiTabUpdated);
@@ -122,6 +126,11 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
     return;
 
   await ensureAllTabsAreTracked(aTab.windowId);
+
+  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+  var correctId = gTabIdWrongToCorrect.get(aTabId);
+  if (correctId)
+    aTabId = aTab.id = correctId;
 
   var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
@@ -219,6 +228,12 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 
   await ensureAllTabsAreTracked(aRemoveInfo.windowId);
 
+  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+  var wrongId = gTabIdCorrectToWrong.get(aTabId);
+  if (wrongId)
+    gTabIdWrongToCorrect.delete(wrongId);
+  gTabIdCorrectToWrong.delete(aTabId);
+
   var container = getOrBuildTabsContainer(aRemoveInfo.windowId);
   var byInternalOperation = container.toBeClosedTabs > 0;
   if (byInternalOperation)
@@ -315,6 +330,16 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   log(`New apiTab for attached tab ${aTabId}: `, apiTab);
   if (!apiTab)
     return;
+
+  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+  if (apiTab.id != aTabId) {
+    let oldWrongId = gTabIdCorrectToWrong.get(aTabId);
+    if (oldWrongId)
+      gTabIdWrongToCorrect.delete(oldWrongId);
+    gTabIdWrongToCorrect.set(apiTab.id, aTabId);
+    gTabIdCorrectToWrong.set(aTabId, apiTab.id);
+    apiTab.id = aTabId;
+  }
 
   clearOldActiveStateInWindow(aAttachInfo.newWindowId);
   onNewTabTracked(apiTab);

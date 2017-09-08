@@ -883,7 +883,13 @@ async function moveTabs(aTabs, aOptions = {}) {
     let startTime = Date.now();
     let maxDelay = configs.maximumAcceptableDelayForTabDuplication;
     while (Date.now() - startTime < maxDelay) {
-      newTabs = apiTabIds.map(getTabById);
+      newTabs = apiTabIds.map(aApiTabId => {
+        // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+        var correctId = gTabIdWrongToCorrect.get(aApiTabId);
+        if (correctId)
+          aApiTabId = correctId;
+        return getTabById(aApiTabId);
+      });
       newTabs = newTabs.filter(aTab => !!aTab);
       if (newTabs.length < aTabs.length ||
           container.processingNewTabsCount > 0) {
