@@ -759,6 +759,7 @@ function onMessage(aMessage, aSender, aRespond) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PING_TO_SIDEBAR: {
+      clearTimeout(timeout);
       if (aMessage.windowId == gTargetWindow)
         return Promise.resolve(true);
     }; break;

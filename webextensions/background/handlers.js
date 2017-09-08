@@ -579,6 +579,7 @@ function onMessage(aMessage, aSender) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PING_TO_BACKGROUND:
+      clearTimeout(timeout);
       return Promise.resolve(true);
 
     case kCOMMAND_SIDEBAR_OPENED:
