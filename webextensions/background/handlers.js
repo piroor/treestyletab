@@ -580,6 +580,7 @@ function onMessage(aMessage, aSender) {
   switch (aMessage.type) {
     case kCOMMAND_PING_TO_BACKGROUND:
       clearTimeout(timeout);
+      startWatchSidebarOpenState();
       return Promise.resolve(true);
 
     case kCOMMAND_SIDEBAR_OPENED:

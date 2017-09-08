@@ -30,11 +30,15 @@ async function init() {
 
   migrateLegacyTreeStructure();
 
-  startWatchSidebarOpenState();
   startObserveApiTabs();
   startObserveContextualIdentities();
   browser.runtime.onMessage.addListener(onMessage);
   gInitializing = false;
+
+  // notify that the master process is ready.
+  browser.runtime.sendMessage({
+    type: kCOMMAND_PING_TO_SIDEBAR
+  });
 }
 
 function waitUntilCompletelyRestored() {
@@ -90,16 +94,23 @@ function startWatchSidebarOpenState() {
     let windows = await browser.windows.getAll({
       windowTypes: ['normal']
     });
-    windows.forEach(async aWindow => {
-      var response = await browser.runtime.sendMessage({
-        type:     kCOMMAND_PING_TO_SIDEBAR,
-        windowId: aWindow.id
-      });
-      if (response)
-        gSidebarOpenState.set(aWindow.id, true);
-      else
+    await Promise.all(windows.map(async aWindow => {
+      try {
+        var response = await browser.runtime.sendMessage({
+          type:     kCOMMAND_PING_TO_SIDEBAR,
+          windowId: aWindow.id
+        });
+        if (response)
+          gSidebarOpenState.set(aWindow.id, true);
+        else
+          gSidebarOpenState.delete(aWindow.id);
+      }
+      catch(e) {
         gSidebarOpenState.delete(aWindow.id);
-    });
+      }
+    }));
+    if (gSidebarOpenState.size == 0)
+      endWatchSidebarOpenState();
   }, configs.sidebarOpenStateUpdateInterval);
 }
 

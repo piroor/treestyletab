@@ -261,14 +261,21 @@ async function inheritTreeStructure() {
     await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 
+var gBackgroundIsReady = false;
 async function waitUntilBackgroundIsReady() {
-  while (true) {
+  try {
     let response = await browser.runtime.sendMessage({
       type: kCOMMAND_PING_TO_BACKGROUND
     });
-    if (response)
-      break;
-    await wait();
+    if (response) {
+      gBackgroundIsReady = true;
+      return;
+    }
+  }
+  catch(e) {
+  }
+  while (!gBackgroundIsReady) {
+    await wait(50);
   }
 }
 
