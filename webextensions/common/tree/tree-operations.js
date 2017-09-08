@@ -855,18 +855,19 @@ async function moveTabs(aTabs, aOptions = {}) {
       await newWindow;
     log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
     let toIndex = getAllTabs(container).length;
+    log('toIndex = ', toIndex);
     if (aOptions.insertBefore) {
-      toIndex = aOptions.insertBefore.apiTab.index;
-      if (!isAcrossWindows &&
-          aTabs[0].apiTab.index < toIndex)
-          toIndex--;
+      let latestApiTab = await browser.tabs.get(aOptions.insertBefore.apiTab.id);
+      toIndex = latestApiTab.index;
     }
     else if (aOptions.insertAfter) {
-      toIndex = aOptions.insertAfter.apiTab.index;
-      if (!isAcrossWindows &&
-          aTabs[0].apiTab.index > toIndex)
-          toIndex++;
+      let latestApiTab = await browser.tabs.get(aOptions.insertAfter.apiTab.id);
+      toIndex = latestApiTab.index + 1;
     }
+    if (!isAcrossWindows &&
+        aTabs[0].apiTab.index < toIndex)
+        toIndex--;
+    log(' => ', toIndex);
     if (isAcrossWindows) {
       apiTabIds = await safeMoveApiTabsAcrossWindows(apiTabIds, {
         windowId: destinationWindowId,
@@ -884,7 +885,8 @@ async function moveTabs(aTabs, aOptions = {}) {
     while (Date.now() - startTime < maxDelay) {
       newTabs = apiTabIds.map(getTabById);
       newTabs = newTabs.filter(aTab => !!aTab);
-      if (newTabs.length < aTabs.length) {
+      if (newTabs.length < aTabs.length ||
+          container.processingNewTabsCount > 0) {
         log('retryling: ', apiTabIds, newTabs.length, aTabs.length);
         await wait(100);
         continue;
