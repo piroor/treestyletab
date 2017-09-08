@@ -633,6 +633,7 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_NEW_TABS:
       return (async () => {
+        clearTimeout(timeout);
         log('new tabs requested: ', aMessage);
         return await openURIsInTabs(aMessage.uris, clone(aMessage, {
           parent:       getTabById(aMessage.parent),
@@ -747,12 +748,14 @@ function onMessage(aMessage, aSender) {
     }; break;
 
     case kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE:
+      clearTimeout(timeout);
       return moveTabsInternallyBefore(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.nextTab)
       ).map(aTab => aTab.id);
 
     case kCOMMAND_MOVE_TABS_INTERNALLY_AFTER:
+      clearTimeout(timeout);
       return moveTabsInternallyAfter(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.previousTab)
@@ -760,6 +763,7 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
+        clearTimeout(timeout);
         let child = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
         let insertBefore = getTabById(aMessage.insertBefore);
@@ -772,6 +776,7 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_DETACH_TAB:
       return (async () => {
+        clearTimeout(timeout);
         let tab = getTabById(aMessage.tab);
         if (tab)
           await detachTab(tab);
@@ -779,6 +784,7 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_PERFORM_TABS_DRAG_DROP:
       log('perform tabs dragdrop requested: ', aMessage);
+      clearTimeout(timeout);
       return performTabsDragDrop(clone(aMessage, {
         attachTo:     getTabById(aMessage.attachTo),
         insertBefore: getTabById(aMessage.insertBefore),
