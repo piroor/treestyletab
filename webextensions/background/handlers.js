@@ -692,6 +692,7 @@ function onMessage(aMessage, aSender) {
           browser.runtime.sendMessage(aId, clone(aMessage, {
             type:   kTSTAPI_NOTIFY_TAB_CLICKED,
             tab:    tab.apiTab.id,
+            window: tab.apiTab.windowId,
             states: states
           }))
         ));
@@ -864,7 +865,8 @@ function onMessageExternal(aMessage, aSender) {
         return {
           tab:    tab.apiTab.id,
           id:     tab.apiTab.id, // alias
-          states: Array.slice(tab.classList)
+          states: Array.slice(tab.classList),
+          window: tab.apiTab.windowId
         };
       })();
 
