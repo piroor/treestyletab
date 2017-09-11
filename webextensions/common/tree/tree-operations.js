@@ -683,9 +683,12 @@ function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
 
 
 async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
-  if (!aTab ||
-      isAllTabsPlacedBefore([aTab].concat(getDescendantTabs(aTab)), aNextTab))
+  if (!aTab)
     return;
+  if (isAllTabsPlacedBefore([aTab].concat(getDescendantTabs(aTab)), aNextTab)) {
+    log('moveTabSubtreeBefore:no need to move');
+    return;
+  }
 
   var container = aTab.parentNode;
   container.subTreeMovingCount++;
@@ -705,9 +708,12 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
 }
 
 async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
-  if (!aTab ||
-      isAllTabsPlacedAfter([aTab].concat(getDescendantTabs(aTab)), aPreviousTab))
+  if (!aTab)
     return;
+  if (isAllTabsPlacedAfter([aTab].concat(getDescendantTabs(aTab)), aPreviousTab)) {
+    log('moveTabSubtreeAfter:no need to move');
+    return;
+  }
 
   var container = aTab.parentNode;
   container.subTreeMovingCount++;
