@@ -38,9 +38,9 @@ const kTSTAPI_NOTIFY_TAB_CLICKED   = 'notify:tab-clicked';
 const kTSTAPI_IS_SUBTREE_COLLAPSED = 'request:is-subtree-collapsed';
 const kTSTAPI_HAS_CHILD_TABS       = 'request:has-child-tabs';
 const kTSTAPI_GET_DESCENDANT_TABS  = 'request:get-descendant-tabs';
-const kTSTAPI_GET_TABS_STATE       = 'request:get-tabs-state';
-const kTSTAPI_ADD_TABS_STATE       = 'notify:add-tabs-state';
-const kTSTAPI_REMOVE_TABS_STATE    = 'notify:remove-tabs-state';
+const kTSTAPI_GET_TAB_STATE        = 'request:get-tab-state';
+const kTSTAPI_ADD_TAB_STATE        = 'notify:add-tab-state';
+const kTSTAPI_REMOVE_TAB_STATE     = 'notify:remove-tab-state';
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';

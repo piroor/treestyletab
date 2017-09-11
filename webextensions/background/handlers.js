@@ -843,51 +843,80 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_IS_SUBTREE_COLLAPSED:
       return (async () => {
         clearTimeout(timeout);
-        let tab = getTabById(aMessage.id);
-        return isSubtreeCollapsed(tab);
+        var tabs = TSTAPIGetTargetTabs(aMessage);
+        var results = tabs.map(isSubtreeCollapsed);
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_HAS_CHILD_TABS:
       return (async () => {
         clearTimeout(timeout);
-        let tab = getTabById(aMessage.id);
-        return hasChildTabs(tab);
+        var tabs = TSTAPIGetTargetTabs(aMessage);
+        var results = tabs.map(hasChildTabs);
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_GET_DESCENDANT_TABS:
       return (async () => {
         clearTimeout(timeout);
-        let tab = getTabById(aMessage.id);
-        return getDescendantTabs(tab).map(aTab => aTab.apiTab.id);
+        var tabs = TSTAPIGetTargetTabs(aMessage);
+        var results = tabs.map(getDescendantTabs);
+        results = results.map(aTabs => {
+          return aTabs.map(aTab => aTab.apiTab.id);
+        });
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_GET_TABS_STATE:
+    case kTSTAPI_GET_TAB_STATE:
       return (async () => {
         clearTimeout(timeout);
-        let tabs = aMessage.ids.map(getTabById);
-        return tabs.map(aTab => aTab.classList.contains(aMessage.value));
+        var tabs = TSTAPIGetTargetTabs(aMessage);
+        var results = tabs.map(aTab => aTab.classList.contains(aMessage.state));
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
 
-    case kTSTAPI_ADD_TABS_STATE: {
-      let tabs = aMessage.ids.map(getTabById);
+    case kTSTAPI_ADD_TAB_STATE: {
+      let tabs = TSTAPIGetTargetTabs(aMessage);
       for (let tab of tabs) {
-        tab.classList.add(aMessage.value);
+        tab.classList.add(aMessage.state);
       }
       broadcastTabState(tabs, {
-        add: [aMessage.value]
+        add: [aMessage.state]
       });
     }; break;
 
-    case kTSTAPI_REMOVE_TABS_STATE: {
-      let tabs = aMessage.ids.map(getTabById);
+    case kTSTAPI_REMOVE_TAB_STATE: {
+      let tabs = TSTAPIGetTargetTabs(aMessage);
       for (let tab of tabs) {
-        tab.classList.remove(aMessage.value);
+        tab.classList.remove(aMessage.state);
       }
       broadcastTabState(tabs, {
-        remove: [aMessage.value]
+        remove: [aMessage.state]
       });
     }; break;
   }
   clearTimeout(timeout);
+}
+
+function TSTAPIGetTargetTabs(aMessage) {
+  if (Array.isArray(aMessage.tabs))
+    return aMessage.tabs.map(getTabById);
+  if (aMessage.tab == '*' ||
+      aMessage.tabs == '*')
+    return getAllTabs(aMessage.window);
+  if (aMessage.tab)
+    return [getTabById(aMessage.tab)];
+  return [];
+}
+
+function TSTAPIFormatResult(aResults, aOriginalMessage) {
+  if (Array.isArray(aOriginalMessage.tabs))
+    return aResults;
+  if (aOriginalMessage.tab == '*' ||
+      aOriginalMessage.tabs == '*')
+    return aResults;
+  if (aOriginalMessage.tab)
+    return aResults[0];
+  return aResults;
 }
