@@ -678,6 +678,23 @@ function onMessage(aMessage, aSender) {
           .catch(handleMissingTabError);
       })();
 
+    case kCOMMAND_TAB_MOUSEDOWN: {
+      let tab = getTabById(aMessage.tab);
+      if (!tab) {
+        clearTimeout(timeout);
+        return;
+      }
+
+      for (let id of gExternalListenerAddons) {
+        browser.runtime.sendMessage(id, clone(aMessage, {
+          type: kCOMMAND_TST_TAB_CLICKED,
+          tab:  null,
+          id:   tab.apiTab.id
+        }));
+      }
+
+      // not canceled, then fallback to "select tab"
+    };
     case kCOMMAND_SELECT_TAB: {
       let tab = getTabById(aMessage.tab);
       if (!tab) {
