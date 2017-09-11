@@ -7,18 +7,18 @@
 
 const kID = 'treestyletab@piro.sakura.ne.jp';
 
-const kCOMMAND_PING_TO_BACKGROUND = 'treestyletab:request:ping-to-background';
-const kCOMMAND_PING_TO_SIDEBAR = 'treestyletab:request:ping-to-sidebar';
-const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request:get-unique-id';
-const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:request:pull-tree-structure';
-const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:request:change-subtree-collapsed-state';
-const kCOMMAND_LOAD_URI = 'treestyletab:request:load-uri';
-const kCOMMAND_NEW_WINDOW_FROM_TABS = 'treestyletab:request:open-new-window-from-tabs';
-const kCOMMAND_MOVE_TABS = 'treestyletab:request:move-tabs';
-const kCOMMAND_NEW_TABS = 'treestyletab:request:open-new-tabs';
-const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:request:select-tab-internally';
-const kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE = 'treestyletab:request:move-tabs-internally-before';
-const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:request:move-tabs-internally-after';
+const kCOMMAND_PING_TO_BACKGROUND = 'treestyletab:ping-to-background';
+const kCOMMAND_PING_TO_SIDEBAR = 'treestyletab:ping-to-sidebar';
+const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request-unique-id';
+const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
+const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
+const kCOMMAND_LOAD_URI = 'treestyletab:load-uri';
+const kCOMMAND_NEW_WINDOW_FROM_TABS = 'treestyletab:open-new-window-from-tabs';
+const kCOMMAND_MOVE_TABS = 'treestyletab:move-tabs';
+const kCOMMAND_NEW_TABS = 'treestyletab:open-new-tabs';
+const kCOMMAND_SELECT_TAB_INTERNALLY = 'treestyletab:select-tab-internally';
+const kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE = 'treestyletab:move-tabs-internally-before';
+const kCOMMAND_MOVE_TABS_INTERNALLY_AFTER = 'treestyletab:move-tabs-internally-after';
 
 const kCOMMAND_SELECT_TAB = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED = 'treestyletab:set-subtree-muted';
