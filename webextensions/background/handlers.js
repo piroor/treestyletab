@@ -687,7 +687,8 @@ function onMessage(aMessage, aSender) {
         }
 
         let states = Array.slice(tab.classList);
-        let results = await Promise.all(gExternalListenerAddons.map(aId =>
+        let addons = Object.keys(gExternalListenerAddons);
+        let results = await Promise.all(addons.map(aId =>
           browser.runtime.sendMessage(aId, clone(aMessage, {
             type:   kTSTAPI_NOTIFY_TAB_CLICKED,
             tab:    tab.apiTab.id,
@@ -827,15 +828,11 @@ function onMessageExternal(aMessage, aSender) {
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
     case kTSTAPI_REGISTER_SELF: {
-      let index = gExternalListenerAddons.indexOf(aSender.id);
-      if (index < 0)
-        gExternalListenerAddons.push(aSender.id);
+      gExternalListenerAddons[aSender.id] = aMessage;
     }; break;
 
     case kTSTAPI_UNREGISTER_SELF: {
-      let index = gExternalListenerAddons.indexOf(aSender.id);
-      if (index > -1)
-        gExternalListenerAddons.splice(index, 1);
+      delete gExternalListenerAddons[aSender.id];
     }; break;
 
 

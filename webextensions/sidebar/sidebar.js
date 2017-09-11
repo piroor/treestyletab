@@ -26,6 +26,7 @@ var gSizeDefinition;
 var gContextualIdentitiesStyle;
 var gStyleLoader;
 var gUserStyleRules;
+var gAddonStyles = {};
 
 async function earlyInit() {
   log('initialize sidebar on DOMContentLoaded');
@@ -85,6 +86,16 @@ async function init() {
   onConfigChange('animation');
 
   browser.runtime.onMessage.addListener(onMessage);
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+
+  var bg = await browser.runtime.getBackgroundPage();
+  var addons = bg.gExternalListenerAddons;
+  for (let id of Object.keys(addons)) {
+    let addon = addons[id];
+    if (addon.style)
+      installStyleForAddon(id, addon.style);
+  }
+
   unblockUserOperations({ throbber: true });
 }
 
@@ -96,6 +107,7 @@ function destroy() {
 
   configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
+  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   endListenDragEvents(gTabBar);
   endObserveApiTabs();
   endObserveContextualIdentities();
@@ -235,6 +247,22 @@ function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGG
   var blue  = parseInt(parts[3], 16);
   var brightness = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
   return brightness < 0.5 ? 'white' : 'black';
+}
+
+function installStyleForAddon(aId, aStyle) {
+  if (!gAddonStyles[aId]) {
+    gAddonStyles[aId] = document.createElement('style');
+    gAddonStyles[aId].setAttribute('type', 'text/css');
+    document.head.insertBefore(gAddonStyles[aId], gUserStyleRules);
+  }
+  gAddonStyles[aId].textContent = aStyle;
+}
+
+function uninstallStyleForAddon(aId) {
+  if (!gAddonStyles[aId])
+    return;
+  document.head.removeChild(gAddonStyles[aId]);
+  delete gAddonStyles[aId];
 }
 
 async function rebuildAll() {

@@ -848,6 +848,19 @@ function onMessage(aMessage, aSender, aRespond) {
   clearTimeout(timeout);
 }
 
+function onMessageExternal(aMessage, aSender) {
+  switch (aMessage.type) {
+    case kTSTAPI_REGISTER_SELF: {
+      if (aMessage.style)
+        installStyleForAddon(aSender.id, aMessage.style)
+    }; break;
+
+    case kTSTAPI_UNREGISTER_SELF: {
+      uninstallStyleForAddon(aSender.id)
+    }; break;
+  }
+}
+
 function onConfigChange(aChangedKey) {
   var rootClasses = document.documentElement.classList;
   switch (aChangedKey) {

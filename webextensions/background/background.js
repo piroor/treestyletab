@@ -10,7 +10,7 @@ gLogContext = 'BG';
 var gInitializing = true;
 var gSidebarOpenState = new Map();
 var gSidebarOpenStateUpdateTimer;
-var gExternalListenerAddons = [];
+var gExternalListenerAddons = {};
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
