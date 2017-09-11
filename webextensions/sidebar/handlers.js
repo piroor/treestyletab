@@ -241,6 +241,18 @@ function onMouseDown(aEvent) {
     return;
   }
 
+  for (let id of gExternalListenerAddons) {
+    browser.runtime.sendMessage(id, {
+      type:     kCOMMAND_TST_TAB_CLICKED,
+      tab:      tab.apiTab.id,
+      button:   aEvent.button,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey
+    });
+  }
+
   //log('give focus to ', tab.id);
   browser.runtime.sendMessage({
     type:     kCOMMAND_SELECT_TAB,

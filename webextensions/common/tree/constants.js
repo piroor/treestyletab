@@ -5,6 +5,8 @@
 */
 'use strict';
 
+const kID = 'treestyletab@piro.sakura.ne.jp';
+
 const kCOMMAND_PING_TO_BACKGROUND = 'treestyletab:request:ping-to-background';
 const kCOMMAND_PING_TO_SIDEBAR = 'treestyletab:request:ping-to-sidebar';
 const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request:get-unique-id';
@@ -29,6 +31,13 @@ const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';
 const kCOMMAND_BROADCAST_TAB_STATE = 'treestyletab:broadcast-tab-state';
 const kCOMMAND_SIDEBAR_OPENED = 'treestyletab:sidebar-opened';
 const kCOMMAND_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
+
+const kCOMMAND_TST_REGISTER_LISTENER_ADDON   = `${kID}:register-listener-addon`;
+const kCOMMAND_TST_UNREGISTER_LISTENER_ADDON = `${kID}:unregister-listener-addon`;
+const kCOMMAND_TST_TAB_CLICKED               = `${kID}:notify:tab-clicked`;
+const kCOMMAND_TST_IS_SUBTREE_COLLAPSED      = `${kID}:request:is-subtree-collapsed`;
+const kCOMMAND_TST_HAS_CHILD_TABS            = `${kID}:request:has-child-tabs`;
+const kCOMMAND_TST_GET_DESCENDANT_TABS       = `${kID}:request:get-descendant-tabs`;
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';

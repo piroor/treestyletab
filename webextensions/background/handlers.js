@@ -794,3 +794,45 @@ function onMessage(aMessage, aSender) {
   }
   clearTimeout(timeout);
 }
+
+function onMessageExternal(aMessage, aSender) {
+  var timeout = setTimeout(() => {
+    log('onMessage: timeout! ', aMessage, aSender);
+  }, 10 * 1000);
+
+  //log('onMessageExternal: ', aMessage, aSender);
+  switch (aMessage.type) {
+    case kCOMMAND_TST_REGISTER_LISTENER_ADDON: {
+      let index = gExternalListenerAddons.indexOf(aSender.id);
+      if (index < 0)
+        gExternalListenerAddons.push(aSender.id);
+    }; break;
+
+    case kCOMMAND_TST_UNREGISTER_LISTENER_ADDON: {
+      let index = gExternalListenerAddons.indexOf(aSender.id);
+      if (index > -1)
+        gExternalListenerAddons.splice(index, 1);
+    }; break;
+
+    case kCOMMAND_TST_IS_SUBTREE_COLLAPSED:
+      return (async () => {
+        clearTimeout(timeout);
+        let tab = getTabById(aMessage.id);
+        if (tab)
+          await isSubtreeCollapsed(tab);
+        else
+          return false;
+      })();
+
+    case kCOMMAND_TST_HAS_CHILD_TABS:
+      return (async () => {
+        clearTimeout(timeout);
+        let tab = getTabById(aMessage.id);
+        if (tab)
+          await hasChildTabs(tab);
+        else
+          return false;
+      })();
+  }
+  clearTimeout(timeout);
+}
