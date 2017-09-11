@@ -34,14 +34,14 @@ const kNOTIFY_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
 const kTSTAPI_REGISTER_SELF        = 'register-self';
 const kTSTAPI_UNREGISTER_SELF      = 'unregister-self';
-const kTSTAPI_NOTIFY_TAB_CLICKED   = 'notify:tab-clicked';
-const kTSTAPI_IS_SUBTREE_COLLAPSED = 'request:is-subtree-collapsed';
-const kTSTAPI_HAS_CHILD_TABS       = 'request:has-child-tabs';
-const kTSTAPI_GET_ACTIVE_TAB       = 'request:get-active-tab';
-const kTSTAPI_GET_DESCENDANT_TABS  = 'request:get-descendant-tabs';
-const kTSTAPI_GET_TAB_STATE        = 'request:get-tab-state';
-const kTSTAPI_ADD_TAB_STATE        = 'notify:add-tab-state';
-const kTSTAPI_REMOVE_TAB_STATE     = 'notify:remove-tab-state';
+const kTSTAPI_NOTIFY_TAB_CLICKED   = 'tab-clicked';
+const kTSTAPI_IS_SUBTREE_COLLAPSED = 'is-subtree-collapsed';
+const kTSTAPI_HAS_CHILD_TABS       = 'has-child-tabs';
+const kTSTAPI_GET_ACTIVE_TAB       = 'get-active-tab';
+const kTSTAPI_GET_DESCENDANT_TABS  = 'get-descendant-tabs';
+const kTSTAPI_GET_TAB_STATE        = 'get-tab-state';
+const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
+const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';
