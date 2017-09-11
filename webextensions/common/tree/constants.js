@@ -37,6 +37,7 @@ const kTSTAPI_UNREGISTER_SELF      = 'unregister-self';
 const kTSTAPI_NOTIFY_TAB_CLICKED   = 'notify:tab-clicked';
 const kTSTAPI_IS_SUBTREE_COLLAPSED = 'request:is-subtree-collapsed';
 const kTSTAPI_HAS_CHILD_TABS       = 'request:has-child-tabs';
+const kTSTAPI_GET_ACTIVE_TAB       = 'request:get-active-tab';
 const kTSTAPI_GET_DESCENDANT_TABS  = 'request:get-descendant-tabs';
 const kTSTAPI_GET_TAB_STATE        = 'request:get-tab-state';
 const kTSTAPI_ADD_TAB_STATE        = 'notify:add-tab-state';

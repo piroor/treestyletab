@@ -855,6 +855,17 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(results, aMessage);
       })();
 
+    case kTSTAPI_GET_ACTIVE_TAB:
+      return (async () => {
+        clearTimeout(timeout);
+        var window = await browser.windows.getLastFocused({});
+        var tab = getCurrentTab(window.id);
+        return {
+          tab:    tab.apiTab.id,
+          states: Array.slice(tab.classList)
+        };
+      })();
+
     case kTSTAPI_GET_DESCENDANT_TABS:
       return (async () => {
         clearTimeout(timeout);
