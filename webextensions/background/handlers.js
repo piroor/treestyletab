@@ -842,7 +842,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_IS_SUBTREE_COLLAPSED:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
         var results = tabs.map(isSubtreeCollapsed);
         return TSTAPIFormatResult(results, aMessage);
       })();
@@ -850,7 +850,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_HAS_CHILD_TABS:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
         var results = tabs.map(hasChildTabs);
         return TSTAPIFormatResult(results, aMessage);
       })();
@@ -858,7 +858,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_GET_DESCENDANT_TABS:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
         var results = tabs.map(getDescendantTabs);
         results = results.map(aTabs => {
           return aTabs.map(aTab => aTab.apiTab.id);
@@ -869,41 +869,49 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_GET_TAB_STATE:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = TSTAPIGetTargetTabs(aMessage);
-        var results = tabs.map(aTab => aTab.classList.contains(aMessage.state));
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var results = tabs.map(aTab => Array.slice(aTab.classList));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
 
-    case kTSTAPI_ADD_TAB_STATE: {
-      let tabs = TSTAPIGetTargetTabs(aMessage);
-      for (let tab of tabs) {
-        tab.classList.add(aMessage.state);
-      }
-      broadcastTabState(tabs, {
-        add: [aMessage.state]
-      });
-    }; break;
+    case kTSTAPI_ADD_TAB_STATE:
+      return (async () => {
+        clearTimeout(timeout);
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          tab.classList.add(aMessage.state);
+        }
+        broadcastTabState(tabs, {
+          add: [aMessage.state]
+        });
+      })();
 
-    case kTSTAPI_REMOVE_TAB_STATE: {
-      let tabs = TSTAPIGetTargetTabs(aMessage);
-      for (let tab of tabs) {
-        tab.classList.remove(aMessage.state);
-      }
-      broadcastTabState(tabs, {
-        remove: [aMessage.state]
-      });
-    }; break;
+    case kTSTAPI_REMOVE_TAB_STATE:
+      return (async () => {
+        clearTimeout(timeout);
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          tab.classList.remove(aMessage.state);
+        }
+        broadcastTabState(tabs, {
+          remove: [aMessage.state]
+        });
+      })();
   }
   clearTimeout(timeout);
 }
 
-function TSTAPIGetTargetTabs(aMessage) {
+async function TSTAPIGetTargetTabs(aMessage) {
   if (Array.isArray(aMessage.tabs))
     return aMessage.tabs.map(getTabById);
   if (aMessage.tab == '*' ||
-      aMessage.tabs == '*')
-    return getAllTabs(aMessage.window);
+      aMessage.tabs == '*') {
+    if (aMessage.window)
+      return getAllTabs(aMessage.window);
+    let window = await browser.windows.getLastFocused({});
+    return getAllTabs(window.id);
+  }
   if (aMessage.tab)
     return [getTabById(aMessage.tab)];
   return [];
