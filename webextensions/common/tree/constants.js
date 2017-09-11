@@ -5,8 +5,6 @@
 */
 'use strict';
 
-const kID = 'treestyletab@piro.sakura.ne.jp';
-
 const kCOMMAND_PING_TO_BACKGROUND = 'treestyletab:ping-to-background';
 const kCOMMAND_PING_TO_SIDEBAR = 'treestyletab:ping-to-sidebar';
 const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request-unique-id';
@@ -34,15 +32,15 @@ const kNOTIFY_TAB_MOUSEDOWN = 'treestyletab:tab-mousedown';
 const kNOTIFY_SIDEBAR_OPENED = 'treestyletab:sidebar-opened';
 const kNOTIFY_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
-const kTSTAPI_REGISTER_LISTENER_ADDON   = `${kID}:register-listener-addon`;
-const kTSTAPI_UNREGISTER_LISTENER_ADDON = `${kID}:unregister-listener-addon`;
-const kTSTAPI_NOTIFY_TAB_CLICKED        = `${kID}:notify:tab-clicked`;
-const kTSTAPI_IS_SUBTREE_COLLAPSED      = `${kID}:request:is-subtree-collapsed`;
-const kTSTAPI_HAS_CHILD_TABS            = `${kID}:request:has-child-tabs`;
-const kTSTAPI_GET_DESCENDANT_TABS       = `${kID}:request:get-descendant-tabs`;
-const kTSTAPI_GET_TABS_STATE            = `${kID}:request:get-tabs-state`;
-const kTSTAPI_ADD_TABS_STATE            = `${kID}:notify:add-tabs-state`;
-const kTSTAPI_REMOVE_TABS_STATE         = `${kID}:notify:remove-tabs-state`;
+const kTSTAPI_REGISTER_LISTENER_ADDON   = 'register-self';
+const kTSTAPI_UNREGISTER_LISTENER_ADDON = 'unregister-self';
+const kTSTAPI_NOTIFY_TAB_CLICKED        = 'notify:tab-clicked';
+const kTSTAPI_IS_SUBTREE_COLLAPSED      = 'request:is-subtree-collapsed';
+const kTSTAPI_HAS_CHILD_TABS            = 'request:has-child-tabs';
+const kTSTAPI_GET_DESCENDANT_TABS       = 'request:get-descendant-tabs';
+const kTSTAPI_GET_TABS_STATE            = 'request:get-tabs-state';
+const kTSTAPI_ADD_TABS_STATE            = 'notify:add-tabs-state';
+const kTSTAPI_REMOVE_TABS_STATE         = 'notify:remove-tabs-state';
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';
