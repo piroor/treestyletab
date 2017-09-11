@@ -827,13 +827,17 @@ function onMessageExternal(aMessage, aSender) {
 
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kTSTAPI_REGISTER_SELF: {
-      gExternalListenerAddons[aSender.id] = aMessage;
-    }; break;
+    case kTSTAPI_REGISTER_SELF:
+      return (async () => {
+        gExternalListenerAddons[aSender.id] = aMessage;
+        return true;
+      })();
 
-    case kTSTAPI_UNREGISTER_SELF: {
-      delete gExternalListenerAddons[aSender.id];
-    }; break;
+    case kTSTAPI_UNREGISTER_SELF:
+      return (async () => {
+        delete gExternalListenerAddons[aSender.id];
+        return true;
+      })();
 
 
     case kTSTAPI_IS_SUBTREE_COLLAPSED:
