@@ -476,21 +476,26 @@ function onTabFocused(aTab) {
   scrollToTab(aTab);
 }
 
-function onTabOpening(aTab) {
-  if (configs.animation)
+function onTabOpening(aTab, aInfo = {}) {
+  if (configs.animation) {
+    aTab.classList.add(kTAB_STATE_COLLAPSED);
     onTabCollapsedStateChanging(aTab, {
       collapsed: true,
       justNow:   true
     });
+  }
 }
 
-function onTabOpened(aTab) {
+function onTabOpened(aTab, aInfo = {}) {
   if (configs.animation) {
-    nextFrame().then(() => {
+    nextFrame().then(async () => {
+      if (aInfo.openedWithPosition) // wait until the tab is moved to correct position
+        await nextFrame();
       if (!aTab.parentNode) // it was removed while waiting
         return;
       aTab.classList.add(kTAB_STATE_ANIMATION_READY);
       var focused = isActive(aTab);
+      aTab.classList.remove(kTAB_STATE_COLLAPSED);
       onTabCollapsedStateChanging(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
