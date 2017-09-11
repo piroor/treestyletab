@@ -860,13 +860,35 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_GET_ACTIVE_TAB:
       return (async () => {
         clearTimeout(timeout);
-        var window = await browser.windows.getLastFocused({});
-        var tab = getCurrentTab(window.id);
+        var windowId = aMessage.window;
+        if (!windowId) {
+          let window = await browser.windows.getLastFocused({});
+          windowId = window.id;
+        }
+        var tab = getCurrentTab(windowId);
         return {
           tab:    tab.apiTab.id,
           id:     tab.apiTab.id, // alias
           states: Array.slice(tab.classList),
-          window: tab.apiTab.windowId
+          window: windowId
+        };
+      })();
+
+    case kTSTAPI_GET_TABS:
+      return (async () => {
+        clearTimeout(timeout);
+        var windowId = aMessage.window;
+        if (!windowId) {
+          let window = await browser.windows.getLastFocused({});
+          windowId = window.id;
+        }
+        var tabs = getTabs(windowId);
+        var tabIds = tabs.map(aTab => aTab.apiTab.id);
+        return {
+          tabs:   tabIds,
+          ids:    tabIds, // alias
+          states: tabs.map(aTab => Array.slice(aTab.classList)),
+          window: windowId
         };
       })();
 
@@ -923,9 +945,9 @@ async function TSTAPIGetTargetTabs(aMessage) {
   if (aMessage.tab == '*' ||
       aMessage.tabs == '*') {
     if (aMessage.window)
-      return getAllTabs(aMessage.window);
+      return getTabs(aMessage.window);
     let window = await browser.windows.getLastFocused({});
-    return getAllTabs(window.id);
+    return getTabs(window.id);
   }
   if (aMessage.tab)
     return [getTabById(aMessage.tab)];
