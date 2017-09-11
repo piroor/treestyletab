@@ -495,6 +495,7 @@ function retrieveURIsFromData(aData, aType) {
 /* DOM event listeners */
 
 var gDraggingOnSelfWindow = false;
+var gLastDragDataRaw = null;
 
 function onDragStart(aEvent) {
   var tab = aEvent.target;
@@ -503,6 +504,7 @@ function onDragStart(aEvent) {
     return;
 
   gDraggingOnSelfWindow = true;
+  gLastDragDataRaw = dragData;
 
   var dt = aEvent.dataTransfer;
 
@@ -699,9 +701,15 @@ function onDrop(aEvent) {
 function onDragEnd(aEvent) {
   log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
   var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
-  dragData = JSON.parse(dragData);
+  if (dragData) {
+    dragData = JSON.parse(dragData);
+  }
+  else {
+    dragData = gLastDragDataRaw;
+  }
   var stillInSelfWindow = !!gDraggingOnSelfWindow;
   gDraggingOnSelfWindow = false;
+  gLastDragDataRaw = null;
 
   if (Array.isArray(dragData.tabIds)) {
     dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
