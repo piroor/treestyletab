@@ -689,9 +689,8 @@ function onMessage(aMessage, aSender) {
         let states = Array.slice(tab.classList);
         let results = await Promise.all(gExternalListenerAddons.map(aId =>
           browser.runtime.sendMessage(aId, clone(aMessage, {
-            type: kTSTAPI_NOTIFY_TAB_CLICKED,
-            tab:  null,
-            id:   tab.apiTab.id,
+            type:   kTSTAPI_NOTIFY_TAB_CLICKED,
+            tab:    tab.apiTab.id,
             states: states
           }))
         ));
