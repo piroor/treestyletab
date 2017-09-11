@@ -191,20 +191,20 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
         });
       }
       else
-        collapseExpandTab(aChild, clone(aOptions, {
+        collapseExpandTabAndSubtree(aChild, clone(aOptions, {
           collapsed: true,
           inRemote: false
         }));
     }
     if (isCollapsed(aParent))
-      collapseExpandTab(aChild, clone(aOptions, {
+      collapseExpandTabAndSubtree(aChild, clone(aOptions, {
         collapsed: true,
         inRemote: false
       }));
   }
   else if (shouldTabAutoExpanded(aParent) ||
            isCollapsed(aParent)) {
-    collapseExpandTab(aChild, clone(aOptions, {
+    collapseExpandTabAndSubtree(aChild, clone(aOptions, {
       collapsed: true,
       inRemote: false
     }));
@@ -457,7 +457,7 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
     if (!aParams.collapsed &&
         !aParams.justNow &&
         i == lastExpandedTabIndex) {
-      collapseExpandTab(childTab, {
+      collapseExpandTabAndSubtree(childTab, {
          collapsed: aParams.collapsed,
          justNow:   aParams.justNow,
          anchor:    aTab,
@@ -465,7 +465,7 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
       });
     }
     else {
-      collapseExpandTab(childTab, {
+      collapseExpandTabAndSubtree(childTab, {
         collapsed: aParams.collapsed,
         justNow:   aParams.justNow
       });
@@ -485,7 +485,7 @@ function manualCollapseExpandSubtree(aTab, aParams = {}) {
   }
 }
 
-function collapseExpandTab(aTab, aParams = {}) {
+function collapseExpandTabAndSubtree(aTab, aParams = {}) {
   if (!aTab)
     return;
 
@@ -493,7 +493,7 @@ function collapseExpandTab(aTab, aParams = {}) {
   if (!parent)
     return;
 
-  collapseExpandOneTab(aTab, aParams);
+  collapseExpandTab(aTab, aParams);
 
   //var data = {
   //  collapsed : aParams.collapsed
@@ -518,7 +518,7 @@ function collapseExpandTab(aTab, aParams = {}) {
     children.forEach((aChild, aIndex) => {
       var last = aParams.last &&
                    (aIndex == children.length - 1);
-      collapseExpandTab(aChild, clone(aParams, {
+      collapseExpandTabAndSubtree(aChild, clone(aParams, {
         collapsed: aParams.collapsed,
         justNow:   aParams.justNow,
         anchor:    last && aParams.anchor,
@@ -528,7 +528,7 @@ function collapseExpandTab(aTab, aParams = {}) {
   }
 }
 
-function collapseExpandOneTab(aTab, aParams = {}) {
+function collapseExpandTab(aTab, aParams = {}) {
   if (aParams.collapsed)
     aTab.classList.add(kTAB_STATE_COLLAPSED);
   else
@@ -1186,7 +1186,7 @@ function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
       attachTabTo(tab, aParent, aOptions);
     else
       detachTab(tab, aOptions);
-    collapseExpandTab(tab, clone(aOptions, {
+    collapseExpandTabAndSubtree(tab, clone(aOptions, {
       collapsed: false
     }));
   }
@@ -1196,7 +1196,7 @@ function detachTabsOnDrop(aTabs, aOptions = {}) {
   log('detachTabsOnDrop: start');
   for (let tab of aTabs) {
     detachTab(tab, aOptions);
-    collapseExpandTab(tab, clone(aOptions, {
+    collapseExpandTabAndSubtree(tab, clone(aOptions, {
       collapsed: false
     }));
   }
@@ -1275,7 +1275,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     let tab = aTabs[i];
 /*
     if (isCollapsed(tab))
-      collapseExpandTab(tab, clone(aOptions, {
+      collapseExpandTabAndSubtree(tab, clone(aOptions, {
         collapsed: false,
         justNow: true
       }));

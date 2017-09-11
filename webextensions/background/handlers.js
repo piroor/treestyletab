@@ -560,7 +560,7 @@ function onTabPinned(aTab) {
   detachTab(aTab, {
     broadcast: true
   });
-  collapseExpandTab(aTab, { collapsed: false });
+  collapseExpandTabAndSubtree(aTab, { collapsed: false });
 }
 
 

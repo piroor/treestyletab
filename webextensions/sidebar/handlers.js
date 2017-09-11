@@ -478,7 +478,7 @@ function onTabFocused(aTab) {
 
 function onTabOpening(aTab, aInfo = {}) {
   if (configs.animation) {
-    collapseExpandOneTab(aTab, {
+    collapseExpandTab(aTab, {
       collapsed: true,
       justNow:   true
     });
@@ -490,7 +490,7 @@ function onTabOpened(aTab, aInfo = {}) {
     aTab.classList.add(kTAB_STATE_ANIMATION_READY);
     nextFrame().then(async () => {
       var focused = isActive(aTab);
-      collapseExpandOneTab(aTab, {
+      collapseExpandTab(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
         anchor:    focused && getCurrentTab(),
@@ -547,14 +547,14 @@ function onTabMoving(aTab) {
   if (configs.animation &&
       !isCollapsed(aTab) &&
       !isPinned(aTab)) {
-    collapseExpandOneTab(aTab, {
+    collapseExpandTab(aTab, {
       collapsed: true,
       justNow:   true
     });
     nextFrame().then(() => {
       if (!aTab.parentNode) // it was removed while waiting
         return;
-      collapseExpandOneTab(aTab, {
+      collapseExpandTab(aTab, {
         collapsed: false
       });
     });
