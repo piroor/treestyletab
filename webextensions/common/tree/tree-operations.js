@@ -493,21 +493,7 @@ function collapseExpandTab(aTab, aParams = {}) {
   if (!parent)
     return;
 
-  if (aParams.collapsed)
-    aTab.classList.add(kTAB_STATE_COLLAPSED);
-  else
-    aTab.classList.remove(kTAB_STATE_COLLAPSED);
-  //setTabValue(aTab, kTAB_STATE_COLLAPSED, aParams.collapsed);
-
-  var last = aParams.last &&
-               (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
-  window.onTabCollapsedStateChanging &&
-    window.onTabCollapsedStateChanging(aTab, {
-      collapsed: aParams.collapsed,
-      justNow: aParams.justNow,
-      anchor: last && aParams.anchor,
-      last: last
-    });
+  collapseExpandOneTab(aTab, aParams);
 
   //var data = {
   //  collapsed : aParams.collapsed
@@ -540,6 +526,21 @@ function collapseExpandTab(aTab, aParams = {}) {
       }));
     });
   }
+}
+
+function collapseExpandOneTab(aTab, aParams = {}) {
+  if (aParams.collapsed)
+    aTab.classList.add(kTAB_STATE_COLLAPSED);
+  else
+    aTab.classList.remove(kTAB_STATE_COLLAPSED);
+
+  var last = aParams.last &&
+               (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
+  window.onTabCollapsedStateChanging &&
+    window.onTabCollapsedStateChanging(aTab, clone(aParams, {
+      anchor: last && aParams.anchor,
+      last: last
+    }));
 }
 
 function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
