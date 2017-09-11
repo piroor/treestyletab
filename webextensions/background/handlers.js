@@ -687,7 +687,7 @@ function onMessage(aMessage, aSender) {
 
       for (let id of gExternalListenerAddons) {
         browser.runtime.sendMessage(id, clone(aMessage, {
-          type: kTSTAPI_TAB_CLICKED,
+          type: kTSTAPI_NOTIFY_TAB_CLICKED,
           tab:  null,
           id:   tab.apiTab.id
         }));
