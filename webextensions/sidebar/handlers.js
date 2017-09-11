@@ -243,7 +243,7 @@ function onMouseDown(aEvent) {
 
   //log('give focus to ', tab.id);
   browser.runtime.sendMessage({
-    type:     kCOMMAND_TAB_MOUSEDOWN,
+    type:     kNOTIFY_TAB_MOUSEDOWN,
     windowId: gTargetWindow,
     tab:      tab.id,
     button:   aEvent.button,

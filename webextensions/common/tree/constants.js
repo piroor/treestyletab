@@ -30,16 +30,16 @@ const kCOMMAND_BLOCK_USER_OPERATIONS = 'treestyletab:block-user-operations';
 const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';
 const kCOMMAND_BROADCAST_TAB_STATE = 'treestyletab:broadcast-tab-state';
 
-const kCOMMAND_TAB_MOUSEDOWN = 'treestyletab:tab-mousedown';
-const kCOMMAND_SIDEBAR_OPENED = 'treestyletab:sidebar-opened';
-const kCOMMAND_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
+const kNOTIFY_TAB_MOUSEDOWN = 'treestyletab:tab-mousedown';
+const kNOTIFY_SIDEBAR_OPENED = 'treestyletab:sidebar-opened';
+const kNOTIFY_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
-const kCOMMAND_TST_REGISTER_LISTENER_ADDON   = `${kID}:register-listener-addon`;
-const kCOMMAND_TST_UNREGISTER_LISTENER_ADDON = `${kID}:unregister-listener-addon`;
-const kCOMMAND_TST_TAB_CLICKED               = `${kID}:notify:tab-clicked`;
-const kCOMMAND_TST_IS_SUBTREE_COLLAPSED      = `${kID}:request:is-subtree-collapsed`;
-const kCOMMAND_TST_HAS_CHILD_TABS            = `${kID}:request:has-child-tabs`;
-const kCOMMAND_TST_GET_DESCENDANT_TABS       = `${kID}:request:get-descendant-tabs`;
+const kTSTAPI_REGISTER_LISTENER_ADDON   = `${kID}:register-listener-addon`;
+const kTSTAPI_UNREGISTER_LISTENER_ADDON = `${kID}:unregister-listener-addon`;
+const kTSTAPI_NOTIFY_TAB_CLICKED        = `${kID}:notify:tab-clicked`;
+const kTSTAPI_IS_SUBTREE_COLLAPSED      = `${kID}:request:is-subtree-collapsed`;
+const kTSTAPI_HAS_CHILD_TABS            = `${kID}:request:has-child-tabs`;
+const kTSTAPI_GET_DESCENDANT_TABS       = `${kID}:request:get-descendant-tabs`;
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';

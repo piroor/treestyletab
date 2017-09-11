@@ -64,7 +64,7 @@ async function init() {
   startObserveContextualIdentities();
 
   browser.runtime.sendMessage({
-    type:     kCOMMAND_SIDEBAR_OPENED,
+    type:     kNOTIFY_SIDEBAR_OPENED,
     windowId: gTargetWindow
   });
 
@@ -90,7 +90,7 @@ async function init() {
 
 function destroy() {
   browser.runtime.sendMessage({
-    type:     kCOMMAND_SIDEBAR_CLOSED,
+    type:     kNOTIFY_SIDEBAR_CLOSED,
     windowId: gTargetWindow
   });
 

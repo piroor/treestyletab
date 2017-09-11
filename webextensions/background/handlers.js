@@ -583,11 +583,11 @@ function onMessage(aMessage, aSender) {
       startWatchSidebarOpenState();
       return Promise.resolve(true);
 
-    case kCOMMAND_SIDEBAR_OPENED:
+    case kNOTIFY_SIDEBAR_OPENED:
       gSidebarOpenState.set(aMessage.windowId, true);
       break;
 
-    case kCOMMAND_SIDEBAR_CLOSED:
+    case kNOTIFY_SIDEBAR_CLOSED:
       gSidebarOpenState.delete(aMessage.windowId);
       break;
 
@@ -678,7 +678,7 @@ function onMessage(aMessage, aSender) {
           .catch(handleMissingTabError);
       })();
 
-    case kCOMMAND_TAB_MOUSEDOWN: {
+    case kNOTIFY_TAB_MOUSEDOWN: {
       let tab = getTabById(aMessage.tab);
       if (!tab) {
         clearTimeout(timeout);
@@ -687,7 +687,7 @@ function onMessage(aMessage, aSender) {
 
       for (let id of gExternalListenerAddons) {
         browser.runtime.sendMessage(id, clone(aMessage, {
-          type: kCOMMAND_TST_TAB_CLICKED,
+          type: kTSTAPI_TAB_CLICKED,
           tab:  null,
           id:   tab.apiTab.id
         }));
@@ -819,19 +819,19 @@ function onMessageExternal(aMessage, aSender) {
 
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_TST_REGISTER_LISTENER_ADDON: {
+    case kTSTAPI_REGISTER_LISTENER_ADDON: {
       let index = gExternalListenerAddons.indexOf(aSender.id);
       if (index < 0)
         gExternalListenerAddons.push(aSender.id);
     }; break;
 
-    case kCOMMAND_TST_UNREGISTER_LISTENER_ADDON: {
+    case kTSTAPI_UNREGISTER_LISTENER_ADDON: {
       let index = gExternalListenerAddons.indexOf(aSender.id);
       if (index > -1)
         gExternalListenerAddons.splice(index, 1);
     }; break;
 
-    case kCOMMAND_TST_IS_SUBTREE_COLLAPSED:
+    case kTSTAPI_IS_SUBTREE_COLLAPSED:
       return (async () => {
         clearTimeout(timeout);
         let tab = getTabById(aMessage.id);
@@ -841,7 +841,7 @@ function onMessageExternal(aMessage, aSender) {
           return false;
       })();
 
-    case kCOMMAND_TST_HAS_CHILD_TABS:
+    case kTSTAPI_HAS_CHILD_TABS:
       return (async () => {
         clearTimeout(timeout);
         let tab = getTabById(aMessage.id);
