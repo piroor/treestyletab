@@ -32,15 +32,15 @@ const kNOTIFY_TAB_MOUSEDOWN = 'treestyletab:tab-mousedown';
 const kNOTIFY_SIDEBAR_OPENED = 'treestyletab:sidebar-opened';
 const kNOTIFY_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
-const kTSTAPI_REGISTER_LISTENER_ADDON   = 'register-self';
-const kTSTAPI_UNREGISTER_LISTENER_ADDON = 'unregister-self';
-const kTSTAPI_NOTIFY_TAB_CLICKED        = 'notify:tab-clicked';
-const kTSTAPI_IS_SUBTREE_COLLAPSED      = 'request:is-subtree-collapsed';
-const kTSTAPI_HAS_CHILD_TABS            = 'request:has-child-tabs';
-const kTSTAPI_GET_DESCENDANT_TABS       = 'request:get-descendant-tabs';
-const kTSTAPI_GET_TABS_STATE            = 'request:get-tabs-state';
-const kTSTAPI_ADD_TABS_STATE            = 'notify:add-tabs-state';
-const kTSTAPI_REMOVE_TABS_STATE         = 'notify:remove-tabs-state';
+const kTSTAPI_REGISTER_SELF        = 'register-self';
+const kTSTAPI_UNREGISTER_SELF      = 'unregister-self';
+const kTSTAPI_NOTIFY_TAB_CLICKED   = 'notify:tab-clicked';
+const kTSTAPI_IS_SUBTREE_COLLAPSED = 'request:is-subtree-collapsed';
+const kTSTAPI_HAS_CHILD_TABS       = 'request:has-child-tabs';
+const kTSTAPI_GET_DESCENDANT_TABS  = 'request:get-descendant-tabs';
+const kTSTAPI_GET_TABS_STATE       = 'request:get-tabs-state';
+const kTSTAPI_ADD_TABS_STATE       = 'notify:add-tabs-state';
+const kTSTAPI_REMOVE_TABS_STATE    = 'notify:remove-tabs-state';
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';

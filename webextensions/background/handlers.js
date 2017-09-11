@@ -827,13 +827,13 @@ function onMessageExternal(aMessage, aSender) {
 
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kTSTAPI_REGISTER_LISTENER_ADDON: {
+    case kTSTAPI_REGISTER_SELF: {
       let index = gExternalListenerAddons.indexOf(aSender.id);
       if (index < 0)
         gExternalListenerAddons.push(aSender.id);
     }; break;
 
-    case kTSTAPI_UNREGISTER_LISTENER_ADDON: {
+    case kTSTAPI_UNREGISTER_SELF: {
       let index = gExternalListenerAddons.indexOf(aSender.id);
       if (index > -1)
         gExternalListenerAddons.splice(index, 1);
