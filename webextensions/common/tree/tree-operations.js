@@ -999,7 +999,18 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   browser.windows.get(newWindow.id, { populate: true })
     .then(aApiWindow => {
       var movedTabIds = movedTabs.map(aTab => aTab.apiTab.id);
-      var removeIds = aApiWindow.tabs.map(aTab => aTab.id).filter(aId => movedTabIds.indexOf(aId) < 0);
+      log('moved tabs: ', movedTabIds);
+      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+      var allTabIdsInWindow = aApiWindow.tabs.map(aApiTab => {
+        var id = aApiTab.id;
+        var correctId = gTabIdWrongToCorrect.get(id);
+        if (correctId)
+          return correctId;
+        else
+          return id;
+      });
+      var removeIds = allTabIdsInWindow.filter(aId => movedTabIds.indexOf(aId) < 0);
+      log('removing tabs: ', removeIds);
       browser.tabs.remove(removeIds);
       unblockUserOperationsIn(newWindow.id);
     });
