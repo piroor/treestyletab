@@ -856,11 +856,13 @@ async function moveTabs(aTabs, aOptions = {}) {
     log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
     let toIndex = getAllTabs(container).length;
     log('toIndex = ', toIndex);
-    if (aOptions.insertBefore) {
+    if (aOptions.insertBefore &&
+        aOptions.insertBefore.apiTab.windowId == destinationWindowId) {
       let latestApiTab = await browser.tabs.get(aOptions.insertBefore.apiTab.id);
       toIndex = latestApiTab.index;
     }
-    else if (aOptions.insertAfter) {
+    else if (aOptions.insertAfter &&
+             aOptions.insertAfter.apiTab.windowId == destinationWindowId) {
       let latestApiTab = await browser.tabs.get(aOptions.insertAfter.apiTab.id);
       toIndex = latestApiTab.index + 1;
     }
