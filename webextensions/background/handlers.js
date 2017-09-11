@@ -862,6 +862,7 @@ function onMessageExternal(aMessage, aSender) {
         var tab = getCurrentTab(window.id);
         return {
           tab:    tab.apiTab.id,
+          id:     tab.apiTab.id, // alias
           states: Array.slice(tab.classList)
         };
       })();
