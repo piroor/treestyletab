@@ -76,6 +76,12 @@ function getDragDataFromOneTab(aTab) {
     };
 
   var draggedTabs = [aTab].concat(getDescendantTabs(aTab)); //tabsDragUtils.getSelectedTabs(aTab || aInfo.event);
+  if (isSelected(aTab)) {
+    for (let selectedTab of getSelectedTabs(aTab)) {
+      if (draggedTabs.indexOf(selectedTab) < 0)
+        draggedTabs.push(selectedTab);
+    }
+  }
   return {
     tabNode:  aTab,
     tabNodes: draggedTabs,
@@ -108,7 +114,9 @@ function getDropAction(aEvent) {
         info.canDrop = false;
       }
       else if (info.dragOverTab &&
-               getAncestorTabs(info.dragOverTab).indexOf(info.draggedTab) > -1) {
+               collectRootTabs(info.draggedTabs).some(aRootTab => {
+                 getAncestorTabs(info.dragOverTab).indexOf(aRootTab) > -1
+               })) {
         info.canDrop = false;
       }
     }

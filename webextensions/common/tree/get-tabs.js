@@ -393,6 +393,13 @@ function getDuplicatingTabs(aHint) {
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${kTAB_STATE_DUPLICATING}`));
 }
 
+function getSelectedTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return [];
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${kTAB_STATE_SELECTED}`));
+}
+
 
 
 // misc.

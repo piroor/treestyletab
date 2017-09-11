@@ -123,7 +123,8 @@ function isTemporaryGroupTab(aTab) {
 }
 
 function isSelected(aTab) {
-  return false;
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_SELECTED);
 }
 
 function isLocked(aTab) {
