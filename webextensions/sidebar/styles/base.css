@@ -396,8 +396,8 @@ ul {
 
 /* selection */
 
-.tab.selected .favicon::::after,
-.tab.ready-to-close .favicon::::after {
+.tab.selected .extra-items-container.behind::after,
+.tab.ready-to-close .closebox::after {
   content: " ";
   display: block;
   position: absolute;

@@ -820,19 +820,28 @@ function onMessage(aMessage, aSender, aRespond) {
     }; break;
 
     case kCOMMAND_BROADCAST_TAB_STATE: {
-      let tab = getTabById(aMessage.tab);
-      if (tab) {
-        let add = aMessage.add || [];
-        let remove = aMessage.remove || [];
-        log('apply broadcasted tab state ', tab.id, {
-          add:    add.join(','),
-          remove: remove.join(',')
-        });
+      if (!aMessage.tabs.length)
+        break;
+      let add = aMessage.add || [];
+      let remove = aMessage.remove || [];
+      log('apply broadcasted tab state ', aMessage.tabs, {
+        add:    add.join(','),
+        remove: remove.join(',')
+      });
+      let modified = add.concat(remove);
+      for (let tab of aMessage.tabs) {
+        tab = getTabById(tab);
+        if (!tab)
+          continue;
         add.forEach(aState => tab.classList.add(aState));
         remove.forEach(aState => tab.classList.remove(aState));
-        updateTabSoundButtonTooltip(tab);
-        if (aMessage.bubbles)
-          updateParentTab(getParentTab(tab));
+        if (modified.indexOf(kTAB_STATE_AUDIBLE) > -1 ||
+            modified.indexOf(kTAB_STATE_SOUND_PLAYING) > -1 ||
+            modified.indexOf(kTAB_STATE_MUTED) > -1) {
+          updateTabSoundButtonTooltip(tab);
+          if (aMessage.bubbles)
+            updateParentTab(getParentTab(tab));
+        }
       }
     }; break;
   }

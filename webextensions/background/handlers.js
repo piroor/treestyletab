@@ -678,23 +678,31 @@ function onMessage(aMessage, aSender) {
           .catch(handleMissingTabError);
       })();
 
-    case kNOTIFY_TAB_MOUSEDOWN: {
-      let tab = getTabById(aMessage.tab);
-      if (!tab) {
-        clearTimeout(timeout);
-        return;
-      }
+    case kNOTIFY_TAB_MOUSEDOWN:
+      return (async () => {
+        let tab = getTabById(aMessage.tab);
+        if (!tab) {
+          clearTimeout(timeout);
+          return;
+        }
 
-      for (let id of gExternalListenerAddons) {
-        browser.runtime.sendMessage(id, clone(aMessage, {
-          type: kTSTAPI_NOTIFY_TAB_CLICKED,
-          tab:  null,
-          id:   tab.apiTab.id
-        }));
-      }
+        let states = Array.slice(tab.classList);
+        let results = await Promise.all(gExternalListenerAddons.map(aId =>
+          browser.runtime.sendMessage(aId, clone(aMessage, {
+            type: kTSTAPI_NOTIFY_TAB_CLICKED,
+            tab:  null,
+            id:   tab.apiTab.id,
+            states: states
+          }))
+        ));
+        if (results.indexOf(true) > -1) // canceled
+          return;
 
-      // not canceled, then fallback to "select tab"
-    };
+        // not canceled, then fallback to default "select tab"
+        browser.tabs.update(tab.apiTab.id, { active: true })
+          .catch(handleMissingTabError);
+      })();
+
     case kCOMMAND_SELECT_TAB: {
       let tab = getTabById(aMessage.tab);
       if (!tab) {
@@ -831,25 +839,55 @@ function onMessageExternal(aMessage, aSender) {
         gExternalListenerAddons.splice(index, 1);
     }; break;
 
+
     case kTSTAPI_IS_SUBTREE_COLLAPSED:
       return (async () => {
         clearTimeout(timeout);
         let tab = getTabById(aMessage.id);
-        if (tab)
-          await isSubtreeCollapsed(tab);
-        else
-          return false;
+        return isSubtreeCollapsed(tab);
       })();
 
     case kTSTAPI_HAS_CHILD_TABS:
       return (async () => {
         clearTimeout(timeout);
         let tab = getTabById(aMessage.id);
-        if (tab)
-          await hasChildTabs(tab);
-        else
-          return false;
+        return hasChildTabs(tab);
       })();
+
+    case kTSTAPI_GET_DESCENDANT_TABS:
+      return (async () => {
+        clearTimeout(timeout);
+        let tab = getTabById(aMessage.id);
+        return getDescendantTabs(tab).map(aTab => aTab.apiTab.id);
+      })();
+
+    case kTSTAPI_GET_TABS_STATE:
+      return (async () => {
+        clearTimeout(timeout);
+        let tabs = aMessage.ids.map(getTabById);
+        return tabs.map(aTab => aTab.classList.contains(aMessage.value));
+      })();
+
+
+    case kTSTAPI_ADD_TABS_STATE: {
+      let tabs = aMessage.ids.map(getTabById);
+      for (let tab of tabs) {
+        tab.classList.add(aMessage.value);
+      }
+      broadcastTabState(tabs, {
+        add: [aMessage.value]
+      });
+    }; break;
+
+    case kTSTAPI_REMOVE_TABS_STATE: {
+      let tabs = aMessage.ids.map(getTabById);
+      for (let tab of tabs) {
+        tab.classList.remove(aMessage.value);
+      }
+      broadcastTabState(tabs, {
+        remove: [aMessage.value]
+      });
+    }; break;
   }
   clearTimeout(timeout);
 }

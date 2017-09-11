@@ -629,10 +629,12 @@ function unblockUserOperationsIn(aWindowId, aOptions = {}) {
 }
 
 
-function broadcastTabState(aTab, aOptions = {}) {
+function broadcastTabState(aTabs, aOptions = {}) {
+  if (!Array.isArray(aTabs))
+    aTabs = [aTabs];
   browser.runtime.sendMessage({
     type:   kCOMMAND_BROADCAST_TAB_STATE,
-    tab:    aTab.id,
+    tabs:   aTabs.map(aTab => aTab.id),
     add:    aOptions.add || [],
     remove: aOptions.remove || [],
     bubbles: !!aOptions.bubbles
