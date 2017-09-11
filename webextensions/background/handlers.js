@@ -857,41 +857,6 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_GET_ACTIVE_TAB:
-      return (async () => {
-        clearTimeout(timeout);
-        var windowId = aMessage.window;
-        if (!windowId) {
-          let window = await browser.windows.getLastFocused({});
-          windowId = window.id;
-        }
-        var tab = getCurrentTab(windowId);
-        return {
-          tab:    tab.apiTab.id,
-          id:     tab.apiTab.id, // alias
-          states: Array.slice(tab.classList),
-          window: windowId
-        };
-      })();
-
-    case kTSTAPI_GET_TABS:
-      return (async () => {
-        clearTimeout(timeout);
-        var windowId = aMessage.window;
-        if (!windowId) {
-          let window = await browser.windows.getLastFocused({});
-          windowId = window.id;
-        }
-        var tabs = getTabs(windowId);
-        var tabIds = tabs.map(aTab => aTab.apiTab.id);
-        return {
-          tabs:   tabIds,
-          ids:    tabIds, // alias
-          states: tabs.map(aTab => Array.slice(aTab.classList)),
-          window: windowId
-        };
-      })();
-
     case kTSTAPI_GET_DESCENDANT_TABS:
       return (async () => {
         clearTimeout(timeout);
