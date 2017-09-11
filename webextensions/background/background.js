@@ -17,6 +17,7 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
   gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
 
@@ -63,6 +64,7 @@ function waitUntilCompletelyRestored() {
 
 function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
+  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
   endWatchSidebarOpenState();
   endObserveApiTabs();
