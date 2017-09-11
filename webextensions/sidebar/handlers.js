@@ -762,8 +762,6 @@ function onMessage(aMessage, aSender, aRespond) {
       clearTimeout(timeout);
       if (aMessage.windowId == gTargetWindow)
         return Promise.resolve(true);
-      else // startup
-        gBackgroundIsReady = true;
     }; break;
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:

@@ -261,22 +261,27 @@ async function inheritTreeStructure() {
     await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 
-var gBackgroundIsReady = false;
 async function waitUntilBackgroundIsReady() {
   try {
     let response = await browser.runtime.sendMessage({
       type: kCOMMAND_PING_TO_BACKGROUND
     });
-    if (response) {
-      gBackgroundIsReady = true;
+    if (response)
       return;
-    }
   }
   catch(e) {
   }
-  while (!gBackgroundIsReady) {
-    await wait(50);
-  }
+  return new Promise((aResolve, aReject) => {
+    let onBackgroundIsReady = (aMessage, aSender, aRespond) => {
+      if (!aMessage ||
+          !aMessage.type ||
+          aMessage.type != kCOMMAND_PING_TO_SIDEBAR)
+        return;
+      browser.runtime.onMessage.removeListener(onBackgroundIsReady);
+      aResolve();
+    };
+    browser.runtime.onMessage.addListener(onBackgroundIsReady);
+  });
 }
 
 
