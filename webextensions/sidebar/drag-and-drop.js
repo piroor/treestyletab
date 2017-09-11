@@ -511,6 +511,11 @@ function onDragStart(aEvent) {
   if (!dragData.tabNode)
     return;
 
+  if (!cancelHandleMousedown()) {
+    // this action is already handled as "click".
+    //return;
+  }
+
   gDraggingOnSelfWindow = true;
   gLastDragDataRaw = dragData;
 

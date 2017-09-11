@@ -171,7 +171,11 @@ function onResize(aEvent) {
   reserveToUpdateIndent();
 }
 
+var gLastMousedown = null;
+
 function onMouseDown(aEvent) {
+  cancelHandleMousedown();
+
   var tab = getTabFromEvent(aEvent);
   //log('mousedown tab: ', tab);
   if (isMiddleClick(aEvent)) {
@@ -241,17 +245,41 @@ function onMouseDown(aEvent) {
     return;
   }
 
-  //log('give focus to ', tab.id);
-  browser.runtime.sendMessage({
-    type:     kNOTIFY_TAB_MOUSEDOWN,
-    windowId: gTargetWindow,
-    tab:      tab.id,
-    button:   aEvent.button,
-    ctrlKey:  aEvent.ctrlKey,
-    shiftKey: aEvent.shiftKey,
-    altKey:   aEvent.altKey,
-    metaKey:  aEvent.metaKey
-  });
+  gLastMousedown = {
+    detail: {
+      tab:      tab.id,
+      button:   aEvent.button,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey
+    },
+    fire: () => {
+      //log('give focus to ', tab.id);
+      browser.runtime.sendMessage(clone(gLastMousedown.detail, {
+        type:     kNOTIFY_TAB_MOUSEDOWN,
+        windowId: gTargetWindow
+      }));
+      gLastMousedown = null;
+    }
+  };
+  gLastMousedown.timeout = setTimeout(() => {
+    gLastMousedown.fire();
+  }, configs.startDragTimeout);
+}
+
+function cancelHandleMousedown() {
+  if (gLastMousedown) {
+    clearTimeout(gLastMousedown.timeout);
+    gLastMousedown = null;
+    return true;
+  }
+  return false;
+}
+
+function onMouseUp(aEvent) {
+  if (gLastMousedown)
+    gLastMousedown.fire();
 }
 
 function onClick(aEvent) {

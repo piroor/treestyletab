@@ -151,6 +151,7 @@ configs = new Configs({
   preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
   sidebarOpenStateUpdateInterval: 500,
+  startDragTimeout: 150,
 
   userStyleRules: `
 /* Show title of unread tabs with italic font */
