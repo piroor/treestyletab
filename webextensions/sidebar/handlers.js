@@ -256,8 +256,10 @@ function onMouseDown(aEvent) {
       detail: mousedownDetail
     };
     gLastMousedown.timeout = setTimeout(() => {
-      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
+      if (!gLastMousedown)
+        return;
       gLastMousedown.expired = true;
+      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
     }, configs.startDragTimeout);
     return;
   }
@@ -318,6 +320,9 @@ function onMouseUp(aEvent) {
       type:   kTSTAPI_NOTIFY_TAB_DRAGEND,
       window: gTargetWindow
     });
+
+    gLastDragEnteredTab = null;
+    gLastDragEnteredTarget = null;
   }
 }
 
