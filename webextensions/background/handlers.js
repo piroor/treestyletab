@@ -686,15 +686,10 @@ function onMessage(aMessage, aSender) {
           return;
         }
 
-        let states = Array.slice(tab.classList);
-        let addons = Object.keys(gExternalListenerAddons);
-        let results = await Promise.all(addons.map(aId => {
-          return browser.runtime.sendMessage(aId, clone(aMessage, {
-            type:   kTSTAPI_NOTIFY_TAB_CLICKED,
-            tab:    tab.apiTab.id,
-            window: tab.apiTab.windowId,
-            states: states
-          })).catch(e => {});
+        let results = await sendTSTAPIMessage(clone(aMessage, {
+          type:   kTSTAPI_NOTIFY_TAB_CLICKED,
+          tab:    serializeTabForTSTAPI(tab),
+          window: tab.apiTab.windowId
         }));
         if (results.indexOf(true) > -1) // canceled
           return;

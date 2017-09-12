@@ -281,17 +281,11 @@ function onMouseDown(aEvent) {
 }
 
 function notifyTSTAPIDragReady(aTab, aIsClosebox) {
-  var states = Array.slice(aTab.classList);
-  retrieveExternalListenerAddons().then(aAddons => {
-    for (let addonId of Object.keys(aAddons)) {
-      browser.runtime.sendMessage(addonId, {
-        type:   kTSTAPI_NOTIFY_TAB_DRAGREADY,
-        tab:    aTab.apiTab.id,
-        states: states,
-        window: gTargetWindow,
-        startOnClosebox: aIsClosebox
-      }).catch(e => {});
-    }
+  sendTSTAPIMessage({
+    type:   kTSTAPI_NOTIFY_TAB_DRAGREADY,
+    tab:    serializeTabForTSTAPI(aTab),
+    window: gTargetWindow,
+    startOnClosebox: aIsClosebox
   });
 }
 
@@ -319,13 +313,9 @@ function onMouseUp(aEvent) {
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();
 
-    retrieveExternalListenerAddons().then(aAddons => {
-      for (let addonId of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(addonId, {
-          type:   kTSTAPI_NOTIFY_TAB_DRAGEND,
-          window: gTargetWindow
-        }).catch(e => {});
-      }
+    sendTSTAPIMessage({
+      type:   kTSTAPI_NOTIFY_TAB_DRAGEND,
+      window: gTargetWindow
     });
   }
 }

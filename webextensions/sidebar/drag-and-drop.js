@@ -517,29 +517,21 @@ function onDragStart(aEvent) {
   var tab = dragData.tabNode
 
   if (gLastMousedown && gLastMousedown.expired) {
-	aEvent.stopPropagation();
-	aEvent.preventDefault();
-	gLastDragEnteredTab = tab;
-	let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
-	let states = Array.slice(tab.classList);
-    retrieveExternalListenerAddons().then(aAddons => {
-      if (!tab || !tab.parentNode)
-        return;
-      for (let addonId of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(addonId, {
-          type:   kTSTAPI_NOTIFY_TAB_DRAGSTART,
-          tab:    tab.apiTab.id,
-          states: states,
-          window: gTargetWindow,
-          startOnClosebox
-        }).catch(e => {});
-      }
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    gLastDragEnteredTab = tab;
+    let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
+    sendTSTAPIMessage({
+      type:   kTSTAPI_NOTIFY_TAB_DRAGSTART,
+      tab:    serializeTabForTSTAPI(tab),
+      window: gTargetWindow,
+      startOnClosebox
     });
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
     gCapturingMouseEvents = true;
-	return;
+    return;
   }
 
   if (!cancelHandleMousedown()) {
@@ -550,8 +542,8 @@ function onDragStart(aEvent) {
   // dragging on clickable element will be expected to cancel the operation
   if (isEventFiredOnClosebox(aEvent) ||
       isEventFiredOnClickable(aEvent)) {
-	aEvent.stopPropagation();
-	aEvent.preventDefault();
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
     return;
   }
 
@@ -831,17 +823,10 @@ function onTSTAPIDragEnter(aEvent) {
     return
   cancelDelayedTSTAPIDragExitOn(tab);
   if (tab != gLastDragEnteredTab) {
-    let id = tab.apiTab.id;
-    let states = Array.slice(tab.classList);
-    retrieveExternalListenerAddons().then(aAddons => {
-      for (let addonId of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(addonId, {
-          type:   kTSTAPI_NOTIFY_TAB_DRAGENTER,
-          tab:    id,
-          states: states,
-          window: gTargetWindow
-        }).catch(e => {});
-      }
+    sendTSTAPIMessage({
+      type:   kTSTAPI_NOTIFY_TAB_DRAGENTER,
+      tab:    serializeTabForTSTAPI(tab),
+      window: gTargetWindow
     });
   }
   gLastDragEnteredTab = tab;
@@ -859,15 +844,10 @@ function onTSTAPIDragExit(aEvent) {
   var states = Array.slice(tab.classList);
   tab.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete tab.onTSTAPIDragExitTimeout;
-    retrieveExternalListenerAddons().then(aAddons => {
-      for (let addonId of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(addonId, {
-          type:   kTSTAPI_NOTIFY_TAB_DRAGEXIT,
-          tab:    id,
-          states: states,
-          window: gTargetWindow
-        }).catch(e => {});
-      }
+    sendTSTAPIMessage({
+      type:   kTSTAPI_NOTIFY_TAB_DRAGEXIT,
+      tab:    serializeTabForTSTAPI(tab),
+      window: gTargetWindow
     });
   }, 10);
 }

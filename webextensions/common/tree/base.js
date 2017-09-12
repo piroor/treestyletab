@@ -658,3 +658,23 @@ async function notify(aParams = {}) {
 
   await browser.notifications.clear(id);
 }
+
+
+/* TST API Helpers */
+
+function serializeTabForTSTAPI(aTab) {
+  return {
+    id:       aTab.apiTab.id,
+    states:   Array.slice(aTab.classList),
+    children: getChildTabs(aTab).map(serializeTabForTSTAPI)
+  };
+}
+
+async function sendTSTAPIMessage(aMessage) {
+  var addons = window.gExternalListenerAddons ?
+                 gExternalListenerAddons :
+                 (await browser.runtime.getBackgroundPage()).gExternalListenerAddons;
+  return Promise.all(Object.keys(addons).map(aId => {
+    return browser.runtime.sendMessage(aId, aMessage).catch(e => {});
+  }));
+}

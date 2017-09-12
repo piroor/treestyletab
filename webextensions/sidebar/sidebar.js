@@ -250,11 +250,6 @@ function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGG
   return brightness < 0.5 ? 'white' : 'black';
 }
 
-async function retrieveExternalListenerAddons() {
-  var bg = await browser.runtime.getBackgroundPage();
-  return bg.gExternalListenerAddons;
-}
-
 function installStyleForAddon(aId, aStyle) {
   if (!gAddonStyles[aId]) {
     gAddonStyles[aId] = document.createElement('style');
