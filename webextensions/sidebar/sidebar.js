@@ -89,7 +89,7 @@ async function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 
-  var addons = await retrieveExternalListenerAddons();
+  var addons = (await browser.runtime.getBackgroundPage()).gExternalListenerAddons;
   for (let id of Object.keys(addons)) {
     let addon = addons[id];
     if (addon.style)
