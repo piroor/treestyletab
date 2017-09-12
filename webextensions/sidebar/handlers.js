@@ -256,6 +256,7 @@ function onMouseDown(aEvent) {
       detail: mousedownDetail
     };
     gLastMousedown.timeout = setTimeout(() => {
+      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
       gLastMousedown.expired = true;
     }, configs.startDragTimeout);
     return;
@@ -269,6 +270,7 @@ function onMouseDown(aEvent) {
         type:     kNOTIFY_TAB_MOUSEDOWN,
         windowId: gTargetWindow
       }));
+      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
       gLastMousedown.expired = true;
     }
   };
@@ -276,6 +278,21 @@ function onMouseDown(aEvent) {
     if (gLastMousedown)
       gLastMousedown.fire();
   }, configs.startDragTimeout);
+}
+
+function notifyTSTAPIDragReady(aTab, aIsClosebox) {
+  var states = Array.slice(aTab.classList);
+  retrieveExternalListenerAddons().then(aAddons => {
+    for (let addonId of Object.keys(aAddons)) {
+      browser.runtime.sendMessage(addonId, {
+        type:   kTSTAPI_NOTIFY_TAB_DRAGREADY,
+        tab:    aTab.apiTab.id,
+        states: states,
+        window: gTargetWindow,
+        startOnClosebox: aIsClosebox
+      }).catch(e => {});
+    }
+  });
 }
 
 function cancelHandleMousedown() {

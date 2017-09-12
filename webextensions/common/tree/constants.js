@@ -36,6 +36,7 @@ const kTSTAPI_REGISTER_SELF        = 'register-self';
 const kTSTAPI_UNREGISTER_SELF      = 'unregister-self';
 const kTSTAPI_NOTIFY_READY         = 'ready';
 const kTSTAPI_NOTIFY_TAB_CLICKED   = 'tab-clicked';
+const kTSTAPI_NOTIFY_TAB_DRAGREADY = 'tab-dragready';
 const kTSTAPI_NOTIFY_TAB_DRAGSTART = 'tab-dragstart';
 const kTSTAPI_NOTIFY_TAB_DRAGENTER = 'tab-dragenter';
 const kTSTAPI_NOTIFY_TAB_DRAGEXIT  = 'tab-dragexit';
