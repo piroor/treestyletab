@@ -41,11 +41,20 @@ async function init() {
   browser.runtime.sendMessage({
     type: kCOMMAND_PING_TO_SIDEBAR
   });
-  for (let id of configs.cachedExternalAddons) {
-    browser.runtime.sendMessage(id, {
-      type: kTSTAPI_NOTIFY_READY
-    });
-  }
+
+  var respondedAddons = [];
+  await Promise.all(configs.cachedExternalAddons.map(async aId => {
+    try {
+      let success = await browser.runtime.sendMessage(aId, {
+        type: kTSTAPI_NOTIFY_READY
+      });
+      if (success)
+        respondedAddons.push(aId);
+    }
+    catch(e) {
+    }
+  }));
+  configs.cachedExternalAddons = respondedAddons;
 }
 
 function waitUntilCompletelyRestored() {
