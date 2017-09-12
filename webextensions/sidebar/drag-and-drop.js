@@ -510,10 +510,11 @@ var gLastDragEnteredTab = null;
 var gDragTargetIsClosebox = false;
 
 function onDragStart(aEvent) {
-  var tab = aEvent.target;
-  var dragData = getDragDataFromOneTab(tab);
+  var dragData = getDragDataFromOneTab(aEvent.target);
   if (!dragData.tabNode)
     return;
+
+  var tab = dragData.tabNode
 
   if (gLastMousedown && gLastMousedown.expired) {
 	aEvent.stopPropagation();
@@ -522,6 +523,8 @@ function onDragStart(aEvent) {
 	let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
 	let states = Array.slice(tab.classList);
     retrieveExternalListenerAddons().then(aAddons => {
+      if (!tab || !tab.parentNode)
+        return;
       for (let addonId of Object.keys(aAddons)) {
         browser.runtime.sendMessage(addonId, {
           type:   kTSTAPI_NOTIFY_TAB_DRAGSTART,
