@@ -520,11 +520,13 @@ function onDragStart(aEvent) {
 	aEvent.preventDefault();
 	gLastDragEnteredTab = tab;
 	let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
+	let states = Array.slice(tab.classList);
     retrieveExternalListenerAddons().then(aAddons => {
-      for (let id of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(aId, {
+      for (let addonId of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(addonId, {
           type:   kTSTAPI_NOTIFY_TAB_DRAGSTART,
           tab:    tab.apiTab.id,
+          states: states,
           window: gTargetWindow,
           startOnClosebox
         }).catch(e => {});
@@ -813,15 +815,18 @@ function onTSTAPIDragEnter(aEvent) {
       !isEventFiredOnClosebox(aEvent))
     return;
   var tab = getTabFromEvent(aEvent);
-  if (tab)
-    cancelDelayedTSTAPIDragExitOn(tab);
+  if (!tab)
+    return
+  cancelDelayedTSTAPIDragExitOn(tab);
   if (tab != gLastDragEnteredTab) {
     let id = tab.apiTab.id;
+    let states = Array.slice(tab.classList);
     retrieveExternalListenerAddons().then(aAddons => {
-      for (let id of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(aId, {
+      for (let addonId of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(addonId, {
           type:   kTSTAPI_NOTIFY_TAB_DRAGENTER,
           tab:    id,
+          states: states,
           window: gTargetWindow
         }).catch(e => {});
       }
@@ -834,18 +839,20 @@ function onTSTAPIDragExit(aEvent) {
   if (gDragTargetIsClosebox &&
       !isEventFiredOnClosebox(aEvent))
     return;
-  var tab = getTabFromEvent(tab);
+  var tab = getTabFromEvent(aEvent);
   if (!tab)
     return;
   cancelDelayedTSTAPIDragExitOn(tab);
   var id = tab && tab.apiTab.id;
+  var states = Array.slice(tab.classList);
   tab.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete tab.onTSTAPIDragExitTimeout;
     retrieveExternalListenerAddons().then(aAddons => {
-      for (let id of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(aId, {
+      for (let addonId of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(addonId, {
           type:   kTSTAPI_NOTIFY_TAB_DRAGEXIT,
           tab:    id,
+          states: states,
           window: gTargetWindow
         }).catch(e => {});
       }

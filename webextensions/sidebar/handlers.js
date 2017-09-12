@@ -251,7 +251,7 @@ function onMouseDown(aEvent) {
        isEventFiredOnClosebox(aEvent)) &&
       aEvent.button == 0) {
     //log('mousedown on button in tab');
-    mousedownDetail.closebox = true;
+    mousedownDetail.closebox = isEventFiredOnClosebox(aEvent);
     gLastMousedown = {
       detail: mousedownDetail
     };
@@ -273,7 +273,8 @@ function onMouseDown(aEvent) {
     }
   };
   gLastMousedown.timeout = setTimeout(() => {
-    gLastMousedown.fire();
+    if (gLastMousedown)
+      gLastMousedown.fire();
   }, configs.startDragTimeout);
 }
 
@@ -302,8 +303,8 @@ function onMouseUp(aEvent) {
     document.releaseCapture();
 
     retrieveExternalListenerAddons().then(aAddons => {
-      for (let id of Object.keys(aAddons)) {
-        browser.runtime.sendMessage(aId, {
+      for (let addonId of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(addonId, {
           type:   kTSTAPI_NOTIFY_TAB_DRAGEND,
           window: gTargetWindow
         }).catch(e => {});
