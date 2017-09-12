@@ -270,13 +270,14 @@ function onMouseDown(aEvent) {
         type:     kNOTIFY_TAB_MOUSEDOWN,
         windowId: gTargetWindow
       }));
-      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
       gLastMousedown.expired = true;
     }
   };
   gLastMousedown.timeout = setTimeout(() => {
-    if (gLastMousedown)
-      gLastMousedown.fire();
+    if (!gLastMousedown)
+      return;
+    gLastMousedown.fire();
+    notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
   }, configs.startDragTimeout);
 }
 
@@ -304,7 +305,7 @@ function onMouseUp(aEvent) {
         gLastMousedown.fire)
       gLastMousedown.fire();
 
-    gLastMousedown = null;
+    cancelHandleMousedown();
   }
 
   if (gCapturingMouseEvents) {
