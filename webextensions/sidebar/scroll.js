@@ -269,11 +269,11 @@ function autoScrollOnMouseEvent(aEvent) {
   var scrollPixels = Math.round(gTabHeight * 0.5);
   if (aEvent.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
     if (gTabBar.scrollTop > 0)
-      box.scrollTop -= scrollPixels;
+      gTabBar.scrollTop -= scrollPixels;
   }
   else if (aEvent.clientY > tabbarRect.bottom - autoScrollOnMouseEvent.areaSize) {
     if (gTabBar.scrollTop < gTabBar.scrollTopMax)
-      box.scrollTop += scrollPixels;
+      gTabBar.scrollTop += scrollPixels;
   }
 }
 autoScrollOnMouseEvent.areaSize = 20;
