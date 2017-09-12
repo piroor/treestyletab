@@ -544,6 +544,14 @@ function onDragStart(aEvent) {
     //return;
   }
 
+  // dragging on clickable element will be expected to cancel the operation
+  if (isEventFiredOnClosebox(aEvent) ||
+      isEventFiredOnClickable(aEvent)) {
+	aEvent.stopPropagation();
+	aEvent.preventDefault();
+    return;
+  }
+
   gDraggingOnSelfWindow = true;
   gLastDragDataRaw = dragData;
 

@@ -460,9 +460,10 @@ function onTabBuilt(aTab) {
   soundButton.classList.add(kSOUND_BUTTON);
   aTab.appendChild(soundButton);
 
-  var closebox = document.createElement('button');
+  var closebox = document.createElement('span');
   closebox.classList.add(kCLOSEBOX);
   closebox.setAttribute('title', browser.i18n.getMessage('tab.closebox.tab.tooltip'));
+  closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
   aTab.appendChild(closebox);
 
   var identityMarker = document.createElement('span');
