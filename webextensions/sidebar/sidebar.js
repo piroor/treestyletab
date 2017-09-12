@@ -89,8 +89,7 @@ async function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 
-  var bg = await browser.runtime.getBackgroundPage();
-  var addons = bg.gExternalListenerAddons;
+  var addons = await retrieveExternalListenerAddons();
   for (let id of Object.keys(addons)) {
     let addon = addons[id];
     if (addon.style)
@@ -249,6 +248,11 @@ function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGG
   var blue  = parseInt(parts[3], 16);
   var brightness = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
   return brightness < 0.5 ? 'white' : 'black';
+}
+
+async function retrieveExternalListenerAddons() {
+  var bg = await browser.runtime.getBackgroundPage();
+  return bg.gExternalListenerAddons;
 }
 
 function installStyleForAddon(aId, aStyle) {

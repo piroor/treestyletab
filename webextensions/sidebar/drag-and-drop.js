@@ -505,11 +505,37 @@ function retrieveURIsFromData(aData, aType) {
 var gDraggingOnSelfWindow = false;
 var gLastDragDataRaw = null;
 
+var gCapturingMouseEvents = false;
+var gLastDragEnteredTab = null;
+var gDragTargetIsClosebox = false;
+
 function onDragStart(aEvent) {
   var tab = aEvent.target;
   var dragData = getDragDataFromOneTab(tab);
   if (!dragData.tabNode)
     return;
+
+  if (gLastMousedown && gLastMousedown.expired) {
+	aEvent.stopPropagation();
+	aEvent.preventDefault();
+	gLastDragEnteredTab = tab;
+	let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
+    retrieveExternalListenerAddons().then(aAddons => {
+      for (let id of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(aId, {
+          type:   kTSTAPI_NOTIFY_TAB_DRAGSTART,
+          tab:    tab.apiTab.id,
+          window: gTargetWindow,
+          startOnClosebox
+        }).catch(e => {});
+      }
+    });
+    window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
+    window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
+    document.body.setCapture(false);
+    gCapturingMouseEvents = true;
+	return;
+  }
 
   if (!cancelHandleMousedown()) {
     // this action is already handled as "click".
@@ -778,3 +804,59 @@ function onDragEnd(aEvent) {
     inRemote:  true
   });
 }
+
+
+/* drag on tabs API */
+
+function onTSTAPIDragEnter(aEvent) {
+  if (gDragTargetIsClosebox &&
+      !isEventFiredOnClosebox(aEvent))
+    return;
+  var tab = getTabFromEvent(aEvent);
+  if (tab)
+    cancelDelayedTSTAPIDragExitOn(tab);
+  if (tab != gLastDragEnteredTab) {
+    let id = tab.apiTab.id;
+    retrieveExternalListenerAddons().then(aAddons => {
+      for (let id of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(aId, {
+          type:   kTSTAPI_NOTIFY_TAB_DRAGENTER,
+          tab:    id,
+          window: gTargetWindow
+        }).catch(e => {});
+      }
+    });
+  }
+  gLastDragEnteredTab = tab;
+}
+
+function onTSTAPIDragExit(aEvent) {
+  if (gDragTargetIsClosebox &&
+      !isEventFiredOnClosebox(aEvent))
+    return;
+  var tab = getTabFromEvent(tab);
+  if (!tab)
+    return;
+  cancelDelayedTSTAPIDragExitOn(tab);
+  var id = tab && tab.apiTab.id;
+  tab.onTSTAPIDragExitTimeout = setTimeout(() => {
+    delete tab.onTSTAPIDragExitTimeout;
+    retrieveExternalListenerAddons().then(aAddons => {
+      for (let id of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(aId, {
+          type:   kTSTAPI_NOTIFY_TAB_DRAGEXIT,
+          tab:    id,
+          window: gTargetWindow
+        }).catch(e => {});
+      }
+    });
+  }, 10);
+}
+
+function cancelDelayedTSTAPIDragExitOn(aTab) {
+  if (aTab.onTSTAPIDragExitTimeout) {
+    clearTimeout(aTab.onTSTAPIDragExitTimeout);
+    delete aTab.onTSTAPIDragExitTimeout;
+  }
+}
+

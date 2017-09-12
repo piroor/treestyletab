@@ -238,29 +238,38 @@ function onMouseDown(aEvent) {
     return;
   }
 
+  var mousedownDetail = {
+    tab:      tab.id,
+    button:   aEvent.button,
+    ctrlKey:  aEvent.ctrlKey,
+    shiftKey: aEvent.shiftKey,
+    altKey:   aEvent.altKey,
+    metaKey:  aEvent.metaKey
+  };
+
   if ((isEventFiredOnSoundButton(aEvent) ||
        isEventFiredOnClosebox(aEvent)) &&
       aEvent.button == 0) {
     //log('mousedown on button in tab');
+    mousedownDetail.closebox = true;
+    gLastMousedown = {
+      detail: mousedownDetail
+    };
+    gLastMousedown.timeout = setTimeout(() => {
+      gLastMousedown.expired = true;
+    }, configs.startDragTimeout);
     return;
   }
 
   gLastMousedown = {
-    detail: {
-      tab:      tab.id,
-      button:   aEvent.button,
-      ctrlKey:  aEvent.ctrlKey,
-      shiftKey: aEvent.shiftKey,
-      altKey:   aEvent.altKey,
-      metaKey:  aEvent.metaKey
-    },
+    detail: mousedownDetail,
     fire: () => {
       //log('give focus to ', tab.id);
       browser.runtime.sendMessage(clone(gLastMousedown.detail, {
         type:     kNOTIFY_TAB_MOUSEDOWN,
         windowId: gTargetWindow
       }));
-      gLastMousedown = null;
+      gLastMousedown.expired = true;
     }
   };
   gLastMousedown.timeout = setTimeout(() => {
@@ -278,8 +287,29 @@ function cancelHandleMousedown() {
 }
 
 function onMouseUp(aEvent) {
-  if (gLastMousedown)
-    gLastMousedown.fire();
+  if (gLastMousedown) {
+    if (!gLastMousedown.expired &&
+        gLastMousedown.fire)
+      gLastMousedown.fire();
+
+    gLastMousedown = null;
+  }
+
+  if (gCapturingMouseEvents) {
+    gCapturingMouseEvents = false;
+    window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
+    window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
+    document.releaseCapture();
+
+    retrieveExternalListenerAddons().then(aAddons => {
+      for (let id of Object.keys(aAddons)) {
+        browser.runtime.sendMessage(aId, {
+          type:   kTSTAPI_NOTIFY_TAB_DRAGEND,
+          window: gTargetWindow
+        }).catch(e => {});
+      }
+    });
+  }
 }
 
 function onClick(aEvent) {
