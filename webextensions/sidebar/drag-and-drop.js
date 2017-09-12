@@ -822,6 +822,7 @@ function onDragEnd(aEvent) {
 /* drag on tabs API */
 
 function onTSTAPIDragEnter(aEvent) {
+  autoScrollOnMouseEvent(aEvent);
   if (gDragTargetIsClosebox &&
       !isEventFiredOnClosebox(aEvent))
     return;
