@@ -152,6 +152,7 @@ configs = new Configs({
   notificationTimeout: 10 * 1000,
   sidebarOpenStateUpdateInterval: 500,
   startDragTimeout: 150,
+  cachedExternalAddons: [],
 
   userStyleRules: `
 /* Show title of unread tabs with italic font */

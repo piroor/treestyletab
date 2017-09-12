@@ -34,6 +34,7 @@ const kNOTIFY_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
 const kTSTAPI_REGISTER_SELF        = 'register-self';
 const kTSTAPI_UNREGISTER_SELF      = 'unregister-self';
+const kTSTAPI_NOTIFY_READY         = 'ready';
 const kTSTAPI_NOTIFY_TAB_CLICKED   = 'tab-clicked';
 const kTSTAPI_IS_SUBTREE_COLLAPSED = 'is-subtree-collapsed';
 const kTSTAPI_HAS_CHILD_TABS       = 'has-child-tabs';

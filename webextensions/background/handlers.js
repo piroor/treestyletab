@@ -831,12 +831,16 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_REGISTER_SELF:
       return (async () => {
         gExternalListenerAddons[aSender.id] = aMessage;
+        let index = configs.cachedExternalAddons.indexOf(aSender.id);
+        if (index < 0)
+          configs.cachedExternalAddons = configs.cachedExternalAddons.concat([aSender.id]);
         return true;
       })();
 
     case kTSTAPI_UNREGISTER_SELF:
       return (async () => {
         delete gExternalListenerAddons[aSender.id];
+        configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
         return true;
       })();
 
