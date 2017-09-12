@@ -396,8 +396,8 @@ ul {
 
 /* selection */
 
-.tab.selected::after,
-.tab.ready-to-close .closebox::after {
+.tab.selected::after/*,
+.tab.ready-to-close .closebox::after*/ {
   background: Highlight;
   bottom: 0;
   content: " ";
@@ -409,6 +409,9 @@ ul {
   right: 0;
   top: 0;
   z-index: 10;
+}
+.tab.ready-to-close .closebox {
+  background: Highlight;
 }
 
 
