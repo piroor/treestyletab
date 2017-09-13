@@ -187,8 +187,8 @@ var tabContextMenu = {
     left = left || Math.max(0, (containerRect.width - menuRect.width) / 2);
     top = top || Math.max(0, (containerRect.height - menuRect.height) / 2);
 
-    left = Math.min(left, containerRect.width - menuRect.width);
-    top = Math.min(top, containerRect.height - menuRect.height);
+    left = Math.min(left, containerRect.width - menuRect.width - 3);
+    top = Math.min(top, containerRect.height - menuRect.height - 3);
     aMenu.style.left = `${left}px`;
     aMenu.style.top = `${top}px`;
   },
