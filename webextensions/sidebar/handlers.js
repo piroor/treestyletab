@@ -860,8 +860,7 @@ function onContextualIdentitiesUpdated() {
 
 function onMessage(aMessage, aSender, aRespond) {
   if (!aMessage ||
-      typeof aMessage.type != 'string' ||
-      aMessage.type.indexOf('treestyletab:') != 0)
+      typeof aMessage.type != 'string')
     return;
 
   var timeout = setTimeout(() => {
