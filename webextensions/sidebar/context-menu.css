@@ -30,6 +30,10 @@
   z-index: 999999;
 }
 
+#tabContextMenu ul {
+  transition-delay: 300ms;
+}
+
 #tabContextMenu.open,
 #tabContextMenu li:hover ul {
   opacity: 1;
