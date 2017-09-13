@@ -272,6 +272,8 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_PRIVATE_BROWSING);
   }
 
+/*
+  // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (aOptions.forceApply ||
       aNewState.selected != oldState.selected) {
     if (aNewState.selected)
@@ -279,6 +281,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     else
       aTab.classList.remove(kTAB_STATE_SELECTED);
   }
+*/
 
   if (configs.debug) {
     aTab.setAttribute('title',
@@ -657,4 +660,24 @@ async function notify(aParams = {}) {
     await wait(timeout);
 
   await browser.notifications.clear(id);
+}
+
+
+/* TST API Helpers */
+
+function serializeTabForTSTAPI(aTab) {
+  return {
+    id:       aTab.apiTab.id,
+    states:   Array.slice(aTab.classList),
+    children: getChildTabs(aTab).map(serializeTabForTSTAPI)
+  };
+}
+
+async function sendTSTAPIMessage(aMessage) {
+  var addons = window.gExternalListenerAddons ?
+                 gExternalListenerAddons :
+                 (await browser.runtime.getBackgroundPage()).gExternalListenerAddons;
+  return Promise.all(Object.keys(addons).map(aId => {
+    return browser.runtime.sendMessage(aId, aMessage).catch(e => {});
+  }));
 }
