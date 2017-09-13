@@ -365,7 +365,7 @@ var tabContextMenu = {
   onMessage(aMessage, aSender) {
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_UPDATED: {
-        this.items = aMessage.items;
+        this.extraItems = aMessage.items;
         this.rebuild();
       }; break;
     }
