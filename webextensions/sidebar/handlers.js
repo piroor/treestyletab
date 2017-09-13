@@ -222,8 +222,18 @@ function onMouseDown(aEvent) {
 
   tab = tab || getTabFromTabbarEvent(aEvent);
   //log('found target tab: ', tab);
-  if (!tab)
+  if (!tab) {
+    sendTSTAPIMessage({
+      type:     kTSTAPI_NOTIFY_TABBAR_CLICK,
+      window:   gTargetWindow,
+      button:   aEvent.button,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey
+    });
     return;
+  }
 
   if (isEventFiredOnTwisty(aEvent)) {
     //log('clicked on twisty');
