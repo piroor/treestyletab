@@ -27,7 +27,7 @@ var tabContextMenu = {
   contextTab: null,
   extraItems: {},
 
-  rebuild: function() {
+  rebuild: async function() {
     var firstExtraItem = this.node.querySelector('.extra');
     if (firstExtraItem) {
       let range = document.createRange();
@@ -38,12 +38,17 @@ var tabContextMenu = {
     }
 
     if (Object.keys(this.extraItems).length == 0)
-     return;
+      return;
+
+    var addons = (await browser.runtime.getBackgroundPage()).gExternalListenerAddons;
 
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
       let addonItem = document.createElement('li');
-      addonItem.appendChild(document.createTextNode(id.replace(/@.+$/, '')));
+      let name = (id == browser.runtime.id) ?
+                   browser.i18n.getMessage('extensionName') :
+                   addons[id].name || id.replace(/@.+$/, '') ;
+      addonItem.appendChild(document.createTextNode(name));
       addonItem.classList.add('extra');
       this.prepareAsSubmenu(addonItem);
       let addonSubMenu = addonItem.lastChild;
