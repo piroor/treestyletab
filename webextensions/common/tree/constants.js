@@ -49,6 +49,7 @@ const kTSTAPI_GET_TAB_STATE        = 'get-tab-state';
 const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
 const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
 
+const kTSTAPI_CONTEXT_MENU_UPDATED    = 'fake-contextMenu-updated';
 const kTSTAPI_CONTEXT_MENU_OPEN       = 'fake-contextMenu-open';
 const kTSTAPI_CONTEXT_MENU_CREATE     = 'fake-contextMenu-create';
 const kTSTAPI_CONTEXT_MENU_UPDATE     = 'fake-contextMenu-update';

@@ -952,6 +952,11 @@ function onMessage(aMessage, aSender, aRespond) {
         }
       }
     }; break;
+
+    case kTSTAPI_CONTEXT_MENU_UPDATED:
+      tabContextMenu.extraItems = aMesage.items;
+      tabContextMenu.rebuild();
+      break;
   }
   clearTimeout(timeout);
 }

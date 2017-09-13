@@ -21,6 +21,9 @@ var gContextMenuItems = `
 
 async function refreshContextMenuItems() {
   await browser.contextMenus.removeAll();
+  onMessageExternal({
+    type: kTSTAPI_CONTEXT_MENU_REMOVE_ALL
+  }, browser.runtime);
 
   let separatorsCount = 0;
   let normalItemAppeared = false;
@@ -43,6 +46,13 @@ async function refreshContextMenuItems() {
       id, type, title,
       contexts: ['page', 'tab']
     });
+    onMessageExternal({
+      type: kTSTAPI_CONTEXT_MENU_CREATE,
+      params: {
+        id, type, title,
+        contexts: ['page', 'tab']
+      }
+    }, browser.runtime);
   }
 }
 
@@ -55,7 +65,7 @@ configs.$addObserver(aKey => {
     refreshContextMenuItems();
 });
 
-browser.contextMenus.onClicked.addListener((aInfo, aTab) => {
+var contextMenuClickListener = (aInfo, aTab) => {
   log('context menu item clicked: ', aInfo, aTab);
 
   var contextTab = getTabById(aTab.id);
@@ -130,4 +140,5 @@ browser.contextMenus.onClicked.addListener((aInfo, aTab) => {
     default:
       break;
   }
-});
+};
+browser.contextMenus.onClicked.addListener(contextMenuClickListener);

@@ -44,6 +44,8 @@ async function init() {
 
   var respondedAddons = [];
   await Promise.all(configs.cachedExternalAddons.map(async aId => {
+    if (aId == browser.runtime.id)
+      return true;
     try {
       let success = await browser.runtime.sendMessage(aId, {
         type: kTSTAPI_NOTIFY_READY
@@ -55,6 +57,11 @@ async function init() {
     }
   }));
   configs.cachedExternalAddons = respondedAddons;
+
+  // register self as a listener to listen fake context menu events
+  onMessageExternal({
+    type: kTSTAPI_REGISTER_SELF
+  }, browser.runtime);
 }
 
 function waitUntilCompletelyRestored() {
@@ -77,6 +84,9 @@ function waitUntilCompletelyRestored() {
 }
 
 function destroy() {
+  browser.runtime.sendMessage(browser.runtime.id, {
+    type:  kTSTAPI_UNREGISTER_SELF
+  });
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);

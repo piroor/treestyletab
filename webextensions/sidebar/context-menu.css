@@ -12,10 +12,12 @@
            https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
 */
 
-#tabContextMenu {
+#tabContextMenu,
+#tabContextMenu ul {
   background: ThreeDFace;
   border: 1px outset ThreeDFace;
   box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.35);
+  color: -moz-fieldtext;
   marign: auto auto;
   max-height: 100%;
   max-width: 100%;
@@ -27,9 +29,18 @@
   transition: opacity var(--collapse-animation);
   z-index: 999999;
 }
-#tabContextMenu.open {
+
+#tabContextMenu.open,
+#tabContextMenu li:hover ul {
   opacity: 1;
   pointer-events: auto;
+}
+
+#tabContextMenu ul {
+  bottom: 0;
+  position: absolute;
+  left: 1.5em;
+  width: calc(100% - 1.5em);
 }
 
 #tabContextMenu li {
@@ -52,6 +63,11 @@
 #tabContextMenu li:not(.context-separator):hover {
   background: Highlight;
   color: HighlightText
+}
+
+#tabContextMenu li:not(.context-separator):hover ul li:not(:hover) {
+  background: ThreeDFace;
+  color: -moz-fieldtext;
 }
 
 #tabContextMenu[data-tab-states~="muted"] #context-mute,

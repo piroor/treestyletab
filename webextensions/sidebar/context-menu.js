@@ -18,6 +18,61 @@ var tabContextMenu = {
   },
 
   contextTab: null,
+  extraItems: {},
+
+  rebuild: function() {
+    var firstExtraItem = this.node.querySelector('.extra');
+    if (firstExtraItem) {
+      let range = documenr.createRange();
+      range.selectNodeContents(this.node);
+      range.setStartBefore(firstExtraItem);
+      range.deleteContents();
+      range.detach();
+    }
+
+    if (Object.keys(this.extraItems).length == 0)
+     return;
+
+    var extraItemNodes = document.createDocumentFragment();
+    for (let id of Object.keys(this.extraItems)) {
+      let node = document.createElement('li');
+      node.classList.add('extra');
+      node.appendChild(document.createTextNode(id.replace(/@.+$/, '')));
+      let subMenu = node.appendChild(document.createElement('ul'));
+      for (let item of this.extraItems[id]) {
+        if (item.contexts && item.contexts.indexOf('tab') < 0)
+          continue;
+        let node = document.createElement('li');
+        node.classList.add('extra');
+        if (item.type == 'separator') {
+          node.classList.add('context-separator');
+        }
+        else {
+          node.appendChild(document.createTextNode(item.title));
+          node.setAttribute('title', item.title);
+        }
+        subMenu.appendChild(node);
+      }
+      switch (subMenu.childNodes.length) {
+        case 0:
+          break;
+        case 1:
+          node = subMenu.removeChild(subMenu.firstChild);
+          extraItemNodes.appendChild(node);
+        default:
+          extraItemNodes.appendChild(node);
+          break;
+      }
+    }
+    if (!extraItemNodes.hasChildNodes())
+      return;
+
+    var separator = document.createElement('li');
+    separator.classList.add('extra');
+    separator.classList.add('context-separator');
+    extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
+    this.node.appendChild(extraItemNodes);
+  },
 
   open(aOptions = {}) {
     if (this.closeTimeout) {
@@ -193,6 +248,12 @@ var tabContextMenu = {
 };
 tabContextMenu.onMouseDown = tabContextMenu.onMouseDown.bind(tabContextMenu);
 tabContextMenu.onClick = tabContextMenu.onClick.bind(tabContextMenu);
+setTimeout(() => {
+  browser.runtime.getBackgroundPage().then(aWindow => {
+    tabContextMenu.extraItems = aWindow.gTabContextMenuItems;
+    tabContextMenu.rebuild();
+  });
+}, 0);
 
 window.addEventListener('contextmenu', (aEvent) => {
   aEvent.stopPropagation();
