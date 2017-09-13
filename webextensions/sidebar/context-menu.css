@@ -82,6 +82,7 @@
 #tabContextMenu[data-tab-states~="pinned"] #context-bookmarkAll,
 #tabContextMenu[data-tab-states~="pinned"] #context-closeOther,
 #tabContextMenu:not([data-tab-id]) .require-context-tab,
+#tabContextMenu:not([data-tab-id]) .extra,
 #tabContextMenu:not(.has-multiple-tabs) .require-multiple-tabs,
 #tabContextMenu:not(.has-normal-tabs) .require-normal-tabs,
 #tabContextMenu:not(.has-multiple-normal-tabs) .require-multiple-normal-tabs {
