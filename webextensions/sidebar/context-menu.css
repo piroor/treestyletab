@@ -14,10 +14,10 @@
 
 #tabContextMenu,
 #tabContextMenu ul {
-  background: ThreeDFace;
-  border: 1px outset ThreeDFace;
+  background: Menu;
+  border: 1px outset Menu;
   box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.35);
-  color: -moz-fieldtext;
+  color: MenuText;
   margin: 0;
   max-height: 100%;
   max-width: 100%;
@@ -57,7 +57,7 @@
 }
 
 #tabContextMenu li.separator {
-  border: 1px inset ThreeDFace;
+  border: 1px inset Menu;
   margin: 0.25em 0.5em;
   max-height: 0;
   padding: 0;
@@ -70,8 +70,8 @@
 }
 
 #tabContextMenu li:not(.separator):hover ul li:not(:hover) {
-  background: ThreeDFace;
-  color: -moz-fieldtext;
+  background: transparent;
+  color: MenuText;
 }
 
 #tabContextMenu[data-tab-states~="muted"] #context-mute,
