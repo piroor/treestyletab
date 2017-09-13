@@ -18,7 +18,7 @@
   border: 1px outset ThreeDFace;
   box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.35);
   color: -moz-fieldtext;
-  marign: auto auto;
+  margin: 0;
   max-height: 100%;
   max-width: 100%;
   opacity: 0;
