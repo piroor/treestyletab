@@ -224,7 +224,7 @@ function onMouseDown(aEvent) {
   //log('found target tab: ', tab);
   if (!tab) {
     sendTSTAPIMessage({
-      type:     kTSTAPI_NOTIFY_TABBAR_CLICK,
+      type:     kTSTAPI_NOTIFY_TABBAR_CLICKED,
       window:   gTargetWindow,
       button:   aEvent.button,
       ctrlKey:  aEvent.ctrlKey,
