@@ -84,3 +84,8 @@
   display: none;
 }
 
+#tabContextMenu li.has-submenu::after {
+  content: ">";
+  position: absolute;
+  right: 0.5em;
+}

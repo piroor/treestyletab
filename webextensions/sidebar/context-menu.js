@@ -37,6 +37,7 @@ var tabContextMenu = {
     for (let id of Object.keys(this.extraItems)) {
       let node = document.createElement('li');
       node.classList.add('extra');
+      node.classList.add('has-submenu');
       node.appendChild(document.createTextNode(id.replace(/@.+$/, '')));
       let subMenu = node.appendChild(document.createElement('ul'));
       for (let item of this.extraItems[id]) {
