@@ -89,7 +89,9 @@ async function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 
-  var addons = (await browser.runtime.getBackgroundPage()).gExternalListenerAddons;
+  var addons = await browser.runtime.sendMessage({
+    type: kCOMMAND_REQUEST_REGISTERED_ADDONS
+  });
   for (let id of Object.keys(addons)) {
     let addon = addons[id];
     if (addon.style)

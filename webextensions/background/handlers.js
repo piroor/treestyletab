@@ -600,6 +600,9 @@ function onMessage(aMessage, aSender) {
         return id;
       })();
 
+    case kCOMMAND_REQUEST_REGISTERED_ADDONS:
+      return Promise.resolve(gExternalListenerAddons);
+
     case kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
         while (gInitializing) {

@@ -697,7 +697,9 @@ function serializeTabForTSTAPI(aTab) {
 async function sendTSTAPIMessage(aMessage) {
   var addons = window.gExternalListenerAddons ?
                  gExternalListenerAddons :
-                 (await browser.runtime.getBackgroundPage()).gExternalListenerAddons;
+                 (await browser.runtime.sendMessage({
+                   type: kCOMMAND_REQUEST_REGISTERED_ADDONS
+                 }));
   return Promise.all(Object.keys(addons).map(aId => {
     return browser.runtime.sendMessage(aId, aMessage).catch(e => {});
   }));

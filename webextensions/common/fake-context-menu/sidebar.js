@@ -71,8 +71,9 @@ var tabContextMenu = {
     if (Object.keys(this.extraItems).length == 0)
       return;
 
-    var addons = (await browser.runtime.getBackgroundPage()).gExternalListenerAddons;
-
+    var addons = await browser.runtime.sendMessage({
+      type: kCOMMAND_REQUEST_REGISTERED_ADDONS
+    });
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
       let addonItem = document.createElement('li');

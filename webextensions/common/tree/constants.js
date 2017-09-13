@@ -8,6 +8,7 @@
 const kCOMMAND_PING_TO_BACKGROUND = 'treestyletab:ping-to-background';
 const kCOMMAND_PING_TO_SIDEBAR = 'treestyletab:ping-to-sidebar';
 const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request-unique-id';
+const kCOMMAND_REQUEST_REGISTERED_ADDONS = 'treestyletab:request-registered-addons';
 const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
 const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
 const kCOMMAND_LOAD_URI = 'treestyletab:load-uri';
