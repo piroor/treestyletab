@@ -30,7 +30,7 @@ var tabContextMenu = {
   rebuild: function() {
     var firstExtraItem = this.node.querySelector('.extra');
     if (firstExtraItem) {
-      let range = documenr.createRange();
+      let range = document.createRange();
       range.selectNodeContents(this.node);
       range.setStartBefore(firstExtraItem);
       range.deleteContents();

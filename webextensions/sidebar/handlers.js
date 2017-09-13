@@ -954,7 +954,7 @@ function onMessage(aMessage, aSender, aRespond) {
     }; break;
 
     case kTSTAPI_CONTEXT_MENU_UPDATED:
-      tabContextMenu.extraItems = aMesage.items;
+      tabContextMenu.extraItems = aMessage.items;
       tabContextMenu.rebuild();
       break;
   }
