@@ -46,10 +46,17 @@
 #tabContextMenu li {
   list-style: none;
   margin: 0;
-  padding: 0.2em 0.5em;
+  padding: 0.2em 0.5em 0.2em 1.5em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+#tabContextMenu li.checkbox.checked {
+  padding-left: 0.5em;
+}
+#tabContextMenu li.checkbox.checked::before {
+  content: "☑";
 }
 
 #tabContextMenu li.context-separator {
