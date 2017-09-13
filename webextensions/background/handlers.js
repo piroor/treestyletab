@@ -883,11 +883,16 @@ function onMessageExternal(aMessage, aSender) {
       return (async () => {
         clearTimeout(timeout);
         var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var states = aMessage.state || aMessage.states;
+        if (!Array.isArray(states))
+          states = [states];
         for (let tab of tabs) {
-          tab.classList.add(aMessage.state);
+          for (let state of states) {
+            tab.classList.add(state);
+          }
         }
         broadcastTabState(tabs, {
-          add: [aMessage.state]
+          add: states
         });
       })();
 
@@ -895,11 +900,16 @@ function onMessageExternal(aMessage, aSender) {
       return (async () => {
         clearTimeout(timeout);
         var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var states = aMessage.state || aMessage.states;
+        if (!Array.isArray(states))
+          states = [states];
         for (let tab of tabs) {
-          tab.classList.remove(aMessage.state);
+          for (let state of states) {
+            tab.classList.remove(state);
+          }
         }
         broadcastTabState(tabs, {
-          remove: [aMessage.state]
+          remove: states
         });
       })();
 
