@@ -26,73 +26,73 @@ var tabContextMenu = {
   items: {},
 
   getItemsFor(aAddonId) {
-  let items;
-  if (aAddonId in this.items) {
-    items = this.items[aAddonId];
-  }
-  else {
-    items = [];
-    this.items[aAddonId] = items;
-  }
-  return items;
+    let items;
+    if (aAddonId in this.items) {
+      items = this.items[aAddonId];
+    }
+    else {
+      items = [];
+      this.items[aAddonId] = items;
+    }
+    return items;
   },
 
   onExternalMessage(aMessage, aSender) {
-  switch (aMessage.type) {
-    case kTSTAPI_CONTEXT_MENU_CREATE: {
-      let items = this.getItemsFor(aSender.id);
-      let params = aMessage.params;
-      if (Array.isArray(params))
-        params = params[0];
-      items.push(params);
-      this.items[aSender.id] = items;
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: this.items
-      });
-      return Promise.resolve();
-    }; break;
+    switch (aMessage.type) {
+      case kTSTAPI_CONTEXT_MENU_CREATE: {
+        let items = this.getItemsFor(aSender.id);
+        let params = aMessage.params;
+        if (Array.isArray(params))
+          params = params[0];
+        items.push(params);
+        this.items[aSender.id] = items;
+        browser.runtime.sendMessage({
+          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
+          items: this.items
+        });
+        return Promise.resolve();
+      }; break;
 
-    case kTSTAPI_CONTEXT_MENU_UPDATE: {
-      let items = this.getItemsFor(aSender.id);
-      for (let i = 0, maxi = items.length; i < maxi; i++) {
-        let item = items[i];
-        if (item.id != aMessage.params[0])
-          continue;
-        items.splice(i, 1, clone(item, aMessage.params[1]));
-        updated = true;
-        break;
-      }
-      this.items[aSender.id] = items;
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: this.items
-      });
-      return Promise.resolve();
-    }; break;
+      case kTSTAPI_CONTEXT_MENU_UPDATE: {
+        let items = this.getItemsFor(aSender.id);
+        for (let i = 0, maxi = items.length; i < maxi; i++) {
+          let item = items[i];
+          if (item.id != aMessage.params[0])
+            continue;
+          items.splice(i, 1, clone(item, aMessage.params[1]));
+          updated = true;
+          break;
+        }
+        this.items[aSender.id] = items;
+        browser.runtime.sendMessage({
+          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
+          items: this.items
+        });
+        return Promise.resolve();
+      }; break;
 
-    case kTSTAPI_CONTEXT_MENU_REMOVE: {
-      let items = this.getItemsFor(aSender.id);
-      let id = aMessage.params;
-      if (Array.isArray(id))
-        id = id[0];
-      items = items.filter(aItem => aItem.id != id);
-      this.items[aSender.id] = items;
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: this.items
-      });
-      return Promise.resolve();
-    }; break;
+      case kTSTAPI_CONTEXT_MENU_REMOVE: {
+        let items = this.getItemsFor(aSender.id);
+        let id = aMessage.params;
+        if (Array.isArray(id))
+          id = id[0];
+        items = items.filter(aItem => aItem.id != id);
+        this.items[aSender.id] = items;
+        browser.runtime.sendMessage({
+          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
+          items: this.items
+        });
+        return Promise.resolve();
+      }; break;
 
-    case kTSTAPI_CONTEXT_MENU_REMOVE_ALL: {
-      delete this.items[aSender.id];
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: this.items
-      });
-      return Promise.resolve();
-    }; break;
-  }
+      case kTSTAPI_CONTEXT_MENU_REMOVE_ALL: {
+        delete this.items[aSender.id];
+        browser.runtime.sendMessage({
+          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
+          items: this.items
+        });
+        return Promise.resolve();
+      }; break;
+    }
   }
 };
