@@ -198,3 +198,7 @@ window.addEventListener('contextmenu', (aEvent) => {
   aEvent.stopPropagation();
   aEvent.preventDefault();
 }, { capture: true });
+
+window.addEventListener('blur', (aEvent) => {
+  tabContextMenu.close();
+}, { capture: true });
