@@ -35,6 +35,13 @@ async function init() {
   startObserveApiTabs();
   startObserveContextualIdentities();
   browser.runtime.onMessage.addListener(onMessage);
+
+  refreshContextMenuItems();
+  configs.$addObserver(aKey => {
+    if (aKey.indexOf('context_') == 0)
+      refreshContextMenuItems();
+  });
+
   gInitializing = false;
 
   // notify that the master process is ready.

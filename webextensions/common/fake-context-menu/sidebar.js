@@ -332,12 +332,6 @@ var tabContextMenu = {
 };
 tabContextMenu.onMouseDown = tabContextMenu.onMouseDown.bind(tabContextMenu);
 tabContextMenu.onClick = tabContextMenu.onClick.bind(tabContextMenu);
-setTimeout(() => {
-  browser.runtime.getBackgroundPage().then(aWindow => {
-    tabContextMenu.extraItems = aWindow.gTabContextMenuItems;
-    tabContextMenu.rebuild();
-  });
-}, 0);
 
 window.addEventListener('contextmenu', (aEvent) => {
   aEvent.stopPropagation();
@@ -350,6 +344,13 @@ window.addEventListener('blur', (aEvent) => {
 
 
 browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
+
+window.addEventListener('load', () => {
+  browser.runtime.getBackgroundPage().then(aWindow => {
+    tabContextMenu.extraItems = aWindow.gTabContextMenuItems;
+    tabContextMenu.rebuild();
+  });
+}, { once: true });
 
 window.addEventListener('unload', () => {
   browser.runtime.onMessageExternal.removeListener(handleFakeContextMenuMessages);

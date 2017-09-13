@@ -56,15 +56,6 @@ async function refreshContextMenuItems() {
   }
 }
 
-configs.$load().then(() => {
-  refreshContextMenuItems();
-});
-
-configs.$addObserver(aKey => {
-  if (aKey.indexOf('context_') == 0)
-    refreshContextMenuItems();
-});
-
 var contextMenuClickListener = (aInfo, aTab) => {
   log('context menu item clicked: ', aInfo, aTab);
 
