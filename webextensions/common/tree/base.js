@@ -688,11 +688,10 @@ async function notify(aParams = {}) {
 /* TST API Helpers */
 
 function serializeTabForTSTAPI(aTab) {
-  return {
-    id:       aTab.apiTab.id,
+  return clone(aTab.apiTab, {
     states:   Array.slice(aTab.classList),
     children: getChildTabs(aTab).map(serializeTabForTSTAPI)
-  };
+  });
 }
 
 async function sendTSTAPIMessage(aMessage) {
