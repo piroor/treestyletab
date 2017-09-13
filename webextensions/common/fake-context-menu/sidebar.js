@@ -176,6 +176,10 @@ var tabContextMenu = {
     }, configs.collapseDuration);
   },
   onClosed() {
+    var menus = [this.node].concat(Array.slice(this.node.querySelectorAll('ul')));
+    for (let menu of menus) {
+      this.updatePosition(menu, { left: 0, right: 0 });
+    }
     this.node.removeAttribute('data-tab-id');
     this.node.removeAttribute('data-tab-states');
   },
