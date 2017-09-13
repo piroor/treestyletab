@@ -568,8 +568,7 @@ function onTabPinned(aTab) {
 
 function onMessage(aMessage, aSender) {
   if (!aMessage ||
-      typeof aMessage.type != 'string' ||
-      aMessage.type.indexOf('treestyletab:') != 0)
+      typeof aMessage.type != 'string')
     return;
 
   var timeout = setTimeout(() => {
@@ -812,6 +811,10 @@ function onMessage(aMessage, aSender) {
         insertBefore: getTabById(aMessage.insertBefore),
         insertAfter:  getTabById(aMessage.insertAfter)
       }));
+
+    // just as a listener
+    case kTSTAPI_CONTEXT_MENU_CLICK:
+      return contextMenuClickListener(aMessage.info, aMessage.tab);
   }
   clearTimeout(timeout);
 }
@@ -959,11 +962,6 @@ function onMessageExternal(aMessage, aSender) {
       clearTimeout(timeout);
       return Promise.resolve();
     }; break;
-
-
-    // just as a listener
-    case kTSTAPI_CONTEXT_MENU_CLICK:
-      return contextMenuClickListener(aMessage.info, aMessage.tab);
   }
   clearTimeout(timeout);
 }

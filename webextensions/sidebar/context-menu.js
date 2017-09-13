@@ -42,15 +42,7 @@ var tabContextMenu = {
       for (let item of this.extraItems[id]) {
         if (item.contexts && item.contexts.indexOf('tab') < 0)
           continue;
-        let node = document.createElement('li');
-        node.classList.add('extra');
-        if (item.type == 'separator') {
-          node.classList.add('context-separator');
-        }
-        else {
-          node.appendChild(document.createTextNode(item.title));
-          node.setAttribute('title', item.title);
-        }
+        let node = this.buildExtraItem(item, id);
         subMenu.appendChild(node);
       }
       switch (subMenu.childNodes.length) {
@@ -72,6 +64,20 @@ var tabContextMenu = {
     separator.classList.add('context-separator');
     extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
     this.node.appendChild(extraItemNodes);
+  },
+  buildExtraItem(aItem, aOwnerId) {
+    var node = document.createElement('li');
+    node.setAttribute('data-item-id', aItem.id);
+    node.setAttribute('data-item-owner-id', aOwnerId);
+    node.classList.add('extra');
+    if (aItem.type == 'separator') {
+      node.classList.add('context-separator');
+    }
+    else {
+      node.appendChild(document.createTextNode(aItem.title));
+      node.setAttribute('title', aItem.title);
+    }
+    return node;
   },
 
   open(aOptions = {}) {
@@ -242,6 +248,45 @@ var tabContextMenu = {
       case 'context-close':
         browser.tabs.remove(this.contextTab.id);
         break;
+
+      default: {
+        let id = target.getAttribute('data-item-id');
+        if (id) {
+          var modifiers = [];
+          if (aEvent.metaKey)
+            modifiers.push('Command');
+          if (aEvent.ctrlKey) {
+            modifiers.push('Ctrl');
+            if (navigator.platform.indexOf('Darwin') == 0)
+              modifiers.push('MacCtrl');
+          }
+          if (aEvent.shiftKey)
+            modifiers.push('Shift');
+          let message = {
+            type: kTSTAPI_CONTEXT_MENU_CLICK,
+            info: {
+              checked:          false,
+              editable:         false,
+              frameUrl:         null,
+              linkUrl:          null,
+              mediaType:        null,
+              menuItemId:       id,
+              modifiers:        modifiers,
+              pageUrl:          null,
+              parentMenuItemId: null,
+              selectionText:    null,
+              srcUrl:           null,
+              wasChecked:       false
+            },
+            tab: this.contextTab || null
+          };
+          let owner = target.getAttribute('data-item-owner-id');
+          if (owner == browser.runtime.id)
+            browser.runtime.sendMessage(message);
+          else
+            browser.runtime.sendMessage(owner, message);
+        }
+      }; break;
     }
     this.close();
   }
