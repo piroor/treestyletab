@@ -78,7 +78,7 @@ var tabContextMenu = {
 
     var separator = document.createElement('li');
     separator.classList.add('extra');
-    separator.classList.add('context-separator');
+    separator.classList.add('separator');
     extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
     this.node.appendChild(extraItemNodes);
   },
@@ -94,10 +94,12 @@ var tabContextMenu = {
     node.setAttribute('data-item-id', aItem.id);
     node.setAttribute('data-item-owner-id', aOwnerId);
     node.classList.add('extra');
-    if (aItem.type == 'separator') {
-      node.classList.add('context-separator');
+    node.classList.add(aItem.type);
+    if (aItem.type == 'checkbox' || aItem.type == 'radio') {
+      if (aItem.checked)
+        node.classList.add('checked');
     }
-    else {
+    if (aItem.type != 'separator') {
       node.appendChild(document.createTextNode(aItem.title));
       node.setAttribute('title', aItem.title);
     }

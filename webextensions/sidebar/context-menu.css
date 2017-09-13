@@ -52,7 +52,7 @@
   content: "☑";
 }
 
-#tabContextMenu li.context-separator {
+#tabContextMenu li.separator {
   border: 1px inset ThreeDFace;
   margin: 0.25em 0.5em;
   max-height: 0;
@@ -60,12 +60,12 @@
   pointer-events: none;
 }
 
-#tabContextMenu li:not(.context-separator):hover {
+#tabContextMenu li:not(.separator):hover {
   background: Highlight;
   color: HighlightText
 }
 
-#tabContextMenu li:not(.context-separator):hover ul li:not(:hover) {
+#tabContextMenu li:not(.separator):hover ul li:not(:hover) {
   background: ThreeDFace;
   color: -moz-fieldtext;
 }
