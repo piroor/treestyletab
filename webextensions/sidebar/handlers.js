@@ -224,7 +224,7 @@ function onMouseDown(aEvent) {
   //log('found target tab: ', tab);
   if (!tab) {
     if (aEvent.button == 2) {
-      tabContexMenu.open({
+      tabContextMenu.open({
         left: aEvent.clientX,
         top:  aEvent.clientY
       });
@@ -285,7 +285,7 @@ function onMouseDown(aEvent) {
   }
 
   if (aEvent.button == 2) {
-    tabContexMenu.open({
+    tabContextMenu.open({
       tab:  tab.apiTab,
       left: aEvent.clientX,
       top:  aEvent.clientY

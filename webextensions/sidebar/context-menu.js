@@ -12,7 +12,7 @@
            https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
 */
 
-var tabContexMenu = {
+var tabContextMenu = {
   get node() {
     return document.querySelector('#tabContextMenu');
   },
@@ -191,8 +191,8 @@ var tabContexMenu = {
     this.close();
   }
 };
-tabContexMenu.onMouseDown = tabContexMenu.onMouseDown.bind(tabContexMenu);
-tabContexMenu.onClick = tabContexMenu.onClick.bind(tabContexMenu);
+tabContextMenu.onMouseDown = tabContextMenu.onMouseDown.bind(tabContextMenu);
+tabContextMenu.onClick = tabContextMenu.onClick.bind(tabContextMenu);
 
 window.addEventListener('contextmenu', (aEvent) => {
   aEvent.stopPropagation();
