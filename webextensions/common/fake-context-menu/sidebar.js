@@ -347,3 +347,24 @@ window.addEventListener('contextmenu', (aEvent) => {
 window.addEventListener('blur', (aEvent) => {
   tabContextMenu.close();
 }, { capture: true });
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
+}, { once: true });
+
+window.addEventListener('unload', () => {
+  browser.runtime.onMessageExternal.removeListener(handleFakeContextMenuMessages);
+}, { once: true });
+
+function handleFakeContextMenuMessages(aMessage, aSender) {
+  switch (aMessage.type) {
+    case kTSTAPI_CONTEXT_MENU_OPEN: {
+      tabContextMenu.open({
+        tab:  aMessage.tab ? getTabById(aMessage.tab).apiTab : null,
+        left: aMessage.left,
+        top:  aMessage.top
+      });
+    }; break;
+  }
+}

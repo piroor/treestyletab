@@ -971,14 +971,6 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_UNREGISTER_SELF: {
       uninstallStyleForAddon(aSender.id)
     }; break;
-
-    case kTSTAPI_CONTEXT_MENU_OPEN: {
-      tabContextMenu.open({
-        tab:  aMessage.tab ? getTabById(aMessage.tab).apiTab : null,
-        left: aMessage.left,
-        top:  aMessage.top
-      });
-    }; break;
   }
 }
 

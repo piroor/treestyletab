@@ -49,14 +49,6 @@ const kTSTAPI_GET_TAB_STATE        = 'get-tab-state';
 const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
 const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
 
-const kTSTAPI_CONTEXT_MENU_UPDATED    = 'fake-contextMenu-updated';
-const kTSTAPI_CONTEXT_MENU_OPEN       = 'fake-contextMenu-open';
-const kTSTAPI_CONTEXT_MENU_CREATE     = 'fake-contextMenu-create';
-const kTSTAPI_CONTEXT_MENU_UPDATE     = 'fake-contextMenu-update';
-const kTSTAPI_CONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
-const kTSTAPI_CONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
-const kTSTAPI_CONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
-
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';
 const kCONTENT_LOCATION = 'data-content-location';

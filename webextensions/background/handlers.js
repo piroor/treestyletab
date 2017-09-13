@@ -912,66 +912,6 @@ function onMessageExternal(aMessage, aSender) {
           remove: states
         });
       })();
-
-
-    case kTSTAPI_CONTEXT_MENU_CREATE: {
-      let items = getTabContextMenuItemsFor(aSender.id);
-      let params = aMessage.params;
-      if (Array.isArray(params))
-        params = params[0];
-      items.push(params);
-      gTabContextMenuItems[aSender.id] = items;
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
-      });
-      clearTimeout(timeout);
-      return Promise.resolve();
-    }; break;
-
-    case kTSTAPI_CONTEXT_MENU_UPDATE: {
-      let items = getTabContextMenuItemsFor(aSender.id);
-      for (let i = 0, maxi = items.length; i < maxi; i++) {
-        let item = items[i];
-        if (item.id != aMessage.params[0])
-          continue;
-        items.splice(i, 1, clone(item, aMessage.params[1]));
-        updated = true;
-        break;
-      }
-      gTabContextMenuItems[aSender.id] = items;
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
-      });
-      clearTimeout(timeout);
-      return Promise.resolve();
-    }; break;
-
-    case kTSTAPI_CONTEXT_MENU_REMOVE: {
-      let items = getTabContextMenuItemsFor(aSender.id);
-      let id = aMessage.params;
-      if (Array.isArray(id))
-        id = id[0];
-      items = items.filter(aItem => aItem.id != id);
-      gTabContextMenuItems[aSender.id] = items;
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
-      });
-      clearTimeout(timeout);
-      return Promise.resolve();
-    }; break;
-
-    case kTSTAPI_CONTEXT_MENU_REMOVE_ALL: {
-      delete gTabContextMenuItems[aSender.id];
-      browser.runtime.sendMessage({
-        type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
-      });
-      clearTimeout(timeout);
-      return Promise.resolve();
-    }; break;
   }
   clearTimeout(timeout);
 }
@@ -1004,17 +944,3 @@ function TSTAPIFormatResult(aResults, aOriginalMessage) {
 
 
 // fake context menu
-
-var gTabContextMenuItems = {};
-
-function getTabContextMenuItemsFor(aAddonId) {
-  let items;
-  if (aAddonId in gTabContextMenuItems) {
-    items = gTabContextMenuItems[aAddonId];
-  }
-  else {
-    items = [];
-    gTabContextMenuItems[aAddonId] = items;
-  }
-  return items;
-}
