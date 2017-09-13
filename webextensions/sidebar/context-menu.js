@@ -16,6 +16,13 @@ var tabContextMenu = {
   get node() {
     return document.querySelector('#tabContextMenu');
   },
+  get containerRect() {
+    var allRange = document.createRange();
+    allRange.selectNodeContents(document.body);
+    var containerRect = allRange.getBoundingClientRect();
+    allRange.detach();
+    return containerRect;
+  },
 
   contextTab: null,
   extraItems: {},
@@ -106,7 +113,10 @@ var tabContextMenu = {
     this.contextTab = aOptions.tab;
     this.init();
     this.node.classList.add('open');
-    this.updatePosition(aOptions);
+    var menus = [this.node].concat(Array.slice(this.node.querySelectorAll('ul')));
+    for (let menu of menus) {
+      this.updatePosition(menu, aOptions);
+    }
     setTimeout(() => {
       window.addEventListener('mousedown', this.onMouseDown, { capture: true });
       window.addEventListener('click', this.onClick, { capture: true });
@@ -155,20 +165,25 @@ var tabContextMenu = {
     }
   },
 
-  updatePosition(aOptions = {}) {
-    let menuRect = this.node.getBoundingClientRect();
+  updatePosition(aMenu, aOptions = {}) {
+    var left = aOptions.left;
+    var top = aOptions.top;
 
-    let allRange = document.createRange();
-    allRange.selectNodeContents(document.body);
-    let containerRect = allRange.getBoundingClientRect();
-    allRange.detach();
+    if (aMenu.parentNode.localName == 'li') {
+      let parentRect = aMenu.parentNode.getBoundingClientRect();
+      left = parentRect.right;
+      top = parentRect.top;
+    }
 
-    let left = aOptions.left || Math.max(0, (containerRect.width - menuRect.width) / 2);
-    let top = aOptions.top || Math.max(0, (containerRect.height - menuRect.height) / 2);
+    let menuRect = aMenu.getBoundingClientRect();
+    let containerRect = this.containerRect;
+    left = left || Math.max(0, (containerRect.width - menuRect.width) / 2);
+    top = top || Math.max(0, (containerRect.height - menuRect.height) / 2);
+
     left = Math.min(left, containerRect.width - menuRect.width);
     top = Math.min(top, containerRect.height - menuRect.height);
-    this.node.style.left = `${left}px`;
-    this.node.style.top = `${top}px`;
+    aMenu.style.left = `${left}px`;
+    aMenu.style.top = `${top}px`;
   },
 
   onMouseDown: function(aEvent) {

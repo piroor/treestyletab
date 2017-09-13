@@ -36,13 +36,6 @@
   pointer-events: auto;
 }
 
-#tabContextMenu ul {
-  bottom: 0;
-  position: absolute;
-  left: 1.5em;
-  width: calc(100% - 1.5em);
-}
-
 #tabContextMenu li {
   list-style: none;
   margin: 0;
