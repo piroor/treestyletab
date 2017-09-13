@@ -45,11 +45,11 @@
   white-space: nowrap;
 }
 
-#tabContextMenu li.checkbox.checked {
-  padding-left: 0.5em;
-}
+#tabContextMenu li.radio.checked::before,
 #tabContextMenu li.checkbox.checked::before {
-  content: "☑";
+  content: "✔";
+  position: absolute;
+  left: 0.25em;
 }
 
 #tabContextMenu li.separator {
