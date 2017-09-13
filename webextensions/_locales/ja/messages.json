@@ -39,6 +39,14 @@
       "parent": { "content": "$3", "example": "親フォルダー" }
     }},
 
+  "bookmarkTabs.notification.title": { "message": "複数のタブをブックマークしました" },
+  "bookmarkTabs.notification.message": { "message": "「$TITLE$」を含む$COUNT$個のタブを「$PARENT$」内の新しいフォルダーにブックマークしました。",
+    "placeholders": {
+      "title": { "content": "$1", "example": "タイトル" },
+      "count": { "content": "$2", "example": "2" },
+      "parent": { "content": "$3", "example": "親フォルダー" }
+    }},
+
 
   "context.reloadTree.label": { "message": "このツリーを再読み込み" },
   "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み" },

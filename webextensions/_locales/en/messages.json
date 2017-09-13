@@ -39,6 +39,14 @@
       "parent": { "content": "$3", "example": "Parent Folder" }
     }},
 
+  "bookmarkTabs.notification.title": { "message": "Tabs are Successfully Bookmarked" },
+  "bookmarkTabs.notification.message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
+    "placeholders": {
+      "title": { "content": "$1", "example": "Title" },
+      "count": { "content": "$2", "example": "2" },
+      "parent": { "content": "$3", "example": "Parent Folder" }
+    }},
+
 
   "context.reloadTree.label": { "message": "Reload this Tree" },
   "context.reloadDescendants.label": { "message": "Reload Descendants" },
@@ -162,5 +170,23 @@
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." },
 
-  "config.all.caption": { "message": "All Configs" }
+  "config.all.caption": { "message": "All Configs" },
+
+
+  "tabContextMenu.reload.label":      { "message": "Reload Tab" },
+  "tabContextMenu.mute.label":        { "message": "Mute Tab" },
+  "tabContextMenu.unmute.label":      { "message": "Unmute Tab" },
+
+  "tabContextMenu.pin.label":         { "message": "Pin Tab" },
+  "tabContextMenu.unpin.label":       { "message": "Unpin Tab" },
+  "tabContextMenu.duplicate.label":   { "message": "Duplicate Tab" },
+  "tabContextMenu.tearOff.label":     { "message": "Move to New Window" },
+
+  "tabContextMenu.reloadAll.label":   { "message": "Reload All Tabs" },
+  "tabContextMenu.bookmarkAll.label": { "message": "Bookmark All Tabs…" },
+  "tabContextMenu.closeAfter.label":  { "message": "Close Tabs to the Right" },
+  "tabContextMenu.closeOther.label":  { "message": "Close Other Tabs" },
+
+  "tabContextMenu.undoClose.label":   { "message": "Undo Close Tab" },
+  "tabContextMenu.close.label":       { "message": "Close Tab" }
 }

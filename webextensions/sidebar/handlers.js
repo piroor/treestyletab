@@ -223,6 +223,15 @@ function onMouseDown(aEvent) {
   tab = tab || getTabFromTabbarEvent(aEvent);
   //log('found target tab: ', tab);
   if (!tab) {
+    if (aEvent.button == 2) {
+      tabContexMenu.open({
+        left: aEvent.clientX,
+        top:  aEvent.clientY
+      });
+      aEvent.stopPropagation();
+      aEvent.preventDefault();
+      return;
+    }
     sendTSTAPIMessage({
       type:     kTSTAPI_NOTIFY_TABBAR_CLICKED,
       window:   gTargetWindow,
@@ -235,7 +244,8 @@ function onMouseDown(aEvent) {
     return;
   }
 
-  if (isEventFiredOnTwisty(aEvent)) {
+  if (aEvent.button == 0 &&
+      isEventFiredOnTwisty(aEvent)) {
     //log('clicked on twisty');
     aEvent.stopPropagation();
     aEvent.preventDefault();
@@ -271,6 +281,17 @@ function onMouseDown(aEvent) {
       gLastMousedown.expired = true;
       notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
     }, configs.startDragTimeout);
+    return;
+  }
+
+  if (aEvent.button == 2) {
+    tabContexMenu.open({
+      tab:  tab.apiTab,
+      left: aEvent.clientX,
+      top:  aEvent.clientY
+    });
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
     return;
   }
 

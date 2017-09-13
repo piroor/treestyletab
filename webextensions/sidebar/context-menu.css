@@ -1,0 +1,70 @@
+@charset "UTF-8";
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+/*
+ Workaround until native context menu becomes available.
+ I have very less motivation to maintain this for future versions.
+ See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1376251
+           https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
+*/
+
+#tabContextMenu {
+  background: ThreeDFace;
+  border: 1px outset ThreeDFace;
+  box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.35);
+  marign: auto auto;
+  max-height: 100%;
+  max-width: 100%;
+  opacity: 0;
+  overflow: auto;
+  padding: 0.5em 0;
+  pointer-events: none;
+  position: fixed;
+  transition: opacity var(--collapse-animation);
+  z-index: 999999;
+}
+#tabContextMenu.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#tabContextMenu li {
+  list-style: none;
+  margin: 0;
+  padding: 0.2em 0.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#tabContextMenu li.context-separator {
+  border: 1px inset ThreeDFace;
+  margin: 0.25em 0.5em;
+  max-height: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+#tabContextMenu li:not(.context-separator):hover {
+  background: Highlight;
+  color: HighlightText
+}
+
+#tabContextMenu[data-tab-states~="muted"] #context-mute,
+#tabContextMenu:not([data-tab-states~="muted"]) #context-unmute,
+#tabContextMenu[data-tab-states~="pinned"] #context-pin,
+#tabContextMenu:not([data-tab-states~="pinned"]) #context-unpin,
+#tabContextMenu[data-tab-states~="pinned"] #context-closeAfter,
+#tabContextMenu[data-tab-states~="pinned"] #context-bookmarkAll,
+#tabContextMenu[data-tab-states~="pinned"] #context-closeOther,
+#tabContextMenu:not([data-tab-id]) .require-context-tab,
+#tabContextMenu:not(.has-multiple-tabs) .require-multiple-tabs,
+#tabContextMenu:not(.has-normal-tabs) .require-normal-tabs,
+#tabContextMenu:not(.has-multiple-normal-tabs) .require-multiple-normal-tabs {
+  display: none;
+}
+

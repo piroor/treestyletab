@@ -23,6 +23,8 @@
     <script type="application/javascript" src="/sidebar/handlers.js"></script>
     <script type="application/javascript" src="/sidebar/drag-and-drop.js"></script>
     <link rel="stylesheet" type="text/css" href="/sidebar/sidebar.css"/>
+    <script type="application/javascript" src="/sidebar/context-menu.js"></script>
+    <link rel="stylesheet" type="text/css" href="/sidebar/context-menu.css"/>
     <style id="size-definition" type="text/css"></style>
     <style id="contextual-identity-styling" type="text/css"></style>
     <link id="style-loader" rel="stylesheet" type="text/css" href=""/>
@@ -65,5 +67,41 @@
     <div id="blocking-screen">
       <span class="throbber"></span>
     </div>
+
+    <!-- Workaround until native context menu becomes available.
+         I have very less motivation to maintain this for future versions.
+         See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1376251
+                   https://bugzilla.mozilla.org/show_bug.cgi?id=1396031 -->
+    <ul id="tabContextMenu">
+      <li id="context-reload" class="require-context-tab"
+          title="__MSG_tabContextMenu.reload.label__">__MSG_tabContextMenu.reload.label__</li>
+      <li id="context-mute" class="require-context-tab"
+          title="__MSG_tabContextMenu.mute.label__">__MSG_tabContextMenu.mute.label__</li>
+      <li id="context-unmute" class="require-context-tab"
+          title="__MSG_tabContextMenu.unmute.label__">__MSG_tabContextMenu.unmute.label__</li>
+      <li class="context-separator require-context-tab"></li>
+      <li id="context-pin" class="require-context-tab"
+          title="__MSG_tabContextMenu.pin.label__">__MSG_tabContextMenu.pin.label__</li>
+      <li id="context-unpin" class="require-context-tab"
+          title="__MSG_tabContextMenu.unpin.label__">__MSG_tabContextMenu.unpin.label__</li>
+      <li id="context-duplicate" class="require-context-tab"
+          title="__MSG_tabContextMenu.duplicate.label__">__MSG_tabContextMenu.duplicate.label__</li>
+      <li id="context-tearOff" class="require-context-tab require-multiple-tabs"
+          title="__MSG_tabContextMenu.tearOff.label__">__MSG_tabContextMenu.tearOff.label__</li>
+      <li class="context-separator require-context-tab"></li>
+      <li id="context-reloadAll" class="require-multiple-tabs"
+          title="__MSG_tabContextMenu.reloadAll.label__">__MSG_tabContextMenu.reloadAll.label__</li>
+      <li id="context-bookmarkAll" class="require-normal-tabs"
+          title="__MSG_tabContextMenu.bookmarkAll.label__">__MSG_tabContextMenu.bookmarkAll.label__</li>
+      <li id="context-closeAfter" class="require-context-tab require-multiple-normal-tabs"
+          title="__MSG_tabContextMenu.closeAfter.label__">__MSG_tabContextMenu.closeAfter.label__</li>
+      <li id="context-closeOther" class="require-context-tab require-multiple-normal-tabs"
+          title="__MSG_tabContextMenu.closeOther.label__">__MSG_tabContextMenu.closeOther.label__</li>
+      <li class="context-separator"></li>
+      <li id="context-undoClose"
+          title="__MSG_tabContextMenu.undoClose.label__">__MSG_tabContextMenu.undoClose.label__</li>
+      <li id="context-close" class="require-context-tab"
+          title="__MSG_tabContextMenu.close.label__">__MSG_tabContextMenu.close.label__</li>
+    </ul>
   </body>
 </html>

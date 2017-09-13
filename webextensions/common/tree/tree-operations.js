@@ -1395,31 +1395,13 @@ function openGroupBookmarkBehavior() {
 }
 
 async function bookmarkTree(aRoot, aOptions = {}) {
-  var folderParams = {
-    title: browser.i18n.getMessage('bookmarkFolder.label', aRoot.apiTab.title)
-  };
-  if (aOptions.parentId) {
-    folderParams.parentId = aOptions.parentId;
-    if ('index' in aOptions)
-      folderParams.index = aOptions.index;
-  }
-  var folder = await browser.bookmarks.create(folderParams);
-  var tabs = [aRoot].concat(getDescendantTabs(aRoot));
-  for (let i = 0, maxi = tabs.length; i < maxi; i++) {
-    let tab = tabs[i];
-    await browser.bookmarks.create({
-      parentId: folder.id,
-      index:    i,
-      title:    tab.apiTab.title,
-      url:      tab.apiTab.url
-    });
-  }
+  var folder = await bookmarkTabs([aRoot].concat(getDescendantTabs(aRoot)), aOptions);
   browser.bookmarks.get(folder.parentId).then(aFolders => {
     notify({
       title:   browser.i18n.getMessage('bookmarkTree.notification.title'),
       message: browser.i18n.getMessage('bookmarkTree.notification.message', [
-        aRoot.apiTab.title,
-        tabs.length,
+        aTabs[0].apiTab.title,
+        aTabs.length,
         aFolders[0].title
       ]),
       icon:    kNOTIFICATION_DEFAULT_ICON

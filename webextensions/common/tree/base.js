@@ -645,6 +645,28 @@ function broadcastTabState(aTabs, aOptions = {}) {
 }
 
 
+async function bookmarkTabs(aTabs, aOptions = {}) {
+  var folderParams = {
+    title: browser.i18n.getMessage('bookmarkFolder.label', aTabs[0].apiTab.title)
+  };
+  if (aOptions.parentId) {
+    folderParams.parentId = aOptions.parentId;
+    if ('index' in aOptions)
+      folderParams.index = aOptions.index;
+  }
+  var folder = await browser.bookmarks.create(folderParams);
+  for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
+    let tab = aTabs[i];
+    await browser.bookmarks.create({
+      parentId: folder.id,
+      index:    i,
+      title:    tab.apiTab.title,
+      url:      tab.apiTab.url
+    });
+  }
+  return folder;
+}
+
 async function notify(aParams = {}) {
   var id = await browser.notifications.create({
     type:    'basic',
