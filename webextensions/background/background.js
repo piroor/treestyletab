@@ -36,6 +36,8 @@ async function init() {
   startObserveContextualIdentities();
   browser.runtime.onMessage.addListener(onMessage);
 
+  tabContextMenu.init();
+
   refreshContextMenuItems();
   configs.$addObserver(aKey => {
     if (aKey.indexOf('context_') == 0)
