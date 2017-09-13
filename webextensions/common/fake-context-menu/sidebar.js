@@ -166,8 +166,6 @@ var tabContextMenu = {
   },
 
   close() {
-    window.removeEventListener('mousedown', this.onMouseDown, { capture: true });
-    window.removeEventListener('click', this.onClick, { capture: true });
     this.node.classList.remove('open');
     this.contextTab = null;
     this.closeTimeout = setTimeout(() => {
@@ -182,6 +180,8 @@ var tabContextMenu = {
     }
     this.node.removeAttribute('data-tab-id');
     this.node.removeAttribute('data-tab-states');
+    window.removeEventListener('mousedown', this.onMouseDown, { capture: true });
+    window.removeEventListener('click', this.onClick, { capture: true });
   },
 
   applyContext() {
@@ -232,13 +232,7 @@ var tabContextMenu = {
     aMenu.style.top = `${top}px`;
   },
 
-  onMouseDown: function(aEvent) {
-    var target = aEvent.target;
-    do {
-      if (target == this.node)
-        return;
-      target = target.parentNode;
-    } while (target && target.parentNode);
+  onMouseDown(aEvent) {
     aEvent.stopImmediatePropagation();
     aEvent.stopPropagation();
     aEvent.preventDefault();
@@ -247,6 +241,10 @@ var tabContextMenu = {
   onClick: async function(aEvent) {
     if (aEvent.button != 0)
       return this.close();
+
+    aEvent.stopImmediatePropagation();
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
 
     var target = aEvent.target;
     while (target.nodeType != target.ELEMENT_NODE)
@@ -360,9 +358,9 @@ var tabContextMenu = {
           };
           let owner = target.getAttribute('data-item-owner-id');
           if (owner == browser.runtime.id)
-            browser.runtime.sendMessage(message);
+            await browser.runtime.sendMessage(message);
           else
-            browser.runtime.sendMessage(owner, message);
+            await browser.runtime.sendMessage(owner, message);
         }
       }; break;
     }

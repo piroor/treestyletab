@@ -73,8 +73,8 @@ async function init() {
 
   await inheritTreeStructure();
 
-  document.addEventListener('mousedown', onMouseDown, { capture: true });
-  document.addEventListener('mouseup', onMouseUp, { capture: true });
+  document.addEventListener('mousedown', onMouseDown);
+  document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
   document.addEventListener('change', onChange);
   gTabBar.addEventListener('dblclick', onDblClick);
@@ -117,8 +117,8 @@ function destroy() {
   endObserveContextualIdentities();
   window.removeEventListener('resize', onResize);
 
-  document.removeEventListener('mousedown', onMouseDown, { capture: true });
-  document.removeEventListener('mouseup', onMouseUp, { capture: true });
+  document.removeEventListener('mousedown', onMouseDown);
+  document.removeEventListener('mouseup', onMouseUp);
   document.removeEventListener('click', onClick);
   document.removeEventListener('change', onChange);
   gTabBar.removeEventListener('dblclick', onDblClick);
