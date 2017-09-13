@@ -347,9 +347,13 @@ function onMouseUp(aEvent) {
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();
 
+    let tab = getTabFromEvent(aEvent);
     sendTSTAPIMessage({
-      type:   kTSTAPI_NOTIFY_TAB_DRAGEND,
-      window: gTargetWindow
+      type:    kTSTAPI_NOTIFY_TAB_DRAGEND,
+      tab:     tab && serializeTabForTSTAPI(tab),
+      window:  gTargetWindow,
+      clientX: aEvent.clientX,
+      clientY: aEvent.clientY
     });
 
     gLastDragEnteredTab = null;
@@ -961,6 +965,14 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_UNREGISTER_SELF: {
       uninstallStyleForAddon(aSender.id)
+    }; break;
+
+    case kTSTAPI_OPEN_CONTEXT_MENU: {
+      tabContextMenu.open({
+        tab:  aMessage.tab ? getTabById(aMessage.tab).apiTab : null,
+        left: aMessage.left,
+        top:  aMessage.top
+      });
     }; break;
   }
 }

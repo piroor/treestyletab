@@ -48,6 +48,7 @@ const kTSTAPI_GET_DESCENDANT_TABS  = 'get-descendant-tabs';
 const kTSTAPI_GET_TAB_STATE        = 'get-tab-state';
 const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
 const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
+const kTSTAPI_OPEN_CONTEXT_MENU    = 'open-context-menu';
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';
