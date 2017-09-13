@@ -85,9 +85,7 @@ function handleFakeContextMenuMessages(aMessage, aSender) {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
-}, { once: true });
+browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
 
 window.addEventListener('unload', () => {
   browser.runtime.onMessageExternal.removeListener(handleFakeContextMenuMessages);

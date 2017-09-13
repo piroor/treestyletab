@@ -349,9 +349,7 @@ window.addEventListener('blur', (aEvent) => {
 }, { capture: true });
 
 
-window.addEventListener('DOMContentLoaded', () => {
-  browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
-}, { once: true });
+browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
 
 window.addEventListener('unload', () => {
   browser.runtime.onMessageExternal.removeListener(handleFakeContextMenuMessages);
