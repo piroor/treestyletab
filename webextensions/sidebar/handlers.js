@@ -967,7 +967,7 @@ function onMessageExternal(aMessage, aSender) {
       uninstallStyleForAddon(aSender.id)
     }; break;
 
-    case kTSTAPI_OPEN_CONTEXT_MENU: {
+    case kTSTAPI_CONTEXT_MENU_OPEN: {
       tabContextMenu.open({
         tab:  aMessage.tab ? getTabById(aMessage.tab).apiTab : null,
         left: aMessage.left,
