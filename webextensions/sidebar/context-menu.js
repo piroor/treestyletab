@@ -35,25 +35,34 @@ var tabContextMenu = {
 
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
-      let node = document.createElement('li');
-      node.classList.add('extra');
-      node.classList.add('has-submenu');
-      node.appendChild(document.createTextNode(id.replace(/@.+$/, '')));
-      let subMenu = node.appendChild(document.createElement('ul'));
+      let addonItem = document.createElement('li');
+      addonItem.appendChild(document.createTextNode(id.replace(/@.+$/, '')));
+      addonItem.classList.add('extra');
+      this.prepareAsSubmenu(addonItem);
+      let addonSubMenu = addonItem.lastChild;
+      let knownItems = {};
       for (let item of this.extraItems[id]) {
         if (item.contexts && item.contexts.indexOf('tab') < 0)
           continue;
-        let node = this.buildExtraItem(item, id);
-        subMenu.appendChild(node);
+        let itemNode = this.buildExtraItem(item, id);
+        if (item.parentId && item.parentId in knownItems) {
+          let parent = knownItems[item.parentId];
+          this.prepareAsSubmenu(parent);
+          parent.lastChild.appendChild(itemNode);
+        }
+        else {
+          addonSubMenu.appendChild(itemNode);
+        }
+        knownItems[item.id] = itemNode;
       }
-      switch (subMenu.childNodes.length) {
+      switch (addonSubMenu.childNodes.length) {
         case 0:
           break;
         case 1:
-          node = subMenu.removeChild(subMenu.firstChild);
-          extraItemNodes.appendChild(node);
+          addonItem = addonSubMenu.removeChild(addonSubMenu.firstChild);
+          extraItemNodes.appendChild(addonItem);
         default:
-          extraItemNodes.appendChild(node);
+          extraItemNodes.appendChild(addonItem);
           break;
       }
     }
@@ -65,6 +74,13 @@ var tabContextMenu = {
     separator.classList.add('context-separator');
     extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
     this.node.appendChild(extraItemNodes);
+  },
+  prepareAsSubmenu(aItemNode) {
+    if (aItemNode.classList.contains('has-submenu'))
+      return aItemNode;
+    aItemNode.classList.add('has-submenu');
+    var subMenu = aItemNode.appendChild(document.createElement('ul'));
+    return aItemNode;
   },
   buildExtraItem(aItem, aOwnerId) {
     var node = document.createElement('li');
