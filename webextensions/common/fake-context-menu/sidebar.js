@@ -13,6 +13,32 @@
 */
 
 var tabContextMenu = {
+  init() {
+    this.onMouseDown       = this.onMouseDown.bind(this);
+    this.onClick           = this.onClick.bind(this);
+    this.onExternalMessage = this.onExternalMessage.bind(this);
+
+    window.addEventListener('contextmenu', aEvent => {
+      aEvent.stopPropagation();
+      aEvent.preventDefault();
+    }, { capture: true });
+
+    window.addEventListener('blur', () => {
+      this.close();
+    }, { capture: true });
+
+    browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
+
+    window.addEventListener('unload', () => {
+      browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
+    }, { once: true });
+
+    browser.runtime.getBackgroundPage().then(aWindow => {
+      this.extraItems = aWindow.gTabContextMenuItems;
+      this.rebuild();
+    });
+  },
+
   get node() {
     return document.querySelector('#tabContextMenu');
   },
@@ -118,7 +144,7 @@ var tabContextMenu = {
       this.onClosed();
     }
     this.contextTab = aOptions.tab;
-    this.init();
+    this.applyContext();
     this.node.classList.add('open');
     var menus = [this.node].concat(Array.slice(this.node.querySelectorAll('ul')));
     for (let menu of menus) {
@@ -145,7 +171,7 @@ var tabContextMenu = {
     this.node.removeAttribute('data-tab-states');
   },
 
-  init() {
+  applyContext() {
     if (this.contextTab) {
       this.node.setAttribute('data-tab-id', this.contextTab.id);
       this.node.setAttribute('data-tab-states', getTabById(this.contextTab.id).className);
@@ -328,42 +354,17 @@ var tabContextMenu = {
       }; break;
     }
     this.close();
+  },
+
+  onExternalMessage(aMessage, aSender) {
+    switch (aMessage.type) {
+      case kTSTAPI_CONTEXT_MENU_OPEN: {
+        tabContextMenu.open({
+          tab:  aMessage.tab ? getTabById(aMessage.tab).apiTab : null,
+          left: aMessage.left,
+          top:  aMessage.top
+        });
+      }; break;
+    }
   }
 };
-tabContextMenu.onMouseDown = tabContextMenu.onMouseDown.bind(tabContextMenu);
-tabContextMenu.onClick = tabContextMenu.onClick.bind(tabContextMenu);
-
-window.addEventListener('contextmenu', (aEvent) => {
-  aEvent.stopPropagation();
-  aEvent.preventDefault();
-}, { capture: true });
-
-window.addEventListener('blur', (aEvent) => {
-  tabContextMenu.close();
-}, { capture: true });
-
-
-browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
-
-window.addEventListener('load', () => {
-  browser.runtime.getBackgroundPage().then(aWindow => {
-    tabContextMenu.extraItems = aWindow.gTabContextMenuItems;
-    tabContextMenu.rebuild();
-  });
-}, { once: true });
-
-window.addEventListener('unload', () => {
-  browser.runtime.onMessageExternal.removeListener(handleFakeContextMenuMessages);
-}, { once: true });
-
-function handleFakeContextMenuMessages(aMessage, aSender) {
-  switch (aMessage.type) {
-    case kTSTAPI_CONTEXT_MENU_OPEN: {
-      tabContextMenu.open({
-        tab:  aMessage.tab ? getTabById(aMessage.tab).apiTab : null,
-        left: aMessage.left,
-        top:  aMessage.top
-      });
-    }; break;
-  }
-}

@@ -96,6 +96,8 @@ async function init() {
       installStyleForAddon(id, addon.style);
   }
 
+  tabContextMenu.init();
+
   unblockUserOperations({ throbber: true });
 }
 
