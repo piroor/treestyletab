@@ -21,9 +21,9 @@ function onConfigChanged(aKey) {
 
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
-configs.$loaded.then(() => {
-  document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
-  options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
-  onConfigChanged('debug');
-});
+  configs.$loaded.then(() => {
+    document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
+    options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
+    onConfigChanged('debug');
+  });
 }, { once: true });
