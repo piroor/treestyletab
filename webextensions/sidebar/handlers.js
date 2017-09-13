@@ -370,7 +370,8 @@ function onClick(aEvent) {
   if (isEventFiredOnContextualIdentitySelector(aEvent))
     return;
 
-  if (isEventFiredOnNewTabButton(aEvent)) {
+  if (aEvent.button == 0 &&
+      isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     handleNewTabAction(aEvent, {
