@@ -34,7 +34,7 @@ var tabContextMenu = {
     }, { once: true });
 
     browser.runtime.getBackgroundPage().then(aWindow => {
-      this.extraItems = aWindow.gTabContextMenuItems;
+      this.extraItems = aWindow.tabContextMenu.items;
       this.rebuild();
     });
   },

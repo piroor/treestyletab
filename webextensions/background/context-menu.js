@@ -21,7 +21,7 @@ var gContextMenuItems = `
 
 async function refreshContextMenuItems() {
   await browser.contextMenus.removeAll();
-  handleFakeContextMenuMessages({
+  tabContextMenu.onExternalMessage({
     type: kTSTAPI_CONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
 
@@ -46,7 +46,7 @@ async function refreshContextMenuItems() {
       id, type, title,
       contexts: ['page', 'tab']
     });
-    handleFakeContextMenuMessages({
+    tabContextMenu.onExternalMessage({
       type: kTSTAPI_CONTEXT_MENU_CREATE,
       params: {
         id, type, title,

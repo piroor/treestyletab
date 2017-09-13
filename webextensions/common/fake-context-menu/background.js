@@ -12,38 +12,49 @@
            https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
 */
 
-var gTabContextMenuItems = {};
+var tabContextMenu = {
+  init() {
+    this.onExternalMessage = this.onExternalMessage.bind(this);
 
-function getTabContextMenuItemsFor(aAddonId) {
+    browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
+
+    window.addEventListener('unload', () => {
+      browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
+    }, { once: true });
+  },
+
+  items: {},
+
+  getItemsFor(aAddonId) {
   let items;
-  if (aAddonId in gTabContextMenuItems) {
-    items = gTabContextMenuItems[aAddonId];
+  if (aAddonId in this.items) {
+    items = this.items[aAddonId];
   }
   else {
     items = [];
-    gTabContextMenuItems[aAddonId] = items;
+    this.items[aAddonId] = items;
   }
   return items;
-}
+  },
 
-function handleFakeContextMenuMessages(aMessage, aSender) {
+  onExternalMessage(aMessage, aSender) {
   switch (aMessage.type) {
     case kTSTAPI_CONTEXT_MENU_CREATE: {
-      let items = getTabContextMenuItemsFor(aSender.id);
+      let items = this.getItemsFor(aSender.id);
       let params = aMessage.params;
       if (Array.isArray(params))
         params = params[0];
       items.push(params);
-      gTabContextMenuItems[aSender.id] = items;
+      this.items[aSender.id] = items;
       browser.runtime.sendMessage({
         type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
+        items: this.items
       });
       return Promise.resolve();
     }; break;
 
     case kTSTAPI_CONTEXT_MENU_UPDATE: {
-      let items = getTabContextMenuItemsFor(aSender.id);
+      let items = this.getItemsFor(aSender.id);
       for (let i = 0, maxi = items.length; i < maxi; i++) {
         let item = items[i];
         if (item.id != aMessage.params[0])
@@ -52,41 +63,36 @@ function handleFakeContextMenuMessages(aMessage, aSender) {
         updated = true;
         break;
       }
-      gTabContextMenuItems[aSender.id] = items;
+      this.items[aSender.id] = items;
       browser.runtime.sendMessage({
         type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
+        items: this.items
       });
       return Promise.resolve();
     }; break;
 
     case kTSTAPI_CONTEXT_MENU_REMOVE: {
-      let items = getTabContextMenuItemsFor(aSender.id);
+      let items = this.getItemsFor(aSender.id);
       let id = aMessage.params;
       if (Array.isArray(id))
         id = id[0];
       items = items.filter(aItem => aItem.id != id);
-      gTabContextMenuItems[aSender.id] = items;
+      this.items[aSender.id] = items;
       browser.runtime.sendMessage({
         type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
+        items: this.items
       });
       return Promise.resolve();
     }; break;
 
     case kTSTAPI_CONTEXT_MENU_REMOVE_ALL: {
-      delete gTabContextMenuItems[aSender.id];
+      delete this.items[aSender.id];
       browser.runtime.sendMessage({
         type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-        items: gTabContextMenuItems
+        items: this.items
       });
       return Promise.resolve();
     }; break;
   }
-}
-
-browser.runtime.onMessageExternal.addListener(handleFakeContextMenuMessages);
-
-window.addEventListener('unload', () => {
-  browser.runtime.onMessageExternal.removeListener(handleFakeContextMenuMessages);
-}, { once: true });
+  }
+};
