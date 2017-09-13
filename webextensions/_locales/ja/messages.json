@@ -167,5 +167,23 @@
   "config.debug.label": { "message": "デバッグモード" },
   "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
-  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" }
+  "config.maximumAcceptableDelayForTabDuplication.after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
+
+
+  "tabContextMenu.reload.label":      { "message": "タブを再読み込み" },
+  "tabContextMenu.mute.label":        { "message": "タブをミュート" },
+  "tabContextMenu.unmute.label":      { "message": "タブのミュートを解除" },
+
+  "tabContextMenu.pin.label":         { "message": "タブをピン留め" },
+  "tabContextMenu.unpin.label":       { "message": "タブのピン留めを外す" },
+  "tabContextMenu.duplicate.label":   { "message": "タブを複製" },
+  "tabContextMenu.tearOff.label":     { "message": "新しいウィンドウへ移動" },
+
+  "tabContextMenu.reloadAll.label":   { "message": "すべてのタブを再読み込み" },
+  "tabContextMenu.bookmarkAll.label": { "message": "すべてのタブをブックマーク..." },
+  "tabContextMenu.closeAfter.label":  { "message": "右のタブをすべて閉じる" },
+  "tabContextMenu.closeOther.label":  { "message": "他のタブをすべて閉じる" },
+
+  "tabContextMenu.undoClose.label":   { "message": "閉じたタブを元に戻す" },
+  "tabContextMenu.close.label":       { "message": "タブを閉じる" }
 }
