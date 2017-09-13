@@ -14,11 +14,14 @@
 
 var tabContextMenu = {
   init() {
+    this.onMessage         = this.onMessage.bind(this);
     this.onExternalMessage = this.onExternalMessage.bind(this);
 
+    browser.runtime.onMessage.addListener(this.onMessage);
     browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
 
     window.addEventListener('unload', () => {
+      browser.runtime.onMessage.removeListener(this.onMessage);
       browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
     }, { once: true });
   },
@@ -35,6 +38,17 @@ var tabContextMenu = {
       this.items[aAddonId] = items;
     }
     return items;
+  },
+
+  onMessage(aMessage, aSender) {
+    switch (aMessage.type) {
+      case kTSTAPI_CONTEXT_MENU_GET_ITEMS:
+        return Promise.resolve(this.items);
+
+      case kTSTAPI_CONTEXT_MENU_CLICK:
+        contextMenuClickListener(aMessage.info, aMessage.tab);
+        return;
+    }
   },
 
   onExternalMessage(aMessage, aSender) {

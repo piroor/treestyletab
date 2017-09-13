@@ -861,7 +861,8 @@ function onContextualIdentitiesUpdated() {
 
 function onMessage(aMessage, aSender, aRespond) {
   if (!aMessage ||
-      typeof aMessage.type != 'string')
+      typeof aMessage.type != 'string' ||
+      aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
   var timeout = setTimeout(() => {
@@ -952,11 +953,6 @@ function onMessage(aMessage, aSender, aRespond) {
         }
       }
     }; break;
-
-    case kTSTAPI_CONTEXT_MENU_UPDATED:
-      tabContextMenu.extraItems = aMessage.items;
-      tabContextMenu.rebuild();
-      break;
   }
   clearTimeout(timeout);
 }

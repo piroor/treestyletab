@@ -13,6 +13,7 @@
 */
 
 const kTSTAPI_CONTEXT_MENU_UPDATED    = 'fake-contextMenu-updated';
+const kTSTAPI_CONTEXT_MENU_GET_ITEMS  = 'fake-contextMenu-get-items';
 const kTSTAPI_CONTEXT_MENU_OPEN       = 'fake-contextMenu-open';
 const kTSTAPI_CONTEXT_MENU_CREATE     = 'fake-contextMenu-create';
 const kTSTAPI_CONTEXT_MENU_UPDATE     = 'fake-contextMenu-update';

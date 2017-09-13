@@ -16,6 +16,7 @@ var tabContextMenu = {
   init() {
     this.onMouseDown       = this.onMouseDown.bind(this);
     this.onClick           = this.onClick.bind(this);
+    this.onMessage         = this.onMessage.bind(this);
     this.onExternalMessage = this.onExternalMessage.bind(this);
 
     window.addEventListener('contextmenu', aEvent => {
@@ -27,14 +28,18 @@ var tabContextMenu = {
       this.close();
     }, { capture: true });
 
+    browser.runtime.onMessage.addListener(this.onMessage);
     browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
 
     window.addEventListener('unload', () => {
+      browser.runtime.onMessage.removeListener(this.onMessage);
       browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
     }, { once: true });
 
-    browser.runtime.getBackgroundPage().then(aWindow => {
-      this.extraItems = aWindow.tabContextMenu.items;
+    browser.runtime.sendMessage({
+      type: kTSTAPI_CONTEXT_MENU_GET_ITEMS
+    }).then(aItems => {
+      this.extraItems = aItems;
       this.rebuild();
     });
   },
@@ -354,6 +359,15 @@ var tabContextMenu = {
       }; break;
     }
     this.close();
+  },
+
+  onMessage(aMessage, aSender) {
+    switch (aMessage.type) {
+      case kTSTAPI_CONTEXT_MENU_UPDATED: {
+        this.items = aMessage.items;
+        this.rebuild();
+      }; break;
+    }
   },
 
   onExternalMessage(aMessage, aSender) {
