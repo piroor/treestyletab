@@ -169,7 +169,7 @@ var tabContextMenu = {
           }
           if (!after)
             continue;
-          browser.tabs.reload(tab.id);
+          browser.tabs.remove(tab.id);
         }
       }; break;
       case 'context-closeOther': {
