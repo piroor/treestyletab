@@ -40,6 +40,22 @@ var tabContextMenu = {
     return items;
   },
 
+  notifyUpdated() {
+    browser.runtime.sendMessage({
+      type:  kTSTAPI_CONTEXT_MENU_UPDATED,
+      items: this.items
+    });
+  },
+
+  reserveNotifyUpdated() {
+    if (this.reservedNotifyUpdate)
+      clearTimeout(this.reservedNotifyUpdate);
+    this.reservedNotifyUpdate = setTimeout(() => {
+      delete this.reservedNotifyUpdate;
+      this.notifyUpdated();
+    }, 100);
+  },
+
   onMessage(aMessage, aSender) {
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_GET_ITEMS:
@@ -60,10 +76,7 @@ var tabContextMenu = {
           params = params[0];
         items.push(params);
         this.items[aSender.id] = items;
-        browser.runtime.sendMessage({
-          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-          items: this.items
-        });
+        this.reserveNotifyUpdated();
         return Promise.resolve();
       }; break;
 
@@ -74,14 +87,10 @@ var tabContextMenu = {
           if (item.id != aMessage.params[0])
             continue;
           items.splice(i, 1, clone(item, aMessage.params[1]));
-          updated = true;
           break;
         }
         this.items[aSender.id] = items;
-        browser.runtime.sendMessage({
-          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-          items: this.items
-        });
+        this.reserveNotifyUpdated();
         return Promise.resolve();
       }; break;
 
@@ -92,19 +101,13 @@ var tabContextMenu = {
           id = id[0];
         items = items.filter(aItem => aItem.id != id);
         this.items[aSender.id] = items;
-        browser.runtime.sendMessage({
-          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-          items: this.items
-        });
+        this.reserveNotifyUpdated();
         return Promise.resolve();
       }; break;
 
       case kTSTAPI_CONTEXT_MENU_REMOVE_ALL: {
         delete this.items[aSender.id];
-        browser.runtime.sendMessage({
-          type:  kTSTAPI_CONTEXT_MENU_UPDATED,
-          items: this.items
-        });
+        this.reserveNotifyUpdated();
         return Promise.resolve();
       }; break;
     }
