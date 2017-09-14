@@ -1187,7 +1187,7 @@ async function performTabsDragDrop(aParams = {}) {
 }
 
 function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
-  log('attachTabsOnDrop: start');
+  log('attachTabsOnDrop: start ', aTabs.map(dumpTab));
   for (let tab of aTabs) {
     if (aParent)
       attachTabTo(tab, aParent, aOptions);
@@ -1200,7 +1200,7 @@ function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
 }
 
 function detachTabsOnDrop(aTabs, aOptions = {}) {
-  log('detachTabsOnDrop: start');
+  log('detachTabsOnDrop: start ', aTabs.map(dumpTab));
   for (let tab of aTabs) {
     detachTab(tab, aOptions);
     collapseExpandTabAndSubtree(tab, clone(aOptions, {
