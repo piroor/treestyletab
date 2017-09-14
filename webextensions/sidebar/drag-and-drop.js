@@ -75,13 +75,9 @@ function getDragDataFromOneTab(aTab) {
       windowId: null
     };
 
-  var draggedTabs = [aTab].concat(getDescendantTabs(aTab)); //tabsDragUtils.getSelectedTabs(aTab || aInfo.event);
-  if (isSelected(aTab)) {
-    for (let selectedTab of getSelectedTabs(aTab)) {
-      if (draggedTabs.indexOf(selectedTab) < 0)
-        draggedTabs.push(selectedTab);
-    }
-  }
+  var draggedTabs = isSelected(aTab) ?
+                      getSelectedTabs(aTab) :
+                      [aTab].concat(getDescendantTabs(aTab)) ;
   return {
     tabNode:  aTab,
     tabNodes: draggedTabs,
