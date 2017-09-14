@@ -44,6 +44,7 @@
   list-style: none;
   margin: 0;
   padding: 0.2em 0.5em 0.2em 1.5em;
+  opacity: 0.5;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -58,7 +59,7 @@
 
 #tabContextMenu li.separator {
   border: 1px inset Menu;
-  margin: 0.25em 0.5em;
+  margin: 0 0.5em;
   max-height: 0;
   padding: 0;
   pointer-events: none;
