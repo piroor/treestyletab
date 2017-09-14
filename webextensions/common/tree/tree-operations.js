@@ -300,7 +300,7 @@ function detachTab(aChild, aOptions = {}) {
 function detachParent(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
-  for (let tab of aTabs) {
+  for (let tab of aTabs.reverse()) {
     if (aTabs.indexOf(getParentTab(tab)) > -1)
       continue;
     detachAllChildren(tab, clone(aOptions, {
