@@ -44,7 +44,6 @@
   list-style: none;
   margin: 0;
   padding: 0.2em 0.5em 0.2em 1.5em;
-  opacity: 0.5;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -61,6 +60,7 @@
   border: 1px inset Menu;
   margin: 0 0.5em;
   max-height: 0;
+  opacity: 0.5;
   padding: 0;
   pointer-events: none;
 }
