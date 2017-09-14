@@ -297,7 +297,7 @@ function detachTab(aChild, aOptions = {}) {
   }
 }
 
-function detachParent(aTabs, aOptions = {}) {
+function detachTabsFromTree(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
   aTabs = Array.slice(aTabs).reverse();
@@ -1083,13 +1083,10 @@ async function performTabsDragDrop(aParams = {}) {
   }
   log('=> draggedTabs: ', draggedTabs.map(dumpTab).join(' / '));
 
-  var selectedTabs = draggedTabs.filter(isSelected);
-  if (draggedWholeTree.length != selectedTabs.length &&
-      selectedTabs.length > 0) {
+  if (draggedWholeTree.length != draggedTabs.length) {
     log('=> partially dragged');
-    draggedTabs = draggedRoots = selectedTabs;
     if (!aParams.duplicate)
-      detachParent(selectedTabs, {
+      detachTabsFromTree(draggedTabs, {
         broadcast: true
       });
   }
