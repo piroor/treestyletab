@@ -1084,7 +1084,7 @@ async function performTabsDragDrop(aParams = {}) {
     draggedTabs = draggedRoots = selectedTabs;
     if (!aParams.duplicate)
       detachParent(selectedTabs, {
-        bradcast: true
+        broadcast: true
       });
   }
 
