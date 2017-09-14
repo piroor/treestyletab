@@ -1058,11 +1058,7 @@ async function performTabsDragDrop(aParams = {}) {
     action: aParams.action
   });
 
-  var draggedTabs = aParams.tabIds.map(aTabId => getTabById({
-                      tab:    aTabId,
-                      window: windowId
-                    }));
-  draggedTabs = draggedTabs.filter(aTab => !!aTab);
+  var draggedTabs = aParams.tabIds.map(getTabById).filter(aTab => !!aTab);
   if (!draggedTabs.length)
     return;
 
