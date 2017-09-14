@@ -379,11 +379,11 @@ var tabContextMenu = {
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_OPEN: {
         browser.tabs.get(aMessage.tab).then(aTab => {
-        tabContextMenu.open({
-          tab:  aTab : null,
-          left: aMessage.left,
-          top:  aMessage.top
-        });
+          tabContextMenu.open({
+            tab:  aTab : null,
+            left: aMessage.left,
+            top:  aMessage.top
+          });
         });
       }; break;
     }
