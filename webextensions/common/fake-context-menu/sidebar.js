@@ -44,7 +44,7 @@ var tabContextMenu = {
     });
   },
 
-  get node() {
+  get menu() {
     return document.querySelector('#tabContextMenu');
   },
   get containerRect() {
@@ -60,10 +60,10 @@ var tabContextMenu = {
   dirty: false,
 
   rebuild: async function() {
-    var firstExtraItem = this.node.querySelector('.extra');
+    var firstExtraItem = this.menu.querySelector('.extra');
     if (firstExtraItem) {
       let range = document.createRange();
-      range.selectNodeContents(this.node);
+      range.selectNodeContents(this.menu);
       range.setStartBefore(firstExtraItem);
       range.deleteContents();
       range.detach();
@@ -118,7 +118,7 @@ var tabContextMenu = {
     separator.classList.add('extra');
     separator.classList.add('separator');
     extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
-    this.node.appendChild(extraItemNodes);
+    this.menu.appendChild(extraItemNodes);
   },
   prepareAsSubmenu(aItemNode) {
     if (aItemNode.classList.contains('has-submenu'))
@@ -128,20 +128,20 @@ var tabContextMenu = {
     return aItemNode;
   },
   buildExtraItem(aItem, aOwnerId) {
-    var node = document.createElement('li');
-    node.setAttribute('data-item-id', aItem.id);
-    node.setAttribute('data-item-owner-id', aOwnerId);
-    node.classList.add('extra');
-    node.classList.add(aItem.type);
+    var itemNode = document.createElement('li');
+    itemNode.setAttribute('data-item-id', aItem.id);
+    itemNode.setAttribute('data-item-owner-id', aOwnerId);
+    itemNode.classList.add('extra');
+    itemNode.classList.add(aItem.type);
     if (aItem.type == 'checkbox' || aItem.type == 'radio') {
       if (aItem.checked)
-        node.classList.add('checked');
+        itemNode.classList.add('checked');
     }
     if (aItem.type != 'separator') {
-      node.appendChild(document.createTextNode(aItem.title));
-      node.setAttribute('title', aItem.title);
+      itemNode.appendChild(document.createTextNode(aItem.title));
+      itemNode.setAttribute('title', aItem.title);
     }
-    return node;
+    return itemNode;
   },
 
   open: async function(aOptions = {}) {
@@ -153,8 +153,8 @@ var tabContextMenu = {
     this.contextTab = aOptions.tab;
     await this.rebuild();
     this.applyContext();
-    this.node.classList.add('open');
-    var menus = [this.node].concat(Array.slice(this.node.querySelectorAll('ul')));
+    this.menu.classList.add('open');
+    var menus = [this.menu].concat(Array.slice(this.menu.querySelectorAll('ul')));
     for (let menu of menus) {
       this.updatePosition(menu, aOptions);
     }
@@ -165,7 +165,7 @@ var tabContextMenu = {
   },
 
   close() {
-    this.node.classList.remove('open');
+    this.menu.classList.remove('open');
     this.contextTab = null;
     this.closeTimeout = setTimeout(() => {
       delete this.closeTimeout;
@@ -173,39 +173,39 @@ var tabContextMenu = {
     }, configs.collapseDuration);
   },
   onClosed() {
-    var menus = [this.node].concat(Array.slice(this.node.querySelectorAll('ul')));
+    var menus = [this.menu].concat(Array.slice(this.menu.querySelectorAll('ul')));
     for (let menu of menus) {
       this.updatePosition(menu, { left: 0, right: 0 });
     }
-    this.node.removeAttribute('data-tab-id');
-    this.node.removeAttribute('data-tab-states');
+    this.menu.removeAttribute('data-tab-id');
+    this.menu.removeAttribute('data-tab-states');
     window.removeEventListener('mousedown', this.onMouseDown, { capture: true });
     window.removeEventListener('click', this.onClick, { capture: true });
   },
 
   applyContext() {
     if (this.contextTab) {
-      this.node.setAttribute('data-tab-id', this.contextTab.id);
-      this.node.setAttribute('data-tab-states', getTabById(this.contextTab.id).className);
+      this.menu.setAttribute('data-tab-id', this.contextTab.id);
+      this.menu.setAttribute('data-tab-states', getTabById(this.contextTab.id).className);
     }
 
     if (getTabs().length > 1)
-      this.node.classList.add('has-multiple-tabs');
+      this.menu.classList.add('has-multiple-tabs');
     else
-      this.node.classList.remove('has-multiple-tabs');
+      this.menu.classList.remove('has-multiple-tabs');
 
     switch (getNormalTabs().length) {
       case 0:
-        this.node.classList.remove('has-normal-tabs');
-        this.node.classList.remove('has-multiple-normal-tabs');
+        this.menu.classList.remove('has-normal-tabs');
+        this.menu.classList.remove('has-multiple-normal-tabs');
         break;
       case 1:
-        this.node.classList.add('has-normal-tabs');
-        this.node.classList.remove('has-multiple-normal-tabs');
+        this.menu.classList.add('has-normal-tabs');
+        this.menu.classList.remove('has-multiple-normal-tabs');
         break;
       default:
-        this.node.classList.add('has-normal-tabs');
-        this.node.classList.add('has-multiple-normal-tabs');
+        this.menu.classList.add('has-normal-tabs');
+        this.menu.classList.add('has-multiple-normal-tabs');
         break;
     }
   },
