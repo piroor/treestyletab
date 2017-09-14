@@ -113,11 +113,12 @@ function getDropAction(aEvent) {
       if (info.parent == info.draggedTab) {
         info.canDrop = false;
       }
-      else if (info.dragOverTab &&
-               collectRootTabs(info.draggedTabs).some(aRootTab => {
-                 getAncestorTabs(info.dragOverTab).indexOf(aRootTab) > -1
-               })) {
-        info.canDrop = false;
+      else if (info.dragOverTab) {
+        let ancestors = getAncestorTabs(info.dragOverTab);
+        info.canDrop = info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
+                       collectRootTabs(info.draggedTabs).some(aRootTab =>
+                         ancestors.indexOf(aRootTab) < 0
+                       );
       }
     }
   }
@@ -151,21 +152,13 @@ function getDropActionInternal(aEvent) {
     insertAfter  : null
   };
 
-  var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
+  var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
   info.dragData = dragData = dragData && JSON.parse(dragData);
 
-  var draggedTab = dragData && getTabById({
-                     tab:    dragData.tabId,
-                     window: dragData.windowId
-                   });
+  var draggedTab = dragData && getTabById(dragData.tabId);
   info.draggedTab = draggedTab;
-  var draggedTabs = (!dragData || !dragData.tabIds) ?
-                      [] :
-                      dragData.tabIds.map(aTabId => getTabById({
-                        tab:    aTabId,
-                        window: dragData.windowId
-                      }));
-  draggedTab = draggedTabs.filter(aTab => !!aTab);
+  var draggedTabs = (dragData && dragData.tabIds) || [];
+  draggedTabs = draggedTabs.map(getTabById).filter(aTab => !!aTab);
   info.draggedTabs = draggedTabs;
   var isRemoteTab = !draggedTab && !!dragData.tabId;
   var isNewTabAction = !draggedTab && !dragData.tabId;
@@ -503,7 +496,6 @@ function retrieveURIsFromData(aData, aType) {
 /* DOM event listeners */
 
 var gDraggingOnSelfWindow = false;
-var gLastDragDataRaw = null;
 
 var gCapturingMouseEvents = false;
 var gLastDragEnteredTab = null;
@@ -552,11 +544,10 @@ function onDragStart(aEvent) {
   }
 
   gDraggingOnSelfWindow = true;
-  gLastDragDataRaw = dragData;
 
   var dt = aEvent.dataTransfer;
 
-  dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizeDragData(dragData)));
+  dt.mozSetDataAt(kTREE_DROP_TYPE, JSON.stringify(sanitizeDragData(dragData)), 0);
 
   dragData.tabNodes.map((aDraggedTab, aIndex) => {
     aDraggedTab.classList.add(kTAB_STATE_DRAGGING);
@@ -748,22 +739,13 @@ function onDrop(aEvent) {
 
 function onDragEnd(aEvent) {
   log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
-  var dragData = aEvent.dataTransfer.getData(kTREE_DROP_TYPE);
-  if (dragData) {
-    dragData = JSON.parse(dragData);
-  }
-  else {
-    dragData = gLastDragDataRaw;
-  }
+  var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
+  dragData = dragData && JSON.parse(dragData);
   var stillInSelfWindow = !!gDraggingOnSelfWindow;
   gDraggingOnSelfWindow = false;
-  gLastDragDataRaw = null;
 
   if (Array.isArray(dragData.tabIds)) {
-    dragData.tabNodes = dragData.tabIds.map(aTabId => getTabById({
-                          tab:    aTabId,
-                          window: dragData.windowId
-                        }));
+    dragData.tabNodes = dragData.tabIds.map(getTabById);
     for (let draggedTab of dragData.tabNodes) {
       draggedTab.classList.remove(kTAB_STATE_DRAGGING);
     }
