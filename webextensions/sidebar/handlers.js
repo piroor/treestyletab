@@ -175,6 +175,7 @@ var gLastMousedown = null;
 
 function onMouseDown(aEvent) {
   cancelHandleMousedown();
+  tabContextMenu.close();
 
   var tab = getTabFromEvent(aEvent);
   //log('mousedown tab: ', tab);
@@ -587,10 +588,12 @@ function updateTabSoundButtonTooltip(aTab) {
 }
 
 function onTabFocused(aTab) {
+  tabContextMenu.close();
   scrollToTab(aTab);
 }
 
 function onTabOpening(aTab, aInfo = {}) {
+  tabContextMenu.close();
   if (configs.animation) {
     collapseExpandTab(aTab, {
       collapsed: true,
@@ -626,6 +629,7 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 function onTabClosed(aTab) {
+  tabContextMenu.close();
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   detachTab(aTab, {
@@ -658,6 +662,7 @@ async function onTabCompletelyClosed(aTab) {
 }
 
 function onTabMoving(aTab) {
+  tabContextMenu.close();
   if (configs.animation &&
       !isCollapsed(aTab) &&
       !isPinned(aTab)) {
@@ -817,6 +822,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 */
 
 function onTabAttached(aTab) {
+  tabContextMenu.close();
   updateTabTwisty(aTab);
   updateTabClosebox(aTab);
   var ancestors = [aTab].concat(getAncestorTabs(aTab));
@@ -828,6 +834,7 @@ function onTabAttached(aTab) {
 }
 
 function onTabDetached(aTab, aDetachInfo = {}) {
+  tabContextMenu.close();
   var parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
@@ -840,10 +847,12 @@ function onTabDetached(aTab, aDetachInfo = {}) {
 }
 
 function onTabPinned(aTab) {
+  tabContextMenu.close();
   reserveToPositionPinnedTabs();
 }
 
 function onTabUnpinned(aTab) {
+  tabContextMenu.close();
   clearPinnedStyle(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);

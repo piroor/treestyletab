@@ -166,6 +166,8 @@ var tabContextMenu = {
   },
 
   close() {
+    if (!this.menu.classList.contains('open'))
+      return;
     this.menu.classList.remove('open');
     this.contextTab = null;
     this.closeTimeout = setTimeout(() => {
