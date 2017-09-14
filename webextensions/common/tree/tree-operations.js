@@ -300,14 +300,20 @@ function detachTab(aChild, aOptions = {}) {
 function detachParent(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
-  for (let tab of aTabs.reverse()) {
-    if (aTabs.indexOf(getParentTab(tab)) > -1)
-      continue;
-    detachAllChildren(tab, clone(aOptions, {
-      behavior : getCloseParentBehaviorForTab(tab, {
-        keepChildren: true
-      })
-    }));
+  aTabs = Array.slice(aTabs).reverse();
+  for (let tab of aTabs) {
+    let children = getChildTabs(tab);
+    let parent = getParentTab(tab);
+    for (let child of children) {
+      if (aTabs.indexOf(child) < 0) {
+        if (parent)
+          attachTabTo(child, parent, clone(aOptions, {
+            dontMove: true
+          }));
+        else
+          detachTab(child, aOptions);
+      }
+    }
   }
 }
 
