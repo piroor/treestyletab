@@ -187,7 +187,20 @@ var tabContextMenu = {
   applyContext() {
     if (this.contextTab) {
       this.menu.setAttribute('data-tab-id', this.contextTab.id);
-      this.menu.setAttribute('data-tab-states', getTabById(this.contextTab.id).className);
+      let states = [];
+      if (this.contextTab.active)
+        states.push('active');
+      if (this.contextTab.pinned)
+        states.push('pinned');
+      if (this.contextTab.audible)
+        states.push('audible');
+      if (this.contextTab.mutedInfo && this.contextTab.mutedInfo.muted)
+        states.push('muted');
+      if (this.contextTab.discarded)
+        states.push('discarded');
+      if (this.contextTab.incognito)
+        states.push('incognito');
+      this.menu.setAttribute('data-tab-states', states.join(' '));
     }
 
     if (getTabs().length > 1)
