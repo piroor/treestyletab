@@ -40,7 +40,7 @@ var tabContextMenu = {
       type: kTSTAPI_CONTEXT_MENU_GET_ITEMS
     }).then(aItems => {
       this.extraItems = aItems;
-      this.built = this.rebuild();
+      this.dirty = true;
     });
   },
 
@@ -57,8 +57,7 @@ var tabContextMenu = {
 
   contextTab: null,
   extraItems: {},
-
-  built: Promise.resolve(),
+  dirty: false,
 
   rebuild: async function() {
     var firstExtraItem = this.node.querySelector('.extra');
@@ -152,7 +151,7 @@ var tabContextMenu = {
       this.onClosed();
     }
     this.contextTab = aOptions.tab;
-    await this.built;
+    await this.rebuild();
     this.applyContext();
     this.node.classList.add('open');
     var menus = [this.node].concat(Array.slice(this.node.querySelectorAll('ul')));
@@ -371,7 +370,7 @@ var tabContextMenu = {
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_UPDATED: {
         this.extraItems = aMessage.items;
-        this.built = this.rebuild();
+        this.dirty = true;
       }; break;
     }
   },
