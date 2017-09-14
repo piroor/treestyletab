@@ -16,7 +16,7 @@
 #tabContextMenu ul {
   background: Menu;
   border: 1px outset Menu;
-  box-shadow: 0.25em 0.25em 0.5em rgba(0, 0, 0, 0.35);
+  box-shadow: 0.1em 0.1em 0.5em rgba(0, 0, 0, 0.65);
   color: MenuText;
   margin: 0;
   max-height: calc(100% - 6px);
