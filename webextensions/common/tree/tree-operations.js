@@ -143,20 +143,20 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   if (!aOptions.broadcasted) {
     let nextTab = aOptions.insertBefore;
     let prevTab = aOptions.insertAfter;
-  if (!nextTab && !prevTab) {
-    let tabs = getTabs(aChild);
-    nextTab = tabs[newIndex];
-    if (!nextTab)
-      prevTab = tabs[newIndex - 1];
-  }
-  log('move newly attached child: ', dumpTab(aChild), {
-    next: dumpTab(nextTab),
-    prev: dumpTab(prevTab)
-  });
-  if (nextTab)
-    await moveTabSubtreeBefore(aChild, nextTab, aOptions);
-  else
-    await moveTabSubtreeAfter(aChild, prevTab, aOptions);
+    if (!nextTab && !prevTab) {
+      let tabs = getTabs(aChild);
+      nextTab = tabs[newIndex];
+      if (!nextTab)
+        prevTab = tabs[newIndex - 1];
+    }
+    log('move newly attached child: ', dumpTab(aChild), {
+      next: dumpTab(nextTab),
+      prev: dumpTab(prevTab)
+    });
+    if (nextTab)
+      await moveTabSubtreeBefore(aChild, nextTab, aOptions);
+    else
+      await moveTabSubtreeAfter(aChild, prevTab, aOptions);
   }
 
   if (!aChild.parentNode) // it is removed while waiting
