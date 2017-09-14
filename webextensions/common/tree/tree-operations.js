@@ -697,6 +697,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
     return;
   }
 
+  log('moveTabSubtreeBefore: ', dumpTab(aTab), dumpTab(aNextTab));
   var container = aTab.parentNode;
   container.subTreeMovingCount++;
   try {
@@ -722,6 +723,7 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
     return;
   }
 
+  log('moveTabSubtreeAfter: ', dumpTab(aTab), dumpTab(aPreviousTab));
   var container = aTab.parentNode;
   container.subTreeMovingCount++;
   try {
@@ -1125,7 +1127,7 @@ async function performTabsDragDrop(aParams = {}) {
     log('=> just moved');
   }
 
-  log('=> moving dragged tabs');
+  log('=> moving dragged tabs ', draggedTabs.map(dumpTab));
   if (aParams.insertBefore &&
       !isAllTabsPlacedBefore(draggedTabs, aParams.insertBefore))
     await moveTabsInternallyBefore(draggedTabs, aParams.insertBefore);
