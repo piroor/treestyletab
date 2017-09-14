@@ -116,7 +116,7 @@ function getDropAction(aEvent) {
       else if (info.dragOverTab) {
         let ancestors = getAncestorTabs(info.dragOverTab);
         info.canDrop = info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
-                       collectRootTabs(info.draggedTabs).some(aRootTab =>
+                       collectRootTabs(info.draggedTabs).every(aRootTab =>
                          ancestors.indexOf(aRootTab) < 0
                        );
       }
