@@ -60,6 +60,9 @@ var tabContextMenu = {
   dirty: false,
 
   rebuild: async function() {
+    if (!this.dirty)
+      return;
+
     var firstExtraItem = this.menu.querySelector('.extra');
     if (firstExtraItem) {
       let range = document.createRange();
