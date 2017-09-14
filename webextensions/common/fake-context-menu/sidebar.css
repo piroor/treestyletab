@@ -35,7 +35,7 @@
 }
 
 #tabContextMenu.open,
-#tabContextMenu li:hover ul {
+#tabContextMenu li:hover > ul {
   opacity: 1;
   pointer-events: auto;
 }
