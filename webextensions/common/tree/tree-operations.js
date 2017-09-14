@@ -55,7 +55,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     forceExpand: aOptions.forceExpand,
     dontExpand: aOptions.forceExpand,
     inRemote: aOptions.inRemote,
-    broadcast: aOptions.broadcast
+    broadcast: aOptions.broadcast,
+    broadcasted: aOptions.broadcasted
   });
 
   if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
@@ -139,8 +140,9 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
     //this.inheritTabIndent(aChild, aParent);
 
-  var nextTab = aOptions.insertBefore;
-  var prevTab = aOptions.insertAfter;
+  if (!aOptions.broadcasted) {
+    let nextTab = aOptions.insertBefore;
+    let prevTab = aOptions.insertAfter;
   if (!nextTab && !prevTab) {
     let tabs = getTabs(aChild);
     nextTab = tabs[newIndex];
@@ -155,6 +157,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     await moveTabSubtreeBefore(aChild, nextTab, aOptions);
   else
     await moveTabSubtreeAfter(aChild, prevTab, aOptions);
+  }
 
   if (!aChild.parentNode) // it is removed while waiting
     return;
@@ -230,7 +233,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       dontUpdateIndent: !!aOptions.dontUpdateIndent,
       forceExpand:      !!aOptions.forceExpand,
       dontExpand:       !!aOptions.dontExpand,
-      justNow:          !!aOptions.justNow
+      justNow:          !!aOptions.justNow,
+      broadcasted:      !!aOptions.broadcast
     });
   }
 }
@@ -287,7 +291,8 @@ function detachTab(aChild, aOptions = {}) {
     browser.runtime.sendMessage({
       type:     kCOMMAND_DETACH_TAB,
       windowId: aChild.apiTab.windowId,
-      tab:      aChild.id
+      tab:      aChild.id,
+      broadcasted: !!aOptions.broadcast
     });
   }
 }
@@ -422,7 +427,8 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
       tab:       aTab.id,
       collapsed: aParams.collapsed,
       manualOperation: !!aParams.manualOperation,
-      justNow:   !!aParams.justNow
+      justNow:   !!aParams.justNow,
+      broadcasted: !!aOptions.broadcast
     });
     if (aParams.inRemote)
       return;
