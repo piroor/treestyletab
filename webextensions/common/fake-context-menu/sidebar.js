@@ -403,7 +403,8 @@ var tabContextMenu = {
       case kTSTAPI_CONTEXT_MENU_OPEN:
         return (async () => {
           var tab = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
-          if (tab && tab.windowId != gTargetWindow)
+          var windowId = aMessage.window || tab && tab.windowId;
+          if (windowId != gTargetWindow)
             return;
           return tabContextMenu.open({
             tab:  tab,
