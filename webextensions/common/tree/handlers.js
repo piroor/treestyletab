@@ -87,7 +87,7 @@ async function onApiTabActivated(aActiveInfo) {
   newTab.classList.add(kTAB_STATE_ACTIVE);
   newTab.classList.remove(kTAB_STATE_UNREAD);
 
-  log('onSelect: ', dumpTab(newTab));
+  log('tabs.onActivated: ', dumpTab(newTab));
 
   window.onTabFocusing && onTabFocusing(newTab, {
     byCurrentTabRemove,
@@ -147,7 +147,7 @@ async function onApiTabCreated(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
-  log('onApiTabCreated: ', aTab.id);
+  log('tabs.onCreated: ', aTab.id);
   return onNewTabTracked(aTab);
 }
 
@@ -243,7 +243,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (!oldTab)
     return;
 
-  log('onApiTabRemoved: ', dumpTab(oldTab));
+  log('tabs.onRemoved: ', dumpTab(oldTab));
 
   if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
     tryMoveFocusFromClosingCurrentTab(oldTab);
@@ -297,7 +297,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     return;
   }
 
-  log('onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
+  log('tabs.onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
 
   var moveInfo = clone(aMoveInfo, {
     byInternalOperation,
@@ -325,7 +325,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
 
   await ensureAllTabsAreTracked(aAttachInfo.newWindowId);
 
-  log('onApiTabAttached, id: ', aTabId, aAttachInfo);
+  log('tabs.onAttached, id: ', aTabId, aAttachInfo);
   var apiTab = await browser.tabs.get(aTabId);
   log(`New apiTab for attached tab ${aTabId}: `, apiTab);
   if (!apiTab)
@@ -352,7 +352,7 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
 
   await ensureAllTabsAreTracked(aDetachInfo.oldWindowId);
 
-  log('onApiTabDetached, id: ', aTabId, aDetachInfo);
+  log('tabs.onDetached, id: ', aTabId, aDetachInfo);
   var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (!oldTab)
     return;
