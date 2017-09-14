@@ -387,15 +387,15 @@ var tabContextMenu = {
 
   onExternalMessage(aMessage, aSender) {
     switch (aMessage.type) {
-      case kTSTAPI_CONTEXT_MENU_OPEN: {
-        browser.tabs.get(aMessage.tab).then(aTab => {
-          tabContextMenu.open({
-            tab:  aTab : null,
+      case kTSTAPI_CONTEXT_MENU_OPEN:
+        return (async () => {
+          var tab = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
+          return tabContextMenu.open({
+            tab:  tab,
             left: aMessage.left,
             top:  aMessage.top
           });
-        });
-      }; break;
+        })();
     }
   }
 };
