@@ -75,13 +75,13 @@
   color: MenuText;
 }
 
-#tabContextMenu[data-tab-states~="muted"] #context-mute,
-#tabContextMenu:not([data-tab-states~="muted"]) #context-unmute,
-#tabContextMenu[data-tab-states~="pinned"] #context-pin,
-#tabContextMenu:not([data-tab-states~="pinned"]) #context-unpin,
-#tabContextMenu[data-tab-states~="pinned"] #context-closeAfter,
-#tabContextMenu[data-tab-states~="pinned"] #context-bookmarkAll,
-#tabContextMenu[data-tab-states~="pinned"] #context-closeOther,
+#tabContextMenu[data-tab-states~="muted"] #context_toggleMuteTab-mute,
+#tabContextMenu:not([data-tab-states~="muted"]) #context_toggleMuteTab-unmute,
+#tabContextMenu[data-tab-states~="pinned"] #context_pinTab,
+#tabContextMenu:not([data-tab-states~="pinned"]) #context_unpinTab,
+#tabContextMenu[data-tab-states~="pinned"] #context_closeTabsToTheEnd,
+#tabContextMenu[data-tab-states~="pinned"] #context_bookmarkAllTabs,
+#tabContextMenu[data-tab-states~="pinned"] #context_closeOtherTabs,
 #tabContextMenu:not([data-tab-id]) .require-context-tab,
 #tabContextMenu:not([data-tab-id]) .extra,
 #tabContextMenu:not(.has-multiple-tabs) .require-multiple-tabs,

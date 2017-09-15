@@ -275,37 +275,37 @@ var tabContextMenu = {
       target = target.parentNode;
 
     switch (target.id) {
-      case 'context-reload':
+      case 'context_reloadTab':
         browser.tabs.reload(this.contextTab.id);
         break;
-      case 'context-mute':
+      case 'context_toggleMuteTab-mute':
         browser.tabs.update(this.contextTab.id, { muted: true });
         break;
-      case 'context-unmute':
+      case 'context_toggleMuteTab-unmute':
         browser.tabs.update(this.contextTab.id, { muted: false });
         break;
-      case 'context-pin':
+      case 'context_pinTab':
         browser.tabs.update(this.contextTab.id, { pinned: true });
         break;
-      case 'context-unpin':
+      case 'context_unpinTab':
         browser.tabs.update(this.contextTab.id, { pinned: false });
         break;
-      case 'context-duplicate':
+      case 'context_duplicateTab':
         browser.tabs.duplicate(this.contextTab.id);
         break;
-      case 'context-tearOff': {
+      case 'context_openTabInWindow': {
         let window = await browser.windows.create({ url: 'about:blank' })
         await browser.tabs.move(this.contextTab.id, { index: 1, windowId: window.id });
         let tabs = await browser.tabs.query({ windowId: window.id });
         browser.tabs.remove(tabs[0].id);
       }; break;
-      case 'context-reloadAll': {
+      case 'context_reloadAllTabs': {
         let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
         for (let tab of tabs) {
           browser.tabs.reload(tab.id);
         }
       }; break;
-      case 'context-bookmarkAll': {
+      case 'context_bookmarkAllTabs': {
         let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
         let folder = await bookmarkTabs(tabs.map(aTab => getTabById(aTab.id)));
         browser.bookmarks.get(folder.parentId).then(aFolders => {
@@ -320,7 +320,7 @@ var tabContextMenu = {
           });
         });
       }; break;
-      case 'context-closeAfter': {
+      case 'context_closeTabsToTheEnd': {
         let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
         let after = false;
         for (let tab of tabs) {
@@ -333,19 +333,19 @@ var tabContextMenu = {
           browser.tabs.remove(tab.id);
         }
       }; break;
-      case 'context-closeOther': {
+      case 'context_closeOtherTabs': {
         let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
         for (let tab of tabs) {
           if (tab.id != this.contextTab.id)
             browser.tabs.remove(tab.id);
         }
       }; break;
-      case 'context-undoClose': {
+      case 'context_undoCloseTab': {
         let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
         if (sessions.length && sessions[0].tab)
           browser.sessions.restore(sessions[0].tab.sessionId);
       }; break;
-      case 'context-close':
+      case 'context_closeTab':
         browser.tabs.remove(this.contextTab.id);
         break;
 
