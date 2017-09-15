@@ -51,24 +51,7 @@ async function init() {
     type: kCOMMAND_PING_TO_SIDEBAR
   });
 
-  var respondedAddons = [];
-  var notifiedAddons = {};
-  var notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
-  await Promise.all(notifyAddons.map(async aId => {
-    if (aId in notifiedAddons)
-      return;
-    notifiedAddons[aId] = true;
-    try {
-      let success = await browser.runtime.sendMessage(aId, {
-        type: kTSTAPI_NOTIFY_READY
-      });
-      if (success)
-        respondedAddons.push(aId);
-    }
-    catch(e) {
-    }
-  }));
-  configs.cachedExternalAddons = respondedAddons;
+  await readyForExternalAddons();
 }
 
 function waitUntilCompletelyRestored() {
@@ -161,6 +144,29 @@ function getCloseParentBehaviorForTabWithSidebarOpenState(aTab) {
     keepChildren: configs.parentTabBehaviorForChanges == kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE &&
                   !gSidebarOpenState.has(aTab.apiTab.windowId)
   });
+}
+
+
+
+async function readyForExternalAddons() {
+  var respondedAddons = [];
+  var notifiedAddons = {};
+  var notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
+  await Promise.all(notifyAddons.map(async aId => {
+    if (aId in notifiedAddons)
+      return;
+    notifiedAddons[aId] = true;
+    try {
+      let success = await browser.runtime.sendMessage(aId, {
+        type: kTSTAPI_NOTIFY_READY
+      });
+      if (success)
+        respondedAddons.push(aId);
+    }
+    catch(e) {
+    }
+  }));
+  configs.cachedExternalAddons = respondedAddons;
 }
 
 
