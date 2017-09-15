@@ -52,7 +52,12 @@ async function init() {
   });
 
   var respondedAddons = [];
-  await Promise.all(configs.cachedExternalAddons.map(async aId => {
+  var notifiedAddons = {};
+  var notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
+  await Promise.all(notifyAddons.map(async aId => {
+    if (aId in notifiedAddons)
+      return;
+    notifiedAddons[aId] = true;
     try {
       let success = await browser.runtime.sendMessage(aId, {
         type: kTSTAPI_NOTIFY_READY
