@@ -666,7 +666,7 @@ function reserveToProcessLongHover(aParams = {}) {
         return;
 
       // auto-expand for staying on a parent
-      let draggedTab = aDraggedTabId && getTabById(aParams.draggedTabId);
+      let draggedTab = getTabById(aParams.draggedTabId);
       if (configs.autoExpandIntelligently) {
         collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
