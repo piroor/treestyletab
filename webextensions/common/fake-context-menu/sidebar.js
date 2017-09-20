@@ -163,7 +163,7 @@ var tabContextMenu = {
   matchPatternToRegExp(aPattern) {
     if (aPattern === '<all_urls>')
       return (/^(?:https?|file|ftp|app):\/\//);
-    const match = matchPattern.exec(aPattern);
+    const match = this.matchPattern.exec(aPattern);
     if (!match)
       throw new TypeError(`"${aPattern}" is not a valid MatchPattern`);
 
