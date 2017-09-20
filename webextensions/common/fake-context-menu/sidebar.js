@@ -90,6 +90,10 @@ var tabContextMenu = {
       for (let item of this.extraItems[id]) {
         if (item.contexts && item.contexts.indexOf('tab') < 0)
           continue;
+        if (this.contextTab &&
+            item.documentUrlPatterns &&
+            !this.matchesToCurrentTab(item.documentUrlPatterns))
+          continue;
         let itemNode = this.buildExtraItem(item, id);
         if (item.parentId && item.parentId in knownItems) {
           let parent = knownItems[item.parentId];
@@ -143,6 +147,32 @@ var tabContextMenu = {
       itemNode.setAttribute('title', aItem.title);
     }
     return itemNode;
+  },
+
+  matchesToCurrentTab(aPatterns) {
+    if (!Array.isArray(aPatterns))
+      aPatterns = [aPatterns];
+    for (let pattern of aPatterns) {
+      if (this.matchPatternToRegExp(pattern).test(this.contextTab.url))
+        return true;
+    }
+    return false;
+  },
+  // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns
+  matchPattern: /^(?:(\*|http|https|file|ftp|app):\/\/([^\/]+|)\/?(.*))$/i,
+  matchPatternToRegExp(aPattern) {
+    if (aPattern === '<all_urls>')
+      return (/^(?:https?|file|ftp|app):\/\//);
+    const match = matchPattern.exec(aPattern);
+    if (!match)
+      throw new TypeError(`"${aPattern}" is not a valid MatchPattern`);
+
+    const [, scheme, host, path,] = match;
+    return new RegExp('^(?:'
+                      + (scheme === '*' ? 'https?' : escape(scheme)) + ':\\/\\/'
+                      + (host === '*' ? "[^\\/]*" : escape(host).replace(/^\*\./g, '(?:[^\\/]+)?'))
+                      + (path ? (path == '*' ? '(?:\\/.*)?' : ('\\/' + escape(path).replace(/\*/g, '.*'))) : '\\/?')
+                      + ')$');
   },
 
   open: async function(aOptions = {}) {
