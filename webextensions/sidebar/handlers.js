@@ -607,12 +607,15 @@ function onTabOpened(aTab, aInfo = {}) {
     aTab.classList.add(kTAB_STATE_ANIMATION_READY);
     nextFrame().then(async () => {
       var focused = isActive(aTab);
+      var parent = getParentTab(aTab);
+      if (!parent || !isSubtreeCollapsed(parent)) { // possibly collapsed by other trigger intentionally
       collapseExpandTab(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
         anchor:    focused && getCurrentTab(),
         last:      focused
       });
+      }
       if (!focused)
         notifyOutOfViewTab(aTab);
     });
