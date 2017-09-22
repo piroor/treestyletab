@@ -177,7 +177,9 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     else if (!aOptions.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
           shouldTabAutoExpanded(aParent))
-        collapseExpandTreesIntelligentlyFor(aParent);
+        collapseExpandTreesIntelligentlyFor(aParent, {
+          broadcast: true
+        });
 
       let newAncestors = [aParent].concat(getAncestorTabs(aParent));
       if (configs.autoCollapseExpandSubtreeOnSelect) {
@@ -185,7 +187,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
           if (shouldTabAutoExpanded(aAncestor))
             collapseExpandSubtree(aAncestor, clone(aOptions, {
               collapsed: false,
-              inRemote: false
+              broadcast: true
             }));
         });
       }
@@ -195,27 +197,27 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
             if (shouldTabAutoExpanded(aAncestor))
               collapseExpandSubtree(aAncestor, clone(aOptions, {
                 collapsed: false,
-                inRemote: false
+                broadcast: true
               }));
           });
         }
         else
           collapseExpandTabAndSubtree(aChild, clone(aOptions, {
             collapsed: true,
-            inRemote: false
+            broadcast: true
           }));
       }
       if (isCollapsed(aParent))
         collapseExpandTabAndSubtree(aChild, clone(aOptions, {
           collapsed: true,
-          inRemote: false
+          broadcast: true
         }));
     }
     else if (shouldTabAutoExpanded(aParent) ||
              isCollapsed(aParent)) {
       collapseExpandTabAndSubtree(aChild, clone(aOptions, {
         collapsed: true,
-        inRemote: false
+        broadcast: true
       }));
     }
   }
