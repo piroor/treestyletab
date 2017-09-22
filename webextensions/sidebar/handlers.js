@@ -713,7 +713,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     reserveToUpdateIndent();
 
   if (aTab.onEndCollapseExpandAnimation) {
-    aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+    clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
     delete aTab.onEndCollapseExpandAnimation;
   }
 
@@ -748,9 +748,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       scrollToTab(aTab, { anchor: aInfo.anchor });
 
     aTab.onEndCollapseExpandAnimation = (() => {
-      delete aTab.onEndCollapseExpandAnimation;
-      if (backupTimer)
-        clearTimeout(backupTimer);
       //log('=> finish animation for ', dumpTab(aTab));
       aTab.classList.remove(kTAB_STATE_COLLAPSING);
       aTab.classList.remove(kTAB_STATE_EXPANDING);
@@ -765,14 +762,13 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
       reserveToUpdateTabbarLayout(configs.collapseDuration);
     });
-    aTab.addEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
-    var backupTimer = setTimeout(() => {
+    aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (!aTab || !aTab.onEndCollapseExpandAnimation ||
           !aTab.parentNode) // it was removed while waiting
         return;
-      backupTimer = null
-      aTab.removeEventListener('transitionend', aTab.onEndCollapseExpandAnimation, { once: true });
+      delete aTab.onEndCollapseExpandAnimation.timeout;
       aTab.onEndCollapseExpandAnimation();
+      delete aTab.onEndCollapseExpandAnimation;
     }, configs.collapseDuration);
   });
 }
