@@ -198,7 +198,7 @@ async function onNewTabTracked(aTab) {
   if (!newTab.parentNode) // it can be removed while waiting
     return;
 
-  var duplicated = duplicatedInternally || !!uniqueId.originalId;
+  var duplicated = duplicatedInternally || uniqueId.duplicated;
 
   window.onTabOpened && onTabOpened(newTab, {
     openedWithPosition: openedWithPosition || moved,
@@ -210,8 +210,7 @@ async function onNewTabTracked(aTab) {
   container.processingNewTabsCount--;
 
   if (!duplicated &&
-      uniqueId.originalTabId &&
-      uniqueId.originalTabId != aTab.id)
+      uniqueId.restored)
     window.onTabRestored && onTabRestored(newTab);
 }
 

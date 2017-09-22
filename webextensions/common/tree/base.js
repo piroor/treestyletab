@@ -60,6 +60,7 @@ async function requestUniqueId(aTabId, aOptions = {}) {
 
   var originalId = null;
   var originalTabId = null;
+  var duplicated = false;
   if (!aOptions.forceNew) {
     let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
@@ -70,12 +71,15 @@ async function requestUniqueId(aTabId, aOptions = {}) {
         return {
           id: oldId.id,
           originalId: null,
-          originalTabId: null
+          originalTabId: null,
+          restored: true
         };
 
       // If the stored tabId is different, it is possibly duplicated tab.
       try {
-        await browser.tabs.get(oldId.tabId);
+        let tabWithOldId = await browser.tabs.get(oldId.tabId);
+        if (!tabWithOldId)
+          throw new Error('missing');
       }
       catch(e) {
         // It fails if the tab doesn't exist.
@@ -89,12 +93,14 @@ async function requestUniqueId(aTabId, aOptions = {}) {
         return {
           id: oldId.id,
           originalId: null,
-          originalTabId: oldId.tabId
+          originalTabId: oldId.tabId,
+          restored: true
         };
       }
       aOptions.forceNew = true;
       originalId = oldId.id;
       originalTabId = oldId.tabId;
+      duplicated = true;
     }
   }
 
@@ -106,7 +112,7 @@ async function requestUniqueId(aTabId, aOptions = {}) {
     id:    id,
     tabId: aTabId // for detecttion of duplicated tabs
   });
-  return { id, originalId, originalTabId };
+  return { id, originalId, originalTabId, duplicated };
 }
 
 function buildTab(aApiTab, aOptions = {}) {
