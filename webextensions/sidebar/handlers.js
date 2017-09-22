@@ -455,9 +455,22 @@ function handleNewTabAction(aEvent, aOptions = {}) {
 }
 
 function onDblClick(aEvent) {
-  if (isEventFiredOnNewTabButton(aEvent) ||
-      getTabFromEvent(aEvent))
+  if (isEventFiredOnNewTabButton(aEvent))
     return;
+
+  var tab = getTabFromEvent(aEvent);
+  if (tab) {
+    if (configs.collapseExpandSubtreeByDblClick) {
+      aEvent.stopPropagation();
+      aEvent.preventDefault();
+      collapseExpandSubtree(tab, {
+        collapsed:       !isSubtreeCollapsed(tab),
+        manualOperation: true,
+        inRemote:        true
+      });
+    }
+    return;
+  }
 
   aEvent.stopPropagation();
   aEvent.preventDefault();

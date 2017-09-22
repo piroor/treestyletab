@@ -5,7 +5,7 @@
 */
 'use strict';
 
-const kLEGACY_CONFIGS_MIGRATION_VERSION = 1;
+const kLEGACY_CONFIGS_MIGRATION_VERSION = 2;
 
 function migrateLegacyConfigs() {
   var values = configs.importedConfigsFromLegacy;
@@ -82,8 +82,12 @@ function migrateLegacyConfigs() {
       migrateLegacyConfig('indentDuration', values['extensions.treestyletab.animation.indent.duration']);
       migrateLegacyConfig('collapseDuration', values['extensions.treestyletab.animation.collapse.duration']);
 
-    // case 2:
+    case 2:
+      migrateLegacyConfig('collapseExpandSubtreeByDblClick', values['extensions.treestyletab.collapseExpandSubtree.dblclick']);
+
     // case 3:
+    // case 4:
+    // case 5:
       migrated = true;
 
     default:

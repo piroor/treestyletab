@@ -101,6 +101,8 @@ configs = new Configs({
   autoCollapseExpandSubtreeOnSelect: true,
   autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove: true,
 
+  collapseExpandSubtreeByDblClick: false,
+
   autoExpandIntelligently: true,
   autoExpandOnAttached: true,
   autoExpandOnCollapsedChildFocused : true,
