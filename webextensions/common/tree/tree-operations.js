@@ -157,7 +157,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       await moveTabSubtreeBefore(aChild, nextTab, aOptions);
     else
       await moveTabSubtreeAfter(aChild, prevTab, aOptions);
-  }
 
   if (!aChild.parentNode) // it is removed while waiting
     return;
@@ -211,6 +210,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       collapsed: true,
       inRemote: false
     }));
+  }
   }
 
   //promoteTooDeepLevelTabs(aChild);
