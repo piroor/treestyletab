@@ -241,7 +241,7 @@ function getDropActionInternal(aEvent) {
       let visibleNext = getNextVisibleTab(targetTab);
       info.action       = kACTION_ATTACH;
       info.parent       = targetTab;
-      info.insertBefore = configs.insertNewChildAt == kINSERT_FISRT ?
+      info.insertBefore = configs.insertNewChildAt == kINSERT_FIRST ?
           (getFirstChildTab(targetTab) || visibleNext) :
           (getNextSiblingTab(targetTab) || getNextTab(getLastDescendantTab(targetTab) || targetTab));
      // if (info.insertBefore)

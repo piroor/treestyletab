@@ -155,7 +155,7 @@ const kPARENT_TAB_BEHAVIOR_ALWAYS            = 0;
 const kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE = 1;
 
 const kINSERT_NO_CONTROL = -1;
-const kINSERT_FISRT = 0;
+const kINSERT_FIRST = 0;
 const kINSERT_LAST = 1;
 
 const kNEWTAB_DO_NOTHING           = -1;
