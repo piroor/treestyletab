@@ -158,32 +158,22 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     else
       await moveTabSubtreeAfter(aChild, prevTab, aOptions);
 
-  if (!aChild.parentNode) // it is removed while waiting
-    return;
+    if (!aChild.parentNode) // it is removed while waiting
+      return;
 
-  if (aOptions.forceExpand) {
-    collapseExpandSubtree(aParent, clone(aOptions, {
-      collapsed: false,
-      inRemote: false
-    }));
-  }
-  else if (!aOptions.dontExpand) {
-    if (configs.autoCollapseExpandSubtreeOnAttach &&
-        shouldTabAutoExpanded(aParent))
-      collapseExpandTreesIntelligentlyFor(aParent);
-
-    let newAncestors = [aParent].concat(getAncestorTabs(aParent));
-    if (configs.autoCollapseExpandSubtreeOnSelect) {
-      newAncestors.forEach(aAncestor => {
-        if (shouldTabAutoExpanded(aAncestor))
-          collapseExpandSubtree(aAncestor, clone(aOptions, {
-            collapsed: false,
-            inRemote: false
-          }));
-      });
+    if (aOptions.forceExpand) {
+      collapseExpandSubtree(aParent, clone(aOptions, {
+        collapsed: false,
+        inRemote: false
+      }));
     }
-    else if (shouldTabAutoExpanded(aParent)) {
-      if (configs.autoExpandOnAttached) {
+    else if (!aOptions.dontExpand) {
+      if (configs.autoCollapseExpandSubtreeOnAttach &&
+          shouldTabAutoExpanded(aParent))
+        collapseExpandTreesIntelligentlyFor(aParent);
+
+      let newAncestors = [aParent].concat(getAncestorTabs(aParent));
+      if (configs.autoCollapseExpandSubtreeOnSelect) {
         newAncestors.forEach(aAncestor => {
           if (shouldTabAutoExpanded(aAncestor))
             collapseExpandSubtree(aAncestor, clone(aOptions, {
@@ -192,25 +182,35 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
             }));
         });
       }
-      else
+      else if (shouldTabAutoExpanded(aParent)) {
+        if (configs.autoExpandOnAttached) {
+          newAncestors.forEach(aAncestor => {
+            if (shouldTabAutoExpanded(aAncestor))
+              collapseExpandSubtree(aAncestor, clone(aOptions, {
+                collapsed: false,
+                inRemote: false
+              }));
+          });
+        }
+        else
+          collapseExpandTabAndSubtree(aChild, clone(aOptions, {
+            collapsed: true,
+            inRemote: false
+          }));
+      }
+      if (isCollapsed(aParent))
         collapseExpandTabAndSubtree(aChild, clone(aOptions, {
           collapsed: true,
           inRemote: false
         }));
     }
-    if (isCollapsed(aParent))
+    else if (shouldTabAutoExpanded(aParent) ||
+             isCollapsed(aParent)) {
       collapseExpandTabAndSubtree(aChild, clone(aOptions, {
         collapsed: true,
         inRemote: false
       }));
-  }
-  else if (shouldTabAutoExpanded(aParent) ||
-           isCollapsed(aParent)) {
-    collapseExpandTabAndSubtree(aChild, clone(aOptions, {
-      collapsed: true,
-      inRemote: false
-    }));
-  }
+    }
   }
 
   //promoteTooDeepLevelTabs(aChild);
