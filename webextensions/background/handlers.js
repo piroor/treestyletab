@@ -103,6 +103,13 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
 }
 
 async function onNewTabsTimeout(aContainer) {
+  // extract only pure new tabs
+  var uniqueIds = await Promise.all(aContainer.openedNewTabs.map(aId => getTabById(aId).uniqueId));
+  aContainer.openedNewTabs = aContainer.openedNewTabs.filter((aId, aIndex) => {
+    var uniqueId = uniqueIds[aIndex];
+    return !uniqueId.duplicated && !uniqueId.restored;
+  });
+
   var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById));
   aContainer.openedNewTabs = [];
   if (newRootTabs.length <= 1)
