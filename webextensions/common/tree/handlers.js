@@ -39,8 +39,8 @@
 'use strict';
 
 // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-var gTabIdWrongToCorrect = new Map();
-var gTabIdCorrectToWrong = new Map();
+var gTabIdWrongToCorrect = {};
+var gTabIdCorrectToWrong = {};
 
 function startObserveApiTabs() {
   browser.tabs.onActivated.addListener(onApiTabActivated);
@@ -128,7 +128,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   await ensureAllTabsAreTracked(aTab.windowId);
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-  var correctId = gTabIdWrongToCorrect.get(aTabId);
+  var correctId = gTabIdWrongToCorrect[aTabId];
   if (correctId)
     aTabId = aTab.id = correctId;
 
@@ -228,10 +228,10 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   await ensureAllTabsAreTracked(aRemoveInfo.windowId);
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-  var wrongId = gTabIdCorrectToWrong.get(aTabId);
+  var wrongId = gTabIdCorrectToWrong[aTabId];
   if (wrongId)
-    gTabIdWrongToCorrect.delete(wrongId);
-  gTabIdCorrectToWrong.delete(aTabId);
+    delete gTabIdWrongToCorrect[wrongId];
+  delete gTabIdCorrectToWrong[aTabId];
 
   var container = getOrBuildTabsContainer(aRemoveInfo.windowId);
   var byInternalOperation = container.toBeClosedTabs > 0;
@@ -332,11 +332,11 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
   if (apiTab.id != aTabId) {
-    let oldWrongId = gTabIdCorrectToWrong.get(aTabId);
+    let oldWrongId = gTabIdCorrectToWrong[aTabId];
     if (oldWrongId)
-      gTabIdWrongToCorrect.delete(oldWrongId);
-    gTabIdWrongToCorrect.set(apiTab.id, aTabId);
-    gTabIdCorrectToWrong.set(aTabId, apiTab.id);
+      delete gTabIdWrongToCorrect[oldWrongId];
+    gTabIdWrongToCorrect[apiTab.id] = aTabId;
+    gTabIdCorrectToWrong[aTabId] = apiTab.id;
     apiTab.id = aTabId;
   }
 

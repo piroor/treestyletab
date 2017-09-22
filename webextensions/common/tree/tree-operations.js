@@ -915,7 +915,7 @@ async function moveTabs(aTabs, aOptions = {}) {
     while (Date.now() - startTime < maxDelay) {
       newTabs = apiTabIds.map(aApiTabId => {
         // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-        var correctId = gTabIdWrongToCorrect.get(aApiTabId);
+        var correctId = gTabIdWrongToCorrect[aApiTabId];
         if (correctId)
           aApiTabId = correctId;
         return getTabById(aApiTabId);
@@ -1031,7 +1031,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
       var allTabIdsInWindow = aApiWindow.tabs.map(aApiTab => {
         var id = aApiTab.id;
-        var correctId = gTabIdWrongToCorrect.get(id);
+        var correctId = gTabIdWrongToCorrect[id];
         if (correctId)
           return correctId;
         else
