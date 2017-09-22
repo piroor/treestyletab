@@ -393,7 +393,14 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   }
   else if (!nextTab) {
     log('=> moved to last position');
-    newParent = prevParent;
+    if ([oldParent].concat(getAncestorTabs(oldParent)).indexOf(prevParent) > -1) {
+      log(' => moving in related tree: keep it attached in existing tree');
+      newParent = prevParent;
+    }
+    else {
+      log(' => moving from other tree: keep it orphaned');
+      newParent = null;
+    }
   }
   else if (prevParent == nextParent) {
     log('=> moved into existing tree');
