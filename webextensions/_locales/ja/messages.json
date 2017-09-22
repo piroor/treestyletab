@@ -109,6 +109,11 @@
   "config.insertNewChildAt.first": { "message": "ツリーの最初の位置に挿入する" },
   "config.insertNewChildAt.last": { "message": "ツリーの末尾に追加する" },
 
+  "config.insertNewTabFromPinnedTabAt.caption": { "message": "ピン留めされたタブから新しいタブを開く位置" },
+  "config.insertNewTabFromPinnedTabAt.noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
+  "config.insertNewTabFromPinnedTabAt.first": { "message": "ツリーの最初の位置に挿入する" },
+  "config.insertNewTabFromPinnedTabAt.last": { "message": "ツリーの末尾に追加する" },
+
   "config.autoGroupNewTabs.before": { "message": "" },
   "config.autoGroupNewTabs.after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
 

@@ -37,10 +37,26 @@ async function onTabOpening(aTab, aInfo = {}) {
   }
 
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
-  if (opener &&
-      configs.autoAttach &&
-      !aInfo.duplicatedInternally) {
-    log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
+  if (!opener ||
+      aInfo.duplicatedInternally)
+    return;
+
+  log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
+  if (isPinned(opener)) {
+    switch (configs.insertNewTabFromPinnedTabAt) {
+      case kINSERT_FIRST:
+        browser.tabs.move(aTab.apiTab.id, {
+          index: getPinnedTabs(container).length
+        });
+        break;
+      case kINSERT_LAST:
+        browser.tabs.move(aTab.apiTab.id, {
+          index: getAllTabs(container).length - 1
+        });
+        break;
+    }
+  }
+  else if (configs.autoAttach) {
     behaveAutoAttachedTab(aTab, {
       baseTab:  opener,
       behavior: configs.autoAttachOnOpenedWithOwner,
