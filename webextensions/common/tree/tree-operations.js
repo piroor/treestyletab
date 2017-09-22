@@ -140,7 +140,14 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
     //this.inheritTabIndent(aChild, aParent);
 
-  if (!aOptions.broadcasted) {
+  if (aOptions.broadcasted) {
+    log(`Broadcasted attach: Set ${dumpTab(aChild)} to collapsed=${isSubtreeCollapsed(aParent)}`);
+    collapseExpandTabAndSubtree(aChild, {
+      collapsed: isSubtreeCollapsed(aParent),
+      justNow:   true
+    });
+  }
+  else {
     let nextTab = aOptions.insertBefore;
     let prevTab = aOptions.insertAfter;
     if (!nextTab && !prevTab) {
