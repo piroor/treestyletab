@@ -643,20 +643,12 @@ async function onTabCompletelyClosed(aTab) {
     return;
 
   return new Promise((aResolve, aReject) => {
-    aTab.onEndRemoveAnimation = (() => {
-      delete aTab.onEndRemoveAnimation;
-      aResolve();
-    });
-    aTab.addEventListener('transitionend', aTab.onEndRemoveAnimation, { once: true });
     let tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
-    let backupTimer = setTimeout(() => {
-      if (!aTab || !aTab.onEndRemoveAnimation ||
-          !aTab.parentNode) // it was removed while waiting
+    setTimeout(() => {
+      if (!aTab || !aTab.parentNode) // it was removed while waiting
         return;
-      backupTimer = null
-      aTab.removeEventListener('transitionend', aTab.onEndRemoveAnimation, { once: true });
-      aTab.onEndRemoveAnimation();
+      aResolve();
     }, configs.collapseDuration);
   });
 }
