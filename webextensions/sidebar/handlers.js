@@ -883,6 +883,13 @@ function onMessage(aMessage, aSender, aRespond) {
         return Promise.resolve(true);
     }; break;
 
+    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+    case kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE:
+      delete gTabIdWrongToCorrect[aMessage.oldWrongId];
+      gTabIdWrongToCorrect[aMessage.newWrongId] = aMessage.newCorrectId;
+      gTabIdCorrectToWrong[aMessage.newCorrectId] = aMessage.newWrongId;
+      break;
+
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);

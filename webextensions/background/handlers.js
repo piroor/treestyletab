@@ -633,6 +633,13 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_REQUEST_REGISTERED_ADDONS:
       return Promise.resolve(gExternalListenerAddons);
 
+    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+    case kCOMMAND_PULL_TAB_ID_TABLES:
+      return Promise.resolve({
+        wrongToCorrect: gTabIdWrongToCorrect,
+        correctToWrong: gTabIdCorrectToWrong
+      });
+
     case kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
         while (gInitializing) {

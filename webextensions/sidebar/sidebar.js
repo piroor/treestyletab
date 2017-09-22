@@ -58,6 +58,13 @@ async function init() {
   ]);
   document.documentElement.classList.remove('initializing');
 
+  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+  let response = await browser.runtime.sendMessage({
+    type: kCOMMAND_PULL_TAB_ID_TABLES
+  });
+  gTabIdWrongToCorrect = response.wrongToCorrect;
+  gTabIdCorrectToWrong = response.correctToWrong;
+
   await rebuildAll();
 
   updateContextualIdentitiesStyle();
@@ -277,6 +284,9 @@ async function rebuildAll() {
   clearAllTabsContainers();
   var container = buildTabsContainerFor(gTargetWindow);
   for (let apiTab of apiTabs) {
+    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+    if (apiTab.id in gTabIdWrongToCorrect)
+      apiTab.id = gTabIdWrongToCorrect[apiTab.id];
     let newTab = buildTab(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
     updateTab(newTab, apiTab, { forceApply: true });

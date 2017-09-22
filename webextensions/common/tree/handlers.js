@@ -337,6 +337,12 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
       delete gTabIdWrongToCorrect[oldWrongId];
     gTabIdWrongToCorrect[apiTab.id] = aTabId;
     gTabIdCorrectToWrong[aTabId] = apiTab.id;
+    browser.runtime.sendMessage({
+      type: kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE,
+      oldWrongId:   oldWrongId,
+      newWrongId:   apiTab.id,
+      newCorrectId: aTabId
+    });
     apiTab.id = aTabId;
   }
 
