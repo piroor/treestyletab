@@ -754,8 +754,14 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       //log('=> finish animation for ', dumpTab(aTab));
       aTab.classList.remove(kTAB_STATE_COLLAPSING);
       aTab.classList.remove(kTAB_STATE_EXPANDING);
-      if (toBeCollapsed)
+
+      // The collapsed state of the tab can be changed by different trigger,
+      // so we must respect the actual status of the tab, instead of the
+      // "expected status" given via arguments.
+      if (aTab.classList.contains(kTAB_STATE_COLLAPSED))
         aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+      else
+        aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
       reserveToUpdateTabbarLayout(configs.collapseDuration);
     });
