@@ -289,6 +289,14 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 */
 
+  if (aOptions.forceApply ||
+      aNewState.discarded != oldState.discarded) {
+    if (aNewState.discarded)
+      aTab.classList.add(kTAB_STATE_DISCARDED);
+    else
+      aTab.classList.remove(kTAB_STATE_DISCARDED);
+  }
+
   if (configs.debug) {
     aTab.setAttribute('title',
       `
