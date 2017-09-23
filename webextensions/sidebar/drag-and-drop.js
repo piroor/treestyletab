@@ -167,34 +167,14 @@ function getDropActionInternal(aEvent) {
       info.targetTab = info.insertBefore = firstTargetTab;
       info.dropPosition = kDROP_BEFORE;
       info.action   = action;
-      return info;
     }
     else if (aEvent.clientY > lastTargetTab.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
       info.targetTab = info.insertAfter = lastTargetTab;
       info.dropPosition = kDROP_AFTER;
       info.action   = action;
-      return info;
     }
-    else {
-      //log('dragging on the tab ', dumpTab(targetTab));
-      let index = getTabIndex(targetTab);
-      index = Math.min(index, lastTargetTabIndex);
-      info.targetTab = targetTab = targetTabs[index];
-      if (index == getTabIndex(lastTargetTab)) {
-        if (index > 0)
-          info.targetTab = targetTab = targetTabs[index - 1];
-        info.dropPosition = kDROP_AFTER;
-        //log('=> after the last tab');
-      }
-      else if (targetTab == firstTargetTab) {
-        if (index < lastTargetTabIndex - 1)
-          info.targetTab = targetTab = targetTabs[index + 1];
-        info.dropPosition = kDROP_BEFORE;
-        //log('=> before the first tab');
-      }
-      //log('info.targetTab = ', dumpTab(info.targetTab));
-    }
+    return info;
   }
 
   /**
