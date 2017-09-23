@@ -552,10 +552,6 @@ async function loadImageTo(aImageElement, aURL, aApiTab) {
   aImageElement.src = '';
   aImageElement.classList.remove('error');
   aImageElement.classList.add('loading');
-  if (!aURL) {
-    onError();
-    return;
-  }
   var onLoad = (() => {
     gEffectiveFavicons.set(aApiTab.id, {
       url:        aApiTab.url,
@@ -583,6 +579,10 @@ async function loadImageTo(aImageElement, aURL, aApiTab) {
   var loader = new Image();
   loader.addEventListener('load', onLoad, { once: true });
   loader.addEventListener('error', onError, { once: true });
+  if (!aURL) {
+    onError();
+    return;
+  }
   try {
     loader.src = aURL;
   }
