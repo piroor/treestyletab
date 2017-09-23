@@ -156,8 +156,8 @@ function getDropActionInternal(aEvent) {
   var draggedTabs = (dragData && dragData.tabIds) || [];
   draggedTabs = draggedTabs.map(getTabById).filter(aTab => !!aTab);
   info.draggedTabs = draggedTabs;
-  var isRemoteTab = !draggedTab && !!dragData.tabId;
-  var isNewTabAction = !draggedTab && !dragData.tabId;
+  var isRemoteTab = !draggedTab &&  (!dragData || !!dragData.tabId);
+  var isNewTabAction = !draggedTab && (!dragData || !dragData.tabId);
 
   if (!targetTab) {
     //log('dragging on non-tab element');
