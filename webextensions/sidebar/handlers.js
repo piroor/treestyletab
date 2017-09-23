@@ -513,7 +513,7 @@ function onTabBuilt(aTab) {
   var throbber = favicon.appendChild(document.createElement('span'));
   throbber.classList.add(kTHROBBER);
   aTab.insertBefore(favicon, label);
-  loadImageTo(faviconImage, aTab.apiTab.favIconUrl);
+  loadImageTo(faviconImage, aTab.apiTab.favIconUrl, aTab.apiTab);
 
   var counter = document.createElement('span');
   counter.classList.add(kCOUNTER);
