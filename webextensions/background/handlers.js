@@ -895,6 +895,30 @@ function onMessageExternal(aMessage, aSender) {
         return tabs.map(serializeTabForTSTAPI);
       })();
 
+    case kTSTAPI_COLLAPSE_TREE:
+      return (async () => {
+        clearTimeout(timeout);
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          collapseExpandSubtree(tab, {
+            collapsed: true,
+            broadcast: true
+          });
+        }
+      })();
+
+    case kTSTAPI_EXPAND_TREE:
+      return (async () => {
+        clearTimeout(timeout);
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          collapseExpandSubtree(tab, {
+            collapsed: false,
+            broadcast: true
+          });
+        }
+      })();
+
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {
         clearTimeout(timeout);

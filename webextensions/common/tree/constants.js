@@ -47,6 +47,8 @@ const kTSTAPI_NOTIFY_TAB_DRAGEXIT  = 'tab-dragexit';
 const kTSTAPI_NOTIFY_TAB_DRAGEND   = 'tab-dragend';
 const kTSTAPI_GET_TREE             = 'get-tree';
 const kTSTAPI_GET_ALL_TREE         = 'get-all-tree';
+const kTSTAPI_COLLAPSE_TREE        = 'collapse-tree';
+const kTSTAPI_EXPAND_TREE          = 'expand-tree';
 const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
 const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
 
