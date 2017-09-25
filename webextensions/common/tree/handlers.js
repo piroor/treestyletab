@@ -244,9 +244,6 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 
   log('tabs.onRemoved: ', dumpTab(oldTab));
 
-  if (oldTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
-    tryMoveFocusFromClosingCurrentTab(oldTab);
-
   window.onTabClosed && await onTabClosed(oldTab, {
     byInternalOperation
   });
@@ -361,9 +358,6 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
   var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (!oldTab)
     return;
-
-  if (isActive(oldTab))
-    tryMoveFocusFromClosingCurrentTab(oldTab);
 
   if (oldTab.parentNode.toBeDetachedTabs > 0) {
     oldTab.parentNode.toBeDetachedTabs--;

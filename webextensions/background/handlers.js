@@ -190,6 +190,9 @@ function onTabRestored(aTab) {
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
+  if (aTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
+    tryMoveFocusFromClosingCurrentTab(aTab);
+
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
@@ -560,6 +563,9 @@ function onTabDetached(aTab, aDetachInfo) {
 }
 
 function onTabDetachedFromWindow(aTab) {
+  if (isActive(aTab))
+    tryMoveFocusFromClosingCurrentTab(aTab);
+
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
