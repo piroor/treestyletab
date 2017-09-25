@@ -911,6 +911,7 @@ function onMessageExternal(aMessage, aSender) {
             broadcast: true
           });
         }
+        return true;
       })();
 
     case kTSTAPI_EXPAND_TREE:
@@ -923,6 +924,7 @@ function onMessageExternal(aMessage, aSender) {
             broadcast: true
           });
         }
+        return true;
       })();
 
     case kTSTAPI_ADD_TAB_STATE:
@@ -940,6 +942,7 @@ function onMessageExternal(aMessage, aSender) {
         broadcastTabState(tabs, {
           add: states
         });
+        return true;
       })();
 
     case kTSTAPI_REMOVE_TAB_STATE:
@@ -957,6 +960,7 @@ function onMessageExternal(aMessage, aSender) {
         broadcastTabState(tabs, {
           remove: states
         });
+        return true;
       })();
   }
   clearTimeout(timeout);
