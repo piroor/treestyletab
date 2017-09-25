@@ -627,6 +627,14 @@ async function tryMoveFocusFromClosingCurrentTab(aTab) {
   log('tryMoveFocusFromClosingCurrentTab');
   var nextFocusedTab = null;
 
+  let results = await sendTSTAPIMessage({
+    type:   kTSTAPI_NOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
+    tab:    serializeTabForTSTAPI(aTab),
+    window: aTab.apiTab.windowId
+  });
+  if (results.indexOf(true) > -1) // canceled
+    return false;
+
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
   var firstChild = getFirstChildTab(aTab);
   if (firstChild &&
