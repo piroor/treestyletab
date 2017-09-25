@@ -703,7 +703,7 @@ async function notify(aParams = {}) {
 
 function serializeTabForTSTAPI(aTab) {
   return clone(aTab.apiTab, {
-    states:   Array.slice(aTab.classList),
+    states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
     children: getChildTabs(aTab).map(serializeTabForTSTAPI)
   });
 }
