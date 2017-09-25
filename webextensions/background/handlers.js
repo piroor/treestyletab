@@ -880,41 +880,20 @@ function onMessageExternal(aMessage, aSender) {
       })();
 
 
-    case kTSTAPI_IS_SUBTREE_COLLAPSED:
+    case kTSTAPI_GET_TREE:
       return (async () => {
         clearTimeout(timeout);
         var tabs = await TSTAPIGetTargetTabs(aMessage);
-        var results = tabs.map(isSubtreeCollapsed);
+        var results = tabs.map(serializeTabForTSTAPI);
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_HAS_CHILD_TABS:
+    case kTSTAPI_GET_ALL_TREE:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
-        var results = tabs.map(hasChildTabs);
-        return TSTAPIFormatResult(results, aMessage);
+        var tabs = getRooTabs(aMessage.window);
+        return tabs.map(serializeTabForTSTAPI);
       })();
-
-    case kTSTAPI_GET_DESCENDANT_TABS:
-      return (async () => {
-        clearTimeout(timeout);
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
-        var results = tabs.map(getDescendantTabs);
-        results = results.map(aTabs => {
-          return aTabs.map(aTab => aTab.apiTab.id);
-        });
-        return TSTAPIFormatResult(results, aMessage);
-      })();
-
-    case kTSTAPI_GET_TAB_STATE:
-      return (async () => {
-        clearTimeout(timeout);
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
-        var results = tabs.map(aTab => Array.slice(aTab.classList));
-        return TSTAPIFormatResult(results, aMessage);
-      })();
-
 
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {

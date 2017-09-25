@@ -45,10 +45,8 @@ const kTSTAPI_NOTIFY_TAB_DRAGSTART = 'tab-dragstart';
 const kTSTAPI_NOTIFY_TAB_DRAGENTER = 'tab-dragenter';
 const kTSTAPI_NOTIFY_TAB_DRAGEXIT  = 'tab-dragexit';
 const kTSTAPI_NOTIFY_TAB_DRAGEND   = 'tab-dragend';
-const kTSTAPI_IS_SUBTREE_COLLAPSED = 'is-subtree-collapsed';
-const kTSTAPI_HAS_CHILD_TABS       = 'has-child-tabs';
-const kTSTAPI_GET_DESCENDANT_TABS  = 'get-descendant-tabs';
-const kTSTAPI_GET_TAB_STATE        = 'get-tab-state';
+const kTSTAPI_GET_TREE             = 'get-tree';
+const kTSTAPI_GET_ALL_TREE         = 'get-all-tree';
 const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
 const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
 
