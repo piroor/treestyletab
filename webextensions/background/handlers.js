@@ -935,10 +935,10 @@ function onMessageExternal(aMessage, aSender) {
 async function TSTAPIGetTargetTabs(aMessage) {
   if (Array.isArray(aMessage.tabs))
     return aMessage.tabs.map(getTabById);
+  if (aMessage.window || aMessage.windowId)
+    return getTabs(aMessage.window || aMessage.windowId);
   if (aMessage.tab == '*' ||
       aMessage.tabs == '*') {
-    if (aMessage.window)
-      return getTabs(aMessage.window);
     let window = await browser.windows.getLastFocused({});
     return getTabs(window.id);
   }
