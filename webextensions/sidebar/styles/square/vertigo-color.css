@@ -51,18 +51,6 @@
   --throbber-color: var(--tab-highlighted-glow);
 }
 
-:root.dark {
-  --tab-surface: #39424D;
-  --tab-text: white;
-  --tab-border: #5f6670;
-  --tab-dropmarker: white;
-
-  --tab-highlighted-highlight: Highlight;
-  --tab-surface-hover: #49525D;
-  --tab-surface-active: #1a4666;
-  --tab-surface-active-hover: #1f5981;
-}
-
 :root {
   background: var(--tab-surface);
 }

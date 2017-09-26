@@ -165,6 +165,9 @@ function applyStyle() {
     case 'vertigo':
       gStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
       break;
+    case 'plain-dark':
+      gStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
+      break;
     default:
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;

@@ -1,0 +1,14 @@
+:root {
+  --tab-surface: #39424D;
+  --tab-text: white;
+  --tab-border: #5f6670;
+  --tab-side-border: #5f6670;
+  --tab-surface-hover: #49525D;
+  --tab-surface-active: #1a4666;
+  --tab-surface-active-hover: #1f5981;
+  --tab-dropmarker: white;
+
+  --tab-highlighted-highlight: Highlight;
+  --tabbar-bg: darkgray;
+}
+
