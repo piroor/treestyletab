@@ -303,13 +303,13 @@ ul {
 }
 
 :root.left .tab:not(.pinned) .contextual-identity-marker {
-  left: 0;
+  right: 0;
   top: 0;
   width: calc(var(--favicon-size) / 6);
 }
 
 :root.right .tab:not(.pinned) .contextual-identity-marker {
-  right: 0;
+  left: 0;
   top: 0;
   width: calc(var(--favicon-size) / 6);
 }
