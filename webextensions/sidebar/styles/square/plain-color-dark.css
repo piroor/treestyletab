@@ -1,14 +1,54 @@
 :root {
-  --tab-surface: #39424D;
+  --tab-surface: #0c0c0d;
   --tab-text: white;
-  --tab-border: #5f6670;
-  --tab-side-border: #5f6670;
-  --tab-surface-hover: #49525D;
-  --tab-surface-active: #1a4666;
-  --tab-surface-active-hover: #1f5981;
-  --tab-dropmarker: white;
+  --tab-border: #3c3c3d;
+  --tab-side-border: #3c3c3d;
+  --tab-surface-hover: #242425;
+  --tab-surface-active: #39424D;
+  --tab-surface-active-hover: #49525D;
+  --tab-active-marker: #0a84ff;
+  --tab-active-marker-size: calc(var(--favicon-size) / 6);
+  --dropmarker-color: white;
 
-  --tab-highlighted-highlight: Highlight;
-  --tabbar-bg: darkgray;
+  --tab-highlighted-highlight: white;
+  --tabbar-bg: black;
+}
+
+.tab.active {
+  background: var(--tab-surface-active);
+}
+.tab.active:hover {
+  background: var(--tab-surface-active-hover);
+}
+
+.tab.active .extra-items-container.behind::before {
+  background: var(--tab-active-marker);
+  content: "";
+  position: absolute;
+  top: 0;
+}
+
+:root.left .tab.active:not(.pinned) .extra-items-container.behind::before {
+  bottom: 0;
+  left: 0;
+  width: var(--tab-active-marker-size);
+}
+
+:root.right .tab.active:not(.pinned) .extra-items-container.behind::before {
+  bottom: 0;
+  right: 0;
+  width: var(--tab-active-marker-size);
+}
+
+.tab.active.pinned .extra-items-container.behind::before {
+  height: var(--tab-active-marker-size);
+  left: 0;
+  right: 0;
+}
+
+.tab.active .twisty,
+.tab.active .label,
+.tab.active .counter {
+  color: white;
 }
 

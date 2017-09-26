@@ -237,8 +237,7 @@ ul {
 .tab.pinned :-moz-any(
   .twisty,
   .label,
-  .closebox,
-  .extra-items-container.behind
+  .closebox
 ) {
   display: none;
 }
