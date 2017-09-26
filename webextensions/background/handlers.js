@@ -969,8 +969,13 @@ function onMessageExternal(aMessage, aSender) {
 async function TSTAPIGetTargetTabs(aMessage) {
   if (Array.isArray(aMessage.tabs))
     return aMessage.tabs.map(getTabById);
-  if (aMessage.window || aMessage.windowId)
-    return getTabs(aMessage.window || aMessage.windowId);
+  if (aMessage.window || aMessage.windowId) {
+    if (aMessage.tab == '*' ||
+        aMessage.tabs == '*')
+      return getTabs(aMessage.window || aMessage.windowId);
+    else
+      return getRootTabs(aMessage.window || aMessage.windowId);
+  }
   if (aMessage.tab == '*' ||
       aMessage.tabs == '*') {
     let window = await browser.windows.getLastFocused({});
