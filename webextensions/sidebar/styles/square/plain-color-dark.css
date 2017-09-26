@@ -10,6 +10,7 @@
   --tab-active-marker-size: calc(var(--favicon-size) / 6);
   --dropmarker-color: white;
 
+  --tab-highlighted: var(--tab-active-marker);
   --tab-highlighted-highlight: white;
   --tabbar-bg: black;
 }
