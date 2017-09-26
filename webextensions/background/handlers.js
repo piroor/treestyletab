@@ -920,6 +920,35 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
+    case kTSTAPI_ATTACH:
+      return (async () => {
+        clearTimeout(timeout);
+        var child = getTabById(aMessage.child);
+        var parent = getTabById(aMessage.parent);
+        if (!child ||
+            !parent ||
+            child.parentNode != parent.parentNode)
+          return false;
+        await attachTabTo(child, parent, {
+          broadcast:    true,
+          insertBefore: getTabById(aMessage.insertBefore),
+          insertAfter:  getTabById(aMessage.insertAfter)
+        });
+        return true;
+      })();
+
+    case kTSTAPI_DETACH:
+      return (async () => {
+        clearTimeout(timeout);
+        var tab = getTabById(aMessage.tab);
+        if (!tab)
+          return false;
+        await detachTab(tab, {
+          broadcast: true
+        });
+        return true;
+      })();
+
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {
         clearTimeout(timeout);
