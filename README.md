@@ -37,7 +37,7 @@ On Nightly, you can try them by setting a secret preference `xpinstall.signature
 ## Similar projects
 
  * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/):
-   Cross-browser, more powerful faatures, and high customizability.
+   Cross-browser, more powerful features, and high customizability.
    (One large difference between TST is: the design strategy.
    TST is aimed to keep it simple and work together with other addons as possible as it can.)
  * [Tab Center Redux ](https://addons.mozilla.org/firefox/addon/tab-center-redux/):
