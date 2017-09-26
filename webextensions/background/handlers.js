@@ -894,13 +894,6 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_GET_ALL_TREE:
-      return (async () => {
-        clearTimeout(timeout);
-        var tabs = getRooTabs(aMessage.window);
-        return tabs.map(serializeTabForTSTAPI);
-      })();
-
     case kTSTAPI_COLLAPSE_TREE:
       return (async () => {
         clearTimeout(timeout);
