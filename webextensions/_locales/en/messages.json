@@ -1,5 +1,5 @@
 {
-  "extensionName": { "message": "Tree Style Tab (WE)" },
+  "extensionName": { "message": "Tree Style Tab" },
   "extensionDescription": { "message": "Show tabs like a tree." },
 
   "sidebarTitle": { "message": "Tree Style Tab" },

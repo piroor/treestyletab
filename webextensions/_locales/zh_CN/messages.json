@@ -1,5 +1,5 @@
 {
-  "extensionName": { "message": "Tree Style Tab (WE)" },
+  "extensionName": { "message": "Tree Style Tab" },
   "extensionDescription": { "message": "树状显示标签页。" },
 
   "sidebarTitle": { "message": "Tree Style Tab" },

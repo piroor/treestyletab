@@ -1,5 +1,5 @@
 {
-  "extensionName": { "message": "ツリー型タブ(WE)" },
+  "extensionName": { "message": "ツリー型タブ" },
   "extensionDescription": { "message": "タブをツリー状に表示します。" },
 
   "sidebarTitle": { "message": "ツリー型タブ" },
