@@ -82,7 +82,7 @@
   "config.context.caption": { "message": "コンテキストメニューに追加する項目" },
 
 
-  "config.newTabs.caption": { "message": "新しいタブの挙動" },
+  "config.newTab.caption": { "message": "新しいタブの挙動" },
 
   "config.autoAttachOnNewTabCommand.before": { "message": "新しい空のタブを" },
   "config.autoAttachOnNewTabCommand.independent": { "message": "独立したタブとして" },
