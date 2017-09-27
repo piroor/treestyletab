@@ -715,17 +715,19 @@ function onDrop(aEvent) {
 
 function onDragEnd(aEvent) {
   log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
+
+  // clear "dragging" status safely, because we possibly fail to get drag data from dataTransfer.
+  for (let tab of getDraggingTabs(gTargetWindow)) {
+    tab.classList.remove(kTAB_STATE_DRAGGING);
+  }
+
   var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
   dragData = dragData && JSON.parse(dragData);
   var stillInSelfWindow = !!gDraggingOnSelfWindow;
   gDraggingOnSelfWindow = false;
 
-  if (Array.isArray(dragData.tabIds)) {
+  if (Array.isArray(dragData.tabIds))
     dragData.tabNodes = dragData.tabIds.map(getTabById);
-    for (let draggedTab of dragData.tabNodes) {
-      draggedTab.classList.remove(kTAB_STATE_DRAGGING);
-    }
-  }
 
   clearDropPosition();
   getTabsContainer(aEvent.target).classList.remove(kTABBAR_STATE_TAB_DRAGGING);
