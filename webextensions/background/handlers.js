@@ -19,6 +19,9 @@ function onToolbarButtonClick(aTab) {
 // raw event handlers
 
 async function onTabOpening(aTab, aInfo = {}) {
+  if (aInfo.duplicatedInternally)
+    return;
+
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
   if (container.openedNewTabsTimeout)
@@ -37,9 +40,19 @@ async function onTabOpening(aTab, aInfo = {}) {
   }
 
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
-  if (!opener ||
-      aInfo.duplicatedInternally)
+  log('opener ', dumpTab(opener));
+  if (!opener) {
+    if (configs.considerNewOrphanTabAsOpenedByNewTabCommand &&
+        aTab.apiTab.url == configs.considerNewOrphanTabAsOpenedByNewTabCommandUrl) {
+      let current = getCurrentTab(aTab);
+      log('behavie as a tab opened by new tab command, current = ', dumpTab(current));
+      behaveAutoAttachedTab(aTab, {
+        baseTab:  current,
+        behavior: configs.autoAttachOnNewTabCommand
+      });
+    }
     return;
+  }
 
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
   if (isPinned(opener)) {
