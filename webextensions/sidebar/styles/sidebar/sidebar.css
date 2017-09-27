@@ -86,7 +86,7 @@
 .tab {
   border-top: 1px solid transparent;
   height: 2.2em;     /* height including border! */
-  padding: 0.075em 3px 0.075em 10px;
+  padding: 0.075em 3px 0.075em 2px;
   z-index: 0;
 }
 
