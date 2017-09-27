@@ -172,52 +172,21 @@ function onResize(aEvent) {
 }
 
 var gLastMousedown = null;
+var gLastMousedownIsMiddleClick = false;
 
 function onMouseDown(aEvent) {
   cancelHandleMousedown();
   tabContextMenu.close();
 
   var tab = getTabFromEvent(aEvent);
-  //log('mousedown tab: ', tab);
-  if (isMiddleClick(aEvent)) {
-    if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
-      //log('middle-click to close');
-      browser.runtime.sendMessage({
-        type:     kCOMMAND_REMOVE_TAB,
-        windowId: gTargetWindow,
-        tab:      tab.id
-      });
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
-    }
-    else if (isEventFiredOnNewTabButton(aEvent)) {
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
-      handleNewTabAction(aEvent, {
-        action: configs.autoAttachOnNewTabButtonMiddleClick
-      });
-    }
-    else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
-      let option = getClickedOptionFromEvent(aEvent);
-      if (option) {
-        /*
-          *NOTE: This block will never work because Firefox
-          always eats mousedown events fired on selectbox's
-          drowdown menu...
-        */
-        handleNewTabAction(aEvent, {
-          action: configs.autoAttachOnNewTabButtonMiddleClick,
-          cookieStoreId: option.getAttribute('value')
-        });
-      }
-      else { // treat as middle click on new tab button
-        handleNewTabAction(aEvent, {
-          action: configs.autoAttachOnNewTabButtonMiddleClick
-        });
-      }
-    }
+
+  gLastMousedownIsMiddleClick = isMiddleClick(aEvent);
+  if (gLastMousedownIsMiddleClick &&
+      (tab ||
+       isEventFiredOnNewTabButton(aEvent) ||
+       isEventFiredOnContextualIdentitySelector(aEvent))) {
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
     return;
   }
 
@@ -359,6 +328,42 @@ function onMouseUp(aEvent) {
 
     gLastDragEnteredTab = null;
     gLastDragEnteredTarget = null;
+  }
+
+  if (gLastMousedownIsMiddleClick) {
+    let tab = getTabFromEvent(aEvent);
+    if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
+      //log('middle-click to close');
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_REMOVE_TAB,
+        windowId: gTargetWindow,
+        tab:      tab.id
+      });
+    }
+    else if (isEventFiredOnNewTabButton(aEvent)) {
+      handleNewTabAction(aEvent, {
+        action: configs.autoAttachOnNewTabButtonMiddleClick
+      });
+    }
+    else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
+      let option = getClickedOptionFromEvent(aEvent);
+      if (option) {
+        /*
+          *NOTE: This block will never work because Firefox
+          always eats mousedown events fired on selectbox's
+          drowdown menu...
+        */
+        handleNewTabAction(aEvent, {
+          action: configs.autoAttachOnNewTabButtonMiddleClick,
+          cookieStoreId: option.getAttribute('value')
+        });
+      }
+      else { // treat as middle click on new tab button
+        handleNewTabAction(aEvent, {
+          action: configs.autoAttachOnNewTabButtonMiddleClick
+        });
+      }
+    }
   }
 }
 
