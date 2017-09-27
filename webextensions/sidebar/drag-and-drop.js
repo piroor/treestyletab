@@ -739,6 +739,13 @@ function onDragEnd(aEvent) {
     return;
   }
 
+  var dropTargetTab = getTabFromEvent(aEvent);
+  if (dropTargetTab &&
+      dragData && dragData.tabNodes && dragData.tabNodes.indexOf(dropTargetTab) < 0) {
+    log('ignore drop on dragged tabs themselves');
+    return;
+  }
+
   log('trying to detach tab from window');
   aEvent.stopPropagation();
   aEvent.preventDefault();
