@@ -90,6 +90,8 @@
   "config.autoAttachOnNewTabCommand.sibling": { "message": "a sibling of the current tab" },
   "config.autoAttachOnNewTabCommand.nextSibling": { "message": "the next sibling of the current tab" },
   "config.autoAttachOnNewTabCommand.after": { "message": "" },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "Guess a new tab as opened by \"New Tab\" command (like keyboard shortcuts), when it is opened with the URL " },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "" },
 
   "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "For middle click on the \"New Tab\" button, open new blank tab as" },
   "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "an independent tab" },

@@ -90,6 +90,8 @@
   "config.autoAttachOnNewTabCommand.sibling": { "message": "現在のタブと同階層に" },
   "config.autoAttachOnNewTabCommand.nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config.autoAttachOnNewTabCommand.after": { "message": "開く" },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "URLが" },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "であるタブが開かれた場合、キーボードショートカットなどによって開かれた新しい空のタブとみなす" },
 
   "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "「新しいタブ」ボタンを中クリックした時、新しい空のタブを" },
   "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "独立したタブとして" },
