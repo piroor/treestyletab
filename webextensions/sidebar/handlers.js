@@ -348,11 +348,6 @@ function onMouseUp(aEvent) {
     else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
       let option = getClickedOptionFromEvent(aEvent);
       if (option) {
-        /*
-          *NOTE: This block will never work because Firefox
-          always eats mousedown events fired on selectbox's
-          drowdown menu...
-        */
         handleNewTabAction(aEvent, {
           action: configs.autoAttachOnNewTabButtonMiddleClick,
           cookieStoreId: option.getAttribute('value')
