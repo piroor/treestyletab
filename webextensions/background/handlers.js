@@ -45,7 +45,7 @@ async function onTabOpening(aTab, aInfo = {}) {
     if (configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
         aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl) {
       let current = getCurrentTab(aTab);
-      log('behavie as a tab opened by new tab command, current = ', dumpTab(current));
+      log('behave as a tab opened by new tab command, current = ', dumpTab(current));
       behaveAutoAttachedTab(aTab, {
         baseTab:  current,
         behavior: configs.autoAttachOnNewTabCommand
