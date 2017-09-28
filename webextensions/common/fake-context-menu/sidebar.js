@@ -365,9 +365,10 @@ var tabContextMenu = {
         }
       }; break;
       case 'context_closeOtherTabs': {
+        let tabId = this.contextTab.id; // cache it for delayed tasks!
         let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
         for (let tab of tabs) {
-          if (tab.id != this.contextTab.id)
+          if (tab.id != tabId)
             browser.tabs.remove(tab.id);
         }
       }; break;
