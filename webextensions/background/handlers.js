@@ -42,6 +42,7 @@ async function onTabOpening(aTab, aInfo = {}) {
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
   log('opener ', dumpTab(opener));
   if (!opener) {
+    log('is new tab command?: ', aTab.apiTab.url);
     if (configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
         aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl) {
       let current = getCurrentTab(aTab);
