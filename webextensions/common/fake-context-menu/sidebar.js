@@ -324,8 +324,9 @@ var tabContextMenu = {
         browser.tabs.duplicate(this.contextTab.id);
         break;
       case 'context_openTabInWindow': {
+        let tabId = this.contextTab.id; // cache it for delayed tasks!
         let window = await browser.windows.create({ url: 'about:blank' })
-        await browser.tabs.move(this.contextTab.id, { index: 1, windowId: window.id });
+        await browser.tabs.move(tabId, { index: 1, windowId: window.id });
         let tabs = await browser.tabs.query({ windowId: window.id });
         browser.tabs.remove(tabs[0].id);
       }; break;
