@@ -623,11 +623,20 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
 // operate tabs based on tree information
 
-async function tryMoveFocusFromClosingCurrentTab(aTab) {
+async function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
   log('tryMoveFocusFromClosingCurrentTab');
   var nextFocusedTab = null;
 
-  let results = await sendTSTAPIMessage({
+  // The aTab can be closed while we waiting.
+  // Thus we need to get tabs related to aTab at first.
+  var parent = getParentTab(aTab);
+  var firstChild = getFirstChildTab(aTab);
+  var firstChildOfParent = getFirstChildTab(parent);
+  var lastChildOfParent = getLastChildTab(parent);
+  var previousSibling = getPreviousSiblingTab(aTab);
+  var preDetectedNextFocusedTab = getNextFocusedTab(aTab);
+
+  var results = await sendTSTAPIMessage({
     type:   kTSTAPI_NOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
     tab:    serializeTabForTSTAPI(aTab),
     window: aTab.apiTab.windowId
@@ -635,8 +644,7 @@ async function tryMoveFocusFromClosingCurrentTab(aTab) {
   if (results.indexOf(true) > -1) // canceled
     return false;
 
-  var closeParentBehavior = getCloseParentBehaviorForTab(aTab);
-  var firstChild = getFirstChildTab(aTab);
+  var closeParentBehavior = getCloseParentBehaviorForTab(aTab, { parent });
   if (firstChild &&
       (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
        closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD))
@@ -644,23 +652,22 @@ async function tryMoveFocusFromClosingCurrentTab(aTab) {
   log('focus to first child?: ', !!nextFocusedTab);
 
   var toBeClosedTabs = []; // collectNeedlessGroupTabs(aTab);
-  var parentTab = getParentTab(aTab);
-  if (parentTab) {
-    if (!nextFocusedTab && aTab == getLastChildTab(parentTab)) {
-      if (aTab == getFirstChildTab(parentTab)) { // this is the really last child
-        nextFocusedTab = parentTab;
+  if (parent) {
+    if (!nextFocusedTab && aTab == lastChildOfParent) {
+      if (aTab == firstChildOfParent) { // this is the really last child
+        nextFocusedTab = parent;
         log('focus to parent?: ', !!nextFocusedTab);
       }
       else {
-        nextFocusedTab = getPreviousSiblingTab(aTab);
+        nextFocusedTab = previousSibling;
         log('focus to previous sibling?: ', !!nextFocusedTab);
       }
     }
     if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
-      nextFocusedTab = getNextFocusedTab(parentTab);
+      nextFocusedTab = getNextFocusedTab(parent);
   }
   else if (!nextFocusedTab) {
-    nextFocusedTab = getNextFocusedTab(aTab);
+    nextFocusedTab = preDetectedNextFocusedTab;
     log('focus to getNextFocusedTab()?: ', !!nextFocusedTab);
   }
   if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1) {
@@ -688,7 +695,7 @@ function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
     return kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
   var behavior = configs.closeParentBehavior;
-  var parentTab = getParentTab(aTab);
+  var parentTab = aOptions.parent || getParentTab(aTab);
 
   if (aOptions.keepChildren &&
       behavior != kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
