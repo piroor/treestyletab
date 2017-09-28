@@ -11,13 +11,7 @@
   display: none;
   margin: 0;
   opacity: 0.75;
-  -moz-context-properties: fill, stroke;
-  fill: currentColor;
-  --sound-button-size: 16px;
-  width: var(--sound-button-size);
-  height: var(--sound-button-size);
-  min-width: var(--sound-button-size);
-  min-height: var(--sound-button-size);
+  padding: 0.1em;
 }
 
 .sound-button:hover {
@@ -37,40 +31,26 @@
   display: inline-block;
 }
 
-.tab.muted .sound-button,
+.tab.muted .sound-button::before,
 .tab.has-muted-member.subtree-collapsed[data-child-ids]
-  .sound-button {
-  background-image: url("/resources/audio-16-mute.svg");
+  .sound-button::before {
+  content: "🔇";
 }
 
 /* put style definition for sound-playing tab after muted tab,
    because "sound-playing" is more important than muted for
    mixed state tree. */
-.tab.sound-playing:not(.muted) .sound-button,
+.tab.sound-playing:not(.muted) .sound-button::before,
 .tab.has-sound-playing-member.subtree-collapsed[data-child-ids]
-  .sound-button {
-  background-image: url("/resources/audio-16.svg");
+  .sound-button::before {
+  content: "🔈";
 }
 
 .tab.pinned .sound-button {
-  border-radius: 50%;
   font-size: 90%;
   padding: 0;
   position: absolute;
   right: 0;
   top: 0;
   z-index: 200;
-  stroke: -moz-field;
-  opacity: 1;
-}
-
-.tab.pinned .sound-button:hover,
-.tab.pinned .sound-button:active {
-  opacity: 1;
-  background-color: -moz-field;
-  fill: -moz-fieldtext;
-}
-
-.tab.pinned .sound-button:active {
-  opacity: var(--button-active-opacity);
 }

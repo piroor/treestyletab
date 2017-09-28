@@ -3,11 +3,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
-# Codes for animation are quoted from Firefox itself:
-# http://searchfox.org/mozilla-central/rev/3dbb47302e114219c53e99ebaf50c5cb727358ab/browser/themes/shared/tabs.inc.css#136-163
-# See also:
-# https://github.com/piroor/treestyletab/issues/1384
 */
 
 :root {
@@ -16,20 +11,35 @@
 }
 
 .throbber {
-  --throbber-size: 16px;
+  --throbber-size: 0.3em;
+  --throbber-half-size: calc(0.3em / 2);
+}
+
+@keyframes throbber {
+  0% { left: 0; width: 0; }
+  3% { left: 0; width: 0; }
+  20% { width: var(--throbber-half-size); }
+  47% { left: calc(var(--favicon-size) - var(--throbber-size)); width: 0; }
+  53% { left: calc(var(--favicon-size) - var(--throbber-size)); width: 0; }
+  70% { width: var(--throbber-half-size); }
+  97% { left: 0; width: 0; }
+  100% { left: 0; width: 0; }
 }
 
 .throbber {
   display: inline-block;
-  height: var(--throbber-size);
-  max-height: var(--throbber-size);
-  max-width: var(--throbber-size);
-  min-height: var(--throbber-size);
-  min-width: var(--throbber-size);
+  font-size: var(--favicon-size);
+  height: var(--favicon-size);
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
+  min-height: var(--favicon-size);
+  min-width: var(--favicon-size);
   padding: 0;
-  width: var(--throbber-size);
+  text-align: center;
+  transform-origin: 50% 50%;
+  white-space: pre;
+  width: var(--favicon-size);
   position: relative;
-  overflow: hidden;
 }
 .tab .throbber,
 .tab .throbber * {
@@ -37,14 +47,16 @@
 }
 
 .throbber::before {
+  box-shadow: 0 0 2px var(--throbber-shadow-color);
   content: "";
+  width: 0;
+  height: 0;
+  border-radius: 100%;
+  border: var(--throbber-half-size) solid var(--throbber-color);
+  background: var(--throbber-color);
+  display: inline-block;
+  top: calc((var(--favicon-size) - var(--throbber-size)) / 2);
   position: absolute;
-  background: transparent url("/resources/loading.svg") left center no-repeat;
-  width: calc(var(--throbber-size) * 60);
-  height: 100%;
-  -moz-context-properties: fill, stroke;
-  fill: currentColor;
-  opacity: 0.7;
 }
 
 :root:not(.blocking-throbber) #blocking-screen .throbber,
@@ -54,23 +66,20 @@
 
 .tab.loading:not(.collapsed) .throbber::before,
 :root.blocking-throbber #blocking-screen .throbber::before {
-  animation: throbber 1.05s steps(60) infinite;
-}
-
-@keyframes throbber {
-  100% { transform: translateX(-100%); }
+  animation: throbber 1.1s ease-in-out infinite;
 }
 
 :root.blocking-throbber #blocking-screen .throbber {
   position: absolute;
-  top: calc(50% - var(--throbber-size));
-  left: calc(50% - var(--throbber-size));
+  top: calc(50% - var(--favicon-size));
+  left: calc(50% - var(--favicon-size));
   transform: scale(2, 2);
 }
 
 :root.blocking-throbber #blocking-screen .throbber::before {
-  color: white;
-  stroke: rgba(0, 0, 0, 0.35);
+  border-color: white;
+  background-color: white;
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
 }
 
 #dummy-tabs .throbber {
