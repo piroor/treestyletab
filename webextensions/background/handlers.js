@@ -204,8 +204,13 @@ function onTabRestored(aTab) {
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
-  if (aTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT))
-    tryMoveFocusFromClosingCurrentTab(aTab);
+  if (aTab.apiTab.active ||
+      aTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT)) {
+    // We need to do that with a delay if this is the closing current tab,
+    // because Firefox already decides that which is the next active tab and
+    // it will be activated automatically just after this event.
+    tryMoveFocusFromClosingCurrentTab(aTab, { delayed: aTab.apiTab.active });
+  }
 
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);

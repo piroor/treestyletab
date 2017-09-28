@@ -680,9 +680,8 @@ async function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
 
   log('focus to: ', dumpTab(nextFocusedTab));
 
-  //XXX notify kEVENT_TYPE_FOCUS_NEXT_TAB for others
-  //if (!canFocus)
-  //  return;
+  if (aOptions.delayed)
+    await wait(0);
 
   nextFocusedTab.parentNode.focusChangedByCurrentTabRemoveCount++;
   await selectTabInternally(nextFocusedTab);
