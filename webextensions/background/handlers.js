@@ -115,7 +115,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       if (parent)
         await attachTabTo(aTab, parent, {
           insertBefore: nextSibling,
-          insertAfter: !nextSibling && baseTab,
+          insertAfter: getLastDescendantTab(baseTab),
           broadcast: true
         });
       else {
