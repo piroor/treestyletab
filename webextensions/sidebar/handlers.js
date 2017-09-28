@@ -519,7 +519,7 @@ function onTabBuilt(aTab) {
   counter.classList.add(kCOUNTER);
   aTab.appendChild(counter);
 
-  var soundButton = document.createElement('button');
+  var soundButton = document.createElement('span');
   soundButton.classList.add(kSOUND_BUTTON);
   aTab.appendChild(soundButton);
 
