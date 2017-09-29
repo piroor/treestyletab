@@ -268,11 +268,10 @@ async function notifyUpdatedFromLegacy() {
     url: browser.extension.getURL('resources/updated-from-legacy.html'),
     active: true
   });
+  var title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`
   browser.tabs.executeScript(tab.id, {
     code: `
-      document.querySelector('#title').textContent = ${
-        JSON.stringify(browser.i18n.getMessage('extensionName') + ' ' + browser.runtime.getManifest().version)
-      };
+      document.querySelector('#title').textContent = document.title = ${JSON.stringify(title)};
       document.querySelector('#description').textContent = ${
         JSON.stringify(browser.i18n.getMessage('message.updatedFromLegacy.description'))
       };
