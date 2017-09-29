@@ -78,6 +78,8 @@
   "config.maxTreeLevel.before": { "message": "Indent tabs until" },
   "config.maxTreeLevel.after": { "message": "level(s) (*Negative value means \"infinite\")" },
 
+  "config.faviconizePinnedTabs.label": { "message": "Show pinned tabs only with their icon" },
+
   "config.animation.label": { "message": "Enable animation effects" },
 
 

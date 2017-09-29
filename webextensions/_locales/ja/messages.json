@@ -78,6 +78,8 @@
   "config.maxTreeLevel.before": { "message": "ツリーを" },
   "config.maxTreeLevel.after": { "message": "階層までインデント表示する（※負の値を指定した場合は無制限）" },
 
+  "config.faviconizePinnedTabs.label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
+
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
 
 
