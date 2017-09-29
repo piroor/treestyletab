@@ -253,7 +253,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     });
     break;
   }
-  if (aOptions.chilren) {
+  if (aOptions.children) {
     for (let child of children) {
       if (!child)
         continue;
@@ -370,4 +370,24 @@ async function updateChildren(aTab) {
     kPERSISTENT_CHILDREN,
     childIds.map(aId => aId.id)
   );
+}
+
+function reserveToRemoveNeedlessGroupTab(aTabOrTabs) {
+  var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
+  for (let tab of tabs) {
+    if (!tab || !tab.parentNode)
+      continue;
+    if (tab.reservedRemoveNeedlessGroupTab)
+      clearTimeout(tab.reservedRemoveNeedlessGroupTab);
+    tab.reservedRemoveNeedlessGroupTab = setTimeout(() => {
+      delete tab.reservedRemoveNeedlessGroupTab;
+      removeNeedlessGroupTab(tab);
+    }, 100);
+  }
+}
+
+async function removeNeedlessGroupTab(aTab) {
+  if (hasChildTabs(aTab))
+    return;
+  browser.tabs.remove(aTab.apiTab.id);
 }

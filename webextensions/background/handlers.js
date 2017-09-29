@@ -577,6 +577,8 @@ function onTabAttached(aTab) {
 }
 
 function onTabDetached(aTab, aDetachInfo) {
+  if (isGroupTab(aDetachInfo.oldParentTab))
+    reserveToRemoveNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
