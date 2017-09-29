@@ -296,7 +296,7 @@ windowId = ${aTab.apiTab.windowId}
 `.trim());
     aTab.uniqueId.then(aUniqueId => {
         // reget it because it can be removed from document.
-        var aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
+        aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
         if (!aTab)
           return;
         aTab.setAttribute('title',
