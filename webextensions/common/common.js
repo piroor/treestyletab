@@ -161,6 +161,7 @@ configs = new Configs({
     'multipletab@piro.sakura.ne.jp'
   ],
   cachedExternalAddons: [],
+  shouldNotifyUpdatedFromLegacyVersion: true,
 
   userStyleRules: `
 /* Show title of unread tabs with italic font */

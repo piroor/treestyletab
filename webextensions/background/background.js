@@ -14,23 +14,14 @@ var gExternalListenerAddons = {};
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
-browser.runtime.onInstalled.addListener(async (aDetails) => {
-  var oldMajorVersion = parseInt(aDetails.previousVersion.split('.'));
-  if (oldMajorVersion < 2 &&
-      aDetails.reason == 'updated') {
-    let tab = await browser.tabs.create({ url: browser.extension.getURL('resources/updated-from-legacy.html') });
-    browser.tabs.executeScript(tab.id, {
-    code: `
-        document.querySelector('#title').textContent = ${
-          JSON.stringify(browser.i18n.getMessage('extensionName') + ' ' + browser.runtime.getManifest().version)
-        };
-        document.querySelector('#description').textContent = ${
-          JSON.stringify(browser.i18n.getMessage('message.updatedFromLegacy.description'))
-        };
-        location.replace('data:text/html,' + encodeURIComponent(document.documentElement.innerHTML));
-      `
-    });
-  }
+browser.runtime.onInstalled.addListener(aDetails => {
+  /* When TST 2 (or later) is newly installed, this listener is invoked.
+     We should not notify "updated from legacy" for this case.
+     On the other hand, when TST is updated from legacy to 2 (or later),
+     this listener is not invoked with the reason "install" and
+     invoked with the reason "updated" after Firefox is restarted. */
+  if (aDetails.reason == 'install')
+    configs.shouldNotifyUpdatedFromLegacyVersion = false;
 });
 
 async function init() {
@@ -71,6 +62,8 @@ async function init() {
   });
 
   await readyForExternalAddons();
+
+  notifyUpdatedFromLegacy();
 }
 
 function waitUntilCompletelyRestored() {

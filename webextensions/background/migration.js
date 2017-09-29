@@ -258,3 +258,25 @@ async function migrateLegacyTreeStructure() {
 
   configs.migrateLegacyTreeStructure = false;
 }
+
+async function notifyUpdatedFromLegacy() {
+  if (!configs.shouldNotifyUpdatedFromLegacyVersion)
+    return;
+  configs.shouldNotifyUpdatedFromLegacyVersion = false;
+
+  var tab = await browser.tabs.create({
+    url: browser.extension.getURL('resources/updated-from-legacy.html'),
+    active: true
+  });
+  browser.tabs.executeScript(tab.id, {
+    code: `
+      document.querySelector('#title').textContent = ${
+        JSON.stringify(browser.i18n.getMessage('extensionName') + ' ' + browser.runtime.getManifest().version)
+      };
+      document.querySelector('#description').textContent = ${
+        JSON.stringify(browser.i18n.getMessage('message.updatedFromLegacy.description'))
+      };
+      location.replace('data:text/html,' + encodeURIComponent(document.documentElement.innerHTML));
+    `
+  });
+}
