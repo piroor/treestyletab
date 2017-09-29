@@ -542,6 +542,7 @@ function onTabBuilt(aTab) {
 }
 
 var gEffectiveFavicons = new Map();
+const kVALID_FAVICON_PATTERN = /^(about|app|chrome|data|file|ftp|https?|moz-extensions|resource):/;
 
 function onTabFaviconUpdated(aTab, aURL) {
   let favicon = getTabFavicon(aTab);
@@ -549,9 +550,7 @@ function onTabFaviconUpdated(aTab, aURL) {
 }
 
 async function loadImageTo(aImageElement, aURL, aApiTab) {
-  aImageElement.src = '';
-  aImageElement.classList.remove('error');
-  aImageElement.classList.add('loading');
+  var loader;
   var onLoad = (() => {
     gEffectiveFavicons.set(aApiTab.id, {
       url:        aApiTab.url,
@@ -562,27 +561,37 @@ async function loadImageTo(aImageElement, aURL, aApiTab) {
     clear();
   });
   var onError = ((aError) => {
-    aImageElement.removeAttribute('src');
-    aImageElement.classList.remove('loading');
-    aImageElement.classList.add('error');
     clear();
     let effectiveFaviconData = gEffectiveFavicons.get(aApiTab.id);
     if (effectiveFaviconData &&
-        effectiveFaviconData.url == aApiTab.url)
-      loadImageTo(aImageElement, aApiTab.favIconUrl, aApiTab)
+        effectiveFaviconData.url == aApiTab.url) {
+      if (aApiTab.favIconUrl != aImageElement.src)
+        loadImageTo(aImageElement, aApiTab.favIconUrl, aApiTab);
+    }
+    else {
+      aImageElement.removeAttribute('src');
+      aImageElement.classList.remove('loading');
+      aImageElement.classList.add('error');
+    }
   });
   var clear = (() => {
-    loader.removeEventListener('load', onLoad, { once: true });
-    loader.removeEventListener('error', onError, { once: true });
+    if (loader) {
+      loader.removeEventListener('load', onLoad, { once: true });
+      loader.removeEventListener('error', onError, { once: true });
+    }
     loader = onLoad = onError = undefined;
   });
-  var loader = new Image();
-  loader.addEventListener('load', onLoad, { once: true });
-  loader.addEventListener('error', onError, { once: true });
-  if (!aURL) {
+  if (!aURL ||
+      !kVALID_FAVICON_PATTERN.test(aURL)) {
     onError();
     return;
   }
+  aImageElement.src = '';
+  aImageElement.classList.remove('error');
+  aImageElement.classList.add('loading');
+  loader = new Image();
+  loader.addEventListener('load', onLoad, { once: true });
+  loader.addEventListener('error', onError, { once: true });
   try {
     loader.src = aURL;
   }
