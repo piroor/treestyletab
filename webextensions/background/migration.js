@@ -278,4 +278,13 @@ async function notifyUpdatedFromLegacy() {
       location.replace('data:text/html,' + encodeURIComponent(document.documentElement.innerHTML));
     `
   });
+
+  browser.runtime.onMessage.addListener(function onMessage(aMessage, aSender) {
+    if (aMessage &&
+        typeof aMessage.type == 'string' &&
+        aMessage.type == kNOTIFY_SIDEBAR_OPENED) {
+      browser.runtime.onMessage.removeListener(onMessage);
+      browser.tabs.remove(tab.id);
+    }
+  });
 }
