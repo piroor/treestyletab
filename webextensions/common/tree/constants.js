@@ -66,7 +66,7 @@ const kLAST_EFFECTIVE_FAVICON = 'data-last-effective-favicon';
 const kCLOSED_SET_ID = 'data-closed-set-id';
 const kDROP_POSITION = 'data-drop-position';
 
-const kVALID_FAVICON_PATTERN = /^(about|app|chrome|data|file|ftp|https?|moz-extensions|resource):/;
+const kVALID_FAVICON_PATTERN = /^(about|app|chrome|data|file|ftp|https?|moz-extension|resource):/;
 
 const kPERSISTENT_ID        = 'data-persistent-id';
 const kPERSISTENT_ANCESTORS = 'ancestors';
