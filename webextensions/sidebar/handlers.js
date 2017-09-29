@@ -1074,6 +1074,10 @@ function onConfigChange(aChangedKey) {
         location.reload();
     }; break;
 
+    case 'faviconizePinnedTabs':
+      reserveToPositionPinnedTabs();
+      break;
+
     case 'userStyleRules':
       applyUserStyleRules()
       break;
