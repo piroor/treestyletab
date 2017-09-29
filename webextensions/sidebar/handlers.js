@@ -1028,7 +1028,7 @@ function onConfigChange(aChangedKey) {
   switch (aChangedKey) {
     case 'debug': {
       for (let tab of getAllTabs()) {
-        updateTab(tab, tab.apiTab);
+        updateTab(tab, tab.apiTab, { forceApply: true });
       }
       if (configs.debug)
         rootClasses.add('debug');

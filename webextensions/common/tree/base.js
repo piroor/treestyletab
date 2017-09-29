@@ -178,7 +178,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       if (identity)
         visibleLabel = `${aNewState.title} - ${identity.name}`;
     }
-    if (aNewState.title != getTabLabel(aTab).textContent &&
+    if (!aOptions.forceApply &&
         !isActive(aTab))
       aTab.classList.add(kTAB_STATE_UNREAD);
     getTabLabel(aTab).textContent = aNewState.title;
