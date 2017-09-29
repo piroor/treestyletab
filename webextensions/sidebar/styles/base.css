@@ -226,7 +226,12 @@ ul {
   z-index: 1; /* this is required to make pinned tabs clickable */
 }
 
-.tab.pinned.faviconized {
+.tab.pinned:not(.faviconized) {
+  left: 0;
+  right: 0;
+}
+
+.tab.faviconized {
   height: var(--faviconized-tab-size);
   max-height: var(--faviconized-tab-size);
   max-width: var(--faviconized-tab-size);
@@ -234,10 +239,10 @@ ul {
   padding: calc((var(--faviconized-tab-size) - var(--favicon-size)) / 2);
 }
 
-.tab.pinned :-moz-any(
+.tab.pinned .closebox,
+.tab.faviconized :-moz-any(
   .twisty,
-  .label,
-  .closebox
+  .label
 ) {
   display: none;
 }
@@ -301,19 +306,19 @@ ul {
   position: absolute;
 }
 
-:root.left .tab:not(.pinned) .contextual-identity-marker {
+:root.left .tab:not(.faviconized) .contextual-identity-marker {
   right: 0;
   top: 0;
   width: calc(var(--favicon-size) / 6);
 }
 
-:root.right .tab:not(.pinned) .contextual-identity-marker {
+:root.right .tab:not(.faviconized) .contextual-identity-marker {
   left: 0;
   top: 0;
   width: calc(var(--favicon-size) / 6);
 }
 
-.tab.pinned .contextual-identity-marker {
+.tab.faviconized .contextual-identity-marker {
   height: calc(var(--favicon-size) / 6);
   left: 0;
   right: 0;

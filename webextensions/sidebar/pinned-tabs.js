@@ -75,7 +75,7 @@ function positionPinnedTabs(aOptions = {}) {
 
     style.bottom = 'auto';
     style.left = `${width * col}px`;
-    style.right = 'auto';
+    style.right = faviconized ? 'auto' : 0 ;
     style.top = `${height * row}px`;
 
     if (aOptions.justNow)

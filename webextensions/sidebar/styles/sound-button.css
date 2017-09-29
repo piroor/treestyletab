@@ -46,7 +46,7 @@
   content: "🔈";
 }
 
-.tab.pinned .sound-button {
+.tab.faviconized .sound-button {
   font-size: 90%;
   padding: 0;
   position: absolute;

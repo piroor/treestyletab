@@ -18,24 +18,24 @@
   color: black;
 }
 
-:root.left .tab:not(.pinned),
+:root.left .tab:not(.faviconized),
 :root.left .after-tabs button {
   border-image: url("tab-l.png") 10 5 10 10 fill / 10px 5px 10px 10px;
   padding: 2px 5px 2px 10px;
 }
 
-:root.left .tab:not(.pinned).active,
+:root.left .tab:not(.faviconized).active,
 :root.left .after-tabs button:hover {
   border-image: url("tab-active-l.png") 10 5 10 10 fill / 10px 5px 10px 10px;
 }
 
-:root.right .tab:not(.pinned),
+:root.right .tab:not(.faviconized),
 :root.right .after-tabs button {
   border-image: url("tab-r.png") 10 10 10 5 fill / 10px 10px 10px 5px;
   padding: 2px 10px 2px 5px;
 }
 
-:root.right .tab:not(.pinned).active,
+:root.right .tab:not(.faviconized).active,
 :root.right .after-tabs button:hover {
   border-image: url("tab-active-r.png") 10 10 10 5 fill / 10px 10px 10px 5px;
 }
@@ -66,17 +66,17 @@
 
 /* pinned tabs */
 
-.tab.pinned {
+.tab.faviconized {
   border: 1px solid #666666;
   border-radius: 4px;
   margin: 1px 0 0 1px;
   padding: 2px 4px 2px 3px;
 }
-.tab.pinned:not(.unread) {
+.tab.faviconized:not(.unread) {
   background: var(--tab-surface);
 }
 
-.tab.pinned:not(.unread).active {
+.tab.faviconized:not(.unread).active {
   background-color: var(--tab-surface-active);
 }
 
