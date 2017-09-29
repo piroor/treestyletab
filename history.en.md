@@ -1,6 +1,24 @@
 # History
 
  - master/HEAD
+ - 2.0.1
+   * "Middle click to close tab" behavior becomes same to Firefox's one (closed on mouseup).
+   * "Dragging" appearance of tabs are correctly cleared when the dragging is canceled.
+   * Tabs were too easily detached from the window by drag and drop of a tab onto itself. Now dropping of a tab onto itself is simply ignored.
+   * Fix missing translation in Japanese locale.
+   * Fix too large padding in tabs in the "Sidebar" theme (by Niklas Hambüchen. Thanks!)
+   * The option to control positioning of tabs opened by "New Tab" command is now applied for tabs opened by keyboard shortcut Ctrl-T (⌘-T), if they are opened with the URL "about:newtab". (But there are some problems. [See also technical details.](https://github.com/piroor/treestyletab/issues/1038#issuecomment-332711522))
+   * "Open as next sibling" choice for options to control new tab position works more correctly.
+   * Focusing of tabs is controlled more correctly for closing current tab.
+   * "Move Tab to New Window" in the sidebar context menu works correctly.
+   * Reduce CPU usage for throbber animation.
+   * WhatsApp Web tabs were unexpectedly eats CPU resource.
+   * Last effective icons are restored correctly after restart, for some websites including WhatsApp Web.
+   * Tabs are updated more correctly by events. For example, view-source tabs are shown with correct title more certainly.
+   * Restore tree structure when a parent tab is restored after it was replaced with a group tab.
+   * All collapsed descendant tabs are now shown in the tooltip.
+   * An announcement message is shown automatically, when TST is updated from legacy version to 2.x or later.
+   * Now pinned tabs are easily unfaviconized. (A new checkbox is added in TST's configurations.)
  - 2.0
    * Rebuilt on WebExtensions.
  - 0.19.2017090601
