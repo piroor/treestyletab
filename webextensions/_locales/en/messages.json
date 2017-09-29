@@ -47,6 +47,8 @@
       "parent": { "content": "$3", "example": "Parent Folder" }
     }},
 
+  "message.updatedFromLegacy.description": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the \"F1\" key or click the \"Tree Style Tab\" button in the toolbar, to activate the Tree Style Tab sidebar panel." },
+
 
   "context.reloadTree.label": { "message": "Reload this Tree" },
   "context.reloadDescendants.label": { "message": "Reload Descendants" },

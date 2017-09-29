@@ -47,6 +47,8 @@
       "parent": { "content": "$3", "example": "親フォルダー" }
     }},
 
+  "message.updatedFromLegacy.description": { "message": "Firefox 57以降のバージョンに対応するため、ツリー型タブがWebExtensionsベースに生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つとして利用できるようになっています。もし表示されていない場合は、「F1」キーを押すかツールバー上の「ツリー型タブ」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示してみて下さい。" },
+
 
   "context.reloadTree.label": { "message": "このツリーを再読み込み" },
   "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み" },

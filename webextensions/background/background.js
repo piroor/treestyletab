@@ -14,6 +14,25 @@ var gExternalListenerAddons = {};
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
+browser.runtime.onInstalled.addListener(async (aDetails) => {
+  var oldMajorVersion = parseInt(aDetails.previousVersion.split('.'));
+  if (oldMajorVersion < 2 &&
+      aDetails.reason == 'updated') {
+    let tab = await browser.tabs.create({ url: browser.extension.getURL('resources/updated-from-legacy.html') });
+    browser.tabs.executeScript(tab.id, {
+    code: `
+        document.querySelector('#title').textContent = ${
+          JSON.stringify(browser.i18n.getMessage('extensionName') + ' ' + browser.runtime.getManifest().version)
+        };
+        document.querySelector('#description').textContent = ${
+          JSON.stringify(browser.i18n.getMessage('message.updatedFromLegacy.description'))
+        };
+        location.replace('data:text/html,' + encodeURIComponent(document.documentElement.innerHTML));
+      `
+    });
+  }
+});
+
 async function init() {
   window.addEventListener('unload', destroy, { once: true });
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
