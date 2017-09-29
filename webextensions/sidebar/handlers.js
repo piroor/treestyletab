@@ -611,6 +611,10 @@ function onTabUpdated(aTab) {
   updateTabSoundButtonTooltip(aTab);
 }
 
+function onTabLabelUpdated(aTab) {
+  reserveToUpdateTabTooltip(aTab);
+}
+
 function onParentTabUpdated(aTab) {
   updateTabSoundButtonTooltip(aTab);
 }
@@ -716,6 +720,7 @@ function onTabMoving(aTab) {
 
 function onTabMoved(aTab) {
   reserveToUpdateTabbarLayout(configs.collapseDuration);
+  reserveToUpdateTabTooltip(getParentTab(aTab));
 }
 
 function onTabLevelChanged(aTab) {
@@ -723,6 +728,7 @@ function onTabLevelChanged(aTab) {
 }
 
 function onTabDetachedFromWindow(aTab) {
+  reserveToUpdateTabTooltip(getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   detachTab(aTab, {
@@ -733,6 +739,7 @@ function onTabDetachedFromWindow(aTab) {
 function onTabSubtreeCollapsedStateChanging(aTab, aInfo = {}) {
   updateTabTwisty(aTab);
   updateTabClosebox(aTab);
+  reserveToUpdateTabTooltip(aTab);
 }
 
 function onTabCollapsedStateChanging(aTab, aInfo = {}) {
@@ -861,6 +868,7 @@ function onTabAttached(aTab) {
   tabContextMenu.close();
   updateTabTwisty(aTab);
   updateTabClosebox(aTab);
+  reserveToUpdateTabTooltip(aTab);
   var ancestors = [aTab].concat(getAncestorTabs(aTab));
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
@@ -877,6 +885,7 @@ function onTabDetached(aTab, aDetachInfo = {}) {
     return;
   updateTabTwisty(parent);
   updateTabClosebox(parent);
+  reserveToUpdateTabTooltip(parent);
   var ancestors = [parent].concat(getAncestorTabs(parent));
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);

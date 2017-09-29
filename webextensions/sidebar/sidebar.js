@@ -498,6 +498,30 @@ function updateTabbarLayout(aParams = {}) {
 }
 
 
+function reserveToUpdateTabTooltip(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
+    if (tab.reservedUpdateTabTooltip)
+      clearTimeout(tab.reservedUpdateTabTooltip);
+  }
+  aTab.reservedUpdateTabTooltip = setTimeout(() => {
+    delete aTab.reservedUpdateTabTooltip;
+    updateTabTooltip(aTab);
+  }, 100);
+}
+
+function updateTabTooltip(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
+    tab.labelWithDescendants = getLabelWithDescendants(tab);
+    tab.setAttribute('title', isSubtreeCollapsed(tab) && hasChildTabs(tab) ?
+                                tab.labelWithDescendants : tab.label);
+  }
+}
+
+
 async function notifyOutOfViewTab(aTab) {
   await nextFrame();
   cancelNotifyOutOfViewTab();

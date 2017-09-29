@@ -182,7 +182,8 @@ function updateTab(aTab, aNewState, aOptions = {}) {
         !isActive(aTab))
       aTab.classList.add(kTAB_STATE_UNREAD);
     getTabLabel(aTab).textContent = aNewState.title;
-    aTab.setAttribute('title', visibleLabel);
+    aTab.label = visibleLabel;
+    window.onTabLabelUpdated && onTabLabelUpdated(aTab);
   }
 
   if (aOptions.forceApply ||

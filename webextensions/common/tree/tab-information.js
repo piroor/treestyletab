@@ -137,6 +137,16 @@ function hasChildTabs(aParent) {
   return aParent.hasAttribute(kCHILDREN);
 }
 
+function getLabelWithDescendants(aTab) {
+  var label = [`* ${aTab.label}`];
+  for (let child of getChildTabs(aTab)) {
+    if (!child.labelWithDescendants)
+      child.labelWithDescendants = getLabelWithDescendants(child);
+    label.push(child.labelWithDescendants.replace(/^/gm, '  '));
+  }
+  return label.join('\n');
+}
+
 function getMaxTreeLevel(aHint, aOptions = {}) {
   var tabCondition = aOptions.onlyVisible ?
                       `${kXPATH_VISIBLE_TAB}[@${kPARENT}]` :
