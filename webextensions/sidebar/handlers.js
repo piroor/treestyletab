@@ -542,7 +542,6 @@ function onTabBuilt(aTab) {
 }
 
 var gEffectiveFavicons = new Map();
-const kVALID_FAVICON_PATTERN = /^(about|app|chrome|data|file|ftp|https?|moz-extensions|resource):/;
 
 function onTabFaviconUpdated(aTab, aURL) {
   let favicon = getTabFavicon(aTab);
@@ -552,21 +551,29 @@ function onTabFaviconUpdated(aTab, aURL) {
 async function loadImageTo(aImageElement, aURL, aApiTab) {
   var loader;
   var onLoad = (() => {
-    gEffectiveFavicons.set(aApiTab.id, {
-      url:        aApiTab.url,
-      favIconUrl: aURL
-    });
+    var oldData = gEffectiveFavicons.get(aApiTab.id);
+    if (!oldData ||
+        oldData.url != aApiTab.url ||
+        oldData.favIconUrl != aURL) {
+      let lastEffectiveFavicon = {
+        url:        aApiTab.url,
+        favIconUrl: aURL
+      };
+      gEffectiveFavicons.set(aApiTab.id, lastEffectiveFavicon);
+      browser.sessions.setTabValue(aApiTab.id, kLAST_EFFECTIVE_FAVICON, lastEffectiveFavicon);
+    }
     aImageElement.src = aURL;
     aImageElement.classList.remove('loading');
     clear();
   });
-  var onError = ((aError) => {
+  var onError = (async (aError) => {
     clear();
-    let effectiveFaviconData = gEffectiveFavicons.get(aApiTab.id);
+    let effectiveFaviconData = gEffectiveFavicons.get(aApiTab.id) ||
+                               await browser.sessions.getTabValue(aApiTab.id, kLAST_EFFECTIVE_FAVICON);
     if (effectiveFaviconData &&
         effectiveFaviconData.url == aApiTab.url) {
       if (aApiTab.favIconUrl != aImageElement.src)
-        loadImageTo(aImageElement, aApiTab.favIconUrl, aApiTab);
+        loadImageTo(aImageElement, effectiveFaviconData.favIconUrl, aApiTab);
     }
     else {
       aImageElement.removeAttribute('src');
