@@ -136,8 +136,8 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (!updatedTab)
     return;
 
-  updateTab(updatedTab, aTab);
   updatedTab.apiTab = aTab;
+  updateTab(updatedTab, aChangeInfo);
   updateParentTab(getParentTab(updatedTab));
 
   window.onTabUpdated && onTabUpdated(updatedTab);

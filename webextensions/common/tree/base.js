@@ -157,39 +157,37 @@ function buildTab(aApiTab, aOptions = {}) {
 }
 
 function updateTab(aTab, aNewState, aOptions = {}) {
-  var oldState = aTab.apiTab;
-  var label = aNewState.title;
-  if (aNewState.url && aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
+  if ('url' in aNewState &&
+      aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
-    label = getTitleFromGroupTabURI(aNewState.url);
+    aNewState.title = getTitleFromGroupTabURI(aNewState.url);
   }
-  else {
+  else if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
   }
 
   if (aOptions.forceApply ||
-      aNewState.url != oldState.url)
+      'url' in aNewState)
     aTab.setAttribute(kCONTENT_LOCATION, aNewState.url);
 
   if (aOptions.forceApply ||
-      label != oldState.title) {
-    getTabLabel(aTab).textContent = label;
-    let visibleLabel = label;
+      'title' in aNewState) {
+    let visibleLabel = aNewState.title;
     if (aNewState && aNewState.cookieStoreId) {
       let identity = gContextualIdentities[aNewState.cookieStoreId];
       if (identity)
-        visibleLabel = `${label} - ${identity.name}`;
+        visibleLabel = `${aNewState.title} - ${identity.name}`;
     }
-    aTab.setAttribute('title', visibleLabel);
-    if (label != oldState.title &&
+    if (aNewState.title != getTabLabel(aTab).textContent &&
         !isActive(aTab))
       aTab.classList.add(kTAB_STATE_UNREAD);
+    getTabLabel(aTab).textContent = aNewState.title;
+    aTab.setAttribute('title', visibleLabel);
   }
 
   if (aOptions.forceApply ||
-      aNewState.favIconUrl != oldState.favIconUrl ||
-      (maybeImageUrl(aNewState.url) &&
-       aNewState.url != oldState.url)) {
+      'favIconUrl' in aNewState ||
+       ('url' in aNewState && maybeImageUrl(aNewState.url))) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
@@ -198,52 +196,38 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       );
   }
 
-  // The tab can be become "completely loaded" immediately
-  // after it is opened, but TST's onApiTabUpdated fails to
-  // handle the event from some reasons - maybe complexed
-  // async operations. As a workaround, I update the loading
-  // status with delay for now.
-  wait(0).then(async () => {
-    oldState = oldState || aTab.apiTab || aNewState;
-    var newState = aNewState;
-    if (oldState) {
-      newState = await browser.tabs.get(oldState.id);
-      aTab.classList.remove(oldState.status);
-    }
-    if (newState)
-      aTab.classList.add(newState.status);
-  });
+  if ('status' in aNewState) {
+    aTab.classList.remove(aNewState.status == 'loading' ? 'complete' : 'loading');
+    aTab.classList.add(aNewState.status);
+  }
 
   if (aOptions.forceApply ||
-      aNewState.pinned != oldState.pinned) {
-    let reallyChanged = (aNewState && isPinned(aTab) != aNewState.pinned);
+      'pinned' in aNewState) {
     if (aNewState.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
-      if (reallyChanged)
-        window.onTabPinned && onTabPinned(aTab);
+      window.onTabPinned && onTabPinned(aTab);
     }
     else {
       aTab.classList.remove(kTAB_STATE_PINNED);
-      if (reallyChanged)
-        window.onTabUnpinned && onTabUnpinned(aTab);
+      window.onTabUnpinned && onTabUnpinned(aTab);
     }
   }
 
   if (aOptions.forceApply ||
-      aNewState.audible != oldState.audible) {
+      'audible' in aNewState) {
     if (aNewState.audible)
       aTab.classList.add(kTAB_STATE_AUDIBLE);
     else
       aTab.classList.remove(kTAB_STATE_AUDIBLE);
-
-    if (aNewState.audible && !aNewState.mutedInfo.muted)
-      aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
-    else
-      aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
   }
 
   if (aOptions.forceApply ||
-      aNewState.mutedInfo.muted != oldState.mutedInfo.muted) {
+      'mutedInfo' in aNewState) {
+    if (aTab.apiTab.audible && !aNewState.mutedInfo.muted)
+      aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
+    else
+      aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
+
     if (aNewState.mutedInfo.muted)
       aTab.classList.add(kTAB_STATE_MUTED);
     else
@@ -254,7 +238,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   // On Firefox, "highlighted" is same to "activated" for now...
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/onHighlighted
   if (aOptions.forceApply ||
-      aNewState.highlighted != oldState.highlighted) {
+      'highlighted' in aNewState) {
     if (aNewState.highlighted)
       aTab.classList.add(kTAB_STATE_HIGHLIGHTED);
     else
@@ -263,15 +247,17 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 */
 
   if (aOptions.forceApply ||
-      aNewState.cookieStoreId != oldState.cookieStoreId) {
-    if (oldState && oldState.cookieStoreId)
-      aTab.classList.remove(`contextual-identity-${oldState.cookieStoreId}`);
+      'cookieStoreId' in aNewState) {
+    for (let className of aTab.classList) {
+      if (className.indexOf('contextual-identity-') == 0)
+        aTab.classList.remove(className);
+    }
     if (aNewState.cookieStoreId)
       aTab.classList.add(`contextual-identity-${aNewState.cookieStoreId}`);
   }
 
   if (aOptions.forceApply ||
-      aNewState.incognito != oldState.incognito) {
+      'incognito' in aNewState) {
     if (aNewState.incognito)
       aTab.classList.add(kTAB_STATE_PRIVATE_BROWSING);
     else
@@ -281,7 +267,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 /*
   // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (aOptions.forceApply ||
-      aNewState.selected != oldState.selected) {
+      'selected' in aNewState) {
     if (aNewState.selected)
       aTab.classList.add(kTAB_STATE_SELECTED);
     else
@@ -290,7 +276,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 */
 
   if (aOptions.forceApply ||
-      aNewState.discarded != oldState.discarded) {
+      'discarded' in aNewState) {
     if (aNewState.discarded)
       aTab.classList.add(kTAB_STATE_DISCARDED);
     else
@@ -300,17 +286,17 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   if (configs.debug) {
     aTab.setAttribute('title',
       `
-${label}
+${aTab.apiTab.title}
 #${aTab.id}
 (${aTab.className})
 uniqueId = <%${kPERSISTENT_ID}%>
 duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
-tabId = ${aNewState.id}
-windowId = ${aNewState.windowId}
+tabId = ${aTab.apiTab.id}
+windowId = ${aTab.apiTab.windowId}
 `.trim());
     aTab.uniqueId.then(aUniqueId => {
         // reget it because it can be removed from document.
-        var aTab = getTabById({ tab: aNewState.id, window: aNewState.windowId });
+        var aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
         if (!aTab)
           return;
         aTab.setAttribute('title',
