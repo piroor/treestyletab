@@ -181,10 +181,7 @@ function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent);
 
   gLastMousedownIsMiddleClick = isMiddleClick(aEvent);
-  if (gLastMousedownIsMiddleClick &&
-      (tab ||
-       isEventFiredOnNewTabButton(aEvent) ||
-       isEventFiredOnContextualIdentitySelector(aEvent))) {
+  if (gLastMousedownIsMiddleClick) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     return;
@@ -358,6 +355,11 @@ function onMouseUp(aEvent) {
           action: configs.autoAttachOnNewTabButtonMiddleClick
         });
       }
+    }
+    else { // on blank area
+      handleNewTabAction(aEvent, {
+        action: configs.autoAttachOnNewTabCommand
+      });
     }
   }
 }
