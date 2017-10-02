@@ -74,6 +74,11 @@
   background: var(--tab-surface-active-hover);
 }
 
+.tab.active .throbber::before {
+  background-color: var(--throbber-color);
+  border-color: var(--throbber-color);
+}
+
 .closebox {
   background: none transparent;
   border: none 0 transparent;

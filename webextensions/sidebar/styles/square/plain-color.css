@@ -35,6 +35,10 @@
   color: HighlightText;
 }
 
+.tab.active .throbber::before {
+  background-color: HighlightText;
+  border-color: HighlightText;
+}
 
 .closebox {
   background: none transparent;
