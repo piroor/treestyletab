@@ -624,7 +624,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 // operate tabs based on tree information
 
 async function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
-  log('tryMoveFocusFromClosingCurrentTab');
+  log('tryMoveFocusFromClosingCurrentTab', aOptions);
   var nextFocusedTab = null;
 
   // The aTab can be closed while we waiting.
