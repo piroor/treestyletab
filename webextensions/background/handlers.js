@@ -105,7 +105,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         detachTab(aTab, {
           broadcast: true
         });
-        await moveTabInternallyAfter(aTab, baseTab || getLastTab());
+        await moveTabInternallyAfter(aTab, getLastDescendantTab(baseTab) || getLastTab());
       }
       return true;
     }; break;
