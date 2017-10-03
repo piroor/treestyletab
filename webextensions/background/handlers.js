@@ -140,7 +140,8 @@ async function onNewTabsTimeout(aContainer) {
     return !uniqueId.duplicated && !uniqueId.restored;
   });
 
-  var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById));
+  var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById))
+                      .filter(aTab => !isGroupTab(aTab));
   aContainer.openedNewTabs = [];
   if (newRootTabs.length <= 1)
     return;
@@ -152,8 +153,7 @@ async function onNewTabsTimeout(aContainer) {
   });
   var groupTab = await openURIInTab(uri, {
     windowId: aContainer.windowId,
-    insertBefore: newRootTabs[0],
-    insertAfter: getPreviousTab(newRootTabs[0])
+    insertBefore: newRootTabs[0]
   });
   for (let tab of newRootTabs) {
     await attachTabTo(tab, groupTab, {
