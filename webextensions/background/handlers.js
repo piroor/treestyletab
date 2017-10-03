@@ -205,13 +205,7 @@ function onTabRestored(aTab) {
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
   log('onTabClosed ', dumpTab(aTab), aTab.apiTab);
-  if (aTab.classList.contains(kTAB_STATE_ACTIVE) ||
-      aTab.classList.contains(kTAB_STATE_POSSIBLE_CLOSING_CURRENT)) {
-    // We need to do that with a delay if this is the closing current tab,
-    // because Firefox already decides that which is the next active tab and
-    // it will be activated automatically just after this event.
-    tryMoveFocusFromClosingCurrentTab(aTab, { delayed: aTab.apiTab.active });
-  }
+  tryMoveFocusFromClosingCurrentTab(aTab);
 
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
@@ -479,7 +473,7 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   return { action: 'move' };
 }
 
-function onTabFocusing(aTab, aInfo = {}) {
+function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
   if (isCollapsed(aTab)) {
     if (configs.autoExpandOnCollapsedChildFocused) {
       for (let ancestor of getAncestorTabs(aTab)) {
@@ -545,19 +539,6 @@ function handleNewActiveTab(aTab, aInfo = {}) {
   }, 0);
 }
 
-function onTabFocused(aTab, aInfo = {}) {
-  var tab = aInfo.previouslyFocusedTab;
-  if (!tab)
-    return;
-  tab.classList.add(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
-  setTimeout(() => {
-    var possibleClosingCurrents = document.querySelectorAll(`.${kTAB_STATE_POSSIBLE_CLOSING_CURRENT}`);
-    for (let tab of possibleClosingCurrents) {
-      tab.classList.remove(kTAB_STATE_POSSIBLE_CLOSING_CURRENT);
-    }
-  }, 100);
-}
-
 function onTabUpdated(aTab) {
   reserveToSaveTreeStructure(aTab);
 }
@@ -589,8 +570,7 @@ function onTabDetached(aTab, aDetachInfo) {
 }
 
 function onTabDetachedFromWindow(aTab) {
-  if (isActive(aTab))
-    tryMoveFocusFromClosingCurrentTab(aTab);
+  tryMoveFocusFromClosingCurrentTab(aTab);
 
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
@@ -744,8 +724,6 @@ function onMessage(aMessage, aSender) {
           clearTimeout(timeout);
           return;
         }
-        if (isActive(tab))
-          await tryMoveFocusFromClosingCurrentTab(tab);
         browser.tabs.remove(tab.apiTab.id)
           .catch(handleMissingTabError);
       })();

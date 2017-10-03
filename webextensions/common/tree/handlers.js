@@ -71,16 +71,12 @@ async function onApiTabActivated(aActiveInfo) {
 
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
   var byInternalOperation = container.internalFocusCount > 0;
-  var byCurrentTabRemove = container.focusChangedByCurrentTabRemoveCount > 0;
+  if (byInternalOperation)
+    container.internalFocusCount--;
   var byTabDuplication = container.duplicatingTabsCount > 0;
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newTab) {
-    if (byInternalOperation)
-      container.internalFocusCount--;
-    if (byCurrentTabRemove)
-      container.focusChangedByCurrentTabRemoveCount--;
+  if (!newTab)
     return;
-  }
 
   var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId)
   var previouslyFocusedTab = oldTabs.length > 0 ? oldTabs[0] : null ;
@@ -89,15 +85,23 @@ async function onApiTabActivated(aActiveInfo) {
 
   log('tabs.onActivated: ', dumpTab(newTab));
 
-  window.onTabFocusing && onTabFocusing(newTab, {
-    byCurrentTabRemove,
-    byTabDuplication,
-    byInternalOperation,
-    previouslyFocusedTab
-  });
+  var byCurrentTabRemove = container.promisedFocusMovesForClosingCurrentTabResolvers.length > 0;
+  if (byCurrentTabRemove) {
+    container.promisedFocusMovesForClosingCurrentTabResolvers.forEach(aResolver => aResolver());
+    let canceled = await Promise.all(container.promisedFocusMovesForClosingCurrentTab);
+    container.promisedFocusMovesForClosingCurrentTabResolvers = [];
+    container.promisedFocusMovesForClosingCurrentTab = [];
+    if (canceled.indexOf(true) > -1)
+      return;
+  }
 
-  if (byCurrentTabRemove)
-    container.focusChangedByCurrentTabRemoveCount--;
+  if (window.onTabFocusing && await onTabFocusing(newTab, {
+        byCurrentTabRemove,
+        byTabDuplication,
+        byInternalOperation,
+        previouslyFocusedTab
+      }))
+    return;
 
   window.onTabFocused && await onTabFocused(newTab, {
     byCurrentTabRemove,
@@ -105,9 +109,6 @@ async function onApiTabActivated(aActiveInfo) {
     byInternalOperation,
     previouslyFocusedTab
   });
-
-  if (byInternalOperation)
-    container.internalFocusCount--;
 }
 
 function clearOldActiveStateInWindow(aWindowId) {

@@ -111,7 +111,6 @@ const kTAB_STATE_UNREAD = 'unread';
 const kTAB_STATE_HIGHLIGHTED = 'highlighted';
 const kTAB_STATE_DISCARDED = 'discarded';
 const kTAB_STATE_SELECTED = 'selected';
-const kTAB_STATE_POSSIBLE_CLOSING_CURRENT = 'possible-closing-current';
 const kTAB_STATE_DRAGGING = 'dragging';
 const kTAB_STATE_DUPLICATING = 'duplicating';
 const kTAB_INTERNAL_STATES = [
@@ -119,7 +118,6 @@ const kTAB_INTERNAL_STATES = [
   kTAB_STATE_LAST_ROW,
   kTAB_STATE_ANIMATION_READY,
   kTAB_STATE_COLLAPSED_DONE,
-  kTAB_STATE_POSSIBLE_CLOSING_CURRENT,
   kTAB_STATE_DUPLICATING
 ];
 

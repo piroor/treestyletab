@@ -623,9 +623,35 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
 // operate tabs based on tree information
 
-async function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
-  log('tryMoveFocusFromClosingCurrentTab', aOptions);
-  var nextFocusedTab = null;
+/*
+ * By https://bugzilla.mozilla.org/show_bug.cgi?id=1366290 when the
+   current tab is closed, Firefox notifies tabs.onTabRemoved at first
+   and tabs.onActivated at later.
+ * Basically the next (right) tab will be focused when the current tab
+   is closed.
+ * However, if the tab has "owner", it will be focused instead of the
+   right tab if `browser.tabs.selectOwnerOnClose` == `true`.
+   * The owner tab must be one of preceding tabs, because Firefox never
+     open tab leftside (by default).
+     So, if the next (right) tab is focused, it definitely caused by
+     the closing of the current tab - except "switch to tab" command
+     from the location bar.
+     https://bugzilla.mozilla.org/show_bug.cgi?id=1405262
+     https://github.com/piroor/treestyletab/issues/1409
+
+So, if I ignore the bug 1405262 / issue #1409 case, "the next (right)
+tab is focused after the current (active) tab is closed" means that the
+focus move is unintentional and TST can override it.
+*/
+function tryMoveFocusFromClosingCurrentTab(aTab) {
+  aTab.parentNode.promisedFocusMovesForClosingCurrentTab.push(tryMoveFocusFromClosingCurrentTabInternal(aTab));
+}
+async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
+  log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab));
+  if (!isActive(aTab)) {
+    log(' => not active tab');
+    return false;
+  }
 
   // The aTab can be closed while we waiting.
   // Thus we need to get tabs related to aTab at first.
@@ -635,15 +661,30 @@ async function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
   var lastChildOfParent = getLastChildTab(parent);
   var previousSibling = getPreviousSiblingTab(aTab);
   var preDetectedNextFocusedTab = getNextFocusedTab(aTab);
+  var nextTab = getNextTab(aTab);
+  var serialized = serializeTabForTSTAPI(aTab);
+
+  // wait for tabs.onActivated
+  await new Promise((aResolve, aReject) => {
+    aTab.parentNode.promisedFocusMovesForClosingCurrentTabResolvers.push(aResolve);
+  });
+  log('tryMoveFocusFromClosingCurrentTab: tabs.onActivated is fired');
+
+  var currentTab = getCurrentTab(aTab.apiTab.windowId);
+  if (currentTab != nextTab) {
+    log('=> non-next tab is focused: ', dumpTab(currentTab), dumpTab(nextTab));
+    return false;
+  }
 
   var results = await sendTSTAPIMessage({
     type:   kTSTAPI_NOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
-    tab:    serializeTabForTSTAPI(aTab),
+    tab:    serialized,
     window: aTab.apiTab.windowId
   });
   if (results.indexOf(true) > -1) // canceled
     return false;
 
+  var nextFocusedTab = null;
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab, { parent });
   if (firstChild &&
       (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
@@ -679,11 +720,6 @@ async function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
     return false;
 
   log('focus to: ', dumpTab(nextFocusedTab));
-
-  if (aOptions.delayed)
-    await wait(0);
-
-  nextFocusedTab.parentNode.focusChangedByCurrentTabRemoveCount++;
   await selectTabInternally(nextFocusedTab);
   return true;
 }
