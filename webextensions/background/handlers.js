@@ -226,6 +226,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     let uri = makeGroupTabURI(label, {
       temporary: true
     });
+    aTab.parentNode.toBeOpenedTabsWithPositions++;
     let groupTab = await openURIInTab(uri, {
       insertBefore: aTab // not firstChild, because the "aTab" is disappeared from tree.
     });
