@@ -38,13 +38,13 @@
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
   --unread-faviconized-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                            var(--tab-highlighted-highlight) 3%,
-                                            var(--tab-highlighted-glow) 10%,
-                                            var(--tab-highlighted-base) 20%);
+                                                 var(--tab-highlighted-highlight) 3%,
+                                                 var(--tab-highlighted-glow) 10%,
+                                                 var(--tab-highlighted-base) 20%);
   --unread-faviconized-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                            var(--tab-highlighted-highlight) 3%,
-                                            var(--tab-highlighted-glow) 10%,
-                                            var(--tab-highlighted-base) 23%);
+                                                       var(--tab-highlighted-highlight) 3%,
+                                                       var(--tab-highlighted-glow) 10%,
+                                                       var(--tab-highlighted-base) 23%);
 }
 
 @keyframes blink {
