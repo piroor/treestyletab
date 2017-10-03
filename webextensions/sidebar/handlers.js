@@ -611,6 +611,7 @@ async function loadImageTo(aImageElement, aURL, aApiTab) {
 
 function onTabUpdated(aTab) {
   updateTabSoundButtonTooltip(aTab);
+  reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabLabelUpdated(aTab) {
@@ -673,6 +674,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
 
   reserveToUpdateTabbarLayout(configs.collapseDuration);
+  reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabClosed(aTab) {
@@ -723,6 +725,7 @@ function onTabMoving(aTab) {
 function onTabMoved(aTab) {
   reserveToUpdateTabbarLayout(configs.collapseDuration);
   reserveToUpdateTabTooltip(getParentTab(aTab));
+  reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabLevelChanged(aTab) {
@@ -759,6 +762,9 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
     delete aTab.onEndCollapseExpandAnimation;
   }
+
+  if (!toBeCollapsed)
+    reserveToSynchronizeThrobberAnimations();
 
   if (!configs.animation ||
       aInfo.justNow ||

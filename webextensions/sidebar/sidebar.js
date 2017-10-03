@@ -522,6 +522,29 @@ function updateTabTooltip(aTab) {
 }
 
 
+function reserveToSynchronizeThrobberAnimations() {
+  if (synchronizeThrobberAnimations.reserved)
+    clearTimeout(synchronizeThrobberAnimations.reserved);
+  synchronizeThrobberAnimations.reserved = setTimeout(() => {
+    delete synchronizeThrobberAnimations.reserved;
+    synchronizeThrobberAnimations();
+  }, 10);
+}
+
+async function synchronizeThrobberAnimations() {
+  var throbbers = getVisibleLoadingTabs().map(getTabThrobber);
+  var animations = [];
+  for (let throbber of throbbers) {
+    animations = animations.concat(throbber.getAnimations({ subtree: true }));
+  }
+  var firstStartTime = Math.min(...animations.map(aAnimation => aAnimation.startTime));
+  await nextFrame();
+  for (let animation of animations) {
+    animation.startTime = firstStartTime;
+  }
+}
+
+
 async function notifyOutOfViewTab(aTab) {
   await nextFrame();
   cancelNotifyOutOfViewTab();

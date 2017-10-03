@@ -369,6 +369,13 @@ function getVisibleRootTabs(aHint) {
   return container.querySelector(`${kSELECTOR_VISIBLE_TAB}:not([${kPARENT}])`);
 }
 
+function getVisibleLoadingTabs(aHint) {
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return [];
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.loading`));
+}
+
 function collectRootTabs(aTabs) {
   return aTabs.filter(aTab => {
     if (!aTab)
