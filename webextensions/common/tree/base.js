@@ -532,7 +532,9 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       let container = getTabsContainer(aOptions.windowId);
       container.toBeOpenedTabsWithPositions += aURIs.length;
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
-        var params = {};
+        var params = {
+          windowId: aOptions.windowId
+        };
         if (aURI)
           params.url = aURI;
         if (aIndex == 0)

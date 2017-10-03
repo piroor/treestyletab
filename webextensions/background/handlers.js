@@ -228,9 +228,12 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     });
     aTab.parentNode.toBeOpenedTabsWithPositions++;
     let groupTab = await openURIInTab(uri, {
+      windowId: aTab.apiTab.windowId,
       insertBefore: aTab // not firstChild, because the "aTab" is disappeared from tree.
     });
     log('group tab: ', dumpTab(groupTab));
+    if (!groupTab) // the window is closed!
+      return;
     await attachTabTo(groupTab, aTab, {
       insertBefore: firstChild
     });
