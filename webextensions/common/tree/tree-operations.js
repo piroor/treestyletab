@@ -628,7 +628,9 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
    current tab is closed, Firefox notifies tabs.onTabRemoved at first
    and tabs.onActivated at later.
  * Basically the next (right) tab will be focused when the current tab
-   is closed.
+   is closed, except the closed tab was the last tab.
+   * If the closed current tab was the last tab, then the previous tab
+     is focused.
  * However, if the tab has "owner", it will be focused instead of the
    right tab if `browser.tabs.selectOwnerOnClose` == `true`.
    * The owner tab must be one of preceding tabs, because Firefox never
@@ -661,8 +663,10 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
   var lastChildOfParent = getLastChildTab(parent);
   var previousSibling = getPreviousSiblingTab(aTab);
   var preDetectedNextFocusedTab = getNextFocusedTab(aTab);
+  var previousTab = getPreviousTab(aTab);
   var nextTab = getNextTab(aTab);
   var serialized = serializeTabForTSTAPI(aTab);
+  var closeParentBehavior = getCloseParentBehaviorForTab(aTab, { parent });
 
   // wait for tabs.onActivated
   await new Promise((aResolve, aReject) => {
@@ -670,9 +674,16 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
   });
   log('tryMoveFocusFromClosingCurrentTab: tabs.onActivated is fired');
 
-  var currentTab = getCurrentTab(aTab.apiTab.windowId);
-  if (currentTab != nextTab) {
-    log('=> non-next tab is focused: ', dumpTab(currentTab), dumpTab(nextTab));
+  var autoFocusedTab = getCurrentTab(aTab.apiTab.windowId);
+  if (autoFocusedTab != nextTab &&
+      (autoFocusedTab != previousTab ||
+       getNextTab(autoFocusedTab))) {
+    log('=> the tab seems focused intentionally: ', {
+      autoFocused: dumpTab(autoFocusedTab),
+      nextOfAutoFocused: dumpTab(getNextTab(autoFocusedTab)),
+      prev: dumpTab(previousTab),
+      next: dumpTab(nextTab)
+    });
     return false;
   }
 
@@ -685,7 +696,6 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
     return false;
 
   var nextFocusedTab = null;
-  var closeParentBehavior = getCloseParentBehaviorForTab(aTab, { parent });
   if (firstChild &&
       (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
        closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD))
