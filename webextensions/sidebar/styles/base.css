@@ -37,11 +37,11 @@
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
-  --unread-pinned-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+  --unread-faviconized-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
                                             var(--tab-highlighted-highlight) 3%,
                                             var(--tab-highlighted-glow) 10%,
                                             var(--tab-highlighted-base) 20%);
-  --unread-pinned-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+  --unread-faviconized-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
                                             var(--tab-highlighted-highlight) 3%,
                                             var(--tab-highlighted-glow) 10%,
                                             var(--tab-highlighted-base) 23%);
@@ -247,12 +247,12 @@ ul {
   display: none;
 }
 
-.tab.pinned.unread:not(.active):not(:hover) {
-  background-image: var(--unread-pinned-gradient);
+.tab.faviconized.unread:not(.active):not(:hover) {
+  background-image: var(--unread-faviconized-gradient);
 }
 
-.tab.pinned.unread:not(.active):hover {
-  background-image: var(--unread-pinned-gradient-hover);
+.tab.faviconized.unread:not(.active):hover {
+  background-image: var(--unread-faviconized-gradient-hover);
 }
 
 
