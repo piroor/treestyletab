@@ -13,6 +13,7 @@
    * 未読のピン留めされたタブについて、アイコンのみの表示でない場合はハイライト表示しないようにした
    * Firefoxの `browser.tabs.selectOwnerOnClose` に基づくタブのフォーカス切り替え動作をより正しく尊重するようにした（ツリー型タブに全面的にタブのフォーカス切り替えを任せる場合は、この隠し設定を`about:config`から手動で無効にして下さい）
    * 新しいタブが連続して開かれたときに、グループ化用のタブ自体を再帰的にグループ化してしまう場合があったのを修正
+   * [ホイールスクロールの動作を上書きするためのAPI](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#override-reaction-for-mouse-wheel-rotation-on-the-vertical-tab-bar)を追加。
    * zh-CNロケール更新（by YFdyh000, thanks!）
  - 2.0.1
    * ミドルクリックでタブを閉じる動作について、Firefox本体と同様にボタンを放したときにタブを閉じるようにした
