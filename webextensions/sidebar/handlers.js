@@ -549,7 +549,10 @@ function onTabBuilt(aTab) {
   var throbber = favicon.appendChild(document.createElement('span'));
   throbber.classList.add(kTHROBBER);
   aTab.insertBefore(favicon, label);
-  loadImageTo(faviconImage, aTab.apiTab.favIconUrl, aTab.apiTab);
+  TabFavIconHelper.loadToImage({
+    image: faviconImage,
+    tab:   aTab.apiTab
+  });
 
   var counter = document.createElement('span');
   counter.classList.add(kCOUNTER);
@@ -585,70 +588,13 @@ function onTabBuilt(aTab) {
   aTab.setAttribute('draggable', true);
 }
 
-var gEffectiveFavicons = new Map();
 
 function onTabFaviconUpdated(aTab, aURL) {
-  let favicon = getTabFavicon(aTab);
-  loadImageTo(favicon.firstChild, aURL, aTab.apiTab);
-}
-
-async function loadImageTo(aImageElement, aURL, aApiTab) {
-  var loader;
-  var onLoad = (() => {
-    var oldData = gEffectiveFavicons.get(aApiTab.id);
-    if (!oldData ||
-        oldData.url != aApiTab.url ||
-        oldData.favIconUrl != aURL) {
-      let lastEffectiveFavicon = {
-        url:        aApiTab.url,
-        favIconUrl: aURL
-      };
-      gEffectiveFavicons.set(aApiTab.id, lastEffectiveFavicon);
-      browser.sessions.setTabValue(aApiTab.id, kLAST_EFFECTIVE_FAVICON, lastEffectiveFavicon);
-    }
-    aImageElement.src = aURL;
-    aImageElement.classList.remove('loading');
-    clear();
+  TabFavIconHelper.loadToImage({
+    image: getTabFavicon(aTab).firstChild,
+    tab:   aTab.apiTab,
+    url:   aURL
   });
-  var onError = (async (aError) => {
-    clear();
-    let effectiveFaviconData = gEffectiveFavicons.get(aApiTab.id) ||
-                               await browser.sessions.getTabValue(aApiTab.id, kLAST_EFFECTIVE_FAVICON);
-    if (effectiveFaviconData &&
-        effectiveFaviconData.url == aApiTab.url) {
-      if (aApiTab.favIconUrl != aImageElement.src)
-        loadImageTo(aImageElement, effectiveFaviconData.favIconUrl, aApiTab);
-    }
-    else {
-      aImageElement.removeAttribute('src');
-      aImageElement.classList.remove('loading');
-      aImageElement.classList.add('error');
-    }
-  });
-  var clear = (() => {
-    if (loader) {
-      loader.removeEventListener('load', onLoad, { once: true });
-      loader.removeEventListener('error', onError, { once: true });
-    }
-    loader = onLoad = onError = undefined;
-  });
-  if (!aURL ||
-      !kVALID_FAVICON_PATTERN.test(aURL)) {
-    onError();
-    return;
-  }
-  aImageElement.src = '';
-  aImageElement.classList.remove('error');
-  aImageElement.classList.add('loading');
-  loader = new Image();
-  loader.addEventListener('load', onLoad, { once: true });
-  loader.addEventListener('error', onError, { once: true });
-  try {
-    loader.src = aURL;
-  }
-  catch(e) {
-    onError(e);
-  }
 }
 
 function onTabUpdated(aTab) {
@@ -720,7 +666,6 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 function onTabClosed(aTab) {
-  gEffectiveFavicons.delete(aTab.apiTab.id);
   tabContextMenu.close();
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
@@ -928,7 +873,6 @@ function onTabAttached(aTab) {
 }
 
 function onTabDetached(aTab, aDetachInfo = {}) {
-  gEffectiveFavicons.delete(aTab.apiTab.id);
   tabContextMenu.close();
   var parent = aDetachInfo.oldParentTab;
   if (!parent)

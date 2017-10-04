@@ -16,3 +16,6 @@
 [submodule "extlib/JavaScript-MD5"]
 	path = extlib/JavaScript-MD5
 	url = https://github.com/blueimp/JavaScript-MD5.git
+[submodule "extlib/webextensions-lib-tab-favicon-helper"]
+	path = extlib/webextensions-lib-tab-favicon-helper
+	url = https://github.com/piroor/webextensions-lib-tab-favicon-helper.git

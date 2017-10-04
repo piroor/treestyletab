@@ -189,12 +189,11 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'favIconUrl' in aNewState ||
-       ('url' in aNewState && maybeImageUrl(aNewState.url))) {
+       TabFavIconHelper.maybeImageTab(aNewState)) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
-        aNewState.favIconUrl ||
-          (maybeImageUrl(aNewState.url) && aNewState.url)
+        aNewState.favIconUrl || aNewState.url
       );
   }
 
@@ -323,10 +322,6 @@ windowId = ${aTab.apiTab.windowId}
             .replace(`<%duplicated%>`, !!aUniqueId.originalId));
       });
   }
-}
-
-function maybeImageUrl(aURL) {
-  return /\.(jpe?g|png|gif|bmp|svg)/i.test(aURL);
 }
 
 function updateParentTab(aParent) {

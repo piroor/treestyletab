@@ -1,4 +1,5 @@
 *.xpi
+**/TabFavIconHelper.js
 **/Configs.js
 **/Options.js
 **/l10n.js
