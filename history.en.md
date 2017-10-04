@@ -1,6 +1,19 @@
 # History
 
  - master/HEAD
+   * Open new tab by middle click on the blank area, like Firefox does.
+   * Synchronize animation of throbbers, like Firefox does.
+   * Apply "burst" animation for completely loaded tabs, like Firefox does.
+   * Show fake context menu with the system font for menu items.
+   * Process fake context menu commands correctly when the menu is opened on non-tab area.
+   * Fix invisible throbber on active tab with some themes.
+   * Open new tab as next sibling without breaking tree, when the current tab is a root tab.
+   * Group tabs by a dummy tab correctly on secondary and later windows.
+   * Don't open needless group tab in a rest window when another window is closed.
+   * Don't highlight unread pinned tabs when they are not faviconized.
+   * Respect Frirefox's behavior of `browser.tabs.selectOwnerOnClose` more correctly. Now the "owner" tab is focused when the current tab is closed. You need to disable the option via `about:config` if you hope TST to control focusing of tabs completely.
+   * Don't create recursively grouped tabs from newly opened tabs.
+   * Updated zh-CN locale by YFdyh000, thanks!
  - 2.0.1
    * "Middle click to close tab" behavior becomes same to Firefox's one (closed on mouseup).
    * "Dragging" appearance of tabs are correctly cleared when the dragging is canceled.
