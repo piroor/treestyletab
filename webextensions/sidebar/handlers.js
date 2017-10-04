@@ -510,10 +510,10 @@ async function onWheel(aEvent) {
     tabs:      getTabs().map(serializeTabForTSTAPI),
     window:    gTargetWindow,
 
-    deltaX:    aEvent.deltaX,
     deltaY:    aEvent.deltaY,
-    deltaZ:    aEvent.deltaZ,
     deltaMode: aEvent.deltaMode,
+    scrollTop:    gTabBar.scrollTop,
+    scrollTopMax: gTabBar.scrollTopMax,
 
     altKey:    aEvent.altKey,
     ctrlKey:   aEvent.ctrlKey,
