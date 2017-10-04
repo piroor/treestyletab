@@ -1089,18 +1089,25 @@ function onMessageExternal(aMessage, aSender) {
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
 
-    case kTSTAPI_SCROLL:
-      return (async () => {
-        let params = {};
-        if ('tab' in aMessage)
-          params.tab = getTabById(aMessage.tab);
+    case kTSTAPI_SCROLL: {
+      let params = {};
+      if ('tab' in aMessage) {
+        params.tab = getTabById(aMessage.tab);
+        if (!params.tab || params.tab.windowId != gTargetWindow)
+          return;
+      }
+      else {
+        if (aMessage.window != gTargetWindow)
+          return;
         if ('delta' in aMessage)
           params.delta = aMessage.delta;
         if ('position' in aMessage)
           params.position = aMessage.position;
-        await scrollTo(params);
+      }
+      return scrollTo(params).then(() => {
         return true;
-      })();
+      });
+    }; break;
   }
 }
 
