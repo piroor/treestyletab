@@ -517,6 +517,10 @@ function onTabBuilt(aTab) {
   aTab.insertBefore(favicon, label);
   loadImageTo(faviconImage, aTab.apiTab.favIconUrl, aTab.apiTab);
 
+  var burster = document.createElement('span');
+  burster.classList.add(kBURSTER);
+  aTab.appendChild(burster);
+
   var counter = document.createElement('span');
   counter.classList.add(kCOUNTER);
   aTab.appendChild(counter);

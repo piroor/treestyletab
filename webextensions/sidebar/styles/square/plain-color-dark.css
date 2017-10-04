@@ -15,6 +15,10 @@
   --tabbar-bg: black;
 }
 
+.tab:not(.active) {
+  --throbber-color: white;
+}
+
 .tab.active {
   background: var(--tab-surface-active);
 }

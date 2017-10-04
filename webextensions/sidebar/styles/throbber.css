@@ -8,6 +8,12 @@
 :root {
   --throbber-color: Highlight;
   --throbber-shadow-color: transparent;
+  --tab-burster-size: 5px;
+  --tab-burster-translation: translate(calc(var(--tab-height) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
+}
+
+.tab.faviconized {
+  --tab-burster-translation: translate(calc(var(--favicon-size) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
 }
 
 .throbber {
@@ -82,4 +88,36 @@
 
 #dummy-tabs .throbber {
   animation: none !important;
+}
+
+
+
+@keyframes tab-burst-animation {
+  0%   { opacity: 0.4; transform: var(--tab-burster-translation) scale(1); }
+  100% { opacity: 0;   transform: var(--tab-burster-translation) scale(40); }
+}
+
+@keyframes tab-burst-animation-light {
+  0%   { opacity: 0.2; transform: var(--tab-burster-translation) scale(1); }
+  100% { opacity: 0;   transform: var(--tab-burster-translation) scale(40); }
+}
+
+.tab .burster {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 20;
+}
+
+:root.animation .tab.bursting .burster::before {
+  animation: tab-burst-animation var(--tab-burst-duration) cubic-bezier(0, 0, 0.58, 1);
+  background: var(--throbber-color);
+  border-radius: 100%;
+  border: var(--tab-burster-size) solid var(--throbber-color);
+  content: "";
+  display: inline-block;
+  opacity: 0;
+  transform-origin: 50% 50%;
 }

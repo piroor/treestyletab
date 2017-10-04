@@ -7,9 +7,7 @@
   --tab-dropmarker: -moz-dialogtext;
 
   --tabbar-bg: darkgray;
-}
 
-:root {
   background: var(--tabbar-bg);
 }
 
@@ -27,17 +25,17 @@
 
 .tab.active {
   background: Highlight;
+  --throbber-color: HighlightText;
+}
+
+.tab:not(.active) {
+  --throbber-color: ThreeDDarkShadow;
 }
 
 .tab.active .twisty,
 .tab.active .label,
 .tab.active .counter {
   color: HighlightText;
-}
-
-.tab.active .throbber::before {
-  background-color: HighlightText;
-  border-color: HighlightText;
 }
 
 .closebox {

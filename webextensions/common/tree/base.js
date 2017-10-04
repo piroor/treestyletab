@@ -200,6 +200,18 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   if ('status' in aNewState) {
     aTab.classList.remove(aNewState.status == 'loading' ? 'complete' : 'loading');
     aTab.classList.add(aNewState.status);
+    if (aNewState.status == 'loading') {
+      aTab.classList.remove(kTAB_STATE_BURSTING);
+    }
+    else if (!aOptions.forceApply) {
+      aTab.classList.add(kTAB_STATE_BURSTING);
+      if (aTab.delayedBurstEnd)
+        clearTimeout(aTab.delayedBurstEnd);
+      aTab.delayedBurstEnd = setTimeout(() => {
+        delete aTab.delayedBurstEnd;
+        aTab.classList.remove(kTAB_STATE_BURSTING);
+      }, configs.butstDuration);
+    }
   }
 
   if (aOptions.forceApply ||

@@ -144,6 +144,7 @@ configs = new Configs({
   animation: true,
   smoothScrollEnabled:  true,
   smoothScrollDuration: 150,
+  butstDuration:    375,
   indentDuration:   200,
   collapseDuration: 150,
   outOfViewTabNotifyDuration: 750,

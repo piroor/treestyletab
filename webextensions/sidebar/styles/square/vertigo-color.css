@@ -49,9 +49,7 @@
   --tab-highlighted-base: var(--tab-surface);
 
   --throbber-color: var(--tab-highlighted-glow);
-}
 
-:root {
   background: var(--tab-surface);
 }
 
@@ -69,14 +67,14 @@
 
 .tab.active {
   background: var(--tab-surface-active);
+  --throbber-color: var(--tab-highlighted-glow);
 }
 .tab.active:hover {
   background: var(--tab-surface-active-hover);
 }
 
-.tab.active .throbber::before {
-  background-color: var(--throbber-color);
-  border-color: var(--throbber-color);
+.tab:not(.active) {
+  --throbber-color: ThreeDDarkShadow;
 }
 
 .closebox {
