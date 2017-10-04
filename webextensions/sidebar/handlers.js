@@ -517,10 +517,6 @@ function onTabBuilt(aTab) {
   aTab.insertBefore(favicon, label);
   loadImageTo(faviconImage, aTab.apiTab.favIconUrl, aTab.apiTab);
 
-  var burster = document.createElement('span');
-  burster.classList.add(kBURSTER);
-  aTab.appendChild(burster);
-
   var counter = document.createElement('span');
   counter.classList.add(kCOUNTER);
   aTab.appendChild(counter);
@@ -534,6 +530,14 @@ function onTabBuilt(aTab) {
   closebox.setAttribute('title', browser.i18n.getMessage('tab.closebox.tab.tooltip'));
   closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
   aTab.appendChild(closebox);
+
+  var burster = document.createElement('span');
+  burster.classList.add(kBURSTER);
+  aTab.appendChild(burster);
+
+  var activeMarker = document.createElement('span');
+  activeMarker.classList.add(kACTIVE_MARKER);
+  aTab.appendChild(activeMarker);
 
   var identityMarker = document.createElement('span');
   identityMarker.classList.add(kCONTEXTUAL_IDENTITY_MARKER);

@@ -102,15 +102,6 @@
   100% { opacity: 0;   transform: var(--tab-burster-translation) scale(40); }
 }
 
-.tab .burster {
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 20;
-}
-
 :root.animation .tab.bursting .burster::before {
   animation: tab-burst-animation var(--tab-burst-duration) cubic-bezier(0, 0, 0.58, 1);
   background: var(--throbber-color);

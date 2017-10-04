@@ -78,6 +78,7 @@ const kFAVICON  = 'favicon';
 const kFAVICON_IMAGE = 'favicon-image';
 const kFAVICON_DEFAULT = 'favicon-default';
 const kTHROBBER = 'throbber';
+const kACTIVE_MARKER = 'active-marker';
 const kBURSTER  = 'burster';
 const kSOUND_BUTTON = 'sound-button';
 const kTWISTY   = 'twisty';

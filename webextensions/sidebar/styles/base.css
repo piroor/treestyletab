@@ -206,12 +206,26 @@ ul {
   order: -1;
 }
 
+.tab .active-marker,
+.tab .burster,
 .tab .extra-items-container.behind {
   bottom: 0;
   left: 0;
+  pointer-events: none;
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.tab .active-marker {
+  z-index: 5000;
+}
+
+.tab .burster {
+  z-index: 4000;
+}
+
+.tab .extra-items-container.behind {
   z-index: 10;
 }
 
