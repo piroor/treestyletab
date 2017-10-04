@@ -51,6 +51,10 @@ function scrollTo(aParams = {}) {
     gTabBar.scrollTop += calculateScrollDeltaForTab(aParams.tab);
   else if (typeof aParams.position == 'number')
     gTabBar.scrollTop = aParams.position;
+  else if (typeof aParams.delta == 'number')
+    gTabBar.scrollTop += aParams.delta;
+  else
+    throw new Error('No parameter to indicate scroll position');
 }
 
 function calculateScrollDeltaForTab(aTab) {
@@ -91,9 +95,16 @@ async function smoothScrollTo(aParams = {}) {
     delta = calculateScrollDeltaForTab(aParams.tab);
     endPosition = startPosition + delta;
   }
-  else {
+  else if (typeof aParams.position == 'number') {
     endPosition = aParams.position;
     delta = endPosition - startPosition;
+  }
+  else if (typeof aParams.delta == 'number') {
+    endPosition = startPosition + aParams.delta;
+    delta = aParams.delta;
+  }
+  else {
+    throw new Error('No parameter to indicate scroll position');
   }
   smoothScrollTo.currentOffset = delta;
 

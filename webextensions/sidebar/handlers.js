@@ -1083,6 +1083,19 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_SCROLL_UNLOCK:
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
+
+    case kTSTAPI_SCROLL:
+      return (async () => {
+        let params = {};
+        if ('tab' in aMessage)
+          params.tab = getTabById(aMessage.tab);
+        if ('delta' in aMessage)
+          params.delta = aMessage.delta;
+        if ('position' in aMessage)
+          params.position = aMessage.position;
+        await scrollTo(params);
+        return true;
+      })();
   }
 }
 

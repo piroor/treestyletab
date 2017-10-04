@@ -54,6 +54,7 @@ const kTSTAPI_COLLAPSE_TREE        = 'collapse-tree';
 const kTSTAPI_EXPAND_TREE          = 'expand-tree';
 const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
 const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
+const kTSTAPI_SCROLL               = 'scroll';
 const kTSTAPI_SCROLL_LOCK          = 'scroll-lock';
 const kTSTAPI_SCROLL_UNLOCK        = 'scroll-unlock';
 const kTSTAPI_NOTIFY_SCROLLED      = 'scrolled';
