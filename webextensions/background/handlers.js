@@ -647,6 +647,7 @@ function onMessage(aMessage, aSender) {
 
     // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
     case kCOMMAND_PULL_TAB_ID_TABLES:
+      clearTimeout(timeout);
       return Promise.resolve({
         wrongToCorrect: gTabIdWrongToCorrect,
         correctToWrong: gTabIdCorrectToWrong
@@ -678,6 +679,7 @@ function onMessage(aMessage, aSender) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
+      clearTimeout(timeout);
     }; break;
 
     case kCOMMAND_LOAD_URI: {
@@ -726,6 +728,7 @@ function onMessage(aMessage, aSender) {
         }
         browser.tabs.remove(tab.apiTab.id)
           .catch(handleMissingTabError);
+        clearTimeout(timeout);
       })();
 
     case kNOTIFY_TAB_MOUSEDOWN:
@@ -741,12 +744,15 @@ function onMessage(aMessage, aSender) {
           tab:    serializeTabForTSTAPI(tab),
           window: tab.apiTab.windowId
         }));
-        if (results.indexOf(true) > -1) // canceled
+        if (results.indexOf(true) > -1) { // canceled
+          clearTimeout(timeout);
           return;
+        }
 
         // not canceled, then fallback to default "select tab"
         browser.tabs.update(tab.apiTab.id, { active: true })
           .catch(handleMissingTabError);
+        clearTimeout(timeout);
       })();
 
     case kCOMMAND_SELECT_TAB: {
