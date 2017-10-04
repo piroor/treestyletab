@@ -894,6 +894,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_UNREGISTER_SELF:
       return (async () => {
         delete gExternalListenerAddons[aSender.id];
+        delete gScrollLockedBy[aSender.id];
         configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
         return true;
       })();

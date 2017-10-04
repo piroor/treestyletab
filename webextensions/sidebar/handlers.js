@@ -1074,6 +1074,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_UNREGISTER_SELF: {
       uninstallStyleForAddon(aSender.id)
+      delete gScrollLockedBy[aSender.id];
     }; break;
 
     case kTSTAPI_SCROLL_LOCK:
