@@ -121,3 +121,7 @@
   opacity: 0;
   transform-origin: 50% 50%;
 }
+
+:root.animation .tab.not-activated-since-load.bursting .burster::before {
+  animation-name: tab-burst-animation-light;
+}

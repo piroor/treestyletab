@@ -210,6 +210,8 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aTab.delayedBurstEnd = setTimeout(() => {
         delete aTab.delayedBurstEnd;
         aTab.classList.remove(kTAB_STATE_BURSTING);
+        if (!isActive(aTab))
+          aTab.classList.add(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.butstDuration);
     }
   }
