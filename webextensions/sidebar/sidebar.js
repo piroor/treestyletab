@@ -525,11 +525,11 @@ function updateTabTooltip(aTab) {
 
 function reserveToSynchronizeThrobberAnimations() {
   if (synchronizeThrobberAnimations.reserved)
-    clearTimeout(synchronizeThrobberAnimations.reserved);
-  synchronizeThrobberAnimations.reserved = setTimeout(() => {
+    return;
+  synchronizeThrobberAnimations.reserved = nextFrame().then(() => {
     delete synchronizeThrobberAnimations.reserved;
     synchronizeThrobberAnimations();
-  }, 10);
+  });
 }
 
 async function synchronizeThrobberAnimations() {
