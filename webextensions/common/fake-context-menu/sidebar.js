@@ -182,6 +182,7 @@ var tabContextMenu = {
       this.onClosed();
     }
     this.contextTab = aOptions.tab;
+    this.contextWindowId = aOptions.windowId;
     await this.rebuild();
     this.applyContext();
     this.menu.classList.add('open');
@@ -200,6 +201,7 @@ var tabContextMenu = {
       return;
     this.menu.classList.remove('open');
     this.contextTab = null;
+    this.contextWindowId = null;
     this.closeTimeout = setTimeout(() => {
       delete this.closeTimeout;
       this.onClosed();
@@ -331,13 +333,13 @@ var tabContextMenu = {
         browser.tabs.remove(tabs[0].id);
       }; break;
       case 'context_reloadAllTabs': {
-        let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
+        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
         for (let tab of tabs) {
           browser.tabs.reload(tab.id);
         }
       }; break;
       case 'context_bookmarkAllTabs': {
-        let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
+        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
         let folder = await bookmarkTabs(tabs.map(aTab => getTabById(aTab.id)));
         browser.bookmarks.get(folder.parentId).then(aFolders => {
           notify({
@@ -352,7 +354,7 @@ var tabContextMenu = {
         });
       }; break;
       case 'context_closeTabsToTheEnd': {
-        let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
+        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
         let after = false;
         for (let tab of tabs) {
           if (tab.id == this.contextTab.id) {
@@ -366,7 +368,7 @@ var tabContextMenu = {
       }; break;
       case 'context_closeOtherTabs': {
         let tabId = this.contextTab.id; // cache it for delayed tasks!
-        let tabs = await browser.tabs.query({ windowId: this.contextTab.windowId });
+        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
         for (let tab of tabs) {
           if (tab.id != tabId)
             browser.tabs.remove(tab.id);
@@ -442,6 +444,7 @@ var tabContextMenu = {
             return;
           return tabContextMenu.open({
             tab:  tab,
+            windowId: windowId,
             left: aMessage.left,
             top:  aMessage.top
           });
