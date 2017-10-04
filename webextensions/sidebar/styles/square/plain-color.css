@@ -29,7 +29,7 @@
 }
 
 .tab:not(.active) {
-  --throbber-color: ThreeDDarkShadow;
+  --throbber-color: ThreeDShadow;
 }
 
 .tab.active .twisty,

@@ -77,6 +77,10 @@
   --throbber-color: ThreeDDarkShadow;
 }
 
+.tab:not(.active) .burster {
+  --throbber-color: #B5C5E0;
+}
+
 .closebox {
   background: none transparent;
   border: none 0 transparent;
