@@ -747,7 +747,7 @@ function onMessage(aMessage, aSender) {
           tab:    serializeTabForTSTAPI(tab),
           window: tab.apiTab.windowId
         }));
-        if (results.indexOf(true) > -1) { // canceled
+        if (results.some(aResult => aResult.result)) { // canceled
           clearTimeout(timeout);
           return;
         }

@@ -730,7 +730,19 @@ async function sendTSTAPIMessage(aMessage, aTargets) {
       uniqueTargets[id] = true;
     }
   }
-  return Promise.all(Object.keys(uniqueTargets).map(aId => {
-    return browser.runtime.sendMessage(aId, aMessage).catch(e => {});
+  return Promise.all(Object.keys(uniqueTargets).map(async (aId) => {
+    try {
+      let result = await browser.runtime.sendMessage(aId, aMessage);
+      return {
+        id:     aId,
+        result: result
+      };
+    }
+    catch(e) {
+      return {
+        id:    aId,
+        error: e
+      };
+    }
   }));
 }

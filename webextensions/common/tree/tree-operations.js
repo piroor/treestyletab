@@ -692,7 +692,7 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
     tab:    serialized,
     window: aTab.apiTab.windowId
   });
-  if (results.indexOf(true) > -1) // canceled
+  if (results.some(aResult => aResult.result)) // canceled
     return false;
 
   var nextFocusedTab = null;

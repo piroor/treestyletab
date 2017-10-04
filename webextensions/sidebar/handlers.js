@@ -495,7 +495,7 @@ function onChange(aEvent) {
   selector.value = '';
 }
 
-function onWheel(aEvent) {
+async function onWheel(aEvent) {
   var lockers = Object.keys(gScrollLockedBy);
   if (lockers.length <= 0)
     return;
@@ -504,7 +504,7 @@ function onWheel(aEvent) {
   aEvent.preventDefault();
 
   var tab = getTabFromEvent(aEvent);
-  sendTSTAPIMessage({
+  var results = await sendTSTAPIMessage({
     type:      kTSTAPI_NOTIFY_SCROLLED,
     tab:       tab && serializeTabForTSTAPI(tab),
     tabs:      getTabs().map(serializeTabForTSTAPI),
@@ -523,6 +523,10 @@ function onWheel(aEvent) {
     clientX:   aEvent.clientX,
     clientY:   aEvent.clientY
   }, lockers);
+  for (let result of results) {
+    if (result.error || result.result === undefined)
+      delete gScrollLockedBy[result.id];
+  }
 }
 
 
