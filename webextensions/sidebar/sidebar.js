@@ -84,6 +84,7 @@ async function init() {
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
   document.addEventListener('change', onChange);
+  document.addEventListener('wheel', onWheel, { capture: true });
   gTabBar.addEventListener('dblclick', onDblClick);
   gTabBar.addEventListener('transitionend', onTransisionEnd);
   startListenDragEvents(window);
@@ -104,6 +105,10 @@ async function init() {
     if (addon.style)
       installStyleForAddon(id, addon.style);
   }
+
+  gScrollLockedBy = await browser.runtime.sendMessage({
+    type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE
+  });
 
   tabContextMenu.init();
 
@@ -128,6 +133,7 @@ function destroy() {
   document.removeEventListener('mouseup', onMouseUp);
   document.removeEventListener('click', onClick);
   document.removeEventListener('change', onChange);
+  document.removeEventListener('wheel', onWheel, { capture: true });
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
 

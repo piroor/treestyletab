@@ -42,6 +42,7 @@ var gAllTabs;
 var gTargetWindow = null;
 var gRestoringTree = false;
 var gNeedRestoreTree = false;
+var gScrollLockedBy = {};
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
@@ -712,13 +713,24 @@ function serializeTabForTSTAPI(aTab) {
   });
 }
 
-async function sendTSTAPIMessage(aMessage) {
+async function sendTSTAPIMessage(aMessage, aTargets) {
   var addons = window.gExternalListenerAddons ?
                  gExternalListenerAddons :
                  (await browser.runtime.sendMessage({
                    type: kCOMMAND_REQUEST_REGISTERED_ADDONS
                  }));
-  return Promise.all(Object.keys(addons).map(aId => {
+  var uniqueTargets = {};
+  for (let id of Object.keys(addons)) {
+    uniqueTargets[id] = true;
+  }
+  if (aTargets) {
+    if (!Array.isArray(aTargets))
+      aTargets = [aTargets];
+    for (let id of aTargets) {
+      uniqueTargets[id] = true;
+    }
+  }
+  return Promise.all(Object.keys(uniqueTargets).map(aId => {
     return browser.runtime.sendMessage(aId, aMessage).catch(e => {});
   }));
 }

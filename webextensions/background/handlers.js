@@ -645,6 +645,9 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_REQUEST_REGISTERED_ADDONS:
       return Promise.resolve(gExternalListenerAddons);
 
+    case kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
+      return Promise.resolve(gScrollLockedBy);
+
     // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
     case kCOMMAND_PULL_TAB_ID_TABLES:
       clearTimeout(timeout);
@@ -994,6 +997,16 @@ function onMessageExternal(aMessage, aSender) {
         });
         return true;
       })();
+
+    case kTSTAPI_SCROLL_LOCK:
+      clearTimeout(timeout);
+      gScrollLockedBy[aSender.id] = true;
+      return Promise.resolve(true);
+
+    case kTSTAPI_SCROLL_UNLOCK:
+      clearTimeout(timeout);
+      delete gScrollLockedBy[aSender.id];
+      return Promise.resolve(true);
   }
   clearTimeout(timeout);
 }

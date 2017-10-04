@@ -495,6 +495,36 @@ function onChange(aEvent) {
   selector.value = '';
 }
 
+function onWheel(aEvent) {
+  var lockers = Object.keys(gScrollLockedBy);
+  if (lockers.length <= 0)
+    return;
+
+  aEvent.stopImmediatePropagation();
+  aEvent.preventDefault();
+
+  var tab = getTabFromEvent(aEvent);
+  sendTSTAPIMessage({
+    type:      kTSTAPI_NOTIFY_SCROLLED,
+    tab:       tab && serializeTabForTSTAPI(tab),
+    tabs:      getTabs().map(serializeTabForTSTAPI),
+    window:    gTargetWindow,
+
+    deltaX:    aEvent.deltaX,
+    deltaY:    aEvent.deltaY,
+    deltaZ:    aEvent.deltaZ,
+    deltaMode: aEvent.deltaMode,
+
+    altKey:    aEvent.altKey,
+    ctrlKey:   aEvent.ctrlKey,
+    metaKey:   aEvent.metaKey,
+    shiftKey:  aEvent.shiftKey,
+
+    clientX:   aEvent.clientX,
+    clientY:   aEvent.clientY
+  }, lockers);
+}
+
 
 /* raw event handlers */
 
@@ -1045,6 +1075,14 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_UNREGISTER_SELF: {
       uninstallStyleForAddon(aSender.id)
     }; break;
+
+    case kTSTAPI_SCROLL_LOCK:
+      gScrollLockedBy[aSender.id] = true;
+      return Promise.resolve(true);
+
+    case kTSTAPI_SCROLL_UNLOCK:
+      delete gScrollLockedBy[aSender.id];
+      return Promise.resolve(true);
   }
 }
 

@@ -9,6 +9,7 @@ const kCOMMAND_PING_TO_BACKGROUND = 'treestyletab:ping-to-background';
 const kCOMMAND_PING_TO_SIDEBAR = 'treestyletab:ping-to-sidebar';
 const kCOMMAND_REQUEST_UNIQUE_ID = 'treestyletab:request-unique-id';
 const kCOMMAND_REQUEST_REGISTERED_ADDONS = 'treestyletab:request-registered-addons';
+const kCOMMAND_REQUEST_SCROLL_LOCK_STATE = 'treestyletab:request-scroll-lock-state';
 const kCOMMAND_PULL_TAB_ID_TABLES = 'treestyletab:pull-tab-id-tables';
 const kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE = 'treestyletab:broadcast-tab-id-tables-update';
 const kCOMMAND_PULL_TREE_STRUCTURE = 'treestyletab:pull-tree-structure';
@@ -53,6 +54,9 @@ const kTSTAPI_COLLAPSE_TREE        = 'collapse-tree';
 const kTSTAPI_EXPAND_TREE          = 'expand-tree';
 const kTSTAPI_ADD_TAB_STATE        = 'add-tab-state';
 const kTSTAPI_REMOVE_TAB_STATE     = 'remove-tab-state';
+const kTSTAPI_SCROLL_LOCK          = 'scroll-lock';
+const kTSTAPI_SCROLL_UNLOCK        = 'scroll-unlock';
+const kTSTAPI_NOTIFY_SCROLLED      = 'scrolled';
 
 const kAPI_TAB_ID = 'data-tab-id';
 const kAPI_WINDOW_ID = 'data-window-id';
