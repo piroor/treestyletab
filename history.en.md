@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.0.2
    * Open new tab by middle click on the blank area, like Firefox does.
    * Synchronize animation of throbbers, like Firefox does.
    * Apply "burst" animation for completely loaded tabs, like Firefox does.
