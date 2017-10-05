@@ -452,15 +452,23 @@ function updateIndent(aOptions = {}) {
     document.head.appendChild(gIndentDefinition);
   }
 
+  var configuredMaxLevel = configs.maxTreeLevel;
+  if (configuredMaxLevel < 0)
+    configuredMaxLevel = Number.MAX_SAFE_INTEGER;
+
   // prepare definitions for all tabs including collapsed.
   // otherwise, we'll see odd animation for expanded tabs
   // from indent=0 to indent=expected.
   var definitionsMaxLevel = getMaxTreeLevel(gTargetWindow);
   var definitions = [];
   // default indent for unhandled (deep) level tabs
-  definitions.push(`.tab[${kPARENT}]:not([${kLEVEL}="0"]) { ${gIndentProp}: ${definitionsMaxLevel + 1 * indentUnit}px; }`);
+  definitions.push(`.tab[${kPARENT}]:not([${kLEVEL}="0"]) {
+    ${gIndentProp}: ${Math.min(definitionsMaxLevel + 1, configuredMaxLevel) * indentUnit}px;
+  }`);
   for (let level = 1; level <= definitionsMaxLevel; level++) {
-    definitions.push(`.tab[${kPARENT}][${kLEVEL}="${level}"] { ${gIndentProp}: ${level * indentUnit}px; }`);
+    definitions.push(`.tab[${kPARENT}][${kLEVEL}="${level}"] {
+      ${gIndentProp}: ${Math.min(level, configuredMaxLevel) * indentUnit}px;
+    }`);
   }
   gIndentDefinition.textContent = definitions.join('\n');
   //log('updated indent definition: ', gIndentDefinition.textContent);
