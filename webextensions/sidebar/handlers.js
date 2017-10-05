@@ -1089,6 +1089,14 @@ function onConfigChange(aChangedKey) {
       updateIndent({ force: true });
       break;
 
+    case 'baseIndent':
+    case 'minIndent':
+    case 'maxTreeLevel':
+    case 'indentAutoShrink':
+    case 'indentAutoShrinkOnlyForVisible':
+      updateIndent({ force: true });
+      break;
+
     case 'style':
     case 'defaultStyle':
     case 'defaultStyleDarwin':
