@@ -38,6 +38,7 @@ const kNOTIFY_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
 const kTSTAPI_REGISTER_SELF        = 'register-self';
 const kTSTAPI_UNREGISTER_SELF      = 'unregister-self';
+const kTSTAPI_PING                 = 'ping';
 const kTSTAPI_NOTIFY_READY         = 'ready';
 const kTSTAPI_NOTIFY_SHUTDOWN      = 'shutdown'; // defined but not notified for now.
 const kTSTAPI_NOTIFY_TAB_CLICKED   = 'tab-clicked';

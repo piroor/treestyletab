@@ -898,6 +898,9 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
+    case kTSTAPI_PING:
+      return Promise.resolve(true);
+
 
     case kTSTAPI_GET_TREE:
       return (async () => {
