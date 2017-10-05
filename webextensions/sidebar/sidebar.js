@@ -30,7 +30,7 @@ var gAddonStyles = {};
 
 async function earlyInit() {
   log('initialize sidebar on DOMContentLoaded');
-  window.addEventListener('unload', destroy, { once: true });
+  window.addEventListener('pagehide', destroy, { once: true });
 
   gTabBar = document.querySelector('#tabbar');
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');

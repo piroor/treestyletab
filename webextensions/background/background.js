@@ -25,7 +25,7 @@ browser.runtime.onInstalled.addListener(aDetails => {
 });
 
 async function init() {
-  window.addEventListener('unload', destroy, { once: true });
+  window.addEventListener('pagehide', destroy, { once: true });
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
   gAllTabs = document.querySelector('#all-tabs');
