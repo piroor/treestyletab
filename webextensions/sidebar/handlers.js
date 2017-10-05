@@ -522,7 +522,9 @@ async function onWheel(aEvent) {
 
     clientX:   aEvent.clientX,
     clientY:   aEvent.clientY
-  }, lockers);
+  }, {
+    targets: lockers
+  });
   for (let result of results) {
     if (result.error || result.result === undefined)
       delete gScrollLockedBy[result.id];

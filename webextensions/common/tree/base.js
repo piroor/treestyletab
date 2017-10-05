@@ -708,7 +708,7 @@ function serializeTabForTSTAPI(aTab) {
   });
 }
 
-async function sendTSTAPIMessage(aMessage, aTargets) {
+async function sendTSTAPIMessage(aMessage, aOptions = {}) {
   var addons = window.gExternalListenerAddons ?
                  gExternalListenerAddons :
                  (await browser.runtime.sendMessage({
@@ -718,10 +718,10 @@ async function sendTSTAPIMessage(aMessage, aTargets) {
   for (let id of Object.keys(addons)) {
     uniqueTargets[id] = true;
   }
-  if (aTargets) {
-    if (!Array.isArray(aTargets))
-      aTargets = [aTargets];
-    for (let id of aTargets) {
+  if (aOptions.targets) {
+    if (!Array.isArray(aOptions.targets))
+      aOptions.targets = [aOptions.targets];
+    for (let id of aOptions.targets) {
       uniqueTargets[id] = true;
     }
   }
