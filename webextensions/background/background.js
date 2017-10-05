@@ -88,9 +88,14 @@ function destroy() {
   browser.runtime.sendMessage(browser.runtime.id, {
     type:  kTSTAPI_UNREGISTER_SELF
   });
+
+  // This API doesn't work as expected because it is not notified to
+  // other addons actually when browser.runtime.sendMessage() is called
+  // on pagehide or something unloading event.
   sendTSTAPIMessage({
     type: kTSTAPI_NOTIFY_SHUTDOWN
   });
+
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
