@@ -89,6 +89,9 @@ function destroy() {
   browser.runtime.sendMessage(browser.runtime.id, {
     type:  kTSTAPI_UNREGISTER_SELF
   });
+  sendTSTAPIMessage({
+    type: kTSTAPI_NOTIFY_SHUTDOWN
+  });
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
