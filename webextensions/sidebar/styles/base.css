@@ -79,6 +79,10 @@ button {
 
 /* tabbar */
 
+:root, body {
+  font: message-box; /* this is same to Firefox's UI. */
+}
+
 #tabbar {
   bottom: 0;
   left: 0;
