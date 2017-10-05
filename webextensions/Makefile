@@ -2,7 +2,7 @@
 
 xpi: ../extlib/webextensions-lib-tab-favicon-helper ../extlib/webextensions-lib-configs/Configs.js ../extlib/webextensions-lib-options/Options.js ../extlib/webextensions-lib-l10n/l10n.js
 	cd .. && git submodule update
-	cp ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js sidebar/
+	cp ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js common/
 	cp ../extlib/webextensions-lib-configs/Configs.js common/
 	cp ../extlib/webextensions-lib-options/Options.js options/
 	cp ../extlib/webextensions-lib-l10n/l10n.js common/
