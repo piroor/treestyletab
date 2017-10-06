@@ -201,7 +201,9 @@ async function loadTreeStructure() {
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);
       for (let tab of tabs) {
-        await attachTabFromRestoredInfo(tab);
+        await attachTabFromRestoredInfo(tab, {
+          keepCurrentTree: true
+        });
       }
     }
   }));
@@ -235,6 +237,16 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       insertAfter:  insertAfter
     });
     break;
+  }
+  if (
+      !aOptions.keepCurrentTree &&
+      ancestors.length == 0 && // the restored tab is a roo tab
+      getParentTab(aTab) && // but attached to any parent based on its restored position
+      !getNextSiblingTab(aTab) // when not in-middle position of existing tree (safely detachable position)
+      ) {
+    detachTab(aTab, {
+      broadcast: true
+    });
   }
   if (aOptions.children) {
     for (let child of children) {
