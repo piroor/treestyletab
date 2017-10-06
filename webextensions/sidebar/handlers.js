@@ -531,6 +531,23 @@ async function onWheel(aEvent) {
   }
 }
 
+function onScroll(aEvent) {
+  reserveToSaveScrollPosition();
+}
+
+function reserveToSaveScrollPosition() {
+  if (reserveToSaveScrollPosition.reserved)
+    clearTimeout(reserveToSaveScrollPosition.reserved);
+  reserveToSaveScrollPosition.reserved = setTimeout(() => {
+    delete reserveToSaveScrollPosition.reserved;
+    browser.sessions.setWindowValue(
+      gTargetWindow,
+      kWINDOW_STATE_SCROLL_POSITION,
+      gTabBar.scrollTop
+    );
+  }, 150);
+}
+
 
 /* raw event handlers */
 

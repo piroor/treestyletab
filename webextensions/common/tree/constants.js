@@ -135,6 +135,7 @@ const kTABBAR_STATE_BLOCKING = 'blocking';
 const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 
 const kWINDOW_STATE_TREE_STRUCTURE = 'tree-structure';
+const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
 
 const kCOUNTER_ROLE_ALL_TABS = 1;
 const kCOUNTER_ROLE_CONTAINED_TABS = 2;

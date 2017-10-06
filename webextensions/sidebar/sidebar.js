@@ -85,6 +85,7 @@ async function init() {
   document.addEventListener('click', onClick);
   document.addEventListener('change', onChange);
   document.addEventListener('wheel', onWheel, { capture: true });
+  gTabBar.addEventListener('scroll', onScroll);
   gTabBar.addEventListener('dblclick', onDblClick);
   gTabBar.addEventListener('transitionend', onTransisionEnd);
   startListenDragEvents(window);
@@ -112,6 +113,13 @@ async function init() {
 
   tabContextMenu.init();
 
+  var scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
+  if (scrollPosition && typeof scrollPosition == 'number')
+    scrollTo({
+      position: scrollPosition,
+      justNow: true
+    });
+
   unblockUserOperations({ throbber: true });
 }
 
@@ -134,6 +142,7 @@ function destroy() {
   document.removeEventListener('click', onClick);
   document.removeEventListener('change', onChange);
   document.removeEventListener('wheel', onWheel, { capture: true });
+  gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
 
