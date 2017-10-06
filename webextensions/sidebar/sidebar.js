@@ -115,22 +115,22 @@ async function init() {
 
   await Promise.all([
     (async () => {
-  var addons = await browser.runtime.sendMessage({
-    type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-  });
-  for (let id of Object.keys(addons)) {
-    let addon = addons[id];
-    if (addon.style)
-      installStyleForAddon(id, addon.style);
-  }
+      var addons = await browser.runtime.sendMessage({
+        type: kCOMMAND_REQUEST_REGISTERED_ADDONS
+      });
+      for (let id of Object.keys(addons)) {
+        let addon = addons[id];
+        if (addon.style)
+          installStyleForAddon(id, addon.style);
+      }
     })(),
     (async () => {
-  gScrollLockedBy = await browser.runtime.sendMessage({
-    type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE
-  });
+      gScrollLockedBy = await browser.runtime.sendMessage({
+        type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE
+      });
     })(),
     (async () => {
-  tabContextMenu.init();
+      tabContextMenu.init();
     })
   ]);
   gMetricsData.add('kCOMMAND_REQUEST_REGISTERED_ADDONS, kCOMMAND_REQUEST_SCROLL_LOCK_STATE, and tabContextMenu.init');
