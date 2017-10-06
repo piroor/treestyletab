@@ -370,7 +370,7 @@ var tabContextMenu = {
         let tabId = this.contextTab.id; // cache it for delayed tasks!
         let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
         for (let tab of tabs) {
-          if (tab.id != tabId)
+          if (!tab.pinned && tab.id != tabId)
             browser.tabs.remove(tab.id);
         }
       }; break;
