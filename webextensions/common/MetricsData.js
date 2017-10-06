@@ -7,20 +7,17 @@
 
 function MetricsData() {
   this.items = [];
+  this.lastTime = Date.now();
 }
 
 MetricsData.prototype = {
   add(aLabel) {
-    this.items.push({ label: aLabel, time: Date.now() });
+    var now = Date.now();
+    this.items.push({ label: aLabel, delta: now - this.lastTime });
+    this.lastTime = now;
   },
 
   toString() {
-    var lastItem;
-    return this.items.map(aItem => {
-      if (lastItem)
-        lastItem.delta = aItem.time - lastItem.time;
-      lastItem = aItem;
-      return `${aItem.delta || 0}: ${aItem.label}`;
-    }).join('\n');
+    return this.items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`).join('\n');
   }
 };
