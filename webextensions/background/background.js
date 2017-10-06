@@ -225,6 +225,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   insertAfter  = getTabByUniqueId(insertAfter);
   ancestors    = ancestors.map(getTabByUniqueId);
   children     = children.map(getTabByUniqueId);
+  log(' => references: ', dumpTab(insertBefore), dumpTab(insertAfter), ancestors.map(dumpTab), children.map(dumpTab));
   for (let ancestor of ancestors) {
     if (!ancestor)
       continue;
