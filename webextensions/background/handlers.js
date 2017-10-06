@@ -35,12 +35,12 @@ async function onTabOpening(aTab, aInfo = {}) {
       container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-    container.openedNewTabs.push(aTab.id);
-    container.openedNewTabsTimeout = setTimeout(
-      onNewTabsTimeout,
-      configs.autoGroupNewTabsTimeout,
-      container
-    );
+      container.openedNewTabs.push(aTab.id);
+      container.openedNewTabsTimeout = setTimeout(
+        onNewTabsTimeout,
+        configs.autoGroupNewTabsTimeout,
+        container
+      );
     }
   }
 
