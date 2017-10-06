@@ -113,11 +113,16 @@ async function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 
+  var scrollPosition;
+
   await Promise.all([
     (async () => {
-      var addons = await browser.runtime.sendMessage({
-        type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-      });
+      var results = await browser.runtime.sendMessage([
+        { type: kCOMMAND_REQUEST_REGISTERED_ADDONS },
+        { type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
+      ]);
+      var addons = results[0];
+      gScrollLockedBy = results[1];
       for (let id of Object.keys(addons)) {
         let addon = addons[id];
         if (addon.style)
@@ -125,19 +130,15 @@ async function init() {
       }
     })(),
     (async () => {
-      gScrollLockedBy = await browser.runtime.sendMessage({
-        type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE
-      });
-    })(),
-    (async () => {
-      tabContextMenu.init();
+      scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
     })()
   ]);
-  gMetricsData.add('kCOMMAND_REQUEST_REGISTERED_ADDONS, kCOMMAND_REQUEST_SCROLL_LOCK_STATE, and tabContextMenu.init');
+  gMetricsData.add('kCOMMAND_REQUEST_REGISTERED_ADDONS, kCOMMAND_REQUEST_SCROLL_LOCK_STATE');
 
+  (async () => {
+    tabContextMenu.init();
+  })();
 
-  var scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
-  gMetricsData.add(`getting kWINDOW_STATE_SCROLL_POSITION`);
   if (scrollPosition && typeof scrollPosition == 'number')
     scrollTo({
       position: scrollPosition,

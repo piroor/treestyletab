@@ -607,6 +607,9 @@ function onTabPinned(aTab) {
 /* message observer */
 
 function onMessage(aMessage, aSender) {
+  if (Array.isArray(aMessage))
+    return Promise.all(aMessage.map(aOneMessage => onMessage(aOneMessage, aSender)));
+
   if (!aMessage ||
       typeof aMessage.type != 'string' ||
       aMessage.type.indexOf('treestyletab:') != 0)
