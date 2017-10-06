@@ -196,11 +196,10 @@ async function loadTreeStructure() {
       kWINDOW_STATE_TREE_STRUCTURE
     );
     var tabs = getAllTabs(aWindow.id);
-    if (structure && structure.length == tabs.length) {
-      await applyTreeStructureToTabs(tabs, structure);
-    }
-    else {
-      log(`Tree information for the window ${aWindow.id} is not available. Fallback to restoration from tab relations.`);
+    var windowStateCompletelyApplied = structure && structure.length == tabs.length;
+    await applyTreeStructureToTabs(tabs, structure);
+    if (!windowStateCompletelyApplied) {
+      log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);
       for (let tab of tabs) {
         await attachTabFromRestoredInfo(tab);
       }
