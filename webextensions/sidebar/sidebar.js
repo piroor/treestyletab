@@ -53,24 +53,24 @@ async function init() {
 
   await configs.$loaded;
   gMetricsData.add('configs.$loaded');
-  await applyStyle();
-  gMetricsData.add('applyStyle');
-  applyUserStyleRules();
-
-  calculateDefaultSizes();
 
   await Promise.all([
+    applyStyle(),
     waitUntilBackgroundIsReady(),
     retrieveAllContextualIdentities()
   ]);
-  gMetricsData.add('waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
+  gMetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
+  applyUserStyleRules();
+  gMetricsData.add('applyUserStyleRules');
+  calculateDefaultSizes();
+  gMetricsData.add('calculateDefaultSizes');
   document.documentElement.classList.remove('initializing');
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
   let response = await browser.runtime.sendMessage({
     type: kCOMMAND_PULL_TAB_ID_TABLES
   });
-  gMetricsData.add(kCOMMAND_PULL_TAB_ID_TABLES);
+  gMetricsData.add('kCOMMAND_PULL_TAB_ID_TABLES');
   gTabIdWrongToCorrect = response.wrongToCorrect;
   gTabIdCorrectToWrong = response.correctToWrong;
 
@@ -113,25 +113,31 @@ async function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 
+  await Promise.all([
+    (async () => {
   var addons = await browser.runtime.sendMessage({
     type: kCOMMAND_REQUEST_REGISTERED_ADDONS
   });
-  gMetricsData.add(kCOMMAND_REQUEST_REGISTERED_ADDONS);
   for (let id of Object.keys(addons)) {
     let addon = addons[id];
     if (addon.style)
       installStyleForAddon(id, addon.style);
   }
-
+    })(),
+    (async () => {
   gScrollLockedBy = await browser.runtime.sendMessage({
     type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE
   });
-  gMetricsData.add(kCOMMAND_REQUEST_SCROLL_LOCK_STATE);
-
+    })(),
+    (async () => {
   tabContextMenu.init();
+    })
+  ]);
+  gMetricsData.add('kCOMMAND_REQUEST_REGISTERED_ADDONS, kCOMMAND_REQUEST_SCROLL_LOCK_STATE, and tabContextMenu.init');
+
 
   var scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
-  gMetricsData.add(`getting ${kWINDOW_STATE_SCROLL_POSITION}`);
+  gMetricsData.add(`getting kWINDOW_STATE_SCROLL_POSITION`);
   if (scrollPosition && typeof scrollPosition == 'number')
     scrollTo({
       position: scrollPosition,
