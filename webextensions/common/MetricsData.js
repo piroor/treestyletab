@@ -7,17 +7,18 @@
 
 function MetricsData() {
   this.items = [];
-  this.lastTime = Date.now();
+  this.initialTime = this.lastTime = Date.now();
 }
 
 MetricsData.prototype = {
   add(aLabel) {
     var now = Date.now();
     this.items.push({ label: aLabel, delta: now - this.lastTime });
+    this.deltaBetweenLastItem = now - this.initialTime;
     this.lastTime = now;
   },
 
   toString() {
-    return this.items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`).join('\n');
+    return `total ${this.deltaBetweenLastItem} msec\n${this.items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`).join('\n')}`;
   }
 };
