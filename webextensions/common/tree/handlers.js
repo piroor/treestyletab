@@ -137,8 +137,6 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
-  await ensureAllTabsAreTracked(aTab.windowId);
-
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
   var correctId = gTabIdWrongToCorrect[aTabId];
   if (correctId)
