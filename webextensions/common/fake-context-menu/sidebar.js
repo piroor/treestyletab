@@ -306,6 +306,9 @@ var tabContextMenu = {
     while (target.nodeType != target.ELEMENT_NODE)
       target = target.parentNode;
 
+    if (target.classList.contains('has-submenu'))
+      return;
+
     switch (target.id) {
       case 'context_reloadTab':
         browser.tabs.reload(this.contextTab.id);
