@@ -726,7 +726,9 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
     log('focus to getNextFocusedTab() again?: ', !!nextFocusedTab);
   }
 
-  if (!nextFocusedTab || isHidden(nextFocusedTab))
+  if (!nextFocusedTab ||
+      isHidden(nextFocusedTab) ||
+      isActive(nextFocusedTab))
     return false;
 
   log('focus to: ', dumpTab(nextFocusedTab));

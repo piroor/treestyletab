@@ -88,12 +88,22 @@ async function onApiTabActivated(aActiveInfo) {
 
   var byCurrentTabRemove = container.promisedFocusMovesForClosingCurrentTabResolvers.length > 0;
   if (byCurrentTabRemove) {
-    container.promisedFocusMovesForClosingCurrentTabResolvers.forEach(aResolver => aResolver());
-    let canceled = await Promise.all(container.promisedFocusMovesForClosingCurrentTab);
+    container.tryingReforcusForClosingCurrentTabCount++;
+    let resolvers = container.promisedFocusMovesForClosingCurrentTabResolvers;
+    let promises = container.promisedFocusMovesForClosingCurrentTab;
     container.promisedFocusMovesForClosingCurrentTabResolvers = [];
     container.promisedFocusMovesForClosingCurrentTab = [];
-    if (canceled.indexOf(true) > -1)
+    resolvers.forEach(aResolver => aResolver(promises));
+    let focusRedirected = await Promise.all(promises);
+    log('focusRedirected: ', focusRedirected);
+    if (focusRedirected.indexOf(true) > -1)
       return;
+    container.tryingReforcusForClosingCurrentTabCount--;
+  }
+  else if (container.tryingReforcusForClosingCurrentTabCount > 0) { // treat as "redirected unintentional tab focus"
+    container.tryingReforcusForClosingCurrentTabCount--;
+    byCurrentTabRemove = true;
+    byInternalOperation = false;
   }
 
   if (window.onTabFocusing && await onTabFocusing(newTab, {

@@ -358,6 +358,7 @@ function buildTabsContainerFor(aWindowId) {
   container.internalFocusCount = 0;
   container.promisedFocusMovesForClosingCurrentTab = [];
   container.promisedFocusMovesForClosingCurrentTabResolvers = [];
+  container.tryingReforcusForClosingCurrentTabCount = 0;
   container.processingNewTabsCount = 0;
   container.duplicatingTabsCount = 0;
 

@@ -480,8 +480,10 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
 }
 
 function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
+  log('onTabFocusing ', aTab.id, aInfo);
   if (isCollapsed(aTab)) {
     if (configs.autoExpandOnCollapsedChildFocused) {
+      log('=> reaction for autoExpandOnCollapsedChildFocused');
       for (let ancestor of getAncestorTabs(aTab)) {
         collapseExpandSubtree(ancestor, {
           collapsed: false,
@@ -491,6 +493,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       handleNewActiveTab(aTab, aInfo);
     }
     else {
+      log('=> reaction for focusing collapsed descendant');
       selectTabInternally(getRootTab(aTab));
       return true;
     }
@@ -501,9 +504,11 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
             */
            aInfo.byCurrentTabRemove &&
            configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove) {
+    log('=> reaction for removing current tab');
     return true;
   }
   else if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab)) {
+    log('=> reaction for newly focused parent tab');
     handleNewActiveTab(aTab, aInfo);
   }
   return false;
@@ -512,19 +517,7 @@ function handleNewActiveTab(aTab, aInfo = {}) {
   if (aTab.parentNode.doingCollapseExpandCount != 0)
     return;
 
-  log('handleNewActiveTab: ', dumpTab(aTab));
-
-  if (handleNewActiveTab.timer)
-    clearTimeout(handleNewActiveTab.timer);
-
-  /**
-   * First, we wait until all event listeners for tabs.onSelect
-   * were processed.
-   */
-  handleNewActiveTab.timer = setTimeout(() => {
-    if (!aTab.parentNode) // it was removed while waiting
-      return;
-    delete handleNewActiveTab.timer;
+  log('handleNewActiveTab: ', dumpTab(aTab), aInfo);
     var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
     var canCollapseTree = shouldCollapseExpandNow;
     var canExpandTree   = shouldCollapseExpandNow && !aInfo.byInternalOperation;
@@ -542,7 +535,6 @@ function handleNewActiveTab(aTab, aInfo = {}) {
           broadcast: true
         });
     }
-  }, 0);
 }
 
 function onTabUpdated(aTab) {
