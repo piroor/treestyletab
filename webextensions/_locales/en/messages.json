@@ -127,6 +127,8 @@
 
   "config.treeBehavior.caption": { "message": "Tree Behavior" },
 
+  "config.alwaysApplyTreeBehavior.label": { "message": "Apply tree behavior for tabs always, even if Tree Style Tab's sidebar is inactive" },
+
   "config.parentTabBehaviorForChanges.caption": { "message": "When a parent tab is moved or closed by someone from outside of the tree" },
   "config.parentTabBehaviorForChanges.always": { "message": "Treat it as a parent always. Move or close all descendant tabs also together." },
   "config.parentTabBehaviorForChanges.onlyWhenVisible": { "message": "Treat it as a parent only when the tree sidebar is visible." },
