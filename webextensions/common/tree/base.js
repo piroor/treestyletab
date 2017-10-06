@@ -238,16 +238,16 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'mutedInfo' in aNewState) {
-    if (aTab.apiTab.audible && !aNewState.mutedInfo.muted)
-      aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
-    else
-      aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
-
     if (aNewState.mutedInfo.muted)
       aTab.classList.add(kTAB_STATE_MUTED);
     else
       aTab.classList.remove(kTAB_STATE_MUTED);
   }
+
+  if (aTab.apiTab.audible && !aTab.apiTab.mutedInfo.muted)
+    aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
+  else
+    aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
 
 /*
   // On Firefox, "highlighted" is same to "activated" for now...
