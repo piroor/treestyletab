@@ -163,6 +163,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     if (!aChild.parentNode) // it is removed while waiting
       return;
 
+    let isFirstChild = childIds.length == 1;
     if (aOptions.forceExpand) {
       collapseExpandSubtree(aParent, clone(aOptions, {
         collapsed: false,
@@ -171,7 +172,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     }
     else if (!aOptions.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
-          shouldTabAutoExpanded(aParent))
+          (isFirstChild || shouldTabAutoExpanded(aParent)))
         collapseExpandTreesIntelligentlyFor(aParent, {
           broadcast: true
         });
@@ -179,17 +180,17 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       let newAncestors = [aParent].concat(getAncestorTabs(aParent));
       if (configs.autoCollapseExpandSubtreeOnSelect) {
         newAncestors.forEach(aAncestor => {
-          if (shouldTabAutoExpanded(aAncestor))
+          if (isFirstChild || shouldTabAutoExpanded(aAncestor))
             collapseExpandSubtree(aAncestor, clone(aOptions, {
               collapsed: false,
               broadcast: true
             }));
         });
       }
-      else if (shouldTabAutoExpanded(aParent)) {
+      else if (isFirstChild || shouldTabAutoExpanded(aParent)) {
         if (configs.autoExpandOnAttached) {
           newAncestors.forEach(aAncestor => {
-            if (shouldTabAutoExpanded(aAncestor))
+            if (isFirstChild || shouldTabAutoExpanded(aAncestor))
               collapseExpandSubtree(aAncestor, clone(aOptions, {
                 collapsed: false,
                 broadcast: true
@@ -208,7 +209,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
           broadcast: true
         }));
     }
-    else if (shouldTabAutoExpanded(aParent) ||
+    else if (isFirstChild ||
+             shouldTabAutoExpanded(aParent) ||
              isCollapsed(aParent)) {
       collapseExpandTabAndSubtree(aChild, clone(aOptions, {
         collapsed: true,
