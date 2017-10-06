@@ -19,6 +19,6 @@ MetricsData.prototype = {
   },
 
   toString() {
-    return `total ${this.deltaBetweenLastItem} msec\n${this.items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`).join('\n')}`;
+    return `total ${this.deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${this.items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`).join('\n')}`;
   }
 };
