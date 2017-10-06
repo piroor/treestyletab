@@ -123,6 +123,8 @@
 
   "config.autoGroupNewTabs.before": { "message": "Auto-group tabs opened within" },
   "config.autoGroupNewTabs.after": { "message": "msec" },
+  "config.autoGroupNewTabsDelayOnNewWindow.before": { "message": "But don't group new tabs opened within" },
+  "config.autoGroupNewTabsDelayOnNewWindow.after": { "message": "msec when a new window is opened, as a part of tabs opened as \"home page\"." },
 
 
   "config.treeBehavior.caption": { "message": "Tree Behavior" },

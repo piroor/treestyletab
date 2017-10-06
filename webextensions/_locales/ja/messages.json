@@ -123,6 +123,8 @@
 
   "config.autoGroupNewTabs.before": { "message": "" },
   "config.autoGroupNewTabs.after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
+  "config.autoGroupNewTabsDelayOnNewWindow.before": { "message": "ただし、新しいウィンドウが開かれてから" },
+  "config.autoGroupNewTabsDelayOnNewWindow.after": { "message": "ミリ秒以内に開かれたタブは「ホームページ」の一部と見なしてグループ化しない" },
 
 
   "config.treeBehavior.caption": { "message": "ツリーの挙動" },
