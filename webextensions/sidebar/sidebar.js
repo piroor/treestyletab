@@ -131,7 +131,7 @@ async function init() {
     })(),
     (async () => {
       tabContextMenu.init();
-    })
+    })()
   ]);
   gMetricsData.add('kCOMMAND_REQUEST_REGISTERED_ADDONS, kCOMMAND_REQUEST_SCROLL_LOCK_STATE, and tabContextMenu.init');
 
