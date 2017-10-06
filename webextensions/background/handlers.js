@@ -31,12 +31,17 @@ async function onTabOpening(aTab, aInfo = {}) {
   if (configs.autoGroupNewTabs &&
       !aTab.apiTab.openerTabId &&
       !aInfo.maybeOrphan) {
+    if (container.preventAutoGroupNewTabsUntil > Date.now()) {
+      container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
+    }
+    else {
     container.openedNewTabs.push(aTab.id);
     container.openedNewTabsTimeout = setTimeout(
       onNewTabsTimeout,
       configs.autoGroupNewTabsTimeout,
       container
     );
+    }
   }
 
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });

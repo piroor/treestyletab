@@ -91,6 +91,7 @@ function getOrBuildTabsContainer(aHint) {
     throw new Error(`The given ID seems invalid as an window id: ${aHint}`);
 
   container = buildTabsContainerFor(aHint);
+  container.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
   gAllTabs.appendChild(container);
   return container;
 }
