@@ -444,7 +444,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
       case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
         parent = getParentTab(current);
         insertBefore = getNextSiblingTab(current);
-        insertAfter  = current;
+        insertAfter  = getLastDescendantTab(current);
       }; break;
     }
   }
