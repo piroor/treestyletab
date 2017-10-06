@@ -134,6 +134,7 @@ var tabContextMenu = {
   },
   buildExtraItem(aItem, aOwnerId) {
     var itemNode = document.createElement('li');
+    itemNode.setAttribute('id', `${aOwnerId}-${aItem.id}`);
     itemNode.setAttribute('data-item-id', aItem.id);
     itemNode.setAttribute('data-item-owner-id', aOwnerId);
     itemNode.classList.add('extra');
@@ -202,6 +203,7 @@ var tabContextMenu = {
     this.menu.classList.remove('open');
     this.contextTab = null;
     this.contextWindowId = null;
+    this.lastMousedownTarget = null;
     this.closeTimeout = setTimeout(() => {
       delete this.closeTimeout;
       this.onClosed();
@@ -288,10 +290,19 @@ var tabContextMenu = {
     this.close();
   },
 
+  getTargetItem(aEvent) {
+    var target = aEvent.target;
+    while (target.nodeType != target.ELEMENT_NODE)
+      target = target.parentNode;
+    return target;
+  },
+
   onMouseDown(aEvent) {
     aEvent.stopImmediatePropagation();
     aEvent.stopPropagation();
     aEvent.preventDefault();
+    var target = this.getTargetItem(aEvent);
+    this.lastMousedownTarget = target.id;
   },
 
   onClick: async function(aEvent) {
@@ -302,11 +313,10 @@ var tabContextMenu = {
     aEvent.stopPropagation();
     aEvent.preventDefault();
 
-    var target = aEvent.target;
-    while (target.nodeType != target.ELEMENT_NODE)
-      target = target.parentNode;
-
-    if (target.classList.contains('has-submenu'))
+    var target = this.getTargetItem(aEvent);
+    if (target.classList.contains('has-submenu') ||
+        !target.id ||
+        this.lastMousedownTarget != target.id)
       return;
 
     switch (target.id) {
