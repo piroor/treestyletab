@@ -27,8 +27,11 @@ var gContextualIdentitiesStyle;
 var gStyleLoader;
 var gUserStyleRules;
 var gAddonStyles = {};
+var gMetricsData = new MetricsData();
+gMetricsData.add('Loaded');
 
-async function earlyInit() {
+function earlyInit() {
+  gMetricsData.add('earlyInit start');
   log('initialize sidebar on DOMContentLoaded');
   window.addEventListener('pagehide', destroy, { once: true });
 
@@ -40,14 +43,18 @@ async function earlyInit() {
   gStyleLoader = document.querySelector('#style-loader');
   gUserStyleRules = document.querySelector('#user-style-rules');
   gContextualIdentitiesStyle = document.querySelector('#contextual-identity-styling');
+  gMetricsData.add('earlyInit end');
 }
 
 async function init() {
+  gMetricsData.add('init start');
   log('initialize sidebar on load');
   window.addEventListener('resize', onResize);
 
   await configs.$loaded;
+  gMetricsData.add('configs.$loaded');
   await applyStyle();
+  gMetricsData.add('applyStyle');
   applyUserStyleRules();
 
   calculateDefaultSizes();
@@ -56,16 +63,19 @@ async function init() {
     waitUntilBackgroundIsReady(),
     retrieveAllContextualIdentities()
   ]);
+  gMetricsData.add('waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
   document.documentElement.classList.remove('initializing');
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
   let response = await browser.runtime.sendMessage({
     type: kCOMMAND_PULL_TAB_ID_TABLES
   });
+  gMetricsData.add(kCOMMAND_PULL_TAB_ID_TABLES);
   gTabIdWrongToCorrect = response.wrongToCorrect;
   gTabIdCorrectToWrong = response.correctToWrong;
 
   await rebuildAll();
+  gMetricsData.add('rebuildAll');
 
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
@@ -79,6 +89,7 @@ async function init() {
   updateTabbarLayout({ justNow: true });
 
   await inheritTreeStructure();
+  gMetricsData.add('inheritTreeStructure');
 
   document.addEventListener('mousedown', onMouseDown);
   document.addEventListener('mouseup', onMouseUp);
@@ -101,6 +112,7 @@ async function init() {
   var addons = await browser.runtime.sendMessage({
     type: kCOMMAND_REQUEST_REGISTERED_ADDONS
   });
+  gMetricsData.add(kCOMMAND_REQUEST_REGISTERED_ADDONS);
   for (let id of Object.keys(addons)) {
     let addon = addons[id];
     if (addon.style)
@@ -110,10 +122,12 @@ async function init() {
   gScrollLockedBy = await browser.runtime.sendMessage({
     type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE
   });
+  gMetricsData.add(kCOMMAND_REQUEST_SCROLL_LOCK_STATE);
 
   tabContextMenu.init();
 
   var scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
+  gMetricsData.add(`getting ${kWINDOW_STATE_SCROLL_POSITION}`);
   if (scrollPosition && typeof scrollPosition == 'number')
     scrollTo({
       position: scrollPosition,
@@ -121,6 +135,9 @@ async function init() {
     });
 
   unblockUserOperations({ throbber: true });
+
+  gMetricsData.add('init end');
+  log('Startup metrics: ', gMetricsData.toString());
 }
 
 function destroy() {
