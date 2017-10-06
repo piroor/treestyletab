@@ -203,7 +203,6 @@ var tabContextMenu = {
     this.menu.classList.remove('open');
     this.contextTab = null;
     this.contextWindowId = null;
-    this.lastMousedownTarget = null;
     this.closeTimeout = setTimeout(() => {
       delete this.closeTimeout;
       this.onClosed();
@@ -290,19 +289,26 @@ var tabContextMenu = {
     this.close();
   },
 
-  getTargetItem(aEvent) {
-    var target = aEvent.target;
-    while (target.nodeType != target.ELEMENT_NODE)
-      target = target.parentNode;
-    return target;
-  },
-
   onMouseDown(aEvent) {
     aEvent.stopImmediatePropagation();
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    var target = this.getTargetItem(aEvent);
-    this.lastMousedownTarget = target.id;
+  },
+
+  getEffectiveTargetItem(aEvent) {
+    var target = aEvent.target;
+    while (target.nodeType != target.ELEMENT_NODE) {
+      target = target.parentNode;
+    }
+    var untransparentTarget = target;
+    while (untransparentTarget) {
+      if (parseFloat(window.getComputedStyle(untransparentTarget, null).opacity) < 1)
+        return null;
+      untransparentTarget = untransparentTarget.parentNode;
+      if (untransparentTarget == document)
+        break;
+    }
+    return target;
   },
 
   onClick: async function(aEvent) {
@@ -313,10 +319,10 @@ var tabContextMenu = {
     aEvent.stopPropagation();
     aEvent.preventDefault();
 
-    var target = this.getTargetItem(aEvent);
-    if (target.classList.contains('has-submenu') ||
-        !target.id ||
-        this.lastMousedownTarget != target.id)
+    var target = this.getEffectiveTargetItem(aEvent);
+    if (!target ||
+        target.classList.contains('has-submenu') ||
+        !target.id)
       return;
 
     switch (target.id) {
