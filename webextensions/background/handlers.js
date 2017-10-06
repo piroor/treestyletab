@@ -518,23 +518,23 @@ function handleNewActiveTab(aTab, aInfo = {}) {
     return;
 
   log('handleNewActiveTab: ', dumpTab(aTab), aInfo);
-    var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
-    var canCollapseTree = shouldCollapseExpandNow;
-    var canExpandTree   = shouldCollapseExpandNow && !aInfo.byInternalOperation;
-    log('handleNewActiveTab[delayed]: ', dumpTab(aTab), {
-      canCollapseTree, canExpandTree, byInternalOperation: aInfo.byInternalOperation });
-    if (canExpandTree) {
-      if (canCollapseTree &&
-          configs.autoExpandIntelligently)
-        collapseExpandTreesIntelligentlyFor(aTab, {
-          broadcast: true
-        });
-      else
-        collapseExpandSubtree(aTab, {
-          collapsed: false,
-          broadcast: true
-        });
-    }
+  var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
+  var canCollapseTree = shouldCollapseExpandNow;
+  var canExpandTree   = shouldCollapseExpandNow && !aInfo.byInternalOperation;
+  log('handleNewActiveTab[delayed]: ', dumpTab(aTab), {
+    canCollapseTree, canExpandTree, byInternalOperation: aInfo.byInternalOperation });
+  if (canExpandTree) {
+    if (canCollapseTree &&
+        configs.autoExpandIntelligently)
+      collapseExpandTreesIntelligentlyFor(aTab, {
+        broadcast: true
+      });
+    else
+      collapseExpandSubtree(aTab, {
+        collapsed: false,
+        broadcast: true
+      });
+  }
 }
 
 function onTabUpdated(aTab) {
