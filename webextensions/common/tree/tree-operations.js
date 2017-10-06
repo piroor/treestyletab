@@ -118,20 +118,15 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
   log('new children: ', childIds);
 
+  detachTab(aChild, aOptions);
+
   if (childIds.length == 0)
     aParent.removeAttribute(kCHILDREN);
   else
     aParent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
 
-  var currentIndex = getTabIndex(aChild);
-  log('calculated index: ', {
-    current: currentIndex,
-    new: newIndex
-  });
-
-  detachTab(aChild, aOptions);
-
   aChild.setAttribute(kPARENT, aParent.id);
+
   var parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
   if (!aOptions.dontUpdateIndent) {
     updateTabsIndent(aChild, parentLevel + 1);
