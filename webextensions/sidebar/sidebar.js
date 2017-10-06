@@ -79,6 +79,7 @@ async function init() {
 
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
+  gMetricsData.add('updateContextualIdentitiesStyle and updateContextualIdentitiesSelector');
   startObserveContextualIdentities();
 
   browser.runtime.sendMessage({
@@ -87,6 +88,7 @@ async function init() {
   });
 
   updateTabbarLayout({ justNow: true });
+  gMetricsData.add('updateTabbarLayout');
 
   await inheritTreeStructure();
   gMetricsData.add('inheritTreeStructure');
@@ -100,11 +102,13 @@ async function init() {
   gTabBar.addEventListener('dblclick', onDblClick);
   gTabBar.addEventListener('transitionend', onTransisionEnd);
   startListenDragEvents(window);
+  gMetricsData.add('start to listen events');
 
   configs.$addObserver(onConfigChange);
   onConfigChange('debug');
   onConfigChange('sidebarPosition');
   onConfigChange('animation');
+  gMetricsData.add('apply configs');
 
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
