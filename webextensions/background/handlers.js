@@ -86,6 +86,7 @@ async function onTabOpening(aTab, aInfo = {}) {
 
 async function behaveAutoAttachedTab(aTab, aOptions = {}) {
   var baseTab = aOptions.baseTab || getCurrentTab();
+  log('behaveAutoAttachedTab ', dumpTab(aTab), dumpTab(baseTab), aOptions);
   switch (aOptions.behavior) {
     case kNEWTAB_OPEN_AS_ORPHAN:
     default:
