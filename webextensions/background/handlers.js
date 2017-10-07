@@ -618,8 +618,7 @@ async function onTabAttached(aTab, aInfo = {}) {
           broadcast: true
         }));
     }
-    else if (isNewTreeCreatedManually ||
-             shouldTabAutoExpanded(parent) ||
+    else if (shouldTabAutoExpanded(parent) ||
              isCollapsed(parent)) {
       collapseExpandTabAndSubtree(aTab, clone(aInfo, {
         collapsed: true,
