@@ -81,36 +81,36 @@ async function init() {
 
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main task: notify ,update, restore, and so on', async () => {
-  browser.runtime.sendMessage({
-    type:     kNOTIFY_SIDEBAR_OPENED,
-    windowId: gTargetWindow
-  });
+      browser.runtime.sendMessage({
+        type:     kNOTIFY_SIDEBAR_OPENED,
+        windowId: gTargetWindow
+      });
 
-  updateTabbarLayout({ justNow: true });
-  gMetricsData.add('updateTabbarLayout');
+      updateTabbarLayout({ justNow: true });
+      gMetricsData.add('updateTabbarLayout');
 
-  await inheritTreeStructure();
-  gMetricsData.add('inheritTreeStructure');
+      await inheritTreeStructure();
+      gMetricsData.add('inheritTreeStructure');
 
-  document.addEventListener('mousedown', onMouseDown);
-  document.addEventListener('mouseup', onMouseUp);
-  document.addEventListener('click', onClick);
-  document.addEventListener('change', onChange);
-  document.addEventListener('wheel', onWheel, { capture: true });
-  gTabBar.addEventListener('scroll', onScroll);
-  gTabBar.addEventListener('dblclick', onDblClick);
-  gTabBar.addEventListener('transitionend', onTransisionEnd);
-  startListenDragEvents(window);
-  gMetricsData.add('start to listen events');
+      document.addEventListener('mousedown', onMouseDown);
+      document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('click', onClick);
+      document.addEventListener('change', onChange);
+      document.addEventListener('wheel', onWheel, { capture: true });
+      gTabBar.addEventListener('scroll', onScroll);
+      gTabBar.addEventListener('dblclick', onDblClick);
+      gTabBar.addEventListener('transitionend', onTransisionEnd);
+      startListenDragEvents(window);
+      gMetricsData.add('start to listen events');
 
-  configs.$addObserver(onConfigChange);
-  onConfigChange('debug');
-  onConfigChange('sidebarPosition');
-  onConfigChange('animation');
-  gMetricsData.add('apply configs');
+      configs.$addObserver(onConfigChange);
+      onConfigChange('debug');
+      onConfigChange('sidebarPosition');
+      onConfigChange('animation');
+      gMetricsData.add('apply configs');
 
-  browser.runtime.onMessage.addListener(onMessage);
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+      browser.runtime.onMessage.addListener(onMessage);
+      browser.runtime.onMessageExternal.addListener(onMessageExternal);
     }),
     gMetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
