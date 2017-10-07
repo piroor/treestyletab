@@ -135,97 +135,13 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
     //this.inheritTabIndent(aChild, aParent);
 
-  if (aOptions.broadcasted) {
-    log(`Broadcasted attach: Set ${dumpTab(aChild)} to collapsed=${isSubtreeCollapsed(aParent)}`);
-    collapseExpandTabAndSubtree(aChild, {
-      collapsed: isSubtreeCollapsed(aParent),
-      justNow:   true
-    });
-  }
-  else {
-    let nextTab = aOptions.insertBefore;
-    let prevTab = aOptions.insertAfter;
-    if (!nextTab && !prevTab) {
-      let tabs = getTabs(aChild);
-      nextTab = tabs[newIndex];
-      if (!nextTab)
-        prevTab = tabs[newIndex - 1];
-    }
-    log('move newly attached child: ', dumpTab(aChild), {
-      next: dumpTab(nextTab),
-      prev: dumpTab(prevTab)
-    });
-    if (nextTab)
-      await moveTabSubtreeBefore(aChild, nextTab, aOptions);
-    else
-      await moveTabSubtreeAfter(aChild, prevTab, aOptions);
-
-    if (!aChild.parentNode) // it is removed while waiting
-      return;
-
-    let isNewTreeCreatedManually = !aOptions.justNow && childIds.length == 1;
-    if (aOptions.forceExpand) {
-      collapseExpandSubtree(aParent, clone(aOptions, {
-        collapsed: false,
-        inRemote: false
-      }));
-    }
-    else if (!aOptions.dontExpand) {
-      if (configs.autoCollapseExpandSubtreeOnAttach &&
-          (isNewTreeCreatedManually || shouldTabAutoExpanded(aParent)))
-        collapseExpandTreesIntelligentlyFor(aParent, {
-          broadcast: true
-        });
-
-      let newAncestors = [aParent].concat(getAncestorTabs(aParent));
-      if (configs.autoCollapseExpandSubtreeOnSelect) {
-        newAncestors.forEach(aAncestor => {
-          if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
-            collapseExpandSubtree(aAncestor, clone(aOptions, {
-              collapsed: false,
-              broadcast: true
-            }));
-        });
-      }
-      else if (isNewTreeCreatedManually || shouldTabAutoExpanded(aParent)) {
-        if (configs.autoExpandOnAttached) {
-          newAncestors.forEach(aAncestor => {
-            if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
-              collapseExpandSubtree(aAncestor, clone(aOptions, {
-                collapsed: false,
-                broadcast: true
-              }));
-          });
-        }
-        else
-          collapseExpandTabAndSubtree(aChild, clone(aOptions, {
-            collapsed: true,
-            broadcast: true
-          }));
-      }
-      if (isCollapsed(aParent))
-        collapseExpandTabAndSubtree(aChild, clone(aOptions, {
-          collapsed: true,
-          broadcast: true
-        }));
-    }
-    else if (isNewTreeCreatedManually ||
-             shouldTabAutoExpanded(aParent) ||
-             isCollapsed(aParent)) {
-      collapseExpandTabAndSubtree(aChild, clone(aOptions, {
-        collapsed: true,
-        broadcast: true
-      }));
-    }
-  }
-
   //promoteTooDeepLevelTabs(aChild);
 
   updateParentTab(aParent);
 
-  window.onTabAttached && onTabAttached(aChild, {
+  window.onTabAttached && onTabAttached(aChild, clone(aOptions, {
     parent: aParent
-  });
+  }));
 
   if (aOptions.inRemote || aOptions.broadcast) {
     browser.runtime.sendMessage({

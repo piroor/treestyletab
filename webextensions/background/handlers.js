@@ -548,10 +548,85 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 }
 
-function onTabAttached(aTab) {
+async function onTabAttached(aTab, aInfo = {}) {
+  var parent = getParentTab(aTab);
+    var nextTab = aInfo.insertBefore;
+    var prevTab = aInfo.insertAfter;
+    if (!nextTab && !prevTab) {
+      let tabs = getTabs(aTab);
+      nextTab = tabs[newIndex];
+      if (!nextTab)
+        prevTab = tabs[newIndex - 1];
+    }
+    log('move newly attached child: ', dumpTab(aTab), {
+      next: dumpTab(nextTab),
+      prev: dumpTab(prevTab)
+    });
+    if (nextTab)
+      await moveTabSubtreeBefore(aTab, nextTab, aInfo);
+    else
+      await moveTabSubtreeAfter(aTab, prevTab, aInfo);
+
+  if (aTab.parentNode) { // not removed while waiting
+    let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
+    if (aInfo.forceExpand) {
+      collapseExpandSubtree(parent, clone(aInfo, {
+        collapsed: false,
+        inRemote: false
+      }));
+    }
+    else if (!aInfo.dontExpand) {
+      if (configs.autoCollapseExpandSubtreeOnAttach &&
+          (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
+        collapseExpandTreesIntelligentlyFor(parent, {
+          broadcast: true
+        });
+
+      let newAncestors = [parent].concat(getAncestorTabs(parent));
+      if (configs.autoCollapseExpandSubtreeOnSelect) {
+        newAncestors.forEach(aAncestor => {
+          if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
+            collapseExpandSubtree(aAncestor, clone(aInfo, {
+              collapsed: false,
+              broadcast: true
+            }));
+        });
+      }
+      else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
+        if (configs.autoExpandOnAttached) {
+          newAncestors.forEach(aAncestor => {
+            if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
+              collapseExpandSubtree(aAncestor, clone(aInfo, {
+                collapsed: false,
+                broadcast: true
+              }));
+          });
+        }
+        else
+          collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+            collapsed: true,
+            broadcast: true
+          }));
+      }
+      if (isCollapsed(parent))
+        collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+          collapsed: true,
+          broadcast: true
+        }));
+    }
+    else if (isNewTreeCreatedManually ||
+             shouldTabAutoExpanded(parent) ||
+             isCollapsed(parent)) {
+      collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+        collapsed: true,
+        broadcast: true
+      }));
+    }
+  }
+
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
-  reserveToUpdateChildren(getParentTab(aTab));
+  reserveToUpdateChildren(parent);
   reserveToUpdateInsertionPosition([
     aTab,
     getNextTab(aTab),

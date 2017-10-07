@@ -878,7 +878,16 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
-function onTabAttached(aTab) {
+function onTabAttached(aTab, aInfo = {}) {
+  var parent = getParentTab(aTab);
+  if (aInfo.broadcasted) {
+    log(`Broadcasted attach: Set ${dumpTab(aTab)} to collapsed=${isSubtreeCollapsed(parent)}`);
+    collapseExpandTabAndSubtree(aTab, {
+      collapsed: isSubtreeCollapsed(parent),
+      justNow:   true
+    });
+  }
+
   tabContextMenu.close();
   updateTabTwisty(aTab);
   updateTabClosebox(aTab);
@@ -887,7 +896,7 @@ function onTabAttached(aTab) {
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
-  if (isActive(getParentTab(aTab)))
+  if (isActive(parent))
     scrollToNewTab(aTab);
 }
 
