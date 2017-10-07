@@ -111,7 +111,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         detachTab(aTab, {
           broadcast: true
         });
-        await moveTabInternallyAfter(aTab, getLastDescendantTab(baseTab) || getLastTab());
+        await moveTabAfter(aTab, getLastDescendantTab(baseTab) || getLastTab());
       }
       return true;
     }; break;
@@ -132,9 +132,9 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           broadcast: true
         });
         if (nextSibling)
-          await moveTabInternallyBefore(aTab, nextSibling);
+          await moveTabBefore(aTab, nextSibling);
         else
-          await moveTabInternallyAfter(aTab, getLastDescendantTab(baseTab));
+          await moveTabAfter(aTab, getLastDescendantTab(baseTab));
       }
    }; break;
   }
@@ -911,16 +911,16 @@ function onMessage(aMessage, aSender) {
       }
     }; break;
 
-    case kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE:
+    case kCOMMAND_MOVE_TABS_BEFORE:
       clearTimeout(timeout);
-      return moveTabsInternallyBefore(
+      return moveTabsBefore(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.nextTab)
       ).map(aTab => aTab.id);
 
-    case kCOMMAND_MOVE_TABS_INTERNALLY_AFTER:
+    case kCOMMAND_MOVE_TABS_AFTER:
       clearTimeout(timeout);
-      return moveTabsInternallyAfter(
+      return moveTabsAfter(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.previousTab)
       ).map(aTab => aTab.id);

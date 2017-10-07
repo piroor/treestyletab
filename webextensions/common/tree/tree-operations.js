@@ -740,7 +740,7 @@ async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
   var container = aTab.parentNode;
   container.subTreeChildrenMovingCount++;
   container.subTreeMovingCount++;
-  await moveTabsInternallyAfter(getDescendantTabs(aTab), aTab, aOptions);
+  await moveTabsAfter(getDescendantTabs(aTab), aTab, aOptions);
   container.subTreeChildrenMovingCount--;
   container.subTreeMovingCount--;
 }
@@ -952,13 +952,11 @@ async function moveTabs(aTabs, aOptions = {}) {
   }
 
 
-  if (aOptions.insertBefore &&
-      !isAllTabsPlacedBefore(movedTabs, aOptions.insertBefore)) {
-    await moveTabsInternallyAfter(movedTabs, aOptions.insertBefore, aOptions);
+  if (aOptions.insertBefore) {
+    await moveTabsBefore(movedTabs, aOptions.insertBefore, aOptions);
   }
-  else if (aOptions.insertAfter &&
-           !isAllTabsPlacedAfter(movedTabs, aOptions.insertAfter)) {
-    await moveTabsInternallyAfter(movedTabs, aOptions.insertAfter, aOptions);
+  else if (aOptions.insertAfter) {
+    await moveTabsAfter(movedTabs, aOptions.insertAfter, aOptions);
   }
   else {
     log('no move: just duplicate or import');
@@ -1135,12 +1133,10 @@ async function performTabsDragDrop(aParams = {}) {
   }
 
   log('=> moving dragged tabs ', draggedTabs.map(dumpTab));
-  if (aParams.insertBefore &&
-      !isAllTabsPlacedBefore(draggedTabs, aParams.insertBefore))
-    await moveTabsInternallyBefore(draggedTabs, aParams.insertBefore);
-  else if (aParams.insertAfter &&
-           !isAllTabsPlacedAfter(draggedTabs, aParams.insertAfter))
-    await moveTabsInternallyAfter(draggedTabs, aParams.insertAfter);
+  if (aParams.insertBefore)
+    await moveTabsBefore(draggedTabs, aParams.insertBefore);
+  else if (aParams.insertAfter)
+    await moveTabsAfter(draggedTabs, aParams.insertAfter);
   else
     log('=> already placed at expected position');
 

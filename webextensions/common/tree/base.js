@@ -405,6 +405,20 @@ async function selectTabInternally(aTab, aOptions = {}) {
 
 /* move tabs */
 
+async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
+  if (!aTabs.length || !aReferenceTab)
+    return [];
+
+  if (isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
+    log('moveTabsBefore:no need to move');
+    return;
+  }
+  return moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions);
+}
+async function moveTabBefore(aTab, aReferenceTab, aOptions = {}) {
+  return moveTabsBefore([aTab], aReferenceTab, aOptions = {});
+}
+
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
     return [];
@@ -412,7 +426,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote) {
     let tabIds = await browser.runtime.sendMessage({
-      type:     kCOMMAND_MOVE_TABS_INTERNALLY_BEFORE,
+      type:     kCOMMAND_MOVE_TABS_BEFORE,
       windowId: gTargetWindow,
       tabs:     aTabs.map(aTab => aTab.id),
       nextTab:  aReferenceTab.id
@@ -444,6 +458,20 @@ async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions = {});
 }
 
+async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
+  if (!aTabs.length || !aReferenceTab)
+    return [];
+
+  if (isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
+    log('moveTabsAfter:no need to move');
+    return;
+  }
+  return moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions);
+}
+async function moveTabAfter(aTab, aReferenceTab, aOptions = {}) {
+  return moveTabsAfter([aTab], aReferenceTab, aOptions = {});
+}
+
 async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length || !aReferenceTab)
     return [];
@@ -451,7 +479,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote) {
     let tabIds = await browser.runtime.sendMessage({
-      type:        kCOMMAND_MOVE_TABS_INTERNALLY_AFTER,
+      type:        kCOMMAND_MOVE_TABS_AFTER,
       windowId:    gTargetWindow,
       tabs:        aTabs.map(aTab => aTab.id),
       previousTab: aReferenceTab.id
