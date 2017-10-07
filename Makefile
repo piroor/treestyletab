@@ -14,7 +14,7 @@ signed: xpi
 	makexpi/sign_xpi.sh -k $(JWT_KEY) -s $(JWT_SECRET) -p ./$(PACKAGE_NAME)_noupdate.xpi
 
 webextensions:
-	cd webextensions && $(MAKE)
+	$(MAKE) xpi -C $(CURDIR)/webextensions
 	cp webextensions/$(PACKAGE_NAME)*.xpi ./
 
 clean:
