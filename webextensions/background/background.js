@@ -197,7 +197,8 @@ async function loadTreeStructure() {
     );
     var tabs = getAllTabs(aWindow.id);
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
-    await applyTreeStructureToTabs(tabs, structure);
+    if (structure)
+      await applyTreeStructureToTabs(tabs, structure);
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);
       for (let tab of tabs) {
