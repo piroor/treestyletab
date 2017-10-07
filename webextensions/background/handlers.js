@@ -832,8 +832,8 @@ function onMessage(aMessage, aSender) {
 
         // not canceled, then fallback to default "select tab"
         if (aMessage.button == 0)
-        browser.tabs.update(tab.apiTab.id, { active: true })
-          .catch(handleMissingTabError);
+          browser.tabs.update(tab.apiTab.id, { active: true })
+            .catch(handleMissingTabError);
         clearTimeout(timeout);
       })();
 
