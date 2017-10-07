@@ -118,6 +118,8 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
 
     case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       let nextSibling = getNextSiblingTab(baseTab);
+      if (nextSibling == aTab)
+        nextSibling = null;
       let parent = getParentTab(baseTab);
       if (parent)
         await attachTabTo(aTab, parent, {
