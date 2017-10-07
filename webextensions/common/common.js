@@ -166,10 +166,11 @@ configs = new Configs({
   shouldNotifyUpdatedFromLegacyVersion: true,
 
   userStyleRules: `
-/* Show title of unread tabs with italic font */
+/* Show title of unread tabs with red and italic font */
 /*
 .tab.unread .label {
-  font-style: italic;
+  color: red !important;
+  font-style: italic !important;
 }
 */
 
