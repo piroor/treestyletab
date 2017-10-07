@@ -67,8 +67,6 @@ async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
-  await ensureAllTabsAreTracked(aActiveInfo.windowId);
-
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
   var byInternalOperation = container.internalFocusCount > 0;
   if (byInternalOperation)
@@ -106,12 +104,18 @@ async function onApiTabActivated(aActiveInfo) {
     byInternalOperation = false;
   }
 
+  if (!newTab.parentNode) // it can be removed while waiting
+    return;
+
   if (window.onTabFocusing && await onTabFocusing(newTab, {
         byCurrentTabRemove,
         byTabDuplication,
         byInternalOperation,
         previouslyFocusedTab
       }))
+    return;
+
+  if (!newTab.parentNode) // it can be removed while waiting
     return;
 
   window.onTabFocused && await onTabFocused(newTab, {
@@ -133,7 +137,7 @@ function clearOldActiveStateInWindow(aWindowId) {
   return oldTabs;
 }
 
-async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
+function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
@@ -153,7 +157,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   window.onTabUpdated && onTabUpdated(updatedTab);
 }
 
-async function onApiTabCreated(aTab) {
+function onApiTabCreated(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
@@ -224,18 +228,10 @@ async function onNewTabTracked(aTab) {
     window.onTabRestored && onTabRestored(newTab);
 }
 
-async function ensureAllTabsAreTracked(aWindowId) {
-  var container = getOrBuildTabsContainer(aWindowId);
-  while (container.processingNewTabsCount > 0) {
-    await wait();
-  }
-}
-
 async function onApiTabRemoved(aTabId, aRemoveInfo) {
+  log('tabs.onRemoved: ', aTabId, aRemoveInfo);
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
-
-  await ensureAllTabsAreTracked(aRemoveInfo.windowId);
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
   var wrongId = gTabIdCorrectToWrong[aTabId];
@@ -252,7 +248,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (!oldTab)
     return;
 
-  log('tabs.onRemoved: ', dumpTab(oldTab));
+  log('tabs.onRemoved, tab is found: ', dumpTab(oldTab));
 
   window.onTabClosed && await onTabClosed(oldTab, {
     byInternalOperation
@@ -284,11 +280,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
 
-  await ensureAllTabsAreTracked(aMoveInfo.windowId);
-
   var container = getOrBuildTabsContainer(aMoveInfo.windowId);
   var byInternalOperation = container.internalMovingCount > 0;
-  //await waitUntilNewTabsAreOpened(aMoveInfo.windowId);
 
   /* When a tab is pinned, tabs.onMoved may be notified before
      tabs.onUpdated(pinned=true) is notified. As the result,
@@ -296,20 +289,13 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
      tab bar to follow their parent pinning tab. To avoid this
      problem, we have to wait for a while with this "async" and
      do following processes after the tab is completely pinned. */
-  var movedApiTab, movedTab;
-  try {
-    movedApiTab = await browser.tabs.get(aTabId);
-    movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
-    if (!movedTab) {
-      container.internalMovingCount--;
-      return;
-    }
-  }
-  catch(e) {
-    handleMissingTabError(e);
+  var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
+  if (!movedTab) {
+    container.internalMovingCount--;
+    return;
   }
 
-  log('tabs.onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
+  log('tabs.onMoved: ', dumpTab(movedTab), aMoveInfo, movedTab.apiTab);
 
   var moveInfo = clone(aMoveInfo, {
     byInternalOperation,
@@ -334,8 +320,6 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   if (gTargetWindow &&
       aAttachInfo.newWindowId != gTargetWindow)
     return;
-
-  await ensureAllTabsAreTracked(aAttachInfo.newWindowId);
 
   log('tabs.onAttached, id: ', aTabId, aAttachInfo);
   var apiTab;
@@ -369,12 +353,10 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   onNewTabTracked(apiTab);
 }
 
-async function onApiTabDetached(aTabId, aDetachInfo) {
+function onApiTabDetached(aTabId, aDetachInfo) {
   if (gTargetWindow &&
       aDetachInfo.oldWindowId != gTargetWindow)
     return;
-
-  await ensureAllTabsAreTracked(aDetachInfo.oldWindowId);
 
   log('tabs.onDetached, id: ', aTabId, aDetachInfo);
   var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
