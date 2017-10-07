@@ -879,11 +879,10 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 */
 
 function onTabAttached(aTab, aInfo = {}) {
-  var parent = getParentTab(aTab);
   if (aInfo.broadcasted) {
-    log(`Broadcasted attach: Set ${dumpTab(aTab)} to collapsed=${isSubtreeCollapsed(parent)}`);
+    log(`Broadcasted attach: Set ${dumpTab(aTab)} to collapsed=${isSubtreeCollapsed(aInfo.parent)}`);
     collapseExpandTabAndSubtree(aTab, {
-      collapsed: isSubtreeCollapsed(parent),
+      collapsed: isSubtreeCollapsed(aInfo.parent),
       justNow:   true
     });
   }
@@ -896,7 +895,7 @@ function onTabAttached(aTab, aInfo = {}) {
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
-  if (isActive(parent))
+  if (isActive(aInfo.parent))
     scrollToNewTab(aTab);
 }
 

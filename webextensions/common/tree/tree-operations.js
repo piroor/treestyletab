@@ -140,7 +140,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   updateParentTab(aParent);
 
   window.onTabAttached && onTabAttached(aChild, clone(aOptions, {
-    parent: aParent
+    parent: aParent,
+    newIndex
   }));
 
   if (aOptions.inRemote || aOptions.broadcast) {

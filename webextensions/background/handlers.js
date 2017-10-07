@@ -553,14 +553,14 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 }
 
 async function onTabAttached(aTab, aInfo = {}) {
-  var parent = getParentTab(aTab);
+  var parent = aInfo.parent;
   var nextTab = aInfo.insertBefore;
   var prevTab = aInfo.insertAfter;
   if (!nextTab && !prevTab) {
     let tabs = getTabs(aTab);
-    nextTab = tabs[newIndex];
+    nextTab = tabs[aInfo.newIndex];
     if (!nextTab)
-      prevTab = tabs[newIndex - 1];
+      prevTab = tabs[aInfo.newIndex - 1];
   }
   log('move newly attached child: ', dumpTab(aTab), {
     next: dumpTab(nextTab),
