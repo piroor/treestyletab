@@ -189,27 +189,6 @@ function onMouseDown(aEvent) {
 
   tab = tab || getTabFromTabbarEvent(aEvent);
   //log('found target tab: ', tab);
-  if (!tab) {
-    if (aEvent.button == 2) {
-      tabContextMenu.open({
-        left: aEvent.clientX,
-        top:  aEvent.clientY
-      });
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
-      return;
-    }
-    sendTSTAPIMessage({
-      type:     kTSTAPI_NOTIFY_TABBAR_CLICKED,
-      window:   gTargetWindow,
-      button:   aEvent.button,
-      ctrlKey:  aEvent.ctrlKey,
-      shiftKey: aEvent.shiftKey,
-      altKey:   aEvent.altKey,
-      metaKey:  aEvent.metaKey
-    });
-    return;
-  }
 
   if (aEvent.button == 0 &&
       isEventFiredOnTwisty(aEvent)) {
@@ -226,7 +205,7 @@ function onMouseDown(aEvent) {
   }
 
   var mousedownDetail = {
-    tab:      tab.id,
+    tab:      tab && tab.id,
     button:   aEvent.button,
     ctrlKey:  aEvent.ctrlKey,
     shiftKey: aEvent.shiftKey,
@@ -251,17 +230,6 @@ function onMouseDown(aEvent) {
     return;
   }
 
-  if (aEvent.button == 2) {
-    tabContextMenu.open({
-      tab:  tab.apiTab,
-      left: aEvent.clientX,
-      top:  aEvent.clientY
-    });
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-    return;
-  }
-
   gLastMousedown = {
     detail: mousedownDetail,
     fire: () => {
@@ -277,7 +245,8 @@ function onMouseDown(aEvent) {
     if (!gLastMousedown)
       return;
     gLastMousedown.fire();
-    notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
+    if (aEvent.button != 2)
+      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
   }, configs.startDragTimeout);
 }
 
@@ -300,10 +269,26 @@ function cancelHandleMousedown() {
 }
 
 function onMouseUp(aEvent) {
+  let tab = getTabFromEvent(aEvent);
+
   if (gLastMousedown) {
-    if (!gLastMousedown.expired &&
-        gLastMousedown.fire)
+    if (!tab)
+      sendTSTAPIMessage(clone(gLastMousedown.detail, {
+        type:     kTSTAPI_NOTIFY_TABBAR_CLICKED,
+        window:   gTargetWindow,
+      }));
+
+    if (gLastMousedown.detail.button == 2) {
+      tabContextMenu.open({
+        tab:  tab && tab.apiTab,
+        left: aEvent.clientX,
+        top:  aEvent.clientY
+      });
+    }
+    else if (!gLastMousedown.expired &&
+             gLastMousedown.fire)
       gLastMousedown.fire();
+
 
     cancelHandleMousedown();
   }
@@ -314,7 +299,6 @@ function onMouseUp(aEvent) {
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();
 
-    let tab = getTabFromEvent(aEvent);
     sendTSTAPIMessage({
       type:    kTSTAPI_NOTIFY_TAB_DRAGEND,
       tab:     tab && serializeTabForTSTAPI(tab),
@@ -328,7 +312,6 @@ function onMouseUp(aEvent) {
   }
 
   if (gLastMousedownIsMiddleClick) {
-    let tab = getTabFromEvent(aEvent);
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       //log('middle-click to close');
       browser.runtime.sendMessage({
