@@ -131,7 +131,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         if (nextSibling)
           await moveTabInternallyBefore(aTab, nextSibling);
         else
-          await moveTabInternallyAfter(aTab, baseTab);
+          await moveTabInternallyAfter(aTab, getLastDescendantTab(baseTab));
       }
    }; break;
   }
