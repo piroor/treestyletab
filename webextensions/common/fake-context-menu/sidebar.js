@@ -322,8 +322,14 @@ var tabContextMenu = {
     var target = this.getEffectiveTargetItem(aEvent);
     if (!target ||
         target.classList.contains('has-submenu') ||
-        !target.id)
+        !target.id) {
+      let elementTarget = aEvent.target;
+      if (elementTarget.nodeType != Node.ELEMENT_NODE)
+        elementTarget = elementTarget.parentNode;
+      if (!elementTarget.matches(`#${this.menu.id} *`))
+        return this.close();
       return;
+    }
 
     switch (target.id) {
       case 'context_reloadTab':
