@@ -1,17 +1,6 @@
 <!--
 NOTE: Please read the guideline to open a new issue at first.
 https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
-
-And, WebExtensions-based renewed version is in development in now,
-and it will be released for Firefox 57. See also:
-https://github.com/piroor/treestyletab/issues/1224#issuecomment-326467198
-
-XUL-based legacy version won't work on Firefox 57, and
-by technical reasons WebExtensions-version cannot provide
-some features of XUL-based version, including "auto hide tab bar".
-To concentrate to development of the WE-based version,
-please don't open issues about feature requests or trivial bug reports
-about the XUL-based version.
 -->
 
 ## Short description
@@ -22,6 +11,18 @@ about the XUL-based version.
  2. Install TST.
  3. 
  4. 
+
+<!--
+If your issue is related to tree strucutre, figures or screenshots will help me a lot, like:
+
+```
+A
+\- B (collapsed)
+C
+\- D
+E (selected)
+```
+-->
 
 ## Expected result
 
