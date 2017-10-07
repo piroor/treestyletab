@@ -59,6 +59,16 @@ async function requestUniqueId(aTabId, aOptions = {}) {
     });
   }
 
+  /*
+    Because currently there is no way to know the timing all
+    restored session information become readable, sessions.getTabValue()
+    sometimes gets nothing result for actually duplicated/restored tabs.
+    https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 will help to fix
+    this problem for duplicated tab case...
+    Just as a workaround, now we wait for the next event loop.
+  */
+  await wait(0);
+
   var originalId = null;
   var originalTabId = null;
   var duplicated = false;
