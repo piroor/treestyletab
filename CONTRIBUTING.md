@@ -52,6 +52,16 @@ Then, please report the bug with these information:
  * **Platform information.**
    If the problem appear on your multiple platforms, please list them.
 
+If your issue is related to tree strucutre, figures or screenshots will help me a lot, like:
+
+```
+A
+\- B (collapsed)
+C
+\- D
+E (selected)
+```
+
 ## Please don't join to an existing discussion if your problem is different from the originally reported one
 
 Even if the result is quite similar, they may be different problem if the reproduction steps for yours are different from the one originally reported.
