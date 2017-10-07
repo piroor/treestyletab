@@ -444,6 +444,10 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
       let realDelta = Math.abs(toIndex - fromIndex);
       newParent = realDelta < 2 ? prevParent : (oldParent || nextParent) ;
     }
+    while (newParent && isSubtreeCollapsed(newParent)) {
+      log('=> the tree is collapsed, up to parent tree')
+      newParent = getParentTab(newParent)
+    }
   }
   else if (prevLevel < nextLevel) {
     log('=> moved to first child position of existing tree');
