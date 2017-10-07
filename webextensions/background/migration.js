@@ -219,14 +219,19 @@ async function migrateLegacyTreeStructure() {
       populate: true
     });
     var restApiTabs = apiWindow.tabs.slice(1);
-    await browser.tabs.remove(apiWindow.tabs[0].id);
-    // apply pinned state
-    for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
-      if (!aStructure[i].pinned)
-        break;
-      await browser.tabs.update(restApiTabs[i].id, {
-        pinned: true
-      });
+    try {
+      await browser.tabs.remove(apiWindow.tabs[0].id);
+      // apply pinned state
+      for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
+        if (!aStructure[i].pinned)
+          break;
+        await browser.tabs.update(restApiTabs[i].id, {
+          pinned: true
+        });
+      }
+    }
+    catch(e) {
+      handleMissingTabError(e);
     }
   }));
   if (structures.length > 0)
@@ -284,7 +289,8 @@ async function notifyUpdatedFromLegacy() {
         typeof aMessage.type == 'string' &&
         aMessage.type == kNOTIFY_SIDEBAR_OPENED) {
       browser.runtime.onMessage.removeListener(onMessage);
-      browser.tabs.remove(tab.id);
+      browser.tabs.remove(tab.id)
+        .catch(handleMissingTabError);
     }
   });
 }

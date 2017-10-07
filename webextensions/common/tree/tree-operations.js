@@ -823,7 +823,13 @@ async function moveTabs(aTabs, aOptions = {}) {
       // This promise will be resolved with very large delay.
       // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
       let promisedDuplicatedIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
-        return (await browser.tabs.duplicate(aId)).id;
+        try {
+          return (await browser.tabs.duplicate(aId)).id;
+        }
+        catch(e) {
+          handleMissingTabError(e);
+          return null;
+        }
       })).then(aIds => {
         log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
         return aIds;
@@ -864,13 +870,25 @@ async function moveTabs(aTabs, aOptions = {}) {
     log('toIndex = ', toIndex);
     if (aOptions.insertBefore &&
         aOptions.insertBefore.apiTab.windowId == destinationWindowId) {
-      let latestApiTab = await browser.tabs.get(aOptions.insertBefore.apiTab.id);
-      toIndex = latestApiTab.index;
+      try {
+        let latestApiTab = await browser.tabs.get(aOptions.insertBefore.apiTab.id);
+        toIndex = latestApiTab.index;
+      }
+      catch(e) {
+        handleMissingTabError(e);
+        log('aOptions.insertBefore is unavailable');
+      }
     }
     else if (aOptions.insertAfter &&
              aOptions.insertAfter.apiTab.windowId == destinationWindowId) {
-      let latestApiTab = await browser.tabs.get(aOptions.insertAfter.apiTab.id);
-      toIndex = latestApiTab.index + 1;
+      try {
+        let latestApiTab = await browser.tabs.get(aOptions.insertAfter.apiTab.id);
+        toIndex = latestApiTab.index + 1;
+      }
+      catch(e) {
+        handleMissingTabError(e);
+        log('aOptions.insertAfter is unavailable');
+      }
     }
     if (!isAcrossWindows &&
         aTabs[0].apiTab.index < toIndex)
@@ -1017,7 +1035,8 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       });
       var removeIds = allTabIdsInWindow.filter(aId => movedTabIds.indexOf(aId) < 0);
       log('removing tabs: ', removeIds);
-      browser.tabs.remove(removeIds);
+      browser.tabs.remove(removeIds)
+        .catch(handleMissingTabError); // already removed
       unblockUserOperationsIn(newWindow.id);
     });
 

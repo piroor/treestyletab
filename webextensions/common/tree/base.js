@@ -83,6 +83,7 @@ async function requestUniqueId(aTabId, aOptions = {}) {
           throw new Error('missing');
       }
       catch(e) {
+        handleMissingTabError(e);
         // It fails if the tab doesn't exist.
         // There is no live tab for the tabId, thus
         // this seems to be a tab restored from session.
@@ -394,8 +395,11 @@ async function selectTabInternally(aTab, aOptions = {}) {
   }
   var container = aTab.parentNode;
   container.internalFocusCount++;
-  await browser.tabs.update(aTab.apiTab.id, { active: true })
-          .catch(handleMissingTabError);
+  return browser.tabs.update(aTab.apiTab.id, { active: true })
+          .catch(e => {
+            container.internalFocusCount--;
+            handleMissingTabError(e);
+          });
 }
 
 
@@ -431,6 +435,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     // tab will be moved by handling of API event
   }
   catch(e) {
+    handleMissingTabError(e);
     log('moveTabsInternallyBefore failed: ', String(e));
   }
   return apiTabIds.map(getTabById);
@@ -469,6 +474,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     // tab will be moved by handling of API event
   }
   catch(e) {
+    handleMissingTabError(e);
     log('moveTabsInternallyAfter failed: ', String(e));
   }
   return apiTabIds.map(getTabById);
@@ -488,8 +494,9 @@ async function loadURI(aURI, aOptions = {}) {
       type: kCOMMAND_LOAD_URI,
       tab:  aOptions.tab && aOptions.tab.id
     }));
+    return;
   }
-  else {
+  try {
     let apiTabId;
     if (aOptions.tab) {
       apiTabId = aOptions.tab.apiTab.id;
@@ -506,6 +513,9 @@ async function loadURI(aURI, aOptions = {}) {
       id:       apiTabId,
       url:      aURI
     });
+  }
+  catch(e) {
+    handleMissingTabError(e);
   }
 }
 

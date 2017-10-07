@@ -66,13 +66,15 @@ var contextMenuClickListener = (aInfo, aTab) => {
     case 'reloadTree': {
       let tabs = [contextTab].concat(getDescendantTabs(contextTab));
       for (let tab of tabs) {
-        browser.tabs.reload(tab.apiTab.id);
+        browser.tabs.reload(tab.apiTab.id)
+          .catch(handleMissingTabError);
       }
     }; break;
     case 'reloadDescendants': {
       let tabs = getDescendantTabs(contextTab);
       for (let tab of tabs) {
-        browser.tabs.reload(tab.apiTab.id);
+        browser.tabs.reload(tab.apiTab.id)
+          .catch(handleMissingTabError);
       }
     }; break;
 
@@ -81,7 +83,8 @@ var contextMenuClickListener = (aInfo, aTab) => {
       container.toBeClosedTabs += tabs.length;
       tabs.reverse(); // close bottom to top!
       for (let tab of tabs) {
-        browser.tabs.remove(tab.apiTab.id);
+        browser.tabs.remove(tab.apiTab.id)
+          .catch(handleMissingTabError);
       }
     }; break;
     case 'closeDescendants': {
@@ -89,7 +92,8 @@ var contextMenuClickListener = (aInfo, aTab) => {
       container.toBeClosedTabs += tabs.length;
       tabs.reverse(); // close bottom to top!
       for (let tab of tabs) {
-        browser.tabs.remove(tab.apiTab.id);
+        browser.tabs.remove(tab.apiTab.id)
+          .catch(handleMissingTabError);
       }
     }; break;
     case 'closeOthers': {
@@ -99,7 +103,8 @@ var contextMenuClickListener = (aInfo, aTab) => {
       tabs.reverse(); // close bottom to top!
       for (let tab of tabs) {
         if (exceptionTabs.indexOf(tab) < 0)
-          browser.tabs.remove(tab.apiTab.id);
+          browser.tabs.remove(tab.apiTab.id)
+            .catch(handleMissingTabError);
       }
     }; break;
 

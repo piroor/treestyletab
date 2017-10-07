@@ -66,12 +66,12 @@ async function onTabOpening(aTab, aInfo = {}) {
       case kINSERT_FIRST:
         browser.tabs.move(aTab.apiTab.id, {
           index: getPinnedTabs(container).length
-        });
+        }).catch(handleMissingTabError); // already removed tab;
         break;
       case kINSERT_LAST:
         browser.tabs.move(aTab.apiTab.id, {
           index: getAllTabs(container).length - 1
-        });
+        }).catch(handleMissingTabError); // already removed tab;
         break;
     }
   }
@@ -267,7 +267,8 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     }
     log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
     for (let tab of tabsToBeRemoved) {
-      browser.tabs.remove(tab.apiTab.id);
+      browser.tabs.remove(tab.apiTab.id)
+        .catch(handleMissingTabError);
     }
   }, 0);
 
@@ -368,14 +369,14 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
   }
 }
 
-async function moveBack(aTab, aMoveInfo) {
+function moveBack(aTab, aMoveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(aTab), aMoveInfo);
   var container = aTab.parentNode;
   container.internalMovingCount++;
-  await browser.tabs.move(aTab.apiTab.id, {
+  return browser.tabs.move(aTab.apiTab.id, {
     windowId: aMoveInfo.windowId,
     index: aMoveInfo.fromIndex
-  });
+  }).catch(handleMissingTabError);
 }
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {

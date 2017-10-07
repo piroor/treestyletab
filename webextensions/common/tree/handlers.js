@@ -296,11 +296,17 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
      tab bar to follow their parent pinning tab. To avoid this
      problem, we have to wait for a while with this "async" and
      do following processes after the tab is completely pinned. */
-  var movedApiTab = await browser.tabs.get(aTabId);
-  var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
-  if (!movedTab) {
-    container.internalMovingCount--;
-    return;
+  var movedApiTab, movedTab;
+  try {
+    movedApiTab = await browser.tabs.get(aTabId);
+    movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
+    if (!movedTab) {
+      container.internalMovingCount--;
+      return;
+    }
+  }
+  catch(e) {
+    handleMissingTabError(e);
   }
 
   log('tabs.onMoved: ', dumpTab(movedTab), aMoveInfo, movedApiTab);
@@ -332,10 +338,16 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   await ensureAllTabsAreTracked(aAttachInfo.newWindowId);
 
   log('tabs.onAttached, id: ', aTabId, aAttachInfo);
-  var apiTab = await browser.tabs.get(aTabId);
-  log(`New apiTab for attached tab ${aTabId}: `, apiTab);
-  if (!apiTab)
-    return;
+  var apiTab;
+  try {
+    apiTab = await browser.tabs.get(aTabId);
+    log(`New apiTab for attached tab ${aTabId}: `, apiTab);
+    if (!apiTab)
+      return;
+  }
+  catch(e) {
+    handleMissingTabError(e);
+  }
 
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
   if (apiTab.id != aTabId) {

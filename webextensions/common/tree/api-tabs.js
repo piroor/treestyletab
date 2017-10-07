@@ -10,7 +10,11 @@ async function getApiTabIndex(...aQueriedTabIds) {
     return -1;
 
   var indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
-    return browser.tabs.get(aTabId);
+    return browser.tabs.get(aTabId)
+             .catch(e => {
+               handleMissingTabError(e);
+               return -1;
+             });
   }));
   indexes = indexes.map(aTab => aTab ? aTab.index : -1);
   if (indexes.length == 1)
@@ -21,14 +25,20 @@ async function getApiTabIndex(...aQueriedTabIds) {
 
 // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477
 async function safeMoveApiTabsAcrossWindows(aTabIds, aMoveOptions) {
-  return await Promise.all(aTabIds.map(async (aTabId, aIndex) => {
-    var movedTab = await browser.tabs.move(aTabId, clone(aMoveOptions, {
-      index: aMoveOptions.index + aIndex
-    }));
-    if (Array.isArray(movedTab))
-      movedTab = movedTab[0];
-    return movedTab;
-  }));
+  return (await Promise.all(aTabIds.map(async (aTabId, aIndex) => {
+    try {
+      var movedTab = await browser.tabs.move(aTabId, clone(aMoveOptions, {
+        index: aMoveOptions.index + aIndex
+      }));
+      if (Array.isArray(movedTab))
+        movedTab = movedTab[0];
+      return movedTab;
+    }
+    catch(e) {
+      handleMissingTabError(e);
+      return null;
+    }
+  }))).filter(aTab => !!aTab);
 }
 
 function handleMissingTabError(aError) {
