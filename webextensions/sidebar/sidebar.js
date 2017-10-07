@@ -77,11 +77,10 @@ async function init() {
   await rebuildAll();
   gMetricsData.add('rebuildAll');
 
-  updateContextualIdentitiesStyle();
-  updateContextualIdentitiesSelector();
-  gMetricsData.add('updateContextualIdentitiesStyle and updateContextualIdentitiesSelector');
-  startObserveContextualIdentities();
+  var scrollPosition;
 
+  await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
+    gMetricsData.addAsync('main task: notify ,update, restore, and so on', async () => {
   browser.runtime.sendMessage({
     type:     kNOTIFY_SIDEBAR_OPENED,
     windowId: gTargetWindow
@@ -112,11 +111,13 @@ async function init() {
 
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
-
-  var scrollPosition;
-
-  await Promise.all([
-    (async () => {
+    }),
+    gMetricsData.addAsync('initializing contextual identities', async () => {
+      updateContextualIdentitiesStyle();
+      updateContextualIdentitiesSelector();
+      startObserveContextualIdentities();
+    }),
+    gMetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       var results = await browser.runtime.sendMessage([
         { type: kCOMMAND_REQUEST_REGISTERED_ADDONS },
         { type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
@@ -128,22 +129,22 @@ async function init() {
         if (addon.style)
           installStyleForAddon(id, addon.style);
       }
-    })(),
-    (async () => {
+    }),
+    gMetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
-    })()
-  ]);
-  gMetricsData.add('kCOMMAND_REQUEST_REGISTERED_ADDONS, kCOMMAND_REQUEST_SCROLL_LOCK_STATE');
+    }),
+    gMetricsData.addAsync('tabContextMenu.init', async () => {
+      tabContextMenu.init();
+    })
+  ]));
 
-  (async () => {
-    tabContextMenu.init();
-  })();
-
-  if (scrollPosition && typeof scrollPosition == 'number')
+  if (scrollPosition && typeof scrollPosition == 'number') {
     scrollTo({
       position: scrollPosition,
       justNow: true
     });
+    gMetricsData.add('applying scroll position');
+  }
 
   unblockUserOperations({ throbber: true });
 

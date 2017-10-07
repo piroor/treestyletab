@@ -18,7 +18,18 @@ MetricsData.prototype = {
     this.lastTime = now;
   },
 
+  addAsync(aLabel, aAsyncTask) {
+    var start = Date.now();
+    if (typeof aAsyncTask == 'function')
+      aAsyncTask = aAsyncTask();
+    return aAsyncTask.then(aResult => {
+      this.items.push({ label: aLabel, delta: Date.now() - start, async: true });
+      return aResult;
+    });
+  },
+
   toString() {
-    return `total ${this.deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${this.items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`).join('\n')}`;
+    var logs = this.items.map(aItem => `${aItem.delta || 0}${aItem.async ? ' (async)' : ''}: ${aItem.label}`);
+    return `total ${this.deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
   }
 };
