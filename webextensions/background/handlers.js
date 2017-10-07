@@ -550,22 +550,22 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
 async function onTabAttached(aTab, aInfo = {}) {
   var parent = getParentTab(aTab);
-    var nextTab = aInfo.insertBefore;
-    var prevTab = aInfo.insertAfter;
-    if (!nextTab && !prevTab) {
-      let tabs = getTabs(aTab);
-      nextTab = tabs[newIndex];
-      if (!nextTab)
-        prevTab = tabs[newIndex - 1];
-    }
-    log('move newly attached child: ', dumpTab(aTab), {
-      next: dumpTab(nextTab),
-      prev: dumpTab(prevTab)
-    });
-    if (nextTab)
-      await moveTabSubtreeBefore(aTab, nextTab, aInfo);
-    else
-      await moveTabSubtreeAfter(aTab, prevTab, aInfo);
+  var nextTab = aInfo.insertBefore;
+  var prevTab = aInfo.insertAfter;
+  if (!nextTab && !prevTab) {
+    let tabs = getTabs(aTab);
+    nextTab = tabs[newIndex];
+    if (!nextTab)
+      prevTab = tabs[newIndex - 1];
+  }
+  log('move newly attached child: ', dumpTab(aTab), {
+    next: dumpTab(nextTab),
+    prev: dumpTab(prevTab)
+  });
+  if (nextTab)
+    await moveTabSubtreeBefore(aTab, nextTab, aInfo);
+  else
+    await moveTabSubtreeAfter(aTab, prevTab, aInfo);
 
   if (aTab.parentNode) { // not removed while waiting
     let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
