@@ -797,9 +797,12 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         log('move tabs requested: ', aMessage);
         let movedTabs = await moveTabs(
-                                aMessage.tabs.map(getTabById),
-                                aMessage
-                              );
+          aMessage.tabs.map(getTabById),
+          clone(aMessage, {
+            insertBefore: getTabById(aMessage.insertBefore),
+            insertAfter: getTabById(aMessage.insertAfter)
+          })
+        );
         clearTimeout(timeout);
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
