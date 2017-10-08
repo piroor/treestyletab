@@ -421,7 +421,7 @@ async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
 
   if (isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
     log('moveTabsBefore:no need to move');
-    return;
+    return [];
   }
   return moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions);
 }
@@ -474,7 +474,7 @@ async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
 
   if (isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
     log('moveTabsAfter:no need to move');
-    return;
+    return [];
   }
   return moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions);
 }
