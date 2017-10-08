@@ -416,6 +416,7 @@ async function selectTabInternally(aTab, aOptions = {}) {
 /* move tabs */
 
 async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
+  log('moveTabsBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (!aTabs.length || !aReferenceTab)
     return [];
 
@@ -469,6 +470,7 @@ async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
 }
 
 async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
+  log('moveTabsAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (!aTabs.length || !aReferenceTab)
     return [];
 

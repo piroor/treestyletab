@@ -48,4 +48,5 @@ function handleMissingTabError(aError) {
     throw aError;
   // otherwise, this error is caused from a tab already closed.
   // we just ignore it.
+  console.log('Invalid Tab ID error on: ' + aError.stack);
 }
