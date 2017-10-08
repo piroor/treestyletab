@@ -195,6 +195,7 @@ function onMouseDown(aEvent) {
   }
 
   var mousedownDetail = {
+    targetType: getMouseEventTargetType(aEvent),
     tab:      tab && tab.id,
     button:   aEvent.button,
     ctrlKey:  aEvent.ctrlKey,
@@ -254,6 +255,16 @@ function notifyTSTAPIDragReady(aTab, aIsClosebox) {
   });
 }
 
+function getMouseEventTargetType(aEvent) {
+  if (getTabFromEvent(aEvent))
+    return 'tab';
+  if (isEventFiredOnNewTabButton(aEvent))
+    return 'newtabbutton';
+  if (isEventFiredOnContextualIdentitySelector(aEvent))
+    return 'contextualidentityselector';
+  return 'blank';
+}
+
 function cancelHandleMousedown() {
   if (gLastMousedown) {
     clearTimeout(gLastMousedown.timeout);
@@ -306,6 +317,7 @@ function onMouseUp(aEvent) {
 
     var validTabClick = tab && tab == getTabById(gLastMousedown.detail.tab);
     if (gLastMousedown.detail.isMiddleClick &&
+        gLastMousedown.detail.targetType == getMouseEventTargetType(aEvent) &&
         (!tab || validTabClick)) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       //log('middle-click to close');
