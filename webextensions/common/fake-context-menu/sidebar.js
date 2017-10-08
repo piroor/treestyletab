@@ -362,13 +362,13 @@ var tabContextMenu = {
           let duplicatedTabs = await moveTabs([sourceTab], {
             duplicate:           true,
             destinationWindowId: this.contextWindowId,
-            insertAfter:         sourceTab
+            insertAfter:         sourceTab,
+            inRemote:            true
           });
           behaveAutoAttachedTab(duplicatedTabs[0], {
             baseTab:  sourceTab,
             behavior: configs.autoAttachOnDuplicated,
-            inRemote: true,
-            broadcast: false
+            inRemote: true
           });
         })();
       case 'context_openTabInWindow': {
