@@ -311,27 +311,27 @@ function onMouseUp(aEvent) {
   if (!gLastMousedown)
     return;
 
-    if (!tab)
-      sendTSTAPIMessage(clone(gLastMousedown.detail, {
-        type:     kTSTAPI_NOTIFY_TABBAR_CLICKED,
-        window:   gTargetWindow,
-      }));
+  if (!tab)
+    sendTSTAPIMessage(clone(gLastMousedown.detail, {
+      type:     kTSTAPI_NOTIFY_TABBAR_CLICKED,
+      window:   gTargetWindow,
+    }));
 
-    if (gLastMousedown.detail.button == 2) {
-      tabContextMenu.open({
-        tab:  tab && tab.apiTab,
-        left: aEvent.clientX,
-        top:  aEvent.clientY
-      });
-    }
-    else if (!gLastMousedown.expired &&
-             gLastMousedown.fire)
-      gLastMousedown.fire();
+  if (gLastMousedown.detail.button == 2) {
+    tabContextMenu.open({
+      tab:  tab && tab.apiTab,
+      left: aEvent.clientX,
+      top:  aEvent.clientY
+    });
+  }
+  else if (!gLastMousedown.expired &&
+           gLastMousedown.fire)
+    gLastMousedown.fire();
 
-    var validTabClick = tab && tab == getTabById(gLastMousedown.detail.tab);
-    if (gLastMousedown.detail.isMiddleClick &&
-        gLastMousedown.detail.targetType == getMouseEventTargetType(aEvent) &&
-        (!tab || validTabClick)) {
+  var validTabClick = tab && tab == getTabById(gLastMousedown.detail.tab);
+  if (gLastMousedown.detail.isMiddleClick &&
+      gLastMousedown.detail.targetType == getMouseEventTargetType(aEvent) &&
+      (!tab || validTabClick)) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       //log('middle-click to close');
       browser.runtime.sendMessage({
