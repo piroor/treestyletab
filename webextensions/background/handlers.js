@@ -54,7 +54,8 @@ async function onTabOpening(aTab, aInfo = {}) {
       log('behave as a tab opened by new tab command, current = ', dumpTab(current));
       behaveAutoAttachedTab(aTab, {
         baseTab:  current,
-        behavior: configs.autoAttachOnNewTabCommand
+        behavior: configs.autoAttachOnNewTabCommand,
+        broadcast: true
       });
     }
     return;
@@ -79,64 +80,9 @@ async function onTabOpening(aTab, aInfo = {}) {
     behaveAutoAttachedTab(aTab, {
       baseTab:  opener,
       behavior: configs.autoAttachOnOpenedWithOwner,
-      dontMove: aInfo.maybeOpenedWithPosition
+      dontMove: aInfo.maybeOpenedWithPosition,
+      broadcast: true
     });
-  }
-}
-
-async function behaveAutoAttachedTab(aTab, aOptions = {}) {
-  var baseTab = aOptions.baseTab || getCurrentTab();
-  log('behaveAutoAttachedTab ', dumpTab(aTab), dumpTab(baseTab), aOptions);
-  switch (aOptions.behavior) {
-    case kNEWTAB_OPEN_AS_ORPHAN:
-    default:
-      break;
-
-    case kNEWTAB_OPEN_AS_CHILD:
-      await attachTabTo(aTab, baseTab, {
-        dontMove: aOptions.dontMove,
-        broadcast: true
-      });
-      return true;
-      break;
-
-    case kNEWTAB_OPEN_AS_SIBLING: {
-      let parent = getParentTab(baseTab);
-      if (parent) {
-        await attachTabTo(aTab, parent, {
-          broadcast: true
-        });
-      }
-      else {
-        detachTab(aTab, {
-          broadcast: true
-        });
-        await moveTabAfter(aTab, getLastDescendantTab(baseTab) || getLastTab());
-      }
-      return true;
-    }; break;
-
-    case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-      let nextSibling = getNextSiblingTab(baseTab);
-      if (nextSibling == aTab)
-        nextSibling = null;
-      let parent = getParentTab(baseTab);
-      if (parent)
-        await attachTabTo(aTab, parent, {
-          insertBefore: nextSibling,
-          insertAfter: getLastDescendantTab(baseTab),
-          broadcast: true
-        });
-      else {
-        detachTab(aTab, {
-          broadcast: true
-        });
-        if (nextSibling)
-          await moveTabBefore(aTab, nextSibling);
-        else
-          await moveTabAfter(aTab, getLastDescendantTab(baseTab));
-      }
-   }; break;
   }
 }
 
@@ -187,7 +133,8 @@ function onTabOpened(aTab, aInfo = {}) {
       behaveAutoAttachedTab(aTab, {
         baseTab:  original,
         behavior: configs.autoAttachOnDuplicated,
-        dontMove: aInfo.openedWithPosition
+        dontMove: aInfo.openedWithPosition,
+        broadcast: true
       });
     }
   }

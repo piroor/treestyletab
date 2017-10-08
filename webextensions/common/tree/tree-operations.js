@@ -314,6 +314,75 @@ function detachAllChildren(aTab, aOptions = {}) {
   }
 }
 
+async function behaveAutoAttachedTab(aTab, aOptions = {}) {
+  var baseTab = aOptions.baseTab || getCurrentTab(gTargetWindow || aTab);
+  log('behaveAutoAttachedTab ', dumpTab(aTab), dumpTab(baseTab), aOptions);
+  switch (aOptions.behavior) {
+    case kNEWTAB_OPEN_AS_ORPHAN:
+    default:
+      break;
+
+    case kNEWTAB_OPEN_AS_CHILD:
+      await attachTabTo(aTab, baseTab, {
+        dontMove: aOptions.dontMove,
+        inRemote: aOptions.inRemote,
+        broadcast: aOptions.broadcast
+      });
+      return true;
+      break;
+
+    case kNEWTAB_OPEN_AS_SIBLING: {
+      let parent = getParentTab(baseTab);
+      if (parent) {
+        await attachTabTo(aTab, parent, {
+          inRemote: aOptions.inRemote,
+          broadcast: aOptions.broadcast
+        });
+      }
+      else {
+        detachTab(aTab, {
+          inRemote: aOptions.inRemote,
+          broadcast: aOptions.broadcast
+        });
+        await moveTabAfter(aTab, getLastDescendantTab(baseTab) || getLastTab(), {
+          inRemote: aOptions.inRemote
+        });
+      }
+      return true;
+    }; break;
+
+    case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+      let nextSibling = getNextSiblingTab(baseTab);
+      if (nextSibling == aTab)
+        nextSibling = null;
+      let parent = getParentTab(baseTab);
+      if (parent)
+        await attachTabTo(aTab, parent, {
+          insertBefore: nextSibling,
+          insertAfter: getLastDescendantTab(baseTab),
+          inRemote: aOptions.inRemote,
+          broadcast: aOptions.broadcast
+        });
+      else {
+        detachTab(aTab, {
+          inRemote: aOptions.inRemote,
+          broadcast: aOptions.broadcast
+        });
+        if (nextSibling)
+          await moveTabBefore(aTab, nextSibling, {
+            inRemote: aOptions.inRemote,
+            broadcast: aOptions.broadcast
+          });
+        else
+          await moveTabAfter(aTab, getLastDescendantTab(baseTab), {
+            inRemote: aOptions.inRemote,
+            broadcast: aOptions.broadcast
+          });
+      }
+   }; break;
+  }
+}
+
 function updateTabsIndent(aTabs, aLevel = undefined) {
   if (!aTabs)
     return;
