@@ -348,8 +348,29 @@ var tabContextMenu = {
         browser.tabs.update(this.contextTab.id, { pinned: false });
         break;
       case 'context_duplicateTab':
-        browser.tabs.duplicate(this.contextTab.id);
-        break;
+        /*
+          Due to difference between Firefox's "duplicate tab" implementation,
+          TST sometimes fails to detect duplicated tabs based on its
+          session information. Thus we need to duplicate as an internally
+          duplicated tab. For more details, see also:
+          https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
+        */
+        // browser.tabs.duplicate(this.contextTab.id);
+        return (async () => {
+          let sourceTab = getTabById(this.contextTab.id);
+          console.log('source tab: ', sourceTab, !!sourceTab.apiTab);
+          let duplicatedTabs = await moveTabs([sourceTab], {
+            duplicate:           true,
+            destinationWindowId: this.contextWindowId,
+            insertAfter:         sourceTab
+          });
+          behaveAutoAttachedTab(duplicatedTabs[0], {
+            baseTab:  sourceTab,
+            behavior: configs.autoAttachOnDuplicated,
+            inRemote: true,
+            broadcast: false
+          });
+        })();
       case 'context_openTabInWindow': {
         let tabId = this.contextTab.id; // cache it for delayed tasks!
         let window = await browser.windows.create({ url: 'about:blank' })
