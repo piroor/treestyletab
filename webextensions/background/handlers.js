@@ -323,7 +323,10 @@ function moveBack(aTab, aMoveInfo) {
   return browser.tabs.move(aTab.apiTab.id, {
     windowId: aMoveInfo.windowId,
     index: aMoveInfo.fromIndex
-  }).catch(handleMissingTabError);
+  }).catch(e => {
+    container.internalMovingCount--;
+    handleMissingTabError(e);
+  });
 }
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
