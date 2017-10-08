@@ -324,7 +324,8 @@ function moveBack(aTab, aMoveInfo) {
     windowId: aMoveInfo.windowId,
     index: aMoveInfo.fromIndex
   }).catch(e => {
-    container.internalMovingCount--;
+    if (container.internalMovingCount > 0)
+      container.internalMovingCount--;
     handleMissingTabError(e);
   });
 }

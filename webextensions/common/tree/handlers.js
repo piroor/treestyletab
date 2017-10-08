@@ -291,7 +291,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
      do following processes after the tab is completely pinned. */
   var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab) {
-    container.internalMovingCount--;
+    if (byInternalOperation)
+      container.internalMovingCount--;
     return;
   }
 
@@ -313,7 +314,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
 
     window.onTabMoved && await onTabMoved(movedTab, moveInfo);
   }
-  container.internalMovingCount--;
+  if (byInternalOperation)
+    container.internalMovingCount--;
 }
 
 async function onApiTabAttached(aTabId, aAttachInfo) {
