@@ -258,10 +258,23 @@ function notifyTSTAPIDragReady(aTab, aIsClosebox) {
 function getMouseEventTargetType(aEvent) {
   if (getTabFromEvent(aEvent))
     return 'tab';
+
   if (isEventFiredOnNewTabButton(aEvent))
     return 'newtabbutton';
+
   if (isEventFiredOnContextualIdentitySelector(aEvent))
     return 'contextualidentityselector';
+
+  var allRange = document.createRange();
+  allRange.selectNodeContents(document.body);
+  var containerRect = allRange.getBoundingClientRect();
+  allRange.detach();
+  if (aEvent.clientX < containerRect.left ||
+      aEvent.clientX > containerRect.right ||
+      aEvent.clientY < containerRect.top ||
+      aEvent.clientY > containerRect.bottom)
+    return 'outside';
+
   return 'blank';
 }
 
