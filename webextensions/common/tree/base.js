@@ -426,7 +426,7 @@ async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions);
 }
 async function moveTabBefore(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsBefore([aTab], aReferenceTab, aOptions = {});
+  return moveTabsBefore([aTab], aReferenceTab, aOptions);
 }
 
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
@@ -465,7 +465,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   return apiTabIds.map(getTabById);
 }
 async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions = {});
+  return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions);
 }
 
 async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
@@ -479,7 +479,7 @@ async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions);
 }
 async function moveTabAfter(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsAfter([aTab], aReferenceTab, aOptions = {});
+  return moveTabsAfter([aTab], aReferenceTab, aOptions);
 }
 
 async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
@@ -518,7 +518,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   return apiTabIds.map(getTabById);
 }
 async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions = {});
+  return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions);
 }
 
 
