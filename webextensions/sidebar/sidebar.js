@@ -540,6 +540,13 @@ function updateTabbarLayout(aParams = {}) {
     let offset = range.getBoundingClientRect().height;
     range.detach();
     gTabBar.style.bottom = `${offset}px`;
+    // Newly opened active tab at the end of the tab bar can be hidden
+    // partially, so we need to scroll.
+    let current = getCurrentTab();
+    if (!getNextTab(current))
+      nextFrame().then(() => {
+        scrollToTab(current);
+      });
   }
   else if (!overflow && gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
     //log('underflow');
