@@ -76,7 +76,7 @@ async function onApiTabActivated(aActiveInfo) {
   if (!newTab)
     return;
 
-  var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId)
+  var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId);
   var previouslyFocusedTab = oldTabs.length > 0 ? oldTabs[0] : null ;
   newTab.classList.add(kTAB_STATE_ACTIVE);
   newTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
