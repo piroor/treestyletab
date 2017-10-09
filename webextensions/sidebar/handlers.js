@@ -903,13 +903,6 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 */
 
 function onTabAttached(aTab, aInfo = {}) {
-  if (isSubtreeCollapsed(aInfo.parent) &&
-      !aInfo.forceExpand)
-    collapseExpandTabAndSubtree(aTab, {
-      collapsed: true,
-      justNow:   true
-    });
-
   tabContextMenu.close();
   updateTabTwisty(aTab);
   updateTabClosebox(aTab);

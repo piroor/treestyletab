@@ -526,7 +526,17 @@ async function onTabAttached(aTab, aInfo = {}) {
   else
     await moveTabSubtreeAfter(aTab, prevTab, aInfo);
 
-  if (aTab.parentNode) { // not removed while waiting
+  if (!aTab.parentNode) // not removed while waiting
+    return;
+
+  if (isSubtreeCollapsed(aInfo.parent) &&
+      !aInfo.forceExpand)
+    collapseExpandTabAndSubtree(aTab, {
+      collapsed: true,
+      justNow:   true,
+      broadcast: true
+    });
+
     let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
     if (aInfo.forceExpand) {
       collapseExpandSubtree(parent, clone(aInfo, {
@@ -580,7 +590,6 @@ async function onTabAttached(aTab, aInfo = {}) {
         broadcast: true
       }));
     }
-  }
 
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
