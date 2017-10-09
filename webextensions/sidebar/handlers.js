@@ -226,21 +226,18 @@ function onMouseDown(aEvent) {
     return;
   }
 
+  browser.runtime.sendMessage(clone(mousedownDetail, {
+    type:     kNOTIFY_TAB_MOUSEDOWN,
+    windowId: gTargetWindow
+  }));
+
   gLastMousedown = {
-    detail: mousedownDetail,
-    fire: () => {
-      //log('give focus to ', tab.id);
-      browser.runtime.sendMessage(clone(gLastMousedown.detail, {
-        type:     kNOTIFY_TAB_MOUSEDOWN,
-        windowId: gTargetWindow
-      }));
-      gLastMousedown.expired = true;
-    }
+    detail: mousedownDetail
   };
   gLastMousedown.timeout = setTimeout(() => {
     if (!gLastMousedown)
       return;
-    gLastMousedown.fire();
+    gLastMousedown.expired = true;
     if (aEvent.button == 0)
       notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
   }, configs.startDragTimeout);
@@ -324,9 +321,6 @@ function onMouseUp(aEvent) {
       top:  aEvent.clientY
     });
   }
-  else if (!gLastMousedown.expired &&
-           gLastMousedown.fire)
-    gLastMousedown.fire();
 
   var validTabClick = tab && tab == getTabById(gLastMousedown.detail.tab);
   if (gLastMousedown.detail.isMiddleClick &&
