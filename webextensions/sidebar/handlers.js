@@ -314,6 +314,10 @@ function onMouseUp(aEvent) {
       window:   gTargetWindow,
     }));
 
+  if (gLastMousedown.detail.targetType != getMouseEventTargetType(aEvent) ||
+      (tab && tab != getTabById(gLastMousedown.detail.tab)))
+    return;
+
   if (gLastMousedown.detail.button == 2) {
     tabContextMenu.open({
       tab:  tab && tab.apiTab,
@@ -321,11 +325,7 @@ function onMouseUp(aEvent) {
       top:  aEvent.clientY
     });
   }
-
-  var validTabClick = tab && tab == getTabById(gLastMousedown.detail.tab);
-  if (gLastMousedown.detail.isMiddleClick &&
-      gLastMousedown.detail.targetType == getMouseEventTargetType(aEvent) &&
-      (!tab || validTabClick)) {
+  else if (gLastMousedown.detail.isMiddleClick) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       //log('middle-click to close');
       browser.runtime.sendMessage({
