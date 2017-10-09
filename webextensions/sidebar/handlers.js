@@ -672,8 +672,8 @@ function onTabOpened(aTab, aInfo = {}) {
       collapseExpandTab(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
-        anchor:    focused && getCurrentTab(),
-        last:      focused
+        anchor:    getCurrentTab(),
+        last:      true
       });
       if (!focused)
         notifyOutOfViewTab(aTab);

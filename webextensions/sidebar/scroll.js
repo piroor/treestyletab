@@ -177,6 +177,7 @@ function canScrollToTab(aTab) {
 
 async function scrollToTab(aTab, aOptions = {}) {
   log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions);
+  cancelRunningScroll();
   if (!canScrollToTab(aTab)) {
     log('=> unscrollable');
     return;
