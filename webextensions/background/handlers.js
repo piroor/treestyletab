@@ -143,6 +143,15 @@ function onTabOpened(aTab, aInfo = {}) {
         broadcast: true
       });
     }
+    // Duplicated tab has its own tree structure information inherited
+    // from the original tab, but they must be cleared.
+    reserveToUpdateAncestors(aTab);
+    reserveToUpdateChildren(aTab);
+    reserveToUpdateInsertionPosition([
+      aTab,
+      getNextTab(aTab),
+      getPreviousTab(aTab)
+    ]);
   }
   else {
     // if the tab is opened inside existing tree by someone, we must fixup the tree.
