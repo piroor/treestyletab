@@ -87,6 +87,11 @@ function isCollapsed(aTab) {
            aTab.classList.contains(kTAB_STATE_COLLAPSED);
 }
 
+function isOpening(aTab) {
+  return aTab && aTab.parentNode &&
+           aTab.classList.contains(kTAB_STATE_OPENING);
+}
+
 function isDuplicating(aTab) {
   return aTab && aTab.parentNode &&
            aTab.classList.contains(kTAB_STATE_DUPLICATING);

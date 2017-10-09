@@ -165,6 +165,10 @@ function buildTab(aApiTab, aOptions = {}) {
       originalTabId: null
     });
 
+  tab.opened = new Promise((aResolve, aReject) => {
+    tab._resolveOpened = aResolve;
+  });
+
   return tab;
 }
 
