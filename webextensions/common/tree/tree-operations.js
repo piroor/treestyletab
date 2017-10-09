@@ -1384,6 +1384,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
     }
     if (parent) {
+      parent.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
       attachTabTo(tab, parent, clone(aOptions, {
         dontExpand : true,
         dontMove   : true,
