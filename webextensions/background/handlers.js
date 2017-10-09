@@ -69,7 +69,7 @@ async function onTabOpening(aTab, aInfo = {}) {
           index: getPinnedTabs(container).length
         }).catch(handleMissingTabError); // already removed tab;
         break;
-      case kINSERT_LAST:
+      case kINSERT_END:
         browser.tabs.move(aTab.apiTab.id, {
           index: getAllTabs(container).length - 1
         }).catch(handleMissingTabError); // already removed tab;

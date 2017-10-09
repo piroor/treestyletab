@@ -167,7 +167,7 @@ function getReferenceTabsForNewChild(aParent) {
   var insertBefore, insertAfter;
   if (descendants.length) {
     switch (configs.insertNewChildAt) {
-      case kINSERT_LAST:
+      case kINSERT_END:
       default:
         insertAfter = descendants[descendants.length-1];
         break;

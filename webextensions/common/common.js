@@ -121,7 +121,7 @@ configs = new Configs({
 
 
   // behavior around newly opened tabs
-  insertNewChildAt: kINSERT_LAST,
+  insertNewChildAt: kINSERT_END,
   insertNewTabFromPinnedTabAt: kINSERT_NO_CONTROL,
 
   scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
