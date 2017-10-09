@@ -620,6 +620,7 @@ async function synchronizeThrobberAnimations() {
   var throbbers = getVisibleLoadingTabs().map(getTabThrobber);
   var animations = [];
   for (let throbber of throbbers) {
+    if (typeof throbber.getAnimations == 'function') // sometimes non-animated throbber can appear in the result
     animations = animations.concat(throbber.getAnimations({ subtree: true }));
   }
   var firstStartTime = Math.min(...animations.map(aAnimation => aAnimation.startTime));
