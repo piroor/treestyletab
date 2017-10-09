@@ -14,21 +14,18 @@
 
 var tabContextMenu = {
   init() {
-    this.onContextMenu     = this.onContextMenu.bind(this);
     this.onBlur            = this.onBlur.bind(this);
     this.onMouseDown       = this.onMouseDown.bind(this);
     this.onClick           = this.onClick.bind(this);
     this.onMessage         = this.onMessage.bind(this);
     this.onExternalMessage = this.onExternalMessage.bind(this);
 
-    window.addEventListener('contextmenu', this.onContextMenu, { capture: true });
     window.addEventListener('blur', this.onBlur, { capture: true });
     browser.runtime.onMessage.addListener(this.onMessage);
     browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
 
     window.addEventListener('unload', () => {
       this.onClosed();
-      window.removeEventListener('contextmenu', this.onContextMenu, { capture: true });
       window.removeEventListener('blur', this.onBlur, { capture: true });
       browser.runtime.onMessage.removeListener(this.onMessage);
       browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
@@ -278,11 +275,6 @@ var tabContextMenu = {
     top = Math.min(top, containerRect.height - menuRect.height - 3);
     aMenu.style.left = `${left}px`;
     aMenu.style.top = `${top}px`;
-  },
-
-  onContextMenu(aEvent) {
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
   },
 
   onBlur() {

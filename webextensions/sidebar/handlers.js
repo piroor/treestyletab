@@ -173,6 +173,17 @@ function onResize(aEvent) {
   reserveToUpdateIndent();
 }
 
+function onContextMenu(aEvent) {
+  aEvent.stopPropagation();
+  aEvent.preventDefault();
+  var tab = getTabFromEvent(aEvent);
+  tabContextMenu.open({
+    tab:  tab && tab.apiTab,
+    left: aEvent.clientX,
+    top:  aEvent.clientY
+  });
+}
+
 var gLastMousedown = null;
 
 function onMouseDown(aEvent) {
@@ -320,14 +331,7 @@ function onMouseUp(aEvent) {
       (tab && tab != getTabById(gLastMousedown.detail.tab)))
     return;
 
-  if (gLastMousedown.detail.button == 2) {
-    tabContextMenu.open({
-      tab:  tab && tab.apiTab,
-      left: aEvent.clientX,
-      top:  aEvent.clientY
-    });
-  }
-  else if (gLastMousedown.detail.isMiddleClick) {
+  if (gLastMousedown.detail.isMiddleClick) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       //log('middle-click to close');
       browser.runtime.sendMessage({
