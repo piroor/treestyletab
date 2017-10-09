@@ -91,10 +91,11 @@ async function onApiTabActivated(aActiveInfo) {
     delete container.resolveClosedWhileActiveForPreviousActiveTab;
     let focusRedirected = await container.focusRedirectedForClosingCurrentTab;
     delete container.focusRedirectedForClosingCurrentTab;
+    if (container.tryingReforcusForClosingCurrentTabCount > 0) // reduce count even if not redirected
+      container.tryingReforcusForClosingCurrentTabCount--;
     log('focusRedirected: ', focusRedirected);
     if (focusRedirected.indexOf(true) > -1)
       return;
-    container.tryingReforcusForClosingCurrentTabCount--;
   }
   else if (container.tryingReforcusForClosingCurrentTabCount > 0) { // treat as "redirected unintentional tab focus"
     container.tryingReforcusForClosingCurrentTabCount--;
