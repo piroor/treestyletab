@@ -18,9 +18,10 @@ function onToolbarButtonClick(aTab) {
 
 // raw event handlers
 
+// this should return true if the tab is moved while processing
 async function onTabOpening(aTab, aInfo = {}) {
   if (aInfo.duplicatedInternally)
-    return;
+    return false;
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
@@ -57,8 +58,9 @@ async function onTabOpening(aTab, aInfo = {}) {
         behavior: configs.autoAttachOnNewTabCommand,
         broadcast: true
       });
+      return true;
     }
-    return;
+    return false;
   }
 
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
@@ -68,11 +70,13 @@ async function onTabOpening(aTab, aInfo = {}) {
         browser.tabs.move(aTab.apiTab.id, {
           index: getPinnedTabs(container).length
         }).catch(handleMissingTabError); // already removed tab;
+        return true;
         break;
       case kINSERT_END:
         browser.tabs.move(aTab.apiTab.id, {
           index: getAllTabs(container).length - 1
         }).catch(handleMissingTabError); // already removed tab;
+        return true;
         break;
     }
   }
@@ -83,7 +87,9 @@ async function onTabOpening(aTab, aInfo = {}) {
       dontMove: aInfo.maybeOpenedWithPosition,
       broadcast: true
     });
+    return true;
   }
+  return false;
 }
 
 async function onNewTabsTimeout(aContainer) {
