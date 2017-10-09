@@ -557,6 +557,7 @@ function updateTabbarLayout(aParams = {}) {
       // the window is shrunken), so we need to scroll to it explicitely.
       var current = getCurrentTab();
       if (!isTabInViewport(current)) {
+        log('scroll to current tab on updateTabbarLayout');
         scrollToTab(current);
         return;
       }
@@ -564,6 +565,7 @@ function updateTabbarLayout(aParams = {}) {
       var reasons = aParams.reasons || [];
       if (reasons.indexOf(kTABBAR_UPDATE_REASON_TAB_OPEN) > -1 &&
           !isTabInViewport(lastOpenedTab))
+        log('scroll to last opened tab on updateTabbarLayout');
         scrollToTab(lastOpenedTab, {
           anchorTab: current
         });
