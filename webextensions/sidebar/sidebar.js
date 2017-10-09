@@ -549,13 +549,23 @@ function updateTabbarLayout(aParams = {}) {
     let offset = range.getBoundingClientRect().height;
     range.detach();
     gTabBar.style.bottom = `${offset}px`;
-    // Newly opened active tab at the end of the tab bar can be hidden
-    // partially, so we need to scroll.
-    let current = getCurrentTab();
-    if (!getNextTab(current))
-      nextFrame().then(() => {
+    nextFrame().then(() => {
+      // Tab at the end of the tab bar can be hidden completely or
+      // partially (newly opened in small tab bar, or scrolled out when
+      // the window is shrunken), so we need to scroll to it explicitely.
+      var current = getCurrentTab();
+      if (!isTabInViewport(current)) {
         scrollToTab(current);
-      });
+        return;
+      }
+      var lastOpenedTab = getLastOpenedTab();
+      var reasons = aParams.reasons || [];
+      if (reasons.indexOf(kTABBAR_UPDATE_REASON_TAB_OPEN) > -1 &&
+          !isTabInViewport(lastOpenedTab))
+        scrollToTab(lastOpenedTab, {
+          anchorTab: current
+        });
+    });
   }
   else if (!overflow && gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
     //log('underflow');
