@@ -519,14 +519,18 @@ function reserveToUpdateTabbarLayout(aOptions = {}) {
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
   if (aOptions.reason)
     reserveToUpdateTabbarLayout.reasons.push(aOptions.reason);
+  var timeout = aOptions.timeout || 10;
+  reserveToUpdateTabbarLayout.timeout = Math.max(timeout, reserveToUpdateTabbarLayout.timeout);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
     var reasons = reserveToUpdateTabbarLayout.reasons;
     reserveToUpdateTabbarLayout.reasons = [];
+    reserveToUpdateTabbarLayout.timeout = 0;
     updateTabbarLayout({ reasons });
-  }, aTimeout || 10);
+  }, reserveToUpdateTabbarLayout.timeout);
 }
 reserveToUpdateTabbarLayout.reasons = [];
+reserveToUpdateTabbarLayout.timeout = 0;
 
 function updateTabbarLayout(aParams = {}) {
   //log('updateTabbarLayout');
