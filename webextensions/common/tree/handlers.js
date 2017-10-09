@@ -79,6 +79,7 @@ async function onApiTabActivated(aActiveInfo) {
   var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId);
   var previouslyFocusedTab = oldTabs.length > 0 ? oldTabs[0] : null ;
   newTab.classList.add(kTAB_STATE_ACTIVE);
+  newTab.apiTab.active = true;
   newTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
   newTab.classList.remove(kTAB_STATE_UNREAD);
 
@@ -133,6 +134,7 @@ function clearOldActiveStateInWindow(aWindowId) {
   var oldTabs = document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
     oldTab.classList.remove(kTAB_STATE_ACTIVE);
+    oldTab.apiTab.active = false;
   }
   return oldTabs;
 }
