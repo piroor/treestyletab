@@ -526,7 +526,8 @@ async function onTabAttached(aTab, aInfo = {}) {
   else
     await moveTabSubtreeAfter(aTab, prevTab, aInfo);
 
-  if (!aTab.parentNode) // not removed while waiting
+  if (!aTab.parentNode || // not removed while waiting
+      getParentTab(aTab) != aInfo.parent) // not detached while waiting
     return;
 
   if (isSubtreeCollapsed(aInfo.parent) &&
