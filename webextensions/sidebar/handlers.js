@@ -755,7 +755,7 @@ function onTabSubtreeCollapsedStateChanging(aTab, aInfo = {}) {
 function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
 
-  //log('updateTabCollapsed ', dumpTab(aTab));
+  //log('onTabCollapsedStateChanging ', dumpTab(aTab), aInfo);
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
 

@@ -433,14 +433,15 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
   }
   if (!aTab.parentNode) // it was removed while waiting
     return;
-  //log('collapseExpandSubtree: ', dumpTab(aTab), aParams);
+  //log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   container.doingCollapseExpandCount++;
   await collapseExpandSubtreeInternal(aTab, aParams);
   container.doingCollapseExpandCount--;
 }
 function collapseExpandSubtreeInternal(aTab, aParams = {}) {
-  if ((isSubtreeCollapsed(aTab) == aParams.collapsed))
+  if (!aParams.force &&
+      isSubtreeCollapsed(aTab) == aParams.collapsed)
     return;
 
   var container = getTabsContainer(aTab);
@@ -1397,7 +1398,8 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     let expanded = expandStates[i];
     collapseExpandSubtree(tab, clone(aOptions, {
       collapsed: expanded === undefined ? !hasChildTabs(tab) : !expanded ,
-      justNow:   true
+      justNow:   true,
+      force:     true
     }));
   }
 }
