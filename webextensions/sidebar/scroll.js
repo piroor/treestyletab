@@ -57,6 +57,11 @@ function scrollTo(aParams = {}) {
     throw new Error('No parameter to indicate scroll position');
 }
 
+function cancelRunningScroll() {
+  scrollToTab.stopped = true;
+  stopSmoothScroll();
+}
+
 function calculateScrollDeltaForTab(aTab) {
   var tabRect = aTab.getBoundingClientRect();
   var containerRect = gTabBar.getBoundingClientRect();
@@ -177,10 +182,13 @@ async function scrollToTab(aTab, aOptions = {}) {
     return;
   }
 
+  scrollToTab.stopped = false;
   cancelNotifyOutOfViewTab();
   //cancelPerformingAutoScroll(true);
 
   await nextFrame();
+  if (scrollToTab.stopped)
+    return;
   cancelNotifyOutOfViewTab();
 
   if (isTabInViewport(aTab)) {
@@ -202,6 +210,8 @@ async function scrollToTab(aTab, aOptions = {}) {
 
   // wait for one more frame, to start collapse/expand animation
   await nextFrame();
+  if (scrollToTab.stopped)
+    return;
   cancelNotifyOutOfViewTab();
 
   var targetTabRect = aTab.getBoundingClientRect();

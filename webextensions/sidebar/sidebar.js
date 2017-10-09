@@ -138,7 +138,9 @@ async function init() {
     })
   ]));
 
-  if (scrollPosition && typeof scrollPosition == 'number') {
+  if (typeof scrollPosition == 'number') {
+    log('restore scroll position');
+    cancelRunningScroll();
     scrollTo({
       position: scrollPosition,
       justNow: true
