@@ -433,7 +433,7 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
   }
   if (!aTab.parentNode) // it was removed while waiting
     return;
-  //log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
+  log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   container.doingCollapseExpandCount++;
   await collapseExpandSubtreeInternal(aTab, aParams);
