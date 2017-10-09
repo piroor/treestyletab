@@ -77,7 +77,6 @@ async function onApiTabActivated(aActiveInfo) {
     return;
 
   var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId);
-  var previouslyFocusedTab = oldTabs.length > 0 ? oldTabs[0] : null ;
   newTab.classList.add(kTAB_STATE_ACTIVE);
   newTab.apiTab.active = true;
   newTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
@@ -85,15 +84,13 @@ async function onApiTabActivated(aActiveInfo) {
 
   log('tabs.onActivated: ', dumpTab(newTab));
 
-  var byCurrentTabRemove = container.promisedFocusMovesForClosingCurrentTabResolvers.length > 0;
+  var byCurrentTabRemove = container.resolveClosedWhileActiveForPreviousActiveTab;
   if (byCurrentTabRemove) {
     container.tryingReforcusForClosingCurrentTabCount++;
-    let resolvers = container.promisedFocusMovesForClosingCurrentTabResolvers;
-    let promises = container.promisedFocusMovesForClosingCurrentTab;
-    container.promisedFocusMovesForClosingCurrentTabResolvers = [];
+    container.resolveClosedWhileActiveForPreviousActiveTab();
+    delete container.resolveClosedWhileActiveForPreviousActiveTab;
+    let focusRedirected = await Promise.all(container.promisedFocusMovesForClosingCurrentTab);
     container.promisedFocusMovesForClosingCurrentTab = [];
-    resolvers.forEach(aResolver => aResolver(promises));
-    let focusRedirected = await Promise.all(promises);
     log('focusRedirected: ', focusRedirected);
     if (focusRedirected.indexOf(true) > -1)
       return;
@@ -111,8 +108,7 @@ async function onApiTabActivated(aActiveInfo) {
   if (window.onTabFocusing && await onTabFocusing(newTab, {
         byCurrentTabRemove,
         byTabDuplication,
-        byInternalOperation,
-        previouslyFocusedTab
+        byInternalOperation
       }))
     return;
 
@@ -122,8 +118,7 @@ async function onApiTabActivated(aActiveInfo) {
   window.onTabFocused && await onTabFocused(newTab, {
     byCurrentTabRemove,
     byTabDuplication,
-    byInternalOperation,
-    previouslyFocusedTab
+    byInternalOperation
   });
 }
 
@@ -254,6 +249,9 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
     return;
 
   log('tabs.onRemoved, tab is found: ', dumpTab(oldTab));
+
+  if (isActive(oldTab))
+    container.resolveClosedWhileActiveForPreviousActiveTab = oldTab._resolveClosedWhileActive;
 
   window.onTabClosed && await onTabClosed(oldTab, {
     byInternalOperation

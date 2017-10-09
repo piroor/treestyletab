@@ -652,10 +652,7 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
   var serialized = serializeTabForTSTAPI(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTab(aTab, { parent });
 
-  // wait for tabs.onActivated
-  await new Promise((aResolve, aReject) => {
-    aTab.parentNode.promisedFocusMovesForClosingCurrentTabResolvers.push(aResolve);
-  });
+  await aTab.closedWhileActive;
   log('tryMoveFocusFromClosingCurrentTab: tabs.onActivated is fired');
 
   var autoFocusedTab = getCurrentTab(aTab.apiTab.windowId);

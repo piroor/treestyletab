@@ -168,6 +168,9 @@ function buildTab(aApiTab, aOptions = {}) {
   tab.opened = new Promise((aResolve, aReject) => {
     tab._resolveOpened = aResolve;
   });
+  tab.closedWhileActive = new Promise((aResolve, aReject) => {
+    tab._resolveClosedWhileActive = aResolve;
+  });
 
   return tab;
 }
@@ -372,7 +375,6 @@ function buildTabsContainerFor(aWindowId) {
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
   container.promisedFocusMovesForClosingCurrentTab = [];
-  container.promisedFocusMovesForClosingCurrentTabResolvers = [];
   container.tryingReforcusForClosingCurrentTabCount = 0;
   container.processingNewTabsCount = 0;
   container.duplicatingTabsCount = 0;
