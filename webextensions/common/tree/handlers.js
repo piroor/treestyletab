@@ -89,8 +89,8 @@ async function onApiTabActivated(aActiveInfo) {
     container.tryingReforcusForClosingCurrentTabCount++;
     container.resolveClosedWhileActiveForPreviousActiveTab();
     delete container.resolveClosedWhileActiveForPreviousActiveTab;
-    let focusRedirected = await Promise.all(container.promisedFocusMovesForClosingCurrentTab);
-    container.promisedFocusMovesForClosingCurrentTab = [];
+    let focusRedirected = await container.focusRedirectedForClosingCurrentTab;
+    delete container.focusRedirectedForClosingCurrentTab;
     log('focusRedirected: ', focusRedirected);
     if (focusRedirected.indexOf(true) > -1)
       return;

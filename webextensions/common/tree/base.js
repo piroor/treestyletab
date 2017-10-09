@@ -374,7 +374,6 @@ function buildTabsContainerFor(aWindowId) {
   container.subTreeChildrenMovingCount = 0;
   container.doingCollapseExpandCount = 0;
   container.internalFocusCount = 0;
-  container.promisedFocusMovesForClosingCurrentTab = [];
   container.tryingReforcusForClosingCurrentTabCount = 0;
   container.processingNewTabsCount = 0;
   container.duplicatingTabsCount = 0;

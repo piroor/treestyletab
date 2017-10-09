@@ -630,15 +630,15 @@ tab is focused after the current (active) tab is closed" means that the
 focus move is unintentional and TST can override it.
 */
 function tryMoveFocusFromClosingCurrentTab(aTab) {
-  aTab.parentNode.promisedFocusMovesForClosingCurrentTab.push(tryMoveFocusFromClosingCurrentTabInternal(aTab));
-}
-async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
   log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab));
   if (!isActive(aTab)) {
     log(' => not active tab');
-    return false;
+    return;
   }
-
+  aTab.parentNode.focusRedirectedForClosingCurrentTab = tryMoveFocusFromClosingCurrentTabInternal(aTab);
+}
+async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
+  log('tryMoveFocusFromClosingCurrentTabInternal', dumpTab(aTab));
   // The aTab can be closed while we waiting.
   // Thus we need to get tabs related to aTab at first.
   var parent = getParentTab(aTab);
