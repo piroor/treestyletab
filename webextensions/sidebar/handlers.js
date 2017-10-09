@@ -167,7 +167,9 @@ function getTabFromCoordinates(aEvent) {
 /* handlers for DOM events */
 
 function onResize(aEvent) {
-  reserveToUpdateTabbarLayout();
+  reserveToUpdateTabbarLayout({
+    reason: kTABBAR_UPDATE_REASON_RESIZE
+  });
   reserveToUpdateIndent();
 }
 
@@ -481,7 +483,9 @@ function onDblClick(aEvent) {
 }
 
 function onTransisionEnd() {
-  reserveToUpdateTabbarLayout();
+  reserveToUpdateTabbarLayout({
+    reason: kTABBAR_UPDATE_REASON_ANIMATION_END
+  });
 }
 
 function onChange(aEvent) {
@@ -679,7 +683,10 @@ function onTabOpened(aTab, aInfo = {}) {
       notifyOutOfViewTab(aTab);
   }
 
-  reserveToUpdateTabbarLayout(configs.collapseDuration);
+  reserveToUpdateTabbarLayout({
+    reason: kTABBAR_UPDATE_REASON_TAB_OPEN,
+    timeout: configs.collapseDuration
+  });
   reserveToSynchronizeThrobberAnimations();
 }
 
@@ -690,7 +697,10 @@ function onTabClosed(aTab) {
   detachTab(aTab, {
     dontUpdateIndent: true
   });
-  reserveToUpdateTabbarLayout(configs.collapseDuration);
+  reserveToUpdateTabbarLayout({
+    reason: kTABBAR_UPDATE_REASON_TAB_CLOSE,
+    timeout: configs.collapseDuration
+  });
 }
 
 async function onTabCompletelyClosed(aTab) {
@@ -728,7 +738,10 @@ function onTabMoving(aTab) {
 }
 
 function onTabMoved(aTab) {
-  reserveToUpdateTabbarLayout(configs.collapseDuration);
+  reserveToUpdateTabbarLayout({
+    reason:  kTABBAR_UPDATE_REASON_TAB_MOVE,
+    timeout: configs.collapseDuration
+  });
   reserveToUpdateTabTooltip(getParentTab(aTab));
   reserveToSynchronizeThrobberAnimations();
 }
@@ -806,15 +819,23 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.classList.remove(kTAB_STATE_COLLAPSING);
       aTab.classList.remove(kTAB_STATE_EXPANDING);
 
+      var reason;
       // The collapsed state of the tab can be changed by different trigger,
       // so we must respect the actual status of the tab, instead of the
       // "expected status" given via arguments.
-      if (aTab.classList.contains(kTAB_STATE_COLLAPSED))
+      if (aTab.classList.contains(kTAB_STATE_COLLAPSED)) {
         aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
-      else
+        reason = kTABBAR_UPDATE_REASON_COLLAPSE;
+      }
+      else {
         aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+        reason = kTABBAR_UPDATE_REASON_EXPAND;
+      }
 
-      reserveToUpdateTabbarLayout(configs.collapseDuration);
+      reserveToUpdateTabbarLayout({
+        reason,
+        timeout: configs.collapseDuration
+      });
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (!aTab || !aTab.onEndCollapseExpandAnimation ||

@@ -513,15 +513,20 @@ function updateIndent(aOptions = {}) {
 }
 
 
-function reserveToUpdateTabbarLayout(aTimeout) {
+function reserveToUpdateTabbarLayout(aOptions = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
+  if (aOptions.reason)
+    reserveToUpdateTabbarLayout.reasons.push(aOptions.reason);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
-    updateTabbarLayout();
+    var reasons = reserveToUpdateTabbarLayout.reasons;
+    reserveToUpdateTabbarLayout.reasons = [];
+    updateTabbarLayout({ reasons });
   }, aTimeout || 10);
 }
+reserveToUpdateTabbarLayout.reasons = [];
 
 function updateTabbarLayout(aParams = {}) {
   //log('updateTabbarLayout');
