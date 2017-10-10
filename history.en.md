@@ -1,6 +1,34 @@
 # History
 
  - master/HEAD
+   * Tree structure is restored when Firefox is started with some extra URLs (or files.)
+   * Sidebar UI is now rendered with the system font for message boxes (same to Firefox's tabs).
+   * "Max level of indentation" config works more correctly (including `0` case.)
+   * Focus redirection for closing current tab works more correctly.
+   * "Close Other Tabs" command in the fake context menu don't close pinned tabs anymore.
+   * Click actions on fake context menu items now work only on certain correct cases.
+   * The fake context menu is shown on the correct timing same to native context menu on the platform.
+   * Last scroll position of the tab bar is now restored.
+   * TST sidebar's initialization process is optimized and now it is opened more quickly.
+   * Add a new option to activate behaviors around tree when TST's sidebar is not shwon. The option is activated by default now.
+   * Tabs opened at startup (like "Home" with multiple URLs) aren't grouped anymroe. The maximum delay to detect "opened on startup" is customizable and it is 500msec by default.
+   * Sound indicator icon is correctly updated for changes. (regression on 2.0.2)
+   * "New Tab" button in the sidebar opens new next sibling tab correctly (if you configured).
+   * Collapse/expand tree by changing focus and closing current tab more correctly.
+   * Collapsed/expanded state of tree is restored more correctly.
+   * Infinitely animation throbbers are gone.
+   * Restore closed tabs with previous tree strucutre more correctly.
+   * Restoring of closed duplicated tabs unexpectedly broke tree structure.
+   * Too narrow height of tabs is corrected for the "Metal" theme.
+   * Tabs moved next to collapsed tree by Firefox or other addons won't be attached to the collapsed tree anymore.
+   * Invalid middle click (the mouse is moved out before mouseup) is correctly ignored for "close the tab" on a tab and "open new tab" on blank area.
+   * Focusing and positioning of duplicated/restored tabs are processed more correctly.
+   * Ghost tabs won't be produced anymore from tabs closed after opened immediately.
+   * Select tab immediately when mousedown event is fired on a tab, like legacy TST.
+   * Use more suitable term "end" instead of "last" for labels of some configurations.
+   * New tabs opened at the end of the tab bar is now completely shown (if possible) when the tab bar turns into "overflow" mode by the opened tab.
+   * [Simple `ping` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#uninit-special-features-for-tst-when-tst-is-going-to-be-disabled) to check TST's living status from other addons is now available.
+   * Tabs gotten with [`get-tree` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#get-tree-information) now have correct `active` status.
  - 2.0.2
    * Open new tab by middle click on the blank area, like Firefox does.
    * Synchronize animation of throbbers, like Firefox does.
