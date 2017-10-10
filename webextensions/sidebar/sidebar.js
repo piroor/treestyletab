@@ -569,7 +569,7 @@ function updateTabbarLayout(aParams = {}) {
           !isTabInViewport(lastOpenedTab))
         log('scroll to last opened tab on updateTabbarLayout');
         scrollToTab(lastOpenedTab, {
-          anchorTab: current
+          anchor: current
         });
     });
   }
