@@ -3,6 +3,8 @@ NPM_BIN_DIR := $(NPM_MOD_DIR)/.bin
 
 .PHONY: xpi install_dependency eslint
 
+all: xpi
+
 install_dependency:
 	npm install
 
