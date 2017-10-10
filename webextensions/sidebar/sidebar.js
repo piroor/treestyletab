@@ -521,19 +521,19 @@ function reserveToUpdateTabbarLayout(aOptions = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
-  if (aOptions.reason)
-    reserveToUpdateTabbarLayout.reasons.push(aOptions.reason);
+  if (aOptions.reason && !(reserveToUpdateTabbarLayout.reasons & aOptions.reason))
+    reserveToUpdateTabbarLayout.reasons |= aOptions.reason;
   var timeout = aOptions.timeout || 10;
   reserveToUpdateTabbarLayout.timeout = Math.max(timeout, reserveToUpdateTabbarLayout.timeout);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
     var reasons = reserveToUpdateTabbarLayout.reasons;
-    reserveToUpdateTabbarLayout.reasons = [];
+    reserveToUpdateTabbarLayout.reasons = 0;
     reserveToUpdateTabbarLayout.timeout = 0;
     updateTabbarLayout({ reasons });
   }, reserveToUpdateTabbarLayout.timeout);
 }
-reserveToUpdateTabbarLayout.reasons = [];
+reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
 function updateTabbarLayout(aParams = {}) {
@@ -564,10 +564,10 @@ function updateTabbarLayout(aParams = {}) {
         return;
       }
       var lastOpenedTab = getLastOpenedTab();
-      var reasons = aParams.reasons || [];
-      if (reasons.indexOf(kTABBAR_UPDATE_REASON_TAB_OPEN) > -1 &&
+      var reasons = aParams.reasons || 0;
+      if (reasons & kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !isTabInViewport(lastOpenedTab))
-        log('scroll to last opened tab on updateTabbarLayout');
+        log('scroll to last opened tab on updateTabbarLayout ', reasons);
         scrollToTab(lastOpenedTab, {
           anchor: current,
           notifyOnOutOfView: true
