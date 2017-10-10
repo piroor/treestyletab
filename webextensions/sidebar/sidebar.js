@@ -566,12 +566,13 @@ function updateTabbarLayout(aParams = {}) {
       var lastOpenedTab = getLastOpenedTab();
       var reasons = aParams.reasons || 0;
       if (reasons & kTABBAR_UPDATE_REASON_TAB_OPEN &&
-          !isTabInViewport(lastOpenedTab))
+          !isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
         scrollToTab(lastOpenedTab, {
           anchor: current,
           notifyOnOutOfView: true
         });
+      }
     });
   }
   else if (!overflow && gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
