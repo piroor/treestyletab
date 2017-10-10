@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * The current tab is never scrolled out when a new tab is opened and the tab bar turned to "overflow" mode.
+   * Never show blue gradient for notification when the window is resized.
  - 2.0.3
    * Tree structure is restored when Firefox is started with some extra URLs (or files.)
    * Sidebar UI is now rendered with the system font for message boxes (same to Firefox's tabs).
