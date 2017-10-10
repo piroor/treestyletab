@@ -19,7 +19,7 @@ xpi: ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js ../extli
 	cp ../extlib/webextensions-lib-l10n/l10n.js common/
 	rm -f ./*.xpi
 	$(MAKE) eslint -C $(CURDIR)
-	zip -r -0 treestyletab-we.xpi *.json *.js _locales common options background sidebar resources >/dev/null 2>/dev/null
+	zip -r -0 treestyletab-we.xpi manifest.json _locales common options background sidebar resources >/dev/null 2>/dev/null
 
 ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js:
 	cd .. && git submodule update --init
