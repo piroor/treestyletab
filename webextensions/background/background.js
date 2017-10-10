@@ -173,9 +173,6 @@ async function saveTreeStructure(aWindowId) {
   if (!container)
     return;
 
-  var window = await browser.windows.get(aWindowId, {
-    windowTypes: ['normal']
-  });
   var structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
   browser.sessions.setWindowValue(
     aWindowId,
