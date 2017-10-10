@@ -522,6 +522,10 @@ function onTabUpdated(aTab) {
   reserveToSaveTreeStructure(aTab);
 }
 
+function onTabSubtreeCollapsedStateChanging(aTab) {
+  reserveToSaveTreeStructure(aTab);
+}
+
 function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (aInfo.collapsed)
     aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
