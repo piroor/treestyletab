@@ -569,7 +569,8 @@ function updateTabbarLayout(aParams = {}) {
           !isTabInViewport(lastOpenedTab))
         log('scroll to last opened tab on updateTabbarLayout');
         scrollToTab(lastOpenedTab, {
-          anchor: current
+          anchor: current,
+          notifyOnOutOfView: true
         });
     });
   }

@@ -166,7 +166,10 @@ function scrollToNewTab(aTab, aOptions = {}) {
     return;
 
   if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE)
-    scrollToTab(aTab, clone(aOptions, { anchor: getCurrentTab() }));
+    scrollToTab(aTab, clone(aOptions, {
+      anchor: getCurrentTab(),
+      notifyOnOutOfView: true
+    }));
 }
 
 function canScrollToTab(aTab) {
@@ -226,7 +229,8 @@ async function scrollToTab(aTab, aOptions = {}) {
     let overHeight = boundingHeight - containerRect.height;
     if (overHeight > 0) {
       delta -= overHeight;
-      notifyOutOfViewTab(aTab);
+      if (aOptions.notifyOnOutOfView)
+        notifyOutOfViewTab(aTab);
     }
     log('calculated result: ', {
       boundingHeight, overHeight, delta,
@@ -273,13 +277,15 @@ function getOffsetForAnimatingTab(aTab) {
 
 function scrollToTabSubtree(aTab) {
   return scrollToTab(getLastDescendantTabs(aTab), {
-    anchor: aTab
+    anchor: aTab,
+    notifyOnOutOfView: true
   });
 }
 
 function scrollToTabs(aTabs) {
   return scrollToTab(aTabs[aTabs.length - 1], {
-    anchor: aTabs[0]
+    anchor: aTabs[0],
+    notifyOnOutOfView: true
   });
 }
 
