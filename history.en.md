@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.0.4
    * The current tab is never scrolled out when a new tab is opened and the tab bar turned to "overflow" mode.
    * Never show blue gradient for notification when the window is resized.
  - 2.0.3
