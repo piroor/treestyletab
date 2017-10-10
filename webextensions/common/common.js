@@ -95,7 +95,6 @@ configs = new Configs({
 
 
   // tree behavior
-  alwaysApplyTreeBehavior: true,
   shouldDetectClickOnIndentSpaces: true,
 
   autoCollapseExpandSubtreeOnAttach: true,

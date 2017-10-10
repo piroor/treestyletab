@@ -129,8 +129,6 @@
 
   "config.treeBehavior.caption": { "message": "ツリーの挙動" },
 
-  "config.alwaysApplyTreeBehavior.label": { "message": "ツリー型タブのサイドバーが非表示の時でも常にタブをツリーの一部として扱う" },
-
   "config.parentTabBehaviorForChanges.caption": { "message": "親のタブがツリー以外の場所から移動または閉じられた場合" },
   "config.parentTabBehaviorForChanges.always": { "message": "常に親として扱い、配下のタブも併せて移動または閉じる" },
   "config.parentTabBehaviorForChanges.onlyWhenVisible": { "message": "サイドバーが表示されている時だけ親として扱う" },

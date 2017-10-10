@@ -124,7 +124,6 @@ async function rebuildAll() {
 function getCloseParentBehaviorForTabWithSidebarOpenState(aTab) {
   return getCloseParentBehaviorForTab(aTab, {
     keepChildren: configs.parentTabBehaviorForChanges == kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE &&
-                  !configs.alwaysApplyTreeBehavior &&
                   !gSidebarOpenState.has(aTab.apiTab.windowId)
   });
 }
