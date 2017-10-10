@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.0.3
    * Tree structure is restored when Firefox is started with some extra URLs (or files.)
    * Sidebar UI is now rendered with the system font for message boxes (same to Firefox's tabs).
    * "Max level of indentation" config works more correctly (including `0` case.)
