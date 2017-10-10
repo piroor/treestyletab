@@ -110,7 +110,7 @@ configs = new Configs({
   autoExpandOnLongHoverDelay: 500,
   autoExpandOnLongHoverRestoreIniitalState: true,
 
-  parentTabBehaviorForChanges: kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE,
+  parentTabBehaviorForChanges: kPARENT_TAB_BEHAVIOR_ALWAYS,
 
 
   // grouping
