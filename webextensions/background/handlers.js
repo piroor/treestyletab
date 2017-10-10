@@ -179,6 +179,14 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
 
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
+  if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
+      closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      isSubtreeCollapsed(aTab))
+    collapseExpandSubtree(aTab, {
+      collapsed: false,
+      justNow: true
+    });
+
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(aTab);
 

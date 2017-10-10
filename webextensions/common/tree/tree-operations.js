@@ -719,7 +719,8 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
 
 function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
   if (!aOptions.asIndividualTab &&
-      isSubtreeCollapsed(aTab))
+      isSubtreeCollapsed(aTab) &&
+      !aOptions.keepChildren)
     return kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
   var behavior = configs.closeParentBehavior;
