@@ -75,9 +75,7 @@ function getDragDataFromOneTab(aTab) {
       windowId: null
     };
 
-  var draggedTabs = isSelected(aTab) ?
-                      getSelectedTabs(aTab) :
-                      [aTab].concat(getDescendantTabs(aTab)) ;
+  var draggedTabs = getDraggedTabsFromOneTab(aTab);
   return {
     tabNode:  aTab,
     tabNodes: draggedTabs,
@@ -85,6 +83,12 @@ function getDragDataFromOneTab(aTab) {
     tabIds:   draggedTabs.map(aDraggedTab => aDraggedTab.apiTab.id),
     windowId: aTab.apiTab.windowId
   };
+}
+
+function getDraggedTabsFromOneTab(aTab) {
+  if (isSelected(aTab))
+    return getSelectedTabs(aTab);
+  return [aTab].concat(getDescendantTabs(aTab));
 }
 
 function sanitizeDragData(aDragData) {
