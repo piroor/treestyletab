@@ -62,6 +62,7 @@ function cancelRunningScroll() {
   stopSmoothScroll();
 }
 
+// This algorithm is unstable for animating tabs, so it must be updated...
 function calculateScrollDeltaForTab(aTab) {
   var tabRect       = aTab.getBoundingClientRect();
   var containerRect = gTabBar.getBoundingClientRect();
