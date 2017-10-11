@@ -216,12 +216,13 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 
   if ('status' in aNewState) {
+    let reallyChanged = !aTab.classList.contains(aNewState.status);
     aTab.classList.remove(aNewState.status == 'loading' ? 'complete' : 'loading');
     aTab.classList.add(aNewState.status);
     if (aNewState.status == 'loading') {
       aTab.classList.remove(kTAB_STATE_BURSTING);
     }
-    else if (!aOptions.forceApply) {
+    else if (!aOptions.forceApply && reallyChanged) {
       aTab.classList.add(kTAB_STATE_BURSTING);
       if (aTab.delayedBurstEnd)
         clearTimeout(aTab.delayedBurstEnd);
