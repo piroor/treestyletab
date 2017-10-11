@@ -565,15 +565,15 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
       .join('><')}>`;
 
   var xpathResult = evaluateXPath(
-      `child::${kXPATH_LIVE_TAB}[
-        @${kCHILDREN} and
-        not(${hasClass(kTAB_STATE_COLLAPSED)}) and
-        not(${hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
-        not(contains("${expandedAncestors}", concat("<", @id, ">"))) and
-        not(${hasClass(kTAB_STATE_HIDDEN)})
-      ]`,
-      container
-    );
+    `child::${kXPATH_LIVE_TAB}[
+       @${kCHILDREN} and
+       not(${hasClass(kTAB_STATE_COLLAPSED)}) and
+       not(${hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
+       not(contains("${expandedAncestors}", concat("<", @id, ">"))) and
+       not(${hasClass(kTAB_STATE_HIDDEN)})
+     ]`,
+    container
+  );
   //log(`${xpathResult.snapshotLength} tabs can be collapsed`);
   for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
     let dontCollapse = false;

@@ -157,14 +157,14 @@ function getMaxTreeLevel(aHint, aOptions = {}) {
                       `${kXPATH_VISIBLE_TAB}[@${kPARENT}]` :
                       `${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}]`;
   var maxLevel = evaluateXPath(
-                   `descendant::${tabCondition}[
-                     not(preceding-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
-                   ][
-                     not(following-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
-                   ]/@${kLEVEL}`,
-                   getTabsContainer(aHint) || document,
-                   XPathResult.NUMBER_TYPE
-                 ).numberValue;
+    `descendant::${tabCondition}[
+       not(preceding-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
+     ][
+       not(following-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
+     ]/@${kLEVEL}`,
+    getTabsContainer(aHint) || document,
+    XPathResult.NUMBER_TYPE
+  ).numberValue;
   if (isNaN(maxLevel))
     return 0;
   else
