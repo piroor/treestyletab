@@ -103,8 +103,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   {
     let expectedAllTabs = getAllTabs(aChild).filter((aTab) => aTab != aChild);
     let refIndex = aOptions.insertBefore ?
-                     expectedAllTabs.indexOf(aOptions.insertBefore) :
-                     expectedAllTabs.indexOf(aOptions.insertAfter) + 1;
+      expectedAllTabs.indexOf(aOptions.insertBefore) :
+      expectedAllTabs.indexOf(aOptions.insertAfter) + 1;
     if (refIndex >= expectedAllTabs.length)
       expectedAllTabs.push(aChild);
     else
@@ -133,7 +133,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
   //updateTabAsParent(aParent);
   //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
-    //this.inheritTabIndent(aChild, aParent);
+  //this.inheritTabIndent(aChild, aParent);
 
   //promoteTooDeepLevelTabs(aChild);
 
@@ -184,7 +184,7 @@ function getReferenceTabsForNewChild(aParent) {
 
 function detachTab(aChild, aOptions = {}) {
   log('detachTab: ', dumpTab(aChild), aOptions,
-    new Error().stack.split('\n')[1]);
+      new Error().stack.split('\n')[1]);
   var parent = getParentTab(aChild);
 
   if (!parent)
@@ -379,7 +379,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
             broadcast: aOptions.broadcast
           });
       }
-   }; break;
+    }; break;
   }
 }
 
@@ -463,10 +463,10 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
         !aParams.justNow &&
         i == lastExpandedTabIndex) {
       collapseExpandTabAndSubtree(childTab, {
-         collapsed: aParams.collapsed,
-         justNow:   aParams.justNow,
-         anchor:    aTab,
-         last:      true
+        collapsed: aParams.collapsed,
+        justNow:   aParams.justNow,
+        anchor:    aTab,
+        last:      true
       });
     }
     else {
@@ -561,19 +561,19 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
   var sameParentTab = getParentTab(aTab);
   var expandedAncestors = `<${[aTab].concat(getAncestorTabs(aTab))
-      .map(aAncestor => aAncestor.id)
-      .join('><')}>`;
+    .map(aAncestor => aAncestor.id)
+    .join('><')}>`;
 
   var xpathResult = evaluateXPath(
-      `child::${kXPATH_LIVE_TAB}[
+    `child::${kXPATH_LIVE_TAB}[
         @${kCHILDREN} and
         not(${hasClass(kTAB_STATE_COLLAPSED)}) and
         not(${hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
         not(contains("${expandedAncestors}", concat("<", @id, ">"))) and
         not(${hasClass(kTAB_STATE_HIDDEN)})
       ]`,
-      container
-    );
+    container
+  );
   //log(`${xpathResult.snapshotLength} tabs can be collapsed`);
   for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
     let dontCollapse = false;
@@ -853,163 +853,163 @@ async function moveTabs(aTabs, aOptions = {}) {
     blockUserOperationsIn(windowId, { throbber: true });
     try {
 
-    let container;
-    let prepareContainer = () => {
-      container = getTabsContainer(destinationWindowId);
-      if (!container) {
-        container = buildTabsContainerFor(destinationWindowId);
-        gAllTabs.appendChild(container);
+      let container;
+      let prepareContainer = () => {
+        container = getTabsContainer(destinationWindowId);
+        if (!container) {
+          container = buildTabsContainerFor(destinationWindowId);
+          gAllTabs.appendChild(container);
+        }
+        container.toBeOpenedTabsWithPositions += aTabs.length;
+        container.toBeOpenedOrphanTabs += aTabs.length;
+      };
+      if (newWindow) {
+        newWindow = newWindow.then(aWindow => {
+          log('moveTabs: destination window is ready, ', aWindow);
+          destinationWindowId = aWindow.id;
+          prepareContainer();
+          return aWindow;
+        });
       }
-      container.toBeOpenedTabsWithPositions += aTabs.length;
-      container.toBeOpenedOrphanTabs += aTabs.length;
-    };
-    if (newWindow) {
-      newWindow = newWindow.then(aWindow => {
-        log('moveTabs: destination window is ready, ', aWindow);
-        destinationWindowId = aWindow.id;
+      else {
         prepareContainer();
-        return aWindow;
-      });
-    }
-    else {
-      prepareContainer();
-    }
+      }
 
-    let sourceContainer = aTabs[0].parentNode;
-    if (aOptions.duplicate) {
-      sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
-      sourceContainer.toBeOpenedOrphanTabs += aTabs.length;
-      sourceContainer.duplicatingTabsCount += aTabs.length;
-    }
-    if (isAcrossWindows)
-      sourceContainer.toBeDetachedTabs += aTabs.length;
+      let sourceContainer = aTabs[0].parentNode;
+      if (aOptions.duplicate) {
+        sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
+        sourceContainer.toBeOpenedOrphanTabs += aTabs.length;
+        sourceContainer.duplicatingTabsCount += aTabs.length;
+      }
+      if (isAcrossWindows)
+        sourceContainer.toBeDetachedTabs += aTabs.length;
 
-    log('preparing tabs');
-    let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
-    if (aOptions.duplicate) {
-      let startTime = Date.now();
-      // This promise will be resolved with very large delay.
-      // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
-      let promisedDuplicatedIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
-        try {
-          return (await browser.tabs.duplicate(aId)).id;
-        }
-        catch(e) {
-          handleMissingTabError(e);
-          return null;
-        }
-      })).then(aIds => {
-        log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
-        return aIds;
-      });
-      if (configs.acccelaratedTabDuplication) {
+      log('preparing tabs');
+      let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
+      if (aOptions.duplicate) {
+        let startTime = Date.now();
+        // This promise will be resolved with very large delay.
+        // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
+        let promisedDuplicatedIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
+          try {
+            return (await browser.tabs.duplicate(aId)).id;
+          }
+          catch(e) {
+            handleMissingTabError(e);
+            return null;
+          }
+        })).then(aIds => {
+          log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
+          return aIds;
+        });
+        if (configs.acccelaratedTabDuplication) {
         // So, I collect duplicating tabs in different way.
         // This promise will be resolved when they actually
         // appear in the tab bar. This hack should be removed
         // after the bug 1394376 is fixed.
-        let promisedDuplicatingIds = (async () => {
-          while (true) {
-            await wait(100);
-            let tabs = getDuplicatingTabs(windowId);
-            if (tabs.length < apiTabIds.length)
-              continue; // not opened yet
-            let tabIds = tabs.map(aTab => aTab.apiTab.id);
-            if (tabIds.join(',') == tabIds.sort().join(','))
-              continue; // not sorted yet
-            return tabIds;
-          }
-        })().then(aIds => {
-          log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
-          return aIds;
-        });
-        apiTabIds = await Promise.race([
-          promisedDuplicatedIds,
-          promisedDuplicatingIds
-        ]);
-      }
-      else {
-        apiTabIds = await promisedDuplicatedIds;
-      }
-    }
-    if (newWindow)
-      await newWindow;
-    log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
-    let toIndex = getAllTabs(container).length;
-    log('toIndex = ', toIndex);
-    if (aOptions.insertBefore &&
-        aOptions.insertBefore.apiTab.windowId == destinationWindowId) {
-      try {
-        let latestApiTab = await browser.tabs.get(aOptions.insertBefore.apiTab.id);
-        toIndex = latestApiTab.index;
-      }
-      catch(e) {
-        handleMissingTabError(e);
-        log('aOptions.insertBefore is unavailable');
-      }
-    }
-    else if (aOptions.insertAfter &&
-             aOptions.insertAfter.apiTab.windowId == destinationWindowId) {
-      try {
-        let latestApiTab = await browser.tabs.get(aOptions.insertAfter.apiTab.id);
-        toIndex = latestApiTab.index + 1;
-      }
-      catch(e) {
-        handleMissingTabError(e);
-        log('aOptions.insertAfter is unavailable');
-      }
-    }
-    if (!isAcrossWindows &&
-        aTabs[0].apiTab.index < toIndex)
-        toIndex--;
-    log(' => ', toIndex);
-    if (isAcrossWindows) {
-      apiTabIds = await safeMoveApiTabsAcrossWindows(apiTabIds, {
-        windowId: destinationWindowId,
-        index:    toIndex
-      });
-      apiTabIds = apiTabIds.map(aApiTab => aApiTab.id);
-      log('moved across windows: ', apiTabIds);
-    }
-
-    log('applying tree structure', structure);
-    // wait until tabs.onCreated are processed (for safety)
-    let newTabs;
-    let startTime = Date.now();
-    let maxDelay = configs.maximumAcceptableDelayForTabDuplication;
-    while (Date.now() - startTime < maxDelay) {
-      newTabs = apiTabIds.map(aApiTabId => {
-        // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-        var correctId = gTabIdWrongToCorrect[aApiTabId];
-        if (correctId)
-          aApiTabId = correctId;
-        return getTabById(aApiTabId);
-      });
-      newTabs = newTabs.filter(aTab => !!aTab);
-      if (newTabs.length < aTabs.length ||
-          container.processingNewTabsCount > 0) {
-        log('retryling: ', apiTabIds, newTabs.length, aTabs.length);
-        await wait(100);
-        continue;
-      }
-      await applyTreeStructureToTabs(newTabs, structure, {
-        broadcast: true
-      });
-      if (aOptions.duplicate) {
-        for (let tab of newTabs) {
-          tab.classList.remove(kTAB_STATE_DUPLICATING);
-          broadcastTabState(tab, {
-            remove: [kTAB_STATE_DUPLICATING]
+          let promisedDuplicatingIds = (async () => {
+            while (true) {
+              await wait(100);
+              let tabs = getDuplicatingTabs(windowId);
+              if (tabs.length < apiTabIds.length)
+                continue; // not opened yet
+              let tabIds = tabs.map(aTab => aTab.apiTab.id);
+              if (tabIds.join(',') == tabIds.sort().join(','))
+                continue; // not sorted yet
+              return tabIds;
+            }
+          })().then(aIds => {
+            log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
+            return aIds;
           });
+          apiTabIds = await Promise.race([
+            promisedDuplicatedIds,
+            promisedDuplicatingIds
+          ]);
+        }
+        else {
+          apiTabIds = await promisedDuplicatedIds;
         }
       }
-      break;
-    }
+      if (newWindow)
+        await newWindow;
+      log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
+      let toIndex = getAllTabs(container).length;
+      log('toIndex = ', toIndex);
+      if (aOptions.insertBefore &&
+        aOptions.insertBefore.apiTab.windowId == destinationWindowId) {
+        try {
+          let latestApiTab = await browser.tabs.get(aOptions.insertBefore.apiTab.id);
+          toIndex = latestApiTab.index;
+        }
+        catch(e) {
+          handleMissingTabError(e);
+          log('aOptions.insertBefore is unavailable');
+        }
+      }
+      else if (aOptions.insertAfter &&
+             aOptions.insertAfter.apiTab.windowId == destinationWindowId) {
+        try {
+          let latestApiTab = await browser.tabs.get(aOptions.insertAfter.apiTab.id);
+          toIndex = latestApiTab.index + 1;
+        }
+        catch(e) {
+          handleMissingTabError(e);
+          log('aOptions.insertAfter is unavailable');
+        }
+      }
+      if (!isAcrossWindows &&
+        aTabs[0].apiTab.index < toIndex)
+        toIndex--;
+      log(' => ', toIndex);
+      if (isAcrossWindows) {
+        apiTabIds = await safeMoveApiTabsAcrossWindows(apiTabIds, {
+          windowId: destinationWindowId,
+          index:    toIndex
+        });
+        apiTabIds = apiTabIds.map(aApiTab => aApiTab.id);
+        log('moved across windows: ', apiTabIds);
+      }
 
-    if (!newTabs) {
-      log('failed to move tabs (timeout)');
-      newTabs = [];
-    }
-    movedTabs = newTabs;
+      log('applying tree structure', structure);
+      // wait until tabs.onCreated are processed (for safety)
+      let newTabs;
+      let startTime = Date.now();
+      let maxDelay = configs.maximumAcceptableDelayForTabDuplication;
+      while (Date.now() - startTime < maxDelay) {
+        newTabs = apiTabIds.map(aApiTabId => {
+        // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+          var correctId = gTabIdWrongToCorrect[aApiTabId];
+          if (correctId)
+            aApiTabId = correctId;
+          return getTabById(aApiTabId);
+        });
+        newTabs = newTabs.filter(aTab => !!aTab);
+        if (newTabs.length < aTabs.length ||
+          container.processingNewTabsCount > 0) {
+          log('retryling: ', apiTabIds, newTabs.length, aTabs.length);
+          await wait(100);
+          continue;
+        }
+        await applyTreeStructureToTabs(newTabs, structure, {
+          broadcast: true
+        });
+        if (aOptions.duplicate) {
+          for (let tab of newTabs) {
+            tab.classList.remove(kTAB_STATE_DUPLICATING);
+            broadcastTabState(tab, {
+              remove: [kTAB_STATE_DUPLICATING]
+            });
+          }
+        }
+        break;
+      }
+
+      if (!newTabs) {
+        log('failed to move tabs (timeout)');
+        newTabs = [];
+      }
+      movedTabs = newTabs;
     }
     catch(e) {
       throw e;
@@ -1076,14 +1076,14 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
     windowParams.top = aOptions.top;
   var newWindow;
   var promsiedNewWindow = browser.windows.create(windowParams).then(aNewWindow => {
-                            newWindow = aNewWindow;
-                            log('openNewWindowFromTabs: new window is ready, ', newWindow);
-                            blockUserOperationsIn(newWindow.id);
-                            return newWindow;
-                          });
+    newWindow = aNewWindow;
+    log('openNewWindowFromTabs: new window is ready, ', newWindow);
+    blockUserOperationsIn(newWindow.id);
+    return newWindow;
+  });
   var movedTabs = await moveTabs(aTabs, clone(aOptions, {
-                          destinationPromisedNewWindow: promsiedNewWindow
-                        }));
+    destinationPromisedNewWindow: promsiedNewWindow
+  }));
 
   log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
@@ -1211,7 +1211,7 @@ async function performTabsDragDrop(aParams = {}) {
   var treeStructure = getTreeStructureFromTabs(draggedTabs);
 
   var newTabs;
-/*
+  /*
   var replacedGroupTabs = doAndGetNewTabs(() => {
     newTabs = moveTabsInternal(draggedTabs, {
       duplicate    : aParams.duplicate,
@@ -1234,7 +1234,7 @@ async function performTabsDragDrop(aParams = {}) {
   }, 0);
 */
 
-/*
+  /*
   if (newTabs.length && aParams.action & kACTION_ATTACH) {
     Promise.all(newTabs.map((aTab) => aTab.__treestyletab__promisedDuplicatedTab))
       .then((function() {
@@ -1293,25 +1293,25 @@ function getTreeStructureFromTabs(aTabs, aOptions = {}) {
       [F]   => 0 (parent is 1st item in this another tree)
   */
   return cleanUpTreeStructureArray(
-      aTabs.map((aTab, aIndex) => {
-        let tab = getParentTab(aTab);
-        let index = tab ? aTabs.indexOf(tab) : -1 ;
-        return index >= aIndex ? -1 : index ;
-      }),
-      -1
-    ).map((aParentIndex, aIndex) => {
-      var tab = aTabs[aIndex];
-      var item = {
-        parent:    aParentIndex,
-        collapsed: isSubtreeCollapsed(tab)
-      };
-      if (aOptions.full) {
-        item.title  = tab.apiTab.title;
-        item.url    = tab.apiTab.url;
-        item.pinned = isPinned(tab);
-      }
-      return item;
-    });
+    aTabs.map((aTab, aIndex) => {
+      let tab = getParentTab(aTab);
+      let index = tab ? aTabs.indexOf(tab) : -1 ;
+      return index >= aIndex ? -1 : index ;
+    }),
+    -1
+  ).map((aParentIndex, aIndex) => {
+    var tab = aTabs[aIndex];
+    var item = {
+      parent:    aParentIndex,
+      collapsed: isSubtreeCollapsed(tab)
+    };
+    if (aOptions.full) {
+      item.title  = tab.apiTab.title;
+      item.url    = tab.apiTab.url;
+      item.pinned = isPinned(tab);
+    }
+    return item;
+  });
 }
 function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   var offset = 0;
@@ -1330,8 +1330,8 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   /* The final step, this validates all of values.
      Smaller than -1 is invalid, so it becomes to -1. */
   aTreeStructure = aTreeStructure.map(aIndex => {
-      return aIndex < -1 ? aDefaultParent : aIndex ;
-    });
+    return aIndex < -1 ? aDefaultParent : aIndex ;
+  });
   return aTreeStructure;
 }
 
@@ -1351,7 +1351,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   var parentTab = null;
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let tab = aTabs[i];
-/*
+    /*
     if (isCollapsed(tab))
       collapseExpandTabAndSubtree(tab, clone(aOptions, {
         collapsed: false,

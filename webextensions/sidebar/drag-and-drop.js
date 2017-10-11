@@ -76,8 +76,8 @@ function getDragDataFromOneTab(aTab) {
     };
 
   var draggedTabs = isSelected(aTab) ?
-                      getSelectedTabs(aTab) :
-                      [aTab].concat(getDescendantTabs(aTab)) ;
+    getSelectedTabs(aTab) :
+    [aTab].concat(getDescendantTabs(aTab)) ;
   return {
     tabNode:  aTab,
     tabNodes: draggedTabs,
@@ -222,15 +222,15 @@ function getDropActionInternal(aEvent) {
       info.action       = kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == kINSERT_FIRST ?
-          (getFirstChildTab(targetTab) || visibleNext) :
-          (getNextSiblingTab(targetTab) || getNextTab(getLastDescendantTab(targetTab) || targetTab));
-     // if (info.insertBefore)
-     //  log('insertBefore = ', dumpTab(info.insertBefore));
+        (getFirstChildTab(targetTab) || visibleNext) :
+        (getNextSiblingTab(targetTab) || getNextTab(getLastDescendantTab(targetTab) || targetTab));
+      // if (info.insertBefore)
+      //  log('insertBefore = ', dumpTab(info.insertBefore));
     }; break;
 
     case kDROP_BEFORE: {
       //log('drop position = before the tab');
-/* strategy
+      /* strategy
   +-----------------------------------------------------
   |     <= detach from parent, and move
   |[TARGET  ]
@@ -273,7 +273,7 @@ function getDropActionInternal(aEvent) {
 
     case kDROP_AFTER: {
       //log('drop position = after the tab');
-/* strategy
+      /* strategy
   +-----------------------------------------------------
   |[TARGET  ]
   |     <= if the target has a parent, attach to it and and move
@@ -303,7 +303,7 @@ function getDropActionInternal(aEvent) {
         info.action       = kACTION_MOVE | (info.parent ? kACTION_ATTACH : kACTION_DETACH );
         info.insertBefore = nextTab;
         info.insertAfter  = targetTab;
-/* strategy
+        /* strategy
   +-----------------------------------------------------
   |[TARGET   ]
   |     <= attach dragged tab to the parent of the target as its next sibling
@@ -397,13 +397,13 @@ function retrieveURIsFromDragEvent(aEvent) {
   var dt = aEvent.dataTransfer;
   var urls = [];
   var types = [
-      kTYPE_X_MOZ_PLACE,
-      'text/uri-list',
-      'text/x-moz-text-internal',
-      'text/x-moz-url',
-      'text/plain',
-      'application/x-moz-file'
-    ];
+    kTYPE_X_MOZ_PLACE,
+    'text/uri-list',
+    'text/x-moz-text-internal',
+    'text/x-moz-url',
+    'text/plain',
+    'application/x-moz-file'
+  ];
   for (let i = 0; i < types.length; i++) {
     let dataType = types[i];
     for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
@@ -453,9 +453,9 @@ function retrieveURIsFromData(aData, aType) {
 
     case 'text/uri-list':
       return aData.replace(/\r/g, '\n')
-            .replace(/^\#.+$/gim, '')
-            .replace(/\n\n+/g, '\n')
-            .split('\n');
+        .replace(/^\#.+$/gim, '')
+        .replace(/\n\n+/g, '\n')
+        .split('\n');
 
     case 'text/unicode':
     case 'text/plain':
@@ -491,8 +491,8 @@ function onDragStart(aEvent) {
     gLastDragEnteredTab = tab;
     let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
     gLastDragEnteredTarget = gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent) ?
-                               getTabClosebox(tab) :
-                               tab ;
+      getTabClosebox(tab) :
+      tab ;
     sendTSTAPIMessage({
       type:   kTSTAPI_NOTIFY_TAB_DRAGSTART,
       tab:    serializeTabForTSTAPI(tab),
@@ -532,19 +532,19 @@ function onDragStart(aEvent) {
     //  * undroppable on content area, desktop, and other application
     // so this won't block tearing off of tabs by drag-and-drop.
     dt.mozSetDataAt(kTYPE_X_MOZ_PLACE,
-      JSON.stringify({
-        type:  kTYPE_X_MOZ_PLACE,
-        uri:   aDraggedTab.apiTab.url,
-        title: aDraggedTab.apiTab.title
-      }),
-      aIndex);
+                    JSON.stringify({
+                      type:  kTYPE_X_MOZ_PLACE,
+                      uri:   aDraggedTab.apiTab.url,
+                      title: aDraggedTab.apiTab.title
+                    }),
+                    aIndex);
     if (aEvent.shiftKey) {
       // this type will be used to create multiple bookmarks
       // but do not add by default, beause dropping this data into
       // the content area will produce both "new tabs from URL" and
       // "tear off".
       dt.mozSetDataAt('text/x-moz-url',
-        `${aDraggedTab.apiTab.url}\n${aDraggedTab.apiTab.title}`, aIndex);
+                      `${aDraggedTab.apiTab.url}\n${aDraggedTab.apiTab.title}`, aIndex);
     }
   });
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
@@ -572,8 +572,8 @@ function onDragOver(aEvent) {
     dropPositionTargetTab = info.targetTab;
 
   var dropPosition = info.dropPosition == kDROP_BEFORE ? 'before' :
-                     info.dropPosition == kDROP_AFTER ? 'after' :
-                     'self';
+    info.dropPosition == kDROP_AFTER ? 'after' :
+      'self';
   if (dropPositionTargetTab != info.draggedTab) {
     clearDropPosition();
     dropPositionTargetTab.setAttribute(kDROP_POSITION, dropPosition);
@@ -596,8 +596,8 @@ function onDragEnter(aEvent) {
   var dt = aEvent.dataTransfer;
   dt.effectAllowed = dt.dropEffect = (
     !info.draggedTab ? 'link' :
-    isCopyAction(aEvent) ? 'copy' :
-    'move'
+      isCopyAction(aEvent) ? 'copy' :
+        'move'
   );
 
   if (!info.canDrop) {
@@ -652,7 +652,7 @@ function reserveToProcessLongHover(aParams = {}) {
       }
       else {
         if (gLongHoverExpandedTabs.indexOf(aParams.dragOverTabId) < 0)
-            gLongHoverExpandedTabs.push(aParams.dragOverTabId);
+          gLongHoverExpandedTabs.push(aParams.dragOverTabId);
         collapseExpandSubtree(dragOverTab, {
           collapsed: false,
           inRemote: true
@@ -788,8 +788,8 @@ function onTSTAPIDragEnter(aEvent) {
   autoScrollOnMouseEvent(aEvent);
   var tab = getTabFromEvent(aEvent);
   var target = gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent) ?
-                 getTabClosebox(tab) :
-                 tab ;
+    getTabClosebox(tab) :
+    tab ;
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!gDragTargetIsClosebox ||
@@ -814,8 +814,8 @@ function onTSTAPIDragExit(aEvent) {
   if (!tab)
     return;
   var target = gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent) ?
-                 getTabClosebox(tab) :
-                 tab ;
+    getTabClosebox(tab) :
+    tab ;
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;

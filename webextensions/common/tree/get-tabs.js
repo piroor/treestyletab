@@ -173,8 +173,8 @@ function getLastTab(aHint) {
 function getLastOpenedTab(aHint) {
   var tabs = getTabs(aHint);
   return tabs.length > 0 ?
-           tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id )[0] :
-           null ;
+    tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id )[0] :
+    null ;
 }
 
 function getTabIndex(aTab) {

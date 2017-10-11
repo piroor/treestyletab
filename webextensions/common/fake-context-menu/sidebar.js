@@ -77,8 +77,8 @@ var tabContextMenu = {
     for (let id of Object.keys(this.extraItems)) {
       let addonItem = document.createElement('li');
       let name = (id == browser.runtime.id) ?
-                   browser.i18n.getMessage('extensionName') :
-                   addons[id].name || id.replace(/@.+$/, '') ;
+        browser.i18n.getMessage('extensionName') :
+        addons[id].name || id.replace(/@.+$/, '') ;
       addonItem.appendChild(document.createTextNode(name));
       addonItem.classList.add('extra');
       this.prepareAsSubmenu(addonItem);

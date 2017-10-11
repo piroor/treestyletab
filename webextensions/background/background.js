@@ -236,11 +236,11 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     break;
   }
   if (
-      !aOptions.keepCurrentTree &&
+    !aOptions.keepCurrentTree &&
       ancestors.length == 0 && // the restored tab is a roo tab
       getParentTab(aTab) && // but attached to any parent based on its restored position
       !getNextSiblingTab(aTab) // when not in-middle position of existing tree (safely detachable position)
-      ) {
+  ) {
     detachTab(aTab, {
       broadcast: true
     });

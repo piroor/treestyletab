@@ -31,12 +31,12 @@ function evaluateXPath(aExpression, aContext, aType) {
     aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
   try {
     var result = (aContext.ownerDocument || aContext).evaluate(
-        aExpression,
-        (aContext || document),
-        NSResolver,
-        aType,
-        null
-      );
+      aExpression,
+      (aContext || document),
+      NSResolver,
+      aType,
+      null
+    );
   }
   catch(e) {
     return {

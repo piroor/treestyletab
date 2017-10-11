@@ -268,7 +268,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   else
     aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
 
-/*
+  /*
   // On Firefox, "highlighted" is same to "activated" for now...
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/onHighlighted
   if (aOptions.forceApply ||
@@ -298,7 +298,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_PRIVATE_BROWSING);
   }
 
-/*
+  /*
   // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (aOptions.forceApply ||
       'selected' in aNewState) {
@@ -319,7 +319,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 
   if (configs.debug) {
     aTab.setAttribute('title',
-      `
+                      `
 ${aTab.apiTab.title}
 #${aTab.id}
 (${aTab.className})
@@ -329,17 +329,17 @@ tabId = ${aTab.apiTab.id}
 windowId = ${aTab.apiTab.windowId}
 `.trim());
     aTab.uniqueId.then(aUniqueId => {
-        // reget it because it can be removed from document.
-        aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
-        if (!aTab)
-          return;
-        aTab.setAttribute('title',
-          aTab.getAttribute('title')
-            .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
-            .replace(`<%originalId%>`, aUniqueId.originalId)
-            .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
-            .replace(`<%duplicated%>`, !!aUniqueId.originalId));
-      });
+      // reget it because it can be removed from document.
+      aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
+      if (!aTab)
+        return;
+      aTab.setAttribute('title',
+                        aTab.getAttribute('title')
+                          .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
+                          .replace(`<%originalId%>`, aUniqueId.originalId)
+                          .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
+                          .replace(`<%duplicated%>`, !!aUniqueId.originalId));
+    });
   }
 }
 
@@ -412,10 +412,10 @@ async function selectTabInternally(aTab, aOptions = {}) {
   var container = aTab.parentNode;
   container.internalFocusCount++;
   return browser.tabs.update(aTab.apiTab.id, { active: true })
-          .catch(e => {
-            container.internalFocusCount--;
-            handleMissingTabError(e);
-          });
+    .catch(e => {
+      container.internalFocusCount--;
+      handleMissingTabError(e);
+    });
 }
 
 
@@ -458,7 +458,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   try {
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
     if (fromIndex < toIndex)
-        toIndex--;
+      toIndex--;
     await browser.tabs.move(apiTabIds, {
       windowId: container.windowId,
       index: toIndex
@@ -593,10 +593,10 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
     }
     else {
       let startIndex = aOptions.insertBefore ?
-                         getTabIndex(aOptions.insertBefore) :
-                       aOptions.insertAfter ?
-                         getTabIndex(aOptions.insertAfter) + 1 :
-                         -1 ;
+        getTabIndex(aOptions.insertBefore) :
+        aOptions.insertAfter ?
+          getTabIndex(aOptions.insertAfter) + 1 :
+          -1 ;
       let container = getTabsContainer(aOptions.windowId);
       container.toBeOpenedTabsWithPositions += aURIs.length;
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
@@ -747,8 +747,8 @@ async function notify(aParams = {}) {
   });
 
   var timeout = 'timeout' in aParams ?
-                  aParams.timeout :
-                  configs.notificationTimeout ;
+    aParams.timeout :
+    configs.notificationTimeout ;
   if (timeout >= 0)
     await wait(timeout);
 
@@ -767,10 +767,10 @@ function serializeTabForTSTAPI(aTab) {
 
 async function sendTSTAPIMessage(aMessage, aOptions = {}) {
   var addons = window.gExternalListenerAddons ?
-                 gExternalListenerAddons :
-                 (await browser.runtime.sendMessage({
-                   type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-                 }));
+    gExternalListenerAddons :
+    (await browser.runtime.sendMessage({
+      type: kCOMMAND_REQUEST_REGISTERED_ADDONS
+    }));
   var uniqueTargets = {};
   for (let id of Object.keys(addons)) {
     uniqueTargets[id] = true;
