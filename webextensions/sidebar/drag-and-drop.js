@@ -207,21 +207,21 @@ function getDropActionInternal(aEvent) {
   //  area: beforeOrAfterDropAreaSize
   //});
   if (eventCoordinate < targetTabCoordinate + beforeOrAfterDropAreaSize) {
-    info.dropPosition = kDROP_BEFORE ;
+    info.dropPosition = kDROP_BEFORE;
     info.insertBefore = firstTargetTab;
   }
   else if (dropAreasCount == 2 ||
            eventCoordinate > targetTabCoordinate + targetTabSize - beforeOrAfterDropAreaSize) {
-    info.dropPosition = kDROP_AFTER ;
+    info.dropPosition = kDROP_AFTER;
     info.insertAfter  = lastTargetTab;
   }
   else {
-    info.dropPosition = kDROP_ON;
+    info.dropPosition = kDROP_ON_SELF;
   }
 
   switch (info.dropPosition)
   {
-    case kDROP_ON: {
+    case kDROP_ON_SELF: {
       //log('drop position = on the tab');
       let visibleNext = getNextVisibleTab(targetTab);
       info.action       = kACTION_ATTACH;
@@ -389,7 +389,7 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
 
   var dragOverTab = aDropActionInfo.dragOverTab;
   if (dragOverTab &&
-      aDropActionInfo.dropPosition == kDROP_ON &&
+      aDropActionInfo.dropPosition == kDROP_ON_SELF &&
       (getDroppedLinksOnTabBehavior() & kDROPLINK_LOAD) &&
       !isLocked(dragOverTab) &&
       !isPinned(dragOverTab)) {
@@ -584,15 +584,10 @@ function onDragOver(aEvent) {
   if (!dropPositionTargetTab)
     dropPositionTargetTab = info.targetTab;
 
-  var dropPosition = info.dropPosition == kDROP_BEFORE ?
-                       'before' :
-                     info.dropPosition == kDROP_AFTER ?
-                       'after' :
-                       'self';
   if (dropPositionTargetTab != info.draggedTab) {
     clearDropPosition();
-    dropPositionTargetTab.setAttribute(kDROP_POSITION, dropPosition);
-    log('set drop position to ', dropPosition);
+    dropPositionTargetTab.setAttribute(kDROP_POSITION, info.dropPosition);
+    log('set drop position to ', info.dropPosition);
   }
 }
 
