@@ -11,6 +11,9 @@ install_dependency:
 eslint:
 	$(NPM_BIN_DIR)/eslint . --ext=.js –report-unused-disable-directives
 
+format:
+	$(NPM_BIN_DIR)/eslint . --ext=.js –report-unused-disable-directives --fix
+
 xpi: ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js ../extlib/webextensions-lib-configs/Configs.js ../extlib/webextensions-lib-options/Options.js ../extlib/webextensions-lib-l10n/l10n.js
 	cd .. && git submodule update
 	cp ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js common/
