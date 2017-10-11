@@ -1,14 +1,14 @@
 NPM_MOD_DIR := $(CURDIR)/node_modules
 NPM_BIN_DIR := $(NPM_MOD_DIR)/.bin
 
-.PHONY: xpi install_dependency eslint
+.PHONY: xpi install_dependency lint
 
 all: xpi
 
 install_dependency:
 	npm install
 
-eslint:
+lint:
 	$(NPM_BIN_DIR)/eslint . --ext=.js –report-unused-disable-directives
 
 format:
