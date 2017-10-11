@@ -73,22 +73,28 @@ function calculateScrollDeltaForTab(aTab) {
     coordinates, so we need to calculate actual position based on
     another static tab.
   */
-  var tab = aTab;
-  while (window.getComputedStyle(tab, null).opacity == 0 ||
+  var tab          = aTab;
+  var tabTop       = tabRect.top;
+  var tabBottom    = tabRect.bottom;
+  var offsetHeight = 0;
+  while (isCollapsed(tab) ||
          tab.classList.contains(kTAB_STATE_COLLAPSING) ||
          tab.classList.contains(kTAB_STATE_EXPANDING)) {
-    offset  += tabRect.height;
-    tab     = getPreviousVisibleTab(tab);
-    tabRect = tab.getBoundingClientRect();
+    tab          = getPreviousVisibleTab(tab);
+    tabRect      = tab.getBoundingClientRect();
+    tabTop       = tabRect.top + offsetHeight;
+    tabBottom    = tabRect.bottom + offsetHeight;
+    offsetHeight += tabRect.height;
+    log('calculateScrollDeltaForTab/recalculate tabBottom ', tabBottom, tabRect);
   }
 
-  if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
-    delta = tabRect.bottom - containerRect.bottom + offset;
+  if (containerRect.bottom < tabBottom + offset) { // should scroll down
+    delta = tabBottom - containerRect.bottom + offset;
   }
-  else if (containerRect.top > tabRect.top + offset) { // should scroll up
-    delta = tabRect.top - containerRect.top + offset;
+  else if (containerRect.top > tabTop + offset) { // should scroll up
+    delta = tabTop - containerRect.top + offset;
   }
-  //log('calculateScrollDeltaForTab ', dumpTab(aTab), delta, tabRect, containerRect, offset);
+  log('calculateScrollDeltaForTab ', dumpTab(aTab), delta, tabRect, containerRect, offset);
   return delta;
 }
 
