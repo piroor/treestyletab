@@ -108,11 +108,12 @@ async function onApiTabActivated(aActiveInfo) {
   if (!newTab.parentNode) // it can be removed while waiting
     return;
 
-  if (window.onTabFocusing && await onTabFocusing(newTab, {
-        byCurrentTabRemove,
-        byTabDuplication,
-        byInternalOperation
-      }))
+  var focusOverridden = window.onTabFocusing && await onTabFocusing(newTab, {
+    byCurrentTabRemove,
+    byTabDuplication,
+    byInternalOperation
+  });
+  if (focusOverridden)
     return;
 
   if (!newTab.parentNode) // it can be removed while waiting
