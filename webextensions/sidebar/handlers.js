@@ -71,50 +71,50 @@ function isEventFiredOnTwisty(aEvent) {
 
 function isEventFiredOnSoundButton(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kSOUND_BUTTON)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kSOUND_BUTTON)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnClosebox(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kCLOSEBOX)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kCLOSEBOX)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kNEWTAB_BUTTON)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kNEWTAB_BUTTON)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnContextualIdentitySelector(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kCONTEXTUAL_IDENTITY_SELECTOR)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kCONTEXTUAL_IDENTITY_SELECTOR)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnClickable(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[contains(" button scrollbar select ", concat(" ", local-name(), " "))]',
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    'ancestor-or-self::*[contains(" button scrollbar select ", concat(" ", local-name(), " "))]',
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnScrollbar(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[local-name()="scrollbar" or local-name()="nativescrollbar"]',
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    'ancestor-or-self::*[local-name()="scrollbar" or local-name()="nativescrollbar"]',
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 
@@ -135,10 +135,10 @@ function getTabFromTabbarEvent(aEvent) {
 
 function getClickedOptionFromEvent(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[contains(" option ", concat(" ", local-name(), " "))]',
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.FIRST_ORDERED_NODE_TYPE
-    ).singleNodeValue;
+    'ancestor-or-self::*[contains(" option ", concat(" ", local-name(), " "))]',
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.FIRST_ORDERED_NODE_TYPE
+  ).singleNodeValue;
 }
 
 function getTabFromCoordinates(aEvent) {
@@ -152,8 +152,12 @@ function getTabFromCoordinates(aEvent) {
     return null;
 
   var rect = container.getBoundingClientRect();
-  for (let x = 0, maxx = rect.width, step = Math.floor(rect.width / 10);
-       x < maxx; x += step) {
+  for (
+    let x = 0,
+        maxx = rect.width,
+        step = Math.floor(rect.width / 10);
+    x < maxx;
+    x += step) {
     tab = document.elementFromPoint(x, aEvent.clientY);
     tab = getTabFromChild(tab);
     if (tab)

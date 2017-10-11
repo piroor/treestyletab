@@ -101,7 +101,7 @@ async function onNewTabsTimeout(aContainer) {
   });
 
   var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById))
-                      .filter(aTab => !isGroupTab(aTab));
+    .filter(aTab => !isGroupTab(aTab));
   aContainer.openedNewTabs = [];
   if (newRootTabs.length <= 1)
     return;
@@ -169,8 +169,8 @@ function onTabOpened(aTab, aInfo = {}) {
 function onTabRestored(aTab) {
   log('restored ', dumpTab(aTab), aTab.apiTab);
   return attachTabFromRestoredInfo(aTab, {
-           children: true
-         });
+    children: true
+  });
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
@@ -255,7 +255,7 @@ async function closeChildTabs(aParent) {
   //markAsClosedSet([aParent].concat(tabs));
   await Promise.all(tabs.reverse().map(aTab => {
     return browser.tabs.remove(aTab.apiTab.id)
-             .catch(handleMissingTabError);
+      .catch(handleMissingTabError);
   }));
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
@@ -483,7 +483,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
             * Focus movings by closing of the old current tab should be handled
             * only when it is activated by user preference expressly.
             */
-           aInfo.byCurrentTabRemove &&
+    aInfo.byCurrentTabRemove &&
            configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove) {
     log('=> reaction for removing current tab');
     return true;
@@ -567,22 +567,32 @@ async function onTabAttached(aTab, aInfo = {}) {
       broadcast: true
     });
 
-    let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
-    if (aInfo.forceExpand) {
-      collapseExpandSubtree(parent, clone(aInfo, {
-        collapsed: false,
-        inRemote: false
-      }));
-    }
-    else if (!aInfo.dontExpand) {
-      if (configs.autoCollapseExpandSubtreeOnAttach &&
+  let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
+  if (aInfo.forceExpand) {
+    collapseExpandSubtree(parent, clone(aInfo, {
+      collapsed: false,
+      inRemote: false
+    }));
+  }
+  else if (!aInfo.dontExpand) {
+    if (configs.autoCollapseExpandSubtreeOnAttach &&
           (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
-        collapseExpandTreesIntelligentlyFor(parent, {
-          broadcast: true
-        });
+      collapseExpandTreesIntelligentlyFor(parent, {
+        broadcast: true
+      });
 
-      let newAncestors = [parent].concat(getAncestorTabs(parent));
-      if (configs.autoCollapseExpandSubtreeOnSelect) {
+    let newAncestors = [parent].concat(getAncestorTabs(parent));
+    if (configs.autoCollapseExpandSubtreeOnSelect) {
+      newAncestors.forEach(aAncestor => {
+        if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
+          collapseExpandSubtree(aAncestor, clone(aInfo, {
+            collapsed: false,
+            broadcast: true
+          }));
+      });
+    }
+    else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
+      if (configs.autoExpandOnAttached) {
         newAncestors.forEach(aAncestor => {
           if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
             collapseExpandSubtree(aAncestor, clone(aInfo, {
@@ -591,35 +601,25 @@ async function onTabAttached(aTab, aInfo = {}) {
             }));
         });
       }
-      else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
-        if (configs.autoExpandOnAttached) {
-          newAncestors.forEach(aAncestor => {
-            if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
-              collapseExpandSubtree(aAncestor, clone(aInfo, {
-                collapsed: false,
-                broadcast: true
-              }));
-          });
-        }
-        else
-          collapseExpandTabAndSubtree(aTab, clone(aInfo, {
-            collapsed: true,
-            broadcast: true
-          }));
-      }
-      if (isCollapsed(parent))
+      else
         collapseExpandTabAndSubtree(aTab, clone(aInfo, {
           collapsed: true,
           broadcast: true
         }));
     }
-    else if (shouldTabAutoExpanded(parent) ||
-             isCollapsed(parent)) {
+    if (isCollapsed(parent))
       collapseExpandTabAndSubtree(aTab, clone(aInfo, {
         collapsed: true,
         broadcast: true
       }));
-    }
+  }
+  else if (shouldTabAutoExpanded(parent) ||
+             isCollapsed(parent)) {
+    collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+      collapsed: true,
+      broadcast: true
+    }));
+  }
 
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
@@ -776,9 +776,9 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         log('new window requested: ', aMessage);
         let movedTabs = await openNewWindowFromTabs(
-                                aMessage.tabs.map(getTabById),
-                                aMessage
-                              );
+          aMessage.tabs.map(getTabById),
+          aMessage
+        );
         clearTimeout(timeout);
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();

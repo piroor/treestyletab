@@ -11,10 +11,10 @@ async function getApiTabIndex(...aQueriedTabIds) {
 
   var indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
     return browser.tabs.get(aTabId)
-             .catch(e => {
-               handleMissingTabError(e);
-               return -1;
-             });
+      .catch(e => {
+        handleMissingTabError(e);
+        return -1;
+      });
   }));
   indexes = indexes.map(aTab => aTab ? aTab.index : -1);
   if (indexes.length == 1)

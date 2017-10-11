@@ -81,7 +81,7 @@ function positionPinnedTabs(aOptions = {}) {
     if (aOptions.justNow)
       item.classList.add(kTAB_STATE_ANIMATION_READY);
 
-/*
+    /*
     log('pinned tab: ', {
       tab:    dumpTab(item),
       col:    col,

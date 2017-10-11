@@ -432,8 +432,8 @@ function updateTabsCount(aTab) {
 function collapseExpandAllSubtree(aParams = {}) {
   var container = getTabsContainer(gTargetWindow);
   var subtreeCondition = aParams.collapsed ?
-        `:not(.${kTAB_STATE_SUBTREE_COLLAPSED})` :
-        `.${kTAB_STATE_SUBTREE_COLLAPSED}`
+    `:not(.${kTAB_STATE_SUBTREE_COLLAPSED})` :
+    `.${kTAB_STATE_SUBTREE_COLLAPSED}`
   var tabs = container.querySelectorAll(`.tab:not([${kCHILDREN}="|"])${subtreeCondition}`);
   for (let tab of tabs) {
     collapseExpandSubtree(tab, aParams);
@@ -456,8 +456,8 @@ var gLastMaxLevel;
 
 function updateIndent(aOptions = {}) {
   var maxLevel = getMaxTreeLevel(gTargetWindow, {
-                   onlyVisible: configs.indentAutoShrinkOnlyForVisible
-                 });
+    onlyVisible: configs.indentAutoShrinkOnlyForVisible
+  });
   if (isNaN(maxLevel))
     maxLevel = 0;
   if (configs.maxTreeLevel > -1)
@@ -604,7 +604,7 @@ function updateTabTooltip(aTab) {
   for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
     tab.labelWithDescendants = getLabelWithDescendants(tab);
     tab.setAttribute('title', isSubtreeCollapsed(tab) && hasChildTabs(tab) ?
-                                tab.labelWithDescendants : tab.label);
+      tab.labelWithDescendants : tab.label);
   }
 }
 
@@ -623,7 +623,7 @@ async function synchronizeThrobberAnimations() {
   var animations = [];
   for (let throbber of throbbers) {
     if (typeof throbber.getAnimations == 'function') // sometimes non-animated throbber can appear in the result
-    animations = animations.concat(throbber.getAnimations({ subtree: true }));
+      animations = animations.concat(throbber.getAnimations({ subtree: true }));
   }
   var firstStartTime = Math.min(...animations.map(aAnimation => aAnimation.startTime));
   await nextFrame();
