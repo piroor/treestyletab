@@ -835,9 +835,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       destinationWindowId: destinationWindowId,
       inRemote:            false
     }));
-    let movedTabs = (response.movedTabs || [])
-                      .map(getTabById);
-    return movedTabs.filter(aTab => !!aTab);
+    return (response.movedTabs || []).map(getTabById).filter(aTab => !!aTab);
   }
 
   var movedTabs = aTabs;
@@ -1054,9 +1052,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       top:       'top' in aOptions ? parseInt(aOptions.top) : null,
       inRemote:  false
     }));
-    let movedTabs = (response.movedTabs || [])
-                      .map(getTabById);
-    return movedTabs.filter(aTab => !!aTab);
+    return (response.movedTabs || []).map(getTabById).filter(aTab => !!aTab);
   }
 
   log('opening new window');
