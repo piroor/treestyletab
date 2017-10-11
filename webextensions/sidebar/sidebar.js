@@ -431,9 +431,9 @@ function updateTabsCount(aTab) {
 
 function collapseExpandAllSubtree(aParams = {}) {
   var container = getTabsContainer(gTargetWindow);
-  var subtreeCondition = aParams.collapsed ?
-                           `:not(.${kTAB_STATE_SUBTREE_COLLAPSED})` :
-                           `.${kTAB_STATE_SUBTREE_COLLAPSED}`
+  var tabCondition = `.${kTAB_STATE_SUBTREE_COLLAPSED}`;
+  if (aParams.collapsed)
+    tabCondition = `:not(${tabCondition})`;
   var tabs = container.querySelectorAll(`.tab:not([${kCHILDREN}="|"])${subtreeCondition}`);
   for (let tab of tabs) {
     collapseExpandSubtree(tab, aParams);
