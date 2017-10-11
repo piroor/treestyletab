@@ -791,6 +791,9 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!toBeCollapsed)
     reserveToSynchronizeThrobberAnimations();
 
+  if (!isTabInViewport(aInfo.anchor))
+    aInfo.anchor = null;
+
   if (!configs.animation ||
       aInfo.justNow ||
       configs.collapseDuration < 1) {

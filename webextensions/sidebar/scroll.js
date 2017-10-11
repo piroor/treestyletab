@@ -179,11 +179,13 @@ function scrollToNewTab(aTab, aOptions = {}) {
   if (!canScrollToTab(aTab))
     return;
 
-  if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE)
+  if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
+    let current = getCurrentTab();
     scrollToTab(aTab, clone(aOptions, {
-      anchor: getCurrentTab(),
+      anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
     }));
+  }
 }
 
 function canScrollToTab(aTab) {
