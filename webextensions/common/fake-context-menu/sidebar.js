@@ -50,6 +50,8 @@ var tabContextMenu = {
     return containerRect;
   },
 
+  addons: null,
+
   contextTab: null,
   extraItems: {},
   dirty:      false,
@@ -70,16 +72,15 @@ var tabContextMenu = {
     if (Object.keys(this.extraItems).length == 0)
       return;
 
-    var addons = await browser.runtime.sendMessage({
-      type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-    });
+    if (!this.addons)
+      this.addons = await browser.runtime.sendMessage({
+        type: kCOMMAND_REQUEST_REGISTERED_ADDONS
+      });
+
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
       let addonItem = document.createElement('li');
-      let name = (id == browser.runtime.id) ?
-                   browser.i18n.getMessage('extensionName') :
-                   addons[id].name || id.replace(/@.+$/, '') ;
-      addonItem.appendChild(document.createTextNode(name));
+      addonItem.appendChild(document.createTextNode(this.getAddonName(id)));
       addonItem.classList.add('extra');
       this.prepareAsSubmenu(addonItem);
       let addonSubMenu = addonItem.lastChild;
@@ -121,6 +122,11 @@ var tabContextMenu = {
     separator.classList.add('separator');
     extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
     this.menu.appendChild(extraItemNodes);
+  },
+  getAddonName(aId) {
+    if (aId == browser.runtime.id)
+      return browser.i18n.getMessage('extensionName');
+    return this.addons[aId].name || aId.replace(/@.+$/, '');
   },
   prepareAsSubmenu(aItemNode) {
     if (aItemNode.classList.contains('has-submenu'))
@@ -200,6 +206,7 @@ var tabContextMenu = {
     this.menu.classList.remove('open');
     this.contextTab      = null;
     this.contextWindowId = null;
+    this.addons          = null;
     this.closeTimeout = setTimeout(() => {
       delete this.closeTimeout;
       this.onClosed();
