@@ -13,5 +13,10 @@ module.exports = {
   },
 
   'rules': {
+    // stylisitc problem
+    'quotes': ['warn', 'single', {
+      'avoidEscape': true,
+      'allowTemplateLiterals': true,
+    }],
   }
 };

@@ -168,7 +168,7 @@ var tabContextMenu = {
     const [, scheme, host, path,] = match;
     return new RegExp('^(?:'
                       + (scheme === '*' ? 'https?' : escape(scheme)) + ':\\/\\/'
-                      + (host === '*' ? "[^\\/]*" : escape(host).replace(/^\*\./g, '(?:[^\\/]+)?'))
+                      + (host === '*' ? '[^\\/]*' : escape(host).replace(/^\*\./g, '(?:[^\\/]+)?'))
                       + (path ? (path == '*' ? '(?:\\/.*)?' : ('\\/' + escape(path).replace(/\*/g, '.*'))) : '\\/?')
                       + ')$');
   },
