@@ -36,7 +36,7 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-const kTREE_DROP_TYPE = 'application/x-treestyletab-tree';
+const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 
 var gLongHoverExpandedTabs = [];
@@ -137,15 +137,15 @@ function getDropActionInternal(aEvent) {
   var lastTargetTabIndex = targetTabs.length - 1;
   var lastTargetTab      = targetTabs[lastTargetTabIndex];
   var info = {
-    dragOverTab  : getTabFromEvent(aEvent),
-    draggedTab   : null,
-    draggedTabs  : [],
-    targetTab    : targetTab,
-    dropPosition : null,
-    action       : null,
-    parent       : null,
-    insertBefore : null,
-    insertAfter  : null
+    dragOverTab:   getTabFromEvent(aEvent),
+    draggedTab:    null,
+    draggedTabs:   [],
+    targetTab:     targetTab,
+    dropPosition:  null,
+    action:        null,
+    parent:        null,
+    insertBefore:  null,
+    insertAfter:   null
   };
 
   var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
@@ -164,15 +164,15 @@ function getDropActionInternal(aEvent) {
     let action = kACTION_MOVE | kACTION_DETACH;
     if (aEvent.clientY < firstTargetTab.getBoundingClientRect().top) {
       //log('dragging above the first tab');
-      info.targetTab = info.insertBefore = firstTargetTab;
+      info.targetTab    = info.insertBefore = firstTargetTab;
       info.dropPosition = kDROP_BEFORE;
-      info.action   = action;
+      info.action       = action;
     }
     else if (aEvent.clientY > lastTargetTab.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
-      info.targetTab = info.insertAfter = lastTargetTab;
+      info.targetTab    = info.insertAfter = lastTargetTab;
       info.dropPosition = kDROP_AFTER;
-      info.action   = action;
+      info.action       = action;
     }
     return info;
   }
@@ -183,11 +183,11 @@ function getDropActionInternal(aEvent) {
    * So, if a tab is dragged and the target tab is pinned, then, we
    * have to ignore the [center] area.
    */
-  var onPinnedTab = isPinned(targetTab);
-  var dropAreasCount = (draggedTab && onPinnedTab) ? 2 : 3 ;
-  var targetTabRect = targetTab.getBoundingClientRect();
+  var onPinnedTab         = isPinned(targetTab);
+  var dropAreasCount      = (draggedTab && onPinnedTab) ? 2 : 3 ;
+  var targetTabRect       = targetTab.getBoundingClientRect();
   var targetTabCoordinate = onPinnedTab ? targetTabRect.left : targetTabRect.top ;
-  var targetTabSize = onPinnedTab ? targetTabRect.width : targetTabRect.height ;
+  var targetTabSize       = onPinnedTab ? targetTabRect.width : targetTabRect.height ;
   var beforeOrAfterDropAreaSize;
   if (dropAreasCount == 2) {
     beforeOrAfterDropAreaSize = Math.round(targetTabSize / dropAreasCount);
@@ -208,7 +208,7 @@ function getDropActionInternal(aEvent) {
   else if (dropAreasCount == 2 ||
            eventCoordinate > targetTabCoordinate + targetTabSize - beforeOrAfterDropAreaSize) {
     info.dropPosition = kDROP_AFTER ;
-    info.insertAfter = lastTargetTab;
+    info.insertAfter  = lastTargetTab;
   }
   else {
     info.dropPosition = kDROP_ON;
@@ -311,8 +311,8 @@ function getDropActionInternal(aEvent) {
              +-----------------------------------------------------
         */
         if (draggedTab == nextTab) {
-          info.action = kACTION_MOVE | kACTION_ATTACH;
-          info.parent = getParentTab(targetTab);
+          info.action       = kACTION_MOVE | kACTION_ATTACH;
+          info.parent       = getParentTab(targetTab);
           info.insertBefore = getNextSiblingTab(targetTab);
           info.insertAfter  = targetTab;
           let ancestor = info.parent;
@@ -473,10 +473,10 @@ function retrieveURIsFromData(aData, aType) {
 
 var gDraggingOnSelfWindow = false;
 
-var gCapturingMouseEvents = false;
-var gLastDragEnteredTab = null;
+var gCapturingMouseEvents  = false;
+var gLastDragEnteredTab    = null;
 var gLastDragEnteredTarget = null;
-var gDragTargetIsClosebox = false;
+var gDragTargetIsClosebox  = false;
 
 function onDragStart(aEvent) {
   var dragData = getDragDataFromOneTab(aEvent.target);
@@ -571,9 +571,11 @@ function onDragOver(aEvent) {
   if (!dropPositionTargetTab)
     dropPositionTargetTab = info.targetTab;
 
-  var dropPosition = info.dropPosition == kDROP_BEFORE ? 'before' :
-                     info.dropPosition == kDROP_AFTER ? 'after' :
-                     'self';
+  var dropPosition = info.dropPosition == kDROP_BEFORE ?
+                       'before' :
+                     info.dropPosition == kDROP_AFTER ?
+                       'after' :
+                       'self';
   if (dropPositionTargetTab != info.draggedTab) {
     clearDropPosition();
     dropPositionTargetTab.setAttribute(kDROP_POSITION, dropPosition);
@@ -593,11 +595,13 @@ function onDragEnter(aEvent) {
   }, 10);
 
   var info = getDropAction(aEvent);
-  var dt = aEvent.dataTransfer;
+  var dt   = aEvent.dataTransfer;
   dt.effectAllowed = dt.dropEffect = (
-    !info.draggedTab ? 'link' :
-    isCopyAction(aEvent) ? 'copy' :
-    'move'
+    !info.draggedTab ?
+      'link' :
+    isCopyAction(aEvent) ?
+      'copy' :
+      'move'
   );
 
   if (!info.canDrop) {
@@ -655,7 +659,7 @@ function reserveToProcessLongHover(aParams = {}) {
           gLongHoverExpandedTabs.push(aParams.dragOverTabId);
         collapseExpandSubtree(dragOverTab, {
           collapsed: false,
-          inRemote: true
+          inRemote:  true
         });
       }
     }, configs.autoExpandOnLongHoverDelay);
@@ -696,15 +700,15 @@ function onDrop(aEvent) {
       dropActionInfo.dragData.tabId) {
     log('there are dragged tabs');
     performTabsDragDrop({
-      windowId:     dropActionInfo.dragData.windowId,
-      tabIds:       dropActionInfo.dragData.tabIds,
-      action:       dropActionInfo.action,
-      attachTo:     dropActionInfo.parent,
-      insertBefore: dropActionInfo.insertBefore,
-      insertAfter:  dropActionInfo.insertAfter,
+      windowId:            dropActionInfo.dragData.windowId,
+      tabIds:              dropActionInfo.dragData.tabIds,
+      action:              dropActionInfo.action,
+      attachTo:            dropActionInfo.parent,
+      insertBefore:        dropActionInfo.insertBefore,
+      insertAfter:         dropActionInfo.insertAfter,
       destinationWindowId: gTargetWindow,
-      duplicate:    dt.dropEffect == 'copy',
-      inRemote:     true
+      duplicate:           dt.dropEffect == 'copy',
+      inRemote:            true
     });
     return;
   }
@@ -786,7 +790,7 @@ function onDragEnd(aEvent) {
 
 function onTSTAPIDragEnter(aEvent) {
   autoScrollOnMouseEvent(aEvent);
-  var tab = getTabFromEvent(aEvent);
+  var tab    = getTabFromEvent(aEvent);
   var target = gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent) ?
                  getTabClosebox(tab) :
                  tab ;
@@ -802,7 +806,7 @@ function onTSTAPIDragEnter(aEvent) {
       });
     }
   }
-  gLastDragEnteredTab = tab;
+  gLastDragEnteredTab    = tab;
   gLastDragEnteredTarget = target;
 }
 
