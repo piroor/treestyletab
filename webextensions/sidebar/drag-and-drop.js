@@ -129,6 +129,7 @@ function getDropAction(aEvent) {
         info.dropPosition != kDROP_AFTER)))
     info.canDrop = false;
 
+  info.dropEffect = getDropEffectFromDropAction(info);
   return info;
 }
 function getDropActionInternal(aEvent) {
@@ -332,6 +333,15 @@ function getDropActionInternal(aEvent) {
   }
 
   return info;
+}
+function getDropEffectFromDropAction(aActionInfo) {
+  if (aActionInfo.canDrop)
+    return 'none';
+  if (!aActionInfo.draggedTab)
+    return 'link';
+  if (isCopyAction(aEvent))
+    return 'copy';
+  return 'move';
 }
 
 function clearDropPosition() {
@@ -600,18 +610,10 @@ function onDragEnter(aEvent) {
 
   var info = getDropAction(aEvent);
   var dt   = aEvent.dataTransfer;
-  dt.effectAllowed = dt.dropEffect = (
-    !info.draggedTab ?
-      'link' :
-    isCopyAction(aEvent) ?
-      'copy' :
-      'move'
-  );
+  dt.effectAllowed = dt.dropEffect = info.dropEffect;
 
-  if (!info.canDrop) {
-    dt.effectAllowed = dt.dropEffect = 'none';
+  if (!info.canDrop)
     return;
-  }
 
   if (!info.dragOverTab ||
       !configs.autoExpandOnLongHover)
@@ -625,7 +627,7 @@ function onDragEnter(aEvent) {
   reserveToProcessLongHover({
     dragOverTabId: info.targetTab.id,
     draggedTabId:  info.draggedTab && info.draggedTab.id,
-    dropEffect:    info.canDrop ? dt.dropEffect : 'none'
+    dropEffect:    info.dropEffect
   });
 }
 
