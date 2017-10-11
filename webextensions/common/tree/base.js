@@ -235,8 +235,9 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     }
   }
 
-  if (aOptions.forceApply ||
-      'pinned' in aNewState) {
+  if ((aOptions.forceApply ||
+       'pinned' in aNewState) &&
+      aNewState.pinned != aTab.classList.contains(kTAB_STATE_PINNED)) {
     if (aNewState.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
       window.onTabPinned && onTabPinned(aTab);
