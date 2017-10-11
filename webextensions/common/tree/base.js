@@ -742,9 +742,9 @@ async function notify(aParams = {}) {
     message: aParams.message
   });
 
-  var timeout = 'timeout' in aParams ?
-                  aParams.timeout :
-                  configs.notificationTimeout ;
+  var timeout = aParams.timeout;
+  if (typeof timeout != 'number')
+    timeout = configs.notificationTimeout;
   if (timeout >= 0)
     await wait(timeout);
 
