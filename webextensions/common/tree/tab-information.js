@@ -154,8 +154,8 @@ function getLabelWithDescendants(aTab) {
 
 function getMaxTreeLevel(aHint, aOptions = {}) {
   var tabCondition = aOptions.onlyVisible ?
-                      `${kXPATH_VISIBLE_TAB}[@${kPARENT}]` :
-                      `${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}]`;
+                       `${kXPATH_VISIBLE_TAB}[@${kPARENT}]` :
+                       `${kXPATH_CONTROLLABLE_TAB}[@${kPARENT}]`;
   var maxLevel = evaluateXPath(
     `descendant::${tabCondition}[
        not(preceding-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
@@ -180,7 +180,9 @@ function isAllTabsPlacedBefore(aTabs, aNextTab) {
       return false;
     previousTab = tab;
   }
-  return !aNextTab || !previousTab || previousTab.nextSibling == aNextTab;
+  return !aNextTab ||
+         !previousTab ||
+         previousTab.nextSibling == aNextTab;
 }
 
 function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
@@ -191,6 +193,8 @@ function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
       return false;
     nextTab = tab;
   }
-  return !aPreviousTab || !nextTab || nextTab.previousSibling == aPreviousTab;
+  return !aPreviousTab ||
+         !nextTab ||
+         nextTab.previousSibling == aPreviousTab;
 }
 

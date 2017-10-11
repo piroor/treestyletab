@@ -68,10 +68,12 @@ async function onApiTabActivated(aActiveInfo) {
     return;
 
   var container = getOrBuildTabsContainer(aActiveInfo.windowId);
+
   var byInternalOperation = container.internalFocusCount > 0;
   if (byInternalOperation)
     container.internalFocusCount--;
   var byTabDuplication = container.duplicatingTabsCount > 0;
+
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab)
     return;
@@ -99,7 +101,7 @@ async function onApiTabActivated(aActiveInfo) {
   }
   else if (container.tryingReforcusForClosingCurrentTabCount > 0) { // treat as "redirected unintentional tab focus"
     container.tryingReforcusForClosingCurrentTabCount--;
-    byCurrentTabRemove = true;
+    byCurrentTabRemove  = true;
     byInternalOperation = false;
   }
 
@@ -177,7 +179,7 @@ async function onNewTabTracked(aTab) {
 
   updateTab(newTab, aTab, { forceApply: true });
 
-  var openedWithPosition = container.toBeOpenedTabsWithPositions > 0;
+  var openedWithPosition   = container.toBeOpenedTabsWithPositions > 0;
   var duplicatedInternally = container.duplicatingTabsCount > 0;
 
   var moved = window.onTabOpening && await onTabOpening(newTab, {
@@ -347,7 +349,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
     gTabIdWrongToCorrect[apiTab.id] = aTabId;
     gTabIdCorrectToWrong[aTabId] = apiTab.id;
     browser.runtime.sendMessage({
-      type: kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE,
+      type:         kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE,
       oldWrongId:   oldWrongId,
       newWrongId:   apiTab.id,
       newCorrectId: aTabId

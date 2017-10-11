@@ -47,8 +47,8 @@ function positionPinnedTabs(aOptions = {}) {
   }
 
   var containerWidth = gTabBar.getBoundingClientRect().width;
-  var maxWidth = containerWidth;
-  var faviconized = configs.faviconizePinnedTabs;
+  var maxWidth       = containerWidth;
+  var faviconized    = configs.faviconizePinnedTabs;
 
   var width  = faviconized ? gFaviconizedTabSize : maxWidth ;
   var height = faviconized ? gFaviconizedTabSize : gTabHeight ;
@@ -74,21 +74,21 @@ function positionPinnedTabs(aOptions = {}) {
       item.classList.remove(kTAB_STATE_LAST_ROW);
 
     style.bottom = 'auto';
-    style.left = `${width * col}px`;
-    style.right = faviconized ? 'auto' : 0 ;
-    style.top = `${height * row}px`;
+    style.left   = `${width * col}px`;
+    style.right  = faviconized ? 'auto' : 0 ;
+    style.top    = `${height * row}px`;
 
     if (aOptions.justNow)
       item.classList.add(kTAB_STATE_ANIMATION_READY);
 
-/*
+    /*
     log('pinned tab: ', {
       tab:    dumpTab(item),
       col:    col,
       width:  width,
       height: height
     });
-*/
+    */
 
     col++;
     if (col >= maxCol) {

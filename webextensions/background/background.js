@@ -7,8 +7,8 @@
 
 gLogContext = 'BG';
 
-var gInitializing = true;
-var gSidebarOpenState = new Map();
+var gInitializing           = true;
+var gSidebarOpenState       = new Map();
 var gExternalListenerAddons = {};
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
@@ -107,7 +107,7 @@ function destroy() {
 async function rebuildAll() {
   clearAllTabsContainers();
   var windows = await browser.windows.getAll({
-    populate: true,
+    populate:    true,
     windowTypes: ['normal']
   });
   windows.forEach(async aWindow => {
@@ -228,8 +228,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     if (!ancestor)
       continue;
     await attachTabTo(aTab, ancestor, {
-      broadcast: true,
-      dontMove: insertBefore || insertAfter,
+      broadcast:    true,
+      dontMove:     insertBefore || insertAfter,
       insertBefore: insertBefore,
       insertAfter:  insertAfter
     });

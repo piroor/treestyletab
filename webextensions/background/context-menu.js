@@ -40,7 +40,7 @@ async function refreshContextMenuItems() {
         continue;
       normalItemAppeared = true;
     }
-    let type = isSeparator ? 'separator' : 'normal';
+    let type  = isSeparator ? 'separator' : 'normal';
     let title = isSeparator ? null : browser.i18n.getMessage(`context.${id}.label`);
     await browser.contextMenus.create({
       id, type, title,
@@ -60,7 +60,7 @@ var contextMenuClickListener = (aInfo, aTab) => {
   log('context menu item clicked: ', aInfo, aTab);
 
   var contextTab = getTabById(aTab.id);
-  var container = contextTab.parentNode;
+  var container  = contextTab.parentNode;
 
   switch (aInfo.menuItemId) {
     case 'reloadTree': {
@@ -98,7 +98,7 @@ var contextMenuClickListener = (aInfo, aTab) => {
     }; break;
     case 'closeOthers': {
       let exceptionTabs = [contextTab].concat(getDescendantTabs(contextTab));
-      let tabs = getNormalTabs(container); // except pinned or hidden tabs
+      let tabs          = getNormalTabs(container); // except pinned or hidden tabs
       container.toBeClosedTabs += tabs.length;
       tabs.reverse(); // close bottom to top!
       for (let tab of tabs) {

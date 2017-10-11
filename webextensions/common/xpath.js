@@ -31,12 +31,12 @@ function evaluateXPath(aExpression, aContext, aType) {
     aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
   try {
     var result = (aContext.ownerDocument || aContext).evaluate(
-        aExpression,
-        (aContext || document),
-        NSResolver,
-        aType,
-        null
-      );
+      aExpression,
+      (aContext || document),
+      NSResolver,
+      aType,
+      null
+    );
   }
   catch(e) {
     return {
@@ -51,7 +51,7 @@ function evaluateXPath(aExpression, aContext, aType) {
 }
 
 function getArrayFromXPathResult(aXPathResult) {
-  var max = aXPathResult.snapshotLength;
+  var max   = aXPathResult.snapshotLength;
   var array = new Array(max);
   if (!max)
     return array;

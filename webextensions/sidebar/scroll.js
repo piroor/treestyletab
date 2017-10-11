@@ -63,19 +63,17 @@ function cancelRunningScroll() {
 }
 
 function calculateScrollDeltaForTab(aTab) {
-  var tabRect = aTab.getBoundingClientRect();
+  var tabRect       = aTab.getBoundingClientRect();
   var containerRect = gTabBar.getBoundingClientRect();
-  var offset = getOffsetForAnimatingTab(aTab);
-  offset += smoothScrollTo.currentOffset;
+  var offset        = getOffsetForAnimatingTab(aTab) + smoothScrollTo.currentOffset;
+  var delta = 0;
   if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
-    return tabRect.bottom - containerRect.bottom + offset;
+    delta = tabRect.bottom - containerRect.bottom + offset;
   }
   else if (containerRect.top > tabRect.top + offset) { // should scroll up
-    return tabRect.top - containerRect.top + offset;
+    delta = tabRect.top - containerRect.top + offset;
   }
-  else {
-    return 0;
-  }
+  return delta;
 }
 
 function isTabInViewport(aTab) {
@@ -97,30 +95,30 @@ async function smoothScrollTo(aParams = {}) {
   var startPosition = gTabBar.scrollTop;
   var delta, endPosition;
   if (aParams.tab) {
-    delta = calculateScrollDeltaForTab(aParams.tab);
+    delta       = calculateScrollDeltaForTab(aParams.tab);
     endPosition = startPosition + delta;
   }
   else if (typeof aParams.position == 'number') {
     endPosition = aParams.position;
-    delta = endPosition - startPosition;
+    delta       = endPosition - startPosition;
   }
   else if (typeof aParams.delta == 'number') {
     endPosition = startPosition + aParams.delta;
-    delta = aParams.delta;
+    delta       = aParams.delta;
   }
   else {
     throw new Error('No parameter to indicate scroll position');
   }
   smoothScrollTo.currentOffset = delta;
 
-  var duration = aParams.duration || configs.smoothScrollDuration;
+  var duration  = aParams.duration || configs.smoothScrollDuration;
   var startTime = Date.now();
 
   return new Promise((aResolve, aReject) => {
     var radian = 90 * Math.PI / 180;
     var scrollStep = () => {
       if (smoothScrollTo.stopped) {
-        smoothScrollTo.currentOffset= 0;
+        smoothScrollTo.currentOffset = 0;
         aReject();
         return;
       }
@@ -131,17 +129,17 @@ async function smoothScrollTo(aParams = {}) {
           position: endPosition,
           justNow: true
         });
-        smoothScrollTo.stopped = true;
-        smoothScrollTo.currentOffset= 0;
+        smoothScrollTo.stopped       = true;
+        smoothScrollTo.currentOffset = 0;
         aResolve();
         return;
       }
-      var power = Math.sin(spentTime / duration * radian);
+      var power        = Math.sin(spentTime / duration * radian);
       var currentDelta = parseInt(delta * power);
-      var newPosition = startPosition + currentDelta;
+      var newPosition  = startPosition + currentDelta;
       scrollTo({
         position: newPosition,
-        justNow: true
+        justNow:  true
       });
       smoothScrollTo.currentOffset = currentDelta;
       nextFrame().then(scrollStep);
@@ -277,14 +275,14 @@ function getOffsetForAnimatingTab(aTab) {
 
 function scrollToTabSubtree(aTab) {
   return scrollToTab(getLastDescendantTabs(aTab), {
-    anchor: aTab,
+    anchor:            aTab,
     notifyOnOutOfView: true
   });
 }
 
 function scrollToTabs(aTabs) {
   return scrollToTab(aTabs[aTabs.length - 1], {
-    anchor: aTabs[0],
+    anchor:            aTabs[0],
     notifyOnOutOfView: true
   });
 }

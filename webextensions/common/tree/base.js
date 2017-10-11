@@ -39,10 +39,10 @@
 'use strict';
 
 var gAllTabs;
-var gTargetWindow = null;
-var gRestoringTree = false;
+var gTargetWindow    = null;
+var gRestoringTree   = false;
 var gNeedRestoreTree = false;
-var gScrollLockedBy = {};
+var gScrollLockedBy  = {};
 
 var gIsMac = /Darwin/.test(navigator.platform);
 
@@ -69,9 +69,9 @@ async function requestUniqueId(aTabId, aOptions = {}) {
   */
   await wait(0);
 
-  var originalId = null;
+  var originalId    = null;
   var originalTabId = null;
-  var duplicated = false;
+  var duplicated    = false;
   if (!aOptions.forceNew) {
     let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
@@ -80,10 +80,10 @@ async function requestUniqueId(aTabId, aOptions = {}) {
     if (oldId) {
       if (aTabId == oldId.tabId)
         return {
-          id: oldId.id,
-          originalId: null,
+          id:            oldId.id,
+          originalId:    null,
           originalTabId: null,
-          restored: true
+          restored:      true
         };
 
       // If the stored tabId is different, it is possibly duplicated tab.
@@ -103,23 +103,23 @@ async function requestUniqueId(aTabId, aOptions = {}) {
           tabId: aTabId
         });
         return {
-          id: oldId.id,
-          originalId: null,
+          id:            oldId.id,
+          originalId:    null,
           originalTabId: oldId.tabId,
-          restored: true
+          restored:      true
         };
       }
       aOptions.forceNew = true;
-      originalId = oldId.id;
+      originalId    = oldId.id;
       originalTabId = oldId.tabId;
-      duplicated = true;
+      duplicated    = true;
     }
   }
 
-  var adjective = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
-  var noun = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
+  var adjective   = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
+  var noun        = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
   var randomValue = Math.floor(Math.random() * 1000);
-  var id = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
+  var id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
   await browser.sessions.setTabValue(aTabId, kPERSISTENT_ID, {
     id:    id,
     tabId: aTabId // for detecttion of duplicated tabs
@@ -160,8 +160,8 @@ function buildTab(aApiTab, aOptions = {}) {
     });
   else
     tab.uniqueId = Promise.resolve({
-      id: null,
-      originalId: null,
+      id:            null,
+      originalId:    null,
       originalTabId: null
     });
 
@@ -268,7 +268,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   else
     aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
 
-/*
+  /*
   // On Firefox, "highlighted" is same to "activated" for now...
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/onHighlighted
   if (aOptions.forceApply ||
@@ -278,7 +278,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     else
       aTab.classList.remove(kTAB_STATE_HIGHLIGHTED);
   }
-*/
+  */
 
   if (aOptions.forceApply ||
       'cookieStoreId' in aNewState) {
@@ -298,7 +298,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_PRIVATE_BROWSING);
   }
 
-/*
+  /*
   // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (aOptions.forceApply ||
       'selected' in aNewState) {
@@ -307,7 +307,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     else
       aTab.classList.remove(kTAB_STATE_SELECTED);
   }
-*/
+  */
 
   if (aOptions.forceApply ||
       'discarded' in aNewState) {
@@ -319,7 +319,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 
   if (configs.debug) {
     aTab.setAttribute('title',
-      `
+                      `
 ${aTab.apiTab.title}
 #${aTab.id}
 (${aTab.className})
@@ -329,17 +329,17 @@ tabId = ${aTab.apiTab.id}
 windowId = ${aTab.apiTab.windowId}
 `.trim());
     aTab.uniqueId.then(aUniqueId => {
-        // reget it because it can be removed from document.
-        aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
-        if (!aTab)
-          return;
-        aTab.setAttribute('title',
-          aTab.getAttribute('title')
-            .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
-            .replace(`<%originalId%>`, aUniqueId.originalId)
-            .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
-            .replace(`<%duplicated%>`, !!aUniqueId.originalId));
-      });
+      // reget it because it can be removed from document.
+      aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
+      if (!aTab)
+        return;
+      aTab.setAttribute('title',
+                        aTab.getAttribute('title')
+                          .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
+                          .replace(`<%originalId%>`, aUniqueId.originalId)
+                          .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
+                          .replace(`<%duplicated%>`, !!aUniqueId.originalId));
+    });
   }
 }
 
@@ -370,23 +370,23 @@ function buildTabsContainerFor(aWindowId) {
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
 
-  container.internalMovingCount = 0;
-  container.subTreeMovingCount = 0;
-  container.subTreeChildrenMovingCount = 0;
-  container.doingCollapseExpandCount = 0;
-  container.internalFocusCount = 0;
-  container.tryingReforcusForClosingCurrentTabCount = 0;
-  container.processingNewTabsCount = 0;
-  container.duplicatingTabsCount = 0;
+  container.internalMovingCount =
+    container.subTreeMovingCount =
+    container.subTreeChildrenMovingCount =
+    container.doingCollapseExpandCount =
+    container.internalFocusCount =
+    container.tryingReforcusForClosingCurrentTabCount =
+    container.processingNewTabsCount =
+    container.duplicatingTabsCount = 0;
 
-  container.openingCount = 0;
-  container.openedNewTabs = [];
+  container.openingCount         = 0;
+  container.openedNewTabs        = [];
   container.openedNewTabsTimeout = null;
 
   container.toBeOpenedTabsWithPositions = 0;
-  container.toBeOpenedOrphanTabs = 0;
-  container.toBeDetachedTabs = 0;
-  container.toBeClosedTabs = 0;
+  container.toBeOpenedOrphanTabs        = 0;
+  container.toBeDetachedTabs            = 0;
+  container.toBeClosedTabs              = 0;
 
   return container;
 }
@@ -412,10 +412,10 @@ async function selectTabInternally(aTab, aOptions = {}) {
   var container = aTab.parentNode;
   container.internalFocusCount++;
   return browser.tabs.update(aTab.apiTab.id, { active: true })
-          .catch(e => {
-            container.internalFocusCount--;
-            handleMissingTabError(e);
-          });
+    .catch(e => {
+      container.internalFocusCount--;
+      handleMissingTabError(e);
+    });
 }
 
 
@@ -458,10 +458,10 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   try {
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
     if (fromIndex < toIndex)
-        toIndex--;
+      toIndex--;
     await browser.tabs.move(apiTabIds, {
       windowId: container.windowId,
-      index: toIndex
+      index:    toIndex
     });
     // tab will be moved by handling of API event
   }
@@ -515,7 +515,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       toIndex++;
     await browser.tabs.move(apiTabIds, {
       windowId: container.windowId,
-      index: toIndex
+      index:    toIndex
     });
     // tab will be moved by handling of API event
   }
@@ -550,7 +550,7 @@ async function loadURI(aURI, aOptions = {}) {
     else {
       let apiTabs = await browser.tabs.query({
         windowId: aOptions.windowId,
-        active: true
+        active:   true
       });
       apiTabId = apiTabs[0].id;
     }
@@ -581,14 +581,14 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
   return await doAndGetNewTabs(async () => {
     if (aOptions.inRemote) {
       await browser.runtime.sendMessage(clone(aOptions, {
-        type:         kCOMMAND_NEW_TABS,
-        uris:         aURIs,
-        parent:       aOptions.parent && aOptions.parent.id,
-        opener:       aOptions.opener && aOptions.opener.id,
-        insertBefore: aOptions.insertBefore && aOptions.insertBefore.id,
-        insertAfter:  aOptions.insertAfter && aOptions.insertAfter.id,
+        type:          kCOMMAND_NEW_TABS,
+        uris:          aURIs,
+        parent:        aOptions.parent && aOptions.parent.id,
+        opener:        aOptions.opener && aOptions.opener.id,
+        insertBefore:  aOptions.insertBefore && aOptions.insertBefore.id,
+        insertAfter:   aOptions.insertAfter && aOptions.insertAfter.id,
         cookieStoreId: aOptions.cookieStoreId || null,
-        inRemote:     false
+        inRemote:      false
       }));
     }
     else {
@@ -664,7 +664,7 @@ function blockUserOperationsIn(aWindowId, aOptions = {}) {
 
   if (!gTargetWindow) {
     browser.runtime.sendMessage({
-      type: kCOMMAND_BLOCK_USER_OPERATIONS,
+      type:     kCOMMAND_BLOCK_USER_OPERATIONS,
       windowId: aWindowId,
       throbber: !!aOptions.throbber
     });
@@ -693,7 +693,7 @@ function unblockUserOperationsIn(aWindowId, aOptions = {}) {
 
   if (!gTargetWindow) {
     browser.runtime.sendMessage({
-      type: kCOMMAND_UNBLOCK_USER_OPERATIONS,
+      type:     kCOMMAND_UNBLOCK_USER_OPERATIONS,
       windowId: aWindowId,
       throbber: !!aOptions.throbber
     });
@@ -707,10 +707,10 @@ function broadcastTabState(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
   browser.runtime.sendMessage({
-    type:   kCOMMAND_BROADCAST_TAB_STATE,
-    tabs:   aTabs.map(aTab => aTab.id),
-    add:    aOptions.add || [],
-    remove: aOptions.remove || [],
+    type:    kCOMMAND_BROADCAST_TAB_STATE,
+    tabs:    aTabs.map(aTab => aTab.id),
+    add:     aOptions.add || [],
+    remove:  aOptions.remove || [],
     bubbles: !!aOptions.bubbles
   });
 }

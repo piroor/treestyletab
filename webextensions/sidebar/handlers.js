@@ -54,7 +54,7 @@ function isAccelKeyPressed(aEvent) {
 
 function isCopyAction(aEvent) {
   return isAccelKeyPressed(aEvent) ||
-      (aEvent.dataTransfer && aEvent.dataTransfer.dropEffect == 'copy');
+           (aEvent.dataTransfer && aEvent.dataTransfer.dropEffect == 'copy');
 }
 
 function isEventFiredOnTwisty(aEvent) {
@@ -71,50 +71,50 @@ function isEventFiredOnTwisty(aEvent) {
 
 function isEventFiredOnSoundButton(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kSOUND_BUTTON)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kSOUND_BUTTON)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnClosebox(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kCLOSEBOX)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kCLOSEBOX)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kNEWTAB_BUTTON)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kNEWTAB_BUTTON)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnContextualIdentitySelector(aEvent) {
   return evaluateXPath(
-      `ancestor-or-self::*[${hasClass(kCONTEXTUAL_IDENTITY_SELECTOR)}]`,
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    `ancestor-or-self::*[${hasClass(kCONTEXTUAL_IDENTITY_SELECTOR)}]`,
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnClickable(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[contains(" button scrollbar select ", concat(" ", local-name(), " "))]',
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    'ancestor-or-self::*[contains(" button scrollbar select ", concat(" ", local-name(), " "))]',
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 function isEventFiredOnScrollbar(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[local-name()="scrollbar" or local-name()="nativescrollbar"]',
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.BOOLEAN_TYPE
-    ).booleanValue;
+    'ancestor-or-self::*[local-name()="scrollbar" or local-name()="nativescrollbar"]',
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 
@@ -135,10 +135,10 @@ function getTabFromTabbarEvent(aEvent) {
 
 function getClickedOptionFromEvent(aEvent) {
   return evaluateXPath(
-      'ancestor-or-self::*[contains(" option ", concat(" ", local-name(), " "))]',
-      aEvent.originalTarget || aEvent.target,
-      XPathResult.FIRST_ORDERED_NODE_TYPE
-    ).singleNodeValue;
+    'ancestor-or-self::*[contains(" option ", concat(" ", local-name(), " "))]',
+    aEvent.originalTarget || aEvent.target,
+    XPathResult.FIRST_ORDERED_NODE_TYPE
+  ).singleNodeValue;
 }
 
 function getTabFromCoordinates(aEvent) {
@@ -152,8 +152,11 @@ function getTabFromCoordinates(aEvent) {
     return null;
 
   var rect = container.getBoundingClientRect();
-  for (let x = 0, maxx = rect.width, step = Math.floor(rect.width / 10);
-       x < maxx; x += step) {
+  for (let x    = 0,
+           maxx = rect.width,
+           step = Math.floor(rect.width / 10);
+       x < maxx;
+       x += step) {
     tab = document.elementFromPoint(x, aEvent.clientY);
     tab = getTabFromChild(tab);
     if (tab)
@@ -208,13 +211,13 @@ function onMouseDown(aEvent) {
   }
 
   var mousedownDetail = {
-    targetType: getMouseEventTargetType(aEvent),
-    tab:      tab && tab.id,
-    button:   aEvent.button,
-    ctrlKey:  aEvent.ctrlKey,
-    shiftKey: aEvent.shiftKey,
-    altKey:   aEvent.altKey,
-    metaKey:  aEvent.metaKey,
+    targetType:    getMouseEventTargetType(aEvent),
+    tab:           tab && tab.id,
+    button:        aEvent.button,
+    ctrlKey:       aEvent.ctrlKey,
+    shiftKey:      aEvent.shiftKey,
+    altKey:        aEvent.altKey,
+    metaKey:       aEvent.metaKey,
     isMiddleClick: isMiddleClick(aEvent)
   };
   if (mousedownDetail.isMiddleClick) {
@@ -323,8 +326,8 @@ function onMouseUp(aEvent) {
 
   if (!tab)
     sendTSTAPIMessage(clone(gLastMousedown.detail, {
-      type:     kTSTAPI_NOTIFY_TABBAR_CLICKED,
-      window:   gTargetWindow,
+      type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
+      window: gTargetWindow,
     }));
 
   if (gLastMousedown.detail.targetType != getMouseEventTargetType(aEvent) ||
@@ -349,7 +352,7 @@ function onMouseUp(aEvent) {
       let option = getClickedOptionFromEvent(aEvent);
       if (option) {
         handleNewTabAction(aEvent, {
-          action: configs.autoAttachOnNewTabButtonMiddleClick,
+          action:        configs.autoAttachOnNewTabButtonMiddleClick,
           cookieStoreId: option.getAttribute('value')
         });
       }
@@ -442,22 +445,22 @@ function handleNewTabAction(aEvent, aOptions = {}) {
       }; break;
 
       case kNEWTAB_OPEN_AS_SIBLING:
-        parent = getParentTab(current);
+        parent      = getParentTab(current);
         insertAfter = getLastDescendantTab(parent);
         break;
 
       case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-        parent = getParentTab(current);
+        parent       = getParentTab(current);
         insertBefore = getNextSiblingTab(current);
         insertAfter  = getLastDescendantTab(current);
       }; break;
     }
   }
   openNewTab({
-    inBackground: aEvent.shiftKey,
     parent, insertBefore, insertAfter,
+    inBackground:  aEvent.shiftKey,
     cookieStoreId: aOptions.cookieStoreId,
-    inRemote: true
+    inRemote:      true
   });
 }
 
@@ -517,8 +520,8 @@ async function onWheel(aEvent) {
     tabs:      getTabs().map(serializeTabForTSTAPI),
     window:    gTargetWindow,
 
-    deltaY:    aEvent.deltaY,
-    deltaMode: aEvent.deltaMode,
+    deltaY:       aEvent.deltaY,
+    deltaMode:    aEvent.deltaMode,
     scrollTop:    gTabBar.scrollTop,
     scrollTopMax: gTabBar.scrollTopMax,
 
@@ -688,7 +691,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
 
   reserveToUpdateTabbarLayout({
-    reason: kTABBAR_UPDATE_REASON_TAB_OPEN,
+    reason:  kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
   });
   reserveToSynchronizeThrobberAnimations();
@@ -702,7 +705,7 @@ function onTabClosed(aTab) {
     dontUpdateIndent: true
   });
   reserveToUpdateTabbarLayout({
-    reason: kTABBAR_UPDATE_REASON_TAB_CLOSE,
+    reason:  kTABBAR_UPDATE_REASON_TAB_CLOSE,
     timeout: configs.collapseDuration
   });
 }
@@ -799,7 +802,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
     if (aInfo.last)
       scrollToTab(aTab, {
-        anchor: aInfo.anchor,
+        anchor:            aInfo.anchor,
         notifyOnOutOfView: true
       });
     return;
@@ -820,7 +823,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     //log('start animation for ', dumpTab(aTab));
     if (aInfo.last)
       scrollToTab(aTab, {
-        anchor: aInfo.anchor,
+        anchor:            aInfo.anchor,
         notifyOnOutOfView: true
       });
 
@@ -978,7 +981,7 @@ function onMessage(aMessage, aSender, aRespond) {
     // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
     case kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE:
       delete gTabIdWrongToCorrect[aMessage.oldWrongId];
-      gTabIdWrongToCorrect[aMessage.newWrongId] = aMessage.newCorrectId;
+      gTabIdWrongToCorrect[aMessage.newWrongId]   = aMessage.newCorrectId;
       gTabIdCorrectToWrong[aMessage.newCorrectId] = aMessage.newWrongId;
       break;
 
@@ -1003,14 +1006,14 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
         log('attach tab from remote ', aMessage);
-        let child = getTabById(aMessage.child);
+        let child  = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
         if (child && parent)
           attachTabTo(child, parent, clone(aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
-            insertAfter: getTabById(aMessage.insertAfter),
-            inRemote: false,
-            broadcast: false
+            insertAfter:  getTabById(aMessage.insertAfter),
+            inRemote:     false,
+            broadcast:    false
           }));
       }
     }; break;
@@ -1036,7 +1039,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_TAB_STATE: {
       if (!aMessage.tabs.length)
         break;
-      let add = aMessage.add || [];
+      let add    = aMessage.add || [];
       let remove = aMessage.remove || [];
       log('apply broadcasted tab state ', aMessage.tabs, {
         add:    add.join(','),

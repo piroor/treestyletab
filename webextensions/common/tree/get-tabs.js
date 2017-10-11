@@ -38,17 +38,17 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-const kSELECTOR_LIVE_TAB = `li.tab:not(.${kTAB_STATE_REMOVING})`;
-const kSELECTOR_NORMAL_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN}):not(.${kTAB_STATE_PINNED})`;
-const kSELECTOR_VISIBLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED}):not(.${kTAB_STATE_HIDDEN})`;
+const kSELECTOR_LIVE_TAB         = `li.tab:not(.${kTAB_STATE_REMOVING})`;
+const kSELECTOR_NORMAL_TAB       = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN}):not(.${kTAB_STATE_PINNED})`;
+const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED}):not(.${kTAB_STATE_HIDDEN})`;
 const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN})`;
-const kSELECTOR_PINNED_TAB = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
+const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
 
-const kXPATH_LIVE_TAB = `xhtml:li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
-const kXPATH_NORMAL_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})][not(${hasClass(kTAB_STATE_PINNED)})]`;
-const kXPATH_VISIBLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass(kTAB_STATE_HIDDEN)})]`;
+const kXPATH_LIVE_TAB         = `xhtml:li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
+const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})][not(${hasClass(kTAB_STATE_PINNED)})]`;
+const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass(kTAB_STATE_HIDDEN)})]`;
 const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})]`;
-const kXPATH_PINNED_TAB = `${kXPATH_LIVE_TAB}[${hasClass(kTAB_STATE_PINNED)}]`;
+const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${hasClass(kTAB_STATE_PINNED)}]`;
 
 // basics
 function assertValidHint(aHint) {
@@ -72,7 +72,9 @@ function getTabsContainer(aHint) {
   if (typeof aHint == 'number')
     return document.querySelector(`#window-${aHint}`);
 
-  if (aHint && typeof aHint == 'object' && 'windowId' in aHint)
+  if (aHint &&
+      typeof aHint == 'object' &&
+      'windowId' in aHint)
     return document.querySelector(`#window-${aHint.windowId}`);
 
   var tab = getTabFromChild(aHint);
@@ -173,8 +175,8 @@ function getLastTab(aHint) {
 function getLastOpenedTab(aHint) {
   var tabs = getTabs(aHint);
   return tabs.length > 0 ?
-           tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id )[0] :
-           null ;
+    tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id )[0] :
+    null ;
 }
 
 function getTabIndex(aTab) {
@@ -484,11 +486,11 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
       tabsQueryOptions.windowId = container.windowId;
   }
   var beforeApiTabs = await browser.tabs.query(tabsQueryOptions);
-  var beforeApiIds = beforeApiTabs.map(aApiTab => aApiTab.id);
+  var beforeApiIds  = beforeApiTabs.map(aApiTab => aApiTab.id);
   await aAsyncTask();
   var afterApiTabs = await browser.tabs.query(tabsQueryOptions);
   var addedApiTabs = afterApiTabs.filter(aAfterApiTab => beforeApiIds.indexOf(aAfterApiTab.id) < 0);
-  var addedTabs = addedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId })
+  var addedTabs    = addedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId })
   );
   return addedTabs;
 }

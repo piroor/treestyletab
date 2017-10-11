@@ -54,8 +54,8 @@ async function onTabOpening(aTab, aInfo = {}) {
       let current = getCurrentTab(aTab);
       log('behave as a tab opened by new tab command, current = ', dumpTab(current));
       behaveAutoAttachedTab(aTab, {
-        baseTab:  current,
-        behavior: configs.autoAttachOnNewTabCommand,
+        baseTab:   current,
+        behavior:  configs.autoAttachOnNewTabCommand,
         broadcast: true
       });
       return true;
@@ -82,9 +82,9 @@ async function onTabOpening(aTab, aInfo = {}) {
   }
   else if (configs.autoAttach) {
     behaveAutoAttachedTab(aTab, {
-      baseTab:  opener,
-      behavior: configs.autoAttachOnOpenedWithOwner,
-      dontMove: aInfo.maybeOpenedWithPosition,
+      baseTab:   opener,
+      behavior:  configs.autoAttachOnOpenedWithOwner,
+      dontMove:  aInfo.maybeOpenedWithPosition,
       broadcast: true
     });
     return true;
@@ -101,7 +101,7 @@ async function onNewTabsTimeout(aContainer) {
   });
 
   var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById))
-                      .filter(aTab => !isGroupTab(aTab));
+    .filter(aTab => !isGroupTab(aTab));
   aContainer.openedNewTabs = [];
   if (newRootTabs.length <= 1)
     return;
@@ -117,7 +117,7 @@ async function onNewTabsTimeout(aContainer) {
   });
   for (let tab of newRootTabs) {
     await attachTabTo(tab, groupTab, {
-      dontMove: true,
+      dontMove:  true,
       broadcast: true
     });
   }
@@ -137,9 +137,9 @@ function onTabOpened(aTab, aInfo = {}) {
     }
     else {
       behaveAutoAttachedTab(aTab, {
-        baseTab:  original,
-        behavior: configs.autoAttachOnDuplicated,
-        dontMove: aInfo.openedWithPosition,
+        baseTab:   original,
+        behavior:  configs.autoAttachOnDuplicated,
+        dontMove:  aInfo.openedWithPosition,
         broadcast: true
       });
     }
@@ -169,8 +169,8 @@ function onTabOpened(aTab, aInfo = {}) {
 function onTabRestored(aTab) {
   log('restored ', dumpTab(aTab), aTab.apiTab);
   return attachTabFromRestoredInfo(aTab, {
-           children: true
-         });
+    children: true
+  });
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
@@ -184,7 +184,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       isSubtreeCollapsed(aTab))
     collapseExpandSubtree(aTab, {
       collapsed: false,
-      justNow: true
+      justNow:   true
     });
 
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
@@ -200,7 +200,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     });
     aTab.parentNode.toBeOpenedTabsWithPositions++;
     let groupTab = await openURIInTab(uri, {
-      windowId: aTab.apiTab.windowId,
+      windowId:     aTab.apiTab.windowId,
       insertBefore: aTab // not firstChild, because the "aTab" is disappeared from tree.
     });
     log('group tab: ', dumpTab(groupTab));
@@ -213,13 +213,13 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   }
 
   detachAllChildren(aTab, {
-    behavior: closeParentBehavior,
+    behavior:  closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
   detachTab(aTab, {
     dontUpdateIndent: true,
-    broadcast: true
+    broadcast:        true
   });
 
   setTimeout(() => {
@@ -255,7 +255,7 @@ async function closeChildTabs(aParent) {
   //markAsClosedSet([aParent].concat(tabs));
   await Promise.all(tabs.reverse().map(aTab => {
     return browser.tabs.remove(aTab.apiTab.id)
-             .catch(handleMissingTabError);
+            .catch(handleMissingTabError);
   }));
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
@@ -322,7 +322,7 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
       await attachTabTo(aTab, getTabById(action.parent), {
         insertBefore: getTabById(action.insertBefore),
         insertAfter:  getTabById(action.insertAfter),
-        broadcast: true
+        broadcast:    true
       });
       followDescendantsToMovedRoot(aTab);
     }; break;
@@ -344,7 +344,7 @@ function moveBack(aTab, aMoveInfo) {
   container.internalMovingCount++;
   return browser.tabs.move(aTab.apiTab.id, {
     windowId: aMoveInfo.windowId,
-    index: aMoveInfo.fromIndex
+    index:    aMoveInfo.fromIndex
   }).catch(e => {
     if (container.internalMovingCount > 0)
       container.internalMovingCount--;
@@ -354,7 +354,7 @@ function moveBack(aTab, aMoveInfo) {
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   log('detectTabActionFromNewPosition: ', dumpTab(aTab), aMoveInfo);
-  var toIndex = aMoveInfo.toIndex;
+  var toIndex   = aMoveInfo.toIndex;
   var fromIndex = aMoveInfo.fromIndex;
   var delta;
   if (toIndex == fromIndex) { // no move?
@@ -446,8 +446,8 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
     if (newParent) {
       if (isHidden(newParent) == isHidden(aTab)) {
         return {
-          action: 'attach',
-          parent: newParent.id,
+          action:       'attach',
+          parent:       newParent.id,
           insertBefore: nextTab && nextTab.id,
           insertAfter:  prevTab && prevTab.id
         };
@@ -500,10 +500,14 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 
   log('handleNewActiveTab: ', dumpTab(aTab), aInfo);
   var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
-  var canCollapseTree = shouldCollapseExpandNow;
-  var canExpandTree   = shouldCollapseExpandNow && !aInfo.byInternalOperation;
-  log('handleNewActiveTab[delayed]: ', dumpTab(aTab), {
-    canCollapseTree, canExpandTree, byInternalOperation: aInfo.byInternalOperation });
+  var canCollapseTree         = shouldCollapseExpandNow;
+  var canExpandTree           = shouldCollapseExpandNow && !aInfo.byInternalOperation;
+  log('handleNewActiveTab[delayed]: ',
+      dumpTab(aTab),
+      {
+        canCollapseTree, canExpandTree,
+        byInternalOperation: aInfo.byInternalOperation
+      });
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
@@ -534,7 +538,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 }
 
 async function onTabAttached(aTab, aInfo = {}) {
-  var parent = aInfo.parent;
+  var parent  = aInfo.parent;
   var nextTab = aInfo.insertBefore;
   var prevTab = aInfo.insertAfter;
   if (!nextTab && !prevTab) {
@@ -567,22 +571,32 @@ async function onTabAttached(aTab, aInfo = {}) {
       broadcast: true
     });
 
-    let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
-    if (aInfo.forceExpand) {
-      collapseExpandSubtree(parent, clone(aInfo, {
-        collapsed: false,
-        inRemote: false
-      }));
-    }
-    else if (!aInfo.dontExpand) {
-      if (configs.autoCollapseExpandSubtreeOnAttach &&
-          (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
-        collapseExpandTreesIntelligentlyFor(parent, {
-          broadcast: true
-        });
+  let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
+  if (aInfo.forceExpand) {
+    collapseExpandSubtree(parent, clone(aInfo, {
+      collapsed: false,
+      inRemote:  false
+    }));
+  }
+  else if (!aInfo.dontExpand) {
+    if (configs.autoCollapseExpandSubtreeOnAttach &&
+        (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
+      collapseExpandTreesIntelligentlyFor(parent, {
+        broadcast: true
+      });
 
-      let newAncestors = [parent].concat(getAncestorTabs(parent));
-      if (configs.autoCollapseExpandSubtreeOnSelect) {
+    let newAncestors = [parent].concat(getAncestorTabs(parent));
+    if (configs.autoCollapseExpandSubtreeOnSelect) {
+      newAncestors.forEach(aAncestor => {
+        if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
+          collapseExpandSubtree(aAncestor, clone(aInfo, {
+            collapsed: false,
+            broadcast: true
+          }));
+      });
+    }
+    else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
+      if (configs.autoExpandOnAttached) {
         newAncestors.forEach(aAncestor => {
           if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
             collapseExpandSubtree(aAncestor, clone(aInfo, {
@@ -591,35 +605,25 @@ async function onTabAttached(aTab, aInfo = {}) {
             }));
         });
       }
-      else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
-        if (configs.autoExpandOnAttached) {
-          newAncestors.forEach(aAncestor => {
-            if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
-              collapseExpandSubtree(aAncestor, clone(aInfo, {
-                collapsed: false,
-                broadcast: true
-              }));
-          });
-        }
-        else
-          collapseExpandTabAndSubtree(aTab, clone(aInfo, {
-            collapsed: true,
-            broadcast: true
-          }));
-      }
-      if (isCollapsed(parent))
+      else
         collapseExpandTabAndSubtree(aTab, clone(aInfo, {
           collapsed: true,
           broadcast: true
         }));
     }
-    else if (shouldTabAutoExpanded(parent) ||
-             isCollapsed(parent)) {
+    if (isCollapsed(parent))
       collapseExpandTabAndSubtree(aTab, clone(aInfo, {
         collapsed: true,
         broadcast: true
       }));
-    }
+  }
+  else if (shouldTabAutoExpanded(parent) ||
+           isCollapsed(parent)) {
+    collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+      collapsed: true,
+      broadcast: true
+    }));
+  }
 
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
@@ -653,7 +657,7 @@ function onTabDetachedFromWindow(aTab) {
   //reserveCloseRelatedTabs(toBeClosedTabs);
   detachTab(aTab, {
     dontUpdateIndent: true,
-    broadcast: true
+    broadcast:        true
   });
   //restoreTabAttributes(aTab, backupAttributes);
 }
@@ -776,9 +780,9 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         log('new window requested: ', aMessage);
         let movedTabs = await openNewWindowFromTabs(
-                                aMessage.tabs.map(getTabById),
-                                aMessage
-                              );
+          aMessage.tabs.map(getTabById),
+          aMessage
+        );
         clearTimeout(timeout);
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
@@ -790,7 +794,7 @@ function onMessage(aMessage, aSender) {
           aMessage.tabs.map(getTabById),
           clone(aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
-            insertAfter: getTabById(aMessage.insertAfter)
+            insertAfter:  getTabById(aMessage.insertAfter)
           })
         );
         clearTimeout(timeout);
@@ -863,7 +867,7 @@ function onMessage(aMessage, aSender) {
       let tabs = [root].concat(getDescendantTabs(root));
       for (let tab of tabs) {
         let playing = isSoundPlaying(tab);
-        let muted = isMuted(tab);
+        let muted   = isMuted(tab);
         log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
         if (playing != aMessage.muted)
           continue;
@@ -921,13 +925,12 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
         clearTimeout(timeout);
-        let child = getTabById(aMessage.child);
+        let child  = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
-        let insertBefore = getTabById(aMessage.insertBefore);
-        let insertAfter = getTabById(aMessage.insertAfter);
         if (child && parent)
           await attachTabTo(child, parent, clone(aMessage, {
-            insertBefore, insertAfter
+            insertBefore: getTabById(aMessage.insertBefore),
+            insertAfter:  getTabById(aMessage.insertAfter)
           }));
       })();
 
@@ -982,7 +985,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_GET_TREE:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs    = await TSTAPIGetTargetTabs(aMessage);
         var results = tabs.map(serializeTabForTSTAPI);
         return TSTAPIFormatResult(results, aMessage);
       })();
@@ -1016,7 +1019,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_ATTACH:
       return (async () => {
         clearTimeout(timeout);
-        var child = getTabById(aMessage.child);
+        var child  = getTabById(aMessage.child);
         var parent = getTabById(aMessage.parent);
         if (!child ||
             !parent ||
@@ -1045,7 +1048,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs   = await TSTAPIGetTargetTabs(aMessage);
         var states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
@@ -1063,7 +1066,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_REMOVE_TAB_STATE:
       return (async () => {
         clearTimeout(timeout);
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs   = await TSTAPIGetTargetTabs(aMessage);
         var states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];

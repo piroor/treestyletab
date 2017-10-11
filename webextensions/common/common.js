@@ -13,7 +13,7 @@ function log(aMessage, ...aArgs)
   if (!configs || !configs.debug)
     return;
 
-  var nest = (new Error()).stack.split('\n').length;
+  var nest   = (new Error()).stack.split('\n').length;
   var indent = '';
   for (let i = 0; i < nest; i++) {
     indent += ' ';
@@ -32,7 +32,7 @@ function dumpTab(aTab) {
 async function wait(aTask = 0, aTimeout = 0) {
   if (typeof aTask != 'function') {
     aTimeout = aTask;
-    aTask = null;
+    aTask    = null;
   }
   return new Promise((aResolve, aReject) => {
     setTimeout(async () => {

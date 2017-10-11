@@ -10,11 +10,11 @@ gLogContext = 'Sidebar-?';
 var gTabBar;
 var gAfterTabsForOverflowTabBar;
 var gOutOfViewTabNotifier;
-var gIndent = -1;
-var gIndentProp = 'margin-left';
-var gFaviconSize = 0;
+var gIndent             = -1;
+var gIndentProp         = 'margin-left';
+var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
-var gTabHeight = 0;
+var gTabHeight          = 0;
 var gStyle;
 
 window.addEventListener('DOMContentLoaded', earlyInit, { once: true });
@@ -35,14 +35,14 @@ function earlyInit() {
   log('initialize sidebar on DOMContentLoaded');
   window.addEventListener('pagehide', destroy, { once: true });
 
-  gTabBar = document.querySelector('#tabbar');
+  gTabBar                     = document.querySelector('#tabbar');
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
-  gOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
-  gAllTabs = document.querySelector('#all-tabs');
-  gSizeDefinition = document.querySelector('#size-definition');
-  gStyleLoader = document.querySelector('#style-loader');
-  gUserStyleRules = document.querySelector('#user-style-rules');
-  gContextualIdentitiesStyle = document.querySelector('#contextual-identity-styling');
+  gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
+  gAllTabs                    = document.querySelector('#all-tabs');
+  gSizeDefinition             = document.querySelector('#size-definition');
+  gStyleLoader                = document.querySelector('#style-loader');
+  gUserStyleRules             = document.querySelector('#user-style-rules');
+  gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
   gMetricsData.add('earlyInit end');
 }
 
@@ -144,7 +144,7 @@ async function init() {
     cancelRunningScroll();
     scrollTo({
       position: scrollPosition,
-      justNow: true
+      justNow:  true
     });
     gMetricsData.add('applying scroll position');
   }
@@ -238,7 +238,7 @@ function calculateDefaultSizes() {
   gFaviconizedTabSize = parseInt(gFaviconSize * scale);
   log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
   gSizeDefinition.textContent = `:root {
-    --favicon-size: ${gFaviconSize}px;
+    --favicon-size:         ${gFaviconSize}px;
     --faviconized-tab-size: ${gFaviconizedTabSize}px;
   }`;
   var dummyTab = document.querySelector('#dummy-tab');
@@ -248,8 +248,8 @@ function calculateDefaultSizes() {
     --tab-height: ${gTabHeight}px;
 
     --tab-burst-duration: ${configs.butstDuration}ms;
-    --indent-duration: ${configs.indentDuration}ms;
-    --collapse-duration: ${configs.collapseDuration}ms;
+    --indent-duration:    ${configs.indentDuration}ms;
+    --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
   }`;
 }
@@ -281,16 +281,16 @@ function updateContextualIdentitiesSelector() {
       continue;
     }
     selector.removeAttribute('disabled');
-    let fragment = document.createDocumentFragment();
+    let fragment    = document.createDocumentFragment();
     let defaultItem = document.createElement('option');
     defaultItem.setAttribute('value', '');
     fragment.appendChild(defaultItem);
     for (let id of identityIds) {
       let identity = gContextualIdentities[id];
-      let item = document.createElement('option');
+      let item     = document.createElement('option');
       item.setAttribute('value', id);
       if (identity.colorCode) {
-        item.style.color = getReadableForegroundColorFromBGColor(identity.colorCode);
+        item.style.color           = getReadableForegroundColorFromBGColor(identity.colorCode);
         item.style.backgroundColor = identity.colorCode;
       }
       item.textContent = identity.name;
@@ -332,7 +332,7 @@ function uninstallStyleForAddon(aId) {
 async function rebuildAll() {
   var apiTabs = await browser.tabs.query({ currentWindow: true });
   gTargetWindow = apiTabs[0].windowId;
-  gLogContext = `Sidebar-${gTargetWindow}`;
+  gLogContext   = `Sidebar-${gTargetWindow}`;
   clearAllTabsContainers();
   var container = buildTabsContainerFor(gTargetWindow);
   for (let apiTab of apiTabs) {
@@ -432,8 +432,8 @@ function updateTabsCount(aTab) {
 function collapseExpandAllSubtree(aParams = {}) {
   var container = getTabsContainer(gTargetWindow);
   var subtreeCondition = aParams.collapsed ?
-        `:not(.${kTAB_STATE_SUBTREE_COLLAPSED})` :
-        `.${kTAB_STATE_SUBTREE_COLLAPSED}`
+                           `:not(.${kTAB_STATE_SUBTREE_COLLAPSED})` :
+                           `.${kTAB_STATE_SUBTREE_COLLAPSED}`
   var tabs = container.querySelectorAll(`.tab:not([${kCHILDREN}="|"])${subtreeCondition}`);
   for (let tab of tabs) {
     collapseExpandSubtree(tab, aParams);
@@ -456,8 +456,8 @@ var gLastMaxLevel;
 
 function updateIndent(aOptions = {}) {
   var maxLevel = getMaxTreeLevel(gTargetWindow, {
-                   onlyVisible: configs.indentAutoShrinkOnlyForVisible
-                 });
+    onlyVisible: configs.indentAutoShrinkOnlyForVisible
+  });
   if (isNaN(maxLevel))
     maxLevel = 0;
   if (configs.maxTreeLevel > -1)
@@ -465,10 +465,10 @@ function updateIndent(aOptions = {}) {
 
   //log('maxLevel ', maxLevel);
 
-  var oldIndent = gIndent;
-  var indent    = (oldIndent < 0 ? configs.baseIndent : oldIndent ) * maxLevel;
-  var maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
-  var minIndent= Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
+  var oldIndent  = gIndent;
+  var indent     = (oldIndent < 0 ? configs.baseIndent : oldIndent ) * maxLevel;
+  var maxIndent  = gTabBar.getBoundingClientRect().width * (0.33);
+  var minIndent  = Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
   var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(maxIndent / maxLevel), minIndent));
   //log('calculated result: ', { oldIndent, indent, maxIndent, minIndent, indentUnit });
   if (indent > maxIndent) {
@@ -541,7 +541,7 @@ function updateTabbarLayout(aParams = {}) {
   var range = document.createRange();
   range.selectNodeContents(gTabBar);
   var containerHeight = gTabBar.getBoundingClientRect().height;
-  var contentHeight = range.getBoundingClientRect().height;
+  var contentHeight   = range.getBoundingClientRect().height;
   //log('height: ', { container: containerHeight, content: contentHeight });
   var overflow = containerHeight < contentHeight;
   if (overflow && !gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
@@ -564,12 +564,12 @@ function updateTabbarLayout(aParams = {}) {
         return;
       }
       var lastOpenedTab = getLastOpenedTab();
-      var reasons = aParams.reasons || 0;
+      var reasons       = aParams.reasons || 0;
       if (reasons & kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
         scrollToTab(lastOpenedTab, {
-          anchor: current,
+          anchor:            current,
           notifyOnOutOfView: true
         });
       }
@@ -604,7 +604,7 @@ function updateTabTooltip(aTab) {
   for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
     tab.labelWithDescendants = getLabelWithDescendants(tab);
     tab.setAttribute('title', isSubtreeCollapsed(tab) && hasChildTabs(tab) ?
-                                tab.labelWithDescendants : tab.label);
+      tab.labelWithDescendants : tab.label);
   }
 }
 
@@ -623,7 +623,7 @@ async function synchronizeThrobberAnimations() {
   var animations = [];
   for (let throbber of throbbers) {
     if (typeof throbber.getAnimations == 'function') // sometimes non-animated throbber can appear in the result
-    animations = animations.concat(throbber.getAnimations({ subtree: true }));
+      animations = animations.concat(throbber.getAnimations({ subtree: true }));
   }
   var firstStartTime = Math.min(...animations.map(aAnimation => aAnimation.startTime));
   await nextFrame();

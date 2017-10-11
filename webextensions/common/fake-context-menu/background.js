@@ -70,7 +70,7 @@ var tabContextMenu = {
   onExternalMessage(aMessage, aSender) {
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_CREATE: {
-        let items = this.getItemsFor(aSender.id);
+        let items  = this.getItemsFor(aSender.id);
         let params = aMessage.params;
         if (Array.isArray(params))
           params = params[0];
@@ -96,7 +96,7 @@ var tabContextMenu = {
 
       case kTSTAPI_CONTEXT_MENU_REMOVE: {
         let items = this.getItemsFor(aSender.id);
-        let id = aMessage.params;
+        let id    = aMessage.params;
         if (Array.isArray(id))
           id = id[0];
         items = items.filter(aItem => aItem.id != id);

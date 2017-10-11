@@ -6,14 +6,17 @@
 'use strict';
 
 function MetricsData() {
-  this.items = [];
+  this.items       = [];
   this.initialTime = this.lastTime = Date.now();
 }
 
 MetricsData.prototype = {
   add(aLabel) {
     var now = Date.now();
-    this.items.push({ label: aLabel, delta: now - this.lastTime });
+    this.items.push({
+      label: aLabel,
+      delta: now - this.lastTime
+    });
     this.deltaBetweenLastItem = now - this.initialTime;
     this.lastTime = now;
   },
@@ -23,13 +26,18 @@ MetricsData.prototype = {
     if (typeof aAsyncTask == 'function')
       aAsyncTask = aAsyncTask();
     return aAsyncTask.then(aResult => {
-      this.items.push({ label: aLabel, delta: Date.now() - start, async: true });
+      this.items.push({
+        label: aLabel,
+        delta: Date.now() - start,
+        async: true
+      });
       return aResult;
     });
   },
 
   toString() {
-    var logs = this.items.map(aItem => `${aItem.delta || 0}${aItem.async ? ' (async)' : ''}: ${aItem.label}`);
+    var async = aItem.async ? ' (async)' : '' ;
+    var logs = this.items.map(aItem => `${aItem.delta || 0}${async}: ${aItem.label}`);
     return `total ${this.deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
   }
 };

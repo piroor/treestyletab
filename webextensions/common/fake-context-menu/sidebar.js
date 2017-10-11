@@ -35,7 +35,7 @@ var tabContextMenu = {
       type: kTSTAPI_CONTEXT_MENU_GET_ITEMS
     }).then(aItems => {
       this.extraItems = aItems;
-      this.dirty = true;
+      this.dirty      = true;
     });
   },
 
@@ -52,7 +52,7 @@ var tabContextMenu = {
 
   contextTab: null,
   extraItems: {},
-  dirty: false,
+  dirty:      false,
 
   rebuild: async function() {
     if (!this.dirty)
@@ -83,7 +83,7 @@ var tabContextMenu = {
       addonItem.classList.add('extra');
       this.prepareAsSubmenu(addonItem);
       let addonSubMenu = addonItem.lastChild;
-      let knownItems = {};
+      let knownItems   = {};
       for (let item of this.extraItems[id]) {
         if (item.contexts && item.contexts.indexOf('tab') < 0)
           continue;
@@ -179,7 +179,7 @@ var tabContextMenu = {
       delete this.closeTimeout;
       this.onClosed();
     }
-    this.contextTab = aOptions.tab;
+    this.contextTab      = aOptions.tab;
     this.contextWindowId = aOptions.windowId;
     await this.rebuild();
     this.applyContext();
@@ -198,7 +198,7 @@ var tabContextMenu = {
     if (!this.menu.classList.contains('open'))
       return;
     this.menu.classList.remove('open');
-    this.contextTab = null;
+    this.contextTab      = null;
     this.contextWindowId = null;
     this.closeTimeout = setTimeout(() => {
       delete this.closeTimeout;
@@ -258,23 +258,23 @@ var tabContextMenu = {
 
   updatePosition(aMenu, aOptions = {}) {
     var left = aOptions.left;
-    var top = aOptions.top;
+    var top  = aOptions.top;
 
     if (aMenu.parentNode.localName == 'li') {
       let parentRect = aMenu.parentNode.getBoundingClientRect();
       left = parentRect.right;
-      top = parentRect.top;
+      top  = parentRect.top;
     }
 
     let menuRect = aMenu.getBoundingClientRect();
     let containerRect = this.containerRect;
     left = left || Math.max(0, (containerRect.width - menuRect.width) / 2);
-    top = top || Math.max(0, (containerRect.height - menuRect.height) / 2);
+    top  = top  || Math.max(0, (containerRect.height - menuRect.height) / 2);
 
     left = Math.min(left, containerRect.width - menuRect.width - 3);
-    top = Math.min(top, containerRect.height - menuRect.height - 3);
+    top  = Math.min(top,  containerRect.height - menuRect.height - 3);
     aMenu.style.left = `${left}px`;
-    aMenu.style.top = `${top}px`;
+    aMenu.style.top  = `${top}px`;
   },
 
   onBlur() {
@@ -364,7 +364,7 @@ var tabContextMenu = {
           });
         })();
       case 'context_openTabInWindow': {
-        let tabId = this.contextTab.id; // cache it for delayed tasks!
+        let tabId  = this.contextTab.id; // cache it for delayed tasks!
         let window = await browser.windows.create({ url: 'about:blank' })
         await browser.tabs.move(tabId, { index: 1, windowId: window.id });
         let tabs = await browser.tabs.query({ windowId: window.id });
@@ -377,7 +377,7 @@ var tabContextMenu = {
         }
       }; break;
       case 'context_bookmarkAllTabs': {
-        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        let tabs   = await browser.tabs.query({ windowId: this.contextWindowId });
         let folder = await bookmarkTabs(tabs.map(aTab => getTabById(aTab.id)));
         browser.bookmarks.get(folder.parentId).then(aFolders => {
           notify({
@@ -392,7 +392,7 @@ var tabContextMenu = {
         });
       }; break;
       case 'context_closeTabsToTheEnd': {
-        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
         let after = false;
         for (let tab of tabs) {
           if (tab.id == this.contextTab.id) {
@@ -406,7 +406,7 @@ var tabContextMenu = {
       }; break;
       case 'context_closeOtherTabs': {
         let tabId = this.contextTab.id; // cache it for delayed tasks!
-        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
         for (let tab of tabs) {
           if (!tab.pinned && tab.id != tabId)
             browser.tabs.remove(tab.id);
@@ -476,15 +476,15 @@ var tabContextMenu = {
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_OPEN:
         return (async () => {
-          var tab = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
+          var tab      = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
           var windowId = aMessage.window || tab && tab.windowId;
           if (windowId != gTargetWindow)
             return;
           return tabContextMenu.open({
-            tab:  tab,
+            tab:      tab,
             windowId: windowId,
-            left: aMessage.left,
-            top:  aMessage.top
+            left:     aMessage.left,
+            top:      aMessage.top
           });
         })();
     }
