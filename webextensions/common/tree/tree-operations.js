@@ -75,7 +75,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     return;
   }
 
-  var newIndex = -1;
   if (aOptions.dontMove) {
     aOptions.insertBefore = getNextTab(aChild);
     if (!aOptions.insertBefore)
@@ -87,16 +86,9 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     aOptions.insertBefore = refTabs.insertBefore;
     aOptions.insertAfter  = refTabs.insertAfter;
   }
-  if (aOptions.insertBefore) {
-    log('insertBefore: ', dumpTab(aOptions.insertBefore));
-    newIndex = getTabIndex(aOptions.insertBefore);
-  }
-  else {
-    aOptions.insertAfter = aOptions.insertAfter || aParent;
-    log('insertAfter: ', dumpTab(aOptions.insertAfter));
-    newIndex = getTabIndex(aOptions.insertAfter) + 1;
-  }
+  aOptions.insertAfter = aOptions.insertAfter || aParent;
 
+  var newIndex = calculateNewTabIndex(aOptions);
   log('newIndex: ', newIndex);
 
   var childIds;

@@ -592,12 +592,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       }));
     }
     else {
-      let startIndex = aOptions.insertBefore ?
-                         getTabIndex(aOptions.insertBefore) :
-                       aOptions.insertAfter ?
-                         getTabIndex(aOptions.insertAfter) + 1 :
-                         -1 ;
-      let container = getTabsContainer(aOptions.windowId);
+      let startIndex = calculateNewTabIndex(aOptions);
+      let container  = getTabsContainer(aOptions.windowId);
       container.toBeOpenedTabsWithPositions += aURIs.length;
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {

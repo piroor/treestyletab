@@ -190,6 +190,14 @@ function getTabIndex(aTab) {
   ).numberValue;
 }
 
+function calculateNewTabIndex(aParams) {
+  if (aParams.insertBefore)
+    return getTabIndex(aParams.insertBefore);
+  if (aParams.insertAfter)
+    return getTabIndex(aParams.insertAfter) + 1;
+  return -1;
+}
+
 
 function getNextNormalTab(aTab) {
   if (!aTab || !aTab.id)
