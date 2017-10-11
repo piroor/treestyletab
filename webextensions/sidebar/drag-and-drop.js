@@ -466,10 +466,11 @@ function retrieveURIsFromData(aData, aType) {
     }; break;
 
     case 'text/uri-list':
-      return aData.replace(/\r/g, '\n')
-                  .replace(/^\#.+$/gim, '')
-                  .replace(/\n\n+/g, '\n')
-                  .split('\n');
+      return aData
+        .replace(/\r/g, '\n')
+        .replace(/^\#.+$/gim, '')
+        .replace(/\n\n+/g, '\n')
+        .split('\n');
 
     case 'text/unicode':
     case 'text/plain':
