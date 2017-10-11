@@ -255,7 +255,7 @@ async function closeChildTabs(aParent) {
   //markAsClosedSet([aParent].concat(tabs));
   await Promise.all(tabs.reverse().map(aTab => {
     return browser.tabs.remove(aTab.apiTab.id)
-            .catch(handleMissingTabError);
+      .catch(handleMissingTabError);
   }));
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
