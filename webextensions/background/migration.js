@@ -274,12 +274,11 @@ async function notifyUpdatedFromLegacy() {
     active: true
   });
   var title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`
+  var description = browser.i18n.getMessage('message.updatedFromLegacy.description');
   browser.tabs.executeScript(tab.id, {
     code: `
       document.querySelector('#title').textContent = document.title = ${JSON.stringify(title)};
-      document.querySelector('#description').textContent = ${
-        JSON.stringify(browser.i18n.getMessage('message.updatedFromLegacy.description'))
-      };
+      document.querySelector('#description').textContent = ${JSON.stringify(description)};
       location.replace('data:text/html,' + encodeURIComponent(document.documentElement.innerHTML));
     `
   });
