@@ -502,11 +502,10 @@ function onDragStart(aEvent) {
   if (gLastMousedown && gLastMousedown.expired) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    gLastDragEnteredTab = tab;
+    gLastDragEnteredTab = gLastDragEnteredTarget = tab;
     let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
-    gLastDragEnteredTarget = gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent) ?
-                               getTabClosebox(tab) :
-                               tab ;
+    if (startOnClosebox)
+      gLastDragEnteredTarget = getTabClosebox(tab);
     sendTSTAPIMessage({
       type:   kTSTAPI_NOTIFY_TAB_DRAGSTART,
       tab:    serializeTabForTSTAPI(tab),
@@ -797,9 +796,9 @@ function onDragEnd(aEvent) {
 function onTSTAPIDragEnter(aEvent) {
   autoScrollOnMouseEvent(aEvent);
   var tab    = getTabFromEvent(aEvent);
-  var target = gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent) ?
-                 getTabClosebox(tab) :
-                 tab ;
+  var target = tab;
+  if (gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent))
+    target = getTabClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!gDragTargetIsClosebox ||
@@ -823,9 +822,9 @@ function onTSTAPIDragExit(aEvent) {
   var tab = getTabFromEvent(aEvent);
   if (!tab)
     return;
-  var target = gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent) ?
-                 getTabClosebox(tab) :
-                 tab ;
+  var target = tab;
+  if (gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent))
+    target = getTabClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;
