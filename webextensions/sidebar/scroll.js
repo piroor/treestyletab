@@ -66,13 +66,29 @@ function calculateScrollDeltaForTab(aTab) {
   var tabRect       = aTab.getBoundingClientRect();
   var containerRect = gTabBar.getBoundingClientRect();
   var offset        = getOffsetForAnimatingTab(aTab) + smoothScrollTo.currentOffset;
-  var delta = 0;
+  var delta         = 0;
+
+  /*
+    getBoundingClientRect() for animating tab will return wrong
+    coordinates, so we need to calculate actual position based on
+    another static tab.
+  */
+  var tab = aTab;
+  while (window.getComputedStyle(tab, null).opacity == 0 ||
+         tab.classList.contains(kTAB_STATE_COLLAPSING) ||
+         tab.classList.contains(kTAB_STATE_EXPANDING)) {
+    offset  += tabRect.height;
+    tab     = getPreviousVisibleTab(tab);
+    tabRect = tab.getBoundingClientRect();
+  }
+
   if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
     delta = tabRect.bottom - containerRect.bottom + offset;
   }
   else if (containerRect.top > tabRect.top + offset) { // should scroll up
     delta = tabRect.top - containerRect.top + offset;
   }
+  //log('calculateScrollDeltaForTab ', dumpTab(aTab), delta, tabRect, containerRect, offset);
   return delta;
 }
 
