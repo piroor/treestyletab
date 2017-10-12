@@ -1,10 +1,10 @@
 # History
 
  - master/HEAD
- - 2.0.4
+ - 2.0.4 (2017.10.10)
    * The current tab is never scrolled out when a new tab is opened and the tab bar turned to "overflow" mode.
    * Never show blue gradient for notification when the window is resized.
- - 2.0.3
+ - 2.0.3 (2017.10.10)
    * Tree structure is restored when Firefox is started with some extra URLs (or files.)
    * Sidebar UI is now rendered with the system font for message boxes (same to Firefox's tabs).
    * "Max level of indentation" config works more correctly (including `0` case.)
@@ -33,7 +33,7 @@
    * New tabs opened at the end of the tab bar is now completely shown (if possible) when the tab bar turns into "overflow" mode by the opened tab.
    * [Simple `ping` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#uninit-special-features-for-tst-when-tst-is-going-to-be-disabled) to check TST's living status from other addons is now available.
    * Tabs gotten with [`get-tree` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#get-tree-information) now have correct `active` status.
- - 2.0.2
+ - 2.0.2 (2017.10.4)
    * Open new tab by middle click on the blank area, like Firefox does.
    * Synchronize animation of throbbers, like Firefox does.
    * Apply "burst" animation for completely loaded tabs, like Firefox does.
@@ -48,7 +48,7 @@
    * Don't create recursively grouped tabs from newly opened tabs.
    * [New APIs to override the wheel scrolling behavior](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#override-reaction-for-mouse-wheel-rotation-on-the-vertical-tab-bar) are now available.
    * Updated zh-CN locale by YFdyh000, thanks!
- - 2.0.1
+ - 2.0.1 (2017.9.29)
    * "Middle click to close tab" behavior becomes same to Firefox's one (closed on mouseup).
    * "Dragging" appearance of tabs are correctly cleared when the dragging is canceled.
    * Tabs were too easily detached from the window by drag and drop of a tab onto itself. Now dropping of a tab onto itself is simply ignored.
@@ -66,7 +66,7 @@
    * All collapsed descendant tabs are now shown in the tooltip.
    * An announcement message is shown automatically, when TST is updated from legacy version to 2.x or later.
    * Now pinned tabs are easily unfaviconized. (A new checkbox is added in TST's configurations.)
- - 2.0
+ - 2.0 (2017.9.26)
    * Rebuilt on WebExtensions.
  - 0.19.2017090601
    * Tree Style Tab's configurations and tree information are now exportable, as a migration assistance for Firefox 57 and later. See the "Advanced" section in the configuration dialog.
