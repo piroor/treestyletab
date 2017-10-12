@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * The tab bar is scrolled to newly attached child tab prior to its parent, if the parent is already out of the viewport.
+   * Animation effect for completely loaded tab won't be applied again and again for already loaded tabs anymore.
  - 2.0.4 (2017.10.10)
    * The current tab is never scrolled out when a new tab is opened and the tab bar turned to "overflow" mode.
    * Never show blue gradient for notification when the window is resized.
