@@ -151,11 +151,20 @@ function getTabFromCoordinates(aEvent) {
   if (!container)
     return null;
 
+  // because tab style can be modified, we try to find tab from
+  // left, middle, and right.
   var containerRect = container.getBoundingClientRect();
-  var x = configs.sidebarPosition == kTABBAR_POSITION_RIGHT ?
-            gFaviconSize :
-            containerRect.width - gFaviconSize ;
-  return getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
+  var trialPoints = [
+    gFaviconSize,
+    containerRect.width / 2,
+    containerRect.width - gFaviconSize
+  ];
+  for (let x of trialPoints) {
+    let tab = getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
+    if (tab)
+      return tab;
+  }
+  return null;
 }
 
 
