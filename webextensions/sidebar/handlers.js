@@ -301,7 +301,7 @@ function cancelHandleMousedown() {
   return false;
 }
 
-function onMouseUp(aEvent) {
+async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
 
   if (gCapturingMouseEvents) {
@@ -327,11 +327,14 @@ function onMouseUp(aEvent) {
       (tab && tab != getTabById(gLastMousedown.detail.tab)))
     return;
 
-  if (!tab)
-    sendTSTAPIMessage(clone(gLastMousedown.detail, {
+  if (!tab) {
+    let results = await sendTSTAPIMessage(clone(gLastMousedown.detail, {
       type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
       window: gTargetWindow,
     }));
+    if (results.some(aResult => aResult.result)) // canceled
+      return;
+  }
 
   if (gLastMousedown.detail.isMiddleClick) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
