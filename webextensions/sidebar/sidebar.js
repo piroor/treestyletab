@@ -10,8 +10,6 @@ gLogContext = 'Sidebar-?';
 var gTabBar;
 var gAfterTabsForOverflowTabBar;
 var gOutOfViewTabNotifier;
-var gIndent             = -1;
-var gIndentProp         = 'margin-left';
 var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
@@ -453,6 +451,8 @@ function reserveToUpdateIndent() {
 
 var gIndentDefinition;
 var gLastMaxLevel;
+var gIndent     = -1;
+var gIndentProp = 'margin-left';
 
 function updateIndent(aOptions = {}) {
   var maxLevel = getMaxTreeLevel(gTargetWindow, {
