@@ -26,6 +26,7 @@ const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';
 const kCOMMAND_REMOVE_TAB              = 'treestyletab:remove-tab';
 const kCOMMAND_ATTACH_TAB_TO           = 'treestyletab:attach-tab-to';
+const kCOMMAND_TAB_ATTACHED_COMPLETELY = 'treestyletab:tab-attached-completely';
 const kCOMMAND_DETACH_TAB              = 'treestyletab:detach-tab';
 const kCOMMAND_PERFORM_TABS_DRAG_DROP  = 'treestyletab:perform-tabs-drag-drop';
 const kCOMMAND_BLOCK_USER_OPERATIONS   = 'treestyletab:block-user-operations';

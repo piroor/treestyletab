@@ -923,8 +923,11 @@ function onTabAttached(aTab, aInfo = {}) {
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
-  if (isActive(aInfo.parent))
-    scrollToNewTab(aTab);
+  /*
+    We must not scroll to the tab here, because the tab can be moved
+    by the background page later. Instead we wait until the tab is
+    successfully moved (then kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
+  */
 }
 
 function onTabDetached(aTab, aDetachInfo = {}) {
@@ -1019,6 +1022,12 @@ function onMessage(aMessage, aSender, aRespond) {
             broadcast:    false
           }));
       }
+    }; break;
+
+    case kCOMMAND_TAB_ATTACHED_COMPLETELY: {
+      let tab = getTabById(aMessage.tab);
+      if (tab && isActive(getTabById(aMessage.parent)))
+        scrollToNewTab(tab);
     }; break;
 
     case kCOMMAND_DETACH_TAB: {

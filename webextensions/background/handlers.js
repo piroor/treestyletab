@@ -563,6 +563,12 @@ async function onTabAttached(aTab, aInfo = {}) {
       getParentTab(aTab) != aInfo.parent) // not detached while waiting
     return;
 
+  browser.runtime.sendMessage({
+    type:   kCOMMAND_TAB_ATTACHED_COMPLETELY,
+    tab:    aTab.id,
+    parent: parent.id
+  });
+
   if (isSubtreeCollapsed(aInfo.parent) &&
       !aInfo.forceExpand)
     collapseExpandTabAndSubtree(aTab, {

@@ -62,40 +62,26 @@ function cancelRunningScroll() {
   stopSmoothScroll();
 }
 
-// This algorithm is unstable for animating tabs, so it must be updated...
 function calculateScrollDeltaForTab(aTab) {
+  if (isPinned(aTab))
+    return 0;
+
   var tabRect       = aTab.getBoundingClientRect();
   var containerRect = gTabBar.getBoundingClientRect();
   var offset        = getOffsetForAnimatingTab(aTab) + smoothScrollTo.currentOffset;
   var delta         = 0;
-
-  /*
-    getBoundingClientRect() for animating tab will return wrong
-    coordinates, so we need to calculate actual position based on
-    another static tab.
-  */
-  var tab          = aTab;
-  var tabTop       = tabRect.top;
-  var tabBottom    = tabRect.bottom;
-  var offsetHeight = 0;
-  while (isCollapsed(tab) ||
-         tab.classList.contains(kTAB_STATE_COLLAPSING) ||
-         tab.classList.contains(kTAB_STATE_EXPANDING)) {
-    tab          = getPreviousVisibleTab(tab);
-    tabRect      = tab.getBoundingClientRect();
-    tabTop       = tabRect.top + offsetHeight;
-    tabBottom    = tabRect.bottom + offsetHeight;
-    offsetHeight += tabRect.height;
-    log('calculateScrollDeltaForTab/recalculate tabBottom ', tabBottom, tabRect);
+  if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
+    delta = tabRect.bottom - containerRect.bottom + offset;
   }
-
-  if (containerRect.bottom < tabBottom + offset) { // should scroll down
-    delta = tabBottom - containerRect.bottom + offset;
+  else if (containerRect.top > tabRect.top + offset) { // should scroll up
+    delta = tabRect.top - containerRect.top + offset;
   }
-  else if (containerRect.top > tabTop + offset) { // should scroll up
-    delta = tabTop - containerRect.top + offset;
-  }
-  log('calculateScrollDeltaForTab ', dumpTab(aTab), delta, tabRect, containerRect, offset);
+  log('calculateScrollDeltaForTab ', dumpTab(aTab), {
+    delta, offset,
+    tabTop:          tabRect.top,
+    tabBottom:       tabRect.bottom,
+    containerBottom: containerRect.bottom
+  });
   return delta;
 }
 
