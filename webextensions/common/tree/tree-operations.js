@@ -93,21 +93,21 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
   var childIds;
   {
-    let expectedAllTabs = getAllTabs(aChild).filter((aTab) => aTab != aChild);
-    let refIndex = aOptions.insertBefore ?
-                     expectedAllTabs.indexOf(aOptions.insertBefore) :
-                     expectedAllTabs.indexOf(aOptions.insertAfter) + 1;
-    if (refIndex >= expectedAllTabs.length)
+    let newIndex = calculateNewTabIndex({
+      insertBefore: aOptions.insertBefore,
+      insertAfter:  aOptions.insertAfter,
+      ignoreTabs:   [aChild.id]
+    });
+    let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
+    if (newIndex >= expectedAllTabs.length)
       expectedAllTabs.push(aChild);
     else
-      expectedAllTabs.splice(refIndex, 0, aChild);
+      expectedAllTabs.splice(newIndex, 0, aChild);
 
-    childIds = expectedAllTabs.filter((aTab) => {
+    childIds = expectedAllTabs.filter(aTab => {
       return (aTab == aChild ||
               aTab.getAttribute(kPARENT) == aParent.id);
-    }).map((aTab) => {
-      return aTab.id;
-    });
+    }).map(aTab => aTab.id);
   }
   log('new children: ', childIds);
 

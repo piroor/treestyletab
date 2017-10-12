@@ -179,12 +179,21 @@ function getLastOpenedTab(aHint) {
     null ;
 }
 
-function getTabIndex(aTab) {
+function getTabIndex(aTab, aOptions = {}) {
   if (!aTab || !aTab.id)
     return -1;
   assertValidHint(aTab);
+
+  let ignoreCondition = '';
+  if (Array.isArray(aOptions.ignoreTabs) &&
+      aOptions.ignoreTabs.length > 0) {
+    let ids = aOptions.ignoreTabs.map(aTab => aTab.id);
+    ids = ` ${ids.join(' ')} `;
+    ignoreCondition = `[not(contains(${ids}, " ${aTab.id} "))]`;
+  }
+
   return evaluateXPath(
-    `count(preceding-sibling::${kXPATH_LIVE_TAB})`,
+    `count(preceding-sibling::${kXPATH_LIVE_TAB}${ignoreCondition})`,
     aTab,
     XPathResult.NUMBER_TYPE
   ).numberValue;
@@ -192,9 +201,9 @@ function getTabIndex(aTab) {
 
 function calculateNewTabIndex(aParams) {
   if (aParams.insertBefore)
-    return getTabIndex(aParams.insertBefore);
+    return getTabIndex(aParams.insertBefore, aParams);
   if (aParams.insertAfter)
-    return getTabIndex(aParams.insertAfter) + 1;
+    return getTabIndex(aParams.insertAfter, aParams) + 1;
   return -1;
 }
 
