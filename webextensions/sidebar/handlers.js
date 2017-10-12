@@ -151,19 +151,11 @@ function getTabFromCoordinates(aEvent) {
   if (!container)
     return null;
 
-  var rect = container.getBoundingClientRect();
-  for (let x    = 0,
-           maxx = rect.width,
-           step = Math.floor(rect.width / 10);
-       x < maxx;
-       x += step) {
-    tab = document.elementFromPoint(x, aEvent.clientY);
-    tab = getTabFromChild(tab);
-    if (tab)
-      return tab;
-  }
-
-  return null;
+  var containerRect = container.getBoundingClientRect();
+  var x = configs.sidebarPosition == kTABBAR_POSITION_RIGHT ?
+            gFaviconSize :
+            containerRect.width - gFaviconSize ;
+  return getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
 }
 
 
