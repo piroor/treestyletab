@@ -27,7 +27,7 @@ MetricsData.prototype = {
       aAsyncTask = aAsyncTask();
     return aAsyncTask.then(aResult => {
       this.items.push({
-        label: aLabel,
+        label: ` ${aLabel} (async)`,
         delta: Date.now() - start,
         async: true
       });
@@ -36,7 +36,6 @@ MetricsData.prototype = {
   },
 
   toString() {
-    var async = aItem.async ? ' (async)' : '' ;
     var logs = this.items.map(aItem => `${aItem.delta || 0}${async}: ${aItem.label}`);
     return `total ${this.deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
   }
