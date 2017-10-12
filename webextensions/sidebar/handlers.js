@@ -322,7 +322,9 @@ function onMouseUp(aEvent) {
     gLastDragEnteredTarget = null;
   }
 
-  if (!gLastMousedown)
+  if (!gLastMousedown ||
+      gLastMousedown.detail.targetType != getMouseEventTargetType(aEvent) ||
+      (tab && tab != getTabById(gLastMousedown.detail.tab)))
     return;
 
   if (!tab)
@@ -330,10 +332,6 @@ function onMouseUp(aEvent) {
       type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
       window: gTargetWindow,
     }));
-
-  if (gLastMousedown.detail.targetType != getMouseEventTargetType(aEvent) ||
-      (tab && tab != getTabById(gLastMousedown.detail.tab)))
-    return;
 
   if (gLastMousedown.detail.isMiddleClick) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
