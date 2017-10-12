@@ -332,8 +332,10 @@ async function onMouseUp(aEvent) {
       type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
       window: gTargetWindow,
     }));
-    if (results.some(aResult => aResult.result)) // canceled
+    if (results.some(aResult => aResult.result)) { // canceled
+      cancelHandleMousedown();
       return;
+    }
   }
 
   if (gLastMousedown.detail.isMiddleClick) {
