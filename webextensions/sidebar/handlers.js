@@ -197,23 +197,10 @@ function onMouseDown(aEvent) {
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
   //log('found target tab: ', tab);
 
-  if (aEvent.button == 0 &&
-      isEventFiredOnTwisty(aEvent)) {
-    //log('clicked on twisty');
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-    if (hasChildTabs(tab))
-      collapseExpandSubtree(tab, {
-        collapsed:       !isSubtreeCollapsed(tab),
-        manualOperation: true,
-        inRemote:        true
-      });
-    return;
-  }
-
   var mousedownDetail = {
     targetType:    getMouseEventTargetType(aEvent),
     tab:           tab && tab.id,
+    closebox:      isEventFiredOnClosebox(aEvent),
     button:        aEvent.button,
     ctrlKey:       aEvent.ctrlKey,
     shiftKey:      aEvent.shiftKey,
@@ -221,32 +208,21 @@ function onMouseDown(aEvent) {
     metaKey:       aEvent.metaKey,
     isMiddleClick: isMiddleClick(aEvent)
   };
+  log('onMouseDown ', mousedownDetail);
+
   if (mousedownDetail.isMiddleClick) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
   }
 
-  if ((isEventFiredOnSoundButton(aEvent) ||
-       isEventFiredOnClosebox(aEvent)) &&
-      aEvent.button == 0) {
-    //log('mousedown on button in tab');
-    mousedownDetail.closebox = isEventFiredOnClosebox(aEvent);
-    gLastMousedown = {
-      detail: mousedownDetail
-    };
-    gLastMousedown.timeout = setTimeout(() => {
-      if (!gLastMousedown)
-        return;
-      gLastMousedown.expired = true;
-      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
-    }, configs.startDragTimeout);
-    return;
-  }
-
-  browser.runtime.sendMessage(clone(mousedownDetail, {
-    type:     kNOTIFY_TAB_MOUSEDOWN,
-    windowId: gTargetWindow
-  }));
+  if ((!isEventFiredOnTwisty(aEvent) &&
+       !isEventFiredOnSoundButton(aEvent) &&
+       !isEventFiredOnClosebox(aEvent)) ||
+      aEvent.button != 0)
+    browser.runtime.sendMessage(clone(mousedownDetail, {
+      type:     kNOTIFY_TAB_MOUSEDOWN,
+      windowId: gTargetWindow
+    }));
 
   gLastMousedown = {
     detail: mousedownDetail
@@ -254,6 +230,7 @@ function onMouseDown(aEvent) {
   gLastMousedown.timeout = setTimeout(() => {
     if (!gLastMousedown)
       return;
+    log('onMouseDown expired');
     gLastMousedown.expired = true;
     if (aEvent.button == 0)
       notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
@@ -327,6 +304,8 @@ async function onMouseUp(aEvent) {
       (tab && tab != getTabById(gLastMousedown.detail.tab)))
     return;
 
+  log('onMouseUp ', gLastMousedown.detail);
+
   if (!tab) {
     let results = await sendTSTAPIMessage(clone(gLastMousedown.detail, {
       type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
@@ -377,7 +356,7 @@ async function onMouseUp(aEvent) {
 }
 
 function onClick(aEvent) {
-  if (aEvent.button == 2) // ignore right click
+  if (aEvent.button != 0) // ignore non-left click
     return;
 
   //log('onClick', String(aEvent.target));
@@ -385,8 +364,7 @@ function onClick(aEvent) {
   if (isEventFiredOnContextualIdentitySelector(aEvent))
     return;
 
-  if (aEvent.button == 0 &&
-      isEventFiredOnNewTabButton(aEvent)) {
+  if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     handleNewTabAction(aEvent, {
@@ -397,6 +375,19 @@ function onClick(aEvent) {
 
   var tab = getTabFromEvent(aEvent);
   //log('clicked tab: ', tab);
+
+  if (isEventFiredOnTwisty(aEvent)) {
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    //log('clicked on twisty');
+    if (hasChildTabs(tab))
+      collapseExpandSubtree(tab, {
+        collapsed:       !isSubtreeCollapsed(tab),
+        manualOperation: true,
+        inRemote:        true
+      });
+    return;
+  }
 
   if (isEventFiredOnSoundButton(aEvent)) {
     aEvent.stopPropagation();
