@@ -94,8 +94,10 @@ async function onTabOpening(aTab, aInfo = {}) {
 }
 
 function onNewTabsTimeout(aContainer) {
-  if (container.onWindowRestored)
-    return container.onWindowRestored();
+  if (aContainer.onWindowRestored) {
+    aContainer.openedNewTabs = [];
+    return aContainer.onWindowRestored();
+  }
 
   if (aContainer.openedNewTabs.length == 0)
     return;
@@ -181,7 +183,7 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 function onTabRestored(aTab) {
-  if (aTab.parentNode.waitingForExplicitWindowRestoration)
+  if (aTab.parentNode.onWindowRestored)
     return;
   log('restored ', dumpTab(aTab), aTab.apiTab);
   return attachTabFromRestoredInfo(aTab, {

@@ -194,7 +194,7 @@ async function loadTreeStructure() {
     var tabs = getAllTabs(aWindow.id);
     if (tabs.length == 1 &&
         tabs[0].apiTab.url.indexOf('about:sessionrestore') == 0) {
-      waitWindowRestored(aWindow.id);
+      waitWindowRestored(tabs[0]);
       return;
     }
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
@@ -273,23 +273,38 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
 }
 
 
-function waitWindowRestored(aWindowId) {
-  var container = getTabsContainer(aWindowId);
+function waitWindowRestored(aRestorerTab) {
+  var container = getTabsContainer(aRestorerTab);
   var promisedRestored = new Promise((aResolve, aReject) => {
     container.onWindowRestored = aResolve;
   });
-  promisedRestored.then(() => {
-    log('Start to restore tree for tabs: ', container.restoringTabs);
+  promisedRestored.then(async () => {
+    var restoringTabs = container.restoringTabs;
+    container.restoringTabs = [];
+    log('waitWindowRestored: Start to restore tree for tabs: ', restoringTabs);
+
+    // Because about:sessionrestore tab is reused, we need to re-init
+    // the unique id from the session data.
+    aRestorerTab.uniqueId = requestUniqueId(aRestorerTab.apiTab.id);
+    let uniqueId = await aRestorerTab.uniqueId;
+    aRestorerTab.setAttribute(kPERSISTENT_ID, uniqueId.id);
+    log('waitWindowRestored: Restorer tab: ', aRestorerTab.id, uniqueId);
+    if (restoringTabs.indexOf(aRestorerTab.id) < 0)
+      restoringTabs.push(aRestorerTab.id);
+
     delete container.onWindowRestored;
-    container.openedNewTabs = [];
-    container.restoringTabs.push(getCurrentTab(container).id);
-    for (let tabId of container.restoringTabs.reverse()) {
-      attachTabFromRestoredInfo(getTabById(tabId), {
+
+    restoringTabs = restoringTabs.map(getTabById);
+    restoringTabs = restoringTabs.sort((aA, aB) => {
+      return aB.apiTab.index - aA.apiTab.index;
+    });
+    for (let tab of restoringTabs) {
+      await attachTabFromRestoredInfo(tab, {
         keepCurrentTree: true,
         children: true
       });
     }
-    container.restoringTabs = [];
+    log('waitWindowRestored: Done.');
   });
 }
 
