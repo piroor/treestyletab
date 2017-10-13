@@ -40,21 +40,30 @@ var tabContextMenu = {
     return items;
   },
 
-  notifyUpdated() {
-    browser.runtime.sendMessage({
+  notifyUpdated: async function() {
+    await browser.runtime.sendMessage({
       type:  kTSTAPI_CONTEXT_MENU_UPDATED,
       items: this.items
     });
   },
 
   reserveNotifyUpdated() {
+    return new Promise((aResolve, aReject) => {
+      this.notifyUpdatedHandlers.push(aResolve);
     if (this.reservedNotifyUpdate)
       clearTimeout(this.reservedNotifyUpdate);
-    this.reservedNotifyUpdate = setTimeout(() => {
+    this.reservedNotifyUpdate = setTimeout(async () => {
       delete this.reservedNotifyUpdate;
-      this.notifyUpdated();
+      await this.notifyUpdated();
+      var handlers = this.notifyUpdatedHandlers;
+      this.notifyUpdatedHandlers = [];
+      for (let handler of handlers) {
+        handler();
+      }
     }, 100);
+    });
   },
+  notifyUpdatedHandlers: [],
 
   onMessage(aMessage, aSender) {
     switch (aMessage.type) {
@@ -76,8 +85,7 @@ var tabContextMenu = {
           params = params[0];
         items.push(params);
         this.items[aSender.id] = items;
-        this.reserveNotifyUpdated();
-        return Promise.resolve();
+        return this.reserveNotifyUpdated();
       }; break;
 
       case kTSTAPI_CONTEXT_MENU_UPDATE: {
@@ -90,8 +98,7 @@ var tabContextMenu = {
           break;
         }
         this.items[aSender.id] = items;
-        this.reserveNotifyUpdated();
-        return Promise.resolve();
+        return this.reserveNotifyUpdated();
       }; break;
 
       case kTSTAPI_CONTEXT_MENU_REMOVE: {
@@ -101,14 +108,12 @@ var tabContextMenu = {
           id = id[0];
         items = items.filter(aItem => aItem.id != id);
         this.items[aSender.id] = items;
-        this.reserveNotifyUpdated();
-        return Promise.resolve();
+        return this.reserveNotifyUpdated();
       }; break;
 
       case kTSTAPI_CONTEXT_MENU_REMOVE_ALL: {
         delete this.items[aSender.id];
-        this.reserveNotifyUpdated();
-        return Promise.resolve();
+        return this.reserveNotifyUpdated();
       }; break;
     }
   }
