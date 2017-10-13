@@ -195,7 +195,7 @@ async function loadTreeStructure() {
     if (tabs.length == 1 &&
         tabs[0].apiTab.url.indexOf('about:sessionrestore') == 0) {
       let container = getTabsContainer(aWindow.id);
-      container.waitingForRestored = true;
+      container.waitingForExplicitWindowRestoration = true;
     }
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
     if (structure)
@@ -215,7 +215,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   await aTab.uniqueId;
   var container = getTabsContainer(aTab);
-  var maxRetry  = container && container.waitingForRestored ? 500 : 0 ;
+  var maxRetry  = container && container.waitingForExplicitWindowRestoration ? configs.explicitWindowRestorationMaxDelay : 0 ;
   var insertBefore, insertAfter, ancestors, children;
   [insertBefore, insertAfter, ancestors, children] = await Promise.all([
     getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE, maxRetry),

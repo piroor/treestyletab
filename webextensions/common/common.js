@@ -158,6 +158,7 @@ configs = new Configs({
   preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400,
+  explicitWindowRestorationMaxDelay: 500,
   knownExternalAddons: [
     'multipletab@piro.sakura.ne.jp'
   ],

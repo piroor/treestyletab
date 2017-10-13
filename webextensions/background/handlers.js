@@ -41,7 +41,9 @@ async function onTabOpening(aTab, aInfo = {}) {
   }
   container.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
-    configs.autoGroupNewTabsTimeout,
+    aContainer.waitingForExplicitWindowRestoration ?
+      configs.explicitWindowRestorationMaxDelay :
+      configs.autoGroupNewTabsTimeout,
     container
   );
 
@@ -93,9 +95,9 @@ async function onTabOpening(aTab, aInfo = {}) {
 }
 
 async function onNewTabsTimeout(aContainer) {
-  if (aContainer.waitingForRestored) {
+  if (aContainer.waitingForExplicitWindowRestoration) {
     aContainer.openedNewTabs = [];
-    aContainer.waitingForRestored = false;
+    aContainer.waitingForExplicitWindowRestoration = false;
     return;
   }
 
