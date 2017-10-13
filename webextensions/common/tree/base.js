@@ -137,12 +137,13 @@ async function getTabValueWithRetry(aTabId, aKey, aMaxRetryDelay) {
   do {
     try {
       let value = await browser.sessions.getTabValue(aTabId, aKey)
-      if (value) {
+      if (value !== undeifned) {
         log(`getTabValueWithRetry(${aTabId}, ${aKey}): success with ${Date.now() - tryStart}msec delay `, value);
         return data;
       }
     }
     catch(e) {
+      return null; // missing tab
     }
     await wait(delay);
   } while (Date.now() - tryStart < aMaxRetryDelay);
