@@ -44,7 +44,7 @@ var gRestoringTree   = false;
 var gNeedRestoreTree = false;
 var gScrollLockedBy  = {};
 
-var gIsMac = /Darwin/.test(navigator.platform);
+var gIsMac = /^Mac/i.test(navigator.platform);
 
 function makeTabId(aApiTab) {
   return `tab-${aApiTab.windowId}-${aApiTab.id}`;

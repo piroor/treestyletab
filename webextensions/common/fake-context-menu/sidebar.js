@@ -436,7 +436,7 @@ var tabContextMenu = {
             modifiers.push('Command');
           if (aEvent.ctrlKey) {
             modifiers.push('Ctrl');
-            if (navigator.platform.indexOf('Darwin') == 0)
+            if (/^Mac/i.test(navigator.platform))
               modifiers.push('MacCtrl');
           }
           if (aEvent.shiftKey)
