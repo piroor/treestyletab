@@ -65,7 +65,7 @@ async function requestUniqueId(aTabId, aOptions = {}) {
   if (!aOptions.forceNew) {
     //let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
     let container = getTabsContainer(getTabById(aTabId));
-    let mayBeRestored = container && container.waitingForExplicitWindowRestoration;
+    let mayBeRestored = container && container.onWindowRestored;
     let maxRetry  = mayBeRestored ? configs.explicitWindowRestorationMaxDelay : 0 ;
     let oldId     = await getTabValueWithRetry(aTabId, kPERSISTENT_ID, maxRetry);
     if (oldId && !oldId.tabId) // ignore broken information!

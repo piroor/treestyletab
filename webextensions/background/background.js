@@ -194,8 +194,7 @@ async function loadTreeStructure() {
     var tabs = getAllTabs(aWindow.id);
     if (tabs.length == 1 &&
         tabs[0].apiTab.url.indexOf('about:sessionrestore') == 0) {
-      let container = getTabsContainer(aWindow.id);
-      container.waitingForExplicitWindowRestoration = true;
+      waitWindowRestored(aWindow.id);
       return;
     }
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
@@ -216,13 +215,12 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   await aTab.uniqueId;
   var container = getTabsContainer(aTab);
-  var maxRetry  = container && container.waitingForExplicitWindowRestoration ? configs.explicitWindowRestorationMaxDelay : 0 ;
   var insertBefore, insertAfter, ancestors, children;
   [insertBefore, insertAfter, ancestors, children] = await Promise.all([
-    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE, maxRetry),
-    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER, maxRetry),
-    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_ANCESTORS, maxRetry),
-    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_CHILDREN, maxRetry)
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN)
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
@@ -263,6 +261,27 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       });
     }
   }
+}
+
+
+function waitWindowRestored(aWindowId) {
+  var container = getTabsContainer(aWindowId);
+  var promisedRestored = new Promise((aResolve, aReject) => {
+    container.onWindowRestored = aResolve;
+  });
+  promisedRestored.then(() => {
+    log('Start to restore tree for tabs: ', container.restoringTabs);
+    delete container.onWindowRestored;
+    container.openedNewTabs = [];
+    container.restoringTabs.push(getCurrentTab(container).id);
+    for (let tabId of container.restoringTabs.reverse()) {
+      attachTabFromRestoredInfo(getTabById(tabId), {
+        keepCurrentTree: true,
+        children: true
+      });
+    }
+    container.restoringTabs = [];
+  });
 }
 
 

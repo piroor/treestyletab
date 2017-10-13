@@ -25,7 +25,7 @@ async function onTabOpening(aTab, aInfo = {}) {
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
-  if (container.waitingForExplicitWindowRestoration) {
+  if (container.onWindowRestored) {
     container.restoringTabs.push(aTab.id);
   }
   else if (configs.autoGroupNewTabs &&
@@ -40,7 +40,7 @@ async function onTabOpening(aTab, aInfo = {}) {
     clearTimeout(container.openedNewTabsTimeout);
   container.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
-    container.waitingForExplicitWindowRestoration ?
+    container.onWindowRestored ?
       configs.explicitWindowRestorationMaxDelay :
       configs.autoGroupNewTabsTimeout,
     container
@@ -94,20 +94,8 @@ async function onTabOpening(aTab, aInfo = {}) {
 }
 
 async function onNewTabsTimeout(aContainer) {
-  if (aContainer.waitingForExplicitWindowRestoration) {
-    log('Start to restore tree for tabs: ', aContainer.restoringTabs);
-    aContainer.waitingForExplicitWindowRestoration = false;
-    aContainer.openedNewTabs = [];
-    aContainer.restoringTabs.push(getCurrentTab(aContainer).id);
-    for (let tabId of aContainer.restoringTabs.reverse()) {
-      attachTabFromRestoredInfo(getTabById(tabId), {
-        keepCurrentTree: true,
-        children: true
-      });
-    }
-    aContainer.restoringTabs = [];
-    return;
-  }
+  if (container.onWindowRestored)
+    return container.onWindowRestored();
 
   if (aContainer.openedNewTabs.length == 0)
     return;
