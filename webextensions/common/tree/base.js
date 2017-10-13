@@ -349,6 +349,7 @@ ${aTab.apiTab.title}
 (${aTab.className})
 uniqueId = <%${kPERSISTENT_ID}%>
 duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
+restored = <%restored%>
 tabId = ${aTab.apiTab.id}
 windowId = ${aTab.apiTab.windowId}
 `.trim();
@@ -363,7 +364,8 @@ windowId = ${aTab.apiTab.windowId}
                           .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
                           .replace(`<%originalId%>`, aUniqueId.originalId)
                           .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
-                          .replace(`<%duplicated%>`, !!aUniqueId.originalId));
+                          .replace(`<%duplicated%>`, !!aUniqueId.duplicated)
+                          .replace(`<%restored%>`, !!aUniqueId.restored));
     });
   }
 }
