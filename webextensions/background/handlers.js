@@ -98,8 +98,10 @@ async function onNewTabsTimeout(aContainer) {
     log('Start to restore tree for tabs: ', aContainer.restoringTabs);
     aContainer.waitingForExplicitWindowRestoration = false;
     aContainer.openedNewTabs = [];
-    for (let tabId of aContainer.restoringTabs) {
+    aContainer.restoringTabs.push(getCurrentTab(aContainer).id);
+    for (let tabId of aContainer.restoringTabs.reverse()) {
       attachTabFromRestoredInfo(getTabById(tabId), {
+        keepCurrentTree: true,
         children: true
       });
     }
@@ -184,6 +186,8 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 function onTabRestored(aTab) {
+  if (aTab.parentNode.waitingForExplicitWindowRestoration)
+    return;
   log('restored ', dumpTab(aTab), aTab.apiTab);
   return attachTabFromRestoredInfo(aTab, {
     children: true

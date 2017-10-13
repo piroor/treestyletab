@@ -196,6 +196,7 @@ async function loadTreeStructure() {
         tabs[0].apiTab.url.indexOf('about:sessionrestore') == 0) {
       let container = getTabsContainer(aWindow.id);
       container.waitingForExplicitWindowRestoration = true;
+      return;
     }
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
     if (structure)
