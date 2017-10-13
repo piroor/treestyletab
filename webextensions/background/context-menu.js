@@ -20,7 +20,7 @@ var gContextMenuItems = `
 `.trim().split(/\s+/);
 
 async function refreshContextMenuItems() {
-  await browser.contextMenus.removeAll();
+  browser.contextMenus.removeAll();
   tabContextMenu.onExternalMessage({
     type: kTSTAPI_CONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
@@ -42,7 +42,7 @@ async function refreshContextMenuItems() {
     }
     let type  = isSeparator ? 'separator' : 'normal';
     let title = isSeparator ? null : browser.i18n.getMessage(`context.${id}.label`);
-    await browser.contextMenus.create({
+    browser.contextMenus.create({
       id, type, title,
       contexts: ['page', 'tab']
     });
