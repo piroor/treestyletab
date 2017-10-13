@@ -93,33 +93,40 @@ async function onTabOpening(aTab, aInfo = {}) {
   return false;
 }
 
-async function onNewTabsTimeout(aContainer) {
+function onNewTabsTimeout(aContainer) {
   if (container.onWindowRestored)
     return container.onWindowRestored();
 
   if (aContainer.openedNewTabs.length == 0)
     return;
 
+  var tabIds = aContainer.openedNewTabs;
+  aContainer.openedNewTabs = [];
+  tryGroupTabs(tabIds);
+}
+
+async function tryGroupTabs(aTabIds) {
+  log('tryGroupTabs: ', aTabIds);
+
   // extract only pure new tabs
-  var uniqueIds = await Promise.all(aContainer.openedNewTabs.map(aId => getTabById(aId).uniqueId));
-  aContainer.openedNewTabs = aContainer.openedNewTabs.filter((aId, aIndex) => {
+  var uniqueIds = await Promise.all(aTabIds.map(aId => getTabById(aId).uniqueId));
+  aTabIds = aTabIds.filter((aId, aIndex) => {
     var uniqueId = uniqueIds[aIndex];
     return !uniqueId.duplicated && !uniqueId.restored;
   });
 
-  var newRootTabs = collectRootTabs(aContainer.openedNewTabs.map(getTabById))
+  var newRootTabs = collectRootTabs(aTabIds.map(getTabById))
     .filter(aTab => !isGroupTab(aTab));
-  aContainer.openedNewTabs = [];
   if (newRootTabs.length <= 1)
     return;
 
-  log(`onNewTabsTimeout: ${newRootTabs.length} root tabs are opened`);
+  log(`tryGroupTabs: ${newRootTabs.length} root tabs are opened`);
   var title = browser.i18n.getMessage('groupTab.label', newRootTabs[0].apiTab.title);
   var uri = makeGroupTabURI(title, {
     temporary: true
   });
   var groupTab = await openURIInTab(uri, {
-    windowId: aContainer.windowId,
+    windowId: newRootTabs[0].apiTab.windowId,
     insertBefore: newRootTabs[0]
   });
   for (let tab of newRootTabs) {
