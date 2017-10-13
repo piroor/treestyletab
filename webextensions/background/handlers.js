@@ -37,13 +37,13 @@ async function onTabOpening(aTab, aInfo = {}) {
     }
     else {
       container.openedNewTabs.push(aTab.id);
-      container.openedNewTabsTimeout = setTimeout(
-        onNewTabsTimeout,
-        configs.autoGroupNewTabsTimeout,
-        container
-      );
     }
   }
+  container.openedNewTabsTimeout = setTimeout(
+    onNewTabsTimeout,
+    configs.autoGroupNewTabsTimeout,
+    container
+  );
 
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
   log('opener ', dumpTab(opener));
@@ -93,6 +93,15 @@ async function onTabOpening(aTab, aInfo = {}) {
 }
 
 async function onNewTabsTimeout(aContainer) {
+  if (aContainer.waitingForRestored) {
+    aContainer.openedNewTabs = [];
+    aContainer.waitingForRestored = false;
+    return;
+  }
+
+  if (aContainer.openedNewTabs.length == 0)
+    return;
+
   // extract only pure new tabs
   var uniqueIds = await Promise.all(aContainer.openedNewTabs.map(aId => getTabById(aId).uniqueId));
   aContainer.openedNewTabs = aContainer.openedNewTabs.filter((aId, aIndex) => {

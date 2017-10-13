@@ -192,6 +192,11 @@ async function loadTreeStructure() {
       kWINDOW_STATE_TREE_STRUCTURE
     );
     var tabs = getAllTabs(aWindow.id);
+    if (tabs.length == 1 &&
+        tabs[0].apiTab.url.indexOf('about:sessionrestore') == 0) {
+      let container = getTabsContainer(aWindow.id);
+      container.waitingForRestored = true;
+    }
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
     if (structure)
       await applyTreeStructureToTabs(tabs, structure);
@@ -209,12 +214,14 @@ async function loadTreeStructure() {
 async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   await aTab.uniqueId;
+  var container = getTabsContainer(aTab);
+  var maxRetry  = container && container.waitingForRestored ? 500 : 0 ;
   var insertBefore, insertAfter, ancestors, children;
   [insertBefore, insertAfter, ancestors, children] = await Promise.all([
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN)
+    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE, maxRetry),
+    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER, maxRetry),
+    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_ANCESTORS, maxRetry),
+    getTabValueWithRetry(aTab.apiTab.id, kPERSISTENT_CHILDREN, maxRetry)
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
