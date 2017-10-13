@@ -138,7 +138,7 @@ async function getTabValueWithRetry(aTabId, aKey, aMaxRetryDelay) {
     try {
       let value = await browser.sessions.getTabValue(aTabId, aKey)
       if (value) {
-        console.log(`getTabValueWithRetry(${aTabId}, ${aKey}): success with ${Date.now() - tryStart}msec delay `, value);
+        log(`getTabValueWithRetry(${aTabId}, ${aKey}): success with ${Date.now() - tryStart}msec delay `, value);
         return data;
       }
     }
@@ -146,7 +146,7 @@ async function getTabValueWithRetry(aTabId, aKey, aMaxRetryDelay) {
     }
     await wait(delay);
   } while (Date.now() - tryStart < aMaxRetryDelay);
-  console.log(`getTabValueWithRetry(${aTabId}, ${aKey}): failed with ${Date.now() - tryStart}msec delay`);
+  log(`getTabValueWithRetry(${aTabId}, ${aKey}): failed with ${Date.now() - tryStart}msec delay`);
   return null;
 }
 
