@@ -65,13 +65,14 @@ async function requestUniqueId(aTabId, aOptions = {}) {
   if (!aOptions.forceNew) {
     //let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
     let container = getTabsContainer(getTabById(aTabId));
-    let maxRetry  = container && container.waitingForExplicitWindowRestoration ? configs.explicitWindowRestorationMaxDelay : 0 ;
+    let mayBeRestored = container && container.waitingForExplicitWindowRestoration;
+    let maxRetry  = mayBeRestored ? configs.explicitWindowRestorationMaxDelay : 0 ;
     let oldId     = await getTabValueWithRetry(aTabId, kPERSISTENT_ID, maxRetry);
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
     if (oldId) {
-      if (aTabId == oldId.tabId)
+      if (mayBeRestored || aTabId == oldId.tabId)
         return {
           id:            oldId.id,
           originalId:    null,
@@ -409,6 +410,8 @@ function buildTabsContainerFor(aWindowId) {
   container.openingCount         = 0;
   container.openedNewTabs        = [];
   container.openedNewTabsTimeout = null;
+
+  container.restoringTabs = [];
 
   container.toBeOpenedTabsWithPositions = 0;
   container.toBeOpenedOrphanTabs        = 0;

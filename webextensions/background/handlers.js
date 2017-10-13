@@ -25,23 +25,22 @@ async function onTabOpening(aTab, aInfo = {}) {
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
+  if (container.waitingForExplicitWindowRestoration) {
+    container.restoringTabs.push(aTab.id);
+  }
+  else if (configs.autoGroupNewTabs &&
+           !aTab.apiTab.openerTabId &&
+           !aInfo.maybeOrphan) {
+    if (container.preventAutoGroupNewTabsUntil > Date.now())
+      container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
+    else
+      container.openedNewTabs.push(aTab.id);
+  }
   if (container.openedNewTabsTimeout)
     clearTimeout(container.openedNewTabsTimeout);
-
-  // ignore tabs opened from others
-  if (configs.autoGroupNewTabs &&
-      !aTab.apiTab.openerTabId &&
-      !aInfo.maybeOrphan) {
-    if (container.preventAutoGroupNewTabsUntil > Date.now()) {
-      container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
-    }
-    else {
-      container.openedNewTabs.push(aTab.id);
-    }
-  }
   container.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
-    aContainer.waitingForExplicitWindowRestoration ?
+    container.waitingForExplicitWindowRestoration ?
       configs.explicitWindowRestorationMaxDelay :
       configs.autoGroupNewTabsTimeout,
     container
@@ -96,8 +95,15 @@ async function onTabOpening(aTab, aInfo = {}) {
 
 async function onNewTabsTimeout(aContainer) {
   if (aContainer.waitingForExplicitWindowRestoration) {
-    aContainer.openedNewTabs = [];
+    log('Start to restore tree for tabs: ', aContainer.restoringTabs);
     aContainer.waitingForExplicitWindowRestoration = false;
+    aContainer.openedNewTabs = [];
+    for (let tabId of aContainer.restoringTabs) {
+      attachTabFromRestoredInfo(getTabById(tabId), {
+        children: true
+      });
+    }
+    aContainer.restoringTabs = [];
     return;
   }
 
