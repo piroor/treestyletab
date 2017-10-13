@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.0.5 (2017.10.14)
    * Restore tree for tabs restored from crash, if possible.
    * The tab bar is scrolled to newly attached child tab prior to its parent, if the parent is already out of the viewport.
    * Animation effect for completely loaded tab won't be applied again and again for already loaded tabs anymore.
