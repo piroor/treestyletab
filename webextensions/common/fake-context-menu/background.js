@@ -50,17 +50,17 @@ var tabContextMenu = {
   reserveNotifyUpdated() {
     return new Promise((aResolve, aReject) => {
       this.notifyUpdatedHandlers.push(aResolve);
-    if (this.reservedNotifyUpdate)
-      clearTimeout(this.reservedNotifyUpdate);
-    this.reservedNotifyUpdate = setTimeout(async () => {
-      delete this.reservedNotifyUpdate;
-      await this.notifyUpdated();
-      var handlers = this.notifyUpdatedHandlers;
-      this.notifyUpdatedHandlers = [];
-      for (let handler of handlers) {
-        handler();
-      }
-    }, 100);
+      if (this.reservedNotifyUpdate)
+        clearTimeout(this.reservedNotifyUpdate);
+      this.reservedNotifyUpdate = setTimeout(async () => {
+        delete this.reservedNotifyUpdate;
+        await this.notifyUpdated();
+        var handlers = this.notifyUpdatedHandlers;
+        this.notifyUpdatedHandlers = [];
+        for (let handler of handlers) {
+          handler();
+        }
+      }, 100);
     });
   },
   notifyUpdatedHandlers: [],
