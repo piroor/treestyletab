@@ -1,9 +1,11 @@
 # History
 
  - master/HEAD
+   * Restore tree for tabs restored from crash, if possible.
    * The tab bar is scrolled to newly attached child tab prior to its parent, if the parent is already out of the viewport.
    * Animation effect for completely loaded tab won't be applied again and again for already loaded tabs anymore.
    * Clicking on the tab bar itself is now cancelable by other addons. If any addon returns `true` for the notified message with the type `tabbar-clicked`, TST's default behavior (open new tab) is canceled.
+   * Apply macOS specific behavior on macOS correctly.
  - 2.0.4 (2017.10.10)
    * The current tab is never scrolled out when a new tab is opened and the tab bar turned to "overflow" mode.
    * Never show blue gradient for notification when the window is resized.
