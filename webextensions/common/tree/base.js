@@ -343,8 +343,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 
   if (configs.debug) {
-    aTab.setAttribute('title',
-                      `
+    aTab.label = `
 ${aTab.apiTab.title}
 #${aTab.id}
 (${aTab.className})
@@ -352,14 +351,15 @@ uniqueId = <%${kPERSISTENT_ID}%>
 duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
 tabId = ${aTab.apiTab.id}
 windowId = ${aTab.apiTab.windowId}
-`.trim());
+`.trim();
+    aTab.setAttribute('title', aTab.label);
     aTab.uniqueId.then(aUniqueId => {
       // reget it because it can be removed from document.
       aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
       if (!aTab)
         return;
       aTab.setAttribute('title',
-                        aTab.getAttribute('title')
+                        aTab.label = aTab.label
                           .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
                           .replace(`<%originalId%>`, aUniqueId.originalId)
                           .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
