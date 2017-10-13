@@ -213,7 +213,7 @@ async function loadTreeStructure() {
 
 async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
-  await aTab.uniqueId;
+  var uniqueId = await aTab.uniqueId;
   var container = getTabsContainer(aTab);
   var insertBefore, insertAfter, ancestors, children;
   [insertBefore, insertAfter, ancestors, children] = await Promise.all([
@@ -224,12 +224,21 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
-  log('persistent references: ', insertBefore, insertAfter, ancestors, children);
+  log(`persistent references for ${aTab.id} (${uniqueId.id}): `, {
+    insertBefore, insertAfter,
+    ancestors: ancestors.join(', '),
+    children:  children.join(', ')
+  });
   insertBefore = getTabByUniqueId(insertBefore);
   insertAfter  = getTabByUniqueId(insertAfter);
   ancestors    = ancestors.map(getTabByUniqueId);
   children     = children.map(getTabByUniqueId);
-  log(' => references: ', dumpTab(insertBefore), dumpTab(insertAfter), ancestors.map(dumpTab), children.map(dumpTab));
+  log(' => references: ', {
+    insertBefore: dumpTab(insertBefore),
+    insertAfter:  dumpTab(insertAfter),
+    ancestors:    ancestors.map(dumpTab).join(', '),
+    children:     children.map(dumpTab).join(', ')
+  });
   for (let ancestor of ancestors) {
     if (!ancestor)
       continue;
