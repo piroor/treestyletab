@@ -34,6 +34,16 @@ There are [automated builds from latest codes](https://piro.sakura.ne.jp/xul/xpi
 Packages are not signed so you cannot try them on your Firefox if it is a released or beta version.
 On Nightly, you can try them by setting a secret preference `xpinstall.signatures.required` to `false` via `about:config`.
 
+## Addons extend TST
+
+TST provides some [APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
+Some addons provide extended behavior to TST's sidebar panel:
+
+ * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs and operate them at a time.
+ * [TST-MiddleClick](https://addons.mozilla.org/firefox/addon/tst-middleclick/) allows you to run "undo close tab" command on middle click on the sidebar.
+ * [tst-wheel_and_double](https://github.com/joshuacant/tst-wheel_and_double) allows you to switch active tab by wheel scrolling.
+ * [tst-closed_tabs_menu](https://github.com/joshuacant/tst-closed_tabs_menu) allows you to restore closed tabs from a menu.
+
 ## Similar projects
 
  * [Tree Tabs](https://addons.mozilla.org/firefox/addon/tree-tabs/):
