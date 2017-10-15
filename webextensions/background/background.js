@@ -272,12 +272,12 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
         broadcast: true
       });
     }
-    if (aOptions.canCollapse) {
-      collapseExpandSubtree(aTab, {
-        broadcast: true,
-        collapsed
-      });
-    }
+  }
+  if (aOptions.canCollapse) {
+    collapseExpandSubtree(aTab, {
+      broadcast: true,
+      collapsed
+    });
   }
 }
 
@@ -310,7 +310,8 @@ function waitWindowRestored(aRestorerTab) {
     for (let tab of restoringTabs) {
       await attachTabFromRestoredInfo(tab, {
         keepCurrentTree: true,
-        children: true
+        children:        true,
+        canCollapse:     true
       });
     }
     log('waitWindowRestored: Done.');
