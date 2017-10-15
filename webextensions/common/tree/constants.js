@@ -69,8 +69,6 @@ const kCONTENT_LOCATION = 'data-content-location';
 const kPARENT        = 'data-parent-id';
 const kCHILDREN      = 'data-child-ids';
 const kLEVEL         = 'data-level';
-const kINSERT_BEFORE = 'data-insert-before-id';
-const kINSERT_AFTER  = 'data-insert-after-id';
 const kCLOSED_SET_ID = 'data-closed-set-id';
 const kDROP_POSITION = 'data-drop-position';
 
