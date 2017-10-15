@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Allow to open new active child tab under a parent tab which is internally collapsed. (regression on 2.0.3)
+   * Restore collapsed/expanded state of tree after crash recovery, if possible.
  - 2.0.5 (2017.10.14)
    * Restore tree for tabs restored from crash, if possible.
    * The tab bar is scrolled to newly attached child tab prior to its parent, if the parent is already out of the viewport.
