@@ -248,8 +248,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     await attachTabTo(aTab, ancestor, {
       broadcast:    true,
       dontMove:     insertBefore || insertAfter,
-      insertBefore: insertBefore,
-      insertAfter:  insertAfter
+      insertBefore,
+      insertAfter
     });
     break;
   }
