@@ -204,7 +204,8 @@ async function loadTreeStructure() {
       log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);
       for (let tab of tabs) {
         await attachTabFromRestoredInfo(tab, {
-          keepCurrentTree: true
+          keepCurrentTree: true,
+          canCollapse:     true
         });
       }
     }
@@ -215,19 +216,21 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   var uniqueId = await aTab.uniqueId;
   var container = getTabsContainer(aTab);
-  var insertBefore, insertAfter, ancestors, children;
-  [insertBefore, insertAfter, ancestors, children] = await Promise.all([
+  var insertBefore, insertAfter, ancestors, children, collapsed;
+  [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER),
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN)
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN),
+    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_SUBTREE_COLLAPSED)
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
   log(`persistent references for ${aTab.id} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
     ancestors: ancestors.join(', '),
-    children:  children.join(', ')
+    children:  children.join(', '),
+    collapsed
   });
   insertBefore = getTabByUniqueId(insertBefore);
   insertAfter  = getTabByUniqueId(insertAfter);
@@ -267,6 +270,12 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
         continue;
       await attachTabTo(child, aTab, {
         broadcast: true
+      });
+    }
+    if (aOptions.canCollapse) {
+      collapseExpandSubtree(aTab, {
+        broadcast: true,
+        collapsed
       });
     }
   }
@@ -413,6 +422,27 @@ async function updateChildren(aTab) {
     aTab.apiTab.id,
     kPERSISTENT_CHILDREN,
     childIds.map(aId => aId.id)
+  );
+}
+
+function reserveToUpdateSubtreeCollapsed(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+  if (aTab.reservedUpdateSubtreeCollapsed)
+    clearTimeout(aTab.reservedUpdateSubtreeCollapsed);
+  aTab.reservedUpdateSubtreeCollapsed = setTimeout(() => {
+    delete aTab.reservedUpdateSubtreeCollapsed;
+    updateSubtreeCollapsed(aTab);
+  }, 100);
+}
+
+async function updateSubtreeCollapsed(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+  browser.sessions.setTabValue(
+    aTab.apiTab.id,
+    kPERSISTENT_SUBTREE_COLLAPSED,
+    isSubtreeCollapsed(aTab)
   );
 }
 

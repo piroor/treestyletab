@@ -545,6 +545,7 @@ function onTabUpdated(aTab) {
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
+  reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
 }
 

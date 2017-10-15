@@ -77,6 +77,7 @@ const kPERSISTENT_ANCESTORS     = 'ancestors';
 const kPERSISTENT_CHILDREN      = 'children';
 const kPERSISTENT_INSERT_BEFORE = 'insert-before';
 const kPERSISTENT_INSERT_AFTER  = 'isnert-after';
+const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed';
 
 const kFAVICON         = 'favicon';
 const kFAVICON_IMAGE   = 'favicon-image';
