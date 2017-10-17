@@ -242,10 +242,9 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     if (!ancestor)
       continue;
     await attachTabTo(aTab, ancestor, {
-      broadcast:    true,
-      dontMove:     insertBefore || insertAfter,
       insertBefore,
-      insertAfter
+      insertAfter,
+      broadcast: true
     });
     attached = true;
     break;
@@ -255,7 +254,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     if (parent) {
       await attachTabTo(aTab, parent, {
         broadcast: true,
-        dontMove:  true
+        insertAt:  kINSERT_NEAREST
       });
     }
   }
