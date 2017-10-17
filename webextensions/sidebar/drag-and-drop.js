@@ -319,7 +319,7 @@ function getDropActionInternal(aEvent) {
           info.action       = kACTION_MOVE | kACTION_ATTACH;
           info.parent       = getParentTab(targetTab);
           info.insertBefore = getNextSiblingTab(targetTab);
-          info.insertAfter  = targetTab;
+          info.insertAfter  = getLastDescendantTab(targetTab);
           let ancestor = info.parent;
           while (ancestor && !info.insertBefore) {
             info.insertBefore = getNextSiblingTab(ancestor);
