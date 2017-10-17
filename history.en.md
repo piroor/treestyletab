@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Better tree restoration for restored sessions.
  - 2.0.6 (2017.10.17)
    * Allow to open new active child tab under a parent tab which is internally collapsed. (regression on 2.0.3)
    * Restore collapsed/expanded state of tree after crash recovery, if possible.
