@@ -9,6 +9,7 @@ gLogContext = 'BG';
 
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();
+var gSidebarOpenStateUpdateTimer;
 var gExternalListenerAddons = {};
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
@@ -99,6 +100,7 @@ function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
+  endWatchSidebarOpenState();
   endObserveApiTabs();
   endObserveContextualIdentities();
   gAllTabs = undefined;
@@ -119,6 +121,42 @@ async function rebuildAll() {
     }
     gAllTabs.appendChild(container);
   });
+}
+
+function startWatchSidebarOpenState() {
+  if (gSidebarOpenStateUpdateTimer)
+    return;
+
+  gSidebarOpenStateUpdateTimer = setInterval(async () => {
+    let windows = await browser.windows.getAll({
+      windowTypes: ['normal']
+    });
+    await Promise.all(windows.map(async aWindow => {
+      try {
+        var response = await browser.runtime.sendMessage({
+          type:     kCOMMAND_PING_TO_SIDEBAR,
+          windowId: aWindow.id
+        });
+        if (response)
+          gSidebarOpenState.set(aWindow.id, true);
+        else
+          gSidebarOpenState.delete(aWindow.id);
+      }
+      catch(e) {
+        gSidebarOpenState.delete(aWindow.id);
+      }
+    }));
+    if (gSidebarOpenState.size == 0)
+      endWatchSidebarOpenState();
+  }, configs.sidebarOpenStateUpdateInterval);
+}
+
+function endWatchSidebarOpenState() {
+  if (!gSidebarOpenStateUpdateTimer)
+    return;
+
+  clearInterval(gSidebarOpenStateUpdateTimer);
+  gSidebarOpenStateUpdateTimer = null;
 }
 
 function getCloseParentBehaviorForTabWithSidebarOpenState(aTab) {

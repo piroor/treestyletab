@@ -157,6 +157,7 @@ configs = new Configs({
   acceptableDelayForInternalFocusMoving: 150,
   preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
+  sidebarOpenStateUpdateInterval: 500,
   startDragTimeout: 400,
   explicitWindowRestorationMaxDelay: 1000,
   knownExternalAddons: [
