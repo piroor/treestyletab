@@ -546,6 +546,7 @@ function onTabUpdated(aTab) {
     if (parent && parent != getParentTab(aTab))
       attachTabTo(aTab, parent, {
         insertAt:  kINSERT_NEAREST,
+        forceExpand: isActive(aTab),
         broadcast: true
       });
   }
