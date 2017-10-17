@@ -541,8 +541,8 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 }
 
 function onTabUpdated(aTab) {
-  if (aTab.apiTab.onenerTabId) {
-    let parent = getTabById(aTab.apiTab.onenerTabId);
+  if (aTab.apiTab.openerTabId) {
+    let parent = getTabById(aTab.apiTab.openerTabId);
     if (parent && parent != getParentTab(aTab))
       attachTabTo(aTab, parent, {
         insertAt:  kINSERT_NEAREST,
