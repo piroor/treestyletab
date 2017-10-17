@@ -129,6 +129,7 @@ function getDropAction(aEvent) {
         info.dropPosition != kDROP_AFTER)))
     info.canDrop = false;
 
+  info.isCopyAction = isCopyAction(aEvent);
   info.dropEffect = getDropEffectFromDropAction(info);
   return info;
 }
@@ -339,7 +340,7 @@ function getDropEffectFromDropAction(aActionInfo) {
     return 'none';
   if (!aActionInfo.draggedTab)
     return 'link';
-  if (isCopyAction(aEvent))
+  if (aActionInfo.isCopyAction)
     return 'copy';
   return 'move';
 }
