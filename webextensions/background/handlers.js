@@ -558,6 +558,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
 async function onTabAttached(aTab, aInfo = {}) {
   var parent  = aInfo.parent;
+  browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id });
   var nextTab = aInfo.insertBefore;
   var prevTab = aInfo.insertAfter;
   if (!nextTab && !prevTab) {
@@ -661,6 +662,7 @@ async function onTabAttached(aTab, aInfo = {}) {
 }
 
 function onTabDetached(aTab, aDetachInfo) {
+  browser.tabs.update(aTab.apiTab.id, { openerTabId: null });
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToRemoveNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
