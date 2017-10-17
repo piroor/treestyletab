@@ -182,6 +182,7 @@ const kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE = 1;
 const kINSERT_NO_CONTROL = -1;
 const kINSERT_FIRST      = 0;
 const kINSERT_END        = 1;
+const kINSERT_NEAREST    = 2;
 
 const kNEWTAB_DO_NOTHING           = -1;
 const kNEWTAB_OPEN_AS_ORPHAN       = 0;

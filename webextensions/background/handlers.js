@@ -541,6 +541,14 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 }
 
 function onTabUpdated(aTab) {
+  if (aTab.apiTab.onenerTabId) {
+    let parent = getTabById(aTab.apiTab.onenerTabId);
+    if (parent && parent != getParentTab(aTab))
+      attachTabTo(aTab, parent, {
+        insertAt:  kINSERT_NEAREST,
+        broadcast: true
+      });
+  }
   reserveToSaveTreeStructure(aTab);
 }
 

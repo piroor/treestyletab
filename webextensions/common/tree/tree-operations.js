@@ -82,7 +82,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
 
   if (!aOptions.insertBefore && !aOptions.insertAfter) {
-    let refTabs = getReferenceTabsForNewChild(aParent);
+    let refTabs = getReferenceTabsForNewChild(aChild, aParent, aOptions);
     aOptions.insertBefore = refTabs.insertBefore;
     aOptions.insertAfter  = refTabs.insertAfter;
   }
@@ -155,18 +155,36 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
 }
 
-function getReferenceTabsForNewChild(aParent) {
+function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
+  var insertAt = aOptions.insertAt;
+  if (typeof insertAt !== 'number')
+    insertAt = configs.insertNewChildAt;
   var descendants = getDescendantTabs(aParent);
   var insertBefore, insertAfter;
-  if (descendants.length) {
-    switch (configs.insertNewChildAt) {
+  if (descendants.length > 0) {
+    let firstChild     = descendants[0];
+    let lastDescendant = descendants[descendants.length-1];
+    switch (insertAt) {
       case kINSERT_END:
       default:
-        insertAfter = descendants[descendants.length-1];
+        insertAfter = lastDescendant;
         break;
       case kINSERT_FIRST:
-        insertBefore = descendants[0];
+        insertBefore = firstChild;
         break;
+      case kINSERT_NEAREST: {
+        let allTabs = getTabs(aParent);
+        let index = allTabs.indexOf(aChild);
+        if (index < allTabs.indexOf(firstChild)) {
+          insertBefore = firstChild;
+          insertAfter  = aParent;
+        }
+        else if (index > allTabs.indexOf(lastDescendant)) {
+          insertAfter  = aParent;
+        }
+        else { // inside the tree
+        }
+      }; break;
     }
   }
   else {
