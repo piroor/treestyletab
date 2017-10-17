@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.0.7 (2017.10.18)
    * Better tree restoration for restored sessions.
  - 2.0.6 (2017.10.17)
    * Allow to open new active child tab under a parent tab which is internally collapsed. (regression on 2.0.3)
