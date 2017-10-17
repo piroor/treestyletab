@@ -183,6 +183,15 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
           insertAfter  = aParent;
         }
         else { // inside the tree
+          let children = getChildTabs(aParent);
+          for (let child of children) {
+            if (index > allTabs.indexOf(child))
+              continue;
+            insertBefore = child;
+            break;
+          }
+          if (!insertBefore)
+            insertAfter = lastDescendant;
         }
       }; break;
     }
