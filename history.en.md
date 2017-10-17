@@ -3,6 +3,9 @@
  - master/HEAD
    * Allow to open new active child tab under a parent tab which is internally collapsed. (regression on 2.0.3)
    * Restore collapsed/expanded state of tree after crash recovery, if possible.
+   * `tabs.Tab.openerTabId` of each tab is now updated based on tree structure, for other addons.
+   * Tabs with updated `tabs.Tab.openerTabId` are now automatically attached to the opener's tree. (Due to [the bug 1409262](https://bugzilla.mozilla.org/show_bug.cgi?id=1409262 "1409262 - Updated openerTabId is not notified via tabs.onUpdated if it is changed by tabs.update()"), updated relation is not applied immediately.)
+   * Scroll to the focused tab correctly, when it is focued by Firefox's `browser.tabs.selectOwnerOnClose` feature.
  - 2.0.5 (2017.10.14)
    * Restore tree for tabs restored from crash, if possible.
    * The tab bar is scrolled to newly attached child tab prior to its parent, if the parent is already out of the viewport.
