@@ -59,20 +59,19 @@ async function requestUniqueId(aTabId, aOptions = {}) {
     });
   }
 
+  var tab = getTabById(aTabId);
+  var isFirstTime = !tab || !tab.__requestUniqueId__firstTimeDone;
+
   var originalId    = null;
   var originalTabId = null;
   var duplicated    = false;
   if (!aOptions.forceNew) {
-    //let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
-    let container = getTabsContainer(getTabById(aTabId));
-    let mayBeRestored = container && container.onWindowRestored;
-    let maxRetry  = mayBeRestored ? configs.explicitWindowRestorationMaxDelay : 0 ;
-    let oldId     = await getTabValueWithRetry(aTabId, kPERSISTENT_ID, maxRetry);
+    let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
     if (oldId) {
-      if (mayBeRestored || aTabId == oldId.tabId)
+      if (isFirstTime || aTabId == oldId.tabId)
         return {
           id:            oldId.id,
           originalId:    null,
@@ -84,7 +83,7 @@ async function requestUniqueId(aTabId, aOptions = {}) {
       try {
         let tabWithOldId = await browser.tabs.get(oldId.tabId);
         if (!tabWithOldId)
-          throw new Error('missing');
+          throw new Error(`Invalid tab ID: ${oldId.tabId}`);
       }
       catch(e) {
         handleMissingTabError(e);
@@ -121,37 +120,6 @@ async function requestUniqueId(aTabId, aOptions = {}) {
   return { id, originalId, originalTabId, duplicated };
 }
 
-async function getTabValueWithRetry(aTabId, aKey, aMaxRetryDelay) {
-  /*
-    Because currently there is no way to know the timing all
-    restored session information become readable, sessions.getTabValue()
-    sometimes gets nothing result for actually duplicated/restored tabs.
-    https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 will help to fix
-    this problem for duplicated tab case...
-    Just as a workaround, now we wait for the next event loop.
-  */
-  await wait(0); // for safety
-  aMaxRetryDelay = Math.max(aMaxRetryDelay, 1);
-  let steps    = 10;
-  let delay    = Math.max(aMaxRetryDelay / steps, 1);
-  let tryStart = Date.now();
-  do {
-    try {
-      let value = await browser.sessions.getTabValue(aTabId, aKey)
-      if (value !== undefined) {
-        //log(`getTabValueWithRetry(${aTabId}, ${aKey}): success with ${Date.now() - tryStart}msec delay `, value);
-        return value;
-      }
-    }
-    catch(e) {
-      return null; // missing tab
-    }
-    await wait(delay);
-  } while (Date.now() - tryStart < aMaxRetryDelay);
-  //log(`getTabValueWithRetry(${aTabId}, ${aKey}): failed with ${Date.now() - tryStart}msec delay`);
-  return null;
-}
-
 function buildTab(aApiTab, aOptions = {}) {
   log('build tab for ', aApiTab);
   var tab = document.createElement('li');
@@ -179,6 +147,7 @@ function buildTab(aApiTab, aOptions = {}) {
     tab.uniqueId = requestUniqueId(aApiTab.id, {
       inRemote: !!gTargetWindow
     }).then(aUniqueId => {
+      tab.__requestUniqueId__firstTimeDone = true;
       if (tab && tab.parentNode) // possibly removed from document
         tab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
       return aUniqueId;
