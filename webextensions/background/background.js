@@ -242,6 +242,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     ancestors:    ancestors.map(dumpTab).join(', '),
     children:     children.map(dumpTab).join(', ')
   });
+  var attached = false;
   for (let ancestor of ancestors) {
     if (!ancestor)
       continue;
@@ -251,7 +252,17 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       insertBefore,
       insertAfter
     });
+    attached = true;
     break;
+  }
+  if (!attached && aTab.apiTab.openerTabId) {
+    let parent = getTabById(aTab.apiTab.openerTabId);
+    if (parent) {
+      await attachTabTo(aTab, parent, {
+        broadcast: true,
+        dontMove:  true
+      });
+    }
   }
   if (!aOptions.keepCurrentTree &&
       // the restored tab is a roo tab
