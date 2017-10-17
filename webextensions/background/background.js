@@ -42,6 +42,7 @@ async function init() {
 
   migrateLegacyTreeStructure();
 
+  startWatchSidebarOpenState();
   startObserveApiTabs();
   startObserveContextualIdentities();
   browser.runtime.onMessage.addListener(onMessage);
