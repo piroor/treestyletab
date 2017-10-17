@@ -25,10 +25,7 @@ async function onTabOpening(aTab, aInfo = {}) {
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
-  if (container.onWindowRestored) {
-    container.restoringTabs.push(aTab.id);
-  }
-  else if (configs.autoGroupNewTabs &&
+  if (configs.autoGroupNewTabs &&
            !aTab.apiTab.openerTabId &&
            !aInfo.maybeOrphan) {
     if (container.preventAutoGroupNewTabsUntil > Date.now())
@@ -40,9 +37,7 @@ async function onTabOpening(aTab, aInfo = {}) {
     clearTimeout(container.openedNewTabsTimeout);
   container.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
-    container.onWindowRestored ?
-      configs.explicitWindowRestorationMaxDelay :
-      configs.autoGroupNewTabsTimeout,
+    configs.autoGroupNewTabsTimeout,
     container
   );
 
@@ -94,11 +89,6 @@ async function onTabOpening(aTab, aInfo = {}) {
 }
 
 function onNewTabsTimeout(aContainer) {
-  if (aContainer.onWindowRestored) {
-    aContainer.openedNewTabs = [];
-    return aContainer.onWindowRestored();
-  }
-
   if (aContainer.openedNewTabs.length == 0)
     return;
 
@@ -183,8 +173,6 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 function onTabRestored(aTab) {
-  if (aTab.parentNode.onWindowRestored)
-    return;
   log('restored ', dumpTab(aTab), aTab.apiTab);
   return attachTabFromRestoredInfo(aTab, {
     children: true

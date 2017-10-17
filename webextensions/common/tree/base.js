@@ -380,8 +380,6 @@ function buildTabsContainerFor(aWindowId) {
   container.openedNewTabs        = [];
   container.openedNewTabsTimeout = null;
 
-  container.restoringTabs = [];
-
   container.toBeOpenedTabsWithPositions = 0;
   container.toBeOpenedOrphanTabs        = 0;
   container.toBeDetachedTabs            = 0;
