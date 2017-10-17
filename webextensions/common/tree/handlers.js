@@ -96,7 +96,7 @@ async function onApiTabActivated(aActiveInfo) {
     if (container.tryingReforcusForClosingCurrentTabCount > 0) // reduce count even if not redirected
       container.tryingReforcusForClosingCurrentTabCount--;
     log('focusRedirected: ', focusRedirected);
-    if (focusRedirected.indexOf(true) > -1)
+    if (focusRedirected)
       return;
   }
   else if (container.tryingReforcusForClosingCurrentTabCount > 0) { // treat as "redirected unintentional tab focus"
