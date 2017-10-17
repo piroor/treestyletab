@@ -180,7 +180,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
           insertAfter  = aParent;
         }
         else if (index > allTabs.indexOf(lastDescendant)) {
-          insertAfter  = aParent;
+          insertAfter  = lastDescendant;
         }
         else { // inside the tree
           let children = getChildTabs(aParent);
