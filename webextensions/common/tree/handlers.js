@@ -151,6 +151,7 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (!updatedTab)
     return;
 
+  //log('tabs.onUpdated ', aTabId, aChangeInfo, aTab);
   updatedTab.apiTab = aTab;
   updateTab(updatedTab, aChangeInfo);
   updateParentTab(getParentTab(updatedTab));
