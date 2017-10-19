@@ -215,6 +215,7 @@ async function onNewTabTracked(aTab) {
   if (!newTab.parentNode) // it can be removed while waiting
     return;
 
+  log('uniqueId: ', uniqueId);
   var duplicated = duplicatedInternally || uniqueId.duplicated;
 
   window.onTabOpened && onTabOpened(newTab, {

@@ -50,39 +50,44 @@ function makeTabId(aApiTab) {
   return `tab-${aApiTab.windowId}-${aApiTab.id}`;
 }
 
-async function requestUniqueId(aTabId, aOptions = {}) {
+async function requestUniqueId(aTabOrId, aOptions = {}) {
+  var tabId = aTabOrId;
+  var tab   = null;
+  if (typeof aTabOrId == 'number') {
+    tab = getTabById(id);
+  }
+  else {
+    tabId = aTabOrId.apiTab.id;
+    tab   = aTabOrId;
+  }
+
   if (aOptions.inRemote) {
     return await browser.runtime.sendMessage({
       type:     kCOMMAND_REQUEST_UNIQUE_ID,
-      id:       aTabId,
+      id:       tabId,
       forceNew: !!aOptions.forceNew
     });
   }
-
-  var tab = getTabById(aTabId);
-  var isFirstTime = !tab || !tab.__requestUniqueId__firstTimeDone;
 
   var originalId    = null;
   var originalTabId = null;
   var duplicated    = false;
   if (!aOptions.forceNew) {
-    let oldId = await browser.sessions.getTabValue(aTabId, kPERSISTENT_ID);
+    let oldId = await browser.sessions.getTabValue(tabId, kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
     if (oldId) {
-      if (isFirstTime || aTabId == oldId.tabId)
-        return {
-          id:            oldId.id,
-          originalId:    null,
-          originalTabId: null,
-          restored:      true
-        };
-
-      // If the stored tabId is different, it is possibly duplicated tab.
+      // If the tab detected from stored tabId is different, it is duplicated tab.
       try {
-        let tabWithOldId = await browser.tabs.get(oldId.tabId);
+        let tabWithOldId = getTabById(oldId.tabId);
         if (!tabWithOldId)
+          throw new Error(`Invalid tab ID: ${oldId.tabId}`);
+        originalId = (tabWithOldId.getAttribute(kPERSISTENT_ID) || await tabWithOldId.uniqueId.id);
+        duplicated = tab && tabWithOldId != tab && originalId == oldId.id;
+        if (duplicated)
+          originalTabId = oldId.tabId;
+        else
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
       }
       catch(e) {
@@ -91,9 +96,9 @@ async function requestUniqueId(aTabId, aOptions = {}) {
         // There is no live tab for the tabId, thus
         // this seems to be a tab restored from session.
         // We need to update the related tab id.
-        await browser.sessions.setTabValue(aTabId, kPERSISTENT_ID, {
+        await browser.sessions.setTabValue(tabId, kPERSISTENT_ID, {
           id:    oldId.id,
-          tabId: aTabId
+          tabId: tabId
         });
         return {
           id:            oldId.id,
@@ -102,10 +107,6 @@ async function requestUniqueId(aTabId, aOptions = {}) {
           restored:      true
         };
       }
-      aOptions.forceNew = true;
-      originalId    = oldId.id;
-      originalTabId = oldId.tabId;
-      duplicated    = true;
     }
   }
 
@@ -113,9 +114,9 @@ async function requestUniqueId(aTabId, aOptions = {}) {
   var noun        = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
   var randomValue = Math.floor(Math.random() * 1000);
   var id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  await browser.sessions.setTabValue(aTabId, kPERSISTENT_ID, {
+  await browser.sessions.setTabValue(tabId, kPERSISTENT_ID, {
     id:    id,
-    tabId: aTabId // for detecttion of duplicated tabs
+    tabId: tabId // for detecttion of duplicated tabs
   });
   return { id, originalId, originalTabId, duplicated };
 }
@@ -144,10 +145,9 @@ function buildTab(aApiTab, aOptions = {}) {
   }
 
   if (aApiTab.id)
-    tab.uniqueId = requestUniqueId(aApiTab.id, {
+    tab.uniqueId = requestUniqueId(tab, {
       inRemote: !!gTargetWindow
     }).then(aUniqueId => {
-      tab.__requestUniqueId__firstTimeDone = true;
       if (tab && tab.parentNode) // possibly removed from document
         tab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
       return aUniqueId;
