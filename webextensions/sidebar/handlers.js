@@ -1031,7 +1031,7 @@ function onMessage(aMessage, aSender, aRespond) {
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);
         if (tab)
-          detachTab(tab);
+          detachTab(tab, aMessage);
       }
     }; break;
 

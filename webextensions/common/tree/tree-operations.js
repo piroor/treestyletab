@@ -57,7 +57,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     inRemote:         aOptions.inRemote,
     broadcast:        aOptions.broadcast,
     broadcasted:      aOptions.broadcasted
-  });
+  }, `${new Error().stack}\n${aOptions.stack || ''}`);
 
   if (isPinned(aParent) || isPinned(aChild)) {
     log('=> pinned tabs cannot be attached');
@@ -152,7 +152,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       forceExpand:      !!aOptions.forceExpand,
       dontExpand:       !!aOptions.dontExpand,
       justNow:          !!aOptions.justNow,
-      broadcasted:      !!aOptions.broadcast
+      broadcasted:      !!aOptions.broadcast,
+      stack:            new Error().stack
     });
   }
 }
@@ -206,7 +207,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
 
 async function detachTab(aChild, aOptions = {}) {
   log('detachTab: ', dumpTab(aChild), aOptions,
-      new Error().stack.split('\n')[1]);
+      `${new Error().stack}\n${aOptions.stack || ''}`);
   var parent = getParentTab(aChild);
 
   if (!parent)
@@ -237,7 +238,8 @@ async function detachTab(aChild, aOptions = {}) {
       type:        kCOMMAND_DETACH_TAB,
       windowId:    aChild.apiTab.windowId,
       tab:         aChild.id,
-      broadcasted: !!aOptions.broadcast
+      broadcasted: !!aOptions.broadcast,
+      stack:       new Error().stack
     });
   }
 }
