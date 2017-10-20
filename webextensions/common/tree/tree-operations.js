@@ -109,26 +109,26 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     log('=> already attached');
   }
   else {
-  detachTab(aChild, aOptions);
+    detachTab(aChild, aOptions);
 
-  if (childIds.length == 0)
-    aParent.removeAttribute(kCHILDREN);
-  else
-    aParent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
+    if (childIds.length == 0)
+      aParent.removeAttribute(kCHILDREN);
+    else
+      aParent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
 
-  aChild.setAttribute(kPARENT, aParent.id);
+    aChild.setAttribute(kPARENT, aParent.id);
 
-  let parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
-  if (!aOptions.dontUpdateIndent) {
-    updateTabsIndent(aChild, parentLevel + 1);
-  }
-  //updateTabAsParent(aParent);
-  //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
-  //  this.inheritTabIndent(aChild, aParent);
+    let parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
+    if (!aOptions.dontUpdateIndent) {
+      updateTabsIndent(aChild, parentLevel + 1);
+    }
+    //updateTabAsParent(aParent);
+    //if (shouldInheritIndent && !aOptions.dontUpdateIndent)
+    //  this.inheritTabIndent(aChild, aParent);
 
-  //promoteTooDeepLevelTabs(aChild);
+    //promoteTooDeepLevelTabs(aChild);
 
-  updateParentTab(aParent);
+    updateParentTab(aParent);
   }
 
   window.onTabAttached && onTabAttached(aChild, clone(aOptions, {
