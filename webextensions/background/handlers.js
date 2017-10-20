@@ -558,7 +558,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   if (aTab.apiTab.openerTabId != parent.apiTab.id) {
     aTab.apiTab.openerTabId = parent.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
-    browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id });
+    await browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id });
   }
   var nextTab = aInfo.insertBefore;
   var prevTab = aInfo.insertAfter;
@@ -666,11 +666,11 @@ async function onTabAttached(aTab, aInfo = {}) {
   ]);
 }
 
-function onTabDetached(aTab, aDetachInfo) {
+async function onTabDetached(aTab, aDetachInfo) {
   if (aTab.apiTab.openerTabId) {
     aTab.apiTab.openerTabId = null;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
-    browser.tabs.update(aTab.apiTab.id, { openerTabId: null });
+    await browser.tabs.update(aTab.apiTab.id, { openerTabId: null });
   }
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToRemoveNeedlessGroupTab(aDetachInfo.oldParentTab);

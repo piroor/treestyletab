@@ -204,7 +204,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
   return { insertBefore, insertAfter };
 }
 
-function detachTab(aChild, aOptions = {}) {
+async function detachTab(aChild, aOptions = {}) {
   log('detachTab: ', dumpTab(aChild), aOptions,
       new Error().stack.split('\n')[1]);
   var parent = getParentTab(aChild);
@@ -228,12 +228,12 @@ function detachTab(aChild, aOptions = {}) {
 
   updateTabsIndent(aChild);
 
-  window.onTabDetached && onTabDetached(aChild, {
+  window.onTabDetached && await onTabDetached(aChild, {
     oldParentTab: parent
   });
 
   if (aOptions.inRemote || aOptions.broadcast) {
-    browser.runtime.sendMessage({
+    await browser.runtime.sendMessage({
       type:        kCOMMAND_DETACH_TAB,
       windowId:    aChild.apiTab.windowId,
       tab:         aChild.id,
@@ -363,7 +363,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         });
       }
       else {
-        detachTab(aTab, {
+        await detachTab(aTab, {
           inRemote:  aOptions.inRemote,
           broadcast: aOptions.broadcast
         });
@@ -387,7 +387,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           broadcast:    aOptions.broadcast
         });
       else {
-        detachTab(aTab, {
+        await detachTab(aTab, {
           inRemote:  aOptions.inRemote,
           broadcast: aOptions.broadcast
         });
