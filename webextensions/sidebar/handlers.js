@@ -911,13 +911,15 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 
 function onTabAttached(aTab, aInfo = {}) {
   tabContextMenu.close();
-  updateTabTwisty(aTab);
-  updateTabClosebox(aTab);
-  reserveToUpdateTabTooltip(aTab);
-  var ancestors = [aTab].concat(getAncestorTabs(aTab));
-  for (let ancestor of ancestors) {
-    updateTabsCount(ancestor);
+  updateTabTwisty(aInfo.parent);
+  updateTabClosebox(aInfo.parent);
+  if (aInfo.newlyAttached) {
+    let ancestors = [aInfo.parent].concat(getAncestorTabs(aInfo.parent));
+    for (let ancestor of ancestors) {
+      updateTabsCount(ancestor);
+    }
   }
+  reserveToUpdateTabTooltip(aInfo.parent);
   /*
     We must not scroll to the tab here, because the tab can be moved
     by the background page later. Instead we wait until the tab is
