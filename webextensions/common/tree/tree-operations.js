@@ -112,7 +112,12 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   else {
     newlyAttached = true;
 
-    detachTab(aChild, aOptions);
+    detachTab(aChild, clone(aOptions, {
+      // Don't broadcast this detach operation, because this "attachTabTo" can be
+      // broadcasted. If we broadcast this detach operation, the tab is detached
+      // twice in the sidebar!
+      broadcast: false
+    }));
 
     if (childIds.length == 0)
       aParent.removeAttribute(kCHILDREN);
