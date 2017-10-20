@@ -105,10 +105,13 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
   log('new children: ', childIds);
 
+  var newlyAttached = false;
   if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
     log('=> already attached');
   }
   else {
+    newlyAttached = true;
+
     detachTab(aChild, aOptions);
 
     if (childIds.length == 0)
@@ -133,7 +136,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
   window.onTabAttached && onTabAttached(aChild, clone(aOptions, {
     parent: aParent,
-    newIndex
+    newIndex, newlyAttached
   }));
 
   if (aOptions.inRemote || aOptions.broadcast) {

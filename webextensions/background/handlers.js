@@ -584,9 +584,11 @@ async function onTabAttached(aTab, aInfo = {}) {
   browser.runtime.sendMessage({
     type:   kCOMMAND_TAB_ATTACHED_COMPLETELY,
     tab:    aTab.id,
-    parent: parent.id
+    parent: parent.id,
+    newlyAttached: aInfo.newlyAttached
   });
 
+  if (aInfo.newlyAttached) {
   if (isSubtreeCollapsed(aInfo.parent) &&
       !aInfo.forceExpand)
     collapseExpandTabAndSubtree(aTab, {
@@ -648,8 +650,10 @@ async function onTabAttached(aTab, aInfo = {}) {
       broadcast: true
     }));
   }
+  }
 
   reserveToSaveTreeStructure(aTab);
+  if (aInfo.newlyAttached)
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(parent);
   reserveToUpdateInsertionPosition([
