@@ -151,8 +151,23 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (!updatedTab)
     return;
 
-  //log('tabs.onUpdated ', aTabId, aChangeInfo, aTab);
-  updatedTab.apiTab = aTab;
+  log('tabs.onUpdated ', aTabId, aChangeInfo, aTab);
+
+  //updatedTab.apiTab = aTab;
+  /*
+    Updated openerTabId is not notified via tabs.onUpdated due to
+    https://bugzilla.mozilla.org/show_bug.cgi?id=1409262 , so it can be
+    notified with delay as a part of the complete tabs.Tab object,
+    "aTab" given to this handler. To prevent unexpected tree brekage,
+    we should apply updated openerTabId only when it is modified at
+    outside of TST (in other words, by any other addon.)
+  */
+  for (let key of Object.keys(aChangeInfo)) {
+    updatedTab.apiTab[key] = aChangeInfo[key];
+  }
+  if (aTab.openerTabId != updatedTab.apiTab.TSTUpdatedOpenerTabId)
+    updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = aTab.openerTabId;
+
   updateTab(updatedTab, aChangeInfo);
   updateParentTab(getParentTab(updatedTab));
 
