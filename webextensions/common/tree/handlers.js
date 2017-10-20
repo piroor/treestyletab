@@ -165,7 +165,8 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   for (let key of Object.keys(aChangeInfo)) {
     updatedTab.apiTab[key] = aChangeInfo[key];
   }
-  if (aTab.openerTabId != updatedTab.apiTab.TSTUpdatedOpenerTabId) {
+  if (configs.enableWorkaroundForBug1409262 &&
+      aTab.openerTabId != updatedTab.apiTab.TSTUpdatedOpenerTabId) {
     log(`openerTabId of ${aTabId} is changed by someone!: ${updatedTab.apiTab.TSTUpdatedOpenerTabId} => ${aTab.openerTabId}`);
     updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = aTab.openerTabId;
   }
