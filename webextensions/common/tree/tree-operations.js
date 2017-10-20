@@ -340,8 +340,14 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
   var baseTab = aOptions.baseTab || getCurrentTab(gTargetWindow || aTab);
   log('behaveAutoAttachedTab ', dumpTab(aTab), dumpTab(baseTab), aOptions);
   switch (aOptions.behavior) {
-    case kNEWTAB_OPEN_AS_ORPHAN:
     default:
+      break;
+
+    case kNEWTAB_OPEN_AS_ORPHAN:
+      if (getNextTab(aTab))
+        await moveTabAfter(aTab, getLastTab(), {
+          inRemote: aOptions.inRemote
+        });
       break;
 
     case kNEWTAB_OPEN_AS_CHILD:
