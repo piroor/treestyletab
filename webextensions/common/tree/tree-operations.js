@@ -59,12 +59,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     broadcasted:      aOptions.broadcasted
   });
 
-  if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
-    log('=> already attached');
-    if (!aOptions.dontMove && !aOptions.inRemote)
-      await followDescendantsToMovedRoot(aChild, aOptions);
-    return;
-  }
   if (isPinned(aParent) || isPinned(aChild)) {
     log('=> pinned tabs cannot be attached');
     return;
@@ -111,6 +105,10 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
   log('new children: ', childIds);
 
+  if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
+    log('=> already attached');
+  }
+  else {
   detachTab(aChild, aOptions);
 
   if (childIds.length == 0)
@@ -120,7 +118,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
   aChild.setAttribute(kPARENT, aParent.id);
 
-  var parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
+  let parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
   if (!aOptions.dontUpdateIndent) {
     updateTabsIndent(aChild, parentLevel + 1);
   }
@@ -131,6 +129,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   //promoteTooDeepLevelTabs(aChild);
 
   updateParentTab(aParent);
+  }
 
   window.onTabAttached && onTabAttached(aChild, clone(aOptions, {
     parent: aParent,
