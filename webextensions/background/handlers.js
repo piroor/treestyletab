@@ -589,40 +589,30 @@ async function onTabAttached(aTab, aInfo = {}) {
   });
 
   if (aInfo.newlyAttached) {
-  if (isSubtreeCollapsed(aInfo.parent) &&
+    if (isSubtreeCollapsed(aInfo.parent) &&
       !aInfo.forceExpand)
-    collapseExpandTabAndSubtree(aTab, {
-      collapsed: true,
-      justNow:   true,
-      broadcast: true
-    });
-
-  let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
-  if (aInfo.forceExpand) {
-    collapseExpandSubtree(parent, clone(aInfo, {
-      collapsed: false,
-      inRemote:  false
-    }));
-  }
-  else if (!aInfo.dontExpand) {
-    if (configs.autoCollapseExpandSubtreeOnAttach &&
-        (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
-      collapseExpandTreesIntelligentlyFor(parent, {
+      collapseExpandTabAndSubtree(aTab, {
+        collapsed: true,
+        justNow:   true,
         broadcast: true
       });
 
-    let newAncestors = [parent].concat(getAncestorTabs(parent));
-    if (configs.autoCollapseExpandSubtreeOnSelect) {
-      newAncestors.forEach(aAncestor => {
-        if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
-          collapseExpandSubtree(aAncestor, clone(aInfo, {
-            collapsed: false,
-            broadcast: true
-          }));
-      });
+    let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
+    if (aInfo.forceExpand) {
+      collapseExpandSubtree(parent, clone(aInfo, {
+        collapsed: false,
+        inRemote:  false
+      }));
     }
-    else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
-      if (configs.autoExpandOnAttached) {
+    else if (!aInfo.dontExpand) {
+      if (configs.autoCollapseExpandSubtreeOnAttach &&
+        (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
+        collapseExpandTreesIntelligentlyFor(parent, {
+          broadcast: true
+        });
+
+      let newAncestors = [parent].concat(getAncestorTabs(parent));
+      if (configs.autoCollapseExpandSubtreeOnSelect) {
         newAncestors.forEach(aAncestor => {
           if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
             collapseExpandSubtree(aAncestor, clone(aInfo, {
@@ -631,30 +621,40 @@ async function onTabAttached(aTab, aInfo = {}) {
             }));
         });
       }
-      else
+      else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
+        if (configs.autoExpandOnAttached) {
+          newAncestors.forEach(aAncestor => {
+            if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
+              collapseExpandSubtree(aAncestor, clone(aInfo, {
+                collapsed: false,
+                broadcast: true
+              }));
+          });
+        }
+        else
+          collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+            collapsed: true,
+            broadcast: true
+          }));
+      }
+      if (isCollapsed(parent))
         collapseExpandTabAndSubtree(aTab, clone(aInfo, {
           collapsed: true,
           broadcast: true
         }));
     }
-    if (isCollapsed(parent))
+    else if (shouldTabAutoExpanded(parent) ||
+           isCollapsed(parent)) {
       collapseExpandTabAndSubtree(aTab, clone(aInfo, {
         collapsed: true,
         broadcast: true
       }));
-  }
-  else if (shouldTabAutoExpanded(parent) ||
-           isCollapsed(parent)) {
-    collapseExpandTabAndSubtree(aTab, clone(aInfo, {
-      collapsed: true,
-      broadcast: true
-    }));
-  }
+    }
   }
 
   reserveToSaveTreeStructure(aTab);
   if (aInfo.newlyAttached)
-  reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
+    reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(parent);
   reserveToUpdateInsertionPosition([
     aTab,
