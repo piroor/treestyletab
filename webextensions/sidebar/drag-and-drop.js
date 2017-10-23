@@ -586,6 +586,12 @@ function onDragOver(aEvent) {
   if (!dropPositionTargetTab)
     dropPositionTargetTab = info.targetTab;
 
+  if (!dropPositionTargetTab) {
+    let dt = aEvent.dataTransfer;
+    dt.effectAllowed = dt.dropEffect = 'none';
+    return;
+  }
+
   if (dropPositionTargetTab != info.draggedTab) {
     clearDropPosition();
     dropPositionTargetTab.setAttribute(kDROP_POSITION, info.dropPosition);
