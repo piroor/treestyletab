@@ -748,13 +748,13 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
+        clearTimeout(timeout);
         let tab = getTabById(aMessage.id);
         if (tab && !aMessage.forceNew)
           return tab.uniqueId;
         let id = await requestUniqueId(aMessage.id, {
           forceNew: aMessage.forceNew
         });
-        clearTimeout(timeout);
         return id;
       })();
 
