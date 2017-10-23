@@ -347,6 +347,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     container.internalMovingCount--;
 }
 
+var gTreeInfoForTabsMovingAcrossWindows = {};
+
 async function onApiTabAttached(aTabId, aAttachInfo) {
   if (gTargetWindow &&
       aAttachInfo.newWindowId != gTargetWindow)
@@ -381,10 +383,16 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   }
 
   clearOldActiveStateInWindow(aAttachInfo.newWindowId);
+  var info = gTreeInfoForTabsMovingAcrossWindows[aTabId];
+  delete gTreeInfoForTabsMovingAcrossWindows[aTabId];
 
   var newTab = await onNewTabTracked(apiTab);
-  if (newTab && newTab.parentNode.toBeAttachedTabs > 0)
+  if (newTab && newTab.parentNode.toBeAttachedTabs > 0) {
     newTab.parentNode.toBeAttachedTabs--;
+  }
+  else {
+    window.onTabAttachedToWindow && onTabAttachedToWindow(newTab, info);
+  }
 }
 
 function onApiTabDetached(aTabId, aDetachInfo) {
@@ -396,6 +404,11 @@ function onApiTabDetached(aTabId, aDetachInfo) {
   var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (!oldTab)
     return;
+
+  gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
+    windowId:    aDetachInfo.oldWindowId,
+    descendants: getDescendantTabs(oldTab)
+  };
 
   if (oldTab.parentNode.toBeDetachedTabs > 0) {
     oldTab.parentNode.toBeDetachedTabs--;

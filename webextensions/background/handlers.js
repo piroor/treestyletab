@@ -679,9 +679,36 @@ function onTabDetached(aTab, aDetachInfo) {
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 }
 
+async function onTabAttachedToWindow(aTab, aInfo = {}) {
+  if (!aInfo.windowId ||
+      !shouldApplyTreeBehavior(aInfo.windowId))
+    return;
+
+  log('onTabAttachedToWindow ', dumpTab(aTab), aInfo);
+
+  log('descendants of attached tab: ', aInfo.descendants.map(dumpTab));
+  let movedTabs = await moveTabs(aInfo.descendants, {
+    destinationWindowId: aTab.apiTab.windowId,
+    insertAfter:         aTab
+  });
+  log('moved descendants: ', movedTabs.map(dumpTab));
+  for (let movedTab of movedTabs) {
+    if (getParentTab(movedTab))
+      continue;
+    attachTabTo(movedTab, aTab, {
+      broadcast: true,
+      dontMove:  true
+    });
+  }
+}
+
 function onTabDetachedFromWindow(aTab) {
   tryMoveFocusFromClosingCurrentTab(aTab);
 
+  if (shouldApplyTreeBehavior(aTab.apiTab.windowId))
+    return;
+
+  log('onTabDetachedFromWindow ', dumpTab(aTab));
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
