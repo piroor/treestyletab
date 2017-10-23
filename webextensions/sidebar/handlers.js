@@ -969,14 +969,9 @@ function onMessage(aMessage, aSender, aRespond) {
       aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
-  var timeout = setTimeout(() => {
-    log('onMessage: timeout! ', aMessage, aSender);
-  }, 10 * 1000);
-
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PING_TO_SIDEBAR: {
-      clearTimeout(timeout);
       if (aMessage.windowId == gTargetWindow)
         return Promise.resolve(true);
     }; break;
@@ -991,10 +986,8 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       if (aMessage.windowId == gTargetWindow) {
         let tab = getTabById(aMessage.tab);
-        if (!tab) {
-          clearTimeout(timeout);
+        if (!tab)
           return;
-        }
         let params = {
           collapsed: aMessage.collapsed,
           justNow:   aMessage.justNow
@@ -1071,7 +1064,6 @@ function onMessage(aMessage, aSender, aRespond) {
       }
     }; break;
   }
-  clearTimeout(timeout);
 }
 
 function onMessageExternal(aMessage, aSender) {

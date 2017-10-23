@@ -727,14 +727,9 @@ function onMessage(aMessage, aSender) {
       aMessage.type.indexOf('treestyletab:') != 0)
     return;
 
-  var timeout = setTimeout(() => {
-    log('onMessage: timeout! ', aMessage, aSender);
-  }, 10 * 1000);
-
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PING_TO_BACKGROUND:
-      clearTimeout(timeout);
       startWatchSidebarOpenState();
       return Promise.resolve(true);
 
@@ -748,7 +743,6 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
-        clearTimeout(timeout);
         let tab = getTabById(aMessage.id);
         if (tab && !aMessage.forceNew)
           return tab.uniqueId;
@@ -766,7 +760,6 @@ function onMessage(aMessage, aSender) {
 
     // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
     case kCOMMAND_PULL_TAB_ID_TABLES:
-      clearTimeout(timeout);
       return Promise.resolve({
         wrongToCorrect: gTabIdWrongToCorrect,
         correctToWrong: gTabIdCorrectToWrong
@@ -778,16 +771,13 @@ function onMessage(aMessage, aSender) {
           await wait(10);
         }
         let structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
-        clearTimeout(timeout);
         return { structure: structure };
       })();
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       let tab = getTabById(aMessage.tab);
-      if (!tab) {
-        clearTimeout(timeout);
+      if (!tab)
         return;
-      }
       let params = {
         collapsed: aMessage.collapsed,
         justNow:   aMessage.justNow,
@@ -798,7 +788,6 @@ function onMessage(aMessage, aSender) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
-      clearTimeout(timeout);
     }; break;
 
     case kCOMMAND_LOAD_URI: {
@@ -807,7 +796,6 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_NEW_TABS:
       return (async () => {
-        clearTimeout(timeout);
         log('new tabs requested: ', aMessage);
         return await openURIsInTabs(aMessage.uris, clone(aMessage, {
           parent:       getTabById(aMessage.parent),
@@ -823,7 +811,6 @@ function onMessage(aMessage, aSender) {
           aMessage.tabs.map(getTabById),
           aMessage
         );
-        clearTimeout(timeout);
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
 
@@ -837,73 +824,58 @@ function onMessage(aMessage, aSender) {
             insertAfter:  getTabById(aMessage.insertAfter)
           })
         );
-        clearTimeout(timeout);
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
 
     case kCOMMAND_REMOVE_TAB:
       return (async () => {
         let tab = getTabById(aMessage.tab);
-        if (!tab) {
-          clearTimeout(timeout);
+        if (!tab)
           return;
-        }
         browser.tabs.remove(tab.apiTab.id)
           .catch(handleMissingTabError);
-        clearTimeout(timeout);
       })();
 
     case kNOTIFY_TAB_MOUSEDOWN:
       return (async () => {
         let tab = getTabById(aMessage.tab);
-        if (!tab) {
-          clearTimeout(timeout);
+        if (!tab)
           return;
-        }
 
         let results = await sendTSTAPIMessage(clone(aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_CLICKED,
           tab:    serializeTabForTSTAPI(tab),
           window: tab.apiTab.windowId
         }));
-        if (results.some(aResult => aResult.result)) { // canceled
-          clearTimeout(timeout);
+        if (results.some(aResult => aResult.result)) // canceled
           return;
-        }
 
         // not canceled, then fallback to default "select tab"
         if (aMessage.button == 0)
           browser.tabs.update(tab.apiTab.id, { active: true })
             .catch(handleMissingTabError);
-        clearTimeout(timeout);
       })();
 
     case kCOMMAND_SELECT_TAB: {
       let tab = getTabById(aMessage.tab);
-      if (!tab) {
-        clearTimeout(timeout);
+      if (!tab)
         return;
-      }
       browser.tabs.update(tab.apiTab.id, { active: true })
         .catch(handleMissingTabError);
     }; break;
 
     case kCOMMAND_SELECT_TAB_INTERNALLY: {
       let tab = getTabById(aMessage.tab);
-      if (!tab) {
-        clearTimeout(timeout);
+      if (!tab)
         return;
-      }
       selectTabInternally(tab);
     }; break;
 
     case kCOMMAND_SET_SUBTREE_MUTED: {
       log('set muted state: ', aMessage);
       let root = getTabById(aMessage.tab);
-      if (!root) {
-        clearTimeout(timeout);
+      if (!root)
         return;
-      }
       let tabs = [root].concat(getDescendantTabs(root));
       for (let tab of tabs) {
         let playing = isSoundPlaying(tab);
@@ -949,14 +921,12 @@ function onMessage(aMessage, aSender) {
     }; break;
 
     case kCOMMAND_MOVE_TABS_BEFORE:
-      clearTimeout(timeout);
       return moveTabsBefore(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.nextTab)
       ).map(aTab => aTab.id);
 
     case kCOMMAND_MOVE_TABS_AFTER:
-      clearTimeout(timeout);
       return moveTabsAfter(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.previousTab)
@@ -964,7 +934,6 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
-        clearTimeout(timeout);
         let child  = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
         if (child && parent)
@@ -976,7 +945,6 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_DETACH_TAB:
       return (async () => {
-        clearTimeout(timeout);
         let tab = getTabById(aMessage.tab);
         if (tab)
           await detachTab(tab);
@@ -984,21 +952,15 @@ function onMessage(aMessage, aSender) {
 
     case kCOMMAND_PERFORM_TABS_DRAG_DROP:
       log('perform tabs dragdrop requested: ', aMessage);
-      clearTimeout(timeout);
       return performTabsDragDrop(clone(aMessage, {
         attachTo:     getTabById(aMessage.attachTo),
         insertBefore: getTabById(aMessage.insertBefore),
         insertAfter:  getTabById(aMessage.insertAfter)
       }));
   }
-  clearTimeout(timeout);
 }
 
 function onMessageExternal(aMessage, aSender) {
-  var timeout = setTimeout(() => {
-    log('onMessage: timeout! ', aMessage, aSender);
-  }, 10 * 1000);
-
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
     case kTSTAPI_REGISTER_SELF:
@@ -1024,7 +986,6 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_GET_TREE:
       return (async () => {
-        clearTimeout(timeout);
         var tabs    = await TSTAPIGetTargetTabs(aMessage);
         var results = tabs.map(serializeTabForTSTAPI);
         return TSTAPIFormatResult(results, aMessage);
@@ -1032,7 +993,6 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_COLLAPSE_TREE:
       return (async () => {
-        clearTimeout(timeout);
         var tabs = await TSTAPIGetTargetTabs(aMessage);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
@@ -1045,7 +1005,6 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_EXPAND_TREE:
       return (async () => {
-        clearTimeout(timeout);
         var tabs = await TSTAPIGetTargetTabs(aMessage);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
@@ -1058,7 +1017,6 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_ATTACH:
       return (async () => {
-        clearTimeout(timeout);
         var child  = getTabById(aMessage.child);
         var parent = getTabById(aMessage.parent);
         if (!child ||
@@ -1075,7 +1033,6 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_DETACH:
       return (async () => {
-        clearTimeout(timeout);
         var tab = getTabById(aMessage.tab);
         if (!tab)
           return false;
@@ -1087,7 +1044,6 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {
-        clearTimeout(timeout);
         var tabs   = await TSTAPIGetTargetTabs(aMessage);
         var states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
@@ -1105,7 +1061,6 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_REMOVE_TAB_STATE:
       return (async () => {
-        clearTimeout(timeout);
         var tabs   = await TSTAPIGetTargetTabs(aMessage);
         var states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
@@ -1122,16 +1077,13 @@ function onMessageExternal(aMessage, aSender) {
       })();
 
     case kTSTAPI_SCROLL_LOCK:
-      clearTimeout(timeout);
       gScrollLockedBy[aSender.id] = true;
       return Promise.resolve(true);
 
     case kTSTAPI_SCROLL_UNLOCK:
-      clearTimeout(timeout);
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
   }
-  clearTimeout(timeout);
 }
 
 async function TSTAPIGetTargetTabs(aMessage) {
