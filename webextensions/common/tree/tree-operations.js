@@ -897,6 +897,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         }
         container.toBeOpenedTabsWithPositions += aTabs.length;
         container.toBeOpenedOrphanTabs        += aTabs.length;
+        container.toBeAttachedTabs            += aTabs.length;
       };
       if (newWindow) {
         newWindow = newWindow.then(aWindow => {

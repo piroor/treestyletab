@@ -187,7 +187,7 @@ function onApiTabCreated(aTab) {
 
 async function onNewTabTracked(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
-    return;
+    return null;
 
   log('onNewTabTracked: ', aTab.id);
   var container = getOrBuildTabsContainer(aTab.windowId);
@@ -227,11 +227,11 @@ async function onNewTabTracked(aTab) {
   }
 
   if (!newTab.parentNode) // it can be removed while waiting
-    return;
+    return null;
 
   var uniqueId = await newTab.uniqueId;
   if (!newTab.parentNode) // it can be removed while waiting
-    return;
+    return null;
 
   log('uniqueId: ', uniqueId);
   var duplicated = duplicatedInternally || uniqueId.duplicated;
@@ -250,6 +250,8 @@ async function onNewTabTracked(aTab) {
   if (!duplicated &&
       uniqueId.restored)
     window.onTabRestored && onTabRestored(newTab);
+
+  return newTab;
 }
 
 async function onApiTabRemoved(aTabId, aRemoveInfo) {
@@ -379,7 +381,10 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   }
 
   clearOldActiveStateInWindow(aAttachInfo.newWindowId);
-  onNewTabTracked(apiTab);
+
+  var newTab = await onNewTabTracked(apiTab);
+  if (newTab && newTab.parentNode.toBeAttachedTabs > 0)
+    newTab.parentNode.toBeAttachedTabs--;
 }
 
 function onApiTabDetached(aTabId, aDetachInfo) {
