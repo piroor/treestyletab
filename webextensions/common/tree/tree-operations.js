@@ -355,6 +355,10 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       break;
 
     case kNEWTAB_OPEN_AS_ORPHAN:
+      await detachTab(aTab, {
+        inRemote:  aOptions.inRemote,
+        broadcast: aOptions.broadcast
+      });
       if (getNextTab(aTab))
         await moveTabAfter(aTab, getLastTab(), {
           inRemote: aOptions.inRemote
