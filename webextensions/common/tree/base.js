@@ -459,8 +459,15 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
+    let oldIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     for (let tab of aTabs) {
       container.insertBefore(tab, aReferenceTab);
+    }
+    let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+    let minIndex = Math.min(...oldIndexes, ...newIndexes);
+    let maxIndex = Math.max(...oldIndexes, ...newIndexes);
+    for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+      allTabs[i].apiTab.index = i;
     }
 
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
@@ -521,11 +528,18 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
+    let oldIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     var nextTab = getNextTab(aReferenceTab);
     if (aTabs.indexOf(nextTab) > -1)
       nextTab = null;
     for (let tab of aTabs) {
       container.insertBefore(tab, nextTab);
+    }
+    let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+    let minIndex = Math.min(...oldIndexes, ...newIndexes);
+    let maxIndex = Math.max(...oldIndexes, ...newIndexes);
+    for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+      allTabs[i].apiTab.index = i;
     }
 
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
