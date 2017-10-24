@@ -1054,7 +1054,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         newTabs = newTabs.filter(aTab => !!aTab);
         if (newTabs.length < aTabs.length ||
             container.processingNewTabsCount > 0) {
-          log('retryling: ', apiTabIds, newTabs.length, aTabs.length);
+          log('retrying: ', apiTabIds, newTabs.length, aTabs.length);
           await wait(100);
           continue;
         }
