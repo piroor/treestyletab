@@ -338,9 +338,10 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     let newNextIndex = aMoveInfo.toIndex;
     if (aMoveInfo.fromIndex < newNextIndex)
       newNextIndex++;
-    let nextTab = getTabs(movedTab)[newNextIndex];
-    movedTab.parentNode.insertBefore(movedTab, nextTab);
-
+    let tabs    = getTabs(movedTab);
+    let nextTab = tabs[newNextIndex];
+    if (movedTab.nextSibling != nextTab)
+      movedTab.parentNode.insertBefore(movedTab, nextTab);
     window.onTabMoved && await onTabMoved(movedTab, moveInfo);
   }
   if (byInternalOperation)

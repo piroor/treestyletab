@@ -454,6 +454,15 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
+    /*
+      Tab elements are moved by tabs.onMoved automatically, but
+      the operation is asynchronous. To help synchronous operations
+      following to this operation, we need to move tabs immediately.
+    */
+    for (let tab of aTabs) {
+      container.insertBefore(tab, aReferenceTab);
+    }
+
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
     if (fromIndex < toIndex)
       toIndex--;
@@ -461,7 +470,6 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       windowId: container.windowId,
       index:    toIndex
     });
-    // tab will be moved by handling of API event
   }
   catch(e) {
     handleMissingTabError(e);
@@ -508,6 +516,18 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
+    /*
+      Tab elements are moved by tabs.onMoved automatically, but
+      the operation is asynchronous. To help synchronous operations
+      following to this operation, we need to move tabs immediately.
+    */
+    var nextTab = getNextTab(aReferenceTab);
+    if (aTabs.indexOf(nextTab) > -1)
+      nextTab = null;
+    for (let tab of aTabs) {
+      container.insertBefore(tab, nextTab);
+    }
+
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
     if (fromIndex > toIndex)
       toIndex++;
@@ -515,7 +535,6 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       windowId: container.windowId,
       index:    toIndex
     });
-    // tab will be moved by handling of API event
   }
   catch(e) {
     handleMissingTabError(e);
