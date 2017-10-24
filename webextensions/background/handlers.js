@@ -26,8 +26,8 @@ async function onTabOpening(aTab, aInfo = {}) {
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
   if (configs.autoGroupNewTabs &&
-           !aTab.apiTab.openerTabId &&
-           !aInfo.maybeOrphan) {
+      !aTab.apiTab.openerTabId &&
+      !aInfo.maybeOrphan) {
     if (container.preventAutoGroupNewTabsUntil > Date.now())
       container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     else
