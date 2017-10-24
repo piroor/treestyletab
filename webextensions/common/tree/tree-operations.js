@@ -1033,7 +1033,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         for (let tab of aTabs) {
           if (!isActive(tab))
             continue;
-          tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: aTabs });
+          await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: aTabs });
           break;
         }
         apiTabIds = await safeMoveApiTabsAcrossWindows(apiTabIds, {
