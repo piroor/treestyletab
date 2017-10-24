@@ -173,7 +173,7 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 function onTabRestored(aTab) {
-  log('restored ', dumpTab(aTab), aTab.apiTab);
+  log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
   return attachTabFromRestoredInfo(aTab, {
     children: true
   });
