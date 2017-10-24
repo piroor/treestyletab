@@ -63,6 +63,10 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     log('=> pinned tabs cannot be attached');
     return;
   }
+  if (aParent.apiTab.windowId != aChild.apiTab.windowId) {
+    log('=> could not attach tab to a parent in different window');
+    return;
+  }
   var ancestors = [aParent].concat(getAncestorTabs(aChild));
   if (ancestors.indexOf(aChild) > -1) {
     log('=> canceled for recursive request');
