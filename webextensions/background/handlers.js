@@ -703,10 +703,14 @@ async function onTabAttachedToWindow(aTab, aInfo = {}) {
 }
 
 function onTabDetachedFromWindow(aTab) {
-  tryMoveFocusFromClosingCurrentTab(aTab);
-
-  if (shouldApplyTreeBehavior(aTab.apiTab.windowId))
+  if (shouldApplyTreeBehavior(aTab.apiTab.windowId)) {
+    tryMoveFocusFromClosingCurrentTabNow(aTab, {
+      ignoredTabs: getDescendantTabs(aTab)
+    });
     return;
+  }
+
+  tryMoveFocusFromClosingCurrentTab(aTab);
 
   log('onTabDetachedFromWindow ', dumpTab(aTab));
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);

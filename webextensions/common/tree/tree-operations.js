@@ -675,25 +675,19 @@ function tryMoveFocusFromClosingCurrentTab(aTab) {
     log(' => not active tab');
     return;
   }
-  aTab.parentNode.focusRedirectedForClosingCurrentTab = tryMoveFocusFromClosingCurrentTabInternal(aTab);
+  aTab.parentNode.focusRedirectedForClosingCurrentTab = tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab);
 }
-async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
-  log('tryMoveFocusFromClosingCurrentTabInternal', dumpTab(aTab));
+async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab) {
+  log('tryMoveFocusFromClosingCurrentTabOnFocusRedirected ', dumpTab(aTab));
+
   // The aTab can be closed while we waiting.
   // Thus we need to get tabs related to aTab at first.
-  var parent                    = getParentTab(aTab);
-  var firstChild                = getFirstChildTab(aTab);
-  var firstChildOfParent        = getFirstChildTab(parent);
-  var lastChildOfParent         = getLastChildTab(parent);
-  var previousSibling           = getPreviousSiblingTab(aTab);
-  var preDetectedNextFocusedTab = getNextFocusedTab(aTab);
-  var previousTab               = getPreviousTab(aTab);
-  var nextTab                   = getNextTab(aTab);
-  var serialized                = serializeTabForTSTAPI(aTab);
-  var closeParentBehavior       = getCloseParentBehaviorForTab(aTab, { parent });
+  var params      = getTryMoveFocusFromClosingCurrentTabNowParams(aTab);
+  var nextTab     = getNextTab(aTab);
+  var previousTab = getPreviousTab(aTab);
 
   await aTab.closedWhileActive;
-  log('tryMoveFocusFromClosingCurrentTab: tabs.onActivated is fired');
+  log('tryMoveFocusFromClosingCurrentTabOnFocusRedirected: tabs.onActivated is fired');
 
   var autoFocusedTab = getCurrentTab(aTab.apiTab.windowId);
   if (autoFocusedTab != nextTab &&
@@ -707,6 +701,39 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
     });
     return false;
   }
+  return tryMoveFocusFromClosingCurrentTabNow(aTab, params);
+}
+function getTryMoveFocusFromClosingCurrentTabNowParams(aTab) {
+  var parentTab = getParentTab(aTab);
+  return {
+    active:                    isActive(aTab),
+    parentTab,
+    firstChildTab:             getFirstChildTab(aTab),
+    firstChildTabOfParent:     getFirstChildTab(parentTab),
+    lastChildTabOfParent:      getLastChildTab(parentTab),
+    previousSiblingTab:        getPreviousSiblingTab(aTab),
+    preDetectedNextFocusedTab: getNextFocusedTab(aTab),
+    serialized:                serializeTabForTSTAPI(aTab),
+    closeParentBehavior:       getCloseParentBehaviorForTab(aTab, { parentTab })
+  };
+}
+
+async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
+  var params = aOptions.params || getTryMoveFocusFromClosingCurrentTabNowParams(aTab);
+  if (aOptions.ignoredTabs)
+    params.ignoredTabs = aOptions.ignoredTabs;
+  var {
+    active,
+    parentTab, firstChildTab, firstChildTabOfParent, lastChildTabOfParent,
+    previousSiblingTab, preDetectedNextFocusedTab,
+    ignoredTabs,
+    serialized, closeParentBehavior
+  } = params;
+  log('tryMoveFocusFromClosingCurrentTabNow ', params);
+  if (!active) {
+    log(' => not active tab');
+    return false;
+  }
 
   var results = await sendTSTAPIMessage({
     type:   kTSTAPI_NOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
@@ -717,32 +744,32 @@ async function tryMoveFocusFromClosingCurrentTabInternal(aTab) {
     return false;
 
   var nextFocusedTab = null;
-  if (firstChild &&
+  if (firstChildTab &&
       (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
        closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD))
-    nextFocusedTab = firstChild;
+    nextFocusedTab = firstChildTab;
   log('focus to first child?: ', !!nextFocusedTab);
 
-  var toBeClosedTabs = []; // collectNeedlessGroupTabs(aTab);
-  if (parent) {
-    if (!nextFocusedTab && aTab == lastChildOfParent) {
-      if (aTab == firstChildOfParent) { // this is the really last child
-        nextFocusedTab = parent;
+  ignoredTabs = ignoredTabs || [];
+  if (parentTab) {
+    if (!nextFocusedTab && aTab == lastChildTabOfParent) {
+      if (aTab == firstChildTabOfParent) { // this is the really last child
+        nextFocusedTab = parentTab;
         log('focus to parent?: ', !!nextFocusedTab);
       }
       else {
-        nextFocusedTab = previousSibling;
+        nextFocusedTab = previousSiblingTab;
         log('focus to previous sibling?: ', !!nextFocusedTab);
       }
     }
-    if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1)
-      nextFocusedTab = getNextFocusedTab(parent);
+    if (nextFocusedTab && ignoredTabs.indexOf(nextFocusedTab) > -1)
+      nextFocusedTab = getNextFocusedTab(parentTab);
   }
   else if (!nextFocusedTab) {
     nextFocusedTab = preDetectedNextFocusedTab;
     log('focus to getNextFocusedTab()?: ', !!nextFocusedTab);
   }
-  if (nextFocusedTab && toBeClosedTabs.indexOf(nextFocusedTab) > -1) {
+  if (nextFocusedTab && ignoredTabs.indexOf(nextFocusedTab) > -1) {
     nextFocusedTab = getNextFocusedTab(nextFocusedTab);
     log('focus to getNextFocusedTab() again?: ', !!nextFocusedTab);
   }
