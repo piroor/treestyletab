@@ -520,6 +520,7 @@ function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is close
     tab = getNextSiblingTab(tab);
   } while (tab && ignoredTabs.indexOf(tab) > -1);
   if (!tab) {
+    tab = aTab;
     do {
       ignoredTabs.push(tab);
       tab = getPreviousVisibleTab(tab);
