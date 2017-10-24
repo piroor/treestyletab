@@ -372,8 +372,13 @@ var tabContextMenu = {
         })();
       case 'context_openTabInWindow': {
         let tabId  = this.contextTab.id; // cache it for delayed tasks!
-        let window = await browser.windows.create({ url: 'about:blank' })
-        await browser.tabs.move(tabId, { index: 1, windowId: window.id });
+        let window = await browser.windows.create({ url: 'about:blank' });
+        //await browser.tabs.move(tabId, { index: 1, windowId: window.id });
+        let tab = getTabById(tabId);
+        await moveTabs([tab].concat(getDescendantTabs(tab)), {
+          destinationWindowId: window.id,
+          inRemote:            true
+        });
         let tabs = await browser.tabs.query({ windowId: window.id });
         browser.tabs.remove(tabs[0].id);
       }; break;
