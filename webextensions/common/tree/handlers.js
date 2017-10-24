@@ -130,7 +130,7 @@ function clearOldActiveStateInWindow(aWindowId) {
   var container = getTabsContainer(aWindowId);
   if (!container)
     return [];
-  var oldTabs = document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
+  var oldTabs = container.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
     oldTab.classList.remove(kTAB_STATE_ACTIVE);
     oldTab.apiTab.active = false;
