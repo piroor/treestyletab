@@ -1030,6 +1030,12 @@ async function moveTabs(aTabs, aOptions = {}) {
         toIndex--;
       log(' => ', toIndex);
       if (isAcrossWindows) {
+        for (let tab of aTabs) {
+          if (!isActive(tab))
+            continue;
+          tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: aTabs });
+          break;
+        }
         apiTabIds = await safeMoveApiTabsAcrossWindows(apiTabIds, {
           windowId: destinationWindowId,
           index:    toIndex
