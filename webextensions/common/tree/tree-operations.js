@@ -1280,6 +1280,7 @@ async function performTabsDragDrop(aParams = {}) {
   else
     log('=> already placed at expected position');
 
+  browser.tabs.update(draggedTabs[0].apiTab.id, { active: true });
   var treeStructure = getTreeStructureFromTabs(draggedTabs);
 
   var newTabs;
