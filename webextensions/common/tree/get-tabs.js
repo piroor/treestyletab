@@ -512,6 +512,18 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
   return addedTabs;
 }
 
-function getNextFocusedTab(aTab) { // if the current tab is closed...
-  return getNextSiblingTab(aTab) || getPreviousVisibleTab(aTab);
+function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is closed...
+  var ignoredTabs = (aOptions.ignoredTabs || []).slice(0);
+  var tab = aTab;
+  do {
+    ignoredTabs.push(tab);
+    tab = getNextSiblingTab(tab);
+  } while (tab && ignoredTabs.indexOf(tab) > -1);
+  if (!tab) {
+    do {
+      ignoredTabs.push(tab);
+      tab = getPreviousVisibleTab(tab);
+    } while (tab && ignoredTabs.indexOf(tab) > -1);
+  }
+  return tab;
 }

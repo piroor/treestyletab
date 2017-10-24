@@ -763,14 +763,14 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
       }
     }
     if (nextFocusedTab && ignoredTabs.indexOf(nextFocusedTab) > -1)
-      nextFocusedTab = getNextFocusedTab(parentTab);
+      nextFocusedTab = getNextFocusedTab(parentTab, { ignoredTabs });
   }
   else if (!nextFocusedTab) {
     nextFocusedTab = preDetectedNextFocusedTab;
     log('focus to getNextFocusedTab()?: ', !!nextFocusedTab);
   }
   if (nextFocusedTab && ignoredTabs.indexOf(nextFocusedTab) > -1) {
-    nextFocusedTab = getNextFocusedTab(nextFocusedTab);
+    nextFocusedTab = getNextFocusedTab(nextFocusedTab, { ignoredTabs });
     log('focus to getNextFocusedTab() again?: ', !!nextFocusedTab);
   }
 
