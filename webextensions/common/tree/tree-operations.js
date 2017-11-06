@@ -367,7 +367,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
 
     case kNEWTAB_OPEN_AS_CHILD:
       await attachTabTo(aTab, baseTab, {
-        dontMove:    aOptions.dontMove,
+        dontMove:    aOptions.dontMove || configs.insertNewChildAt == kINSERT_NO_CONTROL,
         forceExpand: true,
         inRemote:    aOptions.inRemote,
         broadcast:   aOptions.broadcast
