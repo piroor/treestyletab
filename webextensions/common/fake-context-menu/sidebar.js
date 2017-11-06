@@ -186,7 +186,7 @@ var tabContextMenu = {
       this.onClosed();
     }
     this.contextTab      = aOptions.tab;
-    this.contextWindowId = aOptions.windowId;
+    this.contextWindowId = aOptions.windowId || (this.contextTab && this.contextTab.windowId);
     await this.rebuild();
     this.applyContext();
     this.menu.classList.add('open');
