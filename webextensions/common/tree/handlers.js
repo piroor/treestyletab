@@ -325,13 +325,19 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     return;
   }
 
-  log('tabs.onMoved: ', dumpTab(movedTab), aMoveInfo, movedTab.apiTab);
-
+  var oldPreviousTab = getPreviousTab(movedTab);
+  var oldNextTab     = getNextTab(movedTab);
+  if (getTabIndex(aMoveInfo) != aMoveInfo.toIndex) { // already moved
+    let tabs = getAllTabs(container);
+    oldPreviousTab = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex : aMoveInfo.fromIndex - 1];
+    oldNextTab     = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex + 1 : aMoveInfo.fromIndex];
+  }
   var moveInfo = clone(aMoveInfo, {
     byInternalOperation,
-    oldPreviousTab: getPreviousTab(movedTab),
-    oldNextTab:     getNextTab(movedTab)
+    oldPreviousTab,
+    oldNextTab
   });
+  log('tabs.onMoved: ', dumpTab(movedTab), moveInfo, movedTab.apiTab);
   var canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
   if (!canceled &&
       movedTab.parentNode) { // it is removed while waiting

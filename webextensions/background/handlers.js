@@ -283,7 +283,9 @@ async function onTabMoved(aTab, aMoveInfo) {
   reserveToUpdateInsertionPosition([
     aTab,
     aMoveInfo.oldPreviousTab,
-    aMoveInfo.oldNextTab
+    aMoveInfo.oldNextTab,
+    getPreviousTab(aTab),
+    getNextTab(aTab)
   ]);
 
   var container = getTabsContainer(aTab);
