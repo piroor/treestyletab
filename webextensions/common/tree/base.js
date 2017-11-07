@@ -173,7 +173,6 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   if ('url' in aNewState &&
       aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
-    aNewState.title = getTitleFromGroupTabURI(aNewState.url);
   }
   else if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
@@ -680,12 +679,6 @@ function makeGroupTabURI(aTitle, aOptions = {}) {
   var base = kGROUP_TAB_URI;
   var temporaryOption = aOptions.temporary ? '&temporary=true' : '' ;
   return `${base}?title=${encodeURIComponent(aTitle)}${temporaryOption}`;
-}
-
-function getTitleFromGroupTabURI(aURI) {
-  var title = aURI.match(/title=([^&;]*)/);
-  return title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab.label.default');
 }
 
 
