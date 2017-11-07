@@ -380,7 +380,8 @@ function buildTabsContainerFor(aWindowId) {
     container.internalFocusCount =
     container.tryingReforcusForClosingCurrentTabCount =
     container.processingNewTabsCount =
-    container.duplicatingTabsCount = 0;
+    container.duplicatingTabsCount =
+    container.restoringTabsCount = 0;
 
   container.openingCount         = 0;
   container.openedNewTabs        = [];

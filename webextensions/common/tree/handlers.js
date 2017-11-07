@@ -253,8 +253,12 @@ async function onNewTabTracked(aTab) {
   container.processingNewTabsCount--;
 
   if (!duplicated &&
-      uniqueId.restored)
-    window.onTabRestored && onTabRestored(newTab);
+      uniqueId.restored) {
+    container.restoringTabsCount++;
+    window.onTabRestored && Promise.resolve(onTabRestored(newTab)).then(() => {
+      container.restoringTabsCount--;
+    });
+  }
 
   return newTab;
 }

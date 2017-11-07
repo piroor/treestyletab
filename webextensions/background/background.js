@@ -254,6 +254,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   var uniqueId = await aTab.uniqueId;
   var container = getTabsContainer(aTab);
+  var isWindowRestoring = container.restoringTabsCount > 1;
   var insertBefore, insertAfter, ancestors, children, collapsed;
   [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
@@ -287,6 +288,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     await attachTabTo(aTab, ancestor, {
       insertBefore,
       insertAfter,
+      dontExpand: isWindowRestoring,
       broadcast: true
     });
     attached = true;
@@ -298,6 +300,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     let parent = getTabById(aTab.apiTab.openerTabId);
     if (parent) {
       await attachTabTo(aTab, parent, {
+        dontExpand: isWindowRestoring,
         broadcast: true,
         insertAt:  kINSERT_NEAREST
       });
@@ -319,11 +322,12 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       if (!child)
         continue;
       await attachTabTo(child, aTab, {
+        dontExpand: isWindowRestoring,
         broadcast: true
       });
     }
   }
-  if (aOptions.canCollapse) {
+  if (aOptions.canCollapse && !isWindowRestoring) {
     collapseExpandSubtree(aTab, {
       broadcast: true,
       collapsed
