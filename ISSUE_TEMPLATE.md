@@ -13,6 +13,7 @@ https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
  4. 
 
 <!--
+Please describe how to reproduce your problem on my (developer/author/other peoples') environment.
 If your issue is related to tree strucutre, figures or screenshots will help me a lot, like:
 
 ```
