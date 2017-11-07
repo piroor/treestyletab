@@ -288,9 +288,9 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     await attachTabTo(aTab, ancestor, {
       insertBefore,
       insertAfter,
-      dontExpand: !active,
+      dontExpand:  !active,
       forceExpand: active,
-      broadcast: true
+      broadcast:   true
     });
     attached = true;
     break;
@@ -301,8 +301,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     await attachTabTo(aTab, opener, {
       dontExpand:  !active,
       forceExpand: active,
-      broadcast: true,
-      insertAt:  kINSERT_NEAREST
+      broadcast:   true,
+      insertAt:    kINSERT_NEAREST
     });
   }
   if (!aOptions.keepCurrentTree &&
@@ -322,10 +322,10 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       if (!child)
         continue;
       await attachTabTo(child, aTab, {
-        dontExpand: !isActive(child),
+        dontExpand:  !isActive(child),
         forceExpand: active,
-        insertAt:   kINSERT_NEAREST,
-        broadcast:  true
+        insertAt:    kINSERT_NEAREST,
+        broadcast:   true
       });
     }
   }
