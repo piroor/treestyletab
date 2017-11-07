@@ -171,7 +171,9 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
     updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = aTab.openerTabId;
   }
 
-  updateTab(updatedTab, aChangeInfo);
+  updateTab(updatedTab, aChangeInfo, {
+    tab: aTab
+  });
   updateParentTab(getParentTab(updatedTab));
 
   window.onTabUpdated && onTabUpdated(updatedTab);
@@ -197,7 +199,10 @@ async function onNewTabTracked(aTab) {
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
-  updateTab(newTab, aTab, { forceApply: true });
+  updateTab(newTab, aTab, {
+    tab:        aTab,
+    forceApply: true
+  });
 
   var openedWithPosition   = container.toBeOpenedTabsWithPositions > 0;
   var duplicatedInternally = container.duplicatingTabsCount > 0;

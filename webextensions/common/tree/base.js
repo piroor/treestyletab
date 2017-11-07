@@ -170,8 +170,15 @@ function buildTab(aApiTab, aOptions = {}) {
 }
 
 function updateTab(aTab, aNewState, aOptions = {}) {
-  if ('url' in aNewState &&
-      aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
+  // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
+  // so we need to see the complete tab object.
+  if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
+    browser.tabs.update(aTab.apiTab.id, { url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI) });
+    aTab.classList.add(kTAB_STATE_GROUP_TAB);
+    return;
+  }
+  else if ('url' in aNewState &&
+           aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
   }
   else if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
