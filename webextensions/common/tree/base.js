@@ -479,6 +479,11 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       ]);
     }
+    log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(
+           Array.slice(container.childNodes)
+             .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
+             .join('\n')
+             .replace(/^/, ' - ')));
     let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     let minIndex = Math.min(...oldIndexes, ...newIndexes);
     let maxIndex = Math.max(...oldIndexes, ...newIndexes);
@@ -563,6 +568,11 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       ]);
     }
+    log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(
+           Array.slice(container.childNodes)
+             .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
+             .join('\n')
+             .replace(/^/, ' - ')));
     let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     let minIndex = Math.min(...oldIndexes, ...newIndexes);
     let maxIndex = Math.max(...oldIndexes, ...newIndexes);
