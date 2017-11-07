@@ -705,7 +705,7 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab) {
     });
     return false;
   }
-  return tryMoveFocusFromClosingCurrentTabNow(aTab, params);
+  return tryMoveFocusFromClosingCurrentTabNow(aTab, { params });
 }
 function getTryMoveFocusFromClosingCurrentTabNowParams(aTab) {
   var parentTab = getParentTab(aTab);
