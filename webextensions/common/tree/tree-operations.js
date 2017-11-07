@@ -211,6 +211,21 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
   else {
     insertAfter = aParent;
   }
+  // disallow to place tab in invalid position
+  if (insertBefore) {
+    if (getTabIndex(insertBefore) <= getTabIndex(aParent)) {
+      insertBefore = null;
+    }
+    //TODO: we need to reject more cases...
+  }
+  if (insertAfter) {
+    let allTabsInTree = [aParent].concat(descendants);
+    let lastMember    = allTabsInTree[allTabsInTree.length - 1];
+    if (getTabIndex(insertAfter) >= getTabIndex(lastMember)) {
+      insertAfter = lastMember;
+    }
+    //TODO: we need to reject more cases...
+  }
   return { insertBefore, insertAfter };
 }
 
