@@ -461,7 +461,16 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     */
     let oldIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     for (let tab of aTabs) {
+      let oldPreviousTab = getPreviousTab(tab);
+      let oldNextTab     = getNextTab(tab);
       container.insertBefore(tab, aReferenceTab);
+      reserveToUpdateInsertionPosition([
+        tab,
+        getPreviousTab(tab),
+        getNextTab(tab),
+        oldPreviousTab,
+        oldNextTab
+      ]);
     }
     let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     let minIndex = Math.min(...oldIndexes, ...newIndexes);
@@ -533,7 +542,16 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     if (aTabs.indexOf(nextTab) > -1)
       nextTab = null;
     for (let tab of aTabs) {
+      let oldPreviousTab = getPreviousTab(tab);
+      let oldNextTab     = getNextTab(tab);
       container.insertBefore(tab, nextTab);
+      reserveToUpdateInsertionPosition([
+        tab,
+        getPreviousTab(tab),
+        getNextTab(tab),
+        oldPreviousTab,
+        oldNextTab
+      ]);
     }
     let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     let minIndex = Math.min(...oldIndexes, ...newIndexes);
