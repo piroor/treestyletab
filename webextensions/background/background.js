@@ -282,6 +282,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     children:     children.map(dumpTab).join(', ')
   });
   var attached = false;
+  isWindowRestoring = isWindowRestoring || container.restoringTabsCount > 1; // the status can be updated while waiting
   for (let ancestor of ancestors) {
     if (!ancestor)
       continue;
