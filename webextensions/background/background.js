@@ -295,17 +295,14 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     attached = true;
     break;
   }
+  var opener = getOpenerTab(aTab);
   if (!attached &&
-      aTab.apiTab.openerTabId &&
-      aTab.apiTab.openerTabId != aTab.apiTab.id) {
-    let parent = getTabById(aTab.apiTab.openerTabId);
-    if (parent) {
-      await attachTabTo(aTab, parent, {
+      opener) {
+      await attachTabTo(aTab, opener, {
         dontExpand: isWindowRestoring,
         broadcast: true,
         insertAt:  kINSERT_NEAREST
       });
-    }
   }
   if (!aOptions.keepCurrentTree &&
       // the restored tab is a roo tab

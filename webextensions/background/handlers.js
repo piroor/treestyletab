@@ -25,9 +25,9 @@ async function onTabOpening(aTab, aInfo = {}) {
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
+  var opener    = getOpenerTab(aTab);
   if (configs.autoGroupNewTabs &&
-      (!aTab.apiTab.openerTabId ||
-       aTab.apiTab.openerTabId == aTab.apiTab.id) &&
+      !opener &&
       !aInfo.maybeOrphan) {
     if (container.preventAutoGroupNewTabsUntil > Date.now())
       container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
@@ -42,9 +42,6 @@ async function onTabOpening(aTab, aInfo = {}) {
     container
   );
 
-  var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
-  if (opener == aTab)
-    opener = null;
   log('opener ', dumpTab(opener));
   if (!opener) {
     log('is new tab command?: ', aTab.apiTab.url);
@@ -275,10 +272,10 @@ function onTabMoving(aTab, aMoveInfo) {
   if (container.openingCount > 0 &&
       !aMoveInfo.byInternalOperation &&
       positionControlled) {
-    let opener = getTabById(aTab.apiTab.openerTabId);
+    let opener = getOpenerTab(aTab);
     // if there is no valid opener, it can be a restored initial tab in a restored window
     // and can be just moved as a part of window restoration process.
-    if (opener && opener != aTab) {
+    if (opener) {
       log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
       moveBack(aTab, aMoveInfo);
       return true;
@@ -539,10 +536,8 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 }
 
 function onTabUpdated(aTab) {
-  if (aTab.apiTab.openerTabId &&
-      aTab.apiTab.openerTabId != aTab.apiTab.id) {
-    let parent = getTabById(aTab.apiTab.openerTabId);
-    if (parent && parent != getParentTab(aTab))
+  var parent = getOpenerTab(aTab);
+  if (parent && parent != getParentTab(aTab)) {
       attachTabTo(aTab, parent, {
         insertAt:    kINSERT_NEAREST,
         forceExpand: isActive(aTab),
@@ -565,7 +560,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 }
 
 async function onTabAttached(aTab, aInfo = {}) {
-  var parent  = aInfo.parent;
+  var parent = aInfo.parent;
   if (aTab.apiTab.openerTabId != parent.apiTab.id) {
     aTab.apiTab.openerTabId = parent.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262

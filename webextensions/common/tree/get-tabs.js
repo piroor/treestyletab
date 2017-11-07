@@ -229,6 +229,15 @@ function getPreviousNormalTab(aTab) {
 
 // tree basics
 
+function getOpenerTab(aTab) {
+  if (!aTab ||
+      !aTab.apiTab ||
+      !aTab.apiTab.openerTabId ||
+      aTab.apiTab.openerTabId == aTab.apiTab.id)
+    return null;
+  return getTabById(aTab.apiTab.openerTabId);
+}
+
 function getParentTab(aChild) {
   if (!aChild)
     return null;
