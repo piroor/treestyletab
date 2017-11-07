@@ -53,7 +53,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     dontMove:         aOptions.dontMove,
     dontUpdateIndent: aOptions.dontUpdateIndent,
     forceExpand:      aOptions.forceExpand,
-    dontExpand:       aOptions.forceExpand,
+    dontExpand:       aOptions.dontExpand,
     inRemote:         aOptions.inRemote,
     broadcast:        aOptions.broadcast,
     broadcasted:      aOptions.broadcasted

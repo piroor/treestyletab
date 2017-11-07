@@ -254,7 +254,6 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   var uniqueId = await aTab.uniqueId;
   var container = getTabsContainer(aTab);
-  var isWindowRestoring = container.restoringTabsCount > 1;
   var insertBefore, insertAfter, ancestors, children, collapsed;
   [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
     browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
@@ -282,14 +281,15 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     children:     children.map(dumpTab).join(', ')
   });
   var attached = false;
-  isWindowRestoring = isWindowRestoring || container.restoringTabsCount > 1; // the status can be updated while waiting
+  var active   = isActive(aTab);
   for (let ancestor of ancestors) {
     if (!ancestor)
       continue;
     await attachTabTo(aTab, ancestor, {
       insertBefore,
       insertAfter,
-      dontExpand: isWindowRestoring,
+      dontExpand: !active,
+      forceExpand: active,
       broadcast: true
     });
     attached = true;
@@ -299,7 +299,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   if (!attached &&
       opener) {
     await attachTabTo(aTab, opener, {
-      dontExpand: isWindowRestoring,
+      dontExpand:  !active,
+      forceExpand: active,
       broadcast: true,
       insertAt:  kINSERT_NEAREST
     });
@@ -315,18 +316,21 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       broadcast: true
     });
   }
-  if (aOptions.children) {
+  var isWindowRestoring = container.restoringTabsCount > 1;
+  if (aOptions.children && !isWindowRestoring) {
     for (let child of children) {
       if (!child)
         continue;
       await attachTabTo(child, aTab, {
-        dontExpand: isWindowRestoring,
+        dontExpand: !isActive(child),
+        forceExpand: active,
         insertAt:   kINSERT_NEAREST,
         broadcast:  true
       });
     }
   }
-  if (aOptions.canCollapse && !isWindowRestoring) {
+  isWindowRestoring = isWindowRestoring || container.restoringTabsCount > 1; // the status can be updated while waiting
+  if (aOptions.canCollapse || isWindowRestoring) {
     collapseExpandSubtree(aTab, {
       broadcast: true,
       collapsed
