@@ -26,7 +26,8 @@ async function onTabOpening(aTab, aInfo = {}) {
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
   if (configs.autoGroupNewTabs &&
-      !aTab.apiTab.openerTabId &&
+      (!aTab.apiTab.openerTabId ||
+       aTab.apiTab.openerTabId == aTab.apiTab.id) &&
       !aInfo.maybeOrphan) {
     if (container.preventAutoGroupNewTabsUntil > Date.now())
       container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
@@ -42,6 +43,8 @@ async function onTabOpening(aTab, aInfo = {}) {
   );
 
   var opener = getTabById({ tab: aTab.apiTab.openerTabId, window: aTab.apiTab.windowId });
+  if (opener == aTab)
+    opener = null;
   log('opener ', dumpTab(opener));
   if (!opener) {
     log('is new tab command?: ', aTab.apiTab.url);
@@ -531,7 +534,8 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 }
 
 function onTabUpdated(aTab) {
-  if (aTab.apiTab.openerTabId) {
+  if (aTab.apiTab.openerTabId &&
+      aTab.apiTab.openerTabId != aTab.apiTab.id) {
     let parent = getTabById(aTab.apiTab.openerTabId);
     if (parent && parent != getParentTab(aTab))
       attachTabTo(aTab, parent, {
@@ -670,9 +674,9 @@ async function onTabAttached(aTab, aInfo = {}) {
 
 function onTabDetached(aTab, aDetachInfo) {
   if (aTab.apiTab.openerTabId) {
-    aTab.apiTab.openerTabId = null;
+    aTab.apiTab.openerTabId = aTab.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
-    browser.tabs.update(aTab.apiTab.id, { openerTabId: null });
+    browser.tabs.update(aTab.apiTab.id, { openerTabId: aTab.apiTab.id }); // set self id instead of null, because it requires any valid tab id...
   }
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToRemoveNeedlessGroupTab(aDetachInfo.oldParentTab);

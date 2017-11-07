@@ -292,7 +292,9 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     attached = true;
     break;
   }
-  if (!attached && aTab.apiTab.openerTabId) {
+  if (!attached &&
+      aTab.apiTab.openerTabId &&
+      aTab.apiTab.openerTabId != aTab.apiTab.id) {
     let parent = getTabById(aTab.apiTab.openerTabId);
     if (parent) {
       await attachTabTo(aTab, parent, {
