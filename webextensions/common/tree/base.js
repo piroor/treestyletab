@@ -482,7 +482,10 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     let minIndex = Math.min(...oldIndexes, ...newIndexes);
     let maxIndex = Math.max(...oldIndexes, ...newIndexes);
     for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
-      allTabs[i].apiTab.index = i;
+      let tab = allTabs[i];
+      if (!tab)
+        continue;
+      tab.apiTab.index = i;
     }
 
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
@@ -563,7 +566,10 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     let minIndex = Math.min(...oldIndexes, ...newIndexes);
     let maxIndex = Math.max(...oldIndexes, ...newIndexes);
     for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
-      allTabs[i].apiTab.index = i;
+      let tab = allTabs[i];
+      if (!tab)
+        continue;
+      tab.apiTab.index = i;
     }
 
     var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
