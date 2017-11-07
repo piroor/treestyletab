@@ -538,11 +538,11 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 function onTabUpdated(aTab) {
   var parent = getOpenerTab(aTab);
   if (parent && parent != getParentTab(aTab)) {
-      attachTabTo(aTab, parent, {
-        insertAt:    kINSERT_NEAREST,
-        forceExpand: isActive(aTab),
-        broadcast:   true
-      });
+    attachTabTo(aTab, parent, {
+      insertAt:    kINSERT_NEAREST,
+      forceExpand: isActive(aTab),
+      broadcast:   true
+    });
   }
   reserveToSaveTreeStructure(aTab);
 }

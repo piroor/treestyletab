@@ -298,11 +298,11 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   var opener = getOpenerTab(aTab);
   if (!attached &&
       opener) {
-      await attachTabTo(aTab, opener, {
-        dontExpand: isWindowRestoring,
-        broadcast: true,
-        insertAt:  kINSERT_NEAREST
-      });
+    await attachTabTo(aTab, opener, {
+      dontExpand: isWindowRestoring,
+      broadcast: true,
+      insertAt:  kINSERT_NEAREST
+    });
   }
   if (!aOptions.keepCurrentTree &&
       // the restored tab is a roo tab
