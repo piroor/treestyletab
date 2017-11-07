@@ -110,7 +110,8 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   log('new children: ', childIds);
 
   var newlyAttached = false;
-  if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1) {
+  if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1 &&
+      aChild.getAttribute(kPARENT) == aParent.id) {
     log('=> already attached');
   }
   else {

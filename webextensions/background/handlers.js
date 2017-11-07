@@ -174,8 +174,9 @@ function onTabOpened(aTab, aInfo = {}) {
 
 function onTabRestored(aTab) {
   log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
+  var isWindowRestoring = aTab.parentNode.restoringTabsCount > 1;
   return attachTabFromRestoredInfo(aTab, {
-    children: true
+    children: !isWindowRestoring
   });
 }
 

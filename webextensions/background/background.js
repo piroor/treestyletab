@@ -321,7 +321,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
         continue;
       await attachTabTo(child, aTab, {
         dontExpand: isWindowRestoring,
-        broadcast: true
+        insertAt:   kINSERT_NEAREST,
+        broadcast:  true
       });
     }
   }
