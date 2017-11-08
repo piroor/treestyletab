@@ -361,7 +361,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
         Array.slice(container.childNodes)
           .map(aTab => aTab.id+(aTab == movedTab ? '[MOVED]' : ''))
           .join('\n')
-          .replace(/^/, ' - ')));
+          .replace(/^/gm, ' - ')));
     }
     let startIndex = Math.min(aMoveInfo.fromIndex, aMoveInfo.toIndex);
     let endIndex   = Math.max(aMoveInfo.fromIndex, aMoveInfo.toIndex);
