@@ -1004,6 +1004,11 @@ function onMessage(aMessage, aSender, aRespond) {
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
+        // Tree's collapsed state can be changed before this message is delivered,
+        // so we should ignore obsolete messages.
+        if (aMessage.byAncestor &&
+            aMessage.collapsed != getAncestorTabs(tab).some(isSubtreeCollapsed))
+          return;
         let params = {
           collapsed:   aMessage.collapsed,
           justNow:     aMessage.justNow,

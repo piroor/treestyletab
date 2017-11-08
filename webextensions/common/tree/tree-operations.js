@@ -622,7 +622,8 @@ function collapseExpandTab(aTab, aParams = {}) {
       windowId:  aTab.apiTab.windowId,
       tab:       aTab.id,
       justNow:   aParams.justNow,
-      collapsed: aParams.collapsed
+      collapsed: aParams.collapsed,
+      byAncestor: getAncestorTabs(aTab).some(isSubtreeCollapsed) == aParams.collapsed
     });
   }
 }
