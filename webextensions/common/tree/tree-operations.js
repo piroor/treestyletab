@@ -532,13 +532,15 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
         collapsed: aParams.collapsed,
         justNow:   aParams.justNow,
         anchor:    aTab,
-        last:      true
+        last:      true,
+        broadcast: false
       });
     }
     else {
       collapseExpandTabAndSubtree(childTab, {
         collapsed: aParams.collapsed,
-        justNow:   aParams.justNow
+        justNow:   aParams.justNow,
+        broadcast: false
       });
     }
   }
@@ -593,7 +595,8 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
         collapsed: aParams.collapsed,
         justNow:   aParams.justNow,
         anchor:    last && aParams.anchor,
-        last:      last
+        last:      last,
+        broadcast: aParams.broadcast
       }));
     });
   }
@@ -612,6 +615,16 @@ function collapseExpandTab(aTab, aParams = {}) {
       anchor: last && aParams.anchor,
       last:   last
     }));
+
+  if (aParams.broadcast && !aParams.broadcasted) {
+    browser.runtime.sendMessage({
+      type:      kCOMMAND_CHANGE_TAB_COLLAPSED_STATE,
+      windowId:  aTab.apiTab.windowId,
+      tab:       aTab.id,
+      justNow:   aParams.justNow,
+      collapsed: aParams.collapsed
+    });
+  }
 }
 
 function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {

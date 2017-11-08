@@ -14,6 +14,7 @@ const kCOMMAND_PULL_TAB_ID_TABLES             = 'treestyletab:pull-tab-id-tables
 const kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE = 'treestyletab:broadcast-tab-id-tables-update';
 const kCOMMAND_PULL_TREE_STRUCTURE            = 'treestyletab:pull-tree-structure';
 const kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE = 'treestyletab:change-subtree-collapsed-state';
+const kCOMMAND_CHANGE_TAB_COLLAPSED_STATE     = 'treestyletab:change-tab-collapsed-state';
 const kCOMMAND_LOAD_URI                       = 'treestyletab:load-uri';
 const kCOMMAND_NEW_WINDOW_FROM_TABS           = 'treestyletab:open-new-window-from-tabs';
 const kCOMMAND_MOVE_TABS                      = 'treestyletab:move-tabs';

@@ -999,6 +999,20 @@ function onMessage(aMessage, aSender, aRespond) {
       }
       break;
 
+    case kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
+      if (aMessage.windowId == gTargetWindow) {
+        let tab = getTabById(aMessage.tab);
+        if (!tab)
+          return;
+        let params = {
+          collapsed:   aMessage.collapsed,
+          justNow:     aMessage.justNow,
+          broadcasted: true
+        };
+        collapseExpandTab(tab, params);
+      }
+      break;
+
     case kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
         log('attach tab from remote ', aMessage);
