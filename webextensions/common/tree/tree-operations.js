@@ -173,6 +173,8 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
   if (typeof insertAt !== 'number')
     insertAt = configs.insertNewChildAt;
   var descendants = getDescendantTabs(aParent);
+  if (aOptions.ignoreTabs)
+    descendants = descendants.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
   var insertBefore, insertAfter;
   if (descendants.length > 0) {
     let firstChild     = descendants[0];
@@ -187,6 +189,8 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
         break;
       case kINSERT_NEAREST: {
         let allTabs = getTabs(aParent);
+        if (aOptions.ignoreTabs)
+          allTabs = allTabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
         let index = allTabs.indexOf(aChild);
         if (index < allTabs.indexOf(firstChild)) {
           insertBefore = firstChild;
@@ -197,6 +201,8 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
         }
         else { // inside the tree
           let children = getChildTabs(aParent);
+          if (aOptions.ignoreTabs)
+            children = children.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
           for (let child of children) {
             if (index > allTabs.indexOf(child))
               continue;
@@ -1284,9 +1290,10 @@ async function performTabsDragDrop(aParams = {}) {
   }
   else if (aParams.action & kACTION_ATTACH) {
     log('=> attach');
-    attachTabsOnDrop(draggedRoots, aParams.attachTo, {
+    await attachTabsOnDrop(draggedRoots, aParams.attachTo, {
       insertBefore: aParams.insertBefore,
       insertAfter:  aParams.insertAfter,
+      draggedTabs:  draggedTabs,
       broadcast:    true
     });
   }
@@ -1349,8 +1356,26 @@ async function performTabsDragDrop(aParams = {}) {
   log('=> finished');
 }
 
-function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
+async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
   log('attachTabsOnDrop: start ', aTabs.map(dumpTab));
+  if (aParent && !aOptions.insertBefore && !aOptions.insertAfter) {
+    let refTabs = getReferenceTabsForNewChild(aTabs[0], aParent, {
+      ignoreTabs: aTabs
+    });
+    aOptions.insertBefore = refTabs.insertBefore;
+    aOptions.insertAfter  = refTabs.insertAfter;
+  }
+
+  if (aOptions.insertBefore)
+    await moveTabsBefore(aOptions.draggedTabs || aTabs, aOptions.insertBefore);
+  else if (aOptions.insertAfter)
+    await moveTabsAfter(aOptions.draggedTabs || aTabs, aOptions.insertAfter);
+
+  var memberOptions = clone(aOptions, {
+    insertBefore: null,
+    insertAfter:  null,
+    dontMove:     true
+  });
   for (let tab of aTabs) {
     if (aParent)
       attachTabTo(tab, aParent, aOptions);

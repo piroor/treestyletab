@@ -356,12 +356,17 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     let tabs    = getTabs(movedTab);
     let nextTab = tabs[newNextIndex];
     if (movedTab.nextSibling != nextTab) {
+      if (container.alreadyMovedTabsCount > 0) {
+        container.alreadyMovedTabsCount--;
+      }
+      else {
       container.insertBefore(movedTab, nextTab);
       log('Tab nodes rearranged by tabs.onMoved listener:\n'+(
         Array.slice(container.childNodes)
           .map(aTab => aTab.id+(aTab == movedTab ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
+      }
     }
     let startIndex = Math.min(aMoveInfo.fromIndex, aMoveInfo.toIndex);
     let endIndex   = Math.max(aMoveInfo.fromIndex, aMoveInfo.toIndex);

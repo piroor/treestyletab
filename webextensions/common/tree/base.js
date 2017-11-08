@@ -374,6 +374,7 @@ function buildTabsContainerFor(aWindowId) {
   container.classList.add('tabs');
 
   container.internalMovingCount =
+    container.alreadyMovedTabsCount =
     container.subTreeMovingCount =
     container.subTreeChildrenMovingCount =
     container.doingCollapseExpandCount =
@@ -458,6 +459,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
 
   var container = aTabs[0].parentNode;
   container.internalMovingCount += aTabs.length;
+  container.alreadyMovedTabsCount += aTabs.length;
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
@@ -544,6 +546,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
 
   var container = aTabs[0].parentNode;
   container.internalMovingCount += aTabs.length;
+  container.alreadyMovedTabsCount += aTabs.length;
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
