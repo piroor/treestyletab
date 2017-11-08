@@ -514,6 +514,9 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         tab.apiTab.index = i;
       }
 
+      if (aOptions.delayedMove)
+        await wait(200);
+
       let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
       if (fromIndex < toIndex)
         toIndex--;
@@ -614,6 +617,9 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
           continue;
         tab.apiTab.index = i;
       }
+
+      if (aOptions.delayedMove)
+        await wait(200);
 
       let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
       if (fromIndex > toIndex)

@@ -207,11 +207,14 @@ async function onNewTabTracked(aTab) {
   var openedWithPosition   = container.toBeOpenedTabsWithPositions > 0;
   var duplicatedInternally = container.duplicatingTabsCount > 0;
 
-  var moved = window.onTabOpening && await onTabOpening(newTab, {
+  var openInfo = {
     maybeOpenedWithPosition: openedWithPosition,
     maybeOrphan: container.toBeOpenedOrphanTabs > 0,
     duplicatedInternally
-  });
+  };
+  window.onTabOpening && await onTabOpening(newTab, openInfo);
+
+  var moved = await tryAttachNewTab(newTab, openInfo);
 
   if (container.parentNode) { // it can be removed while waiting
     if (container.toBeOpenedTabsWithPositions > 0)
@@ -265,6 +268,39 @@ async function onNewTabTracked(aTab) {
   }
 
   return newTab;
+}
+
+function tryAttachNewTab(aTab, aInfo) {
+  var opener = getOpenerTab(aTab);
+  if (!opener) {
+    log('is new tab command?: ', aTab.apiTab.url);
+    if (configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
+        aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl) {
+      let current = getCurrentTab(aTab);
+      log('behave as a tab opened by new tab command, current = ', dumpTab(current));
+      behaveAutoAttachedTab(aTab, {
+        baseTab:  current,
+        behavior: configs.autoAttachOnNewTabCommand
+      });
+      return true;
+    }
+  }
+  else {
+    log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
+    if (isPinned(opener)) {
+      return window.onTabOpeningFromPinnedTab &&
+               onTabOpeningFromPinnedTab(aTab);
+    }
+    else if (configs.autoAttach) {
+      behaveAutoAttachedTab(aTab, {
+        baseTab:  opener,
+        behavior: configs.autoAttachOnOpenedWithOwner,
+        dontMove: aInfo.maybeOpenedWithPosition
+      });
+      return true;
+    }
+  }
+  return false;
 }
 
 // "Recycled tab" is an existing but reused tab for session restoration.

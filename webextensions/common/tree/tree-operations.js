@@ -54,6 +54,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     dontUpdateIndent: aOptions.dontUpdateIndent,
     forceExpand:      aOptions.forceExpand,
     dontExpand:       aOptions.dontExpand,
+    delayedMove:      aOptions.delayedMove,
     inRemote:         aOptions.inRemote,
     broadcast:        aOptions.broadcast,
     broadcasted:      aOptions.broadcasted
@@ -144,10 +145,26 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     updateParentTab(aParent);
   }
 
-  window.onTabAttached && onTabAttached(aChild, clone(aOptions, {
+  if (!aOptions.dontMove)
+    await moveAttachedTab(aChild, aOptions);
+
+  var info = clone(aOptions, {
     parent: aParent,
     newIndex, newlyAttached
-  }));
+  });
+  window.onTabAttaching && onTabAttaching(aChild, info);
+
+  if (isOpening(aChild))
+    await aChild.opened;
+
+  if (!aChild.parentNode || // removed while waiting
+      getParentTab(aChild) != aParent) // detached while waiting
+    return;
+
+  window.onTabAttached && onTabAttached(aChild, info);
+
+  if (newlyAttached)
+    collapseExpandAttachedTab(aChild, aParent, aOptions);
 
   if (aOptions.inRemote || aOptions.broadcast) {
     browser.runtime.sendMessage({
@@ -165,6 +182,91 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       broadcasted:      !!aOptions.broadcast,
       stack:            new Error().stack
     });
+  }
+}
+async function moveAttachedTab(aTab, aOptions = {}) {
+  var nextTab = aOptions.insertBefore;
+  var prevTab = aOptions.insertAfter;
+  if (!nextTab && !prevTab) {
+    let tabs = getTabs(aTab);
+    nextTab = tabs[aOptions.newIndex];
+    if (!nextTab)
+      prevTab = tabs[aOptions.newIndex - 1];
+  }
+  log('move newly attached child: ', dumpTab(aTab), {
+    next: dumpTab(nextTab),
+    prev: dumpTab(prevTab)
+  });
+  var options = clone(aOptions, {
+    broadcast: false
+  });
+  if (nextTab)
+    await moveTabSubtreeBefore(aTab, nextTab, options);
+  else
+    await moveTabSubtreeAfter(aTab, prevTab, options);
+}
+function collapseExpandAttachedTab(aTab, aParent, aOptions = {}) {
+  if (isSubtreeCollapsed(aParent) &&
+      !aOptions.forceExpand)
+    collapseExpandTabAndSubtree(aTab, {
+      collapsed: true,
+      justNow:   true,
+      broadcast: false
+    });
+
+  let isNewTreeCreatedManually = !aOptions.justNow && getChildTabs(aParent).length == 1;
+  if (aOptions.forceExpand) {
+    collapseExpandSubtree(aParent, clone(aOptions, {
+      collapsed: false,
+      inRemote:  false,
+      broadcast: false
+    }));
+  }
+  else if (!aOptions.dontExpand) {
+    if (configs.autoCollapseExpandSubtreeOnAttach &&
+      (isNewTreeCreatedManually || shouldTabAutoExpanded(aParent)))
+      collapseExpandTreesIntelligentlyFor(aParent, {
+        broadcast: false
+      });
+
+    let newAncestors = [aParent].concat(getAncestorTabs(aParent));
+    if (configs.autoCollapseExpandSubtreeOnSelect) {
+      newAncestors.forEach(aAncestor => {
+        if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
+          collapseExpandSubtree(aAncestor, clone(aOptions, {
+            collapsed: false,
+            broadcast: false
+          }));
+      });
+    }
+    else if (isNewTreeCreatedManually || shouldTabAutoExpanded(aParent)) {
+      if (configs.autoExpandOnAttached) {
+        newAncestors.forEach(aAncestor => {
+          if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
+            collapseExpandSubtree(aAncestor, clone(aOptions, {
+              collapsed: false,
+              broadcast: false
+            }));
+        });
+      }
+      else
+        collapseExpandTabAndSubtree(aTab, clone(aOptions, {
+          collapsed: true,
+          broadcast: false
+        }));
+    }
+    if (isCollapsed(aParent))
+      collapseExpandTabAndSubtree(aTab, clone(aOptions, {
+        collapsed: true,
+        broadcast: false
+      }));
+  }
+  else if (shouldTabAutoExpanded(aParent) ||
+         isCollapsed(aParent)) {
+    collapseExpandTabAndSubtree(aTab, clone(aOptions, {
+      collapsed: true,
+      broadcast: false
+    }));
   }
 }
 
@@ -383,12 +485,14 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       });
       if (getNextTab(aTab))
         await moveTabAfter(aTab, getLastTab(), {
+          delayedMove: true,
           inRemote: aOptions.inRemote
         });
       break;
 
     case kNEWTAB_OPEN_AS_CHILD:
       await attachTabTo(aTab, baseTab, {
+        delayedMove: true,
         dontMove:    aOptions.dontMove || configs.insertNewChildAt == kINSERT_NO_CONTROL,
         forceExpand: true,
         inRemote:    aOptions.inRemote,
@@ -401,6 +505,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       let parent = getParentTab(baseTab);
       if (parent) {
         await attachTabTo(aTab, parent, {
+          delayedMove: true,
           inRemote:  aOptions.inRemote,
           broadcast: aOptions.broadcast
         });
@@ -411,6 +516,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           broadcast: aOptions.broadcast
         });
         await moveTabAfter(aTab, getLastDescendantTab(baseTab) || getLastTab(), {
+          delayedMove: true,
           inRemote: aOptions.inRemote
         });
       }
@@ -426,6 +532,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         await attachTabTo(aTab, parent, {
           insertBefore: nextSibling,
           insertAfter:  getLastDescendantTab(baseTab),
+          delayedMove: true,
           inRemote:     aOptions.inRemote,
           broadcast:    aOptions.broadcast
         });
@@ -436,11 +543,13 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         });
         if (nextSibling)
           await moveTabBefore(aTab, nextSibling, {
+            delayedMove: true,
             inRemote:  aOptions.inRemote,
             broadcast: aOptions.broadcast
           });
         else
           await moveTabAfter(aTab, getLastDescendantTab(baseTab), {
+            delayedMove: true,
             inRemote:  aOptions.inRemote,
             broadcast: aOptions.broadcast
           });

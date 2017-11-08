@@ -21,7 +21,7 @@ function onToolbarButtonClick(aTab) {
 // this should return true if the tab is moved while processing
 async function onTabOpening(aTab, aInfo = {}) {
   if (aInfo.duplicatedInternally)
-    return false;
+    return;
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
@@ -41,51 +41,22 @@ async function onTabOpening(aTab, aInfo = {}) {
     configs.autoGroupNewTabsTimeout,
     container
   );
+}
 
-  log('opener ', dumpTab(opener));
-  if (!opener) {
-    log('is new tab command?: ', aTab.apiTab.url);
-    if (configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
-        aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl) {
-      let current = getCurrentTab(aTab);
-      log('behave as a tab opened by new tab command, current = ', dumpTab(current));
-      behaveAutoAttachedTab(aTab, {
-        baseTab:   current,
-        behavior:  configs.autoAttachOnNewTabCommand,
-        broadcast: true
-      });
-      return true;
-    }
-    return false;
-  }
+function onTabOpeningFromPinnedTab(aTab) {
+  switch (configs.insertNewTabFromPinnedTabAt) {
+    case kINSERT_FIRST:
+      browser.tabs.move(aTab.apiTab.id, {
+        index: getPinnedTabs(aTab).length
+      }).catch(handleMissingTabError); // already removed tab;
+      break;
 
-  log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
-  if (isPinned(opener)) {
-    switch (configs.insertNewTabFromPinnedTabAt) {
-      case kINSERT_FIRST:
-        browser.tabs.move(aTab.apiTab.id, {
-          index: getPinnedTabs(container).length
-        }).catch(handleMissingTabError); // already removed tab;
-        return true;
-        break;
-      case kINSERT_END:
-        browser.tabs.move(aTab.apiTab.id, {
-          index: getAllTabs(container).length - 1
-        }).catch(handleMissingTabError); // already removed tab;
-        return true;
-        break;
-    }
+    case kINSERT_END:
+      browser.tabs.move(aTab.apiTab.id, {
+        index: getAllTabs(aTab).length - 1
+      }).catch(handleMissingTabError); // already removed tab;
+      break;
   }
-  else if (configs.autoAttach) {
-    behaveAutoAttachedTab(aTab, {
-      baseTab:   opener,
-      behavior:  configs.autoAttachOnOpenedWithOwner,
-      dontMove:  aInfo.maybeOpenedWithPosition,
-      broadcast: true
-    });
-    return true;
-  }
-  return false;
 }
 
 function onNewTabsTimeout(aContainer) {
@@ -559,111 +530,16 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 }
 
-async function onTabAttached(aTab, aInfo = {}) {
+function onTabAttaching(aTab, aInfo = {}) {
   var parent = aInfo.parent;
   if (aTab.apiTab.openerTabId != parent.apiTab.id) {
     aTab.apiTab.openerTabId = parent.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id });
   }
+}
 
-  if (!aInfo.dontMove) {
-    let nextTab = aInfo.insertBefore;
-    let prevTab = aInfo.insertAfter;
-    if (!nextTab && !prevTab) {
-      let tabs = getTabs(aTab);
-      nextTab = tabs[aInfo.newIndex];
-      if (!nextTab)
-        prevTab = tabs[aInfo.newIndex - 1];
-    }
-    log('move newly attached child: ', dumpTab(aTab), {
-      next: dumpTab(nextTab),
-      prev: dumpTab(prevTab)
-    });
-    if (nextTab)
-      await moveTabSubtreeBefore(aTab, nextTab, aInfo);
-    else
-      await moveTabSubtreeAfter(aTab, prevTab, aInfo);
-  }
-
-  if (isOpening(aTab))
-    await aTab.opened;
-
-  if (!aTab.parentNode || // not removed while waiting
-      getParentTab(aTab) != aInfo.parent) // not detached while waiting
-    return;
-
-  browser.runtime.sendMessage({
-    type:   kCOMMAND_TAB_ATTACHED_COMPLETELY,
-    tab:    aTab.id,
-    parent: parent.id,
-    newlyAttached: aInfo.newlyAttached
-  });
-
-  if (aInfo.newlyAttached) {
-    if (isSubtreeCollapsed(aInfo.parent) &&
-        !aInfo.forceExpand)
-      collapseExpandTabAndSubtree(aTab, {
-        collapsed: true,
-        justNow:   true,
-        broadcast: true
-      });
-
-    let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
-    if (aInfo.forceExpand) {
-      collapseExpandSubtree(parent, clone(aInfo, {
-        collapsed: false,
-        inRemote:  false
-      }));
-    }
-    else if (!aInfo.dontExpand) {
-      if (configs.autoCollapseExpandSubtreeOnAttach &&
-        (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
-        collapseExpandTreesIntelligentlyFor(parent, {
-          broadcast: true
-        });
-
-      let newAncestors = [parent].concat(getAncestorTabs(parent));
-      if (configs.autoCollapseExpandSubtreeOnSelect) {
-        newAncestors.forEach(aAncestor => {
-          if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
-            collapseExpandSubtree(aAncestor, clone(aInfo, {
-              collapsed: false,
-              broadcast: true
-            }));
-        });
-      }
-      else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
-        if (configs.autoExpandOnAttached) {
-          newAncestors.forEach(aAncestor => {
-            if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
-              collapseExpandSubtree(aAncestor, clone(aInfo, {
-                collapsed: false,
-                broadcast: true
-              }));
-          });
-        }
-        else
-          collapseExpandTabAndSubtree(aTab, clone(aInfo, {
-            collapsed: true,
-            broadcast: true
-          }));
-      }
-      if (isCollapsed(parent))
-        collapseExpandTabAndSubtree(aTab, clone(aInfo, {
-          collapsed: true,
-          broadcast: true
-        }));
-    }
-    else if (shouldTabAutoExpanded(parent) ||
-           isCollapsed(parent)) {
-      collapseExpandTabAndSubtree(aTab, clone(aInfo, {
-        collapsed: true,
-        broadcast: true
-      }));
-    }
-  }
-
+function onTabAttached(aTab, aInfo = {}) {
   reserveToSaveTreeStructure(aTab);
   if (aInfo.newlyAttached)
     reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
