@@ -499,28 +499,28 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       log(' => actually nothing moved');
     }
     else {
-    log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-      Array.slice(container.childNodes)
-        .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
-        .join('\n')
-        .replace(/^/gm, ' - ')));
-    let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
-    let minIndex = Math.min(...oldIndexes, ...newIndexes);
-    let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-    for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
-      let tab = allTabs[i];
-      if (!tab)
-        continue;
-      tab.apiTab.index = i;
-    }
+      log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
+        Array.slice(container.childNodes)
+          .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
+          .join('\n')
+          .replace(/^/gm, ' - ')));
+      let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+      let minIndex = Math.min(...oldIndexes, ...newIndexes);
+      let maxIndex = Math.max(...oldIndexes, ...newIndexes);
+      for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+        let tab = allTabs[i];
+        if (!tab)
+          continue;
+        tab.apiTab.index = i;
+      }
 
-    let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-    if (fromIndex < toIndex)
-      toIndex--;
-    await browser.tabs.move(apiTabIds, {
-      windowId: container.windowId,
-      index:    toIndex
-    });
+      let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+      if (fromIndex < toIndex)
+        toIndex--;
+      await browser.tabs.move(apiTabIds, {
+        windowId: container.windowId,
+        index:    toIndex
+      });
     }
   }
   catch(e) {
@@ -600,28 +600,28 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       log(' => actually nothing moved');
     }
     else {
-    log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-      Array.slice(container.childNodes)
-        .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
-        .join('\n')
-        .replace(/^/gm, ' - ')));
-    let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
-    let minIndex = Math.min(...oldIndexes, ...newIndexes);
-    let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-    for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
-      let tab = allTabs[i];
-      if (!tab)
-        continue;
-      tab.apiTab.index = i;
-    }
+      log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
+        Array.slice(container.childNodes)
+          .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
+          .join('\n')
+          .replace(/^/gm, ' - ')));
+      let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+      let minIndex = Math.min(...oldIndexes, ...newIndexes);
+      let maxIndex = Math.max(...oldIndexes, ...newIndexes);
+      for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+        let tab = allTabs[i];
+        if (!tab)
+          continue;
+        tab.apiTab.index = i;
+      }
 
-    let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-    if (fromIndex > toIndex)
-      toIndex++;
-    await browser.tabs.move(apiTabIds, {
-      windowId: container.windowId,
-      index:    toIndex
-    });
+      let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+      if (fromIndex > toIndex)
+        toIndex++;
+      await browser.tabs.move(apiTabIds, {
+        windowId: container.windowId,
+        index:    toIndex
+      });
     }
   }
   catch(e) {
