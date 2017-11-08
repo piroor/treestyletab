@@ -361,7 +361,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
       }
       else {
         container.insertBefore(movedTab, nextTab);
-        log('Tab nodes rearranged by tabs.onMoved listener:\n'+(
+        log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.slice(container.childNodes)
             .map(aTab => aTab.id+(aTab == movedTab ? '[MOVED]' : ''))
             .join('\n')

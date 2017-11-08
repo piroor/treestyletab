@@ -481,7 +481,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       ]);
     }
-    log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(
+    log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
       Array.slice(container.childNodes)
         .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
         .join('\n')
@@ -571,7 +571,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       ]);
     }
-    log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(
+    log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
       Array.slice(container.childNodes)
         .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
         .join('\n')
