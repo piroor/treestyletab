@@ -566,6 +566,8 @@ async function onTabAttached(aTab, aInfo = {}) {
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id });
   }
+
+  if (!aInfo.dontMove) {
   var nextTab = aInfo.insertBefore;
   var prevTab = aInfo.insertAfter;
   if (!nextTab && !prevTab) {
@@ -582,6 +584,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     await moveTabSubtreeBefore(aTab, nextTab, aInfo);
   else
     await moveTabSubtreeAfter(aTab, prevTab, aInfo);
+  }
 
   if (isOpening(aTab))
     await aTab.opened;

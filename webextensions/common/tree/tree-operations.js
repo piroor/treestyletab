@@ -1378,10 +1378,10 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
   });
   for (let tab of aTabs) {
     if (aParent)
-      attachTabTo(tab, aParent, aOptions);
+      attachTabTo(tab, aParent, memberOptions);
     else
-      detachTab(tab, aOptions);
-    collapseExpandTabAndSubtree(tab, clone(aOptions, {
+      detachTab(tab, memberOptions);
+    collapseExpandTabAndSubtree(tab, clone(memberOptions, {
       collapsed: false
     }));
   }
