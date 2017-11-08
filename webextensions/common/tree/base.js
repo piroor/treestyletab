@@ -170,6 +170,19 @@ function buildTab(aApiTab, aOptions = {}) {
 }
 
 function updateTab(aTab, aNewState, aOptions = {}) {
+/*
+  // When a tab is restored based on existing tab, we must re-request unique id.
+  // However, we cannot know when a tab is replaced to another tab by session restoration.
+  // See also: https://github.com/piroor/treestyletab/issues/1509
+  aTab.uniqueId = requestUniqueId(aTab, {
+    inRemote: !!gTargetWindow
+  }).then(aUniqueId => {
+    if (aTab && aTab.parentNode) // possibly removed from document
+      aTab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
+    return aUniqueId;
+  });
+*/
+
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
   if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
