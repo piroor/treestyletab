@@ -515,7 +515,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       }
 
       if (aOptions.delayedMove)
-        await wait(200);
+        await wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
 
       let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
       if (fromIndex < toIndex)
@@ -619,7 +619,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       }
 
       if (aOptions.delayedMove)
-        await wait(200);
+        await wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
 
       let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
       if (fromIndex > toIndex)
