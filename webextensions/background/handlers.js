@@ -568,8 +568,8 @@ async function onTabAttached(aTab, aInfo = {}) {
   }
 
   if (!aInfo.dontMove) {
-    var nextTab = aInfo.insertBefore;
-    var prevTab = aInfo.insertAfter;
+    let nextTab = aInfo.insertBefore;
+    let prevTab = aInfo.insertAfter;
     if (!nextTab && !prevTab) {
       let tabs = getTabs(aTab);
       nextTab = tabs[aInfo.newIndex];
