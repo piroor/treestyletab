@@ -171,15 +171,12 @@ function updateUniqueId(aTab) {
       aTab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
     return aUniqueId;
   });
+  return aTab.uniqueId;
 }
 
 function updateTab(aTab, aNewState, aOptions = {}) {
-/*
-  // When a tab is restored based on existing tab, we must re-request unique id.
-  // However, we cannot know when a tab is replaced to another tab by session restoration.
-  // See also: https://github.com/piroor/treestyletab/issues/1509
-  updateUniqueId(aTab);
-*/
+  if ('url' in aNewState)
+    aTab.setAttribute(kCURRENT_URI, aNewState.url);
 
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.

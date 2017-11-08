@@ -72,6 +72,7 @@ const kCHILDREN      = 'data-child-ids';
 const kLEVEL         = 'data-level';
 const kCLOSED_SET_ID = 'data-closed-set-id';
 const kDROP_POSITION = 'data-drop-position';
+const kCURRENT_URI   = 'data-current-uri';
 
 const kPERSISTENT_ID            = 'data-persistent-id';
 const kPERSISTENT_ANCESTORS     = 'ancestors';
@@ -124,6 +125,7 @@ const kTAB_STATE_SELECTED                  = 'selected';
 const kTAB_STATE_DRAGGING                  = 'dragging';
 const kTAB_STATE_OPENING                   = 'opening';
 const kTAB_STATE_DUPLICATING               = 'duplicating';
+const kTAB_STATE_RESTORED                  = 'restored';
 const kTAB_INTERNAL_STATES = [
   'tab',
   kTAB_STATE_LAST_ROW,
