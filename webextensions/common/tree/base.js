@@ -466,6 +466,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   }
 
   var container = aTabs[0].parentNode;
+  var beforeInternalMovingCount = container.internalMovingCount;
   container.internalMovingCount += aTabs.length;
   container.alreadyMovedTabsCount += aTabs.length;
 
@@ -480,6 +481,11 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     for (let tab of aTabs) {
       let oldPreviousTab = getPreviousTab(tab);
       let oldNextTab     = getNextTab(tab);
+      if (oldNextTab == aReferenceTab) { // no move case
+        container.internalMovingCount--;
+        container.alreadyMovedTabsCount--;
+        continue;
+      }
       container.insertBefore(tab, aReferenceTab);
       reserveToUpdateInsertionPosition([
         tab,
@@ -489,6 +495,10 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       ]);
     }
+    if (beforeInternalMovingCount == container.internalMovingCount) {
+      log(' => actually nothing moved');
+    }
+    else {
     log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
       Array.slice(container.childNodes)
         .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
@@ -504,13 +514,14 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       tab.apiTab.index = i;
     }
 
-    var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+    let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
     if (fromIndex < toIndex)
       toIndex--;
     await browser.tabs.move(apiTabIds, {
       windowId: container.windowId,
       index:    toIndex
     });
+    }
   }
   catch(e) {
     handleMissingTabError(e);
@@ -553,6 +564,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   }
 
   var container = aTabs[0].parentNode;
+  var beforeInternalMovingCount = container.internalMovingCount;
   container.internalMovingCount += aTabs.length;
   container.alreadyMovedTabsCount += aTabs.length;
 
@@ -570,6 +582,11 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     for (let tab of aTabs) {
       let oldPreviousTab = getPreviousTab(tab);
       let oldNextTab     = getNextTab(tab);
+      if (oldNextTab == nextTab) { // no move case
+        container.internalMovingCount--;
+        container.alreadyMovedTabsCount--;
+        continue;
+      }
       container.insertBefore(tab, nextTab);
       reserveToUpdateInsertionPosition([
         tab,
@@ -579,6 +596,10 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       ]);
     }
+    if (beforeInternalMovingCount == container.internalMovingCount) {
+      log(' => actually nothing moved');
+    }
+    else {
     log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
       Array.slice(container.childNodes)
         .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
@@ -594,13 +615,14 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       tab.apiTab.index = i;
     }
 
-    var [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+    let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
     if (fromIndex > toIndex)
       toIndex++;
     await browser.tabs.move(apiTabIds, {
       windowId: container.windowId,
       index:    toIndex
     });
+    }
   }
   catch(e) {
     handleMissingTabError(e);
