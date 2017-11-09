@@ -514,15 +514,19 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         tab.apiTab.index = i;
       }
 
-      if (aOptions.delayedMove)
-        await wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
-
-      let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-      if (fromIndex < toIndex)
-        toIndex--;
-      await browser.tabs.move(apiTabIds, {
-        windowId: container.windowId,
-        index:    toIndex
+      let toIndex, fromIndex;
+      Promise.all([
+        aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
+        (async () => {
+          [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        })()
+      ]).then(() => {
+        if (fromIndex < toIndex)
+          toIndex--;
+        browser.tabs.move(apiTabIds, {
+          windowId: container.windowId,
+          index:    toIndex
+        });
       });
     }
   }
@@ -618,15 +622,19 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         tab.apiTab.index = i;
       }
 
-      if (aOptions.delayedMove)
-        await wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
-
-      let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-      if (fromIndex > toIndex)
-        toIndex++;
-      await browser.tabs.move(apiTabIds, {
-        windowId: container.windowId,
-        index:    toIndex
+      let toIndex, fromIndex;
+      Promise.all([
+        aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
+        (async () => {
+          [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        })()
+      ]).then(() => {
+        if (fromIndex > toIndex)
+          toIndex++;
+        browser.tabs.move(apiTabIds, {
+          windowId: container.windowId,
+          index:    toIndex
+        });
       });
     }
   }
