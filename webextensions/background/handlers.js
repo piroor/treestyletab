@@ -570,22 +570,22 @@ async function onTabAttached(aTab, aInfo = {}) {
   await Promise.all([
     isOpening(aTab) && aTab.opened,
     !aInfo.dontMove && (async () => {
-    let nextTab = aInfo.insertBefore;
-    let prevTab = aInfo.insertAfter;
-    if (!nextTab && !prevTab) {
-      let tabs = getTabs(aTab);
-      nextTab = tabs[aInfo.newIndex];
-      if (!nextTab)
-        prevTab = tabs[aInfo.newIndex - 1];
-    }
-    log('move newly attached child: ', dumpTab(aTab), {
-      next: dumpTab(nextTab),
-      prev: dumpTab(prevTab)
-    });
-    if (nextTab)
-      await moveTabSubtreeBefore(aTab, nextTab, aInfo);
-    else
-      await moveTabSubtreeAfter(aTab, prevTab, aInfo);
+      let nextTab = aInfo.insertBefore;
+      let prevTab = aInfo.insertAfter;
+      if (!nextTab && !prevTab) {
+        let tabs = getTabs(aTab);
+        nextTab = tabs[aInfo.newIndex];
+        if (!nextTab)
+          prevTab = tabs[aInfo.newIndex - 1];
+      }
+      log('move newly attached child: ', dumpTab(aTab), {
+        next: dumpTab(nextTab),
+        prev: dumpTab(prevTab)
+      });
+      if (nextTab)
+        await moveTabSubtreeBefore(aTab, nextTab, aInfo);
+      else
+        await moveTabSubtreeAfter(aTab, prevTab, aInfo);
     })()
   ]);
 
