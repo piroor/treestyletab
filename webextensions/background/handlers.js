@@ -960,14 +960,16 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_MOVE_TABS_BEFORE:
       return moveTabsBefore(
         aMessage.tabs.map(getTabById),
-        getTabById(aMessage.nextTab)
-      ).map(aTab => aTab.id);
+        getTabById(aMessage.nextTab),
+        aMessage
+      ).then(aTabs => aTabs.map(aTab => aTab.id));
 
     case kCOMMAND_MOVE_TABS_AFTER:
       return moveTabsAfter(
         aMessage.tabs.map(getTabById),
-        getTabById(aMessage.previousTab)
-      ).map(aTab => aTab.id);
+        getTabById(aMessage.previousTab),
+        aMessage
+      ).then(aTabs => aTabs.map(aTab => aTab.id));
 
     case kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
