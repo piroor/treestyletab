@@ -909,7 +909,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
-function onTabAttaching(aTab, aInfo = {}) {
+function onTabAttached(aTab, aInfo = {}) {
   tabContextMenu.close();
   updateTabTwisty(aInfo.parent);
   updateTabClosebox(aInfo.parent);
@@ -923,13 +923,8 @@ function onTabAttaching(aTab, aInfo = {}) {
   /*
     We must not scroll to the tab here, because the tab can be moved
     by the background page later. Instead we wait until the tab is
-    successfully moved.
+    successfully moved (then kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
   */
-}
-
-function onTabAttached(aTab, aInfo = {}) {
-  if (isActive(getTabById(aInfo.parent)))
-    scrollToNewTab(aTab);
 }
 
 function onTabDetached(aTab, aDetachInfo = {}) {
@@ -1036,6 +1031,12 @@ function onMessage(aMessage, aSender, aRespond) {
             broadcast:    false
           }));
       }
+    }; break;
+
+    case kCOMMAND_TAB_ATTACHED_COMPLETELY: {
+      let tab = getTabById(aMessage.tab);
+      if (tab && isActive(getTabById(aMessage.parent)))
+        scrollToNewTab(tab);
     }; break;
 
     case kCOMMAND_DETACH_TAB: {
