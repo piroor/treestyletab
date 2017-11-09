@@ -1163,9 +1163,10 @@ async function TSTAPIGetTargetTabs(aMessage) {
   return [];
 }
 function TSTAPIGetTabsFromWrongIds(aIds) {
-  return aIds.map(aId => gTabIdWrongToCorrect[aId] || aId)
-             .map(getTabById)
-             .filter(aTab => !!aTab);
+  return aIds
+    .map(aId => gTabIdWrongToCorrect[aId] || aId)
+    .map(getTabById)
+    .filter(aTab => !!aTab);
 }
 
 function TSTAPIFormatResult(aResults, aOriginalMessage) {
