@@ -464,12 +464,12 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       broadcasted: !!aOptions.broadcast
     });
     if (aOptions.inRemote)
-    return tabIds.map(getTabById);
+      return tabIds.map(getTabById);
   }
 
   var container = aTabs[0].parentNode;
   if (!aOptions.broadcasted)
-  container.internalMovingCount += aTabs.length;
+    container.internalMovingCount += aTabs.length;
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
@@ -484,7 +484,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       let oldNextTab     = getNextTab(tab);
       if (oldNextTab == aReferenceTab) { // no move case
         if (!aOptions.broadcasted)
-        container.internalMovingCount--;
+          container.internalMovingCount--;
         continue;
       }
       container.alreadyMovedTabsCount++;
@@ -514,20 +514,20 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       }
 
       if (!aOptions.broadcasted) {
-      let toIndex, fromIndex;
-      Promise.all([
-        aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
-        (async () => {
-          [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-        })()
-      ]).then(() => {
-        if (fromIndex < toIndex)
-          toIndex--;
-        browser.tabs.move(apiTabIds, {
-          windowId: container.windowId,
-          index:    toIndex
+        let toIndex, fromIndex;
+        Promise.all([
+          aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
+          (async () => {
+            [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+          })()
+        ]).then(() => {
+          if (fromIndex < toIndex)
+            toIndex--;
+          browser.tabs.move(apiTabIds, {
+            windowId: container.windowId,
+            index:    toIndex
+          });
         });
-      });
       }
     }
   }
@@ -570,12 +570,12 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       broadcasted: !!aOptions.broadcast
     });
     if (aOptions.inRemote)
-    return tabIds.map(getTabById);
+      return tabIds.map(getTabById);
   }
 
   var container = aTabs[0].parentNode;
   if (!aOptions.broadcasted)
-  container.internalMovingCount += aTabs.length;
+    container.internalMovingCount += aTabs.length;
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
@@ -593,7 +593,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       let oldNextTab     = getNextTab(tab);
       if (oldNextTab == nextTab) { // no move case
         if (!aOptions.broadcasted)
-        container.internalMovingCount--;
+          container.internalMovingCount--;
         continue;
       }
       container.alreadyMovedTabsCount++;
@@ -623,20 +623,20 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       }
 
       if (!aOptions.broadcasted) {
-      let toIndex, fromIndex;
-      Promise.all([
-        aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
-        (async () => {
-          [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-        })()
-      ]).then(() => {
-        if (fromIndex > toIndex)
-          toIndex++;
-        browser.tabs.move(apiTabIds, {
-          windowId: container.windowId,
-          index:    toIndex
+        let toIndex, fromIndex;
+        Promise.all([
+          aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
+          (async () => {
+            [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+          })()
+        ]).then(() => {
+          if (fromIndex > toIndex)
+            toIndex++;
+          browser.tabs.move(apiTabIds, {
+            windowId: container.windowId,
+            index:    toIndex
+          });
         });
-      });
       }
     }
   }
