@@ -975,14 +975,18 @@ function onMessage(aMessage, aSender) {
       return moveTabsBefore(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.nextTab),
-        aMessage
+        clone(aMessage, {
+          broadcast: !!aMessage.broadcasted
+        })
       ).then(aTabs => aTabs.map(aTab => aTab.id));
 
     case kCOMMAND_MOVE_TABS_AFTER:
       return moveTabsAfter(
         aMessage.tabs.map(getTabById),
         getTabById(aMessage.previousTab),
-        aMessage
+        clone(aMessage, {
+          broadcast: !!aMessage.broadcasted
+        })
       ).then(aTabs => aTabs.map(aTab => aTab.id));
 
     case kCOMMAND_ATTACH_TAB_TO:
