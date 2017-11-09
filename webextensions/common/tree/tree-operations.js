@@ -995,62 +995,62 @@ async function moveTabs(aTabs, aOptions = {}) {
       await Promise.all([
         newWindow,
         (async () => {
-      let sourceContainer = aTabs[0].parentNode;
-      if (aOptions.duplicate) {
-        sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
-        sourceContainer.toBeOpenedOrphanTabs        += aTabs.length;
-        sourceContainer.duplicatingTabsCount        += aTabs.length;
-      }
-      if (isAcrossWindows)
-        sourceContainer.toBeDetachedTabs += aTabs.length;
+          let sourceContainer = aTabs[0].parentNode;
+          if (aOptions.duplicate) {
+            sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
+            sourceContainer.toBeOpenedOrphanTabs        += aTabs.length;
+            sourceContainer.duplicatingTabsCount        += aTabs.length;
+          }
+          if (isAcrossWindows)
+            sourceContainer.toBeDetachedTabs += aTabs.length;
 
-      log('preparing tabs');
-      let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
-      if (aOptions.duplicate) {
-        let startTime = Date.now();
-        // This promise will be resolved with very large delay.
-        // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
-        let promisedDuplicatedIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
-          try {
-            return (await browser.tabs.duplicate(aId)).id;
-          }
-          catch(e) {
-            handleMissingTabError(e);
-            return null;
-          }
-        })).then(aIds => {
-          log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
-          return aIds;
-        });
-        if (configs.acccelaratedTabDuplication) {
-        // So, I collect duplicating tabs in different way.
-        // This promise will be resolved when they actually
-        // appear in the tab bar. This hack should be removed
-        // after the bug 1394376 is fixed.
-          let promisedDuplicatingIds = (async () => {
-            while (true) {
-              await wait(100);
-              let tabs = getDuplicatingTabs(windowId);
-              if (tabs.length < apiTabIds.length)
-                continue; // not opened yet
-              let tabIds = tabs.map(aTab => aTab.apiTab.id);
-              if (tabIds.join(',') == tabIds.sort().join(','))
-                continue; // not sorted yet
-              return tabIds;
+          log('preparing tabs');
+          let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
+          if (aOptions.duplicate) {
+            let startTime = Date.now();
+            // This promise will be resolved with very large delay.
+            // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
+            let promisedDuplicatedIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
+              try {
+                return (await browser.tabs.duplicate(aId)).id;
+              }
+              catch(e) {
+                handleMissingTabError(e);
+                return null;
+              }
+            })).then(aIds => {
+              log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
+              return aIds;
+            });
+            if (configs.acccelaratedTabDuplication) {
+              // So, I collect duplicating tabs in different way.
+              // This promise will be resolved when they actually
+              // appear in the tab bar. This hack should be removed
+              // after the bug 1394376 is fixed.
+              let promisedDuplicatingIds = (async () => {
+                while (true) {
+                  await wait(100);
+                  let tabs = getDuplicatingTabs(windowId);
+                  if (tabs.length < apiTabIds.length)
+                    continue; // not opened yet
+                  let tabIds = tabs.map(aTab => aTab.apiTab.id);
+                  if (tabIds.join(',') == tabIds.sort().join(','))
+                    continue; // not sorted yet
+                  return tabIds;
+                }
+              })().then(aIds => {
+                log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
+                return aIds;
+              });
+              apiTabIds = await Promise.race([
+                promisedDuplicatedIds,
+                promisedDuplicatingIds
+              ]);
             }
-          })().then(aIds => {
-            log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
-            return aIds;
-          });
-          apiTabIds = await Promise.race([
-            promisedDuplicatedIds,
-            promisedDuplicatingIds
-          ]);
-        }
-        else {
-          apiTabIds = await promisedDuplicatedIds;
-        }
-      }
+            else {
+              apiTabIds = await promisedDuplicatedIds;
+            }
+          }
         })()
       ]);
       log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
