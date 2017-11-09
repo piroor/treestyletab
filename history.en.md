@@ -4,7 +4,7 @@
  - 2.1.0 (2017.11.9)
    * Better handling of restored tabs.
    * Better handling of new tab opened by Ctrl-T.
-   * Redirect legacy `about:treestyletab-group` URI to new `moz-exteions://...` URL.
+   * Redirect legacy `about:treestyletab-group` URI to new `moz-extensions://...` URL.
    * Don't break tree when a member tab of the last tree is promoted by dropping below a paranet tab.
    * Detect copy action for dragging correctly. (regression)
    * Detect sidebar's open/close status more correctly again. (regression)
