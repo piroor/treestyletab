@@ -556,7 +556,7 @@ function reserveToSaveScrollPosition() {
 
 /* raw event handlers */
 
-function onTabBuilt(aTab) {
+function onTabBuilt(aTab, aInfo) {
   var label = getTabLabel(aTab);
 
   var twisty = document.createElement('span');
@@ -610,6 +610,13 @@ function onTabBuilt(aTab) {
   aTab.appendChild(extraItemsContainerBehind);
 
   aTab.setAttribute('draggable', true);
+
+  if (!aInfo.existing && configs.animation) {
+    collapseExpandTab(aTab, {
+      collapsed: true,
+      justNow:   true
+    });
+  }
 }
 
 
@@ -651,12 +658,6 @@ function onTabFocused(aTab) {
 
 function onTabOpening(aTab, aInfo = {}) {
   tabContextMenu.close();
-  if (configs.animation) {
-    collapseExpandTab(aTab, {
-      collapsed: true,
-      justNow:   true
-    });
-  }
 }
 
 function onTabOpened(aTab, aInfo = {}) {

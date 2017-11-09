@@ -138,7 +138,7 @@ function buildTab(aApiTab, aOptions = {}) {
   label.classList.add(kLABEL);
   tab.appendChild(label);
 
-  window.onTabBuilt && onTabBuilt(tab);
+  window.onTabBuilt && onTabBuilt(tab, aOptions);
 
   if (aOptions.existing) {
     tab.classList.add(kTAB_STATE_ANIMATION_READY);
