@@ -1,6 +1,21 @@
 # History
 
  - master/HEAD
+ - 2.1.0 (2017.11.9)
+   * Better handling of restored tabs.
+   * Better handling of new tab opened by Ctrl-T.
+   * Redirect legacy `about:treestyletab-group` URI to new `moz-exteions://...` URL.
+   * Don't break tree when a member tab of the last tree is promoted by dropping below a paranet tab.
+   * Detect copy action for dragging correctly. (regression)
+   * Detect sidebar's open/close status more correctly again. (regression)
+   * Open tab as independent correctly based on configurations, for duplicated tabs.
+   * Move descendant tabs to the new window also by the "Move to New Window" command.
+   * Disallow to drop tab onto scrollbar.
+   * Keep tabs discarded after moved by "Move to New Window".
+   * Move tree to new window more safely from fake context menu.
+   * Close only right (below) tabs in the window correctly.
+   * Specify background color for dummy group tab.
+   * Accept tab ids changed by moving between windows, for API's input.
  - 2.0.7 (2017.10.18)
    * Better tree restoration for restored sessions.
  - 2.0.6 (2017.10.17)
