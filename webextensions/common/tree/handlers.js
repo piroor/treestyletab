@@ -228,7 +228,7 @@ async function onNewTabTracked(aTab) {
 
     container.openingCount++;
     setTimeout(() => {
-      if (!container.parentNode) // it was removed while waiting
+      if (!container.parentNode) // it can be removed while waiting
         return;
       container.openingCount--;
     }, 0);
