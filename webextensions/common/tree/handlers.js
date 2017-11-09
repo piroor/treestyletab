@@ -207,11 +207,14 @@ async function onNewTabTracked(aTab) {
   var openedWithPosition   = container.toBeOpenedTabsWithPositions > 0;
   var duplicatedInternally = container.duplicatingTabsCount > 0;
 
-  var moved = window.onTabOpening && await onTabOpening(newTab, {
-    maybeOpenedWithPosition: openedWithPosition,
-    maybeOrphan: container.toBeOpenedOrphanTabs > 0,
-    duplicatedInternally
-  });
+  var [moved, uniqueId] = await Promise.all([
+    window.onTabOpening && onTabOpening(newTab, {
+      maybeOpenedWithPosition: openedWithPosition,
+      maybeOrphan: container.toBeOpenedOrphanTabs > 0,
+      duplicatedInternally
+    }),
+    newTab.uniqueId
+  ]);
 
   if (container.parentNode) { // it can be removed while waiting
     if (container.toBeOpenedTabsWithPositions > 0)
@@ -231,10 +234,6 @@ async function onNewTabTracked(aTab) {
     }, 0);
   }
 
-  if (!newTab.parentNode) // it can be removed while waiting
-    return null;
-
-  var uniqueId = await newTab.uniqueId;
   if (!newTab.parentNode) // it can be removed while waiting
     return null;
 
