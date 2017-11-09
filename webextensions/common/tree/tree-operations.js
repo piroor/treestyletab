@@ -992,6 +992,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         prepareContainer();
       }
 
+      let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
       await Promise.all([
         newWindow,
         (async () => {
@@ -1005,7 +1006,6 @@ async function moveTabs(aTabs, aOptions = {}) {
             sourceContainer.toBeDetachedTabs += aTabs.length;
 
           log('preparing tabs');
-          let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
           if (aOptions.duplicate) {
             let startTime = Date.now();
             // This promise will be resolved with very large delay.
