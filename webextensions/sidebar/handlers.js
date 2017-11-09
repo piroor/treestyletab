@@ -725,7 +725,8 @@ function onTabMoving(aTab) {
   tabContextMenu.close();
   if (configs.animation &&
       !isCollapsed(aTab) &&
-      !isPinned(aTab)) {
+      !isPinned(aTab) &&
+      !isOpening(aTab)) {
     collapseExpandTab(aTab, {
       collapsed: true,
       justNow:   true

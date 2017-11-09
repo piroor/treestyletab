@@ -246,7 +246,9 @@ async function onNewTabTracked(aTab) {
     duplicatedInternally,
     originalTab: duplicated && getTabById({ tab: uniqueId.originalTabId })
   });
+  wait(configs.newTabAnimationDuration).then(() => {
   newTab.classList.remove(kTAB_STATE_OPENING);
+  });
   newTab._resolveOpened();
 
   container.processingNewTabsCount--;
