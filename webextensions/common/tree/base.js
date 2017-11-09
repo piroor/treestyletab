@@ -455,20 +455,21 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     return [];
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (aOptions.inRemote) {
+  if (aOptions.inRemote || aOptions.broadcast) {
     let tabIds = await browser.runtime.sendMessage({
       type:     kCOMMAND_MOVE_TABS_BEFORE,
       windowId: gTargetWindow,
       tabs:     aTabs.map(aTab => aTab.id),
-      nextTab:  aReferenceTab.id
+      nextTab:  aReferenceTab.id,
+      broadcasted: !!aOptions.broadcast
     });
+    if (aOptions.inRemote)
     return tabIds.map(getTabById);
   }
 
   var container = aTabs[0].parentNode;
-  var beforeInternalMovingCount = container.internalMovingCount;
+  if (!aOptions.broadcasted)
   container.internalMovingCount += aTabs.length;
-  container.alreadyMovedTabsCount += aTabs.length;
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
@@ -482,20 +483,18 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       let oldPreviousTab = getPreviousTab(tab);
       let oldNextTab     = getNextTab(tab);
       if (oldNextTab == aReferenceTab) { // no move case
+        if (!aOptions.broadcasted)
         container.internalMovingCount--;
-        container.alreadyMovedTabsCount--;
         continue;
       }
+      container.alreadyMovedTabsCount++;
       container.insertBefore(tab, aReferenceTab);
-      reserveToUpdateInsertionPosition([
-        tab,
-        getPreviousTab(tab),
-        getNextTab(tab),
+      window.onTabElementMoved && onTabElementMoved(tab, {
         oldPreviousTab,
         oldNextTab
-      ]);
+      });
     }
-    if (beforeInternalMovingCount == container.internalMovingCount) {
+    if (container.alreadyMovedTabsCount == 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -514,6 +513,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         tab.apiTab.index = i;
       }
 
+      if (!aOptions.broadcasted) {
       let toIndex, fromIndex;
       Promise.all([
         aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
@@ -528,6 +528,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
           index:    toIndex
         });
       });
+      }
     }
   }
   catch(e) {
@@ -560,20 +561,21 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     return [];
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (aOptions.inRemote) {
+  if (aOptions.inRemote || aOptions.broadcast) {
     let tabIds = await browser.runtime.sendMessage({
       type:        kCOMMAND_MOVE_TABS_AFTER,
       windowId:    gTargetWindow,
       tabs:        aTabs.map(aTab => aTab.id),
-      previousTab: aReferenceTab.id
+      previousTab: aReferenceTab.id,
+      broadcasted: !!aOptions.broadcast
     });
+    if (aOptions.inRemote)
     return tabIds.map(getTabById);
   }
 
   var container = aTabs[0].parentNode;
-  var beforeInternalMovingCount = container.internalMovingCount;
+  if (!aOptions.broadcasted)
   container.internalMovingCount += aTabs.length;
-  container.alreadyMovedTabsCount += aTabs.length;
 
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
@@ -590,20 +592,18 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       let oldPreviousTab = getPreviousTab(tab);
       let oldNextTab     = getNextTab(tab);
       if (oldNextTab == nextTab) { // no move case
+        if (!aOptions.broadcasted)
         container.internalMovingCount--;
-        container.alreadyMovedTabsCount--;
         continue;
       }
+      container.alreadyMovedTabsCount++;
       container.insertBefore(tab, nextTab);
-      reserveToUpdateInsertionPosition([
-        tab,
-        getPreviousTab(tab),
-        getNextTab(tab),
+      window.onTabElementMoved && onTabElementMoved(tab, {
         oldPreviousTab,
         oldNextTab
-      ]);
+      });
     }
-    if (beforeInternalMovingCount == container.internalMovingCount) {
+    if (container.alreadyMovedTabsCount == 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -622,6 +622,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         tab.apiTab.index = i;
       }
 
+      if (!aOptions.broadcasted) {
       let toIndex, fromIndex;
       Promise.all([
         aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
@@ -636,6 +637,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
           index:    toIndex
         });
       });
+      }
     }
   }
   catch(e) {

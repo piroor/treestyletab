@@ -280,6 +280,16 @@ function onTabMoving(aTab, aMoveInfo) {
   }
 }
 
+function onTabElementMoved(aTab, aInfo = {}) {
+  reserveToUpdateInsertionPosition([
+    aTab,
+    getPreviousTab(aTab),
+    getNextTab(aTab),
+    aInfo.oldPreviousTab,
+    aInfo.oldNextTab
+  ]);
+}
+
 async function onTabMoved(aTab, aMoveInfo) {
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateInsertionPosition([
@@ -580,9 +590,13 @@ async function onTabAttached(aTab, aInfo = {}) {
         prev: dumpTab(prevTab)
       });
       if (nextTab)
-        await moveTabSubtreeBefore(aTab, nextTab, aInfo);
+        await moveTabSubtreeBefore(aTab, nextTab, clone(aInfo, {
+          broadcast: true
+        }));
       else
-        await moveTabSubtreeAfter(aTab, prevTab, aInfo);
+        await moveTabSubtreeAfter(aTab, prevTab, clone(aInfo, {
+          broadcast: true
+        }));
     })()
   ]);
 

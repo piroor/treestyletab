@@ -1019,6 +1019,20 @@ function onMessage(aMessage, aSender, aRespond) {
       }
       break;
 
+    case kCOMMAND_MOVE_TABS_BEFORE:
+      return moveTabsBefore(
+        aMessage.tabs.map(getTabById),
+        getTabById(aMessage.nextTab),
+        aMessage
+      ).then(aTabs => aTabs.map(aTab => aTab.id));
+
+    case kCOMMAND_MOVE_TABS_AFTER:
+      return moveTabsAfter(
+        aMessage.tabs.map(getTabById),
+        getTabById(aMessage.previousTab),
+        aMessage
+      ).then(aTabs => aTabs.map(aTab => aTab.id));
+
     case kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
         log('attach tab from remote ', aMessage);
