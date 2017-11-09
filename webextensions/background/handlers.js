@@ -567,7 +567,9 @@ async function onTabAttached(aTab, aInfo = {}) {
     browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id });
   }
 
-  if (!aInfo.dontMove) {
+  await Promise.all([
+    isOpening(aTab) && aTab.opened,
+    !aInfo.dontMove && (async () => {
     let nextTab = aInfo.insertBefore;
     let prevTab = aInfo.insertAfter;
     if (!nextTab && !prevTab) {
@@ -584,10 +586,8 @@ async function onTabAttached(aTab, aInfo = {}) {
       await moveTabSubtreeBefore(aTab, nextTab, aInfo);
     else
       await moveTabSubtreeAfter(aTab, prevTab, aInfo);
-  }
-
-  if (isOpening(aTab))
-    await aTab.opened;
+    })()
+  ]);
 
   if (!aTab.parentNode || // not removed while waiting
       getParentTab(aTab) != aInfo.parent) // not detached while waiting
