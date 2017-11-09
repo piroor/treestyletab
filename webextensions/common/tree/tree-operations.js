@@ -54,6 +54,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     dontUpdateIndent: aOptions.dontUpdateIndent,
     forceExpand:      aOptions.forceExpand,
     dontExpand:       aOptions.dontExpand,
+    delayedMove:      aOptions.delayedMove,
     inRemote:         aOptions.inRemote,
     broadcast:        aOptions.broadcast,
     broadcasted:      aOptions.broadcasted
@@ -383,6 +384,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       });
       if (getNextTab(aTab))
         await moveTabAfter(aTab, getLastTab(), {
+          delayedMove: true,
           inRemote: aOptions.inRemote
         });
       break;
@@ -391,6 +393,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       await attachTabTo(aTab, baseTab, {
         dontMove:    aOptions.dontMove || configs.insertNewChildAt == kINSERT_NO_CONTROL,
         forceExpand: true,
+        delayedMove: true,
         inRemote:    aOptions.inRemote,
         broadcast:   aOptions.broadcast
       });
@@ -401,6 +404,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       let parent = getParentTab(baseTab);
       if (parent) {
         await attachTabTo(aTab, parent, {
+          delayedMove: true,
           inRemote:  aOptions.inRemote,
           broadcast: aOptions.broadcast
         });
@@ -411,6 +415,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           broadcast: aOptions.broadcast
         });
         await moveTabAfter(aTab, getLastDescendantTab(baseTab) || getLastTab(), {
+          delayedMove: true,
           inRemote: aOptions.inRemote
         });
       }
@@ -426,6 +431,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         await attachTabTo(aTab, parent, {
           insertBefore: nextSibling,
           insertAfter:  getLastDescendantTab(baseTab),
+          delayedMove:  true,
           inRemote:     aOptions.inRemote,
           broadcast:    aOptions.broadcast
         });
@@ -436,11 +442,13 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         });
         if (nextSibling)
           await moveTabBefore(aTab, nextSibling, {
+            delayedMove: true,
             inRemote:  aOptions.inRemote,
             broadcast: aOptions.broadcast
           });
         else
           await moveTabAfter(aTab, getLastDescendantTab(baseTab), {
+            delayedMove: true,
             inRemote:  aOptions.inRemote,
             broadcast: aOptions.broadcast
           });
