@@ -19,7 +19,7 @@ function onToolbarButtonClick(aTab) {
 // raw event handlers
 
 // this should return true if the tab is moved while processing
-async function onTabOpening(aTab, aInfo = {}) {
+function onTabOpening(aTab, aInfo = {}) {
   if (aInfo.duplicatedInternally)
     return false;
 

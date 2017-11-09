@@ -663,7 +663,7 @@ function onTabOpening(aTab, aInfo = {}) {
 function onTabOpened(aTab, aInfo = {}) {
   if (configs.animation) {
     aTab.classList.add(kTAB_STATE_ANIMATION_READY);
-    nextFrame().then(async () => {
+    nextFrame().then(() => {
       var parent = getParentTab(aTab);
       if (parent && isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
