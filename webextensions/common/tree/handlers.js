@@ -382,6 +382,13 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     oldNextTab
   });
   log('tabs.onMoved: ', dumpTab(movedTab), moveInfo, movedTab.apiTab);
+
+  var alreadyMoved = false;
+  if (container.alreadyMovedTabsCount > 0) {
+    container.alreadyMovedTabsCount--;
+    alreadyMoved = true;
+  }
+
   var canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
   if (!canceled &&
       movedTab.parentNode) { // it is removed while waiting
@@ -390,18 +397,13 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
       newNextIndex++;
     let tabs    = getTabs(movedTab);
     let nextTab = tabs[newNextIndex];
-    if (movedTab.nextSibling != nextTab) {
-      if (container.alreadyMovedTabsCount > 0) {
-        container.alreadyMovedTabsCount--;
-      }
-      else {
+    if (!alreadyMoved && movedTab.nextSibling != nextTab) {
         container.insertBefore(movedTab, nextTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.slice(container.childNodes)
             .map(aTab => aTab.id+(aTab == movedTab ? '[MOVED]' : ''))
             .join('\n')
             .replace(/^/gm, ' - ')));
-      }
     }
     let startIndex = Math.min(aMoveInfo.fromIndex, aMoveInfo.toIndex);
     let endIndex   = Math.max(aMoveInfo.fromIndex, aMoveInfo.toIndex);
