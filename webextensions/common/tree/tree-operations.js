@@ -992,6 +992,9 @@ async function moveTabs(aTabs, aOptions = {}) {
         prepareContainer();
       }
 
+      await Promise.all([
+        newWindow,
+        (async () => {
       let sourceContainer = aTabs[0].parentNode;
       if (aOptions.duplicate) {
         sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
@@ -1048,8 +1051,8 @@ async function moveTabs(aTabs, aOptions = {}) {
           apiTabIds = await promisedDuplicatedIds;
         }
       }
-      if (newWindow)
-        await newWindow;
+        })()
+      ]);
       log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
       let toIndex = getAllTabs(container).length;
       log('toIndex = ', toIndex);
