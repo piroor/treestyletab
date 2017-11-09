@@ -97,6 +97,12 @@ function isDuplicating(aTab) {
            aTab.classList.contains(kTAB_STATE_DUPLICATING);
 }
 
+function isNewTabCommandTab(aTab) {
+  return aTab && aTab.parentNode &&
+           configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
+           aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+}
+
 function isSubtreeCollapsed(aTab) {
   return aTab && aTab.parentNode &&
            aTab.classList.contains(kTAB_STATE_SUBTREE_COLLAPSED);

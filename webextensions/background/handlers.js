@@ -42,11 +42,8 @@ async function onTabOpening(aTab, aInfo = {}) {
     container
   );
 
-  log('opener ', dumpTab(opener));
   if (!opener) {
-    log('is new tab command?: ', aTab.apiTab.url);
-    if (configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
-        aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl) {
+    if (isNewTabCommandTab(aTab)) {
       let current = getCurrentTab(aTab);
       log('behave as a tab opened by new tab command, current = ', dumpTab(current));
       behaveAutoAttachedTab(aTab, {
