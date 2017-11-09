@@ -468,9 +468,6 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   }
 
   var container = aTabs[0].parentNode;
-  if (!aOptions.broadcasted)
-    container.internalMovingCount += aTabs.length;
-
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
     /*
@@ -482,11 +479,9 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     for (let tab of aTabs) {
       let oldPreviousTab = getPreviousTab(tab);
       let oldNextTab     = getNextTab(tab);
-      if (oldNextTab == aReferenceTab) { // no move case
-        if (!aOptions.broadcasted)
-          container.internalMovingCount--;
+      if (oldNextTab == aReferenceTab) // no move case
         continue;
-      }
+      container.internalMovingCount++;
       container.alreadyMovedTabsCount++;
       container.insertBefore(tab, aReferenceTab);
       window.onTabElementMoved && onTabElementMoved(tab, {
@@ -574,9 +569,6 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   }
 
   var container = aTabs[0].parentNode;
-  if (!aOptions.broadcasted)
-    container.internalMovingCount += aTabs.length;
-
   var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
     /*
@@ -591,11 +583,9 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     for (let tab of aTabs) {
       let oldPreviousTab = getPreviousTab(tab);
       let oldNextTab     = getNextTab(tab);
-      if (oldNextTab == nextTab) { // no move case
-        if (!aOptions.broadcasted)
-          container.internalMovingCount--;
+      if (oldNextTab == nextTab) // no move case
         continue;
-      }
+      container.internalMovingCount++;
       container.alreadyMovedTabsCount++;
       container.insertBefore(tab, nextTab);
       window.onTabElementMoved && onTabElementMoved(tab, {
