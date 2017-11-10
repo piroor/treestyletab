@@ -776,17 +776,10 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
 
-  if (configs.indentAutoShrink &&
-      configs.indentAutoShrinkOnlyForVisible)
-    reserveToUpdateVisualMaxTreeLevel();
-
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
     delete aTab.onEndCollapseExpandAnimation;
   }
-
-  if (!toBeCollapsed)
-    reserveToSynchronizeThrobberAnimations();
 
   if (!isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
@@ -799,6 +792,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
     else
       aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+
+    onEndCollapseExpandCompletely(toBeCollapsed);
 
     if (aInfo.last)
       scrollToTab(aTab, {
@@ -845,10 +840,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
         reason = kTABBAR_UPDATE_REASON_EXPAND;
       }
 
-      reserveToUpdateTabbarLayout({
-        reason,
-        timeout: configs.collapseDuration
-      });
+      onEndCollapseExpandCompletely(toBeCollapsed);
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (!aTab || !aTab.onEndCollapseExpandAnimation ||
@@ -860,6 +852,20 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     }, configs.collapseDuration);
   });
 }
+function onEndCollapseExpandCompletely(aToBeCollapsed) {
+  if (configs.indentAutoShrink &&
+      configs.indentAutoShrinkOnlyForVisible)
+    reserveToUpdateVisualMaxTreeLevel();
+
+  if (!aToBeCollapsed)
+    reserveToSynchronizeThrobberAnimations();
+
+  reserveToUpdateTabbarLayout({
+    reason,
+    timeout: configs.collapseDuration
+  });
+}
+
 
 /*
 function onTabSubtreeCollapsedStateChangedManually(aEvent) {
