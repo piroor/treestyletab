@@ -443,7 +443,7 @@ function reserveToUpdateVisualMaxTreeLevel() {
   if (updateVisualMaxTreeLevel.waiting)
     clearTimeout(updateVisualMaxTreeLevel.waiting);
   updateVisualMaxTreeLevel.waiting = setTimeout(() => {
-    delete reserveToUpdateIndent.waiting;
+    delete updateVisualMaxTreeLevel.waiting;
     updateVisualMaxTreeLevel();
   }, configs.collapseDuration * 1.5);
 }
