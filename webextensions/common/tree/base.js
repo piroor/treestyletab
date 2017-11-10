@@ -194,10 +194,6 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 
   if (aOptions.forceApply ||
-      'url' in aNewState)
-    aTab.setAttribute(kCONTENT_LOCATION, aNewState.url);
-
-  if (aOptions.forceApply ||
       'title' in aNewState) {
     let visibleLabel = aNewState.title;
     if (aNewState && aNewState.cookieStoreId) {

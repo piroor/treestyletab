@@ -65,7 +65,6 @@ const kTSTAPI_NOTIFY_SCROLLED       = 'scrolled';
 
 const kAPI_TAB_ID       = 'data-tab-id';
 const kAPI_WINDOW_ID    = 'data-window-id';
-const kCONTENT_LOCATION = 'data-content-location';
 
 const kPARENT        = 'data-parent-id';
 const kCHILDREN      = 'data-child-ids';
