@@ -8,7 +8,9 @@
 document.title = getTitle();
 
 function getTitle() {
-  var title = location.href.match(/title=([^&;]*)/);
+  var title = location.search.match(/title=([^&;]*)/);
+  if (!title)
+    title = location.search.match(/^\?([^&;]*)/);
   return title && decodeURIComponent(title[1]) ||
            browser.i18n.getMessage('groupTab.label.default');
 }
