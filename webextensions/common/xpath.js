@@ -11,21 +11,6 @@ function hasClass(aClassName) {
   return `contains(concat(" ", normalize-space(@class), " "), " ${aClassName} ")`;
 }
 
-const NSResolver = {
-  lookupNamespaceURI : function(aPrefix) {
-    switch (aPrefix)
-    {
-      case 'html':
-      case 'xhtml':
-        return 'http://www.w3.org/1999/xhtml';
-      case 'xlink':
-        return 'http://www.w3.org/1999/xlink';
-      default:
-        return '';
-    }
-  }
-};
-
 function evaluateXPath(aExpression, aContext, aType) {
   if (!aType)
     aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
@@ -33,7 +18,7 @@ function evaluateXPath(aExpression, aContext, aType) {
     var result = (aContext.ownerDocument || aContext).evaluate(
       aExpression,
       (aContext || document),
-      NSResolver,
+      null,
       aType,
       null
     );

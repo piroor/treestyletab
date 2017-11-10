@@ -44,7 +44,7 @@ const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLL
 const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN})`;
 const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
 
-const kXPATH_LIVE_TAB         = `xhtml:li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
+const kXPATH_LIVE_TAB         = `li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
 const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})][not(${hasClass(kTAB_STATE_PINNED)})]`;
 const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass(kTAB_STATE_HIDDEN)})]`;
 const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})]`;
