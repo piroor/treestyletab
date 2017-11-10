@@ -776,10 +776,9 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
 
-  var maxLevel = getMaxTreeLevel(aTab.apiTab.windowId, {
-    onlyVisible: configs.indentAutoShrinkOnlyForVisible
-  });
-  document.documentElement.setAttribute(kMAX_TREE_LEVEL, maxLevel);
+  if (configs.indentAutoShrink &&
+      configs.indentAutoShrinkOnlyForVisible)
+    reserveToUpdateVisualMaxTreeLevel();
 
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);

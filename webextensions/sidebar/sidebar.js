@@ -439,6 +439,23 @@ function collapseExpandAllSubtree(aParams = {}) {
 }
 
 
+function reserveToUpdateVisualMaxTreeLevel() {
+  if (updateVisualMaxTreeLevel.waiting)
+    clearTimeout(updateVisualMaxTreeLevel.waiting);
+  updateVisualMaxTreeLevel.waiting = setTimeout(() => {
+    delete reserveToUpdateIndent.waiting;
+    updateVisualMaxTreeLevel();
+  }, configs.collapseDuration * 1.5);
+}
+
+function updateVisualMaxTreeLevel() {
+  var maxLevel = getMaxTreeLevel(gTargetWindow, {
+    onlyVisible: configs.indentAutoShrinkOnlyForVisible
+  });
+  document.documentElement.setAttribute(kMAX_TREE_LEVEL, maxLevel);
+}
+
+
 function reserveToUpdateIndent() {
   //log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)
