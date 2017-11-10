@@ -108,6 +108,9 @@ async function init() {
       onConfigChange('animation');
       gMetricsData.add('apply configs');
 
+      updateVisualMaxTreeLevel();
+      updateIndent({ force: true });
+
       browser.runtime.onMessage.addListener(onMessage);
       browser.runtime.onMessageExternal.addListener(onMessageExternal);
     }),
