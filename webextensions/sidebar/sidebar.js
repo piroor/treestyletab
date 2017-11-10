@@ -463,7 +463,7 @@ function reserveToUpdateIndent() {
   reserveToUpdateIndent.waiting = setTimeout(() => {
     delete reserveToUpdateIndent.waiting;
     updateIndent();
-  }, 100);
+  }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
 }
 
 var gIndentDefinition;
