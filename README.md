@@ -41,8 +41,9 @@ Some addons provide extended behavior to TST's sidebar panel:
 
  * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs and operate them at a time.
  * [TST-MiddleClick](https://addons.mozilla.org/firefox/addon/tst-middleclick/) allows you to run "undo close tab" command on middle click on the sidebar.
- * [tst-wheel_and_double](https://github.com/joshuacant/tst-wheel_and_double) allows you to switch active tab by wheel scrolling.
- * [tst-closed_tabs_menu](https://github.com/joshuacant/tst-closed_tabs_menu) allows you to restore closed tabs from a menu.
+ * [Tree Style Tab Mouse Wheel](https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/) allows you to switch active tab by wheel scrolling.
+ * [Tree Style Tab Open in Private](https://addons.mozilla.org/firefox/addon/tree-style-tab-open-in-private/) allows you to move the tab to a private mode window.
+ * [Tree Style Tab Closed Tabs](https://addons.mozilla.org/firefox/addon/tree-style-tab-closed-tabs/) allows you to restore closed tabs from a menu.
 
 ## Similar projects
 
