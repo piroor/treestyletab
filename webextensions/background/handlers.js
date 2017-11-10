@@ -629,7 +629,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     }
     else if (!aInfo.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
-        (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
+          (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
         collapseExpandTreesIntelligentlyFor(parent, {
           broadcast: true
         });
@@ -667,7 +667,7 @@ async function onTabAttached(aTab, aInfo = {}) {
         }));
     }
     else if (shouldTabAutoExpanded(parent) ||
-           isCollapsed(parent)) {
+             isCollapsed(parent)) {
       collapseExpandTabAndSubtree(aTab, clone(aInfo, {
         collapsed: true,
         broadcast: true
