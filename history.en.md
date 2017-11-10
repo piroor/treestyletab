@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 2.1.1 (2017.11.11)
+   * Optimize animation to collapse/expand tree.
+   * Collapse other auto-expanded tree when new tree is created. (regression)
+   * Dummy group tab now accept tab title specified without`title=`.
+   * Import tree from migration data correctly, including their URIs.
  - 2.1.0 (2017.11.9)
    * Better handling of restored tabs.
    * Better handling of new tab opened by Ctrl-T.
