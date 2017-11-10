@@ -776,17 +776,10 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
 
-  if (configs.indentAutoShrink &&
-      configs.indentAutoShrinkOnlyForVisible)
-    reserveToUpdateIndent();
-
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
     delete aTab.onEndCollapseExpandAnimation;
   }
-
-  if (!toBeCollapsed)
-    reserveToSynchronizeThrobberAnimations();
 
   if (!isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
@@ -844,6 +837,13 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
         aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
         reason = kTABBAR_UPDATE_REASON_EXPAND;
       }
+
+      if (configs.indentAutoShrink &&
+          configs.indentAutoShrinkOnlyForVisible)
+        reserveToUpdateIndent();
+
+      if (!toBeCollapsed)
+        reserveToSynchronizeThrobberAnimations();
 
       reserveToUpdateTabbarLayout({
         reason,
