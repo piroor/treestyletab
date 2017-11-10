@@ -450,49 +450,39 @@ function reserveToUpdateIndent() {
 }
 
 var gIndentDefinition;
-var gLastMaxLevel;
-var gIndent     = -1;
+var gLastMaxLevel  = -1;
+var gLastMaxIndent = -1;
 var gIndentProp = 'margin-left';
 
 function updateIndent(aOptions = {}) {
-  var maxLevel = getMaxTreeLevel(gTargetWindow, {
-    onlyVisible: configs.indentAutoShrinkOnlyForVisible
-  });
-  if (isNaN(maxLevel))
-    maxLevel = 0;
-  if (configs.maxTreeLevel > -1)
-    maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
-
-  //log('maxLevel ', maxLevel);
-
-  var oldIndent  = gIndent;
-  var indent     = (oldIndent < 0 ? configs.baseIndent : oldIndent ) * maxLevel;
-  var maxIndent  = gTabBar.getBoundingClientRect().width * (0.33);
-  var minIndent  = Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
-  var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(maxIndent / maxLevel), minIndent));
-  //log('calculated result: ', { oldIndent, indent, maxIndent, minIndent, indentUnit });
-  if (indent > maxIndent) {
-    gIndent = indentUnit;
-  }
-  else {
-    gIndent = -1;
-    if ((configs.baseIndent * maxLevel) > maxIndent)
-      gIndent = indentUnit;
-  }
-
-  if (!aOptions.force &&
-      oldIndent == gIndent &&
-      gIndentDefinition &&
-      maxLevel == gLastMaxLevel)
+  var maxLevel  = getMaxTreeLevel(gTargetWindow);
+  var maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
+  if (maxLevel == gLastMaxLevel &&
+      maxIndent == gLastMaxIndent &&
+      !aOptions.force)
     return;
 
-  gLastMaxLevel = maxLevel;
+  gLastMaxLevel  = maxLevel;
+  gLastMaxIndent = maxIndent;
 
   if (!gIndentDefinition) {
     gIndentDefinition = document.createElement('style');
     gIndentDefinition.setAttribute('type', 'text/css');
     document.head.appendChild(gIndentDefinition);
   }
+
+  var definitions = [];
+  for (let i = 0; i <= gLastMaxLevel; i++) {
+    definitions.push(generateIndentDefinitionForMaxLevel(i));
+  }
+  gIndentDefinition.textContent = definitions.join('\n');
+
+  //log('updated indent definition: ', gIndentDefinition.textContent);
+}
+function generateIndentDefinitionForMaxLevel(aMaxLevel) {
+  var indent     = configs.baseIndent * aMaxLevel;
+  var minIndent  = Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
+  var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(gLastMaxIndent / aMaxLevel), minIndent));
 
   var configuredMaxLevel = configs.maxTreeLevel;
   if (configuredMaxLevel < 0)
@@ -501,19 +491,18 @@ function updateIndent(aOptions = {}) {
   // prepare definitions for all tabs including collapsed.
   // otherwise, we'll see odd animation for expanded tabs
   // from indent=0 to indent=expected.
-  var definitionsMaxLevel = getMaxTreeLevel(gTargetWindow);
   var definitions = [];
+  var root        = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]`;
   // default indent for unhandled (deep) level tabs
-  definitions.push(`.tab[${kPARENT}]:not([${kLEVEL}="0"]) {
-    ${gIndentProp}: ${Math.min(definitionsMaxLevel + 1, configuredMaxLevel) * indentUnit}px;
+  definitions.push(`${root} .tab[${kPARENT}]:not([${kLEVEL}="0"]) {
+    ${gIndentProp}: ${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px;
   }`);
-  for (let level = 1; level <= definitionsMaxLevel; level++) {
-    definitions.push(`.tab[${kPARENT}][${kLEVEL}="${level}"] {
+  for (let level = 1; level <= aMaxLevel; level++) {
+    definitions.push(`${root} .tab[${kPARENT}][${kLEVEL}="${level}"] {
       ${gIndentProp}: ${Math.min(level, configuredMaxLevel) * indentUnit}px;
     }`);
   }
-  gIndentDefinition.textContent = definitions.join('\n');
-  //log('updated indent definition: ', gIndentDefinition.textContent);
+  return definitions.join('\n');
 }
 
 

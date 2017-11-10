@@ -72,6 +72,7 @@ const kLEVEL         = 'data-level';
 const kCLOSED_SET_ID = 'data-closed-set-id';
 const kDROP_POSITION = 'data-drop-position';
 const kCURRENT_URI   = 'data-current-uri';
+const kMAX_TREE_LEVEL = 'data-max-tree-level';
 
 const kPERSISTENT_ID            = 'data-persistent-id';
 const kPERSISTENT_ANCESTORS     = 'ancestors';

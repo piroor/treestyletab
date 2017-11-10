@@ -776,10 +776,18 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!aTab.parentNode) // do nothing for closed tab!
     return;
 
+  var maxLevel = getMaxTreeLevel(aTab.apiTab.windowId, {
+    onlyVisible: configs.indentAutoShrinkOnlyForVisible
+  });
+  document.documentElement.setAttribute(kMAX_TREE_LEVEL, maxLevel);
+
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
     delete aTab.onEndCollapseExpandAnimation;
   }
+
+  if (!toBeCollapsed)
+    reserveToSynchronizeThrobberAnimations();
 
   if (!isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
@@ -837,13 +845,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
         aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
         reason = kTABBAR_UPDATE_REASON_EXPAND;
       }
-
-      if (configs.indentAutoShrink &&
-          configs.indentAutoShrinkOnlyForVisible)
-        reserveToUpdateIndent();
-
-      if (!toBeCollapsed)
-        reserveToSynchronizeThrobberAnimations();
 
       reserveToUpdateTabbarLayout({
         reason,

@@ -173,9 +173,10 @@ function getMaxTreeLevel(aHint, aOptions = {}) {
     XPathResult.NUMBER_TYPE
   ).numberValue;
   if (isNaN(maxLevel))
-    return 0;
-  else
-    return maxLevel;
+    maxLevel = 0;
+  if (configs.maxTreeLevel > -1)
+    maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
+  return maxLevel;
 }
 
 // if all tabs are aldeardy placed at there, we don't need to move them.
