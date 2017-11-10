@@ -206,7 +206,7 @@ async function migrateLegacyTreeStructure() {
       var uris = aStructure.map(aItem => aItem.url);
       uris = uris.map(aURI => {
         if (!/^about:blank($|\?|#)/.test(aURI) &&
-          /^(about|resource|chrome|file):/.test(aURI))
+            /^(about|resource|chrome|file):/.test(aURI))
           return `about:blank?${aURI}`;
       });
       var tabs = await openURIsInTabs(uris, {
