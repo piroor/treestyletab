@@ -627,7 +627,7 @@ async function onTabAttached(aTab, aInfo = {}) {
         inRemote:  false
       }));
     }
-    else if (!aInfo.dontExpand) {
+    if (!aInfo.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
           (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
         collapseExpandTreesIntelligentlyFor(parent, {
