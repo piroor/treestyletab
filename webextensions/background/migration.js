@@ -208,6 +208,7 @@ async function migrateLegacyTreeStructure() {
         if (!/^about:blank($|\?|#)/.test(aURI) &&
             /^(about|resource|chrome|file):/.test(aURI))
           return `about:blank?${aURI}`;
+        return aURI;
       });
       var tabs = await openURIsInTabs(uris, {
         windowId: apiWindow.id
