@@ -784,6 +784,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
 
+  var reason = toBeCollapsed ? kTABBAR_UPDATE_REASON_COLLAPSE : kTABBAR_UPDATE_REASON_EXPAND ;
+
   if (!configs.animation ||
       aInfo.justNow ||
       configs.collapseDuration < 1) {
@@ -793,7 +795,10 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     else
       aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
-    onEndCollapseExpandCompletely(toBeCollapsed);
+    onEndCollapseExpandCompletely({
+      collapsed: toBeCollapsed,
+      reason
+    });
 
     if (aInfo.last)
       scrollToTab(aTab, {
@@ -827,20 +832,18 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aTab.classList.remove(kTAB_STATE_COLLAPSING);
       aTab.classList.remove(kTAB_STATE_EXPANDING);
 
-      var reason;
       // The collapsed state of the tab can be changed by different trigger,
       // so we must respect the actual status of the tab, instead of the
       // "expected status" given via arguments.
-      if (aTab.classList.contains(kTAB_STATE_COLLAPSED)) {
+      if (aTab.classList.contains(kTAB_STATE_COLLAPSED))
         aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
-        reason = kTABBAR_UPDATE_REASON_COLLAPSE;
-      }
-      else {
+      else
         aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
-        reason = kTABBAR_UPDATE_REASON_EXPAND;
-      }
 
-      onEndCollapseExpandCompletely(toBeCollapsed);
+      onEndCollapseExpandCompletely({
+        collapsed: toBeCollapsed,
+        reason
+      });
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (!aTab || !aTab.onEndCollapseExpandAnimation ||
@@ -852,16 +855,16 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     }, configs.collapseDuration);
   });
 }
-function onEndCollapseExpandCompletely(aToBeCollapsed) {
+function onEndCollapseExpandCompletely(aOptions = {}) {
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     reserveToUpdateVisualMaxTreeLevel();
 
-  if (!aToBeCollapsed)
+  if (!aOptions.collapsed)
     reserveToSynchronizeThrobberAnimations();
 
   reserveToUpdateTabbarLayout({
-    reason,
+    reason:  aOptions.reason,
     timeout: configs.collapseDuration
   });
 }
