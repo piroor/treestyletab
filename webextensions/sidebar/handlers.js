@@ -686,6 +686,7 @@ function onTabOpened(aTab, aInfo = {}) {
       notifyOutOfViewTab(aTab);
   }
 
+  reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
     reason:  kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
@@ -700,6 +701,7 @@ function onTabClosed(aTab) {
   detachTab(aTab, {
     dontUpdateIndent: true
   });
+  reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
     reason:  kTABBAR_UPDATE_REASON_TAB_CLOSE,
     timeout: configs.collapseDuration
