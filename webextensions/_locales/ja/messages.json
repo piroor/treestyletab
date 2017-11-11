@@ -48,6 +48,7 @@
     }},
 
   "message.updatedFromLegacy.description": { "message": "Firefox 57以降のバージョンに対応するため、ツリー型タブがWebExtensionsベースに生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つとして利用できるようになっています。もし表示されていない場合は、「F1」キーを押すかツールバー上の「ツリー型タブ」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示してみて下さい。" },
+  "message.updatedFromLegacy.migrateSessions": { "message": "タブのツリー構造は自動的には移行されません。詳しくは<a href=\"https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x\">手動でのツリー情報の移行手順</a>を参照して下さい。" },
 
 
   "context.reloadTree.label": { "message": "このツリーを再読み込み" },

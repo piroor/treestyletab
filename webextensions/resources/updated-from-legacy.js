@@ -8,4 +8,5 @@
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;
   document.querySelector('#description').textContent = browser.i18n.getMessage('message.updatedFromLegacy.description');
+  document.querySelector('#migrateSessions').innerHTML = browser.i18n.getMessage('message.updatedFromLegacy.migrateSessions');
 }, { once: true });

@@ -48,6 +48,7 @@
     }},
 
   "message.updatedFromLegacy.description": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the \"F1\" key or click the \"Tree Style Tab\" button in the toolbar, to activate the Tree Style Tab sidebar panel." },
+  "message.updatedFromLegacy.migrateSessions": { "message": "Tree structure of tabs is not migrated automatically. See <a href=\"https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x\">the instruction for manual migration of tree information</a>." },
 
 
   "context.reloadTree.label": { "message": "Reload this Tree" },
