@@ -931,6 +931,7 @@ function onTabAttached(aTab, aInfo = {}) {
     }
   }
   reserveToUpdateTabTooltip(aInfo.parent);
+  reserveToUpdateVisualMaxTreeLevel();
   /*
     We must not scroll to the tab here, because the tab can be moved
     by the background page later. Instead we wait until the tab is
@@ -945,6 +946,7 @@ function onTabDetached(aTab, aDetachInfo = {}) {
     return;
   updateTabTwisty(parent);
   updateTabClosebox(parent);
+  reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabTooltip(parent);
   var ancestors = [parent].concat(getAncestorTabs(parent));
   for (let ancestor of ancestors) {
