@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 2.1.2 (2017.11.12)
+   * Keep tabs indented after deep level tab is closed. (regression)
+   * Link to instruction to migrate session information.
  - 2.1.1 (2017.11.11)
    * Optimize animation to collapse/expand tree.
    * Collapse other auto-expanded tree when new tree is created. (regression)
