@@ -428,7 +428,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   log('tabs.onAttached, id: ', aTabId, aAttachInfo);
   var apiTab;
   try {
-    apiTab = await browser.tabs.get(aTabId);
+    apiTab = await browser.tabs.get(aTabId).catch(handleMissingTabError);
     log(`New apiTab for attached tab ${aTabId}: `, apiTab);
     if (!apiTab)
       return;

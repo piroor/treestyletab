@@ -181,7 +181,9 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
   if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
-    browser.tabs.update(aTab.apiTab.id, { url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI) });
+    browser.tabs.update(aTab.apiTab.id, {
+      url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI)
+    }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
     return;
   }
@@ -517,7 +519,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
           browser.tabs.move(apiTabIds, {
             windowId: container.windowId,
             index:    toIndex
-          });
+          }).catch(handleMissingTabError);
         });
       }
     }
@@ -621,7 +623,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
           browser.tabs.move(apiTabIds, {
             windowId: container.windowId,
             index:    toIndex
-          });
+          }).catch(handleMissingTabError);
         });
       }
     }
@@ -665,7 +667,7 @@ async function loadURI(aURI, aOptions = {}) {
       windowId: aOptions.windowId,
       id:       apiTabId,
       url:      aURI
-    });
+    }).catch(handleMissingTabError);
   }
   catch(e) {
     handleMissingTabError(e);
