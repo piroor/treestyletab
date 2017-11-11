@@ -164,6 +164,10 @@
   "migration.configsFailed.notification.message": { "message": "設定の移行中に想定外の問題が発生したため、移行処理を中断しました。" },
 
   "config.importedTreeStructureFromLegacy.label": { "message": "旧バージョンからのツリー情報の移行" },
+  "config.migrateSessionStore.before":     { "message": "" },
+  "config.migrateSessionStore.link.label": { "message": "ツリー情報の手動での移行手順" },
+  "config.migrateSessionStore.link.uri":   { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
+  "config.migrateSessionStore.after":      { "message": "も参照して下さい。" },
   "config.migrateLegacyTreeStructure.label": { "message": "次回初期化時にツリー情報を復元する" },
   "config.importedTreeStructureFromLegacy.placeholder": { "message": "旧バージョンからのツリー情報移行用データをここに貼り付けてください" },
   "migration.tree.notification.title": { "message": "ツリー型タブ：ツリー情報の移行に成功しました" },

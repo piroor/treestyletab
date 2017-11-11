@@ -165,6 +165,10 @@
   "migration.configsFailed.notification.message": { "message": "Migration process is aborted due to unexpected problem." },
 
   "config.importedTreeStructureFromLegacy.label": { "message": "Migration of Old Tree" },
+  "config.migrateSessionStore.before":     { "message": "See" },
+  "config.migrateSessionStore.link.label": { "message": "the instruction for manual migration of tree information" },
+  "config.migrateSessionStore.link.uri":   { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
+  "config.migrateSessionStore.after":      { "message": "also." },
   "config.migrateLegacyTreeStructure.label": { "message": "Migrate tree of tabs at the next startup" },
   "config.importedTreeStructureFromLegacy.placeholder": { "message": "Paste migration data for old tree here" },
   "migration.tree.notification.title": { "message": "Tree Style Tab: Tree of tabs are successfully migrated" },
