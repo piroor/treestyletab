@@ -1525,14 +1525,14 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     let parent = null;
     if (parentIndexInTree > -1) {
       parent = getTabById(parentTab);
-    if (parent) {
-      let tabs = [parent].concat(getDescendantTabs(parent));
-      //log('existing tabs in tree: ', {
-      //  size: tabs.length,
-      //  parent: parentIndexInTree
-      //});
-      parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
-    }
+      if (parent) {
+        let tabs = [parent].concat(getDescendantTabs(parent));
+        //log('existing tabs in tree: ', {
+        //  size: tabs.length,
+        //  parent: parentIndexInTree
+        //});
+        parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
+      }
     }
     if (parent) {
       parent.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
