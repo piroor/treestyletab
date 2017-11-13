@@ -378,7 +378,7 @@ function getPinnedTabs(aHint) { // visible, pinned
 
 function getAllRootTabs(aHint) {
   var container = getTabsContainer(aHint);
-  return container.querySelector(`${kSELECTOR_LIVE_TAB}:not([${kPARENT}])`);
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${kPARENT}])`));
 }
 
 function getRootTabs(aHint) {
