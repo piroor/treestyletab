@@ -482,7 +482,7 @@ function updateIndent(aOptions = {}) {
       !aOptions.force)
     return;
 
-  gLastMaxLevel  = maxLevel;
+  gLastMaxLevel  = maxLevel + 5;
   gLastMaxIndent = maxIndent;
 
   if (!gIndentDefinition) {
