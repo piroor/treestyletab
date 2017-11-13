@@ -491,15 +491,20 @@ function updateIndent(aOptions = {}) {
     document.head.appendChild(gIndentDefinition);
   }
 
-  var definitions = [];
+  var indentToSelectors = {};
   for (let i = 0; i <= gLastMaxLevel; i++) {
-    definitions.push(generateIndentDefinitionForMaxLevel(i));
+    generateIndentAndSelectorsForMaxLevel(i, indentToSelectors);
+  }
+
+  var definitions = [];
+  for (let indent of Object.keys(indentToSelectors).sort()) {
+    definitions.push(`${indentToSelectors[indent].join(',\n')} {
+      ${gIndentProp}: ${indent};
+    }`);
   }
   gIndentDefinition.textContent = definitions.join('\n');
-
-  //log('updated indent definition: ', gIndentDefinition.textContent);
 }
-function generateIndentDefinitionForMaxLevel(aMaxLevel) {
+function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors) {
   var indent     = configs.baseIndent * aMaxLevel;
   var minIndent  = Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
   var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(gLastMaxIndent / aMaxLevel), minIndent));
@@ -508,21 +513,14 @@ function generateIndentDefinitionForMaxLevel(aMaxLevel) {
   if (configuredMaxLevel < 0)
     configuredMaxLevel = Number.MAX_SAFE_INTEGER;
 
-  // prepare definitions for all tabs including collapsed.
-  // otherwise, we'll see odd animation for expanded tabs
-  // from indent=0 to indent=expected.
   var definitions = [];
   var root        = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]`;
-  // default indent for unhandled (deep) level tabs
-  definitions.push(`${root} .tab[${kPARENT}]:not([${kLEVEL}="0"]) {
-    ${gIndentProp}: ${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px;
-  }`);
   for (let level = 1; level <= aMaxLevel; level++) {
-    definitions.push(`${root} .tab[${kPARENT}][${kLEVEL}="${level}"] {
-      ${gIndentProp}: ${Math.min(level, configuredMaxLevel) * indentUnit}px;
-    }`);
+    let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
+    if (!aIndentToSelectors[indent])
+      aIndentToSelectors[indent] = [];
+    aIndentToSelectors[indent].push(`${root} .tab[${kPARENT}][${kLEVEL}="${level}"]`);
   }
-  return definitions.join('\n');
 }
 
 
