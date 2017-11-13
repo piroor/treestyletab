@@ -159,21 +159,8 @@ function getLabelWithDescendants(aTab) {
 }
 
 function getMaxTreeLevel(aHint, aOptions = {}) {
-  var tabCondition = kXPATH_CONTROLLABLE_TAB;
-  if (aOptions.onlyVisible)
-    tabCondition = kXPATH_VISIBLE_TAB;
-  tabCondition = `${tabCondition}[@${kPARENT}]`;
-  var maxLevel = evaluateXPath(
-    `descendant::${tabCondition}[
-       not(preceding-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
-     ][
-       not(following-sibling::${tabCondition}/@${kLEVEL} > @${kLEVEL})
-     ]/@${kLEVEL}`,
-    getTabsContainer(aHint) || document,
-    XPathResult.NUMBER_TYPE
-  ).numberValue;
-  if (isNaN(maxLevel))
-    maxLevel = 0;
+  var tabs = aOptions.onlyVisible ? getVisibleTabs(aHint) : getTabs(aHint) ;
+  var maxLevel = Math.max(...tabs.map(aTab => parseInt(aTab.getAttribute(kLEVEL) || 0)));
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
   return maxLevel;
