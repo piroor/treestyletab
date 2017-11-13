@@ -20,6 +20,7 @@ window.addEventListener('load', init, { once: true });
 
 blockUserOperations({ throbber: true });
 
+var gInitializing = true;
 var gSizeDefinition;
 var gContextualIdentitiesStyle;
 var gStyleLoader;
@@ -115,9 +116,6 @@ async function init() {
       onConfigChange('animation');
       gMetricsData.add('apply configs');
 
-      updateVisualMaxTreeLevel();
-      updateIndent({ force: true });
-
       browser.runtime.onMessage.addListener(onMessage);
       browser.runtime.onMessageExternal.addListener(onMessageExternal);
     }),
@@ -158,7 +156,16 @@ async function init() {
     gMetricsData.add('applying scroll position');
   }
 
+  gInitializing = false;
+
+  synchronizeThrobberAnimations();
+  updateVisualMaxTreeLevel();
+  updateIndent({ force: true });
+  getAllTabs().forEach(updateTabTooltip);
+
   unblockUserOperations({ throbber: true });
+
+  gMetricsData.add('post process');
 
   gMetricsData.add('init end');
   log('Startup metrics: ', gMetricsData.toString());
@@ -454,6 +461,8 @@ function collapseExpandAllSubtree(aParams = {}) {
 
 
 function reserveToUpdateVisualMaxTreeLevel() {
+  if (gInitializing)
+    return;
   if (updateVisualMaxTreeLevel.waiting)
     clearTimeout(updateVisualMaxTreeLevel.waiting);
   updateVisualMaxTreeLevel.waiting = setTimeout(() => {
@@ -471,6 +480,8 @@ function updateVisualMaxTreeLevel() {
 
 
 function reserveToUpdateIndent() {
+  if (gInitializing)
+    return;
   //log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)
     clearTimeout(reserveToUpdateIndent.waiting);
@@ -613,7 +624,9 @@ function updateTabbarLayout(aParams = {}) {
 
 
 function reserveToUpdateTabTooltip(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (gInitializing ||
+      !aTab ||
+      !aTab.parentNode)
     return;
   for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
     if (tab.reservedUpdateTabTooltip)
@@ -621,23 +634,30 @@ function reserveToUpdateTabTooltip(aTab) {
   }
   aTab.reservedUpdateTabTooltip = setTimeout(() => {
     delete aTab.reservedUpdateTabTooltip;
-    updateTabTooltip(aTab);
+    updateTabAndAncestorsTooltip(aTab);
   }, 100);
+}
+
+function updateTabAndAncestorsTooltip(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
+  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
+    updateTabTooltip(tab);
+  }
 }
 
 function updateTabTooltip(aTab) {
   if (!aTab || !aTab.parentNode)
     return;
-  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
-    tab.labelWithDescendants = getLabelWithDescendants(tab);
-    tab.setAttribute('title', isSubtreeCollapsed(tab) && hasChildTabs(tab) ?
-      tab.labelWithDescendants : tab.label);
-  }
+  aTab.labelWithDescendants = getLabelWithDescendants(aTab);
+  aTab.setAttribute('title', isSubtreeCollapsed(aTab) && hasChildTabs(aTab) ?
+    aTab.labelWithDescendants : aTab.label);
 }
 
 
 function reserveToSynchronizeThrobberAnimations() {
-  if (synchronizeThrobberAnimations.reserved)
+  if (gInitializing ||
+      synchronizeThrobberAnimations.reserved)
     return;
   synchronizeThrobberAnimations.reserved = nextFrame().then(() => {
     delete synchronizeThrobberAnimations.reserved;
