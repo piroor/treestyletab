@@ -69,7 +69,7 @@ async function init() {
   getAllTabs().forEach(updateSubtreeCollapsed);
   for (let tab of getCurrentTabs()) {
     for (let ancestor of getAncestorTabs(tab)) {
-      collapseExpandTabAndSubtree(aTab, {
+      collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,
         justNow:   true
       });
