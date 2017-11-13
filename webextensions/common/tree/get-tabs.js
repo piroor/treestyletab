@@ -187,19 +187,12 @@ function getTabIndex(aTab, aOptions = {}) {
     return -1;
   assertValidHint(aTab);
 
-  let ignoreCondition = '';
+  var tabs = getTabs(aTab);
   if (Array.isArray(aOptions.ignoreTabs) &&
-      aOptions.ignoreTabs.length > 0) {
-    let ids = aOptions.ignoreTabs.map(aTab => aTab.id);
-    ids = ` ${ids.join(' ')} `;
-    ignoreCondition = `[not(contains(${ids}, " ${aTab.id} "))]`;
-  }
+      aOptions.ignoreTabs.length > 0)
+    tabs = tabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
 
-  return evaluateXPath(
-    `count(preceding-sibling::${kXPATH_LIVE_TAB}${ignoreCondition})`,
-    aTab,
-    XPathResult.NUMBER_TYPE
-  ).numberValue;
+  return tabs.indexOf(aTab);
 }
 
 function calculateNewTabIndex(aParams) {
