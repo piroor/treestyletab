@@ -19,8 +19,6 @@
                    color         var(--color-animation),
                    left          var(--collapse-animation),
                    margin-bottom var(--collapse-animation),
-                   margin-left   var(--indent-animation),
-                   margin-right  var(--indent-animation),
                    margin-top    var(--collapse-animation),
                    max-height    var(--collapse-animation),
                    max-width     var(--collapse-animation),
@@ -29,6 +27,8 @@
                    opacity       var(--collapse-animation),
                    right         var(--collapse-animation),
                    top           var(--collapse-animation);
+  --tab-indent-animation: margin-left   var(--indent-animation),
+                          margin-right  var(--indent-animation);
 
   --button-opacity: 0.75;
   --button-hover-opacity: 1;
@@ -176,6 +176,10 @@ ul {
 :root.animation .tab.animation-ready,
 :root.animation .after-tabs button {
   transition: var(--tab-animation);
+}
+:root.animation .tab.animation-ready:not(.expanding) {
+  transition: var(--tab-animation),
+              var(--tab-indent-animation);
 }
 
 .tab.removing,
