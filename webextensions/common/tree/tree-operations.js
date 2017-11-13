@@ -98,27 +98,27 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   else {
     newlyAttached = true;
 
-  let childIds;
-  {
-    let newIndex = calculateNewTabIndex({
-      insertBefore: aOptions.insertBefore,
-      insertAfter:  aOptions.insertAfter,
-      ignoreTabs:   [aChild.id]
-    });
-    let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
-    if (newIndex >= expectedAllTabs.length)
-      expectedAllTabs.push(aChild);
-    else
-      expectedAllTabs.splice(newIndex, 0, aChild);
+    let childIds;
+    {
+      let newIndex = calculateNewTabIndex({
+        insertBefore: aOptions.insertBefore,
+        insertAfter:  aOptions.insertAfter,
+        ignoreTabs:   [aChild.id]
+      });
+      let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
+      if (newIndex >= expectedAllTabs.length)
+        expectedAllTabs.push(aChild);
+      else
+        expectedAllTabs.splice(newIndex, 0, aChild);
 
-    let children = expectedAllTabs.filter(aTab => {
+      let children = expectedAllTabs.filter(aTab => {
         return (aTab == aChild ||
                 aTab.parentTab == aParent);
       });
-    aParent.childTabs = children;
-    childIds = children.map(aTab => aTab.id);
-  }
-  log('new children: ', childIds);
+      aParent.childTabs = children;
+      childIds = children.map(aTab => aTab.id);
+    }
+    log('new children: ', childIds);
 
     detachTab(aChild, clone(aOptions, {
       // Don't broadcast this detach operation, because this "attachTabTo" can be
