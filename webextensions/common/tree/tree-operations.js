@@ -1522,7 +1522,9 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
       parentTab = tab.id;
 
-    let parent = getTabById(parentTab);
+    let parent = null;
+    if (parentIndexInTree > -1) {
+      parent = getTabById(parentTab);
     if (parent) {
       let tabs = [parent].concat(getDescendantTabs(parent));
       //log('existing tabs in tree: ', {
@@ -1530,6 +1532,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       //  parent: parentIndexInTree
       //});
       parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
+    }
     }
     if (parent) {
       parent.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
