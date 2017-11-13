@@ -183,7 +183,7 @@ function getLastOpenedTab(aHint) {
 }
 
 function getTabIndex(aTab, aOptions = {}) {
-  if (!aTab || !aTab.id)
+  if (!aTab || !aTab.id || !aTab.parentNode)
     return -1;
   assertValidHint(aTab);
 
@@ -321,7 +321,8 @@ function getDescendantTabs(aRoot) {
 
   var descendants = [];
   for (let child of aRoot.childTabs) {
-    descendants = descendants.concat([child], getDescendantTabs(child));
+    descendants.push(child);
+    descendants = descendants.concat(getDescendantTabs(child));
   }
   return descendants;
 }
