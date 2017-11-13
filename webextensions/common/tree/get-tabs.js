@@ -343,15 +343,25 @@ function getDescendantTabs(aRoot) {
   if (!aRoot || !aRoot.parentNode)
     return [];
   assertValidHint(aRoot);
-  let nextSibling = getNextSiblingTab(aRoot);
-  if (nextSibling)
+
+  let nextOfLastDescendant =
+    getNextSiblingTab(aRoot) ||
+    evaluateXPath(
+      `following-sibling::${kXPATH_LIVE_TAB}[
+        not(@${kPARENT}) or
+        contains(" ${getAncestorTabs(aRoot).map(aTab => aTab.id).join(' ')} ", @${kPARENT})
+      ]`,
+      aRoot,
+      XPathResult.FIRST_ORDERED_NODE_TYPE
+    ).singleNodeValue;
+  if (nextOfLastDescendant)
     return getArrayFromXPathResult(evaluateXPath(
-      `following::${kXPATH_LIVE_TAB}[following::li[@id="${nextSibling.id}"]]`,
+      `following-sibling::${kXPATH_LIVE_TAB}[following-sibling::li[@id="${nextOfLastDescendant.id}"]]`,
       aRoot,
       XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
     ));
-  else
-    return Array.slice(aRoot.parentNode.querySelectorAll(`#${aRoot.id} ~ ${kSELECTOR_LIVE_TAB}`));
+
+  return Array.slice(aRoot.parentNode.querySelectorAll(`#${aRoot.id} ~ ${kSELECTOR_LIVE_TAB}`));
 }
 
 function getLastDescendantTab(aRoot) {
