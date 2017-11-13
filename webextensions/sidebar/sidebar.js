@@ -496,8 +496,10 @@ function updateIndent(aOptions = {}) {
     generateIndentAndSelectorsForMaxLevel(i, indentToSelectors);
   }
 
+  var indents = Object.keys(indentToSelectors);
+  indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
   var definitions = [];
-  for (let indent of Object.keys(indentToSelectors).sort()) {
+  for (let indent of indents) {
     definitions.push(`${indentToSelectors[indent].join(',\n')} {
       ${gIndentProp}: ${indent};
     }`);
