@@ -872,6 +872,8 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
   else
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
+
+  var reason = toBeCollapsed ? kTABBAR_UPDATE_REASON_COLLAPSE : kTABBAR_UPDATE_REASON_EXPAND ;
   onEndCollapseExpandCompletely({
     collapsed: toBeCollapsed,
     reason
