@@ -343,12 +343,12 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   }
 }
 function onApiTabRemovedComplete(aTab) {
-  if (oldTab.parentTab) {
-    oldTab.parentTab.childTabs = oldTab.parentTab.childTabs.filter(aChild => aChild != oldTab);
-    oldTab.parentTab = null;
+  if (aTab.parentTab) {
+    aTab.parentTab.childTabs = oldTab.parentTab.childTabs.filter(aChild => aChild != aTab);
+    aTab.parentTab = null;
   }
-  for (let child of oldTab.childTabs) {
-    if (child.parentTab == oldTab)
+  for (let child of aTab.childTabs) {
+    if (child.parentTab == aTab)
       child.parentTab = null;
   }
   var container = aTab.parentNode;
