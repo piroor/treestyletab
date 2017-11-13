@@ -340,14 +340,18 @@ function getChildTabIndex(aChild, aParent) {
 }
 
 function getDescendantTabs(aRoot) {
-  var descendants = [];
-  if (!aRoot)
-    return descendants;
-  for (let child of getChildTabs(aRoot)) {
-    descendants.push(child);
-    descendants = descendants.concat(getDescendantTabs(child));
-  }
-  return descendants;
+  if (!aRoot || !aRoot.parentNode)
+    return [];
+  assertValidHint(aRoot);
+  let nextSibling = getNextSiblingTab(aRoot);
+  if (nextSibling)
+    return getArrayFromXPathResult(evaluateXPath(
+      `following::${kXPATH_LIVE_TAB}[following::li[@id="${nextSibling.id}"]]`,
+      aRoot,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
+    ));
+  else
+    return Array.slice(aRoot.parentNode.querySelectorAll(`#${aRoot.id} ~ ${kSELECTOR_LIVE_TAB}`));
 }
 
 function getLastDescendantTab(aRoot) {
