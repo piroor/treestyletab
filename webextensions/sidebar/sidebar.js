@@ -500,9 +500,7 @@ function updateIndent(aOptions = {}) {
   indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
   var definitions = [];
   for (let indent of indents) {
-    definitions.push(`${indentToSelectors[indent].join(',\n')} {
-      ${gIndentProp}: ${indent};
-    }`);
+    definitions.push(`${indentToSelectors[indent].join(',\n')} { ${gIndentProp}: ${indent}; }`);
   }
   gIndentDefinition.textContent = definitions.join('\n');
 }
