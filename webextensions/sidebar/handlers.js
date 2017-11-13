@@ -729,16 +729,20 @@ function onTabMoving(aTab) {
       !isCollapsed(aTab) &&
       !isPinned(aTab) &&
       !isOpening(aTab)) {
+    aTab.classList.add(kTAB_STATE_MOVING);
     collapseExpandTab(aTab, {
       collapsed: true,
       justNow:   true
     });
-    nextFrame().then(() => {
+    nextFrame().then(async () => {
       if (!aTab.parentNode) // it was removed while waiting
         return;
       collapseExpandTab(aTab, {
         collapsed: false
       });
+      if (configs.animation)
+        await wait(configs.collapseDuration);
+      aTab.classList.remove(kTAB_STATE_MOVING);
     });
   }
 }

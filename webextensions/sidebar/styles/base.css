@@ -177,7 +177,8 @@ ul {
 :root.animation .after-tabs button {
   transition: var(--tab-animation);
 }
-:root.animation .tab.animation-ready:not(.expanding) {
+:root.animation .tab.animation-ready:not(.expanding),
+:root.animation .tab.animation-ready.expanding.moving {
   transition: var(--tab-animation),
               var(--tab-indent-animation);
 }

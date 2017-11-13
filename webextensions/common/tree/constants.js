@@ -115,6 +115,7 @@ const kTAB_STATE_COLLAPSED                 = 'collapsed';
 const kTAB_STATE_COLLAPSED_DONE            = 'collapsed-completely';
 const kTAB_STATE_COLLAPSING                = 'collapsing';
 const kTAB_STATE_EXPANDING                 = 'expanding';
+const kTAB_STATE_MOVING                    = 'moving';
 const kTAB_STATE_SUBTREE_COLLAPSED         = 'subtree-collapsed';
 const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 const kTAB_STATE_FAVICONIZED               = 'faviconized';
@@ -132,7 +133,10 @@ const kTAB_INTERNAL_STATES = [
   kTAB_STATE_ANIMATION_READY,
   kTAB_STATE_COLLAPSED_DONE,
   kTAB_STATE_OPENING,
-  kTAB_STATE_DUPLICATING
+  kTAB_STATE_DUPLICATING,
+  kTAB_STATE_COLLAPSING,
+  kTAB_STATE_EXPANDING,
+  kTAB_STATE_MOVING
 ];
 
 const kTABBAR_STATE_OVERFLOW               = 'overflow';
