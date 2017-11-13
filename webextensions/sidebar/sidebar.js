@@ -527,7 +527,7 @@ function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aD
   if (configuredMaxLevel < 0)
     configuredMaxLevel = Number.MAX_SAFE_INTEGER;
 
-  var root = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]`;
+  var root = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]:not(.initializing)`;
 
   // default indent for unhandled (deep) level tabs
   let defaultIndent = `${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px`;
