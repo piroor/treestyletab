@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.2.0 (2017.11.14)
+   * Optimize initialization, retrieving tab relations based on tree, and collapsing/expanding of tree.
  - 2.1.2 (2017.11.12)
    * Keep tabs indented after deep level tab is closed. (regression)
    * Link to instruction to migrate session information.
