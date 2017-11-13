@@ -383,12 +383,12 @@ function getAllRootTabs(aHint) {
 
 function getRootTabs(aHint) {
   var container = getTabsContainer(aHint);
-  return container.querySelector(`${kSELECTOR_CONTROLLABLE_TAB}:not([${kPARENT}])`);
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${kPARENT}])`));
 }
 
 function getVisibleRootTabs(aHint) {
   var container = getTabsContainer(aHint);
-  return container.querySelector(`${kSELECTOR_VISIBLE_TAB}:not([${kPARENT}])`);
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${kPARENT}])`));
 }
 
 function getVisibleLoadingTabs(aHint) {
