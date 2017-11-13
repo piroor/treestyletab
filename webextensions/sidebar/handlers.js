@@ -792,21 +792,6 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       aInfo.justNow ||
       configs.collapseDuration < 1) {
     //log('=> skip animation');
-    if (toBeCollapsed)
-      aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
-    else
-      aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
-
-    onEndCollapseExpandCompletely({
-      collapsed: toBeCollapsed,
-      reason
-    });
-
-    if (aInfo.last)
-      scrollToTab(aTab, {
-        anchor:            aInfo.anchor,
-        notifyOnOutOfView: true
-      });
     return;
   }
 
@@ -814,8 +799,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.add(kTAB_STATE_COLLAPSING);
   }
   else {
-    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
     aTab.classList.add(kTAB_STATE_EXPANDING);
+    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
   }
 
   nextFrame().then(() => {
@@ -869,6 +854,34 @@ function onEndCollapseExpandCompletely(aOptions = {}) {
     reason:  aOptions.reason,
     timeout: configs.collapseDuration
   });
+}
+
+function onTabCollapsedStateChanged(aTab, aInfo = {}) {
+  var toBeCollapsed = aInfo.collapsed;
+  if (!aTab.parentNode) // do nothing for closed tab!
+    return;
+
+  if (configs.animation &&
+      !aInfo.justNow &&
+      configs.collapseDuration > 0)
+    return; // animation
+
+  //log('=> skip animation');
+  if (toBeCollapsed)
+    aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+  else
+    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+
+  onEndCollapseExpandCompletely({
+    collapsed: toBeCollapsed,
+    reason
+  });
+
+  if (aInfo.last)
+    scrollToTab(aTab, {
+      anchor:            aInfo.anchor,
+      notifyOnOutOfView: true
+    });
 }
 
 

@@ -613,18 +613,22 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 }
 
 function collapseExpandTab(aTab, aParams = {}) {
+  var last = aParams.last &&
+               (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
+  var collapseExpandInfo = clone(aParams, {
+    anchor: last && aParams.anchor,
+    last:   last
+  });
+  window.onTabCollapsedStateChanging &&
+    window.onTabCollapsedStateChanging(aTab, collapseExpandInfo);
+
   if (aParams.collapsed)
     aTab.classList.add(kTAB_STATE_COLLAPSED);
   else
     aTab.classList.remove(kTAB_STATE_COLLAPSED);
 
-  var last = aParams.last &&
-               (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
-  window.onTabCollapsedStateChanging &&
-    window.onTabCollapsedStateChanging(aTab, clone(aParams, {
-      anchor: last && aParams.anchor,
-      last:   last
-    }));
+  window.onTabCollapsedStateChanged &&
+    window.onTabCollapsedStateChanged(aTab, collapseExpandInfo);
 
   if (aParams.broadcast && !aParams.broadcasted) {
     browser.runtime.sendMessage({
