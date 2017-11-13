@@ -528,7 +528,7 @@ function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aD
     let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
     if (!aIndentToSelectors[indent])
       aIndentToSelectors[indent] = [];
-    aIndentToSelectors[indent].push(`${root} .tab:not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}="${level}"]`);
+    aIndentToSelectors[indent].push(`${root} .tab:not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}][${kLEVEL}="${level}"]`);
   }
 }
 
