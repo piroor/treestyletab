@@ -48,7 +48,7 @@
     }},
 
   "message.updatedFromLegacy.description": { "message": "Firefox 57以降のバージョンに対応するため、ツリー型タブがWebExtensionsベースに生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つとして利用できるようになっています。もし表示されていない場合は、「F1」キーを押すかツールバー上の「ツリー型タブ」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示してみて下さい。" },
-  "message.updatedFromLegacy.migrateSessions": { "message": "タブのツリー構造は自動的には移行されません。詳しくは<a href=\"https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x\">手動でのツリー情報の移行手順</a>を参照して下さい。" },
+  "message.updatedFromLegacy.migrateSessions": { "message": "タブのツリー構造は自動的には移行されません。詳しくは<a href=\"https://github.com/piroor/treestyletab/wiki/TST-0.19.x%E3%81%8B%E3%82%89TST-2.x%E3%81%B8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%E6%83%85%E5%A0%B1%E3%81%AE%E7%A7%BB%E8%A1%8C%E6%89%8B%E9%A0%86\">手動でのツリー情報の移行手順</a>を参照して下さい。" },
 
 
   "context.reloadTree.label": { "message": "このツリーを再読み込み" },
@@ -166,7 +166,7 @@
   "config.importedTreeStructureFromLegacy.label": { "message": "旧バージョンからのツリー情報の移行" },
   "config.migrateSessionStore.before":     { "message": "" },
   "config.migrateSessionStore.link.label": { "message": "ツリー情報の手動での移行手順" },
-  "config.migrateSessionStore.link.uri":   { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
+  "config.migrateSessionStore.link.uri":   { "message": "https://github.com/piroor/treestyletab/wiki/TST-0.19.x%E3%81%8B%E3%82%89TST-2.x%E3%81%B8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%E6%83%85%E5%A0%B1%E3%81%AE%E7%A7%BB%E8%A1%8C%E6%89%8B%E9%A0%86" },
   "config.migrateSessionStore.after":      { "message": "も参照して下さい。" },
   "config.migrateLegacyTreeStructure.label": { "message": "次回初期化時にツリー情報を復元する" },
   "config.importedTreeStructureFromLegacy.placeholder": { "message": "旧バージョンからのツリー情報移行用データをここに貼り付けてください" },
