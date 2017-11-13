@@ -12,6 +12,9 @@ var gSidebarOpenState       = new Map();
 var gSidebarOpenStateUpdateTimer;
 var gExternalListenerAddons = {};
 
+var gMetricsData = new MetricsData();
+gMetricsData.add('Loaded');
+
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 browser.runtime.onInstalled.addListener(aDetails => {
@@ -25,22 +28,28 @@ browser.runtime.onInstalled.addListener(aDetails => {
 });
 
 async function init() {
+  gMetricsData.add('init start');
   window.addEventListener('pagehide', destroy, { once: true });
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
   gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
+  gMetricsData.add('configs.$loaded');
 
   migrateLegacyConfigs();
+  gMetricsData.add('migrateLegacyConfigs');
 
-  await Promise.all([
+  await gMetricsData.addAsync('parallel initialization tasks: waitUntilCompletelyRestored, retrieveAllContextualIdentities', Promise.all([
     waitUntilCompletelyRestored(),
     retrieveAllContextualIdentities()
-  ]);
+  ]));
   await rebuildAll();
+  gMetricsData.add('rebuildAll');
   await loadTreeStructure();
+  gMetricsData.add('loadTreeStructure');
 
   migrateLegacyTreeStructure();
+  gMetricsData.add('migrateLegacyTreeStructure');
 
   startWatchSidebarOpenState();
   startObserveApiTabs();
@@ -65,6 +74,7 @@ async function init() {
   await readyForExternalAddons();
 
   notifyUpdatedFromLegacy();
+  log('Startup metrics: ', gMetricsData.toString());
 }
 
 function waitUntilCompletelyRestored() {
@@ -229,15 +239,19 @@ async function loadTreeStructure() {
   var windows = await browser.windows.getAll({
     windowTypes: ['normal']
   });
-  return Promise.all(windows.map(async aWindow => {
+  gMetricsData.add('loadTreeStructure: browser.windows.getAll');
+  return gMetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async aWindow => {
     var structure = await browser.sessions.getWindowValue(
       aWindow.id,
       kWINDOW_STATE_TREE_STRUCTURE
     );
+    gMetricsData.add('loadTreeStructure: browser.sessions.getWindowValue');
     var tabs = getAllTabs(aWindow.id);
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
-    if (structure)
+    if (structure) {
       await applyTreeStructureToTabs(tabs, structure);
+      gMetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
+    }
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);
       for (let tab of tabs) {
@@ -246,8 +260,9 @@ async function loadTreeStructure() {
           canCollapse:     true
         });
       }
+      gMetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
     }
-  }));
+  })));
 }
 
 async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
