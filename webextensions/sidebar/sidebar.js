@@ -492,19 +492,22 @@ function updateIndent(aOptions = {}) {
   }
 
   var indentToSelectors = {};
+  var defaultIndentToSelectors = {};
   for (let i = 0; i <= gLastMaxLevel; i++) {
-    generateIndentAndSelectorsForMaxLevel(i, indentToSelectors);
+    generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
   }
 
-  var indents = Object.keys(indentToSelectors);
-  indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
   var definitions = [];
-  for (let indent of indents) {
-    definitions.push(`${indentToSelectors[indent].join(',\n')} { ${gIndentProp}: ${indent}; }`);
+  for (let indentSet of [defaultIndentToSelectors, indentToSelectors]) {
+    let indents = Object.keys(indentSet);
+    indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
+    for (let indent of indents) {
+      definitions.push(`${indentSet[indent].join(',\n')} { ${gIndentProp}: ${indent}; }`);
+    }
   }
   gIndentDefinition.textContent = definitions.join('\n');
 }
-function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors) {
+function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aDefaultIndentToSelectors) {
   var indent     = configs.baseIndent * aMaxLevel;
   var minIndent  = Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
   var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(gLastMaxIndent / aMaxLevel), minIndent));
@@ -513,13 +516,19 @@ function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors) {
   if (configuredMaxLevel < 0)
     configuredMaxLevel = Number.MAX_SAFE_INTEGER;
 
-  var definitions = [];
-  var root        = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]`;
+  var root = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]`;
+
+  // default indent for unhandled (deep) level tabs
+  let defaultIndent = `${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px`;
+  if (!aDefaultIndentToSelectors[defaultIndent])
+    aDefaultIndentToSelectors[defaultIndent] = [];
+  aDefaultIndentToSelectors[defaultIndent].push(`${root} .tab:not([${kLEVEL}="0"])`);
+
   for (let level = 1; level <= aMaxLevel; level++) {
     let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
     if (!aIndentToSelectors[indent])
       aIndentToSelectors[indent] = [];
-    aIndentToSelectors[indent].push(`${root} .tab[${kPARENT}][${kLEVEL}="${level}"]`);
+    aIndentToSelectors[indent].push(`${root} .tab[${kLEVEL}="${level}"]`);
   }
 }
 
