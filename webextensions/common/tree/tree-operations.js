@@ -1485,6 +1485,8 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   if (!aTabs || !aTreeStructure)
     return;
 
+  gMetricsData.add('applyTreeStructureToTabs: start');
+
   log('applyTreeStructureToTabs: ', aTabs.map(dumpTab), aTreeStructure, aOptions);
   aTabs = aTabs.slice(0, aTreeStructure.length);
   aTreeStructure = aTreeStructure.slice(0, aTabs.length);
@@ -1493,6 +1495,8 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   expandStates = expandStates.slice(0, aTabs.length);
   while (expandStates.length < aTabs.length)
     expandStates.push(-1);
+
+  gMetricsData.add('applyTreeStructureToTabs: preparation');
 
   var parentTab = null;
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
@@ -1536,6 +1540,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       }));
     }
   }
+  gMetricsData.add('applyTreeStructureToTabs: attach/detach');
 
   log('expandStates: ', expandStates);
   for (let i = aTabs.length-1; i > -1; i--) {
@@ -1547,6 +1552,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       force:     true
     }));
   }
+  gMetricsData.add('applyTreeStructureToTabs: collapse/expand');
 }
 
 

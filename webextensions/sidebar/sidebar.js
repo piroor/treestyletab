@@ -361,8 +361,11 @@ async function inheritTreeStructure() {
     type:     kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
   });
-  if (response.structure)
+  gMetricsData.add('inheritTreeStructure: kCOMMAND_PULL_TREE_STRUCTURE');
+  if (response.structure) {
     applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+    gMetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
+  }
 }
 
 async function waitUntilBackgroundIsReady() {
