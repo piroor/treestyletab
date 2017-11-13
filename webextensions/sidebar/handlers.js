@@ -923,6 +923,8 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 */
 
 function onTabAttached(aTab, aInfo = {}) {
+  if (gInitializing)
+    return;
   tabContextMenu.close();
   updateTabTwisty(aInfo.parent);
   updateTabClosebox(aInfo.parent);
@@ -943,6 +945,8 @@ function onTabAttached(aTab, aInfo = {}) {
 }
 
 function onTabDetached(aTab, aDetachInfo = {}) {
+  if (gInitializing)
+    return;
   tabContextMenu.close();
   var parent = aDetachInfo.oldParentTab;
   if (!parent)

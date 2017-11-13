@@ -66,6 +66,16 @@ async function init() {
 
   gInitializing = false;
 
+  getAllTabs().forEach(updateSubtreeCollapsed);
+  for (let tab of getCurrentTabs()) {
+    for (let ancestor of getAncestorTabs(tab)) {
+      collapseExpandTabAndSubtree(aTab, {
+        collapsed: false,
+        justNow:   true
+      });
+    }
+  }
+
   // notify that the master process is ready.
   browser.runtime.sendMessage({
     type: kCOMMAND_PING_TO_SIDEBAR
@@ -462,7 +472,9 @@ async function updateChildren(aTab) {
 }
 
 function reserveToUpdateSubtreeCollapsed(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (gInitializing ||
+      !aTab ||
+      !aTab.parentNode)
     return;
   if (aTab.reservedUpdateSubtreeCollapsed)
     clearTimeout(aTab.reservedUpdateSubtreeCollapsed);

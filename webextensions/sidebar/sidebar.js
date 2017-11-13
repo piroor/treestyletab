@@ -161,7 +161,12 @@ async function init() {
   synchronizeThrobberAnimations();
   updateVisualMaxTreeLevel();
   updateIndent({ force: true });
-  getAllTabs().forEach(updateTabTooltip);
+  for (let tab of getAllTabs()) {
+    updateTabTwisty(tab);
+    updateTabClosebox(tab);
+    updateTabsCount(tab);
+    updateTabTooltip(tab);
+  }
 
   unblockUserOperations({ throbber: true });
 

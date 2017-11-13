@@ -612,7 +612,8 @@ async function onTabAttached(aTab, aInfo = {}) {
     newlyAttached: aInfo.newlyAttached
   });
 
-  if (aInfo.newlyAttached) {
+  if (aInfo.newlyAttached &&
+      !gInitializing) {
     if (isSubtreeCollapsed(aInfo.parent) &&
         !aInfo.forceExpand)
       collapseExpandTabAndSubtree(aTab, {

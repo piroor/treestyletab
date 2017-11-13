@@ -137,6 +137,9 @@ function getCurrentTab(aHint) {
   var container = getTabsContainer(aHint);
   return container.querySelector(`.${kTAB_STATE_ACTIVE}`);
 }
+function getCurrentTabs() {
+  return Array.slice(document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`));
+}
 
 function getNextTab(aTab) {
   if (!aTab || !aTab.id)
