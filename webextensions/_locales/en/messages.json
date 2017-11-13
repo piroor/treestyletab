@@ -143,7 +143,7 @@
   "config.autoExpandOnAttached.label": { "message": "Expand tree automatically, when tabs are inserted into the tree" },
   "config.collapseExpandSubtreeByDblClick.label": { "message": "Double-click on a tab to collapse/expand tree" },
 
-  "config.closeParentBehavior.caption": { "message": "When a parent tab is closed" },
+  "config.closeParentBehavior.caption": { "message": "When a parent tab is closed with expanded tree" },
   "config.closeParentBehavior.close": { "message": "Close child tabs too" },
   "config.closeParentBehavior.replaceWithGroupTab": { "message": "Replace closed parent with a dummy tab and keep the tree" },
   "config.closeParentBehavior.promoteFirst": { "message": "Promote the first child tab as the new parent" },

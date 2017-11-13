@@ -143,7 +143,7 @@
   "config.autoExpandOnAttached.label": { "message": "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する" },
   "config.collapseExpandSubtreeByDblClick.label": { "message": "タブのダブルクリックでツリーを開閉する" },
 
-  "config.closeParentBehavior.caption": { "message": "親のタブを閉じた時の挙動" },
+  "config.closeParentBehavior.caption": { "message": "展開されたツリーで親のタブを閉じた時の挙動" },
   "config.closeParentBehavior.close": { "message": "子孫のタブも一緒に閉じる" },
   "config.closeParentBehavior.replaceWithGroupTab": { "message": "代わりにグループ化用のダミーのタブを開いてツリーを維持する" },
   "config.closeParentBehavior.promoteFirst": { "message": "最初の子タブを新しい親にする" },

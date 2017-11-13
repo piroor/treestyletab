@@ -138,7 +138,7 @@
   "config.autoExpandOnAttached.label": { "message": "标签页插入树时，自动展开该树" },
   "config.collapseExpandSubtreeByDblClick.label": { "message": "双击标签页折叠/展开树" },
 
-  "config.closeParentBehavior.caption": { "message": "父标签页关闭时" },
+  "config.closeParentBehavior.caption": { "message": "When a parent tab is closed with expanded tree" },
   "config.closeParentBehavior.close": { "message": "关闭子标签页" },
   "config.closeParentBehavior.replaceWithGroupTab": { "message": "用虚构标签页替换已关闭的父标签页从而保留树" },
   "config.closeParentBehavior.promoteFirst": { "message": "将第一个子标签页作为新的父标签页" },
