@@ -466,7 +466,7 @@ function updateVisualMaxTreeLevel() {
   var maxLevel = getMaxTreeLevel(gTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
-  document.documentElement.setAttribute(kMAX_TREE_LEVEL, Math.min(1, maxLevel));
+  document.documentElement.setAttribute(kMAX_TREE_LEVEL, Math.max(1, maxLevel));
 }
 
 
