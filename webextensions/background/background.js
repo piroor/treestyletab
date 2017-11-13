@@ -46,7 +46,7 @@ async function init() {
   await rebuildAll();
   gMetricsData.add('rebuildAll');
   await loadTreeStructure();
-  gMetricsData.add('loadTreeStructure');
+  gMetricsData.add('loadTreeStructure done');
 
   migrateLegacyTreeStructure();
   gMetricsData.add('migrateLegacyTreeStructure');
@@ -249,7 +249,7 @@ async function loadTreeStructure() {
     var tabs = getAllTabs(aWindow.id);
     var windowStateCompletelyApplied = structure && structure.length == tabs.length;
     if (structure) {
-      await applyTreeStructureToTabs(tabs, structure);
+      applyTreeStructureToTabs(tabs, structure);
       gMetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
     }
     if (!windowStateCompletelyApplied) {

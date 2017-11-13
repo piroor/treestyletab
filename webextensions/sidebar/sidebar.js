@@ -55,41 +55,48 @@ async function init() {
   await Promise.all([
     applyStyle(),
     waitUntilBackgroundIsReady(),
-    retrieveAllContextualIdentities()
+    retrieveAllContextualIdentities(),
+    browser.runtime.sendMessage({
+      type:     kNOTIFY_SIDEBAR_OPENED,
+      windowId: gTargetWindow
+    })
   ]);
   gMetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
-  applyUserStyleRules();
-  gMetricsData.add('applyUserStyleRules');
-  calculateDefaultSizes();
-  gMetricsData.add('calculateDefaultSizes');
-  document.documentElement.classList.remove('initializing');
-
-  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-  let response = await browser.runtime.sendMessage({
-    type: kCOMMAND_PULL_TAB_ID_TABLES
-  });
-  gMetricsData.add('kCOMMAND_PULL_TAB_ID_TABLES');
-  gTabIdWrongToCorrect = response.wrongToCorrect;
-  gTabIdCorrectToWrong = response.correctToWrong;
-
-  await rebuildAll();
-  gMetricsData.add('rebuildAll');
-
-  var scrollPosition;
 
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
-    gMetricsData.addAsync('main task: notify ,update, restore, and so on', async () => {
-      browser.runtime.sendMessage({
-        type:     kNOTIFY_SIDEBAR_OPENED,
-        windowId: gTargetWindow
+    gMetricsData.addAsync('misc', async () => {
+      applyUserStyleRules();
+      gMetricsData.add('applyUserStyleRules');
+      calculateDefaultSizes();
+      gMetricsData.add('calculateDefaultSizes');
+      document.documentElement.classList.remove('initializing');
+      await rebuildAll();
+      gMetricsData.add('rebuildAll');
+    }),
+    gMetricsData.addAsync('kCOMMAND_PULL_TAB_ID_TABLES', async () => {
+      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+      let response = await browser.runtime.sendMessage({
+        type: kCOMMAND_PULL_TAB_ID_TABLES
       });
+      gTabIdWrongToCorrect = response.wrongToCorrect;
+      gTabIdCorrectToWrong = response.correctToWrong;
+    })
+  ]));
+  gMetricsData.add('parallel initialization tasks: done');
 
+  await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
+    gMetricsData.addAsync('main', async () => {
       updateTabbarLayout({ justNow: true });
-      gMetricsData.add('updateTabbarLayout');
-
+    }),
+    gMetricsData.addAsync('inheritTreeStructure', async () => {
       await inheritTreeStructure();
-      gMetricsData.add('inheritTreeStructure');
+    })
+  ]));
+  gMetricsData.add('parallel initialization tasks: done');
 
+  var scrollPosition;
+  await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
+    gMetricsData.addAsync('main task: notify ,update, restore, and so on', async () => {
       document.addEventListener('mousedown', onMouseDown);
       document.addEventListener('mouseup', onMouseUp);
       document.addEventListener('click', onClick);
@@ -139,6 +146,7 @@ async function init() {
       tabContextMenu.init();
     })
   ]));
+  gMetricsData.add('parallel initialization tasks: done');
 
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
@@ -354,7 +362,7 @@ async function inheritTreeStructure() {
     windowId: gTargetWindow
   });
   if (response.structure)
-    await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+    applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
 }
 
 async function waitUntilBackgroundIsReady() {
