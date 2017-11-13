@@ -522,7 +522,7 @@ function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aD
   let defaultIndent = `${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px`;
   if (!aDefaultIndentToSelectors[defaultIndent])
     aDefaultIndentToSelectors[defaultIndent] = [];
-  aDefaultIndentToSelectors[defaultIndent].push(`${root} .tab:not(.${kTAB_STATE_COLLAPSED_DONE}):not([${kLEVEL}="0"])`);
+  aDefaultIndentToSelectors[defaultIndent].push(`${root} .tab:not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}]:not([${kLEVEL}="0"])`);
 
   for (let level = 1; level <= aMaxLevel; level++) {
     let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
