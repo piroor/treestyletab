@@ -477,7 +477,7 @@ var gIndentProp = 'margin-left';
 function updateIndent(aOptions = {}) {
   var maxLevel  = getMaxTreeLevel(gTargetWindow);
   var maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
-  if (maxLevel == gLastMaxLevel &&
+  if (maxLevel <= gLastMaxLevel &&
       maxIndent == gLastMaxIndent &&
       !aOptions.force)
     return;
