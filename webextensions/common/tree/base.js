@@ -160,6 +160,9 @@ function buildTab(aApiTab, aOptions = {}) {
     tab._resolveClosedWhileActive = aResolve;
   });
 
+  tab.childTabs = [];
+  tab.parentTab = null;
+
   return tab;
 }
 

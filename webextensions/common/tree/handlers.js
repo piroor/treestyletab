@@ -343,6 +343,14 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   }
 }
 function onApiTabRemovedComplete(aTab) {
+  if (oldTab.parentTab) {
+    oldTab.parentTab.childTabs = oldTab.parentTab.childTabs.filter(aChild => aChild != oldTab);
+    oldTab.parentTab = null;
+  }
+  for (let child of oldTab.childTabs) {
+    if (child.parentTab == oldTab)
+      child.parentTab = null;
+  }
   var container = aTab.parentNode;
   if (!container) // it was removed while waiting
     return;

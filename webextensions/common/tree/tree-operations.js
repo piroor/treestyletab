@@ -90,7 +90,15 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   var newIndex = calculateNewTabIndex(aOptions);
   log('newIndex: ', newIndex);
 
-  var childIds;
+  var newlyAttached = false;
+  if (aParent.childTabs.indexOf(aChild) > -1 &&
+      aChild.parentTab == aParent) {
+    log('=> already attached');
+  }
+  else {
+    newlyAttached = true;
+
+  let childIds;
   {
     let newIndex = calculateNewTabIndex({
       insertBefore: aOptions.insertBefore,
@@ -103,20 +111,14 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     else
       expectedAllTabs.splice(newIndex, 0, aChild);
 
-    childIds = expectedAllTabs.filter(aTab => {
-      return (aTab == aChild ||
-              aTab.getAttribute(kPARENT) == aParent.id);
-    }).map(aTab => aTab.id);
+    let children = expectedAllTabs.filter(aTab => {
+        return (aTab == aChild ||
+                aTab.parentTab == aParent);
+      });
+    aParent.childTabs = children;
+    childIds = children.map(aTab => aTab.id);
   }
   log('new children: ', childIds);
-
-  var newlyAttached = false;
-  if ((aParent.getAttribute(kCHILDREN) || '').indexOf(`|${aChild.id}|`) > -1 &&
-      aChild.getAttribute(kPARENT) == aParent.id) {
-    log('=> already attached');
-  }
-  else {
-    newlyAttached = true;
 
     detachTab(aChild, clone(aOptions, {
       // Don't broadcast this detach operation, because this "attachTabTo" can be
@@ -125,12 +127,10 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       broadcast: false
     }));
 
-    if (childIds.length == 0)
-      aParent.removeAttribute(kCHILDREN);
-    else
-      aParent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
+    aParent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
 
     aChild.setAttribute(kPARENT, aParent.id);
+    aChild.parentTab = aParent;
 
     let parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
     if (!aOptions.dontUpdateIndent) {
@@ -246,7 +246,8 @@ function detachTab(aChild, aOptions = {}) {
     log('parent is already removed, or orphan tab');
 
   if (parent) {
-    let childIds = (parent.getAttribute(kCHILDREN) || '').split('|').filter((aId) => aId && aId != aChild.id);
+    parent.childTabs = parent.childTabs.filter(aTab => aTab != aChild);
+    let childIds = parent.childTabs.map(aTab => aTab.id);
     if (childIds.length == 0) {
       parent.removeAttribute(kCHILDREN);
       log('no more child');
@@ -258,6 +259,7 @@ function detachTab(aChild, aOptions = {}) {
     updateParentTab(parent);
   }
   aChild.removeAttribute(kPARENT);
+  aChild.parentTab = null;
 
   updateTabsIndent(aChild);
 

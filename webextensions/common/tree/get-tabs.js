@@ -245,10 +245,7 @@ function getParentTab(aChild) {
   if (!aChild)
     return null;
   assertValidHint(aChild);
-  var id = aChild.getAttribute(kPARENT);
-  if (id)
-    return aChild.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}#${id}`);
-  return null;
+  return aChild.parentTab || null;
 }
 
 function getAncestorTabs(aDecendant) {
@@ -272,57 +269,48 @@ function getSiblingTabs(aTab) {
   if (!aTab || !aTab.id)
     return [];
   assertValidHint(aTab);
-  var parentId = aTab.getAttribute(kPARENT);
-  if (!parentId)
+  if (!aTab.parentTab)
     return getRootTabs(aTab);
-  return aTab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${kPARENT}="${parentId}"]`);
+  return aTab.parentTab.childTabs;
 }
 
 function getNextSiblingTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
-  var parentId = aTab.getAttribute(kPARENT);
-  var parentCondition = parentId ? `[${kPARENT}="${parentId}"]` : `:not([${kPARENT}])` ;
-  return aTab.parentNode.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}${parentCondition}`);
+  var siblings = getSiblingTabs(aTab);
+  var index = siblings.indexOf(aTab);
+  return index < siblings.length - 1 ? siblings[index + 1] : null ;
 }
 
 function getPreviousSiblingTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
-  var parentId = aTab.getAttribute(kPARENT);
-  var parentCondition = parentId ? `[@${kPARENT}="${parentId}"]` : `[not(@${kPARENT})]` ;
-  return evaluateXPath(
-    `preceding-sibling::${kXPATH_LIVE_TAB}${parentCondition}[1]`,
-    aTab,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  var siblings = getSiblingTabs(aTab);
+  var index = siblings.indexOf(aTab);
+  return index > 1 ? siblings[index - 1] : null ;
 }
 
 function getChildTabs(aParent) {
   if (!aParent)
     return [];
   assertValidHint(aParent);
-  return Array.slice(aParent.parentNode.querySelectorAll(`${kSELECTOR_LIVE_TAB}[${kPARENT}="${aParent.id}"]`));
+  return aParent.childTabs;
 }
 
 function getFirstChildTab(aParent) {
   if (!aParent)
     return null;
   assertValidHint(aParent);
-  return aParent.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${kPARENT}="${aParent.id}"`);
+  return aParent.childTabs.length > 0 ? aParent.childTabs[0] : null ;
 }
 
 function getLastChildTab(aParent) {
   if (!aParent)
     return null;
   assertValidHint(aParent);
-  return evaluateXPath(
-    `following-sibling::${kXPATH_LIVE_TAB}[@${kPARENT}="${aParent.id}"][last()]`,
-    aParent,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  return aParent.childTabs.length > 0 ? aParent.childTabs[aParent.childTabs.length - 1] : null ;
 }
 
 function getChildTabIndex(aChild, aParent) {
@@ -330,13 +318,7 @@ function getChildTabIndex(aChild, aParent) {
     return -1;
   assertValidHint(aChild);
   assertValidHint(aParent);
-  var parentId = (aParent && aParent.id) || aChild.getAttribute(kPARENT);
-  var parentCondition = parentId ? `[@${kPARENT}="${parentId}"]` : `[not(@${kPARENT})]` ;
-  return evaluateXPath(
-    `count(preceding-sibling::${kXPATH_CONTROLLABLE_TAB}${parentCondition})`,
-    aChild,
-    XPathResult.NUMBER_TYPE
-  ).numberValue;
+  return aParent.childTabs.indexOf(aChild);
 }
 
 function getDescendantTabs(aRoot) {
@@ -344,24 +326,11 @@ function getDescendantTabs(aRoot) {
     return [];
   assertValidHint(aRoot);
 
-  let nextOfLastDescendant =
-    getNextSiblingTab(aRoot) ||
-    evaluateXPath(
-      `following-sibling::${kXPATH_LIVE_TAB}[
-        not(@${kPARENT}) or
-        contains(" ${getAncestorTabs(aRoot).map(aTab => aTab.id).join(' ')} ", @${kPARENT})
-      ]`,
-      aRoot,
-      XPathResult.FIRST_ORDERED_NODE_TYPE
-    ).singleNodeValue;
-  if (nextOfLastDescendant)
-    return getArrayFromXPathResult(evaluateXPath(
-      `following-sibling::${kXPATH_LIVE_TAB}[following-sibling::li[@id="${nextOfLastDescendant.id}"]]`,
-      aRoot,
-      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE
-    ));
-
-  return Array.slice(aRoot.parentNode.querySelectorAll(`#${aRoot.id} ~ ${kSELECTOR_LIVE_TAB}`));
+  var descendants = [];
+  for (let child of aRoot.childTabs) {
+    descendants = descendants.concat([child], getDescendantTabs(child));
+  }
+  return descendants;
 }
 
 function getLastDescendantTab(aRoot) {
