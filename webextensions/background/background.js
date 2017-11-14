@@ -185,18 +185,22 @@ function shouldApplyTreeBehavior(aParams = {}) {
     case kPARENT_TAB_BEHAVIOR_ALWAYS:
       return true;
     case kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-      return gSidebarOpenState.has(aParams.windowId);
+      return aParams.windowId && gSidebarOpenState.has(aParams.windowId);
     default:
     case kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
-      return !!aParams.fromSidebar;
+      return !!aParams.byInternalOperation;
   }
 }
 
-function getCloseParentBehaviorForTabWithSidebarOpenState(aTab) {
+function getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo = {}) {
   return getCloseParentBehaviorForTab(aTab, {
-    keepChildren: !shouldApplyTreeBehavior({
-      windowId: aTab.apiTab.windowId
-    })
+    keepChildren: (
+      aInfo.keepChildren ||
+      !shouldApplyTreeBehavior({
+        windowId:            aInfo.windowId || aTab.apiTab.windowId,
+        byInternalOperation: aInfo.byInternalOperation
+      })
+    )
   });
 }
 

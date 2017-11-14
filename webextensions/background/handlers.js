@@ -181,7 +181,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   tryMoveFocusFromClosingCurrentTab(aTab);
 
   var ancestors = getAncestorTabs(aTab);
-  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
+  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
       closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       isSubtreeCollapsed(aTab))
@@ -703,13 +703,8 @@ function onTabDetached(aTab, aDetachInfo) {
 }
 
 async function onTabAttachedToWindow(aTab, aInfo = {}) {
-  if (!aInfo.windowId)
-    return;
-
-  var applyTreeBehavior = shouldApplyTreeBehavior({
-    windowId: aInfo.windowId
-  });
-  if (!applyTreeBehavior)
+  if (!aInfo.windowId ||
+      !shouldApplyTreeBehavior(aInfo))
     return;
 
   log('onTabAttachedToWindow ', dumpTab(aTab), aInfo);
@@ -730,11 +725,8 @@ async function onTabAttachedToWindow(aTab, aInfo = {}) {
   }
 }
 
-function onTabDetachedFromWindow(aTab) {
-  var applyTreeBehavior = shouldApplyTreeBehavior({
-    windowId: aTab.apiTab.windowId
-  });
-  if (applyTreeBehavior) {
+function onTabDetachedFromWindow(aTab, aInfo = {}) {
+  if (shouldApplyTreeBehavior(aInfo)) {
     tryMoveFocusFromClosingCurrentTabNow(aTab, {
       ignoredTabs: getDescendantTabs(aTab)
     });
@@ -744,7 +736,7 @@ function onTabDetachedFromWindow(aTab) {
   tryMoveFocusFromClosingCurrentTab(aTab);
 
   log('onTabDetachedFromWindow ', dumpTab(aTab));
-  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab);
+  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo);
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 

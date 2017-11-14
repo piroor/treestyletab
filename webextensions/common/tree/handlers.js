@@ -484,8 +484,9 @@ function onApiTabDetached(aTabId, aDetachInfo) {
   if (!oldTab)
     return;
 
-  gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
+  var info = gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
     windowId:    aDetachInfo.oldWindowId,
+    byInternalOperation: true, // TODO: this need to be detected dynamically
     descendants: getDescendantTabs(oldTab)
   };
 
@@ -493,7 +494,7 @@ function onApiTabDetached(aTabId, aDetachInfo) {
     oldTab.parentNode.toBeDetachedTabs--;
   }
   else {
-    window.onTabDetachedFromWindow && onTabDetachedFromWindow(oldTab);
+    window.onTabDetachedFromWindow && onTabDetachedFromWindow(oldTab, info);
   }
 
   var container = oldTab.parentNode;
