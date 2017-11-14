@@ -71,8 +71,6 @@ async function init() {
       calculateDefaultSizes();
       gMetricsData.add('calculateDefaultSizes');
       document.documentElement.classList.remove('initializing');
-      await rebuildAll();
-      gMetricsData.add('rebuildAll');
     }),
     gMetricsData.addAsync('kCOMMAND_PULL_TAB_ID_TABLES', async () => {
       // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
@@ -84,6 +82,9 @@ async function init() {
     })
   ]));
   gMetricsData.add('parallel initialization tasks: done');
+
+  await rebuildAll();
+  gMetricsData.add('rebuildAll');
 
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
