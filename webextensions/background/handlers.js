@@ -1116,6 +1116,19 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
+    case kTSTAPI_GET_TREE_STRUCTURE:
+      return (async () => {
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        return Promise.resolve(getTreeStructureFromTabs(tabs));
+      })();
+
+    case kTSTAPI_SET_TREE_STRUCTURE:
+      return (async () => {
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        await applyTreeStructureToTabs(tabs, aMessage.structure);
+        return Promise.resolve(true);
+      })();
+
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {
         var tabs   = await TSTAPIGetTargetTabs(aMessage);
