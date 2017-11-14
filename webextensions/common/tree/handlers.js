@@ -469,12 +469,13 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   delete gTreeInfoForTabsMovingAcrossWindows[aTabId];
 
   var newTab = await onNewTabTracked(apiTab);
-  if (newTab && newTab.parentNode.toBeAttachedTabs > 0) {
+  var byInternalOperation = newTab && newTab.parentNode.toBeAttachedTabs > 0;
+  if (byInternalOperation)
     newTab.parentNode.toBeAttachedTabs--;
-  }
-  else {
+  info.byInternalOperation = info.byInternalOperation || byInternalOperation;
+
+  if (!byInternalOperation) // we should process only tabs attached by others.
     window.onTabAttachedToWindow && onTabAttachedToWindow(newTab, info);
-  }
 }
 
 function onApiTabDetached(aTabId, aDetachInfo) {
@@ -487,18 +488,18 @@ function onApiTabDetached(aTabId, aDetachInfo) {
   if (!oldTab)
     return;
 
+  var byInternalOperation = oldTab.parentNode.toBeDetachedTabs > 0;
+  if (byInternalOperation)
+    oldTab.parentNode.toBeDetachedTabs--;
+
   var info = gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
+    byInternalOperation,
     windowId:    aDetachInfo.oldWindowId,
-    byInternalOperation: true, // TODO: this need to be detected dynamically
     descendants: getDescendantTabs(oldTab)
   };
 
-  if (oldTab.parentNode.toBeDetachedTabs > 0) {
-    oldTab.parentNode.toBeDetachedTabs--;
-  }
-  else {
+  if (!byInternalOperation) // we should process only tabs detached by others.
     window.onTabDetachedFromWindow && onTabDetachedFromWindow(oldTab, info);
-  }
 
   var container = oldTab.parentNode;
   clearTabRelationsForRemovedTab(oldTab);
