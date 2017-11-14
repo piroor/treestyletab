@@ -703,8 +703,13 @@ function onTabDetached(aTab, aDetachInfo) {
 }
 
 async function onTabAttachedToWindow(aTab, aInfo = {}) {
-  if (!aInfo.windowId ||
-      !shouldApplyTreeBehavior(aInfo.windowId))
+  if (!aInfo.windowId)
+    return;
+
+  var applyTreeBehavior = shouldApplyTreeBehavior({
+    windowId: aInfo.windowId
+  });
+  if (!applyTreeBehavior)
     return;
 
   log('onTabAttachedToWindow ', dumpTab(aTab), aInfo);
@@ -726,7 +731,10 @@ async function onTabAttachedToWindow(aTab, aInfo = {}) {
 }
 
 function onTabDetachedFromWindow(aTab) {
-  if (shouldApplyTreeBehavior(aTab.apiTab.windowId)) {
+  var applyTreeBehavior = shouldApplyTreeBehavior({
+    windowId: aTab.apiTab.windowId
+  });
+  if (applyTreeBehavior) {
     tryMoveFocusFromClosingCurrentTabNow(aTab, {
       ignoredTabs: getDescendantTabs(aTab)
     });
