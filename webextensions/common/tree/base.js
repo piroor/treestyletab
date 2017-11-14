@@ -383,6 +383,7 @@ function buildTabsContainerFor(aWindowId) {
   container.classList.add('tabs');
 
   container.internalMovingCount =
+    container.internalClosingCount =
     container.alreadyMovedTabsCount =
     container.subTreeMovingCount =
     container.subTreeChildrenMovingCount =
@@ -401,7 +402,6 @@ function buildTabsContainerFor(aWindowId) {
   container.toBeOpenedOrphanTabs        = 0;
   container.toBeAttachedTabs            = 0;
   container.toBeDetachedTabs            = 0;
-  container.toBeClosedTabs              = 0;
 
   return container;
 }

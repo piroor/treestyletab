@@ -246,7 +246,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     }
     log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
     if (container)
-      container.toBeClosedTabs += tabsToBeRemoved.length;
+      container.internalClosingCount += tabsToBeRemoved.length;
     for (let tab of tabsToBeRemoved) {
       browser.tabs.remove(tab.apiTab.id)
         .catch(handleMissingTabError);
@@ -261,7 +261,7 @@ async function closeChildTabs(aParent) {
   //if (!fireTabSubtreeClosingEvent(aParent, tabs))
   //  return;
 
-  aParent.parentNode.toBeClosedTabs += tabs.length;
+  aParent.parentNode.internalClosingCount += tabs.length;
 
   //markAsClosedSet([aParent].concat(tabs));
   await Promise.all(tabs.reverse().map(aTab => {
@@ -894,7 +894,7 @@ function onMessage(aMessage, aSender) {
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
-        tab.parentNode.toBeClosedTabs++;
+        tab.parentNode.internalClosingCount++;
         browser.tabs.remove(tab.apiTab.id)
           .catch(handleMissingTabError);
       })();

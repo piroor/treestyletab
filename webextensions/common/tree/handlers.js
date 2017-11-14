@@ -312,9 +312,9 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   delete gTabIdCorrectToWrong[aTabId];
 
   var container = getOrBuildTabsContainer(aRemoveInfo.windowId);
-  var byInternalOperation = container.toBeClosedTabs > 0;
+  var byInternalOperation = container.internalClosingCount > 0;
   if (byInternalOperation)
-    container.toBeClosedTabs--;
+    container.internalClosingCount--;
 
   var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
