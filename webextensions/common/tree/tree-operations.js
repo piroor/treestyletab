@@ -962,6 +962,7 @@ async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
 }
 
 async function moveTabs(aTabs, aOptions = {}) {
+  aTabs = aTabs.filter(ensureLivingTab);
   if (aTabs.length == 0)
     return [];
 
