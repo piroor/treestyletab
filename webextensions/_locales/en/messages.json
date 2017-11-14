@@ -135,8 +135,8 @@
 
   "config.parentTabBehaviorForChanges.caption": { "message": "When a parent tab is moved or closed by someone from outside of the tree sidebar" },
   "config.parentTabBehaviorForChanges.always": { "message": "Treat as a parent always (move or close all descendant tabs also together), whether the tree sidebar is visible or not." },
-  "config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible": { "message": "Treat as a parent always, only when the tree sidebar is visible. Otherwise treat just as a solo tab." },
-  "config.parentTabBehaviorForChanges.onlyInSidebar": { "message": "Treat as a parent only when it is operated inside the tree sidebar. Otherwise treat just as a solo tab for operations outside the tree sidebar." },
+  "config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible": { "message": "Treat as a parent always, when the tree sidebar is visible. / Treat just as a solo tab, when the tree sidebar is invisible." },
+  "config.parentTabBehaviorForChanges.onlyInSidebar": { "message": "Treat as a parent by operations inside the tree sidebar. / Treat just as a solo tab, by operations outside the tree sidebar." },
 
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "When a new tree appears, collapse others automatically" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },

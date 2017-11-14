@@ -135,8 +135,8 @@
 
   "config.parentTabBehaviorForChanges.caption": { "message": "親のタブがツリー型タブのサイドバー以外の場所から移動されたり閉じられたりした場合の取り扱い" },
   "config.parentTabBehaviorForChanges.always": { "message": "サイドバーの表示状態に関わらず常に親タブとして扱い、配下のタブも併せて移動するか閉じる" },
-  "config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible": { "message": "サイドバーが表示されている時は常に親タブとして扱うが、サイドバーが表示されていない場合は単体のタブとして扱う" },
-  "config.parentTabBehaviorForChanges.onlyInSidebar": { "message": "サイドバー上で操作された場合にのみ親タブとして扱い、サイドバー外での操作では常に単体のタブとして扱う" },
+  "config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible": { "message": "サイドバーが表示されている時は常に親タブとして扱う / サイドバーが表示されていない場合は単体のタブとして扱う" },
+  "config.parentTabBehaviorForChanges.onlyInSidebar": { "message": "サイドバー上で操作された時は親タブとして扱う / サイドバー外で操作された時は単体のタブとして扱う" },
 
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
