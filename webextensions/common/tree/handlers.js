@@ -343,6 +343,15 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   }
 }
 function onApiTabRemovedComplete(aTab) {
+  clearTabRelationsForRemovedTab(aTab);
+  var container = aTab.parentNode;
+  if (!container) // it was removed while waiting
+    return;
+  container.removeChild(aTab);
+  if (!container.hasChildNodes())
+    container.parentNode.removeChild(container);
+}
+function clearTabRelationsForRemovedTab(aTab) {
   if (aTab.parentTab) {
     aTab.parentTab.childTabs = oldTab.parentTab.childTabs.filter(aChild => aChild != aTab);
     aTab.parentTab = null;
@@ -351,12 +360,6 @@ function onApiTabRemovedComplete(aTab) {
     if (child.parentTab == aTab)
       child.parentTab = null;
   }
-  var container = aTab.parentNode;
-  if (!container) // it was removed while waiting
-    return;
-  container.removeChild(aTab);
-  if (!container.hasChildNodes())
-    container.parentNode.removeChild(container);
 }
 
 async function onApiTabMoved(aTabId, aMoveInfo) {
@@ -498,6 +501,7 @@ function onApiTabDetached(aTabId, aDetachInfo) {
   }
 
   var container = oldTab.parentNode;
+  clearTabRelationsForRemovedTab(oldTab);
   container.removeChild(oldTab);
   if (!container.hasChildNodes())
     container.parentNode.removeChild(container);

@@ -1239,6 +1239,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       blockUserOperationsIn(newWindow.id);
       return newWindow;
     });
+  aTabs = aTabs.filter(aTab => aTab && aTab.parentNode);
   var movedTabs = await moveTabs(aTabs, clone(aOptions, {
     destinationPromisedNewWindow: promsiedNewWindow
   }));
