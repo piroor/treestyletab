@@ -439,7 +439,9 @@ async function selectTabInternally(aTab, aOptions = {}) {
 
 async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (!aTabs.length || !aReferenceTab)
+  if (!aTabs.length ||
+      !aReferenceTab ||
+      !aReferenceTab.parentNode)
     return [];
 
   if (isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
@@ -453,7 +455,9 @@ async function moveTabBefore(aTab, aReferenceTab, aOptions = {}) {
 }
 
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
-  if (!aTabs.length || !aReferenceTab)
+  if (!aTabs.length ||
+      !aReferenceTab ||
+      !aReferenceTab.parentNode)
     return [];
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
@@ -540,7 +544,9 @@ async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
 
 async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (!aTabs.length || !aReferenceTab)
+  if (!aTabs.length ||
+      !aReferenceTab ||
+      !aReferenceTab.parentNode)
     return [];
 
   if (isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
@@ -554,7 +560,9 @@ async function moveTabAfter(aTab, aReferenceTab, aOptions = {}) {
 }
 
 async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
-  if (!aTabs.length || !aReferenceTab)
+  if (!aTabs.length ||
+      !aReferenceTab ||
+      !aReferenceTab.parentNode)
     return [];
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
