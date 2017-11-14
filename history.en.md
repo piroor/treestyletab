@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 2.2.1 (2017.11.14)
+   * Introduce new option to operate a parent tab just as a solo tab, by operations outside of the sidebar.
+   * Fix some odd behaviors around an window separated from another existing window. (regression)
  - 2.2.0 (2017.11.14)
    * Optimize initialization, retrieving tab relations based on tree, and collapsing/expanding of tree.
  - 2.1.2 (2017.11.12)
