@@ -772,6 +772,8 @@ function onTabLevelChanged(aTab) {
 }
 
 function onTabDetachedFromWindow(aTab) {
+  if (!aTab || !aTab.parentNode)
+    return;
   reserveToUpdateTabTooltip(getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.

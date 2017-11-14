@@ -245,7 +245,7 @@ function getAncestorTabs(aDecendant) {
   var ancestors = [];
   while (true) {
     let parent = getParentTab(aDecendant);
-    if (!parent)
+    if (!parent || !parent.parentNode)
       break;
     ancestors.push(parent);
     aDecendant = parent;

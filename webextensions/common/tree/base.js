@@ -356,7 +356,8 @@ windowId = ${aTab.apiTab.windowId}
 }
 
 function updateParentTab(aParent) {
-  if (!aParent)
+  if (!aParent ||
+      !aParent.parentNode)
     return;
 
   var children = getChildTabs(aParent);
