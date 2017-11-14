@@ -103,7 +103,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       let newIndex = calculateNewTabIndex({
         insertBefore: aOptions.insertBefore,
         insertAfter:  aOptions.insertAfter,
-        ignoreTabs:   [aChild.id]
+        ignoreTabs:   [aChild]
       });
       let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
       if (newIndex >= expectedAllTabs.length)
