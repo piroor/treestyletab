@@ -180,6 +180,8 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   log('onTabClosed ', dumpTab(aTab), aTab.apiTab);
   tryMoveFocusFromClosingCurrentTab(aTab);
 
+  var container = aTab.parentNode;
+
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
@@ -239,6 +241,8 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       tabsToBeRemoved.push(ancestor);
     }
     log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
+    if (container)
+      container.toBeClosedTabs += tabsToBeRemoved.length;
     for (let tab of tabsToBeRemoved) {
       browser.tabs.remove(tab.apiTab.id)
         .catch(handleMissingTabError);
@@ -886,6 +890,7 @@ function onMessage(aMessage, aSender) {
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
+        tab.parentNode.toBeClosedTabs++;
         browser.tabs.remove(tab.apiTab.id)
           .catch(handleMissingTabError);
       })();

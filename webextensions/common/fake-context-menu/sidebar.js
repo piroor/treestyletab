@@ -413,7 +413,10 @@ var tabContextMenu = {
           }
           if (!after)
             continue;
-          browser.tabs.remove(tab.id);
+          browser.runtime.sendMessage({
+            type: kCOMMAND_REMOVE_TAB,
+            tab:  tab.id
+          });
         }
       }; break;
       case 'context_closeOtherTabs': {
@@ -421,7 +424,10 @@ var tabContextMenu = {
         let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
         for (let tab of tabs) {
           if (!tab.pinned && tab.id != tabId)
-            browser.tabs.remove(tab.id);
+            browser.runtime.sendMessage({
+              type: kCOMMAND_REMOVE_TAB,
+              tab:  tab.id
+            });
         }
       }; break;
       case 'context_undoCloseTab': {
@@ -430,7 +436,10 @@ var tabContextMenu = {
           browser.sessions.restore(sessions[0].tab.sessionId);
       }; break;
       case 'context_closeTab':
-        browser.tabs.remove(this.contextTab.id);
+        browser.runtime.sendMessage({
+          type: kCOMMAND_REMOVE_TAB,
+          tab:  this.contextTab.id
+        });
         break;
 
       default: {
