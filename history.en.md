@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.2.2 (2017.11.14)
+   * Tabs are opened in correct order when new child tab is attached as a top of existing children. (regression)
  - 2.2.1 (2017.11.14)
    * Introduce new option to operate a parent tab just as a solo tab, by operations outside of the sidebar.
    * Fix some odd behaviors around an window separated from another existing window. (regression)
