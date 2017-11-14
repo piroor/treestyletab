@@ -86,7 +86,7 @@ function calculateScrollDeltaForTab(aTab) {
 }
 
 function isTabInViewport(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return false;
 
   if (isPinned(aTab))
@@ -182,8 +182,7 @@ function scrollToNewTab(aTab, aOptions = {}) {
 }
 
 function canScrollToTab(aTab) {
-  return (aTab &&
-          aTab.parentNode &&
+  return (ensureLivingTab(aTab) &&
           !isHidden(aTab));
 }
 
@@ -210,8 +209,7 @@ async function scrollToTab(aTab, aOptions = {}) {
   }
 
   var anchorTab = aOptions.anchor;
-  if (!anchorTab ||
-      !anchorTab.parentNode ||
+  if (!ensureLivingTab(anchorTab) ||
       anchorTab == aTab ||
       isPinned(anchorTab)) {
     log('=> no available anchor, direct scroll');
