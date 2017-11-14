@@ -387,7 +387,7 @@ function buildTabsContainerFor(aWindowId) {
     container.alreadyMovedTabsCount =
     container.subTreeMovingCount =
     container.subTreeChildrenMovingCount =
-    container.doingCollapseExpandCount =
+    container.doingIntelligentlyCollapseExpandCount =
     container.internalFocusCount =
     container.tryingReforcusForClosingCurrentTabCount =
     container.processingNewTabsCount =

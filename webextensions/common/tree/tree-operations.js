@@ -511,12 +511,10 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     return;
   log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
-  container.doingCollapseExpandCount++;
   await Promise.all([
     collapseExpandSubtreeInternal(aTab, aParams),
     aParams.broadcast && browser.runtime.sendMessage(remoteParams)
   ]);
-  container.doingCollapseExpandCount--;
 }
 function collapseExpandSubtreeInternal(aTab, aParams = {}) {
   if (!aParams.force &&
@@ -651,10 +649,11 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
   log('collapseExpandTreesIntelligentlyFor');
   var container = getTabsContainer(aTab);
-  if (container.doingCollapseExpandCount > 0) {
+  if (container.doingIntelligentlyCollapseExpandCount > 0) {
     //log('=> done by others');
     return;
   }
+  container.doingIntelligentlyCollapseExpandCount++;
 
   var sameParentTab = getParentTab(aTab);
   var expandedAncestors = `<${[aTab].concat(getAncestorTabs(aTab))
@@ -699,6 +698,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   collapseExpandSubtree(aTab, clone(aOptions, {
     collapsed: false
   }));
+  container.doingIntelligentlyCollapseExpandCount--;
 }
 
 
