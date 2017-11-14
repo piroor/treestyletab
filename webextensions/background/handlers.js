@@ -1125,7 +1125,9 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_SET_TREE_STRUCTURE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
-        await applyTreeStructureToTabs(tabs, aMessage.structure);
+        await applyTreeStructureToTabs(tabs, aMessage.structure, {
+          broadcast: true
+        });
         return Promise.resolve(true);
       })();
 
