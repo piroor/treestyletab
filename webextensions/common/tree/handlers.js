@@ -353,7 +353,7 @@ function onApiTabRemovedComplete(aTab) {
 }
 function clearTabRelationsForRemovedTab(aTab) {
   if (aTab.parentTab) {
-    aTab.parentTab.childTabs = oldTab.parentTab.childTabs.filter(aChild => aChild != aTab);
+    aTab.parentTab.childTabs = aTab.parentTab.childTabs.filter(aChild => aChild != aTab);
     aTab.parentTab = null;
   }
   for (let child of aTab.childTabs) {
