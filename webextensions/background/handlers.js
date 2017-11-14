@@ -320,8 +320,7 @@ async function onTabMoved(aTab, aMoveInfo) {
 }
 
 async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
-  if (configs.parentTabBehaviorForChanges == kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE &&
-      !gSidebarOpenState.has(aTab.apiTab.windowId)) {
+  if (!shouldApplyTreeBehavior(aMoveInfo)) {
     detachAllChildren(aTab, {
       behavior: getCloseParentBehaviorForTab(aTab, {
         keepChildren: true
