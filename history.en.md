@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.2.3 (2017.11.15)
+   * Add new APIs to work with other addons, especially Multiple Tab Handler.
  - 2.2.2 (2017.11.14)
    * Tabs are opened in correct order when new child tab is attached as a top of existing children. (regression)
  - 2.2.1 (2017.11.14)
