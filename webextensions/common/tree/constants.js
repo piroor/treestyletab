@@ -62,6 +62,8 @@ const kTSTAPI_SCROLL                = 'scroll';
 const kTSTAPI_SCROLL_LOCK           = 'scroll-lock';
 const kTSTAPI_SCROLL_UNLOCK         = 'scroll-unlock';
 const kTSTAPI_NOTIFY_SCROLLED       = 'scrolled';
+const kTSTAPI_BLOCK_GROUPING        = 'block-grouping';
+const kTSTAPI_UNBLOCK_GROUPING      = 'unblock-grouping';
 
 const kAPI_TAB_ID       = 'data-tab-id';
 const kAPI_WINDOW_ID    = 'data-window-id';

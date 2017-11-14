@@ -85,12 +85,18 @@ function onTabOpening(aTab, aInfo = {}) {
   return false;
 }
 
+var gGroupingBlockedBy = {};
+
 function onNewTabsTimeout(aContainer) {
   if (aContainer.openedNewTabs.length == 0)
     return;
 
   var tabIds = aContainer.openedNewTabs;
   aContainer.openedNewTabs = [];
+
+  if (Object.keys(gGroupingBlockedBy).length > 0)
+    return;
+
   tryGroupTabs(tabIds);
 }
 
@@ -1150,6 +1156,14 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_SCROLL_UNLOCK:
       delete gScrollLockedBy[aSender.id];
+      return Promise.resolve(true);
+
+    case kTSTAPI_BLOCK_GROUPING:
+      gGroupingBlockedBy[aSender.id] = true;
+      return Promise.resolve(true);
+
+    case kTSTAPI_UNBLOCK_GROUPING:
+      delete gGroupingBlockedBy[aSender.id];
       return Promise.resolve(true);
   }
 }
