@@ -177,20 +177,23 @@ function onTabRestored(aTab) {
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
-  log('onTabClosed ', dumpTab(aTab), aTab.apiTab);
+  log('onTabClosed ', dumpTab(aTab), aTab.apiTab, aCloseInfo);
   tryMoveFocusFromClosingCurrentTab(aTab);
 
   var container = aTab.parentNode;
 
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
-      closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      isSubtreeCollapsed(aTab))
-    collapseExpandSubtree(aTab, {
-      collapsed: false,
-      justNow:   true
-    });
+  var skipAnimation = (
+    !gSidebarOpenState.has(aTab.apiTab.windowId) &&
+    closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+    isSubtreeCollapsed(aTab)
+  );
+  collapseExpandSubtree(aTab, {
+    collapsed: false,
+    justNow:   skipAnimation,
+    broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
+  });
 
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(aTab);
@@ -212,7 +215,8 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     if (!groupTab) // the window is closed!
       return;
     await attachTabTo(groupTab, aTab, {
-      insertBefore: firstChild
+      insertBefore: firstChild,
+      broadcast:    true
     });
     closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
   }

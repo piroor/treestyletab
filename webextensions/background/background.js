@@ -180,30 +180,6 @@ function endWatchSidebarOpenState() {
   gSidebarOpenStateUpdateTimer = null;
 }
 
-function shouldApplyTreeBehavior(aParams = {}) {
-  switch (configs.parentTabBehaviorForChanges) {
-    case kPARENT_TAB_BEHAVIOR_ALWAYS:
-      return true;
-    case kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-      return aParams.windowId && gSidebarOpenState.has(aParams.windowId);
-    default:
-    case kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
-      return !!aParams.byInternalOperation;
-  }
-}
-
-function getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo = {}) {
-  return getCloseParentBehaviorForTab(aTab, {
-    keepChildren: (
-      aInfo.keepChildren ||
-      !shouldApplyTreeBehavior({
-        windowId:            aInfo.windowId || aTab.apiTab.windowId,
-        byInternalOperation: aInfo.byInternalOperation
-      })
-    )
-  });
-}
-
 
 
 async function readyForExternalAddons() {

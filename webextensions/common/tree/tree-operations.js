@@ -494,25 +494,28 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
   aParams.collapsed = !!aParams.collapsed;
   if (!aTab)
     return;
-  if (aParams.inRemote || aParams.broadcast) {
-    await browser.runtime.sendMessage({
-      type:            kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
-      windowId:        aTab.parentNode.windowId,
-      tab:             aTab.id,
-      collapsed:       aParams.collapsed,
-      manualOperation: !!aParams.manualOperation,
-      justNow:         !!aParams.justNow,
-      broadcasted:     !!aParams.broadcast
-    });
-    if (aParams.inRemote)
-      return;
+  var remoteParams = {
+    type:            kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
+    windowId:        aTab.parentNode.windowId,
+    tab:             aTab.id,
+    collapsed:       aParams.collapsed,
+    manualOperation: !!aParams.manualOperation,
+    justNow:         !!aParams.justNow,
+    broadcasted:     !!aParams.broadcast
+  };
+  if (aParams.inRemote) {
+    await browser.runtime.sendMessage(remoteParams);
+    return;
   }
   if (!aTab.parentNode) // it was removed while waiting
     return;
   log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   container.doingCollapseExpandCount++;
-  await collapseExpandSubtreeInternal(aTab, aParams);
+  await Promise.all([
+    collapseExpandSubtreeInternal(aTab, aParams),
+    aParams.broadcast && browser.runtime.sendMessage(remoteParams)
+  ]);
   container.doingCollapseExpandCount--;
 }
 function collapseExpandSubtreeInternal(aTab, aParams = {}) {
@@ -866,6 +869,30 @@ function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
     behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
 
   return behavior;
+}
+
+function getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo = {}) {
+  return getCloseParentBehaviorForTab(aTab, {
+    keepChildren: (
+      aInfo.keepChildren ||
+      !shouldApplyTreeBehavior({
+        windowId:            aInfo.windowId || aTab.apiTab.windowId,
+        byInternalOperation: aInfo.byInternalOperation
+      })
+    )
+  });
+}
+
+function shouldApplyTreeBehavior(aParams = {}) {
+  switch (configs.parentTabBehaviorForChanges) {
+    case kPARENT_TAB_BEHAVIOR_ALWAYS:
+      return true;
+    case kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
+      return window.gSidebarOpenState ? (aParams.windowId && gSidebarOpenState.has(aParams.windowId)) : true ;
+    default:
+    case kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
+      return !!aParams.byInternalOperation;
+  }
 }
 
 

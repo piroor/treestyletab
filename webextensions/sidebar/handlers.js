@@ -694,8 +694,19 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToSynchronizeThrobberAnimations();
 }
 
-function onTabClosed(aTab) {
+function onTabClosed(aTab, aCloseInfo) {
   tabContextMenu.close();
+
+  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
+  var skipAnimation = (
+    closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+    isSubtreeCollapsed(aTab)
+  );
+  collapseExpandSubtree(aTab, {
+    collapsed: false,
+    justNow:   skipAnimation
+  });
+
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   detachTab(aTab, {
