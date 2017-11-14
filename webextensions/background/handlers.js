@@ -178,8 +178,6 @@ function onTabRestored(aTab) {
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
   log('onTabClosed ', dumpTab(aTab), aTab.apiTab, aCloseInfo);
-  tryMoveFocusFromClosingCurrentTab(aTab);
-
   var container = aTab.parentNode;
 
   var ancestors = getAncestorTabs(aTab);
@@ -194,6 +192,8 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     justNow:   skipAnimation,
     broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
   });
+
+  tryMoveFocusFromClosingCurrentTab(aTab);
 
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(aTab);
