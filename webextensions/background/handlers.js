@@ -608,7 +608,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     })()
   ]);
 
-  if (!aTab.parentNode || // not removed while waiting
+  if (!ensureLivingTab(aTab) || // not removed while waiting
       getParentTab(aTab) != aInfo.parent) // not detached while waiting
     return;
 

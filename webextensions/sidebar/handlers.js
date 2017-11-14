@@ -727,7 +727,7 @@ async function onTabCompletelyClosed(aTab) {
     let tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
     setTimeout(() => {
-      if (!aTab || !aTab.parentNode) // it was removed while waiting
+      if (!ensureLivingTab(aTab)) // it was removed while waiting
         return;
       aResolve();
     }, configs.collapseDuration);
@@ -746,7 +746,7 @@ function onTabMoving(aTab) {
       justNow:   true
     });
     nextFrame().then(async () => {
-      if (!aTab.parentNode) // it was removed while waiting
+      if (!ensureLivingTab(aTab)) // it was removed while waiting
         return;
       collapseExpandTab(aTab, {
         collapsed: false
@@ -772,7 +772,7 @@ function onTabLevelChanged(aTab) {
 }
 
 function onTabDetachedFromWindow(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return;
   reserveToUpdateTabTooltip(getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
@@ -792,7 +792,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
 
   //log('onTabCollapsedStateChanging ', dumpTab(aTab), aInfo);
-  if (!aTab.parentNode) // do nothing for closed tab!
+  if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
   if (aTab.onEndCollapseExpandAnimation) {
@@ -821,7 +821,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   }
 
   nextFrame().then(() => {
-    if (!aTab.parentNode) // it was removed while waiting
+    if (!ensureLivingTab(aTab)) // it was removed while waiting
       return;
 
     //log('start animation for ', dumpTab(aTab));
@@ -850,8 +850,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       });
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
-      if (!aTab || !aTab.onEndCollapseExpandAnimation ||
-          !aTab.parentNode) // it was removed while waiting
+      if (!ensureLivingTab(aTab) ||
+          !aTab.onEndCollapseExpandAnimation)
         return;
       delete aTab.onEndCollapseExpandAnimation.timeout;
       aTab.onEndCollapseExpandAnimation();
@@ -875,7 +875,7 @@ function onEndCollapseExpandCompletely(aOptions = {}) {
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
-  if (!aTab.parentNode) // do nothing for closed tab!
+  if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
   if (configs.animation &&
@@ -929,7 +929,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
             stillOver = false;
           }
           setTimeout(() => {
-            if (!aTab.parentNode) // it was removed while waiting
+            if (!ensureLivingTab(aTab)) // it was removed while waiting
               return;
             aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true);
           }, 0);

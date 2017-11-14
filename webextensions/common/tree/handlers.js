@@ -105,7 +105,7 @@ async function onApiTabActivated(aActiveInfo) {
     byInternalOperation = false;
   }
 
-  if (!newTab.parentNode) // it can be removed while waiting
+  if (!ensureLivingTab(newTab)) // it can be removed while waiting
     return;
 
   var focusOverridden = window.onTabFocusing && await onTabFocusing(newTab, {
@@ -116,7 +116,7 @@ async function onApiTabActivated(aActiveInfo) {
   if (focusOverridden)
     return;
 
-  if (!newTab.parentNode) // it can be removed while waiting
+  if (!ensureLivingTab(newTab)) // it can be removed while waiting
     return;
 
   window.onTabFocused && await onTabFocused(newTab, {
@@ -234,7 +234,7 @@ async function onNewTabTracked(aTab) {
     }, 0);
   }
 
-  if (!newTab.parentNode) // it can be removed while waiting
+  if (!ensureLivingTab(newTab)) // it can be removed while waiting
     return null;
 
   log('uniqueId: ', uniqueId);
@@ -283,7 +283,7 @@ function checkRecycledTab(aContainer) {
   for (let tab of possibleRecycledTabs) {
     let currentId = tab.getAttribute(kPERSISTENT_ID);
     updateUniqueId(tab).then(aUniqueId => {
-      if (!tab || !tab.parentNode ||
+      if (!ensureLivingTab(tab) ||
           !aUniqueId.restored ||
           aUniqueId.id == currentId ||
           tab.classList.contains(kTAB_STATE_RESTORED))
@@ -329,6 +329,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
     byInternalOperation
   });
 
+  oldTab[kTAB_STATE_REMOVING] = true;
   oldTab.classList.add(kTAB_STATE_REMOVING);
 
   if (!isCollapsed(oldTab) &&
@@ -404,7 +405,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
 
   var canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
   if (!canceled &&
-      movedTab.parentNode) { // it is removed while waiting
+      ensureLivingTab(movedTab)) { // it is removed while waiting
     let newNextIndex = aMoveInfo.toIndex;
     if (aMoveInfo.fromIndex < newNextIndex)
       newNextIndex++;

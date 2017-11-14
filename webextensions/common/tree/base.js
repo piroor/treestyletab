@@ -170,7 +170,7 @@ function updateUniqueId(aTab) {
   aTab.uniqueId = requestUniqueId(aTab, {
     inRemote: !!gTargetWindow
   }).then(aUniqueId => {
-    if (aTab && aTab.parentNode) // possibly removed from document while waiting
+    if (ensureLivingTab(aTab)) // possibly removed from document while waiting
       aTab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
     return aUniqueId;
   });
@@ -356,8 +356,7 @@ windowId = ${aTab.apiTab.windowId}
 }
 
 function updateParentTab(aParent) {
-  if (!aParent ||
-      !aParent.parentNode)
+  if (!ensureLivingTab(aParent))
     return;
 
   var children = getChildTabs(aParent);
@@ -440,8 +439,7 @@ async function selectTabInternally(aTab, aOptions = {}) {
 async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (!aTabs.length ||
-      !aReferenceTab ||
-      !aReferenceTab.parentNode)
+      !ensureLivingTab(aReferenceTab))
     return [];
 
   if (isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
@@ -456,8 +454,7 @@ async function moveTabBefore(aTab, aReferenceTab, aOptions = {}) {
 
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length ||
-      !aReferenceTab ||
-      !aReferenceTab.parentNode)
+      !ensureLivingTab(aReferenceTab))
     return [];
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
@@ -545,8 +542,7 @@ async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
 async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (!aTabs.length ||
-      !aReferenceTab ||
-      !aReferenceTab.parentNode)
+      !ensureLivingTab(aReferenceTab))
     return [];
 
   if (isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
@@ -561,8 +557,7 @@ async function moveTabAfter(aTab, aReferenceTab, aOptions = {}) {
 
 async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length ||
-      !aReferenceTab ||
-      !aReferenceTab.parentNode)
+      !ensureLivingTab(aReferenceTab))
     return [];
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);

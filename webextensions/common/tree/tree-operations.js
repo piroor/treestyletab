@@ -507,7 +507,7 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     await browser.runtime.sendMessage(remoteParams);
     return;
   }
-  if (!aTab.parentNode) // it was removed while waiting
+  if (!ensureLivingTab(aTab)) // it was removed while waiting
     return;
   log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
@@ -909,7 +909,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   container.subTreeMovingCount++;
   try {
     await moveTabInternallyBefore(aTab, aNextTab, aOptions);
-    if (!aTab.parentNode) // it is removed while waiting
+    if (!ensureLivingTab(aTab)) // it is removed while waiting
       throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
   }
@@ -935,7 +935,7 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
   container.subTreeMovingCount++;
   try {
     await moveTabInternallyAfter(aTab, aPreviousTab, aOptions);
-    if (!aTab.parentNode) // it is removed while waiting
+    if (!ensureLivingTab(aTab)) // it is removed while waiting
       throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
   }
@@ -1239,7 +1239,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       blockUserOperationsIn(newWindow.id);
       return newWindow;
     });
-  aTabs = aTabs.filter(aTab => aTab && aTab.parentNode);
+  aTabs = aTabs.filter(ensureLivingTab);
   var movedTabs = await moveTabs(aTabs, clone(aOptions, {
     destinationPromisedNewWindow: promsiedNewWindow
   }));
@@ -1384,7 +1384,7 @@ async function performTabsDragDrop(aParams = {}) {
   });
   log('=> opened group tabs: ', replacedGroupTabs);
   aParams.draggedTab.ownerDocument.defaultView.setTimeout(() => {
-    if (!aTab.parentNode) // it was removed while waiting
+    if (!ensureLivingTab(aTab)) // it was removed while waiting
       return;
     log('closing needless group tabs');
     replacedGroupTabs.reverse().forEach(function(aTab) {

@@ -631,8 +631,7 @@ function updateTabbarLayout(aParams = {}) {
 
 function reserveToUpdateTabTooltip(aTab) {
   if (gInitializing ||
-      !aTab ||
-      !aTab.parentNode)
+      !ensureLivingTab(aTab))
     return;
   for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
     if (tab.reservedUpdateTabTooltip)
@@ -645,7 +644,7 @@ function reserveToUpdateTabTooltip(aTab) {
 }
 
 function updateTabAndAncestorsTooltip(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return;
   for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
     updateTabTooltip(tab);
@@ -653,7 +652,7 @@ function updateTabAndAncestorsTooltip(aTab) {
 }
 
 function updateTabTooltip(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return;
   aTab.labelWithDescendants = getLabelWithDescendants(aTab);
   aTab.setAttribute('title', isSubtreeCollapsed(aTab) && hasChildTabs(aTab) ?

@@ -356,7 +356,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
 function reserveToUpdateInsertionPosition(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!tab || !tab.parentNode)
+    if (!ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateInsertionPosition)
       clearTimeout(tab.reservedUpdateInsertionPosition);
@@ -368,7 +368,7 @@ function reserveToUpdateInsertionPosition(aTabOrTabs) {
 }
 
 async function updateInsertionPosition(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return;
 
   var prev = getPreviousTab(aTab);
@@ -405,7 +405,7 @@ async function updateInsertionPosition(aTab) {
 function reserveToUpdateAncestors(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!tab || !tab.parentNode)
+    if (!ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateAncestors)
       clearTimeout(tab.reservedUpdateAncestors);
@@ -417,7 +417,7 @@ function reserveToUpdateAncestors(aTabOrTabs) {
 }
 
 async function updateAncestors(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return;
 
   var ancestorIds = await Promise.all(
@@ -434,7 +434,7 @@ async function updateAncestors(aTab) {
 function reserveToUpdateChildren(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!tab || !tab.parentNode)
+    if (!ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateChildren)
       clearTimeout(tab.reservedUpdateChildren);
@@ -446,7 +446,7 @@ function reserveToUpdateChildren(aTabOrTabs) {
 }
 
 async function updateChildren(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return;
 
   var childIds = await Promise.all(
@@ -462,8 +462,7 @@ async function updateChildren(aTab) {
 
 function reserveToUpdateSubtreeCollapsed(aTab) {
   if (gInitializing ||
-      !aTab ||
-      !aTab.parentNode)
+      !ensureLivingTab(aTab))
     return;
   if (aTab.reservedUpdateSubtreeCollapsed)
     clearTimeout(aTab.reservedUpdateSubtreeCollapsed);
@@ -474,7 +473,7 @@ function reserveToUpdateSubtreeCollapsed(aTab) {
 }
 
 async function updateSubtreeCollapsed(aTab) {
-  if (!aTab || !aTab.parentNode)
+  if (!ensureLivingTab(aTab))
     return;
   browser.sessions.setTabValue(
     aTab.apiTab.id,
@@ -486,7 +485,7 @@ async function updateSubtreeCollapsed(aTab) {
 function reserveToRemoveNeedlessGroupTab(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!tab || !tab.parentNode)
+    if (!ensureLivingTab(tab))
       continue;
     if (tab.reservedRemoveNeedlessGroupTab)
       clearTimeout(tab.reservedRemoveNeedlessGroupTab);
