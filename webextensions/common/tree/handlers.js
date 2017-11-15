@@ -72,6 +72,9 @@ async function onApiTabActivated(aActiveInfo) {
   var byInternalOperation = container.internalFocusCount > 0;
   if (byInternalOperation)
     container.internalFocusCount--;
+  var silently = container.internalSilentlyFocusCount > 0;
+  if (silently)
+    container.internalSilentlyFocusCount--;
   var byTabDuplication = container.duplicatingTabsCount > 0;
 
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
@@ -111,7 +114,8 @@ async function onApiTabActivated(aActiveInfo) {
   var focusOverridden = window.onTabFocusing && await onTabFocusing(newTab, {
     byCurrentTabRemove,
     byTabDuplication,
-    byInternalOperation
+    byInternalOperation,
+    silently
   });
   if (focusOverridden)
     return;
@@ -122,7 +126,8 @@ async function onApiTabActivated(aActiveInfo) {
   window.onTabFocused && await onTabFocused(newTab, {
     byCurrentTabRemove,
     byTabDuplication,
-    byInternalOperation
+    byInternalOperation,
+    silently
   });
 }
 

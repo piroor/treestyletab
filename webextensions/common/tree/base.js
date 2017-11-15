@@ -389,6 +389,7 @@ function buildTabsContainerFor(aWindowId) {
     container.subTreeChildrenMovingCount =
     container.doingIntelligentlyCollapseExpandCount =
     container.internalFocusCount =
+    container.internalSilentlyFocusCount =
     container.tryingReforcusForClosingCurrentTabCount =
     container.processingNewTabsCount =
     container.duplicatingTabsCount =
@@ -420,15 +421,20 @@ async function selectTabInternally(aTab, aOptions = {}) {
     await browser.runtime.sendMessage({
       type:     kCOMMAND_SELECT_TAB_INTERNALLY,
       windowId: aTab.apiTab.windowId,
-      tab:      aTab.id
+      tab:      aTab.id,
+      options:  aOptions
     });
     return;
   }
   var container = aTab.parentNode;
   container.internalFocusCount++;
+  if (aOptions.silently)
+    container.internalSilentlyFocusCount++;
   return browser.tabs.update(aTab.apiTab.id, { active: true })
     .catch(e => {
       container.internalFocusCount--;
+      if (aOptions.silently)
+        container.internalSilentlyFocusCount--;
       handleMissingTabError(e);
     });
 }

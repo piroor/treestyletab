@@ -491,7 +491,11 @@ var gMaybeTabSwitchingByShortcut = false;
 function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
   log('onTabFocusing ', aTab.id, aInfo);
   var container = aTab.parentNode;
-  var shouldSkipCollapsed = gMaybeTabSwitchingByShortcut && configs.skipCollapsedTabsForTabSwitchingShortcuts;
+  var shouldSkipCollapsed = (
+    !aInfo.byInternalOperation &&
+    gMaybeTabSwitchingByShortcut &&
+    configs.skipCollapsedTabsForTabSwitchingShortcuts
+  );
   if (isCollapsed(aTab)) {
     if (configs.autoExpandOnCollapsedChildFocused &&
         !shouldSkipCollapsed) {
@@ -506,16 +510,15 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     }
     else {
       log('=> reaction for focusing collapsed descendant');
-      for (let ancestor of getAncestorTabs(aTab)) {
-        if (isCollapsed(ancestor))
-          continue;
-        if (shouldSkipCollapsed &&
-            container.lastFocusedTab == ancestor.id)
-          ancestor = getNextVisibleTab(ancestor);
-        container.lastFocusedTab = ancestor.id;
-        selectTabInternally(ancestor);
-        return true
-      }
+      let newSelection = getVisibleAncestorOrSelf(aTab);
+      if (!newSelection) // this seems invalid case...
+        return false;
+      if (shouldSkipCollapsed &&
+          container.lastFocusedTab == newSelection.id)
+        newSelection = getNextVisibleTab(newSelection) || getFirstVisibleTab(aTab);
+      container.lastFocusedTab = newSelection.id;
+      selectTabInternally(newSelection);
+      return true
     }
   }
   else if (aInfo.byCurrentTabRemove &&
@@ -537,19 +540,10 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
   return false;
 }
 function handleNewActiveTab(aTab, aInfo = {}) {
-  if (aTab.parentNode.doingCollapseExpandCount != 0)
-    return;
-
   log('handleNewActiveTab: ', dumpTab(aTab), aInfo);
   var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   var canCollapseTree         = shouldCollapseExpandNow;
-  var canExpandTree           = shouldCollapseExpandNow && !aInfo.byInternalOperation;
-  log('handleNewActiveTab[delayed]: ',
-      dumpTab(aTab),
-      {
-        canCollapseTree, canExpandTree,
-        byInternalOperation: aInfo.byInternalOperation
-      });
+  var canExpandTree           = shouldCollapseExpandNow && !aInfo.silently;
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
@@ -924,8 +918,7 @@ function onMessage(aMessage, aSender) {
 
         // not canceled, then fallback to default "select tab"
         if (aMessage.button == 0)
-          browser.tabs.update(tab.apiTab.id, { active: true })
-            .catch(handleMissingTabError);
+          selectTabInternally(tab);
       })();
 
     case kCOMMAND_SELECT_TAB: {
@@ -940,7 +933,9 @@ function onMessage(aMessage, aSender) {
       let tab = getTabById(aMessage.tab);
       if (!tab)
         return;
-      selectTabInternally(tab);
+      selectTabInternally(tab, clone(aMessage.options, {
+        inRemote: false
+      }));
     }; break;
 
     case kCOMMAND_SET_SUBTREE_MUTED: {

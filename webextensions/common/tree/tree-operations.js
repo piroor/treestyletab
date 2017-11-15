@@ -586,15 +586,9 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
   //fireCustomEvent(kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, aTab, true, false, data);
 
   if (aParams.collapsed && isActive(aTab)) {
-    let newSelection = parent;
-    for (let ancestor of getAncestorTabs(aTab)) {
-      if (isCollapsed(ancestor))
-        continue;
-      newSelection = ancestor;
-      break;
-    }
+    let newSelection = getVisibleAncestorOrSelf(aTab);
     log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
-    selectTabInternally(newSelection);
+    selectTabInternally(newSelection, { silently: true });
   }
 
   if (!isSubtreeCollapsed(aTab)) {

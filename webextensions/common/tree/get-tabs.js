@@ -261,6 +261,16 @@ function getAncestorTabs(aDecendant) {
   return ancestors;
 }
 
+function getVisibleAncestorOrSelf(aDecendant) {
+  if (!isCollapsed(aDecendant))
+    return aDecendant;
+  for (let ancestor of getAncestorTabs(aDecendant)) {
+    if (!isCollapsed(ancestor))
+      return ancestor;
+  }
+  return null;
+}
+
 function getRootTab(aDecendant) {
   var ancestors = getAncestorTabs(aDecendant);
   return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDecendant ;
