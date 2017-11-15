@@ -86,7 +86,7 @@ async function init() {
   browser.runtime.sendMessage({
     type:     kNOTIFY_SIDEBAR_OPENED,
     windowId: gTargetWindow
-  })
+  });
 
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
