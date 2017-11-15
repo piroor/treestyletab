@@ -443,7 +443,7 @@ function removeTabInternally(aTab, aOptions = {}) {
   return removeTabsInternally([aTab], aOptions);
 }
 
-function removeTabsInternally(aTab, aOptions = {}) {
+function removeTabsInternally(aTabs, aOptions = {}) {
   aTabs = aTabs.filter(ensureLivingTab);
   if (!aTabs.length)
     return;
