@@ -1,12 +1,12 @@
 :root {
-  --tab-surface: -moz-dialog;
-  --tab-text: -moz-dialogtext;
-  --tab-border: ThreeDShadow;
-  --tab-side-border: ThreeDLightShadow;
-  --tab-surface-hover: ThreeDHighlight;
-  --tab-dropmarker: -moz-dialogtext;
+  --tab-surface: var(--browser-bg-base, -moz-dialog);
+  --tab-text: var(--browser-fg-color, -moz-dialogtext);
+  --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
+  --tab-side-border: var(--browser-bg-darker, ThreeDLightShadow);
+  --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
+  --tab-dropmarker: var(--browser-fg-color, -moz-dialogtext);
 
-  --tabbar-bg: darkgray;
+  --tabbar-bg: var(--browser-bg-darker, darkgray);
 
   background: var(--tabbar-bg);
 }

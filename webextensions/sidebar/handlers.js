@@ -1186,6 +1186,10 @@ function onMessageExternal(aMessage, aSender) {
   }
 }
 
+function onBrowserThemeChanged(aUpdateInfo) {
+  applyBrowserTheme(aUpdateInfo.theme);
+}
+
 function onConfigChange(aChangedKey) {
   var rootClasses = document.documentElement.classList;
   switch (aChangedKey) {

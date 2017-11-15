@@ -13,7 +13,8 @@
     "notifications",
     "sessions",
     "storage",
-    "tabs"
+    "tabs",
+    "theme"
   ],
   "icons": {
     "16": "resources/16x16-light.svg",

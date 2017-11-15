@@ -24,6 +24,7 @@ var gInitializing = true;
 var gSizeDefinition;
 var gContextualIdentitiesStyle;
 var gStyleLoader;
+var gBrowserThemeDefinition;
 var gUserStyleRules;
 var gAddonStyles = {};
 var gMetricsData = new MetricsData();
@@ -40,6 +41,7 @@ function earlyInit() {
   gAllTabs                    = document.querySelector('#all-tabs');
   gSizeDefinition             = document.querySelector('#size-definition');
   gStyleLoader                = document.querySelector('#style-loader');
+  gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
   gUserStyleRules             = document.querySelector('#user-style-rules');
   gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
   gMetricsData.add('earlyInit end');
@@ -119,6 +121,8 @@ async function init() {
 
       browser.runtime.onMessage.addListener(onMessage);
       browser.runtime.onMessageExternal.addListener(onMessageExternal);
+      if (browser.theme)
+        browser.theme.onUpdated.addListener(onBrowserThemeChanged);
     }),
     gMetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
@@ -186,6 +190,8 @@ function destroy() {
   configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
+  if (browser.theme)
+    browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
   endListenDragEvents(gTabBar);
   endObserveApiTabs();
   endObserveContextualIdentities();
@@ -242,6 +248,8 @@ function applyStyle() {
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
   }
+  if (browser.theme)
+    browser.theme.getCurrent().then(applyBrowserTheme);
   return new Promise((aResolve, aReject) => {
     gStyleLoader.addEventListener('load', () => {
       nextFrame().then(aResolve);
@@ -251,6 +259,37 @@ function applyStyle() {
 
 function applyUserStyleRules() {
   gUserStyleRules.textContent = configs.userStyleRules || '';
+}
+
+function applyBrowserTheme(aTheme) {
+  if (!aTheme.colors) {
+    gBrowserThemeDefinition.textContent = '';
+    return;
+  }
+  gBrowserThemeDefinition.textContent = `
+    :root {
+      --browser-bg-base:         ${aTheme.colors.accentcolor};
+      --browser-bg-less-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.25)};
+      --browser-bg-lighter:      ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.4)};
+      --browser-bg-more-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.6)};
+      --browser-bg-less-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.1)};
+      --browser-bg-darker:       ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.25)};
+      --browser-bg-more-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.5)};
+      --browser-fg-color:        ${aTheme.colors.textcolor};
+      --browser-header-url:      url(${JSON.stringify(aTheme.images.headerURL)});
+    }
+  `;
+}
+
+function getModifiedColorFrom(aCode, aBrightness, aAlpha) { // expected input: 'RRGGBB' or 'RGB'
+  var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i) ||
+              aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/i);
+  if (!parts)
+    return aCode;
+  var red   = Math.min(255, Math.round((parseInt(parts[1], 16) * (1 - aAlpha)) + (aBrightness * aAlpha)));
+  var green = Math.min(255, Math.round((parseInt(parts[2], 16) * (1 - aAlpha)) + (aBrightness * aAlpha)));
+  var blue  = Math.min(255, Math.round((parseInt(parts[3], 16) * (1 - aAlpha)) + (aBrightness * aAlpha)));
+  return `rgb(${red}, ${green}, ${blue})`;
 }
 
 function calculateDefaultSizes() {
@@ -324,8 +363,8 @@ function updateContextualIdentitiesSelector() {
 }
 
 function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGGBB' or 'RGB'
-  var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/) ||
-              aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/);
+  var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i) ||
+              aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/i);
   if (!parts)
     return '-moz-fieldtext';
   var red   = parseInt(parts[1], 16);

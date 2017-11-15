@@ -35,14 +35,14 @@
  * ***** END LICENSE BLOCK ******/
 
 :root {
-  --tab-surface: -moz-dialog;
-  --tab-text: -moz-dialogtext;
-  --tab-border: ThreeDShadow;
-  --tab-dropmarker: -moz-dialogtext;
+  --tab-surface: var(--browser-bg-base, -moz-dialog);
+  --tab-text: var(--browser-fg-color, -moz-dialogtext);
+  --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
+  --tab-dropmarker: var(--browser-fg-color, -moz-dialogtext);
 
-  --tab-surface-hover: #e0e8f6;
-  --tab-surface-active: #c1d2ee;
-  --tab-surface-active-hover: #d1e2fe;
+  --tab-surface-hover: var(--browser-bg-less-lighter, #e0e8f6);
+  --tab-surface-active: var(--browser-bg-lighter, #c1d2ee);
+  --tab-surface-active-hover: var(--browser-bg-more-lighter, #d1e2fe);
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: #3890f3; /* = rgb(56, 144, 243) */
@@ -50,7 +50,7 @@
 
   --throbber-color: var(--tab-highlighted-glow);
 
-  background: var(--tab-surface);
+  background: var(--browser-bg-darker, --tab-surface);
 }
 
 .tab,
