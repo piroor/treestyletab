@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.2.7 (2017.11.15)
+   * Apply theme color for each window.
  - 2.2.6 (2017.11.15)
    * Skip collapsed tabs for focus switching via Ctrl-Tab/Ctrl-Shift-Tab. [But there are some restrictions.](https://github.com/piroor/treestyletab/issues/1531#issuecomment-344487289) (This feature was described at 2.2.4 but didn't work due to missing file.)
  - 2.2.5 (2017.11.15)
