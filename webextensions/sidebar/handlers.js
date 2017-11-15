@@ -1187,7 +1187,8 @@ function onMessageExternal(aMessage, aSender) {
 }
 
 function onBrowserThemeChanged(aUpdateInfo) {
-  if (aUpdateInfo.windowId == gTargetWindow)
+  if (!aUpdateInfo.windowId || // reset to default
+      aUpdateInfo.windowId == gTargetWindow)
     applyBrowserTheme(aUpdateInfo.theme);
 }
 
