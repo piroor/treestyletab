@@ -11,6 +11,7 @@ var gInitializing           = true;
 var gSidebarOpenState       = new Map();
 var gSidebarOpenStateUpdateTimer;
 var gExternalListenerAddons = {};
+var gMaybeTabSwitchingByShortcut = false;
 
 var gMetricsData = new MetricsData();
 gMetricsData.add('Loaded');
@@ -32,6 +33,9 @@ async function init() {
   window.addEventListener('pagehide', destroy, { once: true });
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
+  browser.windows.onFocusChanged.addListener(() => {
+    gMaybeTabSwitchingByShortcut = false;
+  });
   gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
   gMetricsData.add('configs.$loaded');

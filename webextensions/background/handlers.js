@@ -486,8 +486,6 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   return { action: 'move' };
 }
 
-var gMaybeTabSwitchingByShortcut = false;
-
 function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
   log('onTabFocusing ', aTab.id, aInfo);
   var container = aTab.parentNode;
