@@ -251,12 +251,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       tabsToBeRemoved.push(ancestor);
     }
     log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
-    if (container)
-      container.internalClosingCount += tabsToBeRemoved.length;
-    for (let tab of tabsToBeRemoved) {
-      browser.tabs.remove(tab.apiTab.id)
-        .catch(handleMissingTabError);
-    }
+    removeTabsInternally(tabsToBeRemoved);
   }, 0);
 
   reserveToSaveTreeStructure(aTab);
@@ -267,12 +262,10 @@ async function closeChildTabs(aParent) {
   //if (!fireTabSubtreeClosingEvent(aParent, tabs))
   //  return;
 
-  aParent.parentNode.internalClosingCount += tabs.length;
-
   //markAsClosedSet([aParent].concat(tabs));
+  // close bottom to top!
   await Promise.all(tabs.reverse().map(aTab => {
-    return browser.tabs.remove(aTab.apiTab.id)
-      .catch(handleMissingTabError);
+    return removeTabInternally(aTab);
   }));
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
@@ -894,15 +887,10 @@ function onMessage(aMessage, aSender) {
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
 
-    case kCOMMAND_REMOVE_TAB:
-      return (async () => {
-        let tab = getTabById(aMessage.tab);
-        if (!tab)
-          return;
-        tab.parentNode.internalClosingCount++;
-        browser.tabs.remove(tab.apiTab.id)
-          .catch(handleMissingTabError);
-      })();
+    case kCOMMAND_REMOVE_TABS_INTERNALLY:
+      return removeTabsInternally(aMessage.tabs.map(getTabById), clone(aMessage.options, {
+        inRemote: false
+      }));
 
     case kNOTIFY_TAB_MOUSEDOWN:
       return (async () => {

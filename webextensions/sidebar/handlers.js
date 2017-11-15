@@ -320,11 +320,7 @@ async function onMouseUp(aEvent) {
   if (gLastMousedown.detail.isMiddleClick) {
     if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
       //log('middle-click to close');
-      browser.runtime.sendMessage({
-        type:     kCOMMAND_REMOVE_TAB,
-        windowId: gTargetWindow,
-        tab:      tab.id
-      });
+      removeTabInternally(tab, { inRemote: true });
     }
     else if (isEventFiredOnNewTabButton(aEvent)) {
       handleNewTabAction(aEvent, {
@@ -411,11 +407,7 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    browser.runtime.sendMessage({
-      type:     kCOMMAND_REMOVE_TAB,
-      windowId: gTargetWindow,
-      tab:      tab.id
-    });
+    removeTabInternally(tab, { inRemote: true });
     return;
   }
 }

@@ -433,6 +433,26 @@ async function selectTabInternally(aTab, aOptions = {}) {
     });
 }
 
+function removeTabInternally(aTab, aOptions = {}) {
+  return removeTabsInternally([aTab], aOptions);
+}
+
+function removeTabsInternally(aTab, aOptions = {}) {
+  aTabs = aTabs.filter(ensureLivingTab);
+  if (!aTabs.length)
+    return;
+  log('removeTabsInternally: ', aTabs.map(dumpTab));
+  if (aOptions.inRemote) {
+    return browser.runtime.sendMessage({
+      type:    kCOMMAND_REMOVE_TABS_INTERNALLY,
+      tabs:    aTabs.map(aTab => aTab.id),
+      options: aOptions
+    });
+  }
+  var container = aTab.parentNode;
+  container.internalClosingCount += aTabs.length;
+  return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(handleMissingTabError);
+}
 
 /* move tabs */
 

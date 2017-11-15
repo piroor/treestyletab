@@ -80,31 +80,25 @@ var contextMenuClickListener = (aInfo, aTab) => {
 
     case 'closeTree': {
       let tabs = [contextTab].concat(getDescendantTabs(contextTab));
-      container.internalClosingCount += tabs.length;
       tabs.reverse(); // close bottom to top!
       for (let tab of tabs) {
-        browser.tabs.remove(tab.apiTab.id)
-          .catch(handleMissingTabError);
+        removeTabInternally(tab);
       }
     }; break;
     case 'closeDescendants': {
       let tabs = getDescendantTabs(contextTab);
-      container.internalClosingCount += tabs.length;
       tabs.reverse(); // close bottom to top!
       for (let tab of tabs) {
-        browser.tabs.remove(tab.apiTab.id)
-          .catch(handleMissingTabError);
+        removeTabInternally(tab);
       }
     }; break;
     case 'closeOthers': {
       let exceptionTabs = [contextTab].concat(getDescendantTabs(contextTab));
       let tabs          = getNormalTabs(container); // except pinned or hidden tabs
-      container.internalClosingCount += tabs.length;
       tabs.reverse(); // close bottom to top!
       for (let tab of tabs) {
         if (exceptionTabs.indexOf(tab) < 0)
-          browser.tabs.remove(tab.apiTab.id)
-            .catch(handleMissingTabError);
+          removeTabInternally(tab);
       }
     }; break;
 

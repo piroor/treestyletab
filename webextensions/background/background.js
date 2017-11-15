@@ -499,6 +499,5 @@ function reserveToRemoveNeedlessGroupTab(aTabOrTabs) {
 async function removeNeedlessGroupTab(aTab) {
   if (hasChildTabs(aTab))
     return;
-  browser.tabs.remove(aTab.apiTab.id)
-    .catch(handleMissingTabError);
+  removeTabInternally(aTab);
 }

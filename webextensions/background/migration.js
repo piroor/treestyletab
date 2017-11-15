@@ -220,7 +220,7 @@ async function migrateLegacyTreeStructure() {
       });
       var restApiTabs = apiWindow.tabs.slice(1);
       try {
-        await browser.tabs.remove(apiWindow.tabs[0].id);
+        await removeTabInternally(getTabById(apiWindow.tabs[0].id));
         // apply pinned state
         for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
           if (!aStructure[i].pinned)
@@ -277,8 +277,7 @@ async function notifyUpdatedFromLegacy() {
         typeof aMessage.type == 'string' &&
         aMessage.type == kNOTIFY_SIDEBAR_OPENED) {
       browser.runtime.onMessage.removeListener(onMessage);
-      browser.tabs.remove(tab.id)
-        .catch(handleMissingTabError);
+      removeTabInternally(getTabById(tab.id));
     }
   });
 }

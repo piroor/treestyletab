@@ -1261,8 +1261,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       });
       var removeIds = allTabIdsInWindow.filter(aId => movedTabIds.indexOf(aId) < 0);
       log('removing tabs: ', removeIds);
-      browser.tabs.remove(removeIds)
-        .catch(handleMissingTabError); // already removed
+      removeTabsInternally(removeIds.map(getTabById));
       unblockUserOperationsIn(newWindow.id);
     });
 

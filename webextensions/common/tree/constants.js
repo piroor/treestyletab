@@ -20,12 +20,12 @@ const kCOMMAND_NEW_WINDOW_FROM_TABS           = 'treestyletab:open-new-window-fr
 const kCOMMAND_MOVE_TABS                      = 'treestyletab:move-tabs';
 const kCOMMAND_NEW_TABS                       = 'treestyletab:open-new-tabs';
 const kCOMMAND_SELECT_TAB_INTERNALLY          = 'treestyletab:select-tab-internally';
+const kCOMMAND_REMOVE_TABS_INTERNALLY         = 'treestyletab:remove-tabs-internally';
 const kCOMMAND_MOVE_TABS_BEFORE               = 'treestyletab:move-tabs-internally-before';
 const kCOMMAND_MOVE_TABS_AFTER                = 'treestyletab:move-tabs-internally-after';
 
 const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';
-const kCOMMAND_REMOVE_TAB              = 'treestyletab:remove-tab';
 const kCOMMAND_ATTACH_TAB_TO           = 'treestyletab:attach-tab-to';
 const kCOMMAND_TAB_ATTACHED_COMPLETELY = 'treestyletab:tab-attached-completely';
 const kCOMMAND_DETACH_TAB              = 'treestyletab:detach-tab';
