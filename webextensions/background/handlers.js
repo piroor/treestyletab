@@ -903,6 +903,7 @@ function onMessage(aMessage, aSender) {
       }));
 
     case kNOTIFY_TAB_MOUSEDOWN:
+      gMaybeTabSwitchingByShortcut = false;
       return (async () => {
         let tab = getTabById(aMessage.tab);
         if (!tab)
