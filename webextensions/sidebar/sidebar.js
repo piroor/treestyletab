@@ -58,11 +58,7 @@ async function init() {
   await Promise.all([
     applyStyle(),
     waitUntilBackgroundIsReady(),
-    retrieveAllContextualIdentities(),
-    browser.runtime.sendMessage({
-      type:     kNOTIFY_SIDEBAR_OPENED,
-      windowId: gTargetWindow
-    })
+    retrieveAllContextualIdentities()
   ]);
   gMetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
 
@@ -87,6 +83,10 @@ async function init() {
 
   await rebuildAll();
   gMetricsData.add('rebuildAll');
+  browser.runtime.sendMessage({
+    type:     kNOTIFY_SIDEBAR_OPENED,
+    windowId: gTargetWindow
+  })
 
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
