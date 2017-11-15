@@ -89,7 +89,7 @@ async function init() {
     windowId: gTargetWindow
   });
   if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
-    browser.theme.getCurrent({ windowId: gTargetWindow }).then(applyBrowserTheme);
+    browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
 
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
