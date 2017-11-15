@@ -36,9 +36,10 @@
 
 :root {
   --tab-surface: var(--browser-bg-base, -moz-dialog);
-  --tab-text: var(--browser-fg-color, -moz-dialogtext);
+  --tab-text: var(--browser-fg, -moz-dialogtext);
+  --tab-active-text: var(--browser-fg-active, -moz-dialogtext);
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
-  --tab-dropmarker: var(--browser-fg-color, -moz-dialogtext);
+  --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
 
   --tab-surface-hover: var(--browser-bg-less-lighter, #e0e8f6);
   --tab-surface-active: var(--browser-bg-lighter, #c1d2ee);
@@ -68,6 +69,7 @@
 .tab.active {
   background: var(--tab-surface-active);
   --throbber-color: var(--tab-highlighted-glow);
+  color: var(--tab-active-text);
 }
 .tab.active:hover {
   background: var(--tab-surface-active-hover);

@@ -1,10 +1,10 @@
 :root {
   --tab-surface: var(--browser-bg-base, -moz-dialog);
-  --tab-text: var(--browser-fg-color, -moz-dialogtext);
+  --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
   --tab-side-border: var(--browser-bg-darker, ThreeDLightShadow);
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
-  --tab-dropmarker: var(--browser-fg-color, -moz-dialogtext);
+  --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
 
   --tabbar-bg: var(--browser-bg-darker, darkgray);
 

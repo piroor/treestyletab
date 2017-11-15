@@ -11,7 +11,7 @@
 .tab.active .twisty,
 .tab.active .label,
 .tab.active .counter {
-  color: var(--tab-text);
+  color: var(--tab-active-text);
 }
 
 

@@ -270,26 +270,43 @@ function applyBrowserTheme(aTheme) {
     :root {
       --browser-bg-base:         ${aTheme.colors.accentcolor};
       --browser-bg-less-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.25)};
-      --browser-bg-lighter:      ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.4)};
-      --browser-bg-more-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.6)};
-      --browser-bg-lightest:     ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.85)};
+      --browser-bg-lighter:      ${aTheme.colors.toolbar || getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.4)};
+      --browser-bg-more-lighter: ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.6)};
+      --browser-bg-lightest:     ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.85)};
       --browser-bg-less-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.1)};
       --browser-bg-darker:       ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.25)};
       --browser-bg-more-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.5)};
-      --browser-fg-color:        ${aTheme.colors.textcolor};
+      --browser-fg:              ${aTheme.colors.textcolor};
+      --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
       --browser-header-url:      url(${JSON.stringify(aTheme.images.headerURL)});
     }
   `;
 }
 
-function getModifiedColorFrom(aCode, aBrightness, aAlpha) { // expected input: 'RRGGBB' or 'RGB'
+function getModifiedColorFrom(aCode, aBrightness, aAlpha) { // expected input: 'RRGGBB' or 'RGB' or rgb(...) or rgba(...)
+  var red, green, blue;
   var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i) ||
               aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/i);
-  if (!parts)
-    return aCode;
-  var red   = Math.min(255, Math.round((parseInt(parts[1], 16) * (1 - aAlpha)) + (aBrightness * aAlpha)));
-  var green = Math.min(255, Math.round((parseInt(parts[2], 16) * (1 - aAlpha)) + (aBrightness * aAlpha)));
-  var blue  = Math.min(255, Math.round((parseInt(parts[3], 16) * (1 - aAlpha)) + (aBrightness * aAlpha)));
+  if (parts) {
+    red   = parseInt(parts[1], 16);
+    green = parseInt(parts[2], 16);
+    blue  = parseInt(parts[3], 16);
+  }
+  else {
+    parts = aCode.match(/^rgba?(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*(?:,\s*((?:0\.)?[0-9]+)?\s*))/i);
+    if (!parts)
+      return aCode;
+    red   = parseInt(parts[1]);
+    green = parseInt(parts[2]);
+    blue  = parseInt(parts[3]);
+    if (parts[4]) {
+      // not implemented alpha
+    }
+  }
+
+  red   = Math.min(255, Math.round((red   * (1 - aAlpha)) + (aBrightness * aAlpha)));
+  green = Math.min(255, Math.round((green * (1 - aAlpha)) + (aBrightness * aAlpha)));
+  blue  = Math.min(255, Math.round((blue  * (1 - aAlpha)) + (aBrightness * aAlpha)));
   return `rgb(${red}, ${green}, ${blue})`;
 }
 
