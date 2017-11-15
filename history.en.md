@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Skip collapsed tabs for focus switching via Ctrl-Tab/Ctrl-Shift-Tab. [But there are some restrictions.](https://github.com/piroor/treestyletab/issues/1531#issuecomment-344487289)
+   * Collapse other tree when new tree is created. (regression)
  - 2.2.3 (2017.11.15)
    * Add new APIs to work with other addons, especially Multiple Tab Handler.
  - 2.2.2 (2017.11.14)
