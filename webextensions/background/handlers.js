@@ -486,10 +486,15 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   return { action: 'move' };
 }
 
+var gMaybeTabSwitchingByShortcut = false;
+
 function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
   log('onTabFocusing ', aTab.id, aInfo);
+  var container = aTab.parentNode;
+  var shouldSkipCollapsed = gMaybeTabSwitchingByShortcut && configs.skipCollapsedTabsForTabSwitchingShortcuts;
   if (isCollapsed(aTab)) {
-    if (configs.autoExpandOnCollapsedChildFocused) {
+    if (configs.autoExpandOnCollapsedChildFocused &&
+        !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildFocused');
       for (let ancestor of getAncestorTabs(aTab)) {
         collapseExpandSubtree(ancestor, {
@@ -501,8 +506,16 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     }
     else {
       log('=> reaction for focusing collapsed descendant');
-      selectTabInternally(getRootTab(aTab));
-      return true;
+      for (let ancestor of getAncestorTabs(aTab)) {
+        if (isCollapsed(ancestor))
+          continue;
+        if (shouldSkipCollapsed &&
+            container.lastFocusedTab == ancestor.id)
+          ancestor = getNextVisibleTab(ancestor);
+        container.lastFocusedTab = ancestor.id;
+        selectTabInternally(ancestor);
+        return true
+      }
     }
   }
   else if (aInfo.byCurrentTabRemove &&
@@ -514,10 +527,13 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     log('=> reaction for removing current tab');
     return true;
   }
-  else if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab)) {
+  else if (hasChildTabs(aTab) &&
+           isSubtreeCollapsed(aTab) &&
+           !shouldSkipCollapsed) {
     log('=> reaction for newly focused parent tab');
     handleNewActiveTab(aTab, aInfo);
   }
+  container.lastFocusedTab = aTab.id;
   return false;
 }
 function handleNewActiveTab(aTab, aInfo = {}) {
@@ -1019,6 +1035,30 @@ function onMessage(aMessage, aSender) {
         insertBefore: getTabById(aMessage.insertBefore),
         insertAfter:  getTabById(aMessage.insertAfter)
       }));
+
+    case kCOMMAND_NOTIFY_START_TAB_SWITCH:
+      log('kCOMMAND_NOTIFY_START_TAB_SWITCH');
+      gMaybeTabSwitchingByShortcut = true;
+      break;
+    case kCOMMAND_NOTIFY_END_TAB_SWITCH:
+      log('kCOMMAND_NOTIFY_END_TAB_SWITCH');
+      return (async () => {
+        if (gMaybeTabSwitchingByShortcut &&
+            configs.skipCollapsedTabsForTabSwitchingShortcuts) {
+          let tab = aSender.tab && getTabById(aSender.tab.id);
+          if (!tab) {
+            let tabs = await browser.tabs.query({ currentWindow: true, active: true });
+            tab = getTabById(tabs[0].id);
+          }
+          if (tab && tab.parentNode.lastFocusedTab == tab.id) {
+            collapseExpandSubtree(tab, {
+              collapsed: false,
+              broadcast: true
+            });
+          }
+        }
+        gMaybeTabSwitchingByShortcut = false;
+      })();
   }
 }
 
