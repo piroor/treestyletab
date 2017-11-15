@@ -83,10 +83,13 @@ async function init() {
 
   await rebuildAll();
   gMetricsData.add('rebuildAll');
+
   browser.runtime.sendMessage({
     type:     kNOTIFY_SIDEBAR_OPENED,
     windowId: gTargetWindow
   });
+  if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
+    browser.theme.getCurrent({ windowId: gTargetWindow }).then(applyBrowserTheme);
 
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
@@ -248,8 +251,6 @@ function applyStyle() {
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
   }
-  if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
-    browser.theme.getCurrent().then(applyBrowserTheme);
   return new Promise((aResolve, aReject) => {
     gStyleLoader.addEventListener('load', () => {
       nextFrame().then(aResolve);
