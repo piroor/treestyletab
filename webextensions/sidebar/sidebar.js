@@ -121,7 +121,7 @@ async function init() {
 
       browser.runtime.onMessage.addListener(onMessage);
       browser.runtime.onMessageExternal.addListener(onMessageExternal);
-      if (browser.theme)
+      if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
     }),
     gMetricsData.addAsync('initializing contextual identities', async () => {
@@ -190,7 +190,7 @@ function destroy() {
   configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
-  if (browser.theme)
+  if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
     browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
   endListenDragEvents(gTabBar);
   endObserveApiTabs();
@@ -248,7 +248,7 @@ function applyStyle() {
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
   }
-  if (browser.theme)
+  if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
     browser.theme.getCurrent().then(applyBrowserTheme);
   return new Promise((aResolve, aReject) => {
     gStyleLoader.addEventListener('load', () => {
