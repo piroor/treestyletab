@@ -370,18 +370,8 @@ var tabContextMenu = {
             inRemote: true
           });
         })();
-      case 'context_openTabInWindow': {
-        let tabId  = this.contextTab.id; // cache it for delayed tasks!
-        let window = await browser.windows.create({ url: 'about:blank' });
-        //await browser.tabs.move(tabId, { index: 1, windowId: window.id });
-        let tab = getTabById(tabId);
-        await moveTabs([tab].concat(getDescendantTabs(tab)), {
-          destinationWindowId: window.id,
-          inRemote:            true
-        });
-        let tabs = await browser.tabs.query({ windowId: window.id });
-        browser.tabs.remove(tabs[0].id);
-      }; break;
+      case 'context_openTabInWindow':
+        await browser.windows.create({ tabId: this.contextTab.id });
       case 'context_reloadAllTabs': {
         let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
         for (let tab of tabs) {
@@ -406,29 +396,21 @@ var tabContextMenu = {
       case 'context_closeTabsToTheEnd': {
         let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
         let after = false;
+        let closeTabs = [];
         for (let tab of tabs) {
           if (tab.id == this.contextTab.id) {
             after = true;
             continue;
           }
-          if (!after)
-            continue;
-          browser.runtime.sendMessage({
-            type: kCOMMAND_REMOVE_TAB,
-            tab:  tab.id
-          });
+          if (after)
+            closeTabs.push(tab);
         }
+        browser.tabs.remove(closeTabs.map(aTab => aTab.id));
       }; break;
       case 'context_closeOtherTabs': {
         let tabId = this.contextTab.id; // cache it for delayed tasks!
         let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
-        for (let tab of tabs) {
-          if (!tab.pinned && tab.id != tabId)
-            browser.runtime.sendMessage({
-              type: kCOMMAND_REMOVE_TAB,
-              tab:  tab.id
-            });
-        }
+        browser.tabs.remove(tabs.filter(aTab => !aTab.pinned && aTab.id != tabId).map(aTab => aTab.id));
       }; break;
       case 'context_undoCloseTab': {
         let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
@@ -436,10 +418,7 @@ var tabContextMenu = {
           browser.sessions.restore(sessions[0].tab.sessionId);
       }; break;
       case 'context_closeTab':
-        browser.runtime.sendMessage({
-          type: kCOMMAND_REMOVE_TAB,
-          tab:  this.contextTab.id
-        });
+        browser.tabs.remove(this.contextTab.id);
         break;
 
       default: {
