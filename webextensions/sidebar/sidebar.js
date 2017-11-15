@@ -272,6 +272,7 @@ function applyBrowserTheme(aTheme) {
       --browser-bg-less-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.25)};
       --browser-bg-lighter:      ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.4)};
       --browser-bg-more-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.6)};
+      --browser-bg-lightest:     ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.85)};
       --browser-bg-less-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.1)};
       --browser-bg-darker:       ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.25)};
       --browser-bg-more-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.5)};

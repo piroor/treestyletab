@@ -48,7 +48,7 @@
   --tab-highlighted-glow: #3890f3; /* = rgb(56, 144, 243) */
   --tab-highlighted-base: var(--tab-surface);
 
-  --throbber-color: var(--tab-highlighted-glow);
+  --throbber-color: var(--browser-bg-lightest, --tab-highlighted-glow);
 
   background: var(--browser-bg-darker, --tab-surface);
 }
