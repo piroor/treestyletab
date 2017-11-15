@@ -1,11 +1,12 @@
 # History
 
  - master/HEAD
+ - 2.2.6 (2017.11.15)
+   * Skip collapsed tabs for focus switching via Ctrl-Tab/Ctrl-Shift-Tab. [But there are some restrictions.](https://github.com/piroor/treestyletab/issues/1531#issuecomment-344487289) (This feature was described at 2.2.4 but didn't work due to missing file.)
  - 2.2.5 (2017.11.15)
    * Isolate from unimplemented feature on Firefox 57.
  - 2.2.4 (2017.11.15)
    * Inherit theme colros applied by extensions like [VivaldiFox](https://addons.mozilla.org/firefox/addon/vivaldifox/), [Container Theme](https://addons.mozilla.org/firefox/addon/containers-theme/), and others. Due to limitations of WebExtensions APIs, non-extension theme colors won't be applied.
-   * Skip collapsed tabs for focus switching via Ctrl-Tab/Ctrl-Shift-Tab. [But there are some restrictions.](https://github.com/piroor/treestyletab/issues/1531#issuecomment-344487289)
    * Collapse other tree when new tree is created. (regression)
  - 2.2.3 (2017.11.15)
    * Add new APIs to work with other addons, especially Multiple Tab Handler.

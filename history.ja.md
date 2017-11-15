@@ -1,11 +1,12 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.2.6 (2017.11.15)
+   * Ctrl-Tab/Ctrl-Shift-Tabでのタブ切り替え時に、折り畳まれたタブを飛ばすようにした（ただし[いくつかの制限事項あり](https://github.com/piroor/treestyletab/issues/1531#issuecomment-344487289)）（2.2.4の機能として記載していたがファイルのコミット忘れにより動作していなかった）
  - 2.2.5 (2017.11.15)
    * Firefox 57の時点で未実装の機能を呼ばないようにした
  - 2.2.4 (2017.11.15)
    * [VivaldiFox](https://addons.mozilla.org/firefox/addon/vivaldifox/)や[Container Theme](https://addons.mozilla.org/firefox/addon/containers-theme/)などのような拡張機能によるテーマカラーの変更を反映するようにした（WebExtensions APIの制限のため、拡張機能でないテーマは反映されません）
-   * Ctrl-Tab/Ctrl-Shift-Tabでのタブ切り替え時に、折り畳まれたタブを飛ばすようにした（ただし[いくつかの制限事項あり](https://github.com/piroor/treestyletab/issues/1531#issuecomment-344487289)）
    * 新しいツリーを形成したときに既存のツリーが折り畳まれなくなっていたのを修正（後退バグ）
  - 2.2.3 (2017.11.15)
    * マルチプルタブハンドラとの連携用にAPIを追加
