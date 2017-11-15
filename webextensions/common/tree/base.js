@@ -455,7 +455,7 @@ function removeTabsInternally(aTabs, aOptions = {}) {
       options: aOptions
     });
   }
-  var container = aTab.parentNode;
+  var container = aTabs[0].parentNode;
   container.internalClosingCount += aTabs.length;
   return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(handleMissingTabError);
 }
