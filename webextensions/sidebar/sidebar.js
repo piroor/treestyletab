@@ -269,10 +269,10 @@ function applyBrowserTheme(aTheme) {
   gBrowserThemeDefinition.textContent = `
     :root {
       --browser-bg-base:         ${aTheme.colors.accentcolor};
-      --browser-bg-less-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.25)};
+      --browser-bg-less-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.25, aTheme.colors.accentcolor)};
       --browser-bg-lighter:      ${aTheme.colors.toolbar || getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.4)};
-      --browser-bg-more-lighter: ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.6)};
-      --browser-bg-lightest:     ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.85)};
+      --browser-bg-more-lighter: ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.6, aTheme.colors.accentcolor)};
+      --browser-bg-lightest:     ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.85, aTheme.colors.accentcolor)};
       --browser-bg-less-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.1)};
       --browser-bg-darker:       ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.25)};
       --browser-bg-more-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.5)};
@@ -283,7 +283,20 @@ function applyBrowserTheme(aTheme) {
   `;
 }
 
-function getModifiedColorFrom(aCode, aBrightness, aAlpha) { // expected input: 'RRGGBB' or 'RGB' or rgb(...) or rgba(...)
+function getModifiedColorFrom(aCode, aBrightness, aAlpha, aBaseColor) { // expected input: 'RRGGBB' or 'RGB' or rgb(...) or rgba(...)
+  var base = parseColor(aCode, aBaseColor);
+  if (!base)
+    return aCode;
+  var another = {
+    red:   aBrightness,
+    green: aBrightness,
+    blue:  aBrightness
+  };
+  var mixed = mixColors(base, another, aAlpha);
+  return `rgb(${mixed.red}, ${mixed.green}, ${mixed.blue})`;
+}
+
+function parseColor(aCode, aBaseColor) { // expected input: 'RRGGBB' or 'RGB' or rgb(...) or rgba(...)
   var red, green, blue;
   var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i) ||
               aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/i);
@@ -295,19 +308,24 @@ function getModifiedColorFrom(aCode, aBrightness, aAlpha) { // expected input: '
   else {
     parts = aCode.match(/^rgba?(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*(?:,\s*((?:0\.)?[0-9]+)?\s*))/i);
     if (!parts)
-      return aCode;
+      return null;
     red   = parseInt(parts[1]);
     green = parseInt(parts[2]);
     blue  = parseInt(parts[3]);
     if (parts[4]) {
-      // not implemented alpha
+      let base = { red, green, blue };
+      let another = parseColor(aBaseColor);
+      return mixColors(base, another, parseFloat(parts[4]));
     }
   }
+  return { red, green, blue };
+}
 
-  red   = Math.min(255, Math.round((red   * (1 - aAlpha)) + (aBrightness * aAlpha)));
-  green = Math.min(255, Math.round((green * (1 - aAlpha)) + (aBrightness * aAlpha)));
-  blue  = Math.min(255, Math.round((blue  * (1 - aAlpha)) + (aBrightness * aAlpha)));
-  return `rgb(${red}, ${green}, ${blue})`;
+function mixColors(aBase, aAnother, aAlpha) {
+  var red   = Math.min(255, Math.round((aBase.red   * (1 - aAlpha)) + (aAnother.red   * aAlpha)));
+  var green = Math.min(255, Math.round((aBase.green * (1 - aAlpha)) + (aAnother.green * aAlpha)));
+  var blue  = Math.min(255, Math.round((aBase.blue  * (1 - aAlpha)) + (aAnother.blue  * aAlpha)));
+  return { red, green, blue };
 }
 
 function calculateDefaultSizes() {
@@ -380,15 +398,11 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGGBB' or 'RGB'
-  var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i) ||
-              aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/i);
-  if (!parts)
+function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGGBB', 'RGB', 'rgb(...)'
+  var color = parseColor(aCode);
+  if (!color)
     return '-moz-fieldtext';
-  var red   = parseInt(parts[1], 16);
-  var green = parseInt(parts[2], 16);
-  var blue  = parseInt(parts[3], 16);
-  var brightness = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
+  var brightness = (color.red * 0.299 + color.green * 0.587 + color.blue * 0.114) / 255;
   return brightness < 0.5 ? 'white' : 'black';
 }
 
