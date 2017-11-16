@@ -249,6 +249,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       aNewState.pinned != aTab.classList.contains(kTAB_STATE_PINNED)) {
     if (aNewState.pinned) {
       aTab.classList.add(kTAB_STATE_PINNED);
+      aTab.removeAttribute(kLEVEL); // don't indent pinned tabs!
       window.onTabPinned && onTabPinned(aTab);
     }
     else {
