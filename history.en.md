@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 2.2.9 (2017.11.17)
+   * Don't apply indent for pinned tabs.
+   * Don't close initial message tab automatically.
  - 2.2.8 (2017.11.16)
    * Reduce width of elipsis for cropped long title of tabs.
    * Close collapsed tree without expansion animation correctly. (regression)
