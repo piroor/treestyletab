@@ -188,14 +188,12 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
 
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  var skipAnimation = (
-    !gSidebarOpenState.has(aTab.apiTab.windowId) &&
-    closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-    isSubtreeCollapsed(aTab)
-  );
+  if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
+      closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      isSubtreeCollapsed(aTab))
   collapseExpandSubtree(aTab, {
     collapsed: false,
-    justNow:   skipAnimation,
+    justNow:   true,
     broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
   });
 

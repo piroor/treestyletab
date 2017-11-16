@@ -690,13 +690,10 @@ function onTabClosed(aTab, aCloseInfo) {
   tabContextMenu.close();
 
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  var skipAnimation = (
-    closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-    isSubtreeCollapsed(aTab)
-  );
+  if (closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      isSubtreeCollapsed(aTab))
   collapseExpandSubtree(aTab, {
-    collapsed: false,
-    justNow:   skipAnimation
+    collapsed: false
   });
 
   // We don't need to update children because they are controlled by bacgkround.
