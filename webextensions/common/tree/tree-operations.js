@@ -90,15 +90,14 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   var newIndex = calculateNewTabIndex(aOptions);
   log('newIndex: ', newIndex);
 
-  var newlyAttached = false;
-  if (aParent.childTabs.indexOf(aChild) > -1 &&
-      aChild.parentTab == aParent) {
+  var newlyAttached = (
+    aParent.childTabs.indexOf(aChild) < 0 ||
+    aChild.parentTab != aParent
+  );
+  if (!newlyAttached)
     log('=> already attached');
-  }
-  else {
-    newlyAttached = true;
 
-    let childIds;
+    var childIds;
     {
       let newIndex = calculateNewTabIndex({
         insertBefore: aOptions.insertBefore,
@@ -120,6 +119,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     }
     log('new children: ', childIds);
 
+  if (newlyAttached) {
     detachTab(aChild, clone(aOptions, {
       // Don't broadcast this detach operation, because this "attachTabTo" can be
       // broadcasted. If we broadcast this detach operation, the tab is detached
