@@ -448,6 +448,8 @@ function removeTabsInternally(aTabs, aOptions = {}) {
   if (!aTabs.length)
     return;
   log('removeTabsInternally: ', aTabs.map(dumpTab));
+  var container = aTabs[0].parentNode;
+  container.internalClosingCount += aTabs.length;
   if (aOptions.inRemote) {
     return browser.runtime.sendMessage({
       type:    kCOMMAND_REMOVE_TABS_INTERNALLY,
@@ -455,8 +457,6 @@ function removeTabsInternally(aTabs, aOptions = {}) {
       options: aOptions
     });
   }
-  var container = aTabs[0].parentNode;
-  container.internalClosingCount += aTabs.length;
   return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(handleMissingTabError);
 }
 
