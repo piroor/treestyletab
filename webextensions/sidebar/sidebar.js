@@ -567,19 +567,19 @@ function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aD
   if (configuredMaxLevel < 0)
     configuredMaxLevel = Number.MAX_SAFE_INTEGER;
 
-  var root = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]:not(.initializing)`;
+  var base = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]:not(.initializing) .tab:not(.${kTAB_STATE_PINNED}):not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}]`;
 
   // default indent for unhandled (deep) level tabs
   let defaultIndent = `${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px`;
   if (!aDefaultIndentToSelectors[defaultIndent])
     aDefaultIndentToSelectors[defaultIndent] = [];
-  aDefaultIndentToSelectors[defaultIndent].push(`${root} .tab:not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}]:not([${kLEVEL}="0"])`);
+  aDefaultIndentToSelectors[defaultIndent].push(`${base}:not([${kLEVEL}="0"])`);
 
   for (let level = 1; level <= aMaxLevel; level++) {
     let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
     if (!aIndentToSelectors[indent])
       aIndentToSelectors[indent] = [];
-    aIndentToSelectors[indent].push(`${root} .tab:not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}][${kLEVEL}="${level}"]`);
+    aIndentToSelectors[indent].push(`${base}[${kLEVEL}="${level}"]`);
   }
 }
 
