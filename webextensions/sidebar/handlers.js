@@ -1074,6 +1074,9 @@ function onMessage(aMessage, aSender, aRespond) {
         aMessage
       ).then(aTabs => aTabs.map(aTab => aTab.id));
 
+    case kCOMMAND_REMOVE_TABS_INTERNALLY:
+      return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
+
     case kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
         log('attach tab from remote ', aMessage);

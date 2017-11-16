@@ -894,9 +894,7 @@ function onMessage(aMessage, aSender) {
       })();
 
     case kCOMMAND_REMOVE_TABS_INTERNALLY:
-      return removeTabsInternally(aMessage.tabs.map(getTabById), clone(aMessage.options, {
-        inRemote: false
-      }));
+      return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
 
     case kNOTIFY_TAB_MOUSEDOWN:
       gMaybeTabSwitchingByShortcut = false;
