@@ -97,27 +97,27 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   if (!newlyAttached)
     log('=> already attached');
 
-    var childIds;
-    {
-      let newIndex = calculateNewTabIndex({
-        insertBefore: aOptions.insertBefore,
-        insertAfter:  aOptions.insertAfter,
-        ignoreTabs:   [aChild]
-      });
-      let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
-      if (newIndex >= expectedAllTabs.length)
-        expectedAllTabs.push(aChild);
-      else
-        expectedAllTabs.splice(newIndex, 0, aChild);
+  var childIds;
+  {
+    let newIndex = calculateNewTabIndex({
+      insertBefore: aOptions.insertBefore,
+      insertAfter:  aOptions.insertAfter,
+      ignoreTabs:   [aChild]
+    });
+    let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
+    if (newIndex >= expectedAllTabs.length)
+      expectedAllTabs.push(aChild);
+    else
+      expectedAllTabs.splice(newIndex, 0, aChild);
 
-      let children = expectedAllTabs.filter(aTab => {
-        return (aTab == aChild ||
+    let children = expectedAllTabs.filter(aTab => {
+      return (aTab == aChild ||
                 aTab.parentTab == aParent);
-      });
-      aParent.childTabs = children;
-      childIds = children.map(aTab => aTab.id);
-    }
-    log('new children: ', childIds);
+    });
+    aParent.childTabs = children;
+    childIds = children.map(aTab => aTab.id);
+  }
+  log('new children: ', childIds);
 
   if (newlyAttached) {
     detachTab(aChild, clone(aOptions, {
