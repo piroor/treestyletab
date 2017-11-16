@@ -191,11 +191,11 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
       closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       isSubtreeCollapsed(aTab))
-  collapseExpandSubtree(aTab, {
-    collapsed: false,
-    justNow:   true,
-    broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
-  });
+    collapseExpandSubtree(aTab, {
+      collapsed: false,
+      justNow:   true,
+      broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
+    });
 
   tryMoveFocusFromClosingCurrentTab(aTab);
 

@@ -692,9 +692,9 @@ function onTabClosed(aTab, aCloseInfo) {
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       isSubtreeCollapsed(aTab))
-  collapseExpandSubtree(aTab, {
-    collapsed: false
-  });
+    collapseExpandSubtree(aTab, {
+      collapsed: false
+    });
 
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
