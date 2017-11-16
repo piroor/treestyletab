@@ -268,16 +268,8 @@ async function notifyUpdatedFromLegacy() {
     return;
   configs.shouldNotifyUpdatedFromLegacyVersion = false;
 
-  var tab = await browser.tabs.create({
+  browser.tabs.create({
     url:    browser.extension.getURL('resources/updated-from-legacy.html'),
     active: true
-  });
-  browser.runtime.onMessage.addListener(function onMessage(aMessage, aSender) {
-    if (aMessage &&
-        typeof aMessage.type == 'string' &&
-        aMessage.type == kNOTIFY_SIDEBAR_OPENED) {
-      browser.runtime.onMessage.removeListener(onMessage);
-      removeTabInternally(getTabById(tab.id));
-    }
   });
 }
