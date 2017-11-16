@@ -267,66 +267,25 @@ function applyBrowserTheme(aTheme) {
     gBrowserThemeDefinition.textContent = '';
     return;
   }
+  var baseColor    = aTheme.colors.accentcolor;
+  var toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)');
+  if (aTheme.colors.toolbar)
+    toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
   gBrowserThemeDefinition.textContent = `
     :root {
-      --browser-bg-base:         ${aTheme.colors.accentcolor};
-      --browser-bg-less-lighter: ${getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.25, aTheme.colors.accentcolor)};
-      --browser-bg-lighter:      ${aTheme.colors.toolbar || getModifiedColorFrom(aTheme.colors.accentcolor, 255, 0.4)};
-      --browser-bg-more-lighter: ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.6, aTheme.colors.accentcolor)};
-      --browser-bg-lightest:     ${getModifiedColorFrom(aTheme.colors.toolbar || aTheme.colors.accentcolor, 255, 0.85, aTheme.colors.accentcolor)};
-      --browser-bg-less-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.1)};
-      --browser-bg-darker:       ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.25)};
-      --browser-bg-more-darker:  ${getModifiedColorFrom(aTheme.colors.accentcolor, 0, 0.5)};
+      --browser-bg-base:         ${baseColor};
+      --browser-bg-less-lighter: ${mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.25)')};
+      --browser-bg-lighter:      ${toolbarColor};
+      --browser-bg-more-lighter: ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)')};
+      --browser-bg-lightest:     ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)')};
+      --browser-bg-less-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.1)')};
+      --browser-bg-darker:       ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.25)')};
+      --browser-bg-more-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)')};
       --browser-fg:              ${aTheme.colors.textcolor};
       --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
       --browser-header-url:      url(${JSON.stringify(aTheme.images.headerURL)});
     }
   `;
-}
-
-function getModifiedColorFrom(aCode, aBrightness, aAlpha, aBaseColor) { // expected input: 'RRGGBB' or 'RGB' or rgb(...) or rgba(...)
-  var base = parseColor(aCode, aBaseColor);
-  if (!base)
-    return aCode;
-  var another = {
-    red:   aBrightness,
-    green: aBrightness,
-    blue:  aBrightness
-  };
-  var mixed = mixColors(base, another, aAlpha);
-  return `rgb(${mixed.red}, ${mixed.green}, ${mixed.blue})`;
-}
-
-function parseColor(aCode, aBaseColor) { // expected input: 'RRGGBB' or 'RGB' or rgb(...) or rgba(...)
-  var red, green, blue;
-  var parts = aCode.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i) ||
-              aCode.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])/i);
-  if (parts) {
-    red   = parseInt(parts[1], 16);
-    green = parseInt(parts[2], 16);
-    blue  = parseInt(parts[3], 16);
-  }
-  else {
-    parts = aCode.match(/^rgba?(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)\s*(?:,\s*((?:0\.)?[0-9]+)?\s*))/i);
-    if (!parts)
-      return null;
-    red   = parseInt(parts[1]);
-    green = parseInt(parts[2]);
-    blue  = parseInt(parts[3]);
-    if (parts[4]) {
-      let base = { red, green, blue };
-      let another = parseColor(aBaseColor);
-      return mixColors(base, another, parseFloat(parts[4]));
-    }
-  }
-  return { red, green, blue };
-}
-
-function mixColors(aBase, aAnother, aAlpha) {
-  var red   = Math.min(255, Math.round((aBase.red   * (1 - aAlpha)) + (aAnother.red   * aAlpha)));
-  var green = Math.min(255, Math.round((aBase.green * (1 - aAlpha)) + (aAnother.green * aAlpha)));
-  var blue  = Math.min(255, Math.round((aBase.blue  * (1 - aAlpha)) + (aAnother.blue  * aAlpha)));
-  return { red, green, blue };
 }
 
 function calculateDefaultSizes() {
@@ -397,14 +356,6 @@ function updateContextualIdentitiesSelector() {
     range.insertNode(fragment);
   }
   range.detach();
-}
-
-function getReadableForegroundColorFromBGColor(aCode) { // expected input: 'RRGGBB', 'RGB', 'rgb(...)'
-  var color = parseColor(aCode);
-  if (!color)
-    return '-moz-fieldtext';
-  var brightness = (color.red * 0.299 + color.green * 0.587 + color.blue * 0.114) / 255;
-  return brightness < 0.5 ? 'white' : 'black';
 }
 
 function installStyleForAddon(aId, aStyle) {
