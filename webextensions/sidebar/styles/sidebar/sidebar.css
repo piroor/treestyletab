@@ -111,6 +111,7 @@
 }
 .closebox {
   width: 1.5em;
+  min-width: 1.5em;
   height: 1.5em;
   margin-left: 3px;
   background: url("closetab.png") center center no-repeat;
