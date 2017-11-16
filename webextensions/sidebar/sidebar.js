@@ -345,7 +345,7 @@ function calculateDefaultSizes() {
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
 
-    --tab-burst-duration: ${configs.butstDuration}ms;
+    --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;
     --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
