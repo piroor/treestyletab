@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+ - 2.2.8 (2017.11.16)
+   * Reduce width of elipsis for cropped long title of tabs.
+   * Close collapsed tree without expansion animation correctly. (regression)
+   * Update internal order of child tabs correctly, when they are just rearranged. (regression)
+   * Don't shrink close button for indented tabs, on the "Sidebar" skin.
  - 2.2.7 (2017.11.15)
    * Apply theme color for each window.
  - 2.2.6 (2017.11.15)
