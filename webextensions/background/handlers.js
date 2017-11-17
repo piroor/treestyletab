@@ -443,7 +443,7 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
       newParent = prevParent;
     }
     else {
-      log('=> maybe drag and drop');
+      log('=> maybe drag and drop (or opened with active state and position)');
       let realDelta = Math.abs(toIndex - fromIndex);
       newParent = realDelta < 2 ? prevParent : (oldParent || nextParent) ;
     }
