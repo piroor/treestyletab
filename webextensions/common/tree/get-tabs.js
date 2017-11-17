@@ -227,6 +227,7 @@ function getPreviousNormalTab(aTab) {
 
 function ensureLivingTab(aTab) {
   if (!aTab ||
+      !aTab.id ||
       !aTab.parentNode ||
       aTab[kTAB_STATE_REMOVING])
     return null;
@@ -234,7 +235,7 @@ function ensureLivingTab(aTab) {
 }
 
 function getOpenerTab(aTab) {
-  if (!aTab ||
+  if (!ensureLivingTab(aTab) ||
       !aTab.apiTab ||
       !aTab.apiTab.openerTabId ||
       aTab.apiTab.openerTabId == aTab.apiTab.id)
@@ -243,7 +244,7 @@ function getOpenerTab(aTab) {
 }
 
 function getParentTab(aChild) {
-  if (!aChild)
+  if (!ensureLivingTab(aChild))
     return null;
   assertValidHint(aChild);
   return ensureLivingTab(aChild.parentTab);
@@ -277,16 +278,16 @@ function getRootTab(aDecendant) {
 }
 
 function getSiblingTabs(aTab) {
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return [];
   assertValidHint(aTab);
-  if (!aTab.parentTab)
+  if (!ensureLivingTab(aTab.parentTab))
     return getRootTabs(aTab);
   return aTab.parentTab.childTabs.filter(ensureLivingTab);
 }
 
 function getNextSiblingTab(aTab) {
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
   var siblings = getSiblingTabs(aTab);
@@ -295,7 +296,7 @@ function getNextSiblingTab(aTab) {
 }
 
 function getPreviousSiblingTab(aTab) {
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
   var siblings = getSiblingTabs(aTab);
@@ -304,14 +305,14 @@ function getPreviousSiblingTab(aTab) {
 }
 
 function getChildTabs(aParent) {
-  if (!aParent)
+  if (!ensureLivingTab(aParent))
     return [];
   assertValidHint(aParent);
   return aParent.childTabs.filter(ensureLivingTab);
 }
 
 function getFirstChildTab(aParent) {
-  if (!aParent)
+  if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
   var tabs = aParent.childTabs.filter(ensureLivingTab);
@@ -319,7 +320,7 @@ function getFirstChildTab(aParent) {
 }
 
 function getLastChildTab(aParent) {
-  if (!aParent)
+  if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
   var tabs = aParent.childTabs.filter(ensureLivingTab);
@@ -327,7 +328,8 @@ function getLastChildTab(aParent) {
 }
 
 function getChildTabIndex(aChild, aParent) {
-  if (!aChild)
+  if (!ensureLivingTab(aChild) ||
+      !ensureLivingTab(aParent))
     return -1;
   assertValidHint(aChild);
   assertValidHint(aParent);
@@ -416,7 +418,7 @@ function getVisibleLoadingTabs(aHint) {
 
 function collectRootTabs(aTabs) {
   return aTabs.filter(aTab => {
-    if (!aTab)
+    if (!ensureLivingTab(aTab))
       return false;
     var parent = getParentTab(aTab);
     return !parent || aTabs.indexOf(parent) < 0;
@@ -476,14 +478,14 @@ function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
 }
 
 function getNextVisibleTab(aTab) { // visible, not-collapsed
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
   return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
 }
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
   return evaluateXPath(
@@ -494,7 +496,7 @@ function getPreviousVisibleTab(aTab) { // visible, not-collapsed
 }
 
 function getVisibleIndex(aTab) {
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return -1;
   assertValidHint(aTab);
   return evaluateXPath(
