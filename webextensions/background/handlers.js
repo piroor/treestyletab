@@ -595,6 +595,9 @@ function setupDelayedExpand(aTab) {
   if (!aTab)
     return;
   cancelDelayedExpand(aTab);
+  if (!hasChildTabs(aTab) ||
+      !isSubtreeCollapsed(aTab))
+    return;
   aTab.delayedExpand = setTimeout(() => {
     collapseExpandTreesIntelligentlyFor(aTab, {
       broadcast: true
