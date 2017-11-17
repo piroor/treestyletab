@@ -556,7 +556,9 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 
 function onTabUpdated(aTab) {
   var parent = getOpenerTab(aTab);
-  if (parent && parent != getParentTab(aTab)) {
+  if (parent &&
+      parent != getParentTab(aTab) &&
+      configs.syncParentTabAndOpenerTab) {
     attachTabTo(aTab, parent, {
       insertAt:    kINSERT_NEAREST,
       forceExpand: isActive(aTab),
@@ -580,7 +582,8 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
 
 async function onTabAttached(aTab, aInfo = {}) {
   var parent = aInfo.parent;
-  if (aTab.apiTab.openerTabId != parent.apiTab.id) {
+  if (aTab.apiTab.openerTabId != parent.apiTab.id &&
+      configs.syncParentTabAndOpenerTab) {
     aTab.apiTab.openerTabId = parent.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id })
@@ -701,7 +704,8 @@ async function onTabAttached(aTab, aInfo = {}) {
 }
 
 function onTabDetached(aTab, aDetachInfo) {
-  if (aTab.apiTab.openerTabId) {
+  if (aTab.apiTab.openerTabId &&
+      configs.syncParentTabAndOpenerTab) {
     aTab.apiTab.openerTabId = aTab.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(aTab.apiTab.id, { openerTabId: aTab.apiTab.id }) // set self id instead of null, because it requires any valid tab id...

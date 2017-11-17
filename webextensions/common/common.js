@@ -114,6 +114,8 @@ configs = new Configs({
 
   parentTabBehaviorForChanges: kPARENT_TAB_BEHAVIOR_ALWAYS,
 
+  syncParentTabAndOpenerTab: true,
+
 
   // grouping
   autoGroupNewTabs: true,

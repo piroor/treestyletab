@@ -315,7 +315,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   }
   var opener = getOpenerTab(aTab);
   if (!attached &&
-      opener) {
+      opener &&
+      configs.syncParentTabAndOpenerTab) {
     await attachTabTo(aTab, opener, {
       dontExpand:  !active,
       forceExpand: active,
