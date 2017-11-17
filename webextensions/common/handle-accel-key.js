@@ -92,7 +92,7 @@
     window.addEventListener('pagehide', () => {
       window.addEventListener('keydown', onKeyDown, { capture: true });
       window.addEventListener('keyup', onKeyUp, { capture: true });
-      window.addEventListener('pagehide', init, { once: true });
+      window.addEventListener('pageshow', init, { once: true });
     }, { once: true });
   }
   init();
