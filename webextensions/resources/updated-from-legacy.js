@@ -7,4 +7,13 @@
 
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;
+
+  Permissions.bindToCheckbox(
+    Permissions.ALL_URLS,
+    document.querySelector('#allUrlsPermissionGranted')
+  );
+  Permissions.bindToCheckbox(
+    Permissions.BOOKMARKS,
+    document.querySelector('#bookmarksPermissionGranted')
+  );
 }, { once: true });
