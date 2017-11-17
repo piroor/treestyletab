@@ -19,15 +19,18 @@ function onConfigChanged(aKey) {
   }
 }
 
-async function requestPermissionFor(aPermission, aCheckbox) {
+async function requestPermissionFor(aPermissions, aCheckbox) {
   try {
-    if (await browser.permissions.request({ permissions: ['bookmarks'] })) {
-      aCheckbox.checked = true;
+    if (!aCheckbox.checked) {
+      await browser.permissions.remove({ permissions: aPermissions });
+      return;
+    }
+    if (!await browser.permissions.request({ permissions: aPermissions })) {
+      aCheckbox.checked = false;
       return;
     }
   }
   catch(e) {
-    console.log(e);
   }
   aCheckbox.checked = false;
 }
@@ -36,6 +39,9 @@ configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
+    document.querySelector('#bookmarksPermissionGranted').addEventListener('change', (aEvent) => {
+      requestPermissionFor(['bookmarks'], aEvent.target)
+    });
     options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
     onConfigChanged('debug');
   });
