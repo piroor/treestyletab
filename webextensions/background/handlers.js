@@ -681,7 +681,7 @@ async function onTabAttached(aTab, aInfo = {}) {
         });
       }
       else if (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)) {
-        if (configs.autoExpandOnAttached) {
+        if (configs.autoExpandOnAttached || aInfo.forceExpand) {
           newAncestors.forEach(aAncestor => {
             if (isNewTreeCreatedManually || shouldTabAutoExpanded(aAncestor))
               collapseExpandSubtree(aAncestor, clone(aInfo, {
