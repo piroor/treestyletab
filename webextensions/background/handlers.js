@@ -246,20 +246,20 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
 }
 
 function cleanupNeedlssGroupTab(aTabs) {
-    log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
-    var tabsToBeRemoved = [];
-    for (let tab of aTabs) {
-      if (!isTemporaryGroupTab(tab))
-        break;
-      if (getChildTabs(tab).length > 1)
-        break;
-      let lastChild = getFirstChildTab(tab);
-      if (lastChild && !isTemporaryGroupTab(lastChild))
-        break;
-      tabsToBeRemoved.push(tab);
-    }
-    log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
-    removeTabsInternally(tabsToBeRemoved);
+  log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
+  var tabsToBeRemoved = [];
+  for (let tab of aTabs) {
+    if (!isTemporaryGroupTab(tab))
+      break;
+    if (getChildTabs(tab).length > 1)
+      break;
+    let lastChild = getFirstChildTab(tab);
+    if (lastChild && !isTemporaryGroupTab(lastChild))
+      break;
+    tabsToBeRemoved.push(tab);
+  }
+  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
+  removeTabsInternally(tabsToBeRemoved);
 }
 
 async function closeChildTabs(aParent) {
