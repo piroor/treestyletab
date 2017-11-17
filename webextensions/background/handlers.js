@@ -10,7 +10,11 @@ function onToolbarButtonClick(aTab) {
     let permissions = configs.requestingPermissions;
     configs.requestingPermissions = null;
     browser.browserAction.setBadgeText({ text: '' });
-    browser.permissions.request(permissions);
+    browser.permissions.request(permissions).then(aGranted => {
+      log('permission requested: ', permissions, aGranted);
+      if (aGranted)
+        onPermissionsGranted(permissions);
+    });
     return;
   }
 
@@ -814,6 +818,21 @@ function onTabPinned(aTab) {
     broadcast: true
   });
   collapseExpandTabAndSubtree(aTab, { collapsed: false });
+}
+
+
+async function onPermissionsGranted(aPermissions) {
+  browser.runtime.sendMessage({
+    type:        kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+    permissions: aPermissions
+  });
+  if (!Array.isArray(aPermissions.origins) ||
+      aPermissions.origins.indexOf('<all_urls>') < 0)
+    return;
+  var tabs = await browser.tabs.query({});
+  for (let tab of tabs) {
+    tryStartHandleAccelKeyOnTab(getTabById(tab.id));
+  }
 }
 
 

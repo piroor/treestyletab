@@ -150,6 +150,8 @@ async function rebuildAll() {
 }
 
 async function tryStartHandleAccelKeyOnTab(aTab) {
+  if (!ensureLivingTab(aTab))
+    return;
   var granted = await browser.permissions.contains({ origins: ['<all_urls>'] });
   if (!granted ||
       /^(about|chrome|resource):/.test(aTab.apiTab.url))

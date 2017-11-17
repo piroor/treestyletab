@@ -53,6 +53,15 @@ function initPermissionsCheckbox(aId, aPermissions) {
     requestPermissionFor(aPermissions, aEvent.target)
   });
 
+  browser.runtime.onMessage.addListener((aMessage, aSender) => {
+    if (!aMessage ||
+        !aMessage.type ||
+        aMessage.type != kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
+        JSON.stringify(aMessage.permissions) != JSON.stringify(aPermissions))
+      return;
+    checkbox.checked = true;
+  });
+
   /*
   // These events are not available yet on Firefox...
   browser.permissions.onAdded.addListener(aAddedPermissions => {
