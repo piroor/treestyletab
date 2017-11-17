@@ -181,7 +181,7 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   });
   updateParentTab(getParentTab(updatedTab));
 
-  window.onTabUpdated && onTabUpdated(updatedTab);
+  window.onTabUpdated && onTabUpdated(updatedTab, aChangeInfo);
 }
 
 function onApiTabCreated(aTab) {

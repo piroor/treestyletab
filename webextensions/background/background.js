@@ -143,9 +143,28 @@ async function rebuildAll() {
       let newTab = buildTab(apiTab, { existing: true });
       container.appendChild(newTab);
       updateTab(newTab, apiTab, { forceApply: true });
+      tryStartHandleAccelKeyOnTab(newTab);
     }
     gAllTabs.appendChild(container);
   });
+}
+
+async function tryStartHandleAccelKeyOnTab(aTab) {
+  var granted = await browser.permissions.contains({ origins: ['<all_urls>'] });
+  if (!granted ||
+      /^(about|chrome|resource):/.test(aTab.apiTab.url))
+    return;
+  try {
+    browser.tabs.executeScript(aTab.apiTab.id, {
+      file:            '/common/handle-accel-key.js',
+      allFrames:       true,
+      matchAboutBlank: true,
+      runAt:           'document_start'
+    });
+  }
+  catch(aError) {
+    console.log(aError);
+  }
 }
 
 function startWatchSidebarOpenState() {

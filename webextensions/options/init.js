@@ -44,31 +44,35 @@ async function requestPermissionFor(aPermissions, aCheckbox) {
   aCheckbox.checked = false;
 }
 
+function initPermissionsCheckbox(aId, aPermissions) {
+  var checkbox = document.querySelector(`#${aId}`);
+  browser.permissions.contains(aPermissions).then(aGranted => {
+    checkbox.checked = aGranted;
+  });
+  checkbox.addEventListener('change', (aEvent) => {
+    requestPermissionFor(aPermissions, aEvent.target)
+  });
+
+  /*
+  // These events are not available yet on Firefox...
+  browser.permissions.onAdded.addListener(aAddedPermissions => {
+    if (aAddedPermissions.permissions.indexOf('...') > -1)
+      checkbox.checked = true;
+  });
+  browser.permissions.onRemoved.addListener(aRemovedPermissions => {
+    if (aRemovedPermissions.permissions.indexOf('...') > -1)
+      checkbox.checked = false;
+  });
+  */
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
 
-    var bookmarksPermisions = { permissions: ['bookmarks'] };
-    var checkbox = document.querySelector('#bookmarksPermissionGranted');
-    browser.permissions.contains(bookmarksPermisions).then(aGranted => {
-      checkbox.checked = aGranted;
-    });
-    checkbox.addEventListener('change', (aEvent) => {
-      requestPermissionFor(bookmarksPermisions, aEvent.target)
-    });
-
-    /*
-    // These events are not available yet on Firefox...
-    browser.permissions.onAdded.addListener(aPermissions => {
-      if (aPermissions.permissions.indexOf('bookmarks') > -1)
-        checkbox.checked = true;
-    });
-    browser.permissions.onRemoved.addListener(aPermissions => {
-      if (aPermissions.permissions.indexOf('bookmarks') > -1)
-        checkbox.checked = false;
-    });
-    */
+    initPermissionsCheckbox('allUrlsPermissionGranted', { origins: ['<all_urls>'] });
+    initPermissionsCheckbox('bookmarksPermissionGranted', { permissions: ['bookmarks'] });
 
     options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
     onConfigChanged('debug');

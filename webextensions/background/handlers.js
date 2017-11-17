@@ -581,7 +581,7 @@ function handleNewActiveTab(aTab, aInfo = {}) {
   }
 }
 
-function onTabUpdated(aTab) {
+function onTabUpdated(aTab, aChangeInfo) {
   var parent = getOpenerTab(aTab);
   if (parent &&
       parent != getParentTab(aTab) &&
@@ -592,6 +592,10 @@ function onTabUpdated(aTab) {
       broadcast:   true
     });
   }
+
+  if (aChangeInfo.status || aChangeInfo.url)
+    tryStartHandleAccelKeyOnTab(aTab);
+
   reserveToSaveTreeStructure(aTab);
 }
 

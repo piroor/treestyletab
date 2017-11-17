@@ -6,6 +6,9 @@
 'use strict';
 
 (function() {
+  if (window.handleAccelKeyLoaded)
+    return;
+
   const isMac = /^Mac/i.test(navigator.platform);
 
   function isAccelKeyOnlyEvent(aEvent) {
@@ -83,6 +86,7 @@
   }
 
   function init() {
+    window.handleAccelKeyLoaded = true;
     window.addEventListener('keydown', onKeyDown, { capture: true });
     window.addEventListener('keyup', onKeyUp, { capture: true });
     window.addEventListener('pagehide', () => {
