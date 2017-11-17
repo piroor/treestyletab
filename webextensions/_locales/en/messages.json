@@ -31,21 +31,24 @@
     }},
   "bookmarkFolder.label.default": { "message": "Bookmarked Tree" },
 
-  "bookmarkTree.notification.title": { "message": "Tree is Successfully Bookmarked" },
-  "bookmarkTree.notification.message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
+  "bookmarkTree.notification.success.title": { "message": "Tree is Successfully Bookmarked" },
+  "bookmarkTree.notification.success.message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
       "count": { "content": "$2", "example": "2" },
       "parent": { "content": "$3", "example": "Parent Folder" }
     }},
 
-  "bookmarkTabs.notification.title": { "message": "Tabs are Successfully Bookmarked" },
-  "bookmarkTabs.notification.message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
+  "bookmarkTabs.notification.success.title": { "message": "Tabs are Successfully Bookmarked" },
+  "bookmarkTabs.notification.success.message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
       "count": { "content": "$2", "example": "2" },
       "parent": { "content": "$3", "example": "Parent Folder" }
     }},
+
+  "bookmark.notification.notPermitted.title": { "message": "Permission error" },
+  "bookmark.notification.notPermitted.message": { "message": "Failed to get permissions to create bookmarks. Please grant permissions via the configurations of Tree Style Tab." },
 
   "message.updatedFromLegacy.description": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the \"F1\" key or click the \"Tree Style Tab\" button in the toolbar, to activate the Tree Style Tab sidebar panel." },
   "message.updatedFromLegacy.migrateSessions.before": { "message": "Tree structure of tabs is not migrated automatically. See " },
@@ -197,6 +200,8 @@
   "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." },
+
+  "config.requestPermissions.bookmarks": { "message": "Allow to create bookmarks" },
 
   "config.all.caption": { "message": "All Configs" },
 

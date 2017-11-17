@@ -19,6 +19,19 @@ function onConfigChanged(aKey) {
   }
 }
 
+async function requestPermissionFor(aPermission, aCheckbox) {
+  try {
+    if (await browser.permissions.request({ permissions: ['bookmarks'] })) {
+      aCheckbox.checked = true;
+      return;
+    }
+  }
+  catch(e) {
+    console.log(e);
+  }
+  aCheckbox.checked = false;
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   configs.$loaded.then(() => {

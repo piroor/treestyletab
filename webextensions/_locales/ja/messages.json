@@ -31,21 +31,24 @@
     }},
   "bookmarkFolder.label.default": { "message": "ブックマークされたツリー" },
 
-  "bookmarkTree.notification.title": { "message": "ツリーをブックマークしました" },
-  "bookmarkTree.notification.message": { "message": "「$TITLE$」を含む$COUNT$個のタブを「$PARENT$」内の新しいフォルダーにブックマークしました。",
+  "bookmarkTree.notification.success.title": { "message": "ツリーをブックマークしました" },
+  "bookmarkTree.notification.success.message": { "message": "「$TITLE$」を含む$COUNT$個のタブを「$PARENT$」内の新しいフォルダーにブックマークしました。",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" },
       "count": { "content": "$2", "example": "2" },
       "parent": { "content": "$3", "example": "親フォルダー" }
     }},
 
-  "bookmarkTabs.notification.title": { "message": "複数のタブをブックマークしました" },
-  "bookmarkTabs.notification.message": { "message": "「$TITLE$」を含む$COUNT$個のタブを「$PARENT$」内の新しいフォルダーにブックマークしました。",
+  "bookmarkTabs.notification.success.title": { "message": "複数のタブをブックマークしました" },
+  "bookmarkTabs.notification.success.message": { "message": "「$TITLE$」を含む$COUNT$個のタブを「$PARENT$」内の新しいフォルダーにブックマークしました。",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" },
       "count": { "content": "$2", "example": "2" },
       "parent": { "content": "$3", "example": "親フォルダー" }
     }},
+
+  "bookmark.notification.notPermitted.title": { "message": "権限のエラー" },
+  "bookmark.notification.notPermitted.message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。ツリー型タブの設定画面で権限を設定して下さい。" },
 
   "message.updatedFromLegacy.description": { "message": "Firefox 57以降のバージョンに対応するため、ツリー型タブがWebExtensionsベースに生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つとして利用できるようになっています。もし表示されていない場合は、「F1」キーを押すかツールバー上の「ツリー型タブ」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示してみて下さい。" },
   "message.updatedFromLegacy.migrateSessions.before": { "message": "タブのツリー構造は自動的には移行されません。詳しくは" },
@@ -196,6 +199,8 @@
   "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
+
+  "config.requestPermissions.bookmarks": { "message": "ブックマークの作成を許可する" },
 
   "config.all.caption": { "message": "すべての設定" },
 
