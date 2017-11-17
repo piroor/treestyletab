@@ -700,6 +700,15 @@ async function synchronizeThrobberAnimations() {
     if (typeof throbber.getAnimations == 'function') // sometimes non-animated throbber can appear in the result
       animations = animations.concat(throbber.getAnimations({ subtree: true }));
   }
+  animations = animations.filter(aAnimation =>
+    aAnimation instanceof CSSAnimation &&
+    aAnimation.animationName === 'throbber' &&
+    (aAnimation.playState === 'running' ||
+     aAnimation.playState === 'pending') &&
+    aAnimation.startTime !== null
+  );
+  if (animations.length == 0)
+    return;
   var firstStartTime = Math.min(...animations.map(aAnimation => aAnimation.startTime));
   await nextFrame();
   for (let animation of animations) {
