@@ -939,3 +939,37 @@ async function sendTSTAPIMessage(aMessage, aOptions = {}) {
     }
   }));
 }
+
+function snapshotTree(aTargetTab) {
+  var snapshotById = {};
+  function snapshotChild(aTab) {
+    if (!ensureLivingTab(aTab) || isPinned(aTab) || isHidden(aTab))
+      return null;
+    return snapshotById[aTab.id] = {
+      id:            aTab.id,
+      url:           aTab.apiTab.url,
+      cookieStoreId: aTab.apiTab.cookieStoreId,
+      active:        isActive(aTab),
+      children:      getChildTabs(aTab).filter(aChild => !isHidden(aChild)).map(aChild => aChild.id),
+      collapsed:     isSubtreeCollapsed(aTab),
+      level:         parseInt(aTab.getAttribute(kLEVEL))
+    };
+  }
+  var tabs = getNormalTabs(aTargetTab);
+  var snapshotArray = tabs.filter(ensureLivingTab).map(aTab => snapshotChild(aTab));
+  for (let tab of tabs) {
+    let item = snapshotById[tab.id];
+    let parent = getParentTab(tab);
+    item.parent = parent && parent.id;
+    let next = getNextNormalTab(tab);
+    item.next = next && next.id;
+    let previous = getPreviousNormalTab(tab);
+    item.previous = previous && previous.id;
+  }
+  return {
+    target:   snapshotById[aTargetTab.id],
+    active:   snapshotById[getCurrentTab(aTargetTab).id],
+    tabs:     snapshotArray,
+    tabsById: snapshotById
+  };
+}

@@ -165,12 +165,15 @@ function onTabOpened(aTab, aInfo = {}) {
   }
   else {
     // if the tab is opened inside existing tree by someone, we must fixup the tree.
-    let nextTab = getNextTab(aTab);
     if (!aInfo.openedWithPosition &&
-        nextTab)
+        (getNextNormalTab(aTab) ||
+         getPreviousNormalTab(aTab) ||
+         (aInfo.tree && (aInfo.tree.target.next ||
+                         aInfo.tree.target.previous))))
       tryFixupTreeForInsertedTab(aTab, {
         toIndex:   aTab.apiTab.index,
-        fromIndex: getTabIndex(getLastTab(aTab))
+        fromIndex: getTabIndex(getLastTab(aTab)),
+        tree:      aInfo.tree
       });
   }
 
@@ -382,6 +385,9 @@ function moveBack(aTab, aMoveInfo) {
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   log('detectTabActionFromNewPosition: ', dumpTab(aTab), aMoveInfo);
+  var tree   = aMoveInfo.tree || snapshotTree(aTab);
+  var target = tree.target;
+
   var toIndex   = aMoveInfo.toIndex;
   var fromIndex = aMoveInfo.fromIndex;
   var delta;
@@ -396,26 +402,31 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
     delta = Math.abs(toIndex - fromIndex);
   }
 
-  var prevTab = getPreviousNormalTab(aTab);
-  var nextTab = getNextNormalTab(aTab);
+  var prevTab = tree.tabsById[target.previous];
+  var nextTab = tree.tabsById[target.next];
+  log('prevTab: ', prevTab.id);
+  log('nextTab: ', nextTab.id);
 
-  log('prevTab: ', dumpTab(prevTab));
-  log('nextTab: ', dumpTab(nextTab));
+  var prevParent = prevTab && tree.tabsById[prevTab.parent];
+  var nextParent = nextTab && tree.tabsById[nextTab.parent];
 
-  var prevParent = getParentTab(prevTab);
-  var nextParent = getParentTab(nextTab);
-
-  var prevLevel  = prevTab ? Number(prevTab.getAttribute(kLEVEL)) : -1 ;
-  var nextLevel  = nextTab ? Number(nextTab.getAttribute(kLEVEL)) : -1 ;
+  var prevLevel  = prevTab ? prevTab.level : -1 ;
+  var nextLevel  = nextTab ? nextTab.level : -1 ;
   log('prevLevel: '+prevLevel);
   log('nextLevel: '+nextLevel);
 
-  var oldParent = getParentTab(aTab);
-  var newParent;
+  var oldParent = tree.tabsById[target.parent];
+  var newParent = null;
 
-  if (oldParent &&
-      prevTab &&
-      oldParent == prevTab) {
+  if (target.cookieStoreId != prevTab.cookieStoreId &&
+      target.url == prevTab.url) {
+    // https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
+    log('=> replaced by Firefox Multi-Acount Containers');
+    newParent = prevParent;
+  }
+  else if (oldParent &&
+           prevTab &&
+           oldParent == prevTab) {
     log('=> no need to fix case');
     newParent = oldParent;
   }
@@ -425,13 +436,17 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   }
   else if (!nextTab) {
     log('=> moved to last position');
-    if ([oldParent].concat(getAncestorTabs(oldParent)).indexOf(prevParent) > -1) {
-      log(' => moving in related tree: keep it attached in existing tree');
-      newParent = prevParent;
+    let ancestor = oldParent;
+    while (ancestor) {
+      if (ancestor == prevParent) {
+        log(' => moving in related tree: keep it attached in existing tree');
+        newParent = prevParent;
+        break;
+      }
+      ancestor = tree.tabsById[ancestor.parent];
     }
-    else {
+    if (!newParent) {
       log(' => moving from other tree: keep it orphaned');
-      newParent = null;
     }
   }
   else if (prevParent == nextParent) {
@@ -440,7 +455,7 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   }
   else if (prevLevel > nextLevel) {
     log('=> moved to end of existing tree');
-    if (!isActive(aTab)) {
+    if (!target.active) {
       log('=> maybe newly opened tab');
       newParent = prevParent;
     }
@@ -449,9 +464,9 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
       let realDelta = Math.abs(toIndex - fromIndex);
       newParent = realDelta < 2 ? prevParent : (oldParent || nextParent) ;
     }
-    while (newParent && isSubtreeCollapsed(newParent)) {
+    while (newParent && newParent.collapsed) {
       log('=> the tree is collapsed, up to parent tree')
-      newParent = getParentTab(newParent)
+      newParent = tree.tabsById[newParent.parent];
     }
   }
   else if (prevLevel < nextLevel) {
@@ -460,26 +475,29 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   }
 
   log('calculated parent: ', {
-    old: dumpTab(oldParent),
-    new: dumpTab(newParent)
+    old: oldParent && oldParent.id,
+    new: newParent && newParent.id
   });
 
-  if (newParent == aTab ||
-      getAncestorTabs(newParent).indexOf(aTab) > -1) {
-    log('=> invalid move: a parent is moved inside its own tree, thus move back!');
-    return { action: 'moveBack' };
+  if (newParent) {
+    let ancestor = newParent;
+    while (ancestor) {
+      if (ancestor == target) {
+        log('=> invalid move: a parent is moved inside its own tree, thus move back!');
+        return { action: 'moveBack' };
+      }
+      ancestor = tree.tabsById[ancestor.parent];
+    }
   }
 
   if (newParent != oldParent) {
     if (newParent) {
-      if (isHidden(newParent) == isHidden(aTab)) {
-        return {
-          action:       'attach',
-          parent:       newParent.id,
-          insertBefore: nextTab && nextTab.id,
-          insertAfter:  prevTab && prevTab.id
-        };
-      }
+      return {
+        action:       'attach',
+        parent:       newParent.id,
+        insertBefore: nextTab && nextTab.id,
+        insertAfter:  prevTab && prevTab.id
+      };
     }
     else {
       return { action: 'detach' };
