@@ -6,7 +6,6 @@
   "description": "__MSG_extensionDescription__",
   "permissions": [
     "activeTab",
-    "bookmarks",
     "contextMenus",
     "contextualIdentities",
     "cookies",
@@ -15,6 +14,9 @@
     "storage",
     "tabs",
     "theme"
+  ],
+  "optional_permissions": [
+    "bookmarks"
   ],
   "icons": {
     "16": "resources/16x16-light.svg",

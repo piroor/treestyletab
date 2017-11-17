@@ -1666,7 +1666,6 @@ function openGroupBookmarkBehavior() {
 }
 
 async function bookmarkTree(aRoot, aOptions = {}) {
-  /*
   try {
     if (!(await browser.permissions.request({ permissions: ['bookmarks'] })))
       return;
@@ -1679,7 +1678,6 @@ async function bookmarkTree(aRoot, aOptions = {}) {
     });
     return;
   }
-  */
   var folder = await bookmarkTabs([aRoot].concat(getDescendantTabs(aRoot)), aOptions);
   browser.bookmarks.get(folder.parentId).then(aFolders => {
     notify({

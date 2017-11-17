@@ -6,10 +6,11 @@
 'use strict';
 
 function onToolbarButtonClick(aTab) {
-  if (configs.requestingPermissions &&
+  if (Array.isArray(configs.requestingPermissions) &&
       configs.requestingPermissions.length > 0) {
     let permissions = configs.requestingPermissions;
     configs.requestingPermissions = [];
+    browser.browserAction.setBadgeText({ text: '' });
     browser.permissions.request({ permissions: permissions });
     return;
   }

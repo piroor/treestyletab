@@ -20,17 +20,17 @@ function onConfigChanged(aKey) {
 }
 
 async function requestPermissionFor(aPermissions, aCheckbox) {
-  configs.requestingPermissions = aPermissions;
-  aCheckbox.checked = false;
-  alert(browser.i18n.getMessage('config.requestPermissions.fallbackToToolbarButton.message'));
-  return;
-  /*
-  // following codes don't work as expected due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
   try {
     if (!aCheckbox.checked) {
       await browser.permissions.remove({ permissions: aPermissions });
       return;
     }
+    configs.requestingPermissions = aPermissions;
+    aCheckbox.checked = false;
+    browser.browserAction.setBadgeText({ text: '!' });
+    alert(browser.i18n.getMessage('config.requestPermissions.fallbackToToolbarButton.message'));
+    return;
+    // following codes don't work as expected due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
     if (!await browser.permissions.request({ permissions: aPermissions })) {
       aCheckbox.checked = false;
       return;
@@ -39,16 +39,33 @@ async function requestPermissionFor(aPermissions, aCheckbox) {
   catch(e) {
   }
   aCheckbox.checked = false;
-  */
 }
 
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
-    document.querySelector('#bookmarksPermissionGranted').addEventListener('change', (aEvent) => {
+
+    var checkbox = document.querySelector('#bookmarksPermissionGranted');
+    browser.permissions.contains({ permissions: ['bookmarks'] }).then(aGranted => {
+      checkbox.checked = aGranted;
+    });
+    checkbox.addEventListener('change', (aEvent) => {
       requestPermissionFor(['bookmarks'], aEvent.target)
     });
+
+    /*
+    // These events are not available yet on Firefox...
+    browser.permissions.onAdded.addListener(aPermissions => {
+      if (aPermissions.permissions.indexOf('bookmarks') > -1)
+        checkbox.checked = true;
+    });
+    browser.permissions.onRemoved.addListener(aPermissions => {
+      if (aPermissions.permissions.indexOf('bookmarks') > -1)
+        checkbox.checked = false;
+    });
+    */
+
     options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
     onConfigChanged('debug');
   });
