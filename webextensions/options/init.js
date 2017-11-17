@@ -49,12 +49,13 @@ window.addEventListener('DOMContentLoaded', () => {
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
 
+    var bookmarksPermisions = { permissions: ['bookmarks'] };
     var checkbox = document.querySelector('#bookmarksPermissionGranted');
-    browser.permissions.contains({ permissions: ['bookmarks'] }).then(aGranted => {
+    browser.permissions.contains(bookmarksPermisions).then(aGranted => {
       checkbox.checked = aGranted;
     });
     checkbox.addEventListener('change', (aEvent) => {
-      requestPermissionFor(['bookmarks'], aEvent.target)
+      requestPermissionFor(bookmarksPermisions, aEvent.target)
     });
 
     /*
