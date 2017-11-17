@@ -225,6 +225,9 @@ const kLEGACY_GROUP_TAB_URI = 'about:treestyletab-group';
 
 const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';
 
+const kPERMISSION_BOOKMARKS = { permissions: ['bookmarks'] };
+const kPERMISSION_ALL_URLS  = { origins: ['<all_urls>'] };
+
 // for generated IDs
 const kID_ADJECTIVES = `
 Agile

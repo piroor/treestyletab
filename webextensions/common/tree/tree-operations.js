@@ -1667,7 +1667,7 @@ function openGroupBookmarkBehavior() {
 
 async function bookmarkTree(aRoot, aOptions = {}) {
   try {
-    if (!(await browser.permissions.request({ permissions: ['bookmarks'] })))
+    if (!(await browser.permissions.request(kPERMISSION_BOOKMARKS)))
       return;
   }
   catch(e) {

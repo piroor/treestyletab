@@ -80,8 +80,8 @@ window.addEventListener('DOMContentLoaded', () => {
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
 
-    initPermissionsCheckbox('allUrlsPermissionGranted', { origins: ['<all_urls>'] });
-    initPermissionsCheckbox('bookmarksPermissionGranted', { permissions: ['bookmarks'] });
+    initPermissionsCheckbox('allUrlsPermissionGranted',   kPERMISSION_ALL_URLS);
+    initPermissionsCheckbox('bookmarksPermissionGranted', kPERMISSION_BOOKMARKS);
 
     options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
     onConfigChanged('debug');
