@@ -540,11 +540,8 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     }
   }
   else if (aInfo.byCurrentTabRemove &&
-           /*
-             Focus movings by closing of the old current tab should be handled
-             only when it is activated by user preference expressly.
-           */
-           configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove) {
+           (!configs.autoCollapseExpandSubtreeOnSelect ||
+            configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove)) {
     log('=> reaction for removing current tab');
     return true;
   }

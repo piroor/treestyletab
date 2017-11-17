@@ -749,7 +749,8 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab) {
   var autoFocusedTab = getCurrentTab(aTab.apiTab.windowId);
   if (autoFocusedTab != nextTab &&
       (autoFocusedTab != previousTab ||
-       getNextTab(autoFocusedTab))) {
+       (getNextTab(autoFocusedTab) &&
+        getNextTab(autoFocusedTab) != aTab))) {
     log('=> the tab seems focused intentionally: ', {
       autoFocused:       dumpTab(autoFocusedTab),
       nextOfAutoFocused: dumpTab(getNextTab(autoFocusedTab)),
