@@ -372,6 +372,7 @@ var tabContextMenu = {
         })();
       case 'context_openTabInWindow':
         await browser.windows.create({ tabId: this.contextTab.id });
+        break;
       case 'context_reloadAllTabs': {
         let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
         for (let tab of tabs) {
