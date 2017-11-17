@@ -53,6 +53,7 @@ function onTabOpening(aTab, aInfo = {}) {
       });
       return true;
     }
+    log('behave as a tab opened with any URL');
     return false;
   }
 
