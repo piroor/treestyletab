@@ -48,6 +48,7 @@ const kTSTAPI_NOTIFY_SHUTDOWN       = 'shutdown'; // defined but not notified fo
 const kTSTAPI_NOTIFY_TAB_CLICKED    = 'tab-clicked';
 const kTSTAPI_NOTIFY_TABBAR_CLICKED = 'tabbar-clicked';
 const kTSTAPI_NOTIFY_TAB_DRAGREADY  = 'tab-dragready';
+const kTSTAPI_NOTIFY_TAB_DRAGCANCEL = 'tab-dragcancel';
 const kTSTAPI_NOTIFY_TAB_DRAGSTART  = 'tab-dragstart';
 const kTSTAPI_NOTIFY_TAB_DRAGENTER  = 'tab-dragenter';
 const kTSTAPI_NOTIFY_TAB_DRAGEXIT   = 'tab-dragexit';

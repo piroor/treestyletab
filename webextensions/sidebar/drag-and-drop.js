@@ -490,6 +490,7 @@ function retrieveURIsFromData(aData, aType) {
 var gDraggingOnSelfWindow = false;
 
 var gCapturingMouseEvents  = false;
+var gReadyToCaptureMouseEvents = false;
 var gLastDragEnteredTab    = null;
 var gLastDragEnteredTarget = null;
 var gDragTargetIsClosebox  = false;

@@ -244,6 +244,7 @@ function notifyTSTAPIDragReady(aTab, aIsClosebox) {
     window: gTargetWindow,
     startOnClosebox: aIsClosebox
   });
+  gReadyToCaptureMouseEvents = true;
 }
 
 function getMouseEventTargetType(aEvent) {
@@ -282,7 +283,6 @@ async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
 
   if (gCapturingMouseEvents) {
-    gCapturingMouseEvents = false;
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();
@@ -298,6 +298,17 @@ async function onMouseUp(aEvent) {
     gLastDragEnteredTab = null;
     gLastDragEnteredTarget = null;
   }
+  else if (gReadyToCaptureMouseEvents) {
+    sendTSTAPIMessage({
+      type:    kTSTAPI_NOTIFY_TAB_DRAGCANCEL,
+      tab:     tab && serializeTabForTSTAPI(tab),
+      window:  gTargetWindow,
+      clientX: aEvent.clientX,
+      clientY: aEvent.clientY
+    });
+  }
+  gCapturingMouseEvents = false;
+  gReadyToCaptureMouseEvents = false;
 
   if (!gLastMousedown ||
       gLastMousedown.detail.targetType != getMouseEventTargetType(aEvent) ||
