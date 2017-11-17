@@ -56,7 +56,7 @@
   "message.startup.migrateSessions.after": { "message": "を参照して下さい。" },
   "migrateSessions.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/TST-0.19.x%E3%81%8B%E3%82%89TST-2.x%E3%81%B8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%E6%83%85%E5%A0%B1%E3%81%AE%E7%A7%BB%E8%A1%8C%E6%89%8B%E9%A0%86" },
 
-  "message.startup.requestPermissions.description": { "message": "以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
+  "message.startup.requestPermissions.description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message.startup.requestPermissions.bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」（ブックマークの操作の許可が必要）" },
   "message.startup.requestPermissions.allUrls":   { "message": "キーボードショートカットでのタブ切り替え中、折り畳まれたツリーを展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
 
