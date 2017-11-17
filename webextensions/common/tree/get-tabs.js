@@ -205,14 +205,14 @@ function calculateNewTabIndex(aParams) {
 
 
 function getNextNormalTab(aTab) {
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
   return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
 }
 
 function getPreviousNormalTab(aTab) {
-  if (!aTab || !aTab.id)
+  if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
   return evaluateXPath(
