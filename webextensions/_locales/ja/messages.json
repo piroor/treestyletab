@@ -156,6 +156,10 @@
 
   "config.advanced.caption": { "message": "詳細設定" },
   "config.userStyleRules.label": { "message": "サイドバー内用の追加のスタイル指定" },
+  "config.userStyleRules.description.before": { "message": "" },
+  "config.userStyleRules.description.link.label": { "message": "目的別の指定例" },
+  "config.userStyleRules.description.after": { "message": "も参照して下さい。" },
+  "config.userStyleRules.description.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
 
   "config.importedConfigsFromLegacy.label": { "message": "旧バージョンからの設定の移行" },
   "config.legacyConfigsNextMigrationVersion.before": { "message": "次回初期化時に設定レベル" },

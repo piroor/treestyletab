@@ -157,6 +157,10 @@
   "config.advanced.caption": { "message": "Advanced" },
 
   "config.userStyleRules.label": { "message": "Extra style rules for sidebar contents" },
+  "config.userStyleRules.description.before": { "message": "For more options, see " },
+  "config.userStyleRules.description.link.label": { "message": "code snippets at TST wiki" },
+  "config.userStyleRules.description.after": { "message": " also." },
+  "config.userStyleRules.description.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
 
   "config.importedConfigsFromLegacy.label": { "message": "Migration of Old Configuration" },
   "config.legacyConfigsNextMigrationVersion.before": { "message": "Migrate configurations from the config level" },
