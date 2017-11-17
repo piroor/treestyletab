@@ -1666,15 +1666,16 @@ function openGroupBookmarkBehavior() {
 }
 
 async function bookmarkTree(aRoot, aOptions = {}) {
-  var folder = await bookmarkTabs([aRoot].concat(getDescendantTabs(aRoot)), aOptions);
+  var tabs   = [aRoot].concat(getDescendantTabs(aRoot));
+  var folder = await bookmarkTabs(tabs, aOptions);
   if (!folder)
     return null;
   browser.bookmarks.get(folder.parentId).then(aFolders => {
     notify({
       title:   browser.i18n.getMessage('bookmarkTree.notification.success.title'),
       message: browser.i18n.getMessage('bookmarkTree.notification.success.message', [
-        aTabs[0].apiTab.title,
-        aTabs.length,
+        aRoot.apiTab.title,
+        tabs.length,
         aFolders[0].title
       ])
     });
