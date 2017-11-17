@@ -237,24 +237,26 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     broadcast:        true
   });
 
-  setTimeout(() => {
-    log('trying to clanup needless temporary group tabs from ', ancestors.map(dumpTab));
+  reserveToSaveTreeStructure(aTab);
+  await wait(0);
+  cleanupNeedlssGroupTab(ancestors);
+}
+
+function cleanupNeedlssGroupTab(aTabs) {
+    log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
     var tabsToBeRemoved = [];
-    for (let ancestor of ancestors) {
-      if (!isTemporaryGroupTab(ancestor))
+    for (let tab of aTabs) {
+      if (!isTemporaryGroupTab(tab))
         break;
-      if (getChildTabs(ancestor).length > 1)
+      if (getChildTabs(tab).length > 1)
         break;
-      let lastChild = getFirstChildTab(ancestor);
+      let lastChild = getFirstChildTab(tab);
       if (lastChild && !isTemporaryGroupTab(lastChild))
         break;
-      tabsToBeRemoved.push(ancestor);
+      tabsToBeRemoved.push(tab);
     }
     log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
     removeTabsInternally(tabsToBeRemoved);
-  }, 0);
-
-  reserveToSaveTreeStructure(aTab);
 }
 
 async function closeChildTabs(aParent) {
