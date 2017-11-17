@@ -202,6 +202,9 @@
 
   "config.requestPermissions.bookmarks": { "message": "ブックマークの作成を許可する" },
 
+  "config.requestPermissions.fallbackToToolbarButton.title": { "message": "ツールバーの「ツリー型タブ」ボタンをクリックして下さい" },
+  "config.requestPermissions.fallbackToToolbarButton.message": { "message": "Firefoxのバグのため、権限をこの画面から要求することができません。ツールバー上の「ツリー型タブ」ボタンをクリックして権限を承認して下さい。" },
+
   "config.all.caption": { "message": "すべての設定" },
 
 

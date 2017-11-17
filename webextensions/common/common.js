@@ -170,6 +170,8 @@ configs = new Configs({
   cachedExternalAddons: [],
   shouldNotifyUpdatedFromLegacyVersion: true,
 
+  requestingPermissions: [],
+
   // https://dxr.mozilla.org/mozilla-central/rev/2535bad09d720e71a982f3f70dd6925f66ab8ec7/browser/base/content/browser.css#137
   newTabAnimationDuration: 100,
 

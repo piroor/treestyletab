@@ -6,6 +6,14 @@
 'use strict';
 
 function onToolbarButtonClick(aTab) {
+  if (configs.requestingPermissions &&
+      configs.requestingPermissions.length > 0) {
+    let permissions = configs.requestingPermissions;
+    configs.requestingPermissions = [];
+    browser.permissions.request({ permissions: permissions });
+    return;
+  }
+
   if (gSidebarOpenState.has(aTab.windowId)) {
     // "unload" event doesn't fire for sidebar closed by this method,
     // thus we need update the flag manually for now...

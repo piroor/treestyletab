@@ -20,6 +20,12 @@ function onConfigChanged(aKey) {
 }
 
 async function requestPermissionFor(aPermissions, aCheckbox) {
+  configs.requestingPermissions = aPermissions;
+  aCheckbox.checked = false;
+  alert(browser.i18n.getMessage('config.requestPermissions.fallbackToToolbarButton.message'));
+  return;
+  /*
+  // following codes don't work as expected due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
   try {
     if (!aCheckbox.checked) {
       await browser.permissions.remove({ permissions: aPermissions });
@@ -33,6 +39,7 @@ async function requestPermissionFor(aPermissions, aCheckbox) {
   catch(e) {
   }
   aCheckbox.checked = false;
+  */
 }
 
 configs.$addObserver(onConfigChanged);
