@@ -301,7 +301,7 @@ function getPreviousSiblingTab(aTab) {
   assertValidHint(aTab);
   var siblings = getSiblingTabs(aTab);
   var index = siblings.indexOf(aTab);
-  return index > 1 ? siblings[index - 1] : null ;
+  return index > 0 ? siblings[index - 1] : null ;
 }
 
 function getChildTabs(aParent) {

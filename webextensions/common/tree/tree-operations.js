@@ -803,6 +803,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
 
   ignoredTabs = ignoredTabs || [];
   if (parentTab) {
+    log(`tab=${dumpTab(aTab)}, parent=${dumpTab(parentTab)}, nextFocused=${dumpTab(nextFocusedTab)}, lastChildTabOfParent=${dumpTab(lastChildTabOfParent)}, previousSiblingTab=${dumpTab(previousSiblingTab)}`);
     if (!nextFocusedTab && aTab == lastChildTabOfParent) {
       if (aTab == firstChildTabOfParent) { // this is the really last child
         nextFocusedTab = parentTab;
