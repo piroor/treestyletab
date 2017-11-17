@@ -69,7 +69,7 @@
   "config.sidebarPosition.caption": { "message": "Style of contents for the sidebar position" },
   "config.sidebarPosition.left": { "message": "Left side" },
   "config.sidebarPosition.right": { "message": "Right side" },
-  "config.sidebarPosition.description": { "message": "*Note: This configuration won't change the position of the sidebar itself. You need to click the switcher in the sidebar header and click \"Move Sidebar to Right\" manually." },
+  "config.sidebarPosition.description": { "message": "*This configuration won't change the position of the sidebar itself. You need to click the switcher in the sidebar header and click \"Move Sidebar to Right\" manually." },
 
   "config.style.caption": { "message": "Theme" },
   "config.style.plain": { "message": "Plain" },
