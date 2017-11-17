@@ -50,11 +50,14 @@
   "bookmark.notification.notPermitted.title": { "message": "Permission error" },
   "bookmark.notification.notPermitted.message": { "message": "Failed to get permissions to create bookmarks. Please grant permissions via the configurations of Tree Style Tab." },
 
-  "message.updatedFromLegacy.description": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the \"F1\" key or click the \"Tree Style Tab\" button in the toolbar, to activate the Tree Style Tab sidebar panel." },
-  "message.updatedFromLegacy.migrateSessions.before": { "message": "Tree structure of tabs is not migrated automatically. See " },
-  "message.updatedFromLegacy.migrateSessions.link.label": { "message": "the instruction for manual migration of tree information" },
-  "message.updatedFromLegacy.migrateSessions.after": { "message": "." },
-  "updatedFromLegacy.migrateSessions.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
+  "message.startup.description": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the \"F1\" key or click the \"Tree Style Tab\" button in the toolbar, to activate the Tree Style Tab sidebar panel." },
+  "message.startup.migrateSessions.before": { "message": "Tree structure of tabs on Firefox 56 or olders is not migrated automatically. See " },
+  "message.startup.migrateSessions.link.label": { "message": "the instruction for manual migration of tree information" },
+  "message.startup.migrateSessions.after": { "message": "." },
+  "migrateSessions.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
+
+  "message.startup.requestPermissions.bookmarks": { "message": "Allow to create bookmarks." },
+  "message.startup.requestPermissions.allUrls":   { "message": "Don't expand collapsed tree while switching focus of tabs via keyboard shortcuts." },
 
 
   "context.reloadTree.label": { "message": "Reload this Tree" },

@@ -50,11 +50,14 @@
   "bookmark.notification.notPermitted.title": { "message": "権限のエラー" },
   "bookmark.notification.notPermitted.message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。ツリー型タブの設定画面で権限を設定して下さい。" },
 
-  "message.updatedFromLegacy.description": { "message": "Firefox 57以降のバージョンに対応するため、ツリー型タブがWebExtensionsベースに生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つとして利用できるようになっています。もし表示されていない場合は、「F1」キーを押すかツールバー上の「ツリー型タブ」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示してみて下さい。" },
-  "message.updatedFromLegacy.migrateSessions.before": { "message": "タブのツリー構造は自動的には移行されません。詳しくは" },
-  "message.updatedFromLegacy.migrateSessions.link.label": { "message": "手動でのツリー情報の移行手順" },
-  "message.updatedFromLegacy.migrateSessions.after": { "message": "を参照して下さい。" },
-  "updatedFromLegacy.migrateSessions.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/TST-0.19.x%E3%81%8B%E3%82%89TST-2.x%E3%81%B8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%E6%83%85%E5%A0%B1%E3%81%AE%E7%A7%BB%E8%A1%8C%E6%89%8B%E9%A0%86" },
+  "message.startup.description": { "message": "Firefox 57以降のバージョンに対応するため、ツリー型タブがWebExtensionsベースに生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つとして利用できるようになっています。もし表示されていない場合は、「F1」キーを押すかツールバー上の「ツリー型タブ」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示してみて下さい。" },
+  "message.startup.migrateSessions.before": { "message": "Firefox 56以前のバージョンでのタブのツリー構造は、自動的には移行されません。詳しくは" },
+  "message.startup.migrateSessions.link.label": { "message": "手動でのツリー情報の移行手順" },
+  "message.startup.migrateSessions.after": { "message": "を参照して下さい。" },
+  "migrateSessions.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/TST-0.19.x%E3%81%8B%E3%82%89TST-2.x%E3%81%B8%E3%81%AE%E3%82%BB%E3%83%83%E3%82%B7%E3%83%A7%E3%83%B3%E6%83%85%E5%A0%B1%E3%81%AE%E7%A7%BB%E8%A1%8C%E6%89%8B%E9%A0%86" },
+
+  "message.startup.requestPermissions.bookmarks": { "message": "ブックマークの作成を許可する" },
+  "message.startup.requestPermissions.allUrls":   { "message": "キーボードショートカットでのタブ切り替え中、折り畳まれたツリーを展開しない" },
 
 
   "context.reloadTree.label": { "message": "このツリーを再読み込み" },

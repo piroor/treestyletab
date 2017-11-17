@@ -270,7 +270,7 @@ async function notifyNewFeatures() {
   configs.notifiedFeaturesVersion = kFEATURES_VERSION;
 
   browser.tabs.create({
-    url:    browser.extension.getURL('resources/updated-from-legacy.html'),
+    url:    browser.extension.getURL('resources/startup.html'),
     active: true
   });
 }
