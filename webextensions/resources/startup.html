@@ -10,6 +10,17 @@
     text-align: center;
   }
 
+  .permissions {
+    text-align: left;
+    font-size: 95%;
+    margin-left: 8%;
+    margin-right: 8%;
+  }
+
+  p.checkbox {
+    text-indent: -1.5em;
+  }
+
   #icon {
     opacity: 0.7;
     width: 10em;
@@ -28,9 +39,14 @@
 <p>__MSG_message.startup.description__</p>
 <p>__MSG_message.startup.migrateSessions.before__<a href="__MSG_migrateSessions.link.uri__" target="_blank">__MSG_message.startup.migrateSessions.link.label__</a>__MSG_message.startup.migrateSessions.after__</p>
 
-<p><label><input id="bookmarksPermissionGranted"
-                 type="checkbox">
-          __MSG_message.startup.requestPermissions.bookmarks__</label></p>
-<p><label><input id="allUrlsPermissionGranted"
-                 type="checkbox">
-          __MSG_message.startup.requestPermissions.allUrls__</label></p>
+<p>__MSG_message.startup.requestPermissions.description__</p>
+<div class="permissions">
+  <p class="checkbox">
+    <label><input id="bookmarksPermissionGranted"
+                  type="checkbox">
+           __MSG_message.startup.requestPermissions.bookmarks__</label></p>
+  <p class="checkbox">
+    <label><input id="allUrlsPermissionGranted"
+                  type="checkbox">
+           __MSG_message.startup.requestPermissions.allUrls__</label></p>
+</div>

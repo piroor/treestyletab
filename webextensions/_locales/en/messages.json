@@ -56,8 +56,9 @@
   "message.startup.migrateSessions.after": { "message": "." },
   "migrateSessions.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
 
-  "message.startup.requestPermissions.bookmarks": { "message": "Allow to create bookmarks." },
-  "message.startup.requestPermissions.allUrls":   { "message": "Don't expand collapsed tree while switching focus of tabs via keyboard shortcuts." },
+  "message.startup.requestPermissions.description": { "message": "There are some features requireing extra permissions. If you hope to activate them, please grant permissions manually." },
+  "message.startup.requestPermissions.bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs (requires accessing to bookmarks.)" },
+  "message.startup.requestPermissions.allUrls":   { "message": "Don't expand collapsed tree while switching focus of tabs via keyboard shortcuts (requires script injection to webpages for detection of keyboard operations.)" },
 
 
   "context.reloadTree.label": { "message": "Reload this Tree" },
