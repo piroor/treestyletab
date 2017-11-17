@@ -22,10 +22,10 @@ function onConfigChanged(aKey) {
 async function requestPermissionFor(aPermissions, aCheckbox) {
   try {
     if (!aCheckbox.checked) {
-      await browser.permissions.remove({ permissions: aPermissions });
+      await browser.permissions.remove(aPermissions);
       return;
     }
-    var granted = await browser.permissions.contains({ permissions: aPermissions });
+    var granted = await browser.permissions.contains(aPermissions);
     if (granted)
       return;
     configs.requestingPermissions = aPermissions;
@@ -34,7 +34,7 @@ async function requestPermissionFor(aPermissions, aCheckbox) {
     alert(browser.i18n.getMessage('config.requestPermissions.fallbackToToolbarButton.message'));
     return;
     // following codes don't work as expected due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-    if (!await browser.permissions.request({ permissions: aPermissions })) {
+    if (!await browser.permissions.request(aPermissions)) {
       aCheckbox.checked = false;
       return;
     }
