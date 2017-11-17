@@ -69,6 +69,7 @@
   "config.sidebarPosition.caption": { "message": "サイドバーの位置に合わせたスタイル" },
   "config.sidebarPosition.left": { "message": "左側用" },
   "config.sidebarPosition.right": { "message": "右側用" },
+  "config.sidebarPosition.description": { "message": "※注意：この設定はサイドバー自体の位置を変更しません。サイドバーをウィンドウの右側に移動するには、サイドバーのヘッダ上の切り替えメニューから「サイドバーを右側に移動」を選択して下さい。" },
 
   "config.style.caption": { "message": "テーマ" },
   "config.style.plain": { "message": "Plain" },
