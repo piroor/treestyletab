@@ -6,17 +6,8 @@
 'use strict';
 
 function onToolbarButtonClick(aTab) {
-  if (configs.requestingPermissions) {
-    let permissions = configs.requestingPermissions;
-    configs.requestingPermissions = null;
-    browser.browserAction.setBadgeText({ text: '' });
-    browser.permissions.request(permissions).then(aGranted => {
-      log('permission requested: ', permissions, aGranted);
-      if (aGranted)
-        onPermissionsGranted(permissions);
-    });
+  if (Permissions.requestPostProcess())
     return;
-  }
 
   if (gSidebarOpenState.has(aTab.windowId)) {
     // "unload" event doesn't fire for sidebar closed by this method,
@@ -855,21 +846,6 @@ function onTabPinned(aTab) {
 }
 
 
-async function onPermissionsGranted(aPermissions) {
-  browser.runtime.sendMessage({
-    type:        kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
-    permissions: aPermissions
-  });
-  if (!Array.isArray(aPermissions.origins) ||
-      aPermissions.origins.indexOf('<all_urls>') < 0)
-    return;
-  var tabs = await browser.tabs.query({});
-  for (let tab of tabs) {
-    tryStartHandleAccelKeyOnTab(getTabById(tab.id));
-  }
-}
-
-
 /* message observer */
 
 function onMessage(aMessage, aSender) {
@@ -1138,6 +1114,16 @@ function onMessage(aMessage, aSender) {
           }
         }
         gMaybeTabSwitchingByShortcut = false;
+      })();
+
+    case kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
+      return (async () => {
+        if (JSON.stringify(aMessage.permissions) == JSON.stringify(Permissions.ALL_URLS)) {
+          let tabs = await browser.tabs.query({});
+          for (let tab of tabs) {
+            tryStartHandleAccelKeyOnTab(getTabById(tab.id));
+          }
+        }
       })();
   }
 }

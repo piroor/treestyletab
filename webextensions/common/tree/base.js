@@ -858,6 +858,17 @@ function broadcastTabState(aTabs, aOptions = {}) {
 
 
 async function bookmarkTabs(aTabs, aOptions = {}) {
+  try {
+    if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
+      return null;
+  }
+  catch(e) {
+    notify({
+      title:   browser.i18n.getMessage('bookmark.notification.notPermitted.title'),
+      message: browser.i18n.getMessage('bookmark.notification.notPermitted.message')
+    });
+    return null;
+  }
   var folderParams = {
     title: browser.i18n.getMessage('bookmarkFolder.label', aTabs[0].apiTab.title)
   };
@@ -877,23 +888,6 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
     });
   }
   return folder;
-}
-
-async function notify(aParams = {}) {
-  var id = await browser.notifications.create({
-    type:    'basic',
-    iconUrl: aParams.icon,
-    title:   aParams.title,
-    message: aParams.message
-  });
-
-  var timeout = aParams.timeout;
-  if (typeof timeout != 'number')
-    timeout = configs.notificationTimeout;
-  if (timeout >= 0)
-    await wait(timeout);
-
-  await browser.notifications.clear(id);
 }
 
 

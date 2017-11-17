@@ -1666,19 +1666,9 @@ function openGroupBookmarkBehavior() {
 }
 
 async function bookmarkTree(aRoot, aOptions = {}) {
-  try {
-    if (!(await browser.permissions.request(kPERMISSION_BOOKMARKS)))
-      return;
-  }
-  catch(e) {
-    notify({
-      title:   browser.i18n.getMessage('bookmark.notification.notPermitted.title'),
-      message: browser.i18n.getMessage('bookmark.notification.notPermitted.message'),
-      icon:    kNOTIFICATION_DEFAULT_ICON
-    });
-    return;
-  }
   var folder = await bookmarkTabs([aRoot].concat(getDescendantTabs(aRoot)), aOptions);
+  if (!folder)
+    return null;
   browser.bookmarks.get(folder.parentId).then(aFolders => {
     notify({
       title:   browser.i18n.getMessage('bookmarkTree.notification.success.title'),
@@ -1686,8 +1676,7 @@ async function bookmarkTree(aRoot, aOptions = {}) {
         aTabs[0].apiTab.title,
         aTabs.length,
         aFolders[0].title
-      ]),
-      icon:    kNOTIFICATION_DEFAULT_ICON
+      ])
     });
   });
   return folder;
