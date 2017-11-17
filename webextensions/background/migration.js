@@ -6,6 +6,7 @@
 'use strict';
 
 const kLEGACY_CONFIGS_MIGRATION_VERSION = 2;
+const kFEATURES_VERSION = 1;
 
 function migrateLegacyConfigs() {
   var values = configs.importedConfigsFromLegacy;
@@ -263,10 +264,10 @@ async function migrateLegacyTreeStructure() {
   configs.migrateLegacyTreeStructure = false;
 }
 
-async function notifyUpdatedFromLegacy() {
-  if (!configs.shouldNotifyUpdatedFromLegacyVersion)
+async function notifyNewFeatures() {
+  if (configs.notifiedFeaturesVersion >= kFEATURES_VERSION)
     return;
-  configs.shouldNotifyUpdatedFromLegacyVersion = false;
+  configs.notifiedFeaturesVersion = kFEATURES_VERSION;
 
   browser.tabs.create({
     url:    browser.extension.getURL('resources/updated-from-legacy.html'),

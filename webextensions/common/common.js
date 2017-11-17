@@ -186,7 +186,7 @@ configs = new Configs({
     'multipletab@piro.sakura.ne.jp'
   ],
   cachedExternalAddons: [],
-  shouldNotifyUpdatedFromLegacyVersion: true,
+  notifiedFeaturesVersion: 0,
 
   requestingPermissions: null,
 

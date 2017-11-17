@@ -18,16 +18,6 @@ gMetricsData.add('Loaded');
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
-browser.runtime.onInstalled.addListener(aDetails => {
-  /* When TST 2 (or later) is newly installed, this listener is invoked.
-     We should not notify "updated from legacy" for this case.
-     On the other hand, when TST is updated from legacy to 2 (or later),
-     this listener is not invoked with the reason "install" and
-     invoked with the reason "updated" after Firefox is restarted. */
-  if (aDetails.reason == 'install')
-    configs.shouldNotifyUpdatedFromLegacyVersion = false;
-});
-
 async function init() {
   gMetricsData.add('init start');
   window.addEventListener('pagehide', destroy, { once: true });
@@ -87,7 +77,7 @@ async function init() {
 
   await readyForExternalAddons();
 
-  notifyUpdatedFromLegacy();
+  notifyNewFeatures();
   log('Startup metrics: ', gMetricsData.toString());
 }
 
