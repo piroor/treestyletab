@@ -551,7 +551,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       container.lastFocusedTab = newSelection.id;
       if (gMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
-      selectTabInternally(newSelection);
+      selectTabInternally(newSelection, { silently: true });
       return true
     }
   }
