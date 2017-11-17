@@ -57,8 +57,9 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     delayedMove:      aOptions.delayedMove,
     inRemote:         aOptions.inRemote,
     broadcast:        aOptions.broadcast,
-    broadcasted:      aOptions.broadcasted
-  }, `${new Error().stack}\n${aOptions.stack || ''}`);
+    broadcasted:      aOptions.broadcasted,
+    stack:            `${new Error().stack}\n${aOptions.stack || ''}`
+  });
 
   if (isPinned(aParent) || isPinned(aChild)) {
     log('=> pinned tabs cannot be attached');
@@ -239,7 +240,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
 
 function detachTab(aChild, aOptions = {}) {
   log('detachTab: ', dumpTab(aChild), aOptions,
-      `${new Error().stack}\n${aOptions.stack || ''}`);
+      { stack: `${new Error().stack}\n${aOptions.stack || ''}` });
   var parent = getParentTab(aChild);
 
   if (!parent)
@@ -501,7 +502,8 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     collapsed:       aParams.collapsed,
     manualOperation: !!aParams.manualOperation,
     justNow:         !!aParams.justNow,
-    broadcasted:     !!aParams.broadcast
+    broadcasted:     !!aParams.broadcast,
+    stack:           new Error().stack
   };
   if (aParams.inRemote) {
     await browser.runtime.sendMessage(remoteParams);
@@ -509,6 +511,7 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
   }
   if (!ensureLivingTab(aTab)) // it was removed while waiting
     return;
+  aParams.stack = `${new Error().stack}\n${aParams.stack || ''}`;
   log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   await Promise.all([
@@ -608,6 +611,8 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 }
 
 function collapseExpandTab(aTab, aParams = {}) {
+  var stack = `${new Error().stack}\n${aParams.stack || ''}`;
+  log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
   var last = aParams.last &&
                (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
   var collapseExpandInfo = clone(aParams, {
@@ -632,6 +637,7 @@ function collapseExpandTab(aTab, aParams = {}) {
       tab:       aTab.id,
       justNow:   aParams.justNow,
       collapsed: aParams.collapsed,
+      stack:     stack,
       byAncestor: getAncestorTabs(aTab).some(isSubtreeCollapsed) == aParams.collapsed
     });
   }

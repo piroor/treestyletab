@@ -1032,7 +1032,8 @@ function onMessage(aMessage, aSender, aRespond) {
           return;
         let params = {
           collapsed: aMessage.collapsed,
-          justNow:   aMessage.justNow
+          justNow:   aMessage.justNow,
+          stack:     aMessage.stack
         };
         if (aMessage.manualOperation)
           manualCollapseExpandSubtree(tab, params);
@@ -1054,7 +1055,8 @@ function onMessage(aMessage, aSender, aRespond) {
         let params = {
           collapsed:   aMessage.collapsed,
           justNow:     aMessage.justNow,
-          broadcasted: true
+          broadcasted: true,
+          stack:       aMessage.stack
         };
         collapseExpandTab(tab, params);
       }
