@@ -165,11 +165,12 @@ function onTabOpened(aTab, aInfo = {}) {
   }
   else {
     // if the tab is opened inside existing tree by someone, we must fixup the tree.
+    let nextTab = getNextTab(aTab);
     if (!aInfo.openedWithPosition &&
-        aTab.nextSibling)
+        nextTab)
       tryFixupTreeForInsertedTab(aTab, {
         toIndex:   aTab.apiTab.index,
-        fromIndex: getTabIndex(aTab.nextSibling)
+        fromIndex: getTabIndex(getLastTab(aTab))
       });
   }
 
