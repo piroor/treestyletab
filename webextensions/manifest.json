@@ -20,11 +20,11 @@
     "bookmarks"
   ],
   "icons": {
-    "16": "resources/16x16-light.svg",
-    "20": "resources/20x20-light.svg",
-    "24": "resources/24x24-light.svg",
-    "64": "resources/icon64.png",
-    "94": "resources/icon94.png"
+    "16": "resources/icon.svg",
+    "20": "resources/icon.svg",
+    "24": "resources/icon.svg",
+    "64": "resources/icon",
+    "94": "resources/icon"
   },
   "background": {
     "page": "background/background.html"
@@ -32,9 +32,9 @@
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
     "default_icon": {
-      "16": "resources/16x16-light.svg",
-      "20": "resources/20x20-light.svg",
-      "24": "resources/24x24-light.svg"
+      "16": "resources/icon.svg",
+      "20": "resources/icon.svg",
+      "24": "resources/icon.svg"
     },
     "browser_style": true,
     "theme_icons": [
@@ -58,9 +58,9 @@
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
     "default_icon": {
-      "16": "resources/16x16-light.svg",
-      "20": "resources/20x20-light.svg",
-      "24": "resources/24x24-light.svg"
+      "16": "resources/icon.svg",
+      "20": "resources/icon.svg",
+      "24": "resources/icon.svg"
     },
     "default_panel": "sidebar/sidebar.html",
     "browser_style": true
