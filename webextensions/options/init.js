@@ -25,6 +25,9 @@ async function requestPermissionFor(aPermissions, aCheckbox) {
       await browser.permissions.remove({ permissions: aPermissions });
       return;
     }
+    var granted = await browser.permissions.contains({ permissions: aPermissions });
+    if (granted)
+      return;
     configs.requestingPermissions = aPermissions;
     aCheckbox.checked = false;
     browser.browserAction.setBadgeText({ text: '!' });
