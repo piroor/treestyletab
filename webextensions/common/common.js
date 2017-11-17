@@ -105,7 +105,8 @@ configs = new Configs({
 
   autoExpandIntelligently: true,
   autoExpandOnAttached: true,
-  autoExpandOnCollapsedChildFocused : true,
+  autoExpandOnCollapsedChildFocused: true,
+  autoExpandOnCollapsedChildFocusedDelay: 800,
   autoExpandOnLongHover: true,
   autoExpandOnLongHoverDelay: 500,
   autoExpandOnLongHoverRestoreIniitalState: true,

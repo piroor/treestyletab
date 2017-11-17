@@ -521,6 +521,7 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
 function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
   log('onTabFocusing ', aTab.id, aInfo);
   var container = aTab.parentNode;
+  cancelDelayedExpand(getTabById(container.lastFocusedTab));
   var shouldSkipCollapsed = (
     !aInfo.byInternalOperation &&
     gMaybeTabSwitchingByShortcut &&
@@ -544,9 +545,12 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       if (!newSelection) // this seems invalid case...
         return false;
       if (shouldSkipCollapsed &&
-          container.lastFocusedTab == newSelection.id)
+          container.lastFocusedTab == newSelection.id) {
         newSelection = getNextVisibleTab(newSelection) || getFirstVisibleTab(aTab);
+      }
       container.lastFocusedTab = newSelection.id;
+      if (gMaybeTabSwitchingByShortcut)
+        setupDelayedExpand(newSelection);
       selectTabInternally(newSelection);
       return true
     }
@@ -564,6 +568,8 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     handleNewActiveTab(aTab, aInfo);
   }
   container.lastFocusedTab = aTab.id;
+  if (gMaybeTabSwitchingByShortcut)
+    setupDelayedExpand(aTab);
   return false;
 }
 function handleNewActiveTab(aTab, aInfo = {}) {
@@ -582,6 +588,31 @@ function handleNewActiveTab(aTab, aInfo = {}) {
         collapsed: false,
         broadcast: true
       });
+  }
+}
+
+function setupDelayedExpand(aTab) {
+  if (!aTab)
+    return;
+  cancelDelayedExpand(aTab);
+  aTab.delayedExpand = setTimeout(() => {
+    collapseExpandTreesIntelligentlyFor(aTab, {
+      broadcast: true
+    });
+  }, configs.autoExpandOnCollapsedChildFocusedDelay);
+}
+
+function cancelDelayedExpand(aTab) {
+  if (!aTab ||
+      !aTab.delayedExpand)
+    return;
+  clearTimeout(aTab.delayedExpand);
+  delete aTab.delayedExpand;
+}
+
+function cancelAllDelayedExpand(aHint) {
+  for (let tab of getAllTabs(aHint)) {
+    cancelDelayedExpand(tab);
   }
 }
 
@@ -1095,6 +1126,7 @@ function onMessage(aMessage, aSender) {
             let tabs = await browser.tabs.query({ currentWindow: true, active: true });
             tab = getTabById(tabs[0].id);
           }
+          cancelAllDelayedExpand(tab);
           if (tab && tab.parentNode.lastFocusedTab == tab.id) {
             collapseExpandSubtree(tab, {
               collapsed: false,
