@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.2.10 (2017.11.18)
    * いくつかの権限を必須でなくした
    * ツリー上にURIでない文字列がドラッグ＆ドロップされた場合に、ホスト名風の形式の場合はホスト名と見なして開くようにした
    * [Firefox Multi-Account Containers](https://addons.mozilla.org/firefox/addon/multi-account-containers)によって開き直されたタブを、なるべく元のタブの位置でツリーに取り込むようにした
