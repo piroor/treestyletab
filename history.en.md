@@ -1,10 +1,11 @@
 # History
 
  - master/HEAD
+ - 2.2.10 (2017.11.18)
    * Some permissions are now optional.
    * Open plain text dropped onto the sidebar as a URI, if it seems to be formed like a host name.
-   * Tabs reopened by [Firefox Multi-Account Containers](https://addons.mozilla.org/firefox/addon/multi-account-containers) are treated as replacement of the original tab correctly.
-   * While switching tabs by keyboard shortuts, long-stay on collapsed tree now expands the tree automatically.
+   * Tabs reopened by [Firefox Multi-Account Containers](https://addons.mozilla.org/firefox/addon/multi-account-containers) are treated as replacement of the original tab, if possible.
+   * While switching tabs by keyboard shortuts, staying on a collapsed tree expands the tree automatically.
    * Add more descriptions and links from the configurations.
    * Fix wrong tab focus when there are only tow child tabs and the last one is active and closed.
    * [Add ability to deactivate auto-attaching of tabs.](https://github.com/piroor/treestyletab/issues/1544)
