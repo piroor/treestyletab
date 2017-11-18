@@ -171,12 +171,13 @@ function onTabOpened(aTab, aInfo = {}) {
     if (!aInfo.openedWithPosition &&
         (getNextNormalTab(aTab) ||
          getPreviousNormalTab(aTab) ||
-         (aInfo.tree && (aInfo.tree.target.next ||
-                         aInfo.tree.target.previous))))
+         (aInfo.treeForActionDetection &&
+          (aInfo.treeForActionDetection.target.next ||
+           aInfo.treeForActionDetection.target.previous))))
       tryFixupTreeForInsertedTab(aTab, {
         toIndex:   aTab.apiTab.index,
         fromIndex: getTabIndex(getLastTab(aTab)),
-        tree:      aInfo.tree
+        treeForActionDetection: aInfo.treeForActionDetection
       });
   }
 
@@ -388,7 +389,7 @@ function moveBack(aTab, aMoveInfo) {
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   log('detectTabActionFromNewPosition: ', dumpTab(aTab), aMoveInfo);
-  var tree   = aMoveInfo.tree || snapshotTree(aTab);
+  var tree   = aMoveInfo.treeForActionDetection || snapshotTreeForActionDetection(aTab);
   var target = tree.target;
 
   var toIndex   = aMoveInfo.toIndex;

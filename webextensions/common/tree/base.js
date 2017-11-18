@@ -934,10 +934,8 @@ async function sendTSTAPIMessage(aMessage, aOptions = {}) {
   }));
 }
 
-function snapshotTree(aTargetTab) {
-  var prevTab = getPreviousNormalTab(aTargetTab);
-  var nextTab = getNextNormalTab(aTargetTab);
-  var tabs    = getAncestorTabs(prevTab).reverse().concat([prevTab, aTargetTab, nextTab]).filter(ensureLivingTab);
+function snapshotTree(aTargetTab, aTabs) {
+  var tabs = aTabs || getNormalTabs(aTargetTab);
 
   var snapshotById = {};
   function snapshotChild(aTab) {
@@ -971,4 +969,11 @@ function snapshotTree(aTargetTab) {
     tabs:     snapshotArray,
     tabsById: snapshotById
   };
+}
+
+function snapshotTreeForActionDetection(aTargetTab) {
+  var prevTab = getPreviousNormalTab(aTargetTab);
+  var nextTab = getNextNormalTab(aTargetTab);
+  var tabs    = getAncestorTabs(prevTab).reverse().concat([prevTab, aTargetTab, nextTab]).filter(ensureLivingTab);
+  return snapshotTree(aTargetTab, tabs);
 }
