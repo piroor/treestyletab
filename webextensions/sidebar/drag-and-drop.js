@@ -438,6 +438,10 @@ function retrieveURIsFromDragEvent(aEvent) {
       !/^\s*(javascript|data):/.test(aURI)
   );
   log('  => filtered: ', urls);
+
+  urls = urls.map(fixupURIFromText);
+  log('  => fixed: ', urls);
+
   return urls;
 }
 
@@ -482,6 +486,16 @@ function retrieveURIsFromData(aData, aType) {
       return [getURLSpecFromFile(aData)];
   }
   return [];
+}
+
+function fixupURIFromText(aMaybeURI) {
+  if (/^\w+:/.test(aMaybeURI))
+    return aMaybeURI;
+
+  if (/^([^\.\s]+\.)+[^\.\s]{2}/.test(aMaybeURI))
+    return `http://${aMaybeURI}`;
+
+  return aMaybeURI;
 }
 
 
