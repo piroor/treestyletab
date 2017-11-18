@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.2.11 (2017.11.18)
+   * Fix performance regression for many numbers of tabs, on 2.2.10.
  - 2.2.10 (2017.11.18)
    * Some permissions are now optional.
    * Open plain text dropped onto the sidebar as a URI, if it seems to be formed like a host name.
