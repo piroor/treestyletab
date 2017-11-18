@@ -6,7 +6,7 @@
 'use strict';
 
 const kLEGACY_CONFIGS_MIGRATION_VERSION = 2;
-const kFEATURES_VERSION = 1;
+const kFEATURES_VERSION = 2;
 
 function migrateLegacyConfigs() {
   var values = configs.importedConfigsFromLegacy;
