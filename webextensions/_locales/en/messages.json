@@ -50,7 +50,10 @@
   "bookmark.notification.notPermitted.title": { "message": "Permission error" },
   "bookmark.notification.notPermitted.message": { "message": "Failed to get permissions to create bookmarks. Please grant permissions via the configurations of Tree Style Tab." },
 
-  "message.startup.description": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the \"F1\" key or click the \"Tree Style Tab\" button in the toolbar, to activate the Tree Style Tab sidebar panel." },
+  "message.startup.description.1": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the " },
+  "message.startup.description.key": { "message": "\"F1\" key" },
+  "message.startup.description.2": { "message": " or click the " },
+  "message.startup.description.3": { "message": " button in the toolbar, to activate the sidebar panel." },
   "message.startup.migrateSessions.before": { "message": "Tree structure of tabs on Firefox 56 or olders is not migrated automatically. See " },
   "message.startup.migrateSessions.link.label": { "message": "the instruction for manual migration of tree information" },
   "message.startup.migrateSessions.after": { "message": "." },

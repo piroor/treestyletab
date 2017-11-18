@@ -50,7 +50,10 @@
   "bookmark.notification.notPermitted.title": { "message": "権限のエラー" },
   "bookmark.notification.notPermitted.message": { "message": "ブックマーク作成に必要な権限を取得できませんでした。ツリー型タブの設定画面で権限を設定して下さい。" },
 
-  "message.startup.description": { "message": "Firefox 57以降のバージョンに対応するため、ツリー型タブがWebExtensionsベースに生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つとして利用できるようになっています。もし表示されていない場合は、「F1」キーを押すかツールバー上の「ツリー型タブ」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示してみて下さい。" },
+  "message.startup.description.1": { "message": "Firefox 57以降のバージョン向けに、ツリー型タブがWebExtensionsベースで生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
+  "message.startup.description.key": { "message": "「F1」キー" },
+  "message.startup.description.2": { "message": "を押すかツールバー上の「" },
+  "message.startup.description.3": { "message": "」ボタンをクリックして「ツリー型タブ」サイドバーパネルを表示して下さい。" },
   "message.startup.migrateSessions.before": { "message": "Firefox 56以前のバージョンでのタブのツリー構造は、自動的には移行されません。詳しくは" },
   "message.startup.migrateSessions.link.label": { "message": "手動でのツリー情報の移行手順" },
   "message.startup.migrateSessions.after": { "message": "を参照して下さい。" },

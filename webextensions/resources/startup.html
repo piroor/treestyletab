@@ -21,6 +21,11 @@
     text-indent: -1.5em;
   }
 
+  em {
+    font-style: normal;
+    font-weight: bold;
+  }
+
   #icon {
     opacity: 0.7;
     width: 10em;
@@ -36,7 +41,11 @@
 
 <h1 id="title">__MSG_extensionName__</h1>
 <div><img id="icon" src="24x24-light.svg" alt=""></div>
-<p>__MSG_message.startup.description__</p>
+<p>__MSG_message.startup.description.1__
+   <em>__MSG_message.startup.description.key__</em>
+   __MSG_message.startup.description.2__
+   <em>__MSG_extensionName__</em>
+   __MSG_message.startup.description.3__</p>
 <p>__MSG_message.startup.migrateSessions.before__<a href="__MSG_migrateSessions.link.uri__" target="_blank">__MSG_message.startup.migrateSessions.link.label__</a>__MSG_message.startup.migrateSessions.after__</p>
 
 <p>__MSG_message.startup.requestPermissions.description__</p>
