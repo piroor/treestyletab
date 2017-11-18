@@ -63,11 +63,13 @@
   "message.startup.requestPermissions.bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」（ブックマークの操作の許可が必要）" },
   "message.startup.requestPermissions.allUrls":   { "message": "キーボードショートカットでのタブ切り替え中、折り畳まれたツリーを展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
 
-  "message.startup.userChromeCss.notify": { "message": "？" },
+  "message.startup.userChromeCss.notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
   "message.startup.userChromeCss.description.1": { "message": "WebExtensionsの仕様上、Firefoxのタブバーとサイドバーのヘッダーはツリー型タブから制御できません。これらを隠したい場合は" },
   "message.startup.userChromeCss.description.link.label": { "message": "userChrome.cssでのカスタマイズ例" },
   "message.startup.userChromeCss.description.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
-  "message.startup.userChromeCss.description.2": { "message": "を参照して下さい。" },
+  "message.startup.userChromeCss.description.2": { "message": "を参照して下さい。ただし、" },
+  "message.startup.userChromeCss.description.note": { "message": "この方法は低レイヤのカスタマイズ手段のため、Firefoxの将来のバージョンで使えなくなったり、トラブルの原因になったりする恐れがあります。自己の責任と判断に基づいて、トラブルを自己解決できる自信がある場合にだけこの方法を使って下さい。" },
+  "message.startup.userChromeCss.description.3": { "message": "" },
 
 
   "context.reloadTree.label": { "message": "このツリーを再読み込み" },

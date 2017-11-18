@@ -35,15 +35,16 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 80em;
-    max-width: 70%;
     font-size: 65%;
     text-align: left;
     transition: opacity 0.3s ease;
   }
   .user-chrome-css:not(:hover) {
     opacity: 0.65;
-    max-width: 3em;
+  }
+  .user-chrome-css:hover {
+    width: 80em;
+    max-width: 70%;
   }
   .user-chrome-css .arrow {
     position: absolute;
@@ -116,5 +117,7 @@
     __MSG_message.startup.userChromeCss.description.1__
     <a href="__MSG_message.startup.userChromeCss.description.link.uri__" target="_blank">__MSG_message.startup.userChromeCss.description.link.label__</a>
     __MSG_message.startup.userChromeCss.description.2__
+    <em>__MSG_message.startup.userChromeCss.description.note__</em>
+    __MSG_message.startup.userChromeCss.description.3__
   </p>
 </div>
