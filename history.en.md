@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Some permissions are now optional.
+   * Open plain text dropped onto the sidebar as a URI, if it seems to be formed like a host name.
    * Tabs reopened by [Firefox Multi-Account Containers](https://addons.mozilla.org/firefox/addon/multi-account-containers) are treated as replacement of the original tab correctly.
    * While switching tabs by keyboard shortuts, long-stay on collapsed tree now expands the tree automatically.
    * Add more descriptions and links from the configurations.

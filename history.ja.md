@@ -2,6 +2,7 @@
 
  - master/HEAD
    * いくつかの権限を必須でなくした
+   * ツリー上にURIでない文字列がドラッグ＆ドロップされた場合に、ホスト名風の形式の場合はホスト名と見なして開くようにした
    * [Firefox Multi-Account Containers](https://addons.mozilla.org/firefox/addon/multi-account-containers)によって開き直されたタブを元のタブの位置で正しくツリーに取り込むようにした
    * キーボードショートカットでのタブ切り替え時に、折り畳まれたツリーの上でしばらく滞在したら自動的にツリーを展開するようにした
    * 設定画面に誘導のリンクや追加の説明を追加
