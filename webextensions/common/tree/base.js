@@ -935,13 +935,10 @@ async function sendTSTAPIMessage(aMessage, aOptions = {}) {
 }
 
 function snapshotTree(aTargetTab) {
-  var prevRoot = getRootTab(getPreviousNormalTab(aTargetTab));
-  var tabs     = [prevRoot].concat(getDescendantTabs(prevRoot));
-  var nextTab  = getNextNormalTab(aTargetTab);
-  if (tabs.indexOf(aTargetTab) < 0)
-    tabs.push(aTargetTab);
-  if (tabs.indexOf(nextTab) < 0)
-    tabs.push(nextTab);
+  var prevTab       = getPreviousNormalTab(aTargetTab);
+  var nextTab       = getNextNormalTab(aTargetTab);
+  var prevAncestors = getAncestorTabs(prevTab);
+  var tabs          = prevAncestors.reverse().concat([prevTab, aTargetTab, nextTab]);
 
   var snapshotById = {};
   function snapshotChild(aTab) {
