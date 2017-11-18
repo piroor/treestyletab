@@ -8,17 +8,13 @@
     color: black;
     padding: 2em 12%;
     text-align: center;
-  }
-
-  .permissions {
-    text-align: left;
     font-size: 95%;
-    margin-left: 8%;
-    margin-right: 8%;
   }
 
-  p.checkbox {
-    text-indent: -1.5em;
+  #icon {
+    opacity: 0.7;
+    width: 10em;
+    height: 10em;
   }
 
   em {
@@ -26,10 +22,60 @@
     font-weight: bold;
   }
 
-  #icon {
-    opacity: 0.7;
-    width: 10em;
-    height: 10em;
+  .permissions {
+    text-align: left;
+    margin-left: 8%;
+    margin-right: 8%;
+  }
+  p.checkbox {
+    text-indent: -1.5em;
+  }
+
+  .user-chrome-css {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80em;
+    max-width: 70%;
+    font-size: 65%;
+    text-align: left;
+    transition: opacity 0.3s ease;
+  }
+  .user-chrome-css:not(:hover) {
+    opacity: 0.65;
+    max-width: 3em;
+  }
+  .user-chrome-css .arrow {
+    position: absolute;
+    line-height: 1;
+  }
+  .user-chrome-css .arrow.top-tabbar {
+    top: 0;
+    left: 2em;
+    transform: rotate(180deg);
+  }
+  .user-chrome-css .arrow.sidebar-header {
+    top: 1.8em;
+    left: 0;
+    transform: rotate(90deg);
+  }
+  .user-chrome-css p {
+    margin: 1em 0 0 1em;
+    color: InfoText;
+    background: InfoBackground;
+    border: 1px solid;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    box-shadow: 0.2em 0.2em 0.5em rgba(0, 0, 0, 0.35);
+    min-width: 2em
+  }
+  .user-chrome-css:hover p.notify,
+  .user-chrome-css:not(:hover) p.description {
+    display: none;
+  }
+  .user-chrome-css p.notify {
+    text-align: center;
+    font-weight: bold;
   }
 </style>
 <script type="application/javascript" src="./startup.js"></script>
@@ -46,7 +92,9 @@
    __MSG_message.startup.description.2__
    <em>__MSG_extensionName__</em>
    __MSG_message.startup.description.3__</p>
-<p>__MSG_message.startup.migrateSessions.before__<a href="__MSG_migrateSessions.link.uri__" target="_blank">__MSG_message.startup.migrateSessions.link.label__</a>__MSG_message.startup.migrateSessions.after__</p>
+<p>__MSG_message.startup.migrateSessions.before__
+   <a href="__MSG_migrateSessions.link.uri__" target="_blank">__MSG_message.startup.migrateSessions.link.label__</a>
+   __MSG_message.startup.migrateSessions.after__</p>
 
 <p>__MSG_message.startup.requestPermissions.description__</p>
 <div class="permissions">
@@ -58,4 +106,15 @@
     <label><input id="allUrlsPermissionGranted"
                   type="checkbox">
            __MSG_message.startup.requestPermissions.allUrls__</label></p>
+</div>
+
+<div class="user-chrome-css">
+  <span class="arrow top-tabbar">▼</span>
+  <span class="arrow sidebar-header">▼</span>
+  <p class="notify">__MSG_message.startup.userChromeCss.notify__</span>
+  <p class="description">
+    __MSG_message.startup.userChromeCss.description.1__
+    <a href="__MSG_message.startup.userChromeCss.description.link.uri__" target="_blank">__MSG_message.startup.userChromeCss.description.link.label__</a>
+    __MSG_message.startup.userChromeCss.description.2__
+  </p>
 </div>
