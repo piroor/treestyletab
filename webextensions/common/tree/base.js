@@ -935,10 +935,9 @@ async function sendTSTAPIMessage(aMessage, aOptions = {}) {
 }
 
 function snapshotTree(aTargetTab) {
-  var prevTab       = getPreviousNormalTab(aTargetTab);
-  var nextTab       = getNextNormalTab(aTargetTab);
-  var prevAncestors = getAncestorTabs(prevTab);
-  var tabs          = prevAncestors.reverse().concat([prevTab, aTargetTab, nextTab]);
+  var prevTab = getPreviousNormalTab(aTargetTab);
+  var nextTab = getNextNormalTab(aTargetTab);
+  var tabs    = getAncestorTabs(prevTab).reverse().concat([prevTab, aTargetTab, nextTab]).filter(ensureLivingTab);
 
   var snapshotById = {};
   function snapshotChild(aTab) {
@@ -954,9 +953,11 @@ function snapshotTree(aTargetTab) {
       level:         parseInt(aTab.getAttribute(kLEVEL))
     };
   }
-  var snapshotArray = tabs.filter(ensureLivingTab).map(aTab => snapshotChild(aTab));
+  var snapshotArray = tabs.map(aTab => snapshotChild(aTab));
   for (let tab of tabs) {
     let item = snapshotById[tab.id];
+    if (!item)
+      continue;
     let parent = getParentTab(tab);
     item.parent = parent && parent.id;
     let next = getNextNormalTab(tab);
