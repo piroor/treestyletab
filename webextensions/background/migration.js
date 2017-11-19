@@ -87,7 +87,7 @@ function migrateLegacyConfigs() {
         migrateLegacyConfig('collapseExpandSubtreeByDblClick', values['extensions.treestyletab.collapseExpandSubtree.dblclick']);
 
       case 3:
-        migrateLegacyConfig('narrowScrollbar', values['extensions.treestyletab.tabbar.narrowScrollbar']);
+        migrateLegacyConfig('scrollbarMode', values['extensions.treestyletab.tabbar.narrowScrollbar'] ? kTABBAR_SCROLLBAR_MODE_NARROW : kTABBAR_SCROLLBAR_MODE_DEFAULT);
         migrateLegacyConfig('narrowScrollbarSize', values['extensions.treestyletab.tabbar.narrowScrollbar.width']);
 
         // case 4:

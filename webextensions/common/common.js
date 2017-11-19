@@ -99,7 +99,7 @@ configs = new Configs({
   indentAutoShrink: true,
   indentAutoShrinkOnlyForVisible: true,
 
-  narrowScrollbar: true,
+  scrollbarMode:       kTABBAR_SCROLLBAR_MODE_NARROW,
   narrowScrollbarSize: 8,
 
 

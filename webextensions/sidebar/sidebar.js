@@ -120,7 +120,7 @@ async function init() {
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
       onConfigChange('animation');
-      onConfigChange('narrowScrollbar');
+      onConfigChange('scrollbarMode');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);

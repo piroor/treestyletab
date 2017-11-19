@@ -1256,11 +1256,20 @@ function onConfigChange(aChangedKey) {
       reserveToPositionPinnedTabs();
       break;
 
-    case 'narrowScrollbar':
-      if (configs.narrowScrollbar)
-        rootClasses.add('narrow-scrollbar');
-      else
-        rootClasses.remove('narrow-scrollbar');
+    case 'scrollbarMode':
+      rootClasses.remove('narrow-scrollbar');
+      rootClasses.remove('no-scrollbar');
+      switch (configs.scrollbarMode) {
+        default:
+        case kTABBAR_SCROLLBAR_MODE_DEFAULT:
+          break;
+        case kTABBAR_SCROLLBAR_MODE_NARROW:
+          rootClasses.add('narrow-scrollbar');
+          break;
+        case kTABBAR_SCROLLBAR_MODE_HIDE:
+          rootClasses.add('no-scrollbar');
+          break;
+      }
       break;
 
     case 'narrowScrollbarSize':

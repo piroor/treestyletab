@@ -161,6 +161,10 @@ const kCOUNTER_ROLE_CONTAINED_TABS = 2;
 const kTABBAR_POSITION_LEFT  = 1;
 const kTABBAR_POSITION_RIGHT = 2;
 
+const kTABBAR_SCROLLBAR_MODE_DEFAULT = 0;
+const kTABBAR_SCROLLBAR_MODE_NARROW  = 1;
+const kTABBAR_SCROLLBAR_MODE_HIDE    = 2;
+
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';
 const kDROP_AFTER   = 'after';

@@ -124,6 +124,20 @@ button {
   margin-right: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
 }
 
+/* no scrollbar */
+
+:root.left.no-scrollbar #tabbar.overflow,
+:root.right.no-scrollbar #tabbar.overflow ~ #tabContextMenu,
+:root.right.no-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+  margin-left: calc(0px - var(--scrollbar-size));
+}
+
+:root.right.no-scrollbar #tabbar.overflow,
+:root.left.no-scrollbar #tabbar.overflow ~ #tabContextMenu,
+:root.left.no-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+  margin-right: calc(0px - var(--scrollbar-size));
+}
+
 
 ul {
   flex-grow: 1;
