@@ -94,7 +94,7 @@ button {
   top: 0;
 }
 #tabbar.overflow {
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 :root.animation #tabbar {
