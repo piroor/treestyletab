@@ -47,7 +47,18 @@ var tabContextMenu = {
     allRange.selectNodeContents(document.body);
     var containerRect = allRange.getBoundingClientRect();
     allRange.detach();
-    return containerRect;
+    // because the contianer box can be shifted to hide scrollbar
+    var dummyTabsRect = document.querySelector('#dummy-tabs').getBoundingClientRect();
+    return {
+      x:      dummyTabsRect.x,
+      y:      containerRect.y,
+      width:  dummyTabsRect.width,
+      height: containerRect.height,
+      top:    containerRect.top,
+      right:  dummyTabsRect.right,
+      bottom: containerRect.bottom,
+      left:   dummyTabsRect.left
+    };
   },
 
   addons: null,

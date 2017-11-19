@@ -112,29 +112,21 @@ button {
 
 /* narrow scrollbar */
 
-:root.left.narrow-scrollbar #tabbar.overflow,
-:root.right.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu,
-:root.right.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+:root.left.narrow-scrollbar #tabbar.overflow {
   margin-left: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
 }
 
-:root.right.narrow-scrollbar #tabbar.overflow,
-:root.left.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu,
-:root.left.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+:root.right.narrow-scrollbar #tabbar.overflow {
   margin-right: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
 }
 
 /* no scrollbar */
 
-:root.left.no-scrollbar #tabbar.overflow,
-:root.right.no-scrollbar #tabbar.overflow ~ #tabContextMenu,
-:root.right.no-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+:root.left.no-scrollbar #tabbar.overflow {
   margin-left: calc(0px - var(--scrollbar-size));
 }
 
-:root.right.no-scrollbar #tabbar.overflow,
-:root.left.no-scrollbar #tabbar.overflow ~ #tabContextMenu,
-:root.left.no-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+:root.right.no-scrollbar #tabbar.overflow {
   margin-right: calc(0px - var(--scrollbar-size));
 }
 
@@ -151,9 +143,11 @@ ul {
 
 #dummy-tabs {
   bottom: 0;
-  pointer-events: none;
+  left: 0;
   overflow-y: scroll;
+  pointer-events: none;
   position: fixed;
+  right: 0;
   visibility: hidden;
 }
 
