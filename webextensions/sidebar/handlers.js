@@ -820,6 +820,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
   }
 
+  reserveToUpdateTabbarLayout({ reason });
+
   nextFrame().then(() => {
     if (!ensureLivingTab(aTab)) // it was removed while waiting
       return;
@@ -866,11 +868,6 @@ function onEndCollapseExpandCompletely(aOptions = {}) {
 
   if (!aOptions.collapsed)
     reserveToSynchronizeThrobberAnimations();
-
-  reserveToUpdateTabbarLayout({
-    reason:  aOptions.reason,
-    timeout: configs.collapseDuration
-  });
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
