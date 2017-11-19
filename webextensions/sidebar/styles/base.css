@@ -110,7 +110,7 @@ button {
   direction: ltr;
 }
 
-/* for narrow scrollbar */
+/* narrow scrollbar */
 
 :root.left.narrow-scrollbar #tabbar.overflow,
 :root.right.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu,
