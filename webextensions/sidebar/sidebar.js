@@ -290,7 +290,7 @@ function applyBrowserTheme(aTheme) {
 
 function calculateDefaultSizes() {
   // first, calculate actual favicon size.
-  gFaviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
+  gFaviconSize = document.querySelector('#dummy-favicon-size-box').offsetHeight;
   var scale = Math.max(configs.faviconizedTabScale, 1);
   gFaviconizedTabSize = parseInt(gFaviconSize * scale);
   log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
