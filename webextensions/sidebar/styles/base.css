@@ -111,11 +111,19 @@ button {
 }
 
 /* for narrow scrollbar */
-/*
-#tabbar.overflow {
-  margin-left: -8px;
+
+:root.left.narrow-scrollbar #tabbar.overflow,
+:root.right.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu,
+:root.right.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+  margin-left: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
 }
-*/
+
+:root.right.narrow-scrollbar #tabbar.overflow,
+:root.left.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu,
+:root.left.narrow-scrollbar #tabbar.overflow ~ #tabContextMenu ul {
+  margin-right: calc(var(--narrow-scrollbar-size) - var(--scrollbar-size));
+}
+
 
 ul {
   flex-grow: 1;

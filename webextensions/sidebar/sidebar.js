@@ -120,6 +120,7 @@ async function init() {
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
       onConfigChange('animation');
+      onConfigChange('narrowScrollbar');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);
@@ -305,7 +306,8 @@ function calculateDefaultSizes() {
   log('gTabHeight ', gTabHeight);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
-    --tabbar-scrollbar-size: ${scrollbarSize}px;
+    --scrollbar-size: ${scrollbarSize}px;
+    --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;

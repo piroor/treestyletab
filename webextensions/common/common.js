@@ -99,6 +99,9 @@ configs = new Configs({
   indentAutoShrink: true,
   indentAutoShrinkOnlyForVisible: true,
 
+  narrowScrollbar: true,
+  narrowScrollbarSize: 8,
+
 
   // context menu
   context_reloadTree: true,

@@ -5,7 +5,7 @@
 */
 'use strict';
 
-const kLEGACY_CONFIGS_MIGRATION_VERSION = 2;
+const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
 const kFEATURES_VERSION = 2;
 
 function migrateLegacyConfigs() {
@@ -86,7 +86,10 @@ function migrateLegacyConfigs() {
       case 2:
         migrateLegacyConfig('collapseExpandSubtreeByDblClick', values['extensions.treestyletab.collapseExpandSubtree.dblclick']);
 
-        // case 3:
+      case 3:
+        migrateLegacyConfig('narrowScrollbar', values['extensions.treestyletab.tabbar.narrowScrollbar']);
+        migrateLegacyConfig('narrowScrollbarSize', values['extensions.treestyletab.tabbar.narrowScrollbar.width']);
+
         // case 4:
         // case 5:
         migrated = true;

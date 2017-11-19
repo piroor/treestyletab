@@ -1256,6 +1256,17 @@ function onConfigChange(aChangedKey) {
       reserveToPositionPinnedTabs();
       break;
 
+    case 'narrowScrollbar':
+      if (configs.narrowScrollbar)
+        rootClasses.add('narrow-scrollbar');
+      else
+        rootClasses.remove('narrow-scrollbar');
+      break;
+
+    case 'narrowScrollbarSize':
+      location.reload();
+      break;
+
     case 'userStyleRules':
       applyUserStyleRules()
       break;
