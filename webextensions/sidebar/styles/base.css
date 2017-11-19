@@ -130,6 +130,7 @@ ul {
 #dummy-tabs {
   bottom: 0;
   pointer-events: none;
+  overflow-y: scroll;
   position: fixed;
   visibility: hidden;
 }

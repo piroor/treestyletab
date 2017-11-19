@@ -299,10 +299,13 @@ function calculateDefaultSizes() {
     --faviconized-tab-size: ${gFaviconizedTabSize}px;
   }`;
   var dummyTab = document.querySelector('#dummy-tab');
-  gTabHeight = dummyTab.getBoundingClientRect().height;
+  gTabHeight = dummyTab.offsetHeight;
+  var dummyTabbar = document.querySelector('#dummy-tabs');
+  var scrollbarSize = dummyTabbar.offsetWidth - dummyTab.offsetWidth;
   log('gTabHeight ', gTabHeight);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
+    --tabbar-scrollbar-size: ${scrollbarSize}px;
 
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;
