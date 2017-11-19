@@ -51,7 +51,7 @@
 
   --throbber-color: var(--browser-bg-lightest, --tab-highlighted-glow);
 
-  background: var(--browser-bg-darker, --tab-surface);
+  background: var(--tab-surface);
 }
 
 .tab,
