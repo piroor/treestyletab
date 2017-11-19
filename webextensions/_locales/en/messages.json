@@ -89,6 +89,11 @@
   "config.sidebarPosition.right": { "message": "Right side" },
   "config.sidebarPosition.description": { "message": "*This configuration won't change the position of the sidebar itself. You need to click the switcher in the sidebar header and click \"Move Sidebar to Right\" manually." },
 
+  "config.scrollbarMode.caption": { "message": "Scrollbar" },
+  "config.scrollbarMode.default": { "message": "Default" },
+  "config.scrollbarMode.narrow":  { "message": "Narrow" },
+  "config.scrollbarMode.hide":    { "message": "Hide" },
+
   "config.style.caption": { "message": "Theme" },
   "config.style.plain": { "message": "Plain" },
   "config.style.plain-dark": { "message": "Plain Dark" },

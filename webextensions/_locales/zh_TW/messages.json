@@ -89,6 +89,11 @@
   "config.sidebarPosition.right": { "message": "右側用" },
   "config.sidebarPosition.description": { "message": "※此設定不會改變側邊欄的位置，點擊側邊欄標題列並勾選「將側邊欄移至右方」以更改其位置。" },
 
+  "config.scrollbarMode.caption": { "message": "Scrollbar" },
+  "config.scrollbarMode.default": { "message": "Default" },
+  "config.scrollbarMode.narrow":  { "message": "Narrow" },
+  "config.scrollbarMode.hide":    { "message": "Hide" },
+
   "config.style.caption": { "message": "佈景主題" },
   "config.style.plain": { "message": "Plain" },
   "config.style.plain-dark": { "message": "Plain Dark" },

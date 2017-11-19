@@ -67,6 +67,11 @@
   "config.sidebarPosition.left": { "message": "左侧" },
   "config.sidebarPosition.right": { "message": "右侧" },
 
+  "config.scrollbarMode.caption": { "message": "Scrollbar" },
+  "config.scrollbarMode.default": { "message": "Default" },
+  "config.scrollbarMode.narrow":  { "message": "Narrow" },
+  "config.scrollbarMode.hide":    { "message": "Hide" },
+
   "config.style.caption": { "message": "主题" },
   "config.style.plain": { "message": "朴素" },
   "config.style.plain-dark": { "message": "朴素暗" },
