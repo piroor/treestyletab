@@ -1,6 +1,6 @@
 :root {
   --tab-surface: #252526;
-  --tab-text: #f9f9fa;
+  --tab-text: #efefef;
   --tab-border: #3c3c3d;
   --tab-side-border: #3c3c3d;
   --tab-surface-hover: #5a5a5b;
@@ -54,6 +54,6 @@
 .tab.active .twisty,
 .tab.active .label,
 .tab.active .counter {
-  color: white;
+  color: #f9f9fa;
 }
 
