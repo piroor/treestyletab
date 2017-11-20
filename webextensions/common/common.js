@@ -131,7 +131,7 @@ configs = new Configs({
   autoExpandOnLongHoverDelay: 500,
   autoExpandOnLongHoverRestoreIniitalState: true,
 
-  skipCollapsedTabsForTabSwitchingShortcuts: true,
+  skipCollapsedTabsForTabSwitchingShortcuts: false,
 
   parentTabBehaviorForChanges: kPARENT_TAB_BEHAVIOR_ALWAYS,
 

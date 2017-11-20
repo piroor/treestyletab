@@ -13,7 +13,7 @@ const Permissions = {
     return browser.permissions.contains(aPermissions);
   },
 
-  bindToCheckbox(aPermissions, aCheckbox) {
+  bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
     this.isGranted(aPermissions).then(aGranted => {
       aCheckbox.checked = aGranted;
     });
@@ -27,6 +27,8 @@ const Permissions = {
           aMessage.type != kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
           JSON.stringify(aMessage.permissions) != JSON.stringify(aPermissions))
         return;
+      if (aOptions.onChanged)
+        aOptions.onChanged(true);
       aCheckbox.checked = true;
     });
 
@@ -46,12 +48,16 @@ const Permissions = {
       try {
         if (!aCheckbox.checked) {
           await browser.permissions.remove(aPermissions);
+          if (aOptions.onChanged)
+            aOptions.onChanged(false);
           return;
         }
 
         var granted = await this.isGranted(aPermissions);
-        if (granted)
+        if (granted) {
+          aOptions.onChanged(true);
           return;
+        }
 
         configs.requestingPermissions = aPermissions;
         aCheckbox.checked = false;
