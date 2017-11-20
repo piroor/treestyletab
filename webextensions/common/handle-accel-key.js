@@ -48,7 +48,8 @@
   }
 
   function isCtrlTabEvent(aEvent) {
-    if (aEvent.keyCode != KeyEvent.DOM_VK_TAB)
+    if (aEvent.keyCode != KeyEvent.DOM_VK_TAB &&
+        aEvent.keyCode != KeyEvent.DOM_VK_SHIFT)
       return false;
     if (isMac)
       return (
