@@ -962,9 +962,10 @@ function snapshotTree(aTargetTab, aTabs) {
     let previous = getPreviousNormalTab(tab);
     item.previous = previous && previous.id;
   }
+  var activeTab = getCurrentTab(aTargetTab);
   return {
     target:   snapshotById[aTargetTab.id],
-    active:   snapshotById[getCurrentTab(aTargetTab).id],
+    active:   activeTab && snapshotById[activeTab.id],
     tabs:     snapshotArray,
     tabsById: snapshotById
   };
