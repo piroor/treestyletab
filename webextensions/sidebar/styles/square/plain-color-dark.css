@@ -1,18 +1,18 @@
 :root {
-  --tab-surface: #0c0c0d;
-  --tab-text: white;
+  --tab-surface: #252526;
+  --tab-text: #f9f9fa;
   --tab-border: #3c3c3d;
   --tab-side-border: #3c3c3d;
-  --tab-surface-hover: #242425;
-  --tab-surface-active: #39424D;
-  --tab-surface-active-hover: #49525D;
+  --tab-surface-hover: #5a5a5b;
+  --tab-surface-active: #474749;
+  --tab-surface-active-hover: #707071;
   --tab-active-marker: #0a84ff;
   --tab-active-marker-size: calc(var(--favicon-size) / 6);
-  --dropmarker-color: white;
+  --dropmarker-color: var(--tab-text);
 
   --tab-highlighted-glow: var(--tab-active-marker);
   --tab-highlighted-highlight: white;
-  --tabbar-bg: black;
+  --tabbar-bg: #0c0c0d;
 }
 
 .tab:not(.active) {
