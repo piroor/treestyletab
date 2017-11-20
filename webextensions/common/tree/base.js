@@ -392,7 +392,6 @@ function buildTabsContainerFor(aWindowId) {
     container.internalFocusCount =
     container.internalSilentlyFocusCount =
     container.tryingReforcusForClosingCurrentTabCount =
-    container.processingNewTabsCount =
     container.duplicatingTabsCount =
     container.restoringTabsCount = 0;
 

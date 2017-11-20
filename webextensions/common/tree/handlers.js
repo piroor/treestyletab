@@ -198,7 +198,6 @@ async function onNewTabTracked(aTab) {
 
   log('onNewTabTracked: ', aTab.id);
   var container = getOrBuildTabsContainer(aTab.windowId);
-  container.processingNewTabsCount++;
   var newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
   newTab.classList.add(kTAB_STATE_OPENING);
   var nextTab = getAllTabs(container)[aTab.index];
@@ -259,8 +258,6 @@ async function onNewTabTracked(aTab) {
     newTab.classList.remove(kTAB_STATE_OPENING);
   });
   newTab._resolveOpened();
-
-  container.processingNewTabsCount--;
 
   if (!duplicated &&
       uniqueId.restored) {
