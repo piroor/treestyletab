@@ -152,7 +152,7 @@ var tabContextMenu = {
     itemNode.setAttribute('data-item-id', aItem.id);
     itemNode.setAttribute('data-item-owner-id', aOwnerId);
     itemNode.classList.add('extra');
-    itemNode.classList.add(aItem.type);
+    itemNode.classList.add(aItem.type || 'normal');
     if (aItem.type == 'checkbox' || aItem.type == 'radio') {
       if (aItem.checked)
         itemNode.classList.add('checked');
