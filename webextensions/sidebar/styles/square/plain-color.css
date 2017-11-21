@@ -1,10 +1,15 @@
 :root {
-  --tab-surface: var(--browser-bg-base, -moz-dialog);
-  --tab-text: var(--browser-fg, -moz-dialogtext);
-  --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
-  --tab-side-border: var(--browser-bg-darker, ThreeDLightShadow);
-  --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
-  --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
+  /* https://dxr.mozilla.org/mozilla-central/rev/b056526be38e96b3e381b7e90cd8254ad1d96d9d/browser/themes/windows/browser.css#45 */
+  /* http://design.firefox.com/photon/visuals/color.html */
+  --toolbar-non-lwt-bgcolor: #f9f9fa;
+  --toolbar-non-lwt-textcolor: #0c0c0d;
+
+  --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
+  --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
+  --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
+  --tab-side-border: var(--browser-bg-darker, #d7d7db /* ThreeDLightShadow */);
+  --tab-surface-hover: var(--browser-bg-more-lighter, #fefefe /* ThreeDHighlight */);
+  --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
 
   --tabbar-bg: var(--browser-bg-darker, darkgray);
 
