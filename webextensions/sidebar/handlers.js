@@ -727,8 +727,6 @@ async function onTabCompletelyClosed(aTab) {
     let tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
     setTimeout(() => {
-      if (!ensureLivingTab(aTab)) // it was removed while waiting
-        return;
       aResolve();
     }, configs.collapseDuration);
   });
