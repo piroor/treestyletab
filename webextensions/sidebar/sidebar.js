@@ -248,8 +248,13 @@ function applyStyle() {
     case 'plain-dark':
       gStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
       break;
-    default:
+    case 'plain':
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
+      break;
+    default:
+      // as the base of customization. see also:
+      // https://github.com/piroor/treestyletab/issues/1604
+      gStyleLoader.setAttribute('href', 'data:text/css,');
       break;
   }
   return new Promise((aResolve, aReject) => {
