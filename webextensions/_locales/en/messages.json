@@ -102,6 +102,7 @@
   "config.style.mixed": { "message": "Mixed" },
   "config.style.metal": { "message": "Metal" },
   "config.style.sidebar": { "message": "Sidebar" },
+  "config.style.none": { "message": "No Decoration (*Please decorate everything by yourself via \"Extra style rules for sidebar contents\")" },
 
   "config.maxTreeLevel.before": { "message": "Indent tabs until" },
   "config.maxTreeLevel.after": { "message": "level(s) (*Negative value means \"infinite\")" },
