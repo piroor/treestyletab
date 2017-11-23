@@ -132,7 +132,7 @@ After the actual problem is solved, you won't need such a menu anymore.
 In other words, adding such a menu can disguise fatal problems which really should be solved.
 
 And, high customizability for details of features is out of TST's purpose.
-I hope to provide only very required options which are truly un-omitable.
+I want to provide only very required options which are truly un-omitable.
 Too many optional features will kill this project, because they will cloud the important concept of TST and will bring together people who don't like my core vision about TST.
 Instead, sorry but please fork this project and modify it for your usecase.
 
@@ -188,8 +188,8 @@ Now I have only a few resources to maintain TST, so I don't want to increase the
 
 ### [Donation](https://github.com/piroor/treestyletab/issues/761)
 
-Thanks, but sorry, I have no plan about any donation because I hope to keep me as the prime user of this project.
-I hope to keep having a privilege to say "no" about requests not matched to my vision.
+Thanks, but sorry, I have no plan about any donation because I want to keep me as the prime user of this project.
+I want to keep having a privilege to say "no" about requests not matched to my vision.
 My hand is already full to maintain this addon for my usecase.
 
 If you fixed a bug you met, please send a pull request - I'll merge it.
