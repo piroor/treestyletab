@@ -68,7 +68,7 @@
   "message.startup.userChromeCss.description.link.label": { "message": "customization examples by userChrome.css" },
   "message.startup.userChromeCss.description.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message.startup.userChromeCss.description.2": { "message": ". But " },
-  "message.startup.userChromeCss.description.note": { "message": "note that it is very low level customization, thus there is no guarantee and it possibly cause some troubles on future versions of Firefox. Please try it at your own risk, only when you enough to know what are you doing and you have confidence that you can resolve such troubles by youself." },
+  "message.startup.userChromeCss.description.note": { "message": "note that it is very low level customization, thus there is no guarantee and it possibly cause some troubles on future versions of Firefox. Please try it at your own risk, only when you know what you are doing and if you are confident that you can resolve such troubles by yourself." },
   "message.startup.userChromeCss.description.3": { "message": "." },
 
 
