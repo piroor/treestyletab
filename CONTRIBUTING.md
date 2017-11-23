@@ -85,5 +85,5 @@ If you've fixed a problem you met by your hand, then please send a pull request 
 Translations also.
 Pull requests are easy to merge, than sending ZIP files.
 You'll do it without any local application - you can do it on the GitHub.
-For example, if you hope to fix an exsiting typo in a locale, you just have to click the pencil button (with a tooltip "Edit this file") for a language resource file.
+For example, if you want to fix an existing typo in a locale, you just have to click the pencil button (with a tooltip "Edit this file") for a language resource file.
 
