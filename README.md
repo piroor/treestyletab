@@ -4,12 +4,12 @@ This is a Firefox add-on which provides ability to operate tabs as "tree".
 
 New tabs opened from the current tab are automatically organized as "children" of the current.
 Such "branches" are easily folded (collapsed) by clicking on down-triangle shown in a "parent" tab, so you don't need to be suffered from too many visible tabs anymore.
-If you hope, you can restructure the tree via drag and drop.
+If you want, you can restructure the tree via drag and drop.
 
  * Such a tree of tabs will behave like a visual browsing history for you.
    For example, if you see a list of search results for a topic, you'll open each search result link in new child tab.
    For more details you'll also open more descendant tabs from them.
-   You'll easily dig and dig deeply, without lose your browsing trail - if you hope to go back to the original search result, you just have to switch to the "root" tab.
+   You'll easily dig and dig deeply, without lose your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
  * Moreover, you'll treat tree of tabs just as "grouped tabs" for similar topics.
 
 Anyway this addon just provide uncolored "tree" feature.
