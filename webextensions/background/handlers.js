@@ -969,11 +969,17 @@ function onMessage(aMessage, aSender) {
         if (!tab)
           return;
 
+        let serializedTab = serializeTabForTSTAPI(tab);
         let results = await sendTSTAPIMessage(clone(aMessage, {
-          type:   kTSTAPI_NOTIFY_TAB_CLICKED,
-          tab:    serializeTabForTSTAPI(tab),
+          type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
+          tab:    serializedTab,
           window: tab.apiTab.windowId
         }));
+        results = results.concat(await sendTSTAPIMessage(clone(aMessage, {
+          type:   kTSTAPI_NOTIFY_TAB_CLICKED,
+          tab:    serializedTab,
+          window: tab.apiTab.windowId
+        })));
         if (results.some(aResult => aResult.result)) // canceled
           return;
 

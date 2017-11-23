@@ -282,6 +282,15 @@ function cancelHandleMousedown() {
 async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
 
+  let serializedTab = tab && serializeTabForTSTAPI(tab);
+  if (serializedTab && gLastMousedown) {
+    sendTSTAPIMessage(clone(gLastMousedown.detail, {
+      type:    kTSTAPI_NOTIFY_TAB_MOUSEUP,
+      tab:     serializedTab,
+      window:  gTargetWindow
+    }));
+  }
+
   if (gCapturingMouseEvents) {
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
@@ -289,7 +298,7 @@ async function onMouseUp(aEvent) {
 
     sendTSTAPIMessage({
       type:    kTSTAPI_NOTIFY_TAB_DRAGEND,
-      tab:     tab && serializeTabForTSTAPI(tab),
+      tab:     serializedTab,
       window:  gTargetWindow,
       clientX: aEvent.clientX,
       clientY: aEvent.clientY
@@ -301,7 +310,7 @@ async function onMouseUp(aEvent) {
   else if (gReadyToCaptureMouseEvents) {
     sendTSTAPIMessage({
       type:    kTSTAPI_NOTIFY_TAB_DRAGCANCEL,
-      tab:     tab && serializeTabForTSTAPI(tab),
+      tab:     serializedTab,
       window:  gTargetWindow,
       clientX: aEvent.clientX,
       clientY: aEvent.clientY
@@ -319,9 +328,13 @@ async function onMouseUp(aEvent) {
 
   if (!tab) {
     let results = await sendTSTAPIMessage(clone(gLastMousedown.detail, {
-      type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
+      type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
       window: gTargetWindow,
     }));
+    results = results.concat(await sendTSTAPIMessage(clone(gLastMousedown.detail, {
+      type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
+      window: gTargetWindow,
+    })));
     if (results.some(aResult => aResult.result)) { // canceled
       cancelHandleMousedown();
       return;
