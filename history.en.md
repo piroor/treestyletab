@@ -117,7 +117,7 @@
    * Group tabs by a dummy tab correctly on secondary and later windows.
    * Don't open needless group tab in a rest window when another window is closed.
    * Don't highlight unread pinned tabs when they are not faviconized.
-   * Respect Frirefox's behavior of `browser.tabs.selectOwnerOnClose` more correctly. Now the "owner" tab is focused when the current tab is closed. You need to disable the option via `about:config` if you hope TST to control focusing of tabs completely.
+   * Respect Frirefox's behavior of `browser.tabs.selectOwnerOnClose` more correctly. Now the "owner" tab is focused when the current tab is closed. You need to disable the option via `about:config` if you want TST to control focusing of tabs completely.
    * Don't create recursively grouped tabs from newly opened tabs.
    * [New APIs to override the wheel scrolling behavior](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#override-reaction-for-mouse-wheel-rotation-on-the-vertical-tab-bar) are now available.
    * Updated zh-CN locale by YFdyh000, thanks!
