@@ -39,9 +39,9 @@
     "browser_style": true,
     "theme_icons": [
       {
-      "light": "resources/16x16-dark.svg",
-      "dark":  "resources/16x16-light.svg",
-      "size": 16
+        "light": "resources/16x16-dark.svg",
+        "dark":  "resources/16x16-light.svg",
+        "size": 16
       },
       {
         "light": "resources/20x20-dark.svg",
