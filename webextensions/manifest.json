@@ -36,7 +36,24 @@
       "20": "resources/20x20-light.svg",
       "24": "resources/24x24-light.svg"
     },
-    "browser_style": true
+    "browser_style": true,
+    "theme_icons": [
+      {
+      "light": "resources/16x16-dark.svg",
+      "dark":  "resources/16x16-light.svg",
+      "size": 16
+      },
+      {
+        "light": "resources/20x20-dark.svg",
+        "dark":  "resources/20x20-light.svg",
+        "size": 20
+      },
+      {
+        "light": "resources/24x24-dark.svg",
+        "dark":  "resources/24x24-light.svg",
+        "size": 24
+      }
+    ]
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
