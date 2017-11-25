@@ -280,7 +280,8 @@ function checkRecycledTab(aContainer) {
   var possibleRecycledTabs = aContainer.querySelectorAll(`
     ${kBASE_RECYCLED_TAB_CONDITION}:not([${kCURRENT_URI}]),
     ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}"],
-    ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="about:blank"]
+    ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="about:blank"],
+    ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="about:privatebrowsing"]
   `);
   if (possibleRecycledTabs.length == 0)
     return;
