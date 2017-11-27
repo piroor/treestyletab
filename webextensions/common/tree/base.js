@@ -335,10 +335,10 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     wait(0).then(() => {
       // Don't set this class immediately, because we need to know
       // the newly focused tab *was* discarded on onTabClosed handler.
-    if (aNewState.discarded)
-      aTab.classList.add(kTAB_STATE_DISCARDED);
-    else
-      aTab.classList.remove(kTAB_STATE_DISCARDED);
+      if (aNewState.discarded)
+        aTab.classList.add(kTAB_STATE_DISCARDED);
+      else
+        aTab.classList.remove(kTAB_STATE_DISCARDED);
     });
   }
 
