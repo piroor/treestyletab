@@ -43,7 +43,7 @@ function isMiddleClick(aEvent) {
 }
 
 function isAccelAction(aEvent) {
-  return aEvent.button == 1 || (aEvent.button == 0 && isAccelKeyPressed(aEvent));
+  return isMiddleClick(aEvent) || (aEvent.button == 0 && isAccelKeyPressed(aEvent));
 }
 
 function isAccelKeyPressed(aEvent) {
@@ -206,7 +206,8 @@ function onMouseDown(aEvent) {
     shiftKey:      aEvent.shiftKey,
     altKey:        aEvent.altKey,
     metaKey:       aEvent.metaKey,
-    isMiddleClick: isMiddleClick(aEvent)
+    isMiddleClick: isMiddleClick(aEvent),
+    isAccelClick:  isAccelAction(aEvent)
   };
   log('onMouseDown ', mousedownDetail);
 
@@ -327,45 +328,44 @@ async function onMouseUp(aEvent) {
   log('onMouseUp ', gLastMousedown.detail);
 
   var handled = false;
-  if (gLastMousedown.detail.isMiddleClick) {
-    if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
-      log('middle click on a tab');
-      //log('middle-click to close');
-      removeTabInternally(tab, { inRemote: true });
-      handled = true;
-    }
-    else if (isEventFiredOnNewTabButton(aEvent)) {
-      log('middle click on the new tab button');
+  var actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
+    configs.autoAttachOnNewTabButtonMiddleClick :
+    configs.autoAttachOnNewTabCommand;
+  if (isEventFiredOnNewTabButton(aEvent)) {
+    log('click on the new tab button');
+    handleNewTabAction(aEvent, {
+      action: actionForNewTabCommand
+    });
+    handled = true;
+  }
+  else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
+    log('click on the contextual identity selector');
+    let option = getClickedOptionFromEvent(aEvent);
+    if (option) {
       handleNewTabAction(aEvent, {
-        action: configs.autoAttachOnNewTabButtonMiddleClick
+        action:        actionForNewTabCommand,
+        cookieStoreId: option.getAttribute('value')
       });
       handled = true;
     }
-    else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
-      log('middle click on the contextual identity selector');
-      let option = getClickedOptionFromEvent(aEvent);
-      if (option) {
-        handleNewTabAction(aEvent, {
-          action:        configs.autoAttachOnNewTabButtonMiddleClick,
-          cookieStoreId: option.getAttribute('value')
-        });
-        handled = true;
-      }
-      else { // treat as middle click on new tab button
-        log('middle click on the new tab button (fallback)');
-        handleNewTabAction(aEvent, {
-          action: configs.autoAttachOnNewTabButtonMiddleClick
-        });
-        handled = true;
-      }
+    else { // treat as a click on new tab button
+      log('click on the new tab button (fallback)');
+      handleNewTabAction(aEvent, {
+        action: actionForNewTabCommand
+      });
+      handled = true;
     }
-    else { // on blank area
-      log('middle click on blank area');
-    }
+  }
+  else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
+           gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
+    log('middle click on a tab');
+    //log('middle-click to close');
+    removeTabInternally(tab, { inRemote: true });
+    handled = true;
   }
 
   if (!tab && !handled) {
-    log('notify as a blank area click');
+    log('notify as a blank area click to other addons');
     let results = await sendTSTAPIMessage(clone(gLastMousedown.detail, {
       type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
       window: gTargetWindow,
@@ -380,9 +380,9 @@ async function onMouseUp(aEvent) {
     }
   }
 
-  // default action on tab bar's blank area
-  if (!handled && gLastMousedown.detail.isMiddleClick) {
-    log('default action for blank area click');
+  if (!handled &&
+      gLastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
+    log('default action for middle click on the blank area');
     handleNewTabAction(aEvent, {
       action: configs.autoAttachOnNewTabCommand
     });
@@ -397,15 +397,10 @@ function onClick(aEvent) {
 
   //log('onClick', String(aEvent.target));
 
-  if (isEventFiredOnContextualIdentitySelector(aEvent))
-    return;
-
-  if (isEventFiredOnNewTabButton(aEvent)) {
+  if (isEventFiredOnContextualIdentitySelector(aEvent) ||
+      isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    handleNewTabAction(aEvent, {
-      action: configs.autoAttachOnNewTabCommand
-    });
     return;
   }
 
