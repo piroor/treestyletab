@@ -844,8 +844,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
 
   nextTab = getTabById(nextTab);
   if (isActive(nextTab) &&
-      nextIsDiscarded &&
-      typeof browser.tabs.discard == 'function') {
+      nextIsDiscarded) {
     log('reserve to discard accidentally restored tab ', nextTab.apiTab.id, nextTabUrl || nextTab.apiTab.url);
     nextTab.discardURLAfterCompletelyLoaded = nextTabUrl || nextTab.apiTab.url;
   }

@@ -249,7 +249,8 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     if (aNewState.status == 'complete' &&
         aTab.apiTab.url == aTab.discardURLAfterCompletelyLoaded) {
       log(' => discard accidentally restored tab ', aTab.apiTab.id);
-      browser.tabs.discard(aTab.apiTab.id);
+      if (typeof browser.tabs.discard == 'function')
+        browser.tabs.discard(aTab.apiTab.id);
       delete aTab.discardURLAfterCompletelyLoaded;
     }
   }
