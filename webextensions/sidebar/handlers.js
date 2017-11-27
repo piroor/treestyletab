@@ -326,7 +326,46 @@ async function onMouseUp(aEvent) {
 
   log('onMouseUp ', gLastMousedown.detail);
 
-  if (!tab) {
+  var handled = false;
+  if (gLastMousedown.detail.isMiddleClick) {
+    if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
+      log('middle click on a tab');
+      //log('middle-click to close');
+      removeTabInternally(tab, { inRemote: true });
+      handled = true;
+    }
+    else if (isEventFiredOnNewTabButton(aEvent)) {
+      log('middle click on the new tab button');
+      handleNewTabAction(aEvent, {
+        action: configs.autoAttachOnNewTabButtonMiddleClick
+      });
+      handled = true;
+    }
+    else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
+      log('middle click on the contextual identity selector');
+      let option = getClickedOptionFromEvent(aEvent);
+      if (option) {
+        handleNewTabAction(aEvent, {
+          action:        configs.autoAttachOnNewTabButtonMiddleClick,
+          cookieStoreId: option.getAttribute('value')
+        });
+        handled = true;
+      }
+      else { // treat as middle click on new tab button
+        log('middle click on the new tab button (fallback)');
+        handleNewTabAction(aEvent, {
+          action: configs.autoAttachOnNewTabButtonMiddleClick
+        });
+        handled = true;
+      }
+    }
+    else { // on blank area
+      log('middle click on blank area');
+    }
+  }
+
+  if (!tab && !handled) {
+    log('notify as a blank area click');
     let results = await sendTSTAPIMessage(clone(gLastMousedown.detail, {
       type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
       window: gTargetWindow,
@@ -341,35 +380,12 @@ async function onMouseUp(aEvent) {
     }
   }
 
-  if (gLastMousedown.detail.isMiddleClick) {
-    if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/) {
-      //log('middle-click to close');
-      removeTabInternally(tab, { inRemote: true });
-    }
-    else if (isEventFiredOnNewTabButton(aEvent)) {
-      handleNewTabAction(aEvent, {
-        action: configs.autoAttachOnNewTabButtonMiddleClick
-      });
-    }
-    else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
-      let option = getClickedOptionFromEvent(aEvent);
-      if (option) {
-        handleNewTabAction(aEvent, {
-          action:        configs.autoAttachOnNewTabButtonMiddleClick,
-          cookieStoreId: option.getAttribute('value')
-        });
-      }
-      else { // treat as middle click on new tab button
-        handleNewTabAction(aEvent, {
-          action: configs.autoAttachOnNewTabButtonMiddleClick
-        });
-      }
-    }
-    else { // on blank area
-      handleNewTabAction(aEvent, {
-        action: configs.autoAttachOnNewTabCommand
-      });
-    }
+  // default action on tab bar's blank area
+  if (!handled && gLastMousedown.detail.isMiddleClick) {
+    log('default action for blank area click');
+    handleNewTabAction(aEvent, {
+      action: configs.autoAttachOnNewTabCommand
+    });
   }
 
   cancelHandleMousedown();
