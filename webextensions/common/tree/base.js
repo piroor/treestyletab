@@ -178,8 +178,12 @@ function updateUniqueId(aTab) {
 }
 
 function updateTab(aTab, aNewState, aOptions = {}) {
-  if ('url' in aNewState)
+  if ('url' in aNewState) {
     aTab.setAttribute(kCURRENT_URI, aNewState.url);
+    if (aTab.discardURLAfterCompletelyLoaded &&
+        aTab.discardURLAfterCompletelyLoaded != aNewState.url)
+      delete aTab.discardURLAfterCompletelyLoaded;
+  }
 
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
@@ -241,6 +245,12 @@ function updateTab(aTab, aNewState, aOptions = {}) {
         if (!isActive(aTab))
           aTab.classList.add(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
+    }
+    if (aNewState.status == 'complete' &&
+        aTab.apiTab.url == aTab.discardURLAfterCompletelyLoaded) {
+      log(' => discard accidentally restored tab ', aTab.apiTab.id);
+      browser.tabs.discard(aTab.apiTab.id);
+      delete aTab.discardURLAfterCompletelyLoaded;
     }
   }
 
@@ -322,10 +332,14 @@ function updateTab(aTab, aNewState, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'discarded' in aNewState) {
+    wait(0).then(() => {
+      // Don't set this class immediately, because we need to know
+      // the newly focused tab *was* discarded on onTabClosed handler.
     if (aNewState.discarded)
       aTab.classList.add(kTAB_STATE_DISCARDED);
     else
       aTab.classList.remove(kTAB_STATE_DISCARDED);
+    });
   }
 
   if (configs.debug) {

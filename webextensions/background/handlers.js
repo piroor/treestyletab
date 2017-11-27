@@ -206,7 +206,14 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
     });
 
-  tryMoveFocusFromClosingCurrentTab(aTab);
+  var nextTab = closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
+  tryMoveFocusFromClosingCurrentTab(aTab, {
+    params: {
+      nextTab:         nextTab && nextTab.id,
+      nextTabUrl:      nextTab && nextTab.apiTab.url,
+      nextIsDiscarded: isDiscarded(nextTab)
+    }
+  });
 
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(aTab);

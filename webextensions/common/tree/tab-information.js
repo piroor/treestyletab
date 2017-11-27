@@ -87,6 +87,11 @@ function isCollapsed(aTab) {
            aTab.classList.contains(kTAB_STATE_COLLAPSED);
 }
 
+function isDiscarded(aTab) {
+  return ensureLivingTab(aTab) &&
+           aTab.classList.contains(kTAB_STATE_DISCARDED);
+}
+
 function isOpening(aTab) {
   return ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_OPENING);

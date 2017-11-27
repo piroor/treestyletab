@@ -726,20 +726,20 @@ So, if I ignore the bug 1405262 / issue #1409 case, "the next (right)
 tab is focused after the current (active) tab is closed" means that the
 focus move is unintentional and TST can override it.
 */
-function tryMoveFocusFromClosingCurrentTab(aTab) {
-  log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab));
+function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
+  log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab), aOptions);
   if (!isActive(aTab)) {
     log(' => not active tab');
     return;
   }
-  aTab.parentNode.focusRedirectedForClosingCurrentTab = tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab);
+  aTab.parentNode.focusRedirectedForClosingCurrentTab = tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions);
 }
-async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab) {
-  log('tryMoveFocusFromClosingCurrentTabOnFocusRedirected ', dumpTab(aTab));
+async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions = {}) {
+  log('tryMoveFocusFromClosingCurrentTabOnFocusRedirected ', dumpTab(aTab), aOptions);
 
   // The aTab can be closed while we waiting.
   // Thus we need to get tabs related to aTab at first.
-  var params      = getTryMoveFocusFromClosingCurrentTabNowParams(aTab);
+  var params      = getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOptions.params);
   var nextTab     = getNextTab(aTab);
   var previousTab = getPreviousTab(aTab);
 
@@ -761,9 +761,9 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab) {
   }
   return tryMoveFocusFromClosingCurrentTabNow(aTab, { params });
 }
-function getTryMoveFocusFromClosingCurrentTabNowParams(aTab) {
+function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   var parentTab = getParentTab(aTab);
-  return {
+  var params = {
     active:                    isActive(aTab),
     parentTab,
     firstChildTab:             getFirstChildTab(aTab),
@@ -774,6 +774,9 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab) {
     serialized:                serializeTabForTSTAPI(aTab),
     closeParentBehavior:       getCloseParentBehaviorForTab(aTab, { parentTab })
   };
+  if (aOverrideParams)
+    return clone(params, aOverrideParams);
+  return params;
 }
 
 async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
@@ -782,6 +785,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     params.ignoredTabs = aOptions.ignoredTabs;
   var {
     active,
+    nextTab, nextTabUrl, nextIsDiscarded,
     parentTab, firstChildTab, firstChildTabOfParent, lastChildTabOfParent,
     previousSiblingTab, preDetectedNextFocusedTab,
     ignoredTabs,
@@ -837,6 +841,14 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
       isHidden(nextFocusedTab) ||
       isActive(nextFocusedTab))
     return false;
+
+  nextTab = getTabById(nextTab);
+  if (isActive(nextTab) &&
+      nextIsDiscarded &&
+      typeof browser.tabs.discard == 'function') {
+    log('reserve to discard accidentally restored tab ', nextTab.apiTab.id, nextTabUrl || nextTab.apiTab.url);
+    nextTab.discardURLAfterCompletelyLoaded = nextTabUrl || nextTab.apiTab.url;
+  }
 
   log('focus to: ', dumpTab(nextFocusedTab));
   await selectTabInternally(nextFocusedTab);
