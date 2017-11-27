@@ -340,6 +340,10 @@ async function onMouseUp(aEvent) {
   }
   else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
     log('click on the contextual identity selector');
+    handled = true;
+    /*
+    // Disable these mimpelentation until the selector is reimplemented without <select>.
+    // See: https://github.com/piroor/treestyletab/issues/1571
     let option = getClickedOptionFromEvent(aEvent);
     if (option) {
       handleNewTabAction(aEvent, {
@@ -355,6 +359,7 @@ async function onMouseUp(aEvent) {
       });
       handled = true;
     }
+    */
   }
   else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
            gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
