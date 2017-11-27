@@ -528,6 +528,12 @@ function onChange(aEvent) {
 }
 
 async function onWheel(aEvent) {
+  if (!configs.zoomable &&
+      isAccelKeyPressed(aEvent)) {
+    aEvent.preventDefault();
+    return;
+  }
+
   var lockers = Object.keys(gScrollLockedBy);
   if (lockers.length <= 0)
     return;

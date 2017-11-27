@@ -102,6 +102,8 @@ configs = new Configs({
   scrollbarMode:       kTABBAR_SCROLLBAR_MODE_NARROW,
   narrowScrollbarSize: 8,
 
+  zoomable: false,
+
 
   // context menu
   context_reloadTree: true,
