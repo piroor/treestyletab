@@ -158,6 +158,7 @@ configs = new Configs({
   autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
+  inheritContextualIdentityToNewChildTab: false,
 
 
   // behavior around closed tab

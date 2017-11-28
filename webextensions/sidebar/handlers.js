@@ -483,6 +483,10 @@ function handleNewTabAction(aEvent, aOptions = {}) {
       }; break;
     }
   }
+  if (parent &&
+      configs.inheritContextualIdentityToNewChildTab &&
+      !aOptions.cookieStoreId)
+    aOptions.cookieStoreId = parent.apiTab.cookieStoreId;
   openNewTab({
     parent, insertBefore, insertAfter,
     inBackground:  aEvent.shiftKey,
@@ -1314,6 +1318,10 @@ function onConfigChange(aChangedKey) {
 
     case 'userStyleRules':
       applyUserStyleRules()
+      break;
+
+    case 'inheritContextualIdentityToNewChildTab':
+      updateContextualIdentitiesSelector();
       break;
   }
 }
