@@ -253,6 +253,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
         browser.tabs.discard(aTab.apiTab.id);
       delete aTab.discardURLAfterCompletelyLoaded;
     }
+    window.onTabStateChanged && onTabStateChanged(aTab);
   }
 
   if ((aOptions.forceApply ||

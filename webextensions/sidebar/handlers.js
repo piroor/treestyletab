@@ -1038,6 +1038,12 @@ function onTabUnpinned(aTab) {
   reserveToPositionPinnedTabs();
 }
 
+function onTabStateChanged(aTab) {
+  if (document.querySelector('.tab.loading:not(#dummy-tab)'))
+    document.documentElement.classList.add(kTABBAR_STATE_HAVE_LOADING_TAB);
+  else
+    document.documentElement.classList.remove(kTABBAR_STATE_HAVE_LOADING_TAB);
+}
 
 function onContextualIdentitiesUpdated() {
   updateContextualIdentitiesStyle();

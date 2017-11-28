@@ -155,6 +155,7 @@ const kTABBAR_STATE_OVERFLOW               = 'overflow';
 const kTABBAR_STATE_TAB_DRAGGING           = 'tab-dragging';
 const kTABBAR_STATE_BLOCKING               = 'blocking';
 const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
+const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
 
 const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
