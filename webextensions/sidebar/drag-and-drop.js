@@ -590,7 +590,8 @@ function onDragOver(aEvent) {
   var info = getDropAction(aEvent);
   var dt   = aEvent.dataTransfer;
 
-  if (!info.canDrop) {
+  if (!info.canDrop ||
+      isEventFiredOnTabDropBlocker(aEvent)) {
     dt.effectAllowed = dt.dropEffect = 'none';
     clearDropPosition();
     return;
@@ -613,6 +614,14 @@ function onDragOver(aEvent) {
     dropPositionTargetTab.setAttribute(kDROP_POSITION, info.dropPosition);
     log('set drop position to ', info.dropPosition);
   }
+}
+
+function isEventFiredOnTabDropBlocker(aEvent) {
+  return evaluateXPath(
+    `ancestor-or-self::*[${hasClass('tab-drop-blocker')}]`,
+    aEvent.target,
+    XPathResult.BOOLEAN_TYPE
+  ).booleanValue;
 }
 
 var gDelayedDragEnter;
