@@ -587,9 +587,10 @@ function onDragOver(aEvent) {
   aEvent.preventDefault(); // this is required to override default dragover actions!
   autoScrollOnMouseEvent(aEvent);
   var info = getDropAction(aEvent);
+  var dt   = aEvent.dataTransfer;
 
   if (!info.canDrop) {
-    aEvent.dataTransfer.effectAllowed = 'none';
+    dt.effectAllowed = dt.dropEffect = 'none';
     clearDropPosition();
     return;
   }
@@ -602,7 +603,6 @@ function onDragOver(aEvent) {
     dropPositionTargetTab = info.targetTab;
 
   if (!dropPositionTargetTab) {
-    let dt = aEvent.dataTransfer;
     dt.effectAllowed = dt.dropEffect = 'none';
     return;
   }
