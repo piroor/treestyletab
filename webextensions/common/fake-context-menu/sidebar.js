@@ -393,6 +393,7 @@ var tabContextMenu = {
       case 'context_bookmarkAllTabs': {
         let tabs   = await browser.tabs.query({ windowId: this.contextWindowId });
         let folder = await bookmarkTabs(tabs.map(aTab => getTabById(aTab.id)));
+        if (folder)
         browser.bookmarks.get(folder.parentId).then(aFolders => {
           notify({
             title:   browser.i18n.getMessage('bookmarkTree.notification.title'),
