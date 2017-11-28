@@ -784,6 +784,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
             insertAfter:  aOptions.insertAfter,
             broadcast:    true
           });
+        return tab.opened;
       }));
     }
   });
