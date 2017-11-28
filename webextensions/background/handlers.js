@@ -53,6 +53,21 @@ function onTabOpening(aTab, aInfo = {}) {
         baseTab:   current,
         behavior:  configs.autoAttachOnNewTabCommand,
         broadcast: true
+      }).then(async () => {
+        let parent = getParentTab(aTab);
+        if (!parent ||
+            !configs.inheritContextualIdentityToNewChildTab ||
+            aTab.apiTab.cookieStoreId != 'firefox-default' ||
+            aTab.apiTab.cookieStoreId == parent.apiTab.cookieStoreId)
+          return;
+        let cookieStoreId = current.apiTab.cookieStoreId;
+        log(' => reopen with inherited contextual identity ', cookieStoreId);
+        await openNewTab({
+          parent,
+          insertBefore: aTab,
+          cookieStoreId
+        });
+        removeTabInternally(aTab);
       });
       return true;
     }
