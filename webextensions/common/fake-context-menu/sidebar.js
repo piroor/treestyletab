@@ -396,8 +396,8 @@ var tabContextMenu = {
         if (folder)
           browser.bookmarks.get(folder.parentId).then(aFolders => {
             notify({
-              title:   browser.i18n.getMessage('bookmarkTree.notification.title'),
-              message: browser.i18n.getMessage('bookmarkTree.notification.message', [
+              title:   browser.i18n.getMessage('bookmarkTabs.notification.success.title'),
+              message: browser.i18n.getMessage('bookmarkTabs.notification.success.message', [
                 tabs[0].title,
                 tabs.length,
                 aFolders[0].title
