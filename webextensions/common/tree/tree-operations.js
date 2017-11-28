@@ -48,6 +48,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     child:            dumpTab(aChild),
     parent:           dumpTab(aParent),
     children:         aParent.getAttribute(kCHILDREN),
+    insertAt:         aOptions.insertAt,
     insertBefore:     dumpTab(aOptions.insertBefore),
     insertAfter:      dumpTab(aOptions.insertAfter),
     dontMove:         aOptions.dontMove,
@@ -89,6 +90,10 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     aOptions.insertAfter  = refTabs.insertAfter;
   }
   aOptions.insertAfter = aOptions.insertAfter || aParent;
+  log('reference tabs: ', {
+    next: dumpTab(aOptions.insertBefore),
+    prev: dumpTab(aOptions.insertAfter)
+  });
 
   var newIndex = calculateNewTabIndex(aOptions);
   log('newIndex: ', newIndex);
@@ -159,6 +164,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
       windowId:         aChild.apiTab.windowId,
       child:            aChild.id,
       parent:           aParent.id,
+      insertAt:         aOptions.insertAt,
       insertBefore:     aOptions.insertBefore && aOptions.insertBefore.id,
       insertAfter:      aOptions.insertAfter && aOptions.insertAfter.id,
       dontMove:         !!aOptions.dontMove,

@@ -328,6 +328,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   if (!attached &&
       opener &&
       configs.syncParentTabAndOpenerTab) {
+    log(' attach to opener: ', { child: dumpTab(aTab), parent: dumpTab(opener) });
     await attachTabTo(aTab, opener, {
       dontExpand:  !active,
       forceExpand: active,
