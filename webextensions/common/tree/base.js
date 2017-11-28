@@ -83,7 +83,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
         let tabWithOldId = getTabById(oldId.tabId);
         if (!tabWithOldId)
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-        originalId = (tabWithOldId.getAttribute(kPERSISTENT_ID) || await tabWithOldId.uniqueId.id);
+        originalId = tabWithOldId.getAttribute(kPERSISTENT_ID) || (await tabWithOldId.uniqueId).id;
         duplicated = tab && tabWithOldId != tab && originalId == oldId.id;
         if (duplicated)
           originalTabId = oldId.tabId;
