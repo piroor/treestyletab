@@ -158,6 +158,11 @@
 
   "config.treeBehavior.caption": { "message": "Tree Behavior" },
 
+  "config.moveFocusInTreeForClosedCurrentTab.caption": { "message": "When the current tab is closed as a last child" },
+  "config.moveFocusInTreeForClosedCurrentTab.true": { "message": "Focus to the previous tab in the tree" },
+  "config.moveFocusInTreeForClosedCurrentTab.false": { "message": "Focus to the next tab always (Firefox's default)" },
+  "config.moveFocusInTreeForClosedCurrentTab.description": { "message": "*Firefox's built-in behavior for \"browser.tabs.selectOwnerOnClose\"=\"true\" works prior to this config." },
+
   "config.parentTabBehaviorForChanges.caption": { "message": "When a parent tab is moved or closed by someone from outside of the tree sidebar" },
   "config.parentTabBehaviorForChanges.always": { "message": "Treat as a parent always (move or close all descendant tabs also together), whether the tree sidebar is visible or not." },
   "config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible": { "message": "Treat as a parent always, when the tree sidebar is visible. / Treat just as a solo tab, when the tree sidebar is invisible." },

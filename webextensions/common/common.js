@@ -166,6 +166,7 @@ configs = new Configs({
   promoteFirstChildForClosedRoot: true,
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
+  moveFocusInTreeForClosedCurrentTab: true,
 
 
   // animation

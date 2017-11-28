@@ -158,6 +158,11 @@
 
   "config.treeBehavior.caption": { "message": "ツリーの挙動" },
 
+  "config.moveFocusInTreeForClosedCurrentTab.caption": { "message": "現在のタブが最後の子タブだった時に、現在のタブを閉じた後は" },
+  "config.moveFocusInTreeForClosedCurrentTab.true": { "message": "ツリー内の1つ前のタブにフォーカスを移す" },
+  "config.moveFocusInTreeForClosedCurrentTab.false": { "message": "次のタブにフォーカスを移す（Firefox既定の動作）" },
+  "config.moveFocusInTreeForClosedCurrentTab.description": { "message": "※Firefox組み込みの機能である\"browser.tabs.selectOwnerOnClose\"=\"true\"の挙動の方が、この設定よりも優先的に反映されます。" },
+
   "config.parentTabBehaviorForChanges.caption": { "message": "親のタブがツリー型タブのサイドバー以外の場所から移動されたり閉じられたりした場合の取り扱い" },
   "config.parentTabBehaviorForChanges.always": { "message": "サイドバーの表示状態に関わらず常に親タブとして扱い、配下のタブも併せて移動するか閉じる" },
   "config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible": { "message": "サイドバーが表示されている時は常に親タブとして扱う / サイドバーが表示されていない場合は単体のタブとして扱う" },
