@@ -136,7 +136,6 @@
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新树展开时，自动折叠其他树" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "标签页获得焦点时，自动展开该树并折叠其他树" },
   "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "排除当前标签页关闭引发的焦点改变" },
-  "config.autoExpandOnAttached.label": { "message": "标签页插入树时，自动展开该树" },
   "config.collapseExpandSubtreeByDblClick.label": { "message": "双击标签页折叠/展开树" },
 
   "config.closeParentBehavior.close": { "message": "关闭子标签页" },

@@ -126,7 +126,6 @@ configs = new Configs({
   collapseExpandSubtreeByDblClick: false,
 
   autoExpandIntelligently: true,
-  autoExpandOnAttached: true,
   autoExpandOnCollapsedChildFocused: true,
   autoExpandOnCollapsedChildFocusedDelay: 800,
   autoExpandOnLongHover: true,

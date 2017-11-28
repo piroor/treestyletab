@@ -54,7 +54,6 @@ function migrateLegacyConfigs() {
         migrateLegacyConfig('autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove', !values['extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove']);
 
         migrateLegacyConfig('autoExpandIntelligently', values['extensions.treestyletab.autoExpand.intelligently']);
-        migrateLegacyConfig('autoExpandOnAttached', values['extensions.treestyletab.autoExpandSubtreeOnAppendChild']);
         migrateLegacyConfig('autoExpandOnCollapsedChildFocused', values['extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused']);
         migrateLegacyConfig('autoExpandOnLongHover', values['extensions.treestyletab.autoExpand.enabled']);
         migrateLegacyConfig('autoExpandOnLongHoverDelay', values['extensions.treestyletab.autoExpand.delay']);

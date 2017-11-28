@@ -165,7 +165,6 @@
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "創建新樹時自動折疊其他樹" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "切換分頁時，自動展開該樹並折疊其他樹" },
   "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "不包含關閉目前分頁造成的切換" },
-  "config.autoExpandOnAttached.label": { "message": "新增分頁到折疊樹時，自動展開該樹" },
   "config.collapseExpandSubtreeByDblClick.label": { "message": "雙擊分頁開關該樹" },
 
   "config.closeParentBehavior.caption": { "message": "關閉展開樹的父分頁時" },

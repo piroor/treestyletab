@@ -171,7 +171,6 @@
   "config.autoCollapseExpandSubtreeOnAttach.label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelect.label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
   "config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },
-  "config.autoExpandOnAttached.label": { "message": "折り畳まれたツリー内に子孫のタブが追加された時、ツリーを自動的に展開する" },
   "config.collapseExpandSubtreeByDblClick.label": { "message": "タブのダブルクリックでツリーを開閉する" },
 
   "config.closeParentBehavior.caption": { "message": "展開されたツリーで親のタブを閉じた時の挙動" },
