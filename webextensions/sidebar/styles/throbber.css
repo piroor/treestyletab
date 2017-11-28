@@ -16,17 +16,8 @@
   --tab-burster-translation: translate(calc(var(--favicon-size) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
 }
 
-.throbber {
-  --throbber-size: 0.3em;
-  --throbber-half-size: calc(0.3em / 2);
-}
-
 @keyframes throbber {
-  0%    { transform: translateX(0) scale(1, 1); }
-  17.5% { transform: translateX(calc((var(--favicon-size) - var(--throbber-size)) * 0.625)) scale(1.6, 0.9); }
-  50%   { transform: translateX(calc(var(--favicon-size) - var(--throbber-size))) scale(1,1); }
-  67.5% { transform: translateX(calc((var(--favicon-size) - var(--throbber-size)) * 0.625)) scale(1.6, 0.9); }
-  100%  { transform: translateX(0) scale(1, 1); }
+  100% { transform: translateX(-100%); }
 }
 
 .throbber {
@@ -37,30 +28,26 @@
   max-width: var(--favicon-size);
   min-height: var(--favicon-size);
   min-width: var(--favicon-size);
+  overflow: hidden;
   padding: 0;
-  text-align: center;
-  transform-origin: 50% 50%;
-  white-space: pre;
-  width: var(--favicon-size);
+  pointer-events: none;
   position: relative;
-}
-.tab .throbber,
-.tab .throbber * {
-  vertical-align: baseline;
+  width: var(--favicon-size);
 }
 
 .throbber::before {
-  box-shadow: 0 0 2px var(--throbber-shadow-color);
   content: "";
-  width: 0;
-  height: 0;
-  border-radius: 100%;
-  border: var(--throbber-half-size) solid var(--throbber-color);
-  background: var(--throbber-color);
-  display: inline-block;
-  top: calc((var(--favicon-size) - var(--throbber-size)) / 2);
-  left: 0;
   position: absolute;
+  width: calc(var(--favicon-size) * 60);
+  height: 100%
+}
+
+.throbber::before {
+  background: var(--throbber-color);
+  box-shadow: 0 0 2px var(--throbber-shadow-color);
+  mask: url("./throbber.svg");
+  mask-position: left center;
+  mask-repeat: no-repeat;
 }
 
 :root:not(.blocking-throbber) #blocking-screen .throbber,
@@ -70,7 +57,7 @@
 
 .tab.loading:not(.collapsed) .throbber::before,
 :root.blocking-throbber #blocking-screen .throbber::before {
-  animation: throbber 1.05s ease infinite;
+  animation: throbber 1.05s steps(60) infinite;
 }
 
 :root.blocking-throbber #blocking-screen .throbber {
