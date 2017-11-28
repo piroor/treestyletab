@@ -768,7 +768,9 @@ function onDragEnd(aEvent) {
 
   var dropTargetTab = getTabFromEvent(aEvent);
   if (dropTargetTab &&
-      dragData && dragData.tabNodes && dragData.tabNodes.indexOf(dropTargetTab) < 0) {
+      dragData &&
+      dragData.tabNodes &&
+      dragData.tabNodes.indexOf(dropTargetTab) < 0) {
     log('ignore drop on dragged tabs themselves');
     return;
   }
