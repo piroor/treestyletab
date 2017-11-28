@@ -18,6 +18,7 @@
     }},
   "tabbar.newTabButton.tooltip": { "message": "Open a new tab" },
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "New Container Tab" },
+  "tabbar.newTabWithContexualIdentity.default": { "message": "Default" },
 
   "groupTab.label": { "message": "$TITLE$ and more",
     "placeholders": {

@@ -363,6 +363,10 @@ function updateContextualIdentitiesSelector() {
       item.textContent = identity.name;
       fragment.appendChild(item);
     }
+    let defaultCotnainerItem = document.createElement('option');
+    defaultCotnainerItem.setAttribute('value', 'firefox-default');
+    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar.newTabWithContexualIdentity.default');
+    fragment.appendChild(defaultCotnainerItem);
     range.insertNode(fragment);
   }
   range.detach();

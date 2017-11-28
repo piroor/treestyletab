@@ -18,6 +18,7 @@
     }},
   "tabbar.newTabButton.tooltip": { "message": "新しいタブを開く" },
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "新しいコンテナータブ" },
+  "tabbar.newTabWithContexualIdentity.default": { "message": "既定" },
 
   "groupTab.label": { "message": "$TITLE$ など",
     "placeholders": {
