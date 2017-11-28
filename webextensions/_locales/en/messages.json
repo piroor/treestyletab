@@ -156,6 +156,8 @@
   "config.autoGroupNewTabsDelayOnNewWindow.before": { "message": "But don't group new tabs opened within" },
   "config.autoGroupNewTabsDelayOnNewWindow.after": { "message": "msec when a new window is opened, as a part of tabs opened as \"home page\"." },
 
+  "config.inheritContextualIdentityToNewChildTab.label": { "message": "Inherit the container of the parent tab to a new blank tab" },
+
 
   "config.treeBehavior.caption": { "message": "Tree Behavior" },
 
