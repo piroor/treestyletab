@@ -173,6 +173,11 @@ function getMaxTreeLevel(aHint, aOptions = {}) {
 
 // if all tabs are aldeardy placed at there, we don't need to move them.
 function isAllTabsPlacedBefore(aTabs, aNextTab) {
+  if (aTabs[aTabs.length - 1] == aNextTab)
+    aNextTab = getNextTab(aNextTab);
+  if (!aNextTab && !getNextTab(aTabs[aTabs.length - 1]))
+    return true;
+
   aTabs = Array.slice(aTabs);
   var previousTab = aTabs.shift();
   for (let tab of aTabs) {
@@ -186,6 +191,11 @@ function isAllTabsPlacedBefore(aTabs, aNextTab) {
 }
 
 function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
+  if (aTabs[0] == aPreviousTab)
+    aPreviousTab = getPreviousTab(aPreviousTab);
+  if (!aPreviousTab && !getPreviousTab(aTabs[0]))
+    return true;
+
   aTabs = Array.slice(aTabs).reverse();
   var nextTab = aTabs.shift();
   for (let tab of aTabs) {
