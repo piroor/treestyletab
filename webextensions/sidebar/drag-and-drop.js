@@ -43,22 +43,22 @@ var gLongHoverExpandedTabs = [];
 var gLongHoverTimer;
 var gLongHoverTimerNext;
 
-function startListenDragEvents(aTarget) {
-  aTarget.addEventListener('dragstart', onDragStart);
-  aTarget.addEventListener('dragover', onDragOver);
-  aTarget.addEventListener('dragenter', onDragEnter);
-  aTarget.addEventListener('dragleave', onDragLeave);
-  aTarget.addEventListener('drop', onDrop);
-  aTarget.addEventListener('dragend', onDragEnd);
+function startListenDragEvents() {
+  document.addEventListener('dragstart', onDragStart);
+  document.addEventListener('dragover', onDragOver);
+  document.addEventListener('dragenter', onDragEnter);
+  document.addEventListener('dragleave', onDragLeave);
+  document.addEventListener('drop', onDrop);
+  document.addEventListener('dragend', onDragEnd);
 }
 
-function endListenDragEvents(aTarget) {
-  aTarget.removeEventListener('dragstart', onDragStart);
-  aTarget.removeEventListener('dragover', onDragOver);
-  aTarget.removeEventListener('dragenter', onDragEnter);
-  aTarget.removeEventListener('dragleave', onDragLeave);
-  aTarget.removeEventListener('drop', onDrop);
-  aTarget.removeEventListener('dragend', onDragEnd);
+function endListenDragEvents() {
+  document.removeEventListener('dragstart', onDragStart);
+  document.removeEventListener('dragover', onDragOver);
+  document.removeEventListener('dragenter', onDragEnter);
+  document.removeEventListener('dragleave', onDragLeave);
+  document.removeEventListener('drop', onDrop);
+  document.removeEventListener('dragend', onDragEnd);
 }
 
 

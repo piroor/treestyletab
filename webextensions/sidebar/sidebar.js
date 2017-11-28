@@ -113,7 +113,7 @@ async function init() {
       gTabBar.addEventListener('scroll', onScroll);
       gTabBar.addEventListener('dblclick', onDblClick);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
-      startListenDragEvents(window);
+      startListenDragEvents();
       gMetricsData.add('start to listen events');
 
       configs.$addObserver(onConfigChange);
@@ -196,7 +196,7 @@ function destroy() {
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
     browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
-  endListenDragEvents(gTabBar);
+  endListenDragEvents();
   endObserveApiTabs();
   endObserveContextualIdentities();
   window.removeEventListener('resize', onResize);
