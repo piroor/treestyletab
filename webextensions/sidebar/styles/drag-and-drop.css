@@ -62,3 +62,41 @@
   top: 0;
 }
 
+
+.tab-drop-blocker {
+  background: black;
+  display: none;
+  position: fixed;
+}
+
+:root.tab-dragging .tab-drop-blocker {
+  display: block;
+}
+
+:root.tab-dragging .tab-drop-blocker#tab-drop-blocker-top {
+  left: 0;
+  min-height: 1px;
+  right: 0;
+  top: 0;
+}
+
+:root.tab-dragging .tab-drop-blocker#tab-drop-blocker-right {
+  bottom: 0;
+  min-width: 1px;
+  right: 0;
+  top: 0;
+}
+
+:root.tab-dragging .tab-drop-blocker#tab-drop-blocker-bottom {
+  bottom: 0;
+  left: 0;
+  min-height: 1px;
+  right: 0;
+}
+
+:root.tab-dragging .tab-drop-blocker#tab-drop-blocker-left {
+  bottom: 0;
+  left: 0;
+  min-width: 1px;
+  top: 0;
+}

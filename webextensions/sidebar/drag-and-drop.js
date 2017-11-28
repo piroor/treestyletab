@@ -578,6 +578,7 @@ function onDragStart(aEvent) {
     }
   });
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+  document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 }
 
 var gLastDragOverTimestamp = null;
@@ -758,6 +759,7 @@ function onDragEnd(aEvent) {
 
   clearDropPosition();
   getTabsContainer(aEvent.target).classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   collapseAutoExpandedTabsWhileDragging();
 
   if (aEvent.dataTransfer.dropEffect != 'none' ||
