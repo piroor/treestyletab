@@ -167,7 +167,6 @@ async function init() {
 
   gInitializing = false;
 
-  synchronizeThrobberAnimations();
   updateVisualMaxTreeLevel();
   updateIndent({ force: true });
   for (let tab of getAllTabs()) {
@@ -696,40 +695,6 @@ function updateTabTooltip(aTab) {
   aTab.labelWithDescendants = getLabelWithDescendants(aTab);
   aTab.setAttribute('title', isSubtreeCollapsed(aTab) && hasChildTabs(aTab) ?
     aTab.labelWithDescendants : aTab.label);
-}
-
-
-function reserveToSynchronizeThrobberAnimations() {
-  if (gInitializing ||
-      synchronizeThrobberAnimations.reserved)
-    return;
-  synchronizeThrobberAnimations.reserved = nextFrame().then(() => {
-    delete synchronizeThrobberAnimations.reserved;
-    synchronizeThrobberAnimations();
-  });
-}
-
-async function synchronizeThrobberAnimations() {
-  var throbbers = getVisibleLoadingTabs().map(getTabThrobber);
-  var animations = [];
-  for (let throbber of throbbers) {
-    if (typeof throbber.getAnimations == 'function') // sometimes non-animated throbber can appear in the result
-      animations = animations.concat(throbber.getAnimations({ subtree: true }));
-  }
-  animations = animations.filter(aAnimation =>
-    aAnimation instanceof CSSAnimation &&
-    aAnimation.animationName === 'throbber' &&
-    (aAnimation.playState === 'running' ||
-     aAnimation.playState === 'pending') &&
-    aAnimation.startTime !== null
-  );
-  if (animations.length == 0)
-    return;
-  var firstStartTime = Math.min(...animations.map(aAnimation => aAnimation.startTime));
-  await nextFrame();
-  for (let animation of animations) {
-    animation.startTime = firstStartTime;
-  }
 }
 
 

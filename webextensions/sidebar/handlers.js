@@ -672,8 +672,6 @@ function onTabFaviconUpdated(aTab, aURL) {
 
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
-  if (aChangeInfo.status == 'loading')
-    reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabLabelUpdated(aTab) {
@@ -734,7 +732,6 @@ function onTabOpened(aTab, aInfo = {}) {
     reason:  kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
   });
-  reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabClosed(aTab, aCloseInfo) {
@@ -802,8 +799,6 @@ function onTabMoved(aTab) {
     timeout: configs.collapseDuration
   });
   reserveToUpdateTabTooltip(getParentTab(aTab));
-  if (aTab.apiTab.status == 'loading')
-    reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabLevelChanged(aTab) {
@@ -904,9 +899,6 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     reserveToUpdateVisualMaxTreeLevel();
-
-  if (!aOptions.collapsed && aTab.apiTab.status == 'loading')
-    reserveToSynchronizeThrobberAnimations();
 
   // this is very required for no animation case!
   reserveToUpdateTabbarLayout({ reason: aOptions.reason });
