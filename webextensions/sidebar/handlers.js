@@ -901,6 +901,9 @@ function onEndCollapseExpandCompletely(aOptions = {}) {
 
   if (!aOptions.collapsed)
     reserveToSynchronizeThrobberAnimations();
+
+  // this is very required for no animation case!
+  reserveToUpdateTabbarLayout({ reason: aOptions.reason });
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
