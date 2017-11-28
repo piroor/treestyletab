@@ -129,7 +129,9 @@ async function tryGroupTabs(aTabIds) {
     return !uniqueId.duplicated && !uniqueId.restored;
   });
 
-  var newRootTabs = collectRootTabs(aTabIds.map(getTabById))
+  var tabs        = aTabIds.map(getTabById);
+  var activeTabs  = tabs.filter(isActive);
+  var newRootTabs = collectRootTabs(tabs)
     .filter(aTab => !isGroupTab(aTab));
   if (newRootTabs.length <= 1)
     return;
@@ -149,6 +151,8 @@ async function tryGroupTabs(aTabIds) {
       broadcast: true
     });
   }
+  if (activeTabs.length > 0)
+    selectTabInternally(activeTabs[0]);
 }
 
 function onTabOpened(aTab, aInfo = {}) {
