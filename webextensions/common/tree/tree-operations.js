@@ -417,7 +417,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           inRemote:  aOptions.inRemote,
           broadcast: aOptions.broadcast
         });
-        await moveTabAfter(aTab, getLastDescendantTab(baseTab) || getLastTab(), {
+        await moveTabAfter(aTab, getLastTab(), {
           delayedMove: true,
           inRemote: aOptions.inRemote
         });
