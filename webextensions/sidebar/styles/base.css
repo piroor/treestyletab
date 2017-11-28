@@ -142,13 +142,12 @@ ul {
 /* dummy elements to calculate actual size of boxes */
 
 #dummy-tabs {
-  bottom: 0;
+  bottom: calc(0px - (var(--tab-height) * 10));
   left: 0;
   overflow-y: scroll;
   pointer-events: none;
   position: fixed;
   right: 0;
-  visibility: hidden;
 }
 
 #dummy-favicon-size-box {

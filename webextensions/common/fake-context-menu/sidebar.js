@@ -49,14 +49,15 @@ var tabContextMenu = {
     allRange.detach();
     // because the contianer box can be shifted to hide scrollbar
     var dummyTabsRect = document.querySelector('#dummy-tabs').getBoundingClientRect();
+    var dummyTabsOffset = gTabHeight * 10;
     return {
       x:      dummyTabsRect.x,
       y:      containerRect.y,
       width:  dummyTabsRect.width,
-      height: containerRect.height,
+      height: containerRect.height - dummyTabsOffset,
       top:    containerRect.top,
       right:  dummyTabsRect.right,
-      bottom: containerRect.bottom,
+      bottom: containerRect.bottom - dummyTabsOffset,
       left:   dummyTabsRect.left
     };
   },
