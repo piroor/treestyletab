@@ -670,9 +670,10 @@ function onTabFaviconUpdated(aTab, aURL) {
   });
 }
 
-function onTabUpdated(aTab) {
+function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
-  reserveToSynchronizeThrobberAnimations();
+  if (aChangeInfo.status == 'loading')
+    reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabLabelUpdated(aTab) {
@@ -801,7 +802,8 @@ function onTabMoved(aTab) {
     timeout: configs.collapseDuration
   });
   reserveToUpdateTabTooltip(getParentTab(aTab));
-  reserveToSynchronizeThrobberAnimations();
+  if (aTab.apiTab.status == 'loading')
+    reserveToSynchronizeThrobberAnimations();
 }
 
 function onTabLevelChanged(aTab) {
@@ -883,7 +885,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       else
         aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
 
-      onEndCollapseExpandCompletely({
+      onEndCollapseExpandCompletely(aTab, {
         collapsed: toBeCollapsed,
         reason
       });
@@ -898,12 +900,12 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     }, configs.collapseDuration);
   });
 }
-function onEndCollapseExpandCompletely(aOptions = {}) {
+function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     reserveToUpdateVisualMaxTreeLevel();
 
-  if (!aOptions.collapsed)
+  if (!aOptions.collapsed && aTab.apiTab.status == 'loading')
     reserveToSynchronizeThrobberAnimations();
 
   // this is very required for no animation case!
@@ -928,7 +930,7 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
 
 
   var reason = toBeCollapsed ? kTABBAR_UPDATE_REASON_COLLAPSE : kTABBAR_UPDATE_REASON_EXPAND ;
-  onEndCollapseExpandCompletely({
+  onEndCollapseExpandCompletely(aTab, {
     collapsed: toBeCollapsed,
     reason
   });
