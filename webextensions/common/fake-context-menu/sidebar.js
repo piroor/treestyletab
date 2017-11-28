@@ -394,17 +394,17 @@ var tabContextMenu = {
         let tabs   = await browser.tabs.query({ windowId: this.contextWindowId });
         let folder = await bookmarkTabs(tabs.map(aTab => getTabById(aTab.id)));
         if (folder)
-        browser.bookmarks.get(folder.parentId).then(aFolders => {
-          notify({
-            title:   browser.i18n.getMessage('bookmarkTree.notification.title'),
-            message: browser.i18n.getMessage('bookmarkTree.notification.message', [
-              tabs[0].title,
-              tabs.length,
-              aFolders[0].title
-            ]),
-            icon:    kNOTIFICATION_DEFAULT_ICON
+          browser.bookmarks.get(folder.parentId).then(aFolders => {
+            notify({
+              title:   browser.i18n.getMessage('bookmarkTree.notification.title'),
+              message: browser.i18n.getMessage('bookmarkTree.notification.message', [
+                tabs[0].title,
+                tabs.length,
+                aFolders[0].title
+              ]),
+              icon:    kNOTIFICATION_DEFAULT_ICON
+            });
           });
-        });
       }; break;
       case 'context_closeTabsToTheEnd': {
         let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
