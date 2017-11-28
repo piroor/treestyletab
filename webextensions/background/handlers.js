@@ -725,10 +725,10 @@ async function onTabAttached(aTab, aInfo = {}) {
           shouldTabAutoExpanded(parent) ||
           aInfo.forceExpand) {
         newAncestors.filter(isSubtreeCollapsed).forEach(aAncestor => {
-            collapseExpandSubtree(aAncestor, clone(aInfo, {
-              collapsed: false,
-              broadcast: true
-            }));
+          collapseExpandSubtree(aAncestor, clone(aInfo, {
+            collapsed: false,
+            broadcast: true
+          }));
         });
       }
       if (isCollapsed(parent))
