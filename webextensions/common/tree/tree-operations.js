@@ -82,7 +82,9 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
 
   if (!aOptions.insertBefore && !aOptions.insertAfter) {
-    let refTabs = getReferenceTabsForNewChild(aChild, aParent, aOptions);
+    let refTabs = getReferenceTabsForNewChild(aChild, aParent, clone(aOptions, {
+      ignoreTabs: [aChild].concat(aOptions.ignoreTabs || [])
+    }));
     aOptions.insertBefore = refTabs.insertBefore;
     aOptions.insertAfter  = refTabs.insertAfter;
   }
