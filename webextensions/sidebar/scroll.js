@@ -262,16 +262,11 @@ async function scrollToTab(aTab, aOptions = {}) {
 }
 
 function getOffsetForAnimatingTab(aTab) {
-  var numExpandingTabs = evaluateXPath(
-    `count(self::*[${hasClass(kTAB_STATE_EXPANDING)}] |
-           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_EXPANDING)}]) -
-     count(self::*[${hasClass(kTAB_STATE_COLLAPSING)}] |
-           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_COLLAPSING)}])`,
-    aTab,
-    XPathResult.NUMBER_TYPE
-  ).numberValue;
-  if (isNaN(numExpandingTabs))
-    numExpandingTabs = 0;
+  var allExpanding        = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_EXPANDING}`);
+  var followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_EXPANDING}`);
+  var allCollapsing       = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSING}`);
+  var followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSING}`);
+  var numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
   return numExpandingTabs * gTabHeight;
 }
 
