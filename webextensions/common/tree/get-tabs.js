@@ -101,11 +101,17 @@ function getOrBuildTabsContainer(aHint) {
 function getTabFromChild(aNode) {
   if (!aNode)
     return null;
-  return evaluateXPath(
-    `ancestor-or-self::${kXPATH_LIVE_TAB}`,
-    aNode,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  if (aNode.nodeType != Node.ELEMENT_NODE)
+    aNode = aNode.parentNode;
+  if (!aNode.matches(`${kSELECTOR_LIVE_TAB}, ${kSELECTOR_LIVE_TAB} *`))
+    return null;
+  var parent = aNode;
+  while (parent && parent.nodeType == Node.ELEMENT_NODE) {
+    if (parent.matches(kSELECTOR_LIVE_TAB))
+      return parent;
+    parent = parent.parentNode;
+  }
+  return null;
 }
 
 function getTabById(aIdOrInfo) {
@@ -152,11 +158,12 @@ function getPreviousTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
-  return evaluateXPath(
-    `preceding-sibling::${kXPATH_LIVE_TAB}[1]`,
-    aTab,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  var previous = aTab;
+  while (previous = previous.previousElementSibling) {
+    if (previous.matches(kSELECTOR_LIVE_TAB))
+      return previous;
+  }
+  return null;
 }
 
 function getFirstTab(aHint) {
@@ -168,11 +175,8 @@ function getLastTab(aHint) {
   var container = getTabsContainer(aHint);
   if (!container)
     return null;
-  return evaluateXPath(
-    `child::${kXPATH_LIVE_TAB}[last()]`,
-    container,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  var tabs = container.querySelectorAll(kSELECTOR_LIVE_TAB);
+  return tabs.length > 0 ? tabs[tabs.length - 1] : null;
 }
 
 function getLastOpenedTab(aHint) {
@@ -215,11 +219,12 @@ function getPreviousNormalTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  return evaluateXPath(
-    `preceding-sibling::${kXPATH_NORMAL_TAB}[1]`,
-    aTab,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  var previous = aTab;
+  while (previous = previous.previousElementSibling) {
+    if (previous.matches(kSELECTOR_NORMAL_TAB))
+      return previous;
+  }
+  return null;
 }
 
 
@@ -488,11 +493,12 @@ function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  return evaluateXPath(
-    `preceding-sibling::${kXPATH_VISIBLE_TAB}[1]`,
-    aTab,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  var previous = aTab;
+  while (previous = previous.previousElementSibling) {
+    if (previous.matches(kSELECTOR_VISIBLE_TAB))
+      return previous;
+  }
+  return null;
 }
 
 function getVisibleIndex(aTab) {

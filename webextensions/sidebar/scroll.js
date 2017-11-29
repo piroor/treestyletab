@@ -264,23 +264,15 @@ async function scrollToTab(aTab, aOptions = {}) {
 function getOffsetForAnimatingTab(aTab) {
   var numExpandingTabs = evaluateXPath(
     `count(self::*[${hasClass(kTAB_STATE_EXPANDING)}] |
-           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_EXPANDING)}])`,
+           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_EXPANDING)}]) -
+     count(self::*[${hasClass(kTAB_STATE_COLLAPSING)}] |
+           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_COLLAPSING)}])`,
     aTab,
     XPathResult.NUMBER_TYPE
   ).numberValue;
   if (isNaN(numExpandingTabs))
     numExpandingTabs = 0;
-
-  var numCollapsingTabs = evaluateXPath(
-    `count(self::*[${hasClass(kTAB_STATE_COLLAPSING)}] |
-           preceding-sibling::${kXPATH_NORMAL_TAB}[${hasClass(kTAB_STATE_COLLAPSING)}])`,
-    aTab,
-    XPathResult.NUMBER_TYPE
-  ).numberValue;
-  if (isNaN(numCollapsingTabs))
-    numCollapsingTabs = 0;
-
-  return (numExpandingTabs * gTabHeight) - (numCollapsingTabs * gTabHeight);
+  return numExpandingTabs * gTabHeight;
 }
 
 function scrollToTabSubtree(aTab) {
