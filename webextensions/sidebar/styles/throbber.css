@@ -54,10 +54,10 @@
 }
 
 #tabbar .tab:not(.collapsed).loading.unsynchronized .throbber::before {
-  mask: -moz-element(#timer-master-throbber) no-repeat;
+  mask: -moz-element(#master-throbber) no-repeat;
 }
 
-:root:not(.synchronizing) .tab:not(.collapsed).loading .throbber::before,
+:root:not(.synchronizing) .tab:not(.collapsed).loading:not(.unsynchronized) .throbber::before,
 :root:not(.synchronizing).have-loading-tab #master-throbber::before,
 :root:not(.synchronizing).have-loading-tab #timer-master-throbber,
 :root.blocking-throbber #blocking-screen .throbber::before {
