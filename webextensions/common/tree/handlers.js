@@ -262,12 +262,7 @@ async function onNewTabTracked(aTab) {
   if (!duplicated &&
       uniqueId.restored) {
     newTab.classList.add(kTAB_STATE_RESTORED);
-    if (window.onTabRestored) {
-      container.restoringTabsCount++;
-      Promise.resolve(onTabRestored(newTab)).then(() => {
-        container.restoringTabsCount--;
-      });
-    }
+    window.onTabRestored && onTabRestored(newTab);
     checkRecycledTab(container);
   }
 
@@ -297,12 +292,7 @@ function checkRecycledTab(aContainer) {
         return;
       log('A recycled tab is detected: ', dumpTab(tab));
       tab.classList.add(kTAB_STATE_RESTORED);
-      if (!window.onTabRestored)
-        return;
-      aContainer.restoringTabsCount++;
-      Promise.resolve(onTabRestored(tab)).then(() => {
-        aContainer.restoringTabsCount--;
-      });
+      window.onTabRestored && onTabRestored(tab);
     });
   }
 }

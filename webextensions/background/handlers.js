@@ -205,7 +205,7 @@ function onTabOpened(aTab, aInfo = {}) {
 
 function onTabRestored(aTab) {
   log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
-  return attachTabFromRestoredInfo(aTab, {
+  reserveToAttachTabFromRestoredInfo(aTab, {
     children: true
   });
 }

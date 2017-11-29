@@ -269,7 +269,7 @@ async function loadTreeStructure() {
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);
       for (let tab of tabs) {
-        await attachTabFromRestoredInfo(tab, {
+        reserveToAttachTabFromRestoredInfo(tab, {
           keepCurrentTree: true,
           canCollapse:     true
         });
@@ -279,6 +279,28 @@ async function loadTreeStructure() {
   })));
 }
 
+function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
+  if (reserveToAttachTabFromRestoredInfo.waiting)
+    clearTimeout(reserveToAttachTabFromRestoredInfo.waiting);
+  reserveToAttachTabFromRestoredInfo.tasks.push({ tab: aTab, options: aOptions });
+  reserveToAttachTabFromRestoredInfo.waiting = setTimeout(async () => {
+    reserveToAttachTabFromRestoredInfo.waiting = null;
+    var tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
+    reserveToAttachTabFromRestoredInfo.tasks = [];
+    var uniqueIds = await Promise.all(tasks.map(aTask => aTask.tab.uniqueId));
+    var bulk = tasks.length > 1;
+    uniqueIds.forEach((aUniqueId, aIndex) => {
+      var task = tasks[aIndex];
+      attachTabFromRestoredInfo(task.tab, clone(task.options, {
+        uniqueId: aUniqueId,
+        bulk
+      }));
+    });
+  }, 100);
+}
+reserveToAttachTabFromRestoredInfo.waiting = null;
+reserveToAttachTabFromRestoredInfo.tasks   = [];
+
 async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   browser.runtime.sendMessage({
@@ -286,7 +308,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     tab:    aTab.apiTab.id,
     window: aTab.apiTab.windowId
   });
-  var uniqueId = await aTab.uniqueId;
+  var uniqueId = aOptions.uniqueId || await aTab.uniqueId;
   var container = getTabsContainer(aTab);
   var insertBefore, insertAfter, ancestors, children, collapsed;
   [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
@@ -319,13 +341,15 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   for (let ancestor of ancestors) {
     if (!ancestor)
       continue;
-    await attachTabTo(aTab, ancestor, {
+    let done = attachTabTo(aTab, ancestor, {
       insertBefore,
       insertAfter,
       dontExpand:  !active,
       forceExpand: active,
       broadcast:   true
     });
+    if (!aOptions.bulk)
+      await done;
     attached = true;
     break;
   }
@@ -334,12 +358,14 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       opener &&
       configs.syncParentTabAndOpenerTab) {
     log(' attach to opener: ', { child: dumpTab(aTab), parent: dumpTab(opener) });
-    await attachTabTo(aTab, opener, {
+    let done = attachTabTo(aTab, opener, {
       dontExpand:  !active,
       forceExpand: active,
       broadcast:   true,
       insertAt:    kINSERT_NEAREST
     });
+    if (!aOptions.bulk)
+      await done;
   }
   if (!aOptions.keepCurrentTree &&
       // the restored tab is a roo tab
@@ -352,8 +378,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       broadcast: true
     });
   }
-  var isWindowRestoring = container.restoringTabsCount > 1;
-  if (aOptions.children && !isWindowRestoring) {
+  if (aOptions.children && !aOptions.bulk) {
     for (let child of children) {
       if (!child)
         continue;
@@ -365,8 +390,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       });
     }
   }
-  isWindowRestoring = isWindowRestoring || container.restoringTabsCount > 1; // the status can be updated while waiting
-  if (aOptions.canCollapse || isWindowRestoring) {
+  if (aOptions.canCollapse || aOptions.bulk) {
     collapseExpandSubtree(aTab, {
       broadcast: true,
       collapsed
