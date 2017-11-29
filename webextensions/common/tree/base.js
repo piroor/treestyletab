@@ -876,7 +876,7 @@ function broadcastTabState(aTabs, aOptions = {}) {
 async function bookmarkTabs(aTabs, aOptions = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
-      return null;
+      throw new Error('not permitted');
   }
   catch(e) {
     notify({
