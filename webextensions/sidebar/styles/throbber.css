@@ -24,14 +24,16 @@
   100% { transform: translateX(-100%); }
 }
 
+
 :root:not(.blocking-throbber) #blocking-screen .throbber,
-.tab:not(.loading) .throbber,
-.tab.collapsed .throbber {
+:root:not(.have-loading-tab) #tabbar .throbber,
+#tabbar .tab:not(.loading) .throbber,
+#tabbar .tab.collapsed .throbber {
   display: none !important;
 }
 
 
-#master-throbber-container,
+#blocking-screen .throbber,
 .tab:not(.collapsed) .throbber {
   display: inline-block;
   font-size: var(--throbber-size);
@@ -47,41 +49,52 @@
   width: var(--throbber-size);
 }
 
-#master-throbber {
-  background-image: url("./throbber.svg");
-  background-position: left center;
-  background-repeat: no-repeat;
+#tabbar .tab:not(.collapsed).loading .throbber {
+  transform: var(--throbber-scale);
+}
+
+#tabbar .tab:not(.collapsed).loading.unsynchronized .throbber::before {
+  mask: -moz-element(#timer-master-throbber) no-repeat;
+}
+
+:root:not(.synchronizing) .tab:not(.collapsed).loading .throbber::before,
+:root:not(.synchronizing).have-loading-tab #master-throbber::before,
+:root:not(.synchronizing).have-loading-tab #timer-master-throbber,
+:root.blocking-throbber #blocking-screen .throbber::before {
+  animation: throbber 1.05s steps(60) infinite;
+}
+
+:root.blocking-throbber #blocking-screen .throbber::before,
+#tabbar .tab:not(.collapsed).loading .throbber::before,
+:root.have-loading-tab #master-throbber::before,
+:root.have-loading-tab #timer-master-throbber {
   content: "";
   height: var(--throbber-size);
   position: absolute;
   width: calc(var(--throbber-size) * 60);
 }
 
-:root.have-loading-tab #master-throbber,
-:root.blocking-throbber #master-throbber {
-  animation: throbber 1.05s steps(60) infinite;
-}
 
-
-.tab:not(.collapsed) .throbber {
-  transform: var(--throbber-scale);
-}
-
-.tab:not(.collapsed) .throbber::before {
-  content: "";
-  position: absolute;
-  width: var(--throbber-size);
-  height: var(--throbber-size);
-}
-
-.tab:not(.collapsed) .throbber::before,
-:root.blocking-throbber #blocking-screen .throbber {
+:root.blocking-throbber #blocking-screen .throbber::before,
+#tabbar .tab:not(.collapsed).loading .throbber::before {
   background: var(--throbber-color);
   box-shadow: 0 0 2px var(--throbber-shadow-color);
-  mask-image: -moz-element(#master-throbber);
+}
+
+:root.blocking-throbber #blocking-screen .throbber::before,
+#tabbar .tab:not(.collapsed).loading .throbber::before {
+  mask: url("./throbber.svg");
   mask-position: left center;
   mask-repeat: no-repeat;
 }
+
+#master-throbber::before,
+#timer-master-throbber {
+  background-image: url("./throbber.svg");
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
 
 
 :root.blocking-throbber #blocking-screen .throbber {

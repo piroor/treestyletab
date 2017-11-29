@@ -10,6 +10,7 @@ gLogContext = 'Sidebar-?';
 var gTabBar;
 var gAfterTabsForOverflowTabBar;
 var gOutOfViewTabNotifier;
+var gTimerMasterThrobber;
 var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
@@ -40,6 +41,7 @@ function earlyInit() {
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
   gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
   gAllTabs                    = document.querySelector('#all-tabs');
+  gTimerMasterThrobber        = document.querySelector('#timer-master-throbber');
   gSizeDefinition             = document.querySelector('#size-definition');
   gStyleLoader                = document.querySelector('#style-loader');
   gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
@@ -114,6 +116,7 @@ async function init() {
       gTabBar.addEventListener('scroll', onScroll);
       gTabBar.addEventListener('dblclick', onDblClick);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
+      gTimerMasterThrobber.addEventListener('animationiteration', onMasterThrobberAnimationIteration);
       startListenDragEvents();
       gMetricsData.add('start to listen events');
 
@@ -210,8 +213,9 @@ function destroy() {
   gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
+  gTimerMasterThrobber.removeEventListener('animationiteration', onMasterThrobberAnimationIteration);
 
-  gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = undefined;
+  gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gTimerMasterThrobber = undefined;
 }
 
 function getChosenStyle() {
@@ -717,7 +721,7 @@ function reserveToUpdateLoadingState() {
   reserveToUpdateLoadingState.waiting = setTimeout(() => {
     delete reserveToUpdateLoadingState.waiting;
     updateLoadingState();
-  }, 10);
+  }, 0);
 }
 
 function updateLoadingState() {

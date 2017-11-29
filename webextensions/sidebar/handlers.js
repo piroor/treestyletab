@@ -1044,7 +1044,26 @@ function onTabUnpinned(aTab) {
 }
 
 function onTabStateChanged(aTab) {
+  if (aTab.apiTab.status == 'loading')
+    aTab.classList.add('unsynchronized');
+  else
+    aTab.classList.remove('unsynchronized');
+
   reserveToUpdateLoadingState();
+}
+
+async function onMasterThrobberAnimationIteration(aEvent) {
+  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_LIVE_TAB}.unsynchronized`);
+  if (toBeSynchronizedTabs.length == 0)
+    return;
+
+  for (let tab of Array.slice(toBeSynchronizedTabs)) {
+    tab.classList.remove('unsynchronized');
+  }
+  await nextFrame();
+  document.documentElement.classList.add('synchronizing');
+  await nextFrame();
+  document.documentElement.classList.remove('synchronizing');
 }
 
 function onContextualIdentitiesUpdated() {
