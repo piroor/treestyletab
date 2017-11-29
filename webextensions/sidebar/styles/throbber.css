@@ -8,6 +8,9 @@
 :root {
   --throbber-color: Highlight;
   --throbber-shadow-color: transparent;
+  --throbber-size: 16px;
+  --throbber-scale: scale(calc(var(--favicon-size) / var(--throbber-size)),
+                          calc(var(--favicon-size) / var(--throbber-size)));
   --tab-burster-size: 5px;
   --tab-burster-translation: translate(calc(var(--tab-height) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
 }
@@ -23,25 +26,26 @@
 #master-throbber-container,
 .throbber {
   display: inline-block;
-  font-size: var(--favicon-size);
-  height: var(--favicon-size);
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-  min-height: var(--favicon-size);
-  min-width: var(--favicon-size);
+  font-size: var(--throbber-size);
+  height: var(--throbber-size);
+  max-height: var(--throbber-size);
+  max-width: var(--throbber-size);
+  min-height: var(--throbber-size);
+  min-width: var(--throbber-size);
   overflow: hidden;
   padding: 0;
   pointer-events: none;
   position: relative;
-  width: var(--favicon-size);
+  transform: var(--throbber-scale);
+  width: var(--throbber-size);
 }
 
 #master-throbber,
 .throbber::before {
   content: "";
   position: absolute;
-  width: calc(var(--favicon-size) * 60);
-  height: var(--favicon-size);
+  width: calc(var(--throbber-size) * 60);
+  height: var(--throbber-size);
 }
 
 #master-throbber {
@@ -70,8 +74,8 @@
 
 :root.blocking-throbber #blocking-screen .throbber {
   position: absolute;
-  top: calc(50% - var(--favicon-size));
-  left: calc(50% - var(--favicon-size));
+  top: calc(50% - var(--throbber-size));
+  left: calc(50% - var(--throbber-size));
   transform: scale(2, 2);
 }
 
