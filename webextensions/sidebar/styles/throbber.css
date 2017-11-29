@@ -55,7 +55,8 @@
   background-repeat: no-repeat;
 }
 
-.tab:not(.collapsed) .throbber::before {
+.tab:not(.collapsed) .throbber::before,
+:root.blocking-throbber #blocking-screen .throbber {
   background: var(--throbber-color);
   box-shadow: 0 0 2px var(--throbber-shadow-color);
   mask-image: -moz-element(#master-throbber);
@@ -70,7 +71,7 @@
 }
 
 :root.have-loading-tab #master-throbber,
-:root.blocking-throbber #blocking-screen .throbber::before {
+:root.blocking-throbber #master-throbber {
   animation: throbber 1.05s steps(60) infinite;
 }
 
