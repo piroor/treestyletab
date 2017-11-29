@@ -835,6 +835,9 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     delete aTab.onEndCollapseExpandAnimation;
   }
 
+  if (aTab.apiTab.status == 'loading')
+    aTab.classList.add('unsynchronized');
+
   if (aInfo.anchor && !isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
 

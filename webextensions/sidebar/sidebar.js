@@ -732,7 +732,7 @@ function updateLoadingState() {
 }
 
 async function synchronizeThrobberAnimation() {
-  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_LIVE_TAB}.unsynchronized`);
+  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.unsynchronized`);
   if (toBeSynchronizedTabs.length == 0)
     return;
 
