@@ -24,8 +24,15 @@
   100% { transform: translateX(-100%); }
 }
 
+:root:not(.blocking-throbber) #blocking-screen .throbber,
+.tab:not(.loading) .throbber,
+.tab.collapsed .throbber {
+  display: none !important;
+}
+
+
 #master-throbber-container,
-.throbber {
+.tab:not(.collapsed) .throbber {
   display: inline-block;
   font-size: var(--throbber-size);
   height: var(--throbber-size);
@@ -39,22 +46,32 @@
   position: relative;
   width: var(--throbber-size);
 }
-.throbber {
-  transform: var(--throbber-scale);
-}
-
-#master-throbber,
-.throbber::before {
-  content: "";
-  position: absolute;
-  width: calc(var(--throbber-size) * 60);
-  height: var(--throbber-size);
-}
 
 #master-throbber {
   background-image: url("./throbber.svg");
   background-position: left center;
   background-repeat: no-repeat;
+  content: "";
+  height: var(--throbber-size);
+  position: absolute;
+  width: calc(var(--throbber-size) * 60);
+}
+
+:root.have-loading-tab #master-throbber,
+:root.blocking-throbber #master-throbber {
+  animation: throbber 1.05s steps(60) infinite;
+}
+
+
+.tab:not(.collapsed) .throbber {
+  transform: var(--throbber-scale);
+}
+
+.tab:not(.collapsed) .throbber::before {
+  content: "";
+  position: absolute;
+  width: var(--throbber-size);
+  height: var(--throbber-size);
 }
 
 .tab:not(.collapsed) .throbber::before,
@@ -66,16 +83,6 @@
   mask-repeat: no-repeat;
 }
 
-:root:not(.blocking-throbber) #blocking-screen .throbber,
-.tab:not(.loading) .throbber,
-.tab.collapsed .throbber {
-  display: none !important;
-}
-
-:root.have-loading-tab #master-throbber,
-:root.blocking-throbber #master-throbber {
-  animation: throbber 1.05s steps(60) infinite;
-}
 
 :root.blocking-throbber #blocking-screen .throbber {
   position: absolute;
