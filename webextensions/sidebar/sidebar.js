@@ -173,6 +173,8 @@ async function init() {
 
   updateVisualMaxTreeLevel();
   updateIndent({ force: true });
+  updateLoadingState();
+  synchronizeThrobberAnimation();
   for (let tab of getAllTabs()) {
     updateTabTwisty(tab);
     updateTabClosebox(tab);
