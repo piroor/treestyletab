@@ -37,8 +37,10 @@
   padding: 0;
   pointer-events: none;
   position: relative;
-  transform: var(--throbber-scale);
   width: var(--throbber-size);
+}
+.throbber {
+  transform: var(--throbber-scale);
 }
 
 #master-throbber,
