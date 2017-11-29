@@ -58,16 +58,14 @@
 }
 
 :root:not(.synchronizing) .tab:not(.collapsed).loading:not(.unsynchronized) .throbber::before,
-:root:not(.synchronizing).have-loading-tab #master-throbber::before,
-:root:not(.synchronizing).have-loading-tab #timer-master-throbber,
+:root:not(.synchronizing).have-loading-tab #master-throbber,
 :root.blocking-throbber #blocking-screen .throbber::before {
   animation: throbber 1.05s steps(60) infinite;
 }
 
 :root.blocking-throbber #blocking-screen .throbber::before,
 #tabbar .tab:not(.collapsed).loading .throbber::before,
-:root.have-loading-tab #master-throbber::before,
-:root.have-loading-tab #timer-master-throbber {
+:root.have-loading-tab #master-throbber {
   content: "";
   height: var(--throbber-size);
   position: absolute;
@@ -88,8 +86,7 @@
   mask-repeat: no-repeat;
 }
 
-#master-throbber::before,
-#timer-master-throbber {
+#master-throbber {
   background-image: url("./throbber.svg");
   background-position: left center;
   background-repeat: no-repeat;

@@ -10,7 +10,7 @@ gLogContext = 'Sidebar-?';
 var gTabBar;
 var gAfterTabsForOverflowTabBar;
 var gOutOfViewTabNotifier;
-var gTimerMasterThrobber;
+var gMasterThrobber;
 var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
@@ -41,7 +41,7 @@ function earlyInit() {
   gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
   gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
   gAllTabs                    = document.querySelector('#all-tabs');
-  gTimerMasterThrobber        = document.querySelector('#timer-master-throbber');
+  gMasterThrobber             = document.querySelector('#master-throbber');
   gSizeDefinition             = document.querySelector('#size-definition');
   gStyleLoader                = document.querySelector('#style-loader');
   gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
@@ -116,7 +116,7 @@ async function init() {
       gTabBar.addEventListener('scroll', onScroll);
       gTabBar.addEventListener('dblclick', onDblClick);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
-      gTimerMasterThrobber.addEventListener('animationiteration', onMasterThrobberAnimationIteration);
+      gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
       startListenDragEvents();
       gMetricsData.add('start to listen events');
 
@@ -213,9 +213,9 @@ function destroy() {
   gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
-  gTimerMasterThrobber.removeEventListener('animationiteration', onMasterThrobberAnimationIteration);
+  gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
 
-  gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gTimerMasterThrobber = undefined;
+  gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
 
 function getChosenStyle() {
@@ -729,6 +729,20 @@ function updateLoadingState() {
     document.documentElement.classList.add(kTABBAR_STATE_HAVE_LOADING_TAB);
   else
     document.documentElement.classList.remove(kTABBAR_STATE_HAVE_LOADING_TAB);
+}
+
+async function synchronizeThrobberAnimation() {
+  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_LIVE_TAB}.unsynchronized`);
+  if (toBeSynchronizedTabs.length == 0)
+    return;
+
+  for (let tab of Array.slice(toBeSynchronizedTabs)) {
+    tab.classList.remove('unsynchronized');
+  }
+  await nextFrame();
+  document.documentElement.classList.add('synchronizing');
+  await nextFrame();
+  document.documentElement.classList.remove('synchronizing');
 }
 
 
