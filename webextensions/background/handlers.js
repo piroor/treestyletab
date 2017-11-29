@@ -434,8 +434,8 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
 
   var prevTab = tree.tabsById[target.previous];
   var nextTab = tree.tabsById[target.next];
-  log('prevTab: ', prevTab.id);
-  log('nextTab: ', nextTab.id);
+  log('prevTab: ', prevTab && prevTab.id);
+  log('nextTab: ', nextTab && nextTab.id);
 
   var prevParent = prevTab && tree.tabsById[prevTab.parent];
   var nextParent = nextTab && tree.tabsById[nextTab.parent];
