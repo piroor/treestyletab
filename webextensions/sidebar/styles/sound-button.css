@@ -14,25 +14,25 @@
   padding: 0.1em;
 }
 
-.sound-button:hover {
+.tab:not(.collapsed) .sound-button:hover {
   opacity: var(--button-hover-opacity);
 }
 
-.sound-button:active {
+.tab:not(.collapsed) .sound-button:active {
   opacity: var(--button-active-opacity);
 }
 
-.tab.sound-playing .sound-button,
-.tab.has-sound-playing-member.subtree-collapsed[data-child-ids]
+.tab:not(.collapsed).sound-playing .sound-button,
+.tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   .sound-button,
-.tab.muted .sound-button,
-.tab.has-muted-member.subtree-collapsed[data-child-ids]
+.tab:not(.collapsed).muted .sound-button,
+.tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
   .sound-button {
   display: inline-block;
 }
 
-.tab.muted .sound-button::before,
-.tab.has-muted-member.subtree-collapsed[data-child-ids]
+.tab:not(.collapsed).muted .sound-button::before,
+.tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
   .sound-button::before {
   content: "🔇";
 }
@@ -40,8 +40,8 @@
 /* put style definition for sound-playing tab after muted tab,
    because "sound-playing" is more important than muted for
    mixed state tree. */
-.tab.sound-playing:not(.muted) .sound-button::before,
-.tab.has-sound-playing-member.subtree-collapsed[data-child-ids]
+.tab:not(.collapsed).sound-playing:not(.muted) .sound-button::before,
+.tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   .sound-button::before {
   content: "🔈";
 }

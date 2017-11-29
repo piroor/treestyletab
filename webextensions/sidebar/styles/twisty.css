@@ -21,19 +21,20 @@
   width: 1.5em;
 }
 
-:root.animation .tab .twisty {
+:root.animation .tab:not(.collapsed) .twisty {
   transition: transform 0.2s ease-out,
               opacity 0.15s ease-out,
               text-shadow 0.15s ease-out;
 }
 
 .tab:not([data-child-ids]) .twisty,
-.tab.pinned .twisty {
+.tab.pinned .twisty,
+.tab.collapsed .twisty {
   visibility: hidden !important;
   pointer-events: none !important;
 }
 
-.twisty::before {
+tab:not(.collapsed) .twisty::before {
   color: val(--tab-text);
   content: "▼";
   display: inline-block;
@@ -46,36 +47,36 @@
   top: calc((var(--favicon-size) - 1em) / 2);
 }
 
-.tab.subtree-collapsed
+.tab:not(.collapsed).subtree-collapsed
   .twisty {
   text-shadow: -0.1em 0.1em 0.1em transparent;
   transform: rotatez(-90deg);
 }
 :root.right
-  .tab.subtree-collapsed
+  .tab:not(.collapsed).subtree-collapsed
   .twisty {
   transform: rotatez(90deg);
 }
 
-.tab.subtree-collapsed
+.tab:not(.collapsed).subtree-collapsed
   .twisty:hover {
   text-shadow: -0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 :root.right
-  .tab.subtree-collapsed
+  .tab:not(.collapsed).subtree-collapsed
   .twisty {
   text-shadow: 0.1em -0.1em 0.1em transparent;
 }
 :root.right
-  .tab.subtree-collapsed
+  .tab:not(.collapsed).subtree-collapsed
   .twisty:hover {
   text-shadow: 0.1em -0.1em 0.1em rgba(0, 0, 0, 0.45);
 }
 
-.tab:not(.subtree-collapsed) .twisty {
+.tab:not(.collapsed):not(.subtree-collapsed) .twisty {
   text-shadow: 0.1em 0.1em 0.1em transparent;
   transform: rotatez(0);
 }
-.tab:not(.subtree-collapsed) .twisty:hover {
+.tab:not(.collapsed):not(.subtree-collapsed) .twisty:hover {
   text-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.45);
 }

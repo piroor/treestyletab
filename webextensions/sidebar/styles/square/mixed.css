@@ -24,7 +24,7 @@
                     );
 }
 
-.tab:hover {
+.tab:not(.collapsed):hover {
   background-color: var(--tab-surface-hover);
   background-image: -moz-linear-gradient(
                       top,
@@ -42,7 +42,7 @@
                     );
 }
 
-.tab.active:hover {
+.tab.active:not(.collapsed):hover {
   background-color: var(--tab-surface-active-hover);
   background-image: -moz-linear-gradient(
                       top,

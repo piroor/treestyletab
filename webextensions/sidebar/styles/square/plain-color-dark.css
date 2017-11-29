@@ -22,7 +22,7 @@
 .tab.active {
   background: var(--tab-surface-active);
 }
-.tab.active:hover {
+.tab:not(.collapsed).active:hover {
   background: var(--tab-surface-active-hover);
 }
 

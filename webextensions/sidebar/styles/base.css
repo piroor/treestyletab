@@ -332,11 +332,11 @@ ul {
   content: "✖";
 }
 
-.closebox:hover {
+.tab:not(.collapsed) .closebox:hover {
   opacity: var(--button-hover-opacity);
 }
 
-.closebox:active {
+.tab:not(.collapsed) .closebox:active {
   opacity: var(--button-active-opacity);
 }
 

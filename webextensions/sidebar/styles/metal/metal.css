@@ -13,7 +13,7 @@
 }
 
 .tab,
-.tab:hover,
+.tab:not(.collapsed):hover,
 .after-tabs button {
   color: black;
 }

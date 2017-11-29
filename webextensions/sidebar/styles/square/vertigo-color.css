@@ -65,7 +65,7 @@
   color: var(--tab-text);
 }
 
-.tab:not(.active):hover,
+.tab:not(.collapsed):not(.active):hover,
 .after-tabs:not(.active) button:hover {
   background: var(--tab-surface-hover);
   color: var(--tab-text);
@@ -76,7 +76,7 @@
   --throbber-color: var(--tab-highlighted-glow);
   color: var(--tab-active-text);
 }
-.tab.active:hover {
+.tab:not(.collapsed).active:hover {
   background: var(--tab-surface-active-hover);
 }
 

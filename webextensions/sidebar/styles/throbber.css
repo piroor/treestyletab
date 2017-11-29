@@ -55,7 +55,7 @@
   background-repeat: no-repeat;
 }
 
-.throbber::before {
+.tab:not(.collapsed) .throbber::before {
   background: var(--throbber-color);
   box-shadow: 0 0 2px var(--throbber-shadow-color);
   mask-image: -moz-element(#master-throbber);
@@ -64,7 +64,8 @@
 }
 
 :root:not(.blocking-throbber) #blocking-screen .throbber,
-.tab:not(.loading) .throbber {
+.tab:not(.loading) .throbber,
+.tab.collapsed .throbber {
   display: none !important;
 }
 
@@ -98,7 +99,7 @@
   100% { opacity: 0;   transform: var(--tab-burster-translation) scale(40); }
 }
 
-:root.animation .tab.bursting .burster::before {
+:root.animation .tab:not(.collapsed).bursting .burster::before {
   animation: tab-burst-animation var(--tab-burst-duration) cubic-bezier(0, 0, 0.58, 1);
   background: var(--throbber-color);
   border-radius: 100%;
@@ -109,6 +110,6 @@
   transform-origin: 50% 50%;
 }
 
-:root.animation .tab.not-activated-since-load.bursting .burster::before {
+:root.animation .tab:not(.collapsed).not-activated-since-load.bursting .burster::before {
   animation-name: tab-burst-animation-light;
 }
