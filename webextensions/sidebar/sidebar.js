@@ -14,6 +14,7 @@ var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
 var gStyle;
+var gRestoringTabCount = 0;
 
 window.addEventListener('DOMContentLoaded', earlyInit, { once: true });
 window.addEventListener('load', init, { once: true });
@@ -621,6 +622,14 @@ reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
 function updateTabbarLayout(aParams = {}) {
+  if (gRestoringTabCount > 1) {
+    log('updateTabbarLayout: skip until completely restored');
+    reserveToUpdateTabbarLayout({
+      reason:  aParams.reasons,
+      timeout: Math.max(100, aParams.timeout)
+    });
+    return;
+  }
   //log('updateTabbarLayout');
   var range = document.createRange();
   range.selectNodeContents(gTabBar);
@@ -701,6 +710,11 @@ function updateTabTooltip(aTab) {
 
 
 async function notifyOutOfViewTab(aTab) {
+  if (gRestoringTabCount > 1) {
+    log('notifyOutOfViewTab: skip until completely restored');
+    wait(100).then(() => notifyOutOfViewTab(aTab));
+    return;
+  }
   await nextFrame();
   cancelNotifyOutOfViewTab();
   if (aTab && isTabInViewport(aTab))

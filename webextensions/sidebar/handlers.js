@@ -834,7 +834,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     delete aTab.onEndCollapseExpandAnimation;
   }
 
-  if (!isTabInViewport(aInfo.anchor))
+  if (aInfo.anchor && !isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
 
   var reason = toBeCollapsed ? kTABBAR_UPDATE_REASON_COLLAPSE : kTABBAR_UPDATE_REASON_EXPAND ;
@@ -1071,6 +1071,14 @@ function onMessage(aMessage, aSender, aRespond) {
       delete gTabIdWrongToCorrect[aMessage.oldWrongId];
       gTabIdWrongToCorrect[aMessage.newWrongId]   = aMessage.newCorrectId;
       gTabIdCorrectToWrong[aMessage.newCorrectId] = aMessage.newWrongId;
+      break;
+
+    case kCOMMAND_NOTIFY_TAB_RESTORING:
+      gRestoringTabCount++;
+      break;
+
+    case kCOMMAND_NOTIFY_TAB_RESTORED:
+      gRestoringTabCount--;
       break;
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:

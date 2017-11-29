@@ -26,6 +26,8 @@ const kCOMMAND_MOVE_TABS_AFTER                = 'treestyletab:move-tabs-internal
 const kCOMMAND_NOTIFY_START_TAB_SWITCH        = 'treestyletab:notify-start-tab-switch';
 const kCOMMAND_NOTIFY_END_TAB_SWITCH          = 'treestyletab:notify-end-tab-switch';
 const kCOMMAND_NOTIFY_PERMISSIONS_GRANTED     = 'treestyletab:notify-permissions-granted';
+const kCOMMAND_NOTIFY_TAB_RESTORING           = 'treestyletab:notify-tab-restoring';
+const kCOMMAND_NOTIFY_TAB_RESTORED            = 'treestyletab:notify-tab-restored';
 
 const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';

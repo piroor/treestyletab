@@ -281,6 +281,11 @@ async function loadTreeStructure() {
 
 async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
+  browser.runtime.sendMessage({
+    type:   kCOMMAND_NOTIFY_TAB_RESTORING,
+    tab:    aTab.apiTab.id,
+    window: aTab.apiTab.windowId
+  });
   var uniqueId = await aTab.uniqueId;
   var container = getTabsContainer(aTab);
   var insertBefore, insertAfter, ancestors, children, collapsed;
@@ -367,6 +372,11 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       collapsed
     });
   }
+  browser.runtime.sendMessage({
+    type:   kCOMMAND_NOTIFY_TAB_RESTORED,
+    tab:    aTab.apiTab.id,
+    window: aTab.apiTab.windowId
+  });
 }
 
 
