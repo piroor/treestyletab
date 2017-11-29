@@ -448,7 +448,8 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   var oldParent = tree.tabsById[target.parent];
   var newParent = null;
 
-  if (target.cookieStoreId != prevTab.cookieStoreId &&
+  if (prevTab &&
+      target.cookieStoreId != prevTab.cookieStoreId &&
       target.url == prevTab.url) {
     // https://addons.mozilla.org/en-US/firefox/addon/multi-account-containers/
     log('=> replaced by Firefox Multi-Acount Containers');
