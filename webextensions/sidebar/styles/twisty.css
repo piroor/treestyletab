@@ -34,7 +34,7 @@
   pointer-events: none !important;
 }
 
-tab:not(.collapsed) .twisty::before {
+.tab:not(.collapsed) .twisty::before {
   color: val(--tab-text);
   content: "▼";
   display: inline-block;
