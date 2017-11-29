@@ -295,7 +295,7 @@ function applyBrowserTheme(aTheme) {
 
 function calculateDefaultSizes() {
   // first, calculate actual favicon size.
-  gFaviconSize = document.querySelector('#dummy-favicon-size-box').offsetHeight;
+  gFaviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
   var scale = Math.max(configs.faviconizedTabScale, 1);
   gFaviconizedTabSize = parseInt(gFaviconSize * scale);
   log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
@@ -304,9 +304,11 @@ function calculateDefaultSizes() {
     --faviconized-tab-size: ${gFaviconizedTabSize}px;
   }`;
   var dummyTab = document.querySelector('#dummy-tab');
-  gTabHeight = dummyTab.offsetHeight;
+  var dummyTabRect = dummyTab.getBoundingClientRect();
+  gTabHeight = dummyTabRect.height;
   var dummyTabbar = document.querySelector('#dummy-tabs');
-  var scrollbarSize = dummyTabbar.offsetWidth - dummyTab.offsetWidth;
+  var dummyTabbarRect = dummyTabbar.getBoundingClientRect();
+  var scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('gTabHeight ', gTabHeight);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
