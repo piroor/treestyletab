@@ -709,6 +709,25 @@ function updateTabTooltip(aTab) {
 }
 
 
+function reserveToUpdateLoadingState() {
+  if (gInitializing)
+    return;
+  if (reserveToUpdateLoadingState.waiting)
+    clearTimeout(reserveToUpdateLoadingState.waiting);
+  reserveToUpdateLoadingState.waiting = setTimeout(() => {
+    delete reserveToUpdateLoadingState.waiting;
+    updateLoadingState();
+  }, 10);
+}
+
+function updateLoadingState() {
+  if (document.querySelector(`${kSELECTOR_VISIBLE_TAB}.loading:not(#dummy-tab)`))
+    document.documentElement.classList.add(kTABBAR_STATE_HAVE_LOADING_TAB);
+  else
+    document.documentElement.classList.remove(kTABBAR_STATE_HAVE_LOADING_TAB);
+}
+
+
 async function notifyOutOfViewTab(aTab) {
   if (gRestoringTabCount > 1) {
     log('notifyOutOfViewTab: skip until completely restored');

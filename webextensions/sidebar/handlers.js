@@ -754,6 +754,7 @@ function onTabClosed(aTab, aCloseInfo) {
     reason:  kTABBAR_UPDATE_REASON_TAB_CLOSE,
     timeout: configs.collapseDuration
   });
+  reserveToUpdateLoadingState();
 }
 
 async function onTabCompletelyClosed(aTab) {
@@ -900,6 +901,8 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
       configs.indentAutoShrinkOnlyForVisible)
     reserveToUpdateVisualMaxTreeLevel();
 
+  reserveToUpdateLoadingState();
+
   // this is very required for no animation case!
   reserveToUpdateTabbarLayout({ reason: aOptions.reason });
 }
@@ -908,6 +911,8 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
   if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
+
+  reserveToUpdateLoadingState();
 
   if (configs.animation &&
       !aInfo.justNow &&
@@ -1039,10 +1044,7 @@ function onTabUnpinned(aTab) {
 }
 
 function onTabStateChanged(aTab) {
-  if (document.querySelector('.tab.loading:not(#dummy-tab)'))
-    document.documentElement.classList.add(kTABBAR_STATE_HAVE_LOADING_TAB);
-  else
-    document.documentElement.classList.remove(kTABBAR_STATE_HAVE_LOADING_TAB);
+  reserveToUpdateLoadingState();
 }
 
 function onContextualIdentitiesUpdated() {
