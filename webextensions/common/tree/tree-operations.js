@@ -83,9 +83,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   }
 
   if (!aOptions.insertBefore && !aOptions.insertAfter) {
-    let refTabs = getReferenceTabsForNewChild(aChild, aParent, clone(aOptions, {
-      ignoreTabs: [aChild].concat(aOptions.ignoreTabs || [])
-    }));
+    let refTabs = getReferenceTabsForNewChild(aChild, aParent, aOptions);
     aOptions.insertBefore = refTabs.insertBefore;
     aOptions.insertAfter  = refTabs.insertAfter;
   }
@@ -228,6 +226,10 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
   else {
     insertAfter = aParent;
   }
+  if (insertBefore == aChild)
+    insertBefore = getNextTab(insertBefore);
+  if (insertAfter == aChild)
+    insertAfter = getPreviousTab(insertAfter);
   // disallow to place tab in invalid position
   if (insertBefore) {
     if (getTabIndex(insertBefore) <= getTabIndex(aParent)) {
