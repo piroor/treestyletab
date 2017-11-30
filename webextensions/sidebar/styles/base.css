@@ -395,7 +395,7 @@ ul {
   text-align: center;
 }
 
-.newtab-button-box:hover .contextual-identities-selector:not([disabled="true"]) {
+:root.contextual-identity-selectable .newtab-button-box:hover .contextual-identities-selector:not([disabled="true"]) {
   pointer-events: auto;
   opacity: 1;
 }

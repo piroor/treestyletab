@@ -125,6 +125,7 @@ async function init() {
       onConfigChange('sidebarPosition');
       onConfigChange('animation');
       onConfigChange('scrollbarMode');
+      onConfigChange('showContextualIdentitiesSelector');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);

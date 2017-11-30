@@ -1341,5 +1341,12 @@ function onConfigChange(aChangedKey) {
     case 'inheritContextualIdentityToNewChildTab':
       updateContextualIdentitiesSelector();
       break;
+
+    case 'showContextualIdentitiesSelector':
+      if (configs[aChangedKey])
+        rootClasses.add(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      else
+        rootClasses.remove(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      break;
   }
 }
