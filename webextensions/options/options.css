@@ -62,3 +62,7 @@ li label img {
   -moz-user-focus: ignore;
   -moz-user-input: disabled;
 }
+
+:root.platform-mac .unavailable-on-mac {
+  display: none;
+}

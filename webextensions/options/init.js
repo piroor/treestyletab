@@ -21,6 +21,11 @@ function onConfigChanged(aKey) {
 
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
+  if (/^Mac/i.test(navigator.platform))
+    document.documentElement.classList.add('platform-mac');
+  else
+    document.documentElement.classList.remove('platform-mac');
+
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
 
