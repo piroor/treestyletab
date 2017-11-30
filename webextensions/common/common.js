@@ -99,11 +99,10 @@ configs = new Configs({
   indentAutoShrink: true,
   indentAutoShrinkOnlyForVisible: true,
 
-  scrollbarMode:       kTABBAR_SCROLLBAR_MODE_NARROW,
+  scrollbarMode: /^Mac/i.test(navigator.platform) ? kTABBAR_SCROLLBAR_MODE_OVERLAY : kTABBAR_SCROLLBAR_MODE_NARROW,
   narrowScrollbarSize: 8,
 
   showContextualIdentitiesSelector: false,
-  extraMarginForScrollbar: /^Mac/i.test(navigator.platform),
   zoomable: false,
 
 

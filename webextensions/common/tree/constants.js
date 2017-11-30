@@ -164,7 +164,7 @@ const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 const kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE = 'contextual-identity-selectable';
 const kTABBAR_STATE_NARROW_SCROLLBAR       = 'narrow-scrollbar';
 const kTABBAR_STATE_NO_SCROLLBAR           = 'no-scrollbar';
-const kTABBAR_STATE_EXTRA_MARGIN_FOR_SCROLLBAR = 'extra-margin-for-scrollbar';
+const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';
 
 const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
@@ -178,6 +178,7 @@ const kTABBAR_POSITION_RIGHT = 2;
 const kTABBAR_SCROLLBAR_MODE_DEFAULT = 0;
 const kTABBAR_SCROLLBAR_MODE_NARROW  = 1;
 const kTABBAR_SCROLLBAR_MODE_HIDE    = 2;
+const kTABBAR_SCROLLBAR_MODE_OVERLAY = 3;
 
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';

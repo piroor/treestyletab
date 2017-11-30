@@ -1317,6 +1317,7 @@ function onConfigChange(aChangedKey) {
     case 'scrollbarMode':
       rootClasses.remove(kTABBAR_STATE_NARROW_SCROLLBAR);
       rootClasses.remove(kTABBAR_STATE_NO_SCROLLBAR);
+      rootClasses.remove(kTABBAR_STATE_OVERLAY_SCROLLBAR);
       switch (configs.scrollbarMode) {
         default:
         case kTABBAR_SCROLLBAR_MODE_DEFAULT:
@@ -1326,6 +1327,9 @@ function onConfigChange(aChangedKey) {
           break;
         case kTABBAR_SCROLLBAR_MODE_HIDE:
           rootClasses.add(kTABBAR_STATE_NO_SCROLLBAR);
+          break;
+        case kTABBAR_SCROLLBAR_MODE_OVERLAY:
+          rootClasses.add(kTABBAR_STATE_OVERLAY_SCROLLBAR);
           break;
       }
       break;
@@ -1347,13 +1351,6 @@ function onConfigChange(aChangedKey) {
         rootClasses.add(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       else
         rootClasses.remove(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
-      break;
-
-    case 'extraMarginForScrollbar':
-      if (configs[aChangedKey])
-        rootClasses.add(kTABBAR_STATE_EXTRA_MARGIN_FOR_SCROLLBAR);
-      else
-        rootClasses.remove(kTABBAR_STATE_EXTRA_MARGIN_FOR_SCROLLBAR);
       break;
   }
 }
