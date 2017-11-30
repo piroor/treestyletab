@@ -111,7 +111,7 @@
   "config.maxTreeLevel.after": { "message": "層分頁(負值表示無限制)" },
 
   "config.faviconizePinnedTabs.label": { "message": "釘選分頁只顯示網頁圖示" },
-
+  "config.showContextualIdentitiesSelector.label": { "message": "在「開新分頁」按鈕顯示容器分頁的選單" },
   "config.animation.label": { "message": "啟用動畫效果" },
 
 
