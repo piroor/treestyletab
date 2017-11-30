@@ -109,7 +109,7 @@
   "config.maxTreeLevel.after": { "message": "level(s) (*Negative value means \"infinite\")" },
 
   "config.faviconizePinnedTabs.label": { "message": "Show pinned tabs only with their icon" },
-
+  "config.showContextualIdentitiesSelector.label": { "message": "Show container selector on the \"New Tab\" button" },
   "config.animation.label": { "message": "Enable animation effects" },
 
 
