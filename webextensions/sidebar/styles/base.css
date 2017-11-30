@@ -331,7 +331,38 @@ ul {
 }
 
 .closebox::before {
-  content: "✖";
+  /*
+    There are some possible characters for this purpose:
+    https://en.wikipedia.org/wiki/X_mark
+    - X: upper case X
+      * Too narrow
+    - ×: U+00D7 MULTIPLICATION SIGN (z notation Cartesian product)
+      * Too small on macOSX
+    - ╳: U+2573 BOX DRAWINGS LIGHT DIAGONAL CROSS
+      * Too large on Ubuntu
+    - ☓ : U+2613 SALTIRE (St Andrew's Cross)
+      * Narrow a little on Windows and macOS
+    - ✕: U+2715 MULTIPLICATION X
+      * Too small on macOSX
+    - ✖: U+2716 HEAVY MULTIPLICATION X
+      * Too small on macOSX
+    - ❌ : U+274C CROSS MARK
+      * Colored on macOS
+    - ❎ : U+274E NEGATIVE SQUARED CROSS MARK
+      * Colored on macOS
+      * Box around the mark is unnecessary
+    - ⨉ : U+2A09 N-ARY TIMES OPERATOR
+    - ⨯: U+2A2F VECTOR OR CROSS PRODUCT
+      * Too small on macOSX
+    - 🗙: U+1F5D9 CANCELLATION X
+      * Unavailable on macOSX
+    - 🗴 : U+1F5F4 BALLOT SCRIPT X
+      * Unavailable on macOSX
+    - 🞩: U+1F7A9 LIGHT SALTIRE
+      * Unavailable on macOSX
+    So ⨉ (U+2A09) looks good for me on Windows, macOS, and Linux (tested on Ubuntu).
+  */
+  content: "⨉";
 }
 
 .tab:not(.collapsed) .closebox:hover {
