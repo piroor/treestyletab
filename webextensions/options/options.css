@@ -63,6 +63,6 @@ li label img {
   -moz-user-input: disabled;
 }
 
-:root.platform-mac .unavailable-on-mac {
+:root:not(.platform-mac) .available-only-on-mac {
   display: none;
 }

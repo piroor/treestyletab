@@ -95,6 +95,7 @@
   "config.scrollbarMode.narrow":  { "message": "細く表示" },
   "config.scrollbarMode.overlay": { "message": "重ねて表示" },
   "config.scrollbarMode.hide":    { "message": "なし" },
+  "config.scrollbarMode.descriptionForMac": { "message": "※macOSの新しめのバージョンでは「重ねて表示」のみ有効に機能します。" },
 
   "config.style.caption": { "message": "テーマ" },
   "config.style.plain": { "message": "Plain" },

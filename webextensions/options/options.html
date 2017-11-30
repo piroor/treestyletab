@@ -65,19 +65,20 @@
     </fieldset>
     <p>__MSG_config.scrollbarMode.caption__
        <br />
-       <label class="unavailable-on-mac"><input type="radio"
+       <label><input type="radio"
                      name="scrollbarMode" value="0">
          __MSG_config.scrollbarMode.default__</label>
-       <label class="unavailable-on-mac"><input type="radio"
+       <label><input type="radio"
                      name="scrollbarMode" value="1">
          __MSG_config.scrollbarMode.narrow__</label>
-       <label><input type="radio"
+       <label class="available-only-on-mac"><input type="radio"
                      name="scrollbarMode" value="3">
          __MSG_config.scrollbarMode.overlay__</label>
        <label><input type="radio"
                      name="scrollbarMode" value="2">
          __MSG_config.scrollbarMode.hide__</label>
     </p>
+    <p class="sub" class="available-only-on-mac">__MSG_config.scrollbarMode.descriptionForMac__</p>
     <p><label>__MSG_config.maxTreeLevel.before__
               <input id="maxTreeLevel"
                      type="number"

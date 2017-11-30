@@ -95,6 +95,7 @@
   "config.scrollbarMode.narrow":  { "message": "Narrow" },
   "config.scrollbarMode.overlay": { "message": "Overlay" },
   "config.scrollbarMode.hide":    { "message": "Hide" },
+  "config.scrollbarMode.descriptionForMac": { "message": "*Only \"Overlay\" will effective on lately versions of macOS." },
 
   "config.style.caption": { "message": "Theme" },
   "config.style.plain": { "message": "Plain" },
