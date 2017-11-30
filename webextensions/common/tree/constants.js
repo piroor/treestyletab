@@ -162,6 +162,8 @@ const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
 const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 const kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE = 'contextual-identity-selectable';
+const kTABBAR_STATE_NARROW_SCROLLBAR       = 'narrow-scrollbar';
+const kTABBAR_STATE_NO_SCROLLBAR           = 'no-scrollbar';
 
 const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
