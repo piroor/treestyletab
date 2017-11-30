@@ -157,7 +157,7 @@
 
   "config.treeBehavior.caption": { "message": "樹狀結構"},
 
-  "config.parentTabBehaviorForChanges.caption": { "message": "子分頁在 Tree Style Tab 側邊欄以外移動或關閉父分頁時，" },
+  "config.parentTabBehaviorForChanges.caption": { "message": "子分頁在 Tree Style Tab 側邊欄以外移動或關閉父分頁時" },
   "config.parentTabBehaviorForChanges.always": { "message": "隨父分頁一併移動或關閉，無論側邊欄顯示狀態" },
   "config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible": { "message": "側邊欄開啟狀態下隨父分頁聯動 / 側邊欄隱藏狀態下無動作" },
   "config.parentTabBehaviorForChanges.onlyInSidebar": { "message": "側邊欄內的操作隨父分頁聯動 / 側邊欄外的操作無動作" },
@@ -183,7 +183,7 @@
   "config.userStyleRules.description.after": { "message": "。" },
   "config.userStyleRules.description.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
 
-  "config.importedConfigsFromLegacy.label": { "message": "轉移自舊版本的設定" },
+  "config.importedConfigsFromLegacy.label": { "message": "轉移舊版本的設定" },
   "config.legacyConfigsNextMigrationVersion.before": { "message": "下次啟動時轉移" },
   "config.legacyConfigsNextMigrationVersion.after": { "message": "級設定" },
   "config.legacyConfigsNextMigrationVersion.currentLevel.before": { "message": "(現在能轉移" },
