@@ -188,6 +188,7 @@
 
 
   "config.advanced.caption": { "message": "進階設定" },
+
   "config.userStyleRules.label": { "message": "額外的側邊欄樣式規則" },
   "config.userStyleRules.description.before": { "message": "亦可參照" },
   "config.userStyleRules.description.link.label": { "message": " TST wiki 上的範例" },
@@ -225,6 +226,7 @@
 
 
   "config.debug.caption": { "message": "開發用" },
+
   "config.debug.label": { "message": "除錯模式" },
   "config.acccelaratedTabDuplication.label": { "message": "加快分頁複制(※動作會不穩定)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
