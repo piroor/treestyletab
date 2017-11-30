@@ -40,6 +40,13 @@
   border-image: url("tab-active-r.png") 10 10 10 5 fill / 10px 10px 10px 5px;
 }
 
+:root.left.extra-margin-for-scrollbar .tab:not(.pinned) {
+  padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+:root.right.extra-margin-for-scrollbar .tab:not(.pinned) {
+  padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+
 .favicon {
   background: url("icon-bg.png") no-repeat bottom;
   background-size: 100%;

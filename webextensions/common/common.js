@@ -103,6 +103,7 @@ configs = new Configs({
   narrowScrollbarSize: 8,
 
   showContextualIdentitiesSelector: false,
+  extraMarginForScrollbar: /^Mac/i.test(navigator.platform),
   zoomable: false,
 
 

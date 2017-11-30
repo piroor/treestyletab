@@ -95,6 +95,13 @@
   z-index: 0;
 }
 
+:root.left.extra-margin-for-scrollbar .tab:not(.pinned) {
+  padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+:root.right.extra-margin-for-scrollbar .tab:not(.pinned) {
+  padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+
 .tab.active {
   border-top: 1px solid var(--tab-surface-active-color);
   background: var(--tab-surface-active-gradient);

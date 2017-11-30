@@ -17,6 +17,13 @@
   padding-left: 0.65em;
 }
 
+:root.left.extra-margin-for-scrollbar .tab:not(.pinned) {
+  padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+:root.right.extra-margin-for-scrollbar .tab:not(.pinned) {
+  padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+
 
 .tab .label {
   padding: 0.25em 0 0.25em 0.25em;

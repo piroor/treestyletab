@@ -1348,5 +1348,12 @@ function onConfigChange(aChangedKey) {
       else
         rootClasses.remove(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       break;
+
+    case 'extraMarginForScrollbar':
+      if (configs[aChangedKey])
+        rootClasses.add(kTABBAR_STATE_EXTRA_MARGIN_FOR_SCROLLBAR);
+      else
+        rootClasses.remove(kTABBAR_STATE_EXTRA_MARGIN_FOR_SCROLLBAR);
+      break;
   }
 }

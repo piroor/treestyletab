@@ -45,6 +45,8 @@
                                                        var(--tab-highlighted-highlight) 3%,
                                                        var(--tab-highlighted-glow) 10%,
                                                        var(--tab-highlighted-base) 23%);
+
+  --scrollbar-placeholder-size: 1.5em;
 }
 
 @keyframes blink {
