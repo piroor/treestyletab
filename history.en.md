@@ -1,6 +1,35 @@
 # History
 
  - master/HEAD
+ - 2.3.0 (2017.11.30)
+   * Show scrollbar like narrowed by default, on Windows and Linux.
+   * Add extra space for overlay-scrollbar on macOS.
+   * Don't expand tree when the Shift key is pressed/released while tab switching by Ctrl-Tab/Ctrl-Shift-Tab.
+   * Add ability to prevent control for focusing of tabs when the current tab is focused.
+   * Discard accidentally restored tab automatically, on Firefox 58 and later.
+   * Detect `about:privatebrowsing` as a new blank tab, in the private browsing mode.
+   * Always expand tree when a child is manually attached to a parent tab.
+   * Open new sibling tab at correct position for root level tab.
+   * Place attached tab to natural position more correctly.
+   * Detach tab from window more easily by drag and drop to outside of the window. In old versions, it was done if you move the mouse just left or right.
+   * Restore selection of the first tab after opened new tabs are automatically grouped.
+   * Restore tree structure from sessions more quickly for "Restore Previous Session".
+   * Add ability to inherit container (contextual identity) from its parent tab to newly opened child tabs.
+   * Add "Default" to the list of selectable containers, when container inheritance is activated.
+   * Allow to bookmark all tabs from the fake context menu. (regression)
+   * Cleanup tab element for closed tabs correctly. (regression)
+   * Calculate size of elements more correctly. (regression)
+   * Animation of throbber is now synchronized correctly on Firefox 57. (Many thanks to Lej77!)
+   * Recolor "Plain", "Flat", "Vertigo", "Mixed", and the startup page based on the color scheme of Firefox's default Photon theme.
+   * Recolor "Plain Dark" based on the color scheme of Firefox's builtin "Dark" theme.
+   * Use more larger closebox on macOS.
+   * Hide container selector on the new tab button by default.
+   * Add "No Decoration" theme as the base for customization.
+   * Use white icon for the toolbar button on the "Dark" theme.
+   * Disallow zooming of the sidebar contents by default. You can re-activate the old behavior by setting `zoomable` to `true` in the debug mode.
+   * Notify both mousedown and mouseup for other addons via API.
+   * Handle middle-click on the new tab button correctly even if any other addon listens click events on the tab bar.
+   * Add zh_TW locale (by lycsjm, thanks!)
  - 2.2.11 (2017.11.18)
    * Fix performance regression for many numbers of tabs, on 2.2.10.
  - 2.2.10 (2017.11.18)
