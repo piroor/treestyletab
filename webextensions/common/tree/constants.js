@@ -141,6 +141,7 @@ const kTAB_STATE_DRAGGING                  = 'dragging';
 const kTAB_STATE_OPENING                   = 'opening';
 const kTAB_STATE_DUPLICATING               = 'duplicating';
 const kTAB_STATE_RESTORED                  = 'restored';
+const kTAB_STATE_THROBBER_UNSYNCHRONIZED   = 'throbber-unsynchronized';
 const kTAB_INTERNAL_STATES = [
   'tab',
   kTAB_STATE_LAST_ROW,
@@ -150,7 +151,8 @@ const kTAB_INTERNAL_STATES = [
   kTAB_STATE_DUPLICATING,
   kTAB_STATE_COLLAPSING,
   kTAB_STATE_EXPANDING,
-  kTAB_STATE_MOVING
+  kTAB_STATE_MOVING,
+  kTAB_STATE_THROBBER_UNSYNCHRONIZED
 ];
 
 const kTABBAR_STATE_OVERFLOW               = 'overflow';
@@ -158,6 +160,7 @@ const kTABBAR_STATE_TAB_DRAGGING           = 'tab-dragging';
 const kTABBAR_STATE_BLOCKING               = 'blocking';
 const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
+const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 
 const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';

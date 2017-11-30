@@ -836,7 +836,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   }
 
   if (aTab.apiTab.status == 'loading')
-    aTab.classList.add('unsynchronized');
+    aTab.classList.add(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   if (aInfo.anchor && !isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
@@ -1048,9 +1048,9 @@ function onTabUnpinned(aTab) {
 
 function onTabStateChanged(aTab) {
   if (aTab.apiTab.status == 'loading')
-    aTab.classList.add('unsynchronized');
+    aTab.classList.add(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
-    aTab.classList.remove('unsynchronized');
+    aTab.classList.remove(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   reserveToUpdateLoadingState();
 }

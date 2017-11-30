@@ -727,24 +727,24 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  if (document.querySelector(`${kSELECTOR_VISIBLE_TAB}.loading:not(#dummy-tab)`))
+  if (document.querySelector(`#${gTabBar.id} ${kSELECTOR_VISIBLE_TAB}.loading`))
     document.documentElement.classList.add(kTABBAR_STATE_HAVE_LOADING_TAB);
   else
     document.documentElement.classList.remove(kTABBAR_STATE_HAVE_LOADING_TAB);
 }
 
 async function synchronizeThrobberAnimation() {
-  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.unsynchronized`);
+  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.${kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
   if (toBeSynchronizedTabs.length == 0)
     return;
 
   for (let tab of Array.slice(toBeSynchronizedTabs)) {
-    tab.classList.remove('unsynchronized');
+    tab.classList.remove(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   }
   await nextFrame();
-  document.documentElement.classList.add('synchronizing');
+  document.documentElement.classList.add(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
   await nextFrame();
-  document.documentElement.classList.remove('synchronizing');
+  document.documentElement.classList.remove(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
 }
 
 
