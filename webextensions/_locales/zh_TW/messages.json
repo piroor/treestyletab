@@ -18,6 +18,7 @@
     }},
   "tabbar.newTabButton.tooltip": { "message": "開新分頁" },
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "新容器分頁" },
+  "tabbar.newTabWithContexualIdentity.default": { "message": "Default" },
 
   "groupTab.label": { "message": "$TITLE$ 等",
     "placeholders": {
@@ -89,10 +90,12 @@
   "config.sidebarPosition.right": { "message": "右側用" },
   "config.sidebarPosition.description": { "message": "※此設定不會改變側邊欄的位置，點擊側邊欄標題列並勾選「將側邊欄移至右方」以更改其位置。" },
 
-  "config.scrollbarMode.caption": { "message": "Scrollbar" },
-  "config.scrollbarMode.default": { "message": "Default" },
-  "config.scrollbarMode.narrow":  { "message": "Narrow" },
-  "config.scrollbarMode.hide":    { "message": "Hide" },
+  "config.scrollbarMode.caption": { "message": "捲軸樣式" },
+  "config.scrollbarMode.default": { "message": "預設" },
+  "config.scrollbarMode.narrow":  { "message": "狹窄" },
+  "config.scrollbarMode.overlay": { "message": "覆蓋" },
+  "config.scrollbarMode.hide":    { "message": "隱藏" },
+  "config.scrollbarMode.descriptionForMac": { "message": "※「覆蓋」樣式僅在近期版本的 macOS 中有效" },
 
   "config.style.caption": { "message": "佈景主題" },
   "config.style.plain": { "message": "Plain" },
@@ -102,6 +105,7 @@
   "config.style.mixed": { "message": "Mixed" },
   "config.style.metal": { "message": "Metal" },
   "config.style.sidebar": { "message": "Sidebar" },
+  "config.style.none": { "message": "無裝飾(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
   "config.maxTreeLevel.before": { "message": "最多縮進" },
   "config.maxTreeLevel.after": { "message": "層分頁(負值表示無限制)" },
@@ -154,8 +158,15 @@
   "config.autoGroupNewTabsDelayOnNewWindow.before": { "message": "但開新視窗時，在" },
   "config.autoGroupNewTabsDelayOnNewWindow.after": { "message": "亳秒內開啟的分頁視為「首頁」而不自動群組" },
 
+  "config.inheritContextualIdentityToNewChildTab.label": { "message": "開新分頁時，自動繼承父分頁的容器類別" },
+
 
   "config.treeBehavior.caption": { "message": "樹狀結構"},
+
+  "config.moveFocusInTreeForClosedCurrentTab.caption": { "message": "關閉目前分頁時，若為最後一個子分頁則" },
+  "config.moveFocusInTreeForClosedCurrentTab.true": { "message": "切換到前一個分頁" },
+  "config.moveFocusInTreeForClosedCurrentTab.false": { "message": "切換到下一個分頁(Firefox 預設)" },
+  "config.moveFocusInTreeForClosedCurrentTab.description": { "message": "※ Firefox 內建設定「browser.tabs.selectOwnerOnClose」=「true」的行為優先於本設定。" },
 
   "config.parentTabBehaviorForChanges.caption": { "message": "子分頁在 Tree Style Tab 側邊欄以外移動或關閉父分頁時" },
   "config.parentTabBehaviorForChanges.always": { "message": "隨父分頁一併移動或關閉，無論側邊欄顯示狀態" },
