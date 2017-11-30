@@ -93,6 +93,7 @@
   "config.scrollbarMode.caption": { "message": "スクロールバーの表示" },
   "config.scrollbarMode.default": { "message": "通常表示" },
   "config.scrollbarMode.narrow":  { "message": "細く表示" },
+  "config.scrollbarMode.overlay": { "message": "重ねて表示" },
   "config.scrollbarMode.hide":    { "message": "なし" },
 
   "config.style.caption": { "message": "テーマ" },

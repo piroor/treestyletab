@@ -93,6 +93,7 @@
   "config.scrollbarMode.caption": { "message": "Scrollbar" },
   "config.scrollbarMode.default": { "message": "Default" },
   "config.scrollbarMode.narrow":  { "message": "Narrow" },
+  "config.scrollbarMode.overlay": { "message": "Overlay" },
   "config.scrollbarMode.hide":    { "message": "Hide" },
 
   "config.style.caption": { "message": "Theme" },
