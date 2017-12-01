@@ -64,7 +64,7 @@
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-active-text: var(--browser-fg-active, -moz-dialogtext);
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
-  --tab-dropmarker: var(--browser-fg, -moz-dialogtext
+  --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
 }
 
 .tab,
