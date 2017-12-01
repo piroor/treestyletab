@@ -23,7 +23,7 @@
   --tab-side-border: var(--browser-bg-darker, ThreeDLightShadow);
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
-  --tabbar-bg: var(--browser-bg-darker, ThreeDDarkShadow);
+  --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);
 }
 
 .tab,
