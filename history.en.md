@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Use system color instead Photon color scheme on Linux by default, on Plain, Flat, Vertigo, and Mixed theme.
+   * Apply extra margin for overlay-scrollbar on macOS only for overflow tab bar.
+   * Title editor and checkbox to toggle "temporary" status are avialable on group tabs.
+   * Group tab won't be closed automatically if it is not marked as "temporary".
+   * Don't output log for keyboard events.
  - 2.3.0 (2017.11.30)
    * Show scrollbar like narrowed by default, on Windows and Linux.
    * Add extra space for overlay-scrollbar on macOS.
