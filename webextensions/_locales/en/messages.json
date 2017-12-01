@@ -25,6 +25,7 @@
       "title": { "content": "$1", "example": "title" }
     }},
   "groupTab.label.default": { "message": "Group" },
+  "groupTab.temporary.label": { "message": "Temporary Group" },
 
   "bookmarkFolder.label": { "message": "$TITLE$ and more",
     "placeholders": {
