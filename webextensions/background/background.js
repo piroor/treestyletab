@@ -8,6 +8,7 @@
 gLogContext = 'BG';
 
 var gInitializing           = true;
+var gCachedTabbar           = {};
 var gSidebarOpenState       = new Map();
 var gSidebarOpenStateUpdateTimer;
 var gExternalListenerAddons = {};
@@ -228,6 +229,8 @@ function reserveToSaveTreeStructure(aHint) {
   var container = getTabsContainer(aHint);
   if (!container)
     return;
+
+  gCachedTabbar[container.windowId] = null; // clear dirty cache
 
   if (container.waitingToSaveTreeStructure)
     clearTimeout(container.waitingToSaveTreeStructure);

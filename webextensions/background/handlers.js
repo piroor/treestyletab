@@ -901,6 +901,13 @@ function onMessage(aMessage, aSender) {
         return { structure: structure };
       })();
 
+    case kCOMMAND_PUSH_TABBAR_CACHE:
+      gCachedTabbar[aMessage.window] = aMessage.cache;
+      return;
+
+    case kCOMMAND_PULL_TABBAR_CACHE:
+      return Promise.resolve(gCachedTabbar[aMessage.window] || null);
+
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       let tab = getTabById(aMessage.tab);
       if (!tab)
