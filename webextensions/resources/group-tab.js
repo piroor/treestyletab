@@ -42,7 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
   gTitle = document.querySelector('#title');
   gTitleField = document.querySelector('#title-field');
 
-  gTitle.addEventListener('dblclick', enterTitleEdit);
+  gTitle.addEventListener('click', aEvent => {
+    if (aEvent.button == 0 &&
+        !hasModifier(aEvent)) {
+      enterTitleEdit();
+      aEvent.stopPropagation();
+    }
+  });
   gTitleField.addEventListener('keypress', aEvent => {
     if (hasModifier(aEvent))
       return;
@@ -68,6 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
       case KeyEvent.DOM_VK_F2:
         aEvent.stopPropagation();
         break;
+    }
+  });
+  window.addEventListener('click', aEvent => {
+    if (aEvent.button == 0 &&
+        !hasModifier(aEvent)) {
+      gTitleField.value = gTitle.textContent;
+      exitTitleEdit();
+      aEvent.stopPropagation();
     }
   });
   window.addEventListener('keypress', aEvent => {
