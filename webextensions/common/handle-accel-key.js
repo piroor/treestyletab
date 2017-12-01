@@ -69,10 +69,10 @@
 
   function onKeyDown(aEvent) {
     const kCOMMAND_NOTIFY_START_TAB_SWITCH = 'treestyletab:notify-start-tab-switch';
-    console.log('onKeyDown '+JSON.stringify({
-      accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
-      ctrlTabEvent: isCtrlTabEvent(aEvent)
-    }));
+    //console.log('onKeyDown '+JSON.stringify({
+    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
+    //  ctrlTabEvent: isCtrlTabEvent(aEvent)
+    //}));
     if (isAccelKeyOnlyEvent(aEvent) ||
         isCtrlTabEvent(aEvent))
       browser.runtime.sendMessage({
@@ -82,11 +82,11 @@
 
   function onKeyUp(aEvent) {
     const kCOMMAND_NOTIFY_END_TAB_SWITCH = 'treestyletab:notify-end-tab-switch';
-    console.log('onKeyUp '+JSON.stringify({
-      accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
-      unshiftEvent: isAccelKeyUnshiftEvent(aEvent),
-      ctrlTabEvent: isCtrlTabEvent(aEvent)
-    }));
+    //console.log('onKeyUp '+JSON.stringify({
+    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
+    //  unshiftEvent: isAccelKeyUnshiftEvent(aEvent),
+    //  ctrlTabEvent: isCtrlTabEvent(aEvent)
+    //}));
     if (isAccelKeyOnlyEvent(aEvent) ||
         (!isAccelKeyUnshiftEvent(aEvent) &&
          !isCtrlTabEvent(aEvent)))
