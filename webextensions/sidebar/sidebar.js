@@ -289,6 +289,9 @@ function applyStyle() {
     case 'plain':
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
+    case 'systemcolors':
+      gStyleLoader.setAttribute('href', 'styles/square/systemcolors.css');
+      break;
     default:
       // as the base of customization. see also:
       // https://github.com/piroor/treestyletab/issues/1604
