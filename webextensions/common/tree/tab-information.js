@@ -135,7 +135,7 @@ function isGroupTab(aTab) {
 function isTemporaryGroupTab(aTab) {
   if (!isGroupTab(aTab))
     return false;
-  return aTab.apiTab.url.indexOf('&temporary=true') > -1;
+  return /[&?]temporary=true/.test(aTab.apiTab.url);
 }
 
 function isSelected(aTab) {
