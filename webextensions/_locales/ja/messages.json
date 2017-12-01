@@ -108,6 +108,10 @@
   "config.style.sidebar": { "message": "Sidebar" },
   "config.style.none": { "message": "装飾無し（※「サイドバー内用の追加のスタイル指定」でお好みの装飾を設定してください)" },
 
+  "config.colorScheme.caption": { "message": "配色" },
+  "config.colorScheme.photon": { "message": "Photon" },
+  "config.colorScheme.systemColor": { "message": "システムカラー" },
+
   "config.maxTreeLevel.before": { "message": "ツリーを" },
   "config.maxTreeLevel.after": { "message": "階層までインデント表示する（※負の値を指定した場合は無制限）" },
 
