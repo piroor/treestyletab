@@ -416,16 +416,16 @@ async function rebuildAll() {
     gMetricsData.add('rebuildAll (from cache)');
   }
   else {
-  let container = buildTabsContainerFor(gTargetWindow);
-  for (let apiTab of apiTabs) {
+    let container = buildTabsContainerFor(gTargetWindow);
+    for (let apiTab of apiTabs) {
     // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-    if (apiTab.id in gTabIdWrongToCorrect)
-      apiTab.id = gTabIdWrongToCorrect[apiTab.id];
-    let newTab = buildTab(apiTab, { existing: true, inRemote: true });
-    container.appendChild(newTab);
-    updateTab(newTab, apiTab, { forceApply: true });
-  }
-  gAllTabs.appendChild(container);
+      if (apiTab.id in gTabIdWrongToCorrect)
+        apiTab.id = gTabIdWrongToCorrect[apiTab.id];
+      let newTab = buildTab(apiTab, { existing: true, inRemote: true });
+      container.appendChild(newTab);
+      updateTab(newTab, apiTab, { forceApply: true });
+    }
+    gAllTabs.appendChild(container);
     gMetricsData.add('rebuildAll (from scratch)');
   }
   startObserveApiTabs();
