@@ -126,6 +126,7 @@ async function init() {
       onConfigChange('animation');
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
+      onConfigChange('colorScheme');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);

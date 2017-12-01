@@ -87,6 +87,7 @@ configs = new Configs({
   defaultStyle: 'mixed',
   defaultStyleOnDarwin: 'sidebar',
   defaultStyleOnLinux: 'plain',
+  colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
 
   faviconizePinnedTabs: true,
   faviconizedTabScale: 1.75,

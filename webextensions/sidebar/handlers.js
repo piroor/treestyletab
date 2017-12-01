@@ -1334,6 +1334,10 @@ function onConfigChange(aChangedKey) {
       }
       break;
 
+    case 'colorScheme':
+      document.documentElement.setAttribute('color-scheme', configs.colorScheme);
+      break;
+
     case 'narrowScrollbarSize':
       location.reload();
       break;
