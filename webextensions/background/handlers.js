@@ -275,23 +275,6 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   cleanupNeedlssGroupTab(ancestors);
 }
 
-function cleanupNeedlssGroupTab(aTabs) {
-  log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
-  var tabsToBeRemoved = [];
-  for (let tab of aTabs) {
-    if (!isTemporaryGroupTab(tab))
-      break;
-    if (getChildTabs(tab).length > 1)
-      break;
-    let lastChild = getFirstChildTab(tab);
-    if (lastChild && !isTemporaryGroupTab(lastChild))
-      break;
-    tabsToBeRemoved.push(tab);
-  }
-  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
-  removeTabsInternally(tabsToBeRemoved);
-}
-
 async function closeChildTabs(aParent) {
   var tabs = getDescendantTabs(aParent);
   //if (!fireTabSubtreeClosingEvent(aParent, tabs))
@@ -786,7 +769,7 @@ function onTabDetached(aTab, aDetachInfo) {
       .catch(handleMissingTabError);
   }
   if (isGroupTab(aDetachInfo.oldParentTab))
-    reserveToRemoveNeedlessGroupTab(aDetachInfo.oldParentTab);
+    reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);

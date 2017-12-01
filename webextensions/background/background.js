@@ -533,22 +533,35 @@ async function updateSubtreeCollapsed(aTab) {
   );
 }
 
-function reserveToRemoveNeedlessGroupTab(aTabOrTabs) {
+function reserveToCleanupNeedlessGroupTab(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
     if (!ensureLivingTab(tab))
       continue;
-    if (tab.reservedRemoveNeedlessGroupTab)
-      clearTimeout(tab.reservedRemoveNeedlessGroupTab);
-    tab.reservedRemoveNeedlessGroupTab = setTimeout(() => {
-      delete tab.reservedRemoveNeedlessGroupTab;
-      removeNeedlessGroupTab(tab);
+    if (tab.reservedCleanupNeedlessGroupTab)
+      clearTimeout(tab.reservedCleanupNeedlessGroupTab);
+    tab.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+      delete tab.reservedCleanupNeedlessGroupTab;
+      cleanupNeedlssGroupTab(tab);
     }, 100);
   }
 }
 
-async function removeNeedlessGroupTab(aTab) {
-  if (hasChildTabs(aTab))
-    return;
-  removeTabInternally(aTab);
+function cleanupNeedlssGroupTab(aTabs) {
+  if (!Array.isArray(aTabs))
+    aTabs = [aTabs];
+  log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
+  var tabsToBeRemoved = [];
+  for (let tab of aTabs) {
+    if (!isTemporaryGroupTab(tab))
+      break;
+    if (getChildTabs(tab).length > 1)
+      break;
+    let lastChild = getFirstChildTab(tab);
+    if (lastChild && !isTemporaryGroupTab(lastChild))
+      break;
+    tabsToBeRemoved.push(tab);
+  }
+  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
+  removeTabsInternally(tabsToBeRemoved);
 }
