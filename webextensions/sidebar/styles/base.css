@@ -25,6 +25,7 @@
                    min-height    var(--collapse-animation),
                    min-width     var(--collapse-animation),
                    opacity       var(--collapse-animation),
+                   padding       var(--collapse-animation), /* for extra margin on overlay-scrollbar mode */
                    right         var(--collapse-animation),
                    top           var(--collapse-animation);
   --tab-indent-animation: margin-left   var(--indent-animation),
