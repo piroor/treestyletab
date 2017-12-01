@@ -83,10 +83,10 @@ configs = new Configs({
   // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
 
-  style: '',
-  defaultStyle: 'mixed',
-  defaultStyleOnDarwin: 'sidebar',
-  defaultStyleOnLinux: 'plain',
+  style:
+    /^Linux/i.test(navigator.platform) ? 'plain' :
+      /^Mac/i.test(navigator.platform) ? 'sidebar' :
+        'mixed',
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
 
   faviconizePinnedTabs: true,

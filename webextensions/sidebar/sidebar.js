@@ -222,21 +222,8 @@ function destroy() {
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
 
-function getChosenStyle() {
-  var style = configs.style;
-  if (!style && navigator.platform.indexOf('Linux') == 0)
-    style = configs.defaultStyleLinux;
-  if (!style && navigator.platform.indexOf('Darwin') == 0)
-    style = configs.defaultStyleDarwin;
-  if (!style)
-    style = configs.defaultStyle;
-  if (!configs.style)
-    configs.style = style; // cache auto-detected default
-  return style;
-}
-
 function applyStyle() {
-  gStyle = getChosenStyle();
+  gStyle = configs.style;
   switch (gStyle) {
     case 'metal':
       gStyleLoader.setAttribute('href', 'styles/metal/metal.css');
