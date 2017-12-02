@@ -173,6 +173,7 @@ async function init() {
   gInitializing = false;
 
   updateVisualMaxTreeLevel();
+  if (!restoredFromCache) {
   updateIndent({ force: true });
   updateLoadingState();
   synchronizeThrobberAnimation();
@@ -183,6 +184,7 @@ async function init() {
     updateTabTooltip(tab);
   }
   reserveToUpdateCachedTabbar();
+  }
 
   unblockUserOperations({ throbber: true });
 
