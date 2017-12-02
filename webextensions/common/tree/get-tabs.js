@@ -74,8 +74,9 @@ function getTabsContainer(aHint) {
 
   if (aHint &&
       typeof aHint == 'object' &&
-      'windowId' in aHint)
-    return document.querySelector(`#window-${aHint.windowId}`);
+      aHint.dataset &&
+      aHint.dataset.windowId)
+    return document.querySelector(`#window-${aHint.dataset.windowId}`);
 
   var tab = getTabFromChild(aHint);
   if (tab)
