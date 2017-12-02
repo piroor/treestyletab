@@ -196,8 +196,7 @@ configs = new Configs({
   cachedExternalAddons: [],
   notifiedFeaturesVersion: 0,
 
-  cacheTabsForRestart: true,
-  cacheTabbarForReopen: true,
+  useCachedTree: true,
 
   requestingPermissions: null,
 

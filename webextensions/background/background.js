@@ -132,7 +132,7 @@ async function rebuildAll() {
   var restoredFromCache = {};
   await Promise.all(windows.map(aWindow =>
     gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
-      if (configs.cacheTabsForRestart) {
+      if (configs.useCachedTree) {
         let [actualSignature, cachedSignature, cache] = await Promise.all([
           getWindowSignature(aWindow.tabs),
           browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_SIGNATURE),
@@ -252,7 +252,8 @@ async function readyForExternalAddons() {
 // save/load tree structure
 
 function reserveToCacheTree(aHint) {
-  if (gInitializing)
+  if (gInitializing ||
+      !configs.useCachedTree)
     return;
 
   var container = getTabsContainer(aHint);
@@ -271,7 +272,8 @@ function reserveToCacheTree(aHint) {
 }
 async function cacheTree(aWindowId) {
   var container = getTabsContainer(aWindowId);
-  if (!container)
+  if (!container ||
+      !configs.useCachedTree)
     return;
   log('save cache for ', aWindowId);
   browser.sessions.setWindowValue(aWindowId, kWINDOW_STATE_CACHED_TABS, {

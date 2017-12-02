@@ -91,7 +91,7 @@ async function init() {
           gTabIdWrongToCorrect = response.wrongToCorrect;
           gTabIdCorrectToWrong = response.correctToWrong;
         }),
-        configs.cacheTabbarForReopen &&
+        configs.useCachedTree &&
           gMetricsData.addAsync('read cached sidebar contents', async () => {
             let tabsDirty, collapsedDirty;
             [cachedContents, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
@@ -111,7 +111,7 @@ async function init() {
             browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
             browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE);
           }),
-        configs.cacheTabbarForReopen &&
+        configs.useCachedTree &&
           gMetricsData.addAsync('get actual signature', async () => {
             actualSignature = await getWindowSignature(gTargetWindow);
           })
@@ -822,7 +822,7 @@ async function synchronizeThrobberAnimation() {
 
 function reserveToUpdateCachedTabbar() {
   if (gInitializing ||
-      !configs.cacheTabbarForReopen)
+      !configs.useCachedTree)
     return;
 
   // clear dirty cache
@@ -836,6 +836,8 @@ function reserveToUpdateCachedTabbar() {
   }, 500);
 }
 function updateCachedTabbar() {
+  if (!configs.useCachedTree)
+    return;
   browser.sessions.setWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR, {
     version: kSIDEBAR_CONTENTS_VERSION,
     tabbar:  {
