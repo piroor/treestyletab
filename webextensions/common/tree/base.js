@@ -125,8 +125,13 @@ async function getWindowSignature(aWindowIdOrTabs) {
   if (typeof aWindowIdOrTabs == 'number') {
     aWindowIdOrTabs = await browser.tabs.query({ windowId: aWindowIdOrTabs });
   }
-  var uniqueIds = await Promise.all(aWindowIdOrTabs.map(aTab => browser.sessions.getTabValue(aTab.id, kPERSISTENT_ID)));
-  return uniqueIds.map(aId => aId && aId.id || '?').join('\n');
+  var uniqueIds = await getUniqueIds(aWindowIdOrTabs);
+  return uniqueIds.join('\n');
+}
+
+async function getUniqueIds(aApiTabs) {
+  var uniqueIds = await Promise.all(aApiTabs.map(aApiTab => browser.sessions.getTabValue(aApiTab.id, kPERSISTENT_ID)));
+  return uniqueIds.map(aId => aId && aId.id || '?');
 }
 
 function buildTab(aApiTab, aOptions = {}) {

@@ -326,16 +326,28 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
       log(`skip tree structure restoration for window ${aWindow.id} (restored from cache)`);
       return;
     }
-    var structure = await browser.sessions.getWindowValue(
-      aWindow.id,
-      kWINDOW_STATE_TREE_STRUCTURE
-    );
-    gMetricsData.add('loadTreeStructure: browser.sessions.getWindowValue');
     var tabs = getAllTabs(aWindow.id);
-    var windowStateCompletelyApplied = structure && structure.length == tabs.length;
-    if (structure) {
-      applyTreeStructureToTabs(tabs, structure);
-      gMetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
+    var [structure, uniqueIds] = await Promise.all([
+      browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_TREE_STRUCTURE),
+      getUniqueIds(tabs.map(aTab => aTab.apiTab))
+    ]);
+    gMetricsData.add('loadTreeStructure: read stored data');
+    var windowStateCompletelyApplied = false;
+    if (structure && structure.length <= tabs.length) {
+      uniqueIds = uniqueIds.map(aId => aId.id);
+      let tabsOffset, windowStateCompletelyApplied;
+      if (structure[0].id) {
+        tabsOffset = uniqueIds.join('\n').indexOf(structure.map(aItem => aItem.id).join('\n'));
+        windowStateCompletelyApplied = tabsOffset > -1;
+      }
+      else {
+        tabsOffset = 0;
+        windowStateCompletelyApplied = structure.length == tabs.length;
+      }
+      if (tabsOffset > -1) {
+        applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
+        gMetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
+      }
     }
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);

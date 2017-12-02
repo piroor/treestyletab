@@ -1511,6 +1511,7 @@ function getTreeStructureFromTabs(aTabs, aOptions = {}) {
   ).map((aParentIndex, aIndex) => {
     var tab = aTabs[aIndex];
     var item = {
+      id:        tab.getAttribute(kPERSISTENT_ID),
       parent:    aParentIndex,
       collapsed: isSubtreeCollapsed(tab)
     };
