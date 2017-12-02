@@ -76,57 +76,51 @@ async function init() {
   gMetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
 
   var cachedContents;
-  await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
-    gMetricsData.addAsync('misc', async () => {
-      applyUserStyleRules();
-      gMetricsData.add('applyUserStyleRules');
-      calculateDefaultSizes();
-      gMetricsData.add('calculateDefaultSizes');
-      document.documentElement.classList.remove('initializing');
-    }),
-    gMetricsData.addAsync('kCOMMAND_PULL_TAB_ID_TABLES', async () => {
-      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-      let response = await browser.runtime.sendMessage({
-        type: kCOMMAND_PULL_TAB_ID_TABLES
-      });
-      gTabIdWrongToCorrect = response.wrongToCorrect;
-      gTabIdCorrectToWrong = response.correctToWrong;
-    }),
-    configs.cacheTabbarForReopen &&
-      gMetricsData.addAsync('kCOMMAND_PULL_TABBAR_CACHE', async () => {
-        cachedContents = await browser.runtime.sendMessage({
-          type:   kCOMMAND_PULL_TABBAR_CACHE,
-          window: gTargetWindow
-        });
-        if (cachedContents && cachedContents.version != kCACHE_VERSION)
-          cachedContents = null;
-      })
-  ]));
-  gMetricsData.add('parallel initialization tasks: done');
-
-  var restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
-  startObserveApiTabs();
-
-  browser.runtime.sendMessage({
-    type:     kNOTIFY_SIDEBAR_OPENED,
-    windowId: gTargetWindow
-  });
-  if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
-    browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
-
-  await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
-    gMetricsData.addAsync('main', async () => {
-      updateTabbarLayout({ justNow: true });
-    }),
-    !restoredFromCache && gMetricsData.addAsync('inheritTreeStructure', async () => {
-      await inheritTreeStructure();
-    })
-  ]));
-  gMetricsData.add('parallel initialization tasks: done');
-
+  var restoredFromCache;
   var scrollPosition;
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
-    gMetricsData.addAsync('main task: notify ,update, restore, and so on', async () => {
+    gMetricsData.addAsync('main', async () => {
+      await gMetricsData.addAsync('getting basic information and cache', Promise.all([
+        gMetricsData.addAsync('kCOMMAND_PULL_TAB_ID_TABLES', async () => {
+          // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+          let response = await browser.runtime.sendMessage({
+            type: kCOMMAND_PULL_TAB_ID_TABLES
+          });
+          gTabIdWrongToCorrect = response.wrongToCorrect;
+          gTabIdCorrectToWrong = response.correctToWrong;
+        }),
+        configs.cacheTabbarForReopen &&
+          gMetricsData.addAsync('kCOMMAND_PULL_TABBAR_CACHE', async () => {
+            cachedContents = await browser.runtime.sendMessage({
+              type:   kCOMMAND_PULL_TABBAR_CACHE,
+              window: gTargetWindow
+            });
+            if (cachedContents && cachedContents.version != kCACHE_VERSION)
+              cachedContents = null;
+          })
+      ]));
+      gMetricsData.add('getting basic information and cache: done');
+
+      restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
+      startObserveApiTabs();
+
+      browser.runtime.sendMessage({
+        type:     kNOTIFY_SIDEBAR_OPENED,
+        windowId: gTargetWindow
+      });
+      if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
+        browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
+
+      await gMetricsData.addAsync('inherit tree and update layout', Promise.all([
+        gMetricsData.addAsync('main', async () => {
+          updateTabbarLayout({ justNow: true });
+        }),
+        !restoredFromCache && gMetricsData.addAsync('inheritTreeStructure', async () => {
+          await inheritTreeStructure();
+        })
+      ]));
+      gMetricsData.add('inherit tree and update layout: done');
+
       document.addEventListener('mousedown', onMouseDown);
       document.addEventListener('mouseup', onMouseUp);
       document.addEventListener('click', onClick);
@@ -154,10 +148,20 @@ async function init() {
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
     }),
+    gMetricsData.addAsync('apply styles', async () => {
+      applyUserStyleRules();
+      gMetricsData.add('applyUserStyleRules');
+      calculateDefaultSizes();
+      gMetricsData.add('calculateDefaultSizes');
+      document.documentElement.classList.remove('initializing');
+    }),
     gMetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
       startObserveContextualIdentities();
+    }),
+    gMetricsData.addAsync('tabContextMenu.init', async () => {
+      tabContextMenu.init();
     }),
     gMetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       var results = await browser.runtime.sendMessage([
@@ -174,12 +178,8 @@ async function init() {
     }),
     gMetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
-    }),
-    gMetricsData.addAsync('tabContextMenu.init', async () => {
-      tabContextMenu.init();
     })
   ]));
-  gMetricsData.add('parallel initialization tasks: done');
 
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
