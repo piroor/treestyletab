@@ -90,13 +90,22 @@ async function init() {
           gTabIdCorrectToWrong = response.correctToWrong;
         }),
         configs.cacheTabbarForReopen &&
-          gMetricsData.addAsync('kCOMMAND_PULL_TABBAR_CACHE', async () => {
-            cachedContents = await browser.runtime.sendMessage({
-              type:   kCOMMAND_PULL_TABBAR_CACHE,
-              window: gTargetWindow
-            });
-            if (cachedContents && cachedContents.version != kCACHE_VERSION)
+          gMetricsData.addAsync('read cached sidebar contents', async () => {
+            let tabsDirty, collapsedDirty;
+            [cachedContents, tabsDirty, collapsedDirty] = await Promise.all([
+              browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR),
+              browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+              browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
+            ]);
+            if (cachedContents && cachedContents.version == kCACHE_VERSION) {
+              cachedContents.tabsDirty      = tabsDirty;
+              cachedContents.collapsedDirty = collapsedDirty;
+            }
+            else {
               cachedContents = null;
+            }
+            browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY)
+            browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
           })
       ]));
       gMetricsData.add('getting basic information and cache: done');
@@ -429,13 +438,13 @@ async function rebuildAll(aCache) {
         .map(getTabById)
         .filter(aTab => !!aTab);
       aTab.parentTab = getTabById(aTab.getAttribute(kPARENT));
-      if (aCache.needUpdateTab) {
+      if (aCache.tabsDirty) {
         updateTab(aTab, aTab.apiTab, { forceApply: true });
         if (aTab.apiTab.active)
           updateTabFocused(aTab);
       }
     });
-    if (aCache.needUpdateCollapsed) {
+    if (aCache.collapsedDirty) {
       let response = await browser.runtime.sendMessage({
         type:     kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: gTargetWindow
@@ -821,11 +830,7 @@ function reserveToUpdateCachedTabbar() {
     return;
 
   // clear dirty cache
-  browser.runtime.sendMessage({
-    type:   kCOMMAND_PUSH_TABBAR_CACHE,
-    window: gTargetWindow,
-    cache:  null
-  });
+  browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR);
 
   if (updateCachedTabbar.waiting)
     clearTimeout(updateCachedTabbar.waiting);
@@ -835,20 +840,16 @@ function reserveToUpdateCachedTabbar() {
   }, 500);
 }
 function updateCachedTabbar() {
-  browser.runtime.sendMessage({
-    type:   kCOMMAND_PUSH_TABBAR_CACHE,
-    window: gTargetWindow,
-    cache:  {
-      version: kCACHE_VERSION,
-      tabbar:  {
-        contents: gAllTabs.innerHTML,
-        style:    gTabBar.getAttribute('style')
-      },
-      indent:  {
-        lastMaxLevel:  gLastMaxLevel,
-        lastMaxIndent: gLastMaxIndent,
-        definition:    gIndentDefinition.textContent
-      }
+  browser.sessions.setWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR, {
+    version: kCACHE_VERSION,
+    tabbar:  {
+      contents: gAllTabs.innerHTML,
+      style:    gTabBar.getAttribute('style')
+    },
+    indent:  {
+      lastMaxLevel:  gLastMaxLevel,
+      lastMaxIndent: gLastMaxIndent,
+      definition:    gIndentDefinition.textContent
     }
   });
 }

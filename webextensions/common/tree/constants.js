@@ -28,8 +28,6 @@ const kCOMMAND_NOTIFY_END_TAB_SWITCH          = 'treestyletab:notify-end-tab-swi
 const kCOMMAND_NOTIFY_PERMISSIONS_GRANTED     = 'treestyletab:notify-permissions-granted';
 const kCOMMAND_NOTIFY_TAB_RESTORING           = 'treestyletab:notify-tab-restoring';
 const kCOMMAND_NOTIFY_TAB_RESTORED            = 'treestyletab:notify-tab-restored';
-const kCOMMAND_PUSH_TABBAR_CACHE              = 'treestyletab:push-tabbar-cache';
-const kCOMMAND_PULL_TABBAR_CACHE              = 'treestyletab:pull-tabbar-cache';
 
 const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';
@@ -170,6 +168,9 @@ const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';
 
 const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
+const kWINDOW_STATE_CACHED_SIDEBAR  = 'cached-sidebar-contents';
+const kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY = 'cached-sidebar-contents:tabs-dirty';
+const kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY = 'cached-sidebar-contents:collapsed-dirty';
 
 const kCOUNTER_ROLE_ALL_TABS       = 1;
 const kCOUNTER_ROLE_CONTAINED_TABS = 2;
