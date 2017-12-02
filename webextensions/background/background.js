@@ -233,7 +233,7 @@ function reserveToSaveTreeStructure(aHint) {
     clearTimeout(container.waitingToSaveTreeStructure);
   container.waitingToSaveTreeStructure = setTimeout((aWindowId) => {
     saveTreeStructure(aWindowId);
-  }, 150, container.windowId);
+  }, 150, parseInt(container.dataset.windowId));
 }
 async function saveTreeStructure(aWindowId) {
   var container = getTabsContainer(aWindowId);
