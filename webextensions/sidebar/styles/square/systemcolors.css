@@ -31,7 +31,7 @@
     /*mix-blend-mode: multiply;*/
 }
 
-.tab:not(.collapsed),
+.tab,
 .newtab-button-box {
     border-style: solid;
 }
