@@ -154,11 +154,11 @@ function hasChildTabs(aParent) {
 }
 
 function getLabelWithDescendants(aTab) {
-  var label = [`* ${aTab.label}`];
+  var label = [`* ${aTab.dataset.label}`];
   for (let child of getChildTabs(aTab)) {
-    if (!child.labelWithDescendants)
-      child.labelWithDescendants = getLabelWithDescendants(child);
-    label.push(child.labelWithDescendants.replace(/^/gm, '  '));
+    if (!child.dataset.labelWithDescendants)
+      child.dataset.labelWithDescendants = getLabelWithDescendants(child);
+    label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
   }
   return label.join('\n');
 }
