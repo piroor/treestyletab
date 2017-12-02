@@ -144,10 +144,9 @@ async function rebuildAll() {
             cache.version == kBACKGROUND_CONTENTS_VERSION) {
           log(`restore tabs for ${aWindow.id} from cache`);
           range.insertNode(range.createContextualFragment(cache.tabs));
-          getAllTabs(aWindow.id).forEach((aTab, aIndex) => {
-            restoreCachedTab(aTab, aWindow.tabs[aIndex], {
-              dirty: true
-            });
+          getTabsContainer(aWindow.id).dataset.windowId = aWindow.id;
+          restoreCachedTabs(getAllTabs(aWindow.id), aWindow.tabs, {
+            dirty: true
           });
           restoredFromCache[aWindow.id] = true;
           return;

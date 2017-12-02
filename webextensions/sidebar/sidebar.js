@@ -437,10 +437,9 @@ async function rebuildAll(aCache) {
   if (aCache) {
     gTabBar.setAttribute('style', aCache.style);
     gAllTabs.innerHTML = aCache.contents;
-    getAllTabs().forEach((aTab, aIndex) => {
-      restoreCachedTab(aTab, apiTabs[aIndex], {
-        dirty: aCache.tabsDirty
-      });
+    getTabsContainer(gTargetWindow).dataset.windowId = gTargetWindow;
+    restoreCachedTabs(getAllTabs(), apiTabs, {
+      dirty: aCache.tabsDirty
     });
     if (aCache.collapsedDirty) {
       let response = await browser.runtime.sendMessage({

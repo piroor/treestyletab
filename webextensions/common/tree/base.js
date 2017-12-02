@@ -179,6 +179,20 @@ function buildTab(aApiTab, aOptions = {}) {
   return tab;
 }
 
+function restoreCachedTabs(aTabs, aApiTabs, aOptions = {}) {
+  var idMap = {};
+  getAllTabs().forEach((aTab, aIndex) => {
+    var oldId = aTab.id;
+    aTab.id = makeTabId(aApiTabs[aIndex]);
+    idMap[oldId] = aTab.id;
+  });
+  aTabs.forEach((aTab, aIndex) => {
+    restoreCachedTab(aTab, aApiTabs[aIndex], {
+      idMap: idMap,
+      dirty: aOptions.dirty
+    });
+  });
+}
 function restoreCachedTab(aTab, aApiTab, aOptions = {}) {
   aTab.apiTab = aApiTab;
   updateUniqueId(aTab);
@@ -186,11 +200,20 @@ function restoreCachedTab(aTab, aApiTab, aOptions = {}) {
   aTab.closedWhileActive = new Promise((aResolve, aReject) => {
     aTab._resolveClosedWhileActive = aResolve;
   });
+
+  var idMap = aOptions.idMap;
+
   aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
     .split('|')
-    .map(getTabById)
+    .map(aOldId => getTabById(idMap[aOldId]))
     .filter(aTab => !!aTab);
-  aTab.parentTab = getTabById(aTab.getAttribute(kPARENT));
+  if (aTab.childTabs.length > 0)
+    aTab.setAttribute(kCHILDREN, `|${aTab.childTabs.map(aTab => aTab.id).join('|')}|`);
+
+  aTab.parentTab = getTabById(idMap[aTab.getAttribute(kPARENT)]);
+  if (aTab.parentTab)
+    aTab.setAttribute(kPARENT, aTab.parentTab.id);
+
   if (aOptions.dirty) {
     updateTab(aTab, aTab.apiTab, { forceApply: true });
     if (aTab.apiTab.active)
