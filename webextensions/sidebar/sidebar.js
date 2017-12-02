@@ -98,6 +98,8 @@ async function init() {
           type:   kCOMMAND_PULL_TABBAR_CACHE,
           window: gTargetWindow
         });
+        if (cachedContents && cachedContents.version != kCACHE_VERSION)
+          cachedContents = null;
       })
   ]));
   gMetricsData.add('parallel initialization tasks: done');
@@ -792,6 +794,8 @@ async function synchronizeThrobberAnimation() {
 }
 
 
+const kCACHE_VERSION = 1;
+
 function reserveToUpdateCachedTabbar() {
   if (gInitializing ||
       !configs.cacheTabbarForReopen)
@@ -816,8 +820,9 @@ function updateCachedTabbar() {
     type:   kCOMMAND_PUSH_TABBAR_CACHE,
     window: gTargetWindow,
     cache:  {
-      tabbar: gAllTabs.innerHTML,
-      indent: {
+      version: kCACHE_VERSION,
+      tabbar:  gAllTabs.innerHTML,
+      indent:  {
         lastMaxLevel:  gLastMaxLevel,
         lastMaxIndent: gLastMaxIndent,
         definition:    gIndentDefinition.textContent
