@@ -126,7 +126,7 @@ async function getWindowSignature(aWindowIdOrTabs) {
     aWindowIdOrTabs = await browser.tabs.query({ windowId: aWindowIdOrTabs });
   }
   var uniqueIds = await Promise.all(aWindowIdOrTabs.map(aTab => browser.sessions.getTabValue(aTab.id, kPERSISTENT_ID)));
-  return uniqueIds.map(aId => aId.id || '?').join('\n');
+  return uniqueIds.map(aId => aId && aId.id || '?').join('\n');
 }
 
 function buildTab(aApiTab, aOptions = {}) {
