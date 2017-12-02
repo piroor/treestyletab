@@ -229,6 +229,8 @@ function reserveToSaveTreeStructure(aHint) {
   if (!container)
     return;
 
+  container.cachedSidebarContents = null; // clear dirty cache
+
   if (container.waitingToSaveTreeStructure)
     clearTimeout(container.waitingToSaveTreeStructure);
   container.waitingToSaveTreeStructure = setTimeout((aWindowId) => {

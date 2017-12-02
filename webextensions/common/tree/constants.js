@@ -28,6 +28,8 @@ const kCOMMAND_NOTIFY_END_TAB_SWITCH          = 'treestyletab:notify-end-tab-swi
 const kCOMMAND_NOTIFY_PERMISSIONS_GRANTED     = 'treestyletab:notify-permissions-granted';
 const kCOMMAND_NOTIFY_TAB_RESTORING           = 'treestyletab:notify-tab-restoring';
 const kCOMMAND_NOTIFY_TAB_RESTORED            = 'treestyletab:notify-tab-restored';
+const kCOMMAND_PUSH_TABBAR_CACHE              = 'treestyletab:push-tabbar-cache';
+const kCOMMAND_PULL_TABBAR_CACHE              = 'treestyletab:pull-tabbar-cache';
 
 const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';

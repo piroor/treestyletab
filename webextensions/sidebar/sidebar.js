@@ -84,8 +84,7 @@ async function init() {
   ]));
   gMetricsData.add('parallel initialization tasks: done');
 
-  await rebuildAll();
-  gMetricsData.add('rebuildAll');
+  var restoredFromCache = await rebuildAll();
 
   browser.runtime.sendMessage({
     type:     kNOTIFY_SIDEBAR_OPENED,
@@ -98,7 +97,7 @@ async function init() {
     gMetricsData.addAsync('main', async () => {
       updateTabbarLayout({ justNow: true });
     }),
-    gMetricsData.addAsync('inheritTreeStructure', async () => {
+    !restoredFromCache && gMetricsData.addAsync('inheritTreeStructure', async () => {
       await inheritTreeStructure();
     })
   ]));
@@ -174,14 +173,17 @@ async function init() {
   gInitializing = false;
 
   updateVisualMaxTreeLevel();
-  updateIndent({ force: true });
-  updateLoadingState();
-  synchronizeThrobberAnimation();
-  for (let tab of getAllTabs()) {
-    updateTabTwisty(tab);
-    updateTabClosebox(tab);
-    updateTabsCount(tab);
-    updateTabTooltip(tab);
+  if (!restoredFromCache) {
+    updateIndent({ force: true });
+    updateLoadingState();
+    synchronizeThrobberAnimation();
+    for (let tab of getAllTabs()) {
+      updateTabTwisty(tab);
+      updateTabClosebox(tab);
+      updateTabsCount(tab);
+      updateTabTooltip(tab);
+    }
+    reserveToUpdateCachedTabbar();
   }
 
   unblockUserOperations({ throbber: true });
@@ -392,17 +394,44 @@ async function rebuildAll() {
   gTargetWindow = apiTabs[0].windowId;
   gLogContext   = `Sidebar-${gTargetWindow}`;
   clearAllTabsContainers();
-  var container = buildTabsContainerFor(gTargetWindow);
-  for (let apiTab of apiTabs) {
-    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-    if (apiTab.id in gTabIdWrongToCorrect)
-      apiTab.id = gTabIdWrongToCorrect[apiTab.id];
-    let newTab = buildTab(apiTab, { existing: true, inRemote: true });
-    container.appendChild(newTab);
-    updateTab(newTab, apiTab, { forceApply: true });
+
+  var cache = configs.cacheTabbarForReopen && await browser.runtime.sendMessage({
+    type:   kCOMMAND_PULL_TABBAR_CACHE,
+    window: gTargetWindow
+  });
+
+  if (cache) {
+    gAllTabs.innerHTML = cache;
+    getAllTabs().forEach((aTab, aIndex) => {
+      aTab.apiTab = apiTabs[aIndex];
+      updateUniqueId(aTab);
+      aTab.opened = Promise.resolve(true);
+      aTab.closedWhileActive = new Promise((aResolve, aReject) => {
+        aTab._resolveClosedWhileActive = aResolve;
+      });
+      aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
+        .split('|')
+        .map(getTabById)
+        .filter(aTab => !!aTab);
+      aTab.parentTab = getTabById(aTab.getAttribute(kPARENT));
+    });
+    gMetricsData.add('rebuildAll (from cache)');
   }
-  gAllTabs.appendChild(container);
+  else {
+    let container = buildTabsContainerFor(gTargetWindow);
+    for (let apiTab of apiTabs) {
+      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+      if (apiTab.id in gTabIdWrongToCorrect)
+        apiTab.id = gTabIdWrongToCorrect[apiTab.id];
+      let newTab = buildTab(apiTab, { existing: true, inRemote: true });
+      container.appendChild(newTab);
+      updateTab(newTab, apiTab, { forceApply: true });
+    }
+    gAllTabs.appendChild(container);
+    gMetricsData.add('rebuildAll (from scratch)');
+  }
   startObserveApiTabs();
+  return !!cache;
 }
 
 async function inheritTreeStructure() {
@@ -734,6 +763,34 @@ async function synchronizeThrobberAnimation() {
   document.documentElement.classList.add(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
   await nextFrame();
   document.documentElement.classList.remove(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
+}
+
+
+function reserveToUpdateCachedTabbar() {
+  if (gInitializing ||
+      !configs.cacheTabbarForReopen)
+    return;
+
+  // clear dirty cache
+  browser.runtime.sendMessage({
+    type:   kCOMMAND_PUSH_TABBAR_CACHE,
+    window: gTargetWindow,
+    cache:  null
+  });
+
+  if (updateCachedTabbar.waiting)
+    clearTimeout(updateCachedTabbar.waiting);
+  updateCachedTabbar.waiting = setTimeout(() => {
+    delete updateCachedTabbar.waiting;
+    updateCachedTabbar();
+  }, 500);
+}
+function updateCachedTabbar() {
+  browser.runtime.sendMessage({
+    type:   kCOMMAND_PUSH_TABBAR_CACHE,
+    window: gTargetWindow,
+    cache:  gAllTabs.innerHTML
+  });
 }
 
 

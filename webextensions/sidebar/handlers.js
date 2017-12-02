@@ -668,18 +668,22 @@ function onTabFaviconUpdated(aTab, aURL) {
     tab:   aTab.apiTab,
     url:   aURL
   });
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabLabelUpdated(aTab) {
   reserveToUpdateTabTooltip(aTab);
+  reserveToUpdateCachedTabbar();
 }
 
 function onParentTabUpdated(aTab) {
   updateTabSoundButtonTooltip(aTab);
+  reserveToUpdateCachedTabbar();
 }
 
 function updateTabSoundButtonTooltip(aTab) {
@@ -690,11 +694,13 @@ function updateTabSoundButtonTooltip(aTab) {
     tooltip = browser.i18n.getMessage('tab.soundButton.playing.tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabFocused(aTab) {
   tabContextMenu.close();
   scrollToTab(aTab);
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabOpening(aTab, aInfo = {}) {
@@ -732,6 +738,7 @@ function onTabOpened(aTab, aInfo = {}) {
     reason:  kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
   });
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabClosed(aTab, aCloseInfo) {
@@ -758,6 +765,7 @@ function onTabClosed(aTab, aCloseInfo) {
 }
 
 async function onTabCompletelyClosed(aTab) {
+  reserveToUpdateCachedTabbar();
   if (!configs.animation)
     return;
 
@@ -765,6 +773,7 @@ async function onTabCompletelyClosed(aTab) {
     let tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
     setTimeout(() => {
+      reserveToUpdateCachedTabbar();
       aResolve();
     }, configs.collapseDuration);
   });
@@ -800,10 +809,12 @@ function onTabMoved(aTab) {
     timeout: configs.collapseDuration
   });
   reserveToUpdateTabTooltip(getParentTab(aTab));
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabLevelChanged(aTab) {
   reserveToUpdateIndent();
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabDetachedFromWindow(aTab) {
@@ -815,6 +826,7 @@ function onTabDetachedFromWindow(aTab) {
   detachTab(aTab, {
     dontUpdateIndent: true
   });
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab, aInfo = {}) {
@@ -829,6 +841,8 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   //log('onTabCollapsedStateChanging ', dumpTab(aTab), aInfo);
   if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
+
+  reserveToUpdateCachedTabbar();
 
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
@@ -908,6 +922,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 
   // this is very required for no animation case!
   reserveToUpdateTabbarLayout({ reason: aOptions.reason });
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -916,6 +931,7 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
     return;
 
   reserveToUpdateLoadingState();
+  reserveToUpdateCachedTabbar();
 
   if (configs.animation &&
       !aInfo.justNow &&
@@ -1008,6 +1024,7 @@ function onTabAttached(aTab, aInfo = {}) {
   reserveToUpdateTabTooltip(aInfo.parent);
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
+  reserveToUpdateCachedTabbar();
   /*
     We must not scroll to the tab here, because the tab can be moved
     by the background page later. Instead we wait until the tab is
@@ -1031,11 +1048,13 @@ function onTabDetached(aTab, aDetachInfo = {}) {
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabPinned(aTab) {
   tabContextMenu.close();
   reserveToPositionPinnedTabs();
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabUnpinned(aTab) {
@@ -1044,6 +1063,7 @@ function onTabUnpinned(aTab) {
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();
+  reserveToUpdateCachedTabbar();
 }
 
 function onTabStateChanged(aTab) {
