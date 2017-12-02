@@ -80,6 +80,8 @@ async function init() {
   var scrollPosition;
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
+      var actualSignature;
+      var cachedSignature;
       await gMetricsData.addAsync('getting basic information and cache', Promise.all([
         gMetricsData.addAsync('kCOMMAND_PULL_TAB_ID_TABLES', async () => {
           // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
@@ -92,10 +94,11 @@ async function init() {
         configs.cacheTabbarForReopen &&
           gMetricsData.addAsync('read cached sidebar contents', async () => {
             let tabsDirty, collapsedDirty;
-            [cachedContents, tabsDirty, collapsedDirty] = await Promise.all([
+            [cachedContents, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
               browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR),
               browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-              browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
+              browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
+              browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
             ]);
             if (cachedContents && cachedContents.version == kCACHE_VERSION) {
               cachedContents.tabsDirty      = tabsDirty;
@@ -104,11 +107,19 @@ async function init() {
             else {
               cachedContents = null;
             }
-            browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY)
-            browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
+            browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+            browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+            browser.sessions.removeWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE);
+          }),
+        configs.cacheTabbarForReopen &&
+          gMetricsData.addAsync('get actual signature', async () => {
+            actualSignature = getWindowSignature(gTargetWindow);
           })
       ]));
       gMetricsData.add('getting basic information and cache: done');
+
+      if (cachedSignature != actualSignature)
+        cachedContents = null;
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
       startObserveApiTabs();
@@ -851,6 +862,9 @@ function updateCachedTabbar() {
       lastMaxIndent: gLastMaxIndent,
       definition:    gIndentDefinition.textContent
     }
+  });
+  getWindowSignature(gTargetWindow).then(aSignature => {
+    browser.sessions.setWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE, aSignature);
   });
 }
 

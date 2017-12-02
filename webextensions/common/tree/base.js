@@ -121,6 +121,14 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
   return { id, originalId, originalTabId, duplicated };
 }
 
+async function getWindowSignature(aWindowIdOrTabs) {
+  if (typeof aWindowIdOrTabs == 'number') {
+    aWindowIdOrTabs = await browser.tabs.query({ windowId: aWindowIdOrTabs });
+  }
+  var uniqueIds = await Promise.all(aWindowIdOrTabs.map(aTab => browser.sessions.getTabValue(aTab.id, kPERSISTENT_ID)));
+  return uniqueIds.map(aId => aId.id || '?').join('\n');
+}
+
 function buildTab(aApiTab, aOptions = {}) {
   log('build tab for ', aApiTab);
   var tab = document.createElement('li');

@@ -169,6 +169,7 @@ const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';
 const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
 const kWINDOW_STATE_CACHED_SIDEBAR  = 'cached-sidebar-contents';
+const kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE = 'cached-sidebar-contents:signature';
 const kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY = 'cached-sidebar-contents:tabs-dirty';
 const kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY = 'cached-sidebar-contents:collapsed-dirty';
 
