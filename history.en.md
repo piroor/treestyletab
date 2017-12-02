@@ -1,7 +1,7 @@
 # History
 
  - master/HEAD
-   * Optimize restoration of sidebar contents with cache.
+   * Optimize tree restoration with cache.
    * Use system color instead Photon color scheme on Linux by default, on Plain, Flat, Vertigo, and Mixed theme.
    * Apply extra margin for overlay-scrollbar on macOS only for overflow tab bar.
    * Title editor and checkbox to toggle "temporary" status are avialable on group tabs.
