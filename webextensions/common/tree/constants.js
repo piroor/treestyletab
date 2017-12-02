@@ -5,6 +5,9 @@
 */
 'use strict';
 
+const kBACKGROUND_CONTENTS_VERSION = 1;
+const kSIDEBAR_CONTENTS_VERSION    = 1;
+
 const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';
 const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';
 const kCOMMAND_REQUEST_UNIQUE_ID              = 'treestyletab:request-unique-id';
@@ -166,8 +169,10 @@ const kTABBAR_STATE_NARROW_SCROLLBAR       = 'narrow-scrollbar';
 const kTABBAR_STATE_NO_SCROLLBAR           = 'no-scrollbar';
 const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';
 
+const kWINDOW_STATE_SIGNATURE       = 'signature';
 const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
+const kWINDOW_STATE_CACHED_TABS     = 'cached-tabs';
 const kWINDOW_STATE_CACHED_SIDEBAR  = 'cached-sidebar-contents';
 const kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE = 'cached-sidebar-contents:signature';
 const kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY = 'cached-sidebar-contents:tabs-dirty';

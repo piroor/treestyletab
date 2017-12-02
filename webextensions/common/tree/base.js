@@ -174,6 +174,25 @@ function buildTab(aApiTab, aOptions = {}) {
   return tab;
 }
 
+function restoreCachedTab(aTab, aApiTab, aOptions = {}) {
+  aTab.apiTab = aApiTab;
+  updateUniqueId(aTab);
+  aTab.opened = Promise.resolve(true);
+  aTab.closedWhileActive = new Promise((aResolve, aReject) => {
+    aTab._resolveClosedWhileActive = aResolve;
+  });
+  aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
+    .split('|')
+    .map(getTabById)
+    .filter(aTab => !!aTab);
+  aTab.parentTab = getTabById(aTab.getAttribute(kPARENT));
+  if (aOptions.dirty) {
+    updateTab(aTab, aTab.apiTab, { forceApply: true });
+    if (aTab.apiTab.active)
+      updateTabFocused(aTab);
+  }
+}
+
 function updateUniqueId(aTab) {
   aTab.uniqueId = requestUniqueId(aTab, {
     inRemote: !!gTargetWindow

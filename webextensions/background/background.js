@@ -37,9 +37,9 @@ async function init() {
     waitUntilCompletelyRestored(),
     retrieveAllContextualIdentities()
   ]));
-  await rebuildAll();
-  gMetricsData.add('rebuildAll');
-  await loadTreeStructure();
+  var restoredFromCache = await rebuildAll();
+  gMetricsData.add(`rebuildAll (cached: ${JSON.stringify(restoredFromCache)})`);
+  await loadTreeStructure(restoredFromCache);
   gMetricsData.add('loadTreeStructure done');
 
   migrateLegacyTreeStructure();
@@ -127,16 +127,46 @@ async function rebuildAll() {
     populate:    true,
     windowTypes: ['normal']
   });
-  windows.forEach(async aWindow => {
-    var container = buildTabsContainerFor(aWindow.id);
-    for (let apiTab of aWindow.tabs) {
-      let newTab = buildTab(apiTab, { existing: true });
-      container.appendChild(newTab);
-      updateTab(newTab, apiTab, { forceApply: true });
-      tryStartHandleAccelKeyOnTab(newTab);
-    }
-    gAllTabs.appendChild(container);
-  });
+  var range = document.createRange();
+  range.selectNodeContents(gAllTabs);
+  var restoredFromCache = {};
+  await Promise.all(windows.map(aWindow =>
+    gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
+      if (configs.cacheTabsForRestart) {
+        let [actualSignature, cachedSignature, cache] = await Promise.all([
+          getWindowSignature(aWindow.tabs),
+          browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_SIGNATURE),
+          browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_CACHED_TABS)
+        ]);
+        log('restored data: ', { actualSignature, cachedSignature, cache });
+        if (actualSignature == cachedSignature &&
+            cache &&
+            cache.version == kBACKGROUND_CONTENTS_VERSION) {
+          log(`restore tabs for ${aWindow.id} from cache`);
+          range.insertNode(range.createContextualFragment(cache.tabs));
+          getAllTabs(aWindow.id).forEach((aTab, aIndex) => {
+            restoreCachedTab(aTab, aWindow.tabs[aIndex], {
+              dirty: true
+            });
+          });
+          restoredFromCache[aWindow.id] = true;
+          return;
+        }
+      }
+      log(`build tabs for ${aWindow.id} from scratch`);
+      let container = buildTabsContainerFor(aWindow.id);
+      for (let apiTab of aWindow.tabs) {
+        let newTab = buildTab(apiTab, { existing: true });
+        container.appendChild(newTab);
+        updateTab(newTab, apiTab, { forceApply: true });
+        tryStartHandleAccelKeyOnTab(newTab);
+      }
+      gAllTabs.appendChild(container);
+      restoredFromCache[aWindow.id] = false;
+    })
+  ));
+  range.detach();
+  return restoredFromCache;
 }
 
 async function tryStartHandleAccelKeyOnTab(aTab) {
@@ -221,6 +251,38 @@ async function readyForExternalAddons() {
 
 // save/load tree structure
 
+function reserveToCacheTree(aHint) {
+  if (gInitializing)
+    return;
+
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return;
+
+  var windowId = parseInt(container.dataset.windowId);
+  log('clear cache for ', windowId);
+  browser.sessions.removeWindowValue(windowId, kWINDOW_STATE_CACHED_TABS);
+
+  if (container.waitingToCacheTree)
+    clearTimeout(container.waitingToCacheTree);
+  container.waitingToCacheTree = setTimeout(() => {
+    cacheTree(windowId);
+  }, 500, windowId);
+}
+async function cacheTree(aWindowId) {
+  var container = getTabsContainer(aWindowId);
+  if (!container)
+    return;
+  log('save cache for ', aWindowId);
+  browser.sessions.setWindowValue(aWindowId, kWINDOW_STATE_CACHED_TABS, {
+    version: kBACKGROUND_CONTENTS_VERSION,
+    tabs:    container.outerHTML
+  });
+  getWindowSignature(aWindowId).then(aSignature => {
+    browser.sessions.setWindowValue(aWindowId, kWINDOW_STATE_SIGNATURE, aSignature);
+  });
+}
+
 function reserveToSaveTreeStructure(aHint) {
   if (gInitializing)
     return;
@@ -229,9 +291,11 @@ function reserveToSaveTreeStructure(aHint) {
   if (!container)
     return;
 
+  reserveToCacheTree(aHint);
+
   if (container.waitingToSaveTreeStructure)
     clearTimeout(container.waitingToSaveTreeStructure);
-  container.waitingToSaveTreeStructure = setTimeout((aWindowId) => {
+  container.waitingToSaveTreeStructure = setTimeout(aWindowId => {
     saveTreeStructure(aWindowId);
   }, 150, parseInt(container.dataset.windowId));
 }
@@ -248,13 +312,18 @@ async function saveTreeStructure(aWindowId) {
   );
 }
 
-async function loadTreeStructure() {
+async function loadTreeStructure(aRestoredFromCacheResults) {
   log('loadTreeStructure');
   var windows = await browser.windows.getAll({
     windowTypes: ['normal']
   });
   gMetricsData.add('loadTreeStructure: browser.windows.getAll');
   return gMetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async aWindow => {
+    if (aRestoredFromCacheResults &&
+        aRestoredFromCacheResults[aWindow.id]) {
+      log(`skip tree structure restoration for window ${aWindow.id} (restored from cache)`);
+      return;
+    }
     var structure = await browser.sessions.getWindowValue(
       aWindow.id,
       kWINDOW_STATE_TREE_STRUCTURE

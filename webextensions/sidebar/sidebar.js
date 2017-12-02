@@ -100,7 +100,7 @@ async function init() {
               browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
               browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
             ]);
-            if (cachedContents && cachedContents.version == kCACHE_VERSION) {
+            if (cachedContents && cachedContents.version == kSIDEBAR_CONTENTS_VERSION) {
               cachedContents.tabsDirty      = tabsDirty;
               cachedContents.collapsedDirty = collapsedDirty;
             }
@@ -113,7 +113,7 @@ async function init() {
           }),
         configs.cacheTabbarForReopen &&
           gMetricsData.addAsync('get actual signature', async () => {
-            actualSignature = getWindowSignature(gTargetWindow);
+            actualSignature = await getWindowSignature(gTargetWindow);
           })
       ]));
       gMetricsData.add('getting basic information and cache: done');
@@ -438,22 +438,9 @@ async function rebuildAll(aCache) {
     gTabBar.setAttribute('style', aCache.style);
     gAllTabs.innerHTML = aCache.contents;
     getAllTabs().forEach((aTab, aIndex) => {
-      aTab.apiTab = apiTabs[aIndex];
-      updateUniqueId(aTab);
-      aTab.opened = Promise.resolve(true);
-      aTab.closedWhileActive = new Promise((aResolve, aReject) => {
-        aTab._resolveClosedWhileActive = aResolve;
+      restoreCachedTab(aTab, apiTabs[aIndex], {
+        dirty: aCache.tabsDirty
       });
-      aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
-        .split('|')
-        .map(getTabById)
-        .filter(aTab => !!aTab);
-      aTab.parentTab = getTabById(aTab.getAttribute(kPARENT));
-      if (aCache.tabsDirty) {
-        updateTab(aTab, aTab.apiTab, { forceApply: true });
-        if (aTab.apiTab.active)
-          updateTabFocused(aTab);
-      }
     });
     if (aCache.collapsedDirty) {
       let response = await browser.runtime.sendMessage({
@@ -833,8 +820,6 @@ async function synchronizeThrobberAnimation() {
 }
 
 
-const kCACHE_VERSION = 1;
-
 function reserveToUpdateCachedTabbar() {
   if (gInitializing ||
       !configs.cacheTabbarForReopen)
@@ -852,7 +837,7 @@ function reserveToUpdateCachedTabbar() {
 }
 function updateCachedTabbar() {
   browser.sessions.setWindowValue(gTargetWindow, kWINDOW_STATE_CACHED_SIDEBAR, {
-    version: kCACHE_VERSION,
+    version: kSIDEBAR_CONTENTS_VERSION,
     tabbar:  {
       contents: gAllTabs.innerHTML,
       style:    gTabBar.getAttribute('style')
