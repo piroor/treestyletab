@@ -6,8 +6,9 @@
 }
 
 #tabbar {
-    border:none;
+    border: none;
 }
+
 
 /*        Tab         */
 
@@ -20,6 +21,7 @@
 
 .tab.active {
     background: HighLight;
+    border-color: HighLight;
     color: HighLightText;
 }
 
@@ -28,6 +30,16 @@
     opacity: 0.7;
     /*mix-blend-mode: multiply;*/
 }
+
+.tab:not(.collapsed),
+.newtab-button-box {
+    border-style: solid;
+}
+
+.newtab-button-box {
+    border-width: 1px;
+}
+
 
 
 /*        Closebox         */
