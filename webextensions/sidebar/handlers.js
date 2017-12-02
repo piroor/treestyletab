@@ -1323,12 +1323,8 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'style':
-    case 'defaultStyle':
-    case 'defaultStyleDarwin':
-    case 'defaultStyleLinux': {
-      if (getChosenStyle() != gStyle)
-        location.reload();
-    }; break;
+      location.reload();
+      break;
 
     case 'faviconizePinnedTabs':
       reserveToPositionPinnedTabs();
