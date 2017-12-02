@@ -55,8 +55,18 @@ async function init() {
   log('initialize sidebar on load');
   window.addEventListener('resize', onResize);
 
-  await configs.$loaded;
-  gMetricsData.add('configs.$loaded');
+  await Promise.all([
+    (async () => {
+      var apiTabs = await browser.tabs.query({
+        active:        true,
+        currentWindow: true
+      })
+      gTargetWindow = apiTabs[0].windowId;
+      gLogContext   = `Sidebar-${gTargetWindow}`;
+    })(),
+    configs.$loaded
+  ]);
+  gMetricsData.add('browser.tabs.query, configs.$loaded');
 
   await Promise.all([
     applyStyle(),
@@ -65,6 +75,7 @@ async function init() {
   ]);
   gMetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
 
+  var cachedContents;
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('misc', async () => {
       applyUserStyleRules();
@@ -80,11 +91,19 @@ async function init() {
       });
       gTabIdWrongToCorrect = response.wrongToCorrect;
       gTabIdCorrectToWrong = response.correctToWrong;
-    })
+    }),
+    configs.cacheTabbarForReopen &&
+      gMetricsData.addAsync('kCOMMAND_PULL_TABBAR_CACHE', async () => {
+        cachedContents = await browser.runtime.sendMessage({
+          type:   kCOMMAND_PULL_TABBAR_CACHE,
+          window: gTargetWindow
+        });
+      })
   ]));
   gMetricsData.add('parallel initialization tasks: done');
 
-  var restoredFromCache = await rebuildAll();
+  var restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
+  startObserveApiTabs();
 
   browser.runtime.sendMessage({
     type:     kNOTIFY_SIDEBAR_OPENED,
@@ -173,8 +192,11 @@ async function init() {
   gInitializing = false;
 
   updateVisualMaxTreeLevel();
+  updateIndent({
+    force: true,
+    cache: cachedContents && cachedContents.indent
+  });
   if (!restoredFromCache) {
-    updateIndent({ force: true });
     updateLoadingState();
     synchronizeThrobberAnimation();
     for (let tab of getAllTabs()) {
@@ -389,19 +411,12 @@ function uninstallStyleForAddon(aId) {
   delete gAddonStyles[aId];
 }
 
-async function rebuildAll() {
+async function rebuildAll(aCache) {
   var apiTabs = await browser.tabs.query({ currentWindow: true });
-  gTargetWindow = apiTabs[0].windowId;
-  gLogContext   = `Sidebar-${gTargetWindow}`;
   clearAllTabsContainers();
 
-  var cache = configs.cacheTabbarForReopen && await browser.runtime.sendMessage({
-    type:   kCOMMAND_PULL_TABBAR_CACHE,
-    window: gTargetWindow
-  });
-
-  if (cache) {
-    gAllTabs.innerHTML = cache;
+  if (aCache) {
+    gAllTabs.innerHTML = aCache;
     getAllTabs().forEach((aTab, aIndex) => {
       aTab.apiTab = apiTabs[aIndex];
       updateUniqueId(aTab);
@@ -416,6 +431,7 @@ async function rebuildAll() {
       aTab.parentTab = getTabById(aTab.getAttribute(kPARENT));
     });
     gMetricsData.add('rebuildAll (from cache)');
+    return true;
   }
   else {
     let container = buildTabsContainerFor(gTargetWindow);
@@ -429,9 +445,8 @@ async function rebuildAll() {
     }
     gAllTabs.appendChild(container);
     gMetricsData.add('rebuildAll (from scratch)');
+    return false;
   }
-  startObserveApiTabs();
-  return !!cache;
 }
 
 async function inheritTreeStructure() {
@@ -568,8 +583,9 @@ var gLastMaxIndent = -1;
 var gIndentProp = 'margin-left';
 
 function updateIndent(aOptions = {}) {
-  var maxLevel  = getMaxTreeLevel(gTargetWindow);
-  var maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
+  if (!aOptions.cache) {
+  let maxLevel  = getMaxTreeLevel(gTargetWindow);
+  let maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
   if (maxLevel <= gLastMaxLevel &&
       maxIndent == gLastMaxIndent &&
       !aOptions.force)
@@ -577,6 +593,11 @@ function updateIndent(aOptions = {}) {
 
   gLastMaxLevel  = maxLevel + 5;
   gLastMaxIndent = maxIndent;
+  }
+  else {
+    gLastMaxLevel  = aOptions.cache.lastMaxLevel;
+    gLastMaxIndent = aOptions.cache.lastMaxIndent;
+  }
 
   if (!gIndentDefinition) {
     gIndentDefinition = document.createElement('style');
@@ -584,13 +605,17 @@ function updateIndent(aOptions = {}) {
     document.head.appendChild(gIndentDefinition);
   }
 
-  var indentToSelectors = {};
-  var defaultIndentToSelectors = {};
+  if (aOptions.cache) {
+    gIndentDefinition.textContent = aOptions.cache.definition;
+  }
+  else {
+  let indentToSelectors = {};
+  let defaultIndentToSelectors = {};
   for (let i = 0; i <= gLastMaxLevel; i++) {
     generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
   }
 
-  var definitions = [];
+  let definitions = [];
   for (let indentSet of [defaultIndentToSelectors, indentToSelectors]) {
     let indents = Object.keys(indentSet);
     indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
@@ -599,6 +624,7 @@ function updateIndent(aOptions = {}) {
     }
   }
   gIndentDefinition.textContent = definitions.join('\n');
+  }
 }
 function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aDefaultIndentToSelectors) {
   var indent     = configs.baseIndent * aMaxLevel;
@@ -789,7 +815,14 @@ function updateCachedTabbar() {
   browser.runtime.sendMessage({
     type:   kCOMMAND_PUSH_TABBAR_CACHE,
     window: gTargetWindow,
-    cache:  gAllTabs.innerHTML
+    cache:  {
+      tabbar: gAllTabs.innerHTML,
+      indent: {
+        lastMaxLevel:  gLastMaxLevel,
+        lastMaxIndent: gLastMaxIndent,
+        definition:    gIndentDefinition.textContent
+      }
+    }
   });
 }
 
