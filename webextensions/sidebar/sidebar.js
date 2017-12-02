@@ -698,9 +698,9 @@ function updateTabAndAncestorsTooltip(aTab) {
 function updateTabTooltip(aTab) {
   if (!ensureLivingTab(aTab))
     return;
-  aTab.labelWithDescendants = getLabelWithDescendants(aTab);
+  aTab.dataset.labelWithDescendants = getLabelWithDescendants(aTab);
   aTab.setAttribute('title', isSubtreeCollapsed(aTab) && hasChildTabs(aTab) ?
-    aTab.labelWithDescendants : aTab.label);
+    aTab.dataset.labelWithDescendants : aTab.dataset.label);
 }
 
 

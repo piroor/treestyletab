@@ -180,9 +180,9 @@ function updateUniqueId(aTab) {
 function updateTab(aTab, aNewState, aOptions = {}) {
   if ('url' in aNewState) {
     aTab.setAttribute(kCURRENT_URI, aNewState.url);
-    if (aTab.discardURLAfterCompletelyLoaded &&
-        aTab.discardURLAfterCompletelyLoaded != aNewState.url)
-      delete aTab.discardURLAfterCompletelyLoaded;
+    if (aTab.dataset.discardURLAfterCompletelyLoaded &&
+        aTab.dataset.discardURLAfterCompletelyLoaded != aNewState.url)
+      delete aTab.dataset.discardURLAfterCompletelyLoaded;
   }
 
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
@@ -214,7 +214,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
         !isActive(aTab))
       aTab.classList.add(kTAB_STATE_UNREAD);
     getTabLabel(aTab).textContent = aNewState.title;
-    aTab.label = visibleLabel;
+    aTab.dataset.label = visibleLabel;
     window.onTabLabelUpdated && onTabLabelUpdated(aTab);
   }
 
@@ -247,11 +247,11 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       }, configs.burstDuration);
     }
     if (aNewState.status == 'complete' &&
-        aTab.apiTab.url == aTab.discardURLAfterCompletelyLoaded) {
+        aTab.apiTab.url == aTab.dataset.discardURLAfterCompletelyLoaded) {
       log(' => discard accidentally restored tab ', aTab.apiTab.id);
       if (typeof browser.tabs.discard == 'function')
         browser.tabs.discard(aTab.apiTab.id);
-      delete aTab.discardURLAfterCompletelyLoaded;
+      delete aTab.dataset.discardURLAfterCompletelyLoaded;
     }
     window.onTabStateChanged && onTabStateChanged(aTab);
   }
@@ -345,7 +345,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   }
 
   if (configs.debug) {
-    aTab.label = `
+    aTab.dataset.label = `
 ${aTab.apiTab.title}
 #${aTab.id}
 (${aTab.className})
@@ -355,14 +355,14 @@ restored = <%restored%>
 tabId = ${aTab.apiTab.id}
 windowId = ${aTab.apiTab.windowId}
 `.trim();
-    aTab.setAttribute('title', aTab.label);
+    aTab.setAttribute('title', aTab.dataset.label);
     aTab.uniqueId.then(aUniqueId => {
       // reget it because it can be removed from document.
       aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
       if (!aTab)
         return;
       aTab.setAttribute('title',
-                        aTab.label = aTab.label
+                        aTab.dataset.label = aTab.dataset.label
                           .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
                           .replace(`<%originalId%>`, aUniqueId.originalId)
                           .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
