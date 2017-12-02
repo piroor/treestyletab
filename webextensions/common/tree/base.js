@@ -372,6 +372,14 @@ windowId = ${aTab.apiTab.windowId}
   }
 }
 
+function updateTabFocused(aTab) {
+  var oldTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
+  aTab.classList.add(kTAB_STATE_ACTIVE);
+  aTab.apiTab.active = true;
+  aTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+  aTab.classList.remove(kTAB_STATE_UNREAD);
+}
+
 function updateParentTab(aParent) {
   if (!ensureLivingTab(aParent))
     return;

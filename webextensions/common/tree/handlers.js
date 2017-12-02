@@ -81,13 +81,8 @@ async function onApiTabActivated(aActiveInfo) {
   if (!newTab)
     return;
 
-  var oldTabs = clearOldActiveStateInWindow(aActiveInfo.windowId);
-  newTab.classList.add(kTAB_STATE_ACTIVE);
-  newTab.apiTab.active = true;
-  newTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-  newTab.classList.remove(kTAB_STATE_UNREAD);
-
   log('tabs.onActivated: ', dumpTab(newTab));
+  updateTabFocused(newTab);
 
   var byCurrentTabRemove = container.resolveClosedWhileActiveForPreviousActiveTab;
   if (byCurrentTabRemove) {
@@ -138,9 +133,9 @@ function clearOldActiveStateInWindow(aWindowId) {
   var oldTabs = container.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
     oldTab.classList.remove(kTAB_STATE_ACTIVE);
-    oldTab.apiTab.active = false;
+    if (oldTab.apiTab) // this function can be applied for cached tab.
+      oldTab.apiTab.active = false;
   }
-  return oldTabs;
 }
 
 function onApiTabUpdated(aTabId, aChangeInfo, aTab) {

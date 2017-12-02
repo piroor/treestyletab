@@ -429,7 +429,25 @@ async function rebuildAll(aCache) {
         .map(getTabById)
         .filter(aTab => !!aTab);
       aTab.parentTab = getTabById(aTab.getAttribute(kPARENT));
+      if (aCache.needUpdateTab) {
+        updateTab(aTab, aTab.apiTab, { forceApply: true });
+        if (aTab.apiTab.active)
+          updateTabFocused(aTab);
+      }
     });
+    if (aCache.needUpdateCollapsed) {
+      let response = await browser.runtime.sendMessage({
+        type:     kCOMMAND_PULL_TREE_STRUCTURE,
+        windowId: gTargetWindow
+      });
+      let structure = response.structure.reverse();
+      getAllTabs().reverse().forEach((aTab, aIndex) => {
+        collapseExpandSubtree(tab, {
+          collapsed: structure[aIndex].collapsed,
+          justNow:   true
+        });
+      });
+    }
     gMetricsData.add('rebuildAll (from cache)');
     return true;
   }

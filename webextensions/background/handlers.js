@@ -201,6 +201,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
 }
 
 function onTabRestored(aTab) {
@@ -271,6 +272,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   });
 
   reserveToSaveTreeStructure(aTab);
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
   await wait(0);
   cleanupNeedlssGroupTab(ancestors);
 }
@@ -316,6 +318,7 @@ function onTabElementMoved(aTab, aInfo = {}) {
 }
 
 async function onTabMoved(aTab, aMoveInfo) {
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateInsertionPosition([
     aTab,
@@ -593,6 +596,11 @@ function handleNewActiveTab(aTab, aInfo = {}) {
   }
 }
 
+function onTabFocused(aTab, aInfo = {}) {
+  if (aTab.parentNode.cachedSidebarContents)
+    aTab.parentNode.cachedSidebarContents.needUpdateTab = true;
+}
+
 function setupDelayedExpand(aTab) {
   if (!aTab)
     return;
@@ -637,11 +645,14 @@ function onTabUpdated(aTab, aChangeInfo) {
     tryStartHandleAccelKeyOnTab(aTab);
 
   reserveToSaveTreeStructure(aTab);
+  if (aTab.parentNode.cachedSidebarContents)
+    aTab.parentNode.cachedSidebarContents.needUpdateTab = true;
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -750,6 +761,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
   if (aInfo.newlyAttached)
     reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(parent);
@@ -771,6 +783,7 @@ function onTabDetached(aTab, aDetachInfo) {
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 }
@@ -826,6 +839,7 @@ function onTabDetachedFromWindow(aTab, aInfo = {}) {
 }
 
 function onTabPinned(aTab) {
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
   collapseExpandSubtree(aTab, {
     collapsed: false,
     broadcast: true
@@ -840,6 +854,10 @@ function onTabPinned(aTab) {
     broadcast: true
   });
   collapseExpandTabAndSubtree(aTab, { collapsed: false });
+}
+
+function onTabUnpinned(aTab) {
+  aTab.parentNode.cachedSidebarContents = null; // clear dirty cache
 }
 
 
@@ -923,6 +941,8 @@ function onMessage(aMessage, aSender) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
+      if (tab.parentNode.cachedSidebarContents)
+        tab.parentNode.cachedSidebarContents.needUpdateCollapsed = true;
     }; break;
 
     case kCOMMAND_LOAD_URI: {
