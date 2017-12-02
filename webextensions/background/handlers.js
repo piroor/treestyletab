@@ -211,6 +211,39 @@ function onTabRestored(aTab) {
   });
 }
 
+async function onWindowRestoring(aWindowId) {
+  if (!configs.useCachedTree)
+    return;
+
+  var [cachedSignature, cache] = await Promise.all([
+    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_SIGNATURE),
+    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_TABS)
+  ]);
+
+  var container = getTabsContainer(aWindowId);
+  await container.allTabsRestored;
+
+  var tabs            = await browser.tabs.query({ windowId: aWindowId });
+  var actualSignature = await getWindowSignature(tabs);
+  var insertionPoint  = document.createRange();
+  insertionPoint.selectNode(container);
+  insertionPoint.collapse(false);
+
+  if (actualSignature == cachedSignature)
+    restoreTabsFromCache(aWindowId, { insertionPoint, cache, tabs });
+
+  insertionPoint.detach();
+}
+
+async function onWindowRestored(aWindowId) {
+  var structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
+  browser.runtime.sendMessage({
+    type:     kCOMMAND_PUSH_TREE_STRUCTURE,
+    windowId: aWindowId,
+    structure
+  });
+}
+
 async function onTabClosed(aTab, aCloseInfo = {}) {
   log('onTabClosed ', dumpTab(aTab), aTab.apiTab, aCloseInfo);
   var container = aTab.parentNode;

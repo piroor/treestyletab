@@ -127,8 +127,8 @@ async function rebuildAll() {
     populate:    true,
     windowTypes: ['normal']
   });
-  var range = document.createRange();
-  range.selectNodeContents(gAllTabs);
+  var insertionPoint = document.createRange();
+  insertionPoint.selectNodeContents(gAllTabs);
   var restoredFromCache = {};
   await Promise.all(windows.map(aWindow =>
     gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
@@ -140,14 +140,7 @@ async function rebuildAll() {
         ]);
         log('restored data: ', { actualSignature, cachedSignature, cache });
         if (actualSignature == cachedSignature &&
-            cache &&
-            cache.version == kBACKGROUND_CONTENTS_VERSION) {
-          log(`restore tabs for ${aWindow.id} from cache`);
-          range.insertNode(range.createContextualFragment(cache.tabs));
-          getTabsContainer(aWindow.id).dataset.windowId = aWindow.id;
-          restoreCachedTabs(getAllTabs(aWindow.id), aWindow.tabs, {
-            dirty: true
-          });
+            restoreTabsFromCache(aWindow.id, { insertionPoint, cache, tabs: aWindow.tabs })) {
           restoredFromCache[aWindow.id] = true;
           return;
         }
@@ -164,8 +157,27 @@ async function rebuildAll() {
       restoredFromCache[aWindow.id] = false;
     })
   ));
-  range.detach();
+  insertionPoint.detach();
   return restoredFromCache;
+}
+
+function restoreTabsFromCache(aWindowId, aParams = {}) {
+  if (!aParams.cache ||
+      aParams.cache.version != kBACKGROUND_CONTENTS_VERSION)
+    return false;
+
+  log(`restore tabs for ${aWindowId} from cache`);
+
+  var oldContainer = getTabsContainer(aWindowId);
+  if (oldContainer)
+    oldContainer.parentNode.removeChild(oldContainer);
+
+  aParams.insertionPoint.insertNode(aParams.insertionPoint.createContextualFragment(aParams.cache.tabs));
+  getTabsContainer(aWindowId).dataset.windowId = aWindowId;
+  restoreCachedTabs(getAllTabs(aWindowId), aParams.tabs, {
+    dirty: true
+  });
+  return true;
 }
 
 async function tryStartHandleAccelKeyOnTab(aTab) {
@@ -260,7 +272,7 @@ function reserveToCacheTree(aHint) {
     return;
 
   var windowId = parseInt(container.dataset.windowId);
-  log('clear cache for ', windowId);
+  //log('clear cache for ', windowId);
   browser.sessions.removeWindowValue(windowId, kWINDOW_STATE_CACHED_TABS);
 
   if (container.waitingToCacheTree)
@@ -274,7 +286,7 @@ async function cacheTree(aWindowId) {
   if (!container ||
       !configs.useCachedTree)
     return;
-  log('save cache for ', aWindowId);
+  //log('save cache for ', aWindowId);
   browser.sessions.setWindowValue(aWindowId, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML

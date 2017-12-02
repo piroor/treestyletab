@@ -218,6 +218,35 @@ async function onNewTabTracked(aTab) {
     newTab.uniqueId
   ]);
 
+  if (uniqueId.restored) {
+    container.restoredCount = container.restoredCount || 0;
+    container.restoredCount++;
+    let start = Date.now();
+    if (!container.allTabsRestored) {
+      container.allTabsRestored = new Promise((aResolve, aReject) => {
+        var start = Date.now();
+        var lastCount = container.restoredCount;
+        var timer = setInterval(() => {
+          if (lastCount != container.restoredCount) {
+            lastCount = container.restoredCount;
+            return;
+          }
+          clearTimeout(timer);
+          container.allTabsRestored = null;
+          container.restoredCount   = 0;
+          aResolve();
+          setTimeout(() => {
+            window.onWindowRestored &&
+              onWindowRestored(aTab.windowId);
+          }, 200);
+        }, 200);
+      });
+      window.onWindowRestoring &&
+        onWindowRestoring(aTab.windowId);
+    }
+    await container.allTabsRestored;
+  }
+
   if (container.parentNode) { // it can be removed while waiting
     if (parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0)
       decrementContainerCounter(container, 'toBeOpenedTabsWithPositions');

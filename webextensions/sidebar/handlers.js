@@ -741,6 +741,36 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToUpdateCachedTabbar();
 }
 
+/*
+async function onWindowRestoring(aWindowId) {
+  if (!configs.useCachedTree)
+    return;
+
+  var [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
+    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR),
+    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
+    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
+  ]);
+  if (!cache ||
+      cache.version != kSIDEBAR_CONTENTS_VERSION) {
+    return;
+  }
+
+  cache                = cache.tabbar;
+  cache.tabsDirty      = tabsDirty;
+  cache.collapsedDirty = collapsedDirty;
+
+  var container = getTabsContainer(aWindowId);
+  await container.allTabsRestored;
+
+  var tabs            = await browser.tabs.query({ windowId: aWindowId });
+  var actualSignature = await getWindowSignature(tabs);
+  if (actualSignature == cachedSignature)
+    restoreTabsFromCache(cache, { tabs });
+}
+*/
+
 function onTabClosed(aTab, aCloseInfo) {
   tabContextMenu.close();
 
@@ -1101,6 +1131,11 @@ function onMessage(aMessage, aSender, aRespond) {
       delete gTabIdWrongToCorrect[aMessage.oldWrongId];
       gTabIdWrongToCorrect[aMessage.newWrongId]   = aMessage.newCorrectId;
       gTabIdCorrectToWrong[aMessage.newCorrectId] = aMessage.newWrongId;
+      break;
+
+    case kCOMMAND_PUSH_TREE_STRUCTURE:
+      if (aMessage.windowId == gTargetWindow)
+        applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
       break;
 
     case kCOMMAND_NOTIFY_TAB_RESTORING:

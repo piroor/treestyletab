@@ -435,25 +435,7 @@ async function rebuildAll(aCache) {
   clearAllTabsContainers();
 
   if (aCache) {
-    gTabBar.setAttribute('style', aCache.style);
-    gAllTabs.innerHTML = aCache.contents;
-    getTabsContainer(gTargetWindow).dataset.windowId = gTargetWindow;
-    restoreCachedTabs(getAllTabs(), apiTabs, {
-      dirty: aCache.tabsDirty
-    });
-    if (aCache.collapsedDirty) {
-      let response = await browser.runtime.sendMessage({
-        type:     kCOMMAND_PULL_TREE_STRUCTURE,
-        windowId: gTargetWindow
-      });
-      let structure = response.structure.reverse();
-      getAllTabs().reverse().forEach((aTab, aIndex) => {
-        collapseExpandSubtree(tab, {
-          collapsed: structure[aIndex].collapsed,
-          justNow:   true
-        });
-      });
-    }
+    await restoreTabsFromCache(aCache, { tabs: apiTabs });
     gMetricsData.add('rebuildAll (from cache)');
     return true;
   }
@@ -470,6 +452,34 @@ async function rebuildAll(aCache) {
     gAllTabs.appendChild(container);
     gMetricsData.add('rebuildAll (from scratch)');
     return false;
+  }
+}
+
+async function restoreTabsFromCache(aCache, aParams = {}) {
+  log('restore tabs from cache');
+
+  var oldContainer = getTabsContainer(gTargetWindow);
+  if (oldContainer)
+    oldContainer.parentNode.removeChild(oldContainer);
+
+  gTabBar.setAttribute('style', aCache.style);
+  gAllTabs.innerHTML = aCache.contents;
+  getTabsContainer(gTargetWindow).dataset.windowId = gTargetWindow;
+  restoreCachedTabs(getAllTabs(), aParams.tabs, {
+    dirty: aCache.tabsDirty
+  });
+  if (aCache.collapsedDirty) {
+    let response = await browser.runtime.sendMessage({
+      type:     kCOMMAND_PULL_TREE_STRUCTURE,
+      windowId: gTargetWindow
+    });
+    let structure = response.structure.reverse();
+    getAllTabs().reverse().forEach((aTab, aIndex) => {
+      collapseExpandSubtree(tab, {
+        collapsed: structure[aIndex].collapsed,
+        justNow:   true
+      });
+    });
   }
 }
 
