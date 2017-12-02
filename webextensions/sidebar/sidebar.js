@@ -418,7 +418,7 @@ async function rebuildAll() {
   else {
     let container = buildTabsContainerFor(gTargetWindow);
     for (let apiTab of apiTabs) {
-    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
+      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
       if (apiTab.id in gTabIdWrongToCorrect)
         apiTab.id = gTabIdWrongToCorrect[apiTab.id];
       let newTab = buildTab(apiTab, { existing: true, inRemote: true });
