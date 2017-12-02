@@ -507,7 +507,7 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     return;
   var remoteParams = {
     type:            kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
-    windowId:        aTab.parentNode.windowId,
+    windowId:        parseInt(aTab.parentNode.dataset.windowId),
     tab:             aTab.id,
     collapsed:       aParams.collapsed,
     manualOperation: !!aParams.manualOperation,
@@ -659,11 +659,11 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
   log('collapseExpandTreesIntelligentlyFor');
   var container = getTabsContainer(aTab);
-  if (container.doingIntelligentlyCollapseExpandCount > 0) {
+  if (parseInt(container.dataset.doingIntelligentlyCollapseExpandCount) > 0) {
     //log('=> done by others');
     return;
   }
-  container.doingIntelligentlyCollapseExpandCount++;
+  incrementContainerCounter(container, 'doingIntelligentlyCollapseExpandCount');
 
   var sameParentTab = getParentTab(aTab);
   var expandedAncestors = `<${[aTab].concat(getAncestorTabs(aTab))
@@ -708,7 +708,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   collapseExpandSubtree(aTab, clone(aOptions, {
     collapsed: false
   }));
-  container.doingIntelligentlyCollapseExpandCount--;
+  decrementContainerCounter(container, 'doingIntelligentlyCollapseExpandCount');
 }
 
 
@@ -935,7 +935,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
 
   log('moveTabSubtreeBefore: ', dumpTab(aTab), dumpTab(aNextTab));
   var container = aTab.parentNode;
-  container.subTreeMovingCount++;
+  incrementContainerCounter(container, 'subTreeMovingCount');
   try {
     await moveTabInternallyBefore(aTab, aNextTab, aOptions);
     if (!ensureLivingTab(aTab)) // it is removed while waiting
@@ -948,7 +948,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   await wait(0);
   if (!container.parentNode) // it was removed while waiting
     return;
-  container.subTreeMovingCount--;
+  decrementContainerCounter(container, 'subTreeMovingCount');
 }
 
 async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
@@ -961,7 +961,7 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
 
   log('moveTabSubtreeAfter: ', dumpTab(aTab), dumpTab(aPreviousTab));
   var container = aTab.parentNode;
-  container.subTreeMovingCount++;
+  incrementContainerCounter(container, 'subTreeMovingCount');
   try {
     await moveTabInternallyAfter(aTab, aPreviousTab, aOptions);
     if (!ensureLivingTab(aTab)) // it is removed while waiting
@@ -974,7 +974,7 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
   await wait(0);
   if (!container.parentNode) // it was removed while waiting
     return;
-  container.subTreeMovingCount--;
+  decrementContainerCounter(container, 'subTreeMovingCount');
 }
 
 async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
@@ -983,11 +983,11 @@ async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
 
   log('followDescendantsToMovedRoot: ', dumpTab(aTab));
   var container = aTab.parentNode;
-  container.subTreeChildrenMovingCount++;
-  container.subTreeMovingCount++;
+  incrementContainerCounter(container, 'subTreeChildrenMovingCount');
+  incrementContainerCounter(container, 'subTreeMovingCount');
   await moveTabsAfter(getDescendantTabs(aTab), aTab, aOptions);
-  container.subTreeChildrenMovingCount--;
-  container.subTreeMovingCount--;
+  decrementContainerCounter(container, 'subTreeChildrenMovingCount');
+  decrementContainerCounter(container, 'subTreeMovingCount');
 }
 
 async function moveTabs(aTabs, aOptions = {}) {
@@ -997,7 +997,7 @@ async function moveTabs(aTabs, aOptions = {}) {
 
   log('moveTabs: ', aTabs.map(dumpTab), aOptions);
 
-  var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
+  var windowId = parseInt(aTabs[0].parentNode.dataset.windowId || gTargetWindow);
 
   var newWindow = aOptions.destinationPromisedNewWindow;
 
@@ -1038,9 +1038,9 @@ async function moveTabs(aTabs, aOptions = {}) {
           gAllTabs.appendChild(container);
         }
         if (isAcrossWindows) {
-          container.toBeOpenedTabsWithPositions += aTabs.length;
-          container.toBeOpenedOrphanTabs        += aTabs.length;
-          container.toBeAttachedTabs            += aTabs.length;
+          incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aTabs.length);
+          incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aTabs.length);
+          incrementContainerCounter(container, 'toBeAttachedTabs', aTabs.length);
         }
       };
       if (newWindow) {
@@ -1061,12 +1061,12 @@ async function moveTabs(aTabs, aOptions = {}) {
         (async () => {
           let sourceContainer = aTabs[0].parentNode;
           if (aOptions.duplicate) {
-            sourceContainer.toBeOpenedTabsWithPositions += aTabs.length;
-            sourceContainer.toBeOpenedOrphanTabs        += aTabs.length;
-            sourceContainer.duplicatingTabsCount        += aTabs.length;
+            incrementContainerCounter(sourceContainer, 'toBeOpenedTabsWithPositions', aTabs.length);
+            incrementContainerCounter(sourceContainer, 'toBeOpenedOrphanTabs', aTabs.length);
+            incrementContainerCounter(sourceContainer, 'duplicatingTabsCount', aTabs.length);
           }
           if (isAcrossWindows)
-            sourceContainer.toBeDetachedTabs += aTabs.length;
+            incrementContainerCounter(sourceContainer, 'toBeDetachedTabs', aTabs.length);
 
           log('preparing tabs');
           if (aOptions.duplicate) {
@@ -1237,7 +1237,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
 
   log('openNewWindowFromTabs: ', aTabs.map(dumpTab), aOptions);
 
-  var windowId = aTabs[0].parentNode.windowId || gTargetWindow;
+  var windowId = parseInt(aTabs[0].parentNode.windowId || gTargetWindow);
 
   if (aOptions.inRemote) {
     let response = await browser.runtime.sendMessage(clone(aOptions, {

@@ -32,10 +32,10 @@ function onTabOpening(aTab, aInfo = {}) {
   if (configs.autoGroupNewTabs &&
       !opener &&
       !aInfo.maybeOrphan) {
-    if (container.preventAutoGroupNewTabsUntil > Date.now())
-      container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
+    if (parseInt(container.dataset.preventAutoGroupNewTabsUntil) > Date.now())
+      incrementContainerCounter(container, 'preventAutoGroupNewTabsUntil', configs.autoGroupNewTabsTimeout);
     else
-      container.openedNewTabs.push(aTab.id);
+      container.dataset.openedNewTabs += `|${aTab.id}`;
   }
   if (container.openedNewTabsTimeout)
     clearTimeout(container.openedNewTabsTimeout);
@@ -107,11 +107,11 @@ function onTabOpening(aTab, aInfo = {}) {
 var gGroupingBlockedBy = {};
 
 function onNewTabsTimeout(aContainer) {
-  if (aContainer.openedNewTabs.length == 0)
+  var tabIds = aContainer.dataset.openedNewTabs.split('|').filter(aId => aId != '');
+  if (tabIds.length == 0)
     return;
 
-  var tabIds = aContainer.openedNewTabs;
-  aContainer.openedNewTabs = [];
+  aContainer.dataset.openedNewTabs = '';
 
   if (Object.keys(gGroupingBlockedBy).length > 0)
     return;
@@ -245,7 +245,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     let uri = makeGroupTabURI(label, {
       temporary: true
     });
-    aTab.parentNode.toBeOpenedTabsWithPositions++;
+    incrementContainerCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');
     let groupTab = await openURIInTab(uri, {
       windowId:     aTab.apiTab.windowId,
       insertBefore: aTab // not firstChild, because the "aTab" is disappeared from tree.
@@ -291,7 +291,7 @@ async function closeChildTabs(aParent) {
 function onTabMoving(aTab, aMoveInfo) {
   var container = getTabsContainer(aTab);
   var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
-  if (container.openingCount > 0 &&
+  if (parseInt(container.dataset.openingCount) > 0 &&
       !aMoveInfo.byInternalOperation &&
       positionControlled) {
     let opener = getOpenerTab(aTab);
@@ -385,13 +385,13 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
 function moveBack(aTab, aMoveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(aTab), aMoveInfo);
   var container = aTab.parentNode;
-  container.internalMovingCount++;
+  incrementContainerCounter(container, 'internalMovingCount');
   return browser.tabs.move(aTab.apiTab.id, {
     windowId: aMoveInfo.windowId,
     index:    aMoveInfo.fromIndex
   }).catch(e => {
-    if (container.internalMovingCount > 0)
-      container.internalMovingCount--;
+    if (parseInt(container.dataset.internalMovingCount) > 0)
+      decrementContainerCounter(container, 'internalMovingCount');
     handleMissingTabError(e);
   });
 }

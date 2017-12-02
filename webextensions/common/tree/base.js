@@ -395,31 +395,44 @@ function updateParentTab(aParent) {
 
 function buildTabsContainerFor(aWindowId) {
   var container = document.createElement('ul');
-  container.windowId = aWindowId;
+  container.dataset.windowId = aWindowId;
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
 
-  container.internalMovingCount =
-    container.internalClosingCount =
-    container.alreadyMovedTabsCount =
-    container.subTreeMovingCount =
-    container.subTreeChildrenMovingCount =
-    container.doingIntelligentlyCollapseExpandCount =
-    container.internalFocusCount =
-    container.internalSilentlyFocusCount =
-    container.tryingReforcusForClosingCurrentTabCount =
-    container.duplicatingTabsCount = 0;
+  container.dataset.internalMovingCount =
+    container.dataset.internalClosingCount =
+    container.dataset.alreadyMovedTabsCount =
+    container.dataset.subTreeMovingCount =
+    container.dataset.subTreeChildrenMovingCount =
+    container.dataset.doingIntelligentlyCollapseExpandCount =
+    container.dataset.internalFocusCount =
+    container.dataset.internalSilentlyFocusCount =
+    container.dataset.tryingReforcusForClosingCurrentTabCount =
+    container.dataset.duplicatingTabsCount = 0;
 
-  container.openingCount         = 0;
-  container.openedNewTabs        = [];
-  container.openedNewTabsTimeout = null;
+  container.dataset.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
 
-  container.toBeOpenedTabsWithPositions = 0;
-  container.toBeOpenedOrphanTabs        = 0;
-  container.toBeAttachedTabs            = 0;
-  container.toBeDetachedTabs            = 0;
+  container.dataset.openingCount  = 0;
+  container.dataset.openedNewTabs = '';
+
+  container.dataset.toBeOpenedTabsWithPositions = 0;
+  container.dataset.toBeOpenedOrphanTabs        = 0;
+  container.dataset.toBeAttachedTabs            = 0;
+  container.dataset.toBeDetachedTabs            = 0;
 
   return container;
+}
+
+function incrementContainerCounter(aContainer, aName, aDelta) {
+  var count = parseInt(aContainer.dataset[aName]) + (aDelta || 1);
+  aContainer.dataset[aName] = count;
+  return count;
+}
+
+function decrementContainerCounter(aContainer, aName, aDelta) {
+  var count = parseInt(aContainer.dataset[aName]) - (aDelta || 1);
+  aContainer.dataset[aName] = count;
+  return count;
 }
 
 function clearAllTabsContainers() {
@@ -442,14 +455,14 @@ async function selectTabInternally(aTab, aOptions = {}) {
     return;
   }
   var container = aTab.parentNode;
-  container.internalFocusCount++;
+  incrementContainerCounter(container, 'internalFocusCount');
   if (aOptions.silently)
-    container.internalSilentlyFocusCount++;
+    incrementContainerCounter(container, 'internalSilentlyFocusCount');
   return browser.tabs.update(aTab.apiTab.id, { active: true })
     .catch(e => {
-      container.internalFocusCount--;
+      decrementContainerCounter(container, 'internalFocusCount');
       if (aOptions.silently)
-        container.internalSilentlyFocusCount--;
+        decrementContainerCounter(container, 'internalSilentlyFocusCount');
       handleMissingTabError(e);
     });
 }
@@ -477,7 +490,7 @@ function removeTabsInternally(aTabs, aOptions = {}) {
       return;
   }
   var container = aTabs[0].parentNode;
-  container.internalClosingCount += aTabs.length;
+  incrementContainerCounter(container, 'internalClosingCount', aTabs.length);
   if (aOptions.broadcasted)
     return;
   return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(handleMissingTabError);
@@ -533,15 +546,15 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       let oldNextTab     = getNextTab(tab);
       if (oldNextTab == aReferenceTab) // no move case
         continue;
-      container.internalMovingCount++;
-      container.alreadyMovedTabsCount++;
+      incrementContainerCounter(container, 'internalMovingCount');
+      incrementContainerCounter(container, 'alreadyMovedTabsCount');
       container.insertBefore(tab, aReferenceTab);
       window.onTabElementMoved && onTabElementMoved(tab, {
         oldPreviousTab,
         oldNextTab
       });
     }
-    if (container.alreadyMovedTabsCount == 0) {
+    if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -571,7 +584,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
           if (fromIndex < toIndex)
             toIndex--;
           browser.tabs.move(apiTabIds, {
-            windowId: container.windowId,
+            windowId: parseInt(container.dataset.windowId),
             index:    toIndex
           }).catch(handleMissingTabError);
         });
@@ -639,15 +652,15 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       let oldNextTab     = getNextTab(tab);
       if (oldNextTab == nextTab) // no move case
         continue;
-      container.internalMovingCount++;
-      container.alreadyMovedTabsCount++;
+      incrementContainerCounter(container, 'internalMovingCount');
+      incrementContainerCounter(container, 'alreadyMovedTabsCount');
       container.insertBefore(tab, nextTab);
       window.onTabElementMoved && onTabElementMoved(tab, {
         oldPreviousTab,
         oldNextTab
       });
     }
-    if (container.alreadyMovedTabsCount == 0) {
+    if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -677,7 +690,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
           if (fromIndex > toIndex)
             toIndex++;
           browser.tabs.move(apiTabIds, {
-            windowId: container.windowId,
+            windowId: parseInt(container.dataset.windowId),
             index:    toIndex
           }).catch(handleMissingTabError);
         });
@@ -759,7 +772,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
     else {
       let startIndex = calculateNewTabIndex(aOptions);
       let container  = getTabsContainer(aOptions.windowId);
-      container.toBeOpenedTabsWithPositions += aURIs.length;
+      incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {
           windowId: aOptions.windowId

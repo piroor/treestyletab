@@ -93,7 +93,6 @@ function getOrBuildTabsContainer(aHint) {
     throw new Error(`The given ID seems invalid as an window id: ${aHint}`);
 
   container = buildTabsContainerFor(aHint);
-  container.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
   gAllTabs.appendChild(container);
   return container;
 }
@@ -519,7 +518,7 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
   if (aHint) {
     let container = getTabsContainer(aHint);
     if (container)
-      tabsQueryOptions.windowId = container.windowId;
+      tabsQueryOptions.windowId = parseInt(container.dataset.windowId);
   }
   var beforeApiTabs = await browser.tabs.query(tabsQueryOptions);
   var beforeApiIds  = beforeApiTabs.map(aApiTab => aApiTab.id);
