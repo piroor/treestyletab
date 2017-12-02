@@ -174,16 +174,16 @@ async function init() {
 
   updateVisualMaxTreeLevel();
   if (!restoredFromCache) {
-  updateIndent({ force: true });
-  updateLoadingState();
-  synchronizeThrobberAnimation();
-  for (let tab of getAllTabs()) {
-    updateTabTwisty(tab);
-    updateTabClosebox(tab);
-    updateTabsCount(tab);
-    updateTabTooltip(tab);
-  }
-  reserveToUpdateCachedTabbar();
+    updateIndent({ force: true });
+    updateLoadingState();
+    synchronizeThrobberAnimation();
+    for (let tab of getAllTabs()) {
+      updateTabTwisty(tab);
+      updateTabClosebox(tab);
+      updateTabsCount(tab);
+      updateTabTooltip(tab);
+    }
+    reserveToUpdateCachedTabbar();
   }
 
   unblockUserOperations({ throbber: true });
