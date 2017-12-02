@@ -584,15 +584,15 @@ var gIndentProp = 'margin-left';
 
 function updateIndent(aOptions = {}) {
   if (!aOptions.cache) {
-  let maxLevel  = getMaxTreeLevel(gTargetWindow);
-  let maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
-  if (maxLevel <= gLastMaxLevel &&
-      maxIndent == gLastMaxIndent &&
-      !aOptions.force)
-    return;
+    let maxLevel  = getMaxTreeLevel(gTargetWindow);
+    let maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
+    if (maxLevel <= gLastMaxLevel &&
+        maxIndent == gLastMaxIndent &&
+        !aOptions.force)
+      return;
 
-  gLastMaxLevel  = maxLevel + 5;
-  gLastMaxIndent = maxIndent;
+    gLastMaxLevel  = maxLevel + 5;
+    gLastMaxIndent = maxIndent;
   }
   else {
     gLastMaxLevel  = aOptions.cache.lastMaxLevel;
@@ -609,21 +609,21 @@ function updateIndent(aOptions = {}) {
     gIndentDefinition.textContent = aOptions.cache.definition;
   }
   else {
-  let indentToSelectors = {};
-  let defaultIndentToSelectors = {};
-  for (let i = 0; i <= gLastMaxLevel; i++) {
-    generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
-  }
-
-  let definitions = [];
-  for (let indentSet of [defaultIndentToSelectors, indentToSelectors]) {
-    let indents = Object.keys(indentSet);
-    indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
-    for (let indent of indents) {
-      definitions.push(`${indentSet[indent].join(',\n')} { ${gIndentProp}: ${indent}; }`);
+    let indentToSelectors = {};
+    let defaultIndentToSelectors = {};
+    for (let i = 0; i <= gLastMaxLevel; i++) {
+      generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
     }
-  }
-  gIndentDefinition.textContent = definitions.join('\n');
+
+    let definitions = [];
+    for (let indentSet of [defaultIndentToSelectors, indentToSelectors]) {
+      let indents = Object.keys(indentSet);
+      indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
+      for (let indent of indents) {
+        definitions.push(`${indentSet[indent].join(',\n')} { ${gIndentProp}: ${indent}; }`);
+      }
+    }
+    gIndentDefinition.textContent = definitions.join('\n');
   }
 }
 function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aDefaultIndentToSelectors) {
