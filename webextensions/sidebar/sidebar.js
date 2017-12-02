@@ -393,7 +393,7 @@ async function rebuildAll() {
   gLogContext   = `Sidebar-${gTargetWindow}`;
   clearAllTabsContainers();
 
-  var cache = await browser.runtime.sendMessage({
+  var cache = configs.cacheTabbarForReopen && await browser.runtime.sendMessage({
     type:   kCOMMAND_PULL_TABBAR_CACHE,
     window: gTargetWindow
   });
@@ -765,7 +765,8 @@ async function synchronizeThrobberAnimation() {
 
 
 function reserveToUpdateCachedTabbar() {
-  if (gInitializing)
+  if (gInitializing ||
+      !configs.cacheTabbarForReopen)
     return;
 
   // clear dirty cache
