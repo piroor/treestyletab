@@ -196,7 +196,7 @@ async function onNewTabTracked(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return null;
 
-  log('onNewTabTracked: ', aTab.id);
+  log('onNewTabTracked: ', aTab);
   var container = getOrBuildTabsContainer(aTab.windowId);
   var newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
   newTab.classList.add(kTAB_STATE_OPENING);
