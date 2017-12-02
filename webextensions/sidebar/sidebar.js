@@ -111,15 +111,10 @@ async function init() {
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
         browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
 
-      await gMetricsData.addAsync('inherit tree and update layout', Promise.all([
-        gMetricsData.addAsync('main', async () => {
-          updateTabbarLayout({ justNow: true });
-        }),
-        !restoredFromCache && gMetricsData.addAsync('inheritTreeStructure', async () => {
+      if (!restoredFromCache)
+        await gMetricsData.addAsync('inheritTreeStructure', async () => {
           await inheritTreeStructure();
-        })
-      ]));
-      gMetricsData.add('inherit tree and update layout: done');
+        });
 
       document.addEventListener('mousedown', onMouseDown);
       document.addEventListener('mouseup', onMouseUp);
@@ -137,7 +132,6 @@ async function init() {
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
-      onConfigChange('animation');
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('colorScheme');
@@ -209,6 +203,9 @@ async function init() {
     }
     reserveToUpdateCachedTabbar();
   }
+  updateTabbarLayout({ justNow: true });
+
+  onConfigChange('animation');
 
   unblockUserOperations({ throbber: true });
 
@@ -418,7 +415,8 @@ async function rebuildAll(aCache) {
   clearAllTabsContainers();
 
   if (aCache) {
-    gAllTabs.innerHTML = aCache;
+    gTabBar.setAttribute('style', aCache.style);
+    gAllTabs.innerHTML = aCache.contents;
     getAllTabs().forEach((aTab, aIndex) => {
       aTab.apiTab = apiTabs[aIndex];
       updateUniqueId(aTab);
@@ -726,7 +724,10 @@ function updateTabbarLayout(aParams = {}) {
     gTabBar.style.bottom = '';
   }
 
-  reserveToPositionPinnedTabs(aParams);
+  if (aParams.justNow)
+    positionPinnedTabs(aParams);
+  else
+    reserveToPositionPinnedTabs(aParams);
 }
 
 
@@ -821,7 +822,10 @@ function updateCachedTabbar() {
     window: gTargetWindow,
     cache:  {
       version: kCACHE_VERSION,
-      tabbar:  gAllTabs.innerHTML,
+      tabbar:  {
+        contents: gAllTabs.innerHTML,
+        style:    gTabBar.getAttribute('style')
+      },
       indent:  {
         lastMaxLevel:  gLastMaxLevel,
         lastMaxIndent: gLastMaxIndent,
