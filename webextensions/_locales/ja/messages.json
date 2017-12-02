@@ -106,6 +106,7 @@
   "config.style.mixed": { "message": "Mixed" },
   "config.style.metal": { "message": "Metal" },
   "config.style.sidebar": { "message": "Sidebar" },
+  "config.style.systemcolors": { "message": "System Colors" },
   "config.style.none": { "message": "装飾無し（※「サイドバー内用の追加のスタイル指定」でお好みの装飾を設定してください)" },
 
   "config.colorScheme.caption": { "message": "配色" },
