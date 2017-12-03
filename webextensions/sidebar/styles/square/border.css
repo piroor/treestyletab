@@ -10,7 +10,7 @@
   padding: 0em;
 }
 
-#tabbar {
+:root.have-pinned-tabs #tabbar {
   border-top: 1px solid var(--tab-border);
 }
 

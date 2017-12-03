@@ -43,8 +43,11 @@ function positionPinnedTabs(aOptions = {}) {
   var pinnedTabs = getPinnedTabs(gTargetWindow);
   if (!pinnedTabs.length) {
     resetPinnedTabs();
+    document.documentElement.classList.remove('have-pinned-tabs');
     return;
   }
+
+  document.documentElement.classList.add('have-pinned-tabs');
 
   var containerWidth = gTabBar.getBoundingClientRect().width;
   var maxWidth       = containerWidth;
