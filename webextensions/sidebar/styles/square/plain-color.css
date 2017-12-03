@@ -7,7 +7,6 @@
   --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
-  --tab-side-border: var(--browser-bg-darker, #d7d7db /* ThreeDLightShadow */);
   --tab-surface-hover: var(--browser-bg-more-lighter, #fefefe /* ThreeDHighlight */);
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
 
@@ -20,7 +19,6 @@
   --tab-surface: var(--browser-bg-base, -moz-dialog);
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
-  --tab-side-border: var(--browser-bg-darker, ThreeDLightShadow);
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
   --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);

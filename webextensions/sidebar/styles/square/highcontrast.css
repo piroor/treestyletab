@@ -5,7 +5,6 @@
   --tab-surface: ButtonFace;
   --tab-text: ButtonText;
   --tab-border: ThreeDHighlight;
-  --tab-side-border: ThreeDHighlight;
   --tab-dropmarker: ButtonText;
 
   --tabbar-bg: InactiveBorder;
@@ -39,7 +38,6 @@
   background: Highlight;
   --throbber-color: HighlightText;
   --tab-border: Highlight;
-  --tab-side-border: Highlight;
 }
 
 .tab:not(.active) {
