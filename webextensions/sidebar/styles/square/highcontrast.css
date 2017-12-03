@@ -71,6 +71,8 @@
 .tab .closebox {
   margin-top: -10px;
   padding: 3px;
+  height: 22px;
+  width: 22px;
 }
 
 .tab .closebox:hover {
