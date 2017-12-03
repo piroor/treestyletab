@@ -41,12 +41,13 @@
 
 .tab.active {
   --tab-surface: Highlight;
+  color: HighlightText;
   --throbber-color: HighlightText;
   --tab-border: Highlight;
 }
 
 .tab:not(.active) {
-  --throbber-color: ThreeDShadow;
+  --throbber-color: Highlight;
 }
 
 .tab.active .twisty,
@@ -56,13 +57,10 @@
   --tab-text: HighlightText;
 }
 
-.tab,
 .newtab-button-box {
   border-style: solid;
-}
-
-.newtab-button-box {
   border-width: 1px;
+  border-color: ThreeDHighlight;
 }
 
 
@@ -84,4 +82,13 @@
   --tab-text: Highlight;
   background: HighlightText;
   opacity: 0.5;
+}
+
+/* Mac OS workaround */
+
+:root.left.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+  padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
+}
+:root.right.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+  padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
