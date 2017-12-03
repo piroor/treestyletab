@@ -53,6 +53,7 @@
 }
 
 .newtab-button-box {
+  border-color: ThreeDHighlight;
   border-style: solid;
   border-width: 1px;
 }
