@@ -4,6 +4,7 @@
 :root {
   --tab-surface: ButtonFace;
   --tab-text: ButtonText;
+  --tab-text-inverted: ThreeDHighlight;
   --tab-border: ThreeDHighlight;
   --tab-dropmarker: ButtonText;
 }
@@ -41,9 +42,10 @@
 
 .tab.active {
   --tab-surface: Highlight;
-  color: HighlightText;
   --throbber-color: HighlightText;
   --tab-border: Highlight;
+  --tab-text: HighlightText;
+  --tab-text-inverted: Highligh;
 }
 
 .tab:not(.active) {
@@ -60,7 +62,6 @@
 .newtab-button-box {
   border-style: solid;
   border-width: 1px;
-  border-color: ThreeDHighlight;
 }
 
 
