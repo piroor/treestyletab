@@ -6,9 +6,8 @@
 */
 
 :root {
-  --sound-button-size: 16px;
-  --sound-button-scale: scale(calc(var(--favicon-size) / var(--sound-button-size)),
-                              calc(var(--favicon-size) / var(--sound-button-size)));
+  --sound-button-size: var(--svg-small-icon-size);
+  --sound-button-scale: var(--svg-small-icon-scale);
 }
 
 .sound-button {

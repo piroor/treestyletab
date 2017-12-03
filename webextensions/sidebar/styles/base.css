@@ -10,6 +10,7 @@
   --favicon-size: 16px;
   --tab-height: 32px;
   --faviconized-tab-size: 28px;
+  --svg-small-icon-size: 16px;
 
   --color-animation: 0.25s ease-out;
   --indent-animation: var(--indent-duration) ease-out;

@@ -8,9 +8,8 @@
 :root {
   --throbber-color: Highlight;
   --throbber-shadow-color: transparent;
-  --throbber-size: 16px;
-  --throbber-scale: scale(calc(var(--favicon-size) / var(--throbber-size)),
-                          calc(var(--favicon-size) / var(--throbber-size)));
+  --throbber-size: var(--svg-small-icon-size);
+  --throbber-scale: var(--svg-small-icon-scale);
   --tab-burster-size: 5px;
   --tab-burster-translation: translate(calc(var(--tab-height) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
 }
