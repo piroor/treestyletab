@@ -7,6 +7,7 @@
   --tab-surface: #9d9d9d;
   --tab-surface-active: #b3b2b3;
   --tab-text: black;
+  --tab-text-inverted: white;
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--tab-surface-active);

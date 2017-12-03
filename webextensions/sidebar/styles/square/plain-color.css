@@ -6,6 +6,7 @@
 
   --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
+  --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
   --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
   --tab-surface-hover: var(--browser-bg-more-lighter, #fefefe /* ThreeDHighlight */);
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
@@ -19,6 +20,7 @@
 :root[color-scheme="system-color"] {
   --tab-surface: var(--browser-bg-base, -moz-dialog);
   --tab-text: var(--browser-fg, -moz-dialogtext);
+  --tab-text-inverted: var(--browser-bg-more-lighter, ThreeDHighlight);
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
@@ -45,6 +47,7 @@
   --tab-surface: Highlight;
   --throbber-color: HighlightText;
   --tab-text: HighlightText;
+  --tab-text-inverted: Highlight;
 }
 
 .closebox {

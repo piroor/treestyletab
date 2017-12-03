@@ -38,7 +38,7 @@
   width: var(--sound-button-size);
 }
 .sound-button::before {
-  background: var(--tab-surface);
+  background: var(--tab-text-inverted);
   transform: var(--sound-button-bg-scale);
 }
 
@@ -78,6 +78,12 @@
 .tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   .sound-button::after {
   mask-image: url("./icons/audio-16.svg");
+}
+
+.tab.pinned .sound-button:hover::before {
+  mask-image: none !important;
+  border-radius: 150%;
+  transform: scale(1.1, 1.1);
 }
 
 .tab.faviconized .sound-button {

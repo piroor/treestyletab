@@ -1,7 +1,9 @@
 :root {
   --tab-surface: #252526;
   --tab-text: #efefef;
+  --tab-text-inverted: black;
   --tab-text-active: #f9f9fa;
+  --tab-text-active-inverted: black;
   --tab-border: #3c3c3d;
   --tab-surface-hover: #5a5a5b;
   --tab-surface-active: #474749;
@@ -20,6 +22,7 @@
   --tab-surface: var(--tab-surface-active);
   --throbber-color: var(--tab-text-active);
   --tab-text: var(--tab-text-active);
+  --tab-text-inverted: var(--tab-text-active-inverted);
 }
 .tab:not(.collapsed).active:hover {
   --tab-surface: var(--tab-surface-active-hover);

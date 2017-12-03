@@ -4,6 +4,7 @@
 :root {
   --tab-surface: ButtonFace;
   --tab-text: ButtonText;
+  --tab-text-inverted: ThreeDHighlight;
   --tab-border: ThreeDHighlight;
   --tab-dropmarker: ButtonText;
 }
@@ -43,17 +44,12 @@
   --tab-surface: Highlight;
   --throbber-color: HighlightText;
   --tab-border: Highlight;
+  --tab-text: HighlightText;
+  --tab-text-inverted: Highligh;
 }
 
 .tab:not(.active) {
   --throbber-color: ThreeDShadow;
-}
-
-.tab.active .twisty,
-.tab.active .label,
-.tab.active .counter,
-.tab.active .closebox {
-  --tab-text: HighlightText;
 }
 
 .tab,

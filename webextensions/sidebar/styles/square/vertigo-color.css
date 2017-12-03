@@ -42,7 +42,9 @@
 
   --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
+  --tab-text-inverted: var(--browser-bg-lighter, white);
   --tab-active-text: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
+  --tab-active-text-inverted: var(--browser-bg-more-lighter, white);
   --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
 
@@ -62,7 +64,9 @@
 :root[color-scheme="system-color"] {
   --tab-surface: var(--browser-bg-base, -moz-dialog);
   --tab-text: var(--browser-fg, -moz-dialogtext);
+  --tab-text-inverted: var(--browser-bg-lighter, ThreeDHighlight);
   --tab-active-text: var(--browser-fg-active, -moz-dialogtext);
+  --tab-active-text-inverted: var(--browser-bg-more-lighter, ThreeDHighlight);
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
 }
@@ -86,6 +90,7 @@
   --tab-surface: var(--tab-surface-active);
   --throbber-color: var(--tab-highlighted-glow);
   --tab-text: var(--tab-active-text);
+  --tab-text-inverted: var(--tab-active-text-inverted);
 }
 .tab:not(.collapsed).active:hover {
   --tab-surface: var(--tab-surface-active-hover);
