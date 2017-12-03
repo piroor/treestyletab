@@ -105,7 +105,7 @@
   "config.style.mixed": { "message": "Mixed" },
   "config.style.metal": { "message": "Metal" },
   "config.style.sidebar": { "message": "Sidebar" },
-  "config.style.systemcolors": { "message": "System Colors" },
+  "config.style.highcontrast": { "message": "High Contrast" },
   "config.style.none": { "message": "無裝飾(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
   "config.maxTreeLevel.before": { "message": "最多縮進" },
