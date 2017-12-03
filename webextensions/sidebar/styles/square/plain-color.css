@@ -30,6 +30,10 @@
   color: var(--tab-text);
 }
 
+.tab * {
+  color: var(--tab-text);
+}
+
 .tab:not(.collapsed):not(.active):hover,
 .after-tabs:not(.active) button:hover {
   background: var(--tab-surface-hover);
@@ -39,16 +43,11 @@
 .tab.active {
   background: Highlight;
   --throbber-color: HighlightText;
+  --tab-text: HighlightText;
 }
 
 .tab:not(.active) {
   --throbber-color: ThreeDShadow;
-}
-
-.tab.active .twisty,
-.tab.active .label,
-.tab.active .counter {
-  color: HighlightText;
 }
 
 .closebox {

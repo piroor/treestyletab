@@ -50,9 +50,6 @@
   right: 0;
 }
 
-.tab.active .twisty,
-.tab.active .label,
-.tab.active .counter {
-  color: #f9f9fa;
+.tab.active {
+  --tab-text: #f9f9fa;
 }
-
