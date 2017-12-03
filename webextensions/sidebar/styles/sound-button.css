@@ -8,6 +8,7 @@
 :root {
   --sound-button-size: var(--svg-small-icon-size);
   --sound-button-scale: var(--svg-small-icon-scale);
+  --sound-button-bg-scale: var(--svg-small-icon-bg-scale);
 }
 
 .sound-button {
@@ -20,10 +21,12 @@
   min-width: var(--sound-button-size);
   opacity: 0.75;
   padding: 0;
+  position: relative;
   width: var(--sound-button-size);
 }
 
-.sound-button::before {
+.sound-button::before,
+.sound-button::after {
   background: var(--tab-text);
   content: "";
   display: inline-block;
@@ -32,8 +35,15 @@
   mask-repeat: no-repeat;
   min-height: var(--sound-button-size);
   min-width: var(--sound-button-size);
+  position: absolute;
+  right: 0;
+  top: 0;
   transform: var(--sound-button-scale);
   width: var(--sound-button-size);
+}
+.sound-button::before {
+  background: var(--tab-surface);
+  transform: var(--sound-button-bg-scale);
 }
 
 .tab:not(.collapsed) .sound-button:hover {
@@ -54,8 +64,11 @@
 }
 
 .tab:not(.collapsed).muted .sound-button::before,
+.tab:not(.collapsed).muted .sound-button::after,
 .tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
-  .sound-button::before {
+  .sound-button::before,
+.tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
+  .sound-button::after {
   mask-image: url("./audio-16-mute.svg");
 }
 
@@ -63,8 +76,11 @@
    because "sound-playing" is more important than muted for
    mixed state tree. */
 .tab:not(.collapsed).sound-playing:not(.muted) .sound-button::before,
+.tab:not(.collapsed).sound-playing:not(.muted) .sound-button::after,
 .tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
-  .sound-button::before {
+  .sound-button::before,
+.tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
+  .sound-button::after {
   mask-image: url("./audio-16.svg");
 }
 
