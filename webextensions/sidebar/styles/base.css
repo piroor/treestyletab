@@ -86,7 +86,8 @@ button {
   font: message-box; /* this is same to Firefox's UI. */
 }
 
-#tabbar {
+#tabbar,
+#extra-background {
   bottom: 0;
   left: 0;
   margin: 0;
@@ -95,6 +96,7 @@ button {
   position: fixed;
   right: 0;
   top: 0;
+  z-index: 100;
 }
 #tabbar.overflow {
   overflow-y: scroll;
@@ -102,6 +104,10 @@ button {
 
 :root.animation #tabbar {
   transition: margin-top var(--collapse-animation);
+}
+
+#extra-background {
+  z-index: 10;
 }
 
 /* put scrollbar leftside */
@@ -416,6 +422,7 @@ ul {
   overflow: visible;
   position: fixed;
   right: 0;
+  z-index: 100;
 }
 
 

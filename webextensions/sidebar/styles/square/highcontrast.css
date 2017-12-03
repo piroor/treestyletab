@@ -6,10 +6,18 @@
   --tab-text: ButtonText;
   --tab-border: ThreeDHighlight;
   --tab-dropmarker: ButtonText;
+}
 
-  --tabbar-bg: InactiveBorder;
 
-  background: var(--tabbar-bg);
+/* Tab Bar */
+
+:root {
+  background: ButtonFace;
+}
+
+#extra-background {
+  background: ButtonText;
+  opacity: 0.35;
 }
 
 
