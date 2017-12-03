@@ -101,7 +101,6 @@
   "config.style.caption": { "message": "Theme" },
   "config.style.plain": { "message": "Plain" },
   "config.style.plain-dark": { "message": "Plain Dark" },
-  "config.style.flat": { "message": "Flat" },
   "config.style.vertigo": { "message": "Vertigo" },
   "config.style.mixed": { "message": "Mixed" },
   "config.style.metal": { "message": "Metal" },

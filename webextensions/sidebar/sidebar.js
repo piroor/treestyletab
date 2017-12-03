@@ -277,9 +277,6 @@ function applyStyle() {
     case 'mixed':
       gStyleLoader.setAttribute('href', 'styles/square/mixed.css');
       break;
-    case 'flat':
-      gStyleLoader.setAttribute('href', 'styles/square/flat.css');
-      break;
     case 'vertigo':
       gStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
       break;
@@ -287,6 +284,7 @@ function applyStyle() {
       gStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
       break;
     case 'plain':
+    case 'flat': // for backward compatibility, fall back to plain.
       gStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
     case 'highcontrast':

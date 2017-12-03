@@ -75,7 +75,6 @@
   "config.style.caption": { "message": "主题" },
   "config.style.plain": { "message": "朴素" },
   "config.style.plain-dark": { "message": "朴素暗" },
-  "config.style.flat": { "message": "平坦" },
   "config.style.vertigo": { "message": "眩晕" },
   "config.style.mixed": { "message": "错综" },
   "config.style.metal": { "message": "金属" },
