@@ -9,6 +9,7 @@
   --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
   --tab-surface-hover: var(--browser-bg-more-lighter, #fefefe /* ThreeDHighlight */);
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
+  --throbber-color: var(--tab-text);
 
   --tabbar-bg: var(--browser-bg-darker, darkgray);
 
@@ -35,19 +36,15 @@
 }
 
 .tab:not(.collapsed):not(.active):hover,
-.after-tabs:not(.active) button:hover {
-  background: var(--tab-surface-hover);
+.after-tabs button:hover {
+  --tab-surface: var(--tab-surface-hover);
   color: var(--tab-text);
 }
 
 .tab.active {
-  background: Highlight;
+  --tab-surface: Highlight;
   --throbber-color: HighlightText;
   --tab-text: HighlightText;
-}
-
-.tab:not(.active) {
-  --throbber-color: ThreeDShadow;
 }
 
 .closebox {

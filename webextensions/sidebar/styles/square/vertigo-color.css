@@ -78,18 +78,17 @@
 }
 
 .tab:not(.collapsed):not(.active):hover,
-.after-tabs:not(.active) button:hover {
-  background: var(--tab-surface-hover);
-  color: var(--tab-text);
+.after-tabs button:hover {
+  --tab-surface: var(--tab-surface-hover);
 }
 
 .tab.active {
-  background: var(--tab-surface-active);
+  --tab-surface: var(--tab-surface-active);
   --throbber-color: var(--tab-highlighted-glow);
   --tab-text: var(--tab-active-text);
 }
 .tab:not(.collapsed).active:hover {
-  background: var(--tab-surface-active-hover);
+  --tab-surface: var(--tab-surface-active-hover);
 }
 
 .tab:not(.active) {

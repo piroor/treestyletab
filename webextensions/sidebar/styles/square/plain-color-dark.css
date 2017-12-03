@@ -1,6 +1,7 @@
 :root {
   --tab-surface: #252526;
   --tab-text: #efefef;
+  --tab-text-active: #f9f9fa;
   --tab-border: #3c3c3d;
   --tab-surface-hover: #5a5a5b;
   --tab-surface-active: #474749;
@@ -8,21 +9,20 @@
   --tab-active-marker: #0a84ff;
   --tab-active-marker-size: calc(var(--favicon-size) / 6);
   --dropmarker-color: var(--tab-text);
+  --throbber-color: var(--tab-text);
 
   --tab-highlighted-glow: var(--tab-active-marker);
   --tab-highlighted-highlight: white;
   --tabbar-bg: #0c0c0d;
 }
 
-.tab:not(.active) {
-  --throbber-color: white;
-}
-
 .tab.active {
-  background: var(--tab-surface-active);
+  --tab-surface: var(--tab-surface-active);
+  --throbber-color: var(--tab-text-active);
+  --tab-text: var(--tab-text-active);
 }
 .tab:not(.collapsed).active:hover {
-  background: var(--tab-surface-active-hover);
+  --tab-surface: var(--tab-surface-active-hover);
 }
 
 .tab.active .active-marker::before {
@@ -48,8 +48,4 @@
   height: var(--tab-active-marker-size);
   left: 0;
   right: 0;
-}
-
-.tab.active {
-  --tab-text: #f9f9fa;
 }

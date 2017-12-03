@@ -40,7 +40,7 @@
 }
 
 .tab.active {
-  background: Highlight;
+  --tab-surface: Highlight;
   --throbber-color: HighlightText;
   --tab-border: Highlight;
 }
