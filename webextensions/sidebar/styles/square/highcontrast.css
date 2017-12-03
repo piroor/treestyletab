@@ -2,62 +2,82 @@
 @import url("border.css");
 
 :root {
-    background: InactiveBorder;
+  --tab-surface: ButtonFace;
+  --tab-text: ButtonText;
+  --tab-border: ThreeDHighlight;
+  --tab-side-border: ThreeDHighlight;
+  --tab-dropmarker: ButtonText;
+
+  --tabbar-bg: InactiveBorder;
+
+  background: var(--tabbar-bg);
 }
+
+
+/* Tab Bar */
 
 #tabbar {
-    border: none;
+  border: none;
 }
 
 
-/*        Tab         */
+/* Tab */
 
 .tab,
-.newtab-button-box {
-    background: ButtonFace;
-    border-color: ThreeDHighlight;
-    color: ButtonText;
+.after-tabs button {
+  background: var(--tab-surface);
+  color: var(--tab-text);
+}
+
+.tab:not(.collapsed):hover,
+.after-tabs button:hover {
+  opacity: 0.7;
+  /*mix-blend-mode: multiply;*/
 }
 
 .tab.active {
-    background: HighLight;
-    border-color: HighLight;
-    color: HighLightText;
+  background: Highlight;
+  --throbber-color: HighlightText;
+  --tab-border: Highlight;
+  --tab-side-border: Highlight;
 }
 
-.tab:hover,
-.newtab-button-box:hover {
-    opacity: 0.7;
-    /*mix-blend-mode: multiply;*/
+.tab:not(.active) {
+  --throbber-color: ThreeDShadow;
+}
+
+.tab.active .twisty,
+.tab.active .label,
+.tab.active .counter {
+  color: HighlightText;
 }
 
 .tab,
 .newtab-button-box {
-    border-style: solid;
+  border-style: solid;
 }
 
 .newtab-button-box {
-    border-width: 1px;
+  border-width: 1px;
 }
 
 
-
-/*        Closebox         */
+/* Closebox */
 
 .tab .closebox {
-    margin-top: -10px;
-    padding: 3px;
+  margin-top: -10px;
+  padding: 3px;
 }
 
 .tab .closebox:hover {
-    /*color: Highlight;*/
-    color: HighlightText;
-    background: Highlight;
-    opacity: 0.75;
+  /*color: Highlight;*/
+  color: HighlightText;
+  background: Highlight;
+  opacity: 0.75;
 }
 
 .tab.active .closebox:hover {
-    color: Highlight;
-    background: HighlightText;
-    opacity: 0.5;
+  color: Highlight;
+  background: HighlightText;
+  opacity: 0.5;
 }
