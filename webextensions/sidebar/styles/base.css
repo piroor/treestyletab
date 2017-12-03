@@ -369,8 +369,16 @@ ul {
     - 🞩: U+1F7A9 LIGHT SALTIRE
       * Unavailable on macOS
     So ⨉ (U+2A09) looks good for me on Windows, macOS, and Linux (tested on Ubuntu).
+    But it is not guaranteed, so now we use SVG icon instead.
   */
-  content: "⨉";
+  background: var(--tab-text);
+  content: "";
+  display: inline-block;
+  height: var(--svg-small-icon-size);
+  mask-image: url("./close-16.svg");
+  mask-position: left center;
+  mask-repeat: no-repeat;
+  width: var(--svg-small-icon-size);
 }
 
 .tab:not(.collapsed) .closebox:hover {
@@ -435,6 +443,22 @@ ul {
   background: none transparent;
   margin: 0;
   text-align: center;
+}
+
+.newtab-button::before {
+  background: var(--tab-text);
+  content: "";
+  display: inline-block;
+  height: var(--svg-small-icon-size);
+  mask-image: url("./new-16.svg");
+  mask-position: left center;
+  mask-repeat: no-repeat;
+  opacity: var(--button-opacity);
+  width: var(--svg-small-icon-size);
+}
+
+.newtab-button:hover::before {
+  opacity: var(--button-hover-opacity);
 }
 
 :root.contextual-identity-selectable .newtab-button-box:hover .contextual-identities-selector:not([disabled="true"]) {
