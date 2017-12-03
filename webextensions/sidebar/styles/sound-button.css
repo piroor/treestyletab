@@ -65,7 +65,7 @@
   .sound-button::before,
 .tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
   .sound-button::after {
-  mask-image: url("./audio-16-mute.svg");
+  mask-image: url("./icons/audio-16-mute.svg");
 }
 
 /* put style definition for sound-playing tab after muted tab,
@@ -77,7 +77,7 @@
   .sound-button::before,
 .tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   .sound-button::after {
-  mask-image: url("./audio-16.svg");
+  mask-image: url("./icons/audio-16.svg");
 }
 
 .tab.faviconized .sound-button {

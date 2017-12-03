@@ -375,7 +375,7 @@ ul {
   content: "";
   display: inline-block;
   height: var(--svg-small-icon-size);
-  mask-image: url("./close-16.svg");
+  mask-image: url("./icons/close-16.svg");
   mask-position: left center;
   mask-repeat: no-repeat;
   width: var(--svg-small-icon-size);
@@ -450,7 +450,7 @@ ul {
   content: "";
   display: inline-block;
   height: var(--svg-small-icon-size);
-  mask-image: url("./new-16.svg");
+  mask-image: url("./icons/new-16.svg");
   mask-position: left center;
   mask-repeat: no-repeat;
   opacity: var(--button-opacity);

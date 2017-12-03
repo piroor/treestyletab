@@ -36,7 +36,7 @@
 }
 
 .favicon-default::before {
-  background: url("moon.svg") center center no-repeat;
+  background: url("./icons/moon.svg") center center no-repeat;
   background-size: 100%;
   content: "";
   display: inline-block;
