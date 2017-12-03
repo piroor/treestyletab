@@ -17,8 +17,6 @@
   display: none;
   height: var(--sound-button-size);
   margin: 0;
-  min-height: var(--sound-button-size);
-  min-width: var(--sound-button-size);
   opacity: 0.75;
   padding: 0;
   position: relative;
@@ -33,8 +31,6 @@
   height: var(--sound-button-size);
   mask-position: left center;
   mask-repeat: no-repeat;
-  min-height: var(--sound-button-size);
-  min-width: var(--sound-button-size);
   position: absolute;
   right: 0;
   top: 0;

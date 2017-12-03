@@ -39,8 +39,6 @@
   height: var(--throbber-size);
   max-height: var(--throbber-size);
   max-width: var(--throbber-size);
-  min-height: var(--throbber-size);
-  min-width: var(--throbber-size);
   overflow: hidden;
   padding: 0;
   pointer-events: none;
