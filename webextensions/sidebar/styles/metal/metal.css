@@ -6,6 +6,7 @@
   --throbber-shadow-color: rgba(0, 0, 0, 0.45);
   --tab-surface: #9d9d9d;
   --tab-surface-active: #b3b2b3;
+  --tab-text: black;
 
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--tab-surface-active);
@@ -13,9 +14,10 @@
 }
 
 .tab,
+.tab *,
 .tab:not(.collapsed):hover,
 .after-tabs button {
-  color: black;
+  color: val(--tab-text);
 }
 
 :root.left .tab:not(.faviconized),
