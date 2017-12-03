@@ -5,13 +5,36 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+:root {
+  --sound-button-size: 16px;
+  --sound-button-scale: scale(calc(var(--favicon-size) / var(--sound-button-size)),
+                              calc(var(--favicon-size) / var(--sound-button-size)));
+}
+
 .sound-button {
   background: none transparent;
   border: none 0 transparent;
   display: none;
+  height: var(--sound-button-size);
   margin: 0;
+  min-height: var(--sound-button-size);
+  min-width: var(--sound-button-size);
   opacity: 0.75;
-  padding: 0.1em;
+  padding: 0;
+  width: var(--sound-button-size);
+}
+
+.sound-button::before {
+  background: var(--tab-text);
+  content: "";
+  display: inline-block;
+  height: var(--sound-button-size);
+  mask-position: left center;
+  mask-repeat: no-repeat;
+  min-height: var(--sound-button-size);
+  min-width: var(--sound-button-size);
+  transform: var(--sound-button-scale);
+  width: var(--sound-button-size);
 }
 
 .tab:not(.collapsed) .sound-button:hover {
@@ -34,7 +57,7 @@
 .tab:not(.collapsed).muted .sound-button::before,
 .tab:not(.collapsed).has-muted-member.subtree-collapsed[data-child-ids]
   .sound-button::before {
-  content: "🔇";
+  mask-image: url("./audio-16-mute.svg");
 }
 
 /* put style definition for sound-playing tab after muted tab,
@@ -43,11 +66,11 @@
 .tab:not(.collapsed).sound-playing:not(.muted) .sound-button::before,
 .tab:not(.collapsed).has-sound-playing-member.subtree-collapsed[data-child-ids]
   .sound-button::before {
-  content: "🔈";
+  mask-image: url("./audio-16.svg");
 }
 
 .tab.faviconized .sound-button {
-  font-size: 90%;
+  transform: scale(0.9, 0.9);
   padding: 0;
   position: absolute;
   right: 0;
