@@ -334,6 +334,7 @@ ul {
 /* closebox */
 
 .closebox {
+  line-height: 0;
   opacity: var(--button-opacity);
   position: relative;
 }
