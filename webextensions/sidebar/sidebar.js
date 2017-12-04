@@ -464,8 +464,12 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     oldContainer.parentNode.removeChild(oldContainer);
 
   gTabBar.setAttribute('style', aCache.style);
+
   gAllTabs.innerHTML = aCache.contents;
-  getTabsContainer(gTargetWindow).dataset.windowId = gTargetWindow;
+  var container = gAllTabs.firstChild;
+  container.id = `window-${gTargetWindow}`;
+  container.dataset.windowId = gTargetWindow;
+
   restoreCachedTabs(getAllTabs(), aParams.tabs, {
     dirty: aCache.tabsDirty
   });

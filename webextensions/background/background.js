@@ -172,8 +172,11 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
   if (oldContainer)
     oldContainer.parentNode.removeChild(oldContainer);
 
-  aParams.insertionPoint.insertNode(aParams.insertionPoint.createContextualFragment(aParams.cache.tabs));
-  getTabsContainer(aWindowId).dataset.windowId = aWindowId;
+  var fragment = aParams.insertionPoint.createContextualFragment(aParams.cache.tabs);
+  var container = fragment.firstChild;
+  aParams.insertionPoint.insertNode(fragment);
+  container.id = `window-${aWindowId}`;
+  container.dataset.windowId = aWindowId;
   restoreCachedTabs(getAllTabs(aWindowId), aParams.tabs, {
     dirty: true
   });
