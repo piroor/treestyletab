@@ -66,11 +66,12 @@
   opacity: 0.75;
 }
 .tab .closebox:hover::before {
-  background: Highlight;
+  --tab-text: Highlight;
   border-radius: 0;
   height: calc(var(--svg-small-icon-size) + 0.3em);
   margin-left: -0.15em;
   margin-top: -0.15em;
+  opacity: 1;
   width: calc(var(--svg-small-icon-size) + 0.3em);
 }
 
@@ -79,7 +80,7 @@
   opacity: 0.5;
 }
 .tab.active .closebox:hover::before {
-  background: HighlightText;
+  --tab-text: HighlightText;
 }
 
 /* Mac OS workaround */

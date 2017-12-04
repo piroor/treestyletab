@@ -103,8 +103,3 @@
 .tab:not(.active) .burster {
   --throbber-color: #B5C5E0;
 }
-
-.tab .closebox:hover::before {
-  background: var(--tab-text);
-  opacity: 0.15;
-}

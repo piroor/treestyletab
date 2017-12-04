@@ -58,5 +58,11 @@
 }
 
 .tab .closebox:hover::before {
-  background: var(--tab-text-inverted);
+  background: var(--tab-text);
+  box-shadow: 0 0 0.1em rgba(255, 255, 255, 0.3);
+  opacity: 0.1;
+}
+
+.tab.active .closebox:hover::before {
+  background: var(--tab-text);
 }
