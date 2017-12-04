@@ -77,6 +77,8 @@ function clearWindowCache() {
 function markWindowCacheDirty(akey) {
   updateWindowCache(akey, true);
   var container = getTabsContainer(gTargetWindow);
+  if (!container)
+    return;
   container.windowCacheDirtyCount = container.windowCacheDirtyCount || 0;
   container.windowCacheDirtyCount++;
   if (container.windowCacheDirtyCount > 10) {
