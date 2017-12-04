@@ -219,34 +219,8 @@ async function onWindowRestoring(aWindowId) {
   var container = getTabsContainer(aWindowId);
   await container.allTabsRestored;
 
-  log('onWindowRestoring:continue ', aWindowId);
-
-  var owner = getWindowCacheOwner(aWindowId);
-  var [cachedSignature, cache] = await Promise.all([
-    getWindowCache(owner, kWINDOW_STATE_SIGNATURE),
-    getWindowCache(owner, kWINDOW_STATE_CACHED_TABS)
-  ]);
-  if (!cache ||
-      cache.version != kSIDEBAR_CONTENTS_VERSION) {
-    log('onWindowRestoring mismatched cache ', !!cache, cache && cache.version);
-    return;
-  }
-
-  var tabs            = await browser.tabs.query({ windowId: aWindowId });
-  var actualSignature = await getWindowSignature(tabs);
-  var insertionPoint  = document.createRange();
-  insertionPoint.selectNode(container);
-  insertionPoint.collapse(false);
-
-  if (actualSignature == cachedSignature) {
-    log('onWindowRestoring restore!');
-    restoreTabsFromCache(aWindowId, { insertionPoint, cache, tabs });
-  }
-  else {
-    log('onWindowRestoring mismatched signature ', cachedSignature, actualSignature);
-  }
-
-  insertionPoint.detach();
+  log('onWindowRestoring: continue ', aWindowId);
+  await restoreWindowFromEffectiveWindowCache(aWindowId);
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {

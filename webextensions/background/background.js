@@ -135,17 +135,13 @@ async function rebuildAll() {
   await Promise.all(windows.map(aWindow =>
     gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
       if (configs.useCachedTree) {
-        let windowCacheOwner = aWindow.tabs[aWindow.tabs.length - 1].id;
-        let [actualSignature, cachedSignature, cache] = await Promise.all([
-          getWindowSignature(aWindow.tabs),
-          getWindowCache(windowCacheOwner, kWINDOW_STATE_SIGNATURE),
-          getWindowCache(windowCacheOwner, kWINDOW_STATE_CACHED_TABS)
-        ]);
-        log('restored data: ', { actualSignature, cachedSignature, cache });
-        if (actualSignature == cachedSignature &&
-            restoreTabsFromCache(aWindow.id, { insertionPoint, cache, tabs: aWindow.tabs })) {
-          restoredFromCache[aWindow.id] = true;
-          log(`restore window ${aWindow.id} from cache`);
+        restoredFromCache[aWindow.id] = await restoreWindowFromEffectiveWindowCache(aWindow.id, {
+          insertionPoint,
+          owner: aWindow.tabs[aWindow.tabs.length - 1].id,
+          tabs:  aWindow.tabs
+        });
+        if (restoredFromCache[aWindow.id]) {
+          log(`window ${aWindow.id} is restored from cache`);
           return;
         }
       }
@@ -163,28 +159,6 @@ async function rebuildAll() {
   ));
   insertionPoint.detach();
   return restoredFromCache;
-}
-
-function restoreTabsFromCache(aWindowId, aParams = {}) {
-  if (!aParams.cache ||
-      aParams.cache.version != kBACKGROUND_CONTENTS_VERSION)
-    return false;
-
-  log(`restore tabs for ${aWindowId} from cache`);
-
-  var oldContainer = getTabsContainer(aWindowId);
-  if (oldContainer)
-    oldContainer.parentNode.removeChild(oldContainer);
-
-  var fragment = aParams.insertionPoint.createContextualFragment(aParams.cache.tabs);
-  var container = fragment.firstChild;
-  aParams.insertionPoint.insertNode(fragment);
-  container.id = `window-${aWindowId}`;
-  container.dataset.windowId = aWindowId;
-  restoreCachedTabs(getAllTabs(aWindowId), aParams.tabs, {
-    dirty: true
-  });
-  return true;
 }
 
 async function tryStartHandleAccelKeyOnTab(aTab) {
@@ -268,73 +242,6 @@ async function readyForExternalAddons() {
 
 
 // save/load tree structure
-
-function updateWindowCache(aOwner, aKey, aValue) {
-  if (!aOwner ||
-      !getTabById(aOwner))
-    return;
-  if (aValue === undefined) {
-    //browser.sessions.removeWindowValue(aOwner, aKey);
-    browser.sessions.removeTabValue(aOwner, aKey);
-  }
-  else {
-    //browser.sessions.setWindowValue(aOwner, aKey, aValue);
-    browser.sessions.setTabValue(aOwner, aKey, aValue);
-  }
-}
-
-function clearWindowCache(aOwner) {
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-  updateWindowCache(aOwner, kWINDOW_STATE_SIGNATURE);
-}
-
-async function getWindowCache(aOwner, aKey) {
-  //return browser.sessions.getWindowValue(aOwner, aKey);
-  return browser.sessions.getTabValue(aOwner, aKey);
-}
-
-function getWindowCacheOwner(aHint) {
-  return getLastTab(aHint).apiTab.id;
-}
-
-function reserveToCacheTree(aHint) {
-  if (gInitializing ||
-      !configs.useCachedTree)
-    return;
-
-  var container = getTabsContainer(aHint);
-  if (!container ||
-      container.allTabsRestored)
-    return;
-
-  var windowId = parseInt(container.dataset.windowId);
-  //log('clear cache for ', windowId);
-  clearWindowCache(container.lastWindowCacheOwner);
-
-  if (container.waitingToCacheTree)
-    clearTimeout(container.waitingToCacheTree);
-  container.waitingToCacheTree = setTimeout(() => {
-    cacheTree(windowId);
-  }, 500, windowId);
-}
-async function cacheTree(aWindowId) {
-  var container = getTabsContainer(aWindowId);
-  if (!container ||
-      !configs.useCachedTree ||
-      container.allTabsRestored)
-    return;
-  //log('save cache for ', aWindowId);
-  container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
-  updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
-    version: kBACKGROUND_CONTENTS_VERSION,
-    tabs:    container.outerHTML
-  });
-  getWindowSignature(aWindowId).then(aSignature => {
-    updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_SIGNATURE, aSignature);
-  });
-}
 
 function reserveToSaveTreeStructure(aHint) {
   if (gInitializing)
