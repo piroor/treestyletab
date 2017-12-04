@@ -201,7 +201,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
 }
 
 function onTabRestored(aTab) {
@@ -284,7 +284,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   });
 
   reserveToSaveTreeStructure(aTab);
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
 
   await wait(0);
   cleanupNeedlssGroupTab(ancestors);
@@ -331,7 +331,7 @@ function onTabElementMoved(aTab, aInfo = {}) {
 }
 
 async function onTabMoved(aTab, aMoveInfo) {
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateInsertionPosition([
     aTab,
@@ -663,7 +663,7 @@ function onTabUpdated(aTab, aChangeInfo) {
 function onTabSubtreeCollapsedStateChanging(aTab) {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -772,7 +772,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
   if (aInfo.newlyAttached)
     reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(parent);
@@ -794,7 +794,7 @@ function onTabDetached(aTab, aDetachInfo) {
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 }
@@ -850,7 +850,7 @@ function onTabDetachedFromWindow(aTab, aInfo = {}) {
 }
 
 function onTabPinned(aTab) {
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
   collapseExpandSubtree(aTab, {
     collapsed: false,
     broadcast: true
@@ -868,7 +868,7 @@ function onTabPinned(aTab) {
 }
 
 function onTabUnpinned(aTab) {
-  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+  reserveToCacheTree(aTab);
 }
 
 

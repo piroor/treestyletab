@@ -251,8 +251,6 @@ function reserveToSaveTreeStructure(aHint) {
   if (!container)
     return;
 
-  reserveToCacheTree(aHint);
-
   if (container.waitingToSaveTreeStructure)
     clearTimeout(container.waitingToSaveTreeStructure);
   container.waitingToSaveTreeStructure = setTimeout(aWindowId => {
