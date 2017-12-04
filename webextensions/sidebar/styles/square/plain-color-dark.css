@@ -1,4 +1,5 @@
-:root {
+:root,
+:root[color-scheme="system-color"] {
   --tab-surface: #252526;
   --tab-text: #efefef;
   --tab-text-inverted: black;
@@ -16,6 +17,9 @@
   --tab-highlighted-glow: var(--tab-active-marker);
   --tab-highlighted-highlight: white;
   --tabbar-bg: #0c0c0d;
+}
+:root[color-scheme="system-color"] #extra-background {
+  background: transparent;
 }
 
 .tab.active {
