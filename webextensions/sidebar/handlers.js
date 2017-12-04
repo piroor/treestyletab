@@ -749,37 +749,21 @@ async function onWindowRestoring(aWindowId) {
   var container = getTabsContainer(aWindowId);
   await container.allTabsRestored;
 
-  log('onWindowRestoring:continue ', aWindowId);
-  gLastWindowCacheOwner = getWindowCacheOwner();
-  var [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
-    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
-    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
-    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
-  ]);
-  if (!cache ||
-      cache.version != kSIDEBAR_CONTENTS_VERSION) {
-    log('onWindowRestoring mismatched cache ', !!cache, cache && cache.version);
+  log('onWindowRestoring: continue ', aWindowId);
+  var cache = await getEffectiveWindowCache();
+  if (!cache) {
+    log('onWindowRestoring: no effective cache');
     return;
   }
 
-  cache.tabbar.tabsDirty      = tabsDirty;
-  cache.tabbar.collapsedDirty = collapsedDirty;
-
-  var tabs            = await browser.tabs.query({ windowId: aWindowId });
-  var actualSignature = await getWindowSignature(tabs);
-  if (actualSignature == cachedSignature) {
-    log('onWindowRestoring restore! ', cache);
-    restoreTabsFromCache(cache.tabbar, { tabs });
-    updateVisualMaxTreeLevel();
-    updateIndent({
-      force: true,
-      cache: cache.indent
-    });
-  }
-  else {
-    log('onWindowRestoring mismatched signature ', cachedSignature, actualSignature);
-  }
+  log('onWindowRestoring restore! ', cache);
+  var tabs = await browser.tabs.query({ windowId: aWindowId });
+  restoreTabsFromCache(cache.tabbar, { tabs });
+  updateVisualMaxTreeLevel();
+  updateIndent({
+    force: true,
+    cache: cache.indent
+  });
 }
 
 function onTabClosed(aTab, aCloseInfo) {

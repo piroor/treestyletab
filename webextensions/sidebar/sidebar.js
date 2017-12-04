@@ -80,8 +80,6 @@ async function init() {
   var scrollPosition;
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
-      var actualSignature;
-      var cachedSignature;
       await gMetricsData.addAsync('getting basic information and cache', Promise.all([
         gMetricsData.addAsync('kCOMMAND_PULL_TAB_ID_TABLES', async () => {
           // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
@@ -93,34 +91,10 @@ async function init() {
         }),
         configs.useCachedTree &&
           gMetricsData.addAsync('read cached sidebar contents', async () => {
-            var apiTabs = await browser.tabs.query({ currentWindow: true });
-            gLastWindowCacheOwner = apiTabs[apiTabs.length - 1].id;
-            let tabsDirty, collapsedDirty;
-            [cachedContents, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
-              getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
-              getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-              getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
-              getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
-            ]);
-            if (cachedContents && cachedContents.version == kSIDEBAR_CONTENTS_VERSION) {
-              log(`restore sidebar from cache`);
-              cachedContents.tabsDirty      = tabsDirty;
-              cachedContents.collapsedDirty = collapsedDirty;
-            }
-            else {
-              cachedContents = null;
-            }
-            clearWindowCache();
-          }),
-        configs.useCachedTree &&
-          gMetricsData.addAsync('get actual signature', async () => {
-            actualSignature = await getWindowSignature(gTargetWindow);
+            cachedContents = await getEffectiveWindowCache();
           })
       ]));
       gMetricsData.add('getting basic information and cache: done');
-
-      if (cachedSignature != actualSignature)
-        cachedContents = null;
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
       startObserveApiTabs();
@@ -832,84 +806,6 @@ async function synchronizeThrobberAnimation() {
   document.documentElement.classList.add(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
   await nextFrame();
   document.documentElement.classList.remove(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
-}
-
-
-var gLastWindowCacheOwner;
-
-function updateWindowCache(aKey, aValue) {
-  if (!gLastWindowCacheOwner ||
-      !getTabById(gLastWindowCacheOwner))
-    return;
-  if (aValue === undefined) {
-    //browser.sessions.removeWindowValue(gLastWindowCacheOwner, aKey);
-    browser.sessions.removeTabValue(gLastWindowCacheOwner, aKey);
-  }
-  else {
-    //browser.sessions.setWindowValue(gLastWindowCacheOwner, aKey, aValue);
-    browser.sessions.setTabValue(gLastWindowCacheOwner, aKey, aValue);
-  }
-}
-
-function clearWindowCache() {
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-  updateWindowCache(kWINDOW_STATE_SIGNATURE);
-}
-
-async function getWindowCache(aKey) {
-  if (!gLastWindowCacheOwner)
-    return null;
-  //return browser.sessions.getWindowValue(gLastWindowCacheOwner, aKey);
-  return browser.sessions.getTabValue(gLastWindowCacheOwner, aKey);
-}
-
-function getWindowCacheOwner() {
-  return getLastTab().apiTab.id;
-}
-
-function reserveToUpdateCachedTabbar() {
-  if (gInitializing ||
-      !configs.useCachedTree)
-    return;
-
-  var container = getTabsContainer(gTargetWindow);
-  if (container.allTabsRestored)
-    return;
-
-  // clear dirty cache
-  clearWindowCache();
-
-  if (updateCachedTabbar.waiting)
-    clearTimeout(updateCachedTabbar.waiting);
-  updateCachedTabbar.waiting = setTimeout(() => {
-    delete updateCachedTabbar.waiting;
-    updateCachedTabbar();
-  }, 500);
-}
-function updateCachedTabbar() {
-  if (!configs.useCachedTree)
-    return;
-  var container = getTabsContainer(gTargetWindow);
-  if (container.allTabsRestored)
-    return;
-  gLastWindowCacheOwner = getWindowCacheOwner(gTargetWindow);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR, {
-    version: kSIDEBAR_CONTENTS_VERSION,
-    tabbar:  {
-      contents: gAllTabs.innerHTML,
-      style:    gTabBar.getAttribute('style')
-    },
-    indent:  {
-      lastMaxLevel:  gLastMaxLevel,
-      lastMaxIndent: gLastMaxIndent,
-      definition:    gIndentDefinition.textContent
-    }
-  });
-  getWindowSignature(gTargetWindow).then(aSignature => {
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE, aSignature);
-  });
 }
 
 
