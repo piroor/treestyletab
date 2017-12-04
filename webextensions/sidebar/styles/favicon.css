@@ -46,15 +46,12 @@
   min-width: var(--favicon-size);
 }
 
-.tab.group-tab:not(.subtree-collapsed) .favicon-default::before {
-  background: none;
-  content: "📂";
-}
-
-.tab.group-tab.subtree-collapsed .favicon-default::before,
-.tab.group-tab.subtree-collapsed:not([data-child-ids]) .favicon-default::before {
-  background: none;
-  content: "📁";
+.tab.group-tab .favicon-default::before {
+  background: var(--tab-text);
+  mask-image: url("./icons/folder-16.svg");
+  mask-position: left center;
+  mask-repeat: no-repeat;
+  mask-size: 100%;
 }
 
 
