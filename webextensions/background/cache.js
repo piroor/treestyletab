@@ -22,8 +22,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     gMetricsData.add('restoreWindowFromEffectiveWindowCache fail ' + JSON.stringify({
       cache: !!cache,
       version: cache && cache.version,
-      actualSignature,
-      cachedSignature
+      signature: actualSignature == cachedSignature
     }));
     return false;
   }
