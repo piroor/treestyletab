@@ -8,13 +8,6 @@
   background: var(--tabbar-bg);
 }
 
-.tab.active .twisty,
-.tab.active .label,
-.tab.active .counter {
-  color: var(--tab-active-text);
-}
-
-
 .tab {
   background-color: var(--tab-surface);
   background-image: -moz-linear-gradient(
