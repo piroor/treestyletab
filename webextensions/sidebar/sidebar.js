@@ -455,7 +455,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     });
     let structure = response.structure.reverse();
     getAllTabs().reverse().forEach((aTab, aIndex) => {
-      collapseExpandSubtree(tab, {
+      collapseExpandSubtree(aTab, {
         collapsed: structure[aIndex].collapsed,
         justNow:   true
       });
