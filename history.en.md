@@ -2,7 +2,11 @@
 
  - master/HEAD
    * Optimize tree restoration with cache.
+   * Use SVG icons for closeboxes, "New Tab" button, and sound playing indicator.
    * Use system color instead Photon color scheme on Linux by default, on Plain, Flat, Vertigo, and Mixed theme.
+   * Add new theme "Hight Contrast" based on system color on any platform. (contributed by actionless, thanks!)
+   * Remove "Flat" theme. It was quite similar to "Plain".
+   * On "Plain" and similar themes, show top border of the tab bar only when there is any pinned tab.
    * Apply extra margin for overlay-scrollbar on macOS only for overflow tab bar.
    * Title editor and checkbox to toggle "temporary" status are avialable on group tabs.
    * Group tab won't be closed automatically if it is not marked as "temporary".
