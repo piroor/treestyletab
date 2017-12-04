@@ -668,22 +668,22 @@ function onTabFaviconUpdated(aTab, aURL) {
     tab:   aTab.apiTab,
     url:   aURL
   });
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function onTabLabelUpdated(aTab) {
   reserveToUpdateTabTooltip(aTab);
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function onParentTabUpdated(aTab) {
   updateTabSoundButtonTooltip(aTab);
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function updateTabSoundButtonTooltip(aTab) {
@@ -694,13 +694,13 @@ function updateTabSoundButtonTooltip(aTab) {
     tooltip = browser.i18n.getMessage('tab.soundButton.playing.tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function onTabFocused(aTab) {
   tabContextMenu.close();
   scrollToTab(aTab);
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function onTabOpening(aTab, aInfo = {}) {
@@ -868,7 +868,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
 
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
@@ -948,7 +948,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 
   // this is very required for no animation case!
   reserveToUpdateTabbarLayout({ reason: aOptions.reason });
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -957,7 +957,7 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
     return;
 
   reserveToUpdateLoadingState();
-  reserveToUpdateCachedTabbar();
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
 
   if (configs.animation &&
       !aInfo.justNow &&

@@ -8,7 +8,7 @@
 var gLastWindowCacheOwner;
 
 async function getEffectiveWindowCache() {
-  var cachedContents;
+  var cache;
   var cachedSignature;
   var actualSignature;
   await Promise.all([
@@ -16,19 +16,19 @@ async function getEffectiveWindowCache() {
       var apiTabs = await browser.tabs.query({ currentWindow: true });
       gLastWindowCacheOwner = apiTabs[apiTabs.length - 1].id;
       let tabsDirty, collapsedDirty;
-      [cachedContents, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
+      [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
       ]);
-      if (cachedContents && cachedContents.version == kSIDEBAR_CONTENTS_VERSION) {
+      if (cache && cache.version == kSIDEBAR_CONTENTS_VERSION) {
         log(`restore sidebar from cache`);
-        cachedContents.tabbar.tabsDirty      = tabsDirty;
-        cachedContents.tabbar.collapsedDirty = collapsedDirty;
+        cache.tabbar.tabsDirty      = tabsDirty;
+        cache.tabbar.collapsedDirty = collapsedDirty;
       }
       else {
-        cachedContents = null;
+        cache = null;
       }
     })(),
     (async () => {
@@ -36,13 +36,13 @@ async function getEffectiveWindowCache() {
     })()
   ]);
 
-  if (!cachedContents ||
+  if (!cache ||
       cachedSignature != actualSignature) {
     clearWindowCache();
-    cachedContents = null;
+    cache = null;
   }
 
-  return cachedContents;
+  return cache;
 }
 
 function updateWindowCache(aKey, aValue) {
