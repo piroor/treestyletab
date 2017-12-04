@@ -17,7 +17,8 @@
                     );
 }
 
-.tab:not(.collapsed):hover {
+.tab:not(.collapsed):hover,
+.newtab-button:hover {
   background-color: var(--tab-surface-hover);
   background-image: -moz-linear-gradient(
                       top,
