@@ -40,9 +40,6 @@ async function getEffectiveWindowCache() {
       actualSignature = await getWindowSignature(gTargetWindow);
     })()
   ]);
-  gMetricsData.add('getEffectiveWindowCache signature check ' + JSON.stringify({
-    actualSignature, cachedSignature
-  }));
 
   if (!cache ||
       cachedSignature != actualSignature) {
