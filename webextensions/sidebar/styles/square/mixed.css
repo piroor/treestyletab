@@ -50,3 +50,8 @@
                       rgba(199, 219, 252, 0.4) 50%
                     );
 }
+
+.tab:not(.active) .closebox:hover::before {
+  background: var(--tab-text-inverted);
+  opacity: 1;
+}

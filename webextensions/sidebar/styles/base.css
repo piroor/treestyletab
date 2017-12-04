@@ -339,7 +339,7 @@ ul {
   position: relative;
 }
 
-.closebox::before {
+.closebox::after {
   /*
     There are some possible characters for this purpose:
     https://en.wikipedia.org/wiki/X_mark

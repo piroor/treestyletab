@@ -114,7 +114,7 @@
 }
 
 /* Keep the close button at a safe distance from the tab label. */
-.closebox::before {
+.closebox::after {
   display: none;
 }
 .closebox {
