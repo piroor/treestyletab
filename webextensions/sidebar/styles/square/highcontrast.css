@@ -61,24 +61,25 @@
 
 /* Closebox */
 
-.tab .closebox {
-  margin-top: -10px;
-  padding: 3px;
-  height: 22px;
-  width: 22px;
-}
-
 .tab .closebox:hover {
-  /*color: Highlight;*/
   --tab-text: HighlightText;
-  background: Highlight;
   opacity: 0.75;
+}
+.tab .closebox:hover::before {
+  background: Highlight;
+  border-radius: 0;
+  height: calc(var(--svg-small-icon-size) + 0.3em);
+  margin-left: -0.15em;
+  margin-top: -0.15em;
+  width: calc(var(--svg-small-icon-size) + 0.3em);
 }
 
 .tab.active .closebox:hover {
   --tab-text: Highlight;
-  background: HighlightText;
   opacity: 0.5;
+}
+.tab.active .closebox:hover::before {
+  background: HighlightText;
 }
 
 /* Mac OS workaround */
