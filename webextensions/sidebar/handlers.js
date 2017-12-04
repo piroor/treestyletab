@@ -757,6 +757,7 @@ async function onWindowRestoring(aWindowId) {
   }
 
   log('onWindowRestoring restore! ', cache);
+  cache.tabbar.tabsDirty = true;
   var tabs = await browser.tabs.query({ windowId: aWindowId });
   restoreTabsFromCache(cache.tabbar, { tabs });
   updateVisualMaxTreeLevel();
