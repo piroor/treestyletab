@@ -552,6 +552,7 @@ function onDragStart(aEvent) {
   gDraggingOnSelfWindow = true;
 
   var dt = aEvent.dataTransfer;
+  dt.effectAllowed = 'copyMove';
 
   dt.mozSetDataAt(kTREE_DROP_TYPE, JSON.stringify(sanitizeDragData(dragData)), 0);
 
@@ -592,7 +593,7 @@ function onDragOver(aEvent) {
 
   if (!info.canDrop ||
       isEventFiredOnTabDropBlocker(aEvent)) {
-    dt.effectAllowed = dt.dropEffect = 'none';
+    dt.dropEffect = 'none';
     clearDropPosition();
     return;
   }
@@ -605,7 +606,7 @@ function onDragOver(aEvent) {
     dropPositionTargetTab = info.targetTab;
 
   if (!dropPositionTargetTab) {
-    dt.effectAllowed = dt.dropEffect = 'none';
+    dt.dropEffect = 'none';
     return;
   }
 
@@ -637,7 +638,7 @@ function onDragEnter(aEvent) {
 
   var info = getDropAction(aEvent);
   var dt   = aEvent.dataTransfer;
-  dt.effectAllowed = dt.dropEffect = info.dropEffect;
+  dt.dropEffect = info.dropEffect;
 
   if (!info.canDrop)
     return;
