@@ -94,12 +94,6 @@ function clearWindowCache(aOwner) {
 function markWindowCacheDirtyFromTab(aTab, akey) {
   var container = aTab.parentNode;
   updateWindowCache(container.lastWindowCacheOwner, akey, true);
-  container.windowCacheDirtyCount = container.windowCacheDirtyCount || 0;
-  container.windowCacheDirtyCount++;
-  if (container.windowCacheDirtyCount > 10) {
-    container.windowCacheDirtyCount = 0;
-    reserveToCacheTree(container);
-  }
 }
 
 async function getWindowCache(aOwner, aKey) {
