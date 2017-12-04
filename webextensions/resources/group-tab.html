@@ -5,6 +5,7 @@
 <style type="text/css">
   :root {
     background: ThreeDFace;
+    color: ButtonText;
   }
 
   h1 {
@@ -13,8 +14,16 @@
   }
 
   h1::before {
-    content: "📂";
+    background: ButtonText;
+    content: "";
+    display: inline-block;
+    height: 1em;
     margin-right: 0.25em;
+    mask-image: url("/sidebar/styles/icons/folder-16.svg");
+    mask-position: left center;
+    mask-repeat: no-repeat;
+    mask-size: 100%;
+    width: 1em;
   }
 
   h1 > * {
