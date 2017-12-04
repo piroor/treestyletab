@@ -58,6 +58,8 @@ async function init() {
       refreshContextMenuItems();
   });
 
+  Permissions.clearRequest();
+
   gInitializing = false;
 
   getAllTabs().forEach(updateSubtreeCollapsed);

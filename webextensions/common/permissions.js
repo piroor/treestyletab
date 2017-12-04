@@ -9,6 +9,10 @@ const Permissions = {
   BOOKMARKS: { permissions: ['bookmarks'] },
   ALL_URLS:  { origins: ['<all_urls>'] },
 
+  clearRequest() {
+    configs.requestingPermissions = null;
+  },
+
   isGranted(aPermissions) {
     return browser.permissions.contains(aPermissions);
   },
@@ -62,6 +66,7 @@ const Permissions = {
         configs.requestingPermissions = aPermissions;
         aCheckbox.checked = false;
         browser.browserAction.setBadgeText({ text: '!' });
+        browser.browserAction.setPopup({ popup: '' });
 
         notify({
           title:   browser.i18n.getMessage('config.requestPermissions.fallbackToToolbarButton.title'),
