@@ -17,6 +17,8 @@
   display: none;
   height: var(--sound-button-size);
   margin: 0;
+  min-height: var(--sound-button-size);
+  min-width: var(--sound-button-size); /* this is required to prevent shrinking of the box which has no position:static content */
   opacity: 0.75;
   padding: 0;
   position: relative;
