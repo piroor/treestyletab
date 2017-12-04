@@ -26,6 +26,10 @@
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
   --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);
 }
+:root[color-scheme="system-color"] #extra-background {
+  background: var(--browser-bg-darker, ThreeDDarkShadow);
+  opacity: 0.15;
+}
 
 .tab,
 .after-tabs button {
