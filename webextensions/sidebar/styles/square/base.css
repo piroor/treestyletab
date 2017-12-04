@@ -9,12 +9,12 @@
 
 :root.left .tab:not(.pinned),
 :root.left .after-tabs button {
-  padding-right: 0.65em;
+  padding-right: 0.35em;
 }
 
 :root.right .tab:not(.pinned),
 :root.right .after-tabs button {
-  padding-left: 0.65em;
+  padding-left: 0.35em;
 }
 
 :root.left.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
