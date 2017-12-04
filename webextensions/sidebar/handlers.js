@@ -757,6 +757,7 @@ async function onWindowRestoring(aWindowId) {
   }
 
   log('onWindowRestoring restore! ', cache);
+  gMetricsData.add('onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
   var tabs = await browser.tabs.query({ windowId: aWindowId });
   restoreTabsFromCache(cache.tabbar, { tabs });
@@ -765,6 +766,7 @@ async function onWindowRestoring(aWindowId) {
     force: true,
     cache: cache.indent
   });
+  gMetricsData.add('onWindowRestoring restore end');
 }
 
 function onTabClosed(aTab, aCloseInfo) {

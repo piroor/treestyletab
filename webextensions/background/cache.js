@@ -6,6 +6,7 @@
 'use strict';
 
 async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
+  gMetricsData.add('restoreWindowFromEffectiveWindowCache start');
   var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
   var tabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
   var [actualSignature, cachedSignature, cache] = await Promise.all([
@@ -18,6 +19,12 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
       actualSignature != cachedSignature) {
     log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
+    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail ' + JSON.stringify({
+      cache: !!cache,
+      version: cache && cache.version,
+      actualSignature,
+      cachedSignature
+    }));
     return false;
   }
 
@@ -37,6 +44,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   if (!aOptions.insertionPoint)
     insertionPoint.detach();
 
+  gMetricsData.add('restoreWindowFromEffectiveWindowCache success');
   return restored;
 }
 

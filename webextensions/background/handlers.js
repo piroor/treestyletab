@@ -220,7 +220,9 @@ async function onWindowRestoring(aWindowId) {
   await container.allTabsRestored;
 
   log('onWindowRestoring: continue ', aWindowId);
+  gMetricsData.add('onWindowRestoring restore start');
   await restoreWindowFromEffectiveWindowCache(aWindowId);
+  gMetricsData.add('onWindowRestoring restore end');
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {

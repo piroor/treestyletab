@@ -8,6 +8,7 @@
 var gLastWindowCacheOwner;
 
 async function getEffectiveWindowCache() {
+  gMetricsData.add('getEffectiveWindowCache start');
   var cache;
   var cachedSignature;
   var actualSignature;
@@ -22,6 +23,10 @@ async function getEffectiveWindowCache() {
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
       ]);
+      gMetricsData.add('getEffectiveWindowCache get ' + JSON.stringify({
+        cache: !!cache,
+        version: cache && cache.version
+      }));
       if (cache && cache.version == kSIDEBAR_CONTENTS_VERSION) {
         log(`restore sidebar from cache`);
         cache.tabbar.tabsDirty      = tabsDirty;
@@ -35,12 +40,18 @@ async function getEffectiveWindowCache() {
       actualSignature = await getWindowSignature(gTargetWindow);
     })()
   ]);
+  gMetricsData.add('getEffectiveWindowCache signature check ' + JSON.stringify({
+    actualSignature, cachedSignature
+  }));
 
   if (!cache ||
       cachedSignature != actualSignature) {
     clearWindowCache();
     cache = null;
+    gMetricsData.add('getEffectiveWindowCache fail');
   }
+  else
+    gMetricsData.add('getEffectiveWindowCache success');
 
   return cache;
 }
