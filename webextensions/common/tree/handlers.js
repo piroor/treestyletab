@@ -209,20 +209,13 @@ async function onNewTabTracked(aTab) {
   var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
-  var [moved, uniqueId] = await Promise.all([
-    window.onTabOpening && onTabOpening(newTab, {
-      maybeOpenedWithPosition: openedWithPosition,
-      maybeOrphan: parseInt(container.dataset.toBeOpenedOrphanTabs) > 0,
-      duplicatedInternally
-    }),
-    newTab.uniqueId
-  ]);
-
+  var uniqueId = await newTab.uniqueId;
   if (uniqueId.restored) {
     container.restoredCount = container.restoredCount || 0;
     container.restoredCount++;
     let start = Date.now();
     if (!container.allTabsRestored) {
+      log('Maybe starting to restore window');
       container.allTabsRestored = new Promise((aResolve, aReject) => {
         var start = Date.now();
         var lastCount = container.restoredCount;
@@ -234,18 +227,28 @@ async function onNewTabTracked(aTab) {
           clearTimeout(timer);
           container.allTabsRestored = null;
           container.restoredCount   = 0;
+          log('All tabs are restored');
           aResolve();
-          setTimeout(() => {
-            window.onWindowRestored &&
-              onWindowRestored(aTab.windowId);
-          }, 200);
         }, 200);
       });
-      window.onWindowRestoring &&
-        onWindowRestoring(aTab.windowId);
+      let restoredWindowHandled = window.onWindowRestoring && onWindowRestoring(aTab.windowId);
+      if (restoredWindowHandled)
+        container.allTabsRestored = restoredWindowHandled;
     }
     await container.allTabsRestored;
+    log('onNewTabTracked: continued for restored tab');
   }
+  if (!container.parentNode ||
+      !newTab.parentNode) {
+    log('onNewTabTracked: aborted.');
+    return;
+  }
+
+  var moved = window.onTabOpening && await onTabOpening(newTab, {
+    maybeOpenedWithPosition: openedWithPosition,
+    maybeOrphan: parseInt(container.dataset.toBeOpenedOrphanTabs) > 0,
+    duplicatedInternally
+  });
 
   if (container.parentNode) { // it can be removed while waiting
     if (parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0)

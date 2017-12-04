@@ -741,35 +741,46 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToUpdateCachedTabbar();
 }
 
-/*
 async function onWindowRestoring(aWindowId) {
   if (!configs.useCachedTree)
     return;
 
-  var [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
-    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR),
-    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
-    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
-  ]);
-  if (!cache ||
-      cache.version != kSIDEBAR_CONTENTS_VERSION) {
-    return;
-  }
-
-  cache                = cache.tabbar;
-  cache.tabsDirty      = tabsDirty;
-  cache.collapsedDirty = collapsedDirty;
-
+  log('onWindowRestoring ', aWindowId);
   var container = getTabsContainer(aWindowId);
   await container.allTabsRestored;
 
+  log('onWindowRestoring:continue ', aWindowId);
+  gLastWindowCacheOwner = getWindowCacheOwner();
+  var [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
+    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
+    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
+    getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
+  ]);
+  if (!cache ||
+      cache.version != kSIDEBAR_CONTENTS_VERSION) {
+    log('onWindowRestoring mismatched cache ', !!cache, cache && cache.version);
+    return;
+  }
+
+  cache.tabbar.tabsDirty      = tabsDirty;
+  cache.tabbar.collapsedDirty = collapsedDirty;
+
   var tabs            = await browser.tabs.query({ windowId: aWindowId });
   var actualSignature = await getWindowSignature(tabs);
-  if (actualSignature == cachedSignature)
-    restoreTabsFromCache(cache, { tabs });
+  if (actualSignature == cachedSignature) {
+    log('onWindowRestoring restore! ', cache);
+    restoreTabsFromCache(cache.tabbar, { tabs });
+    updateVisualMaxTreeLevel();
+    updateIndent({
+      force: true,
+      cache: cache.indent
+    });
+  }
+  else {
+    log('onWindowRestoring mismatched signature ', cachedSignature, actualSignature);
+  }
 }
-*/
 
 function onTabClosed(aTab, aCloseInfo) {
   tabContextMenu.close();

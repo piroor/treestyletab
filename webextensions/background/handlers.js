@@ -201,7 +201,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
 }
 
 function onTabRestored(aTab) {
@@ -215,13 +215,22 @@ async function onWindowRestoring(aWindowId) {
   if (!configs.useCachedTree)
     return;
 
-  var [cachedSignature, cache] = await Promise.all([
-    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_SIGNATURE),
-    browser.sessions.getWindowValue(aWindowId, kWINDOW_STATE_CACHED_TABS)
-  ]);
-
+  log('onWindowRestoring ', aWindowId);
   var container = getTabsContainer(aWindowId);
   await container.allTabsRestored;
+
+  log('onWindowRestoring:continue ', aWindowId);
+
+  var owner = getWindowCacheOwner(aWindowId);
+  var [cachedSignature, cache] = await Promise.all([
+    getWindowCache(owner, kWINDOW_STATE_SIGNATURE),
+    getWindowCache(owner, kWINDOW_STATE_CACHED_TABS)
+  ]);
+  if (!cache ||
+      cache.version != kSIDEBAR_CONTENTS_VERSION) {
+    log('onWindowRestoring mismatched cache ', !!cache, cache && cache.version);
+    return;
+  }
 
   var tabs            = await browser.tabs.query({ windowId: aWindowId });
   var actualSignature = await getWindowSignature(tabs);
@@ -229,19 +238,15 @@ async function onWindowRestoring(aWindowId) {
   insertionPoint.selectNode(container);
   insertionPoint.collapse(false);
 
-  if (actualSignature == cachedSignature)
+  if (actualSignature == cachedSignature) {
+    log('onWindowRestoring restore!');
     restoreTabsFromCache(aWindowId, { insertionPoint, cache, tabs });
+  }
+  else {
+    log('onWindowRestoring mismatched signature ', cachedSignature, actualSignature);
+  }
 
   insertionPoint.detach();
-}
-
-async function onWindowRestored(aWindowId) {
-  var structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
-  browser.runtime.sendMessage({
-    type:     kCOMMAND_PUSH_TREE_STRUCTURE,
-    windowId: aWindowId,
-    structure
-  });
 }
 
 async function onTabClosed(aTab, aCloseInfo = {}) {
@@ -305,7 +310,8 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   });
 
   reserveToSaveTreeStructure(aTab);
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
+
   await wait(0);
   cleanupNeedlssGroupTab(ancestors);
 }
@@ -351,7 +357,7 @@ function onTabElementMoved(aTab, aInfo = {}) {
 }
 
 async function onTabMoved(aTab, aMoveInfo) {
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateInsertionPosition([
     aTab,
@@ -630,7 +636,7 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 }
 
 function onTabFocused(aTab, aInfo = {}) {
-  browser.sessions.setWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  updateWindowCache(aTab.parentNode.lastWindowCacheOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function setupDelayedExpand(aTab) {
@@ -677,13 +683,13 @@ function onTabUpdated(aTab, aChangeInfo) {
     tryStartHandleAccelKeyOnTab(aTab);
 
   reserveToSaveTreeStructure(aTab);
-  browser.sessions.setWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  updateWindowCache(aTab.parentNode.lastWindowCacheOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -792,7 +798,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
   if (aInfo.newlyAttached)
     reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(parent);
@@ -814,7 +820,7 @@ function onTabDetached(aTab, aDetachInfo) {
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 }
@@ -870,7 +876,7 @@ function onTabDetachedFromWindow(aTab, aInfo = {}) {
 }
 
 function onTabPinned(aTab) {
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
   collapseExpandSubtree(aTab, {
     collapsed: false,
     broadcast: true
@@ -888,7 +894,7 @@ function onTabPinned(aTab) {
 }
 
 function onTabUnpinned(aTab) {
-  browser.sessions.removeWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR);
+  clearWindowCache(aTab.parentNode.lastWindowCacheOwner);
 }
 
 
@@ -965,7 +971,7 @@ function onMessage(aMessage, aSender) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
-      browser.sessions.setWindowValue(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
+      updateWindowCache(tab.parentNode.lastWindowCacheOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
     }; break;
 
     case kCOMMAND_LOAD_URI: {

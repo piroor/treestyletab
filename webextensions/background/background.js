@@ -135,15 +135,17 @@ async function rebuildAll() {
   await Promise.all(windows.map(aWindow =>
     gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
       if (configs.useCachedTree) {
+        let windowCacheOwner = aWindow.tabs[aWindow.tabs.length - 1].id;
         let [actualSignature, cachedSignature, cache] = await Promise.all([
           getWindowSignature(aWindow.tabs),
-          browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_SIGNATURE),
-          browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_CACHED_TABS)
+          getWindowCache(windowCacheOwner, kWINDOW_STATE_SIGNATURE),
+          getWindowCache(windowCacheOwner, kWINDOW_STATE_CACHED_TABS)
         ]);
         log('restored data: ', { actualSignature, cachedSignature, cache });
         if (actualSignature == cachedSignature &&
             restoreTabsFromCache(aWindow.id, { insertionPoint, cache, tabs: aWindow.tabs })) {
           restoredFromCache[aWindow.id] = true;
+          log(`restore window ${aWindow.id} from cache`);
           return;
         }
       }
@@ -267,18 +269,49 @@ async function readyForExternalAddons() {
 
 // save/load tree structure
 
+function updateWindowCache(aOwner, aKey, aValue) {
+  if (!aOwner ||
+      !getTabById(aOwner))
+    return;
+  if (aValue === undefined) {
+    //browser.sessions.removeWindowValue(aOwner, aKey);
+    browser.sessions.removeTabValue(aOwner, aKey);
+  }
+  else {
+    //browser.sessions.setWindowValue(aOwner, aKey, aValue);
+    browser.sessions.setTabValue(aOwner, aKey, aValue);
+  }
+}
+
+function clearWindowCache(aOwner) {
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  updateWindowCache(aOwner, kWINDOW_STATE_SIGNATURE);
+}
+
+async function getWindowCache(aOwner, aKey) {
+  //return browser.sessions.getWindowValue(aOwner, aKey);
+  return browser.sessions.getTabValue(aOwner, aKey);
+}
+
+function getWindowCacheOwner(aHint) {
+  return getLastTab(aHint).apiTab.id;
+}
+
 function reserveToCacheTree(aHint) {
   if (gInitializing ||
       !configs.useCachedTree)
     return;
 
   var container = getTabsContainer(aHint);
-  if (!container)
+  if (!container ||
+      container.allTabsRestored)
     return;
 
   var windowId = parseInt(container.dataset.windowId);
   //log('clear cache for ', windowId);
-  browser.sessions.removeWindowValue(windowId, kWINDOW_STATE_CACHED_TABS);
+  clearWindowCache(container.lastWindowCacheOwner);
 
   if (container.waitingToCacheTree)
     clearTimeout(container.waitingToCacheTree);
@@ -289,15 +322,17 @@ function reserveToCacheTree(aHint) {
 async function cacheTree(aWindowId) {
   var container = getTabsContainer(aWindowId);
   if (!container ||
-      !configs.useCachedTree)
+      !configs.useCachedTree ||
+      container.allTabsRestored)
     return;
   //log('save cache for ', aWindowId);
-  browser.sessions.setWindowValue(aWindowId, kWINDOW_STATE_CACHED_TABS, {
+  container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
+  updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML
   });
   getWindowSignature(aWindowId).then(aSignature => {
-    browser.sessions.setWindowValue(aWindowId, kWINDOW_STATE_SIGNATURE, aSignature);
+    updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_SIGNATURE, aSignature);
   });
 }
 
