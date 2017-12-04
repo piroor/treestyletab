@@ -62,6 +62,11 @@ async function init() {
 
   gInitializing = false;
 
+  for (let windowId of Object.keys(restoredFromCache)) {
+    if (!restoredFromCache[windowId])
+      reserveToCacheTree(parseInt(windowId));
+  }
+
   getAllTabs().forEach(updateSubtreeCollapsed);
   for (let tab of getCurrentTabs()) {
     for (let ancestor of getAncestorTabs(tab)) {
@@ -315,7 +320,6 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
       }
       gMetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
     }
-    reserveToCacheTree(aWindow.id);
   })));
 }
 

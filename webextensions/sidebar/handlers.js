@@ -668,22 +668,22 @@ function onTabFaviconUpdated(aTab, aURL) {
     tab:   aTab.apiTab,
     url:   aURL
   });
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabLabelUpdated(aTab) {
   reserveToUpdateTabTooltip(aTab);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onParentTabUpdated(aTab) {
   updateTabSoundButtonTooltip(aTab);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function updateTabSoundButtonTooltip(aTab) {
@@ -694,13 +694,13 @@ function updateTabSoundButtonTooltip(aTab) {
     tooltip = browser.i18n.getMessage('tab.soundButton.playing.tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabFocused(aTab) {
   tabContextMenu.close();
   scrollToTab(aTab);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabOpening(aTab, aInfo = {}) {
@@ -870,7 +870,7 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
@@ -950,7 +950,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 
   // this is very required for no animation case!
   reserveToUpdateTabbarLayout({ reason: aOptions.reason });
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -959,7 +959,7 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
     return;
 
   reserveToUpdateLoadingState();
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
+  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
   if (configs.animation &&
       !aInfo.justNow &&

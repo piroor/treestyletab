@@ -91,6 +91,17 @@ function clearWindowCache(aOwner) {
   updateWindowCache(aOwner, kWINDOW_STATE_SIGNATURE);
 }
 
+function markWindowCacheDirtyFromTab(aTab, akey) {
+  var container = aTab.parentNode;
+  updateWindowCache(container.lastWindowCacheOwner, akey, true);
+  container.windowCacheDirtyCount = container.windowCacheDirtyCount || 0;
+  container.windowCacheDirtyCount++;
+  if (container.windowCacheDirtyCount > 10) {
+    container.windowCacheDirtyCount = 0;
+    reserveToCacheTree(container);
+  }
+}
+
 async function getWindowCache(aOwner, aKey) {
   //return browser.sessions.getWindowValue(aOwner, aKey);
   return browser.sessions.getTabValue(aOwner, aKey);

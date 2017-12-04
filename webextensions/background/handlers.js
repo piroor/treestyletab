@@ -612,7 +612,7 @@ function handleNewActiveTab(aTab, aInfo = {}) {
 }
 
 function onTabFocused(aTab, aInfo = {}) {
-  updateWindowCache(aTab.parentNode.lastWindowCacheOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function setupDelayedExpand(aTab) {
@@ -659,7 +659,7 @@ function onTabUpdated(aTab, aChangeInfo) {
     tryStartHandleAccelKeyOnTab(aTab);
 
   reserveToSaveTreeStructure(aTab);
-  updateWindowCache(aTab.parentNode.lastWindowCacheOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY, true);
+  markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
@@ -947,7 +947,7 @@ function onMessage(aMessage, aSender) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
-      updateWindowCache(tab.parentNode.lastWindowCacheOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY, true);
+      markWindowCacheDirtyFromTab(tab, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
     }; break;
 
     case kCOMMAND_LOAD_URI: {

@@ -74,6 +74,17 @@ function clearWindowCache() {
   updateWindowCache(kWINDOW_STATE_SIGNATURE);
 }
 
+function markWindowCacheDirty(akey) {
+  updateWindowCache(akey, true);
+  var container = getTabsContainer(gTargetWindow);
+  container.windowCacheDirtyCount = container.windowCacheDirtyCount || 0;
+  container.windowCacheDirtyCount++;
+  if (container.windowCacheDirtyCount > 10) {
+    container.windowCacheDirtyCount = 0;
+    reserveToUpdateCachedTabbar();
+  }
+}
+
 async function getWindowCache(aKey) {
   if (!gLastWindowCacheOwner)
     return null;
