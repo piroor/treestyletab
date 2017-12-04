@@ -7,8 +7,6 @@
 
 :root {
   --sound-button-size: var(--svg-small-icon-size);
-  --sound-button-scale: var(--svg-small-icon-scale);
-  --sound-button-bg-scale: var(--svg-small-icon-bg-scale);
 }
 
 .sound-button {
@@ -33,15 +31,15 @@
   height: var(--sound-button-size);
   mask-position: left center;
   mask-repeat: no-repeat;
+  mask-size: 100%;
   position: absolute;
   right: 0;
   top: 0;
-  transform: var(--sound-button-scale);
   width: var(--sound-button-size);
 }
 .tab.faviconized .sound-button::before {
   background: var(--tab-text-inverted);
-  transform: var(--sound-button-bg-scale);
+  transform: scale(1.3, 1.3);
 }
 
 .tab:not(.collapsed) .sound-button:hover {

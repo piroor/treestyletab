@@ -9,7 +9,6 @@
   --throbber-color: Highlight;
   --throbber-shadow-color: transparent;
   --throbber-size: var(--svg-small-icon-size);
-  --throbber-scale: var(--svg-small-icon-scale);
   --tab-burster-size: 5px;
   --tab-burster-translation: translate(calc(var(--tab-height) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
 }
@@ -46,10 +45,6 @@
   width: var(--throbber-size);
 }
 
-#tabbar .tab:not(.collapsed).loading .throbber {
-  transform: var(--throbber-scale);
-}
-
 #tabbar .tab:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
   mask: -moz-element(#master-throbber) no-repeat;
 }
@@ -81,6 +76,7 @@
   mask: url("./throbber.svg");
   mask-position: left center;
   mask-repeat: no-repeat;
+  mask-size: 100%;
 }
 
 #master-throbber {

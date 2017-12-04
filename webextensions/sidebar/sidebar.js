@@ -355,9 +355,6 @@ function calculateDefaultSizes() {
     --scrollbar-size: ${scrollbarSize}px;
     --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
 
-    --svg-small-icon-scale: scale(${gFaviconSize / 16}, ${gFaviconSize / 16});
-    --svg-small-icon-bg-scale: scale(${gFaviconSize / 16 * 1.3}, ${gFaviconSize / 16 * 1.3});
-
     --tab-burst-duration: ${configs.burstDuration}ms;
     --indent-duration:    ${configs.indentDuration}ms;
     --collapse-duration:  ${configs.collapseDuration}ms;

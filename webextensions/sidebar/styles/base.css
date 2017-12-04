@@ -379,6 +379,7 @@ ul {
   mask-image: url("./icons/close-16.svg");
   mask-position: left center;
   mask-repeat: no-repeat;
+  mask-size: 100%;
   width: var(--svg-small-icon-size);
 }
 
