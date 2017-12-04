@@ -20,7 +20,7 @@
 :root[color-scheme="system-color"] {
   --tab-surface: var(--browser-bg-base, -moz-dialog);
   --tab-text: var(--browser-fg, -moz-dialogtext);
-  --tab-text-inverted: var(--browser-bg-more-lighter, ThreeDHighlight);
+  --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
