@@ -23,16 +23,10 @@
   border-bottom: none;
 }
 
-:root.left .tab:not(.pinned) {
-  padding-right: 0.65em;
-}
 :root.left .tab:not(.pinned)[data-parent-id] {
   border-left-width: 1px;
 }
 
-:root.right .tab:not(.pinned) {
-  padding-left: 0.65em;
-}
 :root.right .tab:not(.pinned)[data-parent-id] {
   border-right-width: 1px;
 }
