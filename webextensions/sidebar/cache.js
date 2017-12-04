@@ -30,7 +30,6 @@ async function getEffectiveWindowCache() {
       else {
         cachedContents = null;
       }
-      clearWindowCache();
     })(),
     (async () => {
       actualSignature = await getWindowSignature(gTargetWindow);
