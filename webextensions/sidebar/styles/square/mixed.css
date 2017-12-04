@@ -44,7 +44,12 @@
                     );
 }
 
-.tab:not(.active) .closebox:hover::before {
+.tab .closebox:hover::before {
+  background: var(--tab-text-inverted);
+  opacity: 0.8;
+}
+
+.tab.active .closebox:hover::before {
   background: var(--tab-text-inverted);
   opacity: 1;
 }
