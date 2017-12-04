@@ -18,7 +18,7 @@
 }
 
 .tab:not(.collapsed):hover,
-.newtab-button:hover {
+.after-tabs button:hover {
   background-color: var(--tab-surface-hover);
   background-image: -moz-linear-gradient(
                       top,
