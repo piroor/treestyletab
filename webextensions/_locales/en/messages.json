@@ -234,6 +234,7 @@
 
   "config.debug.label": { "message": "Debug mode" },
   "config.useCachedTree.label": { "message": "Optimize tree restoration with cahche" },
+  "config.restoreWithPartialCache.label": { "message": "Restore tree from cache even if there is any extra tab" },
   "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." },

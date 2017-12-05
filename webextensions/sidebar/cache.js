@@ -56,7 +56,8 @@ async function getEffectiveWindowCache(aOptions = {}) {
 
   var offset = actualSignature ? actualSignature.indexOf(cachedSignature) : -1;
   if (!cache ||
-      offset < 0) {
+      offset < 0 ||
+      (offset != 0 && !configs.restoreWithPartialCache)) {
     clearWindowCache();
     cache = null;
     log('getEffectiveWindowCache: failed ', { offset, actualSignature, cachedSignature });

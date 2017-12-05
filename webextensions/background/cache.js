@@ -30,7 +30,8 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   var offset = cachedSignature ? actualSignature.indexOf(cachedSignature) : -1;
   if (!cache ||
       cache.version != kSIDEBAR_CONTENTS_VERSION ||
-      offset < 0) {
+      offset < 0 ||
+      (offset != 0 && !configs.restoreWithPartialCache)) {
     log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`, {
       cache, actualSignature, cachedSignature
     });

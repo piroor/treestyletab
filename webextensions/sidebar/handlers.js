@@ -754,7 +754,7 @@ async function onWindowRestoring(aWindowId) {
 
   log('onWindowRestoring: continue');
   var cache = await getEffectiveWindowCache({
-    ignorePinnedTabs: true
+    ignorePinnedTabs: configs.restoreWithPartialCache
   });
   if (!cache ||
       (cache.offset &&
