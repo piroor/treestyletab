@@ -431,38 +431,6 @@ async function rebuildAll(aCache) {
   }
 }
 
-async function restoreTabsFromCache(aCache, aParams = {}) {
-  log('restore tabs from cache ', aCache);
-
-  var oldContainer = getTabsContainer(gTargetWindow);
-  if (oldContainer)
-    oldContainer.parentNode.removeChild(oldContainer);
-
-  gTabBar.setAttribute('style', aCache.style);
-
-  gAllTabs.innerHTML = aCache.contents;
-  var container = gAllTabs.firstChild;
-  container.id = `window-${gTargetWindow}`;
-  container.dataset.windowId = gTargetWindow;
-
-  restoreCachedTabs(getAllTabs(), aParams.tabs, {
-    dirty: aCache.tabsDirty
-  });
-  if (aCache.collapsedDirty) {
-    let response = await browser.runtime.sendMessage({
-      type:     kCOMMAND_PULL_TREE_STRUCTURE,
-      windowId: gTargetWindow
-    });
-    let structure = response.structure.reverse();
-    getAllTabs().reverse().forEach((aTab, aIndex) => {
-      collapseExpandSubtree(aTab, {
-        collapsed: structure[aIndex].collapsed,
-        justNow:   true
-      });
-    });
-  }
-}
-
 async function inheritTreeStructure() {
   var response = await browser.runtime.sendMessage({
     type:     kCOMMAND_PULL_TREE_STRUCTURE,
