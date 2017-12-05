@@ -29,17 +29,16 @@ async function getEffectiveWindowCache(aOptions = {}) {
           cache.tabbar &&
           cache.tabbar.contents &&
           cachedSignature) {
-        log('cachedSignature(before trimmed) ', cachedSignature);
         cache.tabbar.contents = trimTabsCache(cache.tabbar.contents, cache.tabbar.pinnedTabsCount);
         cachedSignature       = trimSignature(cachedSignature, cache.tabbar.pinnedTabsCount);
-        log('getEffectiveWindowCache trim cache', cache, cachedSignature);
       }
       gMetricsData.add('getEffectiveWindowCache get ' + JSON.stringify({
         cache: !!cache,
         version: cache && cache.version
       }));
+      log('getEffectiveWindowCache: verify cache (1)', { cache, tabsDirty, collapsedDirty });
       if (cache && cache.version == kSIDEBAR_CONTENTS_VERSION) {
-        log(`restore sidebar from cache `, { cache, tabsDirty, collapsedDirty });
+        log('getEffectiveWindowCache: restore sidebar from cache');
         cache.tabbar.tabsDirty      = tabsDirty;
         cache.tabbar.collapsedDirty = collapsedDirty;
         cache.signature = cachedSignature;
@@ -54,13 +53,18 @@ async function getEffectiveWindowCache(aOptions = {}) {
     })()
   ]);
 
-  var offset = actualSignature ? actualSignature.indexOf(cachedSignature) : -1;
+  var signatureMatched = matcheSignatures({
+    actual: actualSignature,
+    cached: cachedSignature
+  });
+  log('getEffectiveWindowCache: verify cache (2)', {
+    cache, actualSignature, cachedSignature, signatureMatched
+  });
   if (!cache ||
-      offset < 0 ||
-      (offset != 0 && !configs.restoreWithPartialCache)) {
+      !signatureMatched) {
     clearWindowCache();
     cache = null;
-    log('getEffectiveWindowCache: failed ', { offset, actualSignature, cachedSignature });
+    log('getEffectiveWindowCache: failed');
     gMetricsData.add('getEffectiveWindowCache fail');
   }
   else {
@@ -105,12 +109,11 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
   }
 
   log('restoreTabsFromCache: post process');
-  // After restoration, tabs are updated with renumbered id.
-  // We need to update all tab elements including existing one.
-  var tabElements = getAllTabs()/*.slice(offset)*/;
-  var apiTabs     = aParams.tabs/*.slice(offset)*/;
+  var tabElements = getAllTabs().slice(offset);
+  var apiTabs     = aParams.tabs.slice(offset);
+  log('restoreTabsFromCache: tabs ', { tabElements, apiTabs });
   if (tabElements.length != apiTabs.length) {
-    log('restoreTabsFromCache: Mismatched number of restored tabs? ', { tabElements, apiTabs });
+    log('restoreTabsFromCache: Mismatched number of restored tabs?');
     return true;
   }
   fixupTabsRestoredFromCache(tabElements, apiTabs, {

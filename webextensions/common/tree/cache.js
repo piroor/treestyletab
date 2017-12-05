@@ -30,11 +30,19 @@ function trimTabsCache(aCache, aIgnoreCount) {
   return aCache.replace(new RegExp(`(<li[^>]*>.+?<\/li>){${aIgnoreCount}}`), '');
 }
 
+function matcheSignatures(aSignatures) {
+  return (
+    aSignatures.actual &&
+    aSignatures.cached &&
+    aSignatures.actual.indexOf(aSignatures.cached) + aSignatures.cached.length == aSignatures.actual.length
+  );
+}
+
 function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   if (aTabs.length != aApiTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);
   var idMap = {};
-  getAllTabs().forEach((aTab, aIndex) => {
+  aTabs.forEach((aTab, aIndex) => {
     var oldId = aTab.id;
     var apiTab = aApiTabs[aIndex];
     aTab.id = makeTabId(apiTab);

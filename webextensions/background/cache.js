@@ -14,6 +14,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     return false;
   }
   var tabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
+  log('restoreWindowFromEffectiveWindowCache tabs: ', tabs);
   var [actualSignature, cachedSignature, cache] = await Promise.all([
     getWindowSignature(tabs),
     getWindowCache(owner, kWINDOW_STATE_SIGNATURE),
@@ -26,25 +27,24 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     cache.tabs      = trimTabsCache(cache.tabs, cache.pinnedTabsCount);
     cachedSignature = trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
-  var offset = cachedSignature ? actualSignature.indexOf(cachedSignature) : -1;
+  var signatureMatched = matcheSignatures({
+    actual: actualSignature,
+    cached: cachedSignature
+  });
+  log(`restoreWindowFromEffectiveWindowCache: verify cache for ${aWindowId}`, {
+    cache, actualSignature, cachedSignature, signatureMatched
+  });
   if (!cache ||
       cache.version != kSIDEBAR_CONTENTS_VERSION ||
-      offset < 0 ||
-      (offset != 0 && !configs.restoreWithPartialCache)) {
-    log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`, {
-      cache, actualSignature, cachedSignature
-    });
+      !signatureMatched) {
+    log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
-    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail ' + JSON.stringify({
-      cache: !!cache,
-      version: cache && cache.version,
-      signature: actualSignature.indexOf(cachedSignature)
-    }));
+    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail');
     return false;
   }
   cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
 
-  log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache `, cache);
+  log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
 
   var insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
@@ -65,7 +65,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   if (restored)
     gMetricsData.add('restoreWindowFromEffectiveWindowCache success');
   else
-    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail ', cache);
+    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail');
 
   return restored;
 }
@@ -75,7 +75,7 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
       aParams.cache.version != kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  log(`restoreTabsFromCache: restore tabs for ${aWindowId} from cache`);
+  log(`restoreTabsFromCache: restore tabs for ${aWindowId} from cache `, aParams.cache);
 
   var offset         = aParams.cache.offset || 0;
   var insertionPoint = aParams.insertionPoint;
@@ -112,12 +112,11 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
   }
 
   log('restoreTabsFromCache: post process');
-  // After restoration, tabs are updated with renumbered id.
-  // We need to update all tab elements including existing one.
-  var tabElements = getAllTabs(aWindowId)/*.slice(offset)*/;
-  var apiTabs     = aParams.tabs/*.slice(offset)*/;
+  var tabElements = getAllTabs(aWindowId).slice(offset);
+  var apiTabs     = aParams.tabs.slice(offset);
+  log('restoreTabsFromCache: tabs ', { tabElements, apiTabs });
   if (tabElements.length != apiTabs.length) {
-    log('restoreTabsFromCache: Mismatched number of restored tabs? ', { tabElements, apiTabs });
+    log('restoreTabsFromCache: Mismatched number of restored tabs? ');
     return true;
   }
   fixupTabsRestoredFromCache(tabElements, apiTabs, {
