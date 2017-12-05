@@ -760,6 +760,7 @@ async function onWindowRestoring(aWindowId) {
       (cache.offset &&
        container.childNodes.length <= cache.offset)) {
     log('onWindowRestoring: no effective cache');
+    await inheritTreeStructure(); // fallback to classic method
     unblockUserOperations({ throbber: true });
     return;
   }
