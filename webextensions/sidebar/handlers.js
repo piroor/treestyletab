@@ -745,6 +745,8 @@ async function onWindowRestoring(aWindowId) {
   if (!configs.useCachedTree)
     return;
 
+  blockUserOperations({ throbber: true });
+
   log('onWindowRestoring ', aWindowId);
   var container = getTabsContainer(aWindowId);
   await container.allTabsRestored;
@@ -753,6 +755,7 @@ async function onWindowRestoring(aWindowId) {
   var cache = await getEffectiveWindowCache();
   if (!cache) {
     log('onWindowRestoring: no effective cache');
+    unblockUserOperations({ throbber: true });
     return;
   }
 
@@ -766,6 +769,7 @@ async function onWindowRestoring(aWindowId) {
     force: true,
     cache: cache.indent
   });
+  unblockUserOperations({ throbber: true });
   gMetricsData.add('onWindowRestoring restore end');
 }
 
