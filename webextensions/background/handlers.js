@@ -47,7 +47,7 @@ function onTabOpening(aTab, aInfo = {}) {
 
   if (!opener) {
     if (isNewTabCommandTab(aTab)) {
-      let current = getCurrentTab(aTab);
+      let current = aInfo.activeTab || getCurrentTab(aTab);
       log('behave as a tab opened by new tab command, current = ', dumpTab(current));
       behaveAutoAttachedTab(aTab, {
         baseTab:   current,

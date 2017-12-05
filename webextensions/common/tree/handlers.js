@@ -206,6 +206,7 @@ async function onNewTabTracked(aTab) {
   // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
   var treeForActionDetection = snapshotTreeForActionDetection(newTab);
 
+  var activeTab            = getCurrentTab(container);
   var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
@@ -247,7 +248,8 @@ async function onNewTabTracked(aTab) {
   var moved = window.onTabOpening && await onTabOpening(newTab, {
     maybeOpenedWithPosition: openedWithPosition,
     maybeOrphan: parseInt(container.dataset.toBeOpenedOrphanTabs) > 0,
-    duplicatedInternally
+    duplicatedInternally,
+    activeTab
   });
 
   if (container.parentNode) { // it can be removed while waiting
