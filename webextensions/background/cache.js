@@ -119,9 +119,15 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     log('restoreTabsFromCache: Mismatched number of restored tabs? ');
     return true;
   }
+  try{
   fixupTabsRestoredFromCache(tabElements, apiTabs, {
     dirty: true
   });
+  }
+  catch(e) {
+    log(String(e), e.stack);
+    throw e;
+  }
   log('restoreTabsFromCache: done', configs.debug && getTreeStructureFromTabs(getAllTabs(aWindowId)));
   dumpAllTabs();
   return true;

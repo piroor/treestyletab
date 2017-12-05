@@ -116,6 +116,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     log('restoreTabsFromCache: Mismatched number of restored tabs?');
     return true;
   }
+  try {
   fixupTabsRestoredFromCache(tabElements, apiTabs, {
     dirty: aCache.tabsDirty
   });
@@ -131,6 +132,11 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
         justNow:   true
       });
     });
+  }
+  }
+  catch(e) {
+    log(String(e), e.stack);
+    throw e;
   }
   log('restoreTabsFromCache: done');
   dumpAllTabs();
