@@ -91,11 +91,13 @@ async function init() {
 function waitUntilCompletelyRestored() {
   log('waitUntilCompletelyRestored');
   return new Promise((aResolve, aReject) => {
-    var onNewTabRestored = (() => {
+    var onNewTabRestored = async (aNewApiTab) => {
       clearTimeout(timeout);
       log('new restored tab is detected.');
+      var uniqueId = await browser.sessions.getTabValue(aNewApiTab.id, kPERSISTENT_ID);
+      //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
-    });
+    };
     browser.tabs.onCreated.addListener(onNewTabRestored);
     var resolver = (() => {
       log('timeout: all tabs are restored.');
