@@ -741,6 +741,12 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToUpdateCachedTabbar();
 }
 
+function onTabRestoring(aTab) {
+  var container = aTab.parentNode;
+  if (container.restoredCount > 1)
+    blockUserOperations({ throbber: true });
+}
+
 // Tree restoration for "Restore Previous Session"
 async function onWindowRestoring(aWindowId) {
   if (!configs.useCachedTree)
@@ -785,12 +791,6 @@ async function onWindowRestoring(aWindowId) {
   reserveToUpdateCachedTabbar();
   unblockUserOperations({ throbber: true });
   gMetricsData.add('onWindowRestoring restore end');
-}
-
-function onTabRestoring(aTab) {
-  var container = aTab.parentNode;
-  if (container.restoredCount > 1)
-    blockUserOperations({ throbber: true });
 }
 
 function onTabClosed(aTab, aCloseInfo) {
