@@ -1423,7 +1423,10 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'useCachedTree':
-      clearWindowCache();
+      if (configs[aChangedKey])
+        reserveToUpdateCachedTabbar();
+      else
+        clearWindowCache();
       break;
   }
 }

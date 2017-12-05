@@ -61,7 +61,11 @@ async function init() {
           windowTypes: ['normal']
         }).then(aWindows => {
           for (let window of aWindows) {
-            clearWindowCache(window.tabs[window.tabs.length - 1]);
+            let owner = window.tabs[window.tabs.length - 1];
+            if (configs[aKey])
+              reserveToCacheTree(owner);
+            else
+              clearWindowCache(owner);
           }
         });
         break;
