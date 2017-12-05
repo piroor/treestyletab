@@ -50,7 +50,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   });
 
   // update focused tab appearance
-  browser.tabs.query({ windowId: aTabs[0].windowId, active: true })
+  browser.tabs.query({ windowId: aTabs[0].apiTab.windowId, active: true })
     .then(aActiveTabs => updateTabFocused(aActiveTabs[0]));
 }
 
