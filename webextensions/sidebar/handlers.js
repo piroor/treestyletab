@@ -741,6 +741,7 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToUpdateCachedTabbar();
 }
 
+// Tree restoration for "Restore Previous Session"
 async function onWindowRestoring(aWindowId) {
   if (!configs.useCachedTree)
     return;
@@ -752,7 +753,9 @@ async function onWindowRestoring(aWindowId) {
   await container.allTabsRestored;
 
   log('onWindowRestoring: continue ', aWindowId);
-  var cache = await getEffectiveWindowCache();
+  var cache = await getEffectiveWindowCache({
+    ignorePinnedTabs: true
+  });
   if (!cache ||
       (cache.offset &&
        container.childNodes.length <= cache.offset)) {

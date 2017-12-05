@@ -204,6 +204,7 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToCacheTree(aTab);
 }
 
+// Tree restoration for "Restore Previous Session"
 function onTabRestored(aTab) {
   log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
   reserveToAttachTabFromRestoredInfo(aTab, {
@@ -221,7 +222,9 @@ async function onWindowRestoring(aWindowId) {
 
   log('onWindowRestoring: continue ', aWindowId);
   gMetricsData.add('onWindowRestoring restore start');
-  await restoreWindowFromEffectiveWindowCache(aWindowId);
+  await restoreWindowFromEffectiveWindowCache(aWindowId, {
+    ignorePinnedTabs: true
+  });
   gMetricsData.add('onWindowRestoring restore end');
 }
 

@@ -15,6 +15,13 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     getWindowCache(owner, kWINDOW_STATE_SIGNATURE),
     getWindowCache(owner, kWINDOW_STATE_CACHED_TABS)
   ]);
+  if (aOptions.ignorePinnedTabs &&
+      cache &&
+      cache.tabs &&
+      cachedSignature) {
+    cache.tabs      = trimTabsCache(cache.tabs, cache.pinnedTabsCount);
+    cachedSignature = trimSignature(cachedSignature, cache.pinnedTabsCount);
+  }
   var offset = cachedSignature ? actualSignature.indexOf(cachedSignature) : -1;
   if (!cache ||
       cache.version != kSIDEBAR_CONTENTS_VERSION ||
@@ -164,7 +171,8 @@ async function cacheTree(aWindowId) {
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
   updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,
-    tabs:    container.outerHTML
+    tabs:    container.outerHTML,
+    pinnedTabsCount: getPinnedTabs(container).length
   });
   getWindowSignature(aWindowId).then(aSignature => {
     updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_SIGNATURE, aSignature);

@@ -7,7 +7,7 @@
 
 var gLastWindowCacheOwner;
 
-async function getEffectiveWindowCache() {
+async function getEffectiveWindowCache(aOptions = {}) {
   gMetricsData.add('getEffectiveWindowCache start');
   log('getEffectiveWindowCache: start');
   var cache;
@@ -24,6 +24,14 @@ async function getEffectiveWindowCache() {
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
       ]);
+      if (aOptions.ignorePinnedTabs &&
+          cache &&
+          cache.tabbar &&
+          cache.tabbar.contents &&
+          cachedSignature) {
+        cache.tabbar.contents = trimTabsCache(cache.tabbar.contents, cache.tabbar.pinnedTabsCount);
+        cachedSignature       = trimSignature(cachedSignature, cache.tabbar.pinnedTabsCount);
+      }
       gMetricsData.add('getEffectiveWindowCache get ' + JSON.stringify({
         cache: !!cache,
         version: cache && cache.version
@@ -172,7 +180,8 @@ function updateCachedTabbar() {
     version: kSIDEBAR_CONTENTS_VERSION,
     tabbar:  {
       contents: gAllTabs.innerHTML,
-      style:    gTabBar.getAttribute('style')
+      style:    gTabBar.getAttribute('style'),
+      pinnedTabsCount: getPinnedTabs(container).length
     },
     indent:  {
       lastMaxLevel:  gLastMaxLevel,

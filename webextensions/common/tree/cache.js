@@ -18,6 +18,18 @@ async function getUniqueIds(aApiTabs) {
   return uniqueIds.map(aId => aId && aId.id || '?');
 }
 
+function trimSignature(aSignature, aIgnoreCount) {
+  if (!aIgnoreCount || aIgnoreCount < 0)
+    return aSignature;
+  return aSignature.split('\n').slice(aIgnoreCount).join('\n');
+}
+
+function trimTabsCache(aCache, aIgnoreCount) {
+  if (!aIgnoreCount || aIgnoreCount < 0)
+    return aCache;
+  return aCache.replace(new RegExp(`(<li[^>]*>.+?<\/li>){${aIgnoreCount}}`), '');
+}
+
 function restoreCachedTabs(aTabs, aApiTabs, aOptions = {}) {
   var idMap = {};
   getAllTabs().forEach((aTab, aIndex) => {
