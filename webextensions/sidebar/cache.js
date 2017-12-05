@@ -9,6 +9,7 @@ var gLastWindowCacheOwner;
 
 async function getEffectiveWindowCache() {
   gMetricsData.add('getEffectiveWindowCache start');
+  log('getEffectiveWindowCache: start');
   var cache;
   var cachedSignature;
   var actualSignature;
@@ -16,7 +17,7 @@ async function getEffectiveWindowCache() {
     (async () => {
       var apiTabs = await browser.tabs.query({ currentWindow: true });
       gLastWindowCacheOwner = apiTabs[apiTabs.length - 1].id;
-      let tabsDirty, collapsedDirty;
+      var tabsDirty, collapsedDirty;
       [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
@@ -31,8 +32,10 @@ async function getEffectiveWindowCache() {
         log(`restore sidebar from cache`);
         cache.tabbar.tabsDirty      = tabsDirty;
         cache.tabbar.collapsedDirty = collapsedDirty;
+        cache.signature = cachedSignature;
       }
       else {
+        log('getEffectiveWindowCache: invalid cache ', cache);
         cache = null;
       }
     })(),
@@ -41,14 +44,20 @@ async function getEffectiveWindowCache() {
     })()
   ]);
 
+  var offset = actualSignature ? actualSignature.indexOf(cachedSignature) : -1;
   if (!cache ||
-      cachedSignature != actualSignature) {
+      offset < 0) {
     clearWindowCache();
     cache = null;
+    log('getEffectiveWindowCache: failed ', { actualSignature, cachedSignature });
     gMetricsData.add('getEffectiveWindowCache fail');
   }
-  else
+  else {
+    cache.offset          = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
+    cache.actualSignature = actualSignature;
+    log('getEffectiveWindowCache: success ');
     gMetricsData.add('getEffectiveWindowCache success');
+  }
 
   return cache;
 }
@@ -56,18 +65,30 @@ async function getEffectiveWindowCache() {
 async function restoreTabsFromCache(aCache, aParams = {}) {
   log('restore tabs from cache ', aCache);
 
+  var offset       = aParams.offset || 0;
   var oldContainer = getTabsContainer(gTargetWindow);
-  if (oldContainer)
-    oldContainer.parentNode.removeChild(oldContainer);
+  if (offset > 0) {
+    let insertionPoint = document.createRange();
+    insertionPoint.selectNodeContents(oldContainer);
+    insertionPoint.setStartAfter(oldContainer.childNodes[offset - 1]);
+    insertionPoint.deleteContents();
+    let fragment = insertionPoint.createContextualFragment(aCache.contents.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
+    insertionPoint.insertNode(fragment);
+    insertionPoint.detach();
+  }
+  else {
+    if (oldContainer)
+      oldContainer.parentNode.removeChild(oldContainer);
+    gTabBar.setAttribute('style', aCache.style);
+    gAllTabs.innerHTML = aCache.contents;
+    let container = gAllTabs.firstChild;
+    container.id = `window-${gTargetWindow}`;
+    container.dataset.windowId = gTargetWindow;
+  }
 
-  gTabBar.setAttribute('style', aCache.style);
-
-  gAllTabs.innerHTML = aCache.contents;
-  var container = gAllTabs.firstChild;
-  container.id = `window-${gTargetWindow}`;
-  container.dataset.windowId = gTargetWindow;
-
-  restoreCachedTabs(getAllTabs(), aParams.tabs, {
+  // After restoration, tabs are updated with renumbered id.
+  // We need to update all tab elements including existing one.
+  restoreCachedTabs(getAllTabs()/*.slice(offset)*/, aParams.tabs/*.slice(offset)*/, {
     dirty: aCache.tabsDirty
   });
   if (aCache.collapsedDirty) {

@@ -183,7 +183,10 @@ function restoreCachedTabs(aTabs, aApiTabs, aOptions = {}) {
   var idMap = {};
   getAllTabs().forEach((aTab, aIndex) => {
     var oldId = aTab.id;
-    aTab.id = makeTabId(aApiTabs[aIndex]);
+    var apiTab = aApiTabs[aIndex];
+    aTab.id = makeTabId(apiTab);
+    aTab.setAttribute(kAPI_TAB_ID, apiTab.id || -1);
+    aTab.setAttribute(kAPI_WINDOW_ID, apiTab.windowId || -1);
     idMap[oldId] = aTab.id;
   });
   aTabs.forEach((aTab, aIndex) => {

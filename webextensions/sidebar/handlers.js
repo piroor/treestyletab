@@ -753,7 +753,9 @@ async function onWindowRestoring(aWindowId) {
 
   log('onWindowRestoring: continue ', aWindowId);
   var cache = await getEffectiveWindowCache();
-  if (!cache) {
+  if (!cache ||
+      (cache.offset &&
+       container.childNodes.length <= cache.offset)) {
     log('onWindowRestoring: no effective cache');
     unblockUserOperations({ throbber: true });
     return;
@@ -763,12 +765,16 @@ async function onWindowRestoring(aWindowId) {
   gMetricsData.add('onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
   var tabs = await browser.tabs.query({ windowId: aWindowId });
-  restoreTabsFromCache(cache.tabbar, { tabs });
+  restoreTabsFromCache(cache.tabbar, {
+    offset: cache.offset || 0,
+    tabs
+  });
   updateVisualMaxTreeLevel();
   updateIndent({
     force: true,
-    cache: cache.indent
+    cache: cache.offset == 0 ? cache.indent : null
   });
+  updateTabbarLayout({ justNow: true });
   unblockUserOperations({ throbber: true });
   gMetricsData.add('onWindowRestoring restore end');
 }

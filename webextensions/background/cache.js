@@ -7,6 +7,7 @@
 
 async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   gMetricsData.add('restoreWindowFromEffectiveWindowCache start');
+  log('restoreWindowFromEffectiveWindowCache start');
   var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
   var tabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
   var [actualSignature, cachedSignature, cache] = await Promise.all([
@@ -14,20 +15,24 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     getWindowCache(owner, kWINDOW_STATE_SIGNATURE),
     getWindowCache(owner, kWINDOW_STATE_CACHED_TABS)
   ]);
+  var offset = cachedSignature ? actualSignature.indexOf(cachedSignature) : -1;
   if (!cache ||
       cache.version != kSIDEBAR_CONTENTS_VERSION ||
-      actualSignature != cachedSignature) {
-    log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
+      offset < 0) {
+    log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`, {
+      cache, actualSignature, cachedSignature
+    });
     clearWindowCache(owner);
     gMetricsData.add('restoreWindowFromEffectiveWindowCache fail ' + JSON.stringify({
       cache: !!cache,
       version: cache && cache.version,
-      signature: actualSignature == cachedSignature
+      signature: actualSignature.indexOf(cachedSignature)
     }));
     return false;
   }
+  cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
 
-  log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
+  log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache `, cache);
 
   var insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
@@ -39,11 +44,17 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
       insertionPoint.selectNodeContents(gAllTabs);
     insertionPoint.collapse(false);
   }
-  var restored = restoreTabsFromCache(aWindowId, { insertionPoint, cache, tabs });
+  var restored = restoreTabsFromCache(aWindowId, {
+    insertionPoint, cache, tabs
+  });
   if (!aOptions.insertionPoint)
     insertionPoint.detach();
 
-  gMetricsData.add('restoreWindowFromEffectiveWindowCache success');
+  if (restored)
+    gMetricsData.add('restoreWindowFromEffectiveWindowCache success');
+  else
+    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail ', cache);
+
   return restored;
 }
 
@@ -54,16 +65,34 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
 
   log(`restore tabs for ${aWindowId} from cache`);
 
-  var oldContainer = getTabsContainer(aWindowId);
-  if (oldContainer)
-    oldContainer.parentNode.removeChild(oldContainer);
+  var offset         = aParams.cache.offset || 0;
+  var insertionPoint = aParams.insertionPoint;
+  var oldContainer   = getTabsContainer(aWindowId);
+  if (offset > 0) {
+    if (!oldContainer ||
+        oldContainer.childNodes.length <= offset)
+      return false;
+    insertionPoint = document.createRange();
+    insertionPoint.selectNodeContents(oldContainer);
+    insertionPoint.setStartAfter(oldContainer.childNodes[offset - 1]);
+    insertionPoint.deleteContents();
+    let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
+    insertionPoint.insertNode(fragment);
+    insertionPoint.detach();
+  }
+  else {
+    if (oldContainer)
+      oldContainer.parentNode.removeChild(oldContainer);
+    let fragment = aParams.insertionPoint.createContextualFragment(aParams.cache.tabs);
+    let container = fragment.firstChild;
+    insertionPoint.insertNode(fragment);
+    container.id = `window-${aWindowId}`;
+    container.dataset.windowId = aWindowId;
+  }
 
-  var fragment = aParams.insertionPoint.createContextualFragment(aParams.cache.tabs);
-  var container = fragment.firstChild;
-  aParams.insertionPoint.insertNode(fragment);
-  container.id = `window-${aWindowId}`;
-  container.dataset.windowId = aWindowId;
-  restoreCachedTabs(getAllTabs(aWindowId), aParams.tabs, {
+  // After restoration, tabs are updated with renumbered id.
+  // We need to update all tab elements including existing one.
+  restoreCachedTabs(getAllTabs(aWindowId)/*.slice(offset)*/, aParams.tabs/*.slice(offset)*/, {
     dirty: true
   });
   return true;
