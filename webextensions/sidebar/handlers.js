@@ -808,7 +808,8 @@ function onTabClosed(aTab, aCloseInfo) {
 }
 
 async function onTabCompletelyClosed(aTab) {
-  reserveToUpdateCachedTabbar();
+  // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
+  wait(0).then(() => reserveToUpdateCachedTabbar());
   if (!configs.animation)
     return;
 

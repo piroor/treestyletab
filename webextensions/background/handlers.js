@@ -290,9 +290,12 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   });
 
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
 
   await wait(0);
+
+  // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
+  reserveToCacheTree(aTab);
+
   cleanupNeedlssGroupTab(ancestors);
 }
 
