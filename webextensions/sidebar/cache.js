@@ -29,6 +29,7 @@ async function getEffectiveWindowCache(aOptions = {}) {
           cache.tabbar &&
           cache.tabbar.contents &&
           cachedSignature) {
+        log('cachedSignature(before trimmed) ', cachedSignature);
         cache.tabbar.contents = trimTabsCache(cache.tabbar.contents, cache.tabbar.pinnedTabsCount);
         cachedSignature       = trimSignature(cachedSignature, cache.tabbar.pinnedTabsCount);
         log('getEffectiveWindowCache trim cache', cache, cachedSignature);
@@ -77,12 +78,15 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
   var offset       = aParams.offset || 0;
   var oldContainer = getTabsContainer(gTargetWindow);
   if (offset > 0) {
+    log(`restoreTabsFromCache: there is ${oldContainer.childNodes.length} tabs`);
     log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
     let insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(oldContainer);
     insertionPoint.setStartAfter(oldContainer.childNodes[offset - 1]);
     insertionPoint.deleteContents();
-    log('restoreTabsFromCache: restore');
+    log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
+    let matched = aCache.contents.match(/<li/g);
+    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
     let fragment = insertionPoint.createContextualFragment(aCache.contents.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
@@ -101,7 +105,13 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
   log('restoreTabsFromCache: post process');
   // After restoration, tabs are updated with renumbered id.
   // We need to update all tab elements including existing one.
-  restoreCachedTabs(getAllTabs()/*.slice(offset)*/, aParams.tabs/*.slice(offset)*/, {
+  var tabElements = getAllTabs()/*.slice(offset)*/;
+  var apiTabs     = aParams.tabs/*.slice(offset)*/;
+  if (tabElements.length != apiTabs.length) {
+    log('restoreTabsFromCache: Mismatched number of restored tabs? ', { tabElements, apiTabs });
+    return true;
+  }
+  restoreCachedTabs(tabElements, apiTabs, {
     dirty: aCache.tabsDirty
   });
   if (aCache.collapsedDirty) {

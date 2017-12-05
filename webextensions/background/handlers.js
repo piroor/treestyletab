@@ -204,7 +204,6 @@ function onTabOpened(aTab, aInfo = {}) {
   reserveToCacheTree(aTab);
 }
 
-// Tree restoration for "Restore Previous Session"
 function onTabRestored(aTab) {
   log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
   reserveToAttachTabFromRestoredInfo(aTab, {
@@ -212,6 +211,7 @@ function onTabRestored(aTab) {
   });
 }
 
+// Tree restoration for "Restore Previous Session"
 async function onWindowRestoring(aWindowId) {
   if (!configs.useCachedTree)
     return;
@@ -222,6 +222,7 @@ async function onWindowRestoring(aWindowId) {
 
   log('onWindowRestoring: continue ', aWindowId);
   gMetricsData.add('onWindowRestoring restore start');
+
   await restoreWindowFromEffectiveWindowCache(aWindowId, {
     ignorePinnedTabs: true
   });
@@ -294,6 +295,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   await wait(0);
 
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToCacheTree(aTab);
 
   cleanupNeedlssGroupTab(ancestors);

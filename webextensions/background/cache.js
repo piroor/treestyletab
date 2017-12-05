@@ -23,6 +23,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
       cache &&
       cache.tabs &&
       cachedSignature) {
+    log('cachedSignature(before trimmed) ', cachedSignature);
     cache.tabs      = trimTabsCache(cache.tabs, cache.pinnedTabsCount);
     cachedSignature = trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
@@ -85,12 +86,15 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
       log('restoreTabsFromCache: missing container');
       return false;
     }
+    log(`restoreTabsFromCache: there is ${oldContainer.childNodes.length} tabs`);
     insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(oldContainer);
     log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
     insertionPoint.setStartAfter(oldContainer.childNodes[offset - 1]);
     insertionPoint.deleteContents();
-    log('restoreTabsFromCache: restore');
+    log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
+    let matched = aParams.cache.tabs.match(/<li/g);
+    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
     let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
@@ -109,7 +113,13 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
   log('restoreTabsFromCache: post process');
   // After restoration, tabs are updated with renumbered id.
   // We need to update all tab elements including existing one.
-  restoreCachedTabs(getAllTabs(aWindowId)/*.slice(offset)*/, aParams.tabs/*.slice(offset)*/, {
+  var tabElements = getAllTabs(aWindowId)/*.slice(offset)*/;
+  var apiTabs     = aParams.tabs/*.slice(offset)*/;
+  if (tabElements.length != apiTabs.length) {
+    log('restoreTabsFromCache: Mismatched number of restored tabs? ', { tabElements, apiTabs });
+    return true;
+  }
+  restoreCachedTabs(tabElements, apiTabs, {
     dirty: true
   });
   log('restoreTabsFromCache: done', configs.debug && getTreeStructureFromTabs(getAllTabs(aWindowId)));
