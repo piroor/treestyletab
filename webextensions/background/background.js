@@ -341,6 +341,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
       }
       gMetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
     }
+    dumpAllTabs();
   })));
 }
 

@@ -244,7 +244,7 @@ async function onNewTabTracked(aTab) {
   }
   if (!container.parentNode ||
       !newTab.parentNode) {
-    log('onNewTabTracked: aborted ', aTab.id);
+    log(' => aborted ', aTab.id);
     return;
   }
 

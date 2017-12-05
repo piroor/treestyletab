@@ -124,6 +124,7 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     dirty: true
   });
   log('restoreTabsFromCache: done', configs.debug && getTreeStructureFromTabs(getAllTabs(aWindowId)));
+  dumpAllTabs();
   return true;
 }
 

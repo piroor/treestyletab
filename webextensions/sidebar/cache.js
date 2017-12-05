@@ -130,6 +130,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     });
   }
   log('restoreTabsFromCache: done');
+  dumpAllTabs();
 }
 
 function updateWindowCache(aKey, aValue) {

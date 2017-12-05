@@ -208,3 +208,14 @@ function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
          nextTab.previousSibling == aPreviousTab;
 }
 
+
+function dumpAllTabs() {
+  if (!configs.debug)
+    return;
+  log('dumpAllTabs\n' +
+    getAllTabs().map(aTab =>
+      getAncestorTabs(aTab).reverse().concat([aTab])
+        .map(aTab => aTab.id + (isPinned(aTab) ? ' [pinned]' : ''))
+        .join(' => ')
+    ).join('\n'));
+}
