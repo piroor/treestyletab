@@ -81,4 +81,6 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
 
   if (aOptions.dirty)
     updateTab(aTab, aTab.apiTab, { forceApply: true });
+  else
+    updateTabDebugTooltip(aTab);
 }

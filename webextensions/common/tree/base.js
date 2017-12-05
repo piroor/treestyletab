@@ -344,8 +344,13 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     });
   }
 
-  if (configs.debug) {
-    aTab.dataset.label = `
+  updateTabDebugTooltip(aTab);
+}
+
+function updateTabDebugTooltip(aTab) {
+  if (!configs.debug)
+    return;
+  aTab.dataset.label = `
 ${aTab.apiTab.title}
 #${aTab.id}
 (${aTab.className})
@@ -355,21 +360,20 @@ restored = <%restored%>
 tabId = ${aTab.apiTab.id}
 windowId = ${aTab.apiTab.windowId}
 `.trim();
-    aTab.setAttribute('title', aTab.dataset.label);
-    aTab.uniqueId.then(aUniqueId => {
-      // reget it because it can be removed from document.
-      aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
-      if (!aTab)
-        return;
-      aTab.setAttribute('title',
-                        aTab.dataset.label = aTab.dataset.label
-                          .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
-                          .replace(`<%originalId%>`, aUniqueId.originalId)
-                          .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
-                          .replace(`<%duplicated%>`, !!aUniqueId.duplicated)
-                          .replace(`<%restored%>`, !!aUniqueId.restored));
-    });
-  }
+  aTab.setAttribute('title', aTab.dataset.label);
+  aTab.uniqueId.then(aUniqueId => {
+    // reget it because it can be removed from document.
+    aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
+    if (!aTab)
+      return;
+    aTab.setAttribute('title',
+                      aTab.dataset.label = aTab.dataset.label
+                        .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
+                        .replace(`<%originalId%>`, aUniqueId.originalId)
+                        .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
+                        .replace(`<%duplicated%>`, !!aUniqueId.duplicated)
+                        .replace(`<%restored%>`, !!aUniqueId.restored));
+  });
 }
 
 function updateTabFocused(aTab) {
