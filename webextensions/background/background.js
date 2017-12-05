@@ -59,8 +59,10 @@ async function init() {
         browser.windows.getAll({
           populate:    true,
           windowTypes: ['normal']
-        }).then(aWindow => {
-          clearWindowCache(aWindow.tabs[aWindow.tabs.length - 1]);
+        }).then(aWindows => {
+          for (let window of aWindows) {
+            clearWindowCache(window.tabs[window.tabs.length - 1]);
+          }
         });
         break;
 
