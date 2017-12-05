@@ -66,10 +66,14 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
     .filter(aTab => !!aTab);
   if (aTab.childTabs.length > 0)
     aTab.setAttribute(kCHILDREN, `|${aTab.childTabs.map(aTab => aTab.id).join('|')}|`);
+  else
+    aTab.removeAttribute(kCHILDREN);
 
   aTab.parentTab = getTabById(idMap[aTab.getAttribute(kPARENT)]);
   if (aTab.parentTab)
     aTab.setAttribute(kPARENT, aTab.parentTab.id);
+  else
+    aTab.removeAttribute(kPARENT);
 
   if (aOptions.dirty) {
     updateTab(aTab, aTab.apiTab, { forceApply: true });
