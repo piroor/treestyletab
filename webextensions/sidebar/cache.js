@@ -117,22 +117,22 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     return true;
   }
   try {
-  fixupTabsRestoredFromCache(tabElements, apiTabs, {
-    dirty: aCache.tabsDirty
-  });
-  if (aCache.collapsedDirty) {
-    let response = await browser.runtime.sendMessage({
-      type:     kCOMMAND_PULL_TREE_STRUCTURE,
-      windowId: gTargetWindow
+    fixupTabsRestoredFromCache(tabElements, apiTabs, {
+      dirty: aCache.tabsDirty
     });
-    let structure = response.structure.reverse();
-    getAllTabs().reverse().forEach((aTab, aIndex) => {
-      collapseExpandSubtree(aTab, {
-        collapsed: structure[aIndex].collapsed,
-        justNow:   true
+    if (aCache.collapsedDirty) {
+      let response = await browser.runtime.sendMessage({
+        type:     kCOMMAND_PULL_TREE_STRUCTURE,
+        windowId: gTargetWindow
       });
-    });
-  }
+      let structure = response.structure.reverse();
+      getAllTabs().reverse().forEach((aTab, aIndex) => {
+        collapseExpandSubtree(aTab, {
+          collapsed: structure[aIndex].collapsed,
+          justNow:   true
+        });
+      });
+    }
   }
   catch(e) {
     log(String(e), e.stack);

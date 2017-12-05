@@ -120,9 +120,9 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     return true;
   }
   try{
-  fixupTabsRestoredFromCache(tabElements, apiTabs, {
-    dirty: true
-  });
+    fixupTabsRestoredFromCache(tabElements, apiTabs, {
+      dirty: true
+    });
   }
   catch(e) {
     log(String(e), e.stack);
