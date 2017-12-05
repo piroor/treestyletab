@@ -236,6 +236,7 @@ async function onNewTabTracked(aTab) {
       if (restoredWindowHandled)
         container.allTabsRestored = restoredWindowHandled;
     }
+    window.onTabRestoring && onTabRestoring(newTab);
     await container.allTabsRestored;
     log('onNewTabTracked: continued for restored tab ', aTab.id);
   }

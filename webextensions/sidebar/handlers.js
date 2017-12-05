@@ -746,14 +746,12 @@ async function onWindowRestoring(aWindowId) {
   if (!configs.useCachedTree)
     return;
 
-  blockUserOperations({ throbber: true });
-
   log('onWindowRestoring');
   var container = getTabsContainer(aWindowId);
   var restoredCount = await container.allTabsRestored;
   if (restoredCount == 1) {
-    unblockUserOperations({ throbber: true });
     log('onWindowRestoring: single tab restored');
+    unblockUserOperations({ throbber: true });
     return;
   }
 
@@ -787,6 +785,12 @@ async function onWindowRestoring(aWindowId) {
   reserveToUpdateCachedTabbar();
   unblockUserOperations({ throbber: true });
   gMetricsData.add('onWindowRestoring restore end');
+}
+
+function onTabRestoring(aTab) {
+  var container = aTab.parentNode;
+  if (container.restoredCount > 1)
+    blockUserOperations({ throbber: true });
 }
 
 function onTabClosed(aTab, aCloseInfo) {
