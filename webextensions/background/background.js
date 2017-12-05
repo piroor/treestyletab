@@ -355,13 +355,14 @@ function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
     reserveToAttachTabFromRestoredInfo.tasks = [];
     var uniqueIds = await Promise.all(tasks.map(aTask => aTask.tab.uniqueId));
     var bulk = tasks.length > 1;
-    uniqueIds.forEach((aUniqueId, aIndex) => {
+    await Promise.all(uniqueIds.map((aUniqueId, aIndex) => {
       var task = tasks[aIndex];
-      attachTabFromRestoredInfo(task.tab, clone(task.options, {
+      return attachTabFromRestoredInfo(task.tab, clone(task.options, {
         uniqueId: aUniqueId,
         bulk
       }));
-    });
+    }));
+    dumpAllTabs();
   }, 100);
 }
 reserveToAttachTabFromRestoredInfo.waiting = null;
