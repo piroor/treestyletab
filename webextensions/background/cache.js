@@ -23,7 +23,6 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
       cache &&
       cache.tabs &&
       cachedSignature) {
-    log('cachedSignature(before trimmed) ', cachedSignature);
     cache.tabs      = trimTabsCache(cache.tabs, cache.pinnedTabsCount);
     cachedSignature = trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
@@ -95,7 +94,8 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     insertionPoint.deleteContents();
     log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
     let matched = aParams.cache.tabs.match(/<li/g);
-    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
+    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache `,
+        aParams.cache.tabs.replace(/(<(li|ul))/g, '\n$1'));
     let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
