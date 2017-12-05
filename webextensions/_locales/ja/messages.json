@@ -233,6 +233,7 @@
   "config.debug.caption": { "message": "開発用" },
 
   "config.debug.label": { "message": "デバッグモード" },
+  "config.useCachedTree.label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },

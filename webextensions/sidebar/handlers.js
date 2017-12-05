@@ -1409,5 +1409,9 @@ function onConfigChange(aChangedKey) {
       else
         rootClasses.remove(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       break;
+
+    case 'useCachedTree':
+      clearWindowCache();
+      break;
   }
 }

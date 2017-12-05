@@ -54,8 +54,21 @@ async function init() {
 
   refreshContextMenuItems();
   configs.$addObserver(aKey => {
-    if (aKey.indexOf('context_') == 0)
-      refreshContextMenuItems();
+    switch (aKey) {
+      case 'useCachedTree':
+        browser.windows.getAll({
+          populate:    true,
+          windowTypes: ['normal']
+        }).then(aWindow => {
+          clearWindowCache(aWindow.tabs[aWindow.tabs.length - 1]);
+        });
+        break;
+
+      default:
+        if (aKey.indexOf('context_') == 0)
+          refreshContextMenuItems();
+        break;
+    }
   });
 
   Permissions.clearRequest();
