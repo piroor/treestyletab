@@ -743,7 +743,9 @@ function onTabOpened(aTab, aInfo = {}) {
 
 function onTabRestoring(aTab) {
   var container = aTab.parentNode;
-  if (container.restoredCount > 1)
+  // When we are restoring two or more tabs.
+  // (But we don't need do this again for third, fourth, and later tabs.)
+  if (container.restoredCount == 2)
     blockUserOperations({ throbber: true });
 }
 
