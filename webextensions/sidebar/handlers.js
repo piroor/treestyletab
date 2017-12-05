@@ -372,7 +372,7 @@ async function onMouseUp(aEvent) {
            gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
     if (configs.logOnMouseEvent)
       log('middle click on a tab');
-      //log('middle-click to close');
+    //log('middle-click to close');
     removeTabInternally(tab, { inRemote: true });
     handled = true;
   }
