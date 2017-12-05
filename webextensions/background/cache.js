@@ -70,19 +70,23 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
       aParams.cache.version != kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  log(`restore tabs for ${aWindowId} from cache`);
+  log(`restoreTabsFromCache: restore tabs for ${aWindowId} from cache`);
 
   var offset         = aParams.cache.offset || 0;
   var insertionPoint = aParams.insertionPoint;
   var oldContainer   = getTabsContainer(aWindowId);
   if (offset > 0) {
     if (!oldContainer ||
-        oldContainer.childNodes.length <= offset)
+        oldContainer.childNodes.length <= offset) {
+      log('restoreTabsFromCache: missing container');
       return false;
+    }
     insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(oldContainer);
+    log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
     insertionPoint.setStartAfter(oldContainer.childNodes[offset - 1]);
     insertionPoint.deleteContents();
+    log('restoreTabsFromCache: restore');
     let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
@@ -92,16 +96,19 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
       oldContainer.parentNode.removeChild(oldContainer);
     let fragment = aParams.insertionPoint.createContextualFragment(aParams.cache.tabs);
     let container = fragment.firstChild;
+    log('restoreTabsFromCache: restore');
     insertionPoint.insertNode(fragment);
     container.id = `window-${aWindowId}`;
     container.dataset.windowId = aWindowId;
   }
 
+  log('restoreTabsFromCache: post process');
   // After restoration, tabs are updated with renumbered id.
   // We need to update all tab elements including existing one.
   restoreCachedTabs(getAllTabs(aWindowId)/*.slice(offset)*/, aParams.tabs/*.slice(offset)*/, {
     dirty: true
   });
+  log('restoreTabsFromCache: done', configs.debug && getTreeStructureFromTabs(getAllTabs(aWindowId)));
   return true;
 }
 
@@ -121,6 +128,7 @@ function updateWindowCache(aOwner, aKey, aValue) {
 }
 
 function clearWindowCache(aOwner) {
+  log('clearWindowCache for owner ', aOwner);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -169,6 +177,7 @@ async function cacheTree(aWindowId) {
     return;
   //log('save cache for ', aWindowId);
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
+  log('cacheTree for window ', aWindowId);
   updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,

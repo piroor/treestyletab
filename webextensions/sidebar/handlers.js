@@ -748,11 +748,11 @@ async function onWindowRestoring(aWindowId) {
 
   blockUserOperations({ throbber: true });
 
-  log('onWindowRestoring ', aWindowId);
+  log('onWindowRestoring');
   var container = getTabsContainer(aWindowId);
   await container.allTabsRestored;
 
-  log('onWindowRestoring: continue ', aWindowId);
+  log('onWindowRestoring: continue');
   var cache = await getEffectiveWindowCache({
     ignorePinnedTabs: true
   });

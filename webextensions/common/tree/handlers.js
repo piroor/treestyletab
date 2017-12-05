@@ -215,7 +215,7 @@ async function onNewTabTracked(aTab) {
     container.restoredCount++;
     let start = Date.now();
     if (!container.allTabsRestored) {
-      log('Maybe starting to restore window');
+      log('Maybe starting to restore window ', aTab.id);
       container.allTabsRestored = new Promise((aResolve, aReject) => {
         var start = Date.now();
         var lastCount = container.restoredCount;
@@ -236,11 +236,11 @@ async function onNewTabTracked(aTab) {
         container.allTabsRestored = restoredWindowHandled;
     }
     await container.allTabsRestored;
-    log('onNewTabTracked: continued for restored tab');
+    log('onNewTabTracked: continued for restored tab ', aTab.id);
   }
   if (!container.parentNode ||
       !newTab.parentNode) {
-    log('onNewTabTracked: aborted.');
+    log('onNewTabTracked: aborted ', aTab.id);
     return;
   }
 
