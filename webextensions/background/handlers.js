@@ -624,10 +624,6 @@ function handleNewActiveTab(aTab, aInfo = {}) {
   }
 }
 
-function onTabFocused(aTab, aInfo = {}) {
-  markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-}
-
 function setupDelayedExpand(aTab) {
   if (!aTab)
     return;

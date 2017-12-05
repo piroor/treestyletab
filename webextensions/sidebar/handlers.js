@@ -718,7 +718,6 @@ function updateTabSoundButtonTooltip(aTab) {
 function onTabFocused(aTab) {
   tabContextMenu.close();
   scrollToTab(aTab);
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabOpening(aTab, aInfo = {}) {

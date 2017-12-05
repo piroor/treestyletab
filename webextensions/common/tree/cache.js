@@ -48,6 +48,10 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
       dirty: aOptions.dirty
     });
   });
+
+  // update focused tab appearance
+  browser.tabs.query({ windowId: aTabs[0].windowId, active: true })
+    .then(aActiveTabs => updateTabFocused(aActiveTabs[0]));
 }
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
@@ -75,9 +79,6 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   else
     aTab.removeAttribute(kPARENT);
 
-  if (aOptions.dirty) {
+  if (aOptions.dirty)
     updateTab(aTab, aTab.apiTab, { forceApply: true });
-    if (aTab.apiTab.active)
-      updateTabFocused(aTab);
-  }
 }
