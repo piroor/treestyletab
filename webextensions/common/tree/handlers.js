@@ -151,7 +151,8 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (!updatedTab)
     return;
 
-  log('tabs.onUpdated ', aTabId, aChangeInfo, aTab, updatedTab.apiTab);
+  if (configs.logOnUpdated)
+    log('tabs.onUpdated ', aTabId, aChangeInfo, aTab, updatedTab.apiTab);
 
   //updatedTab.apiTab = aTab;
   /*
@@ -167,7 +168,8 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   }
   if (configs.enableWorkaroundForBug1409262 &&
       aTab.openerTabId != updatedTab.apiTab.TSTUpdatedOpenerTabId) {
-    log(`openerTabId of ${aTabId} is changed by someone!: ${updatedTab.apiTab.TSTUpdatedOpenerTabId} => ${aTab.openerTabId}`);
+    if (configs.logOnUpdated)
+      log(`openerTabId of ${aTabId} is changed by someone!: ${updatedTab.apiTab.TSTUpdatedOpenerTabId} => ${aTab.openerTabId}`);
     updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = aTab.openerTabId;
   }
 

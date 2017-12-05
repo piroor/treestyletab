@@ -222,6 +222,10 @@ configs = new Configs({
 `.trim(),
 
   debug:     false,
+  logOnUpdated: false,
+  logOnMouseEvent: false,
+  logOnScroll: false,
+  logOnCollapseExpand: false,
 
   importedConfigsFromLegacy: null,
   legacyConfigsNextMigrationVersion: 0,

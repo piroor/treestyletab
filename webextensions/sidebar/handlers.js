@@ -195,7 +195,8 @@ function onMouseDown(aEvent) {
   tabContextMenu.close();
 
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
-  //log('found target tab: ', tab);
+  if (configs.logOnMouseEvent)
+    log('onMouseDown: found target tab: ', tab);
 
   var mousedownDetail = {
     targetType:    getMouseEventTargetType(aEvent),
@@ -209,7 +210,8 @@ function onMouseDown(aEvent) {
     isMiddleClick: isMiddleClick(aEvent),
     isAccelClick:  isAccelAction(aEvent)
   };
-  log('onMouseDown ', mousedownDetail);
+  if (configs.logOnMouseEvent)
+    log('onMouseDown ', mousedownDetail);
 
   if (mousedownDetail.isMiddleClick) {
     aEvent.stopPropagation();
@@ -231,7 +233,8 @@ function onMouseDown(aEvent) {
   gLastMousedown.timeout = setTimeout(() => {
     if (!gLastMousedown)
       return;
-    log('onMouseDown expired');
+    if (configs.logOnMouseEvent)
+      log('onMouseDown expired');
     gLastMousedown.expired = true;
     if (aEvent.button == 0)
       notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
@@ -325,21 +328,24 @@ async function onMouseUp(aEvent) {
       (tab && tab != getTabById(gLastMousedown.detail.tab)))
     return;
 
-  log('onMouseUp ', gLastMousedown.detail);
+  if (configs.logOnMouseEvent)
+    log('onMouseUp ', gLastMousedown.detail);
 
   var handled = false;
   var actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
     configs.autoAttachOnNewTabCommand;
   if (isEventFiredOnNewTabButton(aEvent)) {
-    log('click on the new tab button');
+    if (configs.logOnMouseEvent)
+      log('click on the new tab button');
     handleNewTabAction(aEvent, {
       action: actionForNewTabCommand
     });
     handled = true;
   }
   else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
-    log('click on the contextual identity selector');
+    if (configs.logOnMouseEvent)
+      log('click on the contextual identity selector');
     handled = true;
     /*
     // Disable these mimpelentation until the selector is reimplemented without <select>.
@@ -353,7 +359,8 @@ async function onMouseUp(aEvent) {
       handled = true;
     }
     else { // treat as a click on new tab button
-      log('click on the new tab button (fallback)');
+      if (configs.logOnMouseEvent)
+        log('click on the new tab button (fallback)');
       handleNewTabAction(aEvent, {
         action: actionForNewTabCommand
       });
@@ -363,14 +370,16 @@ async function onMouseUp(aEvent) {
   }
   else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
            gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
-    log('middle click on a tab');
-    //log('middle-click to close');
+    if (configs.logOnMouseEvent)
+      log('middle click on a tab');
+      //log('middle-click to close');
     removeTabInternally(tab, { inRemote: true });
     handled = true;
   }
 
   if (!tab && !handled) {
-    log('notify as a blank area click to other addons');
+    if (configs.logOnMouseEvent)
+      log('notify as a blank area click to other addons');
     let results = await sendTSTAPIMessage(clone(gLastMousedown.detail, {
       type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
       window: gTargetWindow,
@@ -387,7 +396,8 @@ async function onMouseUp(aEvent) {
 
   if (!handled &&
       gLastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
-    log('default action for middle click on the blank area');
+    if (configs.logOnMouseEvent)
+      log('default action for middle click on the blank area');
     handleNewTabAction(aEvent, {
       action: configs.autoAttachOnNewTabCommand
     });
@@ -400,7 +410,8 @@ function onClick(aEvent) {
   if (aEvent.button != 0) // ignore non-left click
     return;
 
-  //log('onClick', String(aEvent.target));
+  if (configs.logOnMouseEvent)
+    log('onClick', String(aEvent.target));
 
   if (isEventFiredOnContextualIdentitySelector(aEvent) ||
       isEventFiredOnNewTabButton(aEvent)) {
@@ -410,12 +421,14 @@ function onClick(aEvent) {
   }
 
   var tab = getTabFromEvent(aEvent);
-  //log('clicked tab: ', tab);
+  if (configs.logOnMouseEvent)
+    log('clicked tab: ', tab);
 
   if (isEventFiredOnTwisty(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    //log('clicked on twisty');
+    if (configs.logOnMouseEvent)
+      log('clicked on twisty');
     if (hasChildTabs(tab))
       collapseExpandSubtree(tab, {
         collapsed:       !isSubtreeCollapsed(tab),
@@ -428,7 +441,8 @@ function onClick(aEvent) {
   if (isEventFiredOnSoundButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    //log('clicked on sound button');
+    if (configs.logOnMouseEvent)
+      log('clicked on sound button');
     browser.runtime.sendMessage({
       type:     kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
@@ -441,7 +455,8 @@ function onClick(aEvent) {
   if (isEventFiredOnClosebox(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    //log('clicked on closebox');
+    if (configs.logOnMouseEvent)
+      log('clicked on closebox');
     //if (!warnAboutClosingTabSubtreeOf(tab)) {
     //  aEvent.stopPropagation();
     //  aEvent.preventDefault();
@@ -453,7 +468,8 @@ function onClick(aEvent) {
 }
 
 function handleNewTabAction(aEvent, aOptions = {}) {
-  //log('handleNewTabAction');
+  if (configs.logOnMouseEvent)
+    log('handleNewTabAction');
   var parent, insertBefore, insertAfter;
   if (configs.autoAttach) {
     let current = getCurrentTab(gTargetWindow);
@@ -468,7 +484,9 @@ function handleNewTabAction(aEvent, aOptions = {}) {
         let refTabs = getReferenceTabsForNewChild(parent);
         insertBefore = refTabs.insertBefore;
         insertAfter  = refTabs.insertAfter;
-        //log('detected reference tabs: ', dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
+        if (configs.logOnMouseEvent)
+          log('detected reference tabs: ',
+              dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
       }; break;
 
       case kNEWTAB_OPEN_AS_SIBLING:
@@ -894,7 +912,8 @@ function onTabSubtreeCollapsedStateChanging(aTab, aInfo = {}) {
 function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
 
-  //log('onTabCollapsedStateChanging ', dumpTab(aTab), aInfo);
+  if (configs.logOnCollapseExpand)
+    log('onTabCollapsedStateChanging ', dumpTab(aTab), aInfo);
   if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 

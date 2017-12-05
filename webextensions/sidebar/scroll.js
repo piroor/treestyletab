@@ -41,7 +41,8 @@
 /* basics */
 
 function scrollTo(aParams = {}) {
-  log('scrollTo ', aParams);
+  if (configs.logOnScroll)
+    log('scrollTo ', aParams);
   if (!aParams.justNow &&
       configs.animation && configs.smoothScrollEnabled)
     return smoothScrollTo(aParams);
@@ -76,12 +77,13 @@ function calculateScrollDeltaForTab(aTab) {
   else if (containerRect.top > tabRect.top + offset) { // should scroll up
     delta = tabRect.top - containerRect.top + offset;
   }
-  log('calculateScrollDeltaForTab ', dumpTab(aTab), {
-    delta, offset,
-    tabTop:          tabRect.top,
-    tabBottom:       tabRect.bottom,
-    containerBottom: containerRect.bottom
-  });
+  if (configs.logOnScroll)
+    log('calculateScrollDeltaForTab ', dumpTab(aTab), {
+      delta, offset,
+      tabTop:          tabRect.top,
+      tabBottom:       tabRect.bottom,
+      containerBottom: containerRect.bottom
+    });
   return delta;
 }
 
@@ -96,7 +98,8 @@ function isTabInViewport(aTab) {
 }
 
 async function smoothScrollTo(aParams = {}) {
-  log('smoothScrollTo ', aParams);
+  if (configs.logOnScroll)
+    log('smoothScrollTo ', aParams);
   //cancelPerformingAutoScroll(true);
 
   smoothScrollTo.stopped = false;
@@ -187,11 +190,13 @@ function canScrollToTab(aTab) {
 }
 
 async function scrollToTab(aTab, aOptions = {}) {
-  log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions,
-      { stack: new Error().stack });
+  if (configs.logOnScroll)
+    log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions,
+        { stack: new Error().stack });
   cancelRunningScroll();
   if (!canScrollToTab(aTab)) {
-    log('=> unscrollable');
+    if (configs.logOnScroll)
+      log('=> unscrollable');
     return;
   }
 
@@ -205,7 +210,8 @@ async function scrollToTab(aTab, aOptions = {}) {
   cancelNotifyOutOfViewTab();
 
   if (isTabInViewport(aTab)) {
-    log('=> already visible');
+    if (configs.logOnScroll)
+      log('=> already visible');
     return;
   }
 
@@ -213,7 +219,8 @@ async function scrollToTab(aTab, aOptions = {}) {
   if (!ensureLivingTab(anchorTab) ||
       anchorTab == aTab ||
       isPinned(anchorTab)) {
-    log('=> no available anchor, direct scroll');
+    if (configs.logOnScroll)
+      log('=> no available anchor, direct scroll');
     scrollTo(clone(aOptions, {
       tab: aTab
     }));
@@ -232,7 +239,8 @@ async function scrollToTab(aTab, aOptions = {}) {
   var offset        = getOffsetForAnimatingTab(aTab);
   var delta         = calculateScrollDeltaForTab(aTab);
   if (targetTabRect.top > anchorTabRect.top) {
-    log('=> will scroll down');
+    if (configs.logOnScroll)
+      log('=> will scroll down');
     let boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
     let overHeight     = boundingHeight - containerRect.height;
     if (overHeight > 0) {
@@ -240,21 +248,24 @@ async function scrollToTab(aTab, aOptions = {}) {
       if (aOptions.notifyOnOutOfView)
         notifyOutOfViewTab(aTab);
     }
-    log('calculated result: ', {
-      boundingHeight, overHeight, delta,
-      container:      containerRect.height
-    });
+    if (configs.logOnScroll)
+      log('calculated result: ', {
+        boundingHeight, overHeight, delta,
+        container:      containerRect.height
+      });
   }
   else if (targetTabRect.bottom < anchorTabRect.bottom) {
-    log('=> will scroll up');
+    if (configs.logOnScroll)
+      log('=> will scroll up');
     let boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
     let overHeight     = boundingHeight - containerRect.height;
     if (overHeight > 0)
       delta += overHeight;
-    log('calculated result: ', {
-      boundingHeight, overHeight, delta,
-      container:      containerRect.height
-    });
+    if (configs.logOnScroll)
+      log('calculated result: ', {
+        boundingHeight, overHeight, delta,
+        container:      containerRect.height
+      });
   }
   scrollTo(clone(aOptions, {
     position: gTabBar.scrollTop + delta

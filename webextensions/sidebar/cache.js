@@ -87,7 +87,8 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     insertionPoint.deleteContents();
     log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
     let matched = aCache.contents.match(/<li/g);
-    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
+    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache `,
+        aCache.contents.replace(/(<(li|ul))/g, '\n$1'));
     let fragment = insertionPoint.createContextualFragment(aCache.contents.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();

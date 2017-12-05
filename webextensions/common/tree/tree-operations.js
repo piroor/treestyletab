@@ -522,7 +522,8 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
   if (!ensureLivingTab(aTab)) // it was removed while waiting
     return;
   aParams.stack = `${new Error().stack}\n${aParams.stack || ''}`;
-  log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
+  if (configs.logOnCollapseExpand)
+    logOnCollapseExpand('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   await Promise.all([
     collapseExpandSubtreeInternal(aTab, aParams),
@@ -600,7 +601,8 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 
   if (aParams.collapsed && isActive(aTab)) {
     let newSelection = getVisibleAncestorOrSelf(aTab);
-    log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
+    if (configs.logOnCollapseExpand)
+      log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
     selectTabInternally(newSelection, { silently: true });
   }
 
@@ -622,7 +624,8 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 
 function collapseExpandTab(aTab, aParams = {}) {
   var stack = `${new Error().stack}\n${aParams.stack || ''}`;
-  log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
+  if (configs.logOnCollapseExpand)
+    log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
   var last = aParams.last &&
                (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
   var collapseExpandInfo = clone(aParams, {
@@ -657,10 +660,12 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   if (!aTab)
     return;
 
-  log('collapseExpandTreesIntelligentlyFor');
+  if (configs.logOnCollapseExpand)
+    log('collapseExpandTreesIntelligentlyFor');
   var container = getTabsContainer(aTab);
   if (parseInt(container.dataset.doingIntelligentlyCollapseExpandCount) > 0) {
-    //log('=> done by others');
+    if (configs.logOnCollapseExpand)
+      log('=> done by others');
     return;
   }
   incrementContainerCounter(container, 'doingIntelligentlyCollapseExpandCount');
@@ -680,7 +685,8 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
      ]`,
     container
   );
-  //log(`${xpathResult.snapshotLength} tabs can be collapsed`);
+  if (configs.logOnCollapseExpand)
+    log(`${xpathResult.snapshotLength} tabs can be collapsed`);
   for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
     let dontCollapse = false;
     let collapseTab  = xpathResult.snapshotItem(i);
@@ -696,7 +702,8 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
         }
       }
     }
-    //log(`${dumpTab(collapseTab)}: dontCollapse = ${dontCollapse}`);
+    if (configs.logOnCollapseExpand)
+      log(`${dumpTab(collapseTab)}: dontCollapse = ${dontCollapse}`);
 
     let manuallyExpanded = collapseTab.classList.contains(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
