@@ -228,7 +228,7 @@ async function onWindowRestoring(aWindowId) {
   gMetricsData.add('onWindowRestoring restore start');
 
   await restoreWindowFromEffectiveWindowCache(aWindowId, {
-    ignorePinnedTabs: configs.restoreWithPartialCache
+    ignorePinnedTabs: true
   });
   reserveToCacheTree(aWindowId);
   gMetricsData.add('onWindowRestoring restore end');
