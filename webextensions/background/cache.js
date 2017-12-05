@@ -9,6 +9,10 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   gMetricsData.add('restoreWindowFromEffectiveWindowCache start');
   log('restoreWindowFromEffectiveWindowCache start');
   var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
+  if (!owner) {
+    log('restoreWindowFromEffectiveWindowCache fail: no owner');
+    return false;
+  }
   var tabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
   var [actualSignature, cachedSignature, cache] = await Promise.all([
     getWindowSignature(tabs),
@@ -177,6 +181,8 @@ async function cacheTree(aWindowId) {
     return;
   //log('save cache for ', aWindowId);
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
+  if (!container.lastWindowCacheOwner)
+    return;
   log('cacheTree for window ', aWindowId);
   updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,

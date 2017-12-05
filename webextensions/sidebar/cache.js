@@ -154,7 +154,9 @@ async function getWindowCache(aKey) {
 }
 
 function getWindowCacheOwner() {
-  return getLastTab().apiTab.id;
+  var tab = getLastTab();
+  var apiTab = tab && tab.apiTab;
+  return apiTab && apiTab.id;
 }
 
 function reserveToUpdateCachedTabbar() {

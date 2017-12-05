@@ -31,6 +31,8 @@ function trimTabsCache(aCache, aIgnoreCount) {
 }
 
 function restoreCachedTabs(aTabs, aApiTabs, aOptions = {}) {
+  if (aTabs.length != aApiTabs.length)
+    throw new Error(`restoreCachedTabs: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);
   var idMap = {};
   getAllTabs().forEach((aTab, aIndex) => {
     var oldId = aTab.id;
