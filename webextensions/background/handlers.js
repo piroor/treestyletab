@@ -218,7 +218,11 @@ async function onWindowRestoring(aWindowId) {
 
   log('onWindowRestoring ', aWindowId);
   var container = getTabsContainer(aWindowId);
-  await container.allTabsRestored;
+  var restoredCount = await container.allTabsRestored;
+  if (restoredCount == 1) {
+    log('onWindowRestoring: single tab restored');
+    return;
+  }
 
   log('onWindowRestoring: continue ', aWindowId);
   gMetricsData.add('onWindowRestoring restore start');

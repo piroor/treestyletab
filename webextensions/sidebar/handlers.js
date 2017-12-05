@@ -750,7 +750,12 @@ async function onWindowRestoring(aWindowId) {
 
   log('onWindowRestoring');
   var container = getTabsContainer(aWindowId);
-  await container.allTabsRestored;
+  var restoredCount = await container.allTabsRestored;
+  if (restoredCount == 1) {
+    unblockUserOperations({ throbber: true });
+    log('onWindowRestoring: single tab restored');
+    return;
+  }
 
   log('onWindowRestoring: continue');
   var cache = await getEffectiveWindowCache({

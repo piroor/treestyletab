@@ -229,7 +229,7 @@ async function onNewTabTracked(aTab) {
           container.allTabsRestored = null;
           container.restoredCount   = 0;
           log('All tabs are restored');
-          aResolve();
+          aResolve(lastCount);
         }, 200);
       });
       let restoredWindowHandled = window.onWindowRestoring && onWindowRestoring(aTab.windowId);
