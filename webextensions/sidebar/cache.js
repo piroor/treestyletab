@@ -113,7 +113,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     log('restoreTabsFromCache: Mismatched number of restored tabs? ', { tabElements, apiTabs });
     return true;
   }
-  restoreCachedTabs(tabElements, apiTabs, {
+  fixupTabsRestoredFromCache(tabElements, apiTabs, {
     dirty: aCache.tabsDirty
   });
   if (aCache.collapsedDirty) {

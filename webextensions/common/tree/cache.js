@@ -30,9 +30,9 @@ function trimTabsCache(aCache, aIgnoreCount) {
   return aCache.replace(new RegExp(`(<li[^>]*>.+?<\/li>){${aIgnoreCount}}`), '');
 }
 
-function restoreCachedTabs(aTabs, aApiTabs, aOptions = {}) {
+function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   if (aTabs.length != aApiTabs.length)
-    throw new Error(`restoreCachedTabs: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);
+    throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);
   var idMap = {};
   getAllTabs().forEach((aTab, aIndex) => {
     var oldId = aTab.id;
@@ -43,14 +43,14 @@ function restoreCachedTabs(aTabs, aApiTabs, aOptions = {}) {
     idMap[oldId] = aTab.id;
   });
   aTabs.forEach((aTab, aIndex) => {
-    restoreCachedTab(aTab, aApiTabs[aIndex], {
+    fixupTabRestoredFromCache(aTab, aApiTabs[aIndex], {
       idMap: idMap,
       dirty: aOptions.dirty
     });
   });
 }
 
-function restoreCachedTab(aTab, aApiTab, aOptions = {}) {
+function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   aTab.apiTab = aApiTab;
   updateUniqueId(aTab);
   aTab.opened = Promise.resolve(true);
