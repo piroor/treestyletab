@@ -778,6 +778,7 @@ async function onWindowRestoring(aWindowId) {
     cache: cache.offset == 0 ? cache.indent : null
   });
   updateTabbarLayout({ justNow: true });
+  reserveToUpdateCachedTabbar();
   unblockUserOperations({ throbber: true });
   gMetricsData.add('onWindowRestoring restore end');
 }
