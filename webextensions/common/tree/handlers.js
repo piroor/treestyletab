@@ -212,8 +212,10 @@ async function onNewTabTracked(aTab) {
   var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
-  var uniqueId = await newTab.uniqueId;
-  if (uniqueId.restored) {
+  var uniqueId   = await newTab.uniqueId;
+  var duplicated = duplicatedInternally || uniqueId.duplicated;
+  var restored   = uniqueId.restored;
+  if (restored) {
     container.restoredCount = container.restoredCount || 0;
     container.restoredCount++;
     let start = Date.now();
@@ -251,6 +253,8 @@ async function onNewTabTracked(aTab) {
   var moved = window.onTabOpening && await onTabOpening(newTab, {
     maybeOpenedWithPosition: openedWithPosition,
     maybeOrphan: parseInt(container.dataset.toBeOpenedOrphanTabs) > 0,
+    restored,
+    duplicated,
     duplicatedInternally,
     activeTab
   });
@@ -277,10 +281,10 @@ async function onNewTabTracked(aTab) {
     return null;
 
   log('uniqueId: ', uniqueId);
-  var duplicated = duplicatedInternally || uniqueId.duplicated;
 
   window.onTabOpened && onTabOpened(newTab, {
     openedWithPosition: openedWithPosition || moved,
+    restored,
     duplicated,
     duplicatedInternally,
     originalTab: duplicated && getTabById({ tab: uniqueId.originalTabId }),
@@ -292,7 +296,7 @@ async function onNewTabTracked(aTab) {
   newTab._resolveOpened();
 
   if (!duplicated &&
-      uniqueId.restored) {
+      restored) {
     newTab.classList.add(kTAB_STATE_RESTORED);
     window.onTabRestored && onTabRestored(newTab);
     checkRecycledTab(container);
