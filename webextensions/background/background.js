@@ -420,19 +420,29 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     attached = true;
     break;
   }
-  var opener = getOpenerTab(aTab);
-  if (!attached &&
-      opener &&
-      configs.syncParentTabAndOpenerTab) {
-    log(' attach to opener: ', { child: dumpTab(aTab), parent: dumpTab(opener) });
-    let done = attachTabTo(aTab, opener, {
-      dontExpand:  !active,
-      forceExpand: active,
-      broadcast:   true,
-      insertAt:    kINSERT_NEAREST
-    });
-    if (!aOptions.bulk)
-      await done;
+  if (!attached) {
+    let opener = getOpenerTab(aTab);
+    if (opener &&
+        configs.syncParentTabAndOpenerTab) {
+      log(' attach to opener: ', { child: dumpTab(aTab), parent: dumpTab(opener) });
+      let done = attachTabTo(aTab, opener, {
+        dontExpand:  !active,
+        forceExpand: active,
+        broadcast:   true,
+        insertAt:    kINSERT_NEAREST
+      });
+      if (!aOptions.bulk)
+        await done;
+    }
+    else if (!aOptions.bulk &&
+             (getNextNormalTab(aTab) ||
+              getPreviousNormalTab(aTab))) {
+      log(' attach from position');
+      await tryFixupTreeForInsertedTab(aTab, {
+        toIndex:   aTab.apiTab.index,
+        fromIndex: getTabIndex(getLastTab(aTab))
+      });
+    }
   }
   if (!aOptions.keepCurrentTree &&
       // the restored tab is a roo tab
@@ -457,6 +467,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       });
     }
   }
+
   if (aOptions.canCollapse || aOptions.bulk) {
     collapseExpandSubtree(aTab, {
       broadcast: true,
