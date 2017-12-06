@@ -197,7 +197,6 @@ configs = new Configs({
   notifiedFeaturesVersion: 0,
 
   useCachedTree: false,
-  restoreWithPartialCache: false,
 
   requestingPermissions: null,
 
