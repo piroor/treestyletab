@@ -988,7 +988,7 @@ function snapshotTree(aTargetTab, aTabs) {
       active:        isActive(aTab),
       children:      getChildTabs(aTab).filter(aChild => !isHidden(aChild)).map(aChild => aChild.id),
       collapsed:     isSubtreeCollapsed(aTab),
-      level:         parseInt(aTab.getAttribute(kLEVEL))
+      level:         parseInt(aTab.getAttribute(kLEVEL) || 0)
     };
   }
   var snapshotArray = tabs.map(aTab => snapshotChild(aTab));
