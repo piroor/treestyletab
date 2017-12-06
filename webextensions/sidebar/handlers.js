@@ -759,6 +759,9 @@ function onTabOpened(aTab, aInfo = {}) {
 }
 
 function onTabRestoring(aTab) {
+  if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
+    return;
+
   var container = aTab.parentNode;
   // When we are restoring two or more tabs.
   // (But we don't need do this again for third, fourth, and later tabs.)
