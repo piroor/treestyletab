@@ -883,8 +883,11 @@ function onTabMoved(aTab) {
   reserveToUpdateCachedTabbar();
 }
 
-function onTabLevelChanged(aTab) {
+async function onTabLevelChanged(aTab) {
   reserveToUpdateIndent();
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
 }
 
