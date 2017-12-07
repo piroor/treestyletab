@@ -84,7 +84,7 @@ async function onApiTabActivated(aActiveInfo) {
   log('tabs.onActivated: ', dumpTab(newTab));
   updateTabFocused(newTab);
 
-  var byCurrentTabRemove = container.resolveClosedWhileActiveForPreviousActiveTab;
+  var byCurrentTabRemove = !!container.resolveClosedWhileActiveForPreviousActiveTab;
   if (byCurrentTabRemove) {
     incrementContainerCounter(container, 'tryingReforcusForClosingCurrentTabCount');
     container.resolveClosedWhileActiveForPreviousActiveTab();
