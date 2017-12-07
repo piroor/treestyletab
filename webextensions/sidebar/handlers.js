@@ -1199,8 +1199,9 @@ function onMessage(aMessage, aSender, aRespond) {
       gRestoringTabCount--;
       break;
 
-    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
-      if (aMessage.windowId == gTargetWindow) {
+    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
+      if (aMessage.windowId == gTargetWindow) return (async () => {
+        await waitUntilTabsAreaCreated(aMessage.tab);
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
@@ -1213,11 +1214,12 @@ function onMessage(aMessage, aSender, aRespond) {
           manualCollapseExpandSubtree(tab, params);
         else
           collapseExpandSubtree(tab, params);
-      }
-      break;
+      })();
+    }; break;
 
-    case kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
-      if (aMessage.windowId == gTargetWindow) {
+    case kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
+      if (aMessage.windowId == gTargetWindow) return (async () => {
+        await waitUntilTabsAreaCreated(aMessage.tab);
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
@@ -1233,28 +1235,43 @@ function onMessage(aMessage, aSender, aRespond) {
           stack:       aMessage.stack
         };
         collapseExpandTab(tab, params);
-      }
-      break;
+      })();
+    }; break;
 
     case kCOMMAND_MOVE_TABS_BEFORE:
-      return moveTabsBefore(
-        aMessage.tabs.map(getTabById),
-        getTabById(aMessage.nextTab),
-        aMessage
-      ).then(aTabs => aTabs.map(aTab => aTab.id));
+      return (async () => {
+        await waitUntilTabsAreaCreated(aMessage.tabs.concat([aMessage.nextTab]));
+        return moveTabsBefore(
+          aMessage.tabs.map(getTabById),
+          getTabById(aMessage.nextTab),
+          aMessage
+        ).then(aTabs => aTabs.map(aTab => aTab.id));
+      })();
 
     case kCOMMAND_MOVE_TABS_AFTER:
-      return moveTabsAfter(
-        aMessage.tabs.map(getTabById),
-        getTabById(aMessage.previousTab),
-        aMessage
-      ).then(aTabs => aTabs.map(aTab => aTab.id));
+      return (async () => {
+        await waitUntilTabsAreaCreated(aMessage.tabs.concat([aMessage.previousTab]));
+        return moveTabsAfter(
+          aMessage.tabs.map(getTabById),
+          getTabById(aMessage.previousTab),
+          aMessage
+        ).then(aTabs => aTabs.map(aTab => aTab.id));
+      })();
 
     case kCOMMAND_REMOVE_TABS_INTERNALLY:
-      return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
+      return (async () => {
+        await waitUntilTabsAreaCreated(aMessage.tabs);
+        return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
+      })();
 
     case kCOMMAND_ATTACH_TAB_TO: {
-      if (aMessage.windowId == gTargetWindow) {
+      if (aMessage.windowId == gTargetWindow) return (async () => {
+        await waitUntilTabsAreaCreated([
+          aMessage.child,
+          aMessage.parent,
+          aMessage.insertBefore,
+          aMessage.insertAfter
+        ]);
         log('attach tab from remote ', aMessage);
         let child  = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
@@ -1265,21 +1282,27 @@ function onMessage(aMessage, aSender, aRespond) {
             inRemote:     false,
             broadcast:    false
           }));
-      }
+      })();
     }; break;
 
-    case kCOMMAND_TAB_ATTACHED_COMPLETELY: {
-      let tab = getTabById(aMessage.tab);
-      if (tab && isActive(getTabById(aMessage.parent)))
-        scrollToNewTab(tab);
-    }; break;
+    case kCOMMAND_TAB_ATTACHED_COMPLETELY:
+      return (async () => {
+        await waitUntilTabsAreaCreated([
+          aMessage.tab,
+          aMessage.parent
+        ]);
+        let tab = getTabById(aMessage.tab);
+        if (tab && isActive(getTabById(aMessage.parent)))
+          scrollToNewTab(tab);
+      })();
 
     case kCOMMAND_DETACH_TAB: {
-      if (aMessage.windowId == gTargetWindow) {
+      if (aMessage.windowId == gTargetWindow) return (async () => {
+        await waitUntilTabsAreaCreated(aMessage.tab);
         let tab = getTabById(aMessage.tab);
         if (tab)
           detachTab(tab, aMessage);
-      }
+      })();
     }; break;
 
     case kCOMMAND_BLOCK_USER_OPERATIONS: {
@@ -1295,27 +1318,30 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_TAB_STATE: {
       if (!aMessage.tabs.length)
         break;
-      let add    = aMessage.add || [];
-      let remove = aMessage.remove || [];
-      log('apply broadcasted tab state ', aMessage.tabs, {
-        add:    add.join(','),
-        remove: remove.join(',')
-      });
-      let modified = add.concat(remove);
-      for (let tab of aMessage.tabs) {
-        tab = getTabById(tab);
-        if (!tab)
-          continue;
-        add.forEach(aState => tab.classList.add(aState));
-        remove.forEach(aState => tab.classList.remove(aState));
-        if (modified.indexOf(kTAB_STATE_AUDIBLE) > -1 ||
+      return (async () => {
+        await waitUntilTabsAreaCreated(aMessage.tabs);
+        let add    = aMessage.add || [];
+        let remove = aMessage.remove || [];
+        log('apply broadcasted tab state ', aMessage.tabs, {
+          add:    add.join(','),
+          remove: remove.join(',')
+        });
+        let modified = add.concat(remove);
+        for (let tab of aMessage.tabs) {
+          tab = getTabById(tab);
+          if (!tab)
+            continue;
+          add.forEach(aState => tab.classList.add(aState));
+          remove.forEach(aState => tab.classList.remove(aState));
+          if (modified.indexOf(kTAB_STATE_AUDIBLE) > -1 ||
             modified.indexOf(kTAB_STATE_SOUND_PLAYING) > -1 ||
             modified.indexOf(kTAB_STATE_MUTED) > -1) {
-          updateTabSoundButtonTooltip(tab);
-          if (aMessage.bubbles)
-            updateParentTab(getParentTab(tab));
+            updateTabSoundButtonTooltip(tab);
+            if (aMessage.bubbles)
+              updateParentTab(getParentTab(tab));
+          }
         }
-      }
+      })();
     }; break;
   }
 }
@@ -1340,25 +1366,27 @@ function onMessageExternal(aMessage, aSender) {
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
 
-    case kTSTAPI_SCROLL: {
-      let params = {};
-      if ('tab' in aMessage) {
-        params.tab = getTabById(aMessage.tab);
-        if (!params.tab || params.tab.windowId != gTargetWindow)
-          return;
-      }
-      else {
-        if (aMessage.window != gTargetWindow)
-          return;
-        if ('delta' in aMessage)
-          params.delta = aMessage.delta;
-        if ('position' in aMessage)
-          params.position = aMessage.position;
-      }
-      return scrollTo(params).then(() => {
-        return true;
-      });
-    }; break;
+    case kTSTAPI_SCROLL:
+      return (async () => {
+        let params = {};
+        if ('tab' in aMessage) {
+          await waitUntilTabsAreaCreated(aMessage.tab);
+          params.tab = getTabById(aMessage.tab);
+          if (!params.tab || params.tab.windowId != gTargetWindow)
+            return;
+        }
+        else {
+          if (aMessage.window != gTargetWindow)
+            return;
+          if ('delta' in aMessage)
+            params.delta = aMessage.delta;
+          if ('position' in aMessage)
+            params.position = aMessage.position;
+        }
+        return scrollTo(params).then(() => {
+          return true;
+        });
+      })();
   }
 }
 

@@ -63,6 +63,19 @@ function endObserveApiTabs() {
 }
 
 
+var gCreatingTabs = {};
+
+function waitUntilTabsAreaCreated(aIdOrIds) {
+  if (!Array.isArray(aIdOrIds))
+    aIdOrIds = [aIdOrIds];
+  var creatingTabs = aIdOrIds.filter(aId => !!aId)
+    .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
+    .map(aId => gCreatingTabs[aId])
+    .filter(aCreating => !!aCreating);
+  if (creatingTabs.length)
+    return Promise.all(creatingTabs);
+}
+
 async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
@@ -76,6 +89,8 @@ async function onApiTabActivated(aActiveInfo) {
   if (silently)
     decrementContainerCounter(container, 'internalSilentlyFocusCount');
   var byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
+
+  await waitUntilTabsAreaCreated(aActiveInfo.tabId);
 
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab)
@@ -138,7 +153,7 @@ function clearOldActiveStateInWindow(aWindowId) {
   }
 }
 
-function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
+async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
@@ -146,6 +161,8 @@ function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   var correctId = gTabIdWrongToCorrect[aTabId];
   if (correctId)
     aTabId = aTab.id = correctId;
+
+  await waitUntilTabsAreaCreated(aTabId);
 
   var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
@@ -200,6 +217,14 @@ async function onNewTabTracked(aTab) {
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
+  container.lastWaitingUniqueId = newTab.uniqueId;
+  gCreatingTabs[aTab.id] = newTab.uniqueId;
+  var uniqueId = await newTab.uniqueId;
+  if (gCreatingTabs[aTab.id] === newTab.uniqueId)
+    delete gCreatingTabs[aTab.id];
+  if (container.lastWaitingUniqueId === newTab.uniqueId)
+    container.lastWaitingUniqueId = null;
+
   updateTab(newTab, aTab, {
     tab:        aTab,
     forceApply: true
@@ -211,11 +236,6 @@ async function onNewTabTracked(aTab) {
   var activeTab            = getCurrentTab(container);
   var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
-
-  container.lastWaitingUniqueId = newTab.uniqueId;
-  var uniqueId = await newTab.uniqueId;
-  if (container.lastWaitingUniqueId === newTab.uniqueId)
-    container.lastWaitingUniqueId = null;
 
   var duplicated = duplicatedInternally || uniqueId.duplicated;
   var restored   = uniqueId.restored;
@@ -409,6 +429,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   var container = getOrBuildTabsContainer(aMoveInfo.windowId);
   var byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
+  await waitUntilTabsAreaCreated(aTabId);
+
   /* When a tab is pinned, tabs.onMoved may be notified before
      tabs.onUpdated(pinned=true) is notified. As the result,
      descendant tabs are unexpectedly moved to the top of the
@@ -503,6 +525,8 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
     });
     apiTab.id = aTabId;
   }
+
+  await waitUntilTabsAreaCreated(aTabId);
 
   clearOldActiveStateInWindow(aAttachInfo.newWindowId);
   var info = gTreeInfoForTabsMovingAcrossWindows[aTabId];
