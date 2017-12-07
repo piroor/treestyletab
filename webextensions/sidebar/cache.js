@@ -204,15 +204,14 @@ async function reserveToUpdateCachedTabbar() {
       !configs.useCachedTree)
     return;
 
-  var container = getTabsContainer(gTargetWindow);
-
   // If there is any opening (but not resolved its unique id yet) tab,
   // we are possibly restoring tabs. To avoid cache breakage before
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
-  if (container.lastWaitingUniqueId)
-    await container.lastWaitingUniqueId;
+  if (hasCreatingTab())
+    await waitUntilAllTabsAreaCreated();
 
+  var container = getTabsContainer(gTargetWindow);
   if (container.allTabsRestored)
     return;
 
@@ -238,9 +237,9 @@ function cancelReservedUpdateCachedTabbar() {
 async function updateCachedTabbar() {
   if (!configs.useCachedTree)
     return;
+  if (hasCreatingTab())
+    await waitUntilAllTabsAreaCreated();
   var container = getTabsContainer(gTargetWindow);
-  if (container.lastWaitingUniqueId)
-    await container.lastWaitingUniqueId;
   var signature = await getWindowSignature(gTargetWindow);
   if (container.allTabsRestored)
     return;

@@ -193,16 +193,20 @@ async function reserveToCacheTree(aHint) {
       !configs.useCachedTree)
     return;
 
-  var container = getTabsContainer(aHint);
-  if (!container)
-    return;
-
   // If there is any opening (but not resolved its unique id yet) tab,
   // we are possibly restoring tabs. To avoid cache breakage before
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
-  if (container.lastWaitingUniqueId)
-    await container.lastWaitingUniqueId;
+  if (hasCreatingTab())
+    await waitUntilAllTabsAreaCreated();
+
+  if (!aHint ||
+      aHint instanceof Node && !aHint.parentNode)
+    return;
+
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return;
 
   if (container.allTabsRestored)
     return;
@@ -227,12 +231,12 @@ function cancelReservedCacheTree(aWindowId) {
 }
 
 async function cacheTree(aWindowId) {
+  if (hasCreatingTab())
+    await waitUntilAllTabsAreaCreated();
   var container = getTabsContainer(aWindowId);
   if (!container ||
       !configs.useCachedTree)
     return;
-  if (container.lastWaitingUniqueId)
-    await container.lastWaitingUniqueId;
   var signature = await getWindowSignature(aWindowId);
   if (container.allTabsRestored)
     return;

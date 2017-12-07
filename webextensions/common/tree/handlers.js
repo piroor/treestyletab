@@ -65,6 +65,14 @@ function endObserveApiTabs() {
 
 var gCreatingTabs = {};
 
+function hasCreatingTab() {
+  return Object.keys(gCreatingTabs).length > 0;
+}
+
+function waitUntilAllTabsAreaCreated() {
+  return waitUntilTabsAreaCreated(Object.keys(gCreatingTabs).map(aId => parseInt(aId)));
+}
+
 function waitUntilTabsAreaCreated(aIdOrIds) {
   if (!Array.isArray(aIdOrIds))
     aIdOrIds = [aIdOrIds];
@@ -75,6 +83,7 @@ function waitUntilTabsAreaCreated(aIdOrIds) {
   if (creatingTabs.length)
     return Promise.all(creatingTabs);
 }
+
 
 async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
@@ -217,13 +226,10 @@ async function onNewTabTracked(aTab) {
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
-  container.lastWaitingUniqueId = newTab.uniqueId;
   gCreatingTabs[aTab.id] = newTab.uniqueId;
   var uniqueId = await newTab.uniqueId;
   if (gCreatingTabs[aTab.id] === newTab.uniqueId)
     delete gCreatingTabs[aTab.id];
-  if (container.lastWaitingUniqueId === newTab.uniqueId)
-    container.lastWaitingUniqueId = null;
 
   updateTab(newTab, aTab, {
     tab:        aTab,
