@@ -27,7 +27,7 @@ function trimSignature(aSignature, aIgnoreCount) {
 function trimTabsCache(aCache, aIgnoreCount) {
   if (!aIgnoreCount || aIgnoreCount < 0)
     return aCache;
-  return aCache.replace(new RegExp(`(<li[^>]*>.+?<\/li>){${aIgnoreCount}}`), '');
+  return aCache.replace(new RegExp(`(<li[^>]*>[\\w\\W]+?<\/li>){${aIgnoreCount}}`), '');
 }
 
 function matcheSignatures(aSignatures) {
@@ -36,6 +36,16 @@ function matcheSignatures(aSignatures) {
     aSignatures.cached &&
     aSignatures.actual.indexOf(aSignatures.cached) + aSignatures.cached.length == aSignatures.actual.length
   );
+}
+
+function signatureFromTabsCache(aCache) {
+  var uniqueIdMatcher = new RegExp(`${kPERSISTENT_ID}="([^"]+)"`);
+  if (!aCache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g))
+    log('NO MATCH ', aCache);
+  return (aCache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g) || []).map(aMatched => {
+    var uniqueId = aMatched.match(uniqueIdMatcher);
+    return uniqueId ? uniqueId[1] : '?' ;
+  }).join('\n');
 }
 
 function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {

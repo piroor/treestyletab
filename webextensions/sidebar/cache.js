@@ -21,6 +21,20 @@ async function getEffectiveWindowCache(aOptions = {}) {
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
       ]);
+      log(`getEffectiveWindowCache: got `, {
+        cache, tabsDirty, collapsedDirty, cachedSignature
+      });
+      if (cache &&
+          cache.tabs &&
+          cachedSignature &&
+          cachedSignature != signatureFromTabsCache(cache.tabbar.contents)) {
+        log('getEffectiveWindowCache: cache is broken.', {
+          signature: cachedSignature,
+          cache:     signatureFromTabsCache(cache.tabbar.contents)
+        });
+        cache = cachedSignature = null;
+        clearWindowCache();
+      }
       if (aOptions.ignorePinnedTabs &&
           cache &&
           cache.tabbar &&

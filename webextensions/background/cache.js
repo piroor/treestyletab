@@ -15,6 +15,20 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     getWindowCache(aWindowId, kWINDOW_STATE_SIGNATURE),
     getWindowCache(aWindowId, kWINDOW_STATE_CACHED_TABS)
   ]);
+  log(`restoreWindowFromEffectiveWindowCache: got `, {
+    cachedSignature, cache
+  });
+  if (cache &&
+      cache.tabs &&
+      cachedSignature &&
+      cachedSignature != signatureFromTabsCache(cache.tabs)) {
+    log(`restoreWindowFromEffectiveWindowCache: cache for ${aWindowId} is broken.`, {
+      signature: cachedSignature,
+      cache:     signatureFromTabsCache(cache.tabs)
+    });
+    cache = cachedSignature = null;
+    clearWindowCache(aWindowId);
+  }
   if (aOptions.ignorePinnedTabs &&
       cache &&
       cache.tabs &&
