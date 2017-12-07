@@ -212,7 +212,11 @@ async function onNewTabTracked(aTab) {
   var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
-  var uniqueId   = await newTab.uniqueId;
+  container.lastWaitingUniqueId = newTab.uniqueId;
+  var uniqueId = await newTab.uniqueId;
+  if (container.lastWaitingUniqueId === newTab.uniqueId)
+    container.lastWaitingUniqueId = null;
+
   var duplicated = duplicatedInternally || uniqueId.duplicated;
   var restored   = uniqueId.restored;
   if (restored) {

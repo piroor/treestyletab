@@ -196,12 +196,20 @@ function getWindowCacheOwner() {
   return apiTab && apiTab.id;
 }
 
-function reserveToUpdateCachedTabbar() {
+async function reserveToUpdateCachedTabbar() {
   if (gInitializing ||
       !configs.useCachedTree)
     return;
 
   var container = getTabsContainer(gTargetWindow);
+
+  // If there is any opening (but not resolved its unique id yet) tab,
+  // we are possibly restoring tabs. To avoid cache breakage before
+  // restoration, we must wait until we know whether there is any other
+  // restoring tab or not.
+  if (container.lastWaitingUniqueId)
+    await container.lastWaitingUniqueId;
+
   if (container.allTabsRestored)
     return;
 

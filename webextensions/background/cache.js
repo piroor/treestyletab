@@ -184,14 +184,23 @@ function getWindowCacheOwner(aHint) {
   return getLastTab(aHint).apiTab.id;
 }
 
-function reserveToCacheTree(aHint) {
+async function reserveToCacheTree(aHint) {
   if (gInitializing ||
       !configs.useCachedTree)
     return;
 
   var container = getTabsContainer(aHint);
-  if (!container ||
-      container.allTabsRestored)
+  if (!container)
+    return;
+
+  // If there is any opening (but not resolved its unique id yet) tab,
+  // we are possibly restoring tabs. To avoid cache breakage before
+  // restoration, we must wait until we know whether there is any other
+  // restoring tab or not.
+  if (container.lastWaitingUniqueId)
+    await container.lastWaitingUniqueId;
+
+  if (container.allTabsRestored)
     return;
 
   var windowId = parseInt(container.dataset.windowId);
