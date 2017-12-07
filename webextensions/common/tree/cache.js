@@ -51,6 +51,7 @@ function signatureFromTabsCache(aCache) {
 function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   if (aTabs.length != aApiTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);
+  log('fixupTabsRestoredFromCache start ', { elements: aTabs.map(aTab => aTab.id), apiTabs: aApiTabs });
   var idMap = {};
   aTabs.forEach((aTab, aIndex) => {
     var oldId = aTab.id;
