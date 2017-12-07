@@ -201,7 +201,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
 }
 
 function onTabRestored(aTab) {
@@ -300,7 +300,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
 
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
 
   cleanupNeedlssGroupTab(ancestors);
 }
@@ -346,7 +346,7 @@ function onTabElementMoved(aTab, aInfo = {}) {
 }
 
 async function onTabMoved(aTab, aMoveInfo) {
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateInsertionPosition([
     aTab,
@@ -668,13 +668,13 @@ function onTabUpdated(aTab, aChangeInfo) {
     tryStartHandleAccelKeyOnTab(aTab);
 
   reserveToSaveTreeStructure(aTab);
-  markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirty(aTab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -783,7 +783,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
   if (aInfo.newlyAttached)
     reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(parent);
@@ -805,7 +805,7 @@ function onTabDetached(aTab, aDetachInfo) {
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 }
@@ -861,7 +861,7 @@ function onTabDetachedFromWindow(aTab, aInfo = {}) {
 }
 
 function onTabPinned(aTab) {
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
   collapseExpandSubtree(aTab, {
     collapsed: false,
     broadcast: true
@@ -879,7 +879,7 @@ function onTabPinned(aTab) {
 }
 
 function onTabUnpinned(aTab) {
-  reserveToCacheTree(aTab);
+  reserveToCacheTree(aTab.apiTab.windowId);
 }
 
 
@@ -956,7 +956,7 @@ function onMessage(aMessage, aSender) {
       else
         collapseExpandSubtree(tab, params);
       reserveToSaveTreeStructure(tab);
-      markWindowCacheDirtyFromTab(tab, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+      markWindowCacheDirty(tab.apiTab.windowId, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
     }; break;
 
     case kCOMMAND_LOAD_URI: {

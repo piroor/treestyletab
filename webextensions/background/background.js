@@ -61,11 +61,10 @@ async function init() {
           windowTypes: ['normal']
         }).then(aWindows => {
           for (let window of aWindows) {
-            let owner = window.tabs[window.tabs.length - 1];
             if (configs[aKey])
-              reserveToCacheTree(owner);
+              reserveToCacheTree(window.id);
             else
-              clearWindowCache(owner);
+              clearWindowCache(window.id);
           }
         });
         break;
@@ -163,8 +162,7 @@ async function rebuildAll() {
       if (configs.useCachedTree) {
         restoredFromCache[aWindow.id] = await restoreWindowFromEffectiveWindowCache(aWindow.id, {
           insertionPoint,
-          owner: aWindow.tabs[aWindow.tabs.length - 1].id,
-          tabs:  aWindow.tabs
+          tabs: aWindow.tabs
         });
         if (restoredFromCache[aWindow.id]) {
           log(`window ${aWindow.id} is restored from cache`);

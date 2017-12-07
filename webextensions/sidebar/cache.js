@@ -5,8 +5,6 @@
 */
 'use strict';
 
-var gLastWindowCacheOwner;
-
 async function getEffectiveWindowCache(aOptions = {}) {
   gMetricsData.add('getEffectiveWindowCache start');
   log('getEffectiveWindowCache: start');
@@ -16,7 +14,6 @@ async function getEffectiveWindowCache(aOptions = {}) {
   await Promise.all([
     (async () => {
       var apiTabs = await browser.tabs.query({ currentWindow: true });
-      gLastWindowCacheOwner = apiTabs[apiTabs.length - 1].id;
       var tabsDirty, collapsedDirty;
       [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
@@ -143,16 +140,11 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
 }
 
 function updateWindowCache(aKey, aValue) {
-  if (!gLastWindowCacheOwner ||
-      !getTabById(gLastWindowCacheOwner))
-    return;
   if (aValue === undefined) {
-    //browser.sessions.removeWindowValue(gLastWindowCacheOwner, aKey);
-    browser.sessions.removeTabValue(gLastWindowCacheOwner, aKey);
+    browser.sessions.removeWindowValue(gTargetWindow, aKey);
   }
   else {
-    //browser.sessions.setWindowValue(gLastWindowCacheOwner, aKey, aValue);
-    browser.sessions.setTabValue(gLastWindowCacheOwner, aKey, aValue);
+    browser.sessions.setWindowValue(gTargetWindow, aKey, aValue);
   }
 }
 
@@ -169,16 +161,7 @@ function markWindowCacheDirty(akey) {
 }
 
 async function getWindowCache(aKey) {
-  if (!gLastWindowCacheOwner)
-    return null;
-  //return browser.sessions.getWindowValue(gLastWindowCacheOwner, aKey);
-  return browser.sessions.getTabValue(gLastWindowCacheOwner, aKey);
-}
-
-function getWindowCacheOwner() {
-  var tab = getLastTab();
-  var apiTab = tab && tab.apiTab;
-  return apiTab && apiTab.id;
+  return browser.sessions.getWindowValue(gTargetWindow, aKey);
 }
 
 function reserveToUpdateCachedTabbar() {
@@ -207,7 +190,6 @@ function updateCachedTabbar() {
   if (container.allTabsRestored)
     return;
   log('updateCachedTabbar');
-  gLastWindowCacheOwner = getWindowCacheOwner(gTargetWindow);
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR, {
     version: kSIDEBAR_CONTENTS_VERSION,
     tabbar:  {
