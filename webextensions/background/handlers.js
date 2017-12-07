@@ -783,7 +783,6 @@ async function onTabAttached(aTab, aInfo = {}) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
   if (aInfo.newlyAttached)
     reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(parent);
@@ -792,9 +791,14 @@ async function onTabAttached(aTab, aInfo = {}) {
     getNextTab(aTab),
     getPreviousTab(aTab)
   ]);
+
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+  reserveToCacheTree(aTab);
 }
 
-function onTabDetached(aTab, aDetachInfo) {
+async function onTabDetached(aTab, aDetachInfo) {
   if (aTab.apiTab.openerTabId &&
       configs.syncParentTabAndOpenerTab) {
     aTab.apiTab.openerTabId = aTab.apiTab.id;
@@ -805,9 +809,13 @@ function onTabDetached(aTab, aDetachInfo) {
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
+
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+  reserveToCacheTree(aTab);
 }
 
 async function onTabAttachedToWindow(aTab, aInfo = {}) {

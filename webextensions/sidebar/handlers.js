@@ -1082,7 +1082,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
-function onTabAttached(aTab, aInfo = {}) {
+async function onTabAttached(aTab, aInfo = {}) {
   if (gInitializing)
     return;
   tabContextMenu.close();
@@ -1097,15 +1097,19 @@ function onTabAttached(aTab, aInfo = {}) {
   reserveToUpdateTabTooltip(aInfo.parent);
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
-  reserveToUpdateCachedTabbar();
   /*
     We must not scroll to the tab here, because the tab can be moved
     by the background page later. Instead we wait until the tab is
     successfully moved (then kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
   */
+
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+  reserveToUpdateCachedTabbar();
 }
 
-function onTabDetached(aTab, aDetachInfo = {}) {
+async function onTabDetached(aTab, aDetachInfo = {}) {
   if (gInitializing)
     return;
   tabContextMenu.close();
@@ -1121,6 +1125,10 @@ function onTabDetached(aTab, aDetachInfo = {}) {
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
+
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
 }
 
