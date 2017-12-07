@@ -57,6 +57,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
     var oldId = aTab.id;
     var apiTab = aApiTabs[aIndex];
     aTab.id = makeTabId(apiTab);
+    log(`fixupTabsRestoredFromCache: remap ${oldId} => ${aTab.id}`);
     aTab.setAttribute(kAPI_TAB_ID, apiTab.id || -1);
     aTab.setAttribute(kAPI_WINDOW_ID, apiTab.windowId || -1);
     idMap[oldId] = aTab;
@@ -83,6 +84,7 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
 
   var idMap = aOptions.idMap;
 
+  log('fixupTabRestoredFromCache children: ', aTab.getAttribute(kCHILDREN));
   aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
     .split('|')
     .map(aOldId => idMap[aOldId])
@@ -91,12 +93,15 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
     aTab.setAttribute(kCHILDREN, `|${aTab.childTabs.map(aTab => aTab.id).join('|')}|`);
   else
     aTab.removeAttribute(kCHILDREN);
+  log('fixupTabRestoredFromCache children: => ', aTab.getAttribute(kCHILDREN));
 
+  log('fixupTabRestoredFromCache parent: ', aTab.getAttribute(kPARENT));
   aTab.parentTab = idMap[aTab.getAttribute(kPARENT)] || null;
   if (aTab.parentTab)
     aTab.setAttribute(kPARENT, aTab.parentTab.id);
   else
     aTab.removeAttribute(kPARENT);
+  log('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
 
   if (aOptions.dirty)
     updateTab(aTab, aTab.apiTab, { forceApply: true });
