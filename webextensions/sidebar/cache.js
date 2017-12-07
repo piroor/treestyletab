@@ -10,6 +10,7 @@ var gLastWindowCacheOwner;
 async function getEffectiveWindowCache(aOptions = {}) {
   gMetricsData.add('getEffectiveWindowCache start');
   log('getEffectiveWindowCache: start');
+  cancelReservedUpdateCachedTabbar(); // prevent to break cache before loading
   var cache;
   var cachedSignature;
   var actualSignature;
@@ -215,6 +216,14 @@ function reserveToUpdateCachedTabbar() {
     updateCachedTabbar();
   }, 500);
 }
+
+function cancelReservedUpdateCachedTabbar() {
+  if (updateCachedTabbar.waiting) {
+    clearTimeout(updateCachedTabbar.waiting);
+    delete updateCachedTabbar.waiting;
+  }
+}
+
 function updateCachedTabbar() {
   if (!configs.useCachedTree)
     return;

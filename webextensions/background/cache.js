@@ -13,6 +13,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     log('restoreWindowFromEffectiveWindowCache fail: no owner');
     return false;
   }
+  cancelReservedCacheTree(aWindowId); // prevent to break cache before loading
   var tabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
   log('restoreWindowFromEffectiveWindowCache tabs: ', tabs);
   var [actualSignature, cachedSignature, cache] = await Promise.all([
@@ -201,8 +202,17 @@ function reserveToCacheTree(aHint) {
     clearTimeout(container.waitingToCacheTree);
   container.waitingToCacheTree = setTimeout(() => {
     cacheTree(windowId);
-  }, 500, windowId);
+  }, 500);
 }
+
+function cancelReservedCacheTree(aWindowId) {
+  var container = getTabsContainer(aWindowId);
+  if (container && container.waitingToCacheTree) {
+    clearTimeout(container.waitingToCacheTree);
+    delete container.waitingToCacheTree;
+  }
+}
+
 async function cacheTree(aWindowId) {
   var container = getTabsContainer(aWindowId);
   if (!container ||
