@@ -93,6 +93,7 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
   log(`restoreTabsFromCache: restore tabs for ${aWindowId} from cache `, aParams.cache);
 
   var offset         = aParams.cache.offset || 0;
+  var apiTabs        = aParams.tabs.slice(offset);
   var insertionPoint = aParams.insertionPoint;
   var oldContainer   = getTabsContainer(aWindowId);
   if (offset > 0) {
@@ -105,9 +106,11 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(oldContainer);
     log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
-    insertionPoint.setStartAfter(oldContainer.childNodes[offset - 1]);
+    insertionPoint.setStartBefore(getTabById(apiTabs[0].id));
     insertionPoint.deleteContents();
-    log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
+    let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(aApiTab.id));
+    log('restoreTabsFromCache: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
+    log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs left`);
     let matched = aParams.cache.tabs.match(/<li/g);
     log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
     let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
@@ -127,7 +130,6 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
 
   log('restoreTabsFromCache: post process');
   var tabElements = getAllTabs(aWindowId).slice(offset);
-  var apiTabs     = aParams.tabs.slice(offset);
   log('restoreTabsFromCache: tabs ', { tabElements, apiTabs });
   if (tabElements.length != apiTabs.length) {
     log('restoreTabsFromCache: Mismatched number of restored tabs? ');

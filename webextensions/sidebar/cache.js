@@ -96,14 +96,17 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
   log('restoreTabsFromCache: restore tabs from cache ', aCache, aParams);
 
   var offset       = aParams.offset || 0;
+  var apiTabs      = aParams.tabs.slice(offset);
   var oldContainer = getTabsContainer(gTargetWindow);
   if (offset > 0) {
     log(`restoreTabsFromCache: there is ${oldContainer.childNodes.length} tabs`);
     log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
     let insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(oldContainer);
-    insertionPoint.setStartAfter(oldContainer.childNodes[offset - 1]);
+    insertionPoint.setStartBefore(getTabById(apiTabs[0].id));
     insertionPoint.deleteContents();
+    let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(aApiTab.id));
+    log('restoreTabsFromCache: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
     log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
     let matched = aCache.contents.match(/<li/g);
     log(`restoreTabsFromCache: restore ${matched.length} tabs from cache `,
@@ -125,7 +128,6 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
 
   log('restoreTabsFromCache: post process');
   var tabElements = getAllTabs().slice(offset);
-  var apiTabs     = aParams.tabs.slice(offset);
   log('restoreTabsFromCache: tabs ', { tabElements, apiTabs });
   if (tabElements.length != apiTabs.length) {
     log('restoreTabsFromCache: Mismatched number of restored tabs?');
