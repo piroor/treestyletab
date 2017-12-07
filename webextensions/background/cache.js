@@ -108,8 +108,7 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     insertionPoint.deleteContents();
     log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
     let matched = aParams.cache.tabs.match(/<li/g);
-    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache `,
-        aParams.cache.tabs.replace(/(<(li|ul))/g, '\n$1'));
+    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
     let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
@@ -163,7 +162,7 @@ function updateWindowCache(aOwner, aKey, aValue) {
 }
 
 function clearWindowCache(aOwner) {
-  log('clearWindowCache for owner ', aOwner);
+  log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -195,7 +194,7 @@ function reserveToCacheTree(aHint) {
     return;
 
   var windowId = parseInt(container.dataset.windowId);
-  //log('clear cache for ', windowId);
+  log('cacheTree for window ', windowId, { stack: new Error().stack });
   clearWindowCache(container.lastWindowCacheOwner);
 
   if (container.waitingToCacheTree)
@@ -214,7 +213,7 @@ async function cacheTree(aWindowId) {
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
   if (!container.lastWindowCacheOwner)
     return;
-  log('cacheTree for window ', aWindowId);
+  log('cacheTree for window ', aWindowId, { stack: new Error().stack });
   updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,

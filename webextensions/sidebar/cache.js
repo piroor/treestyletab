@@ -171,7 +171,7 @@ function updateWindowCache(aKey, aValue) {
 }
 
 function clearWindowCache() {
-  log('clearWindowCache');
+  log('clearWindowCache ', { stack: new Error().stack });
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -204,6 +204,7 @@ function reserveToUpdateCachedTabbar() {
   if (container.allTabsRestored)
     return;
 
+  log('reserveToUpdateCachedTabbar ', { stack: new Error().stack });
   // clear dirty cache
   clearWindowCache();
 
@@ -220,7 +221,7 @@ function updateCachedTabbar() {
   var container = getTabsContainer(gTargetWindow);
   if (container.allTabsRestored)
     return;
-  log('updateCachedTabbar');
+  log('updateCachedTabbar ', { stack: new Error().stack });
   gLastWindowCacheOwner = getWindowCacheOwner(gTargetWindow);
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR, {
     version: kSIDEBAR_CONTENTS_VERSION,
