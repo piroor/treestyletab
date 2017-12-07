@@ -16,12 +16,12 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   cancelReservedCacheTree(aWindowId); // prevent to break cache before loading
   var tabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
   log('restoreWindowFromEffectiveWindowCache tabs: ', tabs);
-  var [actualSignature, cachedSignature, cache] = await Promise.all([
+  var [actualSignature, cache] = await Promise.all([
     getWindowSignature(tabs),
-    getWindowCache(owner, kWINDOW_STATE_SIGNATURE),
     getWindowCache(owner, kWINDOW_STATE_CACHED_TABS)
   ]);
-  log(`restoreWindowFromEffectiveWindowCache: got `, {
+  var cachedSignature = cache && cache.signature;
+  log(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
     cachedSignature, cache
   });
   if (cache &&
@@ -166,10 +166,10 @@ function updateWindowCache(aOwner, aKey, aValue) {
 
 function clearWindowCache(aOwner) {
   log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_TABS);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-  updateWindowCache(aOwner, kWINDOW_STATE_SIGNATURE);
 }
 
 function markWindowCacheDirtyFromTab(aTab, akey) {
@@ -231,6 +231,7 @@ async function cacheTree(aWindowId) {
     return;
   if (container.lastWaitingUniqueId)
     await container.lastWaitingUniqueId;
+  var signature = await getWindowSignature(aWindowId);
   if (container.allTabsRestored)
     return;
   //log('save cache for ', aWindowId);
@@ -241,9 +242,7 @@ async function cacheTree(aWindowId) {
   updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,
-    pinnedTabsCount: getPinnedTabs(container).length
-  });
-  getWindowSignature(aWindowId).then(aSignature => {
-    updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_SIGNATURE, aSignature);
+    pinnedTabsCount: getPinnedTabs(container).length,
+    signature
   });
 }

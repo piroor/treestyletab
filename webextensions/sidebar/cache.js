@@ -19,14 +19,14 @@ async function getEffectiveWindowCache(aOptions = {}) {
       var apiTabs = await browser.tabs.query({ currentWindow: true });
       gLastWindowCacheOwner = apiTabs[apiTabs.length - 1].id;
       var tabsDirty, collapsedDirty;
-      [cache, tabsDirty, collapsedDirty, cachedSignature] = await Promise.all([
+      [cache, tabsDirty, collapsedDirty] = await Promise.all([
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-        getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY),
-        getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE)
+        getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
       ]);
-      log(`getEffectiveWindowCache: got `, {
-        cache, tabsDirty, collapsedDirty, cachedSignature
+      cachedSignature = cache && cache.signature;
+      log(`getEffectiveWindowCache: got from the owner ${gLastWindowCacheOwner}`, {
+        cachedSignature, cache, tabsDirty, collapsedDirty
       });
       if (cache &&
           cache.tabs &&
@@ -178,7 +178,6 @@ function clearWindowCache() {
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-  updateWindowCache(kWINDOW_STATE_SIGNATURE);
 }
 
 function markWindowCacheDirty(akey) {
@@ -240,6 +239,7 @@ async function updateCachedTabbar() {
   var container = getTabsContainer(gTargetWindow);
   if (container.lastWaitingUniqueId)
     await container.lastWaitingUniqueId;
+  var signature = await getWindowSignature(gTargetWindow);
   if (container.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });
@@ -255,9 +255,7 @@ async function updateCachedTabbar() {
       lastMaxLevel:  gLastMaxLevel,
       lastMaxIndent: gLastMaxIndent,
       definition:    gIndentDefinition.textContent
-    }
-  });
-  getWindowSignature(gTargetWindow).then(aSignature => {
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_SIGNATURE, aSignature);
+    },
+    signature
   });
 }
