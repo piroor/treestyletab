@@ -218,8 +218,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
     window.onTabLabelUpdated && onTabLabelUpdated(aTab);
   }
 
-  if (aOptions.forceApply ||
-      'favIconUrl' in aNewState ||
+  if ('favIconUrl' in aNewState ||
        TabFavIconHelper.maybeImageTab(aNewState)) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
