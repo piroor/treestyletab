@@ -233,7 +233,6 @@ async function onWindowRestoring(aWindowId) {
     owner: tabs[tabs.length - 1].id,
     tabs
   });
-  reserveToCacheTree(aWindowId);
   gMetricsData.add('onWindowRestoring restore end');
 }
 
