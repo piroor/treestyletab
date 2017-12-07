@@ -225,8 +225,11 @@ function cancelReservedCacheTree(aWindowId) {
 async function cacheTree(aWindowId) {
   var container = getTabsContainer(aWindowId);
   if (!container ||
-      !configs.useCachedTree ||
-      container.allTabsRestored)
+      !configs.useCachedTree)
+    return;
+  if (container.lastWaitingUniqueId)
+    await container.lastWaitingUniqueId;
+  if (container.allTabsRestored)
     return;
   //log('save cache for ', aWindowId);
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);

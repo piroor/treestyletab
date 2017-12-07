@@ -232,10 +232,12 @@ function cancelReservedUpdateCachedTabbar() {
   }
 }
 
-function updateCachedTabbar() {
+async function updateCachedTabbar() {
   if (!configs.useCachedTree)
     return;
   var container = getTabsContainer(gTargetWindow);
+  if (container.lastWaitingUniqueId)
+    await container.lastWaitingUniqueId;
   if (container.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });
