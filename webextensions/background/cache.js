@@ -206,7 +206,7 @@ async function reserveToCacheTree(aHint) {
     return;
 
   var windowId = parseInt(container.dataset.windowId);
-  log('cacheTree for window ', windowId, { stack: new Error().stack });
+  log('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
   clearWindowCache(container.lastWindowCacheOwner);
 
   if (container.waitingToCacheTree)
