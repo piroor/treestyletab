@@ -97,38 +97,40 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
 
   var offset       = aParams.offset || 0;
   var apiTabs      = aParams.tabs.slice(offset);
-  var oldContainer = getTabsContainer(gTargetWindow);
+  var tabElements;
+  var container    = getTabsContainer(gTargetWindow);
   if (offset > 0) {
-    log(`restoreTabsFromCache: there is ${oldContainer.childNodes.length} tabs`);
+    log(`restoreTabsFromCache: there is ${container.childNodes.length} tabs`);
     log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
     let insertionPoint = document.createRange();
-    insertionPoint.selectNodeContents(oldContainer);
-    insertionPoint.setStartBefore(getTabById(apiTabs[0].id));
+    insertionPoint.selectNodeContents(container);
+    // for safety, now I use actual ID string instead of short way.
+    insertionPoint.setStartBefore(getTabById(makeTabId(apiTabs[0])));
     insertionPoint.deleteContents();
-    let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(aApiTab.id));
+    let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(makeTabId(aApiTab)));
     log('restoreTabsFromCache: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
-    log(`restoreTabsFromCache: => ${oldContainer.childNodes.length} tabs`);
+    log(`restoreTabsFromCache: => ${container.childNodes.length} tabs`);
     let matched = aCache.contents.match(/<li/g);
     log(`restoreTabsFromCache: restore ${matched.length} tabs from cache `,
         aCache.contents.replace(/(<(li|ul))/g, '\n$1'));
     let fragment = insertionPoint.createContextualFragment(aCache.contents.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
+    tabElements = Array.slice(container.childNodes, -matched.length);
   }
   else {
-    if (oldContainer)
-      oldContainer.parentNode.removeChild(oldContainer);
+    if (container)
+      container.parentNode.removeChild(container);
     gTabBar.setAttribute('style', aCache.style);
     log('restoreTabsFromCache: restore');
     gAllTabs.innerHTML = aCache.contents;
-    let container = gAllTabs.firstChild;
+    container = gAllTabs.firstChild;
     container.id = `window-${gTargetWindow}`;
     container.dataset.windowId = gTargetWindow;
+    tabElements = Array.slice(container.childNodes);
   }
 
-  log('restoreTabsFromCache: post process');
-  var tabElements = getAllTabs().slice(offset);
-  log('restoreTabsFromCache: tabs ', { tabElements, apiTabs });
+  log('restoreTabsFromCache: post process ', { tabElements, apiTabs });
   if (tabElements.length != apiTabs.length) {
     log('restoreTabsFromCache: Mismatched number of restored tabs?');
     return true;

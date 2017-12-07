@@ -227,8 +227,11 @@ async function onWindowRestoring(aWindowId) {
   log('onWindowRestoring: continue ', aWindowId);
   gMetricsData.add('onWindowRestoring restore start');
 
+  var tabs = await browser.tabs.query({ windowId: aWindowId });
   await restoreWindowFromEffectiveWindowCache(aWindowId, {
-    ignorePinnedTabs: true
+    ignorePinnedTabs: true,
+    owner: tabs[tabs.length - 1].id,
+    tabs
   });
   reserveToCacheTree(aWindowId);
   gMetricsData.add('onWindowRestoring restore end');
