@@ -106,9 +106,10 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     log(`restoreTabsFromCache: there is ${container.childNodes.length} tabs`);
     insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
-    log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
+    log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
     // for safety, now I use actual ID string instead of short way.
     insertionPoint.setStartBefore(getTabById(makeTabId(apiTabs[0])));
+    insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
     let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(makeTabId(aApiTab)));
     log('restoreTabsFromCache: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
@@ -116,7 +117,10 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
     let matched = aParams.cache.tabs.match(/<li/g);
     log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
     let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
+    insertionPoint.selectNodeContents(container);
+    insertionPoint.collapse(false);
     insertionPoint.insertNode(fragment);
+    log('restoreTabsFromCache: insert result: ', Array.slice(container.childNodes).map(dumpTab));
     insertionPoint.detach();
     tabElements = Array.slice(container.childNodes, -matched.length);
   }

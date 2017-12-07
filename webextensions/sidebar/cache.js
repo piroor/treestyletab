@@ -101,11 +101,12 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
   var container    = getTabsContainer(gTargetWindow);
   if (offset > 0) {
     log(`restoreTabsFromCache: there is ${container.childNodes.length} tabs`);
-    log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset);
+    log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
     let insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
     insertionPoint.setStartBefore(getTabById(makeTabId(apiTabs[0])));
+    insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
     let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(makeTabId(aApiTab)));
     log('restoreTabsFromCache: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
@@ -113,6 +114,8 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     let matched = aCache.contents.match(/<li/g);
     log(`restoreTabsFromCache: restore ${matched.length} tabs from cache `,
         aCache.contents.replace(/(<(li|ul))/g, '\n$1'));
+    insertionPoint.selectNodeContents(container);
+    insertionPoint.collapse(false);
     let fragment = insertionPoint.createContextualFragment(aCache.contents.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
