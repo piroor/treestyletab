@@ -843,7 +843,7 @@ async function onTabCompletelyClosed(aTab) {
   return new Promise(async (aResolve, aReject) => {
     let tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
-    await wait(0);
+    await wait(configs.animation ? configs.collapseDuration : 0);
     reserveToUpdateCachedTabbar();
     aResolve();
   });
