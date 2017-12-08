@@ -238,7 +238,7 @@
   "config.logOnMouseEvent.label":     { "message": "Print logs from mouse events" },
   "config.logOnScroll.label":         { "message": "Print logs from auto scrolling" },
   "config.logOnCollapseExpand.label": { "message": "Print logs from collapse/expand" },
-  "config.simulateSVGContextFill.label": { "message": "Simulate SVG icon (*This may increase CPU usage. To deactivate this option, you need to activate \"svg.context-properties.content.enabled\" via \"about:config\", until the bug 1388193 is fixed.)" },
+  "config.simulateSVGContextFill.label": { "message": "Activate workaround for the Bug 1388193 and Bug 1421329 to show SVG icons (*This may increase CPU usage. To deactivate this option, you need to activate \"svg.context-properties.content.enabled\" via \"about:config\", until these bugs are fixed.)" },
   "config.useCachedTree.label": { "message": "Optimize tree restoration with cahche" },
   "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
