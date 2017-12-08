@@ -1,12 +1,13 @@
 # History
 
  - master/HEAD
-   * Optimize tree restoration with cache.
-   * Use SVG icons for closeboxes, "New Tab" button, and sound playing indicator.
+   * Optimize tree restoration with cache. If you see broken tree from cache, please deactivate this feature by the checkbox under "Debug mode" in Tree Style Tab's configurations.
+   * Use SVG icons for closeboxes, "New Tab" button, and sound playing indicator. However, due to the [Bug 1377302](https://bugzilla.mozilla.org/show_bug.cgi?id=1377302) and [1421329](https://bugzilla.mozilla.org/show_bug.cgi?id=1421329), it is just a simulation and requires more CPU. If you want to reduce CPU usage, you need to activate `svg.context-properties.content.enabled` via `about:config` and deactivate the simulation by the checkbox under "Debug mode" in Tree Style Tab's configurations.
    * Use system color instead Photon color scheme on Linux by default, on Plain, Flat, Vertigo, and Mixed theme.
    * Add new theme "Hight Contrast" based on system color on any platform. (contributed by actionless, thanks!)
    * Remove "Flat" theme. It was quite similar to "Plain".
    * On "Plain" and similar themes, show top border of the tab bar only when there is any pinned tab.
+   * Keep tab's "unread" state after reloading of the sidebar.
    * Apply extra margin for overlay-scrollbar on macOS only for overflow tab bar.
    * Title editor and checkbox to toggle "temporary" status are avialable on group tabs.
    * Group tab won't be closed automatically if it is not marked as "temporary".
