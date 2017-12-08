@@ -49,7 +49,7 @@ function signatureFromTabsCache(aCache) {
 }
 
 function restoreTabsFromCacheInternal(aParams) {
-  log(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache `, aParams.cache);
+  log(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache`);
   var offset    = aParams.offset || 0;
   var apiTabs   = aParams.tabs.slice(offset);
   var container = getTabsContainer(aParams.windowId);
@@ -69,14 +69,17 @@ function restoreTabsFromCacheInternal(aParams) {
     insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
     let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(makeTabId(aApiTab)));
-    log('restoreTabsFromCacheInternal: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
+    log('restoreTabsFromCacheInternal: cleared?: ',
+        tabsMustBeRemoved.every(aTab => !aTab),
+        tabsMustBeRemoved.map(dumpTab));
     log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
     let matched = aParams.cache.match(/<li/g);
-    log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache `,
-        aParams.cache.replace(/(<(li|ul))/g, '\n$1'));
+    log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);
+    dumpCache(aParams.cache);
     insertionPoint.selectNodeContents(container);
     insertionPoint.collapse(false);
-    let fragment = insertionPoint.createContextualFragment(aParams.cache.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
+    let source   = aParams.cache.replace(/^<ul[^>]+>|<\/ul>$/g, '');
+    let fragment = insertionPoint.createContextualFragment(source);
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
     tabElements = Array.slice(container.childNodes, -matched.length);
@@ -85,6 +88,7 @@ function restoreTabsFromCacheInternal(aParams) {
     if (container)
       container.parentNode.removeChild(container);
     log('restoreTabsFromCacheInternal: restore');
+    dumpCache(aParams.cache);
     let insertionPoint = aParams.insertionPoint || (() => {
       var range = document.createRange();
       range.selectNodeContents(gAllTabs);
@@ -118,6 +122,12 @@ function restoreTabsFromCacheInternal(aParams) {
   log('restoreTabsFromCacheInternal: done');
   dumpAllTabs();
   return true;
+}
+
+function dumpCache(aCache) {
+  log(aCache
+    .replace(new RegExp(`([^\\s=])="[^"]*(\\n[^"]*)+"`, 'g'), '$1="..."')
+    .replace(/(<(li|ul))/g, '\n$1'));
 }
 
 function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
