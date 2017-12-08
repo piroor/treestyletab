@@ -9,6 +9,7 @@
    * Remove "Flat" theme. It was quite similar to "Plain".
    * On "Plain" and similar themes, show top border of the tab bar only when there is any pinned tab.
    * Keep tab's "unread" state after reloading of the sidebar.
+   * Reduce needless requests for tab icons. (contributed by UENO Katsuhiro, thanks!)
    * Apply extra margin for overlay-scrollbar on macOS only for overflow tab bar.
    * Title editor and checkbox to toggle "temporary" status are avialable on group tabs.
    * Group tab won't be closed automatically if it is not marked as "temporary".
