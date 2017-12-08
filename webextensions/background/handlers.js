@@ -1382,6 +1382,7 @@ function onMessageExternal(aMessage, aSender) {
 }
 
 async function TSTAPIGetTargetTabs(aMessage) {
+  await waitUntilAllTabsAreaCreated();
   if (Array.isArray(aMessage.tabs))
     return TSTAPIGetTabsFromWrongIds(aMessage.tabs);
   if (aMessage.window || aMessage.windowId) {
@@ -1401,9 +1402,7 @@ async function TSTAPIGetTargetTabs(aMessage) {
   return [];
 }
 function TSTAPIGetTabsFromWrongIds(aIds) {
-  aIds = aIds.map(aId => gTabIdWrongToCorrect[aId] || aId);
-  return waitUntilTabsAreaCreated(aIds).then(() =>
-    aIds.map(getTabById).filter(aTab => !!aTab));
+  return aIds.map(aId => gTabIdWrongToCorrect[aId] || aId).map(getTabById).filter(aTab => !!aTab);
 }
 
 function TSTAPIFormatResult(aResults, aOriginalMessage) {
