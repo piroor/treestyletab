@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.4.0 (2017.12.9)
    * キャッシュを使用してツリーの復元を高速化した（キャッシュが原因でツリーが壊れる可能性があります。その場合、ツリー型タブの設定の「デバッグモード」からキャッシュを無効化して下さい。）
    * タブのクローズボックス、「新しいタブ」ボタン、および音声再生状態表示のアイコンを絵文字ではなくSVG画像にした（[Bug 1377302](https://bugzilla.mozilla.org/show_bug.cgi?id=1377302)または[Bug 1421329](https://bugzilla.mozilla.org/show_bug.cgi?id=1421329)が修正されるまでは、CPU負荷の高い擬似的な表示となります。CPU使用率を下げたい場合、`about:config`で`svg.context-properties.content.enabled`を有効にし、ツリー型タブの設定の「デバッグモード」から擬似的なSVGアイコン表示のチェックをOFFにして下さい。）
    * Plain、Flat、Vertigo、Mixedの各テーマについて、LinuxではPhotonの配色ではなくシステムカラーを使うように戻した
