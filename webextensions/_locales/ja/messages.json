@@ -238,6 +238,7 @@
   "config.logOnMouseEvent.label":     { "message": "マウス操作関連のログを出力" },
   "config.logOnScroll.label":         { "message": "自動スクロール関連のログを出力" },
   "config.logOnCollapseExpand.label": { "message": "ツリーの開閉関連のログを出力" },
+  "config.simulateSVGContextFill.label": { "message": "SVGアイコンをシミュレートする（※CPU負荷が高まる可能性があります。このオプションを無効にする場合、bug 1377302が修正されるまでは\"about:config\"で\"svg.context-properties.content.enabled\"を有効化する必要があります。）" },
   "config.useCachedTree.label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config.acccelaratedTabDuplication.label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
