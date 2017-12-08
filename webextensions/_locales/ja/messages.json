@@ -233,6 +233,7 @@
   "config.debug.caption": { "message": "開発用" },
 
   "config.debug.label": { "message": "デバッグモード" },
+  "config.log.caption":               { "message": "詳細なログ" },
   "config.logOnUpdated.label":        { "message": "tabs.onUpdated関連のログを出力" },
   "config.logOnMouseEvent.label":     { "message": "マウス操作関連のログを出力" },
   "config.logOnScroll.label":         { "message": "自動スクロール関連のログを出力" },
