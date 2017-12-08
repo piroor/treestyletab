@@ -106,26 +106,28 @@ function updateWindowCache(aOwner, aKey, aValue) {
       !getTabById(aOwner))
     return;
   if (aValue === undefined) {
-    //browser.sessions.removeWindowValue(aOwner, aKey);
-    browser.sessions.removeTabValue(aOwner, aKey);
+    //return browser.sessions.removeWindowValue(aOwner, aKey);
+    return browser.sessions.removeTabValue(aOwner, aKey);
   }
   else {
-    //browser.sessions.setWindowValue(aOwner, aKey, aValue);
-    browser.sessions.setTabValue(aOwner, aKey, aValue);
+    //return browser.sessions.setWindowValue(aOwner, aKey, aValue);
+    return browser.sessions.setTabValue(aOwner, aKey, aValue);
   }
 }
 
 function clearWindowCache(aOwner) {
   log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_TABS);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  return Promise.all([
+    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_TABS),
+    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR),
+    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
+  ]);
 }
 
 function markWindowCacheDirtyFromTab(aTab, akey) {
   var container = aTab.parentNode;
-  updateWindowCache(container.lastWindowCacheOwner, akey, true);
+  return updateWindowCache(container.lastWindowCacheOwner, akey, true);
 }
 
 async function getWindowCache(aOwner, aKey) {
