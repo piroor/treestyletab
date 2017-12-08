@@ -210,9 +210,19 @@ function updateTab(aTab, aNewState, aOptions = {}) {
       if (identity)
         visibleLabel = `${aNewState.title} - ${identity.name}`;
     }
-    if (!aOptions.forceApply &&
-        !isActive(aTab))
+    if (aOptions.forceApply) {
+      browser.sessions.getTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD)
+        .then(aUnread => {
+          if (aUnread)
+            aTab.classList.add(kTAB_STATE_UNREAD);
+          else
+            aTab.classList.remove(kTAB_STATE_UNREAD);
+        });
+    }
+    else if (!isActive(aTab)) {
       aTab.classList.add(kTAB_STATE_UNREAD);
+      browser.sessions.setTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD, true);
+    }
     getTabLabel(aTab).textContent = aNewState.title;
     aTab.dataset.label = visibleLabel;
     window.onTabLabelUpdated && onTabLabelUpdated(aTab);
@@ -381,6 +391,7 @@ function updateTabFocused(aTab) {
   aTab.apiTab.active = true;
   aTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
   aTab.classList.remove(kTAB_STATE_UNREAD);
+  browser.sessions.removeTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD);
 }
 
 function updateParentTab(aParent) {
