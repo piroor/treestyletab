@@ -48,6 +48,78 @@ function signatureFromTabsCache(aCache) {
   }).join('\n');
 }
 
+function restoreTabsFromCacheInternal(aParams) {
+  log(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache `, aParams.cache);
+  var offset    = aParams.offset || 0;
+  var apiTabs   = aParams.tabs.slice(offset);
+  var container = getTabsContainer(aParams.windowId);
+  var tabElements;
+  if (offset > 0) {
+    if (!container ||
+        container.childNodes.length <= offset) {
+      log('restoreTabsFromCacheInternal: missing container');
+      return false;
+    }
+    log(`restoreTabsFromCacheInternal: there is ${container.childNodes.length} tabs`);
+    log('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
+    let insertionPoint = document.createRange();
+    insertionPoint.selectNodeContents(container);
+    // for safety, now I use actual ID string instead of short way.
+    insertionPoint.setStartBefore(getTabById(makeTabId(apiTabs[0])));
+    insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
+    insertionPoint.deleteContents();
+    let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(makeTabId(aApiTab)));
+    log('restoreTabsFromCacheInternal: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
+    log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
+    let matched = aParams.cache.match(/<li/g);
+    log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache `,
+        aParams.cache.replace(/(<(li|ul))/g, '\n$1'));
+    insertionPoint.selectNodeContents(container);
+    insertionPoint.collapse(false);
+    let fragment = insertionPoint.createContextualFragment(aParams.cache.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
+    insertionPoint.insertNode(fragment);
+    insertionPoint.detach();
+    tabElements = Array.slice(container.childNodes, -matched.length);
+  }
+  else {
+    if (container)
+      container.parentNode.removeChild(container);
+    log('restoreTabsFromCacheInternal: restore');
+    let insertionPoint = aParams.insertionPoint || (() => {
+      var range = document.createRange();
+      range.selectNodeContents(gAllTabs);
+      range.collapse(false);
+      return range;
+    })();
+    let fragment = insertionPoint.createContextualFragment(aParams.cache);
+    container = fragment.firstChild;
+    insertionPoint.insertNode(fragment);
+    container.id = `window-${aParams.windowId}`;
+    container.dataset.windowId = aParams.windowId;
+    tabElements = Array.slice(container.childNodes);
+    if (!aParams.insertionPoint)
+      insertionPoint.detach();
+  }
+
+  log('restoreTabsFromCacheInternal: post process ', { tabElements, apiTabs });
+  if (tabElements.length != apiTabs.length) {
+    log('restoreTabsFromCacheInternal: Mismatched number of restored tabs?');
+    return false;
+  }
+  try {
+    fixupTabsRestoredFromCache(tabElements, apiTabs, {
+      dirty: aParams.shouldUpdate
+    });
+  }
+  catch(e) {
+    log(String(e), e.stack);
+    throw e;
+  }
+  log('restoreTabsFromCacheInternal: done');
+  dumpAllTabs();
+  return true;
+}
+
 function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   if (aTabs.length != aApiTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);

@@ -90,69 +90,14 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
       aParams.cache.version != kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  log(`restoreTabsFromCache: restore tabs for ${aWindowId} from cache `, aParams.cache);
-
-  var offset         = aParams.cache.offset || 0;
-  var apiTabs        = aParams.tabs.slice(offset);
-  var tabElements;
-  var insertionPoint = aParams.insertionPoint;
-  var container      = getTabsContainer(aWindowId);;
-  if (offset > 0) {
-    if (!container ||
-        container.childNodes.length <= offset) {
-      log('restoreTabsFromCache: missing container');
-      return false;
-    }
-    log(`restoreTabsFromCache: there is ${container.childNodes.length} tabs`);
-    insertionPoint = document.createRange();
-    insertionPoint.selectNodeContents(container);
-    log('restoreTabsFromCache: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
-    // for safety, now I use actual ID string instead of short way.
-    insertionPoint.setStartBefore(getTabById(makeTabId(apiTabs[0])));
-    insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
-    insertionPoint.deleteContents();
-    let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(makeTabId(aApiTab)));
-    log('restoreTabsFromCache: cleared?: ', tabsMustBeRemoved.every(aTab => !aTab), tabsMustBeRemoved.map(dumpTab));
-    log(`restoreTabsFromCache: => ${container.childNodes.length} tabs left`);
-    let matched = aParams.cache.tabs.match(/<li/g);
-    log(`restoreTabsFromCache: restore ${matched.length} tabs from cache`);
-    let fragment = insertionPoint.createContextualFragment(aParams.cache.tabs.replace(/^<ul[^>]+>|<\/ul>$/g, ''));
-    insertionPoint.selectNodeContents(container);
-    insertionPoint.collapse(false);
-    insertionPoint.insertNode(fragment);
-    log('restoreTabsFromCache: insert result: ', Array.slice(container.childNodes).map(dumpTab));
-    insertionPoint.detach();
-    tabElements = Array.slice(container.childNodes, -matched.length);
-  }
-  else {
-    if (container)
-      container.parentNode.removeChild(container);
-    let fragment = aParams.insertionPoint.createContextualFragment(aParams.cache.tabs);
-    container = fragment.firstChild;
-    log('restoreTabsFromCache: restore');
-    insertionPoint.insertNode(fragment);
-    container.id = `window-${aWindowId}`;
-    container.dataset.windowId = aWindowId;
-    tabElements = Array.slice(container.childNodes);
-  }
-
-  log('restoreTabsFromCache: post process ', { tabElements, apiTabs });
-  if (tabElements.length != apiTabs.length) {
-    log('restoreTabsFromCache: Mismatched number of restored tabs? ');
-    return true;
-  }
-  try{
-    fixupTabsRestoredFromCache(tabElements, apiTabs, {
-      dirty: true
-    });
-  }
-  catch(e) {
-    log(String(e), e.stack);
-    throw e;
-  }
-  log('restoreTabsFromCache: done', configs.debug && getTreeStructureFromTabs(getAllTabs(aWindowId)));
-  dumpAllTabs();
-  return true;
+  return restoreTabsFromCacheInternal({
+    windowId:       aWindowId,
+    tabs:           aParams.tabs,
+    offset:         aParams.cache.offset || 0,
+    cache:          aParams.cache.tabs,
+    insertionPoint: aParams.insertionPoint,
+    shouldUpdate:   true
+  });
 }
 
 
