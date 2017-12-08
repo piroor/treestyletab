@@ -65,7 +65,7 @@ async function init() {
             if (configs[aKey])
               reserveToCacheTree(owner.windowId);
             else
-              clearWindowCache(owner.id);
+              clearWindowCache(owner.id).then(() => location.reload());
           }
         });
         break;

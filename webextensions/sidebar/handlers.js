@@ -1492,7 +1492,7 @@ function onConfigChange(aChangedKey) {
       if (configs[aChangedKey])
         reserveToUpdateCachedTabbar();
       else
-        clearWindowCache();
+        clearWindowCache().then(() => location.reload());
       break;
   }
 }
