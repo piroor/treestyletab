@@ -1494,5 +1494,12 @@ function onConfigChange(aChangedKey) {
       else
         clearWindowCache().then(() => location.reload());
       break;
+
+    case 'simulateSVGContextFill':
+      if (configs[aChangedKey])
+        rootClasses.add('simulate-svg-context-fill');
+      else
+        rootClasses.remove('simulate-svg-context-fill');
+      break;
   }
 }

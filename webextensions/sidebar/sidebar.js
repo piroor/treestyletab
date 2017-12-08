@@ -130,6 +130,7 @@ async function init() {
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('colorScheme');
+      onConfigChange('simulateSVGContextFill');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);

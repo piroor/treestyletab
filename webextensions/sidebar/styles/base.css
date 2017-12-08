@@ -372,16 +372,22 @@ ul {
     So ⨉ (U+2A09) looks good for me on Windows, macOS, and Linux (tested on Ubuntu).
     But it is not guaranteed, so now we use SVG icon instead.
   */
-  background: var(--tab-text);
+  -moz-context-properties: fill;
+  background: url("./icons/close-16.svg") no-repeat;
   content: "";
   display: inline-block;
+  fill: var(--tab-text);
   height: var(--svg-small-icon-size);
+  width: var(--svg-small-icon-size);
+}
+:root.simulate-svg-context-fill .closebox::after {
+  background: var(--tab-text);
   mask-image: url("./icons/close-16.svg");
   mask-position: left center;
   mask-repeat: no-repeat;
   mask-size: 100%;
-  width: var(--svg-small-icon-size);
 }
+
 
 .tab:not(.collapsed) .closebox:hover {
   opacity: var(--button-hover-opacity);
@@ -448,15 +454,21 @@ ul {
 }
 
 .newtab-button::before {
-  background: var(--tab-text);
+  -moz-context-properties: fill;
+  background: url("./icons/new-16.svg") no-repeat;
   content: "";
   display: inline-block;
+  fill: var(--tab-text);
   height: var(--svg-small-icon-size);
+  opacity: var(--button-opacity);
+  width: var(--svg-small-icon-size);
+}
+:root.simulate-svg-context-fill .newtab-button::after {
+  background: var(--tab-text);
   mask-image: url("./icons/new-16.svg");
   mask-position: left center;
   mask-repeat: no-repeat;
-  opacity: var(--button-opacity);
-  width: var(--svg-small-icon-size);
+  mask-size: 100%;
 }
 
 .newtab-button:hover::before {

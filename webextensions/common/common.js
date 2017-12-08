@@ -198,6 +198,10 @@ configs = new Configs({
 
   useCachedTree: true,
 
+  // This should be removed after https://bugzilla.mozilla.org/show_bug.cgi?id=1377302 become fixed.
+  // Otherwise you need to set "svg.context-properties.content.enabled"="true" via "about:config".
+  simulateSVGContextFill: true,
+
   requestingPermissions: null,
 
   // https://dxr.mozilla.org/mozilla-central/rev/2535bad09d720e71a982f3f70dd6925f66ab8ec7/browser/base/content/browser.css#137
