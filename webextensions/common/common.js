@@ -196,7 +196,7 @@ configs = new Configs({
   cachedExternalAddons: [],
   notifiedFeaturesVersion: 0,
 
-  useCachedTree: false,
+  useCachedTree: true,
 
   requestingPermissions: null,
 
