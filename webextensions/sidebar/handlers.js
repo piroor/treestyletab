@@ -866,8 +866,7 @@ function onTabMoving(aTab) {
       collapseExpandTab(aTab, {
         collapsed: false
       });
-      if (configs.animation)
-        await wait(configs.collapseDuration);
+      await wait(configs.collapseDuration);
       aTab.classList.remove(kTAB_STATE_MOVING);
     });
   }
