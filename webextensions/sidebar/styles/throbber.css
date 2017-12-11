@@ -92,6 +92,9 @@
   mask-repeat: no-repeat;
   mask-size: 100%;
 }
+:root.simulate-svg-context-fill #tabbar .tab:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
+  mask: -moz-element(#master-throbber-container) no-repeat;
+}
 
 #master-throbber {
   background-image: url("./throbber.svg");
