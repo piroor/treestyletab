@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 2.4.1 (2017.12.11)
+   * Fix regressions around SVG icons and throbber's animation on the simulation mode.
+   * Don't attach newly opened tab at the end of the tab bar to the previous tab.
  - 2.4.0 (2017.12.9)
    * Optimize tree restoration with cache. If you see broken tree from cache, please deactivate this feature by the checkbox under "Debug mode" in Tree Style Tab's configurations.
    * Use SVG icons for closeboxes, "New Tab" button, and sound playing indicator. However, due to the [Bug 1377302](https://bugzilla.mozilla.org/show_bug.cgi?id=1377302) and [1421329](https://bugzilla.mozilla.org/show_bug.cgi?id=1421329), it is just a simulation and requires more CPU. If you want to reduce CPU usage, you need to activate `svg.context-properties.content.enabled` via `about:config` and deactivate the simulation by the checkbox under "Debug mode" in Tree Style Tab's configurations.
