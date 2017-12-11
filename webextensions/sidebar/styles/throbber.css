@@ -113,7 +113,7 @@
   box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
 }
 :root.blocking-throbber.simulate-svg-context-fill  #blocking-screen .throbber::before {
-  background-color: white;
+  background: white;
 }
 
 
