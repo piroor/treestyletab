@@ -47,6 +47,10 @@ function earlyInit() {
   gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
   gUserStyleRules             = document.querySelector('#user-style-rules');
   gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
+
+  onConfigChange('colorScheme');
+  onConfigChange('simulateSVGContextFill');
+
   gMetricsData.add('earlyInit end');
 }
 
@@ -129,8 +133,6 @@ async function init() {
       onConfigChange('sidebarPosition');
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
-      onConfigChange('colorScheme');
-      onConfigChange('simulateSVGContextFill');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);
