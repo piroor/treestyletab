@@ -463,7 +463,7 @@ ul {
   opacity: var(--button-opacity);
   width: var(--svg-small-icon-size);
 }
-:root.simulate-svg-context-fill .newtab-button::after {
+:root.simulate-svg-context-fill .newtab-button::before {
   background: var(--tab-text);
   mask-image: url("./icons/new-16.svg");
   mask-position: left center;
