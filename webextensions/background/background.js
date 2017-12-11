@@ -616,10 +616,11 @@ function reserveToCleanupNeedlessGroupTab(aTabOrTabs) {
   for (let tab of tabs) {
     if (!ensureLivingTab(tab))
       continue;
-    if (tab.reservedCleanupNeedlessGroupTab)
-      clearTimeout(tab.reservedCleanupNeedlessGroupTab);
-    tab.reservedCleanupNeedlessGroupTab = setTimeout(() => {
-      delete tab.reservedCleanupNeedlessGroupTab;
+    let container = tab.parentNode;
+    if (container.reservedCleanupNeedlessGroupTab)
+      clearTimeout(container.reservedCleanupNeedlessGroupTab);
+    container.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+      delete container.reservedCleanupNeedlessGroupTab;
       cleanupNeedlssGroupTab(tab);
     }, 100);
   }

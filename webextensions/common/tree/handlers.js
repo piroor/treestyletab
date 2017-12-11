@@ -50,6 +50,7 @@ function startObserveApiTabs() {
   browser.tabs.onMoved.addListener(onApiTabMoved);
   browser.tabs.onAttached.addListener(onApiTabAttached);
   browser.tabs.onDetached.addListener(onApiTabDetached);
+  browser.windows.onRemoved.addListener(onApiWindowRemoved);
 }
 
 function endObserveApiTabs() {
@@ -60,6 +61,7 @@ function endObserveApiTabs() {
   browser.tabs.onMoved.removeListener(onApiTabMoved);
   browser.tabs.onAttached.removeListener(onApiTabAttached);
   browser.tabs.onDetached.removeListener(onApiTabDetached);
+  browser.windows.onRemoved.removeListener(onApiWindowRemoved);
 }
 
 
@@ -588,3 +590,11 @@ function onApiTabDetached(aTabId, aDetachInfo) {
     container.parentNode.removeChild(container);
 }
 
+function onApiWindowRemoved(aWindowId) {
+  log('onApiWindowRemoved ', aWindowId);
+  var container = getTabsContainer(aWindowId);
+  if (container && container.reservedCleanupNeedlessGroupTab) {
+    clearTimeout(container.reservedCleanupNeedlessGroupTab);
+    delete container.reservedCleanupNeedlessGroupTab;
+  }
+}
