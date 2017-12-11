@@ -1,6 +1,11 @@
 <!--
 NOTE: Please read the guideline to open a new issue at first.
 https://github.com/piroor/treestyletab/blob/master/CONTRIBUTING.md
+
+For Japanese people:
+英語は不得意、という場合は日本語で書いてもOKです。ただし、
+「新規プロファイルでFirefoxを起動する所からの現象の再現手順（再現条件）」
+「期待される結果」「実際の結果」は必ず書くようにして下さい。
 -->
 
 ## Short description
