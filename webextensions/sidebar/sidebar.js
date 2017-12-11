@@ -47,10 +47,6 @@ function earlyInit() {
   gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
   gUserStyleRules             = document.querySelector('#user-style-rules');
   gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
-
-  onConfigChange('colorScheme');
-  onConfigChange('simulateSVGContextFill');
-
   gMetricsData.add('earlyInit end');
 }
 
@@ -71,6 +67,9 @@ async function init() {
     configs.$loaded
   ]);
   gMetricsData.add('browser.tabs.query, configs.$loaded');
+
+  onConfigChange('colorScheme');
+  onConfigChange('simulateSVGContextFill');
 
   await Promise.all([
     applyStyle(),
