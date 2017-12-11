@@ -55,7 +55,7 @@
   height: var(--svg-small-icon-size);
   width: var(--svg-small-icon-size);
 }
-:root.simulate-svg-context-fill .favicon-default::after {
+:root.simulate-svg-context-fill .tab.group-tab .favicon-default::before {
   background: var(--tab-text);
   mask-image: url("./icons/folder-16.svg");
   mask-position: left center;
