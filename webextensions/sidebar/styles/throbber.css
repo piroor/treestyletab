@@ -77,7 +77,7 @@
   -moz-context-properties: fill;
   background: url("./throbber.svg") no-repeat;
 }
-:root.blocking-throbber.simulate-svg-context-fill #blocking-screen .throbber::before,
+:root.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
 :root.simulate-svg-context-fill #tabbar .tab:not(.collapsed).loading .throbber::before {
   mask: url("./throbber.svg");
   mask-position: left center;
@@ -112,7 +112,7 @@
   fill: white;
   box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
 }
-:root.blocking-throbber.simulate-svg-context-fill  #blocking-screen .throbber::before {
+:root.simulate-svg-context-fill.blocking-throbber  #blocking-screen .throbber::before {
   background: white;
 }
 
