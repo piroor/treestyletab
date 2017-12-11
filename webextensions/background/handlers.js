@@ -185,7 +185,7 @@ function onTabOpened(aTab, aInfo = {}) {
       getPreviousTab(aTab)
     ]);
   }
-  else if (!aInfo.restored) {
+  else if (!aInfo.restored && !aInfo.skipFixupTree) {
     // if the tab is opened inside existing tree by someone, we must fixup the tree.
     if (!aInfo.openedWithPosition &&
         (getNextNormalTab(aTab) ||

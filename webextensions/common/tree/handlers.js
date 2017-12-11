@@ -221,6 +221,9 @@ async function onNewTabTracked(aTab) {
 
   log('onNewTabTracked: ', aTab);
   var container = getOrBuildTabsContainer(aTab.windowId);
+
+  var hasNextTab = !!getAllTabs(container)[aTab.index];
+
   var newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
   newTab.classList.add(kTAB_STATE_OPENING);
   // append to DOM tree to detect duplication
@@ -318,6 +321,7 @@ async function onNewTabTracked(aTab) {
 
   window.onTabOpened && onTabOpened(newTab, {
     openedWithPosition: openedWithPosition || moved,
+    skipFixupTree: !hasNextTab,
     restored,
     duplicated,
     duplicatedInternally,
