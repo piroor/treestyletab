@@ -438,6 +438,7 @@ function buildTabsContainerFor(aWindowId) {
   container.dataset.openingCount  = 0;
   container.dataset.openedNewTabs = '';
   container.dataset.openedNewTabsOpeners = '';
+  container.dataset.openedNewTabsActiveStates = '';
 
   container.dataset.toBeOpenedTabsWithPositions = 0;
   container.dataset.toBeOpenedOrphanTabs        = 0;
