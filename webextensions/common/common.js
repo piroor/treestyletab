@@ -145,6 +145,7 @@ configs = new Configs({
   autoGroupNewTabs: true,
   autoGroupNewTabsTimeout: 100,
   autoGroupNewTabsDelayOnNewWindow: 500,
+  autoGroupNewTabsFromPinned: true,
 
 
   // behavior around newly opened tabs

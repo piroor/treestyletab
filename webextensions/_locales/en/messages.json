@@ -26,6 +26,10 @@
     }},
   "groupTab.label.default": { "message": "Group" },
   "groupTab.temporary.label": { "message": "Temporary Group" },
+  "groupTab.fromPinnedTab.label": { "message": "Tabs from $TITLE$",
+    "placeholders": {
+      "title": { "content": "$1", "example": "title" }
+    }},
 
   "bookmarkFolder.label": { "message": "$TITLE$ and more",
     "placeholders": {

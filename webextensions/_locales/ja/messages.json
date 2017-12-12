@@ -26,6 +26,10 @@
     }},
   "groupTab.label.default": { "message": "グループ" },
   "groupTab.temporary.label": { "message": "一時的なグループ" },
+  "groupTab.fromPinnedTab.label": { "message": "$TITLE$ から開いたタブ",
+    "placeholders": {
+      "title": { "content": "$1", "example": "title" }
+    }},
 
   "bookmarkFolder.label": { "message": "$TITLE$ など",
     "placeholders": {

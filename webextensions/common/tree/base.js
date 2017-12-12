@@ -832,7 +832,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
 function makeGroupTabURI(aTitle, aOptions = {}) {
   var base = kGROUP_TAB_URI;
   var temporaryOption = aOptions.temporary ? '&temporary=true' : '' ;
-  return `${base}?title=${encodeURIComponent(aTitle)}${temporaryOption}`;
+  var openerTabIdOption = aOptions.openerTabId ? `&openerTabId=${aOptions.openerTabId}` : '' ;
+  return `${base}?title=${encodeURIComponent(aTitle)}${temporaryOption}${openerTabIdOption}`;
 }
 
 

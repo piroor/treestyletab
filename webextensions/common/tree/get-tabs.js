@@ -547,3 +547,12 @@ function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is close
   }
   return tab;
 }
+
+
+function getGroupTabForOpener(aOpener) {
+  var tab = (aOpener instanceof Element) ? aOpener : (getTabById(aOpener) || getTabByUniqueId(aOpener));
+  if (!tab)
+    return null;
+  return tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}$="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}"],
+                                       ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}&"]`);
+}
