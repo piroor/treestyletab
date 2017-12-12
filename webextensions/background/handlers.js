@@ -78,38 +78,38 @@ function onTabOpening(aTab, aInfo = {}) {
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
   if (isPinned(opener)) {
     (async () => {
-    switch (configs.insertNewTabFromPinnedTabAt) {
-      case kINSERT_FIRST:
-        let pinnedTabs = getPinnedTabs(container);
-        await moveTabInternallyAfter(aTab, pinnedTabs[pinnedTabs.length - 1]);
-        break;
-      case kINSERT_END:
-        await moveTabInternallyAfter(aTab, getLastTabs(container));
-        break;
-    }
-    if (configs.autoGroupNewTabsFromPinned) {
-      let parent = getGroupTabForOpener(opener);
-      let newParent = false;
-      if (!parent) {
-        newParent = true;
-        let title = browser.i18n.getMessage('groupTab.fromPinnedTab.label', opener.apiTab.title);
-        let uri = makeGroupTabURI(title, {
-          temporary:   true,
-          openerTabId: opener.getAttribute(kPERSISTENT_ID)
-        });
-        let wasActive = isActive(aTab);
-        parent = await openURIInTab(uri, {
-          windowId: opener.apiTab.windowId,
-          insertBefore: aTab
-        });
-        if (wasActive)
-          selectTabInternally(aTab);
+      switch (configs.insertNewTabFromPinnedTabAt) {
+        case kINSERT_FIRST:
+          let pinnedTabs = getPinnedTabs(container);
+          await moveTabInternallyAfter(aTab, pinnedTabs[pinnedTabs.length - 1]);
+          break;
+        case kINSERT_END:
+          await moveTabInternallyAfter(aTab, getLastTabs(container));
+          break;
       }
-      await attachTabTo(aTab, parent, {
-        dontMove:  newParent,
-        broadcast: true
-      });
-    }
+      if (configs.autoGroupNewTabsFromPinned) {
+        let parent = getGroupTabForOpener(opener);
+        let newParent = false;
+        if (!parent) {
+          newParent = true;
+          let title = browser.i18n.getMessage('groupTab.fromPinnedTab.label', opener.apiTab.title);
+          let uri = makeGroupTabURI(title, {
+            temporary:   true,
+            openerTabId: opener.getAttribute(kPERSISTENT_ID)
+          });
+          let wasActive = isActive(aTab);
+          parent = await openURIInTab(uri, {
+            windowId: opener.apiTab.windowId,
+            insertBefore: aTab
+          });
+          if (wasActive)
+            selectTabInternally(aTab);
+        }
+        await attachTabTo(aTab, parent, {
+          dontMove:  newParent,
+          broadcast: true
+        });
+      }
     })();
     return true;
   }
