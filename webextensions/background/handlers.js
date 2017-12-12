@@ -624,6 +624,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
   container.lastFocusedTab = aTab.id;
   if (gMaybeTabSwitchingByShortcut)
     setupDelayedExpand(aTab);
+  tryInitGroupTab(aTab);
   return false;
 }
 function handleNewActiveTab(aTab, aInfo = {}) {
@@ -685,8 +686,10 @@ function onTabUpdated(aTab, aChangeInfo) {
     });
   }
 
-  if (aChangeInfo.status || aChangeInfo.url)
+  if (aChangeInfo.status || aChangeInfo.url) {
+    tryInitGroupTab(aTab);
     tryStartHandleAccelKeyOnTab(aTab);
+  }
 
   reserveToSaveTreeStructure(aTab);
   markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
@@ -909,6 +912,10 @@ function onTabPinned(aTab) {
 
 function onTabUnpinned(aTab) {
   reserveToCacheTree(aTab);
+}
+
+function onGroupTabDetected(aTab) {
+  tryInitGroupTab(aTab);
 }
 
 

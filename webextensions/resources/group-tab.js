@@ -38,7 +38,7 @@ function hasModifier(aEvent) {
          aEvent.shiftKey;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
   gTitle = document.querySelector('#title');
   gTitleField = document.querySelector('#title-field');
 
@@ -100,4 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
       uri = `${uri}&`;
     location.replace(`${uri}temporary=${gTemporaryCheck.checked}`);
   });
-}, { once: true });
+
+  l10n.updateDocument();
+  window.initialized = true;
+}
+//document.addEventListener('DOMContentLoaded', init, { once: true });

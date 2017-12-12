@@ -207,6 +207,34 @@ async function tryStartHandleAccelKeyOnTab(aTab) {
   }
 }
 
+/*
+  To prevent the tab is closed by Firefox, we need to inject scripts dynamically.
+  See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087
+*/
+async function tryInitGroupTab(aTab) {
+  if (!isGroupTab(aTab) &&
+      aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0)
+    return;
+  var scriptOptions = {
+    runAt:           'document_start',
+    matchAboutBlank: true
+  };
+  var initialized = await browser.tabs.executeScript(aTab.apiTab.id, clone(scriptOptions, {
+    code:  'window.initialized',
+  }));
+  if (initialized[0])
+    return;
+  browser.tabs.executeScript(aTab.apiTab.id, clone(scriptOptions, {
+    file:  '/common/l10n.js'
+  }));
+  browser.tabs.executeScript(aTab.apiTab.id, clone(scriptOptions, {
+    file:  '/resources/group-tab.js'
+  }));
+  browser.tabs.executeScript(aTab.apiTab.id, clone(scriptOptions, {
+    code:  'if (!window.initialized) init();'
+  }));
+}
+
 function startWatchSidebarOpenState() {
   if (gSidebarOpenStateUpdateTimer)
     return;

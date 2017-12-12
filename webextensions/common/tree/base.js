@@ -197,6 +197,7 @@ function updateTab(aTab, aNewState, aOptions = {}) {
   else if ('url' in aNewState &&
            aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
+    window.onGroupTabDetected && onGroupTabDetected(aTab);
   }
   else if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
