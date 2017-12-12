@@ -217,7 +217,7 @@ async function tryGroupNewOrphanTabs(aRootTabs) {
       aRootTabs.length <= 0)
     return false;
 
-  log(`tryGroupTabs: ${aRootTabs.length} root tabs are opened`);
+  log(`tryGroupNewOrphanTabs: ${aRootTabs.length} root tabs are opened`);
   var title = browser.i18n.getMessage('groupTab.label', aRootTabs[0].apiTab.title);
   var uri = makeGroupTabURI(title, {
     temporary: true
