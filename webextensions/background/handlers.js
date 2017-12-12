@@ -152,7 +152,8 @@ async function tryGroupTabs(aTabReferences) {
     if (await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned))
       groupedCount++;
   }
-  if (await tryGroupNewOrphanTabs(newRootTabs))
+  if (newRootTabs.length > 1 &&
+      await tryGroupNewOrphanTabs(newRootTabs))
     groupedCount++;
 
   if (groupedCount > 0 && !isActive(activeTab))
