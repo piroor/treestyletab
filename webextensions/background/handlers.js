@@ -39,7 +39,6 @@ function onTabOpening(aTab, aInfo = {}) {
     else {
       container.dataset.openedNewTabs += `|${aTab.id}`;
       container.dataset.openedNewTabsOpeners += `|${opener && opener.apiTab.id}`;
-      container.dataset.openedNewTabsActiveStates += `|${isActive(aTab)}`;
     }
   }
   if (container.openedNewTabsTimeout)
@@ -101,18 +100,15 @@ var gGroupingBlockedBy = {};
 function onNewTabsTimeout(aContainer) {
   var tabIds        = aContainer.dataset.openedNewTabs.split('|');
   var tabOpenerIds  = aContainer.dataset.openedNewTabsOpeners.split('|');
-  var activeStates  = aContainer.dataset.openedNewTabsActiveStates.split('|');
   var tabReferences = tabIds.map((aId, aIndex) => {
     return {
       id:          aId,
-      openerTabId: tabOpenerIds[aIndex],
-      active:      activeStates[aIndex] == 'true'
+      openerTabId: tabOpenerIds[aIndex]
     };
   });
 
   aContainer.dataset.openedNewTabs = '';
   aContainer.dataset.openedNewTabsOpeners = '';
-  aContainer.dataset.openedNewTabsActiveStates = '';
 
   tabReferences = tabReferences.filter(aTabReference => aTabReference.id != '');
   if (tabReferences.length == 0 ||
@@ -126,13 +122,10 @@ async function tryGroupTabs(aTabReferences) {
   log('tryGroupTabs: ', aTabReferences);
 
   // extract only pure new tabs
-  var activeTabs  = [];
   var tabs = aTabReferences.map(aTabReference => {
     var tab = getTabById(aTabReference.id);
     if (aTabReference.openerTabId)
       tab.apiTab.openerTabId = parseInt(aTabReference.openerTabId); // restore the opener information
-    if (aTabReference.active)
-      activeTabs.push(tab);
     return tab;
   });
   var uniqueIds = await Promise.all(tabs.map(aTab => aTab.uniqueId));
@@ -147,6 +140,8 @@ async function tryGroupTabs(aTabReferences) {
   if (newRootTabs.length <= 0)
     return;
 
+  var activeTab = getCurrentTab(newRootTabs[0]);
+
   var newRootTabsFromPinned = newRootTabs.filter(aTab => isPinned(getOpenerTab(aTab)));
   var groupedCount = 0;
   if (newRootTabsFromPinned.length > 0) {
@@ -157,8 +152,8 @@ async function tryGroupTabs(aTabReferences) {
   if (await tryGroupNewOrphanTabs(newRootTabs))
     groupedCount++;
 
-  if (groupedCount > 0 && activeTabs.length > 0)
-    selectTabInternally(activeTabs[0]);
+  if (groupedCount > 0 && !isActive(activeTab))
+    selectTabInternally(activeTab);
 }
 
 async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
