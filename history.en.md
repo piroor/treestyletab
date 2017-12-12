@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Keep group tabs open after restart of Firefox and reload/update of TST itself. (regression: group tabs were unexpectedly lost on such cases, at 2.4.x.)
+   * Add ability to group new tabs opened from pinned tabs automatically.
  - 2.4.1 (2017.12.11)
    * Fix regressions around SVG icons and throbber's animation on the simulation mode.
    * Don't attach newly opened tab at the end of the tab bar to the previous tab.
