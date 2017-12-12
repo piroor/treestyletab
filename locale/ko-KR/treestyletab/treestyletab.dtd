@@ -1,0 +1,197 @@
+<!ENTITY config.title        "트리형 탭의 설정">
+
+<!ENTITY config.scale.min "최소">
+<!ENTITY config.scale.max "최대">
+
+
+<!ENTITY config.tabs.appearance "외관">
+
+<!ENTITY config.tabbar.position.caption "탭 바의 표시 위치">
+<!ENTITY config.tabbar.position.left    "좌">
+<!ENTITY config.tabbar.position.right   "우">
+<!ENTITY config.tabbar.position.top     "상(Firefox 초기 상태)">
+<!ENTITY config.tabbar.position.bottom  "하">
+<!ENTITY config.tabbar.invertClosebox.left  "탭의 닫기 버튼을 왼쪽에 표시">
+<!ENTITY config.tabbar.invertClosebox.right "탭의 닫기 버튼을 오른쪽에 표시">
+<!ENTITY config.tabbar.invertTab            "탭의 표시를 좌우 반전">
+<!ENTITY config.tabbar.invertTabContents    "탭의 내용을 좌우 반전">
+<!ENTITY config.tabbar.narrowScrollbar      "스크롤 바의 폭을 얇게">
+<!ENTITY config.enableSubtreeIndent "트리의 들여쓰기 표시">
+<!ENTITY config.maxTreeLevel.before "(">
+<!ENTITY config.maxTreeLevel.after  "단계까지)">
+<!ENTITY config.tabbarSize.before-horizontal "높이:">
+<!ENTITY config.tabbarSize.after-horizontal  "픽셀">
+<!ENTITY config.tabbarSize.before-vertical   "폭:">
+<!ENTITY config.tabbarSize.after-vertical    "픽셀">
+
+
+<!ENTITY config.tabs.style "스타일">
+
+<!ENTITY config.tabbar.style.caption "탭 바의 표시 스타일">
+<!ENTITY config.tabbar.style.plain   "Plain">
+<!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.mixed   "Mixed">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
+<!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.none    "없음(테마 본래의 표시 스타일)">
+
+<!ENTITY config.twisty.style.caption "버튼">
+<!ENTITY config.twisty.style.auto    "자동">
+<!ENTITY config.twisty.style.none    "없음">
+<!ENTITY config.twisty.style.retro   "레트로">
+<!ENTITY config.twisty.style.modern.black "모던 검정">
+<!ENTITY config.twisty.style.modern.white "모던 하양">
+<!ENTITY config.twisty.style.osx     "OS X">
+
+
+<!ENTITY config.tabs.menu "메뉴">
+
+<!ENTITY config.show.tabContextMenu.caption "탭의 컨텍스트 메뉴에 이하의 항목을 추가하기">
+
+
+<!ENTITY config.tabs.tab "새 탭">
+
+<!ENTITY config.autoAttach.newTabCommand.label_before "새 빈 탭을">
+<!ENTITY config.autoAttach.newTabCommand.independent "독립적인 탭으로">
+<!ENTITY config.autoAttach.newTabCommand.child       "현재 탭의 자식 탭으로">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "현재 탭과 같은 단계로">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "현재 탭과 같은 단계이며 바로 옆으로">
+<!ENTITY config.autoAttach.newTabCommand.label_after "열기">
+
+<!ENTITY config.autoAttach.newTabButton.label_before "&quot;새 탭&quot;버튼을 휠 클릭 시, 새 빈 탭을">
+<!ENTITY config.autoAttach.newTabButton.independent "독립적인 탭으로">
+<!ENTITY config.autoAttach.newTabButton.child       "현재 탭의 자식 탭으로">
+<!ENTITY config.autoAttach.newTabButton.sibling     "현재 탭과 같은 단계로">
+<!ENTITY config.autoAttach.newTabButton.nextSibling "현재 탭과 같은 단계이며 바로 옆으로">
+<!ENTITY config.autoAttach.newTabButton.label_after "열기">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "&quot;새로고침&quot; 버튼을 휠 클릭 시, 복제된 탭을">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "독립적인 탭으로">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "현재 탭의 자식 탭으로">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "현재 탭과 같은 단계로">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "현재 탭과 같은 단계이며 바로 옆으로">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_after "열기">
+
+<!ENTITY config.autoAttach.goButton.label_before "&quot;이동&quot; 버튼을 휠 클릭 시, 새 탭을">
+<!ENTITY config.autoAttach.goButton.independent "독립적인 탭으로">
+<!ENTITY config.autoAttach.goButton.child       "현재 탭의 자식 탭으로">
+<!ENTITY config.autoAttach.goButton.sibling     "현재 탭과 같은 단계로">
+<!ENTITY config.autoAttach.goButton.nextSibling "현재 탭과 같은 단계이며 바로 옆으로">
+<!ENTITY config.autoAttach.goButton.label_after "열기">
+
+<!ENTITY config.openGroupBookmark.caption     "북마크 폴더의 내용을 탭에서 열 때">
+<!ENTITY config.openGroupBookmark.ask         "어떻게 할지 매번 묻기">
+<!ENTITY config.openGroupBookmark.subtree     "하나의 트리로 열기(추천)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "북마크를 저장했을 때의 탭의 트리 구조를">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "복원하기">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "무시하기">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "">
+<!ENTITY config.openGroupBookmark.flat        "각각의 탭으로 열기(Firefox 초기 상태)">
+<!ENTITY config.openGroupBookmark.underParent "그룹화 용의 더미 탭을 부모로 하기">
+
+<!ENTITY config.dropLinksOnTab.caption "탭에 드래그&드롭 된 링크, URL, 북마크, 파일 등을">
+<!ENTITY config.dropLinksOnTab.ask     "어떻게 할지 매번 묻기">
+<!ENTITY config.dropLinksOnTab.load    "그 탭에 로딩하기(Firefox초기 상태)">
+<!ENTITY config.dropLinksOnTab.newTab  "새 자식 탭으로 열기">
+
+
+<!ENTITY config.tabs.autohide "자동 숨기기">
+
+<!ENTITY config.autoHide.mode.normal.caption     "통상의 윈도우 표시일 경우">
+<!ENTITY config.autoHide.mode.fullscreen.caption "전체 화면 표시의 경우">
+<!ENTITY config.autoHide.mode.0 "항상 탭 바를 표시">
+<!ENTITY config.autoHide.mode.1 "탭 바를 자동으로 숨기기">
+<!ENTITY config.autoHide.mode.2 "탭 바를 자동으로 줄이기">
+<!ENTITY config.autoShow.caption "이하의 경우에 자동으로 탭 바에 표시하기">
+<!ENTITY config.autoShow.mousemove "탭 바와의 경계 혹은 윈도우의 가장자리에 포인터가 접근했을 때">
+<!ENTITY config.autoHide.area.before "반영할 영역: 탭 바와의 경계 혹은 윈도우의 가장자리에서">
+<!ENTITY config.autoHide.area.after "픽셀의 범위">
+<!ENTITY config.autoHide.delay.before "지연:">
+<!ENTITY config.autoHide.delay.after "밀리초">
+<!ENTITY config.autoShow.click "탭 바에서의 클릭">
+<!ENTITY config.autoShow.accelKeyDown "Control키를 길게 눌렀을 때">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "밀리 초 이상에 반응">
+<!ENTITY config.autoShow.tabSwitch   "Control-Tab으로 탭을 전환할 때">
+<!ENTITY config.autoShow.feedback    "탭에 무엇인가 일어났을 때(열기, 닫기, 포커스 이동, 타이틀의 변화)">
+<!ENTITY config.autoShow.feedback.delay.before "">
+<!ENTITY config.autoShow.feedback.delay.after  "밀리 초 이후에 자동으로 숨기기">
+
+
+<!ENTITY config.tabs.tree "트리">
+
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "새 트리가 작성 되었을 때는 자동으로 다른 트리를 접기">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "탭을 변경할 때는 포커스된 탭의 트리를 자동으로 펼치고 나머지 트리를 접기">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "현재의 탭을 닫고 탭의 포커스가 바뀐 경우에는 아무 동작도 하지 않기">
+
+<!ENTITY config.focusMode "Control-Tab으로 탭을 바꿀 때 접힌 탭에도 포커스하기">
+
+<!ENTITY config.collapseExpandSubtree.dblclick "탭에 더블클릭을 하면 트리를 여닫기">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "접힌 트리 안에 자손의 탭이 추가되었을 때, 트리를 자동으로 펼치기">
+
+<!ENTITY config.closeParentBehavior.caption      "부모 탭을 닫을 때의 행동">
+<!ENTITY config.closeParentBehavior.close        "자손의 탭을 같이 닫기">
+<!ENTITY config.closeParentBehavior.promoteFirst "최초의 자식 탭을 새로운 부모로 하기">
+<!ENTITY config.closeParentBehavior.promoteAll   "닫은 부모 탭의 계층에 자손의 탭을 옮기기">
+<!ENTITY config.closeParentBehavior.detach       "자손의 탭을 트리에서 해방하기">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "대신 그룹화 용의 더미 탭을 열어 트리를 유지하기">
+<!ENTITY config.closeRootBehavior.promoteFirst   "최상위의 부모 탭을 닫았을 때만 최초의 자식 탭을 새 부모로 하기">
+
+<!ENTITY config.insertNewChildAt.caption "새 자식 탭을 여는 위치">
+<!ENTITY config.insertNewChildAt.noControl "제어하지 않기(Firefox나 다른 애드온의 판단에 맡긴다)">
+<!ENTITY config.insertNewChildAt.first "트리의 최초의 위치에 삽입한다">
+<!ENTITY config.insertNewChildAt.last "트리의 말미에 추가한다">
+
+<!ENTITY config.undoCloseTabSet.caption  "&quot;닫은 탭을 원상복구하기&quot;로 트리를 구성하고 있던 탭이 다시 열릴 때">
+<!ENTITY config.undoCloseTabSet.ask      "어떻게 할지 매번 묻기">
+<!ENTITY config.undoCloseTabSet.set      "트리 전체를 다시 열기">
+<!ENTITY config.undoCloseTabSet.separate "그 탭만을 다시 열기(Firefox 초기 상태)">
+
+
+<!ENTITY config.tabs.advanced "고급">
+
+<!ENTITY config.tooltip.includeChildren        "탭의 툴팁에 트리의 내용을 표시하기">
+
+<!ENTITY config.bookmarkDroppedTabs.caption "자식 탭을 가진 탭을 북마크 트리에 드래그 앤 드롭했을 때">
+<!ENTITY config.bookmarkDroppedTabs.ask     "어떻게 할지 매번 묻기">
+<!ENTITY config.bookmarkDroppedTabs.all     "트리에 포함된 모든 탭을 북마크에 추가">
+<!ENTITY config.bookmarkDroppedTabs.parent  "드래그된 탭만을 북마크에 추가">
+
+<!ENTITY config.migration.caption     "새 버전으로 업데이트">
+<!ENTITY config.migration.saveConfigs "설정 이동용 데이터를 파일로 보존">
+<!ENTITY config.migration.saveTree    "트리 이동용 데이터를 파일로 보존">
+
+
+
+<!ENTITY selection.removeTabSubtree.label       "모든 트리 닫기">
+<!ENTITY selection.removeTabSubtree.accesskey   "s">
+<!ENTITY selection.createSubtree.label          "하나의 트리로 모으기">
+<!ENTITY selection.createSubtree.accesskey      "g">
+
+<!ENTITY context.reloadTabSubtree.label         "이 트리를 새로 고침">
+<!ENTITY context.reloadTabSubtree.accesskey     "r">
+<!ENTITY context.reloadDescendantTabs.label     "이 탭의 자식 탭을 모두 새로 고침">
+<!ENTITY context.reloadDescendantTabs.accesskey "r">
+<!ENTITY context.removeTabSubtree.label         "이 트리 닫기">
+<!ENTITY context.removeTabSubtree.accesskey     "s">
+<!ENTITY context.removeDescendantTabs.label     "이 트리의 자식 탭을 모두 닫기">
+<!ENTITY context.removeDescendantTabs.accesskey "d">
+<!ENTITY context.removeAllTabsBut.label         "이 트리 이외의 다른 탭을 전부 닫기">
+<!ENTITY context.removeAllTabsBut.accesskey     "b">
+<!ENTITY context.collapseAllSubtree.label       "트리를 전부 접기">
+<!ENTITY context.collapseAllSubtree.accesskey   "c">
+<!ENTITY context.expandAllSubtree.label         "트리를 전부 펴기">
+<!ENTITY context.expandAllSubtree.accesskey     "e">
+<!ENTITY context.toggleAutoHide.label.hide      "탭 바를 자동으로 숨기기">
+<!ENTITY context.toggleAutoHide.label.shrink    "탭 바를 자동으로 줄이기">
+<!ENTITY context.toggleAutoHide.accesskey       "h">
+<!ENTITY context.toggleFixed.label              "탭 바의 위치와 폭/높이를 고정">
+<!ENTITY context.toggleFixed.label.horizontal   "탭 바의 위치와 높이를 고정">
+<!ENTITY context.toggleFixed.label.vertical     "탭 바의 위치와 폭을 고정">
+<!ENTITY context.toggleFixed.accesskey          "f">
+<!ENTITY context.bookmarkTabSubtree.label       "이 트리를 북마크...">
+<!ENTITY context.bookmarkTabSubtree.accesskey   "t">
+
+<!ENTITY group.default "새 그룹">
+<!ENTITY group.temporary "임시 그룹">
