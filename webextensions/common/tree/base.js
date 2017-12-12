@@ -803,8 +803,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         };
         if (aURI)
           params.url = aURI;
-        if (aIndex == 0)
-          params.active = !aOptions.inBackground;
+        if (aIndex == 0 && !aOptions.inBackground)
+          params.active = true;
         if (aOptions.opener)
           params.openerTabId = aOptions.opener.apiTab.id;
         if (startIndex > -1)
