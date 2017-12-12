@@ -167,6 +167,8 @@
   "config.autoGroupNewTabsDelayOnNewWindow.before": { "message": "But don't group new tabs opened within" },
   "config.autoGroupNewTabsDelayOnNewWindow.after": { "message": "msec when a new window is opened, as a part of tabs opened as \"home page\"." },
 
+  "config.autoGroupNewTabsFromPinned.label": { "message": "Auto-group tabs opened from same pinned tab" },
+
   "config.inheritContextualIdentityToNewChildTab.label": { "message": "Inherit the container of the parent tab to a new blank tab" },
 
 

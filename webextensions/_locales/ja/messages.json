@@ -167,6 +167,8 @@
   "config.autoGroupNewTabsDelayOnNewWindow.before": { "message": "ただし、新しいウィンドウが開かれてから" },
   "config.autoGroupNewTabsDelayOnNewWindow.after": { "message": "ミリ秒以内に開かれたタブは「ホームページ」の一部と見なしてグループ化しない" },
 
+  "config.autoGroupNewTabsFromPinned.label": { "message": "同じピン留めされたタブから開かれたタブを自動的にグループ化する" },
+
   "config.inheritContextualIdentityToNewChildTab.label": { "message": "新しい空のタブを子タブとして開く時、親のタブのコンテナーを継承する" },
 
 
