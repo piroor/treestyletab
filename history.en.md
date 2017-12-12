@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.2 (2017.12.12)
    * Keep group tabs open after restart of Firefox and reload/update of TST itself. (regression: group tabs were unexpectedly lost on such cases, at 2.4.x.)
    * Add ability to group new tabs opened from pinned tabs automatically.
  - 2.4.1 (2017.12.11)
