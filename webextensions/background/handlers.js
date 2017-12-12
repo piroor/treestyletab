@@ -138,27 +138,32 @@ async function tryGroupTabs(aTabReferences) {
   var activeTabs  = tabs.filter(isActive);
   var newRootTabs = collectRootTabs(tabs)
     .filter(aTab => !isGroupTab(aTab));
-  if (newRootTabs.length <= 1)
+  if (newRootTabs.length <= 0)
     return;
 
   var newRootTabsFromPinned = newRootTabs.filter(aTab => isPinned(getOpenerTab(aTab)));
   if (newRootTabsFromPinned.length > 0) {
+    newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
     switch (configs.insertNewTabFromPinnedTabAt) {
       case kINSERT_FIRST:
         let pinnedTabs = getPinnedTabs(newRootTabsFromPinned[0].parentNode);
         for (let tab of newRootTabsFromPinned.slice(0).reverse()) {
+          if (getGroupTabForOpener(getOpenerTab(tab)))
+            continue;
           await moveTabSubtreeAfter(tab, pinnedTabs[pinnedTabs.length - 1]);
         }
         break;
       case kINSERT_END:
         for (let tab of newRootTabsFromPinned) {
+          if (getGroupTabForOpener(getOpenerTab(tab)))
+            continue;
           await moveTabSubtreeAfter(tab, getLastTabs(tab.parentNode));
         }
         break;
     }
     if (configs.autoGroupNewTabsFromPinned) { 
       log(`tryGroupTabs: ${newRootTabs.length} root tabs are opened from pinned tabs`);
-      newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
+      let newGroupTabs = new Map();
       for (let tab of newRootTabsFromPinned) {
         let opener = getOpenerTab(tab);
         let parent = getGroupTabForOpener(opener);
@@ -175,9 +180,10 @@ async function tryGroupTabs(aTabReferences) {
           });
           if (wasActive)
             selectTabInternally(tab);
+          newGroupTabs.set(opener, true);
         }
         await attachTabTo(tab, parent, {
-          dontMove:  true,
+          dontMove:  newGroupTabs.has(opener),
           broadcast: true
         });
       }
