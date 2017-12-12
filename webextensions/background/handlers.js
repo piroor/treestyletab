@@ -193,7 +193,8 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       let wasActive = isActive(tab);
       parent = await openURIInTab(uri, {
         windowId:     opener.apiTab.windowId,
-        insertBefore: aRootTabs[0]
+        insertBefore: aRootTabs[0],
+        inBackground: true
       });
       if (wasActive)
         selectTabInternally(tab);
@@ -219,7 +220,8 @@ async function tryGroupNewOrphanTabs(aRootTabs) {
   });
   var groupTab = await openURIInTab(uri, {
     windowId:     aRootTabs[0].apiTab.windowId,
-    insertBefore: aRootTabs[0]
+    insertBefore: aRootTabs[0],
+    inBackground: true
   });
   for (let tab of aRootTabs) {
     await attachTabTo(tab, groupTab, {
@@ -349,7 +351,8 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     incrementContainerCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');
     let groupTab = await openURIInTab(uri, {
       windowId:     aTab.apiTab.windowId,
-      insertBefore: aTab // not firstChild, because the "aTab" is disappeared from tree.
+      insertBefore: aTab, // not firstChild, because the "aTab" is disappeared from tree.
+      inBackground: true
     });
     log('group tab: ', dumpTab(groupTab));
     if (!groupTab) // the window is closed!
