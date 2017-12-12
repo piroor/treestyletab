@@ -29,7 +29,9 @@ function onTabOpening(aTab, aInfo = {}) {
   log('onTabOpening ', dumpTab(aTab), aInfo);
   var container = aTab.parentNode;
   var opener    = getOpenerTab(aTab);
-  if ((configs.autoGroupNewTabsFromPinned && isPinned(opener)) ||
+  if ((configs.autoGroupNewTabsFromPinned &&
+       isPinned(opener) &&
+       opener.parentNode == aTab.parentNode) ||
       (configs.autoGroupNewTabs &&
        !opener &&
        !aInfo.maybeOrphan)) {
@@ -80,7 +82,8 @@ function onTabOpening(aTab, aInfo = {}) {
   }
 
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
-  if (isPinned(opener)) {
+  if (isPinned(opener) &&
+      opener.parentNode == aTab.parentNode) {
     return true;
   }
   else if (configs.autoAttach) {
@@ -734,6 +737,7 @@ function cancelAllDelayedExpand(aHint) {
 function onTabUpdated(aTab, aChangeInfo) {
   var parent = getOpenerTab(aTab);
   if (parent &&
+      parent.parentNode == aTab.parentNode &&
       parent != getParentTab(aTab) &&
       configs.syncParentTabAndOpenerTab) {
     attachTabTo(aTab, parent, {
