@@ -78,7 +78,8 @@ function init() {
   });
   window.addEventListener('click', aEvent => {
     if (aEvent.button == 0 &&
-        !hasModifier(aEvent)) {
+        !hasModifier(aEvent) &&
+        aEvent.target != gTitleField) {
       gTitleField.value = gTitle.textContent;
       exitTitleEdit();
       aEvent.stopPropagation();
