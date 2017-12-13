@@ -25,6 +25,11 @@
       "title": { "content": "$1", "example": "標題" }
     }},
   "groupTab.label.default": { "message": "群組" },
+  "groupTab.temporary.label": { "message": "臨時群組" },
+  "groupTab.fromPinnedTab.label": { "message": "自 $TITLE$ 開啟的分頁",
+    "placeholders": {
+      "title": { "content": "$1", "example": "標題" }
+    }},
 
   "bookmarkFolder.label": { "message": "$TITLE$ 等",
     "placeholders": {
@@ -107,6 +112,10 @@
   "config.style.highcontrast": { "message": "High Contrast" },
   "config.style.none": { "message": "無裝飾(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
+  "config.colorScheme.caption": { "message": "配色方案" },
+  "config.colorScheme.photon": { "message": "Photon" },
+  "config.colorScheme.systemColor": { "message": "系統配色" },
+
   "config.maxTreeLevel.before": { "message": "最多縮進" },
   "config.maxTreeLevel.after": { "message": "層分頁(負值表示無限制)" },
 
@@ -157,6 +166,8 @@
   "config.autoGroupNewTabs.after": { "message": "亳秒內開連續開啟的分頁自動群組" },
   "config.autoGroupNewTabsDelayOnNewWindow.before": { "message": "但開新視窗時，在" },
   "config.autoGroupNewTabsDelayOnNewWindow.after": { "message": "亳秒內開啟的分頁視為「首頁」而不自動群組" },
+
+  "config.autoGroupNewTabsFromPinned.label": { "message": "同個釘選分頁開啟的分頁自動群組" },
 
   "config.inheritContextualIdentityToNewChildTab.label": { "message": "開新分頁時，自動繼承父分頁的容器類別" },
 
@@ -228,6 +239,13 @@
   "config.debug.caption": { "message": "開發用" },
 
   "config.debug.label": { "message": "除錯模式" },
+  "config.log.caption":               { "message": "詳細日誌" },
+  "config.logOnUpdated.label":        { "message": "輸出 tabs.onUpdated 的相關日誌" },
+  "config.logOnMouseEvent.label":     { "message": "輸出滑鼠操作的相關日誌" },
+  "config.logOnScroll.label":         { "message": "輸出自動捲動的相關日誌" },
+  "config.logOnCollapseExpand.label": { "message": "輸出折疊展開樹的相關日誌" },
+  "config.simulateSVGContextFill.label": { "message": "模擬 SVG 圖標以解決 Bug 1388193 及 Bug 1421329 (※可能會提高 CPU 用量。在 Bug 修正前，若想禁用此選項必須啟用「about:config」的「svg.context-properties.content.enabled」)" },
+  "config.useCachedTree.label": { "message": "以快取加速樹狀結構初始化" },
   "config.acccelaratedTabDuplication.label": { "message": "加快分頁複制(※動作會不穩定)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "亳秒內未複制完成即中斷。" },
