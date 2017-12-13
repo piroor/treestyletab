@@ -77,32 +77,28 @@ Then I strongly recommend you to fork this project for your usecase freely.
 Here is a lis of some major requests which are reported multiple times but I marked them "won't fix".
 Note that some topics are just about "legacy" versions of TST.
 
-### Full support for the horizontal tab bar or non-indented vertical tabs
+### Full support for the non-indented vertical tabs
 
-"Renewed" TST is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
+TST is basically designed to operate tabs as tree nodes, so "flat vertical tabs" is out of purpose.
+Instead there are some "vertical tabs" addons, see the "Similar projects" section.
 
-Basically "legacy" TST is designed to provide vertical indented, deeply nested tree of tabs.
-There is only limited support for non-tree mode.
-If you just require the vertical tab bar and you never use "tree of tabs", then please try other alternative addons:
+### I don't need automatically organized tree, instead I just want to organize tree by myself
 
- * [Vertical Tabs (Simplified)](https://addons.mozilla.org/firefox/addon/vertical-tabs-simplified/)
- * [Vertical Tabs Reloaded](https://addons.mozilla.org/firefox/addon/vertical-tabs-reloaded/)
- * [Side Tabs](https://addons.mozilla.org/firefox/addon/side-tabs/)
+You can deactivate TST's automatic tree organizing behaviors, by some secret preferences:
 
-And, horizontal tab bar is just a bonus.
-If you are a heavy user of the horizontal tab bar, then bugs appearing only on it won't be fixed by me.
-Instead please fix it by your hand and send pull requests to me.
+ 1. Go to TST's configuration.
+ 2. "Development" section.
+ 3. Turn on the checkbox "Debug mode". Then all internal configurations are listed.
+ 4. Turn off the checkbox "autoAttach".
+ 5. Turn off the checkbox "syncParentTabAndOpenerTab".
 
-### High compatibility with [Tab Mix Plus](https://addons.mozilla.org/firefox/addon/tab-mix-plus/), especially its own session management feature
+After that TST never attach new tabs to existing tree automatically.
 
-"Renewed" TST works inside the sidebar, so it works separatedly from (legacy) TMP.
+If you want to drag multiple tabs at once to organize tree, [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) will help you.
 
-Supporting TMP by "legacy" TST is very hard, because TMP-enhanced Firefox is totally different from plain Firefox - they are practically different applications.
-So, it requires hard work to support both applications constantly.
-Moreover, unfortunately I have very few motivation to maintain TST for TMP, because I'm not a user of TMP.
-If you are using TST with TMP and get some troubles, those bugs won't be fixed by my hand aggressively.
+### Full support for the horizontal tab bar
 
-Instead please fix problems you met and send pull requests to me.
+TST is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
 
 ### [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043)
 
@@ -111,17 +107,6 @@ Supporting for Pale Moon means supporting for very old Firefox.
 To keep codes cleaner, I have to remove obsolete codes only for old versions of Firefox.
 
 If you require TST for Pale Moon, sorry but please fork this project and rollback to an old revision which can work on Pale Moon.
-
-### [Ability to show both horizontal and vertical tab bars](https://github.com/piroor/treestyletab/issues/304)
-
-"Renewed" TST is just a sidebar panel, so you'll see both horizontal tab bar and vertical tree.
-
-"Legacy" TST can't do it because TST's vertical tab bar is the Firefox's tab bar itself.
-In other words, TST just rotates the orientation of the tab bar from horizontal to vertical and completely reuses Firefox's tab bar.
-It is not another new sidebar, TST doesn't hide Firefox's original tab bar.
-It is still there.
-
-If you really want to show both horizontal and vertical tab bar, then please uninstall legacy TST and install any other addon which provides a custom sidebar panel to show tabs vertically.
 
 ### [Quick access to the configuration dialog](https://github.com/piroor/treestyletab/issues/1020), Adding new minor (trivial) options, and so on
 
@@ -144,18 +129,17 @@ Natural operations for GUI objects shoud be optimized for most major usecases.
 
 Too high customizability for such rare usecases will just make you happy, but others including me won't - they are just confused that "why such too much choices are here?"
 
-### Keyboard shortcuts for TST's custom functions, for example, [toggle show/hide of the tab bar](https://github.com/piroor/treestyletab/issues/156), [close a tree](https://github.com/piroor/treestyletab/issues/274), [operations to modify tree](https://github.com/piroor/treestyletab/issues/772), [moving focus](https://github.com/piroor/treestyletab/issues/836), and so on
+### Keyboard shortcuts for TST's custom functions, for example, toggle show/hide of the sidebar, operations to modify tree, and so on
 
-This topic is strongly written for "legacy" TST.
+Due to limitations of WebExtensions APIs, the keyboard shortcut to toggle show/hide the sidebar is not changable.
+See also:
 
-Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), and other addons also provide their own keyboard shortcuts, I cannot find out safe combinations for my features.
-So I gave up and decided to provide only [APIs for other addons](http://piro.sakura.ne.jp/xul/_treestyletab.html.en#api).
-Please use generic addons to customize keyboard shortcuts which can define custom actions based on scripts.
-Sorry.
-See [the code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-keyboard-shortcuts) also.
+ * [1215061 - Better keyboard shortcut support](https://bugzilla.mozilla.org/show_bug.cgi?id=1215061)
+ * [1303384 - UI for re-assigning command shortcuts](https://bugzilla.mozilla.org/show_bug.cgi?id=1303384 )
+ * [1320332 - Support overriding existing keybinding through WebExtensions](https://bugzilla.mozilla.org/show_bug.cgi?id=1320332)
 
-By the way, "auto hide tab bar" feature doesn't provide any its own keyboard shortcut to toggle it because the feature is included in TST mainly to simulate Firefox's default behavior in the fullscreen mode (started by the `F11` key).
-Is there any keyboard shortcut to show/hide the navigation toolbar?
+And, because Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), I have no plan to provide various shortcuts for TST's each feature by default.
+In future versions, if generic keyboard shortcut customizability is introduced Firefox, I'll define optional commands for user-defined keyboard shortcuts.
 
 ### High-power management of tree, like [sorting child tabs](https://github.com/piroor/treestyletab/issues/94), [auto-modification of tree](https://github.com/piroor/treestyletab/issues/509), [renaming of tabs](https://github.com/piroor/treestyletab/issues/794), and so on
 
@@ -171,44 +155,16 @@ It provides ability to select multiple tabs by Ctrl-Click or Shift-Click and you
 
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), [transparency of tabs](https://github.com/piroor/treestyletab/issues/651), and so on
 
-On "legacy" TST, please use the `userChrome.css` or `about:config` instead of such detailed configuration UIs.
-TST should have configuration UIs only for something it can't be done by any other existing customization feature.
-[The list of all legacy TST's preferences including secret items is available.](https://github.com/piroor/treestyletab/blob/master/defaults/preferences/treestyletab.js)
-
-On "Renewed" TST, there is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
-
-### [Ability to disable animation effects around tabs](https://github.com/piroor/treestyletab/issues/499)
-
-"Renewed" TST has the option. See its configurations.
-
-"Legacy" TST doesn't have such an option.
-[If Firefox introduces new preference to disable tab animations](https://bugzilla.mozilla.org/show_bug.cgi?id=556717), I'll apply it for TST too.
-Otherwise I have no plan to implement such a "no animation mode", because it will make TST more far from Firefox's plain codes.
-Now I have only a few resources to maintain TST, so I don't want to increase the risk that I give up to update TST for future versions of Firefox which will be continuously modified.
+There is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
+See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules).
 
 ### [Donation](https://github.com/piroor/treestyletab/issues/761)
 
-Thanks, but sorry, I have no plan about any donation because I want to keep me as the prime user of this project.
+Thanks, but sorry, I have no plan about any donation from some reasons.
+The largest reason is: because I want to keep me as the prime user of this project.
 I want to keep having a privilege to say "no" about requests not matched to my vision.
 My hand is already full to maintain this addon for my usecase.
 
 If you fixed a bug you met, please send a pull request - I'll merge it.
 If you have different plan about TST, please fork this project freely for your purpose, if needed.
 
-### [Fully-reviewed on Mozilla Add-ons](https://github.com/piroor/treestyletab/issues/793)
-
-"Renewed" TST will be published for all people, because it is built only on clean, Mozilla-recommended technologies.
-
-"Legacy" TST never been published as a "full-reviewed" addon on AMO, because there is one unavoidable issue: TST doesn't match to the policy of AMO.
-
-In 2010, AMO editors decided to reject Tree Style Tab and some my other addons as "bad" addons, because they were against AMO policies - mainly, they used many `eval()` to inject custom codes into functions defined by Firefox itself.
-Because there are less APIs for addons like TST, I still have to use `eval()` to do it.
-[I wrote an objection for this topic, in years ago.](http://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2010-02-08_eval-en.htm)
-
-If the review policy was changed or relaxed, I'm ready to request full review again.
-Otherwise, my request won't be accepted...
-
-To be honest, I agree that TST possibly should not be published as a full-reviewed addon, by AMO policy.
-TST is too fragile from many tricky hacks.
-Moreover, actually, too many `eval()` make my addon hard to be reviewed.
-So, I even think it is better that my addon is kept in sandbox with quick updates, than slow updates from every full-review processes taking much time.
