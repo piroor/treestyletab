@@ -169,14 +169,18 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       for (let tab of aRootTabs.slice(0).reverse()) {
         if (getGroupTabForOpener(getOpenerTab(tab)))
           continue;
-        await moveTabSubtreeAfter(tab, pinnedTabs[pinnedTabs.length - 1]);
+        await moveTabSubtreeAfter(tab, pinnedTabs[pinnedTabs.length - 1], {
+          broadcast: true
+        });
       }
       break;
     case kINSERT_END:
       for (let tab of aRootTabs) {
         if (getGroupTabForOpener(getOpenerTab(tab)))
           continue;
-        await moveTabSubtreeAfter(tab, getLastTabs(tab.parentNode));
+        await moveTabSubtreeAfter(tab, getLastTabs(tab.parentNode), {
+          broadcast: true
+        });
       }
       break;
   }
