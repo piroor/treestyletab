@@ -178,7 +178,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       for (let tab of aRootTabs) {
         if (getGroupTabForOpener(getOpenerTab(tab)))
           continue;
-        await moveTabSubtreeAfter(tab, getLastTabs(tab.parentNode), {
+        await moveTabSubtreeAfter(tab, getLastTab(tab.parentNode), {
           broadcast: true
         });
       }
