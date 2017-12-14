@@ -191,6 +191,7 @@ configs = new Configs({
   notificationTimeout: 10 * 1000,
   sidebarOpenStateUpdateInterval: 500,
   startDragTimeout: 400,
+  moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
   knownExternalAddons: [
     'multipletab@piro.sakura.ne.jp'
   ],

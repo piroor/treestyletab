@@ -773,7 +773,8 @@ function onDragEnd(aEvent) {
   collapseAutoExpandedTabsWhileDragging();
 
   if (aEvent.dataTransfer.dropEffect != 'none' ||
-      aEvent.shiftKey) {
+      aEvent.shiftKey ||
+      !configs.moveDroppedTabToNewWindowForUnhandledDragEvent) {
     log('dragged items are processed by someone: ', aEvent.dataTransfer.dropEffect);
     return;
   }
