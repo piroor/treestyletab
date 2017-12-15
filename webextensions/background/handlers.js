@@ -206,6 +206,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       newGroupTabs.set(opener, true);
     }
     await attachTabTo(tab, parent, {
+      forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
       dontMove:  newGroupTabs.has(opener),
       broadcast: true
     });
@@ -230,6 +231,7 @@ async function tryGroupNewOrphanTabs(aRootTabs) {
   });
   for (let tab of aRootTabs) {
     await attachTabTo(tab, groupTab, {
+      forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
       dontMove:  true,
       broadcast: true
     });
