@@ -198,14 +198,11 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
         temporary:   true,
         openerTabId: opener.getAttribute(kPERSISTENT_ID)
       });
-      let wasActive = isActive(tab);
       parent = await openURIInTab(uri, {
         windowId:     opener.apiTab.windowId,
         insertBefore: aRootTabs[0],
         inBackground: true
       });
-      if (wasActive)
-        selectTabInternally(tab);
       newGroupTabs.set(opener, true);
     }
     await attachTabTo(tab, parent, {
