@@ -799,12 +799,11 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {
-          windowId: aOptions.windowId
+          windowId: aOptions.windowId,
+          active:   aIndex == 0 && !aOptions.inBackground
         };
         if (aURI)
           params.url = aURI;
-        if (aIndex == 0 && !aOptions.inBackground)
-          params.active = true;
         if (aOptions.opener)
           params.openerTabId = aOptions.opener.apiTab.id;
         if (startIndex > -1)
