@@ -143,21 +143,13 @@ async function tryGroupTabs(aTabReferences) {
   if (newRootTabs.length <= 0)
     return;
 
-  var activeTab = getCurrentTab(newRootTabs[0]);
-
   var newRootTabsFromPinned = newRootTabs.filter(aTab => isPinned(getOpenerTab(aTab)));
-  var groupedCount = 0;
   if (newRootTabsFromPinned.length > 0) {
     newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
-    if (await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned))
-      groupedCount++;
+    await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
   }
-  if (newRootTabs.length > 1 &&
-      await tryGroupNewOrphanTabs(newRootTabs))
-    groupedCount++;
-
-  if (groupedCount > 0 && !isActive(activeTab))
-    selectTabInternally(activeTab);
+  if (newRootTabs.length > 1)
+    await tryGroupNewOrphanTabs(newRootTabs);
 }
 
 async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
