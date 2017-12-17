@@ -56,6 +56,8 @@ Some addons provide extended behavior to TST's sidebar panel:
    Vertical tab bar without tree.
  * [sidebarTabs](https://github.com/asamuzaK/sidebarTabs):
    Vertical tab bar with grouped tabs.
+ * [Tab Sidebar](https://addons.mozilla.org/firefox/addon/tab-sidebar-we/):
+   Vertical tab bar with grouped tabs.
 
 Some Google Chrome extensions also provides similar feature.
 
