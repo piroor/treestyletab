@@ -19,6 +19,10 @@ function getTitle() {
            browser.i18n.getMessage('groupTab.label.default');
 }
 
+function isTemporary() {
+  return /[&?]temporary=true/.test(location.search);
+}
+
 function enterTitleEdit() {
   gTitle.style.display = 'none';
   gTitleField.style.display = 'inline';
@@ -36,6 +40,15 @@ function hasModifier(aEvent) {
          aEvent.ctrlKey ||
          aEvent.metaKey ||
          aEvent.shiftKey;
+}
+
+function updateParameters(aParameters = {}) {
+  var title     = aParameters.title || getTitle() || '';
+  var temporary = String(gTemporaryCheck.checked);
+
+  var uri = location.href.split('?')[0];
+  uri = `${uri}?title=${encodeURIComponent(title)}&temporary=${temporary}`;
+  location.replace(uri);
 }
 
 function init() {
@@ -60,16 +73,9 @@ function init() {
         break;
 
       case KeyEvent.DOM_VK_ENTER:
-      case KeyEvent.DOM_VK_RETURN: {
-        let uri = location.href;
-        if (/[&?]title=([^&;]*)/.test(uri))
-          uri = uri.replace(/&title=[^&]+|title=[^&]+&?/, '');
-        else
-          uri = uri.replace(/\?.+$/, '?');
-        if (/\?.+$/.test(uri))
-          uri = `${uri}&`;
-        location.replace(`${uri}title=${encodeURIComponent(gTitleField.value)}`);
-      }; break;
+      case KeyEvent.DOM_VK_RETURN:
+        updateParameters({ title: gTitleField.value });
+        break;
 
       case KeyEvent.DOM_VK_F2:
         aEvent.stopPropagation();
@@ -94,13 +100,8 @@ function init() {
   gTitle.textContent = gTitleField.value = getTitle();
 
   gTemporaryCheck = document.querySelector('#temporary');
-  gTemporaryCheck.checked = /[&?]temporary=true/.test(location.href);
-  gTemporaryCheck.addEventListener('change', aEvent => {
-    var uri = location.href.replace(/&temporary=(true|false)|temporary=(true|false)&?/, '')
-    if (/\?.+$/.test(uri))
-      uri = `${uri}&`;
-    location.replace(`${uri}temporary=${gTemporaryCheck.checked}`);
-  });
+  gTemporaryCheck.checked = isTemporary();
+  gTemporaryCheck.addEventListener('change', aEvent => updateParameters());
 
   l10n.updateDocument();
   window.initialized = true;
