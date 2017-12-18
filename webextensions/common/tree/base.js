@@ -819,7 +819,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
           await attachTabTo(tab, aOptions.parent, {
             insertBefore: aOptions.insertBefore,
             insertAfter:  aOptions.insertAfter,
-            forceExpand:  true,
+            forceExpand:  params.active,
             broadcast:    true
           });
         return tab.opened;
