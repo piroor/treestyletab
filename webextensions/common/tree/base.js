@@ -177,7 +177,7 @@ function updateUniqueId(aTab) {
   return aTab.uniqueId;
 }
 
-function updateTab(aTab, aNewState, aOptions = {}) {
+function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if ('url' in aNewState) {
     aTab.setAttribute(kCURRENT_URI, aNewState.url);
     if (aTab.dataset.discardURLAfterCompletelyLoaded &&
