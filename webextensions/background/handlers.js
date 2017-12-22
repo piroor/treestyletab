@@ -993,14 +993,6 @@ function onMessage(aMessage, aSender) {
       startWatchSidebarOpenState();
       return Promise.resolve(true);
 
-    case kNOTIFY_SIDEBAR_OPENED:
-      gSidebarOpenState.set(aMessage.windowId, true);
-      break;
-
-    case kNOTIFY_SIDEBAR_CLOSED:
-      gSidebarOpenState.delete(aMessage.windowId);
-      break;
-
     case kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
         await waitUntilTabsAreaCreated(aMessage.id);

@@ -91,10 +91,7 @@ async function init() {
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
       startObserveApiTabs();
 
-      browser.runtime.sendMessage({
-        type:     kNOTIFY_SIDEBAR_OPENED,
-        windowId: gTargetWindow
-      });
+      browser.runtime.connect({ name: `${kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}` });
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
         browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
 
@@ -202,11 +199,6 @@ async function init() {
 }
 
 function destroy() {
-  browser.runtime.sendMessage({
-    type:     kNOTIFY_SIDEBAR_CLOSED,
-    windowId: gTargetWindow
-  });
-
   configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);

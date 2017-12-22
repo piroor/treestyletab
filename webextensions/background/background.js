@@ -21,11 +21,14 @@ window.addEventListener('DOMContentLoaded', init, { once: true });
 async function init() {
   gMetricsData.add('init start');
   window.addEventListener('pagehide', destroy, { once: true });
+
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
   browser.windows.onFocusChanged.addListener(() => {
     gMaybeTabSwitchingByShortcut = false;
   });
+  startWatchSidebarOpenState();
+
   gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
   gMetricsData.add('configs.$loaded');
@@ -45,7 +48,6 @@ async function init() {
   migrateLegacyTreeStructure();
   gMetricsData.add('migrateLegacyTreeStructure');
 
-  startWatchSidebarOpenState();
   startObserveApiTabs();
   startObserveContextualIdentities();
   browser.runtime.onMessage.addListener(onMessage);
@@ -143,7 +145,6 @@ function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
-  endWatchSidebarOpenState();
   endObserveApiTabs();
   endObserveContextualIdentities();
   gAllTabs = undefined;
@@ -236,41 +237,17 @@ async function tryInitGroupTab(aTab) {
 }
 
 function startWatchSidebarOpenState() {
-  if (gSidebarOpenStateUpdateTimer)
-    return;
-
-  gSidebarOpenStateUpdateTimer = setInterval(async () => {
-    let windows = await browser.windows.getAll({
-      windowTypes: ['normal']
+  var matcher = new RegExp(`^${kCOMMAND_REQUEST_CONNECT_PREFIX}`);
+  browser.runtime.onConnect.addListener(aPort => {
+    if (!matcher.test(aPort.name))
+      return;
+    var windowId = parseInt(aPort.name.replace(matcher, ''));
+    gSidebarOpenState.set(windowId, true);
+    aPort.onDisconnect.addListener(aMessage => {
+      gSidebarOpenState.delete(windowId);
     });
-    await Promise.all(windows.map(async aWindow => {
-      try {
-        var response = await browser.runtime.sendMessage({
-          type:     kCOMMAND_PING_TO_SIDEBAR,
-          windowId: aWindow.id
-        });
-        if (response)
-          gSidebarOpenState.set(aWindow.id, true);
-        else
-          gSidebarOpenState.delete(aWindow.id);
-      }
-      catch(e) {
-        gSidebarOpenState.delete(aWindow.id);
-      }
-    }));
-    if (gSidebarOpenState.size == 0)
-      endWatchSidebarOpenState();
-  }, configs.sidebarOpenStateUpdateInterval);
+  });
 }
-
-function endWatchSidebarOpenState() {
-  if (!gSidebarOpenStateUpdateTimer)
-    return;
-
-  clearInterval(gSidebarOpenStateUpdateTimer);
-  gSidebarOpenStateUpdateTimer = null;
-}
-
 
 
 async function readyForExternalAddons() {

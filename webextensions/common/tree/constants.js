@@ -10,6 +10,7 @@ const kSIDEBAR_CONTENTS_VERSION    = 2;
 
 const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';
 const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';
+const kCOMMAND_REQUEST_CONNECT_PREFIX         = 'treestyletab:request-connect-from:';
 const kCOMMAND_REQUEST_UNIQUE_ID              = 'treestyletab:request-unique-id';
 const kCOMMAND_REQUEST_REGISTERED_ADDONS      = 'treestyletab:request-registered-addons';
 const kCOMMAND_REQUEST_SCROLL_LOCK_STATE      = 'treestyletab:request-scroll-lock-state';
@@ -44,8 +45,6 @@ const kCOMMAND_UNBLOCK_USER_OPERATIONS = 'treestyletab:unblock-user-operations';
 const kCOMMAND_BROADCAST_TAB_STATE     = 'treestyletab:broadcast-tab-state';
 
 const kNOTIFY_TAB_MOUSEDOWN  = 'treestyletab:tab-mousedown';
-const kNOTIFY_SIDEBAR_OPENED = 'treestyletab:sidebar-opened';
-const kNOTIFY_SIDEBAR_CLOSED = 'treestyletab:sidebar-closed';
 
 const kTSTAPI_REGISTER_SELF         = 'register-self';
 const kTSTAPI_UNREGISTER_SELF       = 'unregister-self';
