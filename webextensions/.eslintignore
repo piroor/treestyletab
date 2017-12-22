@@ -1,4 +1,5 @@
 # from external
+common/TabIdFixer.js
 common/TabFavIconHelper.js
 common/Configs.js
 common/l10n.js

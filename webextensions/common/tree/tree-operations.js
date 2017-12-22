@@ -1173,13 +1173,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       let startTime = Date.now();
       let maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = apiTabIds.map(aApiTabId => {
-        // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-          var correctId = gTabIdWrongToCorrect[aApiTabId];
-          if (correctId)
-            aApiTabId = correctId;
-          return getTabById(aApiTabId);
-        });
+        newTabs = apiTabIds.map(aApiTabId => getTabById(TabIdFixer.fixTabId(aApiTabId)));
         newTabs = newTabs.filter(aTab => !!aTab);
         if (newTabs.length < aTabs.length) {
           log('retrying: ', apiTabIds, newTabs.length, aTabs.length);
@@ -1286,15 +1280,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
     .then(aApiWindow => {
       var movedTabIds = movedTabs.map(aTab => aTab.apiTab.id);
       log('moved tabs: ', movedTabIds);
-      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-      var allTabIdsInWindow = aApiWindow.tabs.map(aApiTab => {
-        var id = aApiTab.id;
-        var correctId = gTabIdWrongToCorrect[id];
-        if (correctId)
-          return correctId;
-        else
-          return id;
-      });
+      var allTabIdsInWindow = aApiWindow.tabs.map(aApiTab => TabIdFixer.fixTabId(aApiTab.id));
       var removeIds = allTabIdsInWindow.filter(aId => movedTabIds.indexOf(aId) < 0);
       log('removing tabs: ', removeIds);
       removeTabsInternally(removeIds.map(getTabById));

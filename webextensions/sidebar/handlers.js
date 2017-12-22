@@ -1177,13 +1177,6 @@ function onMessage(aMessage, aSender, aRespond) {
         return Promise.resolve(true);
     }; break;
 
-    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-    case kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE:
-      delete gTabIdWrongToCorrect[aMessage.oldWrongId];
-      gTabIdWrongToCorrect[aMessage.newWrongId]   = aMessage.newCorrectId;
-      gTabIdCorrectToWrong[aMessage.newCorrectId] = aMessage.newWrongId;
-      break;
-
     case kCOMMAND_PUSH_TREE_STRUCTURE:
       if (aMessage.windowId == gTargetWindow)
         applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);

@@ -19,3 +19,6 @@
 [submodule "extlib/webextensions-lib-tab-favicon-helper"]
 	path = extlib/webextensions-lib-tab-favicon-helper
 	url = https://github.com/piroor/webextensions-lib-tab-favicon-helper.git
+[submodule "extlib/webextensions-lib-tab-id-fixer"]
+	path = extlib/webextensions-lib-tab-id-fixer
+	url = https://github.com/piroor/webextensions-lib-tab-id-fixer.git

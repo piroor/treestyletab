@@ -38,10 +38,6 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-var gTabIdWrongToCorrect = {};
-var gTabIdCorrectToWrong = {};
-
 function startObserveApiTabs() {
   browser.tabs.onActivated.addListener(onApiTabActivated);
   browser.tabs.onUpdated.addListener(onApiTabUpdated);
@@ -168,10 +164,8 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return;
 
-  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-  var correctId = gTabIdWrongToCorrect[aTabId];
-  if (correctId)
-    aTabId = aTab.id = correctId;
+  TabIdFixer.fixTab(aTab);
+  aTabId = aTab.id;
 
   await waitUntilTabsAreaCreated(aTabId);
 
@@ -378,12 +372,6 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
 
-  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-  var wrongId = gTabIdCorrectToWrong[aTabId];
-  if (wrongId)
-    delete gTabIdWrongToCorrect[wrongId];
-  delete gTabIdCorrectToWrong[aTabId];
-
   var container = getOrBuildTabsContainer(aRemoveInfo.windowId);
   var byInternalOperation = parseInt(container.dataset.internalClosingCount) > 0;
   if (byInternalOperation)
@@ -516,33 +504,17 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
 
   log('tabs.onAttached, id: ', aTabId, aAttachInfo);
   var apiTab;
-  try {
-    apiTab = await browser.tabs.get(aTabId).catch(handleMissingTabError);
-    log(`New apiTab for attached tab ${aTabId}: `, apiTab);
-    if (!apiTab)
-      return;
-  }
-  catch(e) {
-    handleMissingTabError(e);
-  }
+  await Promise.all([
+    (async () => {
+      apiTab = await browser.tabs.get(aTabId).catch(handleMissingTabError);
+      log(`New apiTab for attached tab ${aTabId}: `, apiTab);
+    })(),
+    waitUntilTabsAreaCreated(aTabId)
+  ]);
+  if (!apiTab)
+    return;
 
-  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-  if (apiTab.id != aTabId) {
-    let oldWrongId = gTabIdCorrectToWrong[aTabId];
-    if (oldWrongId)
-      delete gTabIdWrongToCorrect[oldWrongId];
-    gTabIdWrongToCorrect[apiTab.id] = aTabId;
-    gTabIdCorrectToWrong[aTabId] = apiTab.id;
-    browser.runtime.sendMessage({
-      type:         kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE,
-      oldWrongId:   oldWrongId,
-      newWrongId:   apiTab.id,
-      newCorrectId: aTabId
-    });
-    apiTab.id = aTabId;
-  }
-
-  await waitUntilTabsAreaCreated(aTabId);
+  TabIdFixer.fixTab(apiTab);
 
   clearOldActiveStateInWindow(aAttachInfo.newWindowId);
   var info = gTreeInfoForTabsMovingAcrossWindows[aTabId];

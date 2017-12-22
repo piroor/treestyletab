@@ -1019,13 +1019,6 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
       return Promise.resolve(gScrollLockedBy);
 
-    // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-    case kCOMMAND_PULL_TAB_ID_TABLES:
-      return Promise.resolve({
-        wrongToCorrect: gTabIdWrongToCorrect,
-        correctToWrong: gTabIdCorrectToWrong
-      });
-
     case kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
         while (gInitializing) {
@@ -1485,7 +1478,7 @@ async function TSTAPIGetTargetTabs(aMessage) {
   return [];
 }
 function TSTAPIGetTabsFromWrongIds(aIds) {
-  return aIds.map(aId => gTabIdWrongToCorrect[aId] || aId).map(getTabById).filter(aTab => !!aTab);
+  return aIds.map(aId => getTabById(TabIdFixer.fixTabId(aId))).filter(aTab => !!aTab);
 }
 
 function TSTAPIFormatResult(aResults, aOriginalMessage) {

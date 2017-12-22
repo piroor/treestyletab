@@ -1,4 +1,5 @@
 *.xpi
+**/TabIdFixer.js
 **/TabFavIconHelper.js
 **/Configs.js
 **/Options.js

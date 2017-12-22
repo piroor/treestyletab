@@ -83,21 +83,10 @@ async function init() {
   var scrollPosition;
   await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
     gMetricsData.addAsync('main', async () => {
-      await gMetricsData.addAsync('getting basic information and cache', Promise.all([
-        gMetricsData.addAsync('kCOMMAND_PULL_TAB_ID_TABLES', async () => {
-          // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-          let response = await browser.runtime.sendMessage({
-            type: kCOMMAND_PULL_TAB_ID_TABLES
-          });
-          gTabIdWrongToCorrect = response.wrongToCorrect;
-          gTabIdCorrectToWrong = response.correctToWrong;
-        }),
-        configs.useCachedTree &&
-          gMetricsData.addAsync('read cached sidebar contents', async () => {
-            cachedContents = await getEffectiveWindowCache();
-          })
-      ]));
-      gMetricsData.add('getting basic information and cache: done');
+      if (configs.useCachedTree)
+        await gMetricsData.addAsync('read cached sidebar contents', async () => {
+          cachedContents = await getEffectiveWindowCache();
+        });
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
       startObserveApiTabs();
@@ -420,9 +409,7 @@ async function rebuildAll(aCache) {
   else {
     let container = buildTabsContainerFor(gTargetWindow);
     for (let apiTab of apiTabs) {
-      // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1398272
-      if (apiTab.id in gTabIdWrongToCorrect)
-        apiTab.id = gTabIdWrongToCorrect[apiTab.id];
+      TabIdFixer.fixTab(apiTab);
       let newTab = buildTab(apiTab, { existing: true, inRemote: true });
       container.appendChild(newTab);
       updateTab(newTab, apiTab, { forceApply: true });
