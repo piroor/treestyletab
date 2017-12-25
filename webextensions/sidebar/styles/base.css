@@ -373,7 +373,7 @@ ul {
     But it is not guaranteed, so now we use SVG icon instead.
   */
   -moz-context-properties: fill;
-  background: url("./icons/close-16.svg") no-repeat;
+  background: url("./icons/close-16.svg") no-repeat center / 100%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
@@ -382,10 +382,7 @@ ul {
 }
 :root.simulate-svg-context-fill .closebox::after {
   background: var(--tab-text);
-  mask-image: url("./icons/close-16.svg");
-  mask-position: left center;
-  mask-repeat: no-repeat;
-  mask-size: 100%;
+  mask: url("./icons/close-16.svg") no-repeat center / 100%;
 }
 
 
@@ -455,7 +452,7 @@ ul {
 
 .newtab-button::before {
   -moz-context-properties: fill;
-  background: url("./icons/new-16.svg") no-repeat;
+  background: url("./icons/new-16.svg") no-repeat center / 100%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
@@ -465,10 +462,7 @@ ul {
 }
 :root.simulate-svg-context-fill .newtab-button::before {
   background: var(--tab-text);
-  mask-image: url("./icons/new-16.svg");
-  mask-position: left center;
-  mask-repeat: no-repeat;
-  mask-size: 100%;
+  mask: url("./icons/new-16.svg") no-repeat center / 100%;
 }
 
 .newtab-button:hover::before {

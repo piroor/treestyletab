@@ -79,27 +79,19 @@
 }
 :root.simulate-svg-context-fill.blocking-throbber #blocking-screen .throbber::before,
 :root.simulate-svg-context-fill #tabbar .tab:not(.collapsed).loading .throbber::before {
-  mask: url("./throbber.svg");
-  mask-position: left center;
-  mask-repeat: no-repeat;
-  mask-size: 100%;
+  mask: url("./throbber.svg") no-repeat left center / 100%;
 }
 
 #tabbar .tab:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
   background-image: none;
-  mask: -moz-element(#master-throbber) no-repeat;
-  mask-position: left center;
-  mask-repeat: no-repeat;
-  mask-size: 100%;
+  mask: -moz-element(#master-throbber) no-repeat left center / 100%;
 }
 :root.simulate-svg-context-fill #tabbar .tab:not(.collapsed).loading.throbber-unsynchronized .throbber::before {
   mask: -moz-element(#master-throbber-container) no-repeat;
 }
 
 #master-throbber {
-  background-image: url("./throbber.svg");
-  background-position: left center;
-  background-repeat: no-repeat;
+  background: url("./throbber.svg") no-repeat left center;
 }
 
 

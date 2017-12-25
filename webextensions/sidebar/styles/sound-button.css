@@ -26,7 +26,7 @@
 .tab.faviconized .sound-button::before,
 .sound-button::after {
   -moz-context-properties: fill;
-  background: none no-repeat;
+  background: none no-repeat center / 100%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
@@ -39,7 +39,7 @@
 :root.simulate-svg-context-fill .tab.faviconized .sound-button::before,
 :root.simulate-svg-context-fill .sound-button::after {
   background: var(--tab-text);
-  mask-position: left center;
+  mask-position: center;
   mask-repeat: no-repeat;
   mask-size: 100%;
 }

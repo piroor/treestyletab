@@ -48,7 +48,7 @@
 
 .tab.group-tab .favicon-default::before {
   -moz-context-properties: fill;
-  background: url("./icons/folder-16.svg") no-repeat;
+  background: url("./icons/folder-16.svg") no-repeat center / 100%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
@@ -57,10 +57,7 @@
 }
 :root.simulate-svg-context-fill .tab.group-tab .favicon-default::before {
   background: var(--tab-text);
-  mask-image: url("./icons/folder-16.svg");
-  mask-position: left center;
-  mask-repeat: no-repeat;
-  mask-size: 100%;
+  mask: url("./icons/folder-16.svg") no-repeat center / 100%;
 }
 
 
