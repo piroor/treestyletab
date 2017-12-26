@@ -177,7 +177,7 @@ function scrollToNewTab(aTab, aOptions = {}) {
 
   if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
     let current = getCurrentTab();
-    scrollToTab(aTab, Object.assign(aOptions, {
+    scrollToTab(aTab, Object.assign({}, aOptions, {
       anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
     }));
@@ -221,7 +221,7 @@ async function scrollToTab(aTab, aOptions = {}) {
       isPinned(anchorTab)) {
     if (configs.logOnScroll)
       log('=> no available anchor, direct scroll');
-    scrollTo(Object.assign(aOptions, {
+    scrollTo(Object.assign({}, aOptions, {
       tab: aTab
     }));
     return;
@@ -267,7 +267,7 @@ async function scrollToTab(aTab, aOptions = {}) {
         container:      containerRect.height
       });
   }
-  scrollTo(Object.assign(aOptions, {
+  scrollTo(Object.assign({}, aOptions, {
     position: gTabBar.scrollTop + delta
   }));
 }

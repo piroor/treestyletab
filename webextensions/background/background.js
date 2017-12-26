@@ -220,18 +220,18 @@ async function tryInitGroupTab(aTab) {
     runAt:           'document_start',
     matchAboutBlank: true
   };
-  var initialized = await browser.tabs.executeScript(aTab.apiTab.id, Object.assign(scriptOptions, {
+  var initialized = await browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     code:  'window.initialized',
   }));
   if (initialized[0])
     return;
-  browser.tabs.executeScript(aTab.apiTab.id, Object.assign(scriptOptions, {
+  browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/common/l10n.js'
   }));
-  browser.tabs.executeScript(aTab.apiTab.id, Object.assign(scriptOptions, {
+  browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'
   }));
-  browser.tabs.executeScript(aTab.apiTab.id, Object.assign(scriptOptions, {
+  browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     code:  'if (!window.initialized) init();'
   }));
 }
@@ -362,7 +362,7 @@ function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
     var bulk = tasks.length > 1;
     await Promise.all(uniqueIds.map((aUniqueId, aIndex) => {
       var task = tasks[aIndex];
-      return attachTabFromRestoredInfo(task.tab, Object.assign(task.options, {
+      return attachTabFromRestoredInfo(task.tab, Object.assign({}, task.options, {
         uniqueId: aUniqueId,
         bulk
       }));

@@ -94,7 +94,7 @@ var tabContextMenu = {
           let item = items[i];
           if (item.id != aMessage.params[0])
             continue;
-          items.splice(i, 1, Object.assign(item, aMessage.params[1]));
+          items.splice(i, 1, Object.assign({}, item, aMessage.params[1]));
           break;
         }
         this.items[aSender.id] = items;
