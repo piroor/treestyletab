@@ -23,6 +23,11 @@ function isTemporary() {
   return /[&?]temporary=true/.test(location.search);
 }
 
+function getOpenerTabId() {
+  var matched = location.search.match(/[&?]openerTabId=([^&;]*)/);
+  return matched && matched[1];
+}
+
 function enterTitleEdit() {
   gTitle.style.display = 'none';
   gTitleField.style.display = 'inline';
@@ -46,8 +51,11 @@ function updateParameters(aParameters = {}) {
   var title     = aParameters.title || getTitle() || '';
   var temporary = String(gTemporaryCheck.checked);
 
+  var opener    = getOpenerTabId();
+  opener = opener ? `&openerTabId=${opener}` : '';
+
   var uri = location.href.split('?')[0];
-  uri = `${uri}?title=${encodeURIComponent(title)}&temporary=${temporary}`;
+  uri = `${uri}?title=${encodeURIComponent(title)}&temporary=${temporary}${opener}`;
   location.replace(uri);
 }
 
