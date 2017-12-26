@@ -791,11 +791,11 @@ async function onTabAttached(aTab, aInfo = {}) {
         prev: dumpTab(prevTab)
       });
       if (nextTab)
-        await moveTabSubtreeBefore(aTab, nextTab, clone(aInfo, {
+        await moveTabSubtreeBefore(aTab, nextTab, Object.assign(aInfo, {
           broadcast: true
         }));
       else
-        await moveTabSubtreeAfter(aTab, prevTab, clone(aInfo, {
+        await moveTabSubtreeAfter(aTab, prevTab, Object.assign(aInfo, {
           broadcast: true
         }));
     })()
@@ -824,7 +824,7 @@ async function onTabAttached(aTab, aInfo = {}) {
 
     let isNewTreeCreatedManually = !aInfo.justNow && getChildTabs(parent).length == 1;
     if (aInfo.forceExpand) {
-      collapseExpandSubtree(parent, clone(aInfo, {
+      collapseExpandSubtree(parent, Object.assign(aInfo, {
         collapsed: false,
         inRemote:  false
       }));
@@ -842,21 +842,21 @@ async function onTabAttached(aTab, aInfo = {}) {
           shouldTabAutoExpanded(parent) ||
           aInfo.forceExpand) {
         newAncestors.filter(isSubtreeCollapsed).forEach(aAncestor => {
-          collapseExpandSubtree(aAncestor, clone(aInfo, {
+          collapseExpandSubtree(aAncestor, Object.assign(aInfo, {
             collapsed: false,
             broadcast: true
           }));
         });
       }
       if (isCollapsed(parent))
-        collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+        collapseExpandTabAndSubtree(aTab, Object.assign(aInfo, {
           collapsed: true,
           broadcast: true
         }));
     }
     else if (shouldTabAutoExpanded(parent) ||
              isCollapsed(parent)) {
-      collapseExpandTabAndSubtree(aTab, clone(aInfo, {
+      collapseExpandTabAndSubtree(aTab, Object.assign(aInfo, {
         collapsed: true,
         broadcast: true
       }));
@@ -1052,7 +1052,7 @@ function onMessage(aMessage, aSender) {
           aMessage.insertAfter
         ]);
         log('new tabs requested: ', aMessage);
-        return await openURIsInTabs(aMessage.uris, clone(aMessage, {
+        return await openURIsInTabs(aMessage.uris, Object.assign(aMessage, {
           parent:       getTabById(aMessage.parent),
           insertBefore: getTabById(aMessage.insertBefore),
           insertAfter:  getTabById(aMessage.insertAfter)
@@ -1076,7 +1076,7 @@ function onMessage(aMessage, aSender) {
         await waitUntilTabsAreaCreated(aMessage.tabs.concat([aMessage.insertBefore, aMessage.insertAfter]));
         let movedTabs = await moveTabs(
           aMessage.tabs.map(getTabById),
-          clone(aMessage, {
+          Object.assign(aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
             insertAfter:  getTabById(aMessage.insertAfter)
           })
@@ -1099,12 +1099,12 @@ function onMessage(aMessage, aSender) {
           return;
 
         let serializedTab = serializeTabForTSTAPI(tab);
-        let results = await sendTSTAPIMessage(clone(aMessage, {
+        let results = await sendTSTAPIMessage(Object.assign(aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
           window: tab.apiTab.windowId
         }));
-        results = results.concat(await sendTSTAPIMessage(clone(aMessage, {
+        results = results.concat(await sendTSTAPIMessage(Object.assign(aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_CLICKED,
           tab:    serializedTab,
           window: tab.apiTab.windowId
@@ -1133,7 +1133,7 @@ function onMessage(aMessage, aSender) {
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
-        selectTabInternally(tab, clone(aMessage.options, {
+        selectTabInternally(tab, Object.assign(aMessage.options, {
           inRemote: false
         }));
       })();
@@ -1195,7 +1195,7 @@ function onMessage(aMessage, aSender) {
         return moveTabsBefore(
           aMessage.tabs.map(getTabById),
           getTabById(aMessage.nextTab),
-          clone(aMessage, {
+          Object.assign(aMessage, {
             broadcast: !!aMessage.broadcasted
           })
         ).then(aTabs => aTabs.map(aTab => aTab.id));
@@ -1207,7 +1207,7 @@ function onMessage(aMessage, aSender) {
         return moveTabsAfter(
           aMessage.tabs.map(getTabById),
           getTabById(aMessage.previousTab),
-          clone(aMessage, {
+          Object.assign(aMessage, {
             broadcast: !!aMessage.broadcasted
           })
         ).then(aTabs => aTabs.map(aTab => aTab.id));
@@ -1224,7 +1224,7 @@ function onMessage(aMessage, aSender) {
         let child  = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
         if (child && parent)
-          await attachTabTo(child, parent, clone(aMessage, {
+          await attachTabTo(child, parent, Object.assign(aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
             insertAfter:  getTabById(aMessage.insertAfter)
           }));
@@ -1246,7 +1246,7 @@ function onMessage(aMessage, aSender) {
           aMessage.insertAfter
         ]);
         log('perform tabs dragdrop requested: ', aMessage);
-        return performTabsDragDrop(clone(aMessage, {
+        return performTabsDragDrop(Object.assign(aMessage, {
           attachTo:     getTabById(aMessage.attachTo),
           insertBefore: getTabById(aMessage.insertBefore),
           insertAfter:  getTabById(aMessage.insertAfter)

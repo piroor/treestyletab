@@ -222,7 +222,7 @@ function onMouseDown(aEvent) {
        !isEventFiredOnSoundButton(aEvent) &&
        !isEventFiredOnClosebox(aEvent)) ||
       aEvent.button != 0)
-    browser.runtime.sendMessage(clone(mousedownDetail, {
+    browser.runtime.sendMessage(Object.assign(mousedownDetail, {
       type:     kNOTIFY_TAB_MOUSEDOWN,
       windowId: gTargetWindow
     }));
@@ -288,7 +288,7 @@ async function onMouseUp(aEvent) {
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
   if (serializedTab && gLastMousedown) {
-    sendTSTAPIMessage(clone(gLastMousedown.detail, {
+    sendTSTAPIMessage(Object.assign(gLastMousedown.detail, {
       type:    kTSTAPI_NOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
       window:  gTargetWindow
@@ -380,11 +380,11 @@ async function onMouseUp(aEvent) {
   if (!tab && !handled) {
     if (configs.logOnMouseEvent)
       log('notify as a blank area click to other addons');
-    let results = await sendTSTAPIMessage(clone(gLastMousedown.detail, {
+    let results = await sendTSTAPIMessage(Object.assign(gLastMousedown.detail, {
       type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
       window: gTargetWindow,
     }));
-    results = results.concat(await sendTSTAPIMessage(clone(gLastMousedown.detail, {
+    results = results.concat(await sendTSTAPIMessage(Object.assign(gLastMousedown.detail, {
       type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
       window: gTargetWindow,
     })));
@@ -1267,7 +1267,7 @@ function onMessage(aMessage, aSender, aRespond) {
         let child  = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
         if (child && parent)
-          attachTabTo(child, parent, clone(aMessage, {
+          attachTabTo(child, parent, Object.assign(aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
             insertAfter:  getTabById(aMessage.insertAfter),
             inRemote:     false,

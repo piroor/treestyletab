@@ -126,7 +126,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   log('new children: ', childIds);
 
   if (newlyAttached) {
-    detachTab(aChild, clone(aOptions, {
+    detachTab(aChild, Object.assign(aOptions, {
       // Don't broadcast this detach operation, because this "attachTabTo" can be
       // broadcasted. If we broadcast this detach operation, the tab is detached
       // twice in the sidebar!
@@ -151,7 +151,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     updateParentTab(aParent);
   }
 
-  window.onTabAttached && onTabAttached(aChild, clone(aOptions, {
+  window.onTabAttached && onTabAttached(aChild, Object.assign(aOptions, {
     parent: aParent,
     newIndex, newlyAttached
   }));
@@ -299,7 +299,7 @@ function detachTabsFromTree(aTabs, aOptions = {}) {
     for (let child of children) {
       if (aTabs.indexOf(child) < 0) {
         if (parent)
-          attachTabTo(child, parent, clone(aOptions, {
+          attachTabTo(child, parent, Object.assign(aOptions, {
             dontMove: true
           }));
         else
@@ -340,7 +340,7 @@ function detachAllChildren(aTab, aOptions = {}) {
   }
 
   if (aOptions.behavior != kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN)
-    collapseExpandSubtree(aTab, clone(aOptions, {
+    collapseExpandSubtree(aTab, Object.assign(aOptions, {
       collapsed: false
     }));
 
@@ -354,25 +354,25 @@ function detachAllChildren(aTab, aOptions = {}) {
       detachTab(child, aOptions);
       if (i == 0) {
         if (parent) {
-          attachTabTo(child, parent, clone(aOptions, {
+          attachTabTo(child, parent, Object.assign(aOptions, {
             dontExpan: true,
             dontMove:  true
           }));
         }
-        collapseExpandSubtree(child, clone(aOptions, {
+        collapseExpandSubtree(child, Object.assign(aOptions, {
           collapsed: false
         }));
         //deleteTabValue(child, kTAB_STATE_SUBTREE_COLLAPSED);
       }
       else {
-        attachTabTo(child, children[0], clone(aOptions, {
+        attachTabTo(child, children[0], Object.assign(aOptions, {
           dontExpand: true,
           dontMove:   true
         }));
       }
     }
     else if (aOptions.behavior == kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN && parent) {
-      attachTabTo(child, parent, clone(aOptions, {
+      attachTabTo(child, parent, Object.assign(aOptions, {
         dontExpand: true,
         dontMove:   true
       }));
@@ -611,7 +611,7 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
     children.forEach((aChild, aIndex) => {
       var last = aParams.last &&
                    (aIndex == children.length - 1);
-      collapseExpandTabAndSubtree(aChild, clone(aParams, {
+      collapseExpandTabAndSubtree(aChild, Object.assign(aParams, {
         collapsed: aParams.collapsed,
         justNow:   aParams.justNow,
         anchor:    last && aParams.anchor,
@@ -628,7 +628,7 @@ function collapseExpandTab(aTab, aParams = {}) {
     log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
   var last = aParams.last &&
                (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
-  var collapseExpandInfo = clone(aParams, {
+  var collapseExpandInfo = Object.assign(aParams, {
     anchor: last && aParams.anchor,
     last:   last
   });
@@ -707,12 +707,12 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
     let manuallyExpanded = collapseTab.classList.contains(kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
-      collapseExpandSubtree(collapseTab, clone(aOptions, {
+      collapseExpandSubtree(collapseTab, Object.assign(aOptions, {
         collapsed: true
       }));
   }
 
-  collapseExpandSubtree(aTab, clone(aOptions, {
+  collapseExpandSubtree(aTab, Object.assign(aOptions, {
     collapsed: false
   }));
   decrementContainerCounter(container, 'doingIntelligentlyCollapseExpandCount');
@@ -796,7 +796,7 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
     closeParentBehavior:       getCloseParentBehaviorForTab(aTab, { parentTab })
   };
   if (aOverrideParams)
-    return clone(params, aOverrideParams);
+    return Object.assign(params, aOverrideParams);
   return params;
 }
 
@@ -1017,7 +1017,7 @@ async function moveTabs(aTabs, aOptions = {}) {
   aOptions.insertAfter = aOptions.insertAfter || getLastTab(destinationWindowId);
 
   if (aOptions.inRemote) {
-    let response = await browser.runtime.sendMessage(clone(aOptions, {
+    let response = await browser.runtime.sendMessage(Object.assign(aOptions, {
       type:                kCOMMAND_MOVE_TABS,
       windowId:            windowId,
       tabs:                aTabs.map(aTab => aTab.id),
@@ -1241,7 +1241,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   var windowId = parseInt(aTabs[0].parentNode.windowId || gTargetWindow);
 
   if (aOptions.inRemote) {
-    let response = await browser.runtime.sendMessage(clone(aOptions, {
+    let response = await browser.runtime.sendMessage(Object.assign(aOptions, {
       type:      kCOMMAND_NEW_WINDOW_FROM_TABS,
       windowId:  windowId,
       tabs:      aTabs.map(aTab => aTab.id),
@@ -1271,7 +1271,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       return newWindow;
     });
   aTabs = aTabs.filter(ensureLivingTab);
-  var movedTabs = await moveTabs(aTabs, clone(aOptions, {
+  var movedTabs = await moveTabs(aTabs, Object.assign(aOptions, {
     destinationPromisedNewWindow: promsiedNewWindow
   }));
 
@@ -1298,7 +1298,7 @@ async function performTabsDragDrop(aParams = {}) {
   var destinationWindowId = aParams.destinationWindowId || windowId;
 
   if (aParams.inRemote) {
-    browser.runtime.sendMessage(clone(aParams, {
+    browser.runtime.sendMessage(Object.assign(aParams, {
       type:         kCOMMAND_PERFORM_TABS_DRAG_DROP,
       windowId:     windowId,
       attachTo:     aParams.attachTo && aParams.attachTo.id,
@@ -1453,7 +1453,7 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
   else if (aOptions.insertAfter)
     await moveTabsAfter(aOptions.draggedTabs || aTabs, aOptions.insertAfter);
 
-  var memberOptions = clone(aOptions, {
+  var memberOptions = Object.assign(aOptions, {
     insertBefore: null,
     insertAfter:  null,
     dontMove:     true
@@ -1463,7 +1463,7 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
       attachTabTo(tab, aParent, memberOptions);
     else
       detachTab(tab, memberOptions);
-    collapseExpandTabAndSubtree(tab, clone(memberOptions, {
+    collapseExpandTabAndSubtree(tab, Object.assign(memberOptions, {
       collapsed: false
     }));
   }
@@ -1473,7 +1473,7 @@ function detachTabsOnDrop(aTabs, aOptions = {}) {
   log('detachTabsOnDrop: start ', aTabs.map(dumpTab));
   for (let tab of aTabs) {
     detachTab(tab, aOptions);
-    collapseExpandTabAndSubtree(tab, clone(aOptions, {
+    collapseExpandTabAndSubtree(tab, Object.assign(aOptions, {
       collapsed: false
     }));
   }
@@ -1560,7 +1560,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     let tab = aTabs[i];
     /*
     if (isCollapsed(tab))
-      collapseExpandTabAndSubtree(tab, clone(aOptions, {
+      collapseExpandTabAndSubtree(tab, Object.assign(aOptions, {
         collapsed: false,
         justNow: true
       }));
@@ -1593,7 +1593,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     }
     if (parent) {
       parent.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
-      attachTabTo(tab, parent, clone(aOptions, {
+      attachTabTo(tab, parent, Object.assign(aOptions, {
         dontExpand: true,
         dontMove:   true,
         justNow:    true
@@ -1606,7 +1606,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   for (let i = aTabs.length-1; i > -1; i--) {
     let tab = aTabs[i];
     let expanded = expandStates[i];
-    collapseExpandSubtree(tab, clone(aOptions, {
+    collapseExpandSubtree(tab, Object.assign(aOptions, {
       collapsed: expanded === undefined ? !hasChildTabs(tab) : !expanded ,
       justNow:   true,
       force:     true

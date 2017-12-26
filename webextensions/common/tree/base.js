@@ -504,7 +504,7 @@ function removeTabsInternally(aTabs, aOptions = {}) {
     browser.runtime.sendMessage({
       type:    kCOMMAND_REMOVE_TABS_INTERNALLY,
       tabs:    aTabs.map(aTab => aTab.id),
-      options: clone(aOptions, {
+      options: Object.assign(aOptions, {
         inRemote:    false,
         broadcast:   aOptions.inRemote && !aOptions.broadcast,
         broadcasted: !!aOptions.broadcast
@@ -738,7 +738,7 @@ async function loadURI(aURI, aOptions = {}) {
   if (!aOptions.windowId && gTargetWindow)
     aOptions.windowId = gTargetWindow;
   if (aOptions.isRemote) {
-    await browser.runtime.sendMessage(clone(aOptions, {
+    await browser.runtime.sendMessage(Object.assign(aOptions, {
       type: kCOMMAND_LOAD_URI,
       tab:  aOptions.tab && aOptions.tab.id
     }));
@@ -782,7 +782,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
 
   return await doAndGetNewTabs(async () => {
     if (aOptions.inRemote) {
-      await browser.runtime.sendMessage(clone(aOptions, {
+      await browser.runtime.sendMessage(Object.assign(aOptions, {
         type:          kCOMMAND_NEW_TABS,
         uris:          aURIs,
         parent:        aOptions.parent && aOptions.parent.id,
@@ -948,7 +948,7 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
 /* TST API Helpers */
 
 function serializeTabForTSTAPI(aTab) {
-  return clone(aTab.apiTab, {
+  return Object.assign(aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
     children: getChildTabs(aTab).map(serializeTabForTSTAPI)
   });

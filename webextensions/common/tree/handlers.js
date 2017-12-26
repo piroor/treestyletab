@@ -455,7 +455,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     oldPreviousTab = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex : aMoveInfo.fromIndex - 1];
     oldNextTab     = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex + 1 : aMoveInfo.fromIndex];
   }
-  var moveInfo = clone(aMoveInfo, {
+  var moveInfo = Object.assign(aMoveInfo, {
     byInternalOperation,
     oldPreviousTab,
     oldNextTab
