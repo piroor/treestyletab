@@ -831,11 +831,12 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
 
 /* group tab */
 
-function makeGroupTabURI(aTitle, aOptions = {}) {
+function makeGroupTabURI(aOptions = {}) {
   var base = kGROUP_TAB_URI;
+  var title = encodeURIComponent(aOptions.title || '');
   var temporaryOption = aOptions.temporary ? '&temporary=true' : '' ;
   var openerTabIdOption = aOptions.openerTabId ? `&openerTabId=${aOptions.openerTabId}` : '' ;
-  return `${base}?title=${encodeURIComponent(aTitle)}${temporaryOption}${openerTabIdOption}`;
+  return `${base}?title=${title}${temporaryOption}${openerTabIdOption}`;
 }
 
 
