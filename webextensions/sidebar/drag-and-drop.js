@@ -571,14 +571,6 @@ function onDragStart(aEvent) {
                       title: aDraggedTab.apiTab.title
                     }),
                     aIndex);
-    if (aEvent.shiftKey) {
-      // this type will be used to create multiple bookmarks
-      // but do not add by default, beause dropping this data into
-      // the content area will produce both "new tabs from URL" and
-      // "tear off".
-      dt.mozSetDataAt('text/x-moz-url',
-                      `${aDraggedTab.apiTab.url}\n${aDraggedTab.apiTab.title}`, aIndex);
-    }
   });
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
