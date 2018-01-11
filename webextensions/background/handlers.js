@@ -752,30 +752,8 @@ function onTabUpdated(aTab, aChangeInfo) {
   markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
-function tryUpdateParentGroupTab(aTab) {
-  var parent = getParentTab(aTab);
-  if (!isGroupTab(parent) ||
-      aTab != getFirstChildTab(parent))
-    return;
-
-  var matcher = new RegExp(`^${browser.i18n.getMessage('groupTab.label', '.+')}$`);
-  if (!matcher.test(parent.apiTab.title))
-    return;
-
-  var newTitle = browser.i18n.getMessage('groupTab.label', aTab.apiTab.title);
-  if (parent.apiTab.title == newTitle)
-    return;
-
-  var url = parent.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
-  browser.tabs.executeScript(parent.apiTab.id, {
-    runAt:           'document_start',
-    matchAboutBlank: true,
-    code:            `location.replace(${JSON.stringify(url)})`,
-  });
-}
-
 function onTabLabelUpdated(aTab) {
-  tryUpdateParentGroupTab(aTab);
+  reserveToUpdateParentGroupTab(aTab);
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
@@ -899,7 +877,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     getPreviousTab(aTab)
   ]);
 
-  tryUpdateParentGroupTab(aTab);
+  reserveToUpdateParentGroupTab(aTab);
 
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
@@ -921,7 +899,7 @@ async function onTabDetached(aTab, aDetachInfo) {
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 
-  tryUpdateParentGroupTab(getFirstChildTab(aDetachInfo.oldParentTab));
+  reserveToUpdateParentGroupTab(getFirstChildTab(aDetachInfo.oldParentTab));
 
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.

@@ -649,3 +649,39 @@ function cleanupNeedlssGroupTab(aTabs) {
   log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
   removeTabsInternally(tabsToBeRemoved);
 }
+
+function reserveToUpdateParentGroupTab(aTab) {
+  var parent = getParentTab(aTab);
+  if (!parent ||
+      !isGroupTab(parent) ||
+      aTab != getFirstChildTab(parent))
+    return;
+
+  if (parent.reservedUpdateParentGroupTab)
+    clearTimeout(parent.reservedUpdateParentGroupTab);
+  parent.reservedUpdateParentGroupTab = setTimeout(() => {
+    delete parent.reservedUpdateParentGroupTab;
+    updateParentGroupTab(parent);
+  }, 100);
+}
+
+function updateParentGroupTab(aParentTab) {
+  if (!ensureLivingTab(aParentTab))
+    return;
+
+  var matcher = new RegExp(`^${browser.i18n.getMessage('groupTab.label', '.+')}$`);
+  if (!matcher.test(aParentTab.apiTab.title))
+    return;
+
+  var firstChild = getFirstChildTab(aParentTab);
+  var newTitle = browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title);
+  if (aParentTab.apiTab.title == newTitle)
+    return;
+
+  var url = aParentTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
+  browser.tabs.executeScript(aParentTab.apiTab.id, {
+    runAt:           'document_start',
+    matchAboutBlank: true,
+    code:            `location.replace(${JSON.stringify(url)})`,
+  });
+}
