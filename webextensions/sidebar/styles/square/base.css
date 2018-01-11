@@ -66,3 +66,7 @@
 .tab.active .closebox:hover::before {
   background: var(--tab-text);
 }
+
+.tab .closebox::after {
+  position: relative;
+}
