@@ -767,7 +767,7 @@ function onDragEnd(aEvent) {
   collapseAutoExpandedTabsWhileDragging();
 
   if (aEvent.dataTransfer.dropEffect != 'none' ||
-      aEvent.shiftKey ||
+      //aEvent.shiftKey || // don't ignore shift-drop, because it can be used to drag a parent tab as an individual tab.
       !configs.moveDroppedTabToNewWindowForUnhandledDragEvent) {
     log('dragged items are processed by someone: ', aEvent.dataTransfer.dropEffect);
     return;
