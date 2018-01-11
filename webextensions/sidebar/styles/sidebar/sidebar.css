@@ -96,10 +96,10 @@
   z-index: 0;
 }
 
-:root.left.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.left-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-left: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
-:root.right.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
+:root.right-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
 

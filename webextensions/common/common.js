@@ -69,6 +69,7 @@ async function notify(aParams = {}) {
 configs = new Configs({
   // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
+  sidebarScrollbarPosition: kTABBAR_SCROLLBAR_POSITION_AUTO,
 
   style:
     /^Linux/i.test(navigator.platform) ? 'plain' :

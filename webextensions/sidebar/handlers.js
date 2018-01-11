@@ -1421,6 +1421,21 @@ function onConfigChange(aChangedKey) {
       updateIndent({ force: true });
       break;
 
+    case 'sidebarScrollbarPosition': {
+      let position = configs.sidebarScrollbarPosition;
+      if (position == kTABBAR_SCROLLBAR_POSITION_AUTO)
+        position = configs.sidebarPosition;
+      if (position == kTABBAR_SCROLLBAR_POSITION_RIGHT) {
+        rootClasses.add('right-scrollbar');
+        rootClasses.remove('left-scrollbar');
+      }
+      else {
+        rootClasses.add('left-scrollbar');
+        rootClasses.remove('right-scrollbar');
+      }
+      updateIndent({ force: true });
+    }; break;
+
     case 'baseIndent':
     case 'minIndent':
     case 'maxTreeLevel':

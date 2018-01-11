@@ -116,6 +116,7 @@ async function init() {
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
+      onConfigChange('sidebarScrollbarPosition');
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
       gMetricsData.add('apply configs');
