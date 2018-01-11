@@ -64,7 +64,7 @@ function endListenDragEvents() {
 
 /* helpers */
 
-function getDragDataFromOneTab(aTab) {
+function getDragDataFromOneTab(aTab, aOptions = {}) {
   aTab = getTabFromChild(aTab);
   if (!aTab)
     return {
@@ -75,7 +75,7 @@ function getDragDataFromOneTab(aTab) {
       windowId: null
     };
 
-  var draggedTabs = getDraggedTabsFromOneTab(aTab);
+  var draggedTabs = aOptions.shouldIgnoreDescendants ? [aTab] : getDraggedTabsFromOneTab(aTab);
   return {
     tabNode:  aTab,
     tabNodes: draggedTabs,
@@ -352,8 +352,8 @@ function clearDropPosition() {
 }
 
 function isDraggingAllTabs(aTab, aTabs) {
-  var dragData = getDragDataFromOneTab(aTab);
-  return dragData.tabIds.length == (aTabs || getAllTabs(aTab)).length;
+  var draggingTabs = getDraggingTabs(aTab);
+  return draggingTabs.length == (aTabs || getAllTabs(aTab)).length;
 }
  
 function isDraggingAllCurrentTabs(aTab) {
@@ -510,7 +510,9 @@ var gLastDragEnteredTarget = null;
 var gDragTargetIsClosebox  = false;
 
 function onDragStart(aEvent) {
-  var dragData = getDragDataFromOneTab(aEvent.target);
+  var dragData = getDragDataFromOneTab(aEvent.target, {
+    shouldIgnoreDescendants: aEvent.shiftKey
+  });
   if (!dragData.tabNode)
     return;
 
