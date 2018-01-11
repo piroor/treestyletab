@@ -251,6 +251,7 @@ const kDEFAULT_MIN_INDENT = 3;
 
 const kTAB_STATE_GROUP_TAB = 'group-tab';
 const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
+const kGROUP_TAB_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab.label', '.+')}$`);
 const kLEGACY_GROUP_TAB_URI = 'about:treestyletab-group';
 
 const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';

@@ -669,8 +669,7 @@ function updateParentGroupTab(aParentTab) {
   if (!ensureLivingTab(aParentTab))
     return;
 
-  var matcher = new RegExp(`^${browser.i18n.getMessage('groupTab.label', '.+')}$`);
-  if (!matcher.test(aParentTab.apiTab.title))
+  if (!kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aParentTab.apiTab.title))
     return;
 
   var firstChild = getFirstChildTab(aParentTab);
