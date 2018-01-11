@@ -4,7 +4,7 @@
 :root {
   --tab-surface: Background;
   --tab-text: CaptionText;
-  --tab-text-inverted: ThreeDHighlight;
+  --tab-text-inverted: Caption;
   --tab-border: ThreeDHighlight;
   --tab-dropmarker: CaptionText;
 }
