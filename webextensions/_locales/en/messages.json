@@ -249,6 +249,10 @@
   "config.acccelaratedTabDuplication.label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "Abort tab duplication when it takes" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "milliseconds or more." },
+  "config.sidebarScrollbarPosition.caption": { "message": "Position of the scrollbar:" },
+  "config.sidebarScrollbarPosition.auto": { "message": "Auto" },
+  "config.sidebarScrollbarPosition.left": { "message": "Left side" },
+  "config.sidebarScrollbarPosition.right": { "message": "Right side" },
 
   "config.requestPermissions.bookmarks": { "message": "Allow to create bookmarks" },
   "config.requestPermissions.allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
