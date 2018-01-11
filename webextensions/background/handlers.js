@@ -752,6 +752,24 @@ function onTabUpdated(aTab, aChangeInfo) {
   markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
+function onTabLabelUpdated(aTab) {
+  var parent = getParentTab(aTab);
+  if (!isGroupTab(parent))
+    return;
+
+  var matcher = new RegExp(`^${browser.i18n.getMessage('groupTab.label', '.+')}$`);
+  if (!matcher.test(parent.apiTab.title))
+    return;
+
+  var newTitle = browser.i18n.getMessage('groupTab.label', aTab.apiTab.title);
+  var url = parent.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
+  browser.tabs.executeScript(parent.apiTab.id, {
+    runAt:           'document_start',
+    matchAboutBlank: true,
+    code:            `location.replace(${JSON.stringify(url)})`,
+  });
+}
+
 function onTabSubtreeCollapsedStateChanging(aTab) {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
