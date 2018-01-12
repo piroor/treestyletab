@@ -113,7 +113,7 @@ And, there is another bug for accesskey support of context menu items:
 
  * [1320462 - Add ability to set access key to context menu item](https://bugzilla.mozilla.org/show_bug.cgi?id=1320462)
 
-As described at the [migration story of TST](http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2017-10-03_migration-we-en.htm#topic2017-10-03_migration-we-en), current context menu in the sidebar is just a workaround, until any genuine WebExtensions feature to do that is landed. So I have ver less motivation to improve the fake context menu by myself, sorry...
+As described at the [migration story of TST](http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2017-10-03_migration-we-en.htm#topic2017-10-03_migration-we-en), current context menu in the sidebar is just a workaround, until any genuine WebExtensions feature to do that is landed. So I have very less motivation to improve the fake context menu by myself, sorry...
 
 ### [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043)
 
