@@ -36,6 +36,8 @@ async function init() {
   migrateLegacyConfigs();
   gMetricsData.add('migrateLegacyConfigs');
 
+  updatePanelUrl();
+
   await gMetricsData.addAsync('parallel initialization tasks: waitUntilCompletelyRestored, retrieveAllContextualIdentities', Promise.all([
     waitUntilCompletelyRestored(),
     retrieveAllContextualIdentities()
@@ -70,6 +72,10 @@ async function init() {
               clearWindowCache(owner.id).then(() => location.reload());
           }
         });
+        break;
+
+      case 'style':
+        updatePanelUrl();
         break;
 
       default:
@@ -107,6 +113,11 @@ async function init() {
 
   notifyNewFeatures();
   log('Startup metrics: ', gMetricsData.toString());
+}
+
+function updatePanelUrl() {
+  var panel = browser.extension.getURL(`/sidebar/sidebar.html?style=${encodeURIComponent(configs.style)}`);
+  browser.sidebarAction.setPanel({ panel });
 }
 
 function waitUntilCompletelyRestored() {

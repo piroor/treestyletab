@@ -47,6 +47,14 @@ function earlyInit() {
   gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
   gUserStyleRules             = document.querySelector('#user-style-rules');
   gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
+
+  // apply style ASAP!
+  let style = location.search.match(/style=([^&]+)/);
+  if (style)
+    applyStyle(style[1]);
+  else
+    configs.$loaded.then(() => applyStyle());
+
   gMetricsData.add('earlyInit end');
 }
 
@@ -72,7 +80,6 @@ async function init() {
   onConfigChange('simulateSVGContextFill');
 
   await Promise.all([
-    applyStyle(),
     waitUntilBackgroundIsReady(),
     retrieveAllContextualIdentities()
   ]);
@@ -224,8 +231,8 @@ function destroy() {
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
 
-function applyStyle() {
-  gStyle = configs.style;
+function applyStyle(aStyle) {
+  gStyle = aStyle || configs.style;
   switch (gStyle) {
     case 'metal':
       gStyleLoader.setAttribute('href', 'styles/metal/metal.css');
