@@ -31,12 +31,13 @@ var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definit
 var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
-// apply style ASAP!
+{ // apply style ASAP!
 let style = location.search.match(/style=([^&]+)/);
 if (style)
   applyStyle(style[1]);
 else
   configs.$loaded.then(() => applyStyle());
+}
 
 blockUserOperations({ throbber: true });
 
