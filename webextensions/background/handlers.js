@@ -1441,6 +1441,52 @@ function onMessageExternal(aMessage, aSender) {
         }
       })();
 
+    case kTSTAPI_MOVE_UP:
+      return (async () => {
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          let previousTab = getPreviousTab(tab);
+          if (!previousTab)
+            continue;
+          if (!aMessage.followChildren)
+            detachAllChildren(tab, {
+              broadcast: true,
+              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+            });
+          await moveTabBefore(tab, previousTab, {
+            broadcast: true
+          });
+          let index = getTabIndex(tab);
+          await tryFixupTreeForInsertedTab(tab, {
+            toIndex:   index,
+            fromIndex: index + 1,
+          });
+        }
+      })();
+
+    case kTSTAPI_MOVE_DOWN:
+      return (async () => {
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          let nextTab = getNextTab(tab);
+          if (!nextTab)
+            continue;
+          if (!aMessage.followChildren)
+            detachAllChildren(tab, {
+              broadcast: true,
+              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+            });
+          await moveTabAfter(tab, nextTab, {
+            broadcast: true
+          });
+          let index = getTabIndex(tab);
+          await tryFixupTreeForInsertedTab(tab, {
+            toIndex:   index,
+            fromIndex: index - 1,
+          });
+        }
+      })();
+
     case kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
