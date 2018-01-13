@@ -16,8 +16,8 @@ var gAddonStyles = {};
 var gMetricsData = new MetricsData();
 gMetricsData.add('Loaded');
 
-  window.addEventListener('pagehide', destroy, { once: true });
-  window.addEventListener('load', init, { once: true });
+window.addEventListener('pagehide', destroy, { once: true });
+window.addEventListener('load', init, { once: true });
 
 var gTabBar                     = document.querySelector('#tabbar');
 var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
@@ -30,12 +30,12 @@ var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definit
 var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
-  // apply style ASAP!
-  let style = location.search.match(/style=([^&]+)/);
-  if (style)
-    applyStyle(style[1]);
-  else
-    configs.$loaded.then(() => applyStyle());
+// apply style ASAP!
+let style = location.search.match(/style=([^&]+)/);
+if (style)
+  applyStyle(style[1]);
+else
+  configs.$loaded.then(() => applyStyle());
 
 blockUserOperations({ throbber: true });
 
