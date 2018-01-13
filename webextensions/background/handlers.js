@@ -1525,6 +1525,38 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
       })();
 
+    case kTSTAPI_DUPLICATE:
+      return (async () => {
+        var tabs     = await TSTAPIGetTargetTabs(aMessage);
+        var behavior = kNEWTAB_OPEN_AS_ORPHAN;
+        switch (String(aMessage.as || 'sibling').toLowerCase()) {
+          case 'child':
+            behavior = kNEWTAB_OPEN_AS_CHILD;
+            break;
+          case 'sibling':
+            behavior = kNEWTAB_OPEN_AS_SIBLING;
+            break;
+          case 'nextsibling':
+            behavior = kNEWTAB_OPEN_AS_NEXT_SIBLING;
+            break;
+          default:
+            break;
+        }
+        for (let tab of tabs) {
+          let duplicatedTabs = await moveTabs([tab], {
+            duplicate:           true,
+            destinationWindowId: tab.apiTab.windowId,
+            insertAfter:         tab
+          });
+          await behaveAutoAttachedTab(duplicatedTabs[0], {
+            broadcast: true,
+            baseTab:   tab,
+            behavior
+          });
+        }
+        return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
+      })();
+
     case kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
