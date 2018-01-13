@@ -1541,6 +1541,7 @@ async function TSTAPIGetTabsFromWrongIds(aIds) {
   }
   aIds = await Promise.all(aIds.map(async (aId) => {
     switch (String(aId).toLowerCase()) {
+      case 'active':
       case 'current': {
         let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
         return tabs[0].id;
