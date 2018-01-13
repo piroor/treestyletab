@@ -7,46 +7,28 @@
 
 gLogContext = 'Sidebar-?';
 
-var gTabBar;
-var gAfterTabsForOverflowTabBar;
-var gOutOfViewTabNotifier;
-var gMasterThrobber;
+var gInitializing = true;
 var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
-var gStyle;
 var gRestoringTabCount = 0;
-
-window.addEventListener('DOMContentLoaded', earlyInit, { once: true });
-window.addEventListener('load', init, { once: true });
-
-blockUserOperations({ throbber: true });
-
-var gInitializing = true;
-var gSizeDefinition;
-var gContextualIdentitiesStyle;
-var gStyleLoader;
-var gBrowserThemeDefinition;
-var gUserStyleRules;
 var gAddonStyles = {};
 var gMetricsData = new MetricsData();
 gMetricsData.add('Loaded');
 
-function earlyInit() {
-  gMetricsData.add('earlyInit start');
-  log('initialize sidebar on DOMContentLoaded');
   window.addEventListener('pagehide', destroy, { once: true });
+  window.addEventListener('load', init, { once: true });
 
-  gTabBar                     = document.querySelector('#tabbar');
-  gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
-  gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
-  gAllTabs                    = document.querySelector('#all-tabs');
-  gMasterThrobber             = document.querySelector('#master-throbber');
-  gSizeDefinition             = document.querySelector('#size-definition');
-  gStyleLoader                = document.querySelector('#style-loader');
-  gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
-  gUserStyleRules             = document.querySelector('#user-style-rules');
-  gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
+var gTabBar                     = document.querySelector('#tabbar');
+var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
+var gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
+var gAllTabs                    = document.querySelector('#all-tabs');
+var gMasterThrobber             = document.querySelector('#master-throbber');
+var gSizeDefinition             = document.querySelector('#size-definition');
+var gStyleLoader                = document.querySelector('#style-loader');
+var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
+var gUserStyleRules             = document.querySelector('#user-style-rules');
+var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
   // apply style ASAP!
   let style = location.search.match(/style=([^&]+)/);
@@ -55,8 +37,7 @@ function earlyInit() {
   else
     configs.$loaded.then(() => applyStyle());
 
-  gMetricsData.add('earlyInit end');
-}
+blockUserOperations({ throbber: true });
 
 async function init() {
   gMetricsData.add('init start');
