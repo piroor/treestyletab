@@ -1393,10 +1393,13 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_INDENT:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var results = [];
         for (let tab of tabs) {
           let newParent = getPreviousSiblingTab(tab);
-          if (!newParent)
+          if (!newParent) {
+            results.push(false);
             continue;
+          }
           if (!aMessage.followChildren)
             detachAllChildren(tab, {
               broadcast: true,
@@ -1407,16 +1410,21 @@ function onMessageExternal(aMessage, aSender) {
             forceExpand: true,
             insertAfter: getLastDescendantTab(newParent) || newParent
           });
+          results.push(true);
         }
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_OUTDENT:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var results = [];
         for (let tab of tabs) {
           let parent = getParentTab(tab);
-          if (!parent)
+          if (!parent) {
+            results.push(false);
             continue;
+          }
           if (!aMessage.followChildren)
             detachAllChildren(tab, {
               broadcast: true,
@@ -1438,16 +1446,21 @@ function onMessageExternal(aMessage, aSender) {
               broadcast: true,
             });
           }
+          results.push(true);
         }
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_MOVE_UP:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var results = [];
         for (let tab of tabs) {
           let previousTab = getPreviousTab(tab);
-          if (!previousTab)
+          if (!previousTab) {
+            results.push(false);
             continue;
+          }
           if (!aMessage.followChildren)
             detachAllChildren(tab, {
               broadcast: true,
@@ -1461,16 +1474,21 @@ function onMessageExternal(aMessage, aSender) {
             toIndex:   index,
             fromIndex: index + 1,
           });
+          results.push(true);
         }
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_MOVE_DOWN:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var results = [];
         for (let tab of tabs) {
           let nextTab = getNextTab(tab);
-          if (!nextTab)
+          if (!nextTab) {
+            results.push(false);
             continue;
+          }
           if (!aMessage.followChildren)
             detachAllChildren(tab, {
               broadcast: true,
@@ -1484,7 +1502,9 @@ function onMessageExternal(aMessage, aSender) {
             toIndex:   index,
             fromIndex: index - 1,
           });
+          results.push(true);
         }
+        return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_FOCUS:
