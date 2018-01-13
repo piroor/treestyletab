@@ -8,6 +8,7 @@
 gLogContext = 'Sidebar-?';
 
 var gInitializing = true;
+var gStyle;
 var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
