@@ -1397,7 +1397,8 @@ function onMessageExternal(aMessage, aSender) {
         var results = [];
         for (let tab of tabs) {
           let newParent = getPreviousSiblingTab(tab);
-          if (!newParent) {
+          if (!newParent ||
+              newParent == getParentTab(tab)) {
             results.push(false);
             continue;
           }
@@ -1427,12 +1428,16 @@ function onMessageExternal(aMessage, aSender) {
             results.push(false);
             continue;
           }
+          let newParent = getParentTab(parent);
+          if (newParent == getParentTab(tab)) {
+            results.push(false);
+            continue;
+          }
           if (!aMessage.followChildren)
             detachAllChildren(tab, {
               broadcast: true,
               behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
             });
-          let newParent = getParentTab(parent);
           if (newParent) {
             await attachTabTo(tab, newParent, {
               broadcast:   true,
