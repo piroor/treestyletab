@@ -152,6 +152,8 @@ See also:
  * [1215061 - Better keyboard shortcut support](https://bugzilla.mozilla.org/show_bug.cgi?id=1215061)
  * [1303384 - UI for re-assigning command shortcuts](https://bugzilla.mozilla.org/show_bug.cgi?id=1303384 )
  * [1320332 - Support overriding existing keybinding through WebExtensions](https://bugzilla.mozilla.org/show_bug.cgi?id=1320332)
+ * [1348589 - \[commands\] Support dynamic commands](https://bugzilla.mozilla.org/show_bug.cgi?id=1348589)
+ * [1421811 - Provide a way for an extension to update the shortcut for its command](https://bugzilla.mozilla.org/show_bug.cgi?id=1421811)
 
 And, because Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), I have no plan to provide various shortcuts for TST's each feature by default.
 In future versions, if generic keyboard shortcut customizability is introduced Firefox, I'll define optional commands for user-defined keyboard shortcuts.
