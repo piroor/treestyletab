@@ -1506,6 +1506,17 @@ async function TSTAPIGetTabsFromWrongIds(aIds) {
           aIndex < maxIndex && tabsInActiveWindow[aIndex + 1].active);
         return tabs.length > 0 ? tabs[0].id : 0 ;
       }
+      case 'nextsibling': {
+        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        let tab = getNextSiblingTab(getTabById(tabs[0].id));
+        return tab ? tab.apiTab.id : 0 ;
+      }
+      case 'previoussibling':
+      case 'prevsibling': {
+        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        let tab = getPreviousSiblingTab(getTabById(tabs[0].id));
+        return tab ? tab.apiTab.id : 0 ;
+      }
       default:
         return aId;
     }
