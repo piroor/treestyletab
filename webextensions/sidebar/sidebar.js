@@ -32,11 +32,11 @@ var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
 { // apply style ASAP!
-let style = location.search.match(/style=([^&]+)/);
-if (style)
-  applyStyle(style[1]);
-else
-  configs.$loaded.then(() => applyStyle());
+  let style = location.search.match(/style=([^&]+)/);
+  if (style)
+    applyStyle(style[1]);
+  else
+    configs.$loaded.then(() => applyStyle());
 
   configs.$loaded.then(applyUserStyleRules);
 }
