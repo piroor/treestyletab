@@ -1390,6 +1390,57 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
+    case kTSTAPI_INDENT:
+      return (async () => {
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          let newParent = getPreviousSiblingTab(tab);
+          if (!newParent)
+            continue;
+          if (!aMessage.followChildren)
+            detachAllChildren(tab, {
+              broadcast: true,
+              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+            });
+          await attachTabTo(tab, newParent, {
+            broadcast:   true,
+            forceExpand: true,
+            insertAfter: getLastDescendantTab(newParent) || newParent
+          });
+        }
+      })();
+
+    case kTSTAPI_OUTDENT:
+      return (async () => {
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          let parent = getParentTab(tab);
+          if (!parent)
+            continue;
+          if (!aMessage.followChildren)
+            detachAllChildren(tab, {
+              broadcast: true,
+              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+            });
+          let newParent = getParentTab(parent);
+          if (newParent) {
+            await attachTabTo(tab, newParent, {
+              broadcast:   true,
+              forceExpand: true,
+              insertAfter: getLastDescendantTab(parent) || parent
+            });
+          }
+          else {
+            await detachTab(tab, {
+              broadcast: true,
+            });
+            await moveTabAfter(tab, getLastDescendantTab(parent) || parent, {
+              broadcast: true,
+            });
+          }
+        }
+      })();
+
     case kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
