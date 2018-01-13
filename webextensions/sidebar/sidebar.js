@@ -37,6 +37,8 @@ if (style)
   applyStyle(style[1]);
 else
   configs.$loaded.then(() => applyStyle());
+
+  configs.$loaded.then(applyUserStyleRules);
 }
 
 blockUserOperations({ throbber: true });
@@ -116,11 +118,8 @@ async function init() {
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
     }),
-    gMetricsData.addAsync('apply styles', async () => {
-      applyUserStyleRules();
-      gMetricsData.add('applyUserStyleRules');
+    gMetricsData.addAsync('calculateDefaultSizes', async () => {
       calculateDefaultSizes();
-      gMetricsData.add('calculateDefaultSizes');
       document.documentElement.classList.remove('initializing');
     }),
     gMetricsData.addAsync('initializing contextual identities', async () => {
