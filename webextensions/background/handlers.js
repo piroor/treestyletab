@@ -1487,6 +1487,17 @@ function onMessageExternal(aMessage, aSender) {
         }
       })();
 
+    case kTSTAPI_FOCUS:
+      return (async () => {
+        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        for (let tab of tabs) {
+          selectTabInternally(tab, {
+            silently: aMessage.silently
+          });
+        }
+        return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
+      })();
+
     case kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
