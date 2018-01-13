@@ -1391,6 +1391,7 @@ function onMessageExternal(aMessage, aSender) {
       })();
 
     case kTSTAPI_INDENT:
+    case kTSTAPI_DEMOTE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
         var results = [];
@@ -1416,6 +1417,7 @@ function onMessageExternal(aMessage, aSender) {
       })();
 
     case kTSTAPI_OUTDENT:
+    case kTSTAPI_PROMOTE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
         var results = [];
