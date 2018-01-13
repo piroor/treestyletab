@@ -416,7 +416,7 @@ var tabContextMenu = {
             after = true;
             continue;
           }
-          if (after)
+          if (after && !tab.pinned)
             closeTabs.push(tab);
         }
         browser.tabs.remove(closeTabs.map(aTab => aTab.id));
