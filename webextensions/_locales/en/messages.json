@@ -112,7 +112,7 @@
   "config.style.highcontrast": { "message": "High Contrast" },
   "config.style.none": { "message": "No Decoration (*Please decorate everything by yourself via \"Extra style rules for sidebar contents\")" },
 
-  "config.colorScheme.caption": { "message": "Color scheme" },
+  "config.colorScheme.caption": { "message": "Color scheme:" },
   "config.colorScheme.photon": { "message": "Photon" },
   "config.colorScheme.systemColor": { "message": "System Color" },
 

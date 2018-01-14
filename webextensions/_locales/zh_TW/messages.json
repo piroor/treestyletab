@@ -112,7 +112,7 @@
   "config.style.highcontrast": { "message": "High Contrast" },
   "config.style.none": { "message": "無裝飾(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
-  "config.colorScheme.caption": { "message": "配色方案" },
+  "config.colorScheme.caption": { "message": "配色方案:" },
   "config.colorScheme.photon": { "message": "Photon" },
   "config.colorScheme.systemColor": { "message": "系統配色" },
 

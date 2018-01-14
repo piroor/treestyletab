@@ -112,7 +112,7 @@
   "config.style.highcontrast": { "message": "ハイコントラスト" },
   "config.style.none": { "message": "装飾無し（※「サイドバー内用の追加のスタイル指定」でお好みの装飾を設定してください)" },
 
-  "config.colorScheme.caption": { "message": "配色" },
+  "config.colorScheme.caption": { "message": "配色:" },
   "config.colorScheme.photon": { "message": "Photon" },
   "config.colorScheme.systemColor": { "message": "システムカラー" },
 
