@@ -737,7 +737,7 @@ async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
 async function loadURI(aURI, aOptions = {}) {
   if (!aOptions.windowId && gTargetWindow)
     aOptions.windowId = gTargetWindow;
-  if (aOptions.isRemote) {
+  if (aOptions.inRemote) {
     await browser.runtime.sendMessage(Object.assign({}, aOptions, {
       type: kCOMMAND_LOAD_URI,
       tab:  aOptions.tab && aOptions.tab.id
