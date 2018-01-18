@@ -47,9 +47,11 @@
       );
   }
 
-  function isCtrlTabEvent(aEvent) {
+  function isTabSwitchEvent(aEvent) {
     if (aEvent.keyCode != KeyEvent.DOM_VK_TAB &&
-        aEvent.keyCode != KeyEvent.DOM_VK_SHIFT)
+        aEvent.keyCode != KeyEvent.DOM_VK_SHIFT &&
+        aEvent.keyCode != KeyEvent.DOM_VK_PAGE_UP &&
+        aEvent.keyCode != KeyEvent.DOM_VK_PAGE_DOWN)
       return false;
     if (isMac)
       return (
@@ -71,10 +73,10 @@
     const kCOMMAND_NOTIFY_START_TAB_SWITCH = 'treestyletab:notify-start-tab-switch';
     //console.log('onKeyDown '+JSON.stringify({
     //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
-    //  ctrlTabEvent: isCtrlTabEvent(aEvent)
+    //  tabSwitchEvent: isTabSwitchEvent(aEvent)
     //}));
     if (isAccelKeyOnlyEvent(aEvent) ||
-        isCtrlTabEvent(aEvent))
+        isTabSwitchEvent(aEvent))
       browser.runtime.sendMessage({
         type: kCOMMAND_NOTIFY_START_TAB_SWITCH
       });
@@ -85,11 +87,11 @@
     //console.log('onKeyUp '+JSON.stringify({
     //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
     //  unshiftEvent: isAccelKeyUnshiftEvent(aEvent),
-    //  ctrlTabEvent: isCtrlTabEvent(aEvent)
+    //  tabSwitchEvent: isTabSwitchEvent(aEvent)
     //}));
     if (isAccelKeyOnlyEvent(aEvent) ||
         (!isAccelKeyUnshiftEvent(aEvent) &&
-         !isCtrlTabEvent(aEvent)))
+         !isTabSwitchEvent(aEvent)))
       browser.runtime.sendMessage({
         type: kCOMMAND_NOTIFY_END_TAB_SWITCH
       });
