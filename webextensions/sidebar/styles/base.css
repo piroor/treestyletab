@@ -88,7 +88,7 @@ button {
 }
 
 #tabbar,
-#extra-background {
+#background {
   bottom: 0;
   left: 0;
   margin: 0;
@@ -107,7 +107,9 @@ button {
   transition: margin-top var(--collapse-animation);
 }
 
-#extra-background {
+#background {
+  background-color: -moz-dialog; /* This is required to cover dummy elements. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 */
+  pointer-events: none;
   z-index: 10;
 }
 
@@ -152,12 +154,13 @@ ul {
 /* dummy elements to calculate actual size of boxes */
 
 #dummy-tabs {
-  bottom: calc(0px - (var(--tab-height) * 10));
+  bottom: 0;
   left: 0;
   overflow-y: scroll;
   pointer-events: none;
   position: fixed;
   right: 0;
+  z-index: 1; /* Put it below the background. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 */
 }
 
 #dummy-favicon-size-box {

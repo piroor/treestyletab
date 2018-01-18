@@ -13,7 +13,10 @@
   --throbber-color: var(--tab-text);
 
   --tabbar-bg: var(--browser-bg-darker, darkgray);
+}
 
+:root,
+#background {
   background: var(--tabbar-bg);
 }
 
@@ -26,9 +29,20 @@
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
   --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);
 }
-:root[color-scheme="system-color"] #extra-background {
+:root[color-scheme="system-color"] #background::after {
   background: var(--browser-bg-darker, ThreeDDarkShadow);
   opacity: 0.15;
+
+  bottom: 0;
+  content: "";
+  left: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 20;
 }
 
 .tab,

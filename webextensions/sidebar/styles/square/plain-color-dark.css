@@ -18,8 +18,8 @@
   --tab-highlighted-highlight: white;
   --tabbar-bg: #0c0c0d;
 }
-:root[color-scheme="system-color"] #extra-background {
-  background: transparent;
+:root[color-scheme="system-color"] #background::after {
+  content: none;
 }
 
 .tab.active {

@@ -65,11 +65,13 @@
 
 /* Background colour for the tree sidebar (light blue when window is
    active, grey otherwise) */
-:root {
+:root,
+#background {
   background: var(--bg-color);
 }
 
-:root:-moz-window-inactive {
+:root:-moz-window-inactive,
+:root:-moz-window-inactive #background {
   background: var(--bg-color-nactive);
 }
 

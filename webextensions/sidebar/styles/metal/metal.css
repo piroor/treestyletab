@@ -93,11 +93,12 @@
 
 /* tab bar */
 
-:root {
+:root,
+#background {
   background: #797979;
 }
 
-:root.left {
+:root.left #background {
   border-right: 2px solid #444444;
 }
 
@@ -107,7 +108,7 @@
   background-position: top right;
 }
 
-:root.right {
+:root.right #background {
   border-left: 2px solid #444444;
 }
 

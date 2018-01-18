@@ -12,13 +12,25 @@
 
 /* Tab Bar */
 
-:root {
+:root,
+#background {
   background: Background;
 }
 
-#extra-background {
+#background::after {
   background: CaptionText;
   opacity: 0.35;
+
+  bottom: 0;
+  content: "";
+  left: 0;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 20;
 }
 
 
