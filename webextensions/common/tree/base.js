@@ -794,7 +794,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       }));
     }
     else {
-      await waitUntilAllTabsAreaCreated();
+      await waitUntilAllTabsAreCreated();
       let startIndex = calculateNewTabIndex(aOptions);
       let container  = getTabsContainer(aOptions.windowId);
       incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
@@ -812,7 +812,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         if (aOptions.cookieStoreId)
           params.cookieStoreId = aOptions.cookieStoreId;
         var apiTab = await browser.tabs.create(params);
-        await waitUntilTabsAreaCreated(apiTab.id);
+        await waitUntilTabsAreCreated(apiTab.id);
         var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
         if (!aOptions.opener &&
             aOptions.parent &&

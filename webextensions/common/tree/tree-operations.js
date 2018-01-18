@@ -93,7 +93,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     prev: dumpTab(aOptions.insertAfter)
   });
 
-  await waitUntilAllTabsAreaCreated();
+  await waitUntilAllTabsAreCreated();
   var newIndex = calculateNewTabIndex(aOptions);
   log('newIndex: ', newIndex);
 

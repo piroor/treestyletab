@@ -180,7 +180,7 @@ async function reserveToUpdateCachedTabbar() {
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
   if (hasCreatingTab())
-    await waitUntilAllTabsAreaCreated();
+    await waitUntilAllTabsAreCreated();
 
   var container = getTabsContainer(gTargetWindow);
   if (container.allTabsRestored)
@@ -209,7 +209,7 @@ async function updateCachedTabbar() {
   if (!configs.useCachedTree)
     return;
   if (hasCreatingTab())
-    await waitUntilAllTabsAreaCreated();
+    await waitUntilAllTabsAreCreated();
   var container = getTabsContainer(gTargetWindow);
   var signature = await getWindowSignature(gTargetWindow);
   if (container.allTabsRestored)

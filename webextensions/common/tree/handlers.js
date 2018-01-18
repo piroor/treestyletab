@@ -67,11 +67,11 @@ function hasCreatingTab() {
   return Object.keys(gCreatingTabs).length > 0;
 }
 
-function waitUntilAllTabsAreaCreated() {
-  return waitUntilTabsAreaCreated(Object.keys(gCreatingTabs).map(aId => parseInt(aId)));
+function waitUntilAllTabsAreCreated() {
+  return waitUntilTabsAreCreated(Object.keys(gCreatingTabs).map(aId => parseInt(aId)));
 }
 
-function waitUntilTabsAreaCreated(aIdOrIds) {
+function waitUntilTabsAreCreated(aIdOrIds) {
   if (!Array.isArray(aIdOrIds))
     aIdOrIds = [aIdOrIds];
   var creatingTabs = aIdOrIds.filter(aId => !!aId)
@@ -97,7 +97,7 @@ async function onApiTabActivated(aActiveInfo) {
     decrementContainerCounter(container, 'internalSilentlyFocusCount');
   var byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
-  await waitUntilTabsAreaCreated(aActiveInfo.tabId);
+  await waitUntilTabsAreCreated(aActiveInfo.tabId);
 
   var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab)
@@ -167,7 +167,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   TabIdFixer.fixTab(aTab);
   aTabId = aTab.id;
 
-  await waitUntilTabsAreaCreated(aTabId);
+  await waitUntilTabsAreCreated(aTabId);
 
   var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
@@ -433,7 +433,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   var container = getOrBuildTabsContainer(aMoveInfo.windowId);
   var byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
-  await waitUntilTabsAreaCreated(aTabId);
+  await waitUntilTabsAreCreated(aTabId);
 
   /* When a tab is pinned, tabs.onMoved may be notified before
      tabs.onUpdated(pinned=true) is notified. As the result,
@@ -509,7 +509,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
       apiTab = await browser.tabs.get(aTabId).catch(handleMissingTabError);
       log(`New apiTab for attached tab ${aTabId}: `, apiTab);
     })(),
-    waitUntilTabsAreaCreated(aTabId)
+    waitUntilTabsAreCreated(aTabId)
   ]);
   if (!apiTab)
     return;

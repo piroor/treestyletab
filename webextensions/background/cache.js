@@ -149,7 +149,7 @@ async function reserveToCacheTree(aHint) {
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
   if (hasCreatingTab())
-    await waitUntilAllTabsAreaCreated();
+    await waitUntilAllTabsAreCreated();
 
   if (!aHint ||
       aHint instanceof Node && !aHint.parentNode)
@@ -183,7 +183,7 @@ function cancelReservedCacheTree(aWindowId) {
 
 async function cacheTree(aWindowId) {
   if (hasCreatingTab())
-    await waitUntilAllTabsAreaCreated();
+    await waitUntilAllTabsAreCreated();
   var container = getTabsContainer(aWindowId);
   if (!container ||
       !configs.useCachedTree)
