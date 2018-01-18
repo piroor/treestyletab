@@ -99,6 +99,7 @@ function onTabOpening(aTab, aInfo = {}) {
 }
 
 var gGroupingBlockedBy = {};
+var gToBeGroupedTabSets = [];
 
 function onNewTabsTimeout(aContainer) {
   var tabIds        = aContainer.dataset.openedNewTabs.split('|');
@@ -118,14 +119,22 @@ function onNewTabsTimeout(aContainer) {
       Object.keys(gGroupingBlockedBy).length > 0)
     return;
 
-  tryGroupTabs(tabReferences);
+  gToBeGroupedTabSets.push(tabReferences);
+  wait(0).then(tryGroupTabs);
 }
 
-async function tryGroupTabs(aTabReferences) {
-  log('tryGroupTabs: ', aTabReferences);
+async function tryGroupTabs() {
+  if (tryGroupTabs.running)
+    return;
 
+  var tabReferences = gToBeGroupedTabSets.shift();
+  if (!tabReferences)
+    return;
+
+  tryGroupTabs.running = true;
+  try {
   // extract only pure new tabs
-  var tabs = aTabReferences.map(aTabReference => {
+  var tabs = tabReferences.map(aTabReference => {
     var tab = getTabById(aTabReference.id);
     if (aTabReference.openerTabId)
       tab.apiTab.openerTabId = parseInt(aTabReference.openerTabId); // restore the opener information
@@ -150,6 +159,16 @@ async function tryGroupTabs(aTabReferences) {
   }
   if (newRootTabs.length > 1)
     await tryGroupNewOrphanTabs(newRootTabs);
+
+  }
+  catch(e) {
+    log('Error on tryGroupTabs: ', String(e), e.stack);
+  }
+  finally {
+  tryGroupTabs.running = false;
+  if (gToBeGroupedTabSets.length > 0)
+    tryGroupTabs();
+  }
 }
 
 async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
