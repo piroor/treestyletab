@@ -133,41 +133,40 @@ async function tryGroupTabs() {
 
   tryGroupTabs.running = true;
   try {
-  // extract only pure new tabs
-  var tabs = tabReferences.map(aTabReference => {
-    var tab = getTabById(aTabReference.id);
-    if (aTabReference.openerTabId)
-      tab.apiTab.openerTabId = parseInt(aTabReference.openerTabId); // restore the opener information
-    return tab;
-  });
-  var uniqueIds = await Promise.all(tabs.map(aTab => aTab.uniqueId));
-  tabs = tabs.filter((aId, aIndex) => {
-    var uniqueId = uniqueIds[aIndex];
-    return !uniqueId.duplicated && !uniqueId.restored;
-  });
-  tabs.sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
+    // extract only pure new tabs
+    var tabs = tabReferences.map(aTabReference => {
+      var tab = getTabById(aTabReference.id);
+      if (aTabReference.openerTabId)
+        tab.apiTab.openerTabId = parseInt(aTabReference.openerTabId); // restore the opener information
+      return tab;
+    });
+    var uniqueIds = await Promise.all(tabs.map(aTab => aTab.uniqueId));
+    tabs = tabs.filter((aId, aIndex) => {
+      var uniqueId = uniqueIds[aIndex];
+      return !uniqueId.duplicated && !uniqueId.restored;
+    });
+    tabs.sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
 
-  var newRootTabs = collectRootTabs(tabs)
-    .filter(aTab => !isGroupTab(aTab));
-  if (newRootTabs.length <= 0)
-    return;
+    var newRootTabs = collectRootTabs(tabs)
+      .filter(aTab => !isGroupTab(aTab));
+    if (newRootTabs.length <= 0)
+      return;
 
-  var newRootTabsFromPinned = newRootTabs.filter(aTab => isPinned(getOpenerTab(aTab)));
-  if (newRootTabsFromPinned.length > 0) {
-    newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
-    await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
-  }
-  if (newRootTabs.length > 1)
-    await tryGroupNewOrphanTabs(newRootTabs);
-
+    var newRootTabsFromPinned = newRootTabs.filter(aTab => isPinned(getOpenerTab(aTab)));
+    if (newRootTabsFromPinned.length > 0) {
+      newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
+      await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
+    }
+    if (newRootTabs.length > 1)
+      await tryGroupNewOrphanTabs(newRootTabs);
   }
   catch(e) {
     log('Error on tryGroupTabs: ', String(e), e.stack);
   }
   finally {
-  tryGroupTabs.running = false;
-  if (gToBeGroupedTabSets.length > 0)
-    tryGroupTabs();
+    tryGroupTabs.running = false;
+    if (gToBeGroupedTabSets.length > 0)
+      tryGroupTabs();
   }
 }
 
