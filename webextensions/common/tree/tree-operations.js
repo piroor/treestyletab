@@ -1617,34 +1617,6 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
 }
 
 
-function getDroppedLinksOnTabBehavior() {
-  return kDROPLINK_NEWTAB;
-/*
-  var behavior = utils.getTreePref('dropLinksOnTab.behavior');
-  if (behavior & this.kDROPLINK_FIXED)
-    return behavior;
-
-  var checked = { value : false };
-  var newChildTab = Services.prompt.confirmEx(this.browserWindow,
-      utils.treeBundle.getString('dropLinkOnTab.title'),
-      utils.treeBundle.getString('dropLinkOnTab.text'),
-      (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
-      (Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_1),
-      utils.treeBundle.getString('dropLinkOnTab.openNewChildTab'),
-      utils.treeBundle.getString('dropLinkOnTab.loadInTheTab'),
-      null,
-      utils.treeBundle.getString('dropLinkOnTab.never'),
-      checked
-    ) == 0;
-
-  behavior = newChildTab ? this.kDROPLINK_NEWTAB : this.kDROPLINK_LOAD ;
-  if (checked.value)
-    utils.setTreePref('dropLinksOnTab.behavior', behavior);
-
-  return behavior
-*/
-}
-
 function openGroupBookmarkBehavior() {
   return kGROUP_BOOKMARK_SUBTREE | kGROUP_BOOKMARK_USE_DUMMY | kGROUP_BOOKMARK_EXPAND_ALL_TREE;
 /*

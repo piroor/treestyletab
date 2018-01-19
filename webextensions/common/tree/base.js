@@ -738,10 +738,13 @@ async function loadURI(aURI, aOptions = {}) {
   if (!aOptions.windowId && gTargetWindow)
     aOptions.windowId = gTargetWindow;
   if (aOptions.inRemote) {
-    await browser.runtime.sendMessage(Object.assign({}, aOptions, {
-      type: kCOMMAND_LOAD_URI,
-      tab:  aOptions.tab && aOptions.tab.id
-    }));
+    await browser.runtime.sendMessage({
+      type:    kCOMMAND_LOAD_URI,
+      uri:     aURI,
+      options: Object.assign({}, aOptions, {
+        tab: aOptions.tab && aOptions.tab.id
+      })
+    });
     return;
   }
   try {
@@ -756,10 +759,8 @@ async function loadURI(aURI, aOptions = {}) {
       });
       apiTabId = apiTabs[0].id;
     }
-    await browser.tabs.update({
-      windowId: aOptions.windowId,
-      id:       apiTabId,
-      url:      aURI
+    await browser.tabs.update(apiTabId, {
+      url: aURI
     }).catch(handleMissingTabError);
   }
   catch(e) {

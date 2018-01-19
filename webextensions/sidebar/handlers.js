@@ -62,59 +62,52 @@ function isEventFiredOnTwisty(aEvent) {
   if (!tab || !hasChildTabs(tab))
     return false;
 
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass(kTWISTY)}]`,
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest(`.${kTWISTY}`);
 }
 
 function isEventFiredOnSoundButton(aEvent) {
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass(kSOUND_BUTTON)}]`,
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest(`.${kSOUND_BUTTON}`);
 }
 
 function isEventFiredOnClosebox(aEvent) {
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass(kCLOSEBOX)}]`,
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest(`.${kCLOSEBOX}`);
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass(kNEWTAB_BUTTON)}]`,
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest(`.${kNEWTAB_BUTTON}`);
 }
 
 function isEventFiredOnContextualIdentitySelector(aEvent) {
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass(kCONTEXTUAL_IDENTITY_SELECTOR)}]`,
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`);
 }
 
 function isEventFiredOnClickable(aEvent) {
-  return evaluateXPath(
-    'ancestor-or-self::*[contains(" button scrollbar select ", concat(" ", local-name(), " "))]',
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest(`button, scrollbar, select`);
 }
 
 function isEventFiredOnScrollbar(aEvent) {
-  return evaluateXPath(
-    'ancestor-or-self::*[local-name()="scrollbar" or local-name()="nativescrollbar"]',
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest(`scrollbar, nativescrollbar`);
 }
 
 
@@ -134,11 +127,10 @@ function getTabFromTabbarEvent(aEvent) {
 }
 
 function getClickedOptionFromEvent(aEvent) {
-  return evaluateXPath(
-    'ancestor-or-self::*[contains(" option ", concat(" ", local-name(), " "))]',
-    aEvent.originalTarget || aEvent.target,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return node.closest(`option`);
 }
 
 function getTabFromCoordinates(aEvent) {
@@ -546,6 +538,8 @@ function onTransisionEnd() {
 
 function onChange(aEvent) {
   var selector = aEvent.target;
+  if (!selector.matches('select'))
+    return;
 
   handleNewTabAction(aEvent, {
     cookieStoreId: selector.value
@@ -1044,11 +1038,10 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
     let id = aTab.id
     aTab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
       if (aEvent.type == 'mouseover') {
-        if (evaluateXPath(
-              `ancestor-or-self::*[#${id}]`,
-              aEvent.originalTarget || aEvent.target,
-              XPathResult.BOOLEAN_TYPE
-            ).booleanValue)
+        let node = aEvent.originalTarget || aEvent.target;
+        if (node.nodeType != Node.ELEMENT_NODE)
+          node = node.parentNode;
+        if (node.closest(`#${id}`))
             stillOver = true;
           return;
         }

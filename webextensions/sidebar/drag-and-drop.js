@@ -336,7 +336,7 @@ function getDropActionInternal(aEvent) {
   return info;
 }
 function getDropEffectFromDropAction(aActionInfo) {
-  if (aActionInfo.canDrop)
+  if (!aActionInfo.canDrop)
     return 'none';
   if (!aActionInfo.draggedTab)
     return 'link';
@@ -391,13 +391,22 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
   var dragOverTab = aDropActionInfo.dragOverTab;
   if (dragOverTab &&
       aDropActionInfo.dropPosition == kDROP_ON_SELF &&
-      (getDroppedLinksOnTabBehavior() & kDROPLINK_LOAD) &&
       !isLocked(dragOverTab) &&
       !isPinned(dragOverTab)) {
-    await loadURI(uris.shift(), {
-      tab:      dragOverTab,
-      inRemote: true
-    });
+    let behavior = await getDroppedLinksOnTabBehavior();
+    if (behavior <= kDROPLINK_ASK)
+      return;
+    if (behavior & kDROPLINK_LOAD) {
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SELECT_TAB,
+        windowId: gTargetWindow,
+        tab:      dragOverTab.id
+      });
+      await loadURI(uris.shift(), {
+        tab:      dragOverTab,
+        inRemote: true
+      });
+    }
   }
   await openURIsInTabs(uris, {
     parent:       aDropActionInfo.parent,
@@ -496,6 +505,35 @@ function fixupURIFromText(aMaybeURI) {
     return `http://${aMaybeURI}`;
 
   return aMaybeURI;
+}
+
+async function getDroppedLinksOnTabBehavior() {
+  var behavior = configs.dropLinksOnTabBehavior;
+  if (behavior != kDROPLINK_ASK)
+    return  behavior;
+
+  var confirm = new RichConfirm({
+    message: browser.i18n.getMessage('dropLinksOnTabBehavior.message'),
+    buttons: [
+      browser.i18n.getMessage('dropLinksOnTabBehavior.load'),
+      browser.i18n.getMessage('dropLinksOnTabBehavior.newtab')
+    ],
+    saveMessage: browser.i18n.getMessage('dropLinksOnTabBehavior.save')
+  });
+  var result = await confirm.show();
+  switch (result.buttonIndex) {
+    case 0:
+      behavior = kDROPLINK_LOAD;
+      break;
+    case 1:
+      behavior = kDROPLINK_NEWTAB;
+      break;
+    default:
+      return result.buttonIndex;
+  }
+  if (result.shouldSave)
+    configs.dropLinksOnTabBehavior = behavior;
+  return behavior;
 }
 
 
@@ -612,11 +650,10 @@ function onDragOver(aEvent) {
 }
 
 function isEventFiredOnTabDropBlocker(aEvent) {
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass('tab-drop-blocker')}]`,
-    aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest('.tab-drop-blocker');
 }
 
 var gDelayedDragEnter;
