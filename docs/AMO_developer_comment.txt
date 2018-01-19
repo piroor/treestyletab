@@ -1,0 +1,19 @@
+## Similar projects
+
+ *<a href="https://addons.mozilla.org/firefox/addon/tree-tabs/">Tree Tabs</a>:
+   Cross-browser, more powerful faatures, and high customizability.
+   (One large difference between TST is: the design strategy.
+   TST is aimed to keep it simple and work together with other addons as possible as it can.)
+ * <a href="https://addons.mozilla.org/firefox/addon/tab-center-redux/">Tab Center Redux</a>:
+   Vertical tab bar without tree.
+ * <a href="https://github.com/asamuzaK/sidebarTabs">sidebarTabs</a>:
+   Vertical tab bar with grouped tabs.
+
+Some Google Chrome extensions also provides similar feature.
+
+ * <a href="https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo">Sidewise Tree Style Tabs</a>
+ * <a href="https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl">Tabs Outliner</a>
+
+## Public API for other addons
+
+For addon authors, Tree Style Tab provides public API. If your addon provides extra context menu items for context menu on tabs, you can easily support TST's context menu with small changes. For more details, see the <a href="https://github.com/piroor/treestyletab/wiki/API-for-other-addons">API document</a>.
