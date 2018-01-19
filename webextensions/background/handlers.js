@@ -1066,9 +1066,11 @@ function onMessage(aMessage, aSender) {
         markWindowCacheDirtyFromTab(tab, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 
-    case kCOMMAND_LOAD_URI: {
-      // not implemented yet.
-    }; break;
+    case kCOMMAND_LOAD_URI:
+      return loadURI(aMessage.uri, Object.assign({}, aMessage.options, {
+        tab:      getTabById(aMessage.options.tab),
+        inRemote: false
+      }));
 
     case kCOMMAND_NEW_TABS:
       return (async () => {
