@@ -650,11 +650,10 @@ function onDragOver(aEvent) {
 }
 
 function isEventFiredOnTabDropBlocker(aEvent) {
-  return evaluateXPath(
-    `ancestor-or-self::*[${hasClass('tab-drop-blocker')}]`,
-    aEvent.target,
-    XPathResult.BOOLEAN_TYPE
-  ).booleanValue;
+  var node = aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return !!node.closest('.tab-drop-blocker');
 }
 
 var gDelayedDragEnter;
