@@ -397,10 +397,10 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
     if (behavior <= kDROPLINK_ASK)
       return;
     if (behavior & kDROPLINK_LOAD) {
-    await loadURI(uris.shift(), {
-      tab:      dragOverTab,
-      inRemote: true
-    });
+      await loadURI(uris.shift(), {
+        tab:      dragOverTab,
+        inRemote: true
+      });
     }
   }
   await openURIsInTabs(uris, {
