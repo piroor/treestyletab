@@ -120,6 +120,7 @@ RichConfirm.prototype = {
 
   show: async function() {
     this.buildUI();
+    await wait(0);
 
     this.message.textContent = this.params.message;
 
