@@ -34,6 +34,28 @@ There are [automated builds from latest codes](https://piro.sakura.ne.jp/xul/xpi
 Packages are not signed so you cannot try them on your Firefox if it is a released or beta version.
 On Nightly, you can try them by setting a secret preference `xpinstall.signatures.required` to `false` via `about:config`.
 
+And, you can build custom development build locally. For example, here is steps to build XPI on Ubuntu (native, or WSL on Windows 10):
+
+```bash
+$ sudo apt install git nodejs npm
+$ git clone --recursive https://github.com/piroor/treestyletab.git
+$ cd treestyletab/webextensions
+$ make install_dependency
+$ make
+```
+
+Steps to build specific revision (for example bb467286d58b3da90fd1b2e6ee8a8016e3377b97):
+
+```
+$ cd treestyletab/webextensions
+$ git checkout bb467286d58b3da90fd1b2e6ee8a8016e3377b97
+$ git submodule update
+$ make
+```
+
+Then you'll see new `.xpi` files at the current directory. You can install such a development build via `about:debugging`. Click `Load Temporary Add-on` button and choose `treestyletab/manifest.json` or a built `.xpi` file.
+
+
 ## Addons extend TST
 
 TST provides some [APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
