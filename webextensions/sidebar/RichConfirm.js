@@ -86,7 +86,6 @@ RichConfirm.prototype = {
       .rich-confirm-save-label {
         display: flex;
         flex-direction: row;
-        justify-content: center;
         margin-top: 0.5em;
       }
 
