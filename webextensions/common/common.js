@@ -128,6 +128,8 @@ configs = new Configs({
 
   syncParentTabAndOpenerTab: true,
 
+  dropLinksOnTabBehavior: kDROPLINK_ASK,
+
 
   // grouping
   autoGroupNewTabs: true,

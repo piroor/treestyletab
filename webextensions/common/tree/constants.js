@@ -210,7 +210,6 @@ const kACTION_DETACH = 1 << 11;
 const kDROPLINK_ASK    = 0;
 const kDROPLINK_LOAD   = 1 << 0;
 const kDROPLINK_NEWTAB = 1 << 1;
-const kDROPLINK_FIXED = kDROPLINK_LOAD | kDROPLINK_NEWTAB;
 
 const kGROUP_BOOKMARK_ASK                         = 0;
 const kGROUP_BOOKMARK_SUBTREE                     = 1 << 0;

@@ -546,6 +546,8 @@ function onTransisionEnd() {
 
 function onChange(aEvent) {
   var selector = aEvent.target;
+  if (!selector.matches('select'))
+    return;
 
   handleNewTabAction(aEvent, {
     cookieStoreId: selector.value

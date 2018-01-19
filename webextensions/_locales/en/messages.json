@@ -56,6 +56,11 @@
   "bookmark.notification.notPermitted.title": { "message": "Permission error" },
   "bookmark.notification.notPermitted.message": { "message": "Failed to get permissions to create bookmarks. Please grant permissions via the configurations of Tree Style Tab." },
 
+  "dropLinksOnTabBehavior.message": { "message": "How to open this?" },
+  "dropLinksOnTabBehavior.save":    { "message": "Do same choice hereafter" },
+  "dropLinksOnTabBehavior.load":    { "message": "Load to this tab" },
+  "dropLinksOnTabBehavior.newtab":  { "message": "Open new child tab" },
+
   "message.startup.description.1": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the " },
   "message.startup.description.key": { "message": "\"F1\" key" },
   "message.startup.description.2": { "message": " or click the " },
@@ -196,6 +201,11 @@
   "config.closeParentBehavior.promoteAll": { "message": "Promote all child tabs as the level of the closed parent tab" },
   "config.promoteFirstChildForClosedRoot.label": { "message": "Promote the first child tab as the new parent, if the closed parent has no parent" },
   "config.closeParentBehavior.detach": { "message": "Liberate child tabs from the tree" },
+
+  "config.dropLinksOnTabBehavior.caption": { "message": "When a link or URL string is dropped on a tab" },
+  "config.dropLinksOnTabBehavior.ask":     { "message": "Always ask me how to treat it" },
+  "config.dropLinksOnTabBehavior.load":    { "message": "Load to the tab" },
+  "config.dropLinksOnTabBehavior.newtab":  { "message": "Open new child tab" },
 
 
   "config.advanced.caption": { "message": "Advanced" },
