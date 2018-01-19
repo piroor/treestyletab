@@ -336,7 +336,7 @@ function getDropActionInternal(aEvent) {
   return info;
 }
 function getDropEffectFromDropAction(aActionInfo) {
-  if (aActionInfo.canDrop)
+  if (!aActionInfo.canDrop)
     return 'none';
   if (!aActionInfo.draggedTab)
     return 'link';
