@@ -397,6 +397,11 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
     if (behavior <= kDROPLINK_ASK)
       return;
     if (behavior & kDROPLINK_LOAD) {
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SELECT_TAB,
+        windowId: gTargetWindow,
+        tab:      dragOverTab.id
+      });
       await loadURI(uris.shift(), {
         tab:      dragOverTab,
         inRemote: true
