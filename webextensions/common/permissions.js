@@ -8,6 +8,7 @@
 const Permissions = {
   BOOKMARKS: { permissions: ['bookmarks'] },
   ALL_URLS:  { origins: ['<all_urls>'] },
+  TAB_HIDE:  { permissions: ['tabHide'] },
 
   clearRequest() {
     configs.requestingPermissions = null;

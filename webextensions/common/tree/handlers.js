@@ -104,7 +104,7 @@ async function onApiTabActivated(aActiveInfo) {
     return;
 
   log('tabs.onActivated: ', dumpTab(newTab));
-  updateTabFocused(newTab);
+  var oldActiveTabs = updateTabFocused(newTab);
 
   var byCurrentTabRemove = !!container.resolveClosedWhileActiveForPreviousActiveTab;
   if (byCurrentTabRemove) {
@@ -141,6 +141,7 @@ async function onApiTabActivated(aActiveInfo) {
     return;
 
   window.onTabFocused && await onTabFocused(newTab, {
+    oldActiveTabs,
     byCurrentTabRemove,
     byTabDuplication,
     byInternalOperation,
@@ -158,6 +159,7 @@ function clearOldActiveStateInWindow(aWindowId) {
     if (oldTab.apiTab) // this function can be applied for cached tab.
       oldTab.apiTab.active = false;
   }
+  return oldTabs;
 }
 
 async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {

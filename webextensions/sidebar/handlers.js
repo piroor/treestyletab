@@ -705,9 +705,13 @@ function updateTabSoundButtonTooltip(aTab) {
   markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
-function onTabFocused(aTab) {
+function onTabFocused(aTab, aInfo = {}) {
   tabContextMenu.close();
   scrollToTab(aTab);
+
+  if (configs.hideInactiveTabs &&
+      aInfo.oldActiveTabs)
+    hideTabs(aInfo.oldActiveTabs);
 }
 
 function onTabOpening(aTab, aInfo = {}) {
@@ -739,6 +743,9 @@ function onTabOpened(aTab, aInfo = {}) {
     else
       notifyOutOfViewTab(aTab);
   }
+
+  if (configs.hideInactiveTabs)
+    hideTabs([aTab]);
 
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
