@@ -256,6 +256,8 @@ function startWatchSidebarOpenState() {
     gSidebarOpenState.set(windowId, true);
     aPort.onDisconnect.addListener(aMessage => {
       gSidebarOpenState.delete(windowId);
+      if (configs.hideInactiveTabs)
+        showTabs(getAllTabs(windowId));
     });
   });
 }

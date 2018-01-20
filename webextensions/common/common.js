@@ -94,6 +94,8 @@ configs = new Configs({
   showContextualIdentitiesSelector: false,
   zoomable: false,
 
+  hideInactiveTabs: false,
+
 
   // context menu
   context_reloadTree: true,

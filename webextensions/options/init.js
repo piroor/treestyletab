@@ -38,6 +38,10 @@ window.addEventListener('DOMContentLoaded', () => {
       Permissions.BOOKMARKS,
       document.querySelector('#bookmarksPermissionGranted')
     );
+    Permissions.bindToCheckbox(
+      Permissions.TAB_HIDE,
+      document.querySelector('#tabHidePermissionGranted')
+    );
 
     options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
     onConfigChanged('debug');
