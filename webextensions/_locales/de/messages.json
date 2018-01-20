@@ -56,6 +56,11 @@
   "bookmark.notification.notPermitted.title": { "message": "Berechtigungs-Fehler" },
   "bookmark.notification.notPermitted.message": { "message": "Fehlende Berechtigung zum Erstellen von Lesezeichen. Bitte erlaube das Erstellen von Leszeichen in den Einstellungen von Tree Style Tab." },
 
+  "dropLinksOnTabBehavior.message": { "message": "Wie soll der Link geöffnet werden?" },
+  "dropLinksOnTabBehavior.save":    { "message": "Die Auswahl beim nächsten Mal beibehalten" },
+  "dropLinksOnTabBehavior.load":    { "message": "In diesem Tab öffnen" },
+  "dropLinksOnTabBehavior.newtab": { "message": "In neuem untergeordneten Tab öffnen" },
+  
   "message.startup.description.1": { "message": "Tree Style Tab wurde wiedergeboren basierend auf der WebExtensions-Technologie für Firefox 57 (und neuer). Seine senkrechte Tab-Leiste ist als eine der auswählbaren Sidebars verfügbar. Falls sie noch nicht angezeigt wird, drücke die " },
   "message.startup.description.key": { "message": "\"F1\" Taste" },
   "message.startup.description.2": { "message": " oder klicke auf den " },
@@ -197,6 +202,10 @@
   "config.promoteFirstChildForClosedRoot.label": { "message": "Den geschlossenen Tab durch den ersten untergeordneten Tab ersetzen, falls der geschlossene Tab keinen übergeordneten Tab besitzt" },
   "config.closeParentBehavior.detach": { "message": "Untergeordnete Tabs vom Zweig lösen" },
 
+  "config.dropLinksOnTabBehavior.caption": { "message": "Wenn ein Link oder eine URL-Zeichenkette per Drag-&Drop auf einen Tab abgelegt wird" },
+  "config.dropLinksOnTabBehavior.ask":     { "message": "Immer nachfragen" },
+  "config.dropLinksOnTabBehavior.load":    { "message": "In diesem Tab öffnen" },
+  "config.dropLinksOnTabBehavior.newtab": { "message": "In einem neuen untergeordneten Tab öffnen" },
 
   "config.advanced.caption": { "message": "Erweitert" },
 
