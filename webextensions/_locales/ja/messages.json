@@ -73,7 +73,7 @@
   "message.startup.requestPermissions.description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message.startup.requestPermissions.bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」（ブックマークの操作の許可が必要）" },
   "message.startup.requestPermissions.allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
-  "message.startup.requestPermissions.tabHide": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（Firefox 59以降のバージョンで、タブを隠す捜査の許可が必要）" },
+  "message.startup.requestPermissions.tabHide": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（Firefox 59以降のバージョンで、タブを隠す操作の許可が必要）" },
 
 
   "message.startup.userChromeCss.notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
