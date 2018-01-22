@@ -387,12 +387,13 @@ windowId = ${aTab.apiTab.windowId}
 }
 
 function updateTabFocused(aTab) {
-  var oldTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
+  var oldActiveTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
   aTab.classList.add(kTAB_STATE_ACTIVE);
   aTab.apiTab.active = true;
   aTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
   aTab.classList.remove(kTAB_STATE_UNREAD);
   browser.sessions.removeTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD);
+  return oldActiveTabs;
 }
 
 function updateParentTab(aParent) {
@@ -945,6 +946,30 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
     });
   }
   return folder;
+}
+
+
+function showTabs(aTabs = []) {
+  if (typeof browser.tabs.show != 'function')
+    return;
+
+  for (let tab of aTabs) {
+    if (tab.apiTab)
+      tab = tab.apiTab;
+    browser.tabs.show(tab.id);
+  }
+}
+
+function hideTabs(aTabs = []) {
+  if (typeof browser.tabs.hide != 'function')
+    return;
+
+  for (let tab of aTabs) {
+    if (tab.apiTab)
+      tab = tab.apiTab;
+    if (!tab.pinned)
+      browser.tabs.hide(tab.id);
+  }
 }
 
 
