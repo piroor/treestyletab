@@ -132,6 +132,7 @@ const kTAB_STATE_MUTED                     = 'muted';
 const kTAB_STATE_HAS_MUTED_MEMBER          = 'has-muted-member';
 const kTAB_STATE_PRIVATE_BROWSING          = 'private-browsing';
 const kTAB_STATE_HIDDEN                    = 'hidden';
+const kTAB_STATE_API_TAB_HIDDEN            = 'api-tab-hidden';
 const kTAB_STATE_ANIMATION_READY           = 'animation-ready';
 const kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD  = 'not-activated-since-load';
 const kTAB_STATE_BURSTING                  = 'bursting';

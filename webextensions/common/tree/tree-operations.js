@@ -772,7 +772,12 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions
   if (autoFocusedTab != nextTab &&
       (autoFocusedTab != previousTab ||
        (getNextTab(autoFocusedTab) &&
-        getNextTab(autoFocusedTab) != aTab))) {
+        getNextTab(autoFocusedTab) != aTab)) &&
+      !isUnexpectedFocusToLastPinnedTabForClosedCurrentTab({
+        closedTabWasPinned: params.pinned,
+        activeTab:          autoFocusedTab
+      })) {
+    // possibly it is focused by browser.tabs.selectOwnerOnClose
     log('=> the tab seems focused intentionally: ', {
       autoFocused:       dumpTab(autoFocusedTab),
       nextOfAutoFocused: dumpTab(getNextTab(autoFocusedTab)),
@@ -787,6 +792,7 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   var parentTab = getParentTab(aTab);
   var params = {
     active:                    isActive(aTab),
+    pinned:                    isPinned(aTab),
     parentTab,
     firstChildTab:             getFirstChildTab(aTab),
     firstChildTabOfParent:     getFirstChildTab(parentTab),
@@ -799,6 +805,16 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   if (aOverrideParams)
     return Object.assign({}, params, aOverrideParams);
   return params;
+}
+function isUnexpectedFocusToLastPinnedTabForClosedCurrentTab(aParams = {}) {
+  return (
+    configs.hideInactiveTabs &&
+    configs.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab &&
+    !aParams.closedTabWasPinned &&
+    isPinned(aParams.activeTab) &&
+    !isPinned(getNextTab(aParams.activeTab)) &&
+    getUnpinnedTabs(aParams.activeTab).filter(isApiTabHidden).length > 0
+  );
 }
 
 async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {

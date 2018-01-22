@@ -82,6 +82,11 @@ function isHidden(aTab) {
            aTab.classList.contains(kTAB_STATE_HIDDEN);
 }
 
+function isApiTabHidden(aTab) {
+  return ensureLivingTab(aTab) &&
+           aTab.classList.contains(kTAB_STATE_API_TAB_HIDDEN);
+}
+
 function isCollapsed(aTab) {
   return ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_COLLAPSED);

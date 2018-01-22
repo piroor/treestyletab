@@ -95,6 +95,7 @@ configs = new Configs({
   zoomable: false,
 
   hideInactiveTabs: false,
+  preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab: true,
 
 
   // context menu

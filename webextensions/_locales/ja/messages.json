@@ -129,6 +129,7 @@
   "config.faviconizePinnedTabs.label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
   "config.showContextualIdentitiesSelector.label": { "message": "「新しいタブ」ボタンにコンテナータブの選択メニューを表示する" },
   "config.hideInactiveTabs.label": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（※Firefox 59以降のバージョンで、\"about:config\"で\"extensions.webextensions.tabhide.enabled\"を有効化する必要があります）" },
+  "config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label": { "message": "現在のタブを閉じた後、可能な限りピン留めされたタブに不用意にフォーカスが移らないようにする" },
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
 
 

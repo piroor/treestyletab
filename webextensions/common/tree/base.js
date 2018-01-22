@@ -336,6 +336,14 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_PRIVATE_BROWSING);
   }
 
+  if (aOptions.forceApply ||
+      'hidden' in aNewState) {
+    if (aNewState.hidden)
+      aTab.classList.add(kTAB_STATE_API_TAB_HIDDEN);
+    else
+      aTab.classList.remove(kTAB_STATE_API_TAB_HIDDEN);
+  }
+
   /*
   // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (aOptions.forceApply ||
