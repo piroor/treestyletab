@@ -831,6 +831,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     ignoredTabs,
     serialized, closeParentBehavior
   } = params;
+  var tabNextFocusedByFirefox = getNextTab(aTab);
   log('tryMoveFocusFromClosingCurrentTabNow ', params);
   if (!active) {
     log(' => not active tab');
@@ -876,6 +877,12 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     nextFocusedTab = getNextFocusedTab(nextFocusedTab, { ignoredTabs });
     log('focus to getNextFocusedTab() again?: ', !!nextFocusedTab);
   }
+
+  if (!nextFocusedTab &&
+      configs.hideInactiveTabs &&
+      isApiTabHidden(tabNextFocusedByFirefox) &&
+      !isHidden(tabNextFocusedByFirefox))
+    nextFocusedTab = tabNextFocusedByFirefox; // focus to the next tab manually because Firefox doesn't focus to it when there is any pinned tab.
 
   if (!nextFocusedTab ||
       isHidden(nextFocusedTab) ||
