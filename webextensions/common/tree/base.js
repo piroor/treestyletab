@@ -188,7 +188,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
   if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
-    browser.tabs.update(aTab.apiTab.id, {
+    browser.tabs.update(aOptions.tab.id, {
+
       url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI)
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
@@ -199,7 +200,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
     window.onGroupTabDetected && onGroupTabDetected(aTab);
   }
-  else if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
+  else if (aTab.apiTab &&
+           aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
   }
 
@@ -211,7 +213,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       if (identity)
         visibleLabel = `${aNewState.title} - ${identity.name}`;
     }
-    if (aOptions.forceApply) {
+    if (aOptions.forceApply && aTab.apiTab) {
       browser.sessions.getTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD)
         .then(aUnread => {
           if (aUnread)
@@ -220,7 +222,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
             aTab.classList.remove(kTAB_STATE_UNREAD);
         });
     }
-    else if (!isActive(aTab)) {
+    else if (!isActive(aTab) && aTab.apiTab) {
       aTab.classList.add(kTAB_STATE_UNREAD);
       browser.sessions.setTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD, true);
     }
@@ -257,6 +259,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       }, configs.burstDuration);
     }
     if (aNewState.status == 'complete' &&
+        aTab.apiTab &&
         aTab.apiTab.url == aTab.dataset.discardURLAfterCompletelyLoaded) {
       log(' => discard accidentally restored tab ', aTab.apiTab.id);
       if (typeof browser.tabs.discard == 'function')
@@ -296,7 +299,9 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_MUTED);
   }
 
-  if (aTab.apiTab.audible && !aTab.apiTab.mutedInfo.muted)
+  if (aTab.apiTab &&
+      aTab.apiTab.audible &&
+      !aTab.apiTab.mutedInfo.muted)
     aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
   else
     aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
@@ -358,7 +363,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 }
 
 function updateTabDebugTooltip(aTab) {
-  if (!configs.debug)
+  if (!configs.debug ||
+      !aTab.apiTab)
     return;
   aTab.dataset.label = `
 ${aTab.apiTab.title}
