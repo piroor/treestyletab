@@ -15,13 +15,27 @@ const Permissions = {
   },
 
   isGranted(aPermissions) {
-    return browser.permissions.contains(aPermissions);
+    try {
+      return browser.permissions.contains(aPermissions);
+    }
+    catch(e) {
+      return Promise.reject(new Error('unsupported permission'));
+    }
   },
 
   bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
-    this.isGranted(aPermissions).then(aGranted => {
-      aCheckbox.checked = aGranted;
-    });
+    this.isGranted(aPermissions)
+      .then(aGranted => {
+        aCheckbox.checked = aGranted;
+      })
+      .catch(aError => {
+        aCheckbox.setAttribute('readonly', true);
+        aCheckbox.setAttribute('disabled', true);
+        var label = aCheckbox.closest('label') || document.querySelector(`label[for=${aCheckbox.id}]`);
+        if (label)
+          label.setAttribute('disabled', true);
+      });
+
     aCheckbox.addEventListener('change', aEvent => {
       aCheckbox.requestPermissions()
     });

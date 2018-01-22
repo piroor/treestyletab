@@ -30,6 +30,12 @@
   p.checkbox {
     text-indent: -1.5em;
   }
+  label[disabled="true"] {
+    opacity: 0.5;
+  }
+  label[disabled="true"] input {
+    opacity: 1;
+  }
 
   .user-chrome-css {
     position: fixed;
@@ -111,12 +117,10 @@
     <label><input id="allUrlsPermissionGranted"
                   type="checkbox">
            __MSG_message.startup.requestPermissions.allUrls__</label></p>
-<!--
   <p class="checkbox">
     <label><input id="tabHidePermissionGranted"
                   type="checkbox">
            __MSG_message.startup.requestPermissions.tabHide__</label></p>
--->
 </div>
 
 <div class="user-chrome-css">

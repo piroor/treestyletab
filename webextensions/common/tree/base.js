@@ -293,7 +293,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'mutedInfo' in aNewState) {
-    if (aNewState.mutedInfo.muted)
+    if (aNewState.mutedInfo && aNewState.mutedInfo.muted)
       aTab.classList.add(kTAB_STATE_MUTED);
     else
       aTab.classList.remove(kTAB_STATE_MUTED);

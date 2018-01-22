@@ -17,10 +17,8 @@ window.addEventListener('DOMContentLoaded', () => {
     Permissions.BOOKMARKS,
     document.querySelector('#bookmarksPermissionGranted')
   );
-  /*
   Permissions.bindToCheckbox(
     Permissions.TAB_HIDE,
     document.querySelector('#tabHidePermissionGranted')
   );
-  */
 }, { once: true });
