@@ -19,6 +19,12 @@ window.addEventListener('DOMContentLoaded', () => {
   );
   Permissions.bindToCheckbox(
     Permissions.TAB_HIDE,
-    document.querySelector('#tabHidePermissionGranted')
+    document.querySelector('#tabHidePermissionGranted'),
+    {
+      onChanged: (aGranted) => {
+        if (aGranted)
+          configs.hideInactiveTabs = true;
+      }
+    }
   );
 }, { once: true });
