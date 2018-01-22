@@ -1143,6 +1143,8 @@ function onTabUnpinned(aTab) {
   clearPinnedStyle(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
+  if (!isActive(aTab))
+    hideTabs([aTab]);
   reserveToPositionPinnedTabs();
   reserveToUpdateCachedTabbar();
 }
