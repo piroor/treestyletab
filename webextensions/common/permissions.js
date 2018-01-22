@@ -31,6 +31,9 @@ const Permissions = {
       .catch(aError => {
         aCheckbox.setAttribute('readonly', true);
         aCheckbox.setAttribute('disabled', true);
+        var label = aCheckbox.closest('label') || document.querySelector(`label[for=${aCheckbox.id}]`);
+        if (label)
+          label.setAttribute('disabled', true);
       });
 
     aCheckbox.addEventListener('change', aEvent => {
