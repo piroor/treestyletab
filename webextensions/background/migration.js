@@ -182,7 +182,7 @@ async function migrateLegacyTreeStructure() {
       // found: apply only structure case
       let structure = structures[index];
       let tabs      = getAllTabs(apiWindow.id);
-      applyTreeStructureToTabs(tabs, structure);
+      await applyTreeStructureToTabs(tabs, structure);
 
       restoredCountWithSession++;
 

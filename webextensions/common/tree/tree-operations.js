@@ -1562,7 +1562,7 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   return aTreeStructure;
 }
 
-function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
+async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   if (!aTabs || !aTreeStructure)
     return;
 
@@ -1581,6 +1581,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
 
   var parentTab = null;
   var tabsInTree = [];
+  var promises   = [];
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let tab = aTabs[i];
     /*
@@ -1620,13 +1621,15 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     }
     if (parent) {
       parent.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
-      attachTabTo(tab, parent, Object.assign({}, aOptions, {
+      promises.push(attachTabTo(tab, parent, Object.assign({}, aOptions, {
         dontExpand: true,
         dontMove:   true,
         justNow:    true
-      }));
+      })));
     }
   }
+  if (promises.length > 0)
+    await Promise.all(promises);
   gMetricsData.add('applyTreeStructureToTabs: attach/detach');
 
   log('expandStates: ', expandStates);

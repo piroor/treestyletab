@@ -345,7 +345,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
         windowStateCompletelyApplied = structure.length == tabs.length;
       }
       if (tabsOffset > -1) {
-        applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
+        await applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
         gMetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
       }
     }

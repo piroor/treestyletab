@@ -413,7 +413,7 @@ async function inheritTreeStructure() {
   });
   gMetricsData.add('inheritTreeStructure: kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+    await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
     gMetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
   }
 }
