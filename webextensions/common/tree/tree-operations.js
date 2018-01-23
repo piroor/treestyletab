@@ -1580,6 +1580,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   gMetricsData.add('applyTreeStructureToTabs: preparation');
 
   var parentTab = null;
+  var tabsInTree = [];
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let tab = aTabs[i];
     /*
@@ -1600,19 +1601,21 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       parentIndexInTree = structureInfo.parent;
       expandStates[i]   = !structureInfo.collapsed;
     }
-    if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
-      parentTab = tab.id;
+    if (parentIndexInTree < 0) { // there is no parent, so this is a new parent!
+      parent = tab.id;
+      tabsInTree = [tab];
+    }
 
     let parent = null;
     if (parentIndexInTree > -1) {
       parent = getTabById(parentTab);
       if (parent) {
-        let tabs = [parent].concat(getDescendantTabs(parent));
         //log('existing tabs in tree: ', {
-        //  size: tabs.length,
+        //  size:   tabsInTree.length,
         //  parent: parentIndexInTree
         //});
-        parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
+        parent = parentIndexInTree < tabsInTree.length ? tabsInTree[parentIndexInTree] : parent ;
+        tabsInTree.push(tab);
       }
     }
     if (parent) {
