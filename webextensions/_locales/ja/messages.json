@@ -129,7 +129,6 @@
   "config.faviconizePinnedTabs.label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
   "config.showContextualIdentitiesSelector.label": { "message": "「新しいタブ」ボタンにコンテナータブの選択メニューを表示する" },
   "config.hideInactiveTabs.label": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（※Firefox 59以降のバージョンで、\"about:config\"で\"extensions.webextensions.tabhide.enabled\"を有効化する必要があります）" },
-  "config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label": { "message": "現在のタブを閉じた後、可能な限りピン留めされたタブに不用意にフォーカスが移らないようにする" },
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
 
 
@@ -267,6 +266,7 @@
   "config.sidebarScrollbarPosition.auto": { "message": "自動" },
   "config.sidebarScrollbarPosition.left": { "message": "左側" },
   "config.sidebarScrollbarPosition.right": { "message": "右側" },
+  "config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠しているときに、現在のタブを閉じた後、可能な限りピン留めされたタブに不用意にフォーカスが移らないようにする" },
 
   "config.requestPermissions.bookmarks": { "message": "ブックマークの作成を許可する" },
   "config.requestPermissions.allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
