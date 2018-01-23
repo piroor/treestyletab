@@ -73,7 +73,7 @@
   "message.startup.requestPermissions.description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
   "message.startup.requestPermissions.bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs (requires access to bookmarks.)" },
   "message.startup.requestPermissions.allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts (requires script injection to webpages for detection of keyboard operations.)" },
-  "message.startup.requestPermissions.tabHide": { "message": "Hide inactive tabs except pinned tabs from the top tab bar (requires permission to hide tabs.)" },
+  "message.startup.requestPermissions.tabHide": { "message": "Hide inactive tabs except pinned tabs from the top tab bar (requires permission to hide tabs, and you also need to activate \"extensions.webextensions.tabhide.enabled\" via \"about:config\".)" },
 
   "message.startup.userChromeCss.notify": { "message": "How to hide top tab bar and sidebar header?" },
   "message.startup.userChromeCss.description.1": { "message": "Due to restrictions of WebExtensions, Tree Style Tab cannot control Firefox's top tab bar and the sidebar header. If you need to control them, see " },
