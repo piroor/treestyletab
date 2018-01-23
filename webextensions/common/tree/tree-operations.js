@@ -1602,7 +1602,7 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       expandStates[i]   = !structureInfo.collapsed;
     }
     if (parentIndexInTree < 0) { // there is no parent, so this is a new parent!
-      parent = tab.id;
+      parentTab  = tab.id;
       tabsInTree = [tab];
     }
 
