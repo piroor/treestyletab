@@ -296,7 +296,6 @@ configs = new Configs({
     acceptableDelayForInternalFocusMoving
     preventTearOffTabsTimeout
     notificationTimeout
-    sidebarOpenStateUpdateInterval
     startDragTimeout
     moveDroppedTabToNewWindowForUnhandledDragEvent
     knownExternalAddons
