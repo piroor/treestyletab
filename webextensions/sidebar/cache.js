@@ -135,10 +135,12 @@ function updateWindowCache(aKey, aValue) {
       !getTabById(gLastWindowCacheOwner))
     return;
   if (aValue === undefined) {
+    log('updateWindowCache: delete cache from ', gLastWindowCacheOwner, aKey);
     //return browser.sessions.removeWindowValue(gLastWindowCacheOwner, aKey);
     return browser.sessions.removeTabValue(gLastWindowCacheOwner, aKey);
   }
   else {
+    log('updateWindowCache: set cache for ', gLastWindowCacheOwner, aKey);
     //return browser.sessions.setWindowValue(gLastWindowCacheOwner, aKey, aValue);
     return browser.sessions.setTabValue(gLastWindowCacheOwner, aKey, aValue);
   }
