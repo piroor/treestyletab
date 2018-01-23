@@ -232,11 +232,14 @@ configs = new Configs({
 }, {
   syncKeys: `
     counterRole
+    sidebarScrollbarPosition
     maxTreeLevel
     indentAutoShrink
     indentAutoShrinkOnlyForVisible
     showContextualIdentitiesSelector
     zoomable
+    hideInactiveTabs
+    preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab
     context_reloadTree
     context_reloadDescendants
     context_closeTree
@@ -259,6 +262,7 @@ configs = new Configs({
     skipCollapsedTabsForTabSwitchingShortcuts
     parentTabBehaviorForChanges
     syncParentTabAndOpenerTab
+    dropLinksOnTabBehavior
     autoGroupNewTabs
     autoGroupNewTabsTimeout
     autoGroupNewTabsDelayOnNewWindow
