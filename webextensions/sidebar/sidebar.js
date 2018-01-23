@@ -394,16 +394,16 @@ async function rebuildAll(aCache) {
     }
   }
 
-    let container = buildTabsContainerFor(gTargetWindow);
-    for (let apiTab of apiTabs) {
-      TabIdFixer.fixTab(apiTab);
-      let newTab = buildTab(apiTab, { existing: true, inRemote: true });
-      container.appendChild(newTab);
-      updateTab(newTab, apiTab, { forceApply: true });
-    }
-    gAllTabs.appendChild(container);
-    gMetricsData.add('rebuildAll (from scratch)');
-    return false;
+  let container = buildTabsContainerFor(gTargetWindow);
+  for (let apiTab of apiTabs) {
+    TabIdFixer.fixTab(apiTab);
+    let newTab = buildTab(apiTab, { existing: true, inRemote: true });
+    container.appendChild(newTab);
+    updateTab(newTab, apiTab, { forceApply: true });
+  }
+  gAllTabs.appendChild(container);
+  gMetricsData.add('rebuildAll (from scratch)');
+  return false;
 }
 
 async function inheritTreeStructure() {
