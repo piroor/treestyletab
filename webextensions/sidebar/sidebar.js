@@ -387,11 +387,13 @@ async function rebuildAll(aCache) {
   clearAllTabsContainers();
 
   if (aCache) {
-    await restoreTabsFromCache(aCache, { tabs: apiTabs });
-    gMetricsData.add('rebuildAll (from cache)');
-    return true;
+    let restored = await restoreTabsFromCache(aCache, { tabs: apiTabs });
+    if (restored) {
+      gMetricsData.add('rebuildAll (from cache)');
+      return true;
+    }
   }
-  else {
+
     let container = buildTabsContainerFor(gTargetWindow);
     for (let apiTab of apiTabs) {
       TabIdFixer.fixTab(apiTab);
@@ -402,7 +404,6 @@ async function rebuildAll(aCache) {
     gAllTabs.appendChild(container);
     gMetricsData.add('rebuildAll (from scratch)');
     return false;
-  }
 }
 
 async function inheritTreeStructure() {
