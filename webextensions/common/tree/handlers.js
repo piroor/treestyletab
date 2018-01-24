@@ -572,3 +572,7 @@ function onApiWindowRemoved(aWindowId) {
     delete container.reservedCleanupNeedlessGroupTab;
   }
 }
+
+//onNewTabTracked = makeAsyncFunctionSequential(onNewTabTracked);
+//onApiTabMoved = makeAsyncFunctionSequential(onApiTabMoved);
+
