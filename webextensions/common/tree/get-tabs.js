@@ -305,7 +305,7 @@ function getChildTabs(aParent) {
   if (!ensureLivingTab(aParent))
     return [];
   assertValidHint(aParent);
-  return aParent.childTabs.filter(ensureLivingTab);
+  return (aParent.childTabs || []).filter(ensureLivingTab);
 }
 
 function getFirstChildTab(aParent) {
