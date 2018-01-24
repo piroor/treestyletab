@@ -132,6 +132,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
             justNow:   true
           });
         });
+        clearDropPosition();
       }
     }
     catch(e) {
