@@ -615,12 +615,12 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       if (!aOptions.broadcasted) {
         await aOptions.delayedMove && wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
         let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-          if (fromIndex < toIndex)
-            toIndex--;
-          browser.tabs.move(apiTabIds, {
-            windowId: parseInt(container.dataset.windowId),
-            index:    toIndex
-          }).catch(handleMissingTabError);
+        if (fromIndex < toIndex)
+          toIndex--;
+        browser.tabs.move(apiTabIds, {
+          windowId: parseInt(container.dataset.windowId),
+          index:    toIndex
+        }).catch(handleMissingTabError);
       }
     }
   }
@@ -715,12 +715,12 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       if (!aOptions.broadcasted) {
         await aOptions.delayedMove && wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
         let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-          if (fromIndex > toIndex)
-            toIndex++;
-          browser.tabs.move(apiTabIds, {
-            windowId: parseInt(container.dataset.windowId),
-            index:    toIndex
-          }).catch(handleMissingTabError);
+        if (fromIndex > toIndex)
+          toIndex++;
+        browser.tabs.move(apiTabIds, {
+          windowId: parseInt(container.dataset.windowId),
+          index:    toIndex
+        }).catch(handleMissingTabError);
       }
     }
   }
