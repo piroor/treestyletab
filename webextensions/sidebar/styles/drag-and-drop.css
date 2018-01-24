@@ -68,6 +68,7 @@
   min-height: calc(var(--favicon-size) / 5);
   min-width: calc(var(--favicon-size) / 5);
   position: fixed;
+  z-index: 100000;
 }
 
 :root.tab-dragging .tab-drop-blocker {
