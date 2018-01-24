@@ -65,49 +65,49 @@ function isEventFiredOnTwisty(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kTWISTY}`);
+  return node && !!node.closest(`.${kTWISTY}`);
 }
 
 function isEventFiredOnSoundButton(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kSOUND_BUTTON}`);
+  return node && !!node.closest(`.${kSOUND_BUTTON}`);
 }
 
 function isEventFiredOnClosebox(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kCLOSEBOX}`);
+  return node && !!node.closest(`.${kCLOSEBOX}`);
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kNEWTAB_BUTTON}`);
+  return node && !!node.closest(`.${kNEWTAB_BUTTON}`);
 }
 
 function isEventFiredOnContextualIdentitySelector(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`);
+  return node && !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`);
 }
 
 function isEventFiredOnClickable(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`button, scrollbar, select`);
+  return node && !!node.closest(`button, scrollbar, select`);
 }
 
 function isEventFiredOnScrollbar(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`scrollbar, nativescrollbar`);
+  return node && !!node.closest(`scrollbar, nativescrollbar`);
 }
 
 
@@ -130,7 +130,7 @@ function getClickedOptionFromEvent(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return node.closest(`option`);
+  return node && node.closest(`option`);
 }
 
 function getTabFromCoordinates(aEvent) {
