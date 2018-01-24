@@ -103,7 +103,7 @@ function getTabFromChild(aNode) {
     return null;
   if (aNode.nodeType != Node.ELEMENT_NODE)
     aNode = aNode.parentNode;
-  return aNode.closest(kSELECTOR_LIVE_TAB);
+  return aNode && aNode.closest(kSELECTOR_LIVE_TAB);
 }
 
 function getTabById(aIdOrInfo) {
