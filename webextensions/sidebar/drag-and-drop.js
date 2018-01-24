@@ -653,7 +653,7 @@ function isEventFiredOnTabDropBlocker(aEvent) {
   var node = aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest('.tab-drop-blocker');
+  return node && !!node.closest('.tab-drop-blocker');
 }
 
 var gDelayedDragEnter;
