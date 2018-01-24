@@ -186,6 +186,7 @@ function onMouseDown(aEvent) {
   cancelHandleMousedown();
   tabContextMenu.close();
   clearDropPosition();
+  clearDraggingState();
 
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
   if (configs.logOnMouseEvent)

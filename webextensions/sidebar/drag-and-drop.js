@@ -351,6 +351,12 @@ function clearDropPosition() {
   }
 }
 
+function clearDraggingState() {
+  getTabsContainer().classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
+}
+
 function isDraggingAllTabs(aTab, aTabs) {
   var draggingTabs = getDraggingTabs(aTab);
   return draggingTabs.length == (aTabs || getAllTabs(aTab)).length;
@@ -670,6 +676,8 @@ function onDragEnter(aEvent) {
   var info = getDropAction(aEvent);
   var dt   = aEvent.dataTransfer;
   dt.dropEffect = info.dropEffect;
+  if (info.dropEffect == 'link')
+    document.documentElement.classList.add(kTABBAR_STATE_LINK_DRAGGING);
 
   if (!info.canDrop)
     return;
@@ -740,9 +748,10 @@ var gDelayedDragLeave;
 function onDragLeave(aEvent) {
   gDelayedDragLeave = setTimeout(() => {
     gDraggingOnSelfWindow = false;
+    clearDropPosition();
+    clearDraggingState();
   }, configs.preventTearOffTabsTimeout);
 
-  clearDropPosition();
   clearTimeout(gLongHoverTimer);
   gLongHoverTimer = null;
 }
@@ -799,8 +808,7 @@ function onDragEnd(aEvent) {
     dragData.tabNodes = dragData.tabIds.map(getTabById);
 
   clearDropPosition();
-  getTabsContainer(aEvent.target).classList.remove(kTABBAR_STATE_TAB_DRAGGING);
-  document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  clearDraggingState();
   collapseAutoExpandedTabsWhileDragging();
 
   if (aEvent.dataTransfer.dropEffect != 'none' ||

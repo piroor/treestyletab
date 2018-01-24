@@ -169,6 +169,7 @@ const kTAB_INTERNAL_STATES = [
 
 const kTABBAR_STATE_OVERFLOW               = 'overflow';
 const kTABBAR_STATE_TAB_DRAGGING           = 'tab-dragging';
+const kTABBAR_STATE_LINK_DRAGGING          = 'link-dragging';
 const kTABBAR_STATE_BLOCKING               = 'blocking';
 const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
