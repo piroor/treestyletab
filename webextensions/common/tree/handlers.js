@@ -217,9 +217,9 @@ async function onNewTabTracked(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return null;
 
+  await waitUntilAllTabsAreCreated();
   log('onNewTabTracked: ', aTab);
   var container = getOrBuildTabsContainer(aTab.windowId);
-  await waitUntilAllTabsAreCreated();
 
   var hasNextTab = !!getAllTabs(container)[aTab.index];
 
