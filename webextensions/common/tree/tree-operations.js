@@ -1473,9 +1473,13 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
   }
 
   if (aOptions.insertBefore)
-    await moveTabsBefore(aOptions.draggedTabs || aTabs, aOptions.insertBefore);
+    await moveTabsBefore(aOptions.draggedTabs || aTabs, aOptions.insertBefore, {
+      broadcast: aOptions.broadcast
+    });
   else if (aOptions.insertAfter)
-    await moveTabsAfter(aOptions.draggedTabs || aTabs, aOptions.insertAfter);
+    await moveTabsAfter(aOptions.draggedTabs || aTabs, aOptions.insertAfter, {
+      broadcast: aOptions.broadcast
+    });
 
   var memberOptions = Object.assign({}, aOptions, {
     insertBefore: null,
