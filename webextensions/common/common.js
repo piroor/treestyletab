@@ -66,6 +66,37 @@ async function notify(aParams = {}) {
   await browser.notifications.clear(id);
 }
 
+function makeAsyncFunctionSequential(aFunction) {
+  return async function(...aArgs) {
+    return new Promise((aResolve, aReject) => {
+      makeAsyncFunctionSequential.tasks.push({
+        original: aFunction,
+        args:     aArgs,
+        resolve:  aResolve,
+        reject:   aReject,
+        context:  this
+      });
+      if (makeAsyncFunctionSequential.tasks.length == 1)
+        makeAsyncFunctionSequential.start();
+    });
+  };
+}
+makeAsyncFunctionSequential.tasks = [];
+makeAsyncFunctionSequential.start = async () => {
+  var task = makeAsyncFunctionSequential.tasks.shift();
+  if (!task)
+    return;
+  try {
+    await waitUntilAllTabsAreCreated();
+    var result = await task.original.call(task.context, ...task.args);
+    task.resolve(result);
+  }
+  catch(e) {
+    task.reject(e);
+  }
+  makeAsyncFunctionSequential.start();
+};
+
 configs = new Configs({
   // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
