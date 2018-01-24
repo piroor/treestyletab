@@ -83,18 +83,20 @@ function makeAsyncFunctionSequential(aFunction) {
 }
 makeAsyncFunctionSequential.tasks = [];
 makeAsyncFunctionSequential.start = async () => {
-  var task = makeAsyncFunctionSequential.tasks.shift();
+  var task = makeAsyncFunctionSequential.tasks[0];
   if (!task)
     return;
   try {
-    await waitUntilAllTabsAreCreated();
     var result = await task.original.call(task.context, ...task.args);
     task.resolve(result);
   }
   catch(e) {
     task.reject(e);
   }
-  makeAsyncFunctionSequential.start();
+  finally {
+    makeAsyncFunctionSequential.tasks.shift();
+    makeAsyncFunctionSequential.start();
+  }
 };
 
 configs = new Configs({
