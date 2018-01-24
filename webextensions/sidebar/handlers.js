@@ -185,6 +185,7 @@ var gLastMousedown = null;
 function onMouseDown(aEvent) {
   cancelHandleMousedown();
   tabContextMenu.close();
+  clearDropPosition();
 
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
   if (configs.logOnMouseEvent)
