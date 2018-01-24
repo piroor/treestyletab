@@ -1448,6 +1448,13 @@ function onConfigChange(aChangedKey) {
       updateIndent({ force: true });
       break;
 
+    case 'hideInactiveTabs':
+      if (configs.hideInactiveTabs)
+        hideTabs(getAllTabs());
+      else
+        showTabs(getAllTabs());
+      break;
+
     case 'style':
       location.reload();
       break;
