@@ -1307,7 +1307,8 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   log('opening new window');
   var windowParams = {
     //focused: true,  // not supported in Firefox...
-    url: 'about:blank'
+    url: 'about:blank',
+    incognito: isPrivateBrowsing(aTabs[0])
   };
   if ('left' in aOptions && aOptions.left !== null)
     windowParams.left = aOptions.left;

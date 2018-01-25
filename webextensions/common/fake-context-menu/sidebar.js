@@ -382,7 +382,10 @@ var tabContextMenu = {
           });
         })();
       case 'context_openTabInWindow':
-        await browser.windows.create({ tabId: this.contextTab.id });
+        await browser.windows.create({
+          tabId:     this.contextTab.id,
+          incognito: this.contextTab.incognito
+        });
         break;
       case 'context_reloadAllTabs': {
         let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
