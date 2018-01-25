@@ -291,24 +291,27 @@ function detachTab(aChild, aOptions = {}) {
   }
 }
 
-function detachTabsFromTree(aTabs, aOptions = {}) {
+async function detachTabsFromTree(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
   aTabs = Array.slice(aTabs).reverse();
+  var promisedAttach = [];
   for (let tab of aTabs) {
     let children = getChildTabs(tab);
     let parent   = getParentTab(tab);
     for (let child of children) {
       if (aTabs.indexOf(child) < 0) {
         if (parent)
-          attachTabTo(child, parent, Object.assign({}, aOptions, {
+          promisedAttach.push(attachTabTo(child, parent, Object.assign({}, aOptions, {
             dontMove: true
-          }));
+          })));
         else
           detachTab(child, aOptions);
       }
     }
   }
+  if (promisedAttach.length > 0)
+    await Promise.all(promisedAttach);
 }
 
 function detachAllChildren(aTab, aOptions = {}) {
@@ -1385,7 +1388,7 @@ async function performTabsDragDrop(aParams = {}) {
   if (draggedWholeTree.length != draggedTabs.length) {
     log('=> partially dragged');
     if (!aParams.duplicate)
-      detachTabsFromTree(draggedTabs, {
+      await detachTabsFromTree(draggedTabs, {
         broadcast: true
       });
   }

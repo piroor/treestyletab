@@ -238,8 +238,13 @@ async function groupTabs(aTabs, aOptions = {}) {
   });
   var groupTab = await openURIInTab(uri, {
     windowId:     rootTabs[0].apiTab.windowId,
+    parent:       getParentTab(rootTabs[0]),
     insertBefore: rootTabs[0],
     inBackground: true
+  });
+
+  await detachTabsFromTree(aTabs, {
+    broadcast: !!aOptions.broadcast
   });
   for (let tab of rootTabs) {
     await attachTabTo(tab, groupTab, {
