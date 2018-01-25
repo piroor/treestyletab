@@ -775,7 +775,7 @@ function onDrop(aEvent) {
     log('there are dragged tabs');
     performTabsDragDrop({
       windowId:            dropActionInfo.dragData.windowId,
-      tabIds:              dropActionInfo.dragData.apiTabs.map(aApiTab => aApiTab.id),
+      tabs:                dropActionInfo.dragData.apiTabs,
       action:              dropActionInfo.action,
       attachTo:            dropActionInfo.parent,
       insertBefore:        dropActionInfo.insertBefore,

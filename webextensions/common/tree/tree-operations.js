@@ -1397,14 +1397,17 @@ async function performTabsDragDrop(aParams = {}) {
   }
 
   log('performTabsDragDrop ', {
-    tabIds:              aParams.tabIds,
+    tabs:                aParams.tabs.map(aTab => aTab.id),
     windowId:            aParams.windowId,
     destinationWindowId: aParams.destinationWindowId,
     action:              aParams.action
   });
 
-  var draggedTabs = aParams.tabIds.map(getTabById).filter(aTab => !!aTab);
+  var draggedTabs = aParams.tabs.map(aApiTab => getTabById(aApiTab.id)).filter(aTab => !!aTab);
   if (!draggedTabs.length)
+    return;
+
+  if (isPrivateBrowsing(draggedTabs[0]) != isPrivateBrowsing(getFirstTab(destinationWindowId)))
     return;
 
   var draggedRoots = collectRootTabs(draggedTabs);

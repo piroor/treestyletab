@@ -97,6 +97,11 @@ function isDiscarded(aTab) {
            aTab.classList.contains(kTAB_STATE_DISCARDED);
 }
 
+function isPrivateBrowsing(aTab) {
+  return ensureLivingTab(aTab) &&
+           aTab.classList.contains(kTAB_STATE_PRIVATE_BROWSING);
+}
+
 function isOpening(aTab) {
   return ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_OPENING);
