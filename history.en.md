@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.4 (2018.1.25)
    * Add a new option to hide inactive tabs from top tab bar. This feature works only on Firefox 59 and later, and require new extra permission. Moreover you need to activate the API manually by `extensions.webextensions.tabhide.enabled`, a secret preference of Firefox itself.
    * Track tabs more correctly at cases multiple tabs are opened quickly.
    * Ask how to open the dropped link on a tab, like legacy versions.
