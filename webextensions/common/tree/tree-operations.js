@@ -94,7 +94,11 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   });
 
   await waitUntilAllTabsAreCreated();
-  var newIndex = calculateNewTabIndex(aOptions);
+  var newIndex = calculateNewTabIndex({
+    insertBefore: aOptions.insertBefore,
+    insertAfter:  aOptions.insertAfter,
+    ignoreTabs:   [aChild]
+  });
   log('newIndex: ', newIndex);
 
   var newlyAttached = (
@@ -106,11 +110,6 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
   var childIds;
   {
-    let newIndex = calculateNewTabIndex({
-      insertBefore: aOptions.insertBefore,
-      insertAfter:  aOptions.insertAfter,
-      ignoreTabs:   [aChild]
-    });
     let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
     if (newIndex >= expectedAllTabs.length)
       expectedAllTabs.push(aChild);
