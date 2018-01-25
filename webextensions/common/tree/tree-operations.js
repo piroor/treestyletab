@@ -977,7 +977,7 @@ function syncOrderOfChildTabs(aParentTabs) {
     parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
     log('updateChildTabsInfo: ', childIds);
   }
-  updatedParent = undefined;
+  updatedParentTabs = undefined;
 }
 
 async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
