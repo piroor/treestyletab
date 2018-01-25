@@ -75,6 +75,7 @@ const kTSTAPI_MOVE_UP               = 'move-up';
 const kTSTAPI_MOVE_DOWN             = 'move-down';
 const kTSTAPI_FOCUS                 = 'focus';
 const kTSTAPI_DUPLICATE             = 'duplicate';
+const kTSTAPI_GROUP_TABS            = 'group-tabs';
 const kTSTAPI_GET_TREE_STRUCTURE    = 'get-tree-structure';
 const kTSTAPI_SET_TREE_STRUCTURE    = 'set-tree-structure';
 const kTSTAPI_COLLAPSE_TREE         = 'collapse-tree';

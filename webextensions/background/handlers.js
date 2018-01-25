@@ -1587,6 +1587,13 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
       })();
 
+    case kTSTAPI_GROUP_TABS:
+      return (async () => {
+        var tabs     = await TSTAPIGetTargetTabs(aMessage);
+        var groupTab = await groupTabs(tabs, { broadcast: true });
+        return groupTab.apiTab;
+      })();
+
     case kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
         var tabs = await TSTAPIGetTargetTabs(aMessage);
