@@ -246,6 +246,9 @@ async function groupTabs(aTabs, aOptions = {}) {
   await detachTabsFromTree(aTabs, {
     broadcast: !!aOptions.broadcast
   });
+  await moveTabsAfter(aTabs.slice(1), aTabs[0], {
+    broadcast: !!aOptions.broadcast
+  });
   for (let tab of rootTabs) {
     await attachTabTo(tab, groupTab, {
       forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
