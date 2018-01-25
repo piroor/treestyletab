@@ -1,6 +1,29 @@
 # History
 
  - master/HEAD
+   * Add a new option to hide inactive tabs from top tab bar. This feature works only on Firefox 59 and later, and require new extra permission. Moreover you need to activate the API manually by `extensions.webextensions.tabhide.enabled`, a secret preference of Firefox itself.
+   * Track tabs more correctly at cases multiple tabs are opened quickly.
+   * Ask how to open the dropped link on a tab, like legacy versions.
+   * Staying on a tab while dragging of a link will switch focus to the dragover tab correctly.
+   * Shift-drag on a parent tab now allows to drag the tab as an individual tab.
+   * Drag and drop operations of tabs between a regular window and a private browsing window are now blocked.
+   * "Move to New Window" and similar operation work correctly for tabs in a private browsing window.
+   * Treat Ctrl-PageUp and Ctrl-PaegDown as tab switch trigger, same to Ctrl-Tab/Ctrl-Shift-Tab.
+   * Activate "Close Tabs to Right" and "Close Other Tabs" context menu items, on pinned tabs (respecting Firefox 59's behavior.)
+   * Theme's background color is now applied ASAP.
+   * Synchronize title of a group tab with its first child tab, if it has just a default title.
+   * Title edit for dummy group tabs now works correctly.
+   * Don't focus to the group tab itself after multiple tabs are automatically grouped.
+   * New tabs from pinned tabs are placed at correct position as configured.
+   * Expand focused tab if it is an orphan but collapsed. This is just a failsafe.
+   * Reduce CPU usage from offscreen rendering of tabs' throbber.
+   * Add a new configuration to control the position of the scrollbar in the sidebar.
+   * Add a secret configuration `moveDroppedTabToNewWindowForUnhandledDragEvent` to deactivate "move tab to new window by drag and drop" behavior.
+   * Synchronize some configurations with Firefox Sync.
+   * Update `zh_TW` locale (by lycsjm, thanks!)
+   * Add `de` locale (by sicherist, thanks!)
+   * Accept [`current` and other special values](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs) to specify tabs via APIs.
+   * Add new APIs to [indent](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#indent-demote-tab), [outdent](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#outdent-promote-tab), [move](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#move-tree-to-different-position), [duplicate](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#duplicate-tab-as-childsibling-tab), [focus](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#focus-to-the-nextprevious-sibling-tab), and [group](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#create-new-group-from-given-tabs) tabs.
  - 2.4.3 (2017.12.12)
    * Never group single orphan tab (regression on 2.4.2)
  - 2.4.2 (2017.12.12)
