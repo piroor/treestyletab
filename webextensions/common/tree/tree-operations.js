@@ -962,7 +962,7 @@ function syncOrderOfChildTabs(aParentTabs) {
 
   var updatedParentTabs = new Map();
   for (let parent of aParentTabs) {
-    if (updatedParentTabs.has(parent))
+    if (!parent || updatedParentTabs.has(parent))
       continue;
     updatedParentTabs.set(parent, true);
     if (parent.childTabs.length < 2)
