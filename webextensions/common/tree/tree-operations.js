@@ -111,10 +111,12 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   var childIds;
   {
     let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
+    log('expectedAllTabs: ', expectedAllTabs.map(dumpTab));
     if (newIndex >= expectedAllTabs.length)
       expectedAllTabs.push(aChild);
     else
       expectedAllTabs.splice(newIndex, 0, aChild);
+    log(' => ', expectedAllTabs.map(dumpTab));
 
     let children = expectedAllTabs.filter(aTab => {
       return (aTab == aChild ||
