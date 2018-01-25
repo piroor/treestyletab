@@ -560,15 +560,20 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
-    let tabIds = await browser.runtime.sendMessage({
+    let message = {
       type:     kCOMMAND_MOVE_TABS_BEFORE,
       windowId: gTargetWindow,
       tabs:     aTabs.map(aTab => aTab.id),
       nextTab:  aReferenceTab.id,
       broadcasted: !!aOptions.broadcast
-    });
-    if (aOptions.inRemote)
+    };
+    if (aOptions.inRemote) {
+      let tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(getTabById);
+    }
+    else {
+      browser.runtime.sendMessage(message);
+    }
   }
 
   var container = aTabs[0].parentNode;
@@ -657,15 +662,20 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
-    let tabIds = await browser.runtime.sendMessage({
+    let message = {
       type:        kCOMMAND_MOVE_TABS_AFTER,
       windowId:    gTargetWindow,
       tabs:        aTabs.map(aTab => aTab.id),
       previousTab: aReferenceTab.id,
       broadcasted: !!aOptions.broadcast
-    });
-    if (aOptions.inRemote)
+    };
+    if (aOptions.inRemote) {
+      let tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(getTabById);
+    }
+    else {
+      browser.runtime.sendMessage(message);
+    }
   }
 
   var container = aTabs[0].parentNode;
