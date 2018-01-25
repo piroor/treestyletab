@@ -632,7 +632,18 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   if (isCollapsed(aTab)) {
-    if (configs.autoExpandOnCollapsedChildFocused &&
+    if (!getParentTab(aTab)) {
+      // This is invalid case, generally never should happen,
+      // but actually happen on some environment:
+      // https://github.com/piroor/treestyletab/issues/1717
+      // So, always expand orphan collapsed tab as a failsafe.
+      collapseExpandTab(aTab, {
+        collapsed: false,
+        broadcast: true
+      });
+      handleNewActiveTab(aTab, aInfo);
+    }
+    else if (configs.autoExpandOnCollapsedChildFocused &&
         !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildFocused');
       for (let ancestor of getAncestorTabs(aTab)) {
