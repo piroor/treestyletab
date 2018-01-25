@@ -598,6 +598,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
+    syncOrderOfChildTabs(aTabs.map(getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
@@ -703,6 +704,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
+    syncOrderOfChildTabs(aTabs.map(getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
