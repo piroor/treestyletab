@@ -1160,6 +1160,20 @@ function onTabStateChanged(aTab) {
   reserveToUpdateLoadingState();
 }
 
+function onGroupTabDetected(aTab) {
+  // When a group tab is restored but pending, TST cannot update title of the tab itself.
+  // For failsafe now we update the title based on its URL.
+  var uri = aTab.apiTab.url;
+  var parameters = uri.replace(/^[^\?]+/, '');
+  var title = parameters.match(/[&?]title=([^&;]*)/);
+  if (!title)
+    title = parameters.match(/^\?([^&;]*)/);
+  title = title && decodeURIComponent(title[1]) ||
+           browser.i18n.getMessage('groupTab.label.default');
+  aTab.apiTab.title = title;
+  updateTab(aTab, { title }, { tab: aTab.apiTab });
+}
+
 function onContextualIdentitiesUpdated() {
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
