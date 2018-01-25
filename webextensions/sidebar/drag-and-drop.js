@@ -162,8 +162,8 @@ function getDropActionInternal(aEvent) {
     insertAfter:   null
   };
 
-  var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0) || gCurrentDragData;
-  info.dragData = dragData = dragData && JSON.parse(dragData);
+  var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
+  info.dragData = dragData = (dragData && JSON.parse(dragData)) || gCurrentDragData;
 
   var draggedTab = dragData && getTabById(dragData.apiTab && dragData.apiTab.id);
   info.draggedTab = draggedTab;
@@ -818,8 +818,8 @@ function onDragEnd(aEvent) {
     tab.classList.remove(kTAB_STATE_DRAGGING);
   }
 
-  var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0) || gCurrentDragData;
-  dragData = dragData && JSON.parse(dragData);
+  var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
+  dragData = (dragData && JSON.parse(dragData)) || gCurrentDragData;
   var stillInSelfWindow = !!gDraggingOnSelfWindow;
   gDraggingOnSelfWindow = false;
 
