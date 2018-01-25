@@ -1338,6 +1338,10 @@ function onMessage(aMessage, aSender, aRespond) {
         }
       })();
     }; break;
+
+    case kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
+      gCurrentDragData = aMessage.dragData || null;
+      break;
   }
 }
 
