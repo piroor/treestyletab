@@ -1342,6 +1342,41 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
 }
 
 
+async function groupTabs(aTabs, aOptions = {}) {
+  var rootTabs = collectRootTabs(aTabs);
+  if (rootTabs.length <= 0)
+    return null;
+
+  log('groupTabs: ', aTabs.map(dumpTab));
+
+  var uri = makeGroupTabURI({
+    title:     browser.i18n.getMessage('groupTab.label', rootTabs[0].apiTab.title),
+    temporary: true
+  });
+  var groupTab = await openURIInTab(uri, {
+    windowId:     rootTabs[0].apiTab.windowId,
+    parent:       getParentTab(rootTabs[0]),
+    insertBefore: rootTabs[0],
+    inBackground: true
+  });
+
+  await detachTabsFromTree(aTabs, {
+    broadcast: !!aOptions.broadcast
+  });
+  await moveTabsAfter(aTabs.slice(1), aTabs[0], {
+    broadcast: !!aOptions.broadcast
+  });
+  for (let tab of rootTabs) {
+    await attachTabTo(tab, groupTab, {
+      forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
+      dontMove:  true,
+      broadcast: !!aOptions.broadcast
+    });
+  }
+  return groupTab;
+}
+
+
 // drag and drop helper
 
 async function performTabsDragDrop(aParams = {}) {
