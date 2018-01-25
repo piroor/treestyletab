@@ -189,7 +189,6 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   // so we need to see the complete tab object.
   if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
     browser.tabs.update(aOptions.tab.id, {
-
       url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI)
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
