@@ -70,8 +70,8 @@ function getDragDataFromOneTab(aTab, aOptions = {}) {
     return {
       tabNode:  null,
       tabNodes: [],
-      tabId:    null,
-      tabIds:   [],
+      apiTab:   null,
+      apiTabs:  [],
       windowId: null
     };
 
@@ -79,8 +79,8 @@ function getDragDataFromOneTab(aTab, aOptions = {}) {
   return {
     tabNode:  aTab,
     tabNodes: draggedTabs,
-    tabId:    aTab.apiTab.id,
-    tabIds:   draggedTabs.map(aDraggedTab => aDraggedTab.apiTab.id),
+    apiTab:   aTab.apiTab,
+    apiTabs:  draggedTabs.map(aDraggedTab => aDraggedTab.apiTab),
     windowId: aTab.apiTab.windowId
   };
 }
@@ -95,8 +95,8 @@ function sanitizeDragData(aDragData) {
   return {
     tabNode:  null,
     tabNodes: [],
-    tabId:    aDragData.tabId,
-    tabIds:   aDragData.tabIds,
+    apiTab:   aDragData.apiTab,
+    apiTabs:  aDragData.apiTabs,
     windowId: aDragData.windowId
   };
 }
@@ -157,13 +157,13 @@ function getDropActionInternal(aEvent) {
   var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
   info.dragData = dragData = dragData && JSON.parse(dragData);
 
-  var draggedTab = dragData && getTabById(dragData.tabId);
+  var draggedTab = dragData && getTabById(dragData.apiTab && dragData.apiTab.id);
   info.draggedTab = draggedTab;
-  var draggedTabs = (dragData && dragData.tabIds) || [];
-  draggedTabs = draggedTabs.map(getTabById).filter(aTab => !!aTab);
+  var draggedTabs = (dragData && dragData.apiTabs) || [];
+  draggedTabs = draggedTabs.map(aApiTab => getTabById(aApiTab && aApiTab.id)).filter(aTab => !!aTab);
   info.draggedTabs = draggedTabs;
-  var isRemoteTab    = !draggedTab && (!dragData || !!dragData.tabId);
-  var isNewTabAction = !draggedTab && (!dragData || !dragData.tabId);
+  var isRemoteTab    = !draggedTab && (!dragData || !!dragData.apiTab);
+  var isNewTabAction = !draggedTab && (!dragData || !dragData.apiTab);
 
   if (!targetTab) {
     //log('dragging on non-tab element');
@@ -765,17 +765,17 @@ function onDrop(aEvent) {
   if (dt.dropEffect != 'link' &&
       dt.dropEffect != 'move' &&
       dropActionInfo.dragData &&
-      !dropActionInfo.dragData.tabId) {
+      !dropActionInfo.dragData.apiTab) {
     log('invalid drop');
     return;
   }
 
   if (dropActionInfo.dragData &&
-      dropActionInfo.dragData.tabId) {
+      dropActionInfo.dragData.apiTab) {
     log('there are dragged tabs');
     performTabsDragDrop({
       windowId:            dropActionInfo.dragData.windowId,
-      tabIds:              dropActionInfo.dragData.tabIds,
+      tabIds:              dropActionInfo.dragData.apiTabs.map(aApiTab => aApiTab.id),
       action:              dropActionInfo.action,
       attachTo:            dropActionInfo.parent,
       insertBefore:        dropActionInfo.insertBefore,
@@ -804,8 +804,8 @@ function onDragEnd(aEvent) {
   var stillInSelfWindow = !!gDraggingOnSelfWindow;
   gDraggingOnSelfWindow = false;
 
-  if (Array.isArray(dragData.tabIds))
-    dragData.tabNodes = dragData.tabIds.map(getTabById);
+  if (Array.isArray(dragData.apiTabs))
+    dragData.tabNodes = dragData.apiTabs.map(aApiTab => getTabById(aApiTab.id));
 
   clearDropPosition();
   clearDraggingState();
