@@ -120,18 +120,18 @@ function onNewTabsTimeout(aContainer) {
     return;
 
   gToBeGroupedTabSets.push(tabReferences);
-  wait(0).then(tryGroupTabs);
+  wait(0).then(tryGroupNewTabs);
 }
 
-async function tryGroupTabs() {
-  if (tryGroupTabs.running)
+async function tryGroupNewTabs() {
+  if (tryGroupNewTabs.running)
     return;
 
   var tabReferences = gToBeGroupedTabSets.shift();
   if (!tabReferences)
     return;
 
-  tryGroupTabs.running = true;
+  tryGroupNewTabs.running = true;
   try {
     // extract only pure new tabs
     var tabs = tabReferences.map(aTabReference => {
@@ -157,16 +157,17 @@ async function tryGroupTabs() {
       newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
     }
-    if (newRootTabs.length > 1)
-      await tryGroupNewOrphanTabs(newRootTabs);
+    if (newRootTabs.length > 1 &&
+        configs.autoGroupNewTabs)
+      await groupTabs(newRootTabs, { broadcast: true });
   }
   catch(e) {
-    log('Error on tryGroupTabs: ', String(e), e.stack);
+    log('Error on tryGroupNewTabs: ', String(e), e.stack);
   }
   finally {
-    tryGroupTabs.running = false;
+    tryGroupNewTabs.running = false;
     if (gToBeGroupedTabSets.length > 0)
-      tryGroupTabs();
+      tryGroupNewTabs();
   }
 }
 
@@ -224,29 +225,30 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
   return true;
 }
 
-async function tryGroupNewOrphanTabs(aRootTabs) {
-  if (!configs.autoGroupNewTabs ||
-      aRootTabs.length <= 0)
-    return false;
+async function groupTabs(aTabs, aOptions = {}) {
+  var rootTabs = collectRootTabs(aTabs);
+  if (rootTabs.length <= 0)
+    return null;
 
-  log(`tryGroupNewOrphanTabs: ${aRootTabs.length} root tabs are opened`);
+  log('groupTabs: ', aTabs.map(dumpTab));
+
   var uri = makeGroupTabURI({
-    title:     browser.i18n.getMessage('groupTab.label', aRootTabs[0].apiTab.title),
+    title:     browser.i18n.getMessage('groupTab.label', rootTabs[0].apiTab.title),
     temporary: true
   });
   var groupTab = await openURIInTab(uri, {
-    windowId:     aRootTabs[0].apiTab.windowId,
-    insertBefore: aRootTabs[0],
+    windowId:     rootTabs[0].apiTab.windowId,
+    insertBefore: rootTabs[0],
     inBackground: true
   });
-  for (let tab of aRootTabs) {
+  for (let tab of rootTabs) {
     await attachTabTo(tab, groupTab, {
       forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
       dontMove:  true,
-      broadcast: true
+      broadcast: !!aOptions.broadcast
     });
   }
-  return true;
+  return groupTab;
 }
 
 function onTabOpened(aTab, aInfo = {}) {
