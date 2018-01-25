@@ -1171,7 +1171,9 @@ function onGroupTabDetected(aTab) {
   title = title && decodeURIComponent(title[1]) ||
            browser.i18n.getMessage('groupTab.label.default');
   aTab.apiTab.title = title;
-  updateTab(aTab, { title }, { tab: aTab.apiTab });
+  wait(0).then(() => {
+    updateTab(aTab, { title }, { tab: aTab.apiTab });
+  });
 }
 
 function onContextualIdentitiesUpdated() {
