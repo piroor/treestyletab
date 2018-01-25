@@ -1407,6 +1407,8 @@ async function performTabsDragDrop(aParams = {}) {
   if (!draggedTabs.length)
     return;
 
+  // Basically tabs should not be dragged between regular window and private browsing window,
+  // so there are some codes to prevent shch operations. This is for failsafe.
   if (isPrivateBrowsing(draggedTabs[0]) != isPrivateBrowsing(getFirstTab(destinationWindowId)))
     return;
 
