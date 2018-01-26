@@ -217,6 +217,7 @@ configs = new Configs({
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
+  autoDiscardTabForUnexpectedFocus: false,
   knownExternalAddons: [
     'multipletab@piro.sakura.ne.jp'
   ],
@@ -331,6 +332,7 @@ configs = new Configs({
     notificationTimeout
     startDragTimeout
     moveDroppedTabToNewWindowForUnhandledDragEvent
+    autoDiscardTabForUnexpectedFocus
     knownExternalAddons
     useCachedTree
     simulateSVGContextFill
