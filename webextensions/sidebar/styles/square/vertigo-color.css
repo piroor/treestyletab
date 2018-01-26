@@ -57,7 +57,10 @@
   --tab-highlighted-base: var(--tab-surface);
 
   --throbber-color: var(--browser-bg-lightest, --tab-highlighted-glow);
+}
 
+:root,
+#background {
   background: var(--tab-surface);
 }
 
