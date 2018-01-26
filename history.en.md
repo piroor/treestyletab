@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.6 (2018.1.26)
    * Clear needless temporary group tabs correctly even if they are nested.
    * Open pinned tabs at the end of the tab bar as configured, when pinned tabs are not grouped.
    * Deactivate "auto discard" behavior for unexpectedly restored tabs by default.
