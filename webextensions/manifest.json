@@ -17,8 +17,7 @@
   ],
   "optional_permissions": [
     "<all_urls>",
-    "bookmarks",
-    "tabHide"
+    "bookmarks"
   ],
   "icons": {
     "16": "resources/16x16-light.svg",
