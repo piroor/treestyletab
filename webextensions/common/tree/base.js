@@ -261,9 +261,9 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
         aTab.apiTab &&
         aTab.apiTab.url == aTab.dataset.discardURLAfterCompletelyLoaded) {
       if (configs.autoDiscardTabForUnexpectedFocus) {
-      log(' => discard accidentally restored tab ', aTab.apiTab.id);
-      if (typeof browser.tabs.discard == 'function')
-        browser.tabs.discard(aTab.apiTab.id);
+        log(' => discard accidentally restored tab ', aTab.apiTab.id);
+        if (typeof browser.tabs.discard == 'function')
+          browser.tabs.discard(aTab.apiTab.id);
       }
       delete aTab.dataset.discardURLAfterCompletelyLoaded;
     }
