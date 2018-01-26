@@ -667,6 +667,9 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       if (gMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
       selectTabInternally(newSelection, { silently: true });
+      log('onTabFocusing: discarded? ', dumpTab(aTab), isDiscarded(aTab));
+      if (isDiscarded(aTab))
+        aTab.dataset.discardURLAfterCompletelyLoaded = aTab.apiTab.url;
       return true
     }
   }
