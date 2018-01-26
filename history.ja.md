@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.4.5 (2018.1.26)
+   * [現時点では権限 `tabHide` がMozilla Add-ons Webサイトによって拒絶される](https://github.com/mozilla/addons-linter/issues/1788)ため、その権限に依存する「アクティブでないタブを隠す」機能を無効化した
  - 2.4.4 (2018.1.25)
    * アクティブでないタブをFirefoxの上部タブバーから隠す機能を追加（Firefox 59以降で動作し、追加の権限と、Firefoxの隠し設定`extensions.webextensions.tabhide.enabled`の手動での有効化が必要です）
    * 複数のタブが素早く開かれた時のトラッキングをより正確に行うようにした
