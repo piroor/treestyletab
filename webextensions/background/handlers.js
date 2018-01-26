@@ -84,7 +84,15 @@ function onTabOpening(aTab, aInfo = {}) {
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
   if (isPinned(opener) &&
       opener.parentNode == aTab.parentNode) {
+    if (configs.autoGroupNewTabsFromPinned) {
     return true;
+    }
+    if (configs.insertNewTabFromPinnedTabAt == kINSERT_END) {
+      moveTabAfter(aTab, getLastTab(aTab), {
+        delayedMove: true,
+        broadcast:   true
+      });
+    }
   }
   else if (configs.autoAttach) {
     behaveAutoAttachedTab(aTab, {
