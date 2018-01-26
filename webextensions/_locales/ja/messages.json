@@ -75,7 +75,6 @@
   "message.startup.requestPermissions.allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
   "message.startup.requestPermissions.tabHide": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（Firefox 59以降のバージョンで、タブを隠す操作の許可が必要。また、\"about:config\"で\"extensions.webextensions.tabhide.enabled\"を有効化する必要もあります）" },
 
-
   "message.startup.userChromeCss.notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
   "message.startup.userChromeCss.description.1": { "message": "WebExtensionsの仕様上、Firefoxのタブバーとサイドバーのヘッダーはツリー型タブから制御できません。これらを隠したい場合は" },
   "message.startup.userChromeCss.description.link.label": { "message": "userChrome.cssでのカスタマイズ例" },
