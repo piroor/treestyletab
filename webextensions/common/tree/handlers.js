@@ -572,8 +572,8 @@ function onApiWindowRemoved(aWindowId) {
     for (let tab of getAllTabs(container)) {
       if (!tab.reservedCleanupNeedlessGroupTab)
         continue;
-    clearTimeout(container.reservedCleanupNeedlessGroupTab);
-    delete container.reservedCleanupNeedlessGroupTab;
+      clearTimeout(container.reservedCleanupNeedlessGroupTab);
+      delete container.reservedCleanupNeedlessGroupTab;
     }
   }
 }
