@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Clear needless temporary group tabs correctly even if they are nested.
+   * Open pinned tabs at the end of the tab bar as configured, when pinned tabs are not grouped.
+   * Deactivate "auto discard" behavior for unexpectedly restored tabs by default.
+   * Suppress some fatal initialization errors.
  - 2.4.5 (2018.1.26)
    * Deactivate "hide inactive tabs" feature, because [a depending permission `tabHide` is rejected by Mozilla Add-ons website itself for now](https://github.com/mozilla/addons-linter/issues/1788).
  - 2.4.4 (2018.1.25)
