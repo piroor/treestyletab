@@ -174,7 +174,7 @@ function getLastTab(aHint) {
 function getLastOpenedTab(aHint) {
   var tabs = getTabs(aHint);
   return tabs.length > 0 ?
-    tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id )[0] :
+    tabs.sort((aA, aB) => (aB.apiTab && aB.apiTab.id || 0) - (aA.apiTab && aA.apiTab.id || 0))[0] :
     null ;
 }
 
