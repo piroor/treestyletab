@@ -85,7 +85,7 @@ function onTabOpening(aTab, aInfo = {}) {
   if (isPinned(opener) &&
       opener.parentNode == aTab.parentNode) {
     if (configs.autoGroupNewTabsFromPinned) {
-    return true;
+      return true;
     }
     if (configs.insertNewTabFromPinnedTabAt == kINSERT_END) {
       moveTabAfter(aTab, getLastTab(aTab), {
