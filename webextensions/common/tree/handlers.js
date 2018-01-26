@@ -568,9 +568,13 @@ function onApiTabDetached(aTabId, aDetachInfo) {
 function onApiWindowRemoved(aWindowId) {
   log('onApiWindowRemoved ', aWindowId);
   var container = getTabsContainer(aWindowId);
-  if (container && container.reservedCleanupNeedlessGroupTab) {
+  if (container) {
+    for (let tab of getAllTabs(container)) {
+      if (!tab.reservedCleanupNeedlessGroupTab)
+        continue;
     clearTimeout(container.reservedCleanupNeedlessGroupTab);
     delete container.reservedCleanupNeedlessGroupTab;
+    }
   }
 }
 
