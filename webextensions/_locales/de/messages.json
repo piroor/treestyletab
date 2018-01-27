@@ -73,7 +73,8 @@
   "message.startup.requestPermissions.description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls Du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message.startup.requestPermissions.bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
   "message.startup.requestPermissions.allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen (erfordert Skript-Injektion in Webseiten zur Erkennung von Tastendrücken.)" },
-
+  "message.startup.requestPermissions.tabHide": { "message": "Inaktive Tabs außer angeheftete Tabs in der Tableiste verstecken (benötigt die Berechtigung zum Verstecken von Tabs.)" },
+  
   "message.startup.userChromeCss.notify": { "message": "Wie kann man die Tableiste und die Überschrift der Sidebar ausblenden?" },
   "message.startup.userChromeCss.description.1": { "message": "Aufgrund von Beschränkungen für WebExtensions, hat Tree Style Tab keine Kontrolle über die Tableiste und die Sidebar-Überschriften von Firefox. Um sie zu verändern, siehe " },
   "message.startup.userChromeCss.description.link.label": { "message": "Beispiele zur Anpassung durch userChrome.css" },
@@ -126,6 +127,7 @@
 
   "config.faviconizePinnedTabs.label": { "message": "Angeheftete Tabs nur mit Ihrem Symbol anzeigen" },
   "config.showContextualIdentitiesSelector.label": { "message": "Containerauswahl am \"Neuer Tab\"-Button anzeigen" },
+  "config.hideInactiveTabs.label": { "message": "Inaktive Tabs außer angeheftete Tabs in der der Tableiste verstecken (*Du musst in Firefox 59 (und neuer) \"extensions.webextensions.tabhide.enabled\" in \"about:config\" aktivieren.)" },
   "config.animation.label": { "message": "Animationen aktivieren" },
 
 
@@ -266,6 +268,8 @@
   "config.requestPermissions.bookmarks": { "message": "Erstellen von Lesezeichen erlauben" },
   "config.requestPermissions.allUrls":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Du musst das Ausführen von Scripts auf Webseiten erlauben.)" },
 
+  "config.requestPermissions.tabHide":   { "message": "Erlauben Tabs zu verstecken" },
+  
   "config.requestPermissions.fallbackToToolbarButton.title": { "message": "Klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste" },
   "config.requestPermissions.fallbackToToolbarButton.message": { "message": "Wegen eines Bugs in Firefox, kannst du Berechtigungen nicht in diesem Menü erteilen. Bitte klicke auf das das \"Tree Style Tab\" Symbol in der Symbolleiste um Berechtigungen zu erteilen." },
 
