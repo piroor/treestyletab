@@ -10,7 +10,6 @@
   --tab-surface-active: #474749;
   --tab-surface-active-hover: #707071;
   --tab-active-marker: #0a84ff;
-  --tab-active-marker-size: calc(var(--favicon-size) / 6);
   --dropmarker-color: var(--tab-text);
   --throbber-color: var(--tab-text);
 
@@ -30,29 +29,4 @@
 }
 .tab:not(.collapsed).active:hover {
   --tab-surface: var(--tab-surface-active-hover);
-}
-
-.tab.active .active-marker::before {
-  background: var(--tab-active-marker);
-  content: "";
-  position: absolute;
-  top: 0;
-}
-
-:root.left .tab.active:not(.faviconized) .active-marker::before {
-  bottom: 0;
-  left: 0;
-  width: var(--tab-active-marker-size);
-}
-
-:root.right .tab.active:not(.faviconized) .active-marker::before {
-  bottom: 0;
-  right: 0;
-  width: var(--tab-active-marker-size);
-}
-
-.tab.active.faviconized .active-marker::before {
-  height: var(--tab-active-marker-size);
-  left: 0;
-  right: 0;
 }

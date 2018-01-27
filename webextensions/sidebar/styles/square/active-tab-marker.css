@@ -1,0 +1,29 @@
+:root {
+  --tab-active-marker: Highlight;
+  --tab-active-marker-size: calc(var(--favicon-size) / 8);
+}
+
+.tab.active .active-marker::before {
+  background: var(--tab-active-marker);
+  content: "";
+  position: absolute;
+  top: 0;
+}
+
+:root.left .tab.active:not(.faviconized) .active-marker::before {
+  bottom: 0;
+  left: 0;
+  width: var(--tab-active-marker-size);
+}
+
+:root.right .tab.active:not(.faviconized) .active-marker::before {
+  bottom: 0;
+  right: 0;
+  width: var(--tab-active-marker-size);
+}
+
+.tab.active.faviconized .active-marker::before {
+  height: var(--tab-active-marker-size);
+  left: 0;
+  right: 0;
+}
