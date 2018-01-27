@@ -7,7 +7,6 @@
 
 :root:not([color-scheme="system-color"]) {
   --tab-active-marker: #0a84ff;
-  --tab-active-marker-inactive: #aab0bd; // rgb(170, 176, 189)
   --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.4);
   --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
 }
@@ -81,26 +80,32 @@
 }
 
 
+.tab:not(.active):hover .active-marker::before {
+  background-color: transparent;
+  --tab-active-marker-start: rgba(0, 20, 20, 0.015);
+  --tab-active-marker-end: rgba(0, 20, 20, 0.2);
+}
+
 :root.left .tab:not(.faviconized):not(.active):hover .active-marker::before {
   background-image: -moz-linear-gradient(
                       left,
-                      rgba(255, 255, 255, 0.85) 0,
-                      rgba(255, 255, 255, 0) 30%
+                      var(--tab-active-marker-start) 0,
+                      var(--tab-active-marker-end) 30%
                     );
 }
 
 :root.right .tab:not(.faviconized):not(.active):hover .active-marker::before {
   background-image: -moz-linear-gradient(
                       right,
-                      rgba(255, 255, 255, 0.85) 0,
-                      rgba(255, 255, 255, 0) 30%
+                      var(--tab-active-marker-start) 0,
+                      var(--tab-active-marker-end) 30%
                     );
 }
 
 .tab.faviconized:not(.active):hover .active-marker::before {
   background-image: -moz-linear-gradient(
                       top,
-                      rgba(255, 255, 255, 0.85) 0,
-                      rgba(255, 255, 255, 0) 30%
+                      var(--tab-active-marker-start) 0,
+                      var(--tab-active-marker-end) 30%
                     );
 }

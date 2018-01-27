@@ -10,7 +10,7 @@
   --tab-surface-active: #474749;
   --tab-surface-active-hover: #707071;
   --tab-active-marker: #0a84ff;
-  --tab-active-marker-inactive: #707071;
+  --tab-active-marker-inactive: rgba(255, 255, 255, 0.2);
   --dropmarker-color: var(--tab-text);
   --throbber-color: var(--tab-text);
 
