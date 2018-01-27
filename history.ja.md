@@ -1,6 +1,37 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.4.6 (2018.1.26)
+   * 入れ子になった一時的なグループ化用タブについて、不要になった物が期待通りに自動で閉じられない問題を修正
+   * ピン留めされたタブから開かれたタブをグループ化しない設定の時に、ピン留めされたタブから開いたタブがタブバー末尾に開かれなかったのを修正
+   * 意図せず読み込まれてしまったタブに対する自動的なアンロード処理を初期状態で無効化した
+   * 致命的なエラーによって初期化が完了しない事があったのを修正
+ - 2.4.5 (2018.1.26)
+   * [現時点では権限 `tabHide` がMozilla Add-ons Webサイトによって拒絶される](https://github.com/mozilla/addons-linter/issues/1788)ため、その権限に依存する「アクティブでないタブを隠す」機能を無効化した
+ - 2.4.4 (2018.1.25)
+   * アクティブでないタブをFirefoxの上部タブバーから隠す機能を追加（Firefox 59以降で動作し、追加の権限と、Firefoxの隠し設定`extensions.webextensions.tabhide.enabled`の手動での有効化が必要です）
+   * 複数のタブが素早く開かれた時のトラッキングをより正確に行うようにした
+   * レガシー版と同様に、リンクがタブの上にドロップされた時の開き方をその都度選択できるようにした
+   * リンクのドラッグ中にタブの上でしばらく待つとそのタブにフォーカスを切り替える、という挙動が働いていなかったのを修正
+   * ツリーの親になっているタブでも、Shift-ドラッグによってツリーから切り離して単独で移動できるようにした
+   * 通常のウィンドウとプライベートウィンドウの間でのタブの移動を禁止するようにした（Firefoxの挙動に合わせた）
+   * タブの「新しいウィンドウへ移動」およびそれに類する機能について、プライベートウィンドウでも正しく動作するようにした
+   * Ctrl-PageUp/Ctrl-PageDownを、タブ切り替えのショートカットとしてCtrl-Tab/Ctrl-Shift-Tabと同様に捕捉するようにした
+   * ピン留めされたタブの上でコンテキストメニューから「右側のタブを閉じる」と「他のタブを閉じる」を実行できるようにした（Firefox 59の挙動に合わせた）
+   * テーマの背景色を可能な限り早く反映するようにした
+   * グループ化用のダミーのタブについて、既定のタイトルをそのグループの最初の子タブのタイトルに同期するようにした
+   * グループ化用の他ミーのタブのタイトル編集機能が正しく動作していなかったのを修正
+   * 複数のタブが自動でグループ化された時に、グループ化用のタブではなくグループの最初のタブにフォーカスするようにした
+   * ピン留めされたタブから開かれたタブが設定通りの位置に配置されていなかったのを修正
+   * 異常事態のフェイルセーフとして、親タブがないのに折り畳まれた状態のタブにフォーカスされた時はタブを表示し直すようにした
+   * タブの読み込み中表示のアニメーションの画面外描画に起因してCPU使用率が異常に高くなる問題を修正
+   * サイドバー内のスクロールバーの表示位置を制御する設定を追加
+   * 「タブをウィンドウ外にドラッグ＆ドロップしたら新しいウィンドウに切り離す」という挙動そのものを抑制する隠し設定 `moveDroppedTabToNewWindowForUnhandledDragEvent` を追加
+   * Firefox Syncでいくつかの設定を同期するようにした
+   * `zh_TW`ロケール更新 (by lycsjm, thanks!)
+   * `de` ロケール追加 (by sicherist, thanks!)
+   * APIでタブを指定する時に[`current`およびその他の便利なエイリアス](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs)を使えるようにした
+   * [タブのインデントの深さの増加](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#indent-demote-tab)、[インデントの深さの減少](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#outdent-promote-tab)、[ツリーごとまたは単体での移動](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#move-tree-to-different-position)、[複製](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#duplicate-tab-as-childsibling-tab)、[フォーカス移動](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#focus-to-the-nextprevious-sibling-tab)、[タブのグループ化](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#create-new-group-from-given-tabs)を行うAPIを追加した
  - 2.4.3 (2017.12.12)
    * 単独のタブがグループ化されてしまう問題を修正（2.4.2の後退バグ）
  - 2.4.2 (2017.12.12)

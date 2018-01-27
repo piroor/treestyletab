@@ -84,7 +84,15 @@ function onTabOpening(aTab, aInfo = {}) {
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
   if (isPinned(opener) &&
       opener.parentNode == aTab.parentNode) {
-    return true;
+    if (configs.autoGroupNewTabsFromPinned) {
+      return true;
+    }
+    if (configs.insertNewTabFromPinnedTabAt == kINSERT_END) {
+      moveTabAfter(aTab, getLastTab(aTab), {
+        delayedMove: true,
+        broadcast:   true
+      });
+    }
   }
   else if (configs.autoAttach) {
     behaveAutoAttachedTab(aTab, {
@@ -120,18 +128,18 @@ function onNewTabsTimeout(aContainer) {
     return;
 
   gToBeGroupedTabSets.push(tabReferences);
-  wait(0).then(tryGroupTabs);
+  wait(0).then(tryGroupNewTabs);
 }
 
-async function tryGroupTabs() {
-  if (tryGroupTabs.running)
+async function tryGroupNewTabs() {
+  if (tryGroupNewTabs.running)
     return;
 
   var tabReferences = gToBeGroupedTabSets.shift();
   if (!tabReferences)
     return;
 
-  tryGroupTabs.running = true;
+  tryGroupNewTabs.running = true;
   try {
     // extract only pure new tabs
     var tabs = tabReferences.map(aTabReference => {
@@ -157,16 +165,17 @@ async function tryGroupTabs() {
       newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
     }
-    if (newRootTabs.length > 1)
-      await tryGroupNewOrphanTabs(newRootTabs);
+    if (newRootTabs.length > 1 &&
+        configs.autoGroupNewTabs)
+      await groupTabs(newRootTabs, { broadcast: true });
   }
   catch(e) {
-    log('Error on tryGroupTabs: ', String(e), e.stack);
+    log('Error on tryGroupNewTabs: ', String(e), e.stack);
   }
   finally {
-    tryGroupTabs.running = false;
+    tryGroupNewTabs.running = false;
     if (gToBeGroupedTabSets.length > 0)
-      tryGroupTabs();
+      tryGroupNewTabs();
   }
 }
 
@@ -218,31 +227,6 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     await attachTabTo(tab, parent, {
       forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
       dontMove:  newGroupTabs.has(opener),
-      broadcast: true
-    });
-  }
-  return true;
-}
-
-async function tryGroupNewOrphanTabs(aRootTabs) {
-  if (!configs.autoGroupNewTabs ||
-      aRootTabs.length <= 0)
-    return false;
-
-  log(`tryGroupNewOrphanTabs: ${aRootTabs.length} root tabs are opened`);
-  var uri = makeGroupTabURI({
-    title:     browser.i18n.getMessage('groupTab.label', aRootTabs[0].apiTab.title),
-    temporary: true
-  });
-  var groupTab = await openURIInTab(uri, {
-    windowId:     aRootTabs[0].apiTab.windowId,
-    insertBefore: aRootTabs[0],
-    inBackground: true
-  });
-  for (let tab of aRootTabs) {
-    await attachTabTo(tab, groupTab, {
-      forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
-      dontMove:  true,
       broadcast: true
     });
   }
@@ -656,7 +640,18 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   if (isCollapsed(aTab)) {
-    if (configs.autoExpandOnCollapsedChildFocused &&
+    if (!getParentTab(aTab)) {
+      // This is invalid case, generally never should happen,
+      // but actually happen on some environment:
+      // https://github.com/piroor/treestyletab/issues/1717
+      // So, always expand orphan collapsed tab as a failsafe.
+      collapseExpandTab(aTab, {
+        collapsed: false,
+        broadcast: true
+      });
+      handleNewActiveTab(aTab, aInfo);
+    }
+    else if (configs.autoExpandOnCollapsedChildFocused &&
         !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildFocused');
       for (let ancestor of getAncestorTabs(aTab)) {
@@ -680,6 +675,9 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       if (gMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
       selectTabInternally(newSelection, { silently: true });
+      log('onTabFocusing: discarded? ', dumpTab(aTab), isDiscarded(aTab));
+      if (isDiscarded(aTab))
+        aTab.dataset.discardURLAfterCompletelyLoaded = aTab.apiTab.url;
       return true
     }
   }
@@ -1575,6 +1573,13 @@ function onMessageExternal(aMessage, aSender) {
           });
         }
         return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
+      })();
+
+    case kTSTAPI_GROUP_TABS:
+      return (async () => {
+        var tabs     = await TSTAPIGetTargetTabs(aMessage);
+        var groupTab = await groupTabs(tabs, { broadcast: true });
+        return groupTab.apiTab;
       })();
 
     case kTSTAPI_GET_TREE_STRUCTURE:

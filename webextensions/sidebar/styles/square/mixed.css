@@ -1,46 +1,111 @@
 @import url("base.css");
 @import url("border.css");
+@import url("active-tab-marker.css");
 @import url("plain-color.css");
 @import url("vertigo-color.css");
 @import url("shadow.css");
 
-:root {
+:root:not([color-scheme="system-color"]) {
+  --tab-active-marker: #0a84ff;
+  --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.4);
+  --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
+}
+
+:root,
+#background {
   background: var(--tabbar-bg);
 }
 
 .tab {
   background-color: var(--tab-surface);
-  background-image: -moz-linear-gradient(
-                      top,
-                      rgba(0, 0, 0, 0.02) 0,
-                      rgba(0, 0, 0, 0) 50%
-                    );
 }
 
 .tab:not(.collapsed):hover,
 .after-tabs button:hover {
   background-color: var(--tab-surface-hover);
-  background-image: -moz-linear-gradient(
-                      top,
-                      rgba(213, 224, 245, 1) 0,
-                      rgba(213, 224, 245, 0.4) 50%
-                    );
 }
 
 .tab.active {
   background-color: var(--tab-surface-active);
-  background-image: -moz-linear-gradient(
-                      top,
-                      rgba(4, 83, 227, 0.04) 0,
-                      rgba(4, 83, 227, 0) 50%
-                    );
 }
 
 .tab.active:not(.collapsed):hover {
   background-color: var(--tab-surface-active-hover);
+}
+
+
+:root.left .tab:not(.faviconized).active {
+  background-image: -moz-linear-gradient(
+                      left,
+                      var(--tab-surface-active-gradient-start) 0,
+                      var(--tab-surface-active-gradient-end) 30%
+                    );
+}
+:root.left .tab:not(.faviconized).active:not(.collapsed):hover {
+  background-image: -moz-linear-gradient(
+                      left,
+                      var(--tab-surface-active-gradient-start) 0,
+                      var(--tab-surface-active-gradient-end) 50%
+                    );
+}
+
+:root.right .tab:not(.faviconized).active {
+  background-image: -moz-linear-gradient(
+                      right,
+                      var(--tab-surface-active-gradient-start) 0,
+                      var(--tab-surface-active-gradient-end) 30%
+                    );
+}
+:root.right .tab:not(.faviconized).active:not(.collapsed):hover {
+  background-image: -moz-linear-gradient(
+                      right,
+                      var(--tab-surface-active-gradient-start) 0,
+                      var(--tab-surface-active-gradient-end) 50%
+                    );
+}
+
+.tab.faviconized.active {
   background-image: -moz-linear-gradient(
                       top,
-                      rgba(199, 219, 252, 1) 0,
-                      rgba(199, 219, 252, 0.4) 50%
+                      var(--tab-surface-active-gradient-start) 0,
+                      var(--tab-surface-active-gradient-end) 40%
+                    );
+}
+.tab.faviconized.active:hover {
+  background-image: -moz-linear-gradient(
+                      top,
+                      var(--tab-surface-active-gradient-start) 0,
+                      var(--tab-surface-active-gradient-end) 60%
+                    );
+}
+
+
+.tab:not(.active):hover .active-marker::before {
+  background-color: transparent;
+  --tab-active-marker-start: rgba(0, 20, 20, 0.015);
+  --tab-active-marker-end: rgba(0, 20, 20, 0.2);
+}
+
+:root.left .tab:not(.faviconized):not(.active):hover .active-marker::before {
+  background-image: -moz-linear-gradient(
+                      left,
+                      var(--tab-active-marker-start) 0,
+                      var(--tab-active-marker-end) 30%
+                    );
+}
+
+:root.right .tab:not(.faviconized):not(.active):hover .active-marker::before {
+  background-image: -moz-linear-gradient(
+                      right,
+                      var(--tab-active-marker-start) 0,
+                      var(--tab-active-marker-end) 30%
+                    );
+}
+
+.tab.faviconized:not(.active):hover .active-marker::before {
+  background-image: -moz-linear-gradient(
+                      top,
+                      var(--tab-active-marker-start) 0,
+                      var(--tab-active-marker-end) 30%
                     );
 }

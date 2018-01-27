@@ -82,6 +82,11 @@ function isHidden(aTab) {
            aTab.classList.contains(kTAB_STATE_HIDDEN);
 }
 
+function isApiTabHidden(aTab) {
+  return ensureLivingTab(aTab) &&
+           aTab.classList.contains(kTAB_STATE_API_TAB_HIDDEN);
+}
+
 function isCollapsed(aTab) {
   return ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_COLLAPSED);
@@ -90,6 +95,11 @@ function isCollapsed(aTab) {
 function isDiscarded(aTab) {
   return ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_DISCARDED);
+}
+
+function isPrivateBrowsing(aTab) {
+  return ensureLivingTab(aTab) &&
+           aTab.classList.contains(kTAB_STATE_PRIVATE_BROWSING);
 }
 
 function isOpening(aTab) {

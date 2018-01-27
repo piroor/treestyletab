@@ -65,49 +65,49 @@ function isEventFiredOnTwisty(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kTWISTY}`);
+  return node && !!node.closest(`.${kTWISTY}`);
 }
 
 function isEventFiredOnSoundButton(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kSOUND_BUTTON}`);
+  return node && !!node.closest(`.${kSOUND_BUTTON}`);
 }
 
 function isEventFiredOnClosebox(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kCLOSEBOX}`);
+  return node && !!node.closest(`.${kCLOSEBOX}`);
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kNEWTAB_BUTTON}`);
+  return node && !!node.closest(`.${kNEWTAB_BUTTON}`);
 }
 
 function isEventFiredOnContextualIdentitySelector(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`);
+  return node && !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`);
 }
 
 function isEventFiredOnClickable(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`button, scrollbar, select`);
+  return node && !!node.closest(`button, scrollbar, select`);
 }
 
 function isEventFiredOnScrollbar(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return !!node.closest(`scrollbar, nativescrollbar`);
+  return node && !!node.closest(`scrollbar, nativescrollbar`);
 }
 
 
@@ -130,7 +130,7 @@ function getClickedOptionFromEvent(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return node.closest(`option`);
+  return node && node.closest(`option`);
 }
 
 function getTabFromCoordinates(aEvent) {
@@ -185,6 +185,8 @@ var gLastMousedown = null;
 function onMouseDown(aEvent) {
   cancelHandleMousedown();
   tabContextMenu.close();
+  clearDropPosition();
+  clearDraggingState();
 
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
   if (configs.logOnMouseEvent)
@@ -705,9 +707,13 @@ function updateTabSoundButtonTooltip(aTab) {
   markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
-function onTabFocused(aTab) {
+function onTabFocused(aTab, aInfo = {}) {
   tabContextMenu.close();
   scrollToTab(aTab);
+
+  if (configs.hideInactiveTabs &&
+      aInfo.oldActiveTabs)
+    hideTabs(aInfo.oldActiveTabs);
 }
 
 function onTabOpening(aTab, aInfo = {}) {
@@ -739,6 +745,9 @@ function onTabOpened(aTab, aInfo = {}) {
     else
       notifyOutOfViewTab(aTab);
   }
+
+  if (configs.hideInactiveTabs)
+    hideTabs([aTab]);
 
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
@@ -1136,6 +1145,8 @@ function onTabUnpinned(aTab) {
   clearPinnedStyle(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
+  if (!isActive(aTab))
+    hideTabs([aTab]);
   reserveToPositionPinnedTabs();
   reserveToUpdateCachedTabbar();
 }
@@ -1147,6 +1158,22 @@ function onTabStateChanged(aTab) {
     aTab.classList.remove(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   reserveToUpdateLoadingState();
+}
+
+function onGroupTabDetected(aTab) {
+  // When a group tab is restored but pending, TST cannot update title of the tab itself.
+  // For failsafe now we update the title based on its URL.
+  var uri = aTab.apiTab.url;
+  var parameters = uri.replace(/^[^\?]+/, '');
+  var title = parameters.match(/[&?]title=([^&;]*)/);
+  if (!title)
+    title = parameters.match(/^\?([^&;]*)/);
+  title = title && decodeURIComponent(title[1]) ||
+           browser.i18n.getMessage('groupTab.label.default');
+  aTab.apiTab.title = title;
+  wait(0).then(() => {
+    updateTab(aTab, { title }, { tab: aTab.apiTab });
+  });
 }
 
 function onContextualIdentitiesUpdated() {
@@ -1327,6 +1354,10 @@ function onMessage(aMessage, aSender, aRespond) {
         }
       })();
     }; break;
+
+    case kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
+      gCurrentDragData = aMessage.dragData || null;
+      break;
   }
 }
 
@@ -1435,6 +1466,13 @@ function onConfigChange(aChangedKey) {
     case 'indentAutoShrink':
     case 'indentAutoShrinkOnlyForVisible':
       updateIndent({ force: true });
+      break;
+
+    case 'hideInactiveTabs':
+      if (configs.hideInactiveTabs)
+        hideTabs(getAllTabs());
+      else
+        showTabs(getAllTabs());
       break;
 
     case 'style':

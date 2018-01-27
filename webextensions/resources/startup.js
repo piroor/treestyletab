@@ -17,4 +17,16 @@ window.addEventListener('DOMContentLoaded', () => {
     Permissions.BOOKMARKS,
     document.querySelector('#bookmarksPermissionGranted')
   );
+  /*
+  Permissions.bindToCheckbox(
+    Permissions.TAB_HIDE,
+    document.querySelector('#tabHidePermissionGranted'),
+    {
+      onChanged: (aGranted) => {
+        if (aGranted)
+          configs.hideInactiveTabs = true;
+      }
+    }
+  );
+  */
 }, { once: true });

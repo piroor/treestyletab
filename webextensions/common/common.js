@@ -66,6 +66,39 @@ async function notify(aParams = {}) {
   await browser.notifications.clear(id);
 }
 
+function makeAsyncFunctionSequential(aFunction) {
+  return async function(...aArgs) {
+    return new Promise((aResolve, aReject) => {
+      makeAsyncFunctionSequential.tasks.push({
+        original: aFunction,
+        args:     aArgs,
+        resolve:  aResolve,
+        reject:   aReject,
+        context:  this
+      });
+      if (makeAsyncFunctionSequential.tasks.length == 1)
+        makeAsyncFunctionSequential.start();
+    });
+  };
+}
+makeAsyncFunctionSequential.tasks = [];
+makeAsyncFunctionSequential.start = async () => {
+  var task = makeAsyncFunctionSequential.tasks[0];
+  if (!task)
+    return;
+  try {
+    var result = await task.original.call(task.context, ...task.args);
+    task.resolve(result);
+  }
+  catch(e) {
+    task.reject(e);
+  }
+  finally {
+    makeAsyncFunctionSequential.tasks.shift();
+    makeAsyncFunctionSequential.start();
+  }
+};
+
 configs = new Configs({
   // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
@@ -93,6 +126,9 @@ configs = new Configs({
 
   showContextualIdentitiesSelector: false,
   zoomable: false,
+
+  hideInactiveTabs: false,
+  preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab: true,
 
 
   // context menu
@@ -181,6 +217,7 @@ configs = new Configs({
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
+  autoDiscardTabForUnexpectedFocus: false,
   knownExternalAddons: [
     'multipletab@piro.sakura.ne.jp'
   ],
@@ -229,11 +266,14 @@ configs = new Configs({
 }, {
   syncKeys: `
     counterRole
+    sidebarScrollbarPosition
     maxTreeLevel
     indentAutoShrink
     indentAutoShrinkOnlyForVisible
     showContextualIdentitiesSelector
     zoomable
+    hideInactiveTabs
+    preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab
     context_reloadTree
     context_reloadDescendants
     context_closeTree
@@ -256,6 +296,7 @@ configs = new Configs({
     skipCollapsedTabsForTabSwitchingShortcuts
     parentTabBehaviorForChanges
     syncParentTabAndOpenerTab
+    dropLinksOnTabBehavior
     autoGroupNewTabs
     autoGroupNewTabsTimeout
     autoGroupNewTabsDelayOnNewWindow
@@ -289,9 +330,9 @@ configs = new Configs({
     acceptableDelayForInternalFocusMoving
     preventTearOffTabsTimeout
     notificationTimeout
-    sidebarOpenStateUpdateInterval
     startDragTimeout
     moveDroppedTabToNewWindowForUnhandledDragEvent
+    autoDiscardTabForUnexpectedFocus
     knownExternalAddons
     useCachedTree
     simulateSVGContextFill

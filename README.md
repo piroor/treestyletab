@@ -195,7 +195,7 @@ It provides ability to select multiple tabs by Ctrl-Click or Shift-Click and you
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), [transparency of tabs](https://github.com/piroor/treestyletab/issues/651), and so on
 
 There is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
-See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules).
+See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) and [details of inspectation for the sidebar contents](https://github.com/piroor/treestyletab/issues/1725#issuecomment-359856516).
 
 ### [Donation](https://github.com/piroor/treestyletab/issues/761)
 

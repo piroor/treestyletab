@@ -256,6 +256,8 @@ function startWatchSidebarOpenState() {
     gSidebarOpenState.set(windowId, true);
     aPort.onDisconnect.addListener(aMessage => {
       gSidebarOpenState.delete(windowId);
+      if (configs.hideInactiveTabs)
+        showTabs(getAllTabs(windowId));
     });
   });
 }
@@ -343,7 +345,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
         windowStateCompletelyApplied = structure.length == tabs.length;
       }
       if (tabsOffset > -1) {
-        applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
+        await applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
         gMetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
       }
     }
@@ -632,11 +634,10 @@ function reserveToCleanupNeedlessGroupTab(aTabOrTabs) {
   for (let tab of tabs) {
     if (!ensureLivingTab(tab))
       continue;
-    let container = tab.parentNode;
-    if (container.reservedCleanupNeedlessGroupTab)
-      clearTimeout(container.reservedCleanupNeedlessGroupTab);
-    container.reservedCleanupNeedlessGroupTab = setTimeout(() => {
-      delete container.reservedCleanupNeedlessGroupTab;
+    if (tab.reservedCleanupNeedlessGroupTab)
+      clearTimeout(tab.reservedCleanupNeedlessGroupTab);
+    tab.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+      delete tab.reservedCleanupNeedlessGroupTab;
       cleanupNeedlssGroupTab(tab);
     }, 100);
   }

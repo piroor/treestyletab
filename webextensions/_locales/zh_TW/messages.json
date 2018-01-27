@@ -56,6 +56,11 @@
   "bookmark.notification.notPermitted.title": { "message": "權限錯誤" },
   "bookmark.notification.notPermitted.message": { "message": "無法取得創建書籤的權限，請至 Tree Style Tab 的設定頁面設定權限。" },
 
+  "dropLinksOnTabBehavior.message": { "message": "如何開啟？" },
+  "dropLinksOnTabBehavior.save":    { "message": "永遠如此" },
+  "dropLinksOnTabBehavior.load":    { "message": "開啟於此分頁" },
+  "dropLinksOnTabBehavior.newtab":  { "message": "開啟為新子分頁" },
+
   "message.startup.description.1": { "message": "Tree Style Tab 在 Firefox 57 後的版本已使用 WebExtensions 技術改寫，以側邊欄做為垂直分頁列。如果側邊欄沒顯示，按下" },
   "message.startup.description.key": { "message": "「F1」鍵" },
   "message.startup.description.2": { "message": "或點擊工具列上的「" },
@@ -68,6 +73,7 @@
   "message.startup.requestPermissions.description": { "message": "⚠下列功能需要額外權限，給予額外的權限以使用。" },
   "message.startup.requestPermissions.bookmarks": { "message": "右鍵選單中「此樹加入書籤」(需要允許書籤存取)。" },
   "message.startup.requestPermissions.allUrls":   { "message": "以快捷鍵切換分頁時，不要展開折疊的樹(為偵測盤盤操作，需要允許在網頁中插入腳本執行)。" },
+  "message.startup.requestPermissions.tabHide": { "message": "自分頁列隱藏釘選分頁外的閒置分頁(必須在 Firefox 59 以後允許分頁隱藏。另需啟用「about:config」中的「extensions.webextensions.tabhide.enabled」。)" },
 
   "message.startup.userChromeCss.notify": { "message": "想要隱藏分頁列及側邊欄標題列？" },
   "message.startup.userChromeCss.description.1": { "message": "由於 WebExtensions 限制，Tree Style Tab 無法控制分頁列及側邊欄標題列，若想隱藏詳見" },
@@ -121,6 +127,7 @@
 
   "config.faviconizePinnedTabs.label": { "message": "釘選分頁只顯示網頁圖示" },
   "config.showContextualIdentitiesSelector.label": { "message": "在「開新分頁」按鈕顯示容器分頁的選單" },
+  "config.hideInactiveTabs.label": { "message": "自分頁列隱藏釘選分頁外的閒置分頁(必須在 Firefox 59 以後允許分頁隱藏。另需啟用「about:config」中的「extensions.webextensions.tabhide.enabled」。)" },
   "config.animation.label": { "message": "啟用動畫效果" },
 
 
@@ -197,6 +204,11 @@
   "config.promoteFirstChildForClosedRoot.label": { "message": "只有關閉最上層的父分頁時，才提升首個子分頁為新父分頁" },
   "config.closeParentBehavior.detach": { "message": "釋放該樹所有子分頁" },
 
+  "config.dropLinksOnTabBehavior.caption": { "message": "拖曳連結或 URL 字串至分頁時" },
+  "config.dropLinksOnTabBehavior.ask":     { "message": "每次詢問" },
+  "config.dropLinksOnTabBehavior.load":    { "message": "開啟於此分頁" },
+  "config.dropLinksOnTabBehavior.newtab":  { "message": "開啟於新子分頁" },
+
 
   "config.advanced.caption": { "message": "進階設定" },
 
@@ -249,9 +261,15 @@
   "config.acccelaratedTabDuplication.label": { "message": "加快分頁複制(※動作會不穩定)" },
   "config.maximumAcceptableDelayForTabDuplication.before": { "message": "" },
   "config.maximumAcceptableDelayForTabDuplication.after": { "message": "亳秒內未複制完成即中斷。" },
+  "config.sidebarScrollbarPosition.caption": { "message": "捲軸位置" },
+  "config.sidebarScrollbarPosition.auto": { "message": "自動" },
+  "config.sidebarScrollbarPosition.left": { "message": "左側" },
+  "config.sidebarScrollbarPosition.right": { "message": "右側" },
+  "config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label": { "message": "自分頁列隱藏釘選分頁外的閒置分頁時，儘可能防止目前分頁關閉後切換到最後一個釘選分頁。" },
 
   "config.requestPermissions.bookmarks": { "message": "允許創建書籤" },
   "config.requestPermissions.allUrls":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(需要允許在網頁中執行腳本)。" },
+  "config.requestPermissions.tabHide":   { "message": "允許顯示 / 隱藏分頁" },
 
   "config.requestPermissions.fallbackToToolbarButton.title": { "message": "點擊「Tree Style Tab」的工具列按鈕" },
   "config.requestPermissions.fallbackToToolbarButton.message": { "message": "由於 Firefox 的問題，不能由此頁頁要求權限，點擊工具列上的「Tree Style Tab」按鈕以給予權限。" },

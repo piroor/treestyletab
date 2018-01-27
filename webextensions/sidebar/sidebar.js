@@ -158,6 +158,9 @@ async function init() {
     gMetricsData.add('applying scroll position');
   }
 
+  if (configs.hideInactiveTabs)
+    hideTabs(getAllTabs());
+
   gInitializing = false;
 
   updateVisualMaxTreeLevel();
@@ -384,22 +387,23 @@ async function rebuildAll(aCache) {
   clearAllTabsContainers();
 
   if (aCache) {
-    await restoreTabsFromCache(aCache, { tabs: apiTabs });
-    gMetricsData.add('rebuildAll (from cache)');
-    return true;
-  }
-  else {
-    let container = buildTabsContainerFor(gTargetWindow);
-    for (let apiTab of apiTabs) {
-      TabIdFixer.fixTab(apiTab);
-      let newTab = buildTab(apiTab, { existing: true, inRemote: true });
-      container.appendChild(newTab);
-      updateTab(newTab, apiTab, { forceApply: true });
+    let restored = await restoreTabsFromCache(aCache, { tabs: apiTabs });
+    if (restored) {
+      gMetricsData.add('rebuildAll (from cache)');
+      return true;
     }
-    gAllTabs.appendChild(container);
-    gMetricsData.add('rebuildAll (from scratch)');
-    return false;
   }
+
+  let container = buildTabsContainerFor(gTargetWindow);
+  for (let apiTab of apiTabs) {
+    TabIdFixer.fixTab(apiTab);
+    let newTab = buildTab(apiTab, { existing: true, inRemote: true });
+    container.appendChild(newTab);
+    updateTab(newTab, apiTab, { forceApply: true });
+  }
+  gAllTabs.appendChild(container);
+  gMetricsData.add('rebuildAll (from scratch)');
+  return false;
 }
 
 async function inheritTreeStructure() {
@@ -409,7 +413,7 @@ async function inheritTreeStructure() {
   });
   gMetricsData.add('inheritTreeStructure: kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+    await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
     gMetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
   }
 }

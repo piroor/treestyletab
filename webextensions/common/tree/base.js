@@ -188,7 +188,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
   if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
-    browser.tabs.update(aTab.apiTab.id, {
+    browser.tabs.update(aOptions.tab.id, {
       url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI)
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
@@ -199,7 +199,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
     window.onGroupTabDetected && onGroupTabDetected(aTab);
   }
-  else if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
+  else if (aTab.apiTab &&
+           aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
     aTab.classList.remove(kTAB_STATE_GROUP_TAB);
   }
 
@@ -211,7 +212,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       if (identity)
         visibleLabel = `${aNewState.title} - ${identity.name}`;
     }
-    if (aOptions.forceApply) {
+    if (aOptions.forceApply && aTab.apiTab) {
       browser.sessions.getTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD)
         .then(aUnread => {
           if (aUnread)
@@ -220,7 +221,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
             aTab.classList.remove(kTAB_STATE_UNREAD);
         });
     }
-    else if (!isActive(aTab)) {
+    else if (!isActive(aTab) && aTab.apiTab) {
       aTab.classList.add(kTAB_STATE_UNREAD);
       browser.sessions.setTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD, true);
     }
@@ -257,10 +258,13 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       }, configs.burstDuration);
     }
     if (aNewState.status == 'complete' &&
+        aTab.apiTab &&
         aTab.apiTab.url == aTab.dataset.discardURLAfterCompletelyLoaded) {
-      log(' => discard accidentally restored tab ', aTab.apiTab.id);
-      if (typeof browser.tabs.discard == 'function')
-        browser.tabs.discard(aTab.apiTab.id);
+      if (configs.autoDiscardTabForUnexpectedFocus) {
+        log(' => discard accidentally restored tab ', aTab.apiTab.id);
+        if (typeof browser.tabs.discard == 'function')
+          browser.tabs.discard(aTab.apiTab.id);
+      }
       delete aTab.dataset.discardURLAfterCompletelyLoaded;
     }
     window.onTabStateChanged && onTabStateChanged(aTab);
@@ -290,13 +294,15 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'mutedInfo' in aNewState) {
-    if (aNewState.mutedInfo.muted)
+    if (aNewState.mutedInfo && aNewState.mutedInfo.muted)
       aTab.classList.add(kTAB_STATE_MUTED);
     else
       aTab.classList.remove(kTAB_STATE_MUTED);
   }
 
-  if (aTab.apiTab.audible && !aTab.apiTab.mutedInfo.muted)
+  if (aTab.apiTab &&
+      aTab.apiTab.audible &&
+      !aTab.apiTab.mutedInfo.muted)
     aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
   else
     aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
@@ -331,6 +337,14 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       aTab.classList.remove(kTAB_STATE_PRIVATE_BROWSING);
   }
 
+  if (aOptions.forceApply ||
+      'hidden' in aNewState) {
+    if (aNewState.hidden)
+      aTab.classList.add(kTAB_STATE_API_TAB_HIDDEN);
+    else
+      aTab.classList.remove(kTAB_STATE_API_TAB_HIDDEN);
+  }
+
   /*
   // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (aOptions.forceApply ||
@@ -358,7 +372,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 }
 
 function updateTabDebugTooltip(aTab) {
-  if (!configs.debug)
+  if (!configs.debug ||
+      !aTab.apiTab)
     return;
   aTab.dataset.label = `
 ${aTab.apiTab.title}
@@ -387,12 +402,13 @@ windowId = ${aTab.apiTab.windowId}
 }
 
 function updateTabFocused(aTab) {
-  var oldTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
+  var oldActiveTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
   aTab.classList.add(kTAB_STATE_ACTIVE);
   aTab.apiTab.active = true;
   aTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
   aTab.classList.remove(kTAB_STATE_UNREAD);
   browser.sessions.removeTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD);
+  return oldActiveTabs;
 }
 
 function updateParentTab(aParent) {
@@ -545,15 +561,20 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
-    let tabIds = await browser.runtime.sendMessage({
+    let message = {
       type:     kCOMMAND_MOVE_TABS_BEFORE,
       windowId: gTargetWindow,
       tabs:     aTabs.map(aTab => aTab.id),
       nextTab:  aReferenceTab.id,
       broadcasted: !!aOptions.broadcast
-    });
-    if (aOptions.inRemote)
+    };
+    if (aOptions.inRemote) {
+      let tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(getTabById);
+    }
+    else {
+      browser.runtime.sendMessage(message);
+    }
   }
 
   var container = aTabs[0].parentNode;
@@ -578,6 +599,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
+    syncOrderOfChildTabs(aTabs.map(getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
@@ -598,20 +620,14 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       }
 
       if (!aOptions.broadcasted) {
-        let toIndex, fromIndex;
-        Promise.all([
-          aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
-          (async () => {
-            [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-          })()
-        ]).then(() => {
-          if (fromIndex < toIndex)
-            toIndex--;
-          browser.tabs.move(apiTabIds, {
-            windowId: parseInt(container.dataset.windowId),
-            index:    toIndex
-          }).catch(handleMissingTabError);
-        });
+        await aOptions.delayedMove && wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
+        let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        if (fromIndex < toIndex)
+          toIndex--;
+        browser.tabs.move(apiTabIds, {
+          windowId: parseInt(container.dataset.windowId),
+          index:    toIndex
+        }).catch(handleMissingTabError);
       }
     }
   }
@@ -648,15 +664,20 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
-    let tabIds = await browser.runtime.sendMessage({
+    let message = {
       type:        kCOMMAND_MOVE_TABS_AFTER,
       windowId:    gTargetWindow,
       tabs:        aTabs.map(aTab => aTab.id),
       previousTab: aReferenceTab.id,
       broadcasted: !!aOptions.broadcast
-    });
-    if (aOptions.inRemote)
+    };
+    if (aOptions.inRemote) {
+      let tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(getTabById);
+    }
+    else {
+      browser.runtime.sendMessage(message);
+    }
   }
 
   var container = aTabs[0].parentNode;
@@ -684,6 +705,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
+    syncOrderOfChildTabs(aTabs.map(getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
@@ -704,20 +726,14 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       }
 
       if (!aOptions.broadcasted) {
-        let toIndex, fromIndex;
-        Promise.all([
-          aOptions.delayedMove && wait(configs.newTabAnimationDuration), // Wait until opening animation is finished.
-          (async () => {
-            [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
-          })()
-        ]).then(() => {
-          if (fromIndex > toIndex)
-            toIndex++;
-          browser.tabs.move(apiTabIds, {
-            windowId: parseInt(container.dataset.windowId),
-            index:    toIndex
-          }).catch(handleMissingTabError);
-        });
+        await aOptions.delayedMove && wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
+        let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        if (fromIndex > toIndex)
+          toIndex++;
+        browser.tabs.move(apiTabIds, {
+          windowId: parseInt(container.dataset.windowId),
+          index:    toIndex
+        }).catch(handleMissingTabError);
       }
     }
   }
@@ -945,6 +961,30 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
     });
   }
   return folder;
+}
+
+
+function showTabs(aTabs = []) {
+  if (typeof browser.tabs.show != 'function')
+    return;
+
+  for (let tab of aTabs) {
+    if (tab.apiTab)
+      tab = tab.apiTab;
+    browser.tabs.show(tab.id);
+  }
+}
+
+function hideTabs(aTabs = []) {
+  if (typeof browser.tabs.hide != 'function')
+    return;
+
+  for (let tab of aTabs) {
+    if (tab.apiTab)
+      tab = tab.apiTab;
+    if (!tab.pinned)
+      browser.tabs.hide(tab.id);
+  }
 }
 
 

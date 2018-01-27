@@ -23,6 +23,13 @@ ul p.sub {
   margin-bottom: 0;
 }
 
+label[disabled="true"] {
+  opacity: 0.5;
+}
+label[disabled="true"] input {
+  opacity: 1;
+}
+
 #style-radiogroup {
   align-content: flex-start;
   align-items: center;

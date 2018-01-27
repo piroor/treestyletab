@@ -109,25 +109,39 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
     shouldUpdate: aCache.tabsDirty
   });
 
-  if (restored && aCache.collapsedDirty) {
+  if (restored) {
     try {
-      let response = await browser.runtime.sendMessage({
+      let masterStructure = (await browser.runtime.sendMessage({
         type:     kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: gTargetWindow
-      });
-      let structure = response.structure.reverse();
-      getAllTabs().reverse().forEach((aTab, aIndex) => {
-        collapseExpandSubtree(aTab, {
-          collapsed: structure[aIndex].collapsed,
-          justNow:   true
+      })).structure;
+      let allTabs = getAllTabs();
+      let currentStructrue = getTreeStructureFromTabs(allTabs);
+      if (currentStructrue.map(aItem => aItem.parent).join(',') != masterStructure.map(aItem => aItem.parent).join(',')) {
+        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${gTargetWindow}. fallback to regular way.`);
+        restored = false;
+        let container = getTabsContainer(gTargetWindow);
+        if (container)
+          container.parentNode.removeChild(container);
+      }
+      if (restored && aCache.collapsedDirty) {
+        let structure = currentStructrue.reverse();
+        allTabs.reverse().forEach((aTab, aIndex) => {
+          collapseExpandSubtree(aTab, {
+            collapsed: structure[aIndex].collapsed,
+            justNow:   true
+          });
         });
-      });
+        clearDropPosition();
+      }
     }
     catch(e) {
       log(String(e), e.stack);
       throw e;
     }
   }
+
+  return restored;
 }
 
 function updateWindowCache(aKey, aValue) {
@@ -135,10 +149,12 @@ function updateWindowCache(aKey, aValue) {
       !getTabById(gLastWindowCacheOwner))
     return;
   if (aValue === undefined) {
+    //log('updateWindowCache: delete cache from ', gLastWindowCacheOwner, aKey);
     //return browser.sessions.removeWindowValue(gLastWindowCacheOwner, aKey);
     return browser.sessions.removeTabValue(gLastWindowCacheOwner, aKey);
   }
   else {
+    //log('updateWindowCache: set cache for ', gLastWindowCacheOwner, aKey);
     //return browser.sessions.setWindowValue(gLastWindowCacheOwner, aKey, aValue);
     return browser.sessions.setTabValue(gLastWindowCacheOwner, aKey, aValue);
   }

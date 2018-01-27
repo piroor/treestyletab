@@ -103,7 +103,7 @@ function getTabFromChild(aNode) {
     return null;
   if (aNode.nodeType != Node.ELEMENT_NODE)
     aNode = aNode.parentNode;
-  return aNode.closest(kSELECTOR_LIVE_TAB);
+  return aNode && aNode.closest(kSELECTOR_LIVE_TAB);
 }
 
 function getTabById(aIdOrInfo) {
@@ -174,7 +174,7 @@ function getLastTab(aHint) {
 function getLastOpenedTab(aHint) {
   var tabs = getTabs(aHint);
   return tabs.length > 0 ?
-    tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id )[0] :
+    tabs.sort((aA, aB) => (aB.apiTab && aB.apiTab.id || 0) - (aA.apiTab && aA.apiTab.id || 0))[0] :
     null ;
 }
 
@@ -280,7 +280,7 @@ function getSiblingTabs(aTab) {
   assertValidHint(aTab);
   if (!ensureLivingTab(aTab.parentTab))
     return getRootTabs(aTab);
-  return aTab.parentTab.childTabs.filter(ensureLivingTab);
+  return (aTab.parentTab.childTabs || []).filter(ensureLivingTab);
 }
 
 function getNextSiblingTab(aTab) {
@@ -305,14 +305,14 @@ function getChildTabs(aParent) {
   if (!ensureLivingTab(aParent))
     return [];
   assertValidHint(aParent);
-  return aParent.childTabs.filter(ensureLivingTab);
+  return (aParent.childTabs || []).filter(ensureLivingTab);
 }
 
 function getFirstChildTab(aParent) {
   if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
-  var tabs = aParent.childTabs.filter(ensureLivingTab);
+  var tabs = (aParent.childTabs || []).filter(ensureLivingTab);
   return tabs.length > 0 ? tabs[0] : null ;
 }
 
@@ -320,7 +320,7 @@ function getLastChildTab(aParent) {
   if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
-  var tabs = aParent.childTabs.filter(ensureLivingTab);
+  var tabs = (aParent.childTabs || []).filter(ensureLivingTab);
   return tabs.length > 0 ? tabs[tabs.length - 1] : null ;
 }
 
@@ -330,7 +330,7 @@ function getChildTabIndex(aChild, aParent) {
     return -1;
   assertValidHint(aChild);
   assertValidHint(aParent);
-  var tabs = aParent.childTabs.filter(ensureLivingTab);
+  var tabs = (aParent.childTabs || []).filter(ensureLivingTab);
   return tabs.indexOf(aChild);
 }
 
@@ -340,7 +340,7 @@ function getDescendantTabs(aRoot) {
   assertValidHint(aRoot);
 
   var descendants = [];
-  var children = aRoot.childTabs.filter(ensureLivingTab);
+  var children = (aRoot.childTabs || []).filter(ensureLivingTab);
   for (let child of children) {
     descendants.push(child);
     descendants = descendants.concat(getDescendantTabs(child));
@@ -389,6 +389,13 @@ function getPinnedTabs(aHint) { // visible, pinned
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
+}
+
+function getUnpinnedTabs(aHint) { // visible, not pinned
+  var container = getTabsContainer(aHint);
+  if (!container)
+    return [];
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_PINNED})`));
 }
 
 function getAllRootTabs(aHint) {

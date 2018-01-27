@@ -94,7 +94,11 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   });
 
   await waitUntilAllTabsAreCreated();
-  var newIndex = calculateNewTabIndex(aOptions);
+  var newIndex = calculateNewTabIndex({
+    insertBefore: aOptions.insertBefore,
+    insertAfter:  aOptions.insertAfter,
+    ignoreTabs:   [aChild]
+  });
   log('newIndex: ', newIndex);
 
   var newlyAttached = (
@@ -106,16 +110,13 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
   var childIds;
   {
-    let newIndex = calculateNewTabIndex({
-      insertBefore: aOptions.insertBefore,
-      insertAfter:  aOptions.insertAfter,
-      ignoreTabs:   [aChild]
-    });
     let expectedAllTabs = getAllTabs(aChild).filter(aTab => aTab != aChild);
+    log('expectedAllTabs: ', expectedAllTabs.map(dumpTab));
     if (newIndex >= expectedAllTabs.length)
       expectedAllTabs.push(aChild);
     else
       expectedAllTabs.splice(newIndex, 0, aChild);
+    log(' => ', expectedAllTabs.map(dumpTab));
 
     let children = expectedAllTabs.filter(aTab => {
       return (aTab == aChild ||
@@ -290,24 +291,27 @@ function detachTab(aChild, aOptions = {}) {
   }
 }
 
-function detachTabsFromTree(aTabs, aOptions = {}) {
+async function detachTabsFromTree(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
   aTabs = Array.slice(aTabs).reverse();
+  var promisedAttach = [];
   for (let tab of aTabs) {
     let children = getChildTabs(tab);
     let parent   = getParentTab(tab);
     for (let child of children) {
       if (aTabs.indexOf(child) < 0) {
         if (parent)
-          attachTabTo(child, parent, Object.assign({}, aOptions, {
+          promisedAttach.push(attachTabTo(child, parent, Object.assign({}, aOptions, {
             dontMove: true
-          }));
+          })));
         else
           detachTab(child, aOptions);
       }
     }
   }
+  if (promisedAttach.length > 0)
+    await Promise.all(promisedAttach);
 }
 
 function detachAllChildren(aTab, aOptions = {}) {
@@ -772,7 +776,12 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions
   if (autoFocusedTab != nextTab &&
       (autoFocusedTab != previousTab ||
        (getNextTab(autoFocusedTab) &&
-        getNextTab(autoFocusedTab) != aTab))) {
+        getNextTab(autoFocusedTab) != aTab)) &&
+      !isUnexpectedFocusToLastPinnedTabForClosedCurrentTab({
+        closedTabWasPinned: params.pinned,
+        activeTab:          autoFocusedTab
+      })) {
+    // possibly it is focused by browser.tabs.selectOwnerOnClose
     log('=> the tab seems focused intentionally: ', {
       autoFocused:       dumpTab(autoFocusedTab),
       nextOfAutoFocused: dumpTab(getNextTab(autoFocusedTab)),
@@ -787,6 +796,7 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   var parentTab = getParentTab(aTab);
   var params = {
     active:                    isActive(aTab),
+    pinned:                    isPinned(aTab),
     parentTab,
     firstChildTab:             getFirstChildTab(aTab),
     firstChildTabOfParent:     getFirstChildTab(parentTab),
@@ -799,6 +809,16 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   if (aOverrideParams)
     return Object.assign({}, params, aOverrideParams);
   return params;
+}
+function isUnexpectedFocusToLastPinnedTabForClosedCurrentTab(aParams = {}) {
+  return (
+    configs.hideInactiveTabs &&
+    configs.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab &&
+    !aParams.closedTabWasPinned &&
+    isPinned(aParams.activeTab) &&
+    !isPinned(getNextTab(aParams.activeTab)) &&
+    getUnpinnedTabs(aParams.activeTab).filter(isApiTabHidden).length > 0
+  );
 }
 
 async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
@@ -815,6 +835,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     ignoredTabs,
     serialized, closeParentBehavior
   } = params;
+  var tabNextFocusedByFirefox = getNextTab(aTab);
   log('tryMoveFocusFromClosingCurrentTabNow ', params);
   if (!active) {
     log(' => not active tab');
@@ -860,6 +881,12 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     nextFocusedTab = getNextFocusedTab(nextFocusedTab, { ignoredTabs });
     log('focus to getNextFocusedTab() again?: ', !!nextFocusedTab);
   }
+
+  if (!nextFocusedTab &&
+      configs.hideInactiveTabs &&
+      isApiTabHidden(tabNextFocusedByFirefox) &&
+      !isHidden(tabNextFocusedByFirefox))
+    nextFocusedTab = tabNextFocusedByFirefox; // focus to the next tab manually because Firefox doesn't focus to it when there is any pinned tab.
 
   if (!nextFocusedTab ||
       isHidden(nextFocusedTab) ||
@@ -932,6 +959,29 @@ function shouldApplyTreeBehavior(aParams = {}) {
   }
 }
 
+function syncOrderOfChildTabs(aParentTabs) {
+  if (!Array.isArray(aParentTabs))
+    aParentTabs = [aParentTabs];
+
+  var updatedParentTabs = new Map();
+  for (let parent of aParentTabs) {
+    if (!parent || updatedParentTabs.has(parent))
+      continue;
+    updatedParentTabs.set(parent, true);
+    if (parent.childTabs.length < 2)
+      continue;
+    parent.childTabs = parent.childTabs.map(aTab => {
+      return {
+        index: getTabIndex(aTab),
+        tab:   aTab
+      };
+    }).sort((aA, aB) => aA.index - aB.index).map(aItem => aItem.tab);
+    let childIds = parent.childTabs.map(aTab => aTab.id);
+    parent.setAttribute(kCHILDREN, `|${childIds.join('|')}|`);
+    log('updateChildTabsInfo: ', childIds);
+  }
+  updatedParentTabs = undefined;
+}
 
 async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   if (!aTab)
@@ -1257,7 +1307,8 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   log('opening new window');
   var windowParams = {
     //focused: true,  // not supported in Firefox...
-    url: 'about:blank'
+    url: 'about:blank',
+    incognito: isPrivateBrowsing(aTabs[0])
   };
   if ('left' in aOptions && aOptions.left !== null)
     windowParams.left = aOptions.left;
@@ -1292,6 +1343,41 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
 }
 
 
+async function groupTabs(aTabs, aOptions = {}) {
+  var rootTabs = collectRootTabs(aTabs);
+  if (rootTabs.length <= 0)
+    return null;
+
+  log('groupTabs: ', aTabs.map(dumpTab));
+
+  var uri = makeGroupTabURI({
+    title:     browser.i18n.getMessage('groupTab.label', rootTabs[0].apiTab.title),
+    temporary: true
+  });
+  var groupTab = await openURIInTab(uri, {
+    windowId:     rootTabs[0].apiTab.windowId,
+    parent:       getParentTab(rootTabs[0]),
+    insertBefore: rootTabs[0],
+    inBackground: true
+  });
+
+  await detachTabsFromTree(aTabs, {
+    broadcast: !!aOptions.broadcast
+  });
+  await moveTabsAfter(aTabs.slice(1), aTabs[0], {
+    broadcast: !!aOptions.broadcast
+  });
+  for (let tab of rootTabs) {
+    await attachTabTo(tab, groupTab, {
+      forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
+      dontMove:  true,
+      broadcast: !!aOptions.broadcast
+    });
+  }
+  return groupTab;
+}
+
+
 // drag and drop helper
 
 async function performTabsDragDrop(aParams = {}) {
@@ -1312,14 +1398,19 @@ async function performTabsDragDrop(aParams = {}) {
   }
 
   log('performTabsDragDrop ', {
-    tabIds:              aParams.tabIds,
+    tabs:                aParams.tabs.map(aTab => aTab.id),
     windowId:            aParams.windowId,
     destinationWindowId: aParams.destinationWindowId,
     action:              aParams.action
   });
 
-  var draggedTabs = aParams.tabIds.map(getTabById).filter(aTab => !!aTab);
+  var draggedTabs = aParams.tabs.map(aApiTab => getTabById(aApiTab.id)).filter(aTab => !!aTab);
   if (!draggedTabs.length)
+    return;
+
+  // Basically tabs should not be dragged between regular window and private browsing window,
+  // so there are some codes to prevent shch operations. This is for failsafe.
+  if (isPrivateBrowsing(draggedTabs[0]) != isPrivateBrowsing(getFirstTab(destinationWindowId)))
     return;
 
   var draggedRoots = collectRootTabs(draggedTabs);
@@ -1338,7 +1429,7 @@ async function performTabsDragDrop(aParams = {}) {
   if (draggedWholeTree.length != draggedTabs.length) {
     log('=> partially dragged');
     if (!aParams.duplicate)
-      detachTabsFromTree(draggedTabs, {
+      await detachTabsFromTree(draggedTabs, {
         broadcast: true
       });
   }
@@ -1539,7 +1630,7 @@ function cleanUpTreeStructureArray(aTreeStructure, aDefaultParent) {
   return aTreeStructure;
 }
 
-function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
+async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   if (!aTabs || !aTreeStructure)
     return;
 
@@ -1557,6 +1648,8 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   gMetricsData.add('applyTreeStructureToTabs: preparation');
 
   var parentTab = null;
+  var tabsInTree = [];
+  var promises   = [];
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let tab = aTabs[i];
     /*
@@ -1577,30 +1670,34 @@ function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       parentIndexInTree = structureInfo.parent;
       expandStates[i]   = !structureInfo.collapsed;
     }
-    if (parentIndexInTree < 0) // there is no parent, so this is a new parent!
-      parentTab = tab.id;
+    if (parentIndexInTree < 0) { // there is no parent, so this is a new parent!
+      parentTab  = tab.id;
+      tabsInTree = [tab];
+    }
 
     let parent = null;
     if (parentIndexInTree > -1) {
       parent = getTabById(parentTab);
       if (parent) {
-        let tabs = [parent].concat(getDescendantTabs(parent));
         //log('existing tabs in tree: ', {
-        //  size: tabs.length,
+        //  size:   tabsInTree.length,
         //  parent: parentIndexInTree
         //});
-        parent = parentIndexInTree < tabs.length ? tabs[parentIndexInTree] : parent ;
+        parent = parentIndexInTree < tabsInTree.length ? tabsInTree[parentIndexInTree] : parent ;
+        tabsInTree.push(tab);
       }
     }
     if (parent) {
       parent.classList.remove(kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
-      attachTabTo(tab, parent, Object.assign({}, aOptions, {
+      promises.push(attachTabTo(tab, parent, Object.assign({}, aOptions, {
         dontExpand: true,
         dontMove:   true,
         justNow:    true
-      }));
+      })));
     }
   }
+  if (promises.length > 0)
+    await Promise.all(promises);
   gMetricsData.add('applyTreeStructureToTabs: attach/detach');
 
   log('expandStates: ', expandStates);
