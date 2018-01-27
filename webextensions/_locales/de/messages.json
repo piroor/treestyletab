@@ -80,7 +80,7 @@
   "message.startup.userChromeCss.description.link.label": { "message": "Beispiele zur Anpassung durch userChrome.css" },
   "message.startup.userChromeCss.description.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message.startup.userChromeCss.description.2": { "message": ". Aber " },
-  "message.startup.userChromeCss.description.note": { "message": "sei Dir bewusst, dass es sich um tiefgreifende Anpassungen handelt. Daher gibt es keine Garantie und es ist wahrscheinlich, dass sie in künftigen Firefox-Versionen Probleme verursachen können. Bitte auf eigenes Risiko ausprobieren und nur wenn du weißt, was du tust und dir zutraust, mögliche Probleme selbst zu beheben." },
+  "message.startup.userChromeCss.description.note": { "message": "sei Dir bewusst, dass es sich um tiefgreifende Anpassungen handelt. Daher gibt es keine Garantie und sie können in künftigen Firefox-Versionen Probleme verursachen. Bitte auf eigenes Risiko ausprobieren und nur wenn du weißt, was du tust und dir zutraust, mögliche Probleme selbst zu beheben." },
   "message.startup.userChromeCss.description.3": { "message": "." },
 
 
