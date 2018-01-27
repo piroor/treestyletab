@@ -1,29 +1,49 @@
 :root {
   --tab-active-marker: Highlight;
+  --tab-active-marker-inactive: darkgray;
   --tab-active-marker-size: calc(var(--favicon-size) / 8);
 }
 
-.tab.active .active-marker::before {
-  background: var(--tab-active-marker);
+.active-marker::before {
+  bottom: 10%;
   content: "";
+  left: 10%;
   position: absolute;
-  top: 0;
+  right: 10%;
+  top: 10%;
+  transition: bottom var(--collapse-animation),
+              left var(--collapse-animation),
+              right var(--collapse-animation),
+              top var(--collapse-animation);
 }
 
-:root.left .tab.active:not(.faviconized) .active-marker::before {
-  bottom: 0;
+.tab:not(.active):hover .active-marker::before {
+  background: var(--tab-active-marker-inactive);
+}
+.tab.active .active-marker::before {
+  background: var(--tab-active-marker);
+}
+
+:root.left .tab:not(.faviconized) .active-marker::before {
   left: 0;
   width: var(--tab-active-marker-size);
 }
-
-:root.right .tab.active:not(.faviconized) .active-marker::before {
-  bottom: 0;
+:root.right .tab:not(.faviconized) .active-marker::before {
   right: 0;
   width: var(--tab-active-marker-size);
 }
+.tab:not(.faviconized):hover .active-marker::before,
+.tab.active:not(.faviconized) .active-marker::before {
+  bottom: 0;
+  top: 0;
+}
 
-.tab.active.faviconized .active-marker::before {
+.tab.faviconized .active-marker::before {
   height: var(--tab-active-marker-size);
+  top: 0;
+}
+.tab.faviconized:hover .active-marker::before,
+.tab.active.faviconized .active-marker::before {
   left: 0;
   right: 0;
 }
