@@ -73,7 +73,7 @@
   "message.startup.requestPermissions.description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls Du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message.startup.requestPermissions.bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
   "message.startup.requestPermissions.allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen (erfordert Skript-Injektion in Webseiten zur Erkennung von Tastendrücken.)" },
-  "message.startup.requestPermissions.tabHide": { "message": "Inaktive Tabs außer angeheftete Tabs in der Tableiste verstecken (benötigt die Berechtigung zum Verstecken von Tabs.)" },
+  "message.startup.requestPermissions.tabHide": { "message": "Inaktive Tabs außer angeheftete Tabs in der Tableiste verstecken (benötigt die Berechtigung zum Verstecken von Tabs und du musst \"extensions.webextensions.tabhide.enabled\" in \"about:config\" aktivieren.)" },
   
   "message.startup.userChromeCss.notify": { "message": "Wie kann man die Tableiste und die Überschrift der Sidebar ausblenden?" },
   "message.startup.userChromeCss.description.1": { "message": "Aufgrund von Beschränkungen für WebExtensions, hat Tree Style Tab keine Kontrolle über die Tableiste und die Sidebar-Überschriften von Firefox. Um sie zu verändern, siehe " },
