@@ -9,6 +9,9 @@
   content: "";
   opacity: 0;
   position: absolute;
+}
+
+:root.animation .active-marker::before {
   transition: opacity var(--tab-active-marker-animation),
               transform var(--tab-active-marker-animation);
 }
