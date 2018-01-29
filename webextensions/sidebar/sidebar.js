@@ -316,6 +316,9 @@ function calculateDefaultSizes() {
     --face-highlight-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
     --face-highlight-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
     --face-highlight-more-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
+    --face-gradient-start-active: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.4);
+    --face-gradient-start-inactive: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.2);
+    --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
   }`;
 }
 
