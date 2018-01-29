@@ -7,6 +7,9 @@
 
 :root:not([color-scheme="system-color"]) {
   --tab-active-marker: #0a84ff;
+}
+
+:root {
   --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.4);
   --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
 }
