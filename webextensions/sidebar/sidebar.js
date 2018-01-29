@@ -314,7 +314,8 @@ function calculateDefaultSizes() {
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
 
     --face-highlight-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
-    --face-highlight-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.15 }))};
+    --face-highlight-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
+    --face-highlight-more-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
   }`;
 }
 
