@@ -301,6 +301,8 @@ function calculateDefaultSizes() {
   var dummyTabbarRect = dummyTabbar.getBoundingClientRect();
   var scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('gTabHeight ', gTabHeight);
+  var baseColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
+  var highlightColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
     --scrollbar-size: ${scrollbarSize}px;
@@ -310,6 +312,9 @@ function calculateDefaultSizes() {
     --indent-duration:    ${configs.indentDuration}ms;
     --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
+
+    --face-highlight-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
+    --face-highlight-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.15 }))};
   }`;
 }
 

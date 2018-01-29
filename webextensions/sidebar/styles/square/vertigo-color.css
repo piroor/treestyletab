@@ -67,6 +67,8 @@
 :root[color-scheme="system-color"] {
   --tab-surface: var(--browser-bg-base, -moz-dialog);
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
+  --tab-surface-active: var(--browser-bg-lighter, var(--face-highlight-lighter));
+  --tab-surface-active-hover: var(--browser-bg-more-lighter, var(--face-highlight-more-lighter));
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-text-inverted: var(--browser-bg-lighter, -moz-dialog);
   --tab-active-text: var(--browser-fg-active, -moz-dialogtext);

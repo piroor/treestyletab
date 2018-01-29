@@ -164,6 +164,7 @@ ul {
 }
 
 #dummy-favicon-size-box {
+  background: -moz-dialog;
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -171,6 +172,11 @@ ul {
   max-height: 1em;
   min-width: 16px;
   min-height: 16px;
+}
+
+#dummy-highlight-color-box {
+  background: Highlight;
+  color: HighlightText;
 }
 
 
