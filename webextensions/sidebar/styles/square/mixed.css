@@ -25,15 +25,15 @@
 
 .tab:not(.collapsed):hover,
 .after-tabs button:hover {
-  background-color: var(--tab-surface-hover);
+  --tab-surface: var(--tab-surface-hover);
 }
 
 .tab.active {
-  background-color: var(--tab-surface-active);
+  --tab-surface: var(--tab-surface-active);
 }
 
 .tab.active:not(.collapsed):hover {
-  background-color: var(--tab-surface-active-hover);
+  --tab-surface: var(--tab-surface-active-hover);
 }
 
 

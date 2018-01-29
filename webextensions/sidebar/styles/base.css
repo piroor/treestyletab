@@ -39,16 +39,19 @@
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: Highlight;
   --tab-highlighted-base: transparent;
+
+  --scrollbar-placeholder-size: 1em;
+}
+
+.tab.faviconized {
   --unread-faviconized-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
                                                  var(--tab-highlighted-highlight) 3%,
                                                  var(--tab-highlighted-glow) 10%,
-                                                 var(--tab-highlighted-base) 20%);
+                                                 var(--tab-surface) 20%);
   --unread-faviconized-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
                                                        var(--tab-highlighted-highlight) 3%,
                                                        var(--tab-highlighted-glow) 10%,
-                                                       var(--tab-highlighted-base) 23%);
-
-  --scrollbar-placeholder-size: 1em;
+                                                       var(--tab-surface) 23%);
 }
 
 @keyframes blink {
