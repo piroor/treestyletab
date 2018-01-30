@@ -135,6 +135,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);
   log('fixupTabsRestoredFromCache start ', { elements: aTabs.map(aTab => aTab.id), apiTabs: aApiTabs });
   var idMap = {};
+  // step 1: build a map from old id to new id
   aTabs.forEach((aTab, aIndex) => {
     var oldId = aTab.id;
     var apiTab = aApiTabs[aIndex];
@@ -145,12 +146,26 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
     aTab.setAttribute(kAPI_WINDOW_ID, apiTab.windowId || -1);
     idMap[oldId] = aTab;
   });
+  // step 2: restore information of tabs
   aTabs.forEach((aTab, aIndex) => {
     fixupTabRestoredFromCache(aTab, aApiTabs[aIndex], {
       idMap: idMap,
       dirty: aOptions.dirty
     });
   });
+  // step 3: update tabs based on restored information.
+  // this step must be done after the step 2 is finished for all tabs
+  // because updating operation can refer other tabs.
+  if (aOptions.dirty) {
+    for (let tab of aTabs) {
+      updateTab(tab, tab.apiTab, { forceApply: true });
+    }
+  }
+  else {
+    for (let tab of aTabs) {
+      updateTabDebugTooltip(tab);
+    }
+  }
 
   // update focused tab appearance
   browser.tabs.query({ windowId: aTabs[0].apiTab.windowId, active: true })
@@ -184,9 +199,4 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   else
     aTab.removeAttribute(kPARENT);
   log('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
-
-  if (aOptions.dirty)
-    updateTab(aTab, aTab.apiTab, { forceApply: true });
-  else
-    updateTabDebugTooltip(aTab);
 }
