@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+   * Fix fatal error on restoration of tabs from the cache.
+   * Show active and hover marker for tabs at the Mixed theme, to match tab style of Firefox itself.
+   * Use `Highlight` system color to highlight active and hover tabs at the Vertigo and the Mixed themes, on Linux.
+   * Apply background color correclty at the Vertigo theme.
+   * Update `en` locale (by Thomas Bertels, thanks!)
+   * Update `zh_TW` locale (by Bo-Sian Li, thanks!)
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.6 (2018.1.26)
    * Clear needless temporary group tabs correctly even if they are nested.
    * Open pinned tabs at the end of the tab bar as configured, when pinned tabs are not grouped.
