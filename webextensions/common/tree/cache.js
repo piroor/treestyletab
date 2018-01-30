@@ -139,6 +139,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
     var oldId = aTab.id;
     var apiTab = aApiTabs[aIndex];
     aTab.id = makeTabId(apiTab);
+    aTab.apiTab = apiTab;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${aTab.id}`);
     aTab.setAttribute(kAPI_TAB_ID, apiTab.id || -1);
     aTab.setAttribute(kAPI_WINDOW_ID, apiTab.windowId || -1);
@@ -157,7 +158,6 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 }
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
-  aTab.apiTab = aApiTab;
   updateUniqueId(aTab);
   aTab.opened = Promise.resolve(true);
   aTab.closedWhileActive = new Promise((aResolve, aReject) => {
