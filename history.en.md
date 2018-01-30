@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.7 (2018.1.30)
    * Fix fatal error on restoration of tabs from the cache.
    * Show active and hover marker for tabs at the Mixed theme, to match tab style of Firefox itself.
    * Use `Highlight` system color to highlight active and hover tabs at the Vertigo and the Mixed themes, on Linux.
