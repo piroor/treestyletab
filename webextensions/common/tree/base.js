@@ -993,6 +993,7 @@ function hideTabs(aTabs = []) {
 function serializeTabForTSTAPI(aTab) {
   return Object.assign({}, aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
+    indent:   parseInt(aTab.getAttribute(kLEVEL) || 0),
     children: getChildTabs(aTab).map(serializeTabForTSTAPI)
   });
 }
