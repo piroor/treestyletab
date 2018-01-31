@@ -179,6 +179,9 @@ async function rebuildAll() {
           owner: aWindow.tabs[aWindow.tabs.length - 1].id,
           tabs:  aWindow.tabs
         });
+        for (let tab of getAllTabs(aWindow.id)) {
+          tryStartHandleAccelKeyOnTab(tab);
+        }
         if (restoredFromCache[aWindow.id]) {
           log(`window ${aWindow.id} is restored from cache`);
           return;
@@ -208,6 +211,7 @@ async function tryStartHandleAccelKeyOnTab(aTab) {
       /^(about|chrome|resource):/.test(aTab.apiTab.url))
     return;
   try {
+    //log(`tryStartHandleAccelKeyOnTab: initialize tab ${aTab.id}`);
     browser.tabs.executeScript(aTab.apiTab.id, {
       file:            '/common/handle-accel-key.js',
       allFrames:       true,
