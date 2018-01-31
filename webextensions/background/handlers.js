@@ -639,6 +639,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     gMaybeTabSwitchingByShortcut &&
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
+  gTabSwitchedByShortcut = gMaybeTabSwitchingByShortcut;
   if (isCollapsed(aTab)) {
     if (!getParentTab(aTab)) {
       // This is invalid case, generally never should happen,
@@ -1117,7 +1118,8 @@ function onMessage(aMessage, aSender) {
       })();
 
     case kNOTIFY_TAB_MOUSEDOWN:
-      gMaybeTabSwitchingByShortcut = false;
+      gMaybeTabSwitchingByShortcut =
+        gTabSwitchedByShortcut = false;
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         let tab = getTabById(aMessage.tab);
@@ -1286,7 +1288,7 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_NOTIFY_END_TAB_SWITCH:
       log('kCOMMAND_NOTIFY_END_TAB_SWITCH');
       return (async () => {
-        if (gMaybeTabSwitchingByShortcut &&
+        if (gTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
           await waitUntilTabsAreCreated(aSender.tab);
           let tab = aSender.tab && getTabById(aSender.tab.id);
@@ -1303,7 +1305,8 @@ function onMessage(aMessage, aSender) {
             });
           }
         }
-        gMaybeTabSwitchingByShortcut = false;
+        gMaybeTabSwitchingByShortcut =
+          gTabSwitchedByShortcut = false;
       })();
 
     case kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:

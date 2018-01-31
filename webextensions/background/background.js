@@ -12,6 +12,7 @@ var gSidebarOpenState       = new Map();
 var gSidebarOpenStateUpdateTimer;
 var gExternalListenerAddons = {};
 var gMaybeTabSwitchingByShortcut = false;
+var gTabSwitchedByShortcut       = false;
 
 var gMetricsData = new MetricsData();
 gMetricsData.add('Loaded');
