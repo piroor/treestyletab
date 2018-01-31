@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "version": "2.4.7",
+  "version": "2.2.9",
   "author": "YUKI \"Piro\" Hiroshi",
   "description": "__MSG_extensionDescription__",
   "permissions": [
@@ -16,7 +16,6 @@
     "theme"
   ],
   "optional_permissions": [
-    "<all_urls>",
     "bookmarks"
   ],
   "icons": {
@@ -31,37 +30,12 @@
   },
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "default_icon": {
-      "16": "resources/icon.svg",
-      "20": "resources/icon.svg",
-      "24": "resources/icon.svg"
-    },
-    "browser_style": true,
-    "theme_icons": [
-      {
-        "light": "resources/16x16-dark.svg",
-        "dark":  "resources/16x16-light.svg",
-        "size": 16
-      },
-      {
-        "light": "resources/20x20-dark.svg",
-        "dark":  "resources/20x20-light.svg",
-        "size": 20
-      },
-      {
-        "light": "resources/24x24-dark.svg",
-        "dark":  "resources/24x24-light.svg",
-        "size": 24
-      }
-    ]
+    "default_icon": "resources/icon.svg",
+    "browser_style": true
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "default_icon": {
-      "16": "resources/icon.svg",
-      "20": "resources/icon.svg",
-      "24": "resources/icon.svg"
-    },
+    "default_icon": "resources/icon.svg",
     "default_panel": "sidebar/sidebar.html",
     "browser_style": true
   },
@@ -71,6 +45,16 @@
       "description": "__MSG_sidebarToggleDescription__"
     }
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "all_frames": true,
+      "run_at": "document_end",
+      "js": [
+        "common/handle-accel-key.js"
+      ]
+    }
+  ],
   "options_ui": {
     "page": "options/options.html",
     "browser_style": true
