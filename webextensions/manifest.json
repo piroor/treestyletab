@@ -20,9 +20,9 @@
     "bookmarks"
   ],
   "icons": {
-    "16": "resources/icon.svg",
-    "20": "resources/icon.svg",
-    "24": "resources/icon.svg",
+    "16": "resources/icon-currentColor.svg",
+    "20": "resources/icon-currentColor.svg",
+    "24": "resources/icon-currentColor.svg",
     "64": "resources/icon64.png",
     "94": "resources/icon94.png"
   },
@@ -31,12 +31,24 @@
   },
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "default_icon": "resources/icon.svg",
+    "theme_icons": [
+      {
+        "light": "resources/icon-dark.svg",
+        "dark":  "resources/icon-light.svg",
+        "size": 16
+      },
+      {
+        "light": "resources/icon-dark.svg",
+        "dark":  "resources/icon-light.svg",
+        "size": 32
+      }
+    ],
+    "default_icon": "resources/icon-currentColor.svg",
     "browser_style": true
   },
   "sidebar_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "default_icon": "resources/icon.svg",
+    "default_icon": "resources/icon-currentColor.svg",
     "default_panel": "sidebar/sidebar.html",
     "browser_style": true
   },
