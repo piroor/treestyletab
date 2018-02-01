@@ -187,9 +187,10 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
-  if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
+  if (aOptions.tab && kSHORTHAND_ABOUT_URI.test(aOptions.tab.url)) {
+    let shorthand = RegExp.$1;
     browser.tabs.update(aOptions.tab.id, {
-      url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI)
+      url: aOptions.tab.url.replace(kSHORTHAND_ABOUT_URI, kSHORTHAND_URIS[shorthand] || 'about:blank')
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
     return;
