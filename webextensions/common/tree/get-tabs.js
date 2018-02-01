@@ -232,9 +232,10 @@ function ensureLivingTab(aTab) {
 }
 
 function assertInitializedTab(aTab) {
-  if (!aTab.apiTab ||
-      !aTab.childTabs)
-    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly!\n${new Error().stack}`);
+  if (!aTab.apiTab)
+    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
+  if (!aTab.childTabs)
+    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (missing priperty "childTabs")\n${new Error().stack}`);
   return true;
 }
 
