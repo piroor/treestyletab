@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.8 (2018.2.1)
    * Fix fatal error on the startup process for tree restored from cache.
    * Don't expand current tree by just hitting Ctrl key.
    * Don't focus to collapsed children expectedly, after the tree of tabs are restored from cache.
