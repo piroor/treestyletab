@@ -115,6 +115,7 @@ function isDuplicating(aTab) {
 function isNewTabCommandTab(aTab) {
   return ensureLivingTab(aTab) &&
            configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
+           assertInitializedTab(aTab) &&
            aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
 }
 
@@ -138,6 +139,7 @@ function shouldCloseLastTabSubtreeOf(aTab) {
 function isGroupTab(aTab) {
   if (!aTab)
     return false;
+  assertInitializedTab(aTab);
   return aTab.classList.contains(kTAB_STATE_GROUP_TAB) ||
          aTab.apiTab.url.indexOf(kGROUP_TAB_URI) == 0;
 }
