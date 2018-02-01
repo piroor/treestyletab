@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Fix fatal error on the startup process for tree restored from cache.
+   * Don't expand current tree by just hitting Ctrl key.
+   * Don't focus to collapsed children expectedly, after the tree of tabs are restored from cache.
+   * Don't open a new tab by right-click on the "New Tab" button. It was an unexpected behavior on Windows.
+   * Accept `about:treestyletab-startup` as a shorthand of the startup tab.
+   * APIs now return `indent` information as a part of extended `tabs.Tab`.
  - 2.4.7 (2018.1.30)
    * Fix fatal error on restoration of tabs from the cache.
    * Show active and hover marker for tabs at the Mixed theme, to match tab style of Firefox itself.
