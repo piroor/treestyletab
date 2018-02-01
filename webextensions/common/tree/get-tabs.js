@@ -234,7 +234,7 @@ function ensureLivingTab(aTab) {
 function assertInitializedTab(aTab) {
   if (!aTab.apiTab ||
       !aTab.childTabs)
-    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly!`);
+    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly!\n${new Error().stack}`);
   return true;
 }
 
