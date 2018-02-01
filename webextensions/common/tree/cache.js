@@ -108,6 +108,7 @@ function restoreTabsFromCacheInternal(aParams) {
   log('restoreTabsFromCacheInternal: post process ', { tabElements, apiTabs });
   if (tabElements.length != apiTabs.length) {
     log('restoreTabsFromCacheInternal: Mismatched number of restored tabs?');
+    container.parentNode.removeChild(container); // clear dirty tree!
     return false;
   }
   try {
