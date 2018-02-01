@@ -329,7 +329,8 @@ async function onMouseUp(aEvent) {
   var actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
     configs.autoAttachOnNewTabCommand;
-  if (isEventFiredOnNewTabButton(aEvent)) {
+  if (isEventFiredOnNewTabButton(aEvent) &&
+      gLastMousedown.detail.button != 2) {
     if (configs.logOnMouseEvent)
       log('click on the new tab button');
     handleNewTabAction(aEvent, {
