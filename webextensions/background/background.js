@@ -714,5 +714,26 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       windowId: aOptions.windowId
     });
 
-  return false;
+  let tabs = await browser.tabs.query({
+    active:   true,
+    windowId: aOptions.windowId
+  });
+  let result = await RichConfirm.showInTab(tabs[0].id, {
+    message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
+    buttons: [
+      browser.i18n.getMessage('warnOnCloseTabs.close'),
+      browser.i18n.getMessage('warnOnCloseTabs.cancel')
+    ],
+    checkMessage: browser.i18n.getMessage('warnOnCloseTabs.warnAgain'),
+    checked: true
+  });
+  switch (result.buttonIndex) {
+    case 0:
+      if (!result.checked)
+        configs.warnOnCloseTree = false;
+      return true;
+    case 1:
+    default:
+      return false;
+  }
 }

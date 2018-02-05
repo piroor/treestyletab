@@ -5,7 +5,8 @@
 */
 'use strict';
 
-function RichConfirm(aParams) {
+if (!window.RichConfirm) {
+window.RichConfirm = function(aParams) {
   this.params = aParams;
   this.onClick = this.onClick.bind(this);
 }
@@ -119,7 +120,7 @@ RichConfirm.prototype = {
 
   show: async function() {
     this.buildUI();
-    await wait(0);
+    await new Promise((aResolve, aReject) => setTimeout(aResolve, 0));
 
     this.message.textContent = this.params.message;
 
@@ -194,3 +195,39 @@ RichConfirm.prototype = {
     }
   }
 };
+RichConfirm.showInTab = async function(aTabId, aParams) {
+  await browser.tabs.executeScript(aTabId, {
+    file:            '/common/RichConfirm.js',
+    matchAboutBlank: true,
+    runAt:           'document_start'
+  });
+  const resultSlot = `result_${parseInt(Math.random() * Math.pow(2, 16))}`;
+  browser.tabs.executeScript(aTabId, {
+    code: `
+      delete window.${resultSlot};
+      (async () => {
+        const confirm = new RichConfirm(${JSON.stringify(aParams)});
+        window.${resultSlot} = await confirm.show();
+      })();
+    `,
+    matchAboutBlank: true,
+    runAt:           'document_start'
+  });
+  let result;
+  while (true) {
+    const results = await browser.tabs.executeScript(aTabId, {
+      code:            `window.${resultSlot}`,
+      matchAboutBlank: true,
+      runAt:           'document_start'
+    });
+    if (results.length > 0 &&
+        results[0] !== undefined) {
+      result = results[0];
+      break;
+    }
+    await new Promise((aResolve, aReject) => setTimeout(aResolve, 100));
+  }
+  return result;
+};
+true; // this is required to run this script as a content script
+}
