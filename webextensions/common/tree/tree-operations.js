@@ -528,7 +528,7 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     return;
   aParams.stack = `${new Error().stack}\n${aParams.stack || ''}`;
   if (configs.logOnCollapseExpand)
-    logOnCollapseExpand('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
+    log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   await Promise.all([
     collapseExpandSubtreeInternal(aTab, aParams),

@@ -301,6 +301,8 @@ function calculateDefaultSizes() {
   var dummyTabbarRect = dummyTabbar.getBoundingClientRect();
   var scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('gTabHeight ', gTabHeight);
+  var baseColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
+  var highlightColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
     --scrollbar-size: ${scrollbarSize}px;
@@ -310,6 +312,13 @@ function calculateDefaultSizes() {
     --indent-duration:    ${configs.indentDuration}ms;
     --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
+
+    --face-highlight-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
+    --face-highlight-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
+    --face-highlight-more-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
+    --face-gradient-start-active: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.4);
+    --face-gradient-start-inactive: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.2);
+    --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
   }`;
 }
 
@@ -459,6 +468,32 @@ function getTabCounter(aTab) {
 }
 function getTabClosebox(aTab) {
   return aTab.querySelector(`.${kCLOSEBOX}`);
+}
+
+
+async function confirmToCloseTabs(aCount, aOptions = {}) {
+  if (aCount <= 1 ||
+      !configs.warnOnCloseTabs)
+    return true;
+  const confirm = new RichConfirm({
+    message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
+    buttons: [
+      browser.i18n.getMessage('warnOnCloseTabs.close'),
+      browser.i18n.getMessage('warnOnCloseTabs.cancel')
+    ],
+    checkMessage: browser.i18n.getMessage('warnOnCloseTabs.warnAgain'),
+    checked: true
+  });
+  const result = await confirm.show();
+  switch (result.buttonIndex) {
+    case 0:
+      if (!result.checked)
+        configs.warnOnCloseTabs = false;
+      configs.lastConfirmedToCloseTabs = Date.now();
+      return true;
+    default:
+      return false;
+  }
 }
 
 

@@ -15,6 +15,7 @@
     <script type="application/javascript" src="/common/TabIdFixer.js"></script>
     <script type="application/javascript" src="/common/TabFavIconHelper.js"></script>
     <script type="application/javascript" src="/common/permissions.js"></script>
+    <script type="application/javascript" src="/common/RichConfirm.js"></script>
     <script type="application/javascript" src="/common/MetricsData.js"></script>
     <script type="application/javascript" src="/common/tree/base.js"></script>
     <script type="application/javascript" src="/common/tree/api-tabs.js"></script>
@@ -30,7 +31,6 @@
     <script type="application/javascript" src="/sidebar/pinned-tabs.js"></script>
     <script type="application/javascript" src="/sidebar/handlers.js"></script>
     <script type="application/javascript" src="/sidebar/drag-and-drop.js"></script>
-    <script type="application/javascript" src="/sidebar/RichConfirm.js"></script>
     <link rel="stylesheet" type="text/css" href="/sidebar/sidebar.css"/>
     <script type="application/javascript" src="/common/fake-context-menu/sidebar.js"></script>
     <link rel="stylesheet" type="text/css" href="/common/fake-context-menu/sidebar.css"/>
@@ -69,6 +69,7 @@
     <div id="background"></div><!-- This is required to hide dummy elements without offscreen rendering outside of the viewport. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 -->
     <ul id="dummy-tabs">
       <span id="dummy-favicon-size-box"></span>
+      <span id="dummy-highlight-color-box"></span>
       <li id="dummy-tab" class="tab">
         <span class="favicon">
           <span class="throbber" id="master-throbber-container"><span id="master-throbber"></span></span>

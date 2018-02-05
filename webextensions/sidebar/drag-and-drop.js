@@ -532,7 +532,7 @@ async function getDroppedLinksOnTabBehavior() {
       browser.i18n.getMessage('dropLinksOnTabBehavior.load'),
       browser.i18n.getMessage('dropLinksOnTabBehavior.newtab')
     ],
-    saveMessage: browser.i18n.getMessage('dropLinksOnTabBehavior.save')
+    checkMessage: browser.i18n.getMessage('dropLinksOnTabBehavior.save')
   });
   var result = await confirm.show();
   switch (result.buttonIndex) {
@@ -545,7 +545,7 @@ async function getDroppedLinksOnTabBehavior() {
     default:
       return result.buttonIndex;
   }
-  if (result.shouldSave)
+  if (result.checked)
     configs.dropLinksOnTabBehavior = behavior;
   return behavior;
 }

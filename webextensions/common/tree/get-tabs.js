@@ -174,7 +174,7 @@ function getLastTab(aHint) {
 function getLastOpenedTab(aHint) {
   var tabs = getTabs(aHint);
   return tabs.length > 0 ?
-    tabs.sort((aA, aB) => (aB.apiTab && aB.apiTab.id || 0) - (aA.apiTab && aA.apiTab.id || 0))[0] :
+    tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id)[0] :
     null ;
 }
 
@@ -231,6 +231,14 @@ function ensureLivingTab(aTab) {
   return aTab;
 }
 
+function assertInitializedTab(aTab) {
+  if (!aTab.apiTab)
+    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
+  if (!aTab.childTabs)
+    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (missing priperty "childTabs")\n${new Error().stack}`);
+  return true;
+}
+
 function getOpenerTab(aTab) {
   if (!ensureLivingTab(aTab) ||
       !aTab.apiTab ||
@@ -280,7 +288,9 @@ function getSiblingTabs(aTab) {
   assertValidHint(aTab);
   if (!ensureLivingTab(aTab.parentTab))
     return getRootTabs(aTab);
-  return (aTab.parentTab.childTabs || []).filter(ensureLivingTab);
+  assertInitializedTab(aTab);
+  assertInitializedTab(aTab.parentTab);
+  return aTab.parentTab.childTabs.filter(ensureLivingTab);
 }
 
 function getNextSiblingTab(aTab) {
@@ -305,14 +315,16 @@ function getChildTabs(aParent) {
   if (!ensureLivingTab(aParent))
     return [];
   assertValidHint(aParent);
-  return (aParent.childTabs || []).filter(ensureLivingTab);
+  assertInitializedTab(aParent);
+  return aParent.childTabs.filter(ensureLivingTab);
 }
 
 function getFirstChildTab(aParent) {
   if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
-  var tabs = (aParent.childTabs || []).filter(ensureLivingTab);
+  assertInitializedTab(aParent);
+  var tabs = aParent.childTabs.filter(ensureLivingTab);
   return tabs.length > 0 ? tabs[0] : null ;
 }
 
@@ -320,7 +332,8 @@ function getLastChildTab(aParent) {
   if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
-  var tabs = (aParent.childTabs || []).filter(ensureLivingTab);
+  assertInitializedTab(aParent);
+  var tabs = aParent.childTabs.filter(ensureLivingTab);
   return tabs.length > 0 ? tabs[tabs.length - 1] : null ;
 }
 
@@ -330,7 +343,8 @@ function getChildTabIndex(aChild, aParent) {
     return -1;
   assertValidHint(aChild);
   assertValidHint(aParent);
-  var tabs = (aParent.childTabs || []).filter(ensureLivingTab);
+  assertInitializedTab(aParent);
+  var tabs = aParent.childTabs.filter(ensureLivingTab);
   return tabs.indexOf(aChild);
 }
 
@@ -338,9 +352,10 @@ function getDescendantTabs(aRoot) {
   if (!ensureLivingTab(aRoot))
     return [];
   assertValidHint(aRoot);
+  assertInitializedTab(aRoot);
 
   var descendants = [];
-  var children = (aRoot.childTabs || []).filter(ensureLivingTab);
+  var children = aRoot.childTabs.filter(ensureLivingTab);
   for (let child of children) {
     descendants.push(child);
     descendants = descendants.concat(getDescendantTabs(child));

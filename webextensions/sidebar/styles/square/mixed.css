@@ -7,8 +7,24 @@
 
 :root:not([color-scheme="system-color"]) {
   --tab-active-marker: #0a84ff;
+}
+
+:root {
   --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.4);
   --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
+}
+:root .tab:not(.active):hover {
+  --tab-surface-active-gradient-start: rgba(249, 249, 250, 0.25);
+  --tab-surface-active-gradient-end:   rgba(249, 249, 250, 0);
+}
+
+:root[color-scheme="system-color"] {
+  --tab-surface-active-gradient-start: var(--face-gradient-start-active);
+  --tab-surface-active-gradient-end:   var(--face-gradient-end);
+}
+:root[color-scheme="system-color"] .tab:not(.active):hover {
+  --tab-surface-active-gradient-start: var(--face-gradient-start-inactive);
+  --tab-surface-active-gradient-end:   var(--face-gradient-end);
 }
 
 :root,
@@ -22,15 +38,15 @@
 
 .tab:not(.collapsed):hover,
 .after-tabs button:hover {
-  background-color: var(--tab-surface-hover);
+  --tab-surface: var(--tab-surface-hover);
 }
 
 .tab.active {
-  background-color: var(--tab-surface-active);
+  --tab-surface: var(--tab-surface-active);
 }
 
 .tab.active:not(.collapsed):hover {
-  background-color: var(--tab-surface-active-hover);
+  --tab-surface: var(--tab-surface-active-hover);
 }
 
 
@@ -41,7 +57,7 @@
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
-:root.left .tab:not(.faviconized).active:not(.collapsed):hover {
+:root.left .tab:not(.faviconized):not(.collapsed):hover {
   background-image: -moz-linear-gradient(
                       left,
                       var(--tab-surface-active-gradient-start) 0,
@@ -56,7 +72,7 @@
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
-:root.right .tab:not(.faviconized).active:not(.collapsed):hover {
+:root.right .tab:not(.faviconized):not(.collapsed):hover {
   background-image: -moz-linear-gradient(
                       right,
                       var(--tab-surface-active-gradient-start) 0,
@@ -71,7 +87,7 @@
                       var(--tab-surface-active-gradient-end) 40%
                     );
 }
-.tab.faviconized.active:hover {
+.tab.faviconized:hover {
   background-image: -moz-linear-gradient(
                       top,
                       var(--tab-surface-active-gradient-start) 0,

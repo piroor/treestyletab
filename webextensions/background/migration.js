@@ -272,7 +272,7 @@ async function notifyNewFeatures() {
   configs.notifiedFeaturesVersion = kFEATURES_VERSION;
 
   browser.tabs.create({
-    url:    browser.extension.getURL('resources/startup.html'),
+    url:    kSHORTHAND_URIS.startup,
     active: true
   });
 }

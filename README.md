@@ -137,13 +137,13 @@ And, there is another bug for accesskey support of context menu items:
 
 As described at the [migration story of TST](http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2017-10-03_migration-we-en.htm#topic2017-10-03_migration-we-en), current context menu in the sidebar is just a workaround, until any genuine WebExtensions feature to do that is landed. So I have very less motivation to improve the fake context menu by myself, sorry...
 
-### [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043)
+### [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043) or Waterfox
 
-Pale Moon is based on old Firefox but TST supports only recent versions of official Firefox.
-Supporting for Pale Moon means supporting for very old Firefox.
+Both Pale Moon and Waterfox are based on old Firefox but TST supports only recent versions of official Firefox.
+Supporting for these forked Firefox means supporting for very old Firefox.
 To keep codes cleaner, I have to remove obsolete codes only for old versions of Firefox.
 
-If you require TST for Pale Moon, sorry but please fork this project and rollback to an old revision which can work on Pale Moon.
+If you require TST for Pale Moon or Waterfox, sorry but please fork this project and rollback to an old revision which can work on them. Actually, there seems to be [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab).
 
 ### [Quick access to the configuration dialog](https://github.com/piroor/treestyletab/issues/1020), Adding new minor (trivial) options, and so on
 

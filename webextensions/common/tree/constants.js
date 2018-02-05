@@ -28,6 +28,7 @@ const kCOMMAND_SELECT_TAB_INTERNALLY          = 'treestyletab:select-tab-interna
 const kCOMMAND_REMOVE_TABS_INTERNALLY         = 'treestyletab:remove-tabs-internally';
 const kCOMMAND_MOVE_TABS_BEFORE               = 'treestyletab:move-tabs-internally-before';
 const kCOMMAND_MOVE_TABS_AFTER                = 'treestyletab:move-tabs-internally-after';
+const kCOMMAND_CONFIRM_TO_CLOSE_TABS          = 'treestyletab:confirm-to-close-tabs';
 const kCOMMAND_NOTIFY_START_TAB_SWITCH        = 'treestyletab:notify-start-tab-switch';
 const kCOMMAND_NOTIFY_END_TAB_SWITCH          = 'treestyletab:notify-end-tab-switch';
 const kCOMMAND_NOTIFY_PERMISSIONS_GRANTED     = 'treestyletab:notify-permissions-granted';
@@ -263,7 +264,11 @@ const kDEFAULT_MIN_INDENT = 3;
 const kTAB_STATE_GROUP_TAB = 'group-tab';
 const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
 const kGROUP_TAB_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab.label', '.+')}$`);
-const kLEGACY_GROUP_TAB_URI = 'about:treestyletab-group';
+const kSHORTHAND_ABOUT_URI = /^about:treestyletab-([^\?]+)/;
+const kSHORTHAND_URIS = {
+  group:   kGROUP_TAB_URI,
+  startup: browser.extension.getURL('resources/startup.html')
+};
 
 const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';
 

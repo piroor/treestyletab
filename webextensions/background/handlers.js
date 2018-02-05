@@ -329,6 +329,18 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
     });
 
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
+    const count = getCountOfClosingTabs(aTab);
+    const confirmed = await confirmToCloseTabs(count, { windowId: aTab.apiTab.windowId });
+    if (!confirmed) {
+      await wait(0); // this is required to wait until the closing tab is stored to the "recently closed" list
+      let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
+      if (sessions.length && sessions[0].tab)
+        browser.sessions.restore(sessions[0].tab.sessionId);
+      return;
+    }
+  }
+
   var nextTab = closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
   tryMoveFocusFromClosingCurrentTab(aTab, {
     params: {
@@ -639,6 +651,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     gMaybeTabSwitchingByShortcut &&
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
+  gTabSwitchedByShortcut = gMaybeTabSwitchingByShortcut;
   if (isCollapsed(aTab)) {
     if (!getParentTab(aTab)) {
       // This is invalid case, generally never should happen,
@@ -1117,7 +1130,8 @@ function onMessage(aMessage, aSender) {
       })();
 
     case kNOTIFY_TAB_MOUSEDOWN:
-      gMaybeTabSwitchingByShortcut = false;
+      gMaybeTabSwitchingByShortcut =
+        gTabSwitchedByShortcut = false;
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         let tab = getTabById(aMessage.tab);
@@ -1286,7 +1300,7 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_NOTIFY_END_TAB_SWITCH:
       log('kCOMMAND_NOTIFY_END_TAB_SWITCH');
       return (async () => {
-        if (gMaybeTabSwitchingByShortcut &&
+        if (gTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
           await waitUntilTabsAreCreated(aSender.tab);
           let tab = aSender.tab && getTabById(aSender.tab.id);
@@ -1303,7 +1317,8 @@ function onMessage(aMessage, aSender) {
             });
           }
         }
-        gMaybeTabSwitchingByShortcut = false;
+        gMaybeTabSwitchingByShortcut =
+          gTabSwitchedByShortcut = false;
       })();
 
     case kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:

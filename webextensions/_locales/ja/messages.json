@@ -61,6 +61,14 @@
   "dropLinksOnTabBehavior.load":    { "message": "このタブに読み込む" },
   "dropLinksOnTabBehavior.newtab":  { "message": "新しい子タブで開く" },
 
+  "warnOnCloseTabs.message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs.warnAgain": { "message": "同時に複数のタブを閉じるときは確認する" },
+  "warnOnCloseTabs.close":     { "message": "タブを閉じる" },
+  "warnOnCloseTabs.cancel":    { "message": "キャンセル" },
+
   "message.startup.description.1": { "message": "Firefox 57以降のバージョン向けに、ツリー型タブがWebExtensionsベースで生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
   "message.startup.description.key": { "message": "「F1」キー" },
   "message.startup.description.2": { "message": "を押すかツールバー上の「" },
@@ -208,6 +216,8 @@
   "config.dropLinksOnTabBehavior.ask":     { "message": "どうするか常に訊ねる" },
   "config.dropLinksOnTabBehavior.load":    { "message": "そのタブに読み込む" },
   "config.dropLinksOnTabBehavior.newtab":  { "message": "新しい子タブで開く" },
+
+  "config.warnOnCloseTabs.label": { "message": "同時に複数のタブを閉じるときは確認する" },
 
 
   "config.advanced.caption": { "message": "詳細設定" },

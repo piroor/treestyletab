@@ -9,9 +9,9 @@ gLogContext = 'BG';
 
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();
-var gSidebarOpenStateUpdateTimer;
 var gExternalListenerAddons = {};
 var gMaybeTabSwitchingByShortcut = false;
+var gTabSwitchedByShortcut       = false;
 
 var gMetricsData = new MetricsData();
 gMetricsData.add('Loaded');
@@ -178,6 +178,9 @@ async function rebuildAll() {
           owner: aWindow.tabs[aWindow.tabs.length - 1].id,
           tabs:  aWindow.tabs
         });
+        for (let tab of getAllTabs(aWindow.id)) {
+          tryStartHandleAccelKeyOnTab(tab);
+        }
         if (restoredFromCache[aWindow.id]) {
           log(`window ${aWindow.id} is restored from cache`);
           return;
@@ -207,6 +210,7 @@ async function tryStartHandleAccelKeyOnTab(aTab) {
       /^(about|chrome|resource):/.test(aTab.apiTab.url))
     return;
   try {
+    //log(`tryStartHandleAccelKeyOnTab: initialize tab ${aTab.id}`);
     browser.tabs.executeScript(aTab.apiTab.id, {
       file:            '/common/handle-accel-key.js',
       allFrames:       true,
@@ -695,4 +699,41 @@ function updateParentGroupTab(aParentTab) {
     matchAboutBlank: true,
     code:            `location.replace(${JSON.stringify(url)})`,
   });
+}
+
+
+async function confirmToCloseTabs(aCount, aOptions = {}) {
+  if (aCount <= 1 ||
+      !configs.warnOnCloseTabs ||
+      Date.now() - configs.lastConfirmedToCloseTabs < 500)
+    return true;
+
+  if (gSidebarOpenState.get(aOptions.windowId))
+    return browser.runtime.sendMessage({
+      type:     kCOMMAND_CONFIRM_TO_CLOSE_TABS,
+      count:    aCount,
+      windowId: aOptions.windowId
+    });
+
+  let tabs = await browser.tabs.query({
+    active:   true,
+    windowId: aOptions.windowId
+  });
+  let result = await RichConfirm.showInTab(tabs[0].id, {
+    message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
+    buttons: [
+      browser.i18n.getMessage('warnOnCloseTabs.close'),
+      browser.i18n.getMessage('warnOnCloseTabs.cancel')
+    ],
+    checkMessage: browser.i18n.getMessage('warnOnCloseTabs.warnAgain'),
+    checked: true
+  });
+  switch (result.buttonIndex) {
+    case 0:
+      if (!result.checked)
+        configs.warnOnCloseTabs = false;
+      return true;
+    default:
+      return false;
+  }
 }

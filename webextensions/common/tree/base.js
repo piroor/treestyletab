@@ -173,6 +173,8 @@ function updateUniqueId(aTab) {
     if (ensureLivingTab(aTab)) // possibly removed from document while waiting
       aTab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
     return aUniqueId;
+  }).catch(aError => {
+    console.log(`FATAL ERROR: Failed to get unique id for a tab ${aTab.apiTab.id}: `, String(aError), aError.stack);
   });
   return aTab.uniqueId;
 }
@@ -187,9 +189,10 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
-  if (aOptions.tab && aOptions.tab.url.indexOf(kLEGACY_GROUP_TAB_URI) == 0) {
+  if (aOptions.tab && kSHORTHAND_ABOUT_URI.test(aOptions.tab.url)) {
+    let shorthand = RegExp.$1;
     browser.tabs.update(aOptions.tab.id, {
-      url: aOptions.tab.url.replace(kLEGACY_GROUP_TAB_URI, kGROUP_TAB_URI)
+      url: aOptions.tab.url.replace(kSHORTHAND_ABOUT_URI, kSHORTHAND_URIS[shorthand] || 'about:blank')
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
     return;
@@ -993,6 +996,7 @@ function hideTabs(aTabs = []) {
 function serializeTabForTSTAPI(aTab) {
   return Object.assign({}, aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
+    indent:   parseInt(aTab.getAttribute(kLEVEL) || 0),
     children: getChildTabs(aTab).map(serializeTabForTSTAPI)
   });
 }

@@ -1,6 +1,21 @@
 # History
 
  - master/HEAD
+ - 2.4.8 (2018.2.1)
+   * Fix fatal error on the startup process for tree restored from cache.
+   * Don't expand current tree by just hitting Ctrl key.
+   * Don't focus to collapsed children expectedly, after the tree of tabs are restored from cache.
+   * Don't open a new tab by right-click on the "New Tab" button. It was an unexpected behavior on Windows.
+   * Accept `about:treestyletab-startup` as a shorthand of the startup tab.
+   * APIs now return `indent` information as a part of extended `tabs.Tab`.
+ - 2.4.7 (2018.1.30)
+   * Fix fatal error on restoration of tabs from the cache.
+   * Show active and hover marker for tabs at the Mixed theme, to match tab style of Firefox itself.
+   * Use `Highlight` system color to highlight active and hover tabs at the Vertigo and the Mixed themes, on Linux.
+   * Apply background color correclty at the Vertigo theme.
+   * Update `en` locale (by Thomas Bertels, thanks!)
+   * Update `zh_TW` locale (by Bo-Sian Li, thanks!)
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.6 (2018.1.26)
    * Clear needless temporary group tabs correctly even if they are nested.
    * Open pinned tabs at the end of the tab bar as configured, when pinned tabs are not grouped.

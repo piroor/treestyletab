@@ -329,7 +329,8 @@ async function onMouseUp(aEvent) {
   var actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
     configs.autoAttachOnNewTabCommand;
-  if (isEventFiredOnNewTabButton(aEvent)) {
+  if (isEventFiredOnNewTabButton(aEvent) &&
+      gLastMousedown.detail.button != 2) {
     if (configs.logOnMouseEvent)
       log('click on the new tab button');
     handleNewTabAction(aEvent, {
@@ -367,7 +368,11 @@ async function onMouseUp(aEvent) {
     if (configs.logOnMouseEvent)
       log('middle click on a tab');
     //log('middle-click to close');
-    removeTabInternally(tab, { inRemote: true });
+    confirmToCloseTabs(getCountOfClosingTabs(tab))
+      .then(aConfirmed => {
+        if (aConfirmed)
+          removeTabInternally(tab, { inRemote: true });
+      });
     handled = true;
   }
 
@@ -456,7 +461,11 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    removeTabInternally(tab, { inRemote: true });
+    confirmToCloseTabs(getCountOfClosingTabs(tab))
+      .then(aConfirmed => {
+        if (aConfirmed)
+          removeTabInternally(tab, { inRemote: true });
+      });
     return;
   }
 }
@@ -1353,6 +1362,11 @@ function onMessage(aMessage, aSender, aRespond) {
           }
         }
       })();
+    }; break;
+
+    case kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
+      if (aMessage.windowId == gTargetWindow)
+        return confirmToCloseTabs(aMessage.count);
     }; break;
 
     case kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
