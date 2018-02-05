@@ -329,18 +329,17 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
     });
 
-  /*
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
     const count = getCountOfClosingTabs(aTab);
     const confirmed = await confirmToCloseTabs(count, { windowId: aTab.apiTab.windowId });
     if (!confirmed) {
+      await wait(0); // this is required to wait until the closing tab is stored to the "recently closed" list
       let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
       if (sessions.length && sessions[0].tab)
         browser.sessions.restore(sessions[0].tab.sessionId);
       return;
     }
   }
-  */
 
   var nextTab = closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
   tryMoveFocusFromClosingCurrentTab(aTab, {
