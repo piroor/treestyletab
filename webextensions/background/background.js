@@ -9,7 +9,6 @@ gLogContext = 'BG';
 
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();
-var gSidebarOpenStateUpdateTimer;
 var gExternalListenerAddons = {};
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
