@@ -191,6 +191,10 @@ if (!window.RichConfirm) {
       if (!aEvent.target.closest(`.rich-confirm-dialog`)) {
         aEvent.stopPropagation();
         aEvent.preventDefault();
+        this._resolve({
+          buttonIndex: -1,
+          checked: !!this.params.message && this.checkCheckbox.checked
+        });
         this.hide();
       }
     }

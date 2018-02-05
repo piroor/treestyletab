@@ -733,7 +733,6 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       if (!result.checked)
         configs.warnOnCloseTabs = false;
       return true;
-    case 1:
     default:
       return false;
   }
