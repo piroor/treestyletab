@@ -9,10 +9,10 @@ install_dependency:
 	npm install
 
 lint:
-	$(NPM_BIN_DIR)/eslint . --ext=.js –report-unused-disable-directives
+	$(NPM_BIN_DIR)/eslint . --ext=.js --report-unused-disable-directives
 
 format:
-	$(NPM_BIN_DIR)/eslint . --ext=.js –report-unused-disable-directives --fix
+	$(NPM_BIN_DIR)/eslint . --ext=.js --report-unused-disable-directives --fix
 
 xpi: lint ../extlib/webextensions-lib-tab-id-fixer/TabIdFixer.js ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js ../extlib/webextensions-lib-configs/Configs.js ../extlib/webextensions-lib-options/Options.js ../extlib/webextensions-lib-l10n/l10n.js
 	cd .. && git submodule update
