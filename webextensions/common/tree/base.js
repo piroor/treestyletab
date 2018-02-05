@@ -173,6 +173,8 @@ function updateUniqueId(aTab) {
     if (ensureLivingTab(aTab)) // possibly removed from document while waiting
       aTab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
     return aUniqueId;
+  }).catch(aError => {
+    console.log(`FATAL ERROR: Failed to get unique id for a tab ${aTab.apiTab.id}: `, String(aError), aError.stack);
   });
   return aTab.uniqueId;
 }
