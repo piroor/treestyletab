@@ -217,6 +217,8 @@
   "config.dropLinksOnTabBehavior.load":    { "message": "そのタブに読み込む" },
   "config.dropLinksOnTabBehavior.newtab":  { "message": "新しい子タブで開く" },
 
+  "config.warnOnCloseTabs.label": { "message": "同時に複数のタブを閉じるときは確認する" },
+
 
   "config.advanced.caption": { "message": "詳細設定" },
 
