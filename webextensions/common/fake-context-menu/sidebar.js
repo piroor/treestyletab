@@ -670,6 +670,8 @@ var tabContextMenu = {
     const item = this.getEffectiveItem(lastHoverItem);
     if (!item)
       return;
+    if (item.parentNode != aEvent.target)
+      return;
     this.setHover(item);
     item.focus();
     this.lastFocusedItem = item;
