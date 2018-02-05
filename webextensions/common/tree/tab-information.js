@@ -221,8 +221,10 @@ function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
 }
 
 function getCountOfClosingTabs(aTab) {
-  if (!isSubtreeCollapsed(aTab) ||
-      !hasChildTabs(aTab))
+  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
+    windowId: aTab.apiTab.windowId
+  });
+  if (closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     return 1;
   const descendants = getDescendantTabs(aTab);
   return descendants.length + 1;
