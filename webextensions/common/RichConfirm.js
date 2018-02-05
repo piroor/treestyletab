@@ -47,7 +47,7 @@ if (!window.RichConfirm) {
           pointer-events: none;
           position: fixed;
           right: 0;
-          transition: opacity var(--collapse-animation);
+          transition: opacity var(--collapse-animation, 250ms ease-out);
           top: 0;
           z-index: 999999;
         }
