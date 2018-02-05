@@ -34,85 +34,85 @@ if (!window.RichConfirm) {
       this.style = document.createElement('style');
       this.style.setAttribute('type', 'text/css');
       this.style.textContent = `
-      .rich-confirm {
-        background: rgba(0, 0, 0, 0.45);
-        border: 1px outset;
-        box-shadow: 0.1em 0.1em 0.5em rgba(0, 0, 0, 0.65);
-        bottom: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        left:0;
-        opacity: 0;
-        pointer-events: none;
-        position: fixed;
-        right: 0;
-        transition: opacity var(--collapse-animation);
-        top: 0;
-        z-index: 999999;
-      }
+        .rich-confirm {
+          background: rgba(0, 0, 0, 0.45);
+          border: 1px outset;
+          box-shadow: 0.1em 0.1em 0.5em rgba(0, 0, 0, 0.65);
+          bottom: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          left:0;
+          opacity: 0;
+          pointer-events: none;
+          position: fixed;
+          right: 0;
+          transition: opacity var(--collapse-animation);
+          top: 0;
+          z-index: 999999;
+        }
 
-      .rich-confirm.show {
-        opacity: 1;
-        pointer-events: auto;
-      }
+        .rich-confirm.show {
+          opacity: 1;
+          pointer-events: auto;
+        }
 
-      .rich-confirm-row {
-        flex-direction: row;
-        justify-content: center;
-      }
+        .rich-confirm-row {
+          flex-direction: row;
+          justify-content: center;
+        }
 
-      .rich-confirm-dialog {
-        background: -moz-dialog;
-        border-radius: 0.5em;
-        box-shadow: 0
-        color: -moz-dialogtext;
-        margin: 0 1em;
-        max-width: 20em;
-        padding: 1em;
-      }
+        .rich-confirm-dialog {
+          background: -moz-dialog;
+          border-radius: 0.5em;
+          box-shadow: 0
+          color: -moz-dialogtext;
+          margin: 0 1em;
+          max-width: 20em;
+          padding: 1em;
+        }
 
-      .rich-confirm-buttons {
-        align-items: stretch;
-        flex-direction: column;
-        justify-content: center;
-        margin: 0.5em 0 0;
-      }
+        .rich-confirm-buttons {
+          align-items: stretch;
+          flex-direction: column;
+          justify-content: center;
+          margin: 0.5em 0 0;
+        }
 
-      .rich-confirm-buttons button {
-        display: block;
-        width: 100%;
-      }
+        .rich-confirm-buttons button {
+          display: block;
+          width: 100%;
+        }
 
-      .rich-confirm-check-label {
-        display: flex;
-        flex-direction: row;
-        margin-top: 0.5em;
-      }
+        .rich-confirm-check-label {
+          display: flex;
+          flex-direction: row;
+          margin-top: 0.5em;
+        }
 
-      .rich-confirm-check-label.hidden {
-        display: none;
-      }
-    `;
+        .rich-confirm-check-label.hidden {
+          display: none;
+        }
+      `;
       document.head.appendChild(this.style);
 
       var range = document.createRange();
       range.selectNodeContents(document.body);
       range.collapse(false);
       var fragment = range.createContextualFragment(`
-      <div class="rich-confirm">
-        <div class="rich-confirm-row">
-          <div class="rich-confirm-dialog">
-            <span class="rich-confirm-message"></span>
-            <div class="rich-confirm-buttons"></div>
-            <label class="rich-confirm-check-label">
-              <input type="checkbox" class="rich-confirm-check-checkbox">
-              <span class="rich-confirm-check-message"></span>
-            </label>
+        <div class="rich-confirm">
+          <div class="rich-confirm-row">
+            <div class="rich-confirm-dialog">
+              <span class="rich-confirm-message"></span>
+              <div class="rich-confirm-buttons"></div>
+              <label class="rich-confirm-check-label">
+                <input type="checkbox" class="rich-confirm-check-checkbox">
+                <span class="rich-confirm-check-message"></span>
+              </label>
+            </div>
           </div>
         </div>
-      </div>
-    `);
+      `);
       range.insertNode(fragment);
       range.detach();
       this.ui = document.body.lastElementChild;
