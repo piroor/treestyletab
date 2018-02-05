@@ -67,7 +67,7 @@ if (!window.RichConfirm) {
           border-radius: 0.5em;
           box-shadow: 0
           color: -moz-dialogtext;
-          margin: 0 1em;
+          margin: 0 auto;
           max-width: 20em;
           padding: 1em;
         }
