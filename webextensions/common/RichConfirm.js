@@ -6,34 +6,34 @@
 'use strict';
 
 if (!window.RichConfirm) {
-window.RichConfirm = function(aParams) {
-  this.params = aParams;
-  this.onClick = this.onClick.bind(this);
-}
-RichConfirm.prototype = {
-  get dialog() {
-    return this.ui.querySelector('.rich-confirm-dialog');
-  },
-  get message() {
-    return this.ui.querySelector('.rich-confirm-message');
-  },
-  get buttonsContainer() {
-    return this.ui.querySelector('.rich-confirm-buttons');
-  },
-  get checkContainer() {
-    return this.ui.querySelector('.rich-confirm-check-label');
-  },
-  get checkCheckbox() {
-    return this.ui.querySelector('.rich-confirm-check-checkbox');
-  },
-  get checkMessage() {
-    return this.ui.querySelector('.rich-confirm-check-message');
-  },
+  window.RichConfirm = function(aParams) {
+    this.params = aParams;
+    this.onClick = this.onClick.bind(this);
+  }
+  RichConfirm.prototype = {
+    get dialog() {
+      return this.ui.querySelector('.rich-confirm-dialog');
+    },
+    get message() {
+      return this.ui.querySelector('.rich-confirm-message');
+    },
+    get buttonsContainer() {
+      return this.ui.querySelector('.rich-confirm-buttons');
+    },
+    get checkContainer() {
+      return this.ui.querySelector('.rich-confirm-check-label');
+    },
+    get checkCheckbox() {
+      return this.ui.querySelector('.rich-confirm-check-checkbox');
+    },
+    get checkMessage() {
+      return this.ui.querySelector('.rich-confirm-check-message');
+    },
 
-  buildUI() {
-    this.style = document.createElement('style');
-    this.style.setAttribute('type', 'text/css');
-    this.style.textContent = `
+    buildUI() {
+      this.style = document.createElement('style');
+      this.style.setAttribute('type', 'text/css');
+      this.style.textContent = `
       .rich-confirm {
         background: rgba(0, 0, 0, 0.45);
         border: 1px outset;
@@ -94,12 +94,12 @@ RichConfirm.prototype = {
         display: none;
       }
     `;
-    document.head.appendChild(this.style);
+      document.head.appendChild(this.style);
 
-    var range = document.createRange();
-    range.selectNodeContents(document.body);
-    range.collapse(false);
-    var fragment = range.createContextualFragment(`
+      var range = document.createRange();
+      range.selectNodeContents(document.body);
+      range.collapse(false);
+      var fragment = range.createContextualFragment(`
       <div class="rich-confirm">
         <div class="rich-confirm-row">
           <div class="rich-confirm-dialog">
@@ -113,121 +113,121 @@ RichConfirm.prototype = {
         </div>
       </div>
     `);
-    range.insertNode(fragment);
-    range.detach();
-    this.ui = document.body.lastElementChild;
-  },
+      range.insertNode(fragment);
+      range.detach();
+      this.ui = document.body.lastElementChild;
+    },
 
-  show: async function() {
-    this.buildUI();
-    await new Promise((aResolve, aReject) => setTimeout(aResolve, 0));
+    show: async function() {
+      this.buildUI();
+      await new Promise((aResolve, aReject) => setTimeout(aResolve, 0));
 
-    this.message.textContent = this.params.message;
+      this.message.textContent = this.params.message;
 
-    if (this.params.checkMessage) {
-      this.checkMessage.textContent = this.params.checkMessage;
-      this.checkCheckbox.checked = !!this.params.checked;
-      this.checkContainer.classList.remove('hidden');
-    }
-    else {
-      this.checkContainer.classList.add('hidden');
-    }
+      if (this.params.checkMessage) {
+        this.checkMessage.textContent = this.params.checkMessage;
+        this.checkCheckbox.checked = !!this.params.checked;
+        this.checkContainer.classList.remove('hidden');
+      }
+      else {
+        this.checkContainer.classList.add('hidden');
+      }
 
-    var range = document.createRange();
-    range.selectNodeContents(this.buttonsContainer);
-    range.deleteContents();
-    var buttons = document.createDocumentFragment();
-    for (let label of this.params.buttons) {
-      let button = document.createElement('button');
-      button.textContent = label;
-      button.setAttribute('title', label);
-      buttons.appendChild(button);
-    }
-    range.insertNode(buttons);
-    range.detach();
+      var range = document.createRange();
+      range.selectNodeContents(this.buttonsContainer);
+      range.deleteContents();
+      var buttons = document.createDocumentFragment();
+      for (let label of this.params.buttons) {
+        let button = document.createElement('button');
+        button.textContent = label;
+        button.setAttribute('title', label);
+        buttons.appendChild(button);
+      }
+      range.insertNode(buttons);
+      range.detach();
 
-    this.ui.addEventListener('click', this.onClick);
-    this.ui.classList.add('show');
+      this.ui.addEventListener('click', this.onClick);
+      this.ui.classList.add('show');
 
-    return new Promise((aResolve, aReject) => {
-      this._resolve = aResolve;
-      this._rejecte = aReject;
-    });
-  },
-
-  hide() {
-    this.ui.removeEventListener('click', this.onClick);
-    delete this._resolve;
-    delete this._rejecte;
-    this.ui.classList.remove('show');
-    window.setTimeout(() => {
-      this.ui.parentNode.removeChild(this.ui);
-      this.style.parentNode.removeChild(this.style);
-      delete this.ui;
-      delete this.style;
-    }, 1000);
-  },
-
-  onClick(aEvent) {
-    if (aEvent.button != 0) {
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
-      return;
-    }
-
-    var button = aEvent.target.closest('button');
-    if (button) {
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
-      let buttonIndex = Array.slice(this.buttonsContainer.childNodes).indexOf(button);
-      this._resolve({
-        buttonIndex,
-        checked: !!this.params.message && this.checkCheckbox.checked
+      return new Promise((aResolve, aReject) => {
+        this._resolve = aResolve;
+        this._rejecte = aReject;
       });
-      this.hide();
-      return;
-    }
+    },
 
-    if (!aEvent.target.closest(`.rich-confirm-dialog`)) {
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
-      this.hide();
+    hide() {
+      this.ui.removeEventListener('click', this.onClick);
+      delete this._resolve;
+      delete this._rejecte;
+      this.ui.classList.remove('show');
+      window.setTimeout(() => {
+        this.ui.parentNode.removeChild(this.ui);
+        this.style.parentNode.removeChild(this.style);
+        delete this.ui;
+        delete this.style;
+      }, 1000);
+    },
+
+    onClick(aEvent) {
+      if (aEvent.button != 0) {
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        return;
+      }
+
+      var button = aEvent.target.closest('button');
+      if (button) {
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        let buttonIndex = Array.slice(this.buttonsContainer.childNodes).indexOf(button);
+        this._resolve({
+          buttonIndex,
+          checked: !!this.params.message && this.checkCheckbox.checked
+        });
+        this.hide();
+        return;
+      }
+
+      if (!aEvent.target.closest(`.rich-confirm-dialog`)) {
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.hide();
+      }
     }
-  }
-};
-RichConfirm.showInTab = async function(aTabId, aParams) {
-  await browser.tabs.executeScript(aTabId, {
-    file:            '/common/RichConfirm.js',
-    matchAboutBlank: true,
-    runAt:           'document_start'
-  });
-  const resultSlot = `result_${parseInt(Math.random() * Math.pow(2, 16))}`;
-  browser.tabs.executeScript(aTabId, {
-    code: `
+  };
+  RichConfirm.showInTab = async function(aTabId, aParams) {
+    await browser.tabs.executeScript(aTabId, {
+      file:            '/common/RichConfirm.js',
+      matchAboutBlank: true,
+      runAt:           'document_start'
+    });
+    const resultSlot = `result_${parseInt(Math.random() * Math.pow(2, 16))}`;
+    browser.tabs.executeScript(aTabId, {
+      code: `
       delete window.${resultSlot};
       (async () => {
         const confirm = new RichConfirm(${JSON.stringify(aParams)});
         window.${resultSlot} = await confirm.show();
       })();
     `,
-    matchAboutBlank: true,
-    runAt:           'document_start'
-  });
-  let result;
-  while (true) {
-    const results = await browser.tabs.executeScript(aTabId, {
-      code:            `window.${resultSlot}`,
       matchAboutBlank: true,
       runAt:           'document_start'
     });
-    if (results.length > 0 &&
+    let result;
+    while (true) {
+      const results = await browser.tabs.executeScript(aTabId, {
+        code:            `window.${resultSlot}`,
+        matchAboutBlank: true,
+        runAt:           'document_start'
+      });
+      if (results.length > 0 &&
         results[0] !== undefined) {
-      result = results[0];
-      break;
+        result = results[0];
+        break;
+      }
+      await new Promise((aResolve, aReject) => setTimeout(aResolve, 100));
     }
-    await new Promise((aResolve, aReject) => setTimeout(aResolve, 100));
-  }
-  return result;
-};
-true; // this is required to run this script as a content script
+    return result;
+  };
+  true; // this is required to run this script as a content script
 }
