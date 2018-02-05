@@ -61,6 +61,14 @@
   "dropLinksOnTabBehavior.load":    { "message": "Load to this tab" },
   "dropLinksOnTabBehavior.newtab":  { "message": "Open new child tab" },
 
+  "warnOnCloseTabs.message":   { "message": "You are about to close $NUMBER$ tabs. Are you sure you want to continue?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs.warnAgain": { "message": "Warn me when I attempt to close multiple tabs" },
+  "warnOnCloseTabs.close":     { "message": "Close tabs" },
+  "warnOnCloseTabs.cancel":    { "message": "Cancel" },
+
   "message.startup.description.1": { "message": "Tree Style Tab is now reborn based on WebExtensions technologies for Firefox 57 and later. Its vertical tab bar is available as one of choosable sidebar panels. If you don't see it yet, hit the " },
   "message.startup.description.key": { "message": "\"F1\" key" },
   "message.startup.description.2": { "message": " or click the " },

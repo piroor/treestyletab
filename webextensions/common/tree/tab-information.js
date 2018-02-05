@@ -220,6 +220,14 @@ function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
          nextTab.previousSibling == aPreviousTab;
 }
 
+function getCountOfClosingTabs(aTab) {
+  if (!isSubtreeCollapsed(aTab) ||
+      !hasChildTabs(aTab))
+    return 1;
+  const descendants = getDescendantTabs(aTab);
+  return descendants.length + 1;
+}
+
 
 function dumpAllTabs() {
   if (!configs.debug)

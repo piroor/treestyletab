@@ -421,12 +421,23 @@ var tabContextMenu = {
           if (after && !tab.pinned)
             closeTabs.push(tab);
         }
-        browser.tabs.remove(closeTabs.map(aTab => aTab.id));
+        confirmToCloseTabs(closeTabs.length, { windowId: this.contextWindowId })
+          .then(aConfirmed => {
+            if (!aConfirmed)
+              return;
+            browser.tabs.remove(closeTabs.map(aTab => aTab.id));
+          });
       }; break;
       case 'context_closeOtherTabs': {
         let tabId = this.contextTab.id; // cache it for delayed tasks!
         let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
-        browser.tabs.remove(tabs.filter(aTab => !aTab.pinned && aTab.id != tabId).map(aTab => aTab.id));
+        let closeTabs = tabs.filter(aTab => !aTab.pinned && aTab.id != tabId).map(aTab => aTab.id);
+        confirmToCloseTabs(closeTabs.length, { windowId: this.contextWindowId })
+          .then(aConfirmed => {
+            if (!aConfirmed)
+              return;
+            browser.tabs.remove(closeTabs);
+          });
       }; break;
       case 'context_undoCloseTab': {
         let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });

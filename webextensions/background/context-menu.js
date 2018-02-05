@@ -80,26 +80,41 @@ var contextMenuClickListener = (aInfo, aTab) => {
 
     case 'closeTree': {
       let tabs = [contextTab].concat(getDescendantTabs(contextTab));
-      tabs.reverse(); // close bottom to top!
-      for (let tab of tabs) {
-        removeTabInternally(tab);
-      }
+      confirmToCloseTabs(tabs.length, { windowId: aTab.windowId })
+        .then(aConfirmed => {
+          if (!aConfirmed)
+            return;
+          tabs.reverse(); // close bottom to top!
+          for (let tab of tabs) {
+            removeTabInternally(tab);
+          }
+        });
     }; break;
     case 'closeDescendants': {
       let tabs = getDescendantTabs(contextTab);
-      tabs.reverse(); // close bottom to top!
-      for (let tab of tabs) {
-        removeTabInternally(tab);
-      }
+      confirmToCloseTabs(tabs.length, { windowId: aTab.windowId })
+        .then(aConfirmed => {
+          if (!aConfirmed)
+            return;
+          tabs.reverse(); // close bottom to top!
+          for (let tab of tabs) {
+            removeTabInternally(tab);
+          }
+        });
     }; break;
     case 'closeOthers': {
       let exceptionTabs = [contextTab].concat(getDescendantTabs(contextTab));
       let tabs          = getNormalTabs(container); // except pinned or hidden tabs
       tabs.reverse(); // close bottom to top!
-      for (let tab of tabs) {
-        if (exceptionTabs.indexOf(tab) < 0)
-          removeTabInternally(tab);
-      }
+      let closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(tab) < 0);
+      confirmToCloseTabs(closeTabs.length, { windowId: aTab.windowId })
+        .then(aConfirmed => {
+          if (!aConfirmed)
+            return;
+          for (let tab of closeTabs) {
+            removeTabInternally(tab);
+          }
+        });
     }; break;
 
     case 'collapseAll': {

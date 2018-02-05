@@ -19,14 +19,14 @@ RichConfirm.prototype = {
   get buttonsContainer() {
     return this.ui.querySelector('.rich-confirm-buttons');
   },
-  get saveContainer() {
-    return this.ui.querySelector('.rich-confirm-save-label');
+  get checkContainer() {
+    return this.ui.querySelector('.rich-confirm-check-label');
   },
-  get saveCheck() {
-    return this.ui.querySelector('.rich-confirm-save-check');
+  get checkCheckbox() {
+    return this.ui.querySelector('.rich-confirm-check-checkbox');
   },
-  get saveMessage() {
-    return this.ui.querySelector('.rich-confirm-save-message');
+  get checkMessage() {
+    return this.ui.querySelector('.rich-confirm-check-message');
   },
 
   buildUI() {
@@ -83,13 +83,13 @@ RichConfirm.prototype = {
         width: 100%;
       }
 
-      .rich-confirm-save-label {
+      .rich-confirm-check-label {
         display: flex;
         flex-direction: row;
         margin-top: 0.5em;
       }
 
-      .rich-confirm-save-label.hidden {
+      .rich-confirm-check-label.hidden {
         display: none;
       }
     `;
@@ -104,9 +104,9 @@ RichConfirm.prototype = {
           <div class="rich-confirm-dialog">
             <span class="rich-confirm-message"></span>
             <div class="rich-confirm-buttons"></div>
-            <label class="rich-confirm-save-label">
-              <input type="checkbox" class="rich-confirm-save-check">
-              <span class="rich-confirm-save-message"></span>
+            <label class="rich-confirm-check-label">
+              <input type="checkbox" class="rich-confirm-check-checkbox">
+              <span class="rich-confirm-check-message"></span>
             </label>
           </div>
         </div>
@@ -123,13 +123,13 @@ RichConfirm.prototype = {
 
     this.message.textContent = this.params.message;
 
-    this.saveCheck.checked = false;
-    if (this.params.saveMessage) {
-      this.saveMessage.textContent = this.params.saveMessage;
-      this.saveContainer.classList.remove('hidden');
+    if (this.params.checkMessage) {
+      this.checkMessage.textContent = this.params.checkMessage;
+      this.checkCheckbox.checked = !!this.params.checked;
+      this.checkContainer.classList.remove('hidden');
     }
     else {
-      this.saveContainer.classList.add('hidden');
+      this.checkContainer.classList.add('hidden');
     }
 
     var range = document.createRange();
@@ -181,7 +181,7 @@ RichConfirm.prototype = {
       let buttonIndex = Array.slice(this.buttonsContainer.childNodes).indexOf(button);
       this._resolve({
         buttonIndex,
-        shouldSave:  this.saveCheck.checked
+        checked: !!this.params.message && this.checkCheckbox.checked
       });
       this.hide();
       return;

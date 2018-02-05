@@ -701,3 +701,18 @@ function updateParentGroupTab(aParentTab) {
     code:            `location.replace(${JSON.stringify(url)})`,
   });
 }
+
+
+async function confirmToCloseTabs(aCount, aOptions = {}) {
+  if (aCount <= 1)
+    return true;
+
+  if (gSidebarOpenState.get(aOptions.windowId))
+    return browser.runtime.sendMessage({
+      type:     kCOMMAND_CONFIRM_TO_CLOSE_TABS,
+      count:    aCount,
+      windowId: aOptions.windowId
+    });
+
+  return false;
+}

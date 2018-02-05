@@ -471,6 +471,31 @@ function getTabClosebox(aTab) {
 }
 
 
+async function confirmToCloseTabs(aCount, aOptions = {}) {
+  if (aCount <= 1)
+    return true;
+  const confirm = new RichConfirm({
+    message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
+    buttons: [
+      browser.i18n.getMessage('warnOnCloseTabs.close'),
+      browser.i18n.getMessage('warnOnCloseTabs.cancel')
+    ],
+    checkMessage: browser.i18n.getMessage('warnOnCloseTabs.warnAgain'),
+    checked: true
+  });
+  const result = await confirm.show();
+  switch (result.buttonIndex) {
+    case 0:
+      if (!result.checked)
+        configs.warnOnCloseTree = false;
+      return true;
+    case 1:
+    default:
+      return false;
+  }
+}
+
+
 function updateTabTwisty(aTab) {
   var tooltip;
   if (isSubtreeCollapsed(aTab))

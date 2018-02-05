@@ -196,6 +196,7 @@ configs = new Configs({
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
   moveFocusInTreeForClosedCurrentTab: true,
+  warnOnCloseTabs: true,
 
 
   // animation
@@ -317,6 +318,7 @@ configs = new Configs({
     moveTabsToBottomWhenDetachedFromClosedParent
     promoteAllChildrenWhenClosedParentIsLastChild
     moveFocusInTreeForClosedCurrentTab
+    warnOnCloseTabs
     animation
     smoothScrollEnabled
     smoothScrollDuration
