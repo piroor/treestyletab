@@ -489,6 +489,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
     case 0:
       if (!result.checked)
         configs.warnOnCloseTabs = false;
+      configs.lastConfirmedToCloseTabs = Date.now();
       return true;
     case 1:
     default:

@@ -197,6 +197,7 @@ configs = new Configs({
   promoteAllChildrenWhenClosedParentIsLastChild: true,
   moveFocusInTreeForClosedCurrentTab: true,
   warnOnCloseTabs: true,
+  lastConfirmedToCloseTabs: 0,
 
 
   // animation
