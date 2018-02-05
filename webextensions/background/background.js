@@ -730,7 +730,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
   switch (result.buttonIndex) {
     case 0:
       if (!result.checked)
-        configs.warnOnCloseTree = false;
+        configs.warnOnCloseTabs = false;
       return true;
     case 1:
     default:
