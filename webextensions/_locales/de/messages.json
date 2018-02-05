@@ -61,6 +61,14 @@
   "dropLinksOnTabBehavior.load":    { "message": "In diesem Tab öffnen" },
   "dropLinksOnTabBehavior.newtab": { "message": "In neuem untergeordneten Tab öffnen" },
   
+   "warnOnCloseTabs.message":   { "message": "Möchtest du wirklich $NUMBER$ Tabs schließen?",
+    "placeholders": {
+      "NUMBER": { "content": "$1", "example": "10" }
+    }},
+  "warnOnCloseTabs.warnAgain": { "message": "Warnen wenn mehrere Tabs geschlossen werden sollen" },
+  "warnOnCloseTabs.close":     { "message": "Tabs schließen" },
+  "warnOnCloseTabs.cancel": { "message": "Abbrechen" },
+  
   "message.startup.description.1": { "message": "Tree Style Tab wurde wiedergeboren basierend auf der WebExtensions-Technologie für Firefox 57 (und neuer). Seine senkrechte Tab-Leiste ist als eine der auswählbaren Sidebars verfügbar. Falls sie noch nicht angezeigt wird, drücke die " },
   "message.startup.description.key": { "message": "\"F1\" Taste" },
   "message.startup.description.2": { "message": " oder klicke auf den " },
@@ -70,7 +78,7 @@
   "message.startup.migrateSessions.after": { "message": "." },
   "migrateSessions.link.uri": { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
 
-  "message.startup.requestPermissions.description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls Du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
+  "message.startup.requestPermissions.description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message.startup.requestPermissions.bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
   "message.startup.requestPermissions.allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen (erfordert Skript-Injektion in Webseiten zur Erkennung von Tastendrücken.)" },
   "message.startup.requestPermissions.tabHide": { "message": "Inaktive Tabs außer angeheftete Tabs in der Tableiste verstecken (benötigt die Berechtigung zum Verstecken von Tabs und du musst \"extensions.webextensions.tabhide.enabled\" in \"about:config\" aktivieren.)" },
