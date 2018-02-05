@@ -217,6 +217,9 @@
   "config.dropLinksOnTabBehavior.load":    { "message": "In diesem Tab öffnen" },
   "config.dropLinksOnTabBehavior.newtab": { "message": "In einem neuen untergeordneten Tab öffnen" },
 
+  "config.warnOnCloseTabs.label": { "message": "Warnen wenn mehrere Tabs geschlossen werden sollen" },
+  
+  
   "config.advanced.caption": { "message": "Erweitert" },
 
   "config.userStyleRules.label": { "message": "Style-Regeln für Sidebar-Inhalte" },
