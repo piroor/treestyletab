@@ -704,7 +704,8 @@ function updateParentGroupTab(aParentTab) {
 
 
 async function confirmToCloseTabs(aCount, aOptions = {}) {
-  if (aCount <= 1)
+  if (aCount <= 1 ||
+      !configs.warnOnCloseTabs)
     return true;
 
   if (gSidebarOpenState.get(aOptions.windowId))

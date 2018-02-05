@@ -472,7 +472,8 @@ function getTabClosebox(aTab) {
 
 
 async function confirmToCloseTabs(aCount, aOptions = {}) {
-  if (aCount <= 1)
+  if (aCount <= 1 ||
+      !configs.warnOnCloseTabs)
     return true;
   const confirm = new RichConfirm({
     message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
