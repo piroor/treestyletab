@@ -22,3 +22,6 @@
 [submodule "extlib/webextensions-lib-tab-id-fixer"]
 	path = extlib/webextensions-lib-tab-id-fixer
 	url = https://github.com/piroor/webextensions-lib-tab-id-fixer.git
+[submodule "extlib/webextensions-lib-rich-confirm"]
+	path = extlib/webextensions-lib-rich-confirm
+	url = https://github.com/piroor/webextensions-lib-rich-confirm.git
