@@ -36,7 +36,8 @@
 }
 
 #tabContextMenu.open,
-#tabContextMenu li:hover > ul {
+#tabContextMenu li:focus.hover > ul,
+#tabContextMenu li.open > ul {
   opacity: 1;
   pointer-events: auto;
 }
@@ -66,12 +67,14 @@
   pointer-events: none;
 }
 
-#tabContextMenu li:not(.separator):hover {
+#tabContextMenu li:not(.separator):focus,
+#tabContextMenu li:not(.separator).open {
   background: Highlight;
   color: HighlightText
 }
 
-#tabContextMenu li:not(.separator):hover ul li:not(:hover) {
+#tabContextMenu li:not(.separator):focus ul li:not(:focus):not(.open),
+#tabContextMenu li:not(.separator).open ul li:not(:focus):not(.open) {
   background: transparent;
   color: MenuText;
 }

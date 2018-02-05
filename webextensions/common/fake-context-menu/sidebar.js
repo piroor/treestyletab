@@ -15,8 +15,11 @@
 var tabContextMenu = {
   init() {
     this.onBlur            = this.onBlur.bind(this);
+    this.onMouseOver       = this.onMouseOver.bind(this);
     this.onMouseDown       = this.onMouseDown.bind(this);
     this.onClick           = this.onClick.bind(this);
+    this.onKeyPress        = this.onKeyPress.bind(this);
+    this.onTransitionEnd   = this.onTransitionEnd.bind(this);
     this.onMessage         = this.onMessage.bind(this);
     this.onExternalMessage = this.onExternalMessage.bind(this);
 
@@ -66,6 +69,7 @@ var tabContextMenu = {
   contextTab: null,
   extraItems: {},
   dirty:      false,
+  lastFocusedItem: null,
 
   rebuild: async function() {
     if (!this.dirty)
@@ -198,6 +202,7 @@ var tabContextMenu = {
     }
     this.contextTab      = aOptions.tab;
     this.contextWindowId = aOptions.windowId || (this.contextTab && this.contextTab.windowId);
+    this.lastFocusedItem = null;
     await this.rebuild();
     this.applyContext();
     this.menu.classList.add('open');
@@ -206,8 +211,15 @@ var tabContextMenu = {
       this.updatePosition(menu, aOptions);
     }
     setTimeout(() => {
+      for (let item of Array.slice(this.menu.querySelectorAll('li:not(.separator)'))) {
+        item.tabIndex = 0;
+        item.classList.remove('open');
+      }
+      this.menu.addEventListener('mousemove', this.onMouseOver);
+      this.menu.addEventListener('transitionend', this.onTransitionEnd);
       window.addEventListener('mousedown', this.onMouseDown, { capture: true });
       window.addEventListener('click', this.onClick, { capture: true });
+      window.addEventListener('keypress', this.onKeyPress, { capture: true });
     }, configs.collapseDuration);
   },
 
@@ -218,6 +230,7 @@ var tabContextMenu = {
     this.contextTab      = null;
     this.contextWindowId = null;
     this.addons          = null;
+    this.lastFocusedItem = null;
     this.closeTimeout = setTimeout(() => {
       delete this.closeTimeout;
       this.onClosed();
@@ -230,8 +243,11 @@ var tabContextMenu = {
     }
     this.menu.removeAttribute('data-tab-id');
     this.menu.removeAttribute('data-tab-states');
+    this.menu.removeEventListener('mousemove', this.onMouseOver);
+    this.menu.removeEventListener('transitionend', this.onTransitionEnd);
     window.removeEventListener('mousedown', this.onMouseDown, { capture: true });
     window.removeEventListener('click', this.onClick, { capture: true });
+    window.removeEventListener('keypress', this.onKeyPress, { capture: true });
   },
 
   applyContext() {
@@ -295,8 +311,53 @@ var tabContextMenu = {
     aMenu.style.top  = `${top}px`;
   },
 
-  onBlur() {
-    this.close();
+  onBlur(aEvent) {
+    if (!aEvent.target.closest ||
+        !aEvent.target.closest(`#${this.menu.id}`))
+      this.close();
+  },
+
+  onMouseOver(aEvent) {
+    const item = this.getEffectiveItem(aEvent.target);
+    if (!item)
+      return;
+    this.setHover(item);
+    this.closeOtherSubmenus(item);
+    this.openSubmenuFor(item);
+    item.focus();
+    this.lastFocusedItem = item;
+  },
+
+  setHover(aItem) {
+    for (let item of Array.slice(this.menu.querySelectorAll('li.hover'))) {
+      if (item != aItem)
+        item.classList.remove('hover');
+    }
+    if (aItem)
+      aItem.classList.add('hover');
+  },
+
+  openSubmenuFor(aItem) {
+    const items = evaluateXPath(
+      `ancestor-or-self::li[${hasClass('has-submenu')}]`,
+      aItem
+    );
+    for (let item of getArrayFromXPathResult(items)) {
+      item.classList.add('open');
+    }
+  },
+
+  closeOtherSubmenus(aItem) {
+    const items = evaluateXPath(
+      `preceding-sibling::li[${hasClass('has-submenu')}] |
+       following-sibling::li[${hasClass('has-submenu')}] |
+       preceding-sibling::li/descendant::li[${hasClass('has-submenu')}] |
+       following-sibling::li/descendant::li[${hasClass('has-submenu')}]`,
+      aItem
+    );
+    for (let item of getArrayFromXPathResult(items)) {
+      item.classList.remove('open');
+    }
   },
 
   onMouseDown(aEvent) {
@@ -305,11 +366,8 @@ var tabContextMenu = {
     aEvent.preventDefault();
   },
 
-  getEffectiveTargetItem(aEvent) {
-    var target = aEvent.target;
-    while (target.nodeType != target.ELEMENT_NODE) {
-      target = target.parentNode;
-    }
+  getEffectiveItem(aNode) {
+    var target = aNode.closest('li');
     var untransparentTarget = target;
     while (untransparentTarget) {
       if (parseFloat(window.getComputedStyle(untransparentTarget, null).opacity) < 1)
@@ -329,7 +387,7 @@ var tabContextMenu = {
     aEvent.stopPropagation();
     aEvent.preventDefault();
 
-    var target = this.getEffectiveTargetItem(aEvent);
+    var target = this.getEffectiveItem(aEvent.target);
     if (!target ||
         target.classList.contains('has-submenu') ||
         !target.id) {
@@ -341,7 +399,121 @@ var tabContextMenu = {
       return;
     }
 
-    switch (target.id) {
+    this.onCommand(target, aEvent);
+  },
+
+  onKeyPress(aEvent) {
+    switch (aEvent.keyCode) {
+      case aEvent.DOM_VK_UP:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.advanceFocus(-1);
+        break;
+
+      case aEvent.DOM_VK_DOWN:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.advanceFocus(1);
+        break;
+
+      case aEvent.DOM_VK_RIGHT:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.digIn();
+        break;
+
+      case aEvent.DOM_VK_LEFT:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.digOut();
+        break;
+
+      case aEvent.DOM_VK_ENTER:
+      case aEvent.DOM_VK_RETURN:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        if (this.lastFocusedItem)
+          this.onCommand(this.lastFocusedItem, aEvent);
+        break;
+
+      case aEvent.DOM_VK_ESCAPE:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.close();
+        break;
+
+      default:
+        return;
+    }
+  },
+
+  advanceFocus(aDirection, aLastFocused) {
+    aLastFocused = aLastFocused || this.lastFocusedItem;
+    if (!aLastFocused) {
+      if (aDirection < 0)
+        this.lastFocusedItem = aLastFocused = this.menu.firstChild;
+      else
+        this.lastFocusedItem = aLastFocused = this.menu.lastChild;
+    }
+    if (aDirection < 0)
+      this.lastFocusedItem = (
+        evaluateXPath(
+          `preceding-sibling::li[not(${hasClass('separator')})][1]`,
+          aLastFocused,
+          XPathResult.FIRST_ORDERED_NODE_TYPE
+        ).singleNodeValue ||
+        evaluateXPath(
+          `following-sibling::li[not(${hasClass('separator')})][last()]`,
+          aLastFocused,
+          XPathResult.FIRST_ORDERED_NODE_TYPE
+        ).singleNodeValue ||
+        aLastFocused
+      );
+    else
+      this.lastFocusedItem = (
+        evaluateXPath(
+          `following-sibling::li[not(${hasClass('separator')})][1]`,
+          aLastFocused,
+          XPathResult.FIRST_ORDERED_NODE_TYPE
+        ).singleNodeValue ||
+        evaluateXPath(
+          `preceding-sibling::li[not(${hasClass('separator')})][last()]`,
+          aLastFocused,
+          XPathResult.FIRST_ORDERED_NODE_TYPE
+        ).singleNodeValue ||
+        aLastFocused
+      );
+    this.lastFocusedItem.focus();
+    this.setHover(null);
+    if (window.getComputedStyle(this.lastFocusedItem, null).display == 'none')
+      this.advanceFocus(aDirection);
+  },
+
+  digIn() {
+    if (!this.lastFocusedItem)
+      return;
+    const submenu = this.lastFocusedItem.querySelector('ul');
+    if (!submenu)
+      return;
+    this.closeOtherSubmenus(this.lastFocusedItem);
+    this.openSubmenuFor(this.lastFocusedItem);
+    this.advanceFocus(1, submenu.lastChild);
+  },
+
+  digOut() {
+    if (!this.lastFocusedItem ||
+        this.lastFocusedItem.parentNode == this.menu)
+      return;
+    this.closeOtherSubmenus(this.lastFocusedItem);
+    this.lastFocusedItem = this.lastFocusedItem.parentNode.parentNode;
+    this.closeOtherSubmenus(this.lastFocusedItem);
+    this.lastFocusedItem.classList.remove('open');
+    this.lastFocusedItem.focus();
+    this.setHover(null);
+  },
+
+  onCommand: async function(aItem, aEvent) {
+    switch (aItem.id) {
       case 'context_reloadTab':
         browser.tabs.reload(this.contextTab.id);
         break;
@@ -449,7 +621,7 @@ var tabContextMenu = {
         break;
 
       default: {
-        let id = target.getAttribute('data-item-id');
+        let id = aItem.getAttribute('data-item-id');
         if (id) {
           var modifiers = [];
           if (aEvent.metaKey)
@@ -479,7 +651,7 @@ var tabContextMenu = {
             },
             tab: this.contextTab || null
           };
-          let owner = target.getAttribute('data-item-owner-id');
+          let owner = aItem.getAttribute('data-item-owner-id');
           if (owner == browser.runtime.id)
             await browser.runtime.sendMessage(message);
           else
@@ -488,6 +660,19 @@ var tabContextMenu = {
       }; break;
     }
     this.close();
+  },
+
+  onTransitionEnd(aEvent) {
+    const hoverItems = this.menu.querySelectorAll('li:hover');
+    if (hoverItems.length == 0)
+      return;
+    const lastHoverItem = hoverItems[hoverItems.length - 1];
+    const item = this.getEffectiveItem(lastHoverItem);
+    if (!item)
+      return;
+    this.setHover(item);
+    item.focus();
+    this.lastFocusedItem = item;
   },
 
   onMessage(aMessage, aSender) {
