@@ -363,23 +363,22 @@ function updateContextualIdentitiesSelector() {
     const item     = document.createElement('li');
     item.dataset.value = id;
     item.textContent = identity.name;
+    const icon = document.createElement('span');
+    icon.classList.add('icon');
     if (identity.iconUrl) {
-      const icon = document.createElement('span');
-      icon.classList.add('icon');
       icon.style.backgroundColor = identity.colorCode || 'var(--tab-text)';
       icon.style.mask = `url(${JSON.stringify(identity.iconUrl)}) no-repeat center / 100%`;
-      item.insertBefore(icon, item.firstChild);
     }
-    else if (identity.colorCode) {
-      item.style.color           = getReadableForegroundColorFromBGColor(identity.colorCode);
-      item.style.backgroundColor = identity.colorCode;
-    }
+    item.insertBefore(icon, item.firstChild);
     fragment.appendChild(item);
   }
   if (configs.inheritContextualIdentityToNewChildTab) {
     let defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';
     defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar.newTabWithContexualIdentity.default');
+    const icon = document.createElement('span');
+    icon.classList.add('icon');
+    defaultCotnainerItem.insertBefore(icon, defaultCotnainerItem.firstChild);
     fragment.appendChild(defaultCotnainerItem);
   }
   range.insertNode(fragment);
