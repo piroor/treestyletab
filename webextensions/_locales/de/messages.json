@@ -151,6 +151,11 @@
   "config.newTab.caption": { "message": "Verhalten für neue Tabs" },
 
   "config.newTabButton.caption": { "message": "\"Neuer Tab\" Schaltfläche" },
+  "config.longPressOnNewTabButton.before":               { "message": "Die Schaltfläche \"Neuer Tab\" lang gedrückt halten, zum " },
+  "config.longPressOnNewTabButton.newTabAction":         { "message": "auswählen, wo der neue Tab geöffnet werden soll" },
+  "config.longPressOnNewTabButton.contextualIdentities": { "message": "Container auswählen" },
+  "config.longPressOnNewTabButton.none":                 { "message": "(nichts)" },
+  "config.longPressOnNewTabButton.after":                { "message": "" },  
   "config.showNewTabActionSelector.label": { "message": "Auswahl bei der Schaltfläche \"Neuer Tab \" anzeigen, wo der neue Tab geöffnet werden soll" },
   "config.showContextualIdentitiesSelector.label": { "message": "Containerauswahl am \"Neuer Tab\"-Button anzeigen" },
     
