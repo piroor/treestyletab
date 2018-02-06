@@ -32,7 +32,7 @@ var tabContextMenu = {
     browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
 
     window.addEventListener('unload', () => {
-      this.onClosed();
+      this.close();
       browser.runtime.onMessage.removeListener(this.onMessage);
       browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
     }, { once: true });
