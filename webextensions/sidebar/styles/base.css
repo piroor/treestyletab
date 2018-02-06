@@ -481,6 +481,11 @@ ul {
   opacity: var(--button-hover-opacity);
 }
 
+.after-tabs
+  .newtab-button-box:hover
+  .newtab-action-selector-anchor:not([disabled="true"]),
+.after-tabs
+  .newtab-action-selector-anchor.open,
 :root.contextual-identity-selectable
   .after-tabs
   .newtab-button-box:hover
@@ -492,9 +497,9 @@ ul {
   opacity: 1;
 }
 
+.after-tabs .newtab-action-selector-anchor,
 .after-tabs .contextual-identities-selector-anchor {
   background: none;
-  border-width: 0 0 0 1px;
   bottom: 0;
   color: var(--tab-text);
   display: flex;
@@ -504,16 +509,25 @@ ul {
   padding: 0.25em;
   pointer-events: none;
   position: absolute;
-  right: 0;
   top: 0;
   transition: opacity var(--collapse-animation);
   z-index: 200;
 }
+.after-tabs .newtab-action-selector-anchor {
+  border-width: 0 1px 0 0;
+  left: 0;
+}
+.after-tabs .contextual-identities-selector-anchor {
+  border-width: 0 0 0 1px;
+  right: 0;
+}
 
+.newtab-action-selector-anchor::-moz-focus-inner,
 .contextual-identities-selector-anchor::-moz-focus-inner {
   border: none;
 }
 
+.newtab-action-selector-anchor::before,
 .contextual-identities-selector-anchor::before {
   content: "▼";
   font-size: 0.65em;

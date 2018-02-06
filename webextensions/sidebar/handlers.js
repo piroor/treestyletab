@@ -89,18 +89,12 @@ function isEventFiredOnNewTabButton(aEvent) {
   return node && !!node.closest(`.${kNEWTAB_BUTTON}`);
 }
 
-function isEventFiredOnContextualIdentitySelector(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`#${kCONTEXTUAL_IDENTITY_SELECTOR}`);
+function isEventFiredOnMenuOrPanel(aEvent) {
+  return !!aEvent.target.closest('ul.menu, ul.panel');
 }
 
-function isEventFiredOnContextualIdentitySelectorAnchor(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}-anchor`);
+function isEventFiredOnAnchor(aEvent) {
+  return !!aEvent.target.closest(`[data-menu-ui]`);
 }
 
 function isEventFiredOnClickable(aEvent) {
@@ -207,7 +201,7 @@ function onMouseDown(aEvent) {
   if (configs.logOnMouseEvent)
     log('onMouseDown ', mousedownDetail);
 
-  if (mousedownDetail.targetType == 'contextualidentityselector')
+  if (mousedownDetail.targetType == 'selector')
     return;
 
   if (mousedownDetail.isMiddleClick) {
@@ -255,9 +249,9 @@ function getMouseEventTargetType(aEvent) {
   if (isEventFiredOnNewTabButton(aEvent))
     return 'newtabbutton';
 
-  if (isEventFiredOnContextualIdentitySelector(aEvent) ||
-      isEventFiredOnContextualIdentitySelectorAnchor(aEvent))
-    return 'contextualidentityselector';
+  if (isEventFiredOnMenuOrPanel(aEvent) ||
+      isEventFiredOnAnchor(aEvent))
+    return 'selector';
 
   var allRange = document.createRange();
   allRange.selectNodeContents(document.body);
@@ -391,16 +385,17 @@ function onClick(aEvent) {
   if (configs.logOnMouseEvent)
     log('onClick', String(aEvent.target));
 
-  if (isEventFiredOnContextualIdentitySelector(aEvent))
+  if (isEventFiredOnMenuOrPanel(aEvent))
     return;
 
-  if (isEventFiredOnContextualIdentitySelectorAnchor(aEvent)) {
+  if (isEventFiredOnAnchor(aEvent) && !isAccelAction(aEvent)) {
     if (configs.logOnMouseEvent)
-      log('click on the contextual identity selector anchor');
+      log('click on a selector anchor');
     aEvent.stopPropagation();
     aEvent.preventDefault();
     aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
-    gContextualIdentitySelector.ui.open({
+    const selector = document.getElementById(aEvent.target.closest('[data-menu-ui]').dataset.menuUi);
+    selector.ui.open({
       anchor: aEvent.target
     });
     return;
@@ -540,8 +535,29 @@ function onTransisionEnd() {
   });
 }
 
+function onNewTabActionSelect(aItem, aEvent) {
+  if (aItem.dataset.value) {
+    let action;
+    switch (aItem.dataset.value) {
+      default:
+        action = kNEWTAB_OPEN_AS_ORPHAN;
+        break;
+      case 'child':
+        action = kNEWTAB_OPEN_AS_CHILD;
+        break;
+      case 'sibling':
+        action = kNEWTAB_OPEN_AS_SIBLING;
+        break;
+      case 'next-sibling':
+        action = kNEWTAB_OPEN_AS_NEXT_SIBLING;
+        break;
+    }
+    handleNewTabAction(aEvent, { action });
+  }
+  gNewTabActionSelector.ui.close();
+}
+
 function onContextualIdentitySelect(aItem, aEvent) {
-  console.log('aItem.dataset.value ', aItem.dataset.value);
   if (aItem.dataset.value) {
     const action = isAccelAction(aEvent) ?
       configs.autoAttachOnNewTabButtonMiddleClick :

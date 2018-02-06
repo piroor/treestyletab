@@ -31,6 +31,7 @@ var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definit
 var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 var gContextualIdentitySelector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
+var gNewTabActionSelector       = document.getElementById('newtab-action-selector');
 
 { // apply style ASAP!
   let style = location.search.match(/style=([^&]+)/);
@@ -132,6 +133,13 @@ async function init() {
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
       startObserveContextualIdentities();
+
+      gNewTabActionSelector.ui = new MenuUI({
+        root:       gNewTabActionSelector,
+        appearance: 'panel',
+        onCommand:  onNewTabActionSelect,
+        animationDuration: configs.collapseDuration
+      });
     }),
     gMetricsData.addAsync('tabContextMenu.init', async () => {
       tabContextMenu.init();
