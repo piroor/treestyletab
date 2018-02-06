@@ -164,6 +164,19 @@ function onMouseDown(aEvent) {
   clearDropPosition();
   clearDraggingState();
 
+  if (isEventFiredOnAnchor(aEvent) && !isAccelAction(aEvent)) {
+    if (configs.logOnMouseEvent)
+      log('mouse down on a selector anchor');
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
+    const selector = document.getElementById(aEvent.target.closest('[data-menu-ui]').dataset.menuUi);
+    selector.ui.open({
+      anchor: aEvent.target
+    });
+    return;
+  }
+
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
   if (configs.logOnMouseEvent)
     log('onMouseDown: found target tab: ', tab);
@@ -367,21 +380,9 @@ function onClick(aEvent) {
   if (configs.logOnMouseEvent)
     log('onClick', String(aEvent.target));
 
-  if (isEventFiredOnMenuOrPanel(aEvent))
+  if (isEventFiredOnMenuOrPanel(aEvent) ||
+      isEventFiredOnAnchor(aEvent))
     return;
-
-  if (isEventFiredOnAnchor(aEvent) && !isAccelAction(aEvent)) {
-    if (configs.logOnMouseEvent)
-      log('click on a selector anchor');
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-    aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
-    const selector = document.getElementById(aEvent.target.closest('[data-menu-ui]').dataset.menuUi);
-    selector.ui.open({
-      anchor: aEvent.target
-    });
-    return;
-  }
 
   if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
