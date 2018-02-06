@@ -476,17 +476,17 @@ var tabContextMenu = {
       default:
         if (aEvent.key) {
           for (let attribute of ['access-key', 'sub-access-key']) {
-          const current = this.lastFocusedItem || this.menu.firstChild;
-          const condition = `@data-${attribute}="${aEvent.key.toLowerCase()}"`;
-          const item = this.getNextItem(current, condition);
-          if (item) {
-            this.lastFocusedItem = item;
-            this.lastFocusedItem.focus();
-            this.setHover(null);
-            if (this.getNextItem(item, condition) == item)
-              this.onCommand(item, aEvent);
-            break;
-          }
+            const current = this.lastFocusedItem || this.menu.firstChild;
+            const condition = `@data-${attribute}="${aEvent.key.toLowerCase()}"`;
+            const item = this.getNextItem(current, condition);
+            if (item) {
+              this.lastFocusedItem = item;
+              this.lastFocusedItem.focus();
+              this.setHover(null);
+              if (this.getNextItem(item, condition) == item)
+                this.onCommand(item, aEvent);
+              break;
+            }
           }
         }
         return;
