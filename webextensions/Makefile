@@ -14,11 +14,12 @@ lint:
 format:
 	$(NPM_BIN_DIR)/eslint . --ext=.js --report-unused-disable-directives --fix
 
-xpi: lint ../extlib/webextensions-lib-tab-id-fixer/TabIdFixer.js ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js ../extlib/webextensions-lib-configs/Configs.js ../extlib/webextensions-lib-options/Options.js ../extlib/webextensions-lib-l10n/l10n.js ../extlib/webextensions-lib-rich-confirm/RichConfirm.js
+xpi: lint ../extlib/webextensions-lib-tab-id-fixer/TabIdFixer.js ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js ../extlib/webextensions-lib-configs/Configs.js ../extlib/webextensions-lib-options/Options.js ../extlib/webextensions-lib-l10n/l10n.js ../extlib/webextensions-lib-rich-confirm/RichConfirm.js ../extlib/webextensions-lib-menu-ui/MenuUI.js
 	cd .. && git submodule update
 	cp ../extlib/webextensions-lib-tab-id-fixer/TabIdFixer.js common/
 	cp ../extlib/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js common/
 	cp ../extlib/webextensions-lib-rich-confirm/RichConfirm.js common/
+	cp ../extlib/webextensions-lib-menu-ui/MenuUI.js common/
 	cp ../extlib/webextensions-lib-configs/Configs.js common/
 	cp ../extlib/webextensions-lib-options/Options.js options/
 	cp ../extlib/webextensions-lib-l10n/l10n.js common/
@@ -41,5 +42,8 @@ xpi: lint ../extlib/webextensions-lib-tab-id-fixer/TabIdFixer.js ../extlib/webex
 	cd .. && git submodule update --init
 
 ../extlib/webextensions-lib-rich-confirm/RichConfirm.js:
+	cd .. && git submodule update --init
+
+../extlib/webextensions-lib-menu-ui/MenuUI.js:
 	cd .. && git submodule update --init
 

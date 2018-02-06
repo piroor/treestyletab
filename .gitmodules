@@ -25,3 +25,6 @@
 [submodule "extlib/webextensions-lib-rich-confirm"]
 	path = extlib/webextensions-lib-rich-confirm
 	url = https://github.com/piroor/webextensions-lib-rich-confirm.git
+[submodule "extlib/webextensions-lib-menu-ui"]
+	path = extlib/webextensions-lib-menu-ui
+	url = https://github.com/piroor/webextensions-lib-menu-ui.git

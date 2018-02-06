@@ -4,6 +4,8 @@
 **/Configs.js
 **/Options.js
 **/l10n.js
+**/MenuUI.js
+**/RichConfirm.js
 
 # node.js dependency
 node_modules/
