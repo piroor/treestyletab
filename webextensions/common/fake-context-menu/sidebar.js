@@ -428,6 +428,18 @@ var tabContextMenu = {
         this.digOut();
         break;
 
+      case aEvent.DOM_VK_HOME:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.advanceFocus(1, (this.lastFocusedItem && this.lastFocusedItem.parentNode || this.menu).lastChild);
+        break;
+
+      case aEvent.DOM_VK_END:
+        aEvent.stopPropagation();
+        aEvent.preventDefault();
+        this.advanceFocus(-1, (this.lastFocusedItem && this.lastFocusedItem.parentNode || this.menu).firstChild);
+        break;
+
       case aEvent.DOM_VK_ENTER:
       case aEvent.DOM_VK_RETURN:
         aEvent.stopPropagation();
