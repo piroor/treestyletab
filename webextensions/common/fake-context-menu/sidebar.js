@@ -14,19 +14,25 @@
 
 var tabContextMenu = {
   init() {
-    this.onBlur            = this.onBlur.bind(this);
-    this.onMouseDown       = this.onMouseDown.bind(this);
-    this.onClick           = this.onClick.bind(this);
+    this.ui = new MenuUI({
+      root: this.menu,
+      onCommand: (aItem, aEvent) => {
+        return this.onCommand(aItem, aEvent);
+      },
+      appearance:        'menu',
+      animationDuration: configs.collapseDuration,
+      subMenuOpenDelay:  configs.subMenuOpenDelay,
+      subMenuCloseDelay: configs.subMenuCloseDelay
+    });
+
     this.onMessage         = this.onMessage.bind(this);
     this.onExternalMessage = this.onExternalMessage.bind(this);
 
-    window.addEventListener('blur', this.onBlur, { capture: true });
     browser.runtime.onMessage.addListener(this.onMessage);
     browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
 
     window.addEventListener('unload', () => {
-      this.onClosed();
-      window.removeEventListener('blur', this.onBlur, { capture: true });
+      this.close();
       browser.runtime.onMessage.removeListener(this.onMessage);
       browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
     }, { once: true });
@@ -41,24 +47,6 @@ var tabContextMenu = {
 
   get menu() {
     return document.querySelector('#tabContextMenu');
-  },
-  get containerRect() {
-    var allRange = document.createRange();
-    allRange.selectNodeContents(document.body);
-    var containerRect = allRange.getBoundingClientRect();
-    allRange.detach();
-    // because the contianer box can be shifted to hide scrollbar
-    var dummyTabsRect = document.querySelector('#dummy-tabs').getBoundingClientRect();
-    return {
-      x:      dummyTabsRect.x,
-      y:      containerRect.y,
-      width:  dummyTabsRect.width,
-      height: containerRect.height,
-      top:    containerRect.top,
-      right:  dummyTabsRect.right,
-      bottom: containerRect.bottom,
-      left:   dummyTabsRect.left
-    };
   },
 
   addons: null,
@@ -91,7 +79,9 @@ var tabContextMenu = {
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
       let addonItem = document.createElement('li');
-      addonItem.appendChild(document.createTextNode(this.getAddonName(id)));
+      const name = this.getAddonName(id);
+      addonItem.appendChild(document.createTextNode(name));
+      addonItem.setAttribute('title', name);
       addonItem.classList.add('extra');
       this.prepareAsSubmenu(addonItem);
       let addonSubMenu = addonItem.lastChild;
@@ -140,9 +130,8 @@ var tabContextMenu = {
     return this.addons[aId].name || aId.replace(/@.+$/, '');
   },
   prepareAsSubmenu(aItemNode) {
-    if (aItemNode.classList.contains('has-submenu'))
+    if (aItemNode.querySelector('ul'))
       return aItemNode;
-    aItemNode.classList.add('has-submenu');
     var subMenu = aItemNode.appendChild(document.createElement('ul'));
     return aItemNode;
   },
@@ -191,47 +180,21 @@ var tabContextMenu = {
   },
 
   open: async function(aOptions = {}) {
-    if (this.closeTimeout) {
-      clearTimeout(this.closeTimeout);
-      delete this.closeTimeout;
-      this.onClosed();
-    }
+    await this.close();
     this.contextTab      = aOptions.tab;
     this.contextWindowId = aOptions.windowId || (this.contextTab && this.contextTab.windowId);
     await this.rebuild();
     this.applyContext();
-    this.menu.classList.add('open');
-    var menus = [this.menu].concat(Array.slice(this.menu.querySelectorAll('ul')));
-    for (let menu of menus) {
-      this.updatePosition(menu, aOptions);
-    }
-    setTimeout(() => {
-      window.addEventListener('mousedown', this.onMouseDown, { capture: true });
-      window.addEventListener('click', this.onClick, { capture: true });
-    }, configs.collapseDuration);
+    this.ui.open(aOptions);
   },
 
-  close() {
-    if (!this.menu.classList.contains('open'))
-      return;
-    this.menu.classList.remove('open');
+  close: async function() {
+    await this.ui.close();
+    this.menu.removeAttribute('data-tab-id');
+    this.menu.removeAttribute('data-tab-states');
     this.contextTab      = null;
     this.contextWindowId = null;
     this.addons          = null;
-    this.closeTimeout = setTimeout(() => {
-      delete this.closeTimeout;
-      this.onClosed();
-    }, configs.collapseDuration);
-  },
-  onClosed() {
-    var menus = [this.menu].concat(Array.slice(this.menu.querySelectorAll('ul')));
-    for (let menu of menus) {
-      this.updatePosition(menu, { left: 0, right: 0 });
-    }
-    this.menu.removeAttribute('data-tab-id');
-    this.menu.removeAttribute('data-tab-states');
-    window.removeEventListener('mousedown', this.onMouseDown, { capture: true });
-    window.removeEventListener('click', this.onClick, { capture: true });
   },
 
   applyContext() {
@@ -274,74 +237,11 @@ var tabContextMenu = {
     }
   },
 
-  updatePosition(aMenu, aOptions = {}) {
-    var left = aOptions.left;
-    var top  = aOptions.top;
-
-    if (aMenu.parentNode.localName == 'li') {
-      let parentRect = aMenu.parentNode.getBoundingClientRect();
-      left = parentRect.right;
-      top  = parentRect.top;
-    }
-
-    let menuRect = aMenu.getBoundingClientRect();
-    let containerRect = this.containerRect;
-    left = left || Math.max(0, (containerRect.width - menuRect.width) / 2);
-    top  = top  || Math.max(0, (containerRect.height - menuRect.height) / 2);
-
-    left = Math.min(left, containerRect.width - menuRect.width - 3);
-    top  = Math.min(top,  containerRect.height - menuRect.height - 3);
-    aMenu.style.left = `${left}px`;
-    aMenu.style.top  = `${top}px`;
-  },
-
-  onBlur() {
-    this.close();
-  },
-
-  onMouseDown(aEvent) {
-    aEvent.stopImmediatePropagation();
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-  },
-
-  getEffectiveTargetItem(aEvent) {
-    var target = aEvent.target;
-    while (target.nodeType != target.ELEMENT_NODE) {
-      target = target.parentNode;
-    }
-    var untransparentTarget = target;
-    while (untransparentTarget) {
-      if (parseFloat(window.getComputedStyle(untransparentTarget, null).opacity) < 1)
-        return null;
-      untransparentTarget = untransparentTarget.parentNode;
-      if (untransparentTarget == document)
-        break;
-    }
-    return target;
-  },
-
-  onClick: async function(aEvent) {
+  onCommand: async function(aItem, aEvent) {
     if (aEvent.button != 0)
       return this.close();
 
-    aEvent.stopImmediatePropagation();
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-
-    var target = this.getEffectiveTargetItem(aEvent);
-    if (!target ||
-        target.classList.contains('has-submenu') ||
-        !target.id) {
-      let elementTarget = aEvent.target;
-      if (elementTarget.nodeType != Node.ELEMENT_NODE)
-        elementTarget = elementTarget.parentNode;
-      if (!elementTarget.matches(`#${this.menu.id} *`))
-        return this.close();
-      return;
-    }
-
-    switch (target.id) {
+    switch (aItem.id) {
       case 'context_reloadTab':
         browser.tabs.reload(this.contextTab.id);
         break;
@@ -449,7 +349,7 @@ var tabContextMenu = {
         break;
 
       default: {
-        let id = target.getAttribute('data-item-id');
+        let id = aItem.getAttribute('data-item-id');
         if (id) {
           var modifiers = [];
           if (aEvent.metaKey)
@@ -479,7 +379,7 @@ var tabContextMenu = {
             },
             tab: this.contextTab || null
           };
-          let owner = target.getAttribute('data-item-owner-id');
+          let owner = aItem.getAttribute('data-item-owner-id');
           if (owner == browser.runtime.id)
             await browser.runtime.sendMessage(message);
           else

@@ -17,6 +17,13 @@
       "count": { "content": "$2", "example": "3" }
     }},
   "tabbar.newTabButton.tooltip": { "message": "Open a new tab" },
+
+  "tabbar.newTabAction.tooltip":           { "message": "Open a new tab as…" },
+  "tabbar.newTabAction.independent.label": { "message": "&Independent Tab" },
+  "tabbar.newTabAction.child.label":       { "message": "&Child Tab" },
+  "tabbar.newTabAction.sibling.label":     { "message": "&Sibling Tab" },
+  "tabbar.newTabAction.nextSibling.label": { "message": "&Next Sibling Tab" },
+
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "New Container Tab" },
   "tabbar.newTabWithContexualIdentity.default": { "message": "Default" },
 
@@ -92,14 +99,14 @@
   "message.startup.userChromeCss.description.3": { "message": "." },
 
 
-  "context.reloadTree.label": { "message": "Reload this Tree" },
-  "context.reloadDescendants.label": { "message": "Reload Descendants" },
-  "context.closeTree.label": { "message": "Close this Tree" },
-  "context.closeDescendants.label": { "message": "Close Descendants" },
-  "context.closeOthers.label": { "message": "Close Other Tabs except this Tree" },
-  "context.collapseAll.label": { "message": "Collapse All" },
-  "context.expandAll.label": { "message": "Expand All" },
-  "context.bookmarkTree.label": { "message": "Bookmark this Tree…" },
+  "context.reloadTree.label": { "message": "&Reload this Tree" },
+  "context.reloadDescendants.label": { "message": "R&eload Descendants" },
+  "context.closeTree.label": { "message": "&Close this Tree" },
+  "context.closeDescendants.label": { "message": "C&lose Descendants" },
+  "context.closeOthers.label": { "message": "Cl&ose Other Tabs except this Tree" },
+  "context.collapseAll.label": { "message": "Colla&pse All" },
+  "context.expandAll.label": { "message": "E&xpand All" },
+  "context.bookmarkTree.label": { "message": "&Bookmark this Tree…" },
 
 
   "config.appearance.caption": { "message": "Appearance" },
@@ -134,7 +141,6 @@
   "config.maxTreeLevel.after": { "message": "level(s) (*Negative value means \"infinite\")" },
 
   "config.faviconizePinnedTabs.label": { "message": "Show pinned tabs only with their icon" },
-  "config.showContextualIdentitiesSelector.label": { "message": "Show container selector on the \"New Tab\" button" },
   "config.hideInactiveTabs.label": { "message": "Hide inactive tabs except pinned tabs at the top tab bar (*You need to activate \"extensions.webextensions.tabhide.enabled\" via \"about:config\" on Firefox 59 and later.)" },
   "config.animation.label": { "message": "Enable animation effects" },
 
@@ -144,16 +150,26 @@
 
   "config.newTab.caption": { "message": "New Tabs Behavior" },
 
+  "config.newTabButton.caption": { "message": "\"New Tab\" button" },
+  "config.longPressOnNewTabButton.before":               { "message": "Log-press on the \"New Tab\" button to " },
+  "config.longPressOnNewTabButton.newTabAction":         { "message": "specify where the new tab is opened in" },
+  "config.longPressOnNewTabButton.contextualIdentities": { "message": "choose container" },
+  "config.longPressOnNewTabButton.none":                 { "message": "(nothing)" },
+  "config.longPressOnNewTabButton.after":                { "message": "" },
+  "config.showNewTabActionSelector.label":               { "message": "Show selector button on the \"New Tab\" button, to specify where the new tab is opened in" },
+  "config.showContextualIdentitiesSelector.label":       { "message": "Show container selector button on the \"New Tab\" button" },
+
+  "config.newTabAction.caption": { "message": "Behavior for new tab actions (other toolbar buttons, keyboard shortcuts, and others)" },
   "config.autoAttachOnNewTabCommand.before": { "message": "Open new blank tab as" },
   "config.autoAttachOnNewTabCommand.independent": { "message": "an independent tab" },
   "config.autoAttachOnNewTabCommand.child": { "message": "a child of the current tab" },
   "config.autoAttachOnNewTabCommand.sibling": { "message": "a sibling of the current tab" },
   "config.autoAttachOnNewTabCommand.nextSibling": { "message": "the next sibling of the current tab" },
   "config.autoAttachOnNewTabCommand.after": { "message": "" },
-  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "Guess a new tab as opened by \"New Tab\" command (like keyboard shortcuts), when it is opened with the URL " },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "Guess a newly opened tab as opened by \"New Tab\" action, when it is opened with the URL " },
   "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "" },
 
-  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "For middle click on the \"New Tab\" button, open new blank tab as" },
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "For middle click, open new blank tab as" },
   "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "an independent tab" },
   "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "a child of the current tab" },
   "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "a sibling of the current tab" },
@@ -287,20 +303,20 @@
   "config.all.caption": { "message": "All Configs" },
 
 
-  "tabContextMenu.reload.label":      { "message": "Reload Tab" },
-  "tabContextMenu.mute.label":        { "message": "Mute Tab" },
-  "tabContextMenu.unmute.label":      { "message": "Unmute Tab" },
+  "tabContextMenu.reload.label":      { "message": "&Reload Tab" },
+  "tabContextMenu.mute.label":        { "message": "&Mute Tab" },
+  "tabContextMenu.unmute.label":      { "message": "Un&mute Tab" },
 
-  "tabContextMenu.pin.label":         { "message": "Pin Tab" },
-  "tabContextMenu.unpin.label":       { "message": "Unpin Tab" },
-  "tabContextMenu.duplicate.label":   { "message": "Duplicate Tab" },
-  "tabContextMenu.tearOff.label":     { "message": "Move to New Window" },
+  "tabContextMenu.pin.label":         { "message": "&Pin Tab" },
+  "tabContextMenu.unpin.label":       { "message": "Unpin Ta&b" },
+  "tabContextMenu.duplicate.label":   { "message": "&Duplicate Tab" },
+  "tabContextMenu.tearOff.label":     { "message": "Move to New &Window" },
 
-  "tabContextMenu.reloadAll.label":   { "message": "Reload All Tabs" },
-  "tabContextMenu.bookmarkAll.label": { "message": "Bookmark All Tabs…" },
-  "tabContextMenu.closeAfter.label":  { "message": "Close Tabs to the Right" },
-  "tabContextMenu.closeOther.label":  { "message": "Close Other Tabs" },
+  "tabContextMenu.reloadAll.label":   { "message": "Reload &All Tabs" },
+  "tabContextMenu.bookmarkAll.label": { "message": "Bookmark All &Tabs…" },
+  "tabContextMenu.closeAfter.label":  { "message": "Close Tabs to the R&ight" },
+  "tabContextMenu.closeOther.label":  { "message": "Cl&ose Other Tabs" },
 
-  "tabContextMenu.undoClose.label":   { "message": "Undo Close Tab" },
-  "tabContextMenu.close.label":       { "message": "Close Tab" }
+  "tabContextMenu.undoClose.label":   { "message": "&Undo Close Tab" },
+  "tabContextMenu.close.label":       { "message": "&Close Tab" }
 }

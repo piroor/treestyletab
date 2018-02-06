@@ -62,52 +62,35 @@ function isEventFiredOnTwisty(aEvent) {
   if (!tab || !hasChildTabs(tab))
     return false;
 
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kTWISTY}`);
+  return !!aEvent.target.closest(`.${kTWISTY}`);
 }
 
 function isEventFiredOnSoundButton(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kSOUND_BUTTON}`);
+  return !!aEvent.target.closest(`.${kSOUND_BUTTON}`);
 }
 
 function isEventFiredOnClosebox(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kCLOSEBOX}`);
+  return !!aEvent.target.closest(`.${kCLOSEBOX}`);
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kNEWTAB_BUTTON}`);
+  return !!aEvent.target.closest(`.${kNEWTAB_BUTTON}`);
 }
 
-function isEventFiredOnContextualIdentitySelector(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`);
+function isEventFiredOnMenuOrPanel(aEvent) {
+  return !!aEvent.target.closest('ul.menu, ul.panel');
+}
+
+function isEventFiredOnAnchor(aEvent) {
+  return !!aEvent.target.closest(`[data-menu-ui]`);
 }
 
 function isEventFiredOnClickable(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`button, scrollbar, select`);
+  return !!aEvent.target.closest(`button, scrollbar, select`);
 }
 
 function isEventFiredOnScrollbar(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`scrollbar, nativescrollbar`);
+  return !!aEvent.target.closest(`scrollbar, nativescrollbar`);
 }
 
 
@@ -124,13 +107,6 @@ function getTabFromTabbarEvent(aEvent) {
       isEventFiredOnClickable(aEvent))
     return null;
   return getTabFromCoordinates(aEvent);
-}
-
-function getClickedOptionFromEvent(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && node.closest(`option`);
 }
 
 function getTabFromCoordinates(aEvent) {
@@ -188,6 +164,20 @@ function onMouseDown(aEvent) {
   clearDropPosition();
   clearDraggingState();
 
+  if (isEventFiredOnAnchor(aEvent) && !isAccelAction(aEvent)) {
+    if (configs.logOnMouseEvent)
+      log('mouse down on a selector anchor');
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
+    const selector = document.getElementById(aEvent.target.closest('[data-menu-ui]').dataset.menuUi);
+    selector.ui.open({
+      anchor: aEvent.target
+    });
+    return;
+  }
+
+  var target = aEvent.target;
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
   if (configs.logOnMouseEvent)
     log('onMouseDown: found target tab: ', tab);
@@ -206,6 +196,9 @@ function onMouseDown(aEvent) {
   };
   if (configs.logOnMouseEvent)
     log('onMouseDown ', mousedownDetail);
+
+  if (mousedownDetail.targetType == 'selector')
+    return;
 
   if (mousedownDetail.isMiddleClick) {
     aEvent.stopPropagation();
@@ -230,8 +223,21 @@ function onMouseDown(aEvent) {
     if (configs.logOnMouseEvent)
       log('onMouseDown expired');
     gLastMousedown.expired = true;
-    if (aEvent.button == 0)
-      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
+    if (aEvent.button == 0) {
+      if (tab) {
+        notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
+      }
+      else if (mousedownDetail.targetType == 'newtabbutton' &&
+               configs.longPressOnNewTabButton) {
+        const selector = document.getElementById(configs.longPressOnNewTabButton);
+        if (selector) {
+          target.blur(); // this is required to prevent the selector is closed by blur event
+          gNewTabActionSelector.ui.open({
+            anchor: target
+          });
+        }
+      }
+    }
   }, configs.startDragTimeout);
 }
 
@@ -252,8 +258,9 @@ function getMouseEventTargetType(aEvent) {
   if (isEventFiredOnNewTabButton(aEvent))
     return 'newtabbutton';
 
-  if (isEventFiredOnContextualIdentitySelector(aEvent))
-    return 'contextualidentityselector';
+  if (isEventFiredOnMenuOrPanel(aEvent) ||
+      isEventFiredOnAnchor(aEvent))
+    return 'selector';
 
   var allRange = document.createRange();
   allRange.selectNodeContents(document.body);
@@ -338,31 +345,6 @@ async function onMouseUp(aEvent) {
     });
     handled = true;
   }
-  else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
-    if (configs.logOnMouseEvent)
-      log('click on the contextual identity selector');
-    handled = true;
-    /*
-    // Disable these mimpelentation until the selector is reimplemented without <select>.
-    // See: https://github.com/piroor/treestyletab/issues/1571
-    let option = getClickedOptionFromEvent(aEvent);
-    if (option) {
-      handleNewTabAction(aEvent, {
-        action:        actionForNewTabCommand,
-        cookieStoreId: option.getAttribute('value')
-      });
-      handled = true;
-    }
-    else { // treat as a click on new tab button
-      if (configs.logOnMouseEvent)
-        log('click on the new tab button (fallback)');
-      handleNewTabAction(aEvent, {
-        action: actionForNewTabCommand
-      });
-      handled = true;
-    }
-    */
-  }
   else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
            gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
     if (configs.logOnMouseEvent)
@@ -412,8 +394,11 @@ function onClick(aEvent) {
   if (configs.logOnMouseEvent)
     log('onClick', String(aEvent.target));
 
-  if (isEventFiredOnContextualIdentitySelector(aEvent) ||
-      isEventFiredOnNewTabButton(aEvent)) {
+  if (isEventFiredOnMenuOrPanel(aEvent) ||
+      isEventFiredOnAnchor(aEvent))
+    return;
+
+  if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     return;
@@ -474,7 +459,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
   if (configs.logOnMouseEvent)
     log('handleNewTabAction');
   var parent, insertBefore, insertAfter;
-  if (configs.autoAttach) {
+  if (configs.autoAttach || 'action' in aOptions) {
     let current = getCurrentTab(gTargetWindow);
     switch (aOptions.action) {
       case kNEWTAB_DO_NOTHING:
@@ -547,16 +532,39 @@ function onTransisionEnd() {
   });
 }
 
-function onChange(aEvent) {
-  var selector = aEvent.target;
-  if (!selector.matches('select'))
-    return;
+function onNewTabActionSelect(aItem, aEvent) {
+  if (aItem.dataset.value) {
+    let action;
+    switch (aItem.dataset.value) {
+      default:
+        action = kNEWTAB_OPEN_AS_ORPHAN;
+        break;
+      case 'child':
+        action = kNEWTAB_OPEN_AS_CHILD;
+        break;
+      case 'sibling':
+        action = kNEWTAB_OPEN_AS_SIBLING;
+        break;
+      case 'next-sibling':
+        action = kNEWTAB_OPEN_AS_NEXT_SIBLING;
+        break;
+    }
+    handleNewTabAction(aEvent, { action });
+  }
+  gNewTabActionSelector.ui.close();
+}
 
-  handleNewTabAction(aEvent, {
-    cookieStoreId: selector.value
-  });
-
-  selector.value = '';
+function onContextualIdentitySelect(aItem, aEvent) {
+  if (aItem.dataset.value) {
+    const action = isAccelAction(aEvent) ?
+      configs.autoAttachOnNewTabButtonMiddleClick :
+      configs.autoAttachOnNewTabCommand;
+    handleNewTabAction(aEvent, {
+      action,
+      cookieStoreId: aItem.dataset.value
+    });
+  }
+  gContextualIdentitySelector.ui.close();
 }
 
 async function onWheel(aEvent) {
@@ -1538,6 +1546,13 @@ function onConfigChange(aChangedKey) {
         rootClasses.add(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       else
         rootClasses.remove(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      break;
+
+    case 'showNewTabActionSelector':
+      if (configs[aChangedKey])
+        rootClasses.add(kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      else
+        rootClasses.remove(kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
       break;
 
     case 'useCachedTree':

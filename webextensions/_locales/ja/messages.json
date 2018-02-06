@@ -17,6 +17,13 @@
       "count": { "content": "$2", "example": "3" }
     }},
   "tabbar.newTabButton.tooltip": { "message": "新しいタブを開く" },
+
+  "tabbar.newTabAction.tooltip":           { "message": "関係を指定して新しいタブを開く..." },
+  "tabbar.newTabAction.independent.label": { "message": "独立したタブ(&I)" },
+  "tabbar.newTabAction.child.label":       { "message": "子タブ(&C)" },
+  "tabbar.newTabAction.sibling.label":     { "message": "同階層のタブ(&S)" },
+  "tabbar.newTabAction.nextSibling.label": { "message": "同階層の隣のタブ(&N)" },
+
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "新しいコンテナータブ" },
   "tabbar.newTabWithContexualIdentity.default": { "message": "既定" },
 
@@ -92,14 +99,14 @@
   "message.startup.userChromeCss.description.3": { "message": "" },
 
 
-  "context.reloadTree.label": { "message": "このツリーを再読み込み" },
-  "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み" },
-  "context.closeTree.label": { "message": "このツリーを閉じる" },
-  "context.closeDescendants.label": { "message": "このタブの配下のタブをすべて閉じる" },
-  "context.closeOthers.label": { "message": "このツリー以外の他のタブをすべて閉じる" },
-  "context.collapseAll.label": { "message": "ツリーをすべてたたむ" },
-  "context.expandAll.label": { "message": "ツリーをすべて展開する" },
-  "context.bookmarkTree.label": { "message": "このツリーをブックマーク..." },
+  "context.reloadTree.label": { "message": "このツリーを再読み込み(&R)" },
+  "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み(&E)" },
+  "context.closeTree.label": { "message": "このツリーを閉じる(&C)" },
+  "context.closeDescendants.label": { "message": "このタブの配下のタブをすべて閉じる(&L)" },
+  "context.closeOthers.label": { "message": "このツリー以外の他のタブをすべて閉じる(&O)" },
+  "context.collapseAll.label": { "message": "ツリーをすべてたたむ(&P)" },
+  "context.expandAll.label": { "message": "ツリーをすべて展開する(&X)" },
+  "context.bookmarkTree.label": { "message": "このツリーをブックマーク(&B)..." },
 
 
   "config.appearance.caption": { "message": "外観" },
@@ -134,7 +141,6 @@
   "config.maxTreeLevel.after": { "message": "階層までインデント表示する（※負の値を指定した場合は無制限）" },
 
   "config.faviconizePinnedTabs.label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
-  "config.showContextualIdentitiesSelector.label": { "message": "「新しいタブ」ボタンにコンテナータブの選択メニューを表示する" },
   "config.hideInactiveTabs.label": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（※Firefox 59以降のバージョンで、\"about:config\"で\"extensions.webextensions.tabhide.enabled\"を有効化する必要があります）" },
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
 
@@ -144,6 +150,16 @@
 
   "config.newTab.caption": { "message": "新しいタブの挙動" },
 
+  "config.newTabButton.caption": { "message": "「新しいタブ」ボタン" },
+  "config.longPressOnNewTabButton.before":               { "message": "ボタンの長押しで" },
+  "config.longPressOnNewTabButton.newTabAction":         { "message": "関係を指定して新しいタブを開く" },
+  "config.longPressOnNewTabButton.contextualIdentities": { "message": "コンテナータブを開く" },
+  "config.longPressOnNewTabButton.none":                 { "message": "何もしない" },
+  "config.longPressOnNewTabButton.after":                { "message": "" },
+  "config.showNewTabActionSelector.label":               { "message": "関係を指定して新しいタブを開くためのボタンを表示する" },
+  "config.showContextualIdentitiesSelector.label":       { "message": "コンテナータブを選択するためのボタンを表示する" },
+
+  "config.newTabAction.caption": { "message": "新しいタブを開く操作の挙動（その他のツールバーボタン、キーボードショートカットなど）" },
   "config.autoAttachOnNewTabCommand.before": { "message": "新しい空のタブを" },
   "config.autoAttachOnNewTabCommand.independent": { "message": "独立したタブとして" },
   "config.autoAttachOnNewTabCommand.child": { "message": "現在のタブの子として" },
@@ -151,9 +167,9 @@
   "config.autoAttachOnNewTabCommand.nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config.autoAttachOnNewTabCommand.after": { "message": "開く" },
   "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "URLが" },
-  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "であるタブが開かれた場合、キーボードショートカットなどによって開かれた新しい空のタブとみなす" },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "であるタブが開かれた場合、新しい空のタブが開かれたとみなす" },
 
-  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "「新しいタブ」ボタンを中クリックした時、新しい空のタブを" },
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "中クリックした時、新しい空のタブを" },
   "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "独立したタブとして" },
   "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "現在のタブの子として" },
   "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "現在のタブと同階層に" },
@@ -287,20 +303,20 @@
   "config.all.caption": { "message": "すべての設定" },
 
 
-  "tabContextMenu.reload.label":      { "message": "タブを再読み込み" },
-  "tabContextMenu.mute.label":        { "message": "タブをミュート" },
-  "tabContextMenu.unmute.label":      { "message": "タブのミュートを解除" },
+  "tabContextMenu.reload.label":      { "message": "タブを再読み込み(&R)" },
+  "tabContextMenu.mute.label":        { "message": "タブをミュート(&M)" },
+  "tabContextMenu.unmute.label":      { "message": "タブのミュートを解除(&M)" },
 
-  "tabContextMenu.pin.label":         { "message": "タブをピン留め" },
-  "tabContextMenu.unpin.label":       { "message": "タブのピン留めを外す" },
-  "tabContextMenu.duplicate.label":   { "message": "タブを複製" },
-  "tabContextMenu.tearOff.label":     { "message": "新しいウィンドウへ移動" },
+  "tabContextMenu.pin.label":         { "message": "タブをピン留め(&P)" },
+  "tabContextMenu.unpin.label":       { "message": "タブのピン留めを外す(&B)" },
+  "tabContextMenu.duplicate.label":   { "message": "タブを複製(&D)" },
+  "tabContextMenu.tearOff.label":     { "message": "新しいウィンドウへ移動(&W)" },
 
-  "tabContextMenu.reloadAll.label":   { "message": "すべてのタブを再読み込み" },
-  "tabContextMenu.bookmarkAll.label": { "message": "すべてのタブをブックマーク..." },
-  "tabContextMenu.closeAfter.label":  { "message": "右のタブをすべて閉じる" },
-  "tabContextMenu.closeOther.label":  { "message": "他のタブをすべて閉じる" },
+  "tabContextMenu.reloadAll.label":   { "message": "すべてのタブを再読み込み(&A)" },
+  "tabContextMenu.bookmarkAll.label": { "message": "すべてのタブをブックマーク(&T)..." },
+  "tabContextMenu.closeAfter.label":  { "message": "右のタブをすべて閉じる(&I)" },
+  "tabContextMenu.closeOther.label":  { "message": "他のタブをすべて閉じる(&O)" },
 
-  "tabContextMenu.undoClose.label":   { "message": "閉じたタブを元に戻す" },
-  "tabContextMenu.close.label":       { "message": "タブを閉じる" }
+  "tabContextMenu.undoClose.label":   { "message": "閉じたタブを元に戻す(&U)" },
+  "tabContextMenu.close.label":       { "message": "タブを閉じる(&C)" }
 }

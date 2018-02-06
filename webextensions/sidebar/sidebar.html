@@ -6,6 +6,7 @@
   <head>
     <meta charset="UTF-8">
     <script type="application/javascript" src="/common/tree/constants.js"></script>
+    <script type="application/javascript" src="/common/MenuUI.js"></script>
     <script type="application/javascript" src="/common/fake-context-menu/constants.js"></script>
     <script type="application/javascript" src="/common/handle-accel-key.js"></script>
     <script type="application/javascript" src="/common/Configs.js"></script>
@@ -48,8 +49,12 @@
         <div class="newtab-button-box vbox">
           <button class="newtab-button"
                   title="__MSG_tabbar.newTabButton.tooltip__"></button>
-          <select class="contextual-identities-selector"
-                  title="__MSG_tabbar.newTabWithContexualIdentity.tooltip__"></select>
+          <button class="newtab-action-selector-anchor"
+                  title="__MSG_tabbar.newTabAction.tooltip__"
+                  data-menu-ui="newtab-action-selector"></button>
+          <button class="contextual-identities-selector-anchor"
+                  title="__MSG_tabbar.newTabWithContexualIdentity.tooltip__"
+                  data-menu-ui="contextual-identities-selector"></button>
         </div>
       </div>
     </div>
@@ -58,10 +63,21 @@
       <div class="newtab-button-box vbox">
         <button class="newtab-button"
                 title="__MSG_tabbar.newTabButton.tooltip__"></button>
-        <select class="contextual-identities-selector"
-                title="__MSG_tabbar.newTabWithContexualIdentity.tooltip__"></select>
+        <button class="newtab-action-selector-anchor"
+                title="__MSG_tabbar.newTabAction.tooltip__"
+                data-menu-ui="newtab-action-selector"></button>
+        <button class="contextual-identities-selector-anchor"
+                title="__MSG_tabbar.newTabWithContexualIdentity.tooltip__"
+                data-menu-ui="contextual-identities-selector"></button>
       </div>
     </div>
+    <ul id="newtab-action-selector">
+      <li data-value="independent">__MSG_tabbar.newTabAction.independent.label__</li>
+      <li data-value="child">__MSG_tabbar.newTabAction.child.label__</li>
+      <li data-value="sibling">__MSG_tabbar.newTabAction.sibling.label__</li>
+      <li data-value="next-sibling">__MSG_tabbar.newTabAction.nextSibling.label__</li>
+    </ul>
+    <ul id="contextual-identities-selector"></ul>
     <div class="tab-drop-blocker" id="tab-drop-blocker-top"></div>
     <div class="tab-drop-blocker" id="tab-drop-blocker-right"></div>
     <div class="tab-drop-blocker" id="tab-drop-blocker-bottom"></div>

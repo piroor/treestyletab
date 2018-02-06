@@ -481,28 +481,64 @@ ul {
   opacity: var(--button-hover-opacity);
 }
 
-:root.contextual-identity-selectable .newtab-button-box:hover .contextual-identities-selector:not([disabled="true"]) {
+:root.newtab-action-selectable
+  .after-tabs
+  .newtab-button-box:hover
+  .newtab-action-selector-anchor,
+.after-tabs
+  .newtab-action-selector-anchor.open,
+:root.contextual-identity-selectable
+  .after-tabs
+  .newtab-button-box:hover
+  .contextual-identities-selector-anchor:not([disabled="true"]),
+.after-tabs
+  .contextual-identities-selector-anchor.open {
   pointer-events: auto;
   opacity: 1;
 }
 
-.contextual-identities-selector {
+.after-tabs .newtab-action-selector-anchor,
+.after-tabs .contextual-identities-selector-anchor {
   background: none;
-  border: none;
   bottom: 0;
+  color: var(--tab-text);
+  display: flex;
   max-width: 1.5em;
   opacity: 0;
   overflow: hidden;
+  padding: 0.25em;
   pointer-events: none;
   position: absolute;
-  right: 0;
   top: 0;
   transition: opacity var(--collapse-animation);
   z-index: 200;
 }
+.after-tabs .newtab-action-selector-anchor {
+  border-width: 0 1px 0 0;
+  left: 0;
+}
+.after-tabs .contextual-identities-selector-anchor {
+  border-width: 0 0 0 1px;
+  right: 0;
+}
 
-.contextual-identities-selector option[value=""] {
-  display: none;
+.newtab-action-selector-anchor::-moz-focus-inner,
+.contextual-identities-selector-anchor::-moz-focus-inner {
+  border: none;
+}
+
+.newtab-action-selector-anchor::before,
+.contextual-identities-selector-anchor::before {
+  content: "▼";
+  font-size: 0.65em;
+  margin: 0.125em;
+}
+
+#contextual-identities-selector .icon {
+  display: inline-block;
+  height: 1em;
+  margin-right: 0.2em;
+  width: 1em;
 }
 
 

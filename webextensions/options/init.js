@@ -26,6 +26,11 @@ window.addEventListener('DOMContentLoaded', () => {
   else
     document.documentElement.classList.remove('platform-mac');
 
+  // remove accesskey mark
+  for (let label of Array.slice(document.querySelectorAll('#contextConfigs label'))) {
+    label.lastChild.nodeValue = label.lastChild.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
+  }
+
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
 

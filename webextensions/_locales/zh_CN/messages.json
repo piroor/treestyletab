@@ -51,14 +51,14 @@
   "message.updatedFromLegacy.description": { "message": "Tree Style Tab 目前基于 WebExtensions 技术以支持 Firefox 57 及后续版本。它提供一个侧栏以作为可选用的垂直标签栏。如果您没看到，按“F1”键或单击工具栏中的“Tree Style Tab”按钮来激活 Tree Style Tab 侧栏面板。" },
 
 
-  "context.reloadTree.label": { "message": "重新载入此树" },
-  "context.reloadDescendants.label": { "message": "重新载入子项" },
-  "context.closeTree.label": { "message": "关闭此树" },
-  "context.closeDescendants.label": { "message": "关闭子项" },
-  "context.closeOthers.label": { "message": "关闭其他标签页（不含此树）" },
-  "context.collapseAll.label": { "message": "全部折叠" },
-  "context.expandAll.label": { "message": "全部展开" },
-  "context.bookmarkTree.label": { "message": "将此树加为书签…" },
+  "context.reloadTree.label": { "message": "重新载入此树(&R)" },
+  "context.reloadDescendants.label": { "message": "重新载入子项(&E)" },
+  "context.closeTree.label": { "message": "关闭此树(&C)" },
+  "context.closeDescendants.label": { "message": "关闭子项(&L)" },
+  "context.closeOthers.label": { "message": "关闭其他标签页（不含此树）(&O)" },
+  "context.collapseAll.label": { "message": "全部折叠(&P)" },
+  "context.expandAll.label": { "message": "全部展开(&X)" },
+  "context.bookmarkTree.label": { "message": "将此树加为书签(&B)…" },
 
 
   "config.appearance.caption": { "message": "外观" },
@@ -181,20 +181,20 @@
   "config.all.caption": { "message": "所有配置" },
 
 
-  "tabContextMenu.reload.label":      { "message": "重新载入标签页" },
-  "tabContextMenu.mute.label":        { "message": "静音标签页" },
-  "tabContextMenu.unmute.label":      { "message": "取消静音标签页" },
+  "tabContextMenu.reload.label":      { "message": "重新载入标签页(&R)" },
+  "tabContextMenu.mute.label":        { "message": "静音标签页(&M)" },
+  "tabContextMenu.unmute.label":      { "message": "取消静音标签页(&M)" },
 
-  "tabContextMenu.pin.label":         { "message": "固定标签页" },
-  "tabContextMenu.unpin.label":       { "message": "取消固定标签页" },
-  "tabContextMenu.duplicate.label":   { "message": "创建标签页副本" },
-  "tabContextMenu.tearOff.label":     { "message": "移动到新窗口" },
+  "tabContextMenu.pin.label":         { "message": "固定标签页(&P)" },
+  "tabContextMenu.unpin.label":       { "message": "取消固定标签页(&B)" },
+  "tabContextMenu.duplicate.label":   { "message": "创建标签页副本(&D)" },
+  "tabContextMenu.tearOff.label":     { "message": "移动到新窗口(&W)" },
 
-  "tabContextMenu.reloadAll.label":   { "message": "重新载入所有标签页" },
-  "tabContextMenu.bookmarkAll.label": { "message": "为全部标签页添加书签…" },
-  "tabContextMenu.closeAfter.label":  { "message": "关闭右侧标签页" },
-  "tabContextMenu.closeOther.label":  { "message": "关闭其他标签页" },
+  "tabContextMenu.reloadAll.label":   { "message": "重新载入所有标签页(&A)" },
+  "tabContextMenu.bookmarkAll.label": { "message": "为全部标签页添加书签(&T)…" },
+  "tabContextMenu.closeAfter.label":  { "message": "关闭右侧标签页(&I)" },
+  "tabContextMenu.closeOther.label":  { "message": "关闭其他标签页(&O)" },
 
-  "tabContextMenu.undoClose.label":   { "message": "撤销关闭标签页" },
-  "tabContextMenu.close.label":       { "message": "关闭标签页" }
+  "tabContextMenu.undoClose.label":   { "message": "撤销关闭标签页(&U)" },
+  "tabContextMenu.close.label":       { "message": "关闭标签页(&C)" }
 }

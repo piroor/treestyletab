@@ -30,6 +30,8 @@ var gStyleLoader                = document.querySelector('#style-loader');
 var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
+var gContextualIdentitySelector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
+var gNewTabActionSelector       = document.getElementById(kNEWTAB_ACTION_SELECTOR);
 
 { // apply style ASAP!
   let style = location.search.match(/style=([^&]+)/);
@@ -95,7 +97,6 @@ async function init() {
       document.addEventListener('mousedown', onMouseDown);
       document.addEventListener('mouseup', onMouseUp);
       document.addEventListener('click', onClick);
-      document.addEventListener('change', onChange);
       document.addEventListener('wheel', onWheel, { capture: true });
       document.addEventListener('contextmenu', onContextMenu, { capture: true });
       gTabBar.addEventListener('scroll', onScroll);
@@ -111,6 +112,7 @@ async function init() {
       onConfigChange('sidebarScrollbarPosition');
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
+      onConfigChange('showNewTabActionSelector');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);
@@ -123,9 +125,22 @@ async function init() {
       document.documentElement.classList.remove('initializing');
     }),
     gMetricsData.addAsync('initializing contextual identities', async () => {
+      gContextualIdentitySelector.ui = new MenuUI({
+        root:       gContextualIdentitySelector,
+        appearance: 'panel',
+        onCommand:  onContextualIdentitySelect,
+        animationDuration: configs.collapseDuration
+      });
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
       startObserveContextualIdentities();
+
+      gNewTabActionSelector.ui = new MenuUI({
+        root:       gNewTabActionSelector,
+        appearance: 'panel',
+        onCommand:  onNewTabActionSelect,
+        animationDuration: configs.collapseDuration
+      });
     }),
     gMetricsData.addAsync('tabContextMenu.init', async () => {
       tabContextMenu.init();
@@ -205,7 +220,6 @@ function destroy() {
   document.removeEventListener('mousedown', onMouseDown);
   document.removeEventListener('mouseup', onMouseUp);
   document.removeEventListener('click', onClick);
-  document.removeEventListener('change', onChange);
   document.removeEventListener('wheel', onWheel, { capture: true });
   document.removeEventListener('contextmenu', onContextMenu, { capture: true });
   gTabBar.removeEventListener('scroll', onScroll);
@@ -338,40 +352,45 @@ function updateContextualIdentitiesStyle() {
 }
 
 function updateContextualIdentitiesSelector() {
-  var selectors = Array.slice(document.querySelectorAll(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`));
-  var identityIds = Object.keys(gContextualIdentities);
-  var range = document.createRange();
-  for (let selector of selectors) {
-    range.selectNodeContents(selector);
-    range.deleteContents();
-    if (identityIds.length == 0) {
-      selector.setAttribute('disabled', true);
-      continue;
-    }
-    selector.removeAttribute('disabled');
-    let fragment    = document.createDocumentFragment();
-    let defaultItem = document.createElement('option');
-    defaultItem.setAttribute('value', '');
-    fragment.appendChild(defaultItem);
-    for (let id of identityIds) {
-      let identity = gContextualIdentities[id];
-      let item     = document.createElement('option');
-      item.setAttribute('value', id);
-      if (identity.colorCode) {
-        item.style.color           = getReadableForegroundColorFromBGColor(identity.colorCode);
-        item.style.backgroundColor = identity.colorCode;
-      }
-      item.textContent = identity.name;
-      fragment.appendChild(item);
-    }
-    if (configs.inheritContextualIdentityToNewChildTab) {
-      let defaultCotnainerItem = document.createElement('option');
-      defaultCotnainerItem.setAttribute('value', 'firefox-default');
-      defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar.newTabWithContexualIdentity.default');
-      fragment.appendChild(defaultCotnainerItem);
-    }
-    range.insertNode(fragment);
+  const anchors = Array.slice(document.querySelectorAll(`.${kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
+  for (let anchor of anchors) {
+    if (identityIds.length == 0)
+      anchor.setAttribute('disabled', true);
+    else
+      anchor.removeAttribute('disabled');
   }
+
+  const selector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
+  const range    = document.createRange();
+  range.selectNodeContents(selector);
+  range.deleteContents();
+
+  const identityIds = Object.keys(gContextualIdentities);
+  const fragment    = document.createDocumentFragment();
+  for (let id of identityIds) {
+    const identity = gContextualIdentities[id];
+    const item     = document.createElement('li');
+    item.dataset.value = id;
+    item.textContent = identity.name;
+    const icon = document.createElement('span');
+    icon.classList.add('icon');
+    if (identity.iconUrl) {
+      icon.style.backgroundColor = identity.colorCode || 'var(--tab-text)';
+      icon.style.mask = `url(${JSON.stringify(identity.iconUrl)}) no-repeat center / 100%`;
+    }
+    item.insertBefore(icon, item.firstChild);
+    fragment.appendChild(item);
+  }
+  if (configs.inheritContextualIdentityToNewChildTab) {
+    let defaultCotnainerItem = document.createElement('li');
+    defaultCotnainerItem.dataset.value = 'firefox-default';
+    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar.newTabWithContexualIdentity.default');
+    const icon = document.createElement('span');
+    icon.classList.add('icon');
+    defaultCotnainerItem.insertBefore(icon, defaultCotnainerItem.firstChild);
+    fragment.appendChild(defaultCotnainerItem);
+  }
+  range.insertNode(fragment);
   range.detach();
 }
 
