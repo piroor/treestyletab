@@ -236,7 +236,7 @@ var tabContextMenu = {
         item.tabIndex = 0;
         item.classList.remove('open');
       }
-      this.menu.addEventListener('mousemove', this.onMouseOver);
+      this.menu.addEventListener('mouseover', this.onMouseOver);
       this.menu.addEventListener('transitionend', this.onTransitionEnd);
       window.addEventListener('mousedown', this.onMouseDown, { capture: true });
       window.addEventListener('click', this.onClick, { capture: true });
@@ -264,7 +264,7 @@ var tabContextMenu = {
     }
     this.menu.removeAttribute('data-tab-id');
     this.menu.removeAttribute('data-tab-states');
-    this.menu.removeEventListener('mousemove', this.onMouseOver);
+    this.menu.removeEventListener('mouseover', this.onMouseOver);
     this.menu.removeEventListener('transitionend', this.onTransitionEnd);
     window.removeEventListener('mousedown', this.onMouseDown, { capture: true });
     window.removeEventListener('click', this.onClick, { capture: true });
@@ -340,13 +340,29 @@ var tabContextMenu = {
 
   onMouseOver(aEvent) {
     const item = this.getEffectiveItem(aEvent.target);
+    if (this.delayedOpen && this.delayedOpen.item != item) {
+      clearTimeout(this.delayedOpen.timer);
+      this.delayedOpen = null;
+    }
+    if (item.delayedClose) {
+      clearTimeout(item.delayedClose);
+      item.delayedClose = null;
+    }
     if (!item)
       return;
+
     this.setHover(item);
     this.closeOtherSubmenus(item);
-    this.openSubmenuFor(item);
     item.focus();
     this.lastFocusedItem = item;
+
+    this.delayedOpen = {
+      item:  item,
+      timer: setTimeout(() => {
+        this.delayedOpen = null;
+        this.openSubmenuFor(item);
+      }, configs.subMenuOpenDelay)
+    };
   },
 
   setHover(aItem) {
@@ -377,7 +393,9 @@ var tabContextMenu = {
       aItem
     );
     for (let item of getArrayFromXPathResult(items)) {
-      item.classList.remove('open');
+      item.delayedClose = setTimeout(() => {
+        item.classList.remove('open');
+      }, configs.subMenuCloseDelay);
     }
   },
 

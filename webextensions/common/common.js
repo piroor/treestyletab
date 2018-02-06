@@ -208,6 +208,8 @@ configs = new Configs({
   indentDuration:   200,
   collapseDuration: 150,
   outOfViewTabNotifyDuration: 750,
+  subMenuOpenDelay: 300,
+  subMenuCloseDelay: 300,
 
 
   // misc.
