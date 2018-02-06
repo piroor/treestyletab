@@ -19,10 +19,10 @@
   "tabbar.newTabButton.tooltip": { "message": "新しいタブを開く" },
 
   "tabbar.newTabAction.tooltip":           { "message": "関係を指定して新しいタブを開く..." },
-  "tabbar.newTabAction.independent.label": { "message": "独立したタブ" },
-  "tabbar.newTabAction.child.label":       { "message": "子タブ" },
-  "tabbar.newTabAction.sibling.label":     { "message": "同階層のタブ" },
-  "tabbar.newTabAction.nextSibling.label": { "message": "同階層の隣のタブ" },
+  "tabbar.newTabAction.independent.label": { "message": "独立したタブ(&I)" },
+  "tabbar.newTabAction.child.label":       { "message": "子タブ(&C)" },
+  "tabbar.newTabAction.sibling.label":     { "message": "同階層のタブ(&S)" },
+  "tabbar.newTabAction.nextSibling.label": { "message": "同階層の隣のタブ(&N)" },
 
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "新しいコンテナータブ" },
   "tabbar.newTabWithContexualIdentity.default": { "message": "既定" },

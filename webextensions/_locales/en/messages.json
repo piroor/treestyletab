@@ -19,10 +19,10 @@
   "tabbar.newTabButton.tooltip": { "message": "Open a new tab" },
 
   "tabbar.newTabAction.tooltip":           { "message": "Open a new tab as…" },
-  "tabbar.newTabAction.independent.label": { "message": "Independent Tab" },
-  "tabbar.newTabAction.child.label":       { "message": "Child Tab" },
-  "tabbar.newTabAction.sibling.label":     { "message": "Sibling Tab" },
-  "tabbar.newTabAction.nextSibling.label": { "message": "Next Sibling Tab" },
+  "tabbar.newTabAction.independent.label": { "message": "&Independent Tab" },
+  "tabbar.newTabAction.child.label":       { "message": "&Child Tab" },
+  "tabbar.newTabAction.sibling.label":     { "message": "&Sibling Tab" },
+  "tabbar.newTabAction.nextSibling.label": { "message": "&Next Sibling Tab" },
 
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "New Container Tab" },
   "tabbar.newTabWithContexualIdentity.default": { "message": "Default" },
