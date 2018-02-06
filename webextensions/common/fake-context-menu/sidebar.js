@@ -35,11 +35,7 @@ var tabContextMenu = {
     }, { once: true });
 
     for (let item of Array.slice(this.menu.querySelectorAll('li:not(.separator)'))) {
-      const title = item.getAttribute('title');
-      if (title)
-        item.setAttribute('title', title.replace(/&([a-z])/i, '$1'));
-      item.innerHTML = item.innerHTML.replace(/&amp;([a-z])/i, '<span class="accesskey">$1</span>');
-      item.dataset.accessKey = RegExp.$1.toLowerCase();
+      this.applyItemAccessKey(item);
     }
 
     browser.runtime.sendMessage({
@@ -48,6 +44,17 @@ var tabContextMenu = {
       this.extraItems = aItems;
       this.dirty      = true;
     });
+  },
+
+  applyItemAccessKey(aItem) {
+    const title = aItem.getAttribute('title');
+    if (title)
+      aItem.setAttribute('title', title.replace(/&([a-z])/i, '$1'));
+    aItem.innerHTML = aItem.innerHTML.replace(/&amp;([a-z])/i, '<span class="accesskey">$1</span>');
+    if (RegExp.$1)
+      aItem.dataset.accessKey = RegExp.$1.toLowerCase();
+    else if (/^([a-z])/i.test(aItem.textContent))
+      aItem.dataset.subAccessKey = RegExp.$1.toLowerCase();
   },
 
   get menu() {
@@ -103,7 +110,10 @@ var tabContextMenu = {
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
       let addonItem = document.createElement('li');
-      addonItem.appendChild(document.createTextNode(this.getAddonName(id)));
+      const name = this.getAddonName(id);
+      addonItem.appendChild(document.createTextNode(name));
+      addonItem.setAttribute('title', name);
+      this.applyItemAccessKey(addonItem);
       addonItem.classList.add('extra');
       this.prepareAsSubmenu(addonItem);
       let addonSubMenu = addonItem.lastChild;
@@ -172,6 +182,7 @@ var tabContextMenu = {
     if (aItem.type != 'separator') {
       itemNode.appendChild(document.createTextNode(aItem.title));
       itemNode.setAttribute('title', aItem.title);
+      this.applyItemAccessKey(itemNode);
     }
     return itemNode;
   },
@@ -464,8 +475,9 @@ var tabContextMenu = {
 
       default:
         if (aEvent.key) {
+          for (let attribute of ['access-key', 'sub-access-key']) {
           const current = this.lastFocusedItem || this.menu.firstChild;
-          const condition = `@data-access-key="${aEvent.key.toLowerCase()}"`;
+          const condition = `@data-${attribute}="${aEvent.key.toLowerCase()}"`;
           const item = this.getNextItem(current, condition);
           if (item) {
             this.lastFocusedItem = item;
@@ -473,6 +485,8 @@ var tabContextMenu = {
             this.setHover(null);
             if (this.getNextItem(item, condition) == item)
               this.onCommand(item, aEvent);
+            break;
+          }
           }
         }
         return;
