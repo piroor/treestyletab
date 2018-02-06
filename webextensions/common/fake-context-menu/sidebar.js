@@ -516,8 +516,10 @@ var tabContextMenu = {
   },
 
   digIn() {
-    if (!this.lastFocusedItem)
+    if (!this.lastFocusedItem) {
+      this.advanceFocus(1, this.menu.lastChild);
       return;
+    }
     const submenu = this.lastFocusedItem.querySelector('ul');
     if (!submenu)
       return;
