@@ -141,7 +141,6 @@
   "config.maxTreeLevel.after": { "message": "Stufen (*Negative Werte bedeuten \"unbegrenzt\")" },
 
   "config.faviconizePinnedTabs.label": { "message": "Angeheftete Tabs nur mit Ihrem Symbol anzeigen" },
-  "config.showContextualIdentitiesSelector.label": { "message": "Containerauswahl am \"Neuer Tab\"-Button anzeigen" },
   "config.hideInactiveTabs.label": { "message": "Inaktive Tabs außer angeheftete Tabs in der der Tableiste verstecken (*Du musst in Firefox 59 (und neuer) \"extensions.webextensions.tabhide.enabled\" in \"about:config\" aktivieren.)" },
   "config.animation.label": { "message": "Animationen aktivieren" },
 
@@ -151,17 +150,21 @@
 
   "config.newTab.caption": { "message": "Verhalten für neue Tabs" },
 
-  "config.showNewTabActionSelector.label": { "message": "Auswahl beim \"Neuer Tab \" Button anzeigen, wo der neue Tab geöffnet werden soll" },
+  "config.newTabButton.caption": { "message": "\"Neuer Tab\" Schaltfläche" },
+  "config.showNewTabActionSelector.label": { "message": "Auswahl bei der Schaltfläche \"Neuer Tab \" anzeigen, wo der neue Tab geöffnet werden soll" },
+  "config.showContextualIdentitiesSelector.label": { "message": "Containerauswahl am \"Neuer Tab\"-Button anzeigen" },
+    
+  "config.newTabAction.caption": { "message": "Verhalten für Aktionen, die einen neuen Tab öffnen (andere Symbolleisten-Schaltflächen, Tastenkombinationen und andere)" },
   "config.autoAttachOnNewTabCommand.before": { "message": "Neuen leeren Tab als " },
   "config.autoAttachOnNewTabCommand.independent": { "message": "eigenständigen Tab" },
   "config.autoAttachOnNewTabCommand.child": { "message": "untergeordneten Tab des aktiven Tab" },
   "config.autoAttachOnNewTabCommand.sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config.autoAttachOnNewTabCommand.nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config.autoAttachOnNewTabCommand.after": { "message": "öffnen" },
-  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "Einen neuen Tab behandeln als sei er durch den Befehl \"Neuer Tab\" (z.B. Tastenkombination) geöffnet worden, wenn der mit dieser URL geöffnet wird:" },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "Einen neuen Tab behandeln als sei er durch den Befehl \"Neuer Tab\" geöffnet worden, wenn der mit dieser URL geöffnet wird:" },
   "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "" },
 
-  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "Beim Klick mit der mittleren Maustaste auf die Schaltfläche \"Neuer Tab\" einen neuen leeren Tab öffnen als" },
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "Mit der mittleren Maustaste einen neuen leeren Tab öffnen als" },
   "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "eigenständigen Tab" },
   "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "untergeordneten Tab des aktiven Tabs" },
   "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
