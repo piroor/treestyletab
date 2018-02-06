@@ -491,8 +491,7 @@ ul {
 
 .after-tabs .contextual-identities-selector-anchor {
   background: none;
-  border: none;
-  border-left: 1px solid;
+  border-width: 0 0 0 1px;
   bottom: 0;
   color: var(--tab-text);
   display: flex;
