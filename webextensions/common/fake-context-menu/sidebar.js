@@ -236,7 +236,7 @@ var tabContextMenu = {
         item.tabIndex = 0;
         item.classList.remove('open');
       }
-      this.menu.addEventListener('mouseover', this.onMouseOver);
+      this.menu.parentNode.addEventListener('mouseover', this.onMouseOver);
       this.menu.addEventListener('transitionend', this.onTransitionEnd);
       window.addEventListener('mousedown', this.onMouseDown, { capture: true });
       window.addEventListener('click', this.onClick, { capture: true });
@@ -264,7 +264,7 @@ var tabContextMenu = {
     }
     this.menu.removeAttribute('data-tab-id');
     this.menu.removeAttribute('data-tab-states');
-    this.menu.removeEventListener('mouseover', this.onMouseOver);
+    this.menu.parentNode.removeEventListener('mouseover', this.onMouseOver);
     this.menu.removeEventListener('transitionend', this.onTransitionEnd);
     window.removeEventListener('mousedown', this.onMouseDown, { capture: true });
     window.removeEventListener('click', this.onClick, { capture: true });
@@ -344,12 +344,24 @@ var tabContextMenu = {
       clearTimeout(this.delayedOpen.timer);
       this.delayedOpen = null;
     }
-    if (item.delayedClose) {
+    if (item && item.delayedClose) {
       clearTimeout(item.delayedClose);
       item.delayedClose = null;
     }
-    if (!item)
+    if (!item) {
+      if (this.lastFocusedItem) {
+        if (this.lastFocusedItem.parentNode != this.menu) {
+          this.lastFocusedItem = this.lastFocusedItem.parentNode.parentNode;
+          this.lastFocusedItem.focus();
+        }
+        else {
+          this.lastFocusedItem.blur();
+          this.lastFocusedItem = null;
+        }
+      }
+      this.setHover(null);
       return;
+    }
 
     this.setHover(item);
     this.closeOtherSubmenus(item);
