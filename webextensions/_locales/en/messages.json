@@ -151,7 +151,7 @@
   "config.newTab.caption": { "message": "New Tabs Behavior" },
 
   "config.newTabButton.caption": { "message": "\"New Tab\" button" },
-  "config.longPressOnNewTabButton.before":               { "message": "Log-press on the \"New Tab\" button to " },
+  "config.longPressOnNewTabButton.before":               { "message": "Long-press on the \"New Tab\" button to " },
   "config.longPressOnNewTabButton.newTabAction":         { "message": "specify where the new tab is opened in" },
   "config.longPressOnNewTabButton.contextualIdentities": { "message": "choose container" },
   "config.longPressOnNewTabButton.none":                 { "message": "(nothing)" },
