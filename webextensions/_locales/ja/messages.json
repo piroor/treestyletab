@@ -287,20 +287,20 @@
   "config.all.caption": { "message": "すべての設定" },
 
 
-  "tabContextMenu.reload.label":      { "message": "タブを再読み込み" },
-  "tabContextMenu.mute.label":        { "message": "タブをミュート" },
-  "tabContextMenu.unmute.label":      { "message": "タブのミュートを解除" },
+  "tabContextMenu.reload.label":      { "message": "タブを再読み込み(&R)" },
+  "tabContextMenu.mute.label":        { "message": "タブをミュート(&M)" },
+  "tabContextMenu.unmute.label":      { "message": "タブのミュートを解除(&M)" },
 
-  "tabContextMenu.pin.label":         { "message": "タブをピン留め" },
-  "tabContextMenu.unpin.label":       { "message": "タブのピン留めを外す" },
-  "tabContextMenu.duplicate.label":   { "message": "タブを複製" },
-  "tabContextMenu.tearOff.label":     { "message": "新しいウィンドウへ移動" },
+  "tabContextMenu.pin.label":         { "message": "タブをピン留め(&P)" },
+  "tabContextMenu.unpin.label":       { "message": "タブのピン留めを外す(&B)" },
+  "tabContextMenu.duplicate.label":   { "message": "タブを複製(&D)" },
+  "tabContextMenu.tearOff.label":     { "message": "新しいウィンドウへ移動(&W)" },
 
-  "tabContextMenu.reloadAll.label":   { "message": "すべてのタブを再読み込み" },
-  "tabContextMenu.bookmarkAll.label": { "message": "すべてのタブをブックマーク..." },
-  "tabContextMenu.closeAfter.label":  { "message": "右のタブをすべて閉じる" },
-  "tabContextMenu.closeOther.label":  { "message": "他のタブをすべて閉じる" },
+  "tabContextMenu.reloadAll.label":   { "message": "すべてのタブを再読み込み(&A)" },
+  "tabContextMenu.bookmarkAll.label": { "message": "すべてのタブをブックマーク(&T)..." },
+  "tabContextMenu.closeAfter.label":  { "message": "右のタブをすべて閉じる(&I)" },
+  "tabContextMenu.closeOther.label":  { "message": "他のタブをすべて閉じる(&O)" },
 
-  "tabContextMenu.undoClose.label":   { "message": "閉じたタブを元に戻す" },
-  "tabContextMenu.close.label":       { "message": "タブを閉じる" }
+  "tabContextMenu.undoClose.label":   { "message": "閉じたタブを元に戻す(&U)" },
+  "tabContextMenu.close.label":       { "message": "タブを閉じる(&C)" }
 }

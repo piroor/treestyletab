@@ -34,6 +34,14 @@ var tabContextMenu = {
       browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
     }, { once: true });
 
+    for (let item of Array.slice(this.menu.querySelectorAll('li:not(.separator)'))) {
+      const title = item.getAttribute('title');
+      if (title)
+        item.setAttribute('title', title.replace(/&([a-z])/i, '$1'));
+      item.innerHTML = item.innerHTML.replace(/&amp;([a-z])/i, '<span class="accesskey">$1</span>');
+      item.dataset.accessKey = RegExp.$1.toLowerCase();
+    }
+
     browser.runtime.sendMessage({
       type: kTSTAPI_CONTEXT_MENU_GET_ITEMS
     }).then(aItems => {
@@ -455,6 +463,18 @@ var tabContextMenu = {
         break;
 
       default:
+        if (aEvent.key) {
+          const current = this.lastFocusedItem || this.menu.firstChild;
+          const condition = `@data-access-key="${aEvent.key.toLowerCase()}"`;
+          const item = this.getNextItem(current, condition);
+          if (item) {
+            this.lastFocusedItem = item;
+            this.lastFocusedItem.focus();
+            this.setHover(null);
+            if (this.getNextItem(item, condition) == item)
+              this.onCommand(item, aEvent);
+          }
+        }
         return;
     }
   },
@@ -472,7 +492,11 @@ var tabContextMenu = {
         aBase,
         XPathResult.FIRST_ORDERED_NODE_TYPE
       ).singleNodeValue ||
-      aBase
+      evaluateXPath(
+        `self::li[not(${hasClass('separator')})]${extraCondition}`,
+        aBase,
+        XPathResult.FIRST_ORDERED_NODE_TYPE
+      ).singleNodeValue
     );
     if (window.getComputedStyle(item, null).display == 'none')
       return this.getPreviousItem(item, aCondition);
@@ -492,14 +516,18 @@ var tabContextMenu = {
         aBase,
         XPathResult.FIRST_ORDERED_NODE_TYPE
       ).singleNodeValue ||
-      aBase
+      evaluateXPath(
+        `self::li[not(${hasClass('separator')})]${extraCondition}`,
+        aBase,
+        XPathResult.FIRST_ORDERED_NODE_TYPE
+      ).singleNodeValue
     );
-    if (window.getComputedStyle(item, null).display == 'none')
+    if (item && window.getComputedStyle(item, null).display == 'none')
       return this.getNextItem(item, aCondition);
     return item;
   },
 
-  advanceFocus(aDirection, aLastFocused) {
+  advanceFocus(aDirection, aLastFocused = null) {
     aLastFocused = aLastFocused || this.lastFocusedItem;
     if (!aLastFocused) {
       if (aDirection < 0)

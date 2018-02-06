@@ -101,3 +101,7 @@
   position: absolute;
   right: 0.5em;
 }
+
+#tabContextMenu .accesskey {
+  text-decoration: underline;
+}
