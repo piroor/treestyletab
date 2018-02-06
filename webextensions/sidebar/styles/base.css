@@ -484,7 +484,10 @@ ul {
 :root.contextual-identity-selectable
   .after-tabs
   .newtab-button-box:hover
-  .contextual-identities-selector-anchor:not([disabled="true"]) {
+  .contextual-identities-selector-anchor:not([disabled="true"]),
+:root.contextual-identity-selectable
+  .after-tabs
+  .contextual-identities-selector-anchor.open {
   pointer-events: auto;
   opacity: 1;
 }
