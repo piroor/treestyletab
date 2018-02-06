@@ -181,20 +181,20 @@
   "config.all.caption": { "message": "所有配置" },
 
 
-  "tabContextMenu.reload.label":      { "message": "重新载入标签页" },
-  "tabContextMenu.mute.label":        { "message": "静音标签页" },
-  "tabContextMenu.unmute.label":      { "message": "取消静音标签页" },
+  "tabContextMenu.reload.label":      { "message": "重新载入标签页(&R)" },
+  "tabContextMenu.mute.label":        { "message": "静音标签页(&M)" },
+  "tabContextMenu.unmute.label":      { "message": "取消静音标签页(&M)" },
 
-  "tabContextMenu.pin.label":         { "message": "固定标签页" },
-  "tabContextMenu.unpin.label":       { "message": "取消固定标签页" },
-  "tabContextMenu.duplicate.label":   { "message": "创建标签页副本" },
-  "tabContextMenu.tearOff.label":     { "message": "移动到新窗口" },
+  "tabContextMenu.pin.label":         { "message": "固定标签页(&P)" },
+  "tabContextMenu.unpin.label":       { "message": "取消固定标签页(&B)" },
+  "tabContextMenu.duplicate.label":   { "message": "创建标签页副本(&D)" },
+  "tabContextMenu.tearOff.label":     { "message": "移动到新窗口(&W)" },
 
-  "tabContextMenu.reloadAll.label":   { "message": "重新载入所有标签页" },
-  "tabContextMenu.bookmarkAll.label": { "message": "为全部标签页添加书签…" },
-  "tabContextMenu.closeAfter.label":  { "message": "关闭右侧标签页" },
-  "tabContextMenu.closeOther.label":  { "message": "关闭其他标签页" },
+  "tabContextMenu.reloadAll.label":   { "message": "重新载入所有标签页(&A)" },
+  "tabContextMenu.bookmarkAll.label": { "message": "为全部标签页添加书签(&T)…" },
+  "tabContextMenu.closeAfter.label":  { "message": "关闭右侧标签页(&I)" },
+  "tabContextMenu.closeOther.label":  { "message": "关闭其他标签页(&O)" },
 
-  "tabContextMenu.undoClose.label":   { "message": "撤销关闭标签页" },
-  "tabContextMenu.close.label":       { "message": "关闭标签页" }
+  "tabContextMenu.undoClose.label":   { "message": "撤销关闭标签页(&U)" },
+  "tabContextMenu.close.label":       { "message": "关闭标签页(&C)" }
 }

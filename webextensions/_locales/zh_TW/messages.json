@@ -277,20 +277,20 @@
   "config.all.caption": { "message": "全部設定" },
 
 
-  "tabContextMenu.reload.label":      { "message": "重新載入分頁" },
-  "tabContextMenu.mute.label":        { "message": "分頁靜音" },
-  "tabContextMenu.unmute.label":      { "message": "取消分頁靜音" },
+  "tabContextMenu.reload.label":      { "message": "重新載入分頁(&R)" },
+  "tabContextMenu.mute.label":        { "message": "分頁靜音(&M)" },
+  "tabContextMenu.unmute.label":      { "message": "取消分頁靜音(&M)" },
 
-  "tabContextMenu.pin.label":         { "message": "釘選分頁" },
-  "tabContextMenu.unpin.label":       { "message": "還原成普通分頁" },
-  "tabContextMenu.duplicate.label":   { "message": "複制分頁" },
-  "tabContextMenu.tearOff.label":     { "message": "移動到新視窗" },
+  "tabContextMenu.pin.label":         { "message": "釘選分頁(&P)" },
+  "tabContextMenu.unpin.label":       { "message": "還原成普通分頁(&B)" },
+  "tabContextMenu.duplicate.label":   { "message": "複制分頁(&D)" },
+  "tabContextMenu.tearOff.label":     { "message": "移動到新視窗(&W)" },
 
-  "tabContextMenu.reloadAll.label":   { "message": "重新載入所有分頁" },
-  "tabContextMenu.bookmarkAll.label": { "message": "將所有分頁加入書籤…" },
-  "tabContextMenu.closeAfter.label":  { "message": "關閉右方分頁" },
-  "tabContextMenu.closeOther.label":  { "message": "關閉其他分頁" },
+  "tabContextMenu.reloadAll.label":   { "message": "重新載入所有分頁(&A)" },
+  "tabContextMenu.bookmarkAll.label": { "message": "將所有分頁加入書籤(&T)…" },
+  "tabContextMenu.closeAfter.label":  { "message": "關閉右方分頁(&I)" },
+  "tabContextMenu.closeOther.label":  { "message": "關閉其他分頁(&O)" },
 
-  "tabContextMenu.undoClose.label":   { "message": "復原已關閉分頁" },
-  "tabContextMenu.close.label":       { "message": "關閉分頁" }
+  "tabContextMenu.undoClose.label":   { "message": "復原已關閉分頁(&U)" },
+  "tabContextMenu.close.label":       { "message": "關閉分頁(&C)" }
 }
