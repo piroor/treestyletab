@@ -141,7 +141,6 @@
   "config.maxTreeLevel.after": { "message": "階層までインデント表示する（※負の値を指定した場合は無制限）" },
 
   "config.faviconizePinnedTabs.label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
-  "config.showContextualIdentitiesSelector.label": { "message": "「新しいタブ」ボタン上に、コンテナータブの選択メニューを表示する" },
   "config.hideInactiveTabs.label": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（※Firefox 59以降のバージョンで、\"about:config\"で\"extensions.webextensions.tabhide.enabled\"を有効化する必要があります）" },
   "config.animation.label": { "message": "アニメーション効果を有効にする" },
 
@@ -151,7 +150,11 @@
 
   "config.newTab.caption": { "message": "新しいタブの挙動" },
 
-  "config.showNewTabActionSelector.label": { "message": "「新しいタブ」ボタン上に、新しいタブを関係を指定して開くための選択メニューを表示する" },
+  "config.newTabButton.caption": { "message": "「新しいタブ」ボタン" },
+  "config.showNewTabActionSelector.label":               { "message": "関係を指定して新しいタブを開くためのボタンを表示する" },
+  "config.showContextualIdentitiesSelector.label":       { "message": "コンテナータブを選択するためのボタンを表示する" },
+
+  "config.newTabAction.caption": { "message": "新しいタブを開く操作の挙動（その他のツールバーボタン、キーボードショートカットなど）" },
   "config.autoAttachOnNewTabCommand.before": { "message": "新しい空のタブを" },
   "config.autoAttachOnNewTabCommand.independent": { "message": "独立したタブとして" },
   "config.autoAttachOnNewTabCommand.child": { "message": "現在のタブの子として" },
@@ -159,9 +162,9 @@
   "config.autoAttachOnNewTabCommand.nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config.autoAttachOnNewTabCommand.after": { "message": "開く" },
   "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "URLが" },
-  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "であるタブが開かれた場合、キーボードショートカットなどによって開かれた新しい空のタブとみなす" },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "であるタブが開かれた場合、新しい空のタブが開かれたとみなす" },
 
-  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "「新しいタブ」ボタンを中クリックした時、新しい空のタブを" },
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "中クリックした時、新しい空のタブを" },
   "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "独立したタブとして" },
   "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "現在のタブの子として" },
   "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "現在のタブと同階層に" },

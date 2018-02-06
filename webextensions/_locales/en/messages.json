@@ -141,7 +141,6 @@
   "config.maxTreeLevel.after": { "message": "level(s) (*Negative value means \"infinite\")" },
 
   "config.faviconizePinnedTabs.label": { "message": "Show pinned tabs only with their icon" },
-  "config.showContextualIdentitiesSelector.label": { "message": "Show container selector on the \"New Tab\" button" },
   "config.hideInactiveTabs.label": { "message": "Hide inactive tabs except pinned tabs at the top tab bar (*You need to activate \"extensions.webextensions.tabhide.enabled\" via \"about:config\" on Firefox 59 and later.)" },
   "config.animation.label": { "message": "Enable animation effects" },
 
@@ -151,17 +150,21 @@
 
   "config.newTab.caption": { "message": "New Tabs Behavior" },
 
-  "config.showNewTabActionSelector.label": { "message": "Show selector on the \"New Tab\" button, to specify where the new tab is opened in" },
+  "config.newTabButton.caption": { "message": "\"New Tab\" button" },
+  "config.showNewTabActionSelector.label":               { "message": "Show selector button on the \"New Tab\" button, to specify where the new tab is opened in" },
+  "config.showContextualIdentitiesSelector.label":       { "message": "Show container selector button on the \"New Tab\" button" },
+
+  "config.newTabAction.caption": { "message": "Behavior for new tab actions (other toolbar buttons, keyboard shortcuts, and others)" },
   "config.autoAttachOnNewTabCommand.before": { "message": "Open new blank tab as" },
   "config.autoAttachOnNewTabCommand.independent": { "message": "an independent tab" },
   "config.autoAttachOnNewTabCommand.child": { "message": "a child of the current tab" },
   "config.autoAttachOnNewTabCommand.sibling": { "message": "a sibling of the current tab" },
   "config.autoAttachOnNewTabCommand.nextSibling": { "message": "the next sibling of the current tab" },
   "config.autoAttachOnNewTabCommand.after": { "message": "" },
-  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "Guess a new tab as opened by \"New Tab\" command (like keyboard shortcuts), when it is opened with the URL " },
+  "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before": { "message": "Guess a newly opened tab as opened by \"New Tab\" action, when it is opened with the URL " },
   "config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after": { "message": "" },
 
-  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "For middle click on the \"New Tab\" button, open new blank tab as" },
+  "config.autoAttachOnNewTabButtonMiddleClick.before": { "message": "For middle click, open new blank tab as" },
   "config.autoAttachOnNewTabButtonMiddleClick.independent": { "message": "an independent tab" },
   "config.autoAttachOnNewTabButtonMiddleClick.child": { "message": "a child of the current tab" },
   "config.autoAttachOnNewTabButtonMiddleClick.sibling": { "message": "a sibling of the current tab" },

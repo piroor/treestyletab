@@ -134,12 +134,25 @@
 
     <h1>__MSG_config.newTab.caption__</h1>
 
+    <fieldset>
+      <legend>__MSG_config.newTabButton.caption__</legend>
+    <p><label>__MSG_config.autoAttachOnNewTabButtonMiddleClick.before__
+              <select id="autoAttachOnNewTabButtonMiddleClick">
+                <option value="0">__MSG_config.autoAttachOnNewTabButtonMiddleClick.independent__</option>
+                <option value="1">__MSG_config.autoAttachOnNewTabButtonMiddleClick.child__</option>
+                <option value="2">__MSG_config.autoAttachOnNewTabButtonMiddleClick.sibling__</option>
+                <option value="3">__MSG_config.autoAttachOnNewTabButtonMiddleClick.nextSibling__</option>
+              </select>
+              __MSG_config.autoAttachOnNewTabButtonMiddleClick.after__</label></p>
     <p><label><input id="showNewTabActionSelector"
                      type="checkbox">
              __MSG_config.showNewTabActionSelector.label__</label></p>
     <p><label><input id="showContextualIdentitiesSelector"
                      type="checkbox">
              __MSG_config.showContextualIdentitiesSelector.label__</label></p>
+    </fieldset>
+    <fieldset>
+      <legend>__MSG_config.newTabAction.caption__</legend>
     <p><label>__MSG_config.autoAttachOnNewTabCommand.before__
               <select id="autoAttachOnNewTabCommand">
                 <option value="0">__MSG_config.autoAttachOnNewTabCommand.independent__</option>
@@ -154,14 +167,6 @@
                           <input id="guessNewOrphanTabAsOpenedByNewTabCommandUrl"
                                  size="20">
                            __MSG_config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after__</label></p>
-    <p><label>__MSG_config.autoAttachOnNewTabButtonMiddleClick.before__
-              <select id="autoAttachOnNewTabButtonMiddleClick">
-                <option value="0">__MSG_config.autoAttachOnNewTabButtonMiddleClick.independent__</option>
-                <option value="1">__MSG_config.autoAttachOnNewTabButtonMiddleClick.child__</option>
-                <option value="2">__MSG_config.autoAttachOnNewTabButtonMiddleClick.sibling__</option>
-                <option value="3">__MSG_config.autoAttachOnNewTabButtonMiddleClick.nextSibling__</option>
-              </select>
-              __MSG_config.autoAttachOnNewTabButtonMiddleClick.after__</label></p>
     <p><label>__MSG_config.autoAttachOnDuplicated.before__
               <select id="autoAttachOnDuplicated">
                 <option value="0">__MSG_config.autoAttachOnDuplicated.independent__</option>
@@ -170,6 +175,7 @@
                 <option value="3">__MSG_config.autoAttachOnDuplicated.nextSibling__</option>
               </select>
               __MSG_config.autoAttachOnDuplicated.after__</label></p>
+    </fieldset>
 
     <fieldset>
       <legend>__MSG_config.insertNewChildAt.caption__</legend>
