@@ -17,6 +17,13 @@
       "count": { "content": "$2", "example": "3" }
     }},
   "tabbar.newTabButton.tooltip": { "message": "Neuen Tab öffnen" },
+  
+  "tabbar.newTabAction.tooltip":           { "message": "Neuen Tab öffnen als..." },
+  "tabbar.newTabAction.independent.label": { "message": "Eigenständigen Tab" },
+  "tabbar.newTabAction.child.label":       { "message": "Untergeordneten Tab" },
+  "tabbar.newTabAction.sibling.label":     { "message": "Tab auf der Ebene des aktiven Tab" },
+  "tabbar.newTabAction.nextSibling.label": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
+
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "Neuer Container-Tab" },
   "tabbar.newTabWithContexualIdentity.default": { "message": "Standard" },
 
@@ -275,11 +282,10 @@
   "config.sidebarScrollbarPosition.auto": { "message": "Automatisch" },
   "config.sidebarScrollbarPosition.left": { "message": "Links" },
   "config.sidebarScrollbarPosition.right": { "message": "Rechts" },
-  
   "config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label": { "message": "Versuchen zu verhinden, dass nach dem Schließen des aktiven Tabs unerwartet ein angehefteter Tab aktiv wird" },
+  
   "config.requestPermissions.bookmarks": { "message": "Erstellen von Lesezeichen erlauben" },
   "config.requestPermissions.allUrls":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Du musst das Ausführen von Scripts auf Webseiten erlauben.)" },
-
   "config.requestPermissions.tabHide":   { "message": "Erlauben Tabs zu verstecken" },
   
   "config.requestPermissions.fallbackToToolbarButton.title": { "message": "Klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste" },
