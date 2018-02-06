@@ -151,6 +151,11 @@
   "config.newTab.caption": { "message": "新しいタブの挙動" },
 
   "config.newTabButton.caption": { "message": "「新しいタブ」ボタン" },
+  "config.longPressOnNewTabButton.before":               { "message": "ボタンの長押しで" },
+  "config.longPressOnNewTabButton.newTabAction":         { "message": "関係を指定して新しいタブを開く" },
+  "config.longPressOnNewTabButton.contextualIdentities": { "message": "コンテナータブを開く" },
+  "config.longPressOnNewTabButton.none":                 { "message": "何もしない" },
+  "config.longPressOnNewTabButton.after":                { "message": "" },
   "config.showNewTabActionSelector.label":               { "message": "関係を指定して新しいタブを開くためのボタンを表示する" },
   "config.showContextualIdentitiesSelector.label":       { "message": "コンテナータブを選択するためのボタンを表示する" },
 

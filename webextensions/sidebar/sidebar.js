@@ -31,7 +31,7 @@ var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definit
 var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 var gContextualIdentitySelector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
-var gNewTabActionSelector       = document.getElementById('newtab-action-selector');
+var gNewTabActionSelector       = document.getElementById(kNEWTAB_ACTION_SELECTOR);
 
 { // apply style ASAP!
   let style = location.search.match(/style=([^&]+)/);

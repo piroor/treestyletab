@@ -126,6 +126,7 @@ configs = new Configs({
 
   showContextualIdentitiesSelector: false,
   showNewTabActionSelector: true,
+  longPressOnNewTabButton: kNEWTAB_ACTION_SELECTOR,
   zoomable: false,
 
   hideInactiveTabs: false,

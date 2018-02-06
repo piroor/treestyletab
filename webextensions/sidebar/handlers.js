@@ -177,6 +177,7 @@ function onMouseDown(aEvent) {
     return;
   }
 
+  var target = aEvent.target;
   var tab = getTabFromEvent(aEvent) || getTabFromTabbarEvent(aEvent);
   if (configs.logOnMouseEvent)
     log('onMouseDown: found target tab: ', tab);
@@ -222,8 +223,21 @@ function onMouseDown(aEvent) {
     if (configs.logOnMouseEvent)
       log('onMouseDown expired');
     gLastMousedown.expired = true;
-    if (aEvent.button == 0)
-      notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
+    if (aEvent.button == 0) {
+      if (tab) {
+        notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
+      }
+      else if (mousedownDetail.targetType == 'newtabbutton' &&
+               configs.longPressOnNewTabButton) {
+        const selector = document.getElementById(configs.longPressOnNewTabButton);
+        if (selector) {
+          target.blur(); // this is required to prevent the selector is closed by blur event
+          gNewTabActionSelector.ui.open({
+            anchor: target
+          });
+        }
+      }
+    }
   }, configs.startDragTimeout);
 }
 

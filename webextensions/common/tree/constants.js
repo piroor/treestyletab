@@ -124,6 +124,7 @@ const kNEWTAB_BUTTON   = 'newtab-button';
 const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';
 const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
+const kNEWTAB_ACTION_SELECTOR       = 'newtab-action-selector';
 
 const kTAB_STATE_ACTIVE                    = 'active';
 const kTAB_STATE_PINNED                    = 'pinned';
