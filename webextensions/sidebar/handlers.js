@@ -93,7 +93,14 @@ function isEventFiredOnContextualIdentitySelector(aEvent) {
   var node = aEvent.originalTarget || aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return node && !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}`);
+  return node && !!node.closest(`#${kCONTEXTUAL_IDENTITY_SELECTOR}`);
+}
+
+function isEventFiredOnContextualIdentitySelectorAnchor(aEvent) {
+  var node = aEvent.originalTarget || aEvent.target;
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return node && !!node.closest(`.${kCONTEXTUAL_IDENTITY_SELECTOR}-anchor`);
 }
 
 function isEventFiredOnClickable(aEvent) {
@@ -124,13 +131,6 @@ function getTabFromTabbarEvent(aEvent) {
       isEventFiredOnClickable(aEvent))
     return null;
   return getTabFromCoordinates(aEvent);
-}
-
-function getClickedOptionFromEvent(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && node.closest(`option`);
 }
 
 function getTabFromCoordinates(aEvent) {
@@ -207,6 +207,9 @@ function onMouseDown(aEvent) {
   if (configs.logOnMouseEvent)
     log('onMouseDown ', mousedownDetail);
 
+  if (mousedownDetail.targetType == 'contextualidentityselector')
+    return;
+
   if (mousedownDetail.isMiddleClick) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
@@ -252,7 +255,8 @@ function getMouseEventTargetType(aEvent) {
   if (isEventFiredOnNewTabButton(aEvent))
     return 'newtabbutton';
 
-  if (isEventFiredOnContextualIdentitySelector(aEvent))
+  if (isEventFiredOnContextualIdentitySelector(aEvent) ||
+      isEventFiredOnContextualIdentitySelectorAnchor(aEvent))
     return 'contextualidentityselector';
 
   var allRange = document.createRange();
@@ -338,31 +342,6 @@ async function onMouseUp(aEvent) {
     });
     handled = true;
   }
-  else if (isEventFiredOnContextualIdentitySelector(aEvent)) {
-    if (configs.logOnMouseEvent)
-      log('click on the contextual identity selector');
-    handled = true;
-    /*
-    // Disable these mimpelentation until the selector is reimplemented without <select>.
-    // See: https://github.com/piroor/treestyletab/issues/1571
-    let option = getClickedOptionFromEvent(aEvent);
-    if (option) {
-      handleNewTabAction(aEvent, {
-        action:        actionForNewTabCommand,
-        cookieStoreId: option.getAttribute('value')
-      });
-      handled = true;
-    }
-    else { // treat as a click on new tab button
-      if (configs.logOnMouseEvent)
-        log('click on the new tab button (fallback)');
-      handleNewTabAction(aEvent, {
-        action: actionForNewTabCommand
-      });
-      handled = true;
-    }
-    */
-  }
   else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
            gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
     if (configs.logOnMouseEvent)
@@ -412,8 +391,23 @@ function onClick(aEvent) {
   if (configs.logOnMouseEvent)
     log('onClick', String(aEvent.target));
 
-  if (isEventFiredOnContextualIdentitySelector(aEvent) ||
-      isEventFiredOnNewTabButton(aEvent)) {
+  if (isEventFiredOnContextualIdentitySelector(aEvent))
+    return;
+
+  if (isEventFiredOnContextualIdentitySelectorAnchor(aEvent)) {
+    if (configs.logOnMouseEvent)
+      log('click on the contextual identity selector anchor');
+    aEvent.stopPropagation();
+    aEvent.preventDefault();
+    aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
+    gContextualIdentitySelector.ui.open({
+      left: aEvent.clientX,
+      top:  aEvent.clientY
+    });
+    return;
+  }
+
+  if (isEventFiredOnNewTabButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     return;
@@ -547,16 +541,18 @@ function onTransisionEnd() {
   });
 }
 
-function onChange(aEvent) {
-  var selector = aEvent.target;
-  if (!selector.matches('select'))
-    return;
-
-  handleNewTabAction(aEvent, {
-    cookieStoreId: selector.value
-  });
-
-  selector.value = '';
+function onContextualIdentitySelect(aItem, aEvent) {
+  console.log('aItem.dataset.value ', aItem.dataset.value);
+  if (aItem.dataset.value) {
+    const action = isAccelAction(aEvent) ?
+      configs.autoAttachOnNewTabButtonMiddleClick :
+      configs.autoAttachOnNewTabCommand;
+    handleNewTabAction(aEvent, {
+      action,
+      cookieStoreId: aItem.dataset.value
+    });
+  }
+  gContextualIdentitySelector.ui.close();
 }
 
 async function onWheel(aEvent) {
