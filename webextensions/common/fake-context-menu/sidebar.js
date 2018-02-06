@@ -459,6 +459,46 @@ var tabContextMenu = {
     }
   },
 
+  getPreviousItem(aBase, aCondition = '') {
+    const extraCondition = aCondition ? `[${aCondition}]` : '' ;
+    const item = (
+      evaluateXPath(
+        `preceding-sibling::li[not(${hasClass('separator')})]${extraCondition}[1]`,
+        aBase,
+        XPathResult.FIRST_ORDERED_NODE_TYPE
+      ).singleNodeValue ||
+      evaluateXPath(
+        `following-sibling::li[not(${hasClass('separator')})]${extraCondition}[last()]`,
+        aBase,
+        XPathResult.FIRST_ORDERED_NODE_TYPE
+      ).singleNodeValue ||
+      aBase
+    );
+    if (window.getComputedStyle(item, null).display == 'none')
+      return this.getPreviousItem(item, aCondition);
+    return item;
+  },
+
+  getNextItem(aBase, aCondition = '') {
+    const extraCondition = aCondition ? `[${aCondition}]` : '' ;
+    const item = (
+      evaluateXPath(
+        `following-sibling::li[not(${hasClass('separator')})]${extraCondition}[1]`,
+        aBase,
+        XPathResult.FIRST_ORDERED_NODE_TYPE
+      ).singleNodeValue ||
+      evaluateXPath(
+        `preceding-sibling::li[not(${hasClass('separator')})]${extraCondition}[last()]`,
+        aBase,
+        XPathResult.FIRST_ORDERED_NODE_TYPE
+      ).singleNodeValue ||
+      aBase
+    );
+    if (window.getComputedStyle(item, null).display == 'none')
+      return this.getNextItem(item, aCondition);
+    return item;
+  },
+
   advanceFocus(aDirection, aLastFocused) {
     aLastFocused = aLastFocused || this.lastFocusedItem;
     if (!aLastFocused) {
@@ -468,37 +508,11 @@ var tabContextMenu = {
         this.lastFocusedItem = aLastFocused = this.menu.lastChild;
     }
     if (aDirection < 0)
-      this.lastFocusedItem = (
-        evaluateXPath(
-          `preceding-sibling::li[not(${hasClass('separator')})][1]`,
-          aLastFocused,
-          XPathResult.FIRST_ORDERED_NODE_TYPE
-        ).singleNodeValue ||
-        evaluateXPath(
-          `following-sibling::li[not(${hasClass('separator')})][last()]`,
-          aLastFocused,
-          XPathResult.FIRST_ORDERED_NODE_TYPE
-        ).singleNodeValue ||
-        aLastFocused
-      );
+      this.lastFocusedItem = this.getPreviousItem(aLastFocused);
     else
-      this.lastFocusedItem = (
-        evaluateXPath(
-          `following-sibling::li[not(${hasClass('separator')})][1]`,
-          aLastFocused,
-          XPathResult.FIRST_ORDERED_NODE_TYPE
-        ).singleNodeValue ||
-        evaluateXPath(
-          `preceding-sibling::li[not(${hasClass('separator')})][last()]`,
-          aLastFocused,
-          XPathResult.FIRST_ORDERED_NODE_TYPE
-        ).singleNodeValue ||
-        aLastFocused
-      );
+      this.lastFocusedItem = this.getNextItem(aLastFocused);
     this.lastFocusedItem.focus();
     this.setHover(null);
-    if (window.getComputedStyle(this.lastFocusedItem, null).display == 'none')
-      this.advanceFocus(aDirection);
   },
 
   digIn() {
