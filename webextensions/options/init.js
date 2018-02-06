@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // remove accesskey mark
   for (let label of Array.slice(document.querySelectorAll('#contextConfigs label'))) {
-    label.lastChild.nodeValue = label.lastChild.nodeValue.replace(/\(&([a-z])\)|&([a-z])/i, '$1$2');
+    label.lastChild.nodeValue = label.lastChild.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
   }
 
   configs.$loaded.then(() => {
