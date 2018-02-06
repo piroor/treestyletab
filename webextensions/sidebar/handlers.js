@@ -62,31 +62,19 @@ function isEventFiredOnTwisty(aEvent) {
   if (!tab || !hasChildTabs(tab))
     return false;
 
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kTWISTY}`);
+  return !!aEvent.target.closest(`.${kTWISTY}`);
 }
 
 function isEventFiredOnSoundButton(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kSOUND_BUTTON}`);
+  return !!aEvent.target.closest(`.${kSOUND_BUTTON}`);
 }
 
 function isEventFiredOnClosebox(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kCLOSEBOX}`);
+  return !!aEvent.target.closest(`.${kCLOSEBOX}`);
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`.${kNEWTAB_BUTTON}`);
+  return !!aEvent.target.closest(`.${kNEWTAB_BUTTON}`);
 }
 
 function isEventFiredOnMenuOrPanel(aEvent) {
@@ -98,17 +86,11 @@ function isEventFiredOnAnchor(aEvent) {
 }
 
 function isEventFiredOnClickable(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`button, scrollbar, select`);
+  return !!aEvent.target.closest(`button, scrollbar, select`);
 }
 
 function isEventFiredOnScrollbar(aEvent) {
-  var node = aEvent.originalTarget || aEvent.target;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  return node && !!node.closest(`scrollbar, nativescrollbar`);
+  return !!aEvent.target.closest(`scrollbar, nativescrollbar`);
 }
 
 
