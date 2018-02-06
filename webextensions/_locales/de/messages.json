@@ -19,10 +19,10 @@
   "tabbar.newTabButton.tooltip": { "message": "Neuen Tab öffnen" },
   
   "tabbar.newTabAction.tooltip":           { "message": "Neuen Tab öffnen als..." },
-  "tabbar.newTabAction.independent.label": { "message": "Eigenständigen Tab" },
-  "tabbar.newTabAction.child.label":       { "message": "Untergeordneten Tab" },
-  "tabbar.newTabAction.sibling.label":     { "message": "Tab auf der Ebene des aktiven Tab" },
-  "tabbar.newTabAction.nextSibling.label": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
+  "tabbar.newTabAction.independent.label": { "message": "E&igenständigen Tab" },
+  "tabbar.newTabAction.child.label":       { "message": "Untergeordneten Tab (&c)" },
+  "tabbar.newTabAction.sibling.label":     { "message": "Tab auf der Ebene de&s aktiven Tab" },
+  "tabbar.newTabAction.nextSibling.label": { "message": "direkte&n Nachbar auf der Ebene des aktiven Tab" },
 
   "tabbar.newTabWithContexualIdentity.tooltip": { "message": "Neuer Container-Tab" },
   "tabbar.newTabWithContexualIdentity.default": { "message": "Standard" },
