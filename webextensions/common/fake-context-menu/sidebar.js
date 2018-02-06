@@ -47,12 +47,14 @@ var tabContextMenu = {
   },
 
   applyItemAccessKey(aItem) {
+    const ACCESS_KEY_MATCHER = /&([a-z])/i;
     const title = aItem.getAttribute('title');
     if (title)
-      aItem.setAttribute('title', title.replace(/&([a-z])/i, '$1'));
+      aItem.setAttribute('title', title.replace(ACCESS_KEY_MATCHER, '$1'));
+    const matchedKey = aItem.textContent.match(ACCESS_KEY_MATCHER);
     aItem.innerHTML = aItem.innerHTML.replace(/&amp;([a-z])/i, '<span class="accesskey">$1</span>');
-    if (RegExp.$1)
-      aItem.dataset.accessKey = RegExp.$1.toLowerCase();
+    if (matchedKey)
+      aItem.dataset.accessKey = matchedKey[1].toLowerCase();
     else if (/^([a-z])/i.test(aItem.textContent))
       aItem.dataset.subAccessKey = RegExp.$1.toLowerCase();
   },
