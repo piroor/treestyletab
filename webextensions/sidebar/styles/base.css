@@ -518,6 +518,13 @@ ul {
   margin: 0.125em;
 }
 
+#contextual-identities-selector .icon {
+  display: inline-block;
+  height: 1em;
+  margin-right: 0.2em;
+  width: 1em;
+}
+
 
 #out-of-view-tab-notifier {
   background: transparent repeat-x bottom;

@@ -362,11 +362,18 @@ function updateContextualIdentitiesSelector() {
     const identity = gContextualIdentities[id];
     const item     = document.createElement('li');
     item.dataset.value = id;
-    if (identity.colorCode) {
+    item.textContent = identity.name;
+    if (identity.iconUrl) {
+      const icon = document.createElement('span');
+      icon.classList.add('icon');
+      icon.style.backgroundColor = identity.colorCode || 'var(--tab-text)';
+      icon.style.mask = `url(${JSON.stringify(identity.iconUrl)}) no-repeat center / 100%`;
+      item.insertBefore(icon, item.firstChild);
+    }
+    else if (identity.colorCode) {
       item.style.color           = getReadableForegroundColorFromBGColor(identity.colorCode);
       item.style.backgroundColor = identity.colorCode;
     }
-    item.textContent = identity.name;
     fragment.appendChild(item);
   }
   if (configs.inheritContextualIdentityToNewChildTab) {
