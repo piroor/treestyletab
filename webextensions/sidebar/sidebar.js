@@ -112,6 +112,7 @@ async function init() {
       onConfigChange('sidebarScrollbarPosition');
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
+      onConfigChange('showNewTabActionSelector');
       gMetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);

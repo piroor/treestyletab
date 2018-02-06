@@ -151,6 +151,7 @@
 
   "config.newTab.caption": { "message": "New Tabs Behavior" },
 
+  "config.showNewTabActionSelector.label": { "message": "Show selector on the \"New Tab\" button, to specify where the new tab is opened in" },
   "config.autoAttachOnNewTabCommand.before": { "message": "Open new blank tab as" },
   "config.autoAttachOnNewTabCommand.independent": { "message": "an independent tab" },
   "config.autoAttachOnNewTabCommand.child": { "message": "a child of the current tab" },

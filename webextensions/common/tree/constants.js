@@ -178,6 +178,7 @@ const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
 const kTABBAR_STATE_THROBBER_SYNCHRONIZING = 'throbber-synchronizing';
 const kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE = 'contextual-identity-selectable';
+const kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE = 'newtab-action-selectable';
 const kTABBAR_STATE_NARROW_SCROLLBAR       = 'narrow-scrollbar';
 const kTABBAR_STATE_NO_SCROLLBAR           = 'no-scrollbar';
 const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';

@@ -481,17 +481,17 @@ ul {
   opacity: var(--button-hover-opacity);
 }
 
-.after-tabs
+:root.newtab-action-selectable
+  .after-tabs
   .newtab-button-box:hover
-  .newtab-action-selector-anchor:not([disabled="true"]),
+  .newtab-action-selector-anchor,
 .after-tabs
   .newtab-action-selector-anchor.open,
 :root.contextual-identity-selectable
   .after-tabs
   .newtab-button-box:hover
   .contextual-identities-selector-anchor:not([disabled="true"]),
-:root.contextual-identity-selectable
-  .after-tabs
+.after-tabs
   .contextual-identities-selector-anchor.open {
   pointer-events: auto;
   opacity: 1;

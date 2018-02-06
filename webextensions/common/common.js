@@ -125,6 +125,7 @@ configs = new Configs({
   narrowScrollbarSize: 8,
 
   showContextualIdentitiesSelector: false,
+  showNewTabActionSelector: true,
   zoomable: false,
 
   hideInactiveTabs: false,
@@ -275,6 +276,7 @@ configs = new Configs({
     indentAutoShrink
     indentAutoShrinkOnlyForVisible
     showContextualIdentitiesSelector
+    showNewTabActionSelector
     zoomable
     hideInactiveTabs
     preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab

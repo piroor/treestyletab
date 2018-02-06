@@ -1533,6 +1533,13 @@ function onConfigChange(aChangedKey) {
         rootClasses.remove(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       break;
 
+    case 'showNewTabActionSelector':
+      if (configs[aChangedKey])
+        rootClasses.add(kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      else
+        rootClasses.remove(kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      break;
+
     case 'useCachedTree':
       if (configs[aChangedKey])
         reserveToUpdateCachedTabbar();
