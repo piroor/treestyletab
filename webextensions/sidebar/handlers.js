@@ -232,7 +232,7 @@ function onMouseDown(aEvent) {
         const selector = document.getElementById(configs.longPressOnNewTabButton);
         if (selector) {
           target.blur(); // this is required to prevent the selector is closed by blur event
-          gNewTabActionSelector.ui.open({
+          selector.ui.open({
             anchor: target
           });
         }
