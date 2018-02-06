@@ -834,14 +834,23 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         var apiTab = await browser.tabs.create(params);
         await waitUntilTabsAreCreated(apiTab.id);
         var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
+        if (!tab)
+          throw new Error('tab is already closed');
         if (!aOptions.opener &&
-            aOptions.parent &&
-            tab)
+            aOptions.parent)
           await attachTabTo(tab, aOptions.parent, {
             insertBefore: aOptions.insertBefore,
             insertAfter:  aOptions.insertAfter,
             forceExpand:  params.active,
             broadcast:    true
+          });
+        else if (aOptions.insertBefore)
+          await moveTabInternallyBefore(tab, aOptions.insertBefore, {
+            broadcast: true
+          });
+        else if (aOptions.insertAfter)
+          await moveTabInternallyAfter(tab, aOptions.insertAfter, {
+            broadcast: true
           });
         return tab.opened;
       }));

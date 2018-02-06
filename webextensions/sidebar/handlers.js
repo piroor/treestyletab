@@ -444,7 +444,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
   if (configs.logOnMouseEvent)
     log('handleNewTabAction');
   var parent, insertBefore, insertAfter;
-  if (configs.autoAttach) {
+  if (configs.autoAttach || 'action' in aOptions) {
     let current = getCurrentTab(gTargetWindow);
     switch (aOptions.action) {
       case kNEWTAB_DO_NOTHING:
