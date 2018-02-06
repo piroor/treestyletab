@@ -92,14 +92,14 @@
   "message.startup.userChromeCss.description.3": { "message": "" },
 
 
-  "context.reloadTree.label": { "message": "このツリーを再読み込み" },
-  "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み" },
-  "context.closeTree.label": { "message": "このツリーを閉じる" },
-  "context.closeDescendants.label": { "message": "このタブの配下のタブをすべて閉じる" },
-  "context.closeOthers.label": { "message": "このツリー以外の他のタブをすべて閉じる" },
-  "context.collapseAll.label": { "message": "ツリーをすべてたたむ" },
-  "context.expandAll.label": { "message": "ツリーをすべて展開する" },
-  "context.bookmarkTree.label": { "message": "このツリーをブックマーク..." },
+  "context.reloadTree.label": { "message": "このツリーを再読み込み(&R)" },
+  "context.reloadDescendants.label": { "message": "このタブの配下のタブをすべて再読み込み(&E)" },
+  "context.closeTree.label": { "message": "このツリーを閉じる(&C)" },
+  "context.closeDescendants.label": { "message": "このタブの配下のタブをすべて閉じる(&L)" },
+  "context.closeOthers.label": { "message": "このツリー以外の他のタブをすべて閉じる(&O)" },
+  "context.collapseAll.label": { "message": "ツリーをすべてたたむ(&P)" },
+  "context.expandAll.label": { "message": "ツリーをすべて展開する(&X)" },
+  "context.bookmarkTree.label": { "message": "このツリーをブックマーク(&B)..." },
 
 
   "config.appearance.caption": { "message": "外観" },

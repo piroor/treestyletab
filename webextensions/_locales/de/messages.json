@@ -92,14 +92,14 @@
   "message.startup.userChromeCss.description.3": { "message": "." },
 
 
-  "context.reloadTree.label": { "message": "Zweig neu laden" },
-  "context.reloadDescendants.label": { "message": "Untergeordnete Tabs neu laden" },
-  "context.closeTree.label": { "message": "Zweig schließen" },
-  "context.closeDescendants.label": { "message": "Untergeordnete Tabs schließen" },
-  "context.closeOthers.label": { "message": "Alle anderen Tabs außer diesen Zweig schließen" },
-  "context.collapseAll.label": { "message": "Alle zuklappen" },
-  "context.expandAll.label": { "message": "Alle aufklappen" },
-  "context.bookmarkTree.label": { "message": "Lesezeichen für diesen Zweig anlegen…" },
+  "context.reloadTree.label": { "message": "Zweig neu la&den" },
+  "context.reloadDescendants.label": { "message": "Untergeordnete Tabs neu la&den" },
+  "context.closeTree.label": { "message": "Zweig s&chließen" },
+  "context.closeDescendants.label": { "message": "&Untergeordnete Tabs schließen" },
+  "context.closeOthers.label": { "message": "&Alle anderen Tabs außer diesen Zweig schließen" },
+  "context.collapseAll.label": { "message": "Alle &zuklappen" },
+  "context.expandAll.label": { "message": "Alle au&fklappen)" },
+  "context.bookmarkTree.label": { "message": "&Lesezeichen für diesen Zweig anlegen…" },
 
 
   "config.appearance.caption": { "message": "Erscheinungsbild" },

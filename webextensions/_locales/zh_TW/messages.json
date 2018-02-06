@@ -84,14 +84,14 @@
   "message.startup.userChromeCss.description.3": { "message": "" },
 
 
-  "context.reloadTree.label": { "message": "重新載入此樹" },
-  "context.reloadDescendants.label": { "message": "重新載入所有子分頁" },
-  "context.closeTree.label": { "message": "關閉此樹" },
-  "context.closeDescendants.label": { "message": "關閉所有子分頁" },
-  "context.closeOthers.label": { "message": "關閉此樹外的所有分頁" },
-  "context.collapseAll.label": { "message": "全部折疊" },
-  "context.expandAll.label": { "message": "全部展開" },
-  "context.bookmarkTree.label": { "message": "此樹加入晝籤…" },
+  "context.reloadTree.label": { "message": "重新載入此樹(&R)" },
+  "context.reloadDescendants.label": { "message": "重新載入所有子分頁(&E)" },
+  "context.closeTree.label": { "message": "關閉此樹(&C)" },
+  "context.closeDescendants.label": { "message": "關閉所有子分頁(&L)" },
+  "context.closeOthers.label": { "message": "關閉此樹外的所有分頁(&O)" },
+  "context.collapseAll.label": { "message": "全部折疊(&P)" },
+  "context.expandAll.label": { "message": "全部展開(&X)" },
+  "context.bookmarkTree.label": { "message": "此樹加入晝籤(&B)…" },
 
 
   "config.appearance.caption": { "message": "外觀" },

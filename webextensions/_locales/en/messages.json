@@ -92,14 +92,14 @@
   "message.startup.userChromeCss.description.3": { "message": "." },
 
 
-  "context.reloadTree.label": { "message": "Reload this Tree" },
-  "context.reloadDescendants.label": { "message": "Reload Descendants" },
-  "context.closeTree.label": { "message": "Close this Tree" },
-  "context.closeDescendants.label": { "message": "Close Descendants" },
-  "context.closeOthers.label": { "message": "Close Other Tabs except this Tree" },
-  "context.collapseAll.label": { "message": "Collapse All" },
-  "context.expandAll.label": { "message": "Expand All" },
-  "context.bookmarkTree.label": { "message": "Bookmark this Tree…" },
+  "context.reloadTree.label": { "message": "&Reload this Tree" },
+  "context.reloadDescendants.label": { "message": "R&eload Descendants" },
+  "context.closeTree.label": { "message": "&Close this Tree" },
+  "context.closeDescendants.label": { "message": "C&lose Descendants" },
+  "context.closeOthers.label": { "message": "Cl&ose Other Tabs except this Tree" },
+  "context.collapseAll.label": { "message": "Colla&pse All" },
+  "context.expandAll.label": { "message": "E&xpand All" },
+  "context.bookmarkTree.label": { "message": "&Bookmark this Tree…" },
 
 
   "config.appearance.caption": { "message": "Appearance" },
