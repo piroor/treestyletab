@@ -21,10 +21,116 @@ function MenuUI(aParams = {}) {
   for (let item of Array.slice(this.root.querySelectorAll('li:not(.separator)'))) {
     this.applyItemAccessKey(item);
   }
+
+  this.installStyles();
+  this.root.classList.add(`menu-ui-${this.uniqueKey}`);
+
+  this.screen = document.createElement('div');
+  this.screen.classList.add(`menu-ui-${this.uniqueKey}-blocking-screen`);
+  this.root.parentNode.appendChild(this.screen);
 };
 
 MenuUI.prototype = {
+  uniqueKey: parseInt(Math.random() * Math.pow(2, 16)),
+
   lastFocusedItem: null,
+
+  installStyles() {
+    this.style = document.createElement('style');
+    this.style.setAttribute('type', 'text/css');
+    this.style.textContent = `
+      .menu-ui-${this.uniqueKey},
+      .menu-ui-${this.uniqueKey} ul {
+        background: Menu;
+        border: 1px outset Menu;
+        box-shadow: 0.1em 0.1em 0.5em rgba(0, 0, 0, 0.65);
+        color: MenuText;
+        font: -moz-pull-down-menu;
+        margin: 0;
+        max-height: calc(100% - 6px);
+        max-width: calc(100% - 6px);
+        opacity: 0;
+        overflow: auto;
+        padding: 0;
+        pointer-events: none;
+        position: fixed;
+        transition: opacity ${this.animationDuration}ms ease-out;
+        z-index: 999999;
+      }
+
+      .menu-ui-${this.uniqueKey}.open,
+      .menu-ui-${this.uniqueKey} li.open > ul {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .menu-ui-${this.uniqueKey} li {
+        list-style: none;
+        margin: 0;
+        padding: 0.15em 0.5em 0.15em 1.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .menu-ui-${this.uniqueKey} li.radio.checked::before,
+      .menu-ui-${this.uniqueKey} li.checkbox.checked::before {
+        content: "✔";
+        position: absolute;
+        left: 0.25em;
+      }
+
+      .menu-ui-${this.uniqueKey} li.separator {
+        border: 1px inset Menu;
+        margin: 0 0.5em;
+        max-height: 0;
+        opacity: 0.5;
+        padding: 0;
+        pointer-events: none;
+      }
+
+      .menu-ui-${this.uniqueKey} li:not(.separator):focus,
+      .menu-ui-${this.uniqueKey} li:not(.separator).open {
+        background: Highlight;
+        color: HighlightText;
+        outline: none;
+      }
+
+      .menu-ui-${this.uniqueKey} li:not(.separator):focus ul li:not(:focus):not(.open),
+      .menu-ui-${this.uniqueKey} li:not(.separator).open ul li:not(:focus):not(.open) {
+        background: transparent;
+        color: MenuText;
+      }
+
+      .menu-ui-${this.uniqueKey} li.has-submenu {
+        padding-right: 1.5em;
+      }
+      .menu-ui-${this.uniqueKey} li.has-submenu::after {
+        content: ">";
+        position: absolute;
+        right: 0.5em;
+      }
+
+      .menu-ui-${this.uniqueKey} .accesskey {
+        text-decoration: underline;
+      }
+
+      .menu-ui-${this.uniqueKey}-blocking-screen {
+        display: none;
+      }
+
+      .menu-ui-${this.uniqueKey}.open + .menu-ui-${this.uniqueKey}-blocking-screen {
+        bottom: 0;
+        display: block;
+        left: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        z-index: 899999;
+      }
+    `;
+    document.head.appendChild(this.style);
+  },
 
   applyItemAccessKey(aItem) {
     const ACCESS_KEY_MATCHER = /&([a-z])/i;
