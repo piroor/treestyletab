@@ -70,7 +70,8 @@
 #tabContextMenu li:not(.separator):focus,
 #tabContextMenu li:not(.separator).open {
   background: Highlight;
-  color: HighlightText
+  color: HighlightText;
+  outline: none;
 }
 
 #tabContextMenu li:not(.separator):focus ul li:not(:focus):not(.open),
