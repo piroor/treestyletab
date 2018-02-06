@@ -401,8 +401,7 @@ function onClick(aEvent) {
     aEvent.preventDefault();
     aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
     gContextualIdentitySelector.ui.open({
-      left: aEvent.clientX,
-      top:  aEvent.clientY
+      anchor: aEvent.target
     });
     return;
   }
