@@ -125,7 +125,7 @@ configs = new Configs({
   narrowScrollbarSize: 8,
 
   showContextualIdentitiesSelector: false,
-  showNewTabActionSelector: true,
+  showNewTabActionSelector: false,
   longPressOnNewTabButton: kNEWTAB_ACTION_SELECTOR,
   zoomable: false,
 
