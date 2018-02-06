@@ -81,7 +81,6 @@ var tabContextMenu = {
       const name = this.getAddonName(id);
       addonItem.appendChild(document.createTextNode(name));
       addonItem.setAttribute('title', name);
-      this.ui.applyItemAccessKey(addonItem);
       addonItem.classList.add('extra');
       this.prepareAsSubmenu(addonItem);
       let addonSubMenu = addonItem.lastChild;
@@ -149,7 +148,6 @@ var tabContextMenu = {
     if (aItem.type != 'separator') {
       itemNode.appendChild(document.createTextNode(aItem.title));
       itemNode.setAttribute('title', aItem.title);
-      this.ui.applyItemAccessKey(itemNode);
     }
     return itemNode;
   },
