@@ -151,6 +151,7 @@
 
   "config.newTab.caption": { "message": "Verhalten für neue Tabs" },
 
+  "config.showNewTabActionSelector.label": { "message": "Auswahl beim \"Neuer Tab \" Button anzeigen, wo der neue Tab geöffnet werden soll" },
   "config.autoAttachOnNewTabCommand.before": { "message": "Neuen leeren Tab als " },
   "config.autoAttachOnNewTabCommand.independent": { "message": "eigenständigen Tab" },
   "config.autoAttachOnNewTabCommand.child": { "message": "untergeordneten Tab des aktiven Tab" },
