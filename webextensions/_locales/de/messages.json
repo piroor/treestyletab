@@ -288,20 +288,20 @@
   "config.all.caption": { "message": "Alle Einstellungen" },
 
 
-  "tabContextMenu.reload.label":      { "message": "Tab neu laden" },
-  "tabContextMenu.mute.label":        { "message": "Tab stumm schalten" },
-  "tabContextMenu.unmute.label":      { "message": "Stummschaltung aufheben" },
+  "tabContextMenu.reload.label":      { "message": "Tab neu la&den" },
+  "tabContextMenu.mute.label":        { "message": "&Ton aus" },
+  "tabContextMenu.unmute.label":      { "message": "&Ton an" },
 
-  "tabContextMenu.pin.label":         { "message": "Tab anheften" },
-  "tabContextMenu.unpin.label":       { "message": "Angehefteten Tab lösen" },
-  "tabContextMenu.duplicate.label":   { "message": "Tab duplizieren" },
-  "tabContextMenu.tearOff.label":     { "message": "In neues Fenster verschieben" },
+  "tabContextMenu.pin.label":         { "message": "Tab an&heften" },
+  "tabContextMenu.unpin.label":       { "message": "Ta&b ablösen" },
+  "tabContextMenu.duplicate.label":   { "message": "Tab &klonen" },
+  "tabContextMenu.tearOff.label":     { "message": "I&n neues Fenster verschieben" },
 
-  "tabContextMenu.reloadAll.label":   { "message": "Alle Tabs neu laden" },
-  "tabContextMenu.bookmarkAll.label": { "message": "Lesezeichen für alle Tabs erstellen…" },
-  "tabContextMenu.closeAfter.label":  { "message": "Tabs rechts schließen" },
-  "tabContextMenu.closeOther.label":  { "message": "Andere Tabs schließen" },
+  "tabContextMenu.reloadAll.label":   { "message": "Alle &Tabs neu laden" },
+  "tabContextMenu.bookmarkAll.label": { "message": "&Lesezeichen für alle Tabs hinzufügen…" },
+  "tabContextMenu.closeAfter.label":  { "message": "&Rechte Tabs schließen" },
+  "tabContextMenu.closeOther.label":  { "message": "&Andere Tabs schließen" },
 
-  "tabContextMenu.undoClose.label":   { "message": "Tab schließen rückgängig machen" },
-  "tabContextMenu.close.label":       { "message": "Tab schließen" }
+  "tabContextMenu.undoClose.label":   { "message": "&Geschlossenen Tab wiederherstellen" },
+  "tabContextMenu.close.label":       { "message": "Tab s&chließen" }
 }
