@@ -130,9 +130,8 @@ var tabContextMenu = {
     return this.addons[aId].name || aId.replace(/@.+$/, '');
   },
   prepareAsSubmenu(aItemNode) {
-    if (aItemNode.classList.contains('has-submenu'))
+    if (aItemNode.querySelector('ul'))
       return aItemNode;
-    aItemNode.classList.add('has-submenu');
     var subMenu = aItemNode.appendChild(document.createElement('ul'));
     return aItemNode;
   },

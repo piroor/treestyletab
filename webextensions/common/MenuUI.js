@@ -152,16 +152,20 @@ MenuUI.prototype = {
       this.onClosed();
     }
     this.lastFocusedItem = null;
+    for (let item of Array.slice(this.root.querySelectorAll('li:not(.separator)'))) {
+      item.tabIndex = 0;
+      item.classList.remove('open');
+      if (item.querySelector('ul'))
+        item.classList.add('has-submenu');
+      else
+        item.classList.remove('has-submenu');
+    }
     this.root.classList.add('open');
     const menus = [this.root].concat(Array.slice(this.root.querySelectorAll('ul')));
     for (let menu of menus) {
       this.updatePosition(menu, aOptions);
     }
     setTimeout(() => {
-      for (let item of Array.slice(this.root.querySelectorAll('li:not(.separator)'))) {
-        item.tabIndex = 0;
-        item.classList.remove('open');
-      }
       this.root.parentNode.addEventListener('mouseover', this.onMouseOver);
       this.root.addEventListener('transitionend', this.onTransitionEnd);
       window.addEventListener('mousedown', this.onMouseDown, { capture: true });
