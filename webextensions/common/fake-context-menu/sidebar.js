@@ -19,6 +19,7 @@ var tabContextMenu = {
       onCommand: (aItem, aEvent) => {
         return this.onCommand(aItem, aEvent);
       },
+      appearance:        'menu',
       animationDuration: configs.collapseDuration,
       subMenuOpenDelay:  configs.subMenuOpenDelay,
       subMenuCloseDelay: configs.subMenuCloseDelay
