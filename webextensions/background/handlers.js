@@ -38,7 +38,7 @@ function onTabOpening(aTab, aInfo = {}) {
   const container = aTab.parentNode;
   if ((configs.autoGroupNewTabsFromPinned &&
        isPinned(opener) &&
-       opener.parentNode == aTab.parentNode) ||
+       opener.parentNode == container) ||
       (configs.autoGroupNewTabs &&
        !opener &&
        !aInfo.maybeOrphan)) {
