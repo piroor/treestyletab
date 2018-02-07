@@ -217,7 +217,7 @@ function columnizeTree(aTree, aOptions) {
     style.height = style.maxHeight =
       Math.floor(containerRect.height * 0.9) + 'px';
 
-    if (getActualColumnCount(aTree) == 1)
+    if (getActualColumnCount(aTree) <= 1)
       style.columnWidth = style.MozColumnWidth = '';
   }
   else {
