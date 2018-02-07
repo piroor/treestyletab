@@ -27,8 +27,15 @@ function onTabOpening(aTab, aInfo = {}) {
     return false;
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
-  var container = aTab.parentNode;
-  var opener    = getOpenerTab(aTab);
+
+  const opener = getOpenerTab(aTab);
+  if (opener)
+    opener.uniqueId.then(aUniqueId => {
+      aTab.dataset.originalOpenerTabId = aUniqueId.id;
+      browser.sessions.setTabValue(aTab.apiTab.id, kORIGINAL_OPENER_TAB_ID, aUniqueId.id);
+    });
+
+  const container = aTab.parentNode;
   if ((configs.autoGroupNewTabsFromPinned &&
        isPinned(opener) &&
        opener.parentNode == aTab.parentNode) ||
