@@ -140,8 +140,11 @@ async function updateTree() {
   range.deleteContents();
   range.detach();
   const tree = document.createDocumentFragment();
-  container.appendChild(buildTabChildren(tab));
-  reflow();
+  const items = buildTabChildren(tab);
+  if (items) {
+    container.appendChild(items);
+    reflow();
+  }
 }
 
 function reflow() {
