@@ -171,7 +171,6 @@ function onMouseDown(aEvent) {
       log('mouse down on a selector anchor');
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
     const selector = document.getElementById(aEvent.target.closest('[data-menu-ui]').dataset.menuUi);
     selector.ui.open({
       anchor: aEvent.target
@@ -233,7 +232,6 @@ function onMouseDown(aEvent) {
                configs.longPressOnNewTabButton) {
         const selector = document.getElementById(configs.longPressOnNewTabButton);
         if (selector) {
-          target.blur(); // this is required to prevent the selector is closed by blur event
           selector.ui.open({
             anchor: target
           });
