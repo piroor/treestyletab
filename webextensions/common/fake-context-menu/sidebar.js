@@ -268,7 +268,7 @@ var tabContextMenu = {
         // browser.tabs.duplicate(this.contextTab.id);
         return (async () => {
           let sourceTab = getTabById(this.contextTab.id);
-          console.log('source tab: ', sourceTab, !!sourceTab.apiTab);
+          //console.log('source tab: ', sourceTab, !!sourceTab.apiTab);
           let duplicatedTabs = await moveTabs([sourceTab], {
             duplicate:           true,
             destinationWindowId: this.contextWindowId,
