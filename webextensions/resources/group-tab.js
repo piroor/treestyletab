@@ -13,7 +13,7 @@ document.title = getTitle();
 
 function getTitle() {
   const params = location.search.split('#')[0];
-  const title = params.match(/[&?]title=([^&;]*)/);
+  let title = params.match(/[&?]title=([^&;]*)/);
   if (!title)
     title = params.match(/^\?([^&;]*)/);
   return title && decodeURIComponent(title[1]) ||
