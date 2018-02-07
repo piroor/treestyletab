@@ -698,11 +698,7 @@ async function updateParentGroupTab(aParentTab) {
     return;
 
   var url = aParentTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
-  browser.tabs.executeScript(aParentTab.apiTab.id, {
-    runAt:           'document_start',
-    matchAboutBlank: true,
-    code:            `location.replace(${JSON.stringify(url)})`,
-  });
+  browser.tabs.update(aParentTab.apiTab.id, { url });
 }
 
 
