@@ -8,6 +8,16 @@
     color: -moz-dialogtext;
   }
 
+  main {
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+  }
+
   h1 {
     display: flex;
     flex-direction: row;
@@ -30,6 +40,53 @@
   #title-field {
     display: none;
   }
+
+  #tabs {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  #tabs img {
+    height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    position: relative;
+    top: 0.25em;
+    width: 16px;
+  }
+
+  #tabs li {
+    display: block;
+    line-height: 1.5;
+    list-style: none;
+    margin: 0 0 0 0.15em;
+    padding: 0;
+    white-space: pre;
+  }
+
+  #tabs a {
+    color: inherit;
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
+  }
+
+  #tabs a:hover {
+    text-decoration: underline;
+  }
+
+  #tabs a span.label {
+    display: inline-block;
+    margin: 0;
+    padding: 0 0 0 0.25em;
+    vertical-align: text-top;
+    white-space: pre-wrap;
+  }
+
+  #tabs ul {
+    margin: 0 0 0 1.5em;
+    padding: 0;
+  }
 </style>
 <!--
   Don't load scripts dynamically, to prevent the tab is closed by Firefox.
@@ -37,5 +94,10 @@
 <script type="application/javascript" src="/common/l10n.js"></script>
 <script type="application/javascript" src="./group-tab.js"></script>
 -->
+<main>
+<header>
 <h1><span id="title"></span><input id="title-field" type="text"></h1>
 <p><label><input id="temporary" type="checkbox">__MSG_groupTab.temporary.label__</label></p>
+</header>
+<div id="tabs"></div>
+</main>
