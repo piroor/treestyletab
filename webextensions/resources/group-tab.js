@@ -127,7 +127,7 @@ function init() {
   l10n.updateDocument();
 
   updateTree();
-  window.initialized = true;
+  init.done = true;
 }
 //document.addEventListener('DOMContentLoaded', init, { once: true });
 
@@ -243,3 +243,5 @@ function getActualColumnCount(aTree) {
   range.detach();
   return Math.floor(rect.width / aTree.columnWidth);
 }
+
+init();

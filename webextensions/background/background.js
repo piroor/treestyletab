@@ -236,7 +236,7 @@ async function tryInitGroupTab(aTab) {
     matchAboutBlank: true
   };
   var initialized = await browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
-    code:  'window.initialized',
+    code:  'window.init && window.init.done',
   }));
   if (initialized[0])
     return;
@@ -245,9 +245,6 @@ async function tryInitGroupTab(aTab) {
   }));
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'
-  }));
-  browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
-    code:  'if (!window.initialized) init();'
   }));
 }
 
