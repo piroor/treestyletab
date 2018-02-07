@@ -568,5 +568,6 @@ function getGroupTabForOpener(aOpener) {
   if (!tab)
     return null;
   return tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}$="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}"],
+                                       ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}#"],
                                        ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}&"]`);
 }
