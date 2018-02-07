@@ -130,19 +130,27 @@ function init() {
 
 
 async function updateTree() {
-  const tab = await browser.runtime.sendMessage({
+  const tabs = await browser.runtime.sendMessage({
     type: 'treestyletab:api:get-tree',
-    tab:  'sendertab'
+    tabs: [
+      'senderTab',
+      getOpenerTabId()
+    ]
   });
   const container = document.getElementById('tabs');
   const range = document.createRange();
   range.selectNodeContents(container);
   range.deleteContents();
   range.detach();
-  const tree = document.createDocumentFragment();
-  const items = buildTabChildren(tab);
-  if (items) {
-    container.appendChild(items);
+  let tree;
+  if (tabs[1]) {
+    tabs[1].children = tabs[0].children;
+    tree = buildTabChildren({ children: [tabs[1]] });
+  }
+  else
+    tree = buildTabChildren(tabs[0]);
+  if (tree) {
+    container.appendChild(tree);
     reflow();
   }
 }
