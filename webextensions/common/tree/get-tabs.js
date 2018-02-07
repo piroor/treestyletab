@@ -118,7 +118,7 @@ function getTabById(aIdOrInfo) {
     selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`;
   else
     selector = `${kSELECTOR_LIVE_TAB}#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
-  return document.querySelector(selector);
+  return document.querySelector(selector) || getTabByUniqueId(aIdOrInfo);
 }
 
 function getTabByUniqueId(aId) {
