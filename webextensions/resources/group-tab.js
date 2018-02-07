@@ -12,19 +12,22 @@ var gTitleField;
 document.title = getTitle();
 
 function getTitle() {
-  var title = location.search.match(/[&?]title=([^&;]*)/);
+  const params = location.search.split('#')[0];
+  const title = params.match(/[&?]title=([^&;]*)/);
   if (!title)
-    title = location.search.match(/^\?([^&;]*)/);
+    title = params.match(/^\?([^&;]*)/);
   return title && decodeURIComponent(title[1]) ||
            browser.i18n.getMessage('groupTab.label.default');
 }
 
 function isTemporary() {
-  return /[&?]temporary=true/.test(location.search);
+  const params = location.search.split('#')[0];
+  return /[&?]temporary=true/.test(params);
 }
 
 function getOpenerTabId() {
-  var matched = location.search.match(/[&?]openerTabId=([^&;]*)/);
+  const params = location.search.split('#')[0];
+  const matched = params.match(/[&?]openerTabId=([^&;]*)/);
   return matched && matched[1];
 }
 
