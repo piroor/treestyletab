@@ -1800,7 +1800,8 @@ async function TSTAPIGetTabsFromWrongIds(aIds, aSender) {
         if (aSender.tab)
           return aSender.tab.id;
       default:
-        return aId;
+        const tabFromUniqueId = getTabByUniqueId(aId);
+        return tabFromUniqueId && tabFromUniqueId.apiTab.id || aId;
     }
   }));
   return aIds.map(aId => getTabById(TabIdFixer.fixTabId(aId))).filter(aTab => !!aTab);
