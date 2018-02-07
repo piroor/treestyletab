@@ -1431,14 +1431,14 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_GET_TREE:
       return (async () => {
-        var tabs    = await TSTAPIGetTargetTabs(aMessage);
+        var tabs    = await TSTAPIGetTargetTabs(aMessage, aSender);
         var results = tabs.map(serializeTabForTSTAPI);
         return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_COLLAPSE_TREE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
             collapsed: true,
@@ -1450,7 +1450,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_EXPAND_TREE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
             collapsed: false,
@@ -1497,7 +1497,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_INDENT:
     case kTSTAPI_DEMOTE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         var results = [];
         for (let tab of tabs) {
           let newParent = getPreviousSiblingTab(tab);
@@ -1524,7 +1524,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_OUTDENT:
     case kTSTAPI_PROMOTE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         var results = [];
         for (let tab of tabs) {
           let parent = getParentTab(tab);
@@ -1564,7 +1564,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_MOVE_UP:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         var results = [];
         for (let tab of tabs) {
           let previousTab = getPreviousTab(tab);
@@ -1592,7 +1592,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_MOVE_DOWN:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         var results = [];
         for (let tab of tabs) {
           let nextTab = getNextTab(tab);
@@ -1620,7 +1620,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_FOCUS:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           selectTabInternally(tab, {
             silently: aMessage.silently
@@ -1631,7 +1631,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_DUPLICATE:
       return (async () => {
-        var tabs     = await TSTAPIGetTargetTabs(aMessage);
+        var tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
         var behavior = kNEWTAB_OPEN_AS_ORPHAN;
         switch (String(aMessage.as || 'sibling').toLowerCase()) {
           case 'child':
@@ -1663,20 +1663,20 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_GROUP_TABS:
       return (async () => {
-        var tabs     = await TSTAPIGetTargetTabs(aMessage);
+        var tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
         var groupTab = await groupTabs(tabs, { broadcast: true });
         return groupTab.apiTab;
       })();
 
     case kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         return Promise.resolve(getTreeStructureFromTabs(tabs));
       })();
 
     case kTSTAPI_SET_TREE_STRUCTURE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage);
+        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         await applyTreeStructureToTabs(tabs, aMessage.structure, {
           broadcast: true
         });
@@ -1685,7 +1685,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {
-        var tabs   = await TSTAPIGetTargetTabs(aMessage);
+        var tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
         var states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
@@ -1702,7 +1702,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_REMOVE_TAB_STATE:
       return (async () => {
-        var tabs   = await TSTAPIGetTargetTabs(aMessage);
+        var tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
         var states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
@@ -1735,10 +1735,10 @@ function onMessageExternal(aMessage, aSender) {
   }
 }
 
-async function TSTAPIGetTargetTabs(aMessage) {
+async function TSTAPIGetTargetTabs(aMessage, aSender) {
   await waitUntilAllTabsAreCreated();
   if (Array.isArray(aMessage.tabs))
-    return TSTAPIGetTabsFromWrongIds(aMessage.tabs);
+    return TSTAPIGetTabsFromWrongIds(aMessage.tabs, aSender);
   if (aMessage.window || aMessage.windowId) {
     if (aMessage.tab == '*' ||
         aMessage.tabs == '*')
@@ -1754,10 +1754,10 @@ async function TSTAPIGetTargetTabs(aMessage) {
     return getTabs(window.id);
   }
   if (aMessage.tab)
-    return TSTAPIGetTabsFromWrongIds([aMessage.tab]);
+    return TSTAPIGetTabsFromWrongIds([aMessage.tab], aSender);
   return [];
 }
-async function TSTAPIGetTabsFromWrongIds(aIds) {
+async function TSTAPIGetTabsFromWrongIds(aIds, aSender) {
   var tabsInActiveWindow = [];
   if (aIds.some(aId => typeof aId != 'number')) {
     let window = await browser.windows.getLastFocused({
@@ -1796,6 +1796,9 @@ async function TSTAPIGetTabsFromWrongIds(aIds) {
         let tab = getPreviousSiblingTab(getTabById(tabs[0].id));
         return tab ? tab.apiTab.id : 0 ;
       }
+      case 'sendertab':
+        if (aSender.tab)
+          return aSender.tab.id;
       default:
         return aId;
     }
