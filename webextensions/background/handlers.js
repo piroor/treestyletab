@@ -32,7 +32,6 @@ function onTabOpening(aTab, aInfo = {}) {
   if (opener)
     opener.uniqueId.then(aUniqueId => {
       aTab.dataset.originalOpenerTabId = aUniqueId.id;
-      browser.sessions.setTabValue(aTab.apiTab.id, kORIGINAL_OPENER_TAB_ID, aUniqueId.id);
     });
 
   const container = aTab.parentNode;
