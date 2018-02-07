@@ -238,8 +238,8 @@ var tabContextMenu = {
   },
 
   onCommand: async function(aItem, aEvent) {
-    if (aEvent.button != 0)
-      return this.close();
+    if (aEvent.button == 1)
+      return;
 
     switch (aItem.id) {
       case 'context_reloadTab':
