@@ -1394,6 +1394,14 @@ function onMessage(aMessage, aSender) {
           }
         }
       })();
+
+    default:
+      const API_PREFIX_MATCHER = /^treestyletab:api:/;
+      if (API_PREFIX_MATCHER.test(aMessage.type)) {
+        aMessage.type = aMessage.type.replace(API_PREFIX_MATCHER, '');
+        return onMessageExternal(aMessage, aSender);
+      }
+      break;
   }
 }
 
