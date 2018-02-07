@@ -164,7 +164,9 @@ function onMouseDown(aEvent) {
   clearDropPosition();
   clearDraggingState();
 
-  if (isEventFiredOnAnchor(aEvent) && !isAccelAction(aEvent)) {
+  if (isEventFiredOnAnchor(aEvent) &&
+      !isAccelAction(aEvent) &&
+      aEvent.button != 2) {
     if (configs.logOnMouseEvent)
       log('mouse down on a selector anchor');
     aEvent.stopPropagation();
