@@ -991,7 +991,7 @@ async function onTabDetached(aTab, aDetachInfo) {
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 
-  reserveToUpdateParentGroupTab(getFirstChildTab(aDetachInfo.oldParentTab));
+  reserveToUpdateParentGroupTab(aDetachInfo.oldParentTab);
 
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.

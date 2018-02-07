@@ -667,23 +667,27 @@ function cleanupNeedlssGroupTab(aTabs) {
 }
 
 function reserveToUpdateParentGroupTab(aTab) {
-  var parent = getParentTab(aTab);
-  if (!parent ||
-      !isGroupTab(parent) ||
-      aTab != getFirstChildTab(parent))
-    return;
-
-  if (parent.reservedUpdateParentGroupTab)
-    clearTimeout(parent.reservedUpdateParentGroupTab);
-  parent.reservedUpdateParentGroupTab = setTimeout(() => {
-    delete parent.reservedUpdateParentGroupTab;
-    updateParentGroupTab(parent);
-  }, 100);
+  var ancestorGroupTabs = [aTab].concat(getAncestorTabs(aTab)).filter(isGroupTab);
+  for (let tab of ancestorGroupTabs) {
+    if (tab.reservedUpdateParentGroupTab)
+      clearTimeout(tab.reservedUpdateParentGroupTab);
+    tab.reservedUpdateParentGroupTab = setTimeout(() => {
+      delete tab.reservedUpdateParentGroupTab;
+      updateParentGroupTab(tab);
+    }, 100);
+  }
 }
 
-function updateParentGroupTab(aParentTab) {
+async function updateParentGroupTab(aParentTab) {
   if (!ensureLivingTab(aParentTab))
     return;
+
+  await tryInitGroupTab(aParentTab);
+  await browser.tabs.executeScript(aParentTab.apiTab.id, {
+    runAt:           'document_start',
+    matchAboutBlank: true,
+    code:            `updateTree()`,
+  });
 
   if (!kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aParentTab.apiTab.title))
     return;
