@@ -32,7 +32,7 @@
       "title": { "content": "$1", "example": "title" }
     }},
   "groupTab.label.default": { "message": "Group" },
-  "groupTab.temporary.label": { "message": "Temporary Group" },
+  "groupTab.temporary.label": { "message": "Close this tab when there is no more child" },
   "groupTab.fromPinnedTab.label": { "message": "Tabs from $TITLE$",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
