@@ -195,16 +195,34 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       url: aOptions.tab.url.replace(kSHORTHAND_ABOUT_URI, kSHORTHAND_URIS[shorthand] || 'about:blank')
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
+    addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
     return;
   }
   else if ('url' in aNewState &&
            aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
+    addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
     window.onGroupTabDetected && onGroupTabDetected(aTab);
   }
   else if (aTab.apiTab &&
            aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
-    aTab.classList.remove(kTAB_STATE_GROUP_TAB);
+    // Detect group tab from different session - which can have different UUID for the URL.
+    getSpecialTabState(aTab).then(aStates => {
+      const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
+      const pathPart = aTab.apiTab.url.replace(PREFIX_REMOVER, '');
+      if (aStates.indexOf(kTAB_STATE_GROUP_TAB) > -1 &&
+          pathPart == kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
+        const parameters = pathPart.replace(/^[^\?]+\?/, '');
+        browser.tabs.update(aTab.apiTab.id, {
+          url: `${kGROUP_TAB_URI}?${parameters}`
+        }).catch(handleMissingTabError);
+        aTab.classList.add(kTAB_STATE_GROUP_TAB);
+      }
+      else {
+        removeSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
+        aTab.classList.remove(kTAB_STATE_GROUP_TAB);
+      }
+    });
   }
 
   if (aOptions.forceApply ||
@@ -997,6 +1015,31 @@ function hideTabs(aTabs = []) {
     if (!tab.pinned)
       browser.tabs.hide(tab.id);
   }
+}
+
+
+async function getSpecialTabState(aTab) {
+  const states = await browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES);
+  return states || [];
+}
+
+async function addSpecialTabState(aTab, aState) {
+  const states = await getSpecialTabState(aTab);
+  if (states.indexOf(aState) > -1)
+    return states;
+  states.push(aState);
+  await browser.sessions.setTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES, states);
+  return states;
+}
+
+async function removeSpecialTabState(aTab, aState) {
+  const states = await getSpecialTabState(aTab);
+  const index = states.indexOf(aState);
+  if (index < 0)
+    return states;
+  states.splice(index, 1);
+  await browser.sessions.setTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES, states);
+  return states;
 }
 
 

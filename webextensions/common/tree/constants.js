@@ -108,6 +108,7 @@ const kPERSISTENT_CHILDREN      = 'children';
 const kPERSISTENT_INSERT_BEFORE = 'insert-before';
 const kPERSISTENT_INSERT_AFTER  = 'isnert-after';
 const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed';
+const kPERSISTENT_SPECIAL_TAB_STATES = 'special-tab-states';
 
 const kFAVICON         = 'favicon';
 const kFAVICON_IMAGE   = 'favicon-image';
