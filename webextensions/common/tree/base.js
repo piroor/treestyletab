@@ -1046,9 +1046,11 @@ async function removeSpecialTabState(aTab, aState) {
 /* TST API Helpers */
 
 function serializeTabForTSTAPI(aTab) {
+  const effectiveFavIcon = TabFavIconHelper.effectiveFavIcons.get(aTab.apiTab.id);
   return Object.assign({}, aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
     indent:   parseInt(aTab.getAttribute(kLEVEL) || 0),
+    effectiveFavIconUrl: effectiveFavIcon && effectiveFavIcon.favIconUrl,
     children: getChildTabs(aTab).map(serializeTabForTSTAPI)
   });
 }
