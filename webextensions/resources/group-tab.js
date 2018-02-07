@@ -163,7 +163,7 @@ function reflow() {
   });
 }
 
-const DEFAULT_FAVICON_URL = '/sidebar/styles/icons/moon.svg';
+var DEFAULT_FAVICON_URL = '/sidebar/styles/icons/moon.svg';
 
 function buildTabItem(aTab) {
   const item = document.createElement('li');
