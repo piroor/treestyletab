@@ -1168,6 +1168,22 @@ function onTabUnpinned(aTab) {
   reserveToUpdateCachedTabbar();
 }
 
+function onTabShown(aTab) {
+  tabContextMenu.close();
+  reserveToPositionPinnedTabs();
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
+  reserveToUpdateCachedTabbar();
+}
+
+function onTabHidden(aTab) {
+  tabContextMenu.close();
+  reserveToPositionPinnedTabs();
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
+  reserveToUpdateCachedTabbar();
+}
+
 function onTabStateChanged(aTab) {
   if (aTab.apiTab.status == 'loading')
     aTab.classList.add(kTAB_STATE_THROBBER_UNSYNCHRONIZED);

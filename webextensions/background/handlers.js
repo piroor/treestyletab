@@ -1072,6 +1072,14 @@ function onTabUnpinned(aTab) {
   reserveToCacheTree(aTab);
 }
 
+function onTabShown(aTab) {
+  reserveToCacheTree(aTab);
+}
+
+function onTabHidden(aTab) {
+  reserveToCacheTree(aTab);
+}
+
 function onGroupTabDetected(aTab) {
   tryInitGroupTab(aTab);
 }
