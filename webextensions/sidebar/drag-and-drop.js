@@ -102,28 +102,26 @@ function sanitizeDragData(aDragData) {
 }
 
 function getDropAction(aEvent) {
-  var info = getDropActionInternal(aEvent);
-  info.canDrop = true;
-  var draggedApiTab               = info.dragData && info.dragData.apiTab;
-  var isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
+  const info = getDropActionInternal(aEvent);
+  info.defineGetter('canDrop', () => {
+    const draggedApiTab               = info.dragData && info.dragData.apiTab;
+    const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
   if (draggedApiTab &&
       isPrivateBrowsingTabDragged != isPrivateBrowsing(info.dragOverTab || getFirstTab())) {
-    info.canDrop      = false;
-    info.dropPosition = null;
-    info.action       = null;
+    return false;
   }
   else if (info.draggedTab) {
     if (info.dragOverTab &&
         isPinned(info.draggedTab) != isPinned(info.dragOverTab)) {
-      info.canDrop = false;
+      return false;
     }
     else if (info.action & kACTION_ATTACH) {
       if (info.parent == info.draggedTab) {
-        info.canDrop = false;
+        return false;
       }
       else if (info.dragOverTab) {
         let ancestors = getAncestorTabs(info.dragOverTab);
-        info.canDrop = info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
+        return info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
                          collectRootTabs(info.draggedTabs).every(aRootTab =>
                            ancestors.indexOf(aRootTab) < 0
                          );
@@ -135,10 +133,13 @@ function getDropAction(aEvent) {
       (isHidden(info.dragOverTab) ||
        (isCollapsed(info.dragOverTab) &&
         info.dropPosition != kDROP_AFTER)))
-    info.canDrop = false;
+    return false;
+
+    return true;
+  });
 
   info.isCopyAction = isCopyAction(aEvent);
-  info.dropEffect = getDropEffectFromDropAction(info);
+  info.defineGetter('dropEffect', () => getDropEffectFromDropAction(info));
   return info;
 }
 function getDropActionInternal(aEvent) {
@@ -155,6 +156,7 @@ function getDropActionInternal(aEvent) {
     insertBefore:  null,
     insertAfter:   null,
     defineGetter(aName, aGetter) {
+      delete this[aName];
       Object.defineProperty(this, aName, {
         get() {
           delete this[aName];
