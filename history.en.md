@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Respect `browser.tabs.selectOwnerOnClose` correctly when new child tabs are configured to be inserted to top of tree. (regression on 2.4.9)
+   * Process initialization message from other addons via API more correctly.
+   * Optimize drag and drop of tabs.
  - 2.4.9 (2018.2.8)
    * Introduce ability to open new tab specifying its position, by long-press on the "New Tab" button.
    * Better appearance for the contaienr selector on the "New Tab" button.
