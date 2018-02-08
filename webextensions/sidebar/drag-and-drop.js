@@ -172,11 +172,22 @@ function getDropAction(aEvent) {
           return false;
         }
         else if (info.dragOverTab) {
-          let ancestors = getAncestorTabs(info.dragOverTab);
+          if (info.draggedAPITabIDs.indexOf(info.dragOverTab.apiTab.id) > -1)
+            return false;
+          const ancestors = getAncestorTabs(info.dragOverTab);
+          /* too many function call in this way, so I use alternative way for better performance.
           return info.draggedAPITabIDs.indexOf(info.dragOverTab.apiTab.id) < 0 &&
                    collectRootTabs(info.draggedTabs).every(aRootTab =>
                      ancestors.indexOf(aRootTab) < 0
                    );
+          */
+          for (let apiTab of info.draggedAPITabs.slice().reverse()) {
+            const tab    = getTabById(apiTab.id);
+            const parent = getParentTab(tab);
+            if (!parent && ancestors.indexOf(parent) > -1)
+              return false;
+          }
+          return true;
         }
       }
     }
