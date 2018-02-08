@@ -360,10 +360,16 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'hidden' in aNewState) {
-    if (aNewState.hidden)
+    if (aNewState.hidden) {
       aTab.classList.add(kTAB_STATE_API_TAB_HIDDEN);
-    else
+      if (!configs.hideInactiveTabs)
+        aTab.classList.add(kTAB_STATE_HIDDEN);
+    }
+    else {
       aTab.classList.remove(kTAB_STATE_API_TAB_HIDDEN);
+      if (!configs.hideInactiveTabs)
+        aTab.classList.remove(kTAB_STATE_HIDDEN);
+    }
   }
 
   /*
