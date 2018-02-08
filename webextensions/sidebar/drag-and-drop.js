@@ -371,7 +371,7 @@ function getDropAction(aEvent) {
 function getDropEffectFromDropAction(aActionInfo) {
   if (!aActionInfo.canDrop)
     return 'none';
-  if (!aActionInfo.draggedTab)
+  if (!aActionInfo.draggedAPITab)
     return 'link';
   if (aActionInfo.isCopyAction)
     return 'copy';
@@ -692,7 +692,8 @@ function onDragOver(aEvent) {
     return;
   }
 
-  if (dropPositionTargetTab != info.draggedTab) {
+  if (!info.draggedAPITab ||
+      dropPositionTargetTab.apiTab.id != info.draggedAPITab.id) {
     clearDropPosition();
     dropPositionTargetTab.setAttribute(kDROP_POSITION, info.dropPosition);
     log('set drop position to ', info.dropPosition);
@@ -730,7 +731,8 @@ function onDragEnter(aEvent) {
 
   reserveToProcessLongHover.cancel();
 
-  if (aEvent.target == info.draggedTab)
+  if (info.draggedAPITab &&
+      info.dragOverTab.apiTab.id == info.draggedAPITab.id)
     return;
 
   reserveToProcessLongHover({
