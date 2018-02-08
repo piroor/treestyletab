@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Match default behavior of long-press on the "New Tab" button to Firefox's one (it shows a menu to choose container).
+   * Place button to select new tab posiiton at right side for the new tab button, if the button to choose container is invisible.
    * Respect `browser.tabs.selectOwnerOnClose` correctly when new child tabs are configured to be inserted to top of tree. (regression on 2.4.9)
    * First child tab opened from a pinned tab is now placed at configured position. (regression on 2.4.9)
    * Process initialization message from other addons via API more correctly.
