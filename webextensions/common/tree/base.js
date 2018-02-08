@@ -367,8 +367,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       }
     }
     else if (aTab.classList.contains(kTAB_STATE_HIDDEN)) {
-        aTab.classList.remove(kTAB_STATE_HIDDEN);
-        window.onTabShown && onTabShown(aTab);
+      aTab.classList.remove(kTAB_STATE_HIDDEN);
+      window.onTabShown && onTabShown(aTab);
     }
   }
 
