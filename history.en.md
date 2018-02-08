@@ -1,6 +1,21 @@
 # History
 
  - master/HEAD
+   * Introduce ability to open new tab specifying its position, by long-press on the "New Tab" button.
+   * Better appearance for the contaienr selector on the "New Tab" button.
+   * Warn before closing multiple tabs a a time.
+   * Better behavior and keyboard operation handling of fake context menu.
+   * Better compatibility with other addons which hide some tabs, like [Conex](https://addons.mozilla.org/firefox/addon/conex/). Now tabs hidden on the top tab bar are also hidden in the sidebar.
+   * Always scroll to the newly opened tab when it is opened as the active tab.
+   * Tabs opened from same pinned tab are grouped, only when there are multiple tabs to be grouped.
+   * Group-tab to bundle tabs opened from same pinned tab inherits the container of the parent pinned tab.
+   * Show descendant tabs as the content of a group tab. Clicking on an item will give focus to the tab.
+   * Don't break group tabs when Tree Style Tab is dynamically updated.
+   * Restore group tabs as-is when they are imported from different profile with session information.
+   * More meaningful label for "temporary group" checkbox of group tabs.
+   * Reduce mismatched tree structure between the internal master process and the visible sidebar contents.
+   * A new [alias to specify tabs via API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs): `senderTab` which is resolved to the owner tab for a content script.
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.8 (2018.2.1)
    * Fix fatal error on the startup process for tree restored from cache.
    * Don't expand current tree by just hitting Ctrl key.
