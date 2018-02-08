@@ -288,7 +288,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       child.dataset.alreadyGroupedForPinnedOpener = true;
       await attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
-        dontMove:  newGroupTabs.has(opener),
+        insertAfter: getLastDescendantTab(parent),
         broadcast: true
       });
     }
