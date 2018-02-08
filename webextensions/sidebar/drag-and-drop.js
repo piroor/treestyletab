@@ -147,39 +147,43 @@ function getDropActionInternal(aEvent) {
   const targetTab   = dragOverTab || getTabFromTabbarEvent(aEvent);
   const targetTabs  = getAllTabs(targetTab);
   const info = {
-    get dragData() {
-      delete this.dragData;
-      const dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
-      return this.dragData = (dragData && JSON.parse(dragData)) || gCurrentDragData;
-    },
-    get draggedTab() {
-      delete this.draggedTab;
-      const dragData = this.dragData;
-      return this.draggedTab = dragData && getTabById(dragData.apiTab && dragData.apiTab.id);
-    },
-    get draggedTabs() {
-      delete this.draggedTabs;
-      const dragData = this.dragData;
-      let draggedTabs = (dragData && dragData.apiTabs) || [];
-      draggedTabs = draggedTabs.map(aApiTab => getTabById(aApiTab && aApiTab.id)).filter(aTab => !!aTab);
-      return this.draggedTabs = draggedTabs;
-    },
-    get firstTargetTab() {
-      delete this.firstTargetTab;
-      return this.firstTargetTab = getFirstNormalTab(targetTab) || targetTabs[0];
-    },
-    get lastTargetTab() {
-      delete this.lastTargetTab;
-      return this.lastTargetTab = targetTabs[targetTabs.length - 1];
-    },
     dragOverTab,
     targetTab,
     dropPosition:  null,
     action:        null,
     parent:        null,
     insertBefore:  null,
-    insertAfter:   null
+    insertAfter:   null,
+    defineGetter(aName, aGetter) {
+      Object.defineProperty(this, aName, {
+        get() {
+          delete this[aName];
+          return this[aName] = aGetter.call(this);
+        },
+        configurable: true,
+        enumerable:   true
+      });
+    }
   };
+  info.defineGetter('dragData', () => {
+    const dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
+    return (dragData && JSON.parse(dragData)) || gCurrentDragData;
+  });
+  info.defineGetter('draggedTab', () => {
+    const dragData = info.dragData;
+    return dragData && getTabById(dragData.apiTab && dragData.apiTab.id);
+  });
+  info.defineGetter('draggedTabs', () => {
+    const dragData = info.dragData;
+    const draggedTabs = (dragData && dragData.apiTabs) || [];
+    return draggedTabs.map(aApiTab => getTabById(aApiTab && aApiTab.id)).filter(aTab => !!aTab);
+  });
+  info.defineGetter('firstTargetTab', () => {
+    return getFirstNormalTab(targetTab) || targetTabs[0];
+  });
+  info.defineGetter('lastTargetTab', () => {
+    return targetTabs[targetTabs.length - 1];
+  });
 
   if (!targetTab) {
     //log('dragging on non-tab element');
@@ -241,11 +245,13 @@ function getDropActionInternal(aEvent) {
       //log('drop position = on the tab');
       info.action       = kACTION_ATTACH;
       info.parent       = targetTab;
-      info.insertBefore = configs.insertNewChildAt == kINSERT_FIRST ?
-        (getFirstChildTab(targetTab) || getNextVisibleTab(targetTab)) :
-        (getNextSiblingTab(targetTab) || getNextTab(getLastDescendantTab(targetTab) || targetTab));
-      // if (info.insertBefore)
-      //  log('insertBefore = ', dumpTab(info.insertBefore));
+      info.defineGetter('insertBefore', () => {
+        return configs.insertNewChildAt == kINSERT_FIRST ?
+          (getFirstChildTab(targetTab) || getNextVisibleTab(targetTab)) :
+          (getNextSiblingTab(targetTab) || getNextTab(getLastDescendantTab(targetTab) || targetTab));
+        // if (info.insertBefore)
+        //  log('insertBefore = ', dumpTab(info.insertBefore));
+      });
     }; break;
 
     case kDROP_BEFORE: {
@@ -333,17 +339,22 @@ function getDropActionInternal(aEvent) {
         if (info.draggedTab == nextTab) {
           info.action       = kACTION_MOVE | kACTION_ATTACH;
           info.parent       = getParentTab(targetTab);
-          info.insertBefore = getNextSiblingTab(targetTab);
-          info.insertAfter  = getLastDescendantTab(targetTab);
-          let ancestor = info.parent;
-          while (ancestor && !info.insertBefore) {
-            info.insertBefore = getNextSiblingTab(ancestor);
-            ancestor = getParentTab(ancestor);
-          }
+          info.defineGetter('insertBefore', () => {
+            let insertBefore = getNextSiblingTab(targetTab);
+            let ancestor     = info.parent;
+            while (ancestor && !insertBefore) {
+              insertBefore = getNextSiblingTab(ancestor);
+              ancestor     = getParentTab(ancestor);
+            }
+            //if (insertBefore)
+            //  log('insertBefore = ', dumpTab(insertBefore));
+            return insertBefore;
+          });
+          info.defineGetter('insertAfter', () => {
+            return getLastDescendantTab(targetTab);
+          });
         }
       }
-      //if (info.insertBefore)
-      //  log('insertBefore = ', dumpTab(info.insertBefore));
     }; break;
   }
 
