@@ -1580,10 +1580,13 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'useCachedTree':
-      if (configs[aChangedKey])
+      if (configs[aChangedKey]) {
         reserveToUpdateCachedTabbar();
-      else
-        clearWindowCache().then(() => location.reload());
+      }
+      else {
+        clearWindowCache();
+        location.reload();
+      }
       break;
 
     case 'simulateSVGContextFill':

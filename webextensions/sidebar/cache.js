@@ -162,15 +162,18 @@ function updateWindowCache(aKey, aValue) {
 
 function clearWindowCache() {
   log('clearWindowCache ', { stack: new Error().stack });
-  return Promise.all([
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
-  ]);
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR);
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
 function markWindowCacheDirty(akey) {
-  return updateWindowCache(akey, true);
+  if (markWindowCacheDirty.timeout)
+    clearTimeout(markWindowCacheDirty.timeout);
+  markWindowCacheDirty.timeout = setTimeout(() => {
+    markWindowCacheDirty.timeout = null;
+    updateWindowCache(akey, true);
+  }, 100);
 }
 
 async function getWindowCache(aKey) {
