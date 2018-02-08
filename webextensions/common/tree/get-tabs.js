@@ -148,7 +148,14 @@ function getNextTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
-  return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
+  let next = aTab;
+  while ((next = next.nextElementSibling)) {
+    if (next.matches(kSELECTOR_LIVE_TAB))
+      return next;
+  }
+  return null;
+  // don't use '~' selector, it is too slow...
+  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
 }
 
 function getPreviousTab(aTab) {
@@ -209,7 +216,14 @@ function getNextNormalTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
+  let next = aTab;
+  while ((next = next.nextElementSibling)) {
+    if (next.matches(kSELECTOR_NORMAL_TAB))
+      return next;
+  }
+  return null;
+  // don't use '~' selector, it is too slow...
+  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
 }
 
 function getPreviousNormalTab(aTab) {
@@ -505,7 +519,14 @@ function getNextVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
+  let next = aTab;
+  while ((next = next.nextElementSibling)) {
+    if (next.matches(kSELECTOR_VISIBLE_TAB))
+      return next;
+  }
+  return null;
+  // don't use '~' selector, it is too slow...
+  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
 }
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
