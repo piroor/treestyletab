@@ -661,8 +661,8 @@ function onDragOver(aEvent) {
   var info = getDropAction(aEvent);
   var dt   = aEvent.dataTransfer;
 
-  if (!info.canDrop ||
-      isEventFiredOnTabDropBlocker(aEvent)) {
+  if (isEventFiredOnTabDropBlocker(aEvent) ||
+      !info.canDrop) {
     dt.dropEffect = 'none';
     clearDropPosition();
     return;
@@ -711,11 +711,9 @@ function onDragEnter(aEvent) {
   if (info.dropEffect == 'link')
     document.documentElement.classList.add(kTABBAR_STATE_LINK_DRAGGING);
 
-  if (!info.canDrop)
-    return;
-
-  if (!info.dragOverTab ||
-      !configs.autoExpandOnLongHover)
+  if (!configs.autoExpandOnLongHover ||
+      !info.canDrop ||
+      !info.dragOverTab)
     return;
 
   reserveToProcessLongHover.cancel();
