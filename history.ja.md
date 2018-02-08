@@ -1,6 +1,8 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.4.11 (2018.2.9)
+   * 言語リソースのキー名が[仕様](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference#Member_details)に則っていなかったのを修正
  - 2.4.10 (2018.2.9)
    * 「新しいタブ」ボタンの長押しの既定の動作をコンテナー選択に変更（Firefoxのタブバーのボタンに合わせた）
    * コンテナー選択用のボタンが非表示の場合は新しいタブを開く位置の選択用ボタンを右側に表示するようにした

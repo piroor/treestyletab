@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.4.11 (2018.2.9)
+   * Reformat keys of localized messages matching to the [spec](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference#Member_details).
  - 2.4.10 (2018.2.9)
    * Match default behavior of long-press on the "New Tab" button to Firefox's one (it shows a menu to choose container).
    * Place button to select new tab posiiton at right side for the new tab button, if the button to choose container is invisible.
