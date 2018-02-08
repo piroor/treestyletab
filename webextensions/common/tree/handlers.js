@@ -477,7 +477,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     let newNextIndex = aMoveInfo.toIndex;
     if (aMoveInfo.fromIndex < newNextIndex)
       newNextIndex++;
-    let tabs    = getTabs(movedTab);
+    let tabs    = getAllTabs(movedTab);
     let nextTab = tabs[newNextIndex];
     if (!alreadyMoved && movedTab.nextSibling != nextTab) {
       container.insertBefore(movedTab, nextTab);
