@@ -170,8 +170,8 @@ async function rebuildAll() {
   var insertionPoint = document.createRange();
   insertionPoint.selectNodeContents(gAllTabs);
   var restoredFromCache = {};
-  await Promise.all(windows.map(aWindow =>
-    gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
+  await Promise.all(windows.map(async (aWindow) => {
+    await gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
       if (configs.useCachedTree) {
         restoredFromCache[aWindow.id] = await restoreWindowFromEffectiveWindowCache(aWindow.id, {
           insertionPoint,
@@ -196,8 +196,11 @@ async function rebuildAll() {
       }
       gAllTabs.appendChild(container);
       restoredFromCache[aWindow.id] = false;
-    })
-  ));
+    });
+    for (let tab of getAllTabs(aWindow.id).filter(isGroupTab)) {
+      browser.tabs.reload(tab.apiTab.id);
+    }
+  }));
   insertionPoint.detach();
   return restoredFromCache;
 }
