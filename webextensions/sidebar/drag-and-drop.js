@@ -236,8 +236,7 @@ function getDropActionInternal(aEvent) {
     info.dropPosition = kDROP_ON_SELF;
   }
 
-  switch (info.dropPosition)
-  {
+  switch (info.dropPosition) {
     case kDROP_ON_SELF: {
       //log('drop position = on the tab');
       info.action       = kACTION_ATTACH;
