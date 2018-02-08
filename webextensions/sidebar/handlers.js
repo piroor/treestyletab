@@ -1201,6 +1201,11 @@ function onContextualIdentitiesUpdated() {
 
 /* message observer */
 
+var gTreeChangesFromRemote = [];
+function waitUntilAllTreeChangesFromRemoteAreComplete() {
+  return Promise.all(gTreeChangesFromRemote);
+}
+
 function onMessage(aMessage, aSender, aRespond) {
   if (!aMessage ||
       typeof aMessage.type != 'string' ||
@@ -1293,24 +1298,32 @@ function onMessage(aMessage, aSender, aRespond) {
       })();
 
     case kCOMMAND_ATTACH_TAB_TO: {
-      if (aMessage.windowId == gTargetWindow) return (async () => {
-        await waitUntilTabsAreCreated([
+      if (aMessage.windowId == gTargetWindow) {
+        const promisedComplete = (async () => {
+        await Promise.all([
+          waitUntilTabsAreCreated([
           aMessage.child,
           aMessage.parent,
           aMessage.insertBefore,
           aMessage.insertAfter
+          ]),
+          waitUntilAllTreeChangesFromRemoteAreComplete()
         ]);
         log('attach tab from remote ', aMessage);
         let child  = getTabById(aMessage.child);
         let parent = getTabById(aMessage.parent);
         if (child && parent)
-          attachTabTo(child, parent, Object.assign({}, aMessage, {
+          await attachTabTo(child, parent, Object.assign({}, aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
             insertAfter:  getTabById(aMessage.insertAfter),
             inRemote:     false,
             broadcast:    false
           }));
-      })();
+          gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
+        })();
+        gTreeChangesFromRemote.push(promisedComplete);
+        return promisedComplete;
+      }
     }; break;
 
     case kCOMMAND_TAB_ATTACHED_COMPLETELY:
@@ -1325,12 +1338,20 @@ function onMessage(aMessage, aSender, aRespond) {
       })();
 
     case kCOMMAND_DETACH_TAB: {
-      if (aMessage.windowId == gTargetWindow) return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tab);
+      if (aMessage.windowId == gTargetWindow) {
+        const promisedComplete = (async () => {
+        await Promise.all([
+          waitUntilTabsAreCreated(aMessage.tab),
+          waitUntilAllTreeChangesFromRemoteAreComplete()
+        ]);
         let tab = getTabById(aMessage.tab);
         if (tab)
           detachTab(tab, aMessage);
-      })();
+          gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
+        })();
+        gTreeChangesFromRemote.push(promisedComplete);
+        return promisedComplete;
+      }
     }; break;
 
     case kCOMMAND_BLOCK_USER_OPERATIONS: {
