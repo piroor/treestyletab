@@ -102,48 +102,6 @@ function sanitizeDragData(aDragData) {
 }
 
 function getDropAction(aEvent) {
-  const info = getDropActionInternal(aEvent);
-  info.defineGetter('canDrop', () => {
-    const draggedApiTab               = info.dragData && info.dragData.apiTab;
-    const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
-    if (draggedApiTab &&
-        isPrivateBrowsingTabDragged != isPrivateBrowsing(info.dragOverTab || getFirstTab())) {
-      return false;
-    }
-    else if (info.draggedTab) {
-      if (info.dragOverTab &&
-          isPinned(info.draggedTab) != isPinned(info.dragOverTab)) {
-        return false;
-      }
-      else if (info.action & kACTION_ATTACH) {
-        if (info.parent == info.draggedTab) {
-          return false;
-        }
-        else if (info.dragOverTab) {
-          let ancestors = getAncestorTabs(info.dragOverTab);
-          return info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
-                   collectRootTabs(info.draggedTabs).every(aRootTab =>
-                     ancestors.indexOf(aRootTab) < 0
-                   );
-        }
-      }
-    }
-
-    if (info.dragOverTab &&
-        (isHidden(info.dragOverTab) ||
-         (isCollapsed(info.dragOverTab) &&
-          info.dropPosition != kDROP_AFTER)))
-      return false;
-
-    return true;
-  });
-
-  info.isCopyAction = isCopyAction(aEvent);
-  info.defineGetter('dropEffect', () => getDropEffectFromDropAction(info));
-  return info;
-}
-function getDropActionInternal(aEvent) {
-  //log('getDropActionInternal: start');
   const dragOverTab = getTabFromEvent(aEvent);
   const targetTab   = dragOverTab || getTabFromTabbarEvent(aEvent);
   const targetTabs  = getAllTabs(targetTab);
@@ -186,6 +144,42 @@ function getDropActionInternal(aEvent) {
   info.defineGetter('lastTargetTab', () => {
     return targetTabs[targetTabs.length - 1];
   });
+  info.defineGetter('canDrop', () => {
+    const draggedApiTab               = info.dragData && info.dragData.apiTab;
+    const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
+    if (draggedApiTab &&
+        isPrivateBrowsingTabDragged != isPrivateBrowsing(info.dragOverTab || getFirstTab())) {
+      return false;
+    }
+    else if (info.draggedTab) {
+      if (info.dragOverTab &&
+          isPinned(info.draggedTab) != isPinned(info.dragOverTab)) {
+        return false;
+      }
+      else if (info.action & kACTION_ATTACH) {
+        if (info.parent == info.draggedTab) {
+          return false;
+        }
+        else if (info.dragOverTab) {
+          let ancestors = getAncestorTabs(info.dragOverTab);
+          return info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
+                   collectRootTabs(info.draggedTabs).every(aRootTab =>
+                     ancestors.indexOf(aRootTab) < 0
+                   );
+        }
+      }
+    }
+
+    if (info.dragOverTab &&
+        (isHidden(info.dragOverTab) ||
+         (isCollapsed(info.dragOverTab) &&
+          info.dropPosition != kDROP_AFTER)))
+      return false;
+
+    return true;
+  });
+  info.defineGetter('isCopyAction', () => isCopyAction(aEvent));
+  info.defineGetter('dropEffect', () => getDropEffectFromDropAction(info));
 
   if (!targetTab) {
     //log('dragging on non-tab element');
