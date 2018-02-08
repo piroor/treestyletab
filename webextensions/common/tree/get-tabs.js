@@ -183,7 +183,7 @@ function getTabIndex(aTab, aOptions = {}) {
     return -1;
   assertValidHint(aTab);
 
-  var tabs = getTabs(aTab);
+  var tabs = getAllTabs(aTab);
   if (Array.isArray(aOptions.ignoreTabs) &&
       aOptions.ignoreTabs.length > 0)
     tabs = tabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);

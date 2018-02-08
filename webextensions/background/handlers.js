@@ -878,7 +878,7 @@ async function onTabAttached(aTab, aInfo = {}) {
       let nextTab = aInfo.insertBefore;
       let prevTab = aInfo.insertAfter;
       if (!nextTab && !prevTab) {
-        let tabs = getTabs(aTab);
+        let tabs = getAllTabs(aTab);
         nextTab = tabs[aInfo.newIndex];
         if (!nextTab)
           prevTab = tabs[aInfo.newIndex - 1];
@@ -1743,7 +1743,7 @@ async function TSTAPIGetTargetTabs(aMessage, aSender) {
   if (aMessage.window || aMessage.windowId) {
     if (aMessage.tab == '*' ||
         aMessage.tabs == '*')
-      return getTabs(aMessage.window || aMessage.windowId);
+      return getAllTabs(aMessage.window || aMessage.windowId);
     else
       return getRootTabs(aMessage.window || aMessage.windowId);
   }
@@ -1752,7 +1752,7 @@ async function TSTAPIGetTargetTabs(aMessage, aSender) {
     let window = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     });
-    return getTabs(window.id);
+    return getAllTabs(window.id);
   }
   if (aMessage.tab)
     return TSTAPIGetTabsFromWrongIds([aMessage.tab], aSender);

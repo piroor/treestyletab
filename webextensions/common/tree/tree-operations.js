@@ -198,7 +198,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
         insertBefore = firstChild;
         break;
       case kINSERT_NEAREST: {
-        let allTabs = getTabs(aParent);
+        let allTabs = getAllTabs(aParent);
         if (aOptions.ignoreTabs)
           allTabs = allTabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
         let index = allTabs.indexOf(aChild);
@@ -328,7 +328,7 @@ function detachAllChildren(aTab, aOptions = {}) {
 
   var parent = getParentTab(aTab);
   if (isGroupTab(aTab) &&
-      getTabs(aTab).filter((aTab) => aTab.removing).length == children.length) {
+      getTabs(aTab).filter(aTab => aTab.removing).length == children.length) {
     aOptions.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     aOptions.dontUpdateIndent = false;
   }

@@ -639,7 +639,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+      for (let i = minIndex, allTabs = getAllTabs(container); i <= maxIndex; i++) {
         let tab = allTabs[i];
         if (!tab)
           continue;
@@ -745,7 +745,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+      for (let i = minIndex, allTabs = getAllTabs(container); i <= maxIndex; i++) {
         let tab = allTabs[i];
         if (!tab)
           continue;

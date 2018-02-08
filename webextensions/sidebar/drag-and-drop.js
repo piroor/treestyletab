@@ -371,7 +371,7 @@ function isDraggingAllTabs(aTab, aTabs) {
 }
  
 function isDraggingAllCurrentTabs(aTab) {
-  return isDraggingAllTabs(aTab, getTabs(aTab));
+  return isDraggingAllTabs(aTab, getAllTabs(aTab));
 }
 
 function collapseAutoExpandedTabsWhileDragging() {
