@@ -143,13 +143,19 @@ function getDropAction(aEvent) {
 }
 function getDropActionInternal(aEvent) {
   //log('getDropActionInternal: start');
-  var targetTab          = getTabFromEvent(aEvent) ||
-                             getTabFromTabbarEvent(aEvent);
-  var targetTabs         = getAllTabs(targetTab);
-  var firstTargetTab     = getFirstNormalTab(targetTab) ||
-                             targetTabs[0];
-  var lastTargetTabIndex = targetTabs.length - 1;
-  var lastTargetTab      = targetTabs[lastTargetTabIndex];
+  const targetTab  = getTabFromEvent(aEvent) ||
+                       getTabFromTabbarEvent(aEvent);
+  const targetTabs = getAllTabs(targetTab);
+  const getFirstTargetTab = () => {
+    if (!getFirstTargetTab.result)
+      getFirstTargetTab.result = getFirstNormalTab(targetTab) || targetTabs[0];
+    return getFirstTargetTab.result;
+  };
+  const getLastTargetTab = () => {
+    if (!getLastTargetTab.result)
+      getLastTargetTab.result = targetTabs[targetTabs.length - 1];
+    return getLastTargetTab.result;
+  };
   var info = {
     dragOverTab:   getTabFromEvent(aEvent),
     draggedTab:    null,
@@ -176,15 +182,15 @@ function getDropActionInternal(aEvent) {
   if (!targetTab) {
     //log('dragging on non-tab element');
     let action = kACTION_MOVE | kACTION_DETACH;
-    if (aEvent.clientY < firstTargetTab.getBoundingClientRect().top) {
+    if (aEvent.clientY < getFirstTargetTab().getBoundingClientRect().top) {
       //log('dragging above the first tab');
-      info.targetTab    = info.insertBefore = firstTargetTab;
+      info.targetTab    = info.insertBefore = getFirstTargetTab();
       info.dropPosition = kDROP_BEFORE;
       info.action       = action;
     }
-    else if (aEvent.clientY > lastTargetTab.getBoundingClientRect().bottom) {
+    else if (aEvent.clientY > getLastTargetTab().getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
-      info.targetTab    = info.insertAfter = lastTargetTab;
+      info.targetTab    = info.insertAfter = getLastTargetTab();
       info.dropPosition = kDROP_AFTER;
       info.action       = action;
     }
@@ -217,12 +223,12 @@ function getDropActionInternal(aEvent) {
   //});
   if (eventCoordinate < targetTabCoordinate + beforeOrAfterDropAreaSize) {
     info.dropPosition = kDROP_BEFORE;
-    info.insertBefore = firstTargetTab;
+    info.insertBefore = getFirstTargetTab();
   }
   else if (dropAreasCount == 2 ||
            eventCoordinate > targetTabCoordinate + targetTabSize - beforeOrAfterDropAreaSize) {
     info.dropPosition = kDROP_AFTER;
-    info.insertAfter  = lastTargetTab;
+    info.insertAfter  = getLastTargetTab();
   }
   else {
     info.dropPosition = kDROP_ON_SELF;
