@@ -118,7 +118,12 @@ function getTabById(aIdOrInfo) {
     selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`;
   else
     selector = `${kSELECTOR_LIVE_TAB}#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
-  return document.querySelector(selector) || getTabByUniqueId(aIdOrInfo);
+  const tab = document.querySelector(selector);
+  if (tab)
+    return tab;
+  if (typeof aIdOrInfo == 'string')
+    return getTabByUniqueId(aIdOrInfo);
+  return null;
 }
 
 function getTabByUniqueId(aId) {
