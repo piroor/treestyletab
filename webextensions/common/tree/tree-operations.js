@@ -1414,7 +1414,6 @@ async function performTabsDragDrop(aParams = {}) {
     return;
 
   var draggedRoots = collectRootTabs(draggedTabs);
-  var targetTabs   = getTabs(windowId);
 
   var draggedWholeTree = [].concat(draggedRoots);
   for (let draggedRoot of draggedRoots) {
