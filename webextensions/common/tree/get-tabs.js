@@ -162,7 +162,7 @@ function getPreviousTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
-  var previous = aTab;
+  let previous = aTab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_LIVE_TAB))
       return previous;
@@ -230,7 +230,7 @@ function getPreviousNormalTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  var previous = aTab;
+  let previous = aTab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_NORMAL_TAB))
       return previous;
@@ -533,7 +533,7 @@ function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  var previous = aTab;
+  let previous = aTab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_VISIBLE_TAB))
       return previous;
