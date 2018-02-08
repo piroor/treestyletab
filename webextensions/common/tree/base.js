@@ -205,14 +205,16 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     window.onGroupTabDetected && onGroupTabDetected(aTab);
   }
   else if (aTab.apiTab &&
+           aTab.apiTab.status == 'complete' &&
            aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
     // Detect group tab from different session - which can have different UUID for the URL.
-    getSpecialTabState(aTab).then(aStates => {
+    getSpecialTabState(aTab).then(async (aStates) => {
       const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
       const pathPart = aTab.apiTab.url.replace(PREFIX_REMOVER, '');
       if (aStates.indexOf(kTAB_STATE_GROUP_TAB) > -1 &&
-          pathPart == kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
+          pathPart.split('?')[0] == kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
         const parameters = pathPart.replace(/^[^\?]+\?/, '');
+        await wait(100); // for safety
         browser.tabs.update(aTab.apiTab.id, {
           url: `${kGROUP_TAB_URI}?${parameters}`
         }).catch(handleMissingTabError);
