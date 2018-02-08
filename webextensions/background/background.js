@@ -198,7 +198,8 @@ async function rebuildAll() {
       restoredFromCache[aWindow.id] = false;
     });
     for (let tab of getAllTabs(aWindow.id).filter(isGroupTab)) {
-      browser.tabs.reload(tab.apiTab.id);
+      if (!isDiscarded(tab))
+        browser.tabs.reload(tab.apiTab.id);
     }
   }));
   insertionPoint.detach();
