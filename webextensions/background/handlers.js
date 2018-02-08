@@ -251,8 +251,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       break;
     case kINSERT_END:
       for (let tab of unifiedRootTabs) {
-        if (pinnedOpeners.indexOf(openerOf[tab.id]) < 0 ||
-            getGroupTabForOpener(openerOf[tab.id]))
+        if (getGroupTabForOpener(openerOf[tab.id]))
           continue;
         await moveTabSubtreeAfter(tab, getLastTab(tab.parentNode), {
           broadcast: true
