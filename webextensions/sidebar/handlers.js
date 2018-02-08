@@ -727,10 +727,6 @@ function updateTabSoundButtonTooltip(aTab) {
 function onTabFocused(aTab, aInfo = {}) {
   tabContextMenu.close();
   scrollToTab(aTab);
-
-  if (configs.hideInactiveTabs &&
-      aInfo.oldActiveTabs)
-    hideTabs(aInfo.oldActiveTabs);
 }
 
 function onTabOpening(aTab, aInfo = {}) {
@@ -762,9 +758,6 @@ function onTabOpened(aTab, aInfo = {}) {
     else
       notifyOutOfViewTab(aTab);
   }
-
-  if (configs.hideInactiveTabs)
-    hideTabs([aTab]);
 
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
@@ -1162,8 +1155,6 @@ function onTabUnpinned(aTab) {
   clearPinnedStyle(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
-  if (!isActive(aTab))
-    hideTabs([aTab]);
   reserveToPositionPinnedTabs();
   reserveToUpdateCachedTabbar();
 }
@@ -1525,13 +1516,6 @@ function onConfigChange(aChangedKey) {
     case 'indentAutoShrink':
     case 'indentAutoShrinkOnlyForVisible':
       updateIndent({ force: true });
-      break;
-
-    case 'hideInactiveTabs':
-      if (configs.hideInactiveTabs)
-        hideTabs(getAllTabs());
-      else
-        showTabs(getAllTabs());
       break;
 
     case 'style':

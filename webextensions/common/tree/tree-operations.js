@@ -776,11 +776,7 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions
   if (autoFocusedTab != nextTab &&
       (autoFocusedTab != previousTab ||
        (getNextTab(autoFocusedTab) &&
-        getNextTab(autoFocusedTab) != aTab)) &&
-      !isUnexpectedFocusToLastPinnedTabForClosedCurrentTab({
-        closedTabWasPinned: params.pinned,
-        activeTab:          autoFocusedTab
-      })) {
+        getNextTab(autoFocusedTab) != aTab))) {
     // possibly it is focused by browser.tabs.selectOwnerOnClose
     log('=> the tab seems focused intentionally: ', {
       autoFocused:       dumpTab(autoFocusedTab),
@@ -809,16 +805,6 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   if (aOverrideParams)
     return Object.assign({}, params, aOverrideParams);
   return params;
-}
-function isUnexpectedFocusToLastPinnedTabForClosedCurrentTab(aParams = {}) {
-  return (
-    configs.hideInactiveTabs &&
-    configs.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab &&
-    !aParams.closedTabWasPinned &&
-    isPinned(aParams.activeTab) &&
-    !isPinned(getNextTab(aParams.activeTab)) &&
-    getUnpinnedTabs(aParams.activeTab).filter(isApiTabHidden).length > 0
-  );
 }
 
 async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
@@ -883,8 +869,6 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
   }
 
   if (!nextFocusedTab &&
-      configs.hideInactiveTabs &&
-      isApiTabHidden(tabNextFocusedByFirefox) &&
       !isHidden(tabNextFocusedByFirefox))
     nextFocusedTab = tabNextFocusedByFirefox; // focus to the next tab manually because Firefox doesn't focus to it when there is any pinned tab.
 

@@ -127,7 +127,6 @@
 
   "config.faviconizePinnedTabs.label": { "message": "釘選分頁只顯示網頁圖示" },
   "config.showContextualIdentitiesSelector.label": { "message": "在「開新分頁」按鈕顯示容器分頁的選單" },
-  "config.hideInactiveTabs.label": { "message": "自分頁列隱藏釘選分頁外的閒置分頁(必須在 Firefox 59 以後允許分頁隱藏。另需啟用「about:config」中的「extensions.webextensions.tabhide.enabled」。)" },
   "config.animation.label": { "message": "啟用動畫效果" },
 
 
@@ -265,7 +264,6 @@
   "config.sidebarScrollbarPosition.auto": { "message": "自動" },
   "config.sidebarScrollbarPosition.left": { "message": "左側" },
   "config.sidebarScrollbarPosition.right": { "message": "右側" },
-  "config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label": { "message": "自分頁列隱藏釘選分頁外的閒置分頁時，儘可能防止目前分頁關閉後切換到最後一個釘選分頁。" },
 
   "config.requestPermissions.bookmarks": { "message": "允許創建書籤" },
   "config.requestPermissions.allUrls":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(需要允許在網頁中執行腳本)。" },

@@ -173,9 +173,6 @@ async function init() {
     gMetricsData.add('applying scroll position');
   }
 
-  if (configs.hideInactiveTabs)
-    hideTabs(getAllTabs());
-
   gInitializing = false;
 
   updateVisualMaxTreeLevel();

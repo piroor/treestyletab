@@ -129,9 +129,6 @@ configs = new Configs({
   longPressOnNewTabButton: kNEWTAB_ACTION_SELECTOR,
   zoomable: false,
 
-  hideInactiveTabs: false,
-  preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab: true,
-
 
   // context menu
   context_reloadTree: true,
@@ -279,8 +276,6 @@ configs = new Configs({
     showContextualIdentitiesSelector
     showNewTabActionSelector
     zoomable
-    hideInactiveTabs
-    preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab
     context_reloadTree
     context_reloadDescendants
     context_closeTree

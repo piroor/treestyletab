@@ -141,7 +141,6 @@
   "config.maxTreeLevel.after": { "message": "Stufen (*Negative Werte bedeuten \"unbegrenzt\")" },
 
   "config.faviconizePinnedTabs.label": { "message": "Angeheftete Tabs nur mit Ihrem Symbol anzeigen" },
-  "config.hideInactiveTabs.label": { "message": "Inaktive Tabs außer angeheftete Tabs in der der Tableiste verstecken (*Du musst in Firefox 59 (und neuer) \"extensions.webextensions.tabhide.enabled\" in \"about:config\" aktivieren.)" },
   "config.animation.label": { "message": "Animationen aktivieren" },
 
 
@@ -291,7 +290,6 @@
   "config.sidebarScrollbarPosition.auto": { "message": "Automatisch" },
   "config.sidebarScrollbarPosition.left": { "message": "Links" },
   "config.sidebarScrollbarPosition.right": { "message": "Rechts" },
-  "config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label": { "message": "Versuchen zu verhinden, dass nach dem Schließen des aktiven Tabs unerwartet ein angehefteter Tab aktiv wird" },
   
   "config.requestPermissions.bookmarks": { "message": "Erstellen von Lesezeichen erlauben" },
   "config.requestPermissions.allUrls":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Du musst das Ausführen von Scripts auf Webseiten erlauben.)" },

@@ -361,20 +361,14 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if (aOptions.forceApply ||
       'hidden' in aNewState) {
     if (aNewState.hidden) {
-      aTab.classList.add(kTAB_STATE_API_TAB_HIDDEN);
-      if (!configs.hideInactiveTabs &&
-          !aTab.classList.contains(kTAB_STATE_HIDDEN)) {
+      if (!aTab.classList.contains(kTAB_STATE_HIDDEN)) {
         aTab.classList.add(kTAB_STATE_HIDDEN);
         window.onTabHidden && onTabHidden(aTab);
       }
     }
-    else {
-      aTab.classList.remove(kTAB_STATE_API_TAB_HIDDEN);
-      if (!configs.hideInactiveTabs &&
-          aTab.classList.contains(kTAB_STATE_HIDDEN)) {
+    else if (aTab.classList.contains(kTAB_STATE_HIDDEN)) {
         aTab.classList.remove(kTAB_STATE_HIDDEN);
         window.onTabShown && onTabShown(aTab);
-      }
     }
   }
 
@@ -1003,30 +997,6 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
     });
   }
   return folder;
-}
-
-
-function showTabs(aTabs = []) {
-  if (typeof browser.tabs.show != 'function')
-    return;
-
-  for (let tab of aTabs) {
-    if (tab.apiTab)
-      tab = tab.apiTab;
-    browser.tabs.show(tab.id);
-  }
-}
-
-function hideTabs(aTabs = []) {
-  if (typeof browser.tabs.hide != 'function')
-    return;
-
-  for (let tab of aTabs) {
-    if (tab.apiTab)
-      tab = tab.apiTab;
-    if (!tab.pinned)
-      browser.tabs.hide(tab.id);
-  }
 }
 
 
