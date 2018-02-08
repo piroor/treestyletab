@@ -279,6 +279,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       parent = await openURIInTab(uri, {
         windowId:     opener.apiTab.windowId,
         insertBefore: children[0],
+        cookieStoreId: opener.apiTab.cookieStoreId,
         inBackground: true
       });
       newGroupTabs.set(opener, true);
