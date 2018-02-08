@@ -129,6 +129,7 @@ function getDropAction(aEvent) {
     return (dragData && JSON.parse(dragData)) || gCurrentDragData;
   });
   info.defineGetter('draggedTab', () => {
+    // don't touch this if not needed, to reduce needless function call.
     return getTabById(info.draggedAPITab);
   });
   info.defineGetter('draggedAPITab', () => {
@@ -136,6 +137,7 @@ function getDropAction(aEvent) {
     return dragData && dragData.apiTab;
   });
   info.defineGetter('draggedTabs', () => {
+    // don't touch this if not needed, to reduce needless function call.
     return info.draggedAPITabs.map(aApiTab => getTabById(aApiTab.id)).filter(aTab => !!aTab);
   });
   info.defineGetter('draggedAPITabs', () => {
