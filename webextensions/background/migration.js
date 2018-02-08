@@ -99,8 +99,8 @@ function migrateLegacyConfigs() {
 
     if (migrated)
       notify({
-        title:   browser.i18n.getMessage('migration.configs.notification.title'),
-        message: browser.i18n.getMessage('migration.configs.notification.message'),
+        title:   browser.i18n.getMessage('migration_configs_notification_title'),
+        message: browser.i18n.getMessage('migration_configs_notification_message'),
         icon:    kNOTIFICATION_DEFAULT_ICON,
         timeout: -1
       });
@@ -109,8 +109,8 @@ function migrateLegacyConfigs() {
   catch(e) {
     log('failed to migrate tree: ', String(e), e.stack);
     notify({
-      title:   browser.i18n.getMessage('migration.configsFailed.notification.title'),
-      message: `${browser.i18n.getMessage('migration.configsFailed.notification.message')}\n${String(e)}`,
+      title:   browser.i18n.getMessage('migration_configsFailed_notification_title'),
+      message: `${browser.i18n.getMessage('migration_configsFailed_notification_message')}\n${String(e)}`,
       icon:    kNOTIFICATION_DEFAULT_ICON,
       timeout: -1
     });
@@ -192,7 +192,7 @@ async function migrateLegacyTreeStructure() {
     if (restoredCountWithSession > 0)
       messages.push(
         browser.i18n.getMessage(
-          'migration.tree.notification.message.withSession',
+          'migration_tree_notification_message_withSession',
           restoredCountWithSession
         )
       );
@@ -240,13 +240,13 @@ async function migrateLegacyTreeStructure() {
     if (structures.length > 0)
       messages.push(
         browser.i18n.getMessage(
-          'migration.tree.notification.message.withoutSession',
+          'migration_tree_notification_message_withoutSession',
           structures.length
         )
       );
 
     notify({
-      title:   browser.i18n.getMessage('migration.tree.notification.title'),
+      title:   browser.i18n.getMessage('migration_tree_notification_title'),
       message: messages.join('\n'),
       icon:    kNOTIFICATION_DEFAULT_ICON,
       timeout: -1
@@ -256,8 +256,8 @@ async function migrateLegacyTreeStructure() {
   catch(e) {
     log('failed to migrate tree: ', String(e), e.stack);
     notify({
-      title:   browser.i18n.getMessage('migration.treeFailed.notification.title'),
-      message: `${browser.i18n.getMessage('migration.treeFailed.notification.message')}\n${String(e)}`,
+      title:   browser.i18n.getMessage('migration_treeFailed_notification_title'),
+      message: `${browser.i18n.getMessage('migration_treeFailed_notification_message')}\n${String(e)}`,
       icon:    kNOTIFICATION_DEFAULT_ICON,
       timeout: -1
     });

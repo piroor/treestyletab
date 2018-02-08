@@ -1331,7 +1331,7 @@ async function groupTabs(aTabs, aOptions = {}) {
   log('groupTabs: ', aTabs.map(dumpTab));
 
   var uri = makeGroupTabURI({
-    title:     browser.i18n.getMessage('groupTab.label', rootTabs[0].apiTab.title),
+    title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].apiTab.title),
     temporary: true
   });
   var groupTab = await openURIInTab(uri, {
@@ -1742,8 +1742,8 @@ async function bookmarkTree(aRoot, aOptions = {}) {
     return null;
   browser.bookmarks.get(folder.parentId).then(aFolders => {
     notify({
-      title:   browser.i18n.getMessage('bookmarkTree.notification.success.title'),
-      message: browser.i18n.getMessage('bookmarkTree.notification.success.message', [
+      title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
+      message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
         aRoot.apiTab.title,
         tabs.length,
         aFolders[0].title

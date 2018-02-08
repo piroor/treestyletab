@@ -695,7 +695,7 @@ async function updateParentGroupTab(aParentTab) {
     return;
 
   var firstChild = getFirstChildTab(aParentTab);
-  var newTitle = browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title);
+  var newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
   if (aParentTab.apiTab.title == newTitle)
     return;
 
@@ -722,12 +722,12 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
     windowId: aOptions.windowId
   });
   let result = await RichConfirm.showInTab(tabs[0].id, {
-    message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
+    message: browser.i18n.getMessage('warnOnCloseTabs_message', [aCount]),
     buttons: [
-      browser.i18n.getMessage('warnOnCloseTabs.close'),
-      browser.i18n.getMessage('warnOnCloseTabs.cancel')
+      browser.i18n.getMessage('warnOnCloseTabs_close'),
+      browser.i18n.getMessage('warnOnCloseTabs_cancel')
     ],
-    checkMessage: browser.i18n.getMessage('warnOnCloseTabs.warnAgain'),
+    checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
     checked: true
   });
   switch (result.buttonIndex) {

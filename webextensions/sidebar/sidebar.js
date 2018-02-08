@@ -381,7 +381,7 @@ function updateContextualIdentitiesSelector() {
   if (configs.inheritContextualIdentityToNewChildTab) {
     let defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';
-    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar.newTabWithContexualIdentity.default');
+    defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContexualIdentity_default');
     const icon = document.createElement('span');
     icon.classList.add('icon');
     defaultCotnainerItem.insertBefore(icon, defaultCotnainerItem.firstChild);
@@ -492,12 +492,12 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       !configs.warnOnCloseTabs)
     return true;
   const confirm = new RichConfirm({
-    message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
+    message: browser.i18n.getMessage('warnOnCloseTabs_message', [aCount]),
     buttons: [
-      browser.i18n.getMessage('warnOnCloseTabs.close'),
-      browser.i18n.getMessage('warnOnCloseTabs.cancel')
+      browser.i18n.getMessage('warnOnCloseTabs_close'),
+      browser.i18n.getMessage('warnOnCloseTabs_cancel')
     ],
-    checkMessage: browser.i18n.getMessage('warnOnCloseTabs.warnAgain'),
+    checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
     checked: true
   });
   const result = await confirm.show();
@@ -516,18 +516,18 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
 function updateTabTwisty(aTab) {
   var tooltip;
   if (isSubtreeCollapsed(aTab))
-    tooltip = browser.i18n.getMessage('tab.twisty.collapsed.tooltip');
+    tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
   else
-    tooltip = browser.i18n.getMessage('tab.twisty.expanded.tooltip');
+    tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
   getTabTwisty(aTab).setAttribute('title', tooltip);
 }
 
 function updateTabClosebox(aTab) {
   var tooltip;
   if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab))
-    tooltip = browser.i18n.getMessage('tab.closebox.tree.tooltip');
+    tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
-    tooltip = browser.i18n.getMessage('tab.closebox.tab.tooltip');
+    tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
   getTabClosebox(aTab).setAttribute('title', tooltip);
 }
 

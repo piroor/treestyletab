@@ -84,8 +84,8 @@ const Permissions = {
         browser.browserAction.setPopup({ popup: '' });
 
         notify({
-          title:   browser.i18n.getMessage('config.requestPermissions.fallbackToToolbarButton.title'),
-          message: browser.i18n.getMessage('config.requestPermissions.fallbackToToolbarButton.message'),
+          title:   browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_title'),
+          message: browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_message'),
           icon:    'resources/24x24-light.svg'
         });
         return;

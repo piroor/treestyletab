@@ -634,7 +634,7 @@ function onTabBuilt(aTab, aInfo) {
 
   var twisty = document.createElement('span');
   twisty.classList.add(kTWISTY);
-  twisty.setAttribute('title', browser.i18n.getMessage('tab.twisty.collapsed.tooltip'));
+  twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
   aTab.insertBefore(twisty, label);
 
   var favicon = document.createElement('span');
@@ -657,7 +657,7 @@ function onTabBuilt(aTab, aInfo) {
 
   var closebox = document.createElement('span');
   closebox.classList.add(kCLOSEBOX);
-  closebox.setAttribute('title', browser.i18n.getMessage('tab.closebox.tab.tooltip'));
+  closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
   closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
   aTab.appendChild(closebox);
 
@@ -716,9 +716,9 @@ function onParentTabUpdated(aTab) {
 function updateTabSoundButtonTooltip(aTab) {
   var tooltip = '';
   if (maybeMuted(aTab))
-    tooltip = browser.i18n.getMessage('tab.soundButton.muted.tooltip');
+    tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
   else if (maybeSoundPlaying(aTab))
-    tooltip = browser.i18n.getMessage('tab.soundButton.playing.tooltip');
+    tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
   markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
@@ -1196,7 +1196,7 @@ function onGroupTabDetected(aTab) {
   if (!title)
     title = parameters.match(/^\?([^&;]*)/);
   title = title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab.label.default');
+           browser.i18n.getMessage('groupTab_label_default');
   aTab.apiTab.title = title;
   wait(0).then(() => {
     updateTab(aTab, { title }, { tab: aTab.apiTab });

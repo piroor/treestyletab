@@ -271,7 +271,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     let parent = getGroupTabForOpener(opener);
     if (!parent) {
       let uri = makeGroupTabURI({
-        title:       browser.i18n.getMessage('groupTab.fromPinnedTab.label', opener.apiTab.title),
+        title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title),
         temporary:   true,
         openerTabId: opener.getAttribute(kPERSISTENT_ID)
       });
@@ -421,7 +421,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     log('trying to replace the closing tab with a new group tab');
     let firstChild = getFirstChildTab(aTab);
     let uri = makeGroupTabURI({
-      title:     browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title),
+      title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
       temporary: true
     });
     incrementContainerCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');

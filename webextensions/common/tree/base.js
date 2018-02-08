@@ -975,13 +975,13 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
   }
   catch(e) {
     notify({
-      title:   browser.i18n.getMessage('bookmark.notification.notPermitted.title'),
-      message: browser.i18n.getMessage('bookmark.notification.notPermitted.message')
+      title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
+      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message')
     });
     return null;
   }
   var folderParams = {
-    title: browser.i18n.getMessage('bookmarkFolder.label', aTabs[0].apiTab.title)
+    title: browser.i18n.getMessage('bookmarkFolder_label', aTabs[0].apiTab.title)
   };
   if (aOptions.parentId) {
     folderParams.parentId = aOptions.parentId;

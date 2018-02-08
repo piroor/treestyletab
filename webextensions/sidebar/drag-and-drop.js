@@ -565,12 +565,12 @@ async function getDroppedLinksOnTabBehavior() {
     return  behavior;
 
   var confirm = new RichConfirm({
-    message: browser.i18n.getMessage('dropLinksOnTabBehavior.message'),
+    message: browser.i18n.getMessage('dropLinksOnTabBehavior_message'),
     buttons: [
-      browser.i18n.getMessage('dropLinksOnTabBehavior.load'),
-      browser.i18n.getMessage('dropLinksOnTabBehavior.newtab')
+      browser.i18n.getMessage('dropLinksOnTabBehavior_load'),
+      browser.i18n.getMessage('dropLinksOnTabBehavior_newtab')
     ],
-    checkMessage: browser.i18n.getMessage('dropLinksOnTabBehavior.save')
+    checkMessage: browser.i18n.getMessage('dropLinksOnTabBehavior_save')
   });
   var result = await confirm.show();
   switch (result.buttonIndex) {

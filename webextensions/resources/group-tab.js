@@ -17,7 +17,7 @@ function getTitle() {
   if (!title)
     title = params.match(/^\?([^&;]*)/);
   return title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab.label.default');
+           browser.i18n.getMessage('groupTab_label_default');
 }
 
 function isTemporary() {
