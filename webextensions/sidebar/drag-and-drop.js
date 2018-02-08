@@ -160,7 +160,7 @@ function getDropActionInternal(aEvent) {
     get draggedTabs() {
       delete this.draggedTabs;
       const dragData = this.dragData;
-      const draggedTabs = (dragData && dragData.apiTabs) || [];
+      let draggedTabs = (dragData && dragData.apiTabs) || [];
       draggedTabs = draggedTabs.map(aApiTab => getTabById(aApiTab && aApiTab.id)).filter(aTab => !!aTab);
       return this.draggedTabs = draggedTabs;
     },
