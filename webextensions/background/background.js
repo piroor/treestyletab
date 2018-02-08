@@ -66,10 +66,13 @@ async function init() {
         }).then(aWindows => {
           for (let window of aWindows) {
             let owner = window.tabs[window.tabs.length - 1];
-            if (configs[aKey])
+            if (configs[aKey]) {
               reserveToCacheTree(owner.windowId);
-            else
-              clearWindowCache(owner.id).then(() => location.reload());
+            }
+            else {
+              clearWindowCache(owner.id);
+              location.reload();
+            }
           }
         });
         break;

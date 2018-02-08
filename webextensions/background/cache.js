@@ -117,17 +117,20 @@ function updateWindowCache(aOwner, aKey, aValue) {
 
 function clearWindowCache(aOwner) {
   log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
-  return Promise.all([
-    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_TABS),
-    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR),
-    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
-  ]);
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_TABS);
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
 function markWindowCacheDirtyFromTab(aTab, akey) {
-  var container = aTab.parentNode;
-  return updateWindowCache(container.lastWindowCacheOwner, akey, true);
+  const container = aTab.parentNode;
+  if (container.markWindowCacheDirtyFromTabTimeout)
+    clearTimeout(container.markWindowCacheDirtyFromTabTimeout);
+  container.markWindowCacheDirtyFromTabTimeout = setTimeout(() => {
+    container.markWindowCacheDirtyFromTabTimeout = null;
+    updateWindowCache(container.lastWindowCacheOwner, akey, true);
+  }, 100);
 }
 
 async function getWindowCache(aOwner, aKey) {
