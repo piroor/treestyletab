@@ -104,7 +104,6 @@ function sanitizeDragData(aDragData) {
 function getDropAction(aEvent) {
   const dragOverTab = getTabFromEvent(aEvent);
   const targetTab   = dragOverTab || getTabFromTabbarEvent(aEvent);
-  const targetTabs  = getAllTabs(targetTab);
   const info = {
     dragOverTab,
     targetTab,
@@ -138,11 +137,14 @@ function getDropAction(aEvent) {
     const draggedTabs = (dragData && dragData.apiTabs) || [];
     return draggedTabs.map(aApiTab => getTabById(aApiTab && aApiTab.id)).filter(aTab => !!aTab);
   });
+  info.defineGetter('targetTabs', () => {
+    return getAllTabs(targetTab);
+  });
   info.defineGetter('firstTargetTab', () => {
-    return getFirstNormalTab(targetTab) || targetTabs[0];
+    return getFirstNormalTab(targetTab) || info.targetTabs[0];
   });
   info.defineGetter('lastTargetTab', () => {
-    return targetTabs[targetTabs.length - 1];
+    return info.targetTabs[info.targetTabs.length - 1];
   });
   info.defineGetter('canDrop', () => {
     const draggedApiTab               = info.dragData && info.dragData.apiTab;
