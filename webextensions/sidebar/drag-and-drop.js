@@ -106,34 +106,34 @@ function getDropAction(aEvent) {
   info.defineGetter('canDrop', () => {
     const draggedApiTab               = info.dragData && info.dragData.apiTab;
     const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
-  if (draggedApiTab &&
-      isPrivateBrowsingTabDragged != isPrivateBrowsing(info.dragOverTab || getFirstTab())) {
-    return false;
-  }
-  else if (info.draggedTab) {
-    if (info.dragOverTab &&
-        isPinned(info.draggedTab) != isPinned(info.dragOverTab)) {
+    if (draggedApiTab &&
+        isPrivateBrowsingTabDragged != isPrivateBrowsing(info.dragOverTab || getFirstTab())) {
       return false;
     }
-    else if (info.action & kACTION_ATTACH) {
-      if (info.parent == info.draggedTab) {
+    else if (info.draggedTab) {
+      if (info.dragOverTab &&
+          isPinned(info.draggedTab) != isPinned(info.dragOverTab)) {
         return false;
       }
-      else if (info.dragOverTab) {
-        let ancestors = getAncestorTabs(info.dragOverTab);
-        return info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
-                         collectRootTabs(info.draggedTabs).every(aRootTab =>
-                           ancestors.indexOf(aRootTab) < 0
-                         );
+      else if (info.action & kACTION_ATTACH) {
+        if (info.parent == info.draggedTab) {
+          return false;
+        }
+        else if (info.dragOverTab) {
+          let ancestors = getAncestorTabs(info.dragOverTab);
+          return info.draggedTabs.indexOf(info.dragOverTab) < 0 &&
+                   collectRootTabs(info.draggedTabs).every(aRootTab =>
+                     ancestors.indexOf(aRootTab) < 0
+                   );
+        }
       }
     }
-  }
 
-  if (info.dragOverTab &&
-      (isHidden(info.dragOverTab) ||
-       (isCollapsed(info.dragOverTab) &&
-        info.dropPosition != kDROP_AFTER)))
-    return false;
+    if (info.dragOverTab &&
+        (isHidden(info.dragOverTab) ||
+         (isCollapsed(info.dragOverTab) &&
+          info.dropPosition != kDROP_AFTER)))
+      return false;
 
     return true;
   });
