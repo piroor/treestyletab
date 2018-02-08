@@ -232,11 +232,10 @@ function getDropActionInternal(aEvent) {
   {
     case kDROP_ON_SELF: {
       //log('drop position = on the tab');
-      let visibleNext = getNextVisibleTab(targetTab);
       info.action       = kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == kINSERT_FIRST ?
-        (getFirstChildTab(targetTab) || visibleNext) :
+        (getFirstChildTab(targetTab) || getNextVisibleTab(targetTab)) :
         (getNextSiblingTab(targetTab) || getNextTab(getLastDescendantTab(targetTab) || targetTab));
       // if (info.insertBefore)
       //  log('insertBefore = ', dumpTab(info.insertBefore));
