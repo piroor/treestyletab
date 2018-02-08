@@ -1411,21 +1411,21 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
       gCurrentDragData = aMessage.dragData || null;
       break;
+
+    case kCOMMAND_BROADCAST_API_REGISTERED:
+      if (aMessage.message.style)
+        installStyleForAddon(aMessage.sender.id, aMessage.message.style)
+      break;
+
+    case kCOMMAND_BROADCAST_API_UNREGISTERED:
+      uninstallStyleForAddon(aMessage.sender.id)
+      delete gScrollLockedBy[aMessage.sender.id];
+      break;
   }
 }
 
 function onMessageExternal(aMessage, aSender) {
   switch (aMessage.type) {
-    case kTSTAPI_REGISTER_SELF: {
-      if (aMessage.style)
-        installStyleForAddon(aSender.id, aMessage.style)
-    }; break;
-
-    case kTSTAPI_UNREGISTER_SELF: {
-      uninstallStyleForAddon(aSender.id)
-      delete gScrollLockedBy[aSender.id];
-    }; break;
-
     case kTSTAPI_SCROLL_LOCK:
       gScrollLockedBy[aSender.id] = true;
       return Promise.resolve(true);

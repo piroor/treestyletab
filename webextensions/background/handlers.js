@@ -1420,6 +1420,11 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_REGISTER_SELF:
       return (async () => {
         gExternalListenerAddons[aSender.id] = aMessage;
+        browser.runtime.sendMessage({
+          type:    kCOMMAND_BROADCAST_API_REGISTERED,
+          sender:  aSender,
+          message: aMessage
+        });
         let index = configs.cachedExternalAddons.indexOf(aSender.id);
         if (index < 0)
           configs.cachedExternalAddons = configs.cachedExternalAddons.concat([aSender.id]);
@@ -1428,6 +1433,11 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_UNREGISTER_SELF:
       return (async () => {
+        browser.runtime.sendMessage({
+          type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
+          sender:  aSender,
+          message: aMessage
+        });
         delete gExternalListenerAddons[aSender.id];
         delete gScrollLockedBy[aSender.id];
         configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
