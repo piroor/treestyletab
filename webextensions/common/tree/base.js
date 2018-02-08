@@ -362,13 +362,19 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       'hidden' in aNewState) {
     if (aNewState.hidden) {
       aTab.classList.add(kTAB_STATE_API_TAB_HIDDEN);
-      if (!configs.hideInactiveTabs)
+      if (!configs.hideInactiveTabs &&
+          !aTab.classList.contains(kTAB_STATE_HIDDEN)) {
         aTab.classList.add(kTAB_STATE_HIDDEN);
+        window.onTabHidden && onTabHidden(aTab);
+      }
     }
     else {
       aTab.classList.remove(kTAB_STATE_API_TAB_HIDDEN);
-      if (!configs.hideInactiveTabs)
+      if (!configs.hideInactiveTabs &&
+          aTab.classList.contains(kTAB_STATE_HIDDEN)) {
         aTab.classList.remove(kTAB_STATE_HIDDEN);
+        window.onTabShown && onTabShown(aTab);
+      }
     }
   }
 
