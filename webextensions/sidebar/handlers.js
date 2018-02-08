@@ -1000,6 +1000,9 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   });
 }
 function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
+  if (isActive(aTab) && !aOptions.collapsed)
+    scrollToTab(aTab);
+
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     reserveToUpdateVisualMaxTreeLevel();
