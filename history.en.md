@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.9 (2018.2.8)
    * Introduce ability to open new tab specifying its position, by long-press on the "New Tab" button.
    * Better appearance for the contaienr selector on the "New Tab" button.
    * Warn before closing multiple tabs a a time.
