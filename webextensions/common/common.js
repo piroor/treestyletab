@@ -220,6 +220,7 @@ configs = new Configs({
   preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400,
+  minimumIntervalToProcessDragoverEvent: 50,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
   autoDiscardTabForUnexpectedFocus: false,
   knownExternalAddons: [
