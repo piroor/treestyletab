@@ -819,6 +819,7 @@ function onDragLeave(aEvent) {
     gDraggingOnSelfWindow = false;
     clearDropPosition();
     clearDraggingState();
+    gLastDropPosition = null;
   }, configs.preventTearOffTabsTimeout);
 
   clearTimeout(gLongHoverTimer);
@@ -889,6 +890,7 @@ function onDragEnd(aEvent) {
     dragData.tabNodes = dragData.apiTabs.map(getTabById);
 
   clearDropPosition();
+  gLastDropPosition = null;
   clearDraggingState();
   collapseAutoExpandedTabsWhileDragging();
 
