@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * Ctrl-Tab/Ctrl-Shift-Tabでのタブのフォーカス切り替えで最後にフォーカスされたタブについて、「タブがフォーカスされたらツリーを展開する」設定の状態に基づいてツリーを展開するかどうか判断するようにした
+   * 追加のコンテキストメニューにラベルが表示されなくなっていたのを修正（2.4.11での後退バグ）
+   * タブの上でのドラッグ操作のパフォーマンスを改善
  - 2.4.11 (2018.2.9)
    * 言語リソースのキー名が[仕様](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference#Member_details)に則っていなかったのを修正
  - 2.4.10 (2018.2.9)

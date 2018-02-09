@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Respect "expand tree when a tab gets focus" configuration for finally focused tab via Ctrl-Tab/Ctrl-Shift-Tab.
+   * Fix missing menu label of extra context menu items. (regression on 2.4.11)
+   * Better performance around dragging something over tabs.
  - 2.4.11 (2018.2.9)
    * Reformat keys of localized messages matching to the [spec](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference#Member_details).
  - 2.4.10 (2018.2.9)
