@@ -798,14 +798,15 @@ function setupDelayedExpand(aTab) {
   if (!aTab)
     return;
   cancelDelayedExpand(aTab);
-  if (!hasChildTabs(aTab) ||
+  if (!configs.autoExpandOnTabSwitchingShortcuts ||
+      !hasChildTabs(aTab) ||
       !isSubtreeCollapsed(aTab))
     return;
   aTab.delayedExpand = setTimeout(() => {
     collapseExpandTreesIntelligentlyFor(aTab, {
       broadcast: true
     });
-  }, configs.autoExpandOnCollapsedChildFocusedDelay);
+  }, configs.autoExpandOnTabSwitchingShortcutsDelay);
 }
 
 function cancelDelayedExpand(aTab) {

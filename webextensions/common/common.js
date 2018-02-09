@@ -152,7 +152,8 @@ configs = new Configs({
 
   autoExpandIntelligently: true,
   autoExpandOnCollapsedChildFocused: true,
-  autoExpandOnCollapsedChildFocusedDelay: 800,
+  autoExpandOnTabSwitchingShortcuts: true,
+  autoExpandOnTabSwitchingShortcutsDelay: 800,
   autoExpandOnLongHover: true,
   autoExpandOnLongHoverDelay: 500,
   autoExpandOnLongHoverRestoreIniitalState: true,
@@ -291,7 +292,8 @@ configs = new Configs({
     collapseExpandSubtreeByDblClick
     autoExpandIntelligently
     autoExpandOnCollapsedChildFocused
-    autoExpandOnCollapsedChildFocusedDelay
+    autoExpandOnTabSwitchingShortcuts
+    autoExpandOnTabSwitchingShortcutsDelay
     autoExpandOnLongHover
     autoExpandOnLongHoverDelay
     autoExpandOnLongHoverRestoreIniitalState
