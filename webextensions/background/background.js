@@ -178,7 +178,7 @@ async function rebuildAll() {
       if (configs.useCachedTree) {
         restoredFromCache[aWindow.id] = await restoreWindowFromEffectiveWindowCache(aWindow.id, {
           insertionPoint,
-          owner: aWindow.tabs[aWindow.tabs.length - 1].id,
+          owner: aWindow.tabs[aWindow.tabs.length - 1],
           tabs:  aWindow.tabs
         });
         for (let tab of getAllTabs(aWindow.id)) {

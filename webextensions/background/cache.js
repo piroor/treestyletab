@@ -107,11 +107,11 @@ function updateWindowCache(aOwner, aKey, aValue) {
     return;
   if (aValue === undefined) {
     //return browser.sessions.removeWindowValue(aOwner, aKey);
-    return browser.sessions.removeTabValue(aOwner, aKey);
+    return browser.sessions.removeTabValue(aOwner.id, aKey);
   }
   else {
     //return browser.sessions.setWindowValue(aOwner, aKey, aValue);
-    return browser.sessions.setTabValue(aOwner, aKey, aValue);
+    return browser.sessions.setTabValue(aOwner.id, aKey, aValue);
   }
 }
 
@@ -135,7 +135,7 @@ function markWindowCacheDirtyFromTab(aTab, akey) {
 
 async function getWindowCache(aOwner, aKey) {
   //return browser.sessions.getWindowValue(aOwner, aKey);
-  return browser.sessions.getTabValue(aOwner, aKey);
+  return browser.sessions.getTabValue(aOwner.id, aKey);
 }
 
 function getWindowCacheOwner(aHint) {
