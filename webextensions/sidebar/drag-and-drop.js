@@ -138,7 +138,7 @@ function getDropAction(aEvent) {
   });
   info.defineGetter('draggedTabs', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return info.draggedAPITabs.map(aApiTab => getTabById(aApiTab.id)).filter(aTab => !!aTab);
+    return info.draggedAPITabs.map(getTabById).filter(aTab => !!aTab);
   });
   info.defineGetter('draggedAPITabs', () => {
     const dragData = info.dragData;
@@ -184,7 +184,7 @@ function getDropAction(aEvent) {
                    );
           */
           for (let apiTab of info.draggedAPITabs.slice().reverse()) {
-            const tab    = getTabById(apiTab.id);
+            const tab    = getTabById(apiTab);
             const parent = getParentTab(tab);
             if (!parent && ancestors.indexOf(parent) > -1)
               return false;
@@ -871,7 +871,7 @@ function onDragEnd(aEvent) {
   });
 
   if (Array.isArray(dragData.apiTabs))
-    dragData.tabNodes = dragData.apiTabs.map(aApiTab => getTabById(aApiTab.id));
+    dragData.tabNodes = dragData.apiTabs.map(getTabById);
 
   clearDropPosition();
   clearDraggingState();

@@ -59,10 +59,10 @@ async function refreshContextMenuItems() {
   }
 }
 
-var contextMenuClickListener = (aInfo, aTab) => {
-  log('context menu item clicked: ', aInfo, aTab);
+var contextMenuClickListener = (aInfo, aAPITab) => {
+  log('context menu item clicked: ', aInfo, aAPITab);
 
-  var contextTab = getTabById(aTab.id);
+  var contextTab = getTabById(aAPITab);
   var container  = contextTab.parentNode;
 
   switch (aInfo.menuItemId) {
@@ -83,7 +83,7 @@ var contextMenuClickListener = (aInfo, aTab) => {
 
     case 'closeTree': {
       let tabs = [contextTab].concat(getDescendantTabs(contextTab));
-      confirmToCloseTabs(tabs.length, { windowId: aTab.windowId })
+      confirmToCloseTabs(tabs.length, { windowId: aAPITab.windowId })
         .then(aConfirmed => {
           if (!aConfirmed)
             return;
@@ -95,7 +95,7 @@ var contextMenuClickListener = (aInfo, aTab) => {
     }; break;
     case 'closeDescendants': {
       let tabs = getDescendantTabs(contextTab);
-      confirmToCloseTabs(tabs.length, { windowId: aTab.windowId })
+      confirmToCloseTabs(tabs.length, { windowId: aAPITab.windowId })
         .then(aConfirmed => {
           if (!aConfirmed)
             return;
@@ -110,7 +110,7 @@ var contextMenuClickListener = (aInfo, aTab) => {
       let tabs          = getNormalTabs(container); // except pinned or hidden tabs
       tabs.reverse(); // close bottom to top!
       let closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(tab) < 0);
-      confirmToCloseTabs(closeTabs.length, { windowId: aTab.windowId })
+      confirmToCloseTabs(closeTabs.length, { windowId: aAPITab.windowId })
         .then(aConfirmed => {
           if (!aConfirmed)
             return;

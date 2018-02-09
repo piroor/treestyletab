@@ -267,7 +267,7 @@ var tabContextMenu = {
         */
         // browser.tabs.duplicate(this.contextTab.id);
         return (async () => {
-          let sourceTab = getTabById(this.contextTab.id);
+          let sourceTab = getTabById(this.contextTab);
           //console.log('source tab: ', sourceTab, !!sourceTab.apiTab);
           let duplicatedTabs = await moveTabs([sourceTab], {
             duplicate:           true,
@@ -295,7 +295,7 @@ var tabContextMenu = {
       }; break;
       case 'context_bookmarkAllTabs': {
         let tabs   = await browser.tabs.query({ windowId: this.contextWindowId });
-        let folder = await bookmarkTabs(tabs.map(aTab => getTabById(aTab.id)));
+        let folder = await bookmarkTabs(tabs.map(getTabById));
         if (folder)
           browser.bookmarks.get(folder.parentId).then(aFolders => {
             notify({

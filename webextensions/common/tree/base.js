@@ -417,7 +417,7 @@ windowId = ${aTab.apiTab.windowId}
   aTab.setAttribute('title', aTab.dataset.label);
   aTab.uniqueId.then(aUniqueId => {
     // reget it because it can be removed from document.
-    aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
+    aTab = getTabById(aTab.apiTab);
     if (!aTab)
       return;
     aTab.setAttribute('title',
@@ -664,7 +664,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     handleMissingTabError(e);
     log('moveTabsInternallyBefore failed: ', String(e));
   }
-  return apiTabIds.map(getTabById);
+  return aTabs;
 }
 async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions);
@@ -770,7 +770,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     handleMissingTabError(e);
     log('moveTabsInternallyAfter failed: ', String(e));
   }
-  return apiTabIds.map(getTabById);
+  return aTabs;
 }
 async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions);
@@ -859,7 +859,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
           params.cookieStoreId = aOptions.cookieStoreId;
         var apiTab = await browser.tabs.create(params);
         await waitUntilTabsAreCreated(apiTab.id);
-        var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
+        var tab = getTabById(apiTab);
         if (!tab)
           throw new Error('tab is already closed');
         if (!aOptions.opener &&

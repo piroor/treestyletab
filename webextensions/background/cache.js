@@ -139,7 +139,11 @@ async function getWindowCache(aOwner, aKey) {
 }
 
 function getWindowCacheOwner(aHint) {
-  return getLastTab(aHint).apiTab.id;
+  const apiTab = getLastTab(aHint).apiTab;
+  return {
+    id:       apiTab.id,
+    windowId: apiTab.windowId
+  };
 }
 
 async function reserveToCacheTree(aHint) {

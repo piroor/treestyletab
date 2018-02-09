@@ -1374,11 +1374,11 @@ function onMessage(aMessage, aSender) {
         if (gTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
           await waitUntilTabsAreCreated(aSender.tab);
-          let tab = aSender.tab && getTabById(aSender.tab.id);
+          let tab = aSender.tab && getTabById(aSender.tab);
           if (!tab) {
             let tabs = await browser.tabs.query({ currentWindow: true, active: true });
             await waitUntilTabsAreCreated(tabs[0].id);
-            tab = getTabById(tabs[0].id);
+            tab = getTabById(tabs[0]);
           }
           cancelAllDelayedExpand(tab);
           if (tab && tab.parentNode.lastFocusedTab == tab.id) {
@@ -1398,7 +1398,7 @@ function onMessage(aMessage, aSender) {
           let tabs = await browser.tabs.query({});
           await waitUntilTabsAreCreated(tabs.map(aTab => aTab.id));
           for (let tab of tabs) {
-            tryStartHandleAccelKeyOnTab(getTabById(tab.id));
+            tryStartHandleAccelKeyOnTab(getTabById(tab));
           }
         }
       })();
@@ -1784,45 +1784,43 @@ async function TSTAPIGetTabsFromWrongIds(aIds, aSender) {
     });
     tabsInActiveWindow = window.tabs;
   }
-  aIds = await Promise.all(aIds.map(async (aId) => {
+  let tabOrAPITabOrIds = await Promise.all(aIds.map(async (aId) => {
     switch (String(aId).toLowerCase()) {
       case 'active':
       case 'current': {
         let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
-        return tabs[0].id;
+        return TabIdFixer.fixTab(tabs[0]);
       }
       case 'next': {
         let tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
           aIndex > 0 && tabsInActiveWindow[aIndex - 1].active);
-        return tabs.length > 0 ? tabs[0].id : 0 ;
+        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
       }
       case 'previous':
       case 'prev': {
         let maxIndex = tabsInActiveWindow.length - 1;
         let tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
           aIndex < maxIndex && tabsInActiveWindow[aIndex + 1].active);
-        return tabs.length > 0 ? tabs[0].id : 0 ;
+        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
       }
       case 'nextsibling': {
         let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
-        let tab = getNextSiblingTab(getTabById(tabs[0].id));
-        return tab ? tab.apiTab.id : 0 ;
+        return getNextSiblingTab(getTabById(tabs[0]));
       }
       case 'previoussibling':
       case 'prevsibling': {
         let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
-        let tab = getPreviousSiblingTab(getTabById(tabs[0].id));
-        return tab ? tab.apiTab.id : 0 ;
+        return getPreviousSiblingTab(getTabById(tabs[0]));
       }
       case 'sendertab':
         if (aSender.tab)
-          return aSender.tab.id;
+          return aSender.tab;
       default:
         const tabFromUniqueId = getTabByUniqueId(aId);
-        return tabFromUniqueId && tabFromUniqueId.apiTab.id || aId;
+        return tabFromUniqueId || aId;
     }
   }));
-  return aIds.map(aId => getTabById(TabIdFixer.fixTabId(aId))).filter(aTab => !!aTab);
+  return tabOrAPITabOrIds.map(getTabById).filter(aTab => !!aTab);
 }
 
 function TSTAPIFormatResult(aResults, aOriginalMessage) {
