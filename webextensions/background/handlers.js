@@ -1381,7 +1381,9 @@ function onMessage(aMessage, aSender) {
             tab = getTabById(tabs[0]);
           }
           cancelAllDelayedExpand(tab);
-          if (tab && tab.parentNode.lastFocusedTab == tab.id) {
+          if (configs.autoCollapseExpandSubtreeOnSelect &&
+              tab &&
+              tab.parentNode.lastFocusedTab == tab.id) {
             collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true
