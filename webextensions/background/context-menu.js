@@ -41,7 +41,7 @@ async function refreshContextMenuItems() {
       normalItemAppeared = true;
     }
     let type  = isSeparator ? 'separator' : 'normal';
-    let title = isSeparator ? null : browser.i18n.getMessage(`context.${id}.label`);
+    let title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`);
     browser.contextMenus.create({
       id, type,
       // Access key is not supported by WE API.
