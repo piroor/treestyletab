@@ -597,6 +597,7 @@ var gCapturingMouseEvents  = false;
 var gReadyToCaptureMouseEvents = false;
 var gLastDragEnteredTab    = null;
 var gLastDragEnteredTarget = null;
+var gLastDropPosition      = null;
 var gDragTargetIsClosebox  = false;
 var gCurrentDragData       = null;
 
@@ -643,6 +644,7 @@ function onDragStart(aEvent) {
   }
 
   gDraggingOnSelfWindow = true;
+  gLastDropPosition = null;
 
   var dt = aEvent.dataTransfer;
   dt.effectAllowed = 'copyMove';
@@ -689,7 +691,9 @@ function onDragOver(aEvent) {
   if (isEventFiredOnTabDropBlocker(aEvent) ||
       !info.canDrop) {
     dt.dropEffect = 'none';
-    clearDropPosition();
+    if (gLastDropPosition)
+      clearDropPosition();
+    gLastDropPosition = null;
     return;
   }
 
@@ -702,14 +706,22 @@ function onDragOver(aEvent) {
 
   if (!dropPositionTargetTab) {
     dt.dropEffect = 'none';
+    gLastDropPosition = null;
     return;
   }
 
   if (!info.draggedAPITab ||
       dropPositionTargetTab.apiTab.id != info.draggedAPITab.id) {
+    let dropPosition = `${dropPositionTargetTab.id}:${info.dropPosition}`;
+    if (dropPosition == gLastDropPosition)
+      return;
     clearDropPosition();
     dropPositionTargetTab.setAttribute(kDROP_POSITION, info.dropPosition);
-    log('set drop position to ', info.dropPosition);
+    gLastDropPosition = dropPosition;
+    log('set drop position to ', dropPosition);
+  }
+  else {
+    gLastDropPosition = null;
   }
 }
 
@@ -815,7 +827,10 @@ function onDragLeave(aEvent) {
 
 function onDrop(aEvent) {
   setTimeout(() => collapseAutoExpandedTabsWhileDragging(), 0);
-  clearDropPosition();
+  if (gLastDropPosition) {
+    clearDropPosition();
+    gLastDropPosition = null;
+  }
 
   var dropActionInfo = getDropAction(aEvent);
   var dt = aEvent.dataTransfer;
