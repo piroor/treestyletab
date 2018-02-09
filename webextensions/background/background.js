@@ -717,11 +717,11 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       windowId: aOptions.windowId
     });
 
-  let tabs = await browser.tabs.query({
+  let apiTabs = await browser.tabs.query({
     active:   true,
     windowId: aOptions.windowId
   });
-  let result = await RichConfirm.showInTab(tabs[0].id, {
+  let result = await RichConfirm.showInTab(apiTabs[0].id, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [aCount]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),

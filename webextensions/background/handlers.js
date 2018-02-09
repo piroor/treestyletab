@@ -368,11 +368,11 @@ async function onWindowRestoring(aWindowId) {
   log('onWindowRestoring: continue ', aWindowId);
   gMetricsData.add('onWindowRestoring restore start');
 
-  var tabs = await browser.tabs.query({ windowId: aWindowId });
+  const apiTabs = await browser.tabs.query({ windowId: aWindowId });
   await restoreWindowFromEffectiveWindowCache(aWindowId, {
     ignorePinnedTabs: true,
-    owner: tabs[tabs.length - 1].id,
-    tabs
+    owner: apiTabs[apiTabs.length - 1].id,
+    tabs:  apiTabs
   });
   gMetricsData.add('onWindowRestoring restore end');
 }
@@ -1377,9 +1377,9 @@ function onMessage(aMessage, aSender) {
           await waitUntilTabsAreCreated(aSender.tab);
           let tab = aSender.tab && getTabById(aSender.tab);
           if (!tab) {
-            let tabs = await browser.tabs.query({ currentWindow: true, active: true });
-            await waitUntilTabsAreCreated(tabs[0].id);
-            tab = getTabById(tabs[0]);
+            const apiTabs = await browser.tabs.query({ currentWindow: true, active: true });
+            await waitUntilTabsAreCreated(apiTabs[0].id);
+            tab = getTabById(apiTabs[0]);
           }
           cancelAllDelayedExpand(tab);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
@@ -1398,10 +1398,10 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
       return (async () => {
         if (JSON.stringify(aMessage.permissions) == JSON.stringify(Permissions.ALL_URLS)) {
-          let tabs = await browser.tabs.query({});
-          await waitUntilTabsAreCreated(tabs.map(aTab => aTab.id));
-          for (let tab of tabs) {
-            tryStartHandleAccelKeyOnTab(getTabById(tab));
+          const apiTabs = await browser.tabs.query({});
+          await waitUntilTabsAreCreated(apiTabs.map(aAPITab => aAPITab.id));
+          for (let apiTab of apiTabs) {
+            tryStartHandleAccelKeyOnTab(getTabById(apiTab));
           }
         }
       })();
