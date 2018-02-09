@@ -728,7 +728,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       handleNewActiveTab(aTab, aInfo);
     }
     else if (configs.autoExpandOnCollapsedChildFocused &&
-        !shouldSkipCollapsed) {
+             !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildFocused');
       for (let ancestor of getAncestorTabs(aTab)) {
         collapseExpandSubtree(ancestor, {
