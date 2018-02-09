@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.12 (2018.2.9)
    * Respect "expand tree when a tab gets focus" configuration for finally focused tab via Ctrl-Tab/Ctrl-Shift-Tab.
    * Fix missing menu label of extra context menu items. (regression on 2.4.11)
    * Better performance around dragging something over tabs.
