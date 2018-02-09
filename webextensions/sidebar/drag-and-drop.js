@@ -682,7 +682,13 @@ function onDragStart(aEvent) {
 var gLastDragOverTimestamp = null;
 
 function onDragOver(aEvent) {
-  gLastDragOverTimestamp = Date.now();
+  const now = Date.now();
+  if (now - (gLastDragOverTimestamp || 0) < 100) {
+    // reduce too much handling of too frequent dragover events...
+    aEvent.preventDefault();
+    return;
+  }
+  gLastDragOverTimestamp = now;
   aEvent.preventDefault(); // this is required to override default dragover actions!
   autoScrollOnMouseEvent(aEvent);
   var info = getDropAction(aEvent);
