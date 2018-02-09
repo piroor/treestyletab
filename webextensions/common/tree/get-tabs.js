@@ -109,20 +109,26 @@ function getTabFromChild(aNode) {
 function getTabById(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
-  var selector;
-  if (typeof aIdOrInfo == 'string')
-    selector = `${kSELECTOR_LIVE_TAB}#${aIdOrInfo}`;
-  else if (typeof aIdOrInfo == 'number')
-    selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo}"]`;
-  else if (!aIdOrInfo.window)
-    selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`;
-  else
-    selector = `${kSELECTOR_LIVE_TAB}#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
-  const tab = document.querySelector(selector);
-  if (tab)
-    return tab;
-  if (typeof aIdOrInfo == 'string')
-    return getTabByUniqueId(aIdOrInfo);
+
+  if (typeof aIdOrInfo == 'string') { // tab-x-x
+    const tab = document.getElementById(aIdOrInfo);
+    if (tab)
+      return tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
+    else // possible unique id
+      return getTabByUniqueId(aIdOrInfo);
+  }
+
+  if (typeof aIdOrInfo == 'number') // tabs.Tab.id
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo}"]`);
+
+  if (!aIdOrInfo.window) { // { id: tabs.Tab.id }
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`);
+  }
+  else { // { id: tabs.Tab.id, window: windows.Window.id }
+    const tab = document.getElementById(`tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`);
+    return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
+  }
+
   return null;
 }
 
