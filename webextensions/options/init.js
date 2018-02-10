@@ -19,6 +19,10 @@ function onConfigChanged(aKey) {
   }
 }
 
+function removeAccesskeyMark(aNode) {
+  aNode.nodeValue = aNode.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   if (/^Mac/i.test(navigator.platform))
@@ -26,14 +30,17 @@ window.addEventListener('DOMContentLoaded', () => {
   else
     document.documentElement.classList.remove('platform-mac');
 
-  // remove accesskey mark
   for (let label of Array.slice(document.querySelectorAll('#contextConfigs label'))) {
-    label.lastChild.nodeValue = label.lastChild.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
+    removeAccesskeyMark(label.lastChild);
   }
 
   ShortcutCustomizeUI.build().then(aUI => {
     document.getElementById('shortcuts').appendChild(aUI);
     l10n.updateDocument();
+
+    for (let item of Array.slice(aUI.querySelectorAll('li > label:first-child'))) {
+      removeAccesskeyMark(item.firstChild);
+    }
   });
 
   configs.$loaded.then(() => {
