@@ -150,5 +150,114 @@ const Commands = {
       cookieStoreId: aOptions.cookieStoreId,
       inRemote:      !!aOptions.inRemote
     });
+  },
+
+  showContainerSelector(aOptions = {}) {
+    if (aOptions.inRemote) {
+      return browser.runtime.sendMessage({
+        type:     kCOMMAND_SHOW_CONTAINER_SELECTOR,
+        windowId: activeTab.apiTab.windowId
+      });
+    }
+    const anchor = document.querySelector(`
+      :root.contextual-identity-selectable .contextual-identities-selector-anchor,
+      .newtab-button
+    `);
+    gContextualIdentitySelector.ui.open({ anchor });
+  },
+
+  indent: async function(aTab, aOptions = {}) {
+    const newParent = getPreviousSiblingTab(aTab);
+    if (!newParent ||
+        newParent == getParentTab(aTab))
+      return false;
+
+    if (!aOptions.followChildren)
+      detachAllChildren(aTab, {
+        broadcast: true,
+        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      });
+    await attachTabTo(aTab, newParent, {
+      broadcast:   true,
+      forceExpand: true,
+      insertAfter: getLastDescendantTab(newParent) || newParent
+    });
+    return true;
+  },
+
+  outdent: async function(aTab, aOptions = {}) {
+    const parent = getParentTab(aTab);
+    if (!parent)
+      return false;
+
+    let newParent = getParentTab(parent);
+    if (newParent == getParentTab(aTab))
+      return false;
+
+    if (!aOptions.followChildren)
+      detachAllChildren(aTab, {
+        broadcast: true,
+        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      });
+    if (newParent) {
+      await attachTabTo(aTab, newParent, {
+        broadcast:   true,
+        forceExpand: true,
+        insertAfter: getLastDescendantTab(parent) || parent
+      });
+    }
+    else {
+      await detachTab(aTab, {
+        broadcast: true,
+      });
+      await moveTabAfter(aTab, getLastDescendantTab(parent) || parent, {
+        broadcast: true,
+      });
+    }
+    return true;
+  },
+
+  moveUp: async function(aTab, aOptions = {}) {
+    const previousTab = getPreviousTab(aTab);
+    if (!previousTab)
+      return false;
+
+    if (!aOptions.followChildren)
+      detachAllChildren(aTab, {
+        broadcast: true,
+        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      });
+
+    await moveTabBefore(aTab, previousTab, {
+      broadcast: true
+    });
+    const index = getTabIndex(aTab);
+    await tryFixupTreeForInsertedTab(aTab, {
+      toIndex:   index,
+      fromIndex: index + 1,
+    });
+    return true;
+  },
+
+  moveDown: async function(aTab, aOptions = {}) {
+    const nextTab = getNextTab(aTab);
+    if (!nextTab)
+      return false;
+
+    if (!aMessage.followChildren)
+      detachAllChildren(aTab, {
+        broadcast: true,
+        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+      });
+
+    await moveTabAfter(aTab, nextTab, {
+      broadcast: true
+    });
+    const index = getTabIndex(aTab);
+    await tryFixupTreeForInsertedTab(aTab, {
+      toIndex:   index,
+      fromIndex: index - 1,
+    });
+    return true;
   }
 };

@@ -80,83 +80,40 @@ async function onShortcutCommand(aCommand) {
       return;
 
     case 'newContainerTab':
-      browser.runtime.sendMessage({
-        type:     kCOMMAND_SHOW_CONTAINER_SELECTOR,
-        windowId: activeTab.apiTab.windowId
-      });
+      Commands.showContainerSelector({ inRemote: true });
       return;
 
     case 'indent':
-      onMessageExternal({
-        type:           kTSTAPI_INDENT,
-        tab:            activeTab.apiTab.id,
-        followChildren: true
-      });
+      Commands.indent(activeTab, { followChildren: true });
       return;
     case 'outdent':
-      onMessageExternal({
-        type:           kTSTAPI_OUTDENT,
-        tab:            activeTab.apiTab.id,
-        followChildren: true
-      });
+      Commands.outdent(activeTab, { followChildren: true });
       return;
 
     case 'tabMoveUp':
-      onMessageExternal({
-        type:           kTSTAPI_MOVE_UP,
-        tab:            activeTab.apiTab.id,
-        followChildren: false
-      });
+      Commands.moveUp(activeTab, { followChildren: false });
       return;
     case 'treeMoveUp':
-      onMessageExternal({
-        type:           kTSTAPI_MOVE_UP,
-        tab:            activeTab.apiTab.id,
-        followChildren: true
-      });
+      Commands.moveUp(activeTab, { followChildren: true });
       return;
     case 'tabMoveDown':
-      onMessageExternal({
-        type:           kTSTAPI_MOVE_DOWN,
-        tab:            activeTab.apiTab.id,
-        followChildren: false
-      });
+      Commands.moveDown(activeTab, { followChildren: false });
       return;
     case 'treeMoveDown':
-      onMessageExternal({
-        type:           kTSTAPI_MOVE_DOWN,
-        tab:            activeTab.apiTab.id,
-        followChildren: true
-      });
+      Commands.moveDown(activeTab, { followChildren: true });
       return;
 
     case 'focusPrevious':
-      onMessageExternal({
-        type:     kTSTAPI_FOCUS,
-        tab:      'previousSibling',
-        silently: false
-      });
+      selectTabInternally(getPreviousSiblingTab(activeTab), { silently: false });
       return;
     case 'focusPreviousSilently':
-      onMessageExternal({
-        type:     kTSTAPI_FOCUS,
-        tab:      'previousSibling',
-        silently: true
-      });
+      selectTabInternally(getPreviousSiblingTab(activeTab), { silently: true });
       return;
     case 'focusNext':
-      onMessageExternal({
-        type:     kTSTAPI_FOCUS,
-        tab:      'nextSibling',
-        silently: false
-      });
+      selectTabInternally(getNextSiblingTab(activeTab), { silently: false });
       return;
     case 'focusNextSilently':
-      onMessageExternal({
-        type:     kTSTAPI_FOCUS,
-        tab:      'nextSibling',
-        silently: true
-      });
+      selectTabInternally(getNextSiblingTab(activeTab), { silently: true });
       return;
 
     case 'tabbarUp':
@@ -1678,124 +1635,30 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_INDENT:
     case kTSTAPI_DEMOTE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var results = [];
-        for (let tab of tabs) {
-          let newParent = getPreviousSiblingTab(tab);
-          if (!newParent ||
-              newParent == getParentTab(tab)) {
-            results.push(false);
-            continue;
-          }
-          if (!aMessage.followChildren)
-            detachAllChildren(tab, {
-              broadcast: true,
-              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-            });
-          await attachTabTo(tab, newParent, {
-            broadcast:   true,
-            forceExpand: true,
-            insertAfter: getLastDescendantTab(newParent) || newParent
-          });
-          results.push(true);
-        }
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const results = await Promise.all(tabs.map(aTab => Commands.indent(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_OUTDENT:
     case kTSTAPI_PROMOTE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var results = [];
-        for (let tab of tabs) {
-          let parent = getParentTab(tab);
-          if (!parent) {
-            results.push(false);
-            continue;
-          }
-          let newParent = getParentTab(parent);
-          if (newParent == getParentTab(tab)) {
-            results.push(false);
-            continue;
-          }
-          if (!aMessage.followChildren)
-            detachAllChildren(tab, {
-              broadcast: true,
-              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-            });
-          if (newParent) {
-            await attachTabTo(tab, newParent, {
-              broadcast:   true,
-              forceExpand: true,
-              insertAfter: getLastDescendantTab(parent) || parent
-            });
-          }
-          else {
-            await detachTab(tab, {
-              broadcast: true,
-            });
-            await moveTabAfter(tab, getLastDescendantTab(parent) || parent, {
-              broadcast: true,
-            });
-          }
-          results.push(true);
-        }
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const results = await Promise.all(tabs.map(aTab => Commands.outdent(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_MOVE_UP:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var results = [];
-        for (let tab of tabs) {
-          let previousTab = getPreviousTab(tab);
-          if (!previousTab) {
-            results.push(false);
-            continue;
-          }
-          if (!aMessage.followChildren)
-            detachAllChildren(tab, {
-              broadcast: true,
-              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-            });
-          await moveTabBefore(tab, previousTab, {
-            broadcast: true
-          });
-          let index = getTabIndex(tab);
-          await tryFixupTreeForInsertedTab(tab, {
-            toIndex:   index,
-            fromIndex: index + 1,
-          });
-          results.push(true);
-        }
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const results = await Promise.all(tabs.map(aTab => Commands.moveUp(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_MOVE_DOWN:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var results = [];
-        for (let tab of tabs) {
-          let nextTab = getNextTab(tab);
-          if (!nextTab) {
-            results.push(false);
-            continue;
-          }
-          if (!aMessage.followChildren)
-            detachAllChildren(tab, {
-              broadcast: true,
-              behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-            });
-          await moveTabAfter(tab, nextTab, {
-            broadcast: true
-          });
-          let index = getTabIndex(tab);
-          await tryFixupTreeForInsertedTab(tab, {
-            toIndex:   index,
-            fromIndex: index - 1,
-          });
-          results.push(true);
-        }
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const results = await Promise.all(tabs.map(aTab => Commands.moveDown(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
