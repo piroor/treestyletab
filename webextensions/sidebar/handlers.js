@@ -809,10 +809,12 @@ async function onWindowRestoring(aWindowId) {
   gMetricsData.add('onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
   const apiTabs = await browser.tabs.query({ windowId: aWindowId });
-  restoreTabsFromCache(cache.tabbar, {
+  const restored = await restoreTabsFromCache(cache.tabbar, {
     offset: cache.offset || 0,
     tabs:   apiTabs
   });
+  if (!restored)
+    await rebuildAll();
   updateVisualMaxTreeLevel();
   updateIndent({
     force: true,
