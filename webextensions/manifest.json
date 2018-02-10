@@ -69,6 +69,93 @@
     "_execute_browser_action": {
       "suggested_key": { "default": "F1" },
       "description": "__MSG_sidebarToggleDescription__"
+    },
+    "reloadTree": {
+      "description": "__MSG_context_reloadTree_label__"
+    },
+    "reloadDescendants": {
+      "description": "__MSG_context_reloadDescendants_label__"
+    },
+    "closeTree": {
+      "description": "__MSG_context_closeTree_label__"
+    },
+    "closeDescendants": {
+      "description": "__MSG_context_closeDescendants_label__"
+    },
+    "closeOthers": {
+      "description": "__MSG_context_closeOthers_label__"
+    },
+    "collapseAll": {
+      "description": "__MSG_context_collapseAll_label__"
+    },
+    "expandAll": {
+      "description": "__MSG_context_expandAll_label__"
+    },
+    "bookmarkTree": {
+      "description": "__MSG_context_bookmarkTree_label__"
+    },
+    "newIndependentTab": {
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_independent_label__"
+    },
+    "newChildTab": {
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_child_label__"
+    },
+    "newSiblingTab": {
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_sibling_label__"
+    },
+    "newNextSiblingTab": {
+      "description": "__MSG_tabbar_newTabButton_tooltip__: __MSG_tabbar_newTabAction_nextSibling_label__"
+    },
+    "newContainerTab": {
+      "description": "__MSG_tabbar_newTabWithContexualIdentity_tooltip__"
+    },
+    "indent": {
+      "description": "__MSG_command_indent__"
+    },
+    "outdent": {
+      "description": "__MSG_command_outdent__"
+    },
+    "tabMoveUp": {
+      "description": "__MSG_command_tabMoveUp__"
+    },
+    "treeMoveUp": {
+      "description": "__MSG_command_treeMoveUp__"
+    },
+    "tabMoveDown": {
+      "description": "__MSG_command_tabMoveDown__"
+    },
+    "treeMoveDown": {
+      "description": "__MSG_command_treeMoveDown__"
+    },
+    "focusPrevious": {
+      "description": "__MSG_command_focusPrevious__"
+    },
+    "focusPreviousSilently": {
+      "description": "__MSG_command_focusPreviousSilently__"
+    },
+    "focusNext": {
+      "description": "__MSG_command_focusNext__"
+    },
+    "focusNextSilently": {
+      "description": "__MSG_command_focusNextSilently__"
+    },
+    "tabbarUp": {
+      "description": "__MSG_command_tabbarUp__"
+    },
+    "tabbarPageUp": {
+      "description": "__MSG_command_tabbarPageUp__"
+    },
+    "tabbarHome": {
+      "description": "__MSG_command_tabbarHome__"
+    },
+    "tabbarDown": {
+      "description": "__MSG_command_tabbarDown__"
+    },
+    "tabbarPageDown": {
+      "description": "__MSG_command_tabbarPageDown__"
+    },
+    "tabbarEnd": {
+      "description": "__MSG_command_tabbarEnd__"
     }
   },
   "options_ui": {
