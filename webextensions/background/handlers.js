@@ -20,10 +20,10 @@ function onToolbarButtonClick(aTab) {
 }
 
 async function onShortcutCommand(aCommand) {
-  const activeTab = (await browser.tabs.query({
+  const activeTab = getTabById((await browser.tabs.query({
     active:        true,
     currentWindow: true
-  }))[0];
+  }))[0]);
 
   switch (aCommand) {
     case '_execute_browser_action':
