@@ -60,6 +60,10 @@ li label img {
   margin-bottom: 0.15em;
 }
 
+#shortcuts input[type="text"] {
+  margin-left: 0.25em;
+}
+
 :root:not(.debugging) #debug-configs {
   max-height: 0;
   overflow: hidden;

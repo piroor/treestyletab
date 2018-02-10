@@ -235,6 +235,9 @@
   "config_warnOnCloseTabs_label": { "message": "Warn me when I attempt to close multiple tabs" },
 
 
+  "config_shortcuts_caption": { "message": "Keyboard shortcuts" },
+
+
   "config_advanced_caption": { "message": "Advanced" },
 
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },

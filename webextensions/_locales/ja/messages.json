@@ -235,6 +235,9 @@
   "config_warnOnCloseTabs_label": { "message": "同時に複数のタブを閉じるときは確認する" },
 
 
+  "config_shortcuts_caption": { "message": "キーボードショートカット" },
+
+
   "config_advanced_caption": { "message": "詳細設定" },
 
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
