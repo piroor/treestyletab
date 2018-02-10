@@ -121,8 +121,10 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
         log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${gTargetWindow}. fallback to regular way.`);
         restored = false;
         let container = getTabsContainer(gTargetWindow);
-        if (container)
+        if (container) {
           container.parentNode.removeChild(container);
+          container = buildTabsContainerFor(gTargetWindow);
+        }
       }
       if (restored && aCache.collapsedDirty) {
         let structure = currentStructrue.reverse();
