@@ -813,12 +813,14 @@ async function onWindowRestoring(aWindowId) {
     offset: cache.offset || 0,
     tabs:   apiTabs
   });
-  if (!restored)
+  if (!restored) {
     await rebuildAll();
+    await inheritTreeStructure();
+  }
   updateVisualMaxTreeLevel();
   updateIndent({
     force: true,
-    cache: cache.offset == 0 ? cache.indent : null
+    cache: restored && cache.offset == 0 ? cache.indent : null
   });
   updateTabbarLayout({ justNow: true });
   unblockUserOperations({ throbber: true });
