@@ -80,6 +80,10 @@ async function onShortcutCommand(aCommand) {
       return;
 
     case 'newContainerTab':
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SHOW_CONTAINER_SELECTOR,
+        windowId: activeTab.apiTab.windowId
+      });
       return;
 
     case 'indent':

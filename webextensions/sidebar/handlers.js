@@ -1395,6 +1395,14 @@ function onMessage(aMessage, aSender, aRespond) {
       uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
       break;
+
+    case kCOMMAND_SHOW_CONTAINER_SELECTOR: {
+      const anchor = document.querySelector(`
+        :root.contextual-identity-selectable .contextual-identities-selector-anchor,
+        .newtab-button
+      `);
+      gContextualIdentitySelector.ui.open({ anchor });
+    }; break;
   }
 }
 
