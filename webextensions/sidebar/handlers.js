@@ -465,6 +465,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
   Commands.openNewTabAs({
     baseTab:      getCurrentTab(gTargetWindow),
     as:           aOptions.action,
+    cookieStoreId: aOptions.cookieStoreId,
     inBackground: aEvent.shiftKey,
     inRemote:     true
   });
