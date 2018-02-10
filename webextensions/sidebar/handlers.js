@@ -458,46 +458,15 @@ function onClick(aEvent) {
 function handleNewTabAction(aEvent, aOptions = {}) {
   if (configs.logOnMouseEvent)
     log('handleNewTabAction');
-  var parent, insertBefore, insertAfter;
-  if (configs.autoAttach || 'action' in aOptions) {
-    let current = getCurrentTab(gTargetWindow);
-    switch (aOptions.action) {
-      case kNEWTAB_DO_NOTHING:
-      case kNEWTAB_OPEN_AS_ORPHAN:
-      default:
-        break;
 
-      case kNEWTAB_OPEN_AS_CHILD: {
-        parent = current;
-        let refTabs = getReferenceTabsForNewChild(parent);
-        insertBefore = refTabs.insertBefore;
-        insertAfter  = refTabs.insertAfter;
-        if (configs.logOnMouseEvent)
-          log('detected reference tabs: ',
-              dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
-      }; break;
+  if (!configs.autoAttach && !('action' in aOptions))
+    aOptions.action = kNEWTAB_DO_NOTHING;
 
-      case kNEWTAB_OPEN_AS_SIBLING:
-        parent      = getParentTab(current);
-        insertAfter = getLastDescendantTab(parent);
-        break;
-
-      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-        parent       = getParentTab(current);
-        insertBefore = getNextSiblingTab(current);
-        insertAfter  = getLastDescendantTab(current);
-      }; break;
-    }
-  }
-  if (parent &&
-      configs.inheritContextualIdentityToNewChildTab &&
-      !aOptions.cookieStoreId)
-    aOptions.cookieStoreId = parent.apiTab.cookieStoreId;
-  openNewTab({
-    parent, insertBefore, insertAfter,
-    inBackground:  aEvent.shiftKey,
-    cookieStoreId: aOptions.cookieStoreId,
-    inRemote:      true
+  Commands.openNewTabAs({
+    baseTab:      getCurrentTab(gTargetWindow),
+    as:           aOptions.action,
+    inBackground: aEvent.shiftKey,
+    inRemote:     true
   });
 }
 

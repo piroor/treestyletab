@@ -55,12 +55,28 @@ async function onShortcutCommand(aCommand) {
       return;
 
     case 'newIndependentTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      kNEWTAB_OPEN_AS_ORPHAN
+      });
       return;
     case 'newChildTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      kNEWTAB_OPEN_AS_CHILD
+      });
       return;
     case 'newSiblingTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      kNEWTAB_OPEN_AS_SIBLING
+      });
       return;
     case 'newNextSiblingTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      kNEWTAB_OPEN_AS_NEXT_SIBLING
+      });
       return;
 
     case 'newContainerTab':

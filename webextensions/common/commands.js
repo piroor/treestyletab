@@ -101,5 +101,54 @@ const Commands = {
       });
     });
     return folder;
+  },
+
+
+  openNewTabAs: async function(aOptions = {}) {
+    const currentTab = aOptions.baseTab || getTabById((await browser.tabs.query({
+      active:        true,
+      currentWindow: true
+    }))[0]);
+
+    let parent, insertBefore, insertAfter;
+    switch (aOptions.as) {
+      case kNEWTAB_DO_NOTHING:
+      case kNEWTAB_OPEN_AS_ORPHAN:
+      default:
+        break;
+
+      case kNEWTAB_OPEN_AS_CHILD: {
+        parent = currentTab;
+        let refTabs = getReferenceTabsForNewChild(parent);
+        insertBefore = refTabs.insertBefore;
+        insertAfter  = refTabs.insertAfter;
+        if (configs.logOnMouseEvent)
+          log('detected reference tabs: ',
+              dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
+      }; break;
+
+      case kNEWTAB_OPEN_AS_SIBLING:
+        parent      = getParentTab(currentTab);
+        insertAfter = getLastDescendantTab(parent);
+        break;
+
+      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+        parent       = getParentTab(currentTab);
+        insertBefore = getNextSiblingTab(currentTab);
+        insertAfter  = getLastDescendantTab(currentTab);
+      }; break;
+    }
+
+    if (parent &&
+        configs.inheritContextualIdentityToNewChildTab &&
+        !aOptions.cookieStoreId)
+      aOptions.cookieStoreId = parent.apiTab.cookieStoreId;
+
+    openNewTab({
+      parent, insertBefore, insertAfter,
+      inBackground:  !!aOptions.inBackground,
+      cookieStoreId: aOptions.cookieStoreId,
+      inRemote:      !!aOptions.inRemote
+    });
   }
 };
