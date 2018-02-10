@@ -1,4 +1,5 @@
 Each file under this directory is licensed under MPL 2.0 by default, if the file includes no license information.
+All rights reserved.
 
 ----
 
