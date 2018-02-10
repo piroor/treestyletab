@@ -61,21 +61,6 @@ li label img {
 }
 
 
-#shortcuts li {
-  border-top: 1px solid ThreeDShadow;
-  display: grid;
-  grid-template-columns: 1fr max-content;
-  margin: 0 0 0.25em;
-  padding: 0.25em 0 0;
-}
-
-#shortcuts li:first-child {
-  border-top: none;
-  margin-top: 0;
-  padding-top: 0;
-}
-
-
 :root:not(.debugging) #debug-configs {
   max-height: 0;
   overflow: hidden;
