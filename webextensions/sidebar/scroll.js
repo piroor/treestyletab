@@ -161,6 +161,12 @@ async function smoothScrollTo(aParams = {}) {
 }
 smoothScrollTo.currentOffset= 0;
 
+async function smoothScrollBy(aDelta) {
+  return smoothScrollTo({
+    position: gTabBar.scrollTop + aDelta
+  });
+}
+
 function stopSmoothScroll() {
   smoothScrollTo.stopped = true;
 }

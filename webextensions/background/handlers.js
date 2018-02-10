@@ -117,16 +117,47 @@ async function onShortcutCommand(aCommand) {
       return;
 
     case 'tabbarUp':
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'lineup'
+      });
       return;
     case 'tabbarPageUp':
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'pageup'
+      });
       return;
     case 'tabbarHome':
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        to:       'top'
+      });
       return;
+
     case 'tabbarDown':
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'linedown'
+      });
       return;
     case 'tabbarPageDown':
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'pagedown'
+      });
       return;
     case 'tabbarEnd':
+      browser.runtime.sendMessage({
+        type:     kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        to:       'bottom'
+      });
       return;
   }
 }

@@ -38,6 +38,7 @@ const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-
 const kCOMMAND_BROADCAST_API_REGISTERED       = 'treestyletab:broadcast-registered';
 const kCOMMAND_BROADCAST_API_UNREGISTERED     = 'treestyletab:broadcast-unregistered';
 const kCOMMAND_SHOW_CONTAINER_SELECTOR        = 'treestyletab:show-container-selector';
+const kCOMMAND_SCROLL_TABBAR                  = 'treestyletab:scroll-tabbar';
 
 const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';

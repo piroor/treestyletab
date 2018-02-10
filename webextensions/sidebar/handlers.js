@@ -1399,6 +1399,38 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_SHOW_CONTAINER_SELECTOR:
       Commands.showContainerSelector();
       break;
+
+    case kCOMMAND_SCROLL_TABBAR:
+      switch (String(aMessage.by).toLowerCase()) {
+        case 'lineup':
+          smoothScrollBy(-gTabHeight);
+          break;
+
+        case 'pageup':
+          smoothScrollBy(-gTabBar.getBoundingClientRect().height + gTabHeight);
+          break;
+
+        case 'linedown':
+          smoothScrollBy(gTabHeight);
+          break;
+
+        case 'pagedown':
+          smoothScrollBy(gTabBar.getBoundingClientRect().height - gTabHeight);
+          break;
+
+        default:
+          switch (String(aMessage.to).toLowerCase()) {
+            case 'top':
+              smoothScrollTo({ position: 0 });
+              break;
+
+            case 'bottom':
+              smoothScrollTo({ position: gTabBar.scrollTopMax });
+              break;
+          }
+          break;
+      }
+      break;
   }
 }
 
