@@ -1152,7 +1152,7 @@ async function moveTabs(aTabs, aOptions = {}) {
             else {
               apiTabs = await promisedDuplicatedTabs;
             }
-            apiTabIds = apiTabs.map(aTab => aTab.apiTab.id);
+            apiTabIds = apiTabs.map(aAPITab => aAPITab.id);
           }
         })()
       ]);
