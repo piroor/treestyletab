@@ -87,25 +87,78 @@ async function onShortcutCommand(aCommand) {
       return;
 
     case 'indent':
+      onMessageExternal({
+        type:           kTSTAPI_INDENT,
+        tab:            activeTab.apiTab.id,
+        followChildren: true
+      });
       return;
     case 'outdent':
+      onMessageExternal({
+        type:           kTSTAPI_OUTDENT,
+        tab:            activeTab.apiTab.id,
+        followChildren: true
+      });
       return;
+
     case 'tabMoveUp':
+      onMessageExternal({
+        type:           kTSTAPI_MOVE_UP,
+        tab:            activeTab.apiTab.id,
+        followChildren: false
+      });
       return;
     case 'treeMoveUp':
+      onMessageExternal({
+        type:           kTSTAPI_MOVE_UP,
+        tab:            activeTab.apiTab.id,
+        followChildren: true
+      });
       return;
     case 'tabMoveDown':
+      onMessageExternal({
+        type:           kTSTAPI_MOVE_DOWN,
+        tab:            activeTab.apiTab.id,
+        followChildren: false
+      });
       return;
     case 'treeMoveDown':
+      onMessageExternal({
+        type:           kTSTAPI_MOVE_DOWN,
+        tab:            activeTab.apiTab.id,
+        followChildren: true
+      });
       return;
+
     case 'focusPrevious':
+      onMessageExternal({
+        type:     kTSTAPI_FOCUS,
+        tab:      'previousSibling',
+        silently: false
+      });
       return;
     case 'focusPreviousSilently':
+      onMessageExternal({
+        type:     kTSTAPI_FOCUS,
+        tab:      'previousSibling',
+        silently: true
+      });
       return;
     case 'focusNext':
+      onMessageExternal({
+        type:     kTSTAPI_FOCUS,
+        tab:      'nextSibling',
+        silently: false
+      });
       return;
     case 'focusNextSilently':
+      onMessageExternal({
+        type:     kTSTAPI_FOCUS,
+        tab:      'nextSibling',
+        silently: true
+      });
       return;
+
     case 'tabbarUp':
       return;
     case 'tabbarPageUp':
