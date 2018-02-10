@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.4.14 (2018.2.10)
+   * Tabs are duplicated or moved across windows correctly. (regression on 2.4.11)
  - 2.4.13 (2018.2.10)
    * Restore tree correctly for "Restore Previous Session". (regression on 2.4.12)
  - 2.4.12 (2018.2.9)
