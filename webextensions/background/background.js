@@ -23,6 +23,7 @@ async function init() {
   window.addEventListener('pagehide', destroy, { once: true });
 
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
+  browser.commands.onCommand.addListener(onShortcutCommand);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
   browser.windows.onFocusChanged.addListener(() => {
     gMaybeTabSwitchingByShortcut = false;

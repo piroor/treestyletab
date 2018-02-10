@@ -19,6 +19,88 @@ function onToolbarButtonClick(aTab) {
     browser.sidebarAction.open();
 }
 
+async function onShortcutCommand(aCommand) {
+  const activeTab = (await browser.tabs.query({
+    active:        true,
+    currentWindow: true
+  }))[0];
+
+  switch (aCommand) {
+    case '_execute_browser_action':
+      return;
+
+    case 'reloadTree':
+      Commands.reloadTree(activeTab);
+      return;
+    case 'reloadDescendants':
+      Commands.reloadDescendants(activeTab);
+      return;
+    case 'closeTree':
+      Commands.closeTree(activeTab);
+      return;
+    case 'closeDescendants':
+      Commands.closeDescendants(activeTab);
+      return;
+    case 'closeOthers':
+      Commands.closeOthers(activeTab);
+      return;
+    case 'collapseAll':
+      Commands.collapseAll(activeTab);
+      return;
+    case 'expandAll':
+      Commands.expandAll(activeTab);
+      return;
+    case 'bookmarkTree':
+      Commands.bookmarkTree(activeTab);
+      return;
+
+    case 'newIndependentTab':
+      return;
+    case 'newChildTab':
+      return;
+    case 'newSiblingTab':
+      return;
+    case 'newNextSiblingTab':
+      return;
+
+    case 'newContainerTab':
+      return;
+
+    case 'indent':
+      return;
+    case 'outdent':
+      return;
+    case 'tabMoveUp':
+      return;
+    case 'treeMoveUp':
+      return;
+    case 'tabMoveDown':
+      return;
+    case 'treeMoveDown':
+      return;
+    case 'focusPrevious':
+      return;
+    case 'focusPreviousSilently':
+      return;
+    case 'focusNext':
+      return;
+    case 'focusNextSilently':
+      return;
+    case 'tabbarUp':
+      return;
+    case 'tabbarPageUp':
+      return;
+    case 'tabbarHome':
+      return;
+    case 'tabbarDown':
+      return;
+    case 'tabbarPageDown':
+      return;
+    case 'tabbarEnd':
+      return;
+  }
+}
+
 // raw event handlers
 
 // this should return true if the tab is moved while processing
