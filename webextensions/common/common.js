@@ -179,6 +179,7 @@ configs = new Configs({
   insertNewTabFromPinnedTabAt: kINSERT_NO_CONTROL,
 
   scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
+  scrollLines: 3,
 
   autoAttach: true,
   autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD,
@@ -309,6 +310,7 @@ configs = new Configs({
     insertNewChildAt
     insertNewTabFromPinnedTabAt
     scrollToNewTabMode
+    scrollLines
     autoAttach
     autoAttachOnOpenedWithOwner
     autoAttachOnNewTabCommand

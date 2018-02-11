@@ -1403,7 +1403,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_SCROLL_TABBAR:
       switch (String(aMessage.by).toLowerCase()) {
         case 'lineup':
-          smoothScrollBy(-gTabHeight);
+          smoothScrollBy(-gTabHeight * configs.scrollLines);
           break;
 
         case 'pageup':
@@ -1411,7 +1411,7 @@ function onMessage(aMessage, aSender, aRespond) {
           break;
 
         case 'linedown':
-          smoothScrollBy(gTabHeight);
+          smoothScrollBy(gTabHeight * configs.scrollLines);
           break;
 
         case 'pagedown':
