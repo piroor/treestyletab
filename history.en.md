@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.15 (2018.2.11)
    * Keyboard shortcuts for commands are now customizable on Firefox 60 and later.
    * Fix broken "Bookmark All Tabs" in the fake context menu. (regression on 2.4.11-13)
    * Introduce new keyboard shortcuts to scroll Tree Style Tab's sidebar itself: Alt-Up, Alt-Down, Alt-PageUp, Alt-PageDown, Alt-Home, and Alt-End.
