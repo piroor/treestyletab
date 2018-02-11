@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Keyboard shortcuts for commands are now customizable on Firefox 60 and later.
+   * Fix broken "Bookmark All Tabs" in the fake context menu. (regression on 2.4.11-13)
+   * Update `zh_TW` locale (by Bo-Sian Li, thanks!)
  - 2.4.14 (2018.2.10)
    * Tabs are duplicated or moved across windows correctly. (regression on 2.4.11)
  - 2.4.13 (2018.2.10)
