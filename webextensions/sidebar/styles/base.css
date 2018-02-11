@@ -231,7 +231,7 @@ ul {
 }
 
 .tab.removing,
-.tab.collapsed,
+.tab:not(.pinned).collapsed,
 .tab.duplicating {
   margin-top: calc(0px - var(--tab-height));
   opacity: 0;
@@ -239,7 +239,7 @@ ul {
   z-index: -100;
 }
 
-.tab.collapsed-completely {
+.tab:not(.pinned).collapsed-completely {
   visibility: collapse;
 }
 

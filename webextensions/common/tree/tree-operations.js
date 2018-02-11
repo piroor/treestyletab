@@ -628,6 +628,12 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 }
 
 function collapseExpandTab(aTab, aParams = {}) {
+  if (isPinned(aTab) && aParams.collapsed) {
+    log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
+        dumpTab(aTab), { stack: new Error().stack });
+    aParams.collapsed = false;
+  }
+
   var stack = `${new Error().stack}\n${aParams.stack || ''}`;
   if (configs.logOnCollapseExpand)
     log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
