@@ -1,3 +1,9 @@
+/*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
 /* tabs */
 
 :root {
@@ -116,4 +122,52 @@
   background-image: url("shadow-active-r.png");
   background-repeat: repeat-y;
   background-position: top left;
+}
+
+
+/* anchor buttons on the new tab button */
+
+:root.left:not(.contextual-identity-selectable)
+  .after-tabs
+  .newtab-action-selector-anchor,
+:root.left
+  .after-tabs .contextual-identities-selector-anchor {
+  border-image: url("tab-r.png") 10 10 10 5 fill / 10px 0 10px 5px;
+  padding-left: 5px;
+}
+
+:root.left:not(.contextual-identity-selectable)
+  .after-tabs
+  .newtab-action-selector-anchor:hover,
+:root.left
+  .after-tabs .contextual-identities-selector-anchor:hover {
+  border-image: url("tab-active-r.png") 10 10 10 5 fill / 10px 0 10px 5px;
+}
+
+:root.left.contextual-identity-selectable
+  .after-tabs
+  .newtab-action-selector-anchor {
+  padding-right: 15px;
+}
+
+
+:root.right:not(.contextual-identity-selectable)
+  .after-tabs
+  .newtab-action-selector-anchor,
+:root.right
+  .after-tabs .contextual-identities-selector-anchor {
+  padding-right: 20px;
+}
+
+:root.right.contextual-identity-selectable
+  .after-tabs
+  .newtab-action-selector-anchor {
+  border-image: url("tab-l.png") 10 5 10 10 fill / 10px 5px 10px 0;
+  padding-right: 10px;
+}
+
+:root.right.contextual-identity-selectable
+  .after-tabs
+  .newtab-action-selector-anchor:hover {
+  border-image: url("tab-active-l.png") 10 5 10 10 fill / 10px 5px 10px 0;
 }

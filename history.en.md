@@ -1,6 +1,45 @@
 # History
 
  - master/HEAD
+ - 2.4.15 (2018.2.11)
+   * Keyboard shortcuts for commands are now customizable on Firefox 60 and later.
+   * Fix broken "Bookmark All Tabs" in the fake context menu. (regression on 2.4.11-13)
+   * Introduce new keyboard shortcuts to scroll Tree Style Tab's sidebar itself: Alt-Up, Alt-Down, Alt-PageUp, Alt-PageDown, Alt-Home, and Alt-End.
+   * Update `zh_TW` locale (by Bo-Sian Li, thanks!)
+ - 2.4.14 (2018.2.10)
+   * Tabs are duplicated or moved across windows correctly. (regression on 2.4.11)
+ - 2.4.13 (2018.2.10)
+   * Restore tree correctly for "Restore Previous Session". (regression on 2.4.12)
+ - 2.4.12 (2018.2.9)
+   * Respect "expand tree when a tab gets focus" configuration for finally focused tab via Ctrl-Tab/Ctrl-Shift-Tab.
+   * Fix missing menu label of extra context menu items. (regression on 2.4.11)
+   * Better performance around dragging something over tabs.
+ - 2.4.11 (2018.2.9)
+   * Reformat keys of localized messages matching to the [spec](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference#Member_details).
+ - 2.4.10 (2018.2.9)
+   * Match default behavior of long-press on the "New Tab" button to Firefox's one (it shows a menu to choose container).
+   * Place button to select new tab posiiton at right side for the new tab button, if the button to choose container is invisible.
+   * Respect `browser.tabs.selectOwnerOnClose` correctly when new child tabs are configured to be inserted to top of tree. (regression on 2.4.9)
+   * First child tab opened from a pinned tab is now placed at configured position. (regression on 2.4.9)
+   * Process initialization message from other addons via API more correctly.
+   * Better performance around dragging something over tabs.
+   * Better performance around collapse/expand tabs.
+ - 2.4.9 (2018.2.8)
+   * Introduce ability to open new tab specifying its position, by long-press on the "New Tab" button.
+   * Better appearance for the contaienr selector on the "New Tab" button.
+   * Warn before closing multiple tabs a a time.
+   * Better behavior and keyboard operation handling of fake context menu.
+   * Better compatibility with other addons which hide some tabs, like [Conex](https://addons.mozilla.org/firefox/addon/conex/). Now tabs hidden on the top tab bar are also hidden in the sidebar.
+   * Always scroll to the newly opened tab when it is opened as the active tab.
+   * Tabs opened from same pinned tab are grouped, only when there are multiple tabs to be grouped.
+   * Group-tab to bundle tabs opened from same pinned tab inherits the container of the parent pinned tab.
+   * Show descendant tabs as the content of a group tab. Clicking on an item will give focus to the tab.
+   * Don't break group tabs when Tree Style Tab is dynamically updated.
+   * Restore group tabs as-is when they are imported from different profile with session information.
+   * More meaningful label for "temporary group" checkbox of group tabs.
+   * Reduce mismatched tree structure between the internal master process and the visible sidebar contents.
+   * A new [alias to specify tabs via API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#basics-to-specify-tabs): `senderTab` which is resolved to the owner tab for a content script.
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.8 (2018.2.1)
    * Fix fatal error on the startup process for tree restored from cache.
    * Don't expand current tree by just hitting Ctrl key.

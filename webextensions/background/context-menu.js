@@ -41,7 +41,7 @@ async function refreshContextMenuItems() {
       normalItemAppeared = true;
     }
     let type  = isSeparator ? 'separator' : 'normal';
-    let title = isSeparator ? null : browser.i18n.getMessage(`context.${id}.label`);
+    let title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`);
     browser.contextMenus.create({
       id, type,
       // Access key is not supported by WE API.
@@ -59,91 +59,40 @@ async function refreshContextMenuItems() {
   }
 }
 
-var contextMenuClickListener = (aInfo, aTab) => {
-  log('context menu item clicked: ', aInfo, aTab);
+var contextMenuClickListener = (aInfo, aAPITab) => {
+  log('context menu item clicked: ', aInfo, aAPITab);
 
-  var contextTab = getTabById(aTab.id);
+  var contextTab = getTabById(aAPITab);
   var container  = contextTab.parentNode;
 
   switch (aInfo.menuItemId) {
-    case 'reloadTree': {
-      let tabs = [contextTab].concat(getDescendantTabs(contextTab));
-      for (let tab of tabs) {
-        browser.tabs.reload(tab.apiTab.id)
-          .catch(handleMissingTabError);
-      }
-    }; break;
-    case 'reloadDescendants': {
-      let tabs = getDescendantTabs(contextTab);
-      for (let tab of tabs) {
-        browser.tabs.reload(tab.apiTab.id)
-          .catch(handleMissingTabError);
-      }
-    }; break;
+    case 'reloadTree':
+      Commands.reloadTree(contextTab);
+      break;
+    case 'reloadDescendants':
+      Commands.reloadDescendants(contextTab);
+      break;
 
-    case 'closeTree': {
-      let tabs = [contextTab].concat(getDescendantTabs(contextTab));
-      confirmToCloseTabs(tabs.length, { windowId: aTab.windowId })
-        .then(aConfirmed => {
-          if (!aConfirmed)
-            return;
-          tabs.reverse(); // close bottom to top!
-          for (let tab of tabs) {
-            removeTabInternally(tab);
-          }
-        });
-    }; break;
-    case 'closeDescendants': {
-      let tabs = getDescendantTabs(contextTab);
-      confirmToCloseTabs(tabs.length, { windowId: aTab.windowId })
-        .then(aConfirmed => {
-          if (!aConfirmed)
-            return;
-          tabs.reverse(); // close bottom to top!
-          for (let tab of tabs) {
-            removeTabInternally(tab);
-          }
-        });
-    }; break;
-    case 'closeOthers': {
-      let exceptionTabs = [contextTab].concat(getDescendantTabs(contextTab));
-      let tabs          = getNormalTabs(container); // except pinned or hidden tabs
-      tabs.reverse(); // close bottom to top!
-      let closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(tab) < 0);
-      confirmToCloseTabs(closeTabs.length, { windowId: aTab.windowId })
-        .then(aConfirmed => {
-          if (!aConfirmed)
-            return;
-          for (let tab of closeTabs) {
-            removeTabInternally(tab);
-          }
-        });
-    }; break;
+    case 'closeTree':
+      Commands.closeTree(contextTab);
+      break;
+    case 'closeDescendants':
+      Commands.closeDescendants(contextTab);
+      break;
+    case 'closeOthers':
+      Commands.closeOthers(contextTab);
+      break;
 
-    case 'collapseAll': {
-      let tabs = getNormalTabs(container);
-      for (let tab of tabs) {
-        if (hasChildTabs(tab) && !isSubtreeCollapsed(tab))
-          collapseExpandSubtree(tab, {
-            collapsed: true,
-            broadcast: true
-          });
-      }
-    }; break;
-    case 'expandAll': {
-      let tabs = getNormalTabs(container);
-      for (let tab of tabs) {
-        if (hasChildTabs(tab) && isSubtreeCollapsed(tab))
-          collapseExpandSubtree(tab, {
-            collapsed: false,
-            broadcast: true
-          });
-      }
-    }; break;
+    case 'collapseAll':
+      Commands.collapseAll(contextTab);
+      break;
+    case 'expandAll':
+      Commands.expandAll(contextTab);
+      break;
 
-    case 'bookmarkTree': {
-      bookmarkTree(contextTab);
-    }; break;
+    case 'bookmarkTree':
+      Commands.bookmarkTree(contextTab);
+      break;
 
     default:
       break;

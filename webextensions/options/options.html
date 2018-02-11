@@ -10,418 +10,410 @@
     <script type="application/javascript" src="/common/common.js"></script>
     <script type="application/javascript" src="/options/Options.js"></script>
     <script type="application/javascript" src="/common/l10n.js"></script>
+    <script type="application/javascript" src="/options/ShortcutCustomizeUI.js"></script>
     <script type="application/javascript" src="/common/permissions.js"></script>
     <script type="application/javascript" src="/background/migration.js"></script>
     <script type="application/javascript" src="/options/init.js"></script>
     <link rel="stylesheet" type="text/css" href="options.css"/>
   </head>
   <body>
-    <h1>__MSG_config.appearance.caption__</h1>
+    <h1>__MSG_config_appearance_caption__</h1>
 
-    <p>__MSG_config.sidebarPosition.caption__
+    <p>__MSG_config_sidebarPosition_caption__
        <br /><label><input type="radio"
                            name="sidebarPosition" value="1">
-               __MSG_config.sidebarPosition.left__</label>
+               __MSG_config_sidebarPosition_left__</label>
              <label><input type="radio"
                            name="sidebarPosition" value="2">
-               __MSG_config.sidebarPosition.right__</label>
+               __MSG_config_sidebarPosition_right__</label>
     </p>
-    <p class="sub">__MSG_config.sidebarPosition.description__</p>
+    <p class="sub">__MSG_config_sidebarPosition_description__</p>
     <fieldset>
-      <legend>__MSG_config.style.caption__</legend>
+      <legend>__MSG_config_style_caption__</legend>
       <ul id="style-radiogroup">
         <li><label><input type="radio"
                           name="style" value="plain">
               <img src="style-plain.png"/>
-              __MSG_config.style.plain__</label></li>
+              __MSG_config_style_plain__</label></li>
         <li><label><input type="radio"
                           name="style" value="plain-dark">
               <img src="style-plain-dark.png"/>
-              __MSG_config.style.plain-dark__</label></li>
+              __MSG_config_style_plain_dark__</label></li>
         <li><label><input type="radio"
                           name="style" value="vertigo">
               <img src="style-vertigo.png"/>
-              __MSG_config.style.vertigo__</label></li>
+              __MSG_config_style_vertigo__</label></li>
         <li><label><input type="radio"
                           name="style" value="mixed">
               <img src="style-mixed.png"/>
-              __MSG_config.style.mixed__</label></li>
+              __MSG_config_style_mixed__</label></li>
         <li><label><input type="radio"
                           name="style" value="metal">
               <img src="style-metal.png"/>
-              __MSG_config.style.metal__</label></li>
+              __MSG_config_style_metal__</label></li>
         <li><label><input type="radio"
                           name="style" value="sidebar">
               <img src="style-sidebar.png"/>
-              __MSG_config.style.sidebar__</label></li>
+              __MSG_config_style_sidebar__</label></li>
         <li><label><input type="radio"
                           name="style" value="highcontrast">
               <img src="style-highcontrast.png"/>
-              __MSG_config.style.highcontrast__</label></li>
+              __MSG_config_style_highcontrast__</label></li>
         <li><label><input type="radio"
                           name="style" value="none">
-              __MSG_config.style.none__</label></li>
+              __MSG_config_style_none__</label></li>
       </ul>
     </fieldset>
-    <p>__MSG_config.scrollbarMode.caption__
+    <p>__MSG_config_scrollbarMode_caption__
        <br />
        <label><input type="radio"
                      name="scrollbarMode" value="0">
-         __MSG_config.scrollbarMode.default__</label>
+         __MSG_config_scrollbarMode_default__</label>
        <label><input type="radio"
                      name="scrollbarMode" value="1">
-         __MSG_config.scrollbarMode.narrow__</label>
+         __MSG_config_scrollbarMode_narrow__</label>
        <label class="available-only-on-mac"><input type="radio"
                      name="scrollbarMode" value="3">
-         __MSG_config.scrollbarMode.overlay__</label>
+         __MSG_config_scrollbarMode_overlay__</label>
        <label><input type="radio"
                      name="scrollbarMode" value="2">
-         __MSG_config.scrollbarMode.hide__</label>
+         __MSG_config_scrollbarMode_hide__</label>
     </p>
-    <p class="sub available-only-on-mac">__MSG_config.scrollbarMode.descriptionForMac__</p>
-    <p><label>__MSG_config.maxTreeLevel.before__
+    <p class="sub available-only-on-mac">__MSG_config_scrollbarMode_descriptionForMac__</p>
+    <p><label>__MSG_config_maxTreeLevel_before__
               <input id="maxTreeLevel"
                      type="number"
                      size="3">
-             __MSG_config.maxTreeLevel.after__</label></p>
+             __MSG_config_maxTreeLevel_after__</label></p>
     <p><label><input id="faviconizePinnedTabs"
                      type="checkbox">
-             __MSG_config.faviconizePinnedTabs.label__</label></p>
-<!--
-    <p><label><input id="hideInactiveTabs"
-                     type="checkbox">
-             __MSG_config.hideInactiveTabs.label__</label></p>
-    <p class="sub"><label><input id="tabHidePermissionGranted"
-                                 type="checkbox">
-                          __MSG_config.requestPermissions.tabHide__</label></p>
--->
+             __MSG_config_faviconizePinnedTabs_label__</label></p>
     <p><label><input id="animation"
                      type="checkbox">
-             __MSG_config.animation.label__</label></p>
+             __MSG_config_animation_label__</label></p>
 
 
-    <h1>__MSG_config.context.caption__</h1>
+    <h1>__MSG_config_context_caption__</h1>
     <div id="contextConfigs">
     <p><label><input id="context_reloadTree"
                      type="checkbox">
-              __MSG_context.reloadTree.label__</label></p>
+              __MSG_context_reloadTree_label__</label></p>
     <p><label><input id="context_reloadDescendants"
                      type="checkbox">
-              __MSG_context.reloadDescendants.label__</label></p>
+              __MSG_context_reloadDescendants_label__</label></p>
     <p><label><input id="context_closeTree"
                      type="checkbox">
-              __MSG_context.closeTree.label__</label></p>
+              __MSG_context_closeTree_label__</label></p>
     <p><label><input id="context_closeDescendants"
                      type="checkbox">
-              __MSG_context.closeDescendants.label__</label></p>
+              __MSG_context_closeDescendants_label__</label></p>
     <p><label><input id="context_closeOthers"
                      type="checkbox">
-              __MSG_context.closeOthers.label__</label></p>
+              __MSG_context_closeOthers_label__</label></p>
     <p><label><input id="context_collapseAll"
                      type="checkbox">
-              __MSG_context.collapseAll.label__</label></p>
+              __MSG_context_collapseAll_label__</label></p>
     <p><label><input id="context_expandAll"
                      type="checkbox">
-              __MSG_context.expandAll.label__</label></p>
+              __MSG_context_expandAll_label__</label></p>
     <p><label><input id="context_bookmarkTree"
                      type="checkbox">
-              __MSG_context.bookmarkTree.label__</label></p>
+              __MSG_context_bookmarkTree_label__</label></p>
     <p class="sub"><label><input id="bookmarksPermissionGranted"
                                  type="checkbox">
-                          __MSG_config.requestPermissions.bookmarks__</label></p>
+                          __MSG_config_requestPermissions_bookmarks__</label></p>
     </div>
 
 
-    <h1>__MSG_config.newTab.caption__</h1>
+    <h1>__MSG_config_newTab_caption__</h1>
 
     <fieldset>
-      <legend>__MSG_config.newTabButton.caption__</legend>
-    <p><label>__MSG_config.autoAttachOnNewTabButtonMiddleClick.before__
+      <legend>__MSG_config_newTabButton_caption__</legend>
+    <p><label>__MSG_config_autoAttachOnNewTabButtonMiddleClick_before__
               <select id="autoAttachOnNewTabButtonMiddleClick">
-                <option value="0">__MSG_config.autoAttachOnNewTabButtonMiddleClick.independent__</option>
-                <option value="1">__MSG_config.autoAttachOnNewTabButtonMiddleClick.child__</option>
-                <option value="2">__MSG_config.autoAttachOnNewTabButtonMiddleClick.sibling__</option>
-                <option value="3">__MSG_config.autoAttachOnNewTabButtonMiddleClick.nextSibling__</option>
+                <option value="0">__MSG_config_autoAttachOnNewTabButtonMiddleClick_independent__</option>
+                <option value="1">__MSG_config_autoAttachOnNewTabButtonMiddleClick_child__</option>
+                <option value="2">__MSG_config_autoAttachOnNewTabButtonMiddleClick_sibling__</option>
+                <option value="3">__MSG_config_autoAttachOnNewTabButtonMiddleClick_nextSibling__</option>
               </select>
-              __MSG_config.autoAttachOnNewTabButtonMiddleClick.after__</label></p>
-    <p><label>__MSG_config.longPressOnNewTabButton.before__
+              __MSG_config_autoAttachOnNewTabButtonMiddleClick_after__</label></p>
+    <p><label>__MSG_config_longPressOnNewTabButton_before__
               <select id="longPressOnNewTabButton">
-                <option value="newtab-action-selector">__MSG_config.longPressOnNewTabButton.newTabAction__</option>
-                <option value="contextual-identities-selector">__MSG_config.longPressOnNewTabButton.contextualIdentities__</option>
-                <option value="">__MSG_config.longPressOnNewTabButton.none__</option>
+                <option value="newtab-action-selector">__MSG_config_longPressOnNewTabButton_newTabAction__</option>
+                <option value="contextual-identities-selector">__MSG_config_longPressOnNewTabButton_contextualIdentities__</option>
+                <option value="">__MSG_config_longPressOnNewTabButton_none__</option>
               </select>
-              __MSG_config.longPressOnNewTabButton.after__</label></p>
+              __MSG_config_longPressOnNewTabButton_after__</label></p>
     <p><label><input id="showNewTabActionSelector"
                      type="checkbox">
-             __MSG_config.showNewTabActionSelector.label__</label></p>
+             __MSG_config_showNewTabActionSelector_label__</label></p>
     <p><label><input id="showContextualIdentitiesSelector"
                      type="checkbox">
-             __MSG_config.showContextualIdentitiesSelector.label__</label></p>
+             __MSG_config_showContextualIdentitiesSelector_label__</label></p>
     </fieldset>
     <fieldset>
-      <legend>__MSG_config.newTabAction.caption__</legend>
-    <p><label>__MSG_config.autoAttachOnNewTabCommand.before__
+      <legend>__MSG_config_newTabAction_caption__</legend>
+    <p><label>__MSG_config_autoAttachOnNewTabCommand_before__
               <select id="autoAttachOnNewTabCommand">
-                <option value="0">__MSG_config.autoAttachOnNewTabCommand.independent__</option>
-                <option value="1">__MSG_config.autoAttachOnNewTabCommand.child__</option>
-                <option value="2">__MSG_config.autoAttachOnNewTabCommand.sibling__</option>
-                <option value="3">__MSG_config.autoAttachOnNewTabCommand.nextSibling__</option>
+                <option value="0">__MSG_config_autoAttachOnNewTabCommand_independent__</option>
+                <option value="1">__MSG_config_autoAttachOnNewTabCommand_child__</option>
+                <option value="2">__MSG_config_autoAttachOnNewTabCommand_sibling__</option>
+                <option value="3">__MSG_config_autoAttachOnNewTabCommand_nextSibling__</option>
               </select>
-              __MSG_config.autoAttachOnNewTabCommand.after__</label></p>
+              __MSG_config_autoAttachOnNewTabCommand_after__</label></p>
     <p class="sub"><label><input id="guessNewOrphanTabAsOpenedByNewTabCommand"
                                  type="checkbox">
-                          __MSG_config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.before__
+                          __MSG_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before__
                           <input id="guessNewOrphanTabAsOpenedByNewTabCommandUrl"
                                  size="20">
-                           __MSG_config.guessNewOrphanTabAsOpenedByNewTabCommandUrl.after__</label></p>
-    <p><label>__MSG_config.autoAttachOnDuplicated.before__
+                           __MSG_config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after__</label></p>
+    <p><label>__MSG_config_autoAttachOnDuplicated_before__
               <select id="autoAttachOnDuplicated">
-                <option value="0">__MSG_config.autoAttachOnDuplicated.independent__</option>
-                <option value="1">__MSG_config.autoAttachOnDuplicated.child__</option>
-                <option value="2">__MSG_config.autoAttachOnDuplicated.sibling__</option>
-                <option value="3">__MSG_config.autoAttachOnDuplicated.nextSibling__</option>
+                <option value="0">__MSG_config_autoAttachOnDuplicated_independent__</option>
+                <option value="1">__MSG_config_autoAttachOnDuplicated_child__</option>
+                <option value="2">__MSG_config_autoAttachOnDuplicated_sibling__</option>
+                <option value="3">__MSG_config_autoAttachOnDuplicated_nextSibling__</option>
               </select>
-              __MSG_config.autoAttachOnDuplicated.after__</label></p>
+              __MSG_config_autoAttachOnDuplicated_after__</label></p>
     </fieldset>
 
     <fieldset>
-      <legend>__MSG_config.insertNewChildAt.caption__</legend>
+      <legend>__MSG_config_insertNewChildAt_caption__</legend>
       <ul>
         <li><label><input type="radio"
                           name="insertNewChildAt" value="-1">
-              __MSG_config.insertNewChildAt.noControl__</label></li>
+              __MSG_config_insertNewChildAt_noControl__</label></li>
         <li><label><input type="radio"
                           name="insertNewChildAt" value="0">
-              __MSG_config.insertNewChildAt.first__</label></li>
+              __MSG_config_insertNewChildAt_first__</label></li>
         <li><label><input type="radio"
                           name="insertNewChildAt" value="1">
-              __MSG_config.insertNewChildAt.end__</label></li>
+              __MSG_config_insertNewChildAt_end__</label></li>
       </ul>
     </fieldset>
 
     <p><label><input id="autoGroupNewTabsFromPinned"
                      type="checkbox">
-              __MSG_config.autoGroupNewTabsFromPinned.label__</p>
+              __MSG_config_autoGroupNewTabsFromPinned_label__</p>
     <fieldset>
-      <legend>__MSG_config.insertNewTabFromPinnedTabAt.caption__</legend>
+      <legend>__MSG_config_insertNewTabFromPinnedTabAt_caption__</legend>
       <ul>
         <li><label><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="-1">
-              __MSG_config.insertNewTabFromPinnedTabAt.noControl__</label></li>
+              __MSG_config_insertNewTabFromPinnedTabAt_noControl__</label></li>
         <li><label><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="0">
-              __MSG_config.insertNewTabFromPinnedTabAt.first__</label></li>
+              __MSG_config_insertNewTabFromPinnedTabAt_first__</label></li>
         <li><label><input type="radio"
                           name="insertNewTabFromPinnedTabAt" value="1">
-              __MSG_config.insertNewTabFromPinnedTabAt.end__</label></li>
+              __MSG_config_insertNewTabFromPinnedTabAt_end__</label></li>
       </ul>
     </fieldset>
 
     <p><label><input id="inheritContextualIdentityToNewChildTab"
                      type="checkbox">
-              __MSG_config.inheritContextualIdentityToNewChildTab.label__</label></p>
+              __MSG_config_inheritContextualIdentityToNewChildTab_label__</label></p>
     <p><label><input id="autoGroupNewTabs"
                      type="checkbox">
-              __MSG_config.autoGroupNewTabs.before__
+              __MSG_config_autoGroupNewTabs_before__
               <input id="autoGroupNewTabsTimeout"
                      type="number"
                      size="3">
-               __MSG_config.autoGroupNewTabs.after__</label></p>
-    <p class="sub"><label>__MSG_config.autoGroupNewTabsDelayOnNewWindow.before__
+               __MSG_config_autoGroupNewTabs_after__</label></p>
+    <p class="sub"><label>__MSG_config_autoGroupNewTabsDelayOnNewWindow_before__
                           <input id="autoGroupNewTabsDelayOnNewWindow"
                                  type="number"
                                  size="3">
-                          __MSG_config.autoGroupNewTabsDelayOnNewWindow.after__</label></p>
+                          __MSG_config_autoGroupNewTabsDelayOnNewWindow_after__</label></p>
 
 
-    <h1>__MSG_config.treeBehavior.caption__</h1>
+    <h1>__MSG_config_treeBehavior_caption__</h1>
 
     <p><label><input id="autoCollapseExpandSubtreeOnAttach"
                      type="checkbox">
-             __MSG_config.autoCollapseExpandSubtreeOnAttach.label__</label></p>
+             __MSG_config_autoCollapseExpandSubtreeOnAttach_label__</label></p>
     <p><label><input id="autoCollapseExpandSubtreeOnSelect"
                      type="checkbox">
-             __MSG_config.autoCollapseExpandSubtreeOnSelect.label__</label></p>
+             __MSG_config_autoCollapseExpandSubtreeOnSelect_label__</label></p>
     <p class="sub">
        <label><input id="autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove"
                      type="checkbox">
-             __MSG_config.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove.label__</label></p>
+             __MSG_config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label__</label></p>
     <p><label><input id="collapseExpandSubtreeByDblClick"
                      type="checkbox">
-             __MSG_config.collapseExpandSubtreeByDblClick.label__</label></p>
+             __MSG_config_collapseExpandSubtreeByDblClick_label__</label></p>
     <p><label><input id="allUrlsPermissionGranted"
                      type="checkbox">
-              __MSG_config.requestPermissions.allUrls__</label></p>
+              __MSG_config_requestPermissions_allUrls__</label></p>
 
     <fieldset>
-      <legend>__MSG_config.moveFocusInTreeForClosedCurrentTab.caption__</legend>
+      <legend>__MSG_config_moveFocusInTreeForClosedCurrentTab_caption__</legend>
       <ul>
         <li><label><input type="radio"
                           name="moveFocusInTreeForClosedCurrentTab" value="true">
-              __MSG_config.moveFocusInTreeForClosedCurrentTab.true__</label></li>
+              __MSG_config_moveFocusInTreeForClosedCurrentTab_true__</label></li>
         <li><label><input type="radio"
                           name="moveFocusInTreeForClosedCurrentTab" value="false">
-              __MSG_config.moveFocusInTreeForClosedCurrentTab.false__</label></li>
+              __MSG_config_moveFocusInTreeForClosedCurrentTab_false__</label></li>
       </ul>
-      <p>__MSG_config.moveFocusInTreeForClosedCurrentTab.description__</p>
+      <p>__MSG_config_moveFocusInTreeForClosedCurrentTab_description__</p>
     </fieldset>
     <fieldset>
-      <legend>__MSG_config.closeParentBehavior.caption__</legend>
+      <legend>__MSG_config_closeParentBehavior_caption__</legend>
       <ul>
         <li><label><input type="radio"
                           name="closeParentBehavior" value="2">
-              __MSG_config.closeParentBehavior.close__</label></li>
+              __MSG_config_closeParentBehavior_close__</label></li>
         <li><label><input type="radio"
                           name="closeParentBehavior" value="5">
-              __MSG_config.closeParentBehavior.replaceWithGroupTab__</label></li>
+              __MSG_config_closeParentBehavior_replaceWithGroupTab__</label></li>
         <li><label><input type="radio"
                           name="closeParentBehavior" value="3">
-              __MSG_config.closeParentBehavior.promoteFirst__</label></li>
+              __MSG_config_closeParentBehavior_promoteFirst__</label></li>
         <li><label><input type="radio"
                           name="closeParentBehavior" value="0">
-              __MSG_config.closeParentBehavior.promoteAll__</label>
+              __MSG_config_closeParentBehavior_promoteAll__</label>
             <p class="sub">
                <label><input id="promoteFirstChildForClosedRoot"
                              type="checkbox">
-                     __MSG_config.promoteFirstChildForClosedRoot.label__</label></p></li>
+                     __MSG_config_promoteFirstChildForClosedRoot_label__</label></p></li>
         <li><label><input type="radio"
                           name="closeParentBehavior" value="1">
-              __MSG_config.closeParentBehavior.detach__</label></li>
+              __MSG_config_closeParentBehavior_detach__</label></li>
       </ul>
     </fieldset>
     <fieldset>
-      <legend>__MSG_config.parentTabBehaviorForChanges.caption__</legend>
+      <legend>__MSG_config_parentTabBehaviorForChanges_caption__</legend>
       <ul>
         <li><label><input type="radio"
                           name="parentTabBehaviorForChanges" value="0">
-              __MSG_config.parentTabBehaviorForChanges.always__</label></li>
+              __MSG_config_parentTabBehaviorForChanges_always__</label></li>
         <li><label><input type="radio"
                           name="parentTabBehaviorForChanges" value="1">
-              __MSG_config.parentTabBehaviorForChanges.alwaysButOnlyWhenVisible__</label></li>
+              __MSG_config_parentTabBehaviorForChanges_alwaysButOnlyWhenVisible__</label></li>
         <li><label><input type="radio"
                           name="parentTabBehaviorForChanges" value="2">
-              __MSG_config.parentTabBehaviorForChanges.onlyInSidebar__</label></li>
+              __MSG_config_parentTabBehaviorForChanges_onlyInSidebar__</label></li>
       </ul>
     </fieldset>
 
 
-    <h1>__MSG_config.advanced.caption__</h1>
+    <h1>__MSG_config_shortcuts_caption__</h1>
+    <div id="shortcuts"></div>
+
+
+    <h1>__MSG_config_advanced_caption__</h1>
     <fieldset>
-      <legend>__MSG_config.dropLinksOnTabBehavior.caption__</legend>
+      <legend>__MSG_config_dropLinksOnTabBehavior_caption__</legend>
       <ul>
         <li><label><input type="radio"
                           name="dropLinksOnTabBehavior" value="0">
-              __MSG_config.dropLinksOnTabBehavior.ask__</label></li>
+              __MSG_config_dropLinksOnTabBehavior_ask__</label></li>
         <li><label><input type="radio"
                           name="dropLinksOnTabBehavior" value="1">
-              __MSG_config.dropLinksOnTabBehavior.load__</label></li>
+              __MSG_config_dropLinksOnTabBehavior_load__</label></li>
         <li><label><input type="radio"
                           name="dropLinksOnTabBehavior" value="2">
-              __MSG_config.dropLinksOnTabBehavior.newtab__</label></li>
+              __MSG_config_dropLinksOnTabBehavior_newtab__</label></li>
       </ul>
     </fieldset>
     <p><label><input id="warnOnCloseTabs"
                      type="checkbox">
-              __MSG_config.warnOnCloseTabs.label__</label></p>
+              __MSG_config_warnOnCloseTabs_label__</label></p>
     <fieldset>
-      <legend>__MSG_config.userStyleRules.label__</legend>
-      <p>__MSG_config.userStyleRules.description.before__
-         <a href="__MSG_config.userStyleRules.description.link.uri__">__MSG_config.userStyleRules.description.link.label__</a>
-         __MSG_config.userStyleRules.description.after__</p>
+      <legend>__MSG_config_userStyleRules_label__</legend>
+      <p>__MSG_config_userStyleRules_description_before__
+         <a href="__MSG_config_userStyleRules_description_link_uri__">__MSG_config_userStyleRules_description_link_label__</a>
+         __MSG_config_userStyleRules_description_after__</p>
       <textarea id="userStyleRules"
                 rows="10"
                 style="width: 100%"></textarea>
     </fieldset>
     <fieldset>
-      <legend>__MSG_config.importedConfigsFromLegacy.label__</legend>
-      <p><label>__MSG_config.legacyConfigsNextMigrationVersion.before__
+      <legend>__MSG_config_importedConfigsFromLegacy_label__</legend>
+      <p><label>__MSG_config_legacyConfigsNextMigrationVersion_before__
                 <input id="legacyConfigsNextMigrationVersion"
                        type="number"
                        size="3">
-                 __MSG_config.legacyConfigsNextMigrationVersion.after__
-                 __MSG_config.legacyConfigsNextMigrationVersion.currentLevel.before__
+                 __MSG_config_legacyConfigsNextMigrationVersion_after__
+                 __MSG_config_legacyConfigsNextMigrationVersion_currentLevel_before__
                  <span id="legacyConfigsNextMigrationVersion-currentLevel"></span>
-                 __MSG_config.legacyConfigsNextMigrationVersion.currentLevel.after__</label></p>
+                 __MSG_config_legacyConfigsNextMigrationVersion_currentLevel_after__</label></p>
       <textarea id="importedConfigsFromLegacy"
                 rows="3"
                 style="width: 100%"
-                placeholder="__MSG_config.importedConfigsFromLegacy.placeholder__">></textarea>
+                placeholder="__MSG_config_importedConfigsFromLegacy_placeholder__">></textarea>
     </fieldset>
     <fieldset>
-      <legend>__MSG_config.importedTreeStructureFromLegacy.label__</legend>
-      <p>__MSG_config.migrateSessionStore.before__
-         <a href="__MSG_migrateSessions.link.uri__">__MSG_config.migrateSessionStore.link.label__</a>
-         __MSG_config.migrateSessionStore.after__</p>
+      <legend>__MSG_config_importedTreeStructureFromLegacy_label__</legend>
+      <p>__MSG_config_migrateSessionStore_before__
+         <a href="__MSG_migrateSessions_link_uri__">__MSG_config_migrateSessionStore_link_label__</a>
+         __MSG_config_migrateSessionStore_after__</p>
       <p><label><input id="migrateLegacyTreeStructure"
                        type="checkbox">
-               __MSG_config.migrateLegacyTreeStructure.label__</label></p>
+               __MSG_config_migrateLegacyTreeStructure_label__</label></p>
       <textarea id="importedTreeStructureFromLegacy"
                 rows="3"
                 style="width: 100%"
-                placeholder="__MSG_config.importedTreeStructureFromLegacy.placeholder__"></textarea>
+                placeholder="__MSG_config_importedTreeStructureFromLegacy_placeholder__"></textarea>
     </fieldset>
 
     <hr/>
 
-    <h1>__MSG_config.debug.caption__</h1>
+    <h1>__MSG_config_debug_caption__</h1>
     <p><label><input id="debug"
                      type="checkbox">
-             __MSG_config.debug.label__</label></p>
+             __MSG_config_debug_label__</label></p>
     <div id="debug-configs">
       <fieldset>
-        <legend>__MSG_config.log.caption__</legend>
+        <legend>__MSG_config_log_caption__</legend>
         <p><label><input id="logOnUpdated"
                          type="checkbox">
-                 __MSG_config.logOnUpdated.label__</label></p>
+                 __MSG_config_logOnUpdated_label__</label></p>
         <p><label><input id="logOnMouseEvent"
                          type="checkbox">
-                 __MSG_config.logOnMouseEvent.label__</label></p>
+                 __MSG_config_logOnMouseEvent_label__</label></p>
         <p><label><input id="logOnScroll"
                          type="checkbox">
-                 __MSG_config.logOnScroll.label__</label></p>
+                 __MSG_config_logOnScroll_label__</label></p>
         <p><label><input id="logOnCollapseExpand"
                          type="checkbox">
-                 __MSG_config.logOnCollapseExpand.label__</label></p>
+                 __MSG_config_logOnCollapseExpand_label__</label></p>
       </fieldset>
       <p><label><input id="simulateSVGContextFill"
                        type="checkbox">
-               __MSG_config.simulateSVGContextFill.label__</label></p>
+               __MSG_config_simulateSVGContextFill_label__</label></p>
       <p><label><input id="useCachedTree"
                        type="checkbox">
-               __MSG_config.useCachedTree.label__</label></p>
-      <p>__MSG_config.colorScheme.caption__
+               __MSG_config_useCachedTree_label__</label></p>
+      <p>__MSG_config_colorScheme_caption__
          <label><input type="radio"
                        name="colorScheme" value="photon">
-           __MSG_config.colorScheme.photon__</label>
+           __MSG_config_colorScheme_photon__</label>
          <label><input type="radio"
                        name="colorScheme" value="system-color">
-           __MSG_config.colorScheme.systemColor__</label>
+           __MSG_config_colorScheme_systemColor__</label>
       </p>
       <p><label><input id="acccelaratedTabDuplication"
                        type="checkbox">
-               __MSG_config.acccelaratedTabDuplication.label__</label></p>
-      <p><label>__MSG_config.maximumAcceptableDelayForTabDuplication.before__
+               __MSG_config_acccelaratedTabDuplication_label__</label></p>
+      <p><label>__MSG_config_maximumAcceptableDelayForTabDuplication_before__
                 <input id="maximumAcceptableDelayForTabDuplication"
                        type="number"
                        size="6">
-               __MSG_config.maximumAcceptableDelayForTabDuplication.after__</label></p>
-      <p>__MSG_config.sidebarScrollbarPosition.caption__
+               __MSG_config_maximumAcceptableDelayForTabDuplication_after__</label></p>
+      <p>__MSG_config_sidebarScrollbarPosition_caption__
          <label><input type="radio"
                        name="sidebarScrollbarPosition" value="0">
-           __MSG_config.sidebarScrollbarPosition.auto__</label>
+           __MSG_config_sidebarScrollbarPosition_auto__</label>
          <label><input type="radio"
                        name="sidebarScrollbarPosition" value="1">
-           __MSG_config.sidebarScrollbarPosition.left__</label>
+           __MSG_config_sidebarScrollbarPosition_left__</label>
          <label><input type="radio"
                        name="sidebarScrollbarPosition" value="2">
-           __MSG_config.sidebarScrollbarPosition.right__</label>
+           __MSG_config_sidebarScrollbarPosition_right__</label>
       </p>
-<!--
-      <p><label><input id="preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab"
-                       type="checkbox">
-                __MSG_config.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab.label__</label></p>
--->
-      <h2>__MSG_config.all.caption__</h2>
+      <h2>__MSG_config_all_caption__</h2>
     </div>
   </body>
 </html>

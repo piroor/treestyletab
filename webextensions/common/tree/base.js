@@ -195,16 +195,36 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       url: aOptions.tab.url.replace(kSHORTHAND_ABOUT_URI, kSHORTHAND_URIS[shorthand] || 'about:blank')
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
+    addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
     return;
   }
   else if ('url' in aNewState &&
            aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
+    addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
     window.onGroupTabDetected && onGroupTabDetected(aTab);
   }
   else if (aTab.apiTab &&
+           aTab.apiTab.status == 'complete' &&
            aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
-    aTab.classList.remove(kTAB_STATE_GROUP_TAB);
+    // Detect group tab from different session - which can have different UUID for the URL.
+    getSpecialTabState(aTab).then(async (aStates) => {
+      const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
+      const pathPart = aTab.apiTab.url.replace(PREFIX_REMOVER, '');
+      if (aStates.indexOf(kTAB_STATE_GROUP_TAB) > -1 &&
+          pathPart.split('?')[0] == kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
+        const parameters = pathPart.replace(/^[^\?]+\?/, '');
+        await wait(100); // for safety
+        browser.tabs.update(aTab.apiTab.id, {
+          url: `${kGROUP_TAB_URI}?${parameters}`
+        }).catch(handleMissingTabError);
+        aTab.classList.add(kTAB_STATE_GROUP_TAB);
+      }
+      else {
+        removeSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
+        aTab.classList.remove(kTAB_STATE_GROUP_TAB);
+      }
+    });
   }
 
   if (aOptions.forceApply ||
@@ -342,10 +362,16 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'hidden' in aNewState) {
-    if (aNewState.hidden)
-      aTab.classList.add(kTAB_STATE_API_TAB_HIDDEN);
-    else
-      aTab.classList.remove(kTAB_STATE_API_TAB_HIDDEN);
+    if (aNewState.hidden) {
+      if (!aTab.classList.contains(kTAB_STATE_HIDDEN)) {
+        aTab.classList.add(kTAB_STATE_HIDDEN);
+        window.onTabHidden && onTabHidden(aTab);
+      }
+    }
+    else if (aTab.classList.contains(kTAB_STATE_HIDDEN)) {
+      aTab.classList.remove(kTAB_STATE_HIDDEN);
+      window.onTabShown && onTabShown(aTab);
+    }
   }
 
   /*
@@ -391,7 +417,7 @@ windowId = ${aTab.apiTab.windowId}
   aTab.setAttribute('title', aTab.dataset.label);
   aTab.uniqueId.then(aUniqueId => {
     // reget it because it can be removed from document.
-    aTab = getTabById({ tab: aTab.apiTab.id, window: aTab.apiTab.windowId });
+    aTab = getTabById(aTab.apiTab);
     if (!aTab)
       return;
     aTab.setAttribute('title',
@@ -615,7 +641,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+      for (let i = minIndex, allTabs = getAllTabs(container); i <= maxIndex; i++) {
         let tab = allTabs[i];
         if (!tab)
           continue;
@@ -638,7 +664,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     handleMissingTabError(e);
     log('moveTabsInternallyBefore failed: ', String(e));
   }
-  return apiTabIds.map(getTabById);
+  return aTabs;
 }
 async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions);
@@ -721,7 +747,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = getTabs(container); i <= maxIndex; i++) {
+      for (let i = minIndex, allTabs = getAllTabs(container); i <= maxIndex; i++) {
         let tab = allTabs[i];
         if (!tab)
           continue;
@@ -744,7 +770,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     handleMissingTabError(e);
     log('moveTabsInternallyAfter failed: ', String(e));
   }
-  return apiTabIds.map(getTabById);
+  return aTabs;
 }
 async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions);
@@ -833,7 +859,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
           params.cookieStoreId = aOptions.cookieStoreId;
         var apiTab = await browser.tabs.create(params);
         await waitUntilTabsAreCreated(apiTab.id);
-        var tab = getTabById({ tab: apiTab.id, window: apiTab.windowId });
+        var tab = getTabById(apiTab);
         if (!tab)
           throw new Error('tab is already closed');
         if (!aOptions.opener &&
@@ -949,13 +975,13 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
   }
   catch(e) {
     notify({
-      title:   browser.i18n.getMessage('bookmark.notification.notPermitted.title'),
-      message: browser.i18n.getMessage('bookmark.notification.notPermitted.message')
+      title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
+      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message')
     });
     return null;
   }
   var folderParams = {
-    title: browser.i18n.getMessage('bookmarkFolder.label', aTabs[0].apiTab.title)
+    title: browser.i18n.getMessage('bookmarkFolder_label', aTabs[0].apiTab.title)
   };
   if (aOptions.parentId) {
     folderParams.parentId = aOptions.parentId;
@@ -976,36 +1002,39 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
 }
 
 
-function showTabs(aTabs = []) {
-  if (typeof browser.tabs.show != 'function')
-    return;
-
-  for (let tab of aTabs) {
-    if (tab.apiTab)
-      tab = tab.apiTab;
-    browser.tabs.show(tab.id);
-  }
+async function getSpecialTabState(aTab) {
+  const states = await browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES);
+  return states || [];
 }
 
-function hideTabs(aTabs = []) {
-  if (typeof browser.tabs.hide != 'function')
-    return;
+async function addSpecialTabState(aTab, aState) {
+  const states = await getSpecialTabState(aTab);
+  if (states.indexOf(aState) > -1)
+    return states;
+  states.push(aState);
+  await browser.sessions.setTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES, states);
+  return states;
+}
 
-  for (let tab of aTabs) {
-    if (tab.apiTab)
-      tab = tab.apiTab;
-    if (!tab.pinned)
-      browser.tabs.hide(tab.id);
-  }
+async function removeSpecialTabState(aTab, aState) {
+  const states = await getSpecialTabState(aTab);
+  const index = states.indexOf(aState);
+  if (index < 0)
+    return states;
+  states.splice(index, 1);
+  await browser.sessions.setTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES, states);
+  return states;
 }
 
 
 /* TST API Helpers */
 
 function serializeTabForTSTAPI(aTab) {
+  const effectiveFavIcon = TabFavIconHelper.effectiveFavIcons.get(aTab.apiTab.id);
   return Object.assign({}, aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
     indent:   parseInt(aTab.getAttribute(kLEVEL) || 0),
+    effectiveFavIconUrl: effectiveFavIcon && effectiveFavIcon.favIconUrl,
     children: getChildTabs(aTab).map(serializeTabForTSTAPI)
   });
 }

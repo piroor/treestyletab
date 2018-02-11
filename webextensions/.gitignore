@@ -6,6 +6,7 @@
 **/l10n.js
 **/MenuUI.js
 **/RichConfirm.js
+**/ShortcutCustomizeUI.js
 
 # node.js dependency
 node_modules/

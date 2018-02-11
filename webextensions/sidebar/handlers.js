@@ -164,12 +164,13 @@ function onMouseDown(aEvent) {
   clearDropPosition();
   clearDraggingState();
 
-  if (isEventFiredOnAnchor(aEvent) && !isAccelAction(aEvent)) {
+  if (isEventFiredOnAnchor(aEvent) &&
+      !isAccelAction(aEvent) &&
+      aEvent.button != 2) {
     if (configs.logOnMouseEvent)
       log('mouse down on a selector anchor');
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    aEvent.target.blur(); // this is required to prevent the selector is closed by blur event
     const selector = document.getElementById(aEvent.target.closest('[data-menu-ui]').dataset.menuUi);
     selector.ui.open({
       anchor: aEvent.target
@@ -231,8 +232,7 @@ function onMouseDown(aEvent) {
                configs.longPressOnNewTabButton) {
         const selector = document.getElementById(configs.longPressOnNewTabButton);
         if (selector) {
-          target.blur(); // this is required to prevent the selector is closed by blur event
-          gNewTabActionSelector.ui.open({
+          selector.ui.open({
             anchor: target
           });
         }
@@ -458,46 +458,16 @@ function onClick(aEvent) {
 function handleNewTabAction(aEvent, aOptions = {}) {
   if (configs.logOnMouseEvent)
     log('handleNewTabAction');
-  var parent, insertBefore, insertAfter;
-  if (configs.autoAttach || 'action' in aOptions) {
-    let current = getCurrentTab(gTargetWindow);
-    switch (aOptions.action) {
-      case kNEWTAB_DO_NOTHING:
-      case kNEWTAB_OPEN_AS_ORPHAN:
-      default:
-        break;
 
-      case kNEWTAB_OPEN_AS_CHILD: {
-        parent = current;
-        let refTabs = getReferenceTabsForNewChild(parent);
-        insertBefore = refTabs.insertBefore;
-        insertAfter  = refTabs.insertAfter;
-        if (configs.logOnMouseEvent)
-          log('detected reference tabs: ',
-              dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
-      }; break;
+  if (!configs.autoAttach && !('action' in aOptions))
+    aOptions.action = kNEWTAB_DO_NOTHING;
 
-      case kNEWTAB_OPEN_AS_SIBLING:
-        parent      = getParentTab(current);
-        insertAfter = getLastDescendantTab(parent);
-        break;
-
-      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-        parent       = getParentTab(current);
-        insertBefore = getNextSiblingTab(current);
-        insertAfter  = getLastDescendantTab(current);
-      }; break;
-    }
-  }
-  if (parent &&
-      configs.inheritContextualIdentityToNewChildTab &&
-      !aOptions.cookieStoreId)
-    aOptions.cookieStoreId = parent.apiTab.cookieStoreId;
-  openNewTab({
-    parent, insertBefore, insertAfter,
-    inBackground:  aEvent.shiftKey,
+  Commands.openNewTabAs({
+    baseTab:      getCurrentTab(gTargetWindow),
+    as:           aOptions.action,
     cookieStoreId: aOptions.cookieStoreId,
-    inRemote:      true
+    inBackground: aEvent.shiftKey,
+    inRemote:     true
   });
 }
 
@@ -634,7 +604,7 @@ function onTabBuilt(aTab, aInfo) {
 
   var twisty = document.createElement('span');
   twisty.classList.add(kTWISTY);
-  twisty.setAttribute('title', browser.i18n.getMessage('tab.twisty.collapsed.tooltip'));
+  twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
   aTab.insertBefore(twisty, label);
 
   var favicon = document.createElement('span');
@@ -657,7 +627,7 @@ function onTabBuilt(aTab, aInfo) {
 
   var closebox = document.createElement('span');
   closebox.classList.add(kCLOSEBOX);
-  closebox.setAttribute('title', browser.i18n.getMessage('tab.closebox.tab.tooltip'));
+  closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
   closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
   aTab.appendChild(closebox);
 
@@ -716,9 +686,9 @@ function onParentTabUpdated(aTab) {
 function updateTabSoundButtonTooltip(aTab) {
   var tooltip = '';
   if (maybeMuted(aTab))
-    tooltip = browser.i18n.getMessage('tab.soundButton.muted.tooltip');
+    tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
   else if (maybeSoundPlaying(aTab))
-    tooltip = browser.i18n.getMessage('tab.soundButton.playing.tooltip');
+    tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
   markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
@@ -727,10 +697,6 @@ function updateTabSoundButtonTooltip(aTab) {
 function onTabFocused(aTab, aInfo = {}) {
   tabContextMenu.close();
   scrollToTab(aTab);
-
-  if (configs.hideInactiveTabs &&
-      aInfo.oldActiveTabs)
-    hideTabs(aInfo.oldActiveTabs);
 }
 
 function onTabOpening(aTab, aInfo = {}) {
@@ -762,9 +728,6 @@ function onTabOpened(aTab, aInfo = {}) {
     else
       notifyOutOfViewTab(aTab);
   }
-
-  if (configs.hideInactiveTabs)
-    hideTabs([aTab]);
 
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
@@ -815,15 +778,19 @@ async function onWindowRestoring(aWindowId) {
   log('onWindowRestoring restore! ', cache);
   gMetricsData.add('onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
-  var tabs = await browser.tabs.query({ windowId: aWindowId });
-  restoreTabsFromCache(cache.tabbar, {
+  const apiTabs = await browser.tabs.query({ windowId: aWindowId });
+  const restored = await restoreTabsFromCache(cache.tabbar, {
     offset: cache.offset || 0,
-    tabs
+    tabs:   apiTabs
   });
+  if (!restored) {
+    await rebuildAll();
+    await inheritTreeStructure();
+  }
   updateVisualMaxTreeLevel();
   updateIndent({
     force: true,
-    cache: cache.offset == 0 ? cache.indent : null
+    cache: restored && cache.offset == 0 ? cache.indent : null
   });
   updateTabbarLayout({ justNow: true });
   unblockUserOperations({ throbber: true });
@@ -1007,6 +974,9 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   });
 }
 function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
+  if (isActive(aTab) && !aOptions.collapsed)
+    scrollToTab(aTab);
+
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     reserveToUpdateVisualMaxTreeLevel();
@@ -1162,9 +1132,23 @@ function onTabUnpinned(aTab) {
   clearPinnedStyle(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
-  if (!isActive(aTab))
-    hideTabs([aTab]);
   reserveToPositionPinnedTabs();
+  reserveToUpdateCachedTabbar();
+}
+
+function onTabShown(aTab) {
+  tabContextMenu.close();
+  reserveToPositionPinnedTabs();
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
+  reserveToUpdateCachedTabbar();
+}
+
+function onTabHidden(aTab) {
+  tabContextMenu.close();
+  reserveToPositionPinnedTabs();
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
   reserveToUpdateCachedTabbar();
 }
 
@@ -1186,7 +1170,7 @@ function onGroupTabDetected(aTab) {
   if (!title)
     title = parameters.match(/^\?([^&;]*)/);
   title = title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab.label.default');
+           browser.i18n.getMessage('groupTab_label_default');
   aTab.apiTab.title = title;
   wait(0).then(() => {
     updateTab(aTab, { title }, { tab: aTab.apiTab });
@@ -1200,6 +1184,11 @@ function onContextualIdentitiesUpdated() {
 
 
 /* message observer */
+
+var gTreeChangesFromRemote = [];
+function waitUntilAllTreeChangesFromRemoteAreComplete() {
+  return Promise.all(gTreeChangesFromRemote);
+}
 
 function onMessage(aMessage, aSender, aRespond) {
   if (!aMessage ||
@@ -1293,24 +1282,32 @@ function onMessage(aMessage, aSender, aRespond) {
       })();
 
     case kCOMMAND_ATTACH_TAB_TO: {
-      if (aMessage.windowId == gTargetWindow) return (async () => {
-        await waitUntilTabsAreCreated([
-          aMessage.child,
-          aMessage.parent,
-          aMessage.insertBefore,
-          aMessage.insertAfter
-        ]);
-        log('attach tab from remote ', aMessage);
-        let child  = getTabById(aMessage.child);
-        let parent = getTabById(aMessage.parent);
-        if (child && parent)
-          attachTabTo(child, parent, Object.assign({}, aMessage, {
-            insertBefore: getTabById(aMessage.insertBefore),
-            insertAfter:  getTabById(aMessage.insertAfter),
-            inRemote:     false,
-            broadcast:    false
-          }));
-      })();
+      if (aMessage.windowId == gTargetWindow) {
+        const promisedComplete = (async () => {
+          await Promise.all([
+            waitUntilTabsAreCreated([
+              aMessage.child,
+              aMessage.parent,
+              aMessage.insertBefore,
+              aMessage.insertAfter
+            ]),
+            waitUntilAllTreeChangesFromRemoteAreComplete()
+          ]);
+          log('attach tab from remote ', aMessage);
+          let child  = getTabById(aMessage.child);
+          let parent = getTabById(aMessage.parent);
+          if (child && parent)
+            await attachTabTo(child, parent, Object.assign({}, aMessage, {
+              insertBefore: getTabById(aMessage.insertBefore),
+              insertAfter:  getTabById(aMessage.insertAfter),
+              inRemote:     false,
+              broadcast:    false
+            }));
+          gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
+        })();
+        gTreeChangesFromRemote.push(promisedComplete);
+        return promisedComplete;
+      }
     }; break;
 
     case kCOMMAND_TAB_ATTACHED_COMPLETELY:
@@ -1325,12 +1322,20 @@ function onMessage(aMessage, aSender, aRespond) {
       })();
 
     case kCOMMAND_DETACH_TAB: {
-      if (aMessage.windowId == gTargetWindow) return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = getTabById(aMessage.tab);
-        if (tab)
-          detachTab(tab, aMessage);
-      })();
+      if (aMessage.windowId == gTargetWindow) {
+        const promisedComplete = (async () => {
+          await Promise.all([
+            waitUntilTabsAreCreated(aMessage.tab),
+            waitUntilAllTreeChangesFromRemoteAreComplete()
+          ]);
+          let tab = getTabById(aMessage.tab);
+          if (tab)
+            detachTab(tab, aMessage);
+          gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
+        })();
+        gTreeChangesFromRemote.push(promisedComplete);
+        return promisedComplete;
+      }
     }; break;
 
     case kCOMMAND_BLOCK_USER_OPERATIONS: {
@@ -1380,21 +1385,57 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
       gCurrentDragData = aMessage.dragData || null;
       break;
+
+    case kCOMMAND_BROADCAST_API_REGISTERED:
+      if (aMessage.message.style)
+        installStyleForAddon(aMessage.sender.id, aMessage.message.style)
+      break;
+
+    case kCOMMAND_BROADCAST_API_UNREGISTERED:
+      uninstallStyleForAddon(aMessage.sender.id)
+      delete gScrollLockedBy[aMessage.sender.id];
+      break;
+
+    case kCOMMAND_SHOW_CONTAINER_SELECTOR:
+      Commands.showContainerSelector();
+      break;
+
+    case kCOMMAND_SCROLL_TABBAR:
+      switch (String(aMessage.by).toLowerCase()) {
+        case 'lineup':
+          smoothScrollBy(-gTabHeight * configs.scrollLines);
+          break;
+
+        case 'pageup':
+          smoothScrollBy(-gTabBar.getBoundingClientRect().height + gTabHeight);
+          break;
+
+        case 'linedown':
+          smoothScrollBy(gTabHeight * configs.scrollLines);
+          break;
+
+        case 'pagedown':
+          smoothScrollBy(gTabBar.getBoundingClientRect().height - gTabHeight);
+          break;
+
+        default:
+          switch (String(aMessage.to).toLowerCase()) {
+            case 'top':
+              smoothScrollTo({ position: 0 });
+              break;
+
+            case 'bottom':
+              smoothScrollTo({ position: gTabBar.scrollTopMax });
+              break;
+          }
+          break;
+      }
+      break;
   }
 }
 
 function onMessageExternal(aMessage, aSender) {
   switch (aMessage.type) {
-    case kTSTAPI_REGISTER_SELF: {
-      if (aMessage.style)
-        installStyleForAddon(aSender.id, aMessage.style)
-    }; break;
-
-    case kTSTAPI_UNREGISTER_SELF: {
-      uninstallStyleForAddon(aSender.id)
-      delete gScrollLockedBy[aSender.id];
-    }; break;
-
     case kTSTAPI_SCROLL_LOCK:
       gScrollLockedBy[aSender.id] = true;
       return Promise.resolve(true);
@@ -1490,13 +1531,6 @@ function onConfigChange(aChangedKey) {
       updateIndent({ force: true });
       break;
 
-    case 'hideInactiveTabs':
-      if (configs.hideInactiveTabs)
-        hideTabs(getAllTabs());
-      else
-        showTabs(getAllTabs());
-      break;
-
     case 'style':
       location.reload();
       break;
@@ -1556,10 +1590,13 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'useCachedTree':
-      if (configs[aChangedKey])
+      if (configs[aChangedKey]) {
         reserveToUpdateCachedTabbar();
-      else
-        clearWindowCache().then(() => location.reload());
+      }
+      else {
+        clearWindowCache();
+        location.reload();
+      }
       break;
 
     case 'simulateSVGContextFill':

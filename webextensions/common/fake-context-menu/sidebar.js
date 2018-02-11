@@ -238,8 +238,8 @@ var tabContextMenu = {
   },
 
   onCommand: async function(aItem, aEvent) {
-    if (aEvent.button != 0)
-      return this.close();
+    if (aEvent.button == 1)
+      return;
 
     switch (aItem.id) {
       case 'context_reloadTab':
@@ -267,8 +267,8 @@ var tabContextMenu = {
         */
         // browser.tabs.duplicate(this.contextTab.id);
         return (async () => {
-          let sourceTab = getTabById(this.contextTab.id);
-          console.log('source tab: ', sourceTab, !!sourceTab.apiTab);
+          let sourceTab = getTabById(this.contextTab);
+          //console.log('source tab: ', sourceTab, !!sourceTab.apiTab);
           let duplicatedTabs = await moveTabs([sourceTab], {
             duplicate:           true,
             destinationWindowId: this.contextWindowId,
@@ -288,21 +288,21 @@ var tabContextMenu = {
         });
         break;
       case 'context_reloadAllTabs': {
-        let tabs = await browser.tabs.query({ windowId: this.contextWindowId });
-        for (let tab of tabs) {
-          browser.tabs.reload(tab.id);
+        let apiTabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        for (let apiTab of apiTabs) {
+          browser.tabs.reload(apiTab.id);
         }
       }; break;
       case 'context_bookmarkAllTabs': {
-        let tabs   = await browser.tabs.query({ windowId: this.contextWindowId });
-        let folder = await bookmarkTabs(tabs.map(aTab => getTabById(aTab.id)));
+        let apiTabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        let folder = await bookmarkTabs(apiTabs.map(getTabById));
         if (folder)
           browser.bookmarks.get(folder.parentId).then(aFolders => {
             notify({
-              title:   browser.i18n.getMessage('bookmarkTabs.notification.success.title'),
-              message: browser.i18n.getMessage('bookmarkTabs.notification.success.message', [
-                tabs[0].title,
-                tabs.length,
+              title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
+              message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
+                apiTabs[0].title,
+                apiTabs.length,
                 aFolders[0].title
               ]),
               icon:    kNOTIFICATION_DEFAULT_ICON
@@ -310,33 +310,33 @@ var tabContextMenu = {
           });
       }; break;
       case 'context_closeTabsToTheEnd': {
-        let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
+        let apiTabs = await browser.tabs.query({ windowId: this.contextWindowId });
         let after = false;
-        let closeTabs = [];
-        for (let tab of tabs) {
-          if (tab.id == this.contextTab.id) {
+        let closeAPITabs = [];
+        for (let apiTab of apiTabs) {
+          if (apiTab.id == this.contextTab.id) {
             after = true;
             continue;
           }
-          if (after && !tab.pinned)
-            closeTabs.push(tab);
+          if (after && !apiTab.pinned)
+            closeAPITabs.push(apiTab);
         }
-        confirmToCloseTabs(closeTabs.length, { windowId: this.contextWindowId })
+        confirmToCloseTabs(closeAPITabs.length, { windowId: this.contextWindowId })
           .then(aConfirmed => {
             if (!aConfirmed)
               return;
-            browser.tabs.remove(closeTabs.map(aTab => aTab.id));
+            browser.tabs.remove(closeAPITabs.map(aAPITab => aAPITab.id));
           });
       }; break;
       case 'context_closeOtherTabs': {
-        let tabId = this.contextTab.id; // cache it for delayed tasks!
-        let tabs  = await browser.tabs.query({ windowId: this.contextWindowId });
-        let closeTabs = tabs.filter(aTab => !aTab.pinned && aTab.id != tabId).map(aTab => aTab.id);
-        confirmToCloseTabs(closeTabs.length, { windowId: this.contextWindowId })
+        let apiTabId = this.contextTab.id; // cache it for delayed tasks!
+        let apiTabs  = await browser.tabs.query({ windowId: this.contextWindowId });
+        let closeAPITabs = apiTabs.filter(aAPITab => !aAPITab.pinned && aAPITab.id != apiTabId).map(aAPITab => aAPITab.id);
+        confirmToCloseTabs(closeAPITabs.length, { windowId: this.contextWindowId })
           .then(aConfirmed => {
             if (!aConfirmed)
               return;
-            browser.tabs.remove(closeTabs);
+            browser.tabs.remove(closeAPITabs);
           });
       }; break;
       case 'context_undoCloseTab': {

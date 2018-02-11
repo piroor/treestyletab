@@ -23,6 +23,7 @@ async function init() {
   window.addEventListener('pagehide', destroy, { once: true });
 
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
+  browser.commands.onCommand.addListener(onShortcutCommand);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
   browser.windows.onFocusChanged.addListener(() => {
     gMaybeTabSwitchingByShortcut = false;
@@ -66,10 +67,13 @@ async function init() {
         }).then(aWindows => {
           for (let window of aWindows) {
             let owner = window.tabs[window.tabs.length - 1];
-            if (configs[aKey])
+            if (configs[aKey]) {
               reserveToCacheTree(owner.windowId);
-            else
-              clearWindowCache(owner.id).then(() => location.reload());
+            }
+            else {
+              clearWindowCache(owner.id);
+              location.reload();
+            }
           }
         });
         break;
@@ -170,12 +174,12 @@ async function rebuildAll() {
   var insertionPoint = document.createRange();
   insertionPoint.selectNodeContents(gAllTabs);
   var restoredFromCache = {};
-  await Promise.all(windows.map(aWindow =>
-    gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
+  await Promise.all(windows.map(async (aWindow) => {
+    await gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
       if (configs.useCachedTree) {
         restoredFromCache[aWindow.id] = await restoreWindowFromEffectiveWindowCache(aWindow.id, {
           insertionPoint,
-          owner: aWindow.tabs[aWindow.tabs.length - 1].id,
+          owner: aWindow.tabs[aWindow.tabs.length - 1],
           tabs:  aWindow.tabs
         });
         for (let tab of getAllTabs(aWindow.id)) {
@@ -196,8 +200,12 @@ async function rebuildAll() {
       }
       gAllTabs.appendChild(container);
       restoredFromCache[aWindow.id] = false;
-    })
-  ));
+    });
+    for (let tab of getAllTabs(aWindow.id).filter(isGroupTab)) {
+      if (!isDiscarded(tab))
+        browser.tabs.reload(tab.apiTab.id);
+    }
+  }));
   insertionPoint.detach();
   return restoredFromCache;
 }
@@ -236,7 +244,7 @@ async function tryInitGroupTab(aTab) {
     matchAboutBlank: true
   };
   var initialized = await browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
-    code:  'window.initialized',
+    code:  'window.init && window.init.done',
   }));
   if (initialized[0])
     return;
@@ -245,9 +253,6 @@ async function tryInitGroupTab(aTab) {
   }));
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'
-  }));
-  browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
-    code:  'if (!window.initialized) init();'
   }));
 }
 
@@ -260,8 +265,6 @@ function startWatchSidebarOpenState() {
     gSidebarOpenState.set(windowId, true);
     aPort.onDisconnect.addListener(aMessage => {
       gSidebarOpenState.delete(windowId);
-      if (configs.hideInactiveTabs)
-        showTabs(getAllTabs(windowId));
     });
   });
 }
@@ -667,38 +670,38 @@ function cleanupNeedlssGroupTab(aTabs) {
 }
 
 function reserveToUpdateParentGroupTab(aTab) {
-  var parent = getParentTab(aTab);
-  if (!parent ||
-      !isGroupTab(parent) ||
-      aTab != getFirstChildTab(parent))
-    return;
-
-  if (parent.reservedUpdateParentGroupTab)
-    clearTimeout(parent.reservedUpdateParentGroupTab);
-  parent.reservedUpdateParentGroupTab = setTimeout(() => {
-    delete parent.reservedUpdateParentGroupTab;
-    updateParentGroupTab(parent);
-  }, 100);
+  var ancestorGroupTabs = [aTab].concat(getAncestorTabs(aTab)).filter(isGroupTab);
+  for (let tab of ancestorGroupTabs) {
+    if (tab.reservedUpdateParentGroupTab)
+      clearTimeout(tab.reservedUpdateParentGroupTab);
+    tab.reservedUpdateParentGroupTab = setTimeout(() => {
+      delete tab.reservedUpdateParentGroupTab;
+      updateParentGroupTab(tab);
+    }, 100);
+  }
 }
 
-function updateParentGroupTab(aParentTab) {
+async function updateParentGroupTab(aParentTab) {
   if (!ensureLivingTab(aParentTab))
     return;
+
+  await tryInitGroupTab(aParentTab);
+  await browser.tabs.executeScript(aParentTab.apiTab.id, {
+    runAt:           'document_start',
+    matchAboutBlank: true,
+    code:            `updateTree()`,
+  });
 
   if (!kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aParentTab.apiTab.title))
     return;
 
   var firstChild = getFirstChildTab(aParentTab);
-  var newTitle = browser.i18n.getMessage('groupTab.label', firstChild.apiTab.title);
+  var newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
   if (aParentTab.apiTab.title == newTitle)
     return;
 
   var url = aParentTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
-  browser.tabs.executeScript(aParentTab.apiTab.id, {
-    runAt:           'document_start',
-    matchAboutBlank: true,
-    code:            `location.replace(${JSON.stringify(url)})`,
-  });
+  browser.tabs.update(aParentTab.apiTab.id, { url });
 }
 
 
@@ -715,17 +718,17 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       windowId: aOptions.windowId
     });
 
-  let tabs = await browser.tabs.query({
+  let apiTabs = await browser.tabs.query({
     active:   true,
     windowId: aOptions.windowId
   });
-  let result = await RichConfirm.showInTab(tabs[0].id, {
-    message: browser.i18n.getMessage('warnOnCloseTabs.message', [aCount]),
+  let result = await RichConfirm.showInTab(apiTabs[0].id, {
+    message: browser.i18n.getMessage('warnOnCloseTabs_message', [aCount]),
     buttons: [
-      browser.i18n.getMessage('warnOnCloseTabs.close'),
-      browser.i18n.getMessage('warnOnCloseTabs.cancel')
+      browser.i18n.getMessage('warnOnCloseTabs_close'),
+      browser.i18n.getMessage('warnOnCloseTabs_cancel')
     ],
-    checkMessage: browser.i18n.getMessage('warnOnCloseTabs.warnAgain'),
+    checkMessage: browser.i18n.getMessage('warnOnCloseTabs_warnAgain'),
     checked: true
   });
   switch (result.buttonIndex) {

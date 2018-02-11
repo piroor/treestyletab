@@ -214,6 +214,12 @@ ul {
   z-index: 100;
 }
 
+.tab.hidden {
+  pointer-events: none;
+  position: fixed;
+  visibility: collapse;
+}
+
 :root.animation .tab.animation-ready,
 :root.animation .after-tabs button {
   transition: var(--tab-animation);
@@ -225,7 +231,7 @@ ul {
 }
 
 .tab.removing,
-.tab.collapsed,
+.tab:not(.pinned).collapsed,
 .tab.duplicating {
   margin-top: calc(0px - var(--tab-height));
   opacity: 0;
@@ -233,7 +239,7 @@ ul {
   z-index: -100;
 }
 
-.tab.collapsed-completely {
+.tab:not(.pinned).collapsed-completely {
   visibility: collapse;
 }
 
@@ -513,10 +519,15 @@ ul {
   transition: opacity var(--collapse-animation);
   z-index: 200;
 }
-.after-tabs .newtab-action-selector-anchor {
+:root.contextual-identity-selectable
+  .after-tabs
+  .newtab-action-selector-anchor {
   border-width: 0 1px 0 0;
   left: 0;
 }
+:root:not(.contextual-identity-selectable)
+  .after-tabs
+  .newtab-action-selector-anchor,
 .after-tabs .contextual-identities-selector-anchor {
   border-width: 0 0 0 1px;
   right: 0;

@@ -60,6 +60,7 @@ li label img {
   margin-bottom: 0.15em;
 }
 
+
 :root:not(.debugging) #debug-configs {
   max-height: 0;
   overflow: hidden;

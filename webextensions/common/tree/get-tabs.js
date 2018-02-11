@@ -109,16 +109,34 @@ function getTabFromChild(aNode) {
 function getTabById(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
-  var selector;
-  if (typeof aIdOrInfo == 'string')
-    selector = `${kSELECTOR_LIVE_TAB}#${aIdOrInfo}`;
-  else if (typeof aIdOrInfo == 'number')
-    selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo}"]`;
-  else if (!aIdOrInfo.window)
-    selector = `${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`;
-  else
-    selector = `${kSELECTOR_LIVE_TAB}#tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`;
-  return document.querySelector(selector);
+
+  if (aIdOrInfo.nodeType == Node.ELEMENT_NODE) // tab element itself
+    return aIdOrInfo;
+
+  if (typeof aIdOrInfo == 'string') { // tab-x-x
+    const tab = document.getElementById(aIdOrInfo);
+    if (tab)
+      return tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
+    else // possible unique id
+      return getTabByUniqueId(aIdOrInfo);
+  }
+
+  if (typeof aIdOrInfo == 'number') // tabs.Tab.id
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo}"]`);
+
+  if (aIdOrInfo.id && aIdOrInfo.windowId) { // tabs.Tab
+    const tab = document.getElementById(makeTabId(aIdOrInfo));
+    return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
+  }
+  else if (!aIdOrInfo.window) { // { tab: tabs.Tab.id }
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`);
+  }
+  else { // { tab: tabs.Tab.id, window: windows.Window.id }
+    const tab = document.getElementById(`tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`);
+    return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
+  }
+
+  return null;
 }
 
 function getTabByUniqueId(aId) {
@@ -143,14 +161,21 @@ function getNextTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
-  return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
+  let next = aTab;
+  while ((next = next.nextElementSibling)) {
+    if (next.matches(kSELECTOR_LIVE_TAB))
+      return next;
+  }
+  return null;
+  // don't use '~' selector, it is too slow...
+  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
 }
 
 function getPreviousTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
-  var previous = aTab;
+  let previous = aTab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_LIVE_TAB))
       return previous;
@@ -183,7 +208,7 @@ function getTabIndex(aTab, aOptions = {}) {
     return -1;
   assertValidHint(aTab);
 
-  var tabs = getTabs(aTab);
+  var tabs = getAllTabs(aTab);
   if (Array.isArray(aOptions.ignoreTabs) &&
       aOptions.ignoreTabs.length > 0)
     tabs = tabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
@@ -204,14 +229,21 @@ function getNextNormalTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
+  let next = aTab;
+  while ((next = next.nextElementSibling)) {
+    if (next.matches(kSELECTOR_NORMAL_TAB))
+      return next;
+  }
+  return null;
+  // don't use '~' selector, it is too slow...
+  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
 }
 
 function getPreviousNormalTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  var previous = aTab;
+  let previous = aTab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_NORMAL_TAB))
       return previous;
@@ -245,7 +277,7 @@ function getOpenerTab(aTab) {
       !aTab.apiTab.openerTabId ||
       aTab.apiTab.openerTabId == aTab.apiTab.id)
     return null;
-  return getTabById(aTab.apiTab.openerTabId);
+  return getTabById({ id: aTab.apiTab.openerTabId, windowId: aTab.apiTab.windowId });
 }
 
 function getParentTab(aChild) {
@@ -500,14 +532,21 @@ function getNextVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
+  let next = aTab;
+  while ((next = next.nextElementSibling)) {
+    if (next.matches(kSELECTOR_VISIBLE_TAB))
+      return next;
+  }
+  return null;
+  // don't use '~' selector, it is too slow...
+  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
 }
 
 function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
-  var previous = aTab;
+  let previous = aTab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_VISIBLE_TAB))
       return previous;
@@ -540,8 +579,7 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
   await aAsyncTask();
   var afterApiTabs = await browser.tabs.query(tabsQueryOptions);
   var addedApiTabs = afterApiTabs.filter(aAfterApiTab => beforeApiIds.indexOf(aAfterApiTab.id) < 0);
-  var addedTabs    = addedApiTabs.map(aApiTab => getTabById({ tab: aApiTab.id, window: aApiTab.windowId })
-  );
+  var addedTabs    = addedApiTabs.map(getTabById);
   return addedTabs;
 }
 
@@ -568,5 +606,6 @@ function getGroupTabForOpener(aOpener) {
   if (!tab)
     return null;
   return tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}$="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}"],
+                                       ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}#"],
                                        ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}&"]`);
 }

@@ -17,7 +17,7 @@ async function getEffectiveWindowCache(aOptions = {}) {
   await Promise.all([
     (async () => {
       var apiTabs = await browser.tabs.query({ currentWindow: true });
-      gLastWindowCacheOwner = apiTabs[apiTabs.length - 1].id;
+      gLastWindowCacheOwner = apiTabs[apiTabs.length - 1];
       var tabsDirty, collapsedDirty;
       [cache, tabsDirty, collapsedDirty] = await Promise.all([
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
@@ -25,7 +25,7 @@ async function getEffectiveWindowCache(aOptions = {}) {
         getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
       ]);
       cachedSignature = cache && cache.signature;
-      log(`getEffectiveWindowCache: got from the owner ${gLastWindowCacheOwner}`, {
+      log(`getEffectiveWindowCache: got from the owner ${gLastWindowCacheOwner.id}`, {
         cachedSignature, cache, tabsDirty, collapsedDirty
       });
       if (cache &&
@@ -151,39 +151,41 @@ function updateWindowCache(aKey, aValue) {
   if (aValue === undefined) {
     //log('updateWindowCache: delete cache from ', gLastWindowCacheOwner, aKey);
     //return browser.sessions.removeWindowValue(gLastWindowCacheOwner, aKey);
-    return browser.sessions.removeTabValue(gLastWindowCacheOwner, aKey);
+    return browser.sessions.removeTabValue(gLastWindowCacheOwner.id, aKey);
   }
   else {
     //log('updateWindowCache: set cache for ', gLastWindowCacheOwner, aKey);
     //return browser.sessions.setWindowValue(gLastWindowCacheOwner, aKey, aValue);
-    return browser.sessions.setTabValue(gLastWindowCacheOwner, aKey, aValue);
+    return browser.sessions.setTabValue(gLastWindowCacheOwner.id, aKey, aValue);
   }
 }
 
 function clearWindowCache() {
   log('clearWindowCache ', { stack: new Error().stack });
-  return Promise.all([
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-    updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
-  ]);
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR);
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
 function markWindowCacheDirty(akey) {
-  return updateWindowCache(akey, true);
+  if (markWindowCacheDirty.timeout)
+    clearTimeout(markWindowCacheDirty.timeout);
+  markWindowCacheDirty.timeout = setTimeout(() => {
+    markWindowCacheDirty.timeout = null;
+    updateWindowCache(akey, true);
+  }, 100);
 }
 
 async function getWindowCache(aKey) {
   if (!gLastWindowCacheOwner)
     return null;
   //return browser.sessions.getWindowValue(gLastWindowCacheOwner, aKey);
-  return browser.sessions.getTabValue(gLastWindowCacheOwner, aKey);
+  return browser.sessions.getTabValue(gLastWindowCacheOwner.id, aKey);
 }
 
 function getWindowCacheOwner() {
-  var tab = getLastTab();
-  var apiTab = tab && tab.apiTab;
-  return apiTab && apiTab.id;
+  const tab = getLastTab();
+  return tab && tab.apiTab;
 }
 
 async function reserveToUpdateCachedTabbar() {

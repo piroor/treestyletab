@@ -125,12 +125,9 @@ configs = new Configs({
   narrowScrollbarSize: 8,
 
   showContextualIdentitiesSelector: false,
-  showNewTabActionSelector: false,
-  longPressOnNewTabButton: kNEWTAB_ACTION_SELECTOR,
+  showNewTabActionSelector: true,
+  longPressOnNewTabButton: kCONTEXTUAL_IDENTITY_SELECTOR,
   zoomable: false,
-
-  hideInactiveTabs: false,
-  preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab: true,
 
 
   // context menu
@@ -155,7 +152,8 @@ configs = new Configs({
 
   autoExpandIntelligently: true,
   autoExpandOnCollapsedChildFocused: true,
-  autoExpandOnCollapsedChildFocusedDelay: 800,
+  autoExpandOnTabSwitchingShortcuts: true,
+  autoExpandOnTabSwitchingShortcutsDelay: 800,
   autoExpandOnLongHover: true,
   autoExpandOnLongHoverDelay: 500,
   autoExpandOnLongHoverRestoreIniitalState: true,
@@ -181,6 +179,7 @@ configs = new Configs({
   insertNewTabFromPinnedTabAt: kINSERT_NO_CONTROL,
 
   scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
+  scrollLines: 3,
 
   autoAttach: true,
   autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD,
@@ -222,6 +221,7 @@ configs = new Configs({
   preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400,
+  minimumIntervalToProcessDragoverEvent: 50,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
   autoDiscardTabForUnexpectedFocus: false,
   knownExternalAddons: [
@@ -279,8 +279,6 @@ configs = new Configs({
     showContextualIdentitiesSelector
     showNewTabActionSelector
     zoomable
-    hideInactiveTabs
-    preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab
     context_reloadTree
     context_reloadDescendants
     context_closeTree
@@ -296,7 +294,8 @@ configs = new Configs({
     collapseExpandSubtreeByDblClick
     autoExpandIntelligently
     autoExpandOnCollapsedChildFocused
-    autoExpandOnCollapsedChildFocusedDelay
+    autoExpandOnTabSwitchingShortcuts
+    autoExpandOnTabSwitchingShortcutsDelay
     autoExpandOnLongHover
     autoExpandOnLongHoverDelay
     autoExpandOnLongHoverRestoreIniitalState
@@ -311,6 +310,7 @@ configs = new Configs({
     insertNewChildAt
     insertNewTabFromPinnedTabAt
     scrollToNewTabMode
+    scrollLines
     autoAttach
     autoAttachOnOpenedWithOwner
     autoAttachOnNewTabCommand

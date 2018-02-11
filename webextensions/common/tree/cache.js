@@ -68,7 +68,7 @@ function restoreTabsFromCacheInternal(aParams) {
     insertionPoint.setStartBefore(getTabById(makeTabId(apiTabs[0])));
     insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
-    let tabsMustBeRemoved = apiTabs.map(aApiTab => getTabById(makeTabId(aApiTab)));
+    let tabsMustBeRemoved = apiTabs.map(getTabById);
     log('restoreTabsFromCacheInternal: cleared?: ',
         tabsMustBeRemoved.every(aTab => !aTab),
         tabsMustBeRemoved.map(dumpTab));
@@ -170,7 +170,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 
   // update focused tab appearance
   browser.tabs.query({ windowId: aTabs[0].apiTab.windowId, active: true })
-    .then(aActiveTabs => updateTabFocused(getTabById(aActiveTabs[0].id)));
+    .then(aActiveTabs => updateTabFocused(getTabById(aActiveTabs[0])));
 }
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {

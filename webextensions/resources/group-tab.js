@@ -12,19 +12,22 @@ var gTitleField;
 document.title = getTitle();
 
 function getTitle() {
-  var title = location.search.match(/[&?]title=([^&;]*)/);
+  const params = location.search.split('#')[0];
+  let title = params.match(/[&?]title=([^&;]*)/);
   if (!title)
-    title = location.search.match(/^\?([^&;]*)/);
+    title = params.match(/^\?([^&;]*)/);
   return title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab.label.default');
+           browser.i18n.getMessage('groupTab_label_default');
 }
 
 function isTemporary() {
-  return /[&?]temporary=true/.test(location.search);
+  const params = location.search.split('#')[0];
+  return /[&?]temporary=true/.test(params);
 }
 
 function getOpenerTabId() {
-  var matched = location.search.match(/[&?]openerTabId=([^&;]*)/);
+  const params = location.search.split('#')[0];
+  const matched = params.match(/[&?]openerTabId=([^&;]*)/);
   return matched && matched[1];
 }
 
@@ -91,6 +94,14 @@ function init() {
     }
   });
   window.addEventListener('click', aEvent => {
+    const link = aEvent.target.closest('a');
+    if (link) {
+      browser.runtime.sendMessage({
+        type: 'treestyletab:api:focus',
+        tab:  parseInt(link.dataset.tabId)
+      });
+      return;
+    }
     if (aEvent.button == 0 &&
         !hasModifier(aEvent) &&
         aEvent.target != gTitleField) {
@@ -105,6 +116,8 @@ function init() {
       enterTitleEdit();
   });
 
+  window.addEventListener('resize', reflow);
+
   gTitle.textContent = gTitleField.value = getTitle();
 
   gTemporaryCheck = document.querySelector('#temporary');
@@ -112,6 +125,123 @@ function init() {
   gTemporaryCheck.addEventListener('change', aEvent => updateParameters());
 
   l10n.updateDocument();
-  window.initialized = true;
+
+  updateTree();
+  init.done = true;
 }
 //document.addEventListener('DOMContentLoaded', init, { once: true });
+
+
+async function updateTree() {
+  const tabs = await browser.runtime.sendMessage({
+    type: 'treestyletab:api:get-tree',
+    tabs: [
+      'senderTab',
+      getOpenerTabId()
+    ]
+  });
+  const container = document.getElementById('tabs');
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  range.deleteContents();
+  range.detach();
+  let tree;
+  if (tabs[1]) {
+    tabs[1].children = tabs[0].children;
+    tree = buildTabChildren({ children: [tabs[1]] });
+  }
+  else
+    tree = buildTabChildren(tabs[0]);
+  if (tree) {
+    container.appendChild(tree);
+    reflow();
+  }
+}
+
+function reflow() {
+  const container = document.getElementById('tabs');
+  columnizeTree(container.firstChild, {
+    columnWidth: '20em',
+    containerRect: container.getBoundingClientRect()
+  });
+}
+
+var DEFAULT_FAVICON_URL = '/sidebar/styles/icons/moon.svg';
+
+function buildTabItem(aTab) {
+  const item = document.createElement('li');
+
+  const link = item.appendChild(document.createElement('a'));
+  link.href = '#';
+  link.setAttribute('title', aTab.title);
+  link.dataset.tabId = aTab.id;
+
+  const icon = link.appendChild(document.createElement('img'));
+  icon.src = aTab.effectiveFavIconUrl || aTab.favIconUrl || DEFAULT_FAVICON_URL;
+  icon.onerror = () => {
+    icon.src = DEFAULT_FAVICON_URL;
+  };
+
+  const label = link.appendChild(document.createElement('span'));
+  label.classList.add('label');
+  label.textContent = aTab.title;
+
+  const children = buildTabChildren(aTab);
+  if (!children)
+    return item;
+
+  const fragment = document.createDocumentFragment();
+  fragment.appendChild(item);
+  const childrenWrapped = document.createElement('li');
+  childrenWrapped.appendChild(children);
+  fragment.appendChild(childrenWrapped);
+  return fragment;
+}
+
+function buildTabChildren(aTab) {
+  if (aTab.children && aTab.children.length > 0) {
+    const list = document.createElement('ul');
+    for (let child of aTab.children) {
+      list.appendChild(buildTabItem(child));
+    }
+    return list;
+  }
+  return null;
+}
+
+function columnizeTree(aTree, aOptions) {
+  aOptions = aOptions || {};
+  aOptions.columnWidth = aOptions.columnWidth || '20em';
+
+  const style = aTree.style;
+  style.columnWidth = style.MozColumnWidth = `calc(${aOptions.columnWidth})`;
+  const computedStyle = window.getComputedStyle(aTree, null);
+  aTree.columnWidth = Number((computedStyle.MozColumnWidth || computedStyle.columnWidth).replace(/px/, ''));
+  style.columnGap   = style.MozColumnGap = '1em';
+  style.columnFill  = style.MozColumnFill = 'auto';
+  style.columnCount = style.MozColumnCount = 'auto';
+
+  const containerRect = aOptions.containerRect || aTree.parentNode.getBoundingClientRect();
+  const maxWidth = containerRect.width;
+  if (aTree.columnWidth * 2 <= maxWidth ||
+      aOptions.calculateCount) {
+    style.height = style.maxHeight =
+      Math.floor(containerRect.height * 0.9) + 'px';
+
+    if (getActualColumnCount(aTree) <= 1)
+      style.columnWidth = style.MozColumnWidth = '';
+  }
+  else {
+    style.height = style.maxHeight = '';
+  }
+}
+
+function getActualColumnCount(aTree) {
+  const range = document.createRange();
+  range.selectNodeContents(aTree);
+  const rect = range.getBoundingClientRect();
+  range.detach();
+  return Math.floor(rect.width / aTree.columnWidth);
+}
+
+init();

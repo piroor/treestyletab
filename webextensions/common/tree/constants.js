@@ -35,6 +35,10 @@ const kCOMMAND_NOTIFY_PERMISSIONS_GRANTED     = 'treestyletab:notify-permissions
 const kCOMMAND_NOTIFY_TAB_RESTORING           = 'treestyletab:notify-tab-restoring';
 const kCOMMAND_NOTIFY_TAB_RESTORED            = 'treestyletab:notify-tab-restored';
 const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
+const kCOMMAND_BROADCAST_API_REGISTERED       = 'treestyletab:broadcast-registered';
+const kCOMMAND_BROADCAST_API_UNREGISTERED     = 'treestyletab:broadcast-unregistered';
+const kCOMMAND_SHOW_CONTAINER_SELECTOR        = 'treestyletab:show-container-selector';
+const kCOMMAND_SCROLL_TABBAR                  = 'treestyletab:scroll-tabbar';
 
 const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';
@@ -108,6 +112,7 @@ const kPERSISTENT_CHILDREN      = 'children';
 const kPERSISTENT_INSERT_BEFORE = 'insert-before';
 const kPERSISTENT_INSERT_AFTER  = 'isnert-after';
 const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed';
+const kPERSISTENT_SPECIAL_TAB_STATES = 'special-tab-states';
 
 const kFAVICON         = 'favicon';
 const kFAVICON_IMAGE   = 'favicon-image';
@@ -136,7 +141,6 @@ const kTAB_STATE_MUTED                     = 'muted';
 const kTAB_STATE_HAS_MUTED_MEMBER          = 'has-muted-member';
 const kTAB_STATE_PRIVATE_BROWSING          = 'private-browsing';
 const kTAB_STATE_HIDDEN                    = 'hidden';
-const kTAB_STATE_API_TAB_HIDDEN            = 'api-tab-hidden';
 const kTAB_STATE_ANIMATION_READY           = 'animation-ready';
 const kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD  = 'not-activated-since-load';
 const kTAB_STATE_BURSTING                  = 'bursting';
@@ -265,7 +269,7 @@ const kDEFAULT_MIN_INDENT = 3;
 
 const kTAB_STATE_GROUP_TAB = 'group-tab';
 const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
-const kGROUP_TAB_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab.label', '.+')}$`);
+const kGROUP_TAB_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab_label', '.+')}$`);
 const kSHORTHAND_ABOUT_URI = /^about:treestyletab-([^\?]+)/;
 const kSHORTHAND_URIS = {
   group:   kGROUP_TAB_URI,

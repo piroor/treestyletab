@@ -198,7 +198,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
         insertBefore = firstChild;
         break;
       case kINSERT_NEAREST: {
-        let allTabs = getTabs(aParent);
+        let allTabs = getAllTabs(aParent);
         if (aOptions.ignoreTabs)
           allTabs = allTabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
         let index = allTabs.indexOf(aChild);
@@ -328,7 +328,7 @@ function detachAllChildren(aTab, aOptions = {}) {
 
   var parent = getParentTab(aTab);
   if (isGroupTab(aTab) &&
-      getTabs(aTab).filter((aTab) => aTab.removing).length == children.length) {
+      getTabs(aTab).filter(aTab => aTab.removing).length == children.length) {
     aOptions.behavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     aOptions.dontUpdateIndent = false;
   }
@@ -628,6 +628,12 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 }
 
 function collapseExpandTab(aTab, aParams = {}) {
+  if (isPinned(aTab) && aParams.collapsed) {
+    log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
+        dumpTab(aTab), { stack: new Error().stack });
+    aParams.collapsed = false;
+  }
+
   var stack = `${new Error().stack}\n${aParams.stack || ''}`;
   if (configs.logOnCollapseExpand)
     log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
@@ -776,11 +782,7 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions
   if (autoFocusedTab != nextTab &&
       (autoFocusedTab != previousTab ||
        (getNextTab(autoFocusedTab) &&
-        getNextTab(autoFocusedTab) != aTab)) &&
-      !isUnexpectedFocusToLastPinnedTabForClosedCurrentTab({
-        closedTabWasPinned: params.pinned,
-        activeTab:          autoFocusedTab
-      })) {
+        getNextTab(autoFocusedTab) != aTab))) {
     // possibly it is focused by browser.tabs.selectOwnerOnClose
     log('=> the tab seems focused intentionally: ', {
       autoFocused:       dumpTab(autoFocusedTab),
@@ -809,16 +811,6 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   if (aOverrideParams)
     return Object.assign({}, params, aOverrideParams);
   return params;
-}
-function isUnexpectedFocusToLastPinnedTabForClosedCurrentTab(aParams = {}) {
-  return (
-    configs.hideInactiveTabs &&
-    configs.preventUnexpectedFocusToLastPinnedTabForClosedCurrentTab &&
-    !aParams.closedTabWasPinned &&
-    isPinned(aParams.activeTab) &&
-    !isPinned(getNextTab(aParams.activeTab)) &&
-    getUnpinnedTabs(aParams.activeTab).filter(isApiTabHidden).length > 0
-  );
 }
 
 async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
@@ -881,12 +873,6 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     nextFocusedTab = getNextFocusedTab(nextFocusedTab, { ignoredTabs });
     log('focus to getNextFocusedTab() again?: ', !!nextFocusedTab);
   }
-
-  if (!nextFocusedTab &&
-      configs.hideInactiveTabs &&
-      isApiTabHidden(tabNextFocusedByFirefox) &&
-      !isHidden(tabNextFocusedByFirefox))
-    nextFocusedTab = tabNextFocusedByFirefox; // focus to the next tab manually because Firefox doesn't focus to it when there is any pinned tab.
 
   if (!nextFocusedTab ||
       isHidden(nextFocusedTab) ||
@@ -1113,6 +1099,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         prepareContainer();
       }
 
+      let apiTabs   = aTabs.map(aTab => aTab.apiTab);
       let apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
       await Promise.all([
         newWindow,
@@ -1131,24 +1118,24 @@ async function moveTabs(aTabs, aOptions = {}) {
             let startTime = Date.now();
             // This promise will be resolved with very large delay.
             // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
-            let promisedDuplicatedIds = Promise.all(apiTabIds.map(async (aId, aIndex) => {
+            let promisedDuplicatedTabs = Promise.all(apiTabIds.map(async (aId, aIndex) => {
               try {
-                return (await browser.tabs.duplicate(aId)).id;
+                return await browser.tabs.duplicate(aId);
               }
               catch(e) {
                 handleMissingTabError(e);
                 return null;
               }
-            })).then(aIds => {
-              log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aIds);
-              return aIds;
+            })).then(aAPITabs => {
+              log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aAPITabs.map(aAPITab => aAPITab.id));
+              return aAPITabs;
             });
             if (configs.acccelaratedTabDuplication) {
               // So, I collect duplicating tabs in different way.
               // This promise will be resolved when they actually
               // appear in the tab bar. This hack should be removed
               // after the bug 1394376 is fixed.
-              let promisedDuplicatingIds = (async () => {
+              let promisedDuplicatingTabs = (async () => {
                 while (true) {
                   await wait(100);
                   let tabs = getDuplicatingTabs(windowId);
@@ -1157,20 +1144,21 @@ async function moveTabs(aTabs, aOptions = {}) {
                   let tabIds = tabs.map(aTab => aTab.apiTab.id);
                   if (tabIds.join(',') == tabIds.sort().join(','))
                     continue; // not sorted yet
-                  return tabIds;
+                  return tabs;
                 }
-              })().then(aIds => {
-                log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aIds);
-                return aIds;
+              })().then(aAPITabs => {
+                log(`ids from duplicating tabs are resolved in ${Date.now() - startTime}msec: `, aAPITabs.map(aAPITab => aAPITab.id));
+                return aAPITabs;
               });
-              apiTabIds = await Promise.race([
-                promisedDuplicatedIds,
-                promisedDuplicatingIds
+              apiTabs = await Promise.race([
+                promisedDuplicatedTabs,
+                promisedDuplicatingTabs
               ]);
             }
             else {
-              apiTabIds = await promisedDuplicatedIds;
+              apiTabs = await promisedDuplicatedTabs;
             }
+            apiTabIds = apiTabs.map(aAPITab => aAPITab.id);
           }
         })()
       ]);
@@ -1210,11 +1198,11 @@ async function moveTabs(aTabs, aOptions = {}) {
           await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: aTabs });
           break;
         }
-        apiTabIds = await safeMoveApiTabsAcrossWindows(apiTabIds, {
+        apiTabs = await safeMoveApiTabsAcrossWindows(apiTabIds, {
           windowId: destinationWindowId,
           index:    toIndex
         });
-        apiTabIds = apiTabIds.map(aApiTab => aApiTab.id);
+        apiTabIds = apiTabs.map(aApiTab => aApiTab.id);
         log('moved across windows: ', apiTabIds);
       }
 
@@ -1224,7 +1212,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       let startTime = Date.now();
       let maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = apiTabIds.map(aApiTabId => getTabById(TabIdFixer.fixTabId(aApiTabId)));
+        newTabs = apiTabs.map(aApiTab => getTabById(TabIdFixer.fixTab(aApiTab)));
         newTabs = newTabs.filter(aTab => !!aTab);
         if (newTabs.length < aTabs.length) {
           log('retrying: ', apiTabIds, newTabs.length, aTabs.length);
@@ -1330,12 +1318,16 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
     .then(aApiWindow => {
-      var movedTabIds = movedTabs.map(aTab => aTab.apiTab.id);
-      log('moved tabs: ', movedTabIds);
-      var allTabIdsInWindow = aApiWindow.tabs.map(aApiTab => TabIdFixer.fixTabId(aApiTab.id));
-      var removeIds = allTabIdsInWindow.filter(aId => movedTabIds.indexOf(aId) < 0);
-      log('removing tabs: ', removeIds);
-      removeTabsInternally(removeIds.map(getTabById));
+      log('moved tabs: ', movedTabs.map(dumpTab));
+      const movedAPITabIds = movedTabs.map(aTab => aTab.apiTab.id);
+      const allTabsInWindow = aApiWindow.tabs.map(aApiTab => TabIdFixer.fixTab(aApiTab));
+      const removeTabs = [];
+      for (let apiTab of allTabsInWindow) {
+        if (movedAPITabIds.indexOf(apiTab.id) < 0)
+          removeTabs.push(getTabById(apiTab));
+      }
+      log('removing tabs: ', removeTabs.map(dumpTab));
+      removeTabsInternally(removeTabs);
       unblockUserOperationsIn(newWindow.id);
     });
 
@@ -1351,7 +1343,7 @@ async function groupTabs(aTabs, aOptions = {}) {
   log('groupTabs: ', aTabs.map(dumpTab));
 
   var uri = makeGroupTabURI({
-    title:     browser.i18n.getMessage('groupTab.label', rootTabs[0].apiTab.title),
+    title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].apiTab.title),
     temporary: true
   });
   var groupTab = await openURIInTab(uri, {
@@ -1404,7 +1396,7 @@ async function performTabsDragDrop(aParams = {}) {
     action:              aParams.action
   });
 
-  var draggedTabs = aParams.tabs.map(aApiTab => getTabById(aApiTab.id)).filter(aTab => !!aTab);
+  var draggedTabs = aParams.tabs.map(getTabById).filter(aTab => !!aTab);
   if (!draggedTabs.length)
     return;
 
@@ -1414,7 +1406,6 @@ async function performTabsDragDrop(aParams = {}) {
     return;
 
   var draggedRoots = collectRootTabs(draggedTabs);
-  var targetTabs   = getTabs(windowId);
 
   var draggedWholeTree = [].concat(draggedRoots);
   for (let draggedRoot of draggedRoots) {
@@ -1754,22 +1745,4 @@ function openGroupBookmarkBehavior() {
   }
   return behavior;
 */
-}
-
-async function bookmarkTree(aRoot, aOptions = {}) {
-  var tabs   = [aRoot].concat(getDescendantTabs(aRoot));
-  var folder = await bookmarkTabs(tabs, aOptions);
-  if (!folder)
-    return null;
-  browser.bookmarks.get(folder.parentId).then(aFolders => {
-    notify({
-      title:   browser.i18n.getMessage('bookmarkTree.notification.success.title'),
-      message: browser.i18n.getMessage('bookmarkTree.notification.success.message', [
-        aRoot.apiTab.title,
-        tabs.length,
-        aFolders[0].title
-      ])
-    });
-  });
-  return folder;
 }
