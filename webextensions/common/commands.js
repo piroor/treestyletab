@@ -52,7 +52,7 @@ const Commands = {
     const exceptionTabs = [aRootTab].concat(getDescendantTabs(aRootTab));
     const tabs          = getNormalTabs(aRootTab); // except pinned or hidden tabs
     tabs.reverse(); // close bottom to top!
-    const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(tab) < 0);
+    const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(aTab) < 0);
     confirmToCloseTabs(closeTabs.length, { windowId: aRootTab.apiTab.windowId })
       .then(aConfirmed => {
         if (!aConfirmed)
