@@ -31,8 +31,8 @@
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }
     }},
-  "groupTab_label_default": { "message": "Gruppe" },
-  "groupTab_temporary_label": { "message": "Temporäre Gruppe" },
+  "groupTab_label_default": { "message": "Gruppieren" },
+  "groupTab_temporary_label": { "message": "Diesen Tab schließen, wenn keine untergeordneten Tabs mehr existieren" },
   "groupTab_fromPinnedTab_label": { "message": "Tabs von $TITLE$",
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }
