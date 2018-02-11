@@ -24,7 +24,7 @@ const Commands = {
 
   closeTree(aRootTab) {
     const tabs = [aRootTab].concat(getDescendantTabs(aRootTab));
-    confirmToCloseTabs(tabs.length, { windowId: aAPITab.windowId })
+    confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
       .then(aConfirmed => {
         if (!aConfirmed)
           return;
@@ -37,7 +37,7 @@ const Commands = {
 
   closeDescendants(aRootTab) {
     const tabs = getDescendantTabs(aRootTab);
-    confirmToCloseTabs(tabs.length, { windowId: aAPITab.windowId })
+    confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
       .then(aConfirmed => {
         if (!aConfirmed)
           return;
@@ -53,7 +53,7 @@ const Commands = {
     const tabs          = getNormalTabs(aRootTab); // except pinned or hidden tabs
     tabs.reverse(); // close bottom to top!
     const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(tab) < 0);
-    confirmToCloseTabs(closeTabs.length, { windowId: aAPITab.windowId })
+    confirmToCloseTabs(closeTabs.length, { windowId: aRootTab.apiTab.windowId })
       .then(aConfirmed => {
         if (!aConfirmed)
           return;
