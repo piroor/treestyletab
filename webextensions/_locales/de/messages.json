@@ -5,6 +5,23 @@
   "sidebarTitle": { "message": "Tree Style Tab" },
   "sidebarToggleDescription": { "message": "\"Tree Style Tab\" Sidebar Ein-/Ausblenden" },
 
+  "command_indent":                { "message": "Aktuellen Tab einrücken" },
+  "command_outdent":               { "message": "Aktuellen Tab ausrücken" },
+  "command_tabMoveUp":             { "message": "Aktuellen Tab nach oben schieben" },
+  "command_treeMoveUp":            { "message": "Aktuellen Zweig nach oben schieben" },
+  "command_tabMoveDown":           { "message": "Aktuellen Tab nach unten schieben" },
+  "command_treeMoveDown":          { "message": "Aktuellen Zweig nach unten schieben" },
+  "command_focusPrevious":         { "message": "Zum vorherigen Tab wechseln (Zweig ausklappen)" },
+  "command_focusPreviousSilently": { "message": "Zum vorherigen Tab wechseln (Zweig nicht ausklappen)" },
+  "command_focusNext":             { "message": "Zum nächsten Tab wechseln (Zweig ausklappen)" },
+  "command_focusNextSilently":     { "message": "Zum nächsten Tab wechseln (Zweig nicht ausklappen)" },
+  "command_tabbarUp":              { "message": "Zeilenweise in Tabs nach oben scrollen" },
+  "command_tabbarPageUp":          { "message": "Seitenweise in Tabs nach oben scrollen" },
+  "command_tabbarHome":            { "message": "Zum ersten Tab scrollen" },
+  "command_tabbarDown":            { "message": "Zeilenweise in Tabs nach unten scrollen" },
+  "command_tabbarPageDown":        { "message": "Seitenweise in Tabs nach unten scrollen" },
+  "command_tabbarEnd":             { "message": "Zum letzten Tab scrollen" },
+  
   "tab_closebox_tab_tooltip": { "message": "Tab schließen" },
   "tab_closebox_tree_tooltip": { "message": "Zweig schließen" },
   "tab_soundButton_muted_tooltip": { "message": "Stummschaltung für Tab aufheben" },
@@ -31,8 +48,8 @@
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }
     }},
-  "groupTab_label_default": { "message": "Gruppe" },
-  "groupTab_temporary_label": { "message": "Temporäre Gruppe" },
+  "groupTab_label_default": { "message": "Gruppieren" },
+  "groupTab_temporary_label": { "message": "Diesen Tab schließen, wenn keine untergeordneten Tabs mehr existieren" },
   "groupTab_fromPinnedTab_label": { "message": "Tabs von $TITLE$",
     "placeholders": {
       "title": { "content": "$1", "example": "Titel" }
@@ -233,6 +250,9 @@
   "config_dropLinksOnTabBehavior_newtab": { "message": "In einem neuen untergeordneten Tab öffnen" },
 
   "config_warnOnCloseTabs_label": { "message": "Warnen wenn mehrere Tabs geschlossen werden sollen" },
+  
+  
+  "config_shortcuts_caption": { "message": "Tastenkombinationen" },
   
   
   "config_advanced_caption": { "message": "Erweitert" },
