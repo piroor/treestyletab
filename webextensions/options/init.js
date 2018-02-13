@@ -36,7 +36,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   ShortcutCustomizeUI.build().then(aUI => {
     document.getElementById('shortcuts').appendChild(aUI);
-    l10n.updateDocument();
 
     for (let item of Array.slice(aUI.querySelectorAll('li > label:first-child'))) {
       removeAccesskeyMark(item.firstChild);
