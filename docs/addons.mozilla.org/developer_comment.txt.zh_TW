@@ -1,0 +1,19 @@
+## 類似專案
+
+ *<a href="https://addons.mozilla.org/firefox/addon/tree-tabs/">Tree Tabs</a>:
+   跨瀏覽器、更多功能、更高自訂性的擴充套件。
+   (和 Tree Style Tab 最大的差別在設計理念。Tree Style Tab 致力於保持本身精簡並儘可能和其他擴充套件互動。
+ * <a href="https://addons.mozilla.org/firefox/addon/tab-center-redux/">Tab Center Redux</a>:
+   無樹狀結構的垂直分頁列擴充擴件。
+ * <a href="https://github.com/asamuzaK/sidebarTabs">sidebarTabs</a>:
+   垂直分頁列擴充套件，擁有分頁群組化功能。
+
+一些 Google Chrome 拚充功能也提供了相似的功能。
+
+ * <a href="https://chrome.google.com/webstore/detail/sidewise-tree-style-tabs/biiammgklaefagjclmnlialkmaemifgo">Sidewise Tree Style Tabs</a>
+ * <a href="https://chrome.google.com/webstore/detail/tabs-outliner/eggkanocgddhmamlbiijnphhppkpkmkl">Tabs Outliner</a>
+
+## 關於和其他擴充套件互動的 API
+
+Tree Style Tab 對於擴充套件開發者提供公開的 API。如果你的擴充套件在分頁右鍵選單有額外選項，那麼稍微改造即可在 Tree Style Tab 右鍵選單中擁有同樣的選項。
+詳情請參考 <a href="https://github.com/piroor/treestyletab/wiki/API-for-other-addons">API 文件(英語)</a>。
