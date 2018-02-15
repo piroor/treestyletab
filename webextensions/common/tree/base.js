@@ -1035,7 +1035,8 @@ function serializeTabForTSTAPI(aTab) {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
     indent:   parseInt(aTab.getAttribute(kLEVEL) || 0),
     effectiveFavIconUrl: effectiveFavIcon && effectiveFavIcon.favIconUrl,
-    children: getChildTabs(aTab).map(serializeTabForTSTAPI)
+    children: getChildTabs(aTab).map(serializeTabForTSTAPI),
+    ancestorTabIds: getAncestorTabs(aTab).map(aTab => aTab.apiTab.id)
   });
 }
 
