@@ -166,8 +166,6 @@ function reflow() {
   });
 }
 
-var DEFAULT_FAVICON_URL = '/sidebar/styles/icons/moon.svg';
-
 function buildTabItem(aTab) {
   const item = document.createElement('li');
 
@@ -177,10 +175,15 @@ function buildTabItem(aTab) {
   link.dataset.tabId = aTab.id;
 
   const icon = link.appendChild(document.createElement('img'));
-  icon.src = aTab.effectiveFavIconUrl || aTab.favIconUrl || DEFAULT_FAVICON_URL;
+  icon.src = aTab.effectiveFavIconUrl || aTab.favIconUrl;
   icon.onerror = () => {
-    icon.src = DEFAULT_FAVICON_URL;
+    item.classList.remove('favicon-loading');
+    item.classList.add('use-default-favicon');
   };
+  icon.onload = () => {
+    item.classList.remove('favicon-loading');
+  };
+  item.classList.add('favicon-loading');
 
   const label = link.appendChild(document.createElement('span'));
   label.classList.add('label');

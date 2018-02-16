@@ -65,13 +65,29 @@
     padding: 0 1em 0 0;
   }
 
-  #tabs img {
+  #tabs li img,
+  #tabs li.use-default-favicon a::before,
+  #tabs li.favicon-loading a::before {
     height: 16px;
     max-width: 16px;
     max-height: 16px;
     position: relative;
-    top: 0.25em;
+    top: calc(1em - 16px);
     width: 16px;
+  }
+
+  #tabs li.use-default-favicon img,
+  #tabs li.favicon-loading img {
+    display: none;
+  }
+
+  #tabs li.use-default-favicon a::before,
+  #tabs li.favicon-loading a::before {
+    background: ButtonText;
+    display: none;
+    content: "";
+    display: inline-block;
+    mask: url("/sidebar/styles/icons/globe-16.svg") no-repeat center / 100%;
   }
 
   #tabs li {
