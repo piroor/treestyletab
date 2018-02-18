@@ -1032,7 +1032,7 @@ async function removeSpecialTabState(aTab, aState) {
 
 function serializeTabForTSTAPI(aTab) {
   const effectiveFavIcon = TabFavIconHelper.effectiveFavIcons.get(aTab.apiTab.id);
-  const children         = getChildTabs(aTab).map(aTab => serializeTabForTSTAPI(aTab, aOptions));
+  const children         = getChildTabs(aTab).map(serializeTabForTSTAPI);
   const ancestorTabIds   = getAncestorTabs(aTab).map(aTab => aTab.apiTab.id);
   return Object.assign({}, aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
