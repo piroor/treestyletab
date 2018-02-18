@@ -162,6 +162,7 @@ function buildTab(aApiTab, aOptions = {}) {
 
   tab.childTabs = [];
   tab.parentTab = null;
+  tab.ancestorTabs = [];
 
   return tab;
 }

@@ -287,7 +287,9 @@ function getParentTab(aChild) {
   return ensureLivingTab(aChild.parentTab);
 }
 
-function getAncestorTabs(aDecendant) {
+function getAncestorTabs(aDecendant, aOptions = {}) {
+  if (!aOptions.force)
+    return aDescendant.ancestorTabs;
   var ancestors = [];
   while (true) {
     let parent = getParentTab(aDecendant);

@@ -139,6 +139,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
     aChild.setAttribute(kPARENT, aParent.id);
     aChild.parentTab = aParent;
+    aChild.ancestorTabs = getAncestorTabs(aChild, { force: true });
 
     let parentLevel = parseInt(aParent.getAttribute(kLEVEL) || 0);
     if (!aOptions.dontUpdateIndent) {
@@ -273,6 +274,7 @@ function detachTab(aChild, aOptions = {}) {
   }
   aChild.removeAttribute(kPARENT);
   aChild.parentTab = null;
+  aChild.ancestorTabs = [];
 
   updateTabsIndent(aChild);
 

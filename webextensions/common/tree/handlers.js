@@ -422,10 +422,13 @@ function clearTabRelationsForRemovedTab(aTab) {
   if (aTab.parentTab) {
     aTab.parentTab.childTabs = aTab.parentTab.childTabs.filter(aChild => aChild != aTab);
     aTab.parentTab = null;
+    aTab.ancestorTabs = [];
   }
   for (let child of aTab.childTabs) {
-    if (child.parentTab == aTab)
+    if (child.parentTab == aTab) {
       child.parentTab = null;
+      child.ancestorTabs = child.ancestorTabs.filter(aAncestor => aAncestor != aTab);
+    }
   }
 }
 
