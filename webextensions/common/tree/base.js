@@ -1029,14 +1029,15 @@ async function removeSpecialTabState(aTab, aState) {
 
 /* TST API Helpers */
 
-function serializeTabForTSTAPI(aTab) {
+function serializeTabForTSTAPI(aTab, aOptions = {}) {
   const effectiveFavIcon = TabFavIconHelper.effectiveFavIcons.get(aTab.apiTab.id);
+  const children = aOptions.children === false ? [] : getChildTabs(aTab).map(aTab => serializeTabForTSTAPI(aTab, aOptions));
+  const ancestorTabIds = aOptions.ancestorTabIds === true ? getAncestorTabs(aTab).map(aTab => aTab.apiTab.id) : [];
   return Object.assign({}, aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
     indent:   parseInt(aTab.getAttribute(kLEVEL) || 0),
     effectiveFavIconUrl: effectiveFavIcon && effectiveFavIcon.favIconUrl,
-    children: getChildTabs(aTab).map(serializeTabForTSTAPI),
-    ancestorTabIds: getAncestorTabs(aTab).map(aTab => aTab.apiTab.id)
+    children, ancestorTabIds
   });
 }
 
