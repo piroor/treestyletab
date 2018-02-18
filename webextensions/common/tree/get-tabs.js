@@ -291,7 +291,7 @@ function getAncestorTabs(aDescendant, aOptions = {}) {
   if (!aDescendant)
     return [];
   if (!aOptions.force)
-    return aDescendant.ancestorTabs;
+    return aDescendant.ancestorTabs || [];
   const ancestors = [];
   while (true) {
     const parent = getParentTab(aDescendant);
