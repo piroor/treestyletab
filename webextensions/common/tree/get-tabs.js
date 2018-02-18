@@ -287,35 +287,35 @@ function getParentTab(aChild) {
   return ensureLivingTab(aChild.parentTab);
 }
 
-function getAncestorTabs(aDecendant, aOptions = {}) {
-  if (!aDecendant)
+function getAncestorTabs(aDescendant, aOptions = {}) {
+  if (!aDescendant)
     return [];
   if (!aOptions.force)
-    return aDecendant.ancestorTabs;
+    return aDescendant.ancestorTabs;
   const ancestors = [];
   while (true) {
-    const parent = getParentTab(aDecendant);
+    const parent = getParentTab(aDescendant);
     if (!parent)
       break;
     ancestors.push(parent);
-    aDecendant = parent;
+    aDescendant = parent;
   }
   return ancestors;
 }
 
-function getVisibleAncestorOrSelf(aDecendant) {
-  if (!isCollapsed(aDecendant))
-    return aDecendant;
-  for (let ancestor of getAncestorTabs(aDecendant)) {
+function getVisibleAncestorOrSelf(aDescendant) {
+  if (!isCollapsed(aDescendant))
+    return aDescendant;
+  for (let ancestor of getAncestorTabs(aDescendant)) {
     if (!isCollapsed(ancestor))
       return ancestor;
   }
   return null;
 }
 
-function getRootTab(aDecendant) {
-  const ancestors = getAncestorTabs(aDecendant);
-  return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDecendant ;
+function getRootTab(aDescendant) {
+  const ancestors = getAncestorTabs(aDescendant);
+  return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDescendant ;
 }
 
 function getSiblingTabs(aTab) {
