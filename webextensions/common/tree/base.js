@@ -259,7 +259,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
-        aNewState.favIconUrl || aNewState.url
+        getSafeFaviconUrl(aNewState.favIconUrl || aNewState.url)
       );
   }
 
@@ -399,6 +399,20 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   }
 
   updateTabDebugTooltip(aTab);
+}
+
+function getSafeFaviconUrl(aURL) {
+  switch (aURL) {
+    case 'chrome://browser/skin/settings.svg':
+      return browser.extension.getURL('resources/icons/settings.svg');
+    case 'chrome://mozapps/skin/extensions/extensionGeneric-16.svg':
+      return browser.extension.getURL('resources/icons/extensionGeneric-16.svg');
+    default:
+      if (/^chrome:\/\//.test(aURL))
+        return browser.extension.getURL('sidebar/styles/icons/globe-16.svg');
+      break;
+  }
+  return aURL;
 }
 
 function updateTabDebugTooltip(aTab) {
