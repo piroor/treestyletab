@@ -200,4 +200,5 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   else
     aTab.removeAttribute(kPARENT);
   log('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
+  aTab.ancestorTabs = getAncestorTabs(aTab, { force: true });
 }
