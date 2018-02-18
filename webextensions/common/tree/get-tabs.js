@@ -390,7 +390,7 @@ function getDescendantTabs(aRoot) {
   assertValidHint(aRoot);
   assertInitializedTab(aRoot);
 
-  const descendants = [];
+  let descendants = [];
   const children = aRoot.childTabs.filter(ensureLivingTab);
   for (let child of children) {
     descendants.push(child);
