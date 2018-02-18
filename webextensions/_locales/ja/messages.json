@@ -161,7 +161,9 @@
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
 
 
-  "config_context_caption": { "message": "コンテキストメニューに追加する項目" },
+  "config_context_caption": { "message": "コンテキストメニュー" },
+  "config_fakeContextMenu_label": { "message": "サイドバー上でタブのコンテキストメニューを再現する" },
+  "config_extraItems_caption": { "message": "コンテキストメニューに追加する項目" },
 
 
   "config_newTab_caption": { "message": "新しいタブの挙動" },

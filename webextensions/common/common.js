@@ -131,6 +131,7 @@ configs = new Configs({
 
 
   // context menu
+  fakeContextMenu: true,
   context_reloadTree: true,
   context_reloadDescendants: false,
   context_closeTree: true,

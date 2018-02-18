@@ -161,7 +161,9 @@
   "config_animation_label": { "message": "Enable animation effects" },
 
 
-  "config_context_caption": { "message": "Additional Context Menu Items" },
+  "config_context_caption": { "message": "Context Menu" },
+  "config_fakeContextMenu_label": { "message": "Simulate Tab Context Menu on the sidebar" },
+  "config_extraItems_caption": { "message": "Additional Context Menu Items" },
 
 
   "config_newTab_caption": { "message": "New Tabs Behavior" },

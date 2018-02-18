@@ -161,7 +161,7 @@
   "config_animation_label": { "message": "啟用動畫效果" },
 
 
-  "config_context_caption": { "message": "額外右鍵選單項" },
+  "config_extraItems_caption": { "message": "額外右鍵選單項" },
 
 
   "config_newTab_caption": { "message": "新分頁行為" },
