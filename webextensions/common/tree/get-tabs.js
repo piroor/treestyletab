@@ -288,8 +288,10 @@ function getParentTab(aChild) {
 }
 
 function getAncestorTabs(aDecendant, aOptions = {}) {
+  if (!aDecendant)
+    return [];
   if (!aOptions.force)
-    return aDescendant.ancestorTabs;
+    return aDecendant.ancestorTabs;
   const ancestors = [];
   while (true) {
     const parent = getParentTab(aDecendant);
