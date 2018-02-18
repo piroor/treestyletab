@@ -1357,10 +1357,7 @@ function onMessage(aMessage, aSender) {
         if (!tab)
           return;
 
-        const serializedTab = serializeTabForTSTAPI(tab, {
-          children:       true,
-          ancestorTabIds: true
-        });
+        const serializedTab = serializeTabForTSTAPI(tab);
         let results = await sendTSTAPIMessage(Object.assign({}, aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
@@ -1603,7 +1600,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_GET_TREE:
       return (async () => {
         const tabs    = await TSTAPIGetTargetTabs(aMessage, aSender);
-        const results = tabs.map(serializeTabForTSTAPI, aMessage);
+        const results = tabs.map(serializeTabForTSTAPI);
         return TSTAPIFormatResult(results, aMessage);
       })();
 
