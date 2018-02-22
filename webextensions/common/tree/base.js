@@ -208,8 +208,10 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   else if (aTab.apiTab &&
            aTab.apiTab.status == 'complete' &&
            aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
-    // Detect group tab from different session - which can have different UUID for the URL.
     getSpecialTabState(aTab).then(async (aStates) => {
+      if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) == 0)
+        return;
+      // Detect group tab from different session - which can have different UUID for the URL.
       const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
       const pathPart = aTab.apiTab.url.replace(PREFIX_REMOVER, '');
       if (aStates.indexOf(kTAB_STATE_GROUP_TAB) > -1 &&
