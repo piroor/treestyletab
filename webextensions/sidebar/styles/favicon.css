@@ -29,31 +29,25 @@
 }
 
 .favicon-default::before {
-  display: inline-block;
-  line-height: 1;
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-}
-
-.favicon-default::before {
-  background: url("./icons/moon.svg") center center no-repeat;
-  background-size: 100%;
-  content: "";
-  display: inline-block;
-  max-height: var(--favicon-size);
-  max-width: var(--favicon-size);
-  min-height: var(--favicon-size);
-  min-width: var(--favicon-size);
-}
-
-.tab.group-tab .favicon-default::before {
   -moz-context-properties: fill;
-  background: url("./icons/folder-16.svg") no-repeat center / 100%;
+  background: url("./icons/globe-16.svg") no-repeat center / 100%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
   height: var(--svg-small-icon-size);
+  line-height: 1;
+  margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
   width: var(--svg-small-icon-size);
+}
+:root.simulate-svg-context-fill .tab .favicon-default::before {
+  background: var(--tab-text);
+  mask: url("./icons/globe-16.svg") no-repeat center / 100%;
+}
+
+.tab.group-tab .favicon-default::before {
+  background: url("./icons/folder-16.svg") no-repeat center / 100%;
 }
 :root.simulate-svg-context-fill .tab.group-tab .favicon-default::before {
   background: var(--tab-text);

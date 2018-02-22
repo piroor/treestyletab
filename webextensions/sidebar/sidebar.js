@@ -34,6 +34,9 @@ var gContextualIdentitySelector = document.getElementById(kCONTEXTUAL_IDENTITY_S
 var gNewTabActionSelector       = document.getElementById(kNEWTAB_ACTION_SELECTOR);
 
 { // apply style ASAP!
+  // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
+  document.documentElement.dataset.userAgent = navigator.userAgent;
+
   let style = location.search.match(/style=([^&]+)/);
   if (style)
     applyStyle(style[1]);

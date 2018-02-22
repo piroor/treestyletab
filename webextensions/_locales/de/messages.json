@@ -161,7 +161,7 @@
   "config_animation_label": { "message": "Animationen aktivieren" },
 
 
-  "config_context_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
+  "config_extraItems_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
 
 
   "config_newTab_caption": { "message": "Verhalten für neue Tabs" },

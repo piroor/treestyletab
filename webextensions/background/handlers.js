@@ -991,10 +991,14 @@ function onTabUpdated(aTab, aChangeInfo) {
 
   reserveToSaveTreeStructure(aTab);
   markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+
+  const group = getGroupTabForOpener(aTab);
+  if (group)
+    reserveToUpdateRelatedGroupTabs(group);
 }
 
 function onTabLabelUpdated(aTab) {
-  reserveToUpdateParentGroupTab(aTab);
+  reserveToUpdateRelatedGroupTabs(aTab);
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
@@ -1118,7 +1122,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     getPreviousTab(aTab)
   ]);
 
-  reserveToUpdateParentGroupTab(aTab);
+  reserveToUpdateRelatedGroupTabs(aTab);
 
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
@@ -1140,7 +1144,7 @@ async function onTabDetached(aTab, aDetachInfo) {
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 
-  reserveToUpdateParentGroupTab(aDetachInfo.oldParentTab);
+  reserveToUpdateRelatedGroupTabs(aDetachInfo.oldParentTab);
 
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
@@ -1253,13 +1257,12 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.id);
-        let tab = getTabById(aMessage.id);
+        const tab = getTabById(aMessage.id);
         if (tab && !aMessage.forceNew)
           return tab.uniqueId;
-        let id = await requestUniqueId(aMessage.id, {
+        return requestUniqueId(aMessage.id, {
           forceNew: aMessage.forceNew
         });
-        return id;
       })();
 
     case kCOMMAND_REQUEST_REGISTERED_ADDONS:
@@ -1273,17 +1276,17 @@ function onMessage(aMessage, aSender) {
         while (gInitializing) {
           await wait(10);
         }
-        let structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
-        return { structure: structure };
+        const structure = getTreeStructureFromTabs(getAllTabs(aMessage.windowId));
+        return { structure };
       })();
 
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = getTabById(aMessage.tab);
+        const tab = getTabById(aMessage.tab);
         if (!tab)
           return;
-        let params = {
+        const params = {
           collapsed: aMessage.collapsed,
           justNow:   aMessage.justNow,
           broadcast: true,
@@ -1322,7 +1325,7 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         log('new window requested: ', aMessage);
         await waitUntilTabsAreCreated(aMessage.tabs);
-        let movedTabs = await openNewWindowFromTabs(
+        const movedTabs = await openNewWindowFromTabs(
           aMessage.tabs.map(getTabById),
           aMessage
         );
@@ -1333,7 +1336,7 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         log('move tabs requested: ', aMessage);
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.insertBefore, aMessage.insertAfter]));
-        let movedTabs = await moveTabs(
+        const movedTabs = await moveTabs(
           aMessage.tabs.map(getTabById),
           Object.assign({}, aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
@@ -1354,11 +1357,11 @@ function onMessage(aMessage, aSender) {
         gTabSwitchedByShortcut = false;
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = getTabById(aMessage.tab);
+        const tab = getTabById(aMessage.tab);
         if (!tab)
           return;
 
-        let serializedTab = serializeTabForTSTAPI(tab);
+        const serializedTab = serializeTabForTSTAPI(tab);
         let results = await sendTSTAPIMessage(Object.assign({}, aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
@@ -1380,7 +1383,7 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_SELECT_TAB:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = getTabById(aMessage.tab);
+        const tab = getTabById(aMessage.tab);
         if (!tab)
           return;
         browser.tabs.update(tab.apiTab.id, { active: true })
@@ -1390,7 +1393,7 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_SELECT_TAB_INTERNALLY:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = getTabById(aMessage.tab);
+        const tab = getTabById(aMessage.tab);
         if (!tab)
           return;
         selectTabInternally(tab, Object.assign({}, aMessage.options, {
@@ -1402,13 +1405,13 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         log('set muted state: ', aMessage);
-        let root = getTabById(aMessage.tab);
+        const root = getTabById(aMessage.tab);
         if (!root)
           return;
-        let tabs = [root].concat(getDescendantTabs(root));
+        const tabs = [root].concat(getDescendantTabs(root));
         for (let tab of tabs) {
-          let playing = isSoundPlaying(tab);
-          let muted   = isMuted(tab);
+          const playing = isSoundPlaying(tab);
+          const muted   = isMuted(tab);
           log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
           if (playing != aMessage.muted)
             continue;
@@ -1419,8 +1422,8 @@ function onMessage(aMessage, aSender) {
             muted: aMessage.muted
           }).catch(handleMissingTabError);
 
-          let add = [];
-          let remove = [];
+          const add = [];
+          const remove = [];
           if (aMessage.muted) {
             add.push(kTAB_STATE_MUTED);
             tab.classList.add(kTAB_STATE_MUTED);
@@ -1481,8 +1484,8 @@ function onMessage(aMessage, aSender) {
           aMessage.insertBefore,
           aMessage.insertAfter
         ]);
-        let child  = getTabById(aMessage.child);
-        let parent = getTabById(aMessage.parent);
+        const child  = getTabById(aMessage.child);
+        const parent = getTabById(aMessage.parent);
         if (child && parent)
           await attachTabTo(child, parent, Object.assign({}, aMessage, {
             insertBefore: getTabById(aMessage.insertBefore),
@@ -1493,7 +1496,7 @@ function onMessage(aMessage, aSender) {
     case kCOMMAND_DETACH_TAB:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = getTabById(aMessage.tab);
+        const tab = getTabById(aMessage.tab);
         if (tab)
           await detachTab(tab);
       })();
@@ -1575,7 +1578,7 @@ function onMessageExternal(aMessage, aSender) {
           sender:  aSender,
           message: aMessage
         });
-        let index = configs.cachedExternalAddons.indexOf(aSender.id);
+        const index = configs.cachedExternalAddons.indexOf(aSender.id);
         if (index < 0)
           configs.cachedExternalAddons = configs.cachedExternalAddons.concat([aSender.id]);
         return true;
@@ -1600,14 +1603,14 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_GET_TREE:
       return (async () => {
-        var tabs    = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var results = tabs.map(serializeTabForTSTAPI);
+        const tabs    = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const results = tabs.map(serializeTabForTSTAPI);
         return TSTAPIFormatResult(results, aMessage);
       })();
 
     case kTSTAPI_COLLAPSE_TREE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
             collapsed: true,
@@ -1619,7 +1622,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_EXPAND_TREE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
             collapsed: false,
@@ -1637,8 +1640,8 @@ function onMessageExternal(aMessage, aSender) {
           aMessage.insertBefore,
           aMessage.insertAfter
         ]);
-        var child  = getTabById(aMessage.child);
-        var parent = getTabById(aMessage.parent);
+        const child  = getTabById(aMessage.child);
+        const parent = getTabById(aMessage.parent);
         if (!child ||
             !parent ||
             child.parentNode != parent.parentNode)
@@ -1654,7 +1657,7 @@ function onMessageExternal(aMessage, aSender) {
     case kTSTAPI_DETACH:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        var tab = getTabById(aMessage.tab);
+        const tab = getTabById(aMessage.tab);
         if (!tab)
           return false;
         await detachTab(tab, {
@@ -1695,7 +1698,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_FOCUS:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           selectTabInternally(tab, {
             silently: aMessage.silently
@@ -1706,8 +1709,8 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_DUPLICATE:
       return (async () => {
-        var tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var behavior = kNEWTAB_OPEN_AS_ORPHAN;
+        const tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
+        let behavior = kNEWTAB_OPEN_AS_ORPHAN;
         switch (String(aMessage.as || 'sibling').toLowerCase()) {
           case 'child':
             behavior = kNEWTAB_OPEN_AS_CHILD;
@@ -1722,7 +1725,7 @@ function onMessageExternal(aMessage, aSender) {
             break;
         }
         for (let tab of tabs) {
-          let duplicatedTabs = await moveTabs([tab], {
+          const duplicatedTabs = await moveTabs([tab], {
             duplicate:           true,
             destinationWindowId: tab.apiTab.windowId,
             insertAfter:         tab
@@ -1738,20 +1741,20 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_GROUP_TABS:
       return (async () => {
-        var tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var groupTab = await groupTabs(tabs, { broadcast: true });
+        const tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const groupTab = await groupTabs(tabs, { broadcast: true });
         return groupTab.apiTab;
       })();
 
     case kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         return Promise.resolve(getTreeStructureFromTabs(tabs));
       })();
 
     case kTSTAPI_SET_TREE_STRUCTURE:
       return (async () => {
-        var tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         await applyTreeStructureToTabs(tabs, aMessage.structure, {
           broadcast: true
         });
@@ -1760,8 +1763,8 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_ADD_TAB_STATE:
       return (async () => {
-        var tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var states = aMessage.state || aMessage.states;
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        let states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
         for (let tab of tabs) {
@@ -1777,8 +1780,8 @@ function onMessageExternal(aMessage, aSender) {
 
     case kTSTAPI_REMOVE_TAB_STATE:
       return (async () => {
-        var tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
-        var states = aMessage.state || aMessage.states;
+        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        let states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
         for (let tab of tabs) {

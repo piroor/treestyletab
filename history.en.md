@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+ - 2.4.16 (2018.2.12)
+   * Make default shortcuts avoidable from Firefox's built-in shortcuts. Now you can scroll Tree Style Tab's sidebar by Alt-Shift-Up, Alt-Shift-Down, Alt-Shift-PageUp, Alt-Shift-PageDown, Alt-Shift-Home, and Alt-Shift-End.
+   * Shortcuts for "scroll sidebar by line" now scrolls for three lines on each time.
+   * Pinned tabs are now impossible to be collapsed. Even if they are collapsed accidentaly, the operation is safely blocked.
+   * "Close This Tree", "Close Descendant Tabs" and "Close Other Tabs except This Tree" now work again. (regression on 2.4.15)
+   * Better styling of extra buttons on the new tab button in the "Metal" theme.
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.15 (2018.2.11)
    * Keyboard shortcuts for commands are now customizable on Firefox 60 and later.
    * Fix broken "Bookmark All Tabs" in the fake context menu. (regression on 2.4.11-13)

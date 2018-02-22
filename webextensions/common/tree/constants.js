@@ -270,6 +270,7 @@ const kDEFAULT_MIN_INDENT = 3;
 const kTAB_STATE_GROUP_TAB = 'group-tab';
 const kGROUP_TAB_URI = browser.extension.getURL('resources/group-tab.html');
 const kGROUP_TAB_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab_label', '.+')}$`);
+const kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER = new RegExp(`^${browser.i18n.getMessage('groupTab_fromPinnedTab_label', '.+')}$`);
 const kSHORTHAND_ABOUT_URI = /^about:treestyletab-([^\?]+)/;
 const kSHORTHAND_URIS = {
   group:   kGROUP_TAB_URI,

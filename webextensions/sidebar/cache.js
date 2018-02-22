@@ -173,7 +173,7 @@ function markWindowCacheDirty(akey) {
   markWindowCacheDirty.timeout = setTimeout(() => {
     markWindowCacheDirty.timeout = null;
     updateWindowCache(akey, true);
-  }, 100);
+  }, 250);
 }
 
 async function getWindowCache(aKey) {

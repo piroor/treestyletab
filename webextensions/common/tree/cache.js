@@ -138,7 +138,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   var idMap = {};
   // step 1: build a map from old id to new id
   aTabs.forEach((aTab, aIndex) => {
-    var oldId = aTab.id;
+    const oldId = aTab.id;
     var apiTab = aApiTabs[aIndex];
     aTab.id = makeTabId(apiTab);
     aTab.apiTab = apiTab;
@@ -180,7 +180,7 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
     aTab._resolveClosedWhileActive = aResolve;
   });
 
-  var idMap = aOptions.idMap;
+  const idMap = aOptions.idMap;
 
   log('fixupTabRestoredFromCache children: ', aTab.getAttribute(kCHILDREN));
   aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
@@ -200,4 +200,5 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   else
     aTab.removeAttribute(kPARENT);
   log('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
+  aTab.ancestorTabs = getAncestorTabs(aTab, { force: true });
 }

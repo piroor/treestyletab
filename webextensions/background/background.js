@@ -669,39 +669,45 @@ function cleanupNeedlssGroupTab(aTabs) {
   removeTabsInternally(tabsToBeRemoved);
 }
 
-function reserveToUpdateParentGroupTab(aTab) {
-  var ancestorGroupTabs = [aTab].concat(getAncestorTabs(aTab)).filter(isGroupTab);
+function reserveToUpdateRelatedGroupTabs(aTab) {
+  const ancestorGroupTabs = [aTab]
+    .concat(getAncestorTabs(aTab))
+    .filter(isGroupTab);
   for (let tab of ancestorGroupTabs) {
-    if (tab.reservedUpdateParentGroupTab)
-      clearTimeout(tab.reservedUpdateParentGroupTab);
-    tab.reservedUpdateParentGroupTab = setTimeout(() => {
-      delete tab.reservedUpdateParentGroupTab;
-      updateParentGroupTab(tab);
+    if (tab.reservedUpdateRelatedGroupTab)
+      clearTimeout(tab.reservedUpdateRelatedGroupTab);
+    tab.reservedUpdateRelatedGroupTab = setTimeout(() => {
+      delete tab.reservedUpdateRelatedGroupTab;
+      updateRelatedGroupTab(tab);
     }, 100);
   }
 }
 
-async function updateParentGroupTab(aParentTab) {
-  if (!ensureLivingTab(aParentTab))
+async function updateRelatedGroupTab(aGroupTab) {
+  if (!ensureLivingTab(aGroupTab))
     return;
 
-  await tryInitGroupTab(aParentTab);
-  await browser.tabs.executeScript(aParentTab.apiTab.id, {
+  await tryInitGroupTab(aGroupTab);
+  await browser.tabs.executeScript(aGroupTab.apiTab.id, {
     runAt:           'document_start',
     matchAboutBlank: true,
     code:            `updateTree()`,
   });
 
-  if (!kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aParentTab.apiTab.title))
-    return;
+  let newTitle;
+  if (kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
+    const firstChild = getFirstChildTab(aGroupTab);
+    newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
+  }
+  else if (kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
+    const opener = getOpenerFromGroupTab(aGroupTab);
+    newTitle = opener && browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
+  }
 
-  var firstChild = getFirstChildTab(aParentTab);
-  var newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
-  if (aParentTab.apiTab.title == newTitle)
-    return;
-
-  var url = aParentTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
-  browser.tabs.update(aParentTab.apiTab.id, { url });
+  if (newTitle && aGroupTab.apiTab.title != newTitle) {
+    const url = aGroupTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
+    browser.tabs.update(aGroupTab.apiTab.id, { url });
+  }
 }
 
 

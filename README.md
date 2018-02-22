@@ -66,6 +66,7 @@ Some addons provide extended behavior to TST's sidebar panel:
  * [Tree Style Tab Mouse Wheel](https://addons.mozilla.org/firefox/addon/tree-style-tab-mouse-wheel/) allows you to switch active tab by wheel scrolling.
  * [Tree Style Tab Open in Private](https://addons.mozilla.org/firefox/addon/tree-style-tab-open-in-private/) allows you to move the tab to a private mode window.
  * [Tree Style Tab Closed Tabs](https://addons.mozilla.org/firefox/addon/tree-style-tab-closed-tabs/) allows you to restore closed tabs from a menu.
+ * [Tab flip for Tree Style Tab](https://addons.mozilla.org/firefox/addon/tab-flip-for-tree-style-tab/) allows you to move focus to the tab previously focused, by clicking on the active tab.
 
 ## Similar projects
 

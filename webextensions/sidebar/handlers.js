@@ -146,6 +146,8 @@ function onResize(aEvent) {
 }
 
 function onContextMenu(aEvent) {
+  if (!configs.fakeContextMenu)
+    return;
   aEvent.stopPropagation();
   aEvent.preventDefault();
   var tab = getTabFromEvent(aEvent);

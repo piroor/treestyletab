@@ -88,7 +88,7 @@
   "config_animation_label": { "message": "启用动画效果" },
 
 
-  "config_context_caption": { "message": "增加上下文菜单项" },
+  "config_extraItems_caption": { "message": "增加上下文菜单项" },
 
 
   "config_newTab_caption": { "message": "新建标签页行为" },

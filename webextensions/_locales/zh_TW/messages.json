@@ -5,6 +5,23 @@
   "sidebarTitle": { "message": "Tree Style Tab" },
   "sidebarToggleDescription": { "message": "開關「Tree Style Tab」側邊欄" },
 
+  "command_indent":                { "message": "目前分頁增加縮排" },
+  "command_outdent":               { "message": "目前分頁減少縮排" },
+  "command_tabMoveUp":             { "message": "目前分頁向上移動 1 個" },
+  "command_treeMoveUp":            { "message": "目前樹向上移動 1 個" },
+  "command_tabMoveDown":           { "message": "目前分頁向下移動 1 個" },
+  "command_treeMoveDown":          { "message": "目前樹向下移動 1 個" },
+  "command_focusPrevious":         { "message": "切換到前個分頁(會展開樹)" },
+  "command_focusPreviousSilently": { "message": "切換到前個分頁(不展開樹)" },
+  "command_focusNext":             { "message": "切換到下個分頁(會展開樹)" },
+  "command_focusNextSilently":     { "message": "切換到下個分頁(不展開樹)" },
+  "command_tabbarUp":              { "message": "分頁一覽向上捲動 1 行" },
+  "command_tabbarPageUp":          { "message": "分頁一覽向上捲動 1 頁" },
+  "command_tabbarHome":            { "message": "分面一覽捲動至開頭" },
+  "command_tabbarDown":            { "message": "分頁一覽向下捲動 1 行" },
+  "command_tabbarPageDown":        { "message": "分頁一覽向下捲動 1 頁" },
+  "command_tabbarEnd":             { "message": "分面一覽捲動至結尾" },
+
   "tab_closebox_tab_tooltip": { "message": "關閉分頁" },
   "tab_closebox_tree_tooltip": { "message": "關閉此樹" },
   "tab_soundButton_muted_tooltip": { "message": "取消分頁靜音" },
@@ -144,7 +161,7 @@
   "config_animation_label": { "message": "啟用動畫效果" },
 
 
-  "config_context_caption": { "message": "額外右鍵選單項" },
+  "config_extraItems_caption": { "message": "額外右鍵選單項" },
 
 
   "config_newTab_caption": { "message": "新分頁行為" },
