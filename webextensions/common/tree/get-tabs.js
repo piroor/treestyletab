@@ -613,3 +613,10 @@ function getGroupTabForOpener(aOpener) {
                                        ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}#"],
                                        ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}&"]`);
 }
+
+function getOpenerFromGroupTab(aGroupTab) {
+  if (!isGroupTab(aGroupTab))
+    return null;
+  const matchedOpenerTabId = aGroupTab.apiTab.url.match(/openerTabId=([^&;]+)/);
+  return matchedOpenerTabId && getTabById(matchedOpenerTabId[1]);
+}

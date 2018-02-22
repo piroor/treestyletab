@@ -991,10 +991,14 @@ function onTabUpdated(aTab, aChangeInfo) {
 
   reserveToSaveTreeStructure(aTab);
   markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+
+  const group = getGroupTabForOpener(aTab);
+  if (group)
+    reserveToUpdateRelatedGroupTabs(group);
 }
 
 function onTabLabelUpdated(aTab) {
-  reserveToUpdateParentGroupTab(aTab);
+  reserveToUpdateRelatedGroupTabs(aTab);
 }
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
@@ -1118,7 +1122,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     getPreviousTab(aTab)
   ]);
 
-  reserveToUpdateParentGroupTab(aTab);
+  reserveToUpdateRelatedGroupTabs(aTab);
 
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
@@ -1140,7 +1144,7 @@ async function onTabDetached(aTab, aDetachInfo) {
   reserveToUpdateAncestors([aTab].concat(getDescendantTabs(aTab)));
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 
-  reserveToUpdateParentGroupTab(aDetachInfo.oldParentTab);
+  reserveToUpdateRelatedGroupTabs(aDetachInfo.oldParentTab);
 
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
