@@ -853,6 +853,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         insertBefore:  aOptions.insertBefore && aOptions.insertBefore.id,
         insertAfter:   aOptions.insertAfter && aOptions.insertAfter.id,
         cookieStoreId: aOptions.cookieStoreId || null,
+        isOrphan:      !!aOptions.isOrphan,
         inRemote:      false
       }));
     }
@@ -861,6 +862,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       let startIndex = calculateNewTabIndex(aOptions);
       let container  = getTabsContainer(aOptions.windowId);
       incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
+      if (aOptions.isOrphan)
+        incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aURIs.length);
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {
           windowId: aOptions.windowId,
@@ -880,7 +883,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         if (!tab)
           throw new Error('tab is already closed');
         if (!aOptions.opener &&
-            aOptions.parent)
+            aOptions.parent &&
+            !aOptions.isOrphan)
           await attachTabTo(tab, aOptions.parent, {
             insertBefore: aOptions.insertBefore,
             insertAfter:  aOptions.insertAfter,

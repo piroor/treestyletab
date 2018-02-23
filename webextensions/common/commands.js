@@ -111,10 +111,15 @@ const Commands = {
     }))[0]);
 
     let parent, insertBefore, insertAfter;
+    let isOrphan = false;
     switch (aOptions.as) {
       case kNEWTAB_DO_NOTHING:
-      case kNEWTAB_OPEN_AS_ORPHAN:
       default:
+        break;
+
+      case kNEWTAB_OPEN_AS_ORPHAN:
+        isOrphan    = true;
+        insertAfter = getLastTab(currentTab);
         break;
 
       case kNEWTAB_OPEN_AS_CHILD: {
@@ -146,6 +151,7 @@ const Commands = {
 
     openNewTab({
       parent, insertBefore, insertAfter,
+      isOrphan,
       inBackground:  !!aOptions.inBackground,
       cookieStoreId: aOptions.cookieStoreId,
       inRemote:      !!aOptions.inRemote

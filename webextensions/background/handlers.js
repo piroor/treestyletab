@@ -201,7 +201,7 @@ function onTabOpening(aTab, aInfo = {}) {
   );
 
   if (!opener) {
-    if (isNewTabCommandTab(aTab)) {
+    if (!aInfo.maybeOrphan && isNewTabCommandTab(aTab)) {
       let current = aInfo.activeTab || getCurrentTab(aTab);
       log('behave as a tab opened by new tab command, current = ', dumpTab(current));
       behaveAutoAttachedTab(aTab, {
@@ -243,7 +243,7 @@ function onTabOpening(aTab, aInfo = {}) {
       });
     }
   }
-  else if (configs.autoAttach) {
+  else if (!aInfo.maybeOrphan && configs.autoAttach) {
     behaveAutoAttachedTab(aTab, {
       baseTab:   opener,
       behavior:  configs.autoAttachOnOpenedWithOwner,
