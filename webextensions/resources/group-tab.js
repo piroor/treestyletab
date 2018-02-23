@@ -77,7 +77,7 @@ function init() {
     if (hasModifier(aEvent))
       return;
 
-    switch (aEvent.code) {
+    switch (aEvent.key) {
       case 'Escape':
         gTitleField.value = gTitle.textContent;
         exitTitleEdit();
@@ -110,7 +110,7 @@ function init() {
     }
   });
   window.addEventListener('keypress', aEvent => {
-    if (aEvent.code == 'F2' &&
+    if (aEvent.key == 'F2' &&
         !hasModifier(aEvent))
       enterTitleEdit();
   });

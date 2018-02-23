@@ -14,14 +14,14 @@
   function isAccelKeyOnlyEvent(aEvent) {
     if (isMac)
       return (
-        /^(Meta|OS)(Left|Right)$/.test(aEvent.code) &&
+        aEvent.key == 'Meta' &&
         !aEvent.altKey &&
         !aEvent.ctrlKey /*&&
         !aEvent.shiftKey*/
       );
     else
       return (
-        /^Control(Left|Right)$/.test(aEvent.code) &&
+        aEvent.key == 'Control' &&
         !aEvent.altKey &&
         !aEvent.metaKey /*&&
         !aEvent.shiftKey*/
@@ -31,7 +31,7 @@
   function isAccelKeyUnshiftEvent(aEvent) {
     if (isMac)
       return (
-        /^Shift(Left|Right)$/.test(aEvent.code) &&
+        aEvent.key == 'Shift' &&
         !aEvent.altKey &&
         !aEvent.ctrlKey &&
         aEvent.metaKey /*&&
@@ -39,7 +39,7 @@
       );
     else
       return (
-        /^Shift(Left|Right)$/.test(aEvent.code) &&
+        aEvent.key == 'Shift' &&
         !aEvent.altKey &&
         aEvent.ctrlKey &&
         !aEvent.metaKey /*&&
@@ -48,7 +48,7 @@
   }
 
   function isTabSwitchEvent(aEvent) {
-    if (!/^(Tab|Shift(Left|Right)|PageUp|PageDown)$/.test(aEvent.code))
+    if (!/^(Tab|Shift|PageUp|PageDown)$/.test(aEvent.key))
       return false;
     if (isMac)
       return (
