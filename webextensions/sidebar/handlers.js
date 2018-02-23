@@ -48,8 +48,8 @@ function isAccelAction(aEvent) {
 
 function isAccelKeyPressed(aEvent) {
   return gIsMac ?
-    (aEvent.metaKey || ('keyCode' in aEvent && aEvent.keyCode == aEvent.DOM_VK_META)) :
-    (aEvent.ctrlKey || ('keyCode' in aEvent && aEvent.keyCode == aEvent.DOM_VK_CONTROL)) ;
+    (aEvent.metaKey || /^(Meta|OS)(Left|Right)$/.test(String(aEvent.code))) :
+    (aEvent.ctrlKey || /^Control(Left|Right)$/.test(String(aEvent.code))) ;
 }
 
 function isCopyAction(aEvent) {
