@@ -31,7 +31,7 @@ var tabContextMenu = {
   getItemsFor(aAddonId) {
     let items;
     if (aAddonId in this.items) {
-      items = this.items[aAddonId];
+      items = this.items[aAddonId] || [];
     }
     else {
       items = [];

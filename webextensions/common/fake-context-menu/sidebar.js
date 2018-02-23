@@ -127,7 +127,8 @@ var tabContextMenu = {
   getAddonName(aId) {
     if (aId == browser.runtime.id)
       return browser.i18n.getMessage('extensionName');
-    return this.addons[aId].name || aId.replace(/@.+$/, '');
+    const addon = this.addons[aId] || {};
+    return addon.name || aId.replace(/@.+$/, '');
   },
   prepareAsSubmenu(aItemNode) {
     if (aItemNode.querySelector('ul'))
