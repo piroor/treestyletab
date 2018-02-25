@@ -1581,6 +1581,7 @@ function onMessageExternal(aMessage, aSender) {
           aMessage.listeningEvents = aMessage.listeningEvent || '*';
         if (!Array.isArray(aMessage.listeningEvents))
           aMessage.listeningEvents = [aMessage.listeningEvents];
+        aMessage.id = aSender.id;
         gExternalListenerAddons[aSender.id] = aMessage;
         browser.runtime.sendMessage({
           type:    kCOMMAND_BROADCAST_API_REGISTERED,

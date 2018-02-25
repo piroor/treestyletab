@@ -1062,13 +1062,21 @@ function serializeTabForTSTAPI(aTab) {
   });
 }
 
-async function sendTSTAPIMessage(aMessage, aOptions = {}) {
-  const addons = gExternalListenerAddons;
+function getListenersForTSTAPIMessageType(aType) {
   const uniqueTargets = {};
-  for (let id of Object.keys(addons)) {
-    if (addons[id].listeningEvents.indexOf('*') > -1 ||
-        addons[id].listeningEvents.indexOf(aMessage.type) > -1)
+  for (let id of Object.keys(gExternalListenerAddons)) {
+    const addon = gExternalListenerAddons[id];
+    if (addon.listeningEvents.indexOf('*') > -1 ||
+        addon.listeningEvents.indexOf(aMessage.type) > -1)
       uniqueTargets[id] = true;
+  }
+  return Object.keys(uniqueTargets).map(aId => gExternalListenerAddons[aId]);
+}
+
+async function sendTSTAPIMessage(aMessage, aOptions = {}) {
+  const uniqueTargets = {};
+  for (let addon of getListenersForTSTAPIMessageType(aMessage.type)) {
+    uniqueTargets[addon.id] = true;
   }
   if (aOptions.targets) {
     if (!Array.isArray(aOptions.targets))

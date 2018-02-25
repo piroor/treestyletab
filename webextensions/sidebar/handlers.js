@@ -223,21 +223,29 @@ function onMouseDown(aEvent) {
   gLastMousedown.timeout = setTimeout(() => {
     if (!gLastMousedown)
       return;
+
+    if (aEvent.button == 0 &&
+        mousedownDetail.targetType == 'newtabbutton' &&
+        configs.longPressOnNewTabButton) {
+      gLastMousedown.expired = true;
+      const selector = document.getElementById(configs.longPressOnNewTabButton);
+      if (selector) {
+        selector.ui.open({
+          anchor: target
+        });
+      }
+      return;
+    }
+
+    if (getListenersForTSTAPIMessageType('kTSTAPI_NOTIFY_TAB_DRAGREADY').length == 0)
+      return;
+
     if (configs.logOnMouseEvent)
       log('onMouseDown expired');
     gLastMousedown.expired = true;
     if (aEvent.button == 0) {
       if (tab) {
         notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
-      }
-      else if (mousedownDetail.targetType == 'newtabbutton' &&
-               configs.longPressOnNewTabButton) {
-        const selector = document.getElementById(configs.longPressOnNewTabButton);
-        if (selector) {
-          selector.ui.open({
-            anchor: target
-          });
-        }
       }
     }
   }, configs.startDragTimeout);
