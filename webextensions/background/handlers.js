@@ -1577,6 +1577,10 @@ function onMessageExternal(aMessage, aSender) {
   switch (aMessage.type) {
     case kTSTAPI_REGISTER_SELF:
       return (async () => {
+        if (!aMessage.listeningEvents)
+          aMessage.listeningEvents = aMessage.listeningEvent || '*';
+        if (!Array.isArray(aMessage.listeningEvents))
+          aMessage.listeningEvents = [aMessage.listeningEvents];
         gExternalListenerAddons[aSender.id] = aMessage;
         browser.runtime.sendMessage({
           type:    kCOMMAND_BROADCAST_API_REGISTERED,

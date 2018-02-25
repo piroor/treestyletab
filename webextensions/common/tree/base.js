@@ -1066,7 +1066,9 @@ async function sendTSTAPIMessage(aMessage, aOptions = {}) {
   const addons = gExternalListenerAddons;
   const uniqueTargets = {};
   for (let id of Object.keys(addons)) {
-    uniqueTargets[id] = true;
+    if (addons[id].listeningEvents.indexOf('*') > -1 ||
+        addons[id].listeningEvents.indexOf(aMessage.type) > -1)
+      uniqueTargets[id] = true;
   }
   if (aOptions.targets) {
     if (!Array.isArray(aOptions.targets))
