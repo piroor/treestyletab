@@ -49,8 +49,6 @@ var tabContextMenu = {
     return document.querySelector('#tabContextMenu');
   },
 
-  addons: null,
-
   contextTab: null,
   extraItems: {},
   dirty:      false,
@@ -70,11 +68,6 @@ var tabContextMenu = {
 
     if (Object.keys(this.extraItems).length == 0)
       return;
-
-    if (!this.addons)
-      this.addons = await browser.runtime.sendMessage({
-        type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-      });
 
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
@@ -127,7 +120,7 @@ var tabContextMenu = {
   getAddonName(aId) {
     if (aId == browser.runtime.id)
       return browser.i18n.getMessage('extensionName');
-    const addon = this.addons[aId] || {};
+    const addon = gExternalListenerAddons[aId] || {};
     return addon.name || aId.replace(/@.+$/, '');
   },
   prepareAsSubmenu(aItemNode) {
@@ -195,7 +188,6 @@ var tabContextMenu = {
     this.menu.removeAttribute('data-tab-states');
     this.contextTab      = null;
     this.contextWindowId = null;
-    this.addons          = null;
   },
 
   applyContext() {
