@@ -1066,8 +1066,7 @@ function getListenersForTSTAPIMessageType(aType) {
   const uniqueTargets = {};
   for (let id of Object.keys(gExternalListenerAddons)) {
     const addon = gExternalListenerAddons[id];
-    if (addon.listeningEvents.indexOf('*') > -1 ||
-        addon.listeningEvents.indexOf(aMessage.type) > -1)
+    if (addon.listeningEvents.indexOf(aType) > -1)
       uniqueTargets[id] = true;
   }
   return Object.keys(uniqueTargets).map(aId => gExternalListenerAddons[aId]);

@@ -1577,10 +1577,20 @@ function onMessageExternal(aMessage, aSender) {
   switch (aMessage.type) {
     case kTSTAPI_REGISTER_SELF:
       return (async () => {
-        if (!aMessage.listeningEvents)
-          aMessage.listeningEvents = aMessage.listeningEvent || '*';
-        if (!Array.isArray(aMessage.listeningEvents))
-          aMessage.listeningEvents = [aMessage.listeningEvents];
+        if (!aMessage.listeningEvents) {
+          // for backward compatibility, send all message types available on TST 2.4.16 by default.
+          aMessage.listeningEvents = [
+            kTSTAPI_NOTIFY_READY,
+            kTSTAPI_NOTIFY_SHUTDOWN,
+            kTSTAPI_NOTIFY_TAB_CLICKED,
+            kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
+            kTSTAPI_NOTIFY_TAB_MOUSEUP,
+            kTSTAPI_NOTIFY_TABBAR_CLICKED,
+            kTSTAPI_NOTIFY_TABBAR_MOUSEDOWN,
+            kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
+            kTSTAPI_CONTEXT_MENU_CLICK
+          ];
+        }
         aMessage.id = aSender.id;
         gExternalListenerAddons[aSender.id] = aMessage;
         browser.runtime.sendMessage({
