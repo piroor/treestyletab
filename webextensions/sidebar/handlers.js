@@ -1389,6 +1389,7 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case kCOMMAND_BROADCAST_API_REGISTERED:
+      gExternalListenerAddons[aMessage.sender.id] = aMessage.message;
       if (aMessage.message.style)
         installStyleForAddon(aMessage.sender.id, aMessage.message.style)
       break;
@@ -1396,6 +1397,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_API_UNREGISTERED:
       uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
+      delete gExternalListenerAddons[aMessage.sender.id];
       break;
 
     case kCOMMAND_SHOW_CONTAINER_SELECTOR:

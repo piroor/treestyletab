@@ -9,7 +9,7 @@ gLogContext = 'BG';
 
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();
-var gExternalListenerAddons = {};
+var gExternalListenerAddons = null;
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
 
@@ -91,8 +91,6 @@ async function init() {
 
   Permissions.clearRequest();
 
-  gInitializing = false;
-
   for (let windowId of Object.keys(restoredFromCache)) {
     if (!restoredFromCache[windowId])
       reserveToCacheTree(parseInt(windowId));
@@ -108,12 +106,14 @@ async function init() {
     }
   }
 
+  await readyForExternalAddons();
+
+  gInitializing = false;
+
   // notify that the master process is ready.
   browser.runtime.sendMessage({
     type: kCOMMAND_PING_TO_SIDEBAR
   });
-
-  await readyForExternalAddons();
 
   notifyNewFeatures();
   log('Startup metrics: ', gMetricsData.toString());
@@ -271,6 +271,7 @@ function startWatchSidebarOpenState() {
 
 
 async function readyForExternalAddons() {
+  gExternalListenerAddons = {};
   var respondedAddons = [];
   var notifiedAddons = {};
   var notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);

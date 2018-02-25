@@ -1266,7 +1266,12 @@ function onMessage(aMessage, aSender) {
       })();
 
     case kCOMMAND_REQUEST_REGISTERED_ADDONS:
-      return Promise.resolve(gExternalListenerAddons);
+      return (async () => {
+        while (!gExternalListenerAddons) {
+          await wait(10);
+        }
+        return gExternalListenerAddons;
+      })();
 
     case kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
       return Promise.resolve(gScrollLockedBy);

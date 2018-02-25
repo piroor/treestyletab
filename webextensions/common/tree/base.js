@@ -1063,12 +1063,8 @@ function serializeTabForTSTAPI(aTab) {
 }
 
 async function sendTSTAPIMessage(aMessage, aOptions = {}) {
-  var addons = window.gExternalListenerAddons;
-  if (!addons)
-    addons = await browser.runtime.sendMessage({
-      type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-    });
-  var uniqueTargets = {};
+  const addons = gExternalListenerAddons;
+  const uniqueTargets = {};
   for (let id of Object.keys(addons)) {
     uniqueTargets[id] = true;
   }
