@@ -1587,8 +1587,7 @@ function onMessageExternal(aMessage, aSender) {
             kTSTAPI_NOTIFY_TAB_MOUSEUP,
             kTSTAPI_NOTIFY_TABBAR_CLICKED,
             kTSTAPI_NOTIFY_TABBAR_MOUSEDOWN,
-            kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
-            kTSTAPI_CONTEXT_MENU_CLICK
+            kTSTAPI_NOTIFY_TABBAR_MOUSEUP
           ];
         }
         aMessage.id = aSender.id;
