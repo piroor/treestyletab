@@ -237,7 +237,7 @@ function onMouseDown(aEvent) {
       return;
     }
 
-    if (getListenersForTSTAPIMessageType('kTSTAPI_NOTIFY_TAB_DRAGREADY').length == 0)
+    if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_DRAGREADY).length == 0)
       return;
 
     if (configs.logOnMouseEvent)
