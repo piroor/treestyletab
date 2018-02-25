@@ -1577,9 +1577,9 @@ function onMessageExternal(aMessage, aSender) {
   switch (aMessage.type) {
     case kTSTAPI_REGISTER_SELF:
       return (async () => {
-        if (!aMessage.listeningEvents) {
+        if (!aMessage.listeningTypes) {
           // for backward compatibility, send all message types available on TST 2.4.16 by default.
-          aMessage.listeningEvents = [
+          aMessage.listeningTypes = [
             kTSTAPI_NOTIFY_READY,
             kTSTAPI_NOTIFY_SHUTDOWN,
             kTSTAPI_NOTIFY_TAB_CLICKED,
