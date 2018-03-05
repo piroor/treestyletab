@@ -127,7 +127,7 @@
 
 <!ENTITY config.tabs.tree "Дерево">
 
-<!ENTITY config.autoCollapseExpandSubtreeOnAttach "При появі нового дерева автоматично згорнути інш">
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "При появі нового дерева автоматично згорнути інші">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect "При виборі вкладки розгорнути дерево і автоматично згорнути інші">
 <!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Окрім вибору вкладки після закриття поточної вкладки">
 <!ENTITY config.collapseExpandSubtree.dblclick "Згортати/розгортати дерево вкладок подвійним кліком">
