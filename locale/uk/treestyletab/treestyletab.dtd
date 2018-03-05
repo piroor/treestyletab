@@ -1,0 +1,203 @@
+<!ENTITY config.title        "Налаштування деревовидного стилю вкладок">
+
+<!ENTITY config.scale.min "мін.">
+<!ENTITY config.scale.max "макс.">
+
+
+<!ENTITY config.tabs.appearance "Зовнішній вигляд">
+
+<!ENTITY config.tabbar.position.caption "Розташування панелі вкладок">
+<!ENTITY config.tabbar.position.left    "Зліва">
+<!ENTITY config.tabbar.position.right   "Праворуч">
+<!ENTITY config.tabbar.position.top     "Зверху (за замовчуванням у Firefox)">
+<!ENTITY config.tabbar.position.bottom  "Знизу">
+<!ENTITY config.tabbar.invertClosebox.left  "Показувати кнопку закриття з лівого боку кожної вкладки">
+<!ENTITY config.tabbar.invertClosebox.right "Показувати кнопку закриття з правого боку кожної вкладки">
+<!ENTITY config.tabbar.invertTab            "Інвертувати вигляд вкладок">
+<!ENTITY config.tabbar.invertTabContents    "Інвертувати вміст вкладок">
+<!ENTITY config.tabbar.narrowScrollbar      "Вузька смуга прокрутки">
+<!ENTITY config.enableSubtreeIndent         "Відступи вкладок">
+<!ENTITY config.maxTreeLevel.before "поки рівнів менше">
+<!ENTITY config.maxTreeLevel.after  "">
+<!ENTITY config.tabbarSize.before-horizontal ":">
+<!ENTITY config.tabbarSize.after-horizontal  "пікселів в висоту">
+<!ENTITY config.tabbarSize.before-vertical   ":">
+<!ENTITY config.tabbarSize.after-vertical    "пікселів в ширину">
+
+
+<!ENTITY config.tabs.style "Стиль">
+
+<!ENTITY config.tabbar.style.caption "Стиль панелі вкладок">
+<!ENTITY config.tabbar.style.plain   "Plain">
+<!ENTITY config.tabbar.style.flat    "Flat">
+<!ENTITY config.tabbar.style.mixed   "Mixed">
+<!ENTITY config.tabbar.style.vertigo "Vertigo">
+<!ENTITY config.tabbar.style.metal   "Metal">
+<!ENTITY config.tabbar.style.sidebar "Sidebar">
+<!ENTITY config.tabbar.style.none    "За замовчуванням (визначається темою)">
+
+<!ENTITY config.twisty.style.caption "Вид вузлів дерева">
+<!ENTITY config.twisty.style.auto    "Авто">
+<!ENTITY config.twisty.style.none    "Немає">
+<!ENTITY config.twisty.style.retro   "Ретро">
+<!ENTITY config.twisty.style.modern.black "Чорний новий">
+<!ENTITY config.twisty.style.modern.white "Білий новий">
+<!ENTITY config.twisty.style.osx     "OS X">
+
+
+<!ENTITY config.tabs.menu "Меню">
+
+<!ENTITY config.show.tabContextMenu.caption "Додати наступні елементи в контекстне меню вкладок">
+
+
+<!ENTITY config.tabs.tab "Нові вкладки">
+
+<!ENTITY config.autoAttach.newTabCommand.label_before "Відкривати нову порожню вкладку">
+<!ENTITY config.autoAttach.newTabCommand.independent "як окрему вкладку">
+<!ENTITY config.autoAttach.newTabCommand.child       "як дочірню поточної вкладки">
+<!ENTITY config.autoAttach.newTabCommand.sibling     "на рівні поточної вкладки">
+<!ENTITY config.autoAttach.newTabCommand.nextSibling "поряд з поточною вкладкою">
+<!ENTITY config.autoAttach.newTabCommand.label_after "">
+
+<!ENTITY config.autoAttach.newTabButton.label_before "Кліком коліщатка мишки на кнопці «Нова вкладка» відкривати нову вкладку">
+<!ENTITY config.autoAttach.newTabButton.independent "як окрему вкладку">
+<!ENTITY config.autoAttach.newTabButton.child       "як дочірню поточної вкладки">
+<!ENTITY config.autoAttach.newTabButton.sibling     "на рівні поточної вкладки">
+<!ENTITY config.autoAttach.newTabButton.nextSibling "поряд з поточною вкладкою">
+<!ENTITY config.autoAttach.newTabButton.label_after "">
+
+<!ENTITY config.autoAttach.duplicateTabCommand.label_before "Кліком коліщатка мишки на кнопці «Оновити» клонувати вкладку">
+<!ENTITY config.autoAttach.duplicateTabCommand.independent "як окрему вкладку">
+<!ENTITY config.autoAttach.duplicateTabCommand.child       "як дочірню поточної вкладки">
+<!ENTITY config.autoAttach.duplicateTabCommand.sibling     "на рівні поточної вкладки">
+<!ENTITY config.autoAttach.duplicateTabCommand.nextSibling "поряд з поточною вкладкою">
+<!ENTITY config.autoAttach.duplicateTabCommand.label_after "">
+
+<!ENTITY config.autoAttach.goButton.label_before "Кліком коліщатка мишки на кнопці «Перейти» відкривати нову вкладку">
+<!ENTITY config.autoAttach.goButton.independent "як окрему вкладку">
+<!ENTITY config.autoAttach.goButton.child       "як дочірню поточної вкладки">
+<!ENTITY config.autoAttach.goButton.sibling     "на рівні поточної вкладки">
+<!ENTITY config.autoAttach.goButton.nextSibling "поряд з поточною вкладкою">
+<!ENTITY config.autoAttach.goButton.label_after "">
+
+<!ENTITY config.openGroupBookmark.caption     "Поведінка команди «Відкрити всі у вкладках» для папок закладок">
+<!ENTITY config.openGroupBookmark.ask         "Завжди запитувати">
+<!ENTITY config.openGroupBookmark.subtree     "Відкривати як дерево (рекомендовано)">
+<!ENTITY config.openGroupBookmark.subtree.type.before  "">
+<!ENTITY config.openGroupBookmark.subtree.type.restore "Відновити">
+<!ENTITY config.openGroupBookmark.subtree.type.flat    "Ігнорувати">
+<!ENTITY config.openGroupBookmark.subtree.type.after   "структуру дерева вкладок, збережену в закладках">
+<!ENTITY config.openGroupBookmark.flat        "Відкривати як окремі вкладки (за замовчуванням у Firefox)">
+<!ENTITY config.openGroupBookmark.underParent "Помістити вкладки у «титульну» батьківську вкладку">
+
+<!ENTITY config.dropLinksOnTab.caption "При перетягуванні посилання, закладки чи файлу на існуючу вкладку">
+<!ENTITY config.dropLinksOnTab.ask     "Завжди запитувати">
+<!ENTITY config.dropLinksOnTab.load    "Завантажувати в поточну вкладку (за замовчуванням у Firefox)">
+<!ENTITY config.dropLinksOnTab.newTab  "Відкривати як дочірню вкладку">
+<!--
+<!ENTITY config.dropLinksOnTab.caption "Дія при перетягуванні посилання чи URL-ів в наявну вкладку">
+<!ENTITY config.dropLinksOnTab.ask     "Завжди запитувати">
+<!ENTITY config.dropLinksOnTab.load    "Завантажити посилання у вкладці (за замовчуванням у Firefox)">
+<!ENTITY config.dropLinksOnTab.newTab  "Відкрити посилання у новій вкладці, дочірній до поточної">
+-->
+
+
+<!ENTITY config.tabs.autohide "Авто-приховування">
+
+<!ENTITY config.autoHide.mode.normal.caption     "В нормальному режимі">
+<!ENTITY config.autoHide.mode.fullscreen.caption "В повноекранному режимі">
+<!ENTITY config.autoHide.mode.0 "Показувати панель вкладок завжди">
+<!ENTITY config.autoHide.mode.1 "Авто-приховування панелі вкладок">
+<!ENTITY config.autoHide.mode.2 "Авто-стискування панелі вкладок">
+<!ENTITY config.autoShow.caption "Автоматично показувати панель вкладок:">
+<!ENTITY config.autoShow.mousemove "При переміщенні мишки до краю вікна чи панелі вкладок">
+<!ENTITY config.autoHide.area.before "Область спрацьовування:">
+<!ENTITY config.autoHide.area.after "пікселів від краю вікна чи панелі вкладок">
+<!ENTITY config.autoHide.delay.before "Затримка:">
+<!ENTITY config.autoHide.delay.after "мсек.">
+<!ENTITY config.autoShow.click "Після кліку по панелі вкладок">
+<!ENTITY config.autoShow.accelKeyDown "При утримуванні клавіші Ctrl">
+<!ENTITY config.autoShow.accelKeyDown.delay.before "Показувати через">
+<!ENTITY config.autoShow.accelKeyDown.delay.after  "мсек.">
+<!ENTITY config.autoShow.tabSwitch   "При перемиканні вкладок з допомогою Ctrl+Tab">
+<!ENTITY config.autoShow.feedback    "При зміні вкладок (нова вкладка, закриття вкладки, зміна фокуса, зміна заголовка)">
+<!ENTITY config.autoShow.feedback.delay.before "Приховувати через">
+<!ENTITY config.autoShow.feedback.delay.after  "мсек.">
+
+
+<!ENTITY config.tabs.tree "Дерево">
+
+<!ENTITY config.autoCollapseExpandSubtreeOnAttach "При появі нового дерева автоматично згорнути інші">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect "При виборі вкладки розгорнути дерево і автоматично згорнути інші">
+<!ENTITY config.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove "Окрім вибору вкладки після закриття поточної вкладки">
+<!ENTITY config.collapseExpandSubtree.dblclick "Згортати/розгортати дерево вкладок подвійним кліком">
+<!ENTITY config.autoExpandSubtreeOnAppendChild "Розгортати дерево автоматично, коли вкладки вставляються в дерево">
+
+<!ENTITY config.closeParentBehavior.caption       "При закритті батьківської вкладки">
+<!ENTITY config.closeParentBehavior.close         "Також закрити дочірні вкладки">
+<!ENTITY config.closeParentBehavior.promoteFirst "Зробити першу дочірню вкладку новою батьківською">
+<!ENTITY config.closeParentBehavior.promoteAll   "Перемістити всі дочірні вкладки на рівень закритої батьківської вкладки">
+<!ENTITY config.closeParentBehavior.detach        "Перемістити дочірні вкладки з дерева">
+<!ENTITY config.closeParentBehavior.replaceWithGroupTab "Замінити закриту батьківську вкладку порожньою і зберегти дерево">
+<!ENTITY config.closeRootBehavior.promoteFirst   "Зробити першу дочірню вкладку новою батьківською, якщо закрита батьківська вкладка не мала батьківської вкл.">
+
+<!ENTITY config.focusMode "Переходити по Ctrl+Tab на наступну/попередню вкладку навіть якщо вона прихована">
+
+<!ENTITY config.insertNewChildAt.caption "Позиція додавання нових дочірніх вкладок">
+<!ENTITY config.insertNewChildAt.noControl "Не контролювати (дотримуватись налаштувань FireFox чи інших аддонів для вкладок)">
+<!ENTITY config.insertNewChildAt.first "Додати на початок дерева">
+<!ENTITY config.insertNewChildAt.last "Додати в кінець дерева">
+
+<!ENTITY config.undoCloseTabSet.caption  "При відновленні елемента дерева через «Відновити закриту вкладку»">
+<!ENTITY config.undoCloseTabSet.ask      "Завжди запитувати">
+<!ENTITY config.undoCloseTabSet.set      "Відновити все дерево">
+<!ENTITY config.undoCloseTabSet.separate "Відновити лише одну вкладку (за замовчуванням у Firefox)">
+
+<!ENTITY config.tabs.advanced "Додатково">
+
+<!ENTITY config.tooltip.includeChildren        "Показувати вміст дерева у спливаючих підказках вкладок">
+
+<!ENTITY config.bookmarkDroppedTabs.caption "При перетягуванні батьківської вкладки в закладки">
+<!ENTITY config.bookmarkDroppedTabs.ask     "Завжди запитувати">
+<!ENTITY config.bookmarkDroppedTabs.all     "Додати в закладки всі вкладки дерева">
+<!ENTITY config.bookmarkDroppedTabs.parent  "Додати в закладки тільки вкладку котра перетягується">
+
+<!ENTITY config.migration.caption "Дані Міграції для майбутніх версій TST (експорт/імпорт налаштувань)">
+<!ENTITY config.migration.saveConfigs "Зберегти у файл Дані Міграції для Конфігурації">
+<!ENTITY config.migration.saveTree "Зберегти у файл Дані Міграції для Дерева">
+
+
+
+
+
+<!ENTITY selection.removeTabSubtree.label     "Закрити обрані дерева">
+<!ENTITY selection.removeTabSubtree.accesskey "в">
+<!ENTITY selection.createSubtree.label          "Перемістити в нове дерево">
+<!ENTITY selection.createSubtree.accesskey      "П">
+
+<!ENTITY context.reloadTabSubtree.label     "Оновити це дерево">
+<!ENTITY context.reloadTabSubtree.accesskey "О">
+<!ENTITY context.reloadDescendantTabs.label     "Оновити дочірні вкладки">
+<!ENTITY context.reloadDescendantTabs.accesskey "д">
+<!ENTITY context.removeTabSubtree.label     "Закрити це дерево">
+<!ENTITY context.removeTabSubtree.accesskey "З">
+<!ENTITY context.removeDescendantTabs.label     "Закрити дочірні вкладки">
+<!ENTITY context.removeDescendantTabs.accesskey "д">
+<!ENTITY context.removeAllTabsBut.label         "Закрити всі вкладки, крім цього дерева">
+<!ENTITY context.removeAllTabsBut.accesskey     "к">
+<!ENTITY context.collapseAllSubtree.label     "Згорнути всі дерева">
+<!ENTITY context.collapseAllSubtree.accesskey "С">
+<!ENTITY context.expandAllSubtree.label     "Розгорнути всі дерева">
+<!ENTITY context.expandAllSubtree.accesskey "Р">
+<!ENTITY context.toggleAutoHide.label.hide   "Авто-приховування панелі вкладок">
+<!ENTITY context.toggleAutoHide.label.shrink "Авто-стискування панелі вкладок">
+<!ENTITY context.toggleAutoHide.accesskey "А">
+<!ENTITY context.toggleFixed.label            "Зафіксувати положення і ширину/висоту панелі вкладок">
+<!ENTITY context.toggleFixed.label.horizontal "Зафіксувати положення і висоту панелі вкладок">
+<!ENTITY context.toggleFixed.label.vertical   "Зафіксувати положення і ширину панелі вкладок">
+<!ENTITY context.toggleFixed.accesskey "ф">
+<!ENTITY context.bookmarkTabSubtree.label     "Додати це дерево в закладки…">
+<!ENTITY context.bookmarkTabSubtree.accesskey "з">
+
+<!ENTITY group.default "Нова група">
+<!ENTITY group.temporary "Тимчасова група">
