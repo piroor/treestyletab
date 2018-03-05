@@ -133,19 +133,19 @@
 <!ENTITY config.collapseExpandSubtree.dblclick "Згортати/розгортати дерево вкладок подвійним кліком">
 <!ENTITY config.autoExpandSubtreeOnAppendChild "Розгортати дерево автоматично, коли вкладки вставляються в дерево">
 
-<!ENTITY config.closeParentBehavior.caption       "При закритті батьківського вкладки">
+<!ENTITY config.closeParentBehavior.caption       "При закритті батьківської вкладки">
 <!ENTITY config.closeParentBehavior.close         "Також закрити дочірні вкладки">
 <!ENTITY config.closeParentBehavior.promoteFirst "Зробити першу дочірню вкладку новою батьківською">
 <!ENTITY config.closeParentBehavior.promoteAll   "Перемістити всі дочірні вкладки на рівень закритої батьківської вкладки">
 <!ENTITY config.closeParentBehavior.detach        "Перемістити дочірні вкладки з дерева">
 <!ENTITY config.closeParentBehavior.replaceWithGroupTab "Замінити закриту батьківську вкладку порожньою і зберегти дерево">
-<!ENTITY config.closeRootBehavior.promoteFirst   "Зробити першу дочірню вкладку новою батьківською, якщо закрита батьківська вкладка не мала батька">
+<!ENTITY config.closeRootBehavior.promoteFirst   "Зробити першу дочірню вкладку новою батьківською, якщо закрита батьківська вкладка не мала батьківської вкл.">
 
 <!ENTITY config.focusMode "Переходити по Ctrl+Tab на наступну/попередню вкладку навіть якщо вона прихована">
 
 <!ENTITY config.insertNewChildAt.caption "Позиція додавання нових дочірніх вкладок">
 <!ENTITY config.insertNewChildAt.noControl "Не контролювати (дотримуватись налаштувань FireFox чи інших аддонів для вкладок)">
-<!ENTITY config.insertNewChildAt.first "Додавати на початок дерева">
+<!ENTITY config.insertNewChildAt.first "Додати на початок дерева">
 <!ENTITY config.insertNewChildAt.last "Додати в кінець дерева">
 
 <!ENTITY config.undoCloseTabSet.caption  "При відновленні елемента дерева через «Відновити закриту вкладку»">
@@ -162,7 +162,7 @@
 <!ENTITY config.bookmarkDroppedTabs.all     "Додати в закладки всі вкладки дерева">
 <!ENTITY config.bookmarkDroppedTabs.parent  "Додати в закладки тільки вкладку котра перетягується">
 
-<!ENTITY config.migration.caption "Дані Міграції для майбутніх версій (експорт/імпорт налаштувань TST)">
+<!ENTITY config.migration.caption "Дані Міграції для майбутніх версій TST (експорт/імпорт налаштувань)">
 <!ENTITY config.migration.saveConfigs "Зберегти у файл Дані Міграції для Конфігурації">
 <!ENTITY config.migration.saveTree "Зберегти у файл Дані Міграції для Дерева">
 
