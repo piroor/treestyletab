@@ -702,7 +702,18 @@ async function updateRelatedGroupTab(aGroupTab) {
   }
   else if (kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
     const opener = getOpenerFromGroupTab(aGroupTab);
-    newTitle = opener && browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
+    if (opener) {
+      if (opener &&
+           (opener.apiTab.favIconUrl ||
+            TabFavIconHelper.maybeImageTab(opener.apiTab))) {
+        browser.runtime.sendMessage({
+          type:       kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+          tab:        aGroupTab.id,
+          favIconUrl: getSafeFaviconUrl(opener.apiTab.favIconUrl || opener.apiTab.url)
+        });
+      }
+      newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
+    }
   }
 
   if (newTitle && aGroupTab.apiTab.title != newTitle) {

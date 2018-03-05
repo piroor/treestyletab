@@ -54,10 +54,18 @@
   mask: url("./icons/folder-16.svg") no-repeat center / 100%;
 }
 
+.tab.group-tab .favicon-image[src]:not(.error) {
+  bottom: 0;
+  max-height: 10px;
+  max-width: 10px;
+  position: absolute;
+  right: 0;
+}
+
 
 .favicon-image.error,
 .favicon-image:not([src]),
-.favicon-image[src]:not(.error) ~ .favicon-default::before,
+.tab:not(.group-tab) .favicon-image[src]:not(.error) ~ .favicon-default::before,
 .tab.loading .favicon-image,
 .tab.loading .favicon-default::before {
   display: none !important;
