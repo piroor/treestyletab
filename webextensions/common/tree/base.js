@@ -421,7 +421,7 @@ function getSafeFaviconUrl(aURL) {
       return browser.extension.getURL('resources/icons/extensionGeneric-16.svg');
     default:
       if (/^chrome:\/\//.test(aURL))
-        return browser.extension.getURL('sidebar/styles/icons/globe-16.svg');
+        return browser.extension.getURL('resources/icons/globe-16.svg');
       break;
   }
   return aURL;
