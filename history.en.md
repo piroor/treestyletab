@@ -1,6 +1,18 @@
 # History
 
  - master/HEAD
+ - 2.4.17 (2018.3.7)
+   * Use default favicon of tabs same to Firexo 60.
+   * Use Firefox-compatible favicon for addon manager and options tabs.
+   * Add an option to deactivate fake context menu in the sidebar.
+   * Optimize internal processes to collect ancestor tabs from a tab.
+   * Synchronize title and favicon of a parent pinned tab to its related group tab.
+   * Open new independent tab correctly by the command, when new tab are configured to be opened as children or sibling.
+   * Don't cancel drag action on a tab for long press when there is no listener for "tab-dragready" API message.
+   * Accept extra context menu items added by other addons without the name of the addon.
+   * Set the value of `HTTP_USER_AGENT` to the `data-user-agent` attribute of the root element, for easy platform-specific styling.
+   * [`get-tree` API](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#data-format) now returns `ancestorTabIds` for each tab.
+   * Notify event messagess via the API only for addons which intentionally listens the message type. (However, all known message types on 2.4.16 are delivered to the addon if it doesn't declare listening event types, for backward compatibility.)
  - 2.4.16 (2018.2.12)
    * Make default shortcuts avoidable from Firefox's built-in shortcuts. Now you can scroll Tree Style Tab's sidebar by Alt-Shift-Up, Alt-Shift-Down, Alt-Shift-PageUp, Alt-Shift-PageDown, Alt-Shift-Home, and Alt-Shift-End.
    * Shortcuts for "scroll sidebar by line" now scrolls for three lines on each time.
