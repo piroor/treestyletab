@@ -113,7 +113,7 @@
   "message_startup_userChromeCss_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message_startup_userChromeCss_description_2": { "message": "。但" },
   "message_startup_userChromeCss_description_note": { "message": "這種自訂方法非常低階，在 Firefox 的後續版本可能無效甚至產生問題。有自信解決可能問題時再行使用，並請自行負責。" },
-  "message_startup_userChromeCss_description_3": { "message": "" },
+  "message_startup_userChromeCss_description_3": { "message": "\u200b" },
 
 
   "context_reloadTree_label": { "message": "重新載入此樹(&R)" },
@@ -171,7 +171,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "開新分頁於特定位置" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "開新容器分頁" },
   "config_longPressOnNewTabButton_none":                 { "message": "不做任何事" },
-  "config_longPressOnNewTabButton_after":                { "message": "" },
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
   "config_showNewTabActionSelector_label":               { "message": "顯示特定位置開新分頁按鈕" },
   "config_showContextualIdentitiesSelector_label":       { "message": "顯示新容器分頁按鈕" },
 
@@ -181,7 +181,7 @@
   "config_autoAttachOnNewTabCommand_child": { "message": "目前分頁下層分頁" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "目前分頁同層分頁" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-  "config_autoAttachOnNewTabCommand_after": { "message": "" },
+  "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "網址為" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "的分頁開啟時，視為以快捷鍵等方式開啟的新分頁" },
 
@@ -190,14 +190,14 @@
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "目前分頁下層分頁" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "目前分頁同層分頁" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "" },
+  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnDuplicated_before": { "message": "中鍵點擊「重新載入目前頁面」按鈕時，將複製分面開啟為" },
   "config_autoAttachOnDuplicated_independent": { "message": "獨立分頁" },
   "config_autoAttachOnDuplicated_child": { "message": "目前分頁下層分頁" },
   "config_autoAttachOnDuplicated_sibling": { "message": "目前分頁同層分頁" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "目前分頁同層相鄰分頁" },
-  "config_autoAttachOnDuplicated_after": { "message": "" },
+  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_insertNewChildAt_caption": { "message": "新子分頁開啟於" },
   "config_insertNewChildAt_noControl": { "message": "不處理(由 Firefox 或其他附加元件決定)" },
@@ -209,7 +209,7 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "樹的前端" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "樹的末尾" },
 
-  "config_autoGroupNewTabs_before": { "message": "" },
+  "config_autoGroupNewTabs_before": { "message": "\u200b" },
   "config_autoGroupNewTabs_after": { "message": "亳秒內開連續開啟的分頁自動群組" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "但開新視窗時，在" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "亳秒內開啟的分頁視為「首頁」而不自動群組" },
@@ -301,7 +301,7 @@
   "config_simulateSVGContextFill_label": { "message": "模擬 SVG 圖標以解決 Bug 1388193 及 Bug 1421329 (※可能會提高 CPU 用量。在 Bug 修正前，若想禁用此選項必須啟用「about:config」的「svg.context-properties.content.enabled」)" },
   "config_useCachedTree_label": { "message": "以快取加速樹狀結構初始化" },
   "config_acccelaratedTabDuplication_label": { "message": "加快分頁複制(※動作會不穩定)" },
-  "config_maximumAcceptableDelayForTabDuplication_before": { "message": "" },
+  "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "亳秒內未複制完成即中斷。" },
   "config_sidebarScrollbarPosition_caption": { "message": "捲軸位置" },
   "config_sidebarScrollbarPosition_auto": { "message": "自動" },

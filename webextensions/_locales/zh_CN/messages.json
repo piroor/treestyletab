@@ -98,23 +98,23 @@
   "config_autoAttachOnNewTabCommand_child": { "message": "当前标签页的子项" },
   "config_autoAttachOnNewTabCommand_sibling": { "message": "当前标签页的同级节点" },
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "当前标签页的下方（同级）" },
-  "config_autoAttachOnNewTabCommand_after": { "message": "" },
+  "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "新标签页带有下列网址时，猜测它是通过“新建标签页”命令（例如键盘快捷键）打开：" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中键单击“新建标签页”按钮时，新建空白标签页为" },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "一个独立的标签页" },
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "当前标签页的子项" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "当前标签页的同级节点" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "当前标签页的下方（同级）" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "" },
+  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnDuplicated_before": { "message": "中键单击“重新载入”按钮时，复制标签页为" },
   "config_autoAttachOnDuplicated_independent": { "message": "一个独立的标签页" },
   "config_autoAttachOnDuplicated_child": { "message": "当前标签页的子项" },
   "config_autoAttachOnDuplicated_sibling": { "message": "当前标签页的同级节点" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "当前标签页的下方（同级）" },
-  "config_autoAttachOnDuplicated_after": { "message": "" },
+  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_insertNewChildAt_caption": { "message": "新建标签页的插入位置" },
   "config_insertNewChildAt_noControl": { "message": "不控制（尊重 Firefox 或其他标签页扩展的决定）" },
@@ -126,7 +126,7 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "插入到树的顶端，作为其首个子标签页" },
   "config_insertNewTabFromPinnedTabAt_last": { "message": "放在树的最后" },
 
-  "config_autoGroupNewTabs_before": { "message": "" },
+  "config_autoGroupNewTabs_before": { "message": "\u200b" },
   "config_autoGroupNewTabs_after": { "message": "毫秒后自动分组打开的标签页" },
 
 

@@ -171,7 +171,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "auszuwählen, wo der neue Tab geöffnet werden soll" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "den Container auszuwählen" },
   "config_longPressOnNewTabButton_none":                 { "message": "(nichts)" },
-  "config_longPressOnNewTabButton_after":                { "message": "" },  
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },  
   "config_showNewTabActionSelector_label": { "message": "Auswahl bei der Schaltfläche \"Neuer Tab \" anzeigen, wo der neue Tab geöffnet werden soll" },
   "config_showContextualIdentitiesSelector_label": { "message": "Containerauswahl am \"Neuer Tab\"-Button anzeigen" },
     
@@ -183,21 +183,21 @@
   "config_autoAttachOnNewTabCommand_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabCommand_after": { "message": "öffnen" },
   "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "Einen neuen Tab behandeln als sei er durch den Befehl \"Neuer Tab\" geöffnet worden, wenn der mit dieser URL geöffnet wird:" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "" },
+  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
 
   "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "Mit der mittleren Maustaste einen neuen leeren Tab öffnen als" },
   "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "eigenständigen Tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "untergeordneten Tab des aktiven Tabs" },
   "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "" },
+  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
 
   "config_autoAttachOnDuplicated_before": { "message": "Beim Klick mit der mittleren Maustaste auf die Schaltfläche \"Aktualisieren\" den Tab duplizieren als" },
   "config_autoAttachOnDuplicated_independent": { "message": "eigenständigen Tab" },
   "config_autoAttachOnDuplicated_child": { "message": "untergeordneten Tab des aktiven Tabs" },
   "config_autoAttachOnDuplicated_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
-  "config_autoAttachOnDuplicated_after": { "message": "" },
+  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
   "config_insertNewChildAt_caption": { "message": "Einfügeposition neuer untergeordneter Tabs" },
   "config_insertNewChildAt_noControl": { "message": "Keine Voreinstellung (das Verhalten von Firefox oder anderer Tab-Add-Ons beibehalten)" },

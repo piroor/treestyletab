@@ -113,7 +113,7 @@
   "message_startup_userChromeCss_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss" },
   "message_startup_userChromeCss_description_2": { "message": "を参照して下さい。ただし、" },
   "message_startup_userChromeCss_description_note": { "message": "この方法は低レイヤのカスタマイズ手段のため、Firefoxの将来のバージョンで使えなくなったり、トラブルの原因になったりする恐れがあります。自己の責任と判断に基づいて、トラブルを自己解決できる自信がある場合にだけこの方法を使って下さい。" },
-  "message_startup_userChromeCss_description_3": { "message": "" },
+  "message_startup_userChromeCss_description_3": { "message": "\u200b" },
 
 
   "context_reloadTree_label": { "message": "このツリーを再読み込み(&R)" },
@@ -173,7 +173,7 @@
   "config_longPressOnNewTabButton_newTabAction":         { "message": "関係を指定して新しいタブを開く" },
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "コンテナータブを開く" },
   "config_longPressOnNewTabButton_none":                 { "message": "何もしない" },
-  "config_longPressOnNewTabButton_after":                { "message": "" },
+  "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
   "config_showNewTabActionSelector_label":               { "message": "関係を指定して新しいタブを開くためのボタンを表示する" },
   "config_showContextualIdentitiesSelector_label":       { "message": "コンテナータブを選択するためのボタンを表示する" },
 
@@ -211,7 +211,7 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "ツリーの最初の位置に挿入する" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "ツリーの末尾に追加する" },
 
-  "config_autoGroupNewTabs_before": { "message": "" },
+  "config_autoGroupNewTabs_before": { "message": "\u200b" },
   "config_autoGroupNewTabs_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "ただし、新しいウィンドウが開かれてから" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "ミリ秒以内に開かれたタブは「ホームページ」の一部と見なしてグループ化しない" },
@@ -260,7 +260,7 @@
   "config_advanced_caption": { "message": "詳細設定" },
 
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
-  "config_userStyleRules_description_before": { "message": "" },
+  "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },
   "config_userStyleRules_description_after": { "message": "も参照して下さい。" },
   "config_userStyleRules_description_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x" },
@@ -277,7 +277,7 @@
   "migration_configsFailed_notification_message": { "message": "設定の移行中に想定外の問題が発生したため、移行処理を中断しました。" },
 
   "config_importedTreeStructureFromLegacy_label": { "message": "旧バージョンからのツリー情報の移行" },
-  "config_migrateSessionStore_before":     { "message": "" },
+  "config_migrateSessionStore_before":     { "message": "\u200b" },
   "config_migrateSessionStore_link_label": { "message": "ツリー情報の手動での移行手順" },
   "config_migrateSessionStore_after":      { "message": "も参照して下さい。" },
   "config_migrateLegacyTreeStructure_label": { "message": "次回初期化時にツリー情報を復元する" },
@@ -306,7 +306,7 @@
   "config_simulateSVGContextFill_label": { "message": "Bug 1388193およびBug 1421329を回避して擬似的にSVGアイコンを表示する（※CPU負荷が高まる可能性があります。このオプションを無効にする場合、これらのBugが修正されるまでは\"about:config\"で\"svg.context-properties.content.enabled\"を有効化する必要があります。）" },
   "config_useCachedTree_label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config_acccelaratedTabDuplication_label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
-  "config_maximumAcceptableDelayForTabDuplication_before": { "message": "" },
+  "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
   "config_sidebarScrollbarPosition_caption": { "message": "スクロールバーの表示位置:" },
   "config_sidebarScrollbarPosition_auto": { "message": "自動" },
