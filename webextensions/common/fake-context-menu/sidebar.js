@@ -80,8 +80,8 @@ var tabContextMenu = {
       if (icon)
         addonItem.dataset.icon = icon;
       this.prepareAsSubmenu(addonItem);
-      let addonSubMenu = addonItem.lastChild;
-      let knownItems   = {};
+
+      const toBeBuiltItems = [];
       for (let item of this.extraItems[id]) {
         if (item.contexts && item.contexts.indexOf('tab') < 0)
           continue;
@@ -89,6 +89,16 @@ var tabContextMenu = {
             item.documentUrlPatterns &&
             !this.matchesToCurrentTab(item.documentUrlPatterns))
           continue;
+        toBeBuiltItems.push(item);
+      }
+      const topLevelItems = toBeBuiltItems.filter(aItem => !aItem.parentId);
+      if (topLevelItems.length == 1 &&
+          !topLevelItems[0].icons)
+        topLevelItems[0].icons = gExternalListenerAddons[id].icons || {};
+
+      const addonSubMenu = addonItem.lastChild;
+      const knownItems   = {};
+      for (let item of toBeBuiltItems) {
         let itemNode = this.buildExtraItem(item, id);
         if (item.parentId && item.parentId in knownItems) {
           let parent = knownItems[item.parentId];
