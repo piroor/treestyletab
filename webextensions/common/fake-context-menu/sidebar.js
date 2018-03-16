@@ -147,7 +147,7 @@ var tabContextMenu = {
   chooseIconForAddon(aParams) {
     const icons = aParams.icons || {};
     const addon = gExternalListenerAddons[aParams.id] || {};
-    const sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
+    let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
     const reducedSizes = sizes.filter(aSize => aSize < 16);
     if (reducedSizes.length > 0)
       sizes = reducedSizes;
