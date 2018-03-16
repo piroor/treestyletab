@@ -61,6 +61,23 @@ li label img {
 }
 
 
+fieldset.collapsible.collapsed > *:not(legend) {
+  display: none;
+}
+
+fieldset.collapsible legend::before {
+  content: "▼";
+  display: inline-block;
+  font-size: 75%;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+fieldset.collapsible.collapsed legend::before {
+  transform: rotate(-90deg);
+}
+
+
 :root:not(.debugging) #debug-configs {
   max-height: 0;
   overflow: hidden;
