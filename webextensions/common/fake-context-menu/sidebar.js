@@ -145,9 +145,9 @@ var tabContextMenu = {
       itemNode.setAttribute('title', aItem.title);
     }
     if (aItem.enabled === false)
-      itemNode.classList.remove('disabled');
-    else
       itemNode.classList.add('disabled');
+    else
+      itemNode.classList.remove('disabled');
     return itemNode;
   },
 
