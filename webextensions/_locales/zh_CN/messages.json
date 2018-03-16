@@ -63,11 +63,11 @@
 
   "config_appearance_caption": { "message": "外观" },
 
-  "config_sidebarPosition_caption": { "message": "侧栏内容的外观（适配侧栏位置）" },
+  "config_sidebarPosition_caption": { "message": "侧栏内容的外观（适配侧栏位置）:" },
   "config_sidebarPosition_left": { "message": "左侧" },
   "config_sidebarPosition_right": { "message": "右侧" },
 
-  "config_scrollbarMode_caption": { "message": "Scrollbar" },
+  "config_scrollbarMode_caption": { "message": "Scrollbar:" },
   "config_scrollbarMode_default": { "message": "Default" },
   "config_scrollbarMode_narrow":  { "message": "Narrow" },
   "config_scrollbarMode_hide":    { "message": "Hide" },

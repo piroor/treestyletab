@@ -128,12 +128,12 @@
 
   "config_appearance_caption": { "message": "Erscheinungsbild" },
 
-  "config_sidebarPosition_caption": { "message": "Ausrichtung des Sidebar-Inhalts" },
+  "config_sidebarPosition_caption": { "message": "Ausrichtung des Sidebar-Inhalts:" },
   "config_sidebarPosition_left": { "message": "Rechtsbündig" },
   "config_sidebarPosition_right": { "message": "Linksbündig" },
   "config_sidebarPosition_description": { "message": "*Diese Einstellung ändert nicht die Position der Sidebar. Klicke dafür auf die Sidebar-Überschrift und dann auf \"Sidebar nach rechts (links) verschieben\"." },
 
-  "config_scrollbarMode_caption": { "message": "Bildlaufleiste" },
+  "config_scrollbarMode_caption": { "message": "Bildlaufleiste:" },
   "config_scrollbarMode_default": { "message": "Standard" },
   "config_scrollbarMode_narrow":  { "message": "Schmal" },
   "config_scrollbarMode_overlay": { "message": "Overlay" },

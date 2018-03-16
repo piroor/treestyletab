@@ -128,12 +128,12 @@
 
   "config_appearance_caption": { "message": "外觀" },
 
-  "config_sidebarPosition_caption": { "message": "配合側邊欄位置的樣式" },
+  "config_sidebarPosition_caption": { "message": "配合側邊欄位置的樣式:" },
   "config_sidebarPosition_left": { "message": "左側用" },
   "config_sidebarPosition_right": { "message": "右側用" },
   "config_sidebarPosition_description": { "message": "※此設定不會改變側邊欄的位置，點擊側邊欄標題列並勾選「將側邊欄移至右方」以更改其位置。" },
 
-  "config_scrollbarMode_caption": { "message": "捲軸樣式" },
+  "config_scrollbarMode_caption": { "message": "捲軸樣式:" },
   "config_scrollbarMode_default": { "message": "預設" },
   "config_scrollbarMode_narrow":  { "message": "狹窄" },
   "config_scrollbarMode_overlay": { "message": "覆蓋" },

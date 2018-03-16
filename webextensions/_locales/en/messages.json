@@ -128,12 +128,12 @@
 
   "config_appearance_caption": { "message": "Appearance" },
 
-  "config_sidebarPosition_caption": { "message": "Style of contents for the sidebar position" },
+  "config_sidebarPosition_caption": { "message": "Style of contents for the sidebar position:" },
   "config_sidebarPosition_left": { "message": "Left side" },
   "config_sidebarPosition_right": { "message": "Right side" },
   "config_sidebarPosition_description": { "message": "*This configuration won't change the position of the sidebar itself. You need to click the switcher in the sidebar header and click \"Move Sidebar to Right\" manually." },
 
-  "config_scrollbarMode_caption": { "message": "Scrollbar" },
+  "config_scrollbarMode_caption": { "message": "Scrollbar:" },
   "config_scrollbarMode_default": { "message": "Default" },
   "config_scrollbarMode_narrow":  { "message": "Narrow" },
   "config_scrollbarMode_overlay": { "message": "Overlay" },
