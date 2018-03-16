@@ -1590,6 +1590,7 @@ function onMessageExternal(aMessage, aSender) {
             kTSTAPI_NOTIFY_TABBAR_MOUSEUP
           ];
         }
+        aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
         aMessage.id = aSender.id;
         gExternalListenerAddons[aSender.id] = aMessage;
         browser.runtime.sendMessage({

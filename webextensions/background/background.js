@@ -272,6 +272,13 @@ function startWatchSidebarOpenState() {
 
 async function readyForExternalAddons() {
   gExternalListenerAddons = {};
+  const manifest = browser.runtime.getManifest();
+  gExternalListenerAddons[manifest.applications.gecko.id] = {
+    id:         manifest.applications.gecko.id,
+    internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
+    icons:      manifest.icons,
+    listeningTypes: []
+  };
   var respondedAddons = [];
   var notifiedAddons = {};
   var notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);

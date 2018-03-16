@@ -76,6 +76,9 @@ var tabContextMenu = {
       addonItem.appendChild(document.createTextNode(name));
       addonItem.setAttribute('title', name);
       addonItem.classList.add('extra');
+      const icon = this.getAddonIcon(id);
+      if (icon)
+        addonItem.dataset.icon = icon;
       this.prepareAsSubmenu(addonItem);
       let addonSubMenu = addonItem.lastChild;
       let knownItems   = {};
@@ -123,17 +126,40 @@ var tabContextMenu = {
     const addon = gExternalListenerAddons[aId] || {};
     return addon.name || aId.replace(/@.+$/, '');
   },
+  getAddonIcon(aId) {
+    const addon = gExternalListenerAddons[aId] || {};
+    return this.chooseIconForAddon({
+      id:         aId,
+      internalId: addon.internalId,
+      icons:      addon.icons || {}
+    });
+  },
+  chooseIconForAddon(aParams) {
+    const icons = aParams.icons || {};
+    const addon = gExternalListenerAddons[aParams.id] || {};
+    const sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
+    const reducedSizes = sizes.filter(aSize => aSize < 16);
+    if (reducedSizes.length > 0)
+      sizes = reducedSizes;
+    const size = sizes[0] || null;
+    if (!size)
+      return null;
+    let url = icons[size];
+    if (!/^\w+:\/\//.test(url))
+      url = `moz-extension://${addon.internalId || aParams.internalId}/${url.replace(/^\//, '')}`;
+    return url;
+  },
   prepareAsSubmenu(aItemNode) {
     if (aItemNode.querySelector('ul'))
       return aItemNode;
     var subMenu = aItemNode.appendChild(document.createElement('ul'));
     return aItemNode;
   },
-  buildExtraItem(aItem, aOwnerId) {
+  buildExtraItem(aItem, aOwnerAddonId) {
     var itemNode = document.createElement('li');
-    itemNode.setAttribute('id', `${aOwnerId}-${aItem.id}`);
+    itemNode.setAttribute('id', `${aOwnerAddonId}-${aItem.id}`);
     itemNode.setAttribute('data-item-id', aItem.id);
-    itemNode.setAttribute('data-item-owner-id', aOwnerId);
+    itemNode.setAttribute('data-item-owner-id', aOwnerAddonId);
     itemNode.classList.add('extra');
     itemNode.classList.add(aItem.type || 'normal');
     if (aItem.type == 'checkbox' || aItem.type == 'radio') {
@@ -147,7 +173,15 @@ var tabContextMenu = {
     if (aItem.enabled === false)
       itemNode.classList.add('disabled');
     else
-      itemNode.classList.remove('disabled');
+      itemNode.classList.remove('disabled');;
+    const addon = gExternalListenerAddons[aOwnerAddonId] || {};
+    const icon = this.chooseIconForAddon({
+      id:         aOwnerAddonId,
+      internalId: addon.internalId,
+      icons:      aItem.icons || {}
+    });
+    if (icon)
+      itemNode.dataset.icon = icon;
     return itemNode;
   },
 
