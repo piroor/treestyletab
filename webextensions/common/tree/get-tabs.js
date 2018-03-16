@@ -291,7 +291,11 @@ function getAncestorTabs(aDescendant, aOptions = {}) {
   if (!aDescendant)
     return [];
   if (!aOptions.force)
-    return aDescendant.ancestorTabs || [];
+    return (
+      // slice(0) is required to guard the cached array from destructive methods liek sort()!
+      aDescendant.ancestorTabs && aDescendant.ancestorTabs.slice(0) ||
+      []
+    );
   const ancestors = [];
   while (true) {
     const parent = getParentTab(aDescendant);
