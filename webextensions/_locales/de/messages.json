@@ -305,6 +305,7 @@
   "config_useCachedTree_label": { "message": "Zweig-Wiederherstellung mit Cache optimieren" },
   "config_acccelaratedTabDuplication_label": { "message": "Operationen zum Duplizieren von Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Das Duplizieren von Tabs abbrechen, wenn es länger als" },
+  "config_useCachedTree_description": { "message": "*Sollte es zu instabilem Verhalten der Baumstruktur kommen, kann es helfen, diese Einstellung zu deaktivieren und wieder zu aktivieren, um den Cache zu erneuern." },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "Millisekunden dauert." },
   "config_sidebarScrollbarPosition_caption": { "message": "Position der Bildlaufleiste:" },
   "config_sidebarScrollbarPosition_auto": { "message": "Automatisch" },
