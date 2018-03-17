@@ -49,8 +49,6 @@ var tabContextMenu = {
     return document.querySelector('#tabContextMenu');
   },
 
-  addons: null,
-
   contextTab: null,
   extraItems: {},
   dirty:      false,
@@ -71,11 +69,6 @@ var tabContextMenu = {
     if (Object.keys(this.extraItems).length == 0)
       return;
 
-    if (!this.addons)
-      this.addons = await browser.runtime.sendMessage({
-        type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-      });
-
     var extraItemNodes = document.createDocumentFragment();
     for (let id of Object.keys(this.extraItems)) {
       let addonItem = document.createElement('li');
@@ -83,9 +76,12 @@ var tabContextMenu = {
       addonItem.appendChild(document.createTextNode(name));
       addonItem.setAttribute('title', name);
       addonItem.classList.add('extra');
+      const icon = this.getAddonIcon(id);
+      if (icon)
+        addonItem.dataset.icon = icon;
       this.prepareAsSubmenu(addonItem);
-      let addonSubMenu = addonItem.lastChild;
-      let knownItems   = {};
+
+      const toBeBuiltItems = [];
       for (let item of this.extraItems[id]) {
         if (item.contexts && item.contexts.indexOf('tab') < 0)
           continue;
@@ -93,6 +89,16 @@ var tabContextMenu = {
             item.documentUrlPatterns &&
             !this.matchesToCurrentTab(item.documentUrlPatterns))
           continue;
+        toBeBuiltItems.push(item);
+      }
+      const topLevelItems = toBeBuiltItems.filter(aItem => !aItem.parentId);
+      if (topLevelItems.length == 1 &&
+          !topLevelItems[0].icons)
+        topLevelItems[0].icons = gExternalListenerAddons[id].icons || {};
+
+      const addonSubMenu = addonItem.lastChild;
+      const knownItems   = {};
+      for (let item of toBeBuiltItems) {
         let itemNode = this.buildExtraItem(item, id);
         if (item.parentId && item.parentId in knownItems) {
           let parent = knownItems[item.parentId];
@@ -127,7 +133,31 @@ var tabContextMenu = {
   getAddonName(aId) {
     if (aId == browser.runtime.id)
       return browser.i18n.getMessage('extensionName');
-    return this.addons[aId].name || aId.replace(/@.+$/, '');
+    const addon = gExternalListenerAddons[aId] || {};
+    return addon.name || aId.replace(/@.+$/, '');
+  },
+  getAddonIcon(aId) {
+    const addon = gExternalListenerAddons[aId] || {};
+    return this.chooseIconForAddon({
+      id:         aId,
+      internalId: addon.internalId,
+      icons:      addon.icons || {}
+    });
+  },
+  chooseIconForAddon(aParams) {
+    const icons = aParams.icons || {};
+    const addon = gExternalListenerAddons[aParams.id] || {};
+    let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
+    const reducedSizes = sizes.filter(aSize => aSize < 16);
+    if (reducedSizes.length > 0)
+      sizes = reducedSizes;
+    const size = sizes[0] || null;
+    if (!size)
+      return null;
+    let url = icons[size];
+    if (!/^\w+:\/\//.test(url))
+      url = `moz-extension://${addon.internalId || aParams.internalId}/${url.replace(/^\//, '')}`;
+    return url;
   },
   prepareAsSubmenu(aItemNode) {
     if (aItemNode.querySelector('ul'))
@@ -135,11 +165,11 @@ var tabContextMenu = {
     var subMenu = aItemNode.appendChild(document.createElement('ul'));
     return aItemNode;
   },
-  buildExtraItem(aItem, aOwnerId) {
+  buildExtraItem(aItem, aOwnerAddonId) {
     var itemNode = document.createElement('li');
-    itemNode.setAttribute('id', `${aOwnerId}-${aItem.id}`);
+    itemNode.setAttribute('id', `${aOwnerAddonId}-${aItem.id}`);
     itemNode.setAttribute('data-item-id', aItem.id);
-    itemNode.setAttribute('data-item-owner-id', aOwnerId);
+    itemNode.setAttribute('data-item-owner-id', aOwnerAddonId);
     itemNode.classList.add('extra');
     itemNode.classList.add(aItem.type || 'normal');
     if (aItem.type == 'checkbox' || aItem.type == 'radio') {
@@ -150,6 +180,18 @@ var tabContextMenu = {
       itemNode.appendChild(document.createTextNode(aItem.title));
       itemNode.setAttribute('title', aItem.title);
     }
+    if (aItem.enabled === false)
+      itemNode.classList.add('disabled');
+    else
+      itemNode.classList.remove('disabled');;
+    const addon = gExternalListenerAddons[aOwnerAddonId] || {};
+    const icon = this.chooseIconForAddon({
+      id:         aOwnerAddonId,
+      internalId: addon.internalId,
+      icons:      aItem.icons || {}
+    });
+    if (icon)
+      itemNode.dataset.icon = icon;
     return itemNode;
   },
 
@@ -194,7 +236,6 @@ var tabContextMenu = {
     this.menu.removeAttribute('data-tab-states');
     this.contextTab      = null;
     this.contextWindowId = null;
-    this.addons          = null;
   },
 
   applyContext() {

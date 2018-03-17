@@ -30,7 +30,7 @@
 
 .favicon-default::before {
   -moz-context-properties: fill;
-  background: url("./icons/globe-16.svg") no-repeat center / 100%;
+  background: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
   content: "";
   display: inline-block;
   fill: var(--tab-text);
@@ -43,21 +43,59 @@
 }
 :root.simulate-svg-context-fill .tab .favicon-default::before {
   background: var(--tab-text);
-  mask: url("./icons/globe-16.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
 }
 
 .tab.group-tab .favicon-default::before {
-  background: url("./icons/folder-16.svg") no-repeat center / 100%;
+  background: url("/resources/icons/folder-16.svg") no-repeat center / 100%;
 }
 :root.simulate-svg-context-fill .tab.group-tab .favicon-default::before {
   background: var(--tab-text);
-  mask: url("./icons/folder-16.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/folder-16.svg") no-repeat center / 100%;
+}
+
+
+.tab[data-current-uri^="chrome:"] .favicon-default::before {
+  background: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill .tab[data-current-uri^="chrome:"] .favicon-default::before {
+  background: var(--tab-text);
+  mask: url("/resources/icons/globe-16.svg") no-repeat center / 100%;
+}
+
+.tab[data-current-uri^="about:addons"] .favicon-default::before {
+  background: url("/resources/icons/extensionGeneric-16.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill .tab[data-current-uri^="about:addons"] .favicon-default::before {
+  background: var(--tab-text);
+  mask: url("/resources/icons/extensionGeneric-16.svg") no-repeat center / 100%;
+}
+
+.tab[data-current-uri^="about:preferences"] .favicon-default::before {
+  background: url("/resources/icons/settings.svg") no-repeat center / 100%;
+}
+:root.simulate-svg-context-fill .tab[data-current-uri^="about:preferences"] .favicon-default::before {
+  background: var(--tab-text);
+  mask: url("/resources/icons/settings.svg") no-repeat center / 100%;
+}
+
+
+.tab.group-tab .favicon-image[src]:not(.error) {
+  bottom: 0;
+  max-height: 10px;
+  max-width: 10px;
+  position: absolute;
+  right: 0;
 }
 
 
 .favicon-image.error,
 .favicon-image:not([src]),
-.favicon-image[src]:not(.error) ~ .favicon-default::before,
+.tab[data-current-uri^="chrome:"] .favicon-image,
+.tab[data-current-uri^="about:addons"] .favicon-image,
+.tab[data-current-uri^="about:preferences"] .favicon-image,
+.tab:not(.group-tab):not([data-current-uri^="chrome:"]):not([data-current-uri^="about:addons"]):not([data-current-uri^="about:preferences"])
+  .favicon-image[src]:not(.error) ~ .favicon-default::before,
 .tab.loading .favicon-image,
 .tab.loading .favicon-default::before {
   display: none !important;

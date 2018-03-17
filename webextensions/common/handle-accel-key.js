@@ -14,14 +14,14 @@
   function isAccelKeyOnlyEvent(aEvent) {
     if (isMac)
       return (
-        aEvent.keyCode == KeyEvent.DOM_VK_META &&
+        aEvent.key == 'Meta' &&
         !aEvent.altKey &&
         !aEvent.ctrlKey /*&&
         !aEvent.shiftKey*/
       );
     else
       return (
-        aEvent.keyCode == KeyEvent.DOM_VK_CONTROL &&
+        aEvent.key == 'Control' &&
         !aEvent.altKey &&
         !aEvent.metaKey /*&&
         !aEvent.shiftKey*/
@@ -31,7 +31,7 @@
   function isAccelKeyUnshiftEvent(aEvent) {
     if (isMac)
       return (
-        aEvent.keyCode == KeyEvent.DOM_VK_SHIFT &&
+        aEvent.key == 'Shift' &&
         !aEvent.altKey &&
         !aEvent.ctrlKey &&
         aEvent.metaKey /*&&
@@ -39,7 +39,7 @@
       );
     else
       return (
-        aEvent.keyCode == KeyEvent.DOM_VK_SHIFT &&
+        aEvent.key == 'Shift' &&
         !aEvent.altKey &&
         aEvent.ctrlKey &&
         !aEvent.metaKey /*&&
@@ -48,10 +48,7 @@
   }
 
   function isTabSwitchEvent(aEvent) {
-    if (aEvent.keyCode != KeyEvent.DOM_VK_TAB &&
-        aEvent.keyCode != KeyEvent.DOM_VK_SHIFT &&
-        aEvent.keyCode != KeyEvent.DOM_VK_PAGE_UP &&
-        aEvent.keyCode != KeyEvent.DOM_VK_PAGE_DOWN)
+    if (!/^(Tab|Shift|PageUp|PageDown)$/.test(aEvent.key))
       return false;
     if (isMac)
       return (

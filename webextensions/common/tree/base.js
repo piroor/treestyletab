@@ -256,12 +256,22 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     window.onTabLabelUpdated && onTabLabelUpdated(aTab);
   }
 
+  const openerOfGroupTab = isGroupTab(aTab) && getOpenerFromGroupTab(aTab);
   if ('favIconUrl' in aNewState ||
        TabFavIconHelper.maybeImageTab(aNewState)) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
         getSafeFaviconUrl(aNewState.favIconUrl || aNewState.url)
+      );
+  }
+  else if (openerOfGroupTab &&
+           (openerOfGroupTab.apiTab.favIconUrl ||
+            TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
+    window.onTabFaviconUpdated &&
+      onTabFaviconUpdated(
+        aTab,
+        getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl || openerOfGroupTab.apiTab.url)
       );
   }
 
@@ -411,7 +421,7 @@ function getSafeFaviconUrl(aURL) {
       return browser.extension.getURL('resources/icons/extensionGeneric-16.svg');
     default:
       if (/^chrome:\/\//.test(aURL))
-        return browser.extension.getURL('sidebar/styles/icons/globe-16.svg');
+        return browser.extension.getURL('resources/icons/globe-16.svg');
       break;
   }
   return aURL;
@@ -853,6 +863,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         insertBefore:  aOptions.insertBefore && aOptions.insertBefore.id,
         insertAfter:   aOptions.insertAfter && aOptions.insertAfter.id,
         cookieStoreId: aOptions.cookieStoreId || null,
+        isOrphan:      !!aOptions.isOrphan,
         inRemote:      false
       }));
     }
@@ -861,6 +872,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       let startIndex = calculateNewTabIndex(aOptions);
       let container  = getTabsContainer(aOptions.windowId);
       incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
+      if (aOptions.isOrphan)
+        incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aURIs.length);
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {
           windowId: aOptions.windowId,
@@ -880,7 +893,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
         if (!tab)
           throw new Error('tab is already closed');
         if (!aOptions.opener &&
-            aOptions.parent)
+            aOptions.parent &&
+            !aOptions.isOrphan)
           await attachTabTo(tab, aOptions.parent, {
             insertBefore: aOptions.insertBefore,
             insertAfter:  aOptions.insertAfter,
@@ -1058,15 +1072,20 @@ function serializeTabForTSTAPI(aTab) {
   });
 }
 
+function getListenersForTSTAPIMessageType(aType) {
+  const uniqueTargets = {};
+  for (let id of Object.keys(gExternalListenerAddons)) {
+    const addon = gExternalListenerAddons[id];
+    if (addon.listeningTypes.indexOf(aType) > -1)
+      uniqueTargets[id] = true;
+  }
+  return Object.keys(uniqueTargets).map(aId => gExternalListenerAddons[aId]);
+}
+
 async function sendTSTAPIMessage(aMessage, aOptions = {}) {
-  var addons = window.gExternalListenerAddons;
-  if (!addons)
-    addons = await browser.runtime.sendMessage({
-      type: kCOMMAND_REQUEST_REGISTERED_ADDONS
-    });
-  var uniqueTargets = {};
-  for (let id of Object.keys(addons)) {
-    uniqueTargets[id] = true;
+  const uniqueTargets = {};
+  for (let addon of getListenersForTSTAPIMessageType(aMessage.type)) {
+    uniqueTargets[addon.id] = true;
   }
   if (aOptions.targets) {
     if (!Array.isArray(aOptions.targets))

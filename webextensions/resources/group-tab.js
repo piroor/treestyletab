@@ -77,18 +77,17 @@ function init() {
     if (hasModifier(aEvent))
       return;
 
-    switch (aEvent.keyCode) {
-      case KeyEvent.DOM_VK_ESCAPE:
+    switch (aEvent.key) {
+      case 'Escape':
         gTitleField.value = gTitle.textContent;
         exitTitleEdit();
         break;
 
-      case KeyEvent.DOM_VK_ENTER:
-      case KeyEvent.DOM_VK_RETURN:
+      case 'Enter':
         updateParameters({ title: gTitleField.value });
         break;
 
-      case KeyEvent.DOM_VK_F2:
+      case 'F2':
         aEvent.stopPropagation();
         break;
     }
@@ -111,7 +110,7 @@ function init() {
     }
   });
   window.addEventListener('keypress', aEvent => {
-    if (aEvent.keyCode == KeyEvent.DOM_VK_F2 &&
+    if (aEvent.key == 'F2' &&
         !hasModifier(aEvent))
       enterTitleEdit();
   });

@@ -432,6 +432,8 @@ function clearTabRelationsForRemovedTab(aTab) {
   }
 }
 
+var gPendingTabMoves = [];
+
 async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
@@ -440,6 +442,12 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   var byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
   await waitUntilTabsAreCreated(aTabId);
+  await Promise.all(gPendingTabMoves);
+
+  let completelyMoved;
+  gPendingTabMoves.push(new Promise((aResolve, aReject) => {
+    completelyMoved = aResolve;
+  }));
 
   /* When a tab is pinned, tabs.onMoved may be notified before
      tabs.onUpdated(pinned=true) is notified. As the result,
@@ -451,6 +459,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (!movedTab) {
     if (byInternalOperation)
       decrementContainerCounter(container, 'internalMovingCount');
+    completelyMoved();
     return;
   }
 
@@ -477,8 +486,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   var canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
   if (!canceled &&
       ensureLivingTab(movedTab)) { // it is removed while waiting
-    let newNextIndex = aMoveInfo.toIndex;
-    if (aMoveInfo.fromIndex < newNextIndex)
+    let newNextIndex = moveInfo.toIndex;
+    if (moveInfo.fromIndex < newNextIndex)
       newNextIndex++;
     let tabs    = getAllTabs(movedTab);
     let nextTab = tabs[newNextIndex];
@@ -499,6 +508,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   }
   if (byInternalOperation)
     decrementContainerCounter(container, 'internalMovingCount');
+  completelyMoved();
 }
 
 var gTreeInfoForTabsMovingAcrossWindows = {};

@@ -42,6 +42,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  for (let fieldset of Array.slice(document.querySelectorAll('fieldset.collapsible'))) {
+    fieldset.addEventListener('click', () => {
+      fieldset.classList.toggle('collapsed');
+    });
+    fieldset.addEventListener('keydown', aEvent => {
+      if (aEvent.key == 'Enter')
+        fieldset.classList.toggle('collapsed');
+    });
+  }
+
   configs.$loaded.then(() => {
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
 

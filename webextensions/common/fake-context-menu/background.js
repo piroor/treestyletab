@@ -31,7 +31,7 @@ var tabContextMenu = {
   getItemsFor(aAddonId) {
     let items;
     if (aAddonId in this.items) {
-      items = this.items[aAddonId];
+      items = this.items[aAddonId] || [];
     }
     else {
       items = [];
@@ -83,7 +83,19 @@ var tabContextMenu = {
         let params = aMessage.params;
         if (Array.isArray(params))
           params = params[0];
-        items.push(params);
+        let shouldAdd = true;
+        if (params.id) {
+          for (let i = 0, maxi = items.length; i < maxi; i++) {
+            let item = items[i];
+            if (item.id != params.id)
+              continue;
+            items.splice(i, 1, params);
+            shouldAdd = false;
+            break;
+          }
+        }
+        if (shouldAdd)
+          items.push(params);
         this.items[aSender.id] = items;
         return this.reserveNotifyUpdated();
       }; break;

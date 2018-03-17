@@ -13,6 +13,7 @@ var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
 var gRestoringTabCount = 0;
+var gExternalListenerAddons = null;
 var gAddonStyles = {};
 var gMetricsData = new MetricsData();
 gMetricsData.add('Loaded');
@@ -154,6 +155,7 @@ async function init() {
         { type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
       ]);
       var addons = results[0];
+      gExternalListenerAddons = addons;
       gScrollLockedBy = results[1];
       for (let id of Object.keys(addons)) {
         let addon = addons[id];
@@ -199,8 +201,6 @@ async function init() {
   onConfigChange('animation');
 
   unblockUserOperations({ throbber: true });
-
-  gMetricsData.add('post process');
 
   gMetricsData.add('init end');
   log('Startup metrics: ', gMetricsData.toString());

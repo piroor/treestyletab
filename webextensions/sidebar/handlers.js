@@ -48,8 +48,8 @@ function isAccelAction(aEvent) {
 
 function isAccelKeyPressed(aEvent) {
   return gIsMac ?
-    (aEvent.metaKey || ('keyCode' in aEvent && aEvent.keyCode == aEvent.DOM_VK_META)) :
-    (aEvent.ctrlKey || ('keyCode' in aEvent && aEvent.keyCode == aEvent.DOM_VK_CONTROL)) ;
+    (aEvent.metaKey || aEvent.key == 'Meta') :
+    (aEvent.ctrlKey || aEvent.key == 'Control') ;
 }
 
 function isCopyAction(aEvent) {
@@ -223,21 +223,29 @@ function onMouseDown(aEvent) {
   gLastMousedown.timeout = setTimeout(() => {
     if (!gLastMousedown)
       return;
+
+    if (aEvent.button == 0 &&
+        mousedownDetail.targetType == 'newtabbutton' &&
+        configs.longPressOnNewTabButton) {
+      gLastMousedown.expired = true;
+      const selector = document.getElementById(configs.longPressOnNewTabButton);
+      if (selector) {
+        selector.ui.open({
+          anchor: target
+        });
+      }
+      return;
+    }
+
+    if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_DRAGREADY).length == 0)
+      return;
+
     if (configs.logOnMouseEvent)
       log('onMouseDown expired');
     gLastMousedown.expired = true;
     if (aEvent.button == 0) {
       if (tab) {
         notifyTSTAPIDragReady(tab, gLastMousedown.detail.closebox);
-      }
-      else if (mousedownDetail.targetType == 'newtabbutton' &&
-               configs.longPressOnNewTabButton) {
-        const selector = document.getElementById(configs.longPressOnNewTabButton);
-        if (selector) {
-          selector.ui.open({
-            anchor: target
-          });
-        }
       }
     }
   }, configs.startDragTimeout);
@@ -1218,6 +1226,10 @@ function onMessage(aMessage, aSender, aRespond) {
       gRestoringTabCount--;
       break;
 
+    case kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
+      onTabFaviconUpdated(getTabById(aMessage.tab), aMessage.favIconUrl);
+      break;
+
     case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
@@ -1389,6 +1401,7 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case kCOMMAND_BROADCAST_API_REGISTERED:
+      gExternalListenerAddons[aMessage.sender.id] = aMessage.message;
       if (aMessage.message.style)
         installStyleForAddon(aMessage.sender.id, aMessage.message.style)
       break;
@@ -1396,6 +1409,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_API_UNREGISTERED:
       uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
+      delete gExternalListenerAddons[aMessage.sender.id];
       break;
 
     case kCOMMAND_SHOW_CONTAINER_SELECTOR:

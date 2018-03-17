@@ -9,7 +9,7 @@ gLogContext = 'BG';
 
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();
-var gExternalListenerAddons = {};
+var gExternalListenerAddons = null;
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
 
@@ -91,8 +91,6 @@ async function init() {
 
   Permissions.clearRequest();
 
-  gInitializing = false;
-
   for (let windowId of Object.keys(restoredFromCache)) {
     if (!restoredFromCache[windowId])
       reserveToCacheTree(parseInt(windowId));
@@ -108,12 +106,14 @@ async function init() {
     }
   }
 
+  await readyForExternalAddons();
+
+  gInitializing = false;
+
   // notify that the master process is ready.
   browser.runtime.sendMessage({
     type: kCOMMAND_PING_TO_SIDEBAR
   });
-
-  await readyForExternalAddons();
 
   notifyNewFeatures();
   log('Startup metrics: ', gMetricsData.toString());
@@ -271,6 +271,14 @@ function startWatchSidebarOpenState() {
 
 
 async function readyForExternalAddons() {
+  gExternalListenerAddons = {};
+  const manifest = browser.runtime.getManifest();
+  gExternalListenerAddons[manifest.applications.gecko.id] = {
+    id:         manifest.applications.gecko.id,
+    internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
+    icons:      manifest.icons,
+    listeningTypes: []
+  };
   var respondedAddons = [];
   var notifiedAddons = {};
   var notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
@@ -701,7 +709,18 @@ async function updateRelatedGroupTab(aGroupTab) {
   }
   else if (kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
     const opener = getOpenerFromGroupTab(aGroupTab);
-    newTitle = opener && browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
+    if (opener) {
+      if (opener &&
+           (opener.apiTab.favIconUrl ||
+            TabFavIconHelper.maybeImageTab(opener.apiTab))) {
+        browser.runtime.sendMessage({
+          type:       kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+          tab:        aGroupTab.id,
+          favIconUrl: getSafeFaviconUrl(opener.apiTab.favIconUrl || opener.apiTab.url)
+        });
+      }
+      newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
+    }
   }
 
   if (newTitle && aGroupTab.apiTab.title != newTitle) {
