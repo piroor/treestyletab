@@ -620,23 +620,6 @@ async function closeChildTabs(aParent) {
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
 
-function onTabMoving(aTab, aMoveInfo) {
-  var container = getTabsContainer(aTab);
-  var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
-  if (parseInt(container.dataset.openingCount) > 0 &&
-      !aMoveInfo.byInternalOperation &&
-      positionControlled) {
-    let opener = getOpenerTab(aTab);
-    // if there is no valid opener, it can be a restored initial tab in a restored window
-    // and can be just moved as a part of window restoration process.
-    if (opener) {
-      log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
-      moveBack(aTab, aMoveInfo);
-      return true;
-    }
-  }
-}
-
 function onTabElementMoved(aTab, aInfo = {}) {
   reserveToUpdateInsertionPosition([
     aTab,
