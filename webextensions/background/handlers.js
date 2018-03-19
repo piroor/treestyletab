@@ -621,20 +621,24 @@ async function closeChildTabs(aParent) {
 }
 
 function onTabMoving(aTab, aMoveInfo) {
+  // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
   const container = getTabsContainer(aTab);
+  const isNewlyOpenedTab = parseInt(container.dataset.openingCount) > 0;
   const positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
-  if (parseInt(container.dataset.openingCount) > 0 &&
-      !aMoveInfo.byInternalOperation &&
-      positionControlled) {
-    const opener = getOpenerTab(aTab);
-    // if there is no valid opener, it can be a restored initial tab in a restored window
-    // and can be just moved as a part of window restoration process.
-    if (opener) {
-      log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
-      moveBack(aTab, aMoveInfo);
-      return true;
-    }
-  }
+  if (!isNewlyOpenedTab ||
+      aMoveInfo.byInternalOperation ||
+      !positionControlled)
+    return false;
+
+  const opener = getOpenerTab(aTab);
+  // if there is no valid opener, it can be a restored initial tab in a restored window
+  // and can be just moved as a part of window restoration process.
+  if (!opener)
+    return false;
+
+  log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
+  moveBack(aTab, aMoveInfo);
+  return true;
 }
 
 function onTabElementMoved(aTab, aInfo = {}) {
