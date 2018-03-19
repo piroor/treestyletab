@@ -621,12 +621,12 @@ async function closeChildTabs(aParent) {
 }
 
 function onTabMoving(aTab, aMoveInfo) {
-  var container = getTabsContainer(aTab);
-  var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
+  const container = getTabsContainer(aTab);
+  const positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
   if (parseInt(container.dataset.openingCount) > 0 &&
       !aMoveInfo.byInternalOperation &&
       positionControlled) {
-    let opener = getOpenerTab(aTab);
+    const opener = getOpenerTab(aTab);
     // if there is no valid opener, it can be a restored initial tab in a restored window
     // and can be just moved as a part of window restoration process.
     if (opener) {
