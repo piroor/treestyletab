@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.4.18 (2018.3.22)
    * 偽コンテキストメニューに項目を追加するAPIにおいて、`enable`と`icons`をパラメータとして受け取れるようにした
    * [`register-self` APIでの`icons`パラメータの指定に対応](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#register-and-unregister)
    * 新しく開かれた子タブが間違った位置に配置される問題について改善
