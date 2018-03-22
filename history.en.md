@@ -4,6 +4,8 @@
    * Support `enable` and `icons` parameters for extra menu items of the fake context menu.
    * [Support `icons` parameter for the `register-self` API.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#register-and-unregister)
    * Newly opened child tabs are placed to the correct position.
+   * Expose detailed options for scrollbar and cache.
+   * Collapse large input fields in the "Advanced" section of the options.
  - 2.4.17 (2018.3.7)
    * Use default favicon of tabs same to Firexo 60.
    * Use Firefox-compatible favicon for addon manager and options tabs.
