@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Allow to drop tab before the first tab, when there is no pinned tab. (regression on recent versions)
  - 2.4.18 (2018.3.22)
    * Support `enable` and `icons` parameters for extra menu items of the fake context menu.
    * [Support `icons` parameter for the `register-self` API.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#register-and-unregister)
