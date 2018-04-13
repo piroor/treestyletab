@@ -67,6 +67,8 @@ Some addons provide extended behavior to TST's sidebar panel:
  * [Tree Style Tab Open in Private](https://addons.mozilla.org/firefox/addon/tree-style-tab-open-in-private/) allows you to move the tab to a private mode window.
  * [Tree Style Tab Closed Tabs](https://addons.mozilla.org/firefox/addon/tree-style-tab-closed-tabs/) allows you to restore closed tabs from a menu.
  * [Tab flip for Tree Style Tab](https://addons.mozilla.org/firefox/addon/tab-flip-for-tree-style-tab/) allows you to move focus to the tab previously focused, by clicking on the active tab.
+ * [Tree Style Tab Focus Preceding Tab on Close](https://github.com/giantoppai/TST-Focus-Preceding-Tab-On-Close) focuses the previous tab instead of the next tab when a tab is closed.
+ * [Tab Unloader for Tree Style Tab](https://addons.mozilla.org/firefox/addon/tab-unload-for-tree-style-tab/) allows you to unload tabs by clicking on them in the sidebar.
 
 ## Similar projects
 
