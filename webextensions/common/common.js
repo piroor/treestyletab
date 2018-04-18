@@ -225,6 +225,8 @@ configs = new Configs({
   minimumIntervalToProcessDragoverEvent: 50,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
   autoDiscardTabForUnexpectedFocus: false,
+  focusOnMovedTabs: true,
+  focusOnMovedTabsBetweenWindows: true,
   knownExternalAddons: [
     'multipletab@piro.sakura.ne.jp'
   ],

@@ -1475,8 +1475,14 @@ async function performTabsDragDrop(aParams = {}) {
   else
     log('=> already placed at expected position');
 
-  browser.tabs.update(draggedTabs[0].apiTab.id, { active: true })
-    .catch(handleMissingTabError);
+  if (
+    windowId !== destinationWindowId ?
+    configs.focusOnMovedTabsBetweenWindows :
+    configs.focusOnMovedTabs
+  ) {
+    browser.tabs.update(draggedTabs[0].apiTab.id, { active: true })
+      .catch(handleMissingTabError);
+  }
   var treeStructure = getTreeStructureFromTabs(draggedTabs);
 
   var newTabs;
