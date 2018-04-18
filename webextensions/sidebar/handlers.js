@@ -298,8 +298,9 @@ async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
+  let results;
   if (serializedTab && gLastMousedown) {
-    sendTSTAPIMessage(Object.assign({}, gLastMousedown.detail, {
+    results = sendTSTAPIMessage(Object.assign({}, gLastMousedown.detail, {
       type:    kTSTAPI_NOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
       window:  gTargetWindow
@@ -360,11 +361,18 @@ async function onMouseUp(aEvent) {
     if (configs.logOnMouseEvent)
       log('middle click on a tab');
     //log('middle-click to close');
-    confirmToCloseTabs(getCountOfClosingTabs(tab))
-      .then(aConfirmed => {
-        if (aConfirmed)
-          removeTabInternally(tab, { inRemote: true });
-      });
+    let handleClose = async () => {
+      results = await results;
+      let canceled = results && results.some(aResult => aResult.result);
+      if (!canceled) {
+        confirmToCloseTabs(getCountOfClosingTabs(tab))
+        .then(aConfirmed => {
+          if (aConfirmed)
+            removeTabInternally(tab, { inRemote: true });
+        });
+      }
+    };
+    handleClose();
     handled = true;
   }
 
