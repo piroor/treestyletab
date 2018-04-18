@@ -298,12 +298,14 @@ async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
+  let canceled = false;
   if (serializedTab && gLastMousedown) {
-    sendTSTAPIMessage(Object.assign({}, gLastMousedown.detail, {
+    const results = await sendTSTAPIMessage(Object.assign({}, gLastMousedown.detail, {
       type:    kTSTAPI_NOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
       window:  gTargetWindow
     }));
+    canceled = results && results.some(aResult => aResult.result);
   }
 
   if (gCapturingMouseEvents) {
@@ -343,7 +345,8 @@ async function onMouseUp(aEvent) {
     log('onMouseUp ', gLastMousedown.detail);
 
   var handled = false;
-  var actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
+  if (!canceled) {
+  const actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
     configs.autoAttachOnNewTabCommand;
   if (isEventFiredOnNewTabButton(aEvent) &&
@@ -366,6 +369,7 @@ async function onMouseUp(aEvent) {
           removeTabInternally(tab, { inRemote: true });
       });
     handled = true;
+  }
   }
 
   if (!tab && !handled) {
