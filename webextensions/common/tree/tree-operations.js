@@ -1436,6 +1436,16 @@ async function performTabsDragDrop(aParams = {}) {
     aParams.insertAfter = getPreviousTab(aParams.insertAfter);
   }
 
+  if (aParams.attachTo && draggedTabs.some(isActive)) {
+    // we need to expand ancestor tree to show the active dragged tab after it is dropped.
+    await Promise.all(
+      [aParams.attachTo]
+        .concat(getAncestorTabs(aParams.attachTo))
+        .reverse()
+        .map(aAncestor => collapseExpandTreesIntelligentlyFor(aAncestor, { collapsed: false, broadcast: true }))
+    );
+  }
+
   if (aParams.duplicate ||
       windowId != destinationWindowId) {
     draggedTabs = await moveTabs(draggedTabs, {
@@ -1475,8 +1485,6 @@ async function performTabsDragDrop(aParams = {}) {
   else
     log('=> already placed at expected position');
 
-  browser.tabs.update(draggedTabs[0].apiTab.id, { active: true })
-    .catch(handleMissingTabError);
   var treeStructure = getTreeStructureFromTabs(draggedTabs);
 
   var newTabs;
