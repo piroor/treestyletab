@@ -2,6 +2,7 @@
 
  - master/HEAD
    * ピン留めされたタブが無い時にタブを最初のタブの前に移動できなくなっていたのを修正（最近のバージョンでの後退バグ）
+   * タブがフォーカスされた時にスクロール位置がずれる現象について、ほとんどの場合で現象が起こらないように対策を取った
  - 2.4.18 (2018.3.22)
    * 偽コンテキストメニューに項目を追加するAPIにおいて、`enable`と`icons`をパラメータとして受け取れるようにした
    * [`register-self` APIでの`icons`パラメータの指定に対応](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#register-and-unregister)
