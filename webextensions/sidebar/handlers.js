@@ -346,30 +346,30 @@ async function onMouseUp(aEvent) {
 
   var handled = false;
   if (!canceled) {
-  const actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
-    configs.autoAttachOnNewTabButtonMiddleClick :
-    configs.autoAttachOnNewTabCommand;
-  if (isEventFiredOnNewTabButton(aEvent) &&
-      gLastMousedown.detail.button != 2) {
-    if (configs.logOnMouseEvent)
-      log('click on the new tab button');
-    handleNewTabAction(aEvent, {
-      action: actionForNewTabCommand
-    });
-    handled = true;
-  }
-  else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
-           gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
-    if (configs.logOnMouseEvent)
-      log('middle click on a tab');
-    //log('middle-click to close');
-    confirmToCloseTabs(getCountOfClosingTabs(tab))
-      .then(aConfirmed => {
-        if (aConfirmed)
-          removeTabInternally(tab, { inRemote: true });
+    const actionForNewTabCommand = gLastMousedown.detail.isAccelClick ?
+      configs.autoAttachOnNewTabButtonMiddleClick :
+      configs.autoAttachOnNewTabCommand;
+    if (isEventFiredOnNewTabButton(aEvent) &&
+        gLastMousedown.detail.button != 2) {
+      if (configs.logOnMouseEvent)
+        log('click on the new tab button');
+      handleNewTabAction(aEvent, {
+        action: actionForNewTabCommand
       });
-    handled = true;
-  }
+      handled = true;
+    }
+    else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
+             gLastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
+      if (configs.logOnMouseEvent)
+        log('middle click on a tab');
+      //log('middle-click to close');
+      confirmToCloseTabs(getCountOfClosingTabs(tab))
+        .then(aConfirmed => {
+          if (aConfirmed)
+            removeTabInternally(tab, { inRemote: true });
+        });
+      handled = true;
+    }
   }
 
   if (!tab && !handled) {
