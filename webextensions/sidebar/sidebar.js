@@ -521,10 +521,15 @@ function updateTabLabelOverflow(aTab) {
     return;
   const label = getTabLabel(aTab);
   const labelContent = getTabLabelContent(aTab);
-  if (labelContent.getBoundingClientRect().width > label.getBoundingClientRect().width)
-    label.classList.add('overflow');
-  else
-    label.classList.remove('overflow');
+  const oldOverflow = label.classList.contains('overflow');
+  if (labelContent.getBoundingClientRect().width > label.getBoundingClientRect().width) {
+    if (!oldOverflow)
+      label.classList.add('overflow');
+  }
+  else {
+    if (oldOverflow)
+      label.classList.remove('overflow');
+  }
 }
 
 function updateAllTabsLabelOverflow() {
