@@ -304,14 +304,14 @@ async function onMouseUp(aEvent) {
   let lastMousedown = gLastMousedown[aEvent.button];
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
-  let canceled = false;
+  let promisedCanceled = Promise.resolve(false);
   if (serializedTab && lastMousedown) {
-    const results = await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
+    results = sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
       type:    kTSTAPI_NOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
       window:  gTargetWindow
     }));
-    canceled = results && results.some(aResult => aResult.result);
+    promisedCanceled = results.then(aResults => aResults.some(aResult => aResult.result));
   }
 
   if (gCapturingMouseEvents) {
@@ -351,7 +351,7 @@ async function onMouseUp(aEvent) {
     log('onMouseUp ', lastMousedown.detail);
 
   var handled = false;
-  if (!canceled) {
+  if (!(await promisedCanceled)) {
     const actionForNewTabCommand = lastMousedown.detail.isAccelClick ?
       configs.autoAttachOnNewTabButtonMiddleClick :
       configs.autoAttachOnNewTabCommand;
