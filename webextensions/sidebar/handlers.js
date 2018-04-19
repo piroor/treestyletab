@@ -623,14 +623,16 @@ function reserveToSaveScrollPosition() {
 
 function onOverflow(aEvent) {
   const tab = getTabFromChild(aEvent.target);
-  if (tab && !isPinned(tab))
-    getTabLabel(tab).classList.add('overflow');
+  const label = getTabLabel(tab);
+  if (aEvent.target == label && !isPinned(tab))
+    label.classList.add('overflow');
 }
 
 function onUnderflow(aEvent) {
   const tab = getTabFromChild(aEvent.target);
-  if (tab && !isPinned(tab))
-    getTabLabel(tab).classList.remove('overflow');
+  const label = getTabLabel(tab);
+  if (aEvent.target == label && !isPinned(tab))
+    label.classList.remove('overflow');
 }
 
 
