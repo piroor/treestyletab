@@ -1375,16 +1375,22 @@ function onMessage(aMessage, aSender) {
         if (configs.logOnMouseEvent)
           log('Sending message to listeners');
         const serializedTab = serializeTabForTSTAPI(tab);
-        let results = await sendTSTAPIMessage(Object.assign({}, aMessage, {
+        const mousedownNotified = sendTSTAPIMessage(Object.assign({}, aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
           window: tab.apiTab.windowId
         }));
-        results = results.concat(await sendTSTAPIMessage(Object.assign({}, aMessage, {
-          type:   kTSTAPI_NOTIFY_TAB_CLICKED,
-          tab:    serializedTab,
-          window: tab.apiTab.windowId
-        })));
+
+        // We must send tab-mouseup after tab-mousedown is notified.
+        // So, we return to the caller process and do this post process asynchronously.
+        mousedownNotified.then(async (aResults) => {
+        const results = aResults.concat(
+          await sendTSTAPIMessage(Object.assign({}, aMessage, {
+            type:   kTSTAPI_NOTIFY_TAB_CLICKED,
+            tab:    serializedTab,
+            window: tab.apiTab.windowId
+          }))
+        );
         if (results.some(aResult => aResult.result)) // canceled
           return;
 
@@ -1394,6 +1400,9 @@ function onMessage(aMessage, aSender) {
         // not canceled, then fallback to default "select tab"
         if (aMessage.button == 0)
           selectTabInternally(tab);
+        });
+
+        return true;
       })();
 
     case kCOMMAND_SELECT_TAB:

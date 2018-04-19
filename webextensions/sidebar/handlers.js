@@ -208,18 +208,20 @@ function onMouseDown(aEvent) {
     aEvent.preventDefault();
   }
 
+  var mousedown = {
+    detail: mousedownDetail,
+    promisedMousedownNotified: Promise.resolve()
+  };
+
   if ((!isEventFiredOnTwisty(aEvent) &&
        !isEventFiredOnSoundButton(aEvent) &&
        !isEventFiredOnClosebox(aEvent)) ||
       aEvent.button != 0)
-    browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
+    mousedown.promisedMousedownNotified = browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
       type:     kNOTIFY_TAB_MOUSEDOWN,
       windowId: gTargetWindow
     }));
 
-  var mousedown = {
-    detail: mousedownDetail
-  };
   gLastMousedown[aEvent.button] = mousedown;
   mousedown.timeout = setTimeout(() => {
     if (!gLastMousedown[aEvent.button])
@@ -303,6 +305,7 @@ async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
   let lastMousedown = gLastMousedown[aEvent.button];
   cancelHandleMousedown(aEvent.button);
+  await lastMousedown.promisedMousedownNotified;
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
   let promisedCanceled = Promise.resolve(false);
