@@ -146,12 +146,16 @@ function getTabByUniqueId(aId) {
 }
 
 function getTabLabel(aTab) {
-  return aTab.querySelector(`.${kLABEL}`);
+  return aTab && aTab.querySelector(`.${kLABEL}`);
+}
+
+function getTabLabelContent(aTab) {
+  return aTab && aTab.querySelector(`.${kLABEL}-content`);
 }
 
 function getCurrentTab(aHint) {
   const container = getTabsContainer(aHint);
-  return container.querySelector(`.${kTAB_STATE_ACTIVE}`);
+  return container && container.querySelector(`.${kTAB_STATE_ACTIVE}`);
 }
 function getCurrentTabs() {
   return Array.slice(document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`));

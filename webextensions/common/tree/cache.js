@@ -5,6 +5,11 @@
 */
 'use strict';
 
+function logForCache(...aArgs) {
+  if (configs.logOnCache)
+    log(...aArgs);
+}
+
 async function getWindowSignature(aWindowIdOrTabs) {
   if (typeof aWindowIdOrTabs == 'number') {
     aWindowIdOrTabs = await browser.tabs.query({ windowId: aWindowIdOrTabs });
@@ -41,7 +46,7 @@ function matcheSignatures(aSignatures) {
 function signatureFromTabsCache(aCache) {
   var uniqueIdMatcher = new RegExp(`${kPERSISTENT_ID}="([^"]+)"`);
   if (!aCache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g))
-    log('NO MATCH ', aCache);
+    logForCache('NO MATCH ', aCache);
   return (aCache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g) || []).map(aMatched => {
     var uniqueId = aMatched.match(uniqueIdMatcher);
     return uniqueId ? uniqueId[1] : '?' ;
@@ -49,7 +54,7 @@ function signatureFromTabsCache(aCache) {
 }
 
 function restoreTabsFromCacheInternal(aParams) {
-  log(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache`);
+  logForCache(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache`);
   var offset    = aParams.offset || 0;
   var apiTabs   = aParams.tabs.slice(offset);
   var container = getTabsContainer(aParams.windowId);
@@ -57,11 +62,11 @@ function restoreTabsFromCacheInternal(aParams) {
   if (offset > 0) {
     if (!container ||
         container.childNodes.length <= offset) {
-      log('restoreTabsFromCacheInternal: missing container');
+      logForCache('restoreTabsFromCacheInternal: missing container');
       return false;
     }
-    log(`restoreTabsFromCacheInternal: there is ${container.childNodes.length} tabs`);
-    log('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
+    logForCache(`restoreTabsFromCacheInternal: there is ${container.childNodes.length} tabs`);
+    logForCache('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
     let insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
@@ -69,12 +74,12 @@ function restoreTabsFromCacheInternal(aParams) {
     insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
     let tabsMustBeRemoved = apiTabs.map(getTabById);
-    log('restoreTabsFromCacheInternal: cleared?: ',
-        tabsMustBeRemoved.every(aTab => !aTab),
-        tabsMustBeRemoved.map(dumpTab));
-    log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
+    logForCache('restoreTabsFromCacheInternal: cleared?: ',
+                tabsMustBeRemoved.every(aTab => !aTab),
+                tabsMustBeRemoved.map(dumpTab));
+    logForCache(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
     let matched = aParams.cache.match(/<li/g);
-    log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);
+    logForCache(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);
     dumpCache(aParams.cache);
     insertionPoint.selectNodeContents(container);
     insertionPoint.collapse(false);
@@ -87,7 +92,7 @@ function restoreTabsFromCacheInternal(aParams) {
   else {
     if (container)
       container.parentNode.removeChild(container);
-    log('restoreTabsFromCacheInternal: restore');
+    logForCache('restoreTabsFromCacheInternal: restore');
     dumpCache(aParams.cache);
     let insertionPoint = aParams.insertionPoint || (() => {
       var range = document.createRange();
@@ -105,9 +110,9 @@ function restoreTabsFromCacheInternal(aParams) {
       insertionPoint.detach();
   }
 
-  log('restoreTabsFromCacheInternal: post process ', { tabElements, apiTabs });
+  logForCache('restoreTabsFromCacheInternal: post process ', { tabElements, apiTabs });
   if (tabElements.length != apiTabs.length) {
-    log('restoreTabsFromCacheInternal: Mismatched number of restored tabs?');
+    logForCache('restoreTabsFromCacheInternal: Mismatched number of restored tabs?');
     container.parentNode.removeChild(container); // clear dirty tree!
     return false;
   }
@@ -117,16 +122,16 @@ function restoreTabsFromCacheInternal(aParams) {
     });
   }
   catch(e) {
-    log(String(e), e.stack);
+    logForCache(String(e), e.stack);
     throw e;
   }
-  log('restoreTabsFromCacheInternal: done');
+  logForCache('restoreTabsFromCacheInternal: done');
   dumpAllTabs();
   return true;
 }
 
 function dumpCache(aCache) {
-  log(aCache
+  logForCache(aCache
     .replace(new RegExp(`([^\\s=])="[^"]*(\\n[^"]*)+"`, 'g'), '$1="..."')
     .replace(/(<(li|ul))/g, '\n$1'));
 }
@@ -134,7 +139,7 @@ function dumpCache(aCache) {
 function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   if (aTabs.length != aApiTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${aTabs.length}, tabs.Tab=${aApiTabs.length}`);
-  log('fixupTabsRestoredFromCache start ', { elements: aTabs.map(aTab => aTab.id), apiTabs: aApiTabs });
+  logForCache('fixupTabsRestoredFromCache start ', { elements: aTabs.map(aTab => aTab.id), apiTabs: aApiTabs });
   var idMap = {};
   // step 1: build a map from old id to new id
   aTabs.forEach((aTab, aIndex) => {
@@ -142,7 +147,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
     var apiTab = aApiTabs[aIndex];
     aTab.id = makeTabId(apiTab);
     aTab.apiTab = apiTab;
-    log(`fixupTabsRestoredFromCache: remap ${oldId} => ${aTab.id}`);
+    logForCache(`fixupTabsRestoredFromCache: remap ${oldId} => ${aTab.id}`);
     aTab.setAttribute(kAPI_TAB_ID, apiTab.id || -1);
     aTab.setAttribute(kAPI_WINDOW_ID, apiTab.windowId || -1);
     idMap[oldId] = aTab;
@@ -182,7 +187,7 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
 
   const idMap = aOptions.idMap;
 
-  log('fixupTabRestoredFromCache children: ', aTab.getAttribute(kCHILDREN));
+  logForCache('fixupTabRestoredFromCache children: ', aTab.getAttribute(kCHILDREN));
   aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
     .split('|')
     .map(aOldId => idMap[aOldId])
@@ -191,14 +196,14 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
     aTab.setAttribute(kCHILDREN, `|${aTab.childTabs.map(aTab => aTab.id).join('|')}|`);
   else
     aTab.removeAttribute(kCHILDREN);
-  log('fixupTabRestoredFromCache children: => ', aTab.getAttribute(kCHILDREN));
+  logForCache('fixupTabRestoredFromCache children: => ', aTab.getAttribute(kCHILDREN));
 
-  log('fixupTabRestoredFromCache parent: ', aTab.getAttribute(kPARENT));
+  logForCache('fixupTabRestoredFromCache parent: ', aTab.getAttribute(kPARENT));
   aTab.parentTab = idMap[aTab.getAttribute(kPARENT)] || null;
   if (aTab.parentTab)
     aTab.setAttribute(kPARENT, aTab.parentTab.id);
   else
     aTab.removeAttribute(kPARENT);
-  log('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
+  logForCache('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
   aTab.ancestorTabs = getAncestorTabs(aTab, { force: true });
 }

@@ -106,6 +106,8 @@ async function init() {
       gTabBar.addEventListener('scroll', onScroll);
       gTabBar.addEventListener('dblclick', onDblClick);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
+      gTabBar.addEventListener('overflow', onOverflow);
+      gTabBar.addEventListener('underflow', onUnderflow);
       gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
       startListenDragEvents();
       gMetricsData.add('start to listen events');
@@ -225,6 +227,8 @@ function destroy() {
   gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
+  gTabBar.removeEventListener('overflow', onOverflow);
+  gTabBar.removeEventListener('underflow', onUnderflow);
   gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;

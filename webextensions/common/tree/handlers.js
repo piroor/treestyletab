@@ -225,17 +225,14 @@ async function onNewTabTracked(aTab) {
 
   var newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
   newTab.classList.add(kTAB_STATE_OPENING);
-  // append to DOM tree to detect duplication
-  container.appendChild(newTab);
+
+  var nextTab = getAllTabs(container)[aTab.index];
+  container.insertBefore(newTab, nextTab);
 
   gCreatingTabs[aTab.id] = newTab.uniqueId;
   var uniqueId = await newTab.uniqueId;
   if (gCreatingTabs[aTab.id] === newTab.uniqueId)
     delete gCreatingTabs[aTab.id];
-
-  // move to correct position after tabs.onRemoved is processed
-  var nextTab = getAllTabs(container)[aTab.index];
-  container.insertBefore(newTab, nextTab);
 
   updateTab(newTab, aTab, {
     tab:        aTab,

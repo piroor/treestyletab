@@ -303,7 +303,7 @@ function getDropAction(aEvent) {
         }
         else {
           info.action       = kACTION_MOVE | kACTION_DETACH;
-          info.insertBefore = firstTargetTab;
+          info.insertBefore = info.firstTargetTab;
         }
       }
       else {

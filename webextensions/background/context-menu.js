@@ -47,13 +47,13 @@ async function refreshContextMenuItems() {
       // Access key is not supported by WE API.
       // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
       title: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
-      contexts: ['page', 'tab']
+      contexts: ['tab']
     });
     tabContextMenu.onExternalMessage({
       type: kTSTAPI_CONTEXT_MENU_CREATE,
       params: {
         id, type, title,
-        contexts: ['page', 'tab']
+        contexts: ['tab']
       }
     }, browser.runtime);
   }

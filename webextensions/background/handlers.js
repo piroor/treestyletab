@@ -621,20 +621,24 @@ async function closeChildTabs(aParent) {
 }
 
 function onTabMoving(aTab, aMoveInfo) {
-  var container = getTabsContainer(aTab);
-  var positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
-  if (parseInt(container.dataset.openingCount) > 0 &&
-      !aMoveInfo.byInternalOperation &&
-      positionControlled) {
-    let opener = getOpenerTab(aTab);
-    // if there is no valid opener, it can be a restored initial tab in a restored window
-    // and can be just moved as a part of window restoration process.
-    if (opener) {
-      log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
-      moveBack(aTab, aMoveInfo);
-      return true;
-    }
-  }
+  // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
+  const container = getTabsContainer(aTab);
+  const isNewlyOpenedTab = parseInt(container.dataset.openingCount) > 0;
+  const positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
+  if (!isNewlyOpenedTab ||
+      aMoveInfo.byInternalOperation ||
+      !positionControlled)
+    return false;
+
+  const opener = getOpenerTab(aTab);
+  // if there is no valid opener, it can be a restored initial tab in a restored window
+  // and can be just moved as a part of window restoration process.
+  if (!opener)
+    return false;
+
+  log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
+  moveBack(aTab, aMoveInfo);
+  return true;
 }
 
 function onTabElementMoved(aTab, aInfo = {}) {
@@ -1361,28 +1365,44 @@ function onMessage(aMessage, aSender) {
       gMaybeTabSwitchingByShortcut =
         gTabSwitchedByShortcut = false;
       return (async () => {
+        if (configs.logOnMouseEvent)
+          log('kNOTIFY_TAB_MOUSEDOWN');
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
         if (!tab)
           return;
 
+        if (configs.logOnMouseEvent)
+          log('Sending message to listeners');
         const serializedTab = serializeTabForTSTAPI(tab);
-        let results = await sendTSTAPIMessage(Object.assign({}, aMessage, {
+        const mousedownNotified = sendTSTAPIMessage(Object.assign({}, aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
           window: tab.apiTab.windowId
         }));
-        results = results.concat(await sendTSTAPIMessage(Object.assign({}, aMessage, {
-          type:   kTSTAPI_NOTIFY_TAB_CLICKED,
-          tab:    serializedTab,
-          window: tab.apiTab.windowId
-        })));
-        if (results.some(aResult => aResult.result)) // canceled
-          return;
 
-        // not canceled, then fallback to default "select tab"
-        if (aMessage.button == 0)
-          selectTabInternally(tab);
+        // We must send tab-mouseup after tab-mousedown is notified.
+        // So, we return to the caller process and do this post process asynchronously.
+        mousedownNotified.then(async (aResults) => {
+          const results = aResults.concat(
+            await sendTSTAPIMessage(Object.assign({}, aMessage, {
+              type:   kTSTAPI_NOTIFY_TAB_CLICKED,
+              tab:    serializedTab,
+              window: tab.apiTab.windowId
+            }))
+          );
+          if (results.some(aResult => aResult.result)) // canceled
+            return;
+
+          if (configs.logOnMouseEvent)
+            log('Ready to select the tab');
+
+          // not canceled, then fallback to default "select tab"
+          if (aMessage.button == 0)
+            selectTabInternally(tab);
+        });
+
+        return true;
       })();
 
     case kCOMMAND_SELECT_TAB:

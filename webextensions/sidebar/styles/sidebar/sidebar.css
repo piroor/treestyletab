@@ -151,7 +151,8 @@
   text-align: start;
   text-shadow: none;
   margin-bottom: 1px;
-  padding: 0.2em 0 0.2em 0.25em;
+  margin-left: 0.25em;
+  padding: 0;
 }
 
 .tab.active .label {

@@ -279,10 +279,10 @@ async function scrollToTab(aTab, aOptions = {}) {
 }
 
 function getOffsetForAnimatingTab(aTab) {
-  var allExpanding        = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_EXPANDING}`);
-  var followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_EXPANDING}`);
-  var allCollapsing       = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSING}`);
-  var followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSING}`);
+  var allExpanding        = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}:not(.${kTAB_STATE_COLLAPSED}).${kTAB_STATE_EXPANDING}`);
+  var followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}:not(.${kTAB_STATE_COLLAPSED}).${kTAB_STATE_EXPANDING}`);
+  var allCollapsing       = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSED}.${kTAB_STATE_COLLAPSING}`);
+  var followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSED}.${kTAB_STATE_COLLAPSING}`);
   var numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
   return numExpandingTabs * gTabHeight;
 }

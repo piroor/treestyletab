@@ -250,7 +250,7 @@ const Commands = {
     if (!nextTab)
       return false;
 
-    if (!aMessage.followChildren)
+    if (!aOptions.followChildren)
       detachAllChildren(aTab, {
         broadcast: true,
         behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
