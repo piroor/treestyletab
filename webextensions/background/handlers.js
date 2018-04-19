@@ -1365,11 +1365,15 @@ function onMessage(aMessage, aSender) {
       gMaybeTabSwitchingByShortcut =
         gTabSwitchedByShortcut = false;
       return (async () => {
+        if (configs.logOnMouseEvent)
+          log('kNOTIFY_TAB_MOUSEDOWN');
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
         if (!tab)
           return;
 
+        if (configs.logOnMouseEvent)
+          log('Sending message to listeners');
         const serializedTab = serializeTabForTSTAPI(tab);
         let results = await sendTSTAPIMessage(Object.assign({}, aMessage, {
           type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
@@ -1383,6 +1387,9 @@ function onMessage(aMessage, aSender) {
         })));
         if (results.some(aResult => aResult.result)) // canceled
           return;
+
+        if (configs.logOnMouseEvent)
+          log('Ready to select the tab');
 
         // not canceled, then fallback to default "select tab"
         if (aMessage.button == 0)
