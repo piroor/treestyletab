@@ -330,8 +330,10 @@ ul {
 
 .tab .label {
   flex-grow: 1;
+  mask-image: linear-gradient(to left, transparent 0, black 2em);
   overflow: hidden;
-  text-overflow: ".."; /*ellipsis*/;
+  text-overflow: clip;
+  /* text-overflow: ".."; *//* instead of "ellipsis" */;
   white-space: nowrap;
 }
 
