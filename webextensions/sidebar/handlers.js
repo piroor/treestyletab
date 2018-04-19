@@ -696,6 +696,7 @@ function onTabFaviconUpdated(aTab, aURL) {
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
   markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  updateTabLabelOverflow(aTab);
 }
 
 function onTabLabelUpdated(aTab) {
@@ -1155,6 +1156,7 @@ function onTabPinned(aTab) {
 function onTabUnpinned(aTab) {
   tabContextMenu.close();
   clearPinnedStyle(aTab);
+  updateTabLabelOverflow(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();

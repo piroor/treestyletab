@@ -134,9 +134,11 @@ function buildTab(aApiTab, aOptions = {}) {
     tab.classList.add(kTAB_STATE_ACTIVE);
   tab.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
 
-  var label = document.createElement('span');
-  label.classList.add(kLABEL);
-  tab.appendChild(label);
+  const labelContainer = document.createElement('span');
+  labelContainer.classList.add(kLABEL);
+  const label = labelContainer.appendChild(document.createElement('span'));
+  label.classList.add(`${kLABEL}-content`);
+  tab.appendChild(labelContainer);
 
   window.onTabBuilt && onTabBuilt(tab, aOptions);
 
@@ -251,7 +253,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       aTab.classList.add(kTAB_STATE_UNREAD);
       browser.sessions.setTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD, true);
     }
-    getTabLabel(aTab).textContent = aNewState.title;
+    getTabLabelContent(aTab).textContent = aNewState.title;
     aTab.dataset.label = visibleLabel;
     window.onTabLabelUpdated && onTabLabelUpdated(aTab);
   }

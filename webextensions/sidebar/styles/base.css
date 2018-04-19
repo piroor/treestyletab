@@ -330,11 +330,15 @@ ul {
 
 .tab .label {
   flex-grow: 1;
-  mask-image: linear-gradient(to left, transparent 0, black 2em);
   overflow: hidden;
-  text-overflow: clip;
   /* text-overflow: ".."; *//* instead of "ellipsis" */;
   white-space: nowrap;
+}
+.tab .label.overflow {
+  mask-image: linear-gradient(to left, transparent 0, black 2em);
+}
+
+.tab .label-content {
 }
 
 .tab:not([data-child-ids]) .counter,

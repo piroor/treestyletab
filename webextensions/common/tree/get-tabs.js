@@ -149,6 +149,10 @@ function getTabLabel(aTab) {
   return aTab.querySelector(`.${kLABEL}`);
 }
 
+function getTabLabelContent(aTab) {
+  return aTab.querySelector(`.${kLABEL}-content`);
+}
+
 function getCurrentTab(aHint) {
   const container = getTabsContainer(aHint);
   return container.querySelector(`.${kTAB_STATE_ACTIVE}`);
