@@ -265,6 +265,7 @@ configs = new Configs({
   logOnMouseEvent: false,
   logOnScroll: false,
   logOnCollapseExpand: false,
+  logOnCache: false,
 
   importedConfigsFromLegacy: null,
   legacyConfigsNextMigrationVersion: 0,
@@ -352,5 +353,6 @@ configs = new Configs({
     logOnMouseEvent
     logOnScroll
     logOnCollapseExpand
+    logOnCache
   `.trim().split('\n').map(aKey => aKey.trim()).filter(aKey => aKey && aKey.indexOf('//') != 0)
 });

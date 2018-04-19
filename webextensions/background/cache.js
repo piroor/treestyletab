@@ -7,28 +7,28 @@
 
 async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   gMetricsData.add('restoreWindowFromEffectiveWindowCache start');
-  log('restoreWindowFromEffectiveWindowCache start');
+  logForCache('restoreWindowFromEffectiveWindowCache start');
   var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
   if (!owner) {
-    log('restoreWindowFromEffectiveWindowCache fail: no owner');
+    logForCache('restoreWindowFromEffectiveWindowCache fail: no owner');
     return false;
   }
   cancelReservedCacheTree(aWindowId); // prevent to break cache before loading
   var apiTabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
-  log('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
+  logForCache('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
   var [actualSignature, cache] = await Promise.all([
     getWindowSignature(apiTabs),
     getWindowCache(owner, kWINDOW_STATE_CACHED_TABS)
   ]);
   var cachedSignature = cache && cache.signature;
-  log(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
+  logForCache(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
     cachedSignature, cache
   });
   if (cache &&
       cache.tabs &&
       cachedSignature &&
       cachedSignature != signatureFromTabsCache(cache.tabs)) {
-    log(`restoreWindowFromEffectiveWindowCache: cache for ${aWindowId} is broken.`, {
+    logForCache(`restoreWindowFromEffectiveWindowCache: cache for ${aWindowId} is broken.`, {
       signature: cachedSignature,
       cache:     signatureFromTabsCache(cache.tabs)
     });
@@ -46,20 +46,20 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     actual: actualSignature,
     cached: cachedSignature
   });
-  log(`restoreWindowFromEffectiveWindowCache: verify cache for ${aWindowId}`, {
+  logForCache(`restoreWindowFromEffectiveWindowCache: verify cache for ${aWindowId}`, {
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
       cache.version != kSIDEBAR_CONTENTS_VERSION ||
       !signatureMatched) {
-    log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
+    logForCache(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
     gMetricsData.add('restoreWindowFromEffectiveWindowCache fail');
     return false;
   }
   cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
 
-  log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
+  logForCache(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
 
   var insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
@@ -118,7 +118,7 @@ function updateWindowCache(aOwner, aKey, aValue) {
 }
 
 function clearWindowCache(aOwner) {
-  log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
+  logForCache('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_TABS);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
@@ -172,7 +172,7 @@ async function reserveToCacheTree(aHint) {
     return;
 
   var windowId = parseInt(container.dataset.windowId);
-  log('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
+  logForCache('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
   clearWindowCache(container.lastWindowCacheOwner);
 
   if (container.waitingToCacheTree)
@@ -200,11 +200,11 @@ async function cacheTree(aWindowId) {
   var signature = await getWindowSignature(aWindowId);
   if (container.allTabsRestored)
     return;
-  //log('save cache for ', aWindowId);
+  //logForCache('save cache for ', aWindowId);
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
   if (!container.lastWindowCacheOwner)
     return;
-  log('cacheTree for window ', aWindowId, { stack: new Error().stack });
+  logForCache('cacheTree for window ', aWindowId, { stack: new Error().stack });
   updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
     version: kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,
