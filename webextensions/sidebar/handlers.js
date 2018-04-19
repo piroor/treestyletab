@@ -306,7 +306,7 @@ async function onMouseUp(aEvent) {
   let serializedTab = tab && serializeTabForTSTAPI(tab);
   let promisedCanceled = Promise.resolve(false);
   if (serializedTab && lastMousedown) {
-    results = sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
+    const results = sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
       type:    kTSTAPI_NOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
       window:  gTargetWindow
