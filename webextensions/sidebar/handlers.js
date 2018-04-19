@@ -311,6 +311,8 @@ async function onMouseUp(aEvent) {
       tab:     serializedTab,
       window:  gTargetWindow
     }));
+    // don't wait here, because we need process following common operations
+    // even if this mouseup event is canceled.
     promisedCanceled = results.then(aResults => aResults.some(aResult => aResult.result));
   }
 
