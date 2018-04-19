@@ -161,6 +161,8 @@
   "config_animation_label": { "message": "Animationen aktivieren" },
 
 
+  "config_context_caption": { "message": "Kontexmenü" },
+  "config_fakeContextMenu_label": { "message": "Tab-Kontextmenü in der Sidebar simulieren" },
   "config_extraItems_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
 
 
@@ -300,7 +302,8 @@
   "config_logOnUpdated_label":        { "message": "Logs ausgeben von tabs.onUpdated" },
   "config_logOnMouseEvent_label":     { "message": "Logs ausgeben von mouse events" },
   "config_logOnScroll_label":         { "message": "Logs ausgeben von auto scrolling" },
-  "config_logOnCollapseExpand_label": { "message": "Logs ausgeben von  collapse/expand" },
+  "config_logOnCollapseExpand_label": { "message": "Logs ausgeben von collapse/expand" },
+  "config_logOnCache_label":          { "message": "Logs ausgeben von zwischengespeichertem Baum" },
   "config_simulateSVGContextFill_label": { "message": "Workaround für Bug 1388193 und Bug 1421329 aktivieren um SVG-Icons zu simulieren (*Kann die CPU-Last erhöhen. Um diese Option zu deaktivieren, aktiviere \"svg.context-properties.content.enabled\" via \"about:config\", bis diese Bugs behoben sind.)" },
   "config_useCachedTree_label": { "message": "Zweig-Wiederherstellung mit Cache optimieren" },
   "config_acccelaratedTabDuplication_label": { "message": "Operationen zum Duplizieren von Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
