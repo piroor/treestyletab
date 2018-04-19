@@ -527,6 +527,12 @@ function updateTabLabelOverflow(aTab) {
     label.classList.remove('overflow');
 }
 
+function updateAllTabsLabelOverflow() {
+  for (let tab of getAllTabs()) {
+    updateTabLabelOverflow(tab);
+  }
+}
+
 function updateTabTwisty(aTab) {
   var tooltip;
   if (isSubtreeCollapsed(aTab))
@@ -719,9 +725,7 @@ function updateTabbarLayout(aParams = {}) {
     range.detach();
     gTabBar.style.bottom = `${offset}px`;
     nextFrame().then(() => {
-      for (let tab of getNormalTabs()) {
-        updateTabLabelOverflow(tab);
-      }
+      updateAllTabsLabelOverflow();
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
@@ -747,14 +751,10 @@ function updateTabbarLayout(aParams = {}) {
     //log('underflow');
     gTabBar.classList.remove(kTABBAR_STATE_OVERFLOW);
     gTabBar.style.bottom = '';
-    for (let tab of getAllTabs()) {
-      updateTabLabelOverflow(tab);
-    }
+    updateAllTabsLabelOverflow();
   }
   else {
-    for (let tab of getAllTabs()) {
-      updateTabLabelOverflow(tab);
-    }
+    updateAllTabsLabelOverflow();
   }
 
   if (aParams.justNow)
