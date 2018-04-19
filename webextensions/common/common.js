@@ -102,6 +102,7 @@ makeAsyncFunctionSequential.start = async () => {
 configs = new Configs({
   // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
+  sidebarDirection: kTABBAR_DIRECTION_LTR,
   sidebarScrollbarPosition: kTABBAR_SCROLLBAR_POSITION_AUTO,
 
   style:

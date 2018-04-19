@@ -1553,6 +1553,17 @@ function onConfigChange(aChangedKey) {
       updateIndent({ force: true });
       break;
 
+    case 'sidebarDirection':
+      if (configs.sidebarDirection == kTABBAR_DIRECTION_RTL) {
+        rootClasses.add('rtl');
+        rootClasses.remove('ltr');
+      }
+      else {
+        rootClasses.add('ltr');
+        rootClasses.remove('rtl');
+      }
+      break;
+
     case 'sidebarScrollbarPosition': {
       let position = configs.sidebarScrollbarPosition;
       if (position == kTABBAR_SCROLLBAR_POSITION_AUTO)
