@@ -6,6 +6,7 @@
    * バックグラウンドのタブをそのままドラッグできるよう、ドラッグ＆ドロップ後にタブのフォーカス状態を再設定しないようにした（Inspired from codes by Lej77, thanks!）
    * タブを中クリックで閉じる操作をAPI経由でキャンセルできるようにした（Inspired from codes by Lej77, thanks!）
    * サイドバー上でのマウスのボタン操作について、同じボタンのmouseupとmousedownをペアで取り扱うようにした（by Lej77, thanks!）
+   * タブのラベルについて「..」で省略する代わりに透明にフェードアウトするようにした（by Keith94m thanks!）
  - 2.4.18 (2018.3.22)
    * 偽コンテキストメニューに項目を追加するAPIにおいて、`enable`と`icons`をパラメータとして受け取れるようにした
    * [`register-self` APIでの`icons`パラメータの指定に対応](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#register-and-unregister)
