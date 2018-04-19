@@ -621,6 +621,18 @@ function reserveToSaveScrollPosition() {
   }, 150);
 }
 
+function onOverflow(aEvent) {
+  const tab = getTabFromChild(aEvent.target);
+  if (tab && !isPinned(tab))
+    getTabLabel(tab).classList.add('overflow');
+}
+
+function onUnderflow(aEvent) {
+  const tab = getTabFromChild(aEvent.target);
+  if (tab && !isPinned(tab))
+    getTabLabel(tab).classList.remove('overflow');
+}
+
 
 /* raw event handlers */
 
@@ -696,7 +708,6 @@ function onTabFaviconUpdated(aTab, aURL) {
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
   markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  updateTabLabelOverflow(aTab);
 }
 
 function onTabLabelUpdated(aTab) {
@@ -1156,7 +1167,6 @@ function onTabPinned(aTab) {
 function onTabUnpinned(aTab) {
   tabContextMenu.close();
   clearPinnedStyle(aTab);
-  updateTabLabelOverflow(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();

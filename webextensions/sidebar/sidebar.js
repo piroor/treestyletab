@@ -106,6 +106,8 @@ async function init() {
       gTabBar.addEventListener('scroll', onScroll);
       gTabBar.addEventListener('dblclick', onDblClick);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
+      gTabBar.addEventListener('overflow', onOverflow);
+      gTabBar.addEventListener('underflow', onUnderflow);
       gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
       startListenDragEvents();
       gMetricsData.add('start to listen events');
@@ -225,6 +227,8 @@ function destroy() {
   gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
+  gTabBar.removeEventListener('overflow', onOverflow);
+  gTabBar.removeEventListener('underflow', onUnderflow);
   gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
@@ -516,28 +520,6 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
 }
 
 
-function updateTabLabelOverflow(aTab) {
-  if (isPinned(aTab))
-    return;
-  const label = getTabLabel(aTab);
-  const labelContent = getTabLabelContent(aTab);
-  const oldOverflow = label.classList.contains('overflow');
-  if (labelContent.getBoundingClientRect().width > label.getBoundingClientRect().width) {
-    if (!oldOverflow)
-      label.classList.add('overflow');
-  }
-  else {
-    if (oldOverflow)
-      label.classList.remove('overflow');
-  }
-}
-
-function updateAllTabsLabelOverflow() {
-  for (let tab of getAllTabs()) {
-    updateTabLabelOverflow(tab);
-  }
-}
-
 function updateTabTwisty(aTab) {
   var tooltip;
   if (isSubtreeCollapsed(aTab))
@@ -730,7 +712,6 @@ function updateTabbarLayout(aParams = {}) {
     range.detach();
     gTabBar.style.bottom = `${offset}px`;
     nextFrame().then(() => {
-      updateAllTabsLabelOverflow();
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
@@ -756,10 +737,6 @@ function updateTabbarLayout(aParams = {}) {
     //log('underflow');
     gTabBar.classList.remove(kTABBAR_STATE_OVERFLOW);
     gTabBar.style.bottom = '';
-    updateAllTabsLabelOverflow();
-  }
-  else {
-    updateAllTabsLabelOverflow();
   }
 
   if (aParams.justNow)
