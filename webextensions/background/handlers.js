@@ -1384,22 +1384,22 @@ function onMessage(aMessage, aSender) {
         // We must send tab-mouseup after tab-mousedown is notified.
         // So, we return to the caller process and do this post process asynchronously.
         mousedownNotified.then(async (aResults) => {
-        const results = aResults.concat(
-          await sendTSTAPIMessage(Object.assign({}, aMessage, {
-            type:   kTSTAPI_NOTIFY_TAB_CLICKED,
-            tab:    serializedTab,
-            window: tab.apiTab.windowId
-          }))
-        );
-        if (results.some(aResult => aResult.result)) // canceled
-          return;
+          const results = aResults.concat(
+            await sendTSTAPIMessage(Object.assign({}, aMessage, {
+              type:   kTSTAPI_NOTIFY_TAB_CLICKED,
+              tab:    serializedTab,
+              window: tab.apiTab.windowId
+            }))
+          );
+          if (results.some(aResult => aResult.result)) // canceled
+            return;
 
-        if (configs.logOnMouseEvent)
-          log('Ready to select the tab');
+          if (configs.logOnMouseEvent)
+            log('Ready to select the tab');
 
-        // not canceled, then fallback to default "select tab"
-        if (aMessage.button == 0)
-          selectTabInternally(tab);
+          // not canceled, then fallback to default "select tab"
+          if (aMessage.button == 0)
+            selectTabInternally(tab);
         });
 
         return true;

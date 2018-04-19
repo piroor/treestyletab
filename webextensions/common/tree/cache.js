@@ -75,8 +75,8 @@ function restoreTabsFromCacheInternal(aParams) {
     insertionPoint.deleteContents();
     let tabsMustBeRemoved = apiTabs.map(getTabById);
     logForCache('restoreTabsFromCacheInternal: cleared?: ',
-        tabsMustBeRemoved.every(aTab => !aTab),
-        tabsMustBeRemoved.map(dumpTab));
+                tabsMustBeRemoved.every(aTab => !aTab),
+                tabsMustBeRemoved.map(dumpTab));
     logForCache(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
     let matched = aParams.cache.match(/<li/g);
     logForCache(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);
