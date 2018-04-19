@@ -302,6 +302,7 @@ function cancelHandleMousedown(button = null) {
 async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
   let lastMousedown = gLastMousedown[aEvent.button];
+  cancelHandleMousedown(aEvent.button);
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
   let promisedCanceled = Promise.resolve(false);
@@ -352,22 +353,14 @@ async function onMouseUp(aEvent) {
   if (configs.logOnMouseEvent)
     log('onMouseUp ', lastMousedown.detail);
 
-  var handled = false;
-  if (!(await promisedCanceled)) {
-    const actionForNewTabCommand = lastMousedown.detail.isAccelClick ?
-      configs.autoAttachOnNewTabButtonMiddleClick :
-      configs.autoAttachOnNewTabCommand;
-    if (isEventFiredOnNewTabButton(aEvent) &&
-        lastMousedown.detail.button != 2) {
-      if (configs.logOnMouseEvent)
-        log('click on the new tab button');
-      handleNewTabAction(aEvent, {
-        action: actionForNewTabCommand
-      });
-      handled = true;
-    }
-    else if (tab/* && warnAboutClosingTabSubtreeOf(tab)*/ &&
-             lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
+  if (await promisedCanceled) {
+    if (configs.logOnMouseEvent)
+      log('mouseup is canceled by other addons');
+    return;
+  }
+
+  if (tab) {
+    if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       if (configs.logOnMouseEvent)
         log('middle click on a tab');
       //log('middle-click to close');
@@ -376,37 +369,44 @@ async function onMouseUp(aEvent) {
           if (aConfirmed)
             removeTabInternally(tab, { inRemote: true });
         });
-      handled = true;
     }
+    return;
   }
 
-  if (!tab && !handled) {
+  // following codes are for handlig of click event on the tab bar itself.
+  const actionForNewTabCommand = lastMousedown.detail.isAccelClick ?
+    configs.autoAttachOnNewTabButtonMiddleClick :
+    configs.autoAttachOnNewTabCommand;
+  if (isEventFiredOnNewTabButton(aEvent) &&
+      lastMousedown.detail.button != 2) {
     if (configs.logOnMouseEvent)
-      log('notify as a blank area click to other addons');
-    let results = await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-      type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
-      window: gTargetWindow,
-    }));
-    results = results.concat(await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-      type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
-      window: gTargetWindow,
-    })));
-    if (results.some(aResult => aResult.result)) { // canceled
-      cancelHandleMousedown(aEvent.button);
-      return;
-    }
+      log('click on the new tab button');
+    handleNewTabAction(aEvent, {
+      action: actionForNewTabCommand
+    });
+    return;
   }
 
-  if (!handled &&
-      lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
+  if (configs.logOnMouseEvent)
+    log('notify as a blank area click to other addons');
+  let results = await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
+    type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
+    window: gTargetWindow,
+  }));
+  results = results.concat(await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
+    type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
+    window: gTargetWindow,
+  })));
+  if (results.some(aResult => aResult.result))// canceled
+    return;
+
+  if (lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
     if (configs.logOnMouseEvent)
       log('default action for middle click on the blank area');
     handleNewTabAction(aEvent, {
       action: configs.autoAttachOnNewTabCommand
     });
   }
-
-  cancelHandleMousedown(aEvent.button);
 }
 
 function onClick(aEvent) {
