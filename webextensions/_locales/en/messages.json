@@ -124,6 +124,7 @@
   "context_collapseAll_label": { "message": "Colla&pse All" },
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
+  "context_openSettings_label": { "message": "Tree Style Tab Settings" },
 
 
   "config_appearance_caption": { "message": "Appearance" },

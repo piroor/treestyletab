@@ -57,6 +57,12 @@ async function refreshContextMenuItems() {
       }
     }, browser.runtime);
   }
+
+  browser.contextMenus.create({
+    id: 'openSettings',
+    title: browser.i18n.getMessage(`context_openSettings_label`),
+    contexts: ['browser_action']
+  });
 }
 
 var contextMenuClickListener = (aInfo, aAPITab) => {
@@ -92,6 +98,10 @@ var contextMenuClickListener = (aInfo, aAPITab) => {
 
     case 'bookmarkTree':
       Commands.bookmarkTree(contextTab);
+      break;
+
+    case 'openSettings':
+      browser.runtime.openOptionsPage();
       break;
 
     default:
