@@ -115,6 +115,7 @@ async function init() {
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
       onConfigChange('sidebarPosition');
+      onConfigChange('sidebarDirection');
       onConfigChange('sidebarScrollbarPosition');
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');

@@ -133,6 +133,10 @@
   "config_sidebarPosition_right": { "message": "Right side" },
   "config_sidebarPosition_description": { "message": "*This configuration won't change the position of the sidebar itself. You need to click the switcher in the sidebar header and click \"Move Sidebar to Right\" manually." },
 
+  "config_sidebarDirection_caption": { "message": "Style for text direction:" },
+  "config_sidebarDirection_ltr": { "message": "LTR" },
+  "config_sidebarDirection_rtl": { "message": "RTL" },
+
   "config_scrollbarMode_caption": { "message": "Scrollbar:" },
   "config_scrollbarMode_default": { "message": "Default" },
   "config_scrollbarMode_narrow":  { "message": "Narrow" },

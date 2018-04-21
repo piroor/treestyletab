@@ -337,8 +337,10 @@ ul {
 .tab .label.overflow {
   mask-image: linear-gradient(to left, transparent 0, black 2em);
 }
-
-.tab .label-content {
+.tab .label.overflow:dir(rtl),
+:root.rtl .tab .label.overflow {
+  direction: rtl;
+  mask-image: linear-gradient(to right, transparent 0, black 2em);
 }
 
 .tab:not([data-child-ids]) .counter,
