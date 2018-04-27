@@ -609,12 +609,13 @@ function onDragStart(aEvent) {
     return;
 
   const tab       = dragData.tabNode
+  const mousedown = gLastMousedown[aEvent.button];
 
-  if (gLastMousedown && gLastMousedown.expired) {
+  if (mousedown && mousedown.expired) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     gLastDragEnteredTab = gLastDragEnteredTarget = tab;
-    let startOnClosebox = gDragTargetIsClosebox = gLastMousedown.detail.closebox;
+    const startOnClosebox = gDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
       gLastDragEnteredTarget = getTabClosebox(tab);
     sendTSTAPIMessage({
