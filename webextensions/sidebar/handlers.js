@@ -290,7 +290,7 @@ function getMouseEventTargetType(aEvent) {
 
 function cancelHandleMousedown(button = null) {
   if (!button && button !== 0) {
-    return Object.keys(gLastMousedown).filter((key) => cancelHandleMousedown(key)).length > 0;
+    return Object.keys(gLastMousedown).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
   }
   let lastMousedown = gLastMousedown[button];
   if (lastMousedown) {
