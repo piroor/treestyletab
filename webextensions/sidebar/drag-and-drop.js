@@ -75,7 +75,7 @@ function getDragDataFromOneTab(aTab, aOptions = {}) {
       windowId: null
     };
 
-  var draggedTabs = aOptions.shouldIgnoreDescendants ? [aTab] : getDraggedTabsFromOneTab(aTab);
+  const draggedTabs = aOptions.shouldIgnoreDescendants ? [aTab] : getDraggedTabsFromOneTab(aTab);
   return {
     tabNode:  aTab,
     tabNodes: draggedTabs,
@@ -229,19 +229,19 @@ function getDropAction(aEvent) {
    * So, if a tab is dragged and the target tab is pinned, then, we
    * have to ignore the [center] area.
    */
-  var onPinnedTab         = isPinned(targetTab);
-  var dropAreasCount      = (info.draggedAPITab && onPinnedTab) ? 2 : 3 ;
-  var targetTabRect       = targetTab.getBoundingClientRect();
-  var targetTabCoordinate = onPinnedTab ? targetTabRect.left : targetTabRect.top ;
-  var targetTabSize       = onPinnedTab ? targetTabRect.width : targetTabRect.height ;
-  var beforeOrAfterDropAreaSize;
+  const onPinnedTab         = isPinned(targetTab);
+  const dropAreasCount      = (info.draggedAPITab && onPinnedTab) ? 2 : 3 ;
+  const targetTabRect       = targetTab.getBoundingClientRect();
+  const targetTabCoordinate = onPinnedTab ? targetTabRect.left : targetTabRect.top ;
+  const targetTabSize       = onPinnedTab ? targetTabRect.width : targetTabRect.height ;
+  let beforeOrAfterDropAreaSize;
   if (dropAreasCount == 2) {
     beforeOrAfterDropAreaSize = Math.round(targetTabSize / dropAreasCount);
   }
   else { // enlarge the area to dop something on the tab itself
     beforeOrAfterDropAreaSize = Math.round(targetTabSize / 4);
   }
-  var eventCoordinate = onPinnedTab ? aEvent.clientX : aEvent.clientY;
+  const eventCoordinate = onPinnedTab ? aEvent.clientX : aEvent.clientY;
   //log('coordinates: ', {
   //  event: eventCoordinate,
   //  targetTab: targetTabCoordinate,
@@ -294,7 +294,7 @@ function getDropAction(aEvent) {
            |  [TARGET]
            +-----------------------------------------------------
       */
-      let prevTab = getPreviousVisibleTab(targetTab);
+      const prevTab = getPreviousVisibleTab(targetTab);
       if (!prevTab) {
         // allow to drop pinned tab to beside of another pinned tab
         if (info.draggedAPITab && info.draggedAPITab.pinned) {
@@ -337,7 +337,7 @@ function getDropAction(aEvent) {
            |  [      ]
            +-----------------------------------------------------
       */
-      let nextTab = getNextVisibleTab(targetTab);
+      const nextTab = getNextVisibleTab(targetTab);
       if (!nextTab) {
         info.action = kACTION_MOVE | kACTION_ATTACH;
         info.parent = getParentTab(targetTab);
@@ -404,7 +404,7 @@ function clearDraggingState() {
 }
 
 function isDraggingAllTabs(aTab, aTabs) {
-  var draggingTabs = getDraggingTabs(aTab);
+  const draggingTabs = getDraggingTabs(aTab);
   return draggingTabs.length == (aTabs || getAllTabs(aTab)).length;
 }
  
@@ -429,23 +429,23 @@ function collapseAutoExpandedTabsWhileDragging() {
 async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
   aEvent.stopPropagation();
 
-  var uris = retrieveURIsFromDragEvent(aEvent);
+  const uris = retrieveURIsFromDragEvent(aEvent);
   // uris.forEach(aURI => {
   //   if (aURI.indexOf(kURI_BOOKMARK_FOLDER) != 0)
   //     securityCheck(aURI, aEvent);
   // });
   log('handleDroppedNonTabItems: ', uris);
 
-  var inBackground = false; // prefs.getPref('browser.tabs.loadInBackground');
+  let inBackground = false; // prefs.getPref('browser.tabs.loadInBackground');
   if (aEvent.shiftKey)
     inBackground = !inBackground;
 
-  var dragOverTab = aDropActionInfo.dragOverTab;
+  const dragOverTab = aDropActionInfo.dragOverTab;
   if (dragOverTab &&
       aDropActionInfo.dropPosition == kDROP_ON_SELF &&
       !isLocked(dragOverTab) &&
       !isPinned(dragOverTab)) {
-    let behavior = await getDroppedLinksOnTabBehavior();
+    const behavior = await getDroppedLinksOnTabBehavior();
     if (behavior <= kDROPLINK_ASK)
       return;
     if (behavior & kDROPLINK_LOAD) {
@@ -470,9 +470,8 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
 
 function retrieveURIsFromDragEvent(aEvent) {
   log('retrieveURIsFromDragEvent');
-  var dt = aEvent.dataTransfer;
-  var urls = [];
-  var types = [
+  const dt    = aEvent.dataTransfer;
+  const types = [
     kTYPE_X_MOZ_PLACE,
     'text/uri-list',
     'text/x-moz-text-internal',
@@ -480,10 +479,11 @@ function retrieveURIsFromDragEvent(aEvent) {
     'text/plain',
     'application/x-moz-file'
   ];
+  let urls = [];
   for (let i = 0; i < types.length; i++) {
-    let dataType = types[i];
+    const dataType = types[i];
     for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
-      let urlData = dt.mozGetDataAt(dataType, i);
+      const urlData = dt.mozGetDataAt(dataType, i);
       if (urlData) {
         urls = urls.concat(retrieveURIsFromData(urlData, dataType));
       }
@@ -511,7 +511,7 @@ function retrieveURIsFromData(aData, aType) {
   log('retrieveURIsFromData: ', aType, aData);
   switch (aType) {
     case kTYPE_X_MOZ_PLACE: {
-      let item = JSON.parse(aData);
+      const item = JSON.parse(aData);
       if (item.type == 'text/x-moz-place-container') {
         let children = item.children;
         if (!children) {
@@ -520,11 +520,11 @@ function retrieveURIsFromData(aData, aType) {
         }
         // When a blank folder is dropped, just open a dummy tab with the folder name.
         if (children && children.length == 0) {
-          let uri = makeGroupTabURI({ title: item.title });
+          const uri = makeGroupTabURI({ title: item.title });
           return [uri];
         }
       }
-      let uri = item.uri;
+      const uri = item.uri;
       if (uri)
         return uri;
       else
@@ -560,11 +560,11 @@ function fixupURIFromText(aMaybeURI) {
 }
 
 async function getDroppedLinksOnTabBehavior() {
-  var behavior = configs.dropLinksOnTabBehavior;
+  let behavior = configs.dropLinksOnTabBehavior;
   if (behavior != kDROPLINK_ASK)
-    return  behavior;
+    return behavior;
 
-  var confirm = new RichConfirm({
+  const confirm = new RichConfirm({
     message: browser.i18n.getMessage('dropLinksOnTabBehavior_message'),
     buttons: [
       browser.i18n.getMessage('dropLinksOnTabBehavior_load'),
@@ -572,7 +572,7 @@ async function getDroppedLinksOnTabBehavior() {
     ],
     checkMessage: browser.i18n.getMessage('dropLinksOnTabBehavior_save')
   });
-  var result = await confirm.show();
+  const result = await confirm.show();
   switch (result.buttonIndex) {
     case 0:
       behavior = kDROPLINK_LOAD;
@@ -602,13 +602,13 @@ var gDragTargetIsClosebox  = false;
 var gCurrentDragData       = null;
 
 function onDragStart(aEvent) {
-  var dragData = getDragDataFromOneTab(aEvent.target, {
+  const dragData = getDragDataFromOneTab(aEvent.target, {
     shouldIgnoreDescendants: aEvent.shiftKey
   });
   if (!dragData.tabNode)
     return;
 
-  var tab = dragData.tabNode
+  const tab       = dragData.tabNode
 
   if (gLastMousedown && gLastMousedown.expired) {
     aEvent.stopPropagation();
@@ -646,10 +646,10 @@ function onDragStart(aEvent) {
   gDraggingOnSelfWindow = true;
   gLastDropPosition = null;
 
-  var dt = aEvent.dataTransfer;
+  const dt = aEvent.dataTransfer;
   dt.effectAllowed = 'copyMove';
 
-  var sanitizedDragData = sanitizeDragData(dragData);
+  const sanitizedDragData = sanitizeDragData(dragData);
   dt.mozSetDataAt(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData), 0);
 
   // Because addon cannot read drag data across private browsing mode,
@@ -691,8 +691,8 @@ function onDragOver(aEvent) {
     return;
   gLastDragOverTimestamp = now;
 
-  var info = getDropAction(aEvent);
-  var dt   = aEvent.dataTransfer;
+  const info = getDropAction(aEvent);
+  const dt   = aEvent.dataTransfer;
 
   if (isEventFiredOnTabDropBlocker(aEvent) ||
       !info.canDrop) {
@@ -703,7 +703,7 @@ function onDragOver(aEvent) {
     return;
   }
 
-  var dropPositionTargetTab = info.targetTab;
+  let dropPositionTargetTab = info.targetTab;
   while (isCollapsed(dropPositionTargetTab)) {
     dropPositionTargetTab = getPreviousTab(dropPositionTargetTab);
   }
@@ -732,7 +732,7 @@ function onDragOver(aEvent) {
 }
 
 function isEventFiredOnTabDropBlocker(aEvent) {
-  var node = aEvent.target;
+  let node = aEvent.target;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
   return node && !!node.closest('.tab-drop-blocker');
@@ -749,8 +749,8 @@ function onDragEnter(aEvent) {
     }
   }, 10);
 
-  var info = getDropAction(aEvent);
-  var dt   = aEvent.dataTransfer;
+  const info = getDropAction(aEvent);
+  const dt   = aEvent.dataTransfer;
   dt.dropEffect = info.dropEffect;
   if (info.dropEffect == 'link')
     document.documentElement.classList.add(kTABBAR_STATE_LINK_DRAGGING);
@@ -839,8 +839,8 @@ function onDrop(aEvent) {
     gLastDropPosition = null;
   }
 
-  var dropActionInfo = getDropAction(aEvent);
-  var dt = aEvent.dataTransfer;
+  const dropActionInfo = getDropAction(aEvent);
+  const dt = aEvent.dataTransfer;
   if (dt.dropEffect != 'link' &&
       dt.dropEffect != 'move' &&
       dropActionInfo.dragData &&
@@ -878,9 +878,9 @@ function onDragEnd(aEvent) {
     tab.classList.remove(kTAB_STATE_DRAGGING);
   }
 
-  var dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
+  let dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
   dragData = (dragData && JSON.parse(dragData)) || gCurrentDragData;
-  var stillInSelfWindow = !!gDraggingOnSelfWindow;
+  const stillInSelfWindow = !!gDraggingOnSelfWindow;
   gDraggingOnSelfWindow = false;
 
   wait(100).then(() => {
@@ -907,7 +907,7 @@ function onDragEnd(aEvent) {
     return;
   }
 
-  var dropTargetTab = getTabFromEvent(aEvent);
+  const dropTargetTab = getTabFromEvent(aEvent);
   if (dropTargetTab &&
       dragData &&
       dragData.tabNodes &&
@@ -925,8 +925,8 @@ function onDragEnd(aEvent) {
     return;
   }
 
-  var now = Date.now();
-  var delta = now - gLastDragOverTimestamp;
+  const now = Date.now();
+  const delta = now - gLastDragOverTimestamp;
   log('LastDragOverTimestamp: ', {
     last: gLastDragOverTimestamp,
     now, delta,
@@ -956,8 +956,8 @@ function onDragEnd(aEvent) {
 
 function onTSTAPIDragEnter(aEvent) {
   autoScrollOnMouseEvent(aEvent);
-  var tab    = getTabFromEvent(aEvent);
-  var target = tab;
+  const tab = getTabFromEvent(aEvent);
+  let target = tab;
   if (gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent))
     target = getTabClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
@@ -980,10 +980,10 @@ function onTSTAPIDragExit(aEvent) {
   if (gDragTargetIsClosebox &&
       !isEventFiredOnClosebox(aEvent))
     return;
-  var tab = getTabFromEvent(aEvent);
+  const tab = getTabFromEvent(aEvent);
   if (!tab)
     return;
-  var target = tab;
+  let target = tab;
   if (gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent))
     target = getTabClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
