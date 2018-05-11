@@ -1152,8 +1152,12 @@ function snapshotTree(aTargetTab, aTabs) {
 }
 
 function snapshotTreeForActionDetection(aTargetTab) {
-  var prevTab = getPreviousNormalTab(aTargetTab);
-  var nextTab = getNextNormalTab(aTargetTab);
-  var tabs    = getAncestorTabs(prevTab).reverse().concat([prevTab, aTargetTab, nextTab, getParentTab(aTargetTab)]).filter(ensureLivingTab).sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
+  const prevTab = getPreviousNormalTab(aTargetTab);
+  const nextTab = getNextNormalTab(aTargetTab);
+  const foundTabs = {};
+  const tabs = getAncestorTabs(prevTab)
+    .concat([prevTab, aTargetTab, nextTab, getParentTab(aTargetTab)])
+    .filter(aTab => ensureLivingTab(aTab) && !foundTabs[aTab.id] && (foundTabs[aTab.id] = true)) // uniq
+    .sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
   return snapshotTree(aTargetTab, tabs);
 }
