@@ -409,7 +409,7 @@ async function onMouseUp(aEvent) {
       clientY: aEvent.clientY
     });
   }
-  gCapturingMouseEvents = false;
+  gCapturingMouseEventsForDragging = false;
   gReadyToCaptureMouseEvents = false;
 
   if (!lastMousedown ||
