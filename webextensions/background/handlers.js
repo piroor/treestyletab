@@ -526,6 +526,10 @@ async function onWindowRestoring(aWindowId) {
   }
 }
 
+var gClosingTabIds              = [];
+var gClosingTabWasActive        = false;
+var gPromisedGrantedToCloseTabs = null;
+
 async function onTabClosed(aTab, aCloseInfo = {}) {
   log('onTabClosed ', dumpTab(aTab), aTab.apiTab, aCloseInfo);
   var container = aTab.parentNode;
@@ -541,21 +545,43 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
     });
 
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
-    const count = getCountOfClosingTabs(aTab);
-    const wasActive = isActive(aTab);
-    await wait(0); // this is required to wait until the closing tab is stored to the "recently closed" list
-    const confirmed = await confirmToCloseTabs(count, {
-      windowId: aTab.apiTab.windowId,
-      showInTab: wasActive
-    });
-    if (!confirmed) {
-      let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
-      if (sessions.length && sessions[0].tab)
-        browser.sessions.restore(sessions[0].tab.sessionId);
-      return;
-    }
+  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    gClosingTabIds = gClosingTabIds.concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
+  else
+    gClosingTabIds.push(aTab.id);
+
+  // this is required to wait until the closing tab is stored to the "recently closed" list
+  await wait(0);
+  gClosingTabWasActive = gClosingTabWasActive || isActive(aTab);
+  if (!gPromisedGrantedToCloseTabs) {
+    gPromisedGrantedToCloseTabs = wait(10).then(async () => {
+      const foundTabs = {};
+      gClosingTabIds = gClosingTabIds.filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)) // uniq
+      if (gClosingTabIds.length > 1) {
+        return confirmToCloseTabs(gClosingTabIds.length, {
+          windowId:  aTab.apiTab.windowId,
+          showInTab: gClosingTabWasActive
+        });
+      }
+      return true;
+    })
+      .then(async (aGranted) => {
+        if (!aGranted) {
+          for (let i = 0; i < gClosingTabIds.length; i++) {
+            let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
+            if (sessions.length && sessions[0].tab)
+              await browser.sessions.restore(sessions[0].tab.sessionId);
+          }
+        }
+        return aGranted;
+      });
   }
+  const granted = await gPromisedGrantedToCloseTabs;
+  gClosingTabIds              = [];
+  gClosingTabWasActive        = false;
+  gPromisedGrantedToCloseTabs = null;
+  if (!granted)
+    return;
 
   var nextTab = closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
   tryMoveFocusFromClosingCurrentTab(aTab, {
