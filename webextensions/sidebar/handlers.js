@@ -202,7 +202,7 @@ function onMouseOver(aEvent) {
       dragging: gCapturingMouseEventsForDragging
     });
   }
-  onMouseOver.lastTarget = tab.id;
+  onMouseOver.lastTarget = tab && tab.id;
 }
 
 function onMouseOut(aEvent) {
@@ -219,7 +219,7 @@ function onMouseOut(aEvent) {
       dragging: gCapturingMouseEventsForDragging
     });
   }
-  onMouseOut.lastTarget = tab.id;
+  onMouseOut.lastTarget = tab && tab.id;
 }
 
 var gLastMousedown = {};
