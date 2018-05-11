@@ -428,7 +428,7 @@ function uninstallStyleForAddon(aId) {
 }
 
 function updateSpecialEventListenersForAPIListeners() {
-  if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEMOVE) != onMouseMove.listening) {
+  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
     if (!onMouseMove.listening) {
       window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
       onMouseMove.listening = true;
@@ -439,7 +439,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOVER) != onMouseOver.listening) {
+  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
     if (!onMouseOver.listening) {
       window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
       onMouseOver.listening = true;
@@ -450,7 +450,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOUT) != onMouseOut.listening) {
+  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
     if (!onMouseOut.listening) {
       window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
       onMouseOut.listening = true;
