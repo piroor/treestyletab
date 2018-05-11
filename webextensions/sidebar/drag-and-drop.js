@@ -49,7 +49,6 @@ function startListenDragEvents() {
   document.addEventListener('dragenter', onDragEnter);
   document.addEventListener('dragleave', onDragLeave);
   document.addEventListener('drop', onDrop);
-  document.addEventListener('dragend', onDragEnd);
 }
 
 function endListenDragEvents() {
@@ -58,7 +57,6 @@ function endListenDragEvents() {
   document.removeEventListener('dragenter', onDragEnter);
   document.removeEventListener('dragleave', onDragLeave);
   document.removeEventListener('drop', onDrop);
-  document.removeEventListener('dragend', onDragEnd);
 }
 
 
@@ -678,6 +676,8 @@ function onDragStart(aEvent) {
   });
   getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
+
+  document.addEventListener('dragend', onDragEnd);
 }
 
 var gLastDragOverTimestamp = null;
@@ -873,6 +873,8 @@ function onDrop(aEvent) {
 
 function onDragEnd(aEvent) {
   log('onDragEnd, gDraggingOnSelfWindow = ', gDraggingOnSelfWindow);
+
+  document.removeEventListener('dragend', onDragEnd);
 
   // clear "dragging" status safely, because we possibly fail to get drag data from dataTransfer.
   for (let tab of getDraggingTabs(gTargetWindow)) {
