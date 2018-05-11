@@ -53,6 +53,9 @@ const kCOMMAND_BROADCAST_TAB_STATE     = 'treestyletab:broadcast-tab-state';
 
 const kNOTIFY_TAB_MOUSEDOWN  = 'treestyletab:tab-mousedown';
 
+const kNOTIFY_SIDEBAR_FOCUS = 'treestyletab:sidebar-focus';
+const kNOTIFY_SIDEBAR_BLUR  = 'treestyletab:sidebar-blur';
+
 const kTSTAPI_REGISTER_SELF         = 'register-self';
 const kTSTAPI_UNREGISTER_SELF       = 'unregister-self';
 const kTSTAPI_PING                  = 'ping';

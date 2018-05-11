@@ -13,6 +13,7 @@ function onToolbarButtonClick(aTab) {
     // "unload" event doesn't fire for sidebar closed by this method,
     // thus we need update the flag manually for now...
     gSidebarOpenState.delete(aTab.windowId);
+    gSidebarFocusState.delete(aTab.windowId);
     browser.sidebarAction.close();
   }
   else
@@ -542,9 +543,13 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
 
   if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
     const count = getCountOfClosingTabs(aTab);
-    const confirmed = await confirmToCloseTabs(count, { windowId: aTab.apiTab.windowId });
+    const wasActive = isActive(aTab);
+    await wait(0); // this is required to wait until the closing tab is stored to the "recently closed" list
+    const confirmed = await confirmToCloseTabs(count, {
+      windowId: aTab.apiTab.windowId,
+      showInTab: wasActive
+    });
     if (!confirmed) {
-      await wait(0); // this is required to wait until the closing tab is stored to the "recently closed" list
       let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
       if (sessions.length && sessions[0].tab)
         browser.sessions.restore(sessions[0].tab.sessionId);
@@ -1360,6 +1365,14 @@ function onMessage(aMessage, aSender) {
         await waitUntilTabsAreCreated(aMessage.tabs);
         return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
       })();
+
+    case kNOTIFY_SIDEBAR_FOCUS:
+      gSidebarFocusState.set(aMessage.windowId, true);
+      break;
+
+    case kNOTIFY_SIDEBAR_BLUR:
+      gSidebarFocusState.delete(aMessage.windowId);
+      break;
 
     case kNOTIFY_TAB_MOUSEDOWN:
       gMaybeTabSwitchingByShortcut =

@@ -158,6 +158,20 @@ function onContextMenu(aEvent) {
   });
 }
 
+function onFocus(aEvent) {
+  browser.runtime.sendMessage({
+    type:     kNOTIFY_SIDEBAR_FOCUS,
+    windowId: gTargetWindow
+  });
+}
+
+function onBlur(aEvent) {
+  browser.runtime.sendMessage({
+    type:     kNOTIFY_SIDEBAR_BLUR,
+    windowId: gTargetWindow
+  });
+}
+
 var gLastMousedown = {};
 
 function onMouseDown(aEvent) {

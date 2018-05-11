@@ -103,6 +103,8 @@ async function init() {
       document.addEventListener('click', onClick);
       document.addEventListener('wheel', onWheel, { capture: true });
       document.addEventListener('contextmenu', onContextMenu, { capture: true });
+      document.addEventListener('focus', onFocus);
+      document.addEventListener('blur', onBlur);
       gTabBar.addEventListener('scroll', onScroll);
       gTabBar.addEventListener('dblclick', onDblClick);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
@@ -225,6 +227,8 @@ function destroy() {
   document.removeEventListener('click', onClick);
   document.removeEventListener('wheel', onWheel, { capture: true });
   document.removeEventListener('contextmenu', onContextMenu, { capture: true });
+  document.removeEventListener('focus', onFocus);
+  document.removeEventListener('blur', onBlur);
   gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
