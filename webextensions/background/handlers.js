@@ -639,8 +639,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   gClosingTabIds              = [];
   gClosingTabWasActive        = false;
   gPromisedGrantedToCloseTabs = null;
-  if (!granted)
-    return;
+  return granted;
 }
 
 async function closeChildTabs(aParent) {
