@@ -369,7 +369,8 @@ async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
   let lastMousedown = gLastMousedown[aEvent.button];
   cancelHandleMousedown(aEvent.button);
-  await lastMousedown.promisedMousedownNotified;
+  if (lastMousedown)
+    await lastMousedown.promisedMousedownNotified;
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
   let promisedCanceled = Promise.resolve(false);
