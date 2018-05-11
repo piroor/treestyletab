@@ -432,7 +432,7 @@ async function onMouseUp(aEvent) {
       if (configs.logOnMouseEvent)
         log('middle click on a tab');
       //log('middle-click to close');
-      confirmToCloseTabs(getCountOfClosingTabs(tab))
+      confirmToCloseTabs(getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
           if (aConfirmed)
             removeTabInternally(tab, { inRemote: true });
@@ -536,7 +536,7 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    confirmToCloseTabs(getCountOfClosingTabs(tab))
+    confirmToCloseTabs(getClosingTabsFromParent(tab).length)
       .then(aConfirmed => {
         if (aConfirmed)
           removeTabInternally(tab, { inRemote: true });
