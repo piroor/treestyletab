@@ -628,8 +628,13 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
         if (!aGranted) {
           for (let i = 0; i < gClosingTabIds.length; i++) {
             let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
-            if (sessions.length && sessions[0].tab)
-              await browser.sessions.restore(sessions[0].tab.sessionId);
+            if (sessions.length && sessions[0].tab) {
+              const count = getAllTabs().length;
+              browser.sessions.restore(sessions[0].tab.sessionId);
+              while (count == getAllTabs().length) { // wait until tab is completely restored
+                await wait(10);
+              }
+            }
           }
         }
         return aGranted;
