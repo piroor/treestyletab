@@ -178,8 +178,12 @@ function onMouseMove(aEvent) {
     sendTSTAPIMessage({
       type:     kTSTAPI_NOTIFY_TAB_MOUSEMOVE,
       tab:      serializeTabForTSTAPI(tab),
-      dragging: gCapturingMouseEventsForDragging,
-      window:   gTargetWindow
+      window:   gTargetWindow,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey,
+      dragging: gCapturingMouseEventsForDragging
     });
   }
 }
@@ -190,8 +194,12 @@ function onMouseOver(aEvent) {
     sendTSTAPIMessage({
       type:     kTSTAPI_NOTIFY_TAB_MOUSEOVER,
       tab:      serializeTabForTSTAPI(tab),
-      dragging: gCapturingMouseEventsForDragging,
-      window:   gTargetWindow
+      window:   gTargetWindow,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey,
+      dragging: gCapturingMouseEventsForDragging
     });
   }
   onMouseOver.lastTarget = tab.id;
@@ -203,8 +211,12 @@ function onMouseOut(aEvent) {
     sendTSTAPIMessage({
       type:     kTSTAPI_NOTIFY_TAB_MOUSEOUT,
       tab:      serializeTabForTSTAPI(tab),
-      dragging: gCapturingMouseEventsForDragging,
-      window:   gTargetWindow
+      window:   gTargetWindow,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey,
+      dragging: gCapturingMouseEventsForDragging
     });
   }
   onMouseOut.lastTarget = tab.id;
