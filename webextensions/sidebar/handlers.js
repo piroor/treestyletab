@@ -334,7 +334,7 @@ async function onMouseUp(aEvent) {
     promisedCanceled = results.then(aResults => aResults.some(aResult => aResult.result));
   }
 
-  if (gCapturingMouseEvents) {
+  if (gCapturingMouseEventsForDragging) {
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();

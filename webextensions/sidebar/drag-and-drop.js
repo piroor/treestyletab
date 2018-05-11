@@ -593,7 +593,7 @@ async function getDroppedLinksOnTabBehavior() {
 
 var gDraggingOnSelfWindow = false;
 
-var gCapturingMouseEvents  = false;
+var gCapturingMouseEventsForDragging = false;
 var gReadyToCaptureMouseEvents = false;
 var gLastDragEnteredTab    = null;
 var gLastDragEnteredTarget = null;
@@ -627,7 +627,7 @@ function onDragStart(aEvent) {
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
-    gCapturingMouseEvents = true;
+    gCapturingMouseEventsForDragging = true;
     return;
   }
 
