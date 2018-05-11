@@ -743,9 +743,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
     windowId: aOptions.windowId
   });
 
-  const granted = await Permissions.isGranted(Permissions.ALL_URLS);
-  if (!granted ||
-      /^(about|chrome|resource):/.test(apiTabs[0].url) ||
+  if (/^(about|chrome|resource):/.test(apiTabs[0].url) ||
       (!aOptions.showInTab &&
        gSidebarOpenState.get(aOptions.windowId) &&
        gSidebarFocusState.get(aOptions.windowId)))
