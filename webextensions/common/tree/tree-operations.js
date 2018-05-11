@@ -1475,6 +1475,13 @@ async function performTabsDragDrop(aParams = {}) {
   else
     log('=> already placed at expected position');
 
+  if (windowId != destinationWindowId) {
+    // Firefox always focuses to the dropped tab if it is dragged from another window.
+    // TST respects Firefox's the behavior.
+    browser.tabs.update(draggedTabs[0].apiTab.id, { active: true })
+      .catch(handleMissingTabError);
+  }
+
   var treeStructure = getTreeStructureFromTabs(draggedTabs);
 
   var newTabs;
