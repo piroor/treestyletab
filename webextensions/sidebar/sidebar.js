@@ -238,11 +238,11 @@ function destroy() {
   gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
 
   if (onMouseMove.listening)
-    window.removeEventListener('mousemove', onMouseMove, { capture: true });
+    window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
   if (onMouseOver.listening)
-    window.removeEventListener('mouseover', onMouseOver, { capture: true });
+    window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
   if (onMouseOut.listening)
-    window.removeEventListener('mouseout', onMouseOut, { capture: true });
+    window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
@@ -430,33 +430,33 @@ function uninstallStyleForAddon(aId) {
 function updateSpecialEventListenersForAPIListeners() {
   if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEMOVE) != onMouseMove.listening) {
     if (!onMouseMove.listening) {
-      window.addEventListener('mousemove', onMouseMove, { capture: true });
+      window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
       onMouseMove.listening = true;
     }
     else {
-      window.removeEventListener('mousemove', onMouseMove, { capture: true });
+      window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
       onMouseMove.listening = false;
     }
   }
 
   if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOVER) != onMouseOver.listening) {
     if (!onMouseOver.listening) {
-      window.addEventListener('mouseover', onMouseOver, { capture: true });
+      window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
       onMouseOver.listening = true;
     }
     else {
-      window.removeEventListener('mouseover', onMouseOver, { capture: true });
+      window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
       onMouseOver.listening = false;
     }
   }
 
   if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOUT) != onMouseOut.listening) {
     if (!onMouseOut.listening) {
-      window.addEventListener('mouseout', onMouseOut, { capture: true });
+      window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
       onMouseOut.listening = true;
     }
     else {
-      window.removeEventListener('mouseout', onMouseOut, { capture: true });
+      window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
       onMouseOut.listening = false;
     }
   }
