@@ -167,6 +167,7 @@ async function init() {
         if (addon.style)
           installStyleForAddon(id, addon.style);
       }
+      updateSpecialEventListenersForAPIListeners();
     }),
     gMetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
@@ -235,6 +236,13 @@ function destroy() {
   gTabBar.removeEventListener('overflow', onOverflow);
   gTabBar.removeEventListener('underflow', onUnderflow);
   gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
+
+  if (onMouseMove.listening)
+    window.removeEventListener('mousemove', onMouseMove, { capture: true });
+  if (onMouseOver.listening)
+    window.removeEventListener('mouseover', onMouseOver, { capture: true });
+  if (onMouseOut.listening)
+    window.removeEventListener('mouseout', onMouseOut, { capture: true });
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
@@ -417,6 +425,41 @@ function uninstallStyleForAddon(aId) {
     return;
   document.head.removeChild(gAddonStyles[aId]);
   delete gAddonStyles[aId];
+}
+
+function updateSpecialEventListenersForAPIListeners() {
+  if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEMOVE) != onMouseMove.listening) {
+    if (!onMouseMove.listening) {
+      window.addEventListener('mousemove', onMouseMove, { capture: true });
+      onMouseMove.listening = true;
+    }
+    else {
+      window.removeEventListener('mousemove', onMouseMove, { capture: true });
+      onMouseMove.listening = false;
+    }
+  }
+
+  if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOVER) != onMouseOver.listening) {
+    if (!onMouseOver.listening) {
+      window.addEventListener('mouseover', onMouseOver, { capture: true });
+      onMouseOver.listening = true;
+    }
+    else {
+      window.removeEventListener('mouseover', onMouseOver, { capture: true });
+      onMouseOver.listening = false;
+    }
+  }
+
+  if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOUT) != onMouseOut.listening) {
+    if (!onMouseOut.listening) {
+      window.addEventListener('mouseout', onMouseOut, { capture: true });
+      onMouseOut.listening = true;
+    }
+    else {
+      window.removeEventListener('mouseout', onMouseOut, { capture: true });
+      onMouseOut.listening = false;
+    }
+  }
 }
 
 async function rebuildAll(aCache) {

@@ -172,6 +172,44 @@ function onBlur(aEvent) {
   });
 }
 
+function onMouseMove(aEvent) {
+  const tab = getTabFromEvent(aEvent);
+  if (tab) {
+    sendTSTAPIMessage({
+      type:     kTSTAPI_NOTIFY_TAB_MOUSEMOVE,
+      tab:      serializeTabForTSTAPI(tab),
+      dragging: gCapturingMouseEventsForDragging,
+      window:   gTargetWindow
+    });
+  }
+}
+
+function onMouseOver(aEvent) {
+  const tab = getTabFromEvent(aEvent);
+  if (tab && onMouseOver.lastTarget != tab.id) {
+    sendTSTAPIMessage({
+      type:     kTSTAPI_NOTIFY_TAB_MOUSEOVER,
+      tab:      serializeTabForTSTAPI(tab),
+      dragging: gCapturingMouseEventsForDragging,
+      window:   gTargetWindow
+    });
+  }
+  onMouseOver.lastTarget = tab.id;
+}
+
+function onMouseOut(aEvent) {
+  const tab = getTabFromEvent(aEvent);
+  if (tab && onMouseOut.lastTarget != tab.id) {
+    sendTSTAPIMessage({
+      type:     kTSTAPI_NOTIFY_TAB_MOUSEOUT,
+      tab:      serializeTabForTSTAPI(tab),
+      dragging: gCapturingMouseEventsForDragging,
+      window:   gTargetWindow
+    });
+  }
+  onMouseOut.lastTarget = tab.id;
+}
+
 var gLastMousedown = {};
 
 function onMouseDown(aEvent) {
@@ -1446,13 +1484,15 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_API_REGISTERED:
       gExternalListenerAddons[aMessage.sender.id] = aMessage.message;
       if (aMessage.message.style)
-        installStyleForAddon(aMessage.sender.id, aMessage.message.style)
+        installStyleForAddon(aMessage.sender.id, aMessage.message.style);
+      updateSpecialEventListenersForAPIListeners();
       break;
 
     case kCOMMAND_BROADCAST_API_UNREGISTERED:
       uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
       delete gExternalListenerAddons[aMessage.sender.id];
+      updateSpecialEventListenersForAPIListeners();
       break;
 
     case kCOMMAND_SHOW_CONTAINER_SELECTOR:
