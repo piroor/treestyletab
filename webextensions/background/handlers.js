@@ -1034,15 +1034,18 @@ function cancelAllDelayedExpand(aHint) {
 }
 
 function onTabUpdated(aTab, aChangeInfo) {
-  var parent = getOpenerTab(aTab);
-  if (parent &&
-      parent.parentNode == aTab.parentNode &&
-      parent != getParentTab(aTab) &&
-      configs.syncParentTabAndOpenerTab) {
+  if (configs.syncParentTabAndOpenerTab) {
+    waitUntilAllTabsAreCreated().then(() => {
+      const parent = getOpenerTab(aTab);
+      if (!parent ||
+          parent.parentNode != aTab.parentNode ||
+          parent == getParentTab(aTab))
+        return;
     attachTabTo(aTab, parent, {
       insertAt:    kINSERT_NEAREST,
       forceExpand: isActive(aTab),
       broadcast:   true
+    });
     });
   }
 
