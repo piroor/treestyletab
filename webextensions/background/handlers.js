@@ -600,27 +600,28 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
 }
 
 async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
+  const self = tryGrantCloseTab;
   if (aCloseParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    tryGrantCloseTab.closingTabIds = tryGrantCloseTab.closingTabIds
+    self.closingTabIds = self.closingTabIds
       .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
   else
-    tryGrantCloseTab.closingTabIds.push(aTab.id);
+    self.closingTabIds.push(aTab.id);
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
   gClosingTabWasActive = gClosingTabWasActive || isActive(aTab);
-  if (tryGrantCloseTab.promisedGrantedToCloseTabs)
-    return tryGrantCloseTab.promisedGrantedToCloseTabs;
+  if (self.promisedGrantedToCloseTabs)
+    return self.promisedGrantedToCloseTabs;
 
   let shouldRestoreCount;
-  tryGrantCloseTab.promisedGrantedToCloseTabs = wait(10).then(async () => {
+  self.promisedGrantedToCloseTabs = wait(10).then(async () => {
     const foundTabs = {};
-    tryGrantCloseTab.closingTabIds = tryGrantCloseTab.closingTabIds.filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)) // uniq
-    shouldRestoreCount = tryGrantCloseTab.closingTabIds.length;
+    self.closingTabIds = self.closingTabIds.filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)) // uniq
+    shouldRestoreCount = self.closingTabIds.length;
     if (shouldRestoreCount > 1) {
       return confirmToCloseTabs(shouldRestoreCount, {
         windowId:  aTab.apiTab.windowId,
-        showInTab: tryGrantCloseTab.closingTabWasActive
+        showInTab: self.closingTabWasActive
       });
     }
     return true;
@@ -648,10 +649,10 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
       return false;
     });
 
-  const granted = await tryGrantCloseTab.promisedGrantedToCloseTabs;
-  tryGrantCloseTab.closingTabIds              = [];
-  tryGrantCloseTab.closingTabWasActive        = false;
-  tryGrantCloseTab.promisedGrantedToCloseTabs = null;
+  const granted = await self.promisedGrantedToCloseTabs;
+  self.closingTabIds              = [];
+  self.closingTabWasActive        = false;
+  self.promisedGrantedToCloseTabs = null;
   return granted;
 }
 tryGrantCloseTab.closingTabIds              = [];
