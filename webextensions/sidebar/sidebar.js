@@ -820,8 +820,13 @@ function updateTabTooltip(aTab) {
   if (!ensureLivingTab(aTab))
     return;
   aTab.dataset.labelWithDescendants = getLabelWithDescendants(aTab);
+  if (configs.showCollapsedDescendantsByTooltip) {
   aTab.setAttribute('title', isSubtreeCollapsed(aTab) && hasChildTabs(aTab) ?
     aTab.dataset.labelWithDescendants : aTab.dataset.label);
+  }
+  else {
+    aTab.setAttribute('title', aTab.dataset.label);
+  }
 }
 
 

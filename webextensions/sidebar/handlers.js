@@ -1654,6 +1654,12 @@ function onConfigChange(aChangedKey) {
       updateIndent({ force: true });
       break;
 
+    case 'showCollapsedDescendantsByTooltip':
+      for (let tab of getAllTabs()) {
+        reserveToUpdateTabTooltip(tab);
+      }
+      break;
+
     case 'style':
       location.reload();
       break;

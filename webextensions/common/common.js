@@ -129,6 +129,7 @@ configs = new Configs({
   showNewTabActionSelector: true,
   longPressOnNewTabButton: kCONTEXTUAL_IDENTITY_SELECTOR,
   zoomable: false,
+  showCollapsedDescendantsByTooltip: true,
 
 
   // context menu
