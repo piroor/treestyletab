@@ -138,7 +138,7 @@ async function init() {
         root:       gContextualIdentitySelector,
         appearance: 'panel',
         onCommand:  onContextualIdentitySelect,
-        animationDuration: configs.collapseDuration
+        animationDuration: configs.animation ? configs.collapseDuration : 0.001
       });
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
@@ -148,7 +148,7 @@ async function init() {
         root:       gNewTabActionSelector,
         appearance: 'panel',
         onCommand:  onNewTabActionSelect,
-        animationDuration: configs.collapseDuration
+        animationDuration: configs.animation ? configs.collapseDuration : 0.001
       });
     }),
     gMetricsData.addAsync('tabContextMenu.init', async () => {

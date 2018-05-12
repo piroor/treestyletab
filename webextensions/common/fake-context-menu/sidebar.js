@@ -20,7 +20,7 @@ var tabContextMenu = {
         return this.onCommand(aItem, aEvent);
       },
       appearance:        'menu',
-      animationDuration: configs.collapseDuration,
+      animationDuration: configs.animation ? configs.collapseDuration : 0.001,
       subMenuOpenDelay:  configs.subMenuOpenDelay,
       subMenuCloseDelay: configs.subMenuCloseDelay
     });
