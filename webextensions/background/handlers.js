@@ -601,27 +601,33 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
 
 async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   const self = tryGrantCloseTab;
+
+  self.closingTabIds.push(aTab.id);
   if (aCloseParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    self.closingTabIds = self.closingTabIds
+    self.closingDescendantTabIds = self.closingDescendantTabIds
       .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
-  else
-    self.closingTabIds.push(aTab.id);
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
-  self.closingTabWasActive = self.closingTabWasActive || isActive(aTab);
   if (self.promisedGrantedToCloseTabs)
     return self.promisedGrantedToCloseTabs;
 
+  self.closingTabWasActive = self.closingTabWasActive || isActive(aTab);
+
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
-    const foundTabs = {};
-    self.closingTabIds = self.closingTabIds.filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)) // uniq
-    shouldRestoreCount = self.closingTabIds.length;
-    if (shouldRestoreCount > 1) {
-      return confirmToCloseTabs(shouldRestoreCount, {
-        windowId:  aTab.apiTab.windowId,
-        showInTab: self.closingTabWasActive
+    let foundTabs = {};
+    self.closingTabIds = self.closingTabIds
+      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)); // uniq
+
+    foundTabs = {};
+    self.closingDescendantTabIds = self.closingDescendantTabIds
+      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true) && (self.closingTabIds.indexOf(aId) < 0));
+
+    shouldRestoreCount = self.closingDescendantTabIds.length;
+    if (shouldRestoreCount > 0) {
+      return confirmToCloseTabs(shouldRestoreCount + 1, {
+        windowId: aTab.apiTab.windowId
       });
     }
     return true;
@@ -649,11 +655,13 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
 
   const granted = await self.promisedGrantedToCloseTabs;
   self.closingTabIds              = [];
+  self.closingDescendantTabIds    = [];
   self.closingTabWasActive        = false;
   self.promisedGrantedToCloseTabs = null;
   return granted;
 }
 tryGrantCloseTab.closingTabIds              = [];
+tryGrantCloseTab.closingDescendantTabIds    = [];
 tryGrantCloseTab.closingTabWasActive        = false;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
