@@ -263,6 +263,8 @@
 
   "config_advanced_caption": { "message": "Advanced" },
 
+  "config_showCollapsedDescendantsByTooltip": { "message": "Show collapsed descendants in the tooltip on a tab" },
+
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
   "config_userStyleRules_description_link_label": { "message": "code snippets at TST wiki" },

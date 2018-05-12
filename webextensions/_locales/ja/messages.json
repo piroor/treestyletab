@@ -263,6 +263,8 @@
 
   "config_advanced_caption": { "message": "詳細設定" },
 
+  "config_showCollapsedDescendantsByTooltip": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
+
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },
