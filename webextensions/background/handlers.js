@@ -599,31 +599,28 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   reserveToCacheTree(aTab);
 }
 
-var gClosingTabIds              = [];
-var gClosingTabWasActive        = false;
-var gPromisedGrantedToCloseTabs = null;
-
 async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   if (aCloseParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    gClosingTabIds = gClosingTabIds.concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
+    tryGrantCloseTab.closingTabIds = tryGrantCloseTab.closingTabIds
+      .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
   else
-    gClosingTabIds.push(aTab.id);
+    tryGrantCloseTab.closingTabIds.push(aTab.id);
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
   gClosingTabWasActive = gClosingTabWasActive || isActive(aTab);
-  if (gPromisedGrantedToCloseTabs)
-    return gPromisedGrantedToCloseTabs;
+  if (tryGrantCloseTab.promisedGrantedToCloseTabs)
+    return tryGrantCloseTab.promisedGrantedToCloseTabs;
 
   let shouldRestoreCount;
-  gPromisedGrantedToCloseTabs = wait(10).then(async () => {
+  tryGrantCloseTab.promisedGrantedToCloseTabs = wait(10).then(async () => {
     const foundTabs = {};
-    gClosingTabIds = gClosingTabIds.filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)) // uniq
-    shouldRestoreCount = gClosingTabIds.length;
+    tryGrantCloseTab.closingTabIds = tryGrantCloseTab.closingTabIds.filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)) // uniq
+    shouldRestoreCount = tryGrantCloseTab.closingTabIds.length;
     if (shouldRestoreCount > 1) {
       return confirmToCloseTabs(shouldRestoreCount, {
         windowId:  aTab.apiTab.windowId,
-        showInTab: gClosingTabWasActive
+        showInTab: tryGrantCloseTab.closingTabWasActive
       });
     }
     return true;
@@ -651,12 +648,15 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
       return false;
     });
 
-  const granted = await gPromisedGrantedToCloseTabs;
-  gClosingTabIds              = [];
-  gClosingTabWasActive        = false;
-  gPromisedGrantedToCloseTabs = null;
+  const granted = await tryGrantCloseTab.promisedGrantedToCloseTabs;
+  tryGrantCloseTab.closingTabIds              = [];
+  tryGrantCloseTab.closingTabWasActive        = false;
+  tryGrantCloseTab.promisedGrantedToCloseTabs = null;
   return granted;
 }
+tryGrantCloseTab.closingTabIds              = [];
+tryGrantCloseTab.closingTabWasActive        = false;
+tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
 async function closeChildTabs(aParent) {
   var tabs = getDescendantTabs(aParent);
