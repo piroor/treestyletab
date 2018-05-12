@@ -613,11 +613,13 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   await wait(0);
   gClosingTabWasActive = gClosingTabWasActive || isActive(aTab);
   if (!gPromisedGrantedToCloseTabs) {
+    let shouldRestoreCount;
     gPromisedGrantedToCloseTabs = wait(10).then(async () => {
       const foundTabs = {};
       gClosingTabIds = gClosingTabIds.filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)) // uniq
-      if (gClosingTabIds.length > 1) {
-        return confirmToCloseTabs(gClosingTabIds.length, {
+      shouldRestoreCount = gClosingTabIds.length;
+      if (shouldRestoreCount > 1) {
+        return confirmToCloseTabs(shouldRestoreCount, {
           windowId:  aTab.apiTab.windowId,
           showInTab: gClosingTabWasActive
         });
@@ -625,19 +627,26 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
       return true;
     })
       .then(async (aGranted) => {
-        if (!aGranted) {
-          for (let i = 0; i < gClosingTabIds.length; i++) {
-            let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
-            if (sessions.length && sessions[0].tab) {
-              const count = getAllTabs().length;
-              browser.sessions.restore(sessions[0].tab.sessionId);
-              while (count == getAllTabs().length) { // wait until tab is completely restored
-                await wait(10);
-              }
-            }
+        if (aGranted)
+          return true;
+        const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 });
+        const toBeRestoredTabs = [];
+        for (let session of sessions) {
+          if (!session.tab)
+            continue;
+          toBeRestoredTabs.push(session.tab);
+          if (toBeRestoredTabs.length == shouldRestoreCount)
+            break;
+        }
+        for (let tab of toBeRestoredTabs.reverse()) {
+          const allTabsCount = getAllTabs().length;
+          log('tryGrantClose: Tabrestoring session = ', tab);
+          browser.sessions.restore(tab.sessionId);
+          while (allTabsCount == getAllTabs().length) { // wait until tab is completely restored
+            await wait(10);
           }
         }
-        return aGranted;
+        return false;
       });
   }
   const granted = await gPromisedGrantedToCloseTabs;
