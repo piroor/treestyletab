@@ -1041,11 +1041,11 @@ function onTabUpdated(aTab, aChangeInfo) {
           parent.parentNode != aTab.parentNode ||
           parent == getParentTab(aTab))
         return;
-    attachTabTo(aTab, parent, {
-      insertAt:    kINSERT_NEAREST,
-      forceExpand: isActive(aTab),
-      broadcast:   true
-    });
+      attachTabTo(aTab, parent, {
+        insertAt:    kINSERT_NEAREST,
+        forceExpand: isActive(aTab),
+        broadcast:   true
+      });
     });
   }
 
