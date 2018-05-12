@@ -639,12 +639,10 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
           break;
       }
       for (let tab of toBeRestoredTabs.reverse()) {
-        const allTabsCount = getAllTabs().length;
         log('tryGrantClose: Tabrestoring session = ', tab);
         browser.sessions.restore(tab.sessionId);
-        while (allTabsCount == getAllTabs().length) { // wait until tab is completely restored
-          await wait(10);
-        }
+        const tabs = await waitUntilAllTabsAreCreated();
+        await Promise.all(tabs.map(aTab => aTab.opened));
       }
       return false;
     });

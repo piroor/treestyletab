@@ -67,11 +67,11 @@ function hasCreatingTab() {
   return Object.keys(gCreatingTabs).length > 0;
 }
 
-function waitUntilAllTabsAreCreated() {
+async function waitUntilAllTabsAreCreated() {
   return waitUntilTabsAreCreated(Object.keys(gCreatingTabs).map(aId => parseInt(aId)));
 }
 
-function waitUntilTabsAreCreated(aIdOrIds) {
+async function waitUntilTabsAreCreated(aIdOrIds) {
   if (!Array.isArray(aIdOrIds))
     aIdOrIds = [aIdOrIds];
   var creatingTabs = aIdOrIds.filter(aId => !!aId)
@@ -79,7 +79,9 @@ function waitUntilTabsAreCreated(aIdOrIds) {
     .map(aId => gCreatingTabs[aId])
     .filter(aCreating => !!aCreating);
   if (creatingTabs.length)
-    return Promise.all(creatingTabs);
+    return Promise.all(creatingTabs)
+      .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
+  return [];
 }
 
 
