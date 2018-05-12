@@ -609,7 +609,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
-  gClosingTabWasActive = gClosingTabWasActive || isActive(aTab);
+  self.closingTabWasActive = self.closingTabWasActive || isActive(aTab);
   if (self.promisedGrantedToCloseTabs)
     return self.promisedGrantedToCloseTabs;
 
