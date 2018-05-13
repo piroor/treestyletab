@@ -19,7 +19,7 @@ For Japanese people:
 
 <!--
 Please describe how to reproduce your problem on my (developer/author/other peoples') environment.
-If your issue is related to tree strucutre, figures or screenshots will help me a lot, like:
+If your issue is related to tree structure, figures or screenshots will help me a lot, like:
 
 ```
 A
