@@ -819,13 +819,22 @@ function updateTabAndAncestorsTooltip(aTab) {
 function updateTabTooltip(aTab) {
   if (!ensureLivingTab(aTab))
     return;
+
   aTab.dataset.labelWithDescendants = getLabelWithDescendants(aTab);
-  if (configs.showCollapsedDescendantsByTooltip) {
-    aTab.setAttribute('title', isSubtreeCollapsed(aTab) && hasChildTabs(aTab) ?
-      aTab.dataset.labelWithDescendants : aTab.dataset.label);
+
+  if (configs.showCollapsedDescendantsByTooltip &&
+      isSubtreeCollapsed(aTab) &&
+      hasChildTabs(aTab)) {
+    aTab.setAttribute('title', aTab.dataset.labelWithDescendants);
+    return;
+  }
+
+  const label = getTabLabel(aTab);
+  if (isPinned(aTab) || label.classList.contains('overflow')) {
+    aTab.setAttribute('title', aTab.dataset.label);
   }
   else {
-    aTab.setAttribute('title', aTab.dataset.label);
+    aTab.removeAttribute('title');
   }
 }
 
