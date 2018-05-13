@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.4.19 (2018.5.13)
    * [タブの上でのマウスの移動を監視するためのAPIを追加した](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-pointer-is-moved-over-tabs)
    * サイドバー内の書字方向を設定できるようにした
    * 折り畳まれたツリーについてツールチップで子孫タブを表示する機能を無効化できるようにした

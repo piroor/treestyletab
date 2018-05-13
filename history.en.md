@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.19 (2018.5.13)
    * [New APIs for other addons to observe moving of mouse pointer on tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-pointer-is-moved-over-tabs)
    * Add ability to change text direction in the sidebar.
    * Add ability to change visibility of collapsed descendants in a tooltip on collapsed tree.
