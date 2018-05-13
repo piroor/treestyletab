@@ -163,6 +163,7 @@
 
   "config_faviconizePinnedTabs_label": { "message": "Show pinned tabs only with their icon" },
   "config_animation_label": { "message": "Enable animation effects" },
+  "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
 
 
   "config_context_caption": { "message": "Context Menu" },
@@ -262,8 +263,6 @@
 
 
   "config_advanced_caption": { "message": "Advanced" },
-
-  "config_showCollapsedDescendantsByTooltip": { "message": "Show collapsed descendants in the tooltip on a tab" },
 
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },

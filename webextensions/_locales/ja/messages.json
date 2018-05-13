@@ -163,6 +163,7 @@
 
   "config_faviconizePinnedTabs_label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
+  "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
 
 
   "config_context_caption": { "message": "コンテキストメニュー" },
@@ -262,8 +263,6 @@
 
 
   "config_advanced_caption": { "message": "詳細設定" },
-
-  "config_showCollapsedDescendantsByTooltip": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
 
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
