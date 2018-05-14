@@ -1517,6 +1517,8 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case kCOMMAND_SCROLL_TABBAR:
+      if (aMessage.windowId != gTargetWindow)
+        break;
       switch (String(aMessage.by).toLowerCase()) {
         case 'lineup':
           smoothScrollBy(-gTabHeight * configs.scrollLines);
