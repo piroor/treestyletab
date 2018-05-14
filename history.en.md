@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Keyboard shortcuts to scroll tab bar never affect to non-active windows anymore.
  - 2.4.20 (2018.5.14)
    * Apply specified color for tab label correctly with style rules written for old versions. (regression)
    * New tabs reopened by [Conex](https://addons.mozilla.org/firefox/addon/conex/) appears in the tab bar correctly. (regression?)
