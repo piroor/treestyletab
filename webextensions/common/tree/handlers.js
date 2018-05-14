@@ -341,6 +341,10 @@ async function onNewTabTracked(aTab) {
     checkRecycledTab(container);
   }
 
+  if (aTab.active &&
+      getCurrentTabs().some(aTabElement => aTabElement != newTab && aTabElement.parentNode == newTab.parentNode))
+    onApiTabActivated({ tabId: aTab.id, windowId: aTab.windowId });
+
   return newTab;
 }
 
