@@ -173,11 +173,12 @@ function updateUniqueId(aTab) {
   aTab.uniqueId = requestUniqueId(aTab, {
     inRemote: !!gTargetWindow
   }).then(aUniqueId => {
-    if (ensureLivingTab(aTab)) // possibly removed from document while waiting
+    if (aUniqueId && ensureLivingTab(aTab)) // possibly removed from document while waiting
       aTab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
-    return aUniqueId;
+    return aUniqueId || {};
   }).catch(aError => {
     console.log(`FATAL ERROR: Failed to get unique id for a tab ${aTab.apiTab.id}: `, String(aError), aError.stack);
+    return {};
   });
   return aTab.uniqueId;
 }
