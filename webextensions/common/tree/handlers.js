@@ -236,7 +236,7 @@ async function onNewTabTracked(aTab) {
   if (gCreatingTabs[aTab.id] === newTab.uniqueId)
     delete gCreatingTabs[aTab.id];
 
-  if (!newTab.parentNode) // it is already removed
+  if (!ensureLivingTab(newTab)) // it can be removed while waiting
     return;
 
   updateTab(newTab, aTab, {
