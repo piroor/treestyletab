@@ -829,6 +829,9 @@ function updateTabTooltip(aTab) {
     return;
   }
 
+  if (configs.debug)
+    return;
+
   const label = getTabLabel(aTab);
   if (isPinned(aTab) || label.classList.contains('overflow')) {
     aTab.setAttribute('title', aTab.dataset.label);
