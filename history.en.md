@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Apply specified color for tab label correctly with style rules written for old versions. (regression)
+   * New tabs reopened by [Conex](https://addons.mozilla.org/firefox/addon/conex/) appears in the tab bar correctly. (regression?)
+   * Don't show multiple "active" tabs at once when a new active tab is opened.
  - 2.4.19 (2018.5.13)
    * [New APIs for other addons to observe moving of mouse pointer on tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-pointer-is-moved-over-tabs)
    * Add ability to change text direction in the sidebar.

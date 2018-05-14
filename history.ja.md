@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * 旧バージョン向けに設定されたスタイル指定でタブのラベルの色を変更できなくなっていたのを修正（後退バグ）
+   * [Conex](https://addons.mozilla.org/firefox/addon/conex/)によって開き直されたタブがタブバーから消えてしまう問題を修正（後退バグ？）
+   * 新しいアクティブなタブが開かれた時に、複数のタブがアクティブになっているように見える事があったのを修正
  - 2.4.19 (2018.5.13)
    * [タブの上でのマウスの移動を監視するためのAPIを追加した](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-pointer-is-moved-over-tabs)
    * サイドバー内の書字方向を設定できるようにした
