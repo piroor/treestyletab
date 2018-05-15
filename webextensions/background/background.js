@@ -204,7 +204,7 @@ async function rebuildAll() {
     });
     for (let tab of getAllTabs(aWindow.id).filter(isGroupTab)) {
       if (!isDiscarded(tab))
-        browser.tabs.reload(tab.apiTab.id);
+        tab.dataset.shouldReloadOnSelect = true;
     }
   }));
   insertionPoint.detach();

@@ -917,6 +917,10 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
 
 function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
   log('onTabFocusing ', aTab.id, aInfo);
+  if (aTab.dataset.shouldReloadOnSelect) {
+    browser.tabs.reload(aTab.apiTab.id);
+    delete aTab.dataset.shouldReloadOnSelect;
+  }
   var container = aTab.parentNode;
   cancelDelayedExpand(getTabById(container.lastFocusedTab));
   var shouldSkipCollapsed = (
