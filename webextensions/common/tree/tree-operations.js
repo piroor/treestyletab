@@ -760,7 +760,7 @@ function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
   if (!configs.moveFocusInTreeForClosedCurrentTab)
     return;
   log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab), aOptions);
-  if (!isActive(aTab)) {
+  if (!aOptions.wasActive && !isActive(aTab)) {
     log(' => not active tab');
     return;
   }

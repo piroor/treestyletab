@@ -541,12 +541,15 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
     });
 
+  var wasActive = isActive(aTab);
   if (!(await tryGrantCloseTab(aTab, closeParentBehavior)))
     return;
 
   var nextTab = closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
   tryMoveFocusFromClosingCurrentTab(aTab, {
+    wasActive,
     params: {
+      active:          wasActive,
       nextTab:         nextTab && nextTab.id,
       nextTabUrl:      nextTab && nextTab.apiTab.url,
       nextIsDiscarded: isDiscarded(nextTab)
