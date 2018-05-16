@@ -100,6 +100,8 @@ makeAsyncFunctionSequential.start = async () => {
 };
 
 configs = new Configs({
+  optionsExpandedSections: ['section-appearance'],
+
   // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
   sidebarDirection: kTABBAR_DIRECTION_LTR,
@@ -277,6 +279,7 @@ configs = new Configs({
   migrateLegacyTreeStructure: true
 }, {
   localKeys: `
+    optionsExpandedSections
     sidebarPosition
     sidebarDirection
     style

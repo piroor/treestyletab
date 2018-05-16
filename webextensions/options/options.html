@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="options.css"/>
   </head>
   <body>
+    <section id="section-appearance">
     <h1>__MSG_config_appearance_caption__</h1>
 
     <p>__MSG_config_sidebarPosition_caption__
@@ -113,7 +114,9 @@
                      type="checkbox">
              __MSG_config_showCollapsedDescendantsByTooltip_label__</label></p>
 
+    </section>
 
+    <section id="section-contextMenu">
     <h1>__MSG_config_context_caption__</h1>
     <p><label><input id="fakeContextMenu"
                      type="checkbox">
@@ -150,8 +153,10 @@
                           __MSG_config_requestPermissions_bookmarks__</label></p>
     </div>
     </fieldset>
+    </section>
 
 
+    <section id="section-newTab">
     <h1>__MSG_config_newTab_caption__</h1>
 
     <fieldset>
@@ -267,8 +272,10 @@
                                  type="number"
                                  size="3">
                           __MSG_config_autoGroupNewTabsDelayOnNewWindow_after__</label></p>
+    </section>
 
 
+    <section id="section-treeBehavior">
     <h1>__MSG_config_treeBehavior_caption__</h1>
 
     <p><label><input id="autoCollapseExpandSubtreeOnAttach"
@@ -338,12 +345,16 @@
               __MSG_config_parentTabBehaviorForChanges_onlyInSidebar__</label></li>
       </ul>
     </fieldset>
+    </section>
 
 
+    <section id="section-shortcuts">
     <h1>__MSG_config_shortcuts_caption__</h1>
     <div id="shortcuts"></div>
+    </section>
 
 
+    <section id="section-advanced">
     <h1>__MSG_config_advanced_caption__</h1>
     <fieldset>
       <legend>__MSG_config_dropLinksOnTabBehavior_caption__</legend>
@@ -403,9 +414,11 @@
                 style="width: 100%"
                 placeholder="__MSG_config_importedTreeStructureFromLegacy_placeholder__"></textarea>
     </fieldset>
+    </section>
 
     <hr/>
 
+    <section id="section-debug">
     <h1>__MSG_config_debug_caption__</h1>
     <p><label><input id="debug"
                      type="checkbox">
@@ -450,5 +463,6 @@
                __MSG_config_maximumAcceptableDelayForTabDuplication_after__</label></p>
       <h2>__MSG_config_all_caption__</h2>
     </div>
+    </section>
   </body>
 </html>

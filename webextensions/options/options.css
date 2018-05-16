@@ -65,15 +65,18 @@ fieldset.collapsible.collapsed > *:not(legend) {
   display: none;
 }
 
-fieldset.collapsible legend::before {
+fieldset.collapsible legend::before,
+body > section > h1:first-child::before {
   content: "▼";
   display: inline-block;
-  font-size: 75%;
+  font-size: 65%;
+  margin-right: 0.5em;
   position: relative;
   transition: transform 0.2s ease;
 }
 
-fieldset.collapsible.collapsed legend::before {
+fieldset.collapsible.collapsed legend::before,
+body > section.collapsed > h1:first-child::before {
   transform: rotate(-90deg);
 }
 
@@ -90,4 +93,27 @@ fieldset.collapsible.collapsed legend::before {
 
 :root:not(.platform-mac) .available-only-on-mac {
   display: none;
+}
+
+
+body > section {
+  margin-top: 1em;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+body > section:not(.collapsed) {
+  max-height: none !important;
+}
+
+body > section > h1:first-child {
+  margin-top: 0;
+  cursor: pointer;
+}
+
+body > section > h1:first-child ~ * {
+  opacity: 1;
+  transition: opacity 0.2s ease-out;
+}
+body > section.collapsed > h1:first-child ~ * {
+  opacity: 0;
 }
