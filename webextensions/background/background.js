@@ -23,6 +23,9 @@ async function init() {
   gMetricsData.add('init start');
   window.addEventListener('pagehide', destroy, { once: true });
 
+  if (browser.webRequest)
+    browser.webRequest.onBeforeRequest.addListener(onBeforeRequest, { urls: ['<all_urls>'] });
+
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
   browser.commands.onCommand.addListener(onShortcutCommand);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
@@ -161,6 +164,8 @@ function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
+  if (browser.webRequest)
+    browser.webRequest.onBeforeRequest.removeListener(onBeforeRequest);
   endObserveApiTabs();
   endObserveContextualIdentities();
   gAllTabs = undefined;

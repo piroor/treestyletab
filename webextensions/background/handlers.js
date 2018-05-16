@@ -163,6 +163,41 @@ async function onShortcutCommand(aCommand) {
   }
 }
 
+function onBeforeRequest(aDetails) {
+  if (aDetails.type != 'main_frame' ||
+      aDetails.documentUrl ||
+      aDetails.originUrl ||
+      aDetails.tabId == -1)
+    return;
+
+  const tab = getTabById(aDetails.tabId);
+  if (!tab)
+    return;
+
+  const possibleOpenerTab = getTabById(tab.dataset.possibleOpenerTab);
+  delete tab.dataset.possibleOpenerTab;
+  log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
+  if (getParentTab(tab) || !possibleOpenerTab)
+    return;
+
+  const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
+  const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
+  const newTabSite    = aDetails.url.match(siteMatcher);
+  log('openerTabSite ', openerTabSite);
+  log('newTabSite ', newTabSite);
+  if (!openerTabSite ||
+      !newTabSite ||
+      openerTabSite[1] != newTabSite[1])
+    return;
+
+  log('behave as a tab opened from same site');
+  handleNewTabFromActiveTab(tab, {
+    activeTab:                 possibleOpenerTab,
+    autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
+    inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
+  });
+};
+
 // raw event handlers
 
 // this should return true if the tab is moved while processing
@@ -172,6 +207,7 @@ function onTabOpening(aTab, aInfo = {}) {
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
 
+  const activeTab = aInfo.activeTab || getCurrentTab(aTab);
   const opener = getOpenerTab(aTab);
   if (opener)
     opener.uniqueId.then(aUniqueId => {
@@ -202,28 +238,14 @@ function onTabOpening(aTab, aInfo = {}) {
   );
 
   if (!opener) {
+    if (!aInfo.maybeOrphan && activeTab != aTab)
+      aTab.dataset.possibleOpenerTab = activeTab.id;
     if (!aInfo.maybeOrphan && isNewTabCommandTab(aTab)) {
-      let current = aInfo.activeTab || getCurrentTab(aTab);
-      log('behave as a tab opened by new tab command, current = ', dumpTab(current));
-      behaveAutoAttachedTab(aTab, {
-        baseTab:   current,
-        behavior:  configs.autoAttachOnNewTabCommand,
-        broadcast: true
-      }).then(async () => {
-        let parent = getParentTab(aTab);
-        if (!parent ||
-            !configs.inheritContextualIdentityToNewChildTab ||
-            aTab.apiTab.cookieStoreId != 'firefox-default' ||
-            aTab.apiTab.cookieStoreId == parent.apiTab.cookieStoreId)
-          return;
-        let cookieStoreId = current.apiTab.cookieStoreId;
-        log(' => reopen with inherited contextual identity ', cookieStoreId);
-        await openNewTab({
-          parent,
-          insertBefore: aTab,
-          cookieStoreId
-        });
-        removeTabInternally(aTab);
+      log('behave as a tab opened by new tab command');
+      handleNewTabFromActiveTab(aTab, {
+        activeTab,
+        autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+        inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
       });
       return true;
     }
@@ -254,6 +276,30 @@ function onTabOpening(aTab, aInfo = {}) {
     return true;
   }
   return false;
+}
+
+async function handleNewTabFromActiveTab(aTab, aParams = {}) {
+  const activeTab = aParams.activeTab;
+  log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), aParams);
+  await behaveAutoAttachedTab(aTab, {
+    baseTab:   activeTab,
+    behavior:  aParams.autoAttachBehavior,
+    broadcast: true
+  });
+  const parent = getParentTab(aTab);
+  if (!parent ||
+      !aParams.inheritContextualIdentity ||
+      aTab.apiTab.cookieStoreId != 'firefox-default' ||
+      aTab.apiTab.cookieStoreId == parent.apiTab.cookieStoreId)
+    return;
+  const cookieStoreId = activeTab.apiTab.cookieStoreId;
+  log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
+  await openNewTab({
+    parent,
+    insertBefore: aTab,
+    cookieStoreId
+  });
+  removeTabInternally(aTab);
 }
 
 var gGroupingBlockedBy = {};

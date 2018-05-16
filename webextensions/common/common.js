@@ -189,9 +189,11 @@ configs = new Configs({
   autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN,
   autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD,
   autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING,
+  autoAttachSameSiteOrphan: kNEWTAB_OPEN_AS_CHILD,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
   inheritContextualIdentityToNewChildTab: false,
+  inheritContextualIdentityToSameSiteOrphan: true,
 
 
   // behavior around closed tab
