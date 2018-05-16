@@ -1,7 +1,12 @@
 # History
 
  - master/HEAD
+   * Add ability to attach newly opened orphan tab to the current tab, when they have same website.
+   * Add ability to collapse/expand configuration sections.
+   * Execute command in the fake context menu, by an access key without Enter, when there is no other command with same access key.
    * Keyboard shortcuts to scroll tab bar never affect to non-active windows anymore.
+   * Don't reload restored group tab until it is activated.
+   * Control next focused tab for closed current tab correctly (regression)
  - 2.4.20 (2018.5.14)
    * Apply specified color for tab label correctly with style rules written for old versions. (regression)
    * New tabs reopened by [Conex](https://addons.mozilla.org/firefox/addon/conex/) appears in the tab bar correctly. (regression?)
