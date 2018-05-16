@@ -163,41 +163,6 @@ async function onShortcutCommand(aCommand) {
   }
 }
 
-function onBeforeRequest(aDetails) {
-  if (aDetails.type != 'main_frame' ||
-      aDetails.documentUrl ||
-      aDetails.originUrl ||
-      aDetails.tabId == -1)
-    return;
-
-  const tab = getTabById(aDetails.tabId);
-  if (!tab)
-    return;
-
-  const possibleOpenerTab = getTabById(tab.dataset.possibleOpenerTab);
-  delete tab.dataset.possibleOpenerTab;
-  log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
-  if (getParentTab(tab) || !possibleOpenerTab)
-    return;
-
-  const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
-  const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
-  const newTabSite    = aDetails.url.match(siteMatcher);
-  log('openerTabSite ', openerTabSite);
-  log('newTabSite ', newTabSite);
-  if (!openerTabSite ||
-      !newTabSite ||
-      openerTabSite[1] != newTabSite[1])
-    return;
-
-  log('behave as a tab opened from same site');
-  handleNewTabFromActiveTab(tab, {
-    activeTab:                 possibleOpenerTab,
-    autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
-    inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
-  });
-};
-
 // raw event handlers
 
 // this should return true if the tab is moved while processing
@@ -1105,6 +1070,25 @@ function onTabUpdated(aTab, aChangeInfo) {
   if (aChangeInfo.status || aChangeInfo.url) {
     tryInitGroupTab(aTab);
     tryStartHandleAccelKeyOnTab(aTab);
+  }
+
+  if (aChangeInfo.url) {
+    const possibleOpenerTab = getTabById(aTab.dataset.possibleOpenerTab);
+    delete aTab.dataset.possibleOpenerTab;
+    log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
+    if (!getParentTab(aTab) && possibleOpenerTab) {
+      const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
+      const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
+      const newTabSite    = aTab.apiTab.url.match(siteMatcher);
+      if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
+        log('behave as a tab opened from same site');
+        handleNewTabFromActiveTab(aTab, {
+          activeTab:                 possibleOpenerTab,
+          autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
+          inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
+        });
+      }
+    }
   }
 
   reserveToSaveTreeStructure(aTab);

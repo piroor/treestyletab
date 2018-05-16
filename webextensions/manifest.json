@@ -13,8 +13,7 @@
     "sessions",
     "storage",
     "tabs",
-    "theme",
-    "webRequest"
+    "theme"
   ],
   "optional_permissions": [
     "<all_urls>",
