@@ -205,6 +205,15 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "現在のタブと同階層で隣に" },
   "config_autoAttachOnDuplicated_after": { "message": "開く" },
 
+  "config_sameSiteOrphan_caption": { "message": "現在のタブと同じWebサイトのタブがロケーションバーなどから開かれた場合" },
+  "config_autoAttachSameSiteOrphan_before": { "message": "\u200b" },
+  "config_autoAttachSameSiteOrphan_independent": { "message": "独立したタブとして" },
+  "config_autoAttachSameSiteOrphan_child": { "message": "現在のタブの子として" },
+  "config_autoAttachSameSiteOrphan_sibling": { "message": "現在のタブと同階層に" },
+  "config_autoAttachSameSiteOrphan_nextSibling": { "message": "現在のタブと同階層で隣に" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "開く" },
+  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "現在のタブのコンテナーを継承する" },
+
   "config_insertNewChildAt_caption": { "message": "新しい子タブを開く位置" },
   "config_insertNewChildAt_noControl": { "message": "制御しない（Firefoxや他のアドオンの判断に任せる）" },
   "config_insertNewChildAt_first": { "message": "ツリーの最初の位置に挿入する" },

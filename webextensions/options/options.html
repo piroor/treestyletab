@@ -203,6 +203,24 @@
               </select>
               __MSG_config_autoAttachOnDuplicated_after__</label></p>
     </fieldset>
+    <p><label><input id="inheritContextualIdentityToNewChildTab"
+                     type="checkbox">
+              __MSG_config_inheritContextualIdentityToNewChildTab_label__</label></p>
+
+    <fieldset>
+      <legend>__MSG_config_sameSiteOrphan_caption__</legend>
+      <p><label>__MSG_config_autoAttachSameSiteOrphan_before__
+                <select id="autoAttachSameSiteOrphan">
+                  <option value="0">__MSG_config_autoAttachSameSiteOrphan_independent__</option>
+                  <option value="1">__MSG_config_autoAttachSameSiteOrphan_child__</option>
+                  <option value="2">__MSG_config_autoAttachSameSiteOrphan_sibling__</option>
+                  <option value="3">__MSG_config_autoAttachSameSiteOrphan_nextSibling__</option>
+                </select>
+                __MSG_config_autoAttachSameSiteOrphan_after__</label></p>
+      <p><label><input id="inheritContextualIdentityToSameSiteOrphan"
+                       type="checkbox">
+                __MSG_config_inheritContextualIdentityToSameSiteOrphan_label__</label></p>
+    </fieldset>
 
     <fieldset>
       <legend>__MSG_config_insertNewChildAt_caption__</legend>
@@ -237,9 +255,6 @@
       </ul>
     </fieldset>
 
-    <p><label><input id="inheritContextualIdentityToNewChildTab"
-                     type="checkbox">
-              __MSG_config_inheritContextualIdentityToNewChildTab_label__</label></p>
     <p><label><input id="autoGroupNewTabs"
                      type="checkbox">
               __MSG_config_autoGroupNewTabs_before__

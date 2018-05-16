@@ -205,6 +205,15 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
+  "config_sameSiteOrphan_caption": { "message": "When new tab with a website same to current tab is opened from the location bar (or others)" },
+  "config_autoAttachSameSiteOrphan_before": { "message": "Open as" },
+  "config_autoAttachSameSiteOrphan_independent": { "message": "an independent tab" },
+  "config_autoAttachSameSiteOrphan_child": { "message": "a child of the current tab" },
+  "config_autoAttachSameSiteOrphan_sibling": { "message": "a sibling of the current tab" },
+  "config_autoAttachSameSiteOrphan_nextSibling": { "message": "the next sibling of the current tab" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Inherit the container of the current tab" },
+
   "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
   "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
   "config_insertNewChildAt_first": { "message": "Insert to the top of the tree, as the first child" },
