@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.21 (2018.5.16)
    * Add ability to attach newly opened orphan tab to the current tab, when they have same website.
    * Add ability to collapse/expand configuration sections.
    * Execute command in the fake context menu, by an access key without Enter, when there is no other command with same access key.
