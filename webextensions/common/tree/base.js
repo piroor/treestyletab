@@ -422,8 +422,11 @@ function getSafeFaviconUrl(aURL) {
       return browser.extension.getURL('resources/icons/settings.svg');
     case 'chrome://mozapps/skin/extensions/extensionGeneric-16.svg':
       return browser.extension.getURL('resources/icons/extensionGeneric-16.svg');
+    case 'chrome://browser/skin/privatebrowsing/favicon.svg':
+      return browser.extension.getURL('resources/icons/privatebrowsing-favicon.svg');
     default:
-      if (/^chrome:\/\//.test(aURL))
+      if (/^chrome:\/\//.test(aURL) &&
+          !/^chrome:\/\/branding\//.test(aURL))
         return browser.extension.getURL('resources/icons/globe-16.svg');
       break;
   }
