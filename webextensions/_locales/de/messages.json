@@ -105,7 +105,6 @@
   "message_startup_requestPermissions_description": { "message": "⚠Für einige Funktionen sind zusätzliche Berechtigungen erforderlich. Falls du sie aktivieren möchtest, erteile bitte manuell die Berechtigungen." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Lesezeichen für diesen Zweig erstellen\" im Kontextmenü von Tabs (benötigt Zugriff auf Lesezeichen.)" },
   "message_startup_requestPermissions_allUrls":   { "message": "Beim Auswählen von Tabs per Tastatur zugeklappte Zweige nicht ausklappen und zugeklappte untergeordnete Tabs überspringen (erfordert Skript-Injektion in Webseiten zur Erkennung von Tastendrücken.)" },
-  "message_startup_requestPermissions_tabHide": { "message": "Inaktive Tabs außer angeheftete Tabs in der Tableiste verstecken (benötigt die Berechtigung zum Verstecken von Tabs und du musst \"extensions.webextensions.tabhide.enabled\" in \"about:config\" aktivieren.)" },
   
   "message_startup_userChromeCss_notify": { "message": "Wie kann man die Tableiste und die Überschrift der Sidebar ausblenden?" },
   "message_startup_userChromeCss_description_1": { "message": "Aufgrund von Beschränkungen für WebExtensions, hat Tree Style Tab keine Kontrolle über die Tableiste und die Sidebar-Überschriften von Firefox. Um sie zu verändern, siehe " },
@@ -321,7 +320,6 @@
   
   "config_requestPermissions_bookmarks": { "message": "Erstellen von Lesezeichen erlauben" },
   "config_requestPermissions_allUrls":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Du musst das Ausführen von Scripts auf Webseiten erlauben.)" },
-  "config_requestPermissions_tabHide":   { "message": "Erlauben Tabs zu verstecken" },
   
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Wegen eines Bugs in Firefox, kannst du Berechtigungen nicht in diesem Menü erteilen. Bitte klicke auf das das \"Tree Style Tab\" Symbol in der Symbolleiste um Berechtigungen zu erteilen." },

@@ -105,7 +105,6 @@
   "message_startup_requestPermissions_description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message_startup_requestPermissions_bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」（ブックマークの操作の許可が必要）" },
   "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
-  "message_startup_requestPermissions_tabHide": { "message": "ピン留めされたタブ以外のアクティブでないタブを上のタブバーから隠す（Firefox 59以降のバージョンで、タブを隠す操作の許可が必要。また、\"about:config\"で\"extensions.webextensions.tabhide.enabled\"を有効化する必要もあります）" },
 
   "message_startup_userChromeCss_notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
   "message_startup_userChromeCss_description_1": { "message": "WebExtensionsの仕様上、Firefoxのタブバーとサイドバーのヘッダーはツリー型タブから制御できません。これらを隠したい場合は" },
@@ -322,7 +321,6 @@
 
   "config_requestPermissions_bookmarks": { "message": "ブックマークの作成を許可する" },
   "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
-  "config_requestPermissions_tabHide":   { "message": "タブの表示・非表示の切り替えを許可する" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "ツールバーの「ツリー型タブ」ボタンをクリックして下さい" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Firefoxのバグのため、権限をこの画面から要求することができません。ツールバー上の「ツリー型タブ」ボタンをクリックして権限を承認して下さい。" },

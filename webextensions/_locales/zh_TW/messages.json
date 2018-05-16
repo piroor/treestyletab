@@ -105,7 +105,6 @@
   "message_startup_requestPermissions_description": { "message": "⚠下列功能需要額外權限，給予額外的權限以使用。" },
   "message_startup_requestPermissions_bookmarks": { "message": "右鍵選單中「此樹加入書籤」(需要允許書籤存取)。" },
   "message_startup_requestPermissions_allUrls":   { "message": "以快捷鍵切換分頁時，不要展開折疊的樹(為偵測盤盤操作，需要允許在網頁中插入腳本執行)。" },
-  "message_startup_requestPermissions_tabHide": { "message": "自分頁列隱藏釘選分頁外的閒置分頁(必須在 Firefox 59 以後允許分頁隱藏。另需啟用「about:config」中的「extensions.webextensions.tabhide.enabled」。)" },
 
   "message_startup_userChromeCss_notify": { "message": "想要隱藏分頁列及側邊欄標題列？" },
   "message_startup_userChromeCss_description_1": { "message": "由於 WebExtensions 限制，Tree Style Tab 無法控制分頁列及側邊欄標題列，若想隱藏詳見" },
@@ -310,7 +309,6 @@
 
   "config_requestPermissions_bookmarks": { "message": "允許創建書籤" },
   "config_requestPermissions_allUrls":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(需要允許在網頁中執行腳本)。" },
-  "config_requestPermissions_tabHide":   { "message": "允許顯示 / 隱藏分頁" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "點擊「Tree Style Tab」的工具列按鈕" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "由於 Firefox 的問題，不能由此頁頁要求權限，點擊工具列上的「Tree Style Tab」按鈕以給予權限。" },
