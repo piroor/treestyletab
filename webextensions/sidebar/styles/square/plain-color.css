@@ -13,8 +13,12 @@
   --tab-surface: var(--browser-bg-base, var(--toolbar-non-lwt-bgcolor));
   --tab-text: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
+  --tab-text-active: var(--tab-text);
+  --tab-text-active-inverted: Highlight;
   --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
-  --tab-surface-hover: var(--browser-bg-more-lighter, #fefefe /* ThreeDHighlight */);
+  --tab-surface-hover: var(--browser-bg-more-more-lighter, #fefefe /* ThreeDHighlight */);
+  --tab-surface-active: var(--face-highlight-more-lighter, Highlight);
+  --tab-surface-active-hover: var(--face-highlight-more-more-lighter, Highlight);
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
   --throbber-color: var(--tab-text);
 
@@ -30,8 +34,12 @@
   --tab-surface: var(--browser-bg-base, -moz-dialog);
   --tab-text: var(--browser-fg, -moz-dialogtext);
   --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
+  --tab-text-active: var(--tab-text);
+  --tab-text-active-inverted: Highlight;
   --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
+  --tab-surface-active: var(--face-highlight-more-lighter, Highlight);
+  --tab-surface-active-hover: var(--face-highlight-more-more-lighter, Highlight);
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
   --tabbar-bg: var(--browser-bg-darker, ThreeDShadow);
 }
@@ -68,10 +76,13 @@
 }
 
 .tab.active {
-  --tab-surface: Highlight;
-  --throbber-color: HighlightText;
-  --tab-text: HighlightText;
-  --tab-text-inverted: Highlight;
+  --tab-surface: var(--tab-surface-active);
+  --throbber-color: var(--tab-text-active);
+  --tab-text: var(--tab-text-active);
+  --tab-text-inverted: var(--tab-text-active-inverted);
+}
+.tab:not(.collapsed).active:hover {
+  --tab-surface: var(--tab-surface-active-hover);
 }
 
 .closebox {
