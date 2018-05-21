@@ -386,6 +386,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (byInternalOperation)
     decrementContainerCounter(container, 'internalClosingCount');
 
+  await waitUntilAllTabsAreCreated();
   var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;
