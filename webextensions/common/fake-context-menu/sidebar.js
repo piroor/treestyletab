@@ -57,6 +57,8 @@ var tabContextMenu = {
     if (!this.dirty)
       return;
 
+    this.dirty = false;
+
     var firstExtraItem = this.menu.querySelector('.extra');
     if (firstExtraItem) {
       let range = document.createRange();
@@ -223,11 +225,18 @@ var tabContextMenu = {
 
   open: async function(aOptions = {}) {
     await this.close();
+    this.lastOpenOptions = aOptions;
     this.contextTab      = aOptions.tab;
     this.contextWindowId = aOptions.windowId || (this.contextTab && this.contextTab.windowId);
     await this.rebuild();
+    if (this.dirty) {
+      return await this.open(aOptions);
+    }
     this.applyContext();
-    this.ui.open(aOptions);
+    await this.ui.open(aOptions);
+    if (this.dirty) {
+      return await this.open(aOptions);
+    }
   },
 
   close: async function() {
@@ -236,6 +245,7 @@ var tabContextMenu = {
     this.menu.removeAttribute('data-tab-states');
     this.contextTab      = null;
     this.contextWindowId = null;
+    this.lastOpenOptions = null;
   },
 
   applyContext() {
@@ -437,6 +447,8 @@ var tabContextMenu = {
       case kTSTAPI_CONTEXT_MENU_UPDATED: {
         this.extraItems = aMessage.items;
         this.dirty = true;
+        if (this.ui.opened)
+          this.open(this.lastOpenOptions);
       }; break;
     }
   },
