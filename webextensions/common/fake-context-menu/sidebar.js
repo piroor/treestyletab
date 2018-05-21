@@ -233,6 +233,10 @@ var tabContextMenu = {
       return await this.open(aOptions);
     }
     this.applyContext();
+    const originalCanceller = aOptions.canceller;
+    aOptions.canceller = () => {
+      return (typeof originalCanceller == 'function' && originalCanceller()) || this.dirty;
+    };
     await this.ui.open(aOptions);
     if (this.dirty) {
       return await this.open(aOptions);
