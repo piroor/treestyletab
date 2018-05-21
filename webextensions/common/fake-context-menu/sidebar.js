@@ -432,6 +432,7 @@ var tabContextMenu = {
   },
 
   onMessage(aMessage, aSender) {
+    log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_UPDATED: {
         this.extraItems = aMessage.items;
@@ -441,6 +442,7 @@ var tabContextMenu = {
   },
 
   onExternalMessage(aMessage, aSender) {
+    log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_OPEN:
         return (async () => {
