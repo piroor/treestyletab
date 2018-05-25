@@ -586,7 +586,12 @@ function onDblClick(aEvent) {
   });
 }
 
-function onTransisionEnd() {
+function onTransisionEnd(aEvent) {
+  if (aEvent.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
+      !aEvent.target.classList.contains('tab') || // ignore animations of twisty or something inside tabs
+      /opacity|color|text-shadow/.test(aEvent.propertyName))
+    return;
+  //log('transitionend ', aEvent);
   reserveToUpdateTabbarLayout({
     reason: kTABBAR_UPDATE_REASON_ANIMATION_END
   });
