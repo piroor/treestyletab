@@ -204,18 +204,18 @@ function onTabOpening(aTab, aInfo = {}) {
 
   if (!opener) {
     if (!aInfo.maybeOrphan) {
-    if (isNewTabCommandTab(aTab)) {
-      log('behave as a tab opened by new tab command');
-      handleNewTabFromActiveTab(aTab, {
-        activeTab,
-        autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
-        inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
-      });
-      return true;
-    }
-    else if (activeTab != aTab) {
-      aTab.dataset.possibleOpenerTab = activeTab.id;
-    }
+      if (isNewTabCommandTab(aTab)) {
+        log('behave as a tab opened by new tab command');
+        handleNewTabFromActiveTab(aTab, {
+          activeTab,
+          autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+          inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+        });
+        return true;
+      }
+      else if (activeTab != aTab) {
+        aTab.dataset.possibleOpenerTab = activeTab.id;
+      }
     }
     log('behave as a tab opened with any URL');
     return false;
