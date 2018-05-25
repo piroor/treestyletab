@@ -296,6 +296,8 @@ var tabContextMenu = {
     if (aEvent.button == 1)
       return;
 
+    wait(0).then(() => this.close()); // close the menu immediately!
+
     switch (aItem.id) {
       case 'context_reloadTab':
         browser.tabs.reload(this.contextTab.id);
@@ -442,7 +444,6 @@ var tabContextMenu = {
         }
       }; break;
     }
-    this.close();
   },
 
   onMessage(aMessage, aSender) {
