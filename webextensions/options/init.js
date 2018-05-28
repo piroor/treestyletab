@@ -53,6 +53,21 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   configs.$loaded.then(() => {
+    for (let heading of Array.slice(document.querySelectorAll('body > section > h1'))) {
+      const section = heading.parentNode;
+      section.style.maxHeight = `${heading.offsetHeight}px`;
+      if (configs.optionsExpandedSections.indexOf(section.id) < 0)
+        section.classList.add('collapsed');
+      heading.addEventListener('click', () => {
+        section.classList.toggle('collapsed');
+        const otherExpandedSections = configs.optionsExpandedSections.filter(aId => aId != section.id);
+        if (section.classList.contains('collapsed'))
+          configs.optionsExpandedSections = otherExpandedSections;
+        else
+          configs.optionsExpandedSections = otherExpandedSections.concat([section.id]);
+      });
+    }
+
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
 
     Permissions.bindToCheckbox(

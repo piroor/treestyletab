@@ -66,6 +66,7 @@ var tabContextMenu = {
   notifyUpdatedHandlers: [],
 
   onMessage(aMessage, aSender) {
+    log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_GET_ITEMS:
         return Promise.resolve(this.items);
@@ -77,6 +78,7 @@ var tabContextMenu = {
   },
 
   onExternalMessage(aMessage, aSender) {
+    log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_CREATE: {
         let items  = this.getItemsFor(aSender.id);
@@ -123,7 +125,8 @@ var tabContextMenu = {
         return this.reserveNotifyUpdated();
       }; break;
 
-      case kTSTAPI_CONTEXT_MENU_REMOVE_ALL: {
+      case kTSTAPI_CONTEXT_MENU_REMOVE_ALL:
+      case kTSTAPI_UNREGISTER_SELF: {
         delete this.items[aSender.id];
         return this.reserveNotifyUpdated();
       }; break;

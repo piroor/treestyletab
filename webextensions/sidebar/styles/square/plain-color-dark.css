@@ -27,13 +27,3 @@
 :root[color-scheme="system-color"] #background::after {
   content: none;
 }
-
-.tab.active {
-  --tab-surface: var(--tab-surface-active);
-  --throbber-color: var(--tab-text-active);
-  --tab-text: var(--tab-text-active);
-  --tab-text-inverted: var(--tab-text-active-inverted);
-}
-.tab:not(.collapsed).active:hover {
-  --tab-surface: var(--tab-surface-active-hover);
-}

@@ -103,6 +103,8 @@ async function init() {
       document.addEventListener('click', onClick);
       document.addEventListener('wheel', onWheel, { capture: true });
       document.addEventListener('contextmenu', onContextMenu, { capture: true });
+      document.addEventListener('focus', onFocus);
+      document.addEventListener('blur', onBlur);
       gTabBar.addEventListener('scroll', onScroll);
       gTabBar.addEventListener('dblclick', onDblClick);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
@@ -136,7 +138,7 @@ async function init() {
         root:       gContextualIdentitySelector,
         appearance: 'panel',
         onCommand:  onContextualIdentitySelect,
-        animationDuration: configs.collapseDuration
+        animationDuration: configs.animation ? configs.collapseDuration : 0.001
       });
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
@@ -146,7 +148,7 @@ async function init() {
         root:       gNewTabActionSelector,
         appearance: 'panel',
         onCommand:  onNewTabActionSelect,
-        animationDuration: configs.collapseDuration
+        animationDuration: configs.animation ? configs.collapseDuration : 0.001
       });
     }),
     gMetricsData.addAsync('tabContextMenu.init', async () => {
@@ -165,6 +167,7 @@ async function init() {
         if (addon.style)
           installStyleForAddon(id, addon.style);
       }
+      updateSpecialEventListenersForAPIListeners();
     }),
     gMetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
@@ -225,12 +228,21 @@ function destroy() {
   document.removeEventListener('click', onClick);
   document.removeEventListener('wheel', onWheel, { capture: true });
   document.removeEventListener('contextmenu', onContextMenu, { capture: true });
+  document.removeEventListener('focus', onFocus);
+  document.removeEventListener('blur', onBlur);
   gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
   gTabBar.removeEventListener('transitionend', onTransisionEnd);
   gTabBar.removeEventListener('overflow', onOverflow);
   gTabBar.removeEventListener('underflow', onUnderflow);
   gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
+
+  if (onMouseMove.listening)
+    window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+  if (onMouseOver.listening)
+    window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
+  if (onMouseOut.listening)
+    window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
 
   gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
@@ -413,6 +425,41 @@ function uninstallStyleForAddon(aId) {
     return;
   document.head.removeChild(gAddonStyles[aId]);
   delete gAddonStyles[aId];
+}
+
+function updateSpecialEventListenersForAPIListeners() {
+  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
+    if (!onMouseMove.listening) {
+      window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+      onMouseMove.listening = true;
+    }
+    else {
+      window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+      onMouseMove.listening = false;
+    }
+  }
+
+  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
+    if (!onMouseOver.listening) {
+      window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
+      onMouseOver.listening = true;
+    }
+    else {
+      window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
+      onMouseOver.listening = false;
+    }
+  }
+
+  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
+    if (!onMouseOut.listening) {
+      window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
+      onMouseOut.listening = true;
+    }
+    else {
+      window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
+      onMouseOut.listening = false;
+    }
+  }
 }
 
 async function rebuildAll(aCache) {
@@ -772,9 +819,26 @@ function updateTabAndAncestorsTooltip(aTab) {
 function updateTabTooltip(aTab) {
   if (!ensureLivingTab(aTab))
     return;
+
   aTab.dataset.labelWithDescendants = getLabelWithDescendants(aTab);
-  aTab.setAttribute('title', isSubtreeCollapsed(aTab) && hasChildTabs(aTab) ?
-    aTab.dataset.labelWithDescendants : aTab.dataset.label);
+
+  if (configs.showCollapsedDescendantsByTooltip &&
+      isSubtreeCollapsed(aTab) &&
+      hasChildTabs(aTab)) {
+    aTab.setAttribute('title', aTab.dataset.labelWithDescendants);
+    return;
+  }
+
+  if (configs.debug)
+    return;
+
+  const label = getTabLabel(aTab);
+  if (isPinned(aTab) || label.classList.contains('overflow')) {
+    aTab.setAttribute('title', aTab.dataset.label);
+  }
+  else {
+    aTab.removeAttribute('title');
+  }
 }
 
 

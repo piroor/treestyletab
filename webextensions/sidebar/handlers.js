@@ -158,6 +158,70 @@ function onContextMenu(aEvent) {
   });
 }
 
+function onFocus(aEvent) {
+  browser.runtime.sendMessage({
+    type:     kNOTIFY_SIDEBAR_FOCUS,
+    windowId: gTargetWindow
+  });
+}
+
+function onBlur(aEvent) {
+  browser.runtime.sendMessage({
+    type:     kNOTIFY_SIDEBAR_BLUR,
+    windowId: gTargetWindow
+  });
+}
+
+function onMouseMove(aEvent) {
+  const tab = getTabFromEvent(aEvent);
+  if (tab) {
+    sendTSTAPIMessage({
+      type:     kTSTAPI_NOTIFY_TAB_MOUSEMOVE,
+      tab:      serializeTabForTSTAPI(tab),
+      window:   gTargetWindow,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey,
+      dragging: gCapturingMouseEventsForDragging
+    });
+  }
+}
+
+function onMouseOver(aEvent) {
+  const tab = getTabFromEvent(aEvent);
+  if (tab && onMouseOver.lastTarget != tab.id) {
+    sendTSTAPIMessage({
+      type:     kTSTAPI_NOTIFY_TAB_MOUSEOVER,
+      tab:      serializeTabForTSTAPI(tab),
+      window:   gTargetWindow,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey,
+      dragging: gCapturingMouseEventsForDragging
+    });
+  }
+  onMouseOver.lastTarget = tab && tab.id;
+}
+
+function onMouseOut(aEvent) {
+  const tab = getTabFromEvent(aEvent);
+  if (tab && onMouseOut.lastTarget != tab.id) {
+    sendTSTAPIMessage({
+      type:     kTSTAPI_NOTIFY_TAB_MOUSEOUT,
+      tab:      serializeTabForTSTAPI(tab),
+      window:   gTargetWindow,
+      ctrlKey:  aEvent.ctrlKey,
+      shiftKey: aEvent.shiftKey,
+      altKey:   aEvent.altKey,
+      metaKey:  aEvent.metaKey,
+      dragging: gCapturingMouseEventsForDragging
+    });
+  }
+  onMouseOut.lastTarget = tab && tab.id;
+}
+
 var gLastMousedown = {};
 
 function onMouseDown(aEvent) {
@@ -290,7 +354,7 @@ function getMouseEventTargetType(aEvent) {
 
 function cancelHandleMousedown(button = null) {
   if (!button && button !== 0) {
-    return Object.keys(gLastMousedown).filter((key) => cancelHandleMousedown(key)).length > 0;
+    return Object.keys(gLastMousedown).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
   }
   let lastMousedown = gLastMousedown[button];
   if (lastMousedown) {
@@ -305,7 +369,8 @@ async function onMouseUp(aEvent) {
   let tab = getTabFromEvent(aEvent);
   let lastMousedown = gLastMousedown[aEvent.button];
   cancelHandleMousedown(aEvent.button);
-  await lastMousedown.promisedMousedownNotified;
+  if (lastMousedown)
+    await lastMousedown.promisedMousedownNotified;
 
   let serializedTab = tab && serializeTabForTSTAPI(tab);
   let promisedCanceled = Promise.resolve(false);
@@ -320,7 +385,7 @@ async function onMouseUp(aEvent) {
     promisedCanceled = results.then(aResults => aResults.some(aResult => aResult.result));
   }
 
-  if (gCapturingMouseEvents) {
+  if (gCapturingMouseEventsForDragging) {
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();
@@ -345,7 +410,7 @@ async function onMouseUp(aEvent) {
       clientY: aEvent.clientY
     });
   }
-  gCapturingMouseEvents = false;
+  gCapturingMouseEventsForDragging = false;
   gReadyToCaptureMouseEvents = false;
 
   if (!lastMousedown ||
@@ -367,7 +432,7 @@ async function onMouseUp(aEvent) {
       if (configs.logOnMouseEvent)
         log('middle click on a tab');
       //log('middle-click to close');
-      confirmToCloseTabs(getCountOfClosingTabs(tab))
+      confirmToCloseTabs(getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
           if (aConfirmed)
             removeTabInternally(tab, { inRemote: true });
@@ -471,7 +536,7 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    confirmToCloseTabs(getCountOfClosingTabs(tab))
+    confirmToCloseTabs(getClosingTabsFromParent(tab).length)
       .then(aConfirmed => {
         if (aConfirmed)
           removeTabInternally(tab, { inRemote: true });
@@ -521,7 +586,12 @@ function onDblClick(aEvent) {
   });
 }
 
-function onTransisionEnd() {
+function onTransisionEnd(aEvent) {
+  if (aEvent.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
+      !aEvent.target.classList.contains('tab') || // ignore animations of twisty or something inside tabs
+      /opacity|color|text-shadow/.test(aEvent.propertyName))
+    return;
+  //log('transitionend ', aEvent);
   reserveToUpdateTabbarLayout({
     reason: kTABBAR_UPDATE_REASON_ANIMATION_END
   });
@@ -624,15 +694,19 @@ function reserveToSaveScrollPosition() {
 function onOverflow(aEvent) {
   const tab = getTabFromChild(aEvent.target);
   const label = getTabLabel(tab);
-  if (aEvent.target == label && !isPinned(tab))
+  if (aEvent.target == label && !isPinned(tab)) {
     label.classList.add('overflow');
+    reserveToUpdateTabTooltip(tab);
+  }
 }
 
 function onUnderflow(aEvent) {
   const tab = getTabFromChild(aEvent.target);
   const label = getTabLabel(tab);
-  if (aEvent.target == label && !isPinned(tab))
+  if (aEvent.target == label && !isPinned(tab)) {
     label.classList.remove('overflow');
+    reserveToUpdateTabTooltip(tab);
+  }
 }
 
 
@@ -1432,13 +1506,15 @@ function onMessage(aMessage, aSender, aRespond) {
     case kCOMMAND_BROADCAST_API_REGISTERED:
       gExternalListenerAddons[aMessage.sender.id] = aMessage.message;
       if (aMessage.message.style)
-        installStyleForAddon(aMessage.sender.id, aMessage.message.style)
+        installStyleForAddon(aMessage.sender.id, aMessage.message.style);
+      updateSpecialEventListenersForAPIListeners();
       break;
 
     case kCOMMAND_BROADCAST_API_UNREGISTERED:
       uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
       delete gExternalListenerAddons[aMessage.sender.id];
+      updateSpecialEventListenersForAPIListeners();
       break;
 
     case kCOMMAND_SHOW_CONTAINER_SELECTOR:
@@ -1446,6 +1522,8 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case kCOMMAND_SCROLL_TABBAR:
+      if (aMessage.windowId != gTargetWindow)
+        break;
       switch (String(aMessage.by).toLowerCase()) {
         case 'lineup':
           smoothScrollBy(-gTabHeight * configs.scrollLines);
@@ -1585,6 +1663,12 @@ function onConfigChange(aChangedKey) {
     case 'indentAutoShrink':
     case 'indentAutoShrinkOnlyForVisible':
       updateIndent({ force: true });
+      break;
+
+    case 'showCollapsedDescendantsByTooltip':
+      for (let tab of getAllTabs()) {
+        reserveToUpdateTabTooltip(tab);
+      }
       break;
 
     case 'style':

@@ -215,14 +215,13 @@ function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
          nextTab.previousSibling == aPreviousTab;
 }
 
-function getCountOfClosingTabs(aTab) {
+function getClosingTabsFromParent(aTab) {
   const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
     windowId: aTab.apiTab.windowId
   });
   if (closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    return 1;
-  const descendants = getDescendantTabs(aTab);
-  return descendants.length + 1;
+    return [aTab];
+  return [aTab].concat(getDescendantTabs(aTab));
 }
 
 

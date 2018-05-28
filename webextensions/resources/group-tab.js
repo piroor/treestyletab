@@ -73,7 +73,7 @@ function init() {
       aEvent.stopPropagation();
     }
   });
-  gTitleField.addEventListener('keypress', aEvent => {
+  gTitleField.addEventListener('keyup', aEvent => {
     if (hasModifier(aEvent))
       return;
 
@@ -109,7 +109,7 @@ function init() {
       aEvent.stopPropagation();
     }
   });
-  window.addEventListener('keypress', aEvent => {
+  window.addEventListener('keyup', aEvent => {
     if (aEvent.key == 'F2' &&
         !hasModifier(aEvent))
       enterTitleEdit();

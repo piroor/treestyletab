@@ -1,12 +1,35 @@
 # History
 
  - master/HEAD
+ - 2.4.21 (2018.5.16)
+   * Add ability to attach newly opened orphan tab to the current tab, when they have same website.
+   * Add ability to collapse/expand configuration sections.
+   * Execute command in the fake context menu, by an access key without Enter, when there is no other command with same access key.
+   * Keyboard shortcuts to scroll tab bar never affect to non-active windows anymore.
+   * Don't reload restored group tab until it is activated.
+   * Control next focused tab for closed current tab correctly (regression)
+ - 2.4.20 (2018.5.14)
+   * Apply specified color for tab label correctly with style rules written for old versions. (regression)
+   * New tabs reopened by [Conex](https://addons.mozilla.org/firefox/addon/conex/) appears in the tab bar correctly. (regression?)
+   * Don't show multiple "active" tabs at once when a new active tab is opened.
+ - 2.4.19 (2018.5.13)
+   * [New APIs for other addons to observe moving of mouse pointer on tabs.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-pointer-is-moved-over-tabs)
+   * Add ability to change text direction in the sidebar.
+   * Add ability to change visibility of collapsed descendants in a tooltip on collapsed tree.
+   * Tooltip on a tab will appear only when it is necessary for too long title.
+   * Disable animation effect of the fake context menu and other menu-like UI, if animation effects in TST is disabled.
+   * Handle keyboard operations around the fake context menu and fake confirmation dialog on `keydown`. This behavior is same to native UI.
+   * Show confirmation dialog only once, when multiple tree are closed at a time. And it won't be shown by "Close Tabs to the Right" and "Close Other Tabs", because the action is already accepted by the user.
+   * Show confirmation dialog in the content area of the current tab if possible, when multiple tabs are closed by keyboard shortcut command.
+   * Apply "insert new child at first" configuration for tabs grouped for their pinned parent.
    * Allow to drop tab before the first tab, when there is no pinned tab. (regression on recent versions)
+   * Detach moved tab from existing tree when it is moved by Ctrl-Shift-PageDown. (regression on recent versions)
    * Unexpected bumping of scroll position is disappeared, for most cases around focued tabs.
    * Don't re-focus to a dragged tab after it is dropped, to allow dragging of background tabs as is. (Inspired from codes by Lej77, thanks!)
    * Allow to cancel closing of middle-clicked tab via API. (Inspired from codes by Lej77, thanks!)
    * Mouseup and mouseup events on the sidebar are now handled as a pair with same button (by Lej77, thanks!)
    * Fade out tab labels instead of ellipsis (by Keith94m thanks!)
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.18 (2018.3.22)
    * Support `enable` and `icons` parameters for extra menu items of the fake context menu.
    * [Support `icons` parameter for the `register-self` API.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#register-and-unregister)

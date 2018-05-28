@@ -13,6 +13,7 @@ function onToolbarButtonClick(aTab) {
     // "unload" event doesn't fire for sidebar closed by this method,
     // thus we need update the flag manually for now...
     gSidebarOpenState.delete(aTab.windowId);
+    gSidebarFocusState.delete(aTab.windowId);
     browser.sidebarAction.close();
   }
   else
@@ -171,6 +172,7 @@ function onTabOpening(aTab, aInfo = {}) {
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
 
+  const activeTab = aInfo.activeTab || getCurrentTab(aTab);
   const opener = getOpenerTab(aTab);
   if (opener)
     opener.uniqueId.then(aUniqueId => {
@@ -201,30 +203,19 @@ function onTabOpening(aTab, aInfo = {}) {
   );
 
   if (!opener) {
-    if (!aInfo.maybeOrphan && isNewTabCommandTab(aTab)) {
-      let current = aInfo.activeTab || getCurrentTab(aTab);
-      log('behave as a tab opened by new tab command, current = ', dumpTab(current));
-      behaveAutoAttachedTab(aTab, {
-        baseTab:   current,
-        behavior:  configs.autoAttachOnNewTabCommand,
-        broadcast: true
-      }).then(async () => {
-        let parent = getParentTab(aTab);
-        if (!parent ||
-            !configs.inheritContextualIdentityToNewChildTab ||
-            aTab.apiTab.cookieStoreId != 'firefox-default' ||
-            aTab.apiTab.cookieStoreId == parent.apiTab.cookieStoreId)
-          return;
-        let cookieStoreId = current.apiTab.cookieStoreId;
-        log(' => reopen with inherited contextual identity ', cookieStoreId);
-        await openNewTab({
-          parent,
-          insertBefore: aTab,
-          cookieStoreId
+    if (!aInfo.maybeOrphan) {
+      if (isNewTabCommandTab(aTab)) {
+        log('behave as a tab opened by new tab command');
+        handleNewTabFromActiveTab(aTab, {
+          activeTab,
+          autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+          inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
         });
-        removeTabInternally(aTab);
-      });
-      return true;
+        return true;
+      }
+      else if (activeTab != aTab) {
+        aTab.dataset.possibleOpenerTab = activeTab.id;
+      }
     }
     log('behave as a tab opened with any URL');
     return false;
@@ -253,6 +244,30 @@ function onTabOpening(aTab, aInfo = {}) {
     return true;
   }
   return false;
+}
+
+async function handleNewTabFromActiveTab(aTab, aParams = {}) {
+  const activeTab = aParams.activeTab;
+  log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), aParams);
+  await behaveAutoAttachedTab(aTab, {
+    baseTab:   activeTab,
+    behavior:  aParams.autoAttachBehavior,
+    broadcast: true
+  });
+  const parent = getParentTab(aTab);
+  if (!parent ||
+      !aParams.inheritContextualIdentity ||
+      aTab.apiTab.cookieStoreId != 'firefox-default' ||
+      aTab.apiTab.cookieStoreId == parent.apiTab.cookieStoreId)
+    return;
+  const cookieStoreId = activeTab.apiTab.cookieStoreId;
+  log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
+  await openNewTab({
+    parent,
+    insertBefore: aTab,
+    cookieStoreId
+  });
+  removeTabInternally(aTab);
 }
 
 var gGroupingBlockedBy = {};
@@ -431,7 +446,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       child.dataset.alreadyGroupedForPinnedOpener = true;
       await attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
-        insertAfter: getLastDescendantTab(parent),
+        insertAfter: configs.insertNewChildAt == kINSERT_FIRST ? parent : getLastDescendantTab(parent),
         broadcast: true
       });
     }
@@ -540,21 +555,15 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
     });
 
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
-    const count = getCountOfClosingTabs(aTab);
-    const confirmed = await confirmToCloseTabs(count, { windowId: aTab.apiTab.windowId });
-    if (!confirmed) {
-      await wait(0); // this is required to wait until the closing tab is stored to the "recently closed" list
-      let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
-      if (sessions.length && sessions[0].tab)
-        browser.sessions.restore(sessions[0].tab.sessionId);
-      return;
-    }
-  }
+  var wasActive = isActive(aTab);
+  if (!(await tryGrantCloseTab(aTab, closeParentBehavior)))
+    return;
 
   var nextTab = closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
   tryMoveFocusFromClosingCurrentTab(aTab, {
+    wasActive,
     params: {
+      active:          wasActive,
       nextTab:         nextTab && nextTab.id,
       nextTabUrl:      nextTab && nextTab.apiTab.url,
       nextIsDiscarded: isDiscarded(nextTab)
@@ -606,6 +615,72 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToCacheTree(aTab);
 }
+
+async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
+  const self = tryGrantCloseTab;
+
+  self.closingTabIds.push(aTab.id);
+  if (aCloseParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    self.closingDescendantTabIds = self.closingDescendantTabIds
+      .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
+
+  // this is required to wait until the closing tab is stored to the "recently closed" list
+  await wait(0);
+  if (self.promisedGrantedToCloseTabs)
+    return self.promisedGrantedToCloseTabs;
+
+  self.closingTabWasActive = self.closingTabWasActive || isActive(aTab);
+
+  let shouldRestoreCount;
+  self.promisedGrantedToCloseTabs = wait(10).then(async () => {
+    let foundTabs = {};
+    self.closingTabIds = self.closingTabIds
+      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)); // uniq
+
+    foundTabs = {};
+    self.closingDescendantTabIds = self.closingDescendantTabIds
+      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true) && (self.closingTabIds.indexOf(aId) < 0));
+
+    shouldRestoreCount = self.closingDescendantTabIds.length;
+    if (shouldRestoreCount > 0) {
+      return confirmToCloseTabs(shouldRestoreCount + 1, {
+        windowId: aTab.apiTab.windowId
+      });
+    }
+    return true;
+  })
+    .then(async (aGranted) => {
+      if (aGranted)
+        return true;
+      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 });
+      const toBeRestoredTabs = [];
+      for (let session of sessions) {
+        if (!session.tab)
+          continue;
+        toBeRestoredTabs.push(session.tab);
+        if (toBeRestoredTabs.length == shouldRestoreCount)
+          break;
+      }
+      for (let tab of toBeRestoredTabs.reverse()) {
+        log('tryGrantClose: Tabrestoring session = ', tab);
+        browser.sessions.restore(tab.sessionId);
+        const tabs = await waitUntilAllTabsAreCreated();
+        await Promise.all(tabs.map(aTab => aTab.opened));
+      }
+      return false;
+    });
+
+  const granted = await self.promisedGrantedToCloseTabs;
+  self.closingTabIds              = [];
+  self.closingDescendantTabIds    = [];
+  self.closingTabWasActive        = false;
+  self.promisedGrantedToCloseTabs = null;
+  return granted;
+}
+tryGrantCloseTab.closingTabIds              = [];
+tryGrantCloseTab.closingDescendantTabIds    = [];
+tryGrantCloseTab.closingTabWasActive        = false;
+tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
 async function closeChildTabs(aParent) {
   var tabs = getDescendantTabs(aParent);
@@ -859,6 +934,10 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
 
 function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is overridden.
   log('onTabFocusing ', aTab.id, aInfo);
+  if (aTab.dataset.shouldReloadOnSelect) {
+    browser.tabs.reload(aTab.apiTab.id);
+    delete aTab.dataset.shouldReloadOnSelect;
+  }
   var container = aTab.parentNode;
   cancelDelayedExpand(getTabById(container.lastFocusedTab));
   var shouldSkipCollapsed = (
@@ -976,21 +1055,43 @@ function cancelAllDelayedExpand(aHint) {
 }
 
 function onTabUpdated(aTab, aChangeInfo) {
-  var parent = getOpenerTab(aTab);
-  if (parent &&
-      parent.parentNode == aTab.parentNode &&
-      parent != getParentTab(aTab) &&
-      configs.syncParentTabAndOpenerTab) {
-    attachTabTo(aTab, parent, {
-      insertAt:    kINSERT_NEAREST,
-      forceExpand: isActive(aTab),
-      broadcast:   true
+  if (configs.syncParentTabAndOpenerTab) {
+    waitUntilAllTabsAreCreated().then(() => {
+      const parent = getOpenerTab(aTab);
+      if (!parent ||
+          parent.parentNode != aTab.parentNode ||
+          parent == getParentTab(aTab))
+        return;
+      attachTabTo(aTab, parent, {
+        insertAt:    kINSERT_NEAREST,
+        forceExpand: isActive(aTab),
+        broadcast:   true
+      });
     });
   }
 
   if (aChangeInfo.status || aChangeInfo.url) {
     tryInitGroupTab(aTab);
     tryStartHandleAccelKeyOnTab(aTab);
+  }
+
+  if (aChangeInfo.url) {
+    const possibleOpenerTab = getTabById(aTab.dataset.possibleOpenerTab);
+    delete aTab.dataset.possibleOpenerTab;
+    log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
+    if (!getParentTab(aTab) && possibleOpenerTab) {
+      const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
+      const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
+      const newTabSite    = aTab.apiTab.url.match(siteMatcher);
+      if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
+        log('behave as a tab opened from same site');
+        handleNewTabFromActiveTab(aTab, {
+          activeTab:                 possibleOpenerTab,
+          autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
+          inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
+        });
+      }
+    }
   }
 
   reserveToSaveTreeStructure(aTab);
@@ -1360,6 +1461,14 @@ function onMessage(aMessage, aSender) {
         await waitUntilTabsAreCreated(aMessage.tabs);
         return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
       })();
+
+    case kNOTIFY_SIDEBAR_FOCUS:
+      gSidebarFocusState.set(aMessage.windowId, true);
+      break;
+
+    case kNOTIFY_SIDEBAR_BLUR:
+      gSidebarFocusState.delete(aMessage.windowId);
+      break;
 
     case kNOTIFY_TAB_MOUSEDOWN:
       gMaybeTabSwitchingByShortcut =

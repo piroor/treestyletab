@@ -760,7 +760,7 @@ function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
   if (!configs.moveFocusInTreeForClosedCurrentTab)
     return;
   log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab), aOptions);
-  if (!isActive(aTab)) {
+  if (!aOptions.wasActive && !isActive(aTab)) {
     log(' => not active tab');
     return;
   }
@@ -1436,16 +1436,6 @@ async function performTabsDragDrop(aParams = {}) {
     aParams.insertAfter = getPreviousTab(aParams.insertAfter);
   }
 
-  if (aParams.attachTo && draggedTabs.some(isActive)) {
-    // we need to expand ancestor tree to show the active dragged tab after it is dropped.
-    await Promise.all(
-      [aParams.attachTo]
-        .concat(getAncestorTabs(aParams.attachTo))
-        .reverse()
-        .map(aAncestor => collapseExpandTreesIntelligentlyFor(aAncestor, { collapsed: false, broadcast: true }))
-    );
-  }
-
   if (aParams.duplicate ||
       windowId != destinationWindowId) {
     draggedTabs = await moveTabs(draggedTabs, {
@@ -1484,6 +1474,13 @@ async function performTabsDragDrop(aParams = {}) {
     await moveTabsAfter(draggedTabs, aParams.insertAfter);
   else
     log('=> already placed at expected position');
+
+  if (windowId != destinationWindowId) {
+    // Firefox always focuses to the dropped tab if it is dragged from another window.
+    // TST respects Firefox's the behavior.
+    browser.tabs.update(draggedTabs[0].apiTab.id, { active: true })
+      .catch(handleMissingTabError);
+  }
 
   var treeStructure = getTreeStructureFromTabs(draggedTabs);
 
@@ -1549,7 +1546,8 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
   var memberOptions = Object.assign({}, aOptions, {
     insertBefore: null,
     insertAfter:  null,
-    dontMove:     true
+    dontMove:     true,
+    forceExpand:  aOptions.draggedTabs.some(isActive)
   });
   for (let tab of aTabs) {
     if (aParent)

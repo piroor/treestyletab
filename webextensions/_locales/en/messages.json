@@ -105,7 +105,6 @@
   "message_startup_requestPermissions_description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
   "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs (requires access to bookmarks.)" },
   "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts (requires script injection to webpages for detection of keyboard operations.)" },
-  "message_startup_requestPermissions_tabHide": { "message": "Hide inactive tabs except pinned tabs from the top tab bar (requires permission to hide tabs, and you also need to activate \"extensions.webextensions.tabhide.enabled\" via \"about:config\".)" },
 
   "message_startup_userChromeCss_notify": { "message": "How to hide top tab bar and sidebar header?" },
   "message_startup_userChromeCss_description_1": { "message": "Due to restrictions of WebExtensions, Tree Style Tab cannot control Firefox's top tab bar and the sidebar header. If you need to control them, see " },
@@ -163,6 +162,7 @@
 
   "config_faviconizePinnedTabs_label": { "message": "Show pinned tabs only with their icon" },
   "config_animation_label": { "message": "Enable animation effects" },
+  "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
 
 
   "config_context_caption": { "message": "Context Menu" },
@@ -204,6 +204,15 @@
   "config_autoAttachOnDuplicated_sibling": { "message": "a sibling of the current tab" },
   "config_autoAttachOnDuplicated_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
+
+  "config_sameSiteOrphan_caption": { "message": "When new tab with a website same to current tab is opened from the location bar (or others)" },
+  "config_autoAttachSameSiteOrphan_before": { "message": "Open as" },
+  "config_autoAttachSameSiteOrphan_independent": { "message": "an independent tab" },
+  "config_autoAttachSameSiteOrphan_child": { "message": "a child of the current tab" },
+  "config_autoAttachSameSiteOrphan_sibling": { "message": "a sibling of the current tab" },
+  "config_autoAttachSameSiteOrphan_nextSibling": { "message": "the next sibling of the current tab" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Inherit the container of the current tab" },
 
   "config_insertNewChildAt_caption": { "message": "Insertion position of new child tabs" },
   "config_insertNewChildAt_noControl": { "message": "No control (respect the decision by Firefox or other tab addons)" },
@@ -321,7 +330,6 @@
 
   "config_requestPermissions_bookmarks": { "message": "Allow to create bookmarks" },
   "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
-  "config_requestPermissions_tabHide":   { "message": "Allow to show/hide tabs" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Click the \"Tree Style Tab\" toolbar button" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Due to Firefox's bug, you cannot request permission from this screen. Please click the \"Tree Style Tab\" toolbar button to grant permissions." },

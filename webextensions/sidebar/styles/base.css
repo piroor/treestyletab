@@ -343,6 +343,11 @@ ul {
   mask-image: linear-gradient(to right, transparent 0, black 2em);
 }
 
+/* This is for backward compatibility about custom user style rules like https://github.com/piroor/treestyletab/issues/1363 */
+.tab .label-content {
+  color: inherit;
+}
+
 .tab:not([data-child-ids]) .counter,
 .tab:not(.subtree-collapsed) .counter {
   display: none;

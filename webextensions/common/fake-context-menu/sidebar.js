@@ -20,7 +20,7 @@ var tabContextMenu = {
         return this.onCommand(aItem, aEvent);
       },
       appearance:        'menu',
-      animationDuration: configs.collapseDuration,
+      animationDuration: configs.animation ? configs.collapseDuration : 0.001,
       subMenuOpenDelay:  configs.subMenuOpenDelay,
       subMenuCloseDelay: configs.subMenuCloseDelay
     });
@@ -56,6 +56,8 @@ var tabContextMenu = {
   rebuild: async function() {
     if (!this.dirty)
       return;
+
+    this.dirty = false;
 
     var firstExtraItem = this.menu.querySelector('.extra');
     if (firstExtraItem) {
@@ -223,11 +225,22 @@ var tabContextMenu = {
 
   open: async function(aOptions = {}) {
     await this.close();
+    this.lastOpenOptions = aOptions;
     this.contextTab      = aOptions.tab;
     this.contextWindowId = aOptions.windowId || (this.contextTab && this.contextTab.windowId);
     await this.rebuild();
+    if (this.dirty) {
+      return await this.open(aOptions);
+    }
     this.applyContext();
-    this.ui.open(aOptions);
+    const originalCanceller = aOptions.canceller;
+    aOptions.canceller = () => {
+      return (typeof originalCanceller == 'function' && originalCanceller()) || this.dirty;
+    };
+    await this.ui.open(aOptions);
+    if (this.dirty) {
+      return await this.open(aOptions);
+    }
   },
 
   close: async function() {
@@ -236,6 +249,7 @@ var tabContextMenu = {
     this.menu.removeAttribute('data-tab-states');
     this.contextTab      = null;
     this.contextWindowId = null;
+    this.lastOpenOptions = null;
   },
 
   applyContext() {
@@ -281,6 +295,8 @@ var tabContextMenu = {
   onCommand: async function(aItem, aEvent) {
     if (aEvent.button == 1)
       return;
+
+    wait(0).then(() => this.close()); // close the menu immediately!
 
     switch (aItem.id) {
       case 'context_reloadTab':
@@ -428,19 +444,22 @@ var tabContextMenu = {
         }
       }; break;
     }
-    this.close();
   },
 
   onMessage(aMessage, aSender) {
+    log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_UPDATED: {
         this.extraItems = aMessage.items;
         this.dirty = true;
+        if (this.ui.opened)
+          this.open(this.lastOpenOptions);
       }; break;
     }
   },
 
   onExternalMessage(aMessage, aSender) {
+    log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_OPEN:
         return (async () => {

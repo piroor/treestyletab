@@ -67,11 +67,11 @@ function hasCreatingTab() {
   return Object.keys(gCreatingTabs).length > 0;
 }
 
-function waitUntilAllTabsAreCreated() {
+async function waitUntilAllTabsAreCreated() {
   return waitUntilTabsAreCreated(Object.keys(gCreatingTabs).map(aId => parseInt(aId)));
 }
 
-function waitUntilTabsAreCreated(aIdOrIds) {
+async function waitUntilTabsAreCreated(aIdOrIds) {
   if (!Array.isArray(aIdOrIds))
     aIdOrIds = [aIdOrIds];
   var creatingTabs = aIdOrIds.filter(aId => !!aId)
@@ -79,7 +79,9 @@ function waitUntilTabsAreCreated(aIdOrIds) {
     .map(aId => gCreatingTabs[aId])
     .filter(aCreating => !!aCreating);
   if (creatingTabs.length)
-    return Promise.all(creatingTabs);
+    return Promise.all(creatingTabs)
+      .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
+  return [];
 }
 
 
@@ -234,6 +236,9 @@ async function onNewTabTracked(aTab) {
   if (gCreatingTabs[aTab.id] === newTab.uniqueId)
     delete gCreatingTabs[aTab.id];
 
+  if (!ensureLivingTab(newTab)) // it can be removed while waiting
+    return;
+
   updateTab(newTab, aTab, {
     tab:        aTab,
     forceApply: true
@@ -336,6 +341,10 @@ async function onNewTabTracked(aTab) {
     checkRecycledTab(container);
   }
 
+  if (aTab.active &&
+      getCurrentTabs().some(aTabElement => aTabElement != newTab && aTabElement.parentNode == newTab.parentNode))
+    onApiTabActivated({ tabId: aTab.id, windowId: aTab.windowId });
+
   return newTab;
 }
 
@@ -377,6 +386,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (byInternalOperation)
     decrementContainerCounter(container, 'internalClosingCount');
 
+  await waitUntilAllTabsAreCreated();
   var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
   if (!oldTab)
     return;

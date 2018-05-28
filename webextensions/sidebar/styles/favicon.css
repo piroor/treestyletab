@@ -79,6 +79,12 @@
   mask: url("/resources/icons/settings.svg") no-repeat center / 100%;
 }
 
+.tab[data-current-uri^="about:privatebrowsing"] .favicon-default::before,
+:root.simulate-svg-context-fill .tab[data-current-uri^="about:privatebrowsing"] .favicon-default::before {
+  background: url("/resources/icons/privatebrowsing-favicon.svg") no-repeat center / 100%;
+  mask: none;
+}
+
 
 .tab.group-tab .favicon-image[src]:not(.error) {
   bottom: 0;

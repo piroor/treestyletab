@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="options.css"/>
   </head>
   <body>
+    <section id="section-appearance">
     <h1>__MSG_config_appearance_caption__</h1>
 
     <p>__MSG_config_sidebarPosition_caption__
@@ -109,8 +110,13 @@
     <p><label><input id="animation"
                      type="checkbox">
              __MSG_config_animation_label__</label></p>
+    <p><label><input id="showCollapsedDescendantsByTooltip"
+                     type="checkbox">
+             __MSG_config_showCollapsedDescendantsByTooltip_label__</label></p>
 
+    </section>
 
+    <section id="section-contextMenu">
     <h1>__MSG_config_context_caption__</h1>
     <p><label><input id="fakeContextMenu"
                      type="checkbox">
@@ -147,8 +153,10 @@
                           __MSG_config_requestPermissions_bookmarks__</label></p>
     </div>
     </fieldset>
+    </section>
 
 
+    <section id="section-newTab">
     <h1>__MSG_config_newTab_caption__</h1>
 
     <fieldset>
@@ -200,6 +208,24 @@
               </select>
               __MSG_config_autoAttachOnDuplicated_after__</label></p>
     </fieldset>
+    <p><label><input id="inheritContextualIdentityToNewChildTab"
+                     type="checkbox">
+              __MSG_config_inheritContextualIdentityToNewChildTab_label__</label></p>
+
+    <fieldset>
+      <legend>__MSG_config_sameSiteOrphan_caption__</legend>
+      <p><label>__MSG_config_autoAttachSameSiteOrphan_before__
+                <select id="autoAttachSameSiteOrphan">
+                  <option value="0">__MSG_config_autoAttachSameSiteOrphan_independent__</option>
+                  <option value="1">__MSG_config_autoAttachSameSiteOrphan_child__</option>
+                  <option value="2">__MSG_config_autoAttachSameSiteOrphan_sibling__</option>
+                  <option value="3">__MSG_config_autoAttachSameSiteOrphan_nextSibling__</option>
+                </select>
+                __MSG_config_autoAttachSameSiteOrphan_after__</label></p>
+      <p><label><input id="inheritContextualIdentityToSameSiteOrphan"
+                       type="checkbox">
+                __MSG_config_inheritContextualIdentityToSameSiteOrphan_label__</label></p>
+    </fieldset>
 
     <fieldset>
       <legend>__MSG_config_insertNewChildAt_caption__</legend>
@@ -234,9 +260,6 @@
       </ul>
     </fieldset>
 
-    <p><label><input id="inheritContextualIdentityToNewChildTab"
-                     type="checkbox">
-              __MSG_config_inheritContextualIdentityToNewChildTab_label__</label></p>
     <p><label><input id="autoGroupNewTabs"
                      type="checkbox">
               __MSG_config_autoGroupNewTabs_before__
@@ -249,8 +272,10 @@
                                  type="number"
                                  size="3">
                           __MSG_config_autoGroupNewTabsDelayOnNewWindow_after__</label></p>
+    </section>
 
 
+    <section id="section-treeBehavior">
     <h1>__MSG_config_treeBehavior_caption__</h1>
 
     <p><label><input id="autoCollapseExpandSubtreeOnAttach"
@@ -320,12 +345,16 @@
               __MSG_config_parentTabBehaviorForChanges_onlyInSidebar__</label></li>
       </ul>
     </fieldset>
+    </section>
 
 
+    <section id="section-shortcuts">
     <h1>__MSG_config_shortcuts_caption__</h1>
     <div id="shortcuts"></div>
+    </section>
 
 
+    <section id="section-advanced">
     <h1>__MSG_config_advanced_caption__</h1>
     <fieldset>
       <legend>__MSG_config_dropLinksOnTabBehavior_caption__</legend>
@@ -385,9 +414,11 @@
                 style="width: 100%"
                 placeholder="__MSG_config_importedTreeStructureFromLegacy_placeholder__"></textarea>
     </fieldset>
+    </section>
 
     <hr/>
 
+    <section id="section-debug">
     <h1>__MSG_config_debug_caption__</h1>
     <p><label><input id="debug"
                      type="checkbox">
@@ -432,5 +463,6 @@
                __MSG_config_maximumAcceptableDelayForTabDuplication_after__</label></p>
       <h2>__MSG_config_all_caption__</h2>
     </div>
+    </section>
   </body>
 </html>

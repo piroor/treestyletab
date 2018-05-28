@@ -53,6 +53,9 @@ const kCOMMAND_BROADCAST_TAB_STATE     = 'treestyletab:broadcast-tab-state';
 
 const kNOTIFY_TAB_MOUSEDOWN  = 'treestyletab:tab-mousedown';
 
+const kNOTIFY_SIDEBAR_FOCUS = 'treestyletab:sidebar-focus';
+const kNOTIFY_SIDEBAR_BLUR  = 'treestyletab:sidebar-blur';
+
 const kTSTAPI_REGISTER_SELF         = 'register-self';
 const kTSTAPI_UNREGISTER_SELF       = 'unregister-self';
 const kTSTAPI_PING                  = 'ping';
@@ -64,6 +67,9 @@ const kTSTAPI_NOTIFY_TAB_MOUSEUP    = 'tab-mouseup';
 const kTSTAPI_NOTIFY_TABBAR_CLICKED = 'tabbar-clicked'; // for backward compatibility
 const kTSTAPI_NOTIFY_TABBAR_MOUSEDOWN = 'tabbar-mousedown';
 const kTSTAPI_NOTIFY_TABBAR_MOUSEUP = 'tabbar-mouseup';
+const kTSTAPI_NOTIFY_TAB_MOUSEMOVE  = 'tab-mousemove';
+const kTSTAPI_NOTIFY_TAB_MOUSEOVER  = 'tab-mouseover';
+const kTSTAPI_NOTIFY_TAB_MOUSEOUT   = 'tab-mouseout';
 const kTSTAPI_NOTIFY_TAB_DRAGREADY  = 'tab-dragready';
 const kTSTAPI_NOTIFY_TAB_DRAGCANCEL = 'tab-dragcancel';
 const kTSTAPI_NOTIFY_TAB_DRAGSTART  = 'tab-dragstart';

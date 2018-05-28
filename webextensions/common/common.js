@@ -100,6 +100,8 @@ makeAsyncFunctionSequential.start = async () => {
 };
 
 configs = new Configs({
+  optionsExpandedSections: ['section-appearance'],
+
   // appearance
   sidebarPosition: kTABBAR_POSITION_LEFT,
   sidebarDirection: kTABBAR_DIRECTION_LTR,
@@ -129,6 +131,7 @@ configs = new Configs({
   showNewTabActionSelector: true,
   longPressOnNewTabButton: kCONTEXTUAL_IDENTITY_SELECTOR,
   zoomable: false,
+  showCollapsedDescendantsByTooltip: true,
 
 
   // context menu
@@ -188,9 +191,11 @@ configs = new Configs({
   autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN,
   autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD,
   autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING,
+  autoAttachSameSiteOrphan: kNEWTAB_OPEN_AS_CHILD,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
   inheritContextualIdentityToNewChildTab: false,
+  inheritContextualIdentityToSameSiteOrphan: true,
 
 
   // behavior around closed tab
@@ -273,87 +278,22 @@ configs = new Configs({
   importedTreeStructureFromLegacy: null,
   migrateLegacyTreeStructure: true
 }, {
-  syncKeys: `
-    counterRole
-    sidebarScrollbarPosition
-    maxTreeLevel
-    indentAutoShrink
-    indentAutoShrinkOnlyForVisible
-    showContextualIdentitiesSelector
-    showNewTabActionSelector
-    zoomable
-    context_reloadTree
-    context_reloadDescendants
-    context_closeTree
-    context_closeDescendants
-    context_closeOthers
-    context_collapseAll
-    context_expandAll
-    context_bookmarkTree
-    shouldDetectClickOnIndentSpaces
-    autoCollapseExpandSubtreeOnAttach
-    autoCollapseExpandSubtreeOnSelect
-    autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove
-    collapseExpandSubtreeByDblClick
-    autoExpandIntelligently
-    autoExpandOnCollapsedChildFocused
-    autoExpandOnTabSwitchingShortcuts
-    autoExpandOnTabSwitchingShortcutsDelay
-    autoExpandOnLongHover
-    autoExpandOnLongHoverDelay
-    autoExpandOnLongHoverRestoreIniitalState
-    skipCollapsedTabsForTabSwitchingShortcuts
-    parentTabBehaviorForChanges
-    syncParentTabAndOpenerTab
-    dropLinksOnTabBehavior
-    autoGroupNewTabs
-    autoGroupNewTabsTimeout
-    autoGroupNewTabsDelayOnNewWindow
-    autoGroupNewTabsFromPinned
-    insertNewChildAt
-    insertNewTabFromPinnedTabAt
-    scrollToNewTabMode
-    scrollLines
-    autoAttach
-    autoAttachOnOpenedWithOwner
-    autoAttachOnNewTabCommand
-    autoAttachOnNewTabButtonMiddleClick
-    autoAttachOnDuplicated
-    guessNewOrphanTabAsOpenedByNewTabCommand
-    guessNewOrphanTabAsOpenedByNewTabCommandUrl
-    inheritContextualIdentityToNewChildTab
-    closeParentBehavior
-    promoteFirstChildForClosedRoot
-    moveTabsToBottomWhenDetachedFromClosedParent
-    promoteAllChildrenWhenClosedParentIsLastChild
-    moveFocusInTreeForClosedCurrentTab
-    warnOnCloseTabs
-    animation
-    smoothScrollEnabled
-    smoothScrollDuration
-    burstDuration
-    indentDuration
-    collapseDuration
-    outOfViewTabNotifyDuration
-    acccelaratedTabDuplication
-    enableWorkaroundForBug1409262
-    maximumAcceptableDelayForTabDuplication
-    acceptableDelayForInternalFocusMoving
-    preventTearOffTabsTimeout
-    notificationTimeout
-    startDragTimeout
-    moveDroppedTabToNewWindowForUnhandledDragEvent
-    autoDiscardTabForUnexpectedFocus
-    knownExternalAddons
-    useCachedTree
-    simulateSVGContextFill
-    newTabAnimationDuration
-    userStyleRules
-    debug
-    logOnUpdated
-    logOnMouseEvent
-    logOnScroll
-    logOnCollapseExpand
-    logOnCache
+  localKeys: `
+    optionsExpandedSections
+    sidebarPosition
+    sidebarDirection
+    style
+    colorScheme
+    faviconizedTabScale
+    baseIndent
+    minIndent
+    scrollbarMode
+    narrowScrollbarSize
+    lastConfirmedToCloseTabs
+    subMenuOpenDelay
+    subMenuCloseDelay
+    minimumIntervalToProcessDragoverEvent
+    cachedExternalAddons
+    notifiedFeaturesVersion
   `.trim().split('\n').map(aKey => aKey.trim()).filter(aKey => aKey && aKey.indexOf('//') != 0)
 });

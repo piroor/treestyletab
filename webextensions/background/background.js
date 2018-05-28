@@ -9,6 +9,7 @@ gLogContext = 'BG';
 
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();
+var gSidebarFocusState      = new Map();
 var gExternalListenerAddons = null;
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
@@ -203,7 +204,7 @@ async function rebuildAll() {
     });
     for (let tab of getAllTabs(aWindow.id).filter(isGroupTab)) {
       if (!isDiscarded(tab))
-        browser.tabs.reload(tab.apiTab.id);
+        tab.dataset.shouldReloadOnSelect = true;
     }
   }));
   insertionPoint.detach();
@@ -265,6 +266,7 @@ function startWatchSidebarOpenState() {
     gSidebarOpenState.set(windowId, true);
     aPort.onDisconnect.addListener(aMessage => {
       gSidebarOpenState.delete(windowId);
+      gSidebarFocusState.delete(windowId);
     });
   });
 }
@@ -736,18 +738,24 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       Date.now() - configs.lastConfirmedToCloseTabs < 500)
     return true;
 
-  if (gSidebarOpenState.get(aOptions.windowId))
+  const apiTabs = await browser.tabs.query({
+    active:   true,
+    windowId: aOptions.windowId
+  });
+
+  const granted = await Permissions.isGranted(Permissions.ALL_URLS);
+  if (!granted ||
+      /^(about|chrome|resource):/.test(apiTabs[0].url) ||
+      (!aOptions.showInTab &&
+       gSidebarOpenState.get(aOptions.windowId) &&
+       gSidebarFocusState.get(aOptions.windowId)))
     return browser.runtime.sendMessage({
       type:     kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       count:    aCount,
       windowId: aOptions.windowId
     });
 
-  let apiTabs = await browser.tabs.query({
-    active:   true,
-    windowId: aOptions.windowId
-  });
-  let result = await RichConfirm.showInTab(apiTabs[0].id, {
+  const result = await RichConfirm.showInTab(apiTabs[0].id, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [aCount]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
