@@ -162,8 +162,9 @@
 
   "config_faviconizePinnedTabs_label": { "message": "Angeheftete Tabs nur mit Ihrem Symbol anzeigen" },
   "config_animation_label": { "message": "Animationen aktivieren" },
+  "config_showCollapsedDescendantsByTooltip_label": { "message": "Eingeklappte untergeordnete Tabs als Tooltip anzeigen" },
 
-
+  
   "config_context_caption": { "message": "Kontexmenü" },
   "config_fakeContextMenu_label": { "message": "Tab-Kontextmenü in der Sidebar simulieren" },
   "config_extraItems_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
