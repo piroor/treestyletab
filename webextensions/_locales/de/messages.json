@@ -205,6 +205,15 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
+  "config_sameSiteOrphan_caption": { "message": "Wenn über die Adressleiste (oder andere) ein neuer Tab geöffnet wird mit der gleichen Website wie im aktuellen Tab" },
+  "config_autoAttachSameSiteOrphan_before": { "message": "Öffnen als" },
+  "config_autoAttachSameSiteOrphan_independent": { "message": "unabhängigen Tab" },
+  "config_autoAttachSameSiteOrphan_child": { "message": "untergeordneten Tab des aktuellen Tab" },
+  "config_autoAttachSameSiteOrphan_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
+  "config_autoAttachSameSiteOrphan_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
+  "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
+  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Den Container vom aktuellen Tab erben" },
+  
   "config_insertNewChildAt_caption": { "message": "Einfügeposition neuer untergeordneter Tabs" },
   "config_insertNewChildAt_noControl": { "message": "Keine Voreinstellung (das Verhalten von Firefox oder anderer Tab-Add-Ons beibehalten)" },
   "config_insertNewChildAt_first": { "message": "Am Anfang des Zweigs, als erster untergeordneter Tab" },
