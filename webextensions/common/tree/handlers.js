@@ -250,6 +250,14 @@ async function onNewTabTracked(aTab) {
   var activeTab            = getCurrentTab(container);
   var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
+  var mayBeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
+
+  if (openedWithPosition)
+    decrementContainerCounter(container, 'toBeOpenedTabsWithPositions');
+  if (mayBeOrphan)
+    decrementContainerCounter(container, 'toBeOpenedOrphanTabs');
+  if (duplicatedInternally)
+    decrementContainerCounter(container, 'duplicatingTabsCount');
 
   var duplicated = duplicatedInternally || uniqueId.duplicated;
   var restored   = uniqueId.restored;
@@ -290,7 +298,7 @@ async function onNewTabTracked(aTab) {
 
   var moved = window.onTabOpening && await onTabOpening(newTab, {
     maybeOpenedWithPosition: openedWithPosition,
-    maybeOrphan: parseInt(container.dataset.toBeOpenedOrphanTabs) > 0,
+    maybeOrphan,
     restored,
     duplicated,
     duplicatedInternally,
@@ -298,15 +306,6 @@ async function onNewTabTracked(aTab) {
   });
 
   if (container.parentNode) { // it can be removed while waiting
-    if (parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0)
-      decrementContainerCounter(container, 'toBeOpenedTabsWithPositions');
-
-    if (parseInt(container.dataset.toBeOpenedOrphanTabs) > 0)
-      decrementContainerCounter(container, 'toBeOpenedOrphanTabs');
-
-    if (duplicatedInternally)
-      decrementContainerCounter(container, 'duplicatingTabsCount');
-
     incrementContainerCounter(container, 'openingCount');
     setTimeout(() => {
       if (!container.parentNode) // it can be removed while waiting
