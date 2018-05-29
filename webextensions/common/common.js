@@ -21,7 +21,7 @@ function log(aMessage, ...aArgs)
   const line = `tst<${gLogContext}>: ${indent}${aMessage}`;
   console.log(line, ...aArgs);
 
-  log.logs.push(`${line} ${aArgs.map(aArg => String(aArg)).join(', ')}`);
+  log.logs.push(`${line} ${aArgs.map(aArg => uneval(aArg)).join(', ')}`);
   log.logs = log.logs.slice(-log.max);
 }
 log.max  = 1000;
