@@ -13,13 +13,19 @@ function log(aMessage, ...aArgs)
   if (!configs || !configs.debug)
     return;
 
-  var nest   = (new Error()).stack.split('\n').length;
-  var indent = '';
+  const nest = (new Error()).stack.split('\n').length;
+  let indent = '';
   for (let i = 0; i < nest; i++) {
     indent += ' ';
   }
-  console.log(`tst<${gLogContext}>: ${indent}${aMessage}`, ...aArgs);
+  const line = `tst<${gLogContext}>: ${indent}${aMessage}`;
+  console.log(line, ...aArgs);
+
+  log.logs.push(`${line} ${aArgs.map(aArg => String(aArg)).join(', ')}`);
+  log.logs = log.logs.slice(-log.max);
 }
+log.max  = 1000;
+log.logs = [];
 
 function dumpTab(aTab) {
   if (!configs || !configs.debug)
