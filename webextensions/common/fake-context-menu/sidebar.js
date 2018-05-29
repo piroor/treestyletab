@@ -325,7 +325,8 @@ var tabContextMenu = {
         // browser.tabs.duplicate(this.contextTab.id);
         return (async () => {
           let sourceTab = getTabById(this.contextTab);
-          //console.log('source tab: ', sourceTab, !!sourceTab.apiTab);
+          if (configs.logOnFakeContextMenu)
+            log('source tab: ', sourceTab, !!sourceTab.apiTab);
           let duplicatedTabs = await moveTabs([sourceTab], {
             duplicate:           true,
             destinationWindowId: this.contextWindowId,
@@ -447,7 +448,8 @@ var tabContextMenu = {
   },
 
   onMessage(aMessage, aSender) {
-    log('fake-context-menu: internally called:', aMessage);
+    if (configs.logOnFakeContextMenu)
+      log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_UPDATED: {
         this.extraItems = aMessage.items;
@@ -459,7 +461,8 @@ var tabContextMenu = {
   },
 
   onExternalMessage(aMessage, aSender) {
-    log('fake-context-menu: API called:', aMessage, aSender);
+    if (configs.logOnFakeContextMenu)
+      log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_OPEN:
         return (async () => {

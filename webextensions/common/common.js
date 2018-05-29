@@ -272,6 +272,7 @@ configs = new Configs({
   logOnScroll: false,
   logOnCollapseExpand: false,
   logOnCache: false,
+  logOnFakeContextMenu: false,
 
   importedConfigsFromLegacy: null,
   legacyConfigsNextMigrationVersion: 0,

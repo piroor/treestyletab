@@ -66,7 +66,8 @@ var tabContextMenu = {
   notifyUpdatedHandlers: [],
 
   onMessage(aMessage, aSender) {
-    log('fake-context-menu: internally called:', aMessage);
+    if (configs.logOnFakeContextMenu)
+      log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_GET_ITEMS:
         return Promise.resolve(this.items);
@@ -78,7 +79,8 @@ var tabContextMenu = {
   },
 
   onExternalMessage(aMessage, aSender) {
-    log('fake-context-menu: API called:', aMessage, aSender);
+    if (configs.logOnFakeContextMenu)
+      log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
       case kTSTAPI_CONTEXT_MENU_CREATE: {
         let items  = this.getItemsFor(aSender.id);
