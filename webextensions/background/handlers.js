@@ -1092,17 +1092,17 @@ function onTabUpdated(aTab, aChangeInfo) {
         });
       }
       else {
-      const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
-      const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
-      const newTabSite    = aTab.apiTab.url.match(siteMatcher);
-      if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
-        log('behave as a tab opened from same site (delayed)');
-        handleNewTabFromActiveTab(aTab, {
-          activeTab:                 possibleOpenerTab,
-          autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
-          inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
-        });
-      }
+        const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
+        const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
+        const newTabSite    = aTab.apiTab.url.match(siteMatcher);
+        if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
+          log('behave as a tab opened from same site (delayed)');
+          handleNewTabFromActiveTab(aTab, {
+            activeTab:                 possibleOpenerTab,
+            autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
+            inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
+          });
+        }
       }
     }
   }
