@@ -216,6 +216,7 @@ function onTabOpening(aTab, aInfo = {}) {
       else if (activeTab != aTab) {
         aTab.dataset.possibleOpenerTab = activeTab.id;
       }
+      aTab.dataset.isNewTab = true;
     }
     log('behave as a tab opened with any URL');
     return false;
@@ -1075,21 +1076,33 @@ function onTabUpdated(aTab, aChangeInfo) {
     tryStartHandleAccelKeyOnTab(aTab);
   }
 
-  if (aChangeInfo.url) {
+  if (aTab.dataset.isNewTab &&
+      aChangeInfo.url || aChangeInfo.status == 'complete') {
+    delete aTab.dataset.isNewTab;
     const possibleOpenerTab = getTabById(aTab.dataset.possibleOpenerTab);
     delete aTab.dataset.possibleOpenerTab;
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     if (!getParentTab(aTab) && possibleOpenerTab) {
+      if (isNewTabCommandTab(aTab)) {
+        log('behave as a tab opened by new tab command (delayed)');
+        handleNewTabFromActiveTab(aTab, {
+          activeTab:                 possibleOpenerTab,
+          autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+          inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+        });
+      }
+      else {
       const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
       const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
       const newTabSite    = aTab.apiTab.url.match(siteMatcher);
       if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
-        log('behave as a tab opened from same site');
+        log('behave as a tab opened from same site (delayed)');
         handleNewTabFromActiveTab(aTab, {
           activeTab:                 possibleOpenerTab,
           autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
           inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
         });
+      }
       }
     }
   }
