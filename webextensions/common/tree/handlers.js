@@ -250,11 +250,11 @@ async function onNewTabTracked(aTab) {
   var activeTab            = getCurrentTab(container);
   var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
-  var mayBeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
+  var maybeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
 
   if (openedWithPosition)
     decrementContainerCounter(container, 'toBeOpenedTabsWithPositions');
-  if (mayBeOrphan)
+  if (maybeOrphan)
     decrementContainerCounter(container, 'toBeOpenedOrphanTabs');
   if (duplicatedInternally)
     decrementContainerCounter(container, 'duplicatingTabsCount');
