@@ -1077,7 +1077,7 @@ function onTabUpdated(aTab, aChangeInfo) {
   }
 
   if (aTab.dataset.isNewTab &&
-      aChangeInfo.url || aChangeInfo.status == 'complete') {
+      (aChangeInfo.url || aChangeInfo.status == 'complete')) {
     delete aTab.dataset.isNewTab;
     const possibleOpenerTab = getTabById(aTab.dataset.possibleOpenerTab);
     delete aTab.dataset.possibleOpenerTab;
