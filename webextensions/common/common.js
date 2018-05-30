@@ -10,7 +10,9 @@ var gLogContext = '?';
 
 function log(aMessage, ...aArgs)
 {
-  if (!configs || !configs.debug)
+  const useConsole = configs && configs.debug;
+  const logging    = useConsole || log.forceStore;
+  if (!logging)
     return;
 
   const nest = (new Error()).stack.split('\n').length;
@@ -19,13 +21,15 @@ function log(aMessage, ...aArgs)
     indent += ' ';
   }
   const line = `tst<${gLogContext}>: ${indent}${aMessage}`;
-  console.log(line, ...aArgs);
+  if (useConsole)
+    console.log(line, ...aArgs);
 
   log.logs.push(`${line} ${aArgs.map(aArg => uneval(aArg)).join(', ')}`);
   log.logs = log.logs.slice(-log.max);
 }
 log.max  = 1000;
 log.logs = [];
+log.forceStore = true;
 
 function dumpTab(aTab) {
   if (!configs || !configs.debug)
@@ -303,4 +307,10 @@ configs = new Configs({
     cachedExternalAddons
     notifiedFeaturesVersion
   `.trim().split('\n').map(aKey => aKey.trim()).filter(aKey => aKey && aKey.indexOf('//') != 0)
+});
+
+configs.$loaded.then(() => {
+  log.forceStore = false;
+  if (!configs.debug)
+    log.logs = [];
 });
