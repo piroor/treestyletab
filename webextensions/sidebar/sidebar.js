@@ -89,7 +89,9 @@ async function init() {
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
       startObserveApiTabs();
 
-      browser.runtime.connect({ name: `${kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}` });
+      browser.runtime.connect({
+        name: `${kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}`
+      });
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
         browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
 
