@@ -725,7 +725,8 @@ function onTabBuilt(aTab, aInfo) {
   var faviconImage = favicon.appendChild(document.createElement('img'));
   faviconImage.classList.add(kFAVICON_IMAGE);
   var defaultIcon = favicon.appendChild(document.createElement('span'));
-  defaultIcon.classList.add(kFAVICON_DEFAULT);
+  defaultIcon.classList.add(kFAVICON_BUILTIN);
+  defaultIcon.classList.add(kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
   var throbber = favicon.appendChild(document.createElement('span'));
   throbber.classList.add(kTHROBBER);
   aTab.insertBefore(favicon, label);

@@ -123,7 +123,8 @@ const kPERSISTENT_SPECIAL_TAB_STATES = 'special-tab-states';
 
 const kFAVICON         = 'favicon';
 const kFAVICON_IMAGE   = 'favicon-image';
-const kFAVICON_DEFAULT = 'favicon-default';
+const kFAVICON_BUILTIN = 'favicon-builtin';
+const kFAVICON_DEFAULT = 'favicon-default'; // just for backward compatibility, and this should be removed from future versions
 const kTHROBBER        = 'throbber';
 const kACTIVE_MARKER   = 'active-marker';
 const kBURSTER         = 'burster';
