@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.22 (2018.5.30)
    * Initialize sidebar more safely on browser's startup.
    * Prevent needless flashing of the vertical scrollbar.
    * Open new tabs from Ctrl-T as configured position more correctly.
