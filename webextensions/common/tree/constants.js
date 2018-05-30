@@ -6,7 +6,7 @@
 'use strict';
 
 const kBACKGROUND_CONTENTS_VERSION = 2;
-const kSIDEBAR_CONTENTS_VERSION    = 3;
+const kSIDEBAR_CONTENTS_VERSION    = 4;
 
 const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';
 const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';
