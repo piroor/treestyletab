@@ -262,7 +262,7 @@ function startWatchSidebarOpenState() {
   browser.runtime.onConnect.addListener(aPort => {
     if (!matcher.test(aPort.name))
       return;
-    var windowId = parseInt(aPort.name.replace(matcher, ''));
+    const windowId = parseInt(aPort.name.replace(matcher, ''));
     gSidebarOpenState.set(windowId, true);
     sendTSTAPIMessage({
       type:   kTSTAPI_NOTIFY_SIDEBAR_SHOW,
