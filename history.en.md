@@ -1,6 +1,18 @@
 # History
 
  - master/HEAD
+   * Initialize sidebar more safely on browser's startup.
+   * Prevent needless flashing of the vertical scrollbar.
+   * Open new tabs from Ctrl-T as configured position more correctly.
+   * Don't attach new same site tab if it is originally opened as a blank tab intentionally.
+   * Close the fake context menu immediately when any item is clicked.
+   * Keyboard operations affects correctly for the fake context menu even if the cursor is on any separator.
+   * Refresh context menu automatically when items are modified while open.
+   * Remove extra context menu items if an external addon is unregistered.
+   * Make "Plain" theme more respectful of Firefox's default theme.
+   * More respect Firefox's default favicons for tabs without site-specific favicon.
+   * Add ability to collect logs while browser's startup process. You can print logs by running `log.logs.join('\n')` in the remote debugger, if you're running TST in the debug mode.
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.21 (2018.5.16)
    * Add ability to attach newly opened orphan tab to the current tab, when they have same website.
    * Add ability to collapse/expand configuration sections.
