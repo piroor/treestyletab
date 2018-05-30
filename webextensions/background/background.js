@@ -264,9 +264,17 @@ function startWatchSidebarOpenState() {
       return;
     var windowId = parseInt(aPort.name.replace(matcher, ''));
     gSidebarOpenState.set(windowId, true);
+    sendTSTAPIMessage({
+      type:   kTSTAPI_NOTIFY_SIDEBAR_SHOW,
+      window: windowId
+    });
     aPort.onDisconnect.addListener(aMessage => {
       gSidebarOpenState.delete(windowId);
       gSidebarFocusState.delete(windowId);
+      sendTSTAPIMessage({
+        type:   kTSTAPI_NOTIFY_SIDEBAR_HIDE,
+        window: windowId
+      });
     });
   });
 }
