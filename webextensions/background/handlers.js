@@ -9,13 +9,8 @@ function onToolbarButtonClick(aTab) {
   if (Permissions.requestPostProcess())
     return;
 
-  if (gSidebarOpenState.has(aTab.windowId)) {
-    // "unload" event doesn't fire for sidebar closed by this method,
-    // thus we need update the flag manually for now...
-    gSidebarOpenState.delete(aTab.windowId);
-    gSidebarFocusState.delete(aTab.windowId);
+  if (gSidebarOpenState.has(aTab.windowId))
     browser.sidebarAction.close();
-  }
   else
     browser.sidebarAction.open();
 }
@@ -1369,7 +1364,6 @@ function onMessage(aMessage, aSender) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case kCOMMAND_PING_TO_BACKGROUND:
-      startWatchSidebarOpenState();
       return Promise.resolve(true);
 
     case kCOMMAND_REQUEST_UNIQUE_ID:
