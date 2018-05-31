@@ -198,7 +198,7 @@ function onTabOpening(aTab, aInfo = {}) {
   );
 
   if (!opener) {
-    if (!aInfo.maybeOrphan) {
+    if (!aInfo.maybeOrphan && possibleOpenerTab) {
       if (isNewTabCommandTab(aTab)) {
         log('behave as a tab opened by new tab command');
         handleNewTabFromActiveTab(aTab, {

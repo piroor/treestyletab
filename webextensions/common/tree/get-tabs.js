@@ -153,6 +153,8 @@ function getTabLabelContent(aTab) {
   return aTab && aTab.querySelector(`.${kLABEL}-content`);
 }
 
+// Note that this function can return null if it is the first tab of
+// a new window opened by the "move tab to new window" command.
 function getCurrentTab(aHint) {
   const container = getTabsContainer(aHint);
   return container && container.querySelector(`.${kTAB_STATE_ACTIVE}`);
