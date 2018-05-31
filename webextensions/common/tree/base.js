@@ -260,12 +260,14 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   }
 
   const openerOfGroupTab = isGroupTab(aTab) && getOpenerFromGroupTab(aTab);
-  if ('favIconUrl' in aNewState ||
-      TabFavIconHelper.maybeImageTab(aNewState)) {
+  const hasFavIcon       = 'favIconUrl' in aNewState;
+  const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab(aNewState);
+  if (aOptions.forceApply || hasFavIcon || maybeImageTab) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
-        getSafeFaviconUrl(aNewState.favIconUrl || aNewState.url)
+        getSafeFaviconUrl(aNewState.favIconUrl ||
+                          maybeImageTab && aNewState.url)
       );
   }
   else if (openerOfGroupTab &&
