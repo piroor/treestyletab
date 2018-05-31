@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Add [new API to notify sidebar is shown or hidden](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-sidebar-is-shownhidden) for other addons.
+   * Apply correct favicon for restored tabs.
+   * Fix freezing after a tab is detached from a window by drag and drop.
+   * Make tabs more easily detachable by drag and drop.
  - 2.4.22 (2018.5.30)
    * Initialize sidebar more safely on browser's startup.
    * Prevent needless flashing of the vertical scrollbar.
