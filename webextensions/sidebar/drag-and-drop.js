@@ -832,13 +832,13 @@ function onDragLeave(aEvent) {
     gDelayedDragLeave = null;
   }
   setTimeout(() => {
-  gDelayedDragLeave = setTimeout(() => {
-    gDelayedDragLeave = null;
-    gDraggingOnSelfWindow = false;
-    clearDropPosition();
-    clearDraggingState();
-    gLastDropPosition = null;
-  }, configs.preventTearOffTabsTimeout);
+    gDelayedDragLeave = setTimeout(() => {
+      gDelayedDragLeave = null;
+      gDraggingOnSelfWindow = false;
+      clearDropPosition();
+      clearDraggingState();
+      gLastDropPosition = null;
+    }, configs.preventTearOffTabsTimeout);
   }, 10);
 
   clearTimeout(gLongHoverTimer);
