@@ -742,7 +742,12 @@ function isEventFiredOnTabDropBlocker(aEvent) {
 var gDelayedDragEnter;
 
 function onDragEnter(aEvent) {
+  if (gDelayedDragEnter) {
+    clearTimeout(gDelayedDragEnter);
+    gDelayedDragEnter = null;
+  }
   gDelayedDragEnter = setTimeout(() => {
+    gDelayedDragEnter = null;
     gDraggingOnSelfWindow = true;
     if (gDelayedDragLeave) {
       clearTimeout(gDelayedDragLeave);
@@ -822,12 +827,19 @@ reserveToProcessLongHover.cancel = function() {
 var gDelayedDragLeave;
 
 function onDragLeave(aEvent) {
+  if (gDelayedDragLeave) {
+    clearTimeout(gDelayedDragLeave);
+    gDelayedDragLeave = null;
+  }
+  setTimeout(() => {
   gDelayedDragLeave = setTimeout(() => {
+    gDelayedDragLeave = null;
     gDraggingOnSelfWindow = false;
     clearDropPosition();
     clearDraggingState();
     gLastDropPosition = null;
   }, configs.preventTearOffTabsTimeout);
+  }, 10);
 
   clearTimeout(gLongHoverTimer);
   gLongHoverTimer = null;
