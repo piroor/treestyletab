@@ -261,7 +261,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   const openerOfGroupTab = isGroupTab(aTab) && getOpenerFromGroupTab(aTab);
   if ('favIconUrl' in aNewState ||
-       TabFavIconHelper.maybeImageTab(aNewState)) {
+      TabFavIconHelper.maybeImageTab(aNewState)) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
