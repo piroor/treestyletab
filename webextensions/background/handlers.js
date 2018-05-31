@@ -167,7 +167,7 @@ function onTabOpening(aTab, aInfo = {}) {
 
   log('onTabOpening ', dumpTab(aTab), aInfo);
 
-  const activeTab = aInfo.activeTab || getCurrentTab(aTab);
+  const possibleOpenerTab = aInfo.activeTab || getCurrentTab(aTab);
   const opener = getOpenerTab(aTab);
   if (opener)
     opener.uniqueId.then(aUniqueId => {
@@ -202,14 +202,14 @@ function onTabOpening(aTab, aInfo = {}) {
       if (isNewTabCommandTab(aTab)) {
         log('behave as a tab opened by new tab command');
         handleNewTabFromActiveTab(aTab, {
-          activeTab,
+          possibleOpenerTab,
           autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
           inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
         });
         return true;
       }
-      else if (activeTab != aTab) {
-        aTab.dataset.possibleOpenerTab = activeTab.id;
+      else if (possibleOpenerTab != aTab) {
+        aTab.dataset.possibleOpenerTab = possibleOpenerTab.id;
       }
       aTab.dataset.isNewTab = true;
     }
