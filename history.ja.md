@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.4.23 (2018.6.1)
    * 他のアドオン向けに、[サイドバーが開閉されたことを通知するAPI](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-sidebar-is-shownhidden)を追加
    * キャッシュから復元されたタブのアイコンが正しく反映されない場合があったのを修正
    * タブをドラッグ&ドロップでウィンドウから切り離した際にフリーズする問題を修正
