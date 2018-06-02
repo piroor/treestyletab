@@ -195,11 +195,13 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   // so we need to see the complete tab object.
   if (aOptions.tab && kSHORTHAND_ABOUT_URI.test(aOptions.tab.url)) {
     let shorthand = RegExp.$1;
+    wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
     browser.tabs.update(aOptions.tab.id, {
       url: aOptions.tab.url.replace(kSHORTHAND_ABOUT_URI, kSHORTHAND_URIS[shorthand] || 'about:blank')
     }).catch(handleMissingTabError);
     aTab.classList.add(kTAB_STATE_GROUP_TAB);
     addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
+    });
     return;
   }
   else if ('url' in aNewState &&
