@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.4.24 (2018.6.3)
    * Some context menu commands didn't work when animation effect is disabled, on 2.4.22 and 2.4.23. (regression)
    * Fix 100% CPU usage problem on loading `about;treestyletab-group` on any existing group tab.
    * Fix incompatibility with Conex. When Conex is installed, new tabs opened from dropped links were unexpectedly closed immediately.
