@@ -296,23 +296,25 @@ var tabContextMenu = {
     if (aEvent.button == 1)
       return;
 
+    const contextTab      = this.contextTab;
+    const contextWindowId = this.contextWindowId;
     wait(0).then(() => this.close()); // close the menu immediately!
 
     switch (aItem.id) {
       case 'context_reloadTab':
-        browser.tabs.reload(this.contextTab.id);
+        browser.tabs.reload(contextTab.id);
         break;
       case 'context_toggleMuteTab-mute':
-        browser.tabs.update(this.contextTab.id, { muted: true });
+        browser.tabs.update(contextTab.id, { muted: true });
         break;
       case 'context_toggleMuteTab-unmute':
-        browser.tabs.update(this.contextTab.id, { muted: false });
+        browser.tabs.update(contextTab.id, { muted: false });
         break;
       case 'context_pinTab':
-        browser.tabs.update(this.contextTab.id, { pinned: true });
+        browser.tabs.update(contextTab.id, { pinned: true });
         break;
       case 'context_unpinTab':
-        browser.tabs.update(this.contextTab.id, { pinned: false });
+        browser.tabs.update(contextTab.id, { pinned: false });
         break;
       case 'context_duplicateTab':
         /*
@@ -322,14 +324,14 @@ var tabContextMenu = {
           duplicated tab. For more details, see also:
           https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
         */
-        // browser.tabs.duplicate(this.contextTab.id);
+        // browser.tabs.duplicate(contextTab.id);
         return (async () => {
-          let sourceTab = getTabById(this.contextTab);
+          let sourceTab = getTabById(contextTab);
           if (configs.logOnFakeContextMenu)
             log('source tab: ', sourceTab, !!sourceTab.apiTab);
           let duplicatedTabs = await moveTabs([sourceTab], {
             duplicate:           true,
-            destinationWindowId: this.contextWindowId,
+            destinationWindowId: contextWindowId,
             insertAfter:         sourceTab,
             inRemote:            true
           });
@@ -341,18 +343,18 @@ var tabContextMenu = {
         })();
       case 'context_openTabInWindow':
         await browser.windows.create({
-          tabId:     this.contextTab.id,
-          incognito: this.contextTab.incognito
+          tabId:     contextTab.id,
+          incognito: contextTab.incognito
         });
         break;
       case 'context_reloadAllTabs': {
-        let apiTabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
         for (let apiTab of apiTabs) {
           browser.tabs.reload(apiTab.id);
         }
       }; break;
       case 'context_bookmarkAllTabs': {
-        let apiTabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
         let folder = await bookmarkTabs(apiTabs.map(getTabById));
         if (folder)
           browser.bookmarks.get(folder.parentId).then(aFolders => {
@@ -368,18 +370,18 @@ var tabContextMenu = {
           });
       }; break;
       case 'context_closeTabsToTheEnd': {
-        let apiTabs = await browser.tabs.query({ windowId: this.contextWindowId });
+        let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
         let after = false;
         let closeAPITabs = [];
         for (let apiTab of apiTabs) {
-          if (apiTab.id == this.contextTab.id) {
+          if (apiTab.id == contextTab.id) {
             after = true;
             continue;
           }
           if (after && !apiTab.pinned)
             closeAPITabs.push(apiTab);
         }
-        confirmToCloseTabs(closeAPITabs.length, { windowId: this.contextWindowId })
+        confirmToCloseTabs(closeAPITabs.length, { windowId: contextWindowId })
           .then(aConfirmed => {
             if (!aConfirmed)
               return;
@@ -387,10 +389,10 @@ var tabContextMenu = {
           });
       }; break;
       case 'context_closeOtherTabs': {
-        let apiTabId = this.contextTab.id; // cache it for delayed tasks!
-        let apiTabs  = await browser.tabs.query({ windowId: this.contextWindowId });
+        let apiTabId = contextTab.id; // cache it for delayed tasks!
+        let apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
         let closeAPITabs = apiTabs.filter(aAPITab => !aAPITab.pinned && aAPITab.id != apiTabId).map(aAPITab => aAPITab.id);
-        confirmToCloseTabs(closeAPITabs.length, { windowId: this.contextWindowId })
+        confirmToCloseTabs(closeAPITabs.length, { windowId: contextWindowId })
           .then(aConfirmed => {
             if (!aConfirmed)
               return;
@@ -403,7 +405,7 @@ var tabContextMenu = {
           browser.sessions.restore(sessions[0].tab.sessionId);
       }; break;
       case 'context_closeTab':
-        browser.tabs.remove(this.contextTab.id);
+        browser.tabs.remove(contextTab.id);
         break;
 
       default: {
@@ -435,7 +437,7 @@ var tabContextMenu = {
               srcUrl:           null,
               wasChecked:       false
             },
-            tab: this.contextTab || null
+            tab: contextTab || null
           };
           let owner = aItem.getAttribute('data-item-owner-id');
           if (owner == browser.runtime.id)
