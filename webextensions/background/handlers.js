@@ -1137,43 +1137,10 @@ async function onTabAttached(aTab, aInfo = {}) {
       .catch(handleMissingTabError);
   }
 
-  await Promise.all([
-    isOpening(aTab) && aTab.opened,
-    !aInfo.dontMove && (async () => {
-      let nextTab = aInfo.insertBefore;
-      let prevTab = aInfo.insertAfter;
-      if (!nextTab && !prevTab) {
-        let tabs = getAllTabs(aTab);
-        nextTab = tabs[aInfo.newIndex];
-        if (!nextTab)
-          prevTab = tabs[aInfo.newIndex - 1];
-      }
-      log('move newly attached child: ', dumpTab(aTab), {
-        next: dumpTab(nextTab),
-        prev: dumpTab(prevTab)
-      });
-      if (nextTab)
-        await moveTabSubtreeBefore(aTab, nextTab, Object.assign({}, aInfo, {
-          broadcast: true
-        }));
-      else
-        await moveTabSubtreeAfter(aTab, prevTab, Object.assign({}, aInfo, {
-          broadcast: true
-        }));
-    })()
-  ]);
-
-  if (!ensureLivingTab(aTab) || // not removed while waiting
-      getParentTab(aTab) != aInfo.parent) // not detached while waiting
-    return;
-
-  browser.runtime.sendMessage({
-    type:   kCOMMAND_TAB_ATTACHED_COMPLETELY,
-    tab:    aTab.id,
-    parent: parent.id,
-    newlyAttached: aInfo.newlyAttached
-  });
-
+  // Because the tab is possibly closing for "reopen" operation,
+  // we need to apply "forceExpand" immediately. Otherwise, when
+  // the tab is closed with "subtree collapsed" state, descendant
+  // tabs are also closed even if "forceExpand" is "true".
   if (aInfo.newlyAttached &&
       !gInitializing) {
     if (isSubtreeCollapsed(aInfo.parent) &&
@@ -1224,6 +1191,43 @@ async function onTabAttached(aTab, aInfo = {}) {
       }));
     }
   }
+
+  await Promise.all([
+    isOpening(aTab) && aTab.opened,
+    !aInfo.dontMove && (async () => {
+      let nextTab = aInfo.insertBefore;
+      let prevTab = aInfo.insertAfter;
+      if (!nextTab && !prevTab) {
+        let tabs = getAllTabs(aTab);
+        nextTab = tabs[aInfo.newIndex];
+        if (!nextTab)
+          prevTab = tabs[aInfo.newIndex - 1];
+      }
+      log('move newly attached child: ', dumpTab(aTab), {
+        next: dumpTab(nextTab),
+        prev: dumpTab(prevTab)
+      });
+      if (nextTab)
+        await moveTabSubtreeBefore(aTab, nextTab, Object.assign({}, aInfo, {
+          broadcast: true
+        }));
+      else
+        await moveTabSubtreeAfter(aTab, prevTab, Object.assign({}, aInfo, {
+          broadcast: true
+        }));
+    })()
+  ]);
+
+  if (!ensureLivingTab(aTab) || // not removed while waiting
+      getParentTab(aTab) != aInfo.parent) // not detached while waiting
+    return;
+
+  browser.runtime.sendMessage({
+    type:   kCOMMAND_TAB_ATTACHED_COMPLETELY,
+    tab:    aTab.id,
+    parent: parent.id,
+    newlyAttached: aInfo.newlyAttached
+  });
 
   reserveToSaveTreeStructure(aTab);
   if (aInfo.newlyAttached)
