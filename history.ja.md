@@ -1,6 +1,9 @@
 # 更新履歴
 
  - master/HEAD
+   * いくつかのコンテキストメニューの機能がアニメーション効果無効時に機能しなくなっていたのを修正（2.4.22～2.4.23での後退バグ）
+   * 既存のグループ化用タブに`about;treestyletab-group`を読み込むとCPU使用率が100％になる問題を修正
+   * Conexがインストールされているとリンクなどのドロップ操作で開かれたタブがすぐに閉じられてしまう不具合を修正
  - 2.4.23 (2018.6.1)
    * 他のアドオン向けに、[サイドバーが開閉されたことを通知するAPI](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-sidebar-is-shownhidden)を追加
    * キャッシュから復元されたタブのアイコンが正しく反映されない場合があったのを修正
