@@ -300,6 +300,9 @@ function applyBrowserTheme(aTheme) {
   var toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)');
   if (aTheme.colors.toolbar)
     toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
+  const extraColors = [];
+  if (aTheme.colors.tab_line)
+    extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
   gBrowserThemeDefinition.textContent = `
     :root {
       --browser-bg-base:         ${baseColor};
@@ -313,6 +316,7 @@ function applyBrowserTheme(aTheme) {
       --browser-fg:              ${aTheme.colors.textcolor};
       --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
       --browser-header-url:      url(${JSON.stringify(aTheme.images.headerURL)});
+      ${extraColors.join(';\n')}
     }
   `;
 }

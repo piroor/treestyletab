@@ -5,7 +5,7 @@
 */
 
 :root {
-  --tab-active-marker: Highlight;
+  --tab-active-marker: var(--browser-tab-active-marker, Highlight);
   --tab-active-marker-inactive: rgba(0, 0, 0, 0.2);
   --tab-active-marker-size: calc(var(--favicon-size) / 8);
   --tab-active-marker-animation: 0.25s cubic-bezier(0.07, 0.95, 0, 1);
