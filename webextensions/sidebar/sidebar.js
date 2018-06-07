@@ -297,6 +297,7 @@ function applyBrowserTheme(aTheme) {
     gBrowserThemeDefinition.textContent = '';
     return;
   }
+  aTheme.images = aTheme.images || {};
   var baseColor    = aTheme.colors.accentcolor;
   var toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)');
   if (aTheme.colors.toolbar)
