@@ -292,6 +292,7 @@ function applyUserStyleRules() {
 }
 
 function applyBrowserTheme(aTheme) {
+  log('applying theme ', aTheme);
   if (!aTheme.colors) {
     gBrowserThemeDefinition.textContent = '';
     return;
