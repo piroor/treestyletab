@@ -20,7 +20,7 @@
   --tab-surface-active: var(--face-highlight-more-lighter, Highlight);
   --tab-surface-active-hover: var(--face-highlight-more-more-lighter, Highlight);
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
-  --throbber-color: var(--tab-text);
+  --throbber-color: var(--browser-loading-indicator-color, --tab-text);
 
   --tabbar-bg: var(--browser-bg-darker, darkgray);
 }
@@ -77,7 +77,7 @@
 
 .tab.active {
   --tab-surface: var(--tab-surface-active);
-  --throbber-color: var(--tab-text-active);
+  --throbber-color: var(--browser-loading-indicator-color, --tab-text-active);
   --tab-text: var(--tab-text-active);
   --tab-text-inverted: var(--tab-text-active-inverted);
 }

@@ -56,7 +56,7 @@
   --tab-highlighted-glow: #3890f3; /* = rgb(56, 144, 243) */
   --tab-highlighted-base: var(--tab-surface);
 
-  --throbber-color: var(--browser-bg-lightest, --tab-highlighted-glow);
+  --throbber-color: var(--browser-loading-indicator-color, --browser-bg-lightest, --tab-highlighted-glow);
 }
 
 :root,
@@ -94,7 +94,7 @@
 
 .tab.active {
   --tab-surface: var(--tab-surface-active);
-  --throbber-color: var(--tab-highlighted-glow);
+  --throbber-color: var(--browser-loading-indicator-color, --tab-highlighted-glow);
   --tab-text: var(--tab-active-text);
   --tab-text-inverted: var(--tab-active-text-inverted);
 }
@@ -103,9 +103,9 @@
 }
 
 .tab:not(.active) {
-  --throbber-color: ThreeDDarkShadow;
+  --throbber-color: var(--browser-loading-indicator-color, ThreeDDarkShadow);
 }
 
 .tab:not(.active) .burster {
-  --throbber-color: #B5C5E0;
+  --throbber-color: var(--browser-loading-indicator-color, #B5C5E0);
 }
