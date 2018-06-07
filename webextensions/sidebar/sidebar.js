@@ -297,12 +297,13 @@ function applyBrowserTheme(aTheme) {
     gBrowserThemeDefinition.textContent = '';
     return;
   }
-  aTheme.images = aTheme.images || {};
   var baseColor    = aTheme.colors.accentcolor;
   var toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)');
   if (aTheme.colors.toolbar)
     toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
   const extraColors = [];
+  if (aTheme.images && aTheme.images.headerURL)
+    extraColors.push(`--browser-header-url: url(${JSON.stringify(aTheme.images.headerURL)})`);
   if (aTheme.colors.tab_line)
     extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
   gBrowserThemeDefinition.textContent = `
@@ -317,7 +318,6 @@ function applyBrowserTheme(aTheme) {
       --browser-bg-more-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)')};
       --browser-fg:              ${aTheme.colors.textcolor};
       --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
-      --browser-header-url:      url(${JSON.stringify(aTheme.images.headerURL)});
       ${extraColors.join(';\n')}
     }
   `;
