@@ -28,6 +28,7 @@
 :root,
 #background {
   background: var(--tabbar-bg);
+  background-image: var(--browser-bg-url, none);
 }
 
 :root[color-scheme="system-color"] {
