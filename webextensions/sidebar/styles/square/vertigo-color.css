@@ -84,6 +84,11 @@
   color: var(--tab-text);
 }
 
+.tab.active,
+.tab:hover {
+  background: var(--tab-surface);
+}
+
 .tab * {
   color: var(--tab-text);
 }
