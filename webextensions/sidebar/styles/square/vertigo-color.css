@@ -62,6 +62,7 @@
 :root,
 #background {
   background: var(--tab-surface);
+  background-image: var(--browser-bg-url, none);
 }
 
 :root[color-scheme="system-color"] {
@@ -79,7 +80,7 @@
 
 .tab,
 .after-tabs button {
-  background: var(--tab-surface);
+  background: transparent;
   color: var(--tab-text);
 }
 

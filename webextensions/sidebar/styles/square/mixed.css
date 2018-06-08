@@ -36,9 +36,11 @@
 :root,
 #background {
   background: var(--tabbar-bg);
+  background-image: var(--browser-bg-url, none);
 }
 
-.tab {
+.tab,
+.after-tabs button {
   background-color: var(--tab-surface);
 }
 
