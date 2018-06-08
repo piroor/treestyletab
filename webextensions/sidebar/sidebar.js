@@ -297,18 +297,21 @@ function applyBrowserTheme(aTheme) {
     gBrowserThemeDefinition.textContent = '';
     return;
   }
-  var baseColor    = aTheme.colors.accentcolor;
-  var toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)');
-  if (aTheme.colors.toolbar)
-    toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
   const extraColors = [];
+  let bgAlpha = 1;
   if (aTheme.images) {
     if (aTheme.images.headerURL)
       extraColors.push(`--browser-header-url: url(${JSON.stringify(aTheme.images.headerURL)})`);
     if (Array.isArray(aTheme.images.additional_backgrounds) &&
-        aTheme.images.additional_backgrounds.length > 0)
+        aTheme.images.additional_backgrounds.length > 0) {
       extraColors.push(`--browser-bg-url: url(${JSON.stringify(aTheme.images.additional_backgrounds[0])})`);
+      bgAlpha = 0.75;
+    }
   }
+  const baseColor = mixCSSColors(aTheme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
+  let toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
+  if (aTheme.colors.toolbar)
+    toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
   if (aTheme.colors.tab_line)
     extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
   if (aTheme.colors.tab_loading)
@@ -316,13 +319,13 @@ function applyBrowserTheme(aTheme) {
   gBrowserThemeDefinition.textContent = `
     :root {
       --browser-bg-base:         ${baseColor};
-      --browser-bg-less-lighter: ${mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.25)')};
+      --browser-bg-less-lighter: ${mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
       --browser-bg-lighter:      ${toolbarColor};
-      --browser-bg-more-lighter: ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)')};
-      --browser-bg-lightest:     ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)')};
-      --browser-bg-less-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.1)')};
-      --browser-bg-darker:       ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.25)')};
-      --browser-bg-more-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)')};
+      --browser-bg-more-lighter: ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)', bgAlpha)};
+      --browser-bg-lightest:     ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)', bgAlpha)};
+      --browser-bg-less-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
+      --browser-bg-darker:       ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
+      --browser-bg-more-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
       --browser-fg:              ${aTheme.colors.textcolor};
       --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
       ${extraColors.join(';\n')}

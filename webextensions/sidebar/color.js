@@ -5,11 +5,11 @@
 */
 'use strict';
 
-function mixCSSColors(aBase, aOver) {
+function mixCSSColors(aBase, aOver, aAlpha = 1) {
   var base = parseCSSColor(aBase);
   var over = parseCSSColor(aOver);
   var mixed = mixColors(base, over);
-  return `rgb(${mixed.red}, ${mixed.green}, ${mixed.blue})`;
+  return `rgba(${mixed.red}, ${mixed.green}, ${mixed.blue}, ${aAlpha})`;
 }
 
 function parseCSSColor(aColor, aBaseColor) {
