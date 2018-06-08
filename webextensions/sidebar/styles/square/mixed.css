@@ -12,7 +12,7 @@
 @import url("shadow.css");
 
 :root:not([color-scheme="system-color"]) {
-  --tab-active-marker: #0a84ff;
+  --tab-active-marker: var(--browser-tab-active-marker, #0a84ff);
 }
 
 :root {
