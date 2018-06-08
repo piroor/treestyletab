@@ -336,22 +336,22 @@ function applyBrowserTheme(aTheme) {
 function calculateDefaultSizes() {
   // first, calculate actual favicon size.
   gFaviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
-  var scale = Math.max(configs.faviconizedTabScale, 1);
+  const scale = Math.max(configs.faviconizedTabScale, 1);
   gFaviconizedTabSize = parseInt(gFaviconSize * scale);
   log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
   gSizeDefinition.textContent = `:root {
     --favicon-size:         ${gFaviconSize}px;
     --faviconized-tab-size: ${gFaviconizedTabSize}px;
   }`;
-  var dummyTab = document.querySelector('#dummy-tab');
-  var dummyTabRect = dummyTab.getBoundingClientRect();
+  const dummyTab = document.querySelector('#dummy-tab');
+  const dummyTabRect = dummyTab.getBoundingClientRect();
   gTabHeight = dummyTabRect.height;
-  var dummyTabbar = document.querySelector('#dummy-tabs');
-  var dummyTabbarRect = dummyTabbar.getBoundingClientRect();
-  var scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
+  const dummyTabbar = document.querySelector('#dummy-tabs');
+  const dummyTabbarRect = dummyTabbar.getBoundingClientRect();
+  const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('gTabHeight ', gTabHeight);
-  var baseColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
-  var highlightColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
+  const baseColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
+  const highlightColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
     --scrollbar-size: ${scrollbarSize}px;
