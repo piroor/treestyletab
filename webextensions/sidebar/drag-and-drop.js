@@ -395,6 +395,12 @@ function clearDropPosition() {
   }
 }
 
+function clearDraggingTabsState() {
+  for (let tab of getDraggingTabs(gTargetWindow)) {
+    tab.classList.remove(kTAB_STATE_DRAGGING);
+  }
+}
+
 function clearDraggingState() {
   getTabsContainer().classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
@@ -600,6 +606,8 @@ var gDragTargetIsClosebox  = false;
 var gCurrentDragData       = null;
 
 function onDragStart(aEvent) {
+  clearDraggingTabsState(); // clear previous state anyway
+
   const dragData = getDragDataFromOneTab(aEvent.target, {
     shouldIgnoreDescendants: aEvent.shiftKey
   });
@@ -889,9 +897,7 @@ function onDragEnd(aEvent) {
   document.removeEventListener('dragend', onDragEnd, { capture: true });
 
   // clear "dragging" status safely, because we possibly fail to get drag data from dataTransfer.
-  for (let tab of getDraggingTabs(gTargetWindow)) {
-    tab.classList.remove(kTAB_STATE_DRAGGING);
-  }
+  clearDraggingTabsState();
 
   let dragData = aEvent.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
   dragData = (dragData && JSON.parse(dragData)) || gCurrentDragData;

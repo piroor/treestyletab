@@ -478,6 +478,10 @@ async function onMouseUp(aEvent) {
 }
 
 function onClick(aEvent) {
+  // clear unexpectedly left "dragging" state
+  // (see also https://github.com/piroor/treestyletab/issues/1921 )
+  clearDraggingTabsState();
+
   if (aEvent.button != 0) // ignore non-left click
     return;
 
