@@ -302,8 +302,13 @@ function applyBrowserTheme(aTheme) {
   if (aTheme.colors.toolbar)
     toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
   const extraColors = [];
-  if (aTheme.images && aTheme.images.headerURL)
-    extraColors.push(`--browser-header-url: url(${JSON.stringify(aTheme.images.headerURL)})`);
+  if (aTheme.images) {
+    if (aTheme.images.headerURL)
+      extraColors.push(`--browser-header-url: url(${JSON.stringify(aTheme.images.headerURL)})`);
+    else if (Array.isArray(aTheme.images.additional_backgrounds) &&
+             aTheme.images.additional_backgrounds.length > 0)
+      extraColors.push(`--browser-header-url: url(${JSON.stringify(aTheme.images.additional_backgrounds[0])})`);
+  }
   if (aTheme.colors.tab_line)
     extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
   if (aTheme.colors.tab_loading)
