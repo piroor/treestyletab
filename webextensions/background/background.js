@@ -382,6 +382,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
           canCollapse:     true
         });
       }
+      await reserveToAttachTabFromRestoredInfo.promisedDone;
       gMetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
     }
     dumpAllTabs();
@@ -392,6 +393,11 @@ function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
   if (reserveToAttachTabFromRestoredInfo.waiting)
     clearTimeout(reserveToAttachTabFromRestoredInfo.waiting);
   reserveToAttachTabFromRestoredInfo.tasks.push({ tab: aTab, options: aOptions });
+  if (!reserveToAttachTabFromRestoredInfo.promisedDone) {
+    reserveToAttachTabFromRestoredInfo.promisedDone = new Promise((aResolve, aReject) => {
+      reserveToAttachTabFromRestoredInfo.onDone = aResolve;
+    });
+  }
   reserveToAttachTabFromRestoredInfo.waiting = setTimeout(async () => {
     reserveToAttachTabFromRestoredInfo.waiting = null;
     var tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
@@ -405,11 +411,15 @@ function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
         bulk
       }));
     }));
+    reserveToAttachTabFromRestoredInfo.onDone();
+    delete reserveToAttachTabFromRestoredInfo.onDone;
+    delete reserveToAttachTabFromRestoredInfo.promisedDone;
     dumpAllTabs();
   }, 100);
 }
 reserveToAttachTabFromRestoredInfo.waiting = null;
 reserveToAttachTabFromRestoredInfo.tasks   = [];
+reserveToAttachTabFromRestoredInfo.promisedDone = null;
 
 async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
