@@ -1046,8 +1046,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     return;
   }
 
-  if (isSurelyCollapsed.updating[aTab.id])
-    await isSurelyCollapsed.updating[aTab.id];
+  await isSurelyCollapsed(aTab);
 
   let onCompletelyUpdated;
   isSurelyCollapsed.updating[aTab.id] = new Promise((aResolve, aReject) => {
@@ -1169,10 +1168,12 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
 }
 
 async function isSurelyCollapsed(aTab) {
+/*
   if (isSurelyCollapsed.updating[aTab.id])
     return isSurelyCollapsed.updating[aTab.id].then(() => {
       return isCollapsed(aTab);
     });
+*/
   return isCollapsed(aTab);
 }
 isSurelyCollapsed.updating = {};
