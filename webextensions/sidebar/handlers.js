@@ -1099,7 +1099,6 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       });
       if (onCompletelyUpdated) {
         onCompletelyUpdated(aTab);
-        log('collapseExpandTab: finished for ', aTab.apiTab.id);
         cancelUpdating();
       }
     });
