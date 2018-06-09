@@ -61,7 +61,7 @@ function endObserveApiTabs() {
 }
 
 
-var gCreatingTabs = {};
+const gCreatingTabs = {};
 
 function hasCreatingTab() {
   return Object.keys(gCreatingTabs).length > 0;
@@ -74,7 +74,7 @@ async function waitUntilAllTabsAreCreated() {
 async function waitUntilTabsAreCreated(aIdOrIds) {
   if (!Array.isArray(aIdOrIds))
     aIdOrIds = [aIdOrIds];
-  var creatingTabs = aIdOrIds.filter(aId => !!aId)
+  const creatingTabs = aIdOrIds.filter(aId => !!aId)
     .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
     .map(aId => gCreatingTabs[aId])
     .filter(aCreating => !!aCreating);
