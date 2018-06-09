@@ -954,26 +954,30 @@ async function onTabCompletelyClosed(aTab) {
   });
 }
 
-function onTabMoving(aTab) {
+async function onTabMoving(aTab) {
   tabContextMenu.close();
   if (configs.animation &&
-      !isCollapsed(aTab) &&
       !isPinned(aTab) &&
       !isOpening(aTab)) {
     aTab.classList.add(kTAB_STATE_MOVING);
+    await nextFrame();
+    if (!ensureLivingTab(aTab)) // it was removed while waiting
+      return;
+    const visible = !(await isSurelyCollapsed(aTab));
+    if (visible)
     collapseExpandTab(aTab, {
       collapsed: true,
       justNow:   true
     });
-    nextFrame().then(async () => {
+    await nextFrame();
       if (!ensureLivingTab(aTab)) // it was removed while waiting
         return;
+      if (visible)
       collapseExpandTab(aTab, {
         collapsed: false
       });
       await wait(configs.collapseDuration);
       aTab.classList.remove(kTAB_STATE_MOVING);
-    });
   }
 }
 
@@ -1042,6 +1046,15 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     return;
   }
 
+  let onCompletelyUpdated;
+  isSurelyCollapsed.updating[aTab.apiTab.id] = new Promise((aResolve, aReject) => {
+    onCompletelyUpdated = aResolve;
+  });
+  const cancelUpdating = () => {
+    delete isSurelyCollapsed.updating[aTab.apiTab.id]
+    onCompletelyUpdated = undefined;
+  };
+
   if (toBeCollapsed) {
     aTab.classList.add(kTAB_STATE_COLLAPSING);
   }
@@ -1053,8 +1066,10 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   reserveToUpdateTabbarLayout({ reason });
 
   nextFrame().then(() => {
-    if (!ensureLivingTab(aTab)) // it was removed while waiting
+    if (!ensureLivingTab(aTab)) { // it was removed while waiting
+      cancelUpdating();
       return;
+    }
 
     //log('start animation for ', dumpTab(aTab));
     if (aInfo.last)
@@ -1080,14 +1095,25 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
         collapsed: toBeCollapsed,
         reason
       });
+      if (onCompletelyUpdated) {
+        onCompletelyUpdated(aTab);
+        log('collapseExpandTab: finished for ', aTab.apiTab.id);
+        cancelUpdating();
+      }
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (!ensureLivingTab(aTab) ||
-          !aTab.onEndCollapseExpandAnimation)
+          !aTab.onEndCollapseExpandAnimation) {
+        cancelUpdating();
         return;
+      }
       delete aTab.onEndCollapseExpandAnimation.timeout;
       aTab.onEndCollapseExpandAnimation();
       delete aTab.onEndCollapseExpandAnimation;
+      if (onCompletelyUpdated) {
+        onCompletelyUpdated(aTab);
+        cancelUpdating();
+      }
     }, configs.collapseDuration);
   });
 }
@@ -1138,6 +1164,15 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
       notifyOnOutOfView: true
     });
 }
+
+async function isSurelyCollapsed(aTab) {
+  if (isSurelyCollapsed.updating[aTab.id])
+    return isSurelyCollapsed.updating[aTab.id].then(() => {
+      return isCollapsed(aTab);
+    });
+  return isCollapsed(aTab);
+}
+isSurelyCollapsed.updating = {};
 
 
 /*
