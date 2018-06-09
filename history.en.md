@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Apply more theme colors for "Plain", "Vertigo" and "Mixed" for other addons like "Firefox Color".
+   * Clear "dragging" state of tabs more aggressively.
+   * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
+   * Keep tree expanded after restoration, for restoration without cache.
  - 2.4.24 (2018.6.3)
    * Some context menu commands didn't work when animation effect is disabled, on 2.4.22 and 2.4.23. (regression)
    * Fix 100% CPU usage problem on loading `about;treestyletab-group` on any existing group tab.
