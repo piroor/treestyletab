@@ -1167,12 +1167,10 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
 }
 
 async function isSurelyCollapsed(aTab) {
-/*
   if (isSurelyCollapsed.updating[aTab.id])
     return isSurelyCollapsed.updating[aTab.id].then(() => {
       return isCollapsed(aTab);
     });
-*/
   return isCollapsed(aTab);
 }
 isSurelyCollapsed.updating = {};
@@ -1400,6 +1398,7 @@ function onMessage(aMessage, aSender, aRespond) {
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
+        await isSurelyCollapsed(tab);
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (aMessage.byAncestor &&
