@@ -1016,7 +1016,7 @@ function onTabSubtreeCollapsedStateChanging(aTab, aInfo = {}) {
   reserveToUpdateTabTooltip(aTab);
 }
 
-function onTabCollapsedStateChanging(aTab, aInfo = {}) {
+async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
 
   if (configs.logOnCollapseExpand)
@@ -1046,12 +1046,15 @@ function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     return;
   }
 
+  if (isSurelyCollapsed.updating[aTab.id])
+    await isSurelyCollapsed.updating[aTab.id];
+
   let onCompletelyUpdated;
-  isSurelyCollapsed.updating[aTab.apiTab.id] = new Promise((aResolve, aReject) => {
+  isSurelyCollapsed.updating[aTab.id] = new Promise((aResolve, aReject) => {
     onCompletelyUpdated = aResolve;
   });
   const cancelUpdating = () => {
-    delete isSurelyCollapsed.updating[aTab.apiTab.id]
+    delete isSurelyCollapsed.updating[aTab.id]
     onCompletelyUpdated = undefined;
   };
 
