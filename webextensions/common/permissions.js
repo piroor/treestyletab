@@ -85,7 +85,7 @@ const Permissions = {
         notify({
           title:   browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_title'),
           message: browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_message'),
-          icon:    'resources/24x24-light.svg'
+          icon:    'resources/24x24.svg'
         });
         return;
 
