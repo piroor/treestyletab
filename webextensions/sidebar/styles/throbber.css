@@ -6,7 +6,7 @@
 */
 
 :root {
-  --throbber-color: var(--browser-loading-indicator-color, Highlight);
+  --throbber-color: var(--browser-loading-indicator, Highlight);
   --throbber-shadow-color: transparent;
   --throbber-size: var(--svg-small-icon-size);
   --tab-burster-size: 5px;
