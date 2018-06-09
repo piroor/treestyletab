@@ -965,19 +965,19 @@ async function onTabMoving(aTab) {
       return;
     const visible = !(await isSurelyCollapsed(aTab));
     if (visible)
-    collapseExpandTab(aTab, {
-      collapsed: true,
-      justNow:   true
-    });
+      collapseExpandTab(aTab, {
+        collapsed: true,
+        justNow:   true
+      });
     await nextFrame();
-      if (!ensureLivingTab(aTab)) // it was removed while waiting
-        return;
-      if (visible)
+    if (!ensureLivingTab(aTab)) // it was removed while waiting
+      return;
+    if (visible)
       collapseExpandTab(aTab, {
         collapsed: false
       });
-      await wait(configs.collapseDuration);
-      aTab.classList.remove(kTAB_STATE_MOVING);
+    await wait(configs.collapseDuration);
+    aTab.classList.remove(kTAB_STATE_MOVING);
   }
 }
 
