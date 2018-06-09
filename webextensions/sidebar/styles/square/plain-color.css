@@ -15,7 +15,7 @@
   --tab-text-inverted: var(--browser-bg-more-lighter, var(--toolbar-non-lwt-bgcolor));
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: Highlight;
-  --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */));
   --tab-surface-hover: var(--browser-bg-more-more-lighter, #fefefe /* ThreeDHighlight */);
   --tab-surface-active: var(--face-highlight-more-lighter, Highlight);
   --tab-surface-active-hover: var(--face-highlight-more-more-lighter, Highlight);
@@ -37,7 +37,7 @@
   --tab-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
   --tab-text-active: var(--tab-text);
   --tab-text-active-inverted: Highlight;
-  --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
   --tab-surface-hover: var(--browser-bg-more-lighter, ThreeDHighlight);
   --tab-surface-active: var(--face-highlight-more-lighter, Highlight);
   --tab-surface-active-hover: var(--face-highlight-more-more-lighter, Highlight);

@@ -45,7 +45,7 @@
   --tab-text-inverted: var(--browser-bg-lighter, white);
   --tab-active-text: var(--browser-fg-active, var(--toolbar-non-lwt-textcolor));
   --tab-active-text-inverted: var(--browser-bg-more-lighter, white);
-  --tab-border: var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */);
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, #b1b1b3 /* ThreeDShadow */));
   --tab-dropmarker: var(--browser-fg, var(--toolbar-non-lwt-textcolor));
 
   --tab-surface-hover: var(--browser-bg-less-lighter, #e0e8f6);
@@ -74,7 +74,7 @@
   --tab-text-inverted: var(--browser-bg-lighter, -moz-dialog);
   --tab-active-text: var(--browser-fg-active, -moz-dialogtext);
   --tab-active-text-inverted: var(--browser-bg-more-lighter, -moz-dialog);
-  --tab-border: var(--browser-bg-more-darker, ThreeDShadow);
+  --tab-border: var(--browser-border, var(--browser-bg-more-darker, ThreeDShadow));
   --tab-dropmarker: var(--browser-fg, -moz-dialogtext);
 }
 

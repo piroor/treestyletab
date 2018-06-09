@@ -328,6 +328,7 @@ function applyBrowserTheme(aTheme) {
       --browser-bg-more-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
       --browser-fg:              ${aTheme.colors.textcolor};
       --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
+      --browser-border:          ${mixCSSColors(aTheme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
     }
   `;
