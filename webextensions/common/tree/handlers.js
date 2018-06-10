@@ -98,10 +98,31 @@ async function waitUntilAllTabsAreMoved() {
 }
 
 
+const gTabOperationQueue = [];
+
+function addTabOperationQueue() {
+  let onCompleted;
+  const previous = gTabOperationQueue[gTabOperationQueue.length - 1];
+  const queue = new Promise((aResolve, aReject) => {
+    onCompleted = aResolve;
+  });
+  queue.then(() => {
+    gTabOperationQueue.splice(gTabOperationQueue.indexOf(queue), 1);
+  });
+  gTabOperationQueue.push(queue);
+  return [onCompleted, previous];
+}
+
+
 async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
   const container = getOrBuildTabsContainer(aActiveInfo.windowId);
 
   let byInternalOperation = parseInt(container.dataset.internalFocusCount) > 0;
@@ -115,8 +136,10 @@ async function onApiTabActivated(aActiveInfo) {
   await waitUntilTabsAreCreated(aActiveInfo.tabId);
 
   const newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
-  if (!newTab)
+  if (!newTab) {
+    onCompleted();
     return;
+  }
 
   log('tabs.onActivated: ', dumpTab(newTab));
   const oldActiveTabs = updateTabFocused(newTab);
@@ -131,8 +154,10 @@ async function onApiTabActivated(aActiveInfo) {
     if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) // reduce count even if not redirected
       decrementContainerCounter(container, 'tryingReforcusForClosingCurrentTabCount');
     log('focusRedirected: ', focusRedirected);
-    if (focusRedirected)
+    if (focusRedirected) {
+      onCompleted();
       return;
+    }
   }
   else if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) { // treat as "redirected unintentional tab focus"
     decrementContainerCounter(container, 'tryingReforcusForClosingCurrentTabCount');
@@ -140,8 +165,10 @@ async function onApiTabActivated(aActiveInfo) {
     byInternalOperation = false;
   }
 
-  if (!ensureLivingTab(newTab)) // it can be removed while waiting
+  if (!ensureLivingTab(newTab)) { // it can be removed while waiting
+    onCompleted();
     return;
+  }
 
   const focusOverridden = window.onTabFocusing && await onTabFocusing(newTab, {
     byCurrentTabRemove,
@@ -149,11 +176,15 @@ async function onApiTabActivated(aActiveInfo) {
     byInternalOperation,
     silently
   });
-  if (focusOverridden)
+  if (focusOverridden) {
+    onCompleted();
     return;
+  }
 
-  if (!ensureLivingTab(newTab)) // it can be removed while waiting
+  if (!ensureLivingTab(newTab)) { // it can be removed while waiting
+    onCompleted();
     return;
+  }
 
   window.onTabFocused && await onTabFocused(newTab, {
     oldActiveTabs,
@@ -162,6 +193,12 @@ async function onApiTabActivated(aActiveInfo) {
     byInternalOperation,
     silently
   });
+  onCompleted();
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
+  }
 }
 
 function clearOldActiveStateInWindow(aWindowId) {
@@ -186,9 +223,16 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
 
   await waitUntilTabsAreCreated(aTabId);
 
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
   const updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
-  if (!updatedTab)
+  if (!updatedTab) {
+    onCompleted();
     return;
+  }
 
   if (configs.logOnUpdated)
     log('tabs.onUpdated ', aTabId, aChangeInfo, aTab, updatedTab.apiTab);
@@ -217,7 +261,13 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   });
   updateParentTab(getParentTab(updatedTab));
 
-  window.onTabUpdated && onTabUpdated(updatedTab, aChangeInfo);
+  window.onTabUpdated && await onTabUpdated(updatedTab, aChangeInfo);
+  onCompleted();
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
+  }
 }
 
 function onApiTabCreated(aTab) {
@@ -233,6 +283,12 @@ async function onNewTabTracked(aTab) {
     return null;
 
   await waitUntilAllTabsAreCreated();
+
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
   log('onNewTabTracked: ', aTab);
   const container = getOrBuildTabsContainer(aTab.windowId);
 
@@ -244,13 +300,13 @@ async function onNewTabTracked(aTab) {
   const nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
-  let onTabCreated = () => {};
+  let onTabCreated = onCompleted;
   if (configs.accelaratedTabCreation) {
     gCreatingTabs[aTab.id] = newTab.uniqueId;
   }
   else {
     gCreatingTabs[aTab.id] = new Promise((aResolve, aReject) => {
-      onTabCreated = aResolve;
+      onTabCreated = (aUniqueId) => { onCompleted(); aResolve(aUniqueId); };
     });
   }
   const uniqueId = await newTab.uniqueId;
@@ -370,6 +426,11 @@ async function onNewTabTracked(aTab) {
 
   onTabCreated(uniqueId);
   return newTab;
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
+  }
 }
 
 // "Recycled tab" is an existing but reused tab for session restoration.
@@ -411,9 +472,17 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
     decrementContainerCounter(container, 'internalClosingCount');
 
   await waitUntilAllTabsAreCreated();
-  var oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
-  if (!oldTab)
+
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
+  const oldTab = getTabById({ tab: aTabId, window: aRemoveInfo.windowId });
+  if (!oldTab) {
+    onCompleted();
     return;
+  }
 
   log('tabs.onRemoved, tab is found: ', dumpTab(oldTab));
 
@@ -434,10 +503,16 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
     await onTabCompletelyClosed(oldTab, {
       byInternalOperation
     });
-    onApiTabRemovedComplete(oldTab);
+    await onApiTabRemovedComplete(oldTab);
   }
   else {
-    onApiTabRemovedComplete(oldTab);
+    await onApiTabRemovedComplete(oldTab);
+  }
+  onCompleted();
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
   }
 }
 function onApiTabRemovedComplete(aTab) {
@@ -473,9 +548,14 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   await waitUntilTabsAreCreated(aTabId);
   await waitUntilAllTabsAreMoved();
 
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
   let completelyMoved;
   gMovingTabs[aTabId] = new Promise((aResolve, aReject) => {
-    completelyMoved = aResolve;
+    completelyMoved = () => { onCompleted(); aResolve() };
   });
 
   /* When a tab is pinned, tabs.onMoved may be notified before
@@ -538,6 +618,11 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (byInternalOperation)
     decrementContainerCounter(container, 'internalMovingCount');
   completelyMoved();
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
+  }
 }
 
 var gTreeInfoForTabsMovingAcrossWindows = {};
@@ -547,6 +632,11 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
       aAttachInfo.newWindowId != gTargetWindow)
     return;
 
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
   log('tabs.onAttached, id: ', aTabId, aAttachInfo);
   let apiTab;
   await Promise.all([
@@ -556,8 +646,10 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
     })(),
     waitUntilTabsAreCreated(aTabId)
   ]);
-  if (!apiTab)
+  if (!apiTab) {
+    onCompleted();
     return;
+  }
 
   TabIdFixer.fixTab(apiTab);
 
@@ -572,18 +664,32 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   info.byInternalOperation = info.byInternalOperation || byInternalOperation;
 
   if (!byInternalOperation) // we should process only tabs attached by others.
-    window.onTabAttachedToWindow && onTabAttachedToWindow(newTab, info);
+    window.onTabAttachedToWindow && await onTabAttachedToWindow(newTab, info);
+
+  onCompleted();
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
+  }
 }
 
-function onApiTabDetached(aTabId, aDetachInfo) {
+async function onApiTabDetached(aTabId, aDetachInfo) {
   if (gTargetWindow &&
       aDetachInfo.oldWindowId != gTargetWindow)
     return;
 
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
   log('tabs.onDetached, id: ', aTabId, aDetachInfo);
   const oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
-  if (!oldTab)
+  if (!oldTab) {
+    onCompleted();
     return;
+  }
 
   const byInternalOperation = parseInt(oldTab.parentNode.dataset.toBeDetachedTabs) > 0;
   if (byInternalOperation)
@@ -595,19 +701,31 @@ function onApiTabDetached(aTabId, aDetachInfo) {
     descendants: getDescendantTabs(oldTab)
   };
 
-  window.onTabStateChanged && onTabStateChanged(oldTab);
+  window.onTabStateChanged && await onTabStateChanged(oldTab);
 
   if (!byInternalOperation) // we should process only tabs detached by others.
-    window.onTabDetachedFromWindow && onTabDetachedFromWindow(oldTab, info);
+    window.onTabDetachedFromWindow && await onTabDetachedFromWindow(oldTab, info);
 
   const container = oldTab.parentNode;
   clearTabRelationsForRemovedTab(oldTab);
   container.removeChild(oldTab);
   if (!container.hasChildNodes())
     container.parentNode.removeChild(container);
+
+  onCompleted();
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
+  }
 }
 
-function onApiWindowRemoved(aWindowId) {
+async function onApiWindowRemoved(aWindowId) {
+  const [onCompleted, previous] = addTabOperationQueue();
+  if (!configs.accelaratedTabOperations && previous)
+    await previous;
+
+  try {
   log('onApiWindowRemoved ', aWindowId);
   const container = getTabsContainer(aWindowId);
   if (container) {
@@ -617,6 +735,13 @@ function onApiWindowRemoved(aWindowId) {
       clearTimeout(container.reservedCleanupNeedlessGroupTab);
       delete container.reservedCleanupNeedlessGroupTab;
     }
+  }
+
+  onCompleted();
+  }
+  catch(e) {
+    console.log(e);
+    onCompleted();
   }
 }
 
