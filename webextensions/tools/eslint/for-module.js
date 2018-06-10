@@ -9,6 +9,8 @@ module.exports = {
   },
 
   'rules': {
+    'no-unused-expressions': 'error',
+
     'no-undef': ['error', {
       'typeof': true,
     }],
