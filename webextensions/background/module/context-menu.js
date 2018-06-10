@@ -5,6 +5,18 @@
 */
 'use strict';
 
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  tabContextMenu: false,
+  kTSTAPI_CONTEXT_MENU_REMOVE_ALL: false,
+  kTSTAPI_CONTEXT_MENU_CREATE: false,
+  getTabById: false,
+  log: false,
+  Commands: false,
+  configs: false,
+ */
+
+
 var gContextMenuItems = `
   reloadTree
   reloadDescendants
@@ -19,7 +31,7 @@ var gContextMenuItems = `
   bookmarkTree
 `.trim().split(/\s+/);
 
-async function refreshContextMenuItems() {
+export async function refreshContextMenuItems() {
   browser.contextMenus.removeAll();
   tabContextMenu.onExternalMessage({
     type: kTSTAPI_CONTEXT_MENU_REMOVE_ALL
@@ -59,7 +71,7 @@ async function refreshContextMenuItems() {
   }
 }
 
-var contextMenuClickListener = (aInfo, aAPITab) => {
+export var contextMenuClickListener = (aInfo, aAPITab) => {
   log('context menu item clicked: ', aInfo, aAPITab);
 
   var contextTab = getTabById(aAPITab);
