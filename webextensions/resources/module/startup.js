@@ -5,6 +5,11 @@
 */
 'use strict';
 
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  configs: false,
+ */
+
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;
 
