@@ -299,7 +299,7 @@
   "config_logOnCollapseExpand_label": { "message": "輸出折疊展開樹的相關日誌" },
   "config_simulateSVGContextFill_label": { "message": "模擬 SVG 圖標以解決 Bug 1388193 及 Bug 1421329 (※可能會提高 CPU 用量。在 Bug 修正前，若想禁用此選項必須啟用「about:config」的「svg.context-properties.content.enabled」)" },
   "config_useCachedTree_label": { "message": "以快取加速樹狀結構初始化" },
-  "config_accelaratedTabDuplication_label": { "message": "加快分頁複制(※動作會不穩定)" },
+  "config_acceleratedTabDuplication_label": { "message": "加快分頁複制(※動作會不穩定)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "亳秒內未複制完成即中斷。" },
   "config_sidebarScrollbarPosition_caption": { "message": "捲軸位置" },

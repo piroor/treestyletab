@@ -174,7 +174,7 @@
 
   "config_debug_caption": { "message": "开发" },
   "config_debug_label": { "message": "调试模式" },
-  "config_accelaratedTabDuplication_label": { "message": "加速标签页复制操作（过程中会看到非稳定的变化）" },
+  "config_acceleratedTabDuplication_label": { "message": "加速标签页复制操作（过程中会看到非稳定的变化）" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "中止复制标签页，如果按住超过" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "毫秒。" },
 

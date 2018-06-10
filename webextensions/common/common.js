@@ -231,9 +231,9 @@ configs = new Configs({
 
 
   // misc.
-  accelaratedTabOperations: true,
-  accelaratedTabCreation: false,
-  accelaratedTabDuplication: false,
+  acceleratedTabOperations: true,
+  acceleratedTabCreation: false,
+  acceleratedTabDuplication: false,
   enableWorkaroundForBug1409262: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   acceptableDelayForInternalFocusMoving: 150,

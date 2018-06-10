@@ -119,7 +119,7 @@ async function onApiTabActivated(aActiveInfo) {
     return;
 
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
@@ -224,7 +224,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   await waitUntilTabsAreCreated(aTabId);
 
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
@@ -285,7 +285,7 @@ async function onNewTabTracked(aTab) {
   await waitUntilAllTabsAreCreated();
 
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
@@ -301,7 +301,7 @@ async function onNewTabTracked(aTab) {
     container.insertBefore(newTab, nextTab);
 
     let onTabCreated = onCompleted;
-    if (configs.accelaratedTabCreation) {
+    if (configs.acceleratedTabCreation) {
       gCreatingTabs[aTab.id] = newTab.uniqueId;
     }
     else {
@@ -474,7 +474,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   await waitUntilAllTabsAreCreated();
 
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
@@ -549,7 +549,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   await waitUntilAllTabsAreMoved();
 
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
@@ -633,7 +633,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
     return;
 
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
@@ -680,7 +680,7 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
     return;
 
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
@@ -722,7 +722,7 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
 
 async function onApiWindowRemoved(aWindowId) {
   const [onCompleted, previous] = addTabOperationQueue();
-  if (!configs.accelaratedTabOperations && previous)
+  if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
