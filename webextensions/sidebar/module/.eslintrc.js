@@ -8,10 +8,6 @@ module.exports = {
     'sourceType': 'module',
   },
 
-  'env': {
-    'browser': true,
-  },
-
   'rules': {
     'no-undef': ['error', {
       'typeof': true,
