@@ -474,7 +474,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   await waitUntilAllTabsAreMoved();
 
   let completelyMoved;
-  gMovingTabs[aTab.id] = new Promise((aResolve, aReject) => {
+  gMovingTabs[aTabId] = new Promise((aResolve, aReject) => {
     completelyMoved = aResolve;
   });
 
