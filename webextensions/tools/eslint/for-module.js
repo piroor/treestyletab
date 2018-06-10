@@ -10,6 +10,7 @@ module.exports = {
 
   'rules': {
     'no-unused-expressions': 'error',
+    'no-unused-labels': 'error',
 
     'no-undef': ['error', {
       'typeof': true,
