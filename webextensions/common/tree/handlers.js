@@ -87,7 +87,7 @@ async function waitUntilAllTabsAreCreated() {
 
 async function waitUntilTabsAreCreated(aIdOrIds) {
   return waitUntilTabsAreOperated(aIdOrIds, gCreatingTabs)
-      .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
+    .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
 }
 
 
