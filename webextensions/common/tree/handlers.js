@@ -89,26 +89,26 @@ async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
     return;
 
-  var container = getOrBuildTabsContainer(aActiveInfo.windowId);
+  const container = getOrBuildTabsContainer(aActiveInfo.windowId);
 
-  var byInternalOperation = parseInt(container.dataset.internalFocusCount) > 0;
+  let byInternalOperation = parseInt(container.dataset.internalFocusCount) > 0;
   if (byInternalOperation)
     decrementContainerCounter(container, 'internalFocusCount');
-  var silently = parseInt(container.dataset.internalSilentlyFocusCount) > 0;
+  const silently = parseInt(container.dataset.internalSilentlyFocusCount) > 0;
   if (silently)
     decrementContainerCounter(container, 'internalSilentlyFocusCount');
-  var byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
+  const byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
   await waitUntilTabsAreCreated(aActiveInfo.tabId);
 
-  var newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
+  const newTab = getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
   if (!newTab)
     return;
 
   log('tabs.onActivated: ', dumpTab(newTab));
-  var oldActiveTabs = updateTabFocused(newTab);
+  const oldActiveTabs = updateTabFocused(newTab);
 
-  var byCurrentTabRemove = !!container.resolveClosedWhileActiveForPreviousActiveTab;
+  let byCurrentTabRemove = !!container.resolveClosedWhileActiveForPreviousActiveTab;
   if (byCurrentTabRemove) {
     incrementContainerCounter(container, 'tryingReforcusForClosingCurrentTabCount');
     container.resolveClosedWhileActiveForPreviousActiveTab();
@@ -130,7 +130,7 @@ async function onApiTabActivated(aActiveInfo) {
   if (!ensureLivingTab(newTab)) // it can be removed while waiting
     return;
 
-  var focusOverridden = window.onTabFocusing && await onTabFocusing(newTab, {
+  const focusOverridden = window.onTabFocusing && await onTabFocusing(newTab, {
     byCurrentTabRemove,
     byTabDuplication,
     byInternalOperation,
@@ -152,10 +152,10 @@ async function onApiTabActivated(aActiveInfo) {
 }
 
 function clearOldActiveStateInWindow(aWindowId) {
-  var container = getTabsContainer(aWindowId);
+  const container = getTabsContainer(aWindowId);
   if (!container)
     return [];
-  var oldTabs = container.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
+  const oldTabs = container.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
     oldTab.classList.remove(kTAB_STATE_ACTIVE);
     if (oldTab.apiTab) // this function can be applied for cached tab.
@@ -173,7 +173,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
 
   await waitUntilTabsAreCreated(aTabId);
 
-  var updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
+  const updatedTab = getTabById({ tab: aTabId, window: aTab.windowId });
   if (!updatedTab)
     return;
 
@@ -221,14 +221,14 @@ async function onNewTabTracked(aTab) {
 
   await waitUntilAllTabsAreCreated();
   log('onNewTabTracked: ', aTab);
-  var container = getOrBuildTabsContainer(aTab.windowId);
+  const container = getOrBuildTabsContainer(aTab.windowId);
 
-  var hasNextTab = !!getAllTabs(container)[aTab.index];
+  const hasNextTab = !!getAllTabs(container)[aTab.index];
 
-  var newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
+  const newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
   newTab.classList.add(kTAB_STATE_OPENING);
 
-  var nextTab = getAllTabs(container)[aTab.index];
+  const nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
   let onTabCreated = () => {};
@@ -240,7 +240,7 @@ async function onNewTabTracked(aTab) {
       onTabCreated = aResolve;
     });
   }
-  var uniqueId = await newTab.uniqueId;
+  const uniqueId = await newTab.uniqueId;
   if (gCreatingTabs[aTab.id] === newTab.uniqueId)
     delete gCreatingTabs[aTab.id];
 
@@ -255,12 +255,12 @@ async function onNewTabTracked(aTab) {
   });
 
   // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
-  var treeForActionDetection = snapshotTreeForActionDetection(newTab);
+  const treeForActionDetection = snapshotTreeForActionDetection(newTab);
 
-  var activeTab            = getCurrentTab(container);
-  var openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
-  var duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
-  var maybeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
+  const activeTab            = getCurrentTab(container);
+  const openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
+  const duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
+  const maybeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
 
   if (openedWithPosition)
     decrementContainerCounter(container, 'toBeOpenedTabsWithPositions');
@@ -269,18 +269,16 @@ async function onNewTabTracked(aTab) {
   if (duplicatedInternally)
     decrementContainerCounter(container, 'duplicatingTabsCount');
 
-  var duplicated = duplicatedInternally || uniqueId.duplicated;
-  var restored   = uniqueId.restored;
+  const duplicated = duplicatedInternally || uniqueId.duplicated;
+  const restored   = uniqueId.restored;
   if (restored) {
     container.restoredCount = container.restoredCount || 0;
     container.restoredCount++;
-    let start = Date.now();
     if (!container.allTabsRestored) {
       log('Maybe starting to restore window ', aTab.id);
       container.allTabsRestored = new Promise((aResolve, aReject) => {
-        var start = Date.now();
-        var lastCount = container.restoredCount;
-        var timer = setInterval(() => {
+        let lastCount = container.restoredCount;
+        const timer = setInterval(() => {
           if (lastCount != container.restoredCount) {
             lastCount = container.restoredCount;
             return;
@@ -307,7 +305,7 @@ async function onNewTabTracked(aTab) {
     return;
   }
 
-  var moved = window.onTabOpening && await onTabOpening(newTab, {
+  const moved = window.onTabOpening && await onTabOpening(newTab, {
     maybeOpenedWithPosition: openedWithPosition,
     maybeOrphan,
     restored,
@@ -364,7 +362,7 @@ async function onNewTabTracked(aTab) {
 // "Recycled tab" is an existing but reused tab for session restoration.
 const kBASE_RECYCLED_TAB_CONDITION = `li:not(.${kTAB_STATE_RESTORED}):not(.${kTAB_STATE_OPENING})`;
 function checkRecycledTab(aContainer) {
-  var possibleRecycledTabs = aContainer.querySelectorAll(`
+  const possibleRecycledTabs = aContainer.querySelectorAll(`
     ${kBASE_RECYCLED_TAB_CONDITION}:not([${kCURRENT_URI}]),
     ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}"],
     ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="about:blank"],
@@ -394,8 +392,8 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
 
-  var container = getOrBuildTabsContainer(aRemoveInfo.windowId);
-  var byInternalOperation = parseInt(container.dataset.internalClosingCount) > 0;
+  const container = getOrBuildTabsContainer(aRemoveInfo.windowId);
+  const byInternalOperation = parseInt(container.dataset.internalClosingCount) > 0;
   if (byInternalOperation)
     decrementContainerCounter(container, 'internalClosingCount');
 
@@ -431,7 +429,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 }
 function onApiTabRemovedComplete(aTab) {
   clearTabRelationsForRemovedTab(aTab);
-  var container = aTab.parentNode;
+  const container = aTab.parentNode;
   if (!container) // it was removed while waiting
     return;
   container.removeChild(aTab);
@@ -458,8 +456,8 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
 
-  var container = getOrBuildTabsContainer(aMoveInfo.windowId);
-  var byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
+  const container = getOrBuildTabsContainer(aMoveInfo.windowId);
+  const byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
   await waitUntilTabsAreCreated(aTabId);
   await Promise.all(gPendingTabMoves);
@@ -475,7 +473,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
      tab bar to follow their parent pinning tab. To avoid this
      problem, we have to wait for a while with this "async" and
      do following processes after the tab is completely pinned. */
-  var movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
+  const movedTab = getTabById({ tab: aTabId, window: aMoveInfo.windowId });
   if (!movedTab) {
     if (byInternalOperation)
       decrementContainerCounter(container, 'internalMovingCount');
@@ -483,27 +481,27 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     return;
   }
 
-  var oldPreviousTab = getPreviousTab(movedTab);
-  var oldNextTab     = getNextTab(movedTab);
+  let oldPreviousTab = getPreviousTab(movedTab);
+  let oldNextTab     = getNextTab(movedTab);
   if (getTabIndex(aMoveInfo) != aMoveInfo.toIndex) { // already moved
     let tabs = getAllTabs(container);
     oldPreviousTab = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex : aMoveInfo.fromIndex - 1];
     oldNextTab     = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex + 1 : aMoveInfo.fromIndex];
   }
-  var moveInfo = Object.assign({}, aMoveInfo, {
+  const moveInfo = Object.assign({}, aMoveInfo, {
     byInternalOperation,
     oldPreviousTab,
     oldNextTab
   });
   log('tabs.onMoved: ', dumpTab(movedTab), moveInfo, movedTab.apiTab);
 
-  var alreadyMoved = false;
+  let alreadyMoved = false;
   if (parseInt(container.dataset.alreadyMovedTabsCount) > 0) {
     decrementContainerCounter(container, 'alreadyMovedTabsCount');
     alreadyMoved = true;
   }
 
-  var canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
+  const canceled = window.onTabMoving && await onTabMoving(movedTab, moveInfo);
   if (!canceled &&
       ensureLivingTab(movedTab)) { // it is removed while waiting
     let newNextIndex = moveInfo.toIndex;
@@ -539,7 +537,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
     return;
 
   log('tabs.onAttached, id: ', aTabId, aAttachInfo);
-  var apiTab;
+  let apiTab;
   await Promise.all([
     (async () => {
       apiTab = await browser.tabs.get(aTabId).catch(handleMissingTabError);
@@ -553,11 +551,11 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   TabIdFixer.fixTab(apiTab);
 
   clearOldActiveStateInWindow(aAttachInfo.newWindowId);
-  var info = gTreeInfoForTabsMovingAcrossWindows[aTabId];
+  const info = gTreeInfoForTabsMovingAcrossWindows[aTabId];
   delete gTreeInfoForTabsMovingAcrossWindows[aTabId];
 
-  var newTab = await onNewTabTracked(apiTab);
-  var byInternalOperation = newTab && parseInt(newTab.parentNode.dataset.toBeAttachedTabs) > 0;
+  const newTab = await onNewTabTracked(apiTab);
+  const byInternalOperation = newTab && parseInt(newTab.parentNode.dataset.toBeAttachedTabs) > 0;
   if (byInternalOperation)
     decrementContainerCounter(newTab.parentNode, 'toBeAttachedTabs');
   info.byInternalOperation = info.byInternalOperation || byInternalOperation;
@@ -572,15 +570,15 @@ function onApiTabDetached(aTabId, aDetachInfo) {
     return;
 
   log('tabs.onDetached, id: ', aTabId, aDetachInfo);
-  var oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
+  const oldTab = getTabById({ tab: aTabId, window: aDetachInfo.oldWindowId });
   if (!oldTab)
     return;
 
-  var byInternalOperation = parseInt(oldTab.parentNode.dataset.toBeDetachedTabs) > 0;
+  const byInternalOperation = parseInt(oldTab.parentNode.dataset.toBeDetachedTabs) > 0;
   if (byInternalOperation)
     decrementContainerCounter(oldTab.parentNode, 'toBeDetachedTabs');
 
-  var info = gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
+  const info = gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
     byInternalOperation,
     windowId:    aDetachInfo.oldWindowId,
     descendants: getDescendantTabs(oldTab)
@@ -591,7 +589,7 @@ function onApiTabDetached(aTabId, aDetachInfo) {
   if (!byInternalOperation) // we should process only tabs detached by others.
     window.onTabDetachedFromWindow && onTabDetachedFromWindow(oldTab, info);
 
-  var container = oldTab.parentNode;
+  const container = oldTab.parentNode;
   clearTabRelationsForRemovedTab(oldTab);
   container.removeChild(oldTab);
   if (!container.hasChildNodes())
@@ -600,7 +598,7 @@ function onApiTabDetached(aTabId, aDetachInfo) {
 
 function onApiWindowRemoved(aWindowId) {
   log('onApiWindowRemoved ', aWindowId);
-  var container = getTabsContainer(aWindowId);
+  const container = getTabsContainer(aWindowId);
   if (container) {
     for (let tab of getAllTabs(container)) {
       if (!tab.reservedCleanupNeedlessGroupTab)
