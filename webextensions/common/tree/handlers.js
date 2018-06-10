@@ -61,6 +61,20 @@ function endObserveApiTabs() {
 }
 
 
+async function waitUntilTabsAreOperated(aIdOrIds, aSlot) {
+  if (!Array.isArray(aIdOrIds))
+    aIdOrIds = [aIdOrIds];
+  const operatingTabs = aIdOrIds
+    .map(aId => parseInt(aId))
+    .filter(aId => !!aId)
+    .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
+    .map(aId => aSlot[aId])
+    .filter(aOperating => !!aOperating);
+  if (operatingTabs.length)
+    return Promise.all(operatingTabs);
+  return [];
+}
+
 const gCreatingTabs = {};
 
 function hasCreatingTab() {
@@ -68,20 +82,19 @@ function hasCreatingTab() {
 }
 
 async function waitUntilAllTabsAreCreated() {
-  return waitUntilTabsAreCreated(Object.keys(gCreatingTabs).map(aId => parseInt(aId)));
+  return waitUntilTabsAreCreated(Object.keys(gCreatingTabs));
 }
 
 async function waitUntilTabsAreCreated(aIdOrIds) {
-  if (!Array.isArray(aIdOrIds))
-    aIdOrIds = [aIdOrIds];
-  const creatingTabs = aIdOrIds.filter(aId => !!aId)
-    .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
-    .map(aId => gCreatingTabs[aId])
-    .filter(aCreating => !!aCreating);
-  if (creatingTabs.length)
-    return Promise.all(creatingTabs)
+  return waitUntilTabsAreOperated(aIdOrIds, gCreatingTabs)
       .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
-  return [];
+}
+
+
+const gMovingTabs = {};
+
+async function waitUntilAllTabsAreMoved() {
+  return waitUntilTabsAreOperated(Object.keys(gMovingTabs), gMovingTabs);
 }
 
 
@@ -450,8 +463,6 @@ function clearTabRelationsForRemovedTab(aTab) {
   }
 }
 
-var gPendingTabMoves = [];
-
 async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
@@ -460,12 +471,12 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   const byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
   await waitUntilTabsAreCreated(aTabId);
-  await Promise.all(gPendingTabMoves);
+  await waitUntilAllTabsAreMoved();
 
   let completelyMoved;
-  gPendingTabMoves.push(new Promise((aResolve, aReject) => {
+  gMovingTabs[aTab.id] = new Promise((aResolve, aReject) => {
     completelyMoved = aResolve;
-  }));
+  });
 
   /* When a tab is pinned, tabs.onMoved may be notified before
      tabs.onUpdated(pinned=true) is notified. As the result,
