@@ -15,7 +15,7 @@ var gTabHeight          = 0;
 var gRestoringTabCount = 0;
 var gExternalListenerAddons = null;
 var gAddonStyles = {};
-var gMetricsData = new MetricsData();
+
 gMetricsData.add('Loaded');
 
 window.addEventListener('pagehide', destroy, { once: true });
