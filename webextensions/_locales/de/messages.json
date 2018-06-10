@@ -319,7 +319,7 @@
   "config_logOnCache_label":          { "message": "Logs ausgeben von zwischengespeichertem Baum" },
   "config_simulateSVGContextFill_label": { "message": "Workaround für Bug 1388193 und Bug 1421329 aktivieren um SVG-Icons zu simulieren (*Kann die CPU-Last erhöhen. Um diese Option zu deaktivieren, aktiviere \"svg.context-properties.content.enabled\" via \"about:config\", bis diese Bugs behoben sind.)" },
   "config_useCachedTree_label": { "message": "Zweig-Wiederherstellung mit Cache optimieren" },
-  "config_acccelaratedTabDuplication_label": { "message": "Operationen zum Duplizieren von Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
+  "config_accelaratedTabDuplication_label": { "message": "Operationen zum Duplizieren von Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Das Duplizieren von Tabs abbrechen, wenn es länger als" },
   "config_useCachedTree_description": { "message": "*Sollte es zu instabilem Verhalten der Baumstruktur kommen, kann es helfen, diese Einstellung zu deaktivieren und wieder zu aktivieren, um den Cache zu erneuern." },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "Millisekunden dauert." },

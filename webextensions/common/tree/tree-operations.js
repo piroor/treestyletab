@@ -1132,7 +1132,7 @@ async function moveTabs(aTabs, aOptions = {}) {
               log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, aAPITabs.map(aAPITab => aAPITab.id));
               return aAPITabs;
             });
-            if (configs.acccelaratedTabDuplication) {
+            if (configs.accelaratedTabDuplication) {
               // So, I collect duplicating tabs in different way.
               // This promise will be resolved when they actually
               // appear in the tab bar. This hack should be removed
