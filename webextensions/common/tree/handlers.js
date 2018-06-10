@@ -231,13 +231,23 @@ async function onNewTabTracked(aTab) {
   var nextTab = getAllTabs(container)[aTab.index];
   container.insertBefore(newTab, nextTab);
 
-  gCreatingTabs[aTab.id] = newTab.uniqueId;
+  let onTabCreated = () => {};
+  if (configs.accelaratedTabCreation) {
+    gCreatingTabs[aTab.id] = newTab.uniqueId;
+  }
+  else {
+    gCreatingTabs[aTab.id] = new Promise((aResolve, aReject) => {
+      onTabCreated = aResolve;
+    });
+  }
   var uniqueId = await newTab.uniqueId;
   if (gCreatingTabs[aTab.id] === newTab.uniqueId)
     delete gCreatingTabs[aTab.id];
 
-  if (!ensureLivingTab(newTab)) // it can be removed while waiting
+  if (!ensureLivingTab(newTab)) { // it can be removed while waiting
+    newTab.uniqueId.then(aUniqueId => onTabCreated(aUniqueId));
     return;
+  }
 
   updateTab(newTab, aTab, {
     tab:        aTab,
@@ -293,6 +303,7 @@ async function onNewTabTracked(aTab) {
   if (!container.parentNode ||
       !newTab.parentNode) {
     log(' => aborted ', aTab.id);
+    newTab.uniqueId.then(aUniqueId => onTabCreated(aUniqueId));
     return;
   }
 
@@ -314,8 +325,10 @@ async function onNewTabTracked(aTab) {
     }, 0);
   }
 
-  if (!ensureLivingTab(newTab)) // it can be removed while waiting
-    return null;
+  if (!ensureLivingTab(newTab)) { // it can be removed while waiting
+    newTab.uniqueId.then(aUniqueId => onTabCreated(aUniqueId));
+    return;
+  }
 
   log('uniqueId: ', uniqueId);
 
@@ -344,6 +357,7 @@ async function onNewTabTracked(aTab) {
       getCurrentTabs().some(aTabElement => aTabElement != newTab && aTabElement.parentNode == newTab.parentNode))
     onApiTabActivated({ tabId: aTab.id, windowId: aTab.windowId });
 
+  newTab.uniqueId.then(aUniqueId => onTabCreated(aUniqueId));
   return newTab;
 }
 
