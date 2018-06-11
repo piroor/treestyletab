@@ -179,7 +179,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 }
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
-  updateUniqueId(aTab);
+  Tabs.updateUniqueId(aTab);
   aTab.opened = Promise.resolve(true);
   aTab.closedWhileActive = new Promise((aResolve, aReject) => {
     aTab._resolveClosedWhileActive = aResolve;

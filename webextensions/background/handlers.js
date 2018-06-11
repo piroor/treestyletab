@@ -1376,7 +1376,7 @@ function onMessage(aMessage, aSender) {
         const tab = Tabs.getTabById(aMessage.id);
         if (tab && !aMessage.forceNew)
           return tab.uniqueId;
-        return requestUniqueId(aMessage.id, {
+        return Tabs.requestUniqueId(aMessage.id, {
           forceNew: aMessage.forceNew
         });
       })();

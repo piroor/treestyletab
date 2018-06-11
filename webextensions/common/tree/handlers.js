@@ -461,7 +461,7 @@ function checkRecycledTab(aContainer) {
   log(`Detecting recycled tabs for session restoration from ${possibleRecycledTabs.length} tabs`);
   for (let tab of possibleRecycledTabs) {
     let currentId = tab.getAttribute(Constants.kPERSISTENT_ID);
-    updateUniqueId(tab).then(aUniqueId => {
+    Tabs.updateUniqueId(tab).then(aUniqueId => {
       if (!Tabs.ensureLivingTab(tab) ||
           !aUniqueId.restored ||
           aUniqueId.id == currentId ||

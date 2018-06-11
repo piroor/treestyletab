@@ -46,77 +46,6 @@ var gScrollLockedBy  = {};
 
 var gIsMac = /^Mac/i.test(navigator.platform);
 
-async function requestUniqueId(aTabOrId, aOptions = {}) {
-  var tabId = aTabOrId;
-  var tab   = null;
-  if (typeof aTabOrId == 'number') {
-    tab = Tabs.getTabById(id);
-  }
-  else {
-    tabId = aTabOrId.apiTab.id;
-    tab   = aTabOrId;
-  }
-
-  if (aOptions.inRemote) {
-    return await browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_REQUEST_UNIQUE_ID,
-      id:       tabId,
-      forceNew: !!aOptions.forceNew
-    });
-  }
-
-  var originalId    = null;
-  var originalTabId = null;
-  var duplicated    = false;
-  if (!aOptions.forceNew) {
-    let oldId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
-    if (oldId && !oldId.tabId) // ignore broken information!
-      oldId = null;
-
-    if (oldId) {
-      // If the tab detected from stored tabId is different, it is duplicated tab.
-      try {
-        let tabWithOldId = Tabs.getTabById(oldId.tabId);
-        if (!tabWithOldId)
-          throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-        originalId = tabWithOldId.getAttribute(Constants.kPERSISTENT_ID) /* (await tabWithOldId.uniqueId).id // don't try to wait this, because it sometime causes deadlock */;
-        duplicated = tab && tabWithOldId != tab && originalId == oldId.id;
-        if (duplicated)
-          originalTabId = oldId.tabId;
-        else
-          throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-      }
-      catch(e) {
-        ApiTabs.handleMissingTabError(e);
-        // It fails if the tab doesn't exist.
-        // There is no live tab for the tabId, thus
-        // this seems to be a tab restored from session.
-        // We need to update the related tab id.
-        await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, {
-          id:    oldId.id,
-          tabId: tabId
-        });
-        return {
-          id:            oldId.id,
-          originalId:    null,
-          originalTabId: oldId.tabId,
-          restored:      true
-        };
-      }
-    }
-  }
-
-  var adjective   = Constants.kID_ADJECTIVES[Math.floor(Math.random() * Constants.kID_ADJECTIVES.length)];
-  var noun        = Constants.kID_NOUNS[Math.floor(Math.random() * Constants.kID_NOUNS.length)];
-  var randomValue = Math.floor(Math.random() * 1000);
-  var id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, {
-    id:    id,
-    tabId: tabId // for detecttion of duplicated tabs
-  });
-  return { id, originalId, originalTabId, duplicated };
-}
-
 function buildTab(aApiTab, aOptions = {}) {
   log('build tab for ', aApiTab);
   var tab = document.createElement('li');
@@ -143,7 +72,7 @@ function buildTab(aApiTab, aOptions = {}) {
   }
 
   if (aApiTab.id)
-    updateUniqueId(tab);
+    Tabs.updateUniqueId(tab);
   else
     tab.uniqueId = Promise.resolve({
       id:            null,
@@ -163,20 +92,6 @@ function buildTab(aApiTab, aOptions = {}) {
   tab.ancestorTabs = [];
 
   return tab;
-}
-
-function updateUniqueId(aTab) {
-  aTab.uniqueId = requestUniqueId(aTab, {
-    inRemote: !!gTargetWindow
-  }).then(aUniqueId => {
-    if (aUniqueId && Tabs.ensureLivingTab(aTab)) // possibly removed from document while waiting
-      aTab.setAttribute(Constants.kPERSISTENT_ID, aUniqueId.id);
-    return aUniqueId || {};
-  }).catch(aError => {
-    console.log(`FATAL ERROR: Failed to get unique id for a tab ${aTab.apiTab.id}: `, String(aError), aError.stack);
-    return {};
-  });
-  return aTab.uniqueId;
 }
 
 function updateTab(aTab, aNewState = {}, aOptions = {}) {
