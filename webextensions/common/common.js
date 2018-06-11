@@ -76,38 +76,6 @@ async function notify(aParams = {}) {
   await browser.notifications.clear(id);
 }
 
-function makeAsyncFunctionSequential(aFunction) {
-  return async function(...aArgs) {
-    return new Promise((aResolve, aReject) => {
-      makeAsyncFunctionSequential.tasks.push({
-        original: aFunction,
-        args:     aArgs,
-        resolve:  aResolve,
-        reject:   aReject,
-        context:  this
-      });
-      if (makeAsyncFunctionSequential.tasks.length == 1)
-        makeAsyncFunctionSequential.start();
-    });
-  };
-}
-makeAsyncFunctionSequential.tasks = [];
-makeAsyncFunctionSequential.start = async () => {
-  var task = makeAsyncFunctionSequential.tasks[0];
-  if (!task)
-    return;
-  try {
-    var result = await task.original.call(task.context, ...task.args);
-    task.resolve(result);
-  }
-  catch(e) {
-    task.reject(e);
-  }
-  finally {
-    makeAsyncFunctionSequential.tasks.shift();
-    makeAsyncFunctionSequential.start();
-  }
-};
 
 configs = new Configs({
   optionsExpandedSections: ['section-appearance'],

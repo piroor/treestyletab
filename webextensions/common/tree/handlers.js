@@ -745,6 +745,3 @@ async function onApiWindowRemoved(aWindowId) {
   }
 }
 
-//onNewTabTracked = makeAsyncFunctionSequential(onNewTabTracked);
-//onApiTabMoved = makeAsyncFunctionSequential(onApiTabMoved);
-
