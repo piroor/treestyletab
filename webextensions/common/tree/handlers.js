@@ -121,7 +121,7 @@ function getOrBuildTabsContainer(aHint) {
   if (typeof aHint != 'number')
     throw new Error(`The given ID seems invalid as an window id: ${aHint}`);
 
-  container = buildTabsContainerFor(aHint);
+  container = TabsContainer.buildFor(aHint);
   Tabs.allTabsContainer.appendChild(container);
   return container;
 }
@@ -140,10 +140,10 @@ async function onApiTabActivated(aActiveInfo) {
 
     let byInternalOperation = parseInt(container.dataset.internalFocusCount) > 0;
     if (byInternalOperation)
-      decrementContainerCounter(container, 'internalFocusCount');
+      TabsContainer.decrementCounter(container, 'internalFocusCount');
     const silently = parseInt(container.dataset.internalSilentlyFocusCount) > 0;
     if (silently)
-      decrementContainerCounter(container, 'internalSilentlyFocusCount');
+      TabsContainer.decrementCounter(container, 'internalSilentlyFocusCount');
     const byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
     await waitUntilTabsAreCreated(aActiveInfo.tabId);
@@ -159,13 +159,13 @@ async function onApiTabActivated(aActiveInfo) {
 
     let byCurrentTabRemove = !!container.resolveClosedWhileActiveForPreviousActiveTab;
     if (byCurrentTabRemove) {
-      incrementContainerCounter(container, 'tryingReforcusForClosingCurrentTabCount');
+      TabsContainer.incrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
       container.resolveClosedWhileActiveForPreviousActiveTab();
       delete container.resolveClosedWhileActiveForPreviousActiveTab;
       let focusRedirected = await container.focusRedirectedForClosingCurrentTab;
       delete container.focusRedirectedForClosingCurrentTab;
       if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) // reduce count even if not redirected
-        decrementContainerCounter(container, 'tryingReforcusForClosingCurrentTabCount');
+        TabsContainer.decrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
       log('focusRedirected: ', focusRedirected);
       if (focusRedirected) {
         onCompleted();
@@ -173,7 +173,7 @@ async function onApiTabActivated(aActiveInfo) {
       }
     }
     else if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) { // treat as "redirected unintentional tab focus"
-      decrementContainerCounter(container, 'tryingReforcusForClosingCurrentTabCount');
+      TabsContainer.decrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
       byCurrentTabRemove  = true;
       byInternalOperation = false;
     }
@@ -307,7 +307,7 @@ async function onNewTabTracked(aTab) {
 
     const hasNextTab = !!Tabs.getAllTabs(container)[aTab.index];
 
-    const newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
+    const newTab = Tabs.buildTab(aTab, { inRemote: !!gTargetWindow });
     newTab.classList.add(Constants.kTAB_STATE_OPENING);
 
     const nextTab = Tabs.getAllTabs(container)[aTab.index];
@@ -345,11 +345,11 @@ async function onNewTabTracked(aTab) {
     const maybeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
 
     if (openedWithPosition)
-      decrementContainerCounter(container, 'toBeOpenedTabsWithPositions');
+      TabsContainer.decrementCounter(container, 'toBeOpenedTabsWithPositions');
     if (maybeOrphan)
-      decrementContainerCounter(container, 'toBeOpenedOrphanTabs');
+      TabsContainer.decrementCounter(container, 'toBeOpenedOrphanTabs');
     if (duplicatedInternally)
-      decrementContainerCounter(container, 'duplicatingTabsCount');
+      TabsContainer.decrementCounter(container, 'duplicatingTabsCount');
 
     const duplicated = duplicatedInternally || uniqueId.duplicated;
     const restored   = uniqueId.restored;
@@ -397,11 +397,11 @@ async function onNewTabTracked(aTab) {
     });
 
     if (container.parentNode) { // it can be removed while waiting
-      incrementContainerCounter(container, 'openingCount');
+      TabsContainer.incrementCounter(container, 'openingCount');
       setTimeout(() => {
         if (!container.parentNode) // it can be removed while waiting
           return;
-        decrementContainerCounter(container, 'openingCount');
+        TabsContainer.decrementCounter(container, 'openingCount');
       }, 0);
     }
 
@@ -482,7 +482,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   const container = getOrBuildTabsContainer(aRemoveInfo.windowId);
   const byInternalOperation = parseInt(container.dataset.internalClosingCount) > 0;
   if (byInternalOperation)
-    decrementContainerCounter(container, 'internalClosingCount');
+    TabsContainer.decrementCounter(container, 'internalClosingCount');
 
   await waitUntilAllTabsAreCreated();
 
@@ -580,7 +580,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
     const movedTab = Tabs.getTabById({ tab: aTabId, window: aMoveInfo.windowId });
     if (!movedTab) {
       if (byInternalOperation)
-        decrementContainerCounter(container, 'internalMovingCount');
+        TabsContainer.decrementCounter(container, 'internalMovingCount');
       completelyMoved();
       return;
     }
@@ -601,7 +601,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
 
     let alreadyMoved = false;
     if (parseInt(container.dataset.alreadyMovedTabsCount) > 0) {
-      decrementContainerCounter(container, 'alreadyMovedTabsCount');
+      TabsContainer.decrementCounter(container, 'alreadyMovedTabsCount');
       alreadyMoved = true;
     }
 
@@ -629,7 +629,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
       window.onTabMoved && await onTabMoved(movedTab, moveInfo);
     }
     if (byInternalOperation)
-      decrementContainerCounter(container, 'internalMovingCount');
+      TabsContainer.decrementCounter(container, 'internalMovingCount');
     completelyMoved();
   }
   catch(e) {
@@ -673,7 +673,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
     const newTab = await onNewTabTracked(apiTab);
     const byInternalOperation = newTab && parseInt(newTab.parentNode.dataset.toBeAttachedTabs) > 0;
     if (byInternalOperation)
-      decrementContainerCounter(newTab.parentNode, 'toBeAttachedTabs');
+      TabsContainer.decrementCounter(newTab.parentNode, 'toBeAttachedTabs');
     info.byInternalOperation = info.byInternalOperation || byInternalOperation;
 
     if (!byInternalOperation) // we should process only tabs attached by others.
@@ -706,7 +706,7 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
 
     const byInternalOperation = parseInt(oldTab.parentNode.dataset.toBeDetachedTabs) > 0;
     if (byInternalOperation)
-      decrementContainerCounter(oldTab.parentNode, 'toBeDetachedTabs');
+      TabsContainer.decrementCounter(oldTab.parentNode, 'toBeDetachedTabs');
 
     const info = gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
       byInternalOperation,

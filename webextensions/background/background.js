@@ -164,7 +164,7 @@ function destroy() {
 }
 
 async function rebuildAll() {
-  clearAllTabsContainers();
+  TabsContainer.clearAll();
   var windows = await browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
@@ -189,9 +189,9 @@ async function rebuildAll() {
         }
       }
       log(`build tabs for ${aWindow.id} from scratch`);
-      let container = buildTabsContainerFor(aWindow.id);
+      let container = TabsContainer.buildFor(aWindow.id);
       for (let apiTab of aWindow.tabs) {
-        let newTab = buildTab(apiTab, { existing: true });
+        let newTab = Tabs.buildTab(apiTab, { existing: true });
         container.appendChild(newTab);
         updateTab(newTab, apiTab, { forceApply: true });
         tryStartHandleAccelKeyOnTab(newTab);

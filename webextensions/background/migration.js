@@ -204,7 +204,7 @@ async function migrateLegacyTreeStructure() {
         url: 'about:blank'
       });
       var container = Tabs.getTabsContainer(apiWindow.id);
-      incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aStructure.length);
+      TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', aStructure.length);
       // restore tree
       var uris = aStructure.map(aItem => aItem.url);
       uris = uris.map(aURI => {

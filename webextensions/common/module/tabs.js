@@ -38,6 +38,10 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+/* global
+  Promise: false,
+ */
+
 import * as XPath from './xpath.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
@@ -189,6 +193,59 @@ export const onHidden           = new EventListenerManager();
 export const onShown            = new EventListenerManager();
 export const onParentTabUpdated = new EventListenerManager();
 export const onTabElementMoved  = new EventListenerManager();
+
+
+//===================================================================
+// Create Tabs
+//===================================================================
+
+export function buildTab(aApiTab, aOptions = {}) {
+  log('build tab for ', aApiTab);
+  const tab = document.createElement('li');
+  tab.apiTab = aApiTab;
+  tab.setAttribute('id', makeTabId(aApiTab));
+  tab.setAttribute(Constants.kAPI_TAB_ID, aApiTab.id || -1);
+  tab.setAttribute(Constants.kAPI_WINDOW_ID, aApiTab.windowId || -1);
+  //tab.setAttribute(Constants.kCHILDREN, '');
+  tab.classList.add('tab');
+  if (aApiTab.active)
+    tab.classList.add(Constants.kTAB_STATE_ACTIVE);
+  tab.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+
+  const labelContainer = document.createElement('span');
+  labelContainer.classList.add(Constants.kLABEL);
+  const label = labelContainer.appendChild(document.createElement('span'));
+  label.classList.add(`${Constants.kLABEL}-content`);
+  tab.appendChild(labelContainer);
+
+  onBuilt.dispatch(tab, aOptions);
+
+  if (aOptions.existing) {
+    tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+  }
+
+  if (aApiTab.id)
+    updateUniqueId(tab);
+  else
+    tab.uniqueId = Promise.resolve({
+      id:            null,
+      originalId:    null,
+      originalTabId: null
+    });
+
+  tab.opened = new Promise((aResolve, _aReject) => {
+    tab._resolveOpened = aResolve;
+  });
+  tab.closedWhileActive = new Promise((aResolve, _aReject) => {
+    tab._resolveClosedWhileActive = aResolve;
+  });
+
+  tab.childTabs = [];
+  tab.parentTab = null;
+  tab.ancestorTabs = [];
+
+  return tab;
+}
 
 
 //===================================================================

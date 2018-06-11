@@ -480,7 +480,7 @@ function updateSpecialEventListenersForAPIListeners() {
 
 async function rebuildAll(aCache) {
   var apiTabs = await browser.tabs.query({ currentWindow: true });
-  clearAllTabsContainers();
+  TabsContainer.clearAll();
 
   if (aCache) {
     let restored = await restoreTabsFromCache(aCache, { tabs: apiTabs });
@@ -490,10 +490,10 @@ async function rebuildAll(aCache) {
     }
   }
 
-  let container = buildTabsContainerFor(gTargetWindow);
+  let container = TabsContainer.buildFor(gTargetWindow);
   for (let apiTab of apiTabs) {
     TabIdFixer.fixTab(apiTab);
-    let newTab = buildTab(apiTab, { existing: true, inRemote: true });
+    let newTab = Tabs.buildTab(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
     updateTab(newTab, apiTab, { forceApply: true });
   }

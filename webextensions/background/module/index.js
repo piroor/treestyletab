@@ -13,6 +13,7 @@ import * as ContextMenu from './context-menu.js';
 import * as MetricsData from '../../common/module/MetricsData.js';
 
 import * as Tabs from '../../common/module/tabs.js';
+import * as TabsContainer from '../../common/module/tabs-container.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -34,6 +35,7 @@ window.ContextMenu = ContextMenu;
 window.MetricsData = MetricsData;
 
 window.Tabs = Tabs;
+window.TabsContainer = TabsContainer;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;

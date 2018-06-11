@@ -182,7 +182,7 @@ function onTabOpening(aTab, aInfo = {}) {
        !opener &&
        !aInfo.maybeOrphan)) {
     if (parseInt(container.dataset.preventAutoGroupNewTabsUntil) > Date.now()) {
-      incrementContainerCounter(container, 'preventAutoGroupNewTabsUntil', configs.autoGroupNewTabsTimeout);
+      TabsContainer.incrementCounter(container, 'preventAutoGroupNewTabsUntil', configs.autoGroupNewTabsTimeout);
     }
     else {
       container.dataset.openedNewTabs += `|${aTab.id}`;
@@ -577,7 +577,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
       temporary: true
     });
-    incrementContainerCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');
+    TabsContainer.incrementCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');
     let groupTab = await openURIInTab(uri, {
       windowId:     aTab.apiTab.windowId,
       insertBefore: aTab, // not firstChild, because the "aTab" is disappeared from tree.
@@ -793,13 +793,13 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
 function moveBack(aTab, aMoveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(aTab), aMoveInfo);
   var container = aTab.parentNode;
-  incrementContainerCounter(container, 'internalMovingCount');
+  TabsContainer.incrementCounter(container, 'internalMovingCount');
   return browser.tabs.move(aTab.apiTab.id, {
     windowId: aMoveInfo.windowId,
     index:    aMoveInfo.fromIndex
   }).catch(e => {
     if (parseInt(container.dataset.internalMovingCount) > 0)
-      decrementContainerCounter(container, 'internalMovingCount');
+      TabsContainer.decrementCounter(container, 'internalMovingCount');
     ApiTabs.handleMissingTabError(e);
   });
 }

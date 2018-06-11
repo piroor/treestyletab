@@ -45,54 +45,6 @@ var gScrollLockedBy  = {};
 
 var gIsMac = /^Mac/i.test(navigator.platform);
 
-function buildTab(aApiTab, aOptions = {}) {
-  log('build tab for ', aApiTab);
-  var tab = document.createElement('li');
-  tab.apiTab = aApiTab;
-  tab.setAttribute('id', Tabs.makeTabId(aApiTab));
-  tab.setAttribute(Constants.kAPI_TAB_ID, aApiTab.id || -1);
-  tab.setAttribute(Constants.kAPI_WINDOW_ID, aApiTab.windowId || -1);
-  //tab.setAttribute(Constants.kCHILDREN, '');
-  tab.classList.add('tab');
-  if (aApiTab.active)
-    tab.classList.add(Constants.kTAB_STATE_ACTIVE);
-  tab.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-
-  const labelContainer = document.createElement('span');
-  labelContainer.classList.add(Constants.kLABEL);
-  const label = labelContainer.appendChild(document.createElement('span'));
-  label.classList.add(`${Constants.kLABEL}-content`);
-  tab.appendChild(labelContainer);
-
-  Tabs.onBuilt.dispatch(tab, aOptions);
-
-  if (aOptions.existing) {
-    tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
-  }
-
-  if (aApiTab.id)
-    Tabs.updateUniqueId(tab);
-  else
-    tab.uniqueId = Promise.resolve({
-      id:            null,
-      originalId:    null,
-      originalTabId: null
-    });
-
-  tab.opened = new Promise((aResolve, aReject) => {
-    tab._resolveOpened = aResolve;
-  });
-  tab.closedWhileActive = new Promise((aResolve, aReject) => {
-    tab._resolveClosedWhileActive = aResolve;
-  });
-
-  tab.childTabs = [];
-  tab.parentTab = null;
-  tab.ancestorTabs = [];
-
-  return tab;
-}
-
 function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if ('url' in aNewState) {
     aTab.setAttribute(Constants.kCURRENT_URI, aNewState.url);
@@ -390,56 +342,6 @@ function updateParentTab(aParent) {
   Tabs.onParentTabUpdated.dispatch(aParent);
 }
 
-function buildTabsContainerFor(aWindowId) {
-  var container = document.createElement('ul');
-  container.dataset.windowId = aWindowId;
-  container.setAttribute('id', `window-${aWindowId}`);
-  container.classList.add('tabs');
-
-  container.dataset.internalMovingCount =
-    container.dataset.internalClosingCount =
-    container.dataset.alreadyMovedTabsCount =
-    container.dataset.subTreeMovingCount =
-    container.dataset.subTreeChildrenMovingCount =
-    container.dataset.doingIntelligentlyCollapseExpandCount =
-    container.dataset.internalFocusCount =
-    container.dataset.internalSilentlyFocusCount =
-    container.dataset.tryingReforcusForClosingCurrentTabCount =
-    container.dataset.duplicatingTabsCount = 0;
-
-  container.dataset.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
-
-  container.dataset.openingCount  = 0;
-  container.dataset.openedNewTabs = '';
-  container.dataset.openedNewTabsOpeners = '';
-
-  container.dataset.toBeOpenedTabsWithPositions = 0;
-  container.dataset.toBeOpenedOrphanTabs        = 0;
-  container.dataset.toBeAttachedTabs            = 0;
-  container.dataset.toBeDetachedTabs            = 0;
-
-  return container;
-}
-
-function incrementContainerCounter(aContainer, aName, aDelta) {
-  var count = parseInt(aContainer.dataset[aName]) + (aDelta || 1);
-  aContainer.dataset[aName] = count;
-  return count;
-}
-
-function decrementContainerCounter(aContainer, aName, aDelta) {
-  var count = parseInt(aContainer.dataset[aName]) - (aDelta || 1);
-  aContainer.dataset[aName] = count;
-  return count;
-}
-
-function clearAllTabsContainers() {
-  var range = document.createRange();
-  range.selectNodeContents(Tabs.allTabsContainer);
-  range.deleteContents();
-  range.detach();
-}
-
 
 async function selectTabInternally(aTab, aOptions = {}) {
   log('selectTabInternally: ', dumpTab(aTab));
@@ -453,14 +355,14 @@ async function selectTabInternally(aTab, aOptions = {}) {
     return;
   }
   var container = aTab.parentNode;
-  incrementContainerCounter(container, 'internalFocusCount');
+  TabsContainer.incrementCounter(container, 'internalFocusCount');
   if (aOptions.silently)
-    incrementContainerCounter(container, 'internalSilentlyFocusCount');
+    TabsContainer.incrementCounter(container, 'internalSilentlyFocusCount');
   return browser.tabs.update(aTab.apiTab.id, { active: true })
     .catch(e => {
-      decrementContainerCounter(container, 'internalFocusCount');
+      TabsContainer.decrementCounter(container, 'internalFocusCount');
       if (aOptions.silently)
-        decrementContainerCounter(container, 'internalSilentlyFocusCount');
+        TabsContainer.decrementCounter(container, 'internalSilentlyFocusCount');
       ApiTabs.handleMissingTabError(e);
     });
 }
@@ -488,7 +390,7 @@ function removeTabsInternally(aTabs, aOptions = {}) {
       return;
   }
   var container = aTabs[0].parentNode;
-  incrementContainerCounter(container, 'internalClosingCount', aTabs.length);
+  TabsContainer.incrementCounter(container, 'internalClosingCount', aTabs.length);
   if (aOptions.broadcasted)
     return;
   return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
@@ -549,8 +451,8 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       let oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == aReferenceTab) // no move case
         continue;
-      incrementContainerCounter(container, 'internalMovingCount');
-      incrementContainerCounter(container, 'alreadyMovedTabsCount');
+      TabsContainer.incrementCounter(container, 'internalMovingCount');
+      TabsContainer.incrementCounter(container, 'alreadyMovedTabsCount');
       container.insertBefore(tab, aReferenceTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
@@ -655,8 +557,8 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       let oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == nextTab) // no move case
         continue;
-      incrementContainerCounter(container, 'internalMovingCount');
-      incrementContainerCounter(container, 'alreadyMovedTabsCount');
+      TabsContainer.incrementCounter(container, 'internalMovingCount');
+      TabsContainer.incrementCounter(container, 'alreadyMovedTabsCount');
       container.insertBefore(tab, nextTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
@@ -773,9 +675,9 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
       await waitUntilAllTabsAreCreated();
       let startIndex = Tabs.calculateNewTabIndex(aOptions);
       let container  = Tabs.getTabsContainer(aOptions.windowId);
-      incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
+      TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
       if (aOptions.isOrphan)
-        incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aURIs.length);
+        TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', aURIs.length);
       await Promise.all(aURIs.map(async (aURI, aIndex) => {
         var params = {
           windowId: aOptions.windowId,
