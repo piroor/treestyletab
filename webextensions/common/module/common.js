@@ -12,26 +12,7 @@
   uneval: false,
  */
 
-import {
-  kNOTIFICATION_DEFAULT_ICON,
-  kTABBAR_POSITION_LEFT,
-  kTABBAR_DIRECTION_LTR,
-  kTABBAR_SCROLLBAR_POSITION_AUTO,
-  kCOUNTER_ROLE_CONTAINED_TABS,
-  kDEFAULT_MIN_INDENT,
-  kTABBAR_SCROLLBAR_MODE_OVERLAY,
-  kTABBAR_SCROLLBAR_MODE_NARROW,
-  kCONTEXTUAL_IDENTITY_SELECTOR,
-  kPARENT_TAB_BEHAVIOR_ALWAYS,
-  kDROPLINK_ASK,
-  kINSERT_END,
-  kINSERT_NO_CONTROL,
-  kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
-  kNEWTAB_OPEN_AS_CHILD,
-  kNEWTAB_OPEN_AS_ORPHAN,
-  kNEWTAB_OPEN_AS_NEXT_SIBLING,
-  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-} from './constants.js';
+import * as Constants from './constants.js';
 
 let configs;
 
@@ -90,7 +71,7 @@ export function nextFrame() {
 export async function notify(aParams = {}) {
   var id = await browser.notifications.create({
     type:    'basic',
-    iconUrl: aParams.icon || kNOTIFICATION_DEFAULT_ICON,
+    iconUrl: aParams.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
     title:   aParams.title,
     message: aParams.message
   });
@@ -109,9 +90,9 @@ configs = new Configs({
   optionsExpandedSections: ['section-appearance'],
 
   // appearance
-  sidebarPosition: kTABBAR_POSITION_LEFT,
-  sidebarDirection: kTABBAR_DIRECTION_LTR,
-  sidebarScrollbarPosition: kTABBAR_SCROLLBAR_POSITION_AUTO,
+  sidebarPosition: Constants.kTABBAR_POSITION_LEFT,
+  sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
+  sidebarScrollbarPosition: Constants.kTABBAR_SCROLLBAR_POSITION_AUTO,
 
   style:
     /^Linux/i.test(navigator.platform) ? 'plain' :
@@ -122,20 +103,20 @@ configs = new Configs({
   faviconizePinnedTabs: true,
   faviconizedTabScale: 1.75,
 
-  counterRole: kCOUNTER_ROLE_CONTAINED_TABS,
+  counterRole: Constants.kCOUNTER_ROLE_CONTAINED_TABS,
 
   baseIndent: 12,
-  minIndent: kDEFAULT_MIN_INDENT,
+  minIndent: Constants.kDEFAULT_MIN_INDENT,
   maxTreeLevel: -1,
   indentAutoShrink: true,
   indentAutoShrinkOnlyForVisible: true,
 
-  scrollbarMode: /^Mac/i.test(navigator.platform) ? kTABBAR_SCROLLBAR_MODE_OVERLAY : kTABBAR_SCROLLBAR_MODE_NARROW,
+  scrollbarMode: /^Mac/i.test(navigator.platform) ? Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY : Constants.kTABBAR_SCROLLBAR_MODE_NARROW,
   narrowScrollbarSize: 8,
 
   showContextualIdentitiesSelector: false,
   showNewTabActionSelector: true,
-  longPressOnNewTabButton: kCONTEXTUAL_IDENTITY_SELECTOR,
+  longPressOnNewTabButton: Constants.kCONTEXTUAL_IDENTITY_SELECTOR,
   zoomable: false,
   showCollapsedDescendantsByTooltip: true,
 
@@ -171,11 +152,11 @@ configs = new Configs({
 
   skipCollapsedTabsForTabSwitchingShortcuts: false,
 
-  parentTabBehaviorForChanges: kPARENT_TAB_BEHAVIOR_ALWAYS,
+  parentTabBehaviorForChanges: Constants.kPARENT_TAB_BEHAVIOR_ALWAYS,
 
   syncParentTabAndOpenerTab: true,
 
-  dropLinksOnTabBehavior: kDROPLINK_ASK,
+  dropLinksOnTabBehavior: Constants.kDROPLINK_ASK,
 
 
   // grouping
@@ -186,18 +167,18 @@ configs = new Configs({
 
 
   // behavior around newly opened tabs
-  insertNewChildAt: kINSERT_END,
-  insertNewTabFromPinnedTabAt: kINSERT_NO_CONTROL,
+  insertNewChildAt: Constants.kINSERT_END,
+  insertNewTabFromPinnedTabAt: Constants.kINSERT_NO_CONTROL,
 
-  scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
+  scrollToNewTabMode: Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
   scrollLines: 3,
 
   autoAttach: true,
-  autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD,
-  autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN,
-  autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD,
-  autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING,
-  autoAttachSameSiteOrphan: kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnOpenedWithOwner: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnNewTabCommand: Constants.kNEWTAB_OPEN_AS_ORPHAN,
+  autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnDuplicated: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
+  autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
   inheritContextualIdentityToNewChildTab: false,
@@ -205,7 +186,7 @@ configs = new Configs({
 
 
   // behavior around closed tab
-  closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
   promoteFirstChildForClosedRoot: true,
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
