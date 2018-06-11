@@ -12,7 +12,7 @@
  */
 
 import * as Constants from './constants.js';
-import Configs from '/common/Configs.js';
+import Configs from '../Configs.js';
 
 let configs;
 

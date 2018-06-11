@@ -5,8 +5,8 @@
 */
 'use strict';
 
-import { configs } from '/common/module/common.js';
-import * as Permissions from '/common/module/permissions.js';
+import { configs } from '../../common/module/common.js';
+import * as Permissions from '../../common/module/permissions.js';
 import '/common/l10n.js';
 
 window.addEventListener('DOMContentLoaded', () => {

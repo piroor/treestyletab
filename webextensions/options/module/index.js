@@ -1,6 +1,6 @@
-import * as Constants from '/common/module/constants.js';
-import * as Common from '/common/module/common.js';
-import * as Permissions from '/common/module/permissions.js';
+import * as Constants from '../../common/module/constants.js';
+import * as Common from '../../common/module/common.js';
+import * as Permissions from '../../common/module/permissions.js';
 
 import l10n from '../l10n.js';
 import Options from '../Options.js';

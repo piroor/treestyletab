@@ -12,11 +12,11 @@
   Commands: false,
  */
 
-import * as Constants from '/common/module/constants.js';
+import * as Constants from '../../common/module/constants.js';
 import {
   log,
   configs
-} from '/common/module/common.js';
+} from '../../common/module/common.js';
 
 var gContextMenuItems = `
   reloadTree
