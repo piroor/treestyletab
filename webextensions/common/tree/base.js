@@ -46,10 +46,6 @@ var gScrollLockedBy  = {};
 
 var gIsMac = /^Mac/i.test(navigator.platform);
 
-function makeTabId(aApiTab) {
-  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
-}
-
 async function requestUniqueId(aTabOrId, aOptions = {}) {
   var tabId = aTabOrId;
   var tab   = null;
@@ -125,7 +121,7 @@ function buildTab(aApiTab, aOptions = {}) {
   log('build tab for ', aApiTab);
   var tab = document.createElement('li');
   tab.apiTab = aApiTab;
-  tab.setAttribute('id', makeTabId(aApiTab));
+  tab.setAttribute('id', Tabs.makeTabId(aApiTab));
   tab.setAttribute(Constants.kAPI_TAB_ID, aApiTab.id || -1);
   tab.setAttribute(Constants.kAPI_WINDOW_ID, aApiTab.windowId || -1);
   //tab.setAttribute(Constants.kCHILDREN, '');

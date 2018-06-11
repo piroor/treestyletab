@@ -70,8 +70,8 @@ function restoreTabsFromCacheInternal(aParams) {
     let insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
-    insertionPoint.setStartBefore(Tabs.getTabById(makeTabId(apiTabs[0])));
-    insertionPoint.setEndAfter(Tabs.getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
+    insertionPoint.setStartBefore(Tabs.getTabById(Tabs.makeTabId(apiTabs[0])));
+    insertionPoint.setEndAfter(Tabs.getTabById(Tabs.makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
     let tabsMustBeRemoved = apiTabs.map(Tabs.getTabById);
     logForCache('restoreTabsFromCacheInternal: cleared?: ',
@@ -145,7 +145,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   aTabs.forEach((aTab, aIndex) => {
     const oldId = aTab.id;
     var apiTab = aApiTabs[aIndex];
-    aTab.id = makeTabId(apiTab);
+    aTab.id = Tabs.makeTabId(apiTab);
     aTab.apiTab = apiTab;
     logForCache(`fixupTabsRestoredFromCache: remap ${oldId} => ${aTab.id}`);
     aTab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);

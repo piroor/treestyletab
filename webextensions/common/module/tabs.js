@@ -43,7 +43,6 @@
   gTargetWindow: false,
   gAllTabs: false,
   buildTabsContainerFor: false,
-  makeTabId: false,
  */
 
 import * as XPath from './xpath.js';
@@ -52,6 +51,15 @@ import {
   log,
   configs
 } from './common.js';
+
+
+//===================================================================
+// Utilities
+//===================================================================
+
+export function makeTabId(aApiTab) {
+  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
+}
 
 
 //===================================================================
