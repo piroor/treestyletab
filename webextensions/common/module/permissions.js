@@ -21,115 +21,115 @@ export const BOOKMARKS = { permissions: ['bookmarks'] };
 export const ALL_URLS = { origins: ['<all_urls>'] };
 
 export function clearRequest() {
-    configs.requestingPermissions = null;
-  }
+  configs.requestingPermissions = null;
+}
 
 export function isGranted(aPermissions) {
-    try {
-      return browser.permissions.contains(aPermissions);
-    }
-    catch(e) {
-      return Promise.reject(new Error('unsupported permission'));
-    }
+  try {
+    return browser.permissions.contains(aPermissions);
   }
+  catch(e) {
+    return Promise.reject(new Error('unsupported permission'));
+  }
+}
 
 export function bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
-    isGranted(aPermissions)
-      .then(aGranted => {
-        aCheckbox.checked = aGranted;
-      })
-      .catch(aError => {
-        aCheckbox.setAttribute('readonly', true);
-        aCheckbox.setAttribute('disabled', true);
-        var label = aCheckbox.closest('label') || document.querySelector(`label[for=${aCheckbox.id}]`);
-        if (label)
-          label.setAttribute('disabled', true);
-      });
-
-    aCheckbox.addEventListener('change', aEvent => {
-      aCheckbox.requestPermissions()
+  isGranted(aPermissions)
+    .then(aGranted => {
+      aCheckbox.checked = aGranted;
+    })
+    .catch(aError => {
+      aCheckbox.setAttribute('readonly', true);
+      aCheckbox.setAttribute('disabled', true);
+      var label = aCheckbox.closest('label') || document.querySelector(`label[for=${aCheckbox.id}]`);
+      if (label)
+        label.setAttribute('disabled', true);
     });
 
-    browser.runtime.onMessage.addListener((aMessage, aSender) => {
-      if (!aMessage ||
-          !aMessage.type ||
-          aMessage.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
-          JSON.stringify(aMessage.permissions) != JSON.stringify(aPermissions))
-        return;
-      if (aOptions.onChanged)
-        aOptions.onChanged(true);
+  aCheckbox.addEventListener('change', aEvent => {
+    aCheckbox.requestPermissions()
+  });
+
+  browser.runtime.onMessage.addListener((aMessage, aSender) => {
+    if (!aMessage ||
+        !aMessage.type ||
+        aMessage.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
+        JSON.stringify(aMessage.permissions) != JSON.stringify(aPermissions))
+      return;
+    if (aOptions.onChanged)
+      aOptions.onChanged(true);
+    aCheckbox.checked = true;
+  });
+
+  /*
+  // These events are not available yet on Firefox...
+  browser.permissions.onAdded.addListener(aAddedPermissions => {
+    if (aAddedPermissions.permissions.indexOf('...') > -1)
       aCheckbox.checked = true;
-    });
-
-    /*
-    // These events are not available yet on Firefox...
-    browser.permissions.onAdded.addListener(aAddedPermissions => {
-      if (aAddedPermissions.permissions.indexOf('...') > -1)
-        aCheckbox.checked = true;
-    });
-    browser.permissions.onRemoved.addListener(aRemovedPermissions => {
-      if (aRemovedPermissions.permissions.indexOf('...') > -1)
-        aCheckbox.checked = false;
-    });
-    */
-
-    aCheckbox.requestPermissions = async () => {
-      try {
-        if (!aCheckbox.checked) {
-          await browser.permissions.remove(aPermissions);
-          if (aOptions.onChanged)
-            aOptions.onChanged(false);
-          return;
-        }
-
-        var granted = await isGranted(aPermissions);
-        if (granted) {
-          aOptions.onChanged(true);
-          return;
-        }
-
-        configs.requestingPermissions = aPermissions;
-        aCheckbox.checked = false;
-        browser.browserAction.setBadgeText({ text: '!' });
-        browser.browserAction.setPopup({ popup: '' });
-
-        notify({
-          title:   browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_title'),
-          message: browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_message'),
-          icon:    'resources/24x24.svg'
-        });
-        return;
-
-        /*
-        // following codes don't work as expected due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-        if (!await browser.permissions.request(aPermissions)) {
-          aCheckbox.checked = false;
-          return;
-        }
-        */
-      }
-      catch(aError) {
-        console.log(aError);
-      }
+  });
+  browser.permissions.onRemoved.addListener(aRemovedPermissions => {
+    if (aRemovedPermissions.permissions.indexOf('...') > -1)
       aCheckbox.checked = false;
-    };
-  }
+  });
+  */
+
+  aCheckbox.requestPermissions = async () => {
+    try {
+      if (!aCheckbox.checked) {
+        await browser.permissions.remove(aPermissions);
+        if (aOptions.onChanged)
+          aOptions.onChanged(false);
+        return;
+      }
+
+      var granted = await isGranted(aPermissions);
+      if (granted) {
+        aOptions.onChanged(true);
+        return;
+      }
+
+      configs.requestingPermissions = aPermissions;
+      aCheckbox.checked = false;
+      browser.browserAction.setBadgeText({ text: '!' });
+      browser.browserAction.setPopup({ popup: '' });
+
+      notify({
+        title:   browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_title'),
+        message: browser.i18n.getMessage('config_requestPermissions_fallbackToToolbarButton_message'),
+        icon:    'resources/24x24.svg'
+      });
+      return;
+
+      /*
+      // following codes don't work as expected due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
+      if (!await browser.permissions.request(aPermissions)) {
+        aCheckbox.checked = false;
+        return;
+      }
+      */
+    }
+    catch(aError) {
+      console.log(aError);
+    }
+    aCheckbox.checked = false;
+  };
+}
 
 export function requestPostProcess() {
-    if (!configs.requestingPermissions)
-      return false;
+  if (!configs.requestingPermissions)
+    return false;
 
-    var permissions = configs.requestingPermissions;
-    configs.requestingPermissions = null;
-    browser.browserAction.setBadgeText({ text: '' });
-    browser.permissions.request(permissions).then(aGranted => {
-      log('permission requested: ', permissions, aGranted);
-      if (aGranted)
-        browser.runtime.sendMessage({
-          type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
-          permissions: permissions
-        });
-    });
-    return true;
-  }
+  var permissions = configs.requestingPermissions;
+  configs.requestingPermissions = null;
+  browser.browserAction.setBadgeText({ text: '' });
+  browser.permissions.request(permissions).then(aGranted => {
+    log('permission requested: ', permissions, aGranted);
+    if (aGranted)
+      browser.runtime.sendMessage({
+        type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+        permissions: permissions
+      });
+  });
+  return true;
+}
 
