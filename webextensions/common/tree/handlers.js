@@ -641,7 +641,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
     let apiTab;
     await Promise.all([
       (async () => {
-        apiTab = await browser.tabs.get(aTabId).catch(handleMissingTabError);
+        apiTab = await browser.tabs.get(aTabId).catch(ApiTabs.handleMissingTabError);
         log(`New apiTab for attached tab ${aTabId}: `, apiTab);
       })(),
       waitUntilTabsAreCreated(aTabId)

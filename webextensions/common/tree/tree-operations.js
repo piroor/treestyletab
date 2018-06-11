@@ -1125,7 +1125,7 @@ async function moveTabs(aTabs, aOptions = {}) {
                 return await browser.tabs.duplicate(aId);
               }
               catch(e) {
-                handleMissingTabError(e);
+                ApiTabs.handleMissingTabError(e);
                 return null;
               }
             })).then(aAPITabs => {
@@ -1174,7 +1174,7 @@ async function moveTabs(aTabs, aOptions = {}) {
           toIndex = latestApiTab.index;
         }
         catch(e) {
-          handleMissingTabError(e);
+          ApiTabs.handleMissingTabError(e);
           log('aOptions.insertBefore is unavailable');
         }
       }
@@ -1185,7 +1185,7 @@ async function moveTabs(aTabs, aOptions = {}) {
           toIndex = latestApiTab.index + 1;
         }
         catch(e) {
-          handleMissingTabError(e);
+          ApiTabs.handleMissingTabError(e);
           log('aOptions.insertAfter is unavailable');
         }
       }
@@ -1200,7 +1200,7 @@ async function moveTabs(aTabs, aOptions = {}) {
           await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: aTabs });
           break;
         }
-        apiTabs = await safeMoveApiTabsAcrossWindows(apiTabIds, {
+        apiTabs = await ApiTabs.safeMoveAcrossWindows(apiTabIds, {
           windowId: destinationWindowId,
           index:    toIndex
         });
@@ -1479,7 +1479,7 @@ async function performTabsDragDrop(aParams = {}) {
     // Firefox always focuses to the dropped tab if it is dragged from another window.
     // TST respects Firefox's the behavior.
     browser.tabs.update(draggedTabs[0].apiTab.id, { active: true })
-      .catch(handleMissingTabError);
+      .catch(ApiTabs.handleMissingTabError);
   }
 
   var treeStructure = getTreeStructureFromTabs(draggedTabs);

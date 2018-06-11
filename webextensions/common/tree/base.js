@@ -91,7 +91,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
       }
       catch(e) {
-        handleMissingTabError(e);
+        ApiTabs.handleMissingTabError(e);
         // It fails if the tab doesn't exist.
         // There is no live tab for the tabId, thus
         // this seems to be a tab restored from session.
@@ -198,7 +198,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
       browser.tabs.update(aOptions.tab.id, {
         url: aOptions.tab.url.replace(kSHORTHAND_ABOUT_URI, kSHORTHAND_URIS[shorthand] || 'about:blank')
-      }).catch(handleMissingTabError);
+      }).catch(ApiTabs.handleMissingTabError);
       aTab.classList.add(kTAB_STATE_GROUP_TAB);
       addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
     });
@@ -225,7 +225,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
         await wait(100); // for safety
         browser.tabs.update(aTab.apiTab.id, {
           url: `${kGROUP_TAB_URI}?${parameters}`
-        }).catch(handleMissingTabError);
+        }).catch(ApiTabs.handleMissingTabError);
         aTab.classList.add(kTAB_STATE_GROUP_TAB);
       }
       else {
@@ -569,7 +569,7 @@ async function selectTabInternally(aTab, aOptions = {}) {
       decrementContainerCounter(container, 'internalFocusCount');
       if (aOptions.silently)
         decrementContainerCounter(container, 'internalSilentlyFocusCount');
-      handleMissingTabError(e);
+      ApiTabs.handleMissingTabError(e);
     });
 }
 
@@ -599,7 +599,7 @@ function removeTabsInternally(aTabs, aOptions = {}) {
   incrementContainerCounter(container, 'internalClosingCount', aTabs.length);
   if (aOptions.broadcasted)
     return;
-  return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(handleMissingTabError);
+  return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
 }
 
 /* move tabs */
@@ -687,18 +687,18 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
 
       if (!aOptions.broadcasted) {
         await aOptions.delayedMove && wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
-        let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        let [toIndex, fromIndex] = await ApiTabs.getIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
         if (fromIndex < toIndex)
           toIndex--;
         browser.tabs.move(apiTabIds, {
           windowId: parseInt(container.dataset.windowId),
           index:    toIndex
-        }).catch(handleMissingTabError);
+        }).catch(ApiTabs.handleMissingTabError);
       }
     }
   }
   catch(e) {
-    handleMissingTabError(e);
+    ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyBefore failed: ', String(e));
   }
   return aTabs;
@@ -793,18 +793,18 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
 
       if (!aOptions.broadcasted) {
         await aOptions.delayedMove && wait(configs.newTabAnimationDuration); // Wait until opening animation is finished.
-        let [toIndex, fromIndex] = await getApiTabIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        let [toIndex, fromIndex] = await ApiTabs.getIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
         if (fromIndex > toIndex)
           toIndex++;
         browser.tabs.move(apiTabIds, {
           windowId: parseInt(container.dataset.windowId),
           index:    toIndex
-        }).catch(handleMissingTabError);
+        }).catch(ApiTabs.handleMissingTabError);
       }
     }
   }
   catch(e) {
-    handleMissingTabError(e);
+    ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyAfter failed: ', String(e));
   }
   return aTabs;
@@ -843,10 +843,10 @@ async function loadURI(aURI, aOptions = {}) {
     }
     await browser.tabs.update(apiTabId, {
       url: aURI
-    }).catch(handleMissingTabError);
+    }).catch(ApiTabs.handleMissingTabError);
   }
   catch(e) {
-    handleMissingTabError(e);
+    ApiTabs.handleMissingTabError(e);
   }
 }
 

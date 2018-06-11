@@ -10,7 +10,7 @@ const Commands = {
     const tabs = [aRootTab].concat(getDescendantTabs(aRootTab));
     for (let tab of tabs) {
       browser.tabs.reload(tab.apiTab.id)
-        .catch(handleMissingTabError);
+        .catch(ApiTabs.handleMissingTabError);
     }
   },
 
@@ -18,7 +18,7 @@ const Commands = {
     const tabs = getDescendantTabs(aRootTab);
     for (let tab of tabs) {
       browser.tabs.reload(tab.apiTab.id)
-        .catch(handleMissingTabError);
+        .catch(ApiTabs.handleMissingTabError);
     }
   },
 

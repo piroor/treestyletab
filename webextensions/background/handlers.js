@@ -800,7 +800,7 @@ function moveBack(aTab, aMoveInfo) {
   }).catch(e => {
     if (parseInt(container.dataset.internalMovingCount) > 0)
       decrementContainerCounter(container, 'internalMovingCount');
-    handleMissingTabError(e);
+    ApiTabs.handleMissingTabError(e);
   });
 }
 
@@ -1134,7 +1134,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     aTab.apiTab.openerTabId = parent.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id })
-      .catch(handleMissingTabError);
+      .catch(ApiTabs.handleMissingTabError);
   }
 
   // Because the tab is possibly closing for "reopen" operation,
@@ -1253,7 +1253,7 @@ async function onTabDetached(aTab, aDetachInfo) {
     aTab.apiTab.openerTabId = aTab.apiTab.id;
     aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(aTab.apiTab.id, { openerTabId: aTab.apiTab.id }) // set self id instead of null, because it requires any valid tab id...
-      .catch(handleMissingTabError);
+      .catch(ApiTabs.handleMissingTabError);
   }
   if (isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
@@ -1532,7 +1532,7 @@ function onMessage(aMessage, aSender) {
         if (!tab)
           return;
         browser.tabs.update(tab.apiTab.id, { active: true })
-          .catch(handleMissingTabError);
+          .catch(ApiTabs.handleMissingTabError);
       })();
 
     case kCOMMAND_SELECT_TAB_INTERNALLY:
@@ -1565,7 +1565,7 @@ function onMessage(aMessage, aSender) {
 
           browser.tabs.update(tab.apiTab.id, {
             muted: aMessage.muted
-          }).catch(handleMissingTabError);
+          }).catch(ApiTabs.handleMissingTabError);
 
           const add = [];
           const remove = [];

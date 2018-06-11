@@ -234,7 +234,7 @@ async function migrateLegacyTreeStructure() {
         }
       }
       catch(e) {
-        handleMissingTabError(e);
+        ApiTabs.handleMissingTabError(e);
       }
     }));
     if (structures.length > 0)

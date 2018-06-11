@@ -5,7 +5,12 @@
 */
 'use strict';
 
-async function getApiTabIndex(...aQueriedTabIds) {
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  Promise: false,
+ */
+
+export async function getApiTabIndex(...aQueriedTabIds) {
   if (aQueriedTabIds.length == 0)
     return -1;
 
@@ -24,7 +29,7 @@ async function getApiTabIndex(...aQueriedTabIds) {
 }
 
 // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477
-async function safeMoveApiTabsAcrossWindows(aTabIds, aMoveOptions) {
+export async function safeMoveAcrossWindows(aTabIds, aMoveOptions) {
   return (await Promise.all(aTabIds.map(async (aTabId, aIndex) => {
     try {
       var movedTab = await browser.tabs.move(aTabId, Object.assign({}, aMoveOptions, {
@@ -41,7 +46,7 @@ async function safeMoveApiTabsAcrossWindows(aTabIds, aMoveOptions) {
   }))).filter(aTab => !!aTab);
 }
 
-function handleMissingTabError(aError) {
+export function handleMissingTabError(aError) {
   if (!aError ||
       !aError.message ||
       aError.message.indexOf('Invalid tab ID:') != 0)
