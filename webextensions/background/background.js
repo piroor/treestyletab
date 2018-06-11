@@ -5,7 +5,7 @@
 */
 'use strict';
 
-gLogContext = 'BG';
+log.context = 'BG';
 
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();

@@ -6,7 +6,6 @@
 'use strict';
 
 var configs;
-var gLogContext = '?';
 
 function log(aMessage, ...aArgs)
 {
@@ -20,13 +19,14 @@ function log(aMessage, ...aArgs)
   for (let i = 0; i < nest; i++) {
     indent += ' ';
   }
-  const line = `tst<${gLogContext}>: ${indent}${aMessage}`;
+  const line = `tst<${log.context}>: ${indent}${aMessage}`;
   if (useConsole)
     console.log(line, ...aArgs);
 
   log.logs.push(`${line} ${aArgs.map(aArg => uneval(aArg)).join(', ')}`);
   log.logs = log.logs.slice(-log.max);
 }
+log.context = '?';
 log.max  = 1000;
 log.logs = [];
 log.forceStore = true;

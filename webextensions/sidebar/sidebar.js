@@ -5,7 +5,7 @@
 */
 'use strict';
 
-gLogContext = 'Sidebar-?';
+log.context = 'Sidebar-?';
 
 var gInitializing = true;
 var gStyle;
@@ -61,7 +61,7 @@ async function init() {
         currentWindow: true
       });
       gTargetWindow = apiTabs[0].windowId;
-      gLogContext   = `Sidebar-${gTargetWindow}`;
+      log.context   = `Sidebar-${gTargetWindow}`;
     })(),
     configs.$loaded
   ]);

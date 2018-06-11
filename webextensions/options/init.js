@@ -5,7 +5,7 @@
 */
 'use strict';
 
-gLogContext = 'Options';
+log.context = 'Options';
 var options = new Options(configs);
 
 function onConfigChanged(aKey) {
