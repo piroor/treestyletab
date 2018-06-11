@@ -48,7 +48,7 @@
   isGroupTab: false,
  */
 
-import * as XPath from './xpath.js';
+//import * as XPath from './xpath.js';
 import * as Constants from './constants.js';
 import { log } from './common.js';
 
@@ -58,7 +58,7 @@ const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_
 const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_HIDDEN})`;
 const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_PINNED}`;
 
-const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath.hasClass(Constants.kTAB_STATE_REMOVING)})]`;
+//const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath.hasClass(Constants.kTAB_STATE_REMOVING)})]`;
 //const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})][not(${XPath.hasClass(Constants.kTAB_STATE_PINNED)})]`;
 //const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_COLLAPSED)})][not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
 //const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
