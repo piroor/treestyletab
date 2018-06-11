@@ -963,7 +963,7 @@ async function onTabMoving(aTab) {
     await nextFrame();
     if (!ensureLivingTab(aTab)) // it was removed while waiting
       return;
-    const visible = !(await isSurelyCollapsed(aTab));
+    const visible = !(isCollapsedStateUpdating(aTab) ? await isSurelyCollapsed(aTab) : isCollapsed(aTab));
     if (visible)
       collapseExpandTab(aTab, {
         collapsed: true,
@@ -1046,6 +1046,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
     return;
   }
 
+  if (isCollapsedStateUpdating(aTab))
   await isSurelyCollapsed(aTab);
 
   let onCompletelyUpdated;
@@ -1164,6 +1165,10 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
       anchor:            aInfo.anchor,
       notifyOnOutOfView: true
     });
+}
+
+function isCollapsedStateUpdating(aTab) {
+  return !!isSurelyCollapsed.updating[aTab.id];
 }
 
 async function isSurelyCollapsed(aTab) {
@@ -1398,6 +1403,7 @@ function onMessage(aMessage, aSender, aRespond) {
         let tab = getTabById(aMessage.tab);
         if (!tab)
           return;
+        if (isCollapsedStateUpdating(tab))
         await isSurelyCollapsed(tab);
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
