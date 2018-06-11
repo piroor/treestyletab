@@ -5,14 +5,14 @@
 */
 'use strict';
 
-function mixCSSColors(aBase, aOver, aAlpha = 1) {
+export function mixCSSColors(aBase, aOver, aAlpha = 1) {
   var base = parseCSSColor(aBase);
   var over = parseCSSColor(aOver);
   var mixed = mixColors(base, over);
   return `rgba(${mixed.red}, ${mixed.green}, ${mixed.blue}, ${aAlpha})`;
 }
 
-function parseCSSColor(aColor, aBaseColor) {
+export function parseCSSColor(aColor, aBaseColor) {
   if (typeof aColor!= 'string')
     return aColor;
 

@@ -308,10 +308,10 @@ function applyBrowserTheme(aTheme) {
       bgAlpha = 0.75;
     }
   }
-  const baseColor = mixCSSColors(aTheme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
-  let toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
+  const baseColor = Color.mixCSSColors(aTheme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
+  let toolbarColor = Color.mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
   if (aTheme.colors.toolbar)
-    toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
+    toolbarColor = Color.mixCSSColors(baseColor, aTheme.colors.toolbar);
   if (aTheme.colors.tab_line)
     extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
   if (aTheme.colors.tab_loading)
@@ -319,16 +319,16 @@ function applyBrowserTheme(aTheme) {
   gBrowserThemeDefinition.textContent = `
     :root {
       --browser-bg-base:         ${baseColor};
-      --browser-bg-less-lighter: ${mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
+      --browser-bg-less-lighter: ${Color.mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
       --browser-bg-lighter:      ${toolbarColor};
-      --browser-bg-more-lighter: ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)', bgAlpha)};
-      --browser-bg-lightest:     ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)', bgAlpha)};
-      --browser-bg-less-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
-      --browser-bg-darker:       ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
-      --browser-bg-more-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
+      --browser-bg-more-lighter: ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)', bgAlpha)};
+      --browser-bg-lightest:     ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)', bgAlpha)};
+      --browser-bg-less-darker:  ${Color.mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
+      --browser-bg-darker:       ${Color.mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
+      --browser-bg-more-darker:  ${Color.mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
       --browser-fg:              ${aTheme.colors.textcolor};
       --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
-      --browser-border:          ${mixCSSColors(aTheme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
+      --browser-border:          ${Color.mixCSSColors(aTheme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
     }
   `;
@@ -351,8 +351,8 @@ function calculateDefaultSizes() {
   const dummyTabbarRect = dummyTabbar.getBoundingClientRect();
   const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('gTabHeight ', gTabHeight);
-  const baseColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
-  const highlightColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
+  const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
+  const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
   gSizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
     --scrollbar-size: ${scrollbarSize}px;
@@ -363,9 +363,9 @@ function calculateDefaultSizes() {
     --collapse-duration:  ${configs.collapseDuration}ms;
     --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
 
-    --face-highlight-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
-    --face-highlight-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
-    --face-highlight-more-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
+    --face-highlight-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
+    --face-highlight-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
+    --face-highlight-more-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
     --face-gradient-start-active: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.4);
     --face-gradient-start-inactive: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.2);
     --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
