@@ -41,6 +41,10 @@ module.exports = {
     'import/default': 'error',
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/namespace.md
     'import/namespace': 'error',
+    // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-absolute-path.md
+    'import/no-absolute-path': ['warn', {
+      'esmodule': true,
+    }],
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-duplicates.md
     'import/no-duplicates': 'error',
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/export.md
