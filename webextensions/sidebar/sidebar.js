@@ -211,7 +211,7 @@ async function init() {
   unblockUserOperations({ throbber: true });
 
   MetricsData.add('init end');
-  log('Startup metrics: ', MetricsData.toString());
+  log(`Startup metrics for ${getTabs().length} tabs: `, MetricsData.toString());
 }
 
 function destroy() {

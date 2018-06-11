@@ -4,11 +4,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-// Defined in a classic script source, and we can read these as global variables. 
-/* global
-  getTabs: false,
- */
-
 let items = [];
 
 const now = Date.now();
@@ -42,6 +37,6 @@ export async function addAsync(aLabel, aAsyncTask) {
 
 export function toString() {
   const logs = items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
-  return `total ${deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
+  return `total ${deltaBetweenLastItem} msec\n${logs.join('\n')}`;
 }
 

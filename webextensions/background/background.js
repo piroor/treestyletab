@@ -116,7 +116,7 @@ async function init() {
   });
 
   notifyNewFeatures();
-  log('Startup metrics: ', MetricsData.toString());
+  log(`Startup metrics for ${getTabs().length} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {
