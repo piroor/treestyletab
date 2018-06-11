@@ -179,8 +179,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
-        getSafeFaviconUrl(aNewState.favIconUrl ||
-                          maybeImageTab && aNewState.url)
+        Tabs.getSafeFaviconUrl(aNewState.favIconUrl ||
+                               maybeImageTab && aNewState.url)
       );
   }
   else if (openerOfGroupTab &&
@@ -189,7 +189,8 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     window.onTabFaviconUpdated &&
       onTabFaviconUpdated(
         aTab,
-        getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl || openerOfGroupTab.apiTab.url)
+        Tabs.getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl ||
+                               openerOfGroupTab.apiTab.url)
       );
   }
 
@@ -329,23 +330,6 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   }
 
   updateTabDebugTooltip(aTab);
-}
-
-function getSafeFaviconUrl(aURL) {
-  switch (aURL) {
-    case 'chrome://browser/skin/settings.svg':
-      return browser.extension.getURL('resources/icons/settings.svg');
-    case 'chrome://mozapps/skin/extensions/extensionGeneric-16.svg':
-      return browser.extension.getURL('resources/icons/extensionGeneric-16.svg');
-    case 'chrome://browser/skin/privatebrowsing/favicon.svg':
-      return browser.extension.getURL('resources/icons/privatebrowsing-favicon.svg');
-    default:
-      if (/^chrome:\/\//.test(aURL) &&
-          !/^chrome:\/\/branding\//.test(aURL))
-        return browser.extension.getURL('resources/icons/globe-16.svg');
-      break;
-  }
-  return aURL;
 }
 
 function updateTabDebugTooltip(aTab) {
