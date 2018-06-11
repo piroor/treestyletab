@@ -64,7 +64,7 @@ function cancelRunningScroll() {
 }
 
 function calculateScrollDeltaForTab(aTab) {
-  if (isPinned(aTab))
+  if (TabInfo.isPinned(aTab))
     return 0;
 
   var tabRect       = aTab.getBoundingClientRect();
@@ -91,7 +91,7 @@ function isTabInViewport(aTab) {
   if (!GetTabs.ensureLivingTab(aTab))
     return false;
 
-  if (isPinned(aTab))
+  if (TabInfo.isPinned(aTab))
     return true;
 
   return calculateScrollDeltaForTab(aTab) == 0;
@@ -192,7 +192,7 @@ function scrollToNewTab(aTab, aOptions = {}) {
 
 function canScrollToTab(aTab) {
   return (GetTabs.ensureLivingTab(aTab) &&
-          !isHidden(aTab));
+          !TabInfo.isHidden(aTab));
 }
 
 async function scrollToTab(aTab, aOptions = {}) {
@@ -224,7 +224,7 @@ async function scrollToTab(aTab, aOptions = {}) {
   var anchorTab = aOptions.anchor;
   if (!GetTabs.ensureLivingTab(anchorTab) ||
       anchorTab == aTab ||
-      isPinned(anchorTab)) {
+      TabInfo.isPinned(anchorTab)) {
     if (configs.logOnScroll)
       log('=> no available anchor, direct scroll');
     scrollTo(Object.assign({}, aOptions, {

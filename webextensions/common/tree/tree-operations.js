@@ -62,7 +62,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     stack:            `${new Error().stack}\n${aOptions.stack || ''}`
   });
 
-  if (isPinned(aParent) || isPinned(aChild)) {
+  if (TabInfo.isPinned(aParent) || TabInfo.isPinned(aChild)) {
     log('=> pinned tabs cannot be attached');
     return;
   }
@@ -329,7 +329,7 @@ function detachAllChildren(aTab, aOptions = {}) {
   aOptions.dontUpdateInsertionPositionInfo = true;
 
   var parent = GetTabs.getParentTab(aTab);
-  if (isGroupTab(aTab) &&
+  if (TabInfo.isGroupTab(aTab) &&
       GetTabs.getTabs(aTab).filter(aTab => aTab.removing).length == children.length) {
     aOptions.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     aOptions.dontUpdateIndent = false;
@@ -492,7 +492,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
 
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let item = aTabs[i];
-    if (!item || isPinned(item))
+    if (!item || TabInfo.isPinned(item))
       continue;
 
     window.onTabLevelChanged && onTabLevelChanged(item);
@@ -505,7 +505,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
 // collapse/expand tabs
 
 function shouldTabAutoExpanded(aTab) {
-  return hasChildTabs(aTab) && isSubtreeCollapsed(aTab);
+  return TabInfo.hasChildTabs(aTab) && TabInfo.isSubtreeCollapsed(aTab);
 }
 
 async function collapseExpandSubtree(aTab, aParams = {}) {
@@ -530,7 +530,7 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     return;
   aParams.stack = `${new Error().stack}\n${aParams.stack || ''}`;
   if (configs.logOnCollapseExpand)
-    log('collapseExpandSubtree: ', dumpTab(aTab), isSubtreeCollapsed(aTab), aParams);
+    log('collapseExpandSubtree: ', dumpTab(aTab), TabInfo.isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   await Promise.all([
     collapseExpandSubtreeInternal(aTab, aParams),
@@ -539,7 +539,7 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
 }
 function collapseExpandSubtreeInternal(aTab, aParams = {}) {
   if (!aParams.force &&
-      isSubtreeCollapsed(aTab) == aParams.collapsed)
+      TabInfo.isSubtreeCollapsed(aTab) == aParams.collapsed)
     return;
 
   var container = GetTabs.getTabsContainer(aTab);
@@ -606,14 +606,14 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
   ///* PUBLIC API */
   //fireCustomEvent(Constants.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, aTab, true, false, data);
 
-  if (aParams.collapsed && isActive(aTab)) {
+  if (aParams.collapsed && TabInfo.isActive(aTab)) {
     let newSelection = GetTabs.getVisibleAncestorOrSelf(aTab);
     if (configs.logOnCollapseExpand)
       log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
     selectTabInternally(newSelection, { silently: true });
   }
 
-  if (!isSubtreeCollapsed(aTab)) {
+  if (!TabInfo.isSubtreeCollapsed(aTab)) {
     let children = GetTabs.getChildTabs(aTab);
     children.forEach((aChild, aIndex) => {
       var last = aParams.last &&
@@ -630,7 +630,7 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 }
 
 function collapseExpandTab(aTab, aParams = {}) {
-  if (isPinned(aTab) && aParams.collapsed) {
+  if (TabInfo.isPinned(aTab) && aParams.collapsed) {
     log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
         dumpTab(aTab), { stack: new Error().stack });
     aParams.collapsed = false;
@@ -640,7 +640,7 @@ function collapseExpandTab(aTab, aParams = {}) {
   if (configs.logOnCollapseExpand)
     log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
   var last = aParams.last &&
-               (!hasChildTabs(aTab) || isSubtreeCollapsed(aTab));
+               (!TabInfo.hasChildTabs(aTab) || TabInfo.isSubtreeCollapsed(aTab));
   var collapseExpandInfo = Object.assign({}, aParams, {
     anchor: last && aParams.anchor,
     last:   last
@@ -664,7 +664,7 @@ function collapseExpandTab(aTab, aParams = {}) {
       justNow:   aParams.justNow,
       collapsed: aParams.collapsed,
       stack:     stack,
-      byAncestor: GetTabs.getAncestorTabs(aTab).some(isSubtreeCollapsed) == aParams.collapsed
+      byAncestor: GetTabs.getAncestorTabs(aTab).some(TabInfo.isSubtreeCollapsed) == aParams.collapsed
     });
   }
 }
@@ -706,7 +706,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
     let parentTab    = GetTabs.getParentTab(collapseTab);
     if (parentTab) {
       dontCollapse = true;
-      if (!isSubtreeCollapsed(parentTab)) {
+      if (!TabInfo.isSubtreeCollapsed(parentTab)) {
         for (let ancestor of GetTabs.getAncestorTabs(collapseTab)) {
           if (expandedAncestors.indexOf(`<${ancestor.id}>`) < 0)
             continue;
@@ -760,7 +760,7 @@ function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
   if (!configs.moveFocusInTreeForClosedCurrentTab)
     return;
   log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab), aOptions);
-  if (!aOptions.wasActive && !isActive(aTab)) {
+  if (!aOptions.wasActive && !TabInfo.isActive(aTab)) {
     log(' => not active tab');
     return;
   }
@@ -799,8 +799,8 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions
 function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
   var parentTab = GetTabs.getParentTab(aTab);
   var params = {
-    active:                    isActive(aTab),
-    pinned:                    isPinned(aTab),
+    active:                    TabInfo.isActive(aTab),
+    pinned:                    TabInfo.isPinned(aTab),
     parentTab,
     firstChildTab:             GetTabs.getFirstChildTab(aTab),
     firstChildTabOfParent:     GetTabs.getFirstChildTab(parentTab),
@@ -877,12 +877,12 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
   }
 
   if (!nextFocusedTab ||
-      isHidden(nextFocusedTab) ||
-      isActive(nextFocusedTab))
+      TabInfo.isHidden(nextFocusedTab) ||
+      TabInfo.isActive(nextFocusedTab))
     return false;
 
   nextTab = GetTabs.getTabById(nextTab);
-  if (isActive(nextTab) &&
+  if (TabInfo.isActive(nextTab) &&
       nextIsDiscarded) {
     log('reserve to discard accidentally restored tab ', nextTab.apiTab.id, nextTabUrl || nextTab.apiTab.url);
     nextTab.dataset.discardURLAfterCompletelyLoaded = nextTabUrl || nextTab.apiTab.url;
@@ -895,7 +895,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
 
 function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
   if (!aOptions.asIndividualTab &&
-      isSubtreeCollapsed(aTab) &&
+      TabInfo.isSubtreeCollapsed(aTab) &&
       !aOptions.keepChildren)
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
@@ -974,7 +974,7 @@ function syncOrderOfChildTabs(aParentTabs) {
 async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   if (!aTab)
     return;
-  if (isAllTabsPlacedBefore([aTab].concat(GetTabs.getDescendantTabs(aTab)), aNextTab)) {
+  if (TabInfo.isAllTabsPlacedBefore([aTab].concat(GetTabs.getDescendantTabs(aTab)), aNextTab)) {
     log('moveTabSubtreeBefore:no need to move');
     return;
   }
@@ -1000,7 +1000,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
 async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
   if (!aTab)
     return;
-  if (isAllTabsPlacedAfter([aTab].concat(GetTabs.getDescendantTabs(aTab)), aPreviousTab)) {
+  if (TabInfo.isAllTabsPlacedAfter([aTab].concat(GetTabs.getDescendantTabs(aTab)), aPreviousTab)) {
     log('moveTabSubtreeAfter:no need to move');
     return;
   }
@@ -1024,7 +1024,7 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
 }
 
 async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
-  if (!hasChildTabs(aTab))
+  if (!TabInfo.hasChildTabs(aTab))
     return;
 
   log('followDescendantsToMovedRoot: ', dumpTab(aTab));
@@ -1195,7 +1195,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       log(' => ', toIndex);
       if (isAcrossWindows) {
         for (let tab of aTabs) {
-          if (!isActive(tab))
+          if (!TabInfo.isActive(tab))
             continue;
           await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: aTabs });
           break;
@@ -1298,7 +1298,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
   var windowParams = {
     //focused: true,  // not supported in Firefox...
     url: 'about:blank',
-    incognito: isPrivateBrowsing(aTabs[0])
+    incognito: TabInfo.isPrivateBrowsing(aTabs[0])
   };
   if ('left' in aOptions && aOptions.left !== null)
     windowParams.left = aOptions.left;
@@ -1404,7 +1404,7 @@ async function performTabsDragDrop(aParams = {}) {
 
   // Basically tabs should not be dragged between regular window and private browsing window,
   // so there are some codes to prevent shch operations. This is for failsafe.
-  if (isPrivateBrowsing(draggedTabs[0]) != isPrivateBrowsing(GetTabs.getFirstTab(destinationWindowId)))
+  if (TabInfo.isPrivateBrowsing(draggedTabs[0]) != TabInfo.isPrivateBrowsing(GetTabs.getFirstTab(destinationWindowId)))
     return;
 
   var draggedRoots = GetTabs.collectRootTabs(draggedTabs);
@@ -1501,8 +1501,8 @@ async function performTabsDragDrop(aParams = {}) {
     log('closing needless group tabs');
     replacedGroupTabs.reverse().forEach(function(aTab) {
       log(' check: ', aTab.label+'('+aTab._tPos+') '+getLoadingURI(aTab));
-      if (isGroupTab(aTab) &&
-        !hasChildTabs(aTab))
+      if (TabInfo.isGroupTab(aTab) &&
+        !TabInfo.hasChildTabs(aTab))
         removeTab(aTab);
     }, this);
   }, 0);
@@ -1547,7 +1547,7 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
     insertBefore: null,
     insertAfter:  null,
     dontMove:     true,
-    forceExpand:  aOptions.draggedTabs.some(isActive)
+    forceExpand:  aOptions.draggedTabs.some(TabInfo.isActive)
   });
   for (let tab of aTabs) {
     if (aParent)
@@ -1597,12 +1597,12 @@ function getTreeStructureFromTabs(aTabs, aOptions = {}) {
     var item = {
       id:        tab.getAttribute(Constants.kPERSISTENT_ID),
       parent:    aParentIndex,
-      collapsed: isSubtreeCollapsed(tab)
+      collapsed: TabInfo.isSubtreeCollapsed(tab)
     };
     if (aOptions.full) {
       item.title  = tab.apiTab.title;
       item.url    = tab.apiTab.url;
-      item.pinned = isPinned(tab);
+      item.pinned = TabInfo.isPinned(tab);
     }
     return item;
   });
@@ -1652,7 +1652,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let tab = aTabs[i];
     /*
-    if (isCollapsed(tab))
+    if (TabInfo.isCollapsed(tab))
       collapseExpandTabAndSubtree(tab, Object.assign({}, aOptions, {
         collapsed: false,
         justNow: true
@@ -1704,7 +1704,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     let tab = aTabs[i];
     let expanded = expandStates[i];
     collapseExpandSubtree(tab, Object.assign({}, aOptions, {
-      collapsed: expanded === undefined ? !hasChildTabs(tab) : !expanded ,
+      collapsed: expanded === undefined ? !TabInfo.hasChildTabs(tab) : !expanded ,
       justNow:   true,
       force:     true
     }));

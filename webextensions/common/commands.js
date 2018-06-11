@@ -66,7 +66,7 @@ const Commands = {
   collapseAll(aHint) {
     const tabs = GetTabs.getNormalTabs(aHint);
     for (let tab of tabs) {
-      if (hasChildTabs(tab) && !isSubtreeCollapsed(tab))
+      if (TabInfo.hasChildTabs(tab) && !TabInfo.isSubtreeCollapsed(tab))
         collapseExpandSubtree(tab, {
           collapsed: true,
           broadcast: true
@@ -77,7 +77,7 @@ const Commands = {
   expandAll(aHint) {
     const tabs = GetTabs.getNormalTabs(aHint);
     for (let tab of tabs) {
-      if (hasChildTabs(tab) && isSubtreeCollapsed(tab))
+      if (TabInfo.hasChildTabs(tab) && TabInfo.isSubtreeCollapsed(tab))
         collapseExpandSubtree(tab, {
           collapsed: false,
           broadcast: true

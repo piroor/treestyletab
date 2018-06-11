@@ -252,7 +252,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
             aTab.classList.remove(Constants.kTAB_STATE_UNREAD);
         });
     }
-    else if (!isActive(aTab) && aTab.apiTab) {
+    else if (!TabInfo.isActive(aTab) && aTab.apiTab) {
       aTab.classList.add(Constants.kTAB_STATE_UNREAD);
       browser.sessions.setTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD, true);
     }
@@ -261,7 +261,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     window.onTabLabelUpdated && onTabLabelUpdated(aTab);
   }
 
-  const openerOfGroupTab = isGroupTab(aTab) && GetTabs.getOpenerFromGroupTab(aTab);
+  const openerOfGroupTab = TabInfo.isGroupTab(aTab) && GetTabs.getOpenerFromGroupTab(aTab);
   const hasFavIcon       = 'favIconUrl' in aNewState;
   const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab(aNewState);
   if (aOptions.forceApply || hasFavIcon || maybeImageTab) {
@@ -296,7 +296,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       aTab.delayedBurstEnd = setTimeout(() => {
         delete aTab.delayedBurstEnd;
         aTab.classList.remove(Constants.kTAB_STATE_BURSTING);
-        if (!isActive(aTab))
+        if (!TabInfo.isActive(aTab))
           aTab.classList.add(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
@@ -483,12 +483,12 @@ function updateParentTab(aParent) {
 
   var children = GetTabs.getChildTabs(aParent);
 
-  if (children.some(maybeSoundPlaying))
+  if (children.some(TabInfo.maybeSoundPlaying))
     aParent.classList.add(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
   else
     aParent.classList.remove(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
-  if (children.some(maybeMuted))
+  if (children.some(TabInfo.maybeMuted))
     aParent.classList.add(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
   else
     aParent.classList.remove(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
@@ -610,7 +610,7 @@ async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
       !GetTabs.ensureLivingTab(aReferenceTab))
     return [];
 
-  if (isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
+  if (TabInfo.isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
     log('moveTabsBefore:no need to move');
     return [];
   }
@@ -713,7 +713,7 @@ async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
       !GetTabs.ensureLivingTab(aReferenceTab))
     return [];
 
-  if (isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
+  if (TabInfo.isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
     log('moveTabsAfter:no need to move');
     return [];
   }
@@ -1126,15 +1126,15 @@ function snapshotTree(aTargetTab, aTabs) {
 
   var snapshotById = {};
   function snapshotChild(aTab) {
-    if (!GetTabs.ensureLivingTab(aTab) || isPinned(aTab) || isHidden(aTab))
+    if (!GetTabs.ensureLivingTab(aTab) || TabInfo.isPinned(aTab) || TabInfo.isHidden(aTab))
       return null;
     return snapshotById[aTab.id] = {
       id:            aTab.id,
       url:           aTab.apiTab.url,
       cookieStoreId: aTab.apiTab.cookieStoreId,
-      active:        isActive(aTab),
-      children:      GetTabs.getChildTabs(aTab).filter(aChild => !isHidden(aChild)).map(aChild => aChild.id),
-      collapsed:     isSubtreeCollapsed(aTab),
+      active:        TabInfo.isActive(aTab),
+      children:      GetTabs.getChildTabs(aTab).filter(aChild => !TabInfo.isHidden(aChild)).map(aChild => aChild.id),
+      collapsed:     TabInfo.isSubtreeCollapsed(aTab),
       level:         parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)
     };
   }

@@ -59,7 +59,7 @@ function isCopyAction(aEvent) {
 
 function isEventFiredOnTwisty(aEvent) {
   var tab = getTabFromEvent(aEvent);
-  if (!tab || !hasChildTabs(tab))
+  if (!tab || !TabInfo.hasChildTabs(tab))
     return false;
 
   return !!aEvent.target.closest(`.${Constants.kTWISTY}`);
@@ -432,7 +432,7 @@ async function onMouseUp(aEvent) {
       if (configs.logOnMouseEvent)
         log('middle click on a tab');
       //log('middle-click to close');
-      confirmToCloseTabs(getClosingTabsFromParent(tab).length)
+      confirmToCloseTabs(TabInfo.getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
           if (aConfirmed)
             removeTabInternally(tab, { inRemote: true });
@@ -507,9 +507,9 @@ function onClick(aEvent) {
     aEvent.preventDefault();
     if (configs.logOnMouseEvent)
       log('clicked on twisty');
-    if (hasChildTabs(tab))
+    if (TabInfo.hasChildTabs(tab))
       collapseExpandSubtree(tab, {
-        collapsed:       !isSubtreeCollapsed(tab),
+        collapsed:       !TabInfo.isSubtreeCollapsed(tab),
         manualOperation: true,
         inRemote:        true
       });
@@ -525,7 +525,7 @@ function onClick(aEvent) {
       type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
       tab:      tab.id,
-      muted:    maybeSoundPlaying(tab)
+      muted:    TabInfo.maybeSoundPlaying(tab)
     });
     return;
   }
@@ -540,7 +540,7 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    confirmToCloseTabs(getClosingTabsFromParent(tab).length)
+    confirmToCloseTabs(TabInfo.getClosingTabsFromParent(tab).length)
       .then(aConfirmed => {
         if (aConfirmed)
           removeTabInternally(tab, { inRemote: true });
@@ -575,7 +575,7 @@ function onDblClick(aEvent) {
       aEvent.stopPropagation();
       aEvent.preventDefault();
       collapseExpandSubtree(tab, {
-        collapsed:       !isSubtreeCollapsed(tab),
+        collapsed:       !TabInfo.isSubtreeCollapsed(tab),
         manualOperation: true,
         inRemote:        true
       });
@@ -698,7 +698,7 @@ function reserveToSaveScrollPosition() {
 function onOverflow(aEvent) {
   const tab = GetTabs.getTabFromChild(aEvent.target);
   const label = GetTabs.getTabLabel(tab);
-  if (aEvent.target == label && !isPinned(tab)) {
+  if (aEvent.target == label && !TabInfo.isPinned(tab)) {
     label.classList.add('overflow');
     reserveToUpdateTabTooltip(tab);
   }
@@ -707,7 +707,7 @@ function onOverflow(aEvent) {
 function onUnderflow(aEvent) {
   const tab = GetTabs.getTabFromChild(aEvent.target);
   const label = GetTabs.getTabLabel(tab);
-  if (aEvent.target == label && !isPinned(tab)) {
+  if (aEvent.target == label && !TabInfo.isPinned(tab)) {
     label.classList.remove('overflow');
     reserveToUpdateTabTooltip(tab);
   }
@@ -803,9 +803,9 @@ function onParentTabUpdated(aTab) {
 
 function updateTabSoundButtonTooltip(aTab) {
   var tooltip = '';
-  if (maybeMuted(aTab))
+  if (TabInfo.maybeMuted(aTab))
     tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
-  else if (maybeSoundPlaying(aTab))
+  else if (TabInfo.maybeSoundPlaying(aTab))
     tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
@@ -826,9 +826,9 @@ function onTabOpened(aTab, aInfo = {}) {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
     nextFrame().then(() => {
       var parent = GetTabs.getParentTab(aTab);
-      if (parent && isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
+      if (parent && TabInfo.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
-      var focused = isActive(aTab);
+      var focused = TabInfo.isActive(aTab);
       collapseExpandTab(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
@@ -841,7 +841,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
   else {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
-    if (isActive(aTab))
+    if (TabInfo.isActive(aTab))
       scrollToNewTab(aTab);
     else
       notifyOutOfViewTab(aTab);
@@ -920,7 +920,7 @@ function onTabClosed(aTab, aCloseInfo) {
 
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      isSubtreeCollapsed(aTab))
+      TabInfo.isSubtreeCollapsed(aTab))
     collapseExpandSubtree(aTab, {
       collapsed: false
     });
@@ -957,13 +957,13 @@ async function onTabCompletelyClosed(aTab) {
 async function onTabMoving(aTab) {
   tabContextMenu.close();
   if (configs.animation &&
-      !isPinned(aTab) &&
-      !isOpening(aTab)) {
+      !TabInfo.isPinned(aTab) &&
+      !TabInfo.isOpening(aTab)) {
     aTab.classList.add(Constants.kTAB_STATE_MOVING);
     await nextFrame();
     if (!GetTabs.ensureLivingTab(aTab)) // it was removed while waiting
       return;
-    const visible = !(isCollapsedStateUpdating(aTab) ? await isSurelyCollapsed(aTab) : isCollapsed(aTab));
+    const visible = !(isCollapsedStateUpdating(aTab) ? await isSurelyCollapsed(aTab) : TabInfo.isCollapsed(aTab));
     if (visible)
       collapseExpandTab(aTab, {
         collapsed: true,
@@ -1120,7 +1120,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   });
 }
 function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
-  if (isActive(aTab) && !aOptions.collapsed)
+  if (TabInfo.isActive(aTab) && !aOptions.collapsed)
     scrollToTab(aTab);
 
   if (configs.indentAutoShrink &&
@@ -1174,9 +1174,9 @@ function isCollapsedStateUpdating(aTab) {
 async function isSurelyCollapsed(aTab) {
   if (isSurelyCollapsed.updating[aTab.id])
     return isSurelyCollapsed.updating[aTab.id].then(() => {
-      return isCollapsed(aTab);
+      return TabInfo.isCollapsed(aTab);
     });
-  return isCollapsed(aTab);
+  return TabInfo.isCollapsed(aTab);
 }
 isSurelyCollapsed.updating = {};
 
@@ -1408,7 +1408,7 @@ function onMessage(aMessage, aSender, aRespond) {
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (aMessage.byAncestor &&
-            aMessage.collapsed != GetTabs.getAncestorTabs(tab).some(isSubtreeCollapsed))
+            aMessage.collapsed != GetTabs.getAncestorTabs(tab).some(TabInfo.isSubtreeCollapsed))
           return;
         let params = {
           collapsed:   aMessage.collapsed,
@@ -1482,7 +1482,7 @@ function onMessage(aMessage, aSender, aRespond) {
           aMessage.parent
         ]);
         let tab = GetTabs.getTabById(aMessage.tab);
-        if (tab && isActive(GetTabs.getTabById(aMessage.parent)))
+        if (tab && TabInfo.isActive(GetTabs.getTabById(aMessage.parent)))
           scrollToNewTab(tab);
       })();
 

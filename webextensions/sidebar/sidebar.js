@@ -586,7 +586,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
 
 function updateTabTwisty(aTab) {
   var tooltip;
-  if (isSubtreeCollapsed(aTab))
+  if (TabInfo.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
@@ -595,7 +595,7 @@ function updateTabTwisty(aTab) {
 
 function updateTabClosebox(aTab) {
   var tooltip;
-  if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab))
+  if (TabInfo.hasChildTabs(aTab) && TabInfo.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
@@ -637,7 +637,7 @@ function reserveToUpdateVisualMaxTreeLevel() {
 }
 
 function updateVisualMaxTreeLevel() {
-  var maxLevel = getMaxTreeLevel(gTargetWindow, {
+  var maxLevel = TabInfo.getMaxTreeLevel(gTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
   document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
@@ -663,7 +663,7 @@ var gIndentProp = 'margin-left';
 
 function updateIndent(aOptions = {}) {
   if (!aOptions.cache) {
-    let maxLevel  = getMaxTreeLevel(gTargetWindow);
+    let maxLevel  = TabInfo.getMaxTreeLevel(gTargetWindow);
     let maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
     if (maxLevel <= gLastMaxLevel &&
         maxIndent == gLastMaxIndent &&
@@ -836,11 +836,11 @@ function updateTabTooltip(aTab) {
   if (!GetTabs.ensureLivingTab(aTab))
     return;
 
-  aTab.dataset.labelWithDescendants = getLabelWithDescendants(aTab);
+  aTab.dataset.labelWithDescendants = TabInfo.getLabelWithDescendants(aTab);
 
   if (configs.showCollapsedDescendantsByTooltip &&
-      isSubtreeCollapsed(aTab) &&
-      hasChildTabs(aTab)) {
+      TabInfo.isSubtreeCollapsed(aTab) &&
+      TabInfo.hasChildTabs(aTab)) {
     aTab.setAttribute('title', aTab.dataset.labelWithDescendants);
     return;
   }
@@ -849,7 +849,7 @@ function updateTabTooltip(aTab) {
     return;
 
   const label = GetTabs.getTabLabel(aTab);
-  if (isPinned(aTab) || label.classList.contains('overflow')) {
+  if (TabInfo.isPinned(aTab) || label.classList.contains('overflow')) {
     aTab.setAttribute('title', aTab.dataset.label);
   }
   else {

@@ -84,7 +84,7 @@ function getDragDataFromOneTab(aTab, aOptions = {}) {
 }
 
 function getDraggedTabsFromOneTab(aTab) {
-  if (isSelected(aTab))
+  if (TabInfo.isSelected(aTab))
     return GetTabs.getSelectedTabs(aTab);
   return [aTab].concat(GetTabs.getDescendantTabs(aTab));
 }
@@ -158,12 +158,12 @@ function getDropAction(aEvent) {
     const draggedApiTab               = info.dragData && info.dragData.apiTab;
     const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
     if (draggedApiTab &&
-        isPrivateBrowsingTabDragged != isPrivateBrowsing(info.dragOverTab || GetTabs.getFirstTab())) {
+        isPrivateBrowsingTabDragged != TabInfo.isPrivateBrowsing(info.dragOverTab || GetTabs.getFirstTab())) {
       return false;
     }
     else if (info.draggedAPITab) {
       if (info.dragOverTab &&
-          info.draggedAPITab.pinned != isPinned(info.dragOverTab)) {
+          info.draggedAPITab.pinned != TabInfo.isPinned(info.dragOverTab)) {
         return false;
       }
       else if (info.action & Constants.kACTION_ATTACH) {
@@ -193,8 +193,8 @@ function getDropAction(aEvent) {
     }
 
     if (info.dragOverTab &&
-        (isHidden(info.dragOverTab) ||
-         (isCollapsed(info.dragOverTab) &&
+        (TabInfo.isHidden(info.dragOverTab) ||
+         (TabInfo.isCollapsed(info.dragOverTab) &&
           info.dropPosition != Constants.kDROP_AFTER)))
       return false;
 
@@ -227,7 +227,7 @@ function getDropAction(aEvent) {
    * So, if a tab is dragged and the target tab is pinned, then, we
    * have to ignore the [center] area.
    */
-  const onPinnedTab         = isPinned(targetTab);
+  const onPinnedTab         = TabInfo.isPinned(targetTab);
   const dropAreasCount      = (info.draggedAPITab && onPinnedTab) ? 2 : 3 ;
   const targetTabRect       = targetTab.getBoundingClientRect();
   const targetTabCoordinate = onPinnedTab ? targetTabRect.left : targetTabRect.top ;
@@ -447,8 +447,8 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
   const dragOverTab = aDropActionInfo.dragOverTab;
   if (dragOverTab &&
       aDropActionInfo.dropPosition == Constants.kDROP_ON_SELF &&
-      !isLocked(dragOverTab) &&
-      !isPinned(dragOverTab)) {
+      !TabInfo.isLocked(dragOverTab) &&
+      !TabInfo.isPinned(dragOverTab)) {
     const behavior = await getDroppedLinksOnTabBehavior();
     if (behavior <= Constants.kDROPLINK_ASK)
       return;
@@ -713,7 +713,7 @@ function onDragOver(aEvent) {
   }
 
   let dropPositionTargetTab = info.targetTab;
-  while (isCollapsed(dropPositionTargetTab)) {
+  while (TabInfo.isCollapsed(dropPositionTargetTab)) {
     dropPositionTargetTab = GetTabs.getPreviousTab(dropPositionTargetTab);
   }
   if (!dropPositionTargetTab)
@@ -799,7 +799,7 @@ function reserveToProcessLongHover(aParams = {}) {
         return;
 
       // auto-switch for staying on tabs
-      if (!isActive(dragOverTab) &&
+      if (!TabInfo.isActive(dragOverTab) &&
           aParams.dropEffect == 'link') {
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_SELECT_TAB,

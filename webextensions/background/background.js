@@ -201,8 +201,8 @@ async function rebuildAll() {
       gAllTabs.appendChild(container);
       restoredFromCache[aWindow.id] = false;
     });
-    for (let tab of GetTabs.getAllTabs(aWindow.id).filter(isGroupTab)) {
-      if (!isDiscarded(tab))
+    for (let tab of GetTabs.getAllTabs(aWindow.id).filter(TabInfo.isGroupTab)) {
+      if (!TabInfo.isDiscarded(tab))
         tab.dataset.shouldReloadOnSelect = true;
     }
   }));
@@ -236,7 +236,7 @@ async function tryStartHandleAccelKeyOnTab(aTab) {
   See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087
 */
 async function tryInitGroupTab(aTab) {
-  if (!isGroupTab(aTab) &&
+  if (!TabInfo.isGroupTab(aTab) &&
       aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0)
     return;
   var scriptOptions = {
@@ -384,7 +384,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
       await reserveToAttachTabFromRestoredInfo.promisedDone;
       MetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
     }
-    dumpAllTabs();
+    TabInfo.dumpAllTabs();
   })));
 }
 
@@ -413,7 +413,7 @@ function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
     reserveToAttachTabFromRestoredInfo.onDone();
     delete reserveToAttachTabFromRestoredInfo.onDone;
     delete reserveToAttachTabFromRestoredInfo.promisedDone;
-    dumpAllTabs();
+    TabInfo.dumpAllTabs();
   }, 100);
 }
 reserveToAttachTabFromRestoredInfo.waiting = null;
@@ -456,7 +456,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     children:     children.map(dumpTab).join(', ')
   });
   var attached = false;
-  var active   = isActive(aTab);
+  var active   = TabInfo.isActive(aTab);
   for (let ancestor of ancestors) {
     if (!ancestor)
       continue;
@@ -512,7 +512,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       if (!child)
         continue;
       await attachTabTo(child, aTab, {
-        dontExpand:  !isActive(child),
+        dontExpand:  !TabInfo.isActive(child),
         forceExpand: active,
         insertAt:    Constants.kINSERT_NEAREST,
         broadcast:   true
@@ -659,7 +659,7 @@ async function updateSubtreeCollapsed(aTab) {
   browser.sessions.setTabValue(
     aTab.apiTab.id,
     Constants.kPERSISTENT_SUBTREE_COLLAPSED,
-    isSubtreeCollapsed(aTab)
+    TabInfo.isSubtreeCollapsed(aTab)
   );
 }
 
@@ -683,12 +683,12 @@ function cleanupNeedlssGroupTab(aTabs) {
   log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
   var tabsToBeRemoved = [];
   for (let tab of aTabs) {
-    if (!isTemporaryGroupTab(tab))
+    if (!TabInfo.isTemporaryGroupTab(tab))
       break;
     if (GetTabs.getChildTabs(tab).length > 1)
       break;
     let lastChild = GetTabs.getFirstChildTab(tab);
-    if (lastChild && !isTemporaryGroupTab(lastChild))
+    if (lastChild && !TabInfo.isTemporaryGroupTab(lastChild))
       break;
     tabsToBeRemoved.push(tab);
   }
@@ -699,7 +699,7 @@ function cleanupNeedlssGroupTab(aTabs) {
 function reserveToUpdateRelatedGroupTabs(aTab) {
   const ancestorGroupTabs = [aTab]
     .concat(GetTabs.getAncestorTabs(aTab))
-    .filter(isGroupTab);
+    .filter(TabInfo.isGroupTab);
   for (let tab of ancestorGroupTabs) {
     if (tab.reservedUpdateRelatedGroupTab)
       clearTimeout(tab.reservedUpdateRelatedGroupTab);

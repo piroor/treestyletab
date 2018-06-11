@@ -176,7 +176,7 @@ function onTabOpening(aTab, aInfo = {}) {
 
   const container = aTab.parentNode;
   if ((configs.autoGroupNewTabsFromPinned &&
-       isPinned(opener) &&
+       TabInfo.isPinned(opener) &&
        opener.parentNode == container) ||
       (configs.autoGroupNewTabs &&
        !opener &&
@@ -199,7 +199,7 @@ function onTabOpening(aTab, aInfo = {}) {
 
   if (!opener) {
     if (!aInfo.maybeOrphan && possibleOpenerTab) {
-      if (isNewTabCommandTab(aTab)) {
+      if (TabInfo.isNewTabCommandTab(aTab)) {
         log('behave as a tab opened by new tab command');
         handleNewTabFromActiveTab(aTab, {
           possibleOpenerTab,
@@ -218,7 +218,7 @@ function onTabOpening(aTab, aInfo = {}) {
   }
 
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
-  if (isPinned(opener) &&
+  if (TabInfo.isPinned(opener) &&
       opener.parentNode == aTab.parentNode) {
     if (configs.autoGroupNewTabsFromPinned) {
       return true;
@@ -316,11 +316,11 @@ async function tryGroupNewTabs() {
     tabs.sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
 
     var newRootTabs = GetTabs.collectRootTabs(tabs)
-      .filter(aTab => !isGroupTab(aTab));
+      .filter(aTab => !TabInfo.isGroupTab(aTab));
     if (newRootTabs.length <= 0)
       return;
 
-    var newRootTabsFromPinned = newRootTabs.filter(aTab => isPinned(GetTabs.getOpenerTab(aTab)));
+    var newRootTabsFromPinned = newRootTabs.filter(aTab => TabInfo.isPinned(GetTabs.getOpenerTab(aTab)));
     if (newRootTabsFromPinned.length > 0) {
       newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
@@ -369,7 +369,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       return true;
     }
     const opener = GetTabs.getTabByUniqueId(aTab.dataset.originalOpenerTabId);
-    if (!isPinned(opener))
+    if (!TabInfo.isPinned(opener))
       return false;
     // existing and not yet grouped tab
     if (pinnedOpeners.indexOf(opener) < 0)
@@ -544,14 +544,14 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      isSubtreeCollapsed(aTab))
+      TabInfo.isSubtreeCollapsed(aTab))
     collapseExpandSubtree(aTab, {
       collapsed: false,
       justNow:   true,
       broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
     });
 
-  var wasActive = isActive(aTab);
+  var wasActive = TabInfo.isActive(aTab);
   if (!(await tryGrantCloseTab(aTab, closeParentBehavior)))
     return;
 
@@ -562,7 +562,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       active:          wasActive,
       nextTab:         nextTab && nextTab.id,
       nextTabUrl:      nextTab && nextTab.apiTab.url,
-      nextIsDiscarded: isDiscarded(nextTab)
+      nextIsDiscarded: TabInfo.isDiscarded(nextTab)
     }
   });
 
@@ -618,14 +618,14 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   self.closingTabIds.push(aTab.id);
   if (aCloseParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
+      .concat(TabInfo.getClosingTabsFromParent(aTab).map(aTab => aTab.id));
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
   if (self.promisedGrantedToCloseTabs)
     return self.promisedGrantedToCloseTabs;
 
-  self.closingTabWasActive = self.closingTabWasActive || isActive(aTab);
+  self.closingTabWasActive = self.closingTabWasActive || TabInfo.isActive(aTab);
 
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
@@ -735,7 +735,7 @@ async function onTabMoved(aTab, aMoveInfo) {
 
   var container = GetTabs.getTabsContainer(aTab);
   if (aMoveInfo.byInternalOperation ||
-      isDuplicating(aTab)) {
+      TabInfo.isDuplicating(aTab)) {
     log('internal move');
     return;
   }
@@ -942,7 +942,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   gTabSwitchedByShortcut = gMaybeTabSwitchingByShortcut;
-  if (isCollapsed(aTab)) {
+  if (TabInfo.isCollapsed(aTab)) {
     if (!GetTabs.getParentTab(aTab)) {
       // This is invalid case, generally never should happen,
       // but actually happen on some environment:
@@ -978,8 +978,8 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       if (gMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
       selectTabInternally(newSelection, { silently: true });
-      log('onTabFocusing: discarded? ', dumpTab(aTab), isDiscarded(aTab));
-      if (isDiscarded(aTab))
+      log('onTabFocusing: discarded? ', dumpTab(aTab), TabInfo.isDiscarded(aTab));
+      if (TabInfo.isDiscarded(aTab))
         aTab.dataset.discardURLAfterCompletelyLoaded = aTab.apiTab.url;
       return true
     }
@@ -990,8 +990,8 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
     log('=> reaction for removing current tab');
     return true;
   }
-  else if (hasChildTabs(aTab) &&
-           isSubtreeCollapsed(aTab) &&
+  else if (TabInfo.hasChildTabs(aTab) &&
+           TabInfo.isSubtreeCollapsed(aTab) &&
            !shouldSkipCollapsed) {
     log('=> reaction for newly focused parent tab');
     handleNewActiveTab(aTab, aInfo);
@@ -1026,8 +1026,8 @@ function setupDelayedExpand(aTab) {
     return;
   cancelDelayedExpand(aTab);
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
-      !hasChildTabs(aTab) ||
-      !isSubtreeCollapsed(aTab))
+      !TabInfo.hasChildTabs(aTab) ||
+      !TabInfo.isSubtreeCollapsed(aTab))
     return;
   aTab.delayedExpand = setTimeout(() => {
     collapseExpandTreesIntelligentlyFor(aTab, {
@@ -1060,7 +1060,7 @@ function onTabUpdated(aTab, aChangeInfo) {
         return;
       attachTabTo(aTab, parent, {
         insertAt:    Constants.kINSERT_NEAREST,
-        forceExpand: isActive(aTab),
+        forceExpand: TabInfo.isActive(aTab),
         broadcast:   true
       });
     });
@@ -1078,7 +1078,7 @@ function onTabUpdated(aTab, aChangeInfo) {
     delete aTab.dataset.possibleOpenerTab;
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     if (!GetTabs.getParentTab(aTab) && possibleOpenerTab) {
-      if (isNewTabCommandTab(aTab)) {
+      if (TabInfo.isNewTabCommandTab(aTab)) {
         log('behave as a tab opened by new tab command (delayed)');
         handleNewTabFromActiveTab(aTab, {
           activeTab:                 possibleOpenerTab,
@@ -1143,7 +1143,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   // tabs are also closed even if "forceExpand" is "true".
   if (aInfo.newlyAttached &&
       !gInitializing) {
-    if (isSubtreeCollapsed(aInfo.parent) &&
+    if (TabInfo.isSubtreeCollapsed(aInfo.parent) &&
         !aInfo.forceExpand)
       collapseExpandTabAndSubtree(aTab, {
         collapsed: true,
@@ -1170,21 +1170,21 @@ async function onTabAttached(aTab, aInfo = {}) {
           isNewTreeCreatedManually ||
           shouldTabAutoExpanded(parent) ||
           aInfo.forceExpand) {
-        newAncestors.filter(isSubtreeCollapsed).forEach(aAncestor => {
+        newAncestors.filter(TabInfo.isSubtreeCollapsed).forEach(aAncestor => {
           collapseExpandSubtree(aAncestor, Object.assign({}, aInfo, {
             collapsed: false,
             broadcast: true
           }));
         });
       }
-      if (isCollapsed(parent))
+      if (TabInfo.isCollapsed(parent))
         collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
           collapsed: true,
           broadcast: true
         }));
     }
     else if (shouldTabAutoExpanded(parent) ||
-             isCollapsed(parent)) {
+             TabInfo.isCollapsed(parent)) {
       collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
         collapsed: true,
         broadcast: true
@@ -1193,7 +1193,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   }
 
   await Promise.all([
-    isOpening(aTab) && aTab.opened,
+    TabInfo.isOpening(aTab) && aTab.opened,
     !aInfo.dontMove && (async () => {
       let nextTab = aInfo.insertBefore;
       let prevTab = aInfo.insertAfter;
@@ -1255,7 +1255,7 @@ async function onTabDetached(aTab, aDetachInfo) {
     browser.tabs.update(aTab.apiTab.id, { openerTabId: aTab.apiTab.id }) // set self id instead of null, because it requires any valid tab id...
       .catch(ApiTabs.handleMissingTabError);
   }
-  if (isGroupTab(aDetachInfo.oldParentTab))
+  if (TabInfo.isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateAncestors([aTab].concat(GetTabs.getDescendantTabs(aTab)));
@@ -1555,8 +1555,8 @@ function onMessage(aMessage, aSender) {
           return;
         const tabs = [root].concat(GetTabs.getDescendantTabs(root));
         for (let tab of tabs) {
-          const playing = isSoundPlaying(tab);
-          const muted   = isMuted(tab);
+          const playing = TabInfo.isSoundPlaying(tab);
+          const muted   = TabInfo.isMuted(tab);
           log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
           if (playing != aMessage.muted)
             continue;
@@ -1578,7 +1578,7 @@ function onMessage(aMessage, aSender) {
             tab.classList.remove(Constants.kTAB_STATE_MUTED);
           }
 
-          if (isAudible(tab) && !aMessage.muted) {
+          if (TabInfo.isAudible(tab) && !aMessage.muted) {
             add.push(Constants.kTAB_STATE_SOUND_PLAYING);
             tab.classList.add(Constants.kTAB_STATE_SOUND_PLAYING);
           }
@@ -1592,7 +1592,7 @@ function onMessage(aMessage, aSender) {
           // are unresponsive for quick-clicks).
           broadcastTabState(tab, {
             add, remove,
-            bubbles: !hasChildTabs(tab)
+            bubbles: !TabInfo.hasChildTabs(tab)
           });
         }
       })();

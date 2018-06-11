@@ -126,7 +126,7 @@ function restoreTabsFromCacheInternal(aParams) {
     throw e;
   }
   logForCache('restoreTabsFromCacheInternal: done');
-  dumpAllTabs();
+  TabInfo.dumpAllTabs();
   return true;
 }
 

@@ -488,7 +488,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 
     window.onTabStateChanged && onTabStateChanged(oldTab);
 
-    if (isActive(oldTab))
+    if (TabInfo.isActive(oldTab))
       container.resolveClosedWhileActiveForPreviousActiveTab = oldTab._resolveClosedWhileActive;
 
     window.onTabClosed && await onTabClosed(oldTab, {
@@ -498,7 +498,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
     oldTab[Constants.kTAB_STATE_REMOVING] = true;
     oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
 
-    if (!isCollapsed(oldTab) &&
+    if (!TabInfo.isCollapsed(oldTab) &&
         window.onTabCompletelyClosed) {
       await onTabCompletelyClosed(oldTab, {
         byInternalOperation
