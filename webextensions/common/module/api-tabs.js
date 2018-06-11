@@ -14,7 +14,7 @@ export async function getApiTabIndex(...aQueriedTabIds) {
   if (aQueriedTabIds.length == 0)
     return -1;
 
-  var indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
+  let indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
     return browser.tabs.get(aTabId)
       .catch(e => {
         handleMissingTabError(e);
@@ -32,7 +32,7 @@ export async function getApiTabIndex(...aQueriedTabIds) {
 export async function safeMoveAcrossWindows(aTabIds, aMoveOptions) {
   return (await Promise.all(aTabIds.map(async (aTabId, aIndex) => {
     try {
-      var movedTab = await browser.tabs.move(aTabId, Object.assign({}, aMoveOptions, {
+      let movedTab = await browser.tabs.move(aTabId, Object.assign({}, aMoveOptions, {
         index: aMoveOptions.index + aIndex
       }));
       if (Array.isArray(movedTab))
