@@ -8,14 +8,16 @@
 // Defined in a classic script source, and we can read these as global variables. 
 /* global
   tabContextMenu: false,
-  kTSTAPI_CONTEXT_MENU_REMOVE_ALL: false,
-  kTSTAPI_CONTEXT_MENU_CREATE: false,
   getTabById: false,
   log: false,
   Commands: false,
   configs: false,
  */
 
+import {
+  kTSTAPI_CONTEXT_MENU_REMOVE_ALL,
+  kTSTAPI_CONTEXT_MENU_CREATE
+} from '../../common/module/constants.js';
 
 var gContextMenuItems = `
   reloadTree
