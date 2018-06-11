@@ -543,7 +543,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    let oldIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+    let oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
     for (let tab of aTabs) {
       let oldPreviousTab = Tabs.getPreviousTab(tab);
       let oldNextTab     = Tabs.getNextTab(tab);
@@ -567,7 +567,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
           .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
-      let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+      let newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
       for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
@@ -646,7 +646,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    let oldIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+    let oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
     var nextTab = Tabs.getNextTab(aReferenceTab);
     if (aTabs.indexOf(nextTab) > -1)
       nextTab = null;
@@ -673,7 +673,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
           .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
-      let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
+      let newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
       for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
