@@ -7,7 +7,7 @@
 
 const Commands = {
   reloadTree(aRootTab) {
-    const tabs = [aRootTab].concat(getDescendantTabs(aRootTab));
+    const tabs = [aRootTab].concat(GetTabs.getDescendantTabs(aRootTab));
     for (let tab of tabs) {
       browser.tabs.reload(tab.apiTab.id)
         .catch(ApiTabs.handleMissingTabError);
@@ -15,7 +15,7 @@ const Commands = {
   },
 
   reloadDescendants(aRootTab) {
-    const tabs = getDescendantTabs(aRootTab);
+    const tabs = GetTabs.getDescendantTabs(aRootTab);
     for (let tab of tabs) {
       browser.tabs.reload(tab.apiTab.id)
         .catch(ApiTabs.handleMissingTabError);
@@ -23,7 +23,7 @@ const Commands = {
   },
 
   closeTree(aRootTab) {
-    const tabs = [aRootTab].concat(getDescendantTabs(aRootTab));
+    const tabs = [aRootTab].concat(GetTabs.getDescendantTabs(aRootTab));
     confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
       .then(aConfirmed => {
         if (!aConfirmed)
@@ -36,7 +36,7 @@ const Commands = {
   },
 
   closeDescendants(aRootTab) {
-    const tabs = getDescendantTabs(aRootTab);
+    const tabs = GetTabs.getDescendantTabs(aRootTab);
     confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
       .then(aConfirmed => {
         if (!aConfirmed)
@@ -49,8 +49,8 @@ const Commands = {
   },
 
   closeOthers(aRootTab) {
-    const exceptionTabs = [aRootTab].concat(getDescendantTabs(aRootTab));
-    const tabs          = getNormalTabs(aRootTab); // except pinned or hidden tabs
+    const exceptionTabs = [aRootTab].concat(GetTabs.getDescendantTabs(aRootTab));
+    const tabs          = GetTabs.getNormalTabs(aRootTab); // except pinned or hidden tabs
     tabs.reverse(); // close bottom to top!
     const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(aTab) < 0);
     confirmToCloseTabs(closeTabs.length, { windowId: aRootTab.apiTab.windowId })
@@ -64,7 +64,7 @@ const Commands = {
   },
 
   collapseAll(aHint) {
-    const tabs = getNormalTabs(aHint);
+    const tabs = GetTabs.getNormalTabs(aHint);
     for (let tab of tabs) {
       if (hasChildTabs(tab) && !isSubtreeCollapsed(tab))
         collapseExpandSubtree(tab, {
@@ -75,7 +75,7 @@ const Commands = {
   },
 
   expandAll(aHint) {
-    const tabs = getNormalTabs(aHint);
+    const tabs = GetTabs.getNormalTabs(aHint);
     for (let tab of tabs) {
       if (hasChildTabs(tab) && isSubtreeCollapsed(tab))
         collapseExpandSubtree(tab, {
@@ -86,7 +86,7 @@ const Commands = {
   },
 
   bookmarkTree: async function(aRoot, aOptions = {}) {
-    const tabs   = [aRoot].concat(getDescendantTabs(aRoot));
+    const tabs   = [aRoot].concat(GetTabs.getDescendantTabs(aRoot));
     const folder = await bookmarkTabs(tabs, aOptions);
     if (!folder)
       return null;
@@ -105,7 +105,7 @@ const Commands = {
 
 
   openNewTabAs: async function(aOptions = {}) {
-    const currentTab = aOptions.baseTab || getTabById((await browser.tabs.query({
+    const currentTab = aOptions.baseTab || GetTabs.getTabById((await browser.tabs.query({
       active:        true,
       currentWindow: true
     }))[0]);
@@ -119,7 +119,7 @@ const Commands = {
 
       case Constants.kNEWTAB_OPEN_AS_ORPHAN:
         isOrphan    = true;
-        insertAfter = getLastTab(currentTab);
+        insertAfter = GetTabs.getLastTab(currentTab);
         break;
 
       case Constants.kNEWTAB_OPEN_AS_CHILD: {
@@ -133,14 +133,14 @@ const Commands = {
       }; break;
 
       case Constants.kNEWTAB_OPEN_AS_SIBLING:
-        parent      = getParentTab(currentTab);
-        insertAfter = getLastDescendantTab(parent);
+        parent      = GetTabs.getParentTab(currentTab);
+        insertAfter = GetTabs.getLastDescendantTab(parent);
         break;
 
       case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-        parent       = getParentTab(currentTab);
-        insertBefore = getNextSiblingTab(currentTab);
-        insertAfter  = getLastDescendantTab(currentTab);
+        parent       = GetTabs.getParentTab(currentTab);
+        insertBefore = GetTabs.getNextSiblingTab(currentTab);
+        insertAfter  = GetTabs.getLastDescendantTab(currentTab);
       }; break;
     }
 
@@ -173,9 +173,9 @@ const Commands = {
   },
 
   indent: async function(aTab, aOptions = {}) {
-    const newParent = getPreviousSiblingTab(aTab);
+    const newParent = GetTabs.getPreviousSiblingTab(aTab);
     if (!newParent ||
-        newParent == getParentTab(aTab))
+        newParent == GetTabs.getParentTab(aTab))
       return false;
 
     if (!aOptions.followChildren)
@@ -186,18 +186,18 @@ const Commands = {
     await attachTabTo(aTab, newParent, {
       broadcast:   true,
       forceExpand: true,
-      insertAfter: getLastDescendantTab(newParent) || newParent
+      insertAfter: GetTabs.getLastDescendantTab(newParent) || newParent
     });
     return true;
   },
 
   outdent: async function(aTab, aOptions = {}) {
-    const parent = getParentTab(aTab);
+    const parent = GetTabs.getParentTab(aTab);
     if (!parent)
       return false;
 
-    let newParent = getParentTab(parent);
-    if (newParent == getParentTab(aTab))
+    let newParent = GetTabs.getParentTab(parent);
+    if (newParent == GetTabs.getParentTab(aTab))
       return false;
 
     if (!aOptions.followChildren)
@@ -209,14 +209,14 @@ const Commands = {
       await attachTabTo(aTab, newParent, {
         broadcast:   true,
         forceExpand: true,
-        insertAfter: getLastDescendantTab(parent) || parent
+        insertAfter: GetTabs.getLastDescendantTab(parent) || parent
       });
     }
     else {
       await detachTab(aTab, {
         broadcast: true,
       });
-      await moveTabAfter(aTab, getLastDescendantTab(parent) || parent, {
+      await moveTabAfter(aTab, GetTabs.getLastDescendantTab(parent) || parent, {
         broadcast: true,
       });
     }
@@ -224,7 +224,7 @@ const Commands = {
   },
 
   moveUp: async function(aTab, aOptions = {}) {
-    const previousTab = getPreviousTab(aTab);
+    const previousTab = GetTabs.getPreviousTab(aTab);
     if (!previousTab)
       return false;
 
@@ -237,7 +237,7 @@ const Commands = {
     await moveTabBefore(aTab, previousTab, {
       broadcast: true
     });
-    const index = getTabIndex(aTab);
+    const index = GetTabs.getTabIndex(aTab);
     await tryFixupTreeForInsertedTab(aTab, {
       toIndex:   index,
       fromIndex: index + 1,
@@ -246,7 +246,7 @@ const Commands = {
   },
 
   moveDown: async function(aTab, aOptions = {}) {
-    const nextTab = getNextTab(aTab);
+    const nextTab = GetTabs.getNextTab(aTab);
     if (!nextTab)
       return false;
 
@@ -259,7 +259,7 @@ const Commands = {
     await moveTabAfter(aTab, nextTab, {
       broadcast: true
     });
-    const index = getTabIndex(aTab);
+    const index = GetTabs.getTabIndex(aTab);
     await tryFixupTreeForInsertedTab(aTab, {
       toIndex:   index,
       fromIndex: index - 1,

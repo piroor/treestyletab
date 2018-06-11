@@ -88,7 +88,7 @@ function calculateScrollDeltaForTab(aTab) {
 }
 
 function isTabInViewport(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return false;
 
   if (isPinned(aTab))
@@ -182,7 +182,7 @@ function scrollToNewTab(aTab, aOptions = {}) {
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
-    let current = getCurrentTab();
+    let current = GetTabs.getCurrentTab();
     scrollToTab(aTab, Object.assign({}, aOptions, {
       anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
@@ -191,7 +191,7 @@ function scrollToNewTab(aTab, aOptions = {}) {
 }
 
 function canScrollToTab(aTab) {
-  return (ensureLivingTab(aTab) &&
+  return (GetTabs.ensureLivingTab(aTab) &&
           !isHidden(aTab));
 }
 
@@ -222,7 +222,7 @@ async function scrollToTab(aTab, aOptions = {}) {
   }
 
   var anchorTab = aOptions.anchor;
-  if (!ensureLivingTab(anchorTab) ||
+  if (!GetTabs.ensureLivingTab(anchorTab) ||
       anchorTab == aTab ||
       isPinned(anchorTab)) {
     if (configs.logOnScroll)

@@ -96,9 +96,9 @@ async function init() {
       reserveToCacheTree(parseInt(windowId));
   }
 
-  getAllTabs().forEach(updateSubtreeCollapsed);
-  for (let tab of getCurrentTabs()) {
-    for (let ancestor of getAncestorTabs(tab)) {
+  GetTabs.getAllTabs().forEach(updateSubtreeCollapsed);
+  for (let tab of GetTabs.getCurrentTabs()) {
+    for (let ancestor of GetTabs.getAncestorTabs(tab)) {
       collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,
         justNow:   true
@@ -116,7 +116,7 @@ async function init() {
   });
 
   notifyNewFeatures();
-  log(`Startup metrics for ${getTabs().length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${GetTabs.getTabs().length} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {
@@ -182,7 +182,7 @@ async function rebuildAll() {
           owner: aWindow.tabs[aWindow.tabs.length - 1],
           tabs:  aWindow.tabs
         });
-        for (let tab of getAllTabs(aWindow.id)) {
+        for (let tab of GetTabs.getAllTabs(aWindow.id)) {
           tryStartHandleAccelKeyOnTab(tab);
         }
         if (restoredFromCache[aWindow.id]) {
@@ -201,7 +201,7 @@ async function rebuildAll() {
       gAllTabs.appendChild(container);
       restoredFromCache[aWindow.id] = false;
     });
-    for (let tab of getAllTabs(aWindow.id).filter(isGroupTab)) {
+    for (let tab of GetTabs.getAllTabs(aWindow.id).filter(isGroupTab)) {
       if (!isDiscarded(tab))
         tab.dataset.shouldReloadOnSelect = true;
     }
@@ -211,7 +211,7 @@ async function rebuildAll() {
 }
 
 async function tryStartHandleAccelKeyOnTab(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return;
   var granted = await Permissions.isGranted(Permissions.ALL_URLS);
   if (!granted ||
@@ -315,7 +315,7 @@ function reserveToSaveTreeStructure(aHint) {
   if (gInitializing)
     return;
 
-  var container = getTabsContainer(aHint);
+  var container = GetTabs.getTabsContainer(aHint);
   if (!container)
     return;
 
@@ -326,11 +326,11 @@ function reserveToSaveTreeStructure(aHint) {
   }, 150, parseInt(container.dataset.windowId));
 }
 async function saveTreeStructure(aWindowId) {
-  var container = getTabsContainer(aWindowId);
+  var container = GetTabs.getTabsContainer(aWindowId);
   if (!container)
     return;
 
-  var structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
+  var structure = getTreeStructureFromTabs(GetTabs.getAllTabs(aWindowId));
   browser.sessions.setWindowValue(
     aWindowId,
     Constants.kWINDOW_STATE_TREE_STRUCTURE,
@@ -350,7 +350,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
       log(`skip tree structure restoration for window ${aWindow.id} (restored from cache)`);
       return;
     }
-    var tabs = getAllTabs(aWindow.id);
+    var tabs = GetTabs.getAllTabs(aWindow.id);
     var [structure, uniqueIds] = await Promise.all([
       browser.sessions.getWindowValue(aWindow.id, Constants.kWINDOW_STATE_TREE_STRUCTURE),
       getUniqueIds(tabs.map(aTab => aTab.apiTab))
@@ -428,7 +428,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     window: aTab.apiTab.windowId
   });
   var uniqueId = aOptions.uniqueId || await aTab.uniqueId;
-  var container = getTabsContainer(aTab);
+  var container = GetTabs.getTabsContainer(aTab);
   var insertBefore, insertAfter, ancestors, children, collapsed;
   [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
     browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
@@ -445,8 +445,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     children:  children.join(', '),
     collapsed
   });
-  insertBefore = getTabByUniqueId(insertBefore);
-  insertAfter  = getTabByUniqueId(insertAfter);
+  insertBefore = GetTabs.getTabByUniqueId(insertBefore);
+  insertAfter  = GetTabs.getTabByUniqueId(insertAfter);
   ancestors    = ancestors.map(getTabByUniqueId);
   children     = children.map(getTabByUniqueId);
   log(' => references: ', {
@@ -473,7 +473,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     break;
   }
   if (!attached) {
-    let opener = getOpenerTab(aTab);
+    let opener = GetTabs.getOpenerTab(aTab);
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', { child: dumpTab(aTab), parent: dumpTab(opener) });
@@ -487,12 +487,12 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
         await done;
     }
     else if (!aOptions.bulk &&
-             (getNextNormalTab(aTab) ||
-              getPreviousNormalTab(aTab))) {
+             (GetTabs.getNextNormalTab(aTab) ||
+              GetTabs.getPreviousNormalTab(aTab))) {
       log(' attach from position');
       await tryFixupTreeForInsertedTab(aTab, {
         toIndex:   aTab.apiTab.index,
-        fromIndex: getTabIndex(getLastTab(aTab))
+        fromIndex: GetTabs.getTabIndex(GetTabs.getLastTab(aTab))
       });
     }
   }
@@ -500,9 +500,9 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       // the restored tab is a roo tab
       ancestors.length == 0 &&
       // but attached to any parent based on its restored position
-      getParentTab(aTab) &&
+      GetTabs.getParentTab(aTab) &&
       // when not in-middle position of existing tree (safely detachable position)
-      !getNextSiblingTab(aTab)) {
+      !GetTabs.getNextSiblingTab(aTab)) {
     detachTab(aTab, {
       broadcast: true
     });
@@ -537,7 +537,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
 function reserveToUpdateInsertionPosition(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!ensureLivingTab(tab))
+    if (!GetTabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateInsertionPosition)
       clearTimeout(tab.reservedUpdateInsertionPosition);
@@ -549,10 +549,10 @@ function reserveToUpdateInsertionPosition(aTabOrTabs) {
 }
 
 async function updateInsertionPosition(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return;
 
-  var prev = getPreviousTab(aTab);
+  var prev = GetTabs.getPreviousTab(aTab);
   if (prev)
     prev.uniqueId.then(aId =>
       browser.sessions.setTabValue(
@@ -567,7 +567,7 @@ async function updateInsertionPosition(aTab) {
       Constants.kPERSISTENT_INSERT_AFTER
     );
 
-  var next = getNextTab(aTab);
+  var next = GetTabs.getNextTab(aTab);
   if (next)
     next.uniqueId.then(aId =>
       browser.sessions.setTabValue(
@@ -586,7 +586,7 @@ async function updateInsertionPosition(aTab) {
 function reserveToUpdateAncestors(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!ensureLivingTab(tab))
+    if (!GetTabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateAncestors)
       clearTimeout(tab.reservedUpdateAncestors);
@@ -598,11 +598,11 @@ function reserveToUpdateAncestors(aTabOrTabs) {
 }
 
 async function updateAncestors(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return;
 
   var ancestorIds = await Promise.all(
-    getAncestorTabs(aTab)
+    GetTabs.getAncestorTabs(aTab)
       .map(aAncestor => aAncestor.uniqueId)
   );
   browser.sessions.setTabValue(
@@ -615,7 +615,7 @@ async function updateAncestors(aTab) {
 function reserveToUpdateChildren(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!ensureLivingTab(tab))
+    if (!GetTabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateChildren)
       clearTimeout(tab.reservedUpdateChildren);
@@ -627,11 +627,11 @@ function reserveToUpdateChildren(aTabOrTabs) {
 }
 
 async function updateChildren(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return;
 
   var childIds = await Promise.all(
-    getChildTabs(aTab)
+    GetTabs.getChildTabs(aTab)
       .map(aChild => aChild.uniqueId)
   );
   browser.sessions.setTabValue(
@@ -643,7 +643,7 @@ async function updateChildren(aTab) {
 
 function reserveToUpdateSubtreeCollapsed(aTab) {
   if (gInitializing ||
-      !ensureLivingTab(aTab))
+      !GetTabs.ensureLivingTab(aTab))
     return;
   if (aTab.reservedUpdateSubtreeCollapsed)
     clearTimeout(aTab.reservedUpdateSubtreeCollapsed);
@@ -654,7 +654,7 @@ function reserveToUpdateSubtreeCollapsed(aTab) {
 }
 
 async function updateSubtreeCollapsed(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return;
   browser.sessions.setTabValue(
     aTab.apiTab.id,
@@ -666,7 +666,7 @@ async function updateSubtreeCollapsed(aTab) {
 function reserveToCleanupNeedlessGroupTab(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (let tab of tabs) {
-    if (!ensureLivingTab(tab))
+    if (!GetTabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedCleanupNeedlessGroupTab)
       clearTimeout(tab.reservedCleanupNeedlessGroupTab);
@@ -685,9 +685,9 @@ function cleanupNeedlssGroupTab(aTabs) {
   for (let tab of aTabs) {
     if (!isTemporaryGroupTab(tab))
       break;
-    if (getChildTabs(tab).length > 1)
+    if (GetTabs.getChildTabs(tab).length > 1)
       break;
-    let lastChild = getFirstChildTab(tab);
+    let lastChild = GetTabs.getFirstChildTab(tab);
     if (lastChild && !isTemporaryGroupTab(lastChild))
       break;
     tabsToBeRemoved.push(tab);
@@ -698,7 +698,7 @@ function cleanupNeedlssGroupTab(aTabs) {
 
 function reserveToUpdateRelatedGroupTabs(aTab) {
   const ancestorGroupTabs = [aTab]
-    .concat(getAncestorTabs(aTab))
+    .concat(GetTabs.getAncestorTabs(aTab))
     .filter(isGroupTab);
   for (let tab of ancestorGroupTabs) {
     if (tab.reservedUpdateRelatedGroupTab)
@@ -711,7 +711,7 @@ function reserveToUpdateRelatedGroupTabs(aTab) {
 }
 
 async function updateRelatedGroupTab(aGroupTab) {
-  if (!ensureLivingTab(aGroupTab))
+  if (!GetTabs.ensureLivingTab(aGroupTab))
     return;
 
   await tryInitGroupTab(aGroupTab);
@@ -723,11 +723,11 @@ async function updateRelatedGroupTab(aGroupTab) {
 
   let newTitle;
   if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
-    const firstChild = getFirstChildTab(aGroupTab);
+    const firstChild = GetTabs.getFirstChildTab(aGroupTab);
     newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
   }
   else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
-    const opener = getOpenerFromGroupTab(aGroupTab);
+    const opener = GetTabs.getOpenerFromGroupTab(aGroupTab);
     if (opener) {
       if (opener &&
            (opener.apiTab.favIconUrl ||

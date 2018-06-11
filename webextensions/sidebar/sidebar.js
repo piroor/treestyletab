@@ -196,7 +196,7 @@ async function init() {
   if (!restoredFromCache) {
     updateLoadingState();
     synchronizeThrobberAnimation();
-    for (let tab of getAllTabs()) {
+    for (let tab of GetTabs.getAllTabs()) {
       updateTabTwisty(tab);
       updateTabClosebox(tab);
       updateTabsCount(tab);
@@ -211,7 +211,7 @@ async function init() {
   unblockUserOperations({ throbber: true });
 
   MetricsData.add('init end');
-  log(`Startup metrics for ${getTabs().length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${GetTabs.getTabs().length} tabs: `, MetricsData.toString());
 }
 
 function destroy() {
@@ -509,7 +509,7 @@ async function inheritTreeStructure() {
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
+    await applyTreeStructureToTabs(GetTabs.getAllTabs(gTargetWindow), response.structure);
     MetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
   }
 }
@@ -606,7 +606,7 @@ function updateTabsCount(aTab) {
   var counter = getTabCounter(aTab);
   if (!counter)
     return;
-  var descendants = getDescendantTabs(aTab);
+  var descendants = GetTabs.getDescendantTabs(aTab);
   var count = descendants.length;
   if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
     count += 1;
@@ -614,7 +614,7 @@ function updateTabsCount(aTab) {
 }
 
 function collapseExpandAllSubtree(aParams = {}) {
-  var container = getTabsContainer(gTargetWindow);
+  var container = GetTabs.getTabsContainer(gTargetWindow);
   var tabCondition = `.${Constants.kTAB_STATE_SUBTREE_COLLAPSED}`;
   if (aParams.collapsed)
     tabCondition = `:not(${tabCondition})`;
@@ -779,13 +779,13 @@ function updateTabbarLayout(aParams = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      var current = getCurrentTab();
+      var current = GetTabs.getCurrentTab();
       if (!isTabInViewport(current)) {
         log('scroll to current tab on updateTabbarLayout');
         scrollToTab(current);
         return;
       }
-      var lastOpenedTab = getLastOpenedTab();
+      var lastOpenedTab = GetTabs.getLastOpenedTab();
       var reasons       = aParams.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !isTabInViewport(lastOpenedTab)) {
@@ -812,9 +812,9 @@ function updateTabbarLayout(aParams = {}) {
 
 function reserveToUpdateTabTooltip(aTab) {
   if (gInitializing ||
-      !ensureLivingTab(aTab))
+      !GetTabs.ensureLivingTab(aTab))
     return;
-  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
+  for (let tab of [aTab].concat(GetTabs.getAncestorTabs(aTab))) {
     if (tab.reservedUpdateTabTooltip)
       clearTimeout(tab.reservedUpdateTabTooltip);
   }
@@ -825,15 +825,15 @@ function reserveToUpdateTabTooltip(aTab) {
 }
 
 function updateTabAndAncestorsTooltip(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return;
-  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
+  for (let tab of [aTab].concat(GetTabs.getAncestorTabs(aTab))) {
     updateTabTooltip(tab);
   }
 }
 
 function updateTabTooltip(aTab) {
-  if (!ensureLivingTab(aTab))
+  if (!GetTabs.ensureLivingTab(aTab))
     return;
 
   aTab.dataset.labelWithDescendants = getLabelWithDescendants(aTab);
@@ -848,7 +848,7 @@ function updateTabTooltip(aTab) {
   if (configs.debug)
     return;
 
-  const label = getTabLabel(aTab);
+  const label = GetTabs.getTabLabel(aTab);
   if (isPinned(aTab) || label.classList.contains('overflow')) {
     aTab.setAttribute('title', aTab.dataset.label);
   }

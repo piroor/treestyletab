@@ -57,7 +57,7 @@ function restoreTabsFromCacheInternal(aParams) {
   logForCache(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache`);
   var offset    = aParams.offset || 0;
   var apiTabs   = aParams.tabs.slice(offset);
-  var container = getTabsContainer(aParams.windowId);
+  var container = GetTabs.getTabsContainer(aParams.windowId);
   var tabElements;
   if (offset > 0) {
     if (!container ||
@@ -70,8 +70,8 @@ function restoreTabsFromCacheInternal(aParams) {
     let insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
-    insertionPoint.setStartBefore(getTabById(makeTabId(apiTabs[0])));
-    insertionPoint.setEndAfter(getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
+    insertionPoint.setStartBefore(GetTabs.getTabById(makeTabId(apiTabs[0])));
+    insertionPoint.setEndAfter(GetTabs.getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
     let tabsMustBeRemoved = apiTabs.map(getTabById);
     logForCache('restoreTabsFromCacheInternal: cleared?: ',
@@ -175,7 +175,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 
   // update focused tab appearance
   browser.tabs.query({ windowId: aTabs[0].apiTab.windowId, active: true })
-    .then(aActiveTabs => updateTabFocused(getTabById(aActiveTabs[0])));
+    .then(aActiveTabs => updateTabFocused(GetTabs.getTabById(aActiveTabs[0])));
 }
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
@@ -205,5 +205,5 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   else
     aTab.removeAttribute(kPARENT);
   logForCache('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
-  aTab.ancestorTabs = getAncestorTabs(aTab, { force: true });
+  aTab.ancestorTabs = GetTabs.getAncestorTabs(aTab, { force: true });
 }

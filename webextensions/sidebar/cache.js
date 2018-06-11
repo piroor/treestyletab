@@ -94,7 +94,7 @@ async function getEffectiveWindowCache(aOptions = {}) {
 
 async function restoreTabsFromCache(aCache, aParams = {}) {
   var offset    = aParams.offset || 0;
-  var container = getTabsContainer(gTargetWindow);
+  var container = GetTabs.getTabsContainer(gTargetWindow);
   if (offset <= 0) {
     if (container)
       container.parentNode.removeChild(container);
@@ -115,12 +115,12 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: gTargetWindow
       })).structure;
-      let allTabs = getAllTabs();
+      let allTabs = GetTabs.getAllTabs();
       let currentStructrue = getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(aItem => aItem.parent).join(',') != masterStructure.map(aItem => aItem.parent).join(',')) {
         logForCache(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${gTargetWindow}. fallback to regular way.`);
         restored = false;
-        let container = getTabsContainer(gTargetWindow);
+        let container = GetTabs.getTabsContainer(gTargetWindow);
         if (container)
           container.parentNode.removeChild(container);
       }
@@ -146,7 +146,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
 
 function updateWindowCache(aKey, aValue) {
   if (!gLastWindowCacheOwner ||
-      !getTabById(gLastWindowCacheOwner))
+      !GetTabs.getTabById(gLastWindowCacheOwner))
     return;
   if (aValue === undefined) {
     //logForCache('updateWindowCache: delete cache from ', gLastWindowCacheOwner, aKey);
@@ -184,7 +184,7 @@ async function getWindowCache(aKey) {
 }
 
 function getWindowCacheOwner() {
-  const tab = getLastTab();
+  const tab = GetTabs.getLastTab();
   return tab && tab.apiTab;
 }
 
@@ -200,7 +200,7 @@ async function reserveToUpdateCachedTabbar() {
   if (hasCreatingTab())
     await waitUntilAllTabsAreCreated();
 
-  var container = getTabsContainer(gTargetWindow);
+  var container = GetTabs.getTabsContainer(gTargetWindow);
   if (container.allTabsRestored)
     return;
 
@@ -228,7 +228,7 @@ async function updateCachedTabbar() {
     return;
   if (hasCreatingTab())
     await waitUntilAllTabsAreCreated();
-  var container = getTabsContainer(gTargetWindow);
+  var container = GetTabs.getTabsContainer(gTargetWindow);
   var signature = await getWindowSignature(gTargetWindow);
   if (container.allTabsRestored)
     return;
@@ -239,7 +239,7 @@ async function updateCachedTabbar() {
     tabbar:  {
       contents: gAllTabs.innerHTML,
       style:    gTabBar.getAttribute('style'),
-      pinnedTabsCount: getPinnedTabs(container).length
+      pinnedTabsCount: GetTabs.getPinnedTabs(container).length
     },
     indent:  {
       lastMaxLevel:  gLastMaxLevel,

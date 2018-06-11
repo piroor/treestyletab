@@ -64,7 +64,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   var insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
     insertionPoint = document.createRange();
-    let container = getTabsContainer(aWindowId);
+    let container = GetTabs.getTabsContainer(aWindowId);
     if (container)
       insertionPoint.selectNode(container);
     else
@@ -105,7 +105,7 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
 
 function updateWindowCache(aOwner, aKey, aValue) {
   if (!aOwner ||
-      !getTabById(aOwner))
+      !GetTabs.getTabById(aOwner))
     return;
   if (aValue === undefined) {
     //return browser.sessions.removeWindowValue(aOwner, aKey);
@@ -141,7 +141,7 @@ async function getWindowCache(aOwner, aKey) {
 }
 
 function getWindowCacheOwner(aHint) {
-  const apiTab = getLastTab(aHint).apiTab;
+  const apiTab = GetTabs.getLastTab(aHint).apiTab;
   return {
     id:       apiTab.id,
     windowId: apiTab.windowId
@@ -164,7 +164,7 @@ async function reserveToCacheTree(aHint) {
       aHint instanceof Node && !aHint.parentNode)
     return;
 
-  var container = getTabsContainer(aHint);
+  var container = GetTabs.getTabsContainer(aHint);
   if (!container)
     return;
 
@@ -183,7 +183,7 @@ async function reserveToCacheTree(aHint) {
 }
 
 function cancelReservedCacheTree(aWindowId) {
-  var container = getTabsContainer(aWindowId);
+  var container = GetTabs.getTabsContainer(aWindowId);
   if (container && container.waitingToCacheTree) {
     clearTimeout(container.waitingToCacheTree);
     delete container.waitingToCacheTree;
@@ -193,7 +193,7 @@ function cancelReservedCacheTree(aWindowId) {
 async function cacheTree(aWindowId) {
   if (hasCreatingTab())
     await waitUntilAllTabsAreCreated();
-  var container = getTabsContainer(aWindowId);
+  var container = GetTabs.getTabsContainer(aWindowId);
   if (!container ||
       !configs.useCachedTree)
     return;
@@ -208,7 +208,7 @@ async function cacheTree(aWindowId) {
   updateWindowCache(container.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version: Constants.kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,
-    pinnedTabsCount: getPinnedTabs(container).length,
+    pinnedTabsCount: GetTabs.getPinnedTabs(container).length,
     signature
   });
 }

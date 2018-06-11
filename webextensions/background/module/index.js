@@ -12,6 +12,8 @@ import * as ContextualIdentities from '../../common/module/contextual-identities
 import * as ContextMenu from './context-menu.js';
 import * as MetricsData from '../../common/module/MetricsData.js';
 
+import * as GetTabs from '../../common/module/get-tabs.js';
+
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
 import RichConfirm from '../../common/RichConfirm.js';
@@ -30,6 +32,8 @@ window.Permissions = Permissions;
 window.ContextualIdentities = ContextualIdentities;
 window.ContextMenu = ContextMenu;
 window.MetricsData = MetricsData;
+
+window.GetTabs = GetTabs;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;

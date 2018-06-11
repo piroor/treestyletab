@@ -39,83 +39,83 @@
 'use strict';
 
 function isActive(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_ACTIVE);
 }
 
 function isPinned(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_PINNED);
 }
 
 function isAudible(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_AUDIBLE);
 }
 
 function isSoundPlaying(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_SOUND_PLAYING);
 }
 
 function maybeSoundPlaying(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
          (aTab.classList.contains(kTAB_STATE_SOUND_PLAYING) ||
           (aTab.classList.contains(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
            aTab.hasAttribute(kCHILDREN)));
 }
 
 function isMuted(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_MUTED);
 }
 
 function maybeMuted(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
          (aTab.classList.contains(kTAB_STATE_MUTED) ||
           (aTab.classList.contains(kTAB_STATE_HAS_MUTED_MEMBER) &&
            aTab.hasAttribute(kCHILDREN)));
 }
 
 function isHidden(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_HIDDEN);
 }
 
 function isCollapsed(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_COLLAPSED);
 }
 
 function isDiscarded(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_DISCARDED);
 }
 
 function isPrivateBrowsing(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_PRIVATE_BROWSING);
 }
 
 function isOpening(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_OPENING);
 }
 
 function isDuplicating(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_DUPLICATING);
 }
 
 function isNewTabCommandTab(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
-           assertInitializedTab(aTab) &&
+           GetTabs.assertInitializedTab(aTab) &&
            aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
 }
 
 function isSubtreeCollapsed(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
@@ -126,15 +126,15 @@ function shouldCloseTabSubtreeOf(aTab) {
 }
 
 function shouldCloseLastTabSubtreeOf(aTab) {
-  return (ensureLivingTab(aTab) &&
+  return (GetTabs.ensureLivingTab(aTab) &&
           shouldCloseTabSubtreeOf(aTab) &&
-          getDescendantTabs(aTab).length + 1 == getAllTabs(aTab).length);
+          GetTabs.getDescendantTabs(aTab).length + 1 == GetTabs.getAllTabs(aTab).length);
 }
 
 function isGroupTab(aTab) {
   if (!aTab)
     return false;
-  assertInitializedTab(aTab);
+  GetTabs.assertInitializedTab(aTab);
   return aTab.classList.contains(kTAB_STATE_GROUP_TAB) ||
          aTab.apiTab.url.indexOf(kGROUP_TAB_URI) == 0;
 }
@@ -146,7 +146,7 @@ function isTemporaryGroupTab(aTab) {
 }
 
 function isSelected(aTab) {
-  return ensureLivingTab(aTab) &&
+  return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(kTAB_STATE_SELECTED);
 }
 
@@ -155,14 +155,14 @@ function isLocked(aTab) {
 }
 
 function hasChildTabs(aParent) {
-  if (!ensureLivingTab(aParent))
+  if (!GetTabs.ensureLivingTab(aParent))
     return false;
   return aParent.hasAttribute(kCHILDREN);
 }
 
 function getLabelWithDescendants(aTab) {
   var label = [`* ${aTab.dataset.label}`];
-  for (let child of getChildTabs(aTab)) {
+  for (let child of GetTabs.getChildTabs(aTab)) {
     if (!child.dataset.labelWithDescendants)
       child.dataset.labelWithDescendants = getLabelWithDescendants(child);
     label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
@@ -171,7 +171,7 @@ function getLabelWithDescendants(aTab) {
 }
 
 function getMaxTreeLevel(aHint, aOptions = {}) {
-  var tabs = aOptions.onlyVisible ? getVisibleTabs(aHint) : getTabs(aHint) ;
+  var tabs = aOptions.onlyVisible ? GetTabs.getVisibleTabs(aHint) : GetTabs.getTabs(aHint) ;
   var maxLevel = Math.max(...tabs.map(aTab => parseInt(aTab.getAttribute(kLEVEL) || 0)));
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
@@ -181,8 +181,8 @@ function getMaxTreeLevel(aHint, aOptions = {}) {
 // if all tabs are aldeardy placed at there, we don't need to move them.
 function isAllTabsPlacedBefore(aTabs, aNextTab) {
   if (aTabs[aTabs.length - 1] == aNextTab)
-    aNextTab = getNextTab(aNextTab);
-  if (!aNextTab && !getNextTab(aTabs[aTabs.length - 1]))
+    aNextTab = GetTabs.getNextTab(aNextTab);
+  if (!aNextTab && !GetTabs.getNextTab(aTabs[aTabs.length - 1]))
     return true;
 
   aTabs = Array.slice(aTabs);
@@ -199,8 +199,8 @@ function isAllTabsPlacedBefore(aTabs, aNextTab) {
 
 function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
   if (aTabs[0] == aPreviousTab)
-    aPreviousTab = getPreviousTab(aPreviousTab);
-  if (!aPreviousTab && !getPreviousTab(aTabs[0]))
+    aPreviousTab = GetTabs.getPreviousTab(aPreviousTab);
+  if (!aPreviousTab && !GetTabs.getPreviousTab(aTabs[0]))
     return true;
 
   aTabs = Array.slice(aTabs).reverse();
@@ -221,7 +221,7 @@ function getClosingTabsFromParent(aTab) {
   });
   if (closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     return [aTab];
-  return [aTab].concat(getDescendantTabs(aTab));
+  return [aTab].concat(GetTabs.getDescendantTabs(aTab));
 }
 
 
@@ -229,8 +229,8 @@ function dumpAllTabs() {
   if (!configs.debug)
     return;
   log('dumpAllTabs\n' +
-    getAllTabs().map(aTab =>
-      getAncestorTabs(aTab).reverse().concat([aTab])
+    GetTabs.getAllTabs().map(aTab =>
+      GetTabs.getAncestorTabs(aTab).reverse().concat([aTab])
         .map(aTab => aTab.id + (isPinned(aTab) ? ' [pinned]' : ''))
         .join(' => ')
     ).join('\n'));

@@ -8,7 +8,6 @@
 // Defined in a classic script source, and we can read these as global variables. 
 /* global
   tabContextMenu: false,
-  getTabById: false,
   Commands: false,
  */
 
@@ -17,6 +16,8 @@ import {
   log,
   configs
 } from '../../common/module/common.js';
+
+import * as GetTabs from '../../common/module/get-tabs.js';
 
 var gContextMenuItems = `
   reloadTree
@@ -75,7 +76,7 @@ export async function refreshItems() {
 export const onClick = (aInfo, aAPITab) => {
   log('context menu item clicked: ', aInfo, aAPITab);
 
-  var contextTab = getTabById(aAPITab);
+  var contextTab = GetTabs.getTabById(aAPITab);
 
   switch (aInfo.menuItemId) {
     case 'reloadTree':
