@@ -6,6 +6,7 @@
 'use strict';
 
 import { configs } from '/common/module/common.js';
+import * as Permissions from '/common/module/permissions.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;

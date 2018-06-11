@@ -5,25 +5,36 @@
 */
 'use strict';
 
-const Permissions = {
-  BOOKMARKS: { permissions: ['bookmarks'] },
-  ALL_URLS:  { origins: ['<all_urls>'] },
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  Promise: false,
+ */
 
-  clearRequest() {
+import * as Constants from './constants.js';
+import {
+  log,
+  notify,
+  configs
+} from './common.js';
+
+export const BOOKMARKS = { permissions: ['bookmarks'] };
+export const ALL_URLS = { origins: ['<all_urls>'] };
+
+export function clearRequest() {
     configs.requestingPermissions = null;
-  },
+  }
 
-  isGranted(aPermissions) {
+export function isGranted(aPermissions) {
     try {
       return browser.permissions.contains(aPermissions);
     }
     catch(e) {
       return Promise.reject(new Error('unsupported permission'));
     }
-  },
+  }
 
-  bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
-    this.isGranted(aPermissions)
+export function bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
+    isGranted(aPermissions)
       .then(aGranted => {
         aCheckbox.checked = aGranted;
       })
@@ -42,7 +53,7 @@ const Permissions = {
     browser.runtime.onMessage.addListener((aMessage, aSender) => {
       if (!aMessage ||
           !aMessage.type ||
-          aMessage.type != kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
+          aMessage.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
           JSON.stringify(aMessage.permissions) != JSON.stringify(aPermissions))
         return;
       if (aOptions.onChanged)
@@ -71,7 +82,7 @@ const Permissions = {
           return;
         }
 
-        var granted = await this.isGranted(aPermissions);
+        var granted = await isGranted(aPermissions);
         if (granted) {
           aOptions.onChanged(true);
           return;
@@ -102,9 +113,9 @@ const Permissions = {
       }
       aCheckbox.checked = false;
     };
-  },
+  }
 
-  requestPostProcess() {
+export function requestPostProcess() {
     if (!configs.requestingPermissions)
       return false;
 
@@ -115,10 +126,10 @@ const Permissions = {
       log('permission requested: ', permissions, aGranted);
       if (aGranted)
         browser.runtime.sendMessage({
-          type:        kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+          type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
           permissions: permissions
         });
     });
     return true;
   }
-};
+
