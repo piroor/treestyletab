@@ -947,6 +947,15 @@ function shouldApplyTreeBehavior(aParams = {}) {
   }
 }
 
+function getClosingTabsFromParent(aTab) {
+  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
+    windowId: aTab.apiTab.windowId
+  });
+  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    return [aTab];
+  return [aTab].concat(Tabs.getDescendantTabs(aTab));
+}
+
 function syncOrderOfChildTabs(aParentTabs) {
   if (!Array.isArray(aParentTabs))
     aParentTabs = [aParentTabs];

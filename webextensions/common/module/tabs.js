@@ -44,7 +44,6 @@
   gAllTabs: false,
   buildTabsContainerFor: false,
   makeTabId: false,
-  getCloseParentBehaviorForTabWithSidebarOpenState: false,
  */
 
 import * as XPath from './xpath.js';
@@ -852,15 +851,6 @@ export function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
   return !aPreviousTab ||
          !nextTab ||
          nextTab.previousSibling == aPreviousTab;
-}
-
-export function getClosingTabsFromParent(aTab) {
-  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
-    windowId: aTab.apiTab.windowId
-  });
-  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    return [aTab];
-  return [aTab].concat(getDescendantTabs(aTab));
 }
 
 

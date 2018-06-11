@@ -618,7 +618,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   self.closingTabIds.push(aTab.id);
   if (aCloseParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .concat(Tabs.getClosingTabsFromParent(aTab).map(aTab => aTab.id));
+      .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
