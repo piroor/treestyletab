@@ -57,7 +57,7 @@ import {
 // Tab Related Utilities
 //===================================================================
 
-function getSafeFaviconUrl(aURL) {
+export function getSafeFaviconUrl(aURL) {
   switch (aURL) {
     case 'chrome://browser/skin/settings.svg':
       return browser.extension.getURL('resources/icons/settings.svg');
