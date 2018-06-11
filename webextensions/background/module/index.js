@@ -12,8 +12,7 @@ import * as ContextualIdentities from '../../common/module/contextual-identities
 import * as ContextMenu from './context-menu.js';
 import * as MetricsData from '../../common/module/MetricsData.js';
 
-import * as GetTabs from '../../common/module/get-tabs.js';
-import * as TabInfo from '../../common/module/tab-information.js';
+import * as Tabs from '../../common/module/tabs.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -34,8 +33,7 @@ window.ContextualIdentities = ContextualIdentities;
 window.ContextMenu = ContextMenu;
 window.MetricsData = MetricsData;
 
-window.GetTabs = GetTabs;
-window.TabInfo = TabInfo;
+window.Tabs = Tabs;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;

@@ -59,7 +59,7 @@ function isCopyAction(aEvent) {
 
 function isEventFiredOnTwisty(aEvent) {
   var tab = getTabFromEvent(aEvent);
-  if (!tab || !TabInfo.hasChildTabs(tab))
+  if (!tab || !Tabs.hasChildTabs(tab))
     return false;
 
   return !!aEvent.target.closest(`.${Constants.kTWISTY}`);
@@ -95,11 +95,11 @@ function isEventFiredOnScrollbar(aEvent) {
 
 
 function getTabFromEvent(aEvent) {
-  return GetTabs.getTabFromChild(aEvent.target);
+  return Tabs.getTabFromChild(aEvent.target);
 }
 
 function getTabsContainerFromEvent(aEvent) {
-  return GetTabs.getTabsContainer(aEvent.target);
+  return Tabs.getTabsContainer(aEvent.target);
 }
 
 function getTabFromTabbarEvent(aEvent) {
@@ -111,7 +111,7 @@ function getTabFromTabbarEvent(aEvent) {
 
 function getTabFromCoordinates(aEvent) {
   var tab = document.elementFromPoint(aEvent.clientX, aEvent.clientY);
-  tab = GetTabs.getTabFromChild(tab);
+  tab = Tabs.getTabFromChild(tab);
   if (tab)
     return tab;
 
@@ -128,7 +128,7 @@ function getTabFromCoordinates(aEvent) {
     containerRect.width - gFaviconSize
   ];
   for (let x of trialPoints) {
-    let tab = GetTabs.getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
+    let tab = Tabs.getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
     if (tab)
       return tab;
   }
@@ -415,7 +415,7 @@ async function onMouseUp(aEvent) {
 
   if (!lastMousedown ||
       lastMousedown.detail.targetType != getMouseEventTargetType(aEvent) ||
-      (tab && tab != GetTabs.getTabById(lastMousedown.detail.tab)))
+      (tab && tab != Tabs.getTabById(lastMousedown.detail.tab)))
     return;
 
   if (configs.logOnMouseEvent)
@@ -432,7 +432,7 @@ async function onMouseUp(aEvent) {
       if (configs.logOnMouseEvent)
         log('middle click on a tab');
       //log('middle-click to close');
-      confirmToCloseTabs(TabInfo.getClosingTabsFromParent(tab).length)
+      confirmToCloseTabs(Tabs.getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
           if (aConfirmed)
             removeTabInternally(tab, { inRemote: true });
@@ -507,9 +507,9 @@ function onClick(aEvent) {
     aEvent.preventDefault();
     if (configs.logOnMouseEvent)
       log('clicked on twisty');
-    if (TabInfo.hasChildTabs(tab))
+    if (Tabs.hasChildTabs(tab))
       collapseExpandSubtree(tab, {
-        collapsed:       !TabInfo.isSubtreeCollapsed(tab),
+        collapsed:       !Tabs.isSubtreeCollapsed(tab),
         manualOperation: true,
         inRemote:        true
       });
@@ -525,7 +525,7 @@ function onClick(aEvent) {
       type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
       tab:      tab.id,
-      muted:    TabInfo.maybeSoundPlaying(tab)
+      muted:    Tabs.maybeSoundPlaying(tab)
     });
     return;
   }
@@ -540,7 +540,7 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    confirmToCloseTabs(TabInfo.getClosingTabsFromParent(tab).length)
+    confirmToCloseTabs(Tabs.getClosingTabsFromParent(tab).length)
       .then(aConfirmed => {
         if (aConfirmed)
           removeTabInternally(tab, { inRemote: true });
@@ -557,7 +557,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
     aOptions.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
-    baseTab:      GetTabs.getCurrentTab(gTargetWindow),
+    baseTab:      Tabs.getCurrentTab(gTargetWindow),
     as:           aOptions.action,
     cookieStoreId: aOptions.cookieStoreId,
     inBackground: aEvent.shiftKey,
@@ -575,7 +575,7 @@ function onDblClick(aEvent) {
       aEvent.stopPropagation();
       aEvent.preventDefault();
       collapseExpandSubtree(tab, {
-        collapsed:       !TabInfo.isSubtreeCollapsed(tab),
+        collapsed:       !Tabs.isSubtreeCollapsed(tab),
         manualOperation: true,
         inRemote:        true
       });
@@ -654,7 +654,7 @@ async function onWheel(aEvent) {
   var results = await sendTSTAPIMessage({
     type:      Constants.kTSTAPI_NOTIFY_SCROLLED,
     tab:       tab && serializeTabForTSTAPI(tab),
-    tabs:      GetTabs.getTabs().map(serializeTabForTSTAPI),
+    tabs:      Tabs.getTabs().map(serializeTabForTSTAPI),
     window:    gTargetWindow,
 
     deltaY:       aEvent.deltaY,
@@ -696,18 +696,18 @@ function reserveToSaveScrollPosition() {
 }
 
 function onOverflow(aEvent) {
-  const tab = GetTabs.getTabFromChild(aEvent.target);
-  const label = GetTabs.getTabLabel(tab);
-  if (aEvent.target == label && !TabInfo.isPinned(tab)) {
+  const tab = Tabs.getTabFromChild(aEvent.target);
+  const label = Tabs.getTabLabel(tab);
+  if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
     reserveToUpdateTabTooltip(tab);
   }
 }
 
 function onUnderflow(aEvent) {
-  const tab = GetTabs.getTabFromChild(aEvent.target);
-  const label = GetTabs.getTabLabel(tab);
-  if (aEvent.target == label && !TabInfo.isPinned(tab)) {
+  const tab = Tabs.getTabFromChild(aEvent.target);
+  const label = Tabs.getTabLabel(tab);
+  if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
     reserveToUpdateTabTooltip(tab);
   }
@@ -717,7 +717,7 @@ function onUnderflow(aEvent) {
 /* raw event handlers */
 
 function onTabBuilt(aTab, aInfo) {
-  var label = GetTabs.getTabLabel(aTab);
+  var label = Tabs.getTabLabel(aTab);
 
   var twisty = document.createElement('span');
   twisty.classList.add(Constants.kTWISTY);
@@ -803,9 +803,9 @@ function onParentTabUpdated(aTab) {
 
 function updateTabSoundButtonTooltip(aTab) {
   var tooltip = '';
-  if (TabInfo.maybeMuted(aTab))
+  if (Tabs.maybeMuted(aTab))
     tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
-  else if (TabInfo.maybeSoundPlaying(aTab))
+  else if (Tabs.maybeSoundPlaying(aTab))
     tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
@@ -825,14 +825,14 @@ function onTabOpened(aTab, aInfo = {}) {
   if (configs.animation) {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
     nextFrame().then(() => {
-      var parent = GetTabs.getParentTab(aTab);
-      if (parent && TabInfo.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
+      var parent = Tabs.getParentTab(aTab);
+      if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
-      var focused = TabInfo.isActive(aTab);
+      var focused = Tabs.isActive(aTab);
       collapseExpandTab(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
-        anchor:    GetTabs.getCurrentTab(),
+        anchor:    Tabs.getCurrentTab(),
         last:      true
       });
       if (!focused)
@@ -841,7 +841,7 @@ function onTabOpened(aTab, aInfo = {}) {
   }
   else {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
-    if (TabInfo.isActive(aTab))
+    if (Tabs.isActive(aTab))
       scrollToNewTab(aTab);
     else
       notifyOutOfViewTab(aTab);
@@ -872,7 +872,7 @@ async function onWindowRestoring(aWindowId) {
     return;
 
   log('onWindowRestoring');
-  var container = GetTabs.getTabsContainer(aWindowId);
+  var container = Tabs.getTabsContainer(aWindowId);
   var restoredCount = await container.allTabsRestored;
   if (restoredCount == 1) {
     log('onWindowRestoring: single tab restored');
@@ -920,7 +920,7 @@ function onTabClosed(aTab, aCloseInfo) {
 
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      TabInfo.isSubtreeCollapsed(aTab))
+      Tabs.isSubtreeCollapsed(aTab))
     collapseExpandSubtree(aTab, {
       collapsed: false
     });
@@ -957,20 +957,20 @@ async function onTabCompletelyClosed(aTab) {
 async function onTabMoving(aTab) {
   tabContextMenu.close();
   if (configs.animation &&
-      !TabInfo.isPinned(aTab) &&
-      !TabInfo.isOpening(aTab)) {
+      !Tabs.isPinned(aTab) &&
+      !Tabs.isOpening(aTab)) {
     aTab.classList.add(Constants.kTAB_STATE_MOVING);
     await nextFrame();
-    if (!GetTabs.ensureLivingTab(aTab)) // it was removed while waiting
+    if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
       return;
-    const visible = !(isCollapsedStateUpdating(aTab) ? await isSurelyCollapsed(aTab) : TabInfo.isCollapsed(aTab));
+    const visible = !(isCollapsedStateUpdating(aTab) ? await isSurelyCollapsed(aTab) : Tabs.isCollapsed(aTab));
     if (visible)
       collapseExpandTab(aTab, {
         collapsed: true,
         justNow:   true
       });
     await nextFrame();
-    if (!GetTabs.ensureLivingTab(aTab)) // it was removed while waiting
+    if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
       return;
     if (visible)
       collapseExpandTab(aTab, {
@@ -986,7 +986,7 @@ function onTabMoved(aTab) {
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
     timeout: configs.collapseDuration
   });
-  reserveToUpdateTabTooltip(GetTabs.getParentTab(aTab));
+  reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
   reserveToUpdateCachedTabbar();
 }
 
@@ -999,9 +999,9 @@ async function onTabLevelChanged(aTab) {
 }
 
 function onTabDetachedFromWindow(aTab) {
-  if (!GetTabs.ensureLivingTab(aTab))
+  if (!Tabs.ensureLivingTab(aTab))
     return;
-  reserveToUpdateTabTooltip(GetTabs.getParentTab(aTab));
+  reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   detachTab(aTab, {
@@ -1021,7 +1021,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
   if (configs.logOnCollapseExpand)
     log('onTabCollapsedStateChanging ', dumpTab(aTab), aInfo);
-  if (!GetTabs.ensureLivingTab(aTab)) // do nothing for closed tab!
+  if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -1069,7 +1069,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   reserveToUpdateTabbarLayout({ reason });
 
   nextFrame().then(() => {
-    if (!GetTabs.ensureLivingTab(aTab)) { // it was removed while waiting
+    if (!Tabs.ensureLivingTab(aTab)) { // it was removed while waiting
       cancelUpdating();
       return;
     }
@@ -1104,7 +1104,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       }
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
-      if (!GetTabs.ensureLivingTab(aTab) ||
+      if (!Tabs.ensureLivingTab(aTab) ||
           !aTab.onEndCollapseExpandAnimation) {
         cancelUpdating();
         return;
@@ -1120,7 +1120,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   });
 }
 function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
-  if (TabInfo.isActive(aTab) && !aOptions.collapsed)
+  if (Tabs.isActive(aTab) && !aOptions.collapsed)
     scrollToTab(aTab);
 
   if (configs.indentAutoShrink &&
@@ -1136,7 +1136,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
   var toBeCollapsed = aInfo.collapsed;
-  if (!GetTabs.ensureLivingTab(aTab)) // do nothing for closed tab!
+  if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
   reserveToUpdateLoadingState();
@@ -1174,9 +1174,9 @@ function isCollapsedStateUpdating(aTab) {
 async function isSurelyCollapsed(aTab) {
   if (isSurelyCollapsed.updating[aTab.id])
     return isSurelyCollapsed.updating[aTab.id].then(() => {
-      return TabInfo.isCollapsed(aTab);
+      return Tabs.isCollapsed(aTab);
     });
-  return TabInfo.isCollapsed(aTab);
+  return Tabs.isCollapsed(aTab);
 }
 isSurelyCollapsed.updating = {};
 
@@ -1205,7 +1205,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
             stillOver = false;
           }
           setTimeout(() => {
-            if (!GetTabs.ensureLivingTab(aTab)) // it was removed while waiting
+            if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
               return;
             aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true);
           }, 0);
@@ -1237,7 +1237,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   updateTabTwisty(aInfo.parent);
   updateTabClosebox(aInfo.parent);
   if (aInfo.newlyAttached) {
-    let ancestors = [aInfo.parent].concat(GetTabs.getAncestorTabs(aInfo.parent));
+    let ancestors = [aInfo.parent].concat(Tabs.getAncestorTabs(aInfo.parent));
     for (let ancestor of ancestors) {
       updateTabsCount(ancestor);
     }
@@ -1269,7 +1269,7 @@ async function onTabDetached(aTab, aDetachInfo = {}) {
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
   reserveToUpdateTabTooltip(parent);
-  var ancestors = [parent].concat(GetTabs.getAncestorTabs(parent));
+  var ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
@@ -1364,7 +1364,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
       if (aMessage.windowId == gTargetWindow)
-        applyTreeStructureToTabs(GetTabs.getAllTabs(gTargetWindow), aMessage.structure);
+        applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), aMessage.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
@@ -1376,13 +1376,13 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
-      onTabFaviconUpdated(GetTabs.getTabById(aMessage.tab), aMessage.favIconUrl);
+      onTabFaviconUpdated(Tabs.getTabById(aMessage.tab), aMessage.favIconUrl);
       break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = GetTabs.getTabById(aMessage.tab);
+        let tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
         let params = {
@@ -1400,7 +1400,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
-        let tab = GetTabs.getTabById(aMessage.tab);
+        let tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
         if (isCollapsedStateUpdating(tab))
@@ -1408,7 +1408,7 @@ function onMessage(aMessage, aSender, aRespond) {
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (aMessage.byAncestor &&
-            aMessage.collapsed != GetTabs.getAncestorTabs(tab).some(TabInfo.isSubtreeCollapsed))
+            aMessage.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
           return;
         let params = {
           collapsed:   aMessage.collapsed,
@@ -1424,8 +1424,8 @@ function onMessage(aMessage, aSender, aRespond) {
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
         return moveTabsBefore(
-          aMessage.tabs.map(GetTabs.getTabById),
-          GetTabs.getTabById(aMessage.nextTab),
+          aMessage.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(aMessage.nextTab),
           aMessage
         ).then(aTabs => aTabs.map(aTab => aTab.id));
       })();
@@ -1434,8 +1434,8 @@ function onMessage(aMessage, aSender, aRespond) {
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
         return moveTabsAfter(
-          aMessage.tabs.map(GetTabs.getTabById),
-          GetTabs.getTabById(aMessage.previousTab),
+          aMessage.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(aMessage.previousTab),
           aMessage
         ).then(aTabs => aTabs.map(aTab => aTab.id));
       })();
@@ -1443,7 +1443,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs);
-        return removeTabsInternally(aMessage.tabs.map(GetTabs.getTabById), aMessage.options);
+        return removeTabsInternally(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {
@@ -1459,12 +1459,12 @@ function onMessage(aMessage, aSender, aRespond) {
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
           log('attach tab from remote ', aMessage);
-          let child  = GetTabs.getTabById(aMessage.child);
-          let parent = GetTabs.getTabById(aMessage.parent);
+          let child  = Tabs.getTabById(aMessage.child);
+          let parent = Tabs.getTabById(aMessage.parent);
           if (child && parent)
             await attachTabTo(child, parent, Object.assign({}, aMessage, {
-              insertBefore: GetTabs.getTabById(aMessage.insertBefore),
-              insertAfter:  GetTabs.getTabById(aMessage.insertAfter),
+              insertBefore: Tabs.getTabById(aMessage.insertBefore),
+              insertAfter:  Tabs.getTabById(aMessage.insertAfter),
               inRemote:     false,
               broadcast:    false
             }));
@@ -1481,8 +1481,8 @@ function onMessage(aMessage, aSender, aRespond) {
           aMessage.tab,
           aMessage.parent
         ]);
-        let tab = GetTabs.getTabById(aMessage.tab);
-        if (tab && TabInfo.isActive(GetTabs.getTabById(aMessage.parent)))
+        let tab = Tabs.getTabById(aMessage.tab);
+        if (tab && Tabs.isActive(Tabs.getTabById(aMessage.parent)))
           scrollToNewTab(tab);
       })();
 
@@ -1493,7 +1493,7 @@ function onMessage(aMessage, aSender, aRespond) {
             waitUntilTabsAreCreated(aMessage.tab),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
-          let tab = GetTabs.getTabById(aMessage.tab);
+          let tab = Tabs.getTabById(aMessage.tab);
           if (tab)
             detachTab(tab, aMessage);
           gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
@@ -1526,7 +1526,7 @@ function onMessage(aMessage, aSender, aRespond) {
         });
         let modified = add.concat(remove);
         for (let tab of aMessage.tabs) {
-          tab = GetTabs.getTabById(tab);
+          tab = Tabs.getTabById(tab);
           if (!tab)
             continue;
           add.forEach(aState => tab.classList.add(aState));
@@ -1536,7 +1536,7 @@ function onMessage(aMessage, aSender, aRespond) {
             modified.indexOf(Constants.kTAB_STATE_MUTED) > -1) {
             updateTabSoundButtonTooltip(tab);
             if (aMessage.bubbles)
-              updateParentTab(GetTabs.getParentTab(tab));
+              updateParentTab(Tabs.getParentTab(tab));
           }
         }
       })();
@@ -1620,7 +1620,7 @@ function onMessageExternal(aMessage, aSender) {
         let params = {};
         if ('tab' in aMessage) {
           await waitUntilTabsAreCreated(aMessage.tab);
-          params.tab = GetTabs.getTabById(aMessage.tab);
+          params.tab = Tabs.getTabById(aMessage.tab);
           if (!params.tab || params.tab.windowId != gTargetWindow)
             return;
         }
@@ -1649,7 +1649,7 @@ function onConfigChange(aChangedKey) {
   var rootClasses = document.documentElement.classList;
   switch (aChangedKey) {
     case 'debug': {
-      for (let tab of GetTabs.getAllTabs()) {
+      for (let tab of Tabs.getAllTabs()) {
         updateTab(tab, tab.apiTab, { forceApply: true });
       }
       if (configs.debug)
@@ -1714,7 +1714,7 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'showCollapsedDescendantsByTooltip':
-      for (let tab of GetTabs.getAllTabs()) {
+      for (let tab of Tabs.getAllTabs()) {
         reserveToUpdateTabTooltip(tab);
       }
       break;

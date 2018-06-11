@@ -57,7 +57,7 @@ function restoreTabsFromCacheInternal(aParams) {
   logForCache(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache`);
   var offset    = aParams.offset || 0;
   var apiTabs   = aParams.tabs.slice(offset);
-  var container = GetTabs.getTabsContainer(aParams.windowId);
+  var container = Tabs.getTabsContainer(aParams.windowId);
   var tabElements;
   if (offset > 0) {
     if (!container ||
@@ -70,10 +70,10 @@ function restoreTabsFromCacheInternal(aParams) {
     let insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
-    insertionPoint.setStartBefore(GetTabs.getTabById(makeTabId(apiTabs[0])));
-    insertionPoint.setEndAfter(GetTabs.getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
+    insertionPoint.setStartBefore(Tabs.getTabById(makeTabId(apiTabs[0])));
+    insertionPoint.setEndAfter(Tabs.getTabById(makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
-    let tabsMustBeRemoved = apiTabs.map(GetTabs.getTabById);
+    let tabsMustBeRemoved = apiTabs.map(Tabs.getTabById);
     logForCache('restoreTabsFromCacheInternal: cleared?: ',
                 tabsMustBeRemoved.every(aTab => !aTab),
                 tabsMustBeRemoved.map(dumpTab));
@@ -126,7 +126,7 @@ function restoreTabsFromCacheInternal(aParams) {
     throw e;
   }
   logForCache('restoreTabsFromCacheInternal: done');
-  TabInfo.dumpAllTabs();
+  Tabs.dumpAllTabs();
   return true;
 }
 
@@ -175,7 +175,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 
   // update focused tab appearance
   browser.tabs.query({ windowId: aTabs[0].apiTab.windowId, active: true })
-    .then(aActiveTabs => updateTabFocused(GetTabs.getTabById(aActiveTabs[0])));
+    .then(aActiveTabs => updateTabFocused(Tabs.getTabById(aActiveTabs[0])));
 }
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
@@ -205,5 +205,5 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   else
     aTab.removeAttribute(Constants.kPARENT);
   logForCache('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(Constants.kPARENT));
-  aTab.ancestorTabs = GetTabs.getAncestorTabs(aTab, { force: true });
+  aTab.ancestorTabs = Tabs.getAncestorTabs(aTab, { force: true });
 }

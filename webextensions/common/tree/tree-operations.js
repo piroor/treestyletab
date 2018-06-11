@@ -62,7 +62,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     stack:            `${new Error().stack}\n${aOptions.stack || ''}`
   });
 
-  if (TabInfo.isPinned(aParent) || TabInfo.isPinned(aChild)) {
+  if (Tabs.isPinned(aParent) || Tabs.isPinned(aChild)) {
     log('=> pinned tabs cannot be attached');
     return;
   }
@@ -70,16 +70,16 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
     log('=> could not attach tab to a parent in different window');
     return;
   }
-  var ancestors = [aParent].concat(GetTabs.getAncestorTabs(aChild));
+  var ancestors = [aParent].concat(Tabs.getAncestorTabs(aChild));
   if (ancestors.indexOf(aChild) > -1) {
     log('=> canceled for recursive request');
     return;
   }
 
   if (aOptions.dontMove) {
-    aOptions.insertBefore = GetTabs.getNextTab(aChild);
+    aOptions.insertBefore = Tabs.getNextTab(aChild);
     if (!aOptions.insertBefore)
-      aOptions.insertAfter = GetTabs.getPreviousTab(aChild);
+      aOptions.insertAfter = Tabs.getPreviousTab(aChild);
   }
 
   if (!aOptions.insertBefore && !aOptions.insertAfter) {
@@ -94,7 +94,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
   });
 
   await waitUntilAllTabsAreCreated();
-  var newIndex = GetTabs.calculateNewTabIndex({
+  var newIndex = Tabs.calculateNewTabIndex({
     insertBefore: aOptions.insertBefore,
     insertAfter:  aOptions.insertAfter,
     ignoreTabs:   [aChild]
@@ -110,7 +110,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
   var childIds;
   {
-    let expectedAllTabs = GetTabs.getAllTabs(aChild).filter(aTab => aTab != aChild);
+    let expectedAllTabs = Tabs.getAllTabs(aChild).filter(aTab => aTab != aChild);
     log('expectedAllTabs: ', expectedAllTabs.map(dumpTab));
     if (newIndex >= expectedAllTabs.length)
       expectedAllTabs.push(aChild);
@@ -139,7 +139,7 @@ async function attachTabTo(aChild, aParent, aOptions = {}) {
 
     aChild.setAttribute(Constants.kPARENT, aParent.id);
     aChild.parentTab = aParent;
-    aChild.ancestorTabs = GetTabs.getAncestorTabs(aChild, { force: true });
+    aChild.ancestorTabs = Tabs.getAncestorTabs(aChild, { force: true });
 
     let parentLevel = parseInt(aParent.getAttribute(Constants.kLEVEL) || 0);
     if (!aOptions.dontUpdateIndent) {
@@ -183,7 +183,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
   var insertAt = aOptions.insertAt;
   if (typeof insertAt !== 'number')
     insertAt = configs.insertNewChildAt;
-  var descendants = GetTabs.getDescendantTabs(aParent);
+  var descendants = Tabs.getDescendantTabs(aParent);
   if (aOptions.ignoreTabs)
     descendants = descendants.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
   var insertBefore, insertAfter;
@@ -199,7 +199,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
         insertBefore = firstChild;
         break;
       case Constants.kINSERT_NEAREST: {
-        let allTabs = GetTabs.getAllTabs(aParent);
+        let allTabs = Tabs.getAllTabs(aParent);
         if (aOptions.ignoreTabs)
           allTabs = allTabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
         let index = allTabs.indexOf(aChild);
@@ -211,7 +211,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
           insertAfter  = lastDescendant;
         }
         else { // inside the tree
-          let children = GetTabs.getChildTabs(aParent);
+          let children = Tabs.getChildTabs(aParent);
           if (aOptions.ignoreTabs)
             children = children.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
           for (let child of children) {
@@ -230,12 +230,12 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
     insertAfter = aParent;
   }
   if (insertBefore == aChild)
-    insertBefore = GetTabs.getNextTab(insertBefore);
+    insertBefore = Tabs.getNextTab(insertBefore);
   if (insertAfter == aChild)
-    insertAfter = GetTabs.getPreviousTab(insertAfter);
+    insertAfter = Tabs.getPreviousTab(insertAfter);
   // disallow to place tab in invalid position
   if (insertBefore) {
-    if (GetTabs.getTabIndex(insertBefore) <= GetTabs.getTabIndex(aParent)) {
+    if (Tabs.getTabIndex(insertBefore) <= Tabs.getTabIndex(aParent)) {
       insertBefore = null;
     }
     //TODO: we need to reject more cases...
@@ -243,7 +243,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
   if (insertAfter) {
     let allTabsInTree = [aParent].concat(descendants);
     let lastMember    = allTabsInTree[allTabsInTree.length - 1];
-    if (GetTabs.getTabIndex(insertAfter) >= GetTabs.getTabIndex(lastMember)) {
+    if (Tabs.getTabIndex(insertAfter) >= Tabs.getTabIndex(lastMember)) {
       insertAfter = lastMember;
     }
     //TODO: we need to reject more cases...
@@ -254,7 +254,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
 function detachTab(aChild, aOptions = {}) {
   log('detachTab: ', dumpTab(aChild), aOptions,
       { stack: `${new Error().stack}\n${aOptions.stack || ''}` });
-  var parent = GetTabs.getParentTab(aChild);
+  var parent = Tabs.getParentTab(aChild);
 
   if (!parent)
     log('parent is already removed, or orphan tab');
@@ -299,8 +299,8 @@ async function detachTabsFromTree(aTabs, aOptions = {}) {
   aTabs = Array.slice(aTabs).reverse();
   var promisedAttach = [];
   for (let tab of aTabs) {
-    let children = GetTabs.getChildTabs(tab);
-    let parent   = GetTabs.getParentTab(tab);
+    let children = Tabs.getChildTabs(tab);
+    let parent   = Tabs.getParentTab(tab);
     for (let child of children) {
       if (aTabs.indexOf(child) < 0) {
         if (parent)
@@ -317,7 +317,7 @@ async function detachTabsFromTree(aTabs, aOptions = {}) {
 }
 
 function detachAllChildren(aTab, aOptions = {}) {
-  var children = GetTabs.getChildTabs(aTab);
+  var children = Tabs.getChildTabs(aTab);
   if (!children.length)
     return;
 
@@ -328,9 +328,9 @@ function detachAllChildren(aTab, aOptions = {}) {
 
   aOptions.dontUpdateInsertionPositionInfo = true;
 
-  var parent = GetTabs.getParentTab(aTab);
-  if (TabInfo.isGroupTab(aTab) &&
-      GetTabs.getTabs(aTab).filter(aTab => aTab.removing).length == children.length) {
+  var parent = Tabs.getParentTab(aTab);
+  if (Tabs.isGroupTab(aTab) &&
+      Tabs.getTabs(aTab).filter(aTab => aTab.removing).length == children.length) {
     aOptions.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     aOptions.dontUpdateIndent = false;
   }
@@ -338,7 +338,7 @@ function detachAllChildren(aTab, aOptions = {}) {
   var nextTab = null;
   if (aOptions.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
       !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
-    nextTab = GetTabs.getNextSiblingTab(GetTabs.getRootTab(aTab));
+    nextTab = Tabs.getNextSiblingTab(Tabs.getRootTab(aTab));
   }
 
   if (aOptions.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
@@ -391,7 +391,7 @@ function detachAllChildren(aTab, aOptions = {}) {
 }
 
 async function behaveAutoAttachedTab(aTab, aOptions = {}) {
-  var baseTab = aOptions.baseTab || GetTabs.getCurrentTab(gTargetWindow || aTab);
+  var baseTab = aOptions.baseTab || Tabs.getCurrentTab(gTargetWindow || aTab);
   log('behaveAutoAttachedTab ', dumpTab(aTab), dumpTab(baseTab), aOptions);
   switch (aOptions.behavior) {
     default:
@@ -402,8 +402,8 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         inRemote:  aOptions.inRemote,
         broadcast: aOptions.broadcast
       });
-      if (GetTabs.getNextTab(aTab))
-        await moveTabAfter(aTab, GetTabs.getLastTab(), {
+      if (Tabs.getNextTab(aTab))
+        await moveTabAfter(aTab, Tabs.getLastTab(), {
           delayedMove: true,
           inRemote: aOptions.inRemote
         });
@@ -421,7 +421,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
       break;
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING: {
-      let parent = GetTabs.getParentTab(baseTab);
+      let parent = Tabs.getParentTab(baseTab);
       if (parent) {
         await attachTabTo(aTab, parent, {
           delayedMove: true,
@@ -434,7 +434,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           inRemote:  aOptions.inRemote,
           broadcast: aOptions.broadcast
         });
-        await moveTabAfter(aTab, GetTabs.getLastTab(), {
+        await moveTabAfter(aTab, Tabs.getLastTab(), {
           delayedMove: true,
           inRemote: aOptions.inRemote
         });
@@ -443,14 +443,14 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
     }; break;
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-      let nextSibling = GetTabs.getNextSiblingTab(baseTab);
+      let nextSibling = Tabs.getNextSiblingTab(baseTab);
       if (nextSibling == aTab)
         nextSibling = null;
-      let parent = GetTabs.getParentTab(baseTab);
+      let parent = Tabs.getParentTab(baseTab);
       if (parent)
         await attachTabTo(aTab, parent, {
           insertBefore: nextSibling,
-          insertAfter:  GetTabs.getLastDescendantTab(baseTab),
+          insertAfter:  Tabs.getLastDescendantTab(baseTab),
           delayedMove:  true,
           inRemote:     aOptions.inRemote,
           broadcast:    aOptions.broadcast
@@ -467,7 +467,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
             broadcast: aOptions.broadcast
           });
         else
-          await moveTabAfter(aTab, GetTabs.getLastDescendantTab(baseTab), {
+          await moveTabAfter(aTab, Tabs.getLastDescendantTab(baseTab), {
             delayedMove: true,
             inRemote:  aOptions.inRemote,
             broadcast: aOptions.broadcast
@@ -488,16 +488,16 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
     return;
 
   if (aLevel === undefined)
-    aLevel = GetTabs.getAncestorTabs(aTabs[0]).length;
+    aLevel = Tabs.getAncestorTabs(aTabs[0]).length;
 
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let item = aTabs[i];
-    if (!item || TabInfo.isPinned(item))
+    if (!item || Tabs.isPinned(item))
       continue;
 
     window.onTabLevelChanged && onTabLevelChanged(item);
     item.setAttribute(Constants.kLEVEL, aLevel);
-    updateTabsIndent(GetTabs.getChildTabs(item), aLevel + 1);
+    updateTabsIndent(Tabs.getChildTabs(item), aLevel + 1);
   }
 }
 
@@ -505,7 +505,7 @@ function updateTabsIndent(aTabs, aLevel = undefined) {
 // collapse/expand tabs
 
 function shouldTabAutoExpanded(aTab) {
-  return TabInfo.hasChildTabs(aTab) && TabInfo.isSubtreeCollapsed(aTab);
+  return Tabs.hasChildTabs(aTab) && Tabs.isSubtreeCollapsed(aTab);
 }
 
 async function collapseExpandSubtree(aTab, aParams = {}) {
@@ -526,11 +526,11 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
     await browser.runtime.sendMessage(remoteParams);
     return;
   }
-  if (!GetTabs.ensureLivingTab(aTab)) // it was removed while waiting
+  if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
     return;
   aParams.stack = `${new Error().stack}\n${aParams.stack || ''}`;
   if (configs.logOnCollapseExpand)
-    log('collapseExpandSubtree: ', dumpTab(aTab), TabInfo.isSubtreeCollapsed(aTab), aParams);
+    log('collapseExpandSubtree: ', dumpTab(aTab), Tabs.isSubtreeCollapsed(aTab), aParams);
   var container = aTab.parentNode;
   await Promise.all([
     collapseExpandSubtreeInternal(aTab, aParams),
@@ -539,10 +539,10 @@ async function collapseExpandSubtree(aTab, aParams = {}) {
 }
 function collapseExpandSubtreeInternal(aTab, aParams = {}) {
   if (!aParams.force &&
-      TabInfo.isSubtreeCollapsed(aTab) == aParams.collapsed)
+      Tabs.isSubtreeCollapsed(aTab) == aParams.collapsed)
     return;
 
-  var container = GetTabs.getTabsContainer(aTab);
+  var container = Tabs.getTabsContainer(aTab);
 
   if (aParams.collapsed) {
     aTab.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
@@ -553,7 +553,7 @@ function collapseExpandSubtreeInternal(aTab, aParams = {}) {
   }
   //setTabValue(aTab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, aParams.collapsed);
 
-  var childTabs = GetTabs.getChildTabs(aTab);
+  var childTabs = Tabs.getChildTabs(aTab);
   var lastExpandedTabIndex = childTabs.length - 1;
   for (let i = 0, maxi = childTabs.length; i < maxi; i++) {
     let childTab = childTabs[i];
@@ -594,7 +594,7 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
   if (!aTab)
     return;
 
-  var parent = GetTabs.getParentTab(aTab);
+  var parent = Tabs.getParentTab(aTab);
   if (!parent)
     return;
 
@@ -606,15 +606,15 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
   ///* PUBLIC API */
   //fireCustomEvent(Constants.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, aTab, true, false, data);
 
-  if (aParams.collapsed && TabInfo.isActive(aTab)) {
-    let newSelection = GetTabs.getVisibleAncestorOrSelf(aTab);
+  if (aParams.collapsed && Tabs.isActive(aTab)) {
+    let newSelection = Tabs.getVisibleAncestorOrSelf(aTab);
     if (configs.logOnCollapseExpand)
       log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
     selectTabInternally(newSelection, { silently: true });
   }
 
-  if (!TabInfo.isSubtreeCollapsed(aTab)) {
-    let children = GetTabs.getChildTabs(aTab);
+  if (!Tabs.isSubtreeCollapsed(aTab)) {
+    let children = Tabs.getChildTabs(aTab);
     children.forEach((aChild, aIndex) => {
       var last = aParams.last &&
                    (aIndex == children.length - 1);
@@ -630,7 +630,7 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 }
 
 function collapseExpandTab(aTab, aParams = {}) {
-  if (TabInfo.isPinned(aTab) && aParams.collapsed) {
+  if (Tabs.isPinned(aTab) && aParams.collapsed) {
     log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
         dumpTab(aTab), { stack: new Error().stack });
     aParams.collapsed = false;
@@ -640,7 +640,7 @@ function collapseExpandTab(aTab, aParams = {}) {
   if (configs.logOnCollapseExpand)
     log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
   var last = aParams.last &&
-               (!TabInfo.hasChildTabs(aTab) || TabInfo.isSubtreeCollapsed(aTab));
+               (!Tabs.hasChildTabs(aTab) || Tabs.isSubtreeCollapsed(aTab));
   var collapseExpandInfo = Object.assign({}, aParams, {
     anchor: last && aParams.anchor,
     last:   last
@@ -664,7 +664,7 @@ function collapseExpandTab(aTab, aParams = {}) {
       justNow:   aParams.justNow,
       collapsed: aParams.collapsed,
       stack:     stack,
-      byAncestor: GetTabs.getAncestorTabs(aTab).some(TabInfo.isSubtreeCollapsed) == aParams.collapsed
+      byAncestor: Tabs.getAncestorTabs(aTab).some(Tabs.isSubtreeCollapsed) == aParams.collapsed
     });
   }
 }
@@ -675,7 +675,7 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
 
   if (configs.logOnCollapseExpand)
     log('collapseExpandTreesIntelligentlyFor');
-  var container = GetTabs.getTabsContainer(aTab);
+  var container = Tabs.getTabsContainer(aTab);
   if (parseInt(container.dataset.doingIntelligentlyCollapseExpandCount) > 0) {
     if (configs.logOnCollapseExpand)
       log('=> done by others');
@@ -683,13 +683,13 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   }
   incrementContainerCounter(container, 'doingIntelligentlyCollapseExpandCount');
 
-  var sameParentTab = GetTabs.getParentTab(aTab);
-  var expandedAncestors = `<${[aTab].concat(GetTabs.getAncestorTabs(aTab))
+  var sameParentTab = Tabs.getParentTab(aTab);
+  var expandedAncestors = `<${[aTab].concat(Tabs.getAncestorTabs(aTab))
     .map(aAncestor => aAncestor.id)
     .join('><')}>`;
 
   var xpathResult = XPath.evaluate(
-    `child::${GetTabs.kXPATH_LIVE_TAB}[
+    `child::${Tabs.kXPATH_LIVE_TAB}[
        @${Constants.kCHILDREN} and
        not(${XPath.hasClass(Constants.kTAB_STATE_COLLAPSED)}) and
        not(${XPath.hasClass(Constants.kTAB_STATE_SUBTREE_COLLAPSED)}) and
@@ -703,11 +703,11 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
     let dontCollapse = false;
     let collapseTab  = xpathResult.snapshotItem(i);
-    let parentTab    = GetTabs.getParentTab(collapseTab);
+    let parentTab    = Tabs.getParentTab(collapseTab);
     if (parentTab) {
       dontCollapse = true;
-      if (!TabInfo.isSubtreeCollapsed(parentTab)) {
-        for (let ancestor of GetTabs.getAncestorTabs(collapseTab)) {
+      if (!Tabs.isSubtreeCollapsed(parentTab)) {
+        for (let ancestor of Tabs.getAncestorTabs(collapseTab)) {
           if (expandedAncestors.indexOf(`<${ancestor.id}>`) < 0)
             continue;
           dontCollapse = false;
@@ -760,7 +760,7 @@ function tryMoveFocusFromClosingCurrentTab(aTab, aOptions = {}) {
   if (!configs.moveFocusInTreeForClosedCurrentTab)
     return;
   log('tryMoveFocusFromClosingCurrentTab', dumpTab(aTab), aOptions);
-  if (!aOptions.wasActive && !TabInfo.isActive(aTab)) {
+  if (!aOptions.wasActive && !Tabs.isActive(aTab)) {
     log(' => not active tab');
     return;
   }
@@ -774,21 +774,21 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions
   // The aTab can be closed while we waiting.
   // Thus we need to get tabs related to aTab at first.
   var params      = getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOptions.params);
-  var nextTab     = GetTabs.getNextTab(aTab);
-  var previousTab = GetTabs.getPreviousTab(aTab);
+  var nextTab     = Tabs.getNextTab(aTab);
+  var previousTab = Tabs.getPreviousTab(aTab);
 
   await aTab.closedWhileActive;
   log('tryMoveFocusFromClosingCurrentTabOnFocusRedirected: tabs.onActivated is fired');
 
-  var autoFocusedTab = GetTabs.getCurrentTab(aTab.apiTab.windowId);
+  var autoFocusedTab = Tabs.getCurrentTab(aTab.apiTab.windowId);
   if (autoFocusedTab != nextTab &&
       (autoFocusedTab != previousTab ||
-       (GetTabs.getNextTab(autoFocusedTab) &&
-        GetTabs.getNextTab(autoFocusedTab) != aTab))) {
+       (Tabs.getNextTab(autoFocusedTab) &&
+        Tabs.getNextTab(autoFocusedTab) != aTab))) {
     // possibly it is focused by browser.tabs.selectOwnerOnClose
     log('=> the tab seems focused intentionally: ', {
       autoFocused:       dumpTab(autoFocusedTab),
-      nextOfAutoFocused: dumpTab(GetTabs.getNextTab(autoFocusedTab)),
+      nextOfAutoFocused: dumpTab(Tabs.getNextTab(autoFocusedTab)),
       prev:              dumpTab(previousTab),
       next:              dumpTab(nextTab)
     });
@@ -797,16 +797,16 @@ async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(aTab, aOptions
   return tryMoveFocusFromClosingCurrentTabNow(aTab, { params });
 }
 function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
-  var parentTab = GetTabs.getParentTab(aTab);
+  var parentTab = Tabs.getParentTab(aTab);
   var params = {
-    active:                    TabInfo.isActive(aTab),
-    pinned:                    TabInfo.isPinned(aTab),
+    active:                    Tabs.isActive(aTab),
+    pinned:                    Tabs.isPinned(aTab),
     parentTab,
-    firstChildTab:             GetTabs.getFirstChildTab(aTab),
-    firstChildTabOfParent:     GetTabs.getFirstChildTab(parentTab),
-    lastChildTabOfParent:      GetTabs.getLastChildTab(parentTab),
-    previousSiblingTab:        GetTabs.getPreviousSiblingTab(aTab),
-    preDetectedNextFocusedTab: GetTabs.getNextFocusedTab(aTab),
+    firstChildTab:             Tabs.getFirstChildTab(aTab),
+    firstChildTabOfParent:     Tabs.getFirstChildTab(parentTab),
+    lastChildTabOfParent:      Tabs.getLastChildTab(parentTab),
+    previousSiblingTab:        Tabs.getPreviousSiblingTab(aTab),
+    preDetectedNextFocusedTab: Tabs.getNextFocusedTab(aTab),
     serialized:                serializeTabForTSTAPI(aTab),
     closeParentBehavior:       getCloseParentBehaviorForTab(aTab, { parentTab })
   };
@@ -829,7 +829,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     ignoredTabs,
     serialized, closeParentBehavior
   } = params;
-  var tabNextFocusedByFirefox = GetTabs.getNextTab(aTab);
+  var tabNextFocusedByFirefox = Tabs.getNextTab(aTab);
   log('tryMoveFocusFromClosingCurrentTabNow ', params);
   if (!active) {
     log(' => not active tab');
@@ -865,24 +865,24 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
       }
     }
     if (nextFocusedTab && ignoredTabs.indexOf(nextFocusedTab) > -1)
-      nextFocusedTab = GetTabs.getNextFocusedTab(parentTab, { ignoredTabs });
+      nextFocusedTab = Tabs.getNextFocusedTab(parentTab, { ignoredTabs });
   }
   else if (!nextFocusedTab) {
     nextFocusedTab = preDetectedNextFocusedTab;
-    log('focus to GetTabs.getNextFocusedTab()?: ', !!nextFocusedTab);
+    log('focus to Tabs.getNextFocusedTab()?: ', !!nextFocusedTab);
   }
   if (nextFocusedTab && ignoredTabs.indexOf(nextFocusedTab) > -1) {
-    nextFocusedTab = GetTabs.getNextFocusedTab(nextFocusedTab, { ignoredTabs });
-    log('focus to GetTabs.getNextFocusedTab() again?: ', !!nextFocusedTab);
+    nextFocusedTab = Tabs.getNextFocusedTab(nextFocusedTab, { ignoredTabs });
+    log('focus to Tabs.getNextFocusedTab() again?: ', !!nextFocusedTab);
   }
 
   if (!nextFocusedTab ||
-      TabInfo.isHidden(nextFocusedTab) ||
-      TabInfo.isActive(nextFocusedTab))
+      Tabs.isHidden(nextFocusedTab) ||
+      Tabs.isActive(nextFocusedTab))
     return false;
 
-  nextTab = GetTabs.getTabById(nextTab);
-  if (TabInfo.isActive(nextTab) &&
+  nextTab = Tabs.getTabById(nextTab);
+  if (Tabs.isActive(nextTab) &&
       nextIsDiscarded) {
     log('reserve to discard accidentally restored tab ', nextTab.apiTab.id, nextTabUrl || nextTab.apiTab.url);
     nextTab.dataset.discardURLAfterCompletelyLoaded = nextTabUrl || nextTab.apiTab.url;
@@ -895,12 +895,12 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
 
 function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
   if (!aOptions.asIndividualTab &&
-      TabInfo.isSubtreeCollapsed(aTab) &&
+      Tabs.isSubtreeCollapsed(aTab) &&
       !aOptions.keepChildren)
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
   var behavior = configs.closeParentBehavior;
-  var parentTab = aOptions.parent || GetTabs.getParentTab(aTab);
+  var parentTab = aOptions.parent || Tabs.getParentTab(aTab);
 
   if (aOptions.keepChildren &&
       behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
@@ -916,7 +916,7 @@ function getCloseParentBehaviorForTab(aTab, aOptions = {}) {
   // This is similar to "taking by representation".
   if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
       parentTab &&
-      GetTabs.getChildTabs(parentTab).length == 1 &&
+      Tabs.getChildTabs(parentTab).length == 1 &&
       configs.promoteAllChildrenWhenClosedParentIsLastChild)
     behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
 
@@ -960,7 +960,7 @@ function syncOrderOfChildTabs(aParentTabs) {
       continue;
     parent.childTabs = parent.childTabs.map(aTab => {
       return {
-        index: GetTabs.getTabIndex(aTab),
+        index: Tabs.getTabIndex(aTab),
         tab:   aTab
       };
     }).sort((aA, aB) => aA.index - aB.index).map(aItem => aItem.tab);
@@ -974,7 +974,7 @@ function syncOrderOfChildTabs(aParentTabs) {
 async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   if (!aTab)
     return;
-  if (TabInfo.isAllTabsPlacedBefore([aTab].concat(GetTabs.getDescendantTabs(aTab)), aNextTab)) {
+  if (Tabs.isAllTabsPlacedBefore([aTab].concat(Tabs.getDescendantTabs(aTab)), aNextTab)) {
     log('moveTabSubtreeBefore:no need to move');
     return;
   }
@@ -984,7 +984,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   incrementContainerCounter(container, 'subTreeMovingCount');
   try {
     await moveTabInternallyBefore(aTab, aNextTab, aOptions);
-    if (!GetTabs.ensureLivingTab(aTab)) // it is removed while waiting
+    if (!Tabs.ensureLivingTab(aTab)) // it is removed while waiting
       throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
   }
@@ -1000,7 +1000,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
 async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
   if (!aTab)
     return;
-  if (TabInfo.isAllTabsPlacedAfter([aTab].concat(GetTabs.getDescendantTabs(aTab)), aPreviousTab)) {
+  if (Tabs.isAllTabsPlacedAfter([aTab].concat(Tabs.getDescendantTabs(aTab)), aPreviousTab)) {
     log('moveTabSubtreeAfter:no need to move');
     return;
   }
@@ -1010,7 +1010,7 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
   incrementContainerCounter(container, 'subTreeMovingCount');
   try {
     await moveTabInternallyAfter(aTab, aPreviousTab, aOptions);
-    if (!GetTabs.ensureLivingTab(aTab)) // it is removed while waiting
+    if (!Tabs.ensureLivingTab(aTab)) // it is removed while waiting
       throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
   }
@@ -1024,20 +1024,20 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
 }
 
 async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
-  if (!TabInfo.hasChildTabs(aTab))
+  if (!Tabs.hasChildTabs(aTab))
     return;
 
   log('followDescendantsToMovedRoot: ', dumpTab(aTab));
   var container = aTab.parentNode;
   incrementContainerCounter(container, 'subTreeChildrenMovingCount');
   incrementContainerCounter(container, 'subTreeMovingCount');
-  await moveTabsAfter(GetTabs.getDescendantTabs(aTab), aTab, aOptions);
+  await moveTabsAfter(Tabs.getDescendantTabs(aTab), aTab, aOptions);
   decrementContainerCounter(container, 'subTreeChildrenMovingCount');
   decrementContainerCounter(container, 'subTreeMovingCount');
 }
 
 async function moveTabs(aTabs, aOptions = {}) {
-  aTabs = aTabs.filter(GetTabs.ensureLivingTab);
+  aTabs = aTabs.filter(Tabs.ensureLivingTab);
   if (aTabs.length == 0)
     return [];
 
@@ -1053,7 +1053,7 @@ async function moveTabs(aTabs, aOptions = {}) {
 
   var isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
-  aOptions.insertAfter = aOptions.insertAfter || GetTabs.getLastTab(destinationWindowId);
+  aOptions.insertAfter = aOptions.insertAfter || Tabs.getLastTab(destinationWindowId);
 
   if (aOptions.inRemote) {
     let response = await browser.runtime.sendMessage(Object.assign({}, aOptions, {
@@ -1066,7 +1066,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       destinationWindowId: destinationWindowId,
       inRemote:            false
     }));
-    return (response.movedTabs || []).map(GetTabs.getTabById).filter(aTab => !!aTab);
+    return (response.movedTabs || []).map(Tabs.getTabById).filter(aTab => !!aTab);
   }
 
   var movedTabs = aTabs;
@@ -1078,7 +1078,7 @@ async function moveTabs(aTabs, aOptions = {}) {
     try {
       let container;
       let prepareContainer = () => {
-        container = GetTabs.getTabsContainer(destinationWindowId);
+        container = Tabs.getTabsContainer(destinationWindowId);
         if (!container) {
           container = buildTabsContainerFor(destinationWindowId);
           gAllTabs.appendChild(container);
@@ -1140,7 +1140,7 @@ async function moveTabs(aTabs, aOptions = {}) {
               let promisedDuplicatingTabs = (async () => {
                 while (true) {
                   await wait(100);
-                  let tabs = GetTabs.getDuplicatingTabs(windowId);
+                  let tabs = Tabs.getDuplicatingTabs(windowId);
                   if (tabs.length < apiTabIds.length)
                     continue; // not opened yet
                   let tabIds = tabs.map(aTab => aTab.apiTab.id);
@@ -1165,7 +1165,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         })()
       ]);
       log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
-      let toIndex = GetTabs.getAllTabs(container).length;
+      let toIndex = Tabs.getAllTabs(container).length;
       log('toIndex = ', toIndex);
       if (aOptions.insertBefore &&
           aOptions.insertBefore.apiTab.windowId == destinationWindowId) {
@@ -1195,7 +1195,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       log(' => ', toIndex);
       if (isAcrossWindows) {
         for (let tab of aTabs) {
-          if (!TabInfo.isActive(tab))
+          if (!Tabs.isActive(tab))
             continue;
           await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: aTabs });
           break;
@@ -1214,7 +1214,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       let startTime = Date.now();
       let maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = apiTabs.map(aApiTab => GetTabs.getTabById(TabIdFixer.fixTab(aApiTab)));
+        newTabs = apiTabs.map(aApiTab => Tabs.getTabById(TabIdFixer.fixTab(aApiTab)));
         newTabs = newTabs.filter(aTab => !!aTab);
         if (newTabs.length < aTabs.length) {
           log('retrying: ', apiTabIds, newTabs.length, aTabs.length);
@@ -1262,7 +1262,7 @@ async function moveTabs(aTabs, aOptions = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = movedTabs.map(aTab => GetTabs.getTabById(aTab.id));
+  movedTabs = movedTabs.map(aTab => Tabs.getTabById(aTab.id));
   movedTabs = movedTabs.filter(aTab => !!aTab);
 
   return movedTabs;
@@ -1291,14 +1291,14 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       top:       'top' in aOptions ? parseInt(aOptions.top) : null,
       inRemote:  false
     }));
-    return (response.movedTabs || []).map(GetTabs.getTabById).filter(aTab => !!aTab);
+    return (response.movedTabs || []).map(Tabs.getTabById).filter(aTab => !!aTab);
   }
 
   log('opening new window');
   var windowParams = {
     //focused: true,  // not supported in Firefox...
     url: 'about:blank',
-    incognito: TabInfo.isPrivateBrowsing(aTabs[0])
+    incognito: Tabs.isPrivateBrowsing(aTabs[0])
   };
   if ('left' in aOptions && aOptions.left !== null)
     windowParams.left = aOptions.left;
@@ -1312,7 +1312,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       blockUserOperationsIn(newWindow.id);
       return newWindow;
     });
-  aTabs = aTabs.filter(GetTabs.ensureLivingTab);
+  aTabs = aTabs.filter(Tabs.ensureLivingTab);
   var movedTabs = await moveTabs(aTabs, Object.assign({}, aOptions, {
     destinationPromisedNewWindow: promsiedNewWindow
   }));
@@ -1326,7 +1326,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       const removeTabs = [];
       for (let apiTab of allTabsInWindow) {
         if (movedAPITabIds.indexOf(apiTab.id) < 0)
-          removeTabs.push(GetTabs.getTabById(apiTab));
+          removeTabs.push(Tabs.getTabById(apiTab));
       }
       log('removing tabs: ', removeTabs.map(dumpTab));
       removeTabsInternally(removeTabs);
@@ -1338,7 +1338,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
 
 
 async function groupTabs(aTabs, aOptions = {}) {
-  var rootTabs = GetTabs.collectRootTabs(aTabs);
+  var rootTabs = Tabs.collectRootTabs(aTabs);
   if (rootTabs.length <= 0)
     return null;
 
@@ -1350,7 +1350,7 @@ async function groupTabs(aTabs, aOptions = {}) {
   });
   var groupTab = await openURIInTab(uri, {
     windowId:     rootTabs[0].apiTab.windowId,
-    parent:       GetTabs.getParentTab(rootTabs[0]),
+    parent:       Tabs.getParentTab(rootTabs[0]),
     insertBefore: rootTabs[0],
     inBackground: true
   });
@@ -1398,20 +1398,20 @@ async function performTabsDragDrop(aParams = {}) {
     action:              aParams.action
   });
 
-  var draggedTabs = aParams.tabs.map(GetTabs.getTabById).filter(aTab => !!aTab);
+  var draggedTabs = aParams.tabs.map(Tabs.getTabById).filter(aTab => !!aTab);
   if (!draggedTabs.length)
     return;
 
   // Basically tabs should not be dragged between regular window and private browsing window,
   // so there are some codes to prevent shch operations. This is for failsafe.
-  if (TabInfo.isPrivateBrowsing(draggedTabs[0]) != TabInfo.isPrivateBrowsing(GetTabs.getFirstTab(destinationWindowId)))
+  if (Tabs.isPrivateBrowsing(draggedTabs[0]) != Tabs.isPrivateBrowsing(Tabs.getFirstTab(destinationWindowId)))
     return;
 
-  var draggedRoots = GetTabs.collectRootTabs(draggedTabs);
+  var draggedRoots = Tabs.collectRootTabs(draggedTabs);
 
   var draggedWholeTree = [].concat(draggedRoots);
   for (let draggedRoot of draggedRoots) {
-    let descendants = GetTabs.getDescendantTabs(draggedRoot);
+    let descendants = Tabs.getDescendantTabs(draggedRoot);
     for (let descendant of descendants) {
       if (draggedWholeTree.indexOf(descendant) < 0)
         draggedWholeTree.push(descendant);
@@ -1429,11 +1429,11 @@ async function performTabsDragDrop(aParams = {}) {
 
   while (aParams.insertBefore &&
          draggedWholeTree.indexOf(aParams.insertBefore) > -1) {
-    aParams.insertBefore = GetTabs.getNextTab(aParams.insertBefore);
+    aParams.insertBefore = Tabs.getNextTab(aParams.insertBefore);
   }
   while (aParams.insertAfter &&
          draggedWholeTree.indexOf(aParams.insertAfter) > -1) {
-    aParams.insertAfter = GetTabs.getPreviousTab(aParams.insertAfter);
+    aParams.insertAfter = Tabs.getPreviousTab(aParams.insertAfter);
   }
 
   if (aParams.duplicate ||
@@ -1444,7 +1444,7 @@ async function performTabsDragDrop(aParams = {}) {
       insertBefore: aParams.insertBefore,
       insertAfter:  aParams.insertAfter
     });
-    draggedRoots = GetTabs.collectRootTabs(draggedTabs);
+    draggedRoots = Tabs.collectRootTabs(draggedTabs);
   }
 
   log('try attach/detach');
@@ -1496,13 +1496,13 @@ async function performTabsDragDrop(aParams = {}) {
   });
   log('=> opened group tabs: ', replacedGroupTabs);
   aParams.draggedTab.ownerDocument.defaultView.setTimeout(() => {
-    if (!GetTabs.ensureLivingTab(aTab)) // it was removed while waiting
+    if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
       return;
     log('closing needless group tabs');
     replacedGroupTabs.reverse().forEach(function(aTab) {
       log(' check: ', aTab.label+'('+aTab._tPos+') '+getLoadingURI(aTab));
-      if (TabInfo.isGroupTab(aTab) &&
-        !TabInfo.hasChildTabs(aTab))
+      if (Tabs.isGroupTab(aTab) &&
+        !Tabs.hasChildTabs(aTab))
         removeTab(aTab);
     }, this);
   }, 0);
@@ -1547,7 +1547,7 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
     insertBefore: null,
     insertAfter:  null,
     dontMove:     true,
-    forceExpand:  aOptions.draggedTabs.some(TabInfo.isActive)
+    forceExpand:  aOptions.draggedTabs.some(Tabs.isActive)
   });
   for (let tab of aTabs) {
     if (aParent)
@@ -1587,7 +1587,7 @@ function getTreeStructureFromTabs(aTabs, aOptions = {}) {
   */
   return cleanUpTreeStructureArray(
     aTabs.map((aTab, aIndex) => {
-      let tab = GetTabs.getParentTab(aTab);
+      let tab = Tabs.getParentTab(aTab);
       let index = tab ? aTabs.indexOf(tab) : -1 ;
       return index >= aIndex ? -1 : index ;
     }),
@@ -1597,12 +1597,12 @@ function getTreeStructureFromTabs(aTabs, aOptions = {}) {
     var item = {
       id:        tab.getAttribute(Constants.kPERSISTENT_ID),
       parent:    aParentIndex,
-      collapsed: TabInfo.isSubtreeCollapsed(tab)
+      collapsed: Tabs.isSubtreeCollapsed(tab)
     };
     if (aOptions.full) {
       item.title  = tab.apiTab.title;
       item.url    = tab.apiTab.url;
-      item.pinned = TabInfo.isPinned(tab);
+      item.pinned = Tabs.isPinned(tab);
     }
     return item;
   });
@@ -1652,7 +1652,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     let tab = aTabs[i];
     /*
-    if (TabInfo.isCollapsed(tab))
+    if (Tabs.isCollapsed(tab))
       collapseExpandTabAndSubtree(tab, Object.assign({}, aOptions, {
         collapsed: false,
         justNow: true
@@ -1676,7 +1676,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
 
     let parent = null;
     if (parentIndexInTree > -1) {
-      parent = GetTabs.getTabById(parentTab);
+      parent = Tabs.getTabById(parentTab);
       if (parent) {
         //log('existing tabs in tree: ', {
         //  size:   tabsInTree.length,
@@ -1704,7 +1704,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
     let tab = aTabs[i];
     let expanded = expandStates[i];
     collapseExpandSubtree(tab, Object.assign({}, aOptions, {
-      collapsed: expanded === undefined ? !TabInfo.hasChildTabs(tab) : !expanded ,
+      collapsed: expanded === undefined ? !Tabs.hasChildTabs(tab) : !expanded ,
       justNow:   true,
       force:     true
     }));

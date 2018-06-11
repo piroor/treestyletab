@@ -271,12 +271,12 @@ var tabContextMenu = {
       this.menu.setAttribute('data-tab-states', states.join(' '));
     }
 
-    if (GetTabs.getTabs().length > 1)
+    if (Tabs.getTabs().length > 1)
       this.menu.classList.add('has-multiple-tabs');
     else
       this.menu.classList.remove('has-multiple-tabs');
 
-    switch (GetTabs.getNormalTabs().length) {
+    switch (Tabs.getNormalTabs().length) {
       case 0:
         this.menu.classList.remove('has-normal-tabs');
         this.menu.classList.remove('has-multiple-normal-tabs');
@@ -326,7 +326,7 @@ var tabContextMenu = {
         */
         // browser.tabs.duplicate(contextTab.id);
         return (async () => {
-          let sourceTab = GetTabs.getTabById(contextTab);
+          let sourceTab = Tabs.getTabById(contextTab);
           if (configs.logOnFakeContextMenu)
             log('source tab: ', sourceTab, !!sourceTab.apiTab);
           let duplicatedTabs = await moveTabs([sourceTab], {
@@ -355,7 +355,7 @@ var tabContextMenu = {
       }; break;
       case 'context_bookmarkAllTabs': {
         let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
-        let folder = await bookmarkTabs(apiTabs.map(GetTabs.getTabById));
+        let folder = await bookmarkTabs(apiTabs.map(Tabs.getTabById));
         if (folder)
           browser.bookmarks.get(folder.parentId).then(aFolders => {
             notify({

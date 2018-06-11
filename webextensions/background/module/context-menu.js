@@ -17,7 +17,7 @@ import {
   configs
 } from '../../common/module/common.js';
 
-import * as GetTabs from '../../common/module/get-tabs.js';
+import * as Tabs from '../../common/module/tabs.js';
 
 var gContextMenuItems = `
   reloadTree
@@ -76,7 +76,7 @@ export async function refreshItems() {
 export const onClick = (aInfo, aAPITab) => {
   log('context menu item clicked: ', aInfo, aAPITab);
 
-  var contextTab = GetTabs.getTabById(aAPITab);
+  var contextTab = Tabs.getTabById(aAPITab);
 
   switch (aInfo.menuItemId) {
     case 'reloadTree':

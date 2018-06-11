@@ -181,7 +181,7 @@ async function migrateLegacyTreeStructure() {
 
       // found: apply only structure case
       let structure = structures[index];
-      let tabs      = GetTabs.getAllTabs(apiWindow.id);
+      let tabs      = Tabs.getAllTabs(apiWindow.id);
       await applyTreeStructureToTabs(tabs, structure);
 
       restoredCountWithSession++;
@@ -203,7 +203,7 @@ async function migrateLegacyTreeStructure() {
       var apiWindow = await browser.windows.create({
         url: 'about:blank'
       });
-      var container = GetTabs.getTabsContainer(apiWindow.id);
+      var container = Tabs.getTabsContainer(apiWindow.id);
       incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aStructure.length);
       // restore tree
       var uris = aStructure.map(aItem => aItem.url);
@@ -223,7 +223,7 @@ async function migrateLegacyTreeStructure() {
       });
       var restApiTabs = apiWindow.tabs.slice(1);
       try {
-        await removeTabInternally(GetTabs.getTabById(apiWindow.tabs[0]));
+        await removeTabInternally(Tabs.getTabById(apiWindow.tabs[0]));
         // apply pinned state
         for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
           if (!aStructure[i].pinned)

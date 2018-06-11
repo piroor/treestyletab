@@ -196,7 +196,7 @@ async function init() {
   if (!restoredFromCache) {
     updateLoadingState();
     synchronizeThrobberAnimation();
-    for (let tab of GetTabs.getAllTabs()) {
+    for (let tab of Tabs.getAllTabs()) {
       updateTabTwisty(tab);
       updateTabClosebox(tab);
       updateTabsCount(tab);
@@ -211,7 +211,7 @@ async function init() {
   unblockUserOperations({ throbber: true });
 
   MetricsData.add('init end');
-  log(`Startup metrics for ${GetTabs.getTabs().length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
 }
 
 function destroy() {
@@ -509,7 +509,7 @@ async function inheritTreeStructure() {
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await applyTreeStructureToTabs(GetTabs.getAllTabs(gTargetWindow), response.structure);
+    await applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), response.structure);
     MetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
   }
 }
@@ -586,7 +586,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
 
 function updateTabTwisty(aTab) {
   var tooltip;
-  if (TabInfo.isSubtreeCollapsed(aTab))
+  if (Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
@@ -595,7 +595,7 @@ function updateTabTwisty(aTab) {
 
 function updateTabClosebox(aTab) {
   var tooltip;
-  if (TabInfo.hasChildTabs(aTab) && TabInfo.isSubtreeCollapsed(aTab))
+  if (Tabs.hasChildTabs(aTab) && Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
@@ -606,7 +606,7 @@ function updateTabsCount(aTab) {
   var counter = getTabCounter(aTab);
   if (!counter)
     return;
-  var descendants = GetTabs.getDescendantTabs(aTab);
+  var descendants = Tabs.getDescendantTabs(aTab);
   var count = descendants.length;
   if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
     count += 1;
@@ -614,7 +614,7 @@ function updateTabsCount(aTab) {
 }
 
 function collapseExpandAllSubtree(aParams = {}) {
-  var container = GetTabs.getTabsContainer(gTargetWindow);
+  var container = Tabs.getTabsContainer(gTargetWindow);
   var tabCondition = `.${Constants.kTAB_STATE_SUBTREE_COLLAPSED}`;
   if (aParams.collapsed)
     tabCondition = `:not(${tabCondition})`;
@@ -637,7 +637,7 @@ function reserveToUpdateVisualMaxTreeLevel() {
 }
 
 function updateVisualMaxTreeLevel() {
-  var maxLevel = TabInfo.getMaxTreeLevel(gTargetWindow, {
+  var maxLevel = Tabs.getMaxTreeLevel(gTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
   document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
@@ -663,7 +663,7 @@ var gIndentProp = 'margin-left';
 
 function updateIndent(aOptions = {}) {
   if (!aOptions.cache) {
-    let maxLevel  = TabInfo.getMaxTreeLevel(gTargetWindow);
+    let maxLevel  = Tabs.getMaxTreeLevel(gTargetWindow);
     let maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
     if (maxLevel <= gLastMaxLevel &&
         maxIndent == gLastMaxIndent &&
@@ -779,13 +779,13 @@ function updateTabbarLayout(aParams = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      var current = GetTabs.getCurrentTab();
+      var current = Tabs.getCurrentTab();
       if (!isTabInViewport(current)) {
         log('scroll to current tab on updateTabbarLayout');
         scrollToTab(current);
         return;
       }
-      var lastOpenedTab = GetTabs.getLastOpenedTab();
+      var lastOpenedTab = Tabs.getLastOpenedTab();
       var reasons       = aParams.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !isTabInViewport(lastOpenedTab)) {
@@ -812,9 +812,9 @@ function updateTabbarLayout(aParams = {}) {
 
 function reserveToUpdateTabTooltip(aTab) {
   if (gInitializing ||
-      !GetTabs.ensureLivingTab(aTab))
+      !Tabs.ensureLivingTab(aTab))
     return;
-  for (let tab of [aTab].concat(GetTabs.getAncestorTabs(aTab))) {
+  for (let tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
     if (tab.reservedUpdateTabTooltip)
       clearTimeout(tab.reservedUpdateTabTooltip);
   }
@@ -825,22 +825,22 @@ function reserveToUpdateTabTooltip(aTab) {
 }
 
 function updateTabAndAncestorsTooltip(aTab) {
-  if (!GetTabs.ensureLivingTab(aTab))
+  if (!Tabs.ensureLivingTab(aTab))
     return;
-  for (let tab of [aTab].concat(GetTabs.getAncestorTabs(aTab))) {
+  for (let tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
     updateTabTooltip(tab);
   }
 }
 
 function updateTabTooltip(aTab) {
-  if (!GetTabs.ensureLivingTab(aTab))
+  if (!Tabs.ensureLivingTab(aTab))
     return;
 
-  aTab.dataset.labelWithDescendants = TabInfo.getLabelWithDescendants(aTab);
+  aTab.dataset.labelWithDescendants = Tabs.getLabelWithDescendants(aTab);
 
   if (configs.showCollapsedDescendantsByTooltip &&
-      TabInfo.isSubtreeCollapsed(aTab) &&
-      TabInfo.hasChildTabs(aTab)) {
+      Tabs.isSubtreeCollapsed(aTab) &&
+      Tabs.hasChildTabs(aTab)) {
     aTab.setAttribute('title', aTab.dataset.labelWithDescendants);
     return;
   }
@@ -848,8 +848,8 @@ function updateTabTooltip(aTab) {
   if (configs.debug)
     return;
 
-  const label = GetTabs.getTabLabel(aTab);
-  if (TabInfo.isPinned(aTab) || label.classList.contains('overflow')) {
+  const label = Tabs.getTabLabel(aTab);
+  if (Tabs.isPinned(aTab) || label.classList.contains('overflow')) {
     aTab.setAttribute('title', aTab.dataset.label);
   }
   else {
@@ -870,14 +870,14 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  if (document.querySelector(`#${gTabBar.id} ${GetTabs.kSELECTOR_VISIBLE_TAB}.loading`))
+  if (document.querySelector(`#${gTabBar.id} ${Tabs.kSELECTOR_VISIBLE_TAB}.loading`))
     document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
   else
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
 }
 
 async function synchronizeThrobberAnimation() {
-  var toBeSynchronizedTabs = document.querySelectorAll(`${GetTabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
+  var toBeSynchronizedTabs = document.querySelectorAll(`${Tabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
   if (toBeSynchronizedTabs.length == 0)
     return;
 

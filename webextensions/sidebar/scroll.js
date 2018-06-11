@@ -64,7 +64,7 @@ function cancelRunningScroll() {
 }
 
 function calculateScrollDeltaForTab(aTab) {
-  if (TabInfo.isPinned(aTab))
+  if (Tabs.isPinned(aTab))
     return 0;
 
   var tabRect       = aTab.getBoundingClientRect();
@@ -88,10 +88,10 @@ function calculateScrollDeltaForTab(aTab) {
 }
 
 function isTabInViewport(aTab) {
-  if (!GetTabs.ensureLivingTab(aTab))
+  if (!Tabs.ensureLivingTab(aTab))
     return false;
 
-  if (TabInfo.isPinned(aTab))
+  if (Tabs.isPinned(aTab))
     return true;
 
   return calculateScrollDeltaForTab(aTab) == 0;
@@ -182,7 +182,7 @@ function scrollToNewTab(aTab, aOptions = {}) {
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
-    let current = GetTabs.getCurrentTab();
+    let current = Tabs.getCurrentTab();
     scrollToTab(aTab, Object.assign({}, aOptions, {
       anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
@@ -191,8 +191,8 @@ function scrollToNewTab(aTab, aOptions = {}) {
 }
 
 function canScrollToTab(aTab) {
-  return (GetTabs.ensureLivingTab(aTab) &&
-          !TabInfo.isHidden(aTab));
+  return (Tabs.ensureLivingTab(aTab) &&
+          !Tabs.isHidden(aTab));
 }
 
 async function scrollToTab(aTab, aOptions = {}) {
@@ -222,9 +222,9 @@ async function scrollToTab(aTab, aOptions = {}) {
   }
 
   var anchorTab = aOptions.anchor;
-  if (!GetTabs.ensureLivingTab(anchorTab) ||
+  if (!Tabs.ensureLivingTab(anchorTab) ||
       anchorTab == aTab ||
-      TabInfo.isPinned(anchorTab)) {
+      Tabs.isPinned(anchorTab)) {
     if (configs.logOnScroll)
       log('=> no available anchor, direct scroll');
     scrollTo(Object.assign({}, aOptions, {
@@ -279,10 +279,10 @@ async function scrollToTab(aTab, aOptions = {}) {
 }
 
 function getOffsetForAnimatingTab(aTab) {
-  var allExpanding        = document.querySelectorAll(`${GetTabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
-  var followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${GetTabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
-  var allCollapsing       = document.querySelectorAll(`${GetTabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
-  var followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${GetTabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
+  var allExpanding        = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
+  var followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
+  var allCollapsing       = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
+  var followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
   var numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
   return numExpandingTabs * gTabHeight;
 }

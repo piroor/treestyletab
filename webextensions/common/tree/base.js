@@ -54,7 +54,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
   var tabId = aTabOrId;
   var tab   = null;
   if (typeof aTabOrId == 'number') {
-    tab = GetTabs.getTabById(id);
+    tab = Tabs.getTabById(id);
   }
   else {
     tabId = aTabOrId.apiTab.id;
@@ -80,7 +80,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
     if (oldId) {
       // If the tab detected from stored tabId is different, it is duplicated tab.
       try {
-        let tabWithOldId = GetTabs.getTabById(oldId.tabId);
+        let tabWithOldId = Tabs.getTabById(oldId.tabId);
         if (!tabWithOldId)
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
         originalId = tabWithOldId.getAttribute(Constants.kPERSISTENT_ID) /* (await tabWithOldId.uniqueId).id // don't try to wait this, because it sometime causes deadlock */;
@@ -173,7 +173,7 @@ function updateUniqueId(aTab) {
   aTab.uniqueId = requestUniqueId(aTab, {
     inRemote: !!gTargetWindow
   }).then(aUniqueId => {
-    if (aUniqueId && GetTabs.ensureLivingTab(aTab)) // possibly removed from document while waiting
+    if (aUniqueId && Tabs.ensureLivingTab(aTab)) // possibly removed from document while waiting
       aTab.setAttribute(Constants.kPERSISTENT_ID, aUniqueId.id);
     return aUniqueId || {};
   }).catch(aError => {
@@ -252,16 +252,16 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
             aTab.classList.remove(Constants.kTAB_STATE_UNREAD);
         });
     }
-    else if (!TabInfo.isActive(aTab) && aTab.apiTab) {
+    else if (!Tabs.isActive(aTab) && aTab.apiTab) {
       aTab.classList.add(Constants.kTAB_STATE_UNREAD);
       browser.sessions.setTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD, true);
     }
-    GetTabs.getTabLabelContent(aTab).textContent = aNewState.title;
+    Tabs.getTabLabelContent(aTab).textContent = aNewState.title;
     aTab.dataset.label = visibleLabel;
     window.onTabLabelUpdated && onTabLabelUpdated(aTab);
   }
 
-  const openerOfGroupTab = TabInfo.isGroupTab(aTab) && GetTabs.getOpenerFromGroupTab(aTab);
+  const openerOfGroupTab = Tabs.isGroupTab(aTab) && Tabs.getOpenerFromGroupTab(aTab);
   const hasFavIcon       = 'favIconUrl' in aNewState;
   const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab(aNewState);
   if (aOptions.forceApply || hasFavIcon || maybeImageTab) {
@@ -296,7 +296,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       aTab.delayedBurstEnd = setTimeout(() => {
         delete aTab.delayedBurstEnd;
         aTab.classList.remove(Constants.kTAB_STATE_BURSTING);
-        if (!TabInfo.isActive(aTab))
+        if (!Tabs.isActive(aTab))
           aTab.classList.add(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
@@ -454,7 +454,7 @@ windowId = ${aTab.apiTab.windowId}
   aTab.setAttribute('title', aTab.dataset.label);
   aTab.uniqueId.then(aUniqueId => {
     // reget it because it can be removed from document.
-    aTab = GetTabs.getTabById(aTab.apiTab);
+    aTab = Tabs.getTabById(aTab.apiTab);
     if (!aTab)
       return;
     aTab.setAttribute('title',
@@ -478,22 +478,22 @@ function updateTabFocused(aTab) {
 }
 
 function updateParentTab(aParent) {
-  if (!GetTabs.ensureLivingTab(aParent))
+  if (!Tabs.ensureLivingTab(aParent))
     return;
 
-  var children = GetTabs.getChildTabs(aParent);
+  var children = Tabs.getChildTabs(aParent);
 
-  if (children.some(TabInfo.maybeSoundPlaying))
+  if (children.some(Tabs.maybeSoundPlaying))
     aParent.classList.add(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
   else
     aParent.classList.remove(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
-  if (children.some(TabInfo.maybeMuted))
+  if (children.some(Tabs.maybeMuted))
     aParent.classList.add(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
   else
     aParent.classList.remove(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
 
-  updateParentTab(GetTabs.getParentTab(aParent));
+  updateParentTab(Tabs.getParentTab(aParent));
 
   window.onParentTabUpdated && onParentTabUpdated(aParent);
 }
@@ -578,7 +578,7 @@ function removeTabInternally(aTab, aOptions = {}) {
 }
 
 function removeTabsInternally(aTabs, aOptions = {}) {
-  aTabs = aTabs.filter(GetTabs.ensureLivingTab);
+  aTabs = aTabs.filter(Tabs.ensureLivingTab);
   if (!aTabs.length)
     return;
   log('removeTabsInternally: ', aTabs.map(dumpTab));
@@ -607,10 +607,10 @@ function removeTabsInternally(aTabs, aOptions = {}) {
 async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (!aTabs.length ||
-      !GetTabs.ensureLivingTab(aReferenceTab))
+      !Tabs.ensureLivingTab(aReferenceTab))
     return [];
 
-  if (TabInfo.isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
+  if (Tabs.isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
     log('moveTabsBefore:no need to move');
     return [];
   }
@@ -622,7 +622,7 @@ async function moveTabBefore(aTab, aReferenceTab, aOptions = {}) {
 
 async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length ||
-      !GetTabs.ensureLivingTab(aReferenceTab))
+      !Tabs.ensureLivingTab(aReferenceTab))
     return [];
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
@@ -636,7 +636,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     };
     if (aOptions.inRemote) {
       let tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(GetTabs.getTabById);
+      return tabIds.map(Tabs.getTabById);
     }
     else {
       browser.runtime.sendMessage(message);
@@ -653,8 +653,8 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     */
     let oldIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
     for (let tab of aTabs) {
-      let oldPreviousTab = GetTabs.getPreviousTab(tab);
-      let oldNextTab     = GetTabs.getNextTab(tab);
+      let oldPreviousTab = Tabs.getPreviousTab(tab);
+      let oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == aReferenceTab) // no move case
         continue;
       incrementContainerCounter(container, 'internalMovingCount');
@@ -665,7 +665,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
-    syncOrderOfChildTabs(aTabs.map(GetTabs.getParentTab));
+    syncOrderOfChildTabs(aTabs.map(Tabs.getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
@@ -678,7 +678,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = GetTabs.getAllTabs(container); i <= maxIndex; i++) {
+      for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
         let tab = allTabs[i];
         if (!tab)
           continue;
@@ -710,10 +710,10 @@ async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
 async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (!aTabs.length ||
-      !GetTabs.ensureLivingTab(aReferenceTab))
+      !Tabs.ensureLivingTab(aReferenceTab))
     return [];
 
-  if (TabInfo.isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
+  if (Tabs.isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
     log('moveTabsAfter:no need to move');
     return [];
   }
@@ -725,7 +725,7 @@ async function moveTabAfter(aTab, aReferenceTab, aOptions = {}) {
 
 async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length ||
-      !GetTabs.ensureLivingTab(aReferenceTab))
+      !Tabs.ensureLivingTab(aReferenceTab))
     return [];
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
@@ -739,7 +739,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     };
     if (aOptions.inRemote) {
       let tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(GetTabs.getTabById);
+      return tabIds.map(Tabs.getTabById);
     }
     else {
       browser.runtime.sendMessage(message);
@@ -755,12 +755,12 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       following to this operation, we need to move tabs immediately.
     */
     let oldIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
-    var nextTab = GetTabs.getNextTab(aReferenceTab);
+    var nextTab = Tabs.getNextTab(aReferenceTab);
     if (aTabs.indexOf(nextTab) > -1)
       nextTab = null;
     for (let tab of aTabs) {
-      let oldPreviousTab = GetTabs.getPreviousTab(tab);
-      let oldNextTab     = GetTabs.getNextTab(tab);
+      let oldPreviousTab = Tabs.getPreviousTab(tab);
+      let oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == nextTab) // no move case
         continue;
       incrementContainerCounter(container, 'internalMovingCount');
@@ -771,7 +771,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
-    syncOrderOfChildTabs(aTabs.map(GetTabs.getParentTab));
+    syncOrderOfChildTabs(aTabs.map(Tabs.getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
@@ -784,7 +784,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       let newIndexes = [aReferenceTab].concat(aTabs).map(getTabIndex);
       let minIndex = Math.min(...oldIndexes, ...newIndexes);
       let maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = GetTabs.getAllTabs(container); i <= maxIndex; i++) {
+      for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
         let tab = allTabs[i];
         if (!tab)
           continue;
@@ -879,8 +879,8 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
     }
     else {
       await waitUntilAllTabsAreCreated();
-      let startIndex = GetTabs.calculateNewTabIndex(aOptions);
-      let container  = GetTabs.getTabsContainer(aOptions.windowId);
+      let startIndex = Tabs.calculateNewTabIndex(aOptions);
+      let container  = Tabs.getTabsContainer(aOptions.windowId);
       incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
       if (aOptions.isOrphan)
         incrementContainerCounter(container, 'toBeOpenedOrphanTabs', aURIs.length);
@@ -899,7 +899,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
           params.cookieStoreId = aOptions.cookieStoreId;
         var apiTab = await browser.tabs.create(params);
         await waitUntilTabsAreCreated(apiTab.id);
-        var tab = GetTabs.getTabById(apiTab);
+        var tab = Tabs.getTabById(apiTab);
         if (!tab)
           throw new Error('tab is already closed');
         if (!aOptions.opener &&
@@ -1072,8 +1072,8 @@ async function removeSpecialTabState(aTab, aState) {
 
 function serializeTabForTSTAPI(aTab) {
   const effectiveFavIcon = TabFavIconHelper.effectiveFavIcons.get(aTab.apiTab.id);
-  const children         = GetTabs.getChildTabs(aTab).map(serializeTabForTSTAPI);
-  const ancestorTabIds   = GetTabs.getAncestorTabs(aTab).map(aTab => aTab.apiTab.id);
+  const children         = Tabs.getChildTabs(aTab).map(serializeTabForTSTAPI);
+  const ancestorTabIds   = Tabs.getAncestorTabs(aTab).map(aTab => aTab.apiTab.id);
   return Object.assign({}, aTab.apiTab, {
     states:   Array.slice(aTab.classList).filter(aState => Constants.kTAB_INTERNAL_STATES.indexOf(aState) < 0),
     indent:   parseInt(aTab.getAttribute(Constants.kLEVEL) || 0),
@@ -1122,19 +1122,19 @@ async function sendTSTAPIMessage(aMessage, aOptions = {}) {
 }
 
 function snapshotTree(aTargetTab, aTabs) {
-  var tabs = aTabs || GetTabs.getNormalTabs(aTargetTab);
+  var tabs = aTabs || Tabs.getNormalTabs(aTargetTab);
 
   var snapshotById = {};
   function snapshotChild(aTab) {
-    if (!GetTabs.ensureLivingTab(aTab) || TabInfo.isPinned(aTab) || TabInfo.isHidden(aTab))
+    if (!Tabs.ensureLivingTab(aTab) || Tabs.isPinned(aTab) || Tabs.isHidden(aTab))
       return null;
     return snapshotById[aTab.id] = {
       id:            aTab.id,
       url:           aTab.apiTab.url,
       cookieStoreId: aTab.apiTab.cookieStoreId,
-      active:        TabInfo.isActive(aTab),
-      children:      GetTabs.getChildTabs(aTab).filter(aChild => !TabInfo.isHidden(aChild)).map(aChild => aChild.id),
-      collapsed:     TabInfo.isSubtreeCollapsed(aTab),
+      active:        Tabs.isActive(aTab),
+      children:      Tabs.getChildTabs(aTab).filter(aChild => !Tabs.isHidden(aChild)).map(aChild => aChild.id),
+      collapsed:     Tabs.isSubtreeCollapsed(aTab),
       level:         parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)
     };
   }
@@ -1143,14 +1143,14 @@ function snapshotTree(aTargetTab, aTabs) {
     let item = snapshotById[tab.id];
     if (!item)
       continue;
-    let parent = GetTabs.getParentTab(tab);
+    let parent = Tabs.getParentTab(tab);
     item.parent = parent && parent.id;
-    let next = GetTabs.getNextNormalTab(tab);
+    let next = Tabs.getNextNormalTab(tab);
     item.next = next && next.id;
-    let previous = GetTabs.getPreviousNormalTab(tab);
+    let previous = Tabs.getPreviousNormalTab(tab);
     item.previous = previous && previous.id;
   }
-  var activeTab = GetTabs.getCurrentTab(aTargetTab);
+  var activeTab = Tabs.getCurrentTab(aTargetTab);
   return {
     target:   snapshotById[aTargetTab.id],
     active:   activeTab && snapshotById[activeTab.id],
@@ -1160,12 +1160,12 @@ function snapshotTree(aTargetTab, aTabs) {
 }
 
 function snapshotTreeForActionDetection(aTargetTab) {
-  const prevTab = GetTabs.getPreviousNormalTab(aTargetTab);
-  const nextTab = GetTabs.getNextNormalTab(aTargetTab);
+  const prevTab = Tabs.getPreviousNormalTab(aTargetTab);
+  const nextTab = Tabs.getNextNormalTab(aTargetTab);
   const foundTabs = {};
-  const tabs = GetTabs.getAncestorTabs(prevTab)
-    .concat([prevTab, aTargetTab, nextTab, GetTabs.getParentTab(aTargetTab)])
-    .filter(aTab => GetTabs.ensureLivingTab(aTab) && !foundTabs[aTab.id] && (foundTabs[aTab.id] = true)) // uniq
+  const tabs = Tabs.getAncestorTabs(prevTab)
+    .concat([prevTab, aTargetTab, nextTab, Tabs.getParentTab(aTargetTab)])
+    .filter(aTab => Tabs.ensureLivingTab(aTab) && !foundTabs[aTab.id] && (foundTabs[aTab.id] = true)) // uniq
     .sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
   return snapshotTree(aTargetTab, tabs);
 }

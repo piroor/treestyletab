@@ -40,7 +40,7 @@
 
 function positionPinnedTabs(aOptions = {}) {
   //log('positionPinnedTabs');
-  var pinnedTabs = GetTabs.getPinnedTabs(gTargetWindow);
+  var pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
   if (!pinnedTabs.length) {
     resetPinnedTabs();
     document.documentElement.classList.remove('have-pinned-tabs');
@@ -113,7 +113,7 @@ function reserveToPositionPinnedTabs(aOptions = {}) {
 
 function resetPinnedTabs(aHint) {
   gTabBar.style.marginTop = '';
-  var pinnedTabs = GetTabs.getPinnedTabs(gTargetWindow);
+  var pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
   pinnedTabs.forEach(clearPinnedStyle);
 }
 
