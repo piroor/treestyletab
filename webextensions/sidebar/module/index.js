@@ -19,12 +19,13 @@ import TabFavIconHelper from '../../common/TabFavIconHelper.js';
 import RichConfirm from '../../common/RichConfirm.js';
 
 // Set to the global to make compatibility with other classic sources.
-for (let key of Object.keys(Constants)) {
-  window[key] = Constants[key];
-}
-for (let key of Object.keys(Common)) {
-  window[key] = Common[key];
-}
+window.Constants = Constants;
+window.configs   = Common.configs;
+window.log       = Common.log;
+window.dumpTab   = Common.dumpTab;
+window.wait      = Common.wait;
+window.nextFrame = Common.nextFrame;
+window.notify    = Common.notify;
 window.XPath = XPath;
 window.ApiTabs = ApiTabs;
 window.Permissions = Permissions;

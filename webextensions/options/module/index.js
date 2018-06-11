@@ -12,12 +12,13 @@ import Options from '../Options.js';
 import ShortcutCustomizeUI from '../ShortcutCustomizeUI.js';
 
 // Set to the global to make compatibility with other classic sources.
-for (let key of Object.keys(Constants)) {
-  window[key] = Constants[key];
-}
-for (let key of Object.keys(Common)) {
-  window[key] = Common[key];
-}
+window.Constants = Constants;
+window.configs   = Common.configs;
+window.log       = Common.log;
+window.dumpTab   = Common.dumpTab;
+window.wait      = Common.wait;
+window.nextFrame = Common.nextFrame;
+window.notify    = Common.notify;
 window.Permissions = Permissions;
 
 window.l10n = l10n;
