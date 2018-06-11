@@ -113,16 +113,16 @@ const Commands = {
     let parent, insertBefore, insertAfter;
     let isOrphan = false;
     switch (aOptions.as) {
-      case kNEWTAB_DO_NOTHING:
+      case Constants.kNEWTAB_DO_NOTHING:
       default:
         break;
 
-      case kNEWTAB_OPEN_AS_ORPHAN:
+      case Constants.kNEWTAB_OPEN_AS_ORPHAN:
         isOrphan    = true;
         insertAfter = getLastTab(currentTab);
         break;
 
-      case kNEWTAB_OPEN_AS_CHILD: {
+      case Constants.kNEWTAB_OPEN_AS_CHILD: {
         parent = currentTab;
         let refTabs = getReferenceTabsForNewChild(parent);
         insertBefore = refTabs.insertBefore;
@@ -132,12 +132,12 @@ const Commands = {
               dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
       }; break;
 
-      case kNEWTAB_OPEN_AS_SIBLING:
+      case Constants.kNEWTAB_OPEN_AS_SIBLING:
         parent      = getParentTab(currentTab);
         insertAfter = getLastDescendantTab(parent);
         break;
 
-      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+      case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
         parent       = getParentTab(currentTab);
         insertBefore = getNextSiblingTab(currentTab);
         insertAfter  = getLastDescendantTab(currentTab);
@@ -161,7 +161,7 @@ const Commands = {
   showContainerSelector(aOptions = {}) {
     if (aOptions.inRemote) {
       return browser.runtime.sendMessage({
-        type:     kCOMMAND_SHOW_CONTAINER_SELECTOR,
+        type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
         windowId: activeTab.apiTab.windowId
       });
     }
@@ -181,7 +181,7 @@ const Commands = {
     if (!aOptions.followChildren)
       detachAllChildren(aTab, {
         broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+        behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
     await attachTabTo(aTab, newParent, {
       broadcast:   true,
@@ -203,7 +203,7 @@ const Commands = {
     if (!aOptions.followChildren)
       detachAllChildren(aTab, {
         broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+        behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
     if (newParent) {
       await attachTabTo(aTab, newParent, {
@@ -231,7 +231,7 @@ const Commands = {
     if (!aOptions.followChildren)
       detachAllChildren(aTab, {
         broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+        behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
 
     await moveTabBefore(aTab, previousTab, {
@@ -253,7 +253,7 @@ const Commands = {
     if (!aOptions.followChildren)
       detachAllChildren(aTab, {
         broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+        behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
 
     await moveTabAfter(aTab, nextTab, {

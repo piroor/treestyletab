@@ -181,7 +181,7 @@ function scrollToNewTab(aTab, aOptions = {}) {
   if (!canScrollToTab(aTab))
     return;
 
-  if (configs.scrollToNewTabMode == kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
+  if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
     let current = getCurrentTab();
     scrollToTab(aTab, Object.assign({}, aOptions, {
       anchor:            isTabInViewport(current) && current,
@@ -279,10 +279,10 @@ async function scrollToTab(aTab, aOptions = {}) {
 }
 
 function getOffsetForAnimatingTab(aTab) {
-  var allExpanding        = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}:not(.${kTAB_STATE_COLLAPSED}).${kTAB_STATE_EXPANDING}`);
-  var followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}:not(.${kTAB_STATE_COLLAPSED}).${kTAB_STATE_EXPANDING}`);
-  var allCollapsing       = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSED}.${kTAB_STATE_COLLAPSING}`);
-  var followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}.${kTAB_STATE_COLLAPSED}.${kTAB_STATE_COLLAPSING}`);
+  var allExpanding        = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
+  var followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
+  var allCollapsing       = document.querySelectorAll(`${kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
+  var followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
   var numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
   return numExpandingTabs * gTabHeight;
 }
@@ -302,7 +302,7 @@ function scrollToTabs(aTabs) {
 }
 
 function autoScrollOnMouseEvent(aEvent) {
-  if (!gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW))
+  if (!gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
     return;
 
   var tabbarRect = gTabBar.getBoundingClientRect();

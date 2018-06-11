@@ -31,8 +31,8 @@ var gStyleLoader                = document.querySelector('#style-loader');
 var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
-var gContextualIdentitySelector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
-var gNewTabActionSelector       = document.getElementById(kNEWTAB_ACTION_SELECTOR);
+var gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
+var gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
@@ -90,7 +90,7 @@ async function init() {
       startObserveApiTabs();
 
       browser.runtime.connect({
-        name: `${kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}`
+        name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}`
       });
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
         browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
@@ -158,8 +158,8 @@ async function init() {
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       var results = await browser.runtime.sendMessage([
-        { type: kCOMMAND_REQUEST_REGISTERED_ADDONS },
-        { type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
+        { type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS },
+        { type: Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
       ]);
       var addons = results[0];
       gExternalListenerAddons = addons;
@@ -171,8 +171,8 @@ async function init() {
       }
       updateSpecialEventListenersForAPIListeners();
     }),
-    MetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
-      scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
+    MetricsData.addAsync('getting Constants.kWINDOW_STATE_SCROLL_POSITION', async () => {
+      scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION);
     })
   ]));
 
@@ -387,7 +387,7 @@ function updateContextualIdentitiesStyle() {
 }
 
 function updateContextualIdentitiesSelector() {
-  const anchors = Array.slice(document.querySelectorAll(`.${kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
+  const anchors = Array.slice(document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
   for (let anchor of anchors) {
     if (ContextualIdentities.getCount() == 0)
       anchor.setAttribute('disabled', true);
@@ -395,7 +395,7 @@ function updateContextualIdentitiesSelector() {
       anchor.removeAttribute('disabled');
   }
 
-  const selector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
+  const selector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
   const range    = document.createRange();
   range.selectNodeContents(selector);
   range.deleteContents();
@@ -444,7 +444,7 @@ function uninstallStyleForAddon(aId) {
 }
 
 function updateSpecialEventListenersForAPIListeners() {
-  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
+  if ((getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
     if (!onMouseMove.listening) {
       window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
       onMouseMove.listening = true;
@@ -455,7 +455,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
+  if ((getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
     if (!onMouseOver.listening) {
       window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
       onMouseOver.listening = true;
@@ -466,7 +466,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
+  if ((getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
     if (!onMouseOut.listening) {
       window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
       onMouseOut.listening = true;
@@ -504,10 +504,10 @@ async function rebuildAll(aCache) {
 
 async function inheritTreeStructure() {
   var response = await browser.runtime.sendMessage({
-    type:     kCOMMAND_PULL_TREE_STRUCTURE,
+    type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
   });
-  MetricsData.add('inheritTreeStructure: kCOMMAND_PULL_TREE_STRUCTURE');
+  MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
     await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
     MetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
@@ -517,7 +517,7 @@ async function inheritTreeStructure() {
 async function waitUntilBackgroundIsReady() {
   try {
     let response = await browser.runtime.sendMessage({
-      type: kCOMMAND_PING_TO_BACKGROUND
+      type: Constants.kCOMMAND_PING_TO_BACKGROUND
     });
     if (response)
       return;
@@ -528,7 +528,7 @@ async function waitUntilBackgroundIsReady() {
     let onBackgroundIsReady = (aMessage, aSender, aRespond) => {
       if (!aMessage ||
           !aMessage.type ||
-          aMessage.type != kCOMMAND_PING_TO_SIDEBAR)
+          aMessage.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
         return;
       browser.runtime.onMessage.removeListener(onBackgroundIsReady);
       aResolve();
@@ -539,22 +539,22 @@ async function waitUntilBackgroundIsReady() {
 
 
 function getTabTwisty(aTab) {
-  return aTab.querySelector(`.${kTWISTY}`);
+  return aTab.querySelector(`.${Constants.kTWISTY}`);
 }
 function getTabFavicon(aTab) {
-  return aTab.querySelector(`.${kFAVICON}`);
+  return aTab.querySelector(`.${Constants.kFAVICON}`);
 }
 function getTabThrobber(aTab) {
-  return aTab.querySelector(`.${kTHROBBER}`);
+  return aTab.querySelector(`.${Constants.kTHROBBER}`);
 }
 function getTabSoundButton(aTab) {
-  return aTab.querySelector(`.${kSOUND_BUTTON}`);
+  return aTab.querySelector(`.${Constants.kSOUND_BUTTON}`);
 }
 function getTabCounter(aTab) {
-  return aTab.querySelector(`.${kCOUNTER}`);
+  return aTab.querySelector(`.${Constants.kCOUNTER}`);
 }
 function getTabClosebox(aTab) {
-  return aTab.querySelector(`.${kCLOSEBOX}`);
+  return aTab.querySelector(`.${Constants.kCLOSEBOX}`);
 }
 
 
@@ -608,17 +608,17 @@ function updateTabsCount(aTab) {
     return;
   var descendants = getDescendantTabs(aTab);
   var count = descendants.length;
-  if (configs.counterRole == kCOUNTER_ROLE_ALL_TABS)
+  if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
     count += 1;
   counter.textContent = count;
 }
 
 function collapseExpandAllSubtree(aParams = {}) {
   var container = getTabsContainer(gTargetWindow);
-  var tabCondition = `.${kTAB_STATE_SUBTREE_COLLAPSED}`;
+  var tabCondition = `.${Constants.kTAB_STATE_SUBTREE_COLLAPSED}`;
   if (aParams.collapsed)
     tabCondition = `:not(${tabCondition})`;
-  var tabs = container.querySelectorAll(`.tab:not([${kCHILDREN}="|"])${subtreeCondition}`);
+  var tabs = container.querySelectorAll(`.tab:not([${Constants.kCHILDREN}="|"])${subtreeCondition}`);
   for (let tab of tabs) {
     collapseExpandSubtree(tab, aParams);
   }
@@ -640,7 +640,7 @@ function updateVisualMaxTreeLevel() {
   var maxLevel = getMaxTreeLevel(gTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
-  document.documentElement.setAttribute(kMAX_TREE_LEVEL, Math.max(1, maxLevel));
+  document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
 }
 
 
@@ -707,26 +707,26 @@ function updateIndent(aOptions = {}) {
 }
 function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aDefaultIndentToSelectors) {
   var indent     = configs.baseIndent * aMaxLevel;
-  var minIndent  = Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
+  var minIndent  = Math.max(Constants.kDEFAULT_MIN_INDENT, configs.minIndent);
   var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(gLastMaxIndent / aMaxLevel), minIndent));
 
   var configuredMaxLevel = configs.maxTreeLevel;
   if (configuredMaxLevel < 0)
     configuredMaxLevel = Number.MAX_SAFE_INTEGER;
 
-  var base = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]:not(.initializing) .tab:not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}]`;
+  var base = `:root[${Constants.kMAX_TREE_LEVEL}="${aMaxLevel}"]:not(.initializing) .tab:not(.${Constants.kTAB_STATE_COLLAPSED_DONE})[${Constants.kLEVEL}]`;
 
   // default indent for unhandled (deep) level tabs
   let defaultIndent = `${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px`;
   if (!aDefaultIndentToSelectors[defaultIndent])
     aDefaultIndentToSelectors[defaultIndent] = [];
-  aDefaultIndentToSelectors[defaultIndent].push(`${base}:not([${kLEVEL}="0"])`);
+  aDefaultIndentToSelectors[defaultIndent].push(`${base}:not([${Constants.kLEVEL}="0"])`);
 
   for (let level = 1; level <= aMaxLevel; level++) {
     let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
     if (!aIndentToSelectors[indent])
       aIndentToSelectors[indent] = [];
-    aIndentToSelectors[indent].push(`${base}[${kLEVEL}="${level}"]`);
+    aIndentToSelectors[indent].push(`${base}[${Constants.kLEVEL}="${level}"]`);
   }
 }
 
@@ -766,9 +766,9 @@ function updateTabbarLayout(aParams = {}) {
   var contentHeight   = range.getBoundingClientRect().height;
   //log('height: ', { container: containerHeight, content: contentHeight });
   var overflow = containerHeight < contentHeight;
-  if (overflow && !gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
+  if (overflow && !gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('overflow');
-    gTabBar.classList.add(kTABBAR_STATE_OVERFLOW);
+    gTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
     let range = document.createRange();
     range.selectNodeContents(gAfterTabsForOverflowTabBar);
     range.setStartAfter(gOutOfViewTabNotifier);
@@ -787,7 +787,7 @@ function updateTabbarLayout(aParams = {}) {
       }
       var lastOpenedTab = getLastOpenedTab();
       var reasons       = aParams.reasons || 0;
-      if (reasons & kTABBAR_UPDATE_REASON_TAB_OPEN &&
+      if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
         scrollToTab(lastOpenedTab, {
@@ -797,9 +797,9 @@ function updateTabbarLayout(aParams = {}) {
       }
     });
   }
-  else if (!overflow && gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
+  else if (!overflow && gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('underflow');
-    gTabBar.classList.remove(kTABBAR_STATE_OVERFLOW);
+    gTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
     gTabBar.style.bottom = '';
   }
 
@@ -871,23 +871,23 @@ function reserveToUpdateLoadingState() {
 
 function updateLoadingState() {
   if (document.querySelector(`#${gTabBar.id} ${kSELECTOR_VISIBLE_TAB}.loading`))
-    document.documentElement.classList.add(kTABBAR_STATE_HAVE_LOADING_TAB);
+    document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
   else
-    document.documentElement.classList.remove(kTABBAR_STATE_HAVE_LOADING_TAB);
+    document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
 }
 
 async function synchronizeThrobberAnimation() {
-  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.${kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
+  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
   if (toBeSynchronizedTabs.length == 0)
     return;
 
   for (let tab of Array.slice(toBeSynchronizedTabs)) {
-    tab.classList.remove(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   }
   await nextFrame();
-  document.documentElement.classList.add(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
+  document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
   await nextFrame();
-  document.documentElement.classList.remove(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
+  document.documentElement.classList.remove(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
 }
 
 

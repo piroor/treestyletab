@@ -20,9 +20,9 @@ async function getEffectiveWindowCache(aOptions = {}) {
       gLastWindowCacheOwner = apiTabs[apiTabs.length - 1];
       var tabsDirty, collapsedDirty;
       [cache, tabsDirty, collapsedDirty] = await Promise.all([
-        getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR),
-        getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
-        getWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
+        getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
       ]);
       cachedSignature = cache && cache.signature;
       logForCache(`getEffectiveWindowCache: got from the owner ${gLastWindowCacheOwner.id}`, {
@@ -52,7 +52,7 @@ async function getEffectiveWindowCache(aOptions = {}) {
         version: cache && cache.version
       }));
       logForCache('getEffectiveWindowCache: verify cache (1)', { cache, tabsDirty, collapsedDirty });
-      if (cache && cache.version == kSIDEBAR_CONTENTS_VERSION) {
+      if (cache && cache.version == Constants.kSIDEBAR_CONTENTS_VERSION) {
         logForCache('getEffectiveWindowCache: restore sidebar from cache');
         cache.tabbar.tabsDirty      = tabsDirty;
         cache.tabbar.collapsedDirty = collapsedDirty;
@@ -112,7 +112,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
   if (restored) {
     try {
       let masterStructure = (await browser.runtime.sendMessage({
-        type:     kCOMMAND_PULL_TREE_STRUCTURE,
+        type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: gTargetWindow
       })).structure;
       let allTabs = getAllTabs();
@@ -162,9 +162,9 @@ function updateWindowCache(aKey, aValue) {
 
 function clearWindowCache() {
   logForCache('clearWindowCache ', { stack: new Error().stack });
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR);
+  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
 function markWindowCacheDirty(akey) {
@@ -234,8 +234,8 @@ async function updateCachedTabbar() {
     return;
   logForCache('updateCachedTabbar ', { stack: new Error().stack });
   gLastWindowCacheOwner = getWindowCacheOwner(gTargetWindow);
-  updateWindowCache(kWINDOW_STATE_CACHED_SIDEBAR, {
-    version: kSIDEBAR_CONTENTS_VERSION,
+  updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
+    version: Constants.kSIDEBAR_CONTENTS_VERSION,
     tabbar:  {
       contents: gAllTabs.innerHTML,
       style:    gTabBar.getAttribute('style'),

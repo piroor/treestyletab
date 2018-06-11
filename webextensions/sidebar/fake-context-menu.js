@@ -38,7 +38,7 @@ var tabContextMenu = {
     }, { once: true });
 
     browser.runtime.sendMessage({
-      type: kTSTAPI_CONTEXT_MENU_GET_ITEMS
+      type: Constants.kTSTAPI_CONTEXT_MENU_GET_ITEMS
     }).then(aItems => {
       this.extraItems = aItems;
       this.dirty      = true;
@@ -365,7 +365,7 @@ var tabContextMenu = {
                 apiTabs.length,
                 aFolders[0].title
               ]),
-              icon:    kNOTIFICATION_DEFAULT_ICON
+              icon:    Constants.kNOTIFICATION_DEFAULT_ICON
             });
           });
       }; break;
@@ -422,7 +422,7 @@ var tabContextMenu = {
           if (aEvent.shiftKey)
             modifiers.push('Shift');
           let message = {
-            type: kTSTAPI_CONTEXT_MENU_CLICK,
+            type: Constants.kTSTAPI_CONTEXT_MENU_CLICK,
             info: {
               checked:          false,
               editable:         false,
@@ -453,7 +453,7 @@ var tabContextMenu = {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
-      case kTSTAPI_CONTEXT_MENU_UPDATED: {
+      case Constants.kTSTAPI_CONTEXT_MENU_UPDATED: {
         this.extraItems = aMessage.items;
         this.dirty = true;
         if (this.ui.opened)
@@ -466,7 +466,7 @@ var tabContextMenu = {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
-      case kTSTAPI_CONTEXT_MENU_OPEN:
+      case Constants.kTSTAPI_CONTEXT_MENU_OPEN:
         return (async () => {
           var tab      = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
           var windowId = aMessage.window || tab && tab.windowId;

@@ -53,25 +53,25 @@ async function onShortcutCommand(aCommand) {
     case 'newIndependentTab':
       Commands.openNewTabAs({
         baseTab: activeTab,
-        as:      kNEWTAB_OPEN_AS_ORPHAN
+        as:      Constants.kNEWTAB_OPEN_AS_ORPHAN
       });
       return;
     case 'newChildTab':
       Commands.openNewTabAs({
         baseTab: activeTab,
-        as:      kNEWTAB_OPEN_AS_CHILD
+        as:      Constants.kNEWTAB_OPEN_AS_CHILD
       });
       return;
     case 'newSiblingTab':
       Commands.openNewTabAs({
         baseTab: activeTab,
-        as:      kNEWTAB_OPEN_AS_SIBLING
+        as:      Constants.kNEWTAB_OPEN_AS_SIBLING
       });
       return;
     case 'newNextSiblingTab':
       Commands.openNewTabAs({
         baseTab: activeTab,
-        as:      kNEWTAB_OPEN_AS_NEXT_SIBLING
+        as:      Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
       });
       return;
 
@@ -114,21 +114,21 @@ async function onShortcutCommand(aCommand) {
 
     case 'tabbarUp':
       browser.runtime.sendMessage({
-        type:     kCOMMAND_SCROLL_TABBAR,
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.apiTab.windowId,
         by:       'lineup'
       });
       return;
     case 'tabbarPageUp':
       browser.runtime.sendMessage({
-        type:     kCOMMAND_SCROLL_TABBAR,
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.apiTab.windowId,
         by:       'pageup'
       });
       return;
     case 'tabbarHome':
       browser.runtime.sendMessage({
-        type:     kCOMMAND_SCROLL_TABBAR,
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.apiTab.windowId,
         to:       'top'
       });
@@ -136,21 +136,21 @@ async function onShortcutCommand(aCommand) {
 
     case 'tabbarDown':
       browser.runtime.sendMessage({
-        type:     kCOMMAND_SCROLL_TABBAR,
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.apiTab.windowId,
         by:       'linedown'
       });
       return;
     case 'tabbarPageDown':
       browser.runtime.sendMessage({
-        type:     kCOMMAND_SCROLL_TABBAR,
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.apiTab.windowId,
         by:       'pagedown'
       });
       return;
     case 'tabbarEnd':
       browser.runtime.sendMessage({
-        type:     kCOMMAND_SCROLL_TABBAR,
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.apiTab.windowId,
         to:       'bottom'
       });
@@ -223,7 +223,7 @@ function onTabOpening(aTab, aInfo = {}) {
     if (configs.autoGroupNewTabsFromPinned) {
       return true;
     }
-    if (configs.insertNewTabFromPinnedTabAt == kINSERT_END) {
+    if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
       moveTabAfter(aTab, getLastTab(aTab), {
         delayedMove: true,
         broadcast:   true
@@ -388,7 +388,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
 
   // Move newly opened tabs to expected position before grouping!
   switch (configs.insertNewTabFromPinnedTabAt) {
-    case kINSERT_FIRST:
+    case Constants.kINSERT_FIRST:
       const allPinnedTabs = getPinnedTabs(aRootTabs[0].parentNode);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
       for (let tab of unifiedRootTabs.slice(0).reverse()) {
@@ -403,7 +403,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
         });
       }
       break;
-    case kINSERT_END:
+    case Constants.kINSERT_END:
       for (let tab of unifiedRootTabs) {
         if (getGroupTabForOpener(openerOf[tab.id]))
           continue;
@@ -427,7 +427,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       let uri = makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title),
         temporary:   true,
-        openerTabId: opener.getAttribute(kPERSISTENT_ID)
+        openerTabId: opener.getAttribute(Constants.kPERSISTENT_ID)
       });
       parent = await openURIInTab(uri, {
         windowId:     opener.apiTab.windowId,
@@ -442,7 +442,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       child.dataset.alreadyGroupedForPinnedOpener = true;
       await attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
-        insertAfter: configs.insertNewChildAt == kINSERT_FIRST ? parent : getLastDescendantTab(parent),
+        insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : getLastDescendantTab(parent),
         broadcast: true
       });
     }
@@ -457,9 +457,9 @@ function onTabOpened(aTab, aInfo = {}) {
     log('duplicated ', dumpTab(aTab), dumpTab(original));
     if (aInfo.duplicatedInternally) {
       log('duplicated by internal operation');
-      aTab.classList.add(kTAB_STATE_DUPLICATING);
+      aTab.classList.add(Constants.kTAB_STATE_DUPLICATING);
       broadcastTabState(aTab, {
-        add: [kTAB_STATE_DUPLICATING]
+        add: [Constants.kTAB_STATE_DUPLICATING]
       });
     }
     else {
@@ -543,7 +543,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   var ancestors = getAncestorTabs(aTab);
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
-      closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       isSubtreeCollapsed(aTab))
     collapseExpandSubtree(aTab, {
       collapsed: false,
@@ -555,7 +555,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
   if (!(await tryGrantCloseTab(aTab, closeParentBehavior)))
     return;
 
-  var nextTab = closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
+  var nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && getNextSiblingTab(aTab) || aTab.nextSibling;
   tryMoveFocusFromClosingCurrentTab(aTab, {
     wasActive,
     params: {
@@ -566,10 +566,10 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
     }
   });
 
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(aTab);
 
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
+  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       getChildTabs(aTab).length > 1) {
     log('trying to replace the closing tab with a new group tab');
     let firstChild = getFirstChildTab(aTab);
@@ -590,7 +590,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       insertBefore: firstChild,
       broadcast:    true
     });
-    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+    closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
   }
 
   detachAllChildren(aTab, {
@@ -616,7 +616,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   const self = tryGrantCloseTab;
 
   self.closingTabIds.push(aTab.id);
-  if (aCloseParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+  if (aCloseParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     self.closingDescendantTabIds = self.closingDescendantTabIds
       .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
 
@@ -695,7 +695,7 @@ function onTabMoving(aTab, aMoveInfo) {
   // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
   const container = getTabsContainer(aTab);
   const isNewlyOpenedTab = parseInt(container.dataset.openingCount) > 0;
-  const positionControlled = configs.insertNewChildAt != kINSERT_NO_CONTROL;
+  const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
   if (!isNewlyOpenedTab ||
       aMoveInfo.byInternalOperation ||
       !positionControlled)
@@ -1059,7 +1059,7 @@ function onTabUpdated(aTab, aChangeInfo) {
           parent == getParentTab(aTab))
         return;
       attachTabTo(aTab, parent, {
-        insertAt:    kINSERT_NEAREST,
+        insertAt:    Constants.kINSERT_NEAREST,
         forceExpand: isActive(aTab),
         broadcast:   true
       });
@@ -1103,7 +1103,7 @@ function onTabUpdated(aTab, aChangeInfo) {
   }
 
   reserveToSaveTreeStructure(aTab);
-  markWindowCacheDirtyFromTab(aTab, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirtyFromTab(aTab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 
   const group = getGroupTabForOpener(aTab);
   if (group)
@@ -1122,9 +1122,9 @@ function onTabSubtreeCollapsedStateChanging(aTab) {
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
   if (aInfo.collapsed)
-    aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+    aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
   else
-    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
 }
 
 async function onTabAttached(aTab, aInfo = {}) {
@@ -1223,7 +1223,7 @@ async function onTabAttached(aTab, aInfo = {}) {
     return;
 
   browser.runtime.sendMessage({
-    type:   kCOMMAND_TAB_ATTACHED_COMPLETELY,
+    type:   Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY,
     tab:    aTab.id,
     parent: parent.id,
     newlyAttached: aInfo.newlyAttached
@@ -1304,8 +1304,8 @@ function onTabDetachedFromWindow(aTab, aInfo = {}) {
 
   log('onTabDetachedFromWindow ', dumpTab(aTab));
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo);
-  if (closeParentBehavior == kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    closeParentBehavior = kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
+  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+    closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
   detachAllChildren(aTab, {
     behavior: closeParentBehavior,
@@ -1367,10 +1367,10 @@ function onMessage(aMessage, aSender) {
 
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_PING_TO_BACKGROUND:
+    case Constants.kCOMMAND_PING_TO_BACKGROUND:
       return Promise.resolve(true);
 
-    case kCOMMAND_REQUEST_UNIQUE_ID:
+    case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.id);
         const tab = getTabById(aMessage.id);
@@ -1381,7 +1381,7 @@ function onMessage(aMessage, aSender) {
         });
       })();
 
-    case kCOMMAND_REQUEST_REGISTERED_ADDONS:
+    case Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS:
       return (async () => {
         while (!gExternalListenerAddons) {
           await wait(10);
@@ -1389,10 +1389,10 @@ function onMessage(aMessage, aSender) {
         return gExternalListenerAddons;
       })();
 
-    case kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
+    case Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
       return Promise.resolve(gScrollLockedBy);
 
-    case kCOMMAND_PULL_TREE_STRUCTURE:
+    case Constants.kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
         while (gInitializing) {
           await wait(10);
@@ -1401,7 +1401,7 @@ function onMessage(aMessage, aSender) {
         return { structure };
       })();
 
-    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
+    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
@@ -1418,16 +1418,16 @@ function onMessage(aMessage, aSender) {
         else
           collapseExpandSubtree(tab, params);
         reserveToSaveTreeStructure(tab);
-        markWindowCacheDirtyFromTab(tab, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+        markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 
-    case kCOMMAND_LOAD_URI:
+    case Constants.kCOMMAND_LOAD_URI:
       return loadURI(aMessage.uri, Object.assign({}, aMessage.options, {
         tab:      getTabById(aMessage.options.tab),
         inRemote: false
       }));
 
-    case kCOMMAND_NEW_TABS:
+    case Constants.kCOMMAND_NEW_TABS:
       return (async () => {
         await waitUntilTabsAreCreated([
           aMessage.parent,
@@ -1442,7 +1442,7 @@ function onMessage(aMessage, aSender) {
         }));
       })();
 
-    case kCOMMAND_NEW_WINDOW_FROM_TABS:
+    case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS:
       return (async () => {
         log('new window requested: ', aMessage);
         await waitUntilTabsAreCreated(aMessage.tabs);
@@ -1453,7 +1453,7 @@ function onMessage(aMessage, aSender) {
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
 
-    case kCOMMAND_MOVE_TABS:
+    case Constants.kCOMMAND_MOVE_TABS:
       return (async () => {
         log('move tabs requested: ', aMessage);
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.insertBefore, aMessage.insertAfter]));
@@ -1467,26 +1467,26 @@ function onMessage(aMessage, aSender) {
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
       })();
 
-    case kCOMMAND_REMOVE_TABS_INTERNALLY:
+    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs);
         return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
       })();
 
-    case kNOTIFY_SIDEBAR_FOCUS:
+    case Constants.kNOTIFY_SIDEBAR_FOCUS:
       gSidebarFocusState.set(aMessage.windowId, true);
       break;
 
-    case kNOTIFY_SIDEBAR_BLUR:
+    case Constants.kNOTIFY_SIDEBAR_BLUR:
       gSidebarFocusState.delete(aMessage.windowId);
       break;
 
-    case kNOTIFY_TAB_MOUSEDOWN:
+    case Constants.kNOTIFY_TAB_MOUSEDOWN:
       gMaybeTabSwitchingByShortcut =
         gTabSwitchedByShortcut = false;
       return (async () => {
         if (configs.logOnMouseEvent)
-          log('kNOTIFY_TAB_MOUSEDOWN');
+          log('Constants.kNOTIFY_TAB_MOUSEDOWN');
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
         if (!tab)
@@ -1496,7 +1496,7 @@ function onMessage(aMessage, aSender) {
           log('Sending message to listeners');
         const serializedTab = serializeTabForTSTAPI(tab);
         const mousedownNotified = sendTSTAPIMessage(Object.assign({}, aMessage, {
-          type:   kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
+          type:   Constants.kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
           window: tab.apiTab.windowId
         }));
@@ -1506,7 +1506,7 @@ function onMessage(aMessage, aSender) {
         mousedownNotified.then(async (aResults) => {
           const results = aResults.concat(
             await sendTSTAPIMessage(Object.assign({}, aMessage, {
-              type:   kTSTAPI_NOTIFY_TAB_CLICKED,
+              type:   Constants.kTSTAPI_NOTIFY_TAB_CLICKED,
               tab:    serializedTab,
               window: tab.apiTab.windowId
             }))
@@ -1525,7 +1525,7 @@ function onMessage(aMessage, aSender) {
         return true;
       })();
 
-    case kCOMMAND_SELECT_TAB:
+    case Constants.kCOMMAND_SELECT_TAB:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
@@ -1535,7 +1535,7 @@ function onMessage(aMessage, aSender) {
           .catch(ApiTabs.handleMissingTabError);
       })();
 
-    case kCOMMAND_SELECT_TAB_INTERNALLY:
+    case Constants.kCOMMAND_SELECT_TAB_INTERNALLY:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
@@ -1546,7 +1546,7 @@ function onMessage(aMessage, aSender) {
         }));
       })();
 
-    case kCOMMAND_SET_SUBTREE_MUTED:
+    case Constants.kCOMMAND_SET_SUBTREE_MUTED:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         log('set muted state: ', aMessage);
@@ -1570,21 +1570,21 @@ function onMessage(aMessage, aSender) {
           const add = [];
           const remove = [];
           if (aMessage.muted) {
-            add.push(kTAB_STATE_MUTED);
-            tab.classList.add(kTAB_STATE_MUTED);
+            add.push(Constants.kTAB_STATE_MUTED);
+            tab.classList.add(Constants.kTAB_STATE_MUTED);
           }
           else {
-            remove.push(kTAB_STATE_MUTED);
-            tab.classList.remove(kTAB_STATE_MUTED);
+            remove.push(Constants.kTAB_STATE_MUTED);
+            tab.classList.remove(Constants.kTAB_STATE_MUTED);
           }
 
           if (isAudible(tab) && !aMessage.muted) {
-            add.push(kTAB_STATE_SOUND_PLAYING);
-            tab.classList.add(kTAB_STATE_SOUND_PLAYING);
+            add.push(Constants.kTAB_STATE_SOUND_PLAYING);
+            tab.classList.add(Constants.kTAB_STATE_SOUND_PLAYING);
           }
           else {
-            remove.push(kTAB_STATE_SOUND_PLAYING);
-            tab.classList.remove(kTAB_STATE_SOUND_PLAYING);
+            remove.push(Constants.kTAB_STATE_SOUND_PLAYING);
+            tab.classList.remove(Constants.kTAB_STATE_SOUND_PLAYING);
           }
 
           // tabs.onUpdated is too slow, so users will be confused
@@ -1597,7 +1597,7 @@ function onMessage(aMessage, aSender) {
         }
       })();
 
-    case kCOMMAND_MOVE_TABS_BEFORE:
+    case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
         return moveTabsBefore(
@@ -1609,7 +1609,7 @@ function onMessage(aMessage, aSender) {
         ).then(aTabs => aTabs.map(aTab => aTab.id));
       })();
 
-    case kCOMMAND_MOVE_TABS_AFTER:
+    case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
         return moveTabsAfter(
@@ -1621,7 +1621,7 @@ function onMessage(aMessage, aSender) {
         ).then(aTabs => aTabs.map(aTab => aTab.id));
       })();
 
-    case kCOMMAND_ATTACH_TAB_TO:
+    case Constants.kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
         await waitUntilTabsAreCreated([
           aMessage.child,
@@ -1638,7 +1638,7 @@ function onMessage(aMessage, aSender) {
           }));
       })();
 
-    case kCOMMAND_DETACH_TAB:
+    case Constants.kCOMMAND_DETACH_TAB:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
@@ -1646,7 +1646,7 @@ function onMessage(aMessage, aSender) {
           await detachTab(tab);
       })();
 
-    case kCOMMAND_PERFORM_TABS_DRAG_DROP:
+    case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
       return (async () => {
         await waitUntilTabsAreCreated([
           aMessage.attachTo,
@@ -1661,12 +1661,12 @@ function onMessage(aMessage, aSender) {
         }));
       })();
 
-    case kCOMMAND_NOTIFY_START_TAB_SWITCH:
-      log('kCOMMAND_NOTIFY_START_TAB_SWITCH');
+    case Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH:
+      log('Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH');
       gMaybeTabSwitchingByShortcut = true;
       break;
-    case kCOMMAND_NOTIFY_END_TAB_SWITCH:
-      log('kCOMMAND_NOTIFY_END_TAB_SWITCH');
+    case Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH:
+      log('Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH');
       return (async () => {
         if (gTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
@@ -1691,7 +1691,7 @@ function onMessage(aMessage, aSender) {
           gTabSwitchedByShortcut = false;
       })();
 
-    case kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
+    case Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
       return (async () => {
         if (JSON.stringify(aMessage.permissions) == JSON.stringify(Permissions.ALL_URLS)) {
           const apiTabs = await browser.tabs.query({});
@@ -1715,26 +1715,26 @@ function onMessage(aMessage, aSender) {
 function onMessageExternal(aMessage, aSender) {
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kTSTAPI_REGISTER_SELF:
+    case Constants.kTSTAPI_REGISTER_SELF:
       return (async () => {
         if (!aMessage.listeningTypes) {
           // for backward compatibility, send all message types available on TST 2.4.16 by default.
           aMessage.listeningTypes = [
-            kTSTAPI_NOTIFY_READY,
-            kTSTAPI_NOTIFY_SHUTDOWN,
-            kTSTAPI_NOTIFY_TAB_CLICKED,
-            kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
-            kTSTAPI_NOTIFY_TAB_MOUSEUP,
-            kTSTAPI_NOTIFY_TABBAR_CLICKED,
-            kTSTAPI_NOTIFY_TABBAR_MOUSEDOWN,
-            kTSTAPI_NOTIFY_TABBAR_MOUSEUP
+            Constants.kTSTAPI_NOTIFY_READY,
+            Constants.kTSTAPI_NOTIFY_SHUTDOWN,
+            Constants.kTSTAPI_NOTIFY_TAB_CLICKED,
+            Constants.kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
+            Constants.kTSTAPI_NOTIFY_TAB_MOUSEUP,
+            Constants.kTSTAPI_NOTIFY_TABBAR_CLICKED,
+            Constants.kTSTAPI_NOTIFY_TABBAR_MOUSEDOWN,
+            Constants.kTSTAPI_NOTIFY_TABBAR_MOUSEUP
           ];
         }
         aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
         aMessage.id = aSender.id;
         gExternalListenerAddons[aSender.id] = aMessage;
         browser.runtime.sendMessage({
-          type:    kCOMMAND_BROADCAST_API_REGISTERED,
+          type:    Constants.kCOMMAND_BROADCAST_API_REGISTERED,
           sender:  aSender,
           message: aMessage
         });
@@ -1744,10 +1744,10 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_UNREGISTER_SELF:
+    case Constants.kTSTAPI_UNREGISTER_SELF:
       return (async () => {
         browser.runtime.sendMessage({
-          type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
+          type:    Constants.kCOMMAND_BROADCAST_API_UNREGISTERED,
           sender:  aSender,
           message: aMessage
         });
@@ -1757,18 +1757,18 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_PING:
+    case Constants.kTSTAPI_PING:
       return Promise.resolve(true);
 
 
-    case kTSTAPI_GET_TREE:
+    case Constants.kTSTAPI_GET_TREE:
       return (async () => {
         const tabs    = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = tabs.map(serializeTabForTSTAPI);
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_COLLAPSE_TREE:
+    case Constants.kTSTAPI_COLLAPSE_TREE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
@@ -1780,7 +1780,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_EXPAND_TREE:
+    case Constants.kTSTAPI_EXPAND_TREE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
@@ -1792,7 +1792,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_ATTACH:
+    case Constants.kTSTAPI_ATTACH:
       return (async () => {
         await waitUntilTabsAreCreated([
           aMessage.child,
@@ -1814,7 +1814,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_DETACH:
+    case Constants.kTSTAPI_DETACH:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         const tab = getTabById(aMessage.tab);
@@ -1826,37 +1826,37 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_INDENT:
-    case kTSTAPI_DEMOTE:
+    case Constants.kTSTAPI_INDENT:
+    case Constants.kTSTAPI_DEMOTE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.indent(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_OUTDENT:
-    case kTSTAPI_PROMOTE:
+    case Constants.kTSTAPI_OUTDENT:
+    case Constants.kTSTAPI_PROMOTE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.outdent(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_MOVE_UP:
+    case Constants.kTSTAPI_MOVE_UP:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.moveUp(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_MOVE_DOWN:
+    case Constants.kTSTAPI_MOVE_DOWN:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.moveDown(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case kTSTAPI_FOCUS:
+    case Constants.kTSTAPI_FOCUS:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
@@ -1867,19 +1867,19 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
       })();
 
-    case kTSTAPI_DUPLICATE:
+    case Constants.kTSTAPI_DUPLICATE:
       return (async () => {
         const tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
-        let behavior = kNEWTAB_OPEN_AS_ORPHAN;
+        let behavior = Constants.kNEWTAB_OPEN_AS_ORPHAN;
         switch (String(aMessage.as || 'sibling').toLowerCase()) {
           case 'child':
-            behavior = kNEWTAB_OPEN_AS_CHILD;
+            behavior = Constants.kNEWTAB_OPEN_AS_CHILD;
             break;
           case 'sibling':
-            behavior = kNEWTAB_OPEN_AS_SIBLING;
+            behavior = Constants.kNEWTAB_OPEN_AS_SIBLING;
             break;
           case 'nextsibling':
-            behavior = kNEWTAB_OPEN_AS_NEXT_SIBLING;
+            behavior = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
             break;
           default:
             break;
@@ -1899,20 +1899,20 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
       })();
 
-    case kTSTAPI_GROUP_TABS:
+    case Constants.kTSTAPI_GROUP_TABS:
       return (async () => {
         const tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
         const groupTab = await groupTabs(tabs, { broadcast: true });
         return groupTab.apiTab;
       })();
 
-    case kTSTAPI_GET_TREE_STRUCTURE:
+    case Constants.kTSTAPI_GET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         return Promise.resolve(getTreeStructureFromTabs(tabs));
       })();
 
-    case kTSTAPI_SET_TREE_STRUCTURE:
+    case Constants.kTSTAPI_SET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         await applyTreeStructureToTabs(tabs, aMessage.structure, {
@@ -1921,7 +1921,7 @@ function onMessageExternal(aMessage, aSender) {
         return Promise.resolve(true);
       })();
 
-    case kTSTAPI_ADD_TAB_STATE:
+    case Constants.kTSTAPI_ADD_TAB_STATE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         let states = aMessage.state || aMessage.states;
@@ -1938,7 +1938,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_REMOVE_TAB_STATE:
+    case Constants.kTSTAPI_REMOVE_TAB_STATE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         let states = aMessage.state || aMessage.states;
@@ -1955,19 +1955,19 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case kTSTAPI_SCROLL_LOCK:
+    case Constants.kTSTAPI_SCROLL_LOCK:
       gScrollLockedBy[aSender.id] = true;
       return Promise.resolve(true);
 
-    case kTSTAPI_SCROLL_UNLOCK:
+    case Constants.kTSTAPI_SCROLL_UNLOCK:
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
 
-    case kTSTAPI_BLOCK_GROUPING:
+    case Constants.kTSTAPI_BLOCK_GROUPING:
       gGroupingBlockedBy[aSender.id] = true;
       return Promise.resolve(true);
 
-    case kTSTAPI_UNBLOCK_GROUPING:
+    case Constants.kTSTAPI_UNBLOCK_GROUPING:
       delete gGroupingBlockedBy[aSender.id];
       return Promise.resolve(true);
   }

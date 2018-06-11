@@ -62,19 +62,19 @@ function isEventFiredOnTwisty(aEvent) {
   if (!tab || !hasChildTabs(tab))
     return false;
 
-  return !!aEvent.target.closest(`.${kTWISTY}`);
+  return !!aEvent.target.closest(`.${Constants.kTWISTY}`);
 }
 
 function isEventFiredOnSoundButton(aEvent) {
-  return !!aEvent.target.closest(`.${kSOUND_BUTTON}`);
+  return !!aEvent.target.closest(`.${Constants.kSOUND_BUTTON}`);
 }
 
 function isEventFiredOnClosebox(aEvent) {
-  return !!aEvent.target.closest(`.${kCLOSEBOX}`);
+  return !!aEvent.target.closest(`.${Constants.kCLOSEBOX}`);
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
-  return !!aEvent.target.closest(`.${kNEWTAB_BUTTON}`);
+  return !!aEvent.target.closest(`.${Constants.kNEWTAB_BUTTON}`);
 }
 
 function isEventFiredOnMenuOrPanel(aEvent) {
@@ -140,7 +140,7 @@ function getTabFromCoordinates(aEvent) {
 
 function onResize(aEvent) {
   reserveToUpdateTabbarLayout({
-    reason: kTABBAR_UPDATE_REASON_RESIZE
+    reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
   });
   reserveToUpdateIndent();
 }
@@ -160,14 +160,14 @@ function onContextMenu(aEvent) {
 
 function onFocus(aEvent) {
   browser.runtime.sendMessage({
-    type:     kNOTIFY_SIDEBAR_FOCUS,
+    type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
     windowId: gTargetWindow
   });
 }
 
 function onBlur(aEvent) {
   browser.runtime.sendMessage({
-    type:     kNOTIFY_SIDEBAR_BLUR,
+    type:     Constants.kNOTIFY_SIDEBAR_BLUR,
     windowId: gTargetWindow
   });
 }
@@ -176,7 +176,7 @@ function onMouseMove(aEvent) {
   const tab = getTabFromEvent(aEvent);
   if (tab) {
     sendTSTAPIMessage({
-      type:     kTSTAPI_NOTIFY_TAB_MOUSEMOVE,
+      type:     Constants.kTSTAPI_NOTIFY_TAB_MOUSEMOVE,
       tab:      serializeTabForTSTAPI(tab),
       window:   gTargetWindow,
       ctrlKey:  aEvent.ctrlKey,
@@ -192,7 +192,7 @@ function onMouseOver(aEvent) {
   const tab = getTabFromEvent(aEvent);
   if (tab && onMouseOver.lastTarget != tab.id) {
     sendTSTAPIMessage({
-      type:     kTSTAPI_NOTIFY_TAB_MOUSEOVER,
+      type:     Constants.kTSTAPI_NOTIFY_TAB_MOUSEOVER,
       tab:      serializeTabForTSTAPI(tab),
       window:   gTargetWindow,
       ctrlKey:  aEvent.ctrlKey,
@@ -209,7 +209,7 @@ function onMouseOut(aEvent) {
   const tab = getTabFromEvent(aEvent);
   if (tab && onMouseOut.lastTarget != tab.id) {
     sendTSTAPIMessage({
-      type:     kTSTAPI_NOTIFY_TAB_MOUSEOUT,
+      type:     Constants.kTSTAPI_NOTIFY_TAB_MOUSEOUT,
       tab:      serializeTabForTSTAPI(tab),
       window:   gTargetWindow,
       ctrlKey:  aEvent.ctrlKey,
@@ -282,7 +282,7 @@ function onMouseDown(aEvent) {
        !isEventFiredOnClosebox(aEvent)) ||
       aEvent.button != 0)
     mousedown.promisedMousedownNotified = browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
-      type:     kNOTIFY_TAB_MOUSEDOWN,
+      type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
       windowId: gTargetWindow
     }));
 
@@ -304,7 +304,7 @@ function onMouseDown(aEvent) {
       return;
     }
 
-    if (getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_DRAGREADY).length == 0)
+    if (getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_DRAGREADY).length == 0)
       return;
 
     if (configs.logOnMouseEvent)
@@ -320,7 +320,7 @@ function onMouseDown(aEvent) {
 
 function notifyTSTAPIDragReady(aTab, aIsClosebox) {
   sendTSTAPIMessage({
-    type:   kTSTAPI_NOTIFY_TAB_DRAGREADY,
+    type:   Constants.kTSTAPI_NOTIFY_TAB_DRAGREADY,
     tab:    serializeTabForTSTAPI(aTab),
     window: gTargetWindow,
     startOnClosebox: aIsClosebox
@@ -376,7 +376,7 @@ async function onMouseUp(aEvent) {
   let promisedCanceled = Promise.resolve(false);
   if (serializedTab && lastMousedown) {
     const results = sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-      type:    kTSTAPI_NOTIFY_TAB_MOUSEUP,
+      type:    Constants.kTSTAPI_NOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
       window:  gTargetWindow
     }));
@@ -391,7 +391,7 @@ async function onMouseUp(aEvent) {
     document.releaseCapture();
 
     sendTSTAPIMessage({
-      type:    kTSTAPI_NOTIFY_TAB_DRAGEND,
+      type:    Constants.kTSTAPI_NOTIFY_TAB_DRAGEND,
       tab:     serializedTab,
       window:  gTargetWindow,
       clientX: aEvent.clientX,
@@ -403,7 +403,7 @@ async function onMouseUp(aEvent) {
   }
   else if (gReadyToCaptureMouseEvents) {
     sendTSTAPIMessage({
-      type:    kTSTAPI_NOTIFY_TAB_DRAGCANCEL,
+      type:    Constants.kTSTAPI_NOTIFY_TAB_DRAGCANCEL,
       tab:     serializedTab,
       window:  gTargetWindow,
       clientX: aEvent.clientX,
@@ -458,11 +458,11 @@ async function onMouseUp(aEvent) {
   if (configs.logOnMouseEvent)
     log('notify as a blank area click to other addons');
   let results = await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-    type:   kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
+    type:   Constants.kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
     window: gTargetWindow,
   }));
   results = results.concat(await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-    type:   kTSTAPI_NOTIFY_TABBAR_CLICKED,
+    type:   Constants.kTSTAPI_NOTIFY_TABBAR_CLICKED,
     window: gTargetWindow,
   })));
   if (results.some(aResult => aResult.result))// canceled
@@ -522,7 +522,7 @@ function onClick(aEvent) {
     if (configs.logOnMouseEvent)
       log('clicked on sound button');
     browser.runtime.sendMessage({
-      type:     kCOMMAND_SET_SUBTREE_MUTED,
+      type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
       tab:      tab.id,
       muted:    maybeSoundPlaying(tab)
@@ -554,7 +554,7 @@ function handleNewTabAction(aEvent, aOptions = {}) {
     log('handleNewTabAction');
 
   if (!configs.autoAttach && !('action' in aOptions))
-    aOptions.action = kNEWTAB_DO_NOTHING;
+    aOptions.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
     baseTab:      getCurrentTab(gTargetWindow),
@@ -597,7 +597,7 @@ function onTransisionEnd(aEvent) {
     return;
   //log('transitionend ', aEvent);
   reserveToUpdateTabbarLayout({
-    reason: kTABBAR_UPDATE_REASON_ANIMATION_END
+    reason: Constants.kTABBAR_UPDATE_REASON_ANIMATION_END
   });
 }
 
@@ -606,16 +606,16 @@ function onNewTabActionSelect(aItem, aEvent) {
     let action;
     switch (aItem.dataset.value) {
       default:
-        action = kNEWTAB_OPEN_AS_ORPHAN;
+        action = Constants.kNEWTAB_OPEN_AS_ORPHAN;
         break;
       case 'child':
-        action = kNEWTAB_OPEN_AS_CHILD;
+        action = Constants.kNEWTAB_OPEN_AS_CHILD;
         break;
       case 'sibling':
-        action = kNEWTAB_OPEN_AS_SIBLING;
+        action = Constants.kNEWTAB_OPEN_AS_SIBLING;
         break;
       case 'next-sibling':
-        action = kNEWTAB_OPEN_AS_NEXT_SIBLING;
+        action = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
         break;
     }
     handleNewTabAction(aEvent, { action });
@@ -652,7 +652,7 @@ async function onWheel(aEvent) {
 
   var tab = getTabFromEvent(aEvent);
   var results = await sendTSTAPIMessage({
-    type:      kTSTAPI_NOTIFY_SCROLLED,
+    type:      Constants.kTSTAPI_NOTIFY_SCROLLED,
     tab:       tab && serializeTabForTSTAPI(tab),
     tabs:      getTabs().map(serializeTabForTSTAPI),
     window:    gTargetWindow,
@@ -689,7 +689,7 @@ function reserveToSaveScrollPosition() {
     delete reserveToSaveScrollPosition.reserved;
     browser.sessions.setWindowValue(
       gTargetWindow,
-      kWINDOW_STATE_SCROLL_POSITION,
+      Constants.kWINDOW_STATE_SCROLL_POSITION,
       gTabBar.scrollTop
     );
   }, 150);
@@ -720,49 +720,49 @@ function onTabBuilt(aTab, aInfo) {
   var label = getTabLabel(aTab);
 
   var twisty = document.createElement('span');
-  twisty.classList.add(kTWISTY);
+  twisty.classList.add(Constants.kTWISTY);
   twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
   aTab.insertBefore(twisty, label);
 
   var favicon = document.createElement('span');
-  favicon.classList.add(kFAVICON);
+  favicon.classList.add(Constants.kFAVICON);
   var faviconImage = favicon.appendChild(document.createElement('img'));
-  faviconImage.classList.add(kFAVICON_IMAGE);
+  faviconImage.classList.add(Constants.kFAVICON_IMAGE);
   var defaultIcon = favicon.appendChild(document.createElement('span'));
-  defaultIcon.classList.add(kFAVICON_BUILTIN);
-  defaultIcon.classList.add(kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
+  defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
+  defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
   var throbber = favicon.appendChild(document.createElement('span'));
-  throbber.classList.add(kTHROBBER);
+  throbber.classList.add(Constants.kTHROBBER);
   aTab.insertBefore(favicon, label);
 
   var counter = document.createElement('span');
-  counter.classList.add(kCOUNTER);
+  counter.classList.add(Constants.kCOUNTER);
   aTab.appendChild(counter);
 
   var soundButton = document.createElement('button');
-  soundButton.classList.add(kSOUND_BUTTON);
+  soundButton.classList.add(Constants.kSOUND_BUTTON);
   aTab.appendChild(soundButton);
 
   var closebox = document.createElement('span');
-  closebox.classList.add(kCLOSEBOX);
+  closebox.classList.add(Constants.kCLOSEBOX);
   closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
   closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
   aTab.appendChild(closebox);
 
   var burster = document.createElement('span');
-  burster.classList.add(kBURSTER);
+  burster.classList.add(Constants.kBURSTER);
   aTab.appendChild(burster);
 
   var activeMarker = document.createElement('span');
-  activeMarker.classList.add(kACTIVE_MARKER);
+  activeMarker.classList.add(Constants.kACTIVE_MARKER);
   aTab.appendChild(activeMarker);
 
   var identityMarker = document.createElement('span');
-  identityMarker.classList.add(kCONTEXTUAL_IDENTITY_MARKER);
+  identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
   aTab.appendChild(identityMarker);
 
   var extraItemsContainerBehind = document.createElement('span');
-  extraItemsContainerBehind.classList.add(kEXTRA_ITEMS_CONTAINER);
+  extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
   extraItemsContainerBehind.classList.add('behind');
   aTab.appendChild(extraItemsContainerBehind);
 
@@ -783,22 +783,22 @@ function onTabFaviconUpdated(aTab, aURL) {
     tab:   aTab.apiTab,
     url:   aURL
   });
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabLabelUpdated(aTab) {
   reserveToUpdateTabTooltip(aTab);
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onParentTabUpdated(aTab) {
   updateTabSoundButtonTooltip(aTab);
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function updateTabSoundButtonTooltip(aTab) {
@@ -809,7 +809,7 @@ function updateTabSoundButtonTooltip(aTab) {
     tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 function onTabFocused(aTab, aInfo = {}) {
@@ -823,7 +823,7 @@ function onTabOpening(aTab, aInfo = {}) {
 
 function onTabOpened(aTab, aInfo = {}) {
   if (configs.animation) {
-    aTab.classList.add(kTAB_STATE_ANIMATION_READY);
+    aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
     nextFrame().then(() => {
       var parent = getParentTab(aTab);
       if (parent && isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
@@ -840,7 +840,7 @@ function onTabOpened(aTab, aInfo = {}) {
     });
   }
   else {
-    aTab.classList.add(kTAB_STATE_ANIMATION_READY);
+    aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
     if (isActive(aTab))
       scrollToNewTab(aTab);
     else
@@ -849,7 +849,7 @@ function onTabOpened(aTab, aInfo = {}) {
 
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
-    reason:  kTABBAR_UPDATE_REASON_TAB_OPEN,
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
   });
   reserveToUpdateCachedTabbar();
@@ -919,7 +919,7 @@ function onTabClosed(aTab, aCloseInfo) {
   tabContextMenu.close();
 
   var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  if (closeParentBehavior != kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       isSubtreeCollapsed(aTab))
     collapseExpandSubtree(aTab, {
       collapsed: false
@@ -932,7 +932,7 @@ function onTabClosed(aTab, aCloseInfo) {
   });
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
-    reason:  kTABBAR_UPDATE_REASON_TAB_CLOSE,
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
     timeout: configs.collapseDuration
   });
   reserveToUpdateLoadingState();
@@ -959,7 +959,7 @@ async function onTabMoving(aTab) {
   if (configs.animation &&
       !isPinned(aTab) &&
       !isOpening(aTab)) {
-    aTab.classList.add(kTAB_STATE_MOVING);
+    aTab.classList.add(Constants.kTAB_STATE_MOVING);
     await nextFrame();
     if (!ensureLivingTab(aTab)) // it was removed while waiting
       return;
@@ -977,13 +977,13 @@ async function onTabMoving(aTab) {
         collapsed: false
       });
     await wait(configs.collapseDuration);
-    aTab.classList.remove(kTAB_STATE_MOVING);
+    aTab.classList.remove(Constants.kTAB_STATE_MOVING);
   }
 }
 
 function onTabMoved(aTab) {
   reserveToUpdateTabbarLayout({
-    reason:  kTABBAR_UPDATE_REASON_TAB_MOVE,
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
     timeout: configs.collapseDuration
   });
   reserveToUpdateTabTooltip(getParentTab(aTab));
@@ -1024,7 +1024,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   if (!ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
   if (aTab.onEndCollapseExpandAnimation) {
     clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
@@ -1032,12 +1032,12 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   }
 
   if (aTab.apiTab.status == 'loading')
-    aTab.classList.add(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   if (aInfo.anchor && !isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
 
-  var reason = toBeCollapsed ? kTABBAR_UPDATE_REASON_COLLAPSE : kTABBAR_UPDATE_REASON_EXPAND ;
+  var reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
 
   if (!configs.animation ||
       aInfo.justNow ||
@@ -1059,11 +1059,11 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   };
 
   if (toBeCollapsed) {
-    aTab.classList.add(kTAB_STATE_COLLAPSING);
+    aTab.classList.add(Constants.kTAB_STATE_COLLAPSING);
   }
   else {
-    aTab.classList.add(kTAB_STATE_EXPANDING);
-    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    aTab.classList.add(Constants.kTAB_STATE_EXPANDING);
+    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
 
   reserveToUpdateTabbarLayout({ reason });
@@ -1083,16 +1083,16 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
 
     aTab.onEndCollapseExpandAnimation = (() => {
       //log('=> finish animation for ', dumpTab(aTab));
-      aTab.classList.remove(kTAB_STATE_COLLAPSING);
-      aTab.classList.remove(kTAB_STATE_EXPANDING);
+      aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
+      aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
 
       // The collapsed state of the tab can be changed by different trigger,
       // so we must respect the actual status of the tab, instead of the
       // "expected status" given via arguments.
-      if (aTab.classList.contains(kTAB_STATE_COLLAPSED))
-        aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+      if (aTab.classList.contains(Constants.kTAB_STATE_COLLAPSED))
+        aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
       else
-        aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+        aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
 
       onEndCollapseExpandCompletely(aTab, {
         collapsed: toBeCollapsed,
@@ -1131,7 +1131,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 
   // this is very required for no animation case!
   reserveToUpdateTabbarLayout({ reason: aOptions.reason });
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
 function onTabCollapsedStateChanged(aTab, aInfo = {}) {
@@ -1140,7 +1140,7 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
     return;
 
   reserveToUpdateLoadingState();
-  markWindowCacheDirty(kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
   if (configs.animation &&
       !aInfo.justNow &&
@@ -1149,12 +1149,12 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
 
   //log('=> skip animation');
   if (toBeCollapsed)
-    aTab.classList.add(kTAB_STATE_COLLAPSED_DONE);
+    aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
   else
-    aTab.classList.remove(kTAB_STATE_COLLAPSED_DONE);
+    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
 
 
-  var reason = toBeCollapsed ? kTABBAR_UPDATE_REASON_COLLAPSE : kTABBAR_UPDATE_REASON_EXPAND ;
+  var reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
   onEndCollapseExpandCompletely(aTab, {
     collapsed: toBeCollapsed,
     reason
@@ -1248,7 +1248,7 @@ async function onTabAttached(aTab, aInfo = {}) {
   /*
     We must not scroll to the tab here, because the tab can be moved
     by the background page later. Instead we wait until the tab is
-    successfully moved (then kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
+    successfully moved (then Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
   */
 
   await wait(0);
@@ -1313,9 +1313,9 @@ function onTabHidden(aTab) {
 
 function onTabStateChanged(aTab) {
   if (aTab.apiTab.status == 'loading')
-    aTab.classList.add(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
-    aTab.classList.remove(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    aTab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   reserveToUpdateLoadingState();
 }
@@ -1357,29 +1357,29 @@ function onMessage(aMessage, aSender, aRespond) {
 
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
-    case kCOMMAND_PING_TO_SIDEBAR: {
+    case Constants.kCOMMAND_PING_TO_SIDEBAR: {
       if (aMessage.windowId == gTargetWindow)
         return Promise.resolve(true);
     }; break;
 
-    case kCOMMAND_PUSH_TREE_STRUCTURE:
+    case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
       if (aMessage.windowId == gTargetWindow)
         applyTreeStructureToTabs(getAllTabs(gTargetWindow), aMessage.structure);
       break;
 
-    case kCOMMAND_NOTIFY_TAB_RESTORING:
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
       gRestoringTabCount++;
       break;
 
-    case kCOMMAND_NOTIFY_TAB_RESTORED:
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORED:
       gRestoringTabCount--;
       break;
 
-    case kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
       onTabFaviconUpdated(getTabById(aMessage.tab), aMessage.favIconUrl);
       break;
 
-    case kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
+    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         let tab = getTabById(aMessage.tab);
@@ -1397,7 +1397,7 @@ function onMessage(aMessage, aSender, aRespond) {
       })();
     }; break;
 
-    case kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
+    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
         await waitUntilTabsAreCreated(aMessage.tab);
         let tab = getTabById(aMessage.tab);
@@ -1420,7 +1420,7 @@ function onMessage(aMessage, aSender, aRespond) {
       })();
     }; break;
 
-    case kCOMMAND_MOVE_TABS_BEFORE:
+    case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
         return moveTabsBefore(
@@ -1430,7 +1430,7 @@ function onMessage(aMessage, aSender, aRespond) {
         ).then(aTabs => aTabs.map(aTab => aTab.id));
       })();
 
-    case kCOMMAND_MOVE_TABS_AFTER:
+    case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
         return moveTabsAfter(
@@ -1440,13 +1440,13 @@ function onMessage(aMessage, aSender, aRespond) {
         ).then(aTabs => aTabs.map(aTab => aTab.id));
       })();
 
-    case kCOMMAND_REMOVE_TABS_INTERNALLY:
+    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs);
         return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
       })();
 
-    case kCOMMAND_ATTACH_TAB_TO: {
+    case Constants.kCOMMAND_ATTACH_TAB_TO: {
       if (aMessage.windowId == gTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
@@ -1475,7 +1475,7 @@ function onMessage(aMessage, aSender, aRespond) {
       }
     }; break;
 
-    case kCOMMAND_TAB_ATTACHED_COMPLETELY:
+    case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
       return (async () => {
         await waitUntilTabsAreCreated([
           aMessage.tab,
@@ -1486,7 +1486,7 @@ function onMessage(aMessage, aSender, aRespond) {
           scrollToNewTab(tab);
       })();
 
-    case kCOMMAND_DETACH_TAB: {
+    case Constants.kCOMMAND_DETACH_TAB: {
       if (aMessage.windowId == gTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
@@ -1503,17 +1503,17 @@ function onMessage(aMessage, aSender, aRespond) {
       }
     }; break;
 
-    case kCOMMAND_BLOCK_USER_OPERATIONS: {
+    case Constants.kCOMMAND_BLOCK_USER_OPERATIONS: {
       if (aMessage.windowId == gTargetWindow)
         blockUserOperationsIn(gTargetWindow, aMessage);
     }; break;
 
-    case kCOMMAND_UNBLOCK_USER_OPERATIONS: {
+    case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS: {
       if (aMessage.windowId == gTargetWindow)
         unblockUserOperationsIn(gTargetWindow, aMessage);
     }; break;
 
-    case kCOMMAND_BROADCAST_TAB_STATE: {
+    case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
       if (!aMessage.tabs.length)
         break;
       return (async () => {
@@ -1531,9 +1531,9 @@ function onMessage(aMessage, aSender, aRespond) {
             continue;
           add.forEach(aState => tab.classList.add(aState));
           remove.forEach(aState => tab.classList.remove(aState));
-          if (modified.indexOf(kTAB_STATE_AUDIBLE) > -1 ||
-            modified.indexOf(kTAB_STATE_SOUND_PLAYING) > -1 ||
-            modified.indexOf(kTAB_STATE_MUTED) > -1) {
+          if (modified.indexOf(Constants.kTAB_STATE_AUDIBLE) > -1 ||
+            modified.indexOf(Constants.kTAB_STATE_SOUND_PLAYING) > -1 ||
+            modified.indexOf(Constants.kTAB_STATE_MUTED) > -1) {
             updateTabSoundButtonTooltip(tab);
             if (aMessage.bubbles)
               updateParentTab(getParentTab(tab));
@@ -1542,34 +1542,34 @@ function onMessage(aMessage, aSender, aRespond) {
       })();
     }; break;
 
-    case kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
+    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
       if (aMessage.windowId == gTargetWindow)
         return confirmToCloseTabs(aMessage.count);
     }; break;
 
-    case kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
+    case Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
       gCurrentDragData = aMessage.dragData || null;
       break;
 
-    case kCOMMAND_BROADCAST_API_REGISTERED:
+    case Constants.kCOMMAND_BROADCAST_API_REGISTERED:
       gExternalListenerAddons[aMessage.sender.id] = aMessage.message;
       if (aMessage.message.style)
         installStyleForAddon(aMessage.sender.id, aMessage.message.style);
       updateSpecialEventListenersForAPIListeners();
       break;
 
-    case kCOMMAND_BROADCAST_API_UNREGISTERED:
+    case Constants.kCOMMAND_BROADCAST_API_UNREGISTERED:
       uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
       delete gExternalListenerAddons[aMessage.sender.id];
       updateSpecialEventListenersForAPIListeners();
       break;
 
-    case kCOMMAND_SHOW_CONTAINER_SELECTOR:
+    case Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR:
       Commands.showContainerSelector();
       break;
 
-    case kCOMMAND_SCROLL_TABBAR:
+    case Constants.kCOMMAND_SCROLL_TABBAR:
       if (aMessage.windowId != gTargetWindow)
         break;
       switch (String(aMessage.by).toLowerCase()) {
@@ -1607,15 +1607,15 @@ function onMessage(aMessage, aSender, aRespond) {
 
 function onMessageExternal(aMessage, aSender) {
   switch (aMessage.type) {
-    case kTSTAPI_SCROLL_LOCK:
+    case Constants.kTSTAPI_SCROLL_LOCK:
       gScrollLockedBy[aSender.id] = true;
       return Promise.resolve(true);
 
-    case kTSTAPI_SCROLL_UNLOCK:
+    case Constants.kTSTAPI_SCROLL_UNLOCK:
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
 
-    case kTSTAPI_SCROLL:
+    case Constants.kTSTAPI_SCROLL:
       return (async () => {
         let params = {};
         if ('tab' in aMessage) {
@@ -1666,7 +1666,7 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'sidebarPosition':
-      if (configs.sidebarPosition == kTABBAR_POSITION_RIGHT) {
+      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) {
         rootClasses.add('right');
         rootClasses.remove('left');
         gIndentProp = 'margin-right';
@@ -1680,7 +1680,7 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'sidebarDirection':
-      if (configs.sidebarDirection == kTABBAR_DIRECTION_RTL) {
+      if (configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL) {
         rootClasses.add('rtl');
         rootClasses.remove('ltr');
       }
@@ -1692,9 +1692,9 @@ function onConfigChange(aChangedKey) {
 
     case 'sidebarScrollbarPosition': {
       let position = configs.sidebarScrollbarPosition;
-      if (position == kTABBAR_SCROLLBAR_POSITION_AUTO)
+      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_AUTO)
         position = configs.sidebarPosition;
-      if (position == kTABBAR_SCROLLBAR_POSITION_RIGHT) {
+      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_RIGHT) {
         rootClasses.add('right-scrollbar');
         rootClasses.remove('left-scrollbar');
       }
@@ -1728,21 +1728,21 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'scrollbarMode':
-      rootClasses.remove(kTABBAR_STATE_NARROW_SCROLLBAR);
-      rootClasses.remove(kTABBAR_STATE_NO_SCROLLBAR);
-      rootClasses.remove(kTABBAR_STATE_OVERLAY_SCROLLBAR);
+      rootClasses.remove(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
+      rootClasses.remove(Constants.kTABBAR_STATE_NO_SCROLLBAR);
+      rootClasses.remove(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
       switch (configs.scrollbarMode) {
         default:
-        case kTABBAR_SCROLLBAR_MODE_DEFAULT:
+        case Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT:
           break;
-        case kTABBAR_SCROLLBAR_MODE_NARROW:
-          rootClasses.add(kTABBAR_STATE_NARROW_SCROLLBAR);
+        case Constants.kTABBAR_SCROLLBAR_MODE_NARROW:
+          rootClasses.add(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
           break;
-        case kTABBAR_SCROLLBAR_MODE_HIDE:
-          rootClasses.add(kTABBAR_STATE_NO_SCROLLBAR);
+        case Constants.kTABBAR_SCROLLBAR_MODE_HIDE:
+          rootClasses.add(Constants.kTABBAR_STATE_NO_SCROLLBAR);
           break;
-        case kTABBAR_SCROLLBAR_MODE_OVERLAY:
-          rootClasses.add(kTABBAR_STATE_OVERLAY_SCROLLBAR);
+        case Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY:
+          rootClasses.add(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
           break;
       }
       break;
@@ -1765,16 +1765,16 @@ function onConfigChange(aChangedKey) {
 
     case 'showContextualIdentitiesSelector':
       if (configs[aChangedKey])
-        rootClasses.add(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+        rootClasses.add(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       else
-        rootClasses.remove(kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+        rootClasses.remove(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       break;
 
     case 'showNewTabActionSelector':
       if (configs[aChangedKey])
-        rootClasses.add(kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+        rootClasses.add(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
       else
-        rootClasses.remove(kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+        rootClasses.remove(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
       break;
 
     case 'useCachedTree':

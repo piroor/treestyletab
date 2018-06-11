@@ -72,7 +72,7 @@ function migrateLegacyConfigs() {
 
         // behavior around closed tab
         migrateLegacyConfig('closeParentBehavior', values['extensions.treestyletab.closeParentBehavior']);
-        migrateLegacyConfig('promoteFirstChildForClosedRoot', values['extensions.treestyletab.closeRootBehavior'] == kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD);
+        migrateLegacyConfig('promoteFirstChildForClosedRoot', values['extensions.treestyletab.closeRootBehavior'] == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD);
         migrateLegacyConfig('moveTabsToBottomWhenDetachedFromClosedParent', values['extensions.treestyletab.closeParentBehavior.moveDetachedTabsToBottom']);
         migrateLegacyConfig('promoteAllChildrenWhenClosedParentIsLastChild', values['extensions.treestyletab.closeParentBehavior.promoteAllChildrenWhenParentIsLastChild']);
 
@@ -86,7 +86,7 @@ function migrateLegacyConfigs() {
         migrateLegacyConfig('collapseExpandSubtreeByDblClick', values['extensions.treestyletab.collapseExpandSubtree.dblclick']);
 
       case 3:
-        migrateLegacyConfig('scrollbarMode', values['extensions.treestyletab.tabbar.narrowScrollbar'] ? kTABBAR_SCROLLBAR_MODE_NARROW : kTABBAR_SCROLLBAR_MODE_DEFAULT);
+        migrateLegacyConfig('scrollbarMode', values['extensions.treestyletab.tabbar.narrowScrollbar'] ? Constants.kTABBAR_SCROLLBAR_MODE_NARROW : Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT);
         migrateLegacyConfig('narrowScrollbarSize', values['extensions.treestyletab.tabbar.narrowScrollbar.width']);
 
         // case 4:
@@ -101,7 +101,7 @@ function migrateLegacyConfigs() {
       notify({
         title:   browser.i18n.getMessage('migration_configs_notification_title'),
         message: browser.i18n.getMessage('migration_configs_notification_message'),
-        icon:    kNOTIFICATION_DEFAULT_ICON,
+        icon:    Constants.kNOTIFICATION_DEFAULT_ICON,
         timeout: -1
       });
 
@@ -111,7 +111,7 @@ function migrateLegacyConfigs() {
     notify({
       title:   browser.i18n.getMessage('migration_configsFailed_notification_title'),
       message: `${browser.i18n.getMessage('migration_configsFailed_notification_message')}\n${String(e)}`,
-      icon:    kNOTIFICATION_DEFAULT_ICON,
+      icon:    Constants.kNOTIFICATION_DEFAULT_ICON,
       timeout: -1
     });
   }
@@ -248,7 +248,7 @@ async function migrateLegacyTreeStructure() {
     notify({
       title:   browser.i18n.getMessage('migration_tree_notification_title'),
       message: messages.join('\n'),
-      icon:    kNOTIFICATION_DEFAULT_ICON,
+      icon:    Constants.kNOTIFICATION_DEFAULT_ICON,
       timeout: -1
     });
 
@@ -258,7 +258,7 @@ async function migrateLegacyTreeStructure() {
     notify({
       title:   browser.i18n.getMessage('migration_treeFailed_notification_title'),
       message: `${browser.i18n.getMessage('migration_treeFailed_notification_message')}\n${String(e)}`,
-      icon:    kNOTIFICATION_DEFAULT_ICON,
+      icon:    Constants.kNOTIFICATION_DEFAULT_ICON,
       timeout: -1
     });
   }
@@ -272,7 +272,7 @@ async function notifyNewFeatures() {
   configs.notifiedFeaturesVersion = kFEATURES_VERSION;
 
   browser.tabs.create({
-    url:    kSHORTHAND_URIS.startup,
+    url:    Constants.kSHORTHAND_URIS.startup,
     active: true
   });
 }

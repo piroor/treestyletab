@@ -18,7 +18,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   logForCache('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
   var [actualSignature, cache] = await Promise.all([
     getWindowSignature(apiTabs),
-    getWindowCache(owner, kWINDOW_STATE_CACHED_TABS)
+    getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
   var cachedSignature = cache && cache.signature;
   logForCache(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
@@ -50,7 +50,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
-      cache.version != kSIDEBAR_CONTENTS_VERSION ||
+      cache.version != Constants.kSIDEBAR_CONTENTS_VERSION ||
       !signatureMatched) {
     logForCache(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
@@ -89,7 +89,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
 
 function restoreTabsFromCache(aWindowId, aParams = {}) {
   if (!aParams.cache ||
-      aParams.cache.version != kBACKGROUND_CONTENTS_VERSION)
+      aParams.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
 
   return restoreTabsFromCacheInternal({
@@ -119,10 +119,10 @@ function updateWindowCache(aOwner, aKey, aValue) {
 
 function clearWindowCache(aOwner) {
   logForCache('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_TABS);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-  updateWindowCache(aOwner, kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+  updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_TABS);
+  updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR);
+  updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
 function markWindowCacheDirtyFromTab(aTab, akey) {
@@ -205,8 +205,8 @@ async function cacheTree(aWindowId) {
   if (!container.lastWindowCacheOwner)
     return;
   logForCache('cacheTree for window ', aWindowId, { stack: new Error().stack });
-  updateWindowCache(container.lastWindowCacheOwner, kWINDOW_STATE_CACHED_TABS, {
-    version: kBACKGROUND_CONTENTS_VERSION,
+  updateWindowCache(container.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
+    version: Constants.kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,
     pinnedTabsCount: getPinnedTabs(container).length,
     signature

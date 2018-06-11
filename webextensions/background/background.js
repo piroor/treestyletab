@@ -112,7 +112,7 @@ async function init() {
 
   // notify that the master process is ready.
   browser.runtime.sendMessage({
-    type: kCOMMAND_PING_TO_SIDEBAR
+    type: Constants.kCOMMAND_PING_TO_SIDEBAR
   });
 
   notifyNewFeatures();
@@ -130,7 +130,7 @@ function waitUntilCompletelyRestored() {
     var onNewTabRestored = async (aNewApiTab) => {
       clearTimeout(timeout);
       log('new restored tab is detected.');
-      var uniqueId = await browser.sessions.getTabValue(aNewApiTab.id, kPERSISTENT_ID);
+      var uniqueId = await browser.sessions.getTabValue(aNewApiTab.id, Constants.kPERSISTENT_ID);
       //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
     };
@@ -147,14 +147,14 @@ function waitUntilCompletelyRestored() {
 
 function destroy() {
   browser.runtime.sendMessage(browser.runtime.id, {
-    type:  kTSTAPI_UNREGISTER_SELF
+    type:  Constants.kTSTAPI_UNREGISTER_SELF
   });
 
   // This API doesn't work as expected because it is not notified to
   // other addons actually when browser.runtime.sendMessage() is called
   // on pagehide or something unloading event.
   sendTSTAPIMessage({
-    type: kTSTAPI_NOTIFY_SHUTDOWN
+    type: Constants.kTSTAPI_NOTIFY_SHUTDOWN
   });
 
   browser.runtime.onMessage.removeListener(onMessage);
@@ -237,7 +237,7 @@ async function tryStartHandleAccelKeyOnTab(aTab) {
 */
 async function tryInitGroupTab(aTab) {
   if (!isGroupTab(aTab) &&
-      aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0)
+      aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0)
     return;
   var scriptOptions = {
     runAt:           'document_start',
@@ -257,21 +257,21 @@ async function tryInitGroupTab(aTab) {
 }
 
 function startWatchSidebarOpenState() {
-  var matcher = new RegExp(`^${kCOMMAND_REQUEST_CONNECT_PREFIX}`);
+  var matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}`);
   browser.runtime.onConnect.addListener(aPort => {
     if (!matcher.test(aPort.name))
       return;
     const windowId = parseInt(aPort.name.replace(matcher, ''));
     gSidebarOpenState.set(windowId, true);
     sendTSTAPIMessage({
-      type:   kTSTAPI_NOTIFY_SIDEBAR_SHOW,
+      type:   Constants.kTSTAPI_NOTIFY_SIDEBAR_SHOW,
       window: windowId
     });
     aPort.onDisconnect.addListener(aMessage => {
       gSidebarOpenState.delete(windowId);
       gSidebarFocusState.delete(windowId);
       sendTSTAPIMessage({
-        type:   kTSTAPI_NOTIFY_SIDEBAR_HIDE,
+        type:   Constants.kTSTAPI_NOTIFY_SIDEBAR_HIDE,
         window: windowId
       });
     });
@@ -297,7 +297,7 @@ async function readyForExternalAddons() {
     notifiedAddons[aId] = true;
     try {
       let success = await browser.runtime.sendMessage(aId, {
-        type: kTSTAPI_NOTIFY_READY
+        type: Constants.kTSTAPI_NOTIFY_READY
       });
       if (success)
         respondedAddons.push(aId);
@@ -333,7 +333,7 @@ async function saveTreeStructure(aWindowId) {
   var structure = getTreeStructureFromTabs(getAllTabs(aWindowId));
   browser.sessions.setWindowValue(
     aWindowId,
-    kWINDOW_STATE_TREE_STRUCTURE,
+    Constants.kWINDOW_STATE_TREE_STRUCTURE,
     structure
   );
 }
@@ -352,7 +352,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
     }
     var tabs = getAllTabs(aWindow.id);
     var [structure, uniqueIds] = await Promise.all([
-      browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_TREE_STRUCTURE),
+      browser.sessions.getWindowValue(aWindow.id, Constants.kWINDOW_STATE_TREE_STRUCTURE),
       getUniqueIds(tabs.map(aTab => aTab.apiTab))
     ]);
     MetricsData.add('loadTreeStructure: read stored data');
@@ -423,7 +423,7 @@ reserveToAttachTabFromRestoredInfo.promisedDone = null;
 async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   log('attachTabFromRestoredInfo ', dumpTab(aTab), aTab.apiTab);
   browser.runtime.sendMessage({
-    type:   kCOMMAND_NOTIFY_TAB_RESTORING,
+    type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
     tab:    aTab.apiTab.id,
     window: aTab.apiTab.windowId
   });
@@ -431,11 +431,11 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   var container = getTabsContainer(aTab);
   var insertBefore, insertAfter, ancestors, children, collapsed;
   [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_BEFORE),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_INSERT_AFTER),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_ANCESTORS),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_CHILDREN),
-    browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_SUBTREE_COLLAPSED)
+    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
+    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
+    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
+    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
+    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED)
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
@@ -481,7 +481,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
         dontExpand:  !active,
         forceExpand: active,
         broadcast:   true,
-        insertAt:    kINSERT_NEAREST
+        insertAt:    Constants.kINSERT_NEAREST
       });
       if (!aOptions.bulk)
         await done;
@@ -514,7 +514,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       await attachTabTo(child, aTab, {
         dontExpand:  !isActive(child),
         forceExpand: active,
-        insertAt:    kINSERT_NEAREST,
+        insertAt:    Constants.kINSERT_NEAREST,
         broadcast:   true
       });
     }
@@ -527,7 +527,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     });
   }
   browser.runtime.sendMessage({
-    type:   kCOMMAND_NOTIFY_TAB_RESTORED,
+    type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
     tab:    aTab.apiTab.id,
     window: aTab.apiTab.windowId
   });
@@ -557,14 +557,14 @@ async function updateInsertionPosition(aTab) {
     prev.uniqueId.then(aId =>
       browser.sessions.setTabValue(
         aTab.apiTab.id,
-        kPERSISTENT_INSERT_AFTER,
+        Constants.kPERSISTENT_INSERT_AFTER,
         aId.id
       )
     );
   else
     browser.sessions.removeTabValue(
       aTab.apiTab.id,
-      kPERSISTENT_INSERT_AFTER
+      Constants.kPERSISTENT_INSERT_AFTER
     );
 
   var next = getNextTab(aTab);
@@ -572,14 +572,14 @@ async function updateInsertionPosition(aTab) {
     next.uniqueId.then(aId =>
       browser.sessions.setTabValue(
         aTab.apiTab.id,
-        kPERSISTENT_INSERT_BEFORE,
+        Constants.kPERSISTENT_INSERT_BEFORE,
         aId.id
       )
     );
   else
     browser.sessions.removeTabValue(
       aTab.apiTab.id,
-      kPERSISTENT_INSERT_BEFORE
+      Constants.kPERSISTENT_INSERT_BEFORE
     );
 }
 
@@ -607,7 +607,7 @@ async function updateAncestors(aTab) {
   );
   browser.sessions.setTabValue(
     aTab.apiTab.id,
-    kPERSISTENT_ANCESTORS,
+    Constants.kPERSISTENT_ANCESTORS,
     ancestorIds.map(aId => aId.id)
   );
 }
@@ -636,7 +636,7 @@ async function updateChildren(aTab) {
   );
   browser.sessions.setTabValue(
     aTab.apiTab.id,
-    kPERSISTENT_CHILDREN,
+    Constants.kPERSISTENT_CHILDREN,
     childIds.map(aId => aId.id)
   );
 }
@@ -658,7 +658,7 @@ async function updateSubtreeCollapsed(aTab) {
     return;
   browser.sessions.setTabValue(
     aTab.apiTab.id,
-    kPERSISTENT_SUBTREE_COLLAPSED,
+    Constants.kPERSISTENT_SUBTREE_COLLAPSED,
     isSubtreeCollapsed(aTab)
   );
 }
@@ -722,18 +722,18 @@ async function updateRelatedGroupTab(aGroupTab) {
   });
 
   let newTitle;
-  if (kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
+  if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
     const firstChild = getFirstChildTab(aGroupTab);
     newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
   }
-  else if (kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
+  else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(aGroupTab.apiTab.title)) {
     const opener = getOpenerFromGroupTab(aGroupTab);
     if (opener) {
       if (opener &&
            (opener.apiTab.favIconUrl ||
             TabFavIconHelper.maybeImageTab(opener.apiTab))) {
         browser.runtime.sendMessage({
-          type:       kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+          type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
           tab:        aGroupTab.id,
           favIconUrl: getSafeFaviconUrl(opener.apiTab.favIconUrl || opener.apiTab.url)
         });
@@ -767,7 +767,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
        gSidebarOpenState.get(aOptions.windowId) &&
        gSidebarFocusState.get(aOptions.windowId)))
     return browser.runtime.sendMessage({
-      type:     kCOMMAND_CONFIRM_TO_CLOSE_TABS,
+      type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       count:    aCount,
       windowId: aOptions.windowId
     });

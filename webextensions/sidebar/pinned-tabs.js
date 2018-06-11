@@ -64,17 +64,17 @@ function positionPinnedTabs(aOptions = {}) {
   for (let item of pinnedTabs) {
     let style = item.style;
     if (aOptions.justNow)
-      item.classList.remove(kTAB_STATE_ANIMATION_READY);
+      item.classList.remove(Constants.kTAB_STATE_ANIMATION_READY);
 
     if (faviconized)
-      item.classList.add(kTAB_STATE_FAVICONIZED);
+      item.classList.add(Constants.kTAB_STATE_FAVICONIZED);
     else
-      item.classList.remove(kTAB_STATE_FAVICONIZED);
+      item.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
 
     if (row == maxRow - 1)
-      item.classList.add(kTAB_STATE_LAST_ROW);
+      item.classList.add(Constants.kTAB_STATE_LAST_ROW);
     else
-      item.classList.remove(kTAB_STATE_LAST_ROW);
+      item.classList.remove(Constants.kTAB_STATE_LAST_ROW);
 
     style.bottom = 'auto';
     style.left   = `${width * col}px`;
@@ -82,7 +82,7 @@ function positionPinnedTabs(aOptions = {}) {
     style.top    = `${height * row}px`;
 
     if (aOptions.justNow)
-      item.classList.add(kTAB_STATE_ANIMATION_READY);
+      item.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
 
     /*
     log('pinned tab: ', {
@@ -118,8 +118,8 @@ function resetPinnedTabs(aHint) {
 }
 
 function clearPinnedStyle(aTab) {
-  aTab.classList.remove(kTAB_STATE_FAVICONIZED);
-  aTab.classList.remove(kTAB_STATE_LAST_ROW);
+  aTab.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
+  aTab.classList.remove(Constants.kTAB_STATE_LAST_ROW);
   let style = aTab.style;
   style.left = style.right = style.top = style.bottom;
 }
