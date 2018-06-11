@@ -38,17 +38,31 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-const kSELECTOR_LIVE_TAB         = `li.tab:not(.${kTAB_STATE_REMOVING})`;
-const kSELECTOR_NORMAL_TAB       = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN}):not(.${kTAB_STATE_PINNED})`;
-const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLLAPSED}):not(.${kTAB_STATE_HIDDEN})`;
-const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN})`;
-const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  gTargetWindow: false,
+  gAllTabs: false,
+  buildTabsContainerFor: false,
+  makeTabId: false,
+  isCollapsed: false,
+  isGroupTab: false,
+ */
 
-const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath.hasClass(kTAB_STATE_REMOVING)})]`;
-const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(kTAB_STATE_HIDDEN)})][not(${XPath.hasClass(kTAB_STATE_PINNED)})]`;
-const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(kTAB_STATE_COLLAPSED)})][not(${XPath.hasClass(kTAB_STATE_HIDDEN)})]`;
-const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(kTAB_STATE_HIDDEN)})]`;
-const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${XPath.hasClass(kTAB_STATE_PINNED)}]`;
+import * as XPath from './xpath.js';
+import * as Constants from './constants.js';
+import { log } from './common.js';
+
+const kSELECTOR_LIVE_TAB         = `li.tab:not(.${Constants.kTAB_STATE_REMOVING})`;
+const kSELECTOR_NORMAL_TAB       = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_HIDDEN}):not(.${Constants.kTAB_STATE_PINNED})`;
+const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}):not(.${Constants.kTAB_STATE_HIDDEN})`;
+const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_HIDDEN})`;
+const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_PINNED}`;
+
+const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath.hasClass(Constants.kTAB_STATE_REMOVING)})]`;
+const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})][not(${XPath.hasClass(Constants.kTAB_STATE_PINNED)})]`;
+const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_COLLAPSED)})][not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
+const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
+const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${XPath.hasClass(Constants.kTAB_STATE_PINNED)}]`;
 
 // basics
 function assertValidHint(aHint) {
@@ -63,7 +77,7 @@ function assertValidHint(aHint) {
   throw error;
 }
 
-function getTabsContainer(aHint) {
+export function getTabsContainer(aHint) {
   assertValidHint(aHint);
 
   if (!aHint)
@@ -85,7 +99,7 @@ function getTabsContainer(aHint) {
   return null;
 }
 
-function getOrBuildTabsContainer(aHint) {
+export function getOrBuildTabsContainer(aHint) {
   let container = getTabsContainer(aHint);
   if (container)
     return container;
@@ -98,7 +112,7 @@ function getOrBuildTabsContainer(aHint) {
   return container;
 }
 
-function getTabFromChild(aNode) {
+export function getTabFromChild(aNode) {
   if (!aNode)
     return null;
   if (aNode.nodeType != Node.ELEMENT_NODE)
@@ -106,7 +120,7 @@ function getTabFromChild(aNode) {
   return aNode && aNode.closest(kSELECTOR_LIVE_TAB);
 }
 
-function getTabById(aIdOrInfo) {
+export function getTabById(aIdOrInfo) {
   if (!aIdOrInfo)
     return null;
 
@@ -122,14 +136,14 @@ function getTabById(aIdOrInfo) {
   }
 
   if (typeof aIdOrInfo == 'number') // tabs.Tab.id
-    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo}"]`);
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${aIdOrInfo}"]`);
 
   if (aIdOrInfo.id && aIdOrInfo.windowId) { // tabs.Tab
     const tab = document.getElementById(makeTabId(aIdOrInfo));
     return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
   }
   else if (!aIdOrInfo.window) { // { tab: tabs.Tab.id }
-    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kAPI_TAB_ID}="${aIdOrInfo.tab}"]`);
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${aIdOrInfo.tab}"]`);
   }
   else { // { tab: tabs.Tab.id, window: windows.Window.id }
     const tab = document.getElementById(`tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`);
@@ -139,31 +153,31 @@ function getTabById(aIdOrInfo) {
   return null;
 }
 
-function getTabByUniqueId(aId) {
+export function getTabByUniqueId(aId) {
   if (!aId)
     return null;
-  return document.querySelector(`${kSELECTOR_LIVE_TAB}[${kPERSISTENT_ID}="${aId}"]`);
+  return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kPERSISTENT_ID}="${aId}"]`);
 }
 
-function getTabLabel(aTab) {
-  return aTab && aTab.querySelector(`.${kLABEL}`);
+export function getTabLabel(aTab) {
+  return aTab && aTab.querySelector(`.${Constants.kLABEL}`);
 }
 
-function getTabLabelContent(aTab) {
-  return aTab && aTab.querySelector(`.${kLABEL}-content`);
+export function getTabLabelContent(aTab) {
+  return aTab && aTab.querySelector(`.${Constants.kLABEL}-content`);
 }
 
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
-function getCurrentTab(aHint) {
+export function getCurrentTab(aHint) {
   const container = getTabsContainer(aHint);
-  return container && container.querySelector(`.${kTAB_STATE_ACTIVE}`);
+  return container && container.querySelector(`.${Constants.kTAB_STATE_ACTIVE}`);
 }
-function getCurrentTabs() {
-  return Array.slice(document.querySelectorAll(`.${kTAB_STATE_ACTIVE}`));
+export function getCurrentTabs() {
+  return Array.slice(document.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`));
 }
 
-function getNextTab(aTab) {
+export function getNextTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
@@ -177,7 +191,7 @@ function getNextTab(aTab) {
   //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
 }
 
-function getPreviousTab(aTab) {
+export function getPreviousTab(aTab) {
   if (!aTab || !aTab.id)
     return null;
   assertValidHint(aTab);
@@ -189,12 +203,12 @@ function getPreviousTab(aTab) {
   return null;
 }
 
-function getFirstTab(aHint) {
+export function getFirstTab(aHint) {
   const container = getTabsContainer(aHint);
   return container && container.querySelector(kSELECTOR_LIVE_TAB);
 }
 
-function getLastTab(aHint) {
+export function getLastTab(aHint) {
   const container = getTabsContainer(aHint);
   if (!container)
     return null;
@@ -202,14 +216,14 @@ function getLastTab(aHint) {
   return tabs.length > 0 ? tabs[tabs.length - 1] : null;
 }
 
-function getLastOpenedTab(aHint) {
+export function getLastOpenedTab(aHint) {
   const tabs = getTabs(aHint);
   return tabs.length > 0 ?
     tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id)[0] :
     null ;
 }
 
-function getTabIndex(aTab, aOptions = {}) {
+export function getTabIndex(aTab, aOptions = {}) {
   if (!ensureLivingTab(aTab))
     return -1;
   assertValidHint(aTab);
@@ -222,7 +236,7 @@ function getTabIndex(aTab, aOptions = {}) {
   return tabs.indexOf(aTab);
 }
 
-function calculateNewTabIndex(aParams) {
+export function calculateNewTabIndex(aParams) {
   if (aParams.insertBefore)
     return getTabIndex(aParams.insertBefore, aParams);
   if (aParams.insertAfter)
@@ -231,7 +245,7 @@ function calculateNewTabIndex(aParams) {
 }
 
 
-function getNextNormalTab(aTab) {
+export function getNextNormalTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
@@ -245,7 +259,7 @@ function getNextNormalTab(aTab) {
   //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
 }
 
-function getPreviousNormalTab(aTab) {
+export function getPreviousNormalTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
@@ -260,16 +274,16 @@ function getPreviousNormalTab(aTab) {
 
 // tree basics
 
-function ensureLivingTab(aTab) {
+export function ensureLivingTab(aTab) {
   if (!aTab ||
       !aTab.id ||
       !aTab.parentNode ||
-      aTab[kTAB_STATE_REMOVING])
+      aTab[Constants.kTAB_STATE_REMOVING])
     return null;
   return aTab;
 }
 
-function assertInitializedTab(aTab) {
+export function assertInitializedTab(aTab) {
   if (!aTab.apiTab)
     throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
   if (!aTab.childTabs)
@@ -277,7 +291,7 @@ function assertInitializedTab(aTab) {
   return true;
 }
 
-function getOpenerTab(aTab) {
+export function getOpenerTab(aTab) {
   if (!ensureLivingTab(aTab) ||
       !aTab.apiTab ||
       !aTab.apiTab.openerTabId ||
@@ -286,14 +300,14 @@ function getOpenerTab(aTab) {
   return getTabById({ id: aTab.apiTab.openerTabId, windowId: aTab.apiTab.windowId });
 }
 
-function getParentTab(aChild) {
+export function getParentTab(aChild) {
   if (!ensureLivingTab(aChild))
     return null;
   assertValidHint(aChild);
   return ensureLivingTab(aChild.parentTab);
 }
 
-function getAncestorTabs(aDescendant, aOptions = {}) {
+export function getAncestorTabs(aDescendant, aOptions = {}) {
   if (!aDescendant)
     return [];
   if (!aOptions.force)
@@ -313,7 +327,7 @@ function getAncestorTabs(aDescendant, aOptions = {}) {
   return ancestors;
 }
 
-function getVisibleAncestorOrSelf(aDescendant) {
+export function getVisibleAncestorOrSelf(aDescendant) {
   if (!isCollapsed(aDescendant))
     return aDescendant;
   for (let ancestor of getAncestorTabs(aDescendant)) {
@@ -323,7 +337,7 @@ function getVisibleAncestorOrSelf(aDescendant) {
   return null;
 }
 
-function getRootTab(aDescendant) {
+export function getRootTab(aDescendant) {
   const ancestors = getAncestorTabs(aDescendant);
   return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDescendant ;
 }
@@ -339,7 +353,7 @@ function getSiblingTabs(aTab) {
   return aTab.parentTab.childTabs.filter(ensureLivingTab);
 }
 
-function getNextSiblingTab(aTab) {
+export function getNextSiblingTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
@@ -348,7 +362,7 @@ function getNextSiblingTab(aTab) {
   return index < siblings.length - 1 ? siblings[index + 1] : null ;
 }
 
-function getPreviousSiblingTab(aTab) {
+export function getPreviousSiblingTab(aTab) {
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
@@ -357,7 +371,7 @@ function getPreviousSiblingTab(aTab) {
   return index > 0 ? siblings[index - 1] : null ;
 }
 
-function getChildTabs(aParent) {
+export function getChildTabs(aParent) {
   if (!ensureLivingTab(aParent))
     return [];
   assertValidHint(aParent);
@@ -365,7 +379,7 @@ function getChildTabs(aParent) {
   return aParent.childTabs.filter(ensureLivingTab);
 }
 
-function getFirstChildTab(aParent) {
+export function getFirstChildTab(aParent) {
   if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
@@ -374,7 +388,7 @@ function getFirstChildTab(aParent) {
   return tabs.length > 0 ? tabs[0] : null ;
 }
 
-function getLastChildTab(aParent) {
+export function getLastChildTab(aParent) {
   if (!ensureLivingTab(aParent))
     return null;
   assertValidHint(aParent);
@@ -394,7 +408,7 @@ function getChildTabIndex(aChild, aParent) {
   return tabs.indexOf(aChild);
 }
 
-function getDescendantTabs(aRoot) {
+export function getDescendantTabs(aRoot) {
   if (!ensureLivingTab(aRoot))
     return [];
   assertValidHint(aRoot);
@@ -409,7 +423,7 @@ function getDescendantTabs(aRoot) {
   return descendants;
 }
 
-function getLastDescendantTab(aRoot) {
+export function getLastDescendantTab(aRoot) {
   const descendants = getDescendantTabs(aRoot);
   return descendants.length ? descendants[descendants.length-1] : null ;
 }
@@ -417,35 +431,35 @@ function getLastDescendantTab(aRoot) {
 
 // grab tags
 
-function getAllTabs(aHint) {
+export function getAllTabs(aHint) {
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_LIVE_TAB));
 }
 
-function getTabs(aHint) { // only visible, including collapsed and pinned
+export function getTabs(aHint) { // only visible, including collapsed and pinned
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_CONTROLLABLE_TAB));
 }
 
-function getNormalTabs(aHint) { // only visible, including collapsed, not pinned
+export function getNormalTabs(aHint) { // only visible, including collapsed, not pinned
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
 }
 
-function getVisibleTabs(aHint) { // visible, not-collapsed, not-hidden
+export function getVisibleTabs(aHint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_VISIBLE_TAB));
 }
 
-function getPinnedTabs(aHint) { // visible, pinned
+export function getPinnedTabs(aHint) { // visible, pinned
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
@@ -456,22 +470,22 @@ function getUnpinnedTabs(aHint) { // visible, not pinned
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_PINNED})`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
 }
 
 function getAllRootTabs(aHint) {
   const container = getTabsContainer(aHint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${kPARENT}])`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${Constants.kPARENT}])`));
 }
 
-function getRootTabs(aHint) {
+export function getRootTabs(aHint) {
   const container = getTabsContainer(aHint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${kPARENT}])`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${Constants.kPARENT}])`));
 }
 
 function getVisibleRootTabs(aHint) {
   const container = getTabsContainer(aHint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${kPARENT}])`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${Constants.kPARENT}])`));
 }
 
 function getVisibleLoadingTabs(aHint) {
@@ -481,7 +495,7 @@ function getVisibleLoadingTabs(aHint) {
   return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.loading`));
 }
 
-function collectRootTabs(aTabs) {
+export function collectRootTabs(aTabs) {
   return aTabs.filter(aTab => {
     if (!ensureLivingTab(aTab))
       return false;
@@ -492,41 +506,41 @@ function collectRootTabs(aTabs) {
 
 function getIndentedTabs(aHint) {
   const container = getTabsContainer(aHint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${kPARENT}]`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${Constants.kPARENT}]`));
 }
 
 function getVisibleIndentedTabs(aHint) {
   const container = getTabsContainer(aHint);
-  return container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}[${kPARENT}]`);
+  return container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}[${Constants.kPARENT}]`);
 }
 
-function getDraggingTabs(aHint) {
+export function getDraggingTabs(aHint) {
   const container = getTabsContainer(aHint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${kTAB_STATE_DRAGGING}`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DRAGGING}`));
 }
 
-function getDuplicatingTabs(aHint) {
+export function getDuplicatingTabs(aHint) {
   const container = getTabsContainer(aHint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${kTAB_STATE_DUPLICATING}`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DUPLICATING}`));
 }
 
-function getSelectedTabs(aHint) {
+export function getSelectedTabs(aHint) {
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${kTAB_STATE_SELECTED}`));
+  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`));
 }
 
 
 
 // misc.
 
-function getFirstNormalTab(aHint) { // visible, not-collapsed, not-pinned
+export function getFirstNormalTab(aHint) { // visible, not-collapsed, not-pinned
   const container = getTabsContainer(aHint);
   return container && container.querySelector(kSELECTOR_NORMAL_TAB);
 }
 
-function getFirstVisibleTab(aHint) { // visible, not-collapsed, not-hidden
+export function getFirstVisibleTab(aHint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(aHint);
   return container && container.querySelector(kSELECTOR_VISIBLE_TAB);
 }
@@ -542,7 +556,7 @@ function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
   ).singleNodeValue;
 }
 
-function getNextVisibleTab(aTab) { // visible, not-collapsed
+export function getNextVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
@@ -556,7 +570,7 @@ function getNextVisibleTab(aTab) { // visible, not-collapsed
   //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
 }
 
-function getPreviousVisibleTab(aTab) { // visible, not-collapsed
+export function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
     return null;
   assertValidHint(aTab);
@@ -579,7 +593,7 @@ function getVisibleIndex(aTab) {
   ).numberValue;
 }
 
-async function doAndGetNewTabs(aAsyncTask, aHint) {
+export async function doAndGetNewTabs(aAsyncTask, aHint) {
   const tabsQueryOptions = {
     windowType: 'normal'
   };
@@ -597,7 +611,7 @@ async function doAndGetNewTabs(aAsyncTask, aHint) {
   return addedTabs;
 }
 
-function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is closed...
+export function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is closed...
   const ignoredTabs = (aOptions.ignoredTabs || []).slice(0);
   let tab = aTab;
   do {
@@ -615,16 +629,16 @@ function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is close
 }
 
 
-function getGroupTabForOpener(aOpener) {
+export function getGroupTabForOpener(aOpener) {
   const tab = (aOpener instanceof Element) ? aOpener : (getTabById(aOpener) || getTabByUniqueId(aOpener));
   if (!tab)
     return null;
-  return tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}$="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}"],
-                                       ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}#"],
-                                       ${kSELECTOR_LIVE_TAB}[${kCURRENT_URI}*="openerTabId=${tab.getAttribute(kPERSISTENT_ID)}&"]`);
+  return tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}$="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}"],
+                                       ${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}*="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}#"],
+                                       ${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}*="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}&"]`);
 }
 
-function getOpenerFromGroupTab(aGroupTab) {
+export function getOpenerFromGroupTab(aGroupTab) {
   if (!isGroupTab(aGroupTab))
     return null;
   const matchedOpenerTabId = aGroupTab.apiTab.url.match(/openerTabId=([^&;]+)/);
