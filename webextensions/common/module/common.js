@@ -8,11 +8,11 @@
 // Defined in a classic script source, and we can read these as global variables. 
 /* global
   Promise: false,
-  Configs: false,
   uneval: false,
  */
 
 import * as Constants from './constants.js';
+import Configs from '/common/Configs.js';
 
 let configs;
 

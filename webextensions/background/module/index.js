@@ -7,6 +7,10 @@ import * as ContextualIdentities from '/common/module/contextual-identities.js';
 import * as ContextMenu from './context-menu.js';
 import * as MetricsData from '/common/module/MetricsData.js';
 
+import TabIdFixer from '/common/TabIdFixer.js';
+import TabFavIconHelper from '/common/TabFavIconHelper.js';
+import RichConfirm from '/common/RichConfirm.js';
+
 // Set to the global to make compatibility with other classic sources.
 for (let key of Object.keys(Constants)) {
   window[key] = Constants[key];
@@ -20,4 +24,8 @@ window.Permissions = Permissions;
 window.ContextualIdentities = ContextualIdentities;
 window.ContextMenu = ContextMenu;
 window.MetricsData = MetricsData;
+
+window.TabIdFixer = TabIdFixer;
+window.TabFavIconHelper = TabFavIconHelper;
+window.RichConfirm = RichConfirm;
 
