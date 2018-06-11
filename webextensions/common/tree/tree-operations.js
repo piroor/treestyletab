@@ -688,13 +688,13 @@ function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
     .map(aAncestor => aAncestor.id)
     .join('><')}>`;
 
-  var xpathResult = evaluateXPath(
+  var xpathResult = XPath.evaluate(
     `child::${kXPATH_LIVE_TAB}[
        @${kCHILDREN} and
-       not(${hasClass(kTAB_STATE_COLLAPSED)}) and
-       not(${hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
+       not(${XPath.hasClass(kTAB_STATE_COLLAPSED)}) and
+       not(${XPath.hasClass(kTAB_STATE_SUBTREE_COLLAPSED)}) and
        not(contains("${expandedAncestors}", concat("<", @id, ">"))) and
-       not(${hasClass(kTAB_STATE_HIDDEN)})
+       not(${XPath.hasClass(kTAB_STATE_HIDDEN)})
      ]`,
     container
   );

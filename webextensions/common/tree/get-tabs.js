@@ -44,11 +44,11 @@ const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_COLL
 const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${kTAB_STATE_HIDDEN})`;
 const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${kTAB_STATE_PINNED}`;
 
-const kXPATH_LIVE_TAB         = `li[${hasClass('tab')}][not(${hasClass(kTAB_STATE_REMOVING)})]`;
-const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})][not(${hasClass(kTAB_STATE_PINNED)})]`;
-const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_COLLAPSED)})][not(${hasClass(kTAB_STATE_HIDDEN)})]`;
-const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${hasClass(kTAB_STATE_HIDDEN)})]`;
-const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${hasClass(kTAB_STATE_PINNED)}]`;
+const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath.hasClass(kTAB_STATE_REMOVING)})]`;
+const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(kTAB_STATE_HIDDEN)})][not(${XPath.hasClass(kTAB_STATE_PINNED)})]`;
+const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(kTAB_STATE_COLLAPSED)})][not(${XPath.hasClass(kTAB_STATE_HIDDEN)})]`;
+const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(kTAB_STATE_HIDDEN)})]`;
+const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${XPath.hasClass(kTAB_STATE_PINNED)}]`;
 
 // basics
 function assertValidHint(aHint) {
@@ -535,7 +535,7 @@ function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(aHint);
   if (!container)
     return null;
-  return evaluateXPath(
+  return XPath.evaluate(
     `child::${kXPATH_VISIBLE_TAB}[last()]`,
     container,
     XPathResult.FIRST_ORDERED_NODE_TYPE
@@ -572,7 +572,7 @@ function getVisibleIndex(aTab) {
   if (!ensureLivingTab(aTab))
     return -1;
   assertValidHint(aTab);
-  return evaluateXPath(
+  return XPath.evaluate(
     `count(preceding-sibling::${kXPATH_VISIBLE_TAB})`,
     aTab,
     XPathResult.NUMBER_TYPE

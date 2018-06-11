@@ -7,11 +7,11 @@
 
 // XPath utilities
 
-function hasClass(aClassName) {
+export function hasClass(aClassName) {
   return `contains(concat(" ", normalize-space(@class), " "), " ${aClassName} ")`;
 }
 
-function evaluateXPath(aExpression, aContext, aType) {
+export function evaluate(aExpression, aContext, aType) {
   if (!aType)
     aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
   try {
@@ -35,7 +35,7 @@ function evaluateXPath(aExpression, aContext, aType) {
   return result;
 }
 
-function getArrayFromXPathResult(aXPathResult) {
+export function getArrayFromXPathResult(aXPathResult) {
   var max   = aXPathResult.snapshotLength;
   var array = new Array(max);
   if (!max)
