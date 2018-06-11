@@ -59,10 +59,10 @@ const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_
 const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_PINNED}`;
 
 const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath.hasClass(Constants.kTAB_STATE_REMOVING)})]`;
-const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})][not(${XPath.hasClass(Constants.kTAB_STATE_PINNED)})]`;
-const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_COLLAPSED)})][not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
-const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
-const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${XPath.hasClass(Constants.kTAB_STATE_PINNED)}]`;
+//const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})][not(${XPath.hasClass(Constants.kTAB_STATE_PINNED)})]`;
+//const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_COLLAPSED)})][not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
+//const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
+//const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${XPath.hasClass(Constants.kTAB_STATE_PINNED)}]`;
 
 // basics
 function assertValidHint(aHint) {
@@ -397,6 +397,7 @@ export function getLastChildTab(aParent) {
   return tabs.length > 0 ? tabs[tabs.length - 1] : null ;
 }
 
+/*
 function getChildTabIndex(aChild, aParent) {
   if (!ensureLivingTab(aChild) ||
       !ensureLivingTab(aParent))
@@ -407,6 +408,7 @@ function getChildTabIndex(aChild, aParent) {
   const tabs = aParent.childTabs.filter(ensureLivingTab);
   return tabs.indexOf(aChild);
 }
+*/
 
 export function getDescendantTabs(aRoot) {
   if (!ensureLivingTab(aRoot))
@@ -466,23 +468,28 @@ export function getPinnedTabs(aHint) { // visible, pinned
   return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
 }
 
+/*
 function getUnpinnedTabs(aHint) { // visible, not pinned
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
 }
+*/
 
+/*
 function getAllRootTabs(aHint) {
   const container = getTabsContainer(aHint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${Constants.kPARENT}])`));
 }
+*/
 
 export function getRootTabs(aHint) {
   const container = getTabsContainer(aHint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${Constants.kPARENT}])`));
 }
 
+/*
 function getVisibleRootTabs(aHint) {
   const container = getTabsContainer(aHint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${Constants.kPARENT}])`));
@@ -494,6 +501,7 @@ function getVisibleLoadingTabs(aHint) {
     return [];
   return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.loading`));
 }
+*/
 
 export function collectRootTabs(aTabs) {
   return aTabs.filter(aTab => {
@@ -504,6 +512,7 @@ export function collectRootTabs(aTabs) {
   });
 }
 
+/*
 function getIndentedTabs(aHint) {
   const container = getTabsContainer(aHint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${Constants.kPARENT}]`));
@@ -513,6 +522,7 @@ function getVisibleIndentedTabs(aHint) {
   const container = getTabsContainer(aHint);
   return container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}[${Constants.kPARENT}]`);
 }
+*/
 
 export function getDraggingTabs(aHint) {
   const container = getTabsContainer(aHint);
@@ -545,6 +555,7 @@ export function getFirstVisibleTab(aHint) { // visible, not-collapsed, not-hidde
   return container && container.querySelector(kSELECTOR_VISIBLE_TAB);
 }
 
+/*
 function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(aHint);
   if (!container)
@@ -555,6 +566,7 @@ function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
     XPathResult.FIRST_ORDERED_NODE_TYPE
   ).singleNodeValue;
 }
+*/
 
 export function getNextVisibleTab(aTab) { // visible, not-collapsed
   if (!ensureLivingTab(aTab))
@@ -582,6 +594,7 @@ export function getPreviousVisibleTab(aTab) { // visible, not-collapsed
   return null;
 }
 
+/*
 function getVisibleIndex(aTab) {
   if (!ensureLivingTab(aTab))
     return -1;
@@ -592,6 +605,7 @@ function getVisibleIndex(aTab) {
     XPathResult.NUMBER_TYPE
   ).numberValue;
 }
+*/
 
 export async function doAndGetNewTabs(aAsyncTask, aHint) {
   const tabsQueryOptions = {
