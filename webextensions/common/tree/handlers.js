@@ -113,6 +113,19 @@ function addTabOperationQueue() {
   return [onCompleted, previous];
 }
 
+function getOrBuildTabsContainer(aHint) {
+  let container = Tabs.getTabsContainer(aHint);
+  if (container)
+    return container;
+
+  if (typeof aHint != 'number')
+    throw new Error(`The given ID seems invalid as an window id: ${aHint}`);
+
+  container = buildTabsContainerFor(aHint);
+  gAllTabs.appendChild(container);
+  return container;
+}
+
 
 async function onApiTabActivated(aActiveInfo) {
   if (gTargetWindow && aActiveInfo.windowId != gTargetWindow)
@@ -123,7 +136,7 @@ async function onApiTabActivated(aActiveInfo) {
     await previous;
 
   try {
-    const container = Tabs.getOrBuildTabsContainer(aActiveInfo.windowId);
+    const container = getOrBuildTabsContainer(aActiveInfo.windowId);
 
     let byInternalOperation = parseInt(container.dataset.internalFocusCount) > 0;
     if (byInternalOperation)
@@ -290,7 +303,7 @@ async function onNewTabTracked(aTab) {
 
   try {
     log('onNewTabTracked: ', aTab);
-    const container = Tabs.getOrBuildTabsContainer(aTab.windowId);
+    const container = getOrBuildTabsContainer(aTab.windowId);
 
     const hasNextTab = !!Tabs.getAllTabs(container)[aTab.index];
 
@@ -466,7 +479,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (gTargetWindow && aRemoveInfo.windowId != gTargetWindow)
     return;
 
-  const container = Tabs.getOrBuildTabsContainer(aRemoveInfo.windowId);
+  const container = getOrBuildTabsContainer(aRemoveInfo.windowId);
   const byInternalOperation = parseInt(container.dataset.internalClosingCount) > 0;
   if (byInternalOperation)
     decrementContainerCounter(container, 'internalClosingCount');
@@ -542,7 +555,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   if (gTargetWindow && aMoveInfo.windowId != gTargetWindow)
     return;
 
-  const container = Tabs.getOrBuildTabsContainer(aMoveInfo.windowId);
+  const container = getOrBuildTabsContainer(aMoveInfo.windowId);
   const byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
   await waitUntilTabsAreCreated(aTabId);

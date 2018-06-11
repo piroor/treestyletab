@@ -42,7 +42,6 @@
 /* global
   gTargetWindow: false,
   gAllTabs: false,
-  buildTabsContainerFor: false,
  */
 
 import * as XPath from './xpath.js';
@@ -111,19 +110,6 @@ export function getTabsContainer(aHint) {
     return tab.parentNode;
 
   return null;
-}
-
-export function getOrBuildTabsContainer(aHint) {
-  let container = getTabsContainer(aHint);
-  if (container)
-    return container;
-
-  if (typeof aHint != 'number')
-    throw new Error(`The given ID seems invalid as an window id: ${aHint}`);
-
-  container = buildTabsContainerFor(aHint);
-  gAllTabs.appendChild(container);
-  return container;
 }
 
 export function getTabFromChild(aNode) {
