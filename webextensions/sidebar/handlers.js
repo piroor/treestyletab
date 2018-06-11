@@ -1047,7 +1047,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
   }
 
   if (isCollapsedStateUpdating(aTab))
-  await isSurelyCollapsed(aTab);
+    await isSurelyCollapsed(aTab);
 
   let onCompletelyUpdated;
   isSurelyCollapsed.updating[aTab.id] = new Promise((aResolve, aReject) => {
@@ -1404,7 +1404,7 @@ function onMessage(aMessage, aSender, aRespond) {
         if (!tab)
           return;
         if (isCollapsedStateUpdating(tab))
-        await isSurelyCollapsed(tab);
+          await isSurelyCollapsed(tab);
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (aMessage.byAncestor &&
