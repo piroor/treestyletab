@@ -28,7 +28,7 @@ export function isGranted(aPermissions) {
   try {
     return browser.permissions.contains(aPermissions);
   }
-  catch(e) {
+  catch(_e) {
     return Promise.reject(new Error('unsupported permission'));
   }
 }
@@ -38,7 +38,7 @@ export function bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
     .then(aGranted => {
       aCheckbox.checked = aGranted;
     })
-    .catch(aError => {
+    .catch(_aError => {
       aCheckbox.setAttribute('readonly', true);
       aCheckbox.setAttribute('disabled', true);
       var label = aCheckbox.closest('label') || document.querySelector(`label[for=${aCheckbox.id}]`);
@@ -46,11 +46,11 @@ export function bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
         label.setAttribute('disabled', true);
     });
 
-  aCheckbox.addEventListener('change', aEvent => {
+  aCheckbox.addEventListener('change', _aEvent => {
     aCheckbox.requestPermissions()
   });
 
-  browser.runtime.onMessage.addListener((aMessage, aSender) => {
+  browser.runtime.onMessage.addListener((aMessage, _aSender) => {
     if (!aMessage ||
         !aMessage.type ||
         aMessage.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
