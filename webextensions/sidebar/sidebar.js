@@ -24,7 +24,6 @@ window.addEventListener('load', init, { once: true });
 var gTabBar                     = document.querySelector('#tabbar');
 var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
 var gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
-var gAllTabs                    = document.querySelector('#all-tabs');
 var gMasterThrobber             = document.querySelector('#master-throbber');
 var gSizeDefinition             = document.querySelector('#size-definition');
 var gStyleLoader                = document.querySelector('#style-loader');
@@ -247,7 +246,7 @@ function destroy() {
   if (onMouseOut.listening)
     window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
 
-  gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
+  gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
 
 function applyStyle(aStyle) {
@@ -498,7 +497,7 @@ async function rebuildAll(aCache) {
     container.appendChild(newTab);
     updateTab(newTab, apiTab, { forceApply: true });
   }
-  gAllTabs.appendChild(container);
+  Tabs.allTabsContainer.appendChild(container);
   MetricsData.add('rebuildAll (from scratch)');
   return false;
 }

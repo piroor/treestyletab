@@ -237,7 +237,7 @@ async function updateCachedTabbar() {
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: Constants.kSIDEBAR_CONTENTS_VERSION,
     tabbar:  {
-      contents: gAllTabs.innerHTML,
+      contents: Tabs.allTabsContainer.innerHTML,
       style:    gTabBar.getAttribute('style'),
       pinnedTabsCount: Tabs.getPinnedTabs(container).length
     },

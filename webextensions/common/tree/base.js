@@ -38,7 +38,6 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-var gAllTabs;
 var gTargetWindow    = null;
 var gRestoringTree   = false;
 var gNeedRestoreTree = false;
@@ -438,7 +437,7 @@ function decrementContainerCounter(aContainer, aName, aDelta) {
 
 function clearAllTabsContainers() {
   var range = document.createRange();
-  range.selectNodeContents(gAllTabs);
+  range.selectNodeContents(Tabs.allTabsContainer);
   range.deleteContents();
   range.detach();
 }

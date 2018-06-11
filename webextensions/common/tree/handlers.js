@@ -122,7 +122,7 @@ function getOrBuildTabsContainer(aHint) {
     throw new Error(`The given ID seems invalid as an window id: ${aHint}`);
 
   container = buildTabsContainerFor(aHint);
-  gAllTabs.appendChild(container);
+  Tabs.allTabsContainer.appendChild(container);
   return container;
 }
 

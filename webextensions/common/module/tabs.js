@@ -48,7 +48,7 @@ import {
 
 let gTargetWindow;
 
-export const allTabs = document.querySelector('#all-tabs');
+export const allTabsContainer = document.querySelector('#all-tabs');
 
 
 //===================================================================
@@ -204,7 +204,7 @@ export function getTabsContainer(aHint) {
   assertValidHint(aHint);
 
   if (!aHint)
-    aHint = gTargetWindow || allTabs.firstChild;
+    aHint = gTargetWindow || allTabsContainer.firstChild;
 
   if (typeof aHint == 'number')
     return document.querySelector(`#window-${aHint}`);

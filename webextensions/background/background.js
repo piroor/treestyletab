@@ -30,7 +30,6 @@ async function init() {
   });
   startWatchSidebarOpenState();
 
-  gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
   MetricsData.add('configs.$loaded');
 
@@ -162,7 +161,6 @@ function destroy() {
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
   endObserveApiTabs();
   ContextualIdentities.endObserve();
-  gAllTabs = undefined;
 }
 
 async function rebuildAll() {
@@ -172,7 +170,7 @@ async function rebuildAll() {
     windowTypes: ['normal']
   });
   var insertionPoint = document.createRange();
-  insertionPoint.selectNodeContents(gAllTabs);
+  insertionPoint.selectNodeContents(Tabs.allTabsContainer);
   var restoredFromCache = {};
   await Promise.all(windows.map(async (aWindow) => {
     await MetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
@@ -198,7 +196,7 @@ async function rebuildAll() {
         updateTab(newTab, apiTab, { forceApply: true });
         tryStartHandleAccelKeyOnTab(newTab);
       }
-      gAllTabs.appendChild(container);
+      Tabs.allTabsContainer.appendChild(container);
       restoredFromCache[aWindow.id] = false;
     });
     for (let tab of Tabs.getAllTabs(aWindow.id).filter(Tabs.isGroupTab)) {

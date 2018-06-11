@@ -96,7 +96,7 @@ function restoreTabsFromCacheInternal(aParams) {
     dumpCache(aParams.cache);
     let insertionPoint = aParams.insertionPoint || (() => {
       var range = document.createRange();
-      range.selectNodeContents(gAllTabs);
+      range.selectNodeContents(Tabs.allTabsContainer);
       range.collapse(false);
       return range;
     })();

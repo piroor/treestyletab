@@ -1090,7 +1090,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         container = Tabs.getTabsContainer(destinationWindowId);
         if (!container) {
           container = buildTabsContainerFor(destinationWindowId);
-          gAllTabs.appendChild(container);
+          Tabs.allTabsContainer.appendChild(container);
         }
         if (isAcrossWindows) {
           incrementContainerCounter(container, 'toBeOpenedTabsWithPositions', aTabs.length);

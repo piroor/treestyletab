@@ -68,7 +68,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     if (container)
       insertionPoint.selectNode(container);
     else
-      insertionPoint.selectNodeContents(gAllTabs);
+      insertionPoint.selectNodeContents(Tabs.allTabsContainer);
     insertionPoint.collapse(false);
   }
   var restored = restoreTabsFromCache(aWindowId, {
