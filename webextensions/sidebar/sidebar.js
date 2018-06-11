@@ -870,14 +870,14 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  if (document.querySelector(`#${gTabBar.id} ${kSELECTOR_VISIBLE_TAB}.loading`))
+  if (document.querySelector(`#${gTabBar.id} ${GetTabs.kSELECTOR_VISIBLE_TAB}.loading`))
     document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
   else
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
 }
 
 async function synchronizeThrobberAnimation() {
-  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
+  var toBeSynchronizedTabs = document.querySelectorAll(`${GetTabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
   if (toBeSynchronizedTabs.length == 0)
     return;
 
