@@ -12,10 +12,7 @@
   Commands: false,
  */
 
-import {
-  kTSTAPI_CONTEXT_MENU_REMOVE_ALL,
-  kTSTAPI_CONTEXT_MENU_CREATE
-} from '/common/module/constants.js';
+import * as Constants from '/common/module/constants.js';
 import {
   log,
   configs
@@ -38,7 +35,7 @@ var gContextMenuItems = `
 export async function refreshItems() {
   browser.contextMenus.removeAll();
   tabContextMenu.onExternalMessage({
-    type: kTSTAPI_CONTEXT_MENU_REMOVE_ALL
+    type: Constants.kTSTAPI_CONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
 
   let separatorsCount = 0;
@@ -66,7 +63,7 @@ export async function refreshItems() {
       contexts: ['tab']
     });
     tabContextMenu.onExternalMessage({
-      type: kTSTAPI_CONTEXT_MENU_CREATE,
+      type: Constants.kTSTAPI_CONTEXT_MENU_CREATE,
       params: {
         id, type, title,
         contexts: ['tab']
