@@ -17,31 +17,31 @@ let lastTime    = now;
 let deltaBetweenLastItem = 0;
 
 export function add(aLabel) {
-    const now = Date.now();
-    items.push({
-      label: aLabel,
-      delta: now - lastTime
-    });
-    deltaBetweenLastItem = now - initialTime;
-    lastTime = now;
-  }
+  const now = Date.now();
+  items.push({
+    label: aLabel,
+    delta: now - lastTime
+  });
+  deltaBetweenLastItem = now - initialTime;
+  lastTime = now;
+}
 
 export async function addAsync(aLabel, aAsyncTask) {
-    const start = Date.now();
-    if (typeof aAsyncTask == 'function')
-      aAsyncTask = aAsyncTask();
-    return aAsyncTask.then(aResult => {
-      items.push({
-        label: `(async) ${aLabel}`,
-        delta: Date.now() - start,
-        async: true
-      });
-      return aResult;
+  const start = Date.now();
+  if (typeof aAsyncTask == 'function')
+    aAsyncTask = aAsyncTask();
+  return aAsyncTask.then(aResult => {
+    items.push({
+      label: `(async) ${aLabel}`,
+      delta: Date.now() - start,
+      async: true
     });
-  }
+    return aResult;
+  });
+}
 
 export function toString() {
-    const logs = items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
-    return `total ${deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
-  }
+  const logs = items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
+  return `total ${deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
+}
 
