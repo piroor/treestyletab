@@ -63,10 +63,9 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-webpack-loader-syntax.md
     'import/no-self-import': 'error',
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-unresolved.md
-    // 'import/no-unresolved': ['error', {
-    //  'caseSensitive': true,
-    //  'commonjs': true,
-    // }],
+    'import/no-unresolved': ['error', {
+      'caseSensitive': true,
+    }],
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-useless-path-segments.md
     'import/no-useless-path-segments': 'error',
   },
