@@ -23,7 +23,7 @@ export function evaluate(aExpression, aContext, aType) {
       null
     );
   }
-  catch(e) {
+  catch(_exception) {
     return {
       singleNodeValue: null,
       snapshotLength:  0,
