@@ -5,10 +5,6 @@
 */
 'use strict';
 
-/* global
-  Promise: false,
- */
-
 export async function getIndex(...aQueriedTabIds) {
   if (aQueriedTabIds.length == 0)
     return -1;

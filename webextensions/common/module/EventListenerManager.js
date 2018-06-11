@@ -5,10 +5,6 @@
 */
 'use strict';
 
-/* global
-  Promise: false,
- */
-
 export default function EventListenerManager() {
   this.listeners = [];
 }

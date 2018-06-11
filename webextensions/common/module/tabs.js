@@ -38,10 +38,6 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-/* global
-  Promise: false,
- */
-
 import * as XPath from './xpath.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
