@@ -1,4 +1,5 @@
-import { gMetricsData } from './metrics.js';
+import * as MetricsData from '../../common/module/MetricsData.js';
 
 // Set to the global to make compatibility with other classic sources.
-window.gMetricsData = gMetricsData;
+window.MetricsData = MetricsData;
+

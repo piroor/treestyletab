@@ -894,7 +894,7 @@ async function onWindowRestoring(aWindowId) {
   }
 
   log('onWindowRestoring restore! ', cache);
-  gMetricsData.add('onWindowRestoring restore start');
+  MetricsData.add('onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
   const apiTabs = await browser.tabs.query({ windowId: aWindowId });
   const restored = await restoreTabsFromCache(cache.tabbar, {
@@ -912,7 +912,7 @@ async function onWindowRestoring(aWindowId) {
   });
   updateTabbarLayout({ justNow: true });
   unblockUserOperations({ throbber: true });
-  gMetricsData.add('onWindowRestoring restore end');
+  MetricsData.add('onWindowRestoring restore end');
 }
 
 function onTabClosed(aTab, aCloseInfo) {

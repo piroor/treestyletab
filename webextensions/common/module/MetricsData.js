@@ -9,38 +9,39 @@
   getTabs: false,
  */
 
-export function MetricsData() {
-  this.items       = [];
-  this.initialTime = this.lastTime = Date.now();
-}
+let items = [];
 
-MetricsData.prototype = {
-  add(aLabel) {
-    var now = Date.now();
-    this.items.push({
+const now = Date.now();
+let initialTime = now;
+let lastTime    = now;
+let deltaBetweenLastItem = 0;
+
+export function add(aLabel) {
+    const now = Date.now();
+    items.push({
       label: aLabel,
-      delta: now - this.lastTime
+      delta: now - lastTime
     });
-    this.deltaBetweenLastItem = now - this.initialTime;
-    this.lastTime = now;
-  },
+    deltaBetweenLastItem = now - initialTime;
+    lastTime = now;
+  }
 
-  addAsync(aLabel, aAsyncTask) {
-    var start = Date.now();
+export async function addAsync(aLabel, aAsyncTask) {
+    const start = Date.now();
     if (typeof aAsyncTask == 'function')
       aAsyncTask = aAsyncTask();
     return aAsyncTask.then(aResult => {
-      this.items.push({
+      items.push({
         label: `(async) ${aLabel}`,
         delta: Date.now() - start,
         async: true
       });
       return aResult;
     });
-  },
-
-  toString() {
-    var logs = this.items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
-    return `total ${this.deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
   }
-};
+
+export function toString() {
+    const logs = items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
+    return `total ${deltaBetweenLastItem} msec for ${getTabs().length} tabs\n${logs.join('\n')}`;
+  }
+

@@ -520,7 +520,7 @@ async function onWindowRestoring(aWindowId) {
   }
 
   log('onWindowRestoring: continue ', aWindowId);
-  gMetricsData.add('onWindowRestoring restore start');
+  MetricsData.add('onWindowRestoring restore start');
 
   const apiTabs = await browser.tabs.query({ windowId: aWindowId });
   try {
@@ -529,7 +529,7 @@ async function onWindowRestoring(aWindowId) {
       owner: apiTabs[apiTabs.length - 1],
       tabs:  apiTabs
     });
-    gMetricsData.add('onWindowRestoring restore end');
+    MetricsData.add('onWindowRestoring restore end');
   }
   catch(e) {
     log('onWindowRestoring: FATAL ERROR while restoring tree from cache', String(e), e.stack);

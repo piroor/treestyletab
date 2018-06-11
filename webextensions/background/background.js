@@ -14,12 +14,12 @@ var gExternalListenerAddons = null;
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
 
-gMetricsData.add('Loaded');
+MetricsData.add('Loaded');
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
 
 async function init() {
-  gMetricsData.add('init start');
+  MetricsData.add('init start');
   window.addEventListener('pagehide', destroy, { once: true });
 
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
@@ -32,24 +32,24 @@ async function init() {
 
   gAllTabs = document.querySelector('#all-tabs');
   await configs.$loaded;
-  gMetricsData.add('configs.$loaded');
+  MetricsData.add('configs.$loaded');
 
   migrateLegacyConfigs();
-  gMetricsData.add('migrateLegacyConfigs');
+  MetricsData.add('migrateLegacyConfigs');
 
   updatePanelUrl();
 
-  await gMetricsData.addAsync('parallel initialization tasks: waitUntilCompletelyRestored, retrieveAllContextualIdentities', Promise.all([
+  await MetricsData.addAsync('parallel initialization tasks: waitUntilCompletelyRestored, retrieveAllContextualIdentities', Promise.all([
     waitUntilCompletelyRestored(),
     retrieveAllContextualIdentities()
   ]));
   var restoredFromCache = await rebuildAll();
-  gMetricsData.add(`rebuildAll (cached: ${JSON.stringify(restoredFromCache)})`);
+  MetricsData.add(`rebuildAll (cached: ${JSON.stringify(restoredFromCache)})`);
   await loadTreeStructure(restoredFromCache);
-  gMetricsData.add('loadTreeStructure done');
+  MetricsData.add('loadTreeStructure done');
 
   migrateLegacyTreeStructure();
-  gMetricsData.add('migrateLegacyTreeStructure');
+  MetricsData.add('migrateLegacyTreeStructure');
 
   startObserveApiTabs();
   startObserveContextualIdentities();
@@ -116,7 +116,7 @@ async function init() {
   });
 
   notifyNewFeatures();
-  log('Startup metrics: ', gMetricsData.toString());
+  log('Startup metrics: ', MetricsData.toString());
 }
 
 function updatePanelUrl() {
@@ -175,7 +175,7 @@ async function rebuildAll() {
   insertionPoint.selectNodeContents(gAllTabs);
   var restoredFromCache = {};
   await Promise.all(windows.map(async (aWindow) => {
-    await gMetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
+    await MetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
       if (configs.useCachedTree) {
         restoredFromCache[aWindow.id] = await restoreWindowFromEffectiveWindowCache(aWindow.id, {
           insertionPoint,
@@ -343,8 +343,8 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
   var windows = await browser.windows.getAll({
     windowTypes: ['normal']
   });
-  gMetricsData.add('loadTreeStructure: browser.windows.getAll');
-  return gMetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async aWindow => {
+  MetricsData.add('loadTreeStructure: browser.windows.getAll');
+  return MetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async aWindow => {
     if (aRestoredFromCacheResults &&
         aRestoredFromCacheResults[aWindow.id]) {
       log(`skip tree structure restoration for window ${aWindow.id} (restored from cache)`);
@@ -355,7 +355,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
       browser.sessions.getWindowValue(aWindow.id, kWINDOW_STATE_TREE_STRUCTURE),
       getUniqueIds(tabs.map(aTab => aTab.apiTab))
     ]);
-    gMetricsData.add('loadTreeStructure: read stored data');
+    MetricsData.add('loadTreeStructure: read stored data');
     var windowStateCompletelyApplied = false;
     if (structure && structure.length <= tabs.length) {
       uniqueIds = uniqueIds.map(aId => aId.id);
@@ -370,7 +370,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
       }
       if (tabsOffset > -1) {
         await applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
-        gMetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
+        MetricsData.add('loadTreeStructure: applyTreeStructureToTabs');
       }
     }
     if (!windowStateCompletelyApplied) {
@@ -382,7 +382,7 @@ async function loadTreeStructure(aRestoredFromCacheResults) {
         });
       }
       await reserveToAttachTabFromRestoredInfo.promisedDone;
-      gMetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
+      MetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
     }
     dumpAllTabs();
   })));

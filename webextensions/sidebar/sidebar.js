@@ -16,7 +16,7 @@ var gRestoringTabCount = 0;
 var gExternalListenerAddons = null;
 var gAddonStyles = {};
 
-gMetricsData.add('Loaded');
+MetricsData.add('Loaded');
 
 window.addEventListener('pagehide', destroy, { once: true });
 window.addEventListener('load', init, { once: true });
@@ -50,7 +50,7 @@ var gNewTabActionSelector       = document.getElementById(kNEWTAB_ACTION_SELECTO
 blockUserOperations({ throbber: true });
 
 async function init() {
-  gMetricsData.add('init start');
+  MetricsData.add('init start');
   log('initialize sidebar on load');
   window.addEventListener('resize', onResize);
 
@@ -65,7 +65,7 @@ async function init() {
     })(),
     configs.$loaded
   ]);
-  gMetricsData.add('browser.tabs.query, configs.$loaded');
+  MetricsData.add('browser.tabs.query, configs.$loaded');
 
   onConfigChange('colorScheme');
   onConfigChange('simulateSVGContextFill');
@@ -74,15 +74,15 @@ async function init() {
     waitUntilBackgroundIsReady(),
     retrieveAllContextualIdentities()
   ]);
-  gMetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
+  MetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
 
   var cachedContents;
   var restoredFromCache;
   var scrollPosition;
-  await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
-    gMetricsData.addAsync('main', async () => {
+  await MetricsData.addAsync('parallel initialization tasks', Promise.all([
+    MetricsData.addAsync('main', async () => {
       if (configs.useCachedTree)
-        await gMetricsData.addAsync('read cached sidebar contents', async () => {
+        await MetricsData.addAsync('read cached sidebar contents', async () => {
           cachedContents = await getEffectiveWindowCache();
         });
 
@@ -96,7 +96,7 @@ async function init() {
         browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
 
       if (!restoredFromCache)
-        await gMetricsData.addAsync('inheritTreeStructure', async () => {
+        await MetricsData.addAsync('inheritTreeStructure', async () => {
           await inheritTreeStructure();
         });
 
@@ -114,7 +114,7 @@ async function init() {
       gTabBar.addEventListener('underflow', onUnderflow);
       gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
       startListenDragEvents();
-      gMetricsData.add('start to listen events');
+      MetricsData.add('start to listen events');
 
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
@@ -124,18 +124,18 @@ async function init() {
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
-      gMetricsData.add('apply configs');
+      MetricsData.add('apply configs');
 
       browser.runtime.onMessage.addListener(onMessage);
       browser.runtime.onMessageExternal.addListener(onMessageExternal);
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
     }),
-    gMetricsData.addAsync('calculateDefaultSizes', async () => {
+    MetricsData.addAsync('calculateDefaultSizes', async () => {
       calculateDefaultSizes();
       document.documentElement.classList.remove('initializing');
     }),
-    gMetricsData.addAsync('initializing contextual identities', async () => {
+    MetricsData.addAsync('initializing contextual identities', async () => {
       gContextualIdentitySelector.ui = new MenuUI({
         root:       gContextualIdentitySelector,
         appearance: 'panel',
@@ -153,10 +153,10 @@ async function init() {
         animationDuration: configs.animation ? configs.collapseDuration : 0.001
       });
     }),
-    gMetricsData.addAsync('tabContextMenu.init', async () => {
+    MetricsData.addAsync('tabContextMenu.init', async () => {
       tabContextMenu.init();
     }),
-    gMetricsData.addAsync('getting registered addons and scroll lock state', async () => {
+    MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       var results = await browser.runtime.sendMessage([
         { type: kCOMMAND_REQUEST_REGISTERED_ADDONS },
         { type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
@@ -171,7 +171,7 @@ async function init() {
       }
       updateSpecialEventListenersForAPIListeners();
     }),
-    gMetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
+    MetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
     })
   ]));
@@ -183,7 +183,7 @@ async function init() {
       position: scrollPosition,
       justNow:  true
     });
-    gMetricsData.add('applying scroll position');
+    MetricsData.add('applying scroll position');
   }
 
   gInitializing = false;
@@ -210,8 +210,8 @@ async function init() {
 
   unblockUserOperations({ throbber: true });
 
-  gMetricsData.add('init end');
-  log('Startup metrics: ', gMetricsData.toString());
+  MetricsData.add('init end');
+  log('Startup metrics: ', MetricsData.toString());
 }
 
 function destroy() {
@@ -488,7 +488,7 @@ async function rebuildAll(aCache) {
   if (aCache) {
     let restored = await restoreTabsFromCache(aCache, { tabs: apiTabs });
     if (restored) {
-      gMetricsData.add('rebuildAll (from cache)');
+      MetricsData.add('rebuildAll (from cache)');
       return true;
     }
   }
@@ -501,7 +501,7 @@ async function rebuildAll(aCache) {
     updateTab(newTab, apiTab, { forceApply: true });
   }
   gAllTabs.appendChild(container);
-  gMetricsData.add('rebuildAll (from scratch)');
+  MetricsData.add('rebuildAll (from scratch)');
   return false;
 }
 
@@ -510,10 +510,10 @@ async function inheritTreeStructure() {
     type:     kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
   });
-  gMetricsData.add('inheritTreeStructure: kCOMMAND_PULL_TREE_STRUCTURE');
+  MetricsData.add('inheritTreeStructure: kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
     await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
-    gMetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
+    MetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
   }
 }
 

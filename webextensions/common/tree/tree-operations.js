@@ -1633,7 +1633,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   if (!aTabs || !aTreeStructure)
     return;
 
-  gMetricsData.add('applyTreeStructureToTabs: start');
+  MetricsData.add('applyTreeStructureToTabs: start');
 
   log('applyTreeStructureToTabs: ', aTabs.map(dumpTab), aTreeStructure, aOptions);
   aTabs = aTabs.slice(0, aTreeStructure.length);
@@ -1644,7 +1644,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   while (expandStates.length < aTabs.length)
     expandStates.push(-1);
 
-  gMetricsData.add('applyTreeStructureToTabs: preparation');
+  MetricsData.add('applyTreeStructureToTabs: preparation');
 
   var parentTab = null;
   var tabsInTree = [];
@@ -1697,7 +1697,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
   }
   if (promises.length > 0)
     await Promise.all(promises);
-  gMetricsData.add('applyTreeStructureToTabs: attach/detach');
+  MetricsData.add('applyTreeStructureToTabs: attach/detach');
 
   log('expandStates: ', expandStates);
   for (let i = aTabs.length-1; i > -1; i--) {
@@ -1709,7 +1709,7 @@ async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions = {}) {
       force:     true
     }));
   }
-  gMetricsData.add('applyTreeStructureToTabs: collapse/expand');
+  MetricsData.add('applyTreeStructureToTabs: collapse/expand');
 }
 
 

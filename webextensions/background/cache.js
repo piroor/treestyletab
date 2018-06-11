@@ -6,7 +6,7 @@
 'use strict';
 
 async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
-  gMetricsData.add('restoreWindowFromEffectiveWindowCache start');
+  MetricsData.add('restoreWindowFromEffectiveWindowCache start');
   logForCache('restoreWindowFromEffectiveWindowCache start');
   var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
   if (!owner) {
@@ -54,7 +54,7 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
       !signatureMatched) {
     logForCache(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
-    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail');
+    MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
     return false;
   }
   cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
@@ -80,9 +80,9 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
     insertionPoint.detach();
 
   if (restored)
-    gMetricsData.add('restoreWindowFromEffectiveWindowCache success');
+    MetricsData.add('restoreWindowFromEffectiveWindowCache success');
   else
-    gMetricsData.add('restoreWindowFromEffectiveWindowCache fail');
+    MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
 
   return restored;
 }

@@ -8,7 +8,7 @@
 var gLastWindowCacheOwner;
 
 async function getEffectiveWindowCache(aOptions = {}) {
-  gMetricsData.add('getEffectiveWindowCache start');
+  MetricsData.add('getEffectiveWindowCache start');
   logForCache('getEffectiveWindowCache: start');
   cancelReservedUpdateCachedTabbar(); // prevent to break cache before loading
   var cache;
@@ -47,7 +47,7 @@ async function getEffectiveWindowCache(aOptions = {}) {
         cache.tabbar.contents = trimTabsCache(cache.tabbar.contents, cache.tabbar.pinnedTabsCount);
         cachedSignature       = trimSignature(cachedSignature, cache.tabbar.pinnedTabsCount);
       }
-      gMetricsData.add('getEffectiveWindowCache get ' + JSON.stringify({
+      MetricsData.add('getEffectiveWindowCache get ' + JSON.stringify({
         cache: !!cache,
         version: cache && cache.version
       }));
@@ -80,13 +80,13 @@ async function getEffectiveWindowCache(aOptions = {}) {
     clearWindowCache();
     cache = null;
     logForCache('getEffectiveWindowCache: failed');
-    gMetricsData.add('getEffectiveWindowCache fail');
+    MetricsData.add('getEffectiveWindowCache fail');
   }
   else {
     cache.offset          = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
     cache.actualSignature = actualSignature;
     logForCache('getEffectiveWindowCache: success ');
-    gMetricsData.add('getEffectiveWindowCache success');
+    MetricsData.add('getEffectiveWindowCache success');
   }
 
   return cache;
