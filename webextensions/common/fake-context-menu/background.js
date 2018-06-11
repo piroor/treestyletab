@@ -73,7 +73,7 @@ var tabContextMenu = {
         return Promise.resolve(this.items);
 
       case kTSTAPI_CONTEXT_MENU_CLICK:
-        contextMenuClickListener(aMessage.info, aMessage.tab);
+        ContextMenu.onClick(aMessage.info, aMessage.tab);
         return;
     }
   },

@@ -57,7 +57,7 @@ async function init() {
 
   tabContextMenu.init();
 
-  refreshContextMenuItems();
+  ContextMenu.refreshItems();
   configs.$addObserver(aKey => {
     switch (aKey) {
       case 'useCachedTree':
@@ -84,7 +84,7 @@ async function init() {
 
       default:
         if (aKey.indexOf('context_') == 0)
-          refreshContextMenuItems();
+          ContextMenu.refreshItems();
         break;
     }
   });

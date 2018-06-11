@@ -4,17 +4,7 @@
 'use strict';
 
 module.exports = {
-  'parserOptions': {
-    'sourceType': 'module',
-  },
-
-  'env': {
-    'browser': true,
-  },
-
-  'rules': {
-    'no-undef': ['error', {
-      'typeof': true,
-    }],
-  },
+  'extends': [
+    '../../tools/eslint/for-module.js',
+  ],
 };
