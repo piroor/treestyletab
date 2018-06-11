@@ -136,7 +136,7 @@ function getDropAction(aEvent) {
   });
   info.defineGetter('draggedTabs', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return info.draggedAPITabs.map(getTabById).filter(aTab => !!aTab);
+    return info.draggedAPITabs.map(GetTabs.getTabById).filter(aTab => !!aTab);
   });
   info.defineGetter('draggedAPITabs', () => {
     const dragData = info.dragData;
@@ -914,7 +914,7 @@ function onDragEnd(aEvent) {
   });
 
   if (Array.isArray(dragData.apiTabs))
-    dragData.tabNodes = dragData.apiTabs.map(getTabById);
+    dragData.tabNodes = dragData.apiTabs.map(GetTabs.getTabById);
 
   clearDropPosition();
   gLastDropPosition = null;

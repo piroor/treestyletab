@@ -235,7 +235,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
     insertAfter = GetTabs.getPreviousTab(insertAfter);
   // disallow to place tab in invalid position
   if (insertBefore) {
-    if (GetTabs.getTabIndex(insertBefore) <= getTabIndex(aParent)) {
+    if (GetTabs.getTabIndex(insertBefore) <= GetTabs.getTabIndex(aParent)) {
       insertBefore = null;
     }
     //TODO: we need to reject more cases...
@@ -243,7 +243,7 @@ function getReferenceTabsForNewChild(aChild, aParent, aOptions = {}) {
   if (insertAfter) {
     let allTabsInTree = [aParent].concat(descendants);
     let lastMember    = allTabsInTree[allTabsInTree.length - 1];
-    if (GetTabs.getTabIndex(insertAfter) >= getTabIndex(lastMember)) {
+    if (GetTabs.getTabIndex(insertAfter) >= GetTabs.getTabIndex(lastMember)) {
       insertAfter = lastMember;
     }
     //TODO: we need to reject more cases...
@@ -1037,7 +1037,7 @@ async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
 }
 
 async function moveTabs(aTabs, aOptions = {}) {
-  aTabs = aTabs.filter(ensureLivingTab);
+  aTabs = aTabs.filter(GetTabs.ensureLivingTab);
   if (aTabs.length == 0)
     return [];
 
@@ -1066,7 +1066,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       destinationWindowId: destinationWindowId,
       inRemote:            false
     }));
-    return (response.movedTabs || []).map(getTabById).filter(aTab => !!aTab);
+    return (response.movedTabs || []).map(GetTabs.getTabById).filter(aTab => !!aTab);
   }
 
   var movedTabs = aTabs;
@@ -1291,7 +1291,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       top:       'top' in aOptions ? parseInt(aOptions.top) : null,
       inRemote:  false
     }));
-    return (response.movedTabs || []).map(getTabById).filter(aTab => !!aTab);
+    return (response.movedTabs || []).map(GetTabs.getTabById).filter(aTab => !!aTab);
   }
 
   log('opening new window');
@@ -1312,7 +1312,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       blockUserOperationsIn(newWindow.id);
       return newWindow;
     });
-  aTabs = aTabs.filter(ensureLivingTab);
+  aTabs = aTabs.filter(GetTabs.ensureLivingTab);
   var movedTabs = await moveTabs(aTabs, Object.assign({}, aOptions, {
     destinationPromisedNewWindow: promsiedNewWindow
   }));
@@ -1398,7 +1398,7 @@ async function performTabsDragDrop(aParams = {}) {
     action:              aParams.action
   });
 
-  var draggedTabs = aParams.tabs.map(getTabById).filter(aTab => !!aTab);
+  var draggedTabs = aParams.tabs.map(GetTabs.getTabById).filter(aTab => !!aTab);
   if (!draggedTabs.length)
     return;
 

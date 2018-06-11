@@ -1424,7 +1424,7 @@ function onMessage(aMessage, aSender, aRespond) {
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
         return moveTabsBefore(
-          aMessage.tabs.map(getTabById),
+          aMessage.tabs.map(GetTabs.getTabById),
           GetTabs.getTabById(aMessage.nextTab),
           aMessage
         ).then(aTabs => aTabs.map(aTab => aTab.id));
@@ -1434,7 +1434,7 @@ function onMessage(aMessage, aSender, aRespond) {
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
         return moveTabsAfter(
-          aMessage.tabs.map(getTabById),
+          aMessage.tabs.map(GetTabs.getTabById),
           GetTabs.getTabById(aMessage.previousTab),
           aMessage
         ).then(aTabs => aTabs.map(aTab => aTab.id));
@@ -1443,7 +1443,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs);
-        return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
+        return removeTabsInternally(aMessage.tabs.map(GetTabs.getTabById), aMessage.options);
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {

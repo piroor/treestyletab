@@ -1447,7 +1447,7 @@ function onMessage(aMessage, aSender) {
         log('new window requested: ', aMessage);
         await waitUntilTabsAreCreated(aMessage.tabs);
         const movedTabs = await openNewWindowFromTabs(
-          aMessage.tabs.map(getTabById),
+          aMessage.tabs.map(GetTabs.getTabById),
           aMessage
         );
         return { movedTabs: movedTabs.map(aTab => aTab.id) };
@@ -1458,7 +1458,7 @@ function onMessage(aMessage, aSender) {
         log('move tabs requested: ', aMessage);
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.insertBefore, aMessage.insertAfter]));
         const movedTabs = await moveTabs(
-          aMessage.tabs.map(getTabById),
+          aMessage.tabs.map(GetTabs.getTabById),
           Object.assign({}, aMessage, {
             insertBefore: GetTabs.getTabById(aMessage.insertBefore),
             insertAfter:  GetTabs.getTabById(aMessage.insertAfter)
@@ -1470,7 +1470,7 @@ function onMessage(aMessage, aSender) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs);
-        return removeTabsInternally(aMessage.tabs.map(getTabById), aMessage.options);
+        return removeTabsInternally(aMessage.tabs.map(GetTabs.getTabById), aMessage.options);
       })();
 
     case Constants.kNOTIFY_SIDEBAR_FOCUS:
@@ -1601,7 +1601,7 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
         return moveTabsBefore(
-          aMessage.tabs.map(getTabById),
+          aMessage.tabs.map(GetTabs.getTabById),
           GetTabs.getTabById(aMessage.nextTab),
           Object.assign({}, aMessage, {
             broadcast: !!aMessage.broadcasted
@@ -1613,7 +1613,7 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
         return moveTabsAfter(
-          aMessage.tabs.map(getTabById),
+          aMessage.tabs.map(GetTabs.getTabById),
           GetTabs.getTabById(aMessage.previousTab),
           Object.assign({}, aMessage, {
             broadcast: !!aMessage.broadcasted
@@ -2040,7 +2040,7 @@ async function TSTAPIGetTabsFromWrongIds(aIds, aSender) {
         return tabFromUniqueId || aId;
     }
   }));
-  return tabOrAPITabOrIds.map(getTabById).filter(aTab => !!aTab);
+  return tabOrAPITabOrIds.map(GetTabs.getTabById).filter(aTab => !!aTab);
 }
 
 function TSTAPIFormatResult(aResults, aOriginalMessage) {

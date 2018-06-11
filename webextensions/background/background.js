@@ -447,8 +447,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   });
   insertBefore = GetTabs.getTabByUniqueId(insertBefore);
   insertAfter  = GetTabs.getTabByUniqueId(insertAfter);
-  ancestors    = ancestors.map(getTabByUniqueId);
-  children     = children.map(getTabByUniqueId);
+  ancestors    = ancestors.map(GetTabs.getTabByUniqueId);
+  children     = children.map(GetTabs.getTabByUniqueId);
   log(' => references: ', {
     insertBefore: dumpTab(insertBefore),
     insertAfter:  dumpTab(insertAfter),

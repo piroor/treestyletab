@@ -578,7 +578,7 @@ function removeTabInternally(aTab, aOptions = {}) {
 }
 
 function removeTabsInternally(aTabs, aOptions = {}) {
-  aTabs = aTabs.filter(ensureLivingTab);
+  aTabs = aTabs.filter(GetTabs.ensureLivingTab);
   if (!aTabs.length)
     return;
   log('removeTabsInternally: ', aTabs.map(dumpTab));
@@ -636,7 +636,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     };
     if (aOptions.inRemote) {
       let tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(getTabById);
+      return tabIds.map(GetTabs.getTabById);
     }
     else {
       browser.runtime.sendMessage(message);
@@ -665,7 +665,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
-    syncOrderOfChildTabs(aTabs.map(getParentTab));
+    syncOrderOfChildTabs(aTabs.map(GetTabs.getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
@@ -739,7 +739,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     };
     if (aOptions.inRemote) {
       let tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(getTabById);
+      return tabIds.map(GetTabs.getTabById);
     }
     else {
       browser.runtime.sendMessage(message);
@@ -771,7 +771,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
-    syncOrderOfChildTabs(aTabs.map(getParentTab));
+    syncOrderOfChildTabs(aTabs.map(GetTabs.getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
