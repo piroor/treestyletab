@@ -31,7 +31,7 @@ var gContextMenuItems = `
   bookmarkTree
 `.trim().split(/\s+/);
 
-export async function refreshContextMenuItems() {
+export async function refreshItems() {
   browser.contextMenus.removeAll();
   tabContextMenu.onExternalMessage({
     type: kTSTAPI_CONTEXT_MENU_REMOVE_ALL
@@ -71,7 +71,7 @@ export async function refreshContextMenuItems() {
   }
 }
 
-export var contextMenuClickListener = (aInfo, aAPITab) => {
+export const onClick = (aInfo, aAPITab) => {
   log('context menu item clicked: ', aInfo, aAPITab);
 
   var contextTab = getTabById(aAPITab);
@@ -109,4 +109,4 @@ export var contextMenuClickListener = (aInfo, aAPITab) => {
       break;
   }
 };
-browser.contextMenus.onClicked.addListener(contextMenuClickListener);
+browser.contextMenus.onClicked.addListener(onClick);
