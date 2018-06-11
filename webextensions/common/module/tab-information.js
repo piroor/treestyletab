@@ -38,100 +38,117 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-function isActive(aTab) {
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  getCloseParentBehaviorForTabWithSidebarOpenState: false,
+ */
+
+import {
+  log,
+  configs
+} from './common.js';
+
+import * as Constants from './constants.js';
+import * as GetTabs from './get-tabs.js';
+
+export function isActive(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_ACTIVE);
 }
 
-function isPinned(aTab) {
+export function isPinned(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_PINNED);
 }
 
-function isAudible(aTab) {
+export function isAudible(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_AUDIBLE);
 }
 
-function isSoundPlaying(aTab) {
+export function isSoundPlaying(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING);
 }
 
-function maybeSoundPlaying(aTab) {
+export function maybeSoundPlaying(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
          (aTab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING) ||
           (aTab.classList.contains(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
            aTab.hasAttribute(Constants.kCHILDREN)));
 }
 
-function isMuted(aTab) {
+export function isMuted(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_MUTED);
 }
 
-function maybeMuted(aTab) {
+export function maybeMuted(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
          (aTab.classList.contains(Constants.kTAB_STATE_MUTED) ||
           (aTab.classList.contains(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
            aTab.hasAttribute(Constants.kCHILDREN)));
 }
 
-function isHidden(aTab) {
+export function isHidden(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_HIDDEN);
 }
 
-function isCollapsed(aTab) {
+export function isCollapsed(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_COLLAPSED);
 }
 
-function isDiscarded(aTab) {
+export function isDiscarded(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_DISCARDED);
 }
 
-function isPrivateBrowsing(aTab) {
+export function isPrivateBrowsing(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_PRIVATE_BROWSING);
 }
 
-function isOpening(aTab) {
+export function isOpening(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_OPENING);
 }
 
-function isDuplicating(aTab) {
+export function isDuplicating(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_DUPLICATING);
 }
 
-function isNewTabCommandTab(aTab) {
+export function isNewTabCommandTab(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
            GetTabs.assertInitializedTab(aTab) &&
            aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
 }
 
-function isSubtreeCollapsed(aTab) {
+export function isSubtreeCollapsed(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
-function shouldCloseTabSubtreeOf(aTab) {
+/*
+export function shouldCloseTabSubtreeOf(aTab) {
   return (hasChildTabs(aTab) &&
           (configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
            isSubtreeCollapsed(aTab)));
 }
+*/
 
-function shouldCloseLastTabSubtreeOf(aTab) {
+/*
+export function shouldCloseLastTabSubtreeOf(aTab) {
   return (GetTabs.ensureLivingTab(aTab) &&
           shouldCloseTabSubtreeOf(aTab) &&
           GetTabs.getDescendantTabs(aTab).length + 1 == GetTabs.getAllTabs(aTab).length);
 }
+*/
 
-function isGroupTab(aTab) {
+export function isGroupTab(aTab) {
   if (!aTab)
     return false;
   GetTabs.assertInitializedTab(aTab);
@@ -139,28 +156,28 @@ function isGroupTab(aTab) {
          aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
 }
 
-function isTemporaryGroupTab(aTab) {
+export function isTemporaryGroupTab(aTab) {
   if (!isGroupTab(aTab))
     return false;
   return /[&?]temporary=true/.test(aTab.apiTab.url);
 }
 
-function isSelected(aTab) {
+export function isSelected(aTab) {
   return GetTabs.ensureLivingTab(aTab) &&
            aTab.classList.contains(Constants.kTAB_STATE_SELECTED);
 }
 
-function isLocked(aTab) {
+export function isLocked(_aTab) {
   return false;
 }
 
-function hasChildTabs(aParent) {
+export function hasChildTabs(aParent) {
   if (!GetTabs.ensureLivingTab(aParent))
     return false;
   return aParent.hasAttribute(Constants.kCHILDREN);
 }
 
-function getLabelWithDescendants(aTab) {
+export function getLabelWithDescendants(aTab) {
   var label = [`* ${aTab.dataset.label}`];
   for (let child of GetTabs.getChildTabs(aTab)) {
     if (!child.dataset.labelWithDescendants)
@@ -170,7 +187,7 @@ function getLabelWithDescendants(aTab) {
   return label.join('\n');
 }
 
-function getMaxTreeLevel(aHint, aOptions = {}) {
+export function getMaxTreeLevel(aHint, aOptions = {}) {
   var tabs = aOptions.onlyVisible ? GetTabs.getVisibleTabs(aHint) : GetTabs.getTabs(aHint) ;
   var maxLevel = Math.max(...tabs.map(aTab => parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)));
   if (configs.maxTreeLevel > -1)
@@ -179,7 +196,7 @@ function getMaxTreeLevel(aHint, aOptions = {}) {
 }
 
 // if all tabs are aldeardy placed at there, we don't need to move them.
-function isAllTabsPlacedBefore(aTabs, aNextTab) {
+export function isAllTabsPlacedBefore(aTabs, aNextTab) {
   if (aTabs[aTabs.length - 1] == aNextTab)
     aNextTab = GetTabs.getNextTab(aNextTab);
   if (!aNextTab && !GetTabs.getNextTab(aTabs[aTabs.length - 1]))
@@ -197,7 +214,7 @@ function isAllTabsPlacedBefore(aTabs, aNextTab) {
          previousTab.nextSibling == aNextTab;
 }
 
-function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
+export function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
   if (aTabs[0] == aPreviousTab)
     aPreviousTab = GetTabs.getPreviousTab(aPreviousTab);
   if (!aPreviousTab && !GetTabs.getPreviousTab(aTabs[0]))
@@ -215,7 +232,7 @@ function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
          nextTab.previousSibling == aPreviousTab;
 }
 
-function getClosingTabsFromParent(aTab) {
+export function getClosingTabsFromParent(aTab) {
   const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
     windowId: aTab.apiTab.windowId
   });
@@ -225,7 +242,7 @@ function getClosingTabsFromParent(aTab) {
 }
 
 
-function dumpAllTabs() {
+export function dumpAllTabs() {
   if (!configs.debug)
     return;
   log('dumpAllTabs\n' +

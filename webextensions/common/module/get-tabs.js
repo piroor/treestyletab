@@ -44,8 +44,7 @@
   gAllTabs: false,
   buildTabsContainerFor: false,
   makeTabId: false,
-  isCollapsed: false,
-  isGroupTab: false,
+  TabInfo: false,
  */
 
 import * as XPath from './xpath.js';
@@ -328,10 +327,10 @@ export function getAncestorTabs(aDescendant, aOptions = {}) {
 }
 
 export function getVisibleAncestorOrSelf(aDescendant) {
-  if (!isCollapsed(aDescendant))
+  if (!TabInfo.isCollapsed(aDescendant))
     return aDescendant;
   for (let ancestor of getAncestorTabs(aDescendant)) {
-    if (!isCollapsed(ancestor))
+    if (!TabInfo.isCollapsed(ancestor))
       return ancestor;
   }
   return null;
@@ -653,7 +652,7 @@ export function getGroupTabForOpener(aOpener) {
 }
 
 export function getOpenerFromGroupTab(aGroupTab) {
-  if (!isGroupTab(aGroupTab))
+  if (!TabInfo.isGroupTab(aGroupTab))
     return null;
   const matchedOpenerTabId = aGroupTab.apiTab.url.match(/openerTabId=([^&;]+)/);
   return matchedOpenerTabId && getTabById(matchedOpenerTabId[1]);

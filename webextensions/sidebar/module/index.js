@@ -13,6 +13,7 @@ import * as MetricsData from '../../common/module/MetricsData.js';
 import * as Color from './color.js';
 
 import * as GetTabs from '../../common/module/get-tabs.js';
+import * as TabInfo from '../../common/module/tab-information.js';
 
 import MenuUI from '../../common/MenuUI.js';
 import l10n from '../../common/l10n.js';
@@ -36,6 +37,7 @@ window.MetricsData = MetricsData;
 window.Color = Color;
 
 window.GetTabs = GetTabs;
+window.TabInfo = TabInfo;
 
 window.MenuUI = MenuUI;
 window.l10n = l10n;
