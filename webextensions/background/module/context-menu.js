@@ -75,7 +75,6 @@ export var contextMenuClickListener = (aInfo, aAPITab) => {
   log('context menu item clicked: ', aInfo, aAPITab);
 
   var contextTab = getTabById(aAPITab);
-  var container  = contextTab.parentNode;
 
   switch (aInfo.menuItemId) {
     case 'reloadTree':
