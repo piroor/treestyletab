@@ -716,7 +716,7 @@ function onUnderflow(aEvent) {
 
 /* raw event handlers */
 
-function onTabBuilt(aTab, aInfo) {
+Tabs.onBuilt.addListener((aTab, aInfo) => {
   var label = Tabs.getTabLabel(aTab);
 
   var twisty = document.createElement('span');
@@ -774,32 +774,31 @@ function onTabBuilt(aTab, aInfo) {
       justNow:   true
     });
   }
-}
+});
 
-
-function onTabFaviconUpdated(aTab, aURL) {
+Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
   TabFavIconHelper.loadToImage({
     image: getTabFavicon(aTab).firstChild,
     tab:   aTab.apiTab,
     url:   aURL
   });
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-}
+});
 
 function onTabUpdated(aTab, aChangeInfo) {
   updateTabSoundButtonTooltip(aTab);
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
-function onTabLabelUpdated(aTab) {
+Tabs.onLabelUpdated.addListener(aTab => {
   reserveToUpdateTabTooltip(aTab);
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-}
+});
 
-function onParentTabUpdated(aTab) {
+Tabs.onParentTabUpdated.addListener(aTab => {
   updateTabSoundButtonTooltip(aTab);
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
-}
+});
 
 function updateTabSoundButtonTooltip(aTab) {
   var tooltip = '';
@@ -1280,47 +1279,47 @@ async function onTabDetached(aTab, aDetachInfo = {}) {
   reserveToUpdateCachedTabbar();
 }
 
-function onTabPinned(aTab) {
+Tabs.onPinned.addListener(aTab => {
   tabContextMenu.close();
   reserveToPositionPinnedTabs();
   reserveToUpdateCachedTabbar();
-}
+});
 
-function onTabUnpinned(aTab) {
+Tabs.onUnpinned.addListener(aTab => {
   tabContextMenu.close();
   clearPinnedStyle(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();
   reserveToUpdateCachedTabbar();
-}
+});
 
-function onTabShown(aTab) {
+Tabs.onShown.addListener(aTab => {
   tabContextMenu.close();
   reserveToPositionPinnedTabs();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
   reserveToUpdateCachedTabbar();
-}
+});
 
-function onTabHidden(aTab) {
+Tabs.onHidden.addListener(aTab => {
   tabContextMenu.close();
   reserveToPositionPinnedTabs();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
   reserveToUpdateCachedTabbar();
-}
+});
 
-function onTabStateChanged(aTab) {
+Tabs.onStateChanged.addListener(aTab => {
   if (aTab.apiTab.status == 'loading')
     aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
     aTab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   reserveToUpdateLoadingState();
-}
+});
 
-function onGroupTabDetected(aTab) {
+Tabs.onGroupTabDetected.addListener(aTab => {
   // When a group tab is restored but pending, TST cannot update title of the tab itself.
   // For failsafe now we update the title based on its URL.
   var uri = aTab.apiTab.url;
@@ -1334,7 +1333,7 @@ function onGroupTabDetected(aTab) {
   wait(0).then(() => {
     updateTab(aTab, { title }, { tab: aTab.apiTab });
   });
-}
+});
 
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();
@@ -1376,7 +1375,7 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
-      onTabFaviconUpdated(Tabs.getTabById(aMessage.tab), aMessage.favIconUrl);
+      Tabs.onFaviconUpdated.dispatch(Tabs.getTabById(aMessage.tab), aMessage.favIconUrl);
       break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {

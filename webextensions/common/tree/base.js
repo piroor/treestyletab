@@ -64,7 +64,7 @@ function buildTab(aApiTab, aOptions = {}) {
   label.classList.add(`${Constants.kLABEL}-content`);
   tab.appendChild(labelContainer);
 
-  window.onTabBuilt && onTabBuilt(tab, aOptions);
+  Tabs.onBuilt.dispatch(tab, aOptions);
 
   if (aOptions.existing) {
     tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
@@ -118,7 +118,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
            aNewState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     aTab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
     addSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
-    window.onGroupTabDetected && onGroupTabDetected(aTab);
+    Tabs.onGroupTabDetected.dispatch(aTab);
   }
   else if (aTab.apiTab &&
            aTab.apiTab.status == 'complete' &&
@@ -168,29 +168,27 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     }
     Tabs.getTabLabelContent(aTab).textContent = aNewState.title;
     aTab.dataset.label = visibleLabel;
-    window.onTabLabelUpdated && onTabLabelUpdated(aTab);
+    Tabs.onLabelUpdated.dispatch(aTab);
   }
 
   const openerOfGroupTab = Tabs.isGroupTab(aTab) && Tabs.getOpenerFromGroupTab(aTab);
   const hasFavIcon       = 'favIconUrl' in aNewState;
   const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab(aNewState);
   if (aOptions.forceApply || hasFavIcon || maybeImageTab) {
-    window.onTabFaviconUpdated &&
-      onTabFaviconUpdated(
-        aTab,
-        Tabs.getSafeFaviconUrl(aNewState.favIconUrl ||
-                               maybeImageTab && aNewState.url)
-      );
+    Tabs.onFaviconUpdated.dispatch(
+      aTab,
+      Tabs.getSafeFaviconUrl(aNewState.favIconUrl ||
+                             maybeImageTab && aNewState.url)
+    );
   }
   else if (openerOfGroupTab &&
            (openerOfGroupTab.apiTab.favIconUrl ||
             TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
-    window.onTabFaviconUpdated &&
-      onTabFaviconUpdated(
-        aTab,
-        Tabs.getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl ||
-                               openerOfGroupTab.apiTab.url)
-      );
+    Tabs.onFaviconUpdated.dispatch(
+      aTab,
+      Tabs.getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl ||
+                             openerOfGroupTab.apiTab.url)
+    );
   }
 
   if ('status' in aNewState) {
@@ -221,7 +219,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       }
       delete aTab.dataset.discardURLAfterCompletelyLoaded;
     }
-    window.onTabStateChanged && onTabStateChanged(aTab);
+    Tabs.onStateChanged.dispatch(aTab);
   }
 
   if ((aOptions.forceApply ||
@@ -230,11 +228,11 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     if (aNewState.pinned) {
       aTab.classList.add(Constants.kTAB_STATE_PINNED);
       aTab.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
-      window.onTabPinned && onTabPinned(aTab);
+      Tabs.onPinned.dispatch(aTab);
     }
     else {
       aTab.classList.remove(Constants.kTAB_STATE_PINNED);
-      window.onTabUnpinned && onTabUnpinned(aTab);
+      Tabs.onUnpinned.dispatch(aTab);
     }
   }
 
@@ -296,12 +294,12 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     if (aNewState.hidden) {
       if (!aTab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
         aTab.classList.add(Constants.kTAB_STATE_HIDDEN);
-        window.onTabHidden && onTabHidden(aTab);
+        Tabs.onHidden.dispatch(aTab);
       }
     }
     else if (aTab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
       aTab.classList.remove(Constants.kTAB_STATE_HIDDEN);
-      window.onTabShown && onTabShown(aTab);
+      Tabs.onShown.dispatch(aTab);
     }
   }
 
@@ -389,7 +387,7 @@ function updateParentTab(aParent) {
 
   updateParentTab(Tabs.getParentTab(aParent));
 
-  window.onParentTabUpdated && onParentTabUpdated(aParent);
+  Tabs.onParentTabUpdated.dispatch(aParent);
 }
 
 function buildTabsContainerFor(aWindowId) {
@@ -554,7 +552,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
       incrementContainerCounter(container, 'internalMovingCount');
       incrementContainerCounter(container, 'alreadyMovedTabsCount');
       container.insertBefore(tab, aReferenceTab);
-      window.onTabElementMoved && onTabElementMoved(tab, {
+      Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab
       });
@@ -660,7 +658,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
       incrementContainerCounter(container, 'internalMovingCount');
       incrementContainerCounter(container, 'alreadyMovedTabsCount');
       container.insertBefore(tab, nextTab);
-      window.onTabElementMoved && onTabElementMoved(tab, {
+      Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab
       });

@@ -712,7 +712,7 @@ function onTabMoving(aTab, aMoveInfo) {
   return true;
 }
 
-function onTabElementMoved(aTab, aInfo = {}) {
+Tabs.onTabElementMoved.addListener((aTab, aInfo = {}) => {
   reserveToUpdateInsertionPosition([
     aTab,
     Tabs.getPreviousTab(aTab),
@@ -720,7 +720,7 @@ function onTabElementMoved(aTab, aInfo = {}) {
     aInfo.oldPreviousTab,
     aInfo.oldNextTab
   ]);
-}
+});
 
 async function onTabMoved(aTab, aMoveInfo) {
   reserveToCacheTree(aTab);
@@ -1110,9 +1110,9 @@ function onTabUpdated(aTab, aChangeInfo) {
     reserveToUpdateRelatedGroupTabs(group);
 }
 
-function onTabLabelUpdated(aTab) {
+Tabs.onLabelUpdated.addListener(aTab => {
   reserveToUpdateRelatedGroupTabs(aTab);
-}
+});
 
 function onTabSubtreeCollapsedStateChanging(aTab) {
   reserveToUpdateSubtreeCollapsed(aTab);
@@ -1319,7 +1319,7 @@ function onTabDetachedFromWindow(aTab, aInfo = {}) {
   //restoreTabAttributes(aTab, backupAttributes);
 }
 
-function onTabPinned(aTab) {
+Tabs.onPinned.addListener(aTab => {
   reserveToCacheTree(aTab);
   collapseExpandSubtree(aTab, {
     collapsed: false,
@@ -1335,23 +1335,23 @@ function onTabPinned(aTab) {
     broadcast: true
   });
   collapseExpandTabAndSubtree(aTab, { collapsed: false });
-}
+});
 
-function onTabUnpinned(aTab) {
+Tabs.onUnpinned.addListener(aTab => {
   reserveToCacheTree(aTab);
-}
+});
 
-function onTabShown(aTab) {
+Tabs.onShown.addListener(aTab => {
   reserveToCacheTree(aTab);
-}
+});
 
-function onTabHidden(aTab) {
+Tabs.onHidden.addListener(aTab => {
   reserveToCacheTree(aTab);
-}
+});
 
-function onGroupTabDetected(aTab) {
+Tabs.onGroupTabDetected.addListener(aTab => {
   tryInitGroupTab(aTab);
-}
+});
 
 
 /* message observer */

@@ -499,7 +499,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
 
     log('tabs.onRemoved, tab is found: ', dumpTab(oldTab));
 
-    window.onTabStateChanged && onTabStateChanged(oldTab);
+    Tabs.onStateChanged.dispatch(oldTab);
 
     if (Tabs.isActive(oldTab))
       container.resolveClosedWhileActiveForPreviousActiveTab = oldTab._resolveClosedWhileActive;
@@ -714,7 +714,7 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
       descendants: Tabs.getDescendantTabs(oldTab)
     };
 
-    window.onTabStateChanged && await onTabStateChanged(oldTab);
+    Tabs.onStateChanged.dispatch(oldTab);
 
     if (!byInternalOperation) // we should process only tabs detached by others.
       window.onTabDetachedFromWindow && await onTabDetachedFromWindow(oldTab, info);

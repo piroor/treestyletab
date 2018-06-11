@@ -46,6 +46,9 @@ import {
   configs
 } from './common.js';
 
+import EventListenerManager from './EventListenerManager.js';
+
+
 let gTargetWindow;
 
 export const allTabsContainer = document.querySelector('#all-tabs');
@@ -169,6 +172,23 @@ export function updateUniqueId(aTab) {
   });
   return aTab.uniqueId;
 }
+
+
+//===================================================================
+// Event Handling
+//===================================================================
+
+export const onBuilt            = new EventListenerManager();
+export const onGroupTabDetected = new EventListenerManager();
+export const onLabelUpdated     = new EventListenerManager();
+export const onFaviconUpdated   = new EventListenerManager();
+export const onStateChanged     = new EventListenerManager();
+export const onPinned           = new EventListenerManager();
+export const onUnpinned         = new EventListenerManager();
+export const onHidden           = new EventListenerManager();
+export const onShown            = new EventListenerManager();
+export const onParentTabUpdated = new EventListenerManager();
+export const onTabElementMoved  = new EventListenerManager();
 
 
 //===================================================================
