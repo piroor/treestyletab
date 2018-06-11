@@ -38,12 +38,6 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-// Defined in a classic script source, and we can read these as global variables. 
-/* global
-  gTargetWindow: false,
-  gAllTabs: false,
- */
-
 import * as XPath from './xpath.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
@@ -52,10 +46,18 @@ import {
   configs
 } from './common.js';
 
+let gTargetWindow;
+
+export const allTabs = document.querySelector('#all-tabs');
+
 
 //===================================================================
 // Tab Related Utilities
 //===================================================================
+
+export function setWindow(aTargetWindow) {
+  return gTargetWindow = aTargetWindow;
+}
 
 export function getSafeFaviconUrl(aURL) {
   switch (aURL) {
@@ -202,7 +204,7 @@ export function getTabsContainer(aHint) {
   assertValidHint(aHint);
 
   if (!aHint)
-    aHint = gTargetWindow || gAllTabs.firstChild;
+    aHint = gTargetWindow || allTabs.firstChild;
 
   if (typeof aHint == 'number')
     return document.querySelector(`#window-${aHint}`);

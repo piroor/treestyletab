@@ -61,6 +61,7 @@ async function init() {
         currentWindow: true
       });
       gTargetWindow = apiTabs[0].windowId;
+      Tabs.setWindow(gTargetWindow);
       log.context   = `Sidebar-${gTargetWindow}`;
     })(),
     configs.$loaded
