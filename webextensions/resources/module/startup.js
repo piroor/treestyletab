@@ -5,7 +5,7 @@
 */
 'use strict';
 
-import { configs } from '../../common/module/common.js';
+import { configs } from '/common/module/common.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;

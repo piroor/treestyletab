@@ -15,11 +15,11 @@
 import {
   kTSTAPI_CONTEXT_MENU_REMOVE_ALL,
   kTSTAPI_CONTEXT_MENU_CREATE
-} from '../../common/module/constants.js';
+} from '/common/module/constants.js';
 import {
   log,
   configs
-} from '../../common/module/common.js';
+} from '/common/module/common.js';
 
 var gContextMenuItems = `
   reloadTree
