@@ -10,7 +10,7 @@
   Promise: false,
  */
 
-export async function getApiTabIndex(...aQueriedTabIds) {
+export async function getIndex(...aQueriedTabIds) {
   if (aQueriedTabIds.length == 0)
     return -1;
 
