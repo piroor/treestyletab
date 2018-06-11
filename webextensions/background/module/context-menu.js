@@ -9,15 +9,17 @@
 /* global
   tabContextMenu: false,
   getTabById: false,
-  log: false,
   Commands: false,
-  configs: false,
  */
 
 import {
   kTSTAPI_CONTEXT_MENU_REMOVE_ALL,
   kTSTAPI_CONTEXT_MENU_CREATE
 } from '../../common/module/constants.js';
+import {
+  log,
+  configs
+} from '../../common/module/common.js';
 
 var gContextMenuItems = `
   reloadTree

@@ -5,9 +5,37 @@
 */
 'use strict';
 
-var configs;
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  Promise: false,
+  Configs: false,
+  uneval: false,
+ */
 
-function log(aMessage, ...aArgs)
+import {
+  kNOTIFICATION_DEFAULT_ICON,
+  kTABBAR_POSITION_LEFT,
+  kTABBAR_DIRECTION_LTR,
+  kTABBAR_SCROLLBAR_POSITION_AUTO,
+  kCOUNTER_ROLE_CONTAINED_TABS,
+  kDEFAULT_MIN_INDENT,
+  kTABBAR_SCROLLBAR_MODE_OVERLAY,
+  kTABBAR_SCROLLBAR_MODE_NARROW,
+  kCONTEXTUAL_IDENTITY_SELECTOR,
+  kPARENT_TAB_BEHAVIOR_ALWAYS,
+  kDROPLINK_ASK,
+  kINSERT_END,
+  kINSERT_NO_CONTROL,
+  kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
+  kNEWTAB_OPEN_AS_CHILD,
+  kNEWTAB_OPEN_AS_ORPHAN,
+  kNEWTAB_OPEN_AS_NEXT_SIBLING,
+  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+} from './constants.js';
+
+let configs;
+
+export function log(aMessage, ...aArgs)
 {
   const useConsole = configs && configs.debug;
   const logging    = useConsole || log.forceStore;
@@ -31,7 +59,7 @@ log.max  = 1000;
 log.logs = [];
 log.forceStore = true;
 
-function dumpTab(aTab) {
+export function dumpTab(aTab) {
   if (!configs || !configs.debug)
     return '';
   if (!aTab || !aTab.apiTab)
@@ -39,12 +67,12 @@ function dumpTab(aTab) {
   return `#${aTab.id}`;
 }
 
-async function wait(aTask = 0, aTimeout = 0) {
+export async function wait(aTask = 0, aTimeout = 0) {
   if (typeof aTask != 'function') {
     aTimeout = aTask;
     aTask    = null;
   }
-  return new Promise((aResolve, aReject) => {
+  return new Promise((aResolve, _aReject) => {
     setTimeout(async () => {
       if (aTask)
         await aTask();
@@ -53,13 +81,13 @@ async function wait(aTask = 0, aTimeout = 0) {
   });
 }
 
-function nextFrame() {
-  return new Promise((aResolve, aReject) => {
+export function nextFrame() {
+  return new Promise((aResolve, _aReject) => {
     window.requestAnimationFrame(aResolve);
   });
 }
 
-async function notify(aParams = {}) {
+export async function notify(aParams = {}) {
   var id = await browser.notifications.create({
     type:    'basic',
     iconUrl: aParams.icon || kNOTIFICATION_DEFAULT_ICON,
@@ -284,3 +312,5 @@ configs.$loaded.then(() => {
   if (!configs.debug)
     log.logs = [];
 });
+
+export { configs };
