@@ -63,10 +63,3 @@ function mixColors(aBase, aOver) {
   return { red, green, blue, alpha: 1 };
 }
 
-function getReadableForegroundColorFromBGColor(aColor) { // expected input: 'RRGGBB', 'RGB', 'rgb(...)'
-  var color = parseCSSColor(aColor);
-  if (!color)
-    return '-moz-fieldtext';
-  var brightness = (color.red * 0.299 + color.green * 0.587 + color.blue * 0.114) / 255;
-  return brightness < 0.5 ? 'white' : 'black';
-}
