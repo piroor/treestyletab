@@ -239,7 +239,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       'title' in aNewState) {
     let visibleLabel = aNewState.title;
     if (aNewState && aNewState.cookieStoreId) {
-      let identity = gContextualIdentities[aNewState.cookieStoreId];
+      let identity = ContextualIdentities.get(aNewState.cookieStoreId);
       if (identity)
         visibleLabel = `${aNewState.title} - ${identity.name}`;
     }

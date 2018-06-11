@@ -1336,10 +1336,10 @@ function onGroupTabDetected(aTab) {
   });
 }
 
-function onContextualIdentitiesUpdated() {
+ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
-}
+});
 
 
 /* message observer */

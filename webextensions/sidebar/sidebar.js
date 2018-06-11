@@ -72,9 +72,9 @@ async function init() {
 
   await Promise.all([
     waitUntilBackgroundIsReady(),
-    retrieveAllContextualIdentities()
+    ContextualIdentities.init()
   ]);
-  MetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
+  MetricsData.add('applyStyle, waitUntilBackgroundIsReady and ContextualIdentities.init');
 
   var cachedContents;
   var restoredFromCache;
@@ -144,7 +144,7 @@ async function init() {
       });
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
-      startObserveContextualIdentities();
+      ContextualIdentities.startObserve();
 
       gNewTabActionSelector.ui = new MenuUI({
         root:       gNewTabActionSelector,
@@ -222,7 +222,7 @@ function destroy() {
     browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
   endListenDragEvents();
   endObserveApiTabs();
-  endObserveContextualIdentities();
+  ContextualIdentities.endObserve();
   window.removeEventListener('resize', onResize);
 
   document.removeEventListener('mousedown', onMouseDown);
@@ -374,23 +374,22 @@ function calculateDefaultSizes() {
 
 function updateContextualIdentitiesStyle() {
   var definitions = [];
-  for (let id of Object.keys(gContextualIdentities)) {
-    let identity = gContextualIdentities[id];
-    if (!identity.colorCode)
-      continue;
+  ContextualIdentities.forEach(aIdentity => {
+    if (!aIdentity.colorCode)
+      return;
     definitions.push(`
-      .tab.contextual-identity-${id} .contextual-identity-marker {
-        background-color: ${identity.colorCode};
+      .tab.contextual-identity-${aIdentity.cookieStoreId} .contextual-identity-marker {
+        background-color: ${aIdentity.colorCode};
       }
     `);
-  }
+  });
   gContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
 
 function updateContextualIdentitiesSelector() {
   const anchors = Array.slice(document.querySelectorAll(`.${kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
   for (let anchor of anchors) {
-    if (identityIds.length == 0)
+    if (ContextualIdentities.getCount() == 0)
       anchor.setAttribute('disabled', true);
     else
       anchor.removeAttribute('disabled');
@@ -401,22 +400,20 @@ function updateContextualIdentitiesSelector() {
   range.selectNodeContents(selector);
   range.deleteContents();
 
-  const identityIds = Object.keys(gContextualIdentities);
-  const fragment    = document.createDocumentFragment();
-  for (let id of identityIds) {
-    const identity = gContextualIdentities[id];
+  const fragment = document.createDocumentFragment();
+  ContextualIdentities.forEach(aIdentity => {
     const item     = document.createElement('li');
-    item.dataset.value = id;
-    item.textContent = identity.name;
+    item.dataset.value = aIdentity.cookieStoreId;
+    item.textContent = aIdentity.name;
     const icon = document.createElement('span');
     icon.classList.add('icon');
-    if (identity.iconUrl) {
-      icon.style.backgroundColor = identity.colorCode || 'var(--tab-text)';
-      icon.style.mask = `url(${JSON.stringify(identity.iconUrl)}) no-repeat center / 100%`;
+    if (aIdentity.iconUrl) {
+      icon.style.backgroundColor = aIdentity.colorCode || 'var(--tab-text)';
+      icon.style.mask = `url(${JSON.stringify(aIdentity.iconUrl)}) no-repeat center / 100%`;
     }
     item.insertBefore(icon, item.firstChild);
     fragment.appendChild(item);
-  }
+  });
   if (configs.inheritContextualIdentityToNewChildTab) {
     let defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';

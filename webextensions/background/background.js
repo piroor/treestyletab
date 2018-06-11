@@ -39,9 +39,9 @@ async function init() {
 
   updatePanelUrl();
 
-  await MetricsData.addAsync('parallel initialization tasks: waitUntilCompletelyRestored, retrieveAllContextualIdentities', Promise.all([
+  await MetricsData.addAsync('parallel initialization tasks: waitUntilCompletelyRestored, ContextualIdentities.init', Promise.all([
     waitUntilCompletelyRestored(),
-    retrieveAllContextualIdentities()
+    ContextualIdentities.init()
   ]));
   var restoredFromCache = await rebuildAll();
   MetricsData.add(`rebuildAll (cached: ${JSON.stringify(restoredFromCache)})`);
@@ -52,7 +52,7 @@ async function init() {
   MetricsData.add('migrateLegacyTreeStructure');
 
   startObserveApiTabs();
-  startObserveContextualIdentities();
+  ContextualIdentities.startObserve();
   browser.runtime.onMessage.addListener(onMessage);
 
   tabContextMenu.init();
@@ -161,7 +161,7 @@ function destroy() {
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
   endObserveApiTabs();
-  endObserveContextualIdentities();
+  ContextualIdentities.endObserve();
   gAllTabs = undefined;
 }
 

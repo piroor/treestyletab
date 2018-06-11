@@ -3,6 +3,7 @@ import * as Common from '/common/module/common.js';
 import * as XPath from '/common/module/xpath.js';
 import * as ApiTabs from '/common/module/api-tabs.js';
 import * as Permissions from '/common/module/permissions.js';
+import * as ContextualIdentities from '/common/module/contextual-identities.js';
 import * as ContextMenu from './context-menu.js';
 import * as MetricsData from '/common/module/MetricsData.js';
 
@@ -16,6 +17,7 @@ for (let key of Object.keys(Common)) {
 window.XPath = XPath;
 window.ApiTabs = ApiTabs;
 window.Permissions = Permissions;
+window.ContextualIdentities = ContextualIdentities;
 window.ContextMenu = ContextMenu;
 window.MetricsData = MetricsData;
 
