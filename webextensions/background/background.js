@@ -14,7 +14,6 @@ var gExternalListenerAddons = null;
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
 
-var gMetricsData = new MetricsData();
 gMetricsData.add('Loaded');
 
 window.addEventListener('DOMContentLoaded', init, { once: true });

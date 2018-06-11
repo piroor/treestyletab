@@ -3,9 +3,13 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-'use strict';
 
-function MetricsData() {
+// Defined in a classic script source, and we can read these as global variables. 
+/* global
+  getTabs: false,
+ */
+
+export function MetricsData() {
   this.items       = [];
   this.initialTime = this.lastTime = Date.now();
 }
