@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import EventListenerManager from './EventListenerManager.js';
+
 var gContextualIdentities = {};
 
 export function get(id) {
@@ -46,38 +48,22 @@ export async function init() {
   }
 }
 
-export const onUpdated = {
-  listeners: [],
-  addListener(aListener) {
-    if (this.listeners.indexOf(aListener) < 0)
-      this.listeners.push(aListener);
-  },
-  removeListener(aListener) {
-    const index = this.listeners.indexOf(aListener);
-    if (index > -1)
-      this.listeners.splice(index, 1);
-  },
-  process() {
-    for (let listener of this.listeners) {
-      listener();
-    }
-  }
-};
+export const onUpdated = new EventListenerManager();
 
 function onContextualIdentityCreated(aCreatedInfo) {
   const identity = aCreatedInfo.contextualIdentity;
   gContextualIdentities[identity.cookieStoreId] = identity;
-  onUpdated.process();
+  onUpdated.dispatch();
 }
 
 function onContextualIdentityRemoved(aRemovedInfo) {
   const identity = aRemovedInfo.contextualIdentity;
   delete gContextualIdentities[identity.cookieStoreId];
-  onUpdated.process();
+  onUpdated.dispatch();
 }
 
 function onContextualIdentityUpdated(aUpdatedInfo) {
   const identity = aUpdatedInfo.contextualIdentity;
   gContextualIdentities[identity.cookieStoreId] = identity;
-  onUpdated.process();
+  onUpdated.dispatch();
 }
