@@ -205,9 +205,9 @@ function clearOldActiveStateInWindow(aWindowId) {
   const container = GetTabs.getTabsContainer(aWindowId);
   if (!container)
     return [];
-  const oldTabs = container.querySelectorAll(`.${kTAB_STATE_ACTIVE}`);
+  const oldTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`);
   for (let oldTab of oldTabs) {
-    oldTab.classList.remove(kTAB_STATE_ACTIVE);
+    oldTab.classList.remove(Constants.kTAB_STATE_ACTIVE);
     if (oldTab.apiTab) // this function can be applied for cached tab.
       oldTab.apiTab.active = false;
   }
@@ -295,7 +295,7 @@ async function onNewTabTracked(aTab) {
     const hasNextTab = !!GetTabs.getAllTabs(container)[aTab.index];
 
     const newTab = buildTab(aTab, { inRemote: !!gTargetWindow });
-    newTab.classList.add(kTAB_STATE_OPENING);
+    newTab.classList.add(Constants.kTAB_STATE_OPENING);
 
     const nextTab = GetTabs.getAllTabs(container)[aTab.index];
     container.insertBefore(newTab, nextTab);
@@ -409,13 +409,13 @@ async function onNewTabTracked(aTab) {
       treeForActionDetection
     });
     wait(configs.newTabAnimationDuration).then(() => {
-      newTab.classList.remove(kTAB_STATE_OPENING);
+      newTab.classList.remove(Constants.kTAB_STATE_OPENING);
     });
     newTab._resolveOpened();
 
     if (!duplicated &&
         restored) {
-      newTab.classList.add(kTAB_STATE_RESTORED);
+      newTab.classList.add(Constants.kTAB_STATE_RESTORED);
       window.onTabRestored && onTabRestored(newTab);
       checkRecycledTab(container);
     }
@@ -434,28 +434,28 @@ async function onNewTabTracked(aTab) {
 }
 
 // "Recycled tab" is an existing but reused tab for session restoration.
-const kBASE_RECYCLED_TAB_CONDITION = `li:not(.${kTAB_STATE_RESTORED}):not(.${kTAB_STATE_OPENING})`;
+const kBASE_RECYCLED_TAB_CONDITION = `li:not(.${Constants.kTAB_STATE_RESTORED}):not(.${Constants.kTAB_STATE_OPENING})`;
 function checkRecycledTab(aContainer) {
   const possibleRecycledTabs = aContainer.querySelectorAll(`
-    ${kBASE_RECYCLED_TAB_CONDITION}:not([${kCURRENT_URI}]),
-    ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}"],
-    ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="about:blank"],
-    ${kBASE_RECYCLED_TAB_CONDITION}[${kCURRENT_URI}="about:privatebrowsing"]
+    ${kBASE_RECYCLED_TAB_CONDITION}:not([${Constants.kCURRENT_URI}]),
+    ${kBASE_RECYCLED_TAB_CONDITION}[${Constants.kCURRENT_URI}="${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}"],
+    ${kBASE_RECYCLED_TAB_CONDITION}[${Constants.kCURRENT_URI}="about:blank"],
+    ${kBASE_RECYCLED_TAB_CONDITION}[${Constants.kCURRENT_URI}="about:privatebrowsing"]
   `);
   if (possibleRecycledTabs.length == 0)
     return;
 
   log(`Detecting recycled tabs for session restoration from ${possibleRecycledTabs.length} tabs`);
   for (let tab of possibleRecycledTabs) {
-    let currentId = tab.getAttribute(kPERSISTENT_ID);
+    let currentId = tab.getAttribute(Constants.kPERSISTENT_ID);
     updateUniqueId(tab).then(aUniqueId => {
       if (!GetTabs.ensureLivingTab(tab) ||
           !aUniqueId.restored ||
           aUniqueId.id == currentId ||
-          tab.classList.contains(kTAB_STATE_RESTORED))
+          tab.classList.contains(Constants.kTAB_STATE_RESTORED))
         return;
       log('A recycled tab is detected: ', dumpTab(tab));
-      tab.classList.add(kTAB_STATE_RESTORED);
+      tab.classList.add(Constants.kTAB_STATE_RESTORED);
       window.onTabRestored && onTabRestored(tab);
     });
   }
@@ -495,8 +495,8 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
       byInternalOperation
     });
 
-    oldTab[kTAB_STATE_REMOVING] = true;
-    oldTab.classList.add(kTAB_STATE_REMOVING);
+    oldTab[Constants.kTAB_STATE_REMOVING] = true;
+    oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
 
     if (!isCollapsed(oldTab) &&
         window.onTabCompletelyClosed) {

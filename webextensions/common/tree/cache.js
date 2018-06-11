@@ -19,7 +19,7 @@ async function getWindowSignature(aWindowIdOrTabs) {
 }
 
 async function getUniqueIds(aApiTabs) {
-  var uniqueIds = await Promise.all(aApiTabs.map(aApiTab => browser.sessions.getTabValue(aApiTab.id, kPERSISTENT_ID)));
+  var uniqueIds = await Promise.all(aApiTabs.map(aApiTab => browser.sessions.getTabValue(aApiTab.id, Constants.kPERSISTENT_ID)));
   return uniqueIds.map(aId => aId && aId.id || '?');
 }
 
@@ -44,7 +44,7 @@ function matcheSignatures(aSignatures) {
 }
 
 function signatureFromTabsCache(aCache) {
-  var uniqueIdMatcher = new RegExp(`${kPERSISTENT_ID}="([^"]+)"`);
+  var uniqueIdMatcher = new RegExp(`${Constants.kPERSISTENT_ID}="([^"]+)"`);
   if (!aCache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g))
     logForCache('NO MATCH ', aCache);
   return (aCache.match(/(<li[^>]*>[\w\W]+?<\/li>)/g) || []).map(aMatched => {
@@ -148,8 +148,8 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
     aTab.id = makeTabId(apiTab);
     aTab.apiTab = apiTab;
     logForCache(`fixupTabsRestoredFromCache: remap ${oldId} => ${aTab.id}`);
-    aTab.setAttribute(kAPI_TAB_ID, apiTab.id || -1);
-    aTab.setAttribute(kAPI_WINDOW_ID, apiTab.windowId || -1);
+    aTab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);
+    aTab.setAttribute(Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
     idMap[oldId] = aTab;
   });
   // step 2: restore information of tabs
@@ -187,23 +187,23 @@ function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
 
   const idMap = aOptions.idMap;
 
-  logForCache('fixupTabRestoredFromCache children: ', aTab.getAttribute(kCHILDREN));
-  aTab.childTabs = (aTab.getAttribute(kCHILDREN) || '')
+  logForCache('fixupTabRestoredFromCache children: ', aTab.getAttribute(Constants.kCHILDREN));
+  aTab.childTabs = (aTab.getAttribute(Constants.kCHILDREN) || '')
     .split('|')
     .map(aOldId => idMap[aOldId])
     .filter(aTab => !!aTab);
   if (aTab.childTabs.length > 0)
-    aTab.setAttribute(kCHILDREN, `|${aTab.childTabs.map(aTab => aTab.id).join('|')}|`);
+    aTab.setAttribute(Constants.kCHILDREN, `|${aTab.childTabs.map(aTab => aTab.id).join('|')}|`);
   else
-    aTab.removeAttribute(kCHILDREN);
-  logForCache('fixupTabRestoredFromCache children: => ', aTab.getAttribute(kCHILDREN));
+    aTab.removeAttribute(Constants.kCHILDREN);
+  logForCache('fixupTabRestoredFromCache children: => ', aTab.getAttribute(Constants.kCHILDREN));
 
-  logForCache('fixupTabRestoredFromCache parent: ', aTab.getAttribute(kPARENT));
-  aTab.parentTab = idMap[aTab.getAttribute(kPARENT)] || null;
+  logForCache('fixupTabRestoredFromCache parent: ', aTab.getAttribute(Constants.kPARENT));
+  aTab.parentTab = idMap[aTab.getAttribute(Constants.kPARENT)] || null;
   if (aTab.parentTab)
-    aTab.setAttribute(kPARENT, aTab.parentTab.id);
+    aTab.setAttribute(Constants.kPARENT, aTab.parentTab.id);
   else
-    aTab.removeAttribute(kPARENT);
-  logForCache('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(kPARENT));
+    aTab.removeAttribute(Constants.kPARENT);
+  logForCache('fixupTabRestoredFromCache parent: => ', aTab.getAttribute(Constants.kPARENT));
   aTab.ancestorTabs = GetTabs.getAncestorTabs(aTab, { force: true });
 }

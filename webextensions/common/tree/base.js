@@ -63,7 +63,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
 
   if (aOptions.inRemote) {
     return await browser.runtime.sendMessage({
-      type:     kCOMMAND_REQUEST_UNIQUE_ID,
+      type:     Constants.kCOMMAND_REQUEST_UNIQUE_ID,
       id:       tabId,
       forceNew: !!aOptions.forceNew
     });
@@ -73,7 +73,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
   var originalTabId = null;
   var duplicated    = false;
   if (!aOptions.forceNew) {
-    let oldId = await browser.sessions.getTabValue(tabId, kPERSISTENT_ID);
+    let oldId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
@@ -83,7 +83,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
         let tabWithOldId = GetTabs.getTabById(oldId.tabId);
         if (!tabWithOldId)
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-        originalId = tabWithOldId.getAttribute(kPERSISTENT_ID) /* (await tabWithOldId.uniqueId).id // don't try to wait this, because it sometime causes deadlock */;
+        originalId = tabWithOldId.getAttribute(Constants.kPERSISTENT_ID) /* (await tabWithOldId.uniqueId).id // don't try to wait this, because it sometime causes deadlock */;
         duplicated = tab && tabWithOldId != tab && originalId == oldId.id;
         if (duplicated)
           originalTabId = oldId.tabId;
@@ -96,7 +96,7 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
         // There is no live tab for the tabId, thus
         // this seems to be a tab restored from session.
         // We need to update the related tab id.
-        await browser.sessions.setTabValue(tabId, kPERSISTENT_ID, {
+        await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, {
           id:    oldId.id,
           tabId: tabId
         });
@@ -110,11 +110,11 @@ async function requestUniqueId(aTabOrId, aOptions = {}) {
     }
   }
 
-  var adjective   = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
-  var noun        = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
+  var adjective   = Constants.kID_ADJECTIVES[Math.floor(Math.random() * Constants.kID_ADJECTIVES.length)];
+  var noun        = Constants.kID_NOUNS[Math.floor(Math.random() * Constants.kID_NOUNS.length)];
   var randomValue = Math.floor(Math.random() * 1000);
   var id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  await browser.sessions.setTabValue(tabId, kPERSISTENT_ID, {
+  await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, {
     id:    id,
     tabId: tabId // for detecttion of duplicated tabs
   });
@@ -126,24 +126,24 @@ function buildTab(aApiTab, aOptions = {}) {
   var tab = document.createElement('li');
   tab.apiTab = aApiTab;
   tab.setAttribute('id', makeTabId(aApiTab));
-  tab.setAttribute(kAPI_TAB_ID, aApiTab.id || -1);
-  tab.setAttribute(kAPI_WINDOW_ID, aApiTab.windowId || -1);
-  //tab.setAttribute(kCHILDREN, '');
+  tab.setAttribute(Constants.kAPI_TAB_ID, aApiTab.id || -1);
+  tab.setAttribute(Constants.kAPI_WINDOW_ID, aApiTab.windowId || -1);
+  //tab.setAttribute(Constants.kCHILDREN, '');
   tab.classList.add('tab');
   if (aApiTab.active)
-    tab.classList.add(kTAB_STATE_ACTIVE);
-  tab.classList.add(kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.classList.add(Constants.kTAB_STATE_ACTIVE);
+  tab.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
   const labelContainer = document.createElement('span');
-  labelContainer.classList.add(kLABEL);
+  labelContainer.classList.add(Constants.kLABEL);
   const label = labelContainer.appendChild(document.createElement('span'));
-  label.classList.add(`${kLABEL}-content`);
+  label.classList.add(`${Constants.kLABEL}-content`);
   tab.appendChild(labelContainer);
 
   window.onTabBuilt && onTabBuilt(tab, aOptions);
 
   if (aOptions.existing) {
-    tab.classList.add(kTAB_STATE_ANIMATION_READY);
+    tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
   }
 
   if (aApiTab.id)
@@ -174,7 +174,7 @@ function updateUniqueId(aTab) {
     inRemote: !!gTargetWindow
   }).then(aUniqueId => {
     if (aUniqueId && GetTabs.ensureLivingTab(aTab)) // possibly removed from document while waiting
-      aTab.setAttribute(kPERSISTENT_ID, aUniqueId.id);
+      aTab.setAttribute(Constants.kPERSISTENT_ID, aUniqueId.id);
     return aUniqueId || {};
   }).catch(aError => {
     console.log(`FATAL ERROR: Failed to get unique id for a tab ${aTab.apiTab.id}: `, String(aError), aError.stack);
@@ -185,7 +185,7 @@ function updateUniqueId(aTab) {
 
 function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if ('url' in aNewState) {
-    aTab.setAttribute(kCURRENT_URI, aNewState.url);
+    aTab.setAttribute(Constants.kCURRENT_URI, aNewState.url);
     if (aTab.dataset.discardURLAfterCompletelyLoaded &&
         aTab.dataset.discardURLAfterCompletelyLoaded != aNewState.url)
       delete aTab.dataset.discardURLAfterCompletelyLoaded;
@@ -193,44 +193,44 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
-  if (aOptions.tab && kSHORTHAND_ABOUT_URI.test(aOptions.tab.url)) {
+  if (aOptions.tab && Constants.kSHORTHAND_ABOUT_URI.test(aOptions.tab.url)) {
     let shorthand = RegExp.$1;
     wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
       browser.tabs.update(aOptions.tab.id, {
-        url: aOptions.tab.url.replace(kSHORTHAND_ABOUT_URI, kSHORTHAND_URIS[shorthand] || 'about:blank')
+        url: aOptions.tab.url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
-      aTab.classList.add(kTAB_STATE_GROUP_TAB);
-      addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
+      aTab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+      addSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
     });
     return;
   }
   else if ('url' in aNewState &&
-           aNewState.url.indexOf(kGROUP_TAB_URI) == 0) {
-    aTab.classList.add(kTAB_STATE_GROUP_TAB);
-    addSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
+           aNewState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+    aTab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+    addSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
     window.onGroupTabDetected && onGroupTabDetected(aTab);
   }
   else if (aTab.apiTab &&
            aTab.apiTab.status == 'complete' &&
-           aTab.apiTab.url.indexOf(kGROUP_TAB_URI) != 0) {
+           aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0) {
     getSpecialTabState(aTab).then(async (aStates) => {
-      if (aTab.apiTab.url.indexOf(kGROUP_TAB_URI) == 0)
+      if (aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0)
         return;
       // Detect group tab from different session - which can have different UUID for the URL.
       const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
       const pathPart = aTab.apiTab.url.replace(PREFIX_REMOVER, '');
-      if (aStates.indexOf(kTAB_STATE_GROUP_TAB) > -1 &&
-          pathPart.split('?')[0] == kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
+      if (aStates.indexOf(Constants.kTAB_STATE_GROUP_TAB) > -1 &&
+          pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
         const parameters = pathPart.replace(/^[^\?]+\?/, '');
         await wait(100); // for safety
         browser.tabs.update(aTab.apiTab.id, {
-          url: `${kGROUP_TAB_URI}?${parameters}`
+          url: `${Constants.kGROUP_TAB_URI}?${parameters}`
         }).catch(ApiTabs.handleMissingTabError);
-        aTab.classList.add(kTAB_STATE_GROUP_TAB);
+        aTab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
       }
       else {
-        removeSpecialTabState(aTab, kTAB_STATE_GROUP_TAB);
-        aTab.classList.remove(kTAB_STATE_GROUP_TAB);
+        removeSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
+        aTab.classList.remove(Constants.kTAB_STATE_GROUP_TAB);
       }
     });
   }
@@ -244,17 +244,17 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
         visibleLabel = `${aNewState.title} - ${identity.name}`;
     }
     if (aOptions.forceApply && aTab.apiTab) {
-      browser.sessions.getTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD)
+      browser.sessions.getTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD)
         .then(aUnread => {
           if (aUnread)
-            aTab.classList.add(kTAB_STATE_UNREAD);
+            aTab.classList.add(Constants.kTAB_STATE_UNREAD);
           else
-            aTab.classList.remove(kTAB_STATE_UNREAD);
+            aTab.classList.remove(Constants.kTAB_STATE_UNREAD);
         });
     }
     else if (!isActive(aTab) && aTab.apiTab) {
-      aTab.classList.add(kTAB_STATE_UNREAD);
-      browser.sessions.setTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD, true);
+      aTab.classList.add(Constants.kTAB_STATE_UNREAD);
+      browser.sessions.setTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD, true);
     }
     GetTabs.getTabLabelContent(aTab).textContent = aNewState.title;
     aTab.dataset.label = visibleLabel;
@@ -287,17 +287,17 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
     aTab.classList.remove(aNewState.status == 'loading' ? 'complete' : 'loading');
     aTab.classList.add(aNewState.status);
     if (aNewState.status == 'loading') {
-      aTab.classList.remove(kTAB_STATE_BURSTING);
+      aTab.classList.remove(Constants.kTAB_STATE_BURSTING);
     }
     else if (!aOptions.forceApply && reallyChanged) {
-      aTab.classList.add(kTAB_STATE_BURSTING);
+      aTab.classList.add(Constants.kTAB_STATE_BURSTING);
       if (aTab.delayedBurstEnd)
         clearTimeout(aTab.delayedBurstEnd);
       aTab.delayedBurstEnd = setTimeout(() => {
         delete aTab.delayedBurstEnd;
-        aTab.classList.remove(kTAB_STATE_BURSTING);
+        aTab.classList.remove(Constants.kTAB_STATE_BURSTING);
         if (!isActive(aTab))
-          aTab.classList.add(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+          aTab.classList.add(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
     if (aNewState.status == 'complete' &&
@@ -315,14 +315,14 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   if ((aOptions.forceApply ||
        'pinned' in aNewState) &&
-      aNewState.pinned != aTab.classList.contains(kTAB_STATE_PINNED)) {
+      aNewState.pinned != aTab.classList.contains(Constants.kTAB_STATE_PINNED)) {
     if (aNewState.pinned) {
-      aTab.classList.add(kTAB_STATE_PINNED);
-      aTab.removeAttribute(kLEVEL); // don't indent pinned tabs!
+      aTab.classList.add(Constants.kTAB_STATE_PINNED);
+      aTab.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
       window.onTabPinned && onTabPinned(aTab);
     }
     else {
-      aTab.classList.remove(kTAB_STATE_PINNED);
+      aTab.classList.remove(Constants.kTAB_STATE_PINNED);
       window.onTabUnpinned && onTabUnpinned(aTab);
     }
   }
@@ -330,25 +330,25 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if (aOptions.forceApply ||
       'audible' in aNewState) {
     if (aNewState.audible)
-      aTab.classList.add(kTAB_STATE_AUDIBLE);
+      aTab.classList.add(Constants.kTAB_STATE_AUDIBLE);
     else
-      aTab.classList.remove(kTAB_STATE_AUDIBLE);
+      aTab.classList.remove(Constants.kTAB_STATE_AUDIBLE);
   }
 
   if (aOptions.forceApply ||
       'mutedInfo' in aNewState) {
     if (aNewState.mutedInfo && aNewState.mutedInfo.muted)
-      aTab.classList.add(kTAB_STATE_MUTED);
+      aTab.classList.add(Constants.kTAB_STATE_MUTED);
     else
-      aTab.classList.remove(kTAB_STATE_MUTED);
+      aTab.classList.remove(Constants.kTAB_STATE_MUTED);
   }
 
   if (aTab.apiTab &&
       aTab.apiTab.audible &&
       !aTab.apiTab.mutedInfo.muted)
-    aTab.classList.add(kTAB_STATE_SOUND_PLAYING);
+    aTab.classList.add(Constants.kTAB_STATE_SOUND_PLAYING);
   else
-    aTab.classList.remove(kTAB_STATE_SOUND_PLAYING);
+    aTab.classList.remove(Constants.kTAB_STATE_SOUND_PLAYING);
 
   /*
   // On Firefox, "highlighted" is same to "activated" for now...
@@ -356,9 +356,9 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if (aOptions.forceApply ||
       'highlighted' in aNewState) {
     if (aNewState.highlighted)
-      aTab.classList.add(kTAB_STATE_HIGHLIGHTED);
+      aTab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
     else
-      aTab.classList.remove(kTAB_STATE_HIGHLIGHTED);
+      aTab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
   }
   */
 
@@ -375,21 +375,21 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if (aOptions.forceApply ||
       'incognito' in aNewState) {
     if (aNewState.incognito)
-      aTab.classList.add(kTAB_STATE_PRIVATE_BROWSING);
+      aTab.classList.add(Constants.kTAB_STATE_PRIVATE_BROWSING);
     else
-      aTab.classList.remove(kTAB_STATE_PRIVATE_BROWSING);
+      aTab.classList.remove(Constants.kTAB_STATE_PRIVATE_BROWSING);
   }
 
   if (aOptions.forceApply ||
       'hidden' in aNewState) {
     if (aNewState.hidden) {
-      if (!aTab.classList.contains(kTAB_STATE_HIDDEN)) {
-        aTab.classList.add(kTAB_STATE_HIDDEN);
+      if (!aTab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
+        aTab.classList.add(Constants.kTAB_STATE_HIDDEN);
         window.onTabHidden && onTabHidden(aTab);
       }
     }
-    else if (aTab.classList.contains(kTAB_STATE_HIDDEN)) {
-      aTab.classList.remove(kTAB_STATE_HIDDEN);
+    else if (aTab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
+      aTab.classList.remove(Constants.kTAB_STATE_HIDDEN);
       window.onTabShown && onTabShown(aTab);
     }
   }
@@ -399,9 +399,9 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if (aOptions.forceApply ||
       'selected' in aNewState) {
     if (aNewState.selected)
-      aTab.classList.add(kTAB_STATE_SELECTED);
+      aTab.classList.add(Constants.kTAB_STATE_SELECTED);
     else
-      aTab.classList.remove(kTAB_STATE_SELECTED);
+      aTab.classList.remove(Constants.kTAB_STATE_SELECTED);
   }
   */
 
@@ -411,9 +411,9 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
       // Don't set this class immediately, because we need to know
       // the newly focused tab *was* discarded on onTabClosed handler.
       if (aNewState.discarded)
-        aTab.classList.add(kTAB_STATE_DISCARDED);
+        aTab.classList.add(Constants.kTAB_STATE_DISCARDED);
       else
-        aTab.classList.remove(kTAB_STATE_DISCARDED);
+        aTab.classList.remove(Constants.kTAB_STATE_DISCARDED);
     });
   }
 
@@ -445,7 +445,7 @@ function updateTabDebugTooltip(aTab) {
 ${aTab.apiTab.title}
 #${aTab.id}
 (${aTab.className})
-uniqueId = <%${kPERSISTENT_ID}%>
+uniqueId = <%${Constants.kPERSISTENT_ID}%>
 duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
 restored = <%restored%>
 tabId = ${aTab.apiTab.id}
@@ -459,7 +459,7 @@ windowId = ${aTab.apiTab.windowId}
       return;
     aTab.setAttribute('title',
                       aTab.dataset.label = aTab.dataset.label
-                        .replace(`<%${kPERSISTENT_ID}%>`, aUniqueId.id)
+                        .replace(`<%${Constants.kPERSISTENT_ID}%>`, aUniqueId.id)
                         .replace(`<%originalId%>`, aUniqueId.originalId)
                         .replace(`<%originalTabId%>`, aUniqueId.originalTabId)
                         .replace(`<%duplicated%>`, !!aUniqueId.duplicated)
@@ -469,11 +469,11 @@ windowId = ${aTab.apiTab.windowId}
 
 function updateTabFocused(aTab) {
   var oldActiveTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
-  aTab.classList.add(kTAB_STATE_ACTIVE);
+  aTab.classList.add(Constants.kTAB_STATE_ACTIVE);
   aTab.apiTab.active = true;
-  aTab.classList.remove(kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-  aTab.classList.remove(kTAB_STATE_UNREAD);
-  browser.sessions.removeTabValue(aTab.apiTab.id, kTAB_STATE_UNREAD);
+  aTab.classList.remove(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+  aTab.classList.remove(Constants.kTAB_STATE_UNREAD);
+  browser.sessions.removeTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD);
   return oldActiveTabs;
 }
 
@@ -484,14 +484,14 @@ function updateParentTab(aParent) {
   var children = GetTabs.getChildTabs(aParent);
 
   if (children.some(maybeSoundPlaying))
-    aParent.classList.add(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+    aParent.classList.add(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
   else
-    aParent.classList.remove(kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+    aParent.classList.remove(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
   if (children.some(maybeMuted))
-    aParent.classList.add(kTAB_STATE_HAS_MUTED_MEMBER);
+    aParent.classList.add(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
   else
-    aParent.classList.remove(kTAB_STATE_HAS_MUTED_MEMBER);
+    aParent.classList.remove(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
 
   updateParentTab(GetTabs.getParentTab(aParent));
 
@@ -553,7 +553,7 @@ async function selectTabInternally(aTab, aOptions = {}) {
   log('selectTabInternally: ', dumpTab(aTab));
   if (aOptions.inRemote) {
     await browser.runtime.sendMessage({
-      type:     kCOMMAND_SELECT_TAB_INTERNALLY,
+      type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
       windowId: aTab.apiTab.windowId,
       tab:      aTab.id,
       options:  aOptions
@@ -584,7 +584,7 @@ function removeTabsInternally(aTabs, aOptions = {}) {
   log('removeTabsInternally: ', aTabs.map(dumpTab));
   if (aOptions.inRemote || aOptions.broadcast) {
     browser.runtime.sendMessage({
-      type:    kCOMMAND_REMOVE_TABS_INTERNALLY,
+      type:    Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
       tabs:    aTabs.map(aTab => aTab.id),
       options: Object.assign({}, aOptions, {
         inRemote:    false,
@@ -628,7 +628,7 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
     let message = {
-      type:     kCOMMAND_MOVE_TABS_BEFORE,
+      type:     Constants.kCOMMAND_MOVE_TABS_BEFORE,
       windowId: gTargetWindow,
       tabs:     aTabs.map(aTab => aTab.id),
       nextTab:  aReferenceTab.id,
@@ -731,7 +731,7 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
     let message = {
-      type:        kCOMMAND_MOVE_TABS_AFTER,
+      type:        Constants.kCOMMAND_MOVE_TABS_AFTER,
       windowId:    gTargetWindow,
       tabs:        aTabs.map(aTab => aTab.id),
       previousTab: aReferenceTab.id,
@@ -821,7 +821,7 @@ async function loadURI(aURI, aOptions = {}) {
     aOptions.windowId = gTargetWindow;
   if (aOptions.inRemote) {
     await browser.runtime.sendMessage({
-      type:    kCOMMAND_LOAD_URI,
+      type:    Constants.kCOMMAND_LOAD_URI,
       uri:     aURI,
       options: Object.assign({}, aOptions, {
         tab: aOptions.tab && aOptions.tab.id
@@ -866,7 +866,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
   return await doAndGetNewTabs(async () => {
     if (aOptions.inRemote) {
       await browser.runtime.sendMessage(Object.assign({}, aOptions, {
-        type:          kCOMMAND_NEW_TABS,
+        type:          Constants.kCOMMAND_NEW_TABS,
         uris:          aURIs,
         parent:        aOptions.parent && aOptions.parent.id,
         opener:        aOptions.opener && aOptions.opener.id,
@@ -929,7 +929,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
 /* group tab */
 
 function makeGroupTabURI(aOptions = {}) {
-  var base = kGROUP_TAB_URI;
+  var base = Constants.kGROUP_TAB_URI;
   var title = encodeURIComponent(aOptions.title || '');
   var temporaryOption = aOptions.temporary ? '&temporary=true' : '' ;
   var openerTabIdOption = aOptions.openerTabId ? `&openerTabId=${aOptions.openerTabId}` : '' ;
@@ -944,10 +944,10 @@ var gBlockingThrobberCount = 0;
 
 function blockUserOperations(aOptions = {}) {
   gBlockingCount++;
-  document.documentElement.classList.add(kTABBAR_STATE_BLOCKING);
+  document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING);
   if (aOptions.throbber) {
     gBlockingThrobberCount++;
-    document.documentElement.classList.add(kTABBAR_STATE_BLOCKING_WITH_THROBBER);
+    document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
   }
 }
 
@@ -957,7 +957,7 @@ function blockUserOperationsIn(aWindowId, aOptions = {}) {
 
   if (!gTargetWindow) {
     browser.runtime.sendMessage({
-      type:     kCOMMAND_BLOCK_USER_OPERATIONS,
+      type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
       windowId: aWindowId,
       throbber: !!aOptions.throbber
     });
@@ -971,13 +971,13 @@ function unblockUserOperations(aOptions = {}) {
   if (gBlockingThrobberCount < 0)
     gBlockingThrobberCount = 0;
   if (gBlockingThrobberCount == 0)
-    document.documentElement.classList.remove(kTABBAR_STATE_BLOCKING_WITH_THROBBER);
+    document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
 
   gBlockingCount--;
   if (gBlockingCount < 0)
     gBlockingCount = 0;
   if (gBlockingCount == 0)
-    document.documentElement.classList.remove(kTABBAR_STATE_BLOCKING);
+    document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING);
 }
 
 function unblockUserOperationsIn(aWindowId, aOptions = {}) {
@@ -986,7 +986,7 @@ function unblockUserOperationsIn(aWindowId, aOptions = {}) {
 
   if (!gTargetWindow) {
     browser.runtime.sendMessage({
-      type:     kCOMMAND_UNBLOCK_USER_OPERATIONS,
+      type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
       windowId: aWindowId,
       throbber: !!aOptions.throbber
     });
@@ -1000,7 +1000,7 @@ function broadcastTabState(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
   browser.runtime.sendMessage({
-    type:    kCOMMAND_BROADCAST_TAB_STATE,
+    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
     tabs:    aTabs.map(aTab => aTab.id),
     add:     aOptions.add || [],
     remove:  aOptions.remove || [],
@@ -1044,7 +1044,7 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
 
 
 async function getSpecialTabState(aTab) {
-  const states = await browser.sessions.getTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES);
+  const states = await browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
   return states || [];
 }
 
@@ -1053,7 +1053,7 @@ async function addSpecialTabState(aTab, aState) {
   if (states.indexOf(aState) > -1)
     return states;
   states.push(aState);
-  await browser.sessions.setTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES, states);
+  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
   return states;
 }
 
@@ -1063,7 +1063,7 @@ async function removeSpecialTabState(aTab, aState) {
   if (index < 0)
     return states;
   states.splice(index, 1);
-  await browser.sessions.setTabValue(aTab.apiTab.id, kPERSISTENT_SPECIAL_TAB_STATES, states);
+  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
   return states;
 }
 
@@ -1075,8 +1075,8 @@ function serializeTabForTSTAPI(aTab) {
   const children         = GetTabs.getChildTabs(aTab).map(serializeTabForTSTAPI);
   const ancestorTabIds   = GetTabs.getAncestorTabs(aTab).map(aTab => aTab.apiTab.id);
   return Object.assign({}, aTab.apiTab, {
-    states:   Array.slice(aTab.classList).filter(aState => kTAB_INTERNAL_STATES.indexOf(aState) < 0),
-    indent:   parseInt(aTab.getAttribute(kLEVEL) || 0),
+    states:   Array.slice(aTab.classList).filter(aState => Constants.kTAB_INTERNAL_STATES.indexOf(aState) < 0),
+    indent:   parseInt(aTab.getAttribute(Constants.kLEVEL) || 0),
     effectiveFavIconUrl: effectiveFavIcon && effectiveFavIcon.favIconUrl,
     children, ancestorTabIds
   });
@@ -1135,7 +1135,7 @@ function snapshotTree(aTargetTab, aTabs) {
       active:        isActive(aTab),
       children:      GetTabs.getChildTabs(aTab).filter(aChild => !isHidden(aChild)).map(aChild => aChild.id),
       collapsed:     isSubtreeCollapsed(aTab),
-      level:         parseInt(aTab.getAttribute(kLEVEL) || 0)
+      level:         parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)
     };
   }
   var snapshotArray = tabs.map(aTab => snapshotChild(aTab));
