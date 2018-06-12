@@ -458,7 +458,7 @@ function onTabOpened(aTab, aInfo = {}) {
     if (aInfo.duplicatedInternally) {
       log('duplicated by internal operation');
       aTab.classList.add(Constants.kTAB_STATE_DUPLICATING);
-      broadcastTabState(aTab, {
+      Tabs.broadcastTabState(aTab, {
         add: [Constants.kTAB_STATE_DUPLICATING]
       });
     }
@@ -1590,7 +1590,7 @@ function onMessage(aMessage, aSender) {
           // tabs.onUpdated is too slow, so users will be confused
           // from still-not-updated tabs (in other words, they tabs
           // are unresponsive for quick-clicks).
-          broadcastTabState(tab, {
+          Tabs.broadcastTabState(tab, {
             add, remove,
             bubbles: !Tabs.hasChildTabs(tab)
           });
@@ -1932,7 +1932,7 @@ function onMessageExternal(aMessage, aSender) {
             tab.classList.add(state);
           }
         }
-        broadcastTabState(tabs, {
+        Tabs.broadcastTabState(tabs, {
           add: states
         });
         return true;
@@ -1949,7 +1949,7 @@ function onMessageExternal(aMessage, aSender) {
             tab.classList.remove(state);
           }
         }
-        broadcastTabState(tabs, {
+        Tabs.broadcastTabState(tabs, {
           remove: states
         });
         return true;

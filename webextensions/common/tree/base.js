@@ -62,20 +62,20 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
         url: aOptions.tab.url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
       aTab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
-      addSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
+      Tabs.addSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
     });
     return;
   }
   else if ('url' in aNewState &&
            aNewState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     aTab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
-    addSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
+    Tabs.addSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
     Tabs.onGroupTabDetected.dispatch(aTab);
   }
   else if (aTab.apiTab &&
            aTab.apiTab.status == 'complete' &&
            aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0) {
-    getSpecialTabState(aTab).then(async (aStates) => {
+    Tabs.getSpecialTabState(aTab).then(async (aStates) => {
       if (aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0)
         return;
       // Detect group tab from different session - which can have different UUID for the URL.
@@ -91,7 +91,7 @@ function updateTab(aTab, aNewState = {}, aOptions = {}) {
         aTab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
       }
       else {
-        removeSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
+        Tabs.removeSpecialTabState(aTab, Constants.kTAB_STATE_GROUP_TAB);
         aTab.classList.remove(Constants.kTAB_STATE_GROUP_TAB);
       }
     });
@@ -397,19 +397,6 @@ function removeTabsInternally(aTabs, aOptions = {}) {
 }
 
 
-function broadcastTabState(aTabs, aOptions = {}) {
-  if (!Array.isArray(aTabs))
-    aTabs = [aTabs];
-  browser.runtime.sendMessage({
-    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabs:    aTabs.map(aTab => aTab.id),
-    add:     aOptions.add || [],
-    remove:  aOptions.remove || [],
-    bubbles: !!aOptions.bubbles
-  });
-}
-
-
 async function bookmarkTabs(aTabs, aOptions = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
@@ -441,30 +428,5 @@ async function bookmarkTabs(aTabs, aOptions = {}) {
     });
   }
   return folder;
-}
-
-
-async function getSpecialTabState(aTab) {
-  const states = await browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
-  return states || [];
-}
-
-async function addSpecialTabState(aTab, aState) {
-  const states = await getSpecialTabState(aTab);
-  if (states.indexOf(aState) > -1)
-    return states;
-  states.push(aState);
-  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
-  return states;
-}
-
-async function removeSpecialTabState(aTab, aState) {
-  const states = await getSpecialTabState(aTab);
-  const index = states.indexOf(aState);
-  if (index < 0)
-    return states;
-  states.splice(index, 1);
-  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
-  return states;
 }
 

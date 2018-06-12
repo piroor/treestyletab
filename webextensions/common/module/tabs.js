@@ -1112,6 +1112,48 @@ export function dumpAllTabs() {
 
 
 //===================================================================
+// Tab State
+//===================================================================
+
+export function broadcastTabState(aTabs, aOptions = {}) {
+  if (!Array.isArray(aTabs))
+    aTabs = [aTabs];
+  browser.runtime.sendMessage({
+    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
+    tabs:    aTabs.map(aTab => aTab.id),
+    add:     aOptions.add || [],
+    remove:  aOptions.remove || [],
+    bubbles: !!aOptions.bubbles
+  });
+}
+
+export async function getSpecialTabState(aTab) {
+  const states = await browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
+  return states || [];
+}
+
+export async function addSpecialTabState(aTab, aState) {
+  const states = await getSpecialTabState(aTab);
+  if (states.indexOf(aState) > -1)
+    return states;
+  states.push(aState);
+  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+  return states;
+}
+
+export async function removeSpecialTabState(aTab, aState) {
+  const states = await getSpecialTabState(aTab);
+  const index = states.indexOf(aState);
+  if (index < 0)
+    return states;
+  states.splice(index, 1);
+  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+  return states;
+}
+
+
+
+//===================================================================
 // Take snapshot
 //===================================================================
 

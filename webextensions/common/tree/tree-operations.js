@@ -1214,7 +1214,7 @@ async function moveTabs(aTabs, aOptions = {}) {
         if (aOptions.duplicate) {
           for (let tab of newTabs) {
             tab.classList.remove(Constants.kTAB_STATE_DUPLICATING);
-            broadcastTabState(tab, {
+            Tabs.broadcastTabState(tab, {
               remove: [Constants.kTAB_STATE_DUPLICATING]
             });
           }
