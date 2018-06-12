@@ -43,38 +43,3 @@ var gRestoringTree   = false;
 var gNeedRestoreTree = false;
 var gScrollLockedBy  = {};
 
-
-
-async function bookmarkTabs(aTabs, aOptions = {}) {
-  try {
-    if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
-      throw new Error('not permitted');
-  }
-  catch(e) {
-    notify({
-      title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
-      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message')
-    });
-    return null;
-  }
-  var folderParams = {
-    title: browser.i18n.getMessage('bookmarkFolder_label', aTabs[0].apiTab.title)
-  };
-  if (aOptions.parentId) {
-    folderParams.parentId = aOptions.parentId;
-    if ('index' in aOptions)
-      folderParams.index = aOptions.index;
-  }
-  var folder = await browser.bookmarks.create(folderParams);
-  for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
-    let tab = aTabs[i];
-    await browser.bookmarks.create({
-      parentId: folder.id,
-      index:    i,
-      title:    tab.apiTab.title,
-      url:      tab.apiTab.url
-    });
-  }
-  return folder;
-}
-

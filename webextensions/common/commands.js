@@ -87,7 +87,7 @@ const Commands = {
 
   bookmarkTree: async function(aRoot, aOptions = {}) {
     const tabs   = [aRoot].concat(Tabs.getDescendantTabs(aRoot));
-    const folder = await bookmarkTabs(tabs, aOptions);
+    const folder = await Bookmark.bookmarkTabs(tabs, aOptions);
     if (!folder)
       return null;
     browser.bookmarks.get(folder.parentId).then(aFolders => {

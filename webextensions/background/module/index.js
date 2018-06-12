@@ -19,6 +19,7 @@ import * as TabsMove from '../../common/module/tabs-move.js';
 import * as TabsOpen from '../../common/module/tabs-open.js';
 import * as TabsInternalOperation from '../../common/module/tabs-internal-operation.js';
 import * as TSTAPI from '../../common/module/tst-api.js';
+import * as Bookmark from '../../common/module/bookmark.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -46,6 +47,7 @@ window.TabsMove = TabsMove;
 window.TabsOpen = TabsOpen;
 window.TabsInternalOperation = TabsInternalOperation;
 window.TSTAPI = TSTAPI;
+window.Bookmark = Bookmark;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;

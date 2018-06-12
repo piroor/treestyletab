@@ -355,7 +355,7 @@ var tabContextMenu = {
       }; break;
       case 'context_bookmarkAllTabs': {
         let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
-        let folder = await bookmarkTabs(apiTabs.map(Tabs.getTabById));
+        let folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
         if (folder)
           browser.bookmarks.get(folder.parentId).then(aFolders => {
             notify({
