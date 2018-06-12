@@ -970,15 +970,19 @@ Tabs.onMoving.addListener(async aTab => {
       Tabs.isOpening(aTab))
     return;
   aTab.classList.add(Constants.kTAB_STATE_MOVING);
-  await nextFrame();
+  nextFrame().then(async () => {
   if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
     return;
-  const visible = !(isCollapsedStateUpdating(aTab) ? await isSurelyCollapsed(aTab) : Tabs.isCollapsed(aTab));
-  if (visible)
-    Tree.collapseExpandTab(aTab, {
-      collapsed: true,
-      justNow:   true
-    });
+  let visible = !Tabs.isCollapsed(aTab);
+  let promisedCollapsed;
+  if (isCollapsedStateUpdating(aTab));
+    promisedCollapsed = isSurelyCollapsed(aTab);
+  Tree.collapseExpandTab(aTab, {
+    collapsed: true,
+    justNow:   true
+  });
+  if (promisedCollapsed)
+    visible = !(await promisedCollapsed);
   await nextFrame();
   if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
     return;
@@ -988,6 +992,7 @@ Tabs.onMoving.addListener(async aTab => {
     });
   await wait(configs.collapseDuration);
   aTab.classList.remove(Constants.kTAB_STATE_MOVING);
+  });
 });
 
 Tabs.onMoved.addListener(aTab => {
