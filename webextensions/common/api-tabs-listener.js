@@ -53,25 +53,25 @@ import * as TabsInternalOperation from './tabs-internal-operation.js';
 import TabIdFixer from './TabIdFixer.js';
 
 export function startListen() {
-  browser.tabs.onActivated.addListener(onApiTabActivated);
-  browser.tabs.onUpdated.addListener(onApiTabUpdated);
-  browser.tabs.onCreated.addListener(onApiTabCreated);
-  browser.tabs.onRemoved.addListener(onApiTabRemoved);
-  browser.tabs.onMoved.addListener(onApiTabMoved);
-  browser.tabs.onAttached.addListener(onApiTabAttached);
-  browser.tabs.onDetached.addListener(onApiTabDetached);
-  browser.windows.onRemoved.addListener(onApiWindowRemoved);
+  browser.tabs.onActivated.addListener(onActivated);
+  browser.tabs.onUpdated.addListener(onUpdated);
+  browser.tabs.onCreated.addListener(onCreated);
+  browser.tabs.onRemoved.addListener(onRemoved);
+  browser.tabs.onMoved.addListener(onMoved);
+  browser.tabs.onAttached.addListener(onAttached);
+  browser.tabs.onDetached.addListener(onDetached);
+  browser.windows.onRemoved.addListener(onWindowRemoved);
 }
 
 export function endListen() {
-  browser.tabs.onActivated.removeListener(onApiTabActivated);
-  browser.tabs.onUpdated.removeListener(onApiTabUpdated);
-  browser.tabs.onCreated.removeListener(onApiTabCreated);
-  browser.tabs.onRemoved.removeListener(onApiTabRemoved);
-  browser.tabs.onMoved.removeListener(onApiTabMoved);
-  browser.tabs.onAttached.removeListener(onApiTabAttached);
-  browser.tabs.onDetached.removeListener(onApiTabDetached);
-  browser.windows.onRemoved.removeListener(onApiWindowRemoved);
+  browser.tabs.onActivated.removeListener(onActivated);
+  browser.tabs.onUpdated.removeListener(onUpdated);
+  browser.tabs.onCreated.removeListener(onCreated);
+  browser.tabs.onRemoved.removeListener(onRemoved);
+  browser.tabs.onMoved.removeListener(onMoved);
+  browser.tabs.onAttached.removeListener(onAttached);
+  browser.tabs.onDetached.removeListener(onDetached);
+  browser.windows.onRemoved.removeListener(onWindowRemoved);
 }
 
 
@@ -105,7 +105,7 @@ function getOrBuildTabsContainer(aHint) {
 }
 
 
-async function onApiTabActivated(aActiveInfo) {
+async function onActivated(aActiveInfo) {
   const targetWindow = Tabs.getWindow();
   if (targetWindow && aActiveInfo.windowId != targetWindow)
     return;
@@ -193,7 +193,7 @@ async function onApiTabActivated(aActiveInfo) {
   }
 }
 
-async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
+async function onUpdated(aTabId, aChangeInfo, aTab) {
   const targetWindow = Tabs.getWindow();
   if (targetWindow && aTab.windowId != targetWindow)
     return;
@@ -250,7 +250,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   }
 }
 
-function onApiTabCreated(aTab) {
+function onCreated(aTab) {
   const targetWindow = Tabs.getWindow();
   if (targetWindow && aTab.windowId != targetWindow)
     return;
@@ -393,7 +393,7 @@ async function onNewTabTracked(aTab) {
 
     if (aTab.active &&
         Tabs.getCurrentTabs().some(aTabElement => aTabElement != newTab && aTabElement.parentNode == newTab.parentNode))
-      onApiTabActivated({ tabId: aTab.id, windowId: aTab.windowId });
+      onActivated({ tabId: aTab.id, windowId: aTab.windowId });
 
     onTabCreated(uniqueId);
     return newTab;
@@ -432,7 +432,7 @@ function checkRecycledTab(aContainer) {
   }
 }
 
-async function onApiTabRemoved(aTabId, aRemoveInfo) {
+async function onRemoved(aTabId, aRemoveInfo) {
   log('tabs.onRemoved: ', aTabId, aRemoveInfo);
   const targetWindow = Tabs.getWindow();
   if (targetWindow && aRemoveInfo.windowId != targetWindow)
@@ -473,7 +473,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
     await Tabs.onRemoved.dispatch(oldTab, {
       byInternalOperation
     });
-    await onApiTabRemovedComplete(oldTab);
+    await onRemovedComplete(oldTab);
     onCompleted();
   }
   catch(e) {
@@ -481,7 +481,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
     onCompleted();
   }
 }
-function onApiTabRemovedComplete(aTab) {
+function onRemovedComplete(aTab) {
   clearTabRelationsForRemovedTab(aTab);
   const container = aTab.parentNode;
   if (!container) // it was removed while waiting
@@ -504,7 +504,7 @@ function clearTabRelationsForRemovedTab(aTab) {
   }
 }
 
-async function onApiTabMoved(aTabId, aMoveInfo) {
+async function onMoved(aTabId, aMoveInfo) {
   const targetWindow = Tabs.getWindow();
   if (targetWindow && aMoveInfo.windowId != targetWindow)
     return;
@@ -592,7 +592,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
 
 var gTreeInfoForTabsMovingAcrossWindows = {};
 
-async function onApiTabAttached(aTabId, aAttachInfo) {
+async function onAttached(aTabId, aAttachInfo) {
   const targetWindow = Tabs.getWindow();
   if (targetWindow && aAttachInfo.windowId != targetWindow)
     return;
@@ -639,7 +639,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
   }
 }
 
-async function onApiTabDetached(aTabId, aDetachInfo) {
+async function onDetached(aTabId, aDetachInfo) {
   const targetWindow = Tabs.getWindow();
   if (targetWindow && aDetachInfo.windowId != targetWindow)
     return;
@@ -685,13 +685,13 @@ async function onApiTabDetached(aTabId, aDetachInfo) {
   }
 }
 
-async function onApiWindowRemoved(aWindowId) {
+async function onWindowRemoved(aWindowId) {
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
-    log('onApiWindowRemoved ', aWindowId);
+    log('onWindowRemoved ', aWindowId);
     const container = Tabs.getTabsContainer(aWindowId);
     if (container) {
       for (let tab of Tabs.getAllTabs(container)) {
