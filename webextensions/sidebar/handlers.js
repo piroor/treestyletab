@@ -1059,11 +1059,13 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
     await isSurelyCollapsed(aTab);
 
   let onCompletelyUpdated;
-  isSurelyCollapsed.updating[aTab.id] = new Promise((aResolve, aReject) => {
+  gUpdatingCollapsedState[aTab.id] = new Promise((aResolve, _aReject) => {
     onCompletelyUpdated = aResolve;
   });
+  gUpdatingCollapsedState[aTab.id].then(() => {
+    delete gUpdatingCollapsedState[aTab.id];
+  });
   const cancelUpdating = () => {
-    delete isSurelyCollapsed.updating[aTab.id]
     onCompletelyUpdated = undefined;
   };
 
@@ -1177,17 +1179,17 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
 });
 
 function isCollapsedStateUpdating(aTab) {
-  return !!isSurelyCollapsed.updating[aTab.id];
+  return !!gUpdatingCollapsedState[aTab.id];
 }
 
 async function isSurelyCollapsed(aTab) {
-  if (isSurelyCollapsed.updating[aTab.id])
-    return isSurelyCollapsed.updating[aTab.id].then(() => {
+  if (gUpdatingCollapsedState[aTab.id])
+    return gUpdatingCollapsedState[aTab.id].then(() => {
       return Tabs.isCollapsed(aTab);
     });
   return Tabs.isCollapsed(aTab);
 }
-isSurelyCollapsed.updating = {};
+const gUpdatingCollapsedState = {};
 
 
 /*
