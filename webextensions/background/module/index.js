@@ -12,7 +12,7 @@ import * as Sidebar from '../../common/sidebar.js';
 import * as Permissions from '../../common/permissions.js';
 import * as ContextualIdentities from '../../common/contextual-identities.js';
 import * as ContextMenu from './context-menu.js';
-import * as MetricsData from '../../common/MetricsData.js';
+import * as MetricsData from '../../common/metrics-data.js';
 
 import * as Tabs from '../../common/tabs.js';
 import * as TabsContainer from '../../common/tabs-container.js';
