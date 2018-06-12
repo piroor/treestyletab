@@ -806,7 +806,7 @@ function moveBack(aTab, aMoveInfo) {
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   log('detectTabActionFromNewPosition: ', dumpTab(aTab), aMoveInfo);
-  var tree   = aMoveInfo.treeForActionDetection || snapshotTreeForActionDetection(aTab);
+  var tree   = aMoveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(aTab);
   var target = tree.target;
 
   var toIndex   = aMoveInfo.toIndex;
@@ -1383,10 +1383,10 @@ function onMessage(aMessage, aSender) {
 
     case Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS:
       return (async () => {
-        while (!gExternalListenerAddons) {
+        while (!TSTAPI.isInitialized()) {
           await wait(10);
         }
-        return gExternalListenerAddons;
+        return TSTAPI.addons;
       })();
 
     case Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
@@ -1494,9 +1494,9 @@ function onMessage(aMessage, aSender) {
 
         if (configs.logOnMouseEvent)
           log('Sending message to listeners');
-        const serializedTab = serializeTabForTSTAPI(tab);
-        const mousedownNotified = sendTSTAPIMessage(Object.assign({}, aMessage, {
-          type:   Constants.kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
+        const serializedTab = TSTAPI.serializeTab(tab);
+        const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, aMessage, {
+          type:   TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
           window: tab.apiTab.windowId
         }));
@@ -1505,8 +1505,8 @@ function onMessage(aMessage, aSender) {
         // So, we return to the caller process and do this post process asynchronously.
         mousedownNotified.then(async (aResults) => {
           const results = aResults.concat(
-            await sendTSTAPIMessage(Object.assign({}, aMessage, {
-              type:   Constants.kTSTAPI_NOTIFY_TAB_CLICKED,
+            await TSTAPI.sendMessage(Object.assign({}, aMessage, {
+              type:   TSTAPI.kNOTIFY_TAB_CLICKED,
               tab:    serializedTab,
               window: tab.apiTab.windowId
             }))
@@ -1715,24 +1715,24 @@ function onMessage(aMessage, aSender) {
 function onMessageExternal(aMessage, aSender) {
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
-    case Constants.kTSTAPI_REGISTER_SELF:
+    case TSTAPI.kREGISTER_SELF:
       return (async () => {
         if (!aMessage.listeningTypes) {
           // for backward compatibility, send all message types available on TST 2.4.16 by default.
           aMessage.listeningTypes = [
-            Constants.kTSTAPI_NOTIFY_READY,
-            Constants.kTSTAPI_NOTIFY_SHUTDOWN,
-            Constants.kTSTAPI_NOTIFY_TAB_CLICKED,
-            Constants.kTSTAPI_NOTIFY_TAB_MOUSEDOWN,
-            Constants.kTSTAPI_NOTIFY_TAB_MOUSEUP,
-            Constants.kTSTAPI_NOTIFY_TABBAR_CLICKED,
-            Constants.kTSTAPI_NOTIFY_TABBAR_MOUSEDOWN,
-            Constants.kTSTAPI_NOTIFY_TABBAR_MOUSEUP
+            TSTAPI.kNOTIFY_READY,
+            TSTAPI.kNOTIFY_SHUTDOWN,
+            TSTAPI.kNOTIFY_TAB_CLICKED,
+            TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+            TSTAPI.kNOTIFY_TAB_MOUSEUP,
+            TSTAPI.kNOTIFY_TABBAR_CLICKED,
+            TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN,
+            TSTAPI.kNOTIFY_TABBAR_MOUSEUP
           ];
         }
         aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
         aMessage.id = aSender.id;
-        gExternalListenerAddons[aSender.id] = aMessage;
+        TSTAPI.addons[aSender.id] = aMessage;
         browser.runtime.sendMessage({
           type:    Constants.kCOMMAND_BROADCAST_API_REGISTERED,
           sender:  aSender,
@@ -1744,31 +1744,31 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case Constants.kTSTAPI_UNREGISTER_SELF:
+    case TSTAPI.kUNREGISTER_SELF:
       return (async () => {
         browser.runtime.sendMessage({
           type:    Constants.kCOMMAND_BROADCAST_API_UNREGISTERED,
           sender:  aSender,
           message: aMessage
         });
-        delete gExternalListenerAddons[aSender.id];
+        delete TSTAPI.addons[aSender.id];
         delete gScrollLockedBy[aSender.id];
         configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
         return true;
       })();
 
-    case Constants.kTSTAPI_PING:
+    case TSTAPI.kPING:
       return Promise.resolve(true);
 
 
-    case Constants.kTSTAPI_GET_TREE:
+    case TSTAPI.kGET_TREE:
       return (async () => {
         const tabs    = await TSTAPIGetTargetTabs(aMessage, aSender);
-        const results = tabs.map(serializeTabForTSTAPI);
+        const results = tabs.map(TSTAPI.serializeTab);
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case Constants.kTSTAPI_COLLAPSE_TREE:
+    case TSTAPI.kCOLLAPSE_TREE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
@@ -1780,7 +1780,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case Constants.kTSTAPI_EXPAND_TREE:
+    case TSTAPI.kEXPAND_TREE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
@@ -1792,7 +1792,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case Constants.kTSTAPI_ATTACH:
+    case TSTAPI.kATTACH:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
           aMessage.child,
@@ -1814,7 +1814,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case Constants.kTSTAPI_DETACH:
+    case TSTAPI.kDETACH:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(aMessage.tab);
         const tab = Tabs.getTabById(aMessage.tab);
@@ -1826,37 +1826,37 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case Constants.kTSTAPI_INDENT:
-    case Constants.kTSTAPI_DEMOTE:
+    case TSTAPI.kINDENT:
+    case TSTAPI.kDEMOTE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.indent(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case Constants.kTSTAPI_OUTDENT:
-    case Constants.kTSTAPI_PROMOTE:
+    case TSTAPI.kOUTDENT:
+    case TSTAPI.kPROMOTE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.outdent(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case Constants.kTSTAPI_MOVE_UP:
+    case TSTAPI.kMOVE_UP:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.moveUp(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case Constants.kTSTAPI_MOVE_DOWN:
+    case TSTAPI.kMOVE_DOWN:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.moveDown(aTab, aMessage)));
         return TSTAPIFormatResult(results, aMessage);
       })();
 
-    case Constants.kTSTAPI_FOCUS:
+    case TSTAPI.kFOCUS:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
@@ -1867,7 +1867,7 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
       })();
 
-    case Constants.kTSTAPI_DUPLICATE:
+    case TSTAPI.kDUPLICATE:
       return (async () => {
         const tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
         let behavior = Constants.kNEWTAB_OPEN_AS_ORPHAN;
@@ -1899,20 +1899,20 @@ function onMessageExternal(aMessage, aSender) {
         return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
       })();
 
-    case Constants.kTSTAPI_GROUP_TABS:
+    case TSTAPI.kGROUP_TABS:
       return (async () => {
         const tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
         const groupTab = await groupTabs(tabs, { broadcast: true });
         return groupTab.apiTab;
       })();
 
-    case Constants.kTSTAPI_GET_TREE_STRUCTURE:
+    case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         return Promise.resolve(getTreeStructureFromTabs(tabs));
       })();
 
-    case Constants.kTSTAPI_SET_TREE_STRUCTURE:
+    case TSTAPI.kSET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         await applyTreeStructureToTabs(tabs, aMessage.structure, {
@@ -1921,7 +1921,7 @@ function onMessageExternal(aMessage, aSender) {
         return Promise.resolve(true);
       })();
 
-    case Constants.kTSTAPI_ADD_TAB_STATE:
+    case TSTAPI.kADD_TAB_STATE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         let states = aMessage.state || aMessage.states;
@@ -1938,7 +1938,7 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case Constants.kTSTAPI_REMOVE_TAB_STATE:
+    case TSTAPI.kREMOVE_TAB_STATE:
       return (async () => {
         const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
         let states = aMessage.state || aMessage.states;
@@ -1955,19 +1955,19 @@ function onMessageExternal(aMessage, aSender) {
         return true;
       })();
 
-    case Constants.kTSTAPI_SCROLL_LOCK:
+    case TSTAPI.kSCROLL_LOCK:
       gScrollLockedBy[aSender.id] = true;
       return Promise.resolve(true);
 
-    case Constants.kTSTAPI_SCROLL_UNLOCK:
+    case TSTAPI.kSCROLL_UNLOCK:
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
 
-    case Constants.kTSTAPI_BLOCK_GROUPING:
+    case TSTAPI.kBLOCK_GROUPING:
       gGroupingBlockedBy[aSender.id] = true;
       return Promise.resolve(true);
 
-    case Constants.kTSTAPI_UNBLOCK_GROUPING:
+    case TSTAPI.kUNBLOCK_GROUPING:
       delete gGroupingBlockedBy[aSender.id];
       return Promise.resolve(true);
   }

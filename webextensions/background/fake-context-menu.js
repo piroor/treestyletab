@@ -42,7 +42,7 @@ var tabContextMenu = {
 
   notifyUpdated: async function() {
     await browser.runtime.sendMessage({
-      type:  Constants.kTSTAPI_CONTEXT_MENU_UPDATED,
+      type:  TSTAPI.kCONTEXT_MENU_UPDATED,
       items: this.items
     });
   },
@@ -69,10 +69,10 @@ var tabContextMenu = {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
-      case Constants.kTSTAPI_CONTEXT_MENU_GET_ITEMS:
+      case TSTAPI.kCONTEXT_MENU_GET_ITEMS:
         return Promise.resolve(this.items);
 
-      case Constants.kTSTAPI_CONTEXT_MENU_CLICK:
+      case TSTAPI.kCONTEXT_MENU_CLICK:
         ContextMenu.onClick(aMessage.info, aMessage.tab);
         return;
     }
@@ -82,7 +82,7 @@ var tabContextMenu = {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
-      case Constants.kTSTAPI_CONTEXT_MENU_CREATE: {
+      case TSTAPI.kCONTEXT_MENU_CREATE: {
         let items  = this.getItemsFor(aSender.id);
         let params = aMessage.params;
         if (Array.isArray(params))
@@ -104,7 +104,7 @@ var tabContextMenu = {
         return this.reserveNotifyUpdated();
       }; break;
 
-      case Constants.kTSTAPI_CONTEXT_MENU_UPDATE: {
+      case TSTAPI.kCONTEXT_MENU_UPDATE: {
         let items = this.getItemsFor(aSender.id);
         for (let i = 0, maxi = items.length; i < maxi; i++) {
           let item = items[i];
@@ -117,7 +117,7 @@ var tabContextMenu = {
         return this.reserveNotifyUpdated();
       }; break;
 
-      case Constants.kTSTAPI_CONTEXT_MENU_REMOVE: {
+      case TSTAPI.kCONTEXT_MENU_REMOVE: {
         let items = this.getItemsFor(aSender.id);
         let id    = aMessage.params;
         if (Array.isArray(id))
@@ -127,8 +127,8 @@ var tabContextMenu = {
         return this.reserveNotifyUpdated();
       }; break;
 
-      case Constants.kTSTAPI_CONTEXT_MENU_REMOVE_ALL:
-      case Constants.kTSTAPI_UNREGISTER_SELF: {
+      case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
+      case TSTAPI.kUNREGISTER_SELF: {
         delete this.items[aSender.id];
         return this.reserveNotifyUpdated();
       }; break;

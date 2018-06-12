@@ -16,6 +16,7 @@ import * as Tabs from '../../common/module/tabs.js';
 import * as TabsContainer from '../../common/module/tabs-container.js';
 import * as TabsMove from '../../common/module/tabs-move.js';
 import * as TabsOpen from '../../common/module/tabs-open.js';
+import * as TSTAPI from '../../common/module/tst-api.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -40,6 +41,7 @@ window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;
 window.TabsMove = TabsMove;
 window.TabsOpen = TabsOpen;
+window.TSTAPI = TSTAPI;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;

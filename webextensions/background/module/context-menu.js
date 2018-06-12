@@ -11,13 +11,13 @@
   Commands: false,
  */
 
-import * as Constants from '../../common/module/constants.js';
 import {
   log,
   configs
 } from '../../common/module/common.js';
 
 import * as Tabs from '../../common/module/tabs.js';
+import * as TSTAPI from '../../common/module/tst-api.js';
 
 var gContextMenuItems = `
   reloadTree
@@ -36,7 +36,7 @@ var gContextMenuItems = `
 export async function refreshItems() {
   browser.contextMenus.removeAll();
   tabContextMenu.onExternalMessage({
-    type: Constants.kTSTAPI_CONTEXT_MENU_REMOVE_ALL
+    type: TSTAPI.kCONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
 
   let separatorsCount = 0;
@@ -64,7 +64,7 @@ export async function refreshItems() {
       contexts: ['tab']
     });
     tabContextMenu.onExternalMessage({
-      type: Constants.kTSTAPI_CONTEXT_MENU_CREATE,
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: {
         id, type, title,
         contexts: ['tab']

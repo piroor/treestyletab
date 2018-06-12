@@ -175,9 +175,9 @@ function onBlur(aEvent) {
 function onMouseMove(aEvent) {
   const tab = getTabFromEvent(aEvent);
   if (tab) {
-    sendTSTAPIMessage({
-      type:     Constants.kTSTAPI_NOTIFY_TAB_MOUSEMOVE,
-      tab:      serializeTabForTSTAPI(tab),
+    TSTAPI.sendMessage({
+      type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
+      tab:      TSTAPI.serializeTab(tab),
       window:   gTargetWindow,
       ctrlKey:  aEvent.ctrlKey,
       shiftKey: aEvent.shiftKey,
@@ -191,9 +191,9 @@ function onMouseMove(aEvent) {
 function onMouseOver(aEvent) {
   const tab = getTabFromEvent(aEvent);
   if (tab && onMouseOver.lastTarget != tab.id) {
-    sendTSTAPIMessage({
-      type:     Constants.kTSTAPI_NOTIFY_TAB_MOUSEOVER,
-      tab:      serializeTabForTSTAPI(tab),
+    TSTAPI.sendMessage({
+      type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
+      tab:      TSTAPI.serializeTab(tab),
       window:   gTargetWindow,
       ctrlKey:  aEvent.ctrlKey,
       shiftKey: aEvent.shiftKey,
@@ -208,9 +208,9 @@ function onMouseOver(aEvent) {
 function onMouseOut(aEvent) {
   const tab = getTabFromEvent(aEvent);
   if (tab && onMouseOut.lastTarget != tab.id) {
-    sendTSTAPIMessage({
-      type:     Constants.kTSTAPI_NOTIFY_TAB_MOUSEOUT,
-      tab:      serializeTabForTSTAPI(tab),
+    TSTAPI.sendMessage({
+      type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
+      tab:      TSTAPI.serializeTab(tab),
       window:   gTargetWindow,
       ctrlKey:  aEvent.ctrlKey,
       shiftKey: aEvent.shiftKey,
@@ -304,7 +304,7 @@ function onMouseDown(aEvent) {
       return;
     }
 
-    if (getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_DRAGREADY).length == 0)
+    if (TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_DRAGREADY).length == 0)
       return;
 
     if (configs.logOnMouseEvent)
@@ -319,9 +319,9 @@ function onMouseDown(aEvent) {
 }
 
 function notifyTSTAPIDragReady(aTab, aIsClosebox) {
-  sendTSTAPIMessage({
-    type:   Constants.kTSTAPI_NOTIFY_TAB_DRAGREADY,
-    tab:    serializeTabForTSTAPI(aTab),
+  TSTAPI.sendMessage({
+    type:   TSTAPI.kNOTIFY_TAB_DRAGREADY,
+    tab:    TSTAPI.serializeTab(aTab),
     window: gTargetWindow,
     startOnClosebox: aIsClosebox
   });
@@ -372,11 +372,11 @@ async function onMouseUp(aEvent) {
   if (lastMousedown)
     await lastMousedown.promisedMousedownNotified;
 
-  let serializedTab = tab && serializeTabForTSTAPI(tab);
+  let serializedTab = tab && TSTAPI.serializeTab(tab);
   let promisedCanceled = Promise.resolve(false);
   if (serializedTab && lastMousedown) {
-    const results = sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-      type:    Constants.kTSTAPI_NOTIFY_TAB_MOUSEUP,
+    const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+      type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
       window:  gTargetWindow
     }));
@@ -390,8 +390,8 @@ async function onMouseUp(aEvent) {
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.releaseCapture();
 
-    sendTSTAPIMessage({
-      type:    Constants.kTSTAPI_NOTIFY_TAB_DRAGEND,
+    TSTAPI.sendMessage({
+      type:    TSTAPI.kNOTIFY_TAB_DRAGEND,
       tab:     serializedTab,
       window:  gTargetWindow,
       clientX: aEvent.clientX,
@@ -402,8 +402,8 @@ async function onMouseUp(aEvent) {
     gLastDragEnteredTarget = null;
   }
   else if (gReadyToCaptureMouseEvents) {
-    sendTSTAPIMessage({
-      type:    Constants.kTSTAPI_NOTIFY_TAB_DRAGCANCEL,
+    TSTAPI.sendMessage({
+      type:    TSTAPI.kNOTIFY_TAB_DRAGCANCEL,
       tab:     serializedTab,
       window:  gTargetWindow,
       clientX: aEvent.clientX,
@@ -457,12 +457,12 @@ async function onMouseUp(aEvent) {
 
   if (configs.logOnMouseEvent)
     log('notify as a blank area click to other addons');
-  let results = await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-    type:   Constants.kTSTAPI_NOTIFY_TABBAR_MOUSEUP,
+  let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+    type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     window: gTargetWindow,
   }));
-  results = results.concat(await sendTSTAPIMessage(Object.assign({}, lastMousedown.detail, {
-    type:   Constants.kTSTAPI_NOTIFY_TABBAR_CLICKED,
+  results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
+    type:   TSTAPI.kNOTIFY_TABBAR_CLICKED,
     window: gTargetWindow,
   })));
   if (results.some(aResult => aResult.result))// canceled
@@ -651,10 +651,10 @@ async function onWheel(aEvent) {
   aEvent.preventDefault();
 
   var tab = getTabFromEvent(aEvent);
-  var results = await sendTSTAPIMessage({
-    type:      Constants.kTSTAPI_NOTIFY_SCROLLED,
-    tab:       tab && serializeTabForTSTAPI(tab),
-    tabs:      Tabs.getTabs().map(serializeTabForTSTAPI),
+  var results = await TSTAPI.sendMessage({
+    type:      TSTAPI.kNOTIFY_SCROLLED,
+    tab:       tab && TSTAPI.serializeTab(tab),
+    tabs:      Tabs.getTabs().map(TSTAPI.serializeTab),
     window:    gTargetWindow,
 
     deltaY:       aEvent.deltaY,
@@ -1551,7 +1551,7 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case Constants.kCOMMAND_BROADCAST_API_REGISTERED:
-      gExternalListenerAddons[aMessage.sender.id] = aMessage.message;
+      TSTAPI.addons[aMessage.sender.id] = aMessage.message;
       if (aMessage.message.style)
         installStyleForAddon(aMessage.sender.id, aMessage.message.style);
       updateSpecialEventListenersForAPIListeners();
@@ -1560,7 +1560,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case Constants.kCOMMAND_BROADCAST_API_UNREGISTERED:
       uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
-      delete gExternalListenerAddons[aMessage.sender.id];
+      delete TSTAPI.addons[aMessage.sender.id];
       updateSpecialEventListenersForAPIListeners();
       break;
 
@@ -1606,15 +1606,15 @@ function onMessage(aMessage, aSender, aRespond) {
 
 function onMessageExternal(aMessage, aSender) {
   switch (aMessage.type) {
-    case Constants.kTSTAPI_SCROLL_LOCK:
+    case TSTAPI.kSCROLL_LOCK:
       gScrollLockedBy[aSender.id] = true;
       return Promise.resolve(true);
 
-    case Constants.kTSTAPI_SCROLL_UNLOCK:
+    case TSTAPI.kSCROLL_UNLOCK:
       delete gScrollLockedBy[aSender.id];
       return Promise.resolve(true);
 
-    case Constants.kTSTAPI_SCROLL:
+    case TSTAPI.kSCROLL:
       return (async () => {
         let params = {};
         if ('tab' in aMessage) {

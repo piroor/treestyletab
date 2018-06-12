@@ -38,7 +38,7 @@ var tabContextMenu = {
     }, { once: true });
 
     browser.runtime.sendMessage({
-      type: Constants.kTSTAPI_CONTEXT_MENU_GET_ITEMS
+      type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
     }).then(aItems => {
       this.extraItems = aItems;
       this.dirty      = true;
@@ -96,7 +96,7 @@ var tabContextMenu = {
       const topLevelItems = toBeBuiltItems.filter(aItem => !aItem.parentId);
       if (topLevelItems.length == 1 &&
           !topLevelItems[0].icons)
-        topLevelItems[0].icons = gExternalListenerAddons[id].icons || {};
+        topLevelItems[0].icons = TSTAPI.addons[id].icons || {};
 
       const addonSubMenu = addonItem.lastChild;
       const knownItems   = {};
@@ -135,11 +135,11 @@ var tabContextMenu = {
   getAddonName(aId) {
     if (aId == browser.runtime.id)
       return browser.i18n.getMessage('extensionName');
-    const addon = gExternalListenerAddons[aId] || {};
+    const addon = TSTAPI.addons[aId] || {};
     return addon.name || aId.replace(/@.+$/, '');
   },
   getAddonIcon(aId) {
-    const addon = gExternalListenerAddons[aId] || {};
+    const addon = TSTAPI.addons[aId] || {};
     return this.chooseIconForAddon({
       id:         aId,
       internalId: addon.internalId,
@@ -148,7 +148,7 @@ var tabContextMenu = {
   },
   chooseIconForAddon(aParams) {
     const icons = aParams.icons || {};
-    const addon = gExternalListenerAddons[aParams.id] || {};
+    const addon = TSTAPI.addons[aParams.id] || {};
     let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
     const reducedSizes = sizes.filter(aSize => aSize < 16);
     if (reducedSizes.length > 0)
@@ -186,7 +186,7 @@ var tabContextMenu = {
       itemNode.classList.add('disabled');
     else
       itemNode.classList.remove('disabled');;
-    const addon = gExternalListenerAddons[aOwnerAddonId] || {};
+    const addon = TSTAPI.addons[aOwnerAddonId] || {};
     const icon = this.chooseIconForAddon({
       id:         aOwnerAddonId,
       internalId: addon.internalId,
@@ -422,7 +422,7 @@ var tabContextMenu = {
           if (aEvent.shiftKey)
             modifiers.push('Shift');
           let message = {
-            type: Constants.kTSTAPI_CONTEXT_MENU_CLICK,
+            type: TSTAPI.kCONTEXT_MENU_CLICK,
             info: {
               checked:          false,
               editable:         false,
@@ -453,7 +453,7 @@ var tabContextMenu = {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
-      case Constants.kTSTAPI_CONTEXT_MENU_UPDATED: {
+      case TSTAPI.kCONTEXT_MENU_UPDATED: {
         this.extraItems = aMessage.items;
         this.dirty = true;
         if (this.ui.opened)
@@ -466,7 +466,7 @@ var tabContextMenu = {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
-      case Constants.kTSTAPI_CONTEXT_MENU_OPEN:
+      case TSTAPI.kCONTEXT_MENU_OPEN:
         return (async () => {
           var tab      = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
           var windowId = aMessage.window || tab && tab.windowId;

@@ -10,7 +10,6 @@ log.context = 'BG';
 var gInitializing           = true;
 var gSidebarOpenState       = new Map();
 var gSidebarFocusState      = new Map();
-var gExternalListenerAddons = null;
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
 
@@ -105,7 +104,7 @@ async function init() {
     }
   }
 
-  await readyForExternalAddons();
+  await TSTAPI.init();
 
   gInitializing = false;
 
@@ -146,14 +145,14 @@ function waitUntilCompletelyRestored() {
 
 function destroy() {
   browser.runtime.sendMessage(browser.runtime.id, {
-    type:  Constants.kTSTAPI_UNREGISTER_SELF
+    type:  TSTAPI.kUNREGISTER_SELF
   });
 
   // This API doesn't work as expected because it is not notified to
   // other addons actually when browser.runtime.sendMessage() is called
   // on pagehide or something unloading event.
-  sendTSTAPIMessage({
-    type: Constants.kTSTAPI_NOTIFY_SHUTDOWN
+  TSTAPI.sendMessage({
+    type: TSTAPI.kNOTIFY_SHUTDOWN
   });
 
   browser.runtime.onMessage.removeListener(onMessage);
@@ -261,50 +260,21 @@ function startWatchSidebarOpenState() {
       return;
     const windowId = parseInt(aPort.name.replace(matcher, ''));
     gSidebarOpenState.set(windowId, true);
-    sendTSTAPIMessage({
-      type:   Constants.kTSTAPI_NOTIFY_SIDEBAR_SHOW,
+    TSTAPI.sendMessage({
+      type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
       window: windowId
     });
     aPort.onDisconnect.addListener(aMessage => {
       gSidebarOpenState.delete(windowId);
       gSidebarFocusState.delete(windowId);
-      sendTSTAPIMessage({
-        type:   Constants.kTSTAPI_NOTIFY_SIDEBAR_HIDE,
+      TSTAPI.sendMessage({
+        type:   TSTAPI.kNOTIFY_SIDEBAR_HIDE,
         window: windowId
       });
     });
   });
 }
 
-
-async function readyForExternalAddons() {
-  gExternalListenerAddons = {};
-  const manifest = browser.runtime.getManifest();
-  gExternalListenerAddons[manifest.applications.gecko.id] = {
-    id:         manifest.applications.gecko.id,
-    internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
-    icons:      manifest.icons,
-    listeningTypes: []
-  };
-  var respondedAddons = [];
-  var notifiedAddons = {};
-  var notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
-  await Promise.all(notifyAddons.map(async aId => {
-    if (aId in notifiedAddons)
-      return;
-    notifiedAddons[aId] = true;
-    try {
-      let success = await browser.runtime.sendMessage(aId, {
-        type: Constants.kTSTAPI_NOTIFY_READY
-      });
-      if (success)
-        respondedAddons.push(aId);
-    }
-    catch(e) {
-    }
-  }));
-  configs.cachedExternalAddons = respondedAddons;
-}
 
 
 // save/load tree structure

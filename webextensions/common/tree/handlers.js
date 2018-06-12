@@ -292,7 +292,7 @@ async function onNewTabTracked(aTab) {
     });
 
     // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
-    const treeForActionDetection = snapshotTreeForActionDetection(newTab);
+    const treeForActionDetection = Tabs.snapshotTreeForActionDetection(newTab);
 
     const activeTab            = Tabs.getCurrentTab(container);
     const openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;

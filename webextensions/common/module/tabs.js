@@ -1105,3 +1105,57 @@ export function dumpAllTabs() {
         .join(' => ')
     ).join('\n'));
 }
+
+
+//===================================================================
+// Take snapshot
+//===================================================================
+
+export function snapshotTreeForActionDetection(aTargetTab) {
+  const prevTab = getPreviousNormalTab(aTargetTab);
+  const nextTab = getNextNormalTab(aTargetTab);
+  const foundTabs = {};
+  const tabs = getAncestorTabs(prevTab)
+    .concat([prevTab, aTargetTab, nextTab, getParentTab(aTargetTab)])
+    .filter(aTab => ensureLivingTab(aTab) && !foundTabs[aTab.id] && (foundTabs[aTab.id] = true)) // uniq
+    .sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
+  return snapshotTree(aTargetTab, tabs);
+}
+
+function snapshotTree(aTargetTab, aTabs) {
+  const tabs = aTabs || getNormalTabs(aTargetTab);
+
+  const snapshotById = {};
+  function snapshotChild(aTab) {
+    if (!ensureLivingTab(aTab) || isPinned(aTab) || isHidden(aTab))
+      return null;
+    return snapshotById[aTab.id] = {
+      id:            aTab.id,
+      url:           aTab.apiTab.url,
+      cookieStoreId: aTab.apiTab.cookieStoreId,
+      active:        isActive(aTab),
+      children:      getChildTabs(aTab).filter(aChild => !isHidden(aChild)).map(aChild => aChild.id),
+      collapsed:     isSubtreeCollapsed(aTab),
+      level:         parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)
+    };
+  }
+  const snapshotArray = tabs.map(aTab => snapshotChild(aTab));
+  for (let tab of tabs) {
+    const item = snapshotById[tab.id];
+    if (!item)
+      continue;
+    const parent = getParentTab(tab);
+    item.parent = parent && parent.id;
+    const next = getNextNormalTab(tab);
+    item.next = next && next.id;
+    const previous = getPreviousNormalTab(tab);
+    item.previous = previous && previous.id;
+  }
+  const activeTab = getCurrentTab(aTargetTab);
+  return {
+    target:   snapshotById[aTargetTab.id],
+    active:   activeTab && snapshotById[activeTab.id],
+    tabs:     snapshotArray,
+    tabsById: snapshotById
+  };
+}

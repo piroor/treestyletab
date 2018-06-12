@@ -13,7 +13,6 @@ var gFaviconSize        = 0;
 var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
 var gRestoringTabCount = 0;
-var gExternalListenerAddons = null;
 var gAddonStyles = {};
 
 MetricsData.add('Loaded');
@@ -162,7 +161,7 @@ async function init() {
         { type: Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
       ]);
       var addons = results[0];
-      gExternalListenerAddons = addons;
+      TSTAPI.setAddons(addons);
       gScrollLockedBy = results[1];
       for (let id of Object.keys(addons)) {
         let addon = addons[id];
@@ -444,7 +443,7 @@ function uninstallStyleForAddon(aId) {
 }
 
 function updateSpecialEventListenersForAPIListeners() {
-  if ((getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
+  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
     if (!onMouseMove.listening) {
       window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
       onMouseMove.listening = true;
@@ -455,7 +454,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
+  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
     if (!onMouseOver.listening) {
       window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
       onMouseOver.listening = true;
@@ -466,7 +465,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((getListenersForTSTAPIMessageType(Constants.kTSTAPI_NOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
+  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
     if (!onMouseOut.listening) {
       window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
       onMouseOut.listening = true;

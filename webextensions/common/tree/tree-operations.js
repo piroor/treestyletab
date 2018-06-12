@@ -807,7 +807,7 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(aTab, aOverrideParams) {
     lastChildTabOfParent:      Tabs.getLastChildTab(parentTab),
     previousSiblingTab:        Tabs.getPreviousSiblingTab(aTab),
     preDetectedNextFocusedTab: Tabs.getNextFocusedTab(aTab),
-    serialized:                serializeTabForTSTAPI(aTab),
+    serialized:                TSTAPI.serializeTab(aTab),
     closeParentBehavior:       getCloseParentBehaviorForTab(aTab, { parentTab })
   };
   if (aOverrideParams)
@@ -836,8 +836,8 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
     return false;
   }
 
-  var results = await sendTSTAPIMessage({
-    type:   Constants.kTSTAPI_NOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
+  var results = await TSTAPI.sendMessage({
+    type:   TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
     tab:    serialized,
     window: aTab.apiTab.windowId
   });

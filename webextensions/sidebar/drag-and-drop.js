@@ -624,9 +624,9 @@ function onDragStart(aEvent) {
     const startOnClosebox = gDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
       gLastDragEnteredTarget = getTabClosebox(tab);
-    sendTSTAPIMessage({
-      type:   Constants.kTSTAPI_NOTIFY_TAB_DRAGSTART,
-      tab:    serializeTabForTSTAPI(tab),
+    TSTAPI.sendMessage({
+      type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
+      tab:    TSTAPI.serializeTab(tab),
       window: gTargetWindow,
       startOnClosebox
     });
@@ -986,9 +986,9 @@ function onTSTAPIDragEnter(aEvent) {
       (!gDragTargetIsClosebox ||
        isEventFiredOnClosebox(aEvent))) {
     if (target != gLastDragEnteredTarget) {
-      sendTSTAPIMessage({
-        type:   Constants.kTSTAPI_NOTIFY_TAB_DRAGENTER,
-        tab:    serializeTabForTSTAPI(tab),
+      TSTAPI.sendMessage({
+        type:   TSTAPI.kNOTIFY_TAB_DRAGENTER,
+        tab:    TSTAPI.serializeTab(tab),
         window: gTargetWindow
       });
     }
@@ -1010,9 +1010,9 @@ function onTSTAPIDragExit(aEvent) {
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;
-    sendTSTAPIMessage({
-      type:   Constants.kTSTAPI_NOTIFY_TAB_DRAGEXIT,
-      tab:    serializeTabForTSTAPI(tab),
+    TSTAPI.sendMessage({
+      type:   TSTAPI.kNOTIFY_TAB_DRAGEXIT,
+      tab:    TSTAPI.serializeTab(tab),
       window: gTargetWindow
     });
   }, 10);
