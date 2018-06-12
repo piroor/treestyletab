@@ -971,27 +971,27 @@ Tabs.onMoving.addListener(async aTab => {
     return;
   aTab.classList.add(Constants.kTAB_STATE_MOVING);
   nextFrame().then(async () => {
-  if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
-    return;
-  let visible = !Tabs.isCollapsed(aTab);
-  let promisedCollapsed;
-  if (isCollapsedStateUpdating(aTab));
-    promisedCollapsed = isSurelyCollapsed(aTab);
-  Tree.collapseExpandTab(aTab, {
-    collapsed: true,
-    justNow:   true
-  });
-  if (promisedCollapsed)
-    visible = !(await promisedCollapsed);
-  await nextFrame();
-  if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
-    return;
-  if (visible)
+    if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
+      return;
+    let visible = !Tabs.isCollapsed(aTab);
+    let promisedCollapsed;
+    if (isCollapsedStateUpdating(aTab));
+      promisedCollapsed = isSurelyCollapsed(aTab);
     Tree.collapseExpandTab(aTab, {
-      collapsed: false
+      collapsed: true,
+      justNow:   true
     });
-  await wait(configs.collapseDuration);
-  aTab.classList.remove(Constants.kTAB_STATE_MOVING);
+    if (promisedCollapsed)
+      visible = !(await promisedCollapsed);
+    await nextFrame();
+    if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
+      return;
+    if (visible)
+      Tree.collapseExpandTab(aTab, {
+        collapsed: false
+      });
+    await wait(configs.collapseDuration);
+    aTab.classList.remove(Constants.kTAB_STATE_MOVING);
   });
 });
 
