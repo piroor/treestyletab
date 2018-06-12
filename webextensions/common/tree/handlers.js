@@ -61,42 +61,6 @@ function endObserveApiTabs() {
 }
 
 
-async function waitUntilTabsAreOperated(aIdOrIds, aSlot) {
-  if (!Array.isArray(aIdOrIds))
-    aIdOrIds = [aIdOrIds];
-  const operatingTabs = aIdOrIds
-    .map(aId => parseInt(aId))
-    .filter(aId => !!aId)
-    .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
-    .map(aId => aSlot[aId])
-    .filter(aOperating => !!aOperating);
-  if (operatingTabs.length)
-    return Promise.all(operatingTabs);
-  return [];
-}
-
-const gCreatingTabs = {};
-
-function hasCreatingTab() {
-  return Object.keys(gCreatingTabs).length > 0;
-}
-
-async function waitUntilAllTabsAreCreated() {
-  return waitUntilTabsAreCreated(Object.keys(gCreatingTabs));
-}
-
-async function waitUntilTabsAreCreated(aIdOrIds) {
-  return waitUntilTabsAreOperated(aIdOrIds, gCreatingTabs)
-    .then(aUniqueIds => aUniqueIds.map(aUniqueId => Tabs.getTabByUniqueId(aUniqueId.id)));
-}
-
-
-const gMovingTabs = {};
-
-async function waitUntilAllTabsAreMoved() {
-  return waitUntilTabsAreOperated(Object.keys(gMovingTabs), gMovingTabs);
-}
-
 
 const gTabOperationQueue = [];
 
@@ -146,7 +110,7 @@ async function onApiTabActivated(aActiveInfo) {
       TabsContainer.decrementCounter(container, 'internalSilentlyFocusCount');
     const byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
-    await waitUntilTabsAreCreated(aActiveInfo.tabId);
+    await Tabs.waitUntilTabsAreCreated(aActiveInfo.tabId);
 
     const newTab = Tabs.getTabById({ tab: aActiveInfo.tabId, window: aActiveInfo.windowId });
     if (!newTab) {
@@ -234,7 +198,7 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
   TabIdFixer.fixTab(aTab);
   aTabId = aTab.id;
 
-  await waitUntilTabsAreCreated(aTabId);
+  await Tabs.waitUntilTabsAreCreated(aTabId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -295,7 +259,7 @@ async function onNewTabTracked(aTab) {
   if (gTargetWindow && aTab.windowId != gTargetWindow)
     return null;
 
-  await waitUntilAllTabsAreCreated();
+  await Tabs.waitUntilAllTabsAreCreated();
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -313,18 +277,9 @@ async function onNewTabTracked(aTab) {
     const nextTab = Tabs.getAllTabs(container)[aTab.index];
     container.insertBefore(newTab, nextTab);
 
-    let onTabCreated = onCompleted;
-    if (configs.acceleratedTabCreation) {
-      gCreatingTabs[aTab.id] = newTab.uniqueId;
-    }
-    else {
-      gCreatingTabs[aTab.id] = new Promise((aResolve, aReject) => {
-        onTabCreated = (aUniqueId) => { onCompleted(); aResolve(aUniqueId); };
-      });
-    }
+    let _onTabCreated = Tabs.addCreatingTab(newTab);
+    let onTabCreated = (aUniqueId) => { _onTabCreated(aUniqueId); onCompleted(); };
     const uniqueId = await newTab.uniqueId;
-    if (gCreatingTabs[aTab.id] === newTab.uniqueId)
-      delete gCreatingTabs[aTab.id];
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
@@ -484,7 +439,7 @@ async function onApiTabRemoved(aTabId, aRemoveInfo) {
   if (byInternalOperation)
     TabsContainer.decrementCounter(container, 'internalClosingCount');
 
-  await waitUntilAllTabsAreCreated();
+  await Tabs.waitUntilAllTabsAreCreated();
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -558,18 +513,16 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
   const container = getOrBuildTabsContainer(aMoveInfo.windowId);
   const byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
-  await waitUntilTabsAreCreated(aTabId);
-  await waitUntilAllTabsAreMoved();
+  await Tabs.waitUntilTabsAreCreated(aTabId);
+  await Tabs.waitUntilAllTabsAreMoved();
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
-    let completelyMoved;
-    gMovingTabs[aTabId] = new Promise((aResolve, aReject) => {
-      completelyMoved = () => { onCompleted(); aResolve() };
-    });
+    let _onTabMoved = Tabs.addMovingTabId(aTabId);
+    let completelyMoved = () => { _onTabMoved(); onCompleted() };
 
     /* When a tab is pinned, tabs.onMoved may be notified before
        tabs.onUpdated(pinned=true) is notified. As the result,
@@ -657,7 +610,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
         apiTab = await browser.tabs.get(aTabId).catch(ApiTabs.handleMissingTabError);
         log(`New apiTab for attached tab ${aTabId}: `, apiTab);
       })(),
-      waitUntilTabsAreCreated(aTabId)
+      Tabs.waitUntilTabsAreCreated(aTabId)
     ]);
     if (!apiTab) {
       onCompleted();

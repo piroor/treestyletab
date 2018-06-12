@@ -190,6 +190,70 @@ export const onShown            = new EventListenerManager();
 export const onParentTabUpdated = new EventListenerManager();
 export const onTabElementMoved  = new EventListenerManager();
 
+async function waitUntilTabsAreOperated(aIdOrIds, aSlot) {
+  if (!Array.isArray(aIdOrIds))
+    aIdOrIds = [aIdOrIds];
+  const operatingTabs = aIdOrIds
+    .map(aId => parseInt(aId))
+    .filter(aId => !!aId)
+    .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
+    .map(aId => aSlot[aId])
+    .filter(aOperating => !!aOperating);
+  if (operatingTabs.length)
+    return Promise.all(operatingTabs);
+  return [];
+}
+
+const gCreatingTabs = {};
+
+export function addCreatingTab(aTab) {
+  let onTabCreated;
+  if (configs.acceleratedTabCreation) {
+    gCreatingTabs[aTab.apiTab.id] = aTab.uniqueId;
+    onTabCreated = () => {};
+  }
+  else {
+    gCreatingTabs[aTab.apiTab.id] = new Promise((aResolve, _aReject) => {
+      onTabCreated = (aUniqueId) => { aResolve(aUniqueId); };
+    });
+  }
+  aTab.uniqueId.then(_aUniqueId => {
+    if (gCreatingTabs[aTab.apiTab.id] === aTab.uniqueId)
+      delete gCreatingTabs[aTab.apiTab.id];
+  });
+  return onTabCreated;
+}
+
+export function hasCreatingTab() {
+  return Object.keys(gCreatingTabs).length > 0;
+}
+
+export async function waitUntilAllTabsAreCreated() {
+  return waitUntilTabsAreCreated(Object.keys(gCreatingTabs));
+}
+
+export async function waitUntilTabsAreCreated(aIdOrIds) {
+  return waitUntilTabsAreOperated(aIdOrIds, gCreatingTabs)
+    .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
+}
+
+const gMovingTabs = {};
+
+export function addMovingTabId(aTabId) {
+  let onTabMoved;
+  gMovingTabs[aTabId] = new Promise((aResolve, _aReject) => {
+    onTabMoved = () => {
+      delete gMovingTabs[aTabId];
+      aResolve();
+    };
+  });
+  return onTabMoved;
+}
+
+export async function waitUntilAllTabsAreMoved() {
+  return waitUntilTabsAreOperated(Object.keys(gMovingTabs), gMovingTabs);
+}
+
 
 //===================================================================
 // Create Tabs

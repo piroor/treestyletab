@@ -1380,7 +1380,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tab);
+        await Tabs.waitUntilTabsAreCreated(aMessage.tab);
         let tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
@@ -1398,7 +1398,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tab);
+        await Tabs.waitUntilTabsAreCreated(aMessage.tab);
         let tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
@@ -1421,7 +1421,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
         return TabsMove.moveTabsBefore(
           aMessage.tabs.map(Tabs.getTabById),
           Tabs.getTabById(aMessage.nextTab),
@@ -1431,7 +1431,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
         return TabsMove.moveTabsAfter(
           aMessage.tabs.map(Tabs.getTabById),
           Tabs.getTabById(aMessage.previousTab),
@@ -1441,7 +1441,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tabs);
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
         return removeTabsInternally(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
       })();
 
@@ -1449,7 +1449,7 @@ function onMessage(aMessage, aSender, aRespond) {
       if (aMessage.windowId == gTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
-            waitUntilTabsAreCreated([
+            Tabs.waitUntilTabsAreCreated([
               aMessage.child,
               aMessage.parent,
               aMessage.insertBefore,
@@ -1476,7 +1476,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
       return (async () => {
-        await waitUntilTabsAreCreated([
+        await Tabs.waitUntilTabsAreCreated([
           aMessage.tab,
           aMessage.parent
         ]);
@@ -1489,7 +1489,7 @@ function onMessage(aMessage, aSender, aRespond) {
       if (aMessage.windowId == gTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
-            waitUntilTabsAreCreated(aMessage.tab),
+            Tabs.waitUntilTabsAreCreated(aMessage.tab),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
           let tab = Tabs.getTabById(aMessage.tab);
@@ -1516,7 +1516,7 @@ function onMessage(aMessage, aSender, aRespond) {
       if (!aMessage.tabs.length)
         break;
       return (async () => {
-        await waitUntilTabsAreCreated(aMessage.tabs);
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
         let add    = aMessage.add || [];
         let remove = aMessage.remove || [];
         log('apply broadcasted tab state ', aMessage.tabs, {
@@ -1618,7 +1618,7 @@ function onMessageExternal(aMessage, aSender) {
       return (async () => {
         let params = {};
         if ('tab' in aMessage) {
-          await waitUntilTabsAreCreated(aMessage.tab);
+          await Tabs.waitUntilTabsAreCreated(aMessage.tab);
           params.tab = Tabs.getTabById(aMessage.tab);
           if (!params.tab || params.tab.windowId != gTargetWindow)
             return;
