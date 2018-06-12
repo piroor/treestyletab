@@ -245,7 +245,8 @@ async function tryInitGroupTab(aTab) {
   if (initialized[0])
     return;
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
-    file:  '/common/l10n.js'
+    //file:  '/common/l10n.js'
+    file:  '/resources/l10n.js' // ES module does not supported as a content script...
   }));
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'

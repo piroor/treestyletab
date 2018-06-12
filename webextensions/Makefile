@@ -27,6 +27,7 @@ install_extlib:
 	cp ../extlib/webextensions-lib-configs/Configs.js common/; echo 'export default Configs;' >> common/Configs.js
 	cp ../extlib/webextensions-lib-options/Options.js options/; echo 'export default Options;' >> options/Options.js
 	cp ../extlib/webextensions-lib-l10n/l10n.js common/; echo 'export default l10n;' >> common/l10n.js
+	cp ../extlib/webextensions-lib-l10n/l10n.js resources/
 	cp ../extlib/webextensions-lib-shortcut-customize-ui/ShortcutCustomizeUI.js options/; echo 'export default ShortcutCustomizeUI;' >> options/ShortcutCustomizeUI.js
 
 ../extlib/webextensions-lib-tab-id-fixer/TabIdFixer.js:
