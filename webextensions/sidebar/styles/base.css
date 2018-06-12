@@ -361,6 +361,14 @@ ul {
   content: ")";
 }
 
+/* change the counter color which is black */
+.tab.discarded .counter {
+  color: var(--tone-3)!important
+}
+.tab .counter {
+  color: var(--tone-1)!important
+}
+
 
 /* closebox */
 
