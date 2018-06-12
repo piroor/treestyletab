@@ -14,6 +14,8 @@ var gFaviconizedTabSize = 0;
 var gTabHeight          = 0;
 var gRestoringTabCount = 0;
 var gAddonStyles = {};
+var gTargetWindow   = null;
+var gScrollLockedBy = {};
 
 MetricsData.add('Loaded');
 

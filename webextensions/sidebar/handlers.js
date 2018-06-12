@@ -831,7 +831,6 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
       var focused = Tabs.isActive(aTab);
       Tree.collapseExpandTab(aTab, {
         collapsed: false,
-        justNow:   gRestoringTree,
         anchor:    Tabs.getCurrentTab(),
         last:      true
       });

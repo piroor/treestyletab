@@ -10,6 +10,7 @@ log.context = 'BG';
 var gInitializing           = true;
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
+var gScrollLockedBy              = {};
 
 MetricsData.add('Loaded');
 
