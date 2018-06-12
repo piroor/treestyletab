@@ -43,6 +43,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import TabFavIconHelper from '../TabFavIconHelper.js';
+import TabIdFixer from '../TabIdFixer.js';
 import * as Tabs from './tabs.js';
 
 export const kREGISTER_SELF         = 'register-self';
@@ -198,4 +199,87 @@ export async function sendMessage(aMessage, aOptions = {}) {
       };
     }
   }));
+}
+
+
+export async function getTargetTabs(aMessage, aSender) {
+  await Tabs.waitUntilAllTabsAreCreated();
+  if (Array.isArray(aMessage.tabs))
+    return getTabsFromWrongIds(aMessage.tabs, aSender);
+  if (aMessage.window || aMessage.windowId) {
+    if (aMessage.tab == '*' ||
+        aMessage.tabs == '*')
+      return Tabs.getAllTabs(aMessage.window || aMessage.windowId);
+    else
+      return Tabs.getRootTabs(aMessage.window || aMessage.windowId);
+  }
+  if (aMessage.tab == '*' ||
+      aMessage.tabs == '*') {
+    let window = await browser.windows.getLastFocused({
+      windowTypes: ['normal']
+    });
+    return Tabs.getAllTabs(window.id);
+  }
+  if (aMessage.tab)
+    return getTabsFromWrongIds([aMessage.tab], aSender);
+  return [];
+}
+
+async function getTabsFromWrongIds(aIds, aSender) {
+  let tabsInActiveWindow = [];
+  if (aIds.some(aId => typeof aId != 'number')) {
+    let window = await browser.windows.getLastFocused({
+      populate:    true,
+      windowTypes: ['normal']
+    });
+    tabsInActiveWindow = window.tabs;
+  }
+  let tabOrAPITabOrIds = await Promise.all(aIds.map(async (aId) => {
+    switch (String(aId).toLowerCase()) {
+      case 'active':
+      case 'current': {
+        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        return TabIdFixer.fixTab(tabs[0]);
+      }
+      case 'next': {
+        let tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
+          aIndex > 0 && tabsInActiveWindow[aIndex - 1].active);
+        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
+      }
+      case 'previous':
+      case 'prev': {
+        let maxIndex = tabsInActiveWindow.length - 1;
+        let tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
+          aIndex < maxIndex && tabsInActiveWindow[aIndex + 1].active);
+        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
+      }
+      case 'nextsibling': {
+        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        return Tabs.getNextSiblingTab(Tabs.getTabById(tabs[0]));
+      }
+      case 'previoussibling':
+      case 'prevsibling': {
+        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        return Tabs.getPreviousSiblingTab(Tabs.getTabById(tabs[0]));
+      }
+      case 'sendertab':
+        if (aSender.tab)
+          return aSender.tab;
+      default:
+        const tabFromUniqueId = Tabs.getTabByUniqueId(aId);
+        return tabFromUniqueId || aId;
+    }
+  }));
+  return tabOrAPITabOrIds.map(Tabs.getTabById).filter(aTab => !!aTab);
+}
+
+export function formatResult(aResults, aOriginalMessage) {
+  if (Array.isArray(aOriginalMessage.tabs))
+    return aResults;
+  if (aOriginalMessage.tab == '*' ||
+      aOriginalMessage.tabs == '*')
+    return aResults;
+  if (aOriginalMessage.tab)
+    return aResults[0];
+  return aResults;
 }

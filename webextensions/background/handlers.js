@@ -1763,14 +1763,14 @@ function onMessageExternal(aMessage, aSender) {
 
     case TSTAPI.kGET_TREE:
       return (async () => {
-        const tabs    = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs    = await TSTAPI.getTargetTabs(aMessage, aSender);
         const results = tabs.map(TSTAPI.serializeTab);
-        return TSTAPIFormatResult(results, aMessage);
+        return TSTAPI.formatResult(results, aMessage);
       })();
 
     case TSTAPI.kCOLLAPSE_TREE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
             collapsed: true,
@@ -1782,7 +1782,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case TSTAPI.kEXPAND_TREE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           collapseExpandSubtree(tab, {
             collapsed: false,
@@ -1829,47 +1829,47 @@ function onMessageExternal(aMessage, aSender) {
     case TSTAPI.kINDENT:
     case TSTAPI.kDEMOTE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.indent(aTab, aMessage)));
-        return TSTAPIFormatResult(results, aMessage);
+        return TSTAPI.formatResult(results, aMessage);
       })();
 
     case TSTAPI.kOUTDENT:
     case TSTAPI.kPROMOTE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.outdent(aTab, aMessage)));
-        return TSTAPIFormatResult(results, aMessage);
+        return TSTAPI.formatResult(results, aMessage);
       })();
 
     case TSTAPI.kMOVE_UP:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.moveUp(aTab, aMessage)));
-        return TSTAPIFormatResult(results, aMessage);
+        return TSTAPI.formatResult(results, aMessage);
       })();
 
     case TSTAPI.kMOVE_DOWN:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         const results = await Promise.all(tabs.map(aTab => Commands.moveDown(aTab, aMessage)));
-        return TSTAPIFormatResult(results, aMessage);
+        return TSTAPI.formatResult(results, aMessage);
       })();
 
     case TSTAPI.kFOCUS:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
           selectTabInternally(tab, {
             silently: aMessage.silently
           });
         }
-        return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
+        return TSTAPI.formatResult(tabs.map(aTab => true), aMessage);
       })();
 
     case TSTAPI.kDUPLICATE:
       return (async () => {
-        const tabs   = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs   = await TSTAPI.getTargetTabs(aMessage, aSender);
         let behavior = Constants.kNEWTAB_OPEN_AS_ORPHAN;
         switch (String(aMessage.as || 'sibling').toLowerCase()) {
           case 'child':
@@ -1896,25 +1896,25 @@ function onMessageExternal(aMessage, aSender) {
             behavior
           });
         }
-        return TSTAPIFormatResult(tabs.map(aTab => true), aMessage);
+        return TSTAPI.formatResult(tabs.map(aTab => true), aMessage);
       })();
 
     case TSTAPI.kGROUP_TABS:
       return (async () => {
-        const tabs     = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs     = await TSTAPI.getTargetTabs(aMessage, aSender);
         const groupTab = await groupTabs(tabs, { broadcast: true });
         return groupTab.apiTab;
       })();
 
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         return Promise.resolve(getTreeStructureFromTabs(tabs));
       })();
 
     case TSTAPI.kSET_TREE_STRUCTURE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         await applyTreeStructureToTabs(tabs, aMessage.structure, {
           broadcast: true
         });
@@ -1923,7 +1923,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case TSTAPI.kADD_TAB_STATE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         let states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
@@ -1940,7 +1940,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case TSTAPI.kREMOVE_TAB_STATE:
       return (async () => {
-        const tabs = await TSTAPIGetTargetTabs(aMessage, aSender);
+        const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         let states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
@@ -1971,87 +1971,6 @@ function onMessageExternal(aMessage, aSender) {
       delete gGroupingBlockedBy[aSender.id];
       return Promise.resolve(true);
   }
-}
-
-async function TSTAPIGetTargetTabs(aMessage, aSender) {
-  await Tabs.waitUntilAllTabsAreCreated();
-  if (Array.isArray(aMessage.tabs))
-    return TSTAPIGetTabsFromWrongIds(aMessage.tabs, aSender);
-  if (aMessage.window || aMessage.windowId) {
-    if (aMessage.tab == '*' ||
-        aMessage.tabs == '*')
-      return Tabs.getAllTabs(aMessage.window || aMessage.windowId);
-    else
-      return Tabs.getRootTabs(aMessage.window || aMessage.windowId);
-  }
-  if (aMessage.tab == '*' ||
-      aMessage.tabs == '*') {
-    let window = await browser.windows.getLastFocused({
-      windowTypes: ['normal']
-    });
-    return Tabs.getAllTabs(window.id);
-  }
-  if (aMessage.tab)
-    return TSTAPIGetTabsFromWrongIds([aMessage.tab], aSender);
-  return [];
-}
-async function TSTAPIGetTabsFromWrongIds(aIds, aSender) {
-  var tabsInActiveWindow = [];
-  if (aIds.some(aId => typeof aId != 'number')) {
-    let window = await browser.windows.getLastFocused({
-      populate:    true,
-      windowTypes: ['normal']
-    });
-    tabsInActiveWindow = window.tabs;
-  }
-  let tabOrAPITabOrIds = await Promise.all(aIds.map(async (aId) => {
-    switch (String(aId).toLowerCase()) {
-      case 'active':
-      case 'current': {
-        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
-        return TabIdFixer.fixTab(tabs[0]);
-      }
-      case 'next': {
-        let tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
-          aIndex > 0 && tabsInActiveWindow[aIndex - 1].active);
-        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
-      }
-      case 'previous':
-      case 'prev': {
-        let maxIndex = tabsInActiveWindow.length - 1;
-        let tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
-          aIndex < maxIndex && tabsInActiveWindow[aIndex + 1].active);
-        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
-      }
-      case 'nextsibling': {
-        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
-        return Tabs.getNextSiblingTab(Tabs.getTabById(tabs[0]));
-      }
-      case 'previoussibling':
-      case 'prevsibling': {
-        let tabs = tabsInActiveWindow.filter(aTab => aTab.active);
-        return Tabs.getPreviousSiblingTab(Tabs.getTabById(tabs[0]));
-      }
-      case 'sendertab':
-        if (aSender.tab)
-          return aSender.tab;
-      default:
-        const tabFromUniqueId = Tabs.getTabByUniqueId(aId);
-        return tabFromUniqueId || aId;
-    }
-  }));
-  return tabOrAPITabOrIds.map(Tabs.getTabById).filter(aTab => !!aTab);
-}
-
-function TSTAPIFormatResult(aResults, aOriginalMessage) {
-  if (Array.isArray(aOriginalMessage.tabs))
-    return aResults;
-  if (aOriginalMessage.tab == '*' ||
-      aOriginalMessage.tabs == '*')
-    return aResults;
-  if (aOriginalMessage.tab)
-    return aResults[0];
-  return aResults;
 }
 
 
