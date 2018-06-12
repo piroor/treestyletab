@@ -165,7 +165,7 @@ async function onShortcutCommand(aCommand) {
 // this should return true if the tab is moved while processing
 Tabs.onCreating.addListener((aTab, aInfo = {}) => {
   if (aInfo.duplicatedInternally)
-    return false;
+    return true;
 
   log('Tabs.onCreating ', dumpTab(aTab), aInfo);
 
@@ -208,7 +208,7 @@ Tabs.onCreating.addListener((aTab, aInfo = {}) => {
           autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
           inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
         });
-        return true;
+        return false;
       }
       else if (possibleOpenerTab != aTab) {
         aTab.dataset.possibleOpenerTab = possibleOpenerTab.id;
@@ -216,14 +216,14 @@ Tabs.onCreating.addListener((aTab, aInfo = {}) => {
       aTab.dataset.isNewTab = true;
     }
     log('behave as a tab opened with any URL');
-    return false;
+    return true;
   }
 
   log('opener: ', dumpTab(opener), aInfo.maybeOpenedWithPosition);
   if (Tabs.isPinned(opener) &&
       opener.parentNode == aTab.parentNode) {
     if (configs.autoGroupNewTabsFromPinned) {
-      return true;
+      return false;
     }
     if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
       TabsMove.moveTabAfter(aTab, Tabs.getLastTab(aTab), {
@@ -239,9 +239,9 @@ Tabs.onCreating.addListener((aTab, aInfo = {}) => {
       dontMove:  aInfo.maybeOpenedWithPosition,
       broadcast: true
     });
-    return true;
+    return false;
   }
-  return false;
+  return true;
 });
 
 async function handleNewTabFromActiveTab(aTab, aParams = {}) {
@@ -701,17 +701,17 @@ Tabs.onMoving.addListener((aTab, aMoveInfo) => {
   if (!isNewlyOpenedTab ||
       aMoveInfo.byInternalOperation ||
       !positionControlled)
-    return false;
+    return true;
 
   const opener = Tabs.getOpenerTab(aTab);
   // if there is no valid opener, it can be a restored initial tab in a restored window
   // and can be just moved as a part of window restoration process.
   if (!opener)
-    return false;
+    return true;
 
   log('onTabMove for new child tab: move back '+aMoveInfo.toIndex+' => '+aMoveInfo.fromIndex);
   moveBack(aTab, aMoveInfo);
-  return true;
+  return false;
 });
 
 Tabs.onTabElementMoved.addListener((aTab, aInfo = {}) => {
@@ -999,14 +999,14 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
       log('Tabs.onActivating: discarded? ', dumpTab(aTab), Tabs.isDiscarded(aTab));
       if (Tabs.isDiscarded(aTab))
         aTab.dataset.discardURLAfterCompletelyLoaded = aTab.apiTab.url;
-      return true
+      return false;
     }
   }
   else if (aInfo.byCurrentTabRemove &&
            (!configs.autoCollapseExpandSubtreeOnSelect ||
             configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove)) {
     log('=> reaction for removing current tab');
-    return true;
+    return false;
   }
   else if (Tabs.hasChildTabs(aTab) &&
            Tabs.isSubtreeCollapsed(aTab) &&
@@ -1018,7 +1018,7 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
   if (gMaybeTabSwitchingByShortcut)
     setupDelayedExpand(aTab);
   tryInitGroupTab(aTab);
-  return false;
+  return true;
 });
 function handleNewActiveTab(aTab, aInfo = {}) {
   log('handleNewActiveTab: ', dumpTab(aTab), aInfo);

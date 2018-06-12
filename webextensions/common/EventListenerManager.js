@@ -19,7 +19,14 @@ EventListenerManager.prototype = {
     if (index > -1)
       this.listeners.splice(index, 1);
   },
-  dispatch(...aArgs) {
-    return Promise.all(this.listeners.map(aListener => aListener(...aArgs)));
+  async dispatch(...aArgs) {
+    const results = await Promise.all(this.listeners.map(aListener => aListener(...aArgs)));
+    if (results.length == 1)
+      return results[0];
+    for (let result of results) {
+      if (result === false)
+        return false;
+    }
+    return true;
   }
 };

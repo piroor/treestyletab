@@ -43,8 +43,8 @@ export function reloadDescendants(aRootTab) {
 
 export async function closeTree(aRootTab) {
   const tabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
-  const canceled = await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId });
-  if (canceled === false)
+  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
+  if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
   for (let tab of tabs) {
@@ -54,8 +54,8 @@ export async function closeTree(aRootTab) {
 
 export async function closeDescendants(aRootTab) {
   const tabs = Tabs.getDescendantTabs(aRootTab);
-  const canceled = await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId });
-  if (canceled === false)
+  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
+  if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
   for (let tab of tabs) {
@@ -68,8 +68,8 @@ export async function closeOthers(aRootTab) {
   const tabs          = Tabs.getNormalTabs(aRootTab); // except pinned or hidden tabs
   tabs.reverse(); // close bottom to top!
   const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(aTab) < 0);
-  const canceled = await onTabsClosing.dispatch(closeTabs.length, { windowId: aRootTab.apiTab.windowId });
-  if (canceled === false)
+  const canceled = (await onTabsClosing.dispatch(closeTabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
+  if (canceled)
     return;
   for (let tab of closeTabs) {
     TabsInternalOperation.removeTab(tab);

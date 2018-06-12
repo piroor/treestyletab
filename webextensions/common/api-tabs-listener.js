@@ -162,12 +162,12 @@ async function onApiTabActivated(aActiveInfo) {
       return;
     }
 
-    const focusOverridden = await Tabs.onActivating.dispatch(newTab, {
+    const focusOverridden = (await Tabs.onActivating.dispatch(newTab, {
       byCurrentTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
-    });
+    })) === false;
     if (focusOverridden) {
       onCompleted();
       return;
@@ -332,9 +332,7 @@ async function onNewTabTracked(aTab) {
             aResolve(lastCount);
           }, 200);
         });
-        let restoredWindowHandled = Tabs.onWindowRestoring.dispatch(aTab.windowId);
-        if (restoredWindowHandled)
-          container.allTabsRestored = restoredWindowHandled;
+        container.allTabsRestored = Tabs.onWindowRestoring.dispatch(aTab.windowId);
       }
       Tabs.onRestoring.dispatch(newTab);
       await container.allTabsRestored;
@@ -347,14 +345,14 @@ async function onNewTabTracked(aTab) {
       return;
     }
 
-    const moved = await Tabs.onCreating.dispatch(newTab, {
+    const moved = (await Tabs.onCreating.dispatch(newTab, {
       maybeOpenedWithPosition: openedWithPosition,
       maybeOrphan,
       restored,
       duplicated,
       duplicatedInternally,
       activeTab
-    });
+    })) === false;
 
     if (container.parentNode) { // it can be removed while waiting
       TabsContainer.incrementCounter(container, 'openingCount');
@@ -559,7 +557,7 @@ async function onApiTabMoved(aTabId, aMoveInfo) {
       alreadyMoved = true;
     }
 
-    const canceled = await Tabs.onMoving.dispatch(movedTab, moveInfo);
+    const canceled = (await Tabs.onMoving.dispatch(movedTab, moveInfo)) === false;
     if (!canceled &&
         Tabs.ensureLivingTab(movedTab)) { // it is removed while waiting
       let newNextIndex = moveInfo.toIndex;
