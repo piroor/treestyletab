@@ -14,6 +14,7 @@ import * as Color from './color.js';
 
 import * as Tabs from '../../common/module/tabs.js';
 import * as TabsContainer from '../../common/module/tabs-container.js';
+import * as TabsUpdate from '../../common/module/tabs-update.js';
 import * as TabsMove from '../../common/module/tabs-move.js';
 import * as TabsOpen from '../../common/module/tabs-open.js';
 import * as TabsInternalOperation from '../../common/module/tabs-internal-operation.js';
@@ -43,6 +44,7 @@ window.Color = Color;
 
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;
+window.TabsUpdate = TabsUpdate;
 window.TabsMove = TabsMove;
 window.TabsOpen = TabsOpen;
 window.TabsInternalOperation = TabsInternalOperation;
