@@ -15,6 +15,7 @@ import * as MetricsData from '../../common/module/MetricsData.js';
 import * as Tabs from '../../common/module/tabs.js';
 import * as TabsContainer from '../../common/module/tabs-container.js';
 import * as TabsMove from '../../common/module/tabs-move.js';
+import * as TabsOpen from '../../common/module/tabs-open.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -38,6 +39,7 @@ window.MetricsData = MetricsData;
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;
 window.TabsMove = TabsMove;
+window.TabsOpen = TabsOpen;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;
