@@ -508,8 +508,8 @@ async function inheritTreeStructure() {
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), response.structure);
-    MetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
+    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), response.structure);
+    MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
   }
 }
 
@@ -619,7 +619,7 @@ function collapseExpandAllSubtree(aParams = {}) {
     tabCondition = `:not(${tabCondition})`;
   var tabs = container.querySelectorAll(`.tab:not([${Constants.kCHILDREN}="|"])${subtreeCondition}`);
   for (let tab of tabs) {
-    collapseExpandSubtree(tab, aParams);
+    Tree.collapseExpandSubtree(tab, aParams);
   }
 }
 

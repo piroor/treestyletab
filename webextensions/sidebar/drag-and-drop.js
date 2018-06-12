@@ -420,7 +420,7 @@ function collapseAutoExpandedTabsWhileDragging() {
   if (gLongHoverExpandedTabs.length > 0 &&
       configs.autoExpandOnLongHoverRestoreIniitalState) {
     for (let tab of gLongHoverExpandedTabs) {
-      collapseExpandSubtree(tab, {
+      Tree.collapseExpandSubtree(tab, {
         collapsed: false,
         justNow:   true,
         inRemote:  true
@@ -808,18 +808,18 @@ function reserveToProcessLongHover(aParams = {}) {
         });
       }
 
-      if (!shouldTabAutoExpanded(dragOverTab))
+      if (!Tree.shouldTabAutoExpanded(dragOverTab))
         return;
 
       // auto-expand for staying on a parent
       let draggedTab = Tabs.getTabById(aParams.draggedTabId);
       if (configs.autoExpandIntelligently) {
-        collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
+        Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
       else {
         if (gLongHoverExpandedTabs.indexOf(aParams.dragOverTabId) < 0)
           gLongHoverExpandedTabs.push(aParams.dragOverTabId);
-        collapseExpandSubtree(dragOverTab, {
+        Tree.collapseExpandSubtree(dragOverTab, {
           collapsed: false,
           inRemote:  true
         });
@@ -873,7 +873,7 @@ function onDrop(aEvent) {
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.apiTab) {
     log('there are dragged tabs');
-    performTabsDragDrop({
+    Tree.performTabsDragDrop({
       windowId:            dropActionInfo.dragData.windowId,
       tabs:                dropActionInfo.dragData.apiTabs,
       action:              dropActionInfo.action,
@@ -964,7 +964,7 @@ function onDragEnd(aEvent) {
     return;
   }
 
-  openNewWindowFromTabs(dragData.tabNodes, {
+  Tree.openNewWindowFromTabs(dragData.tabNodes, {
     duplicate: isAccelKeyPressed(aEvent),
     left:      aEvent.screenX,
     top:       aEvent.screenY,

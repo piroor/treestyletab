@@ -154,7 +154,7 @@ async function migrateLegacyTreeStructure() {
       [...]
     ]
     "parent" and "collapsed" are compatible to the format of
-    getTreeStructureFromTabs() / applyTreeStructureToTabs().
+    Tree.getTreeStructureFromTabs() / Tree.applyTreeStructureToTabs().
   */
 
   try {
@@ -182,7 +182,7 @@ async function migrateLegacyTreeStructure() {
       // found: apply only structure case
       let structure = structures[index];
       let tabs      = Tabs.getAllTabs(apiWindow.id);
-      await applyTreeStructureToTabs(tabs, structure);
+      await Tree.applyTreeStructureToTabs(tabs, structure);
 
       restoredCountWithSession++;
 
@@ -216,7 +216,7 @@ async function migrateLegacyTreeStructure() {
       var tabs = await TabsOpen.openURIsInTabs(uris, {
         windowId: apiWindow.id
       });
-      applyTreeStructureToTabs(tabs, aStructure);
+      Tree.applyTreeStructureToTabs(tabs, aStructure);
       // close initial blank tab
       apiWindow = await browser.windows.get(apiWindow.id, {
         populate: true

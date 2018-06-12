@@ -231,7 +231,7 @@ Tabs.onCreating.addListener((aTab, aInfo = {}) => {
     }
   }
   else if (!aInfo.maybeOrphan && configs.autoAttach) {
-    behaveAutoAttachedTab(aTab, {
+    Tree.behaveAutoAttachedTab(aTab, {
       baseTab:   opener,
       behavior:  configs.autoAttachOnOpenedWithOwner,
       dontMove:  aInfo.maybeOpenedWithPosition,
@@ -245,7 +245,7 @@ Tabs.onCreating.addListener((aTab, aInfo = {}) => {
 async function handleNewTabFromActiveTab(aTab, aParams = {}) {
   const activeTab = aParams.activeTab;
   log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), aParams);
-  await behaveAutoAttachedTab(aTab, {
+  await Tree.behaveAutoAttachedTab(aTab, {
     baseTab:   activeTab,
     behavior:  aParams.autoAttachBehavior,
     broadcast: true
@@ -398,7 +398,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
         // If there is not-yet grouped sibling, place next to it.
         const siblings = tab.parentNode.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}[data-original-opener-tab-id="${tab.dataset.originalOpenerTabId}"]:not([data-already-grouped-for-pinned-opener])`);
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
-        await moveTabSubtreeAfter(tab, Tabs.getLastDescendantTab(referenceTab) || referenceTab, {
+        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastDescendantTab(referenceTab) || referenceTab, {
           broadcast: true
         });
       }
@@ -407,7 +407,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       for (let tab of unifiedRootTabs) {
         if (Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
-        await moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.parentNode), {
+        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.parentNode), {
           broadcast: true
         });
       }
@@ -440,7 +440,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     for (let child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.dataset.alreadyGroupedForPinnedOpener = true;
-      await attachTabTo(child, parent, {
+      await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
         insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tabs.getLastDescendantTab(parent),
         broadcast: true
@@ -463,7 +463,7 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
       });
     }
     else {
-      behaveAutoAttachedTab(aTab, {
+      Tree.behaveAutoAttachedTab(aTab, {
         baseTab:   original,
         behavior:  configs.autoAttachOnDuplicated,
         dontMove:  aInfo.openedWithPosition,
@@ -541,14 +541,14 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
   const container = aTab.parentNode;
 
   const ancestors = Tabs.getAncestorTabs(aTab);
-  const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (!Sidebar.isOpen(aTab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(aTab))
-    collapseExpandSubtree(aTab, {
+    Tree.collapseExpandSubtree(aTab, {
       collapsed: false,
       justNow:   true,
-      broadcast: false // because the tab is going to be closed, broadcasted collapseExpandSubtree can be ignored.
+      broadcast: false // because the tab is going to be closed, broadcasted Tree.collapseExpandSubtree can be ignored.
     });
 
   const wasActive = Tabs.isActive(aTab);
@@ -556,7 +556,7 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
     return;
 
   const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(aTab) || aTab.nextSibling;
-  tryMoveFocusFromClosingCurrentTab(aTab, {
+  Tree.tryMoveFocusFromClosingCurrentTab(aTab, {
     wasActive,
     params: {
       active:          wasActive,
@@ -586,19 +586,19 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
     log('group tab: ', dumpTab(groupTab));
     if (!groupTab) // the window is closed!
       return;
-    await attachTabTo(groupTab, aTab, {
+    await Tree.attachTabTo(groupTab, aTab, {
       insertBefore: firstChild,
       broadcast:    true
     });
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
   }
 
-  detachAllChildren(aTab, {
+  Tree.detachAllChildren(aTab, {
     behavior:  closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
-  detachTab(aTab, {
+  Tree.detachTab(aTab, {
     dontUpdateIndent: true,
     broadcast:        true
   });
@@ -618,7 +618,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
   self.closingTabIds.push(aTab.id);
   if (aCloseParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .concat(getClosingTabsFromParent(aTab).map(aTab => aTab.id));
+      .concat(Tree.getClosingTabsFromParent(aTab).map(aTab => aTab.id));
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
@@ -745,14 +745,14 @@ Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
 });
 
 async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
-  if (!shouldApplyTreeBehavior(aMoveInfo)) {
-    detachAllChildren(aTab, {
-      behavior: getCloseParentBehaviorForTab(aTab, {
+  if (!Tree.shouldApplyTreeBehavior(aMoveInfo)) {
+    Tree.detachAllChildren(aTab, {
+      behavior: Tree.getCloseParentBehaviorForTab(aTab, {
         keepChildren: true
       }),
       broadcast: true
     });
-    detachTab(aTab, {
+    Tree.detachTab(aTab, {
       broadcast: true
     });
   }
@@ -771,21 +771,21 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
       return;
 
     case 'attach': {
-      await attachTabTo(aTab, Tabs.getTabById(action.parent), {
+      await Tree.attachTabTo(aTab, Tabs.getTabById(action.parent), {
         insertBefore: Tabs.getTabById(action.insertBefore),
         insertAfter:  Tabs.getTabById(action.insertAfter),
         broadcast:    true
       });
-      followDescendantsToMovedRoot(aTab);
+      Tree.followDescendantsToMovedRoot(aTab);
     }; break;
 
     case 'detach': {
-      detachTab(aTab, { broadcast: true });
-      followDescendantsToMovedRoot(aTab);
+      Tree.detachTab(aTab, { broadcast: true });
+      Tree.followDescendantsToMovedRoot(aTab);
     }; break;
 
     default:
-      followDescendantsToMovedRoot(aTab);
+      Tree.followDescendantsToMovedRoot(aTab);
       break;
   }
 }
@@ -948,7 +948,7 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
       // but actually happen on some environment:
       // https://github.com/piroor/treestyletab/issues/1717
       // So, always expand orphan collapsed tab as a failsafe.
-      collapseExpandTab(aTab, {
+      Tree.collapseExpandTab(aTab, {
         collapsed: false,
         broadcast: true
       });
@@ -958,7 +958,7 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildFocused');
       for (let ancestor of Tabs.getAncestorTabs(aTab)) {
-        collapseExpandSubtree(ancestor, {
+        Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
           broadcast: true
         });
@@ -1010,11 +1010,11 @@ function handleNewActiveTab(aTab, aInfo = {}) {
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
-      collapseExpandTreesIntelligentlyFor(aTab, {
+      Tree.collapseExpandTreesIntelligentlyFor(aTab, {
         broadcast: true
       });
     else
-      collapseExpandSubtree(aTab, {
+      Tree.collapseExpandSubtree(aTab, {
         collapsed: false,
         broadcast: true
       });
@@ -1030,7 +1030,7 @@ function setupDelayedExpand(aTab) {
       !Tabs.isSubtreeCollapsed(aTab))
     return;
   aTab.delayedExpand = setTimeout(() => {
-    collapseExpandTreesIntelligentlyFor(aTab, {
+    Tree.collapseExpandTreesIntelligentlyFor(aTab, {
       broadcast: true
     });
   }, configs.autoExpandOnTabSwitchingShortcutsDelay);
@@ -1058,7 +1058,7 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
           parent.parentNode != aTab.parentNode ||
           parent == Tabs.getParentTab(aTab))
         return;
-      attachTabTo(aTab, parent, {
+      Tree.attachTabTo(aTab, parent, {
         insertAt:    Constants.kINSERT_NEAREST,
         forceExpand: Tabs.isActive(aTab),
         broadcast:   true
@@ -1145,7 +1145,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
       !gInitializing) {
     if (Tabs.isSubtreeCollapsed(aInfo.parent) &&
         !aInfo.forceExpand)
-      collapseExpandTabAndSubtree(aTab, {
+      Tree.collapseExpandTabAndSubtree(aTab, {
         collapsed: true,
         justNow:   true,
         broadcast: true
@@ -1153,39 +1153,39 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
 
     let isNewTreeCreatedManually = !aInfo.justNow && Tabs.getChildTabs(parent).length == 1;
     if (aInfo.forceExpand) {
-      collapseExpandSubtree(parent, Object.assign({}, aInfo, {
+      Tree.collapseExpandSubtree(parent, Object.assign({}, aInfo, {
         collapsed: false,
         inRemote:  false
       }));
     }
     if (!aInfo.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
-          (isNewTreeCreatedManually || shouldTabAutoExpanded(parent)))
-        collapseExpandTreesIntelligentlyFor(parent, {
+          (isNewTreeCreatedManually || Tree.shouldTabAutoExpanded(parent)))
+        Tree.collapseExpandTreesIntelligentlyFor(parent, {
           broadcast: true
         });
 
       let newAncestors = [parent].concat(Tabs.getAncestorTabs(parent));
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
-          shouldTabAutoExpanded(parent) ||
+          Tree.shouldTabAutoExpanded(parent) ||
           aInfo.forceExpand) {
         newAncestors.filter(Tabs.isSubtreeCollapsed).forEach(aAncestor => {
-          collapseExpandSubtree(aAncestor, Object.assign({}, aInfo, {
+          Tree.collapseExpandSubtree(aAncestor, Object.assign({}, aInfo, {
             collapsed: false,
             broadcast: true
           }));
         });
       }
       if (Tabs.isCollapsed(parent))
-        collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
+        Tree.collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
           collapsed: true,
           broadcast: true
         }));
     }
-    else if (shouldTabAutoExpanded(parent) ||
+    else if (Tree.shouldTabAutoExpanded(parent) ||
              Tabs.isCollapsed(parent)) {
-      collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
+      Tree.collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
         collapsed: true,
         broadcast: true
       }));
@@ -1208,11 +1208,11 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
         prev: dumpTab(prevTab)
       });
       if (nextTab)
-        await moveTabSubtreeBefore(aTab, nextTab, Object.assign({}, aInfo, {
+        await Tree.moveTabSubtreeBefore(aTab, nextTab, Object.assign({}, aInfo, {
           broadcast: true
         }));
       else
-        await moveTabSubtreeAfter(aTab, prevTab, Object.assign({}, aInfo, {
+        await Tree.moveTabSubtreeAfter(aTab, prevTab, Object.assign({}, aInfo, {
           broadcast: true
         }));
     })()
@@ -1271,13 +1271,13 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
 
 Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
   if (!aInfo.windowId ||
-      !shouldApplyTreeBehavior(aInfo))
+      !Tree.shouldApplyTreeBehavior(aInfo))
     return;
 
   log('Tabs.onAttached ', dumpTab(aTab), aInfo);
 
   log('descendants of attached tab: ', aInfo.descendants.map(dumpTab));
-  let movedTabs = await moveTabs(aInfo.descendants, {
+  let movedTabs = await Tree.moveTabs(aInfo.descendants, {
     destinationWindowId: aTab.apiTab.windowId,
     insertAfter:         aTab
   });
@@ -1285,7 +1285,7 @@ Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
   for (let movedTab of movedTabs) {
     if (Tabs.getParentTab(movedTab))
       continue;
-    attachTabTo(movedTab, aTab, {
+    Tree.attachTabTo(movedTab, aTab, {
       broadcast: true,
       dontMove:  true
     });
@@ -1293,26 +1293,26 @@ Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
 });
 
 Tabs.onDetached.addListener((aTab, aInfo = {}) => {
-  if (shouldApplyTreeBehavior(aInfo)) {
-    tryMoveFocusFromClosingCurrentTabNow(aTab, {
+  if (Tree.shouldApplyTreeBehavior(aInfo)) {
+    Tree.tryMoveFocusFromClosingCurrentTabNow(aTab, {
       ignoredTabs: Tabs.getDescendantTabs(aTab)
     });
     return;
   }
 
-  tryMoveFocusFromClosingCurrentTab(aTab);
+  Tree.tryMoveFocusFromClosingCurrentTab(aTab);
 
   log('Tabs.onDetached ', dumpTab(aTab));
-  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo);
+  var closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
-  detachAllChildren(aTab, {
+  Tree.detachAllChildren(aTab, {
     behavior: closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
-  detachTab(aTab, {
+  Tree.detachTab(aTab, {
     dontUpdateIndent: true,
     broadcast:        true
   });
@@ -1321,20 +1321,20 @@ Tabs.onDetached.addListener((aTab, aInfo = {}) => {
 
 Tabs.onPinned.addListener(aTab => {
   reserveToCacheTree(aTab);
-  collapseExpandSubtree(aTab, {
+  Tree.collapseExpandSubtree(aTab, {
     collapsed: false,
     broadcast: true
   });
-  detachAllChildren(aTab, {
-    behavior: getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
+  Tree.detachAllChildren(aTab, {
+    behavior: Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, {
       keepChildren: true
     }),
     broadcast: true
   });
-  detachTab(aTab, {
+  Tree.detachTab(aTab, {
     broadcast: true
   });
-  collapseExpandTabAndSubtree(aTab, { collapsed: false });
+  Tree.collapseExpandTabAndSubtree(aTab, { collapsed: false });
 });
 
 Tabs.onUnpinned.addListener(aTab => {
@@ -1397,7 +1397,7 @@ function onMessage(aMessage, aSender) {
         while (gInitializing) {
           await wait(10);
         }
-        const structure = getTreeStructureFromTabs(Tabs.getAllTabs(aMessage.windowId));
+        const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(aMessage.windowId));
         return { structure };
       })();
 
@@ -1414,9 +1414,9 @@ function onMessage(aMessage, aSender) {
           stack:     aMessage.stack
         };
         if (aMessage.manualOperation)
-          manualCollapseExpandSubtree(tab, params);
+          Tree.manualCollapseExpandSubtree(tab, params);
         else
-          collapseExpandSubtree(tab, params);
+          Tree.collapseExpandSubtree(tab, params);
         reserveToSaveTreeStructure(tab);
         markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
@@ -1446,7 +1446,7 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         log('new window requested: ', aMessage);
         await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
-        const movedTabs = await openNewWindowFromTabs(
+        const movedTabs = await Tree.openNewWindowFromTabs(
           aMessage.tabs.map(Tabs.getTabById),
           aMessage
         );
@@ -1457,7 +1457,7 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         log('move tabs requested: ', aMessage);
         await Tabs.waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.insertBefore, aMessage.insertAfter]));
-        const movedTabs = await moveTabs(
+        const movedTabs = await Tree.moveTabs(
           aMessage.tabs.map(Tabs.getTabById),
           Object.assign({}, aMessage, {
             insertBefore: Tabs.getTabById(aMessage.insertBefore),
@@ -1632,7 +1632,7 @@ function onMessage(aMessage, aSender) {
         const child  = Tabs.getTabById(aMessage.child);
         const parent = Tabs.getTabById(aMessage.parent);
         if (child && parent)
-          await attachTabTo(child, parent, Object.assign({}, aMessage, {
+          await Tree.attachTabTo(child, parent, Object.assign({}, aMessage, {
             insertBefore: Tabs.getTabById(aMessage.insertBefore),
             insertAfter:  Tabs.getTabById(aMessage.insertAfter)
           }));
@@ -1643,7 +1643,7 @@ function onMessage(aMessage, aSender) {
         await Tabs.waitUntilTabsAreCreated(aMessage.tab);
         const tab = Tabs.getTabById(aMessage.tab);
         if (tab)
-          await detachTab(tab);
+          await Tree.detachTab(tab);
       })();
 
     case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
@@ -1654,7 +1654,7 @@ function onMessage(aMessage, aSender) {
           aMessage.insertAfter
         ]);
         log('perform tabs dragdrop requested: ', aMessage);
-        return performTabsDragDrop(Object.assign({}, aMessage, {
+        return Tree.performTabsDragDrop(Object.assign({}, aMessage, {
           attachTo:     Tabs.getTabById(aMessage.attachTo),
           insertBefore: Tabs.getTabById(aMessage.insertBefore),
           insertAfter:  Tabs.getTabById(aMessage.insertAfter)
@@ -1681,7 +1681,7 @@ function onMessage(aMessage, aSender) {
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               tab.parentNode.lastFocusedTab == tab.id) {
-            collapseExpandSubtree(tab, {
+            Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true
             });
@@ -1772,7 +1772,7 @@ function onMessageExternal(aMessage, aSender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
-          collapseExpandSubtree(tab, {
+          Tree.collapseExpandSubtree(tab, {
             collapsed: true,
             broadcast: true
           });
@@ -1784,7 +1784,7 @@ function onMessageExternal(aMessage, aSender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
-          collapseExpandSubtree(tab, {
+          Tree.collapseExpandSubtree(tab, {
             collapsed: false,
             broadcast: true
           });
@@ -1806,7 +1806,7 @@ function onMessageExternal(aMessage, aSender) {
             !parent ||
             child.parentNode != parent.parentNode)
           return false;
-        await attachTabTo(child, parent, {
+        await Tree.attachTabTo(child, parent, {
           broadcast:    true,
           insertBefore: Tabs.getTabById(aMessage.insertBefore),
           insertAfter:  Tabs.getTabById(aMessage.insertAfter)
@@ -1820,7 +1820,7 @@ function onMessageExternal(aMessage, aSender) {
         const tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return false;
-        await detachTab(tab, {
+        await Tree.detachTab(tab, {
           broadcast: true
         });
         return true;
@@ -1885,12 +1885,12 @@ function onMessageExternal(aMessage, aSender) {
             break;
         }
         for (let tab of tabs) {
-          const duplicatedTabs = await moveTabs([tab], {
+          const duplicatedTabs = await Tree.moveTabs([tab], {
             duplicate:           true,
             destinationWindowId: tab.apiTab.windowId,
             insertAfter:         tab
           });
-          await behaveAutoAttachedTab(duplicatedTabs[0], {
+          await Tree.behaveAutoAttachedTab(duplicatedTabs[0], {
             broadcast: true,
             baseTab:   tab,
             behavior
@@ -1909,13 +1909,13 @@ function onMessageExternal(aMessage, aSender) {
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
-        return Promise.resolve(getTreeStructureFromTabs(tabs));
+        return Promise.resolve(Tree.getTreeStructureFromTabs(tabs));
       })();
 
     case TSTAPI.kSET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
-        await applyTreeStructureToTabs(tabs, aMessage.structure, {
+        await Tree.applyTreeStructureToTabs(tabs, aMessage.structure, {
           broadcast: true
         });
         return Promise.resolve(true);

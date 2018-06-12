@@ -67,7 +67,7 @@ const Commands = {
     const tabs = Tabs.getNormalTabs(aHint);
     for (let tab of tabs) {
       if (Tabs.hasChildTabs(tab) && !Tabs.isSubtreeCollapsed(tab))
-        collapseExpandSubtree(tab, {
+        Tree.collapseExpandSubtree(tab, {
           collapsed: true,
           broadcast: true
         });
@@ -78,7 +78,7 @@ const Commands = {
     const tabs = Tabs.getNormalTabs(aHint);
     for (let tab of tabs) {
       if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
-        collapseExpandSubtree(tab, {
+        Tree.collapseExpandSubtree(tab, {
           collapsed: false,
           broadcast: true
         });
@@ -124,7 +124,7 @@ const Commands = {
 
       case Constants.kNEWTAB_OPEN_AS_CHILD: {
         parent = currentTab;
-        let refTabs = getReferenceTabsForNewChild(parent);
+        let refTabs = Tree.getReferenceTabsForNewChild(parent);
         insertBefore = refTabs.insertBefore;
         insertAfter  = refTabs.insertAfter;
         if (configs.logOnMouseEvent)
@@ -179,11 +179,11 @@ const Commands = {
       return false;
 
     if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
+      Tree.detachAllChildren(aTab, {
         broadcast: true,
         behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
-    await attachTabTo(aTab, newParent, {
+    await Tree.attachTabTo(aTab, newParent, {
       broadcast:   true,
       forceExpand: true,
       insertAfter: Tabs.getLastDescendantTab(newParent) || newParent
@@ -201,19 +201,19 @@ const Commands = {
       return false;
 
     if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
+      Tree.detachAllChildren(aTab, {
         broadcast: true,
         behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
     if (newParent) {
-      await attachTabTo(aTab, newParent, {
+      await Tree.attachTabTo(aTab, newParent, {
         broadcast:   true,
         forceExpand: true,
         insertAfter: Tabs.getLastDescendantTab(parent) || parent
       });
     }
     else {
-      await detachTab(aTab, {
+      await Tree.detachTab(aTab, {
         broadcast: true,
       });
       await TabsMove.moveTabAfter(aTab, Tabs.getLastDescendantTab(parent) || parent, {
@@ -229,7 +229,7 @@ const Commands = {
       return false;
 
     if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
+      Tree.detachAllChildren(aTab, {
         broadcast: true,
         behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
@@ -251,7 +251,7 @@ const Commands = {
       return false;
 
     if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
+      Tree.detachAllChildren(aTab, {
         broadcast: true,
         behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });

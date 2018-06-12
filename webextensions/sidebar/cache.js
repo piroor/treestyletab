@@ -116,7 +116,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
         windowId: gTargetWindow
       })).structure;
       let allTabs = Tabs.getAllTabs();
-      let currentStructrue = getTreeStructureFromTabs(allTabs);
+      let currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(aItem => aItem.parent).join(',') != masterStructure.map(aItem => aItem.parent).join(',')) {
         Cache.log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${gTargetWindow}. fallback to regular way.`);
         restored = false;
@@ -127,7 +127,7 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
       if (restored && aCache.collapsedDirty) {
         let structure = currentStructrue.reverse();
         allTabs.reverse().forEach((aTab, aIndex) => {
-          collapseExpandSubtree(aTab, {
+          Tree.collapseExpandSubtree(aTab, {
             collapsed: structure[aIndex].collapsed,
             justNow:   true
           });

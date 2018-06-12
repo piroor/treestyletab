@@ -329,13 +329,13 @@ var tabContextMenu = {
           let sourceTab = Tabs.getTabById(contextTab);
           if (configs.logOnFakeContextMenu)
             log('source tab: ', sourceTab, !!sourceTab.apiTab);
-          let duplicatedTabs = await moveTabs([sourceTab], {
+          let duplicatedTabs = await Tree.moveTabs([sourceTab], {
             duplicate:           true,
             destinationWindowId: contextWindowId,
             insertAfter:         sourceTab,
             inRemote:            true
           });
-          behaveAutoAttachedTab(duplicatedTabs[0], {
+          Tree.behaveAutoAttachedTab(duplicatedTabs[0], {
             baseTab:  sourceTab,
             behavior: configs.autoAttachOnDuplicated,
             inRemote: true

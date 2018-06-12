@@ -432,7 +432,7 @@ async function onMouseUp(aEvent) {
       if (configs.logOnMouseEvent)
         log('middle click on a tab');
       //log('middle-click to close');
-      confirmToCloseTabs(getClosingTabsFromParent(tab).length)
+      confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
           if (aConfirmed)
             TabsInternalOperation.removeTab(tab, { inRemote: true });
@@ -508,7 +508,7 @@ function onClick(aEvent) {
     if (configs.logOnMouseEvent)
       log('clicked on twisty');
     if (Tabs.hasChildTabs(tab))
-      collapseExpandSubtree(tab, {
+      Tree.collapseExpandSubtree(tab, {
         collapsed:       !Tabs.isSubtreeCollapsed(tab),
         manualOperation: true,
         inRemote:        true
@@ -540,7 +540,7 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    confirmToCloseTabs(getClosingTabsFromParent(tab).length)
+    confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
       .then(aConfirmed => {
         if (aConfirmed)
           TabsInternalOperation.removeTab(tab, { inRemote: true });
@@ -574,7 +574,7 @@ function onDblClick(aEvent) {
     if (configs.collapseExpandSubtreeByDblClick) {
       aEvent.stopPropagation();
       aEvent.preventDefault();
-      collapseExpandSubtree(tab, {
+      Tree.collapseExpandSubtree(tab, {
         collapsed:       !Tabs.isSubtreeCollapsed(tab),
         manualOperation: true,
         inRemote:        true
@@ -769,7 +769,7 @@ Tabs.onBuilt.addListener((aTab, aInfo) => {
   aTab.setAttribute('draggable', true);
 
   if (!aInfo.existing && configs.animation) {
-    collapseExpandTab(aTab, {
+    Tree.collapseExpandTab(aTab, {
       collapsed: true,
       justNow:   true
     });
@@ -829,7 +829,7 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
       var focused = Tabs.isActive(aTab);
-      collapseExpandTab(aTab, {
+      Tree.collapseExpandTab(aTab, {
         collapsed: false,
         justNow:   gRestoringTree,
         anchor:    Tabs.getCurrentTab(),
@@ -918,16 +918,16 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
 Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
   tabContextMenu.close();
 
-  var closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
+  var closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(aTab))
-    collapseExpandSubtree(aTab, {
+    Tree.collapseExpandSubtree(aTab, {
       collapsed: false
     });
 
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  detachTab(aTab, {
+  Tree.detachTab(aTab, {
     dontUpdateIndent: true
   });
   reserveToUpdateVisualMaxTreeLevel();
@@ -968,7 +968,7 @@ Tabs.onMoving.addListener(async aTab => {
       return;
     const visible = !(isCollapsedStateUpdating(aTab) ? await isSurelyCollapsed(aTab) : Tabs.isCollapsed(aTab));
     if (visible)
-      collapseExpandTab(aTab, {
+      Tree.collapseExpandTab(aTab, {
         collapsed: true,
         justNow:   true
       });
@@ -976,7 +976,7 @@ Tabs.onMoving.addListener(async aTab => {
     if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
       return;
     if (visible)
-      collapseExpandTab(aTab, {
+      Tree.collapseExpandTab(aTab, {
         collapsed: false
       });
     await wait(configs.collapseDuration);
@@ -1007,7 +1007,7 @@ Tabs.onDetached.addListener(aTab => {
   reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  detachTab(aTab, {
+  Tree.detachTab(aTab, {
     dontUpdateIndent: true
   });
   reserveToUpdateCachedTabbar();
@@ -1367,7 +1367,7 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
       if (aMessage.windowId == gTargetWindow)
-        applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), aMessage.structure);
+        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), aMessage.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
@@ -1394,9 +1394,9 @@ function onMessage(aMessage, aSender, aRespond) {
           stack:     aMessage.stack
         };
         if (aMessage.manualOperation)
-          manualCollapseExpandSubtree(tab, params);
+          Tree.manualCollapseExpandSubtree(tab, params);
         else
-          collapseExpandSubtree(tab, params);
+          Tree.collapseExpandSubtree(tab, params);
       })();
     }; break;
 
@@ -1419,7 +1419,7 @@ function onMessage(aMessage, aSender, aRespond) {
           broadcasted: true,
           stack:       aMessage.stack
         };
-        collapseExpandTab(tab, params);
+        Tree.collapseExpandTab(tab, params);
       })();
     }; break;
 
@@ -1465,7 +1465,7 @@ function onMessage(aMessage, aSender, aRespond) {
           let child  = Tabs.getTabById(aMessage.child);
           let parent = Tabs.getTabById(aMessage.parent);
           if (child && parent)
-            await attachTabTo(child, parent, Object.assign({}, aMessage, {
+            await Tree.attachTabTo(child, parent, Object.assign({}, aMessage, {
               insertBefore: Tabs.getTabById(aMessage.insertBefore),
               insertAfter:  Tabs.getTabById(aMessage.insertAfter),
               inRemote:     false,
@@ -1498,7 +1498,7 @@ function onMessage(aMessage, aSender, aRespond) {
           ]);
           let tab = Tabs.getTabById(aMessage.tab);
           if (tab)
-            detachTab(tab, aMessage);
+            Tree.detachTab(tab, aMessage);
           gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
         })();
         gTreeChangesFromRemote.push(promisedComplete);
