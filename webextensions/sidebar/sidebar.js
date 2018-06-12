@@ -154,8 +154,8 @@ async function init() {
         animationDuration: configs.animation ? configs.collapseDuration : 0.001
       });
     }),
-    MetricsData.addAsync('tabContextMenu.init', async () => {
-      tabContextMenu.init();
+    MetricsData.addAsync('TabContextMenu.init', async () => {
+      TabContextMenu.init();
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       var results = await browser.runtime.sendMessage([
@@ -584,6 +584,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
   }
 }
 Commands.onTabsClosing.addListener(confirmToCloseTabs);
+TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
 function updateTabTwisty(aTab) {

@@ -158,7 +158,7 @@ function onContextMenu(aEvent) {
   aEvent.stopPropagation();
   aEvent.preventDefault();
   var tab = getTabFromEvent(aEvent);
-  tabContextMenu.open({
+  TabContextMenu.open({
     tab:  tab && tab.apiTab,
     left: aEvent.clientX,
     top:  aEvent.clientY
@@ -233,7 +233,7 @@ var gLastMousedown = {};
 
 function onMouseDown(aEvent) {
   cancelHandleMousedown(aEvent.button);
-  tabContextMenu.close();
+  TabContextMenu.close();
   clearDropPosition();
   clearDraggingState();
 
@@ -820,12 +820,12 @@ function updateTabSoundButtonTooltip(aTab) {
 
 
 Tabs.onActivated.addListener((aTab, aInfo = {}) => {
-  tabContextMenu.close();
+  TabContextMenu.close();
   scrollToTab(aTab);
 });
 
 Tabs.onCreating.addListener((aTab, aInfo = {}) => {
-  tabContextMenu.close();
+  TabContextMenu.close();
 });
 
 Tabs.onCreated.addListener((aTab, aInfo = {}) => {
@@ -922,7 +922,7 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
 });
 
 Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
-  tabContextMenu.close();
+  TabContextMenu.close();
 
   var closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
@@ -964,7 +964,7 @@ Tabs.onRemoved.addListener(async aTab => {
 });
 
 Tabs.onMoving.addListener(async aTab => {
-  tabContextMenu.close();
+  TabContextMenu.close();
   if (!configs.animation ||
       Tabs.isPinned(aTab) ||
       Tabs.isOpening(aTab))
@@ -1242,7 +1242,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   if (gInitializing)
     return;
-  tabContextMenu.close();
+  TabContextMenu.close();
   updateTabTwisty(aInfo.parent);
   updateTabClosebox(aInfo.parent);
   if (aInfo.newlyAttached) {
@@ -1269,7 +1269,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
 Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   if (gInitializing)
     return;
-  tabContextMenu.close();
+  TabContextMenu.close();
   var parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
@@ -1290,13 +1290,13 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
 });
 
 Tabs.onPinned.addListener(aTab => {
-  tabContextMenu.close();
+  TabContextMenu.close();
   reserveToPositionPinnedTabs();
   reserveToUpdateCachedTabbar();
 });
 
 Tabs.onUnpinned.addListener(aTab => {
-  tabContextMenu.close();
+  TabContextMenu.close();
   clearPinnedStyle(aTab);
   scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
@@ -1305,7 +1305,7 @@ Tabs.onUnpinned.addListener(aTab => {
 });
 
 Tabs.onShown.addListener(aTab => {
-  tabContextMenu.close();
+  TabContextMenu.close();
   reserveToPositionPinnedTabs();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
@@ -1313,7 +1313,7 @@ Tabs.onShown.addListener(aTab => {
 });
 
 Tabs.onHidden.addListener(aTab => {
-  tabContextMenu.close();
+  TabContextMenu.close();
   reserveToPositionPinnedTabs();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();

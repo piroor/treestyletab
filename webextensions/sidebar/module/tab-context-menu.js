@@ -12,84 +12,97 @@
            https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
 */
 
-var tabContextMenu = {
-  init() {
-    this.ui = new MenuUI({
-      root: this.menu,
-      onCommand: (aItem, aEvent) => {
-        return this.onCommand(aItem, aEvent);
-      },
+import {
+  log,
+  wait,
+  notify,
+  configs
+} from '../../common/common.js';
+import * as Constants from '../../common/constants.js';
+import * as Tabs from '../../common/tabs.js';
+import * as Tree from '../../common/tree.js';
+import * as Bookmark from '../../common/bookmark.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import EventListenerManager from '../../common/EventListenerManager.js';
+import MenuUI from '../../common/MenuUI.js';
+
+export const onTabsClosing = new EventListenerManager();
+
+let ui;
+let menu;
+
+let contextTab      = null;
+let lastOpenOptions = null;
+let contextWindowId = null;
+let extraItems      = {};
+let dirty           = false;
+
+  export function init() {
+    menu = document.querySelector('#tabContextMenu');
+
+    ui = new MenuUI({
+      root: menu,
+      onCommand,
       appearance:        'menu',
       animationDuration: configs.animation ? configs.collapseDuration : 0.001,
       subMenuOpenDelay:  configs.subMenuOpenDelay,
       subMenuCloseDelay: configs.subMenuCloseDelay
     });
 
-    this.onMessage         = this.onMessage.bind(this);
-    this.onExternalMessage = this.onExternalMessage.bind(this);
-
-    browser.runtime.onMessage.addListener(this.onMessage);
-    browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
+    browser.runtime.onMessage.addListener(onMessage);
+    browser.runtime.onMessageExternal.addListener(onExternalMessage);
 
     window.addEventListener('unload', () => {
-      this.close();
-      browser.runtime.onMessage.removeListener(this.onMessage);
-      browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
+      close();
+      browser.runtime.onMessage.removeListener(onMessage);
+      browser.runtime.onMessageExternal.removeListener(onExternalMessage);
     }, { once: true });
 
     browser.runtime.sendMessage({
       type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
     }).then(aItems => {
-      this.extraItems = aItems;
-      this.dirty      = true;
+      extraItems = aItems;
+      dirty      = true;
     });
-  },
+  }
 
-  get menu() {
-    return document.querySelector('#tabContextMenu');
-  },
-
-  contextTab: null,
-  extraItems: {},
-  dirty:      false,
-
-  rebuild: async function() {
-    if (!this.dirty)
+  async function rebuild() {
+    if (!dirty)
       return;
 
-    this.dirty = false;
+    dirty = false;
 
-    var firstExtraItem = this.menu.querySelector('.extra');
+    var firstExtraItem = menu.querySelector('.extra');
     if (firstExtraItem) {
       let range = document.createRange();
-      range.selectNodeContents(this.menu);
+      range.selectNodeContents(menu);
       range.setStartBefore(firstExtraItem);
       range.deleteContents();
       range.detach();
     }
 
-    if (Object.keys(this.extraItems).length == 0)
+    if (Object.keys(extraItems).length == 0)
       return;
 
     var extraItemNodes = document.createDocumentFragment();
-    for (let id of Object.keys(this.extraItems)) {
+    for (let id of Object.keys(extraItems)) {
       let addonItem = document.createElement('li');
-      const name = this.getAddonName(id);
+      const name = getAddonName(id);
       addonItem.appendChild(document.createTextNode(name));
       addonItem.setAttribute('title', name);
       addonItem.classList.add('extra');
-      const icon = this.getAddonIcon(id);
+      const icon = getAddonIcon(id);
       if (icon)
         addonItem.dataset.icon = icon;
-      this.prepareAsSubmenu(addonItem);
+      prepareAsSubmenu(addonItem);
 
       const toBeBuiltItems = [];
-      for (let item of this.extraItems[id]) {
+      for (let item of extraItems[id]) {
         if (item.contexts && item.contexts.indexOf('tab') < 0)
           continue;
-        if (this.contextTab &&
+        if (contextTab &&
             item.documentUrlPatterns &&
-            !this.matchesToCurrentTab(item.documentUrlPatterns))
+            !matchesToCurrentTab(item.documentUrlPatterns))
           continue;
         toBeBuiltItems.push(item);
       }
@@ -101,10 +114,10 @@ var tabContextMenu = {
       const addonSubMenu = addonItem.lastChild;
       const knownItems   = {};
       for (let item of toBeBuiltItems) {
-        let itemNode = this.buildExtraItem(item, id);
+        let itemNode = buildExtraItem(item, id);
         if (item.parentId && item.parentId in knownItems) {
           let parent = knownItems[item.parentId];
-          this.prepareAsSubmenu(parent);
+          prepareAsSubmenu(parent);
           parent.lastChild.appendChild(itemNode);
         }
         else {
@@ -130,23 +143,26 @@ var tabContextMenu = {
     separator.classList.add('extra');
     separator.classList.add('separator');
     extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
-    this.menu.appendChild(extraItemNodes);
-  },
-  getAddonName(aId) {
+    menu.appendChild(extraItemNodes);
+  }
+
+  function getAddonName(aId) {
     if (aId == browser.runtime.id)
       return browser.i18n.getMessage('extensionName');
     const addon = TSTAPI.addons[aId] || {};
     return addon.name || aId.replace(/@.+$/, '');
-  },
-  getAddonIcon(aId) {
+  }
+
+  function getAddonIcon(aId) {
     const addon = TSTAPI.addons[aId] || {};
-    return this.chooseIconForAddon({
+    return chooseIconForAddon({
       id:         aId,
       internalId: addon.internalId,
       icons:      addon.icons || {}
     });
-  },
-  chooseIconForAddon(aParams) {
+  }
+
+  function chooseIconForAddon(aParams) {
     const icons = aParams.icons || {};
     const addon = TSTAPI.addons[aParams.id] || {};
     let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
@@ -160,14 +176,16 @@ var tabContextMenu = {
     if (!/^\w+:\/\//.test(url))
       url = `moz-extension://${addon.internalId || aParams.internalId}/${url.replace(/^\//, '')}`;
     return url;
-  },
-  prepareAsSubmenu(aItemNode) {
+  }
+
+  function prepareAsSubmenu(aItemNode) {
     if (aItemNode.querySelector('ul'))
       return aItemNode;
-    var subMenu = aItemNode.appendChild(document.createElement('ul'));
+    aItemNode.appendChild(document.createElement('ul'));
     return aItemNode;
-  },
-  buildExtraItem(aItem, aOwnerAddonId) {
+  }
+
+  function buildExtraItem(aItem, aOwnerAddonId) {
     var itemNode = document.createElement('li');
     itemNode.setAttribute('id', `${aOwnerAddonId}-${aItem.id}`);
     itemNode.setAttribute('data-item-id', aItem.id);
@@ -187,7 +205,7 @@ var tabContextMenu = {
     else
       itemNode.classList.remove('disabled');;
     const addon = TSTAPI.addons[aOwnerAddonId] || {};
-    const icon = this.chooseIconForAddon({
+    const icon = chooseIconForAddon({
       id:         aOwnerAddonId,
       internalId: addon.internalId,
       icons:      aItem.icons || {}
@@ -195,23 +213,23 @@ var tabContextMenu = {
     if (icon)
       itemNode.dataset.icon = icon;
     return itemNode;
-  },
+  }
 
-  matchesToCurrentTab(aPatterns) {
+  function matchesToCurrentTab(aPatterns) {
     if (!Array.isArray(aPatterns))
       aPatterns = [aPatterns];
     for (let pattern of aPatterns) {
-      if (this.matchPatternToRegExp(pattern).test(this.contextTab.url))
+      if (matchPatternToRegExp(pattern).test(contextTab.url))
         return true;
     }
     return false;
-  },
+  }
   // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns
-  matchPattern: /^(?:(\*|http|https|file|ftp|app):\/\/([^\/]+|)\/?(.*))$/i,
-  matchPatternToRegExp(aPattern) {
+  const matchPattern = /^(?:(\*|http|https|file|ftp|app):\/\/([^\/]+|)\/?(.*))$/i;
+  function matchPatternToRegExp(aPattern) {
     if (aPattern === '<all_urls>')
       return (/^(?:https?|file|ftp|app):\/\//);
-    const match = this.matchPattern.exec(aPattern);
+    const match = matchPattern.exec(aPattern);
     if (!match)
       throw new TypeError(`"${aPattern}" is not a valid MatchPattern`);
 
@@ -221,84 +239,82 @@ var tabContextMenu = {
                       + (host === '*' ? '[^\\/]*' : escape(host).replace(/^\*\./g, '(?:[^\\/]+)?'))
                       + (path ? (path == '*' ? '(?:\\/.*)?' : ('\\/' + escape(path).replace(/\*/g, '.*'))) : '\\/?')
                       + ')$');
-  },
+  }
 
-  open: async function(aOptions = {}) {
-    await this.close();
-    this.lastOpenOptions = aOptions;
-    this.contextTab      = aOptions.tab;
-    this.contextWindowId = aOptions.windowId || (this.contextTab && this.contextTab.windowId);
-    await this.rebuild();
-    if (this.dirty) {
-      return await this.open(aOptions);
+  export async function open(aOptions = {}) {
+    await close();
+    lastOpenOptions = aOptions;
+    contextTab      = aOptions.tab;
+    contextWindowId = aOptions.windowId || (contextTab && contextTab.windowId);
+    await rebuild();
+    if (dirty) {
+      return await open(aOptions);
     }
-    this.applyContext();
+    applyContext();
     const originalCanceller = aOptions.canceller;
     aOptions.canceller = () => {
-      return (typeof originalCanceller == 'function' && originalCanceller()) || this.dirty;
+      return (typeof originalCanceller == 'function' && originalCanceller()) || dirty;
     };
-    await this.ui.open(aOptions);
-    if (this.dirty) {
-      return await this.open(aOptions);
+    await ui.open(aOptions);
+    if (dirty) {
+      return await open(aOptions);
     }
-  },
+  }
 
-  close: async function() {
-    await this.ui.close();
-    this.menu.removeAttribute('data-tab-id');
-    this.menu.removeAttribute('data-tab-states');
-    this.contextTab      = null;
-    this.contextWindowId = null;
-    this.lastOpenOptions = null;
-  },
+  export async function close() {
+    await ui.close();
+    menu.removeAttribute('data-tab-id');
+    menu.removeAttribute('data-tab-states');
+    contextTab      = null;
+    contextWindowId = null;
+    lastOpenOptions = null;
+  }
 
-  applyContext() {
-    if (this.contextTab) {
-      this.menu.setAttribute('data-tab-id', this.contextTab.id);
+  function applyContext() {
+    if (contextTab) {
+      menu.setAttribute('data-tab-id', contextTab.id);
       let states = [];
-      if (this.contextTab.active)
+      if (contextTab.active)
         states.push('active');
-      if (this.contextTab.pinned)
+      if (contextTab.pinned)
         states.push('pinned');
-      if (this.contextTab.audible)
+      if (contextTab.audible)
         states.push('audible');
-      if (this.contextTab.mutedInfo && this.contextTab.mutedInfo.muted)
+      if (contextTab.mutedInfo && contextTab.mutedInfo.muted)
         states.push('muted');
-      if (this.contextTab.discarded)
+      if (contextTab.discarded)
         states.push('discarded');
-      if (this.contextTab.incognito)
+      if (contextTab.incognito)
         states.push('incognito');
-      this.menu.setAttribute('data-tab-states', states.join(' '));
+      menu.setAttribute('data-tab-states', states.join(' '));
     }
 
     if (Tabs.getTabs().length > 1)
-      this.menu.classList.add('has-multiple-tabs');
+      menu.classList.add('has-multiple-tabs');
     else
-      this.menu.classList.remove('has-multiple-tabs');
+      menu.classList.remove('has-multiple-tabs');
 
     switch (Tabs.getNormalTabs().length) {
       case 0:
-        this.menu.classList.remove('has-normal-tabs');
-        this.menu.classList.remove('has-multiple-normal-tabs');
+        menu.classList.remove('has-normal-tabs');
+        menu.classList.remove('has-multiple-normal-tabs');
         break;
       case 1:
-        this.menu.classList.add('has-normal-tabs');
-        this.menu.classList.remove('has-multiple-normal-tabs');
+        menu.classList.add('has-normal-tabs');
+        menu.classList.remove('has-multiple-normal-tabs');
         break;
       default:
-        this.menu.classList.add('has-normal-tabs');
-        this.menu.classList.add('has-multiple-normal-tabs');
+        menu.classList.add('has-normal-tabs');
+        menu.classList.add('has-multiple-normal-tabs');
         break;
     }
-  },
+  }
 
-  onCommand: async function(aItem, aEvent) {
+  async function onCommand(aItem, aEvent) {
     if (aEvent.button == 1)
       return;
 
-    const contextTab      = this.contextTab;
-    const contextWindowId = this.contextWindowId;
-    wait(0).then(() => this.close()); // close the menu immediately!
+    wait(0).then(() => close()); // close the menu immediately!
 
     switch (aItem.id) {
       case 'context_reloadTab':
@@ -381,23 +397,19 @@ var tabContextMenu = {
           if (after && !apiTab.pinned)
             closeAPITabs.push(apiTab);
         }
-        confirmToCloseTabs(closeAPITabs.length, { windowId: contextWindowId })
-          .then(aConfirmed => {
-            if (!aConfirmed)
-              return;
+        const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: contextWindowId })) === false;
+        if (canceled)
+          return;
             browser.tabs.remove(closeAPITabs.map(aAPITab => aAPITab.id));
-          });
       }; break;
       case 'context_closeOtherTabs': {
         let apiTabId = contextTab.id; // cache it for delayed tasks!
         let apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
         let closeAPITabs = apiTabs.filter(aAPITab => !aAPITab.pinned && aAPITab.id != apiTabId).map(aAPITab => aAPITab.id);
-        confirmToCloseTabs(closeAPITabs.length, { windowId: contextWindowId })
-          .then(aConfirmed => {
-            if (!aConfirmed)
+        const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: contextWindowId })) === false;
+        if (canceled)
               return;
             browser.tabs.remove(closeAPITabs);
-          });
       }; break;
       case 'context_undoCloseTab': {
         let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
@@ -447,22 +459,22 @@ var tabContextMenu = {
         }
       }; break;
     }
-  },
+  }
 
-  onMessage(aMessage, aSender) {
+  function onMessage(aMessage, _aSender) {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
       case TSTAPI.kCONTEXT_MENU_UPDATED: {
-        this.extraItems = aMessage.items;
-        this.dirty = true;
-        if (this.ui.opened)
-          this.open(this.lastOpenOptions);
+        extraItems = aMessage.items;
+        dirty = true;
+        if (ui.opened)
+          open(lastOpenOptions);
       }; break;
     }
-  },
+  }
 
-  onExternalMessage(aMessage, aSender) {
+  function onExternalMessage(aMessage, aSender) {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
@@ -470,9 +482,9 @@ var tabContextMenu = {
         return (async () => {
           var tab      = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
           var windowId = aMessage.window || tab && tab.windowId;
-          if (windowId != gTargetWindow)
+          if (windowId != Tabs.getWindow())
             return;
-          return tabContextMenu.open({
+          return open({
             tab:      tab,
             windowId: windowId,
             left:     aMessage.left,
@@ -481,4 +493,3 @@ var tabContextMenu = {
         })();
     }
   }
-};
