@@ -327,7 +327,7 @@ async function tryGroupNewTabs() {
     }
     if (newRootTabs.length > 1 &&
         configs.autoGroupNewTabs)
-      await groupTabs(newRootTabs, { broadcast: true });
+      await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
   }
   catch(e) {
     log('Error on tryGroupNewTabs: ', String(e), e.stack);
@@ -424,7 +424,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     log(`trying to group children of ${dumpTab(opener)}: `, children.map(dumpTab));
     let parent = Tabs.getGroupTabForOpener(opener);
     if (!parent) {
-      let uri = TabsOpen.makeGroupTabURI({
+      let uri = TabsGroup.makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title),
         temporary:   true,
         openerTabId: opener.getAttribute(Constants.kPERSISTENT_ID)
@@ -573,7 +573,7 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       Tabs.getChildTabs(aTab).length > 1) {
     log('trying to replace the closing tab with a new group tab');
     let firstChild = Tabs.getFirstChildTab(aTab);
-    let uri = TabsOpen.makeGroupTabURI({
+    let uri = TabsGroup.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
       temporary: true
     });
@@ -1902,7 +1902,7 @@ function onMessageExternal(aMessage, aSender) {
     case TSTAPI.kGROUP_TABS:
       return (async () => {
         const tabs     = await TSTAPI.getTargetTabs(aMessage, aSender);
-        const groupTab = await groupTabs(tabs, { broadcast: true });
+        const groupTab = await TabsGroup.groupTabs(tabs, { broadcast: true });
         return groupTab.apiTab;
       })();
 

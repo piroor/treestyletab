@@ -18,6 +18,7 @@ import * as TabsUpdate from '../../common/module/tabs-update.js';
 import * as TabsMove from '../../common/module/tabs-move.js';
 import * as TabsOpen from '../../common/module/tabs-open.js';
 import * as TabsInternalOperation from '../../common/module/tabs-internal-operation.js';
+import * as TabsGroup from '../../common/module/tabs-group.js';
 import * as TSTAPI from '../../common/module/tst-api.js';
 import * as Bookmark from '../../common/module/bookmark.js';
 
@@ -46,6 +47,7 @@ window.TabsUpdate = TabsUpdate;
 window.TabsMove = TabsMove;
 window.TabsOpen = TabsOpen;
 window.TabsInternalOperation = TabsInternalOperation;
+window.TabsGroup = TabsGroup;
 window.TSTAPI = TSTAPI;
 window.Bookmark = Bookmark;
 

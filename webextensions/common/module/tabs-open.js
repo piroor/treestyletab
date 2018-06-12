@@ -158,14 +158,3 @@ export async function openURIsInTabs(aURIs, aOptions = {}) {
   });
 }
 
-
-/* group tab */
-
-export function makeGroupTabURI(aOptions = {}) {
-  const base = Constants.kGROUP_TAB_URI;
-  const title = encodeURIComponent(aOptions.title || '');
-  const temporaryOption = aOptions.temporary ? '&temporary=true' : '' ;
-  const openerTabIdOption = aOptions.openerTabId ? `&openerTabId=${aOptions.openerTabId}` : '' ;
-  return `${base}?title=${title}${temporaryOption}${openerTabIdOption}`;
-}
-

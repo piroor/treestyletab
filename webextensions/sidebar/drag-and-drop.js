@@ -524,7 +524,7 @@ function retrieveURIsFromData(aData, aType) {
         }
         // When a blank folder is dropped, just open a dummy tab with the folder name.
         if (children && children.length == 0) {
-          const uri = TabsOpen.makeGroupTabURI({ title: item.title });
+          const uri = TabsGroup.makeGroupTabURI({ title: item.title });
           return [uri];
         }
       }
