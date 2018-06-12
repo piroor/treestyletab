@@ -286,7 +286,7 @@ export function updateTab(aTab, aNewState = {}, aOptions = {}) {
   updateTabDebugTooltip(aTab);
 }
 
-function updateTabDebugTooltip(aTab) {
+export function updateTabDebugTooltip(aTab) {
   if (!configs.debug ||
       !aTab.apiTab)
     return;

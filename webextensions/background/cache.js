@@ -7,30 +7,30 @@
 
 async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   MetricsData.add('restoreWindowFromEffectiveWindowCache start');
-  logForCache('restoreWindowFromEffectiveWindowCache start');
+  Cache.log('restoreWindowFromEffectiveWindowCache start');
   var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
   if (!owner) {
-    logForCache('restoreWindowFromEffectiveWindowCache fail: no owner');
+    Cache.log('restoreWindowFromEffectiveWindowCache fail: no owner');
     return false;
   }
   cancelReservedCacheTree(aWindowId); // prevent to break cache before loading
   var apiTabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
-  logForCache('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
+  Cache.log('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
   var [actualSignature, cache] = await Promise.all([
-    getWindowSignature(apiTabs),
+    Cache.getWindowSignature(apiTabs),
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
   var cachedSignature = cache && cache.signature;
-  logForCache(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
+  Cache.log(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
     cachedSignature, cache
   });
   if (cache &&
       cache.tabs &&
       cachedSignature &&
-      cachedSignature != signatureFromTabsCache(cache.tabs)) {
-    logForCache(`restoreWindowFromEffectiveWindowCache: cache for ${aWindowId} is broken.`, {
+      cachedSignature != Cache.signatureFromTabsCache(cache.tabs)) {
+    Cache.log(`restoreWindowFromEffectiveWindowCache: cache for ${aWindowId} is broken.`, {
       signature: cachedSignature,
-      cache:     signatureFromTabsCache(cache.tabs)
+      cache:     Cache.signatureFromTabsCache(cache.tabs)
     });
     cache = cachedSignature = null;
     clearWindowCache(aWindowId);
@@ -39,27 +39,27 @@ async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
       cache &&
       cache.tabs &&
       cachedSignature) {
-    cache.tabs      = trimTabsCache(cache.tabs, cache.pinnedTabsCount);
-    cachedSignature = trimSignature(cachedSignature, cache.pinnedTabsCount);
+    cache.tabs      = Cache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
+    cachedSignature = Cache.trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
-  var signatureMatched = matcheSignatures({
+  var signatureMatched = Cache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
-  logForCache(`restoreWindowFromEffectiveWindowCache: verify cache for ${aWindowId}`, {
+  Cache.log(`restoreWindowFromEffectiveWindowCache: verify cache for ${aWindowId}`, {
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
       cache.version != Constants.kSIDEBAR_CONTENTS_VERSION ||
       !signatureMatched) {
-    logForCache(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
+    Cache.log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
     MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
     return false;
   }
   cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
 
-  logForCache(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
+  Cache.log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
 
   var insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
@@ -92,7 +92,7 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
       aParams.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  return restoreTabsFromCacheInternal({
+  return Cache.restoreTabsFromCacheInternal({
     windowId:       aWindowId,
     tabs:           aParams.tabs,
     offset:         aParams.cache.offset || 0,
@@ -118,7 +118,7 @@ function updateWindowCache(aOwner, aKey, aValue) {
 }
 
 function clearWindowCache(aOwner) {
-  logForCache('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
+  Cache.log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_TABS);
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
@@ -172,7 +172,7 @@ async function reserveToCacheTree(aHint) {
     return;
 
   var windowId = parseInt(container.dataset.windowId);
-  logForCache('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
+  Cache.log('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
   clearWindowCache(container.lastWindowCacheOwner);
 
   if (container.waitingToCacheTree)
@@ -197,14 +197,14 @@ async function cacheTree(aWindowId) {
   if (!container ||
       !configs.useCachedTree)
     return;
-  var signature = await getWindowSignature(aWindowId);
+  var signature = await Cache.getWindowSignature(aWindowId);
   if (container.allTabsRestored)
     return;
-  //logForCache('save cache for ', aWindowId);
+  //Cache.log('save cache for ', aWindowId);
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
   if (!container.lastWindowCacheOwner)
     return;
-  logForCache('cacheTree for window ', aWindowId, { stack: new Error().stack });
+  Cache.log('cacheTree for window ', aWindowId, { stack: new Error().stack });
   updateWindowCache(container.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version: Constants.kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,
