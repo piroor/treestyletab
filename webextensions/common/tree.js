@@ -57,7 +57,7 @@ import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as MetricsData from './MetricsData.js';
 import EventListenerManager from './EventListenerManager.js';
-import TabIdFixer from '../TabIdFixer.js';
+import TabIdFixer from './TabIdFixer.js';
 
 
 export const onAttached     = new EventListenerManager();

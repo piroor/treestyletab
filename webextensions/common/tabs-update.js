@@ -48,7 +48,7 @@ import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as ContextualIdentities from './contextual-identities.js';
-import TabFavIconHelper from '../TabFavIconHelper.js';
+import TabFavIconHelper from './TabFavIconHelper.js';
 
 export function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if ('url' in aNewState) {

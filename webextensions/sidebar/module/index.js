@@ -3,30 +3,30 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
-import * as Constants from '../../common/module/constants.js';
-import * as Common from '../../common/module/common.js';
-import * as XPath from '../../common/module/xpath.js';
-import * as ApiTabs from '../../common/module/api-tabs.js';
-import * as ApiTabsListener from '../../common/module/api-tabs-listener.js';
-import * as Sidebar from '../../common/module/sidebar.js';
-import * as Permissions from '../../common/module/permissions.js';
-import * as ContextualIdentities from '../../common/module/contextual-identities.js';
-import * as MetricsData from '../../common/module/MetricsData.js';
+import * as Constants from '../../common/constants.js';
+import * as Common from '../../common/common.js';
+import * as XPath from '../../common/xpath.js';
+import * as ApiTabs from '../../common/api-tabs.js';
+import * as ApiTabsListener from '../../common/api-tabs-listener.js';
+import * as Sidebar from '../../common/sidebar.js';
+import * as Permissions from '../../common/permissions.js';
+import * as ContextualIdentities from '../../common/contextual-identities.js';
+import * as MetricsData from '../../common/MetricsData.js';
 import * as Color from './color.js';
 
-import * as Tabs from '../../common/module/tabs.js';
-import * as TabsContainer from '../../common/module/tabs-container.js';
-import * as TabsUpdate from '../../common/module/tabs-update.js';
-import * as TabsMove from '../../common/module/tabs-move.js';
-import * as TabsOpen from '../../common/module/tabs-open.js';
-import * as TabsInternalOperation from '../../common/module/tabs-internal-operation.js';
-import * as TabsGroup from '../../common/module/tabs-group.js';
-import * as TSTAPI from '../../common/module/tst-api.js';
-import * as Bookmark from '../../common/module/bookmark.js';
-import * as UserOperationBlocker from '../../common/module/user-operation-blocker.js';
-import * as Cache from '../../common/module/cache.js';
-import * as Tree from '../../common/module/tree.js';
-import * as Commands from '../../common/module/commands.js';
+import * as Tabs from '../../common/tabs.js';
+import * as TabsContainer from '../../common/tabs-container.js';
+import * as TabsUpdate from '../../common/tabs-update.js';
+import * as TabsMove from '../../common/tabs-move.js';
+import * as TabsOpen from '../../common/tabs-open.js';
+import * as TabsInternalOperation from '../../common/tabs-internal-operation.js';
+import * as TabsGroup from '../../common/tabs-group.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import * as Bookmark from '../../common/bookmark.js';
+import * as UserOperationBlocker from '../../common/user-operation-blocker.js';
+import * as Cache from '../../common/cache.js';
+import * as Tree from '../../common/tree.js';
+import * as Commands from '../../common/commands.js';
 
 import MenuUI from '../../common/MenuUI.js';
 import l10n from '../../common/l10n.js';

@@ -42,8 +42,8 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
-import TabFavIconHelper from '../TabFavIconHelper.js';
-import TabIdFixer from '../TabIdFixer.js';
+import TabFavIconHelper from './TabFavIconHelper.js';
+import TabIdFixer from './TabIdFixer.js';
 import * as Tabs from './tabs.js';
 
 export const kREGISTER_SELF         = 'register-self';

@@ -14,10 +14,10 @@
 import {
   log,
   configs
-} from '../../common/module/common.js';
+} from '../../common/common.js';
 
-import * as Tabs from '../../common/module/tabs.js';
-import * as TSTAPI from '../../common/module/tst-api.js';
+import * as Tabs from '../../common/tabs.js';
+import * as TSTAPI from '../../common/tst-api.js';
 
 var gContextMenuItems = `
   reloadTree
