@@ -119,7 +119,7 @@ async function onApiTabActivated(aActiveInfo) {
     }
 
     log('tabs.onActivated: ', dumpTab(newTab));
-    const oldActiveTabs = updateTabFocused(newTab);
+    const oldActiveTabs = TabsInternalOperation.setTabFocused(newTab);
 
     let byCurrentTabRemove = !!container.resolveClosedWhileActiveForPreviousActiveTab;
     if (byCurrentTabRemove) {
@@ -176,19 +176,6 @@ async function onApiTabActivated(aActiveInfo) {
     console.log(e);
     onCompleted();
   }
-}
-
-function clearOldActiveStateInWindow(aWindowId) {
-  const container = Tabs.getTabsContainer(aWindowId);
-  if (!container)
-    return [];
-  const oldTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`);
-  for (let oldTab of oldTabs) {
-    oldTab.classList.remove(Constants.kTAB_STATE_ACTIVE);
-    if (oldTab.apiTab) // this function can be applied for cached tab.
-      oldTab.apiTab.active = false;
-  }
-  return oldTabs;
 }
 
 async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
@@ -619,7 +606,7 @@ async function onApiTabAttached(aTabId, aAttachInfo) {
 
     TabIdFixer.fixTab(apiTab);
 
-    clearOldActiveStateInWindow(aAttachInfo.newWindowId);
+    TabsInternalOperation.clearOldActiveStateInWindow(aAttachInfo.newWindowId);
     const info = gTreeInfoForTabsMovingAcrossWindows[aTabId];
     delete gTreeInfoForTabsMovingAcrossWindows[aTabId];
 

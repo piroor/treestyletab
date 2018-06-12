@@ -175,7 +175,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 
   // update focused tab appearance
   browser.tabs.query({ windowId: aTabs[0].apiTab.windowId, active: true })
-    .then(aActiveTabs => updateTabFocused(Tabs.getTabById(aActiveTabs[0])));
+    .then(aActiveTabs => TabsInternalOperation.setTabFocused(Tabs.getTabById(aActiveTabs[0])));
 }
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {

@@ -69,3 +69,25 @@ export function removeTabs(aTabs, aOptions = {}) {
   return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
 }
 
+export function setTabFocused(aTab) {
+  const oldActiveTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
+  aTab.classList.add(Constants.kTAB_STATE_ACTIVE);
+  aTab.apiTab.active = true;
+  aTab.classList.remove(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+  aTab.classList.remove(Constants.kTAB_STATE_UNREAD);
+  browser.sessions.removeTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD);
+  return oldActiveTabs;
+}
+
+export function clearOldActiveStateInWindow(aWindowId) {
+  const container = Tabs.getTabsContainer(aWindowId);
+  if (!container)
+    return [];
+  const oldTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`);
+  for (let oldTab of oldTabs) {
+    oldTab.classList.remove(Constants.kTAB_STATE_ACTIVE);
+    if (oldTab.apiTab) // this function can be applied for cached tab.
+      oldTab.apiTab.active = false;
+  }
+  return oldTabs;
+}

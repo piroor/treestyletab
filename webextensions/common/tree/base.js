@@ -309,16 +309,6 @@ windowId = ${aTab.apiTab.windowId}
   });
 }
 
-function updateTabFocused(aTab) {
-  var oldActiveTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
-  aTab.classList.add(Constants.kTAB_STATE_ACTIVE);
-  aTab.apiTab.active = true;
-  aTab.classList.remove(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-  aTab.classList.remove(Constants.kTAB_STATE_UNREAD);
-  browser.sessions.removeTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD);
-  return oldActiveTabs;
-}
-
 function updateParentTab(aParent) {
   if (!Tabs.ensureLivingTab(aParent))
     return;
