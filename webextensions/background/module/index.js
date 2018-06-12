@@ -21,6 +21,7 @@ import * as TabsInternalOperation from '../../common/module/tabs-internal-operat
 import * as TabsGroup from '../../common/module/tabs-group.js';
 import * as TSTAPI from '../../common/module/tst-api.js';
 import * as Bookmark from '../../common/module/bookmark.js';
+import * as Cache from '../../common/module/cache.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -50,6 +51,7 @@ window.TabsInternalOperation = TabsInternalOperation;
 window.TabsGroup = TabsGroup;
 window.TSTAPI = TSTAPI;
 window.Bookmark = Bookmark;
+window.Cache = Cache;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;

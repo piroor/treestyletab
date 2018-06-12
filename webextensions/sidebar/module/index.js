@@ -22,6 +22,7 @@ import * as TabsGroup from '../../common/module/tabs-group.js';
 import * as TSTAPI from '../../common/module/tst-api.js';
 import * as Bookmark from '../../common/module/bookmark.js';
 import * as UserOperationBlocker from '../../common/module/user-operation-blocker.js';
+import * as Cache from '../../common/module/cache.js';
 
 import MenuUI from '../../common/MenuUI.js';
 import l10n from '../../common/l10n.js';
@@ -54,6 +55,7 @@ window.TabsGroup = TabsGroup;
 window.TSTAPI = TSTAPI;
 window.Bookmark = Bookmark;
 window.UserOperationBlocker = UserOperationBlocker;
+window.Cache = Cache;
 
 window.MenuUI = MenuUI;
 window.l10n = l10n;
