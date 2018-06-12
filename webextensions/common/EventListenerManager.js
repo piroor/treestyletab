@@ -5,6 +5,8 @@
 */
 'use strict';
 
+const TIMEOUT = 2000;
+
 export default function EventListenerManager() {
   this.listeners = [];
 }
@@ -20,7 +22,20 @@ EventListenerManager.prototype = {
       this.listeners.splice(index, 1);
   },
   async dispatch(...aArgs) {
-    const results = await Promise.all(this.listeners.map(aListener => aListener(...aArgs)));
+    const results = await Promise.all(this.listeners.map(async aListener => {
+      let timer = setTimeout(() => {
+        console.log(`listener does not respond in ${TIMEOUT}ms.\n${new Error().stack}`);
+      }, TIMEOUT);
+      try {
+        return await aListener(...aArgs);
+      }
+      catch(e) {
+        console.log(e);
+      }
+      finally {
+        clearTimeout(timer);
+      }
+    }));
     if (results.length == 1)
       return results[0];
     for (let result of results) {

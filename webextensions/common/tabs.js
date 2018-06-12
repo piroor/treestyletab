@@ -244,8 +244,7 @@ export function addCreatingTab(aTab) {
     });
   }
   aTab.uniqueId.then(_aUniqueId => {
-    if (gCreatingTabs[aTab.apiTab.id] === aTab.uniqueId)
-      delete gCreatingTabs[aTab.apiTab.id];
+    delete gCreatingTabs[aTab.apiTab.id];
   });
   return onTabCreated;
 }
@@ -268,10 +267,10 @@ const gMovingTabs = {};
 export function addMovingTabId(aTabId) {
   let onTabMoved;
   gMovingTabs[aTabId] = new Promise((aResolve, _aReject) => {
-    onTabMoved = () => {
-      delete gMovingTabs[aTabId];
-      aResolve();
-    };
+    onTabMoved = aResolve;
+  });
+  gMovingTabs[aTabId].then(() => {
+    delete gMovingTabs[aTabId];
   });
   return onTabMoved;
 }
