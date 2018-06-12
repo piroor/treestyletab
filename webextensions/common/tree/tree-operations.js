@@ -403,7 +403,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
         broadcast: aOptions.broadcast
       });
       if (Tabs.getNextTab(aTab))
-        await moveTabAfter(aTab, Tabs.getLastTab(), {
+        await TabsMove.moveTabAfter(aTab, Tabs.getLastTab(), {
           delayedMove: true,
           inRemote: aOptions.inRemote
         });
@@ -434,7 +434,7 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           inRemote:  aOptions.inRemote,
           broadcast: aOptions.broadcast
         });
-        await moveTabAfter(aTab, Tabs.getLastTab(), {
+        await TabsMove.moveTabAfter(aTab, Tabs.getLastTab(), {
           delayedMove: true,
           inRemote: aOptions.inRemote
         });
@@ -461,13 +461,13 @@ async function behaveAutoAttachedTab(aTab, aOptions = {}) {
           broadcast: aOptions.broadcast
         });
         if (nextSibling)
-          await moveTabBefore(aTab, nextSibling, {
+          await TabsMove.moveTabBefore(aTab, nextSibling, {
             delayedMove: true,
             inRemote:  aOptions.inRemote,
             broadcast: aOptions.broadcast
           });
         else
-          await moveTabAfter(aTab, Tabs.getLastDescendantTab(baseTab), {
+          await TabsMove.moveTabAfter(aTab, Tabs.getLastDescendantTab(baseTab), {
             delayedMove: true,
             inRemote:  aOptions.inRemote,
             broadcast: aOptions.broadcast
@@ -969,7 +969,7 @@ async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   var container = aTab.parentNode;
   TabsContainer.incrementCounter(container, 'subTreeMovingCount');
   try {
-    await moveTabInternallyBefore(aTab, aNextTab, aOptions);
+    await TabsMove.moveTabInternallyBefore(aTab, aNextTab, aOptions);
     if (!Tabs.ensureLivingTab(aTab)) // it is removed while waiting
       throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
@@ -995,7 +995,7 @@ async function moveTabSubtreeAfter(aTab, aPreviousTab, aOptions = {}) {
   var container = aTab.parentNode;
   TabsContainer.incrementCounter(container, 'subTreeMovingCount');
   try {
-    await moveTabInternallyAfter(aTab, aPreviousTab, aOptions);
+    await TabsMove.moveTabInternallyAfter(aTab, aPreviousTab, aOptions);
     if (!Tabs.ensureLivingTab(aTab)) // it is removed while waiting
       throw new Error('the tab was removed before moving of descendants');
     await followDescendantsToMovedRoot(aTab, aOptions);
@@ -1017,7 +1017,7 @@ async function followDescendantsToMovedRoot(aTab, aOptions = {}) {
   var container = aTab.parentNode;
   TabsContainer.incrementCounter(container, 'subTreeChildrenMovingCount');
   TabsContainer.incrementCounter(container, 'subTreeMovingCount');
-  await moveTabsAfter(Tabs.getDescendantTabs(aTab), aTab, aOptions);
+  await TabsMove.moveTabsAfter(Tabs.getDescendantTabs(aTab), aTab, aOptions);
   TabsContainer.decrementCounter(container, 'subTreeChildrenMovingCount');
   TabsContainer.decrementCounter(container, 'subTreeMovingCount');
 }
@@ -1238,10 +1238,10 @@ async function moveTabs(aTabs, aOptions = {}) {
 
 
   if (aOptions.insertBefore) {
-    await moveTabsBefore(movedTabs, aOptions.insertBefore, aOptions);
+    await TabsMove.moveTabsBefore(movedTabs, aOptions.insertBefore, aOptions);
   }
   else if (aOptions.insertAfter) {
-    await moveTabsAfter(movedTabs, aOptions.insertAfter, aOptions);
+    await TabsMove.moveTabsAfter(movedTabs, aOptions.insertAfter, aOptions);
   }
   else {
     log('no move: just duplicate or import');
@@ -1344,7 +1344,7 @@ async function groupTabs(aTabs, aOptions = {}) {
   await detachTabsFromTree(aTabs, {
     broadcast: !!aOptions.broadcast
   });
-  await moveTabsAfter(aTabs.slice(1), aTabs[0], {
+  await TabsMove.moveTabsAfter(aTabs.slice(1), aTabs[0], {
     broadcast: !!aOptions.broadcast
   });
   for (let tab of rootTabs) {
@@ -1455,9 +1455,9 @@ async function performTabsDragDrop(aParams = {}) {
 
   log('=> moving dragged tabs ', draggedTabs.map(dumpTab));
   if (aParams.insertBefore)
-    await moveTabsBefore(draggedTabs, aParams.insertBefore);
+    await TabsMove.moveTabsBefore(draggedTabs, aParams.insertBefore);
   else if (aParams.insertAfter)
-    await moveTabsAfter(draggedTabs, aParams.insertAfter);
+    await TabsMove.moveTabsAfter(draggedTabs, aParams.insertAfter);
   else
     log('=> already placed at expected position');
 
@@ -1525,9 +1525,9 @@ async function attachTabsOnDrop(aTabs, aParent, aOptions = {}) {
   }
 
   if (aOptions.insertBefore)
-    await moveTabsBefore(aOptions.draggedTabs || aTabs, aOptions.insertBefore);
+    await TabsMove.moveTabsBefore(aOptions.draggedTabs || aTabs, aOptions.insertBefore);
   else if (aOptions.insertAfter)
-    await moveTabsAfter(aOptions.draggedTabs || aTabs, aOptions.insertAfter);
+    await TabsMove.moveTabsAfter(aOptions.draggedTabs || aTabs, aOptions.insertAfter);
 
   var memberOptions = Object.assign({}, aOptions, {
     insertBefore: null,

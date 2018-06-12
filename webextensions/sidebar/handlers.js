@@ -1422,7 +1422,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
-        return moveTabsBefore(
+        return TabsMove.moveTabsBefore(
           aMessage.tabs.map(Tabs.getTabById),
           Tabs.getTabById(aMessage.nextTab),
           aMessage
@@ -1432,7 +1432,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
-        return moveTabsAfter(
+        return TabsMove.moveTabsAfter(
           aMessage.tabs.map(Tabs.getTabById),
           Tabs.getTabById(aMessage.previousTab),
           aMessage

@@ -496,11 +496,11 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
             broadcast:    true
           });
         else if (aOptions.insertBefore)
-          await moveTabInternallyBefore(tab, aOptions.insertBefore, {
+          await TabsMove.moveTabInternallyBefore(tab, aOptions.insertBefore, {
             broadcast: true
           });
         else if (aOptions.insertAfter)
-          await moveTabInternallyAfter(tab, aOptions.insertAfter, {
+          await TabsMove.moveTabInternallyAfter(tab, aOptions.insertAfter, {
             broadcast: true
           });
         return tab.opened;

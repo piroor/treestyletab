@@ -224,7 +224,7 @@ function onTabOpening(aTab, aInfo = {}) {
       return true;
     }
     if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
-      moveTabAfter(aTab, Tabs.getLastTab(aTab), {
+      TabsMove.moveTabAfter(aTab, Tabs.getLastTab(aTab), {
         delayedMove: true,
         broadcast:   true
       });
@@ -1600,7 +1600,7 @@ function onMessage(aMessage, aSender) {
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
-        return moveTabsBefore(
+        return TabsMove.moveTabsBefore(
           aMessage.tabs.map(Tabs.getTabById),
           Tabs.getTabById(aMessage.nextTab),
           Object.assign({}, aMessage, {
@@ -1612,7 +1612,7 @@ function onMessage(aMessage, aSender) {
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
         await waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
-        return moveTabsAfter(
+        return TabsMove.moveTabsAfter(
           aMessage.tabs.map(Tabs.getTabById),
           Tabs.getTabById(aMessage.previousTab),
           Object.assign({}, aMessage, {

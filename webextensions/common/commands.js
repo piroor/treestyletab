@@ -216,7 +216,7 @@ const Commands = {
       await detachTab(aTab, {
         broadcast: true,
       });
-      await moveTabAfter(aTab, Tabs.getLastDescendantTab(parent) || parent, {
+      await TabsMove.moveTabAfter(aTab, Tabs.getLastDescendantTab(parent) || parent, {
         broadcast: true,
       });
     }
@@ -234,7 +234,7 @@ const Commands = {
         behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
 
-    await moveTabBefore(aTab, previousTab, {
+    await TabsMove.moveTabBefore(aTab, previousTab, {
       broadcast: true
     });
     const index = Tabs.getTabIndex(aTab);
@@ -256,7 +256,7 @@ const Commands = {
         behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
       });
 
-    await moveTabAfter(aTab, nextTab, {
+    await TabsMove.moveTabAfter(aTab, nextTab, {
       broadcast: true
     });
     const index = Tabs.getTabIndex(aTab);
