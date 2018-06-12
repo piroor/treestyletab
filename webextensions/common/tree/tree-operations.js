@@ -956,29 +956,6 @@ function getClosingTabsFromParent(aTab) {
   return [aTab].concat(Tabs.getDescendantTabs(aTab));
 }
 
-function syncOrderOfChildTabs(aParentTabs) {
-  if (!Array.isArray(aParentTabs))
-    aParentTabs = [aParentTabs];
-
-  var updatedParentTabs = new Map();
-  for (let parent of aParentTabs) {
-    if (!parent || updatedParentTabs.has(parent))
-      continue;
-    updatedParentTabs.set(parent, true);
-    if (parent.childTabs.length < 2)
-      continue;
-    parent.childTabs = parent.childTabs.map(aTab => {
-      return {
-        index: Tabs.getTabIndex(aTab),
-        tab:   aTab
-      };
-    }).sort((aA, aB) => aA.index - aB.index).map(aItem => aItem.tab);
-    let childIds = parent.childTabs.map(aTab => aTab.id);
-    parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
-    log('updateChildTabsInfo: ', childIds);
-  }
-  updatedParentTabs = undefined;
-}
 
 async function moveTabSubtreeBefore(aTab, aNextTab, aOptions = {}) {
   if (!aTab)

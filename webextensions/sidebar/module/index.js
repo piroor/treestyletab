@@ -14,6 +14,7 @@ import * as Color from './color.js';
 
 import * as Tabs from '../../common/module/tabs.js';
 import * as TabsContainer from '../../common/module/tabs-container.js';
+import * as TabsMove from '../../common/module/tabs-move.js';
 
 import MenuUI from '../../common/MenuUI.js';
 import l10n from '../../common/l10n.js';
@@ -38,6 +39,7 @@ window.Color = Color;
 
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;
+window.TabsMove = TabsMove;
 
 window.MenuUI = MenuUI;
 window.l10n = l10n;
