@@ -975,7 +975,7 @@ Tabs.onMoving.addListener(async aTab => {
       return;
     let visible = !Tabs.isCollapsed(aTab);
     let promisedCollapsed;
-    if (isCollapsedStateUpdating(aTab));
+    if (isCollapsedStateUpdating(aTab))
       promisedCollapsed = isSurelyCollapsed(aTab);
     Tree.collapseExpandTab(aTab, {
       collapsed: true,
