@@ -11,8 +11,9 @@ import * as ApiTabsListener from '../../common/api-tabs-listener.js';
 import * as Sidebar from '../../common/sidebar.js';
 import * as Permissions from '../../common/permissions.js';
 import * as ContextualIdentities from '../../common/contextual-identities.js';
-import * as ContextMenu from './context-menu.js';
 import * as MetricsData from '../../common/metrics-data.js';
+import * as Migration from '../../common/migration.js';
+import * as ContextMenu from './context-menu.js';
 
 import * as Tabs from '../../common/tabs.js';
 import * as TabsContainer from '../../common/tabs-container.js';
@@ -45,8 +46,9 @@ window.ApiTabsListener = ApiTabsListener;
 window.Sidebar = Sidebar;
 window.Permissions = Permissions;
 window.ContextualIdentities = ContextualIdentities;
-window.ContextMenu = ContextMenu;
 window.MetricsData = MetricsData;
+window.ContextMenu = ContextMenu;
+window.Migration = Migration;
 
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;

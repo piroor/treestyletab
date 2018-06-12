@@ -68,7 +68,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = kLEGACY_CONFIGS_MIGRATION_VERSION;
+    document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = Migration.kLEGACY_CONFIGS_MIGRATION_VERSION;
 
     Permissions.bindToCheckbox(
       Permissions.ALL_URLS,

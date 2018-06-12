@@ -6,6 +6,7 @@
 import * as Constants from '../../common/constants.js';
 import * as Common from '../../common/common.js';
 import * as Permissions from '../../common/permissions.js';
+import * as Migration from '../../common/migration.js';
 
 import l10n from '../../common/l10n.js';
 import Options from '../Options.js';
@@ -20,6 +21,7 @@ window.wait      = Common.wait;
 window.nextFrame = Common.nextFrame;
 window.notify    = Common.notify;
 window.Permissions = Permissions;
+window.Migration = Migration;
 
 window.l10n = l10n;
 window.Options = Options;

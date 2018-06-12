@@ -31,8 +31,8 @@ async function init() {
   await configs.$loaded;
   MetricsData.add('configs.$loaded');
 
-  migrateLegacyConfigs();
-  MetricsData.add('migrateLegacyConfigs');
+  Migration.migrateLegacyConfigs();
+  MetricsData.add('Migration.migrateLegacyConfigs');
 
   updatePanelUrl();
 
@@ -45,8 +45,8 @@ async function init() {
   await loadTreeStructure(restoredFromCache);
   MetricsData.add('loadTreeStructure done');
 
-  migrateLegacyTreeStructure();
-  MetricsData.add('migrateLegacyTreeStructure');
+  Migration.migrateLegacyTreeStructure();
+  MetricsData.add('Migration.migrateLegacyTreeStructure');
 
   ApiTabsListener.startListen();
   ContextualIdentities.startObserve();
@@ -112,7 +112,7 @@ async function init() {
     type: Constants.kCOMMAND_PING_TO_SIDEBAR
   });
 
-  notifyNewFeatures();
+  Migration.notifyNewFeatures();
   log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
 }
 
