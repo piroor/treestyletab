@@ -45,7 +45,7 @@ var gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTI
   configs.$loaded.then(applyUserStyleRules);
 }
 
-blockUserOperations({ throbber: true });
+UserOperationBlocker.block({ throbber: true });
 
 async function init() {
   MetricsData.add('init start');
@@ -207,7 +207,7 @@ async function init() {
 
   onConfigChange('animation');
 
-  unblockUserOperations({ throbber: true });
+  UserOperationBlocker.unblock({ throbber: true });
 
   MetricsData.add('init end');
   log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());

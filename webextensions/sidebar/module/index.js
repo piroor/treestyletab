@@ -17,6 +17,7 @@ import * as TabsContainer from '../../common/module/tabs-container.js';
 import * as TabsMove from '../../common/module/tabs-move.js';
 import * as TabsOpen from '../../common/module/tabs-open.js';
 import * as TSTAPI from '../../common/module/tst-api.js';
+import * as UserOperationBlocker from '../../common/module/user-operation-blocker.js';
 
 import MenuUI from '../../common/MenuUI.js';
 import l10n from '../../common/l10n.js';
@@ -44,6 +45,7 @@ window.TabsContainer = TabsContainer;
 window.TabsMove = TabsMove;
 window.TabsOpen = TabsOpen;
 window.TSTAPI = TSTAPI;
+window.UserOperationBlocker = UserOperationBlocker;
 
 window.MenuUI = MenuUI;
 window.l10n = l10n;

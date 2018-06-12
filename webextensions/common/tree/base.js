@@ -396,64 +396,6 @@ function removeTabsInternally(aTabs, aOptions = {}) {
   return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
 }
 
-/* blocking/unblocking */
-
-var gBlockingCount = 0;
-var gBlockingThrobberCount = 0;
-
-function blockUserOperations(aOptions = {}) {
-  gBlockingCount++;
-  document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING);
-  if (aOptions.throbber) {
-    gBlockingThrobberCount++;
-    document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
-  }
-}
-
-function blockUserOperationsIn(aWindowId, aOptions = {}) {
-  if (gTargetWindow && gTargetWindow != aWindowId)
-    return;
-
-  if (!gTargetWindow) {
-    browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
-      windowId: aWindowId,
-      throbber: !!aOptions.throbber
-    });
-    return;
-  }
-  blockUserOperations(aOptions);
-}
-
-function unblockUserOperations(aOptions = {}) {
-  gBlockingThrobberCount--;
-  if (gBlockingThrobberCount < 0)
-    gBlockingThrobberCount = 0;
-  if (gBlockingThrobberCount == 0)
-    document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
-
-  gBlockingCount--;
-  if (gBlockingCount < 0)
-    gBlockingCount = 0;
-  if (gBlockingCount == 0)
-    document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING);
-}
-
-function unblockUserOperationsIn(aWindowId, aOptions = {}) {
-  if (gTargetWindow && gTargetWindow != aWindowId)
-    return;
-
-  if (!gTargetWindow) {
-    browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
-      windowId: aWindowId,
-      throbber: !!aOptions.throbber
-    });
-    return;
-  }
-  unblockUserOperations(aOptions);
-}
-
 
 function broadcastTabState(aTabs, aOptions = {}) {
   if (!Array.isArray(aTabs))

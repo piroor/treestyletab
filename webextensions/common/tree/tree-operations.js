@@ -1060,7 +1060,7 @@ async function moveTabs(aTabs, aOptions = {}) {
   log('original tree structure: ', structure);
 
   if (isAcrossWindows || aOptions.duplicate) {
-    blockUserOperationsIn(windowId, { throbber: true });
+    UserOperationBlocker.blockIn(windowId, { throbber: true });
     try {
       let container;
       let prepareContainer = () => {
@@ -1232,7 +1232,7 @@ async function moveTabs(aTabs, aOptions = {}) {
       throw e;
     }
     finally {
-      unblockUserOperationsIn(windowId, { throbber: true });
+      UserOperationBlocker.unblockIn(windowId, { throbber: true });
     }
   }
 
@@ -1295,7 +1295,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
     .then(aNewWindow => {
       newWindow = aNewWindow;
       log('openNewWindowFromTabs: new window is ready, ', newWindow);
-      blockUserOperationsIn(newWindow.id);
+      UserOperationBlocker.blockIn(newWindow.id);
       return newWindow;
     });
   aTabs = aTabs.filter(Tabs.ensureLivingTab);
@@ -1316,7 +1316,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
       }
       log('removing tabs: ', removeTabs.map(dumpTab));
       removeTabsInternally(removeTabs);
-      unblockUserOperationsIn(newWindow.id);
+      UserOperationBlocker.unblockIn(newWindow.id);
     });
 
   return movedTabs;

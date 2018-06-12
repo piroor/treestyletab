@@ -62,6 +62,10 @@ export function setWindow(aTargetWindow) {
   return gTargetWindow = aTargetWindow;
 }
 
+export function getWindow() {
+  return gTargetWindow;
+}
+
 export function getSafeFaviconUrl(aURL) {
   switch (aURL) {
     case 'chrome://browser/skin/settings.svg':

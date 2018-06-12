@@ -862,7 +862,7 @@ function onTabRestoring(aTab) {
   // When we are restoring two or more tabs.
   // (But we don't need do this again for third, fourth, and later tabs.)
   if (container.restoredCount == 2)
-    blockUserOperations({ throbber: true });
+    UserOperationBlocker.block({ throbber: true });
 }
 
 // Tree restoration for "Restore Previous Session"
@@ -875,7 +875,7 @@ async function onWindowRestoring(aWindowId) {
   var restoredCount = await container.allTabsRestored;
   if (restoredCount == 1) {
     log('onWindowRestoring: single tab restored');
-    unblockUserOperations({ throbber: true });
+    UserOperationBlocker.unblock({ throbber: true });
     return;
   }
 
@@ -888,7 +888,7 @@ async function onWindowRestoring(aWindowId) {
        container.childNodes.length <= cache.offset)) {
     log('onWindowRestoring: no effective cache');
     await inheritTreeStructure(); // fallback to classic method
-    unblockUserOperations({ throbber: true });
+    UserOperationBlocker.unblock({ throbber: true });
     return;
   }
 
@@ -910,7 +910,7 @@ async function onWindowRestoring(aWindowId) {
     cache: restored && cache.offset == 0 ? cache.indent : null
   });
   updateTabbarLayout({ justNow: true });
-  unblockUserOperations({ throbber: true });
+  UserOperationBlocker.unblock({ throbber: true });
   MetricsData.add('onWindowRestoring restore end');
 }
 
@@ -1504,12 +1504,12 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS: {
       if (aMessage.windowId == gTargetWindow)
-        blockUserOperationsIn(gTargetWindow, aMessage);
+        UserOperationBlocker.blockIn(gTargetWindow, aMessage);
     }; break;
 
     case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS: {
       if (aMessage.windowId == gTargetWindow)
-        unblockUserOperationsIn(gTargetWindow, aMessage);
+        UserOperationBlocker.unblockIn(gTargetWindow, aMessage);
     }; break;
 
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
