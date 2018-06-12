@@ -563,8 +563,8 @@ async function onMoved(aTabId, aMoveInfo) {
       let newNextIndex = moveInfo.toIndex;
       if (moveInfo.fromIndex < newNextIndex)
         newNextIndex++;
-      let tabs    = Tabs.getAllTabs(movedTab);
-      let nextTab = tabs[newNextIndex];
+      const tabs    = Tabs.getAllTabs(movedTab);
+      const nextTab = tabs[newNextIndex];
       if (!alreadyMoved && movedTab.nextSibling != nextTab) {
         container.insertBefore(movedTab, nextTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
@@ -573,8 +573,8 @@ async function onMoved(aTabId, aMoveInfo) {
             .join('\n')
             .replace(/^/gm, ' - ')));
       }
-      let startIndex = Math.min(aMoveInfo.fromIndex, aMoveInfo.toIndex);
-      let endIndex   = Math.max(aMoveInfo.fromIndex, aMoveInfo.toIndex);
+      const startIndex = Math.min(aMoveInfo.fromIndex, aMoveInfo.toIndex);
+      const endIndex   = Math.max(aMoveInfo.fromIndex, aMoveInfo.toIndex);
       for (let i = startIndex; i < endIndex; i++) {
         tabs[i].apiTab.index = i;
       }
