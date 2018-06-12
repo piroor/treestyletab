@@ -26,6 +26,7 @@ import * as Bookmark from '../../common/module/bookmark.js';
 import * as UserOperationBlocker from '../../common/module/user-operation-blocker.js';
 import * as Cache from '../../common/module/cache.js';
 import * as Tree from '../../common/module/tree.js';
+import * as Commands from '../../common/module/commands.js';
 
 import MenuUI from '../../common/MenuUI.js';
 import l10n from '../../common/l10n.js';
@@ -62,6 +63,7 @@ window.Bookmark = Bookmark;
 window.UserOperationBlocker = UserOperationBlocker;
 window.Cache = Cache;
 window.Tree = Tree;
+window.Commands = Commands;
 
 window.MenuUI = MenuUI;
 window.l10n = l10n;

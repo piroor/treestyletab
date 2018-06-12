@@ -583,6 +583,7 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       return false;
   }
 }
+Commands.onTabsClosing.addListener(confirmToCloseTabs);
 
 
 function updateTabTwisty(aTab) {

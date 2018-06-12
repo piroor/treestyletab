@@ -5,65 +5,78 @@
 */
 'use strict';
 
-const Commands = {
-  reloadTree(aRootTab) {
+import {
+  log,
+  dumpTab,
+  notify,
+  configs
+} from './common.js';
+import * as Constants from './constants.js';
+import * as ApiTabs from './api-tabs.js';
+import * as Tabs from './tabs.js';
+import * as TabsMove from './tabs-move.js';
+import * as TabsOpen from './tabs-open.js';
+import * as TabsInternalOperation from './tabs-internal-operation.js';
+import * as Bookmark from './bookmark.js';
+import * as Tree from './tree.js';
+import EventListenerManager from './EventListenerManager.js';
+
+export const onTabsClosing = new EventListenerManager();
+export const onMoveUp      = new EventListenerManager();
+export const onMoveDown    = new EventListenerManager();
+
+  export function reloadTree(aRootTab) {
     const tabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
     for (let tab of tabs) {
       browser.tabs.reload(tab.apiTab.id)
         .catch(ApiTabs.handleMissingTabError);
     }
-  },
+  }
 
-  reloadDescendants(aRootTab) {
+  export function reloadDescendants(aRootTab) {
     const tabs = Tabs.getDescendantTabs(aRootTab);
     for (let tab of tabs) {
       browser.tabs.reload(tab.apiTab.id)
         .catch(ApiTabs.handleMissingTabError);
     }
-  },
+  }
 
-  closeTree(aRootTab) {
+  export async function closeTree(aRootTab) {
     const tabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
-    confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
-      .then(aConfirmed => {
-        if (!aConfirmed)
-          return;
+    const canceled = await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId });
+    if (canceled === false)
+      return;
         tabs.reverse(); // close bottom to top!
         for (let tab of tabs) {
           TabsInternalOperation.removeTab(tab);
         }
-      });
-  },
+  }
 
-  closeDescendants(aRootTab) {
+  export async function closeDescendants(aRootTab) {
     const tabs = Tabs.getDescendantTabs(aRootTab);
-    confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
-      .then(aConfirmed => {
-        if (!aConfirmed)
-          return;
+    const canceled = await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId });
+    if (canceled === false)
+      return;
         tabs.reverse(); // close bottom to top!
         for (let tab of tabs) {
           TabsInternalOperation.removeTab(tab);
         }
-      });
-  },
+  }
 
-  closeOthers(aRootTab) {
+  export async function closeOthers(aRootTab) {
     const exceptionTabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
     const tabs          = Tabs.getNormalTabs(aRootTab); // except pinned or hidden tabs
     tabs.reverse(); // close bottom to top!
     const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(aTab) < 0);
-    confirmToCloseTabs(closeTabs.length, { windowId: aRootTab.apiTab.windowId })
-      .then(aConfirmed => {
-        if (!aConfirmed)
-          return;
+    const canceled = await onTabsClosing.dispatch(closeTabs.length, { windowId: aRootTab.apiTab.windowId });
+    if (canceled === false)
+      return;
         for (let tab of closeTabs) {
           TabsInternalOperation.removeTab(tab);
         }
-      });
-  },
+  }
 
-  collapseAll(aHint) {
+  export function collapseAll(aHint) {
     const tabs = Tabs.getNormalTabs(aHint);
     for (let tab of tabs) {
       if (Tabs.hasChildTabs(tab) && !Tabs.isSubtreeCollapsed(tab))
@@ -72,9 +85,9 @@ const Commands = {
           broadcast: true
         });
     }
-  },
+  }
 
-  expandAll(aHint) {
+  export function expandAll(aHint) {
     const tabs = Tabs.getNormalTabs(aHint);
     for (let tab of tabs) {
       if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
@@ -83,9 +96,9 @@ const Commands = {
           broadcast: true
         });
     }
-  },
+  }
 
-  bookmarkTree: async function(aRoot, aOptions = {}) {
+  export async function bookmarkTree(aRoot, aOptions = {}) {
     const tabs   = [aRoot].concat(Tabs.getDescendantTabs(aRoot));
     const folder = await Bookmark.bookmarkTabs(tabs, aOptions);
     if (!folder)
@@ -101,10 +114,10 @@ const Commands = {
       });
     });
     return folder;
-  },
+  }
 
 
-  openNewTabAs: async function(aOptions = {}) {
+  export async function openNewTabAs(aOptions = {}) {
     const currentTab = aOptions.baseTab || Tabs.getTabById((await browser.tabs.query({
       active:        true,
       currentWindow: true
@@ -156,23 +169,9 @@ const Commands = {
       cookieStoreId: aOptions.cookieStoreId,
       inRemote:      !!aOptions.inRemote
     });
-  },
+  }
 
-  showContainerSelector(aOptions = {}) {
-    if (aOptions.inRemote) {
-      return browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
-        windowId: activeTab.apiTab.windowId
-      });
-    }
-    const anchor = document.querySelector(`
-      :root.contextual-identity-selectable .contextual-identities-selector-anchor,
-      .newtab-button
-    `);
-    gContextualIdentitySelector.ui.open({ anchor });
-  },
-
-  indent: async function(aTab, aOptions = {}) {
+  export async function indent(aTab, aOptions = {}) {
     const newParent = Tabs.getPreviousSiblingTab(aTab);
     if (!newParent ||
         newParent == Tabs.getParentTab(aTab))
@@ -189,9 +188,9 @@ const Commands = {
       insertAfter: Tabs.getLastDescendantTab(newParent) || newParent
     });
     return true;
-  },
+  }
 
-  outdent: async function(aTab, aOptions = {}) {
+  export async function outdent(aTab, aOptions = {}) {
     const parent = Tabs.getParentTab(aTab);
     if (!parent)
       return false;
@@ -221,9 +220,9 @@ const Commands = {
       });
     }
     return true;
-  },
+  }
 
-  moveUp: async function(aTab, aOptions = {}) {
+  export async function moveUp(aTab, aOptions = {}) {
     const previousTab = Tabs.getPreviousTab(aTab);
     if (!previousTab)
       return false;
@@ -237,15 +236,11 @@ const Commands = {
     await TabsMove.moveTabBefore(aTab, previousTab, {
       broadcast: true
     });
-    const index = Tabs.getTabIndex(aTab);
-    await tryFixupTreeForInsertedTab(aTab, {
-      toIndex:   index,
-      fromIndex: index + 1,
-    });
+    await onMoveUp.dispatch(aTab);
     return true;
-  },
+  }
 
-  moveDown: async function(aTab, aOptions = {}) {
+  export async function moveDown(aTab, aOptions = {}) {
     const nextTab = Tabs.getNextTab(aTab);
     if (!nextTab)
       return false;
@@ -259,11 +254,6 @@ const Commands = {
     await TabsMove.moveTabAfter(aTab, nextTab, {
       broadcast: true
     });
-    const index = Tabs.getTabIndex(aTab);
-    await tryFixupTreeForInsertedTab(aTab, {
-      toIndex:   index,
-      fromIndex: index - 1,
-    });
+    await onMoveDown.dispatch(aTab);
     return true;
   }
-};

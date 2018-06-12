@@ -25,6 +25,7 @@ import * as TSTAPI from '../../common/module/tst-api.js';
 import * as Bookmark from '../../common/module/bookmark.js';
 import * as Cache from '../../common/module/cache.js';
 import * as Tree from '../../common/module/tree.js';
+import * as Commands from '../../common/module/commands.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -58,6 +59,7 @@ window.TSTAPI = TSTAPI;
 window.Bookmark = Bookmark;
 window.Cache = Cache;
 window.Tree = Tree;
+window.Commands = Commands;
 
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;

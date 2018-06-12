@@ -76,8 +76,10 @@ async function onShortcutCommand(aCommand) {
       return;
 
     case 'newContainerTab':
-      Commands.showContainerSelector({ inRemote: true });
-      return;
+      return browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
+        windowId: activeTab.apiTab.windowId
+      });
 
     case 'indent':
       Commands.indent(activeTab, { followChildren: true });
@@ -742,6 +744,22 @@ Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
   log('process moved tab');
 
   tryFixupTreeForInsertedTab(aTab, aMoveInfo);
+});
+
+Commands.onMoveUp.addListener(async aTab => {
+  const index = Tabs.getTabIndex(aTab);
+  await tryFixupTreeForInsertedTab(aTab, {
+    toIndex:   index,
+    fromIndex: index + 1,
+  });
+});
+
+Commands.onMoveDown.addListener(async aTab => {
+  const index = Tabs.getTabIndex(aTab);
+  await tryFixupTreeForInsertedTab(aTab, {
+    toIndex:   index,
+    fromIndex: index - 1,
+  });
 });
 
 async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {

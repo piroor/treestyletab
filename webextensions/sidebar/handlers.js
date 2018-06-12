@@ -1567,9 +1567,13 @@ function onMessage(aMessage, aSender, aRespond) {
       updateSpecialEventListenersForAPIListeners();
       break;
 
-    case Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR:
-      Commands.showContainerSelector();
-      break;
+    case Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR: {
+      const anchor = document.querySelector(`
+        :root.contextual-identity-selectable .contextual-identities-selector-anchor,
+        .newtab-button
+      `);
+      gContextualIdentitySelector.ui.open({ anchor });
+    }; break;
 
     case Constants.kCOMMAND_SCROLL_TABBAR:
       if (aMessage.windowId != gTargetWindow)
