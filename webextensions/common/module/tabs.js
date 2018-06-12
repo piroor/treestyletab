@@ -199,6 +199,21 @@ export const onShown            = new EventListenerManager();
 export const onParentTabUpdated = new EventListenerManager();
 export const onTabElementMoved  = new EventListenerManager();
 
+export const onCreating         = new EventListenerManager();
+export const onCreated          = new EventListenerManager();
+export const onRemoving         = new EventListenerManager();
+export const onRemoved          = new EventListenerManager();
+export const onMoving           = new EventListenerManager();
+export const onMoved            = new EventListenerManager();
+export const onActivating       = new EventListenerManager();
+export const onActivated        = new EventListenerManager();
+export const onUpdated          = new EventListenerManager();
+export const onRestoring        = new EventListenerManager();
+export const onRestored         = new EventListenerManager();
+export const onWindowRestoring  = new EventListenerManager();
+export const onAttached         = new EventListenerManager();
+export const onDetached         = new EventListenerManager();
+
 async function waitUntilTabsAreOperated(aIdOrIds, aSlot) {
   if (!Array.isArray(aIdOrIds))
     aIdOrIds = [aIdOrIds];

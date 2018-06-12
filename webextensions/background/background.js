@@ -49,7 +49,7 @@ async function init() {
   migrateLegacyTreeStructure();
   MetricsData.add('migrateLegacyTreeStructure');
 
-  startObserveApiTabs();
+  ApiTabsListener.startListen();
   ContextualIdentities.startObserve();
   browser.runtime.onMessage.addListener(onMessage);
 
@@ -158,7 +158,7 @@ function destroy() {
   browser.runtime.onMessage.removeListener(onMessage);
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
-  endObserveApiTabs();
+  ApiTabsListener.endListen();
   ContextualIdentities.endObserve();
 }
 

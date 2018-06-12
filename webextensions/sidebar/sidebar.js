@@ -86,7 +86,7 @@ async function init() {
         });
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
-      startObserveApiTabs();
+      ApiTabsListener.startListen();
 
       browser.runtime.connect({
         name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}`
@@ -220,7 +220,7 @@ function destroy() {
   if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
     browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
   endListenDragEvents();
-  endObserveApiTabs();
+  ApiTabsListener.endListen();
   ContextualIdentities.endObserve();
   window.removeEventListener('resize', onResize);
 
