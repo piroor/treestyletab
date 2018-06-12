@@ -24,7 +24,7 @@ EventListenerManager.prototype = {
   async dispatch(...aArgs) {
     const results = await Promise.all(this.listeners.map(async aListener => {
       let timer = setTimeout(() => {
-        console.log(`listener does not respond in ${TIMEOUT}ms.\n${new Error().stack}`);
+        console.log(`listener does not respond in ${TIMEOUT}ms.\n${new Error().stack}\n${aListener.toString()}`);
       }, TIMEOUT);
       try {
         return await aListener(...aArgs);
