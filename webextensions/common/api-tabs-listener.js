@@ -520,8 +520,8 @@ async function onMoved(aTabId, aMoveInfo) {
     await previous;
 
   try {
-    let _onTabMoved = Tabs.addMovingTabId(aTabId);
-    let completelyMoved = () => { _onTabMoved(); onCompleted() };
+    const _onTabMoved = Tabs.addMovingTabId(aTabId);
+    const completelyMoved = () => { _onTabMoved(); onCompleted() };
 
     /* When a tab is pinned, tabs.onMoved may be notified before
        tabs.onUpdated(pinned=true) is notified. As the result,
