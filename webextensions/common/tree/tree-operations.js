@@ -1472,7 +1472,7 @@ async function performTabsDragDrop(aParams = {}) {
 
   var newTabs;
   /*
-  var replacedGroupTabs = doAndGetNewTabs(() => {
+  var replacedGroupTabs = Tabs.doAndGetNewTabs(() => {
     newTabs = moveTabsInternal(draggedTabs, {
       duplicate    : aParams.duplicate,
       insertBefore : aParams.insertBefore,

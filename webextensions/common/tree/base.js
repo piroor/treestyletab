@@ -447,7 +447,7 @@ async function openURIsInTabs(aURIs, aOptions = {}) {
   if (!aOptions.windowId && gTargetWindow)
     aOptions.windowId = gTargetWindow;
 
-  return await doAndGetNewTabs(async () => {
+  return await Tabs.doAndGetNewTabs(async () => {
     if (aOptions.inRemote) {
       await browser.runtime.sendMessage(Object.assign({}, aOptions, {
         type:          Constants.kCOMMAND_NEW_TABS,
