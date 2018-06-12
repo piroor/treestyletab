@@ -18,7 +18,7 @@ import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
 
-const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
+export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
 const kFEATURES_VERSION = 3;
 
 export function migrateLegacyConfigs() {

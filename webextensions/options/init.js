@@ -5,8 +5,20 @@
 */
 'use strict';
 
+import {
+  log,
+  configs
+} from '../common/common.js';
+
+import * as Permissions from '../common/permissions.js';
+import * as Migration from '../common/migration.js';
+
+import '../common/l10n.js';
+import Options from './Options.js';
+import ShortcutCustomizeUI from './ShortcutCustomizeUI.js';
+
 log.context = 'Options';
-var options = new Options(configs);
+const options = new Options(configs);
 
 function onConfigChanged(aKey) {
   switch (aKey) {
