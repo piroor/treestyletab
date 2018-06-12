@@ -57,40 +57,47 @@ function isCopyAction(aEvent) {
            (aEvent.dataTransfer && aEvent.dataTransfer.dropEffect == 'copy');
 }
 
+function getElementTarget(aEvent) {
+  const target = aEvent.target;
+  if (target.nodeType == Node.TEXT_NODE)
+    return target.parentNode;
+  return target;
+}
+
 function isEventFiredOnTwisty(aEvent) {
   var tab = getTabFromEvent(aEvent);
   if (!tab || !Tabs.hasChildTabs(tab))
     return false;
 
-  return !!aEvent.target.closest(`.${Constants.kTWISTY}`);
+  return !!getElementTarget(aEvent).closest(`.${Constants.kTWISTY}`);
 }
 
 function isEventFiredOnSoundButton(aEvent) {
-  return !!aEvent.target.closest(`.${Constants.kSOUND_BUTTON}`);
+  return !!getElementTarget(aEvent).closest(`.${Constants.kSOUND_BUTTON}`);
 }
 
 function isEventFiredOnClosebox(aEvent) {
-  return !!aEvent.target.closest(`.${Constants.kCLOSEBOX}`);
+  return !!getElementTarget(aEvent).closest(`.${Constants.kCLOSEBOX}`);
 }
 
 function isEventFiredOnNewTabButton(aEvent) {
-  return !!aEvent.target.closest(`.${Constants.kNEWTAB_BUTTON}`);
+  return !!getElementTarget(aEvent).closest(`.${Constants.kNEWTAB_BUTTON}`);
 }
 
 function isEventFiredOnMenuOrPanel(aEvent) {
-  return !!aEvent.target.closest('ul.menu, ul.panel');
+  return !!getElementTarget(aEvent).closest('ul.menu, ul.panel');
 }
 
 function isEventFiredOnAnchor(aEvent) {
-  return !!aEvent.target.closest(`[data-menu-ui]`);
+  return !!getElementTarget(aEvent).closest(`[data-menu-ui]`);
 }
 
 function isEventFiredOnClickable(aEvent) {
-  return !!aEvent.target.closest(`button, scrollbar, select`);
+  return !!getElementTarget(aEvent).closest(`button, scrollbar, select`);
 }
 
 function isEventFiredOnScrollbar(aEvent) {
-  return !!aEvent.target.closest(`scrollbar, nativescrollbar`);
+  return !!getElementTarget(aEvent).closest(`scrollbar, nativescrollbar`);
 }
 
 
@@ -237,7 +244,7 @@ function onMouseDown(aEvent) {
       log('mouse down on a selector anchor');
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    const selector = document.getElementById(aEvent.target.closest('[data-menu-ui]').dataset.menuUi);
+    const selector = document.getElementById(getElementTarget(aEvent).closest('[data-menu-ui]').dataset.menuUi);
     selector.ui.open({
       anchor: aEvent.target
     });
@@ -1195,9 +1202,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
     let id = aTab.id
     aTab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
       if (aEvent.type == 'mouseover') {
-        let node = aEvent.originalTarget || aEvent.target;
-        if (node.nodeType != Node.ELEMENT_NODE)
-          node = node.parentNode;
+        let node = getElementTarget(aEvent);
         if (node.closest(`#${id}`))
             stillOver = true;
           return;
