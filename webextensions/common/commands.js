@@ -165,6 +165,7 @@ export async function openNewTabAs(aOptions = {}) {
   TabsOpen.openNewTab({
     parent, insertBefore, insertAfter,
     isOrphan,
+    windowId:      currentTab.apiTab.windowId,
     inBackground:  !!aOptions.inBackground,
     cookieStoreId: aOptions.cookieStoreId,
     inRemote:      !!aOptions.inRemote

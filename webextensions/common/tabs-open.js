@@ -90,7 +90,7 @@ export async function openURIInTab(aURI, aOptions = {}) {
 
 export async function openURIsInTabs(aURIs, aOptions = {}) {
   if (!aOptions.windowId)
-    throw new Error('missing loading target window');
+    throw new Error('missing loading target window\n' + new Error().stack);
 
   return await Tabs.doAndGetNewTabs(async () => {
     if (aOptions.inRemote) {
