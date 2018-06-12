@@ -177,6 +177,11 @@ export function updateUniqueId(aTab) {
   return aTab.uniqueId;
 }
 
+export async function getUniqueIds(aApiTabs) {
+  const uniqueIds = await Promise.all(aApiTabs.map(aApiTab => browser.sessions.getTabValue(aApiTab.id, Constants.kPERSISTENT_ID)));
+  return uniqueIds.map(aId => aId && aId.id || '?');
+}
+
 
 //===================================================================
 // Event Handling

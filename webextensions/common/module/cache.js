@@ -20,13 +20,8 @@ export async function getWindowSignature(aWindowIdOrTabs) {
   if (typeof aWindowIdOrTabs == 'number') {
     aWindowIdOrTabs = await browser.tabs.query({ windowId: aWindowIdOrTabs });
   }
-  const uniqueIds = await getUniqueIds(aWindowIdOrTabs);
+  const uniqueIds = await Tabs.getUniqueIds(aWindowIdOrTabs);
   return uniqueIds.join('\n');
-}
-
-async function getUniqueIds(aApiTabs) {
-  const uniqueIds = await Promise.all(aApiTabs.map(aApiTab => browser.sessions.getTabValue(aApiTab.id, Constants.kPERSISTENT_ID)));
-  return uniqueIds.map(aId => aId && aId.id || '?');
 }
 
 export function trimSignature(aSignature, aIgnoreCount) {
