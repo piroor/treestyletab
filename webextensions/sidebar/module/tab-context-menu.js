@@ -400,7 +400,7 @@ async function onCommand(aItem, aEvent) {
       const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: contextWindowId })) === false;
       if (canceled)
         return;
-          browser.tabs.remove(closeAPITabs.map(aAPITab => aAPITab.id));
+      browser.tabs.remove(closeAPITabs.map(aAPITab => aAPITab.id));
     }; break;
     case 'context_closeOtherTabs': {
       let apiTabId = contextTab.id; // cache it for delayed tasks!
@@ -408,8 +408,8 @@ async function onCommand(aItem, aEvent) {
       let closeAPITabs = apiTabs.filter(aAPITab => !aAPITab.pinned && aAPITab.id != apiTabId).map(aAPITab => aAPITab.id);
       const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: contextWindowId })) === false;
       if (canceled)
-            return;
-          browser.tabs.remove(closeAPITabs);
+        return;
+      browser.tabs.remove(closeAPITabs);
     }; break;
     case 'context_undoCloseTab': {
       let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
