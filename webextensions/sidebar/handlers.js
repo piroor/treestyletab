@@ -993,15 +993,15 @@ Tabs.onMoved.addListener(aTab => {
   reserveToUpdateCachedTabbar();
 });
 
-async function onTabLevelChanged(aTab) {
+Tree.onLevelChanged.addListener(async aTab => {
   reserveToUpdateIndent();
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
-}
+});
 
-function onTabDetachedFromWindow(aTab) {
+Tabs.onDetached.addListener(aTab => {
   if (!Tabs.ensureLivingTab(aTab))
     return;
   reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
@@ -1011,19 +1011,19 @@ function onTabDetachedFromWindow(aTab) {
     dontUpdateIndent: true
   });
   reserveToUpdateCachedTabbar();
-}
+});
 
-function onTabSubtreeCollapsedStateChanging(aTab, aInfo = {}) {
+Tree.onSubtreeCollapsedStateChanging.addListener((aTab, aInfo = {}) => {
   updateTabTwisty(aTab);
   updateTabClosebox(aTab);
   reserveToUpdateTabTooltip(aTab);
-}
+});
 
-async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
+Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   var toBeCollapsed = aInfo.collapsed;
 
   if (configs.logOnCollapseExpand)
-    log('onTabCollapsedStateChanging ', dumpTab(aTab), aInfo);
+    log('Tabs.onCollapsedStateChanging ', dumpTab(aTab), aInfo);
   if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
@@ -1121,7 +1121,7 @@ async function onTabCollapsedStateChanging(aTab, aInfo = {}) {
       }
     }, configs.collapseDuration);
   });
-}
+});
 function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
   if (Tabs.isActive(aTab) && !aOptions.collapsed)
     scrollToTab(aTab);
@@ -1137,7 +1137,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-function onTabCollapsedStateChanged(aTab, aInfo = {}) {
+Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
   var toBeCollapsed = aInfo.collapsed;
   if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
@@ -1168,7 +1168,7 @@ function onTabCollapsedStateChanged(aTab, aInfo = {}) {
       anchor:            aInfo.anchor,
       notifyOnOutOfView: true
     });
-}
+});
 
 function isCollapsedStateUpdating(aTab) {
   return !!isSurelyCollapsed.updating[aTab.id];
@@ -1233,7 +1233,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
-async function onTabAttached(aTab, aInfo = {}) {
+Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   if (gInitializing)
     return;
   tabContextMenu.close();
@@ -1258,9 +1258,9 @@ async function onTabAttached(aTab, aInfo = {}) {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
-}
+});
 
-async function onTabDetached(aTab, aDetachInfo = {}) {
+Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   if (gInitializing)
     return;
   tabContextMenu.close();
@@ -1281,7 +1281,7 @@ async function onTabDetached(aTab, aDetachInfo = {}) {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
-}
+});
 
 Tabs.onPinned.addListener(aTab => {
   tabContextMenu.close();

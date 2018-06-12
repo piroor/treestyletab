@@ -198,6 +198,8 @@ export const onHidden           = new EventListenerManager();
 export const onShown            = new EventListenerManager();
 export const onParentTabUpdated = new EventListenerManager();
 export const onTabElementMoved  = new EventListenerManager();
+export const onCollapsedStateChanging = new EventListenerManager();
+export const onCollapsedStateChanged  = new EventListenerManager();
 
 export const onCreating         = new EventListenerManager();
 export const onCreated          = new EventListenerManager();

@@ -5,12 +5,6 @@
 */
 'use strict';
 
-// Defined in a classic script source, and we can read these as global variables. 
-/* global
-  attachTabTo: false,
-  detachTabsFromTree: false,
- */
-
 import {
   log,
   dumpTab
@@ -19,6 +13,7 @@ import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
+import * as Tree from './tree.js';
 
 export function makeGroupTabURI(aOptions = {}) {
   const base = Constants.kGROUP_TAB_URI;
@@ -46,14 +41,14 @@ export async function groupTabs(aTabs, aOptions = {}) {
     inBackground: true
   });
 
-  await detachTabsFromTree(aTabs, {
+  await Tree.detachTabsFromTree(aTabs, {
     broadcast: !!aOptions.broadcast
   });
   await TabsMove.moveTabsAfter(aTabs.slice(1), aTabs[0], {
     broadcast: !!aOptions.broadcast
   });
   for (let tab of rootTabs) {
-    await attachTabTo(tab, groupTab, {
+    await Tree.attachTabTo(tab, groupTab, {
       forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
       dontMove:  true,
       broadcast: !!aOptions.broadcast

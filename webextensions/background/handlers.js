@@ -9,7 +9,7 @@ function onToolbarButtonClick(aTab) {
   if (Permissions.requestPostProcess())
     return;
 
-  if (gSidebarOpenState.has(aTab.windowId))
+  if (Sidebar.isOpen(aTab.windowId))
     browser.sidebarAction.close();
   else
     browser.sidebarAction.open();
@@ -542,7 +542,7 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
 
   const ancestors = Tabs.getAncestorTabs(aTab);
   const closeParentBehavior = getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  if (!gSidebarOpenState.has(aTab.apiTab.windowId) &&
+  if (!Sidebar.isOpen(aTab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(aTab))
     collapseExpandSubtree(aTab, {
@@ -1114,20 +1114,20 @@ Tabs.onLabelUpdated.addListener(aTab => {
   reserveToUpdateRelatedGroupTabs(aTab);
 });
 
-function onTabSubtreeCollapsedStateChanging(aTab) {
+Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
   reserveToCacheTree(aTab);
-}
+});
 
-function onTabCollapsedStateChanged(aTab, aInfo = {}) {
+Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
   if (aInfo.collapsed)
     aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
   else
     aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
-}
+});
 
-async function onTabAttached(aTab, aInfo = {}) {
+Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   var parent = aInfo.parent;
   if (aTab.apiTab.openerTabId != parent.apiTab.id &&
       configs.syncParentTabAndOpenerTab) {
@@ -1245,9 +1245,9 @@ async function onTabAttached(aTab, aInfo = {}) {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToCacheTree(aTab);
-}
+});
 
-async function onTabDetached(aTab, aDetachInfo) {
+Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
   if (aTab.apiTab.openerTabId &&
       configs.syncParentTabAndOpenerTab) {
     aTab.apiTab.openerTabId = aTab.apiTab.id;
@@ -1267,7 +1267,7 @@ async function onTabDetached(aTab, aDetachInfo) {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToCacheTree(aTab);
-}
+});
 
 Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
   if (!aInfo.windowId ||
@@ -1474,11 +1474,11 @@ function onMessage(aMessage, aSender) {
       })();
 
     case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      gSidebarFocusState.set(aMessage.windowId, true);
+      Sidebar.onFocus(aMessage.windowId);
       break;
 
     case Constants.kNOTIFY_SIDEBAR_BLUR:
-      gSidebarFocusState.delete(aMessage.windowId);
+      Sidebar.onBlur(aMessage.windowId);
       break;
 
     case Constants.kNOTIFY_TAB_MOUSEDOWN:

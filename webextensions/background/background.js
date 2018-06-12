@@ -8,8 +8,6 @@
 log.context = 'BG';
 
 var gInitializing           = true;
-var gSidebarOpenState       = new Map();
-var gSidebarFocusState      = new Map();
 var gMaybeTabSwitchingByShortcut = false;
 var gTabSwitchedByShortcut       = false;
 
@@ -27,7 +25,7 @@ async function init() {
   browser.windows.onFocusChanged.addListener(() => {
     gMaybeTabSwitchingByShortcut = false;
   });
-  startWatchSidebarOpenState();
+  Sidebar.startWatchOpenState();
 
   await configs.$loaded;
   MetricsData.add('configs.$loaded');
@@ -251,28 +249,6 @@ async function tryInitGroupTab(aTab) {
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'
   }));
-}
-
-function startWatchSidebarOpenState() {
-  var matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}`);
-  browser.runtime.onConnect.addListener(aPort => {
-    if (!matcher.test(aPort.name))
-      return;
-    const windowId = parseInt(aPort.name.replace(matcher, ''));
-    gSidebarOpenState.set(windowId, true);
-    TSTAPI.sendMessage({
-      type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
-      window: windowId
-    });
-    aPort.onDisconnect.addListener(aMessage => {
-      gSidebarOpenState.delete(windowId);
-      gSidebarFocusState.delete(windowId);
-      TSTAPI.sendMessage({
-        type:   TSTAPI.kNOTIFY_SIDEBAR_HIDE,
-        window: windowId
-      });
-    });
-  });
 }
 
 
@@ -732,8 +708,8 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
   if (!granted ||
       /^(about|chrome|resource):/.test(apiTabs[0].url) ||
       (!aOptions.showInTab &&
-       gSidebarOpenState.get(aOptions.windowId) &&
-       gSidebarFocusState.get(aOptions.windowId)))
+       Sidebar.isOpen(aOptions.windowId) &&
+       Sidebar.hasFocus(aOptions.windowId)))
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       count:    aCount,

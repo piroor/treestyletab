@@ -38,16 +38,12 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-// Defined in a classic script source, and we can read these as global variables. 
-/* global
-  attachTabTo: false,
- */
-
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 import * as TabsMove from './tabs-move.js';
+import * as Tree from './tree.js';
 
 export async function loadURI(aURI, aOptions = {}) {
   if (!aOptions.windowId && !aOptions.tab)
@@ -138,7 +134,7 @@ export async function openURIsInTabs(aURIs, aOptions = {}) {
         if (!aOptions.opener &&
             aOptions.parent &&
             !aOptions.isOrphan)
-          await attachTabTo(tab, aOptions.parent, {
+          await Tree.attachTabTo(tab, aOptions.parent, {
             insertBefore: aOptions.insertBefore,
             insertAfter:  aOptions.insertAfter,
             forceExpand:  params.active,
