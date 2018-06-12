@@ -661,7 +661,7 @@ function cleanupNeedlssGroupTab(aTabs) {
     tabsToBeRemoved.push(tab);
   }
   log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
-  removeTabsInternally(tabsToBeRemoved);
+  TabsInternalOperation.removeTabs(tabsToBeRemoved);
 }
 
 function reserveToUpdateRelatedGroupTabs(aTab) {

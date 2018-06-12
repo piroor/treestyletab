@@ -100,16 +100,16 @@ async function onShortcutCommand(aCommand) {
       return;
 
     case 'focusPrevious':
-      selectTabInternally(Tabs.getPreviousSiblingTab(activeTab), { silently: false });
+      TabsInternalOperation.selectTab(Tabs.getPreviousSiblingTab(activeTab), { silently: false });
       return;
     case 'focusPreviousSilently':
-      selectTabInternally(Tabs.getPreviousSiblingTab(activeTab), { silently: true });
+      TabsInternalOperation.selectTab(Tabs.getPreviousSiblingTab(activeTab), { silently: true });
       return;
     case 'focusNext':
-      selectTabInternally(Tabs.getNextSiblingTab(activeTab), { silently: false });
+      TabsInternalOperation.selectTab(Tabs.getNextSiblingTab(activeTab), { silently: false });
       return;
     case 'focusNextSilently':
-      selectTabInternally(Tabs.getNextSiblingTab(activeTab), { silently: true });
+      TabsInternalOperation.selectTab(Tabs.getNextSiblingTab(activeTab), { silently: true });
       return;
 
     case 'tabbarUp':
@@ -263,7 +263,7 @@ async function handleNewTabFromActiveTab(aTab, aParams = {}) {
     insertBefore: aTab,
     cookieStoreId
   });
-  removeTabInternally(aTab);
+  TabsInternalOperation.removeTab(aTab);
 }
 
 var gGroupingBlockedBy = {};
@@ -686,7 +686,7 @@ async function closeChildTabs(aParent) {
   //markAsClosedSet([aParent].concat(tabs));
   // close bottom to top!
   await Promise.all(tabs.reverse().map(aTab => {
-    return removeTabInternally(aTab);
+    return TabsInternalOperation.removeTab(aTab);
   }));
   //fireTabSubtreeClosedEvent(aParent, tabs);
 }
@@ -977,7 +977,7 @@ function onTabFocusing(aTab, aInfo = {}) { // return true if this focusing is ov
       container.lastFocusedTab = newSelection.id;
       if (gMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
-      selectTabInternally(newSelection, { silently: true });
+      TabsInternalOperation.selectTab(newSelection, { silently: true });
       log('onTabFocusing: discarded? ', dumpTab(aTab), Tabs.isDiscarded(aTab));
       if (Tabs.isDiscarded(aTab))
         aTab.dataset.discardURLAfterCompletelyLoaded = aTab.apiTab.url;
@@ -1470,7 +1470,7 @@ function onMessage(aMessage, aSender) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
-        return removeTabsInternally(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
+        return TabsInternalOperation.removeTabs(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
       })();
 
     case Constants.kNOTIFY_SIDEBAR_FOCUS:
@@ -1519,7 +1519,7 @@ function onMessage(aMessage, aSender) {
 
           // not canceled, then fallback to default "select tab"
           if (aMessage.button == 0)
-            selectTabInternally(tab);
+            TabsInternalOperation.selectTab(tab);
         });
 
         return true;
@@ -1541,7 +1541,7 @@ function onMessage(aMessage, aSender) {
         const tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
-        selectTabInternally(tab, Object.assign({}, aMessage.options, {
+        TabsInternalOperation.selectTab(tab, Object.assign({}, aMessage.options, {
           inRemote: false
         }));
       })();
@@ -1860,7 +1860,7 @@ function onMessageExternal(aMessage, aSender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
         for (let tab of tabs) {
-          selectTabInternally(tab, {
+          TabsInternalOperation.selectTab(tab, {
             silently: aMessage.silently
           });
         }

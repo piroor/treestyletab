@@ -343,59 +343,6 @@ function updateParentTab(aParent) {
 }
 
 
-async function selectTabInternally(aTab, aOptions = {}) {
-  log('selectTabInternally: ', dumpTab(aTab));
-  if (aOptions.inRemote) {
-    await browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
-      windowId: aTab.apiTab.windowId,
-      tab:      aTab.id,
-      options:  aOptions
-    });
-    return;
-  }
-  var container = aTab.parentNode;
-  TabsContainer.incrementCounter(container, 'internalFocusCount');
-  if (aOptions.silently)
-    TabsContainer.incrementCounter(container, 'internalSilentlyFocusCount');
-  return browser.tabs.update(aTab.apiTab.id, { active: true })
-    .catch(e => {
-      TabsContainer.decrementCounter(container, 'internalFocusCount');
-      if (aOptions.silently)
-        TabsContainer.decrementCounter(container, 'internalSilentlyFocusCount');
-      ApiTabs.handleMissingTabError(e);
-    });
-}
-
-function removeTabInternally(aTab, aOptions = {}) {
-  return removeTabsInternally([aTab], aOptions);
-}
-
-function removeTabsInternally(aTabs, aOptions = {}) {
-  aTabs = aTabs.filter(Tabs.ensureLivingTab);
-  if (!aTabs.length)
-    return;
-  log('removeTabsInternally: ', aTabs.map(dumpTab));
-  if (aOptions.inRemote || aOptions.broadcast) {
-    browser.runtime.sendMessage({
-      type:    Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-      tabs:    aTabs.map(aTab => aTab.id),
-      options: Object.assign({}, aOptions, {
-        inRemote:    false,
-        broadcast:   aOptions.inRemote && !aOptions.broadcast,
-        broadcasted: !!aOptions.broadcast
-      })
-    });
-    if (aOptions.inRemote)
-      return;
-  }
-  var container = aTabs[0].parentNode;
-  TabsContainer.incrementCounter(container, 'internalClosingCount', aTabs.length);
-  if (aOptions.broadcasted)
-    return;
-  return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
-}
-
 
 async function bookmarkTabs(aTabs, aOptions = {}) {
   try {

@@ -610,7 +610,7 @@ function collapseExpandTabAndSubtree(aTab, aParams = {}) {
     let newSelection = Tabs.getVisibleAncestorOrSelf(aTab);
     if (configs.logOnCollapseExpand)
       log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
-    selectTabInternally(newSelection, { silently: true });
+    TabsInternalOperation.selectTab(newSelection, { silently: true });
   }
 
   if (!Tabs.isSubtreeCollapsed(aTab)) {
@@ -889,7 +889,7 @@ async function tryMoveFocusFromClosingCurrentTabNow(aTab, aOptions = {}) {
   }
 
   log('focus to: ', dumpTab(nextFocusedTab));
-  await selectTabInternally(nextFocusedTab);
+  await TabsInternalOperation.selectTab(nextFocusedTab);
   return true;
 }
 
@@ -1315,7 +1315,7 @@ async function openNewWindowFromTabs(aTabs, aOptions = {}) {
           removeTabs.push(Tabs.getTabById(apiTab));
       }
       log('removing tabs: ', removeTabs.map(dumpTab));
-      removeTabsInternally(removeTabs);
+      TabsInternalOperation.removeTabs(removeTabs);
       UserOperationBlocker.unblockIn(newWindow.id);
     });
 

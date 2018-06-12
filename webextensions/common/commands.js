@@ -30,7 +30,7 @@ const Commands = {
           return;
         tabs.reverse(); // close bottom to top!
         for (let tab of tabs) {
-          removeTabInternally(tab);
+          TabsInternalOperation.removeTab(tab);
         }
       });
   },
@@ -43,7 +43,7 @@ const Commands = {
           return;
         tabs.reverse(); // close bottom to top!
         for (let tab of tabs) {
-          removeTabInternally(tab);
+          TabsInternalOperation.removeTab(tab);
         }
       });
   },
@@ -58,7 +58,7 @@ const Commands = {
         if (!aConfirmed)
           return;
         for (let tab of closeTabs) {
-          removeTabInternally(tab);
+          TabsInternalOperation.removeTab(tab);
         }
       });
   },

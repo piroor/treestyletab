@@ -435,7 +435,7 @@ async function onMouseUp(aEvent) {
       confirmToCloseTabs(getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
           if (aConfirmed)
-            removeTabInternally(tab, { inRemote: true });
+            TabsInternalOperation.removeTab(tab, { inRemote: true });
         });
     }
     return;
@@ -543,7 +543,7 @@ function onClick(aEvent) {
     confirmToCloseTabs(getClosingTabsFromParent(tab).length)
       .then(aConfirmed => {
         if (aConfirmed)
-          removeTabInternally(tab, { inRemote: true });
+          TabsInternalOperation.removeTab(tab, { inRemote: true });
       });
     return;
   }
@@ -1442,7 +1442,7 @@ function onMessage(aMessage, aSender, aRespond) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
-        return removeTabsInternally(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
+        return TabsInternalOperation.removeTabs(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {
