@@ -494,7 +494,7 @@ async function rebuildAll(aCache) {
     TabIdFixer.fixTab(apiTab);
     let newTab = Tabs.buildTab(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
-    updateTab(newTab, apiTab, { forceApply: true });
+    TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
   }
   Tabs.allTabsContainer.appendChild(container);
   MetricsData.add('rebuildAll (from scratch)');

@@ -164,7 +164,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   // because updating operation can refer other tabs.
   if (aOptions.dirty) {
     for (let tab of aTabs) {
-      updateTab(tab, tab.apiTab, { forceApply: true });
+      TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
     }
   }
   else {

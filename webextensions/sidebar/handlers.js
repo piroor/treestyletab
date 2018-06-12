@@ -1331,7 +1331,7 @@ Tabs.onGroupTabDetected.addListener(aTab => {
            browser.i18n.getMessage('groupTab_label_default');
   aTab.apiTab.title = title;
   wait(0).then(() => {
-    updateTab(aTab, { title }, { tab: aTab.apiTab });
+    TabsUpdate.updateTab(aTab, { title }, { tab: aTab.apiTab });
   });
 });
 
@@ -1535,7 +1535,7 @@ function onMessage(aMessage, aSender, aRespond) {
             modified.indexOf(Constants.kTAB_STATE_MUTED) > -1) {
             updateTabSoundButtonTooltip(tab);
             if (aMessage.bubbles)
-              updateParentTab(Tabs.getParentTab(tab));
+              TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
           }
         }
       })();
@@ -1649,7 +1649,7 @@ function onConfigChange(aChangedKey) {
   switch (aChangedKey) {
     case 'debug': {
       for (let tab of Tabs.getAllTabs()) {
-        updateTab(tab, tab.apiTab, { forceApply: true });
+        TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
       }
       if (configs.debug)
         rootClasses.add('debug');

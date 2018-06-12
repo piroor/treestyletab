@@ -220,10 +220,10 @@ async function onApiTabUpdated(aTabId, aChangeInfo, aTab) {
       updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = aTab.openerTabId;
     }
 
-    updateTab(updatedTab, aChangeInfo, {
+    TabsUpdate.updateTab(updatedTab, aChangeInfo, {
       tab: aTab
     });
-    updateParentTab(Tabs.getParentTab(updatedTab));
+    TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab));
 
     window.onTabUpdated && await onTabUpdated(updatedTab, aChangeInfo);
     onCompleted();
@@ -273,7 +273,7 @@ async function onNewTabTracked(aTab) {
       return;
     }
 
-    updateTab(newTab, aTab, {
+    TabsUpdate.updateTab(newTab, aTab, {
       tab:        aTab,
       forceApply: true
     });

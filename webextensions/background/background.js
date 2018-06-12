@@ -192,7 +192,7 @@ async function rebuildAll() {
       for (let apiTab of aWindow.tabs) {
         let newTab = Tabs.buildTab(apiTab, { existing: true });
         container.appendChild(newTab);
-        updateTab(newTab, apiTab, { forceApply: true });
+        TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
         tryStartHandleAccelKeyOnTab(newTab);
       }
       Tabs.allTabsContainer.appendChild(container);
