@@ -458,13 +458,13 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
         windowId: gTargetWindow,
         tab:      dragOverTab.id
       });
-      await loadURI(uris.shift(), {
+      await TabsOpen.loadURI(uris.shift(), {
         tab:      dragOverTab,
         inRemote: true
       });
     }
   }
-  await openURIsInTabs(uris, {
+  await TabsOpen.openURIsInTabs(uris, {
     parent:       aDropActionInfo.parent,
     insertBefore: aDropActionInfo.insertBefore,
     insertAfter:  aDropActionInfo.insertAfter,
@@ -524,7 +524,7 @@ function retrieveURIsFromData(aData, aType) {
         }
         // When a blank folder is dropped, just open a dummy tab with the folder name.
         if (children && children.length == 0) {
-          const uri = makeGroupTabURI({ title: item.title });
+          const uri = TabsOpen.makeGroupTabURI({ title: item.title });
           return [uri];
         }
       }

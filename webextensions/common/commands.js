@@ -149,7 +149,7 @@ const Commands = {
         !aOptions.cookieStoreId)
       aOptions.cookieStoreId = parent.apiTab.cookieStoreId;
 
-    openNewTab({
+    TabsOpen.openNewTab({
       parent, insertBefore, insertAfter,
       isOrphan,
       inBackground:  !!aOptions.inBackground,

@@ -258,7 +258,7 @@ async function handleNewTabFromActiveTab(aTab, aParams = {}) {
     return;
   const cookieStoreId = activeTab.apiTab.cookieStoreId;
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
-  await openNewTab({
+  await TabsOpen.openNewTab({
     parent,
     insertBefore: aTab,
     cookieStoreId
@@ -424,12 +424,12 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     log(`trying to group children of ${dumpTab(opener)}: `, children.map(dumpTab));
     let parent = Tabs.getGroupTabForOpener(opener);
     if (!parent) {
-      let uri = makeGroupTabURI({
+      let uri = TabsOpen.makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title),
         temporary:   true,
         openerTabId: opener.getAttribute(Constants.kPERSISTENT_ID)
       });
-      parent = await openURIInTab(uri, {
+      parent = await TabsOpen.openURIInTab(uri, {
         windowId:     opener.apiTab.windowId,
         insertBefore: children[0],
         cookieStoreId: opener.apiTab.cookieStoreId,
@@ -573,12 +573,12 @@ async function onTabClosed(aTab, aCloseInfo = {}) {
       Tabs.getChildTabs(aTab).length > 1) {
     log('trying to replace the closing tab with a new group tab');
     let firstChild = Tabs.getFirstChildTab(aTab);
-    let uri = makeGroupTabURI({
+    let uri = TabsOpen.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
       temporary: true
     });
     TabsContainer.incrementCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');
-    let groupTab = await openURIInTab(uri, {
+    let groupTab = await TabsOpen.openURIInTab(uri, {
       windowId:     aTab.apiTab.windowId,
       insertBefore: aTab, // not firstChild, because the "aTab" is disappeared from tree.
       inBackground: true
@@ -1422,7 +1422,7 @@ function onMessage(aMessage, aSender) {
       })();
 
     case Constants.kCOMMAND_LOAD_URI:
-      return loadURI(aMessage.uri, Object.assign({}, aMessage.options, {
+      return TabsOpen.loadURI(aMessage.uri, Object.assign({}, aMessage.options, {
         tab:      Tabs.getTabById(aMessage.options.tab),
         inRemote: false
       }));
@@ -1435,7 +1435,7 @@ function onMessage(aMessage, aSender) {
           aMessage.insertAfter
         ]);
         log('new tabs requested: ', aMessage);
-        return await openURIsInTabs(aMessage.uris, Object.assign({}, aMessage, {
+        return await TabsOpen.openURIsInTabs(aMessage.uris, Object.assign({}, aMessage, {
           parent:       Tabs.getTabById(aMessage.parent),
           insertBefore: Tabs.getTabById(aMessage.insertBefore),
           insertAfter:  Tabs.getTabById(aMessage.insertAfter)

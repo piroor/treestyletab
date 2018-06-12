@@ -1330,11 +1330,11 @@ async function groupTabs(aTabs, aOptions = {}) {
 
   log('groupTabs: ', aTabs.map(dumpTab));
 
-  var uri = makeGroupTabURI({
+  var uri = TabsOpen.makeGroupTabURI({
     title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].apiTab.title),
     temporary: true
   });
-  var groupTab = await openURIInTab(uri, {
+  var groupTab = await TabsOpen.openURIInTab(uri, {
     windowId:     rootTabs[0].apiTab.windowId,
     parent:       Tabs.getParentTab(rootTabs[0]),
     insertBefore: rootTabs[0],

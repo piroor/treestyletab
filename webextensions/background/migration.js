@@ -213,7 +213,7 @@ async function migrateLegacyTreeStructure() {
           return `about:blank?${aURI}`;
         return aURI;
       });
-      var tabs = await openURIsInTabs(uris, {
+      var tabs = await TabsOpen.openURIsInTabs(uris, {
         windowId: apiWindow.id
       });
       applyTreeStructureToTabs(tabs, aStructure);
