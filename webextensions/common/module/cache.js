@@ -58,7 +58,7 @@ export function restoreTabsFromCacheInternal(aParams) {
   log(`restoreTabsFromCacheInternal: restore tabs for ${aParams.windowId} from cache`);
   const offset    = aParams.offset || 0;
   const apiTabs   = aParams.tabs.slice(offset);
-  const container = Tabs.getTabsContainer(aParams.windowId);
+  let container = Tabs.getTabsContainer(aParams.windowId);
   let tabElements;
   if (offset > 0) {
     if (!container ||
