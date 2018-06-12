@@ -43,8 +43,6 @@ var gRestoringTree   = false;
 var gNeedRestoreTree = false;
 var gScrollLockedBy  = {};
 
-var gIsMac = /^Mac/i.test(navigator.platform);
-
 function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if ('url' in aNewState) {
     aTab.setAttribute(Constants.kCURRENT_URI, aNewState.url);

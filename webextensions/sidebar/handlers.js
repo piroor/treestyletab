@@ -47,7 +47,7 @@ function isAccelAction(aEvent) {
 }
 
 function isAccelKeyPressed(aEvent) {
-  return gIsMac ?
+  return /^Mac/i.test(navigator.platform) ?
     (aEvent.metaKey || aEvent.key == 'Meta') :
     (aEvent.ctrlKey || aEvent.key == 'Control') ;
 }
