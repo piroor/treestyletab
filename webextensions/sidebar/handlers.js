@@ -965,9 +965,10 @@ Tabs.onRemoved.addListener(async aTab => {
 
 Tabs.onMoving.addListener(async aTab => {
   tabContextMenu.close();
-  if (configs.animation &&
-      !Tabs.isPinned(aTab) &&
-      !Tabs.isOpening(aTab)) {
+  if (!configs.animation ||
+      Tabs.isPinned(aTab) ||
+      Tabs.isOpening(aTab))
+    return;
     aTab.classList.add(Constants.kTAB_STATE_MOVING);
     await nextFrame();
     if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
@@ -987,7 +988,6 @@ Tabs.onMoving.addListener(async aTab => {
       });
     await wait(configs.collapseDuration);
     aTab.classList.remove(Constants.kTAB_STATE_MOVING);
-  }
 });
 
 Tabs.onMoved.addListener(aTab => {
