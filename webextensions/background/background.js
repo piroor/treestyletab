@@ -52,7 +52,7 @@ async function init() {
   ContextualIdentities.startObserve();
   browser.runtime.onMessage.addListener(onMessage);
 
-  tabContextMenu.init();
+  TabContextMenu.init();
 
   ContextMenu.refreshItems();
   configs.$addObserver(aKey => {

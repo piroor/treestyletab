@@ -27,6 +27,7 @@ import * as Bookmark from '../../common/bookmark.js';
 import * as Cache from '../../common/cache.js';
 import * as Tree from '../../common/tree.js';
 import * as Commands from '../../common/commands.js';
+import * as TabContextMenu from './tab-context-menu.js';
 
 import TabIdFixer from '../../common/TabIdFixer.js';
 import TabFavIconHelper from '../../common/TabFavIconHelper.js';
@@ -48,6 +49,7 @@ window.Permissions = Permissions;
 window.ContextualIdentities = ContextualIdentities;
 window.MetricsData = MetricsData;
 window.ContextMenu = ContextMenu;
+window.TabContextMenu = TabContextMenu;
 window.Migration = Migration;
 
 window.Tabs = Tabs;

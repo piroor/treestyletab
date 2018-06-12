@@ -12,78 +12,85 @@
            https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
 */
 
-var tabContextMenu = {
-  init() {
-    this.onMessage         = this.onMessage.bind(this);
-    this.onExternalMessage = this.onExternalMessage.bind(this);
+import {
+  log,
+  configs
+} from '../../common/common.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import EventListenerManager from '../../common/EventListenerManager.js';
 
-    browser.runtime.onMessage.addListener(this.onMessage);
-    browser.runtime.onMessageExternal.addListener(this.onExternalMessage);
+export const onTSTItemClick = new EventListenerManager();
+
+  export function init() {
+    browser.runtime.onMessage.addListener(onMessage);
+    browser.runtime.onMessageExternal.addListener(onExternalMessage);
 
     window.addEventListener('unload', () => {
-      browser.runtime.onMessage.removeListener(this.onMessage);
-      browser.runtime.onMessageExternal.removeListener(this.onExternalMessage);
+      browser.runtime.onMessage.removeListener(onMessage);
+      browser.runtime.onMessageExternal.removeListener(onExternalMessage);
     }, { once: true });
-  },
+  }
 
-  items: {},
+  const gItems = {};
 
-  getItemsFor(aAddonId) {
+  function getItemsFor(aAddonId) {
     let items;
-    if (aAddonId in this.items) {
-      items = this.items[aAddonId] || [];
+    if (aAddonId in gItems) {
+      items = gItems[aAddonId] || [];
     }
     else {
       items = [];
-      this.items[aAddonId] = items;
+      gItems[aAddonId] = items;
     }
     return items;
-  },
+  }
 
-  notifyUpdated: async function() {
+  async function notifyUpdated() {
     await browser.runtime.sendMessage({
       type:  TSTAPI.kCONTEXT_MENU_UPDATED,
-      items: this.items
+      items: gItems
     });
-  },
+  }
 
-  reserveNotifyUpdated() {
-    return new Promise((aResolve, aReject) => {
-      this.notifyUpdatedHandlers.push(aResolve);
-      if (this.reservedNotifyUpdate)
-        clearTimeout(this.reservedNotifyUpdate);
-      this.reservedNotifyUpdate = setTimeout(async () => {
-        delete this.reservedNotifyUpdate;
-        await this.notifyUpdated();
-        var handlers = this.notifyUpdatedHandlers;
-        this.notifyUpdatedHandlers = [];
+  let gReservedNotifyUpdate;
+  let gNotifyUpdatedHandlers = [];
+
+  function reserveNotifyUpdated() {
+    return new Promise((aResolve, _aReject) => {
+      gNotifyUpdatedHandlers.push(aResolve);
+      if (gReservedNotifyUpdate)
+        clearTimeout(gReservedNotifyUpdate);
+      gReservedNotifyUpdate = setTimeout(async () => {
+        gReservedNotifyUpdate = undefined;
+        await notifyUpdated();
+        const handlers = gNotifyUpdatedHandlers;
+        gNotifyUpdatedHandlers = [];
         for (let handler of handlers) {
           handler();
         }
       }, 100);
     });
-  },
-  notifyUpdatedHandlers: [],
+  }
 
-  onMessage(aMessage, aSender) {
+  function onMessage(aMessage, _aSender) {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: internally called:', aMessage);
     switch (aMessage.type) {
       case TSTAPI.kCONTEXT_MENU_GET_ITEMS:
-        return Promise.resolve(this.items);
+        return Promise.resolve(gItems);
 
       case TSTAPI.kCONTEXT_MENU_CLICK:
-        ContextMenu.onClick(aMessage.info, aMessage.tab);
+        onTSTItemClick.dispatch(aMessage.info, aMessage.tab);
         return;
     }
-  },
+  }
 
-  onExternalMessage(aMessage, aSender) {
+  export function onExternalMessage(aMessage, aSender) {
     if (configs.logOnFakeContextMenu)
       log('fake-context-menu: API called:', aMessage, aSender);
     switch (aMessage.type) {
       case TSTAPI.kCONTEXT_MENU_CREATE: {
-        let items  = this.getItemsFor(aSender.id);
+        let items  = getItemsFor(aSender.id);
         let params = aMessage.params;
         if (Array.isArray(params))
           params = params[0];
@@ -100,12 +107,12 @@ var tabContextMenu = {
         }
         if (shouldAdd)
           items.push(params);
-        this.items[aSender.id] = items;
-        return this.reserveNotifyUpdated();
+        gItems[aSender.id] = items;
+        return reserveNotifyUpdated();
       }; break;
 
       case TSTAPI.kCONTEXT_MENU_UPDATE: {
-        let items = this.getItemsFor(aSender.id);
+        let items = getItemsFor(aSender.id);
         for (let i = 0, maxi = items.length; i < maxi; i++) {
           let item = items[i];
           if (item.id != aMessage.params[0])
@@ -113,25 +120,24 @@ var tabContextMenu = {
           items.splice(i, 1, Object.assign({}, item, aMessage.params[1]));
           break;
         }
-        this.items[aSender.id] = items;
-        return this.reserveNotifyUpdated();
+        gItems[aSender.id] = items;
+        return reserveNotifyUpdated();
       }; break;
 
       case TSTAPI.kCONTEXT_MENU_REMOVE: {
-        let items = this.getItemsFor(aSender.id);
+        let items = getItemsFor(aSender.id);
         let id    = aMessage.params;
         if (Array.isArray(id))
           id = id[0];
         items = items.filter(aItem => aItem.id != id);
-        this.items[aSender.id] = items;
-        return this.reserveNotifyUpdated();
+        gItems[aSender.id] = items;
+        return reserveNotifyUpdated();
       }; break;
 
       case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
       case TSTAPI.kUNREGISTER_SELF: {
-        delete this.items[aSender.id];
-        return this.reserveNotifyUpdated();
+        delete gItems[aSender.id];
+        return reserveNotifyUpdated();
       }; break;
     }
   }
-};

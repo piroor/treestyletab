@@ -5,21 +5,17 @@
 */
 'use strict';
 
-// Defined in a classic script source, and we can read these as global variables. 
-/* global
-  tabContextMenu: false,
-  Commands: false,
- */
-
 import {
   log,
   configs
 } from '../../common/common.js';
 
 import * as Tabs from '../../common/tabs.js';
+import * as Commands from '../../common/commands.js';
 import * as TSTAPI from '../../common/tst-api.js';
+import * as TabContextMenu from './tab-context-menu.js';
 
-var gContextMenuItems = `
+const gContextMenuItems = `
   reloadTree
   reloadDescendants
   -----------------
@@ -35,7 +31,7 @@ var gContextMenuItems = `
 
 export async function refreshItems() {
   browser.contextMenus.removeAll();
-  tabContextMenu.onExternalMessage({
+  TabContextMenu.onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
 
@@ -63,7 +59,7 @@ export async function refreshItems() {
       title: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
       contexts: ['tab']
     });
-    tabContextMenu.onExternalMessage({
+    TabContextMenu.onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: {
         id, type, title,
@@ -76,7 +72,7 @@ export async function refreshItems() {
 export const onClick = (aInfo, aAPITab) => {
   log('context menu item clicked: ', aInfo, aAPITab);
 
-  var contextTab = Tabs.getTabById(aAPITab);
+  const contextTab = Tabs.getTabById(aAPITab);
 
   switch (aInfo.menuItemId) {
     case 'reloadTree':
@@ -112,3 +108,4 @@ export const onClick = (aInfo, aAPITab) => {
   }
 };
 browser.contextMenus.onClicked.addListener(onClick);
+TabContextMenu.onTSTItemClick.addListener(onClick);
