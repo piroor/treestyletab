@@ -10,6 +10,6 @@
 
 module.exports = {
   'extends': [
-    '../../tools/eslint/for-module.js',
+    '../tools/eslint/for-module.js',
   ],
 };

@@ -17,14 +17,14 @@ import {
   wait,
   notify,
   configs
-} from '../../common/common.js';
-import * as Constants from '../../common/constants.js';
-import * as Tabs from '../../common/tabs.js';
-import * as Tree from '../../common/tree.js';
-import * as Bookmark from '../../common/bookmark.js';
-import * as TSTAPI from '../../common/tst-api.js';
-import EventListenerManager from '../../common/EventListenerManager.js';
-import MenuUI from '../../common/MenuUI.js';
+} from '../common/common.js';
+import * as Constants from '../common/constants.js';
+import * as Tabs from '../common/tabs.js';
+import * as Tree from '../common/tree.js';
+import * as Bookmark from '../common/bookmark.js';
+import * as TSTAPI from '../common/tst-api.js';
+import EventListenerManager from '../common/EventListenerManager.js';
+import MenuUI from '../common/MenuUI.js';
 
 export const onTabsClosing = new EventListenerManager();
 

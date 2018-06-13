@@ -7,10 +7,10 @@
 
 import {
   configs
-} from '../../common/common.js';
+} from '../common/common.js';
 
-import * as Constants from '../../common/constants.js';
-import * as Tabs from '../../common/tabs.js';
+import * as Constants from '../common/constants.js';
+import * as Tabs from '../common/tabs.js';
 
 let gIndentDefinition;
 let gLastMaxLevel  = -1;

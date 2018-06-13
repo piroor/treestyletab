@@ -9,21 +9,21 @@ import {
   log,
   nextFrame,
   configs
-} from '../../common/common.js';
-import * as Constants from '../../common/constants.js';
-import * as ApiTabsListener from '../../common/api-tabs-listener.js';
-import * as Tabs from '../../common/tabs.js';
-import * as TabsUpdate from '../../common/tabs-update.js';
-import * as TabsContainer from '../../common/tabs-container.js';
-import * as Tree from '../../common/tree.js';
-import * as TSTAPI from '../../common/tst-api.js';
-import * as ContextualIdentities from '../../common/contextual-identities.js';
-import * as Commands from '../../common/commands.js';
-import * as UserOperationBlocker from '../../common/user-operation-blocker.js';
-import * as MetricsData from '../../common/metrics-data.js';
-import RichConfirm from '../../common/RichConfirm.js';
-import TabIdFixer from '../../common/TabIdFixer.js';
-import EventListenerManager from '../../common/EventListenerManager.js';
+} from '../common/common.js';
+import * as Constants from '../common/constants.js';
+import * as ApiTabsListener from '../common/api-tabs-listener.js';
+import * as Tabs from '../common/tabs.js';
+import * as TabsUpdate from '../common/tabs-update.js';
+import * as TabsContainer from '../common/tabs-container.js';
+import * as Tree from '../common/tree.js';
+import * as TSTAPI from '../common/tst-api.js';
+import * as ContextualIdentities from '../common/contextual-identities.js';
+import * as Commands from '../common/commands.js';
+import * as UserOperationBlocker from '../common/user-operation-blocker.js';
+import * as MetricsData from '../common/metrics-data.js';
+import RichConfirm from '../common/RichConfirm.js';
+import TabIdFixer from '../common/TabIdFixer.js';
+import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';

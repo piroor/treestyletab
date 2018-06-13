@@ -40,17 +40,17 @@ import {
   log,
   wait,
   configs
-} from '../../common/common.js';
-import * as Constants from '../../common/constants.js';
-import * as Tabs from '../../common/tabs.js';
-import * as TabsOpen from '../../common/tabs-open.js';
-import * as Tree from '../../common/tree.js';
-import * as TSTAPI from '../../common/tst-api.js';
+} from '../common/common.js';
+import * as Constants from '../common/constants.js';
+import * as Tabs from '../common/tabs.js';
+import * as TabsOpen from '../common/tabs-open.js';
+import * as Tree from '../common/tree.js';
+import * as TSTAPI from '../common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 
-import RichConfirm from '../../common/RichConfirm.js';
+import RichConfirm from '../common/RichConfirm.js';
 
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';

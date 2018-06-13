@@ -5,7 +5,7 @@
 */
 'use strict';
 
-import * as Constants from '../../common/constants.js';
+import * as Constants from '../common/constants.js';
 
 export function getTabTwisty(aTab) {
   return aTab.querySelector(`.${Constants.kTWISTY}`);

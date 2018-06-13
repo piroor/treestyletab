@@ -5,15 +5,15 @@
 */
 import {
   log
-} from '../../common/common.js';
+} from '../common/common.js';
 
-import * as MetricsData from '../../common/metrics-data.js';
+import * as MetricsData from '../common/metrics-data.js';
 
 import * as Sidebar from './sidebar.js';
 import './listener.js';
 
 import './tab-context-menu.js';
-import '../../common/TabIdFixer.js';
+import '../common/TabIdFixer.js';
 
 log.context = 'Sidebar-?';
 

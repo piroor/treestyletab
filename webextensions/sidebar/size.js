@@ -8,7 +8,7 @@
 import {
   log,
   configs
-} from '../../common/common.js';
+} from '../common/common.js';
 
 let gTabHeight          = 0;
 let gFavIconSize        = 0;
