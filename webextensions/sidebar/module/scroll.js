@@ -193,10 +193,6 @@ function stopSmoothScroll() {
   smoothScrollTo.stopped = true;
 }
 
-function isSmoothScrolling() {
-  return !smoothScrollTo.stopped;
-}
-
 /* applications */
 
 export function scrollToNewTab(aTab, aOptions = {}) {
@@ -309,6 +305,7 @@ function getOffsetForAnimatingTab(aTab) {
   return numExpandingTabs * Size.getTabHeight();
 }
 
+/*
 function scrollToTabSubtree(aTab) {
   return scrollToTab(Tabs.getLastDescendantTab(aTab), {
     anchor:            aTab,
@@ -322,6 +319,7 @@ function scrollToTabs(aTabs) {
     notifyOnOutOfView: true
   });
 }
+*/
 
 export function autoScrollOnMouseEvent(aEvent) {
   if (!gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
