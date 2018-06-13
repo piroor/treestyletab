@@ -12,79 +12,7 @@
 import * as Constants from './constants.js';
 import Configs from './Configs.js';
 
-let configs;
-
-export function log(aMessage, ...aArgs)
-{
-  const useConsole = configs && configs.debug;
-  const logging    = useConsole || log.forceStore;
-  if (!logging)
-    return;
-
-  const nest = (new Error()).stack.split('\n').length;
-  let indent = '';
-  for (let i = 0; i < nest; i++) {
-    indent += ' ';
-  }
-  const line = `tst<${log.context}>: ${indent}${aMessage}`;
-  if (useConsole)
-    console.log(line, ...aArgs);
-
-  log.logs.push(`${line} ${aArgs.map(aArg => uneval(aArg)).join(', ')}`);
-  log.logs = log.logs.slice(-log.max);
-}
-log.context = '?';
-log.max  = 1000;
-log.logs = [];
-log.forceStore = true;
-
-export function dumpTab(aTab) {
-  if (!configs || !configs.debug)
-    return '';
-  if (!aTab || !aTab.apiTab)
-    return '<NULL>';
-  return `#${aTab.id}`;
-}
-
-export async function wait(aTask = 0, aTimeout = 0) {
-  if (typeof aTask != 'function') {
-    aTimeout = aTask;
-    aTask    = null;
-  }
-  return new Promise((aResolve, _aReject) => {
-    setTimeout(async () => {
-      if (aTask)
-        await aTask();
-      aResolve();
-    }, aTimeout);
-  });
-}
-
-export function nextFrame() {
-  return new Promise((aResolve, _aReject) => {
-    window.requestAnimationFrame(aResolve);
-  });
-}
-
-export async function notify(aParams = {}) {
-  var id = await browser.notifications.create({
-    type:    'basic',
-    iconUrl: aParams.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
-    title:   aParams.title,
-    message: aParams.message
-  });
-
-  var timeout = aParams.timeout;
-  if (typeof timeout != 'number')
-    timeout = configs.notificationTimeout;
-  if (timeout >= 0)
-    await wait(timeout);
-
-  await browser.notifications.clear(id);
-}
-
-
-configs = new Configs({
+export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],
 
   // appearance
@@ -292,4 +220,72 @@ configs.$loaded.then(() => {
     log.logs = [];
 });
 
-export { configs };
+
+export function log(aMessage, ...aArgs)
+{
+  const useConsole = configs && configs.debug;
+  const logging    = useConsole || log.forceStore;
+  if (!logging)
+    return;
+
+  const nest = (new Error()).stack.split('\n').length;
+  let indent = '';
+  for (let i = 0; i < nest; i++) {
+    indent += ' ';
+  }
+  const line = `tst<${log.context}>: ${indent}${aMessage}`;
+  if (useConsole)
+    console.log(line, ...aArgs);
+
+  log.logs.push(`${line} ${aArgs.map(aArg => uneval(aArg)).join(', ')}`);
+  log.logs = log.logs.slice(-log.max);
+}
+log.context = '?';
+log.max  = 1000;
+log.logs = [];
+log.forceStore = true;
+
+export function dumpTab(aTab) {
+  if (!configs || !configs.debug)
+    return '';
+  if (!aTab || !aTab.apiTab)
+    return '<NULL>';
+  return `#${aTab.id}`;
+}
+
+export async function wait(aTask = 0, aTimeout = 0) {
+  if (typeof aTask != 'function') {
+    aTimeout = aTask;
+    aTask    = null;
+  }
+  return new Promise((aResolve, _aReject) => {
+    setTimeout(async () => {
+      if (aTask)
+        await aTask();
+      aResolve();
+    }, aTimeout);
+  });
+}
+
+export function nextFrame() {
+  return new Promise((aResolve, _aReject) => {
+    window.requestAnimationFrame(aResolve);
+  });
+}
+
+export async function notify(aParams = {}) {
+  var id = await browser.notifications.create({
+    type:    'basic',
+    iconUrl: aParams.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
+    title:   aParams.title,
+    message: aParams.message
+  });
+
+  var timeout = aParams.timeout;
+  if (typeof timeout != 'number')
+    timeout = configs.notificationTimeout;
+  if (timeout >= 0)
+    await wait(timeout);
+
+  await browser.notifications.clear(id);
+}
