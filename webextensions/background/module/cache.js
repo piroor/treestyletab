@@ -6,17 +6,21 @@
 'use strict';
 
 import {
+  log,
+  wait,
   configs
 } from '../../common/common.js';
 
 import * as Constants from '../../common/constants.js';
 import * as Tabs from '../../common/tabs.js';
+import * as Tree from '../../common/tree.js';
 import * as MetricsData from '../../common/metrics-data.js';
 
 let gActivated = false;
 
 export function activate() {
   gActivated = true;
+  configs.$addObserver(onConfigChange);
 }
 
 export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
@@ -225,4 +229,112 @@ async function cacheTree(aWindowId) {
     pinnedTabsCount: Tabs.getPinnedTabs(container).length,
     signature
   });
+}
+
+
+// update cache on events
+
+Tabs.onCreated.addListener(aTab => {
+  reserveToCacheTree(aTab);
+});
+
+// Tree restoration for "Restore Previous Session"
+Tabs.onWindowRestoring.addListener(async aWindowId => {
+  if (!configs.useCachedTree)
+    return;
+
+  log('Tabs.onWindowRestoring ', aWindowId);
+  const container = Tabs.getTabsContainer(aWindowId);
+  const restoredCount = await container.allTabsRestored;
+  if (restoredCount == 1) {
+    log('Tabs.onWindowRestoring: single tab restored');
+    return;
+  }
+
+  log('Tabs.onWindowRestoring: continue ', aWindowId);
+  MetricsData.add('Tabs.onWindowRestoring restore start');
+
+  const apiTabs = await browser.tabs.query({ windowId: aWindowId });
+  try {
+    await restoreWindowFromEffectiveWindowCache(aWindowId, {
+      ignorePinnedTabs: true,
+      owner: apiTabs[apiTabs.length - 1],
+      tabs:  apiTabs
+    });
+    MetricsData.add('Tabs.onWindowRestoring restore end');
+  }
+  catch(e) {
+    log('Tabs.onWindowRestoring: FATAL ERROR while restoring tree from cache', String(e), e.stack);
+  }
+});
+
+Tabs.onRemoved.addListener(async aTab => {
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+  reserveToCacheTree(aTab);
+});
+
+Tabs.onMoved.addListener(async aTab => {
+  reserveToCacheTree(aTab);
+});
+
+Tabs.onUpdated.addListener(aTab => {
+  markWindowCacheDirtyFromTab(aTab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+});
+
+Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
+  reserveToCacheTree(aTab);
+});
+
+Tree.onAttached.addListener(async aTab => {
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+  reserveToCacheTree(aTab);
+});
+
+Tree.onDetached.addListener(async aTab => {
+  await wait(0);
+  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+  reserveToCacheTree(aTab);
+});
+
+Tabs.onPinned.addListener(aTab => {
+  reserveToCacheTree(aTab);
+});
+
+Tabs.onUnpinned.addListener(aTab => {
+  reserveToCacheTree(aTab);
+});
+
+Tabs.onShown.addListener(aTab => {
+  reserveToCacheTree(aTab);
+});
+
+Tabs.onHidden.addListener(aTab => {
+  reserveToCacheTree(aTab);
+});
+
+function onConfigChange(aKey) {
+  switch (aKey) {
+    case 'useCachedTree':
+      browser.windows.getAll({
+        populate:    true,
+        windowTypes: ['normal']
+      }).then(aWindows => {
+        for (let window of aWindows) {
+          let owner = window.tabs[window.tabs.length - 1];
+          if (configs[aKey]) {
+            reserveToCacheTree(owner.windowId);
+          }
+          else {
+            clearWindowCache(owner.id);
+            location.reload();
+          }
+        }
+      });
+      break;
+  }
 }

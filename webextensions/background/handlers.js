@@ -498,7 +498,6 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
   }
 
   reserveToSaveTreeStructure(aTab);
-  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onRestored.addListener(aTab => {
@@ -506,36 +505,6 @@ Tabs.onRestored.addListener(aTab => {
   reserveToAttachTabFromRestoredInfo(aTab, {
     children: true
   });
-});
-
-// Tree restoration for "Restore Previous Session"
-Tabs.onWindowRestoring.addListener(async aWindowId => {
-  if (!configs.useCachedTree)
-    return;
-
-  log('Tabs.onWindowRestoring ', aWindowId);
-  const container = Tabs.getTabsContainer(aWindowId);
-  const restoredCount = await container.allTabsRestored;
-  if (restoredCount == 1) {
-    log('Tabs.onWindowRestoring: single tab restored');
-    return;
-  }
-
-  log('Tabs.onWindowRestoring: continue ', aWindowId);
-  MetricsData.add('Tabs.onWindowRestoring restore start');
-
-  const apiTabs = await browser.tabs.query({ windowId: aWindowId });
-  try {
-    await BackgroundCache.restoreWindowFromEffectiveWindowCache(aWindowId, {
-      ignorePinnedTabs: true,
-      owner: apiTabs[apiTabs.length - 1],
-      tabs:  apiTabs
-    });
-    MetricsData.add('Tabs.onWindowRestoring restore end');
-  }
-  catch(e) {
-    log('Tabs.onWindowRestoring: FATAL ERROR while restoring tree from cache', String(e), e.stack);
-  }
 });
 
 Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
@@ -607,11 +576,6 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
 
   reserveToSaveTreeStructure(aTab);
   reserveToCleanupNeedlessGroupTab(ancestors);
-
-  await wait(0);
-  // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
@@ -725,7 +689,6 @@ Tabs.onTabElementMoved.addListener((aTab, aInfo = {}) => {
 });
 
 Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
-  BackgroundCache.reserveToCacheTree(aTab);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateInsertionPosition([
     aTab,
@@ -1121,7 +1084,6 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
   }
 
   reserveToSaveTreeStructure(aTab);
-  BackgroundCache.markWindowCacheDirtyFromTab(aTab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 
   const group = Tabs.getGroupTabForOpener(aTab);
   if (group)
@@ -1135,7 +1097,6 @@ Tabs.onLabelUpdated.addListener(aTab => {
 Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
-  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
@@ -1258,11 +1219,6 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   ]);
 
   reserveToUpdateRelatedGroupTabs(aTab);
-
-  await wait(0);
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
@@ -1280,11 +1236,6 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
   reserveToUpdateChildren(aDetachInfo.oldParentTab);
 
   reserveToUpdateRelatedGroupTabs(aDetachInfo.oldParentTab);
-
-  await wait(0);
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
@@ -1338,7 +1289,6 @@ Tabs.onDetached.addListener((aTab, aInfo = {}) => {
 });
 
 Tabs.onPinned.addListener(aTab => {
-  BackgroundCache.reserveToCacheTree(aTab);
   Tree.collapseExpandSubtree(aTab, {
     collapsed: false,
     broadcast: true
@@ -1355,18 +1305,6 @@ Tabs.onPinned.addListener(aTab => {
   Tree.collapseExpandTabAndSubtree(aTab, { collapsed: false });
 });
 
-Tabs.onUnpinned.addListener(aTab => {
-  BackgroundCache.reserveToCacheTree(aTab);
-});
-
-Tabs.onShown.addListener(aTab => {
-  BackgroundCache.reserveToCacheTree(aTab);
-});
-
-Tabs.onHidden.addListener(aTab => {
-  BackgroundCache.reserveToCacheTree(aTab);
-});
-
 Tabs.onGroupTabDetected.addListener(aTab => {
   tryInitGroupTab(aTab);
 });
@@ -1375,9 +1313,6 @@ Tabs.onGroupTabDetected.addListener(aTab => {
 /* message observer */
 
 function onMessage(aMessage, aSender) {
-  if (Array.isArray(aMessage))
-    return Promise.all(aMessage.map(aOneMessage => onMessage(aOneMessage, aSender)));
-
   if (!aMessage ||
       typeof aMessage.type != 'string' ||
       aMessage.type.indexOf('treestyletab:') != 0)
@@ -1436,7 +1371,7 @@ function onMessage(aMessage, aSender) {
         else
           Tree.collapseExpandSubtree(tab, params);
         reserveToSaveTreeStructure(tab);
-        BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+        BrowserCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 
     case Constants.kCOMMAND_LOAD_URI:

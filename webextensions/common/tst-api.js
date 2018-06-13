@@ -141,6 +141,8 @@ export async function init() {
 }
 
 export function setAddons(aAddons) {
+  if (!aAddons)
+    console.log(new Error());
   for (let id of Object.keys(addons)) {
     delete addons[id];
   }

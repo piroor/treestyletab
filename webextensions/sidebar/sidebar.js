@@ -160,9 +160,9 @@ async function init() {
       TabContextMenu.init();
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
-      var results = await browser.runtime.sendMessage([
-        { type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS },
-        { type: Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
+      var results = await Promise.all([
+        browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS }),
+        browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE })
       ]);
       var addons = results[0];
       TSTAPI.setAddons(addons);

@@ -57,24 +57,6 @@ async function init() {
   ContextMenu.refreshItems();
   configs.$addObserver(aKey => {
     switch (aKey) {
-      case 'useCachedTree':
-        browser.windows.getAll({
-          populate:    true,
-          windowTypes: ['normal']
-        }).then(aWindows => {
-          for (let window of aWindows) {
-            let owner = window.tabs[window.tabs.length - 1];
-            if (configs[aKey]) {
-              BackgroundCache.reserveToCacheTree(owner.windowId);
-            }
-            else {
-              BackgroundCache.clearWindowCache(owner.id);
-              location.reload();
-            }
-          }
-        });
-        break;
-
       case 'style':
         updatePanelUrl();
         break;
