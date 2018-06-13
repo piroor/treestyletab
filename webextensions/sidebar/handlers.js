@@ -789,22 +789,18 @@ Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
     tab:   aTab.apiTab,
     url:   aURL
   });
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
 Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
   updateTabSoundButtonTooltip(aTab);
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
 Tabs.onLabelUpdated.addListener(aTab => {
   reserveToUpdateTabTooltip(aTab);
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
 Tabs.onParentTabUpdated.addListener(aTab => {
   updateTabSoundButtonTooltip(aTab);
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
 function updateTabSoundButtonTooltip(aTab) {
@@ -815,7 +811,6 @@ function updateTabSoundButtonTooltip(aTab) {
     tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
 
   getTabSoundButton(aTab).setAttribute('title', tooltip);
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 }
 
 
@@ -858,7 +853,6 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
   });
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onRestoring.addListener(aTab => {
@@ -945,20 +939,14 @@ Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
 });
 
 Tabs.onRemoved.addListener(async aTab => {
-  if (Tabs.isCollapsed(aTab))
-    return;
-
-  // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  wait(0).then(() => SidebarCache.reserveToUpdateCachedTabbar());
-  if (!configs.animation)
+  if (Tabs.isCollapsed(aTab) ||
+      !configs.animation)
     return;
 
   return new Promise(async (aResolve, aReject) => {
     let tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
     await wait(configs.animation ? configs.collapseDuration : 0);
-    SidebarCache.reserveToUpdateCachedTabbar();
     aResolve();
   });
 });
@@ -1001,15 +989,10 @@ Tabs.onMoved.addListener(aTab => {
     timeout: configs.collapseDuration
   });
   reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tree.onLevelChanged.addListener(async aTab => {
   reserveToUpdateIndent();
-  await wait(0);
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onDetached.addListener(aTab => {
@@ -1021,7 +1004,6 @@ Tabs.onDetached.addListener(aTab => {
   Tree.detachTab(aTab, {
     dontUpdateIndent: true
   });
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener((aTab, aInfo = {}) => {
@@ -1255,11 +1237,6 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
     by the background page later. Instead we wait until the tab is
     successfully moved (then Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
   */
-
-  await wait(0);
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
@@ -1278,17 +1255,11 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
   }
-
-  await wait(0);
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onPinned.addListener(aTab => {
   TabContextMenu.close();
   PinnedTabs.reserveToReposition();
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onUnpinned.addListener(aTab => {
@@ -1297,7 +1268,6 @@ Tabs.onUnpinned.addListener(aTab => {
   Scroll.scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
   PinnedTabs.reserveToReposition();
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onShown.addListener(aTab => {
@@ -1305,7 +1275,6 @@ Tabs.onShown.addListener(aTab => {
   PinnedTabs.reserveToReposition();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onHidden.addListener(aTab => {
@@ -1313,7 +1282,6 @@ Tabs.onHidden.addListener(aTab => {
   PinnedTabs.reserveToReposition();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
-  SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onStateChanged.addListener(aTab => {
@@ -1782,16 +1750,6 @@ function onConfigChange(aChangedKey) {
         rootClasses.add(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
       else
         rootClasses.remove(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
-      break;
-
-    case 'useCachedTree':
-      if (configs[aChangedKey]) {
-        SidebarCache.reserveToUpdateCachedTabbar();
-      }
-      else {
-        clearWindowCache();
-        location.reload();
-      }
       break;
 
     case 'simulateSVGContextFill':
