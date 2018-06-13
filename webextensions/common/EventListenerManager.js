@@ -13,8 +13,10 @@ export default function EventListenerManager() {
 
 EventListenerManager.prototype = {
   addListener(aListener) {
-    if (this.listeners.indexOf(aListener) < 0)
+    if (this.listeners.indexOf(aListener) < 0) {
       this.listeners.push(aListener);
+      aListener.$stack = new Error().stack;
+    }
   },
   removeListener(aListener) {
     const index = this.listeners.indexOf(aListener);
@@ -24,7 +26,7 @@ EventListenerManager.prototype = {
   async dispatch(...aArgs) {
     const results = await Promise.all(this.listeners.map(async aListener => {
       let timer = setTimeout(() => {
-        console.log(`listener does not respond in ${TIMEOUT}ms.\n${new Error().stack}\n${aListener.toString()}`);
+        console.log(`listener does not respond in ${TIMEOUT}ms.\n${aListener.$stack}\n\n${new Error().stack}`);
       }, TIMEOUT);
       try {
         return await aListener(...aArgs);
