@@ -38,27 +38,43 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-function positionPinnedTabs(aOptions = {}) {
-  //log('positionPinnedTabs');
-  var pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
+import {
+  configs
+} from '../../common/common.js';
+
+import * as Constants from '../../common/constants.js';
+import * as Tabs from '../../common/tabs.js';
+import * as Size from './size.js';
+
+let gTargetWindow;
+let gTabBar;
+
+export function init() {
+  gTargetWindow = Tabs.getWindow();
+  gTabBar       = document.querySelector('#tabbar');
+}
+
+export function reposition(aOptions = {}) {
+  //log('reposition');
+  const pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
   if (!pinnedTabs.length) {
-    resetPinnedTabs();
+    reset();
     document.documentElement.classList.remove('have-pinned-tabs');
     return;
   }
 
   document.documentElement.classList.add('have-pinned-tabs');
 
-  var containerWidth = gTabBar.getBoundingClientRect().width;
-  var maxWidth       = containerWidth;
-  var faviconized    = configs.faviconizePinnedTabs;
+  const containerWidth = gTabBar.getBoundingClientRect().width;
+  const maxWidth       = containerWidth;
+  const faviconized    = configs.faviconizePinnedTabs;
 
-  var width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth ;
-  var height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() ;
-  var maxCol = Math.max(1, Math.floor(maxWidth / width));
-  var maxRow = Math.ceil(pinnedTabs.length / maxCol);
-  var col    = 0;
-  var row    = 0;
+  const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth ;
+  const height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() ;
+  const maxCol = Math.max(1, Math.floor(maxWidth / width));
+  const maxRow = Math.ceil(pinnedTabs.length / maxCol);
+  let col    = 0;
+  let row    = 0;
 
   gTabBar.style.marginTop = `${height * maxRow}px`;
   for (let item of pinnedTabs) {
@@ -102,24 +118,24 @@ function positionPinnedTabs(aOptions = {}) {
   }
 }
 
-function reserveToPositionPinnedTabs(aOptions = {}) {
-  if (reserveToPositionPinnedTabs.waiting)
-    clearTimeout(reserveToPositionPinnedTabs.waiting);
-  reserveToPositionPinnedTabs.waiting = setTimeout(() => {
-    delete reserveToPositionPinnedTabs.waiting;
-    positionPinnedTabs(aOptions);
+export function reserveToReposition(aOptions = {}) {
+  if (reserveToReposition.waiting)
+    clearTimeout(reserveToReposition.waiting);
+  reserveToReposition.waiting = setTimeout(() => {
+    delete reserveToReposition.waiting;
+    reposition(aOptions);
   }, 10);
 }
 
-function resetPinnedTabs(aHint) {
+function reset() {
   gTabBar.style.marginTop = '';
-  var pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
-  pinnedTabs.forEach(clearPinnedStyle);
+  const pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
+  pinnedTabs.forEach(clearStyle);
 }
 
-function clearPinnedStyle(aTab) {
+export function clearStyle(aTab) {
   aTab.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
   aTab.classList.remove(Constants.kTAB_STATE_LAST_ROW);
-  let style = aTab.style;
+  const style = aTab.style;
   style.left = style.right = style.top = style.bottom;
 }

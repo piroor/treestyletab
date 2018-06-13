@@ -1287,22 +1287,22 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
 
 Tabs.onPinned.addListener(aTab => {
   TabContextMenu.close();
-  reserveToPositionPinnedTabs();
+  PinnedTabs.reserveToReposition();
   SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onUnpinned.addListener(aTab => {
   TabContextMenu.close();
-  clearPinnedStyle(aTab);
+  PinnedTabs.clearStyle(aTab);
   Scroll.scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
-  reserveToPositionPinnedTabs();
+  PinnedTabs.reserveToReposition();
   SidebarCache.reserveToUpdateCachedTabbar();
 });
 
 Tabs.onShown.addListener(aTab => {
   TabContextMenu.close();
-  reserveToPositionPinnedTabs();
+  PinnedTabs.reserveToReposition();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
   SidebarCache.reserveToUpdateCachedTabbar();
@@ -1310,7 +1310,7 @@ Tabs.onShown.addListener(aTab => {
 
 Tabs.onHidden.addListener(aTab => {
   TabContextMenu.close();
-  reserveToPositionPinnedTabs();
+  PinnedTabs.reserveToReposition();
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
   SidebarCache.reserveToUpdateCachedTabbar();
@@ -1731,7 +1731,7 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'faviconizePinnedTabs':
-      reserveToPositionPinnedTabs();
+      PinnedTabs.reserveToReposition();
       break;
 
     case 'scrollbarMode':

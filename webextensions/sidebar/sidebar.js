@@ -58,6 +58,7 @@ async function init() {
       Tabs.setWindow(gTargetWindow);
       log.context   = `Sidebar-${gTargetWindow}`;
 
+      PinnedTabs.init();
       Indent.init();
       SidebarCache.init();
       SidebarCache.onRestored.addListener(clearDropPosition);
@@ -709,9 +710,9 @@ function updateTabbarLayout(aParams = {}) {
   }
 
   if (aParams.justNow)
-    positionPinnedTabs(aParams);
+    PinnedTabs.reposition(aParams);
   else
-    reserveToPositionPinnedTabs(aParams);
+    PinnedTabs.reserveToReposition(aParams);
 }
 
 

@@ -19,6 +19,7 @@ import * as Indent from './indent.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as Size from './size.js';
 import * as Scroll from './scroll.js';
+import * as PinnedTabs from './pinned-tabs.js';
 
 import * as Tabs from '../../common/tabs.js';
 import * as TabsContainer from '../../common/tabs-container.js';
@@ -62,6 +63,7 @@ window.Indent = Indent;
 window.RestoringTabCount = RestoringTabCount;
 window.Size = Size;
 window.Scroll = Scroll;
+window.PinnedTabs = PinnedTabs;
 
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;
