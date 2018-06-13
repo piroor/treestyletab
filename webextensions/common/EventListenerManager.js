@@ -7,22 +7,24 @@
 
 const TIMEOUT = 2000;
 
-export default function EventListenerManager() {
-  this.listeners = [];
-}
+export default class EventListenerManager {
+  constructor() {
+    this.listeners = [];
+  }
 
-EventListenerManager.prototype = {
   addListener(aListener) {
     if (this.listeners.indexOf(aListener) < 0) {
       this.listeners.push(aListener);
       aListener.$stack = new Error().stack;
     }
-  },
+  }
+
   removeListener(aListener) {
     const index = this.listeners.indexOf(aListener);
     if (index > -1)
       this.listeners.splice(index, 1);
-  },
+  }
+
   async dispatch(...aArgs) {
     const results = await Promise.all(this.listeners.map(async aListener => {
       let timer = setTimeout(() => {
@@ -46,4 +48,4 @@ EventListenerManager.prototype = {
     }
     return true;
   }
-};
+}
