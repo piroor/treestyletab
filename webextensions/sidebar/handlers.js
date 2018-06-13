@@ -912,7 +912,7 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
     await inheritTreeStructure();
   }
   updateVisualMaxTreeLevel();
-  updateIndent({
+  Indent.update({
     force: true,
     cache: restored && cache.offset == 0 ? cache.indent : null
   });
@@ -1694,7 +1694,7 @@ function onConfigChange(aChangedKey) {
         rootClasses.remove('right');
         gIndentProp = 'margin-left';
       }
-      updateIndent({ force: true });
+      Indent.update({ force: true });
       break;
 
     case 'sidebarDirection':
@@ -1720,7 +1720,7 @@ function onConfigChange(aChangedKey) {
         rootClasses.add('left-scrollbar');
         rootClasses.remove('right-scrollbar');
       }
-      updateIndent({ force: true });
+      Indent.update({ force: true });
     }; break;
 
     case 'baseIndent':
@@ -1728,7 +1728,7 @@ function onConfigChange(aChangedKey) {
     case 'maxTreeLevel':
     case 'indentAutoShrink':
     case 'indentAutoShrinkOnlyForVisible':
-      updateIndent({ force: true });
+      Indent.update({ force: true });
       break;
 
     case 'showCollapsedDescendantsByTooltip':

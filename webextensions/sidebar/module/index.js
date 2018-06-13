@@ -14,6 +14,8 @@ import * as ContextualIdentities from '../../common/contextual-identities.js';
 import * as MetricsData from '../../common/metrics-data.js';
 import * as Color from './color.js';
 import * as TabContextMenu from './tab-context-menu.js';
+import * as SidebarCache from './cache.js';
+import * as Indent from './indent.js';
 
 import * as Tabs from '../../common/tabs.js';
 import * as TabsContainer from '../../common/tabs-container.js';
@@ -52,6 +54,8 @@ window.ContextualIdentities = ContextualIdentities;
 window.MetricsData = MetricsData;
 window.Color = Color;
 window.TabContextMenu = TabContextMenu;
+window.SidebarCache = SidebarCache;
+window.Indent = Indent;
 
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;

@@ -5,15 +5,36 @@
 */
 'use strict';
 
-var gLastWindowCacheOwner;
+import {
+  configs
+} from '../../common/common.js';
 
-async function getEffectiveWindowCache(aOptions = {}) {
+import * as Constants from '../../common/constants.js';
+import * as Tabs from '../../common/tabs.js';
+import * as Tree from '../../common/tree.js';
+import * as MetricsData from '../../common/metrics-data.js';
+import EventListenerManager from '../../common/EventListenerManager.js';
+
+import * as Indent from './indent.js';
+
+export const onRestored = new EventListenerManager();
+
+let gLastWindowCacheOwner;
+let gTargetWindow;
+let gTabBar;
+
+export function activate() {
+  gTargetWindow = Tabs.getWindow();
+  gTabBar       = document.querySelector('#tabbar');
+}
+
+export async function getEffectiveWindowCache(aOptions = {}) {
   MetricsData.add('getEffectiveWindowCache start');
   Cache.log('getEffectiveWindowCache: start');
   cancelReservedUpdateCachedTabbar(); // prevent to break cache before loading
-  var cache;
-  var cachedSignature;
-  var actualSignature;
+  let cache;
+  let cachedSignature;
+  let actualSignature;
   await Promise.all([
     (async () => {
       var apiTabs = await browser.tabs.query({ currentWindow: true });
@@ -68,7 +89,7 @@ async function getEffectiveWindowCache(aOptions = {}) {
     })()
   ]);
 
-  var signatureMatched = Cache.matcheSignatures({
+  const signatureMatched = Cache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
@@ -92,16 +113,16 @@ async function getEffectiveWindowCache(aOptions = {}) {
   return cache;
 }
 
-async function restoreTabsFromCache(aCache, aParams = {}) {
-  var offset    = aParams.offset || 0;
-  var container = Tabs.getTabsContainer(gTargetWindow);
+export async function restoreTabsFromCache(aCache, aParams = {}) {
+  const offset    = aParams.offset || 0;
+  const container = Tabs.getTabsContainer(gTargetWindow);
   if (offset <= 0) {
     if (container)
       container.parentNode.removeChild(container);
     gTabBar.setAttribute('style', aCache.style);
   }
 
-  var restored = Cache.restoreTabsFromCacheInternal({
+  let restored = Cache.restoreTabsFromCacheInternal({
     windowId:     gTargetWindow,
     tabs:         aParams.tabs,
     offset:       offset,
@@ -132,8 +153,8 @@ async function restoreTabsFromCache(aCache, aParams = {}) {
             justNow:   true
           });
         });
-        clearDropPosition();
       }
+      onRestored.dispatch();
     }
     catch(e) {
       Cache.log(String(e), e.stack);
@@ -167,7 +188,7 @@ function clearWindowCache() {
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-function markWindowCacheDirty(akey) {
+export function markWindowCacheDirty(akey) {
   if (markWindowCacheDirty.timeout)
     clearTimeout(markWindowCacheDirty.timeout);
   markWindowCacheDirty.timeout = setTimeout(() => {
@@ -188,8 +209,8 @@ function getWindowCacheOwner() {
   return tab && tab.apiTab;
 }
 
-async function reserveToUpdateCachedTabbar() {
-  if (gInitializing ||
+export async function reserveToUpdateCachedTabbar() {
+  if (!gTargetWindow ||
       !configs.useCachedTree)
     return;
 
@@ -200,7 +221,7 @@ async function reserveToUpdateCachedTabbar() {
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
 
-  var container = Tabs.getTabsContainer(gTargetWindow);
+  const container = Tabs.getTabsContainer(gTargetWindow);
   if (container.allTabsRestored)
     return;
 
@@ -228,24 +249,20 @@ async function updateCachedTabbar() {
     return;
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
-  var container = Tabs.getTabsContainer(gTargetWindow);
-  var signature = await Cache.getWindowSignature(gTargetWindow);
+  const container = Tabs.getTabsContainer(gTargetWindow);
+  const signature = await Cache.getWindowSignature(gTargetWindow);
   if (container.allTabsRestored)
     return;
   Cache.log('updateCachedTabbar ', { stack: new Error().stack });
   gLastWindowCacheOwner = getWindowCacheOwner(gTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: Constants.kSIDEBAR_CONTENTS_VERSION,
-    tabbar:  {
-      contents: Tabs.allTabsContainer.innerHTML,
-      style:    gTabBar.getAttribute('style'),
+    tabbar: {
+      contents:        Tabs.allTabsContainer.innerHTML,
+      style:           gTabBar.getAttribute('style'),
       pinnedTabsCount: Tabs.getPinnedTabs(container).length
     },
-    indent:  {
-      lastMaxLevel:  gLastMaxLevel,
-      lastMaxIndent: gLastMaxIndent,
-      definition:    gIndentDefinition.textContent
-    },
+    indent: Indent.getCacheInfo(),
     signature
   });
 }
