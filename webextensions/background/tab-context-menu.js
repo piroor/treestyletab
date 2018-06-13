@@ -15,9 +15,9 @@
 import {
   log,
   configs
-} from '../../common/common.js';
-import * as TSTAPI from '../../common/tst-api.js';
-import EventListenerManager from '../../common/EventListenerManager.js';
+} from '../common/common.js';
+import * as TSTAPI from '../common/tst-api.js';
+import EventListenerManager from '../common/EventListenerManager.js';
 
 export const onTSTItemClick = new EventListenerManager();
 

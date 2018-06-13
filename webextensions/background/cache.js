@@ -9,12 +9,13 @@ import {
   log,
   wait,
   configs
-} from '../../common/common.js';
+} from '../common/common.js';
 
-import * as Constants from '../../common/constants.js';
-import * as Tabs from '../../common/tabs.js';
-import * as Tree from '../../common/tree.js';
-import * as MetricsData from '../../common/metrics-data.js';
+import * as Constants from '../common/constants.js';
+import * as Tabs from '../common/tabs.js';
+import * as Tree from '../common/tree.js';
+import * as Cache from '../common/cache.js';
+import * as MetricsData from '../common/metrics-data.js';
 
 let gActivated = false;
 

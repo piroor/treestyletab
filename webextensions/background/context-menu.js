@@ -8,11 +8,11 @@
 import {
   log,
   configs
-} from '../../common/common.js';
+} from '../common/common.js';
 
-import * as Tabs from '../../common/tabs.js';
-import * as Commands from '../../common/commands.js';
-import * as TSTAPI from '../../common/tst-api.js';
+import * as Tabs from '../common/tabs.js';
+import * as Commands from '../common/commands.js';
+import * as TSTAPI from '../common/tst-api.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 const gContextMenuItems = `

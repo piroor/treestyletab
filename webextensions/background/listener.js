@@ -10,20 +10,20 @@ import {
   dumpTab,
   wait,
   configs
-} from '../../common/common.js';
+} from '../common/common.js';
 
-import * as Constants from '../../common/constants.js';
-import * as ApiTabs from '../../common/api-tabs.js';
-import * as Tabs from '../../common/tabs.js';
-import * as TabsInternalOperation from '../../common/tabs-internal-operation.js';
-import * as TabsMove from '../../common/tabs-move.js';
-import * as TabsOpen from '../../common/tabs-open.js';
-import * as TabsGroup from '../../common/tabs-group.js';
-import * as TabsContainer from '../../common/tabs-container.js';
-import * as Tree from '../../common/tree.js';
-import * as TSTAPI from '../../common/tst-api.js';
-import * as Sidebar from '../../common/sidebar.js';
-import * as Commands from '../../common/commands.js';
+import * as Constants from '../common/constants.js';
+import * as ApiTabs from '../common/api-tabs.js';
+import * as Tabs from '../common/tabs.js';
+import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
+import * as TabsMove from '../common/tabs-move.js';
+import * as TabsOpen from '../common/tabs-open.js';
+import * as TabsGroup from '../common/tabs-group.js';
+import * as TabsContainer from '../common/tabs-container.js';
+import * as Tree from '../common/tree.js';
+import * as TSTAPI from '../common/tst-api.js';
+import * as Sidebar from '../common/sidebar.js';
+import * as Commands from '../common/commands.js';
 
 import * as Background from './background.js';
 import * as BackgroundCache from './cache.js';
