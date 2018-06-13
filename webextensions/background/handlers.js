@@ -498,7 +498,7 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
   }
 
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onRestored.addListener(aTab => {
@@ -526,7 +526,7 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
 
   const apiTabs = await browser.tabs.query({ windowId: aWindowId });
   try {
-    await restoreWindowFromEffectiveWindowCache(aWindowId, {
+    await BackgroundCache.restoreWindowFromEffectiveWindowCache(aWindowId, {
       ignorePinnedTabs: true,
       owner: apiTabs[apiTabs.length - 1],
       tabs:  apiTabs
@@ -611,7 +611,7 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
   await wait(0);
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
@@ -725,7 +725,7 @@ Tabs.onTabElementMoved.addListener((aTab, aInfo = {}) => {
 });
 
 Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
   reserveToSaveTreeStructure(aTab);
   reserveToUpdateInsertionPosition([
     aTab,
@@ -1121,7 +1121,7 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
   }
 
   reserveToSaveTreeStructure(aTab);
-  markWindowCacheDirtyFromTab(aTab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  BackgroundCache.markWindowCacheDirtyFromTab(aTab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 
   const group = Tabs.getGroupTabForOpener(aTab);
   if (group)
@@ -1135,7 +1135,7 @@ Tabs.onLabelUpdated.addListener(aTab => {
 Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   reserveToUpdateSubtreeCollapsed(aTab);
   reserveToSaveTreeStructure(aTab);
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
@@ -1262,7 +1262,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
@@ -1284,7 +1284,7 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
   await wait(0);
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
@@ -1338,7 +1338,7 @@ Tabs.onDetached.addListener((aTab, aInfo = {}) => {
 });
 
 Tabs.onPinned.addListener(aTab => {
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
   Tree.collapseExpandSubtree(aTab, {
     collapsed: false,
     broadcast: true
@@ -1356,15 +1356,15 @@ Tabs.onPinned.addListener(aTab => {
 });
 
 Tabs.onUnpinned.addListener(aTab => {
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onShown.addListener(aTab => {
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onHidden.addListener(aTab => {
-  reserveToCacheTree(aTab);
+  BackgroundCache.reserveToCacheTree(aTab);
 });
 
 Tabs.onGroupTabDetected.addListener(aTab => {
@@ -1436,7 +1436,7 @@ function onMessage(aMessage, aSender) {
         else
           Tree.collapseExpandSubtree(tab, params);
         reserveToSaveTreeStructure(tab);
-        markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+        BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 
     case Constants.kCOMMAND_LOAD_URI:

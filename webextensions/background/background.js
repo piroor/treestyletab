@@ -65,10 +65,10 @@ async function init() {
           for (let window of aWindows) {
             let owner = window.tabs[window.tabs.length - 1];
             if (configs[aKey]) {
-              reserveToCacheTree(owner.windowId);
+              BackgroundCache.reserveToCacheTree(owner.windowId);
             }
             else {
-              clearWindowCache(owner.id);
+              BackgroundCache.clearWindowCache(owner.id);
               location.reload();
             }
           }
@@ -90,7 +90,7 @@ async function init() {
 
   for (let windowId of Object.keys(restoredFromCache)) {
     if (!restoredFromCache[windowId])
-      reserveToCacheTree(parseInt(windowId));
+      BackgroundCache.reserveToCacheTree(parseInt(windowId));
   }
 
   Tabs.getAllTabs().forEach(updateSubtreeCollapsed);
@@ -174,7 +174,7 @@ async function rebuildAll() {
   await Promise.all(windows.map(async (aWindow) => {
     await MetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
       if (configs.useCachedTree) {
-        restoredFromCache[aWindow.id] = await restoreWindowFromEffectiveWindowCache(aWindow.id, {
+        restoredFromCache[aWindow.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(aWindow.id, {
           insertionPoint,
           owner: aWindow.tabs[aWindow.tabs.length - 1],
           tabs:  aWindow.tabs
