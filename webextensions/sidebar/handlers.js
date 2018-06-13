@@ -814,15 +814,6 @@ function updateTabSoundButtonTooltip(aTab) {
 }
 
 
-Tabs.onActivated.addListener((aTab, aInfo = {}) => {
-  TabContextMenu.close();
-  Scroll.scrollToTab(aTab);
-});
-
-Tabs.onCreating.addListener((aTab, aInfo = {}) => {
-  TabContextMenu.close();
-});
-
 Tabs.onCreated.addListener((aTab, aInfo = {}) => {
   if (configs.animation) {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);

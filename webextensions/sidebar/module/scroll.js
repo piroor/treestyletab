@@ -357,3 +357,8 @@ export async function notifyOutOfViewTab(aTab) {
 function cancelNotifyOutOfViewTab() {
   gOutOfViewTabNotifier.classList.remove('notifying');
 }
+
+
+Tabs.onActivated.addListener(aTab => {
+  scrollToTab(aTab);
+});

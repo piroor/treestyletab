@@ -493,3 +493,12 @@ function onExternalMessage(aMessage, aSender) {
       })();
   }
 }
+
+
+Tabs.onActivated.addListener(() => {
+  close();
+});
+
+Tabs.onCreating.addListener(() => {
+  close();
+});
