@@ -5,7 +5,36 @@
 */
 'use strict';
 
-// raw event handlers
+import {
+  log,
+  dumpTab,
+  wait,
+  configs
+} from '../../common/common.js';
+
+import * as Constants from '../../common/constants.js';
+import * as ApiTabs from '../../common/api-tabs.js';
+import * as Tabs from '../../common/tabs.js';
+import * as TabsInternalOperation from '../../common/tabs-internal-operation.js';
+import * as TabsMove from '../../common/tabs-move.js';
+import * as TabsOpen from '../../common/tabs-open.js';
+import * as TabsGroup from '../../common/tabs-group.js';
+import * as TabsContainer from '../../common/tabs-container.js';
+import * as Tree from '../../common/tree.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import * as Sidebar from '../../common/sidebar.js';
+import * as Commands from '../../common/commands.js';
+
+import * as Background from './background.js';
+import * as BackgroundCache from './cache.js';
+import * as TreeStructure from './tree-structure.js';
+
+
+let gInitialized                 = false;
+let gTabSwitchedByShortcut       = false;
+let gMaybeTabSwitchingByShortcut = false;
+const gScrollLockedBy = {};
+
 
 // this should return true if the tab is moved while processing
 Tabs.onCreating.addListener((aTab, aInfo = {}) => {
@@ -319,9 +348,9 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
     }
     // Duplicated tab has its own tree structure information inherited
     // from the original tab, but they must be cleared.
-    reserveToUpdateAncestors(aTab);
-    reserveToUpdateChildren(aTab);
-    reserveToUpdateInsertionPosition([
+    Background.reserveToUpdateAncestors(aTab);
+    Background.reserveToUpdateChildren(aTab);
+    Background.reserveToUpdateInsertionPosition([
       aTab,
       Tabs.getNextTab(aTab),
       Tabs.getPreviousTab(aTab)
@@ -342,19 +371,19 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
       });
   }
 
-  reserveToSaveTreeStructure(aTab);
+  if (gInitialized)
+    TreeStructure.reserveToSaveTreeStructure(aTab);
 });
 
 Tabs.onRestored.addListener(aTab => {
   log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
-  reserveToAttachTabFromRestoredInfo(aTab, {
+  TreeStructure.reserveToAttachTabFromRestoredInfo(aTab, {
     children: true
   });
 });
 
 Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
   log('Tabs.onRemoving ', dumpTab(aTab), aTab.apiTab, aCloseInfo);
-  const container = aTab.parentNode;
 
   const ancestors = Tabs.getAncestorTabs(aTab);
   const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
@@ -419,8 +448,9 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
     broadcast:        true
   });
 
-  reserveToSaveTreeStructure(aTab);
-  reserveToCleanupNeedlessGroupTab(ancestors);
+  if (gInitialized)
+    TreeStructure.reserveToSaveTreeStructure(aTab);
+  Background.reserveToCleanupNeedlessGroupTab(ancestors);
 });
 
 async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
@@ -450,7 +480,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
 
     shouldRestoreCount = self.closingDescendantTabIds.length;
     if (shouldRestoreCount > 0) {
-      return confirmToCloseTabs(shouldRestoreCount + 1, {
+      return Background.confirmToCloseTabs(shouldRestoreCount + 1, {
         windowId: aTab.apiTab.windowId
       });
     }
@@ -524,7 +554,7 @@ Tabs.onMoving.addListener((aTab, aMoveInfo) => {
 });
 
 Tabs.onTabElementMoved.addListener((aTab, aInfo = {}) => {
-  reserveToUpdateInsertionPosition([
+  Background.reserveToUpdateInsertionPosition([
     aTab,
     Tabs.getPreviousTab(aTab),
     Tabs.getNextTab(aTab),
@@ -580,8 +610,9 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
 }
 
 Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
-  reserveToSaveTreeStructure(aTab);
-  reserveToUpdateInsertionPosition([
+  if (gInitialized)
+    TreeStructure.reserveToSaveTreeStructure(aTab);
+  Background.reserveToUpdateInsertionPosition([
     aTab,
     aMoveInfo.oldPreviousTab,
     aMoveInfo.oldNextTab,
@@ -589,7 +620,6 @@ Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
     Tabs.getNextTab(aTab)
   ]);
 
-  const container = Tabs.getTabsContainer(aTab);
   if (aMoveInfo.byInternalOperation ||
       Tabs.isDuplicating(aTab)) {
     log('internal move');
@@ -616,7 +646,7 @@ Commands.onMoveDown.addListener(async aTab => {
   });
 });
 
-Background.onTabAttachedFromRestoredInfo.addListener(tryFixupTreeForInsertedTab);
+TreeStructure.onTabAttachedFromRestoredInfo.addListener(tryFixupTreeForInsertedTab);
 
 function moveBack(aTab, aMoveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(aTab), aMoveInfo);
@@ -639,16 +669,9 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
 
   var toIndex   = aMoveInfo.toIndex;
   var fromIndex = aMoveInfo.fromIndex;
-  var delta;
   if (toIndex == fromIndex) { // no move?
     log('=> no move');
     return { action: null };
-  }
-  else if (toIndex < 0 || fromIndex < 0) {
-    delta = 2;
-  }
-  else {
-    delta = Math.abs(toIndex - fromIndex);
   }
 
   var prevTab = tree.tabsById[target.previous];
@@ -827,7 +850,7 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
   container.lastFocusedTab = aTab.id;
   if (gMaybeTabSwitchingByShortcut)
     setupDelayedExpand(aTab);
-  tryInitGroupTab(aTab);
+  Background.tryInitGroupTab(aTab);
   return true;
 });
 function handleNewActiveTab(aTab, aInfo = {}) {
@@ -895,8 +918,8 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
   }
 
   if (aChangeInfo.status || aChangeInfo.url) {
-    tryInitGroupTab(aTab);
-    tryStartHandleAccelKeyOnTab(aTab);
+    Background.tryInitGroupTab(aTab);
+    Background.tryStartHandleAccelKeyOnTab(aTab);
   }
 
   if (aTab.dataset.isNewTab &&
@@ -930,20 +953,22 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
     }
   }
 
-  reserveToSaveTreeStructure(aTab);
+  if (gInitialized)
+    TreeStructure.reserveToSaveTreeStructure(aTab);
 
   const group = Tabs.getGroupTabForOpener(aTab);
   if (group)
-    reserveToUpdateRelatedGroupTabs(group);
+    Background.reserveToUpdateRelatedGroupTabs(group);
 });
 
 Tabs.onLabelUpdated.addListener(aTab => {
-  reserveToUpdateRelatedGroupTabs(aTab);
+  Background.reserveToUpdateRelatedGroupTabs(aTab);
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
-  reserveToUpdateSubtreeCollapsed(aTab);
-  reserveToSaveTreeStructure(aTab);
+  Background.reserveToUpdateSubtreeCollapsed(aTab);
+  if (gInitialized)
+    TreeStructure.reserveToSaveTreeStructure(aTab);
 });
 
 Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
@@ -968,7 +993,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   // the tab is closed with "subtree collapsed" state, descendant
   // tabs are also closed even if "forceExpand" is "true".
   if (aInfo.newlyAttached &&
-      !gInitializing) {
+      gInitialized) {
     if (Tabs.isSubtreeCollapsed(aInfo.parent) &&
         !aInfo.forceExpand)
       Tree.collapseExpandTabAndSubtree(aTab, {
@@ -1055,17 +1080,18 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
     newlyAttached: aInfo.newlyAttached
   });
 
-  reserveToSaveTreeStructure(aTab);
+  if (gInitialized)
+    TreeStructure.reserveToSaveTreeStructure(aTab);
   if (aInfo.newlyAttached)
-    reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
-  reserveToUpdateChildren(parent);
-  reserveToUpdateInsertionPosition([
+    Background.reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
+  Background.reserveToUpdateChildren(parent);
+  Background.reserveToUpdateInsertionPosition([
     aTab,
     Tabs.getNextTab(aTab),
     Tabs.getPreviousTab(aTab)
   ]);
 
-  reserveToUpdateRelatedGroupTabs(aTab);
+  Background.reserveToUpdateRelatedGroupTabs(aTab);
 });
 
 Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
@@ -1077,12 +1103,12 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
       .catch(ApiTabs.handleMissingTabError);
   }
   if (Tabs.isGroupTab(aDetachInfo.oldParentTab))
-    reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
-  reserveToSaveTreeStructure(aTab);
-  reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
-  reserveToUpdateChildren(aDetachInfo.oldParentTab);
-
-  reserveToUpdateRelatedGroupTabs(aDetachInfo.oldParentTab);
+    Background.reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
+  if (gInitialized)
+    TreeStructure.reserveToSaveTreeStructure(aTab);
+  Background.reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
+  Background.reserveToUpdateChildren(aDetachInfo.oldParentTab);
+  Background.reserveToUpdateRelatedGroupTabs(aDetachInfo.oldParentTab);
 });
 
 Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
@@ -1153,16 +1179,11 @@ Tabs.onPinned.addListener(aTab => {
 });
 
 Tabs.onGroupTabDetected.addListener(aTab => {
-  tryInitGroupTab(aTab);
+  Background.tryInitGroupTab(aTab);
 });
 
 
 /* message observer */
-
-let gInitialized                 = false;
-let gTabSwitchedByShortcut       = false;
-let gMaybeTabSwitchingByShortcut = false;
-const gScrollLockedBy = {};
 
 Background.onInit.addListener(() => {
   browser.browserAction.onClicked.addListener(onToolbarButtonClick);
@@ -1401,8 +1422,9 @@ function onMessage(aMessage, aSender) {
           Tree.manualCollapseExpandSubtree(tab, params);
         else
           Tree.collapseExpandSubtree(tab, params);
-        reserveToSaveTreeStructure(tab);
-        BrowserCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+        if (gInitialized)
+          TreeStructure.reserveToSaveTreeStructure(tab);
+        BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 
     case Constants.kCOMMAND_LOAD_URI:
@@ -1681,7 +1703,7 @@ function onMessage(aMessage, aSender) {
           const apiTabs = await browser.tabs.query({});
           await Tabs.waitUntilTabsAreCreated(apiTabs.map(aAPITab => aAPITab.id));
           for (let apiTab of apiTabs) {
-            tryStartHandleAccelKeyOnTab(Tabs.getTabById(apiTab));
+            Background.tryStartHandleAccelKeyOnTab(Tabs.getTabById(apiTab));
           }
         }
       })();
@@ -1848,7 +1870,7 @@ function onMessageExternal(aMessage, aSender) {
             silently: aMessage.silently
           });
         }
-        return TSTAPI.formatResult(tabs.map(aTab => true), aMessage);
+        return TSTAPI.formatResult(tabs.map(() => true), aMessage);
       })();
 
     case TSTAPI.kDUPLICATE:
@@ -1880,7 +1902,7 @@ function onMessageExternal(aMessage, aSender) {
             behavior
           });
         }
-        return TSTAPI.formatResult(tabs.map(aTab => true), aMessage);
+        return TSTAPI.formatResult(tabs.map(() => true), aMessage);
       })();
 
     case TSTAPI.kGROUP_TABS:

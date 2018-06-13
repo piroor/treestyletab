@@ -15,6 +15,7 @@ import * as MetricsData from '../../common/metrics-data.js';
 import * as Migration from '../../common/migration.js';
 import * as ContextMenu from './context-menu.js';
 import * as Background from './background.js';
+import './listener.js';
 import * as BackgroundCache from './cache.js';
 
 import * as Tabs from '../../common/tabs.js';
