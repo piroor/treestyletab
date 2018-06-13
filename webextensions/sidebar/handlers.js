@@ -1070,9 +1070,6 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   gUpdatingCollapsedState[aTab.id].then(() => {
     delete gUpdatingCollapsedState[aTab.id];
   });
-  const cancelUpdating = () => {
-    onCompletelyUpdated = undefined;
-  };
 
   if (toBeCollapsed) {
     aTab.classList.add(Constants.kTAB_STATE_COLLAPSING);
@@ -1086,7 +1083,7 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
 
   nextFrame().then(() => {
     if (!Tabs.ensureLivingTab(aTab)) { // it was removed while waiting
-      cancelUpdating();
+      onCompletelyUpdated();
       return;
     }
 
@@ -1114,24 +1111,18 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
         collapsed: toBeCollapsed,
         reason
       });
-      if (onCompletelyUpdated) {
-        onCompletelyUpdated(aTab);
-        cancelUpdating();
-      }
+      onCompletelyUpdated();
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (!Tabs.ensureLivingTab(aTab) ||
           !aTab.onEndCollapseExpandAnimation) {
-        cancelUpdating();
+        onCompletelyUpdated();
         return;
       }
       delete aTab.onEndCollapseExpandAnimation.timeout;
       aTab.onEndCollapseExpandAnimation();
       delete aTab.onEndCollapseExpandAnimation;
-      if (onCompletelyUpdated) {
-        onCompletelyUpdated(aTab);
-        cancelUpdating();
-      }
+      onCompletelyUpdated();
     }, configs.collapseDuration);
   });
 });
@@ -1184,11 +1175,11 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
 });
 
 function isCollapsedStateUpdating(aTab) {
-  return !!gUpdatingCollapsedState[aTab.id];
+  return aTab.id in gUpdatingCollapsedState;
 }
 
 async function isSurelyCollapsed(aTab) {
-  if (gUpdatingCollapsedState[aTab.id])
+  if ('aTab.id' in gUpdatingCollapsedState)
     return gUpdatingCollapsedState[aTab.id].then(() => {
       return Tabs.isCollapsed(aTab);
     });
