@@ -22,7 +22,7 @@ import * as Tree from '../common/tree.js';
 import * as ContextualIdentities from '../common/contextual-identities.js';
 import * as Permissions from '../common/permissions.js';
 import * as TSTAPI from '../common/tst-api.js';
-import * as Sidebar from '../common/sidebar.js';
+import * as SidebarStatus from '../common/sidebar-status.js';
 import * as Commands from '../common/commands.js';
 import * as Migration from '../common/migration.js';
 import TabFavIconHelper from '../common/TabFavIconHelper.js';
@@ -52,7 +52,7 @@ async function init() {
   window.addEventListener('pagehide', destroy, { once: true });
 
   onInit.dispatch();
-  Sidebar.startWatchOpenState();
+  SidebarStatus.startWatchOpenState();
 
   await configs.$loaded;
   MetricsData.add('configs.$loaded');
@@ -494,8 +494,8 @@ export async function confirmToCloseTabs(aCount, aOptions = {}) {
   if (!granted ||
       /^(about|chrome|resource):/.test(apiTabs[0].url) ||
       (!aOptions.showInTab &&
-       Sidebar.isOpen(aOptions.windowId) &&
-       Sidebar.hasFocus(aOptions.windowId)))
+       SidebarStatus.isOpen(aOptions.windowId) &&
+       SidebarStatus.hasFocus(aOptions.windowId)))
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       count:    aCount,

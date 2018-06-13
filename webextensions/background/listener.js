@@ -22,7 +22,7 @@ import * as TabsGroup from '../common/tabs-group.js';
 import * as TabsContainer from '../common/tabs-container.js';
 import * as Tree from '../common/tree.js';
 import * as TSTAPI from '../common/tst-api.js';
-import * as Sidebar from '../common/sidebar.js';
+import * as SidebarStatus from '../common/sidebar-status.js';
 import * as Commands from '../common/commands.js';
 
 import * as Background from './background.js';
@@ -387,7 +387,7 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
 
   const ancestors = Tabs.getAncestorTabs(aTab);
   const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  if (!Sidebar.isOpen(aTab.apiTab.windowId) &&
+  if (!SidebarStatus.isOpen(aTab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(aTab))
     Tree.collapseExpandSubtree(aTab, {
@@ -1213,7 +1213,7 @@ function onToolbarButtonClick(aTab) {
   if (Permissions.requestPostProcess())
     return;
 
-  if (Sidebar.isOpen(aTab.windowId))
+  if (SidebarStatus.isOpen(aTab.windowId))
     browser.sidebarAction.close();
   else
     browser.sidebarAction.open();
@@ -1480,11 +1480,11 @@ function onMessage(aMessage, aSender) {
       })();
 
     case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      Sidebar.onFocus(aMessage.windowId);
+      SidebarStatus.onFocus(aMessage.windowId);
       break;
 
     case Constants.kNOTIFY_SIDEBAR_BLUR:
-      Sidebar.onBlur(aMessage.windowId);
+      SidebarStatus.onBlur(aMessage.windowId);
       break;
 
     case Constants.kNOTIFY_TAB_MOUSEDOWN:

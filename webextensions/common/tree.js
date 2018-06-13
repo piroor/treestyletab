@@ -47,7 +47,7 @@ import {
 import * as Constants from './constants.js';
 import * as XPath from './xpath.js';
 import * as ApiTabs from './api-tabs.js';
-import * as Sidebar from './sidebar.js';
+import * as SidebarStatus from './sidebar-status.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
@@ -960,7 +960,7 @@ export function shouldApplyTreeBehavior(aParams = {}) {
     case Constants.kPARENT_TAB_BEHAVIOR_ALWAYS:
       return true;
     case Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE:
-      return Sidebar.isWatchingOpenState() ? (aParams.windowId && Sidebar.isOpen(aParams.windowId)) : true ;
+      return SidebarStatus.isWatchingOpenState() ? (aParams.windowId && SidebarStatus.isOpen(aParams.windowId)) : true ;
     default:
     case Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR:
       return !!aParams.byInternalOperation;
