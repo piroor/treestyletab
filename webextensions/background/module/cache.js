@@ -5,7 +5,21 @@
 */
 'use strict';
 
-async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
+import {
+  configs
+} from '../../common/common.js';
+
+import * as Constants from '../../common/constants.js';
+import * as Tabs from '../../common/tabs.js';
+import * as MetricsData from '../../common/metrics-data.js';
+
+let gActivated = false;
+
+export function activate() {
+  gActivated = true;
+}
+
+export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   MetricsData.add('restoreWindowFromEffectiveWindowCache start');
   Cache.log('restoreWindowFromEffectiveWindowCache start');
   var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
@@ -117,7 +131,7 @@ function updateWindowCache(aOwner, aKey, aValue) {
   }
 }
 
-function clearWindowCache(aOwner) {
+export function clearWindowCache(aOwner) {
   Cache.log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_TABS);
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR);
@@ -125,7 +139,7 @@ function clearWindowCache(aOwner) {
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-function markWindowCacheDirtyFromTab(aTab, akey) {
+export function markWindowCacheDirtyFromTab(aTab, akey) {
   const container = aTab.parentNode;
   if (container.markWindowCacheDirtyFromTabTimeout)
     clearTimeout(container.markWindowCacheDirtyFromTabTimeout);
@@ -148,8 +162,8 @@ function getWindowCacheOwner(aHint) {
   };
 }
 
-async function reserveToCacheTree(aHint) {
-  if (gInitializing ||
+export async function reserveToCacheTree(aHint) {
+  if (!gActivated ||
       !configs.useCachedTree)
     return;
 

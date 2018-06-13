@@ -106,6 +106,7 @@ async function init() {
   await TSTAPI.init();
 
   gInitializing = false;
+  BackgroundCache.activate();
 
   // notify that the master process is ready.
   browser.runtime.sendMessage({
