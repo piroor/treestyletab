@@ -39,15 +39,9 @@ export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
 export const onDestroy = new EventListenerManager();
 
-log.context = 'BG';
-
 let gInitialized = false;
 
-MetricsData.add('Loaded');
-
-window.addEventListener('DOMContentLoaded', init, { once: true });
-
-async function init() {
+export async function init() {
   MetricsData.add('init start');
   window.addEventListener('pagehide', destroy, { once: true });
 

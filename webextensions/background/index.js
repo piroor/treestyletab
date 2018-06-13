@@ -4,9 +4,21 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-import './background.js';
+import {
+  log
+} from '../common/common.js';
+
+import * as MetricsData from '../common/metrics-data.js';
+
+import * as Background from './background.js';
 import './listener.js';
 import './context-menu.js';
 
 import './tab-context-menu.js';
 import '../common/TabIdFixer.js';
+
+log.context = 'BG';
+
+MetricsData.add('index: Loaded');
+
+window.addEventListener('DOMContentLoaded', Background.init, { once: true });
