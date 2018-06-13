@@ -30,7 +30,7 @@ import RichConfirm from '../common/RichConfirm.js';
 import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as TreeStructure from './tree-structure.js';
-import * as BackgroundCache from './cache.js';
+import * as BackgroundCache from './background-cache.js';
 import * as ContextMenu from './context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
 

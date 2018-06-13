@@ -26,7 +26,7 @@ import * as SidebarStatus from '../common/sidebar-status.js';
 import * as Commands from '../common/commands.js';
 
 import * as Background from './background.js';
-import * as BackgroundCache from './cache.js';
+import * as BackgroundCache from './background-cache.js';
 import * as TreeStructure from './tree-structure.js';
 
 

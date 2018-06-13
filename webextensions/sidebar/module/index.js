@@ -13,7 +13,7 @@ import * as ContextualIdentities from '../../common/contextual-identities.js';
 import * as MetricsData from '../../common/metrics-data.js';
 import * as Color from './color.js';
 import * as TabContextMenu from './tab-context-menu.js';
-import * as SidebarCache from './cache.js';
+import * as SidebarCache from './sidebar-cache.js';
 import * as Indent from './indent.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as Size from './size.js';
