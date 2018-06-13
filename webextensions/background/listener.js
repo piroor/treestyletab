@@ -386,7 +386,7 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
   log('Tabs.onRemoving ', dumpTab(aTab), aTab.apiTab, aCloseInfo);
 
   const ancestors = Tabs.getAncestorTabs(aTab);
-  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
+  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (!SidebarStatus.isOpen(aTab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(aTab))
