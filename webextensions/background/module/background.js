@@ -5,12 +5,42 @@
 */
 'use strict';
 
+import {
+  log,
+  dumpTab,
+  configs
+} from '../../common/common.js';
+
+import * as Constants from '../../common/constants.js';
+import * as ApiTabsListener from '../../common/api-tabs-listener.js';
+import * as MetricsData from '../../common/metrics-data.js';
+import * as Tabs from '../../common/tabs.js';
+import * as TabsInternalOperation from '../../common/tabs-internal-operation.js';
+import * as TabsContainer from '../../common/tabs-container.js';
+import * as TabsUpdate from '../../common/tabs-update.js';
+import * as Tree from '../../common/tree.js';
+import * as ContextualIdentities from '../../common/contextual-identities.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import * as Sidebar from '../../common/sidebar.js';
+import * as Commands from '../../common/commands.js';
+import * as Migration from '../../common/migration.js';
+import TabFavIconHelper from '../../common/TabFavIconHelper.js';
+import RichConfirm from '../../common/RichConfirm.js';
+import EventListenerManager from '../../common/EventListenerManager.js';
+
+import * as BackgroundCache from './cache.js';
+import * as ContextMenu from './context-menu.js';
+import * as TabContextMenu from './tab-context-menu.js';
+
+export const onInit    = new EventListenerManager();
+export const onBuilt   = new EventListenerManager();
+export const onReady   = new EventListenerManager();
+export const onDestroy = new EventListenerManager();
+export const onTabAttachedFromRestoredInfo = new EventListenerManager();
+
 log.context = 'BG';
 
-var gInitializing           = true;
-var gMaybeTabSwitchingByShortcut = false;
-var gTabSwitchedByShortcut       = false;
-var gScrollLockedBy              = {};
+let gInitialized = false;
 
 MetricsData.add('Loaded');
 
@@ -20,12 +50,7 @@ async function init() {
   MetricsData.add('init start');
   window.addEventListener('pagehide', destroy, { once: true });
 
-  browser.browserAction.onClicked.addListener(onToolbarButtonClick);
-  browser.commands.onCommand.addListener(onShortcutCommand);
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
-  browser.windows.onFocusChanged.addListener(() => {
-    gMaybeTabSwitchingByShortcut = false;
-  });
+  onInit.dispatch();
   Sidebar.startWatchOpenState();
 
   await configs.$loaded;
@@ -50,7 +75,7 @@ async function init() {
 
   ApiTabsListener.startListen();
   ContextualIdentities.startObserve();
-  browser.runtime.onMessage.addListener(onMessage);
+  onBuilt.dispatch();
 
   TabContextMenu.init();
 
@@ -87,7 +112,8 @@ async function init() {
 
   await TSTAPI.init();
 
-  gInitializing = false;
+  gInitialized = true;
+  onReady.dispatch();
   BackgroundCache.activate();
 
   // notify that the master process is ready.
@@ -106,22 +132,24 @@ function updatePanelUrl() {
 
 function waitUntilCompletelyRestored() {
   log('waitUntilCompletelyRestored');
-  return new Promise((aResolve, aReject) => {
-    var onNewTabRestored = async (aNewApiTab) => {
+  return new Promise((aResolve, _aReject) => {
+    let timeout;
+    let resolver;
+    const onNewTabRestored = async (aNewApiTab) => {
       clearTimeout(timeout);
       log('new restored tab is detected.');
-      var uniqueId = await browser.sessions.getTabValue(aNewApiTab.id, Constants.kPERSISTENT_ID);
+      await browser.sessions.getTabValue(aNewApiTab.id, Constants.kPERSISTENT_ID);
       //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
     };
     browser.tabs.onCreated.addListener(onNewTabRestored);
-    var resolver = (() => {
+    resolver = (() => {
       log('timeout: all tabs are restored.');
       browser.tabs.onCreated.removeListener(onNewTabRestored);
       timeout = resolver = onNewTabRestored = undefined;
       aResolve();
     });
-    var timeout = setTimeout(resolver, 500);
+    timeout = setTimeout(resolver, 500);
   });
 }
 
@@ -137,9 +165,7 @@ function destroy() {
     type: TSTAPI.kNOTIFY_SHUTDOWN
   });
 
-  browser.runtime.onMessage.removeListener(onMessage);
-  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
-  browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
+  onDestroy.dispatch();
   ApiTabsListener.endListen();
   ContextualIdentities.endObserve();
 }
@@ -241,7 +267,7 @@ async function tryInitGroupTab(aTab) {
 // save/load tree structure
 
 function reserveToSaveTreeStructure(aHint) {
-  if (gInitializing)
+  if (!gInitialized)
     return;
 
   var container = Tabs.getTabsContainer(aHint);
@@ -419,7 +445,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
              (Tabs.getNextNormalTab(aTab) ||
               Tabs.getPreviousNormalTab(aTab))) {
       log(' attach from position');
-      await tryFixupTreeForInsertedTab(aTab, {
+      onTabAttachedFromRestoredInfo.dispatch(aTab, {
         toIndex:   aTab.apiTab.index,
         fromIndex: Tabs.getTabIndex(Tabs.getLastTab(aTab))
       });
@@ -571,7 +597,7 @@ async function updateChildren(aTab) {
 }
 
 function reserveToUpdateSubtreeCollapsed(aTab) {
-  if (gInitializing ||
+  if (!gInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
   if (aTab.reservedUpdateSubtreeCollapsed)

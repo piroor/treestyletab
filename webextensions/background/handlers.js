@@ -5,161 +5,6 @@
 */
 'use strict';
 
-function onToolbarButtonClick(aTab) {
-  if (Permissions.requestPostProcess())
-    return;
-
-  if (Sidebar.isOpen(aTab.windowId))
-    browser.sidebarAction.close();
-  else
-    browser.sidebarAction.open();
-}
-
-async function onShortcutCommand(aCommand) {
-  const activeTab = Tabs.getTabById((await browser.tabs.query({
-    active:        true,
-    currentWindow: true
-  }))[0]);
-
-  switch (aCommand) {
-    case '_execute_browser_action':
-      return;
-
-    case 'reloadTree':
-      Commands.reloadTree(activeTab);
-      return;
-    case 'reloadDescendants':
-      Commands.reloadDescendants(activeTab);
-      return;
-    case 'closeTree':
-      Commands.closeTree(activeTab);
-      return;
-    case 'closeDescendants':
-      Commands.closeDescendants(activeTab);
-      return;
-    case 'closeOthers':
-      Commands.closeOthers(activeTab);
-      return;
-    case 'collapseAll':
-      Commands.collapseAll(activeTab);
-      return;
-    case 'expandAll':
-      Commands.expandAll(activeTab);
-      return;
-    case 'bookmarkTree':
-      Commands.bookmarkTree(activeTab);
-      return;
-
-    case 'newIndependentTab':
-      Commands.openNewTabAs({
-        baseTab: activeTab,
-        as:      Constants.kNEWTAB_OPEN_AS_ORPHAN
-      });
-      return;
-    case 'newChildTab':
-      Commands.openNewTabAs({
-        baseTab: activeTab,
-        as:      Constants.kNEWTAB_OPEN_AS_CHILD
-      });
-      return;
-    case 'newSiblingTab':
-      Commands.openNewTabAs({
-        baseTab: activeTab,
-        as:      Constants.kNEWTAB_OPEN_AS_SIBLING
-      });
-      return;
-    case 'newNextSiblingTab':
-      Commands.openNewTabAs({
-        baseTab: activeTab,
-        as:      Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
-      });
-      return;
-
-    case 'newContainerTab':
-      return browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
-        windowId: activeTab.apiTab.windowId
-      });
-
-    case 'indent':
-      Commands.indent(activeTab, { followChildren: true });
-      return;
-    case 'outdent':
-      Commands.outdent(activeTab, { followChildren: true });
-      return;
-
-    case 'tabMoveUp':
-      Commands.moveUp(activeTab, { followChildren: false });
-      return;
-    case 'treeMoveUp':
-      Commands.moveUp(activeTab, { followChildren: true });
-      return;
-    case 'tabMoveDown':
-      Commands.moveDown(activeTab, { followChildren: false });
-      return;
-    case 'treeMoveDown':
-      Commands.moveDown(activeTab, { followChildren: true });
-      return;
-
-    case 'focusPrevious':
-      TabsInternalOperation.selectTab(Tabs.getPreviousSiblingTab(activeTab), { silently: false });
-      return;
-    case 'focusPreviousSilently':
-      TabsInternalOperation.selectTab(Tabs.getPreviousSiblingTab(activeTab), { silently: true });
-      return;
-    case 'focusNext':
-      TabsInternalOperation.selectTab(Tabs.getNextSiblingTab(activeTab), { silently: false });
-      return;
-    case 'focusNextSilently':
-      TabsInternalOperation.selectTab(Tabs.getNextSiblingTab(activeTab), { silently: true });
-      return;
-
-    case 'tabbarUp':
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
-        by:       'lineup'
-      });
-      return;
-    case 'tabbarPageUp':
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
-        by:       'pageup'
-      });
-      return;
-    case 'tabbarHome':
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
-        to:       'top'
-      });
-      return;
-
-    case 'tabbarDown':
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
-        by:       'linedown'
-      });
-      return;
-    case 'tabbarPageDown':
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
-        by:       'pagedown'
-      });
-      return;
-    case 'tabbarEnd':
-      browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
-        to:       'bottom'
-      });
-      return;
-  }
-}
-
 // raw event handlers
 
 // this should return true if the tab is moved while processing
@@ -688,43 +533,6 @@ Tabs.onTabElementMoved.addListener((aTab, aInfo = {}) => {
   ]);
 });
 
-Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
-  reserveToSaveTreeStructure(aTab);
-  reserveToUpdateInsertionPosition([
-    aTab,
-    aMoveInfo.oldPreviousTab,
-    aMoveInfo.oldNextTab,
-    Tabs.getPreviousTab(aTab),
-    Tabs.getNextTab(aTab)
-  ]);
-
-  const container = Tabs.getTabsContainer(aTab);
-  if (aMoveInfo.byInternalOperation ||
-      Tabs.isDuplicating(aTab)) {
-    log('internal move');
-    return;
-  }
-  log('process moved tab');
-
-  tryFixupTreeForInsertedTab(aTab, aMoveInfo);
-});
-
-Commands.onMoveUp.addListener(async aTab => {
-  const index = Tabs.getTabIndex(aTab);
-  await tryFixupTreeForInsertedTab(aTab, {
-    toIndex:   index,
-    fromIndex: index + 1,
-  });
-});
-
-Commands.onMoveDown.addListener(async aTab => {
-  const index = Tabs.getTabIndex(aTab);
-  await tryFixupTreeForInsertedTab(aTab, {
-    toIndex:   index,
-    fromIndex: index - 1,
-  });
-});
-
 async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
   if (!Tree.shouldApplyTreeBehavior(aMoveInfo)) {
     Tree.detachAllChildren(aTab, {
@@ -770,6 +578,45 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
       break;
   }
 }
+
+Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
+  reserveToSaveTreeStructure(aTab);
+  reserveToUpdateInsertionPosition([
+    aTab,
+    aMoveInfo.oldPreviousTab,
+    aMoveInfo.oldNextTab,
+    Tabs.getPreviousTab(aTab),
+    Tabs.getNextTab(aTab)
+  ]);
+
+  const container = Tabs.getTabsContainer(aTab);
+  if (aMoveInfo.byInternalOperation ||
+      Tabs.isDuplicating(aTab)) {
+    log('internal move');
+    return;
+  }
+  log('process moved tab');
+
+  tryFixupTreeForInsertedTab(aTab, aMoveInfo);
+});
+
+Commands.onMoveUp.addListener(async aTab => {
+  const index = Tabs.getTabIndex(aTab);
+  await tryFixupTreeForInsertedTab(aTab, {
+    toIndex:   index,
+    fromIndex: index + 1,
+  });
+});
+
+Commands.onMoveDown.addListener(async aTab => {
+  const index = Tabs.getTabIndex(aTab);
+  await tryFixupTreeForInsertedTab(aTab, {
+    toIndex:   index,
+    fromIndex: index - 1,
+  });
+});
+
+Background.onTabAttachedFromRestoredInfo.addListener(tryFixupTreeForInsertedTab);
 
 function moveBack(aTab, aMoveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(aTab), aMoveInfo);
@@ -1312,6 +1159,190 @@ Tabs.onGroupTabDetected.addListener(aTab => {
 
 /* message observer */
 
+let gInitialized                 = false;
+let gTabSwitchedByShortcut       = false;
+let gMaybeTabSwitchingByShortcut = false;
+const gScrollLockedBy = {};
+
+Background.onInit.addListener(() => {
+  browser.browserAction.onClicked.addListener(onToolbarButtonClick);
+  browser.commands.onCommand.addListener(onShortcutCommand);
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+  browser.windows.onFocusChanged.addListener(() => {
+    gMaybeTabSwitchingByShortcut = false;
+  });
+});
+
+Background.onBuilt.addListener(() => {
+  browser.runtime.onMessage.addListener(onMessage);
+});
+
+Background.onReady.addListener(() => {
+  gInitialized = true;
+});
+
+Background.onDestroy.addListener(() => {
+  browser.runtime.onMessage.removeListener(onMessage);
+  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
+  browser.browserAction.onClicked.removeListener(onToolbarButtonClick);
+});
+
+
+function onToolbarButtonClick(aTab) {
+  if (Permissions.requestPostProcess())
+    return;
+
+  if (Sidebar.isOpen(aTab.windowId))
+    browser.sidebarAction.close();
+  else
+    browser.sidebarAction.open();
+}
+
+async function onShortcutCommand(aCommand) {
+  const activeTab = Tabs.getTabById((await browser.tabs.query({
+    active:        true,
+    currentWindow: true
+  }))[0]);
+
+  switch (aCommand) {
+    case '_execute_browser_action':
+      return;
+
+    case 'reloadTree':
+      Commands.reloadTree(activeTab);
+      return;
+    case 'reloadDescendants':
+      Commands.reloadDescendants(activeTab);
+      return;
+    case 'closeTree':
+      Commands.closeTree(activeTab);
+      return;
+    case 'closeDescendants':
+      Commands.closeDescendants(activeTab);
+      return;
+    case 'closeOthers':
+      Commands.closeOthers(activeTab);
+      return;
+    case 'collapseAll':
+      Commands.collapseAll(activeTab);
+      return;
+    case 'expandAll':
+      Commands.expandAll(activeTab);
+      return;
+    case 'bookmarkTree':
+      Commands.bookmarkTree(activeTab);
+      return;
+
+    case 'newIndependentTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      Constants.kNEWTAB_OPEN_AS_ORPHAN
+      });
+      return;
+    case 'newChildTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      Constants.kNEWTAB_OPEN_AS_CHILD
+      });
+      return;
+    case 'newSiblingTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      Constants.kNEWTAB_OPEN_AS_SIBLING
+      });
+      return;
+    case 'newNextSiblingTab':
+      Commands.openNewTabAs({
+        baseTab: activeTab,
+        as:      Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING
+      });
+      return;
+
+    case 'newContainerTab':
+      return browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
+        windowId: activeTab.apiTab.windowId
+      });
+
+    case 'indent':
+      Commands.indent(activeTab, { followChildren: true });
+      return;
+    case 'outdent':
+      Commands.outdent(activeTab, { followChildren: true });
+      return;
+
+    case 'tabMoveUp':
+      Commands.moveUp(activeTab, { followChildren: false });
+      return;
+    case 'treeMoveUp':
+      Commands.moveUp(activeTab, { followChildren: true });
+      return;
+    case 'tabMoveDown':
+      Commands.moveDown(activeTab, { followChildren: false });
+      return;
+    case 'treeMoveDown':
+      Commands.moveDown(activeTab, { followChildren: true });
+      return;
+
+    case 'focusPrevious':
+      TabsInternalOperation.selectTab(Tabs.getPreviousSiblingTab(activeTab), { silently: false });
+      return;
+    case 'focusPreviousSilently':
+      TabsInternalOperation.selectTab(Tabs.getPreviousSiblingTab(activeTab), { silently: true });
+      return;
+    case 'focusNext':
+      TabsInternalOperation.selectTab(Tabs.getNextSiblingTab(activeTab), { silently: false });
+      return;
+    case 'focusNextSilently':
+      TabsInternalOperation.selectTab(Tabs.getNextSiblingTab(activeTab), { silently: true });
+      return;
+
+    case 'tabbarUp':
+      browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'lineup'
+      });
+      return;
+    case 'tabbarPageUp':
+      browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'pageup'
+      });
+      return;
+    case 'tabbarHome':
+      browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        to:       'top'
+      });
+      return;
+
+    case 'tabbarDown':
+      browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'linedown'
+      });
+      return;
+    case 'tabbarPageDown':
+      browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        by:       'pagedown'
+      });
+      return;
+    case 'tabbarEnd':
+      browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_SCROLL_TABBAR,
+        windowId: activeTab.apiTab.windowId,
+        to:       'bottom'
+      });
+      return;
+  }
+}
+
 function onMessage(aMessage, aSender) {
   if (!aMessage ||
       typeof aMessage.type != 'string' ||
@@ -1347,7 +1378,7 @@ function onMessage(aMessage, aSender) {
 
     case Constants.kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
-        while (gInitializing) {
+        while (!gInitialized) {
           await wait(10);
         }
         const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(aMessage.windowId));
@@ -1925,6 +1956,3 @@ function onMessageExternal(aMessage, aSender) {
       return Promise.resolve(true);
   }
 }
-
-
-// fake context menu

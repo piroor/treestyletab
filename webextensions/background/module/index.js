@@ -14,6 +14,7 @@ import * as ContextualIdentities from '../../common/contextual-identities.js';
 import * as MetricsData from '../../common/metrics-data.js';
 import * as Migration from '../../common/migration.js';
 import * as ContextMenu from './context-menu.js';
+import * as Background from './background.js';
 import * as BackgroundCache from './cache.js';
 
 import * as Tabs from '../../common/tabs.js';
@@ -52,6 +53,7 @@ window.MetricsData = MetricsData;
 window.ContextMenu = ContextMenu;
 window.TabContextMenu = TabContextMenu;
 window.Migration = Migration;
+window.Background = Background;
 window.BackgroundCache = BackgroundCache;
 
 window.Tabs = Tabs;
