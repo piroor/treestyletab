@@ -282,8 +282,8 @@ async function onNewTabTracked(aTab) {
     const nextTab = Tabs.getAllTabs(container)[aTab.index];
     container.insertBefore(newTab, nextTab);
 
-    const _onTabCreated = Tabs.addCreatingTab(newTab);
-    const onTabCreated = (aUniqueId) => { _onTabCreated(aUniqueId); onCompleted(); };
+    const onTabCreatedInner = Tabs.addCreatingTab(newTab);
+    const onTabCreated = (aUniqueId) => { onTabCreatedInner(aUniqueId); onCompleted(); };
     const uniqueId = await newTab.uniqueId;
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
@@ -382,6 +382,7 @@ async function onNewTabTracked(aTab) {
     wait(configs.newTabAnimationDuration).then(() => {
       newTab.classList.remove(Constants.kTAB_STATE_OPENING);
     });
+    // eslint-disable-next-line no-underscore-dangle
     newTab._resolveOpened();
 
     if (!duplicated &&
@@ -460,8 +461,10 @@ async function onRemoved(aTabId, aRemoveInfo) {
 
     Tabs.onStateChanged.dispatch(oldTab);
 
-    if (Tabs.isActive(oldTab))
+    if (Tabs.isActive(oldTab)) {
+      // eslint-disable-next-line no-underscore-dangle
       container.resolveClosedWhileActiveForPreviousActiveTab = oldTab._resolveClosedWhileActive;
+    }
 
     await Tabs.onRemoving.dispatch(oldTab, {
       byInternalOperation
@@ -520,8 +523,8 @@ async function onMoved(aTabId, aMoveInfo) {
     await previous;
 
   try {
-    const _onTabMoved = Tabs.addMovingTabId(aTabId);
-    const completelyMoved = () => { _onTabMoved(); onCompleted() };
+    const onTabMoved = Tabs.addMovingTabId(aTabId);
+    const completelyMoved = () => { onTabMoved(); onCompleted() };
 
     /* When a tab is pinned, tabs.onMoved may be notified before
        tabs.onUpdated(pinned=true) is notified. As the result,
