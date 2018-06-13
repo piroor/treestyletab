@@ -44,6 +44,7 @@ export const onDestroy = new EventListenerManager();
 
 var gInitialized = false;
 var gStyle;
+var gAddonStyles    = {};
 var gTargetWindow   = null;
 
 var gTabBar                     = document.querySelector('#tabbar');
@@ -72,7 +73,6 @@ UserOperationBlocker.block({ throbber: true });
 export async function init() {
   MetricsData.add('init start');
   log('initialize sidebar on load');
-  onInit.dispatch();
 
   await Promise.all([
     (async () => {
@@ -150,6 +150,11 @@ export async function init() {
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       const addons = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS });
       TSTAPI.setAddons(addons);
+      for (let id of Object.keys(TSTAPI.addons)) {
+        let addon = TSTAPI.addons[id];
+        if (addon.style)
+          installStyleForAddon(id, addon.style);
+      }
     }),
     MetricsData.addAsync('getting Constants.kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION);
@@ -244,11 +249,27 @@ function applyStyle(aStyle) {
   });
 }
 
-function applyUserStyleRules() {
+export function applyUserStyleRules() {
   gUserStyleRules.textContent = configs.userStyleRules || '';
 }
 
-function applyBrowserTheme(aTheme) {
+export function installStyleForAddon(aId, aStyle) {
+  if (!gAddonStyles[aId]) {
+    gAddonStyles[aId] = document.createElement('style');
+    gAddonStyles[aId].setAttribute('type', 'text/css');
+    document.head.insertBefore(gAddonStyles[aId], gUserStyleRules);
+  }
+  gAddonStyles[aId].textContent = aStyle;
+}
+
+export function uninstallStyleForAddon(aId) {
+  if (!gAddonStyles[aId])
+    return;
+  document.head.removeChild(gAddonStyles[aId]);
+  delete gAddonStyles[aId];
+}
+
+export function applyBrowserTheme(aTheme) {
   log('applying theme ', aTheme);
 
   const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
@@ -304,7 +325,7 @@ function applyBrowserTheme(aTheme) {
   `;
 }
 
-function updateContextualIdentitiesStyle() {
+export function updateContextualIdentitiesStyle() {
   var definitions = [];
   ContextualIdentities.forEach(aIdentity => {
     if (!aIdentity.colorCode)
@@ -318,7 +339,7 @@ function updateContextualIdentitiesStyle() {
   gContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
 
-function updateContextualIdentitiesSelector() {
+export function updateContextualIdentitiesSelector() {
   const anchors = Array.slice(document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
   for (let anchor of anchors) {
     if (ContextualIdentities.getCount() == 0)
@@ -359,7 +380,7 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-async function rebuildAll(aCache) {
+export async function rebuildAll(aCache) {
   var apiTabs = await browser.tabs.query({ currentWindow: true });
   TabsContainer.clearAll();
 
@@ -383,7 +404,7 @@ async function rebuildAll(aCache) {
   return false;
 }
 
-async function inheritTreeStructure() {
+export async function inheritTreeStructure() {
   var response = await browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
@@ -419,7 +440,7 @@ async function waitUntilBackgroundIsReady() {
 }
 
 
-async function confirmToCloseTabs(aCount, _aOptions = {}) {
+export async function confirmToCloseTabs(aCount, _aOptions = {}) {
   if (aCount <= 1 ||
       !configs.warnOnCloseTabs)
     return true;
@@ -447,7 +468,7 @@ Commands.onTabsClosing.addListener(confirmToCloseTabs);
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
-function updateTabTwisty(aTab) {
+export function updateTabTwisty(aTab) {
   var tooltip;
   if (Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
@@ -456,7 +477,7 @@ function updateTabTwisty(aTab) {
   SidebarTabs.getTabTwisty(aTab).setAttribute('title', tooltip);
 }
 
-function updateTabClosebox(aTab) {
+export function updateTabClosebox(aTab) {
   var tooltip;
   if (Tabs.hasChildTabs(aTab) && Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
@@ -465,7 +486,7 @@ function updateTabClosebox(aTab) {
   SidebarTabs.getTabClosebox(aTab).setAttribute('title', tooltip);
 }
 
-function updateTabsCount(aTab) {
+export function updateTabsCount(aTab) {
   var counter = SidebarTabs.getTabCounter(aTab);
   if (!counter)
     return;
@@ -488,7 +509,7 @@ export function reserveToUpdateVisualMaxTreeLevel() {
   }, configs.collapseDuration * 1.5);
 }
 
-function updateVisualMaxTreeLevel() {
+export function updateVisualMaxTreeLevel() {
   var maxLevel = Tabs.getMaxTreeLevel(gTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
@@ -527,7 +548,7 @@ export function reserveToUpdateTabbarLayout(aOptions = {}) {
 reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
-function updateTabbarLayout(aParams = {}) {
+export function updateTabbarLayout(aParams = {}) {
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({

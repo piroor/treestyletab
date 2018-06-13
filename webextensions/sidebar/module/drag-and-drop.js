@@ -134,6 +134,10 @@ export function endMultiDrag(aTab, aCoordinates) {
   gReadyToCaptureMouseEvents = false;
 }
 
+export function setDragData(aDragData) {
+  return gCurrentDragData = aDragData;
+}
+
 
 /* helpers */
 

@@ -38,11 +38,43 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-//import MenuUI from '../../common/MenuUI.js';
+import {
+  log,
+  dumpTab,
+  wait,
+  nextFrame,
+  configs
+} from '../../common/common.js';
+import * as Constants from '../../common/constants.js';
+import * as Tabs from '../../common/tabs.js';
+import * as TabsInternalOperation from '../../common/tabs-internal-operation.js';
+import * as TabsUpdate from '../../common/tabs-update.js';
+import * as TabsMove from '../../common/tabs-move.js';
+import * as Tree from '../../common/tree.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import * as ContextualIdentities from '../../common/contextual-identities.js';
+import * as Commands from '../../common/commands.js';
+import * as UserOperationBlocker from '../../common/user-operation-blocker.js';
+import * as MetricsData from '../../common/metrics-data.js';
+import MenuUI from '../../common/MenuUI.js';
+import TabFavIconHelper from '../../common/TabFavIconHelper.js';
+
+import * as Sidebar from './sidebar.js';
+import * as SidebarCache from './sidebar-cache.js';
+import * as SidebarTabs from './sidebar-tabs.js';
+import * as EventUtils from './event-utils.js';
+import * as DragAndDrop from './drag-and-drop.js';
+import * as RestoringTabCount from './restoring-tab-count.js';
+import * as Size from './size.js';
+import * as Indent from './indent.js';
+import * as Scroll from './scroll.js';
+import * as TabContextMenu from './tab-context-menu.js';
 
 var gScrollLockedBy = {};
-var gAddonStyles    = {};
 var gInitialized    = false;
+var gTargetWindow;
+
+const gUpdatingCollapsedState = {};
 
 var gTabBar = document.querySelector('#tabbar');
 var gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
@@ -51,6 +83,7 @@ var gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTI
 Sidebar.onInit.addListener(() => {
   onConfigChange('colorScheme');
   onConfigChange('simulateSVGContextFill');
+  gTargetWindow = Tabs.getWindow();
 });
 
 Sidebar.onBuilt.addListener(async () => {
@@ -106,12 +139,6 @@ Sidebar.onReady.addListener(() => {
   onConfigChange('animation');
 
   updateSpecialEventListenersForAPIListeners();
-
-  for (let id of Object.keys(TSTAPI.addons)) {
-    let addon = addons[id];
-    if (addon.style)
-      installStyleForAddon(id, addon.style);
-  }
 });
 
 Sidebar.onDestroy.addListener(() => {
@@ -178,26 +205,10 @@ function updateSpecialEventListenersForAPIListeners() {
   }
 }
 
-function installStyleForAddon(aId, aStyle) {
-  if (!gAddonStyles[aId]) {
-    gAddonStyles[aId] = document.createElement('style');
-    gAddonStyles[aId].setAttribute('type', 'text/css');
-    document.head.insertBefore(gAddonStyles[aId], gUserStyleRules);
-  }
-  gAddonStyles[aId].textContent = aStyle;
-}
-
-function uninstallStyleForAddon(aId) {
-  if (!gAddonStyles[aId])
-    return;
-  document.head.removeChild(gAddonStyles[aId]);
-  delete gAddonStyles[aId];
-}
-
 
 /* handlers for DOM events */
 
-function onResize(aEvent) {
+function onResize(_aEvent) {
   Sidebar.reserveToUpdateTabbarLayout({
     reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
   });
@@ -217,14 +228,14 @@ function onContextMenu(aEvent) {
   });
 }
 
-function onFocus(aEvent) {
+function onFocus(_aEvent) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
     windowId: gTargetWindow
   });
 }
 
-function onBlur(aEvent) {
+function onBlur(_aEvent) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_BLUR,
     windowId: gTargetWindow
@@ -440,7 +451,7 @@ async function onMouseUp(aEvent) {
       if (configs.logOnMouseEvent)
         log('middle click on a tab');
       //log('middle-click to close');
-      confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
+      Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
           if (aConfirmed)
             TabsInternalOperation.removeTab(tab, { inRemote: true });
@@ -548,7 +559,7 @@ function onClick(aEvent) {
     //  aEvent.preventDefault();
     //  return;
     //}
-    confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
+    Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
       .then(aConfirmed => {
         if (aConfirmed)
           TabsInternalOperation.removeTab(tab, { inRemote: true });
@@ -686,7 +697,7 @@ async function onWheel(aEvent) {
   }
 }
 
-function onScroll(aEvent) {
+function onScroll(_aEvent) {
   reserveToSaveScrollPosition();
 }
 
@@ -792,7 +803,7 @@ Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
   });
 });
 
-Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
+Tabs.onUpdated.addListener(aTab => {
   updateTabSoundButtonTooltip(aTab);
 });
 
@@ -815,7 +826,7 @@ function updateTabSoundButtonTooltip(aTab) {
 }
 
 
-Tabs.onCreated.addListener((aTab, aInfo = {}) => {
+Tabs.onCreated.addListener(aTab => {
   if (configs.animation) {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
     nextFrame().then(() => {
@@ -880,7 +891,7 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
       (cache.offset &&
        container.childNodes.length <= cache.offset)) {
     log('Tabs.onWindowRestoring: no effective cache');
-    await inheritTreeStructure(); // fallback to classic method
+    await Sidebar.inheritTreeStructure(); // fallback to classic method
     UserOperationBlocker.unblock({ throbber: true });
     return;
   }
@@ -894,15 +905,15 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
     tabs:   apiTabs
   });
   if (!restored) {
-    await rebuildAll();
-    await inheritTreeStructure();
+    await Sidebar.rebuildAll();
+    await Sidebar.inheritTreeStructure();
   }
-  updateVisualMaxTreeLevel();
+  Sidebar.updateVisualMaxTreeLevel();
   Indent.update({
     force: true,
     cache: restored && cache.offset == 0 ? cache.indent : null
   });
-  updateTabbarLayout({ justNow: true });
+  Sidebar.updateTabbarLayout({ justNow: true });
   UserOperationBlocker.unblock({ throbber: true });
   MetricsData.add('Tabs.onWindowRestoring restore end');
 });
@@ -935,7 +946,7 @@ Tabs.onRemoved.addListener(async aTab => {
       !configs.animation)
     return;
 
-  return new Promise(async (aResolve, aReject) => {
+  return new Promise(async (aResolve, _aReject) => {
     let tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
     await wait(configs.animation ? configs.collapseDuration : 0);
@@ -983,7 +994,7 @@ Tabs.onMoved.addListener(aTab => {
   Sidebar.reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
 });
 
-Tree.onLevelChanged.addListener(async aTab => {
+Tree.onLevelChanged.addListener(async () => {
   Sidebar.reserveToUpdateIndent();
 });
 
@@ -998,9 +1009,9 @@ Tabs.onDetached.addListener(aTab => {
   });
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener((aTab, aInfo = {}) => {
-  updateTabTwisty(aTab);
-  updateTabClosebox(aTab);
+Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
+  Sidebar.updateTabTwisty(aTab);
+  Sidebar.updateTabClosebox(aTab);
   Sidebar.reserveToUpdateTabTooltip(aTab);
 });
 
@@ -1159,7 +1170,6 @@ async function isSurelyCollapsed(aTab) {
     });
   return Tabs.isCollapsed(aTab);
 }
-const gUpdatingCollapsedState = {};
 
 
 /*
@@ -1213,12 +1223,12 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   if (!gInitialized)
     return;
   TabContextMenu.close();
-  updateTabTwisty(aInfo.parent);
-  updateTabClosebox(aInfo.parent);
+  Sidebar.updateTabTwisty(aInfo.parent);
+  Sidebar.updateTabClosebox(aInfo.parent);
   if (aInfo.newlyAttached) {
     let ancestors = [aInfo.parent].concat(Tabs.getAncestorTabs(aInfo.parent));
     for (let ancestor of ancestors) {
-      updateTabsCount(ancestor);
+      Sidebar.updateTabsCount(ancestor);
     }
   }
   Sidebar.reserveToUpdateTabTooltip(aInfo.parent);
@@ -1238,18 +1248,18 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   var parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
-  updateTabTwisty(parent);
-  updateTabClosebox(parent);
+  Sidebar.updateTabTwisty(parent);
+  Sidebar.updateTabClosebox(parent);
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
   Sidebar.reserveToUpdateTabTooltip(parent);
   var ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (let ancestor of ancestors) {
-    updateTabsCount(ancestor);
+    Sidebar.updateTabsCount(ancestor);
   }
 });
 
-Tabs.onPinned.addListener(aTab => {
+Tabs.onPinned.addListener(() => {
   TabContextMenu.close();
 });
 
@@ -1259,13 +1269,13 @@ Tabs.onUnpinned.addListener(aTab => {
   //updateInvertedTabContentsOrder(aTab);
 });
 
-Tabs.onShown.addListener(aTab => {
+Tabs.onShown.addListener(() => {
   TabContextMenu.close();
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
 });
 
-Tabs.onHidden.addListener(aTab => {
+Tabs.onHidden.addListener(() => {
   TabContextMenu.close();
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
@@ -1297,8 +1307,8 @@ Tabs.onGroupTabDetected.addListener(aTab => {
 });
 
 ContextualIdentities.onUpdated.addListener(() => {
-  updateContextualIdentitiesStyle();
-  updateContextualIdentitiesSelector();
+  Sidebar.updateContextualIdentitiesStyle();
+  Sidebar.updateContextualIdentitiesSelector();
 });
 
 
@@ -1309,7 +1319,7 @@ function waitUntilAllTreeChangesFromRemoteAreComplete() {
   return Promise.all(gTreeChangesFromRemote);
 }
 
-function onMessage(aMessage, aSender, aRespond) {
+function onMessage(aMessage, _aSender, _aRespond) {
   if (!aMessage ||
       typeof aMessage.type != 'string' ||
       aMessage.type.indexOf('treestyletab:') != 0)
@@ -1504,23 +1514,23 @@ function onMessage(aMessage, aSender, aRespond) {
 
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
       if (aMessage.windowId == gTargetWindow)
-        return confirmToCloseTabs(aMessage.count);
+        return Sidebar.confirmToCloseTabs(aMessage.count);
     }; break;
 
     case Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
-      gCurrentDragData = aMessage.dragData || null;
+      DragAndDrop.setDragData(aMessage.dragData || null);
       break;
 
     case Constants.kCOMMAND_BROADCAST_API_REGISTERED:
       TSTAPI.addons[aMessage.sender.id] = aMessage.message;
       if (aMessage.message.style)
-        installStyleForAddon(aMessage.sender.id, aMessage.message.style);
+        Sidebar.installStyleForAddon(aMessage.sender.id, aMessage.message.style);
       updateSpecialEventListenersForAPIListeners();
       break;
 
     case Constants.kCOMMAND_BROADCAST_API_UNREGISTERED:
       delete gScrollLockedBy[aMessage.sender.id];
-      uninstallStyleForAddon(aMessage.sender.id)
+      Sidebar.uninstallStyleForAddon(aMessage.sender.id)
       delete TSTAPI.addons[aMessage.sender.id];
       updateSpecialEventListenersForAPIListeners();
       break;
@@ -1606,7 +1616,7 @@ function onMessageExternal(aMessage, aSender) {
 function onBrowserThemeChanged(aUpdateInfo) {
   if (!aUpdateInfo.windowId || // reset to default
       aUpdateInfo.windowId == gTargetWindow)
-    applyBrowserTheme(aUpdateInfo.theme);
+    Sidebar.applyBrowserTheme(aUpdateInfo.theme);
 }
 
 function onConfigChange(aChangedKey) {
@@ -1714,11 +1724,11 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'userStyleRules':
-      applyUserStyleRules()
+      Sidebar.applyUserStyleRules()
       break;
 
     case 'inheritContextualIdentityToNewChildTab':
-      updateContextualIdentitiesSelector();
+      Sidebar.updateContextualIdentitiesSelector();
       break;
 
     case 'showContextualIdentitiesSelector':
