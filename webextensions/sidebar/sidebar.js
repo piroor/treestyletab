@@ -84,7 +84,7 @@ async function init() {
     MetricsData.addAsync('main', async () => {
       if (configs.useCachedTree)
         await MetricsData.addAsync('read cached sidebar contents', async () => {
-          cachedContents = await getEffectiveWindowCache();
+          cachedContents = await SidebarCache.getEffectiveWindowCache();
         });
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
@@ -206,7 +206,7 @@ async function init() {
       updateTabsCount(tab);
       updateTabTooltip(tab);
     }
-    reserveToUpdateCachedTabbar();
+    SidebarCache.reserveToUpdateCachedTabbar();
   }
   updateTabbarLayout({ justNow: true });
 
@@ -487,7 +487,7 @@ async function rebuildAll(aCache) {
   TabsContainer.clearAll();
 
   if (aCache) {
-    let restored = await restoreTabsFromCache(aCache, { tabs: apiTabs });
+    let restored = await SidebarCache.restoreTabsFromCache(aCache, { tabs: apiTabs });
     if (restored) {
       MetricsData.add('rebuildAll (from cache)');
       return true;
