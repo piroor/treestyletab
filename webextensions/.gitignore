@@ -7,6 +7,7 @@
 **/MenuUI.js
 **/RichConfirm.js
 **/ShortcutCustomizeUI.js
+external/
 
 # node.js dependency
 node_modules/

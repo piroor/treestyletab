@@ -10,3 +10,6 @@ options/ShortcutCustomizeUI.js
 
 # include as a lint target.
 !.eslintrc.js
+
+# The Makefile will copy external libraries into this directory
+external/
