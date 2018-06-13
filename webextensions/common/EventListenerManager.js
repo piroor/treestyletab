@@ -9,24 +9,24 @@ const TIMEOUT = 2000;
 
 export default class EventListenerManager {
   constructor() {
-    this.listeners = [];
+    this._listeners = [];
   }
 
   addListener(aListener) {
-    if (this.listeners.indexOf(aListener) < 0) {
-      this.listeners.push(aListener);
+    if (this._listeners.indexOf(aListener) < 0) {
+      this._listeners.push(aListener);
       aListener.$stack = new Error().stack;
     }
   }
 
   removeListener(aListener) {
-    const index = this.listeners.indexOf(aListener);
+    const index = this._listeners.indexOf(aListener);
     if (index > -1)
-      this.listeners.splice(index, 1);
+      this._listeners.splice(index, 1);
   }
 
   async dispatch(...aArgs) {
-    const results = await Promise.all(this.listeners.map(async aListener => {
+    const results = await Promise.all(this._listeners.map(async aListener => {
       const timer = setTimeout(() => {
         console.log(`listener does not respond in ${TIMEOUT}ms.\n${aListener.$stack}\n\n${new Error().stack}`);
       }, TIMEOUT);
