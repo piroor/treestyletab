@@ -122,8 +122,7 @@ function restoreTabsFromCache(aWindowId, aParams = {}) {
 
 
 function updateWindowCache(aOwner, aKey, aValue) {
-  if (!aOwner ||
-      !Tabs.getTabById(aOwner))
+  if (!aOwner)
     return;
   if (aValue === undefined) {
     //return browser.sessions.removeWindowValue(aOwner, aKey);
@@ -327,10 +326,10 @@ function onConfigChange(aKey) {
         for (let window of aWindows) {
           let owner = window.tabs[window.tabs.length - 1];
           if (configs[aKey]) {
-            reserveToCacheTree(owner.windowId);
+            reserveToCacheTree(Tabs.getTabById(owner));
           }
           else {
-            clearWindowCache(owner.id);
+            clearWindowCache(owner);
             location.reload();
           }
         }
