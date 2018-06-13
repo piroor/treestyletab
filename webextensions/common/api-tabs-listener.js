@@ -590,11 +590,11 @@ async function onMoved(aTabId, aMoveInfo) {
   }
 }
 
-var gTreeInfoForTabsMovingAcrossWindows = {};
+const gTreeInfoForTabsMovingAcrossWindows = {};
 
 async function onAttached(aTabId, aAttachInfo) {
   const targetWindow = Tabs.getWindow();
-  if (targetWindow && aAttachInfo.windowId != targetWindow)
+  if (targetWindow && aAttachInfo.newWindowId != targetWindow)
     return;
 
   const [onCompleted, previous] = addTabOperationQueue();
@@ -641,7 +641,7 @@ async function onAttached(aTabId, aAttachInfo) {
 
 async function onDetached(aTabId, aDetachInfo) {
   const targetWindow = Tabs.getWindow();
-  if (targetWindow && aDetachInfo.windowId != targetWindow)
+  if (targetWindow && aDetachInfo.oldWindowId != targetWindow)
     return;
 
   const [onCompleted, previous] = addTabOperationQueue();
