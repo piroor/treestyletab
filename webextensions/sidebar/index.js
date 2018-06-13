@@ -11,6 +11,7 @@ import * as MetricsData from '../common/metrics-data.js';
 
 import * as Sidebar from './sidebar.js';
 import './listener.js';
+import '../common/l10n.js';
 
 import './tab-context-menu.js';
 import '../common/TabIdFixer.js';
