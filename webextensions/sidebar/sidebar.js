@@ -61,7 +61,7 @@ async function init() {
       PinnedTabs.init();
       Indent.init();
       SidebarCache.init();
-      SidebarCache.onRestored.addListener(clearDropPosition);
+      SidebarCache.onRestored.addListener(DragAndDrop.clearDropPosition);
       Scroll.init();
     })(),
     configs.$loaded
@@ -116,7 +116,7 @@ async function init() {
       gTabBar.addEventListener('overflow', onOverflow);
       gTabBar.addEventListener('underflow', onUnderflow);
       gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
-      startListenDragEvents();
+      DragAndDrop.startListen();
       MetricsData.add('start to listen events');
 
       configs.$addObserver(onConfigChange);
@@ -225,7 +225,7 @@ function destroy() {
   browser.runtime.onMessageExternal.removeListener(onMessageExternal);
   if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
     browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
-  endListenDragEvents();
+  DragAndDrop.endListen();
   ApiTabsListener.endListen();
   ContextualIdentities.endObserve();
   window.removeEventListener('resize', onResize);
@@ -518,26 +518,6 @@ async function waitUntilBackgroundIsReady() {
 }
 
 
-function getTabTwisty(aTab) {
-  return aTab.querySelector(`.${Constants.kTWISTY}`);
-}
-function getTabFavicon(aTab) {
-  return aTab.querySelector(`.${Constants.kFAVICON}`);
-}
-function getTabThrobber(aTab) {
-  return aTab.querySelector(`.${Constants.kTHROBBER}`);
-}
-function getTabSoundButton(aTab) {
-  return aTab.querySelector(`.${Constants.kSOUND_BUTTON}`);
-}
-function getTabCounter(aTab) {
-  return aTab.querySelector(`.${Constants.kCOUNTER}`);
-}
-function getTabClosebox(aTab) {
-  return aTab.querySelector(`.${Constants.kCLOSEBOX}`);
-}
-
-
 async function confirmToCloseTabs(aCount, aOptions = {}) {
   if (aCount <= 1 ||
       !configs.warnOnCloseTabs)
@@ -572,7 +552,7 @@ function updateTabTwisty(aTab) {
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
-  getTabTwisty(aTab).setAttribute('title', tooltip);
+  SidebarTabs.getTabTwisty(aTab).setAttribute('title', tooltip);
 }
 
 function updateTabClosebox(aTab) {
@@ -581,11 +561,11 @@ function updateTabClosebox(aTab) {
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
-  getTabClosebox(aTab).setAttribute('title', tooltip);
+  SidebarTabs.getTabClosebox(aTab).setAttribute('title', tooltip);
 }
 
 function updateTabsCount(aTab) {
-  var counter = getTabCounter(aTab);
+  var counter = SidebarTabs.getTabCounter(aTab);
   if (!counter)
     return;
   var descendants = Tabs.getDescendantTabs(aTab);

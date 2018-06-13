@@ -36,14 +36,44 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+import {
+  log,
+  wait,
+  configs
+} from '../../common/common.js';
+import * as Constants from '../../common/constants.js';
+import * as Tabs from '../../common/tabs.js';
+import * as TabsOpen from '../../common/tabs-open.js';
+import * as Tree from '../../common/tree.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import * as Scroll from './scroll.js';
+import * as EventUtils from './event-utils.js';
+import * as SidebarTabs from './sidebar-tabs.js';
+
+import RichConfirm from '../../common/RichConfirm.js';
+
+
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
+const kBOOKMARK_FOLDER = 'x-moz-place:';
 
 var gLongHoverExpandedTabs = [];
 var gLongHoverTimer;
 var gLongHoverTimerNext;
 
-function startListenDragEvents() {
+var gDelayedDragEnter;
+var gDelayedDragLeave;
+
+var gDraggingOnSelfWindow = false;
+
+var gCapturingForDragging = false;
+var gReadyToCaptureMouseEvents = false;
+var gLastDragEnteredTarget = null;
+var gLastDropPosition      = null;
+var gDragTargetIsClosebox  = false;
+var gCurrentDragData       = null;
+
+export function startListen() {
   document.addEventListener('dragstart', onDragStart);
   document.addEventListener('dragover', onDragOver);
   document.addEventListener('dragenter', onDragEnter);
@@ -51,12 +81,57 @@ function startListenDragEvents() {
   document.addEventListener('drop', onDrop);
 }
 
-function endListenDragEvents() {
+export function endListen() {
   document.removeEventListener('dragstart', onDragStart);
   document.removeEventListener('dragover', onDragOver);
   document.removeEventListener('dragenter', onDragEnter);
   document.removeEventListener('dragleave', onDragLeave);
   document.removeEventListener('drop', onDrop);
+}
+
+
+export function isCapturingForDragging() {
+  return gCapturingForDragging;
+}
+
+export function startMultiDrag(aTab, aIsClosebox) {
+  TSTAPI.sendMessage({
+    type:   TSTAPI.kNOTIFY_TAB_DRAGREADY,
+    tab:    TSTAPI.serializeTab(aTab),
+    window: Tabs.getWindow(),
+    startOnClosebox: aIsClosebox
+  });
+  gReadyToCaptureMouseEvents = true;
+}
+
+export function endMultiDrag(aTab, aCoordinates) {
+  const serializedTab = aTab && TSTAPI.serializeTab(aTab);
+  if (gCapturingForDragging) {
+    window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
+    window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
+    document.releaseCapture();
+
+    TSTAPI.sendMessage({
+      type:    TSTAPI.kNOTIFY_TAB_DRAGEND,
+      tab:     serializedTab,
+      window:  aTab && aTab.apiTab.windowId,
+      clientX: aCoordinates.clientX,
+      clientY: aCoordinates.clientY
+    });
+
+    gLastDragEnteredTarget = null;
+  }
+  else if (gReadyToCaptureMouseEvents) {
+    TSTAPI.sendMessage({
+      type:    TSTAPI.kNOTIFY_TAB_DRAGCANCEL,
+      tab:     serializedTab,
+      window:  aTab && aTab.apiTab.windowId,
+      clientX: aCoordinates.clientX,
+      clientY: aCoordinates.clientY
+    });
+  }
+  gCapturingForDragging = false;
+  gReadyToCaptureMouseEvents = false;
 }
 
 
@@ -100,8 +175,8 @@ function sanitizeDragData(aDragData) {
 }
 
 function getDropAction(aEvent) {
-  const dragOverTab = getTabFromEvent(aEvent);
-  const targetTab   = dragOverTab || getTabFromTabbarEvent(aEvent);
+  const dragOverTab = EventUtils.getTabFromEvent(aEvent);
+  const targetTab   = dragOverTab || EventUtils.getTabFromTabbarEvent(aEvent);
   const info = {
     dragOverTab,
     targetTab,
@@ -200,7 +275,7 @@ function getDropAction(aEvent) {
 
     return true;
   });
-  info.defineGetter('isCopyAction', () => isCopyAction(aEvent));
+  info.defineGetter('EventUtils.isCopyAction', () => EventUtils.isCopyAction(aEvent));
   info.defineGetter('dropEffect', () => getDropEffectFromDropAction(info));
 
   if (!targetTab) {
@@ -389,19 +464,19 @@ function getDropEffectFromDropAction(aActionInfo) {
   return 'move';
 }
 
-function clearDropPosition() {
+export function clearDropPosition() {
   for (let tab of document.querySelectorAll(`[${Constants.kDROP_POSITION}]`)) {
     tab.removeAttribute(Constants.kDROP_POSITION)
   }
 }
 
-function clearDraggingTabsState() {
-  for (let tab of Tabs.getDraggingTabs(gTargetWindow)) {
+export function clearDraggingTabsState() {
+  for (let tab of Tabs.getDraggingTabs(Tabs.getWindow())) {
     tab.classList.remove(Constants.kTAB_STATE_DRAGGING);
   }
 }
 
-function clearDraggingState() {
+export function clearDraggingState() {
   Tabs.getTabsContainer().classList.remove(Constants.kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(Constants.kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(Constants.kTABBAR_STATE_LINK_DRAGGING);
@@ -440,10 +515,6 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
   // });
   log('handleDroppedNonTabItems: ', uris);
 
-  let inBackground = false; // prefs.getPref('browser.tabs.loadInBackground');
-  if (aEvent.shiftKey)
-    inBackground = !inBackground;
-
   const dragOverTab = aDropActionInfo.dragOverTab;
   if (dragOverTab &&
       aDropActionInfo.dropPosition == Constants.kDROP_ON_SELF &&
@@ -455,7 +526,7 @@ async function handleDroppedNonTabItems(aEvent, aDropActionInfo) {
     if (behavior & Constants.kDROPLINK_LOAD) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SELECT_TAB,
-        windowId: gTargetWindow,
+        windowId: Tabs.getWindow(),
         tab:      dragOverTab.id
       });
       await TabsOpen.loadURI(uris.shift(), {
@@ -510,30 +581,29 @@ function retrieveURIsFromDragEvent(aEvent) {
   return urls;
 }
 
-const kBOOKMARK_FOLDER = 'x-moz-place:';
 function retrieveURIsFromData(aData, aType) {
   log('retrieveURIsFromData: ', aType, aData);
   switch (aType) {
-    case kTYPE_X_MOZ_PLACE: {
-      const item = JSON.parse(aData);
-      if (item.type == 'text/x-moz-place-container') {
-        let children = item.children;
-        if (!children) {
-          children = item.children = retrieveBookmarksInFolder(item.id);
-          aData = JSON.stringify(item);
-        }
-        // When a blank folder is dropped, just open a dummy tab with the folder name.
-        if (children && children.length == 0) {
-          const uri = TabsGroup.makeGroupTabURI({ title: item.title });
-          return [uri];
-        }
-      }
-      const uri = item.uri;
-      if (uri)
-        return uri;
-      else
-        return `${kBOOKMARK_FOLDER}${aData}`;
-    }; break;
+    //case kTYPE_X_MOZ_PLACE: {
+    //  const item = JSON.parse(aData);
+    //  if (item.type == 'text/x-moz-place-container') {
+    //    let children = item.children;
+    //    if (!children) {
+    //      children = item.children = retrieveBookmarksInFolder(item.id);
+    //      aData = JSON.stringify(item);
+    //    }
+    //    // When a blank folder is dropped, just open a dummy tab with the folder name.
+    //    if (children && children.length == 0) {
+    //      const uri = TabsGroup.makeGroupTabURI({ title: item.title });
+    //      return [uri];
+    //    }
+    //  }
+    //  const uri = item.uri;
+    //  if (uri)
+    //    return uri;
+    //  else
+    //    return `${kBOOKMARK_FOLDER}${aData}`;
+    //}; break;
 
     case 'text/uri-list':
       return aData
@@ -547,8 +617,8 @@ function retrieveURIsFromData(aData, aType) {
     case 'text/x-moz-text-internal':
       return [aData.trim()];
 
-    case 'application/x-moz-file':
-      return [getURLSpecFromFile(aData)];
+    //case 'application/x-moz-file':
+    //  return [getURLSpecFromFile(aData)];
   }
   return [];
 }
@@ -595,16 +665,6 @@ async function getDroppedLinksOnTabBehavior() {
 
 /* DOM event listeners */
 
-var gDraggingOnSelfWindow = false;
-
-var gCapturingMouseEventsForDragging = false;
-var gReadyToCaptureMouseEvents = false;
-var gLastDragEnteredTab    = null;
-var gLastDragEnteredTarget = null;
-var gLastDropPosition      = null;
-var gDragTargetIsClosebox  = false;
-var gCurrentDragData       = null;
-
 function onDragStart(aEvent) {
   clearDraggingTabsState(); // clear previous state anyway
 
@@ -615,36 +675,36 @@ function onDragStart(aEvent) {
     return;
 
   const tab       = dragData.tabNode
-  const mousedown = gLastMousedown[aEvent.button];
+  const mousedown = EventUtils.lastMousedown[aEvent.button];
 
   if (mousedown && mousedown.expired) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    gLastDragEnteredTab = gLastDragEnteredTarget = tab;
+    gLastDragEnteredTarget = tab;
     const startOnClosebox = gDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
-      gLastDragEnteredTarget = getTabClosebox(tab);
+      gLastDragEnteredTarget = SidebarTabs.getTabClosebox(tab);
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
       tab:    TSTAPI.serializeTab(tab),
-      window: gTargetWindow,
+      window: Tabs.getWindow(),
       startOnClosebox
     });
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
-    gCapturingMouseEventsForDragging = true;
+    gCapturingForDragging = true;
     return;
   }
 
-  if (!cancelHandleMousedown()) {
+  if (!EventUtils.cancelHandleMousedown()) {
     // this action is already handled as "click".
     //return;
   }
 
   // dragging on clickable element will be expected to cancel the operation
-  if (isEventFiredOnClosebox(aEvent) ||
-      isEventFiredOnClickable(aEvent)) {
+  if (EventUtils.isEventFiredOnClosebox(aEvent) ||
+      EventUtils.isEventFiredOnClickable(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
     return;
@@ -664,7 +724,7 @@ function onDragStart(aEvent) {
   gCurrentDragData = sanitizedDragData;
   browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-    windowId: gTargetWindow,
+    windowId: Tabs.getWindow(),
     dragData: sanitizedDragData
   });
 
@@ -747,8 +807,6 @@ function isEventFiredOnTabDropBlocker(aEvent) {
   return node && !!node.closest('.tab-drop-blocker');
 }
 
-var gDelayedDragEnter;
-
 function onDragEnter(aEvent) {
   if (gDelayedDragEnter) {
     clearTimeout(gDelayedDragEnter);
@@ -803,7 +861,7 @@ function reserveToProcessLongHover(aParams = {}) {
           aParams.dropEffect == 'link') {
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_SELECT_TAB,
-          windowId: gTargetWindow,
+          windowId: Tabs.getWindow(),
           tab:      dragOverTab.id
         });
       }
@@ -812,7 +870,6 @@ function reserveToProcessLongHover(aParams = {}) {
         return;
 
       // auto-expand for staying on a parent
-      let draggedTab = Tabs.getTabById(aParams.draggedTabId);
       if (configs.autoExpandIntelligently) {
         Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
@@ -832,9 +889,7 @@ reserveToProcessLongHover.cancel = function() {
   clearTimeout(gLongHoverTimerNext);
 };
 
-var gDelayedDragLeave;
-
-function onDragLeave(aEvent) {
+function onDragLeave(_aEvent) {
   if (gDelayedDragLeave) {
     clearTimeout(gDelayedDragLeave);
     gDelayedDragLeave = null;
@@ -880,7 +935,7 @@ function onDrop(aEvent) {
       attachTo:            dropActionInfo.parent,
       insertBefore:        dropActionInfo.insertBefore,
       insertAfter:         dropActionInfo.insertAfter,
-      destinationWindowId: gTargetWindow,
+      destinationWindowId: Tabs.getWindow(),
       duplicate:           dt.dropEffect == 'copy',
       inRemote:            true
     });
@@ -908,7 +963,7 @@ function onDragEnd(aEvent) {
     gCurrentDragData = null;
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-      windowId: gTargetWindow,
+      windowId: Tabs.getWindow(),
       dragData: null
     });
   });
@@ -928,7 +983,7 @@ function onDragEnd(aEvent) {
     return;
   }
 
-  const dropTargetTab = getTabFromEvent(aEvent);
+  const dropTargetTab = EventUtils.getTabFromEvent(aEvent);
   if (dropTargetTab &&
       dragData &&
       dragData.tabNodes &&
@@ -965,7 +1020,7 @@ function onDragEnd(aEvent) {
   }
 
   Tree.openNewWindowFromTabs(dragData.tabNodes, {
-    duplicate: isAccelKeyPressed(aEvent),
+    duplicate: EventUtils.isAccelKeyPressed(aEvent),
     left:      aEvent.screenX,
     top:       aEvent.screenY,
     inRemote:  true
@@ -975,45 +1030,44 @@ function onDragEnd(aEvent) {
 
 /* drag on tabs API */
 
-function onTSTAPIDragEnter(aEvent) {
+export function onTSTAPIDragEnter(aEvent) {
   Scroll.autoScrollOnMouseEvent(aEvent);
-  const tab = getTabFromEvent(aEvent);
+  const tab = EventUtils.getTabFromEvent(aEvent);
   let target = tab;
-  if (gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent))
-    target = getTabClosebox(tab);
+  if (gDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(aEvent))
+    target = SidebarTabs.getTabClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!gDragTargetIsClosebox ||
-       isEventFiredOnClosebox(aEvent))) {
+       EventUtils.isEventFiredOnClosebox(aEvent))) {
     if (target != gLastDragEnteredTarget) {
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_TAB_DRAGENTER,
         tab:    TSTAPI.serializeTab(tab),
-        window: gTargetWindow
+        window: Tabs.getWindow()
       });
     }
   }
-  gLastDragEnteredTab    = tab;
   gLastDragEnteredTarget = target;
 }
 
-function onTSTAPIDragExit(aEvent) {
+export function onTSTAPIDragExit(aEvent) {
   if (gDragTargetIsClosebox &&
-      !isEventFiredOnClosebox(aEvent))
+      !EventUtils.isEventFiredOnClosebox(aEvent))
     return;
-  const tab = getTabFromEvent(aEvent);
+  const tab = EventUtils.getTabFromEvent(aEvent);
   if (!tab)
     return;
   let target = tab;
-  if (gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent))
-    target = getTabClosebox(tab);
+  if (gDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(aEvent))
+    target = SidebarTabs.getTabClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGEXIT,
       tab:    TSTAPI.serializeTab(tab),
-      window: gTargetWindow
+      window: Tabs.getWindow()
     });
   }, 10);
 }
