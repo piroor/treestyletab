@@ -38,6 +38,8 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+import TabIdFixer from '../external/TabIdFixer.js';
+
 import {
   log,
   wait,
@@ -50,7 +52,6 @@ import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
-import TabIdFixer from './TabIdFixer.js';
 
 export function startListen() {
   browser.tabs.onActivated.addListener(onActivated);

@@ -5,6 +5,10 @@
 */
 'use strict';
 
+import Options from '../external/Options.js';
+import ShortcutCustomizeUI from '../external/ShortcutCustomizeUI.js';
+import '../external/l10n.js';
+
 import {
   log,
   configs
@@ -12,10 +16,6 @@ import {
 
 import * as Permissions from '../common/permissions.js';
 import * as Migration from '../common/migration.js';
-
-import '../common/l10n.js';
-import Options from './Options.js';
-import ShortcutCustomizeUI from './ShortcutCustomizeUI.js';
 
 log.context = 'Options';
 const options = new Options(configs);

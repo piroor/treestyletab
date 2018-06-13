@@ -38,6 +38,8 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+import TabIdFixer from '../external/TabIdFixer.js';
+
 import {
   log,
   wait,
@@ -57,7 +59,6 @@ import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as MetricsData from './metrics-data.js';
 import EventListenerManager from './EventListenerManager.js';
-import TabIdFixer from './TabIdFixer.js';
 
 
 export const onAttached     = new EventListenerManager();

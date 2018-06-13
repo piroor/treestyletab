@@ -36,6 +36,9 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+
+import RichConfirm from '../external/RichConfirm.js';
+
 import {
   log,
   wait,
@@ -49,8 +52,6 @@ import * as TSTAPI from '../common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
-
-import RichConfirm from '../common/RichConfirm.js';
 
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
