@@ -5,18 +5,46 @@
 */
 'use strict';
 
-log.context = 'Sidebar-?';
+import {
+  log,
+  nextFrame,
+  configs
+} from '../../common/common.js';
+import * as Constants from '../../common/constants.js';
+import * as ApiTabsListener from '../../common/api-tabs-listener.js';
+import * as Tabs from '../../common/tabs.js';
+import * as TabsUpdate from '../../common/tabs-update.js';
+import * as TabsContainer from '../../common/tabs-container.js';
+import * as Tree from '../../common/tree.js';
+import * as TSTAPI from '../../common/tst-api.js';
+import * as ContextualIdentities from '../../common/contextual-identities.js';
+import * as Commands from '../../common/commands.js';
+import * as UserOperationBlocker from '../../common/user-operation-blocker.js';
+import * as MetricsData from '../../common/metrics-data.js';
+import RichConfirm from '../../common/RichConfirm.js';
+import TabIdFixer from '../../common/TabIdFixer.js';
+import EventListenerManager from '../../common/EventListenerManager.js';
 
-var gInitializing = true;
+import * as SidebarCache from './sidebar-cache.js';
+import * as SidebarTabs from './sidebar-tabs.js';
+import * as PinnedTabs from './pinned-tabs.js';
+import * as DragAndDrop from './drag-and-drop.js';
+import * as RestoringTabCount from './restoring-tab-count.js';
+import * as Size from './size.js';
+import * as Color from './color.js';
+import * as Indent from './indent.js';
+import * as Scroll from './scroll.js';
+import * as TabContextMenu from './tab-context-menu.js';
+
+export const onInit    = new EventListenerManager();
+export const onBuilt   = new EventListenerManager();
+export const onReady   = new EventListenerManager();
+export const onDestroy = new EventListenerManager();
+
+
+var gInitialized = false;
 var gStyle;
-var gAddonStyles = {};
 var gTargetWindow   = null;
-var gScrollLockedBy = {};
-
-MetricsData.add('Loaded');
-
-window.addEventListener('pagehide', destroy, { once: true });
-window.addEventListener('load', init, { once: true });
 
 var gTabBar                     = document.querySelector('#tabbar');
 var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
@@ -25,8 +53,6 @@ var gStyleLoader                = document.querySelector('#style-loader');
 var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 var gUserStyleRules             = document.querySelector('#user-style-rules');
 var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
-var gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
-var gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
@@ -43,10 +69,10 @@ var gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTI
 
 UserOperationBlocker.block({ throbber: true });
 
-async function init() {
+export async function init() {
   MetricsData.add('init start');
   log('initialize sidebar on load');
-  window.addEventListener('resize', onResize);
+  onInit.dispatch();
 
   await Promise.all([
     (async () => {
@@ -68,8 +94,7 @@ async function init() {
   ]);
   MetricsData.add('browser.tabs.query, configs.$loaded');
 
-  onConfigChange('colorScheme');
-  onConfigChange('simulateSVGContextFill');
+  onInit.dispatch();
 
   await Promise.all([
     waitUntilBackgroundIsReady(),
@@ -103,76 +128,28 @@ async function init() {
           await inheritTreeStructure();
         });
 
-      document.addEventListener('mousedown', onMouseDown);
-      document.addEventListener('mouseup', onMouseUp);
-      document.addEventListener('click', onClick);
-      document.addEventListener('wheel', onWheel, { capture: true });
-      document.addEventListener('contextmenu', onContextMenu, { capture: true });
-      document.addEventListener('focus', onFocus);
-      document.addEventListener('blur', onBlur);
-      gTabBar.addEventListener('scroll', onScroll);
-      gTabBar.addEventListener('dblclick', onDblClick);
-      gTabBar.addEventListener('transitionend', onTransisionEnd);
-      gTabBar.addEventListener('overflow', onOverflow);
-      gTabBar.addEventListener('underflow', onUnderflow);
+      onBuilt.dispatch();
+
       gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
       DragAndDrop.startListen();
-      MetricsData.add('start to listen events');
 
-      configs.$addObserver(onConfigChange);
-      onConfigChange('debug');
-      onConfigChange('sidebarPosition');
-      onConfigChange('sidebarDirection');
-      onConfigChange('sidebarScrollbarPosition');
-      onConfigChange('scrollbarMode');
-      onConfigChange('showContextualIdentitiesSelector');
-      onConfigChange('showNewTabActionSelector');
-      MetricsData.add('apply configs');
-
-      browser.runtime.onMessage.addListener(onMessage);
-      browser.runtime.onMessageExternal.addListener(onMessageExternal);
-      if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
-        browser.theme.onUpdated.addListener(onBrowserThemeChanged);
+      MetricsData.add('onBuilt: start to listen events');
     }),
     MetricsData.addAsync('Size.init', async () => {
       Size.init();
       document.documentElement.classList.remove('initializing');
     }),
     MetricsData.addAsync('initializing contextual identities', async () => {
-      gContextualIdentitySelector.ui = new MenuUI({
-        root:       gContextualIdentitySelector,
-        appearance: 'panel',
-        onCommand:  onContextualIdentitySelect,
-        animationDuration: configs.animation ? configs.collapseDuration : 0.001
-      });
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
       ContextualIdentities.startObserve();
-
-      gNewTabActionSelector.ui = new MenuUI({
-        root:       gNewTabActionSelector,
-        appearance: 'panel',
-        onCommand:  onNewTabActionSelect,
-        animationDuration: configs.animation ? configs.collapseDuration : 0.001
-      });
     }),
     MetricsData.addAsync('TabContextMenu.init', async () => {
       TabContextMenu.init();
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
-      var results = await Promise.all([
-        browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS }),
-        browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE })
-      ]);
-      var addons = results[0];
+      const addons = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS });
       TSTAPI.setAddons(addons);
-      gScrollLockedBy = results[1];
-      for (let id of Object.keys(addons)) {
-        let addon = addons[id];
-        if (addon.style)
-          installStyleForAddon(id, addon.style);
-      }
-      updateSpecialEventListenersForAPIListeners();
     }),
     MetricsData.addAsync('getting Constants.kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION);
@@ -189,7 +166,7 @@ async function init() {
     MetricsData.add('applying scroll position');
   }
 
-  gInitializing = false;
+  gInitialized = true;
 
   SidebarCache.startTracking();
 
@@ -211,7 +188,7 @@ async function init() {
   }
   updateTabbarLayout({ justNow: true });
 
-  onConfigChange('animation');
+  onReady.dispatch();
 
   UserOperationBlocker.unblock({ throbber: true });
 
@@ -219,37 +196,12 @@ async function init() {
   log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
 }
 
-function destroy() {
-  configs.$removeObserver(onConfigChange);
-  browser.runtime.onMessage.removeListener(onMessage);
-  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
-  if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
-    browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
+export function destroy() {
   DragAndDrop.endListen();
   ApiTabsListener.endListen();
   ContextualIdentities.endObserve();
-  window.removeEventListener('resize', onResize);
-
-  document.removeEventListener('mousedown', onMouseDown);
-  document.removeEventListener('mouseup', onMouseUp);
-  document.removeEventListener('click', onClick);
-  document.removeEventListener('wheel', onWheel, { capture: true });
-  document.removeEventListener('contextmenu', onContextMenu, { capture: true });
-  document.removeEventListener('focus', onFocus);
-  document.removeEventListener('blur', onBlur);
-  gTabBar.removeEventListener('scroll', onScroll);
-  gTabBar.removeEventListener('dblclick', onDblClick);
-  gTabBar.removeEventListener('transitionend', onTransisionEnd);
-  gTabBar.removeEventListener('overflow', onOverflow);
-  gTabBar.removeEventListener('underflow', onUnderflow);
+  onDestroy.dispatch();
   gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
-
-  if (onMouseMove.listening)
-    window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-  if (onMouseOver.listening)
-    window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-  if (onMouseOut.listening)
-    window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
 
   gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
 }
@@ -285,7 +237,7 @@ function applyStyle(aStyle) {
       gStyleLoader.setAttribute('href', 'data:text/css,');
       break;
   }
-  return new Promise((aResolve, aReject) => {
+  return new Promise((aResolve, _aReject) => {
     gStyleLoader.addEventListener('load', () => {
       nextFrame().then(aResolve);
     }, { once: true });
@@ -407,57 +359,6 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-function installStyleForAddon(aId, aStyle) {
-  if (!gAddonStyles[aId]) {
-    gAddonStyles[aId] = document.createElement('style');
-    gAddonStyles[aId].setAttribute('type', 'text/css');
-    document.head.insertBefore(gAddonStyles[aId], gUserStyleRules);
-  }
-  gAddonStyles[aId].textContent = aStyle;
-}
-
-function uninstallStyleForAddon(aId) {
-  if (!gAddonStyles[aId])
-    return;
-  document.head.removeChild(gAddonStyles[aId]);
-  delete gAddonStyles[aId];
-}
-
-function updateSpecialEventListenersForAPIListeners() {
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
-    if (!onMouseMove.listening) {
-      window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-      onMouseMove.listening = true;
-    }
-    else {
-      window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-      onMouseMove.listening = false;
-    }
-  }
-
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
-    if (!onMouseOver.listening) {
-      window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-      onMouseOver.listening = true;
-    }
-    else {
-      window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-      onMouseOver.listening = false;
-    }
-  }
-
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
-    if (!onMouseOut.listening) {
-      window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
-      onMouseOut.listening = true;
-    }
-    else {
-      window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
-      onMouseOut.listening = false;
-    }
-  }
-}
-
 async function rebuildAll(aCache) {
   var apiTabs = await browser.tabs.query({ currentWindow: true });
   TabsContainer.clearAll();
@@ -502,10 +403,10 @@ async function waitUntilBackgroundIsReady() {
     if (response)
       return;
   }
-  catch(e) {
+  catch(_e) {
   }
-  return new Promise((aResolve, aReject) => {
-    let onBackgroundIsReady = (aMessage, aSender, aRespond) => {
+  return new Promise((aResolve, _aReject) => {
+    let onBackgroundIsReady = (aMessage, _aSender, _aRespond) => {
       if (!aMessage ||
           !aMessage.type ||
           aMessage.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
@@ -518,7 +419,7 @@ async function waitUntilBackgroundIsReady() {
 }
 
 
-async function confirmToCloseTabs(aCount, aOptions = {}) {
+async function confirmToCloseTabs(aCount, _aOptions = {}) {
   if (aCount <= 1 ||
       !configs.warnOnCloseTabs)
     return true;
@@ -575,20 +476,9 @@ function updateTabsCount(aTab) {
   counter.textContent = count;
 }
 
-function collapseExpandAllSubtree(aParams = {}) {
-  var container = Tabs.getTabsContainer(gTargetWindow);
-  var tabCondition = `.${Constants.kTAB_STATE_SUBTREE_COLLAPSED}`;
-  if (aParams.collapsed)
-    tabCondition = `:not(${tabCondition})`;
-  var tabs = container.querySelectorAll(`.tab:not([${Constants.kCHILDREN}="|"])${subtreeCondition}`);
-  for (let tab of tabs) {
-    Tree.collapseExpandSubtree(tab, aParams);
-  }
-}
 
-
-function reserveToUpdateVisualMaxTreeLevel() {
-  if (gInitializing)
+export function reserveToUpdateVisualMaxTreeLevel() {
+  if (!gInitialized)
     return;
   if (updateVisualMaxTreeLevel.waiting)
     clearTimeout(updateVisualMaxTreeLevel.waiting);
@@ -606,8 +496,8 @@ function updateVisualMaxTreeLevel() {
 }
 
 
-function reserveToUpdateIndent() {
-  if (gInitializing)
+export function reserveToUpdateIndent() {
+  if (!gInitialized)
     return;
   //log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)
@@ -618,7 +508,7 @@ function reserveToUpdateIndent() {
   }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
 }
 
-function reserveToUpdateTabbarLayout(aOptions = {}) {
+export function reserveToUpdateTabbarLayout(aOptions = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
@@ -696,8 +586,8 @@ function updateTabbarLayout(aParams = {}) {
 }
 
 
-function reserveToUpdateTabTooltip(aTab) {
-  if (gInitializing ||
+export function reserveToUpdateTabTooltip(aTab) {
+  if (!gInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
   for (let tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
@@ -744,8 +634,8 @@ function updateTabTooltip(aTab) {
 }
 
 
-function reserveToUpdateLoadingState() {
-  if (gInitializing)
+export function reserveToUpdateLoadingState() {
+  if (!gInitialized)
     return;
   if (reserveToUpdateLoadingState.waiting)
     clearTimeout(reserveToUpdateLoadingState.waiting);

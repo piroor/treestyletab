@@ -38,14 +38,170 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+//import MenuUI from '../../common/MenuUI.js';
+
+var gScrollLockedBy = {};
+var gAddonStyles    = {};
+var gInitialized    = false;
+
+var gTabBar = document.querySelector('#tabbar');
+var gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
+var gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
+
+Sidebar.onInit.addListener(() => {
+  onConfigChange('colorScheme');
+  onConfigChange('simulateSVGContextFill');
+});
+
+Sidebar.onBuilt.addListener(async () => {
+  window.addEventListener('resize', onResize);
+  document.addEventListener('mousedown', onMouseDown);
+  document.addEventListener('mouseup', onMouseUp);
+  document.addEventListener('click', onClick);
+  document.addEventListener('wheel', onWheel, { capture: true });
+  document.addEventListener('contextmenu', onContextMenu, { capture: true });
+  document.addEventListener('focus', onFocus);
+  document.addEventListener('blur', onBlur);
+  gTabBar.addEventListener('scroll', onScroll);
+  gTabBar.addEventListener('dblclick', onDblClick);
+  gTabBar.addEventListener('transitionend', onTransisionEnd);
+  gTabBar.addEventListener('overflow', onOverflow);
+  gTabBar.addEventListener('underflow', onUnderflow);
+
+  configs.$addObserver(onConfigChange);
+  onConfigChange('debug');
+  onConfigChange('sidebarPosition');
+  onConfigChange('sidebarDirection');
+  onConfigChange('sidebarScrollbarPosition');
+  onConfigChange('scrollbarMode');
+  onConfigChange('showContextualIdentitiesSelector');
+  onConfigChange('showNewTabActionSelector');
+  MetricsData.add('apply configs');
+
+  browser.runtime.onMessage.addListener(onMessage);
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
+  if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
+    browser.theme.onUpdated.addListener(onBrowserThemeChanged);
+
+  gContextualIdentitySelector.ui = new MenuUI({
+    root:       gContextualIdentitySelector,
+    appearance: 'panel',
+    onCommand:  onContextualIdentitySelect,
+    animationDuration: configs.animation ? configs.collapseDuration : 0.001
+  });
+
+  gNewTabActionSelector.ui = new MenuUI({
+    root:       gNewTabActionSelector,
+    appearance: 'panel',
+    onCommand:  onNewTabActionSelect,
+    animationDuration: configs.animation ? configs.collapseDuration : 0.001
+  });
+
+  gScrollLockedBy = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE });
+});
+
+Sidebar.onReady.addListener(() => {
+  gInitialized = true;
+
+  onConfigChange('animation');
+
+  updateSpecialEventListenersForAPIListeners();
+
+  for (let id of Object.keys(TSTAPI.addons)) {
+    let addon = addons[id];
+    if (addon.style)
+      installStyleForAddon(id, addon.style);
+  }
+});
+
+Sidebar.onDestroy.addListener(() => {
+  configs.$removeObserver(onConfigChange);
+  browser.runtime.onMessage.removeListener(onMessage);
+  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
+  if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
+    browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
+
+  window.removeEventListener('resize', onResize);
+  document.removeEventListener('mousedown', onMouseDown);
+  document.removeEventListener('mouseup', onMouseUp);
+  document.removeEventListener('click', onClick);
+  document.removeEventListener('wheel', onWheel, { capture: true });
+  document.removeEventListener('contextmenu', onContextMenu, { capture: true });
+  document.removeEventListener('focus', onFocus);
+  document.removeEventListener('blur', onBlur);
+  gTabBar.removeEventListener('scroll', onScroll);
+  gTabBar.removeEventListener('dblclick', onDblClick);
+  gTabBar.removeEventListener('transitionend', onTransisionEnd);
+  gTabBar.removeEventListener('overflow', onOverflow);
+  gTabBar.removeEventListener('underflow', onUnderflow);
+
+  if (onMouseMove.listening)
+    window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+  if (onMouseOver.listening)
+    window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
+  if (onMouseOut.listening)
+    window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
+});
+
+function updateSpecialEventListenersForAPIListeners() {
+  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
+    if (!onMouseMove.listening) {
+      window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+      onMouseMove.listening = true;
+    }
+    else {
+      window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+      onMouseMove.listening = false;
+    }
+  }
+
+  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
+    if (!onMouseOver.listening) {
+      window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
+      onMouseOver.listening = true;
+    }
+    else {
+      window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
+      onMouseOver.listening = false;
+    }
+  }
+
+  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
+    if (!onMouseOut.listening) {
+      window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
+      onMouseOut.listening = true;
+    }
+    else {
+      window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
+      onMouseOut.listening = false;
+    }
+  }
+}
+
+function installStyleForAddon(aId, aStyle) {
+  if (!gAddonStyles[aId]) {
+    gAddonStyles[aId] = document.createElement('style');
+    gAddonStyles[aId].setAttribute('type', 'text/css');
+    document.head.insertBefore(gAddonStyles[aId], gUserStyleRules);
+  }
+  gAddonStyles[aId].textContent = aStyle;
+}
+
+function uninstallStyleForAddon(aId) {
+  if (!gAddonStyles[aId])
+    return;
+  document.head.removeChild(gAddonStyles[aId]);
+  delete gAddonStyles[aId];
+}
+
 
 /* handlers for DOM events */
 
 function onResize(aEvent) {
-  reserveToUpdateTabbarLayout({
+  Sidebar.reserveToUpdateTabbarLayout({
     reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
   });
-  reserveToUpdateIndent();
+  Sidebar.reserveToUpdateIndent();
 }
 
 function onContextMenu(aEvent) {
@@ -448,7 +604,7 @@ function onTransisionEnd(aEvent) {
       /opacity|color|text-shadow/.test(aEvent.propertyName))
     return;
   //log('transitionend ', aEvent);
-  reserveToUpdateTabbarLayout({
+  Sidebar.reserveToUpdateTabbarLayout({
     reason: Constants.kTABBAR_UPDATE_REASON_ANIMATION_END
   });
 }
@@ -552,7 +708,7 @@ function onOverflow(aEvent) {
   const label = Tabs.getTabLabel(tab);
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
-    reserveToUpdateTabTooltip(tab);
+    Sidebar.reserveToUpdateTabTooltip(tab);
   }
 }
 
@@ -561,7 +717,7 @@ function onUnderflow(aEvent) {
   const label = Tabs.getTabLabel(tab);
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
-    reserveToUpdateTabTooltip(tab);
+    Sidebar.reserveToUpdateTabTooltip(tab);
   }
 }
 
@@ -641,7 +797,7 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
 });
 
 Tabs.onLabelUpdated.addListener(aTab => {
-  reserveToUpdateTabTooltip(aTab);
+  Sidebar.reserveToUpdateTabTooltip(aTab);
 });
 
 Tabs.onParentTabUpdated.addListener(aTab => {
@@ -684,8 +840,8 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
       Scroll.notifyOutOfViewTab(aTab);
   }
 
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateTabbarLayout({
+  Sidebar.reserveToUpdateVisualMaxTreeLevel();
+  Sidebar.reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
   });
@@ -766,12 +922,12 @@ Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
   Tree.detachTab(aTab, {
     dontUpdateIndent: true
   });
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateTabbarLayout({
+  Sidebar.reserveToUpdateVisualMaxTreeLevel();
+  Sidebar.reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
     timeout: configs.collapseDuration
   });
-  reserveToUpdateLoadingState();
+  Sidebar.reserveToUpdateLoadingState();
 });
 
 Tabs.onRemoved.addListener(async aTab => {
@@ -820,21 +976,21 @@ Tabs.onMoving.addListener(async aTab => {
 });
 
 Tabs.onMoved.addListener(aTab => {
-  reserveToUpdateTabbarLayout({
+  Sidebar.reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
     timeout: configs.collapseDuration
   });
-  reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
+  Sidebar.reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
 });
 
 Tree.onLevelChanged.addListener(async aTab => {
-  reserveToUpdateIndent();
+  Sidebar.reserveToUpdateIndent();
 });
 
 Tabs.onDetached.addListener(aTab => {
   if (!Tabs.ensureLivingTab(aTab))
     return;
-  reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
+  Sidebar.reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   Tree.detachTab(aTab, {
@@ -845,7 +1001,7 @@ Tabs.onDetached.addListener(aTab => {
 Tree.onSubtreeCollapsedStateChanging.addListener((aTab, aInfo = {}) => {
   updateTabTwisty(aTab);
   updateTabClosebox(aTab);
-  reserveToUpdateTabTooltip(aTab);
+  Sidebar.reserveToUpdateTabTooltip(aTab);
 });
 
 Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
@@ -897,7 +1053,7 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
     aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
 
-  reserveToUpdateTabbarLayout({ reason });
+  Sidebar.reserveToUpdateTabbarLayout({ reason });
 
   nextFrame().then(() => {
     if (!Tabs.ensureLivingTab(aTab)) { // it was removed while waiting
@@ -950,12 +1106,12 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
-    reserveToUpdateVisualMaxTreeLevel();
+    Sidebar.reserveToUpdateVisualMaxTreeLevel();
 
-  reserveToUpdateLoadingState();
+  Sidebar.reserveToUpdateLoadingState();
 
   // this is very required for no animation case!
-  reserveToUpdateTabbarLayout({ reason: aOptions.reason });
+  Sidebar.reserveToUpdateTabbarLayout({ reason: aOptions.reason });
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
@@ -964,7 +1120,7 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
   if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
-  reserveToUpdateLoadingState();
+  Sidebar.reserveToUpdateLoadingState();
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
   if (configs.animation &&
@@ -1054,7 +1210,7 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 */
 
 Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
-  if (gInitializing)
+  if (!gInitialized)
     return;
   TabContextMenu.close();
   updateTabTwisty(aInfo.parent);
@@ -1065,9 +1221,9 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
       updateTabsCount(ancestor);
     }
   }
-  reserveToUpdateTabTooltip(aInfo.parent);
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
+  Sidebar.reserveToUpdateTabTooltip(aInfo.parent);
+  Sidebar.reserveToUpdateVisualMaxTreeLevel();
+  Sidebar.reserveToUpdateIndent();
   /*
     We must not scroll to the tab here, because the tab can be moved
     by the background page later. Instead we wait until the tab is
@@ -1076,7 +1232,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
 });
 
 Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
-  if (gInitializing)
+  if (!gInitialized)
     return;
   TabContextMenu.close();
   var parent = aDetachInfo.oldParentTab;
@@ -1084,9 +1240,9 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
     return;
   updateTabTwisty(parent);
   updateTabClosebox(parent);
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
-  reserveToUpdateTabTooltip(parent);
+  Sidebar.reserveToUpdateVisualMaxTreeLevel();
+  Sidebar.reserveToUpdateIndent();
+  Sidebar.reserveToUpdateTabTooltip(parent);
   var ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (let ancestor of ancestors) {
     updateTabsCount(ancestor);
@@ -1105,14 +1261,14 @@ Tabs.onUnpinned.addListener(aTab => {
 
 Tabs.onShown.addListener(aTab => {
   TabContextMenu.close();
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
+  Sidebar.reserveToUpdateVisualMaxTreeLevel();
+  Sidebar.reserveToUpdateIndent();
 });
 
 Tabs.onHidden.addListener(aTab => {
   TabContextMenu.close();
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
+  Sidebar.reserveToUpdateVisualMaxTreeLevel();
+  Sidebar.reserveToUpdateIndent();
 });
 
 Tabs.onStateChanged.addListener(aTab => {
@@ -1121,7 +1277,7 @@ Tabs.onStateChanged.addListener(aTab => {
   else
     aTab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
-  reserveToUpdateLoadingState();
+  Sidebar.reserveToUpdateLoadingState();
 });
 
 Tabs.onGroupTabDetected.addListener(aTab => {
@@ -1363,8 +1519,8 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case Constants.kCOMMAND_BROADCAST_API_UNREGISTERED:
-      uninstallStyleForAddon(aMessage.sender.id)
       delete gScrollLockedBy[aMessage.sender.id];
+      uninstallStyleForAddon(aMessage.sender.id)
       delete TSTAPI.addons[aMessage.sender.id];
       updateSpecialEventListenersForAPIListeners();
       break;
@@ -1521,7 +1677,7 @@ function onConfigChange(aChangedKey) {
 
     case 'showCollapsedDescendantsByTooltip':
       for (let tab of Tabs.getAllTabs()) {
-        reserveToUpdateTabTooltip(tab);
+        Sidebar.reserveToUpdateTabTooltip(tab);
       }
       break;
 

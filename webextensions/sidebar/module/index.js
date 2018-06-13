@@ -22,6 +22,7 @@ import * as PinnedTabs from './pinned-tabs.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as SidebarTabs from './sidebar-tabs.js';
+import * as Sidebar from './sidebar.js';
 
 import * as Tabs from '../../common/tabs.js';
 import * as TabsContainer from '../../common/tabs-container.js';
@@ -68,6 +69,7 @@ window.PinnedTabs = PinnedTabs;
 window.EventUtils = EventUtils;
 window.DragAndDrop = DragAndDrop;
 window.SidebarTabs = SidebarTabs;
+window.Sidebar = Sidebar;
 
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;
@@ -88,3 +90,11 @@ window.l10n = l10n;
 window.TabIdFixer = TabIdFixer;
 window.TabFavIconHelper = TabFavIconHelper;
 window.RichConfirm = RichConfirm;
+
+
+Common.log.context = 'Sidebar-?';
+
+MetricsData.add('Loaded');
+
+window.addEventListener('pagehide', Sidebar.destroy, { once: true });
+window.addEventListener('load', Sidebar.init, { once: true });
