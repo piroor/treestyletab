@@ -191,7 +191,7 @@ async function tryGroupNewTabs() {
     });
     tabs.sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
 
-    const newRootTabs = Tabs.collectRootTabs(tabs)
+    let newRootTabs = Tabs.collectRootTabs(tabs)
       .filter(aTab => !Tabs.isGroupTab(aTab));
     if (newRootTabs.length <= 0)
       return;
