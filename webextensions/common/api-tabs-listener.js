@@ -141,7 +141,7 @@ async function onActivated(aActiveInfo) {
       TabsContainer.incrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
       container.resolveClosedWhileActiveForPreviousActiveTab();
       delete container.resolveClosedWhileActiveForPreviousActiveTab;
-      let focusRedirected = await container.focusRedirectedForClosingCurrentTab;
+      const focusRedirected = await container.focusRedirectedForClosingCurrentTab;
       delete container.focusRedirectedForClosingCurrentTab;
       if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) // reduce count even if not redirected
         TabsContainer.decrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
@@ -226,7 +226,7 @@ async function onUpdated(aTabId, aChangeInfo, aTab) {
       we should apply updated openerTabId only when it is modified at
       outside of TST (in other words, by any other addon.)
     */
-    for (let key of Object.keys(aChangeInfo)) {
+    for (const key of Object.keys(aChangeInfo)) {
       updatedTab.apiTab[key] = aChangeInfo[key];
     }
     if (configs.enableWorkaroundForBug1409262 &&
@@ -282,8 +282,8 @@ async function onNewTabTracked(aTab) {
     const nextTab = Tabs.getAllTabs(container)[aTab.index];
     container.insertBefore(newTab, nextTab);
 
-    let _onTabCreated = Tabs.addCreatingTab(newTab);
-    let onTabCreated = (aUniqueId) => { _onTabCreated(aUniqueId); onCompleted(); };
+    const _onTabCreated = Tabs.addCreatingTab(newTab);
+    const onTabCreated = (aUniqueId) => { _onTabCreated(aUniqueId); onCompleted(); };
     const uniqueId = await newTab.uniqueId;
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
@@ -417,8 +417,8 @@ function checkRecycledTab(aContainer) {
     return;
 
   log(`Detecting recycled tabs for session restoration from ${possibleRecycledTabs.length} tabs`);
-  for (let tab of possibleRecycledTabs) {
-    let currentId = tab.getAttribute(Constants.kPERSISTENT_ID);
+  for (const tab of possibleRecycledTabs) {
+    const currentId = tab.getAttribute(Constants.kPERSISTENT_ID);
     Tabs.updateUniqueId(tab).then(aUniqueId => {
       if (!Tabs.ensureLivingTab(tab) ||
           !aUniqueId.restored ||
@@ -496,7 +496,7 @@ function clearTabRelationsForRemovedTab(aTab) {
     aTab.parentTab = null;
     aTab.ancestorTabs = [];
   }
-  for (let child of aTab.childTabs) {
+  for (const child of aTab.childTabs) {
     if (child.parentTab == aTab) {
       child.parentTab = null;
       child.ancestorTabs = child.ancestorTabs.filter(aAncestor => aAncestor != aTab);
@@ -540,7 +540,7 @@ async function onMoved(aTabId, aMoveInfo) {
     let oldPreviousTab = Tabs.getPreviousTab(movedTab);
     let oldNextTab     = Tabs.getNextTab(movedTab);
     if (Tabs.getTabIndex(aMoveInfo) != aMoveInfo.toIndex) { // already moved
-      let tabs = Tabs.getAllTabs(container);
+      const tabs = Tabs.getAllTabs(container);
       oldPreviousTab = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex : aMoveInfo.fromIndex - 1];
       oldNextTab     = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex + 1 : aMoveInfo.fromIndex];
     }
@@ -694,7 +694,7 @@ async function onWindowRemoved(aWindowId) {
     log('onWindowRemoved ', aWindowId);
     const container = Tabs.getTabsContainer(aWindowId);
     if (container) {
-      for (let tab of Tabs.getAllTabs(container)) {
+      for (const tab of Tabs.getAllTabs(container)) {
         if (!tab.reservedCleanupNeedlessGroupTab)
           continue;
         clearTimeout(container.reservedCleanupNeedlessGroupTab);

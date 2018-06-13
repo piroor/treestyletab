@@ -64,7 +64,7 @@ export async function loadURI(aURI, aOptions = {}) {
       apiTabId = aOptions.tab.apiTab.id;
     }
     else {
-      let apiTabs = await browser.tabs.query({
+      const apiTabs = await browser.tabs.query({
         windowId: aOptions.windowId,
         active:   true
       });
@@ -108,8 +108,8 @@ export async function openURIsInTabs(aURIs, aOptions = {}) {
     }
     else {
       await Tabs.waitUntilAllTabsAreCreated();
-      let startIndex = Tabs.calculateNewTabIndex(aOptions);
-      let container  = Tabs.getTabsContainer(aOptions.windowId);
+      const startIndex = Tabs.calculateNewTabIndex(aOptions);
+      const container  = Tabs.getTabsContainer(aOptions.windowId);
       TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
       if (aOptions.isOrphan)
         TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', aURIs.length);

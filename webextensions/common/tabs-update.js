@@ -61,7 +61,7 @@ export function updateTab(aTab, aNewState = {}, aOptions = {}) {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
   if (aOptions.tab && Constants.kSHORTHAND_ABOUT_URI.test(aOptions.tab.url)) {
-    let shorthand = RegExp.$1;
+    const shorthand = RegExp.$1;
     wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
       browser.tabs.update(aOptions.tab.id, {
         url: aOptions.tab.url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
@@ -106,7 +106,7 @@ export function updateTab(aTab, aNewState = {}, aOptions = {}) {
       'title' in aNewState) {
     let visibleLabel = aNewState.title;
     if (aNewState && aNewState.cookieStoreId) {
-      let identity = ContextualIdentities.get(aNewState.cookieStoreId);
+      const identity = ContextualIdentities.get(aNewState.cookieStoreId);
       if (identity)
         visibleLabel = `${aNewState.title} - ${identity.name}`;
     }
@@ -149,7 +149,7 @@ export function updateTab(aTab, aNewState = {}, aOptions = {}) {
   }
 
   if ('status' in aNewState) {
-    let reallyChanged = !aTab.classList.contains(aNewState.status);
+    const reallyChanged = !aTab.classList.contains(aNewState.status);
     aTab.classList.remove(aNewState.status == 'loading' ? 'complete' : 'loading');
     aTab.classList.add(aNewState.status);
     if (aNewState.status == 'loading') {
@@ -230,7 +230,7 @@ export function updateTab(aTab, aNewState = {}, aOptions = {}) {
 
   if (aOptions.forceApply ||
       'cookieStoreId' in aNewState) {
-    for (let className of aTab.classList) {
+    for (const className of aTab.classList) {
       if (className.indexOf('contextual-identity-') == 0)
         aTab.classList.remove(className);
     }

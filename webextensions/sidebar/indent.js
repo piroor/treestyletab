@@ -58,10 +58,10 @@ export function update(aOptions = {}) {
 
     const indentProp = (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) ? 'margin-right' : 'margin-left';
     const definitions = [];
-    for (let indentSet of [defaultIndentToSelectors, indentToSelectors]) {
-      let indents = Object.keys(indentSet);
+    for (const indentSet of [defaultIndentToSelectors, indentToSelectors]) {
+      const indents = Object.keys(indentSet);
       indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
-      for (let indent of indents) {
+      for (const indent of indents) {
         definitions.push(`${indentSet[indent].join(',\n')} { ${indentProp}: ${indent}; }`);
       }
     }
@@ -85,7 +85,7 @@ function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aD
   aDefaultIndentToSelectors[defaultIndent].push(`${base}:not([${Constants.kLEVEL}="0"])`);
 
   for (let level = 1; level <= aMaxLevel; level++) {
-    let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
+    const indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
     if (!aIndentToSelectors[indent])
       aIndentToSelectors[indent] = [];
     aIndentToSelectors[indent].push(`${base}[${Constants.kLEVEL}="${level}"]`);

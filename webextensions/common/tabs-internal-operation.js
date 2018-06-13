@@ -84,7 +84,7 @@ export function clearOldActiveStateInWindow(aWindowId) {
   if (!container)
     return [];
   const oldTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`);
-  for (let oldTab of oldTabs) {
+  for (const oldTab of oldTabs) {
     oldTab.classList.remove(Constants.kTAB_STATE_ACTIVE);
     if (oldTab.apiTab) // this function can be applied for cached tab.
       oldTab.apiTab.active = false;

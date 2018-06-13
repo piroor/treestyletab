@@ -27,7 +27,7 @@ export const onMoveDown    = new EventListenerManager();
 
 export function reloadTree(aRootTab) {
   const tabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     browser.tabs.reload(tab.apiTab.id)
       .catch(ApiTabs.handleMissingTabError);
   }
@@ -35,7 +35,7 @@ export function reloadTree(aRootTab) {
 
 export function reloadDescendants(aRootTab) {
   const tabs = Tabs.getDescendantTabs(aRootTab);
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     browser.tabs.reload(tab.apiTab.id)
       .catch(ApiTabs.handleMissingTabError);
   }
@@ -47,7 +47,7 @@ export async function closeTree(aRootTab) {
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     TabsInternalOperation.removeTab(tab);
   }
 }
@@ -58,7 +58,7 @@ export async function closeDescendants(aRootTab) {
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     TabsInternalOperation.removeTab(tab);
   }
 }
@@ -71,14 +71,14 @@ export async function closeOthers(aRootTab) {
   const canceled = (await onTabsClosing.dispatch(closeTabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
   if (canceled)
     return;
-  for (let tab of closeTabs) {
+  for (const tab of closeTabs) {
     TabsInternalOperation.removeTab(tab);
   }
 }
 
 export function collapseAll(aHint) {
   const tabs = Tabs.getNormalTabs(aHint);
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     if (Tabs.hasChildTabs(tab) && !Tabs.isSubtreeCollapsed(tab))
       Tree.collapseExpandSubtree(tab, {
         collapsed: true,
@@ -89,7 +89,7 @@ export function collapseAll(aHint) {
 
 export function expandAll(aHint) {
   const tabs = Tabs.getNormalTabs(aHint);
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
       Tree.collapseExpandSubtree(tab, {
         collapsed: false,
@@ -137,7 +137,7 @@ export async function openNewTabAs(aOptions = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_CHILD: {
       parent = currentTab;
-      let refTabs = Tree.getReferenceTabsForNewChild(parent);
+      const refTabs = Tree.getReferenceTabsForNewChild(parent);
       insertBefore = refTabs.insertBefore;
       insertAfter  = refTabs.insertAfter;
       if (configs.logOnMouseEvent)
@@ -196,7 +196,7 @@ export async function outdent(aTab, aOptions = {}) {
   if (!parent)
     return false;
 
-  let newParent = Tabs.getParentTab(parent);
+  const newParent = Tabs.getParentTab(parent);
   if (newParent == Tabs.getParentTab(aTab))
     return false;
 

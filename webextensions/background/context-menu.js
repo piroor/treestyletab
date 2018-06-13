@@ -38,7 +38,7 @@ export async function refreshItems() {
   let separatorsCount = 0;
   let normalItemAppeared = false;
   for (let id of gContextMenuItems) {
-    let isSeparator = id.charAt(0) == '-';
+    const isSeparator = id.charAt(0) == '-';
     if (isSeparator) {
       if (!normalItemAppeared)
         continue;
@@ -50,8 +50,8 @@ export async function refreshItems() {
         continue;
       normalItemAppeared = true;
     }
-    let type  = isSeparator ? 'separator' : 'normal';
-    let title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`);
+    const type  = isSeparator ? 'separator' : 'normal';
+    const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`);
     browser.contextMenus.create({
       id, type,
       // Access key is not supported by WE API.

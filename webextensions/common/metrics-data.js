@@ -4,10 +4,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-let items = [];
+const items = [];
 
 const now = Date.now();
-let initialTime = now;
+const initialTime = now;
 let lastTime    = now;
 let deltaBetweenLastItem = 0;
 

@@ -9,7 +9,7 @@ import * as Constants from './constants.js';
 import * as TSTAPI from './tst-api.js';
 
 let gOpenState;
-let gFocusState = new Map();
+const gFocusState = new Map();
 
 export function isOpen(aWindowId) {
   return gOpenState && gOpenState.has(aWindowId)

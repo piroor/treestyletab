@@ -122,7 +122,7 @@ export async function requestUniqueId(aTabOrId, aOptions = {}) {
     if (oldId) {
       // If the tab detected from stored tabId is different, it is duplicated tab.
       try {
-        let tabWithOldId = getTabById(oldId.tabId);
+        const tabWithOldId = getTabById(oldId.tabId);
         if (!tabWithOldId)
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
         originalId = tabWithOldId.getAttribute(Constants.kPERSISTENT_ID) /* (await tabWithOldId.uniqueId).id // don't try to wait this, because it sometime causes deadlock */;
@@ -602,7 +602,7 @@ export function getAncestorTabs(aDescendant, aOptions = {}) {
 export function getVisibleAncestorOrSelf(aDescendant) {
   if (!isCollapsed(aDescendant))
     return aDescendant;
-  for (let ancestor of getAncestorTabs(aDescendant)) {
+  for (const ancestor of getAncestorTabs(aDescendant)) {
     if (!isCollapsed(ancestor))
       return ancestor;
   }
@@ -690,7 +690,7 @@ export function getDescendantTabs(aRoot) {
 
   let descendants = [];
   const children = aRoot.childTabs.filter(ensureLivingTab);
-  for (let child of children) {
+  for (const child of children) {
     descendants.push(child);
     descendants = descendants.concat(getDescendantTabs(child));
   }
@@ -884,7 +884,7 @@ export async function doAndGetNewTabs(aAsyncTask, aHint) {
     windowType: 'normal'
   };
   if (aHint) {
-    let container = getTabsContainer(aHint);
+    const container = getTabsContainer(aHint);
     if (container)
       tabsQueryOptions.windowId = parseInt(container.dataset.windowId);
   }
@@ -1066,7 +1066,7 @@ export function hasChildTabs(aParent) {
 
 export function getLabelWithDescendants(aTab) {
   var label = [`* ${aTab.dataset.label}`];
-  for (let child of getChildTabs(aTab)) {
+  for (const child of getChildTabs(aTab)) {
     if (!child.dataset.labelWithDescendants)
       child.dataset.labelWithDescendants = getLabelWithDescendants(child);
     label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
@@ -1091,7 +1091,7 @@ export function isAllTabsPlacedBefore(aTabs, aNextTab) {
 
   aTabs = Array.slice(aTabs);
   var previousTab = aTabs.shift();
-  for (let tab of aTabs) {
+  for (const tab of aTabs) {
     if (tab.previousSibling != previousTab)
       return false;
     previousTab = tab;
@@ -1109,7 +1109,7 @@ export function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
 
   aTabs = Array.slice(aTabs).reverse();
   var nextTab = aTabs.shift();
-  for (let tab of aTabs) {
+  for (const tab of aTabs) {
     if (tab.nextSibling != nextTab)
       return false;
     nextTab = tab;
@@ -1207,7 +1207,7 @@ function snapshotTree(aTargetTab, aTabs) {
     };
   }
   const snapshotArray = tabs.map(aTab => snapshotChild(aTab));
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     const item = snapshotById[tab.id];
     if (!item)
       continue;

@@ -90,14 +90,14 @@ export async function init() {
 
   Permissions.clearRequest();
 
-  for (let windowId of Object.keys(restoredFromCache)) {
+  for (const windowId of Object.keys(restoredFromCache)) {
     if (!restoredFromCache[windowId])
       BackgroundCache.reserveToCacheTree(parseInt(windowId));
   }
 
   Tabs.getAllTabs().forEach(updateSubtreeCollapsed);
-  for (let tab of Tabs.getCurrentTabs()) {
-    for (let ancestor of Tabs.getAncestorTabs(tab)) {
+  for (const tab of Tabs.getCurrentTabs()) {
+    for (const ancestor of Tabs.getAncestorTabs(tab)) {
       Tree.collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,
         justNow:   true
@@ -182,7 +182,7 @@ async function rebuildAll() {
           owner: aWindow.tabs[aWindow.tabs.length - 1],
           tabs:  aWindow.tabs
         });
-        for (let tab of Tabs.getAllTabs(aWindow.id)) {
+        for (const tab of Tabs.getAllTabs(aWindow.id)) {
           tryStartHandleAccelKeyOnTab(tab);
         }
         if (restoredFromCache[aWindow.id]) {
@@ -191,9 +191,9 @@ async function rebuildAll() {
         }
       }
       log(`build tabs for ${aWindow.id} from scratch`);
-      let container = TabsContainer.buildFor(aWindow.id);
-      for (let apiTab of aWindow.tabs) {
-        let newTab = Tabs.buildTab(apiTab, { existing: true });
+      const container = TabsContainer.buildFor(aWindow.id);
+      for (const apiTab of aWindow.tabs) {
+        const newTab = Tabs.buildTab(apiTab, { existing: true });
         container.appendChild(newTab);
         TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
         tryStartHandleAccelKeyOnTab(newTab);
@@ -201,7 +201,7 @@ async function rebuildAll() {
       Tabs.allTabsContainer.appendChild(container);
       restoredFromCache[aWindow.id] = false;
     });
-    for (let tab of Tabs.getAllTabs(aWindow.id).filter(Tabs.isGroupTab)) {
+    for (const tab of Tabs.getAllTabs(aWindow.id).filter(Tabs.isGroupTab)) {
       if (!Tabs.isDiscarded(tab))
         tab.dataset.shouldReloadOnSelect = true;
     }
@@ -259,7 +259,7 @@ export async function tryInitGroupTab(aTab) {
 
 export function reserveToUpdateInsertionPosition(aTabOrTabs) {
   const tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateInsertionPosition)
@@ -309,7 +309,7 @@ async function updateInsertionPosition(aTab) {
 
 export function reserveToUpdateAncestors(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateAncestors)
@@ -338,7 +338,7 @@ async function updateAncestors(aTab) {
 
 export function reserveToUpdateChildren(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedUpdateChildren)
@@ -389,7 +389,7 @@ async function updateSubtreeCollapsed(aTab) {
 
 export function reserveToCleanupNeedlessGroupTab(aTabOrTabs) {
   var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
     if (tab.reservedCleanupNeedlessGroupTab)
@@ -406,12 +406,12 @@ function cleanupNeedlssGroupTab(aTabs) {
     aTabs = [aTabs];
   log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
   var tabsToBeRemoved = [];
-  for (let tab of aTabs) {
+  for (const tab of aTabs) {
     if (!Tabs.isTemporaryGroupTab(tab))
       break;
     if (Tabs.getChildTabs(tab).length > 1)
       break;
-    let lastChild = Tabs.getFirstChildTab(tab);
+    const lastChild = Tabs.getFirstChildTab(tab);
     if (lastChild && !Tabs.isTemporaryGroupTab(lastChild))
       break;
     tabsToBeRemoved.push(tab);
@@ -424,7 +424,7 @@ export function reserveToUpdateRelatedGroupTabs(aTab) {
   const ancestorGroupTabs = [aTab]
     .concat(Tabs.getAncestorTabs(aTab))
     .filter(Tabs.isGroupTab);
-  for (let tab of ancestorGroupTabs) {
+  for (const tab of ancestorGroupTabs) {
     if (tab.reservedUpdateRelatedGroupTab)
       clearTimeout(tab.reservedUpdateRelatedGroupTab);
     tab.reservedUpdateRelatedGroupTab = setTimeout(() => {

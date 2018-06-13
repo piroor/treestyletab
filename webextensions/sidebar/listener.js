@@ -411,13 +411,13 @@ function getMouseEventTargetType(aEvent) {
 }
 
 async function onMouseUp(aEvent) {
-  let tab = EventUtils.getTabFromEvent(aEvent);
-  let lastMousedown = EventUtils.lastMousedown[aEvent.button];
+  const tab = EventUtils.getTabFromEvent(aEvent);
+  const lastMousedown = EventUtils.lastMousedown[aEvent.button];
   EventUtils.cancelHandleMousedown(aEvent.button);
   if (lastMousedown)
     await lastMousedown.promisedMousedownNotified;
 
-  let serializedTab = tab && TSTAPI.serializeTab(tab);
+  const serializedTab = tab && TSTAPI.serializeTab(tab);
   let promisedCanceled = Promise.resolve(false);
   if (serializedTab && lastMousedown) {
     const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
@@ -691,7 +691,7 @@ async function onWheel(aEvent) {
   }, {
     targets: lockers
   });
-  for (let result of results) {
+  for (const result of results) {
     if (result.error || result.result === undefined)
       delete gScrollLockedBy[result.id];
   }
@@ -947,7 +947,7 @@ Tabs.onRemoved.addListener(async aTab => {
     return;
 
   return new Promise(async (aResolve, _aReject) => {
-    let tabRect = aTab.getBoundingClientRect();
+    const tabRect = aTab.getBoundingClientRect();
     aTab.style.marginLeft = `${tabRect.width}px`;
     await wait(configs.animation ? configs.collapseDuration : 0);
     aResolve();
@@ -1226,8 +1226,8 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   Sidebar.updateTabTwisty(aInfo.parent);
   Sidebar.updateTabClosebox(aInfo.parent);
   if (aInfo.newlyAttached) {
-    let ancestors = [aInfo.parent].concat(Tabs.getAncestorTabs(aInfo.parent));
-    for (let ancestor of ancestors) {
+    const ancestors = [aInfo.parent].concat(Tabs.getAncestorTabs(aInfo.parent));
+    for (const ancestor of ancestors) {
       Sidebar.updateTabsCount(ancestor);
     }
   }
@@ -1254,7 +1254,7 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   Sidebar.reserveToUpdateIndent();
   Sidebar.reserveToUpdateTabTooltip(parent);
   var ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
-  for (let ancestor of ancestors) {
+  for (const ancestor of ancestors) {
     Sidebar.updateTabsCount(ancestor);
   }
 });
@@ -1352,10 +1352,10 @@ function onMessage(aMessage, _aSender, _aRespond) {
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
         await Tabs.waitUntilTabsAreCreated(aMessage.tab);
-        let tab = Tabs.getTabById(aMessage.tab);
+        const tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
-        let params = {
+        const params = {
           collapsed: aMessage.collapsed,
           justNow:   aMessage.justNow,
           stack:     aMessage.stack
@@ -1370,7 +1370,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
       if (aMessage.windowId == gTargetWindow) return (async () => {
         await Tabs.waitUntilTabsAreCreated(aMessage.tab);
-        let tab = Tabs.getTabById(aMessage.tab);
+        const tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
         if (isCollapsedStateUpdating(tab))
@@ -1380,7 +1380,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
         if (aMessage.byAncestor &&
             aMessage.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
           return;
-        let params = {
+        const params = {
           collapsed:   aMessage.collapsed,
           justNow:     aMessage.justNow,
           broadcasted: true,
@@ -1429,8 +1429,8 @@ function onMessage(aMessage, _aSender, _aRespond) {
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
           log('attach tab from remote ', aMessage);
-          let child  = Tabs.getTabById(aMessage.child);
-          let parent = Tabs.getTabById(aMessage.parent);
+          const child  = Tabs.getTabById(aMessage.child);
+          const parent = Tabs.getTabById(aMessage.parent);
           if (child && parent)
             await Tree.attachTabTo(child, parent, Object.assign({}, aMessage, {
               insertBefore: Tabs.getTabById(aMessage.insertBefore),
@@ -1451,7 +1451,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
           aMessage.tab,
           aMessage.parent
         ]);
-        let tab = Tabs.getTabById(aMessage.tab);
+        const tab = Tabs.getTabById(aMessage.tab);
         if (tab && Tabs.isActive(Tabs.getTabById(aMessage.parent)))
           Scroll.scrollToNewTab(tab);
       })();
@@ -1463,7 +1463,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
             Tabs.waitUntilTabsAreCreated(aMessage.tab),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
-          let tab = Tabs.getTabById(aMessage.tab);
+          const tab = Tabs.getTabById(aMessage.tab);
           if (tab)
             Tree.detachTab(tab, aMessage);
           gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
@@ -1488,13 +1488,13 @@ function onMessage(aMessage, _aSender, _aRespond) {
         break;
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
-        let add    = aMessage.add || [];
-        let remove = aMessage.remove || [];
+        const add    = aMessage.add || [];
+        const remove = aMessage.remove || [];
         log('apply broadcasted tab state ', aMessage.tabs, {
           add:    add.join(','),
           remove: remove.join(',')
         });
-        let modified = add.concat(remove);
+        const modified = add.concat(remove);
         for (let tab of aMessage.tabs) {
           tab = Tabs.getTabById(tab);
           if (!tab)
@@ -1591,7 +1591,7 @@ function onMessageExternal(aMessage, aSender) {
 
     case TSTAPI.kSCROLL:
       return (async () => {
-        let params = {};
+        const params = {};
         if ('tab' in aMessage) {
           await Tabs.waitUntilTabsAreCreated(aMessage.tab);
           params.tab = Tabs.getTabById(aMessage.tab);
@@ -1623,7 +1623,7 @@ function onConfigChange(aChangedKey) {
   var rootClasses = document.documentElement.classList;
   switch (aChangedKey) {
     case 'debug': {
-      for (let tab of Tabs.getAllTabs()) {
+      for (const tab of Tabs.getAllTabs()) {
         TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
       }
       if (configs.debug)
@@ -1686,7 +1686,7 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'showCollapsedDescendantsByTooltip':
-      for (let tab of Tabs.getAllTabs()) {
+      for (const tab of Tabs.getAllTabs()) {
         Sidebar.reserveToUpdateTabTooltip(tab);
       }
       break;

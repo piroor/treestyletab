@@ -78,8 +78,8 @@ export function reposition(aOptions = {}) {
   let row    = 0;
 
   gTabBar.style.marginTop = `${height * maxRow}px`;
-  for (let item of pinnedTabs) {
-    let style = item.style;
+  for (const item of pinnedTabs) {
+    const style = item.style;
     if (aOptions.justNow)
       item.classList.remove(Constants.kTAB_STATE_ANIMATION_READY);
 

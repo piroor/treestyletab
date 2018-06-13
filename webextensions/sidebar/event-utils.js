@@ -108,8 +108,8 @@ export function getTabFromCoordinates(aEvent) {
     containerRect.width / 2,
     containerRect.width - Size.getFavIconSize()
   ];
-  for (let x of trialPoints) {
-    let tab = Tabs.getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
+  for (const x of trialPoints) {
+    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
     if (tab)
       return tab;
   }
@@ -122,7 +122,7 @@ export function cancelHandleMousedown(aButton = null) {
   if (!aButton && aButton !== 0) {
     return Object.keys(lastMousedown).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
   }
-  let lastMousedownForButton = lastMousedown[aButton];
+  const lastMousedownForButton = lastMousedown[aButton];
   if (lastMousedownForButton) {
     clearTimeout(lastMousedownForButton.timeout);
     delete lastMousedown[aButton];

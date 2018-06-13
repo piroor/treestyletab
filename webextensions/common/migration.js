@@ -186,15 +186,15 @@ export async function migrateLegacyTreeStructure() {
       windowTypes: ['normal']
     });
     var restoredCountWithSession = 0;
-    for (let apiWindow of apiWindows) {
-      let signature = getWindowSignatureFromTabs(apiWindow.tabs);
-      let index     = structureSignatures.indexOf(signature);
+    for (const apiWindow of apiWindows) {
+      const signature = getWindowSignatureFromTabs(apiWindow.tabs);
+      const index     = structureSignatures.indexOf(signature);
       if (index < 0)
         continue;
 
       // found: apply only structure case
-      let structure = structures[index];
-      let tabs      = Tabs.getAllTabs(apiWindow.id);
+      const structure = structures[index];
+      const tabs      = Tabs.getAllTabs(apiWindow.id);
       await Tree.applyTreeStructureToTabs(tabs, structure);
 
       restoredCountWithSession++;

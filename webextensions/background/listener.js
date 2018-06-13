@@ -221,7 +221,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
   // First, collect pinned opener tabs.
   let pinnedOpeners = [];
   const childrenOfPinnedTabs = {};
-  for (let tab of aRootTabs) {
+  for (const tab of aRootTabs) {
     const opener = Tabs.getOpenerTab(tab);
     if (pinnedOpeners.indexOf(opener) < 0)
       pinnedOpeners.push(opener);
@@ -267,7 +267,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     case Constants.kINSERT_FIRST:
       const allPinnedTabs = Tabs.getPinnedTabs(aRootTabs[0].parentNode);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
-      for (let tab of unifiedRootTabs.slice(0).reverse()) {
+      for (const tab of unifiedRootTabs.slice(0).reverse()) {
         if (pinnedOpeners.indexOf(openerOf[tab.id]) < 0 ||
             Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
@@ -280,7 +280,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       }
       break;
     case Constants.kINSERT_END:
-      for (let tab of unifiedRootTabs) {
+      for (const tab of unifiedRootTabs) {
         if (Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.parentNode), {
@@ -295,12 +295,12 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
 
   // Finally, try to group opened tabs.
   const newGroupTabs = new Map();
-  for (let opener of pinnedOpeners) {
+  for (const opener of pinnedOpeners) {
     const children = childrenOfPinnedTabs[opener.id].sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
     log(`trying to group children of ${dumpTab(opener)}: `, children.map(dumpTab));
     let parent = Tabs.getGroupTabForOpener(opener);
     if (!parent) {
-      let uri = TabsGroup.makeGroupTabURI({
+      const uri = TabsGroup.makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title),
         temporary:   true,
         openerTabId: opener.getAttribute(Constants.kPERSISTENT_ID)
@@ -313,7 +313,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       });
       newGroupTabs.set(opener, true);
     }
-    for (let child of children) {
+    for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.dataset.alreadyGroupedForPinnedOpener = true;
       await Tree.attachTabTo(child, parent, {
@@ -329,7 +329,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
 Tabs.onCreated.addListener((aTab, aInfo = {}) => {
   log('Tabs.onCreated ', dumpTab(aTab), aInfo);
   if (aInfo.duplicated) {
-    let original = aInfo.originalTab;
+    const original = aInfo.originalTab;
     log('duplicated ', dumpTab(aTab), dumpTab(original));
     if (aInfo.duplicatedInternally) {
       log('duplicated by internal operation');
@@ -417,13 +417,13 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       Tabs.getChildTabs(aTab).length > 1) {
     log('trying to replace the closing tab with a new group tab');
-    let firstChild = Tabs.getFirstChildTab(aTab);
-    let uri = TabsGroup.makeGroupTabURI({
+    const firstChild = Tabs.getFirstChildTab(aTab);
+    const uri = TabsGroup.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
       temporary: true
     });
     TabsContainer.incrementCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');
-    let groupTab = await TabsOpen.openURIInTab(uri, {
+    const groupTab = await TabsOpen.openURIInTab(uri, {
       windowId:     aTab.apiTab.windowId,
       insertBefore: aTab, // not firstChild, because the "aTab" is disappeared from tree.
       inBackground: true
@@ -491,14 +491,14 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
         return true;
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 });
       const toBeRestoredTabs = [];
-      for (let session of sessions) {
+      for (const session of sessions) {
         if (!session.tab)
           continue;
         toBeRestoredTabs.push(session.tab);
         if (toBeRestoredTabs.length == shouldRestoreCount)
           break;
       }
-      for (let tab of toBeRestoredTabs.reverse()) {
+      for (const tab of toBeRestoredTabs.reverse()) {
         log('tryGrantClose: Tabrestoring session = ', tab);
         browser.sessions.restore(tab.sessionId);
         const tabs = await Tabs.waitUntilAllTabsAreCreated();
@@ -734,7 +734,7 @@ async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
     }
     else {
       log('=> maybe drag and drop (or opened with active state and position)');
-      let realDelta = Math.abs(toIndex - fromIndex);
+      const realDelta = Math.abs(toIndex - fromIndex);
       newParent = realDelta < 2 ? prevParent : (oldParent || nextParent) ;
     }
     while (newParent && newParent.collapsed) {
@@ -808,7 +808,7 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
     else if (configs.autoExpandOnCollapsedChildFocused &&
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildFocused');
-      for (let ancestor of Tabs.getAncestorTabs(aTab)) {
+      for (const ancestor of Tabs.getAncestorTabs(aTab)) {
         Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
           broadcast: true
@@ -896,7 +896,7 @@ function cancelDelayedExpand(aTab) {
 }
 
 function cancelAllDelayedExpand(aHint) {
-  for (let tab of Tabs.getAllTabs(aHint)) {
+  for (const tab of Tabs.getAllTabs(aHint)) {
     cancelDelayedExpand(tab);
   }
 }
@@ -1002,7 +1002,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
         broadcast: true
       });
 
-    let isNewTreeCreatedManually = !aInfo.justNow && Tabs.getChildTabs(parent).length == 1;
+    const isNewTreeCreatedManually = !aInfo.justNow && Tabs.getChildTabs(parent).length == 1;
     if (aInfo.forceExpand) {
       Tree.collapseExpandSubtree(parent, Object.assign({}, aInfo, {
         collapsed: false,
@@ -1016,7 +1016,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
           broadcast: true
         });
 
-      let newAncestors = [parent].concat(Tabs.getAncestorTabs(parent));
+      const newAncestors = [parent].concat(Tabs.getAncestorTabs(parent));
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
           Tree.shouldTabAutoExpanded(parent) ||
@@ -1049,7 +1049,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
       let nextTab = aInfo.insertBefore;
       let prevTab = aInfo.insertAfter;
       if (!nextTab && !prevTab) {
-        let tabs = Tabs.getAllTabs(aTab);
+        const tabs = Tabs.getAllTabs(aTab);
         nextTab = tabs[aInfo.newIndex];
         if (!nextTab)
           prevTab = tabs[aInfo.newIndex - 1];
@@ -1119,12 +1119,12 @@ Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
   log('Tabs.onAttached ', dumpTab(aTab), aInfo);
 
   log('descendants of attached tab: ', aInfo.descendants.map(dumpTab));
-  let movedTabs = await Tree.moveTabs(aInfo.descendants, {
+  const movedTabs = await Tree.moveTabs(aInfo.descendants, {
     destinationWindowId: aTab.apiTab.windowId,
     insertAfter:         aTab
   });
   log('moved descendants: ', movedTabs.map(dumpTab));
-  for (let movedTab of movedTabs) {
+  for (const movedTab of movedTabs) {
     if (Tabs.getParentTab(movedTab))
       continue;
     Tree.attachTabTo(movedTab, aTab, {
@@ -1560,7 +1560,7 @@ function onMessage(aMessage, aSender) {
         if (!root)
           return;
         const tabs = [root].concat(Tabs.getDescendantTabs(root));
-        for (let tab of tabs) {
+        for (const tab of tabs) {
           const playing = Tabs.isSoundPlaying(tab);
           const muted   = Tabs.isMuted(tab);
           log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
@@ -1702,7 +1702,7 @@ function onMessage(aMessage, aSender) {
         if (JSON.stringify(aMessage.permissions) == JSON.stringify(Permissions.ALL_URLS)) {
           const apiTabs = await browser.tabs.query({});
           await Tabs.waitUntilTabsAreCreated(apiTabs.map(aAPITab => aAPITab.id));
-          for (let apiTab of apiTabs) {
+          for (const apiTab of apiTabs) {
             Background.tryStartHandleAccelKeyOnTab(Tabs.getTabById(apiTab));
           }
         }
@@ -1777,7 +1777,7 @@ function onMessageExternal(aMessage, aSender) {
     case TSTAPI.kCOLLAPSE_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
-        for (let tab of tabs) {
+        for (const tab of tabs) {
           Tree.collapseExpandSubtree(tab, {
             collapsed: true,
             broadcast: true
@@ -1789,7 +1789,7 @@ function onMessageExternal(aMessage, aSender) {
     case TSTAPI.kEXPAND_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
-        for (let tab of tabs) {
+        for (const tab of tabs) {
           Tree.collapseExpandSubtree(tab, {
             collapsed: false,
             broadcast: true
@@ -1865,7 +1865,7 @@ function onMessageExternal(aMessage, aSender) {
     case TSTAPI.kFOCUS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(aMessage, aSender);
-        for (let tab of tabs) {
+        for (const tab of tabs) {
           TabsInternalOperation.selectTab(tab, {
             silently: aMessage.silently
           });
@@ -1890,7 +1890,7 @@ function onMessageExternal(aMessage, aSender) {
           default:
             break;
         }
-        for (let tab of tabs) {
+        for (const tab of tabs) {
           const duplicatedTabs = await Tree.moveTabs([tab], {
             duplicate:           true,
             destinationWindowId: tab.apiTab.windowId,
@@ -1933,8 +1933,8 @@ function onMessageExternal(aMessage, aSender) {
         let states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
-        for (let tab of tabs) {
-          for (let state of states) {
+        for (const tab of tabs) {
+          for (const state of states) {
             tab.classList.add(state);
           }
         }
@@ -1950,8 +1950,8 @@ function onMessageExternal(aMessage, aSender) {
         let states = aMessage.state || aMessage.states;
         if (!Array.isArray(states))
           states = [states];
-        for (let tab of tabs) {
-          for (let state of states) {
+        for (const tab of tabs) {
+          for (const state of states) {
             tab.classList.remove(state);
           }
         }

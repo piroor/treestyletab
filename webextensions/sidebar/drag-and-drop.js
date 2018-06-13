@@ -260,7 +260,7 @@ function getDropAction(aEvent) {
                      ancestors.indexOf(aRootTab) < 0
                    );
           */
-          for (let apiTab of info.draggedAPITabs.slice().reverse()) {
+          for (const apiTab of info.draggedAPITabs.slice().reverse()) {
             const tab    = Tabs.getTabById(apiTab);
             const parent = Tabs.getParentTab(tab);
             if (!parent && ancestors.indexOf(parent) > -1)
@@ -284,7 +284,7 @@ function getDropAction(aEvent) {
 
   if (!targetTab) {
     //log('dragging on non-tab element');
-    let action = Constants.kACTION_MOVE | Constants.kACTION_DETACH;
+    const action = Constants.kACTION_MOVE | Constants.kACTION_DETACH;
     if (aEvent.clientY < info.firstTargetTab.getBoundingClientRect().top) {
       //log('dragging above the first tab');
       info.targetTab    = info.insertBefore = info.firstTargetTab;
@@ -384,8 +384,8 @@ function getDropAction(aEvent) {
         }
       }
       else {
-        let prevLevel   = Number(prevTab.getAttribute(Constants.kLEVEL) || 0);
-        let targetLevel = Number(targetTab.getAttribute(Constants.kLEVEL) || 0);
+        const prevLevel   = Number(prevTab.getAttribute(Constants.kLEVEL) || 0);
+        const targetLevel = Number(targetTab.getAttribute(Constants.kLEVEL) || 0);
         info.parent       = (prevLevel < targetLevel) ? prevTab : Tabs.getParentTab(targetTab) ;
         info.action       = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
         info.insertBefore = targetTab;
@@ -420,8 +420,8 @@ function getDropAction(aEvent) {
         info.parent = Tabs.getParentTab(targetTab);
       }
       else {
-        let targetLevel = Number(targetTab.getAttribute(Constants.kLEVEL) || 0);
-        let nextLevel   = Number(nextTab.getAttribute(Constants.kLEVEL) || 0);
+        const targetLevel = Number(targetTab.getAttribute(Constants.kLEVEL) || 0);
+        const nextLevel   = Number(nextTab.getAttribute(Constants.kLEVEL) || 0);
         info.parent       = (targetLevel < nextLevel) ? targetTab : Tabs.getParentTab(targetTab) ;
         info.action       = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
         info.insertBefore = nextTab;
@@ -469,13 +469,13 @@ function getDropEffectFromDropAction(aActionInfo) {
 }
 
 export function clearDropPosition() {
-  for (let tab of document.querySelectorAll(`[${Constants.kDROP_POSITION}]`)) {
+  for (const tab of document.querySelectorAll(`[${Constants.kDROP_POSITION}]`)) {
     tab.removeAttribute(Constants.kDROP_POSITION)
   }
 }
 
 export function clearDraggingTabsState() {
-  for (let tab of Tabs.getDraggingTabs(Tabs.getWindow())) {
+  for (const tab of Tabs.getDraggingTabs(Tabs.getWindow())) {
     tab.classList.remove(Constants.kTAB_STATE_DRAGGING);
   }
 }
@@ -498,7 +498,7 @@ function isDraggingAllCurrentTabs(aTab) {
 function collapseAutoExpandedTabsWhileDragging() {
   if (gLongHoverExpandedTabs.length > 0 &&
       configs.autoExpandOnLongHoverRestoreIniitalState) {
-    for (let tab of gLongHoverExpandedTabs) {
+    for (const tab of gLongHoverExpandedTabs) {
       Tree.collapseExpandSubtree(tab, {
         collapsed: false,
         justNow:   true,
@@ -791,7 +791,7 @@ function onDragOver(aEvent) {
 
   if (!info.draggedAPITab ||
       dropPositionTargetTab.apiTab.id != info.draggedAPITab.id) {
-    let dropPosition = `${dropPositionTargetTab.id}:${info.dropPosition}`;
+    const dropPosition = `${dropPositionTargetTab.id}:${info.dropPosition}`;
     if (dropPosition == gLastDropPosition)
       return;
     clearDropPosition();
@@ -855,7 +855,7 @@ function reserveToProcessLongHover(aParams = {}) {
     gLongHoverTimer = setTimeout(async () => {
       log('reservedProcessLongHover: ', aParams);
 
-      let dragOverTab = Tabs.getTabById(aParams.dragOverTabId);
+      const dragOverTab = Tabs.getTabById(aParams.dragOverTabId);
       if (!dragOverTab ||
           dragOverTab.getAttribute(Constants.kDROP_POSITION) != 'self')
         return;

@@ -68,24 +68,24 @@ export function restoreTabsFromCacheInternal(aParams) {
     }
     log(`restoreTabsFromCacheInternal: there is ${container.childNodes.length} tabs`);
     log('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
-    let insertionPoint = document.createRange();
+    const insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
     insertionPoint.setStartBefore(Tabs.getTabById(Tabs.makeTabId(apiTabs[0])));
     insertionPoint.setEndAfter(Tabs.getTabById(Tabs.makeTabId(apiTabs[apiTabs.length - 1])));
     insertionPoint.deleteContents();
-    let tabsMustBeRemoved = apiTabs.map(Tabs.getTabById);
+    const tabsMustBeRemoved = apiTabs.map(Tabs.getTabById);
     log('restoreTabsFromCacheInternal: cleared?: ',
         tabsMustBeRemoved.every(aTab => !aTab),
         tabsMustBeRemoved.map(Common.dumpTab));
     log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
-    let matched = aParams.cache.match(/<li/g);
+    const matched = aParams.cache.match(/<li/g);
     log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);
     dumpCache(aParams.cache);
     insertionPoint.selectNodeContents(container);
     insertionPoint.collapse(false);
-    let source   = aParams.cache.replace(/^<ul[^>]+>|<\/ul>$/g, '');
-    let fragment = insertionPoint.createContextualFragment(source);
+    const source   = aParams.cache.replace(/^<ul[^>]+>|<\/ul>$/g, '');
+    const fragment = insertionPoint.createContextualFragment(source);
     insertionPoint.insertNode(fragment);
     insertionPoint.detach();
     tabElements = Array.slice(container.childNodes, -matched.length);
@@ -95,13 +95,13 @@ export function restoreTabsFromCacheInternal(aParams) {
       container.parentNode.removeChild(container);
     log('restoreTabsFromCacheInternal: restore');
     dumpCache(aParams.cache);
-    let insertionPoint = aParams.insertionPoint || (() => {
+    const insertionPoint = aParams.insertionPoint || (() => {
       var range = document.createRange();
       range.selectNodeContents(Tabs.allTabsContainer);
       range.collapse(false);
       return range;
     })();
-    let fragment = insertionPoint.createContextualFragment(aParams.cache);
+    const fragment = insertionPoint.createContextualFragment(aParams.cache);
     container = fragment.firstChild;
     insertionPoint.insertNode(fragment);
     container.id = `window-${aParams.windowId}`;
@@ -164,12 +164,12 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
   // this step must be done after the step 2 is finished for all tabs
   // because updating operation can refer other tabs.
   if (aOptions.dirty) {
-    for (let tab of aTabs) {
+    for (const tab of aTabs) {
       TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
     }
   }
   else {
-    for (let tab of aTabs) {
+    for (const tab of aTabs) {
       TabsUpdate.updateTabDebugTooltip(tab);
     }
   }

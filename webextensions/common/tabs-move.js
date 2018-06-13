@@ -73,7 +73,7 @@ export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = 
 
   log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
-    let message = {
+    const message = {
       type:     Constants.kCOMMAND_MOVE_TABS_BEFORE,
       windowId: aTabs[0].apiTab.windowId,
       tabs:     aTabs.map(aTab => aTab.id),
@@ -81,7 +81,7 @@ export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = 
       broadcasted: !!aOptions.broadcast
     };
     if (aOptions.inRemote) {
-      let tabIds = await browser.runtime.sendMessage(message);
+      const tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(Tabs.getTabById);
     }
     else {
@@ -97,10 +97,10 @@ export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = 
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    let oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
-    for (let tab of aTabs) {
-      let oldPreviousTab = Tabs.getPreviousTab(tab);
-      let oldNextTab     = Tabs.getNextTab(tab);
+    const oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
+    for (const tab of aTabs) {
+      const oldPreviousTab = Tabs.getPreviousTab(tab);
+      const oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == aReferenceTab) // no move case
         continue;
       TabsContainer.incrementCounter(container, 'internalMovingCount');
@@ -121,11 +121,11 @@ export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = 
           .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
-      let newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
-      let minIndex = Math.min(...oldIndexes, ...newIndexes);
-      let maxIndex = Math.max(...oldIndexes, ...newIndexes);
+      const newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
+      const minIndex = Math.min(...oldIndexes, ...newIndexes);
+      const maxIndex = Math.max(...oldIndexes, ...newIndexes);
       for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
-        let tab = allTabs[i];
+        const tab = allTabs[i];
         if (!tab)
           continue;
         tab.apiTab.index = i;
@@ -159,7 +159,7 @@ function syncOrderOfChildTabs(aParentTabs) {
     aParentTabs = [aParentTabs];
 
   var updatedParentTabs = new Map();
-  for (let parent of aParentTabs) {
+  for (const parent of aParentTabs) {
     if (!parent || updatedParentTabs.has(parent))
       continue;
     updatedParentTabs.set(parent, true);
@@ -171,7 +171,7 @@ function syncOrderOfChildTabs(aParentTabs) {
         tab:   aTab
       };
     }).sort((aA, aB) => aA.index - aB.index).map(aItem => aItem.tab);
-    let childIds = parent.childTabs.map(aTab => aTab.id);
+    const childIds = parent.childTabs.map(aTab => aTab.id);
     parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
     log('updateChildTabsInfo: ', childIds);
   }
@@ -201,7 +201,7 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
 
   log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
   if (aOptions.inRemote || aOptions.broadcast) {
-    let message = {
+    const message = {
       type:        Constants.kCOMMAND_MOVE_TABS_AFTER,
       windowId:    aTabs[0].apiTab.windowId,
       tabs:        aTabs.map(aTab => aTab.id),
@@ -209,7 +209,7 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
       broadcasted: !!aOptions.broadcast
     };
     if (aOptions.inRemote) {
-      let tabIds = await browser.runtime.sendMessage(message);
+      const tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(Tabs.getTabById);
     }
     else {
@@ -225,13 +225,13 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    let oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
+    const oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
     var nextTab = Tabs.getNextTab(aReferenceTab);
     if (aTabs.indexOf(nextTab) > -1)
       nextTab = null;
-    for (let tab of aTabs) {
-      let oldPreviousTab = Tabs.getPreviousTab(tab);
-      let oldNextTab     = Tabs.getNextTab(tab);
+    for (const tab of aTabs) {
+      const oldPreviousTab = Tabs.getPreviousTab(tab);
+      const oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == nextTab) // no move case
         continue;
       TabsContainer.incrementCounter(container, 'internalMovingCount');
@@ -252,11 +252,11 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
           .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
-      let newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
-      let minIndex = Math.min(...oldIndexes, ...newIndexes);
-      let maxIndex = Math.max(...oldIndexes, ...newIndexes);
+      const newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
+      const minIndex = Math.min(...oldIndexes, ...newIndexes);
+      const maxIndex = Math.max(...oldIndexes, ...newIndexes);
       for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
-        let tab = allTabs[i];
+        const tab = allTabs[i];
         if (!tab)
           continue;
         tab.apiTab.index = i;

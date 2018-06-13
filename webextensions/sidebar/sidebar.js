@@ -59,7 +59,7 @@ var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-s
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
   document.documentElement.dataset.userAgent = navigator.userAgent;
 
-  let style = location.search.match(/style=([^&]+)/);
+  const style = location.search.match(/style=([^&]+)/);
   if (style)
     applyStyle(style[1]);
   else
@@ -150,8 +150,8 @@ export async function init() {
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       const addons = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS });
       TSTAPI.setAddons(addons);
-      for (let id of Object.keys(TSTAPI.addons)) {
-        let addon = TSTAPI.addons[id];
+      for (const id of Object.keys(TSTAPI.addons)) {
+        const addon = TSTAPI.addons[id];
         if (addon.style)
           installStyleForAddon(id, addon.style);
       }
@@ -183,7 +183,7 @@ export async function init() {
   if (!restoredFromCache) {
     updateLoadingState();
     synchronizeThrobberAnimation();
-    for (let tab of Tabs.getAllTabs()) {
+    for (const tab of Tabs.getAllTabs()) {
       updateTabTwisty(tab);
       updateTabClosebox(tab);
       updateTabsCount(tab);
@@ -341,7 +341,7 @@ export function updateContextualIdentitiesStyle() {
 
 export function updateContextualIdentitiesSelector() {
   const anchors = Array.slice(document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
-  for (let anchor of anchors) {
+  for (const anchor of anchors) {
     if (ContextualIdentities.getCount() == 0)
       anchor.setAttribute('disabled', true);
     else
@@ -368,7 +368,7 @@ export function updateContextualIdentitiesSelector() {
     fragment.appendChild(item);
   });
   if (configs.inheritContextualIdentityToNewChildTab) {
-    let defaultCotnainerItem = document.createElement('li');
+    const defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';
     defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContexualIdentity_default');
     const icon = document.createElement('span');
@@ -385,17 +385,17 @@ export async function rebuildAll(aCache) {
   TabsContainer.clearAll();
 
   if (aCache) {
-    let restored = await SidebarCache.restoreTabsFromCache(aCache, { tabs: apiTabs });
+    const restored = await SidebarCache.restoreTabsFromCache(aCache, { tabs: apiTabs });
     if (restored) {
       MetricsData.add('rebuildAll (from cache)');
       return true;
     }
   }
 
-  let container = TabsContainer.buildFor(gTargetWindow);
-  for (let apiTab of apiTabs) {
+  const container = TabsContainer.buildFor(gTargetWindow);
+  for (const apiTab of apiTabs) {
     TabIdFixer.fixTab(apiTab);
-    let newTab = Tabs.buildTab(apiTab, { existing: true, inRemote: true });
+    const newTab = Tabs.buildTab(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
     TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
   }
@@ -418,7 +418,7 @@ export async function inheritTreeStructure() {
 
 async function waitUntilBackgroundIsReady() {
   try {
-    let response = await browser.runtime.sendMessage({
+    const response = await browser.runtime.sendMessage({
       type: Constants.kCOMMAND_PING_TO_BACKGROUND
     });
     if (response)
@@ -427,7 +427,7 @@ async function waitUntilBackgroundIsReady() {
   catch(_e) {
   }
   return new Promise((aResolve, _aReject) => {
-    let onBackgroundIsReady = (aMessage, _aSender, _aRespond) => {
+    const onBackgroundIsReady = (aMessage, _aSender, _aRespond) => {
       if (!aMessage ||
           !aMessage.type ||
           aMessage.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
@@ -567,9 +567,9 @@ export function updateTabbarLayout(aParams = {}) {
   if (overflow && !gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('overflow');
     gTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
-    let range = document.createRange();
+    const range = document.createRange();
     range.selectNode(gAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
-    let offset = range.getBoundingClientRect().height;
+    const offset = range.getBoundingClientRect().height;
     range.detach();
     gTabBar.style.bottom = `${offset}px`;
     nextFrame().then(() => {
@@ -611,7 +611,7 @@ export function reserveToUpdateTabTooltip(aTab) {
   if (!gInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
-  for (let tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
+  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
     if (tab.reservedUpdateTabTooltip)
       clearTimeout(tab.reservedUpdateTabTooltip);
   }
@@ -624,7 +624,7 @@ export function reserveToUpdateTabTooltip(aTab) {
 function updateTabAndAncestorsTooltip(aTab) {
   if (!Tabs.ensureLivingTab(aTab))
     return;
-  for (let tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
+  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
     updateTabTooltip(tab);
   }
 }
@@ -678,7 +678,7 @@ async function synchronizeThrobberAnimation() {
   if (toBeSynchronizedTabs.length == 0)
     return;
 
-  for (let tab of Array.slice(toBeSynchronizedTabs)) {
+  for (const tab of Array.slice(toBeSynchronizedTabs)) {
     tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   }
   await nextFrame();

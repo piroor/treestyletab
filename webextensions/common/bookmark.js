@@ -30,7 +30,7 @@ export async function bookmarkTabs(aTabs, aOptions = {}) {
   }
   var folder = await browser.bookmarks.create(folderParams);
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
-    let tab = aTabs[i];
+    const tab = aTabs[i];
     await browser.bookmarks.create({
       parentId: folder.id,
       index:    i,

@@ -141,21 +141,21 @@ export async function restoreTabsFromCache(aCache, aParams = {}) {
 
   if (restored) {
     try {
-      let masterStructure = (await browser.runtime.sendMessage({
+      const masterStructure = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: gTargetWindow
       })).structure;
-      let allTabs = Tabs.getAllTabs();
-      let currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
+      const allTabs = Tabs.getAllTabs();
+      const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(aItem => aItem.parent).join(',') != masterStructure.map(aItem => aItem.parent).join(',')) {
         Cache.log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${gTargetWindow}. fallback to regular way.`);
         restored = false;
-        let container = Tabs.getTabsContainer(gTargetWindow);
+        const container = Tabs.getTabsContainer(gTargetWindow);
         if (container)
           container.parentNode.removeChild(container);
       }
       if (restored && aCache.collapsedDirty) {
-        let structure = currentStructrue.reverse();
+        const structure = currentStructrue.reverse();
         allTabs.reverse().forEach((aTab, aIndex) => {
           Tree.collapseExpandSubtree(aTab, {
             collapsed: structure[aIndex].collapsed,

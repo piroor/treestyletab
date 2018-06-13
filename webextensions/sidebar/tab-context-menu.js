@@ -74,7 +74,7 @@ async function rebuild() {
 
   var firstExtraItem = menu.querySelector('.extra');
   if (firstExtraItem) {
-    let range = document.createRange();
+    const range = document.createRange();
     range.selectNodeContents(menu);
     range.setStartBefore(firstExtraItem);
     range.deleteContents();
@@ -85,7 +85,7 @@ async function rebuild() {
     return;
 
   var extraItemNodes = document.createDocumentFragment();
-  for (let id of Object.keys(extraItems)) {
+  for (const id of Object.keys(extraItems)) {
     let addonItem = document.createElement('li');
     const name = getAddonName(id);
     addonItem.appendChild(document.createTextNode(name));
@@ -97,7 +97,7 @@ async function rebuild() {
     prepareAsSubmenu(addonItem);
 
     const toBeBuiltItems = [];
-    for (let item of extraItems[id]) {
+    for (const item of extraItems[id]) {
       if (item.contexts && item.contexts.indexOf('tab') < 0)
         continue;
       if (contextTab &&
@@ -113,10 +113,10 @@ async function rebuild() {
 
     const addonSubMenu = addonItem.lastChild;
     const knownItems   = {};
-    for (let item of toBeBuiltItems) {
-      let itemNode = buildExtraItem(item, id);
+    for (const item of toBeBuiltItems) {
+      const itemNode = buildExtraItem(item, id);
       if (item.parentId && item.parentId in knownItems) {
-        let parent = knownItems[item.parentId];
+        const parent = knownItems[item.parentId];
         prepareAsSubmenu(parent);
         parent.lastChild.appendChild(itemNode);
       }
@@ -218,7 +218,7 @@ function buildExtraItem(aItem, aOwnerAddonId) {
 function matchesToCurrentTab(aPatterns) {
   if (!Array.isArray(aPatterns))
     aPatterns = [aPatterns];
-  for (let pattern of aPatterns) {
+  for (const pattern of aPatterns) {
     if (matchPatternToRegExp(pattern).test(contextTab.url))
       return true;
   }
@@ -273,7 +273,7 @@ export async function close() {
 function applyContext() {
   if (contextTab) {
     menu.setAttribute('data-tab-id', contextTab.id);
-    let states = [];
+    const states = [];
     if (contextTab.active)
       states.push('active');
     if (contextTab.pinned)
@@ -342,10 +342,10 @@ async function onCommand(aItem, aEvent) {
       */
       // browser.tabs.duplicate(contextTab.id);
       return (async () => {
-        let sourceTab = Tabs.getTabById(contextTab);
+        const sourceTab = Tabs.getTabById(contextTab);
         if (configs.logOnFakeContextMenu)
           log('source tab: ', sourceTab, !!sourceTab.apiTab);
-        let duplicatedTabs = await Tree.moveTabs([sourceTab], {
+        const duplicatedTabs = await Tree.moveTabs([sourceTab], {
           duplicate:           true,
           destinationWindowId: contextWindowId,
           insertAfter:         sourceTab,
@@ -364,14 +364,14 @@ async function onCommand(aItem, aEvent) {
       });
       break;
     case 'context_reloadAllTabs': {
-      let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
-      for (let apiTab of apiTabs) {
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      for (const apiTab of apiTabs) {
         browser.tabs.reload(apiTab.id);
       }
     }; break;
     case 'context_bookmarkAllTabs': {
-      let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
-      let folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
       if (folder)
         browser.bookmarks.get(folder.parentId).then(aFolders => {
           notify({
@@ -386,10 +386,10 @@ async function onCommand(aItem, aEvent) {
         });
     }; break;
     case 'context_closeTabsToTheEnd': {
-      let apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       let after = false;
-      let closeAPITabs = [];
-      for (let apiTab of apiTabs) {
+      const closeAPITabs = [];
+      for (const apiTab of apiTabs) {
         if (apiTab.id == contextTab.id) {
           after = true;
           continue;
@@ -403,16 +403,16 @@ async function onCommand(aItem, aEvent) {
       browser.tabs.remove(closeAPITabs.map(aAPITab => aAPITab.id));
     }; break;
     case 'context_closeOtherTabs': {
-      let apiTabId = contextTab.id; // cache it for delayed tasks!
-      let apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
-      let closeAPITabs = apiTabs.filter(aAPITab => !aAPITab.pinned && aAPITab.id != apiTabId).map(aAPITab => aAPITab.id);
+      const apiTabId = contextTab.id; // cache it for delayed tasks!
+      const apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
+      const closeAPITabs = apiTabs.filter(aAPITab => !aAPITab.pinned && aAPITab.id != apiTabId).map(aAPITab => aAPITab.id);
       const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: contextWindowId })) === false;
       if (canceled)
         return;
       browser.tabs.remove(closeAPITabs);
     }; break;
     case 'context_undoCloseTab': {
-      let sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
+      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
       if (sessions.length && sessions[0].tab)
         browser.sessions.restore(sessions[0].tab.sessionId);
     }; break;
@@ -421,7 +421,7 @@ async function onCommand(aItem, aEvent) {
       break;
 
     default: {
-      let id = aItem.getAttribute('data-item-id');
+      const id = aItem.getAttribute('data-item-id');
       if (id) {
         var modifiers = [];
         if (aEvent.metaKey)
@@ -433,7 +433,7 @@ async function onCommand(aItem, aEvent) {
         }
         if (aEvent.shiftKey)
           modifiers.push('Shift');
-        let message = {
+        const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
           info: {
             checked:          false,
@@ -451,7 +451,7 @@ async function onCommand(aItem, aEvent) {
           },
           tab: contextTab || null
         };
-        let owner = aItem.getAttribute('data-item-owner-id');
+        const owner = aItem.getAttribute('data-item-owner-id');
         if (owner == browser.runtime.id)
           await browser.runtime.sendMessage(message);
         else

@@ -80,7 +80,7 @@ export async function loadTreeStructure(aRestoredFromCacheResults) {
     }
     if (!windowStateCompletelyApplied) {
       log(`Tree information for the window ${aWindow.id} is not same to actual state. Fallback to restoration from tab relations.`);
-      for (let tab of tabs) {
+      for (const tab of tabs) {
         reserveToAttachTabFromRestoredInfo(tab, {
           keepCurrentTree: true,
           canCollapse:     true
@@ -162,10 +162,10 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   });
   var attached = false;
   var active   = Tabs.isActive(aTab);
-  for (let ancestor of ancestors) {
+  for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
-    let done = Tree.attachTabTo(aTab, ancestor, {
+    const done = Tree.attachTabTo(aTab, ancestor, {
       insertBefore,
       insertAfter,
       dontExpand:  !active,
@@ -178,11 +178,11 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     break;
   }
   if (!attached) {
-    let opener = Tabs.getOpenerTab(aTab);
+    const opener = Tabs.getOpenerTab(aTab);
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', { child: dumpTab(aTab), parent: dumpTab(opener) });
-      let done = Tree.attachTabTo(aTab, opener, {
+      const done = Tree.attachTabTo(aTab, opener, {
         dontExpand:  !active,
         forceExpand: active,
         broadcast:   true,
@@ -213,7 +213,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     });
   }
   if (aOptions.children && !aOptions.bulk) {
-    for (let child of children) {
+    for (const child of children) {
       if (!child)
         continue;
       await Tree.attachTabTo(child, aTab, {

@@ -83,7 +83,7 @@ export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions 
   var insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
     insertionPoint = document.createRange();
-    let container = Tabs.getTabsContainer(aWindowId);
+    const container = Tabs.getTabsContainer(aWindowId);
     if (container)
       insertionPoint.selectNode(container);
     else
@@ -324,8 +324,8 @@ function onConfigChange(aKey) {
         populate:    true,
         windowTypes: ['normal']
       }).then(aWindows => {
-        for (let window of aWindows) {
-          let owner = window.tabs[window.tabs.length - 1];
+        for (const window of aWindows) {
+          const owner = window.tabs[window.tabs.length - 1];
           if (configs[aKey]) {
             reserveToCacheTree(Tabs.getTabById(owner));
           }

@@ -203,7 +203,7 @@ function buildTabItem(aTab) {
 function buildTabChildren(aTab) {
   if (aTab.children && aTab.children.length > 0) {
     const list = document.createElement('ul');
-    for (let child of aTab.children) {
+    for (const child of aTab.children) {
       list.appendChild(buildTabItem(child));
     }
     return list;

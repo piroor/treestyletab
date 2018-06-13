@@ -18,7 +18,7 @@ export function getCount() {
 }
 
 export function forEach(aCallback) {
-  for (let id of Object.keys(gContextualIdentities)) {
+  for (const id of Object.keys(gContextualIdentities)) {
     aCallback(gContextualIdentities[id]);
   }
 }
@@ -43,7 +43,7 @@ export async function init() {
   if (!browser.contextualIdentities)
     return;
   const identities = await browser.contextualIdentities.query({});
-  for (let identity of identities) {
+  for (const identity of identities) {
     gContextualIdentities[identity.cookieStoreId] = identity;
   }
 }

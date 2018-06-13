@@ -65,7 +65,7 @@ function reserveNotifyUpdated() {
       await notifyUpdated();
       const handlers = gNotifyUpdatedHandlers;
       gNotifyUpdatedHandlers = [];
-      for (let handler of handlers) {
+      for (const handler of handlers) {
         handler();
       }
     }, 100);
@@ -90,14 +90,14 @@ export function onExternalMessage(aMessage, aSender) {
     log('fake-context-menu: API called:', aMessage, aSender);
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
-      let items  = getItemsFor(aSender.id);
+      const items  = getItemsFor(aSender.id);
       let params = aMessage.params;
       if (Array.isArray(params))
         params = params[0];
       let shouldAdd = true;
       if (params.id) {
         for (let i = 0, maxi = items.length; i < maxi; i++) {
-          let item = items[i];
+          const item = items[i];
           if (item.id != params.id)
             continue;
           items.splice(i, 1, params);
@@ -112,9 +112,9 @@ export function onExternalMessage(aMessage, aSender) {
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_UPDATE: {
-      let items = getItemsFor(aSender.id);
+      const items = getItemsFor(aSender.id);
       for (let i = 0, maxi = items.length; i < maxi; i++) {
-        let item = items[i];
+        const item = items[i];
         if (item.id != aMessage.params[0])
           continue;
         items.splice(i, 1, Object.assign({}, item, aMessage.params[1]));
