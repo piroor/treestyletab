@@ -52,6 +52,7 @@ let gTabBar;
 export function init() {
   gTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
+  configs.$addObserver(onConfigChange);
 }
 
 export function reposition(aOptions = {}) {
@@ -138,4 +139,29 @@ export function clearStyle(aTab) {
   aTab.classList.remove(Constants.kTAB_STATE_LAST_ROW);
   const style = aTab.style;
   style.left = style.right = style.top = style.bottom;
+}
+
+Tabs.onPinned.addListener(() => {
+  reserveToReposition();
+});
+
+Tabs.onUnpinned.addListener(aTab => {
+  clearStyle(aTab);
+  reserveToReposition();
+});
+
+Tabs.onShown.addListener(() => {
+  reserveToReposition();
+});
+
+Tabs.onHidden.addListener(() => {
+  reserveToReposition();
+});
+
+function onConfigChange(aChangedKey) {
+  switch (aChangedKey) {
+    case 'faviconizePinnedTabs':
+      reserveToReposition();
+      break;
+  }
 }
