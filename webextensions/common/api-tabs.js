@@ -5,22 +5,18 @@
 */
 'use strict';
 
-export async function getIndex(...aQueriedTabIds) {
+export async function getIndexes(...aQueriedTabIds) {
   if (aQueriedTabIds.length == 0)
-    return -1;
+    return [];
 
-  let indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
+  const indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
     return browser.tabs.get(aTabId)
       .catch(e => {
         handleMissingTabError(e);
         return -1;
       });
   }));
-  indexes = indexes.map(aTab => aTab ? aTab.index : -1);
-  if (indexes.length == 1)
-    return indexes[0];
-  else
-    return indexes;
+  return indexes.map(aTab => aTab ? aTab.index : -1);
 }
 
 // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477

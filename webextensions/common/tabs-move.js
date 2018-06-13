@@ -134,7 +134,9 @@ export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = 
       if (!aOptions.broadcasted) {
         if (aOptions.delayedMove) // Wait until opening animation is finished.
           await wait(configs.newTabAnimationDuration);
-        let [toIndex, fromIndex] = await ApiTabs.getIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        const indexes   = await ApiTabs.getIndexes(aReferenceTab.apiTab.id, apiTabIds[0]);
+        let   toIndex   = indexes[0];
+        const fromIndex = indexes[1];
         if (fromIndex < toIndex)
           toIndex--;
         browser.tabs.move(apiTabIds, {
@@ -265,7 +267,9 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
       if (!aOptions.broadcasted) {
         if (aOptions.delayedMove) // Wait until opening animation is finished.
           await wait(configs.newTabAnimationDuration);
-        let [toIndex, fromIndex] = await ApiTabs.getIndex(aReferenceTab.apiTab.id, apiTabIds[0]);
+        const indexes   = await ApiTabs.getIndexes(aReferenceTab.apiTab.id, apiTabIds[0]);
+        let   toIndex   = indexes[0];
+        const fromIndex = indexes[1];
         if (fromIndex > toIndex)
           toIndex++;
         browser.tabs.move(apiTabIds, {
