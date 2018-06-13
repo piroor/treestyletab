@@ -130,9 +130,9 @@ function getTabFromCoordinates(aEvent) {
   // left, middle, and right.
   var containerRect = container.getBoundingClientRect();
   var trialPoints = [
-    gFaviconSize,
+    Size.getFavIconSize(),
     containerRect.width / 2,
-    containerRect.width - gFaviconSize
+    containerRect.width - Size.getFavIconSize()
   ];
   for (let x of trialPoints) {
     let tab = Tabs.getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
@@ -1382,11 +1382,11 @@ function onMessage(aMessage, aSender, aRespond) {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
-      gRestoringTabCount++;
+      RestoringTabCount.increment();
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORED:
-      gRestoringTabCount--;
+      RestoringTabCount.decrement();
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
@@ -1592,19 +1592,19 @@ function onMessage(aMessage, aSender, aRespond) {
         break;
       switch (String(aMessage.by).toLowerCase()) {
         case 'lineup':
-          smoothScrollBy(-gTabHeight * configs.scrollLines);
+          smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
           break;
 
         case 'pageup':
-          smoothScrollBy(-gTabBar.getBoundingClientRect().height + gTabHeight);
+          smoothScrollBy(-gTabBar.getBoundingClientRect().height + Size.getTabHeight());
           break;
 
         case 'linedown':
-          smoothScrollBy(gTabHeight * configs.scrollLines);
+          smoothScrollBy(Size.getTabHeight() * configs.scrollLines);
           break;
 
         case 'pagedown':
-          smoothScrollBy(gTabBar.getBoundingClientRect().height - gTabHeight);
+          smoothScrollBy(gTabBar.getBoundingClientRect().height - Size.getTabHeight());
           break;
 
         default:

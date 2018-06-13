@@ -9,10 +9,6 @@ log.context = 'Sidebar-?';
 
 var gInitializing = true;
 var gStyle;
-var gFaviconSize        = 0;
-var gFaviconizedTabSize = 0;
-var gTabHeight          = 0;
-var gRestoringTabCount = 0;
 var gAddonStyles = {};
 var gTargetWindow   = null;
 var gScrollLockedBy = {};
@@ -24,7 +20,6 @@ window.addEventListener('load', init, { once: true });
 
 var gTabBar                     = document.querySelector('#tabbar');
 var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
-var gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
 var gMasterThrobber             = document.querySelector('#master-throbber');
 var gSizeDefinition             = document.querySelector('#size-definition');
 var gStyleLoader                = document.querySelector('#style-loader');
@@ -95,6 +90,8 @@ async function init() {
       });
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
         browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
+      else
+        applyBrowserTheme();
 
       if (!restoredFromCache)
         await MetricsData.addAsync('inheritTreeStructure', async () => {
@@ -132,8 +129,8 @@ async function init() {
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
     }),
-    MetricsData.addAsync('calculateDefaultSizes', async () => {
-      calculateDefaultSizes();
+    MetricsData.addAsync('Size.init', async () => {
+      Size.init();
       document.documentElement.classList.remove('initializing');
     }),
     MetricsData.addAsync('initializing contextual identities', async () => {
@@ -297,8 +294,20 @@ function applyUserStyleRules() {
 
 function applyBrowserTheme(aTheme) {
   log('applying theme ', aTheme);
-  if (!aTheme.colors) {
-    gBrowserThemeDefinition.textContent = '';
+
+  const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
+  const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
+  const defaultColors = `:root {
+    --face-highlight-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
+    --face-highlight-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
+    --face-highlight-more-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
+    --face-gradient-start-active: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.4);
+    --face-gradient-start-inactive: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.2);
+    --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
+  }`;
+
+  if (!aTheme || !aTheme.colors) {
+    gBrowserThemeDefinition.textContent = defaultColors;
     return;
   }
   const extraColors = [];
@@ -312,68 +321,31 @@ function applyBrowserTheme(aTheme) {
       bgAlpha = 0.75;
     }
   }
-  const baseColor = Color.mixCSSColors(aTheme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
-  let toolbarColor = Color.mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
+  const themeBaseColor = Color.mixCSSColors(aTheme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
+  let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
   if (aTheme.colors.toolbar)
-    toolbarColor = Color.mixCSSColors(baseColor, aTheme.colors.toolbar);
+    toolbarColor = Color.mixCSSColors(themeBaseColor, aTheme.colors.toolbar);
   if (aTheme.colors.tab_line)
     extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
   if (aTheme.colors.tab_loading)
     extraColors.push(`--browser-loading-indicator: ${aTheme.colors.tab_loading}`);
   gBrowserThemeDefinition.textContent = `
+    ${defaultColors}
     :root {
-      --browser-bg-base:         ${baseColor};
-      --browser-bg-less-lighter: ${Color.mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
+      --browser-bg-base:         ${themeBaseColor};
+      --browser-bg-less-lighter: ${Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
       --browser-bg-lighter:      ${toolbarColor};
       --browser-bg-more-lighter: ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)', bgAlpha)};
       --browser-bg-lightest:     ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)', bgAlpha)};
-      --browser-bg-less-darker:  ${Color.mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
-      --browser-bg-darker:       ${Color.mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
-      --browser-bg-more-darker:  ${Color.mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
+      --browser-bg-less-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
+      --browser-bg-darker:       ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
+      --browser-bg-more-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
       --browser-fg:              ${aTheme.colors.textcolor};
       --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
       --browser-border:          ${Color.mixCSSColors(aTheme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
     }
   `;
-}
-
-function calculateDefaultSizes() {
-  // first, calculate actual favicon size.
-  gFaviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
-  const scale = Math.max(configs.faviconizedTabScale, 1);
-  gFaviconizedTabSize = parseInt(gFaviconSize * scale);
-  log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
-  gSizeDefinition.textContent = `:root {
-    --favicon-size:         ${gFaviconSize}px;
-    --faviconized-tab-size: ${gFaviconizedTabSize}px;
-  }`;
-  const dummyTab = document.querySelector('#dummy-tab');
-  const dummyTabRect = dummyTab.getBoundingClientRect();
-  gTabHeight = dummyTabRect.height;
-  const dummyTabbar = document.querySelector('#dummy-tabs');
-  const dummyTabbarRect = dummyTabbar.getBoundingClientRect();
-  const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
-  log('gTabHeight ', gTabHeight);
-  const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
-  const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
-  gSizeDefinition.textContent += `:root {
-    --tab-height: ${gTabHeight}px;
-    --scrollbar-size: ${scrollbarSize}px;
-    --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
-
-    --tab-burst-duration: ${configs.burstDuration}ms;
-    --indent-duration:    ${configs.indentDuration}ms;
-    --collapse-duration:  ${configs.collapseDuration}ms;
-    --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
-
-    --face-highlight-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
-    --face-highlight-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
-    --face-highlight-more-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
-    --face-gradient-start-active: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.4);
-    --face-gradient-start-inactive: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.2);
-    --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
-  }`;
 }
 
 function updateContextualIdentitiesStyle() {
@@ -682,7 +654,7 @@ reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
 function updateTabbarLayout(aParams = {}) {
-  if (gRestoringTabCount > 1) {
+  if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({
       reason:  aParams.reasons,
@@ -701,8 +673,7 @@ function updateTabbarLayout(aParams = {}) {
     //log('overflow');
     gTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
     let range = document.createRange();
-    range.selectNodeContents(gAfterTabsForOverflowTabBar);
-    range.setStartAfter(gOutOfViewTabNotifier);
+    range.selectNode(gAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
     let offset = range.getBoundingClientRect().height;
     range.detach();
     gTabBar.style.bottom = `${offset}px`;
@@ -819,25 +790,5 @@ async function synchronizeThrobberAnimation() {
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
   await nextFrame();
   document.documentElement.classList.remove(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
-}
-
-
-async function notifyOutOfViewTab(aTab) {
-  if (gRestoringTabCount > 1) {
-    log('notifyOutOfViewTab: skip until completely restored');
-    wait(100).then(() => notifyOutOfViewTab(aTab));
-    return;
-  }
-  await nextFrame();
-  cancelNotifyOutOfViewTab();
-  if (aTab && isTabInViewport(aTab))
-    return;
-  gOutOfViewTabNotifier.classList.add('notifying');
-  await wait(configs.outOfViewTabNotifyDuration);
-  cancelNotifyOutOfViewTab();
-}
-
-function cancelNotifyOutOfViewTab() {
-  gOutOfViewTabNotifier.classList.remove('notifying');
 }
 

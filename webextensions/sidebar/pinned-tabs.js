@@ -53,8 +53,8 @@ function positionPinnedTabs(aOptions = {}) {
   var maxWidth       = containerWidth;
   var faviconized    = configs.faviconizePinnedTabs;
 
-  var width  = faviconized ? gFaviconizedTabSize : maxWidth ;
-  var height = faviconized ? gFaviconizedTabSize : gTabHeight ;
+  var width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth ;
+  var height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() ;
   var maxCol = Math.max(1, Math.floor(maxWidth / width));
   var maxRow = Math.ceil(pinnedTabs.length / maxCol);
   var col    = 0;

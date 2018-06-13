@@ -16,6 +16,8 @@ import * as Color from './color.js';
 import * as TabContextMenu from './tab-context-menu.js';
 import * as SidebarCache from './cache.js';
 import * as Indent from './indent.js';
+import * as RestoringTabCount from './restoring-tab-count.js';
+import * as Size from './size.js';
 
 import * as Tabs from '../../common/tabs.js';
 import * as TabsContainer from '../../common/tabs-container.js';
@@ -56,6 +58,8 @@ window.Color = Color;
 window.TabContextMenu = TabContextMenu;
 window.SidebarCache = SidebarCache;
 window.Indent = Indent;
+window.RestoringTabCount = RestoringTabCount;
+window.Size = Size;
 
 window.Tabs = Tabs;
 window.TabsContainer = TabsContainer;
