@@ -20,6 +20,11 @@ module.exports = {
   },
 
   'rules': {
+    'no-const-assign': 'error',
+    'prefer-const': ['warn', {
+      'destructuring': 'any',
+      'ignoreReadBeforeAssign': false
+    }],
     // stylisitc problem
     'indent': ['warn', 2, {
       'SwitchCase': 1,
