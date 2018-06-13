@@ -692,7 +692,7 @@ var gLastDragOverTimestamp = null;
 
 function onDragOver(aEvent) {
   aEvent.preventDefault(); // this is required to override default dragover actions!
-  autoScrollOnMouseEvent(aEvent);
+  Scroll.autoScrollOnMouseEvent(aEvent);
 
   // reduce too much handling of too frequent dragover events...
   const now = Date.now();
@@ -976,7 +976,7 @@ function onDragEnd(aEvent) {
 /* drag on tabs API */
 
 function onTSTAPIDragEnter(aEvent) {
-  autoScrollOnMouseEvent(aEvent);
+  Scroll.autoScrollOnMouseEvent(aEvent);
   const tab = getTabFromEvent(aEvent);
   let target = tab;
   if (gDragTargetIsClosebox && isEventFiredOnClosebox(aEvent))

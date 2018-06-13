@@ -62,7 +62,7 @@ export function activate() {
 
 /* basics */
 
-function scrollTo(aParams = {}) {
+export function scrollTo(aParams = {}) {
   if (configs.logOnScroll)
     log('scrollTo ', aParams);
   if (!aParams.justNow &&
@@ -80,7 +80,7 @@ function scrollTo(aParams = {}) {
     throw new Error('No parameter to indicate scroll position');
 }
 
-function cancelRunningScroll() {
+export function cancelRunningScroll() {
   scrollToTab.stopped = true;
   stopSmoothScroll();
 }
@@ -109,7 +109,7 @@ function calculateScrollDeltaForTab(aTab) {
   return delta;
 }
 
-function isTabInViewport(aTab) {
+export function isTabInViewport(aTab) {
   if (!Tabs.ensureLivingTab(aTab))
     return false;
 
@@ -119,7 +119,7 @@ function isTabInViewport(aTab) {
   return calculateScrollDeltaForTab(aTab) == 0;
 }
 
-async function smoothScrollTo(aParams = {}) {
+export async function smoothScrollTo(aParams = {}) {
   if (configs.logOnScroll)
     log('smoothScrollTo ', aParams);
   //cancelPerformingAutoScroll(true);
@@ -183,7 +183,7 @@ async function smoothScrollTo(aParams = {}) {
 }
 smoothScrollTo.currentOffset= 0;
 
-async function smoothScrollBy(aDelta) {
+export async function smoothScrollBy(aDelta) {
   return smoothScrollTo({
     position: gTabBar.scrollTop + aDelta
   });
@@ -199,7 +199,7 @@ function isSmoothScrolling() {
 
 /* applications */
 
-function scrollToNewTab(aTab, aOptions = {}) {
+export function scrollToNewTab(aTab, aOptions = {}) {
   if (!canScrollToTab(aTab))
     return;
 
@@ -217,7 +217,7 @@ function canScrollToTab(aTab) {
           !Tabs.isHidden(aTab));
 }
 
-async function scrollToTab(aTab, aOptions = {}) {
+export async function scrollToTab(aTab, aOptions = {}) {
   if (configs.logOnScroll)
     log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions,
         { stack: new Error().stack });
@@ -323,7 +323,7 @@ function scrollToTabs(aTabs) {
   });
 }
 
-function autoScrollOnMouseEvent(aEvent) {
+export function autoScrollOnMouseEvent(aEvent) {
   if (!gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
     return;
 
@@ -341,7 +341,7 @@ function autoScrollOnMouseEvent(aEvent) {
 autoScrollOnMouseEvent.areaSize = 20;
 
 
-async function notifyOutOfViewTab(aTab) {
+export async function notifyOutOfViewTab(aTab) {
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('notifyOutOfViewTab: skip until completely restored');
     wait(100).then(() => notifyOutOfViewTab(aTab));

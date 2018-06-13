@@ -176,8 +176,8 @@ async function init() {
 
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
-    cancelRunningScroll();
-    scrollTo({
+    Scroll.cancelRunningScroll();
+    Scroll.scrollTo({
       position: scrollPosition,
       justNow:  true
     });
@@ -682,17 +682,17 @@ function updateTabbarLayout(aParams = {}) {
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
       var current = Tabs.getCurrentTab();
-      if (!isTabInViewport(current)) {
+      if (!Scroll.isTabInViewport(current)) {
         log('scroll to current tab on updateTabbarLayout');
-        scrollToTab(current);
+        Scroll.scrollToTab(current);
         return;
       }
       var lastOpenedTab = Tabs.getLastOpenedTab();
       var reasons       = aParams.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
-          !isTabInViewport(lastOpenedTab)) {
+          !Scroll.isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
-        scrollToTab(lastOpenedTab, {
+        Scroll.scrollToTab(lastOpenedTab, {
           anchor:            current,
           notifyOnOutOfView: true
         });

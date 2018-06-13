@@ -821,7 +821,7 @@ function updateTabSoundButtonTooltip(aTab) {
 
 Tabs.onActivated.addListener((aTab, aInfo = {}) => {
   TabContextMenu.close();
-  scrollToTab(aTab);
+  Scroll.scrollToTab(aTab);
 });
 
 Tabs.onCreating.addListener((aTab, aInfo = {}) => {
@@ -842,15 +842,15 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
         last:      true
       });
       if (!focused)
-        notifyOutOfViewTab(aTab);
+        Scroll.notifyOutOfViewTab(aTab);
     });
   }
   else {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
     if (Tabs.isActive(aTab))
-      scrollToNewTab(aTab);
+      Scroll.scrollToNewTab(aTab);
     else
-      notifyOutOfViewTab(aTab);
+      Scroll.notifyOutOfViewTab(aTab);
   }
 
   reserveToUpdateVisualMaxTreeLevel();
@@ -1048,7 +1048,7 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   if (aTab.apiTab.status == 'loading')
     aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
-  if (aInfo.anchor && !isTabInViewport(aInfo.anchor))
+  if (aInfo.anchor && !Scroll.isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
 
   var reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
@@ -1092,7 +1092,7 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
 
     //log('start animation for ', dumpTab(aTab));
     if (aInfo.last)
-      scrollToTab(aTab, {
+      Scroll.scrollToTab(aTab, {
         anchor:            aInfo.anchor,
         notifyOnOutOfView: true
       });
@@ -1137,7 +1137,7 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
 });
 function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
   if (Tabs.isActive(aTab) && !aOptions.collapsed)
-    scrollToTab(aTab);
+    Scroll.scrollToTab(aTab);
 
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
@@ -1177,7 +1177,7 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
   });
 
   if (aInfo.last)
-    scrollToTab(aTab, {
+    Scroll.scrollToTab(aTab, {
       anchor:            aInfo.anchor,
       notifyOnOutOfView: true
     });
@@ -1303,7 +1303,7 @@ Tabs.onPinned.addListener(aTab => {
 Tabs.onUnpinned.addListener(aTab => {
   TabContextMenu.close();
   clearPinnedStyle(aTab);
-  scrollToTab(aTab);
+  Scroll.scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
   reserveToPositionPinnedTabs();
   SidebarCache.reserveToUpdateCachedTabbar();
@@ -1497,7 +1497,7 @@ function onMessage(aMessage, aSender, aRespond) {
         ]);
         let tab = Tabs.getTabById(aMessage.tab);
         if (tab && Tabs.isActive(Tabs.getTabById(aMessage.parent)))
-          scrollToNewTab(tab);
+          Scroll.scrollToNewTab(tab);
       })();
 
     case Constants.kCOMMAND_DETACH_TAB: {
@@ -1592,29 +1592,29 @@ function onMessage(aMessage, aSender, aRespond) {
         break;
       switch (String(aMessage.by).toLowerCase()) {
         case 'lineup':
-          smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
+          Scroll.smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
           break;
 
         case 'pageup':
-          smoothScrollBy(-gTabBar.getBoundingClientRect().height + Size.getTabHeight());
+          Scroll.smoothScrollBy(-gTabBar.getBoundingClientRect().height + Size.getTabHeight());
           break;
 
         case 'linedown':
-          smoothScrollBy(Size.getTabHeight() * configs.scrollLines);
+          Scroll.smoothScrollBy(Size.getTabHeight() * configs.scrollLines);
           break;
 
         case 'pagedown':
-          smoothScrollBy(gTabBar.getBoundingClientRect().height - Size.getTabHeight());
+          Scroll.smoothScrollBy(gTabBar.getBoundingClientRect().height - Size.getTabHeight());
           break;
 
         default:
           switch (String(aMessage.to).toLowerCase()) {
             case 'top':
-              smoothScrollTo({ position: 0 });
+              Scroll.smoothScrollTo({ position: 0 });
               break;
 
             case 'bottom':
-              smoothScrollTo({ position: gTabBar.scrollTopMax });
+              Scroll.smoothScrollTo({ position: gTabBar.scrollTopMax });
               break;
           }
           break;
@@ -1650,7 +1650,7 @@ function onMessageExternal(aMessage, aSender) {
           if ('position' in aMessage)
             params.position = aMessage.position;
         }
-        return scrollTo(params).then(() => {
+        return Scroll.scrollTo(params).then(() => {
           return true;
         });
       })();
