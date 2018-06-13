@@ -1687,12 +1687,10 @@ function onConfigChange(aChangedKey) {
       if (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) {
         rootClasses.add('right');
         rootClasses.remove('left');
-        gIndentProp = 'margin-right';
       }
       else {
         rootClasses.add('left');
         rootClasses.remove('right');
-        gIndentProp = 'margin-left';
       }
       Indent.update({ force: true });
       break;

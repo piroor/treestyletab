@@ -13,7 +13,6 @@ import {
 let gTabHeight          = 0;
 let gFavIconSize        = 0;
 let gFavIconizedTabSize = 0;
-let gSizeDefinition;
 
 export function getTabHeight() {
   return gTabHeight;
@@ -28,12 +27,13 @@ export function getFavIconizedTabSize() {
 }
 
 export function init() {
+  const sizeDefinition = document.querySelector('#size-definition');
   // first, calculate actual favicon size.
   gFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
   const scale = Math.max(configs.faviconizedTabScale, 1);
   gFavIconizedTabSize = parseInt(gFavIconSize * scale);
   log('gFavIconSize / gFavIconizedTabSize ', gFavIconSize, gFavIconizedTabSize);
-  gSizeDefinition.textContent = `:root {
+  sizeDefinition.textContent = `:root {
     --favicon-size:         ${gFavIconSize}px;
     --faviconized-tab-size: ${gFavIconizedTabSize}px;
   }`;
@@ -44,7 +44,7 @@ export function init() {
   const dummyTabbarRect = dummyTabbar.getBoundingClientRect();
   const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('gTabHeight ', gTabHeight);
-  gSizeDefinition.textContent += `:root {
+  sizeDefinition.textContent += `:root {
     --tab-height: ${gTabHeight}px;
     --scrollbar-size: ${scrollbarSize}px;
     --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;

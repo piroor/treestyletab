@@ -15,11 +15,10 @@ import * as Tabs from '../../common/tabs.js';
 let gIndentDefinition;
 let gLastMaxLevel  = -1;
 let gLastMaxIndent = -1;
-let gIndentProp = 'margin-left';
 let gTargetWindow;
 let gTabBar;
 
-export function activate() {
+export function init() {
   gTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
 }
@@ -57,12 +56,13 @@ export function update(aOptions = {}) {
       generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
     }
 
+    const indentProp = (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) ? 'margin-right' : 'margin-left';
     const definitions = [];
     for (let indentSet of [defaultIndentToSelectors, indentToSelectors]) {
       let indents = Object.keys(indentSet);
       indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
       for (let indent of indents) {
-        definitions.push(`${indentSet[indent].join(',\n')} { ${gIndentProp}: ${indent}; }`);
+        definitions.push(`${indentSet[indent].join(',\n')} { ${indentProp}: ${indent}; }`);
       }
     }
     gIndentDefinition.textContent = definitions.join('\n');

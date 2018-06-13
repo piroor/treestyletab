@@ -19,13 +19,19 @@ import * as Indent from './indent.js';
 
 export const onRestored = new EventListenerManager();
 
+let gTracking = false;
+
 let gLastWindowCacheOwner;
 let gTargetWindow;
 let gTabBar;
 
-export function activate() {
+export function init() {
   gTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
+}
+
+export function startTracking() {
+  gTracking = true;
 }
 
 export async function getEffectiveWindowCache(aOptions = {}) {
@@ -210,7 +216,7 @@ function getWindowCacheOwner() {
 }
 
 export async function reserveToUpdateCachedTabbar() {
-  if (!gTargetWindow ||
+  if (!gTracking ||
       !configs.useCachedTree)
     return;
 

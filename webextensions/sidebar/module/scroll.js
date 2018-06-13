@@ -55,7 +55,7 @@ import * as RestoringTabCount from './restoring-tab-count.js';
 let gTabBar;
 let gOutOfViewTabNotifier;
 
-export function activate() {
+export function init() {
   gTabBar               = document.querySelector('#tabbar');
   gOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 }

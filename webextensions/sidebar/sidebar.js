@@ -21,7 +21,6 @@ window.addEventListener('load', init, { once: true });
 var gTabBar                     = document.querySelector('#tabbar');
 var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
 var gMasterThrobber             = document.querySelector('#master-throbber');
-var gSizeDefinition             = document.querySelector('#size-definition');
 var gStyleLoader                = document.querySelector('#style-loader');
 var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 var gUserStyleRules             = document.querySelector('#user-style-rules');
@@ -58,6 +57,11 @@ async function init() {
       gTargetWindow = apiTabs[0].windowId;
       Tabs.setWindow(gTargetWindow);
       log.context   = `Sidebar-${gTargetWindow}`;
+
+      Indent.init();
+      SidebarCache.init();
+      SidebarCache.onRestored.addListener(clearDropPosition);
+      Scroll.init();
     })(),
     configs.$loaded
   ]);
@@ -185,11 +189,10 @@ async function init() {
   }
 
   gInitializing = false;
-  SidebarCache.onRestored.addListener(clearDropPosition);
-  SidebarCache.activate();
+
+  SidebarCache.startTracking();
 
   updateVisualMaxTreeLevel();
-  Indent.activate();
   Indent.update({
     force: true,
     cache: cachedContents && cachedContents.indent
