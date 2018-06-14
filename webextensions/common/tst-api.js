@@ -106,16 +106,16 @@ export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
 
 const addons = new Map();
 
-export function getAddon(id) {
-  return addons.get(id);
+export function getAddon(aId) {
+  return addons.get(aId);
 }
 
-export function registerAddon(id, data) {
-  addons.set(id, data);
+export function registerAddon(aId, aAddon) {
+  addons.set(aId, aAddon);
 }
 
-export function unregisterAddon(id) {
-  addons.delete(id);
+export function unregisterAddon(aId) {
+  addons.delete(aId);
 }
 
 export function getAddons() {
@@ -123,11 +123,11 @@ export function getAddons() {
 }
 
 export function exportAddons() {
-  const json = {};
-  for (const [id, data] of getAddons()) {
-    json[id] = data;
+  const exported = {};
+  for (const [id, addon] of getAddons()) {
+    exported[id] = addon;
   }
-  return json;
+  return exported;
 }
 
 let initialized = false;
