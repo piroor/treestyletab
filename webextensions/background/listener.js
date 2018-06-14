@@ -24,6 +24,7 @@ import * as Tree from '../common/tree.js';
 import * as TSTAPI from '../common/tst-api.js';
 import * as SidebarStatus from '../common/sidebar-status.js';
 import * as Commands from '../common/commands.js';
+import * as Permissions from '../common/permissions.js';
 
 import * as Background from './background.js';
 import * as BackgroundCache from './background-cache.js';
