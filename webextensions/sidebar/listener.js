@@ -1523,7 +1523,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
       break;
 
     case Constants.kCOMMAND_BROADCAST_API_REGISTERED:
-      TSTAPI.setAddonData(aMessage.sender.id, aMessage.message);
+      TSTAPI.registerAddon(aMessage.sender.id, aMessage.message);
       if (aMessage.message.style)
         Sidebar.installStyleForAddon(aMessage.sender.id, aMessage.message.style);
       updateSpecialEventListenersForAPIListeners();
@@ -1532,7 +1532,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
     case Constants.kCOMMAND_BROADCAST_API_UNREGISTERED:
       delete gScrollLockedBy[aMessage.sender.id];
       Sidebar.uninstallStyleForAddon(aMessage.sender.id)
-      TSTAPI.removeAddonData(aMessage.sender.id);
+      TSTAPI.unregisterAddon(aMessage.sender.id);
       updateSpecialEventListenersForAPIListeners();
       break;
 

@@ -150,8 +150,8 @@ export async function init() {
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       const addons = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS });
-      TSTAPI.setAddonsFromJSON(addons);
-      for (const [id, addon] of TSTAPI.getAddonDataEntries()) {
+      TSTAPI.importAddons(addons);
+      for (const [id, addon] of TSTAPI.getAddons()) {
         if (addon.style)
           installStyleForAddon(id, addon.style);
       }

@@ -109,7 +109,7 @@ async function rebuild() {
     const topLevelItems = toBeBuiltItems.filter(aItem => !aItem.parentId);
     if (topLevelItems.length == 1 &&
         !topLevelItems[0].icons)
-      topLevelItems[0].icons = TSTAPI.getAddonData(id).icons || {};
+      topLevelItems[0].icons = TSTAPI.getAddon(id).icons || {};
 
     const addonSubMenu = addonItem.lastChild;
     const knownItems   = {};
@@ -149,12 +149,12 @@ async function rebuild() {
 function getAddonName(aId) {
   if (aId == browser.runtime.id)
     return browser.i18n.getMessage('extensionName');
-  const addon = TSTAPI.getAddonData(aId) || {};
+  const addon = TSTAPI.getAddon(aId) || {};
   return addon.name || aId.replace(/@.+$/, '');
 }
 
 function getAddonIcon(aId) {
-  const addon = TSTAPI.getAddonData(aId) || {};
+  const addon = TSTAPI.getAddon(aId) || {};
   return chooseIconForAddon({
     id:         aId,
     internalId: addon.internalId,
@@ -164,7 +164,7 @@ function getAddonIcon(aId) {
 
 function chooseIconForAddon(aParams) {
   const icons = aParams.icons || {};
-  const addon = TSTAPI.getAddonData(aParams.id) || {};
+  const addon = TSTAPI.getAddon(aParams.id) || {};
   let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
   const reducedSizes = sizes.filter(aSize => aSize < 16);
   if (reducedSizes.length > 0)
@@ -204,7 +204,7 @@ function buildExtraItem(aItem, aOwnerAddonId) {
     itemNode.classList.add('disabled');
   else
     itemNode.classList.remove('disabled');;
-  const addon = TSTAPI.getAddonData(aOwnerAddonId) || {};
+  const addon = TSTAPI.getAddon(aOwnerAddonId) || {};
   const icon = chooseIconForAddon({
     id:         aOwnerAddonId,
     internalId: addon.internalId,
