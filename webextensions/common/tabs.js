@@ -1138,9 +1138,9 @@ export function initPromisedStatus(aTab, aAlreadyOpened = false) {
   if (aAlreadyOpened)
     aTab.opened = Promise.resolve(true);
   else
-  aTab.opened = new Promise((aResolve, _aReject) => {
-    gOpenedResolvers.set(aTab, aResolve);
-  });
+    aTab.opened = new Promise((aResolve, _aReject) => {
+      gOpenedResolvers.set(aTab, aResolve);
+    });
 
   aTab.closedWhileActive = new Promise((aResolve, _aReject) => {
     gClosedWhileActiveResolvers.set(aTab, aResolve);
