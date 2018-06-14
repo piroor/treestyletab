@@ -116,24 +116,25 @@ export function getTabFromCoordinates(aEvent) {
   return null;
 }
 
-const lastMousedown = {};
+const lastMousedown = new Map();
 
 export function getLastMousedown(aButtonCode) {
-  return lastMousedown[aButtonCode];
+  return lastMousedown.get(aButtonCode);
 }
 
 export function setLastMousedown(aButtonCode, aButton) {
-  lastMousedown[aButtonCode] = aButton;
+  lastMousedown.set(aButtonCode, aButton);
 }
 
 export function cancelHandleMousedown(aButton = null) {
   if (!aButton && aButton !== 0) {
-    return Object.keys(lastMousedown).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
+    return  Array.from(lastMousedown.keys()).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
   }
+
   const lastMousedownForButton = lastMousedown[aButton];
   if (lastMousedownForButton) {
     clearTimeout(lastMousedownForButton.timeout);
-    delete lastMousedown[aButton];
+    lastMousedown.delete(aButton);
     return true;
   }
   return false;
