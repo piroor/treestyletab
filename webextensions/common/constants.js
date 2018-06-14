@@ -12,8 +12,6 @@ export const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-bac
 export const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';
 export const kCOMMAND_REQUEST_CONNECT_PREFIX         = 'treestyletab:request-connect-from:';
 export const kCOMMAND_REQUEST_UNIQUE_ID              = 'treestyletab:request-unique-id';
-export const kCOMMAND_REQUEST_REGISTERED_ADDONS      = 'treestyletab:request-registered-addons';
-export const kCOMMAND_REQUEST_SCROLL_LOCK_STATE      = 'treestyletab:request-scroll-lock-state';
 export const kCOMMAND_PULL_TAB_ID_TABLES             = 'treestyletab:pull-tab-id-tables';
 export const kCOMMAND_BROADCAST_TAB_ID_TABLES_UPDATE = 'treestyletab:broadcast-tab-id-tables-update';
 export const kCOMMAND_PUSH_TREE_STRUCTURE            = 'treestyletab:push-tree-structure';
@@ -36,8 +34,6 @@ export const kCOMMAND_NOTIFY_TAB_RESTORING           = 'treestyletab:notify-tab-
 export const kCOMMAND_NOTIFY_TAB_RESTORED            = 'treestyletab:notify-tab-restored';
 export const kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED     = 'treestyletab:notify-tab-favicon-updated';
 export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
-export const kCOMMAND_BROADCAST_API_REGISTERED       = 'treestyletab:broadcast-registered';
-export const kCOMMAND_BROADCAST_API_UNREGISTERED     = 'treestyletab:broadcast-unregistered';
 export const kCOMMAND_SHOW_CONTAINER_SELECTOR        = 'treestyletab:show-container-selector';
 export const kCOMMAND_SCROLL_TABBAR                  = 'treestyletab:scroll-tabbar';
 

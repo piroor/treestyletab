@@ -131,7 +131,7 @@ Sidebar.onBuilt.addListener(async () => {
     animationDuration: configs.animation ? configs.collapseDuration : 0.001
   });
 
-  gScrollLockedBy = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE });
+  gScrollLockedBy = await browser.runtime.sendMessage({ type: TSTAPI.kCOMMAND_REQUEST_SCROLL_LOCK_STATE });
 });
 
 Sidebar.onReady.addListener(() => {
@@ -663,39 +663,17 @@ async function onWheel(aEvent) {
     return;
   }
 
-  var lockers = Object.keys(gScrollLockedBy);
-  if (lockers.length <= 0)
+  if (!TSTAPI.isScrollLocked())
     return;
 
   aEvent.stopImmediatePropagation();
   aEvent.preventDefault();
 
-  var tab = EventUtils.getTabFromEvent(aEvent);
-  var results = await TSTAPI.sendMessage({
-    type:      TSTAPI.kNOTIFY_SCROLLED,
-    tab:       tab && TSTAPI.serializeTab(tab),
-    tabs:      Tabs.getTabs().map(TSTAPI.serializeTab),
-    window:    gTargetWindow,
-
-    deltaY:       aEvent.deltaY,
-    deltaMode:    aEvent.deltaMode,
-    scrollTop:    gTabBar.scrollTop,
-    scrollTopMax: gTabBar.scrollTopMax,
-
-    altKey:    aEvent.altKey,
-    ctrlKey:   aEvent.ctrlKey,
-    metaKey:   aEvent.metaKey,
-    shiftKey:  aEvent.shiftKey,
-
-    clientX:   aEvent.clientX,
-    clientY:   aEvent.clientY
-  }, {
-    targets: lockers
+  TSTAPI.notifyScrolled({
+    tab:             EventUtils.getTabFromEvent(aEvent),
+    scrollContainer: gTabBar,
+    event:           aEvent
   });
-  for (const result of results) {
-    if (result.error || result.result === undefined)
-      delete gScrollLockedBy[result.id];
-  }
 }
 
 function onScroll(_aEvent) {
@@ -1522,18 +1500,17 @@ function onMessage(aMessage, _aSender, _aRespond) {
       DragAndDrop.setDragData(aMessage.dragData || null);
       break;
 
-    case Constants.kCOMMAND_BROADCAST_API_REGISTERED:
-      TSTAPI.registerAddon(aMessage.sender.id, aMessage.message);
-      if (aMessage.message.style)
-        Sidebar.installStyleForAddon(aMessage.sender.id, aMessage.message.style);
-      updateSpecialEventListenersForAPIListeners();
+    case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
+      wait(0).then(() => { // wait until addons are updated
+        updateSpecialEventListenersForAPIListeners();
+      });
       break;
 
-    case Constants.kCOMMAND_BROADCAST_API_UNREGISTERED:
+    case TSTAPI.kCOMMAND_BROADCAST_API_UNREGISTERED:
       delete gScrollLockedBy[aMessage.sender.id];
-      Sidebar.uninstallStyleForAddon(aMessage.sender.id)
-      TSTAPI.unregisterAddon(aMessage.sender.id);
-      updateSpecialEventListenersForAPIListeners();
+      wait(0).then(() => { // wait until addons are updated
+        updateSpecialEventListenersForAPIListeners();
+      });
       break;
 
     case Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR: {

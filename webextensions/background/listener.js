@@ -34,7 +34,6 @@ import * as TreeStructure from './tree-structure.js';
 let gInitialized                 = false;
 let gTabSwitchedByShortcut       = false;
 let gMaybeTabSwitchingByShortcut = false;
-const gScrollLockedBy = {};
 
 
 // this should return true if the tab is moved while processing
@@ -1387,17 +1386,6 @@ function onMessage(aMessage, aSender) {
         });
       })();
 
-    case Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS:
-      return (async () => {
-        while (!TSTAPI.isInitialized()) {
-          await wait(10);
-        }
-        return TSTAPI.exportAddons();
-      })();
-
-    case Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
-      return Promise.resolve(gScrollLockedBy);
-
     case Constants.kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
         while (!gInitialized) {
@@ -1722,52 +1710,6 @@ function onMessage(aMessage, aSender) {
 function onMessageExternal(aMessage, aSender) {
   //log('onMessageExternal: ', aMessage, aSender);
   switch (aMessage.type) {
-    case TSTAPI.kREGISTER_SELF:
-      return (async () => {
-        if (!aMessage.listeningTypes) {
-          // for backward compatibility, send all message types available on TST 2.4.16 by default.
-          aMessage.listeningTypes = [
-            TSTAPI.kNOTIFY_READY,
-            TSTAPI.kNOTIFY_SHUTDOWN,
-            TSTAPI.kNOTIFY_TAB_CLICKED,
-            TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-            TSTAPI.kNOTIFY_TAB_MOUSEUP,
-            TSTAPI.kNOTIFY_TABBAR_CLICKED,
-            TSTAPI.kNOTIFY_TABBAR_MOUSEDOWN,
-            TSTAPI.kNOTIFY_TABBAR_MOUSEUP
-          ];
-        }
-        aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
-        aMessage.id = aSender.id;
-        TSTAPI.registerAddon(aSender.id, aMessage);
-        browser.runtime.sendMessage({
-          type:    Constants.kCOMMAND_BROADCAST_API_REGISTERED,
-          sender:  aSender,
-          message: aMessage
-        });
-        const index = configs.cachedExternalAddons.indexOf(aSender.id);
-        if (index < 0)
-          configs.cachedExternalAddons = configs.cachedExternalAddons.concat([aSender.id]);
-        return true;
-      })();
-
-    case TSTAPI.kUNREGISTER_SELF:
-      return (async () => {
-        browser.runtime.sendMessage({
-          type:    Constants.kCOMMAND_BROADCAST_API_UNREGISTERED,
-          sender:  aSender,
-          message: aMessage
-        });
-        TSTAPI.unregisterAddon(aSender.id);
-        delete gScrollLockedBy[aSender.id];
-        configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
-        return true;
-      })();
-
-    case TSTAPI.kPING:
-      return Promise.resolve(true);
-
-
     case TSTAPI.kGET_TREE:
       return (async () => {
         const tabs    = await TSTAPI.getTargetTabs(aMessage, aSender);
@@ -1961,14 +1903,6 @@ function onMessageExternal(aMessage, aSender) {
         });
         return true;
       })();
-
-    case TSTAPI.kSCROLL_LOCK:
-      gScrollLockedBy[aSender.id] = true;
-      return Promise.resolve(true);
-
-    case TSTAPI.kSCROLL_UNLOCK:
-      delete gScrollLockedBy[aSender.id];
-      return Promise.resolve(true);
 
     case TSTAPI.kBLOCK_GROUPING:
       gGroupingBlockedBy[aSender.id] = true;

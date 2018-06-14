@@ -45,7 +45,6 @@ export const onDestroy = new EventListenerManager();
 
 var gInitialized = false;
 var gStyle;
-const gAddonStyles = new Map();
 var gTargetWindow   = null;
 
 var gTabBar                     = document.querySelector('#tabbar');
@@ -149,12 +148,7 @@ export async function init() {
       TabContextMenu.init();
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
-      const addons = await browser.runtime.sendMessage({ type: Constants.kCOMMAND_REQUEST_REGISTERED_ADDONS });
-      TSTAPI.importAddons(addons);
-      for (const [id, addon] of TSTAPI.getAddons()) {
-        if (addon.style)
-          installStyleForAddon(id, addon.style);
-      }
+      await TSTAPI.initAsFrontend();
     }),
     MetricsData.addAsync('getting Constants.kWINDOW_STATE_SCROLL_POSITION', async () => {
       scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION);
@@ -251,25 +245,6 @@ function applyStyle(aStyle) {
 
 export function applyUserStyleRules() {
   gUserStyleRules.textContent = configs.userStyleRules || '';
-}
-
-export function installStyleForAddon(aId, aStyle) {
-  let styleElement = gAddonStyles.get(aId);
-  if (!styleElement) {
-    styleElement = document.createElement('style');
-    styleElement.setAttribute('type', 'text/css');
-    document.head.insertBefore(styleElement, gUserStyleRules);
-    gAddonStyles.set(aId, styleElement);
-  }
-  styleElement.textContent = aStyle;
-}
-
-export function uninstallStyleForAddon(aId) {
-  const styleElement = gAddonStyles.get(aId);
-  if (!styleElement)
-    return;
-  document.head.removeChild(styleElement);
-  gAddonStyles.delete(aId);
 }
 
 export function applyBrowserTheme(aTheme) {

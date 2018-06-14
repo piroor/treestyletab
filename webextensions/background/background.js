@@ -106,7 +106,7 @@ export async function init() {
     }
   }
 
-  await TSTAPI.init();
+  await TSTAPI.initAsBackend();
 
   gInitialized = true;
   onReady.dispatch();
