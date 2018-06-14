@@ -5,12 +5,13 @@
 */
 'use strict';
 
+import Configs from '../external/Configs.js';
+
 /* global
   uneval: false,
  */
 
 import * as Constants from './constants.js';
-import Configs from './Configs.js';
 
 export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],

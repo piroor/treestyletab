@@ -5,6 +5,9 @@
 */
 'use strict';
 
+import TabFavIconHelper from '../external/TabFavIconHelper.js';
+import RichConfirm from '../external/RichConfirm.js';
+
 import {
   log,
   dumpTab,
@@ -25,8 +28,6 @@ import * as TSTAPI from '../common/tst-api.js';
 import * as SidebarStatus from '../common/sidebar-status.js';
 import * as Commands from '../common/commands.js';
 import * as Migration from '../common/migration.js';
-import TabFavIconHelper from '../common/TabFavIconHelper.js';
-import RichConfirm from '../common/RichConfirm.js';
 import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as TreeStructure from './tree-structure.js';
@@ -250,7 +251,7 @@ export async function tryInitGroupTab(aTab) {
     return;
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     //file:  '/common/l10n.js'
-    file:  '/resources/l10n.js' // ES module does not supported as a content script...
+    file:  '/external/l10n-classic.js' // ES module does not supported as a content script...
   }));
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'

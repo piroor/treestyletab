@@ -38,12 +38,13 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+import TabFavIconHelper from '../external/TabFavIconHelper.js';
+import TabIdFixer from '../external/TabIdFixer.js';
+
 import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
-import TabFavIconHelper from './TabFavIconHelper.js';
-import TabIdFixer from './TabIdFixer.js';
 import * as Tabs from './tabs.js';
 
 export const kREGISTER_SELF         = 'register-self';

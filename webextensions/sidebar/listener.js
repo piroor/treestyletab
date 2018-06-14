@@ -38,6 +38,9 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+import MenuUI from '../external/MenuUI.js';
+import TabFavIconHelper from '../external/TabFavIconHelper.js';
+
 import {
   log,
   dumpTab,
@@ -56,8 +59,6 @@ import * as ContextualIdentities from '../common/contextual-identities.js';
 import * as Commands from '../common/commands.js';
 import * as UserOperationBlocker from '../common/user-operation-blocker.js';
 import * as MetricsData from '../common/metrics-data.js';
-import MenuUI from '../common/MenuUI.js';
-import TabFavIconHelper from '../common/TabFavIconHelper.js';
 
 import * as Sidebar from './sidebar.js';
 import * as SidebarCache from './sidebar-cache.js';

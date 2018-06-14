@@ -11,6 +11,7 @@
  See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1376251
            https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
 */
+import MenuUI from '../external/MenuUI.js';
 
 import {
   log,
@@ -24,7 +25,6 @@ import * as Tree from '../common/tree.js';
 import * as Bookmark from '../common/bookmark.js';
 import * as TSTAPI from '../common/tst-api.js';
 import EventListenerManager from '../common/EventListenerManager.js';
-import MenuUI from '../common/MenuUI.js';
 
 export const onTabsClosing = new EventListenerManager();
 

@@ -1,12 +1,5 @@
 *.xpi
-**/TabIdFixer.js
-**/TabFavIconHelper.js
-**/Configs.js
-**/Options.js
-**/l10n.js
-**/MenuUI.js
-**/RichConfirm.js
-**/ShortcutCustomizeUI.js
+external/
 
 # node.js dependency
 node_modules/

@@ -5,6 +5,9 @@
 */
 'use strict';
 
+import RichConfirm from '../external/RichConfirm.js';
+import TabIdFixer from '../external/TabIdFixer.js';
+
 import {
   log,
   nextFrame,
@@ -21,8 +24,6 @@ import * as ContextualIdentities from '../common/contextual-identities.js';
 import * as Commands from '../common/commands.js';
 import * as UserOperationBlocker from '../common/user-operation-blocker.js';
 import * as MetricsData from '../common/metrics-data.js';
-import RichConfirm from '../common/RichConfirm.js';
-import TabIdFixer from '../common/TabIdFixer.js';
 import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as SidebarCache from './sidebar-cache.js';

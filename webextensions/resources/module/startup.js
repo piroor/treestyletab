@@ -5,9 +5,10 @@
 */
 'use strict';
 
+import '../../external/l10n.js';
+
 import { configs } from '../../common/common.js';
 import * as Permissions from '../../common/permissions.js';
-import '../../common/l10n.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelector('#title').textContent = document.title = `${browser.i18n.getMessage('extensionName')} ${browser.runtime.getManifest().version}`;
