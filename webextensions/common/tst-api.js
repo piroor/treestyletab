@@ -171,8 +171,8 @@ export function importAddons(aAddons) {
   for (const id of Object.keys(addons)) {
     unregisterAddon(id);
   }
-  for (const [id, data] of Object.entries(aAddons)) {
-    registerAddon(id,data);
+  for (const [id, addon] of Object.entries(aAddons)) {
+    registerAddon(id, addon);
   }
 }
 
