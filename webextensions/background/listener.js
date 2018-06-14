@@ -1467,14 +1467,6 @@ function onMessage(aMessage, aSender) {
         return TabsInternalOperation.removeTabs(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
       })();
 
-    case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      SidebarStatus.onFocus(aMessage.windowId);
-      break;
-
-    case Constants.kNOTIFY_SIDEBAR_BLUR:
-      SidebarStatus.onBlur(aMessage.windowId);
-      break;
-
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
       gMaybeTabSwitchingByShortcut =
         gTabSwitchedByShortcut = false;

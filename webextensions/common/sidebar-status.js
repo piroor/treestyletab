@@ -23,13 +23,21 @@ export function hasFocus(aWindowId) {
   return gFocusState.has(aWindowId)
 }
 
-export function onFocus(aWindowId) {
-  gFocusState.set(aWindowId, true);
-}
+browser.runtime.onMessage.addListener((aMessage, _aSender) => {
+  if (!aMessage ||
+      typeof aMessage.type != 'string')
+    return;
 
-export function onBlur(aWindowId) {
-  gFocusState.delete(aWindowId);
-}
+  switch (aMessage.type) {
+    case Constants.kNOTIFY_SIDEBAR_FOCUS:
+      gFocusState.set(aWindowId, true);
+      break;
+
+    case Constants.kNOTIFY_SIDEBAR_BLUR:
+      gFocusState.delete(aWindowId);
+      break;
+  }
+});
 
 export function startWatchOpenState() {
   if (isWatchingOpenState())
