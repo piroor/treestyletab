@@ -108,14 +108,15 @@ export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';
 export const kCOMMAND_REQUEST_REGISTERED_ADDONS  = 'treestyletab:request-registered-addons';
-export const kCOMMAND_REQUEST_SCROLL_LOCK_STATE  = 'treestyletab:request-scroll-lock-state';
+export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control-state';
 
 const kCONTEXT_BACKEND  = 1;
 const kCONTEXT_FRONTEND = 2;
 
 let context = null;
 const addons = new Map();
-const gScrollLockedBy = {};
+let gScrollLockedBy    = {};
+let gGroupingBlockedBy = {};
 
 export function getAddon(aId) {
   return addons.get(aId);
@@ -127,6 +128,8 @@ export function registerAddon(aId, aAddon) {
 
 export function unregisterAddon(aId) {
   addons.delete(aId);
+  delete gScrollLockedBy[aId];
+  delete gGroupingBlockedBy[aId];
 }
 
 export function getAddons() {
@@ -174,7 +177,6 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
   switch (context) {
     case kCONTEXT_BACKEND:
       switch (aMessage.type) {
-        // backend mode
         case kCOMMAND_REQUEST_REGISTERED_ADDONS:
           return (async () => {
             while (!context) {
@@ -183,14 +185,16 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
             return exportAddons();
           })();
 
-        case kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
-          return Promise.resolve(gScrollLockedBy);
+        case kCOMMAND_REQUEST_CONTROL_STATE:
+          return Promise.resolve({
+            scrollLocked:   gScrollLockedBy,
+            groupingLocked: gGroupingBlockedBy
+          });
       }
       break;
 
     case kCONTEXT_FRONTEND:
       switch (aMessage.type) {
-        // sidebar mode
         case kCOMMAND_BROADCAST_API_REGISTERED:
           registerAddon(aMessage.sender.id, aMessage.message);
           if (aMessage.message.style)
@@ -211,10 +215,10 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
       typeof aMessage.type != 'string')
     return;
 
+
   switch (context) {
     case kCONTEXT_BACKEND:
       switch (aMessage.type) {
-        // backend mode
         case kPING:
           return Promise.resolve(true);
 
@@ -259,16 +263,26 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
             configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
             return true;
           })();
-
-        case kSCROLL_LOCK:
-          gScrollLockedBy[aSender.id] = true;
-          return Promise.resolve(true);
-
-        case kSCROLL_UNLOCK:
-          delete gScrollLockedBy[aSender.id];
-          return Promise.resolve(true);
       }
       break;
+  }
+
+  switch (aMessage.type) {
+    case kSCROLL_LOCK:
+      gScrollLockedBy[aSender.id] = true;
+      return Promise.resolve(true);
+
+    case kSCROLL_UNLOCK:
+      delete gScrollLockedBy[aSender.id];
+      return Promise.resolve(true);
+
+    case kBLOCK_GROUPING:
+      gGroupingBlockedBy[aSender.id] = true;
+      return Promise.resolve(true);
+
+    case kUNBLOCK_GROUPING:
+      delete gGroupingBlockedBy[aSender.id];
+      return Promise.resolve(true);
   }
 });
 
@@ -288,6 +302,9 @@ export async function initAsFrontend() {
       installStyleForAddon(id, addon.style);
   }
   context = kCONTEXT_FRONTEND;
+  const state = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_CONTROL_STATE });
+  gScrollLockedBy    = state.scrollLocked;
+  gGroupingBlockedBy = state.groupingLocked;
 }
 
 function importAddons(aAddons) {
@@ -356,6 +373,11 @@ export async function notifyScrolled(aParams = {}) {
     if (result.error || result.result === undefined)
       delete gScrollLockedBy[result.id];
   }
+}
+
+
+export function isGroupingBlocked() {
+  return Object.keys(gGroupingBlockedBy).length > 0;
 }
 
 

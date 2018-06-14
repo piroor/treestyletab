@@ -71,7 +71,6 @@ import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-var gScrollLockedBy = {};
 var gInitialized    = false;
 var gTargetWindow;
 
@@ -130,8 +129,6 @@ Sidebar.onBuilt.addListener(async () => {
     onCommand:  onNewTabActionSelect,
     animationDuration: configs.animation ? configs.collapseDuration : 0.001
   });
-
-  gScrollLockedBy = await browser.runtime.sendMessage({ type: TSTAPI.kCOMMAND_REQUEST_SCROLL_LOCK_STATE });
 });
 
 Sidebar.onReady.addListener(() => {
@@ -1507,7 +1504,6 @@ function onMessage(aMessage, _aSender, _aRespond) {
       break;
 
     case TSTAPI.kCOMMAND_BROADCAST_API_UNREGISTERED:
-      delete gScrollLockedBy[aMessage.sender.id];
       wait(0).then(() => { // wait until addons are updated
         updateSpecialEventListenersForAPIListeners();
       });
@@ -1557,16 +1553,8 @@ function onMessage(aMessage, _aSender, _aRespond) {
   }
 }
 
-function onMessageExternal(aMessage, aSender) {
+function onMessageExternal(aMessage, _aSender) {
   switch (aMessage.type) {
-    case TSTAPI.kSCROLL_LOCK:
-      gScrollLockedBy[aSender.id] = true;
-      return Promise.resolve(true);
-
-    case TSTAPI.kSCROLL_UNLOCK:
-      delete gScrollLockedBy[aSender.id];
-      return Promise.resolve(true);
-
     case TSTAPI.kSCROLL:
       return (async () => {
         const params = {};

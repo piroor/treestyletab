@@ -142,7 +142,6 @@ async function handleNewTabFromActiveTab(aTab, aParams = {}) {
   TabsInternalOperation.removeTab(aTab);
 }
 
-const gGroupingBlockedBy = {};
 const gToBeGroupedTabSets = [];
 
 function onNewTabsTimeout(aContainer) {
@@ -160,7 +159,7 @@ function onNewTabsTimeout(aContainer) {
 
   tabReferences = tabReferences.filter(aTabReference => aTabReference.id != '');
   if (tabReferences.length == 0 ||
-      Object.keys(gGroupingBlockedBy).length > 0)
+      TSTAPI.isGroupingBlocked())
     return;
 
   gToBeGroupedTabSets.push(tabReferences);
@@ -1903,13 +1902,5 @@ function onMessageExternal(aMessage, aSender) {
         });
         return true;
       })();
-
-    case TSTAPI.kBLOCK_GROUPING:
-      gGroupingBlockedBy[aSender.id] = true;
-      return Promise.resolve(true);
-
-    case TSTAPI.kUNBLOCK_GROUPING:
-      delete gGroupingBlockedBy[aSender.id];
-      return Promise.resolve(true);
   }
 }
