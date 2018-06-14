@@ -118,17 +118,17 @@ export function getTabFromCoordinates(aEvent) {
 
 const lastMousedown = new Map();
 
-export function getLastMousedown(aButtonCode) {
-  return lastMousedown.get(aButtonCode);
+export function getLastMousedown(aButton) {
+  return lastMousedown.get(aButton);
 }
 
-export function setLastMousedown(aButtonCode, aButton) {
-  lastMousedown.set(aButtonCode, aButton);
+export function setLastMousedown(aButton, aDetails) {
+  lastMousedown.set(aButton, aDetails);
 }
 
 export function cancelHandleMousedown(aButton = null) {
   if (!aButton && aButton !== 0) {
-    return  Array.from(lastMousedown.keys()).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
+    return Array.from(lastMousedown.keys()).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
   }
 
   const lastMousedownForButton = lastMousedown[aButton];
