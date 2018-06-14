@@ -174,33 +174,33 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
   switch (context) {
     case kCONTEXT_BACKEND:
       switch (aMessage.type) {
-    // backend mode
-    case kCOMMAND_REQUEST_REGISTERED_ADDONS:
-      return (async () => {
-        while (!context) {
-          await wait(10);
-        }
-        return exportAddons();
-      })();
+        // backend mode
+        case kCOMMAND_REQUEST_REGISTERED_ADDONS:
+          return (async () => {
+            while (!context) {
+              await wait(10);
+            }
+            return exportAddons();
+          })();
 
-    case kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
-      return Promise.resolve(gScrollLockedBy);
+        case kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
+          return Promise.resolve(gScrollLockedBy);
       }
       break;
 
     case kCONTEXT_FRONTEND:
       switch (aMessage.type) {
-    // sidebar mode
-    case kCOMMAND_BROADCAST_API_REGISTERED:
-      registerAddon(aMessage.sender.id, aMessage.message);
-      if (aMessage.message.style)
-        installStyleForAddon(aMessage.sender.id, aMessage.message.style);
-      break;
+        // sidebar mode
+        case kCOMMAND_BROADCAST_API_REGISTERED:
+          registerAddon(aMessage.sender.id, aMessage.message);
+          if (aMessage.message.style)
+            installStyleForAddon(aMessage.sender.id, aMessage.message.style);
+          break;
 
-    case kCOMMAND_BROADCAST_API_UNREGISTERED:
-      uninstallStyleForAddon(aMessage.sender.id)
-      unregisterAddon(aMessage.sender.id);
-      break;
+        case kCOMMAND_BROADCAST_API_UNREGISTERED:
+          uninstallStyleForAddon(aMessage.sender.id)
+          unregisterAddon(aMessage.sender.id);
+          break;
       }
       break;
   }
@@ -213,60 +213,60 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
 
   switch (context) {
     case kCONTEXT_BACKEND:
-  switch (aMessage.type) {
-    // backend mode
-    case kPING:
-      return Promise.resolve(true);
+      switch (aMessage.type) {
+        // backend mode
+        case kPING:
+          return Promise.resolve(true);
 
-    case kREGISTER_SELF:
-      return (async () => {
-        if (!aMessage.listeningTypes) {
-          // for backward compatibility, send all message types available on TST 2.4.16 by default.
-          aMessage.listeningTypes = [
-            kNOTIFY_READY,
-            kNOTIFY_SHUTDOWN,
-            kNOTIFY_TAB_CLICKED,
-            kNOTIFY_TAB_MOUSEDOWN,
-            kNOTIFY_TAB_MOUSEUP,
-            kNOTIFY_TABBAR_CLICKED,
-            kNOTIFY_TABBAR_MOUSEDOWN,
-            kNOTIFY_TABBAR_MOUSEUP
-          ];
-        }
-        aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
-        aMessage.id = aSender.id;
-        registerAddon(aSender.id, aMessage);
-        browser.runtime.sendMessage({
-          type:    kCOMMAND_BROADCAST_API_REGISTERED,
-          sender:  aSender,
-          message: aMessage
-        });
-        const index = configs.cachedExternalAddons.indexOf(aSender.id);
-        if (index < 0)
-          configs.cachedExternalAddons = configs.cachedExternalAddons.concat([aSender.id]);
-        return true;
-      })();
+        case kREGISTER_SELF:
+          return (async () => {
+            if (!aMessage.listeningTypes) {
+              // for backward compatibility, send all message types available on TST 2.4.16 by default.
+              aMessage.listeningTypes = [
+                kNOTIFY_READY,
+                kNOTIFY_SHUTDOWN,
+                kNOTIFY_TAB_CLICKED,
+                kNOTIFY_TAB_MOUSEDOWN,
+                kNOTIFY_TAB_MOUSEUP,
+                kNOTIFY_TABBAR_CLICKED,
+                kNOTIFY_TABBAR_MOUSEDOWN,
+                kNOTIFY_TABBAR_MOUSEUP
+              ];
+            }
+            aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
+            aMessage.id = aSender.id;
+            registerAddon(aSender.id, aMessage);
+            browser.runtime.sendMessage({
+              type:    kCOMMAND_BROADCAST_API_REGISTERED,
+              sender:  aSender,
+              message: aMessage
+            });
+            const index = configs.cachedExternalAddons.indexOf(aSender.id);
+            if (index < 0)
+              configs.cachedExternalAddons = configs.cachedExternalAddons.concat([aSender.id]);
+            return true;
+          })();
 
-    case kUNREGISTER_SELF:
-      return (async () => {
-        browser.runtime.sendMessage({
-          type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
-          sender:  aSender,
-          message: aMessage
-        });
-        unregisterAddon(aSender.id);
-        delete gScrollLockedBy[aSender.id];
-        configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
-        return true;
-      })();
+        case kUNREGISTER_SELF:
+          return (async () => {
+            browser.runtime.sendMessage({
+              type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
+              sender:  aSender,
+              message: aMessage
+            });
+            unregisterAddon(aSender.id);
+            delete gScrollLockedBy[aSender.id];
+            configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
+            return true;
+          })();
 
-    case kSCROLL_LOCK:
-      gScrollLockedBy[aSender.id] = true;
-      return Promise.resolve(true);
+        case kSCROLL_LOCK:
+          gScrollLockedBy[aSender.id] = true;
+          return Promise.resolve(true);
 
-    case kSCROLL_UNLOCK:
-      delete gScrollLockedBy[aSender.id];
-      return Promise.resolve(true);
+        case kSCROLL_UNLOCK:
+          delete gScrollLockedBy[aSender.id];
+          return Promise.resolve(true);
       }
       break;
   }
