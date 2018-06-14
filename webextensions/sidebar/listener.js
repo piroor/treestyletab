@@ -38,8 +38,8 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import MenuUI from '../external/MenuUI.js';
-import TabFavIconHelper from '../external/TabFavIconHelper.js';
+import MenuUI from '../extlib/MenuUI.js';
+import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 
 import {
   log,

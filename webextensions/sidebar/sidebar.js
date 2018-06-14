@@ -5,8 +5,8 @@
 */
 'use strict';
 
-import RichConfirm from '../external/RichConfirm.js';
-import TabIdFixer from '../external/TabIdFixer.js';
+import RichConfirm from '../extlib/RichConfirm.js';
+import TabIdFixer from '../extlib/TabIdFixer.js';
 
 import {
   log,

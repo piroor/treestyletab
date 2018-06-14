@@ -5,8 +5,8 @@
 */
 'use strict';
 
-import TabFavIconHelper from '../external/TabFavIconHelper.js';
-import RichConfirm from '../external/RichConfirm.js';
+import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+import RichConfirm from '../extlib/RichConfirm.js';
 
 import {
   log,
@@ -251,7 +251,7 @@ export async function tryInitGroupTab(aTab) {
     return;
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     //file:  '/common/l10n.js'
-    file:  '/external/l10n-classic.js' // ES module does not supported as a content script...
+    file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
   }));
   browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'

@@ -2,4 +2,4 @@
 !.eslintrc.js
 
 # The Makefile will copy external libraries into this directory
-external/
+extlib/

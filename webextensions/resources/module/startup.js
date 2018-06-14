@@ -5,7 +5,7 @@
 */
 'use strict';
 
-import '../../external/l10n.js';
+import '../../extlib/l10n.js';
 
 import { configs } from '../../common/common.js';
 import * as Permissions from '../../common/permissions.js';

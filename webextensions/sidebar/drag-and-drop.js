@@ -37,7 +37,7 @@
 'use strict';
 
 
-import RichConfirm from '../external/RichConfirm.js';
+import RichConfirm from '../extlib/RichConfirm.js';
 
 import {
   log,

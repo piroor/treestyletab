@@ -5,9 +5,9 @@
 */
 'use strict';
 
-import Options from '../external/Options.js';
-import ShortcutCustomizeUI from '../external/ShortcutCustomizeUI.js';
-import '../external/l10n.js';
+import Options from '../extlib/Options.js';
+import ShortcutCustomizeUI from '../extlib/ShortcutCustomizeUI.js';
+import '../extlib/l10n.js';
 
 import {
   log,
