@@ -131,7 +131,7 @@ export function cancelHandleMousedown(aButton = null) {
     return Array.from(lastMousedown.keys()).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
   }
 
-  const lastMousedownForButton = lastMousedown[aButton];
+  const lastMousedownForButton = lastMousedown.get(aButton);
   if (lastMousedownForButton) {
     clearTimeout(lastMousedownForButton.timeout);
     lastMousedown.delete(aButton);
