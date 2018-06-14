@@ -134,12 +134,12 @@ export function isInitialized() {
 
 export async function init() {
   const manifest = browser.runtime.getManifest();
-  addons[manifest.applications.gecko.id] = {
+  setAddonData(manifest.applications.gecko.id, {
     id:         manifest.applications.gecko.id,
     internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
     icons:      manifest.icons,
     listeningTypes: []
-  };
+  });
   initialized = true;
   const respondedAddons = [];
   const notifiedAddons = {};
@@ -165,10 +165,10 @@ export function setAddonsFromJSON(aAddons) {
   if (!aAddons)
     console.log(new Error());
   for (const id of Object.keys(addons)) {
-    delete addons[id];
+    removeAddonData(id);
   }
-  for (const id of Object.keys(aAddons)) {
-    addons[id] = aAddons[id];
+  for (const [id, data] of Object.entries(aAddons)) {
+    setAddonData(id,data);
   }
 }
 
@@ -186,12 +186,11 @@ export function serializeTab(aTab) {
 
 export function getListenersForMessageType(aType) {
   const uniqueTargets = {};
-  for (const id of Object.keys(addons)) {
-    const addon = addons[id];
+  for (const [id, addon] of getAddonDataEntries()) {
     if (addon.listeningTypes.includes(aType))
       uniqueTargets[id] = true;
   }
-  return Object.keys(uniqueTargets).map(aId => addons[aId]);
+  return Object.keys(uniqueTargets).map(aId => getAddonData(aId));
 }
 
 export async function sendMessage(aMessage, aOptions = {}) {
