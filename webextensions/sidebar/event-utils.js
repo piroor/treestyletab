@@ -116,7 +116,15 @@ export function getTabFromCoordinates(aEvent) {
   return null;
 }
 
-export const lastMousedown = {};
+const lastMousedown = {};
+
+export function getLastMousedown(aButtonCode) {
+  return lastMousedown[aButtonCode];
+}
+
+export function setLastMousedown(aButtonCode, aButton) {
+  lastMousedown[aButtonCode] = aButton;
+}
 
 export function cancelHandleMousedown(aButton = null) {
   if (!aButton && aButton !== 0) {
