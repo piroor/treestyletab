@@ -104,6 +104,7 @@ function getOrBuildTabsContainer(aHint) {
   return container;
 }
 
+const gLastClosedWhileActiveResolvers = new WeakMap();
 
 async function onActivated(aActiveInfo) {
   const targetWindow = Tabs.getWindow();
@@ -136,11 +137,11 @@ async function onActivated(aActiveInfo) {
     log('tabs.onActivated: ', dumpTab(newTab));
     const oldActiveTabs = TabsInternalOperation.setTabFocused(newTab);
 
-    let byCurrentTabRemove = !!container.resolveClosedWhileActiveForPreviousActiveTab;
+    let byCurrentTabRemove = gLastClosedWhileActiveResolvers.has(container);
     if (byCurrentTabRemove) {
       TabsContainer.incrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
-      container.resolveClosedWhileActiveForPreviousActiveTab();
-      delete container.resolveClosedWhileActiveForPreviousActiveTab;
+      gLastClosedWhileActiveResolvers.get(container)();
+      delete gLastClosedWhileActiveResolvers.delete(container);
       const focusRedirected = await container.focusRedirectedForClosingCurrentTab;
       delete container.focusRedirectedForClosingCurrentTab;
       if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) // reduce count even if not redirected
@@ -382,8 +383,7 @@ async function onNewTabTracked(aTab) {
     wait(configs.newTabAnimationDuration).then(() => {
       newTab.classList.remove(Constants.kTAB_STATE_OPENING);
     });
-    // eslint-disable-next-line no-underscore-dangle
-    newTab._resolveOpened();
+    Tabs.resolveOpened(newTab);
 
     if (!duplicated &&
         restored) {
@@ -462,8 +462,10 @@ async function onRemoved(aTabId, aRemoveInfo) {
     Tabs.onStateChanged.dispatch(oldTab);
 
     if (Tabs.isActive(oldTab)) {
-      // eslint-disable-next-line no-underscore-dangle
-      container.resolveClosedWhileActiveForPreviousActiveTab = oldTab._resolveClosedWhileActive;
+      const resolver = Tabs.getClosedWhileActiveResolver(oldTab);
+      Tabs.clearClosedWhileActiveResolver(oldTab);
+      if (resolver)
+        gLastClosedWhileActiveResolvers.set(container, resolver);
     }
 
     await Tabs.onRemoving.dispatch(oldTab, {

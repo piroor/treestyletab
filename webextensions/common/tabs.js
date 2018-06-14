@@ -318,14 +318,8 @@ export function buildTab(aApiTab, aOptions = {}) {
       originalTabId: null
     });
 
-  tab.opened = new Promise((aResolve, _aReject) => {
-    // eslint-disable-next-line no-underscore-dangle
-    tab._resolveOpened = aResolve;
-  });
-  tab.closedWhileActive = new Promise((aResolve, _aReject) => {
-    // eslint-disable-next-line no-underscore-dangle
-    tab._resolveClosedWhileActive = aResolve;
-  });
+  prepareOpened(tab);
+  prepareClosedWhileActive(tab);
 
   tab.childTabs = [];
   tab.parentTab = null;
@@ -1131,6 +1125,42 @@ export function dumpAllTabs() {
         .map(aTab => aTab.id + (isPinned(aTab) ? ' [pinned]' : ''))
         .join(' => ')
     ).join('\n'));
+}
+
+
+//===================================================================
+// Promised status of tabs
+//===================================================================
+
+const gOpenedResolvers = new WeakMap();
+
+export function prepareOpened(aTab) {
+  aTab.opened = new Promise((aResolve, _aReject) => {
+    gOpenedResolvers.set(aTab, aResolve);
+  });
+}
+
+export function resolveOpened(aTab) {
+  if (!gOpenedResolvers.has(aTab))
+    return;
+  gOpenedResolvers.get(aTab)();
+  gOpenedResolvers.delete(aTab);
+}
+
+const gClosedWhileActiveResolvers = new WeakMap();
+
+export function prepareClosedWhileActive(aTab) {
+  aTab.closedWhileActive = new Promise((aResolve, _aReject) => {
+    gClosedWhileActiveResolvers.set(aTab, aResolve);
+  });
+}
+
+export function getClosedWhileActiveResolver(aTab) {
+  return gClosedWhileActiveResolvers.get(aTab);
+}
+
+export function clearClosedWhileActiveResolver(aTab) {
+  gClosedWhileActiveResolvers.delete(aTab);
 }
 
 

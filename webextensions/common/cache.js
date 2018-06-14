@@ -182,10 +182,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   Tabs.updateUniqueId(aTab);
   aTab.opened = Promise.resolve(true);
-  aTab.closedWhileActive = new Promise((aResolve, _aReject) => {
-    // eslint-disable-next-line no-underscore-dangle
-    aTab._resolveClosedWhileActive = aResolve;
-  });
+  Tabs.prepareClosedWhileActive(aTab);
 
   const idMap = aOptions.idMap;
 
