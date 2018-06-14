@@ -16,12 +16,12 @@ lint:
 format:
 	$(NPM_BIN_DIR)/eslint . --ext=.js --report-unused-disable-directives --fix
 
-xpi: install_extlib lint ../submodules/webextensions-lib-tab-id-fixer/TabIdFixer.js ../submodules/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js ../submodules/webextensions-lib-configs/Configs.js ../submodules/webextensions-lib-options/Options.js ../submodules/webextensions-lib-l10n/l10n.js ../submodules/webextensions-lib-rich-confirm/RichConfirm.js ../submodules/webextensions-lib-menu-ui/MenuUI.js ../submodules/webextensions-lib-shortcut-customize-ui/ShortcutCustomizeUI.js
+xpi: install_extlib lint
 	rm -f ./*.xpi
 	zip -r -0 treestyletab-we.xpi manifest.json _locales common options background sidebar resources >/dev/null 2>/dev/null
 
 install_extlib:
-	cd .. && git submodule update
+	cd .. && git submodule update --init
 	cp ../submodules/webextensions-lib-tab-id-fixer/TabIdFixer.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabIdFixer;' >> $(EXTERNAL_LIB_DIR)/TabIdFixer.js
 	cp ../submodules/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabFavIconHelper;' >> $(EXTERNAL_LIB_DIR)/TabFavIconHelper.js
 	cp ../submodules/webextensions-lib-rich-confirm/RichConfirm.js $(EXTERNAL_LIB_DIR)/; echo 'export default RichConfirm;' >> $(EXTERNAL_LIB_DIR)/RichConfirm.js
@@ -31,28 +31,4 @@ install_extlib:
 	cp ../submodules/webextensions-lib-l10n/l10n.js $(EXTERNAL_LIB_DIR)/; echo 'export default l10n;' >> $(EXTERNAL_LIB_DIR)/l10n.js
 	cp ../submodules/webextensions-lib-l10n/l10n.js $(EXTERNAL_LIB_DIR)/l10n-classic.js
 	cp ../submodules/webextensions-lib-shortcut-customize-ui/ShortcutCustomizeUI.js $(EXTERNAL_LIB_DIR)/; echo 'export default ShortcutCustomizeUI;' >> $(EXTERNAL_LIB_DIR)/ShortcutCustomizeUI.js
-
-../submodules/webextensions-lib-tab-id-fixer/TabIdFixer.js:
-	cd .. && git submodule update --init
-
-../submodules/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js:
-	cd .. && git submodule update --init
-
-../submodules/webextensions-lib-configs/Configs.js:
-	cd .. && git submodule update --init
-
-../submodules/webextensions-lib-options/Options.js:
-	cd .. && git submodule update --init
-
-../submodules/webextensions-lib-l10n/l10n.js:
-	cd .. && git submodule update --init
-
-../submodules/webextensions-lib-rich-confirm/RichConfirm.js:
-	cd .. && git submodule update --init
-
-../submodules/webextensions-lib-menu-ui/MenuUI.js:
-	cd .. && git submodule update --init
-
-../submodules/webextensions-lib-shortcut-customize-ui/ShortcutCustomizeUI.js:
-	cd .. && git submodule update --init
 
