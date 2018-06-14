@@ -67,7 +67,7 @@ export async function closeOthers(aRootTab) {
   const exceptionTabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
   const tabs          = Tabs.getNormalTabs(aRootTab); // except pinned or hidden tabs
   tabs.reverse(); // close bottom to top!
-  const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(aTab) < 0);
+  const closeTabs = tabs.filter(aTab => !exceptionTabs.includes(aTab));
   const canceled = (await onTabsClosing.dispatch(closeTabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
   if (canceled)
     return;

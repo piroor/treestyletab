@@ -1502,9 +1502,9 @@ function onMessage(aMessage, _aSender, _aRespond) {
             continue;
           add.forEach(aState => tab.classList.add(aState));
           remove.forEach(aState => tab.classList.remove(aState));
-          if (modified.indexOf(Constants.kTAB_STATE_AUDIBLE) > -1 ||
-            modified.indexOf(Constants.kTAB_STATE_SOUND_PLAYING) > -1 ||
-            modified.indexOf(Constants.kTAB_STATE_MUTED) > -1) {
+          if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
+            modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
+            modified.includes(Constants.kTAB_STATE_MUTED)) {
             updateTabSoundButtonTooltip(tab);
             if (aMessage.bubbles)
               TabsUpdate.updateParentTab(Tabs.getParentTab(tab));

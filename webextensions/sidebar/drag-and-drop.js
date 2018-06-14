@@ -252,19 +252,19 @@ function getDropAction(aEvent) {
           return false;
         }
         else if (info.dragOverTab) {
-          if (info.draggedAPITabIDs.indexOf(info.dragOverTab.apiTab.id) > -1)
+          if (info.draggedAPITabIDs.includes(info.dragOverTab.apiTab.id))
             return false;
           const ancestors = Tabs.getAncestorTabs(info.dragOverTab);
           /* too many function call in this way, so I use alternative way for better performance.
-          return info.draggedAPITabIDs.indexOf(info.dragOverTab.apiTab.id) < 0 &&
+          return !info.draggedAPITabIDs.includes(info.dragOverTab.apiTab.id) &&
                    Tabs.collectRootTabs(info.draggedTabs).every(aRootTab =>
-                     ancestors.indexOf(aRootTab) < 0
+                     !ancestors.includes(aRootTab)
                    );
           */
           for (const apiTab of info.draggedAPITabs.slice().reverse()) {
             const tab    = Tabs.getTabById(apiTab);
             const parent = Tabs.getParentTab(tab);
-            if (!parent && ancestors.indexOf(parent) > -1)
+            if (!parent && ancestors.includes(parent))
               return false;
           }
           return true;
@@ -879,7 +879,7 @@ function reserveToProcessLongHover(aParams = {}) {
         Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
       else {
-        if (gLongHoverExpandedTabs.indexOf(aParams.dragOverTabId) < 0)
+        if (!gLongHoverExpandedTabs.includes(aParams.dragOverTabId))
           gLongHoverExpandedTabs.push(aParams.dragOverTabId);
         Tree.collapseExpandSubtree(dragOverTab, {
           collapsed: false,
@@ -992,7 +992,7 @@ function onDragEnd(aEvent) {
   if (dropTargetTab &&
       dragData &&
       dragData.tabNodes &&
-      dragData.tabNodes.indexOf(dropTargetTab) < 0) {
+      !dragData.tabNodes.includes(dropTargetTab)) {
     log('ignore drop on dragged tabs themselves');
     return;
   }

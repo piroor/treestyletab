@@ -198,7 +198,7 @@ async function tryGroupNewTabs() {
 
     const newRootTabsFromPinned = newRootTabs.filter(aTab => Tabs.isPinned(Tabs.getOpenerTab(aTab)));
     if (newRootTabsFromPinned.length > 0) {
-      newRootTabs = newRootTabs.filter(aTab => newRootTabsFromPinned.indexOf(aTab) < 0);
+      newRootTabs = newRootTabs.filter(aTab => !newRootTabsFromPinned.includes(aTab));
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
     }
     if (newRootTabs.length > 1 &&
@@ -223,7 +223,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
   const childrenOfPinnedTabs = {};
   for (const tab of aRootTabs) {
     const opener = Tabs.getOpenerTab(tab);
-    if (pinnedOpeners.indexOf(opener) < 0)
+    if (!pinnedOpeners.includes(opener))
       pinnedOpeners.push(opener);
   }
   log('pinnedOpeners ', pinnedOpeners.map(dumpTab));
@@ -235,7 +235,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     if (Tabs.getParentTab(aTab) ||
         aTab.dataset.alreadyGroupedForPinnedOpener)
       return false;
-    if (aRootTabs.indexOf(aTab) > -1) { // newly opened tab
+    if (aRootTabs.includes(aTab)) { // newly opened tab
       const opener = Tabs.getOpenerTab(aTab);
       if (!opener)
         return false;
@@ -248,7 +248,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
     if (!Tabs.isPinned(opener))
       return false;
     // existing and not yet grouped tab
-    if (pinnedOpeners.indexOf(opener) < 0)
+    if (!pinnedOpeners.includes(opener))
       pinnedOpeners.push(opener);
     openerOf[aTab.id] = opener;
     const tabs = childrenOfPinnedTabs[opener.id] || [];
@@ -268,7 +268,7 @@ async function tryGroupNewTabsFromPinnedOpener(aRootTabs) {
       const allPinnedTabs = Tabs.getPinnedTabs(aRootTabs[0].parentNode);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
       for (const tab of unifiedRootTabs.slice(0).reverse()) {
-        if (pinnedOpeners.indexOf(openerOf[tab.id]) < 0 ||
+        if (!pinnedOpeners.includes(openerOf[tab.id]) ||
             Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         // If there is not-yet grouped sibling, place next to it.
@@ -476,7 +476,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
 
     foundTabs = {};
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true) && (self.closingTabIds.indexOf(aId) < 0));
+      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true) && !self.closingTabIds.includes(aId));
 
     shouldRestoreCount = self.closingDescendantTabIds.length;
     if (shouldRestoreCount > 0) {

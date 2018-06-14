@@ -59,11 +59,11 @@ export function bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
   /*
   // These events are not available yet on Firefox...
   browser.permissions.onAdded.addListener(aAddedPermissions => {
-    if (aAddedPermissions.permissions.indexOf('...') > -1)
+    if (aAddedPermissions.permissions.includes('...'))
       aCheckbox.checked = true;
   });
   browser.permissions.onRemoved.addListener(aRemovedPermissions => {
-    if (aRemovedPermissions.permissions.indexOf('...') > -1)
+    if (aRemovedPermissions.permissions.includes('...'))
       aCheckbox.checked = false;
   });
   */

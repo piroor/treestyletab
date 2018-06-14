@@ -118,7 +118,7 @@ export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = 
     else {
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
         Array.slice(container.childNodes)
-          .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
+          .map(aTab => aTab.id+(aTabs.includes(aTab) ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
       const newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
@@ -229,7 +229,7 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
     */
     const oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
     var nextTab = Tabs.getNextTab(aReferenceTab);
-    if (aTabs.indexOf(nextTab) > -1)
+    if (aTabs.includes(nextTab))
       nextTab = null;
     for (const tab of aTabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab);
@@ -251,7 +251,7 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
     else {
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
         Array.slice(container.childNodes)
-          .map(aTab => aTab.id+(aTabs.indexOf(aTab) > -1 ? '[MOVED]' : ''))
+          .map(aTab => aTab.id+(aTabs.includes(aTab) ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
       const newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);

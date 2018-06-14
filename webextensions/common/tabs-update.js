@@ -87,7 +87,7 @@ export function updateTab(aTab, aNewState = {}, aOptions = {}) {
       // Detect group tab from different session - which can have different UUID for the URL.
       const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
       const pathPart = aTab.apiTab.url.replace(PREFIX_REMOVER, '');
-      if (aStates.indexOf(Constants.kTAB_STATE_GROUP_TAB) > -1 &&
+      if (aStates.includes(Constants.kTAB_STATE_GROUP_TAB) &&
           pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
         const parameters = pathPart.replace(/^[^\?]+\?/, '');
         await wait(100); // for safety

@@ -498,7 +498,7 @@ export function getTabIndex(aTab, aOptions = {}) {
   let tabs = getAllTabs(aTab);
   if (Array.isArray(aOptions.ignoreTabs) &&
       aOptions.ignoreTabs.length > 0)
-    tabs = tabs.filter(aTab => aOptions.ignoreTabs.indexOf(aTab) < 0);
+    tabs = tabs.filter(aTab => !aOptions.ignoreTabs.includes(aTab));
 
   return tabs.indexOf(aTab);
 }
@@ -775,7 +775,7 @@ export function collectRootTabs(aTabs) {
     if (!ensureLivingTab(aTab))
       return false;
     const parent = getParentTab(aTab);
-    return !parent || aTabs.indexOf(parent) < 0;
+    return !parent || !aTabs.includes(parent);
   });
 }
 
@@ -887,7 +887,7 @@ export async function doAndGetNewTabs(aAsyncTask, aHint) {
   const beforeApiIds  = beforeApiTabs.map(aApiTab => aApiTab.id);
   await aAsyncTask();
   const afterApiTabs = await browser.tabs.query(tabsQueryOptions);
-  const addedApiTabs = afterApiTabs.filter(aAfterApiTab => beforeApiIds.indexOf(aAfterApiTab.id) < 0);
+  const addedApiTabs = afterApiTabs.filter(aAfterApiTab => !beforeApiIds.includes(aAfterApiTab.id));
   const addedTabs    = addedApiTabs.map(getTabById);
   return addedTabs;
 }
@@ -898,13 +898,13 @@ export function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab i
   do {
     ignoredTabs.push(tab);
     tab = getNextSiblingTab(tab);
-  } while (tab && ignoredTabs.indexOf(tab) > -1);
+  } while (tab && ignoredTabs.includes(tab));
   if (!tab) {
     tab = aTab;
     do {
       ignoredTabs.push(tab);
       tab = getPreviousVisibleTab(tab);
-    } while (tab && ignoredTabs.indexOf(tab) > -1);
+    } while (tab && ignoredTabs.includes(tab));
   }
   return tab;
 }
@@ -1184,7 +1184,7 @@ export async function getSpecialTabState(aTab) {
 
 export async function addSpecialTabState(aTab, aState) {
   const states = await getSpecialTabState(aTab);
-  if (states.indexOf(aState) > -1)
+  if (states.includes(aState))
     return states;
   states.push(aState);
   await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);

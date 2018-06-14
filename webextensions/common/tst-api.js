@@ -158,7 +158,7 @@ export function serializeTab(aTab) {
   const children         = Tabs.getChildTabs(aTab).map(serializeTab);
   const ancestorTabIds   = Tabs.getAncestorTabs(aTab).map(aTab => aTab.apiTab.id);
   return Object.assign({}, aTab.apiTab, {
-    states:   Array.slice(aTab.classList).filter(aState => Constants.kTAB_INTERNAL_STATES.indexOf(aState) < 0),
+    states:   Array.slice(aTab.classList).filter(aState => !Constants.kTAB_INTERNAL_STATES.includes(aState)),
     indent:   parseInt(aTab.getAttribute(Constants.kLEVEL) || 0),
     effectiveFavIconUrl: effectiveFavIcon && effectiveFavIcon.favIconUrl,
     children, ancestorTabIds
@@ -169,7 +169,7 @@ export function getListenersForMessageType(aType) {
   const uniqueTargets = {};
   for (const id of Object.keys(addons)) {
     const addon = addons[id];
-    if (addon.listeningTypes.indexOf(aType) > -1)
+    if (addon.listeningTypes.includes(aType))
       uniqueTargets[id] = true;
   }
   return Object.keys(uniqueTargets).map(aId => addons[aId]);

@@ -68,7 +68,7 @@ window.addEventListener('DOMContentLoaded', () => {
     for (const heading of Array.slice(document.querySelectorAll('body > section > h1'))) {
       const section = heading.parentNode;
       section.style.maxHeight = `${heading.offsetHeight}px`;
-      if (configs.optionsExpandedSections.indexOf(section.id) < 0)
+      if (!configs.optionsExpandedSections.includes(section.id))
         section.classList.add('collapsed');
       heading.addEventListener('click', () => {
         section.classList.toggle('collapsed');

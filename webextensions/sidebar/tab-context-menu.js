@@ -98,7 +98,7 @@ async function rebuild() {
 
     const toBeBuiltItems = [];
     for (const item of extraItems[id]) {
-      if (item.contexts && item.contexts.indexOf('tab') < 0)
+      if (item.contexts && !item.contexts.includes('tab'))
         continue;
       if (contextTab &&
           item.documentUrlPatterns &&
