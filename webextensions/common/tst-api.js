@@ -104,7 +104,27 @@ export const kCONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
 export const kCONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
 export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
 
-export const addons = {};
+const addons = {};
+
+export function getAddonData(id) {
+  return addons[id];
+}
+
+export function setAddonData(id, data) {
+  addons[id] = data;
+}
+
+export function removeAddonData(id) {
+  delete addons[id];
+}
+
+export function getAddonDataEntries() {
+  return Object.entries(addons);
+}
+
+export function getAddonDataAllJSON() {
+  return addons;
+}
 
 let initialized = false;
 
@@ -141,7 +161,7 @@ export async function init() {
   configs.cachedExternalAddons = respondedAddons;
 }
 
-export function setAddons(aAddons) {
+export function setAddonsFromJSON(aAddons) {
   if (!aAddons)
     console.log(new Error());
   for (const id of Object.keys(addons)) {
@@ -150,7 +170,6 @@ export function setAddons(aAddons) {
   for (const id of Object.keys(aAddons)) {
     addons[id] = aAddons[id];
   }
-  return addons;
 }
 
 export function serializeTab(aTab) {
