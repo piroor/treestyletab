@@ -680,7 +680,7 @@ function onDragStart(aEvent) {
     return;
 
   const tab       = dragData.tabNode
-  const mousedown = EventUtils.lastMousedown[aEvent.button];
+  const mousedown = EventUtils.getLastMousedown(aEvent.button);
 
   if (mousedown && mousedown.expired) {
     aEvent.stopPropagation();

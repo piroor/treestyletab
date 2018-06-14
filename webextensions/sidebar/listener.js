@@ -355,9 +355,9 @@ function onMouseDown(aEvent) {
       windowId: gTargetWindow
     }));
 
-  EventUtils.lastMousedown[aEvent.button] = mousedown;
+  EventUtils.setLastMousedown(aEvent.button, mousedown);
   mousedown.timeout = setTimeout(() => {
-    if (!EventUtils.lastMousedown[aEvent.button])
+    if (!EventUtils.getLastMousedown(aEvent.button))
       return;
 
     if (aEvent.button == 0 &&
@@ -413,7 +413,7 @@ function getMouseEventTargetType(aEvent) {
 
 async function onMouseUp(aEvent) {
   const tab = EventUtils.getTabFromEvent(aEvent);
-  const lastMousedown = EventUtils.lastMousedown[aEvent.button];
+  const lastMousedown = EventUtils.getLastMousedown(aEvent.button);
   EventUtils.cancelHandleMousedown(aEvent.button);
   if (lastMousedown)
     await lastMousedown.promisedMousedownNotified;
