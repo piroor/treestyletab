@@ -104,7 +104,31 @@ export const kCONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
 export const kCONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
 export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
 
-export const addons = {};
+const addons = new Map();
+
+export function getAddonData(id) {
+  return addons.get(id);
+}
+
+export function setAddonData(id, data) {
+  addons.set(id, data);
+}
+
+export function removeAddonData(id) {
+  addons.delete(id);
+}
+
+export function getAddonDataEntries() {
+  return addons.entries();
+}
+
+export function getAddonDataAllJSON() {
+  const json = {};
+  for (const [id, data] of getAddonDataEntries()) {
+    json[id] = data;
+  }
+  return json;
+}
 
 let initialized = false;
 
@@ -114,12 +138,12 @@ export function isInitialized() {
 
 export async function init() {
   const manifest = browser.runtime.getManifest();
-  addons[manifest.applications.gecko.id] = {
+  setAddonData(manifest.applications.gecko.id, {
     id:         manifest.applications.gecko.id,
     internalId: browser.runtime.getURL('').replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1'),
     icons:      manifest.icons,
     listeningTypes: []
-  };
+  });
   initialized = true;
   const respondedAddons = [];
   const notifiedAddons = {};
@@ -141,16 +165,15 @@ export async function init() {
   configs.cachedExternalAddons = respondedAddons;
 }
 
-export function setAddons(aAddons) {
+export function setAddonsFromJSON(aAddons) {
   if (!aAddons)
     console.log(new Error());
   for (const id of Object.keys(addons)) {
-    delete addons[id];
+    removeAddonData(id);
   }
-  for (const id of Object.keys(aAddons)) {
-    addons[id] = aAddons[id];
+  for (const [id, data] of Object.entries(aAddons)) {
+    setAddonData(id,data);
   }
-  return addons;
 }
 
 export function serializeTab(aTab) {
@@ -167,12 +190,11 @@ export function serializeTab(aTab) {
 
 export function getListenersForMessageType(aType) {
   const uniqueTargets = {};
-  for (const id of Object.keys(addons)) {
-    const addon = addons[id];
+  for (const [id, addon] of getAddonDataEntries()) {
     if (addon.listeningTypes.includes(aType))
       uniqueTargets[id] = true;
   }
-  return Object.keys(uniqueTargets).map(aId => addons[aId]);
+  return Object.keys(uniqueTargets).map(aId => getAddonData(aId));
 }
 
 export async function sendMessage(aMessage, aOptions = {}) {

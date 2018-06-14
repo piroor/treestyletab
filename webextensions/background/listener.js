@@ -1392,7 +1392,7 @@ function onMessage(aMessage, aSender) {
         while (!TSTAPI.isInitialized()) {
           await wait(10);
         }
-        return TSTAPI.addons;
+        return TSTAPI.getAddonDataAllJSON();
       })();
 
     case Constants.kCOMMAND_REQUEST_SCROLL_LOCK_STATE:
@@ -1739,7 +1739,7 @@ function onMessageExternal(aMessage, aSender) {
         }
         aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
         aMessage.id = aSender.id;
-        TSTAPI.addons[aSender.id] = aMessage;
+        TSTAPI.setAddonData(aSender.id, aMessage);
         browser.runtime.sendMessage({
           type:    Constants.kCOMMAND_BROADCAST_API_REGISTERED,
           sender:  aSender,
@@ -1758,7 +1758,7 @@ function onMessageExternal(aMessage, aSender) {
           sender:  aSender,
           message: aMessage
         });
-        delete TSTAPI.addons[aSender.id];
+        TSTAPI.removeAddonData(aSender.id);
         delete gScrollLockedBy[aSender.id];
         configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
         return true;
