@@ -207,6 +207,9 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
           break;
       }
       break;
+
+    default:
+      return;
   }
 });
 
@@ -214,7 +217,6 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
   if (!aMessage ||
       typeof aMessage.type != 'string')
     return;
-
 
   switch (context) {
     case kCONTEXT_BACKEND:
@@ -265,6 +267,12 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
           })();
       }
       break;
+
+    case kCONTEXT_FRONTEND:
+      break;
+
+    default:
+      return;
   }
 
   switch (aMessage.type) {
