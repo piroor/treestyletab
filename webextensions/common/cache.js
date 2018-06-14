@@ -181,8 +181,7 @@ function fixupTabsRestoredFromCache(aTabs, aApiTabs, aOptions = {}) {
 
 function fixupTabRestoredFromCache(aTab, aApiTab, aOptions = {}) {
   Tabs.updateUniqueId(aTab);
-  aTab.opened = Promise.resolve(true);
-  Tabs.prepareClosedWhileActive(aTab);
+  Tabs.initPromisedStatus(aTab, true);
 
   const idMap = aOptions.idMap;
 

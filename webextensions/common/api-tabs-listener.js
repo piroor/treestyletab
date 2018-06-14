@@ -462,8 +462,7 @@ async function onRemoved(aTabId, aRemoveInfo) {
     Tabs.onStateChanged.dispatch(oldTab);
 
     if (Tabs.isActive(oldTab)) {
-      const resolver = Tabs.getClosedWhileActiveResolver(oldTab);
-      Tabs.clearClosedWhileActiveResolver(oldTab);
+      const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab);
       if (resolver)
         gLastClosedWhileActiveResolvers.set(container, resolver);
     }

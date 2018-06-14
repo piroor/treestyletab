@@ -318,12 +318,11 @@ export function buildTab(aApiTab, aOptions = {}) {
       originalTabId: null
     });
 
-  prepareOpened(tab);
-  prepareClosedWhileActive(tab);
-
   tab.childTabs = [];
   tab.parentTab = null;
   tab.ancestorTabs = [];
+
+  initPromisedStatus(tab);
 
   return tab;
 }
@@ -1133,10 +1132,18 @@ export function dumpAllTabs() {
 //===================================================================
 
 const gOpenedResolvers = new WeakMap();
+const gClosedWhileActiveResolvers = new WeakMap();
 
-export function prepareOpened(aTab) {
+export function initPromisedStatus(aTab, aAlreadyOpened = false) {
+  if (aAlreadyOpened)
+    aTab.opened = Promise.resolve(true);
+  else
   aTab.opened = new Promise((aResolve, _aReject) => {
     gOpenedResolvers.set(aTab, aResolve);
+  });
+
+  aTab.closedWhileActive = new Promise((aResolve, _aReject) => {
+    gClosedWhileActiveResolvers.set(aTab, aResolve);
   });
 }
 
@@ -1147,20 +1154,10 @@ export function resolveOpened(aTab) {
   gOpenedResolvers.delete(aTab);
 }
 
-const gClosedWhileActiveResolvers = new WeakMap();
-
-export function prepareClosedWhileActive(aTab) {
-  aTab.closedWhileActive = new Promise((aResolve, _aReject) => {
-    gClosedWhileActiveResolvers.set(aTab, aResolve);
-  });
-}
-
-export function getClosedWhileActiveResolver(aTab) {
-  return gClosedWhileActiveResolvers.get(aTab);
-}
-
-export function clearClosedWhileActiveResolver(aTab) {
+export function fetchClosedWhileActiveResolver(aTab) {
+  const resolver = gClosedWhileActiveResolvers.get(aTab);
   gClosedWhileActiveResolvers.delete(aTab);
+  return resolver;
 }
 
 
