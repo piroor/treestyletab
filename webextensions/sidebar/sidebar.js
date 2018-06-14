@@ -45,7 +45,7 @@ export const onDestroy = new EventListenerManager();
 
 var gInitialized = false;
 var gStyle;
-var gAddonStyles    = {};
+const gAddonStyles = new Map();
 var gTargetWindow   = null;
 
 var gTabBar                     = document.querySelector('#tabbar');
@@ -254,19 +254,22 @@ export function applyUserStyleRules() {
 }
 
 export function installStyleForAddon(aId, aStyle) {
-  if (!gAddonStyles[aId]) {
-    gAddonStyles[aId] = document.createElement('style');
-    gAddonStyles[aId].setAttribute('type', 'text/css');
-    document.head.insertBefore(gAddonStyles[aId], gUserStyleRules);
+  let styleElement = gAddonStyles.get(aId);
+  if (!styleElement) {
+    styleElement = document.createElement('style');
+    styleElement.setAttribute('type', 'text/css');
+    document.head.insertBefore(styleElement, gUserStyleRules);
+    gAddonStyles.set(aId, styleElement);
   }
-  gAddonStyles[aId].textContent = aStyle;
+  styleElement.textContent = aStyle;
 }
 
 export function uninstallStyleForAddon(aId) {
-  if (!gAddonStyles[aId])
+  const styleElement = gAddonStyles.get(aId);
+  if (!styleElement)
     return;
-  document.head.removeChild(gAddonStyles[aId]);
-  delete gAddonStyles[aId];
+  document.head.removeChild(styleElement);
+  gAddonStyles.delete(aId);
 }
 
 export function applyBrowserTheme(aTheme) {
