@@ -38,6 +38,9 @@ module.exports = {
         'const': 3,
       }
     }],
+    'no-underscore-dangle': ['warn', { // Ban the name which starts with `_`.
+      'allowAfterThis': true, // allow after this to create a private member.
+    }],
     'quotes': ['warn', 'single', {
       'avoidEscape': true,
       'allowTemplateLiterals': true,

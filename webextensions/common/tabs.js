@@ -319,9 +319,11 @@ export function buildTab(aApiTab, aOptions = {}) {
     });
 
   tab.opened = new Promise((aResolve, _aReject) => {
+    // eslint-disable-next-line no-underscore-dangle
     tab._resolveOpened = aResolve;
   });
   tab.closedWhileActive = new Promise((aResolve, _aReject) => {
+    // eslint-disable-next-line no-underscore-dangle
     tab._resolveClosedWhileActive = aResolve;
   });
 
