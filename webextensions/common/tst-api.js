@@ -104,26 +104,30 @@ export const kCONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
 export const kCONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
 export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
 
-const addons = {};
+const addons = new Map();
 
 export function getAddonData(id) {
-  return addons[id];
+  return addons.get(id);
 }
 
 export function setAddonData(id, data) {
-  addons[id] = data;
+  addons.set(id, data);
 }
 
 export function removeAddonData(id) {
-  delete addons[id];
+  addons.delete(id);
 }
 
 export function getAddonDataEntries() {
-  return Object.entries(addons);
+  return addons.entries();
 }
 
 export function getAddonDataAllJSON() {
-  return addons;
+  const json = {};
+  for (const [id, data] of getAddonDataEntries()) {
+    json[id] = data;
+  }
+  return json;
 }
 
 let initialized = false;
