@@ -26,6 +26,11 @@ export default class EventListenerManager {
     this._stacksOnListenerAdded.delete(aListener);
   }
 
+  removeAllListeners() {
+    this._listeners.clear();
+    this._stacksOnListenerAdded.clear();
+  }
+
   async dispatch(...aArgs) {
     const listeners = Array.from(this._listeners);
     const results = await Promise.all(listeners.map(async aListener => {
