@@ -4,7 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-const items = [];
+const gItems = [];
 
 const now = Date.now();
 const gInitialTime = now;
@@ -13,7 +13,7 @@ let gDeltaBetweenLastItem = 0;
 
 export function add(aLabel) {
   const now = Date.now();
-  items.push({
+  gItems.push({
     label: aLabel,
     delta: now - gLastTime
   });
@@ -26,7 +26,7 @@ export async function addAsync(aLabel, aAsyncTask) {
   if (typeof aAsyncTask == 'function')
     aAsyncTask = aAsyncTask();
   return aAsyncTask.then(aResult => {
-    items.push({
+    gItems.push({
       label: `(async) ${aLabel}`,
       delta: Date.now() - start,
       async: true
@@ -36,7 +36,7 @@ export async function addAsync(aLabel, aAsyncTask) {
 }
 
 export function toString() {
-  const logs = items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
+  const logs = gItems.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
   return `total ${gDeltaBetweenLastItem} msec\n${logs.join('\n')}`;
 }
 
