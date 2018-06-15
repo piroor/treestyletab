@@ -30,11 +30,11 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
 
   switch (aMessage.type) {
     case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      gFocusState.set(aWindowId, true);
+      gFocusState.set(aMessage.windowId, true);
       break;
 
     case Constants.kNOTIFY_SIDEBAR_BLUR:
-      gFocusState.delete(aWindowId);
+      gFocusState.delete(aMessage.windowId);
       break;
   }
 });
