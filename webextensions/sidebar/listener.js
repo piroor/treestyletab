@@ -74,8 +74,6 @@ import * as TabContextMenu from './tab-context-menu.js';
 let gInitialized = false;
 let gTargetWindow;
 
-const gUpdatingCollapsedState = new Map();
-
 const gTabBar = document.querySelector('#tabbar');
 const gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
 const gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
@@ -937,20 +935,12 @@ Tabs.onMoving.addListener(async aTab => {
       Tabs.isOpening(aTab))
     return;
   aTab.classList.add(Constants.kTAB_STATE_MOVING);
+  let visible = !Tabs.isCollapsed(aTab);
+  Tree.collapseExpandTab(aTab, {
+    collapsed: true,
+    justNow:   true
+  });
   nextFrame().then(async () => {
-    if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
-      return;
-    let visible = !Tabs.isCollapsed(aTab);
-    let promisedCollapsed;
-    if (isCollapsedStateUpdating(aTab))
-      promisedCollapsed = isSurelyCollapsed(aTab);
-    Tree.collapseExpandTab(aTab, {
-      collapsed: true,
-      justNow:   true
-    });
-    if (promisedCollapsed)
-      visible = !(await promisedCollapsed);
-    await nextFrame();
     if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
       return;
     if (visible)
@@ -991,6 +981,9 @@ Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   Sidebar.reserveToUpdateTabTooltip(aTab);
 });
 
+
+const gUpdatingCollapsedStateCancellers = new WeakMap();
+
 Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   const toBeCollapsed = aInfo.collapsed;
 
@@ -1014,6 +1007,48 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
 
   const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
 
+  if (gUpdatingCollapsedStateCancellers.has(aTab)) {
+    gUpdatingCollapsedStateCancellers.get(aTab)();
+    gUpdatingCollapsedStateCancellers.delete(aTab);
+    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
+    aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
+  }
+
+  const onCompleted = (aTab, aInfo = {}) => {
+    Tabs.onCollapsedStateChanged.removeListener(onCompleted);
+    if (canceller.canceled ||
+        !Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
+      return;
+
+    const toBeCollapsed = aInfo.collapsed;
+    Sidebar.reserveToUpdateLoadingState();
+    SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+
+    if (configs.animation &&
+        !aInfo.justNow &&
+        configs.collapseDuration > 0)
+      return; // animation
+
+    //log('=> skip animation');
+    if (toBeCollapsed)
+      aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+    else
+      aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+
+    const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
+    onEndCollapseExpandCompletely(aTab, {
+      collapsed: toBeCollapsed,
+      reason
+    });
+
+    if (aInfo.last)
+      Scroll.scrollToTab(aTab, {
+        anchor:            aInfo.anchor,
+        notifyOnOutOfView: true
+      });
+  };
+  Tabs.onCollapsedStateChanged.addListener(onCompleted);
+
   if (!configs.animation ||
       aInfo.justNow ||
       configs.collapseDuration < 1) {
@@ -1021,17 +1056,10 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
     return;
   }
 
-  if (isCollapsedStateUpdating(aTab))
-    await isSurelyCollapsed(aTab);
-
-  let onCompletelyUpdated;
-  const promisedUpdated = new Promise((aResolve, _aReject) => {
-    onCompletelyUpdated = aResolve;
-  });
-  gUpdatingCollapsedState.set(aTab.id, promisedUpdated);
-  promisedUpdated.then(() => {
-    gUpdatingCollapsedState.delete(aTab.id);
-  });
+  let canceller = () => {
+    canceller.canceled = true;
+  };
+  gUpdatingCollapsedStateCancellers.set(aTab, canceller);
 
   if (toBeCollapsed) {
     aTab.classList.add(Constants.kTAB_STATE_COLLAPSING);
@@ -1044,8 +1072,8 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   Sidebar.reserveToUpdateTabbarLayout({ reason });
 
   nextFrame().then(() => {
-    if (!Tabs.ensureLivingTab(aTab)) { // it was removed while waiting
-      onCompletelyUpdated();
+    if (canceller.canceled ||
+        !Tabs.ensureLivingTab(aTab)) { // it was removed while waiting
       return;
     }
 
@@ -1057,6 +1085,9 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
       });
 
     aTab.onEndCollapseExpandAnimation = (() => {
+      if (canceller.canceled)
+        return;
+
       //log('=> finish animation for ', dumpTab(aTab));
       aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
       aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
@@ -1073,18 +1104,16 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
         collapsed: toBeCollapsed,
         reason
       });
-      onCompletelyUpdated();
     });
     aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
-      if (!Tabs.ensureLivingTab(aTab) ||
+      if (canceller.canceled ||
+          !Tabs.ensureLivingTab(aTab) ||
           !aTab.onEndCollapseExpandAnimation) {
-        onCompletelyUpdated();
         return;
       }
       delete aTab.onEndCollapseExpandAnimation.timeout;
       aTab.onEndCollapseExpandAnimation();
       delete aTab.onEndCollapseExpandAnimation;
-      onCompletelyUpdated();
     }, configs.collapseDuration);
   });
 });
@@ -1101,51 +1130,6 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
   // this is very required for no animation case!
   Sidebar.reserveToUpdateTabbarLayout({ reason: aOptions.reason });
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-}
-
-Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
-  const toBeCollapsed = aInfo.collapsed;
-  if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
-    return;
-
-  Sidebar.reserveToUpdateLoadingState();
-  SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
-
-  if (configs.animation &&
-      !aInfo.justNow &&
-      configs.collapseDuration > 0)
-    return; // animation
-
-  //log('=> skip animation');
-  if (toBeCollapsed)
-    aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
-  else
-    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
-
-
-  const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
-  onEndCollapseExpandCompletely(aTab, {
-    collapsed: toBeCollapsed,
-    reason
-  });
-
-  if (aInfo.last)
-    Scroll.scrollToTab(aTab, {
-      anchor:            aInfo.anchor,
-      notifyOnOutOfView: true
-    });
-});
-
-function isCollapsedStateUpdating(aTab) {
-  return gUpdatingCollapsedState.has(aTab.id);
-}
-
-async function isSurelyCollapsed(aTab) {
-  if (gUpdatingCollapsedState.has(aTab.id))
-    return gUpdatingCollapsedState.get(aTab.id).then(() => {
-      return Tabs.isCollapsed(aTab);
-    });
-  return Tabs.isCollapsed(aTab);
 }
 
 
@@ -1350,8 +1334,6 @@ function onMessage(aMessage, _aSender, _aRespond) {
         const tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
-        if (isCollapsedStateUpdating(tab))
-          await isSurelyCollapsed(tab);
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (aMessage.byAncestor &&
