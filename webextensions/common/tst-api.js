@@ -42,7 +42,6 @@ import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 import TabIdFixer from '../extlib/TabIdFixer.js';
 
 import {
-  wait,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
@@ -113,31 +112,31 @@ export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control
 const kCONTEXT_BACKEND  = 1;
 const kCONTEXT_FRONTEND = 2;
 
-let context = null;
-const addons = new Map();
+let gContext = null;
+const gAddons = new Map();
 let gScrollLockedBy    = {};
 let gGroupingBlockedBy = {};
 
 export function getAddon(aId) {
-  return addons.get(aId);
+  return gAddons.get(aId);
 }
 
 export function registerAddon(aId, aAddon) {
-  addons.set(aId, aAddon);
+  gAddons.set(aId, aAddon);
 }
 
 export function unregisterAddon(aId) {
-  addons.delete(aId);
+  gAddons.delete(aId);
   delete gScrollLockedBy[aId];
   delete gGroupingBlockedBy[aId];
 }
 
 export function getAddons() {
-  return addons.entries();
+  return gAddons.entries();
 }
 
 export function isInitialized() {
-  return !!context;
+  return !!gContext;
 }
 
 export async function initAsBackend() {
@@ -148,7 +147,7 @@ export async function initAsBackend() {
     icons:      manifest.icons,
     listeningTypes: []
   });
-  context = kCONTEXT_BACKEND;
+  gContext = kCONTEXT_BACKEND;
   const respondedAddons = [];
   const notifiedAddons = {};
   const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
@@ -174,7 +173,7 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
       typeof aMessage.type != 'string')
     return;
 
-  switch (context) {
+  switch (gContext) {
     case kCONTEXT_BACKEND:
       switch (aMessage.type) {
         case kCOMMAND_REQUEST_REGISTERED_ADDONS:
@@ -218,7 +217,7 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
       typeof aMessage.type != 'string')
     return;
 
-  switch (context) {
+  switch (gContext) {
     case kCONTEXT_BACKEND:
       switch (aMessage.type) {
         case kPING:
@@ -309,7 +308,7 @@ export async function initAsFrontend() {
     if (addon.style)
       installStyleForAddon(id, addon.style);
   }
-  context = kCONTEXT_FRONTEND;
+  gContext = kCONTEXT_FRONTEND;
   const state = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_CONTROL_STATE });
   gScrollLockedBy    = state.scrollLocked;
   gGroupingBlockedBy = state.groupingLocked;
@@ -318,7 +317,7 @@ export async function initAsFrontend() {
 function importAddons(aAddons) {
   if (!aAddons)
     console.log(new Error());
-  for (const id of Object.keys(addons)) {
+  for (const id of Object.keys(gAddons)) {
     unregisterAddon(id);
   }
   for (const [id, addon] of Object.entries(aAddons)) {
