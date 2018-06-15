@@ -20,7 +20,7 @@ export async function bookmarkTabs(aTabs, aOptions = {}) {
     });
     return null;
   }
-  var folderParams = {
+  const folderParams = {
     title: browser.i18n.getMessage('bookmarkFolder_label', aTabs[0].apiTab.title)
   };
   if (aOptions.parentId) {
@@ -28,7 +28,7 @@ export async function bookmarkTabs(aTabs, aOptions = {}) {
     if ('index' in aOptions)
       folderParams.index = aOptions.index;
   }
-  var folder = await browser.bookmarks.create(folderParams);
+  const folder = await browser.bookmarks.create(folderParams);
   for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
     const tab = aTabs[i];
     await browser.bookmarks.create({
