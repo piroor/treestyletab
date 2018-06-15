@@ -93,8 +93,8 @@ export function makeTabId(aApiTab) {
 }
 
 export async function requestUniqueId(aTabOrId, aOptions = {}) {
-  var tabId = aTabOrId;
-  var tab   = null;
+  let tabId = aTabOrId;
+  let tab   = null;
   if (typeof aTabOrId == 'number') {
     tab = getTabById(aTabOrId);
   }
@@ -152,14 +152,12 @@ export async function requestUniqueId(aTabOrId, aOptions = {}) {
     }
   }
 
-  var adjective   = Constants.kID_ADJECTIVES[Math.floor(Math.random() * Constants.kID_ADJECTIVES.length)];
-  var noun        = Constants.kID_NOUNS[Math.floor(Math.random() * Constants.kID_NOUNS.length)];
-  var randomValue = Math.floor(Math.random() * 1000);
-  var id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, {
-    id:    id,
-    tabId: tabId // for detecttion of duplicated tabs
-  });
+  const adjective   = Constants.kID_ADJECTIVES[Math.floor(Math.random() * Constants.kID_ADJECTIVES.length)];
+  const noun        = Constants.kID_NOUNS[Math.floor(Math.random() * Constants.kID_NOUNS.length)];
+  const randomValue = Math.floor(Math.random() * 1000);
+  const id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
+  // tabId is for detecttion of duplicated tabs
+  await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, { id, tabId });
   return { id, originalId, originalTabId, duplicated };
 }
 
