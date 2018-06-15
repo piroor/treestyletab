@@ -133,10 +133,10 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
   });
   let uniqueId, insertBefore, insertAfter, ancestors, children, collapsed;
   await Promise.all([
-    async () => {
+    (async () => {
       uniqueId = aOptions.uniqueId || await aTab.uniqueId;
-    },
-    async () => {
+    })(),
+    (async () => {
       [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
         browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
         browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
@@ -146,7 +146,7 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
       ]);
       ancestors = ancestors || [];
       children  = children  || [];
-    },
+    })()
   ]);
   log(`persistent references for ${aTab.id} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
