@@ -10,28 +10,28 @@ const TIMEOUT = 2000;
 export default class EventListenerManager {
   constructor() {
     this._listeners = new Set();
-    this._sourceMarker = new WeakMap();
+    this._stacksOnListenerAdded = new WeakMap();
   }
 
   addListener(aListener) {
     const listeners = this._listeners;
     if (!listeners.has(aListener)) {
       listeners.add(aListener);
-      this._sourceMarker.set(aListener, new Error().stack);
+      this._stacksOnListenerAdded.set(aListener, new Error().stack);
     }
   }
 
   removeListener(aListener) {
     this._listeners.delete(aListener);
-    this._sourceMarker.delete(aListener);
+    this._stacksOnListenerAdded.delete(aListener);
   }
 
   async dispatch(...aArgs) {
     const listeners = Array.from(this._listeners);
     const results = await Promise.all(listeners.map(async aListener => {
       const timer = setTimeout(() => {
-        const marker = this._sourceMarker.get(aListener);
-        console.log(`listener does not respond in ${TIMEOUT}ms.\n${marker}\n\n${new Error().stack}`);
+        const listenerAddedStack = this._stacksOnListenerAdded.get(aListener);
+        console.log(`listener does not respond in ${TIMEOUT}ms.\n${listenerAddedStack}\n\n${new Error().stack}`);
       }, TIMEOUT);
       try {
         return await aListener(...aArgs);
