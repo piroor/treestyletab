@@ -1291,9 +1291,9 @@ ContextualIdentities.onUpdated.addListener(() => {
 
 /* message observer */
 
-const gTreeChangesFromRemote = [];
+const gTreeChangesFromRemote = new Set();
 function waitUntilAllTreeChangesFromRemoteAreComplete() {
-  return Promise.all(gTreeChangesFromRemote);
+  return Promise.all(Array.from(gTreeChangesFromRemote.values()));
 }
 
 function onMessage(aMessage, _aSender, _aRespond) {
@@ -1415,9 +1415,9 @@ function onMessage(aMessage, _aSender, _aRespond) {
               inRemote:     false,
               broadcast:    false
             }));
-          gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
+          gTreeChangesFromRemote.delete(promisedComplete);
         })();
-        gTreeChangesFromRemote.push(promisedComplete);
+        gTreeChangesFromRemote.add(promisedComplete);
         return promisedComplete;
       }
     }; break;
@@ -1443,9 +1443,9 @@ function onMessage(aMessage, _aSender, _aRespond) {
           const tab = Tabs.getTabById(aMessage.tab);
           if (tab)
             Tree.detachTab(tab, aMessage);
-          gTreeChangesFromRemote.splice(gTreeChangesFromRemote.indexOf(promisedComplete), 1);
+          gTreeChangesFromRemote.delete(promisedComplete);
         })();
-        gTreeChangesFromRemote.push(promisedComplete);
+        gTreeChangesFromRemote.add(promisedComplete);
         return promisedComplete;
       }
     }; break;
