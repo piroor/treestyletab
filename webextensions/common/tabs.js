@@ -221,38 +221,38 @@ async function waitUntilTabsAreOperated(aIdOrIds, aSlot) {
     .map(aId => parseInt(aId))
     .filter(aId => !!aId)
     .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
-    .map(aId => aSlot[aId])
+    .map(aId => aSlot.get(aId))
     .filter(aOperating => !!aOperating);
   if (operatingTabs.length)
     return Promise.all(operatingTabs);
   return [];
 }
 
-const gCreatingTabs = {};
+const gCreatingTabs = new Map();
 
 export function addCreatingTab(aTab) {
   let onTabCreated;
   if (configs.acceleratedTabCreation) {
-    gCreatingTabs[aTab.apiTab.id] = aTab.uniqueId;
+    gCreatingTabs.set(aTab.apiTab.id, aTab.uniqueId);
     onTabCreated = () => {};
   }
   else {
-    gCreatingTabs[aTab.apiTab.id] = new Promise((aResolve, _aReject) => {
+    gCreatingTabs.set(aTab.apiTab.id, new Promise((aResolve, _aReject) => {
       onTabCreated = (aUniqueId) => { aResolve(aUniqueId); };
-    });
+    }));
   }
   aTab.uniqueId.then(_aUniqueId => {
-    delete gCreatingTabs[aTab.apiTab.id];
+    gCreatingTabs.delete(aTab.apiTab.id);
   });
   return onTabCreated;
 }
 
 export function hasCreatingTab() {
-  return Object.keys(gCreatingTabs).length > 0;
+  return gCreatingTabs.size > 0;
 }
 
 export async function waitUntilAllTabsAreCreated() {
-  return waitUntilTabsAreCreated(Object.keys(gCreatingTabs));
+  return waitUntilTabsAreCreated(Array.from(gCreatingTabs.keys()));
 }
 
 export async function waitUntilTabsAreCreated(aIdOrIds) {
@@ -260,21 +260,22 @@ export async function waitUntilTabsAreCreated(aIdOrIds) {
     .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
 }
 
-const gMovingTabs = {};
+const gMovingTabs = new Map();
 
 export function addMovingTabId(aTabId) {
   let onTabMoved;
-  gMovingTabs[aTabId] = new Promise((aResolve, _aReject) => {
+  const promisedMoved = new Promise((aResolve, _aReject) => {
     onTabMoved = aResolve;
   });
-  gMovingTabs[aTabId].then(() => {
-    delete gMovingTabs[aTabId];
+  gMovingTabs.set(aTabId, promisedMoved);
+  promisedMoved.then(() => {
+    gMovingTabs.delete(aTabId);
   });
   return onTabMoved;
 }
 
 export async function waitUntilAllTabsAreMoved() {
-  return waitUntilTabsAreOperated(Object.keys(gMovingTabs), gMovingTabs);
+  return waitUntilTabsAreOperated(Array.from(gMovingTabs.keys()), gMovingTabs);
 }
 
 

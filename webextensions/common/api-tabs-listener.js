@@ -595,7 +595,7 @@ async function onMoved(aTabId, aMoveInfo) {
   }
 }
 
-const gTreeInfoForTabsMovingAcrossWindows = {};
+const gTreeInfoForTabsMovingAcrossWindows = new Map();
 
 async function onAttached(aTabId, aAttachInfo) {
   const targetWindow = Tabs.getWindow();
@@ -624,8 +624,8 @@ async function onAttached(aTabId, aAttachInfo) {
     TabIdFixer.fixTab(apiTab);
 
     TabsInternalOperation.clearOldActiveStateInWindow(aAttachInfo.newWindowId);
-    const info = gTreeInfoForTabsMovingAcrossWindows[aTabId];
-    delete gTreeInfoForTabsMovingAcrossWindows[aTabId];
+    const info = gTreeInfoForTabsMovingAcrossWindows.get(aTabId);
+    gTreeInfoForTabsMovingAcrossWindows.delete(aTabId);
 
     const newTab = await onNewTabTracked(apiTab);
     const byInternalOperation = newTab && parseInt(newTab.parentNode.dataset.toBeAttachedTabs) > 0;
@@ -665,11 +665,12 @@ async function onDetached(aTabId, aDetachInfo) {
     if (byInternalOperation)
       TabsContainer.decrementCounter(oldTab.parentNode, 'toBeDetachedTabs');
 
-    const info = gTreeInfoForTabsMovingAcrossWindows[aTabId] = {
+    const info = {
       byInternalOperation,
       windowId:    aDetachInfo.oldWindowId,
       descendants: Tabs.getDescendantTabs(oldTab)
     };
+    gTreeInfoForTabsMovingAcrossWindows.set(aTabId, info);
 
     Tabs.onStateChanged.dispatch(oldTab);
 
