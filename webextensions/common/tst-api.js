@@ -311,7 +311,7 @@ export async function initAsFrontend() {
 
 function importAddons(aAddons) {
   if (!aAddons)
-    console.log(new Error());
+    console.log(new Error('null import'));
   for (const id of Object.keys(gAddons)) {
     unregisterAddon(id);
   }

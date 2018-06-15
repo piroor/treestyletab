@@ -7,19 +7,19 @@
 
 import EventListenerManager from './EventListenerManager.js';
 
-var gContextualIdentities = {};
+const gContextualIdentities = new Map();
 
-export function get(id) {
-  return gContextualIdentities[id];
+export function get(aId) {
+  return gContextualIdentities.get(aId);
 }
 
 export function getCount() {
-  return Object.keys(gContextualIdentities).length;
+  return gContextualIdentities.size;
 }
 
 export function forEach(aCallback) {
-  for (const id of Object.keys(gContextualIdentities)) {
-    aCallback(gContextualIdentities[id]);
+  for (const identity of gContextualIdentities.values()) {
+    aCallback(identity);
   }
 }
 
@@ -44,7 +44,7 @@ export async function init() {
     return;
   const identities = await browser.contextualIdentities.query({});
   for (const identity of identities) {
-    gContextualIdentities[identity.cookieStoreId] = identity;
+    gContextualIdentities.set(identity.cookieStoreId, identity);
   }
 }
 
@@ -52,18 +52,18 @@ export const onUpdated = new EventListenerManager();
 
 function onContextualIdentityCreated(aCreatedInfo) {
   const identity = aCreatedInfo.contextualIdentity;
-  gContextualIdentities[identity.cookieStoreId] = identity;
+  gContextualIdentities.set(identity.cookieStoreId, identity);
   onUpdated.dispatch();
 }
 
 function onContextualIdentityRemoved(aRemovedInfo) {
   const identity = aRemovedInfo.contextualIdentity;
-  delete gContextualIdentities[identity.cookieStoreId];
+  delete gContextualIdentities.delete(identity.cookieStoreId);
   onUpdated.dispatch();
 }
 
 function onContextualIdentityUpdated(aUpdatedInfo) {
   const identity = aUpdatedInfo.contextualIdentity;
-  gContextualIdentities[identity.cookieStoreId] = identity;
+  gContextualIdentities.set(identity.cookieStoreId, identity);
   onUpdated.dispatch();
 }
