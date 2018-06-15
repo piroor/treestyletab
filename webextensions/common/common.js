@@ -246,6 +246,8 @@ log.max  = 1000;
 log.logs = [];
 log.forceStore = true;
 
+configs.$logger = log;
+
 export function dumpTab(aTab) {
   if (!configs || !configs.debug)
     return '';
