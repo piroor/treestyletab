@@ -61,7 +61,7 @@ export async function init() {
     waitUntilCompletelyRestored(),
     ContextualIdentities.init()
   ]));
-  var restoredFromCache = await rebuildAll();
+  const restoredFromCache = await rebuildAll();
   MetricsData.add(`rebuildAll (cached: ${JSON.stringify(restoredFromCache)})`);
   await TreeStructure.loadTreeStructure(restoredFromCache);
   MetricsData.add('TreeStructure.loadTreeStructure done');
@@ -122,7 +122,7 @@ export async function init() {
 }
 
 function updatePanelUrl() {
-  var panel = browser.extension.getURL(`/sidebar/sidebar.html?style=${encodeURIComponent(configs.style)}`);
+  const panel = browser.extension.getURL(`/sidebar/sidebar.html?style=${encodeURIComponent(configs.style)}`);
   browser.sidebarAction.setPanel({ panel });
 }
 
@@ -168,13 +168,13 @@ function destroy() {
 
 async function rebuildAll() {
   TabsContainer.clearAll();
-  var windows = await browser.windows.getAll({
+  const windows = await browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
   });
-  var insertionPoint = document.createRange();
+  const insertionPoint = document.createRange();
   insertionPoint.selectNodeContents(Tabs.allTabsContainer);
-  var restoredFromCache = {};
+  const restoredFromCache = {};
   await Promise.all(windows.map(async (aWindow) => {
     await MetricsData.addAsync(`rebuild ${aWindow.id}`, async () => {
       if (configs.useCachedTree) {
@@ -214,7 +214,7 @@ async function rebuildAll() {
 export async function tryStartHandleAccelKeyOnTab(aTab) {
   if (!Tabs.ensureLivingTab(aTab))
     return;
-  var granted = await Permissions.isGranted(Permissions.ALL_URLS);
+  const granted = await Permissions.isGranted(Permissions.ALL_URLS);
   if (!granted ||
       /^(about|chrome|resource):/.test(aTab.apiTab.url))
     return;
@@ -240,11 +240,11 @@ export async function tryInitGroupTab(aTab) {
   if (!Tabs.isGroupTab(aTab) &&
       aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0)
     return;
-  var scriptOptions = {
+  const scriptOptions = {
     runAt:           'document_start',
     matchAboutBlank: true
   };
-  var initialized = await browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
+  const initialized = await browser.tabs.executeScript(aTab.apiTab.id, Object.assign({}, scriptOptions, {
     code:  'window.init && window.init.done',
   }));
   if (initialized[0])
@@ -309,7 +309,7 @@ async function updateInsertionPosition(aTab) {
 
 
 export function reserveToUpdateAncestors(aTabOrTabs) {
-  var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
+  const tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
@@ -326,7 +326,7 @@ async function updateAncestors(aTab) {
   if (!Tabs.ensureLivingTab(aTab))
     return;
 
-  var ancestorIds = await Promise.all(
+  const ancestorIds = await Promise.all(
     Tabs.getAncestorTabs(aTab)
       .map(aAncestor => aAncestor.uniqueId)
   );
@@ -338,7 +338,7 @@ async function updateAncestors(aTab) {
 }
 
 export function reserveToUpdateChildren(aTabOrTabs) {
-  var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
+  const tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
@@ -355,7 +355,7 @@ async function updateChildren(aTab) {
   if (!Tabs.ensureLivingTab(aTab))
     return;
 
-  var childIds = await Promise.all(
+  const childIds = await Promise.all(
     Tabs.getChildTabs(aTab)
       .map(aChild => aChild.uniqueId)
   );
@@ -389,7 +389,7 @@ async function updateSubtreeCollapsed(aTab) {
 }
 
 export function reserveToCleanupNeedlessGroupTab(aTabOrTabs) {
-  var tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
+  const tabs = Array.isArray(aTabOrTabs) ? aTabOrTabs : [aTabOrTabs] ;
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
@@ -406,7 +406,7 @@ function cleanupNeedlssGroupTab(aTabs) {
   if (!Array.isArray(aTabs))
     aTabs = [aTabs];
   log('trying to clanup needless temporary group tabs from ', aTabs.map(dumpTab));
-  var tabsToBeRemoved = [];
+  const tabsToBeRemoved = [];
   for (const tab of aTabs) {
     if (!Tabs.isTemporaryGroupTab(tab))
       break;

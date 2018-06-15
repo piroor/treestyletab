@@ -519,7 +519,7 @@ tryGrantCloseTab.closingTabWasActive        = false;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
 async function closeChildTabs(aParent) {
-  var tabs = Tabs.getDescendantTabs(aParent);
+  const tabs = Tabs.getDescendantTabs(aParent);
   //if (!fireTabSubtreeClosingEvent(aParent, tabs))
   //  return;
 
@@ -576,7 +576,7 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
   }
 
   log('the tab can be placed inside existing tab unexpectedly, so now we are trying to fixup tree.');
-  var action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
+  const action = await detectTabActionFromNewPosition(aTab, aMoveInfo);
   if (!action) {
     log('no action');
     return;
@@ -649,7 +649,7 @@ TreeStructure.onTabAttachedFromRestoredInfo.addListener(tryFixupTreeForInsertedT
 
 function moveBack(aTab, aMoveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(aTab), aMoveInfo);
-  var container = aTab.parentNode;
+  const container = aTab.parentNode;
   TabsContainer.incrementCounter(container, 'internalMovingCount');
   return browser.tabs.move(aTab.apiTab.id, {
     windowId: aMoveInfo.windowId,
@@ -663,31 +663,31 @@ function moveBack(aTab, aMoveInfo) {
 
 async function detectTabActionFromNewPosition(aTab, aMoveInfo) {
   log('detectTabActionFromNewPosition: ', dumpTab(aTab), aMoveInfo);
-  var tree   = aMoveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(aTab);
-  var target = tree.target;
+  const tree   = aMoveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(aTab);
+  const target = tree.target;
 
-  var toIndex   = aMoveInfo.toIndex;
-  var fromIndex = aMoveInfo.fromIndex;
+  const toIndex   = aMoveInfo.toIndex;
+  const fromIndex = aMoveInfo.fromIndex;
   if (toIndex == fromIndex) { // no move?
     log('=> no move');
     return { action: null };
   }
 
-  var prevTab = tree.tabsById[target.previous];
-  var nextTab = tree.tabsById[target.next];
+  const prevTab = tree.tabsById[target.previous];
+  const nextTab = tree.tabsById[target.next];
   log('prevTab: ', prevTab && prevTab.id);
   log('nextTab: ', nextTab && nextTab.id);
 
-  var prevParent = prevTab && tree.tabsById[prevTab.parent];
-  var nextParent = nextTab && tree.tabsById[nextTab.parent];
+  const prevParent = prevTab && tree.tabsById[prevTab.parent];
+  const nextParent = nextTab && tree.tabsById[nextTab.parent];
 
-  var prevLevel  = prevTab ? prevTab.level : -1 ;
-  var nextLevel  = nextTab ? nextTab.level : -1 ;
+  const prevLevel  = prevTab ? prevTab.level : -1 ;
+  const nextLevel  = nextTab ? nextTab.level : -1 ;
   log('prevLevel: '+prevLevel);
   log('nextLevel: '+nextLevel);
 
-  var oldParent = tree.tabsById[target.parent];
-  var newParent = null;
+  const oldParent = tree.tabsById[target.parent];
+  let newParent = null;
 
   if (prevTab &&
       target.cookieStoreId != prevTab.cookieStoreId &&
@@ -784,9 +784,9 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
     browser.tabs.reload(aTab.apiTab.id);
     delete aTab.dataset.shouldReloadOnSelect;
   }
-  var container = aTab.parentNode;
+  const container = aTab.parentNode;
   cancelDelayedExpand(Tabs.getTabById(container.lastFocusedTab));
-  var shouldSkipCollapsed = (
+  const shouldSkipCollapsed = (
     !aInfo.byInternalOperation &&
     gMaybeTabSwitchingByShortcut &&
     configs.skipCollapsedTabsForTabSwitchingShortcuts
@@ -854,9 +854,9 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
 });
 function handleNewActiveTab(aTab, aInfo = {}) {
   log('handleNewActiveTab: ', dumpTab(aTab), aInfo);
-  var shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
-  var canCollapseTree         = shouldCollapseExpandNow;
-  var canExpandTree           = shouldCollapseExpandNow && !aInfo.silently;
+  const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
+  const canCollapseTree         = shouldCollapseExpandNow;
+  const canExpandTree           = shouldCollapseExpandNow && !aInfo.silently;
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
@@ -978,7 +978,7 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
 });
 
 Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
-  var parent = aInfo.parent;
+  const parent = aInfo.parent;
   if (aTab.apiTab.openerTabId != parent.apiTab.id &&
       configs.syncParentTabAndOpenerTab) {
     aTab.apiTab.openerTabId = parent.apiTab.id;
@@ -1144,7 +1144,7 @@ Tabs.onDetached.addListener((aTab, aInfo = {}) => {
   Tree.tryMoveFocusFromClosingCurrentTab(aTab);
 
   log('Tabs.onDetached ', dumpTab(aTab));
-  var closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo);
+  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 

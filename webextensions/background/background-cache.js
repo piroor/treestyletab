@@ -27,19 +27,19 @@ export function activate() {
 export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   MetricsData.add('restoreWindowFromEffectiveWindowCache start');
   Cache.log('restoreWindowFromEffectiveWindowCache start');
-  var owner = aOptions.owner || getWindowCacheOwner(aWindowId);
+  const owner = aOptions.owner || getWindowCacheOwner(aWindowId);
   if (!owner) {
     Cache.log('restoreWindowFromEffectiveWindowCache fail: no owner');
     return false;
   }
   cancelReservedCacheTree(aWindowId); // prevent to break cache before loading
-  var apiTabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
+  const apiTabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
   Cache.log('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
-  var [actualSignature, cache] = await Promise.all([
+  let [actualSignature, cache] = await Promise.all([
     Cache.getWindowSignature(apiTabs),
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
-  var cachedSignature = cache && cache.signature;
+  let cachedSignature = cache && cache.signature;
   Cache.log(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
     cachedSignature, cache
   });
@@ -61,7 +61,7 @@ export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions 
     cache.tabs      = Cache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
     cachedSignature = Cache.trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
-  var signatureMatched = Cache.matcheSignatures({
+  const signatureMatched = Cache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
@@ -80,7 +80,7 @@ export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions 
 
   Cache.log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
 
-  var insertionPoint  = aOptions.insertionPoint;
+  let insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
     insertionPoint = document.createRange();
     const container = Tabs.getTabsContainer(aWindowId);
@@ -90,7 +90,7 @@ export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions 
       insertionPoint.selectNodeContents(Tabs.allTabsContainer);
     insertionPoint.collapse(false);
   }
-  var restored = restoreTabsFromCache(aWindowId, {
+  const restored = restoreTabsFromCache(aWindowId, {
     insertionPoint,
     cache,
     tabs: apiTabs
@@ -182,14 +182,14 @@ export async function reserveToCacheTree(aHint) {
       aHint instanceof Node && !aHint.parentNode)
     return;
 
-  var container = Tabs.getTabsContainer(aHint);
+  const container = Tabs.getTabsContainer(aHint);
   if (!container)
     return;
 
   if (container.allTabsRestored)
     return;
 
-  var windowId = parseInt(container.dataset.windowId);
+  const windowId = parseInt(container.dataset.windowId);
   Cache.log('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
   clearWindowCache(container.lastWindowCacheOwner);
 
@@ -201,7 +201,7 @@ export async function reserveToCacheTree(aHint) {
 }
 
 function cancelReservedCacheTree(aWindowId) {
-  var container = Tabs.getTabsContainer(aWindowId);
+  const container = Tabs.getTabsContainer(aWindowId);
   if (container && container.waitingToCacheTree) {
     clearTimeout(container.waitingToCacheTree);
     delete container.waitingToCacheTree;
@@ -211,11 +211,11 @@ function cancelReservedCacheTree(aWindowId) {
 async function cacheTree(aWindowId) {
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
-  var container = Tabs.getTabsContainer(aWindowId);
+  const container = Tabs.getTabsContainer(aWindowId);
   if (!container ||
       !configs.useCachedTree)
     return;
-  var signature = await Cache.getWindowSignature(aWindowId);
+  const signature = await Cache.getWindowSignature(aWindowId);
   if (container.allTabsRestored)
     return;
   //Cache.log('save cache for ', aWindowId);
