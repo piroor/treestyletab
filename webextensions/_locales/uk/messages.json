@@ -103,7 +103,7 @@
   "migrateSessions_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
 
   "message_startup_requestPermissions_description": { "message": "⚠Є деякі функції, що потребують додаткових дозволів. Якщо ви хочете активувати їх, отримайте дозволи вручну." },
-  "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" у контекстному меню на вкладках (потрібен доступ до закладок)." },
+  "message_startup_requestPermissions_bookmarks": { "message": "\"Додати дерево до закладок\" у контекстному меню на вкладках (потрібен доступ до закладок)." },
   "message_startup_requestPermissions_allUrls":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті нащадки, перемикаючи фокус вкладок з допомогою гарячих клавіш (для виявлення операцій з клавіатурою потрібне впровадження скрипта на веб-сторінки)." },
 
   "message_startup_userChromeCss_notify": { "message": "Як приховати верхню панель вкладок і заголовок бічної панелі?" },
@@ -127,7 +127,7 @@
 
   "config_appearance_caption": { "message": "Вигляд" },
 
-  "config_sidebarPosition_caption": { "message": "Розташування бокової панелі:" },
+  "config_sidebarPosition_caption": { "message": "Розташування вмісту бокової панелі:" },
   "config_sidebarPosition_left": { "message": "Ліворуч" },
   "config_sidebarPosition_right": { "message": "Праворуч" },
   "config_sidebarPosition_description": { "message": "*Ця конфігурація не змінює положення бічної панелі. Вам потрібно натиснути перемикач в заголовку бічної панелі і  натиснути \"Перемістити бічну панель вправо\"." },
@@ -227,7 +227,7 @@
   "config_autoGroupNewTabs_before": { "message": "Автоматично групувати вкладки відкриті протягом" },
   "config_autoGroupNewTabs_after": { "message": "мс" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Але не об'єднувати нові вкладки, відкриті протягом" },
-  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "мс when a new window is opened, as a part of tabs opened as \"home page\"." },
+  "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "мс коли нове вікно відкрито у складі відкритих вкладок як \"домашня сторінка\"." },
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Автоматично групувати вкладки відкриті із однієї закріпленої вкладки" },
 
@@ -336,7 +336,7 @@
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Натисніть \"Tree Style Tab\" кнопку панелі інструментів" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Через баґ Firefox, Ви не зможете запитати дозвіл на цій сторінці. Будь ласка, натисніть \"Tree Style Tab\" кнопку панелі інструментів щоб отримати дозвіл." },
 
-  "config_all_caption": { "message": "All Configs" },
+  "config_all_caption": { "message": "Всі Конфігурації" },
 
 
   "tabContextMenu_reload_label":      { "message": "Оновити вкладку" },
