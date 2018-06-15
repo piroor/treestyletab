@@ -31,24 +31,29 @@ export function init() {
   }, { once: true });
 }
 
-const gItems = {};
+const gExtraItems = new Map();
 
 function getItemsFor(aAddonId) {
-  let items;
-  if (aAddonId in gItems) {
-    items = gItems[aAddonId] || [];
+  if (gExtraItems.has(aAddonId)) {
+    return gExtraItems.get(aAddonId);
   }
-  else {
-    items = [];
-    gItems[aAddonId] = items;
-  }
+  const items = [];
+  gExtraItems.set(aAddonId, items);
   return items;
+}
+
+function exportExtraItems() {
+  const exported = {};
+  for (const [id, items] of gExtraItems.entries()) {
+    exported[id] = items;
+  }
+  return exported;
 }
 
 async function notifyUpdated() {
   await browser.runtime.sendMessage({
     type:  TSTAPI.kCONTEXT_MENU_UPDATED,
-    items: gItems
+    items: exportExtraItems()
   });
 }
 
@@ -77,7 +82,7 @@ function onMessage(aMessage, _aSender) {
     log('fake-context-menu: internally called:', aMessage);
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_GET_ITEMS:
-      return Promise.resolve(gItems);
+      return Promise.resolve(exportExtraItems());
 
     case TSTAPI.kCONTEXT_MENU_CLICK:
       onTSTItemClick.dispatch(aMessage.info, aMessage.tab);
@@ -107,7 +112,7 @@ export function onExternalMessage(aMessage, aSender) {
       }
       if (shouldAdd)
         items.push(params);
-      gItems[aSender.id] = items;
+      gExtraItems.set(aSender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
@@ -120,7 +125,7 @@ export function onExternalMessage(aMessage, aSender) {
         items.splice(i, 1, Object.assign({}, item, aMessage.params[1]));
         break;
       }
-      gItems[aSender.id] = items;
+      gExtraItems.set(aSender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
@@ -130,13 +135,13 @@ export function onExternalMessage(aMessage, aSender) {
       if (Array.isArray(id))
         id = id[0];
       items = items.filter(aItem => aItem.id != id);
-      gItems[aSender.id] = items;
+      gExtraItems.set(aSender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kUNREGISTER_SELF: {
-      delete gItems[aSender.id];
+      delete gExtraItems.delete(aSender.id);
       return reserveNotifyUpdated();
     }; break;
   }

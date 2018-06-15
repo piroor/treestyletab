@@ -34,7 +34,7 @@ let menu;
 let contextTab      = null;
 let lastOpenOptions = null;
 let contextWindowId = null;
-let extraItems      = {};
+const gExtraItems     = new Map();
 let dirty           = false;
 
 export function init() {
@@ -61,7 +61,7 @@ export function init() {
   browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
   }).then(aItems => {
-    extraItems = aItems;
+    importExtraItems(aItems);
     dirty      = true;
   });
 }
@@ -81,11 +81,11 @@ async function rebuild() {
     range.detach();
   }
 
-  if (Object.keys(extraItems).length == 0)
+  if (gExtraItems.size == 0)
     return;
 
   const extraItemNodes = document.createDocumentFragment();
-  for (const id of Object.keys(extraItems)) {
+  for (const [id, extraItems] of gExtraItems.entries()) {
     let addonItem = document.createElement('li');
     const name = getAddonName(id);
     addonItem.appendChild(document.createTextNode(name));
@@ -97,7 +97,7 @@ async function rebuild() {
     prepareAsSubmenu(addonItem);
 
     const toBeBuiltItems = [];
-    for (const item of extraItems[id]) {
+    for (const item of extraItems) {
       if (item.contexts && !item.contexts.includes('tab'))
         continue;
       if (contextTab &&
@@ -466,11 +466,18 @@ function onMessage(aMessage, _aSender) {
     log('fake-context-menu: internally called:', aMessage);
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_UPDATED: {
-      extraItems = aMessage.items;
+      importExtraItems(aMessage.items);
       dirty = true;
       if (ui.opened)
         open(lastOpenOptions);
     }; break;
+  }
+}
+
+function importExtraItems(aItems) {
+  gExtraItems.clear();
+  for (const [id, items] of Object.entries(aItems)) {
+    gExtraItems.set(id, items);
   }
 }
 
