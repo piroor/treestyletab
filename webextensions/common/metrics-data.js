@@ -7,18 +7,18 @@
 const items = [];
 
 const now = Date.now();
-const initialTime = now;
-let lastTime    = now;
-let deltaBetweenLastItem = 0;
+const gInitialTime = now;
+let gLastTime    = now;
+let gDeltaBetweenLastItem = 0;
 
 export function add(aLabel) {
   const now = Date.now();
   items.push({
     label: aLabel,
-    delta: now - lastTime
+    delta: now - gLastTime
   });
-  deltaBetweenLastItem = now - initialTime;
-  lastTime = now;
+  gDeltaBetweenLastItem = now - gInitialTime;
+  gLastTime = now;
 }
 
 export async function addAsync(aLabel, aAsyncTask) {
@@ -37,6 +37,6 @@ export async function addAsync(aLabel, aAsyncTask) {
 
 export function toString() {
   const logs = items.map(aItem => `${aItem.delta || 0}: ${aItem.label}`);
-  return `total ${deltaBetweenLastItem} msec\n${logs.join('\n')}`;
+  return `total ${gDeltaBetweenLastItem} msec\n${logs.join('\n')}`;
 }
 
