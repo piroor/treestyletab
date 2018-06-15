@@ -59,7 +59,7 @@
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
     }},
-  "bookmarkFolder_label_default": { "message": "Bookmarked Tree" },
+  "bookmarkFolder_label_default": { "message": "Дерево в закладках" },
 
   "bookmarkTree_notification_success_title": { "message": "Дерево успішно додано в закладки" },
   "bookmarkTree_notification_success_message": { "message": "$COUNT$ - стільки вкладок, включаючи \"$TITLE$\", додано в закладки, у нову папку під \"$PARENT$.",
