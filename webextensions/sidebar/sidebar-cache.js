@@ -48,7 +48,10 @@ export async function getEffectiveWindowCache(aOptions = {}) {
     (async () => {
       const apiTabs = await browser.tabs.query({ currentWindow: true });
       gLastWindowCacheOwner = apiTabs[apiTabs.length - 1];
+      // We cannot define constants with variables at a time like:
+      //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
+      // eslint-disable-next-line prefer-const
       [cache, tabsDirty, collapsedDirty] = await Promise.all([
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
