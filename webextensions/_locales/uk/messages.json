@@ -138,10 +138,10 @@
 
   "config_scrollbarMode_caption": { "message": "Смуга прокрутки:" },
   "config_scrollbarMode_default": { "message": "За замовч." },
-  "config_scrollbarMode_narrow":  { "message": "Narrow" },
-  "config_scrollbarMode_overlay": { "message": "Overlay" },
-  "config_scrollbarMode_hide":    { "message": "Hide" },
-  "config_scrollbarMode_descriptionForMac": { "message": "*Лише \"Overlay\" буде ефективний на останніх версіях macOS." },
+  "config_scrollbarMode_narrow":  { "message": "Вузька" },
+  "config_scrollbarMode_overlay": { "message": "Оверлей (накладання)" },
+  "config_scrollbarMode_hide":    { "message": "Сховати" },
+  "config_scrollbarMode_descriptionForMac": { "message": "*Лише \"Оверлей\" буде ефективним на останніх версіях macOS." },
 
   "config_style_caption": { "message": "Тема" },
   "config_style_plain": { "message": "Проста" },
