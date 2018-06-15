@@ -74,7 +74,7 @@ import * as TabContextMenu from './tab-context-menu.js';
 let gInitialized = false;
 let gTargetWindow;
 
-const gUpdatingCollapsedState = {};
+const gUpdatingCollapsedState = new Map();
 
 const gTabBar = document.querySelector('#tabbar');
 const gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
@@ -1025,11 +1025,12 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
     await isSurelyCollapsed(aTab);
 
   let onCompletelyUpdated;
-  gUpdatingCollapsedState[aTab.id] = new Promise((aResolve, _aReject) => {
+  const promisedUpdated = new Promise((aResolve, _aReject) => {
     onCompletelyUpdated = aResolve;
   });
-  gUpdatingCollapsedState[aTab.id].then(() => {
-    delete gUpdatingCollapsedState[aTab.id];
+  gUpdatingCollapsedState.set(aTab.id, promisedUpdated);
+  promisedUpdated.then(() => {
+    gUpdatingCollapsedState.delete(aTab.id);
   });
 
   if (toBeCollapsed) {
@@ -1136,12 +1137,12 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
 });
 
 function isCollapsedStateUpdating(aTab) {
-  return aTab.id in gUpdatingCollapsedState;
+  return gUpdatingCollapsedState.has(aTab.id);
 }
 
 async function isSurelyCollapsed(aTab) {
-  if ('aTab.id' in gUpdatingCollapsedState)
-    return gUpdatingCollapsedState[aTab.id].then(() => {
+  if (gUpdatingCollapsedState.has(aTab.id))
+    return gUpdatingCollapsedState.get(aTab.id).then(() => {
       return Tabs.isCollapsed(aTab);
     });
   return Tabs.isCollapsed(aTab);
