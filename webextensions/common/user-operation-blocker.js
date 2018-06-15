@@ -8,8 +8,8 @@
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 
-var gBlockingCount = 0;
-var gBlockingThrobberCount = 0;
+let gBlockingCount = 0;
+let gBlockingThrobberCount = 0;
 
 export function block(aOptions = {}) {
   gBlockingCount++;
