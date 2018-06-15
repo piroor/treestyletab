@@ -42,6 +42,7 @@ import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 import TabIdFixer from '../extlib/TabIdFixer.js';
 
 import {
+  wait,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
@@ -177,7 +178,7 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
     case kCONTEXT_BACKEND:
       switch (aMessage.type) {
         case kCOMMAND_REQUEST_REGISTERED_ADDONS:
-          return exportAddons();
+          return Promise.resolve(exportAddons());
 
         case kCOMMAND_REQUEST_CONTROL_STATE:
           return Promise.resolve({
@@ -297,7 +298,11 @@ function exportAddons() {
 }
 
 export async function initAsFrontend() {
-  const addons = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_REGISTERED_ADDONS });
+  let addons;
+  while (!addons) {
+    addons = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_REGISTERED_ADDONS });
+    await wait(10);
+  }
   importAddons(addons);
   for (const [id, addon] of getAddons()) {
     if (addon.style)
