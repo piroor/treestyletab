@@ -46,9 +46,9 @@ export async function getEffectiveWindowCache(aOptions = {}) {
   let actualSignature;
   await Promise.all([
     (async () => {
-      var apiTabs = await browser.tabs.query({ currentWindow: true });
+      const apiTabs = await browser.tabs.query({ currentWindow: true });
       gLastWindowCacheOwner = apiTabs[apiTabs.length - 1];
-      var tabsDirty, collapsedDirty;
+      let tabsDirty, collapsedDirty;
       [cache, tabsDirty, collapsedDirty] = await Promise.all([
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),

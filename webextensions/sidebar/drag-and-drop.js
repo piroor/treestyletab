@@ -58,21 +58,21 @@ const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 const kBOOKMARK_FOLDER = 'x-moz-place:';
 
-var gLongHoverExpandedTabs = [];
-var gLongHoverTimer;
-var gLongHoverTimerNext;
+let gLongHoverExpandedTabs = [];
+let gLongHoverTimer;
+let gLongHoverTimerNext;
 
-var gDelayedDragEnter;
-var gDelayedDragLeave;
+let gDelayedDragEnter;
+let gDelayedDragLeave;
 
-var gDraggingOnSelfWindow = false;
+let gDraggingOnSelfWindow = false;
 
-var gCapturingForDragging = false;
-var gReadyToCaptureMouseEvents = false;
-var gLastDragEnteredTarget = null;
-var gLastDropPosition      = null;
-var gDragTargetIsClosebox  = false;
-var gCurrentDragData       = null;
+let gCapturingForDragging = false;
+let gReadyToCaptureMouseEvents = false;
+let gLastDragEnteredTarget = null;
+let gLastDropPosition      = null;
+let gDragTargetIsClosebox  = false;
+let gCurrentDragData       = null;
 
 export function startListen() {
   document.addEventListener('dragstart', onDragStart);
@@ -753,7 +753,7 @@ function onDragStart(aEvent) {
   document.addEventListener('dragend', onDragEnd, { capture: true });
 }
 
-var gLastDragOverTimestamp = null;
+let gLastDragOverTimestamp = null;
 
 function onDragOver(aEvent) {
   aEvent.preventDefault(); // this is required to override default dragover actions!

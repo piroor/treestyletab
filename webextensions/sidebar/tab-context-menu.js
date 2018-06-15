@@ -72,7 +72,7 @@ async function rebuild() {
 
   dirty = false;
 
-  var firstExtraItem = menu.querySelector('.extra');
+  const firstExtraItem = menu.querySelector('.extra');
   if (firstExtraItem) {
     const range = document.createRange();
     range.selectNodeContents(menu);
@@ -84,7 +84,7 @@ async function rebuild() {
   if (Object.keys(extraItems).length == 0)
     return;
 
-  var extraItemNodes = document.createDocumentFragment();
+  const extraItemNodes = document.createDocumentFragment();
   for (const id of Object.keys(extraItems)) {
     let addonItem = document.createElement('li');
     const name = getAddonName(id);
@@ -139,7 +139,7 @@ async function rebuild() {
   if (!extraItemNodes.hasChildNodes())
     return;
 
-  var separator = document.createElement('li');
+  const separator = document.createElement('li');
   separator.classList.add('extra');
   separator.classList.add('separator');
   extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
@@ -186,7 +186,7 @@ function prepareAsSubmenu(aItemNode) {
 }
 
 function buildExtraItem(aItem, aOwnerAddonId) {
-  var itemNode = document.createElement('li');
+  const itemNode = document.createElement('li');
   itemNode.setAttribute('id', `${aOwnerAddonId}-${aItem.id}`);
   itemNode.setAttribute('data-item-id', aItem.id);
   itemNode.setAttribute('data-item-owner-id', aOwnerAddonId);
@@ -423,7 +423,7 @@ async function onCommand(aItem, aEvent) {
     default: {
       const id = aItem.getAttribute('data-item-id');
       if (id) {
-        var modifiers = [];
+        const modifiers = [];
         if (aEvent.metaKey)
           modifiers.push('Command');
         if (aEvent.ctrlKey) {
@@ -480,8 +480,8 @@ function onExternalMessage(aMessage, aSender) {
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
       return (async () => {
-        var tab      = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
-        var windowId = aMessage.window || tab && tab.windowId;
+        const tab      = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
+        const windowId = aMessage.window || tab && tab.windowId;
         if (windowId != Tabs.getWindow())
           return;
         return open({

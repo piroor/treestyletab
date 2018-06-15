@@ -43,17 +43,17 @@ export const onReady   = new EventListenerManager();
 export const onDestroy = new EventListenerManager();
 
 
-var gInitialized = false;
-var gStyle;
-var gTargetWindow   = null;
+let gInitialized = false;
+let gStyle;
+let gTargetWindow = null;
 
-var gTabBar                     = document.querySelector('#tabbar');
-var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
-var gMasterThrobber             = document.querySelector('#master-throbber');
-var gStyleLoader                = document.querySelector('#style-loader');
-var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
-var gUserStyleRules             = document.querySelector('#user-style-rules');
-var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
+let gTabBar                     = document.querySelector('#tabbar');
+let gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
+let gMasterThrobber             = document.querySelector('#master-throbber');
+const gStyleLoader                = document.querySelector('#style-loader');
+const gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
+const gUserStyleRules             = document.querySelector('#user-style-rules');
+const gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
@@ -76,7 +76,7 @@ export async function init() {
 
   await Promise.all([
     (async () => {
-      var apiTabs = await browser.tabs.query({
+      const apiTabs = await browser.tabs.query({
         active:        true,
         currentWindow: true
       });
@@ -102,9 +102,9 @@ export async function init() {
   ]);
   MetricsData.add('applyStyle, waitUntilBackgroundIsReady and ContextualIdentities.init');
 
-  var cachedContents;
-  var restoredFromCache;
-  var scrollPosition;
+  let cachedContents;
+  let restoredFromCache;
+  let scrollPosition;
   await MetricsData.addAsync('parallel initialization tasks', Promise.all([
     MetricsData.addAsync('main', async () => {
       if (configs.useCachedTree)
@@ -304,7 +304,7 @@ export function applyBrowserTheme(aTheme) {
 }
 
 export function updateContextualIdentitiesStyle() {
-  var definitions = [];
+  const definitions = [];
   ContextualIdentities.forEach(aIdentity => {
     if (!aIdentity.colorCode)
       return;
@@ -359,7 +359,7 @@ export function updateContextualIdentitiesSelector() {
 }
 
 export async function rebuildAll(aCache) {
-  var apiTabs = await browser.tabs.query({ currentWindow: true });
+  const apiTabs = await browser.tabs.query({ currentWindow: true });
   TabsContainer.clearAll();
 
   if (aCache) {
@@ -383,7 +383,7 @@ export async function rebuildAll(aCache) {
 }
 
 export async function inheritTreeStructure() {
-  var response = await browser.runtime.sendMessage({
+  const response = await browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
   });
@@ -447,7 +447,7 @@ TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
 export function updateTabTwisty(aTab) {
-  var tooltip;
+  let tooltip;
   if (Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
   else
@@ -456,7 +456,7 @@ export function updateTabTwisty(aTab) {
 }
 
 export function updateTabClosebox(aTab) {
-  var tooltip;
+  let tooltip;
   if (Tabs.hasChildTabs(aTab) && Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
@@ -465,11 +465,11 @@ export function updateTabClosebox(aTab) {
 }
 
 export function updateTabsCount(aTab) {
-  var counter = SidebarTabs.getTabCounter(aTab);
+  const counter = SidebarTabs.getTabCounter(aTab);
   if (!counter)
     return;
-  var descendants = Tabs.getDescendantTabs(aTab);
-  var count = descendants.length;
+  const descendants = Tabs.getDescendantTabs(aTab);
+  let count = descendants.length;
   if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
     count += 1;
   counter.textContent = count;
@@ -488,7 +488,7 @@ export function reserveToUpdateVisualMaxTreeLevel() {
 }
 
 export function updateVisualMaxTreeLevel() {
-  var maxLevel = Tabs.getMaxTreeLevel(gTargetWindow, {
+  const maxLevel = Tabs.getMaxTreeLevel(gTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
   document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
@@ -513,11 +513,11 @@ export function reserveToUpdateTabbarLayout(aOptions = {}) {
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
   if (aOptions.reason && !(reserveToUpdateTabbarLayout.reasons & aOptions.reason))
     reserveToUpdateTabbarLayout.reasons |= aOptions.reason;
-  var timeout = aOptions.timeout || 10;
+  const timeout = aOptions.timeout || 10;
   reserveToUpdateTabbarLayout.timeout = Math.max(timeout, reserveToUpdateTabbarLayout.timeout);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
-    var reasons = reserveToUpdateTabbarLayout.reasons;
+    const reasons = reserveToUpdateTabbarLayout.reasons;
     reserveToUpdateTabbarLayout.reasons = 0;
     reserveToUpdateTabbarLayout.timeout = 0;
     updateTabbarLayout({ reasons });
@@ -536,12 +536,12 @@ export function updateTabbarLayout(aParams = {}) {
     return;
   }
   //log('updateTabbarLayout');
-  var range = document.createRange();
+  const range = document.createRange();
   range.selectNodeContents(gTabBar);
-  var containerHeight = gTabBar.getBoundingClientRect().height;
-  var contentHeight   = range.getBoundingClientRect().height;
+  const containerHeight = gTabBar.getBoundingClientRect().height;
+  const contentHeight   = range.getBoundingClientRect().height;
   //log('height: ', { container: containerHeight, content: contentHeight });
-  var overflow = containerHeight < contentHeight;
+  const overflow = containerHeight < contentHeight;
   if (overflow && !gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('overflow');
     gTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
@@ -554,14 +554,14 @@ export function updateTabbarLayout(aParams = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      var current = Tabs.getCurrentTab();
+      const current = Tabs.getCurrentTab();
       if (!Scroll.isTabInViewport(current)) {
         log('scroll to current tab on updateTabbarLayout');
         Scroll.scrollToTab(current);
         return;
       }
-      var lastOpenedTab = Tabs.getLastOpenedTab();
-      var reasons       = aParams.reasons || 0;
+      const lastOpenedTab = Tabs.getLastOpenedTab();
+      const reasons       = aParams.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
@@ -652,7 +652,7 @@ function updateLoadingState() {
 }
 
 async function synchronizeThrobberAnimation() {
-  var toBeSynchronizedTabs = document.querySelectorAll(`${Tabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
+  const toBeSynchronizedTabs = document.querySelectorAll(`${Tabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
   if (toBeSynchronizedTabs.length == 0)
     return;
 

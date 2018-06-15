@@ -71,14 +71,14 @@ import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-var gInitialized    = false;
-var gTargetWindow;
+let gInitialized = false;
+let gTargetWindow;
 
 const gUpdatingCollapsedState = {};
 
-var gTabBar = document.querySelector('#tabbar');
-var gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
-var gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
+const gTabBar = document.querySelector('#tabbar');
+const gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
+const gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
 Sidebar.onInit.addListener(() => {
   onConfigChange('colorScheme');
@@ -218,7 +218,7 @@ function onContextMenu(aEvent) {
     return;
   aEvent.stopPropagation();
   aEvent.preventDefault();
-  var tab = EventUtils.getTabFromEvent(aEvent);
+  const tab = EventUtils.getTabFromEvent(aEvent);
   TabContextMenu.open({
     tab:  tab && tab.apiTab,
     left: aEvent.clientX,
@@ -310,12 +310,12 @@ function onMouseDown(aEvent) {
     return;
   }
 
-  var target = aEvent.target;
-  var tab = EventUtils.getTabFromEvent(aEvent) || EventUtils.getTabFromTabbarEvent(aEvent);
+  const target = aEvent.target;
+  const tab = EventUtils.getTabFromEvent(aEvent) || EventUtils.getTabFromTabbarEvent(aEvent);
   if (configs.logOnMouseEvent)
     log('onMouseDown: found target tab: ', tab);
 
-  var mousedownDetail = {
+  const mousedownDetail = {
     targetType:    getMouseEventTargetType(aEvent),
     tab:           tab && tab.id,
     closebox:      EventUtils.isEventFiredOnClosebox(aEvent),
@@ -338,7 +338,7 @@ function onMouseDown(aEvent) {
     aEvent.preventDefault();
   }
 
-  var mousedown = {
+  const mousedown = {
     detail: mousedownDetail,
     promisedMousedownNotified: Promise.resolve()
   };
@@ -395,9 +395,9 @@ function getMouseEventTargetType(aEvent) {
       EventUtils.isEventFiredOnAnchor(aEvent))
     return 'selector';
 
-  var allRange = document.createRange();
+  const allRange = document.createRange();
   allRange.selectNodeContents(document.body);
-  var containerRect = allRange.getBoundingClientRect();
+  const containerRect = allRange.getBoundingClientRect();
   allRange.detach();
   if (aEvent.clientX < containerRect.left ||
       aEvent.clientX > containerRect.right ||
@@ -515,7 +515,7 @@ function onClick(aEvent) {
     return;
   }
 
-  var tab = EventUtils.getTabFromEvent(aEvent);
+  const tab = EventUtils.getTabFromEvent(aEvent);
   if (configs.logOnMouseEvent)
     log('clicked tab: ', tab);
 
@@ -586,7 +586,7 @@ function onDblClick(aEvent) {
   if (EventUtils.isEventFiredOnNewTabButton(aEvent))
     return;
 
-  var tab = EventUtils.getTabFromEvent(aEvent);
+  const tab = EventUtils.getTabFromEvent(aEvent);
   if (tab) {
     if (configs.collapseExpandSubtreeByDblClick) {
       aEvent.stopPropagation();
@@ -712,51 +712,51 @@ function onUnderflow(aEvent) {
 /* raw event handlers */
 
 Tabs.onBuilt.addListener((aTab, aInfo) => {
-  var label = Tabs.getTabLabel(aTab);
+  const label = Tabs.getTabLabel(aTab);
 
-  var twisty = document.createElement('span');
+  const twisty = document.createElement('span');
   twisty.classList.add(Constants.kTWISTY);
   twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
   aTab.insertBefore(twisty, label);
 
-  var favicon = document.createElement('span');
+  const favicon = document.createElement('span');
   favicon.classList.add(Constants.kFAVICON);
-  var faviconImage = favicon.appendChild(document.createElement('img'));
+  const faviconImage = favicon.appendChild(document.createElement('img'));
   faviconImage.classList.add(Constants.kFAVICON_IMAGE);
-  var defaultIcon = favicon.appendChild(document.createElement('span'));
+  const defaultIcon = favicon.appendChild(document.createElement('span'));
   defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
   defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
-  var throbber = favicon.appendChild(document.createElement('span'));
+  const throbber = favicon.appendChild(document.createElement('span'));
   throbber.classList.add(Constants.kTHROBBER);
   aTab.insertBefore(favicon, label);
 
-  var counter = document.createElement('span');
+  const counter = document.createElement('span');
   counter.classList.add(Constants.kCOUNTER);
   aTab.appendChild(counter);
 
-  var soundButton = document.createElement('button');
+  const soundButton = document.createElement('button');
   soundButton.classList.add(Constants.kSOUND_BUTTON);
   aTab.appendChild(soundButton);
 
-  var closebox = document.createElement('span');
+  const closebox = document.createElement('span');
   closebox.classList.add(Constants.kCLOSEBOX);
   closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
   closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
   aTab.appendChild(closebox);
 
-  var burster = document.createElement('span');
+  const burster = document.createElement('span');
   burster.classList.add(Constants.kBURSTER);
   aTab.appendChild(burster);
 
-  var activeMarker = document.createElement('span');
+  const activeMarker = document.createElement('span');
   activeMarker.classList.add(Constants.kACTIVE_MARKER);
   aTab.appendChild(activeMarker);
 
-  var identityMarker = document.createElement('span');
+  const identityMarker = document.createElement('span');
   identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
   aTab.appendChild(identityMarker);
 
-  var extraItemsContainerBehind = document.createElement('span');
+  const extraItemsContainerBehind = document.createElement('span');
   extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
   extraItemsContainerBehind.classList.add('behind');
   aTab.appendChild(extraItemsContainerBehind);
@@ -792,7 +792,7 @@ Tabs.onParentTabUpdated.addListener(aTab => {
 });
 
 function updateTabSoundButtonTooltip(aTab) {
-  var tooltip = '';
+  let tooltip = '';
   if (Tabs.maybeMuted(aTab))
     tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
   else if (Tabs.maybeSoundPlaying(aTab))
@@ -806,10 +806,10 @@ Tabs.onCreated.addListener(aTab => {
   if (configs.animation) {
     aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
     nextFrame().then(() => {
-      var parent = Tabs.getParentTab(aTab);
+      const parent = Tabs.getParentTab(aTab);
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
-      var focused = Tabs.isActive(aTab);
+      const focused = Tabs.isActive(aTab);
       Tree.collapseExpandTab(aTab, {
         collapsed: false,
         anchor:    Tabs.getCurrentTab(),
@@ -838,7 +838,7 @@ Tabs.onRestoring.addListener(aTab => {
   if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
     return;
 
-  var container = aTab.parentNode;
+  const container = aTab.parentNode;
   // When we are restoring two or more tabs.
   // (But we don't need do this again for third, fourth, and later tabs.)
   if (container.restoredCount == 2)
@@ -851,8 +851,8 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
     return;
 
   log('Tabs.onWindowRestoring');
-  var container = Tabs.getTabsContainer(aWindowId);
-  var restoredCount = await container.allTabsRestored;
+  const container = Tabs.getTabsContainer(aWindowId);
+  const restoredCount = await container.allTabsRestored;
   if (restoredCount == 1) {
     log('Tabs.onWindowRestoring: single tab restored');
     UserOperationBlocker.unblock({ throbber: true });
@@ -860,7 +860,7 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
   }
 
   log('Tabs.onWindowRestoring: continue');
-  var cache = await SidebarCache.getEffectiveWindowCache({
+  const cache = await SidebarCache.getEffectiveWindowCache({
     ignorePinnedTabs: true
   });
   if (!cache ||
@@ -897,7 +897,7 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
 Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
   TabContextMenu.close();
 
-  var closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(aTab))
     Tree.collapseExpandSubtree(aTab, {
@@ -992,7 +992,7 @@ Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
 });
 
 Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
-  var toBeCollapsed = aInfo.collapsed;
+  const toBeCollapsed = aInfo.collapsed;
 
   if (configs.logOnCollapseExpand)
     log('Tabs.onCollapsedStateChanging ', dumpTab(aTab), aInfo);
@@ -1012,7 +1012,7 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   if (aInfo.anchor && !Scroll.isTabInViewport(aInfo.anchor))
     aInfo.anchor = null;
 
-  var reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
+  const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
 
   if (!configs.animation ||
       aInfo.justNow ||
@@ -1103,7 +1103,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 }
 
 Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
-  var toBeCollapsed = aInfo.collapsed;
+  const toBeCollapsed = aInfo.collapsed;
   if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 
@@ -1122,7 +1122,7 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
     aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
 
 
-  var reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
+  const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
   onEndCollapseExpandCompletely(aTab, {
     collapsed: toBeCollapsed,
     reason
@@ -1178,9 +1178,9 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
         } else if (stillOver) {
           return;
         }
-        var x = aEvent.clientX;
-        var y = aEvent.clientY;
-        var rect = aTab.getBoundingClientRect();
+        let x = aEvent.clientX;
+        let y = aEvent.clientY;
+        let rect = aTab.getBoundingClientRect();
         if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
           return;
         document.removeEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
@@ -1221,7 +1221,7 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   if (!gInitialized)
     return;
   TabContextMenu.close();
-  var parent = aDetachInfo.oldParentTab;
+  const parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
   Sidebar.updateTabTwisty(parent);
@@ -1229,7 +1229,7 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
   Sidebar.reserveToUpdateTabTooltip(parent);
-  var ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
+  const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (const ancestor of ancestors) {
     Sidebar.updateTabsCount(ancestor);
   }
@@ -1269,9 +1269,9 @@ Tabs.onStateChanged.addListener(aTab => {
 Tabs.onGroupTabDetected.addListener(aTab => {
   // When a group tab is restored but pending, TST cannot update title of the tab itself.
   // For failsafe now we update the title based on its URL.
-  var uri = aTab.apiTab.url;
-  var parameters = uri.replace(/^[^\?]+/, '');
-  var title = parameters.match(/[&?]title=([^&;]*)/);
+  const uri = aTab.apiTab.url;
+  const parameters = uri.replace(/^[^\?]+/, '');
+  let title = parameters.match(/[&?]title=([^&;]*)/);
   if (!title)
     title = parameters.match(/^\?([^&;]*)/);
   title = title && decodeURIComponent(title[1]) ||
@@ -1290,7 +1290,7 @@ ContextualIdentities.onUpdated.addListener(() => {
 
 /* message observer */
 
-var gTreeChangesFromRemote = [];
+const gTreeChangesFromRemote = [];
 function waitUntilAllTreeChangesFromRemoteAreComplete() {
   return Promise.all(gTreeChangesFromRemote);
 }
@@ -1586,7 +1586,7 @@ function onBrowserThemeChanged(aUpdateInfo) {
 }
 
 function onConfigChange(aChangedKey) {
-  var rootClasses = document.documentElement.classList;
+  const rootClasses = document.documentElement.classList;
   switch (aChangedKey) {
     case 'debug': {
       for (const tab of Tabs.getAllTabs()) {
