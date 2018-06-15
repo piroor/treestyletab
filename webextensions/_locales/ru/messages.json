@@ -334,7 +334,7 @@
   "config_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкл., переключая фокус вкладок с помощью горячих клавиш. (*Необходимо разрешить исполнение скриптов на веб-страницах.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Нажмите \"Tree Style Tab\" кнопку панели инструментов" },
-  "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Из-за бага Firefox, Вы не сможете запросить разрешение на этой странице. Пожалуйста, нажмите \"Tree Style Tab\" кнопку панели инструментов, чтобы получить разрешение. },
+  "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Из-за бага Firefox, Вы не сможете запросить разрешение на этой странице. Пожалуйста, нажмите \"Tree Style Tab\" кнопку панели инструментов, чтобы получить разрешение." },
 
   "config_all_caption": { "message": "Все Конфигурации" },
 
