@@ -31,11 +31,11 @@ export function reserveToSaveTreeStructure(aHint) {
   }, 150, parseInt(container.dataset.windowId));
 }
 async function saveTreeStructure(aWindowId) {
-  var container = Tabs.getTabsContainer(aWindowId);
+  const container = Tabs.getTabsContainer(aWindowId);
   if (!container)
     return;
 
-  var structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(aWindowId));
+  const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(aWindowId));
   browser.sessions.setWindowValue(
     aWindowId,
     Constants.kWINDOW_STATE_TREE_STRUCTURE,
@@ -45,7 +45,7 @@ async function saveTreeStructure(aWindowId) {
 
 export async function loadTreeStructure(aRestoredFromCacheResults) {
   log('loadTreeStructure');
-  var windows = await browser.windows.getAll({
+  const windows = await browser.windows.getAll({
     windowTypes: ['normal']
   });
   MetricsData.add('loadTreeStructure: browser.windows.getAll');
@@ -55,11 +55,9 @@ export async function loadTreeStructure(aRestoredFromCacheResults) {
       log(`skip tree structure restoration for window ${aWindow.id} (restored from cache)`);
       return;
     }
-    var tabs = Tabs.getAllTabs(aWindow.id);
-    var [structure, uniqueIds] = await Promise.all([
-      browser.sessions.getWindowValue(aWindow.id, Constants.kWINDOW_STATE_TREE_STRUCTURE),
-      Tabs.getUniqueIds(tabs.map(aTab => aTab.apiTab))
-    ]);
+    const tabs = Tabs.getAllTabs(aWindow.id);
+    const structure = await browser.sessions.getWindowValue(aWindow.id, Constants.kWINDOW_STATE_TREE_STRUCTURE);
+    let uniqueIds = await Tabs.getUniqueIds(tabs.map(aTab => aTab.apiTab));
     MetricsData.add('loadTreeStructure: read stored data');
     let windowStateCompletelyApplied = false;
     if (structure && structure.length <= tabs.length) {
@@ -104,12 +102,12 @@ export function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
   }
   reserveToAttachTabFromRestoredInfo.waiting = setTimeout(async () => {
     reserveToAttachTabFromRestoredInfo.waiting = null;
-    var tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
+    const tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
     reserveToAttachTabFromRestoredInfo.tasks = [];
-    var uniqueIds = await Promise.all(tasks.map(aTask => aTask.tab.uniqueId));
-    var bulk = tasks.length > 1;
+    const uniqueIds = await Promise.all(tasks.map(aTask => aTask.tab.uniqueId));
+    const bulk = tasks.length > 1;
     await Promise.all(uniqueIds.map((aUniqueId, aIndex) => {
-      var task = tasks[aIndex];
+      const task = tasks[aIndex];
       return attachTabFromRestoredInfo(task.tab, Object.assign({}, task.options, {
         uniqueId: aUniqueId,
         bulk
@@ -133,17 +131,23 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     tab:    aTab.apiTab.id,
     window: aTab.apiTab.windowId
   });
-  var uniqueId = aOptions.uniqueId || await aTab.uniqueId;
-  var insertBefore, insertAfter, ancestors, children, collapsed;
-  [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
-    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
-    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
-    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
-    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
-    browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED)
+  let uniqueId, insertBefore, insertAfter, ancestors, children, collapsed;
+  await Promise.all([
+    async () => {
+      uniqueId = aOptions.uniqueId || await aTab.uniqueId;
+    },
+    async () => {
+      [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
+        browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
+        browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
+        browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
+        browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
+        browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED)
+      ]);
+      ancestors = ancestors || [];
+      children  = children  || [];
+    },
   ]);
-  ancestors = ancestors || [];
-  children  = children  || [];
   log(`persistent references for ${aTab.id} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
     ancestors: ancestors.join(', '),
@@ -160,8 +164,8 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     ancestors:    ancestors.map(dumpTab).join(', '),
     children:     children.map(dumpTab).join(', ')
   });
-  var attached = false;
-  var active   = Tabs.isActive(aTab);
+  let attached = false;
+  const active = Tabs.isActive(aTab);
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
