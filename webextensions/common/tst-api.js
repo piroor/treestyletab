@@ -177,12 +177,7 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
     case kCONTEXT_BACKEND:
       switch (aMessage.type) {
         case kCOMMAND_REQUEST_REGISTERED_ADDONS:
-          return (async () => {
-            while (!context) {
-              await wait(10);
-            }
-            return exportAddons();
-          })();
+          return exportAddons();
 
         case kCOMMAND_REQUEST_CONTROL_STATE:
           return Promise.resolve({
