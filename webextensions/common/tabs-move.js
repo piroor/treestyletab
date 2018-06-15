@@ -89,8 +89,8 @@ export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = 
     }
   }
 
-  var container = aTabs[0].parentNode;
-  var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
+  const container = aTabs[0].parentNode;
+  const apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
@@ -160,7 +160,7 @@ function syncOrderOfChildTabs(aParentTabs) {
   if (!Array.isArray(aParentTabs))
     aParentTabs = [aParentTabs];
 
-  var updatedParentTabs = new Map();
+  let updatedParentTabs = new Map();
   for (const parent of aParentTabs) {
     if (!parent || updatedParentTabs.has(parent))
       continue;
@@ -219,8 +219,8 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
     }
   }
 
-  var container = aTabs[0].parentNode;
-  var apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
+  const container = aTabs[0].parentNode;
+  const apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
@@ -228,7 +228,7 @@ export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {
       following to this operation, we need to move tabs immediately.
     */
     const oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
-    var nextTab = Tabs.getNextTab(aReferenceTab);
+    let nextTab = Tabs.getNextTab(aReferenceTab);
     if (aTabs.includes(nextTab))
       nextTab = null;
     for (const tab of aTabs) {

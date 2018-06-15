@@ -46,7 +46,7 @@ import * as Tabs from './tabs.js';
 
 
 export function buildFor(aWindowId) {
-  var container = document.createElement('ul');
+  const container = document.createElement('ul');
   container.dataset.windowId = aWindowId;
   container.setAttribute('id', `window-${aWindowId}`);
   container.classList.add('tabs');
