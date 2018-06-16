@@ -49,7 +49,6 @@ let gTargetWindow = null;
 
 let gTabBar                     = document.querySelector('#tabbar');
 let gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
-let gMasterThrobber             = document.querySelector('#master-throbber');
 const gStyleLoader                = document.querySelector('#style-loader');
 const gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 const gUserStyleRules             = document.querySelector('#user-style-rules');
@@ -130,7 +129,6 @@ export async function init() {
 
       onBuilt.dispatch();
 
-      gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
       DragAndDrop.startListen();
 
       MetricsData.add('onBuilt: start to listen events');
@@ -175,17 +173,12 @@ export async function init() {
     cache: cachedContents && cachedContents.indent
   });
   if (!restoredFromCache) {
-    updateLoadingState();
-    synchronizeThrobberAnimation();
-    for (const tab of Tabs.getAllTabs()) {
-      SidebarTabs.updateTwisty(tab);
-      SidebarTabs.updateClosebox(tab);
-      SidebarTabs.updateDescendantsCount(tab);
-      SidebarTabs.updateTooltip(tab);
-    }
+    SidebarTabs.updateAll();
     SidebarCache.reserveToUpdateCachedTabbar();
   }
   updateTabbarLayout({ justNow: true });
+
+  SidebarTabs.init();
 
   onReady.dispatch();
 
@@ -200,9 +193,8 @@ export function destroy() {
   ApiTabsListener.endListen();
   ContextualIdentities.endObserve();
   onDestroy.dispatch();
-  gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
 
-  gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
+  gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
 
 function applyStyle(aStyle) {
@@ -554,37 +546,3 @@ export function updateTabbarLayout(aParams = {}) {
   else
     PinnedTabs.reserveToReposition(aParams);
 }
-
-
-export function reserveToUpdateLoadingState() {
-  if (!gInitialized)
-    return;
-  if (reserveToUpdateLoadingState.waiting)
-    clearTimeout(reserveToUpdateLoadingState.waiting);
-  reserveToUpdateLoadingState.waiting = setTimeout(() => {
-    delete reserveToUpdateLoadingState.waiting;
-    updateLoadingState();
-  }, 0);
-}
-
-function updateLoadingState() {
-  if (document.querySelector(`#${gTabBar.id} ${Tabs.kSELECTOR_VISIBLE_TAB}.loading`))
-    document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
-  else
-    document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
-}
-
-async function synchronizeThrobberAnimation() {
-  const toBeSynchronizedTabs = document.querySelectorAll(`${Tabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
-  if (toBeSynchronizedTabs.length == 0)
-    return;
-
-  for (const tab of Array.slice(toBeSynchronizedTabs)) {
-    tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-  }
-  await nextFrame();
-  document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
-  await nextFrame();
-  document.documentElement.classList.remove(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
-}
-

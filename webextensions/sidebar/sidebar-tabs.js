@@ -6,12 +6,20 @@
 'use strict';
 
 import {
+  nextFrame,
   configs
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
+import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 
+let gInitialized = false;
+
+export function init() {
+  gInitialized = true;
+  document.querySelector('#master-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
+}
 
 function getTwisty(aTab) {
   return aTab.querySelector(`.${Constants.kTWISTY}`);
@@ -63,9 +71,18 @@ export function updateDescendantsCount(aTab) {
   counter.textContent = count;
 }
 
+Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
+  TabFavIconHelper.loadToImage({
+    image: getFavIcon(aTab).firstChild,
+    tab:   aTab.apiTab,
+    url:   aURL
+  });
+});
+
 
 export function reserveToUpdateTooltip(aTab) {
-  if (!Tabs.ensureLivingTab(aTab))
+  if (!gInitialized ||
+      !Tabs.ensureLivingTab(aTab))
     return;
   for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
     if (tab.reservedUpdateTabTooltip)
@@ -107,5 +124,84 @@ export function updateTooltip(aTab) {
   }
   else {
     aTab.removeAttribute('title');
+  }
+}
+
+Tabs.onLabelUpdated.addListener(reserveToUpdateTooltip);
+
+
+function reserveToUpdateLoadingState() {
+  if (!gInitialized)
+    return;
+  if (reserveToUpdateLoadingState.waiting)
+    clearTimeout(reserveToUpdateLoadingState.waiting);
+  reserveToUpdateLoadingState.waiting = setTimeout(() => {
+    delete reserveToUpdateLoadingState.waiting;
+    updateLoadingState();
+  }, 0);
+}
+
+export function updateLoadingState() {
+  if (document.querySelector(`#tabbar ${Tabs.kSELECTOR_VISIBLE_TAB}.loading`))
+    document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
+  else
+    document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
+}
+
+async function synchronizeThrobberAnimation() {
+  const toBeSynchronizedTabs = document.querySelectorAll(`${Tabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
+  if (toBeSynchronizedTabs.length == 0)
+    return;
+
+  for (const tab of Array.slice(toBeSynchronizedTabs)) {
+    tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  }
+  await nextFrame();
+  document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
+  await nextFrame();
+  document.documentElement.classList.remove(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
+}
+
+Tabs.onRemoving.addListener((_aTab, _aCloseInfo) => {
+  reserveToUpdateLoadingState();
+});
+
+Tabs.onStateChanged.addListener(aTab => {
+  if (aTab.apiTab.status == 'loading')
+    aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  else
+    aTab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+
+  reserveToUpdateLoadingState();
+});
+
+Tabs.onCollapsedStateChanged.addListener((_aTab, _aInfo = {}) => {
+  reserveToUpdateLoadingState();
+});
+
+
+export function updateSoundButtonTooltip(aTab) {
+  let tooltip = '';
+  if (Tabs.maybeMuted(aTab))
+    tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
+  else if (Tabs.maybeSoundPlaying(aTab))
+    tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
+
+  getSoundButton(aTab).setAttribute('title', tooltip);
+}
+
+Tabs.onUpdated.addListener(updateSoundButtonTooltip);
+
+Tabs.onParentTabUpdated.addListener(updateSoundButtonTooltip);
+
+
+export function updateAll() {
+  updateLoadingState();
+  synchronizeThrobberAnimation();
+  for (const tab of Tabs.getAllTabs()) {
+    updateTwisty(tab);
+    updateClosebox(tab);
+    updateDescendantsCount(tab);
+    updateTooltip(tab);
   }
 }

@@ -39,7 +39,6 @@
 'use strict';
 
 import MenuUI from '../extlib/MenuUI.js';
-import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 
 import {
   log,
@@ -697,8 +696,7 @@ function onOverflow(aEvent) {
   const label = Tabs.getTabLabel(tab);
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
-    if (gInitialized)
-      SidebarTabs.reserveToUpdateTooltip(tab);
+    SidebarTabs.reserveToUpdateTooltip(tab);
   }
 }
 
@@ -707,8 +705,7 @@ function onUnderflow(aEvent) {
   const label = Tabs.getTabLabel(tab);
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
-    if (gInitialized)
-      SidebarTabs.reserveToUpdateTooltip(tab);
+    SidebarTabs.reserveToUpdateTooltip(tab);
   }
 }
 
@@ -774,37 +771,6 @@ Tabs.onBuilt.addListener((aTab, aInfo) => {
     });
   }
 });
-
-Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
-  TabFavIconHelper.loadToImage({
-    image: SidebarTabs.getFavIcon(aTab).firstChild,
-    tab:   aTab.apiTab,
-    url:   aURL
-  });
-});
-
-Tabs.onUpdated.addListener(aTab => {
-  updateTabSoundButtonTooltip(aTab);
-});
-
-Tabs.onLabelUpdated.addListener(aTab => {
-  if (gInitialized)
-    SidebarTabs.reserveToUpdateTooltip(aTab);
-});
-
-Tabs.onParentTabUpdated.addListener(aTab => {
-  updateTabSoundButtonTooltip(aTab);
-});
-
-function updateTabSoundButtonTooltip(aTab) {
-  let tooltip = '';
-  if (Tabs.maybeMuted(aTab))
-    tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
-  else if (Tabs.maybeSoundPlaying(aTab))
-    tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
-
-  SidebarTabs.getSoundButton(aTab).setAttribute('title', tooltip);
-}
 
 
 Tabs.onCreated.addListener(aTab => {
@@ -919,7 +885,6 @@ Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
     timeout: configs.collapseDuration
   });
-  Sidebar.reserveToUpdateLoadingState();
 });
 
 Tabs.onRemoved.addListener(async aTab => {
@@ -1045,7 +1010,6 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
     gUpdatingCollapsedStateCancellers.delete(aTab);
 
     const toBeCollapsed = aInfo.collapsed;
-    Sidebar.reserveToUpdateLoadingState();
     SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
     if (configs.animation &&
@@ -1145,8 +1109,6 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     Sidebar.reserveToUpdateVisualMaxTreeLevel();
-
-  Sidebar.reserveToUpdateLoadingState();
 
   // this is very required for no animation case!
   Sidebar.reserveToUpdateTabbarLayout({ reason: aOptions.reason });
@@ -1266,15 +1228,6 @@ Tabs.onHidden.addListener(() => {
   TabContextMenu.close();
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
-});
-
-Tabs.onStateChanged.addListener(aTab => {
-  if (aTab.apiTab.status == 'loading')
-    aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-  else
-    aTab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-
-  Sidebar.reserveToUpdateLoadingState();
 });
 
 Tabs.onGroupTabDetected.addListener(aTab => {
@@ -1489,7 +1442,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
           if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
             modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
             modified.includes(Constants.kTAB_STATE_MUTED)) {
-            updateTabSoundButtonTooltip(tab);
+            SidebarTabs.updateSoundButtonTooltip(tab);
             if (aMessage.bubbles)
               TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
           }
