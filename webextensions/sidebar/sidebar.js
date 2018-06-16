@@ -44,7 +44,6 @@ export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
 
 
-let gInitialized = false;
 let gStyle;
 let gTargetWindow = null;
 
@@ -140,8 +139,6 @@ export async function init() {
       document.addEventListener('focus', onFocus);
       document.addEventListener('blur', onBlur);
       window.addEventListener('resize', onResize);
-      gTabBar.addEventListener('overflow', onOverflow);
-      gTabBar.addEventListener('underflow', onUnderflow);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
 
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
@@ -175,15 +172,8 @@ export async function init() {
     })
   ]));
 
-  gInitialized = true;
-
   SidebarCache.startTracking();
-
-  updateVisualMaxTreeLevel();
-  Indent.update({
-    force: true,
-    cache: cachedContents && cachedContents.indent
-  });
+  Indent.updateRestoredTree(cachedContents && cachedContents.indent);
   if (!restoredFromCache) {
     SidebarTabs.updateAll();
     SidebarCache.reserveToUpdateCachedTabbar();
@@ -442,38 +432,6 @@ Commands.onTabsClosing.addListener(confirmToCloseTabs);
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
-
-export function reserveToUpdateVisualMaxTreeLevel() {
-  if (!gInitialized)
-    return;
-  if (updateVisualMaxTreeLevel.waiting)
-    clearTimeout(updateVisualMaxTreeLevel.waiting);
-  updateVisualMaxTreeLevel.waiting = setTimeout(() => {
-    delete updateVisualMaxTreeLevel.waiting;
-    updateVisualMaxTreeLevel();
-  }, configs.collapseDuration * 1.5);
-}
-
-export function updateVisualMaxTreeLevel() {
-  const maxLevel = Tabs.getMaxTreeLevel(gTargetWindow, {
-    onlyVisible: configs.indentAutoShrinkOnlyForVisible
-  });
-  document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
-}
-
-
-export function reserveToUpdateIndent() {
-  if (!gInitialized)
-    return;
-  //log('reserveToUpdateIndent');
-  if (reserveToUpdateIndent.waiting)
-    clearTimeout(reserveToUpdateIndent.waiting);
-  reserveToUpdateIndent.waiting = setTimeout(() => {
-    delete reserveToUpdateIndent.waiting;
-    Indent.update();
-  }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
-}
-
 export function reserveToUpdateTabbarLayout(aOptions = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
@@ -566,29 +524,10 @@ function onBlur(_aEvent) {
   });
 }
 
-function onOverflow(aEvent) {
-  const tab = Tabs.getTabFromChild(aEvent.target);
-  const label = Tabs.getTabLabel(tab);
-  if (aEvent.target == label && !Tabs.isPinned(tab)) {
-    label.classList.add('overflow');
-    SidebarTabs.reserveToUpdateTooltip(tab);
-  }
-}
-
-function onUnderflow(aEvent) {
-  const tab = Tabs.getTabFromChild(aEvent.target);
-  const label = Tabs.getTabLabel(tab);
-  if (aEvent.target == label && !Tabs.isPinned(tab)) {
-    label.classList.remove('overflow');
-    SidebarTabs.reserveToUpdateTooltip(tab);
-  }
-}
-
 function onResize(_aEvent) {
   reserveToUpdateTabbarLayout({
     reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
   });
-  reserveToUpdateIndent();
 }
 
 function onTransisionEnd(aEvent) {
@@ -610,7 +549,6 @@ function onBrowserThemeChanged(aUpdateInfo) {
 
 
 Tabs.onCreated.addListener(_aTab => {
-  reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
@@ -631,7 +569,6 @@ Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
     dontUpdateIndent: true
   });
 
-  reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
     timeout: configs.collapseDuration
@@ -653,16 +590,6 @@ Tabs.onDetached.addListener(aTab => {
   Tree.detachTab(aTab, {
     dontUpdateIndent: true
   });
-});
-
-Tabs.onShown.addListener(() => {
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
-});
-
-Tabs.onHidden.addListener(() => {
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
 });
 
 Tabs.onRestoring.addListener(aTab => {
@@ -715,40 +642,11 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
     await rebuildAll();
     await inheritTreeStructure();
   }
-  updateVisualMaxTreeLevel();
-  Indent.update({
-    force: true,
-    cache: restored && cache.offset == 0 ? cache.indent : null
-  });
+  Indent.updateRestoredTree(restored && cache.offset == 0 ? cache.indent : null);
   updateTabbarLayout({ justNow: true });
   UserOperationBlocker.unblock({ throbber: true });
   MetricsData.add('Tabs.onWindowRestoring restore end');
 });
-
-
-Tree.onAttached.addListener(async (aTab, _aInfo = {}) => {
-  if (!gInitialized)
-    return;
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
-  /*
-    We must not scroll to the tab here, because the tab can be moved
-    by the background page later. Instead we wait until the tab is
-    successfully moved (then Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
-  */
-});
-
-Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
-  if (!gInitialized)
-    return;
-  const parent = aDetachInfo.oldParentTab;
-  if (!parent)
-    return;
-  reserveToUpdateVisualMaxTreeLevel();
-  reserveToUpdateIndent();
-});
-
-Tree.onLevelChanged.addListener(reserveToUpdateIndent);
 
 
 ContextualIdentities.onUpdated.addListener(() => {

@@ -51,6 +51,7 @@ import EventListenerManager from '../common/EventListenerManager.js';
 import * as Sidebar from './sidebar.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as Scroll from './scroll.js';
+import * as Indent from './indent.js';
 
 
 const gUpdatingCollapsedStateCancellers = new WeakMap();
@@ -204,7 +205,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
-    Sidebar.reserveToUpdateVisualMaxTreeLevel();
+    Indent.reserveToUpdateVisualMaxTreeLevel();
 
   // this is very required for no animation case!
   Sidebar.reserveToUpdateTabbarLayout({ reason: aOptions.reason });

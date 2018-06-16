@@ -11,7 +11,9 @@ import {
 
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
+import * as Tree from '../common/tree.js';
 
+let gInitialized = false;
 let gIndentDefinition;
 let gLastMaxLevel  = -1;
 let gLastMaxIndent = -1;
@@ -21,6 +23,18 @@ let gTabBar;
 export function init() {
   gTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
+
+  window.addEventListener('resize', reserveToUpdateIndent);
+
+  gInitialized = true;
+}
+
+export function updateRestoredTree(aCachedIndent) {
+  updateVisualMaxTreeLevel();
+  update({
+    force: true,
+    cache: aCachedIndent
+  });
 }
 
 export function update(aOptions = {}) {
@@ -99,3 +113,51 @@ export function getCacheInfo() {
     definition:    gIndentDefinition.textContent
   };
 }
+
+
+export function reserveToUpdateVisualMaxTreeLevel() {
+  if (!gInitialized)
+    return;
+  if (updateVisualMaxTreeLevel.waiting)
+    clearTimeout(updateVisualMaxTreeLevel.waiting);
+  updateVisualMaxTreeLevel.waiting = setTimeout(() => {
+    delete updateVisualMaxTreeLevel.waiting;
+    updateVisualMaxTreeLevel();
+  }, configs.collapseDuration * 1.5);
+}
+
+function updateVisualMaxTreeLevel() {
+  const maxLevel = Tabs.getMaxTreeLevel(gTargetWindow, {
+    onlyVisible: configs.indentAutoShrinkOnlyForVisible
+  });
+  document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
+}
+
+Tabs.onCreated.addListener(reserveToUpdateVisualMaxTreeLevel);
+Tabs.onRemoving.addListener(reserveToUpdateVisualMaxTreeLevel);
+Tabs.onShown.addListener(reserveToUpdateVisualMaxTreeLevel);
+Tabs.onHidden.addListener(reserveToUpdateVisualMaxTreeLevel);
+Tree.onAttached.addListener(reserveToUpdateVisualMaxTreeLevel);
+Tree.onDetached.addListener(async (_aTab, aDetachInfo = {}) => {
+  if (aDetachInfo.oldParentTab)
+    reserveToUpdateVisualMaxTreeLevel();
+});
+
+
+export function reserveToUpdateIndent() {
+  if (!gInitialized)
+    return;
+  //log('reserveToUpdateIndent');
+  if (reserveToUpdateIndent.waiting)
+    clearTimeout(reserveToUpdateIndent.waiting);
+  reserveToUpdateIndent.waiting = setTimeout(() => {
+    delete reserveToUpdateIndent.waiting;
+    update();
+  }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
+}
+
+Tabs.onShown.addListener(reserveToUpdateIndent);
+Tabs.onHidden.addListener(reserveToUpdateIndent);
+Tree.onAttached.addListener(reserveToUpdateIndent);
+Tree.onDetached.addListener(reserveToUpdateIndent);
+Tree.onLevelChanged.addListener(reserveToUpdateIndent);

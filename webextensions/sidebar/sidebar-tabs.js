@@ -22,6 +22,10 @@ let gInitialized = false;
 export function init() {
   gInitialized = true;
   document.querySelector('#master-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
+
+  const tabbar = document.querySelector('#tabbar');
+  tabbar.addEventListener('overflow', onOverflow);
+  tabbar.addEventListener('underflow', onUnderflow);
 }
 
 function getTwisty(aTab) {
@@ -178,6 +182,24 @@ export function updateAll() {
   }
 }
 
+
+function onOverflow(aEvent) {
+  const tab = Tabs.getTabFromChild(aEvent.target);
+  const label = Tabs.getTabLabel(tab);
+  if (aEvent.target == label && !Tabs.isPinned(tab)) {
+    label.classList.add('overflow');
+    reserveToUpdateTooltip(tab);
+  }
+}
+
+function onUnderflow(aEvent) {
+  const tab = Tabs.getTabFromChild(aEvent.target);
+  const label = Tabs.getTabLabel(tab);
+  if (aEvent.target == label && !Tabs.isPinned(tab)) {
+    label.classList.remove('overflow');
+    reserveToUpdateTooltip(tab);
+  }
+}
 
 Tabs.onBuilt.addListener((aTab, aInfo) => {
   const label = Tabs.getTabLabel(aTab);
