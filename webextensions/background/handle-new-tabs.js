@@ -381,3 +381,27 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
     }
   }
 });
+
+
+Tabs.onAttached.addListener(async (aTab, aInfo = {}) => {
+  if (!aInfo.windowId ||
+      !Tree.shouldApplyTreeBehavior(aInfo))
+    return;
+
+  log('Tabs.onAttached ', dumpTab(aTab), aInfo);
+
+  log('descendants of attached tab: ', aInfo.descendants.map(dumpTab));
+  const movedTabs = await Tree.moveTabs(aInfo.descendants, {
+    destinationWindowId: aTab.apiTab.windowId,
+    insertAfter:         aTab
+  });
+  log('moved descendants: ', movedTabs.map(dumpTab));
+  for (const movedTab of movedTabs) {
+    if (Tabs.getParentTab(movedTab))
+      continue;
+    Tree.attachTabTo(movedTab, aTab, {
+      broadcast: true,
+      dontMove:  true
+    });
+  }
+});

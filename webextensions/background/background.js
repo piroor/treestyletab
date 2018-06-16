@@ -566,6 +566,8 @@ Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
 
 Tabs.onLabelUpdated.addListener(reserveToUpdateRelatedGroupTabs);
 
+Tabs.onGroupTabDetected.addListener(tryInitGroupTab);
+
 Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
   if (Tabs.isGroupTab(aDetachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
