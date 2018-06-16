@@ -74,20 +74,14 @@ let gLastDropPosition      = null;
 let gDragTargetIsClosebox  = false;
 let gCurrentDragData       = null;
 
-export function startListen() {
+export function init() {
   document.addEventListener('dragstart', onDragStart);
   document.addEventListener('dragover', onDragOver);
   document.addEventListener('dragenter', onDragEnter);
   document.addEventListener('dragleave', onDragLeave);
   document.addEventListener('drop', onDrop);
-}
 
-export function endListen() {
-  document.removeEventListener('dragstart', onDragStart);
-  document.removeEventListener('dragover', onDragOver);
-  document.removeEventListener('dragenter', onDragEnter);
-  document.removeEventListener('dragleave', onDragLeave);
-  document.removeEventListener('drop', onDrop);
+  browser.runtime.onMessage.addListener(onMessage);
 }
 
 
@@ -1081,6 +1075,19 @@ function cancelDelayedTSTAPIDragExitOn(aTarget) {
   if (aTarget && aTarget.onTSTAPIDragExitTimeout) {
     clearTimeout(aTarget.onTSTAPIDragExitTimeout);
     delete aTarget.onTSTAPIDragExitTimeout;
+  }
+}
+
+
+function onMessage(aMessage, _aSender, _aRespond) {
+  if (!aMessage ||
+      typeof aMessage.type != 'string')
+    return;
+
+  switch (aMessage.type) {
+    case Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA:
+      setDragData(aMessage.dragData || null);
+      break;
   }
 }
 

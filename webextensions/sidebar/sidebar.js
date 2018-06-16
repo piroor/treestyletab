@@ -16,7 +16,9 @@ import {
 import * as Constants from '../common/constants.js';
 import * as ApiTabsListener from '../common/api-tabs-listener.js';
 import * as Tabs from '../common/tabs.js';
+import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
 import * as TabsUpdate from '../common/tabs-update.js';
+import * as TabsMove from '../common/tabs-move.js';
 import * as TabsContainer from '../common/tabs-container.js';
 import * as Tree from '../common/tree.js';
 import * as TSTAPI from '../common/tst-api.js';
@@ -145,9 +147,11 @@ export async function init() {
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
 
+      browser.runtime.onMessage.addListener(onMessage);
+
       onBuilt.dispatch();
 
-      DragAndDrop.startListen();
+      DragAndDrop.init();
 
       MetricsData.add('onBuilt: start to listen events');
     }),
@@ -752,6 +756,7 @@ ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesSelector();
 });
 
+
 function onConfigChange(aChangedKey) {
   const rootClasses = document.documentElement.classList;
   switch (aChangedKey) {
@@ -878,5 +883,198 @@ function onConfigChange(aChangedKey) {
       else
         rootClasses.remove('simulate-svg-context-fill');
       break;
+  }
+}
+
+
+const gTreeChangesFromRemote = new Set();
+function waitUntilAllTreeChangesFromRemoteAreComplete() {
+  return Promise.all(Array.from(gTreeChangesFromRemote.values()));
+}
+
+function onMessage(aMessage, _aSender, _aRespond) {
+  if (!aMessage ||
+      typeof aMessage.type != 'string' ||
+      aMessage.type.indexOf('treestyletab:') != 0)
+    return;
+
+  //log('onMessage: ', aMessage, aSender);
+  switch (aMessage.type) {
+    case Constants.kCOMMAND_PING_TO_SIDEBAR: {
+      if (aMessage.windowId == gTargetWindow)
+        return Promise.resolve(true);
+    }; break;
+
+    case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
+      if (aMessage.windowId == gTargetWindow)
+        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), aMessage.structure);
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
+      RestoringTabCount.increment();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORED:
+      RestoringTabCount.decrement();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
+      Tabs.onFaviconUpdated.dispatch(Tabs.getTabById(aMessage.tab), aMessage.favIconUrl);
+      break;
+
+    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
+      if (aMessage.windowId == gTargetWindow) return (async () => {
+        await Tabs.waitUntilTabsAreCreated(aMessage.tab);
+        const tab = Tabs.getTabById(aMessage.tab);
+        if (!tab)
+          return;
+        const params = {
+          collapsed: aMessage.collapsed,
+          justNow:   aMessage.justNow,
+          stack:     aMessage.stack
+        };
+        if (aMessage.manualOperation)
+          Tree.manualCollapseExpandSubtree(tab, params);
+        else
+          Tree.collapseExpandSubtree(tab, params);
+      })();
+    }; break;
+
+    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
+      if (aMessage.windowId == gTargetWindow) return (async () => {
+        await Tabs.waitUntilTabsAreCreated(aMessage.tab);
+        const tab = Tabs.getTabById(aMessage.tab);
+        if (!tab)
+          return;
+        // Tree's collapsed state can be changed before this message is delivered,
+        // so we should ignore obsolete messages.
+        if (aMessage.byAncestor &&
+            aMessage.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
+          return;
+        const params = {
+          collapsed:   aMessage.collapsed,
+          justNow:     aMessage.justNow,
+          broadcasted: true,
+          stack:       aMessage.stack
+        };
+        Tree.collapseExpandTab(tab, params);
+      })();
+    }; break;
+
+    case Constants.kCOMMAND_MOVE_TABS_BEFORE:
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
+        return TabsMove.moveTabsBefore(
+          aMessage.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(aMessage.nextTab),
+          aMessage
+        ).then(aTabs => aTabs.map(aTab => aTab.id));
+      })();
+
+    case Constants.kCOMMAND_MOVE_TABS_AFTER:
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
+        return TabsMove.moveTabsAfter(
+          aMessage.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(aMessage.previousTab),
+          aMessage
+        ).then(aTabs => aTabs.map(aTab => aTab.id));
+      })();
+
+    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
+        return TabsInternalOperation.removeTabs(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
+      })();
+
+    case Constants.kCOMMAND_ATTACH_TAB_TO: {
+      if (aMessage.windowId == gTargetWindow) {
+        const promisedComplete = (async () => {
+          await Promise.all([
+            Tabs.waitUntilTabsAreCreated([
+              aMessage.child,
+              aMessage.parent,
+              aMessage.insertBefore,
+              aMessage.insertAfter
+            ]),
+            waitUntilAllTreeChangesFromRemoteAreComplete()
+          ]);
+          log('attach tab from remote ', aMessage);
+          const child  = Tabs.getTabById(aMessage.child);
+          const parent = Tabs.getTabById(aMessage.parent);
+          if (child && parent)
+            await Tree.attachTabTo(child, parent, Object.assign({}, aMessage, {
+              insertBefore: Tabs.getTabById(aMessage.insertBefore),
+              insertAfter:  Tabs.getTabById(aMessage.insertAfter),
+              inRemote:     false,
+              broadcast:    false
+            }));
+          gTreeChangesFromRemote.delete(promisedComplete);
+        })();
+        gTreeChangesFromRemote.add(promisedComplete);
+        return promisedComplete;
+      }
+    }; break;
+
+    case Constants.kCOMMAND_DETACH_TAB: {
+      if (aMessage.windowId == gTargetWindow) {
+        const promisedComplete = (async () => {
+          await Promise.all([
+            Tabs.waitUntilTabsAreCreated(aMessage.tab),
+            waitUntilAllTreeChangesFromRemoteAreComplete()
+          ]);
+          const tab = Tabs.getTabById(aMessage.tab);
+          if (tab)
+            Tree.detachTab(tab, aMessage);
+          gTreeChangesFromRemote.delete(promisedComplete);
+        })();
+        gTreeChangesFromRemote.add(promisedComplete);
+        return promisedComplete;
+      }
+    }; break;
+
+    case Constants.kCOMMAND_BLOCK_USER_OPERATIONS: {
+      if (aMessage.windowId == gTargetWindow)
+        UserOperationBlocker.blockIn(gTargetWindow, aMessage);
+    }; break;
+
+    case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS: {
+      if (aMessage.windowId == gTargetWindow)
+        UserOperationBlocker.unblockIn(gTargetWindow, aMessage);
+    }; break;
+
+    case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
+      if (!aMessage.tabs.length)
+        break;
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
+        const add    = aMessage.add || [];
+        const remove = aMessage.remove || [];
+        log('apply broadcasted tab state ', aMessage.tabs, {
+          add:    add.join(','),
+          remove: remove.join(',')
+        });
+        const modified = add.concat(remove);
+        for (let tab of aMessage.tabs) {
+          tab = Tabs.getTabById(tab);
+          if (!tab)
+            continue;
+          add.forEach(aState => tab.classList.add(aState));
+          remove.forEach(aState => tab.classList.remove(aState));
+          if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
+            modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
+            modified.includes(Constants.kTAB_STATE_MUTED)) {
+            SidebarTabs.updateSoundButtonTooltip(tab);
+            if (aMessage.bubbles)
+              TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
+          }
+        }
+      })();
+    }; break;
+
+    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
+      if (aMessage.windowId == gTargetWindow)
+        return confirmToCloseTabs(aMessage.count);
+    }; break;
   }
 }

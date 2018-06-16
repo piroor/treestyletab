@@ -258,6 +258,29 @@ Tabs.onRemoved.addListener(async aTab => {
   });
 });
 
+Tabs.onMoving.addListener(async aTab => {
+  if (!configs.animation ||
+      Tabs.isPinned(aTab) ||
+      Tabs.isOpening(aTab))
+    return;
+  aTab.classList.add(Constants.kTAB_STATE_MOVING);
+  const visible = !Tabs.isCollapsed(aTab);
+  Tree.collapseExpandTab(aTab, {
+    collapsed: true,
+    justNow:   true
+  });
+  nextFrame().then(async () => {
+    if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
+      return;
+    if (visible)
+      Tree.collapseExpandTab(aTab, {
+        collapsed: false
+      });
+    await wait(configs.collapseDuration);
+    aTab.classList.remove(Constants.kTAB_STATE_MOVING);
+  });
+});
+
 Tabs.onMoved.addListener(aTab => {
   if (gInitialized)
     reserveToUpdateTooltip(Tabs.getParentTab(aTab));

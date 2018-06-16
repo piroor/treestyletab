@@ -13,7 +13,8 @@ import {
 import * as MetricsData from '../common/metrics-data.js';
 
 import * as Sidebar from './sidebar.js';
-import './listener.js';
+import './mouse-event-listener.js';
+import './collapse-expand.js';
 
 import './tab-context-menu.js';
 
