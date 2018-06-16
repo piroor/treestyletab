@@ -698,7 +698,7 @@ function onOverflow(aEvent) {
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
     if (gInitialized)
-    SidebarTabs.reserveToUpdateTooltip(tab);
+      SidebarTabs.reserveToUpdateTooltip(tab);
   }
 }
 
@@ -708,7 +708,7 @@ function onUnderflow(aEvent) {
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
     if (gInitialized)
-    SidebarTabs.reserveToUpdateTooltip(tab);
+      SidebarTabs.reserveToUpdateTooltip(tab);
   }
 }
 
@@ -789,7 +789,7 @@ Tabs.onUpdated.addListener(aTab => {
 
 Tabs.onLabelUpdated.addListener(aTab => {
   if (gInitialized)
-  SidebarTabs.reserveToUpdateTooltip(aTab);
+    SidebarTabs.reserveToUpdateTooltip(aTab);
 });
 
 Tabs.onParentTabUpdated.addListener(aTab => {
@@ -968,7 +968,7 @@ Tabs.onMoved.addListener(aTab => {
     timeout: configs.collapseDuration
   });
   if (gInitialized)
-  SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
+    SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
 });
 
 Tree.onLevelChanged.addListener(async () => {
@@ -979,7 +979,7 @@ Tabs.onDetached.addListener(aTab => {
   if (!Tabs.ensureLivingTab(aTab))
     return;
   if (gInitialized)
-  SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
+    SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   Tree.detachTab(aTab, {
@@ -991,7 +991,7 @@ Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   SidebarTabs.updateTwisty(aTab);
   SidebarTabs.updateClosebox(aTab);
   if (gInitialized)
-  SidebarTabs.reserveToUpdateTooltip(aTab);
+    SidebarTabs.reserveToUpdateTooltip(aTab);
 });
 
 
