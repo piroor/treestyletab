@@ -13,6 +13,8 @@ import * as MetricsData from '../common/metrics-data.js';
 
 import * as Background from './background.js';
 import './listener.js';
+import './handle-new-tabs.js';
+import './handle-moved-tabs.js';
 import './context-menu.js';
 
 import './tab-context-menu.js';

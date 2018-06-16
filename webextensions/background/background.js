@@ -39,6 +39,7 @@ export const onInit    = new EventListenerManager();
 export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
 export const onDestroy = new EventListenerManager();
+export const onTreeCompletelyAttached = new EventListenerManager();
 
 let gInitialized = false;
 
@@ -517,3 +518,60 @@ export async function confirmToCloseTabs(aCount, aOptions = {}) {
   }
 }
 Commands.onTabsClosing.addListener(confirmToCloseTabs);
+
+Tabs.onCreated.addListener((aTab, aInfo = {}) => {
+  if (!aInfo.duplicated)
+    return;
+  // Duplicated tab has its own tree structure information inherited
+  // from the original tab, but they must be cleared.
+  reserveToUpdateAncestors(aTab);
+  reserveToUpdateChildren(aTab);
+  reserveToUpdateInsertionPosition([
+    aTab,
+    Tabs.getNextTab(aTab),
+    Tabs.getPreviousTab(aTab)
+  ]);
+});
+
+Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
+  if (aChangeInfo.status || aChangeInfo.url) {
+    tryInitGroupTab(aTab);
+    tryStartHandleAccelKeyOnTab(aTab);
+  }
+
+  const group = Tabs.getGroupTabForOpener(aTab);
+  if (group)
+    reserveToUpdateRelatedGroupTabs(group);
+});
+
+Tabs.onTabElementMoved.addListener((aTab, aInfo = {}) => {
+  reserveToUpdateInsertionPosition([
+    aTab,
+    Tabs.getPreviousTab(aTab),
+    Tabs.getNextTab(aTab),
+    aInfo.oldPreviousTab,
+    aInfo.oldNextTab
+  ]);
+});
+
+Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
+  reserveToUpdateInsertionPosition([
+    aTab,
+    aMoveInfo.oldPreviousTab,
+    aMoveInfo.oldNextTab,
+    Tabs.getPreviousTab(aTab),
+    Tabs.getNextTab(aTab)
+  ]);
+});
+
+Tabs.onLabelUpdated.addListener(reserveToUpdateRelatedGroupTabs);
+
+Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
+  if (Tabs.isGroupTab(aDetachInfo.oldParentTab))
+    reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
+  reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
+  reserveToUpdateChildren(aDetachInfo.oldParentTab);
+  reserveToUpdateRelatedGroupTabs(aDetachInfo.oldParentTab);
+});
+
+Tree.onSubtreeCollapsedStateChanging.addListener(reserveToUpdateRelatedGroupTabs);
