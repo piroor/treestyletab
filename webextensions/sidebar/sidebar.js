@@ -178,9 +178,9 @@ export async function init() {
     updateLoadingState();
     synchronizeThrobberAnimation();
     for (const tab of Tabs.getAllTabs()) {
-      updateTabTwisty(tab);
-      updateTabClosebox(tab);
-      updateTabsCount(tab);
+      SidebarTabs.updateTwisty(tab);
+      SidebarTabs.updateClosebox(tab);
+      SidebarTabs.updateDescendantsCount(tab);
       updateTabTooltip(tab);
     }
     SidebarCache.reserveToUpdateCachedTabbar();
@@ -445,35 +445,6 @@ export async function confirmToCloseTabs(aCount, _aOptions = {}) {
 Commands.onTabsClosing.addListener(confirmToCloseTabs);
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
-
-export function updateTabTwisty(aTab) {
-  let tooltip;
-  if (Tabs.isSubtreeCollapsed(aTab))
-    tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
-  else
-    tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
-  SidebarTabs.getTabTwisty(aTab).setAttribute('title', tooltip);
-}
-
-export function updateTabClosebox(aTab) {
-  let tooltip;
-  if (Tabs.hasChildTabs(aTab) && Tabs.isSubtreeCollapsed(aTab))
-    tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
-  else
-    tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
-  SidebarTabs.getTabClosebox(aTab).setAttribute('title', tooltip);
-}
-
-export function updateTabsCount(aTab) {
-  const counter = SidebarTabs.getTabCounter(aTab);
-  if (!counter)
-    return;
-  const descendants = Tabs.getDescendantTabs(aTab);
-  let count = descendants.length;
-  if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
-    count += 1;
-  counter.textContent = count;
-}
 
 
 export function reserveToUpdateVisualMaxTreeLevel() {

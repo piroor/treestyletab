@@ -983,8 +983,8 @@ Tabs.onDetached.addListener(aTab => {
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
-  Sidebar.updateTabTwisty(aTab);
-  Sidebar.updateTabClosebox(aTab);
+  SidebarTabs.updateTwisty(aTab);
+  SidebarTabs.updateClosebox(aTab);
   Sidebar.reserveToUpdateTabTooltip(aTab);
 });
 
@@ -1204,12 +1204,12 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   if (!gInitialized)
     return;
   TabContextMenu.close();
-  Sidebar.updateTabTwisty(aInfo.parent);
-  Sidebar.updateTabClosebox(aInfo.parent);
+  SidebarTabs.updateTwisty(aInfo.parent);
+  SidebarTabs.updateClosebox(aInfo.parent);
   if (aInfo.newlyAttached) {
     const ancestors = [aInfo.parent].concat(Tabs.getAncestorTabs(aInfo.parent));
     for (const ancestor of ancestors) {
-      Sidebar.updateTabsCount(ancestor);
+      SidebarTabs.updateDescendantsCount(ancestor);
     }
   }
   Sidebar.reserveToUpdateTabTooltip(aInfo.parent);
@@ -1229,14 +1229,14 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   const parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
-  Sidebar.updateTabTwisty(parent);
-  Sidebar.updateTabClosebox(parent);
+  SidebarTabs.updateTwisty(parent);
+  SidebarTabs.updateClosebox(parent);
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
   Sidebar.reserveToUpdateTabTooltip(parent);
   const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (const ancestor of ancestors) {
-    Sidebar.updateTabsCount(ancestor);
+    SidebarTabs.updateDescendantsCount(ancestor);
   }
 });
 
