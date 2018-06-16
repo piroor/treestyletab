@@ -775,7 +775,7 @@ Tabs.onBuilt.addListener((aTab, aInfo) => {
 
 Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
   TabFavIconHelper.loadToImage({
-    image: SidebarTabs.getTabFavicon(aTab).firstChild,
+    image: SidebarTabs.getFavIcon(aTab).firstChild,
     tab:   aTab.apiTab,
     url:   aURL
   });
@@ -800,7 +800,7 @@ function updateTabSoundButtonTooltip(aTab) {
   else if (Tabs.maybeSoundPlaying(aTab))
     tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
 
-  SidebarTabs.getTabSoundButton(aTab).setAttribute('title', tooltip);
+  SidebarTabs.getSoundButton(aTab).setAttribute('title', tooltip);
 }
 
 

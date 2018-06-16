@@ -13,27 +13,23 @@ import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
 
 
-export function getTabTwisty(aTab) {
+function getTwisty(aTab) {
   return aTab.querySelector(`.${Constants.kTWISTY}`);
 }
 
-export function getTabFavicon(aTab) {
+export function getFavIcon(aTab) {
   return aTab.querySelector(`.${Constants.kFAVICON}`);
 }
 
-export function getTabThrobber(aTab) {
-  return aTab.querySelector(`.${Constants.kTHROBBER}`);
-}
-
-export function getTabSoundButton(aTab) {
+export function getSoundButton(aTab) {
   return aTab.querySelector(`.${Constants.kSOUND_BUTTON}`);
 }
 
-export function getTabCounter(aTab) {
+function getDescendantsCounter(aTab) {
   return aTab.querySelector(`.${Constants.kCOUNTER}`);
 }
 
-export function getTabClosebox(aTab) {
+export function getClosebox(aTab) {
   return aTab.querySelector(`.${Constants.kCLOSEBOX}`);
 }
 
@@ -44,7 +40,7 @@ export function updateTwisty(aTab) {
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
-  getTabTwisty(aTab).setAttribute('title', tooltip);
+  getTwisty(aTab).setAttribute('title', tooltip);
 }
 
 export function updateClosebox(aTab) {
@@ -53,11 +49,11 @@ export function updateClosebox(aTab) {
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
-  getTabClosebox(aTab).setAttribute('title', tooltip);
+  getClosebox(aTab).setAttribute('title', tooltip);
 }
 
 export function updateDescendantsCount(aTab) {
-  const counter = getTabCounter(aTab);
+  const counter = getDescendantsCounter(aTab);
   if (!counter)
     return;
   const descendants = Tabs.getDescendantTabs(aTab);
