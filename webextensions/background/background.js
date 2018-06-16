@@ -111,6 +111,7 @@ export async function init() {
   gInitialized = true;
   onReady.dispatch();
   BackgroundCache.activate();
+  TreeStructure.startTracking();
 
   // notify that the master process is ready.
   browser.runtime.sendMessage({

@@ -369,16 +369,6 @@ Tabs.onCreated.addListener((aTab, aInfo = {}) => {
         treeForActionDetection: aInfo.treeForActionDetection
       });
   }
-
-  if (gInitialized)
-    TreeStructure.reserveToSaveTreeStructure(aTab);
-});
-
-Tabs.onRestored.addListener(aTab => {
-  log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
-  TreeStructure.reserveToAttachTabFromRestoredInfo(aTab, {
-    children: true
-  });
 });
 
 Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
@@ -447,8 +437,6 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
     broadcast:        true
   });
 
-  if (gInitialized)
-    TreeStructure.reserveToSaveTreeStructure(aTab);
   Background.reserveToCleanupNeedlessGroupTab(ancestors);
 });
 
@@ -609,8 +597,6 @@ async function tryFixupTreeForInsertedTab(aTab, aMoveInfo) {
 }
 
 Tabs.onMoved.addListener(async (aTab, aMoveInfo) => {
-  if (gInitialized)
-    TreeStructure.reserveToSaveTreeStructure(aTab);
   Background.reserveToUpdateInsertionPosition([
     aTab,
     aMoveInfo.oldPreviousTab,
@@ -952,9 +938,6 @@ Tabs.onUpdated.addListener((aTab, aChangeInfo) => {
     }
   }
 
-  if (gInitialized)
-    TreeStructure.reserveToSaveTreeStructure(aTab);
-
   const group = Tabs.getGroupTabForOpener(aTab);
   if (group)
     Background.reserveToUpdateRelatedGroupTabs(group);
@@ -966,8 +949,6 @@ Tabs.onLabelUpdated.addListener(aTab => {
 
 Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   Background.reserveToUpdateSubtreeCollapsed(aTab);
-  if (gInitialized)
-    TreeStructure.reserveToSaveTreeStructure(aTab);
 });
 
 Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
@@ -1079,8 +1060,6 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
     newlyAttached: aInfo.newlyAttached
   });
 
-  if (gInitialized)
-    TreeStructure.reserveToSaveTreeStructure(aTab);
   if (aInfo.newlyAttached)
     Background.reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
   Background.reserveToUpdateChildren(parent);
@@ -1103,8 +1082,6 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
   }
   if (Tabs.isGroupTab(aDetachInfo.oldParentTab))
     Background.reserveToCleanupNeedlessGroupTab(aDetachInfo.oldParentTab);
-  if (gInitialized)
-    TreeStructure.reserveToSaveTreeStructure(aTab);
   Background.reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
   Background.reserveToUpdateChildren(aDetachInfo.oldParentTab);
   Background.reserveToUpdateRelatedGroupTabs(aDetachInfo.oldParentTab);

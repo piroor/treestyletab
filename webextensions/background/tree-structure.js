@@ -19,6 +19,16 @@ import EventListenerManager from '../common/EventListenerManager.js';
 
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
+export function startTracking() {
+  Tabs.onCreated.addListener(aTab => reserveToSaveTreeStructure(aTab));
+  Tabs.onRemoved.addListener(aTab => reserveToSaveTreeStructure(aTab));
+  Tabs.onMoved.addListener(aTab => reserveToSaveTreeStructure(aTab));
+  Tabs.onUpdated.addListener(aTab => reserveToSaveTreeStructure(aTab));
+  Tree.onAttached.addListener(aTab => reserveToSaveTreeStructure(aTab));
+  Tree.onDetached.addListener(aTab => reserveToSaveTreeStructure(aTab));
+  Tree.onSubtreeCollapsedStateChanging.addListener(aTab => reserveToSaveTreeStructure(aTab));
+}
+
 export function reserveToSaveTreeStructure(aHint) {
   const container = Tabs.getTabsContainer(aHint);
   if (!container)
@@ -91,7 +101,7 @@ export async function loadTreeStructure(aRestoredFromCacheResults) {
   })));
 }
 
-export function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
+function reserveToAttachTabFromRestoredInfo(aTab, aOptions = {}) {
   if (reserveToAttachTabFromRestoredInfo.waiting)
     clearTimeout(reserveToAttachTabFromRestoredInfo.waiting);
   reserveToAttachTabFromRestoredInfo.tasks.push({ tab: aTab, options: aOptions });
@@ -241,3 +251,11 @@ async function attachTabFromRestoredInfo(aTab, aOptions = {}) {
     window: aTab.apiTab.windowId
   });
 }
+
+
+Tabs.onRestored.addListener(aTab => {
+  log('onTabRestored ', dumpTab(aTab), aTab.apiTab);
+  reserveToAttachTabFromRestoredInfo(aTab, {
+    children: true
+  });
+});
