@@ -40,7 +40,6 @@ import * as TabContextMenu from './tab-context-menu.js';
 export const onInit    = new EventListenerManager();
 export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
-export const onDestroy = new EventListenerManager();
 
 
 let gInitialized = false;
@@ -192,15 +191,6 @@ export async function init() {
 
   MetricsData.add('init end');
   log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
-}
-
-export function destroy() {
-  DragAndDrop.endListen();
-  ApiTabsListener.endListen();
-  ContextualIdentities.endObserve();
-  onDestroy.dispatch();
-
-  gTabBar = gAfterTabsForOverflowTabBar = undefined;
 }
 
 function applyStyle(aStyle) {

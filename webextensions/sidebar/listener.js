@@ -115,26 +115,6 @@ Sidebar.onReady.addListener(() => {
   updateSpecialEventListenersForAPIListeners();
 });
 
-Sidebar.onDestroy.addListener(() => {
-  browser.runtime.onMessage.removeListener(onMessage);
-
-  document.removeEventListener('mousedown', onMouseDown);
-  document.removeEventListener('mouseup', onMouseUp);
-  document.removeEventListener('click', onClick);
-  document.removeEventListener('focus', onFocus);
-  document.removeEventListener('blur', onBlur);
-  gTabBar.removeEventListener('dblclick', onDblClick);
-  gTabBar.removeEventListener('overflow', onOverflow);
-  gTabBar.removeEventListener('underflow', onUnderflow);
-
-  if (onMouseMove.listening)
-    window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-  if (onMouseOver.listening)
-    window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-  if (onMouseOut.listening)
-    window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
-});
-
 function updateSpecialEventListenersForAPIListeners() {
   if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
     if (!onMouseMove.listening) {

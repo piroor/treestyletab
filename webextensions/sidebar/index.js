@@ -21,5 +21,4 @@ log.context = 'Sidebar-?';
 
 MetricsData.add('Loaded');
 
-window.addEventListener('pagehide', Sidebar.destroy, { once: true });
 window.addEventListener('load', Sidebar.init, { once: true });
