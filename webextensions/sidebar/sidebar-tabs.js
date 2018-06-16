@@ -12,6 +12,7 @@ import {
 
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
+import * as Tree from '../common/tree.js';
 import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 
 let gInitialized = false;
@@ -71,14 +72,6 @@ export function updateDescendantsCount(aTab) {
   counter.textContent = count;
 }
 
-Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
-  TabFavIconHelper.loadToImage({
-    image: getFavIcon(aTab).firstChild,
-    tab:   aTab.apiTab,
-    url:   aURL
-  });
-});
-
 
 export function reserveToUpdateTooltip(aTab) {
   if (!gInitialized ||
@@ -127,8 +120,6 @@ export function updateTooltip(aTab) {
   }
 }
 
-Tabs.onLabelUpdated.addListener(reserveToUpdateTooltip);
-
 
 function reserveToUpdateLoadingState() {
   if (!gInitialized)
@@ -162,23 +153,6 @@ async function synchronizeThrobberAnimation() {
   document.documentElement.classList.remove(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
 }
 
-Tabs.onRemoving.addListener((_aTab, _aCloseInfo) => {
-  reserveToUpdateLoadingState();
-});
-
-Tabs.onStateChanged.addListener(aTab => {
-  if (aTab.apiTab.status == 'loading')
-    aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-  else
-    aTab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-
-  reserveToUpdateLoadingState();
-});
-
-Tabs.onCollapsedStateChanged.addListener((_aTab, _aInfo = {}) => {
-  reserveToUpdateLoadingState();
-});
-
 
 export function updateSoundButtonTooltip(aTab) {
   let tooltip = '';
@@ -189,10 +163,6 @@ export function updateSoundButtonTooltip(aTab) {
 
   getSoundButton(aTab).setAttribute('title', tooltip);
 }
-
-Tabs.onUpdated.addListener(updateSoundButtonTooltip);
-
-Tabs.onParentTabUpdated.addListener(updateSoundButtonTooltip);
 
 
 export function updateAll() {
@@ -205,3 +175,78 @@ export function updateAll() {
     updateTooltip(tab);
   }
 }
+
+
+Tabs.onRemoving.addListener(reserveToUpdateLoadingState);
+
+Tabs.onStateChanged.addListener(aTab => {
+  if (aTab.apiTab.status == 'loading')
+    aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  else
+    aTab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+
+  reserveToUpdateLoadingState();
+});
+
+Tabs.onLabelUpdated.addListener(reserveToUpdateTooltip);
+
+Tabs.onFaviconUpdated.addListener((aTab, aURL) => {
+  TabFavIconHelper.loadToImage({
+    image: getFavIcon(aTab).firstChild,
+    tab:   aTab.apiTab,
+    url:   aURL
+  });
+});
+
+Tabs.onCollapsedStateChanged.addListener(reserveToUpdateLoadingState);
+
+Tabs.onUpdated.addListener(updateSoundButtonTooltip);
+
+Tabs.onParentTabUpdated.addListener(updateSoundButtonTooltip);
+
+Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
+  if (!gInitialized)
+    return;
+  updateTwisty(aInfo.parent);
+  updateClosebox(aInfo.parent);
+  if (aInfo.newlyAttached) {
+    const ancestors = [aInfo.parent].concat(Tabs.getAncestorTabs(aInfo.parent));
+    for (const ancestor of ancestors) {
+      updateDescendantsCount(ancestor);
+    }
+  }
+  reserveToUpdateTooltip(aInfo.parent);
+});
+
+Tree.onDetached.addListener(async (_aTab, aDetachInfo = {}) => {
+  if (!gInitialized)
+    return;
+  const parent = aDetachInfo.oldParentTab;
+  if (!parent)
+    return;
+  updateTwisty(parent);
+  updateClosebox(parent);
+  reserveToUpdateTooltip(parent);
+  const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
+  for (const ancestor of ancestors) {
+    updateDescendantsCount(ancestor);
+  }
+});
+
+Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
+  updateTwisty(aTab);
+  updateClosebox(aTab);
+  if (gInitialized)
+    reserveToUpdateTooltip(aTab);
+});
+
+configs.$addObserver(aChangedKey => {
+  switch (aChangedKey) {
+    case 'showCollapsedDescendantsByTooltip':
+      if (gInitialized)
+        for (const tab of Tabs.getAllTabs()) {
+          reserveToUpdateTooltip(tab);
+        }
+      break;
+  }
+});

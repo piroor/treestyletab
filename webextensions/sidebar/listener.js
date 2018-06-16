@@ -952,13 +952,6 @@ Tabs.onDetached.addListener(aTab => {
   });
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
-  SidebarTabs.updateTwisty(aTab);
-  SidebarTabs.updateClosebox(aTab);
-  if (gInitialized)
-    SidebarTabs.reserveToUpdateTooltip(aTab);
-});
-
 
 Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   const toBeCollapsed = aInfo.collapsed;
@@ -1168,19 +1161,10 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
-Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
+Tree.onAttached.addListener(async (aTab, _aInfo = {}) => {
   if (!gInitialized)
     return;
   TabContextMenu.close();
-  SidebarTabs.updateTwisty(aInfo.parent);
-  SidebarTabs.updateClosebox(aInfo.parent);
-  if (aInfo.newlyAttached) {
-    const ancestors = [aInfo.parent].concat(Tabs.getAncestorTabs(aInfo.parent));
-    for (const ancestor of ancestors) {
-      SidebarTabs.updateDescendantsCount(ancestor);
-    }
-  }
-  SidebarTabs.reserveToUpdateTooltip(aInfo.parent);
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
   /*
@@ -1197,15 +1181,8 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   const parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
-  SidebarTabs.updateTwisty(parent);
-  SidebarTabs.updateClosebox(parent);
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
-  SidebarTabs.reserveToUpdateTooltip(parent);
-  const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
-  for (const ancestor of ancestors) {
-    SidebarTabs.updateDescendantsCount(ancestor);
-  }
 });
 
 Tabs.onPinned.addListener(() => {
@@ -1611,13 +1588,6 @@ function onConfigChange(aChangedKey) {
     case 'indentAutoShrink':
     case 'indentAutoShrinkOnlyForVisible':
       Indent.update({ force: true });
-      break;
-
-    case 'showCollapsedDescendantsByTooltip':
-      if (gInitialized)
-        for (const tab of Tabs.getAllTabs()) {
-          SidebarTabs.reserveToUpdateTooltip(tab);
-        }
       break;
 
     case 'style':
