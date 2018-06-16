@@ -65,7 +65,6 @@ import * as SidebarTabs from './sidebar-tabs.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
-import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
@@ -86,11 +85,7 @@ Sidebar.onBuilt.addListener(async () => {
   document.addEventListener('mousedown', onMouseDown);
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
-  document.addEventListener('focus', onFocus);
-  document.addEventListener('blur', onBlur);
   gTabBar.addEventListener('dblclick', onDblClick);
-  gTabBar.addEventListener('overflow', onOverflow);
-  gTabBar.addEventListener('underflow', onUnderflow);
 
   MetricsData.add('apply configs');
 
@@ -152,20 +147,6 @@ function updateSpecialEventListenersForAPIListeners() {
 
 
 /* handlers for DOM events */
-
-function onFocus(_aEvent) {
-  browser.runtime.sendMessage({
-    type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
-    windowId: gTargetWindow
-  });
-}
-
-function onBlur(_aEvent) {
-  browser.runtime.sendMessage({
-    type:     Constants.kNOTIFY_SIDEBAR_BLUR,
-    windowId: gTargetWindow
-  });
-}
 
 function onMouseMove(aEvent) {
   const tab = EventUtils.getTabFromEvent(aEvent);
@@ -569,116 +550,12 @@ function onContextualIdentitySelect(aItem, aEvent) {
   gContextualIdentitySelector.ui.close();
 }
 
-function onOverflow(aEvent) {
-  const tab = Tabs.getTabFromChild(aEvent.target);
-  const label = Tabs.getTabLabel(tab);
-  if (aEvent.target == label && !Tabs.isPinned(tab)) {
-    label.classList.add('overflow');
-    SidebarTabs.reserveToUpdateTooltip(tab);
-  }
-}
-
-function onUnderflow(aEvent) {
-  const tab = Tabs.getTabFromChild(aEvent.target);
-  const label = Tabs.getTabLabel(tab);
-  if (aEvent.target == label && !Tabs.isPinned(tab)) {
-    label.classList.remove('overflow');
-    SidebarTabs.reserveToUpdateTooltip(tab);
-  }
-}
-
 
 /* raw event handlers */
-
-Tabs.onRestoring.addListener(aTab => {
-  if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
-    return;
-
-  const container = aTab.parentNode;
-  // When we are restoring two or more tabs.
-  // (But we don't need do this again for third, fourth, and later tabs.)
-  if (container.restoredCount == 2)
-    UserOperationBlocker.block({ throbber: true });
-});
-
-// Tree restoration for "Restore Previous Session"
-Tabs.onWindowRestoring.addListener(async aWindowId => {
-  if (!configs.useCachedTree)
-    return;
-
-  log('Tabs.onWindowRestoring');
-  const container = Tabs.getTabsContainer(aWindowId);
-  const restoredCount = await container.allTabsRestored;
-  if (restoredCount == 1) {
-    log('Tabs.onWindowRestoring: single tab restored');
-    UserOperationBlocker.unblock({ throbber: true });
-    return;
-  }
-
-  log('Tabs.onWindowRestoring: continue');
-  const cache = await SidebarCache.getEffectiveWindowCache({
-    ignorePinnedTabs: true
-  });
-  if (!cache ||
-      (cache.offset &&
-       container.childNodes.length <= cache.offset)) {
-    log('Tabs.onWindowRestoring: no effective cache');
-    await Sidebar.inheritTreeStructure(); // fallback to classic method
-    UserOperationBlocker.unblock({ throbber: true });
-    return;
-  }
-
-  log('Tabs.onWindowRestoring restore! ', cache);
-  MetricsData.add('Tabs.onWindowRestoring restore start');
-  cache.tabbar.tabsDirty = true;
-  const apiTabs = await browser.tabs.query({ windowId: aWindowId });
-  const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
-    offset: cache.offset || 0,
-    tabs:   apiTabs
-  });
-  if (!restored) {
-    await Sidebar.rebuildAll();
-    await Sidebar.inheritTreeStructure();
-  }
-  Sidebar.updateVisualMaxTreeLevel();
-  Indent.update({
-    force: true,
-    cache: restored && cache.offset == 0 ? cache.indent : null
-  });
-  Sidebar.updateTabbarLayout({ justNow: true });
-  UserOperationBlocker.unblock({ throbber: true });
-  MetricsData.add('Tabs.onWindowRestoring restore end');
-});
-
-Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
-  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      Tabs.isSubtreeCollapsed(aTab))
-    Tree.collapseExpandSubtree(aTab, {
-      collapsed: false
-    });
-
-  // We don't need to update children because they are controlled by bacgkround.
-  // However we still need to update the parent itself.
-  Tree.detachTab(aTab, {
-    dontUpdateIndent: true
-  });
-});
 
 Tabs.onRemoved.addListener(async aTab => {
   gUpdatingCollapsedStateCancellers.delete(aTab);
   gTabCollapsedStateChangedManagers.delete(aTab);
-
-  if (Tabs.isCollapsed(aTab) ||
-      !configs.animation)
-    return;
-
-  return new Promise(async (aResolve, _aReject) => {
-    const tabRect = aTab.getBoundingClientRect();
-    aTab.style.marginLeft = `${tabRect.width}px`;
-    await wait(configs.animation ? configs.collapseDuration : 0);
-    aResolve();
-  });
 });
 
 Tabs.onMoving.addListener(async aTab => {
@@ -701,16 +578,6 @@ Tabs.onMoving.addListener(async aTab => {
       });
     await wait(configs.collapseDuration);
     aTab.classList.remove(Constants.kTAB_STATE_MOVING);
-  });
-});
-
-Tabs.onDetached.addListener(aTab => {
-  if (!Tabs.ensureLivingTab(aTab))
-    return;
-  // We don't need to update children because they are controlled by bacgkround.
-  // However we still need to update the parent itself.
-  Tree.detachTab(aTab, {
-    dontUpdateIndent: true
   });
 });
 
@@ -922,22 +789,6 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
   }
 }
 */
-
-Tabs.onGroupTabDetected.addListener(aTab => {
-  // When a group tab is restored but pending, TST cannot update title of the tab itself.
-  // For failsafe now we update the title based on its URL.
-  const uri = aTab.apiTab.url;
-  const parameters = uri.replace(/^[^\?]+/, '');
-  let title = parameters.match(/[&?]title=([^&;]*)/);
-  if (!title)
-    title = parameters.match(/^\?([^&;]*)/);
-  title = title && decodeURIComponent(title[1]) ||
-           browser.i18n.getMessage('groupTab_label_default');
-  aTab.apiTab.title = title;
-  wait(0).then(() => {
-    TabsUpdate.updateTab(aTab, { title }, { tab: aTab.apiTab });
-  });
-});
 
 
 /* message observer */

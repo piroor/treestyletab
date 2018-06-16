@@ -46,8 +46,8 @@ let gInitialized = false;
 let gStyle;
 let gTargetWindow = null;
 
-let gTabBar                     = document.querySelector('#tabbar');
-let gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
+const gTabBar                     = document.querySelector('#tabbar');
+const gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
 const gStyleLoader                = document.querySelector('#style-loader');
 const gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
 const gUserStyleRules             = document.querySelector('#user-style-rules');
@@ -135,7 +135,11 @@ export async function init() {
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
 
+      document.addEventListener('focus', onFocus);
+      document.addEventListener('blur', onBlur);
       window.addEventListener('resize', onResize);
+      gTabBar.addEventListener('overflow', onOverflow);
+      gTabBar.addEventListener('underflow', onUnderflow);
       gTabBar.addEventListener('transitionend', onTransisionEnd);
 
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
@@ -544,6 +548,38 @@ export function updateTabbarLayout(aParams = {}) {
 }
 
 
+function onFocus(_aEvent) {
+  browser.runtime.sendMessage({
+    type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
+    windowId: gTargetWindow
+  });
+}
+
+function onBlur(_aEvent) {
+  browser.runtime.sendMessage({
+    type:     Constants.kNOTIFY_SIDEBAR_BLUR,
+    windowId: gTargetWindow
+  });
+}
+
+function onOverflow(aEvent) {
+  const tab = Tabs.getTabFromChild(aEvent.target);
+  const label = Tabs.getTabLabel(tab);
+  if (aEvent.target == label && !Tabs.isPinned(tab)) {
+    label.classList.add('overflow');
+    SidebarTabs.reserveToUpdateTooltip(tab);
+  }
+}
+
+function onUnderflow(aEvent) {
+  const tab = Tabs.getTabFromChild(aEvent.target);
+  const label = Tabs.getTabLabel(tab);
+  if (aEvent.target == label && !Tabs.isPinned(tab)) {
+    label.classList.remove('overflow');
+    SidebarTabs.reserveToUpdateTooltip(tab);
+  }
+}
+
 function onResize(_aEvent) {
   reserveToUpdateTabbarLayout({
     reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
@@ -577,7 +613,20 @@ Tabs.onCreated.addListener(_aTab => {
   });
 });
 
-Tabs.onRemoving.addListener((_aTab, _aCloseInfo) => {
+Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
+  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      Tabs.isSubtreeCollapsed(aTab))
+    Tree.collapseExpandSubtree(aTab, {
+      collapsed: false
+    });
+
+  // We don't need to update children because they are controlled by bacgkround.
+  // However we still need to update the parent itself.
+  Tree.detachTab(aTab, {
+    dontUpdateIndent: true
+  });
+
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
@@ -592,6 +641,16 @@ Tabs.onMoved.addListener(_aTab => {
   });
 });
 
+Tabs.onDetached.addListener(aTab => {
+  if (!Tabs.ensureLivingTab(aTab))
+    return;
+  // We don't need to update children because they are controlled by bacgkround.
+  // However we still need to update the parent itself.
+  Tree.detachTab(aTab, {
+    dontUpdateIndent: true
+  });
+});
+
 Tabs.onShown.addListener(() => {
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
@@ -601,6 +660,67 @@ Tabs.onHidden.addListener(() => {
   reserveToUpdateVisualMaxTreeLevel();
   reserveToUpdateIndent();
 });
+
+Tabs.onRestoring.addListener(aTab => {
+  if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
+    return;
+
+  const container = aTab.parentNode;
+  // When we are restoring two or more tabs.
+  // (But we don't need do this again for third, fourth, and later tabs.)
+  if (container.restoredCount == 2)
+    UserOperationBlocker.block({ throbber: true });
+});
+
+// Tree restoration for "Restore Previous Session"
+Tabs.onWindowRestoring.addListener(async aWindowId => {
+  if (!configs.useCachedTree)
+    return;
+
+  log('Tabs.onWindowRestoring');
+  const container = Tabs.getTabsContainer(aWindowId);
+  const restoredCount = await container.allTabsRestored;
+  if (restoredCount == 1) {
+    log('Tabs.onWindowRestoring: single tab restored');
+    UserOperationBlocker.unblock({ throbber: true });
+    return;
+  }
+
+  log('Tabs.onWindowRestoring: continue');
+  const cache = await SidebarCache.getEffectiveWindowCache({
+    ignorePinnedTabs: true
+  });
+  if (!cache ||
+      (cache.offset &&
+       container.childNodes.length <= cache.offset)) {
+    log('Tabs.onWindowRestoring: no effective cache');
+    await inheritTreeStructure(); // fallback to classic method
+    UserOperationBlocker.unblock({ throbber: true });
+    return;
+  }
+
+  log('Tabs.onWindowRestoring restore! ', cache);
+  MetricsData.add('Tabs.onWindowRestoring restore start');
+  cache.tabbar.tabsDirty = true;
+  const apiTabs = await browser.tabs.query({ windowId: aWindowId });
+  const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
+    offset: cache.offset || 0,
+    tabs:   apiTabs
+  });
+  if (!restored) {
+    await rebuildAll();
+    await inheritTreeStructure();
+  }
+  updateVisualMaxTreeLevel();
+  Indent.update({
+    force: true,
+    cache: restored && cache.offset == 0 ? cache.indent : null
+  });
+  updateTabbarLayout({ justNow: true });
+  UserOperationBlocker.unblock({ throbber: true });
+  MetricsData.add('Tabs.onWindowRestoring restore end');
+});
+
 
 Tree.onAttached.addListener(async (aTab, _aInfo = {}) => {
   if (!gInitialized)
@@ -625,6 +745,7 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
 });
 
 Tree.onLevelChanged.addListener(reserveToUpdateIndent);
+
 
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();

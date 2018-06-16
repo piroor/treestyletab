@@ -6,12 +6,14 @@
 'use strict';
 
 import {
+  wait,
   nextFrame,
   configs
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
+import * as TabsUpdate from '../common/tabs-update.js';
 import * as Tree from '../common/tree.js';
 import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 
@@ -243,6 +245,19 @@ Tabs.onCreated.addListener(aTab => {
 
 Tabs.onRemoving.addListener(reserveToUpdateLoadingState);
 
+Tabs.onRemoved.addListener(async aTab => {
+  if (Tabs.isCollapsed(aTab) ||
+      !configs.animation)
+    return;
+
+  return new Promise(async (aResolve, _aReject) => {
+    const tabRect = aTab.getBoundingClientRect();
+    aTab.style.marginLeft = `${tabRect.width}px`;
+    await wait(configs.animation ? configs.collapseDuration : 0);
+    aResolve();
+  });
+});
+
 Tabs.onMoved.addListener(aTab => {
   if (gInitialized)
     reserveToUpdateTooltip(Tabs.getParentTab(aTab));
@@ -278,6 +293,22 @@ Tabs.onDetached.addListener(aTab => {
       !Tabs.ensureLivingTab(aTab))
     return;
   reserveToUpdateTooltip(Tabs.getParentTab(aTab));
+});
+
+Tabs.onGroupTabDetected.addListener(aTab => {
+  // When a group tab is restored but pending, TST cannot update title of the tab itself.
+  // For failsafe now we update the title based on its URL.
+  const uri = aTab.apiTab.url;
+  const parameters = uri.replace(/^[^\?]+/, '');
+  let title = parameters.match(/[&?]title=([^&;]*)/);
+  if (!title)
+    title = parameters.match(/^\?([^&;]*)/);
+  title = title && decodeURIComponent(title[1]) ||
+           browser.i18n.getMessage('groupTab_label_default');
+  aTab.apiTab.title = title;
+  wait(0).then(() => {
+    TabsUpdate.updateTab(aTab, { title }, { tab: aTab.apiTab });
+  });
 });
 
 Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
