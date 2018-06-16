@@ -48,16 +48,36 @@ import {
 
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
+import * as Tree from '../common/tree.js';
+import * as TSTAPI from '../common/tst-api.js';
+
 import * as Size from './size.js';
+import * as EventUtils from './event-utils.js';
+
 import * as RestoringTabCount from './restoring-tab-count.js';
 
 
 let gTabBar;
 let gOutOfViewTabNotifier;
 
-export function init() {
+export async function init() {
   gTabBar               = document.querySelector('#tabbar');
   gOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
+
+  const scrollPosition = await browser.sessions.getWindowValue(Tabs.getWindow(), Constants.kWINDOW_STATE_SCROLL_POSITION);
+  if (typeof scrollPosition == 'number') {
+    log('restore scroll position');
+    cancelRunningScroll();
+    scrollTo({
+      position: scrollPosition,
+      justNow:  true
+    });
+  }
+
+  document.addEventListener('wheel', onWheel, { capture: true });
+  gTabBar.addEventListener('scroll', onScroll);
+  browser.runtime.onMessage.removeListener(onMessage);
+  browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 
 /* basics */
@@ -359,6 +379,149 @@ function cancelNotifyOutOfViewTab() {
 }
 
 
-Tabs.onActivated.addListener(aTab => {
-  scrollToTab(aTab);
+async function onWheel(aEvent) {
+  if (!configs.zoomable &&
+      EventUtils.isAccelKeyPressed(aEvent)) {
+    aEvent.preventDefault();
+    return;
+  }
+
+  if (!TSTAPI.isScrollLocked())
+    return;
+
+  aEvent.stopImmediatePropagation();
+  aEvent.preventDefault();
+
+  TSTAPI.notifyScrolled({
+    tab:             EventUtils.getTabFromEvent(aEvent),
+    scrollContainer: gTabBar,
+    event:           aEvent
+  });
+}
+
+function onScroll(_aEvent) {
+  reserveToSaveScrollPosition();
+}
+
+function reserveToSaveScrollPosition() {
+  if (reserveToSaveScrollPosition.reserved)
+    clearTimeout(reserveToSaveScrollPosition.reserved);
+  reserveToSaveScrollPosition.reserved = setTimeout(() => {
+    delete reserveToSaveScrollPosition.reserved;
+    browser.sessions.setWindowValue(
+      Tabs.getWindow(),
+      Constants.kWINDOW_STATE_SCROLL_POSITION,
+      gTabBar.scrollTop
+    );
+  }, 150);
+}
+
+
+Tabs.onCreated.addListener(aTab => {
+  if (configs.animation) {
+    nextFrame().then(() => {
+      const parent = Tabs.getParentTab(aTab);
+      if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
+        return;
+      const focused = Tabs.isActive(aTab);
+      Tree.collapseExpandTab(aTab, {
+        collapsed: false,
+        anchor:    Tabs.getCurrentTab(),
+        last:      true
+      });
+      if (!focused)
+        notifyOutOfViewTab(aTab);
+    });
+  }
+  else {
+    if (Tabs.isActive(aTab))
+      scrollToNewTab(aTab);
+    else
+      notifyOutOfViewTab(aTab);
+  }
 });
+
+Tabs.onActivated.addListener(scrollToTab);
+
+Tabs.onUnpinned.addListener(scrollToTab);
+
+
+function onMessage(aMessage, _aSender, _aRespond) {
+  if (!aMessage ||
+      typeof aMessage.type != 'string')
+    return;
+
+  switch (aMessage.type) {
+    case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated([
+          aMessage.tab,
+          aMessage.parent
+        ]);
+        const tab = Tabs.getTabById(aMessage.tab);
+        if (tab && Tabs.isActive(Tabs.getTabById(aMessage.parent)))
+          scrollToNewTab(tab);
+      })();
+
+    case Constants.kCOMMAND_SCROLL_TABBAR:
+      if (aMessage.windowId != Tabs.getWindow())
+        break;
+      switch (String(aMessage.by).toLowerCase()) {
+        case 'lineup':
+          smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
+          break;
+
+        case 'pageup':
+          smoothScrollBy(-gTabBar.getBoundingClientRect().height + Size.getTabHeight());
+          break;
+
+        case 'linedown':
+          smoothScrollBy(Size.getTabHeight() * configs.scrollLines);
+          break;
+
+        case 'pagedown':
+          smoothScrollBy(gTabBar.getBoundingClientRect().height - Size.getTabHeight());
+          break;
+
+        default:
+          switch (String(aMessage.to).toLowerCase()) {
+            case 'top':
+              smoothScrollTo({ position: 0 });
+              break;
+
+            case 'bottom':
+              smoothScrollTo({ position: gTabBar.scrollTopMax });
+              break;
+          }
+          break;
+      }
+      break;
+  }
+}
+
+function onMessageExternal(aMessage, _aSender) {
+  switch (aMessage.type) {
+    case TSTAPI.kSCROLL:
+      return (async () => {
+        const params = {};
+        const currentWindow = Tabs.getWindow();
+        if ('tab' in aMessage) {
+          await Tabs.waitUntilTabsAreCreated(aMessage.tab);
+          params.tab = Tabs.getTabById(aMessage.tab);
+          if (!params.tab || params.tab.windowId != currentWindow)
+            return;
+        }
+        else {
+          if (aMessage.window != currentWindow)
+            return;
+          if ('delta' in aMessage)
+            params.delta = aMessage.delta;
+          if ('position' in aMessage)
+            params.position = aMessage.position;
+        }
+        return scrollTo(params).then(() => {
+          return true;
+        });
+      })();
+  }
+}

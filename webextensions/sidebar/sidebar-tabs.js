@@ -177,6 +177,70 @@ export function updateAll() {
 }
 
 
+Tabs.onBuilt.addListener((aTab, aInfo) => {
+  const label = Tabs.getTabLabel(aTab);
+
+  const twisty = document.createElement('span');
+  twisty.classList.add(Constants.kTWISTY);
+  twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
+  aTab.insertBefore(twisty, label);
+
+  const favicon = document.createElement('span');
+  favicon.classList.add(Constants.kFAVICON);
+  const faviconImage = favicon.appendChild(document.createElement('img'));
+  faviconImage.classList.add(Constants.kFAVICON_IMAGE);
+  const defaultIcon = favicon.appendChild(document.createElement('span'));
+  defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
+  defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
+  const throbber = favicon.appendChild(document.createElement('span'));
+  throbber.classList.add(Constants.kTHROBBER);
+  aTab.insertBefore(favicon, label);
+
+  const counter = document.createElement('span');
+  counter.classList.add(Constants.kCOUNTER);
+  aTab.appendChild(counter);
+
+  const soundButton = document.createElement('button');
+  soundButton.classList.add(Constants.kSOUND_BUTTON);
+  aTab.appendChild(soundButton);
+
+  const closebox = document.createElement('span');
+  closebox.classList.add(Constants.kCLOSEBOX);
+  closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
+  closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
+  aTab.appendChild(closebox);
+
+  const burster = document.createElement('span');
+  burster.classList.add(Constants.kBURSTER);
+  aTab.appendChild(burster);
+
+  const activeMarker = document.createElement('span');
+  activeMarker.classList.add(Constants.kACTIVE_MARKER);
+  aTab.appendChild(activeMarker);
+
+  const identityMarker = document.createElement('span');
+  identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
+  aTab.appendChild(identityMarker);
+
+  const extraItemsContainerBehind = document.createElement('span');
+  extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
+  extraItemsContainerBehind.classList.add('behind');
+  aTab.appendChild(extraItemsContainerBehind);
+
+  aTab.setAttribute('draggable', true);
+
+  if (!aInfo.existing && configs.animation) {
+    Tree.collapseExpandTab(aTab, {
+      collapsed: true,
+      justNow:   true
+    });
+  }
+});
+
+Tabs.onCreated.addListener(aTab => {
+  aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+});
+
 Tabs.onRemoving.addListener(reserveToUpdateLoadingState);
 
 Tabs.onMoved.addListener(aTab => {

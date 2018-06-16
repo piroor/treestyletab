@@ -54,7 +54,6 @@ import * as TabsUpdate from '../common/tabs-update.js';
 import * as TabsMove from '../common/tabs-move.js';
 import * as Tree from '../common/tree.js';
 import * as TSTAPI from '../common/tst-api.js';
-import * as ContextualIdentities from '../common/contextual-identities.js';
 import * as Commands from '../common/commands.js';
 import * as UserOperationBlocker from '../common/user-operation-blocker.js';
 import * as MetricsData from '../common/metrics-data.js';
@@ -66,12 +65,10 @@ import * as SidebarTabs from './sidebar-tabs.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
-import * as Size from './size.js';
 import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-let gInitialized = false;
 let gTargetWindow;
 
 const gTabBar = document.querySelector('#tabbar');
@@ -82,40 +79,22 @@ const gUpdatingCollapsedStateCancellers = new WeakMap();
 const gTabCollapsedStateChangedManagers = new WeakMap();
 
 Sidebar.onInit.addListener(() => {
-  onConfigChange('colorScheme');
-  onConfigChange('simulateSVGContextFill');
   gTargetWindow = Tabs.getWindow();
 });
 
 Sidebar.onBuilt.addListener(async () => {
-  window.addEventListener('resize', onResize);
   document.addEventListener('mousedown', onMouseDown);
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
-  document.addEventListener('wheel', onWheel, { capture: true });
-  document.addEventListener('contextmenu', onContextMenu, { capture: true });
   document.addEventListener('focus', onFocus);
   document.addEventListener('blur', onBlur);
-  gTabBar.addEventListener('scroll', onScroll);
   gTabBar.addEventListener('dblclick', onDblClick);
-  gTabBar.addEventListener('transitionend', onTransisionEnd);
   gTabBar.addEventListener('overflow', onOverflow);
   gTabBar.addEventListener('underflow', onUnderflow);
 
-  configs.$addObserver(onConfigChange);
-  onConfigChange('debug');
-  onConfigChange('sidebarPosition');
-  onConfigChange('sidebarDirection');
-  onConfigChange('sidebarScrollbarPosition');
-  onConfigChange('scrollbarMode');
-  onConfigChange('showContextualIdentitiesSelector');
-  onConfigChange('showNewTabActionSelector');
   MetricsData.add('apply configs');
 
   browser.runtime.onMessage.addListener(onMessage);
-  browser.runtime.onMessageExternal.addListener(onMessageExternal);
-  if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
-    browser.theme.onUpdated.addListener(onBrowserThemeChanged);
 
   gContextualIdentitySelector.ui = new MenuUI({
     root:       gContextualIdentitySelector,
@@ -133,31 +112,18 @@ Sidebar.onBuilt.addListener(async () => {
 });
 
 Sidebar.onReady.addListener(() => {
-  gInitialized = true;
-
-  onConfigChange('animation');
-
   updateSpecialEventListenersForAPIListeners();
 });
 
 Sidebar.onDestroy.addListener(() => {
-  configs.$removeObserver(onConfigChange);
   browser.runtime.onMessage.removeListener(onMessage);
-  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
-  if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
-    browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
 
-  window.removeEventListener('resize', onResize);
   document.removeEventListener('mousedown', onMouseDown);
   document.removeEventListener('mouseup', onMouseUp);
   document.removeEventListener('click', onClick);
-  document.removeEventListener('wheel', onWheel, { capture: true });
-  document.removeEventListener('contextmenu', onContextMenu, { capture: true });
   document.removeEventListener('focus', onFocus);
   document.removeEventListener('blur', onBlur);
-  gTabBar.removeEventListener('scroll', onScroll);
   gTabBar.removeEventListener('dblclick', onDblClick);
-  gTabBar.removeEventListener('transitionend', onTransisionEnd);
   gTabBar.removeEventListener('overflow', onOverflow);
   gTabBar.removeEventListener('underflow', onUnderflow);
 
@@ -206,26 +172,6 @@ function updateSpecialEventListenersForAPIListeners() {
 
 
 /* handlers for DOM events */
-
-function onResize(_aEvent) {
-  Sidebar.reserveToUpdateTabbarLayout({
-    reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
-  });
-  Sidebar.reserveToUpdateIndent();
-}
-
-function onContextMenu(aEvent) {
-  if (!configs.fakeContextMenu)
-    return;
-  aEvent.stopPropagation();
-  aEvent.preventDefault();
-  const tab = EventUtils.getTabFromEvent(aEvent);
-  TabContextMenu.open({
-    tab:  tab && tab.apiTab,
-    left: aEvent.clientX,
-    top:  aEvent.clientY
-  });
-}
 
 function onFocus(_aEvent) {
   browser.runtime.sendMessage({
@@ -608,17 +554,6 @@ function onDblClick(aEvent) {
   });
 }
 
-function onTransisionEnd(aEvent) {
-  if (aEvent.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
-      !aEvent.target.classList.contains('tab') || // ignore animations of twisty or something inside tabs
-      /opacity|color|text-shadow/.test(aEvent.propertyName))
-    return;
-  //log('transitionend ', aEvent);
-  Sidebar.reserveToUpdateTabbarLayout({
-    reason: Constants.kTABBAR_UPDATE_REASON_ANIMATION_END
-  });
-}
-
 function onNewTabActionSelect(aItem, aEvent) {
   if (aItem.dataset.value) {
     let action;
@@ -654,43 +589,6 @@ function onContextualIdentitySelect(aItem, aEvent) {
   gContextualIdentitySelector.ui.close();
 }
 
-async function onWheel(aEvent) {
-  if (!configs.zoomable &&
-      EventUtils.isAccelKeyPressed(aEvent)) {
-    aEvent.preventDefault();
-    return;
-  }
-
-  if (!TSTAPI.isScrollLocked())
-    return;
-
-  aEvent.stopImmediatePropagation();
-  aEvent.preventDefault();
-
-  TSTAPI.notifyScrolled({
-    tab:             EventUtils.getTabFromEvent(aEvent),
-    scrollContainer: gTabBar,
-    event:           aEvent
-  });
-}
-
-function onScroll(_aEvent) {
-  reserveToSaveScrollPosition();
-}
-
-function reserveToSaveScrollPosition() {
-  if (reserveToSaveScrollPosition.reserved)
-    clearTimeout(reserveToSaveScrollPosition.reserved);
-  reserveToSaveScrollPosition.reserved = setTimeout(() => {
-    delete reserveToSaveScrollPosition.reserved;
-    browser.sessions.setWindowValue(
-      gTargetWindow,
-      Constants.kWINDOW_STATE_SCROLL_POSITION,
-      gTabBar.scrollTop
-    );
-  }, 150);
-}
-
 function onOverflow(aEvent) {
   const tab = Tabs.getTabFromChild(aEvent.target);
   const label = Tabs.getTabLabel(tab);
@@ -711,99 +609,6 @@ function onUnderflow(aEvent) {
 
 
 /* raw event handlers */
-
-Tabs.onBuilt.addListener((aTab, aInfo) => {
-  const label = Tabs.getTabLabel(aTab);
-
-  const twisty = document.createElement('span');
-  twisty.classList.add(Constants.kTWISTY);
-  twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
-  aTab.insertBefore(twisty, label);
-
-  const favicon = document.createElement('span');
-  favicon.classList.add(Constants.kFAVICON);
-  const faviconImage = favicon.appendChild(document.createElement('img'));
-  faviconImage.classList.add(Constants.kFAVICON_IMAGE);
-  const defaultIcon = favicon.appendChild(document.createElement('span'));
-  defaultIcon.classList.add(Constants.kFAVICON_BUILTIN);
-  defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
-  const throbber = favicon.appendChild(document.createElement('span'));
-  throbber.classList.add(Constants.kTHROBBER);
-  aTab.insertBefore(favicon, label);
-
-  const counter = document.createElement('span');
-  counter.classList.add(Constants.kCOUNTER);
-  aTab.appendChild(counter);
-
-  const soundButton = document.createElement('button');
-  soundButton.classList.add(Constants.kSOUND_BUTTON);
-  aTab.appendChild(soundButton);
-
-  const closebox = document.createElement('span');
-  closebox.classList.add(Constants.kCLOSEBOX);
-  closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
-  closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
-  aTab.appendChild(closebox);
-
-  const burster = document.createElement('span');
-  burster.classList.add(Constants.kBURSTER);
-  aTab.appendChild(burster);
-
-  const activeMarker = document.createElement('span');
-  activeMarker.classList.add(Constants.kACTIVE_MARKER);
-  aTab.appendChild(activeMarker);
-
-  const identityMarker = document.createElement('span');
-  identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
-  aTab.appendChild(identityMarker);
-
-  const extraItemsContainerBehind = document.createElement('span');
-  extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
-  extraItemsContainerBehind.classList.add('behind');
-  aTab.appendChild(extraItemsContainerBehind);
-
-  aTab.setAttribute('draggable', true);
-
-  if (!aInfo.existing && configs.animation) {
-    Tree.collapseExpandTab(aTab, {
-      collapsed: true,
-      justNow:   true
-    });
-  }
-});
-
-
-Tabs.onCreated.addListener(aTab => {
-  if (configs.animation) {
-    aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
-    nextFrame().then(() => {
-      const parent = Tabs.getParentTab(aTab);
-      if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
-        return;
-      const focused = Tabs.isActive(aTab);
-      Tree.collapseExpandTab(aTab, {
-        collapsed: false,
-        anchor:    Tabs.getCurrentTab(),
-        last:      true
-      });
-      if (!focused)
-        Scroll.notifyOutOfViewTab(aTab);
-    });
-  }
-  else {
-    aTab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
-    if (Tabs.isActive(aTab))
-      Scroll.scrollToNewTab(aTab);
-    else
-      Scroll.notifyOutOfViewTab(aTab);
-  }
-
-  Sidebar.reserveToUpdateVisualMaxTreeLevel();
-  Sidebar.reserveToUpdateTabbarLayout({
-    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
-    timeout: configs.collapseDuration
-  });
-});
 
 Tabs.onRestoring.addListener(aTab => {
   if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
@@ -878,11 +683,6 @@ Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
   Tree.detachTab(aTab, {
     dontUpdateIndent: true
   });
-  Sidebar.reserveToUpdateVisualMaxTreeLevel();
-  Sidebar.reserveToUpdateTabbarLayout({
-    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
-    timeout: configs.collapseDuration
-  });
 });
 
 Tabs.onRemoved.addListener(async aTab => {
@@ -922,17 +722,6 @@ Tabs.onMoving.addListener(async aTab => {
     await wait(configs.collapseDuration);
     aTab.classList.remove(Constants.kTAB_STATE_MOVING);
   });
-});
-
-Tabs.onMoved.addListener(_aTab => {
-  Sidebar.reserveToUpdateTabbarLayout({
-    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
-    timeout: configs.collapseDuration
-  });
-});
-
-Tree.onLevelChanged.addListener(async () => {
-  Sidebar.reserveToUpdateIndent();
 });
 
 Tabs.onDetached.addListener(aTab => {
@@ -1154,43 +943,6 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 }
 */
 
-Tree.onAttached.addListener(async (aTab, _aInfo = {}) => {
-  if (!gInitialized)
-    return;
-  Sidebar.reserveToUpdateVisualMaxTreeLevel();
-  Sidebar.reserveToUpdateIndent();
-  /*
-    We must not scroll to the tab here, because the tab can be moved
-    by the background page later. Instead we wait until the tab is
-    successfully moved (then Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
-  */
-});
-
-Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
-  if (!gInitialized)
-    return;
-  const parent = aDetachInfo.oldParentTab;
-  if (!parent)
-    return;
-  Sidebar.reserveToUpdateVisualMaxTreeLevel();
-  Sidebar.reserveToUpdateIndent();
-});
-
-Tabs.onUnpinned.addListener(aTab => {
-  Scroll.scrollToTab(aTab);
-  //updateInvertedTabContentsOrder(aTab);
-});
-
-Tabs.onShown.addListener(() => {
-  Sidebar.reserveToUpdateVisualMaxTreeLevel();
-  Sidebar.reserveToUpdateIndent();
-});
-
-Tabs.onHidden.addListener(() => {
-  Sidebar.reserveToUpdateVisualMaxTreeLevel();
-  Sidebar.reserveToUpdateIndent();
-});
-
 Tabs.onGroupTabDetected.addListener(aTab => {
   // When a group tab is restored but pending, TST cannot update title of the tab itself.
   // For failsafe now we update the title based on its URL.
@@ -1205,11 +957,6 @@ Tabs.onGroupTabDetected.addListener(aTab => {
   wait(0).then(() => {
     TabsUpdate.updateTab(aTab, { title }, { tab: aTab.apiTab });
   });
-});
-
-ContextualIdentities.onUpdated.addListener(() => {
-  Sidebar.updateContextualIdentitiesStyle();
-  Sidebar.updateContextualIdentitiesSelector();
 });
 
 
@@ -1344,17 +1091,6 @@ function onMessage(aMessage, _aSender, _aRespond) {
       }
     }; break;
 
-    case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
-      return (async () => {
-        await Tabs.waitUntilTabsAreCreated([
-          aMessage.tab,
-          aMessage.parent
-        ]);
-        const tab = Tabs.getTabById(aMessage.tab);
-        if (tab && Tabs.isActive(Tabs.getTabById(aMessage.parent)))
-          Scroll.scrollToNewTab(tab);
-      })();
-
     case Constants.kCOMMAND_DETACH_TAB: {
       if (aMessage.windowId == gTargetWindow) {
         const promisedComplete = (async () => {
@@ -1439,200 +1175,5 @@ function onMessage(aMessage, _aSender, _aRespond) {
       `);
       gContextualIdentitySelector.ui.open({ anchor });
     }; break;
-
-    case Constants.kCOMMAND_SCROLL_TABBAR:
-      if (aMessage.windowId != gTargetWindow)
-        break;
-      switch (String(aMessage.by).toLowerCase()) {
-        case 'lineup':
-          Scroll.smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
-          break;
-
-        case 'pageup':
-          Scroll.smoothScrollBy(-gTabBar.getBoundingClientRect().height + Size.getTabHeight());
-          break;
-
-        case 'linedown':
-          Scroll.smoothScrollBy(Size.getTabHeight() * configs.scrollLines);
-          break;
-
-        case 'pagedown':
-          Scroll.smoothScrollBy(gTabBar.getBoundingClientRect().height - Size.getTabHeight());
-          break;
-
-        default:
-          switch (String(aMessage.to).toLowerCase()) {
-            case 'top':
-              Scroll.smoothScrollTo({ position: 0 });
-              break;
-
-            case 'bottom':
-              Scroll.smoothScrollTo({ position: gTabBar.scrollTopMax });
-              break;
-          }
-          break;
-      }
-      break;
-  }
-}
-
-function onMessageExternal(aMessage, _aSender) {
-  switch (aMessage.type) {
-    case TSTAPI.kSCROLL:
-      return (async () => {
-        const params = {};
-        if ('tab' in aMessage) {
-          await Tabs.waitUntilTabsAreCreated(aMessage.tab);
-          params.tab = Tabs.getTabById(aMessage.tab);
-          if (!params.tab || params.tab.windowId != gTargetWindow)
-            return;
-        }
-        else {
-          if (aMessage.window != gTargetWindow)
-            return;
-          if ('delta' in aMessage)
-            params.delta = aMessage.delta;
-          if ('position' in aMessage)
-            params.position = aMessage.position;
-        }
-        return Scroll.scrollTo(params).then(() => {
-          return true;
-        });
-      })();
-  }
-}
-
-function onBrowserThemeChanged(aUpdateInfo) {
-  if (!aUpdateInfo.windowId || // reset to default
-      aUpdateInfo.windowId == gTargetWindow)
-    Sidebar.applyBrowserTheme(aUpdateInfo.theme);
-}
-
-function onConfigChange(aChangedKey) {
-  const rootClasses = document.documentElement.classList;
-  switch (aChangedKey) {
-    case 'debug': {
-      for (const tab of Tabs.getAllTabs()) {
-        TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
-      }
-      if (configs.debug)
-        rootClasses.add('debug');
-      else
-        rootClasses.remove('debug');
-    }; break;
-
-    case 'animation':
-      if (configs.animation)
-        rootClasses.add('animation');
-      else
-        rootClasses.remove('animation');
-      break;
-
-    case 'sidebarPosition':
-      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) {
-        rootClasses.add('right');
-        rootClasses.remove('left');
-      }
-      else {
-        rootClasses.add('left');
-        rootClasses.remove('right');
-      }
-      Indent.update({ force: true });
-      break;
-
-    case 'sidebarDirection':
-      if (configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL) {
-        rootClasses.add('rtl');
-        rootClasses.remove('ltr');
-      }
-      else {
-        rootClasses.add('ltr');
-        rootClasses.remove('rtl');
-      }
-      break;
-
-    case 'sidebarScrollbarPosition': {
-      let position = configs.sidebarScrollbarPosition;
-      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_AUTO)
-        position = configs.sidebarPosition;
-      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_RIGHT) {
-        rootClasses.add('right-scrollbar');
-        rootClasses.remove('left-scrollbar');
-      }
-      else {
-        rootClasses.add('left-scrollbar');
-        rootClasses.remove('right-scrollbar');
-      }
-      Indent.update({ force: true });
-    }; break;
-
-    case 'baseIndent':
-    case 'minIndent':
-    case 'maxTreeLevel':
-    case 'indentAutoShrink':
-    case 'indentAutoShrinkOnlyForVisible':
-      Indent.update({ force: true });
-      break;
-
-    case 'style':
-      location.reload();
-      break;
-
-    case 'scrollbarMode':
-      rootClasses.remove(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
-      rootClasses.remove(Constants.kTABBAR_STATE_NO_SCROLLBAR);
-      rootClasses.remove(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
-      switch (configs.scrollbarMode) {
-        default:
-        case Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT:
-          break;
-        case Constants.kTABBAR_SCROLLBAR_MODE_NARROW:
-          rootClasses.add(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
-          break;
-        case Constants.kTABBAR_SCROLLBAR_MODE_HIDE:
-          rootClasses.add(Constants.kTABBAR_STATE_NO_SCROLLBAR);
-          break;
-        case Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY:
-          rootClasses.add(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
-          break;
-      }
-      break;
-
-    case 'colorScheme':
-      document.documentElement.setAttribute('color-scheme', configs.colorScheme);
-      break;
-
-    case 'narrowScrollbarSize':
-      location.reload();
-      break;
-
-    case 'userStyleRules':
-      Sidebar.applyUserStyleRules()
-      break;
-
-    case 'inheritContextualIdentityToNewChildTab':
-      Sidebar.updateContextualIdentitiesSelector();
-      break;
-
-    case 'showContextualIdentitiesSelector':
-      if (configs[aChangedKey])
-        rootClasses.add(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
-      else
-        rootClasses.remove(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
-      break;
-
-    case 'showNewTabActionSelector':
-      if (configs[aChangedKey])
-        rootClasses.add(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
-      else
-        rootClasses.remove(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
-      break;
-
-    case 'simulateSVGContextFill':
-      if (configs[aChangedKey])
-        rootClasses.add('simulate-svg-context-fill');
-      else
-        rootClasses.remove('simulate-svg-context-fill');
-      break;
   }
 }

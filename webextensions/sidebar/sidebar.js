@@ -87,12 +87,13 @@ export async function init() {
       Indent.init();
       SidebarCache.init();
       SidebarCache.onRestored.addListener(DragAndDrop.clearDropPosition);
-      Scroll.init();
     })(),
     configs.$loaded
   ]);
   MetricsData.add('browser.tabs.query, configs.$loaded');
 
+  onConfigChange('colorScheme');
+  onConfigChange('simulateSVGContextFill');
   onInit.dispatch();
 
   await Promise.all([
@@ -103,7 +104,6 @@ export async function init() {
 
   let cachedContents;
   let restoredFromCache;
-  let scrollPosition;
   await MetricsData.addAsync('parallel initialization tasks', Promise.all([
     MetricsData.addAsync('main', async () => {
       if (configs.useCachedTree)
@@ -127,6 +127,21 @@ export async function init() {
           await inheritTreeStructure();
         });
 
+      configs.$addObserver(onConfigChange);
+      onConfigChange('debug');
+      onConfigChange('sidebarPosition');
+      onConfigChange('sidebarDirection');
+      onConfigChange('sidebarScrollbarPosition');
+      onConfigChange('scrollbarMode');
+      onConfigChange('showContextualIdentitiesSelector');
+      onConfigChange('showNewTabActionSelector');
+
+      window.addEventListener('resize', onResize);
+      gTabBar.addEventListener('transitionend', onTransisionEnd);
+
+      if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
+        browser.theme.onUpdated.addListener(onBrowserThemeChanged);
+
       onBuilt.dispatch();
 
       DragAndDrop.startListen();
@@ -148,20 +163,10 @@ export async function init() {
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       await TSTAPI.initAsFrontend();
     }),
-    MetricsData.addAsync('getting Constants.kWINDOW_STATE_SCROLL_POSITION', async () => {
-      scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION);
+    MetricsData.addAsync('Scroll.init', async () => {
+      Scroll.init();
     })
   ]));
-
-  if (typeof scrollPosition == 'number') {
-    log('restore scroll position');
-    Scroll.cancelRunningScroll();
-    Scroll.scrollTo({
-      position: scrollPosition,
-      justNow:  true
-    });
-    MetricsData.add('applying scroll position');
-  }
 
   gInitialized = true;
 
@@ -180,6 +185,7 @@ export async function init() {
 
   SidebarTabs.init();
 
+  onConfigChange('animation');
   onReady.dispatch();
 
   UserOperationBlocker.unblock({ throbber: true });
@@ -545,4 +551,221 @@ export function updateTabbarLayout(aParams = {}) {
     PinnedTabs.reposition(aParams);
   else
     PinnedTabs.reserveToReposition(aParams);
+}
+
+
+function onResize(_aEvent) {
+  reserveToUpdateTabbarLayout({
+    reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
+  });
+  reserveToUpdateIndent();
+}
+
+function onTransisionEnd(aEvent) {
+  if (aEvent.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
+      !aEvent.target.classList.contains('tab') || // ignore animations of twisty or something inside tabs
+      /opacity|color|text-shadow/.test(aEvent.propertyName))
+    return;
+  //log('transitionend ', aEvent);
+  reserveToUpdateTabbarLayout({
+    reason: Constants.kTABBAR_UPDATE_REASON_ANIMATION_END
+  });
+}
+
+function onBrowserThemeChanged(aUpdateInfo) {
+  if (!aUpdateInfo.windowId || // reset to default
+      aUpdateInfo.windowId == gTargetWindow)
+    applyBrowserTheme(aUpdateInfo.theme);
+}
+
+
+Tabs.onCreated.addListener(_aTab => {
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
+    timeout: configs.collapseDuration
+  });
+});
+
+Tabs.onRemoving.addListener((_aTab, _aCloseInfo) => {
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
+    timeout: configs.collapseDuration
+  });
+});
+
+Tabs.onMoved.addListener(_aTab => {
+  reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
+    timeout: configs.collapseDuration
+  });
+});
+
+Tabs.onShown.addListener(() => {
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
+});
+
+Tabs.onHidden.addListener(() => {
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
+});
+
+Tree.onAttached.addListener(async (aTab, _aInfo = {}) => {
+  if (!gInitialized)
+    return;
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
+  /*
+    We must not scroll to the tab here, because the tab can be moved
+    by the background page later. Instead we wait until the tab is
+    successfully moved (then Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY is delivered.)
+  */
+});
+
+Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
+  if (!gInitialized)
+    return;
+  const parent = aDetachInfo.oldParentTab;
+  if (!parent)
+    return;
+  reserveToUpdateVisualMaxTreeLevel();
+  reserveToUpdateIndent();
+});
+
+Tree.onLevelChanged.addListener(reserveToUpdateIndent);
+
+ContextualIdentities.onUpdated.addListener(() => {
+  updateContextualIdentitiesStyle();
+  updateContextualIdentitiesSelector();
+});
+
+function onConfigChange(aChangedKey) {
+  const rootClasses = document.documentElement.classList;
+  switch (aChangedKey) {
+    case 'debug': {
+      for (const tab of Tabs.getAllTabs()) {
+        TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
+      }
+      if (configs.debug)
+        rootClasses.add('debug');
+      else
+        rootClasses.remove('debug');
+    }; break;
+
+    case 'animation':
+      if (configs.animation)
+        rootClasses.add('animation');
+      else
+        rootClasses.remove('animation');
+      break;
+
+    case 'sidebarPosition':
+      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) {
+        rootClasses.add('right');
+        rootClasses.remove('left');
+      }
+      else {
+        rootClasses.add('left');
+        rootClasses.remove('right');
+      }
+      Indent.update({ force: true });
+      break;
+
+    case 'sidebarDirection':
+      if (configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL) {
+        rootClasses.add('rtl');
+        rootClasses.remove('ltr');
+      }
+      else {
+        rootClasses.add('ltr');
+        rootClasses.remove('rtl');
+      }
+      break;
+
+    case 'sidebarScrollbarPosition': {
+      let position = configs.sidebarScrollbarPosition;
+      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_AUTO)
+        position = configs.sidebarPosition;
+      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_RIGHT) {
+        rootClasses.add('right-scrollbar');
+        rootClasses.remove('left-scrollbar');
+      }
+      else {
+        rootClasses.add('left-scrollbar');
+        rootClasses.remove('right-scrollbar');
+      }
+      Indent.update({ force: true });
+    }; break;
+
+    case 'baseIndent':
+    case 'minIndent':
+    case 'maxTreeLevel':
+    case 'indentAutoShrink':
+    case 'indentAutoShrinkOnlyForVisible':
+      Indent.update({ force: true });
+      break;
+
+    case 'style':
+      location.reload();
+      break;
+
+    case 'scrollbarMode':
+      rootClasses.remove(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
+      rootClasses.remove(Constants.kTABBAR_STATE_NO_SCROLLBAR);
+      rootClasses.remove(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
+      switch (configs.scrollbarMode) {
+        default:
+        case Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT:
+          break;
+        case Constants.kTABBAR_SCROLLBAR_MODE_NARROW:
+          rootClasses.add(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
+          break;
+        case Constants.kTABBAR_SCROLLBAR_MODE_HIDE:
+          rootClasses.add(Constants.kTABBAR_STATE_NO_SCROLLBAR);
+          break;
+        case Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY:
+          rootClasses.add(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
+          break;
+      }
+      break;
+
+    case 'colorScheme':
+      document.documentElement.setAttribute('color-scheme', configs.colorScheme);
+      break;
+
+    case 'narrowScrollbarSize':
+      location.reload();
+      break;
+
+    case 'userStyleRules':
+      applyUserStyleRules()
+      break;
+
+    case 'inheritContextualIdentityToNewChildTab':
+      updateContextualIdentitiesSelector();
+      break;
+
+    case 'showContextualIdentitiesSelector':
+      if (configs[aChangedKey])
+        rootClasses.add(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      else
+        rootClasses.remove(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      break;
+
+    case 'showNewTabActionSelector':
+      if (configs[aChangedKey])
+        rootClasses.add(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      else
+        rootClasses.remove(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      break;
+
+    case 'simulateSVGContextFill':
+      if (configs[aChangedKey])
+        rootClasses.add('simulate-svg-context-fill');
+      else
+        rootClasses.remove('simulate-svg-context-fill');
+      break;
+  }
 }

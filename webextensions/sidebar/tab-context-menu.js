@@ -24,6 +24,7 @@ import * as Tabs from '../common/tabs.js';
 import * as Tree from '../common/tree.js';
 import * as Bookmark from '../common/bookmark.js';
 import * as TSTAPI from '../common/tst-api.js';
+import * as EventUtils from './event-utils.js';
 import EventListenerManager from '../common/EventListenerManager.js';
 
 export const onTabsClosing = new EventListenerManager();
@@ -40,6 +41,7 @@ const gExtraItems = new Map();
 
 export function init() {
   gMenu = document.querySelector('#tabContextMenu');
+  document.removeEventListener('contextmenu', onContextMenu, { capture: true });
 
   gUI = new MenuUI({
     root: gMenu,
@@ -502,6 +504,19 @@ function onExternalMessage(aMessage, aSender) {
   }
 }
 
+
+function onContextMenu(aEvent) {
+  if (!configs.fakeContextMenu)
+    return;
+  aEvent.stopPropagation();
+  aEvent.preventDefault();
+  const tab = EventUtils.getTabFromEvent(aEvent);
+  open({
+    tab:  tab && tab.apiTab,
+    left: aEvent.clientX,
+    top:  aEvent.clientY
+  });
+}
 
 Tabs.onRemoving.addListener(close);
 Tabs.onMoving.addListener(close);
