@@ -179,6 +179,11 @@ export function updateAll() {
 
 Tabs.onRemoving.addListener(reserveToUpdateLoadingState);
 
+Tabs.onMoved.addListener(aTab => {
+  if (gInitialized)
+    reserveToUpdateTooltip(Tabs.getParentTab(aTab));
+});
+
 Tabs.onStateChanged.addListener(aTab => {
   if (aTab.apiTab.status == 'loading')
     aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
@@ -203,6 +208,13 @@ Tabs.onCollapsedStateChanged.addListener(reserveToUpdateLoadingState);
 Tabs.onUpdated.addListener(updateSoundButtonTooltip);
 
 Tabs.onParentTabUpdated.addListener(updateSoundButtonTooltip);
+
+Tabs.onDetached.addListener(aTab => {
+  if (!gInitialized ||
+      !Tabs.ensureLivingTab(aTab))
+    return;
+  reserveToUpdateTooltip(Tabs.getParentTab(aTab));
+});
 
 Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   if (!gInitialized)

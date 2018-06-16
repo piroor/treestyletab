@@ -866,8 +866,6 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
 });
 
 Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
-  TabContextMenu.close();
-
   const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(aTab))
@@ -904,7 +902,6 @@ Tabs.onRemoved.addListener(async aTab => {
 });
 
 Tabs.onMoving.addListener(async aTab => {
-  TabContextMenu.close();
   if (!configs.animation ||
       Tabs.isPinned(aTab) ||
       Tabs.isOpening(aTab))
@@ -927,13 +924,11 @@ Tabs.onMoving.addListener(async aTab => {
   });
 });
 
-Tabs.onMoved.addListener(aTab => {
+Tabs.onMoved.addListener(_aTab => {
   Sidebar.reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
     timeout: configs.collapseDuration
   });
-  if (gInitialized)
-    SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
 });
 
 Tree.onLevelChanged.addListener(async () => {
@@ -943,8 +938,6 @@ Tree.onLevelChanged.addListener(async () => {
 Tabs.onDetached.addListener(aTab => {
   if (!Tabs.ensureLivingTab(aTab))
     return;
-  if (gInitialized)
-    SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   Tree.detachTab(aTab, {
@@ -1164,7 +1157,6 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
 Tree.onAttached.addListener(async (aTab, _aInfo = {}) => {
   if (!gInitialized)
     return;
-  TabContextMenu.close();
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
   /*
@@ -1177,7 +1169,6 @@ Tree.onAttached.addListener(async (aTab, _aInfo = {}) => {
 Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   if (!gInitialized)
     return;
-  TabContextMenu.close();
   const parent = aDetachInfo.oldParentTab;
   if (!parent)
     return;
@@ -1185,24 +1176,17 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   Sidebar.reserveToUpdateIndent();
 });
 
-Tabs.onPinned.addListener(() => {
-  TabContextMenu.close();
-});
-
 Tabs.onUnpinned.addListener(aTab => {
-  TabContextMenu.close();
   Scroll.scrollToTab(aTab);
   //updateInvertedTabContentsOrder(aTab);
 });
 
 Tabs.onShown.addListener(() => {
-  TabContextMenu.close();
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
 });
 
 Tabs.onHidden.addListener(() => {
-  TabContextMenu.close();
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
 });
