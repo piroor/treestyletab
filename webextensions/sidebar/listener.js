@@ -942,7 +942,7 @@ Tabs.onMoving.addListener(async aTab => {
       Tabs.isOpening(aTab))
     return;
   aTab.classList.add(Constants.kTAB_STATE_MOVING);
-  let visible = !Tabs.isCollapsed(aTab);
+  const visible = !Tabs.isCollapsed(aTab);
   Tree.collapseExpandTab(aTab, {
     collapsed: true,
     justNow:   true
@@ -1148,7 +1148,7 @@ function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
 }
 
 Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
-  let manager = gTabCollapsedStateChangedManagers.get(aTab);
+  const manager = gTabCollapsedStateChangedManagers.get(aTab);
   if (manager)
     manager.dispatch(aTab, aInfo);
 });
