@@ -697,7 +697,8 @@ function onOverflow(aEvent) {
   const label = Tabs.getTabLabel(tab);
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
-    Sidebar.reserveToUpdateTabTooltip(tab);
+    if (gInitialized)
+    SidebarTabs.reserveToUpdateTooltip(tab);
   }
 }
 
@@ -706,7 +707,8 @@ function onUnderflow(aEvent) {
   const label = Tabs.getTabLabel(tab);
   if (aEvent.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
-    Sidebar.reserveToUpdateTabTooltip(tab);
+    if (gInitialized)
+    SidebarTabs.reserveToUpdateTooltip(tab);
   }
 }
 
@@ -786,7 +788,8 @@ Tabs.onUpdated.addListener(aTab => {
 });
 
 Tabs.onLabelUpdated.addListener(aTab => {
-  Sidebar.reserveToUpdateTabTooltip(aTab);
+  if (gInitialized)
+  SidebarTabs.reserveToUpdateTooltip(aTab);
 });
 
 Tabs.onParentTabUpdated.addListener(aTab => {
@@ -964,7 +967,8 @@ Tabs.onMoved.addListener(aTab => {
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
     timeout: configs.collapseDuration
   });
-  Sidebar.reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
+  if (gInitialized)
+  SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
 });
 
 Tree.onLevelChanged.addListener(async () => {
@@ -974,7 +978,8 @@ Tree.onLevelChanged.addListener(async () => {
 Tabs.onDetached.addListener(aTab => {
   if (!Tabs.ensureLivingTab(aTab))
     return;
-  Sidebar.reserveToUpdateTabTooltip(Tabs.getParentTab(aTab));
+  if (gInitialized)
+  SidebarTabs.reserveToUpdateTooltip(Tabs.getParentTab(aTab));
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
   Tree.detachTab(aTab, {
@@ -985,7 +990,8 @@ Tabs.onDetached.addListener(aTab => {
 Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   SidebarTabs.updateTwisty(aTab);
   SidebarTabs.updateClosebox(aTab);
-  Sidebar.reserveToUpdateTabTooltip(aTab);
+  if (gInitialized)
+  SidebarTabs.reserveToUpdateTooltip(aTab);
 });
 
 
@@ -1212,7 +1218,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
       SidebarTabs.updateDescendantsCount(ancestor);
     }
   }
-  Sidebar.reserveToUpdateTabTooltip(aInfo.parent);
+  SidebarTabs.reserveToUpdateTooltip(aInfo.parent);
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
   /*
@@ -1233,7 +1239,7 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo = {}) => {
   SidebarTabs.updateClosebox(parent);
   Sidebar.reserveToUpdateVisualMaxTreeLevel();
   Sidebar.reserveToUpdateIndent();
-  Sidebar.reserveToUpdateTabTooltip(parent);
+  SidebarTabs.reserveToUpdateTooltip(parent);
   const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (const ancestor of ancestors) {
     SidebarTabs.updateDescendantsCount(ancestor);
@@ -1655,9 +1661,10 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'showCollapsedDescendantsByTooltip':
-      for (const tab of Tabs.getAllTabs()) {
-        Sidebar.reserveToUpdateTabTooltip(tab);
-      }
+      if (gInitialized)
+        for (const tab of Tabs.getAllTabs()) {
+          SidebarTabs.reserveToUpdateTooltip(tab);
+        }
       break;
 
     case 'style':

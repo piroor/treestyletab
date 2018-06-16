@@ -181,7 +181,7 @@ export async function init() {
       SidebarTabs.updateTwisty(tab);
       SidebarTabs.updateClosebox(tab);
       SidebarTabs.updateDescendantsCount(tab);
-      updateTabTooltip(tab);
+      SidebarTabs.updateTooltip(tab);
     }
     SidebarCache.reserveToUpdateCachedTabbar();
   }
@@ -553,54 +553,6 @@ export function updateTabbarLayout(aParams = {}) {
     PinnedTabs.reposition(aParams);
   else
     PinnedTabs.reserveToReposition(aParams);
-}
-
-
-export function reserveToUpdateTabTooltip(aTab) {
-  if (!gInitialized ||
-      !Tabs.ensureLivingTab(aTab))
-    return;
-  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
-    if (tab.reservedUpdateTabTooltip)
-      clearTimeout(tab.reservedUpdateTabTooltip);
-  }
-  aTab.reservedUpdateTabTooltip = setTimeout(() => {
-    delete aTab.reservedUpdateTabTooltip;
-    updateTabAndAncestorsTooltip(aTab);
-  }, 100);
-}
-
-function updateTabAndAncestorsTooltip(aTab) {
-  if (!Tabs.ensureLivingTab(aTab))
-    return;
-  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
-    updateTabTooltip(tab);
-  }
-}
-
-function updateTabTooltip(aTab) {
-  if (!Tabs.ensureLivingTab(aTab))
-    return;
-
-  aTab.dataset.labelWithDescendants = Tabs.getLabelWithDescendants(aTab);
-
-  if (configs.showCollapsedDescendantsByTooltip &&
-      Tabs.isSubtreeCollapsed(aTab) &&
-      Tabs.hasChildTabs(aTab)) {
-    aTab.setAttribute('title', aTab.dataset.labelWithDescendants);
-    return;
-  }
-
-  if (configs.debug)
-    return;
-
-  const label = Tabs.getTabLabel(aTab);
-  if (Tabs.isPinned(aTab) || label.classList.contains('overflow')) {
-    aTab.setAttribute('title', aTab.dataset.label);
-  }
-  else {
-    aTab.removeAttribute('title');
-  }
 }
 
 

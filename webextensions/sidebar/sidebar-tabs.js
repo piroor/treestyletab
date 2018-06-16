@@ -62,3 +62,50 @@ export function updateDescendantsCount(aTab) {
     count += 1;
   counter.textContent = count;
 }
+
+
+export function reserveToUpdateTooltip(aTab) {
+  if (!Tabs.ensureLivingTab(aTab))
+    return;
+  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
+    if (tab.reservedUpdateTabTooltip)
+      clearTimeout(tab.reservedUpdateTabTooltip);
+  }
+  aTab.reservedUpdateTabTooltip = setTimeout(() => {
+    delete aTab.reservedUpdateTabTooltip;
+    updateTabAndAncestorsTooltip(aTab);
+  }, 100);
+}
+
+function updateTabAndAncestorsTooltip(aTab) {
+  if (!Tabs.ensureLivingTab(aTab))
+    return;
+  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
+    updateTooltip(tab);
+  }
+}
+
+export function updateTooltip(aTab) {
+  if (!Tabs.ensureLivingTab(aTab))
+    return;
+
+  aTab.dataset.labelWithDescendants = Tabs.getLabelWithDescendants(aTab);
+
+  if (configs.showCollapsedDescendantsByTooltip &&
+      Tabs.isSubtreeCollapsed(aTab) &&
+      Tabs.hasChildTabs(aTab)) {
+    aTab.setAttribute('title', aTab.dataset.labelWithDescendants);
+    return;
+  }
+
+  if (configs.debug)
+    return;
+
+  const label = Tabs.getTabLabel(aTab);
+  if (Tabs.isPinned(aTab) || label.classList.contains('overflow')) {
+    aTab.setAttribute('title', aTab.dataset.label);
+  }
+  else {
+    aTab.removeAttribute('title');
+  }
+}
