@@ -368,7 +368,7 @@ async function updateChildren(aTab) {
   );
 }
 
-export function reserveToUpdateSubtreeCollapsed(aTab) {
+function reserveToUpdateSubtreeCollapsed(aTab) {
   if (!gInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;

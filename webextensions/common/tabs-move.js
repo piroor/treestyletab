@@ -66,7 +66,7 @@ export async function moveTabBefore(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsBefore([aTab], aReferenceTab, aOptions);
 }
 
-export async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
+async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length ||
       !Tabs.ensureLivingTab(aReferenceTab))
     return [];
@@ -196,7 +196,7 @@ export async function moveTabAfter(aTab, aReferenceTab, aOptions = {}) {
   return moveTabsAfter([aTab], aReferenceTab, aOptions);
 }
 
-export async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
+async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
   if (!aTabs.length ||
       !Tabs.ensureLivingTab(aReferenceTab))
     return [];

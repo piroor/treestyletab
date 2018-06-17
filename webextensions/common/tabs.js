@@ -549,7 +549,7 @@ export function ensureLivingTab(aTab) {
   return aTab;
 }
 
-export function assertInitializedTab(aTab) {
+function assertInitializedTab(aTab) {
   if (!aTab.apiTab)
     throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
   if (!aTab.childTabs)
@@ -720,7 +720,7 @@ export function getNormalTabs(aHint) { // only visible, including collapsed, not
   return Array.slice(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
 }
 
-export function getVisibleTabs(aHint) { // visible, not-collapsed, not-hidden
+function getVisibleTabs(aHint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(aHint);
   if (!container)
     return [];
@@ -1014,7 +1014,7 @@ export function isSubtreeCollapsed(aTab) {
 }
 
 /*
-export function shouldCloseTabSubtreeOf(aTab) {
+function shouldCloseTabSubtreeOf(aTab) {
   return (hasChildTabs(aTab) &&
           (configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
            isSubtreeCollapsed(aTab)));
@@ -1022,7 +1022,7 @@ export function shouldCloseTabSubtreeOf(aTab) {
 */
 
 /*
-export function shouldCloseLastTabSubtreeOf(aTab) {
+function shouldCloseLastTabSubtreeOf(aTab) {
   return (ensureLivingTab(aTab) &&
           shouldCloseTabSubtreeOf(aTab) &&
           getDescendantTabs(aTab).length + 1 == getAllTabs(aTab).length);

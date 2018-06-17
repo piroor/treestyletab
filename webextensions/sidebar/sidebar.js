@@ -368,7 +368,7 @@ export async function rebuildAll(aCache) {
   return false;
 }
 
-export async function inheritTreeStructure() {
+async function inheritTreeStructure() {
   const response = await browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: gTargetWindow
@@ -451,7 +451,7 @@ export function reserveToUpdateTabbarLayout(aOptions = {}) {
 reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
-export function updateTabbarLayout(aParams = {}) {
+function updateTabbarLayout(aParams = {}) {
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({

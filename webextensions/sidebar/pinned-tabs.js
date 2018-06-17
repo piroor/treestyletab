@@ -134,7 +134,7 @@ function reset() {
   pinnedTabs.forEach(clearStyle);
 }
 
-export function clearStyle(aTab) {
+function clearStyle(aTab) {
   aTab.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
   aTab.classList.remove(Constants.kTAB_STATE_LAST_ROW);
   const style = aTab.style;

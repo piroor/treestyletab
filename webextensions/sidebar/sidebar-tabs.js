@@ -32,11 +32,11 @@ function getTwisty(aTab) {
   return aTab.querySelector(`.${Constants.kTWISTY}`);
 }
 
-export function getFavIcon(aTab) {
+function getFavIcon(aTab) {
   return aTab.querySelector(`.${Constants.kFAVICON}`);
 }
 
-export function getSoundButton(aTab) {
+function getSoundButton(aTab) {
   return aTab.querySelector(`.${Constants.kSOUND_BUTTON}`);
 }
 
@@ -49,7 +49,7 @@ export function getClosebox(aTab) {
 }
 
 
-export function updateTwisty(aTab) {
+function updateTwisty(aTab) {
   let tooltip;
   if (Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
@@ -58,7 +58,7 @@ export function updateTwisty(aTab) {
   getTwisty(aTab).setAttribute('title', tooltip);
 }
 
-export function updateClosebox(aTab) {
+function updateClosebox(aTab) {
   let tooltip;
   if (Tabs.hasChildTabs(aTab) && Tabs.isSubtreeCollapsed(aTab))
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
@@ -67,7 +67,7 @@ export function updateClosebox(aTab) {
   getClosebox(aTab).setAttribute('title', tooltip);
 }
 
-export function updateDescendantsCount(aTab) {
+function updateDescendantsCount(aTab) {
   const counter = getDescendantsCounter(aTab);
   if (!counter)
     return;
@@ -79,7 +79,7 @@ export function updateDescendantsCount(aTab) {
 }
 
 
-export function reserveToUpdateTooltip(aTab) {
+function reserveToUpdateTooltip(aTab) {
   if (!gInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
@@ -101,7 +101,7 @@ function updateTabAndAncestorsTooltip(aTab) {
   }
 }
 
-export function updateTooltip(aTab) {
+function updateTooltip(aTab) {
   if (!Tabs.ensureLivingTab(aTab))
     return;
 
@@ -138,7 +138,7 @@ function reserveToUpdateLoadingState() {
   }, 0);
 }
 
-export function updateLoadingState() {
+function updateLoadingState() {
   if (document.querySelector(`#tabbar ${Tabs.kSELECTOR_VISIBLE_TAB}.loading`))
     document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
   else

@@ -129,7 +129,7 @@ export function endMultiDrag(aTab, aCoordinates) {
   gReadyToCaptureMouseEvents = false;
 }
 
-export function setDragData(aDragData) {
+function setDragData(aDragData) {
   return gCurrentDragData = aDragData;
 }
 
@@ -1029,7 +1029,7 @@ function onDragEnd(aEvent) {
 
 /* drag on tabs API */
 
-export function onTSTAPIDragEnter(aEvent) {
+function onTSTAPIDragEnter(aEvent) {
   Scroll.autoScrollOnMouseEvent(aEvent);
   const tab = EventUtils.getTabFromEvent(aEvent);
   let target = tab;
@@ -1050,7 +1050,7 @@ export function onTSTAPIDragEnter(aEvent) {
   gLastDragEnteredTarget = target;
 }
 
-export function onTSTAPIDragExit(aEvent) {
+function onTSTAPIDragExit(aEvent) {
   if (gDragTargetIsClosebox &&
       !EventUtils.isEventFiredOnClosebox(aEvent))
     return;

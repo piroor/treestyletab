@@ -82,7 +82,7 @@ export async function init() {
 
 /* basics */
 
-export function scrollTo(aParams = {}) {
+function scrollTo(aParams = {}) {
   if (configs.logOnScroll)
     log('scrollTo ', aParams);
   if (!aParams.justNow &&
@@ -100,7 +100,7 @@ export function scrollTo(aParams = {}) {
     throw new Error('No parameter to indicate scroll position');
 }
 
-export function cancelRunningScroll() {
+function cancelRunningScroll() {
   scrollToTab.stopped = true;
   stopSmoothScroll();
 }
@@ -139,7 +139,7 @@ export function isTabInViewport(aTab) {
   return calculateScrollDeltaForTab(aTab) == 0;
 }
 
-export async function smoothScrollTo(aParams = {}) {
+async function smoothScrollTo(aParams = {}) {
   if (configs.logOnScroll)
     log('smoothScrollTo ', aParams);
   //cancelPerformingAutoScroll(true);
@@ -203,7 +203,7 @@ export async function smoothScrollTo(aParams = {}) {
 }
 smoothScrollTo.currentOffset= 0;
 
-export async function smoothScrollBy(aDelta) {
+async function smoothScrollBy(aDelta) {
   return smoothScrollTo({
     position: gTabBar.scrollTop + aDelta
   });
@@ -371,7 +371,7 @@ export function autoScrollOnMouseEvent(aEvent) {
 autoScrollOnMouseEvent.areaSize = 20;
 
 
-export async function notifyOutOfViewTab(aTab) {
+async function notifyOutOfViewTab(aTab) {
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('notifyOutOfViewTab: skip until completely restored');
     wait(100).then(() => notifyOutOfViewTab(aTab));

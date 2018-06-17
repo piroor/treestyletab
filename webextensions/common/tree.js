@@ -1686,7 +1686,7 @@ export async function applyTreeStructureToTabs(aTabs, aTreeStructure, aOptions =
 }
 
 
-export function openGroupBookmarkBehavior() {
+function openGroupBookmarkBehavior() {
   return Constants.kGROUP_BOOKMARK_SUBTREE | Constants.kGROUP_BOOKMARK_USE_DUMMY | Constants.kGROUP_BOOKMARK_EXPAND_ALL_TREE;
 /*
   const behavior = utils.getTreePref('openGroupBookmark.behavior');

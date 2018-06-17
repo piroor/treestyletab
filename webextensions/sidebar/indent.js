@@ -144,7 +144,7 @@ Tree.onDetached.addListener(async (_aTab, aDetachInfo = {}) => {
 });
 
 
-export function reserveToUpdateIndent() {
+function reserveToUpdateIndent() {
   if (!gInitialized)
     return;
   //log('reserveToUpdateIndent');

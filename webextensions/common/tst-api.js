@@ -122,21 +122,21 @@ export function getAddon(aId) {
   return gAddons.get(aId);
 }
 
-export function registerAddon(aId, aAddon) {
+function registerAddon(aId, aAddon) {
   gAddons.set(aId, aAddon);
 }
 
-export function unregisterAddon(aId) {
+function unregisterAddon(aId) {
   gAddons.delete(aId);
   delete gScrollLockedBy[aId];
   delete gGroupingBlockedBy[aId];
 }
 
-export function getAddons() {
+function getAddons() {
   return gAddons.entries();
 }
 
-export function isInitialized() {
+function isInitialized() {
   return !!gContext;
 }
 

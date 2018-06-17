@@ -35,7 +35,7 @@ export function evaluate(aExpression, aContext, aType) {
   return result;
 }
 
-export function getArrayFromXPathResult(aXPathResult) {
+function getArrayFromXPathResult(aXPathResult) {
   var max   = aXPathResult.snapshotLength;
   var array = new Array(max);
   if (!max)

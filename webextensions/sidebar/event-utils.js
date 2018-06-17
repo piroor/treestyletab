@@ -70,7 +70,7 @@ export function isEventFiredOnClickable(aEvent) {
   return !!getElementTarget(aEvent).closest(`button, scrollbar, select`);
 }
 
-export function isEventFiredOnScrollbar(aEvent) {
+function isEventFiredOnScrollbar(aEvent) {
   return !!getElementTarget(aEvent).closest(`scrollbar, nativescrollbar`);
 }
 
@@ -79,7 +79,7 @@ export function getTabFromEvent(aEvent) {
   return Tabs.getTabFromChild(aEvent.target);
 }
 
-export function getTabsContainerFromEvent(aEvent) {
+function getTabsContainerFromEvent(aEvent) {
   return Tabs.getTabsContainer(aEvent.target);
 }
 
@@ -90,7 +90,7 @@ export function getTabFromTabbarEvent(aEvent) {
   return getTabFromCoordinates(aEvent);
 }
 
-export function getTabFromCoordinates(aEvent) {
+function getTabFromCoordinates(aEvent) {
   let tab = document.elementFromPoint(aEvent.clientX, aEvent.clientY);
   tab = Tabs.getTabFromChild(tab);
   if (tab)
