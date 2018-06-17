@@ -72,7 +72,7 @@ export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions 
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
-      cache.version != Constants.kSIDEBAR_CONTENTS_VERSION ||
+      cache.version != Constants.kBACKGROUND_CONTENTS_VERSION ||
       !signatureMatched) {
     Cache.log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
