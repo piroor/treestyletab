@@ -41,7 +41,7 @@
 import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   configs
 } from './common.js';
@@ -50,6 +50,11 @@ import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as ContextualIdentities from './contextual-identities.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tabs-update'] || configs.logOnUpdated)
+    internalLogger(...aArgs);
+}
 
 export function updateTab(aTab, aNewState = {}, aOptions = {}) {
   if ('url' in aNewState) {

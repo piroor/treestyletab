@@ -7,10 +7,15 @@
 
 import * as Constants from './constants.js';
 import {
-  log,
+  log as internalLogger,
   notify,
   configs
 } from './common.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/permissions'])
+    internalLogger(...aArgs);
+}
 
 export const BOOKMARKS = { permissions: ['bookmarks'] };
 export const ALL_URLS = { origins: ['<all_urls>'] };

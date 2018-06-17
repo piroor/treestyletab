@@ -39,10 +39,16 @@
 'use strict';
 
 import {
+  log as internalLogger,
   configs
 } from './common.js';
 
 import * as Tabs from './tabs.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tabs-container'])
+    internalLogger(...aArgs);
+}
 
 
 export function buildFor(aWindowId) {

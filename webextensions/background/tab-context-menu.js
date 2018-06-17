@@ -13,11 +13,16 @@
 */
 
 import {
-  log,
+  log as internalLogger,
   configs
 } from '../common/common.js';
 import * as TSTAPI from '../common/tst-api.js';
 import EventListenerManager from '../common/EventListenerManager.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/tab-context-menu'])
+    internalLogger(...aArgs);
+}
 
 export const onTSTItemClick = new EventListenerManager();
 
@@ -78,8 +83,7 @@ function reserveNotifyUpdated() {
 }
 
 function onMessage(aMessage, _aSender) {
-  if (configs.logOnFakeContextMenu)
-    log('fake-context-menu: internally called:', aMessage);
+  log('tab-context-menu: internally called:', aMessage);
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_GET_ITEMS:
       return Promise.resolve(exportExtraItems());
@@ -91,8 +95,7 @@ function onMessage(aMessage, _aSender) {
 }
 
 export function onExternalMessage(aMessage, aSender) {
-  if (configs.logOnFakeContextMenu)
-    log('fake-context-menu: API called:', aMessage, aSender);
+  log('tab-context-menu: API called:', aMessage, aSender);
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
       const items  = getItemsFor(aSender.id);

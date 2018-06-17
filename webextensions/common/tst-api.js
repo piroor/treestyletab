@@ -42,11 +42,17 @@ import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 import TabIdFixer from '../extlib/TabIdFixer.js';
 
 import {
+  log as internalLogger,
   wait,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tst-api'])
+    internalLogger(...aArgs);
+}
 
 export const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';

@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   configs
 } from '../common/common.js';
@@ -27,6 +27,15 @@ import * as Permissions from '../common/permissions.js';
 import * as Background from './background.js';
 import * as BackgroundCache from './background-cache.js';
 import * as TreeStructure from './tree-structure.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/handle-misc'])
+    internalLogger(...aArgs);
+}
+function logMouseEvent(...aArgs) {
+  if (configs.logOnMouseEvent)
+    internalLogger(...aArgs);
+}
 
 
 let gInitialized = false;
@@ -334,15 +343,13 @@ function onMessage(aMessage, aSender) {
 
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
       return (async () => {
-        if (configs.logOnMouseEvent)
-          log('Constants.kNOTIFY_TAB_MOUSEDOWN');
+        logMouseEvent('Constants.kNOTIFY_TAB_MOUSEDOWN');
         await Tabs.waitUntilTabsAreCreated(aMessage.tab);
         const tab = Tabs.getTabById(aMessage.tab);
         if (!tab)
           return;
 
-        if (configs.logOnMouseEvent)
-          log('Sending message to listeners');
+        logMouseEvent('Sending message to listeners');
         const serializedTab = TSTAPI.serializeTab(tab);
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, aMessage, {
           type:   TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
@@ -363,8 +370,7 @@ function onMessage(aMessage, aSender) {
           if (results.some(aResult => aResult.result)) // canceled
             return;
 
-          if (configs.logOnMouseEvent)
-            log('Ready to select the tab');
+          logMouseEvent('Ready to select the tab');
 
           // not canceled, then fallback to default "select tab"
           if (aMessage.button == 0)

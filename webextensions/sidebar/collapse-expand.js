@@ -39,7 +39,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
   nextFrame,
   configs
@@ -53,6 +53,11 @@ import * as SidebarCache from './sidebar-cache.js';
 import * as Scroll from './scroll.js';
 import * as Indent from './indent.js';
 
+function log(...aArgs) {
+  if (configs.logFor['sidebar/collapse-expand'] || configs.logOnCollapseExpand)
+    internalLogger(...aArgs);
+}
+
 
 const gUpdatingCollapsedStateCancellers = new WeakMap();
 const gTabCollapsedStateChangedManagers = new WeakMap();
@@ -60,8 +65,7 @@ const gTabCollapsedStateChangedManagers = new WeakMap();
 Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   const toBeCollapsed = aInfo.collapsed;
 
-  if (configs.logOnCollapseExpand)
-    log('Tabs.onCollapsedStateChanging ', dumpTab(aTab), aInfo);
+  log('Tabs.onCollapsedStateChanging ', dumpTab(aTab), aInfo);
   if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
     return;
 

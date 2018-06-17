@@ -41,7 +41,7 @@
 import TabIdFixer from '../extlib/TabIdFixer.js';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   dumpTab,
   configs
@@ -52,6 +52,15 @@ import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/api-tabs-listener'])
+    internalLogger(...aArgs);
+}
+function logUpdated(...aArgs) {
+  if (configs.logOnUpdated)
+    internalLogger(...aArgs);
+}
 
 export function startListen() {
   browser.tabs.onActivated.addListener(onActivated);
@@ -216,8 +225,7 @@ async function onUpdated(aTabId, aChangeInfo, aTab) {
       return;
     }
 
-    if (configs.logOnUpdated)
-      log('tabs.onUpdated ', aTabId, aChangeInfo, aTab, updatedTab.apiTab);
+    logUpdated('tabs.onUpdated ', aTabId, aChangeInfo, aTab, updatedTab.apiTab);
 
     //updatedTab.apiTab = aTab;
     /*
@@ -233,8 +241,7 @@ async function onUpdated(aTabId, aChangeInfo, aTab) {
     }
     if (configs.enableWorkaroundForBug1409262 &&
         aTab.openerTabId != updatedTab.apiTab.TSTUpdatedOpenerTabId) {
-      if (configs.logOnUpdated)
-        log(`openerTabId of ${aTabId} is changed by someone!: ${updatedTab.apiTab.TSTUpdatedOpenerTabId} => ${aTab.openerTabId}`);
+      logUpdated(`openerTabId of ${aTabId} is changed by someone!: ${updatedTab.apiTab.TSTUpdatedOpenerTabId} => ${aTab.openerTabId}`);
       updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = aTab.openerTabId;
     }
 

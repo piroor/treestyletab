@@ -41,7 +41,7 @@
 import MenuUI from '../extlib/MenuUI.js';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   configs
 } from '../common/common.js';
@@ -57,6 +57,11 @@ import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as TabContextMenu from './tab-context-menu.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/mouse-event-listener'] || configs.logOnMouseEvent)
+    internalLogger(...aArgs);
+}
 
 let gTargetWindow;
 
@@ -197,8 +202,7 @@ function onMouseDown(aEvent) {
   if (EventUtils.isEventFiredOnAnchor(aEvent) &&
       !EventUtils.isAccelAction(aEvent) &&
       aEvent.button != 2) {
-    if (configs.logOnMouseEvent)
-      log('mouse down on a selector anchor');
+    log('mouse down on a selector anchor');
     aEvent.stopPropagation();
     aEvent.preventDefault();
     const selector = document.getElementById(EventUtils.getElementTarget(aEvent).closest('[data-menu-ui]').dataset.menuUi);
@@ -210,8 +214,7 @@ function onMouseDown(aEvent) {
 
   const target = aEvent.target;
   const tab = EventUtils.getTabFromEvent(aEvent) || EventUtils.getTabFromTabbarEvent(aEvent);
-  if (configs.logOnMouseEvent)
-    log('onMouseDown: found target tab: ', tab);
+  log('onMouseDown: found target tab: ', tab);
 
   const mousedownDetail = {
     targetType:    getMouseEventTargetType(aEvent),
@@ -225,8 +228,7 @@ function onMouseDown(aEvent) {
     isMiddleClick: EventUtils.isMiddleClick(aEvent),
     isAccelClick:  EventUtils.isAccelAction(aEvent)
   };
-  if (configs.logOnMouseEvent)
-    log('onMouseDown ', mousedownDetail);
+  log('onMouseDown ', mousedownDetail);
 
   if (mousedownDetail.targetType == 'selector')
     return;
@@ -271,8 +273,7 @@ function onMouseDown(aEvent) {
     if (TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_DRAGREADY).length == 0)
       return;
 
-    if (configs.logOnMouseEvent)
-      log('onMouseDown expired');
+    log('onMouseDown expired');
     mousedown.expired = true;
     if (aEvent.button == 0) {
       if (tab) {
@@ -333,19 +334,16 @@ async function onMouseUp(aEvent) {
       (tab && tab != Tabs.getTabById(lastMousedown.detail.tab)))
     return;
 
-  if (configs.logOnMouseEvent)
-    log('onMouseUp ', lastMousedown.detail);
+  log('onMouseUp ', lastMousedown.detail);
 
   if (await promisedCanceled) {
-    if (configs.logOnMouseEvent)
-      log('mouseup is canceled by other addons');
+    log('mouseup is canceled by other addons');
     return;
   }
 
   if (tab) {
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
-      if (configs.logOnMouseEvent)
-        log('middle click on a tab');
+      log('middle click on a tab');
       //log('middle-click to close');
       Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
         .then(aConfirmed => {
@@ -362,16 +360,14 @@ async function onMouseUp(aEvent) {
     configs.autoAttachOnNewTabCommand;
   if (EventUtils.isEventFiredOnNewTabButton(aEvent) &&
       lastMousedown.detail.button != 2) {
-    if (configs.logOnMouseEvent)
-      log('click on the new tab button');
+    log('click on the new tab button');
     handleNewTabAction(aEvent, {
       action: actionForNewTabCommand
     });
     return;
   }
 
-  if (configs.logOnMouseEvent)
-    log('notify as a blank area click to other addons');
+  log('notify as a blank area click to other addons');
   let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     window: gTargetWindow,
@@ -384,8 +380,7 @@ async function onMouseUp(aEvent) {
     return;
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
-    if (configs.logOnMouseEvent)
-      log('default action for middle click on the blank area');
+    log('default action for middle click on the blank area');
     handleNewTabAction(aEvent, {
       action: configs.autoAttachOnNewTabCommand
     });
@@ -400,8 +395,7 @@ function onClick(aEvent) {
   if (aEvent.button != 0) // ignore non-left click
     return;
 
-  if (configs.logOnMouseEvent)
-    log('onClick', String(aEvent.target));
+  log('onClick', String(aEvent.target));
 
   if (EventUtils.isEventFiredOnMenuOrPanel(aEvent) ||
       EventUtils.isEventFiredOnAnchor(aEvent))
@@ -414,14 +408,12 @@ function onClick(aEvent) {
   }
 
   const tab = EventUtils.getTabFromEvent(aEvent);
-  if (configs.logOnMouseEvent)
-    log('clicked tab: ', tab);
+  log('clicked tab: ', tab);
 
   if (EventUtils.isEventFiredOnTwisty(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    if (configs.logOnMouseEvent)
-      log('clicked on twisty');
+    log('clicked on twisty');
     if (Tabs.hasChildTabs(tab))
       Tree.collapseExpandSubtree(tab, {
         collapsed:       !Tabs.isSubtreeCollapsed(tab),
@@ -434,8 +426,7 @@ function onClick(aEvent) {
   if (EventUtils.isEventFiredOnSoundButton(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    if (configs.logOnMouseEvent)
-      log('clicked on sound button');
+    log('clicked on sound button');
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
       windowId: gTargetWindow,
@@ -448,8 +439,7 @@ function onClick(aEvent) {
   if (EventUtils.isEventFiredOnClosebox(aEvent)) {
     aEvent.stopPropagation();
     aEvent.preventDefault();
-    if (configs.logOnMouseEvent)
-      log('clicked on closebox');
+    log('clicked on closebox');
     //if (!warnAboutClosingTabSubtreeOf(tab)) {
     //  aEvent.stopPropagation();
     //  aEvent.preventDefault();
@@ -465,8 +455,7 @@ function onClick(aEvent) {
 }
 
 function handleNewTabAction(aEvent, aOptions = {}) {
-  if (configs.logOnMouseEvent)
-    log('handleNewTabAction');
+  log('handleNewTabAction');
 
   if (!configs.autoAttach && !('action' in aOptions))
     aOptions.action = Constants.kNEWTAB_DO_NOTHING;

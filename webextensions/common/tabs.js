@@ -42,11 +42,16 @@ import * as XPath from './xpath.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import {
-  log,
+  log as internalLogger,
   configs
 } from './common.js';
 
 import EventListenerManager from './EventListenerManager.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tabs'])
+    internalLogger(...aArgs);
+}
 
 
 let gTargetWindow;

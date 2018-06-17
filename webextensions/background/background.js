@@ -9,7 +9,7 @@ import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 import RichConfirm from '../extlib/RichConfirm.js';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
   configs
 } from '../common/common.js';
@@ -34,6 +34,11 @@ import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as ContextMenu from './context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/background'])
+    internalLogger(...aArgs);
+}
 
 export const onInit    = new EventListenerManager();
 export const onBuilt   = new EventListenerManager();

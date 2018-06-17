@@ -6,14 +6,20 @@
 'use strict';
 
 import {
-  log,
-  dumpTab
+  log as internalLogger,
+  dumpTab,
+  configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tabs-group'])
+    internalLogger(...aArgs);
+}
 
 export function makeGroupTabURI(aOptions = {}) {
   const base = Constants.kGROUP_TAB_URI;

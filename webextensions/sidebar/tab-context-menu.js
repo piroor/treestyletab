@@ -14,7 +14,7 @@
 import MenuUI from '../extlib/MenuUI.js';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   notify,
   configs
@@ -26,6 +26,11 @@ import * as Bookmark from '../common/bookmark.js';
 import * as TSTAPI from '../common/tst-api.js';
 import * as EventUtils from './event-utils.js';
 import EventListenerManager from '../common/EventListenerManager.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/tab-context-menu'])
+    internalLogger(...aArgs);
+}
 
 export const onTabsClosing = new EventListenerManager();
 
@@ -340,8 +345,7 @@ async function onCommand(aItem, aEvent) {
       // browser.tabs.duplicate(gContextTab.id);
       return (async () => {
         const sourceTab = Tabs.getTabById(gContextTab);
-        if (configs.logOnFakeContextMenu)
-          log('source tab: ', sourceTab, !!sourceTab.apiTab);
+        log('source tab: ', sourceTab, !!sourceTab.apiTab);
         const duplicatedTabs = await Tree.moveTabs([sourceTab], {
           duplicate:           true,
           destinationWindowId: gContextWindowId,
@@ -459,8 +463,7 @@ async function onCommand(aItem, aEvent) {
 }
 
 function onMessage(aMessage, _aSender) {
-  if (configs.logOnFakeContextMenu)
-    log('fake-context-menu: internally called:', aMessage);
+  log('tab-context-menu: internally called:', aMessage);
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_UPDATED: {
       importExtraItems(aMessage.items);
@@ -479,8 +482,7 @@ function importExtraItems(aItems) {
 }
 
 function onExternalMessage(aMessage, aSender) {
-  if (configs.logOnFakeContextMenu)
-    log('fake-context-menu: API called:', aMessage, aSender);
+  log('tab-context-menu: API called:', aMessage, aSender);
   switch (aMessage.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
       return (async () => {

@@ -5,8 +5,17 @@
 */
 'use strict';
 
+import {
+  log as internalLogger,
+  configs
+} from './common.js';
 import * as Constants from './constants.js';
 import * as TSTAPI from './tst-api.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/sidebar-status'])
+    internalLogger(...aArgs);
+}
 
 let gOpenState;
 const gFocusState = new Map();

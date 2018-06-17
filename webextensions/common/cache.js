@@ -5,15 +5,19 @@
 */
 'use strict';
 
-import * as Common from './common.js';
+import {
+  log as internalLogger,
+  dumpTab,
+  configs
+} from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 
-export function log(...aArgs) {
-  if (Common.configs.logOnCache)
-    Common.log(...aArgs);
+function log(...aArgs) {
+  if (configs.logFor['common/cache'])
+    internalLogger(...aArgs);
 }
 
 export async function getWindowSignature(aWindowIdOrTabs) {
@@ -77,7 +81,7 @@ export function restoreTabsFromCacheInternal(aParams) {
     const tabsMustBeRemoved = apiTabs.map(Tabs.getTabById);
     log('restoreTabsFromCacheInternal: cleared?: ',
         tabsMustBeRemoved.every(aTab => !aTab),
-        tabsMustBeRemoved.map(Common.dumpTab));
+        tabsMustBeRemoved.map(dumpTab));
     log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
     const matched = aParams.cache.match(/<li/g);
     log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);

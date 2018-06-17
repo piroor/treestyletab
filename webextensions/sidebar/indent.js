@@ -6,12 +6,18 @@
 'use strict';
 
 import {
+  log as internalLogger,
   configs
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
 import * as Tree from '../common/tree.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/indent'])
+    internalLogger(...aArgs);
+}
 
 let gInitialized = false;
 let gIndentDefinition;

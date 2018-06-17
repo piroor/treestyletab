@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   configs
 } from '../common/common.js';
@@ -17,6 +17,11 @@ import * as Tree from '../common/tree.js';
 import * as Cache from '../common/cache.js';
 import * as MetricsData from '../common/metrics-data.js';
 
+function log(...aArgs) {
+  if (configs.logFor['background/background-cache'])
+    internalLogger(...aArgs);
+}
+
 let gActivated = false;
 
 export function activate() {
@@ -26,15 +31,15 @@ export function activate() {
 
 export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions = {}) {
   MetricsData.add('restoreWindowFromEffectiveWindowCache start');
-  Cache.log('restoreWindowFromEffectiveWindowCache start');
+  log('restoreWindowFromEffectiveWindowCache start');
   const owner = aOptions.owner || getWindowCacheOwner(aWindowId);
   if (!owner) {
-    Cache.log('restoreWindowFromEffectiveWindowCache fail: no owner');
+    log('restoreWindowFromEffectiveWindowCache fail: no owner');
     return false;
   }
   cancelReservedCacheTree(aWindowId); // prevent to break cache before loading
   const apiTabs  = aOptions.tabs || await browser.tabs.query({ windowId: aWindowId });
-  Cache.log('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
+  log('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const
@@ -43,14 +48,14 @@ export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions 
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
   let cachedSignature = cache && cache.signature;
-  Cache.log(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
+  log(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
     cachedSignature, cache
   });
   if (cache &&
       cache.tabs &&
       cachedSignature &&
       cachedSignature != Cache.signatureFromTabsCache(cache.tabs)) {
-    Cache.log(`restoreWindowFromEffectiveWindowCache: cache for ${aWindowId} is broken.`, {
+    log(`restoreWindowFromEffectiveWindowCache: cache for ${aWindowId} is broken.`, {
       signature: cachedSignature,
       cache:     Cache.signatureFromTabsCache(cache.tabs)
     });
@@ -68,20 +73,20 @@ export async function restoreWindowFromEffectiveWindowCache(aWindowId, aOptions 
     actual: actualSignature,
     cached: cachedSignature
   });
-  Cache.log(`restoreWindowFromEffectiveWindowCache: verify cache for ${aWindowId}`, {
+  log(`restoreWindowFromEffectiveWindowCache: verify cache for ${aWindowId}`, {
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
       cache.version != Constants.kBACKGROUND_CONTENTS_VERSION ||
       !signatureMatched) {
-    Cache.log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
+    log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${aWindowId}`);
     clearWindowCache(owner);
     MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
     return false;
   }
   cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
 
-  Cache.log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
+  log(`restoreWindowFromEffectiveWindowCache: restore ${aWindowId} from cache`);
 
   let insertionPoint  = aOptions.insertionPoint;
   if (!insertionPoint) {
@@ -139,7 +144,7 @@ function updateWindowCache(aOwner, aKey, aValue) {
 }
 
 export function clearWindowCache(aOwner) {
-  Cache.log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
+  log('clearWindowCache for owner ', aOwner, { stack: new Error().stack });
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_TABS);
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR);
   updateWindowCache(aOwner, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
@@ -193,7 +198,7 @@ export async function reserveToCacheTree(aHint) {
     return;
 
   const windowId = parseInt(container.dataset.windowId);
-  Cache.log('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
+  log('reserveToCacheTree for window ', windowId, { stack: new Error().stack });
   clearWindowCache(container.lastWindowCacheOwner);
 
   if (container.waitingToCacheTree)
@@ -221,11 +226,11 @@ async function cacheTree(aWindowId) {
   const signature = await Cache.getWindowSignature(aWindowId);
   if (container.allTabsRestored)
     return;
-  //Cache.log('save cache for ', aWindowId);
+  //log('save cache for ', aWindowId);
   container.lastWindowCacheOwner = getWindowCacheOwner(aWindowId);
   if (!container.lastWindowCacheOwner)
     return;
-  Cache.log('cacheTree for window ', aWindowId, { stack: new Error().stack });
+  log('cacheTree for window ', aWindowId, { stack: new Error().stack });
   updateWindowCache(container.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version: Constants.kBACKGROUND_CONTENTS_VERSION,
     tabs:    container.outerHTML,

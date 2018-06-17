@@ -39,12 +39,18 @@
 'use strict';
 
 import {
+  log as internalLogger,
   configs
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
 import * as Size from './size.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/pinned-tabs'])
+    internalLogger(...aArgs);
+}
 
 let gTargetWindow;
 let gTabBar;

@@ -41,7 +41,7 @@
 import TabIdFixer from '../extlib/TabIdFixer.js';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   dumpTab,
   configs
@@ -59,6 +59,15 @@ import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as MetricsData from './metrics-data.js';
 import EventListenerManager from './EventListenerManager.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tree'])
+    internalLogger(...aArgs);
+}
+function logCollapseExpand(...aArgs) {
+  if (configs.logOnCollapseExpand)
+    internalLogger(...aArgs);
+}
 
 
 export const onAttached     = new EventListenerManager();
@@ -558,8 +567,7 @@ export async function collapseExpandSubtree(aTab, aParams = {}) {
   if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
     return;
   aParams.stack = `${new Error().stack}\n${aParams.stack || ''}`;
-  if (configs.logOnCollapseExpand)
-    log('collapseExpandSubtree: ', dumpTab(aTab), Tabs.isSubtreeCollapsed(aTab), aParams);
+  logCollapseExpand('collapseExpandSubtree: ', dumpTab(aTab), Tabs.isSubtreeCollapsed(aTab), aParams);
   await Promise.all([
     collapseExpandSubtreeInternal(aTab, aParams),
     aParams.broadcast && browser.runtime.sendMessage(remoteParams)
@@ -633,8 +641,7 @@ export function collapseExpandTabAndSubtree(aTab, aParams = {}) {
 
   if (aParams.collapsed && Tabs.isActive(aTab)) {
     const newSelection = Tabs.getVisibleAncestorOrSelf(aTab);
-    if (configs.logOnCollapseExpand)
-      log('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
+    logCollapseExpand('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
     TabsInternalOperation.selectTab(newSelection, { silently: true });
   }
 
@@ -662,8 +669,7 @@ export function collapseExpandTab(aTab, aParams = {}) {
   }
 
   const stack = `${new Error().stack}\n${aParams.stack || ''}`;
-  if (configs.logOnCollapseExpand)
-    log(`collapseExpandTab ${aTab.id} `, aParams, { stack })
+  logCollapseExpand(`collapseExpandTab ${aTab.id} `, aParams, { stack })
   const last = aParams.last &&
                  (!Tabs.hasChildTabs(aTab) || Tabs.isSubtreeCollapsed(aTab));
   const collapseExpandInfo = Object.assign({}, aParams, {
@@ -696,12 +702,10 @@ export function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
   if (!aTab)
     return;
 
-  if (configs.logOnCollapseExpand)
-    log('collapseExpandTreesIntelligentlyFor');
+  logCollapseExpand('collapseExpandTreesIntelligentlyFor');
   const container = Tabs.getTabsContainer(aTab);
   if (parseInt(container.dataset.doingIntelligentlyCollapseExpandCount) > 0) {
-    if (configs.logOnCollapseExpand)
-      log('=> done by others');
+    logCollapseExpand('=> done by others');
     return;
   }
   TabsContainer.incrementCounter(container, 'doingIntelligentlyCollapseExpandCount');
@@ -720,8 +724,7 @@ export function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
      ]`,
     container
   );
-  if (configs.logOnCollapseExpand)
-    log(`${xpathResult.snapshotLength} tabs can be collapsed`);
+  logCollapseExpand(`${xpathResult.snapshotLength} tabs can be collapsed`);
   for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
     let dontCollapse = false;
     const collapseTab  = xpathResult.snapshotItem(i);
@@ -737,8 +740,7 @@ export function collapseExpandTreesIntelligentlyFor(aTab, aOptions = {}) {
         }
       }
     }
-    if (configs.logOnCollapseExpand)
-      log(`${dumpTab(collapseTab)}: dontCollapse = ${dontCollapse}`);
+    logCollapseExpand(`${dumpTab(collapseTab)}: dontCollapse = ${dontCollapse}`);
 
     const manuallyExpanded = collapseTab.classList.contains(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)

@@ -39,7 +39,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   dumpTab,
   configs
@@ -49,6 +49,11 @@ import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tabs-move'])
+    internalLogger(...aArgs);
+}
 
 export async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
   log('moveTabsBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);

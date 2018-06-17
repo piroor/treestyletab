@@ -40,7 +40,7 @@
 import RichConfirm from '../extlib/RichConfirm.js';
 
 import {
-  log,
+  log as internalLogger,
   wait,
   configs
 } from '../common/common.js';
@@ -52,6 +52,11 @@ import * as TSTAPI from '../common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/drag-and-drop'])
+    internalLogger(...aArgs);
+}
 
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';

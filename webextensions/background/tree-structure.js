@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
   configs
 } from '../common/common.js';
@@ -16,6 +16,11 @@ import * as Tabs from '../common/tabs.js';
 import * as Tree from '../common/tree.js';
 import * as MetricsData from '../common/metrics-data.js';
 import EventListenerManager from '../common/EventListenerManager.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/tree-structure'])
+    internalLogger(...aArgs);
+}
 
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 

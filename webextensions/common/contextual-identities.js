@@ -5,7 +5,16 @@
 */
 'use strict';
 
+import {
+  log as internalLogger,
+  configs
+} from './common.js';
 import EventListenerManager from './EventListenerManager.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/contextual-identities'])
+    internalLogger(...aArgs);
+}
 
 const gContextualIdentities = new Map();
 

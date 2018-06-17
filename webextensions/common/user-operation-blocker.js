@@ -5,8 +5,17 @@
 */
 'use strict';
 
+import {
+  log as internalLogger,
+  configs
+} from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/user-operation-blocker'])
+    internalLogger(...aArgs);
+}
 
 let gBlockingCount = 0;
 let gBlockingThrobberCount = 0;

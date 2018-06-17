@@ -6,6 +6,7 @@
 'use strict';
 
 import {
+  log as internalLogger,
   wait,
   nextFrame,
   configs
@@ -16,6 +17,11 @@ import * as Tabs from '../common/tabs.js';
 import * as TabsUpdate from '../common/tabs-update.js';
 import * as Tree from '../common/tree.js';
 import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/sidebar-tabs'])
+    internalLogger(...aArgs);
+}
 
 let gInitialized = false;
 

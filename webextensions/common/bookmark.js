@@ -5,8 +5,17 @@
 */
 'use strict';
 
-import { notify } from './common.js';
+import {
+  log as internalLogger,
+  configs,
+  notify
+} from './common.js';
 import * as Permissions from './permissions.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/bookmarks'])
+    internalLogger(...aArgs);
+}
 
 export async function bookmarkTabs(aTabs, aOptions = {}) {
   try {

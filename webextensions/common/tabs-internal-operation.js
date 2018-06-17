@@ -8,13 +8,19 @@
 // internal operations means operations bypassing WebExtensions' tabs APIs.
 
 import {
-  log,
-  dumpTab
+  log as internalLogger,
+  dumpTab,
+  configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tabs-internal-operation'])
+    internalLogger(...aArgs);
+}
 
 export async function selectTab(aTab, aOptions = {}) {
   log('selectTabInternally: ', dumpTab(aTab));

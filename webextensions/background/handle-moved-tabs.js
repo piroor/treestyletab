@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
   configs
 } from '../common/common.js';
@@ -19,6 +19,11 @@ import * as Tree from '../common/tree.js';
 import * as Commands from '../common/commands.js';
 
 import * as TreeStructure from './tree-structure.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/handle-moved-tabs'])
+    internalLogger(...aArgs);
+}
 
 
 Tabs.onCreated.addListener((aTab, aInfo = {}) => {

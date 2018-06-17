@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
   configs
 } from '../common/common.js';
@@ -17,6 +17,11 @@ import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
 import * as Tree from '../common/tree.js';
 
 import * as Background from './background.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/handle-tab-focus'])
+    internalLogger(...aArgs);
+}
 
 
 let gTabSwitchedByShortcut       = false;

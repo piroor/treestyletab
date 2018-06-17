@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   configs
 } from '../common/common.js';
 
@@ -14,6 +14,11 @@ import * as Tabs from '../common/tabs.js';
 import * as Commands from '../common/commands.js';
 import * as TSTAPI from '../common/tst-api.js';
 import * as TabContextMenu from './tab-context-menu.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/context-menu'])
+    internalLogger(...aArgs);
+}
 
 const gContextMenuItems = `
   reloadTree

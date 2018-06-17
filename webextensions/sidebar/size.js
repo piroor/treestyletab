@@ -6,9 +6,14 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   configs
 } from '../common/common.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/size'])
+    internalLogger(...aArgs);
+}
 
 let gTabHeight          = 0;
 let gFavIconSize        = 0;

@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   notify,
   configs
 } from './common.js';
@@ -17,6 +17,11 @@ import * as TabsContainer from './tabs-container.js';
 import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/migration'])
+    internalLogger(...aArgs);
+}
 
 export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
 const kFEATURES_VERSION = 3;

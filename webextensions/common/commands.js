@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
   notify,
   configs
@@ -20,6 +20,11 @@ import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Bookmark from './bookmark.js';
 import * as Tree from './tree.js';
 import EventListenerManager from './EventListenerManager.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/command'])
+    internalLogger(...aArgs);
+}
 
 export const onTabsClosing = new EventListenerManager();
 export const onMoveUp      = new EventListenerManager();
@@ -140,9 +145,8 @@ export async function openNewTabAs(aOptions = {}) {
       const refTabs = Tree.getReferenceTabsForNewChild(parent);
       insertBefore = refTabs.insertBefore;
       insertAfter  = refTabs.insertAfter;
-      if (configs.logOnMouseEvent)
-        log('detected reference tabs: ',
-            dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
+      log('detected reference tabs: ',
+          dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
     }; break;
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING:

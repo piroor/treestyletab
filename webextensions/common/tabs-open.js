@@ -38,12 +38,21 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
+import {
+  log as internalLogger,
+  configs
+} from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
+
+function log(...aArgs) {
+  if (configs.logFor['common/tabs-open'])
+    internalLogger(...aArgs);
+}
 
 export async function loadURI(aURI, aOptions = {}) {
   if (!aOptions.windowId && !aOptions.tab)

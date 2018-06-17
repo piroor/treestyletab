@@ -6,9 +6,10 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
-  wait
+  wait,
+  configs
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
@@ -21,6 +22,11 @@ import * as Tree from '../common/tree.js';
 import * as SidebarStatus from '../common/sidebar-status.js';
 
 import * as Background from './background.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/handle-removed-tabs'])
+    internalLogger(...aArgs);
+}
 
 
 Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {

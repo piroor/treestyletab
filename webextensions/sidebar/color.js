@@ -5,6 +5,16 @@
 */
 'use strict';
 
+import {
+  log as internalLogger,
+  configs
+} from '../common/common.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/color'])
+    internalLogger(...aArgs);
+}
+
 export function mixCSSColors(aBase, aOver, aAlpha = 1) {
   const base = parseCSSColor(aBase);
   const over = parseCSSColor(aOver);

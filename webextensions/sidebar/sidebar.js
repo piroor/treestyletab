@@ -9,7 +9,7 @@ import RichConfirm from '../extlib/RichConfirm.js';
 import TabIdFixer from '../extlib/TabIdFixer.js';
 
 import {
-  log,
+  log as internalLogger,
   nextFrame,
   configs
 } from '../common/common.js';
@@ -38,6 +38,11 @@ import * as Color from './color.js';
 import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
+
+function log(...aArgs) {
+  if (configs.logFor['sidebar/sidebar'])
+    internalLogger(...aArgs);
+}
 
 export const onInit    = new EventListenerManager();
 export const onBuilt   = new EventListenerManager();

@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  log,
+  log as internalLogger,
   dumpTab,
   wait,
   configs
@@ -21,6 +21,11 @@ import * as TabsGroup from '../common/tabs-group.js';
 import * as TabsContainer from '../common/tabs-container.js';
 import * as Tree from '../common/tree.js';
 import * as TSTAPI from '../common/tst-api.js';
+
+function log(...aArgs) {
+  if (configs.logFor['background/handle-new-tabs'])
+    internalLogger(...aArgs);
+}
 
 
 // this should return true if the tab is moved while processing
