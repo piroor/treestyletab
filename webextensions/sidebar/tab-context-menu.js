@@ -41,7 +41,7 @@ const gExtraItems = new Map();
 
 export function init() {
   gMenu = document.querySelector('#tabContextMenu');
-  document.removeEventListener('contextmenu', onContextMenu, { capture: true });
+  document.addEventListener('contextmenu', onContextMenu, { capture: true });
 
   gUI = new MenuUI({
     root: gMenu,
