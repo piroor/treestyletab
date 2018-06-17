@@ -87,16 +87,18 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   }
 
   if (gUpdatingCollapsedStateCancellers.has(aTab)) {
-    gUpdatingCollapsedStateCancellers.get(aTab)();
+    gUpdatingCollapsedStateCancellers.get(aTab)(toBeCollapsed);
     gUpdatingCollapsedStateCancellers.delete(aTab);
-    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
-    aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
-    manager.removeAllListeners();
   }
 
   let cancelled = false;
-  const canceller = () => {
+  const canceller = (aNewToBeCollapsed) => {
     cancelled = true;
+    manager.removeListener(onCompleted);
+    if (aNewToBeCollapsed != toBeCollapsed) {
+      aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
+      aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
+    }
   };
   const onCompleted = (aTab, aInfo = {}) => {
     manager.removeListener(onCompleted);

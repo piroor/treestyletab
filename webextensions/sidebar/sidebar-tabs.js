@@ -292,6 +292,7 @@ Tabs.onMoving.addListener(async aTab => {
     justNow:   true
   });
   nextFrame().then(async () => {
+    await wait(10); // we need to wait until other operations finished
     if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
       return;
     if (visible)
