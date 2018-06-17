@@ -323,6 +323,13 @@ export async function scrollToTab(aTab, aOptions = {}) {
   // keep "last scrolled-to tab" information until the tab is
   // actually moved.
   await wait(configs.autoGroupNewTabsTimeout);
+  const retryOptions = { retryCount: aOptions.retryCount || 0 };
+  if (scrollToTab.lastTargetId == aTab.id &&
+      !isTabInViewport(aTab) &&
+      retryOptions.retryCount < 3) {
+    retryOptions.retryCount++;
+    return scrollToTab(aTab, retryOptions);
+  }
   if (scrollToTab.lastTargetId == aTab.id)
     scrollToTab.lastTargetId = null;
 }
@@ -454,15 +461,6 @@ Tabs.onCreated.addListener(aTab => {
 });
 
 Tabs.onActivated.addListener(scrollToTab);
-
-// A tab can be moved after the tabbar is scrolled to the tab.
-// This retries "scroll to tab" behavior.
-Tabs.onMoved.addListener((aTab, _aMoveInfo = {}) => {
-  if (scrollToTab.lastTargetId != aTab.id ||
-      isTabInViewport(aTab))
-    return;
-  scrollToTab(aTab);
-});
 
 Tabs.onUnpinned.addListener(scrollToTab);
 
