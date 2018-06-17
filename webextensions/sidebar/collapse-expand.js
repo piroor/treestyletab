@@ -94,7 +94,6 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
   let cancelled = false;
   const canceller = (aNewToBeCollapsed) => {
     cancelled = true;
-    manager.removeListener(onCompleted);
     if (aNewToBeCollapsed != toBeCollapsed) {
       aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
       aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
@@ -155,9 +154,14 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
 
   Sidebar.reserveToUpdateTabbarLayout({ reason });
 
+  const onCanceled = () => {
+    manager.removeListener(onCompleted);
+  };
+
   nextFrame().then(() => {
     if (cancelled ||
         !Tabs.ensureLivingTab(aTab)) { // it was removed while waiting
+      onCanceled();
       return;
     }
 
@@ -169,8 +173,10 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
       });
 
     aTab.onEndCollapseExpandAnimation = (() => {
-      if (cancelled)
+      if (cancelled) {
+        onCanceled();
         return;
+      }
 
       //log('=> finish animation for ', dumpTab(aTab));
       aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
@@ -193,6 +199,7 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
       if (cancelled ||
           !Tabs.ensureLivingTab(aTab) ||
           !aTab.onEndCollapseExpandAnimation) {
+        onCanceled();
         return;
       }
       delete aTab.onEndCollapseExpandAnimation.timeout;
