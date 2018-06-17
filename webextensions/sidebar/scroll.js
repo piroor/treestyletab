@@ -275,43 +275,43 @@ export async function scrollToTab(aTab, aOptions = {}) {
   scrollToTab.lastTargetId = aTab.id;
 
   if (hasAnchor) {
-  const targetTabRect = aTab.getBoundingClientRect();
-  const anchorTabRect = anchorTab.getBoundingClientRect();
-  const containerRect = gTabBar.getBoundingClientRect();
-  const offset        = getOffsetForAnimatingTab(aTab);
-  let delta = calculateScrollDeltaForTab(aTab);
-  if (targetTabRect.top > anchorTabRect.top) {
-    if (configs.logOnScroll)
-      log('=> will scroll down');
-    const boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
-    const overHeight     = boundingHeight - containerRect.height;
-    if (overHeight > 0) {
-      delta -= overHeight;
-      if (aOptions.notifyOnOutOfView)
-        notifyOutOfViewTab(aTab);
+    const targetTabRect = aTab.getBoundingClientRect();
+    const anchorTabRect = anchorTab.getBoundingClientRect();
+    const containerRect = gTabBar.getBoundingClientRect();
+    const offset        = getOffsetForAnimatingTab(aTab);
+    let delta = calculateScrollDeltaForTab(aTab);
+    if (targetTabRect.top > anchorTabRect.top) {
+      if (configs.logOnScroll)
+        log('=> will scroll down');
+      const boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
+      const overHeight     = boundingHeight - containerRect.height;
+      if (overHeight > 0) {
+        delta -= overHeight;
+        if (aOptions.notifyOnOutOfView)
+          notifyOutOfViewTab(aTab);
+      }
+      if (configs.logOnScroll)
+        log('calculated result: ', {
+          boundingHeight, overHeight, delta,
+          container:      containerRect.height
+        });
     }
-    if (configs.logOnScroll)
-      log('calculated result: ', {
-        boundingHeight, overHeight, delta,
-        container:      containerRect.height
-      });
-  }
-  else if (targetTabRect.bottom < anchorTabRect.bottom) {
-    if (configs.logOnScroll)
-      log('=> will scroll up');
-    const boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
-    const overHeight     = boundingHeight - containerRect.height;
-    if (overHeight > 0)
-      delta += overHeight;
-    if (configs.logOnScroll)
-      log('calculated result: ', {
-        boundingHeight, overHeight, delta,
-        container:      containerRect.height
-      });
-  }
-  await scrollTo(Object.assign({}, aOptions, {
-    position: gTabBar.scrollTop + delta
-  }));
+    else if (targetTabRect.bottom < anchorTabRect.bottom) {
+      if (configs.logOnScroll)
+        log('=> will scroll up');
+      const boundingHeight = anchorTabRect.bottom - targetTabRect.top + offset;
+      const overHeight     = boundingHeight - containerRect.height;
+      if (overHeight > 0)
+        delta += overHeight;
+      if (configs.logOnScroll)
+        log('calculated result: ', {
+          boundingHeight, overHeight, delta,
+          container:      containerRect.height
+        });
+    }
+    await scrollTo(Object.assign({}, aOptions, {
+      position: gTabBar.scrollTop + delta
+    }));
   }
   else {
     await scrollTo(Object.assign({}, aOptions, {
