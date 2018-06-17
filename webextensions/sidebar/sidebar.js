@@ -229,11 +229,11 @@ function applyStyle(aStyle) {
   });
 }
 
-export function applyUserStyleRules() {
+function applyUserStyleRules() {
   gUserStyleRules.textContent = configs.userStyleRules || '';
 }
 
-export function applyBrowserTheme(aTheme) {
+function applyBrowserTheme(aTheme) {
   log('applying theme ', aTheme);
 
   const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
@@ -289,7 +289,7 @@ export function applyBrowserTheme(aTheme) {
   `;
 }
 
-export function updateContextualIdentitiesStyle() {
+function updateContextualIdentitiesStyle() {
   const definitions = [];
   ContextualIdentities.forEach(aIdentity => {
     if (!aIdentity.colorCode)
@@ -303,7 +303,7 @@ export function updateContextualIdentitiesStyle() {
   gContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
 
-export function updateContextualIdentitiesSelector() {
+function updateContextualIdentitiesSelector() {
   const anchors = Array.slice(document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
   for (const anchor of anchors) {
     if (ContextualIdentities.getCount() == 0)
