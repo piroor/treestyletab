@@ -429,21 +429,30 @@ export async function sendMessage(message, options = {}) {
     }
   }
 
-  return Promise.all(Array.from(uniqueTargets).map(async (id) => {
+  const spawned = spawnMessages(uniqueTargets, message);
+  return Promise.all(spawned);
+}
+
+function* spawnMessages(targetSet, message) {
+  const send = async (id) => {
     try {
       const result = await browser.runtime.sendMessage(id, message);
       return {
-        id:     id,
+        id,
         result: result
       };
     }
     catch(e) {
       return {
-        id:    id,
+        id,
         error: e
       };
     }
-  }));
+  };
+
+  for (const id of targetSet) {
+    yield send(id);
+  }
 }
 
 
