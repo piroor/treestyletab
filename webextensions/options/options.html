@@ -378,7 +378,7 @@
                 rows="10"
                 style="width: 100%"></textarea>
     </fieldset>
-    <fieldset class="collapsible collapsed">
+    <fieldset id="group-importedConfigsFromLegacy" class="collapsible collapsed">
       <legend>__MSG_config_importedConfigsFromLegacy_label__</legend>
       <p><label>__MSG_config_legacyConfigsNextMigrationVersion_before__
                 <input id="legacyConfigsNextMigrationVersion"
@@ -393,7 +393,7 @@
                 style="width: 100%"
                 placeholder="__MSG_config_importedConfigsFromLegacy_placeholder__">></textarea>
     </fieldset>
-    <fieldset class="collapsible collapsed">
+    <fieldset id="group-importedTreeStructureFromLegacy" class="collapsible collapsed">
       <legend>__MSG_config_importedTreeStructureFromLegacy_label__</legend>
       <p>__MSG_config_migrateSessionStore_before__
          <a href="__MSG_migrateSessions_link_uri__">__MSG_config_migrateSessionStore_link_label__</a>
@@ -416,7 +416,7 @@
                      type="checkbox">
              __MSG_config_debug_label__</label></p>
     <div id="debug-configs">
-      <fieldset>
+      <fieldset id="group-logFor" class="collapsible collapsed">
         <legend>__MSG_config_log_caption__</legend>
         <p><!-- git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -r -e 's;^(.+)$;            <p><label><input id="logFor-\1" type="checkbox">\1</label></p>;' -->
         <fieldset>
@@ -505,7 +505,9 @@
                        type="number"
                        size="6">
                __MSG_config_maximumAcceptableDelayForTabDuplication_after__</label></p>
-      <h2>__MSG_config_all_caption__</h2>
+      <fieldset id="group-allConfigs" class="collapsible collapsed">
+        <legend>__MSG_config_all_caption__</legend>
+      </fieldset>
     </div>
     </section>
   </body>

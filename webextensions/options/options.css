@@ -65,7 +65,7 @@ fieldset.collapsible.collapsed > *:not(legend) {
   display: none;
 }
 
-fieldset.collapsible legend::before,
+fieldset.collapsible > legend::before,
 body > section > h1:first-child::before {
   content: "▼";
   display: inline-block;
@@ -75,7 +75,7 @@ body > section > h1:first-child::before {
   transition: transform 0.2s ease;
 }
 
-fieldset.collapsible.collapsed legend::before,
+fieldset.collapsible.collapsed > legend::before,
 body > section.collapsed > h1:first-child::before {
   transform: rotate(-90deg);
 }

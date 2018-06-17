@@ -15,6 +15,7 @@ import * as Constants from './constants.js';
 
 export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],
+  optionsExpandedGroups: [],
 
   // appearance
   sidebarPosition: Constants.kTABBAR_POSITION_LEFT,

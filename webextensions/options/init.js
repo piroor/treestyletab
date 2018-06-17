@@ -84,12 +84,30 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   for (const fieldset of Array.from(document.querySelectorAll('fieldset.collapsible'))) {
+    if (configs.optionsExpandedGroups.includes(fieldset.id))
+      fieldset.classList.remove('collapsed');
+    else
+      fieldset.classList.add('collapsed');
+
+    const onChangeCollapsed = () => {
+      if (!fieldset.id)
+        return;
+      const otherExpandedSections = configs.optionsExpandedGroups.filter(aId => aId != fieldset.id);
+      if (fieldset.classList.contains('collapsed'))
+        configs.optionsExpandedGroups = otherExpandedSections;
+      else
+        configs.optionsExpandedGroups = otherExpandedSections.concat([fieldset.id]);
+    };
+
     fieldset.addEventListener('click', () => {
       fieldset.classList.toggle('collapsed');
+      onChangeCollapsed();
     });
     fieldset.addEventListener('keydown', aEvent => {
-      if (aEvent.key == 'Enter')
-        fieldset.classList.toggle('collapsed');
+      if (aEvent.key != 'Enter')
+        return;
+      fieldset.classList.toggle('collapsed');
+      onChangeCollapsed();
     });
   }
 
@@ -131,7 +149,7 @@ window.addEventListener('DOMContentLoaded', () => {
       checkbox.addEventListener('change', onChangeMasterChacekbox);
     }
 
-    options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
+    options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('debug');
   });
 }, { once: true });
