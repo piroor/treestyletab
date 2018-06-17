@@ -71,19 +71,19 @@ window.addEventListener('DOMContentLoaded', () => {
   else
     document.documentElement.classList.remove('platform-mac');
 
-  for (const label of Array.slice(document.querySelectorAll('#contextConfigs label'))) {
+  for (const label of Array.from(document.querySelectorAll('#contextConfigs label'))) {
     removeAccesskeyMark(label.lastChild);
   }
 
   ShortcutCustomizeUI.build().then(aUI => {
     document.getElementById('shortcuts').appendChild(aUI);
 
-    for (const item of Array.slice(aUI.querySelectorAll('li > label:first-child'))) {
+    for (const item of Array.from(aUI.querySelectorAll('li > label:first-child'))) {
       removeAccesskeyMark(item.firstChild);
     }
   });
 
-  for (const fieldset of Array.slice(document.querySelectorAll('fieldset.collapsible'))) {
+  for (const fieldset of Array.from(document.querySelectorAll('fieldset.collapsible'))) {
     fieldset.addEventListener('click', () => {
       fieldset.classList.toggle('collapsed');
     });
@@ -94,7 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   configs.$loaded.then(() => {
-    for (const heading of Array.slice(document.querySelectorAll('body > section > h1'))) {
+    for (const heading of Array.from(document.querySelectorAll('body > section > h1'))) {
       const section = heading.parentNode;
       section.style.maxHeight = `${heading.offsetHeight}px`;
       if (!configs.optionsExpandedSections.includes(section.id))
