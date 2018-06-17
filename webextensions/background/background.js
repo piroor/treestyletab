@@ -577,3 +577,4 @@ Tree.onDetached.addListener(async (aTab, aDetachInfo) => {
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener(reserveToUpdateRelatedGroupTabs);
+Tree.onSubtreeCollapsedStateChanging.addListener(reserveToUpdateSubtreeCollapsed);
