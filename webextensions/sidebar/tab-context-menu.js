@@ -55,12 +55,6 @@ export function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onExternalMessage);
 
-  window.addEventListener('unload', () => {
-    close();
-    browser.runtime.onMessage.removeListener(onMessage);
-    browser.runtime.onMessageExternal.removeListener(onExternalMessage);
-  }, { once: true });
-
   browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
   }).then(aItems => {
