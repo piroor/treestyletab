@@ -234,6 +234,8 @@ function canScrollToTab(aTab) {
 }
 
 export async function scrollToTab(aTab, aOptions = {}) {
+  scrollToTab.lastTargetId = null;
+
   if (configs.logOnScroll)
     log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions,
         { stack: new Error().stack });
@@ -253,21 +255,15 @@ export async function scrollToTab(aTab, aOptions = {}) {
     return;
   cancelNotifyOutOfViewTab();
 
-  if (isTabInViewport(aTab)) {
+  const anchorTab = aOptions.anchor;
+  const hasAnchor = Tabs.ensureLivingTab(anchorTab) && anchorTab != aTab;
+  const openedFromPinnedTab = hasAnchor && Tabs.isPinned(anchorTab);
+
+  if (isTabInViewport(aTab) &&
+      (!hasAnchor ||
+       !openedFromPinnedTab)) {
     if (configs.logOnScroll)
       log('=> already visible');
-    return;
-  }
-
-  const anchorTab = aOptions.anchor;
-  if (!Tabs.ensureLivingTab(anchorTab) ||
-      anchorTab == aTab ||
-      Tabs.isPinned(anchorTab)) {
-    if (configs.logOnScroll)
-      log('=> no available anchor, direct scroll');
-    scrollTo(Object.assign({}, aOptions, {
-      tab: aTab
-    }));
     return;
   }
 
@@ -276,7 +272,9 @@ export async function scrollToTab(aTab, aOptions = {}) {
   if (scrollToTab.stopped)
     return;
   cancelNotifyOutOfViewTab();
+  scrollToTab.lastTargetId = aTab.id;
 
+  if (hasAnchor) {
   const targetTabRect = aTab.getBoundingClientRect();
   const anchorTabRect = anchorTab.getBoundingClientRect();
   const containerRect = gTabBar.getBoundingClientRect();
@@ -311,10 +309,24 @@ export async function scrollToTab(aTab, aOptions = {}) {
         container:      containerRect.height
       });
   }
-  scrollTo(Object.assign({}, aOptions, {
+  await scrollTo(Object.assign({}, aOptions, {
     position: gTabBar.scrollTop + delta
   }));
+  }
+  else {
+    await scrollTo(Object.assign({}, aOptions, {
+      tab: aTab
+    }));
+  }
+  // A tab can be moved after the tabbar is scrolled to the tab.
+  // To retry "scroll to tab" behavior for such cases, we need to
+  // keep "last scrolled-to tab" information until the tab is
+  // actually moved.
+  await wait(configs.autoGroupNewTabsTimeout);
+  if (scrollToTab.lastTargetId == aTab.id)
+    scrollToTab.lastTargetId = null;
 }
+scrollToTab.lastTargetId = null;
 
 function getOffsetForAnimatingTab(aTab) {
   const allExpanding        = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
@@ -442,6 +454,15 @@ Tabs.onCreated.addListener(aTab => {
 });
 
 Tabs.onActivated.addListener(scrollToTab);
+
+// A tab can be moved after the tabbar is scrolled to the tab.
+// This retries "scroll to tab" behavior.
+Tabs.onMoved.addListener((aTab, _aMoveInfo = {}) => {
+  if (scrollToTab.lastTargetId != aTab.id ||
+      isTabInViewport(aTab))
+    return;
+  scrollToTab(aTab);
+});
 
 Tabs.onUnpinned.addListener(scrollToTab);
 
