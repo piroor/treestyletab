@@ -70,10 +70,6 @@ export function isEventFiredOnClickable(aEvent) {
   return !!getElementTarget(aEvent).closest(`button, scrollbar, select`);
 }
 
-function isEventFiredOnScrollbar(aEvent) {
-  return !!getElementTarget(aEvent).closest(`scrollbar, nativescrollbar`);
-}
-
 
 export function getTabFromEvent(aEvent) {
   return Tabs.getTabFromChild(aEvent.target);

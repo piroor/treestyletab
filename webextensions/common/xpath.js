@@ -34,15 +34,3 @@ export function evaluate(aExpression, aContext, aType) {
   }
   return result;
 }
-
-function getArrayFromXPathResult(aXPathResult) {
-  var max   = aXPathResult.snapshotLength;
-  var array = new Array(max);
-  if (!max)
-    return array;
-
-  for (var i = 0; i < max; i++) {
-    array[i] = aXPathResult.snapshotItem(i);
-  }
-  return array;
-}

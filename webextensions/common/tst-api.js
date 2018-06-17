@@ -136,10 +136,6 @@ function getAddons() {
   return gAddons.entries();
 }
 
-function isInitialized() {
-  return !!gContext;
-}
-
 export async function initAsBackend() {
   const manifest = browser.runtime.getManifest();
   registerAddon(manifest.applications.gecko.id, {
