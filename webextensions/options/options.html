@@ -418,18 +418,70 @@
     <div id="debug-configs">
       <fieldset>
         <legend>__MSG_config_log_caption__</legend>
-        <p><label><input id="logOnUpdated"
-                         type="checkbox">
-                 __MSG_config_logOnUpdated_label__</label></p>
-        <p><label><input id="logOnMouseEvent"
-                         type="checkbox">
-                 __MSG_config_logOnMouseEvent_label__</label></p>
-        <p><label><input id="logOnCollapseExpand"
-                         type="checkbox">
-                 __MSG_config_logOnCollapseExpand_label__</label></p>
-        <p><label><input id="logOnCache"
-                         type="checkbox">
-                 __MSG_config_logOnCache_label__</label></p>
+        <p><!-- git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -r -e 's;^(.+)$;            <p><label><input id="logFor-\1" type="checkbox">\1</label></p>;' -->
+        <fieldset>
+          <legend><label><input id="logFor-common" type="checkbox">__MSG_config_logFor_common__</label></legend>
+            <p><label><input id="logFor-common/api-tabs-listener" type="checkbox">common/api-tabs-listener</label></p>
+            <p><label><input id="logFor-common/bookmarks" type="checkbox">common/bookmarks</label></p>
+            <p><label><input id="logFor-common/cache" type="checkbox">common/cache</label></p>
+            <p><label><input id="logFor-common/command" type="checkbox">common/command</label></p>
+            <p><label><input id="logFor-common/contextual-identities" type="checkbox">common/contextual-identities</label></p>
+            <p><label><input id="logFor-common/migration" type="checkbox">common/migration</label></p>
+            <p><label><input id="logFor-common/permissions" type="checkbox">common/permissions</label></p>
+            <p><label><input id="logFor-common/sidebar-status" type="checkbox">common/sidebar-status</label></p>
+            <p><label><input id="logFor-common/tabs-container" type="checkbox">common/tabs-container</label></p>
+            <p><label><input id="logFor-common/tabs-group" type="checkbox">common/tabs-group</label></p>
+            <p><label><input id="logFor-common/tabs-internal-operation" type="checkbox">common/tabs-internal-operation</label></p>
+            <p><label><input id="logFor-common/tabs-move" type="checkbox">common/tabs-move</label></p>
+            <p><label><input id="logFor-common/tabs-open" type="checkbox">common/tabs-open</label></p>
+            <p><label><input id="logFor-common/tabs-update" type="checkbox">common/tabs-update</label></p>
+            <p><label><input id="logFor-common/tabs" type="checkbox">common/tabs</label></p>
+            <p><label><input id="logFor-common/tree" type="checkbox">common/tree</label></p>
+            <p><label><input id="logFor-common/tst-api" type="checkbox">common/tst-api</label></p>
+            <p><label><input id="logFor-common/user-operation-blocker" type="checkbox">common/user-operation-blocker</label></p>
+        </fieldset>
+        <fieldset>
+          <legend><label><input id="logFor-background" type="checkbox">__MSG_config_logFor_background__</label></legend>
+            <p><label><input id="logFor-background/background-cache" type="checkbox">background/background-cache</label></p>
+            <p><label><input id="logFor-background/background" type="checkbox">background/background</label></p>
+            <p><label><input id="logFor-background/context-menu" type="checkbox">background/context-menu</label></p>
+            <p><label><input id="logFor-background/handle-misc" type="checkbox">background/handle-misc</label></p>
+            <p><label><input id="logFor-background/handle-moved-tabs" type="checkbox">background/handle-moved-tabs</label></p>
+            <p><label><input id="logFor-background/handle-new-tabs" type="checkbox">background/handle-new-tabs</label></p>
+            <p><label><input id="logFor-background/handle-removed-tabs" type="checkbox">background/handle-removed-tabs</label></p>
+            <p><label><input id="logFor-background/handle-tab-focus" type="checkbox">background/handle-tab-focus</label></p>
+            <p><label><input id="logFor-background/handle-tree-changes" type="checkbox">background/handle-tree-changes</label></p>
+            <p><label><input id="logFor-background/tab-context-menu" type="checkbox">background/tab-context-menu</label></p>
+            <p><label><input id="logFor-background/tree-structure" type="checkbox">background/tree-structure</label></p>
+        </fieldset>
+        <fieldset>
+          <legend><label><input id="logFor-sidebar" type="checkbox">__MSG_config_logFor_sidebar__</label></legend>
+            <p><label><input id="logFor-sidebar/collapse-expand" type="checkbox">sidebar/collapse-expand</label></p>
+            <p><label><input id="logFor-sidebar/color" type="checkbox">sidebar/color</label></p>
+            <p><label><input id="logFor-sidebar/drag-and-drop" type="checkbox">sidebar/drag-and-drop</label></p>
+            <p><label><input id="logFor-sidebar/event-utils" type="checkbox">sidebar/event-utils</label></p>
+            <p><label><input id="logFor-sidebar/indent" type="checkbox">sidebar/indent</label></p>
+            <p><label><input id="logFor-sidebar/mouse-event-listener" type="checkbox">sidebar/mouse-event-listener</label></p>
+            <p><label><input id="logFor-sidebar/pinned-tabs" type="checkbox">sidebar/pinned-tabs</label></p>
+            <p><label><input id="logFor-sidebar/scroll" type="checkbox">sidebar/scroll</label></p>
+            <p><label><input id="logFor-sidebar/sidebar-cache" type="checkbox">sidebar/sidebar-cache</label></p>
+            <p><label><input id="logFor-sidebar/sidebar-tabs" type="checkbox">sidebar/sidebar-tabs</label></p>
+            <p><label><input id="logFor-sidebar/sidebar" type="checkbox">sidebar/sidebar</label></p>
+            <p><label><input id="logFor-sidebar/size" type="checkbox">sidebar/size</label></p>
+            <p><label><input id="logFor-sidebar/tab-context-menu" type="checkbox">sidebar/tab-context-menu</label></p>
+        </fieldset>
+        <fieldset>
+          <legend>__MSG_config_logFor_misc__</legend>
+          <p><label><input id="logOnUpdated"
+                           type="checkbox">
+                   __MSG_config_logOnUpdated_label__</label></p>
+          <p><label><input id="logOnMouseEvent"
+                           type="checkbox">
+                   __MSG_config_logOnMouseEvent_label__</label></p>
+          <p><label><input id="logOnCollapseExpand"
+                           type="checkbox">
+                   __MSG_config_logOnCollapseExpand_label__</label></p>
+        </fieldset>
       </fieldset>
       <p><label><input id="simulateSVGContextFill"
                        type="checkbox">

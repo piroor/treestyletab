@@ -35,6 +35,35 @@ function removeAccesskeyMark(aNode) {
   aNode.nodeValue = aNode.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
 }
 
+function onChangeMasterChacekbox(aEvent) {
+  const container = aEvent.currentTarget.closest('fieldset');
+  const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
+  for (const checkbox of Array.from(checkboxes)) {
+    checkbox.checked = aEvent.currentTarget.checked;
+  }
+  saveLogForConfig();
+}
+
+function onChangeSlaveChacekbox(aEvent) {
+  master.checked = isAllSlavesChecked(aEvent.currentTarget);
+  saveLogForConfig();
+}
+
+function saveLogForConfig() {
+  const config = {};
+  for (const checkbox of Array.from(document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]'))) {
+    config[checkbox.id.replace(/^logFor-/, '')] = checkbox.checked;
+  }
+  configs.logFor = config;
+}
+
+function isAllSlavesChecked(aMasger) {
+  const container = aMasger.closest('fieldset');
+  const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
+  const master = container.querySelector('legend input[type="checkbox"]');
+  return Array.from(checkboxes).every(aCheckbox => aCheckbox.checked);
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   if (/^Mac/i.test(navigator.platform))
@@ -91,6 +120,16 @@ window.addEventListener('DOMContentLoaded', () => {
       Permissions.BOOKMARKS,
       document.querySelector('#bookmarksPermissionGranted')
     );
+
+
+    for (const checkbox of Array.from(document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]'))) {
+      checkbox.addEventListener('change', onChangeSlaveChacekbox);
+      checkbox.checked = configs.logFor[checkbox.id.replace(/^logFor-/, '')];
+    }
+    for (const checkbox of Array.from(document.querySelectorAll('legend input[type="checkbox"][id^="logFor-"]'))) {
+      checkbox.checked = isAllSlavesChecked(checkbox);
+      checkbox.addEventListener('change', onChangeMasterChacekbox);
+    }
 
     options.buildUIForAllConfigs(document.querySelector('#debug-configs'));
     onConfigChanged('debug');

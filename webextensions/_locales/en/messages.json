@@ -312,6 +312,10 @@
 
   "config_debug_label": { "message": "Debug mode" },
   "config_log_caption":               { "message": "Detailed logging" },
+  "config_logFor_common":     { "message": "Logs from common modules" },
+  "config_logFor_background": { "message": "Logs from background modules" },
+  "config_logFor_sidebar":    { "message": "Logs from sidebar modules" },
+  "config_logFor_misc":       { "message": "Logs from multiple modules" },
   "config_logOnUpdated_label":        { "message": "Print logs from tabs.onUpdated" },
   "config_logOnMouseEvent_label":     { "message": "Print logs from mouse events" },
   "config_logOnCollapseExpand_label": { "message": "Print logs from collapse/expand" },

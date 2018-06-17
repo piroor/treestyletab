@@ -312,6 +312,10 @@
 
   "config_debug_label": { "message": "デバッグモード" },
   "config_log_caption":               { "message": "詳細なログ" },
+  "config_logFor_common":     { "message": "共通モジュールからのログ" },
+  "config_logFor_background": { "message": "バックグラウンドモジュールからのログ" },
+  "config_logFor_sidebar":    { "message": "サイドバーモジュールからのログ" },
+  "config_logFor_misc":       { "message": "複数モジュールからのログ" },
   "config_logOnUpdated_label":        { "message": "tabs.onUpdated関連のログを出力" },
   "config_logOnMouseEvent_label":     { "message": "マウス操作関連のログを出力" },
   "config_logOnCollapseExpand_label": { "message": "ツリーの開閉関連のログを出力" },
