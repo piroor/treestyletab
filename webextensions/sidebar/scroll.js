@@ -76,7 +76,7 @@ export async function init() {
 
   document.addEventListener('wheel', onWheel, { capture: true });
   gTabBar.addEventListener('scroll', onScroll);
-  browser.runtime.onMessage.removeListener(onMessage);
+  browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
 
