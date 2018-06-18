@@ -24,11 +24,11 @@ let mInitialized = false;
 let gIndentDefinition;
 let gLastMaxLevel  = -1;
 let gLastMaxIndent = -1;
-let gTargetWindow;
+let mTargetWindow;
 let gTabBar;
 
 export function init() {
-  gTargetWindow = Tabs.getWindow();
+  mTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
 
   window.addEventListener('resize', reserveToUpdateIndent);
@@ -46,7 +46,7 @@ export function updateRestoredTree(aCachedIndent) {
 
 export function update(options = {}) {
   if (!options.cache) {
-    const maxLevel  = Tabs.getMaxTreeLevel(gTargetWindow);
+    const maxLevel  = Tabs.getMaxTreeLevel(mTargetWindow);
     const maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
     if (maxLevel <= gLastMaxLevel &&
         maxIndent == gLastMaxIndent &&
@@ -134,7 +134,7 @@ export function reserveToUpdateVisualMaxTreeLevel() {
 }
 
 function updateVisualMaxTreeLevel() {
-  const maxLevel = Tabs.getMaxTreeLevel(gTargetWindow, {
+  const maxLevel = Tabs.getMaxTreeLevel(mTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
   document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));

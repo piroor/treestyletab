@@ -54,7 +54,7 @@ function log(...args) {
 }
 
 
-let gTargetWindow;
+let mTargetWindow;
 
 export const allTabsContainer = document.querySelector('#all-tabs');
 
@@ -64,11 +64,11 @@ export const allTabsContainer = document.querySelector('#all-tabs');
 //===================================================================
 
 export function setWindow(targetWindow) {
-  return gTargetWindow = targetWindow;
+  return mTargetWindow = targetWindow;
 }
 
 export function getWindow() {
-  return gTargetWindow;
+  return mTargetWindow;
 }
 
 export function getSafeFaviconUrl(uRL) {
@@ -168,7 +168,7 @@ export async function requestUniqueId(tabOrId, options = {}) {
 
 export function updateUniqueId(tab) {
   tab.uniqueId = requestUniqueId(tab, {
-    inRemote: !!gTargetWindow
+    inRemote: !!mTargetWindow
   }).then(uniqueId => {
     if (uniqueId && ensureLivingTab(tab)) // possibly removed from document while waiting
       tab.setAttribute(Constants.kPERSISTENT_ID, uniqueId.id);
@@ -233,54 +233,54 @@ async function waitUntilTabsAreOperated(idOrIds, slot) {
   return [];
 }
 
-const gCreatingTabs = new Map();
+const mCreatingTabs = new Map();
 
 export function addCreatingTab(tab) {
   let onTabCreated;
   if (configs.acceleratedTabCreation) {
-    gCreatingTabs.set(tab.apiTab.id, tab.uniqueId);
+    mCreatingTabs.set(tab.apiTab.id, tab.uniqueId);
     onTabCreated = () => {};
   }
   else {
-    gCreatingTabs.set(tab.apiTab.id, new Promise((resolve, _aReject) => {
+    mCreatingTabs.set(tab.apiTab.id, new Promise((resolve, _aReject) => {
       onTabCreated = (uniqueId) => { resolve(uniqueId); };
     }));
   }
   tab.uniqueId.then(_aUniqueId => {
-    gCreatingTabs.delete(tab.apiTab.id);
+    mCreatingTabs.delete(tab.apiTab.id);
   });
   return onTabCreated;
 }
 
 export function hasCreatingTab() {
-  return gCreatingTabs.size > 0;
+  return mCreatingTabs.size > 0;
 }
 
 export async function waitUntilAllTabsAreCreated() {
-  return waitUntilTabsAreCreated(Array.from(gCreatingTabs.keys()));
+  return waitUntilTabsAreCreated(Array.from(mCreatingTabs.keys()));
 }
 
 export async function waitUntilTabsAreCreated(idOrIds) {
-  return waitUntilTabsAreOperated(idOrIds, gCreatingTabs)
+  return waitUntilTabsAreOperated(idOrIds, mCreatingTabs)
     .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
 }
 
-const gMovingTabs = new Map();
+const mMovingTabs = new Map();
 
 export function addMovingTabId(tabId) {
   let onTabMoved;
   const promisedMoved = new Promise((resolve, _aReject) => {
     onTabMoved = resolve;
   });
-  gMovingTabs.set(tabId, promisedMoved);
+  mMovingTabs.set(tabId, promisedMoved);
   promisedMoved.then(() => {
-    gMovingTabs.delete(tabId);
+    mMovingTabs.delete(tabId);
   });
   return onTabMoved;
 }
 
 export async function waitUntilAllTabsAreMoved() {
-  return waitUntilTabsAreOperated(Array.from(gMovingTabs.keys()), gMovingTabs);
+  return waitUntilTabsAreOperated(Array.from(mMovingTabs.keys()), mMovingTabs);
 }
 
 
@@ -365,7 +365,7 @@ export function getTabsContainer(hint) {
   assertValidHint(hint);
 
   if (!hint)
-    hint = gTargetWindow || allTabsContainer.firstChild;
+    hint = mTargetWindow || allTabsContainer.firstChild;
 
   if (typeof hint == 'number')
     return document.querySelector(`#window-${hint}`);
@@ -1135,32 +1135,32 @@ export function dumpAllTabs() {
 // Promised status of tabs
 //===================================================================
 
-const gOpenedResolvers = new WeakMap();
-const gClosedWhileActiveResolvers = new WeakMap();
+const mOpenedResolvers = new WeakMap();
+const mClosedWhileActiveResolvers = new WeakMap();
 
 export function initPromisedStatus(tab, alreadyOpened = false) {
   if (alreadyOpened)
     tab.opened = Promise.resolve(true);
   else
     tab.opened = new Promise((resolve, _aReject) => {
-      gOpenedResolvers.set(tab, resolve);
+      mOpenedResolvers.set(tab, resolve);
     });
 
   tab.closedWhileActive = new Promise((resolve, _aReject) => {
-    gClosedWhileActiveResolvers.set(tab, resolve);
+    mClosedWhileActiveResolvers.set(tab, resolve);
   });
 }
 
 export function resolveOpened(tab) {
-  if (!gOpenedResolvers.has(tab))
+  if (!mOpenedResolvers.has(tab))
     return;
-  gOpenedResolvers.get(tab)();
-  gOpenedResolvers.delete(tab);
+  mOpenedResolvers.get(tab)();
+  mOpenedResolvers.delete(tab);
 }
 
 export function fetchClosedWhileActiveResolver(tab) {
-  const resolver = gClosedWhileActiveResolvers.get(tab);
-  gClosedWhileActiveResolvers.delete(tab);
+  const resolver = mClosedWhileActiveResolvers.get(tab);
+  mClosedWhileActiveResolvers.delete(tab);
   return resolver;
 }
 

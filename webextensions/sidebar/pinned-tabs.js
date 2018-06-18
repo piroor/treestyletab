@@ -53,18 +53,18 @@ function log(...args) {
     internalLogger(...args);
 }
 
-let gTargetWindow;
+let mTargetWindow;
 let gTabBar;
 
 export function init() {
-  gTargetWindow = Tabs.getWindow();
+  mTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
   configs.$addObserver(onConfigChange);
 }
 
 export function reposition(options = {}) {
   //log('reposition');
-  const pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
+  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
   if (!pinnedTabs.length) {
     reset();
     document.documentElement.classList.remove('have-pinned-tabs');
@@ -137,7 +137,7 @@ export function reserveToReposition(options = {}) {
 
 function reset() {
   gTabBar.style.marginTop = '';
-  const pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
+  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
   pinnedTabs.forEach(clearStyle);
 }
 

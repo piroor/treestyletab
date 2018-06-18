@@ -18,14 +18,14 @@ function log(...args) {
     internalLogger(...args);
 }
 
-let gBlockingCount = 0;
-let gBlockingThrobberCount = 0;
+let mBlockingCount = 0;
+let mBlockingThrobberCount = 0;
 
 export function block(options = {}) {
-  gBlockingCount++;
+  mBlockingCount++;
   document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING);
   if (options.throbber) {
-    gBlockingThrobberCount++;
+    mBlockingThrobberCount++;
     document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
   }
 }
@@ -47,16 +47,16 @@ export function blockIn(windowId, options = {}) {
 }
 
 export function unblock(_aOptions = {}) {
-  gBlockingThrobberCount--;
-  if (gBlockingThrobberCount < 0)
-    gBlockingThrobberCount = 0;
-  if (gBlockingThrobberCount == 0)
+  mBlockingThrobberCount--;
+  if (mBlockingThrobberCount < 0)
+    mBlockingThrobberCount = 0;
+  if (mBlockingThrobberCount == 0)
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
 
-  gBlockingCount--;
-  if (gBlockingCount < 0)
-    gBlockingCount = 0;
-  if (gBlockingCount == 0)
+  mBlockingCount--;
+  if (mBlockingCount < 0)
+    mBlockingCount = 0;
+  if (mBlockingCount == 0)
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING);
 }
 

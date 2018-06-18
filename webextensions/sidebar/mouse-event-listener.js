@@ -63,7 +63,7 @@ function log(...args) {
     internalLogger(...args);
 }
 
-let gTargetWindow;
+let mTargetWindow;
 
 const gTabBar = document.querySelector('#tabbar');
 const gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
@@ -73,7 +73,7 @@ const gUpdatingCollapsedStateCancellers = new WeakMap();
 const gTabCollapsedStateChangedManagers = new WeakMap();
 
 Sidebar.onInit.addListener(() => {
-  gTargetWindow = Tabs.getWindow();
+  mTargetWindow = Tabs.getWindow();
 });
 
 Sidebar.onBuilt.addListener(async () => {
@@ -149,7 +149,7 @@ function onMouseMove(event) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
       tab:      TSTAPI.serializeTab(tab),
-      window:   gTargetWindow,
+      window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
       altKey:   event.altKey,
@@ -165,7 +165,7 @@ function onMouseOver(event) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
       tab:      TSTAPI.serializeTab(tab),
-      window:   gTargetWindow,
+      window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
       altKey:   event.altKey,
@@ -182,7 +182,7 @@ function onMouseOut(event) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
       tab:      TSTAPI.serializeTab(tab),
-      window:   gTargetWindow,
+      window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
       altKey:   event.altKey,
@@ -249,7 +249,7 @@ function onMouseDown(event) {
       event.button != 0)
     mousedown.promisedMousedownNotified = browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
       type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
-      windowId: gTargetWindow
+      windowId: mTargetWindow
     }));
 
   EventUtils.setLastMousedown(event.button, mousedown);
@@ -320,7 +320,7 @@ async function onMouseUp(event) {
     const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
       type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
-      window:  gTargetWindow
+      window:  mTargetWindow
     }));
     // don't wait here, because we need process following common operations
     // even if this mouseup event is canceled.
@@ -370,11 +370,11 @@ async function onMouseUp(event) {
   log('notify as a blank area click to other addons');
   let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
-    window: gTargetWindow,
+    window: mTargetWindow,
   }));
   results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_CLICKED,
-    window: gTargetWindow,
+    window: mTargetWindow,
   })));
   if (results.some(result => result.result))// canceled
     return;
@@ -429,7 +429,7 @@ function onClick(event) {
     log('clicked on sound button');
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
-      windowId: gTargetWindow,
+      windowId: mTargetWindow,
       tab:      tab.id,
       muted:    Tabs.maybeSoundPlaying(tab)
     });
@@ -461,7 +461,7 @@ function handleNewTabAction(event, options = {}) {
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
-    baseTab:      Tabs.getCurrentTab(gTargetWindow),
+    baseTab:      Tabs.getCurrentTab(mTargetWindow),
     as:           options.action,
     cookieStoreId: options.cookieStoreId,
     inBackground: event.shiftKey,

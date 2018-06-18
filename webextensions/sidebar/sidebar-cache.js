@@ -30,11 +30,11 @@ export const onRestored = new EventListenerManager();
 let gTracking = false;
 
 let gLastWindowCacheOwner;
-let gTargetWindow;
+let mTargetWindow;
 let gTabBar;
 
 export function init() {
-  gTargetWindow = Tabs.getWindow();
+  mTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
 }
 
@@ -103,7 +103,7 @@ export async function getEffectiveWindowCache(options = {}) {
       }
     })(),
     (async () => {
-      actualSignature = await Cache.getWindowSignature(gTargetWindow);
+      actualSignature = await Cache.getWindowSignature(mTargetWindow);
     })()
   ]);
 
@@ -133,7 +133,7 @@ export async function getEffectiveWindowCache(options = {}) {
 
 export async function restoreTabsFromCache(cache, params = {}) {
   const offset    = params.offset || 0;
-  const container = Tabs.getTabsContainer(gTargetWindow);
+  const container = Tabs.getTabsContainer(mTargetWindow);
   if (offset <= 0) {
     if (container)
       container.parentNode.removeChild(container);
@@ -141,7 +141,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
   }
 
   let restored = Cache.restoreTabsFromCacheInternal({
-    windowId:     gTargetWindow,
+    windowId:     mTargetWindow,
     tabs:         params.tabs,
     offset:       offset,
     cache:        cache.contents,
@@ -152,14 +152,14 @@ export async function restoreTabsFromCache(cache, params = {}) {
     try {
       const masterStructure = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
-        windowId: gTargetWindow
+        windowId: mTargetWindow
       })).structure;
       const allTabs = Tabs.getAllTabs();
       const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
-        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${gTargetWindow}. fallback to regular way.`);
+        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`);
         restored = false;
-        const container = Tabs.getTabsContainer(gTargetWindow);
+        const container = Tabs.getTabsContainer(mTargetWindow);
         if (container)
           container.parentNode.removeChild(container);
       }
@@ -239,7 +239,7 @@ export async function reserveToUpdateCachedTabbar() {
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
 
-  const container = Tabs.getTabsContainer(gTargetWindow);
+  const container = Tabs.getTabsContainer(mTargetWindow);
   if (container.allTabsRestored)
     return;
 
@@ -267,12 +267,12 @@ async function updateCachedTabbar() {
     return;
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
-  const container = Tabs.getTabsContainer(gTargetWindow);
-  const signature = await Cache.getWindowSignature(gTargetWindow);
+  const container = Tabs.getTabsContainer(mTargetWindow);
+  const signature = await Cache.getWindowSignature(mTargetWindow);
   if (container.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });
-  gLastWindowCacheOwner = getWindowCacheOwner(gTargetWindow);
+  gLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: Constants.kSIDEBAR_CONTENTS_VERSION,
     tabbar: {

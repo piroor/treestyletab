@@ -50,7 +50,7 @@ export const onReady   = new EventListenerManager();
 
 
 let gStyle;
-let gTargetWindow = null;
+let mTargetWindow = null;
 
 const gTabBar                     = document.querySelector('#tabbar');
 const gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
@@ -84,9 +84,9 @@ export async function init() {
         active:        true,
         currentWindow: true
       });
-      gTargetWindow = apiTabs[0].windowId;
-      Tabs.setWindow(gTargetWindow);
-      internalLogger.context   = `Sidebar-${gTargetWindow}`;
+      mTargetWindow = apiTabs[0].windowId;
+      Tabs.setWindow(mTargetWindow);
+      internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
       PinnedTabs.init();
       Indent.init();
@@ -120,10 +120,10 @@ export async function init() {
       ApiTabsListener.startListen();
 
       browser.runtime.connect({
-        name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}`
+        name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${mTargetWindow}`
       });
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
-        browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
+        browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
       else
         applyBrowserTheme();
 
@@ -361,7 +361,7 @@ export async function rebuildAll(cache) {
     }
   }
 
-  const container = TabsContainer.buildFor(gTargetWindow);
+  const container = TabsContainer.buildFor(mTargetWindow);
   for (const apiTab of apiTabs) {
     TabIdFixer.fixTab(apiTab);
     const newTab = Tabs.buildTab(apiTab, { existing: true, inRemote: true });
@@ -376,11 +376,11 @@ export async function rebuildAll(cache) {
 async function inheritTreeStructure() {
   const response = await browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
-    windowId: gTargetWindow
+    windowId: mTargetWindow
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), response.structure);
+    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), response.structure);
     MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
   }
 }
@@ -518,14 +518,14 @@ function updateTabbarLayout(params = {}) {
 function onFocus(_aEvent) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
-    windowId: gTargetWindow
+    windowId: mTargetWindow
   });
 }
 
 function onBlur(_aEvent) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_BLUR,
-    windowId: gTargetWindow
+    windowId: mTargetWindow
   });
 }
 
@@ -548,7 +548,7 @@ function onTransisionEnd(event) {
 
 function onBrowserThemeChanged(aUpdateInfo) {
   if (!aUpdateInfo.windowId || // reset to default
-      aUpdateInfo.windowId == gTargetWindow)
+      aUpdateInfo.windowId == mTargetWindow)
     applyBrowserTheme(aUpdateInfo.theme);
 }
 
@@ -804,13 +804,13 @@ function onMessage(message, _aSender, _aRespond) {
   //log('onMessage: ', message, sender);
   switch (message.type) {
     case Constants.kCOMMAND_PING_TO_SIDEBAR: {
-      if (message.windowId == gTargetWindow)
+      if (message.windowId == mTargetWindow)
         return Promise.resolve(true);
     }; break;
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
-      if (message.windowId == gTargetWindow)
-        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), message.structure);
+      if (message.windowId == mTargetWindow)
+        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), message.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
@@ -826,7 +826,7 @@ function onMessage(message, _aSender, _aRespond) {
       break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
-      if (message.windowId == gTargetWindow) return (async () => {
+      if (message.windowId == mTargetWindow) return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tab);
         const tab = Tabs.getTabById(message.tab);
         if (!tab)
@@ -844,7 +844,7 @@ function onMessage(message, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
-      if (message.windowId == gTargetWindow) return (async () => {
+      if (message.windowId == mTargetWindow) return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tab);
         const tab = Tabs.getTabById(message.tab);
         if (!tab)
@@ -891,7 +891,7 @@ function onMessage(message, _aSender, _aRespond) {
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {
-      if (message.windowId == gTargetWindow) {
+      if (message.windowId == mTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
             Tabs.waitUntilTabsAreCreated([
@@ -920,7 +920,7 @@ function onMessage(message, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_DETACH_TAB: {
-      if (message.windowId == gTargetWindow) {
+      if (message.windowId == mTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
             Tabs.waitUntilTabsAreCreated(message.tab),
@@ -937,13 +937,13 @@ function onMessage(message, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS: {
-      if (message.windowId == gTargetWindow)
-        UserOperationBlocker.blockIn(gTargetWindow, message);
+      if (message.windowId == mTargetWindow)
+        UserOperationBlocker.blockIn(mTargetWindow, message);
     }; break;
 
     case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS: {
-      if (message.windowId == gTargetWindow)
-        UserOperationBlocker.unblockIn(gTargetWindow, message);
+      if (message.windowId == mTargetWindow)
+        UserOperationBlocker.unblockIn(mTargetWindow, message);
     }; break;
 
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
@@ -976,7 +976,7 @@ function onMessage(message, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
-      if (message.windowId == gTargetWindow)
+      if (message.windowId == mTargetWindow)
         return confirmToCloseTabs(message.count);
     }; break;
   }
