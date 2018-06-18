@@ -287,7 +287,7 @@ Tabs.onRemoved.addListener(async tab => {
   });
 });
 
-Tabs.onMoving.addListener(async tab => {
+Tabs.onMoving.addListener(tab => {
   if (!configs.animation ||
       Tabs.isPinned(tab) ||
       Tabs.isOpening(tab))
