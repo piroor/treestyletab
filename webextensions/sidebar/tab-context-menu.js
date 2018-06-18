@@ -42,7 +42,7 @@ let gLastOpenOptions = null;
 let gContextWindowId = null;
 let gIsDirty         = false;
 
-const gExtraItems = new Map();
+const mExtraItems = new Map();
 
 export function init() {
   gMenu = document.querySelector('#tabContextMenu');
@@ -83,11 +83,11 @@ async function rebuild() {
     range.detach();
   }
 
-  if (gExtraItems.size == 0)
+  if (mExtraItems.size == 0)
     return;
 
   const extraItemNodes = document.createDocumentFragment();
-  for (const [id, extraItems] of gExtraItems.entries()) {
+  for (const [id, extraItems] of mExtraItems.entries()) {
     let addonItem = document.createElement('li');
     const name = getAddonName(id);
     addonItem.appendChild(document.createTextNode(name));
@@ -475,9 +475,9 @@ function onMessage(aMessage, _aSender) {
 }
 
 function importExtraItems(aItems) {
-  gExtraItems.clear();
+  mExtraItems.clear();
   for (const [id, items] of Object.entries(aItems)) {
-    gExtraItems.set(id, items);
+    mExtraItems.set(id, items);
   }
 }
 

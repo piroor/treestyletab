@@ -36,20 +36,20 @@ export function init() {
   }, { once: true });
 }
 
-const gExtraItems = new Map();
+const mExtraItems = new Map();
 
 function getItemsFor(aAddonId) {
-  if (gExtraItems.has(aAddonId)) {
-    return gExtraItems.get(aAddonId);
+  if (mExtraItems.has(aAddonId)) {
+    return mExtraItems.get(aAddonId);
   }
   const items = [];
-  gExtraItems.set(aAddonId, items);
+  mExtraItems.set(aAddonId, items);
   return items;
 }
 
 function exportExtraItems() {
   const exported = {};
-  for (const [id, items] of gExtraItems.entries()) {
+  for (const [id, items] of mExtraItems.entries()) {
     exported[id] = items;
   }
   return exported;
@@ -62,19 +62,19 @@ async function notifyUpdated() {
   });
 }
 
-let gReservedNotifyUpdate;
-let gNotifyUpdatedHandlers = [];
+let mReservedNotifyUpdate;
+let mNotifyUpdatedHandlers = [];
 
 function reserveNotifyUpdated() {
   return new Promise((aResolve, _aReject) => {
-    gNotifyUpdatedHandlers.push(aResolve);
-    if (gReservedNotifyUpdate)
-      clearTimeout(gReservedNotifyUpdate);
-    gReservedNotifyUpdate = setTimeout(async () => {
-      gReservedNotifyUpdate = undefined;
+    mNotifyUpdatedHandlers.push(aResolve);
+    if (mReservedNotifyUpdate)
+      clearTimeout(mReservedNotifyUpdate);
+    mReservedNotifyUpdate = setTimeout(async () => {
+      mReservedNotifyUpdate = undefined;
       await notifyUpdated();
-      const handlers = gNotifyUpdatedHandlers;
-      gNotifyUpdatedHandlers = [];
+      const handlers = mNotifyUpdatedHandlers;
+      mNotifyUpdatedHandlers = [];
       for (const handler of handlers) {
         handler();
       }
@@ -115,7 +115,7 @@ export function onExternalMessage(aMessage, aSender) {
       }
       if (shouldAdd)
         items.push(params);
-      gExtraItems.set(aSender.id, items);
+      mExtraItems.set(aSender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
@@ -128,7 +128,7 @@ export function onExternalMessage(aMessage, aSender) {
         items.splice(i, 1, Object.assign({}, item, aMessage.params[1]));
         break;
       }
-      gExtraItems.set(aSender.id, items);
+      mExtraItems.set(aSender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
@@ -138,13 +138,13 @@ export function onExternalMessage(aMessage, aSender) {
       if (Array.isArray(id))
         id = id[0];
       items = items.filter(aItem => aItem.id != id);
-      gExtraItems.set(aSender.id, items);
+      mExtraItems.set(aSender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kUNREGISTER_SELF: {
-      delete gExtraItems.delete(aSender.id);
+      delete mExtraItems.delete(aSender.id);
       return reserveNotifyUpdated();
     }; break;
   }

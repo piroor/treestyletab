@@ -134,7 +134,7 @@ async function handleNewTabFromActiveTab(aTab, aParams = {}) {
   TabsInternalOperation.removeTab(aTab);
 }
 
-const gToBeGroupedTabSets = [];
+const mToBeGroupedTabSets = [];
 
 function onNewTabsTimeout(aContainer) {
   const tabIds       = aContainer.dataset.openedNewTabs.split('|');
@@ -154,7 +154,7 @@ function onNewTabsTimeout(aContainer) {
       TSTAPI.isGroupingBlocked())
     return;
 
-  gToBeGroupedTabSets.push(tabReferences);
+  mToBeGroupedTabSets.push(tabReferences);
   wait(0).then(tryGroupNewTabs);
 }
 
@@ -162,7 +162,7 @@ async function tryGroupNewTabs() {
   if (tryGroupNewTabs.running)
     return;
 
-  const tabReferences = gToBeGroupedTabSets.shift();
+  const tabReferences = mToBeGroupedTabSets.shift();
   if (!tabReferences)
     return;
 
@@ -201,7 +201,7 @@ async function tryGroupNewTabs() {
   }
   finally {
     tryGroupNewTabs.running = false;
-    if (gToBeGroupedTabSets.length > 0)
+    if (mToBeGroupedTabSets.length > 0)
       tryGroupNewTabs();
   }
 }

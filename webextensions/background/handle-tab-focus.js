@@ -24,8 +24,8 @@ function log(...aArgs) {
 }
 
 
-let gTabSwitchedByShortcut       = false;
-let gMaybeTabSwitchingByShortcut = false;
+let mTabSwitchedByShortcut       = false;
+let mMaybeTabSwitchingByShortcut = false;
 
 
 Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this focusing is overridden.
@@ -38,10 +38,10 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
   cancelDelayedExpand(Tabs.getTabById(container.lastFocusedTab));
   const shouldSkipCollapsed = (
     !aInfo.byInternalOperation &&
-    gMaybeTabSwitchingByShortcut &&
+    mMaybeTabSwitchingByShortcut &&
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
-  gTabSwitchedByShortcut = gMaybeTabSwitchingByShortcut;
+  mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
   if (Tabs.isCollapsed(aTab)) {
     if (!Tabs.getParentTab(aTab)) {
       // This is invalid case, generally never should happen,
@@ -75,7 +75,7 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
         newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(aTab);
       }
       container.lastFocusedTab = newSelection.id;
-      if (gMaybeTabSwitchingByShortcut)
+      if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
       TabsInternalOperation.selectTab(newSelection, { silently: true });
       log('Tabs.onActivating: discarded? ', dumpTab(aTab), Tabs.isDiscarded(aTab));
@@ -97,7 +97,7 @@ Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this foc
     handleNewActiveTab(aTab, aInfo);
   }
   container.lastFocusedTab = aTab.id;
-  if (gMaybeTabSwitchingByShortcut)
+  if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(aTab);
   Background.tryInitGroupTab(aTab);
   return true;
@@ -160,7 +160,7 @@ Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
 
 Background.onInit.addListener(() => {
   browser.windows.onFocusChanged.addListener(() => {
-    gMaybeTabSwitchingByShortcut = false;
+    mMaybeTabSwitchingByShortcut = false;
   });
 });
 
@@ -177,18 +177,18 @@ function onMessage(aMessage, aSender) {
   //log('onMessage: ', aMessage, aSender);
   switch (aMessage.type) {
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
-      gMaybeTabSwitchingByShortcut =
-        gTabSwitchedByShortcut = false;
+      mMaybeTabSwitchingByShortcut =
+        mTabSwitchedByShortcut = false;
       break;
 
     case Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH:
       log('Constants.kCOMMAND_NOTIFY_START_TAB_SWITCH');
-      gMaybeTabSwitchingByShortcut = true;
+      mMaybeTabSwitchingByShortcut = true;
       break;
     case Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH:
       log('Constants.kCOMMAND_NOTIFY_END_TAB_SWITCH');
       return (async () => {
-        if (gTabSwitchedByShortcut &&
+        if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
           await Tabs.waitUntilTabsAreCreated(aSender.tab);
           let tab = aSender.tab && Tabs.getTabById(aSender.tab);
@@ -207,8 +207,8 @@ function onMessage(aMessage, aSender) {
             });
           }
         }
-        gMaybeTabSwitchingByShortcut =
-          gTabSwitchedByShortcut = false;
+        mMaybeTabSwitchingByShortcut =
+          mTabSwitchedByShortcut = false;
       })();
   }
 }

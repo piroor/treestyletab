@@ -86,18 +86,18 @@ export function endListen() {
 
 
 
-const gTabOperationQueue = [];
+const mTabOperationQueue = [];
 
 function addTabOperationQueue() {
   let onCompleted;
-  const previous = gTabOperationQueue[gTabOperationQueue.length - 1];
+  const previous = mTabOperationQueue[mTabOperationQueue.length - 1];
   const queue = new Promise((aResolve, _aReject) => {
     onCompleted = aResolve;
   });
   queue.then(() => {
-    gTabOperationQueue.splice(gTabOperationQueue.indexOf(queue), 1);
+    mTabOperationQueue.splice(mTabOperationQueue.indexOf(queue), 1);
   });
-  gTabOperationQueue.push(queue);
+  mTabOperationQueue.push(queue);
   return [onCompleted, previous];
 }
 
@@ -114,7 +114,7 @@ function getOrBuildTabsContainer(aHint) {
   return container;
 }
 
-const gLastClosedWhileActiveResolvers = new WeakMap();
+const mLastClosedWhileActiveResolvers = new WeakMap();
 
 async function onActivated(aActiveInfo) {
   const targetWindow = Tabs.getWindow();
@@ -147,11 +147,11 @@ async function onActivated(aActiveInfo) {
     log('tabs.onActivated: ', dumpTab(newTab));
     const oldActiveTabs = TabsInternalOperation.setTabFocused(newTab);
 
-    let byCurrentTabRemove = gLastClosedWhileActiveResolvers.has(container);
+    let byCurrentTabRemove = mLastClosedWhileActiveResolvers.has(container);
     if (byCurrentTabRemove) {
       TabsContainer.incrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
-      gLastClosedWhileActiveResolvers.get(container)();
-      delete gLastClosedWhileActiveResolvers.delete(container);
+      mLastClosedWhileActiveResolvers.get(container)();
+      delete mLastClosedWhileActiveResolvers.delete(container);
       const focusRedirected = await container.focusRedirectedForClosingCurrentTab;
       delete container.focusRedirectedForClosingCurrentTab;
       if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) // reduce count even if not redirected
@@ -472,7 +472,7 @@ async function onRemoved(aTabId, aRemoveInfo) {
     if (Tabs.isActive(oldTab)) {
       const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab);
       if (resolver)
-        gLastClosedWhileActiveResolvers.set(container, resolver);
+        mLastClosedWhileActiveResolvers.set(container, resolver);
     }
 
     await Tabs.onRemoving.dispatch(oldTab, {
@@ -602,7 +602,7 @@ async function onMoved(aTabId, aMoveInfo) {
   }
 }
 
-const gTreeInfoForTabsMovingAcrossWindows = new Map();
+const mTreeInfoForTabsMovingAcrossWindows = new Map();
 
 async function onAttached(aTabId, aAttachInfo) {
   const targetWindow = Tabs.getWindow();
@@ -631,8 +631,8 @@ async function onAttached(aTabId, aAttachInfo) {
     TabIdFixer.fixTab(apiTab);
 
     TabsInternalOperation.clearOldActiveStateInWindow(aAttachInfo.newWindowId);
-    const info = gTreeInfoForTabsMovingAcrossWindows.get(aTabId);
-    gTreeInfoForTabsMovingAcrossWindows.delete(aTabId);
+    const info = mTreeInfoForTabsMovingAcrossWindows.get(aTabId);
+    mTreeInfoForTabsMovingAcrossWindows.delete(aTabId);
 
     const newTab = await onNewTabTracked(apiTab);
     const byInternalOperation = newTab && parseInt(newTab.parentNode.dataset.toBeAttachedTabs) > 0;
@@ -677,7 +677,7 @@ async function onDetached(aTabId, aDetachInfo) {
       windowId:    aDetachInfo.oldWindowId,
       descendants: Tabs.getDescendantTabs(oldTab)
     };
-    gTreeInfoForTabsMovingAcrossWindows.set(aTabId, info);
+    mTreeInfoForTabsMovingAcrossWindows.set(aTabId, info);
 
     Tabs.onStateChanged.dispatch(oldTab);
 
