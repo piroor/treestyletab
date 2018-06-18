@@ -39,6 +39,9 @@ module.exports = {
     }],
     'no-unused-expressions': 'error',
     'no-unused-labels': 'error',
+    'no-undef': ['error', {
+      'typeof': true,
+    }],
 
     // stylisitc problem
     'indent': ['warn', 2, {

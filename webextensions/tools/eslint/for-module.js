@@ -18,12 +18,6 @@ module.exports = {
   ],
 
   'rules': {
-
-
-    'no-undef': ['error', {
-      'typeof': true,
-    }],
-
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/default.md
     'import/default': 'error',
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/namespace.md

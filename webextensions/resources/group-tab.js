@@ -5,6 +5,8 @@
 */
 'use strict';
 
+/* global l10n: false */
+
 window.gTemporaryCheck = undefined;
 window.gTitle = undefined;
 window.gTitleField = undefined;
@@ -32,6 +34,9 @@ function getOpenerTabId() {
 }
 
 function enterTitleEdit() {
+  const gTitle = window.gTitle;
+  const gTitleField = window.gTitleField;
+
   gTitle.style.display = 'none';
   gTitleField.style.display = 'inline';
   gTitleField.select();
@@ -39,6 +44,9 @@ function enterTitleEdit() {
 }
 
 function exitTitleEdit() {
+  const gTitle = window.gTitle;
+  const gTitleField = window.gTitleField;
+
   gTitle.style.display = '';
   gTitleField.style.display = '';
 }
@@ -52,7 +60,7 @@ function hasModifier(aEvent) {
 
 function updateParameters(aParameters = {}) {
   const title     = aParameters.title || getTitle() || '';
-  const temporary = String(gTemporaryCheck.checked);
+  const temporary = String(window.gTemporaryCheck.checked);
 
   let opener    = getOpenerTabId();
   opener = opener ? `&openerTabId=${opener}` : '';
@@ -63,8 +71,11 @@ function updateParameters(aParameters = {}) {
 }
 
 function init() {
-  gTitle = document.querySelector('#title');
-  gTitleField = document.querySelector('#title-field');
+  const gTitle = document.querySelector('#title');
+  const gTitleField = document.querySelector('#title-field');
+
+  window.gTitle = gTitle;
+  window.gTitleField = gTitleField;
 
   gTitle.addEventListener('click', aEvent => {
     if (aEvent.button == 0 &&
@@ -119,7 +130,9 @@ function init() {
 
   gTitle.textContent = gTitleField.value = getTitle();
 
-  gTemporaryCheck = document.querySelector('#temporary');
+  const gTemporaryCheck = document.querySelector('#temporary');
+  window.gTemporaryCheck = gTemporaryCheck
+
   gTemporaryCheck.checked = isTemporary();
   gTemporaryCheck.addEventListener('change', _aEvent => updateParameters());
 
