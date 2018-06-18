@@ -599,12 +599,12 @@ export function getAncestorTabs(descendant, options = {}) {
 }
 
 export function getVisibleAncestorOrSelf(descendant) {
-  if (!isCollapsed(descendant))
-    return descendant;
   for (const ancestor of getAncestorTabs(descendant)) {
     if (!isCollapsed(ancestor))
       return ancestor;
   }
+  if (!isCollapsed(descendant))
+    return descendant;
   return null;
 }
 
