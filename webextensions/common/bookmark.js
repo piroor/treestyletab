@@ -12,6 +12,7 @@ import {
 } from './common.js';
 import * as Permissions from './permissions.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['common/bookmarks'])
     internalLogger(...aArgs);

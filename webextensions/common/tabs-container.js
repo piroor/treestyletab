@@ -45,6 +45,7 @@ import {
 
 import * as Tabs from './tabs.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['common/tabs-container'])
     internalLogger(...aArgs);

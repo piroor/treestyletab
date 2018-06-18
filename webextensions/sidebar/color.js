@@ -10,6 +10,7 @@ import {
   configs
 } from '../common/common.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['sidebar/color'])
     internalLogger(...aArgs);

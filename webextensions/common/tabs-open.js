@@ -49,6 +49,7 @@ import * as TabsContainer from './tabs-container.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['common/tabs-open'])
     internalLogger(...aArgs);

@@ -11,6 +11,7 @@ import {
 } from './common.js';
 import EventListenerManager from './EventListenerManager.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['common/contextual-identities'])
     internalLogger(...aArgs);

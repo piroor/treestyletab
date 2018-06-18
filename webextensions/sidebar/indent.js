@@ -14,6 +14,7 @@ import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
 import * as Tree from '../common/tree.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['sidebar/indent'])
     internalLogger(...aArgs);

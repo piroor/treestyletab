@@ -12,6 +12,7 @@ import {
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['common/user-operation-blocker'])
     internalLogger(...aArgs);

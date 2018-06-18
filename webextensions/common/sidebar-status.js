@@ -12,6 +12,7 @@ import {
 import * as Constants from './constants.js';
 import * as TSTAPI from './tst-api.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...aArgs) {
   if (configs.logFor['common/sidebar-status'])
     internalLogger(...aArgs);
