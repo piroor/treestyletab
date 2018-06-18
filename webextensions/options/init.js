@@ -45,8 +45,13 @@ function onChangeMasterChacekbox(aEvent) {
 }
 
 function onChangeSlaveChacekbox(aEvent) {
-  master.checked = isAllSlavesChecked(aEvent.currentTarget);
+  getMasterCheckboxFromSlave(aEvent.currentTarget).checked = isAllSlavesChecked(aEvent.currentTarget);
   saveLogForConfig();
+}
+
+function getMasterCheckboxFromSlave(aSlave) {
+  const container = aSlave.closest('fieldset');
+  return container.querySelector('legend input[type="checkbox"]');
 }
 
 function saveLogForConfig() {
@@ -60,7 +65,6 @@ function saveLogForConfig() {
 function isAllSlavesChecked(aMasger) {
   const container = aMasger.closest('fieldset');
   const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
-  const master = container.querySelector('legend input[type="checkbox"]');
   return Array.from(checkboxes).every(aCheckbox => aCheckbox.checked);
 }
 
