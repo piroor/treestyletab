@@ -26,6 +26,15 @@ module.exports = {
       'ignoreReadBeforeAssign': false
     }],
     'no-var': 'error',
+  
+    'no-unused-vars': ['warn', { // Not make an error for debugging.
+      'vars': 'all',
+      'args': 'after-used',
+      'argsIgnorePattern': '^_',
+      'caughtErrors': 'all',
+      'caughtErrorsIgnorePattern': '^_', // Allow `catch (_e) {...}`
+    }],
+
     // stylisitc problem
     'indent': ['warn', 2, {
       'SwitchCase': 1,

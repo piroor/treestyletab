@@ -121,7 +121,7 @@ function init() {
 
   gTemporaryCheck = document.querySelector('#temporary');
   gTemporaryCheck.checked = isTemporary();
-  gTemporaryCheck.addEventListener('change', aEvent => updateParameters());
+  gTemporaryCheck.addEventListener('change', _aEvent => updateParameters());
 
   l10n.updateDocument();
 
