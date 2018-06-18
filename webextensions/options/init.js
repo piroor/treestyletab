@@ -103,11 +103,12 @@ window.addEventListener('DOMContentLoaded', () => {
         configs.optionsExpandedGroups = otherExpandedSections.concat([fieldset.id]);
     };
 
-    fieldset.addEventListener('click', () => {
+    const legend = fieldset.querySelector(':scope > legend');
+    legend.addEventListener('click', () => {
       fieldset.classList.toggle('collapsed');
       onChangeCollapsed();
     });
-    fieldset.addEventListener('keydown', aEvent => {
+    legend.addEventListener('keydown', aEvent => {
       if (aEvent.key != 'Enter')
         return;
       fieldset.classList.toggle('collapsed');
