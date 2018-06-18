@@ -5,9 +5,9 @@
 */
 'use strict';
 
-var gTemporaryCheck;
-var gTitle;
-var gTitleField;
+window.gTemporaryCheck;
+window.gTitle
+window.gTitleField
 
 document.title = getTitle();
 
@@ -51,13 +51,13 @@ function hasModifier(aEvent) {
 }
 
 function updateParameters(aParameters = {}) {
-  var title     = aParameters.title || getTitle() || '';
-  var temporary = String(gTemporaryCheck.checked);
+  const title     = aParameters.title || getTitle() || '';
+  const temporary = String(gTemporaryCheck.checked);
 
-  var opener    = getOpenerTabId();
+  let opener    = getOpenerTabId();
   opener = opener ? `&openerTabId=${opener}` : '';
 
-  var uri = location.href.split('?')[0];
+  let uri = location.href.split('?')[0];
   uri = `${uri}?title=${encodeURIComponent(title)}&temporary=${temporary}${opener}`;
   location.replace(uri);
 }

@@ -27,14 +27,14 @@ export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
 const kFEATURES_VERSION = 3;
 
 export function migrateLegacyConfigs() {
-  var values = configs.importedConfigsFromLegacy;
+  const values = configs.importedConfigsFromLegacy;
   if (!values ||
       typeof values != 'object')
     return;
 
   try {
 
-    var migrated = false;
+    let migrated = false;
     switch (configs.legacyConfigsNextMigrationVersion) {
       case 0:
       case 1:
@@ -144,7 +144,7 @@ function migrateLegacyConfig(aKey, aValue) {
 }
 
 export async function migrateLegacyTreeStructure() {
-  var structures = configs.importedTreeStructureFromLegacy;
+  const structures = configs.importedTreeStructureFromLegacy;
   if (!structures ||
       !Array.isArray(structures) ||
       !configs.migrateLegacyTreeStructure)
@@ -176,21 +176,21 @@ export async function migrateLegacyTreeStructure() {
   */
 
   try {
-    var getWindowSignatureFromTabs = (aTabs) => {
+    const getWindowSignatureFromTabs = (aTabs) => {
       return aTabs.map(aTab =>
         `${aTab.title}\n${aTab.url}\npinned=${aTab.pinned}`
       ).join('\n');
     };
 
-    var structureSignatures = structures.map(getWindowSignatureFromTabs);
+    const structureSignatures = structures.map(getWindowSignatureFromTabs);
 
-    var messages = [];
+    const messages = [];
 
-    var apiWindows = await browser.windows.getAll({
+    const apiWindows = await browser.windows.getAll({
       populate:     true,
       windowTypes: ['normal']
     });
-    var restoredCountWithSession = 0;
+    let restoredCountWithSession = 0;
     for (const apiWindow of apiWindows) {
       const signature = getWindowSignatureFromTabs(apiWindow.tabs);
       const index     = structureSignatures.indexOf(signature);
@@ -218,20 +218,20 @@ export async function migrateLegacyTreeStructure() {
     // not found: try to restore windows from structures
     await Promise.all(structures.map(async aStructure => {
     // prepare new window with tabs
-      var apiWindow = await browser.windows.create({
+      let apiWindow = await browser.windows.create({
         url: 'about:blank'
       });
-      var container = Tabs.getTabsContainer(apiWindow.id);
+      const container = Tabs.getTabsContainer(apiWindow.id);
       TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', aStructure.length);
       // restore tree
-      var uris = aStructure.map(aItem => aItem.url);
+      let uris = aStructure.map(aItem => aItem.url);
       uris = uris.map(aURI => {
         if (!/^about:blank($|\?|#)/.test(aURI) &&
             /^(about|resource|chrome|file):/.test(aURI))
           return `about:blank?${aURI}`;
         return aURI;
       });
-      var tabs = await TabsOpen.openURIsInTabs(uris, {
+      const tabs = await TabsOpen.openURIsInTabs(uris, {
         windowId: apiWindow.id
       });
       Tree.applyTreeStructureToTabs(tabs, aStructure);
@@ -239,7 +239,7 @@ export async function migrateLegacyTreeStructure() {
       apiWindow = await browser.windows.get(apiWindow.id, {
         populate: true
       });
-      var restApiTabs = apiWindow.tabs.slice(1);
+      const restApiTabs = apiWindow.tabs.slice(1);
       try {
         await TabsInternalOperation.removeTab(Tabs.getTabById(apiWindow.tabs[0]));
         // apply pinned state
