@@ -173,12 +173,16 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    const focusOverridden = (await Tabs.onActivating.dispatch(newTab, {
+    let focusOverridden = Tabs.onActivating.dispatch(newTab, {
       byCurrentTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
-    })) === false;
+    });
+    // don't do await if not needed, to process things synchronously
+    if (focusOverridden instanceof Promise)
+      focusOverridden = await focusOverridden;
+    focusOverridden = focusOverridden === false;
     if (focusOverridden) {
       onCompleted();
       return;
@@ -189,13 +193,16 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    await Tabs.onActivated.dispatch(newTab, {
+    const onActivatedReuslt = Tabs.onActivated.dispatch(newTab, {
       oldActiveTabs,
       byCurrentTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
     });
+    // don't do await if not needed, to process things synchronously
+    if (onActivatedReuslt instanceof Promise)
+      await onActivatedReuslt;
     onCompleted();
   }
   catch(e) {
@@ -250,7 +257,10 @@ async function onUpdated(tabId, changeInfo, tab) {
     });
     TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab));
 
-    await Tabs.onUpdated.dispatch(updatedTab, changeInfo);
+    const onUpdatedResult = Tabs.onUpdated.dispatch(updatedTab, changeInfo);
+    // don't do await if not needed, to process things synchronously
+    if (onUpdatedResult instanceof Promise)
+      await onUpdatedResult;
     onCompleted();
   }
   catch(e) {
@@ -354,14 +364,18 @@ async function onNewTabTracked(tab) {
       return;
     }
 
-    const moved = (await Tabs.onCreating.dispatch(newTab, {
+    let moved = Tabs.onCreating.dispatch(newTab, {
       maybeOpenedWithPosition: openedWithPosition,
       maybeOrphan,
       restored,
       duplicated,
       duplicatedInternally,
       activeTab
-    })) === false;
+    });
+    // don't do await if not needed, to process things synchronously
+    if (moved instanceof Promise)
+      moved = await moved;
+    moved = moved === false;
 
     if (container.parentNode) { // it can be removed while waiting
       TabsContainer.incrementCounter(container, 'openingCount');
@@ -475,16 +489,22 @@ async function onRemoved(tabId, removeInfo) {
         mLastClosedWhileActiveResolvers.set(container, resolver);
     }
 
-    await Tabs.onRemoving.dispatch(oldTab, {
+    const onRemovingResult = Tabs.onRemoving.dispatch(oldTab, {
       byInternalOperation
     });
+    // don't do await if not needed, to process things synchronously
+    if (onRemovingResult instanceof Promise)
+      await onRemovingResult;
 
     oldTab[Constants.kTAB_STATE_REMOVING] = true;
     oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
 
-    await Tabs.onRemoved.dispatch(oldTab, {
+    const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, {
       byInternalOperation
     });
+    // don't do await if not needed, to process things synchronously
+    if (onRemovedReuslt instanceof Promise)
+      await onRemovedReuslt;
     await onRemovedComplete(oldTab);
     onCompleted();
   }
@@ -569,7 +589,11 @@ async function onMoved(tabId, moveInfo) {
       alreadyMoved = true;
     }
 
-    const canceled = (await Tabs.onMoving.dispatch(movedTab, extendedMoveInfo)) === false;
+    let canceled = Tabs.onMoving.dispatch(movedTab, extendedMoveInfo);
+    // don't do await if not needed, to process things synchronously
+    if (canceled instanceof Promise)
+      await canceled;
+    canceled = canceled === false;
     if (!canceled &&
         Tabs.ensureLivingTab(movedTab)) { // it is removed while waiting
       let newNextIndex = extendedMoveInfo.toIndex;
@@ -590,7 +614,10 @@ async function onMoved(tabId, moveInfo) {
       for (let i = startIndex; i < endIndex; i++) {
         tabs[i].apiTab.index = i;
       }
-      await Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);
+      const onMovedResult = Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);
+      // don't do await if not needed, to process things synchronously
+      if (onMovedResult instanceof Promise)
+        await onMovedResult;
     }
     if (byInternalOperation)
       TabsContainer.decrementCounter(container, 'internalMovingCount');
@@ -640,8 +667,12 @@ async function onAttached(tabId, attachInfo) {
       TabsContainer.decrementCounter(newTab.parentNode, 'toBeAttachedTabs');
     info.byInternalOperation = info.byInternalOperation || byInternalOperation;
 
-    if (!byInternalOperation) // we should process only tabs attached by others.
-      await Tabs.onAttached.dispatch(newTab, info);
+    if (!byInternalOperation) { // we should process only tabs attached by others.
+      const onAttachedResult = Tabs.onAttached.dispatch(newTab, info);
+      // don't do await if not needed, to process things synchronously
+      if (onAttachedResult instanceof Promise)
+        await onAttachedResult;
+    }
 
     onCompleted();
   }

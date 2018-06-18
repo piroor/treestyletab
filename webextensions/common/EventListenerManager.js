@@ -31,23 +31,41 @@ export default class EventListenerManager {
     this._stacksOnListenerAdded.clear();
   }
 
-  async dispatch(...args) {
+  // We hope to process results synchronously if possibly,
+  // so this method must not be "async".
+  dispatch(...args) {
     const listeners = Array.from(this._listeners);
-    const results = await Promise.all(listeners.map(async listener => {
+    const results = listeners.map(listener => {
       const timer = setTimeout(() => {
         const listenerAddedStack = this._stacksOnListenerAdded.get(listener);
         console.log(`listener does not respond in ${TIMEOUT}ms.\n${listenerAddedStack}\n\n${new Error().stack}`);
       }, TIMEOUT);
       try {
-        return await listener(...args);
+        const result = listener(...args);
+        if (result instanceof Promise)
+          return result
+                   .catch(e => {
+                     console.log(e);
+                   })
+                   .then(result => {
+                     clearTimeout(timer);
+                     return result;
+                   });
+        clearTimeout(timer);
+        return result;
       }
       catch(e) {
         console.log(e);
-      }
-      finally {
         clearTimeout(timer);
       }
-    }));
+    });
+    if (results.some(result => result instanceof Promise))
+      return Promise.all(results).then(this.normalizeResults);
+    else
+      return this.normalizeResults(results);
+  }
+
+  normalizeResults(results) {
     if (results.length == 1)
       return results[0];
     for (const result of results) {
