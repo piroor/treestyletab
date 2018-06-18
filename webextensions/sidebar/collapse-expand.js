@@ -62,7 +62,7 @@ function log(...args) {
 const gUpdatingCollapsedStateCancellers = new WeakMap();
 const gTabCollapsedStateChangedManagers = new WeakMap();
 
-Tabs.onCollapsedStateChanging.addListener(async (tab, info = {}) => {
+Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   const toBeCollapsed = info.collapsed;
 
   log('Tabs.onCollapsedStateChanging ', dumpTab(tab), info);

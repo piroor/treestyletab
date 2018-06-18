@@ -274,7 +274,7 @@ Tabs.onCreated.addListener(tab => {
 
 Tabs.onRemoving.addListener(reserveToUpdateLoadingState);
 
-Tabs.onRemoved.addListener(async tab => {
+Tabs.onRemoved.addListener(tab => {
   if (Tabs.isCollapsed(tab) ||
       !configs.animation)
     return;
@@ -364,7 +364,7 @@ Tabs.onGroupTabDetected.addListener(tab => {
   });
 });
 
-Tree.onAttached.addListener(async (tab, info = {}) => {
+Tree.onAttached.addListener((tab, info = {}) => {
   if (!mInitialized)
     return;
   updateTwisty(info.parent);
@@ -378,7 +378,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   reserveToUpdateTooltip(info.parent);
 });
 
-Tree.onDetached.addListener(async (_aTab, detachInfo = {}) => {
+Tree.onDetached.addListener((_aTab, detachInfo = {}) => {
   if (!mInitialized)
     return;
   const parent = detachInfo.oldParentTab;
