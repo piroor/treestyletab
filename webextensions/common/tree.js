@@ -661,12 +661,34 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   }
 }
 
-export function collapseExpandTab(tab, params = {}) {
+const mCollapseExpandLastCalled = new WeakMap();
+const mCollapseExpandLastState  = new WeakMap();
+
+export async function collapseExpandTab(tab, params = {}) {
   if (Tabs.isPinned(tab) && params.collapsed) {
     log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
         dumpTab(tab), { stack: new Error().stack });
     params.collapsed = false;
   }
+
+  // This may prevent double-collapsing/expanding of a tab for new child tabs
+  // (They are collapsed/expanded by onTabMoved listeners, Tree.onAtached
+  // listeners, and others. We should apply only the last one.)
+  const lastCalled = Date.now();
+  mCollapseExpandLastCalled.set(tab, lastCalled);
+  const lastState = !!params.collapsed;
+  mCollapseExpandLastState.set(tab, lastState);
+  if (!params.justNow) {
+    await wait(10);
+    if (mCollapseExpandLastCalled.get(tab) != lastCalled &&
+        mCollapseExpandLastState.get(tab) != lastState) {
+      mCollapseExpandLastCalled.delete(tab);
+      mCollapseExpandLastState.delete(tab);
+      return;
+    }
+  }
+  mCollapseExpandLastCalled.delete(tab);
+  mCollapseExpandLastState.delete(tab);
 
   const stack = `${new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })
