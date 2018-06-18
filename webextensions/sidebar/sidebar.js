@@ -39,9 +39,9 @@ import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/sidebar'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export const onInit    = new EventListenerManager();
@@ -196,8 +196,8 @@ export async function init() {
   log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
 }
 
-function applyStyle(aStyle) {
-  gStyle = aStyle || configs.style;
+function applyStyle(style) {
+  gStyle = style || configs.style;
   switch (gStyle) {
     case 'metal':
       gStyleLoader.setAttribute('href', 'styles/metal/metal.css');
@@ -227,9 +227,9 @@ function applyStyle(aStyle) {
       gStyleLoader.setAttribute('href', 'data:text/css,');
       break;
   }
-  return new Promise((aResolve, _aReject) => {
+  return new Promise((resolve, _aReject) => {
     gStyleLoader.addEventListener('load', () => {
-      nextFrame().then(aResolve);
+      nextFrame().then(resolve);
     }, { once: true });
   });
 }
@@ -349,12 +349,12 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-export async function rebuildAll(aCache) {
+export async function rebuildAll(cache) {
   const apiTabs = await browser.tabs.query({ currentWindow: true });
   TabsContainer.clearAll();
 
-  if (aCache) {
-    const restored = await SidebarCache.restoreTabsFromCache(aCache, { tabs: apiTabs });
+  if (cache) {
+    const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs: apiTabs });
     if (restored) {
       MetricsData.add('rebuildAll (from cache)');
       return true;
@@ -395,26 +395,26 @@ async function waitUntilBackgroundIsReady() {
   }
   catch(_e) {
   }
-  return new Promise((aResolve, _aReject) => {
-    const onBackgroundIsReady = (aMessage, _aSender, _aRespond) => {
-      if (!aMessage ||
-          !aMessage.type ||
-          aMessage.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
+  return new Promise((resolve, _aReject) => {
+    const onBackgroundIsReady = (message, _aSender, _aRespond) => {
+      if (!message ||
+          !message.type ||
+          message.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
         return;
       browser.runtime.onMessage.removeListener(onBackgroundIsReady);
-      aResolve();
+      resolve();
     };
     browser.runtime.onMessage.addListener(onBackgroundIsReady);
   });
 }
 
 
-export async function confirmToCloseTabs(aCount, _aOptions = {}) {
-  if (aCount <= 1 ||
+export async function confirmToCloseTabs(count, _aOptions = {}) {
+  if (count <= 1 ||
       !configs.warnOnCloseTabs)
     return true;
   const confirm = new RichConfirm({
-    message: browser.i18n.getMessage('warnOnCloseTabs_message', [aCount]),
+    message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
       browser.i18n.getMessage('warnOnCloseTabs_cancel')
@@ -437,13 +437,13 @@ Commands.onTabsClosing.addListener(confirmToCloseTabs);
 TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
-export function reserveToUpdateTabbarLayout(aOptions = {}) {
+export function reserveToUpdateTabbarLayout(options = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
-  if (aOptions.reason && !(reserveToUpdateTabbarLayout.reasons & aOptions.reason))
-    reserveToUpdateTabbarLayout.reasons |= aOptions.reason;
-  const timeout = aOptions.timeout || 10;
+  if (options.reason && !(reserveToUpdateTabbarLayout.reasons & options.reason))
+    reserveToUpdateTabbarLayout.reasons |= options.reason;
+  const timeout = options.timeout || 10;
   reserveToUpdateTabbarLayout.timeout = Math.max(timeout, reserveToUpdateTabbarLayout.timeout);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
@@ -456,12 +456,12 @@ export function reserveToUpdateTabbarLayout(aOptions = {}) {
 reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
-function updateTabbarLayout(aParams = {}) {
+function updateTabbarLayout(params = {}) {
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({
-      reason:  aParams.reasons,
-      timeout: Math.max(100, aParams.timeout)
+      reason:  params.reasons,
+      timeout: Math.max(100, params.timeout)
     });
     return;
   }
@@ -491,7 +491,7 @@ function updateTabbarLayout(aParams = {}) {
         return;
       }
       const lastOpenedTab = Tabs.getLastOpenedTab();
-      const reasons       = aParams.reasons || 0;
+      const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
@@ -508,10 +508,10 @@ function updateTabbarLayout(aParams = {}) {
     gTabBar.style.bottom = '';
   }
 
-  if (aParams.justNow)
-    PinnedTabs.reposition(aParams);
+  if (params.justNow)
+    PinnedTabs.reposition(params);
   else
-    PinnedTabs.reserveToReposition(aParams);
+    PinnedTabs.reserveToReposition(params);
 }
 
 
@@ -535,12 +535,12 @@ function onResize(_aEvent) {
   });
 }
 
-function onTransisionEnd(aEvent) {
-  if (aEvent.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
-      !aEvent.target.classList.contains('tab') || // ignore animations of twisty or something inside tabs
-      /opacity|color|text-shadow/.test(aEvent.propertyName))
+function onTransisionEnd(event) {
+  if (event.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
+      !event.target.classList.contains('tab') || // ignore animations of twisty or something inside tabs
+      /opacity|color|text-shadow/.test(event.propertyName))
     return;
-  //log('transitionend ', aEvent);
+  //log('transitionend ', event);
   reserveToUpdateTabbarLayout({
     reason: Constants.kTABBAR_UPDATE_REASON_ANIMATION_END
   });
@@ -560,17 +560,17 @@ Tabs.onCreated.addListener(_aTab => {
   });
 });
 
-Tabs.onRemoving.addListener((aTab, aCloseInfo) => {
-  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
+Tabs.onRemoving.addListener((tab, closeInfo) => {
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, closeInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      Tabs.isSubtreeCollapsed(aTab))
-    Tree.collapseExpandSubtree(aTab, {
+      Tabs.isSubtreeCollapsed(tab))
+    Tree.collapseExpandSubtree(tab, {
       collapsed: false
     });
 
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  Tree.detachTab(aTab, {
+  Tree.detachTab(tab, {
     dontUpdateIndent: true
   });
 
@@ -587,21 +587,21 @@ Tabs.onMoved.addListener(_aTab => {
   });
 });
 
-Tabs.onDetached.addListener(aTab => {
-  if (!Tabs.ensureLivingTab(aTab))
+Tabs.onDetached.addListener(tab => {
+  if (!Tabs.ensureLivingTab(tab))
     return;
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  Tree.detachTab(aTab, {
+  Tree.detachTab(tab, {
     dontUpdateIndent: true
   });
 });
 
-Tabs.onRestoring.addListener(aTab => {
+Tabs.onRestoring.addListener(tab => {
   if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
     return;
 
-  const container = aTab.parentNode;
+  const container = tab.parentNode;
   // When we are restoring two or more tabs.
   // (But we don't need do this again for third, fourth, and later tabs.)
   if (container.restoredCount == 2)
@@ -609,12 +609,12 @@ Tabs.onRestoring.addListener(aTab => {
 });
 
 // Tree restoration for "Restore Previous Session"
-Tabs.onWindowRestoring.addListener(async aWindowId => {
+Tabs.onWindowRestoring.addListener(async windowId => {
   if (!configs.useCachedTree)
     return;
 
   log('Tabs.onWindowRestoring');
-  const container = Tabs.getTabsContainer(aWindowId);
+  const container = Tabs.getTabsContainer(windowId);
   const restoredCount = await container.allTabsRestored;
   if (restoredCount == 1) {
     log('Tabs.onWindowRestoring: single tab restored');
@@ -638,7 +638,7 @@ Tabs.onWindowRestoring.addListener(async aWindowId => {
   log('Tabs.onWindowRestoring restore! ', cache);
   MetricsData.add('Tabs.onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
-  const apiTabs = await browser.tabs.query({ windowId: aWindowId });
+  const apiTabs = await browser.tabs.query({ windowId: windowId });
   const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
     offset: cache.offset || 0,
     tabs:   apiTabs
@@ -795,22 +795,22 @@ function waitUntilAllTreeChangesFromRemoteAreComplete() {
   return Promise.all(Array.from(gTreeChangesFromRemote.values()));
 }
 
-function onMessage(aMessage, _aSender, _aRespond) {
-  if (!aMessage ||
-      typeof aMessage.type != 'string' ||
-      aMessage.type.indexOf('treestyletab:') != 0)
+function onMessage(message, _aSender, _aRespond) {
+  if (!message ||
+      typeof message.type != 'string' ||
+      message.type.indexOf('treestyletab:') != 0)
     return;
 
-  //log('onMessage: ', aMessage, aSender);
-  switch (aMessage.type) {
+  //log('onMessage: ', message, sender);
+  switch (message.type) {
     case Constants.kCOMMAND_PING_TO_SIDEBAR: {
-      if (aMessage.windowId == gTargetWindow)
+      if (message.windowId == gTargetWindow)
         return Promise.resolve(true);
     }; break;
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
-      if (aMessage.windowId == gTargetWindow)
-        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), aMessage.structure);
+      if (message.windowId == gTargetWindow)
+        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(gTargetWindow), message.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
@@ -822,21 +822,21 @@ function onMessage(aMessage, _aSender, _aRespond) {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
-      Tabs.onFaviconUpdated.dispatch(Tabs.getTabById(aMessage.tab), aMessage.favIconUrl);
+      Tabs.onFaviconUpdated.dispatch(Tabs.getTabById(message.tab), message.favIconUrl);
       break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
-      if (aMessage.windowId == gTargetWindow) return (async () => {
-        await Tabs.waitUntilTabsAreCreated(aMessage.tab);
-        const tab = Tabs.getTabById(aMessage.tab);
+      if (message.windowId == gTargetWindow) return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tab);
+        const tab = Tabs.getTabById(message.tab);
         if (!tab)
           return;
         const params = {
-          collapsed: aMessage.collapsed,
-          justNow:   aMessage.justNow,
-          stack:     aMessage.stack
+          collapsed: message.collapsed,
+          justNow:   message.justNow,
+          stack:     message.stack
         };
-        if (aMessage.manualOperation)
+        if (message.manualOperation)
           Tree.manualCollapseExpandSubtree(tab, params);
         else
           Tree.collapseExpandSubtree(tab, params);
@@ -844,21 +844,21 @@ function onMessage(aMessage, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
-      if (aMessage.windowId == gTargetWindow) return (async () => {
-        await Tabs.waitUntilTabsAreCreated(aMessage.tab);
-        const tab = Tabs.getTabById(aMessage.tab);
+      if (message.windowId == gTargetWindow) return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tab);
+        const tab = Tabs.getTabById(message.tab);
         if (!tab)
           return;
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
-        if (aMessage.byAncestor &&
-            aMessage.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
+        if (message.byAncestor &&
+            message.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
           return;
         const params = {
-          collapsed:   aMessage.collapsed,
-          justNow:     aMessage.justNow,
+          collapsed:   message.collapsed,
+          justNow:     message.justNow,
           broadcasted: true,
-          stack:       aMessage.stack
+          stack:       message.stack
         };
         Tree.collapseExpandTab(tab, params);
       })();
@@ -866,49 +866,49 @@ function onMessage(aMessage, _aSender, _aRespond) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.nextTab]));
+        await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.nextTab]));
         return TabsMove.moveTabsBefore(
-          aMessage.tabs.map(Tabs.getTabById),
-          Tabs.getTabById(aMessage.nextTab),
-          aMessage
-        ).then(aTabs => aTabs.map(aTab => aTab.id));
+          message.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(message.nextTab),
+          message
+        ).then(tabs => tabs.map(tab => tab.id));
       })();
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(aMessage.tabs.concat([aMessage.previousTab]));
+        await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.previousTab]));
         return TabsMove.moveTabsAfter(
-          aMessage.tabs.map(Tabs.getTabById),
-          Tabs.getTabById(aMessage.previousTab),
-          aMessage
-        ).then(aTabs => aTabs.map(aTab => aTab.id));
+          message.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(message.previousTab),
+          message
+        ).then(tabs => tabs.map(tab => tab.id));
       })();
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
-        return TabsInternalOperation.removeTabs(aMessage.tabs.map(Tabs.getTabById), aMessage.options);
+        await Tabs.waitUntilTabsAreCreated(message.tabs);
+        return TabsInternalOperation.removeTabs(message.tabs.map(Tabs.getTabById), message.options);
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {
-      if (aMessage.windowId == gTargetWindow) {
+      if (message.windowId == gTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
             Tabs.waitUntilTabsAreCreated([
-              aMessage.child,
-              aMessage.parent,
-              aMessage.insertBefore,
-              aMessage.insertAfter
+              message.child,
+              message.parent,
+              message.insertBefore,
+              message.insertAfter
             ]),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
-          log('attach tab from remote ', aMessage);
-          const child  = Tabs.getTabById(aMessage.child);
-          const parent = Tabs.getTabById(aMessage.parent);
+          log('attach tab from remote ', message);
+          const child  = Tabs.getTabById(message.child);
+          const parent = Tabs.getTabById(message.parent);
           if (child && parent)
-            await Tree.attachTabTo(child, parent, Object.assign({}, aMessage, {
-              insertBefore: Tabs.getTabById(aMessage.insertBefore),
-              insertAfter:  Tabs.getTabById(aMessage.insertAfter),
+            await Tree.attachTabTo(child, parent, Object.assign({}, message, {
+              insertBefore: Tabs.getTabById(message.insertBefore),
+              insertAfter:  Tabs.getTabById(message.insertAfter),
               inRemote:     false,
               broadcast:    false
             }));
@@ -920,15 +920,15 @@ function onMessage(aMessage, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_DETACH_TAB: {
-      if (aMessage.windowId == gTargetWindow) {
+      if (message.windowId == gTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
-            Tabs.waitUntilTabsAreCreated(aMessage.tab),
+            Tabs.waitUntilTabsAreCreated(message.tab),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
-          const tab = Tabs.getTabById(aMessage.tab);
+          const tab = Tabs.getTabById(message.tab);
           if (tab)
-            Tree.detachTab(tab, aMessage);
+            Tree.detachTab(tab, message);
           gTreeChangesFromRemote.delete(promisedComplete);
         })();
         gTreeChangesFromRemote.add(promisedComplete);
@@ -937,38 +937,38 @@ function onMessage(aMessage, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS: {
-      if (aMessage.windowId == gTargetWindow)
-        UserOperationBlocker.blockIn(gTargetWindow, aMessage);
+      if (message.windowId == gTargetWindow)
+        UserOperationBlocker.blockIn(gTargetWindow, message);
     }; break;
 
     case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS: {
-      if (aMessage.windowId == gTargetWindow)
-        UserOperationBlocker.unblockIn(gTargetWindow, aMessage);
+      if (message.windowId == gTargetWindow)
+        UserOperationBlocker.unblockIn(gTargetWindow, message);
     }; break;
 
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
-      if (!aMessage.tabs.length)
+      if (!message.tabs.length)
         break;
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(aMessage.tabs);
-        const add    = aMessage.add || [];
-        const remove = aMessage.remove || [];
-        log('apply broadcasted tab state ', aMessage.tabs, {
+        await Tabs.waitUntilTabsAreCreated(message.tabs);
+        const add    = message.add || [];
+        const remove = message.remove || [];
+        log('apply broadcasted tab state ', message.tabs, {
           add:    add.join(','),
           remove: remove.join(',')
         });
         const modified = add.concat(remove);
-        for (let tab of aMessage.tabs) {
+        for (let tab of message.tabs) {
           tab = Tabs.getTabById(tab);
           if (!tab)
             continue;
-          add.forEach(aState => tab.classList.add(aState));
-          remove.forEach(aState => tab.classList.remove(aState));
+          add.forEach(state => tab.classList.add(state));
+          remove.forEach(state => tab.classList.remove(state));
           if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
             modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
             modified.includes(Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.updateSoundButtonTooltip(tab);
-            if (aMessage.bubbles)
+            if (message.bubbles)
               TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
           }
         }
@@ -976,8 +976,8 @@ function onMessage(aMessage, _aSender, _aRespond) {
     }; break;
 
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
-      if (aMessage.windowId == gTargetWindow)
-        return confirmToCloseTabs(aMessage.count);
+      if (message.windowId == gTargetWindow)
+        return confirmToCloseTabs(message.count);
     }; break;
   }
 }

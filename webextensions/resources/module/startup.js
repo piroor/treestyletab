@@ -16,7 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
   Permissions.bindToCheckbox(
     Permissions.ALL_URLS,
     document.querySelector('#allUrlsPermissionGranted'),
-    { onChanged: (aGranted) => configs.skipCollapsedTabsForTabSwitchingShortcuts = aGranted }
+    { onChanged: (granted) => configs.skipCollapsedTabsForTabSwitchingShortcuts = granted }
   );
   Permissions.bindToCheckbox(
     Permissions.BOOKMARKS,

@@ -12,24 +12,24 @@ import {
 import EventListenerManager from './EventListenerManager.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/contextual-identities'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 const mContextualIdentities = new Map();
 
-export function get(aId) {
-  return mContextualIdentities.get(aId);
+export function get(id) {
+  return mContextualIdentities.get(id);
 }
 
 export function getCount() {
   return mContextualIdentities.size;
 }
 
-export function forEach(aCallback) {
+export function forEach(callback) {
   for (const identity of mContextualIdentities.values()) {
-    aCallback(identity);
+    callback(identity);
   }
 }
 
@@ -60,20 +60,20 @@ export async function init() {
 
 export const onUpdated = new EventListenerManager();
 
-function onContextualIdentityCreated(aCreatedInfo) {
-  const identity = aCreatedInfo.contextualIdentity;
+function onContextualIdentityCreated(createdInfo) {
+  const identity = createdInfo.contextualIdentity;
   mContextualIdentities.set(identity.cookieStoreId, identity);
   onUpdated.dispatch();
 }
 
-function onContextualIdentityRemoved(aRemovedInfo) {
-  const identity = aRemovedInfo.contextualIdentity;
+function onContextualIdentityRemoved(removedInfo) {
+  const identity = removedInfo.contextualIdentity;
   delete mContextualIdentities.delete(identity.cookieStoreId);
   onUpdated.dispatch();
 }
 
-function onContextualIdentityUpdated(aUpdatedInfo) {
-  const identity = aUpdatedInfo.contextualIdentity;
+function onContextualIdentityUpdated(updatedInfo) {
+  const identity = updatedInfo.contextualIdentity;
   mContextualIdentities.set(identity.cookieStoreId, identity);
   onUpdated.dispatch();
 }

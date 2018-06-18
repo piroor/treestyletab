@@ -48,9 +48,9 @@ import {
 
 import EventListenerManager from './EventListenerManager.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/tabs'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 
@@ -63,16 +63,16 @@ export const allTabsContainer = document.querySelector('#all-tabs');
 // Tab Related Utilities
 //===================================================================
 
-export function setWindow(aTargetWindow) {
-  return gTargetWindow = aTargetWindow;
+export function setWindow(targetWindow) {
+  return gTargetWindow = targetWindow;
 }
 
 export function getWindow() {
   return gTargetWindow;
 }
 
-export function getSafeFaviconUrl(aURL) {
-  switch (aURL) {
+export function getSafeFaviconUrl(uRL) {
+  switch (uRL) {
     case 'chrome://browser/skin/settings.svg':
       return browser.extension.getURL('resources/icons/settings.svg');
     case 'chrome://mozapps/skin/extensions/extensionGeneric-16.svg':
@@ -80,12 +80,12 @@ export function getSafeFaviconUrl(aURL) {
     case 'chrome://browser/skin/privatebrowsing/favicon.svg':
       return browser.extension.getURL('resources/icons/privatebrowsing-favicon.svg');
     default:
-      if (/^chrome:\/\//.test(aURL) &&
-          !/^chrome:\/\/branding\//.test(aURL))
+      if (/^chrome:\/\//.test(uRL) &&
+          !/^chrome:\/\/branding\//.test(uRL))
         return browser.extension.getURL('resources/icons/globe-16.svg');
       break;
   }
-  return aURL;
+  return uRL;
 }
 
 
@@ -93,33 +93,33 @@ export function getSafeFaviconUrl(aURL) {
 // Operate Tab ID
 //===================================================================
 
-export function makeTabId(aApiTab) {
-  return `tab-${aApiTab.windowId}-${aApiTab.id}`;
+export function makeTabId(apiTab) {
+  return `tab-${apiTab.windowId}-${apiTab.id}`;
 }
 
-export async function requestUniqueId(aTabOrId, aOptions = {}) {
-  let tabId = aTabOrId;
+export async function requestUniqueId(tabOrId, options = {}) {
+  let tabId = tabOrId;
   let tab   = null;
-  if (typeof aTabOrId == 'number') {
-    tab = getTabById(aTabOrId);
+  if (typeof tabOrId == 'number') {
+    tab = getTabById(tabOrId);
   }
   else {
-    tabId = aTabOrId.apiTab.id;
-    tab   = aTabOrId;
+    tabId = tabOrId.apiTab.id;
+    tab   = tabOrId;
   }
 
-  if (aOptions.inRemote) {
+  if (options.inRemote) {
     return await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_REQUEST_UNIQUE_ID,
       id:       tabId,
-      forceNew: !!aOptions.forceNew
+      forceNew: !!options.forceNew
     });
   }
 
   let originalId    = null;
   let originalTabId = null;
   let duplicated    = false;
-  if (!aOptions.forceNew) {
+  if (!options.forceNew) {
     let oldId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
@@ -166,23 +166,23 @@ export async function requestUniqueId(aTabOrId, aOptions = {}) {
   return { id, originalId, originalTabId, duplicated };
 }
 
-export function updateUniqueId(aTab) {
-  aTab.uniqueId = requestUniqueId(aTab, {
+export function updateUniqueId(tab) {
+  tab.uniqueId = requestUniqueId(tab, {
     inRemote: !!gTargetWindow
-  }).then(aUniqueId => {
-    if (aUniqueId && ensureLivingTab(aTab)) // possibly removed from document while waiting
-      aTab.setAttribute(Constants.kPERSISTENT_ID, aUniqueId.id);
-    return aUniqueId || {};
-  }).catch(aError => {
-    console.log(`FATAL ERROR: Failed to get unique id for a tab ${aTab.apiTab.id}: `, String(aError), aError.stack);
+  }).then(uniqueId => {
+    if (uniqueId && ensureLivingTab(tab)) // possibly removed from document while waiting
+      tab.setAttribute(Constants.kPERSISTENT_ID, uniqueId.id);
+    return uniqueId || {};
+  }).catch(error => {
+    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tab.apiTab.id}: `, String(error), error.stack);
     return {};
   });
-  return aTab.uniqueId;
+  return tab.uniqueId;
 }
 
-export async function getUniqueIds(aApiTabs) {
-  const uniqueIds = await Promise.all(aApiTabs.map(aApiTab => browser.sessions.getTabValue(aApiTab.id, Constants.kPERSISTENT_ID)));
-  return uniqueIds.map(aId => aId && aId.id || '?');
+export async function getUniqueIds(apiTabs) {
+  const uniqueIds = await Promise.all(apiTabs.map(apiTab => browser.sessions.getTabValue(apiTab.id, Constants.kPERSISTENT_ID)));
+  return uniqueIds.map(id => id && id.id || '?');
 }
 
 
@@ -219,15 +219,15 @@ export const onWindowRestoring  = new EventListenerManager();
 export const onAttached         = new EventListenerManager();
 export const onDetached         = new EventListenerManager();
 
-async function waitUntilTabsAreOperated(aIdOrIds, aSlot) {
-  if (!Array.isArray(aIdOrIds))
-    aIdOrIds = [aIdOrIds];
-  const operatingTabs = aIdOrIds
-    .map(aId => parseInt(aId))
-    .filter(aId => !!aId)
-    .map(aId => typeof aId == 'string' ? parseInt(aId.match(/^tab-\d+-(\d+)$/)[1]) : aId)
-    .map(aId => aSlot.get(aId))
-    .filter(aOperating => !!aOperating);
+async function waitUntilTabsAreOperated(idOrIds, slot) {
+  if (!Array.isArray(idOrIds))
+    idOrIds = [idOrIds];
+  const operatingTabs = idOrIds
+    .map(id => parseInt(id))
+    .filter(id => !!id)
+    .map(id => typeof id == 'string' ? parseInt(id.match(/^tab-\d+-(\d+)$/)[1]) : id)
+    .map(id => slot.get(id))
+    .filter(operating => !!operating);
   if (operatingTabs.length)
     return Promise.all(operatingTabs);
   return [];
@@ -235,19 +235,19 @@ async function waitUntilTabsAreOperated(aIdOrIds, aSlot) {
 
 const gCreatingTabs = new Map();
 
-export function addCreatingTab(aTab) {
+export function addCreatingTab(tab) {
   let onTabCreated;
   if (configs.acceleratedTabCreation) {
-    gCreatingTabs.set(aTab.apiTab.id, aTab.uniqueId);
+    gCreatingTabs.set(tab.apiTab.id, tab.uniqueId);
     onTabCreated = () => {};
   }
   else {
-    gCreatingTabs.set(aTab.apiTab.id, new Promise((aResolve, _aReject) => {
-      onTabCreated = (aUniqueId) => { aResolve(aUniqueId); };
+    gCreatingTabs.set(tab.apiTab.id, new Promise((resolve, _aReject) => {
+      onTabCreated = (uniqueId) => { resolve(uniqueId); };
     }));
   }
-  aTab.uniqueId.then(_aUniqueId => {
-    gCreatingTabs.delete(aTab.apiTab.id);
+  tab.uniqueId.then(_aUniqueId => {
+    gCreatingTabs.delete(tab.apiTab.id);
   });
   return onTabCreated;
 }
@@ -260,21 +260,21 @@ export async function waitUntilAllTabsAreCreated() {
   return waitUntilTabsAreCreated(Array.from(gCreatingTabs.keys()));
 }
 
-export async function waitUntilTabsAreCreated(aIdOrIds) {
-  return waitUntilTabsAreOperated(aIdOrIds, gCreatingTabs)
-    .then(aUniqueIds => aUniqueIds.map(aUniqueId => getTabByUniqueId(aUniqueId.id)));
+export async function waitUntilTabsAreCreated(idOrIds) {
+  return waitUntilTabsAreOperated(idOrIds, gCreatingTabs)
+    .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
 }
 
 const gMovingTabs = new Map();
 
-export function addMovingTabId(aTabId) {
+export function addMovingTabId(tabId) {
   let onTabMoved;
-  const promisedMoved = new Promise((aResolve, _aReject) => {
-    onTabMoved = aResolve;
+  const promisedMoved = new Promise((resolve, _aReject) => {
+    onTabMoved = resolve;
   });
-  gMovingTabs.set(aTabId, promisedMoved);
+  gMovingTabs.set(tabId, promisedMoved);
   promisedMoved.then(() => {
-    gMovingTabs.delete(aTabId);
+    gMovingTabs.delete(tabId);
   });
   return onTabMoved;
 }
@@ -288,16 +288,16 @@ export async function waitUntilAllTabsAreMoved() {
 // Create Tabs
 //===================================================================
 
-export function buildTab(aApiTab, aOptions = {}) {
-  log('build tab for ', aApiTab);
+export function buildTab(apiTab, options = {}) {
+  log('build tab for ', apiTab);
   const tab = document.createElement('li');
-  tab.apiTab = aApiTab;
-  tab.setAttribute('id', makeTabId(aApiTab));
-  tab.setAttribute(Constants.kAPI_TAB_ID, aApiTab.id || -1);
-  tab.setAttribute(Constants.kAPI_WINDOW_ID, aApiTab.windowId || -1);
+  tab.apiTab = apiTab;
+  tab.setAttribute('id', makeTabId(apiTab));
+  tab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);
+  tab.setAttribute(Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
   //tab.setAttribute(Constants.kCHILDREN, '');
   tab.classList.add('tab');
-  if (aApiTab.active)
+  if (apiTab.active)
     tab.classList.add(Constants.kTAB_STATE_ACTIVE);
   tab.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
@@ -307,13 +307,13 @@ export function buildTab(aApiTab, aOptions = {}) {
   label.classList.add(`${Constants.kLABEL}-content`);
   tab.appendChild(labelContainer);
 
-  onBuilt.dispatch(tab, aOptions);
+  onBuilt.dispatch(tab, options);
 
-  if (aOptions.existing) {
+  if (options.existing) {
     tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
   }
 
-  if (aApiTab.id)
+  if (apiTab.id)
     updateUniqueId(tab);
   else
     tab.uniqueId = Promise.resolve({
@@ -349,124 +349,124 @@ export const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath
 //const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${XPath.hasClass(Constants.kTAB_STATE_PINNED)}]`;
 
 // basics
-function assertValidHint(aHint) {
-  if (!aHint)
+function assertValidHint(hint) {
+  if (!hint)
     return;
-  if (/string|number/.test(typeof aHint))
+  if (/string|number/.test(typeof hint))
     return;
-  if (aHint.parentNode)
+  if (hint.parentNode)
     return;
   const error = new Error('FATAL ERROR: invalid hint is given');
   log(error.message, error.stack);
   throw error;
 }
 
-export function getTabsContainer(aHint) {
-  assertValidHint(aHint);
+export function getTabsContainer(hint) {
+  assertValidHint(hint);
 
-  if (!aHint)
-    aHint = gTargetWindow || allTabsContainer.firstChild;
+  if (!hint)
+    hint = gTargetWindow || allTabsContainer.firstChild;
 
-  if (typeof aHint == 'number')
-    return document.querySelector(`#window-${aHint}`);
+  if (typeof hint == 'number')
+    return document.querySelector(`#window-${hint}`);
 
-  if (aHint &&
-      typeof aHint == 'object' &&
-      aHint.dataset &&
-      aHint.dataset.windowId)
-    return document.querySelector(`#window-${aHint.dataset.windowId}`);
+  if (hint &&
+      typeof hint == 'object' &&
+      hint.dataset &&
+      hint.dataset.windowId)
+    return document.querySelector(`#window-${hint.dataset.windowId}`);
 
-  const tab = getTabFromChild(aHint);
+  const tab = getTabFromChild(hint);
   if (tab)
     return tab.parentNode;
 
   return null;
 }
 
-export function getTabFromChild(aNode) {
-  if (!aNode)
+export function getTabFromChild(node) {
+  if (!node)
     return null;
-  if (aNode.nodeType != Node.ELEMENT_NODE)
-    aNode = aNode.parentNode;
-  return aNode && aNode.closest(kSELECTOR_LIVE_TAB);
+  if (node.nodeType != Node.ELEMENT_NODE)
+    node = node.parentNode;
+  return node && node.closest(kSELECTOR_LIVE_TAB);
 }
 
-export function getTabById(aIdOrInfo) {
-  if (!aIdOrInfo)
+export function getTabById(idOrInfo) {
+  if (!idOrInfo)
     return null;
 
-  if (aIdOrInfo.nodeType == Node.ELEMENT_NODE) // tab element itself
-    return aIdOrInfo;
+  if (idOrInfo.nodeType == Node.ELEMENT_NODE) // tab element itself
+    return idOrInfo;
 
-  if (typeof aIdOrInfo == 'string') { // tab-x-x
-    const tab = document.getElementById(aIdOrInfo);
+  if (typeof idOrInfo == 'string') { // tab-x-x
+    const tab = document.getElementById(idOrInfo);
     if (tab)
       return tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
     else // possible unique id
-      return getTabByUniqueId(aIdOrInfo);
+      return getTabByUniqueId(idOrInfo);
   }
 
-  if (typeof aIdOrInfo == 'number') // tabs.Tab.id
-    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${aIdOrInfo}"]`);
+  if (typeof idOrInfo == 'number') // tabs.Tab.id
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${idOrInfo}"]`);
 
-  if (aIdOrInfo.id && aIdOrInfo.windowId) { // tabs.Tab
-    const tab = document.getElementById(makeTabId(aIdOrInfo));
+  if (idOrInfo.id && idOrInfo.windowId) { // tabs.Tab
+    const tab = document.getElementById(makeTabId(idOrInfo));
     return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
   }
-  else if (!aIdOrInfo.window) { // { tab: tabs.Tab.id }
-    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${aIdOrInfo.tab}"]`);
+  else if (!idOrInfo.window) { // { tab: tabs.Tab.id }
+    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${idOrInfo.tab}"]`);
   }
   else { // { tab: tabs.Tab.id, window: windows.Window.id }
-    const tab = document.getElementById(`tab-${aIdOrInfo.window}-${aIdOrInfo.tab}`);
+    const tab = document.getElementById(`tab-${idOrInfo.window}-${idOrInfo.tab}`);
     return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
   }
 
   return null;
 }
 
-export function getTabByUniqueId(aId) {
-  if (!aId)
+export function getTabByUniqueId(id) {
+  if (!id)
     return null;
-  return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kPERSISTENT_ID}="${aId}"]`);
+  return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kPERSISTENT_ID}="${id}"]`);
 }
 
-export function getTabLabel(aTab) {
-  return aTab && aTab.querySelector(`.${Constants.kLABEL}`);
+export function getTabLabel(tab) {
+  return tab && tab.querySelector(`.${Constants.kLABEL}`);
 }
 
-export function getTabLabelContent(aTab) {
-  return aTab && aTab.querySelector(`.${Constants.kLABEL}-content`);
+export function getTabLabelContent(tab) {
+  return tab && tab.querySelector(`.${Constants.kLABEL}-content`);
 }
 
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
-export function getCurrentTab(aHint) {
-  const container = getTabsContainer(aHint);
+export function getCurrentTab(hint) {
+  const container = getTabsContainer(hint);
   return container && container.querySelector(`.${Constants.kTAB_STATE_ACTIVE}`);
 }
 export function getCurrentTabs() {
   return Array.slice(document.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`));
 }
 
-export function getNextTab(aTab) {
-  if (!aTab || !aTab.id)
+export function getNextTab(tab) {
+  if (!tab || !tab.id)
     return null;
-  assertValidHint(aTab);
-  let next = aTab;
+  assertValidHint(tab);
+  let next = tab;
   while ((next = next.nextElementSibling)) {
     if (next.matches(kSELECTOR_LIVE_TAB))
       return next;
   }
   return null;
   // don't use '~' selector, it is too slow...
-  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_LIVE_TAB}`);
+  //return document.querySelector(`#${tab.id} ~ ${kSELECTOR_LIVE_TAB}`);
 }
 
-export function getPreviousTab(aTab) {
-  if (!aTab || !aTab.id)
+export function getPreviousTab(tab) {
+  if (!tab || !tab.id)
     return null;
-  assertValidHint(aTab);
-  let previous = aTab;
+  assertValidHint(tab);
+  let previous = tab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_LIVE_TAB))
       return previous;
@@ -474,67 +474,67 @@ export function getPreviousTab(aTab) {
   return null;
 }
 
-export function getFirstTab(aHint) {
-  const container = getTabsContainer(aHint);
+export function getFirstTab(hint) {
+  const container = getTabsContainer(hint);
   return container && container.querySelector(kSELECTOR_LIVE_TAB);
 }
 
-export function getLastTab(aHint) {
-  const container = getTabsContainer(aHint);
+export function getLastTab(hint) {
+  const container = getTabsContainer(hint);
   if (!container)
     return null;
   const tabs = container.querySelectorAll(kSELECTOR_LIVE_TAB);
   return tabs.length > 0 ? tabs[tabs.length - 1] : null;
 }
 
-export function getLastOpenedTab(aHint) {
-  const tabs = getTabs(aHint);
+export function getLastOpenedTab(hint) {
+  const tabs = getTabs(hint);
   return tabs.length > 0 ?
     tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id)[0] :
     null ;
 }
 
-export function getTabIndex(aTab, aOptions = {}) {
-  if (!ensureLivingTab(aTab))
+export function getTabIndex(tab, options = {}) {
+  if (!ensureLivingTab(tab))
     return -1;
-  assertValidHint(aTab);
+  assertValidHint(tab);
 
-  let tabs = getAllTabs(aTab);
-  if (Array.isArray(aOptions.ignoreTabs) &&
-      aOptions.ignoreTabs.length > 0)
-    tabs = tabs.filter(aTab => !aOptions.ignoreTabs.includes(aTab));
+  let tabs = getAllTabs(tab);
+  if (Array.isArray(options.ignoreTabs) &&
+      options.ignoreTabs.length > 0)
+    tabs = tabs.filter(tab => !options.ignoreTabs.includes(tab));
 
-  return tabs.indexOf(aTab);
+  return tabs.indexOf(tab);
 }
 
-export function calculateNewTabIndex(aParams) {
-  if (aParams.insertBefore)
-    return getTabIndex(aParams.insertBefore, aParams);
-  if (aParams.insertAfter)
-    return getTabIndex(aParams.insertAfter, aParams) + 1;
+export function calculateNewTabIndex(params) {
+  if (params.insertBefore)
+    return getTabIndex(params.insertBefore, params);
+  if (params.insertAfter)
+    return getTabIndex(params.insertAfter, params) + 1;
   return -1;
 }
 
 
-export function getNextNormalTab(aTab) {
-  if (!ensureLivingTab(aTab))
+export function getNextNormalTab(tab) {
+  if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(aTab);
-  let next = aTab;
+  assertValidHint(tab);
+  let next = tab;
   while ((next = next.nextElementSibling)) {
     if (next.matches(kSELECTOR_NORMAL_TAB))
       return next;
   }
   return null;
   // don't use '~' selector, it is too slow...
-  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
+  //return document.querySelector(`#${tab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
 }
 
-export function getPreviousNormalTab(aTab) {
-  if (!ensureLivingTab(aTab))
+export function getPreviousNormalTab(tab) {
+  if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(aTab);
-  let previous = aTab;
+  assertValidHint(tab);
+  let previous = tab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_NORMAL_TAB))
       return previous;
@@ -545,150 +545,150 @@ export function getPreviousNormalTab(aTab) {
 
 // tree basics
 
-export function ensureLivingTab(aTab) {
-  if (!aTab ||
-      !aTab.id ||
-      !aTab.parentNode ||
-      aTab[Constants.kTAB_STATE_REMOVING])
+export function ensureLivingTab(tab) {
+  if (!tab ||
+      !tab.id ||
+      !tab.parentNode ||
+      tab[Constants.kTAB_STATE_REMOVING])
     return null;
-  return aTab;
+  return tab;
 }
 
-function assertInitializedTab(aTab) {
-  if (!aTab.apiTab)
-    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
-  if (!aTab.childTabs)
-    throw new Error(`FATAL ERROR: the tab ${aTab.id} is not initialized yet correctly! (missing priperty "childTabs")\n${new Error().stack}`);
+function assertInitializedTab(tab) {
+  if (!tab.apiTab)
+    throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
+  if (!tab.childTabs)
+    throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (missing priperty "childTabs")\n${new Error().stack}`);
   return true;
 }
 
-export function getOpenerTab(aTab) {
-  if (!ensureLivingTab(aTab) ||
-      !aTab.apiTab ||
-      !aTab.apiTab.openerTabId ||
-      aTab.apiTab.openerTabId == aTab.apiTab.id)
+export function getOpenerTab(tab) {
+  if (!ensureLivingTab(tab) ||
+      !tab.apiTab ||
+      !tab.apiTab.openerTabId ||
+      tab.apiTab.openerTabId == tab.apiTab.id)
     return null;
-  return getTabById({ id: aTab.apiTab.openerTabId, windowId: aTab.apiTab.windowId });
+  return getTabById({ id: tab.apiTab.openerTabId, windowId: tab.apiTab.windowId });
 }
 
-export function getParentTab(aChild) {
-  if (!ensureLivingTab(aChild))
+export function getParentTab(child) {
+  if (!ensureLivingTab(child))
     return null;
-  assertValidHint(aChild);
-  return ensureLivingTab(aChild.parentTab);
+  assertValidHint(child);
+  return ensureLivingTab(child.parentTab);
 }
 
-export function getAncestorTabs(aDescendant, aOptions = {}) {
-  if (!aDescendant)
+export function getAncestorTabs(descendant, options = {}) {
+  if (!descendant)
     return [];
-  if (!aOptions.force)
+  if (!options.force)
     return (
       // slice(0) is required to guard the cached array from destructive methods liek sort()!
-      aDescendant.ancestorTabs && aDescendant.ancestorTabs.slice(0) ||
+      descendant.ancestorTabs && descendant.ancestorTabs.slice(0) ||
       []
     );
   const ancestors = [];
   while (true) {
-    const parent = getParentTab(aDescendant);
+    const parent = getParentTab(descendant);
     if (!parent)
       break;
     ancestors.push(parent);
-    aDescendant = parent;
+    descendant = parent;
   }
   return ancestors;
 }
 
-export function getVisibleAncestorOrSelf(aDescendant) {
-  if (!isCollapsed(aDescendant))
-    return aDescendant;
-  for (const ancestor of getAncestorTabs(aDescendant)) {
+export function getVisibleAncestorOrSelf(descendant) {
+  if (!isCollapsed(descendant))
+    return descendant;
+  for (const ancestor of getAncestorTabs(descendant)) {
     if (!isCollapsed(ancestor))
       return ancestor;
   }
   return null;
 }
 
-export function getRootTab(aDescendant) {
-  const ancestors = getAncestorTabs(aDescendant);
-  return ancestors.length > 0 ? ancestors[ancestors.length-1] : aDescendant ;
+export function getRootTab(descendant) {
+  const ancestors = getAncestorTabs(descendant);
+  return ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
 }
 
-function getSiblingTabs(aTab) {
-  if (!ensureLivingTab(aTab))
+function getSiblingTabs(tab) {
+  if (!ensureLivingTab(tab))
     return [];
-  assertValidHint(aTab);
-  if (!ensureLivingTab(aTab.parentTab))
-    return getRootTabs(aTab);
-  assertInitializedTab(aTab);
-  assertInitializedTab(aTab.parentTab);
-  return aTab.parentTab.childTabs.filter(ensureLivingTab);
+  assertValidHint(tab);
+  if (!ensureLivingTab(tab.parentTab))
+    return getRootTabs(tab);
+  assertInitializedTab(tab);
+  assertInitializedTab(tab.parentTab);
+  return tab.parentTab.childTabs.filter(ensureLivingTab);
 }
 
-export function getNextSiblingTab(aTab) {
-  if (!ensureLivingTab(aTab))
+export function getNextSiblingTab(tab) {
+  if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(aTab);
-  const siblings = getSiblingTabs(aTab);
-  const index = siblings.indexOf(aTab);
+  assertValidHint(tab);
+  const siblings = getSiblingTabs(tab);
+  const index = siblings.indexOf(tab);
   return index < siblings.length - 1 ? siblings[index + 1] : null ;
 }
 
-export function getPreviousSiblingTab(aTab) {
-  if (!ensureLivingTab(aTab))
+export function getPreviousSiblingTab(tab) {
+  if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(aTab);
-  const siblings = getSiblingTabs(aTab);
-  const index = siblings.indexOf(aTab);
+  assertValidHint(tab);
+  const siblings = getSiblingTabs(tab);
+  const index = siblings.indexOf(tab);
   return index > 0 ? siblings[index - 1] : null ;
 }
 
-export function getChildTabs(aParent) {
-  if (!ensureLivingTab(aParent))
+export function getChildTabs(parent) {
+  if (!ensureLivingTab(parent))
     return [];
-  assertValidHint(aParent);
-  assertInitializedTab(aParent);
-  return aParent.childTabs.filter(ensureLivingTab);
+  assertValidHint(parent);
+  assertInitializedTab(parent);
+  return parent.childTabs.filter(ensureLivingTab);
 }
 
-export function getFirstChildTab(aParent) {
-  if (!ensureLivingTab(aParent))
+export function getFirstChildTab(parent) {
+  if (!ensureLivingTab(parent))
     return null;
-  assertValidHint(aParent);
-  assertInitializedTab(aParent);
-  const tabs = aParent.childTabs.filter(ensureLivingTab);
+  assertValidHint(parent);
+  assertInitializedTab(parent);
+  const tabs = parent.childTabs.filter(ensureLivingTab);
   return tabs.length > 0 ? tabs[0] : null ;
 }
 
-export function getLastChildTab(aParent) {
-  if (!ensureLivingTab(aParent))
+export function getLastChildTab(parent) {
+  if (!ensureLivingTab(parent))
     return null;
-  assertValidHint(aParent);
-  assertInitializedTab(aParent);
-  const tabs = aParent.childTabs.filter(ensureLivingTab);
+  assertValidHint(parent);
+  assertInitializedTab(parent);
+  const tabs = parent.childTabs.filter(ensureLivingTab);
   return tabs.length > 0 ? tabs[tabs.length - 1] : null ;
 }
 
 /*
-function getChildTabIndex(aChild, aParent) {
-  if (!ensureLivingTab(aChild) ||
-      !ensureLivingTab(aParent))
+function getChildTabIndex(child, parent) {
+  if (!ensureLivingTab(child) ||
+      !ensureLivingTab(parent))
     return -1;
-  assertValidHint(aChild);
-  assertValidHint(aParent);
-  assertInitializedTab(aParent);
-  const tabs = aParent.childTabs.filter(ensureLivingTab);
-  return tabs.indexOf(aChild);
+  assertValidHint(child);
+  assertValidHint(parent);
+  assertInitializedTab(parent);
+  const tabs = parent.childTabs.filter(ensureLivingTab);
+  return tabs.indexOf(child);
 }
 */
 
-export function getDescendantTabs(aRoot) {
-  if (!ensureLivingTab(aRoot))
+export function getDescendantTabs(root) {
+  if (!ensureLivingTab(root))
     return [];
-  assertValidHint(aRoot);
-  assertInitializedTab(aRoot);
+  assertValidHint(root);
+  assertInitializedTab(root);
 
   let descendants = [];
-  const children = aRoot.childTabs.filter(ensureLivingTab);
+  const children = root.childTabs.filter(ensureLivingTab);
   for (const child of children) {
     descendants.push(child);
     descendants = descendants.concat(getDescendantTabs(child));
@@ -696,52 +696,52 @@ export function getDescendantTabs(aRoot) {
   return descendants;
 }
 
-export function getLastDescendantTab(aRoot) {
-  const descendants = getDescendantTabs(aRoot);
+export function getLastDescendantTab(root) {
+  const descendants = getDescendantTabs(root);
   return descendants.length ? descendants[descendants.length-1] : null ;
 }
 
 
 // grab tags
 
-export function getAllTabs(aHint) {
-  const container = getTabsContainer(aHint);
+export function getAllTabs(hint) {
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_LIVE_TAB));
 }
 
-export function getTabs(aHint) { // only visible, including collapsed and pinned
-  const container = getTabsContainer(aHint);
+export function getTabs(hint) { // only visible, including collapsed and pinned
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_CONTROLLABLE_TAB));
 }
 
-export function getNormalTabs(aHint) { // only visible, including collapsed, not pinned
-  const container = getTabsContainer(aHint);
+export function getNormalTabs(hint) { // only visible, including collapsed, not pinned
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
 }
 
-function getVisibleTabs(aHint) { // visible, not-collapsed, not-hidden
-  const container = getTabsContainer(aHint);
+function getVisibleTabs(hint) { // visible, not-collapsed, not-hidden
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_VISIBLE_TAB));
 }
 
-export function getPinnedTabs(aHint) { // visible, pinned
-  const container = getTabsContainer(aHint);
+export function getPinnedTabs(hint) { // visible, pinned
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
 }
 
 /*
-function getUnpinnedTabs(aHint) { // visible, not pinned
-  const container = getTabsContainer(aHint);
+function getUnpinnedTabs(hint) { // visible, not pinned
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
@@ -749,64 +749,64 @@ function getUnpinnedTabs(aHint) { // visible, not pinned
 */
 
 /*
-function getAllRootTabs(aHint) {
-  const container = getTabsContainer(aHint);
+function getAllRootTabs(hint) {
+  const container = getTabsContainer(hint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${Constants.kPARENT}])`));
 }
 */
 
-export function getRootTabs(aHint) {
-  const container = getTabsContainer(aHint);
+export function getRootTabs(hint) {
+  const container = getTabsContainer(hint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${Constants.kPARENT}])`));
 }
 
 /*
-function getVisibleRootTabs(aHint) {
-  const container = getTabsContainer(aHint);
+function getVisibleRootTabs(hint) {
+  const container = getTabsContainer(hint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${Constants.kPARENT}])`));
 }
 
-function getVisibleLoadingTabs(aHint) {
-  const container = getTabsContainer(aHint);
+function getVisibleLoadingTabs(hint) {
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.loading`));
 }
 */
 
-export function collectRootTabs(aTabs) {
-  return aTabs.filter(aTab => {
-    if (!ensureLivingTab(aTab))
+export function collectRootTabs(tabs) {
+  return tabs.filter(tab => {
+    if (!ensureLivingTab(tab))
       return false;
-    const parent = getParentTab(aTab);
-    return !parent || !aTabs.includes(parent);
+    const parent = getParentTab(tab);
+    return !parent || !tabs.includes(parent);
   });
 }
 
 /*
-function getIndentedTabs(aHint) {
-  const container = getTabsContainer(aHint);
+function getIndentedTabs(hint) {
+  const container = getTabsContainer(hint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${Constants.kPARENT}]`));
 }
 
-function getVisibleIndentedTabs(aHint) {
-  const container = getTabsContainer(aHint);
+function getVisibleIndentedTabs(hint) {
+  const container = getTabsContainer(hint);
   return container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}[${Constants.kPARENT}]`);
 }
 */
 
-export function getDraggingTabs(aHint) {
-  const container = getTabsContainer(aHint);
+export function getDraggingTabs(hint) {
+  const container = getTabsContainer(hint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DRAGGING}`));
 }
 
-export function getDuplicatingTabs(aHint) {
-  const container = getTabsContainer(aHint);
+export function getDuplicatingTabs(hint) {
+  const container = getTabsContainer(hint);
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DUPLICATING}`));
 }
 
-export function getSelectedTabs(aHint) {
-  const container = getTabsContainer(aHint);
+export function getSelectedTabs(hint) {
+  const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`));
@@ -816,19 +816,19 @@ export function getSelectedTabs(aHint) {
 
 // misc.
 
-export function getFirstNormalTab(aHint) { // visible, not-collapsed, not-pinned
-  const container = getTabsContainer(aHint);
+export function getFirstNormalTab(hint) { // visible, not-collapsed, not-pinned
+  const container = getTabsContainer(hint);
   return container && container.querySelector(kSELECTOR_NORMAL_TAB);
 }
 
-export function getFirstVisibleTab(aHint) { // visible, not-collapsed, not-hidden
-  const container = getTabsContainer(aHint);
+export function getFirstVisibleTab(hint) { // visible, not-collapsed, not-hidden
+  const container = getTabsContainer(hint);
   return container && container.querySelector(kSELECTOR_VISIBLE_TAB);
 }
 
 /*
-function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
-  const container = getTabsContainer(aHint);
+function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
+  const container = getTabsContainer(hint);
   if (!container)
     return null;
   return XPath.evaluate(
@@ -839,25 +839,25 @@ function getLastVisibleTab(aHint) { // visible, not-collapsed, not-hidden
 }
 */
 
-export function getNextVisibleTab(aTab) { // visible, not-collapsed
-  if (!ensureLivingTab(aTab))
+export function getNextVisibleTab(tab) { // visible, not-collapsed
+  if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(aTab);
-  let next = aTab;
+  assertValidHint(tab);
+  let next = tab;
   while ((next = next.nextElementSibling)) {
     if (next.matches(kSELECTOR_VISIBLE_TAB))
       return next;
   }
   return null;
   // don't use '~' selector, it is too slow...
-  //return document.querySelector(`#${aTab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
+  //return document.querySelector(`#${tab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
 }
 
-export function getPreviousVisibleTab(aTab) { // visible, not-collapsed
-  if (!ensureLivingTab(aTab))
+export function getPreviousVisibleTab(tab) { // visible, not-collapsed
+  if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(aTab);
-  let previous = aTab;
+  assertValidHint(tab);
+  let previous = tab;
   while ((previous = previous.previousElementSibling)) {
     if (previous.matches(kSELECTOR_VISIBLE_TAB))
       return previous;
@@ -866,45 +866,45 @@ export function getPreviousVisibleTab(aTab) { // visible, not-collapsed
 }
 
 /*
-function getVisibleIndex(aTab) {
-  if (!ensureLivingTab(aTab))
+function getVisibleIndex(tab) {
+  if (!ensureLivingTab(tab))
     return -1;
-  assertValidHint(aTab);
+  assertValidHint(tab);
   return XPath.evaluate(
     `count(preceding-sibling::${kXPATH_VISIBLE_TAB})`,
-    aTab,
+    tab,
     XPathResult.NUMBER_TYPE
   ).numberValue;
 }
 */
 
-export async function doAndGetNewTabs(aAsyncTask, aHint) {
+export async function doAndGetNewTabs(asyncTask, hint) {
   const tabsQueryOptions = {
     windowType: 'normal'
   };
-  if (aHint) {
-    const container = getTabsContainer(aHint);
+  if (hint) {
+    const container = getTabsContainer(hint);
     if (container)
       tabsQueryOptions.windowId = parseInt(container.dataset.windowId);
   }
   const beforeApiTabs = await browser.tabs.query(tabsQueryOptions);
-  const beforeApiIds  = beforeApiTabs.map(aApiTab => aApiTab.id);
-  await aAsyncTask();
+  const beforeApiIds  = beforeApiTabs.map(apiTab => apiTab.id);
+  await asyncTask();
   const afterApiTabs = await browser.tabs.query(tabsQueryOptions);
-  const addedApiTabs = afterApiTabs.filter(aAfterApiTab => !beforeApiIds.includes(aAfterApiTab.id));
+  const addedApiTabs = afterApiTabs.filter(afterApiTab => !beforeApiIds.includes(afterApiTab.id));
   const addedTabs    = addedApiTabs.map(getTabById);
   return addedTabs;
 }
 
-export function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is closed...
-  const ignoredTabs = (aOptions.ignoredTabs || []).slice(0);
-  let foundTab = aTab;
+export function getNextFocusedTab(tab, options = {}) { // if the current tab is closed...
+  const ignoredTabs = (options.ignoredTabs || []).slice(0);
+  let foundTab = tab;
   do {
     ignoredTabs.push(foundTab);
     foundTab = getNextSiblingTab(foundTab);
   } while (foundTab && ignoredTabs.includes(foundTab));
   if (!foundTab) {
-    foundTab = aTab;
+    foundTab = tab;
     do {
       ignoredTabs.push(foundTab);
       foundTab = getPreviousVisibleTab(foundTab);
@@ -914,8 +914,8 @@ export function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab i
 }
 
 
-export function getGroupTabForOpener(aOpener) {
-  const tab = (aOpener instanceof Element) ? aOpener : (getTabById(aOpener) || getTabByUniqueId(aOpener));
+export function getGroupTabForOpener(opener) {
+  const tab = (opener instanceof Element) ? opener : (getTabById(opener) || getTabByUniqueId(opener));
   if (!tab)
     return null;
   return tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}$="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}"],
@@ -923,10 +923,10 @@ export function getGroupTabForOpener(aOpener) {
                                        ${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}*="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}&"]`);
 }
 
-export function getOpenerFromGroupTab(aGroupTab) {
-  if (!isGroupTab(aGroupTab))
+export function getOpenerFromGroupTab(groupTab) {
+  if (!isGroupTab(groupTab))
     return null;
-  const matchedOpenerTabId = aGroupTab.apiTab.url.match(/openerTabId=([^&;]+)/);
+  const matchedOpenerTabId = groupTab.apiTab.url.match(/openerTabId=([^&;]+)/);
   return matchedOpenerTabId && getTabById(matchedOpenerTabId[1]);
 }
 
@@ -937,135 +937,135 @@ export function getOpenerFromGroupTab(aGroupTab) {
 // Tab Information
 //===================================================================
 
-export function isActive(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_ACTIVE);
+export function isActive(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_ACTIVE);
 }
 
-export function isPinned(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_PINNED);
+export function isPinned(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_PINNED);
 }
 
-export function isAudible(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_AUDIBLE);
+export function isAudible(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_AUDIBLE);
 }
 
-export function isSoundPlaying(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING);
+export function isSoundPlaying(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING);
 }
 
-export function maybeSoundPlaying(aTab) {
-  return ensureLivingTab(aTab) &&
-         (aTab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING) ||
-          (aTab.classList.contains(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
-           aTab.hasAttribute(Constants.kCHILDREN)));
+export function maybeSoundPlaying(tab) {
+  return ensureLivingTab(tab) &&
+         (tab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING) ||
+          (tab.classList.contains(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+           tab.hasAttribute(Constants.kCHILDREN)));
 }
 
-export function isMuted(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_MUTED);
+export function isMuted(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_MUTED);
 }
 
-export function maybeMuted(aTab) {
-  return ensureLivingTab(aTab) &&
-         (aTab.classList.contains(Constants.kTAB_STATE_MUTED) ||
-          (aTab.classList.contains(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
-           aTab.hasAttribute(Constants.kCHILDREN)));
+export function maybeMuted(tab) {
+  return ensureLivingTab(tab) &&
+         (tab.classList.contains(Constants.kTAB_STATE_MUTED) ||
+          (tab.classList.contains(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+           tab.hasAttribute(Constants.kCHILDREN)));
 }
 
-export function isHidden(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_HIDDEN);
+export function isHidden(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_HIDDEN);
 }
 
-export function isCollapsed(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_COLLAPSED);
+export function isCollapsed(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_COLLAPSED);
 }
 
-export function isDiscarded(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_DISCARDED);
+export function isDiscarded(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_DISCARDED);
 }
 
-export function isPrivateBrowsing(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_PRIVATE_BROWSING);
+export function isPrivateBrowsing(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_PRIVATE_BROWSING);
 }
 
-export function isOpening(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_OPENING);
+export function isOpening(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_OPENING);
 }
 
-export function isDuplicating(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_DUPLICATING);
+export function isDuplicating(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_DUPLICATING);
 }
 
-export function isNewTabCommandTab(aTab) {
-  return ensureLivingTab(aTab) &&
+export function isNewTabCommandTab(tab) {
+  return ensureLivingTab(tab) &&
            configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
-           assertInitializedTab(aTab) &&
-           aTab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+           assertInitializedTab(tab) &&
+           tab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
 }
 
-export function isSubtreeCollapsed(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+export function isSubtreeCollapsed(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
 /*
-function shouldCloseTabSubtreeOf(aTab) {
-  return (hasChildTabs(aTab) &&
+function shouldCloseTabSubtreeOf(tab) {
+  return (hasChildTabs(tab) &&
           (configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
-           isSubtreeCollapsed(aTab)));
+           isSubtreeCollapsed(tab)));
 }
 */
 
 /*
-function shouldCloseLastTabSubtreeOf(aTab) {
-  return (ensureLivingTab(aTab) &&
-          shouldCloseTabSubtreeOf(aTab) &&
-          getDescendantTabs(aTab).length + 1 == getAllTabs(aTab).length);
+function shouldCloseLastTabSubtreeOf(tab) {
+  return (ensureLivingTab(tab) &&
+          shouldCloseTabSubtreeOf(tab) &&
+          getDescendantTabs(tab).length + 1 == getAllTabs(tab).length);
 }
 */
 
-export function isGroupTab(aTab) {
-  if (!aTab)
+export function isGroupTab(tab) {
+  if (!tab)
     return false;
-  assertInitializedTab(aTab);
-  return aTab.classList.contains(Constants.kTAB_STATE_GROUP_TAB) ||
-         aTab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
+  assertInitializedTab(tab);
+  return tab.classList.contains(Constants.kTAB_STATE_GROUP_TAB) ||
+         tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
 }
 
-export function isTemporaryGroupTab(aTab) {
-  if (!isGroupTab(aTab))
+export function isTemporaryGroupTab(tab) {
+  if (!isGroupTab(tab))
     return false;
-  return /[&?]temporary=true/.test(aTab.apiTab.url);
+  return /[&?]temporary=true/.test(tab.apiTab.url);
 }
 
-export function isSelected(aTab) {
-  return ensureLivingTab(aTab) &&
-           aTab.classList.contains(Constants.kTAB_STATE_SELECTED);
+export function isSelected(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_SELECTED);
 }
 
 export function isLocked(_aTab) {
   return false;
 }
 
-export function hasChildTabs(aParent) {
-  if (!ensureLivingTab(aParent))
+export function hasChildTabs(parent) {
+  if (!ensureLivingTab(parent))
     return false;
-  return aParent.hasAttribute(Constants.kCHILDREN);
+  return parent.hasAttribute(Constants.kCHILDREN);
 }
 
-export function getLabelWithDescendants(aTab) {
-  const label = [`* ${aTab.dataset.label}`];
-  for (const child of getChildTabs(aTab)) {
+export function getLabelWithDescendants(tab) {
+  const label = [`* ${tab.dataset.label}`];
+  for (const child of getChildTabs(tab)) {
     if (!child.dataset.labelWithDescendants)
       child.dataset.labelWithDescendants = getLabelWithDescendants(child);
     label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
@@ -1073,49 +1073,49 @@ export function getLabelWithDescendants(aTab) {
   return label.join('\n');
 }
 
-export function getMaxTreeLevel(aHint, aOptions = {}) {
-  const tabs = aOptions.onlyVisible ? getVisibleTabs(aHint) : getTabs(aHint) ;
-  let maxLevel = Math.max(...tabs.map(aTab => parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)));
+export function getMaxTreeLevel(hint, options = {}) {
+  const tabs = options.onlyVisible ? getVisibleTabs(hint) : getTabs(hint) ;
+  let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.getAttribute(Constants.kLEVEL) || 0)));
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
   return maxLevel;
 }
 
 // if all tabs are aldeardy placed at there, we don't need to move them.
-export function isAllTabsPlacedBefore(aTabs, aNextTab) {
-  if (aTabs[aTabs.length - 1] == aNextTab)
-    aNextTab = getNextTab(aNextTab);
-  if (!aNextTab && !getNextTab(aTabs[aTabs.length - 1]))
+export function isAllTabsPlacedBefore(tabs, nextTab) {
+  if (tabs[tabs.length - 1] == nextTab)
+    nextTab = getNextTab(nextTab);
+  if (!nextTab && !getNextTab(tabs[tabs.length - 1]))
     return true;
 
-  aTabs = Array.slice(aTabs);
-  let previousTab = aTabs.shift();
-  for (const tab of aTabs) {
+  tabs = Array.slice(tabs);
+  let previousTab = tabs.shift();
+  for (const tab of tabs) {
     if (tab.previousSibling != previousTab)
       return false;
     previousTab = tab;
   }
-  return !aNextTab ||
+  return !nextTab ||
          !previousTab ||
-         previousTab.nextSibling == aNextTab;
+         previousTab.nextSibling == nextTab;
 }
 
-export function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
-  if (aTabs[0] == aPreviousTab)
-    aPreviousTab = getPreviousTab(aPreviousTab);
-  if (!aPreviousTab && !getPreviousTab(aTabs[0]))
+export function isAllTabsPlacedAfter(tabs, previousTab) {
+  if (tabs[0] == previousTab)
+    previousTab = getPreviousTab(previousTab);
+  if (!previousTab && !getPreviousTab(tabs[0]))
     return true;
 
-  aTabs = Array.slice(aTabs).reverse();
-  let nextTab = aTabs.shift();
-  for (const tab of aTabs) {
+  tabs = Array.slice(tabs).reverse();
+  let nextTab = tabs.shift();
+  for (const tab of tabs) {
     if (tab.nextSibling != nextTab)
       return false;
     nextTab = tab;
   }
-  return !aPreviousTab ||
+  return !previousTab ||
          !nextTab ||
-         nextTab.previousSibling == aPreviousTab;
+         nextTab.previousSibling == previousTab;
 }
 
 
@@ -1123,9 +1123,9 @@ export function dumpAllTabs() {
   if (!configs.debug)
     return;
   log('dumpAllTabs\n' +
-    getAllTabs().map(aTab =>
-      getAncestorTabs(aTab).reverse().concat([aTab])
-        .map(aTab => aTab.id + (isPinned(aTab) ? ' [pinned]' : ''))
+    getAllTabs().map(tab =>
+      getAncestorTabs(tab).reverse().concat([tab])
+        .map(tab => tab.id + (isPinned(tab) ? ' [pinned]' : ''))
         .join(' => ')
     ).join('\n'));
 }
@@ -1138,29 +1138,29 @@ export function dumpAllTabs() {
 const gOpenedResolvers = new WeakMap();
 const gClosedWhileActiveResolvers = new WeakMap();
 
-export function initPromisedStatus(aTab, aAlreadyOpened = false) {
-  if (aAlreadyOpened)
-    aTab.opened = Promise.resolve(true);
+export function initPromisedStatus(tab, alreadyOpened = false) {
+  if (alreadyOpened)
+    tab.opened = Promise.resolve(true);
   else
-    aTab.opened = new Promise((aResolve, _aReject) => {
-      gOpenedResolvers.set(aTab, aResolve);
+    tab.opened = new Promise((resolve, _aReject) => {
+      gOpenedResolvers.set(tab, resolve);
     });
 
-  aTab.closedWhileActive = new Promise((aResolve, _aReject) => {
-    gClosedWhileActiveResolvers.set(aTab, aResolve);
+  tab.closedWhileActive = new Promise((resolve, _aReject) => {
+    gClosedWhileActiveResolvers.set(tab, resolve);
   });
 }
 
-export function resolveOpened(aTab) {
-  if (!gOpenedResolvers.has(aTab))
+export function resolveOpened(tab) {
+  if (!gOpenedResolvers.has(tab))
     return;
-  gOpenedResolvers.get(aTab)();
-  gOpenedResolvers.delete(aTab);
+  gOpenedResolvers.get(tab)();
+  gOpenedResolvers.delete(tab);
 }
 
-export function fetchClosedWhileActiveResolver(aTab) {
-  const resolver = gClosedWhileActiveResolvers.get(aTab);
-  gClosedWhileActiveResolvers.delete(aTab);
+export function fetchClosedWhileActiveResolver(tab) {
+  const resolver = gClosedWhileActiveResolvers.get(tab);
+  gClosedWhileActiveResolvers.delete(tab);
   return resolver;
 }
 
@@ -1169,39 +1169,39 @@ export function fetchClosedWhileActiveResolver(aTab) {
 // Tab State
 //===================================================================
 
-export function broadcastTabState(aTabs, aOptions = {}) {
-  if (!Array.isArray(aTabs))
-    aTabs = [aTabs];
+export function broadcastTabState(tabs, options = {}) {
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
   browser.runtime.sendMessage({
     type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabs:    aTabs.map(aTab => aTab.id),
-    add:     aOptions.add || [],
-    remove:  aOptions.remove || [],
-    bubbles: !!aOptions.bubbles
+    tabs:    tabs.map(tab => tab.id),
+    add:     options.add || [],
+    remove:  options.remove || [],
+    bubbles: !!options.bubbles
   });
 }
 
-export async function getSpecialTabState(aTab) {
-  const states = await browser.sessions.getTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
+export async function getSpecialTabState(tab) {
+  const states = await browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
   return states || [];
 }
 
-export async function addSpecialTabState(aTab, aState) {
-  const states = await getSpecialTabState(aTab);
-  if (states.includes(aState))
+export async function addSpecialTabState(tab, state) {
+  const states = await getSpecialTabState(tab);
+  if (states.includes(state))
     return states;
-  states.push(aState);
-  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+  states.push(state);
+  await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
   return states;
 }
 
-export async function removeSpecialTabState(aTab, aState) {
-  const states = await getSpecialTabState(aTab);
-  const index = states.indexOf(aState);
+export async function removeSpecialTabState(tab, state) {
+  const states = await getSpecialTabState(tab);
+  const index = states.indexOf(state);
   if (index < 0)
     return states;
   states.splice(index, 1);
-  await browser.sessions.setTabValue(aTab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+  await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
   return states;
 }
 
@@ -1211,35 +1211,35 @@ export async function removeSpecialTabState(aTab, aState) {
 // Take snapshot
 //===================================================================
 
-export function snapshotTreeForActionDetection(aTargetTab) {
-  const prevTab = getPreviousNormalTab(aTargetTab);
-  const nextTab = getNextNormalTab(aTargetTab);
+export function snapshotTreeForActionDetection(targetTab) {
+  const prevTab = getPreviousNormalTab(targetTab);
+  const nextTab = getNextNormalTab(targetTab);
   const foundTabs = {};
   const tabs = getAncestorTabs(prevTab)
-    .concat([prevTab, aTargetTab, nextTab, getParentTab(aTargetTab)])
-    .filter(aTab => ensureLivingTab(aTab) && !foundTabs[aTab.id] && (foundTabs[aTab.id] = true)) // uniq
+    .concat([prevTab, targetTab, nextTab, getParentTab(targetTab)])
+    .filter(tab => ensureLivingTab(tab) && !foundTabs[tab.id] && (foundTabs[tab.id] = true)) // uniq
     .sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
-  return snapshotTree(aTargetTab, tabs);
+  return snapshotTree(targetTab, tabs);
 }
 
-function snapshotTree(aTargetTab, aTabs) {
-  const allTabs = aTabs || getNormalTabs(aTargetTab);
+function snapshotTree(targetTab, tabs) {
+  const allTabs = tabs || getNormalTabs(targetTab);
 
   const snapshotById = {};
-  function snapshotChild(aTab) {
-    if (!ensureLivingTab(aTab) || isPinned(aTab) || isHidden(aTab))
+  function snapshotChild(tab) {
+    if (!ensureLivingTab(tab) || isPinned(tab) || isHidden(tab))
       return null;
-    return snapshotById[aTab.id] = {
-      id:            aTab.id,
-      url:           aTab.apiTab.url,
-      cookieStoreId: aTab.apiTab.cookieStoreId,
-      active:        isActive(aTab),
-      children:      getChildTabs(aTab).filter(aChild => !isHidden(aChild)).map(aChild => aChild.id),
-      collapsed:     isSubtreeCollapsed(aTab),
-      level:         parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)
+    return snapshotById[tab.id] = {
+      id:            tab.id,
+      url:           tab.apiTab.url,
+      cookieStoreId: tab.apiTab.cookieStoreId,
+      active:        isActive(tab),
+      children:      getChildTabs(tab).filter(child => !isHidden(child)).map(child => child.id),
+      collapsed:     isSubtreeCollapsed(tab),
+      level:         parseInt(tab.getAttribute(Constants.kLEVEL) || 0)
     };
   }
-  const snapshotArray = allTabs.map(aTab => snapshotChild(aTab));
+  const snapshotArray = allTabs.map(tab => snapshotChild(tab));
   for (const tab of allTabs) {
     const item = snapshotById[tab.id];
     if (!item)
@@ -1251,9 +1251,9 @@ function snapshotTree(aTargetTab, aTabs) {
     const previous = getPreviousNormalTab(tab);
     item.previous = previous && previous.id;
   }
-  const activeTab = getCurrentTab(aTargetTab);
+  const activeTab = getCurrentTab(targetTab);
   return {
-    target:   snapshotById[aTargetTab.id],
+    target:   snapshotById[targetTab.id],
     active:   activeTab && snapshotById[activeTab.id],
     tabs:     snapshotArray,
     tabsById: snapshotById

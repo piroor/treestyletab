@@ -18,20 +18,20 @@ import * as Tree from '../common/tree.js';
 
 import * as Background from './background.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['background/handle-tree-changes'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 let mInitialized = false;
 
-Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
-  const parent = aInfo.parent;
-  if (aTab.apiTab.openerTabId != parent.apiTab.id &&
+Tree.onAttached.addListener(async (tab, info = {}) => {
+  const parent = info.parent;
+  if (tab.apiTab.openerTabId != parent.apiTab.id &&
       configs.syncParentTabAndOpenerTab) {
-    aTab.apiTab.openerTabId = parent.apiTab.id;
-    aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
-    browser.tabs.update(aTab.apiTab.id, { openerTabId: parent.apiTab.id })
+    tab.apiTab.openerTabId = parent.apiTab.id;
+    tab.apiTab.TSTUpdatedOpenerTabId = tab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
+    browser.tabs.update(tab.apiTab.id, { openerTabId: parent.apiTab.id })
       .catch(ApiTabs.handleMissingTabError);
   }
 
@@ -39,24 +39,24 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   // we need to apply "forceExpand" immediately. Otherwise, when
   // the tab is closed with "subtree collapsed" state, descendant
   // tabs are also closed even if "forceExpand" is "true".
-  if (aInfo.newlyAttached &&
+  if (info.newlyAttached &&
       mInitialized) {
-    if (Tabs.isSubtreeCollapsed(aInfo.parent) &&
-        !aInfo.forceExpand)
-      Tree.collapseExpandTabAndSubtree(aTab, {
+    if (Tabs.isSubtreeCollapsed(info.parent) &&
+        !info.forceExpand)
+      Tree.collapseExpandTabAndSubtree(tab, {
         collapsed: true,
         justNow:   true,
         broadcast: true
       });
 
-    const isNewTreeCreatedManually = !aInfo.justNow && Tabs.getChildTabs(parent).length == 1;
-    if (aInfo.forceExpand) {
-      Tree.collapseExpandSubtree(parent, Object.assign({}, aInfo, {
+    const isNewTreeCreatedManually = !info.justNow && Tabs.getChildTabs(parent).length == 1;
+    if (info.forceExpand) {
+      Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
         collapsed: false,
         inRemote:  false
       }));
     }
-    if (!aInfo.dontExpand) {
+    if (!info.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
           (isNewTreeCreatedManually || Tree.shouldTabAutoExpanded(parent)))
         Tree.collapseExpandTreesIntelligentlyFor(parent, {
@@ -67,23 +67,23 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
           Tree.shouldTabAutoExpanded(parent) ||
-          aInfo.forceExpand) {
-        newAncestors.filter(Tabs.isSubtreeCollapsed).forEach(aAncestor => {
-          Tree.collapseExpandSubtree(aAncestor, Object.assign({}, aInfo, {
+          info.forceExpand) {
+        newAncestors.filter(Tabs.isSubtreeCollapsed).forEach(ancestor => {
+          Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
             collapsed: false,
             broadcast: true
           }));
         });
       }
       if (Tabs.isCollapsed(parent))
-        Tree.collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
+        Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
           collapsed: true,
           broadcast: true
         }));
     }
     else if (Tree.shouldTabAutoExpanded(parent) ||
              Tabs.isCollapsed(parent)) {
-      Tree.collapseExpandTabAndSubtree(aTab, Object.assign({}, aInfo, {
+      Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
         collapsed: true,
         broadcast: true
       }));
@@ -91,60 +91,60 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   }
 
   await Promise.all([
-    Tabs.isOpening(aTab) && aTab.opened,
-    !aInfo.dontMove && (async () => {
-      let nextTab = aInfo.insertBefore;
-      let prevTab = aInfo.insertAfter;
+    Tabs.isOpening(tab) && tab.opened,
+    !info.dontMove && (async () => {
+      let nextTab = info.insertBefore;
+      let prevTab = info.insertAfter;
       if (!nextTab && !prevTab) {
-        const tabs = Tabs.getAllTabs(aTab);
-        nextTab = tabs[aInfo.newIndex];
+        const tabs = Tabs.getAllTabs(tab);
+        nextTab = tabs[info.newIndex];
         if (!nextTab)
-          prevTab = tabs[aInfo.newIndex - 1];
+          prevTab = tabs[info.newIndex - 1];
       }
-      log('move newly attached child: ', dumpTab(aTab), {
+      log('move newly attached child: ', dumpTab(tab), {
         next: dumpTab(nextTab),
         prev: dumpTab(prevTab)
       });
       if (nextTab)
-        await Tree.moveTabSubtreeBefore(aTab, nextTab, Object.assign({}, aInfo, {
+        await Tree.moveTabSubtreeBefore(tab, nextTab, Object.assign({}, info, {
           broadcast: true
         }));
       else
-        await Tree.moveTabSubtreeAfter(aTab, prevTab, Object.assign({}, aInfo, {
+        await Tree.moveTabSubtreeAfter(tab, prevTab, Object.assign({}, info, {
           broadcast: true
         }));
     })()
   ]);
 
-  if (!Tabs.ensureLivingTab(aTab) || // not removed while waiting
-      Tabs.getParentTab(aTab) != aInfo.parent) // not detached while waiting
+  if (!Tabs.ensureLivingTab(tab) || // not removed while waiting
+      Tabs.getParentTab(tab) != info.parent) // not detached while waiting
     return;
 
   browser.runtime.sendMessage({
     type:   Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY,
-    tab:    aTab.id,
+    tab:    tab.id,
     parent: parent.id,
-    newlyAttached: aInfo.newlyAttached
+    newlyAttached: info.newlyAttached
   });
 
-  if (aInfo.newlyAttached)
-    Background.reserveToUpdateAncestors([aTab].concat(Tabs.getDescendantTabs(aTab)));
+  if (info.newlyAttached)
+    Background.reserveToUpdateAncestors([tab].concat(Tabs.getDescendantTabs(tab)));
   Background.reserveToUpdateChildren(parent);
   Background.reserveToUpdateInsertionPosition([
-    aTab,
-    Tabs.getNextTab(aTab),
-    Tabs.getPreviousTab(aTab)
+    tab,
+    Tabs.getNextTab(tab),
+    Tabs.getPreviousTab(tab)
   ]);
 
-  Background.reserveToUpdateRelatedGroupTabs(aTab);
+  Background.reserveToUpdateRelatedGroupTabs(tab);
 });
 
-Tree.onDetached.addListener(async (aTab, _aDetachInfo) => {
-  if (aTab.apiTab.openerTabId &&
+Tree.onDetached.addListener(async (tab, _aDetachInfo) => {
+  if (tab.apiTab.openerTabId &&
       configs.syncParentTabAndOpenerTab) {
-    aTab.apiTab.openerTabId = aTab.apiTab.id;
-    aTab.apiTab.TSTUpdatedOpenerTabId = aTab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
-    browser.tabs.update(aTab.apiTab.id, { openerTabId: aTab.apiTab.id }) // set self id instead of null, because it requires any valid tab id...
+    tab.apiTab.openerTabId = tab.apiTab.id;
+    tab.apiTab.TSTUpdatedOpenerTabId = tab.apiTab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
+    browser.tabs.update(tab.apiTab.id, { openerTabId: tab.apiTab.id }) // set self id instead of null, because it requires any valid tab id...
       .catch(ApiTabs.handleMissingTabError);
   }
 });

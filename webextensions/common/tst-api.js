@@ -50,9 +50,9 @@ import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/tst-api'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export const kREGISTER_SELF         = 'register-self';
@@ -125,18 +125,18 @@ const gAddons = new Map();
 let gScrollLockedBy    = {};
 let gGroupingBlockedBy = {};
 
-export function getAddon(aId) {
-  return gAddons.get(aId);
+export function getAddon(id) {
+  return gAddons.get(id);
 }
 
-function registerAddon(aId, aAddon) {
-  gAddons.set(aId, aAddon);
+function registerAddon(id, addon) {
+  gAddons.set(id, addon);
 }
 
-function unregisterAddon(aId) {
-  gAddons.delete(aId);
-  delete gScrollLockedBy[aId];
-  delete gGroupingBlockedBy[aId];
+function unregisterAddon(id) {
+  gAddons.delete(id);
+  delete gScrollLockedBy[id];
+  delete gGroupingBlockedBy[id];
 }
 
 function getAddons() {
@@ -155,16 +155,16 @@ export async function initAsBackend() {
   const respondedAddons = [];
   const notifiedAddons = {};
   const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
-  await Promise.all(notifyAddons.map(async aId => {
-    if (aId in notifiedAddons)
+  await Promise.all(notifyAddons.map(async id => {
+    if (id in notifiedAddons)
       return;
-    notifiedAddons[aId] = true;
+    notifiedAddons[id] = true;
     try {
-      const success = await browser.runtime.sendMessage(aId, {
+      const success = await browser.runtime.sendMessage(id, {
         type: kNOTIFY_READY
       });
       if (success)
-        respondedAddons.push(aId);
+        respondedAddons.push(id);
     }
     catch(_e) {
     }
@@ -172,14 +172,14 @@ export async function initAsBackend() {
   configs.cachedExternalAddons = respondedAddons;
 }
 
-browser.runtime.onMessage.addListener((aMessage, _aSender) => {
-  if (!aMessage ||
-      typeof aMessage.type != 'string')
+browser.runtime.onMessage.addListener((message, _aSender) => {
+  if (!message ||
+      typeof message.type != 'string')
     return;
 
   switch (gContext) {
     case kCONTEXT_BACKEND:
-      switch (aMessage.type) {
+      switch (message.type) {
         case kCOMMAND_REQUEST_REGISTERED_ADDONS:
           return Promise.resolve(exportAddons());
 
@@ -192,16 +192,16 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
       break;
 
     case kCONTEXT_FRONTEND:
-      switch (aMessage.type) {
+      switch (message.type) {
         case kCOMMAND_BROADCAST_API_REGISTERED:
-          registerAddon(aMessage.sender.id, aMessage.message);
-          if (aMessage.message.style)
-            installStyleForAddon(aMessage.sender.id, aMessage.message.style);
+          registerAddon(message.sender.id, message.message);
+          if (message.message.style)
+            installStyleForAddon(message.sender.id, message.message.style);
           break;
 
         case kCOMMAND_BROADCAST_API_UNREGISTERED:
-          uninstallStyleForAddon(aMessage.sender.id)
-          unregisterAddon(aMessage.sender.id);
+          uninstallStyleForAddon(message.sender.id)
+          unregisterAddon(message.sender.id);
           break;
       }
       break;
@@ -211,22 +211,22 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
   }
 });
 
-browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
-  if (!aMessage ||
-      typeof aMessage.type != 'string')
+browser.runtime.onMessageExternal.addListener((message, sender) => {
+  if (!message ||
+      typeof message.type != 'string')
     return;
 
   switch (gContext) {
     case kCONTEXT_BACKEND:
-      switch (aMessage.type) {
+      switch (message.type) {
         case kPING:
           return Promise.resolve(true);
 
         case kREGISTER_SELF:
           return (async () => {
-            if (!aMessage.listeningTypes) {
+            if (!message.listeningTypes) {
               // for backward compatibility, send all message types available on TST 2.4.16 by default.
-              aMessage.listeningTypes = [
+              message.listeningTypes = [
                 kNOTIFY_READY,
                 kNOTIFY_SHUTDOWN,
                 kNOTIFY_TAB_CLICKED,
@@ -237,17 +237,17 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
                 kNOTIFY_TABBAR_MOUSEUP
               ];
             }
-            aMessage.internalId = aSender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
-            aMessage.id = aSender.id;
-            registerAddon(aSender.id, aMessage);
+            message.internalId = sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
+            message.id = sender.id;
+            registerAddon(sender.id, message);
             browser.runtime.sendMessage({
               type:    kCOMMAND_BROADCAST_API_REGISTERED,
-              sender:  aSender,
-              message: aMessage
+              sender:  sender,
+              message: message
             });
-            const index = configs.cachedExternalAddons.indexOf(aSender.id);
+            const index = configs.cachedExternalAddons.indexOf(sender.id);
             if (index < 0)
-              configs.cachedExternalAddons = configs.cachedExternalAddons.concat([aSender.id]);
+              configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
             return true;
           })();
 
@@ -255,12 +255,12 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
           return (async () => {
             browser.runtime.sendMessage({
               type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
-              sender:  aSender,
-              message: aMessage
+              sender:  sender,
+              message: message
             });
-            unregisterAddon(aSender.id);
-            delete gScrollLockedBy[aSender.id];
-            configs.cachedExternalAddons = configs.cachedExternalAddons.filter(aId => aId != aSender.id);
+            unregisterAddon(sender.id);
+            delete gScrollLockedBy[sender.id];
+            configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
             return true;
           })();
       }
@@ -273,21 +273,21 @@ browser.runtime.onMessageExternal.addListener((aMessage, aSender) => {
       return;
   }
 
-  switch (aMessage.type) {
+  switch (message.type) {
     case kSCROLL_LOCK:
-      gScrollLockedBy[aSender.id] = true;
+      gScrollLockedBy[sender.id] = true;
       return Promise.resolve(true);
 
     case kSCROLL_UNLOCK:
-      delete gScrollLockedBy[aSender.id];
+      delete gScrollLockedBy[sender.id];
       return Promise.resolve(true);
 
     case kBLOCK_GROUPING:
-      gGroupingBlockedBy[aSender.id] = true;
+      gGroupingBlockedBy[sender.id] = true;
       return Promise.resolve(true);
 
     case kUNBLOCK_GROUPING:
-      delete gGroupingBlockedBy[aSender.id];
+      delete gGroupingBlockedBy[sender.id];
       return Promise.resolve(true);
   }
 });
@@ -317,36 +317,36 @@ export async function initAsFrontend() {
   gGroupingBlockedBy = state.groupingLocked;
 }
 
-function importAddons(aAddons) {
-  if (!aAddons)
+function importAddons(addons) {
+  if (!addons)
     console.log(new Error('null import'));
   for (const id of Object.keys(gAddons)) {
     unregisterAddon(id);
   }
-  for (const [id, addon] of Object.entries(aAddons)) {
+  for (const [id, addon] of Object.entries(addons)) {
     registerAddon(id, addon);
   }
 }
 
 const gAddonStyles = new Map();
 
-function installStyleForAddon(aId, aStyle) {
-  let styleElement = gAddonStyles.get(aId);
+function installStyleForAddon(id, style) {
+  let styleElement = gAddonStyles.get(id);
   if (!styleElement) {
     styleElement = document.createElement('style');
     styleElement.setAttribute('type', 'text/css');
     document.head.insertBefore(styleElement, document.querySelector('#addons-style-rules'));
-    gAddonStyles.set(aId, styleElement);
+    gAddonStyles.set(id, styleElement);
   }
-  styleElement.textContent = aStyle;
+  styleElement.textContent = style;
 }
 
-function uninstallStyleForAddon(aId) {
-  const styleElement = gAddonStyles.get(aId);
+function uninstallStyleForAddon(id) {
+  const styleElement = gAddonStyles.get(id);
   if (!styleElement)
     return;
   document.head.removeChild(styleElement);
-  gAddonStyles.delete(aId);
+  gAddonStyles.delete(id);
 }
 
 
@@ -354,9 +354,9 @@ export function isScrollLocked() {
   return Object.keys(gScrollLockedBy).length > 0;
 }
 
-export async function notifyScrolled(aParams = {}) {
+export async function notifyScrolled(params = {}) {
   const lockers = Object.keys(gScrollLockedBy);
-  const tab     = aParams.tab;
+  const tab     = params.tab;
   const window  = Tabs.getWindow();
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
@@ -364,18 +364,18 @@ export async function notifyScrolled(aParams = {}) {
     tabs: Tabs.getTabs(window).map(serializeTab),
     window,
 
-    deltaY:       aParams.event.deltaY,
-    deltaMode:    aParams.event.deltaMode,
-    scrollTop:    aParams.scrollContainer.scrollTop,
-    scrollTopMax: aParams.scrollContainer.scrollTopMax,
+    deltaY:       params.event.deltaY,
+    deltaMode:    params.event.deltaMode,
+    scrollTop:    params.scrollContainer.scrollTop,
+    scrollTopMax: params.scrollContainer.scrollTopMax,
 
-    altKey:   aParams.event.altKey,
-    ctrlKey:  aParams.event.ctrlKey,
-    metaKey:  aParams.event.metaKey,
-    shiftKey: aParams.event.shiftKey,
+    altKey:   params.event.altKey,
+    ctrlKey:  params.event.ctrlKey,
+    metaKey:  params.event.metaKey,
+    shiftKey: params.event.shiftKey,
 
-    clientX:  aParams.event.clientX,
-    clientY:  aParams.event.clientY
+    clientX:  params.event.clientX,
+    clientY:  params.event.clientY
   }, {
     targets: lockers
   });
@@ -391,50 +391,50 @@ export function isGroupingBlocked() {
 }
 
 
-export function serializeTab(aTab) {
-  const effectiveFavIcon = TabFavIconHelper.effectiveFavIcons.get(aTab.apiTab.id);
-  const children         = Tabs.getChildTabs(aTab).map(serializeTab);
-  const ancestorTabIds   = Tabs.getAncestorTabs(aTab).map(aTab => aTab.apiTab.id);
-  return Object.assign({}, aTab.apiTab, {
-    states:   Array.slice(aTab.classList).filter(aState => !Constants.kTAB_INTERNAL_STATES.includes(aState)),
-    indent:   parseInt(aTab.getAttribute(Constants.kLEVEL) || 0),
+export function serializeTab(tab) {
+  const effectiveFavIcon = TabFavIconHelper.effectiveFavIcons.get(tab.apiTab.id);
+  const children         = Tabs.getChildTabs(tab).map(serializeTab);
+  const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.apiTab.id);
+  return Object.assign({}, tab.apiTab, {
+    states:   Array.slice(tab.classList).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
+    indent:   parseInt(tab.getAttribute(Constants.kLEVEL) || 0),
     effectiveFavIconUrl: effectiveFavIcon && effectiveFavIcon.favIconUrl,
     children, ancestorTabIds
   });
 }
 
-export function getListenersForMessageType(aType) {
+export function getListenersForMessageType(type) {
   const uniqueTargets = {};
   for (const [id, addon] of getAddons()) {
-    if (addon.listeningTypes.includes(aType))
+    if (addon.listeningTypes.includes(type))
       uniqueTargets[id] = true;
   }
-  return Object.keys(uniqueTargets).map(aId => getAddon(aId));
+  return Object.keys(uniqueTargets).map(id => getAddon(id));
 }
 
-export async function sendMessage(aMessage, aOptions = {}) {
+export async function sendMessage(message, options = {}) {
   const uniqueTargets = {};
-  for (const addon of getListenersForMessageType(aMessage.type)) {
+  for (const addon of getListenersForMessageType(message.type)) {
     uniqueTargets[addon.id] = true;
   }
-  if (aOptions.targets) {
-    if (!Array.isArray(aOptions.targets))
-      aOptions.targets = [aOptions.targets];
-    for (const id of aOptions.targets) {
+  if (options.targets) {
+    if (!Array.isArray(options.targets))
+      options.targets = [options.targets];
+    for (const id of options.targets) {
       uniqueTargets[id] = true;
     }
   }
-  return Promise.all(Object.keys(uniqueTargets).map(async (aId) => {
+  return Promise.all(Object.keys(uniqueTargets).map(async (id) => {
     try {
-      const result = await browser.runtime.sendMessage(aId, aMessage);
+      const result = await browser.runtime.sendMessage(id, message);
       return {
-        id:     aId,
+        id:     id,
         result: result
       };
     }
     catch(e) {
       return {
-        id:    aId,
+        id:    id,
         error: e
       };
     }
@@ -442,84 +442,84 @@ export async function sendMessage(aMessage, aOptions = {}) {
 }
 
 
-export async function getTargetTabs(aMessage, aSender) {
+export async function getTargetTabs(message, sender) {
   await Tabs.waitUntilAllTabsAreCreated();
-  if (Array.isArray(aMessage.tabs))
-    return getTabsFromWrongIds(aMessage.tabs, aSender);
-  if (aMessage.window || aMessage.windowId) {
-    if (aMessage.tab == '*' ||
-        aMessage.tabs == '*')
-      return Tabs.getAllTabs(aMessage.window || aMessage.windowId);
+  if (Array.isArray(message.tabs))
+    return getTabsFromWrongIds(message.tabs, sender);
+  if (message.window || message.windowId) {
+    if (message.tab == '*' ||
+        message.tabs == '*')
+      return Tabs.getAllTabs(message.window || message.windowId);
     else
-      return Tabs.getRootTabs(aMessage.window || aMessage.windowId);
+      return Tabs.getRootTabs(message.window || message.windowId);
   }
-  if (aMessage.tab == '*' ||
-      aMessage.tabs == '*') {
+  if (message.tab == '*' ||
+      message.tabs == '*') {
     const window = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     });
     return Tabs.getAllTabs(window.id);
   }
-  if (aMessage.tab)
-    return getTabsFromWrongIds([aMessage.tab], aSender);
+  if (message.tab)
+    return getTabsFromWrongIds([message.tab], sender);
   return [];
 }
 
-async function getTabsFromWrongIds(aIds, aSender) {
+async function getTabsFromWrongIds(aIds, sender) {
   let tabsInActiveWindow = [];
-  if (aIds.some(aId => typeof aId != 'number')) {
+  if (aIds.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
       populate:    true,
       windowTypes: ['normal']
     });
     tabsInActiveWindow = window.tabs;
   }
-  const tabOrAPITabOrIds = await Promise.all(aIds.map(async (aId) => {
-    switch (String(aId).toLowerCase()) {
+  const tabOrAPITabOrIds = await Promise.all(aIds.map(async (id) => {
+    switch (String(id).toLowerCase()) {
       case 'active':
       case 'current': {
-        const tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        const tabs = tabsInActiveWindow.filter(tab => tab.active);
         return TabIdFixer.fixTab(tabs[0]);
       }
       case 'next': {
-        const tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
-          aIndex > 0 && tabsInActiveWindow[aIndex - 1].active);
+        const tabs = tabsInActiveWindow.filter((tab, index) =>
+          index > 0 && tabsInActiveWindow[index - 1].active);
         return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
       }
       case 'previous':
       case 'prev': {
         const maxIndex = tabsInActiveWindow.length - 1;
-        const tabs = tabsInActiveWindow.filter((aTab, aIndex) =>
-          aIndex < maxIndex && tabsInActiveWindow[aIndex + 1].active);
+        const tabs = tabsInActiveWindow.filter((tab, index) =>
+          index < maxIndex && tabsInActiveWindow[index + 1].active);
         return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
       }
       case 'nextsibling': {
-        const tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        const tabs = tabsInActiveWindow.filter(tab => tab.active);
         return Tabs.getNextSiblingTab(Tabs.getTabById(tabs[0]));
       }
       case 'previoussibling':
       case 'prevsibling': {
-        const tabs = tabsInActiveWindow.filter(aTab => aTab.active);
+        const tabs = tabsInActiveWindow.filter(tab => tab.active);
         return Tabs.getPreviousSiblingTab(Tabs.getTabById(tabs[0]));
       }
       case 'sendertab':
-        if (aSender.tab)
-          return aSender.tab;
+        if (sender.tab)
+          return sender.tab;
       default:
-        const tabFromUniqueId = Tabs.getTabByUniqueId(aId);
-        return tabFromUniqueId || aId;
+        const tabFromUniqueId = Tabs.getTabByUniqueId(id);
+        return tabFromUniqueId || id;
     }
   }));
-  return tabOrAPITabOrIds.map(Tabs.getTabById).filter(aTab => !!aTab);
+  return tabOrAPITabOrIds.map(Tabs.getTabById).filter(tab => !!tab);
 }
 
-export function formatResult(aResults, aOriginalMessage) {
-  if (Array.isArray(aOriginalMessage.tabs))
-    return aResults;
-  if (aOriginalMessage.tab == '*' ||
-      aOriginalMessage.tabs == '*')
-    return aResults;
-  if (aOriginalMessage.tab)
-    return aResults[0];
-  return aResults;
+export function formatResult(results, originalMessage) {
+  if (Array.isArray(originalMessage.tabs))
+    return results;
+  if (originalMessage.tab == '*' ||
+      originalMessage.tabs == '*')
+    return results;
+  if (originalMessage.tab)
+    return results[0];
+  return results;
 }

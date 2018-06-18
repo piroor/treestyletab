@@ -46,16 +46,16 @@ import {
 import * as Tabs from './tabs.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/tabs-container'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 
-export function buildFor(aWindowId) {
+export function buildFor(windowId) {
   const container = document.createElement('ul');
-  container.dataset.windowId = aWindowId;
-  container.setAttribute('id', `window-${aWindowId}`);
+  container.dataset.windowId = windowId;
+  container.setAttribute('id', `window-${windowId}`);
   container.classList.add('tabs');
 
   container.dataset.internalMovingCount =
@@ -83,15 +83,15 @@ export function buildFor(aWindowId) {
   return container;
 }
 
-export function incrementCounter(aContainer, aName, aDelta) {
-  const count = parseInt(aContainer.dataset[aName]) + (aDelta || 1);
-  aContainer.dataset[aName] = count;
+export function incrementCounter(container, name, delta) {
+  const count = parseInt(container.dataset[name]) + (delta || 1);
+  container.dataset[name] = count;
   return count;
 }
 
-export function decrementCounter(aContainer, aName, aDelta) {
-  const count = parseInt(aContainer.dataset[aName]) - (aDelta || 1);
-  aContainer.dataset[aName] = count;
+export function decrementCounter(container, name, delta) {
+  const count = parseInt(container.dataset[name]) - (delta || 1);
+  container.dataset[name] = count;
   return count;
 }
 

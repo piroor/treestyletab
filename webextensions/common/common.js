@@ -254,7 +254,7 @@ export const configs = new Configs({
     minimumIntervalToProcessDragoverEvent
     cachedExternalAddons
     notifiedFeaturesVersion
-  `.trim().split('\n').map(aKey => aKey.trim()).filter(aKey => aKey && aKey.indexOf('//') != 0)
+  `.trim().split('\n').map(key => key.trim()).filter(key => key && key.indexOf('//') != 0)
 });
 
 configs.$loaded.then(() => {
@@ -264,7 +264,7 @@ configs.$loaded.then(() => {
 });
 
 
-export function log(aMessage, ...aArgs)
+export function log(message, ...args)
 {
   const useConsole = configs && configs.debug;
   const logging    = useConsole || log.forceStore;
@@ -276,11 +276,11 @@ export function log(aMessage, ...aArgs)
   for (let i = 0; i < nest; i++) {
     indent += ' ';
   }
-  const line = `tst<${log.context}>: ${indent}${aMessage}`;
+  const line = `tst<${log.context}>: ${indent}${message}`;
   if (useConsole)
-    console.log(line, ...aArgs);
+    console.log(line, ...args);
 
-  log.logs.push(`${line} ${aArgs.map(aArg => uneval(aArg)).join(', ')}`);
+  log.logs.push(`${line} ${args.map(arg => uneval(arg)).join(', ')}`);
   log.logs = log.logs.slice(-log.max);
 }
 log.context = '?';
@@ -290,43 +290,43 @@ log.forceStore = true;
 
 configs.$logger = log;
 
-export function dumpTab(aTab) {
+export function dumpTab(tab) {
   if (!configs || !configs.debug)
     return '';
-  if (!aTab || !aTab.apiTab)
+  if (!tab || !tab.apiTab)
     return '<NULL>';
-  return `#${aTab.id}`;
+  return `#${tab.id}`;
 }
 
-export async function wait(aTask = 0, aTimeout = 0) {
-  if (typeof aTask != 'function') {
-    aTimeout = aTask;
-    aTask    = null;
+export async function wait(task = 0, timeout = 0) {
+  if (typeof task != 'function') {
+    timeout = task;
+    task    = null;
   }
-  return new Promise((aResolve, _aReject) => {
+  return new Promise((resolve, _aReject) => {
     setTimeout(async () => {
-      if (aTask)
-        await aTask();
-      aResolve();
-    }, aTimeout);
+      if (task)
+        await task();
+      resolve();
+    }, timeout);
   });
 }
 
 export function nextFrame() {
-  return new Promise((aResolve, _aReject) => {
-    window.requestAnimationFrame(aResolve);
+  return new Promise((resolve, _aReject) => {
+    window.requestAnimationFrame(resolve);
   });
 }
 
-export async function notify(aParams = {}) {
+export async function notify(params = {}) {
   const id = await browser.notifications.create({
     type:    'basic',
-    iconUrl: aParams.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
-    title:   aParams.title,
-    message: aParams.message
+    iconUrl: params.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
+    title:   params.title,
+    message: params.message
   });
 
-  let timeout = aParams.timeout;
+  let timeout = params.timeout;
   if (typeof timeout != 'number')
     timeout = configs.notificationTimeout;
   if (timeout >= 0)

@@ -27,9 +27,9 @@ import * as TSTAPI from '../common/tst-api.js';
 import * as EventUtils from './event-utils.js';
 import EventListenerManager from '../common/EventListenerManager.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/tab-context-menu'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export const onTabsClosing = new EventListenerManager();
@@ -108,7 +108,7 @@ async function rebuild() {
         continue;
       toBeBuiltItems.push(item);
     }
-    const topLevelItems = toBeBuiltItems.filter(aItem => !aItem.parentId);
+    const topLevelItems = toBeBuiltItems.filter(item => !item.parentId);
     if (topLevelItems.length == 1 &&
         !topLevelItems[0].icons)
       topLevelItems[0].icons = TSTAPI.getAddon(id).icons || {};
@@ -148,25 +148,25 @@ async function rebuild() {
   gMenu.appendChild(extraItemNodes);
 }
 
-function getAddonName(aId) {
-  if (aId == browser.runtime.id)
+function getAddonName(id) {
+  if (id == browser.runtime.id)
     return browser.i18n.getMessage('extensionName');
-  const addon = TSTAPI.getAddon(aId) || {};
-  return addon.name || aId.replace(/@.+$/, '');
+  const addon = TSTAPI.getAddon(id) || {};
+  return addon.name || id.replace(/@.+$/, '');
 }
 
-function getAddonIcon(aId) {
-  const addon = TSTAPI.getAddon(aId) || {};
+function getAddonIcon(id) {
+  const addon = TSTAPI.getAddon(id) || {};
   return chooseIconForAddon({
-    id:         aId,
+    id:         id,
     internalId: addon.internalId,
     icons:      addon.icons || {}
   });
 }
 
-function chooseIconForAddon(aParams) {
-  const icons = aParams.icons || {};
-  const addon = TSTAPI.getAddon(aParams.id) || {};
+function chooseIconForAddon(params) {
+  const icons = params.icons || {};
+  const addon = TSTAPI.getAddon(params.id) || {};
   let sizes = Object.keys(icons).map(aSize => parseInt(aSize)).sort();
   const reducedSizes = sizes.filter(aSize => aSize < 16);
   if (reducedSizes.length > 0)
@@ -176,7 +176,7 @@ function chooseIconForAddon(aParams) {
     return null;
   let url = icons[size];
   if (!/^\w+:\/\//.test(url))
-    url = `moz-extension://${addon.internalId || aParams.internalId}/${url.replace(/^\//, '')}`;
+    url = `moz-extension://${addon.internalId || params.internalId}/${url.replace(/^\//, '')}`;
   return url;
 }
 
@@ -187,22 +187,22 @@ function prepareAsSubmenu(aItemNode) {
   return aItemNode;
 }
 
-function buildExtraItem(aItem, aOwnerAddonId) {
+function buildExtraItem(item, aOwnerAddonId) {
   const itemNode = document.createElement('li');
-  itemNode.setAttribute('id', `${aOwnerAddonId}-${aItem.id}`);
-  itemNode.setAttribute('data-item-id', aItem.id);
+  itemNode.setAttribute('id', `${aOwnerAddonId}-${item.id}`);
+  itemNode.setAttribute('data-item-id', item.id);
   itemNode.setAttribute('data-item-owner-id', aOwnerAddonId);
   itemNode.classList.add('extra');
-  itemNode.classList.add(aItem.type || 'normal');
-  if (aItem.type == 'checkbox' || aItem.type == 'radio') {
-    if (aItem.checked)
+  itemNode.classList.add(item.type || 'normal');
+  if (item.type == 'checkbox' || item.type == 'radio') {
+    if (item.checked)
       itemNode.classList.add('checked');
   }
-  if (aItem.type != 'separator') {
-    itemNode.appendChild(document.createTextNode(aItem.title));
-    itemNode.setAttribute('title', aItem.title);
+  if (item.type != 'separator') {
+    itemNode.appendChild(document.createTextNode(item.title));
+    itemNode.setAttribute('title', item.title);
   }
-  if (aItem.enabled === false)
+  if (item.enabled === false)
     itemNode.classList.add('disabled');
   else
     itemNode.classList.remove('disabled');;
@@ -210,7 +210,7 @@ function buildExtraItem(aItem, aOwnerAddonId) {
   const icon = chooseIconForAddon({
     id:         aOwnerAddonId,
     internalId: addon.internalId,
-    icons:      aItem.icons || {}
+    icons:      item.icons || {}
   });
   if (icon)
     itemNode.dataset.icon = icon;
@@ -243,23 +243,23 @@ function matchPatternToRegExp(aPattern) {
                     + ')$');
 }
 
-export async function open(aOptions = {}) {
+export async function open(options = {}) {
   await close();
-  gLastOpenOptions = aOptions;
-  gContextTab      = aOptions.tab;
-  gContextWindowId = aOptions.windowId || (gContextTab && gContextTab.windowId);
+  gLastOpenOptions = options;
+  gContextTab      = options.tab;
+  gContextWindowId = options.windowId || (gContextTab && gContextTab.windowId);
   await rebuild();
   if (gIsDirty) {
-    return await open(aOptions);
+    return await open(options);
   }
   applyContext();
-  const originalCanceller = aOptions.canceller;
-  aOptions.canceller = () => {
+  const originalCanceller = options.canceller;
+  options.canceller = () => {
     return (typeof originalCanceller == 'function' && originalCanceller()) || gIsDirty;
   };
-  await gUI.open(aOptions);
+  await gUI.open(options);
   if (gIsDirty) {
-    return await open(aOptions);
+    return await open(options);
   }
 }
 
@@ -312,13 +312,13 @@ function applyContext() {
   }
 }
 
-async function onCommand(aItem, aEvent) {
-  if (aEvent.button == 1)
+async function onCommand(item, event) {
+  if (event.button == 1)
     return;
 
   wait(0).then(() => close()); // close the menu immediately!
 
-  switch (aItem.id) {
+  switch (item.id) {
     case 'context_reloadTab':
       browser.tabs.reload(gContextTab.id);
       break;
@@ -374,13 +374,13 @@ async function onCommand(aItem, aEvent) {
       const apiTabs = await browser.tabs.query({ windowId: gContextWindowId });
       const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
       if (folder)
-        browser.bookmarks.get(folder.parentId).then(aFolders => {
+        browser.bookmarks.get(folder.parentId).then(folders => {
           notify({
             title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
             message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
               apiTabs[0].title,
               apiTabs.length,
-              aFolders[0].title
+              folders[0].title
             ]),
             icon:    Constants.kNOTIFICATION_DEFAULT_ICON
           });
@@ -401,12 +401,12 @@ async function onCommand(aItem, aEvent) {
       const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: gContextWindowId })) === false;
       if (canceled)
         return;
-      browser.tabs.remove(closeAPITabs.map(aAPITab => aAPITab.id));
+      browser.tabs.remove(closeAPITabs.map(aPITab => aPITab.id));
     }; break;
     case 'context_closeOtherTabs': {
       const apiTabId = gContextTab.id; // cache it for delayed tasks!
       const apiTabs  = await browser.tabs.query({ windowId: gContextWindowId });
-      const closeAPITabs = apiTabs.filter(aAPITab => !aAPITab.pinned && aAPITab.id != apiTabId).map(aAPITab => aAPITab.id);
+      const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && aPITab.id != apiTabId).map(aPITab => aPITab.id);
       const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: gContextWindowId })) === false;
       if (canceled)
         return;
@@ -422,17 +422,17 @@ async function onCommand(aItem, aEvent) {
       break;
 
     default: {
-      const id = aItem.getAttribute('data-item-id');
+      const id = item.getAttribute('data-item-id');
       if (id) {
         const modifiers = [];
-        if (aEvent.metaKey)
+        if (event.metaKey)
           modifiers.push('Command');
-        if (aEvent.ctrlKey) {
+        if (event.ctrlKey) {
           modifiers.push('Ctrl');
           if (/^Mac/i.test(navigator.platform))
             modifiers.push('MacCtrl');
         }
-        if (aEvent.shiftKey)
+        if (event.shiftKey)
           modifiers.push('Shift');
         const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
@@ -452,7 +452,7 @@ async function onCommand(aItem, aEvent) {
           },
           tab: gContextTab || null
         };
-        const owner = aItem.getAttribute('data-item-owner-id');
+        const owner = item.getAttribute('data-item-owner-id');
         if (owner == browser.runtime.id)
           await browser.runtime.sendMessage(message);
         else
@@ -462,11 +462,11 @@ async function onCommand(aItem, aEvent) {
   }
 }
 
-function onMessage(aMessage, _aSender) {
-  log('tab-context-menu: internally called:', aMessage);
-  switch (aMessage.type) {
+function onMessage(message, _aSender) {
+  log('tab-context-menu: internally called:', message);
+  switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_UPDATED: {
-      importExtraItems(aMessage.items);
+      importExtraItems(message.items);
       gIsDirty = true;
       if (gUI.opened)
         open(gLastOpenOptions);
@@ -481,36 +481,36 @@ function importExtraItems(aItems) {
   }
 }
 
-function onExternalMessage(aMessage, aSender) {
-  log('tab-context-menu: API called:', aMessage, aSender);
-  switch (aMessage.type) {
+function onExternalMessage(message, sender) {
+  log('tab-context-menu: API called:', message, sender);
+  switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
       return (async () => {
-        const tab      = aMessage.tab ? (await browser.tabs.get(aMessage.tab)) : null ;
-        const windowId = aMessage.window || tab && tab.windowId;
+        const tab      = message.tab ? (await browser.tabs.get(message.tab)) : null ;
+        const windowId = message.window || tab && tab.windowId;
         if (windowId != Tabs.getWindow())
           return;
         return open({
           tab:      tab,
           windowId: windowId,
-          left:     aMessage.left,
-          top:      aMessage.top
+          left:     message.left,
+          top:      message.top
         });
       })();
   }
 }
 
 
-function onContextMenu(aEvent) {
+function onContextMenu(event) {
   if (!configs.fakeContextMenu)
     return;
-  aEvent.stopPropagation();
-  aEvent.preventDefault();
-  const tab = EventUtils.getTabFromEvent(aEvent);
+  event.stopPropagation();
+  event.preventDefault();
+  const tab = EventUtils.getTabFromEvent(event);
   open({
     tab:  tab && tab.apiTab,
-    left: aEvent.clientX,
-    top:  aEvent.clientY
+    left: event.clientX,
+    top:  event.clientY
   });
 }
 

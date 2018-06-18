@@ -15,9 +15,9 @@ import * as Commands from '../common/commands.js';
 import * as TSTAPI from '../common/tst-api.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['background/context-menu'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 const mContextMenuItems = `
@@ -74,12 +74,12 @@ export async function refreshItems() {
   }
 }
 
-export const onClick = (aInfo, aAPITab) => {
-  log('context menu item clicked: ', aInfo, aAPITab);
+export const onClick = (info, aPITab) => {
+  log('context menu item clicked: ', info, aPITab);
 
-  const contextTab = Tabs.getTabById(aAPITab);
+  const contextTab = Tabs.getTabById(aPITab);
 
-  switch (aInfo.menuItemId) {
+  switch (info.menuItemId) {
     case 'reloadTree':
       Commands.reloadTree(contextTab);
       break;

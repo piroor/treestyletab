@@ -21,34 +21,34 @@ import * as Bookmark from './bookmark.js';
 import * as Tree from './tree.js';
 import EventListenerManager from './EventListenerManager.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/command'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export const onTabsClosing = new EventListenerManager();
 export const onMoveUp      = new EventListenerManager();
 export const onMoveDown    = new EventListenerManager();
 
-export function reloadTree(aRootTab) {
-  const tabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
+export function reloadTree(rootTab) {
+  const tabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
   for (const tab of tabs) {
     browser.tabs.reload(tab.apiTab.id)
       .catch(ApiTabs.handleMissingTabError);
   }
 }
 
-export function reloadDescendants(aRootTab) {
-  const tabs = Tabs.getDescendantTabs(aRootTab);
+export function reloadDescendants(rootTab) {
+  const tabs = Tabs.getDescendantTabs(rootTab);
   for (const tab of tabs) {
     browser.tabs.reload(tab.apiTab.id)
       .catch(ApiTabs.handleMissingTabError);
   }
 }
 
-export async function closeTree(aRootTab) {
-  const tabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
-  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
+export async function closeTree(rootTab) {
+  const tabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: rootTab.apiTab.windowId })) === false;
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
@@ -57,9 +57,9 @@ export async function closeTree(aRootTab) {
   }
 }
 
-export async function closeDescendants(aRootTab) {
-  const tabs = Tabs.getDescendantTabs(aRootTab);
-  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
+export async function closeDescendants(rootTab) {
+  const tabs = Tabs.getDescendantTabs(rootTab);
+  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: rootTab.apiTab.windowId })) === false;
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
@@ -68,12 +68,12 @@ export async function closeDescendants(aRootTab) {
   }
 }
 
-export async function closeOthers(aRootTab) {
-  const exceptionTabs = [aRootTab].concat(Tabs.getDescendantTabs(aRootTab));
-  const tabs          = Tabs.getNormalTabs(aRootTab); // except pinned or hidden tabs
+export async function closeOthers(rootTab) {
+  const exceptionTabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  const tabs          = Tabs.getNormalTabs(rootTab); // except pinned or hidden tabs
   tabs.reverse(); // close bottom to top!
-  const closeTabs = tabs.filter(aTab => !exceptionTabs.includes(aTab));
-  const canceled = (await onTabsClosing.dispatch(closeTabs.length, { windowId: aRootTab.apiTab.windowId })) === false;
+  const closeTabs = tabs.filter(tab => !exceptionTabs.includes(tab));
+  const canceled = (await onTabsClosing.dispatch(closeTabs.length, { windowId: rootTab.apiTab.windowId })) === false;
   if (canceled)
     return;
   for (const tab of closeTabs) {
@@ -81,8 +81,8 @@ export async function closeOthers(aRootTab) {
   }
 }
 
-export function collapseAll(aHint) {
-  const tabs = Tabs.getNormalTabs(aHint);
+export function collapseAll(hint) {
+  const tabs = Tabs.getNormalTabs(hint);
   for (const tab of tabs) {
     if (Tabs.hasChildTabs(tab) && !Tabs.isSubtreeCollapsed(tab))
       Tree.collapseExpandSubtree(tab, {
@@ -92,8 +92,8 @@ export function collapseAll(aHint) {
   }
 }
 
-export function expandAll(aHint) {
-  const tabs = Tabs.getNormalTabs(aHint);
+export function expandAll(hint) {
+  const tabs = Tabs.getNormalTabs(hint);
   for (const tab of tabs) {
     if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
       Tree.collapseExpandSubtree(tab, {
@@ -103,18 +103,18 @@ export function expandAll(aHint) {
   }
 }
 
-export async function bookmarkTree(aRoot, aOptions = {}) {
-  const tabs   = [aRoot].concat(Tabs.getDescendantTabs(aRoot));
-  const folder = await Bookmark.bookmarkTabs(tabs, aOptions);
+export async function bookmarkTree(root, options = {}) {
+  const tabs   = [root].concat(Tabs.getDescendantTabs(root));
+  const folder = await Bookmark.bookmarkTabs(tabs, options);
   if (!folder)
     return null;
-  browser.bookmarks.get(folder.parentId).then(aFolders => {
+  browser.bookmarks.get(folder.parentId).then(folders => {
     notify({
       title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
       message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
-        aRoot.apiTab.title,
+        root.apiTab.title,
         tabs.length,
-        aFolders[0].title
+        folders[0].title
       ])
     });
   });
@@ -122,15 +122,15 @@ export async function bookmarkTree(aRoot, aOptions = {}) {
 }
 
 
-export async function openNewTabAs(aOptions = {}) {
-  const currentTab = aOptions.baseTab || Tabs.getTabById((await browser.tabs.query({
+export async function openNewTabAs(options = {}) {
+  const currentTab = options.baseTab || Tabs.getTabById((await browser.tabs.query({
     active:        true,
     currentWindow: true
   }))[0]);
 
   let parent, insertBefore, insertAfter;
   let isOrphan = false;
-  switch (aOptions.as) {
+  switch (options.as) {
     case Constants.kNEWTAB_DO_NOTHING:
     default:
       break;
@@ -163,31 +163,31 @@ export async function openNewTabAs(aOptions = {}) {
 
   if (parent &&
       configs.inheritContextualIdentityToNewChildTab &&
-      !aOptions.cookieStoreId)
-    aOptions.cookieStoreId = parent.apiTab.cookieStoreId;
+      !options.cookieStoreId)
+    options.cookieStoreId = parent.apiTab.cookieStoreId;
 
   TabsOpen.openNewTab({
     parent, insertBefore, insertAfter,
     isOrphan,
     windowId:      currentTab.apiTab.windowId,
-    inBackground:  !!aOptions.inBackground,
-    cookieStoreId: aOptions.cookieStoreId,
-    inRemote:      !!aOptions.inRemote
+    inBackground:  !!options.inBackground,
+    cookieStoreId: options.cookieStoreId,
+    inRemote:      !!options.inRemote
   });
 }
 
-export async function indent(aTab, aOptions = {}) {
-  const newParent = Tabs.getPreviousSiblingTab(aTab);
+export async function indent(tab, options = {}) {
+  const newParent = Tabs.getPreviousSiblingTab(tab);
   if (!newParent ||
-      newParent == Tabs.getParentTab(aTab))
+      newParent == Tabs.getParentTab(tab))
     return false;
 
-  if (!aOptions.followChildren)
-    Tree.detachAllChildren(aTab, {
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
-  await Tree.attachTabTo(aTab, newParent, {
+  await Tree.attachTabTo(tab, newParent, {
     broadcast:   true,
     forceExpand: true,
     insertAfter: Tabs.getLastDescendantTab(newParent) || newParent
@@ -195,70 +195,70 @@ export async function indent(aTab, aOptions = {}) {
   return true;
 }
 
-export async function outdent(aTab, aOptions = {}) {
-  const parent = Tabs.getParentTab(aTab);
+export async function outdent(tab, options = {}) {
+  const parent = Tabs.getParentTab(tab);
   if (!parent)
     return false;
 
   const newParent = Tabs.getParentTab(parent);
-  if (newParent == Tabs.getParentTab(aTab))
+  if (newParent == Tabs.getParentTab(tab))
     return false;
 
-  if (!aOptions.followChildren)
-    Tree.detachAllChildren(aTab, {
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
   if (newParent) {
-    await Tree.attachTabTo(aTab, newParent, {
+    await Tree.attachTabTo(tab, newParent, {
       broadcast:   true,
       forceExpand: true,
       insertAfter: Tabs.getLastDescendantTab(parent) || parent
     });
   }
   else {
-    await Tree.detachTab(aTab, {
+    await Tree.detachTab(tab, {
       broadcast: true,
     });
-    await TabsMove.moveTabAfter(aTab, Tabs.getLastDescendantTab(parent) || parent, {
+    await TabsMove.moveTabAfter(tab, Tabs.getLastDescendantTab(parent) || parent, {
       broadcast: true,
     });
   }
   return true;
 }
 
-export async function moveUp(aTab, aOptions = {}) {
-  const previousTab = Tabs.getPreviousTab(aTab);
+export async function moveUp(tab, options = {}) {
+  const previousTab = Tabs.getPreviousTab(tab);
   if (!previousTab)
     return false;
 
-  if (!aOptions.followChildren)
-    Tree.detachAllChildren(aTab, {
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
 
-  await TabsMove.moveTabBefore(aTab, previousTab, {
+  await TabsMove.moveTabBefore(tab, previousTab, {
     broadcast: true
   });
-  await onMoveUp.dispatch(aTab);
+  await onMoveUp.dispatch(tab);
   return true;
 }
 
-export async function moveDown(aTab, aOptions = {}) {
-  const nextTab = Tabs.getNextTab(aTab);
+export async function moveDown(tab, options = {}) {
+  const nextTab = Tabs.getNextTab(tab);
   if (!nextTab)
     return false;
 
-  if (!aOptions.followChildren)
-    Tree.detachAllChildren(aTab, {
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
 
-  await TabsMove.moveTabAfter(aTab, nextTab, {
+  await TabsMove.moveTabAfter(tab, nextTab, {
     broadcast: true
   });
-  await onMoveDown.dispatch(aTab);
+  await onMoveDown.dispatch(tab);
   return true;
 }

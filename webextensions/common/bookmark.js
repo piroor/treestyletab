@@ -13,12 +13,12 @@ import {
 import * as Permissions from './permissions.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/bookmarks'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
-export async function bookmarkTabs(aTabs, aOptions = {}) {
+export async function bookmarkTabs(tabs, options = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
       throw new Error('not permitted');
@@ -31,16 +31,16 @@ export async function bookmarkTabs(aTabs, aOptions = {}) {
     return null;
   }
   const folderParams = {
-    title: browser.i18n.getMessage('bookmarkFolder_label', aTabs[0].apiTab.title)
+    title: browser.i18n.getMessage('bookmarkFolder_label', tabs[0].apiTab.title)
   };
-  if (aOptions.parentId) {
-    folderParams.parentId = aOptions.parentId;
-    if ('index' in aOptions)
-      folderParams.index = aOptions.index;
+  if (options.parentId) {
+    folderParams.parentId = options.parentId;
+    if ('index' in options)
+      folderParams.index = options.index;
   }
   const folder = await browser.bookmarks.create(folderParams);
-  for (let i = 0, maxi = aTabs.length; i < maxi; i++) {
-    const tab = aTabs[i];
+  for (let i = 0, maxi = tabs.length; i < maxi; i++) {
+    const tab = tabs[i];
     await browser.bookmarks.create({
       parentId: folder.id,
       index:    i,

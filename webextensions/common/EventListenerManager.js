@@ -13,17 +13,17 @@ export default class EventListenerManager {
     this._stacksOnListenerAdded = new WeakMap();
   }
 
-  addListener(aListener) {
+  addListener(listener) {
     const listeners = this._listeners;
-    if (!listeners.has(aListener)) {
-      listeners.add(aListener);
-      this._stacksOnListenerAdded.set(aListener, new Error().stack);
+    if (!listeners.has(listener)) {
+      listeners.add(listener);
+      this._stacksOnListenerAdded.set(listener, new Error().stack);
     }
   }
 
-  removeListener(aListener) {
-    this._listeners.delete(aListener);
-    this._stacksOnListenerAdded.delete(aListener);
+  removeListener(listener) {
+    this._listeners.delete(listener);
+    this._stacksOnListenerAdded.delete(listener);
   }
 
   removeAllListeners() {
@@ -31,15 +31,15 @@ export default class EventListenerManager {
     this._stacksOnListenerAdded.clear();
   }
 
-  async dispatch(...aArgs) {
+  async dispatch(...args) {
     const listeners = Array.from(this._listeners);
-    const results = await Promise.all(listeners.map(async aListener => {
+    const results = await Promise.all(listeners.map(async listener => {
       const timer = setTimeout(() => {
-        const listenerAddedStack = this._stacksOnListenerAdded.get(aListener);
+        const listenerAddedStack = this._stacksOnListenerAdded.get(listener);
         console.log(`listener does not respond in ${TIMEOUT}ms.\n${listenerAddedStack}\n\n${new Error().stack}`);
       }, TIMEOUT);
       try {
-        return await aListener(...aArgs);
+        return await listener(...args);
       }
       catch(e) {
         console.log(e);

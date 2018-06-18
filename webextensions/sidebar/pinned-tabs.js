@@ -48,9 +48,9 @@ import * as Tabs from '../common/tabs.js';
 import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/pinned-tabs'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 let gTargetWindow;
@@ -62,7 +62,7 @@ export function init() {
   configs.$addObserver(onConfigChange);
 }
 
-export function reposition(aOptions = {}) {
+export function reposition(options = {}) {
   //log('reposition');
   const pinnedTabs = Tabs.getPinnedTabs(gTargetWindow);
   if (!pinnedTabs.length) {
@@ -87,7 +87,7 @@ export function reposition(aOptions = {}) {
   gTabBar.style.marginTop = `${height * maxRow}px`;
   for (const item of pinnedTabs) {
     const style = item.style;
-    if (aOptions.justNow)
+    if (options.justNow)
       item.classList.remove(Constants.kTAB_STATE_ANIMATION_READY);
 
     if (faviconized)
@@ -105,7 +105,7 @@ export function reposition(aOptions = {}) {
     style.right  = faviconized ? 'auto' : 0 ;
     style.top    = `${height * row}px`;
 
-    if (aOptions.justNow)
+    if (options.justNow)
       item.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
 
     /*
@@ -126,12 +126,12 @@ export function reposition(aOptions = {}) {
   }
 }
 
-export function reserveToReposition(aOptions = {}) {
+export function reserveToReposition(options = {}) {
   if (reserveToReposition.waiting)
     clearTimeout(reserveToReposition.waiting);
   reserveToReposition.waiting = setTimeout(() => {
     delete reserveToReposition.waiting;
-    reposition(aOptions);
+    reposition(options);
   }, 10);
 }
 
@@ -141,10 +141,10 @@ function reset() {
   pinnedTabs.forEach(clearStyle);
 }
 
-function clearStyle(aTab) {
-  aTab.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
-  aTab.classList.remove(Constants.kTAB_STATE_LAST_ROW);
-  const style = aTab.style;
+function clearStyle(tab) {
+  tab.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
+  tab.classList.remove(Constants.kTAB_STATE_LAST_ROW);
+  const style = tab.style;
   style.left = style.right = style.top = style.bottom;
 }
 
@@ -152,8 +152,8 @@ Tabs.onPinned.addListener(() => {
   reserveToReposition();
 });
 
-Tabs.onUnpinned.addListener(aTab => {
-  clearStyle(aTab);
+Tabs.onUnpinned.addListener(tab => {
+  clearStyle(tab);
   reserveToReposition();
 });
 

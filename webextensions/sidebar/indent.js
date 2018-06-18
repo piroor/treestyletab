@@ -15,9 +15,9 @@ import * as Tabs from '../common/tabs.js';
 import * as Tree from '../common/tree.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/indent'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 let mInitialized = false;
@@ -44,21 +44,21 @@ export function updateRestoredTree(aCachedIndent) {
   });
 }
 
-export function update(aOptions = {}) {
-  if (!aOptions.cache) {
+export function update(options = {}) {
+  if (!options.cache) {
     const maxLevel  = Tabs.getMaxTreeLevel(gTargetWindow);
     const maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
     if (maxLevel <= gLastMaxLevel &&
         maxIndent == gLastMaxIndent &&
-        !aOptions.force)
+        !options.force)
       return;
 
     gLastMaxLevel  = maxLevel + 5;
     gLastMaxIndent = maxIndent;
   }
   else {
-    gLastMaxLevel  = aOptions.cache.lastMaxLevel;
-    gLastMaxIndent = aOptions.cache.lastMaxIndent;
+    gLastMaxLevel  = options.cache.lastMaxLevel;
+    gLastMaxIndent = options.cache.lastMaxIndent;
   }
 
   if (!gIndentDefinition) {
@@ -67,8 +67,8 @@ export function update(aOptions = {}) {
     document.head.appendChild(gIndentDefinition);
   }
 
-  if (aOptions.cache) {
-    gIndentDefinition.textContent = aOptions.cache.definition;
+  if (options.cache) {
+    gIndentDefinition.textContent = options.cache.definition;
   }
   else {
     const indentToSelectors = {};
@@ -145,8 +145,8 @@ Tabs.onRemoving.addListener(reserveToUpdateVisualMaxTreeLevel);
 Tabs.onShown.addListener(reserveToUpdateVisualMaxTreeLevel);
 Tabs.onHidden.addListener(reserveToUpdateVisualMaxTreeLevel);
 Tree.onAttached.addListener(reserveToUpdateVisualMaxTreeLevel);
-Tree.onDetached.addListener(async (_aTab, aDetachInfo = {}) => {
-  if (aDetachInfo.oldParentTab)
+Tree.onDetached.addListener(async (_aTab, detachInfo = {}) => {
+  if (detachInfo.oldParentTab)
     reserveToUpdateVisualMaxTreeLevel();
 });
 

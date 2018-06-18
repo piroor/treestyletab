@@ -13,37 +13,37 @@ import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/user-operation-blocker'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 let gBlockingCount = 0;
 let gBlockingThrobberCount = 0;
 
-export function block(aOptions = {}) {
+export function block(options = {}) {
   gBlockingCount++;
   document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING);
-  if (aOptions.throbber) {
+  if (options.throbber) {
     gBlockingThrobberCount++;
     document.documentElement.classList.add(Constants.kTABBAR_STATE_BLOCKING_WITH_THROBBER);
   }
 }
 
-export function blockIn(aWindowId, aOptions = {}) {
+export function blockIn(windowId, options = {}) {
   const window = Tabs.getWindow();
-  if (window && window != aWindowId)
+  if (window && window != windowId)
     return;
 
   if (!window) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
-      windowId: aWindowId,
-      throbber: !!aOptions.throbber
+      windowId: windowId,
+      throbber: !!options.throbber
     });
     return;
   }
-  block(aOptions);
+  block(options);
 }
 
 export function unblock(_aOptions = {}) {
@@ -60,19 +60,19 @@ export function unblock(_aOptions = {}) {
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_BLOCKING);
 }
 
-export function unblockIn(aWindowId, aOptions = {}) {
+export function unblockIn(windowId, options = {}) {
   const window = Tabs.getWindow();
-  if (window && window != aWindowId)
+  if (window && window != windowId)
     return;
 
   if (!window) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
-      windowId: aWindowId,
-      throbber: !!aOptions.throbber
+      windowId: windowId,
+      throbber: !!options.throbber
     });
     return;
   }
-  unblock(aOptions);
+  unblock(options);
 }
 

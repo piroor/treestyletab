@@ -23,32 +23,32 @@ import * as SidebarStatus from '../common/sidebar-status.js';
 
 import * as Background from './background.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['background/handle-removed-tabs'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 
-Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
-  log('Tabs.onRemoving ', dumpTab(aTab), aTab.apiTab, aCloseInfo);
+Tabs.onRemoving.addListener(async (tab, closeInfo = {}) => {
+  log('Tabs.onRemoving ', dumpTab(tab), tab.apiTab, closeInfo);
 
-  const ancestors = Tabs.getAncestorTabs(aTab);
-  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aCloseInfo);
-  if (!SidebarStatus.isOpen(aTab.apiTab.windowId) &&
+  const ancestors = Tabs.getAncestorTabs(tab);
+  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, closeInfo);
+  if (!SidebarStatus.isOpen(tab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      Tabs.isSubtreeCollapsed(aTab))
-    Tree.collapseExpandSubtree(aTab, {
+      Tabs.isSubtreeCollapsed(tab))
+    Tree.collapseExpandSubtree(tab, {
       collapsed: false,
       justNow:   true,
       broadcast: false // because the tab is going to be closed, broadcasted Tree.collapseExpandSubtree can be ignored.
     });
 
-  const wasActive = Tabs.isActive(aTab);
-  if (!(await tryGrantCloseTab(aTab, closeParentBehavior)))
+  const wasActive = Tabs.isActive(tab);
+  if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
     return;
 
-  const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(aTab) || aTab.nextSibling;
-  Tree.tryMoveFocusFromClosingCurrentTab(aTab, {
+  const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(tab) || tab.nextSibling;
+  Tree.tryMoveFocusFromClosingCurrentTab(tab, {
     wasActive,
     params: {
       active:          wasActive,
@@ -59,38 +59,38 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
   });
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    await closeChildTabs(aTab);
+    await closeChildTabs(tab);
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
-      Tabs.getChildTabs(aTab).length > 1) {
+      Tabs.getChildTabs(tab).length > 1) {
     log('trying to replace the closing tab with a new group tab');
-    const firstChild = Tabs.getFirstChildTab(aTab);
+    const firstChild = Tabs.getFirstChildTab(tab);
     const uri = TabsGroup.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
       temporary: true
     });
-    TabsContainer.incrementCounter(aTab.parentNode, 'toBeOpenedTabsWithPositions');
+    TabsContainer.incrementCounter(tab.parentNode, 'toBeOpenedTabsWithPositions');
     const groupTab = await TabsOpen.openURIInTab(uri, {
-      windowId:     aTab.apiTab.windowId,
-      insertBefore: aTab, // not firstChild, because the "aTab" is disappeared from tree.
+      windowId:     tab.apiTab.windowId,
+      insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
       inBackground: true
     });
     log('group tab: ', dumpTab(groupTab));
     if (!groupTab) // the window is closed!
       return;
-    await Tree.attachTabTo(groupTab, aTab, {
+    await Tree.attachTabTo(groupTab, tab, {
       insertBefore: firstChild,
       broadcast:    true
     });
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
   }
 
-  Tree.detachAllChildren(aTab, {
+  Tree.detachAllChildren(tab, {
     behavior:  closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
-  Tree.detachTab(aTab, {
+  Tree.detachTab(tab, {
     dontUpdateIndent: true,
     broadcast:        true
   });
@@ -98,41 +98,41 @@ Tabs.onRemoving.addListener(async (aTab, aCloseInfo = {}) => {
   Background.reserveToCleanupNeedlessGroupTab(ancestors);
 });
 
-async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
+async function tryGrantCloseTab(tab, closeParentBehavior) {
   const self = tryGrantCloseTab;
 
-  self.closingTabIds.push(aTab.id);
-  if (aCloseParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+  self.closingTabIds.push(tab.id);
+  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .concat(Tree.getClosingTabsFromParent(aTab).map(aTab => aTab.id));
+      .concat(Tree.getClosingTabsFromParent(tab).map(tab => tab.id));
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
   if (self.promisedGrantedToCloseTabs)
     return self.promisedGrantedToCloseTabs;
 
-  self.closingTabWasActive = self.closingTabWasActive || Tabs.isActive(aTab);
+  self.closingTabWasActive = self.closingTabWasActive || Tabs.isActive(tab);
 
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
     let foundTabs = {};
     self.closingTabIds = self.closingTabIds
-      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true)); // uniq
+      .filter(id => !foundTabs[id] && (foundTabs[id] = true)); // uniq
 
     foundTabs = {};
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .filter(aId => !foundTabs[aId] && (foundTabs[aId] = true) && !self.closingTabIds.includes(aId));
+      .filter(id => !foundTabs[id] && (foundTabs[id] = true) && !self.closingTabIds.includes(id));
 
     shouldRestoreCount = self.closingDescendantTabIds.length;
     if (shouldRestoreCount > 0) {
       return Background.confirmToCloseTabs(shouldRestoreCount + 1, {
-        windowId: aTab.apiTab.windowId
+        windowId: tab.apiTab.windowId
       });
     }
     return true;
   })
-    .then(async (aGranted) => {
-      if (aGranted)
+    .then(async (granted) => {
+      if (granted)
         return true;
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 });
       const toBeRestoredTabs = [];
@@ -147,7 +147,7 @@ async function tryGrantCloseTab(aTab, aCloseParentBehavior) {
         log('tryGrantClose: Tabrestoring session = ', tab);
         browser.sessions.restore(tab.sessionId);
         const tabs = await Tabs.waitUntilAllTabsAreCreated();
-        await Promise.all(tabs.map(aTab => aTab.opened));
+        await Promise.all(tabs.map(tab => tab.opened));
       }
       return false;
     });
@@ -164,43 +164,43 @@ tryGrantCloseTab.closingDescendantTabIds    = [];
 tryGrantCloseTab.closingTabWasActive        = false;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
-async function closeChildTabs(aParent) {
-  const tabs = Tabs.getDescendantTabs(aParent);
-  //if (!fireTabSubtreeClosingEvent(aParent, tabs))
+async function closeChildTabs(parent) {
+  const tabs = Tabs.getDescendantTabs(parent);
+  //if (!fireTabSubtreeClosingEvent(parent, tabs))
   //  return;
 
-  //markAsClosedSet([aParent].concat(tabs));
+  //markAsClosedSet([parent].concat(tabs));
   // close bottom to top!
-  await Promise.all(tabs.reverse().map(aTab => {
-    return TabsInternalOperation.removeTab(aTab);
+  await Promise.all(tabs.reverse().map(tab => {
+    return TabsInternalOperation.removeTab(tab);
   }));
-  //fireTabSubtreeClosedEvent(aParent, tabs);
+  //fireTabSubtreeClosedEvent(parent, tabs);
 }
 
 
-Tabs.onDetached.addListener((aTab, aInfo = {}) => {
-  if (Tree.shouldApplyTreeBehavior(aInfo)) {
-    Tree.tryMoveFocusFromClosingCurrentTabNow(aTab, {
-      ignoredTabs: Tabs.getDescendantTabs(aTab)
+Tabs.onDetached.addListener((tab, info = {}) => {
+  if (Tree.shouldApplyTreeBehavior(info)) {
+    Tree.tryMoveFocusFromClosingCurrentTabNow(tab, {
+      ignoredTabs: Tabs.getDescendantTabs(tab)
     });
     return;
   }
 
-  Tree.tryMoveFocusFromClosingCurrentTab(aTab);
+  Tree.tryMoveFocusFromClosingCurrentTab(tab);
 
-  log('Tabs.onDetached ', dumpTab(aTab));
-  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(aTab, aInfo);
+  log('Tabs.onDetached ', dumpTab(tab));
+  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, info);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
-  Tree.detachAllChildren(aTab, {
+  Tree.detachAllChildren(tab, {
     behavior: closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
-  Tree.detachTab(aTab, {
+  Tree.detachTab(tab, {
     dontUpdateIndent: true,
     broadcast:        true
   });
-  //restoreTabAttributes(aTab, backupAttributes);
+  //restoreTabAttributes(tab, backupAttributes);
 });

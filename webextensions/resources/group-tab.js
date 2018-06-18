@@ -43,11 +43,11 @@ function exitTitleEdit() {
   gTitleField.style.display = '';
 }
 
-function hasModifier(aEvent) {
-  return aEvent.altKey ||
-         aEvent.ctrlKey ||
-         aEvent.metaKey ||
-         aEvent.shiftKey;
+function hasModifier(event) {
+  return event.altKey ||
+         event.ctrlKey ||
+         event.metaKey ||
+         event.shiftKey;
 }
 
 function updateParameters(aParameters = {}) {
@@ -66,18 +66,18 @@ function init() {
   gTitle = document.querySelector('#title');
   gTitleField = document.querySelector('#title-field');
 
-  gTitle.addEventListener('click', aEvent => {
-    if (aEvent.button == 0 &&
-        !hasModifier(aEvent)) {
+  gTitle.addEventListener('click', event => {
+    if (event.button == 0 &&
+        !hasModifier(event)) {
       enterTitleEdit();
-      aEvent.stopPropagation();
+      event.stopPropagation();
     }
   });
-  gTitleField.addEventListener('keyup', aEvent => {
-    if (hasModifier(aEvent))
+  gTitleField.addEventListener('keyup', event => {
+    if (hasModifier(event))
       return;
 
-    switch (aEvent.key) {
+    switch (event.key) {
       case 'Escape':
         gTitleField.value = gTitle.textContent;
         exitTitleEdit();
@@ -88,12 +88,12 @@ function init() {
         break;
 
       case 'F2':
-        aEvent.stopPropagation();
+        event.stopPropagation();
         break;
     }
   });
-  window.addEventListener('click', aEvent => {
-    const link = aEvent.target.closest('a');
+  window.addEventListener('click', event => {
+    const link = event.target.closest('a');
     if (link) {
       browser.runtime.sendMessage({
         type: 'treestyletab:api:focus',
@@ -101,17 +101,17 @@ function init() {
       });
       return;
     }
-    if (aEvent.button == 0 &&
-        !hasModifier(aEvent) &&
-        aEvent.target != gTitleField) {
+    if (event.button == 0 &&
+        !hasModifier(event) &&
+        event.target != gTitleField) {
       gTitleField.value = gTitle.textContent;
       exitTitleEdit();
-      aEvent.stopPropagation();
+      event.stopPropagation();
     }
   });
-  window.addEventListener('keyup', aEvent => {
-    if (aEvent.key == 'F2' &&
-        !hasModifier(aEvent))
+  window.addEventListener('keyup', event => {
+    if (event.key == 'F2' &&
+        !hasModifier(event))
       enterTitleEdit();
   });
 
@@ -121,7 +121,7 @@ function init() {
 
   gTemporaryCheck = document.querySelector('#temporary');
   gTemporaryCheck.checked = isTemporary();
-  gTemporaryCheck.addEventListener('change', aEvent => updateParameters());
+  gTemporaryCheck.addEventListener('change', event => updateParameters());
 
   l10n.updateDocument();
 
@@ -165,16 +165,16 @@ function reflow() {
   });
 }
 
-function buildTabItem(aTab) {
+function buildTabItem(tab) {
   const item = document.createElement('li');
 
   const link = item.appendChild(document.createElement('a'));
   link.href = '#';
-  link.setAttribute('title', aTab.title);
-  link.dataset.tabId = aTab.id;
+  link.setAttribute('title', tab.title);
+  link.dataset.tabId = tab.id;
 
   const icon = link.appendChild(document.createElement('img'));
-  icon.src = aTab.effectiveFavIconUrl || aTab.favIconUrl;
+  icon.src = tab.effectiveFavIconUrl || tab.favIconUrl;
   icon.onerror = () => {
     item.classList.remove('favicon-loading');
     item.classList.add('use-default-favicon');
@@ -186,9 +186,9 @@ function buildTabItem(aTab) {
 
   const label = link.appendChild(document.createElement('span'));
   label.classList.add('label');
-  label.textContent = aTab.title;
+  label.textContent = tab.title;
 
-  const children = buildTabChildren(aTab);
+  const children = buildTabChildren(tab);
   if (!children)
     return item;
 
@@ -200,10 +200,10 @@ function buildTabItem(aTab) {
   return fragment;
 }
 
-function buildTabChildren(aTab) {
-  if (aTab.children && aTab.children.length > 0) {
+function buildTabChildren(tab) {
+  if (tab.children && tab.children.length > 0) {
     const list = document.createElement('ul');
-    for (const child of aTab.children) {
+    for (const child of tab.children) {
       list.appendChild(buildTabItem(child));
     }
     return list;
@@ -211,22 +211,22 @@ function buildTabChildren(aTab) {
   return null;
 }
 
-function columnizeTree(aTree, aOptions) {
-  aOptions = aOptions || {};
-  aOptions.columnWidth = aOptions.columnWidth || '20em';
+function columnizeTree(aTree, options) {
+  options = options || {};
+  options.columnWidth = options.columnWidth || '20em';
 
   const style = aTree.style;
-  style.columnWidth = style.MozColumnWidth = `calc(${aOptions.columnWidth})`;
+  style.columnWidth = style.MozColumnWidth = `calc(${options.columnWidth})`;
   const computedStyle = window.getComputedStyle(aTree, null);
   aTree.columnWidth = Number((computedStyle.MozColumnWidth || computedStyle.columnWidth).replace(/px/, ''));
   style.columnGap   = style.MozColumnGap = '1em';
   style.columnFill  = style.MozColumnFill = 'auto';
   style.columnCount = style.MozColumnCount = 'auto';
 
-  const containerRect = aOptions.containerRect || aTree.parentNode.getBoundingClientRect();
+  const containerRect = options.containerRect || aTree.parentNode.getBoundingClientRect();
   const maxWidth = containerRect.width;
   if (aTree.columnWidth * 2 <= maxWidth ||
-      aOptions.calculateCount) {
+      options.calculateCount) {
     style.height = style.maxHeight =
       Math.floor(containerRect.height * 0.9) + 'px';
 

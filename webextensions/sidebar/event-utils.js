@@ -14,92 +14,92 @@ import * as Tabs from '../common/tabs.js';
 import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/event-utils'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
-export function isMiddleClick(aEvent) {
-  return aEvent.button == 1;
+export function isMiddleClick(event) {
+  return event.button == 1;
 }
 
-export function isAccelAction(aEvent) {
-  return isMiddleClick(aEvent) || (aEvent.button == 0 && isAccelKeyPressed(aEvent));
+export function isAccelAction(event) {
+  return isMiddleClick(event) || (event.button == 0 && isAccelKeyPressed(event));
 }
 
-export function isAccelKeyPressed(aEvent) {
+export function isAccelKeyPressed(event) {
   return /^Mac/i.test(navigator.platform) ?
-    (aEvent.metaKey || aEvent.key == 'Meta') :
-    (aEvent.ctrlKey || aEvent.key == 'Control') ;
+    (event.metaKey || event.key == 'Meta') :
+    (event.ctrlKey || event.key == 'Control') ;
 }
 
-export function isCopyAction(aEvent) {
-  return isAccelKeyPressed(aEvent) ||
-           (aEvent.dataTransfer && aEvent.dataTransfer.dropEffect == 'copy');
+export function isCopyAction(event) {
+  return isAccelKeyPressed(event) ||
+           (event.dataTransfer && event.dataTransfer.dropEffect == 'copy');
 }
 
-export function getElementTarget(aEvent) {
-  const target = aEvent.target;
+export function getElementTarget(event) {
+  const target = event.target;
   if (target.nodeType == Node.TEXT_NODE)
     return target.parentNode;
   return target;
 }
 
-export function isEventFiredOnTwisty(aEvent) {
-  const tab = getTabFromEvent(aEvent);
+export function isEventFiredOnTwisty(event) {
+  const tab = getTabFromEvent(event);
   if (!tab || !Tabs.hasChildTabs(tab))
     return false;
 
-  return !!getElementTarget(aEvent).closest(`.${Constants.kTWISTY}`);
+  return !!getElementTarget(event).closest(`.${Constants.kTWISTY}`);
 }
 
-export function isEventFiredOnSoundButton(aEvent) {
-  return !!getElementTarget(aEvent).closest(`.${Constants.kSOUND_BUTTON}`);
+export function isEventFiredOnSoundButton(event) {
+  return !!getElementTarget(event).closest(`.${Constants.kSOUND_BUTTON}`);
 }
 
-export function isEventFiredOnClosebox(aEvent) {
-  return !!getElementTarget(aEvent).closest(`.${Constants.kCLOSEBOX}`);
+export function isEventFiredOnClosebox(event) {
+  return !!getElementTarget(event).closest(`.${Constants.kCLOSEBOX}`);
 }
 
-export function isEventFiredOnNewTabButton(aEvent) {
-  return !!getElementTarget(aEvent).closest(`.${Constants.kNEWTAB_BUTTON}`);
+export function isEventFiredOnNewTabButton(event) {
+  return !!getElementTarget(event).closest(`.${Constants.kNEWTAB_BUTTON}`);
 }
 
-export function isEventFiredOnMenuOrPanel(aEvent) {
-  return !!getElementTarget(aEvent).closest('ul.menu, ul.panel');
+export function isEventFiredOnMenuOrPanel(event) {
+  return !!getElementTarget(event).closest('ul.menu, ul.panel');
 }
 
-export function isEventFiredOnAnchor(aEvent) {
-  return !!getElementTarget(aEvent).closest(`[data-menu-ui]`);
+export function isEventFiredOnAnchor(event) {
+  return !!getElementTarget(event).closest(`[data-menu-ui]`);
 }
 
-export function isEventFiredOnClickable(aEvent) {
-  return !!getElementTarget(aEvent).closest(`button, scrollbar, select`);
+export function isEventFiredOnClickable(event) {
+  return !!getElementTarget(event).closest(`button, scrollbar, select`);
 }
 
 
-export function getTabFromEvent(aEvent) {
-  return Tabs.getTabFromChild(aEvent.target);
+export function getTabFromEvent(event) {
+  return Tabs.getTabFromChild(event.target);
 }
 
-function getTabsContainerFromEvent(aEvent) {
-  return Tabs.getTabsContainer(aEvent.target);
+function getTabsContainerFromEvent(event) {
+  return Tabs.getTabsContainer(event.target);
 }
 
-export function getTabFromTabbarEvent(aEvent) {
+export function getTabFromTabbarEvent(event) {
   if (!configs.shouldDetectClickOnIndentSpaces ||
-      isEventFiredOnClickable(aEvent))
+      isEventFiredOnClickable(event))
     return null;
-  return getTabFromCoordinates(aEvent);
+  return getTabFromCoordinates(event);
 }
 
-function getTabFromCoordinates(aEvent) {
-  let tab = document.elementFromPoint(aEvent.clientX, aEvent.clientY);
+function getTabFromCoordinates(event) {
+  let tab = document.elementFromPoint(event.clientX, event.clientY);
   tab = Tabs.getTabFromChild(tab);
   if (tab)
     return tab;
 
-  const container = getTabsContainerFromEvent(aEvent);
+  const container = getTabsContainerFromEvent(event);
   if (!container)
     return null;
 
@@ -112,7 +112,7 @@ function getTabFromCoordinates(aEvent) {
     containerRect.width - Size.getFavIconSize()
   ];
   for (const x of trialPoints) {
-    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, aEvent.clientY));
+    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY));
     if (tab)
       return tab;
   }

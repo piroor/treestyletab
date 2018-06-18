@@ -18,9 +18,9 @@ import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/migration'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
@@ -137,10 +137,10 @@ export function migrateLegacyConfigs() {
   configs.legacyConfigsNextMigrationVersion = kLEGACY_CONFIGS_MIGRATION_VERSION + 1;
 }
 
-function migrateLegacyConfig(aKey, aValue) {
-  if (aValue === undefined)
+function migrateLegacyConfig(key, value) {
+  if (value === undefined)
     return;
-  configs[aKey] = aValue;
+  configs[key] = value;
 }
 
 export async function migrateLegacyTreeStructure() {
@@ -176,9 +176,9 @@ export async function migrateLegacyTreeStructure() {
   */
 
   try {
-    const getWindowSignatureFromTabs = (aTabs) => {
-      return aTabs.map(aTab =>
-        `${aTab.title}\n${aTab.url}\npinned=${aTab.pinned}`
+    const getWindowSignatureFromTabs = (tabs) => {
+      return tabs.map(tab =>
+        `${tab.title}\n${tab.url}\npinned=${tab.pinned}`
       ).join('\n');
     };
 
@@ -216,25 +216,25 @@ export async function migrateLegacyTreeStructure() {
       );
 
     // not found: try to restore windows from structures
-    await Promise.all(structures.map(async aStructure => {
+    await Promise.all(structures.map(async structure => {
     // prepare new window with tabs
       let apiWindow = await browser.windows.create({
         url: 'about:blank'
       });
       const container = Tabs.getTabsContainer(apiWindow.id);
-      TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', aStructure.length);
+      TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', structure.length);
       // restore tree
-      let uris = aStructure.map(aItem => aItem.url);
-      uris = uris.map(aURI => {
-        if (!/^about:blank($|\?|#)/.test(aURI) &&
-            /^(about|resource|chrome|file):/.test(aURI))
-          return `about:blank?${aURI}`;
-        return aURI;
+      let uris = structure.map(item => item.url);
+      uris = uris.map(uRI => {
+        if (!/^about:blank($|\?|#)/.test(uRI) &&
+            /^(about|resource|chrome|file):/.test(uRI))
+          return `about:blank?${uRI}`;
+        return uRI;
       });
       const tabs = await TabsOpen.openURIsInTabs(uris, {
         windowId: apiWindow.id
       });
-      Tree.applyTreeStructureToTabs(tabs, aStructure);
+      Tree.applyTreeStructureToTabs(tabs, structure);
       // close initial blank tab
       apiWindow = await browser.windows.get(apiWindow.id, {
         populate: true
@@ -244,7 +244,7 @@ export async function migrateLegacyTreeStructure() {
         await TabsInternalOperation.removeTab(Tabs.getTabById(apiWindow.tabs[0]));
         // apply pinned state
         for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
-          if (!aStructure[i].pinned)
+          if (!structure[i].pinned)
             break;
           await browser.tabs.update(restApiTabs[i].id, {
             pinned: true
