@@ -38,6 +38,7 @@ module.exports = {
       'classes': true, // Class declarations are not hoisted. We should warn it.
     }],
     'no-unused-expressions': 'error',
+    'no-unused-labels': 'error',
 
     // stylisitc problem
     'indent': ['warn', 2, {

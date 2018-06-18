@@ -18,7 +18,7 @@ module.exports = {
   ],
 
   'rules': {
-    'no-unused-labels': 'error',
+
 
     'no-undef': ['error', {
       'typeof': true,
