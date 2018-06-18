@@ -10,9 +10,9 @@ import {
   configs
 } from '../common/common.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/size'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 let gTabHeight          = 0;

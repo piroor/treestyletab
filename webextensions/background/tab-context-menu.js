@@ -19,9 +19,9 @@ import {
 import * as TSTAPI from '../common/tst-api.js';
 import EventListenerManager from '../common/EventListenerManager.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['background/tab-context-menu'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export const onTSTItemClick = new EventListenerManager();
@@ -38,12 +38,12 @@ export function init() {
 
 const mExtraItems = new Map();
 
-function getItemsFor(aAddonId) {
-  if (mExtraItems.has(aAddonId)) {
-    return mExtraItems.get(aAddonId);
+function getItemsFor(addonId) {
+  if (mExtraItems.has(addonId)) {
+    return mExtraItems.get(addonId);
   }
   const items = [];
-  mExtraItems.set(aAddonId, items);
+  mExtraItems.set(addonId, items);
   return items;
 }
 
@@ -66,8 +66,8 @@ let mReservedNotifyUpdate;
 let mNotifyUpdatedHandlers = [];
 
 function reserveNotifyUpdated() {
-  return new Promise((aResolve, _aReject) => {
-    mNotifyUpdatedHandlers.push(aResolve);
+  return new Promise((resolve, _aReject) => {
+    mNotifyUpdatedHandlers.push(resolve);
     if (mReservedNotifyUpdate)
       clearTimeout(mReservedNotifyUpdate);
     mReservedNotifyUpdate = setTimeout(async () => {
@@ -82,24 +82,24 @@ function reserveNotifyUpdated() {
   });
 }
 
-function onMessage(aMessage, _aSender) {
-  log('tab-context-menu: internally called:', aMessage);
-  switch (aMessage.type) {
+function onMessage(message, _aSender) {
+  log('tab-context-menu: internally called:', message);
+  switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_GET_ITEMS:
       return Promise.resolve(exportExtraItems());
 
     case TSTAPI.kCONTEXT_MENU_CLICK:
-      onTSTItemClick.dispatch(aMessage.info, aMessage.tab);
+      onTSTItemClick.dispatch(message.info, message.tab);
       return;
   }
 }
 
-export function onExternalMessage(aMessage, aSender) {
-  log('tab-context-menu: API called:', aMessage, aSender);
-  switch (aMessage.type) {
+export function onExternalMessage(message, sender) {
+  log('tab-context-menu: API called:', message, sender);
+  switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
-      const items  = getItemsFor(aSender.id);
-      let params = aMessage.params;
+      const items  = getItemsFor(sender.id);
+      let params = message.params;
       if (Array.isArray(params))
         params = params[0];
       let shouldAdd = true;
@@ -115,36 +115,36 @@ export function onExternalMessage(aMessage, aSender) {
       }
       if (shouldAdd)
         items.push(params);
-      mExtraItems.set(aSender.id, items);
+      mExtraItems.set(sender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_UPDATE: {
-      const items = getItemsFor(aSender.id);
+      const items = getItemsFor(sender.id);
       for (let i = 0, maxi = items.length; i < maxi; i++) {
         const item = items[i];
-        if (item.id != aMessage.params[0])
+        if (item.id != message.params[0])
           continue;
-        items.splice(i, 1, Object.assign({}, item, aMessage.params[1]));
+        items.splice(i, 1, Object.assign({}, item, message.params[1]));
         break;
       }
-      mExtraItems.set(aSender.id, items);
+      mExtraItems.set(sender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_REMOVE: {
-      let items = getItemsFor(aSender.id);
-      let id    = aMessage.params;
+      let items = getItemsFor(sender.id);
+      let id    = message.params;
       if (Array.isArray(id))
         id = id[0];
-      items = items.filter(aItem => aItem.id != id);
-      mExtraItems.set(aSender.id, items);
+      items = items.filter(item => item.id != id);
+      mExtraItems.set(sender.id, items);
       return reserveNotifyUpdated();
     }; break;
 
     case TSTAPI.kCONTEXT_MENU_REMOVE_ALL:
     case TSTAPI.kUNREGISTER_SELF: {
-      delete mExtraItems.delete(aSender.id);
+      delete mExtraItems.delete(sender.id);
       return reserveNotifyUpdated();
     }; break;
   }

@@ -53,107 +53,107 @@ import * as SidebarCache from './sidebar-cache.js';
 import * as Scroll from './scroll.js';
 import * as Indent from './indent.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/collapse-expand'] || configs.logOnCollapseExpand)
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 
 const gUpdatingCollapsedStateCancellers = new WeakMap();
 const gTabCollapsedStateChangedManagers = new WeakMap();
 
-Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
-  const toBeCollapsed = aInfo.collapsed;
+Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
+  const toBeCollapsed = info.collapsed;
 
-  log('Tabs.onCollapsedStateChanging ', dumpTab(aTab), aInfo);
-  if (!Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
+  log('Tabs.onCollapsedStateChanging ', dumpTab(tab), info);
+  if (!Tabs.ensureLivingTab(tab)) // do nothing for closed tab!
     return;
 
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
-  if (aTab.onEndCollapseExpandAnimation) {
-    clearTimeout(aTab.onEndCollapseExpandAnimation.timeout);
-    delete aTab.onEndCollapseExpandAnimation;
+  if (tab.onEndCollapseExpandAnimation) {
+    clearTimeout(tab.onEndCollapseExpandAnimation.timeout);
+    delete tab.onEndCollapseExpandAnimation;
   }
 
-  if (aTab.apiTab.status == 'loading')
-    aTab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  if (tab.apiTab.status == 'loading')
+    tab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
-  if (aInfo.anchor && !Scroll.isTabInViewport(aInfo.anchor))
-    aInfo.anchor = null;
+  if (info.anchor && !Scroll.isTabInViewport(info.anchor))
+    info.anchor = null;
 
   const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
 
-  let manager = gTabCollapsedStateChangedManagers.get(aTab);
+  let manager = gTabCollapsedStateChangedManagers.get(tab);
   if (!manager) {
     manager = new EventListenerManager();
-    gTabCollapsedStateChangedManagers.set(aTab, manager);
+    gTabCollapsedStateChangedManagers.set(tab, manager);
   }
 
-  if (gUpdatingCollapsedStateCancellers.has(aTab)) {
-    gUpdatingCollapsedStateCancellers.get(aTab)(toBeCollapsed);
-    gUpdatingCollapsedStateCancellers.delete(aTab);
+  if (gUpdatingCollapsedStateCancellers.has(tab)) {
+    gUpdatingCollapsedStateCancellers.get(tab)(toBeCollapsed);
+    gUpdatingCollapsedStateCancellers.delete(tab);
   }
 
   let cancelled = false;
   const canceller = (aNewToBeCollapsed) => {
     cancelled = true;
     if (aNewToBeCollapsed != toBeCollapsed) {
-      aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
-      aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
+      tab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
+      tab.classList.remove(Constants.kTAB_STATE_EXPANDING);
     }
   };
-  const onCompleted = (aTab, aInfo = {}) => {
+  const onCompleted = (tab, info = {}) => {
     manager.removeListener(onCompleted);
     if (cancelled ||
-        !Tabs.ensureLivingTab(aTab)) // do nothing for closed tab!
+        !Tabs.ensureLivingTab(tab)) // do nothing for closed tab!
       return;
 
-    gUpdatingCollapsedStateCancellers.delete(aTab);
+    gUpdatingCollapsedStateCancellers.delete(tab);
 
-    const toBeCollapsed = aInfo.collapsed;
+    const toBeCollapsed = info.collapsed;
     SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 
     if (configs.animation &&
-        !aInfo.justNow &&
+        !info.justNow &&
         configs.collapseDuration > 0)
       return; // animation
 
     //log('=> skip animation');
     if (toBeCollapsed)
-      aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+      tab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
     else
-      aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+      tab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
 
     const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
-    onEndCollapseExpandCompletely(aTab, {
+    onEndCollapseExpandCompletely(tab, {
       collapsed: toBeCollapsed,
       reason
     });
 
-    if (aInfo.last)
-      Scroll.scrollToTab(aTab, {
-        anchor:            aInfo.anchor,
+    if (info.last)
+      Scroll.scrollToTab(tab, {
+        anchor:            info.anchor,
         notifyOnOutOfView: true
       });
   };
   manager.addListener(onCompleted);
 
   if (!configs.animation ||
-      aInfo.justNow ||
+      info.justNow ||
       configs.collapseDuration < 1) {
     //log('=> skip animation');
     return;
   }
 
-  gUpdatingCollapsedStateCancellers.set(aTab, canceller);
+  gUpdatingCollapsedStateCancellers.set(tab, canceller);
 
   if (toBeCollapsed) {
-    aTab.classList.add(Constants.kTAB_STATE_COLLAPSING);
+    tab.classList.add(Constants.kTAB_STATE_COLLAPSING);
   }
   else {
-    aTab.classList.add(Constants.kTAB_STATE_EXPANDING);
-    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.classList.add(Constants.kTAB_STATE_EXPANDING);
+    tab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
 
   Sidebar.reserveToUpdateTabbarLayout({ reason });
@@ -164,86 +164,86 @@ Tabs.onCollapsedStateChanging.addListener(async (aTab, aInfo = {}) => {
 
   nextFrame().then(() => {
     if (cancelled ||
-        !Tabs.ensureLivingTab(aTab)) { // it was removed while waiting
+        !Tabs.ensureLivingTab(tab)) { // it was removed while waiting
       onCanceled();
       return;
     }
 
-    //log('start animation for ', dumpTab(aTab));
-    if (aInfo.last)
-      Scroll.scrollToTab(aTab, {
-        anchor:            aInfo.anchor,
+    //log('start animation for ', dumpTab(tab));
+    if (info.last)
+      Scroll.scrollToTab(tab, {
+        anchor:            info.anchor,
         notifyOnOutOfView: true
       });
 
-    aTab.onEndCollapseExpandAnimation = (() => {
+    tab.onEndCollapseExpandAnimation = (() => {
       if (cancelled) {
         onCanceled();
         return;
       }
 
-      //log('=> finish animation for ', dumpTab(aTab));
-      aTab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
-      aTab.classList.remove(Constants.kTAB_STATE_EXPANDING);
+      //log('=> finish animation for ', dumpTab(tab));
+      tab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
+      tab.classList.remove(Constants.kTAB_STATE_EXPANDING);
 
       // The collapsed state of the tab can be changed by different trigger,
       // so we must respect the actual status of the tab, instead of the
       // "expected status" given via arguments.
-      if (aTab.classList.contains(Constants.kTAB_STATE_COLLAPSED))
-        aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+      if (tab.classList.contains(Constants.kTAB_STATE_COLLAPSED))
+        tab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
       else
-        aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+        tab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
 
-      onEndCollapseExpandCompletely(aTab, {
+      onEndCollapseExpandCompletely(tab, {
         collapsed: toBeCollapsed,
         reason
       });
     });
-    aTab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
+    tab.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (cancelled ||
-          !Tabs.ensureLivingTab(aTab) ||
-          !aTab.onEndCollapseExpandAnimation) {
+          !Tabs.ensureLivingTab(tab) ||
+          !tab.onEndCollapseExpandAnimation) {
         onCanceled();
         return;
       }
-      delete aTab.onEndCollapseExpandAnimation.timeout;
-      aTab.onEndCollapseExpandAnimation();
-      delete aTab.onEndCollapseExpandAnimation;
+      delete tab.onEndCollapseExpandAnimation.timeout;
+      tab.onEndCollapseExpandAnimation();
+      delete tab.onEndCollapseExpandAnimation;
     }, configs.collapseDuration);
   });
 });
-function onEndCollapseExpandCompletely(aTab, aOptions = {}) {
-  if (Tabs.isActive(aTab) && !aOptions.collapsed)
-    Scroll.scrollToTab(aTab);
+function onEndCollapseExpandCompletely(tab, options = {}) {
+  if (Tabs.isActive(tab) && !options.collapsed)
+    Scroll.scrollToTab(tab);
 
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
     Indent.reserveToUpdateVisualMaxTreeLevel();
 
   // this is very required for no animation case!
-  Sidebar.reserveToUpdateTabbarLayout({ reason: aOptions.reason });
+  Sidebar.reserveToUpdateTabbarLayout({ reason: options.reason });
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
-  const manager = gTabCollapsedStateChangedManagers.get(aTab);
+Tabs.onCollapsedStateChanged.addListener((tab, info = {}) => {
+  const manager = gTabCollapsedStateChangedManagers.get(tab);
   if (manager)
-    manager.dispatch(aTab, aInfo);
+    manager.dispatch(tab, info);
 });
 
 /*
-function onTabSubtreeCollapsedStateChangedManually(aEvent) {
+function onTabSubtreeCollapsedStateChangedManually(event) {
   if (!configs.indentAutoShrink ||
       !configs.indentAutoShrinkOnlyForVisible)
     return;
 
   cancelCheckTabsIndentOverflow();
-  if (!aTab.checkTabsIndentOverflowOnMouseLeave) {
+  if (!tab.checkTabsIndentOverflowOnMouseLeave) {
     let stillOver = false;
-    let id = aTab.id
-    aTab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(aEvent, aDelayed) {
-      if (aEvent.type == 'mouseover') {
-        let node = EventUtils.getElementTarget(aEvent);
+    let id = tab.id
+    tab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(event, aDelayed) {
+      if (event.type == 'mouseover') {
+        let node = EventUtils.getElementTarget(event);
         if (node.closest(`#${id}`))
             stillOver = true;
           return;
@@ -253,26 +253,26 @@ function onTabSubtreeCollapsedStateChangedManually(aEvent) {
             stillOver = false;
           }
           setTimeout(() => {
-            if (!Tabs.ensureLivingTab(aTab)) // it was removed while waiting
+            if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
               return;
-            aTab.checkTabsIndentOverflowOnMouseLeave(aEvent, true);
+            tab.checkTabsIndentOverflowOnMouseLeave(event, true);
           }, 0);
           return;
         } else if (stillOver) {
           return;
         }
-        let x = aEvent.clientX;
-        let y = aEvent.clientY;
-        let rect = aTab.getBoundingClientRect();
+        let x = event.clientX;
+        let y = event.clientY;
+        let rect = tab.getBoundingClientRect();
         if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
           return;
-        document.removeEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
-        document.removeEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
-        delete aTab.checkTabsIndentOverflowOnMouseLeave;
+        document.removeEventListener('mouseover', tab.checkTabsIndentOverflowOnMouseLeave, true);
+        document.removeEventListener('mouseout', tab.checkTabsIndentOverflowOnMouseLeave, true);
+        delete tab.checkTabsIndentOverflowOnMouseLeave;
         checkTabsIndentOverflow();
       };
-      document.addEventListener('mouseover', aTab.checkTabsIndentOverflowOnMouseLeave, true);
-      document.addEventListener('mouseout', aTab.checkTabsIndentOverflowOnMouseLeave, true);
+      document.addEventListener('mouseover', tab.checkTabsIndentOverflowOnMouseLeave, true);
+      document.addEventListener('mouseout', tab.checkTabsIndentOverflowOnMouseLeave, true);
     }
   }
 }

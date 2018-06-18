@@ -20,8 +20,8 @@ import * as Migration from '../common/migration.js';
 log.context = 'Options';
 const options = new Options(configs);
 
-function onConfigChanged(aKey) {
-  switch (aKey) {
+function onConfigChanged(key) {
+  switch (key) {
     case 'debug':
       if (configs.debug)
         document.documentElement.classList.add('debugging');
@@ -31,21 +31,21 @@ function onConfigChanged(aKey) {
   }
 }
 
-function removeAccesskeyMark(aNode) {
-  aNode.nodeValue = aNode.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
+function removeAccesskeyMark(node) {
+  node.nodeValue = node.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
 }
 
-function onChangeMasterChacekbox(aEvent) {
-  const container = aEvent.currentTarget.closest('fieldset');
+function onChangeMasterChacekbox(event) {
+  const container = event.currentTarget.closest('fieldset');
   const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
   for (const checkbox of Array.from(checkboxes)) {
-    checkbox.checked = aEvent.currentTarget.checked;
+    checkbox.checked = event.currentTarget.checked;
   }
   saveLogForConfig();
 }
 
-function onChangeSlaveChacekbox(aEvent) {
-  getMasterCheckboxFromSlave(aEvent.currentTarget).checked = isAllSlavesChecked(aEvent.currentTarget);
+function onChangeSlaveChacekbox(event) {
+  getMasterCheckboxFromSlave(event.currentTarget).checked = isAllSlavesChecked(event.currentTarget);
   saveLogForConfig();
 }
 
@@ -65,7 +65,7 @@ function saveLogForConfig() {
 function isAllSlavesChecked(aMasger) {
   const container = aMasger.closest('fieldset');
   const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
-  return Array.from(checkboxes).every(aCheckbox => aCheckbox.checked);
+  return Array.from(checkboxes).every(checkbox => checkbox.checked);
 }
 
 configs.$addObserver(onConfigChanged);
@@ -96,7 +96,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const onChangeCollapsed = () => {
       if (!fieldset.id)
         return;
-      const otherExpandedSections = configs.optionsExpandedGroups.filter(aId => aId != fieldset.id);
+      const otherExpandedSections = configs.optionsExpandedGroups.filter(id => id != fieldset.id);
       if (fieldset.classList.contains('collapsed'))
         configs.optionsExpandedGroups = otherExpandedSections;
       else
@@ -108,8 +108,8 @@ window.addEventListener('DOMContentLoaded', () => {
       fieldset.classList.toggle('collapsed');
       onChangeCollapsed();
     });
-    legend.addEventListener('keydown', aEvent => {
-      if (aEvent.key != 'Enter')
+    legend.addEventListener('keydown', event => {
+      if (event.key != 'Enter')
         return;
       fieldset.classList.toggle('collapsed');
       onChangeCollapsed();
@@ -124,7 +124,7 @@ window.addEventListener('DOMContentLoaded', () => {
         section.classList.add('collapsed');
       heading.addEventListener('click', () => {
         section.classList.toggle('collapsed');
-        const otherExpandedSections = configs.optionsExpandedSections.filter(aId => aId != section.id);
+        const otherExpandedSections = configs.optionsExpandedSections.filter(id => id != section.id);
         if (section.classList.contains('collapsed'))
           configs.optionsExpandedSections = otherExpandedSections;
         else
@@ -137,7 +137,7 @@ window.addEventListener('DOMContentLoaded', () => {
     Permissions.bindToCheckbox(
       Permissions.ALL_URLS,
       document.querySelector('#allUrlsPermissionGranted'),
-      { onChanged: (aGranted) => configs.skipCollapsedTabsForTabSwitchingShortcuts = aGranted }
+      { onChanged: (granted) => configs.skipCollapsedTabsForTabSwitchingShortcuts = granted }
     );
     Permissions.bindToCheckbox(
       Permissions.BOOKMARKS,

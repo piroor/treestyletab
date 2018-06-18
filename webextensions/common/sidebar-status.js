@@ -13,38 +13,38 @@ import * as Constants from './constants.js';
 import * as TSTAPI from './tst-api.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/sidebar-status'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 let mOpenState;
 const mFocusState = new Map();
 
-export function isOpen(aWindowId) {
-  return mOpenState && mOpenState.has(aWindowId)
+export function isOpen(windowId) {
+  return mOpenState && mOpenState.has(windowId)
 }
 
 export function isWatchingOpenState() {
   return !!mOpenState;
 }
 
-export function hasFocus(aWindowId) {
-  return mFocusState.has(aWindowId)
+export function hasFocus(windowId) {
+  return mFocusState.has(windowId)
 }
 
-browser.runtime.onMessage.addListener((aMessage, _aSender) => {
-  if (!aMessage ||
-      typeof aMessage.type != 'string')
+browser.runtime.onMessage.addListener((message, _aSender) => {
+  if (!message ||
+      typeof message.type != 'string')
     return;
 
-  switch (aMessage.type) {
+  switch (message.type) {
     case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      mFocusState.set(aMessage.windowId, true);
+      mFocusState.set(message.windowId, true);
       break;
 
     case Constants.kNOTIFY_SIDEBAR_BLUR:
-      mFocusState.delete(aMessage.windowId);
+      mFocusState.delete(message.windowId);
       break;
   }
 });
@@ -54,16 +54,16 @@ export function startWatchOpenState() {
     return;
   mOpenState = new Map();
   const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}`);
-  browser.runtime.onConnect.addListener(aPort => {
-    if (!matcher.test(aPort.name))
+  browser.runtime.onConnect.addListener(port => {
+    if (!matcher.test(port.name))
       return;
-    const windowId = parseInt(aPort.name.replace(matcher, ''));
+    const windowId = parseInt(port.name.replace(matcher, ''));
     mOpenState.set(windowId, true);
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
       window: windowId
     });
-    aPort.onDisconnect.addListener(_aMessage => {
+    port.onDisconnect.addListener(_aMessage => {
       mOpenState.delete(windowId);
       mFocusState.delete(windowId);
       TSTAPI.sendMessage({

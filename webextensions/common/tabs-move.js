@@ -50,42 +50,42 @@ import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/tabs-move'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
-export async function moveTabsBefore(aTabs, aReferenceTab, aOptions = {}) {
-  log('moveTabsBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (!aTabs.length ||
-      !Tabs.ensureLivingTab(aReferenceTab))
+export async function moveTabsBefore(tabs, referenceTab, options = {}) {
+  log('moveTabsBefore: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  if (!tabs.length ||
+      !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  if (Tabs.isAllTabsPlacedBefore(aTabs, aReferenceTab)) {
+  if (Tabs.isAllTabsPlacedBefore(tabs, referenceTab)) {
     log('moveTabsBefore:no need to move');
     return [];
   }
-  return moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions);
+  return moveTabsInternallyBefore(tabs, referenceTab, options);
 }
-export async function moveTabBefore(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsBefore([aTab], aReferenceTab, aOptions);
+export async function moveTabBefore(tab, referenceTab, options = {}) {
+  return moveTabsBefore([tab], referenceTab, options);
 }
 
-async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
-  if (!aTabs.length ||
-      !Tabs.ensureLivingTab(aReferenceTab))
+async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
+  if (!tabs.length ||
+      !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  log('moveTabsInternallyBefore: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (aOptions.inRemote || aOptions.broadcast) {
+  log('moveTabsInternallyBefore: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  if (options.inRemote || options.broadcast) {
     const message = {
       type:     Constants.kCOMMAND_MOVE_TABS_BEFORE,
-      windowId: aTabs[0].apiTab.windowId,
-      tabs:     aTabs.map(aTab => aTab.id),
-      nextTab:  aReferenceTab.id,
-      broadcasted: !!aOptions.broadcast
+      windowId: tabs[0].apiTab.windowId,
+      tabs:     tabs.map(tab => tab.id),
+      nextTab:  referenceTab.id,
+      broadcasted: !!options.broadcast
     };
-    if (aOptions.inRemote) {
+    if (options.inRemote) {
       const tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(Tabs.getTabById);
     }
@@ -94,39 +94,39 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     }
   }
 
-  const container = aTabs[0].parentNode;
-  const apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
+  const container = tabs[0].parentNode;
+  const apiTabIds = tabs.map(tab => tab.apiTab.id);
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    const oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
-    for (const tab of aTabs) {
+    const oldIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
+    for (const tab of tabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab);
       const oldNextTab     = Tabs.getNextTab(tab);
-      if (oldNextTab == aReferenceTab) // no move case
+      if (oldNextTab == referenceTab) // no move case
         continue;
       TabsContainer.incrementCounter(container, 'internalMovingCount');
       TabsContainer.incrementCounter(container, 'alreadyMovedTabsCount');
-      container.insertBefore(tab, aReferenceTab);
+      container.insertBefore(tab, referenceTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab
       });
     }
-    syncOrderOfChildTabs(aTabs.map(Tabs.getParentTab));
+    syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
         Array.slice(container.childNodes)
-          .map(aTab => aTab.id+(aTabs.includes(aTab) ? '[MOVED]' : ''))
+          .map(tab => tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
-      const newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
+      const newIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
       const minIndex = Math.min(...oldIndexes, ...newIndexes);
       const maxIndex = Math.max(...oldIndexes, ...newIndexes);
       for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
@@ -136,10 +136,10 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
         tab.apiTab.index = i;
       }
 
-      if (!aOptions.broadcasted) {
-        if (aOptions.delayedMove) // Wait until opening animation is finished.
+      if (!options.broadcasted) {
+        if (options.delayedMove) // Wait until opening animation is finished.
           await wait(configs.newTabAnimationDuration);
-        const indexes   = await ApiTabs.getIndexes(aReferenceTab.apiTab.id, apiTabIds[0]);
+        const indexes   = await ApiTabs.getIndexes(referenceTab.apiTab.id, apiTabIds[0]);
         let   toIndex   = indexes[0];
         const fromIndex = indexes[1];
         if (fromIndex < toIndex)
@@ -155,67 +155,67 @@ async function moveTabsInternallyBefore(aTabs, aReferenceTab, aOptions = {}) {
     ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyBefore failed: ', String(e));
   }
-  return aTabs;
+  return tabs;
 }
-export async function moveTabInternallyBefore(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsInternallyBefore([aTab], aReferenceTab, aOptions);
+export async function moveTabInternallyBefore(tab, referenceTab, options = {}) {
+  return moveTabsInternallyBefore([tab], referenceTab, options);
 }
 
-function syncOrderOfChildTabs(aParentTabs) {
-  if (!Array.isArray(aParentTabs))
-    aParentTabs = [aParentTabs];
+function syncOrderOfChildTabs(parentTabs) {
+  if (!Array.isArray(parentTabs))
+    parentTabs = [parentTabs];
 
   let updatedParentTabs = new Map();
-  for (const parent of aParentTabs) {
+  for (const parent of parentTabs) {
     if (!parent || updatedParentTabs.has(parent))
       continue;
     updatedParentTabs.set(parent, true);
     if (parent.childTabs.length < 2)
       continue;
-    parent.childTabs = parent.childTabs.map(aTab => {
+    parent.childTabs = parent.childTabs.map(tab => {
       return {
-        index: Tabs.getTabIndex(aTab),
-        tab:   aTab
+        index: Tabs.getTabIndex(tab),
+        tab:   tab
       };
-    }).sort((aA, aB) => aA.index - aB.index).map(aItem => aItem.tab);
-    const childIds = parent.childTabs.map(aTab => aTab.id);
+    }).sort((aA, aB) => aA.index - aB.index).map(item => item.tab);
+    const childIds = parent.childTabs.map(tab => tab.id);
     parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
     log('updateChildTabsInfo: ', childIds);
   }
   updatedParentTabs = undefined;
 }
 
-export async function moveTabsAfter(aTabs, aReferenceTab, aOptions = {}) {
-  log('moveTabsAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (!aTabs.length ||
-      !Tabs.ensureLivingTab(aReferenceTab))
+export async function moveTabsAfter(tabs, referenceTab, options = {}) {
+  log('moveTabsAfter: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  if (!tabs.length ||
+      !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  if (Tabs.isAllTabsPlacedAfter(aTabs, aReferenceTab)) {
+  if (Tabs.isAllTabsPlacedAfter(tabs, referenceTab)) {
     log('moveTabsAfter:no need to move');
     return [];
   }
-  return moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions);
+  return moveTabsInternallyAfter(tabs, referenceTab, options);
 }
-export async function moveTabAfter(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsAfter([aTab], aReferenceTab, aOptions);
+export async function moveTabAfter(tab, referenceTab, options = {}) {
+  return moveTabsAfter([tab], referenceTab, options);
 }
 
-async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
-  if (!aTabs.length ||
-      !Tabs.ensureLivingTab(aReferenceTab))
+async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
+  if (!tabs.length ||
+      !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  log('moveTabsInternallyAfter: ', aTabs.map(dumpTab), dumpTab(aReferenceTab), aOptions);
-  if (aOptions.inRemote || aOptions.broadcast) {
+  log('moveTabsInternallyAfter: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  if (options.inRemote || options.broadcast) {
     const message = {
       type:        Constants.kCOMMAND_MOVE_TABS_AFTER,
-      windowId:    aTabs[0].apiTab.windowId,
-      tabs:        aTabs.map(aTab => aTab.id),
-      previousTab: aReferenceTab.id,
-      broadcasted: !!aOptions.broadcast
+      windowId:    tabs[0].apiTab.windowId,
+      tabs:        tabs.map(tab => tab.id),
+      previousTab: referenceTab.id,
+      broadcasted: !!options.broadcast
     };
-    if (aOptions.inRemote) {
+    if (options.inRemote) {
       const tabIds = await browser.runtime.sendMessage(message);
       return tabIds.map(Tabs.getTabById);
     }
@@ -224,19 +224,19 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     }
   }
 
-  const container = aTabs[0].parentNode;
-  const apiTabIds = aTabs.map(aTab => aTab.apiTab.id);
+  const container = tabs[0].parentNode;
+  const apiTabIds = tabs.map(tab => tab.apiTab.id);
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    const oldIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
-    let nextTab = Tabs.getNextTab(aReferenceTab);
-    if (aTabs.includes(nextTab))
+    const oldIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
+    let nextTab = Tabs.getNextTab(referenceTab);
+    if (tabs.includes(nextTab))
       nextTab = null;
-    for (const tab of aTabs) {
+    for (const tab of tabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab);
       const oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == nextTab) // no move case
@@ -249,17 +249,17 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         oldNextTab
       });
     }
-    syncOrderOfChildTabs(aTabs.map(Tabs.getParentTab));
+    syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
     if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
       log(' => actually nothing moved');
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
         Array.slice(container.childNodes)
-          .map(aTab => aTab.id+(aTabs.includes(aTab) ? '[MOVED]' : ''))
+          .map(tab => tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')
           .replace(/^/gm, ' - ')));
-      const newIndexes = [aReferenceTab].concat(aTabs).map(Tabs.getTabIndex);
+      const newIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
       const minIndex = Math.min(...oldIndexes, ...newIndexes);
       const maxIndex = Math.max(...oldIndexes, ...newIndexes);
       for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
@@ -269,10 +269,10 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
         tab.apiTab.index = i;
       }
 
-      if (!aOptions.broadcasted) {
-        if (aOptions.delayedMove) // Wait until opening animation is finished.
+      if (!options.broadcasted) {
+        if (options.delayedMove) // Wait until opening animation is finished.
           await wait(configs.newTabAnimationDuration);
-        const indexes   = await ApiTabs.getIndexes(aReferenceTab.apiTab.id, apiTabIds[0]);
+        const indexes   = await ApiTabs.getIndexes(referenceTab.apiTab.id, apiTabIds[0]);
         let   toIndex   = indexes[0];
         const fromIndex = indexes[1];
         if (fromIndex > toIndex)
@@ -288,9 +288,9 @@ async function moveTabsInternallyAfter(aTabs, aReferenceTab, aOptions = {}) {
     ApiTabs.handleMissingTabError(e);
     log('moveTabsInternallyAfter failed: ', String(e));
   }
-  return aTabs;
+  return tabs;
 }
-export async function moveTabInternallyAfter(aTab, aReferenceTab, aOptions = {}) {
-  return moveTabsInternallyAfter([aTab], aReferenceTab, aOptions);
+export async function moveTabInternallyAfter(tab, referenceTab, options = {}) {
+  return moveTabsInternallyAfter([tab], referenceTab, options);
 }
 

@@ -11,9 +11,9 @@ import {
 } from '../common/common.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/color'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export function mixCSSColors(aBase, aOver, aAlpha = 1) {

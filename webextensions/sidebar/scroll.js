@@ -56,9 +56,9 @@ import * as EventUtils from './event-utils.js';
 
 import * as RestoringTabCount from './restoring-tab-count.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/scroll'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 
@@ -87,19 +87,19 @@ export async function init() {
 
 /* basics */
 
-function scrollTo(aParams = {}) {
-  log('scrollTo ', aParams);
-  if (!aParams.justNow &&
+function scrollTo(params = {}) {
+  log('scrollTo ', params);
+  if (!params.justNow &&
       configs.animation && configs.smoothScrollEnabled)
-    return smoothScrollTo(aParams);
+    return smoothScrollTo(params);
 
   //cancelPerformingAutoScroll();
-  if (aParams.tab)
-    gTabBar.scrollTop += calculateScrollDeltaForTab(aParams.tab);
-  else if (typeof aParams.position == 'number')
-    gTabBar.scrollTop = aParams.position;
-  else if (typeof aParams.delta == 'number')
-    gTabBar.scrollTop += aParams.delta;
+  if (params.tab)
+    gTabBar.scrollTop += calculateScrollDeltaForTab(params.tab);
+  else if (typeof params.position == 'number')
+    gTabBar.scrollTop = params.position;
+  else if (typeof params.delta == 'number')
+    gTabBar.scrollTop += params.delta;
   else
     throw new Error('No parameter to indicate scroll position');
 }
@@ -109,13 +109,13 @@ function cancelRunningScroll() {
   stopSmoothScroll();
 }
 
-function calculateScrollDeltaForTab(aTab) {
-  if (Tabs.isPinned(aTab))
+function calculateScrollDeltaForTab(tab) {
+  if (Tabs.isPinned(tab))
     return 0;
 
-  const tabRect       = aTab.getBoundingClientRect();
+  const tabRect       = tab.getBoundingClientRect();
   const containerRect = gTabBar.getBoundingClientRect();
-  const offset        = getOffsetForAnimatingTab(aTab) + smoothScrollTo.currentOffset;
+  const offset        = getOffsetForAnimatingTab(tab) + smoothScrollTo.currentOffset;
   let delta = 0;
   if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
     delta = tabRect.bottom - containerRect.bottom + offset;
@@ -123,7 +123,7 @@ function calculateScrollDeltaForTab(aTab) {
   else if (containerRect.top > tabRect.top + offset) { // should scroll up
     delta = tabRect.top - containerRect.top + offset;
   }
-  log('calculateScrollDeltaForTab ', dumpTab(aTab), {
+  log('calculateScrollDeltaForTab ', dumpTab(tab), {
     delta, offset,
     tabTop:          tabRect.top,
     tabBottom:       tabRect.bottom,
@@ -132,45 +132,45 @@ function calculateScrollDeltaForTab(aTab) {
   return delta;
 }
 
-export function isTabInViewport(aTab) {
-  if (!Tabs.ensureLivingTab(aTab))
+export function isTabInViewport(tab) {
+  if (!Tabs.ensureLivingTab(tab))
     return false;
 
-  if (Tabs.isPinned(aTab))
+  if (Tabs.isPinned(tab))
     return true;
 
-  return calculateScrollDeltaForTab(aTab) == 0;
+  return calculateScrollDeltaForTab(tab) == 0;
 }
 
-async function smoothScrollTo(aParams = {}) {
-  log('smoothScrollTo ', aParams);
+async function smoothScrollTo(params = {}) {
+  log('smoothScrollTo ', params);
   //cancelPerformingAutoScroll(true);
 
   smoothScrollTo.stopped = false;
 
   const startPosition = gTabBar.scrollTop;
   let delta, endPosition;
-  if (aParams.tab) {
-    delta       = calculateScrollDeltaForTab(aParams.tab);
+  if (params.tab) {
+    delta       = calculateScrollDeltaForTab(params.tab);
     endPosition = startPosition + delta;
   }
-  else if (typeof aParams.position == 'number') {
-    endPosition = aParams.position;
+  else if (typeof params.position == 'number') {
+    endPosition = params.position;
     delta       = endPosition - startPosition;
   }
-  else if (typeof aParams.delta == 'number') {
-    endPosition = startPosition + aParams.delta;
-    delta       = aParams.delta;
+  else if (typeof params.delta == 'number') {
+    endPosition = startPosition + params.delta;
+    delta       = params.delta;
   }
   else {
     throw new Error('No parameter to indicate scroll position');
   }
   smoothScrollTo.currentOffset = delta;
 
-  const duration  = aParams.duration || configs.smoothScrollDuration;
+  const duration  = params.duration || configs.smoothScrollDuration;
   const startTime = Date.now();
 
-  return new Promise((aResolve, aReject) => {
+  return new Promise((resolve, aReject) => {
     const radian = 90 * Math.PI / 180;
     const scrollStep = () => {
       if (smoothScrollTo.stopped) {
@@ -187,7 +187,7 @@ async function smoothScrollTo(aParams = {}) {
         });
         smoothScrollTo.stopped       = true;
         smoothScrollTo.currentOffset = 0;
-        aResolve();
+        resolve();
         return;
       }
       const power        = Math.sin(spentTime / duration * radian);
@@ -205,9 +205,9 @@ async function smoothScrollTo(aParams = {}) {
 }
 smoothScrollTo.currentOffset= 0;
 
-async function smoothScrollBy(aDelta) {
+async function smoothScrollBy(delta) {
   return smoothScrollTo({
-    position: gTabBar.scrollTop + aDelta
+    position: gTabBar.scrollTop + delta
   });
 }
 
@@ -217,31 +217,31 @@ function stopSmoothScroll() {
 
 /* applications */
 
-export function scrollToNewTab(aTab, aOptions = {}) {
-  if (!canScrollToTab(aTab))
+export function scrollToNewTab(tab, options = {}) {
+  if (!canScrollToTab(tab))
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
     const current = Tabs.getCurrentTab();
-    scrollToTab(aTab, Object.assign({}, aOptions, {
+    scrollToTab(tab, Object.assign({}, options, {
       anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
     }));
   }
 }
 
-function canScrollToTab(aTab) {
-  return (Tabs.ensureLivingTab(aTab) &&
-          !Tabs.isHidden(aTab));
+function canScrollToTab(tab) {
+  return (Tabs.ensureLivingTab(tab) &&
+          !Tabs.isHidden(tab));
 }
 
-export async function scrollToTab(aTab, aOptions = {}) {
+export async function scrollToTab(tab, options = {}) {
   scrollToTab.lastTargetId = null;
 
-  log('scrollToTab to ', dumpTab(aTab), dumpTab(aOptions.anchor), aOptions,
+  log('scrollToTab to ', dumpTab(tab), dumpTab(options.anchor), options,
       { stack: new Error().stack });
   cancelRunningScroll();
-  if (!canScrollToTab(aTab)) {
+  if (!canScrollToTab(tab)) {
     log('=> unscrollable');
     return;
   }
@@ -255,11 +255,11 @@ export async function scrollToTab(aTab, aOptions = {}) {
     return;
   cancelNotifyOutOfViewTab();
 
-  const anchorTab = aOptions.anchor;
-  const hasAnchor = Tabs.ensureLivingTab(anchorTab) && anchorTab != aTab;
+  const anchorTab = options.anchor;
+  const hasAnchor = Tabs.ensureLivingTab(anchorTab) && anchorTab != tab;
   const openedFromPinnedTab = hasAnchor && Tabs.isPinned(anchorTab);
 
-  if (isTabInViewport(aTab) &&
+  if (isTabInViewport(tab) &&
       (!hasAnchor ||
        !openedFromPinnedTab)) {
     log('=> already visible');
@@ -271,22 +271,22 @@ export async function scrollToTab(aTab, aOptions = {}) {
   if (scrollToTab.stopped)
     return;
   cancelNotifyOutOfViewTab();
-  scrollToTab.lastTargetId = aTab.id;
+  scrollToTab.lastTargetId = tab.id;
 
   if (hasAnchor) {
-    const targetTabRect = aTab.getBoundingClientRect();
+    const targetTabRect = tab.getBoundingClientRect();
     const anchorTabRect = anchorTab.getBoundingClientRect();
     const containerRect = gTabBar.getBoundingClientRect();
-    const offset        = getOffsetForAnimatingTab(aTab);
-    let delta = calculateScrollDeltaForTab(aTab);
+    const offset        = getOffsetForAnimatingTab(tab);
+    let delta = calculateScrollDeltaForTab(tab);
     if (targetTabRect.top > anchorTabRect.top) {
       log('=> will scroll down');
       const boundingHeight = targetTabRect.bottom - anchorTabRect.top + offset;
       const overHeight     = boundingHeight - containerRect.height;
       if (overHeight > 0) {
         delta -= overHeight;
-        if (aOptions.notifyOnOutOfView)
-          notifyOutOfViewTab(aTab);
+        if (options.notifyOnOutOfView)
+          notifyOutOfViewTab(tab);
       }
       log('calculated result: ', {
         boundingHeight, overHeight, delta,
@@ -304,13 +304,13 @@ export async function scrollToTab(aTab, aOptions = {}) {
         container:      containerRect.height
       });
     }
-    await scrollTo(Object.assign({}, aOptions, {
+    await scrollTo(Object.assign({}, options, {
       position: gTabBar.scrollTop + delta
     }));
   }
   else {
-    await scrollTo(Object.assign({}, aOptions, {
-      tab: aTab
+    await scrollTo(Object.assign({}, options, {
+      tab: tab
     }));
   }
   // A tab can be moved after the tabbar is scrolled to the tab.
@@ -318,54 +318,54 @@ export async function scrollToTab(aTab, aOptions = {}) {
   // keep "last scrolled-to tab" information until the tab is
   // actually moved.
   await wait(configs.autoGroupNewTabsTimeout);
-  const retryOptions = { retryCount: aOptions.retryCount || 0 };
-  if (scrollToTab.lastTargetId == aTab.id &&
-      !isTabInViewport(aTab) &&
+  const retryOptions = { retryCount: options.retryCount || 0 };
+  if (scrollToTab.lastTargetId == tab.id &&
+      !isTabInViewport(tab) &&
       retryOptions.retryCount < 3) {
     retryOptions.retryCount++;
-    return scrollToTab(aTab, retryOptions);
+    return scrollToTab(tab, retryOptions);
   }
-  if (scrollToTab.lastTargetId == aTab.id)
+  if (scrollToTab.lastTargetId == tab.id)
     scrollToTab.lastTargetId = null;
 }
 scrollToTab.lastTargetId = null;
 
-function getOffsetForAnimatingTab(aTab) {
+function getOffsetForAnimatingTab(tab) {
   const allExpanding        = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
-  const followingExpanding  = document.querySelectorAll(`#${aTab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
+  const followingExpanding  = document.querySelectorAll(`#${tab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
   const allCollapsing       = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
-  const followingCollapsing = document.querySelectorAll(`#${aTab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
+  const followingCollapsing = document.querySelectorAll(`#${tab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
   const numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
   return numExpandingTabs * Size.getTabHeight();
 }
 
 /*
-function scrollToTabSubtree(aTab) {
-  return scrollToTab(Tabs.getLastDescendantTab(aTab), {
-    anchor:            aTab,
+function scrollToTabSubtree(tab) {
+  return scrollToTab(Tabs.getLastDescendantTab(tab), {
+    anchor:            tab,
     notifyOnOutOfView: true
   });
 }
 
-function scrollToTabs(aTabs) {
-  return scrollToTab(aTabs[aTabs.length - 1], {
-    anchor:            aTabs[0],
+function scrollToTabs(tabs) {
+  return scrollToTab(tabs[tabs.length - 1], {
+    anchor:            tabs[0],
     notifyOnOutOfView: true
   });
 }
 */
 
-export function autoScrollOnMouseEvent(aEvent) {
+export function autoScrollOnMouseEvent(event) {
   if (!gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
     return;
 
   const tabbarRect = gTabBar.getBoundingClientRect();
   const scrollPixels = Math.round(Size.getTabHeight() * 0.5);
-  if (aEvent.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
+  if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
     if (gTabBar.scrollTop > 0)
       gTabBar.scrollTop -= scrollPixels;
   }
-  else if (aEvent.clientY > tabbarRect.bottom - autoScrollOnMouseEvent.areaSize) {
+  else if (event.clientY > tabbarRect.bottom - autoScrollOnMouseEvent.areaSize) {
     if (gTabBar.scrollTop < gTabBar.scrollTopMax)
       gTabBar.scrollTop += scrollPixels;
   }
@@ -373,15 +373,15 @@ export function autoScrollOnMouseEvent(aEvent) {
 autoScrollOnMouseEvent.areaSize = 20;
 
 
-async function notifyOutOfViewTab(aTab) {
+async function notifyOutOfViewTab(tab) {
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('notifyOutOfViewTab: skip until completely restored');
-    wait(100).then(() => notifyOutOfViewTab(aTab));
+    wait(100).then(() => notifyOutOfViewTab(tab));
     return;
   }
   await nextFrame();
   cancelNotifyOutOfViewTab();
-  if (aTab && isTabInViewport(aTab))
+  if (tab && isTabInViewport(tab))
     return;
   gOutOfViewTabNotifier.classList.add('notifying');
   await wait(configs.outOfViewTabNotifyDuration);
@@ -393,23 +393,23 @@ function cancelNotifyOutOfViewTab() {
 }
 
 
-async function onWheel(aEvent) {
+async function onWheel(event) {
   if (!configs.zoomable &&
-      EventUtils.isAccelKeyPressed(aEvent)) {
-    aEvent.preventDefault();
+      EventUtils.isAccelKeyPressed(event)) {
+    event.preventDefault();
     return;
   }
 
   if (!TSTAPI.isScrollLocked())
     return;
 
-  aEvent.stopImmediatePropagation();
-  aEvent.preventDefault();
+  event.stopImmediatePropagation();
+  event.preventDefault();
 
   TSTAPI.notifyScrolled({
-    tab:             EventUtils.getTabFromEvent(aEvent),
+    tab:             EventUtils.getTabFromEvent(event),
     scrollContainer: gTabBar,
-    event:           aEvent
+    event:           event
   });
 }
 
@@ -431,27 +431,27 @@ function reserveToSaveScrollPosition() {
 }
 
 
-Tabs.onCreated.addListener(aTab => {
+Tabs.onCreated.addListener(tab => {
   if (configs.animation) {
-    nextFrame().then(() => {
-      const parent = Tabs.getParentTab(aTab);
+    wait(10).then(() => { // wait until the tab is moved by TST itself
+      const parent = Tabs.getParentTab(tab);
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
-      const focused = Tabs.isActive(aTab);
-      Tree.collapseExpandTab(aTab, {
+      const focused = Tabs.isActive(tab);
+      Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
         collapsed: false,
         anchor:    Tabs.getCurrentTab(),
         last:      true
       });
       if (!focused)
-        notifyOutOfViewTab(aTab);
+        notifyOutOfViewTab(tab);
     });
   }
   else {
-    if (Tabs.isActive(aTab))
-      scrollToNewTab(aTab);
+    if (Tabs.isActive(tab))
+      scrollToNewTab(tab);
     else
-      notifyOutOfViewTab(aTab);
+      notifyOutOfViewTab(tab);
   }
 });
 
@@ -460,27 +460,27 @@ Tabs.onActivated.addListener(scrollToTab);
 Tabs.onUnpinned.addListener(scrollToTab);
 
 
-function onMessage(aMessage, _aSender, _aRespond) {
-  if (!aMessage ||
-      typeof aMessage.type != 'string')
+function onMessage(message, _aSender, _aRespond) {
+  if (!message ||
+      typeof message.type != 'string')
     return;
 
-  switch (aMessage.type) {
+  switch (message.type) {
     case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          aMessage.tab,
-          aMessage.parent
+          message.tab,
+          message.parent
         ]);
-        const tab = Tabs.getTabById(aMessage.tab);
-        if (tab && Tabs.isActive(Tabs.getTabById(aMessage.parent)))
+        const tab = Tabs.getTabById(message.tab);
+        if (tab && Tabs.isActive(Tabs.getTabById(message.parent)))
           scrollToNewTab(tab);
       })();
 
     case Constants.kCOMMAND_SCROLL_TABBAR:
-      if (aMessage.windowId != Tabs.getWindow())
+      if (message.windowId != Tabs.getWindow())
         break;
-      switch (String(aMessage.by).toLowerCase()) {
+      switch (String(message.by).toLowerCase()) {
         case 'lineup':
           smoothScrollBy(-Size.getTabHeight() * configs.scrollLines);
           break;
@@ -498,7 +498,7 @@ function onMessage(aMessage, _aSender, _aRespond) {
           break;
 
         default:
-          switch (String(aMessage.to).toLowerCase()) {
+          switch (String(message.to).toLowerCase()) {
             case 'top':
               smoothScrollTo({ position: 0 });
               break;
@@ -513,25 +513,25 @@ function onMessage(aMessage, _aSender, _aRespond) {
   }
 }
 
-function onMessageExternal(aMessage, _aSender) {
-  switch (aMessage.type) {
+function onMessageExternal(message, _aSender) {
+  switch (message.type) {
     case TSTAPI.kSCROLL:
       return (async () => {
         const params = {};
         const currentWindow = Tabs.getWindow();
-        if ('tab' in aMessage) {
-          await Tabs.waitUntilTabsAreCreated(aMessage.tab);
-          params.tab = Tabs.getTabById(aMessage.tab);
+        if ('tab' in message) {
+          await Tabs.waitUntilTabsAreCreated(message.tab);
+          params.tab = Tabs.getTabById(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;
         }
         else {
-          if (aMessage.window != currentWindow)
+          if (message.window != currentWindow)
             return;
-          if ('delta' in aMessage)
-            params.delta = aMessage.delta;
-          if ('position' in aMessage)
-            params.position = aMessage.position;
+          if ('delta' in message)
+            params.delta = message.delta;
+          if ('position' in message)
+            params.position = message.position;
         }
         return scrollTo(params).then(() => {
           return true;

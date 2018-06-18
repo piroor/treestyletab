@@ -5,26 +5,26 @@
 */
 'use strict';
 
-export async function getIndexes(...aQueriedTabIds) {
-  if (aQueriedTabIds.length == 0)
+export async function getIndexes(...queriedTabIds) {
+  if (queriedTabIds.length == 0)
     return [];
 
-  const indexes = await Promise.all(aQueriedTabIds.map((aTabId) => {
-    return browser.tabs.get(aTabId)
+  const indexes = await Promise.all(queriedTabIds.map((tabId) => {
+    return browser.tabs.get(tabId)
       .catch(e => {
         handleMissingTabError(e);
         return -1;
       });
   }));
-  return indexes.map(aTab => aTab ? aTab.index : -1);
+  return indexes.map(tab => tab ? tab.index : -1);
 }
 
 // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477
-export async function safeMoveAcrossWindows(aTabIds, aMoveOptions) {
-  return (await Promise.all(aTabIds.map(async (aTabId, aIndex) => {
+export async function safeMoveAcrossWindows(aTabIds, moveOptions) {
+  return (await Promise.all(aTabIds.map(async (tabId, index) => {
     try {
-      let movedTab = await browser.tabs.move(aTabId, Object.assign({}, aMoveOptions, {
-        index: aMoveOptions.index + aIndex
+      let movedTab = await browser.tabs.move(tabId, Object.assign({}, moveOptions, {
+        index: moveOptions.index + index
       }));
       if (Array.isArray(movedTab))
         movedTab = movedTab[0];
@@ -34,15 +34,15 @@ export async function safeMoveAcrossWindows(aTabIds, aMoveOptions) {
       handleMissingTabError(e);
       return null;
     }
-  }))).filter(aTab => !!aTab);
+  }))).filter(tab => !!tab);
 }
 
-export function handleMissingTabError(aError) {
-  if (!aError ||
-      !aError.message ||
-      aError.message.indexOf('Invalid tab ID:') != 0)
-    throw aError;
+export function handleMissingTabError(error) {
+  if (!error ||
+      !error.message ||
+      error.message.indexOf('Invalid tab ID:') != 0)
+    throw error;
   // otherwise, this error is caused from a tab already closed.
   // we just ignore it.
-  //console.log('Invalid Tab ID error on: ' + aError.stack);
+  //console.log('Invalid Tab ID error on: ' + error.stack);
 }

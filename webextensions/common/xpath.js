@@ -7,13 +7,13 @@
 
 // XPath utilities
 
-export function hasClass(aClassName) {
-  return `contains(concat(" ", normalize-space(@class), " "), " ${aClassName} ")`;
+export function hasClass(className) {
+  return `contains(concat(" ", normalize-space(@class), " "), " ${className} ")`;
 }
 
-export function evaluate(aExpression, aContext, aType) {
-  if (!aType)
-    aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+export function evaluate(aExpression, aContext, type) {
+  if (!type)
+    type = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
 
   let result;
   try {
@@ -21,7 +21,7 @@ export function evaluate(aExpression, aContext, aType) {
       aExpression,
       (aContext || document),
       null,
-      aType,
+      type,
       null
     );
   }

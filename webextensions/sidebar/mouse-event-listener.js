@@ -58,12 +58,12 @@ import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/mouse-event-listener'] || configs.logOnMouseEvent)
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
-let gTargetWindow;
+let mTargetWindow;
 
 const gTabBar = document.querySelector('#tabbar');
 const gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
@@ -73,7 +73,7 @@ const gUpdatingCollapsedStateCancellers = new WeakMap();
 const gTabCollapsedStateChangedManagers = new WeakMap();
 
 Sidebar.onInit.addListener(() => {
-  gTargetWindow = Tabs.getWindow();
+  mTargetWindow = Tabs.getWindow();
 });
 
 Sidebar.onBuilt.addListener(async () => {
@@ -143,90 +143,90 @@ function updateSpecialEventListenersForAPIListeners() {
 
 /* handlers for DOM events */
 
-function onMouseMove(aEvent) {
-  const tab = EventUtils.getTabFromEvent(aEvent);
+function onMouseMove(event) {
+  const tab = EventUtils.getTabFromEvent(event);
   if (tab) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
       tab:      TSTAPI.serializeTab(tab),
-      window:   gTargetWindow,
-      ctrlKey:  aEvent.ctrlKey,
-      shiftKey: aEvent.shiftKey,
-      altKey:   aEvent.altKey,
-      metaKey:  aEvent.metaKey,
+      window:   mTargetWindow,
+      ctrlKey:  event.ctrlKey,
+      shiftKey: event.shiftKey,
+      altKey:   event.altKey,
+      metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     });
   }
 }
 
-function onMouseOver(aEvent) {
-  const tab = EventUtils.getTabFromEvent(aEvent);
+function onMouseOver(event) {
+  const tab = EventUtils.getTabFromEvent(event);
   if (tab && onMouseOver.lastTarget != tab.id) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
       tab:      TSTAPI.serializeTab(tab),
-      window:   gTargetWindow,
-      ctrlKey:  aEvent.ctrlKey,
-      shiftKey: aEvent.shiftKey,
-      altKey:   aEvent.altKey,
-      metaKey:  aEvent.metaKey,
+      window:   mTargetWindow,
+      ctrlKey:  event.ctrlKey,
+      shiftKey: event.shiftKey,
+      altKey:   event.altKey,
+      metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     });
   }
   onMouseOver.lastTarget = tab && tab.id;
 }
 
-function onMouseOut(aEvent) {
-  const tab = EventUtils.getTabFromEvent(aEvent);
+function onMouseOut(event) {
+  const tab = EventUtils.getTabFromEvent(event);
   if (tab && onMouseOut.lastTarget != tab.id) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
       tab:      TSTAPI.serializeTab(tab),
-      window:   gTargetWindow,
-      ctrlKey:  aEvent.ctrlKey,
-      shiftKey: aEvent.shiftKey,
-      altKey:   aEvent.altKey,
-      metaKey:  aEvent.metaKey,
+      window:   mTargetWindow,
+      ctrlKey:  event.ctrlKey,
+      shiftKey: event.shiftKey,
+      altKey:   event.altKey,
+      metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     });
   }
   onMouseOut.lastTarget = tab && tab.id;
 }
 
-function onMouseDown(aEvent) {
-  EventUtils.cancelHandleMousedown(aEvent.button);
+function onMouseDown(event) {
+  EventUtils.cancelHandleMousedown(event.button);
   TabContextMenu.close();
   DragAndDrop.clearDropPosition();
   DragAndDrop.clearDraggingState();
 
-  if (EventUtils.isEventFiredOnAnchor(aEvent) &&
-      !EventUtils.isAccelAction(aEvent) &&
-      aEvent.button != 2) {
+  if (EventUtils.isEventFiredOnAnchor(event) &&
+      !EventUtils.isAccelAction(event) &&
+      event.button != 2) {
     log('mouse down on a selector anchor');
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
-    const selector = document.getElementById(EventUtils.getElementTarget(aEvent).closest('[data-menu-ui]').dataset.menuUi);
+    event.stopPropagation();
+    event.preventDefault();
+    const selector = document.getElementById(EventUtils.getElementTarget(event).closest('[data-menu-ui]').dataset.menuUi);
     selector.ui.open({
-      anchor: aEvent.target
+      anchor: event.target
     });
     return;
   }
 
-  const target = aEvent.target;
-  const tab = EventUtils.getTabFromEvent(aEvent) || EventUtils.getTabFromTabbarEvent(aEvent);
+  const target = event.target;
+  const tab = EventUtils.getTabFromEvent(event) || EventUtils.getTabFromTabbarEvent(event);
   log('onMouseDown: found target tab: ', tab);
 
   const mousedownDetail = {
-    targetType:    getMouseEventTargetType(aEvent),
+    targetType:    getMouseEventTargetType(event),
     tab:           tab && tab.id,
-    closebox:      EventUtils.isEventFiredOnClosebox(aEvent),
-    button:        aEvent.button,
-    ctrlKey:       aEvent.ctrlKey,
-    shiftKey:      aEvent.shiftKey,
-    altKey:        aEvent.altKey,
-    metaKey:       aEvent.metaKey,
-    isMiddleClick: EventUtils.isMiddleClick(aEvent),
-    isAccelClick:  EventUtils.isAccelAction(aEvent)
+    closebox:      EventUtils.isEventFiredOnClosebox(event),
+    button:        event.button,
+    ctrlKey:       event.ctrlKey,
+    shiftKey:      event.shiftKey,
+    altKey:        event.altKey,
+    metaKey:       event.metaKey,
+    isMiddleClick: EventUtils.isMiddleClick(event),
+    isAccelClick:  EventUtils.isAccelAction(event)
   };
   log('onMouseDown ', mousedownDetail);
 
@@ -234,8 +234,8 @@ function onMouseDown(aEvent) {
     return;
 
   if (mousedownDetail.isMiddleClick) {
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   const mousedown = {
@@ -243,21 +243,21 @@ function onMouseDown(aEvent) {
     promisedMousedownNotified: Promise.resolve()
   };
 
-  if ((!EventUtils.isEventFiredOnTwisty(aEvent) &&
-       !EventUtils.isEventFiredOnSoundButton(aEvent) &&
-       !EventUtils.isEventFiredOnClosebox(aEvent)) ||
-      aEvent.button != 0)
+  if ((!EventUtils.isEventFiredOnTwisty(event) &&
+       !EventUtils.isEventFiredOnSoundButton(event) &&
+       !EventUtils.isEventFiredOnClosebox(event)) ||
+      event.button != 0)
     mousedown.promisedMousedownNotified = browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
       type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
-      windowId: gTargetWindow
+      windowId: mTargetWindow
     }));
 
-  EventUtils.setLastMousedown(aEvent.button, mousedown);
+  EventUtils.setLastMousedown(event.button, mousedown);
   mousedown.timeout = setTimeout(() => {
-    if (!EventUtils.getLastMousedown(aEvent.button))
+    if (!EventUtils.getLastMousedown(event.button))
       return;
 
-    if (aEvent.button == 0 &&
+    if (event.button == 0 &&
         mousedownDetail.targetType == 'newtabbutton' &&
         configs.longPressOnNewTabButton) {
       mousedown.expired = true;
@@ -275,7 +275,7 @@ function onMouseDown(aEvent) {
 
     log('onMouseDown expired');
     mousedown.expired = true;
-    if (aEvent.button == 0) {
+    if (event.button == 0) {
       if (tab) {
         DragAndDrop.startMultiDrag(tab, mousedown.detail.closebox);
       }
@@ -283,34 +283,34 @@ function onMouseDown(aEvent) {
   }, configs.startDragTimeout);
 }
 
-function getMouseEventTargetType(aEvent) {
-  if (EventUtils.getTabFromEvent(aEvent))
+function getMouseEventTargetType(event) {
+  if (EventUtils.getTabFromEvent(event))
     return 'tab';
 
-  if (EventUtils.isEventFiredOnNewTabButton(aEvent))
+  if (EventUtils.isEventFiredOnNewTabButton(event))
     return 'newtabbutton';
 
-  if (EventUtils.isEventFiredOnMenuOrPanel(aEvent) ||
-      EventUtils.isEventFiredOnAnchor(aEvent))
+  if (EventUtils.isEventFiredOnMenuOrPanel(event) ||
+      EventUtils.isEventFiredOnAnchor(event))
     return 'selector';
 
   const allRange = document.createRange();
   allRange.selectNodeContents(document.body);
   const containerRect = allRange.getBoundingClientRect();
   allRange.detach();
-  if (aEvent.clientX < containerRect.left ||
-      aEvent.clientX > containerRect.right ||
-      aEvent.clientY < containerRect.top ||
-      aEvent.clientY > containerRect.bottom)
+  if (event.clientX < containerRect.left ||
+      event.clientX > containerRect.right ||
+      event.clientY < containerRect.top ||
+      event.clientY > containerRect.bottom)
     return 'outside';
 
   return 'blank';
 }
 
-async function onMouseUp(aEvent) {
-  const tab = EventUtils.getTabFromEvent(aEvent);
-  const lastMousedown = EventUtils.getLastMousedown(aEvent.button);
-  EventUtils.cancelHandleMousedown(aEvent.button);
+async function onMouseUp(event) {
+  const tab = EventUtils.getTabFromEvent(event);
+  const lastMousedown = EventUtils.getLastMousedown(event.button);
+  EventUtils.cancelHandleMousedown(event.button);
   if (lastMousedown)
     await lastMousedown.promisedMousedownNotified;
 
@@ -320,17 +320,17 @@ async function onMouseUp(aEvent) {
     const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
       type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
-      window:  gTargetWindow
+      window:  mTargetWindow
     }));
     // don't wait here, because we need process following common operations
     // even if this mouseup event is canceled.
-    promisedCanceled = results.then(aResults => aResults.some(aResult => aResult.result));
+    promisedCanceled = results.then(results => results.some(result => result.result));
   }
 
-  DragAndDrop.endMultiDrag(tab, aEvent);
+  DragAndDrop.endMultiDrag(tab, event);
 
   if (!lastMousedown ||
-      lastMousedown.detail.targetType != getMouseEventTargetType(aEvent) ||
+      lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
       (tab && tab != Tabs.getTabById(lastMousedown.detail.tab)))
     return;
 
@@ -358,10 +358,10 @@ async function onMouseUp(aEvent) {
   const actionForNewTabCommand = lastMousedown.detail.isAccelClick ?
     configs.autoAttachOnNewTabButtonMiddleClick :
     configs.autoAttachOnNewTabCommand;
-  if (EventUtils.isEventFiredOnNewTabButton(aEvent) &&
+  if (EventUtils.isEventFiredOnNewTabButton(event) &&
       lastMousedown.detail.button != 2) {
     log('click on the new tab button');
-    handleNewTabAction(aEvent, {
+    handleNewTabAction(event, {
       action: actionForNewTabCommand
     });
     return;
@@ -370,49 +370,49 @@ async function onMouseUp(aEvent) {
   log('notify as a blank area click to other addons');
   let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
-    window: gTargetWindow,
+    window: mTargetWindow,
   }));
   results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_CLICKED,
-    window: gTargetWindow,
+    window: mTargetWindow,
   })));
-  if (results.some(aResult => aResult.result))// canceled
+  if (results.some(result => result.result))// canceled
     return;
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
     log('default action for middle click on the blank area');
-    handleNewTabAction(aEvent, {
+    handleNewTabAction(event, {
       action: configs.autoAttachOnNewTabCommand
     });
   }
 }
 
-function onClick(aEvent) {
+function onClick(event) {
   // clear unexpectedly left "dragging" state
   // (see also https://github.com/piroor/treestyletab/issues/1921 )
   DragAndDrop.clearDraggingTabsState();
 
-  if (aEvent.button != 0) // ignore non-left click
+  if (event.button != 0) // ignore non-left click
     return;
 
-  log('onClick', String(aEvent.target));
+  log('onClick', String(event.target));
 
-  if (EventUtils.isEventFiredOnMenuOrPanel(aEvent) ||
-      EventUtils.isEventFiredOnAnchor(aEvent))
+  if (EventUtils.isEventFiredOnMenuOrPanel(event) ||
+      EventUtils.isEventFiredOnAnchor(event))
     return;
 
-  if (EventUtils.isEventFiredOnNewTabButton(aEvent)) {
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
+  if (EventUtils.isEventFiredOnNewTabButton(event)) {
+    event.stopPropagation();
+    event.preventDefault();
     return;
   }
 
-  const tab = EventUtils.getTabFromEvent(aEvent);
+  const tab = EventUtils.getTabFromEvent(event);
   log('clicked tab: ', tab);
 
-  if (EventUtils.isEventFiredOnTwisty(aEvent)) {
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
+  if (EventUtils.isEventFiredOnTwisty(event)) {
+    event.stopPropagation();
+    event.preventDefault();
     log('clicked on twisty');
     if (Tabs.hasChildTabs(tab))
       Tree.collapseExpandSubtree(tab, {
@@ -423,26 +423,26 @@ function onClick(aEvent) {
     return;
   }
 
-  if (EventUtils.isEventFiredOnSoundButton(aEvent)) {
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
+  if (EventUtils.isEventFiredOnSoundButton(event)) {
+    event.stopPropagation();
+    event.preventDefault();
     log('clicked on sound button');
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
-      windowId: gTargetWindow,
+      windowId: mTargetWindow,
       tab:      tab.id,
       muted:    Tabs.maybeSoundPlaying(tab)
     });
     return;
   }
 
-  if (EventUtils.isEventFiredOnClosebox(aEvent)) {
-    aEvent.stopPropagation();
-    aEvent.preventDefault();
+  if (EventUtils.isEventFiredOnClosebox(event)) {
+    event.stopPropagation();
+    event.preventDefault();
     log('clicked on closebox');
     //if (!warnAboutClosingTabSubtreeOf(tab)) {
-    //  aEvent.stopPropagation();
-    //  aEvent.preventDefault();
+    //  event.stopPropagation();
+    //  event.preventDefault();
     //  return;
     //}
     Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
@@ -454,30 +454,30 @@ function onClick(aEvent) {
   }
 }
 
-function handleNewTabAction(aEvent, aOptions = {}) {
+function handleNewTabAction(event, options = {}) {
   log('handleNewTabAction');
 
-  if (!configs.autoAttach && !('action' in aOptions))
-    aOptions.action = Constants.kNEWTAB_DO_NOTHING;
+  if (!configs.autoAttach && !('action' in options))
+    options.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
-    baseTab:      Tabs.getCurrentTab(gTargetWindow),
-    as:           aOptions.action,
-    cookieStoreId: aOptions.cookieStoreId,
-    inBackground: aEvent.shiftKey,
+    baseTab:      Tabs.getCurrentTab(mTargetWindow),
+    as:           options.action,
+    cookieStoreId: options.cookieStoreId,
+    inBackground: event.shiftKey,
     inRemote:     true
   });
 }
 
-function onDblClick(aEvent) {
-  if (EventUtils.isEventFiredOnNewTabButton(aEvent))
+function onDblClick(event) {
+  if (EventUtils.isEventFiredOnNewTabButton(event))
     return;
 
-  const tab = EventUtils.getTabFromEvent(aEvent);
+  const tab = EventUtils.getTabFromEvent(event);
   if (tab) {
     if (configs.collapseExpandSubtreeByDblClick) {
-      aEvent.stopPropagation();
-      aEvent.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
       Tree.collapseExpandSubtree(tab, {
         collapsed:       !Tabs.isSubtreeCollapsed(tab),
         manualOperation: true,
@@ -487,17 +487,17 @@ function onDblClick(aEvent) {
     return;
   }
 
-  aEvent.stopPropagation();
-  aEvent.preventDefault();
-  handleNewTabAction(aEvent, {
+  event.stopPropagation();
+  event.preventDefault();
+  handleNewTabAction(event, {
     action: configs.autoAttachOnNewTabCommand
   });
 }
 
-function onNewTabActionSelect(aItem, aEvent) {
-  if (aItem.dataset.value) {
+function onNewTabActionSelect(item, event) {
+  if (item.dataset.value) {
     let action;
-    switch (aItem.dataset.value) {
+    switch (item.dataset.value) {
       default:
         action = Constants.kNEWTAB_OPEN_AS_ORPHAN;
         break;
@@ -511,19 +511,19 @@ function onNewTabActionSelect(aItem, aEvent) {
         action = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
         break;
     }
-    handleNewTabAction(aEvent, { action });
+    handleNewTabAction(event, { action });
   }
   gNewTabActionSelector.ui.close();
 }
 
-function onContextualIdentitySelect(aItem, aEvent) {
-  if (aItem.dataset.value) {
-    const action = EventUtils.isAccelAction(aEvent) ?
+function onContextualIdentitySelect(item, event) {
+  if (item.dataset.value) {
+    const action = EventUtils.isAccelAction(event) ?
       configs.autoAttachOnNewTabButtonMiddleClick :
       configs.autoAttachOnNewTabCommand;
-    handleNewTabAction(aEvent, {
+    handleNewTabAction(event, {
       action,
-      cookieStoreId: aItem.dataset.value
+      cookieStoreId: item.dataset.value
     });
   }
   gContextualIdentitySelector.ui.close();
@@ -531,20 +531,20 @@ function onContextualIdentitySelect(aItem, aEvent) {
 
 
 
-Tabs.onRemoved.addListener(async aTab => {
-  gUpdatingCollapsedStateCancellers.delete(aTab);
-  gTabCollapsedStateChangedManagers.delete(aTab);
+Tabs.onRemoved.addListener(async tab => {
+  gUpdatingCollapsedStateCancellers.delete(tab);
+  gTabCollapsedStateChangedManagers.delete(tab);
 });
 
 
-function onMessage(aMessage, _aSender, _aRespond) {
-  if (!aMessage ||
-      typeof aMessage.type != 'string' ||
-      aMessage.type.indexOf('treestyletab:') != 0)
+function onMessage(message, _aSender, _aRespond) {
+  if (!message ||
+      typeof message.type != 'string' ||
+      message.type.indexOf('treestyletab:') != 0)
     return;
 
-  //log('onMessage: ', aMessage, aSender);
-  switch (aMessage.type) {
+  //log('onMessage: ', message, sender);
+  switch (message.type) {
     case TSTAPI.kCOMMAND_BROADCAST_API_REGISTERED:
       wait(0).then(() => { // wait until addons are updated
         updateSpecialEventListenersForAPIListeners();

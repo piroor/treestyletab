@@ -16,25 +16,25 @@ import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/tabs-group'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
-export function makeGroupTabURI(aOptions = {}) {
+export function makeGroupTabURI(options = {}) {
   const base = Constants.kGROUP_TAB_URI;
-  const title = encodeURIComponent(aOptions.title || '');
-  const temporaryOption = aOptions.temporary ? '&temporary=true' : '' ;
-  const openerTabIdOption = aOptions.openerTabId ? `&openerTabId=${aOptions.openerTabId}` : '' ;
+  const title = encodeURIComponent(options.title || '');
+  const temporaryOption = options.temporary ? '&temporary=true' : '' ;
+  const openerTabIdOption = options.openerTabId ? `&openerTabId=${options.openerTabId}` : '' ;
   return `${base}?title=${title}${temporaryOption}${openerTabIdOption}`;
 }
 
-export async function groupTabs(aTabs, aOptions = {}) {
-  const rootTabs = Tabs.collectRootTabs(aTabs);
+export async function groupTabs(tabs, options = {}) {
+  const rootTabs = Tabs.collectRootTabs(tabs);
   if (rootTabs.length <= 0)
     return null;
 
-  log('groupTabs: ', aTabs.map(dumpTab));
+  log('groupTabs: ', tabs.map(dumpTab));
 
   const uri = makeGroupTabURI({
     title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].apiTab.title),
@@ -47,17 +47,17 @@ export async function groupTabs(aTabs, aOptions = {}) {
     inBackground: true
   });
 
-  await Tree.detachTabsFromTree(aTabs, {
-    broadcast: !!aOptions.broadcast
+  await Tree.detachTabsFromTree(tabs, {
+    broadcast: !!options.broadcast
   });
-  await TabsMove.moveTabsAfter(aTabs.slice(1), aTabs[0], {
-    broadcast: !!aOptions.broadcast
+  await TabsMove.moveTabsAfter(tabs.slice(1), tabs[0], {
+    broadcast: !!options.broadcast
   });
   for (const tab of rootTabs) {
     await Tree.attachTabTo(tab, groupTab, {
       forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
       dontMove:  true,
-      broadcast: !!aOptions.broadcast
+      broadcast: !!options.broadcast
     });
   }
   return groupTab;

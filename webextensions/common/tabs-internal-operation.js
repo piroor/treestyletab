@@ -17,76 +17,76 @@ import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/tabs-internal-operation'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
-export async function selectTab(aTab, aOptions = {}) {
-  log('selectTabInternally: ', dumpTab(aTab));
-  if (aOptions.inRemote) {
+export async function selectTab(tab, options = {}) {
+  log('selectTabInternally: ', dumpTab(tab));
+  if (options.inRemote) {
     await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
-      windowId: aTab.apiTab.windowId,
-      tab:      aTab.id,
-      options:  aOptions
+      windowId: tab.apiTab.windowId,
+      tab:      tab.id,
+      options:  options
     });
     return;
   }
-  const container = aTab.parentNode;
+  const container = tab.parentNode;
   TabsContainer.incrementCounter(container, 'internalFocusCount');
-  if (aOptions.silently)
+  if (options.silently)
     TabsContainer.incrementCounter(container, 'internalSilentlyFocusCount');
-  return browser.tabs.update(aTab.apiTab.id, { active: true })
+  return browser.tabs.update(tab.apiTab.id, { active: true })
     .catch(e => {
       TabsContainer.decrementCounter(container, 'internalFocusCount');
-      if (aOptions.silently)
+      if (options.silently)
         TabsContainer.decrementCounter(container, 'internalSilentlyFocusCount');
       ApiTabs.handleMissingTabError(e);
     });
 }
 
-export function removeTab(aTab, aOptions = {}) {
-  return removeTabs([aTab], aOptions);
+export function removeTab(tab, options = {}) {
+  return removeTabs([tab], options);
 }
 
-export function removeTabs(aTabs, aOptions = {}) {
-  aTabs = aTabs.filter(Tabs.ensureLivingTab);
-  if (!aTabs.length)
+export function removeTabs(tabs, options = {}) {
+  tabs = tabs.filter(Tabs.ensureLivingTab);
+  if (!tabs.length)
     return;
-  log('removeTabsInternally: ', aTabs.map(dumpTab));
-  if (aOptions.inRemote || aOptions.broadcast) {
+  log('removeTabsInternally: ', tabs.map(dumpTab));
+  if (options.inRemote || options.broadcast) {
     browser.runtime.sendMessage({
       type:    Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-      tabs:    aTabs.map(aTab => aTab.id),
-      options: Object.assign({}, aOptions, {
+      tabs:    tabs.map(tab => tab.id),
+      options: Object.assign({}, options, {
         inRemote:    false,
-        broadcast:   aOptions.inRemote && !aOptions.broadcast,
-        broadcasted: !!aOptions.broadcast
+        broadcast:   options.inRemote && !options.broadcast,
+        broadcasted: !!options.broadcast
       })
     });
-    if (aOptions.inRemote)
+    if (options.inRemote)
       return;
   }
-  const container = aTabs[0].parentNode;
-  TabsContainer.incrementCounter(container, 'internalClosingCount', aTabs.length);
-  if (aOptions.broadcasted)
+  const container = tabs[0].parentNode;
+  TabsContainer.incrementCounter(container, 'internalClosingCount', tabs.length);
+  if (options.broadcasted)
     return;
-  return browser.tabs.remove(aTabs.map(aTab => aTab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
+  return browser.tabs.remove(tabs.map(tab => tab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
 }
 
-export function setTabFocused(aTab) {
-  const oldActiveTabs = clearOldActiveStateInWindow(aTab.apiTab.windowId);
-  aTab.classList.add(Constants.kTAB_STATE_ACTIVE);
-  aTab.apiTab.active = true;
-  aTab.classList.remove(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-  aTab.classList.remove(Constants.kTAB_STATE_UNREAD);
-  browser.sessions.removeTabValue(aTab.apiTab.id, Constants.kTAB_STATE_UNREAD);
+export function setTabFocused(tab) {
+  const oldActiveTabs = clearOldActiveStateInWindow(tab.apiTab.windowId);
+  tab.classList.add(Constants.kTAB_STATE_ACTIVE);
+  tab.apiTab.active = true;
+  tab.classList.remove(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+  tab.classList.remove(Constants.kTAB_STATE_UNREAD);
+  browser.sessions.removeTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD);
   return oldActiveTabs;
 }
 
-export function clearOldActiveStateInWindow(aWindowId) {
-  const container = Tabs.getTabsContainer(aWindowId);
+export function clearOldActiveStateInWindow(windowId) {
+  const container = Tabs.getTabsContainer(windowId);
   if (!container)
     return [];
   const oldTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`);

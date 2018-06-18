@@ -20,9 +20,9 @@ import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as Indent from './indent.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['sidebar/sidebar-cache'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 export const onRestored = new EventListenerManager();
@@ -30,11 +30,11 @@ export const onRestored = new EventListenerManager();
 let gTracking = false;
 
 let gLastWindowCacheOwner;
-let gTargetWindow;
+let mTargetWindow;
 let gTabBar;
 
 export function init() {
-  gTargetWindow = Tabs.getWindow();
+  mTargetWindow = Tabs.getWindow();
   gTabBar       = document.querySelector('#tabbar');
 }
 
@@ -43,7 +43,7 @@ export function startTracking() {
   configs.$addObserver(onConfigChange);
 }
 
-export async function getEffectiveWindowCache(aOptions = {}) {
+export async function getEffectiveWindowCache(options = {}) {
   MetricsData.add('getEffectiveWindowCache start');
   log('getEffectiveWindowCache: start');
   cancelReservedUpdateCachedTabbar(); // prevent to break cache before loading
@@ -78,7 +78,7 @@ export async function getEffectiveWindowCache(aOptions = {}) {
         cache = cachedSignature = null;
         clearWindowCache();
       }
-      if (aOptions.ignorePinnedTabs &&
+      if (options.ignorePinnedTabs &&
           cache &&
           cache.tabbar &&
           cache.tabbar.contents &&
@@ -103,7 +103,7 @@ export async function getEffectiveWindowCache(aOptions = {}) {
       }
     })(),
     (async () => {
-      actualSignature = await Cache.getWindowSignature(gTargetWindow);
+      actualSignature = await Cache.getWindowSignature(mTargetWindow);
     })()
   ]);
 
@@ -122,7 +122,7 @@ export async function getEffectiveWindowCache(aOptions = {}) {
     MetricsData.add('getEffectiveWindowCache fail');
   }
   else {
-    cache.offset          = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(aPart => !!aPart).length;
+    cache.offset          = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(part => !!part).length;
     cache.actualSignature = actualSignature;
     log('getEffectiveWindowCache: success ');
     MetricsData.add('getEffectiveWindowCache success');
@@ -131,43 +131,43 @@ export async function getEffectiveWindowCache(aOptions = {}) {
   return cache;
 }
 
-export async function restoreTabsFromCache(aCache, aParams = {}) {
-  const offset    = aParams.offset || 0;
-  const container = Tabs.getTabsContainer(gTargetWindow);
+export async function restoreTabsFromCache(cache, params = {}) {
+  const offset    = params.offset || 0;
+  const container = Tabs.getTabsContainer(mTargetWindow);
   if (offset <= 0) {
     if (container)
       container.parentNode.removeChild(container);
-    gTabBar.setAttribute('style', aCache.style);
+    gTabBar.setAttribute('style', cache.style);
   }
 
   let restored = Cache.restoreTabsFromCacheInternal({
-    windowId:     gTargetWindow,
-    tabs:         aParams.tabs,
+    windowId:     mTargetWindow,
+    tabs:         params.tabs,
     offset:       offset,
-    cache:        aCache.contents,
-    shouldUpdate: aCache.tabsDirty
+    cache:        cache.contents,
+    shouldUpdate: cache.tabsDirty
   });
 
   if (restored) {
     try {
       const masterStructure = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
-        windowId: gTargetWindow
+        windowId: mTargetWindow
       })).structure;
       const allTabs = Tabs.getAllTabs();
       const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
-      if (currentStructrue.map(aItem => aItem.parent).join(',') != masterStructure.map(aItem => aItem.parent).join(',')) {
-        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${gTargetWindow}. fallback to regular way.`);
+      if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
+        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`);
         restored = false;
-        const container = Tabs.getTabsContainer(gTargetWindow);
+        const container = Tabs.getTabsContainer(mTargetWindow);
         if (container)
           container.parentNode.removeChild(container);
       }
-      if (restored && aCache.collapsedDirty) {
+      if (restored && cache.collapsedDirty) {
         const structure = currentStructrue.reverse();
-        allTabs.reverse().forEach((aTab, aIndex) => {
-          Tree.collapseExpandSubtree(aTab, {
-            collapsed: structure[aIndex].collapsed,
+        allTabs.reverse().forEach((tab, index) => {
+          Tree.collapseExpandSubtree(tab, {
+            collapsed: structure[index].collapsed,
             justNow:   true
           });
         });
@@ -183,19 +183,19 @@ export async function restoreTabsFromCache(aCache, aParams = {}) {
   return restored;
 }
 
-function updateWindowCache(aKey, aValue) {
+function updateWindowCache(key, value) {
   if (!gLastWindowCacheOwner ||
       !Tabs.getTabById(gLastWindowCacheOwner))
     return;
-  if (aValue === undefined) {
-    //log('updateWindowCache: delete cache from ', gLastWindowCacheOwner, aKey);
-    //return browser.sessions.removeWindowValue(gLastWindowCacheOwner, aKey);
-    return browser.sessions.removeTabValue(gLastWindowCacheOwner.id, aKey);
+  if (value === undefined) {
+    //log('updateWindowCache: delete cache from ', gLastWindowCacheOwner, key);
+    //return browser.sessions.removeWindowValue(gLastWindowCacheOwner, key);
+    return browser.sessions.removeTabValue(gLastWindowCacheOwner.id, key);
   }
   else {
-    //log('updateWindowCache: set cache for ', gLastWindowCacheOwner, aKey);
-    //return browser.sessions.setWindowValue(gLastWindowCacheOwner, aKey, aValue);
-    return browser.sessions.setTabValue(gLastWindowCacheOwner.id, aKey, aValue);
+    //log('updateWindowCache: set cache for ', gLastWindowCacheOwner, key);
+    //return browser.sessions.setWindowValue(gLastWindowCacheOwner, key, value);
+    return browser.sessions.setTabValue(gLastWindowCacheOwner.id, key, value);
   }
 }
 
@@ -215,11 +215,11 @@ export function markWindowCacheDirty(akey) {
   }, 250);
 }
 
-async function getWindowCache(aKey) {
+async function getWindowCache(key) {
   if (!gLastWindowCacheOwner)
     return null;
-  //return browser.sessions.getWindowValue(gLastWindowCacheOwner, aKey);
-  return browser.sessions.getTabValue(gLastWindowCacheOwner.id, aKey);
+  //return browser.sessions.getWindowValue(gLastWindowCacheOwner, key);
+  return browser.sessions.getTabValue(gLastWindowCacheOwner.id, key);
 }
 
 function getWindowCacheOwner() {
@@ -239,7 +239,7 @@ export async function reserveToUpdateCachedTabbar() {
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
 
-  const container = Tabs.getTabsContainer(gTargetWindow);
+  const container = Tabs.getTabsContainer(mTargetWindow);
   if (container.allTabsRestored)
     return;
 
@@ -267,12 +267,12 @@ async function updateCachedTabbar() {
     return;
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
-  const container = Tabs.getTabsContainer(gTargetWindow);
-  const signature = await Cache.getWindowSignature(gTargetWindow);
+  const container = Tabs.getTabsContainer(mTargetWindow);
+  const signature = await Cache.getWindowSignature(mTargetWindow);
   if (container.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });
-  gLastWindowCacheOwner = getWindowCacheOwner(gTargetWindow);
+  gLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: Constants.kSIDEBAR_CONTENTS_VERSION,
     tabbar: {
@@ -332,8 +332,8 @@ Tree.onLevelChanged.addListener(async () => {
   reserveToUpdateCachedTabbar();
 });
 
-Tabs.onDetached.addListener(async aTab => {
-  if (!Tabs.ensureLivingTab(aTab))
+Tabs.onDetached.addListener(async tab => {
+  if (!Tabs.ensureLivingTab(tab))
     return;
   await wait(0);
   reserveToUpdateCachedTabbar();

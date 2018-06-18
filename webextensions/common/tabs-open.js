@@ -50,38 +50,38 @@ import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
 // eslint-disable-next-line no-unused-vars
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['common/tabs-open'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
-export async function loadURI(aURI, aOptions = {}) {
-  if (!aOptions.windowId && !aOptions.tab)
+export async function loadURI(uRI, options = {}) {
+  if (!options.windowId && !options.tab)
     throw new Error('missing loading target window or tab');
-  if (aOptions.inRemote) {
+  if (options.inRemote) {
     await browser.runtime.sendMessage({
       type:    Constants.kCOMMAND_LOAD_URI,
-      uri:     aURI,
-      options: Object.assign({}, aOptions, {
-        tab: aOptions.tab && aOptions.tab.id
+      uri:     uRI,
+      options: Object.assign({}, options, {
+        tab: options.tab && options.tab.id
       })
     });
     return;
   }
   try {
     let apiTabId;
-    if (aOptions.tab) {
-      apiTabId = aOptions.tab.apiTab.id;
+    if (options.tab) {
+      apiTabId = options.tab.apiTab.id;
     }
     else {
       const apiTabs = await browser.tabs.query({
-        windowId: aOptions.windowId,
+        windowId: options.windowId,
         active:   true
       });
       apiTabId = apiTabs[0].id;
     }
     await browser.tabs.update(apiTabId, {
-      url: aURI
+      url: uRI
     }).catch(ApiTabs.handleMissingTabError);
   }
   catch(e) {
@@ -89,73 +89,73 @@ export async function loadURI(aURI, aOptions = {}) {
   }
 }
 
-export function openNewTab(aOptions = {}) {
-  return openURIInTab(null, aOptions);
+export function openNewTab(options = {}) {
+  return openURIInTab(null, options);
 }
 
-export async function openURIInTab(aURI, aOptions = {}) {
-  const tabs = await openURIsInTabs([aURI], aOptions);
+export async function openURIInTab(uRI, options = {}) {
+  const tabs = await openURIsInTabs([uRI], options);
   return tabs[0];
 }
 
-export async function openURIsInTabs(aURIs, aOptions = {}) {
-  if (!aOptions.windowId)
+export async function openURIsInTabs(uRIs, options = {}) {
+  if (!options.windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
   return await Tabs.doAndGetNewTabs(async () => {
-    if (aOptions.inRemote) {
-      await browser.runtime.sendMessage(Object.assign({}, aOptions, {
+    if (options.inRemote) {
+      await browser.runtime.sendMessage(Object.assign({}, options, {
         type:          Constants.kCOMMAND_NEW_TABS,
-        uris:          aURIs,
-        parent:        aOptions.parent && aOptions.parent.id,
-        opener:        aOptions.opener && aOptions.opener.id,
-        insertBefore:  aOptions.insertBefore && aOptions.insertBefore.id,
-        insertAfter:   aOptions.insertAfter && aOptions.insertAfter.id,
-        cookieStoreId: aOptions.cookieStoreId || null,
-        isOrphan:      !!aOptions.isOrphan,
+        uris:          uRIs,
+        parent:        options.parent && options.parent.id,
+        opener:        options.opener && options.opener.id,
+        insertBefore:  options.insertBefore && options.insertBefore.id,
+        insertAfter:   options.insertAfter && options.insertAfter.id,
+        cookieStoreId: options.cookieStoreId || null,
+        isOrphan:      !!options.isOrphan,
         inRemote:      false
       }));
     }
     else {
       await Tabs.waitUntilAllTabsAreCreated();
-      const startIndex = Tabs.calculateNewTabIndex(aOptions);
-      const container  = Tabs.getTabsContainer(aOptions.windowId);
-      TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', aURIs.length);
-      if (aOptions.isOrphan)
-        TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', aURIs.length);
-      await Promise.all(aURIs.map(async (aURI, aIndex) => {
+      const startIndex = Tabs.calculateNewTabIndex(options);
+      const container  = Tabs.getTabsContainer(options.windowId);
+      TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', uRIs.length);
+      if (options.isOrphan)
+        TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', uRIs.length);
+      await Promise.all(uRIs.map(async (uRI, index) => {
         const params = {
-          windowId: aOptions.windowId,
-          active:   aIndex == 0 && !aOptions.inBackground
+          windowId: options.windowId,
+          active:   index == 0 && !options.inBackground
         };
-        if (aURI)
-          params.url = aURI;
-        if (aOptions.opener)
-          params.openerTabId = aOptions.opener.apiTab.id;
+        if (uRI)
+          params.url = uRI;
+        if (options.opener)
+          params.openerTabId = options.opener.apiTab.id;
         if (startIndex > -1)
-          params.index = startIndex + aIndex;
-        if (aOptions.cookieStoreId)
-          params.cookieStoreId = aOptions.cookieStoreId;
+          params.index = startIndex + index;
+        if (options.cookieStoreId)
+          params.cookieStoreId = options.cookieStoreId;
         const apiTab = await browser.tabs.create(params);
         await Tabs.waitUntilTabsAreCreated(apiTab.id);
         const tab = Tabs.getTabById(apiTab);
         if (!tab)
           throw new Error('tab is already closed');
-        if (!aOptions.opener &&
-            aOptions.parent &&
-            !aOptions.isOrphan)
-          await Tree.attachTabTo(tab, aOptions.parent, {
-            insertBefore: aOptions.insertBefore,
-            insertAfter:  aOptions.insertAfter,
+        if (!options.opener &&
+            options.parent &&
+            !options.isOrphan)
+          await Tree.attachTabTo(tab, options.parent, {
+            insertBefore: options.insertBefore,
+            insertAfter:  options.insertAfter,
             forceExpand:  params.active,
             broadcast:    true
           });
-        else if (aOptions.insertBefore)
-          await TabsMove.moveTabInternallyBefore(tab, aOptions.insertBefore, {
+        else if (options.insertBefore)
+          await TabsMove.moveTabInternallyBefore(tab, options.insertBefore, {
             broadcast: true
           });
-        else if (aOptions.insertAfter)
-          await TabsMove.moveTabInternallyAfter(tab, aOptions.insertAfter, {
+        else if (options.insertAfter)
+          await TabsMove.moveTabInternallyAfter(tab, options.insertAfter, {
             broadcast: true
           });
         return tab.opened;

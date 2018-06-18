@@ -18,9 +18,9 @@ import * as Tree from '../common/tree.js';
 
 import * as Background from './background.js';
 
-function log(...aArgs) {
+function log(...args) {
   if (configs.logFor['background/handle-tab-focus'])
-    internalLogger(...aArgs);
+    internalLogger(...args);
 }
 
 
@@ -28,133 +28,133 @@ let mTabSwitchedByShortcut       = false;
 let mMaybeTabSwitchingByShortcut = false;
 
 
-Tabs.onActivating.addListener((aTab, aInfo = {}) => { // return true if this focusing is overridden.
-  log('Tabs.onActivating ', aTab.id, aInfo);
-  if (aTab.dataset.shouldReloadOnSelect) {
-    browser.tabs.reload(aTab.apiTab.id);
-    delete aTab.dataset.shouldReloadOnSelect;
+Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focusing is overridden.
+  log('Tabs.onActivating ', tab.id, info);
+  if (tab.dataset.shouldReloadOnSelect) {
+    browser.tabs.reload(tab.apiTab.id);
+    delete tab.dataset.shouldReloadOnSelect;
   }
-  const container = aTab.parentNode;
+  const container = tab.parentNode;
   cancelDelayedExpand(Tabs.getTabById(container.lastFocusedTab));
   const shouldSkipCollapsed = (
-    !aInfo.byInternalOperation &&
+    !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
-  if (Tabs.isCollapsed(aTab)) {
-    if (!Tabs.getParentTab(aTab)) {
+  if (Tabs.isCollapsed(tab)) {
+    if (!Tabs.getParentTab(tab)) {
       // This is invalid case, generally never should happen,
       // but actually happen on some environment:
       // https://github.com/piroor/treestyletab/issues/1717
       // So, always expand orphan collapsed tab as a failsafe.
-      Tree.collapseExpandTab(aTab, {
+      Tree.collapseExpandTab(tab, {
         collapsed: false,
         broadcast: true
       });
-      handleNewActiveTab(aTab, aInfo);
+      handleNewActiveTab(tab, info);
     }
     else if (configs.autoExpandOnCollapsedChildFocused &&
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildFocused');
-      for (const ancestor of Tabs.getAncestorTabs(aTab)) {
+      for (const ancestor of Tabs.getAncestorTabs(tab)) {
         Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
           broadcast: true
         });
       }
-      handleNewActiveTab(aTab, aInfo);
+      handleNewActiveTab(tab, info);
     }
     else {
       log('=> reaction for focusing collapsed descendant');
-      let newSelection = Tabs.getVisibleAncestorOrSelf(aTab);
+      let newSelection = Tabs.getVisibleAncestorOrSelf(tab);
       if (!newSelection) // this seems invalid case...
         return false;
       if (shouldSkipCollapsed &&
           container.lastFocusedTab == newSelection.id) {
-        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(aTab);
+        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab);
       }
       container.lastFocusedTab = newSelection.id;
       if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
       TabsInternalOperation.selectTab(newSelection, { silently: true });
-      log('Tabs.onActivating: discarded? ', dumpTab(aTab), Tabs.isDiscarded(aTab));
-      if (Tabs.isDiscarded(aTab))
-        aTab.dataset.discardURLAfterCompletelyLoaded = aTab.apiTab.url;
+      log('Tabs.onActivating: discarded? ', dumpTab(tab), Tabs.isDiscarded(tab));
+      if (Tabs.isDiscarded(tab))
+        tab.dataset.discardURLAfterCompletelyLoaded = tab.apiTab.url;
       return false;
     }
   }
-  else if (aInfo.byCurrentTabRemove &&
+  else if (info.byCurrentTabRemove &&
            (!configs.autoCollapseExpandSubtreeOnSelect ||
             configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove)) {
     log('=> reaction for removing current tab');
     return false;
   }
-  else if (Tabs.hasChildTabs(aTab) &&
-           Tabs.isSubtreeCollapsed(aTab) &&
+  else if (Tabs.hasChildTabs(tab) &&
+           Tabs.isSubtreeCollapsed(tab) &&
            !shouldSkipCollapsed) {
     log('=> reaction for newly focused parent tab');
-    handleNewActiveTab(aTab, aInfo);
+    handleNewActiveTab(tab, info);
   }
-  container.lastFocusedTab = aTab.id;
+  container.lastFocusedTab = tab.id;
   if (mMaybeTabSwitchingByShortcut)
-    setupDelayedExpand(aTab);
-  Background.tryInitGroupTab(aTab);
+    setupDelayedExpand(tab);
+  Background.tryInitGroupTab(tab);
   return true;
 });
-function handleNewActiveTab(aTab, aInfo = {}) {
-  log('handleNewActiveTab: ', dumpTab(aTab), aInfo);
+function handleNewActiveTab(tab, info = {}) {
+  log('handleNewActiveTab: ', dumpTab(tab), info);
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
-  const canExpandTree           = shouldCollapseExpandNow && !aInfo.silently;
+  const canExpandTree           = shouldCollapseExpandNow && !info.silently;
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
-      Tree.collapseExpandTreesIntelligentlyFor(aTab, {
+      Tree.collapseExpandTreesIntelligentlyFor(tab, {
         broadcast: true
       });
     else
-      Tree.collapseExpandSubtree(aTab, {
+      Tree.collapseExpandSubtree(tab, {
         collapsed: false,
         broadcast: true
       });
   }
 }
 
-function setupDelayedExpand(aTab) {
-  if (!aTab)
+function setupDelayedExpand(tab) {
+  if (!tab)
     return;
-  cancelDelayedExpand(aTab);
+  cancelDelayedExpand(tab);
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
-      !Tabs.hasChildTabs(aTab) ||
-      !Tabs.isSubtreeCollapsed(aTab))
+      !Tabs.hasChildTabs(tab) ||
+      !Tabs.isSubtreeCollapsed(tab))
     return;
-  aTab.delayedExpand = setTimeout(() => {
-    Tree.collapseExpandTreesIntelligentlyFor(aTab, {
+  tab.delayedExpand = setTimeout(() => {
+    Tree.collapseExpandTreesIntelligentlyFor(tab, {
       broadcast: true
     });
   }, configs.autoExpandOnTabSwitchingShortcutsDelay);
 }
 
-function cancelDelayedExpand(aTab) {
-  if (!aTab ||
-      !aTab.delayedExpand)
+function cancelDelayedExpand(tab) {
+  if (!tab ||
+      !tab.delayedExpand)
     return;
-  clearTimeout(aTab.delayedExpand);
-  delete aTab.delayedExpand;
+  clearTimeout(tab.delayedExpand);
+  delete tab.delayedExpand;
 }
 
-function cancelAllDelayedExpand(aHint) {
-  for (const tab of Tabs.getAllTabs(aHint)) {
+function cancelAllDelayedExpand(hint) {
+  for (const tab of Tabs.getAllTabs(hint)) {
     cancelDelayedExpand(tab);
   }
 }
 
-Tabs.onCollapsedStateChanged.addListener((aTab, aInfo = {}) => {
-  if (aInfo.collapsed)
-    aTab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+Tabs.onCollapsedStateChanged.addListener((tab, info = {}) => {
+  if (info.collapsed)
+    tab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
   else
-    aTab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
 });
 
 
@@ -169,13 +169,13 @@ Background.onBuilt.addListener(() => {
 });
 
 
-function onMessage(aMessage, aSender) {
-  if (!aMessage ||
-      typeof aMessage.type != 'string')
+function onMessage(message, sender) {
+  if (!message ||
+      typeof message.type != 'string')
     return;
 
-  //log('onMessage: ', aMessage, aSender);
-  switch (aMessage.type) {
+  //log('onMessage: ', message, sender);
+  switch (message.type) {
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
       mMaybeTabSwitchingByShortcut =
         mTabSwitchedByShortcut = false;
@@ -190,8 +190,8 @@ function onMessage(aMessage, aSender) {
       return (async () => {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
-          await Tabs.waitUntilTabsAreCreated(aSender.tab);
-          let tab = aSender.tab && Tabs.getTabById(aSender.tab);
+          await Tabs.waitUntilTabsAreCreated(sender.tab);
+          let tab = sender.tab && Tabs.getTabById(sender.tab);
           if (!tab) {
             const apiTabs = await browser.tabs.query({ currentWindow: true, active: true });
             await Tabs.waitUntilTabsAreCreated(apiTabs[0].id);
