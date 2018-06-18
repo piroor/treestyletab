@@ -44,13 +44,13 @@ export default class EventListenerManager {
         const result = listener(...args);
         if (result instanceof Promise)
           return result
-                   .catch(e => {
-                     console.log(e);
-                   })
-                   .then(result => {
-                     clearTimeout(timer);
-                     return result;
-                   });
+            .catch(e => {
+              console.log(e);
+            })
+            .then(result => {
+              clearTimeout(timer);
+              return result;
+            });
         clearTimeout(timer);
         return result;
       }

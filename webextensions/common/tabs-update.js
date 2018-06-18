@@ -313,12 +313,12 @@ windowId = ${tab.apiTab.windowId}
     if (!tab)
       return;
     tab.setAttribute('title',
-                      tab.dataset.label = tab.dataset.label
-                        .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
-                        .replace(`<%originalId%>`, uniqueId.originalId)
-                        .replace(`<%originalTabId%>`, uniqueId.originalTabId)
-                        .replace(`<%duplicated%>`, !!uniqueId.duplicated)
-                        .replace(`<%restored%>`, !!uniqueId.restored));
+                     tab.dataset.label = tab.dataset.label
+                       .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
+                       .replace(`<%originalId%>`, uniqueId.originalId)
+                       .replace(`<%originalTabId%>`, uniqueId.originalTabId)
+                       .replace(`<%duplicated%>`, !!uniqueId.duplicated)
+                       .replace(`<%restored%>`, !!uniqueId.restored));
   });
 }
 
