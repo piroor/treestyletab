@@ -18,19 +18,19 @@ function log(...aArgs) {
     internalLogger(...aArgs);
 }
 
-let gOpenState;
-const gFocusState = new Map();
+let mOpenState;
+const mFocusState = new Map();
 
 export function isOpen(aWindowId) {
-  return gOpenState && gOpenState.has(aWindowId)
+  return mOpenState && mOpenState.has(aWindowId)
 }
 
 export function isWatchingOpenState() {
-  return !!gOpenState;
+  return !!mOpenState;
 }
 
 export function hasFocus(aWindowId) {
-  return gFocusState.has(aWindowId)
+  return mFocusState.has(aWindowId)
 }
 
 browser.runtime.onMessage.addListener((aMessage, _aSender) => {
@@ -40,11 +40,11 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
 
   switch (aMessage.type) {
     case Constants.kNOTIFY_SIDEBAR_FOCUS:
-      gFocusState.set(aMessage.windowId, true);
+      mFocusState.set(aMessage.windowId, true);
       break;
 
     case Constants.kNOTIFY_SIDEBAR_BLUR:
-      gFocusState.delete(aMessage.windowId);
+      mFocusState.delete(aMessage.windowId);
       break;
   }
 });
@@ -52,20 +52,20 @@ browser.runtime.onMessage.addListener((aMessage, _aSender) => {
 export function startWatchOpenState() {
   if (isWatchingOpenState())
     return;
-  gOpenState = new Map();
+  mOpenState = new Map();
   const matcher = new RegExp(`^${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}`);
   browser.runtime.onConnect.addListener(aPort => {
     if (!matcher.test(aPort.name))
       return;
     const windowId = parseInt(aPort.name.replace(matcher, ''));
-    gOpenState.set(windowId, true);
+    mOpenState.set(windowId, true);
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
       window: windowId
     });
     aPort.onDisconnect.addListener(_aMessage => {
-      gOpenState.delete(windowId);
-      gFocusState.delete(windowId);
+      mOpenState.delete(windowId);
+      mFocusState.delete(windowId);
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_SIDEBAR_HIDE,
         window: windowId
