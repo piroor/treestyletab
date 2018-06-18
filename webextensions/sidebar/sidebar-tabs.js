@@ -24,10 +24,10 @@ function log(...aArgs) {
     internalLogger(...aArgs);
 }
 
-let gInitialized = false;
+let mInitialized = false;
 
 export function init() {
-  gInitialized = true;
+  mInitialized = true;
   document.querySelector('#master-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   const tabbar = document.querySelector('#tabbar');
@@ -87,7 +87,7 @@ function updateDescendantsCount(aTab) {
 
 
 function reserveToUpdateTooltip(aTab) {
-  if (!gInitialized ||
+  if (!mInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
   for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
@@ -135,7 +135,7 @@ function updateTooltip(aTab) {
 
 
 function reserveToUpdateLoadingState() {
-  if (!gInitialized)
+  if (!mInitialized)
     return;
   if (reserveToUpdateLoadingState.waiting)
     clearTimeout(reserveToUpdateLoadingState.waiting);
@@ -312,7 +312,7 @@ Tabs.onMoving.addListener(async aTab => {
 });
 
 Tabs.onMoved.addListener(aTab => {
-  if (gInitialized)
+  if (mInitialized)
     reserveToUpdateTooltip(Tabs.getParentTab(aTab));
 });
 
@@ -342,7 +342,7 @@ Tabs.onUpdated.addListener(updateSoundButtonTooltip);
 Tabs.onParentTabUpdated.addListener(updateSoundButtonTooltip);
 
 Tabs.onDetached.addListener(aTab => {
-  if (!gInitialized ||
+  if (!mInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
   reserveToUpdateTooltip(Tabs.getParentTab(aTab));
@@ -365,7 +365,7 @@ Tabs.onGroupTabDetected.addListener(aTab => {
 });
 
 Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
-  if (!gInitialized)
+  if (!mInitialized)
     return;
   updateTwisty(aInfo.parent);
   updateClosebox(aInfo.parent);
@@ -379,7 +379,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
 });
 
 Tree.onDetached.addListener(async (_aTab, aDetachInfo = {}) => {
-  if (!gInitialized)
+  if (!mInitialized)
     return;
   const parent = aDetachInfo.oldParentTab;
   if (!parent)
@@ -396,14 +396,14 @@ Tree.onDetached.addListener(async (_aTab, aDetachInfo = {}) => {
 Tree.onSubtreeCollapsedStateChanging.addListener(aTab => {
   updateTwisty(aTab);
   updateClosebox(aTab);
-  if (gInitialized)
+  if (mInitialized)
     reserveToUpdateTooltip(aTab);
 });
 
 configs.$addObserver(aChangedKey => {
   switch (aChangedKey) {
     case 'showCollapsedDescendantsByTooltip':
-      if (gInitialized)
+      if (mInitialized)
         for (const tab of Tabs.getAllTabs()) {
           reserveToUpdateTooltip(tab);
         }

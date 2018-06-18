@@ -23,7 +23,7 @@ function log(...aArgs) {
     internalLogger(...aArgs);
 }
 
-let gInitialized = false;
+let mInitialized = false;
 
 Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   const parent = aInfo.parent;
@@ -40,7 +40,7 @@ Tree.onAttached.addListener(async (aTab, aInfo = {}) => {
   // the tab is closed with "subtree collapsed" state, descendant
   // tabs are also closed even if "forceExpand" is "true".
   if (aInfo.newlyAttached &&
-      gInitialized) {
+      mInitialized) {
     if (Tabs.isSubtreeCollapsed(aInfo.parent) &&
         !aInfo.forceExpand)
       Tree.collapseExpandTabAndSubtree(aTab, {
@@ -150,5 +150,5 @@ Tree.onDetached.addListener(async (aTab, _aDetachInfo) => {
 });
 
 Background.onReady.addListener(() => {
-  gInitialized = true;
+  mInitialized = true;
 });

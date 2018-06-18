@@ -38,7 +38,7 @@ function logMouseEvent(...aArgs) {
 }
 
 
-let gInitialized = false;
+let mInitialized = false;
 
 
 Tabs.onPinned.addListener(aTab => {
@@ -72,7 +72,7 @@ Background.onBuilt.addListener(() => {
 });
 
 Background.onReady.addListener(() => {
-  gInitialized = true;
+  mInitialized = true;
 });
 
 Background.onDestroy.addListener(() => {
@@ -261,7 +261,7 @@ function onMessage(aMessage, aSender) {
 
     case Constants.kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
-        while (!gInitialized) {
+        while (!mInitialized) {
           await wait(10);
         }
         const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(aMessage.windowId));
@@ -284,7 +284,7 @@ function onMessage(aMessage, aSender) {
           Tree.manualCollapseExpandSubtree(tab, params);
         else
           Tree.collapseExpandSubtree(tab, params);
-        if (gInitialized)
+        if (mInitialized)
           TreeStructure.reserveToSaveTreeStructure(tab);
         BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();

@@ -22,10 +22,10 @@ function log(...aArgs) {
     internalLogger(...aArgs);
 }
 
-let gActivated = false;
+let mActivated = false;
 
 export function activate() {
-  gActivated = true;
+  mActivated = true;
   configs.$addObserver(onConfigChange);
 }
 
@@ -175,7 +175,7 @@ function getWindowCacheOwner(aHint) {
 }
 
 export async function reserveToCacheTree(aHint) {
-  if (!gActivated ||
+  if (!mActivated ||
       !configs.useCachedTree)
     return;
 

@@ -46,7 +46,7 @@ export const onReady   = new EventListenerManager();
 export const onDestroy = new EventListenerManager();
 export const onTreeCompletelyAttached = new EventListenerManager();
 
-let gInitialized = false;
+let mInitialized = false;
 
 export async function init() {
   MetricsData.add('init start');
@@ -114,7 +114,7 @@ export async function init() {
 
   await TSTAPI.initAsBackend();
 
-  gInitialized = true;
+  mInitialized = true;
   onReady.dispatch();
   BackgroundCache.activate();
   TreeStructure.startTracking();
@@ -374,7 +374,7 @@ async function updateChildren(aTab) {
 }
 
 function reserveToUpdateSubtreeCollapsed(aTab) {
-  if (!gInitialized ||
+  if (!mInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
   if (aTab.reservedUpdateSubtreeCollapsed)

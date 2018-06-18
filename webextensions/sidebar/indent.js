@@ -20,7 +20,7 @@ function log(...aArgs) {
     internalLogger(...aArgs);
 }
 
-let gInitialized = false;
+let mInitialized = false;
 let gIndentDefinition;
 let gLastMaxLevel  = -1;
 let gLastMaxIndent = -1;
@@ -33,7 +33,7 @@ export function init() {
 
   window.addEventListener('resize', reserveToUpdateIndent);
 
-  gInitialized = true;
+  mInitialized = true;
 }
 
 export function updateRestoredTree(aCachedIndent) {
@@ -123,7 +123,7 @@ export function getCacheInfo() {
 
 
 export function reserveToUpdateVisualMaxTreeLevel() {
-  if (!gInitialized)
+  if (!mInitialized)
     return;
   if (updateVisualMaxTreeLevel.waiting)
     clearTimeout(updateVisualMaxTreeLevel.waiting);
@@ -152,7 +152,7 @@ Tree.onDetached.addListener(async (_aTab, aDetachInfo = {}) => {
 
 
 function reserveToUpdateIndent() {
-  if (!gInitialized)
+  if (!mInitialized)
     return;
   //log('reserveToUpdateIndent');
   if (reserveToUpdateIndent.waiting)

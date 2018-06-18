@@ -20,7 +20,7 @@ function log(...aArgs) {
     internalLogger(...aArgs);
 }
 
-const gContextMenuItems = `
+const mContextMenuItems = `
   reloadTree
   reloadDescendants
   -----------------
@@ -42,7 +42,7 @@ export async function refreshItems() {
 
   let separatorsCount = 0;
   let normalItemAppeared = false;
-  for (let id of gContextMenuItems) {
+  for (let id of mContextMenuItems) {
     const isSeparator = id.charAt(0) == '-';
     if (isSeparator) {
       if (!normalItemAppeared)
