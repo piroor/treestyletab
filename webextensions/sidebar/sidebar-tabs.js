@@ -90,9 +90,9 @@ function reserveToUpdateTooltip(aTab) {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(aTab))
     return;
-  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
-    if (tab.reservedUpdateTabTooltip)
-      clearTimeout(tab.reservedUpdateTabTooltip);
+  for (const updateTab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
+    if (updateTab.reservedUpdateTabTooltip)
+      clearTimeout(updateTab.reservedUpdateTabTooltip);
   }
   aTab.reservedUpdateTabTooltip = setTimeout(() => {
     delete aTab.reservedUpdateTabTooltip;
@@ -103,8 +103,8 @@ function reserveToUpdateTooltip(aTab) {
 function updateTabAndAncestorsTooltip(aTab) {
   if (!Tabs.ensureLivingTab(aTab))
     return;
-  for (const tab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
-    updateTooltip(tab);
+  for (const updateTab of [aTab].concat(Tabs.getAncestorTabs(aTab))) {
+    updateTooltip(updateTab);
   }
 }
 
