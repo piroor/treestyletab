@@ -438,7 +438,7 @@ Tabs.onCreated.addListener(tab => {
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
       const focused = Tabs.isActive(tab);
-      Tree.collapseExpandTab(tab, {
+      Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
         collapsed: false,
         anchor:    Tabs.getCurrentTab(),
         last:      true
