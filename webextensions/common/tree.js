@@ -1562,8 +1562,8 @@ export function getTreeStructureFromTabs(aTabs, aOptions = {}) {
   */
   return cleanUpTreeStructureArray(
     aTabs.map((aTab, aIndex) => {
-      const tab = Tabs.getParentTab(aTab);
-      const indexInGivenTabs = tab ? aTabs.indexOf(tab) : -1 ;
+      const parent = Tabs.getParentTab(aTab);
+      const indexInGivenTabs = parent ? aTabs.indexOf(parent) : -1 ;
       return indexInGivenTabs >= aIndex ? -1 : indexInGivenTabs ;
     }),
     -1

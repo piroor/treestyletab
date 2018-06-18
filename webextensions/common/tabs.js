@@ -898,19 +898,19 @@ export async function doAndGetNewTabs(aAsyncTask, aHint) {
 
 export function getNextFocusedTab(aTab, aOptions = {}) { // if the current tab is closed...
   const ignoredTabs = (aOptions.ignoredTabs || []).slice(0);
-  let tab = aTab;
+  let foundTab = aTab;
   do {
-    ignoredTabs.push(tab);
-    tab = getNextSiblingTab(tab);
-  } while (tab && ignoredTabs.includes(tab));
-  if (!tab) {
-    tab = aTab;
+    ignoredTabs.push(foundTab);
+    foundTab = getNextSiblingTab(foundTab);
+  } while (foundTab && ignoredTabs.includes(foundTab));
+  if (!foundTab) {
+    foundTab = aTab;
     do {
-      ignoredTabs.push(tab);
-      tab = getPreviousVisibleTab(tab);
-    } while (tab && ignoredTabs.includes(tab));
+      ignoredTabs.push(foundTab);
+      foundTab = getPreviousVisibleTab(foundTab);
+    } while (foundTab && ignoredTabs.includes(foundTab));
   }
-  return tab;
+  return foundTab;
 }
 
 
