@@ -287,33 +287,38 @@ Tabs.onRemoved.addListener(tab => {
   });
 });
 
+const mTabWasVisibleBeforeMoving = new WeakMap();
+
 Tabs.onMoving.addListener(tab => {
+  tab.classList.add(Constants.kTAB_STATE_MOVING);
   if (!configs.animation ||
       Tabs.isPinned(tab) ||
       Tabs.isOpening(tab))
     return;
-  tab.classList.add(Constants.kTAB_STATE_MOVING);
-  const visible = !Tabs.isCollapsed(tab);
+  mTabWasVisibleBeforeMoving.set(tab, !Tabs.isCollapsed(tab));
   Tree.collapseExpandTab(tab, {
     collapsed: true,
     justNow:   true
   });
-  nextFrame().then(async () => {
-    await wait(10); // we need to wait until other operations finished
-    if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
-      return;
-    if (visible)
-      Tree.collapseExpandTab(tab, {
-        collapsed: false
-      });
-    await wait(configs.collapseDuration);
-    tab.classList.remove(Constants.kTAB_STATE_MOVING);
-  });
 });
 
-Tabs.onMoved.addListener(tab => {
+Tabs.onMoved.addListener(async tab => {
   if (mInitialized)
     reserveToUpdateTooltip(Tabs.getParentTab(tab));
+
+  const wasVisible = mTabWasVisibleBeforeMoving.get(tab);
+  mTabWasVisibleBeforeMoving.delete(tab);
+
+  if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
+    return;
+
+  if (configs.animation && wasVisible) {
+    Tree.collapseExpandTab(tab, {
+      collapsed: false
+    });
+    await wait(configs.collapseDuration);
+  }
+  tab.classList.remove(Constants.kTAB_STATE_MOVING);
 });
 
 Tabs.onStateChanged.addListener(tab => {
