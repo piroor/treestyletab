@@ -267,6 +267,10 @@ export async function waitUntilTabsAreCreated(idOrIds) {
 
 const mMovingTabs = new Map();
 
+export function hasMovingTab() {
+  return mMovingTabs.size > 0;
+}
+
 export function addMovingTabId(tabId) {
   let onTabMoved;
   const promisedMoved = new Promise((resolve, _aReject) => {

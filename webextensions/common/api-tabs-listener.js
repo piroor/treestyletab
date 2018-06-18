@@ -136,7 +136,8 @@ async function onActivated(activeInfo) {
       TabsContainer.decrementCounter(container, 'internalSilentlyFocusCount');
     const byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
-    await Tabs.waitUntilTabsAreCreated(activeInfo.tabId);
+    if (Tabs.hasCreatingTab())
+      await Tabs.waitUntilTabsAreCreated(activeInfo.tabId);
 
     const newTab = Tabs.getTabById({ tab: activeInfo.tabId, window: activeInfo.windowId });
     if (!newTab) {
@@ -219,7 +220,8 @@ async function onUpdated(tabId, changeInfo, tab) {
   TabIdFixer.fixTab(tab);
   tabId = tab.id;
 
-  await Tabs.waitUntilTabsAreCreated(tabId);
+  if (Tabs.hasCreatingTab())
+    await Tabs.waitUntilTabsAreCreated(tabId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -544,8 +546,10 @@ async function onMoved(tabId, moveInfo) {
   const container = getOrBuildTabsContainer(moveInfo.windowId);
   const byInternalOperation = parseInt(container.dataset.internalMovingCount) > 0;
 
-  await Tabs.waitUntilTabsAreCreated(tabId);
-  await Tabs.waitUntilAllTabsAreMoved();
+  if (Tabs.hasCreatingTab())
+    await Tabs.waitUntilTabsAreCreated(tabId);
+  if (Tabs.hasMovingTab())
+    await Tabs.waitUntilAllTabsAreMoved();
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
