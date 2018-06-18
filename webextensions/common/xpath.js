@@ -14,8 +14,10 @@ export function hasClass(aClassName) {
 export function evaluate(aExpression, aContext, aType) {
   if (!aType)
     aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+
+  let result;
   try {
-    var result = (aContext.ownerDocument || aContext).evaluate(
+    result = (aContext.ownerDocument || aContext).evaluate(
       aExpression,
       (aContext || document),
       null,

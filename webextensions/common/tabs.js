@@ -116,9 +116,9 @@ export async function requestUniqueId(aTabOrId, aOptions = {}) {
     });
   }
 
-  var originalId    = null;
-  var originalTabId = null;
-  var duplicated    = false;
+  let originalId    = null;
+  let originalTabId = null;
+  let duplicated    = false;
   if (!aOptions.forceNew) {
     let oldId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
@@ -1064,7 +1064,7 @@ export function hasChildTabs(aParent) {
 }
 
 export function getLabelWithDescendants(aTab) {
-  var label = [`* ${aTab.dataset.label}`];
+  const label = [`* ${aTab.dataset.label}`];
   for (const child of getChildTabs(aTab)) {
     if (!child.dataset.labelWithDescendants)
       child.dataset.labelWithDescendants = getLabelWithDescendants(child);
@@ -1074,8 +1074,8 @@ export function getLabelWithDescendants(aTab) {
 }
 
 export function getMaxTreeLevel(aHint, aOptions = {}) {
-  var tabs = aOptions.onlyVisible ? getVisibleTabs(aHint) : getTabs(aHint) ;
-  var maxLevel = Math.max(...tabs.map(aTab => parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)));
+  const tabs = aOptions.onlyVisible ? getVisibleTabs(aHint) : getTabs(aHint) ;
+  let maxLevel = Math.max(...tabs.map(aTab => parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)));
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
   return maxLevel;
@@ -1089,7 +1089,7 @@ export function isAllTabsPlacedBefore(aTabs, aNextTab) {
     return true;
 
   aTabs = Array.slice(aTabs);
-  var previousTab = aTabs.shift();
+  let previousTab = aTabs.shift();
   for (const tab of aTabs) {
     if (tab.previousSibling != previousTab)
       return false;
@@ -1107,7 +1107,7 @@ export function isAllTabsPlacedAfter(aTabs, aPreviousTab) {
     return true;
 
   aTabs = Array.slice(aTabs).reverse();
-  var nextTab = aTabs.shift();
+  let nextTab = aTabs.shift();
   for (const tab of aTabs) {
     if (tab.nextSibling != nextTab)
       return false;

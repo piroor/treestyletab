@@ -319,14 +319,14 @@ export function nextFrame() {
 }
 
 export async function notify(aParams = {}) {
-  var id = await browser.notifications.create({
+  const id = await browser.notifications.create({
     type:    'basic',
     iconUrl: aParams.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
     title:   aParams.title,
     message: aParams.message
   });
 
-  var timeout = aParams.timeout;
+  let timeout = aParams.timeout;
   if (typeof timeout != 'number')
     timeout = configs.notificationTimeout;
   if (timeout >= 0)

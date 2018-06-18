@@ -41,7 +41,7 @@ export function bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
     .catch(_aError => {
       aCheckbox.setAttribute('readonly', true);
       aCheckbox.setAttribute('disabled', true);
-      var label = aCheckbox.closest('label') || document.querySelector(`label[for=${aCheckbox.id}]`);
+      const label = aCheckbox.closest('label') || document.querySelector(`label[for=${aCheckbox.id}]`);
       if (label)
         label.setAttribute('disabled', true);
     });
@@ -82,7 +82,7 @@ export function bindToCheckbox(aPermissions, aCheckbox, aOptions = {}) {
         return;
       }
 
-      var granted = await isGranted(aPermissions);
+      const granted = await isGranted(aPermissions);
       if (granted) {
         aOptions.onChanged(true);
         return;
@@ -119,7 +119,7 @@ export function requestPostProcess() {
   if (!configs.requestingPermissions)
     return false;
 
-  var permissions = configs.requestingPermissions;
+  const permissions = configs.requestingPermissions;
   configs.requestingPermissions = null;
   browser.browserAction.setBadgeText({ text: '' });
   browser.permissions.request(permissions).then(aGranted => {

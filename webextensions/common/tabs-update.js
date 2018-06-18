@@ -326,7 +326,7 @@ export function updateParentTab(aParent) {
   if (!Tabs.ensureLivingTab(aParent))
     return;
 
-  var children = Tabs.getChildTabs(aParent);
+  const children = Tabs.getChildTabs(aParent);
 
   if (children.some(Tabs.maybeSoundPlaying))
     aParent.classList.add(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
