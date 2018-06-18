@@ -360,14 +360,14 @@ function onMessage(aMessage, aSender) {
         // We must send tab-mouseup after tab-mousedown is notified.
         // So, we return to the caller process and do this post process asynchronously.
         mousedownNotified.then(async (aResults) => {
-          const results = aResults.concat(
+          aResults = aResults.concat(
             await TSTAPI.sendMessage(Object.assign({}, aMessage, {
               type:   TSTAPI.kNOTIFY_TAB_CLICKED,
               tab:    serializedTab,
               window: tab.apiTab.windowId
             }))
           );
-          if (results.some(aResult => aResult.result)) // canceled
+          if (aResults.some(aResult => aResult.result)) // canceled
             return;
 
           logMouseEvent('Ready to select the tab');

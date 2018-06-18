@@ -556,12 +556,12 @@ async function onMoved(aTabId, aMoveInfo) {
       oldPreviousTab = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex : aMoveInfo.fromIndex - 1];
       oldNextTab     = tabs[aMoveInfo.toIndex < aMoveInfo.fromIndex ? aMoveInfo.fromIndex + 1 : aMoveInfo.fromIndex];
     }
-    const moveInfo = Object.assign({}, aMoveInfo, {
+    const extendedMoveInfo = Object.assign({}, aMoveInfo, {
       byInternalOperation,
       oldPreviousTab,
       oldNextTab
     });
-    log('tabs.onMoved: ', dumpTab(movedTab), moveInfo, movedTab.apiTab);
+    log('tabs.onMoved: ', dumpTab(movedTab), extendedMoveInfo, movedTab.apiTab);
 
     let alreadyMoved = false;
     if (parseInt(container.dataset.alreadyMovedTabsCount) > 0) {
@@ -569,11 +569,11 @@ async function onMoved(aTabId, aMoveInfo) {
       alreadyMoved = true;
     }
 
-    const canceled = (await Tabs.onMoving.dispatch(movedTab, moveInfo)) === false;
+    const canceled = (await Tabs.onMoving.dispatch(movedTab, extendedMoveInfo)) === false;
     if (!canceled &&
         Tabs.ensureLivingTab(movedTab)) { // it is removed while waiting
-      let newNextIndex = moveInfo.toIndex;
-      if (moveInfo.fromIndex < newNextIndex)
+      let newNextIndex = extendedMoveInfo.toIndex;
+      if (extendedMoveInfo.fromIndex < newNextIndex)
         newNextIndex++;
       const tabs    = Tabs.getAllTabs(movedTab);
       const nextTab = tabs[newNextIndex];
@@ -590,7 +590,7 @@ async function onMoved(aTabId, aMoveInfo) {
       for (let i = startIndex; i < endIndex; i++) {
         tabs[i].apiTab.index = i;
       }
-      await Tabs.onMoved.dispatch(movedTab, moveInfo);
+      await Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);
     }
     if (byInternalOperation)
       TabsContainer.decrementCounter(container, 'internalMovingCount');
