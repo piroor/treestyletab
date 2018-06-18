@@ -1223,7 +1223,7 @@ export function snapshotTreeForActionDetection(aTargetTab) {
 }
 
 function snapshotTree(aTargetTab, aTabs) {
-  const tabs = aTabs || getNormalTabs(aTargetTab);
+  const allTabs = aTabs || getNormalTabs(aTargetTab);
 
   const snapshotById = {};
   function snapshotChild(aTab) {
@@ -1239,8 +1239,8 @@ function snapshotTree(aTargetTab, aTabs) {
       level:         parseInt(aTab.getAttribute(Constants.kLEVEL) || 0)
     };
   }
-  const snapshotArray = tabs.map(aTab => snapshotChild(aTab));
-  for (const tab of tabs) {
+  const snapshotArray = allTabs.map(aTab => snapshotChild(aTab));
+  for (const tab of allTabs) {
     const item = snapshotById[tab.id];
     if (!item)
       continue;
