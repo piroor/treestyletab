@@ -86,7 +86,7 @@ export async function init() {
       });
       gTargetWindow = apiTabs[0].windowId;
       Tabs.setWindow(gTargetWindow);
-      log.context   = `Sidebar-${gTargetWindow}`;
+      internalLogger.context   = `Sidebar-${gTargetWindow}`;
 
       PinnedTabs.init();
       Indent.init();
