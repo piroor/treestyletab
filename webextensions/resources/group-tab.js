@@ -5,9 +5,9 @@
 */
 'use strict';
 
-window.gTemporaryCheck;
-window.gTitle
-window.gTitleField
+window.gTemporaryCheck = undefined;
+window.gTitle = undefined;
+window.gTitleField = undefined;
 
 document.title = getTitle();
 
