@@ -88,34 +88,34 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   configs.$loaded.then(() => {
-  for (const fieldset of Array.from(document.querySelectorAll('fieldset.collapsible'))) {
-    if (configs.optionsExpandedGroups.includes(fieldset.id))
-      fieldset.classList.remove('collapsed');
-    else
-      fieldset.classList.add('collapsed');
-
-    const onChangeCollapsed = () => {
-      if (!fieldset.id)
-        return;
-      const otherExpandedSections = configs.optionsExpandedGroups.filter(id => id != fieldset.id);
-      if (fieldset.classList.contains('collapsed'))
-        configs.optionsExpandedGroups = otherExpandedSections;
+    for (const fieldset of Array.from(document.querySelectorAll('fieldset.collapsible'))) {
+      if (configs.optionsExpandedGroups.includes(fieldset.id))
+        fieldset.classList.remove('collapsed');
       else
-        configs.optionsExpandedGroups = otherExpandedSections.concat([fieldset.id]);
-    };
+        fieldset.classList.add('collapsed');
 
-    const legend = fieldset.querySelector(':scope > legend');
-    legend.addEventListener('click', () => {
-      fieldset.classList.toggle('collapsed');
-      onChangeCollapsed();
-    });
-    legend.addEventListener('keydown', event => {
-      if (event.key != 'Enter')
-        return;
-      fieldset.classList.toggle('collapsed');
-      onChangeCollapsed();
-    });
-  }
+      const onChangeCollapsed = () => {
+        if (!fieldset.id)
+          return;
+        const otherExpandedSections = configs.optionsExpandedGroups.filter(id => id != fieldset.id);
+        if (fieldset.classList.contains('collapsed'))
+          configs.optionsExpandedGroups = otherExpandedSections;
+        else
+          configs.optionsExpandedGroups = otherExpandedSections.concat([fieldset.id]);
+      };
+
+      const legend = fieldset.querySelector(':scope > legend');
+      legend.addEventListener('click', () => {
+        fieldset.classList.toggle('collapsed');
+        onChangeCollapsed();
+      });
+      legend.addEventListener('keydown', event => {
+        if (event.key != 'Enter')
+          return;
+        fieldset.classList.toggle('collapsed');
+        onChangeCollapsed();
+      });
+    }
 
     for (const heading of Array.from(document.querySelectorAll('body > section > h1'))) {
       const section = heading.parentNode;
