@@ -285,16 +285,30 @@ async function onNewTabTracked(tab) {
   if (targetWindow && tab.windowId != targetWindow)
     return null;
 
-  await Tabs.waitUntilAllTabsAreCreated();
+  log('onNewTabTracked: ', tab);
+
+  const container = getOrBuildTabsContainer(tab.windowId);
+  const openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
+  const duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
+  const maybeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
+  const activeTab            = Tabs.getCurrentTab(container);
+
+  Tabs.onBeforeCreate.dispatch(tab, {
+    maybeOpenedWithPosition: openedWithPosition,
+    maybeOrphan,
+    activeTab
+  });
+
+  if (Tabs.hasCreatingTab())
+    await Tabs.waitUntilAllTabsAreCreated();
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
-  try {
-    log('onNewTabTracked: ', tab);
-    const container = getOrBuildTabsContainer(tab.windowId);
+  log('onNewTabTracked: start to create tab for ', tab);
 
+  try {
     const hasNextTab = !!Tabs.getAllTabs(container)[tab.index];
 
     const newTab = Tabs.buildTab(tab, { inRemote: !!targetWindow });
@@ -319,11 +333,6 @@ async function onNewTabTracked(tab) {
 
     // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
     const treeForActionDetection = Tabs.snapshotTreeForActionDetection(newTab);
-
-    const activeTab            = Tabs.getCurrentTab(container);
-    const openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
-    const duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
-    const maybeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
 
     if (openedWithPosition)
       TabsContainer.decrementCounter(container, 'toBeOpenedTabsWithPositions');
@@ -468,7 +477,8 @@ async function onRemoved(tabId, removeInfo) {
   if (byInternalOperation)
     TabsContainer.decrementCounter(container, 'internalClosingCount');
 
-  await Tabs.waitUntilAllTabsAreCreated();
+  if (Tabs.hasCreatingTab())
+    await Tabs.waitUntilAllTabsAreCreated();
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)

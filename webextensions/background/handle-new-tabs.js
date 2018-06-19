@@ -8,7 +8,6 @@
 import {
   log as internalLogger,
   dumpTab,
-  wait,
   configs
 } from '../common/common.js';
 
@@ -28,6 +27,35 @@ function log(...args) {
 }
 
 
+Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
+  const openerId = apiTab.openerTabId;
+  const openerApiTab = openerId && (await browser.tabs.get(openerId));
+  const container = Tabs.getTabsContainer(apiTab.windowId);
+  if ((configs.autoGroupNewTabsFromPinned &&
+       openerApiTab &&
+       openerApiTab.pinned &&
+       openerApiTab.windowId == apiTab.windowId) ||
+      (configs.autoGroupNewTabs &&
+       !openerApiTab &&
+       !info.maybeOrphan)) {
+    if (parseInt(container.dataset.preventAutoGroupNewTabsUntil) > Date.now()) {
+      TabsContainer.incrementCounter(container, 'preventAutoGroupNewTabsUntil', configs.autoGroupNewTabsTimeout);
+    }
+    else {
+      container.dataset.openedNewTabs += `|${apiTab.id}`;
+      container.dataset.openedNewTabsOpeners += `|${openerApiTab && openerApiTab.id}`;
+    }
+  }
+  if (container.openedNewTabsTimeout)
+    clearTimeout(container.openedNewTabsTimeout);
+  container.openedNewTabsTimeout = setTimeout(
+    onNewTabsTimeout,
+    configs.autoGroupNewTabsTimeout,
+    container
+  );
+});
+
+
 // this should return true if the tab is moved while processing
 Tabs.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
@@ -41,29 +69,6 @@ Tabs.onCreating.addListener((tab, info = {}) => {
     opener.uniqueId.then(uniqueId => {
       tab.dataset.originalOpenerTabId = uniqueId.id;
     });
-
-  const container = tab.parentNode;
-  if ((configs.autoGroupNewTabsFromPinned &&
-       Tabs.isPinned(opener) &&
-       opener.parentNode == container) ||
-      (configs.autoGroupNewTabs &&
-       !opener &&
-       !info.maybeOrphan)) {
-    if (parseInt(container.dataset.preventAutoGroupNewTabsUntil) > Date.now()) {
-      TabsContainer.incrementCounter(container, 'preventAutoGroupNewTabsUntil', configs.autoGroupNewTabsTimeout);
-    }
-    else {
-      container.dataset.openedNewTabs += `|${tab.id}`;
-      container.dataset.openedNewTabsOpeners += `|${opener && opener.apiTab.id}`;
-    }
-  }
-  if (container.openedNewTabsTimeout)
-    clearTimeout(container.openedNewTabsTimeout);
-  container.openedNewTabsTimeout = setTimeout(
-    onNewTabsTimeout,
-    configs.autoGroupNewTabsTimeout,
-    container
-  );
 
   if (!opener) {
     if (!info.maybeOrphan && possibleOpenerTab) {
@@ -136,13 +141,19 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
 
 const mToBeGroupedTabSets = [];
 
-function onNewTabsTimeout(container) {
-  const tabIds       = container.dataset.openedNewTabs.split('|');
-  const tabOpenerIds = container.dataset.openedNewTabsOpeners.split('|');
+async function onNewTabsTimeout(container) {
+  if (Tabs.hasCreatingTab())
+    await Tabs.waitUntilAllTabsAreCreated();
+  if (Tabs.hasMovingTab())
+    await Tabs.waitUntilAllTabsAreMoved();
+
+  const tabIds       = container.dataset.openedNewTabs.split('|').filter(part => part != '');
+  const tabOpenerIds = container.dataset.openedNewTabsOpeners.split('|').filter(part => part != '');
+  log('onNewTabsTimeout ', tabIds);
   let tabReferences = tabIds.map((id, index) => {
     return {
-      id:          id,
-      openerTabId: tabOpenerIds[index]
+      id:          parseInt(id),
+      openerTabId: parseInt(tabOpenerIds[index])
     };
   });
 
@@ -155,7 +166,7 @@ function onNewTabsTimeout(container) {
     return;
 
   mToBeGroupedTabSets.push(tabReferences);
-  wait(0).then(tryGroupNewTabs);
+  tryGroupNewTabs();
 }
 
 async function tryGroupNewTabs() {
@@ -166,6 +177,7 @@ async function tryGroupNewTabs() {
   if (!tabReferences)
     return;
 
+  log('tryGroupNewTabs ', tabReferences);
   tryGroupNewTabs.running = true;
   try {
     // extract only pure new tabs

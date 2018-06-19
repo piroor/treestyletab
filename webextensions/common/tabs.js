@@ -204,6 +204,7 @@ export const onTabElementMoved  = new EventListenerManager();
 export const onCollapsedStateChanging = new EventListenerManager();
 export const onCollapsedStateChanged  = new EventListenerManager();
 
+export const onBeforeCreate     = new EventListenerManager();
 export const onCreating         = new EventListenerManager();
 export const onCreated          = new EventListenerManager();
 export const onRemoving         = new EventListenerManager();
