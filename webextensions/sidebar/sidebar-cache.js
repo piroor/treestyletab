@@ -288,31 +288,31 @@ async function updateCachedTabbar() {
 
 Tabs.onFaviconUpdated.addListener((_tab, _url) => {
   wait(0).then(() => {
-  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
 Tabs.onUpdated.addListener((_tab, _url) => {
   wait(0).then(() => {
-  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
 Tabs.onLabelUpdated.addListener(_tab => {
   wait(0).then(() => {
-  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
 Tabs.onParentTabUpdated.addListener(async _tab => {
   wait(0).then(() => {
-  markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+    markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
 Tabs.onCreated.addListener((_tab, _info) => {
   wait(0).then(() => {
-  reserveToUpdateCachedTabbar();
+    reserveToUpdateCachedTabbar();
   });
 });
 
@@ -334,7 +334,7 @@ Tree.onLevelChanged.addListener(_tab => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToUpdateCachedTabbar();
+    reserveToUpdateCachedTabbar();
   });
 });
 
@@ -349,7 +349,7 @@ Tree.onAttached.addListener((_tab, _info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToUpdateCachedTabbar();
+    reserveToUpdateCachedTabbar();
   });
 });
 
@@ -357,7 +357,7 @@ Tree.onDetached.addListener((_tab, _info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToUpdateCachedTabbar();
+    reserveToUpdateCachedTabbar();
   });
 });
 

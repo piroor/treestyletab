@@ -280,7 +280,7 @@ Tabs.onRemoved.addListener((tab, _info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToCacheTree(tab);
+    reserveToCacheTree(tab);
   });
 });
 
@@ -300,7 +300,7 @@ Tree.onAttached.addListener((tab, _info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToCacheTree(tab);
+    reserveToCacheTree(tab);
   });
 });
 
@@ -308,7 +308,7 @@ Tree.onDetached.addListener((tab, _info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-  reserveToCacheTree(tab);
+    reserveToCacheTree(tab);
   });
 });
 
