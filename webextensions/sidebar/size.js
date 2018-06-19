@@ -15,42 +15,42 @@ function log(...args) {
     internalLogger(...args);
 }
 
-let gTabHeight          = 0;
-let gFavIconSize        = 0;
-let gFavIconizedTabSize = 0;
+let mTabHeight          = 0;
+let mFavIconSize        = 0;
+let mFavIconizedTabSize = 0;
 
 export function getTabHeight() {
-  return gTabHeight;
+  return mTabHeight;
 }
 
 export function getFavIconSize() {
-  return gFavIconSize;
+  return mFavIconSize;
 }
 
 export function getFavIconizedTabSize() {
-  return gFavIconizedTabSize;
+  return mFavIconizedTabSize;
 }
 
 export function init() {
   const sizeDefinition = document.querySelector('#size-definition');
   // first, calculate actual favicon size.
-  gFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
+  mFavIconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
   const scale = Math.max(configs.faviconizedTabScale, 1);
-  gFavIconizedTabSize = parseInt(gFavIconSize * scale);
-  log('gFavIconSize / gFavIconizedTabSize ', gFavIconSize, gFavIconizedTabSize);
+  mFavIconizedTabSize = parseInt(mFavIconSize * scale);
+  log('mFavIconSize / mFavIconizedTabSize ', mFavIconSize, mFavIconizedTabSize);
   sizeDefinition.textContent = `:root {
-    --favicon-size:         ${gFavIconSize}px;
-    --faviconized-tab-size: ${gFavIconizedTabSize}px;
+    --favicon-size:         ${mFavIconSize}px;
+    --faviconized-tab-size: ${mFavIconizedTabSize}px;
   }`;
   const dummyTab = document.querySelector('#dummy-tab');
   const dummyTabRect = dummyTab.getBoundingClientRect();
-  gTabHeight = dummyTabRect.height;
+  mTabHeight = dummyTabRect.height;
   const dummyTabbar = document.querySelector('#dummy-tabs');
   const dummyTabbarRect = dummyTabbar.getBoundingClientRect();
   const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
-  log('gTabHeight ', gTabHeight);
+  log('mTabHeight ', mTabHeight);
   sizeDefinition.textContent += `:root {
-    --tab-height: ${gTabHeight}px;
+    --tab-height: ${mTabHeight}px;
     --scrollbar-size: ${scrollbarSize}px;
     --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
 

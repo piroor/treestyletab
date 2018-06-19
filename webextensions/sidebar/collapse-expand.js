@@ -59,8 +59,8 @@ function log(...args) {
 }
 
 
-const gUpdatingCollapsedStateCancellers = new WeakMap();
-const gTabCollapsedStateChangedManagers = new WeakMap();
+const mUpdatingCollapsedStateCancellers = new WeakMap();
+const mTabCollapsedStateChangedManagers = new WeakMap();
 
 Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   const toBeCollapsed = info.collapsed;
@@ -84,15 +84,15 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
 
   const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
 
-  let manager = gTabCollapsedStateChangedManagers.get(tab);
+  let manager = mTabCollapsedStateChangedManagers.get(tab);
   if (!manager) {
     manager = new EventListenerManager();
-    gTabCollapsedStateChangedManagers.set(tab, manager);
+    mTabCollapsedStateChangedManagers.set(tab, manager);
   }
 
-  if (gUpdatingCollapsedStateCancellers.has(tab)) {
-    gUpdatingCollapsedStateCancellers.get(tab)(toBeCollapsed);
-    gUpdatingCollapsedStateCancellers.delete(tab);
+  if (mUpdatingCollapsedStateCancellers.has(tab)) {
+    mUpdatingCollapsedStateCancellers.get(tab)(toBeCollapsed);
+    mUpdatingCollapsedStateCancellers.delete(tab);
   }
 
   let cancelled = false;
@@ -109,7 +109,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
         !Tabs.ensureLivingTab(tab)) // do nothing for closed tab!
       return;
 
-    gUpdatingCollapsedStateCancellers.delete(tab);
+    mUpdatingCollapsedStateCancellers.delete(tab);
 
     const toBeCollapsed = info.collapsed;
     SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -146,7 +146,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
     return;
   }
 
-  gUpdatingCollapsedStateCancellers.set(tab, canceller);
+  mUpdatingCollapsedStateCancellers.set(tab, canceller);
 
   if (toBeCollapsed) {
     tab.classList.add(Constants.kTAB_STATE_COLLAPSING);
@@ -226,7 +226,7 @@ function onEndCollapseExpandCompletely(tab, options = {}) {
 }
 
 Tabs.onCollapsedStateChanged.addListener((tab, info = {}) => {
-  const manager = gTabCollapsedStateChangedManagers.get(tab);
+  const manager = mTabCollapsedStateChangedManagers.get(tab);
   if (manager)
     manager.dispatch(tab, info);
 });

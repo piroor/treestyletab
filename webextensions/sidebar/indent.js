@@ -21,15 +21,15 @@ function log(...args) {
 }
 
 let mInitialized = false;
-let gIndentDefinition;
-let gLastMaxLevel  = -1;
-let gLastMaxIndent = -1;
+let mIndentDefinition;
+let mLastMaxLevel  = -1;
+let mLastMaxIndent = -1;
 let mTargetWindow;
-let gTabBar;
+let mTabBar;
 
 export function init() {
   mTargetWindow = Tabs.getWindow();
-  gTabBar       = document.querySelector('#tabbar');
+  mTabBar       = document.querySelector('#tabbar');
 
   window.addEventListener('resize', reserveToUpdateIndent);
 
@@ -47,33 +47,33 @@ export function updateRestoredTree(aCachedIndent) {
 export function update(options = {}) {
   if (!options.cache) {
     const maxLevel  = Tabs.getMaxTreeLevel(mTargetWindow);
-    const maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
-    if (maxLevel <= gLastMaxLevel &&
-        maxIndent == gLastMaxIndent &&
+    const maxIndent = mTabBar.getBoundingClientRect().width * (0.33);
+    if (maxLevel <= mLastMaxLevel &&
+        maxIndent == mLastMaxIndent &&
         !options.force)
       return;
 
-    gLastMaxLevel  = maxLevel + 5;
-    gLastMaxIndent = maxIndent;
+    mLastMaxLevel  = maxLevel + 5;
+    mLastMaxIndent = maxIndent;
   }
   else {
-    gLastMaxLevel  = options.cache.lastMaxLevel;
-    gLastMaxIndent = options.cache.lastMaxIndent;
+    mLastMaxLevel  = options.cache.lastMaxLevel;
+    mLastMaxIndent = options.cache.lastMaxIndent;
   }
 
-  if (!gIndentDefinition) {
-    gIndentDefinition = document.createElement('style');
-    gIndentDefinition.setAttribute('type', 'text/css');
-    document.head.appendChild(gIndentDefinition);
+  if (!mIndentDefinition) {
+    mIndentDefinition = document.createElement('style');
+    mIndentDefinition.setAttribute('type', 'text/css');
+    document.head.appendChild(mIndentDefinition);
   }
 
   if (options.cache) {
-    gIndentDefinition.textContent = options.cache.definition;
+    mIndentDefinition.textContent = options.cache.definition;
   }
   else {
     const indentToSelectors = {};
     const defaultIndentToSelectors = {};
-    for (let i = 0; i <= gLastMaxLevel; i++) {
+    for (let i = 0; i <= mLastMaxLevel; i++) {
       generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
     }
 
@@ -86,12 +86,12 @@ export function update(options = {}) {
         definitions.push(`${indentSet[indent].join(',\n')} { ${indentProp}: ${indent}; }`);
       }
     }
-    gIndentDefinition.textContent = definitions.join('\n');
+    mIndentDefinition.textContent = definitions.join('\n');
   }
 }
 function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aDefaultIndentToSelectors) {
   const minIndent  = Math.max(Constants.kDEFAULT_MIN_INDENT, configs.minIndent);
-  const indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(gLastMaxIndent / aMaxLevel), minIndent));
+  const indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(mLastMaxIndent / aMaxLevel), minIndent));
 
   let configuredMaxLevel = configs.maxTreeLevel;
   if (configuredMaxLevel < 0)
@@ -115,9 +115,9 @@ function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aD
 
 export function getCacheInfo() {
   return {
-    lastMaxLevel:  gLastMaxLevel,
-    lastMaxIndent: gLastMaxIndent,
-    definition:    gIndentDefinition.textContent
+    lastMaxLevel:  mLastMaxLevel,
+    lastMaxIndent: mLastMaxIndent,
+    definition:    mIndentDefinition.textContent
   };
 }
 

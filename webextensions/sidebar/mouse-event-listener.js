@@ -65,12 +65,12 @@ function log(...args) {
 
 let mTargetWindow;
 
-const gTabBar = document.querySelector('#tabbar');
-const gContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
-const gNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
+const mTabBar = document.querySelector('#tabbar');
+const mContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
+const mNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
-const gUpdatingCollapsedStateCancellers = new WeakMap();
-const gTabCollapsedStateChangedManagers = new WeakMap();
+const mUpdatingCollapsedStateCancellers = new WeakMap();
+const mTabCollapsedStateChangedManagers = new WeakMap();
 
 Sidebar.onInit.addListener(() => {
   mTargetWindow = Tabs.getWindow();
@@ -80,21 +80,21 @@ Sidebar.onBuilt.addListener(async () => {
   document.addEventListener('mousedown', onMouseDown);
   document.addEventListener('mouseup', onMouseUp);
   document.addEventListener('click', onClick);
-  gTabBar.addEventListener('dblclick', onDblClick);
+  mTabBar.addEventListener('dblclick', onDblClick);
 
   MetricsData.add('apply configs');
 
   browser.runtime.onMessage.addListener(onMessage);
 
-  gContextualIdentitySelector.ui = new MenuUI({
-    root:       gContextualIdentitySelector,
+  mContextualIdentitySelector.ui = new MenuUI({
+    root:       mContextualIdentitySelector,
     appearance: 'panel',
     onCommand:  onContextualIdentitySelect,
     animationDuration: configs.animation ? configs.collapseDuration : 0.001
   });
 
-  gNewTabActionSelector.ui = new MenuUI({
-    root:       gNewTabActionSelector,
+  mNewTabActionSelector.ui = new MenuUI({
+    root:       mNewTabActionSelector,
     appearance: 'panel',
     onCommand:  onNewTabActionSelect,
     animationDuration: configs.animation ? configs.collapseDuration : 0.001
@@ -513,7 +513,7 @@ function onNewTabActionSelect(item, event) {
     }
     handleNewTabAction(event, { action });
   }
-  gNewTabActionSelector.ui.close();
+  mNewTabActionSelector.ui.close();
 }
 
 function onContextualIdentitySelect(item, event) {
@@ -526,14 +526,14 @@ function onContextualIdentitySelect(item, event) {
       cookieStoreId: item.dataset.value
     });
   }
-  gContextualIdentitySelector.ui.close();
+  mContextualIdentitySelector.ui.close();
 }
 
 
 
 Tabs.onRemoved.addListener(async (tab, _info) => {
-  gUpdatingCollapsedStateCancellers.delete(tab);
-  gTabCollapsedStateChangedManagers.delete(tab);
+  mUpdatingCollapsedStateCancellers.delete(tab);
+  mTabCollapsedStateChangedManagers.delete(tab);
 });
 
 
@@ -562,7 +562,7 @@ function onMessage(message, _sender, _respond) {
         :root.contextual-identity-selectable .contextual-identities-selector-anchor,
         .newtab-button
       `);
-      gContextualIdentitySelector.ui.open({ anchor });
+      mContextualIdentitySelector.ui.open({ anchor });
     }; break;
   }
 }

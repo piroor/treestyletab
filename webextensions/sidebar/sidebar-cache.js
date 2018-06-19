@@ -27,19 +27,19 @@ function log(...args) {
 
 export const onRestored = new EventListenerManager();
 
-let gTracking = false;
+let mTracking = false;
 
-let gLastWindowCacheOwner;
+let mLastWindowCacheOwner;
 let mTargetWindow;
-let gTabBar;
+let mTabBar;
 
 export function init() {
   mTargetWindow = Tabs.getWindow();
-  gTabBar       = document.querySelector('#tabbar');
+  mTabBar       = document.querySelector('#tabbar');
 }
 
 export function startTracking() {
-  gTracking = true;
+  mTracking = true;
   configs.$addObserver(onConfigChange);
 }
 
@@ -53,7 +53,7 @@ export async function getEffectiveWindowCache(options = {}) {
   await Promise.all([
     (async () => {
       const apiTabs = await browser.tabs.query({ currentWindow: true });
-      gLastWindowCacheOwner = apiTabs[apiTabs.length - 1];
+      mLastWindowCacheOwner = apiTabs[apiTabs.length - 1];
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
@@ -64,7 +64,7 @@ export async function getEffectiveWindowCache(options = {}) {
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
       ]);
       cachedSignature = cache && cache.signature;
-      log(`getEffectiveWindowCache: got from the owner ${gLastWindowCacheOwner.id}`, {
+      log(`getEffectiveWindowCache: got from the owner ${mLastWindowCacheOwner.id}`, {
         cachedSignature, cache, tabsDirty, collapsedDirty
       });
       if (cache &&
@@ -137,7 +137,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
   if (offset <= 0) {
     if (container)
       container.parentNode.removeChild(container);
-    gTabBar.setAttribute('style', cache.style);
+    mTabBar.setAttribute('style', cache.style);
   }
 
   let restored = Cache.restoreTabsFromCacheInternal({
@@ -184,18 +184,18 @@ export async function restoreTabsFromCache(cache, params = {}) {
 }
 
 function updateWindowCache(key, value) {
-  if (!gLastWindowCacheOwner ||
-      !Tabs.getTabById(gLastWindowCacheOwner))
+  if (!mLastWindowCacheOwner ||
+      !Tabs.getTabById(mLastWindowCacheOwner))
     return;
   if (value === undefined) {
-    //log('updateWindowCache: delete cache from ', gLastWindowCacheOwner, key);
-    //return browser.sessions.removeWindowValue(gLastWindowCacheOwner, key);
-    return browser.sessions.removeTabValue(gLastWindowCacheOwner.id, key);
+    //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
+    //return browser.sessions.removeWindowValue(mLastWindowCacheOwner, key);
+    return browser.sessions.removeTabValue(mLastWindowCacheOwner.id, key);
   }
   else {
-    //log('updateWindowCache: set cache for ', gLastWindowCacheOwner, key);
-    //return browser.sessions.setWindowValue(gLastWindowCacheOwner, key, value);
-    return browser.sessions.setTabValue(gLastWindowCacheOwner.id, key, value);
+    //log('updateWindowCache: set cache for ', mLastWindowCacheOwner, key);
+    //return browser.sessions.setWindowValue(mLastWindowCacheOwner, key, value);
+    return browser.sessions.setTabValue(mLastWindowCacheOwner.id, key, value);
   }
 }
 
@@ -216,10 +216,10 @@ export function markWindowCacheDirty(akey) {
 }
 
 async function getWindowCache(key) {
-  if (!gLastWindowCacheOwner)
+  if (!mLastWindowCacheOwner)
     return null;
-  //return browser.sessions.getWindowValue(gLastWindowCacheOwner, key);
-  return browser.sessions.getTabValue(gLastWindowCacheOwner.id, key);
+  //return browser.sessions.getWindowValue(mLastWindowCacheOwner, key);
+  return browser.sessions.getTabValue(mLastWindowCacheOwner.id, key);
 }
 
 function getWindowCacheOwner() {
@@ -228,7 +228,7 @@ function getWindowCacheOwner() {
 }
 
 export async function reserveToUpdateCachedTabbar() {
-  if (!gTracking ||
+  if (!mTracking ||
       !configs.useCachedTree)
     return;
 
@@ -272,12 +272,12 @@ async function updateCachedTabbar() {
   if (container.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });
-  gLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
+  mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR, {
     version: Constants.kSIDEBAR_CONTENTS_VERSION,
     tabbar: {
       contents:        Tabs.allTabsContainer.innerHTML,
-      style:           gTabBar.getAttribute('style'),
+      style:           mTabBar.getAttribute('style'),
       pinnedTabsCount: Tabs.getPinnedTabs(container).length
     },
     indent: Indent.getCacheInfo(),

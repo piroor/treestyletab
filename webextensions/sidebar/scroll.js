@@ -62,12 +62,12 @@ function log(...args) {
 }
 
 
-let gTabBar;
-let gOutOfViewTabNotifier;
+let mTabBar;
+let mOutOfViewTabNotifier;
 
 export async function init() {
-  gTabBar               = document.querySelector('#tabbar');
-  gOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
+  mTabBar               = document.querySelector('#tabbar');
+  mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 
   const scrollPosition = await browser.sessions.getWindowValue(Tabs.getWindow(), Constants.kWINDOW_STATE_SCROLL_POSITION);
   if (typeof scrollPosition == 'number') {
@@ -80,7 +80,7 @@ export async function init() {
   }
 
   document.addEventListener('wheel', onWheel, { capture: true });
-  gTabBar.addEventListener('scroll', onScroll);
+  mTabBar.addEventListener('scroll', onScroll);
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onMessageExternal);
 }
@@ -95,11 +95,11 @@ function scrollTo(params = {}) {
 
   //cancelPerformingAutoScroll();
   if (params.tab)
-    gTabBar.scrollTop += calculateScrollDeltaForTab(params.tab);
+    mTabBar.scrollTop += calculateScrollDeltaForTab(params.tab);
   else if (typeof params.position == 'number')
-    gTabBar.scrollTop = params.position;
+    mTabBar.scrollTop = params.position;
   else if (typeof params.delta == 'number')
-    gTabBar.scrollTop += params.delta;
+    mTabBar.scrollTop += params.delta;
   else
     throw new Error('No parameter to indicate scroll position');
 }
@@ -114,7 +114,7 @@ function calculateScrollDeltaForTab(tab) {
     return 0;
 
   const tabRect       = tab.getBoundingClientRect();
-  const containerRect = gTabBar.getBoundingClientRect();
+  const containerRect = mTabBar.getBoundingClientRect();
   const offset        = getOffsetForAnimatingTab(tab) + smoothScrollTo.currentOffset;
   let delta = 0;
   if (containerRect.bottom < tabRect.bottom + offset) { // should scroll down
@@ -148,7 +148,7 @@ async function smoothScrollTo(params = {}) {
 
   smoothScrollTo.stopped = false;
 
-  const startPosition = gTabBar.scrollTop;
+  const startPosition = mTabBar.scrollTop;
   let delta, endPosition;
   if (params.tab) {
     delta       = calculateScrollDeltaForTab(params.tab);
@@ -207,7 +207,7 @@ smoothScrollTo.currentOffset= 0;
 
 async function smoothScrollBy(delta) {
   return smoothScrollTo({
-    position: gTabBar.scrollTop + delta
+    position: mTabBar.scrollTop + delta
   });
 }
 
@@ -276,7 +276,7 @@ export async function scrollToTab(tab, options = {}) {
   if (hasAnchor) {
     const targetTabRect = tab.getBoundingClientRect();
     const anchorTabRect = anchorTab.getBoundingClientRect();
-    const containerRect = gTabBar.getBoundingClientRect();
+    const containerRect = mTabBar.getBoundingClientRect();
     const offset        = getOffsetForAnimatingTab(tab);
     let delta = calculateScrollDeltaForTab(tab);
     if (targetTabRect.top > anchorTabRect.top) {
@@ -305,7 +305,7 @@ export async function scrollToTab(tab, options = {}) {
       });
     }
     await scrollTo(Object.assign({}, options, {
-      position: gTabBar.scrollTop + delta
+      position: mTabBar.scrollTop + delta
     }));
   }
   else {
@@ -356,18 +356,18 @@ function scrollToTabs(tabs) {
 */
 
 export function autoScrollOnMouseEvent(event) {
-  if (!gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
+  if (!mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW))
     return;
 
-  const tabbarRect = gTabBar.getBoundingClientRect();
+  const tabbarRect = mTabBar.getBoundingClientRect();
   const scrollPixels = Math.round(Size.getTabHeight() * 0.5);
   if (event.clientY < tabbarRect.top + autoScrollOnMouseEvent.areaSize) {
-    if (gTabBar.scrollTop > 0)
-      gTabBar.scrollTop -= scrollPixels;
+    if (mTabBar.scrollTop > 0)
+      mTabBar.scrollTop -= scrollPixels;
   }
   else if (event.clientY > tabbarRect.bottom - autoScrollOnMouseEvent.areaSize) {
-    if (gTabBar.scrollTop < gTabBar.scrollTopMax)
-      gTabBar.scrollTop += scrollPixels;
+    if (mTabBar.scrollTop < mTabBar.scrollTopMax)
+      mTabBar.scrollTop += scrollPixels;
   }
 }
 autoScrollOnMouseEvent.areaSize = 20;
@@ -383,13 +383,13 @@ async function notifyOutOfViewTab(tab) {
   cancelNotifyOutOfViewTab();
   if (tab && isTabInViewport(tab))
     return;
-  gOutOfViewTabNotifier.classList.add('notifying');
+  mOutOfViewTabNotifier.classList.add('notifying');
   await wait(configs.outOfViewTabNotifyDuration);
   cancelNotifyOutOfViewTab();
 }
 
 function cancelNotifyOutOfViewTab() {
-  gOutOfViewTabNotifier.classList.remove('notifying');
+  mOutOfViewTabNotifier.classList.remove('notifying');
 }
 
 
@@ -408,7 +408,7 @@ async function onWheel(event) {
 
   TSTAPI.notifyScrolled({
     tab:             EventUtils.getTabFromEvent(event),
-    scrollContainer: gTabBar,
+    scrollContainer: mTabBar,
     event:           event
   });
 }
@@ -425,7 +425,7 @@ function reserveToSaveScrollPosition() {
     browser.sessions.setWindowValue(
       Tabs.getWindow(),
       Constants.kWINDOW_STATE_SCROLL_POSITION,
-      gTabBar.scrollTop
+      mTabBar.scrollTop
     );
   }, 150);
 }
@@ -486,7 +486,7 @@ function onMessage(message, _sender, _respond) {
           break;
 
         case 'pageup':
-          smoothScrollBy(-gTabBar.getBoundingClientRect().height + Size.getTabHeight());
+          smoothScrollBy(-mTabBar.getBoundingClientRect().height + Size.getTabHeight());
           break;
 
         case 'linedown':
@@ -494,7 +494,7 @@ function onMessage(message, _sender, _respond) {
           break;
 
         case 'pagedown':
-          smoothScrollBy(gTabBar.getBoundingClientRect().height - Size.getTabHeight());
+          smoothScrollBy(mTabBar.getBoundingClientRect().height - Size.getTabHeight());
           break;
 
         default:
@@ -504,7 +504,7 @@ function onMessage(message, _sender, _respond) {
               break;
 
             case 'bottom':
-              smoothScrollTo({ position: gTabBar.scrollTopMax });
+              smoothScrollTo({ position: mTabBar.scrollTopMax });
               break;
           }
           break;

@@ -5,16 +5,16 @@
 */
 'use strict';
 
-let gCount = 0;
+let mCount = 0;
 
 export function increment() {
-  gCount++;
+  mCount++;
 }
 
 export function decrement() {
-  gCount--;
+  mCount--;
 }
 
 export function hasMultipleRestoringTabs() {
-  return gCount > 1;
+  return mCount > 1;
 }

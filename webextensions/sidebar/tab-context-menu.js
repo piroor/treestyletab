@@ -34,22 +34,22 @@ function log(...args) {
 
 export const onTabsClosing = new EventListenerManager();
 
-let gUI;
-let gMenu;
+let mUI;
+let mMenu;
 
-let gContextTab      = null;
-let gLastOpenOptions = null;
-let gContextWindowId = null;
-let gIsDirty         = false;
+let mContextTab      = null;
+let mLastOpenOptions = null;
+let mContextWindowId = null;
+let mIsDirty         = false;
 
 const mExtraItems = new Map();
 
 export function init() {
-  gMenu = document.querySelector('#tabContextMenu');
+  mMenu = document.querySelector('#tabContextMenu');
   document.addEventListener('contextmenu', onContextMenu, { capture: true });
 
-  gUI = new MenuUI({
-    root: gMenu,
+  mUI = new MenuUI({
+    root: mMenu,
     onCommand,
     appearance:        'menu',
     animationDuration: configs.animation ? configs.collapseDuration : 0.001,
@@ -64,20 +64,20 @@ export function init() {
     type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
   }).then(aItems => {
     importExtraItems(aItems);
-    gIsDirty = true;
+    mIsDirty = true;
   });
 }
 
 async function rebuild() {
-  if (!gIsDirty)
+  if (!mIsDirty)
     return;
 
-  gIsDirty = false;
+  mIsDirty = false;
 
-  const firstExtraItem = gMenu.querySelector('.extra');
+  const firstExtraItem = mMenu.querySelector('.extra');
   if (firstExtraItem) {
     const range = document.createRange();
-    range.selectNodeContents(gMenu);
+    range.selectNodeContents(mMenu);
     range.setStartBefore(firstExtraItem);
     range.deleteContents();
     range.detach();
@@ -102,7 +102,7 @@ async function rebuild() {
     for (const item of extraItems) {
       if (item.contexts && !item.contexts.includes('tab'))
         continue;
-      if (gContextTab &&
+      if (mContextTab &&
           item.documentUrlPatterns &&
           !matchesToCurrentTab(item.documentUrlPatterns))
         continue;
@@ -145,7 +145,7 @@ async function rebuild() {
   separator.classList.add('extra');
   separator.classList.add('separator');
   extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
-  gMenu.appendChild(extraItemNodes);
+  mMenu.appendChild(extraItemNodes);
 }
 
 function getAddonName(id) {
@@ -221,7 +221,7 @@ function matchesToCurrentTab(aPatterns) {
   if (!Array.isArray(aPatterns))
     aPatterns = [aPatterns];
   for (const pattern of aPatterns) {
-    if (matchPatternToRegExp(pattern).test(gContextTab.url))
+    if (matchPatternToRegExp(pattern).test(mContextTab.url))
       return true;
   }
   return false;
@@ -245,69 +245,69 @@ function matchPatternToRegExp(aPattern) {
 
 export async function open(options = {}) {
   await close();
-  gLastOpenOptions = options;
-  gContextTab      = options.tab;
-  gContextWindowId = options.windowId || (gContextTab && gContextTab.windowId);
+  mLastOpenOptions = options;
+  mContextTab      = options.tab;
+  mContextWindowId = options.windowId || (mContextTab && mContextTab.windowId);
   await rebuild();
-  if (gIsDirty) {
+  if (mIsDirty) {
     return await open(options);
   }
   applyContext();
   const originalCanceller = options.canceller;
   options.canceller = () => {
-    return (typeof originalCanceller == 'function' && originalCanceller()) || gIsDirty;
+    return (typeof originalCanceller == 'function' && originalCanceller()) || mIsDirty;
   };
-  await gUI.open(options);
-  if (gIsDirty) {
+  await mUI.open(options);
+  if (mIsDirty) {
     return await open(options);
   }
 }
 
 export async function close() {
-  await gUI.close();
-  gMenu.removeAttribute('data-tab-id');
-  gMenu.removeAttribute('data-tab-states');
-  gContextTab      = null;
-  gContextWindowId = null;
-  gLastOpenOptions = null;
+  await mUI.close();
+  mMenu.removeAttribute('data-tab-id');
+  mMenu.removeAttribute('data-tab-states');
+  mContextTab      = null;
+  mContextWindowId = null;
+  mLastOpenOptions = null;
 }
 
 function applyContext() {
-  if (gContextTab) {
-    gMenu.setAttribute('data-tab-id', gContextTab.id);
+  if (mContextTab) {
+    mMenu.setAttribute('data-tab-id', mContextTab.id);
     const states = [];
-    if (gContextTab.active)
+    if (mContextTab.active)
       states.push('active');
-    if (gContextTab.pinned)
+    if (mContextTab.pinned)
       states.push('pinned');
-    if (gContextTab.audible)
+    if (mContextTab.audible)
       states.push('audible');
-    if (gContextTab.mutedInfo && gContextTab.mutedInfo.muted)
+    if (mContextTab.mutedInfo && mContextTab.mutedInfo.muted)
       states.push('muted');
-    if (gContextTab.discarded)
+    if (mContextTab.discarded)
       states.push('discarded');
-    if (gContextTab.incognito)
+    if (mContextTab.incognito)
       states.push('incognito');
-    gMenu.setAttribute('data-tab-states', states.join(' '));
+    mMenu.setAttribute('data-tab-states', states.join(' '));
   }
 
   if (Tabs.getTabs().length > 1)
-    gMenu.classList.add('has-multiple-tabs');
+    mMenu.classList.add('has-multiple-tabs');
   else
-    gMenu.classList.remove('has-multiple-tabs');
+    mMenu.classList.remove('has-multiple-tabs');
 
   switch (Tabs.getNormalTabs().length) {
     case 0:
-      gMenu.classList.remove('has-normal-tabs');
-      gMenu.classList.remove('has-multiple-normal-tabs');
+      mMenu.classList.remove('has-normal-tabs');
+      mMenu.classList.remove('has-multiple-normal-tabs');
       break;
     case 1:
-      gMenu.classList.add('has-normal-tabs');
-      gMenu.classList.remove('has-multiple-normal-tabs');
+      mMenu.classList.add('has-normal-tabs');
+      mMenu.classList.remove('has-multiple-normal-tabs');
       break;
     default:
-      gMenu.classList.add('has-normal-tabs');
-      gMenu.classList.add('has-multiple-normal-tabs');
+      mMenu.classList.add('has-normal-tabs');
+      mMenu.classList.add('has-multiple-normal-tabs');
       break;
   }
 }
@@ -320,19 +320,19 @@ async function onCommand(item, event) {
 
   switch (item.id) {
     case 'context_reloadTab':
-      browser.tabs.reload(gContextTab.id);
+      browser.tabs.reload(mContextTab.id);
       break;
     case 'context_toggleMuteTab-mute':
-      browser.tabs.update(gContextTab.id, { muted: true });
+      browser.tabs.update(mContextTab.id, { muted: true });
       break;
     case 'context_toggleMuteTab-unmute':
-      browser.tabs.update(gContextTab.id, { muted: false });
+      browser.tabs.update(mContextTab.id, { muted: false });
       break;
     case 'context_pinTab':
-      browser.tabs.update(gContextTab.id, { pinned: true });
+      browser.tabs.update(mContextTab.id, { pinned: true });
       break;
     case 'context_unpinTab':
-      browser.tabs.update(gContextTab.id, { pinned: false });
+      browser.tabs.update(mContextTab.id, { pinned: false });
       break;
     case 'context_duplicateTab':
       /*
@@ -342,13 +342,13 @@ async function onCommand(item, event) {
         duplicated tab. For more details, see also:
         https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
       */
-      // browser.tabs.duplicate(gContextTab.id);
+      // browser.tabs.duplicate(mContextTab.id);
       return (async () => {
-        const sourceTab = Tabs.getTabById(gContextTab);
+        const sourceTab = Tabs.getTabById(mContextTab);
         log('source tab: ', sourceTab, !!sourceTab.apiTab);
         const duplicatedTabs = await Tree.moveTabs([sourceTab], {
           duplicate:           true,
-          destinationWindowId: gContextWindowId,
+          destinationWindowId: mContextWindowId,
           insertAfter:         sourceTab,
           inRemote:            true
         });
@@ -360,18 +360,18 @@ async function onCommand(item, event) {
       })();
     case 'context_openTabInWindow':
       await browser.windows.create({
-        tabId:     gContextTab.id,
-        incognito: gContextTab.incognito
+        tabId:     mContextTab.id,
+        incognito: mContextTab.incognito
       });
       break;
     case 'context_reloadAllTabs': {
-      const apiTabs = await browser.tabs.query({ windowId: gContextWindowId });
+      const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
       for (const apiTab of apiTabs) {
         browser.tabs.reload(apiTab.id);
       }
     }; break;
     case 'context_bookmarkAllTabs': {
-      const apiTabs = await browser.tabs.query({ windowId: gContextWindowId });
+      const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
       const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
       if (folder)
         browser.bookmarks.get(folder.parentId).then(folders => {
@@ -387,27 +387,27 @@ async function onCommand(item, event) {
         });
     }; break;
     case 'context_closeTabsToTheEnd': {
-      const apiTabs = await browser.tabs.query({ windowId: gContextWindowId });
+      const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
       let after = false;
       const closeAPITabs = [];
       for (const apiTab of apiTabs) {
-        if (apiTab.id == gContextTab.id) {
+        if (apiTab.id == mContextTab.id) {
           after = true;
           continue;
         }
         if (after && !apiTab.pinned)
           closeAPITabs.push(apiTab);
       }
-      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: gContextWindowId })) === false;
+      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: mContextWindowId })) === false;
       if (canceled)
         return;
       browser.tabs.remove(closeAPITabs.map(aPITab => aPITab.id));
     }; break;
     case 'context_closeOtherTabs': {
-      const apiTabId = gContextTab.id; // cache it for delayed tasks!
-      const apiTabs  = await browser.tabs.query({ windowId: gContextWindowId });
+      const apiTabId = mContextTab.id; // cache it for delayed tasks!
+      const apiTabs  = await browser.tabs.query({ windowId: mContextWindowId });
       const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && aPITab.id != apiTabId).map(aPITab => aPITab.id);
-      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: gContextWindowId })) === false;
+      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: mContextWindowId })) === false;
       if (canceled)
         return;
       browser.tabs.remove(closeAPITabs);
@@ -418,7 +418,7 @@ async function onCommand(item, event) {
         browser.sessions.restore(sessions[0].tab.sessionId);
     }; break;
     case 'context_closeTab':
-      browser.tabs.remove(gContextTab.id);
+      browser.tabs.remove(mContextTab.id);
       break;
 
     default: {
@@ -450,7 +450,7 @@ async function onCommand(item, event) {
             srcUrl:           null,
             wasChecked:       false
           },
-          tab: gContextTab || null
+          tab: mContextTab || null
         };
         const owner = item.getAttribute('data-item-owner-id');
         if (owner == browser.runtime.id)
@@ -467,9 +467,9 @@ function onMessage(message, _aSender) {
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_UPDATED: {
       importExtraItems(message.items);
-      gIsDirty = true;
-      if (gUI.opened)
-        open(gLastOpenOptions);
+      mIsDirty = true;
+      if (mUI.opened)
+        open(mLastOpenOptions);
     }; break;
   }
 }

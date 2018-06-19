@@ -54,11 +54,11 @@ function log(...args) {
 }
 
 let mTargetWindow;
-let gTabBar;
+let mTabBar;
 
 export function init() {
   mTargetWindow = Tabs.getWindow();
-  gTabBar       = document.querySelector('#tabbar');
+  mTabBar       = document.querySelector('#tabbar');
   configs.$addObserver(onConfigChange);
 }
 
@@ -73,7 +73,7 @@ export function reposition(options = {}) {
 
   document.documentElement.classList.add('have-pinned-tabs');
 
-  const containerWidth = gTabBar.getBoundingClientRect().width;
+  const containerWidth = mTabBar.getBoundingClientRect().width;
   const maxWidth       = containerWidth;
   const faviconized    = configs.faviconizePinnedTabs;
 
@@ -84,7 +84,7 @@ export function reposition(options = {}) {
   let col    = 0;
   let row    = 0;
 
-  gTabBar.style.marginTop = `${height * maxRow}px`;
+  mTabBar.style.marginTop = `${height * maxRow}px`;
   for (const item of pinnedTabs) {
     const style = item.style;
     if (options.justNow)
@@ -136,7 +136,7 @@ export function reserveToReposition(options = {}) {
 }
 
 function reset() {
-  gTabBar.style.marginTop = '';
+  mTabBar.style.marginTop = '';
   const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
   pinnedTabs.forEach(clearStyle);
 }

@@ -49,15 +49,15 @@ export const onBuilt   = new EventListenerManager();
 export const onReady   = new EventListenerManager();
 
 
-let gStyle;
+let mStyle;
 let mTargetWindow = null;
 
-const gTabBar                     = document.querySelector('#tabbar');
-const gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
-const gStyleLoader                = document.querySelector('#style-loader');
-const gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
-const gUserStyleRules             = document.querySelector('#user-style-rules');
-const gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
+const mTabBar                     = document.querySelector('#tabbar');
+const mAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
+const mStyleLoader                = document.querySelector('#style-loader');
+const mBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
+const mUserStyleRules             = document.querySelector('#user-style-rules');
+const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
@@ -144,7 +144,7 @@ export async function init() {
       document.addEventListener('focus', onFocus);
       document.addEventListener('blur', onBlur);
       window.addEventListener('resize', onResize);
-      gTabBar.addEventListener('transitionend', onTransisionEnd);
+      mTabBar.addEventListener('transitionend', onTransisionEnd);
 
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
@@ -197,45 +197,45 @@ export async function init() {
 }
 
 function applyStyle(style) {
-  gStyle = style || configs.style;
-  switch (gStyle) {
+  mStyle = style || configs.style;
+  switch (mStyle) {
     case 'metal':
-      gStyleLoader.setAttribute('href', 'styles/metal/metal.css');
+      mStyleLoader.setAttribute('href', 'styles/metal/metal.css');
       break;
     case 'sidebar':
-      gStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
+      mStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
       break;
     case 'mixed':
-      gStyleLoader.setAttribute('href', 'styles/square/mixed.css');
+      mStyleLoader.setAttribute('href', 'styles/square/mixed.css');
       break;
     case 'vertigo':
-      gStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
+      mStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
       break;
     case 'plain-dark':
-      gStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
+      mStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
       break;
     case 'plain':
     case 'flat': // for backward compatibility, fall back to plain.
-      gStyleLoader.setAttribute('href', 'styles/square/plain.css');
+      mStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
     case 'highcontrast':
-      gStyleLoader.setAttribute('href', 'styles/square/highcontrast.css');
+      mStyleLoader.setAttribute('href', 'styles/square/highcontrast.css');
       break;
     default:
       // as the base of customization. see also:
       // https://github.com/piroor/treestyletab/issues/1604
-      gStyleLoader.setAttribute('href', 'data:text/css,');
+      mStyleLoader.setAttribute('href', 'data:text/css,');
       break;
   }
   return new Promise((resolve, _aReject) => {
-    gStyleLoader.addEventListener('load', () => {
+    mStyleLoader.addEventListener('load', () => {
       nextFrame().then(resolve);
     }, { once: true });
   });
 }
 
 function applyUserStyleRules() {
-  gUserStyleRules.textContent = configs.userStyleRules || '';
+  mUserStyleRules.textContent = configs.userStyleRules || '';
 }
 
 function applyBrowserTheme(aTheme) {
@@ -253,7 +253,7 @@ function applyBrowserTheme(aTheme) {
   }`;
 
   if (!aTheme || !aTheme.colors) {
-    gBrowserThemeDefinition.textContent = defaultColors;
+    mBrowserThemeDefinition.textContent = defaultColors;
     return;
   }
   const extraColors = [];
@@ -275,7 +275,7 @@ function applyBrowserTheme(aTheme) {
     extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
   if (aTheme.colors.tab_loading)
     extraColors.push(`--browser-loading-indicator: ${aTheme.colors.tab_loading}`);
-  gBrowserThemeDefinition.textContent = `
+  mBrowserThemeDefinition.textContent = `
     ${defaultColors}
     :root {
       --browser-bg-base:         ${themeBaseColor};
@@ -305,7 +305,7 @@ function updateContextualIdentitiesStyle() {
       }
     `);
   });
-  gContextualIdentitiesStyle.textContent = definitions.join('\n');
+  mContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
 
 function updateContextualIdentitiesSelector() {
@@ -467,19 +467,19 @@ function updateTabbarLayout(params = {}) {
   }
   //log('updateTabbarLayout');
   const range = document.createRange();
-  range.selectNodeContents(gTabBar);
-  const containerHeight = gTabBar.getBoundingClientRect().height;
+  range.selectNodeContents(mTabBar);
+  const containerHeight = mTabBar.getBoundingClientRect().height;
   const contentHeight   = range.getBoundingClientRect().height;
   //log('height: ', { container: containerHeight, content: contentHeight });
   const overflow = containerHeight < contentHeight;
-  if (overflow && !gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
+  if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('overflow');
-    gTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
+    mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
     const range = document.createRange();
-    range.selectNode(gAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
+    range.selectNode(mAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
     const offset = range.getBoundingClientRect().height;
     range.detach();
-    gTabBar.style.bottom = `${offset}px`;
+    mTabBar.style.bottom = `${offset}px`;
     nextFrame().then(() => {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
@@ -502,10 +502,10 @@ function updateTabbarLayout(params = {}) {
       }
     });
   }
-  else if (!overflow && gTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
+  else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('underflow');
-    gTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
-    gTabBar.style.bottom = '';
+    mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
+    mTabBar.style.bottom = '';
   }
 
   if (params.justNow)
@@ -790,9 +790,9 @@ function onConfigChange(changedKey) {
 }
 
 
-const gTreeChangesFromRemote = new Set();
+const mTreeChangesFromRemote = new Set();
 function waitUntilAllTreeChangesFromRemoteAreComplete() {
-  return Promise.all(Array.from(gTreeChangesFromRemote.values()));
+  return Promise.all(Array.from(mTreeChangesFromRemote.values()));
 }
 
 function onMessage(message, _sender, _respond) {
@@ -912,9 +912,9 @@ function onMessage(message, _sender, _respond) {
               inRemote:     false,
               broadcast:    false
             }));
-          gTreeChangesFromRemote.delete(promisedComplete);
+          mTreeChangesFromRemote.delete(promisedComplete);
         })();
-        gTreeChangesFromRemote.add(promisedComplete);
+        mTreeChangesFromRemote.add(promisedComplete);
         return promisedComplete;
       }
     }; break;
@@ -929,9 +929,9 @@ function onMessage(message, _sender, _respond) {
           const tab = Tabs.getTabById(message.tab);
           if (tab)
             Tree.detachTab(tab, message);
-          gTreeChangesFromRemote.delete(promisedComplete);
+          mTreeChangesFromRemote.delete(promisedComplete);
         })();
-        gTreeChangesFromRemote.add(promisedComplete);
+        mTreeChangesFromRemote.add(promisedComplete);
         return promisedComplete;
       }
     }; break;
