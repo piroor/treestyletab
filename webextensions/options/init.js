@@ -87,6 +87,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  configs.$loaded.then(() => {
   for (const fieldset of Array.from(document.querySelectorAll('fieldset.collapsible'))) {
     if (configs.optionsExpandedGroups.includes(fieldset.id))
       fieldset.classList.remove('collapsed');
@@ -116,7 +117,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  configs.$loaded.then(() => {
     for (const heading of Array.from(document.querySelectorAll('body > section > h1'))) {
       const section = heading.parentNode;
       section.style.maxHeight = `${heading.offsetHeight}px`;
