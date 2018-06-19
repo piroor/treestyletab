@@ -268,13 +268,15 @@ Tabs.onBuilt.addListener((tab, info) => {
   }
 });
 
-Tabs.onCreated.addListener(tab => {
+Tabs.onCreated.addListener((tab, _info) => {
   tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
 });
 
-Tabs.onRemoving.addListener(reserveToUpdateLoadingState);
+Tabs.onRemoving.addListener((_tab, _info) => {
+  reserveToUpdateLoadingState();
+});
 
-Tabs.onRemoved.addListener(tab => {
+Tabs.onRemoved.addListener((tab, _info) => {
   if (Tabs.isCollapsed(tab) ||
       !configs.animation)
     return;
@@ -289,7 +291,7 @@ Tabs.onRemoved.addListener(tab => {
 
 const mTabWasVisibleBeforeMoving = new WeakMap();
 
-Tabs.onMoving.addListener(tab => {
+Tabs.onMoving.addListener((tab, _info) => {
   tab.classList.add(Constants.kTAB_STATE_MOVING);
   if (!configs.animation ||
       Tabs.isPinned(tab) ||
@@ -302,7 +304,7 @@ Tabs.onMoving.addListener(tab => {
   });
 });
 
-Tabs.onMoved.addListener(async tab => {
+Tabs.onMoved.addListener(async (tab, _info) => {
   if (mInitialized)
     reserveToUpdateTooltip(Tabs.getParentTab(tab));
 
@@ -330,23 +332,25 @@ Tabs.onStateChanged.addListener(tab => {
   reserveToUpdateLoadingState();
 });
 
-Tabs.onLabelUpdated.addListener(reserveToUpdateTooltip);
+Tabs.onLabelUpdated.addListener(tab => {
+  reserveToUpdateTooltip(tab);
+});
 
-Tabs.onFaviconUpdated.addListener((tab, uRL) => {
+Tabs.onFaviconUpdated.addListener((tab, url) => {
   TabFavIconHelper.loadToImage({
     image: getFavIcon(tab).firstChild,
     tab:   tab.apiTab,
-    url:   uRL
+    url
   });
 });
 
-Tabs.onCollapsedStateChanged.addListener(reserveToUpdateLoadingState);
+Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadingState(tab); });
 
-Tabs.onUpdated.addListener(updateSoundButtonTooltip);
+Tabs.onUpdated.addListener((tab, _info) => { updateSoundButtonTooltip(tab); });
 
-Tabs.onParentTabUpdated.addListener(updateSoundButtonTooltip);
+Tabs.onParentTabUpdated.addListener(tab => { updateSoundButtonTooltip(tab); });
 
-Tabs.onDetached.addListener(tab => {
+Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(tab))
     return;
@@ -398,7 +402,7 @@ Tree.onDetached.addListener((_aTab, detachInfo = {}) => {
   }
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener(tab => {
+Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
   updateTwisty(tab);
   updateClosebox(tab);
   if (mInitialized)

@@ -611,7 +611,7 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
     }
   }
 
-  onSubtreeCollapsedStateChanging.dispatch(tab);
+  onSubtreeCollapsedStateChanging.dispatch(tab, { collapsed: params.collapsed });
 }
 
 export function manualCollapseExpandSubtree(tab, params = {}) {

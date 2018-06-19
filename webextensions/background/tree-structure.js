@@ -25,13 +25,13 @@ function log(...args) {
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
 export function startTracking() {
-  Tabs.onCreated.addListener(tab => reserveToSaveTreeStructure(tab));
-  Tabs.onRemoved.addListener(tab => reserveToSaveTreeStructure(tab));
-  Tabs.onMoved.addListener(tab => reserveToSaveTreeStructure(tab));
-  Tabs.onUpdated.addListener(tab => reserveToSaveTreeStructure(tab));
-  Tree.onAttached.addListener(tab => reserveToSaveTreeStructure(tab));
-  Tree.onDetached.addListener(tab => reserveToSaveTreeStructure(tab));
-  Tree.onSubtreeCollapsedStateChanging.addListener(tab => reserveToSaveTreeStructure(tab));
+  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onRemoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onUpdated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tree.onSubtreeCollapsedStateChanging.addListener(tab => { reserveToSaveTreeStructure(tab); });
 }
 
 export function reserveToSaveTreeStructure(hint) {

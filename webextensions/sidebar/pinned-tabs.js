@@ -148,7 +148,7 @@ function clearStyle(tab) {
   style.left = style.right = style.top = style.bottom;
 }
 
-Tabs.onPinned.addListener(() => {
+Tabs.onPinned.addListener(_tab => {
   reserveToReposition();
 });
 
@@ -157,16 +157,16 @@ Tabs.onUnpinned.addListener(tab => {
   reserveToReposition();
 });
 
-Tabs.onShown.addListener(() => {
+Tabs.onShown.addListener(_tab => {
   reserveToReposition();
 });
 
-Tabs.onHidden.addListener(() => {
+Tabs.onHidden.addListener(_tab => {
   reserveToReposition();
 });
 
-function onConfigChange(aChangedKey) {
-  switch (aChangedKey) {
+function onConfigChange(key) {
+  switch (key) {
     case 'faviconizePinnedTabs':
       reserveToReposition();
       break;

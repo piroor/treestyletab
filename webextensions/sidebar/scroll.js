@@ -431,7 +431,7 @@ function reserveToSaveScrollPosition() {
 }
 
 
-Tabs.onCreated.addListener(tab => {
+Tabs.onCreated.addListener((tab, _info) => {
   if (configs.animation) {
     wait(10).then(() => { // wait until the tab is moved by TST itself
       const parent = Tabs.getParentTab(tab);
@@ -455,12 +455,12 @@ Tabs.onCreated.addListener(tab => {
   }
 });
 
-Tabs.onActivated.addListener(scrollToTab);
+Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab); });
 
-Tabs.onUnpinned.addListener(scrollToTab);
+Tabs.onUnpinned.addListener(tab => { scrollToTab(tab); });
 
 
-function onMessage(message, _aSender, _aRespond) {
+function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string')
     return;

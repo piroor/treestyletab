@@ -91,7 +91,7 @@ export async function init() {
       PinnedTabs.init();
       Indent.init();
       SidebarCache.init();
-      SidebarCache.onRestored.addListener(DragAndDrop.clearDropPosition);
+      SidebarCache.onRestored.addListener(() => { DragAndDrop.clearDropPosition(); });
     })(),
     configs.$loaded
   ]);
@@ -515,7 +515,7 @@ function updateTabbarLayout(params = {}) {
 }
 
 
-function onFocus(_aEvent) {
+function onFocus(_event) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
     windowId: mTargetWindow
@@ -529,7 +529,7 @@ function onBlur(_aEvent) {
   });
 }
 
-function onResize(_aEvent) {
+function onResize(_event) {
   reserveToUpdateTabbarLayout({
     reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
   });
@@ -546,14 +546,14 @@ function onTransisionEnd(event) {
   });
 }
 
-function onBrowserThemeChanged(aUpdateInfo) {
-  if (!aUpdateInfo.windowId || // reset to default
-      aUpdateInfo.windowId == mTargetWindow)
-    applyBrowserTheme(aUpdateInfo.theme);
+function onBrowserThemeChanged(updateInfo) {
+  if (!updateInfo.windowId || // reset to default
+      updateInfo.windowId == mTargetWindow)
+    applyBrowserTheme(updateInfo.theme);
 }
 
 
-Tabs.onCreated.addListener(_aTab => {
+Tabs.onCreated.addListener((_tab, _info) => {
   reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
@@ -580,14 +580,14 @@ Tabs.onRemoving.addListener((tab, closeInfo) => {
   });
 });
 
-Tabs.onMoved.addListener(_aTab => {
+Tabs.onMoved.addListener((_tab, _info) => {
   reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
     timeout: configs.collapseDuration
   });
 });
 
-Tabs.onDetached.addListener(tab => {
+Tabs.onDetached.addListener((tab, _info) => {
   if (!Tabs.ensureLivingTab(tab))
     return;
   // We don't need to update children because they are controlled by bacgkround.
@@ -660,9 +660,9 @@ ContextualIdentities.onUpdated.addListener(() => {
 });
 
 
-function onConfigChange(aChangedKey) {
+function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
-  switch (aChangedKey) {
+  switch (changedKey) {
     case 'debug': {
       for (const tab of Tabs.getAllTabs()) {
         TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
@@ -767,21 +767,21 @@ function onConfigChange(aChangedKey) {
       break;
 
     case 'showContextualIdentitiesSelector':
-      if (configs[aChangedKey])
+      if (configs[changedKey])
         rootClasses.add(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       else
         rootClasses.remove(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
       break;
 
     case 'showNewTabActionSelector':
-      if (configs[aChangedKey])
+      if (configs[changedKey])
         rootClasses.add(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
       else
         rootClasses.remove(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
       break;
 
     case 'simulateSVGContextFill':
-      if (configs[aChangedKey])
+      if (configs[changedKey])
         rootClasses.add('simulate-svg-context-fill');
       else
         rootClasses.remove('simulate-svg-context-fill');
@@ -795,7 +795,7 @@ function waitUntilAllTreeChangesFromRemoteAreComplete() {
   return Promise.all(Array.from(gTreeChangesFromRemote.values()));
 }
 
-function onMessage(message, _aSender, _aRespond) {
+function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||
       message.type.indexOf('treestyletab:') != 0)

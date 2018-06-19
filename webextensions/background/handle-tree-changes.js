@@ -139,7 +139,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   Background.reserveToUpdateRelatedGroupTabs(tab);
 });
 
-Tree.onDetached.addListener(async (tab, _aDetachInfo) => {
+Tree.onDetached.addListener((tab, _detachInfo) => {
   if (tab.apiTab.openerTabId &&
       configs.syncParentTabAndOpenerTab) {
     tab.apiTab.openerTabId = tab.apiTab.id;

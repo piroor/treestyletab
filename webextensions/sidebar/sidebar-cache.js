@@ -286,32 +286,37 @@ async function updateCachedTabbar() {
 }
 
 
-Tabs.onFaviconUpdated.addListener(async () => {
-  await wait(0);
+Tabs.onFaviconUpdated.addListener((_tab, _url) => {
+  wait(0).then(() => {
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  });
 });
 
-Tabs.onUpdated.addListener(async () => {
-  await wait(0);
+Tabs.onUpdated.addListener((_tab, _url) => {
+  wait(0).then(() => {
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  });
 });
 
-Tabs.onLabelUpdated.addListener(async () => {
-  await wait(0);
+Tabs.onLabelUpdated.addListener(_tab => {
+  wait(0).then(() => {
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  });
 });
 
-Tabs.onParentTabUpdated.addListener(async () => {
-  await wait(0);
+Tabs.onParentTabUpdated.addListener(async _tab => {
+  wait(0).then(() => {
   markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  });
 });
 
-Tabs.onCreated.addListener(async () => {
-  await wait(0);
+Tabs.onCreated.addListener((_tab, _info) => {
+  wait(0).then(() => {
   reserveToUpdateCachedTabbar();
+  });
 });
 
-Tabs.onRemoved.addListener(async () => {
+Tabs.onRemoved.addListener(async (_tab, _info) => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   await wait(0);
@@ -321,58 +326,61 @@ Tabs.onRemoved.addListener(async () => {
   }
 });
 
-Tabs.onMoved.addListener(() => {
+Tabs.onMoved.addListener((_tab, _info) => {
   reserveToUpdateCachedTabbar();
 });
 
-Tree.onLevelChanged.addListener(async () => {
-  await wait(0);
+Tree.onLevelChanged.addListener(_tab => {
+  wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
+  });
 });
 
-Tabs.onDetached.addListener(async tab => {
+Tabs.onDetached.addListener(async (tab, _info) => {
   if (!Tabs.ensureLivingTab(tab))
     return;
   await wait(0);
   reserveToUpdateCachedTabbar();
 });
 
-Tree.onAttached.addListener(async () => {
-  await wait(0);
+Tree.onAttached.addListener((_tab, _info) => {
+  wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
+  });
 });
 
-Tree.onDetached.addListener(async () => {
-  await wait(0);
+Tree.onDetached.addListener((_tab, _info) => {
+  wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToUpdateCachedTabbar();
+  });
 });
 
-Tabs.onPinned.addListener(() => {
+Tabs.onPinned.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 
-Tabs.onUnpinned.addListener(() => {
+Tabs.onUnpinned.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 
-Tabs.onShown.addListener(() => {
+Tabs.onShown.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 
-Tabs.onHidden.addListener(() => {
+Tabs.onHidden.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 
-function onConfigChange(aChangedKey) {
-  switch (aChangedKey) {
+function onConfigChange(changedKey) {
+  switch (changedKey) {
     case 'useCachedTree':
-      if (!configs[aChangedKey]) {
+      if (!configs[changedKey]) {
         reserveToUpdateCachedTabbar();
       }
       else {

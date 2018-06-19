@@ -515,13 +515,13 @@ function onContextMenu(event) {
 }
 
 // don't return promise, to avoid needless "await"
-Tabs.onRemoving.addListener(() => { close(); });
-Tabs.onMoving.addListener(() => { close(); });
-Tabs.onActivated.addListener(() => { close(); });
-Tabs.onCreating.addListener(() => { close(); });
-Tabs.onPinned.addListener(() => { close(); });
-Tabs.onUnpinned.addListener(() => { close(); });
-Tabs.onShown.addListener(() => { close(); });
-Tabs.onHidden.addListener(() => { close(); });
-Tree.onAttached.addListener(() => { close(); });
-Tree.onDetached.addListener(() => { close(); });
+Tabs.onRemoving.addListener((_tab, _info) => { close(); });
+Tabs.onMoving.addListener((_tab, _info) => { close(); });
+Tabs.onActivated.addListener((_tab, _info) => { close(); });
+Tabs.onCreating.addListener((_tab, _info) => { close(); });
+Tabs.onPinned.addListener(_tab => { close(); });
+Tabs.onUnpinned.addListener(_tab => { close(); });
+Tabs.onShown.addListener(_tab => { close(); });
+Tabs.onHidden.addListener(_tab => { close(); });
+Tree.onAttached.addListener((_tab, _info) => { close(); });
+Tree.onDetached.addListener((_tab, _info) => { close(); });

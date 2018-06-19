@@ -74,10 +74,10 @@ export async function refreshItems() {
   }
 }
 
-export const onClick = (info, aPITab) => {
-  log('context menu item clicked: ', info, aPITab);
+export const onClick = (info, apiTab) => {
+  log('context menu item clicked: ', info, apiTab);
 
-  const contextTab = Tabs.getTabById(aPITab);
+  const contextTab = Tabs.getTabById(apiTab);
 
   switch (info.menuItemId) {
     case 'reloadTree':

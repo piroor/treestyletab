@@ -112,7 +112,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo) {
   }
 }
 
-Tabs.onMoved.addListener(async (tab, moveInfo) => {
+Tabs.onMoved.addListener((tab, moveInfo) => {
   if (moveInfo.byInternalOperation ||
       Tabs.isDuplicating(tab)) {
     log('internal move');
@@ -139,7 +139,7 @@ Commands.onMoveDown.addListener(async tab => {
   });
 });
 
-TreeStructure.onTabAttachedFromRestoredInfo.addListener(tryFixupTreeForInsertedTab);
+TreeStructure.onTabAttachedFromRestoredInfo.addListener(tab => { tryFixupTreeForInsertedTab(tab); });
 
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);

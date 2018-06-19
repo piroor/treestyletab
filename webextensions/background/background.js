@@ -138,7 +138,7 @@ function waitUntilCompletelyRestored() {
   return new Promise((resolve, _aReject) => {
     let timeout;
     let resolver;
-    let onNewTabRestored = async (newApiTab) => {
+    let onNewTabRestored = async (newApiTab, _info = {}) => {
       clearTimeout(timeout);
       log('new restored tab is detected.');
       await browser.sessions.getTabValue(newApiTab.id, Constants.kPERSISTENT_ID);
@@ -569,9 +569,9 @@ Tabs.onMoved.addListener(async (tab, moveInfo) => {
   ]);
 });
 
-Tabs.onLabelUpdated.addListener(reserveToUpdateRelatedGroupTabs);
+Tabs.onLabelUpdated.addListener(tab => { reserveToUpdateRelatedGroupTabs(tab); });
 
-Tabs.onGroupTabDetected.addListener(tryInitGroupTab);
+Tabs.onGroupTabDetected.addListener(tab => { tryInitGroupTab(tab); });
 
 Tree.onDetached.addListener(async (tab, detachInfo) => {
   if (Tabs.isGroupTab(detachInfo.oldParentTab))
@@ -581,5 +581,8 @@ Tree.onDetached.addListener(async (tab, detachInfo) => {
   reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab);
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener(reserveToUpdateRelatedGroupTabs);
-Tree.onSubtreeCollapsedStateChanging.addListener(reserveToUpdateSubtreeCollapsed);
+Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
+  reserveToUpdateRelatedGroupTabs(tab);
+  reserveToUpdateSubtreeCollapsed(tab);
+});
+

@@ -531,13 +531,13 @@ function onContextualIdentitySelect(item, event) {
 
 
 
-Tabs.onRemoved.addListener(async tab => {
+Tabs.onRemoved.addListener(async (tab, _info) => {
   gUpdatingCollapsedStateCancellers.delete(tab);
   gTabCollapsedStateChangedManagers.delete(tab);
 });
 
 
-function onMessage(message, _aSender, _aRespond) {
+function onMessage(message, _sender, _respond) {
   if (!message ||
       typeof message.type != 'string' ||
       message.type.indexOf('treestyletab:') != 0)

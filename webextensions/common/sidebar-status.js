@@ -33,7 +33,7 @@ export function hasFocus(windowId) {
   return mFocusState.has(windowId)
 }
 
-browser.runtime.onMessage.addListener((message, _aSender) => {
+browser.runtime.onMessage.addListener((message, _sender) => {
   if (!message ||
       typeof message.type != 'string')
     return;
@@ -63,7 +63,7 @@ export function startWatchOpenState() {
       type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
       window: windowId
     });
-    port.onDisconnect.addListener(_aMessage => {
+    port.onDisconnect.addListener(_message => {
       mOpenState.delete(windowId);
       mFocusState.delete(windowId);
       TSTAPI.sendMessage({

@@ -140,12 +140,12 @@ function updateVisualMaxTreeLevel() {
   document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
 }
 
-Tabs.onCreated.addListener(reserveToUpdateVisualMaxTreeLevel);
-Tabs.onRemoving.addListener(reserveToUpdateVisualMaxTreeLevel);
-Tabs.onShown.addListener(reserveToUpdateVisualMaxTreeLevel);
-Tabs.onHidden.addListener(reserveToUpdateVisualMaxTreeLevel);
-Tree.onAttached.addListener(reserveToUpdateVisualMaxTreeLevel);
-Tree.onDetached.addListener(async (_aTab, detachInfo = {}) => {
+Tabs.onCreated.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tabs.onRemoving.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tabs.onShown.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tabs.onHidden.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tree.onDetached.addListener(async (_tab, detachInfo = {}) => {
   if (detachInfo.oldParentTab)
     reserveToUpdateVisualMaxTreeLevel();
 });
@@ -163,8 +163,8 @@ function reserveToUpdateIndent() {
   }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
 }
 
-Tabs.onShown.addListener(reserveToUpdateIndent);
-Tabs.onHidden.addListener(reserveToUpdateIndent);
-Tree.onAttached.addListener(reserveToUpdateIndent);
-Tree.onDetached.addListener(reserveToUpdateIndent);
-Tree.onLevelChanged.addListener(reserveToUpdateIndent);
+Tabs.onShown.addListener(_tab => { reserveToUpdateIndent() });
+Tabs.onHidden.addListener(_tab => { reserveToUpdateIndent() });
+Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateIndent() });
+Tree.onDetached.addListener((_tab, _info) => { reserveToUpdateIndent() });
+Tree.onLevelChanged.addListener(_tab => { reserveToUpdateIndent() });

@@ -242,7 +242,7 @@ async function cacheTree(windowId) {
 
 // update cache on events
 
-Tabs.onCreated.addListener(tab => {
+Tabs.onCreated.addListener((tab, _info = {}) => {
   reserveToCacheTree(tab);
 });
 
@@ -276,18 +276,19 @@ Tabs.onWindowRestoring.addListener(async windowId => {
   }
 });
 
-Tabs.onRemoved.addListener(async tab => {
-  await wait(0);
+Tabs.onRemoved.addListener((tab, _info) => {
+  wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToCacheTree(tab);
+  });
 });
 
-Tabs.onMoved.addListener(async tab => {
+Tabs.onMoved.addListener((tab, _info) => {
   reserveToCacheTree(tab);
 });
 
-Tabs.onUpdated.addListener(tab => {
+Tabs.onUpdated.addListener((tab, _info) => {
   markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
@@ -295,18 +296,20 @@ Tree.onSubtreeCollapsedStateChanging.addListener(tab => {
   reserveToCacheTree(tab);
 });
 
-Tree.onAttached.addListener(async tab => {
-  await wait(0);
+Tree.onAttached.addListener((tab, _info) => {
+  wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToCacheTree(tab);
+  });
 });
 
-Tree.onDetached.addListener(async tab => {
-  await wait(0);
+Tree.onDetached.addListener((tab, _info) => {
+  wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   reserveToCacheTree(tab);
+  });
 });
 
 Tabs.onPinned.addListener(tab => {
