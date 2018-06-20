@@ -369,11 +369,19 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
 
   if (tab.dataset.isNewTab &&
       (changeInfo.url || changeInfo.status == 'complete')) {
+    log('new tab ', dumpTab(tab));
     delete tab.dataset.isNewTab;
     const possibleOpenerTab = Tabs.getTabById(tab.dataset.possibleOpenerTab);
     delete tab.dataset.possibleOpenerTab;
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
-    if (!Tabs.getParentTab(tab) && possibleOpenerTab) {
+    const toBeGroupedTabs = (tab.parentNode.dataset.openedNewTabs || '')
+      .split('|')
+      .map(id => Tabs.getTabById(parseInt(id)))
+      .filter(tab => !!tab);
+    log('toBeGroupedTabs ', toBeGroupedTabs.map(dumpTab));
+    if (!Tabs.getParentTab(tab) &&
+        possibleOpenerTab &&
+        !toBeGroupedTabs.includes(tab)) {
       if (Tabs.isNewTabCommandTab(tab)) {
         log('behave as a tab opened by new tab command (delayed)');
         handleNewTabFromActiveTab(tab, {
