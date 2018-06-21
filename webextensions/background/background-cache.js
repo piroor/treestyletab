@@ -130,16 +130,26 @@ function restoreTabsFromCache(windowId, params = {}) {
 }
 
 
-function updateWindowCache(owner, key, value) {
+async function updateWindowCache(owner, key, value) {
   if (!owner)
     return;
   if (value === undefined) {
+    try {
     //return browser.sessions.removeWindowValue(owner, key);
-    return browser.sessions.removeTabValue(owner.id, key);
+      return browser.sessions.removeTabValue(owner.id || owner, key);
+    }
+    catch(e) {
+      console.log(new Error('fatal error: failed to delete window cache'), e, owner, key, value);
+    }
   }
   else {
+    try {
     //return browser.sessions.setWindowValue(owner, key, value);
-    return browser.sessions.setTabValue(owner.id, key, value);
+      return browser.sessions.setTabValue(owner.id || owner, key, value);
+    }
+    catch(e) {
+      console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
+    }
   }
 }
 
