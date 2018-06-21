@@ -107,10 +107,11 @@ function init() {
       });
       return;
     }
-    if (event.button == 0 &&
-        !hasModifier(event) &&
-        event.target != gTitleField) {
-      gTitleField.value = gTitle.textContent;
+    if (event.button != 0 ||
+        hasModifier(event))
+      return;
+    if (event.target != gTitleField) {
+      setTitle(gTitleField.value);
       exitTitleEdit();
       event.stopPropagation();
     }
