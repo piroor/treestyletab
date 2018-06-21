@@ -46,7 +46,7 @@ export async function tryInitGroupTab(tab) {
   };
   try {
     const initialized = await browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
-      code:  'init.done',
+      code:  'window.initialized',
     }));
     if (initialized[0])
       return;
@@ -55,7 +55,7 @@ export async function tryInitGroupTab(tab) {
   }
   try {
     const titleElementExists = await browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
-      code:  'document.querySelector("#title")',
+      code:  '!!document.querySelector("#title")',
     }));
     if (!titleElementExists[0] && tab.status == 'complete') // we need to load resources/group-tab.html at first.
       return browser.tabs.update(tab.apiTab.id, { url: tab.apiTab.url });
@@ -132,7 +132,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
     await browser.tabs.executeScript(groupTab.apiTab.id, {
       runAt:           'document_start',
       matchAboutBlank: true,
-      code:            `updateTree()`,
+      code:            `window.updateTree()`,
     });
 
   if (changedInfo.includes('title')) {
@@ -161,7 +161,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       browser.tabs.executeScript(groupTab.apiTab.id, {
         runAt:           'document_start',
         matchAboutBlank: true,
-        code:            `setTitle(${JSON.stringify(newTitle)})`,
+        code:            `window.setTitle(${JSON.stringify(newTitle)})`,
       });
     }
   }

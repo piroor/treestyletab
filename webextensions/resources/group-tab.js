@@ -5,9 +5,10 @@
 */
 'use strict';
 
-let gTemporaryCheck;
+if (!window.initialized) {
 let gTitle;
 let gTitleField;
+let gTemporaryCheck;
 
 document.title = getTitle();
 
@@ -133,7 +134,10 @@ function init() {
   l10n.updateDocument();
 
   updateTree();
-  init.done = true;
+
+  window.setTitle    = window.setTitle || setTitle;
+  window.updateTree  = window.updateTree || updateTree;
+  window.initialized = true;
 }
 //document.addEventListener('DOMContentLoaded', init, { once: true });
 
@@ -254,3 +258,6 @@ function getActualColumnCount(aTree) {
 }
 
 init();
+}
+
+true; // for executeScript
