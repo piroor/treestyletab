@@ -5,7 +5,18 @@
 */
 'use strict';
 
+import {
+  log as internalLogger,
+  configs
+} from './common.js';
+
+function log(...args) {
+  if (configs.logFor['common/api-tabs'])
+    internalLogger(...args);
+}
+
 export async function getIndexes(...queriedTabIds) {
+  log('getIndexes ', queriedTabIds);
   if (queriedTabIds.length == 0)
     return [];
 

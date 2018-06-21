@@ -200,6 +200,7 @@ export const configs = new Configs({
     'background/handle-tree-changes': true,
     'background/tab-context-menu': false,
     'background/tree-structure': true,
+    'common/api-tabs': false,
     'common/api-tabs-listener': true,
     'common/bookmarks': true,
     'common/cache': false,
