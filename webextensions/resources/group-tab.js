@@ -20,6 +20,11 @@ function getTitle() {
            browser.i18n.getMessage('groupTab_label_default');
 }
 
+function setTitle(title) {
+  document.title = gTitle.textContent = gTitleField.value = title;
+  updateParameters({ title });
+}
+
 function isTemporary() {
   const params = location.search.split('#')[0];
   return /[&?]temporary=true/.test(params);
@@ -59,7 +64,7 @@ function updateParameters(aParameters = {}) {
 
   let uri = location.href.split('?')[0];
   uri = `${uri}?title=${encodeURIComponent(title)}&temporary=${temporary}${opener}`;
-  location.replace(uri);
+  history.replaceState({}, document.title, uri);
 }
 
 function init() {
@@ -84,7 +89,8 @@ function init() {
         break;
 
       case 'Enter':
-        updateParameters({ title: gTitleField.value });
+        setTitle(gTitleField.value);
+        exitTitleEdit();
         break;
 
       case 'F2':
