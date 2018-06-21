@@ -30,9 +30,14 @@ export async function bookmarkTabs(tabs, options = {}) {
     });
     return null;
   }
-  const folderParams = {
-    title: browser.i18n.getMessage('bookmarkFolder_label', tabs[0].apiTab.title)
-  };
+  const now = new Date();
+  const title = configs.bookmarkTreeFolderName
+    .replace(/%TITLE%/gi, tabs[0].apiTab.title)
+    .replace(/%URL%/gi, tabs[0].apiTab.url)
+    .replace(/%YEAR%/gi, now.getFullYear())
+    .replace(/%MONTH%/gi, `0${now.getMonth() + 1}`.substr(-2))
+    .replace(/%DATE%/gi, `0${now.getDate() + 1}`.substr(-2));
+  const folderParams = { title };
   if (options.parentId) {
     folderParams.parentId = options.parentId;
     if ('index' in options)

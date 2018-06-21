@@ -55,11 +55,13 @@
       "title": { "content": "$1", "example": "Titel" }
     }},
 
-  "bookmarkFolder_label": { "message": "$TITLE$ und mehr",
+  "bookmarkFolder_label_default": { "message": "$TITLE$ und mehr (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "Titel" }
+      "title": { "content": "$1", "example": "Title" },
+      "year":  { "content": "$2", "example": "2018" },
+      "month": { "content": "$3", "example": "06" },
+      "date":  { "content": "$4", "example": "21" }
     }},
-  "bookmarkFolder_label_default": { "message": "Gespeicherter Zweig" },
 
   "bookmarkTree_notification_success_title": { "message": "Lesezeichen für den Zweig wurden gespeichert" },
   "bookmarkTree_notification_success_message": { "message": "Lesezeichen für $COUNT$ Tabs inklusive \"$TITLE$\" werden in einem neuen Ordner gespeichert unter \"$PARENT$.",

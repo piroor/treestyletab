@@ -55,11 +55,13 @@
       "title": { "content": "$1", "example": "title" }
     }},
 
-  "bookmarkFolder_label": { "message": "$TITLE$ и больше",
+  "bookmarkFolder_label_default": { "message": "$TITLE$ и больше (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "title" }
+      "title": { "content": "$1", "example": "Title" },
+      "year":  { "content": "$2", "example": "2018" },
+      "month": { "content": "$3", "example": "06" },
+      "date":  { "content": "$4", "example": "21" }
     }},
-  "bookmarkFolder_label_default": { "message": "Дерево в закладках" },
 
   "bookmarkTree_notification_success_title": { "message": "Дерево успешно добавлено в закладки" },
   "bookmarkTree_notification_success_message": { "message": "$COUNT$ - столько вкладок, включая \"$TITLE$\", добавлено в закладки, в новую папку под \"$PARENT$.",

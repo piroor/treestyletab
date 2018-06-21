@@ -55,11 +55,13 @@
       "title": { "content": "$1", "example": "標題" }
     }},
 
-  "bookmarkFolder_label": { "message": "$TITLE$ 等",
+  "bookmarkFolder_label_default": { "message": "$TITLE$ 等 (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "標題" }
+      "title": { "content": "$1", "example": "Title" },
+      "year":  { "content": "$2", "example": "2018" },
+      "month": { "content": "$3", "example": "06" },
+      "date":  { "content": "$4", "example": "21" }
     }},
-  "bookmarkFolder_label_default": { "message": "已加入書籤的樹" },
 
   "bookmarkTree_notification_success_title": { "message": "此樹已加入書籤" },
   "bookmarkTree_notification_success_message": { "message": "「$TITLE$」等 $COUNT$ 個分頁已加入「$PARENT$」內的新資料夾中",

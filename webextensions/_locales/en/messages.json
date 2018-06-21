@@ -55,11 +55,13 @@
       "title": { "content": "$1", "example": "title" }
     }},
 
-  "bookmarkFolder_label": { "message": "$TITLE$ and more",
+  "bookmarkFolder_label_default": { "message": "$TITLE$ and more (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "title" }
+      "title": { "content": "$1", "example": "Title" },
+      "year":  { "content": "$2", "example": "2018" },
+      "month": { "content": "$3", "example": "06" },
+      "date":  { "content": "$4", "example": "21" }
     }},
-  "bookmarkFolder_label_default": { "message": "Bookmarked Tree" },
 
   "bookmarkTree_notification_success_title": { "message": "Tree is Successfully Bookmarked" },
   "bookmarkTree_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
@@ -273,6 +275,10 @@
 
 
   "config_advanced_caption": { "message": "Advanced" },
+
+  "config_bookmarkTreeFolderName_before": { "message": "Folder name for \"Bookmark this Tree\":" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
+  "config_bookmarkTreeFolderName_description": { "message": "Available placeholders: %TITLE% (title of the first tab), %URL% (URL of the first tab), %YEAR% (year, four digits), %MONTH% (month, two digits), %DATE% (date, two digits)" },
 
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
