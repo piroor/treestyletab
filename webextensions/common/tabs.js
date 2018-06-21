@@ -1228,7 +1228,7 @@ export function snapshotTreeForActionDetection(targetTab) {
 }
 
 function snapshotTree(targetTab, tabs) {
-  const allTabs = tabs || getNormalTabs(targetTab);
+  const allTabs = tabs || getTabs(targetTab);
 
   const snapshotById = {};
   function snapshotChild(tab) {
@@ -1241,6 +1241,7 @@ function snapshotTree(targetTab, tabs) {
       active:        isActive(tab),
       children:      getChildTabs(tab).filter(child => !isHidden(child)).map(child => child.id),
       collapsed:     isSubtreeCollapsed(tab),
+      pinned:        isPinned(tab),
       level:         parseInt(tab.getAttribute(Constants.kLEVEL) || 0)
     };
   }
