@@ -99,7 +99,6 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
   container.lastFocusedTab = tab.id;
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
-  Background.tryInitGroupTab(tab);
   return true;
 });
 function handleNewActiveTab(tab, info = {}) {

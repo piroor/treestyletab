@@ -135,8 +135,6 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     Tabs.getNextTab(tab),
     Tabs.getPreviousTab(tab)
   ]);
-
-  Background.reserveToUpdateRelatedGroupTabs(tab);
 });
 
 Tree.onDetached.addListener((tab, _detachInfo) => {

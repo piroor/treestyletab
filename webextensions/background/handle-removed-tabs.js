@@ -32,7 +32,6 @@ function log(...args) {
 Tabs.onRemoving.addListener(async (tab, closeInfo = {}) => {
   log('Tabs.onRemoving ', dumpTab(tab), tab.apiTab, closeInfo);
 
-  const ancestors = Tabs.getAncestorTabs(tab);
   let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, closeInfo);
   if (!SidebarStatus.isOpen(tab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
@@ -94,8 +93,6 @@ Tabs.onRemoving.addListener(async (tab, closeInfo = {}) => {
     dontUpdateIndent: true,
     broadcast:        true
   });
-
-  Background.reserveToCleanupNeedlessGroupTab(ancestors);
 });
 
 async function tryGrantCloseTab(tab, closeParentBehavior) {

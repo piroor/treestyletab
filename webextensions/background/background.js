@@ -5,12 +5,10 @@
 */
 'use strict';
 
-import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 import RichConfirm from '../extlib/RichConfirm.js';
 
 import {
   log as internalLogger,
-  dumpTab,
   configs
 } from '../common/common.js';
 
@@ -18,7 +16,6 @@ import * as Constants from '../common/constants.js';
 import * as ApiTabsListener from '../common/api-tabs-listener.js';
 import * as MetricsData from '../common/metrics-data.js';
 import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
 import * as TabsContainer from '../common/tabs-container.js';
 import * as TabsUpdate from '../common/tabs-update.js';
 import * as Tree from '../common/tree.js';
@@ -239,32 +236,6 @@ export async function tryStartHandleAccelKeyOnTab(tab) {
   }
 }
 
-/*
-  To prevent the tab is closed by Firefox, we need to inject scripts dynamically.
-  See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087
-*/
-export async function tryInitGroupTab(tab) {
-  if (!Tabs.isGroupTab(tab) &&
-      tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0)
-    return;
-  const scriptOptions = {
-    runAt:           'document_start',
-    matchAboutBlank: true
-  };
-  const initialized = await browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
-    code:  'window.init && window.init.done',
-  }));
-  if (initialized[0])
-    return;
-  browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
-    //file:  '/common/l10n.js'
-    file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
-  }));
-  browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
-    file:  '/resources/group-tab.js'
-  }));
-}
-
 export function reserveToUpdateInsertionPosition(tabOrTabs) {
   const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
   for (const tab of tabs) {
@@ -395,92 +366,6 @@ async function updateSubtreeCollapsed(tab) {
   );
 }
 
-export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
-  const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
-  for (const tab of tabs) {
-    if (!Tabs.ensureLivingTab(tab))
-      continue;
-    if (tab.reservedCleanupNeedlessGroupTab)
-      clearTimeout(tab.reservedCleanupNeedlessGroupTab);
-    tab.reservedCleanupNeedlessGroupTab = setTimeout(() => {
-      delete tab.reservedCleanupNeedlessGroupTab;
-      cleanupNeedlssGroupTab(tab);
-    }, 100);
-  }
-}
-
-function cleanupNeedlssGroupTab(tabs) {
-  if (!Array.isArray(tabs))
-    tabs = [tabs];
-  log('trying to clanup needless temporary group tabs from ', tabs.map(dumpTab));
-  const tabsToBeRemoved = [];
-  for (const tab of tabs) {
-    if (!Tabs.isTemporaryGroupTab(tab))
-      break;
-    if (Tabs.getChildTabs(tab).length > 1)
-      break;
-    const lastChild = Tabs.getFirstChildTab(tab);
-    if (lastChild && !Tabs.isTemporaryGroupTab(lastChild))
-      break;
-    tabsToBeRemoved.push(tab);
-  }
-  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
-  TabsInternalOperation.removeTabs(tabsToBeRemoved);
-}
-
-export function reserveToUpdateRelatedGroupTabs(tab) {
-  const ancestorGroupTabs = [tab]
-    .concat(Tabs.getAncestorTabs(tab))
-    .filter(Tabs.isGroupTab);
-  for (const tab of ancestorGroupTabs) {
-    if (tab.reservedUpdateRelatedGroupTab)
-      clearTimeout(tab.reservedUpdateRelatedGroupTab);
-    tab.reservedUpdateRelatedGroupTab = setTimeout(() => {
-      delete tab.reservedUpdateRelatedGroupTab;
-      updateRelatedGroupTab(tab);
-    }, 100);
-  }
-}
-
-async function updateRelatedGroupTab(groupTab) {
-  if (!Tabs.ensureLivingTab(groupTab))
-    return;
-
-  await tryInitGroupTab(groupTab);
-  await browser.tabs.executeScript(groupTab.apiTab.id, {
-    runAt:           'document_start',
-    matchAboutBlank: true,
-    code:            `updateTree()`,
-  });
-
-  let newTitle;
-  if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(groupTab.apiTab.title)) {
-    const firstChild = Tabs.getFirstChildTab(groupTab);
-    newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
-  }
-  else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(groupTab.apiTab.title)) {
-    const opener = Tabs.getOpenerFromGroupTab(groupTab);
-    if (opener) {
-      if (opener &&
-           (opener.apiTab.favIconUrl ||
-            TabFavIconHelper.maybeImageTab(opener.apiTab))) {
-        browser.runtime.sendMessage({
-          type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-          tab:        groupTab.id,
-          favIconUrl: Tabs.getSafeFaviconUrl(opener.apiTab.favIconUrl || opener.apiTab.url)
-        });
-      }
-      newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
-    }
-  }
-
-  if (newTitle && groupTab.apiTab.title != newTitle) {
-    const url = groupTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
-    browser.tabs.update(groupTab.apiTab.id, { url });
-  }
-}
-
-
 export async function confirmToCloseTabs(count, options = {}) {
   if (count <= 1 ||
       !configs.warnOnCloseTabs ||
@@ -539,14 +424,8 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
-  if (changeInfo.status || changeInfo.url) {
-    tryInitGroupTab(tab);
+  if (changeInfo.status || changeInfo.url)
     tryStartHandleAccelKeyOnTab(tab);
-  }
-
-  const group = Tabs.getGroupTabForOpener(tab);
-  if (group)
-    reserveToUpdateRelatedGroupTabs(group);
 });
 
 Tabs.onTabElementMoved.addListener((tab, info = {}) => {
@@ -569,20 +448,10 @@ Tabs.onMoved.addListener(async (tab, moveInfo) => {
   ]);
 });
 
-Tabs.onLabelUpdated.addListener(tab => { reserveToUpdateRelatedGroupTabs(tab); });
-
-Tabs.onGroupTabDetected.addListener(tab => { tryInitGroupTab(tab); });
-
 Tree.onDetached.addListener(async (tab, detachInfo) => {
-  if (Tabs.isGroupTab(detachInfo.oldParentTab))
-    reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab);
   reserveToUpdateAncestors([tab].concat(Tabs.getDescendantTabs(tab)));
   reserveToUpdateChildren(detachInfo.oldParentTab);
-  reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab);
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
-  reserveToUpdateRelatedGroupTabs(tab);
-  reserveToUpdateSubtreeCollapsed(tab);
-});
+Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 

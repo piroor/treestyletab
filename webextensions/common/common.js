@@ -191,6 +191,7 @@ export const configs = new Configs({
     'background/background-cache': false,
     'background/background': true,
     'background/context-menu': false,
+    'background/handle-group-tabs': true,
     'background/handle-misc': true,
     'background/handle-moved-tabs': true,
     'background/handle-new-tabs': true,

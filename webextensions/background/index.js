@@ -17,6 +17,7 @@ import './handle-removed-tabs.js';
 import './handle-tab-focus.js';
 import './handle-moved-tabs.js';
 import './handle-tree-changes.js';
+import './handle-group-tabs.js';
 import './handle-misc.js';
 import './context-menu.js';
 
