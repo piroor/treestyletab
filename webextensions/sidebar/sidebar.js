@@ -821,9 +821,11 @@ function onMessage(message, _sender, _respond) {
       RestoringTabCount.decrement();
       break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
-      Tabs.onFaviconUpdated.dispatch(Tabs.getTabById(message.tab), message.favIconUrl);
-      break;
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
+      const tab = Tabs.getTabById(message.tab);
+      if (tab)
+        Tabs.onFaviconUpdated.dispatch(tab, message.favIconUrl);
+    } break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (message.windowId == mTargetWindow) return (async () => {
