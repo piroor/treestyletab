@@ -95,31 +95,38 @@ function cleanupNeedlssGroupTab(tabs) {
   TabsInternalOperation.removeTabs(tabsToBeRemoved);
 }
 
-export function reserveToUpdateRelatedGroupTabs(tab) {
+export function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
   const ancestorGroupTabs = [tab]
     .concat(Tabs.getAncestorTabs(tab))
     .filter(Tabs.isGroupTab);
   for (const tab of ancestorGroupTabs) {
     if (tab.reservedUpdateRelatedGroupTab)
       clearTimeout(tab.reservedUpdateRelatedGroupTab);
+    tab.reservedUpdateRelatedGroupTabChangedInfo = tab.reservedUpdateRelatedGroupTabChangedInfo || new Set();
+    for (const info of changedInfo) {
+      tab.reservedUpdateRelatedGroupTabChangedInfo.add(info);
+    }
     tab.reservedUpdateRelatedGroupTab = setTimeout(() => {
       delete tab.reservedUpdateRelatedGroupTab;
-      updateRelatedGroupTab(tab);
+      updateRelatedGroupTab(tab, Array.from(tab.reservedUpdateRelatedGroupTabChangedInfo));
+      delete tab.reservedUpdateRelatedGroupTabChangedInfo;
     }, 100);
   }
 }
 
-async function updateRelatedGroupTab(groupTab) {
+async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   if (!Tabs.ensureLivingTab(groupTab))
     return;
 
   await tryInitGroupTab(groupTab);
+  if (changedInfo.includes('tree'))
   await browser.tabs.executeScript(groupTab.apiTab.id, {
     runAt:           'document_start',
     matchAboutBlank: true,
     code:            `updateTree()`,
   });
 
+  if (changedInfo.includes('title')) {
   let newTitle;
   if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(groupTab.apiTab.title)) {
     const firstChild = Tabs.getFirstChildTab(groupTab);
@@ -148,6 +155,7 @@ async function updateRelatedGroupTab(groupTab) {
       code:            `setTitle(${JSON.stringify(newTitle)})`,
     });
   }
+  }
 }
 
 Tabs.onRemoved.addListener(async (tab, _closeInfo = {}) => {
@@ -163,7 +171,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
 
   const group = Tabs.getGroupTabForOpener(tab);
   if (group)
-    reserveToUpdateRelatedGroupTabs(group);
+    reserveToUpdateRelatedGroupTabs(group, ['title', 'tree']);
 });
 
 Tabs.onGroupTabDetected.addListener(tab => {
@@ -171,7 +179,7 @@ Tabs.onGroupTabDetected.addListener(tab => {
 });
 
 Tabs.onLabelUpdated.addListener(tab => {
-  reserveToUpdateRelatedGroupTabs(tab);
+  reserveToUpdateRelatedGroupTabs(tab, ['title', 'tree']);
 });
 
 Tabs.onActivating.addListener((tab, _info = {}) => {
