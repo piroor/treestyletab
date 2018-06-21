@@ -32,11 +32,13 @@ export async function getIndexes(...queriedTabIds) {
 
 // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477
 export async function safeMoveAcrossWindows(tabIds, moveOptions) {
+  log('safeMoveAcrossWindows ', tabIds, moveOptions);
   return (await Promise.all(tabIds.map(async (tabId, index) => {
     try {
       let movedTab = await browser.tabs.move(tabId, Object.assign({}, moveOptions, {
         index: moveOptions.index + index
       }));
+      log(`safeMoveAcrossWindows: movedTab[${index}] = `, movedTab);
       if (Array.isArray(movedTab))
         movedTab = movedTab[0];
       return movedTab;
