@@ -53,6 +53,15 @@ export async function tryInitGroupTab(tab) {
   }
   catch(_e) {
   }
+  try {
+    const titleElementExists = await browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
+      code:  'document.querySelector("#title")',
+    }));
+    if (!titleElementExists[0]) // we need to load resources/group-tab.html at first.
+      return browser.tabs.update(tab.apiTab.id, { url: tab.apiTab.url });
+  }
+  catch(_e) {
+  }
   browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
     //file:  '/common/l10n.js'
     file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
