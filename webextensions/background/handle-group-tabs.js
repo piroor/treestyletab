@@ -57,7 +57,7 @@ export async function tryInitGroupTab(tab) {
     const titleElementExists = await browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
       code:  'document.querySelector("#title")',
     }));
-    if (!titleElementExists[0]) // we need to load resources/group-tab.html at first.
+    if (!titleElementExists[0] && tab.status == 'complete') // we need to load resources/group-tab.html at first.
       return browser.tabs.update(tab.apiTab.id, { url: tab.apiTab.url });
   }
   catch(_e) {
