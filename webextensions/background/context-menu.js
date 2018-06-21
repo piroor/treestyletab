@@ -28,7 +28,9 @@ const mContextMenuItems = `
   closeDescendants
   closeOthers
   -----------------
+  collapseTree
   collapseAll
+  expandTree
   expandAll
   -----------------
   bookmarkTree
@@ -97,8 +99,14 @@ export const onClick = (info, apiTab) => {
       Commands.closeOthers(contextTab);
       break;
 
+    case 'collapseTree':
+      Commands.collapseTree(contextTab);
+      break;
     case 'collapseAll':
       Commands.collapseAll(contextTab);
+      break;
+    case 'expandTree':
+      Commands.expandTree(contextTab);
       break;
     case 'expandAll':
       Commands.expandAll(contextTab);

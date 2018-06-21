@@ -120,7 +120,9 @@
   "context_closeTree_label": { "message": "&Close this Tree" },
   "context_closeDescendants_label": { "message": "C&lose Descendants" },
   "context_closeOthers_label": { "message": "Cl&ose Other Tabs except this Tree" },
+  "context_collapseTree_label": { "message": "Collap&se this Tree" },
   "context_collapseAll_label": { "message": "Colla&pse All" },
+  "context_expandTree_label": { "message": "Exp&and this Tree" },
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
 

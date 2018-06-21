@@ -120,8 +120,10 @@
   "context_closeTree_label": { "message": "このツリーを閉じる(&C)" },
   "context_closeDescendants_label": { "message": "このタブの配下のタブをすべて閉じる(&L)" },
   "context_closeOthers_label": { "message": "このツリー以外の他のタブをすべて閉じる(&O)" },
-  "context_collapseAll_label": { "message": "ツリーをすべてたたむ(&P)" },
-  "context_expandAll_label": { "message": "ツリーをすべて展開する(&X)" },
+  "context_collapseTree_label": { "message": "このツリーをたたむ(&S)" },
+  "context_collapseAll_label": { "message": "すべてのツリーをたたむ(&P)" },
+  "context_expandTree_label": { "message": "このツリーを展開(&A)" },
+  "context_expandAll_label": { "message": "すべてのツリーを展開(&X)" },
   "context_bookmarkTree_label": { "message": "このツリーをブックマーク(&B)..." },
 
 

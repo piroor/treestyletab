@@ -85,8 +85,14 @@
     "closeOthers": {
       "description": "__MSG_context_closeOthers_label__"
     },
+    "collapseTree": {
+      "description": "__MSG_context_collapseTree_label__"
+    },
     "collapseAll": {
       "description": "__MSG_context_collapseAll_label__"
+    },
+    "expandTree": {
+      "description": "__MSG_context_expandTree_label__"
     },
     "expandAll": {
       "description": "__MSG_context_expandAll_label__"

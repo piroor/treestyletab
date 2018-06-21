@@ -81,25 +81,37 @@ export async function closeOthers(rootTab) {
   }
 }
 
+export function collapseTree(rootTab) {
+  if (!Tabs.hasChildTabs(rootTab) ||
+      Tabs.isSubtreeCollapsed(rootTab))
+    return;
+  Tree.collapseExpandSubtree(rootTab, {
+    collapsed: true,
+    broadcast: true
+  });
+}
+
 export function collapseAll(hint) {
   const tabs = Tabs.getNormalTabs(hint);
   for (const tab of tabs) {
-    if (Tabs.hasChildTabs(tab) && !Tabs.isSubtreeCollapsed(tab))
-      Tree.collapseExpandSubtree(tab, {
-        collapsed: true,
-        broadcast: true
-      });
+    collapseTree(tab);
   }
+}
+
+export function expandTree(rootTab) {
+  if (!Tabs.hasChildTabs(rootTab) ||
+      !Tabs.isSubtreeCollapsed(rootTab))
+    return;
+  Tree.collapseExpandSubtree(rootTab, {
+    collapsed: false,
+    broadcast: true
+  });
 }
 
 export function expandAll(hint) {
   const tabs = Tabs.getNormalTabs(hint);
   for (const tab of tabs) {
-    if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
-      Tree.collapseExpandSubtree(tab, {
-        collapsed: false,
-        broadcast: true
-      });
+    expandTree(tab);
   }
 }
 

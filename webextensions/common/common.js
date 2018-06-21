@@ -56,7 +56,9 @@ export const configs = new Configs({
   context_closeTree: true,
   context_closeDescendants: false,
   context_closeOthers: false,
+  context_collapseTree: false,
   context_collapseAll: true,
+  context_expandTree: false,
   context_expandAll: true,
   context_bookmarkTree: true,
 
