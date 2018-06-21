@@ -120,41 +120,41 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
 
   await tryInitGroupTab(groupTab);
   if (changedInfo.includes('tree'))
-  await browser.tabs.executeScript(groupTab.apiTab.id, {
-    runAt:           'document_start',
-    matchAboutBlank: true,
-    code:            `updateTree()`,
-  });
-
-  if (changedInfo.includes('title')) {
-  let newTitle;
-  if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(groupTab.apiTab.title)) {
-    const firstChild = Tabs.getFirstChildTab(groupTab);
-    newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
-  }
-  else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(groupTab.apiTab.title)) {
-    const opener = Tabs.getOpenerFromGroupTab(groupTab);
-    if (opener) {
-      if (opener &&
-           (opener.apiTab.favIconUrl ||
-            TabFavIconHelper.maybeImageTab(opener.apiTab))) {
-        browser.runtime.sendMessage({
-          type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
-          tab:        groupTab.id,
-          favIconUrl: Tabs.getSafeFaviconUrl(opener.apiTab.favIconUrl || opener.apiTab.url)
-        });
-      }
-      newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
-    }
-  }
-
-  if (newTitle && groupTab.apiTab.title != newTitle) {
-    browser.tabs.executeScript(groupTab.apiTab.id, {
+    await browser.tabs.executeScript(groupTab.apiTab.id, {
       runAt:           'document_start',
       matchAboutBlank: true,
-      code:            `setTitle(${JSON.stringify(newTitle)})`,
+      code:            `updateTree()`,
     });
-  }
+
+  if (changedInfo.includes('title')) {
+    let newTitle;
+    if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(groupTab.apiTab.title)) {
+      const firstChild = Tabs.getFirstChildTab(groupTab);
+      newTitle = browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title);
+    }
+    else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(groupTab.apiTab.title)) {
+      const opener = Tabs.getOpenerFromGroupTab(groupTab);
+      if (opener) {
+        if (opener &&
+            (opener.apiTab.favIconUrl ||
+             TabFavIconHelper.maybeImageTab(opener.apiTab))) {
+          browser.runtime.sendMessage({
+            type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
+            tab:        groupTab.id,
+            favIconUrl: Tabs.getSafeFaviconUrl(opener.apiTab.favIconUrl || opener.apiTab.url)
+          });
+        }
+        newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
+      }
+    }
+
+    if (newTitle && groupTab.apiTab.title != newTitle) {
+      browser.tabs.executeScript(groupTab.apiTab.id, {
+        runAt:           'document_start',
+        matchAboutBlank: true,
+        code:            `setTitle(${JSON.stringify(newTitle)})`,
+      });
+    }
   }
 }
 
@@ -187,18 +187,20 @@ Tabs.onActivating.addListener((tab, _info = {}) => {
 });
 
 Tree.onAttached.addListener((tab, _info = {}) => {
-  reserveToUpdateRelatedGroupTabs(tab);
+  reserveToUpdateRelatedGroupTabs(tab, ['tree']);
 });
 
 Tree.onDetached.addListener((_tab, detachInfo) => {
   if (Tabs.isGroupTab(detachInfo.oldParentTab))
     reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab);
-  reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab);
+  reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab, ['tree']);
 });
 
+/*
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { 
   reserveToUpdateRelatedGroupTabs(tab);
 });
+*/
 
 
 // ====================================================================
