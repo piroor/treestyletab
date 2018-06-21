@@ -5,9 +5,9 @@
 */
 'use strict';
 
-window.gTemporaryCheck;
-window.gTitle
-window.gTitleField
+let gTemporaryCheck;
+let gTitle;
+let gTitleField;
 
 document.title = getTitle();
 
