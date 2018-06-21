@@ -120,6 +120,9 @@ export async function bookmarkTree(root, options = {}) {
   const folder = await Bookmark.bookmarkTabs(tabs, options);
   if (!folder)
     return null;
+  if (tabs.length > 1 &&
+      Tabs.isGroupTab(tabs[0]))
+    tabs.shift();
   browser.bookmarks.get(folder.parentId).then(folders => {
     notify({
       title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
