@@ -1178,7 +1178,8 @@ export async function moveTabs(tabs, options = {}) {
         })()
       ]);
       log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
-      let toIndex = Tabs.getAllTabs(container).length;
+      // we must put moved tab at the first position by default, because pinned tabs cannot be placed after regular tabs.
+      let toIndex = 0; // Tabs.getAllTabs(container).length;
       log('toIndex = ', toIndex);
       if (options.insertBefore &&
           options.insertBefore.apiTab.windowId == destinationWindowId) {
