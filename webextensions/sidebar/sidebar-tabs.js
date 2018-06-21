@@ -36,23 +36,23 @@ export function init() {
 }
 
 function getTwisty(tab) {
-  return tab.querySelector(`.${Constants.kTWISTY}`);
+  return tab && tab.querySelector(`.${Constants.kTWISTY}`);
 }
 
 function getFavIcon(tab) {
-  return tab.querySelector(`.${Constants.kFAVICON}`);
+  return tab && tab.querySelector(`.${Constants.kFAVICON}`);
 }
 
 function getSoundButton(tab) {
-  return tab.querySelector(`.${Constants.kSOUND_BUTTON}`);
+  return tab && tab.querySelector(`.${Constants.kSOUND_BUTTON}`);
 }
 
 function getDescendantsCounter(tab) {
-  return tab.querySelector(`.${Constants.kCOUNTER}`);
+  return tab && tab.querySelector(`.${Constants.kCOUNTER}`);
 }
 
 export function getClosebox(tab) {
-  return tab.querySelector(`.${Constants.kCLOSEBOX}`);
+  return tab && tab.querySelector(`.${Constants.kCLOSEBOX}`);
 }
 
 
