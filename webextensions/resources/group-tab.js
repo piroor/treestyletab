@@ -5,7 +5,10 @@
 */
 'use strict';
 
-if (!window.initialized) {
+(() => {
+  if (window.initialized)
+    return false;
+
   let gTitle;
   let gTitleField;
   let gTemporaryCheck;
@@ -129,9 +132,9 @@ if (!window.initialized) {
 
     gTemporaryCheck = document.querySelector('#temporary');
     gTemporaryCheck.checked = isTemporary();
-    gTemporaryCheck.addEventListener('change', event => updateParameters());
+    gTemporaryCheck.addEventListener('change', _event => updateParameters());
 
-    l10n.updateDocument();
+    window.l10n.updateDocument();
 
     updateTree();
 
@@ -258,6 +261,5 @@ if (!window.initialized) {
   }
 
   init();
-}
-
-true; // for executeScript
+  return true;
+})();

@@ -26,6 +26,23 @@ module.exports = {
       'ignoreReadBeforeAssign': false
     }],
     'no-var': 'error',
+    'no-unused-vars': ['warn', { // Not make an error for debugging.
+      'vars': 'all',
+      'args': 'after-used',
+      'argsIgnorePattern': '^_',
+      'caughtErrors': 'all',
+      'caughtErrorsIgnorePattern': '^_', // Allow `catch (_e) {...}`
+    }],
+    'no-use-before-define': ['error', { // the measure for Temporary Dead Zone
+      'functions': false, //  Function declarations are hoisted.
+      'classes': true, // Class declarations are not hoisted. We should warn it.
+    }],
+    'no-unused-expressions': 'error',
+    'no-unused-labels': 'error',
+    'no-undef': ['error', {
+      'typeof': true,
+    }],
+
     // stylisitc problem
     'indent': ['warn', 2, {
       'SwitchCase': 1,
