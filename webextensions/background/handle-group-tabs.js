@@ -44,11 +44,15 @@ export async function tryInitGroupTab(tab) {
     runAt:           'document_start',
     matchAboutBlank: true
   };
-  const initialized = await browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
-    code:  'window.init && window.init.done',
-  }));
-  if (initialized[0])
-    return;
+  try {
+    const initialized = await browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
+      code:  'init.done',
+    }));
+    if (initialized[0])
+      return;
+  }
+  catch(_e) {
+  }
   browser.tabs.executeScript(tab.apiTab.id, Object.assign({}, scriptOptions, {
     //file:  '/common/l10n.js'
     file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
@@ -138,8 +142,18 @@ async function updateRelatedGroupTab(groupTab) {
   }
 
   if (newTitle && groupTab.apiTab.title != newTitle) {
-    const url = groupTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
-    browser.tabs.update(groupTab.apiTab.id, { url });
+    browser.tabs.executeScript(groupTab.apiTab.id, {
+      runAt:           'document_start',
+      matchAboutBlank: true,
+      code:            `setTitle(${JSON.stringify(newTitle)})`,
+    });
+    await wait(100);
+    // if the page is not initialized yet, we need to initialize it with new title.
+    const expectedUrl = groupTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
+    const actualUrl   = (await browser.tabs.get(groupTab.apiTab.id)).url;
+    console.log(expectedUrl, actualUrl, actualUrl == expectedUrl);
+    if (actualUrl != expectedUrl)
+      browser.tabs.update(groupTab.apiTab.id, { url: expectedUrl });
   }
 }
 
