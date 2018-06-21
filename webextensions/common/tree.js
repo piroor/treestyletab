@@ -1314,8 +1314,8 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
     windowParams.top = options.top;
   let newWindow;
   const promsiedNewWindow = browser.windows.create(windowParams)
-    .then(newWindow => {
-      newWindow = newWindow;
+    .then(createdWindow => {
+      newWindow = createdWindow;
       log('openNewWindowFromTabs: new window is ready, ', newWindow);
       UserOperationBlocker.blockIn(newWindow.id);
       return newWindow;
