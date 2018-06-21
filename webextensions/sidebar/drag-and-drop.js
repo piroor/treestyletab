@@ -241,11 +241,7 @@ function getDropAction(event) {
       return false;
     }
     else if (info.draggedAPITab) {
-      if (info.dragOverTab &&
-          info.draggedAPITab.pinned != Tabs.isPinned(info.dragOverTab)) {
-        return false;
-      }
-      else if (info.action & Constants.kACTION_ATTACH) {
+      if (info.action & Constants.kACTION_ATTACH) {
         if (info.parent &&
             info.parent.apiTab.id == info.draggedAPITab.id) {
           return false;

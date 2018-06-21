@@ -30,13 +30,28 @@ export async function getIndexes(...queriedTabIds) {
   return indexes.map(tab => tab ? tab.index : -1);
 }
 
-// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477
+// workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1394477 + fix pinned/unpinned status
 export async function safeMoveAcrossWindows(tabIds, moveOptions) {
   log('safeMoveAcrossWindows ', tabIds, moveOptions);
-  return (await Promise.all(tabIds.map(async (tabId, index) => {
+  if (!Array.isArray(tabIds))
+    tabIds = [tabIds];
+  const tabs = await Promise.all(tabIds.map(id => browser.tabs.get(id).catch(handleMissingTabError)));
+  const window = await browser.windows.get(moveOptions.windowId || tabs[0].windowId, { populate: true });
+  return (await Promise.all(tabs.map(async (tab, index) => {
     try {
-      let movedTab = await browser.tabs.move(tabId, Object.assign({}, moveOptions, {
-        index: moveOptions.index + index
+      const destIndex = moveOptions.index + index;
+      if (tab.pinned) {
+        if (window.tabs[destIndex - 1] &&
+            window.tabs[destIndex - 1].pinned != tab.pinned)
+          await browser.tabs.update(tab.id, { pinned: false });
+      }
+      else {
+        if (window.tabs[destIndex] &&
+            window.tabs[destIndex].pinned != tab.pinned)
+          await browser.tabs.update(tab.id, { pinned: true });
+      }
+      let movedTab = await browser.tabs.move(tab.id, Object.assign({}, moveOptions, {
+        index: destIndex
       }));
       log(`safeMoveAcrossWindows: movedTab[${index}] = `, movedTab);
       if (Array.isArray(movedTab))
