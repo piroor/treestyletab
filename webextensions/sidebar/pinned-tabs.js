@@ -148,6 +148,21 @@ function clearStyle(tab) {
   style.left = style.right = style.top = style.bottom;
 }
 
+Tabs.onCreated.addListener((tab, _info) => {
+  if (Tabs.isPinned(tab))
+    reserveToReposition();
+});
+
+Tabs.onRemoving.addListener((tab, _info) => {
+  if (Tabs.isPinned(tab))
+    reserveToReposition();
+});
+
+Tabs.onDetached.addListener((tab, _info) => {
+  if (Tabs.isPinned(tab))
+    reserveToReposition();
+});
+
 Tabs.onPinned.addListener(_tab => {
   reserveToReposition();
 });
