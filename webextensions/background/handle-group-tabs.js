@@ -147,13 +147,6 @@ async function updateRelatedGroupTab(groupTab) {
       matchAboutBlank: true,
       code:            `setTitle(${JSON.stringify(newTitle)})`,
     });
-    await wait(100);
-    // if the page is not initialized yet, we need to initialize it with new title.
-    const expectedUrl = groupTab.apiTab.url.replace(/title=[^&]+/, `title=${encodeURIComponent(newTitle)}`);
-    const actualUrl   = (await browser.tabs.get(groupTab.apiTab.id)).url;
-    console.log(expectedUrl, actualUrl, actualUrl == expectedUrl);
-    if (actualUrl != expectedUrl)
-      browser.tabs.update(groupTab.apiTab.id, { url: expectedUrl });
   }
 }
 
