@@ -118,11 +118,13 @@
 
 
   "context_reloadTree_label": { "message": "Zweig neu la&den" },
-  "context_reloadDescendants_label": { "message": "Untergeordnete Tabs neu la&den" },
-  "context_closeTree_label": { "message": "Zweig s&chließen" },
-  "context_closeDescendants_label": { "message": "&Untergeordnete Tabs schließen" },
+  "context_reloadDescendants_label": { "message": "&Untergeordnete Tabs neu laden" },
+  "context_closeTree_label": { "message": "Zweig &schließen" },
+  "context_closeDescendants_label": { "message": "U&ntergeordnete Tabs schließen" },
   "context_closeOthers_label": { "message": "&Alle anderen Tabs außer diesen Zweig schließen" },
+  "context_collapseTree_label": { "message": "Di&esen Zweig zuklappen" },
   "context_collapseAll_label": { "message": "Alle &zuklappen" },
+  "context_expandTree_label": { "message": "Diesen Zweig auskla&ppen" },
   "context_expandAll_label": { "message": "Alle au&fklappen)" },
   "context_bookmarkTree_label": { "message": "&Lesezeichen für diesen Zweig anlegen…" },
 
