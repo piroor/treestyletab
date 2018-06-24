@@ -277,8 +277,8 @@
   "config_advanced_caption": { "message": "Erweitert" },
   
   "config_bookmarkTreeFolderName_before": { "message": "Ordnernamen für \"Lesezeichen für diesen Zweig erstellen\":" },
-+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
-+  "config_bookmarkTreeFolderName_description": { "message": "Verfügbare Platzhalter: %TITLE% (Titel des ersten Tabs), %URL% (URL des ersten Tabs), %YEAR% (Jahr, vierstellig), %MONTH% (Monat, zweistellig), %DATE% (Tag, zweistellig)" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
+  "config_bookmarkTreeFolderName_description": { "message": "Verfügbare Platzhalter: %TITLE% (Titel des ersten Tabs), %URL% (URL des ersten Tabs), %YEAR% (Jahr, vierstellig), %MONTH% (Monat, zweistellig), %DATE% (Tag, zweistellig)" },
 
   "config_userStyleRules_label": { "message": "Style-Regeln für Sidebar-Inhalte" },
   "config_userStyleRules_description_before": { "message": "Für weitere Optionen siehe " },
