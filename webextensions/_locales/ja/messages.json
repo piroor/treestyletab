@@ -55,11 +55,13 @@
       "title": { "content": "$1", "example": "title" }
     }},
 
-  "bookmarkFolder_label": { "message": "$TITLE$ など",
+  "bookmarkFolder_label_default": { "message": "$TITLE$ など (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "タイトル" }
+      "title": { "content": "$1", "example": "タイトル" },
+      "year":  { "content": "$2", "example": "2018" },
+      "month": { "content": "$3", "example": "06" },
+      "date":  { "content": "$4", "example": "21" }
     }},
-  "bookmarkFolder_label_default": { "message": "ブックマークされたツリー" },
 
   "bookmarkTree_notification_success_title": { "message": "ツリーをブックマークしました" },
   "bookmarkTree_notification_success_message": { "message": "「$TITLE$」を含む$COUNT$個のタブを「$PARENT$」内の新しいフォルダーにブックマークしました。",
@@ -120,8 +122,10 @@
   "context_closeTree_label": { "message": "このツリーを閉じる(&C)" },
   "context_closeDescendants_label": { "message": "このタブの配下のタブをすべて閉じる(&L)" },
   "context_closeOthers_label": { "message": "このツリー以外の他のタブをすべて閉じる(&O)" },
-  "context_collapseAll_label": { "message": "ツリーをすべてたたむ(&P)" },
-  "context_expandAll_label": { "message": "ツリーをすべて展開する(&X)" },
+  "context_collapseTree_label": { "message": "このツリーをたたむ(&S)" },
+  "context_collapseAll_label": { "message": "すべてのツリーをたたむ(&P)" },
+  "context_expandTree_label": { "message": "このツリーを展開(&A)" },
+  "context_expandAll_label": { "message": "すべてのツリーを展開(&X)" },
   "context_bookmarkTree_label": { "message": "このツリーをブックマーク(&B)..." },
 
 
@@ -272,6 +276,10 @@
 
   "config_advanced_caption": { "message": "詳細設定" },
 
+  "config_bookmarkTreeFolderName_before": { "message": "ツリーをブックマークする時のフォルダー名:" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
+  "config_bookmarkTreeFolderName_description": { "message": "以下のプレースホルダを使用できます: %TITLE%（1つ目のタブのタイトル）, %URL%（1つ目のタブのURL）, %YEAR%（4桁の年）, %MONTH%（2桁の月）, %DATE%（2桁の日）" },
+
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },
@@ -312,15 +320,18 @@
 
   "config_debug_label": { "message": "デバッグモード" },
   "config_log_caption":               { "message": "詳細なログ" },
+  "config_logFor_common":     { "message": "共通モジュールからのログ" },
+  "config_logFor_background": { "message": "バックグラウンドモジュールからのログ" },
+  "config_logFor_sidebar":    { "message": "サイドバーモジュールからのログ" },
+  "config_logFor_misc":       { "message": "複数モジュールからのログ" },
   "config_logOnUpdated_label":        { "message": "tabs.onUpdated関連のログを出力" },
   "config_logOnMouseEvent_label":     { "message": "マウス操作関連のログを出力" },
-  "config_logOnScroll_label":         { "message": "自動スクロール関連のログを出力" },
   "config_logOnCollapseExpand_label": { "message": "ツリーの開閉関連のログを出力" },
-  "config_logOnCache_label":          { "message": "ツリーのキャッシュ関連のログを出力" },
   "config_simulateSVGContextFill_label": { "message": "Bug 1388193およびBug 1421329を回避して擬似的にSVGアイコンを表示する（※CPU負荷が高まる可能性があります。このオプションを無効にする場合、これらのBugが修正されるまでは\"about:config\"で\"svg.context-properties.content.enabled\"を有効化する必要があります。）" },
   "config_useCachedTree_label": { "message": "キャッシュを使ってツリーの初期化を高速化する" },
   "config_useCachedTree_description": { "message": "※キャッシュの不整合で動作が不安定になっている場合、このチェックをOFFにして再度ONにすることでキャッシュが刷新され状況が改善するかもしれません。" },
-  "config_acccelaratedTabDuplication_label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
+  "config_acceleratedTabCreation_label": { "message": "新しいタブが開かれた時の処理を高速化する（※動作が不安定になります）" },
+  "config_acceleratedTabDuplication_label": { "message": "タブの複製に関わる処理を高速化する（※動作が不安定になります）" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "ミリ秒以内にタブの複製を完了できなかった場合は処理を中断する" },
   "config_sidebarScrollbarPosition_caption": { "message": "スクロールバーの表示位置:" },

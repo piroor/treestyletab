@@ -5,7 +5,22 @@
 */
 'use strict';
 
-var gContextMenuItems = `
+import {
+  log as internalLogger,
+  configs
+} from '../common/common.js';
+
+import * as Tabs from '../common/tabs.js';
+import * as Commands from '../common/commands.js';
+import * as TSTAPI from '../common/tst-api.js';
+import * as TabContextMenu from './tab-context-menu.js';
+
+function log(...args) {
+  if (configs.logFor['background/context-menu'])
+    internalLogger(...args);
+}
+
+const mContextMenuItems = `
   reloadTree
   reloadDescendants
   -----------------
@@ -13,22 +28,24 @@ var gContextMenuItems = `
   closeDescendants
   closeOthers
   -----------------
+  collapseTree
   collapseAll
+  expandTree
   expandAll
   -----------------
   bookmarkTree
 `.trim().split(/\s+/);
 
-async function refreshContextMenuItems() {
+export async function refreshItems() {
   browser.contextMenus.removeAll();
-  tabContextMenu.onExternalMessage({
-    type: kTSTAPI_CONTEXT_MENU_REMOVE_ALL
+  TabContextMenu.onExternalMessage({
+    type: TSTAPI.kCONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
 
   let separatorsCount = 0;
   let normalItemAppeared = false;
-  for (let id of gContextMenuItems) {
-    let isSeparator = id.charAt(0) == '-';
+  for (let id of mContextMenuItems) {
+    const isSeparator = id.charAt(0) == '-';
     if (isSeparator) {
       if (!normalItemAppeared)
         continue;
@@ -40,8 +57,8 @@ async function refreshContextMenuItems() {
         continue;
       normalItemAppeared = true;
     }
-    let type  = isSeparator ? 'separator' : 'normal';
-    let title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`);
+    const type  = isSeparator ? 'separator' : 'normal';
+    const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`);
     browser.contextMenus.create({
       id, type,
       // Access key is not supported by WE API.
@@ -49,8 +66,8 @@ async function refreshContextMenuItems() {
       title: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
       contexts: ['tab']
     });
-    tabContextMenu.onExternalMessage({
-      type: kTSTAPI_CONTEXT_MENU_CREATE,
+    TabContextMenu.onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: {
         id, type, title,
         contexts: ['tab']
@@ -59,13 +76,12 @@ async function refreshContextMenuItems() {
   }
 }
 
-var contextMenuClickListener = (aInfo, aAPITab) => {
-  log('context menu item clicked: ', aInfo, aAPITab);
+export const onClick = (info, apiTab) => {
+  log('context menu item clicked: ', info, apiTab);
 
-  var contextTab = getTabById(aAPITab);
-  var container  = contextTab.parentNode;
+  const contextTab = Tabs.getTabById(apiTab);
 
-  switch (aInfo.menuItemId) {
+  switch (info.menuItemId) {
     case 'reloadTree':
       Commands.reloadTree(contextTab);
       break;
@@ -83,8 +99,14 @@ var contextMenuClickListener = (aInfo, aAPITab) => {
       Commands.closeOthers(contextTab);
       break;
 
+    case 'collapseTree':
+      Commands.collapseTree(contextTab);
+      break;
     case 'collapseAll':
       Commands.collapseAll(contextTab);
+      break;
+    case 'expandTree':
+      Commands.expandTree(contextTab);
       break;
     case 'expandAll':
       Commands.expandAll(contextTab);
@@ -98,4 +120,5 @@ var contextMenuClickListener = (aInfo, aAPITab) => {
       break;
   }
 };
-browser.contextMenus.onClicked.addListener(contextMenuClickListener);
+browser.contextMenus.onClicked.addListener(onClick);
+TabContextMenu.onTSTItemClick.addListener(onClick);

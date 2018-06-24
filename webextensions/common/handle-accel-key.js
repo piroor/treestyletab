@@ -11,84 +11,84 @@
 
   const isMac = /^Mac/i.test(navigator.platform);
 
-  function isAccelKeyOnlyEvent(aEvent) {
+  function isAccelKeyOnlyEvent(event) {
     if (isMac)
       return (
-        aEvent.key == 'Meta' &&
-        !aEvent.altKey &&
-        !aEvent.ctrlKey /*&&
-        !aEvent.shiftKey*/
+        event.key == 'Meta' &&
+        !event.altKey &&
+        !event.ctrlKey /*&&
+        !event.shiftKey*/
       );
     else
       return (
-        aEvent.key == 'Control' &&
-        !aEvent.altKey &&
-        !aEvent.metaKey /*&&
-        !aEvent.shiftKey*/
+        event.key == 'Control' &&
+        !event.altKey &&
+        !event.metaKey /*&&
+        !event.shiftKey*/
       );
   }
 
-  function isAccelKeyUnshiftEvent(aEvent) {
+  function isAccelKeyUnshiftEvent(event) {
     if (isMac)
       return (
-        aEvent.key == 'Shift' &&
-        !aEvent.altKey &&
-        !aEvent.ctrlKey &&
-        aEvent.metaKey /*&&
-        !aEvent.shiftKey*/
+        event.key == 'Shift' &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        event.metaKey /*&&
+        !event.shiftKey*/
       );
     else
       return (
-        aEvent.key == 'Shift' &&
-        !aEvent.altKey &&
-        aEvent.ctrlKey &&
-        !aEvent.metaKey /*&&
-        !aEvent.shiftKey*/
+        event.key == 'Shift' &&
+        !event.altKey &&
+        event.ctrlKey &&
+        !event.metaKey /*&&
+        !event.shiftKey*/
       );
   }
 
-  function isTabSwitchEvent(aEvent) {
-    if (!/^(Tab|Shift|PageUp|PageDown)$/.test(aEvent.key))
+  function isTabSwitchEvent(event) {
+    if (!/^(Tab|Shift|PageUp|PageDown)$/.test(event.key))
       return false;
     if (isMac)
       return (
-        !aEvent.altKey &&
-        !aEvent.ctrlKey &&
-        aEvent.metaKey /*&&
-        !aEvent.shiftKey*/
+        !event.altKey &&
+        !event.ctrlKey &&
+        event.metaKey /*&&
+        !event.shiftKey*/
       );
     else
       return (
-        !aEvent.altKey &&
-        aEvent.ctrlKey &&
-        !aEvent.metaKey /*&&
-        !aEvent.shiftKey*/
+        !event.altKey &&
+        event.ctrlKey &&
+        !event.metaKey /*&&
+        !event.shiftKey*/
       );
   }
 
-  function onKeyDown(aEvent) {
+  function onKeyDown(event) {
     const kCOMMAND_NOTIFY_START_TAB_SWITCH = 'treestyletab:notify-start-tab-switch';
     //console.log('onKeyDown '+JSON.stringify({
-    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
-    //  tabSwitchEvent: isTabSwitchEvent(aEvent)
+    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(event),
+    //  tabSwitchEvent: isTabSwitchEvent(event)
     //}));
-    if (isAccelKeyOnlyEvent(aEvent) ||
-        isTabSwitchEvent(aEvent))
+    if (isAccelKeyOnlyEvent(event) ||
+        isTabSwitchEvent(event))
       browser.runtime.sendMessage({
         type: kCOMMAND_NOTIFY_START_TAB_SWITCH
       });
   }
 
-  function onKeyUp(aEvent) {
+  function onKeyUp(event) {
     const kCOMMAND_NOTIFY_END_TAB_SWITCH = 'treestyletab:notify-end-tab-switch';
     //console.log('onKeyUp '+JSON.stringify({
-    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(aEvent),
-    //  unshiftEvent: isAccelKeyUnshiftEvent(aEvent),
-    //  tabSwitchEvent: isTabSwitchEvent(aEvent)
+    //  accelKeyOnlyEvent: isAccelKeyOnlyEvent(event),
+    //  unshiftEvent: isAccelKeyUnshiftEvent(event),
+    //  tabSwitchEvent: isTabSwitchEvent(event)
     //}));
-    if (isAccelKeyOnlyEvent(aEvent) ||
-        (!isAccelKeyUnshiftEvent(aEvent) &&
-         !isTabSwitchEvent(aEvent)))
+    if (isAccelKeyOnlyEvent(event) ||
+        (!isAccelKeyUnshiftEvent(event) &&
+         !isTabSwitchEvent(event)))
       browser.runtime.sendMessage({
         type: kCOMMAND_NOTIFY_END_TAB_SWITCH
       });

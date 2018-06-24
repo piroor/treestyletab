@@ -55,11 +55,13 @@
       "title": { "content": "$1", "example": "title" }
     }},
 
-  "bookmarkFolder_label": { "message": "$TITLE$ and more",
+  "bookmarkFolder_label_default": { "message": "$TITLE$ and more (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "title" }
+      "title": { "content": "$1", "example": "Title" },
+      "year":  { "content": "$2", "example": "2018" },
+      "month": { "content": "$3", "example": "06" },
+      "date":  { "content": "$4", "example": "21" }
     }},
-  "bookmarkFolder_label_default": { "message": "Bookmarked Tree" },
 
   "bookmarkTree_notification_success_title": { "message": "Tree is Successfully Bookmarked" },
   "bookmarkTree_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
@@ -120,7 +122,9 @@
   "context_closeTree_label": { "message": "&Close this Tree" },
   "context_closeDescendants_label": { "message": "C&lose Descendants" },
   "context_closeOthers_label": { "message": "Cl&ose Other Tabs except this Tree" },
+  "context_collapseTree_label": { "message": "Collap&se this Tree" },
   "context_collapseAll_label": { "message": "Colla&pse All" },
+  "context_expandTree_label": { "message": "Exp&and this Tree" },
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
 
@@ -272,6 +276,10 @@
 
   "config_advanced_caption": { "message": "Advanced" },
 
+  "config_bookmarkTreeFolderName_before": { "message": "Folder name for \"Bookmark this Tree\":" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
+  "config_bookmarkTreeFolderName_description": { "message": "Available placeholders: %TITLE% (title of the first tab), %URL% (URL of the first tab), %YEAR% (year, four digits), %MONTH% (month, two digits), %DATE% (date, two digits)" },
+
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
   "config_userStyleRules_description_link_label": { "message": "code snippets at TST wiki" },
@@ -312,15 +320,18 @@
 
   "config_debug_label": { "message": "Debug mode" },
   "config_log_caption":               { "message": "Detailed logging" },
+  "config_logFor_common":     { "message": "Logs from common modules" },
+  "config_logFor_background": { "message": "Logs from background modules" },
+  "config_logFor_sidebar":    { "message": "Logs from sidebar modules" },
+  "config_logFor_misc":       { "message": "Logs from multiple modules" },
   "config_logOnUpdated_label":        { "message": "Print logs from tabs.onUpdated" },
   "config_logOnMouseEvent_label":     { "message": "Print logs from mouse events" },
-  "config_logOnScroll_label":         { "message": "Print logs from auto scrolling" },
   "config_logOnCollapseExpand_label": { "message": "Print logs from collapse/expand" },
-  "config_logOnCache_label":          { "message": "Print logs from cached tree" },
   "config_simulateSVGContextFill_label": { "message": "Activate workaround for the Bug 1388193 and Bug 1421329 to simulate SVG icons (*This may increase CPU usage. To deactivate this option, you need to activate \"svg.context-properties.content.enabled\" via \"about:config\", until these bugs are fixed.)" },
   "config_useCachedTree_label": { "message": "Optimize tree restoration with cache" },
   "config_useCachedTree_description": { "message": "*Please try unchecking and re-checking this to refresh the cache, when the behavior around tree is unstable." },
-  "config_acccelaratedTabDuplication_label": { "message": "Accelarate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
+  "config_acceleratedTabCreation_label": { "message": "Accelerate operations around newly opened tabs (*NOTE: You'll see unstable behavior around tabs.)" },
+  "config_acceleratedTabDuplication_label": { "message": "Accelerate operations around tab duplication (*NOTE: You'll see unstable behavior around tabs.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Abort tab duplication when it takes" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "milliseconds or more." },
   "config_sidebarScrollbarPosition_caption": { "message": "Position of the scrollbar:" },

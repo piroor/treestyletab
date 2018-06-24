@@ -7,23 +7,25 @@
 
 // XPath utilities
 
-function hasClass(aClassName) {
-  return `contains(concat(" ", normalize-space(@class), " "), " ${aClassName} ")`;
+export function hasClass(className) {
+  return `contains(concat(" ", normalize-space(@class), " "), " ${className} ")`;
 }
 
-function evaluateXPath(aExpression, aContext, aType) {
-  if (!aType)
-    aType = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+export function evaluate(aExpression, aContext, type) {
+  if (!type)
+    type = XPathResult.ORDERED_NODE_SNAPSHOT_TYPE;
+
+  let result;
   try {
-    var result = (aContext.ownerDocument || aContext).evaluate(
+    result = (aContext.ownerDocument || aContext).evaluate(
       aExpression,
       (aContext || document),
       null,
-      aType,
+      type,
       null
     );
   }
-  catch(e) {
+  catch(_exception) {
     return {
       singleNodeValue: null,
       snapshotLength:  0,
@@ -33,16 +35,4 @@ function evaluateXPath(aExpression, aContext, aType) {
     };
   }
   return result;
-}
-
-function getArrayFromXPathResult(aXPathResult) {
-  var max   = aXPathResult.snapshotLength;
-  var array = new Array(max);
-  if (!max)
-    return array;
-
-  for (var i = 0; i < max; i++) {
-    array[i] = aXPathResult.snapshotItem(i);
-  }
-  return array;
 }

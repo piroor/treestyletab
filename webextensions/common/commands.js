@@ -5,265 +5,275 @@
 */
 'use strict';
 
-const Commands = {
-  reloadTree(aRootTab) {
-    const tabs = [aRootTab].concat(getDescendantTabs(aRootTab));
-    for (let tab of tabs) {
-      browser.tabs.reload(tab.apiTab.id)
-        .catch(handleMissingTabError);
-    }
-  },
+import {
+  log as internalLogger,
+  dumpTab,
+  notify,
+  configs
+} from './common.js';
+import * as Constants from './constants.js';
+import * as ApiTabs from './api-tabs.js';
+import * as Tabs from './tabs.js';
+import * as TabsMove from './tabs-move.js';
+import * as TabsOpen from './tabs-open.js';
+import * as TabsInternalOperation from './tabs-internal-operation.js';
+import * as Bookmark from './bookmark.js';
+import * as Tree from './tree.js';
+import EventListenerManager from './EventListenerManager.js';
 
-  reloadDescendants(aRootTab) {
-    const tabs = getDescendantTabs(aRootTab);
-    for (let tab of tabs) {
-      browser.tabs.reload(tab.apiTab.id)
-        .catch(handleMissingTabError);
-    }
-  },
+function log(...args) {
+  if (configs.logFor['common/command'])
+    internalLogger(...args);
+}
 
-  closeTree(aRootTab) {
-    const tabs = [aRootTab].concat(getDescendantTabs(aRootTab));
-    confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
-      .then(aConfirmed => {
-        if (!aConfirmed)
-          return;
-        tabs.reverse(); // close bottom to top!
-        for (let tab of tabs) {
-          removeTabInternally(tab);
-        }
-      });
-  },
+export const onTabsClosing = new EventListenerManager();
+export const onMoveUp      = new EventListenerManager();
+export const onMoveDown    = new EventListenerManager();
 
-  closeDescendants(aRootTab) {
-    const tabs = getDescendantTabs(aRootTab);
-    confirmToCloseTabs(tabs.length, { windowId: aRootTab.apiTab.windowId })
-      .then(aConfirmed => {
-        if (!aConfirmed)
-          return;
-        tabs.reverse(); // close bottom to top!
-        for (let tab of tabs) {
-          removeTabInternally(tab);
-        }
-      });
-  },
+export function reloadTree(rootTab) {
+  const tabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  for (const tab of tabs) {
+    browser.tabs.reload(tab.apiTab.id)
+      .catch(ApiTabs.handleMissingTabError);
+  }
+}
 
-  closeOthers(aRootTab) {
-    const exceptionTabs = [aRootTab].concat(getDescendantTabs(aRootTab));
-    const tabs          = getNormalTabs(aRootTab); // except pinned or hidden tabs
-    tabs.reverse(); // close bottom to top!
-    const closeTabs = tabs.filter(aTab => exceptionTabs.indexOf(aTab) < 0);
-    confirmToCloseTabs(closeTabs.length, { windowId: aRootTab.apiTab.windowId })
-      .then(aConfirmed => {
-        if (!aConfirmed)
-          return;
-        for (let tab of closeTabs) {
-          removeTabInternally(tab);
-        }
-      });
-  },
+export function reloadDescendants(rootTab) {
+  const tabs = Tabs.getDescendantTabs(rootTab);
+  for (const tab of tabs) {
+    browser.tabs.reload(tab.apiTab.id)
+      .catch(ApiTabs.handleMissingTabError);
+  }
+}
 
-  collapseAll(aHint) {
-    const tabs = getNormalTabs(aHint);
-    for (let tab of tabs) {
-      if (hasChildTabs(tab) && !isSubtreeCollapsed(tab))
-        collapseExpandSubtree(tab, {
-          collapsed: true,
-          broadcast: true
-        });
-    }
-  },
+export async function closeTree(rootTab) {
+  const tabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: rootTab.apiTab.windowId })) === false;
+  if (canceled)
+    return;
+  tabs.reverse(); // close bottom to top!
+  for (const tab of tabs) {
+    TabsInternalOperation.removeTab(tab);
+  }
+}
 
-  expandAll(aHint) {
-    const tabs = getNormalTabs(aHint);
-    for (let tab of tabs) {
-      if (hasChildTabs(tab) && isSubtreeCollapsed(tab))
-        collapseExpandSubtree(tab, {
-          collapsed: false,
-          broadcast: true
-        });
-    }
-  },
+export async function closeDescendants(rootTab) {
+  const tabs = Tabs.getDescendantTabs(rootTab);
+  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: rootTab.apiTab.windowId })) === false;
+  if (canceled)
+    return;
+  tabs.reverse(); // close bottom to top!
+  for (const tab of tabs) {
+    TabsInternalOperation.removeTab(tab);
+  }
+}
 
-  bookmarkTree: async function(aRoot, aOptions = {}) {
-    const tabs   = [aRoot].concat(getDescendantTabs(aRoot));
-    const folder = await bookmarkTabs(tabs, aOptions);
-    if (!folder)
-      return null;
-    browser.bookmarks.get(folder.parentId).then(aFolders => {
-      notify({
-        title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
-        message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
-          aRoot.apiTab.title,
-          tabs.length,
-          aFolders[0].title
-        ])
-      });
+export async function closeOthers(rootTab) {
+  const exceptionTabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  const tabs          = Tabs.getNormalTabs(rootTab); // except pinned or hidden tabs
+  tabs.reverse(); // close bottom to top!
+  const closeTabs = tabs.filter(tab => !exceptionTabs.includes(tab));
+  const canceled = (await onTabsClosing.dispatch(closeTabs.length, { windowId: rootTab.apiTab.windowId })) === false;
+  if (canceled)
+    return;
+  for (const tab of closeTabs) {
+    TabsInternalOperation.removeTab(tab);
+  }
+}
+
+export function collapseTree(rootTab) {
+  if (!Tabs.hasChildTabs(rootTab) ||
+      Tabs.isSubtreeCollapsed(rootTab))
+    return;
+  Tree.collapseExpandSubtree(rootTab, {
+    collapsed: true,
+    broadcast: true
+  });
+}
+
+export function collapseAll(hint) {
+  const tabs = Tabs.getNormalTabs(hint);
+  for (const tab of tabs) {
+    collapseTree(tab);
+  }
+}
+
+export function expandTree(rootTab) {
+  if (!Tabs.hasChildTabs(rootTab) ||
+      !Tabs.isSubtreeCollapsed(rootTab))
+    return;
+  Tree.collapseExpandSubtree(rootTab, {
+    collapsed: false,
+    broadcast: true
+  });
+}
+
+export function expandAll(hint) {
+  const tabs = Tabs.getNormalTabs(hint);
+  for (const tab of tabs) {
+    expandTree(tab);
+  }
+}
+
+export async function bookmarkTree(root, options = {}) {
+  const tabs   = [root].concat(Tabs.getDescendantTabs(root));
+  if (tabs.length > 1 &&
+      Tabs.isGroupTab(tabs[0]))
+    tabs.shift();
+  const folder = await Bookmark.bookmarkTabs(tabs, options);
+  if (!folder)
+    return null;
+  browser.bookmarks.get(folder.parentId).then(folders => {
+    notify({
+      title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
+      message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
+        root.apiTab.title,
+        tabs.length,
+        folders[0].title
+      ])
     });
-    return folder;
-  },
+  });
+  return folder;
+}
 
 
-  openNewTabAs: async function(aOptions = {}) {
-    const currentTab = aOptions.baseTab || getTabById((await browser.tabs.query({
-      active:        true,
-      currentWindow: true
-    }))[0]);
+export async function openNewTabAs(options = {}) {
+  const currentTab = options.baseTab || Tabs.getTabById((await browser.tabs.query({
+    active:        true,
+    currentWindow: true
+  }))[0]);
 
-    let parent, insertBefore, insertAfter;
-    let isOrphan = false;
-    switch (aOptions.as) {
-      case kNEWTAB_DO_NOTHING:
-      default:
-        break;
+  let parent, insertBefore, insertAfter;
+  let isOrphan = false;
+  switch (options.as) {
+    case Constants.kNEWTAB_DO_NOTHING:
+    default:
+      break;
 
-      case kNEWTAB_OPEN_AS_ORPHAN:
-        isOrphan    = true;
-        insertAfter = getLastTab(currentTab);
-        break;
+    case Constants.kNEWTAB_OPEN_AS_ORPHAN:
+      isOrphan    = true;
+      insertAfter = Tabs.getLastTab(currentTab);
+      break;
 
-      case kNEWTAB_OPEN_AS_CHILD: {
-        parent = currentTab;
-        let refTabs = getReferenceTabsForNewChild(parent);
-        insertBefore = refTabs.insertBefore;
-        insertAfter  = refTabs.insertAfter;
-        if (configs.logOnMouseEvent)
-          log('detected reference tabs: ',
-              dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
-      }; break;
+    case Constants.kNEWTAB_OPEN_AS_CHILD: {
+      parent = currentTab;
+      const refTabs = Tree.getReferenceTabsForNewChild(parent);
+      insertBefore = refTabs.insertBefore;
+      insertAfter  = refTabs.insertAfter;
+      log('detected reference tabs: ',
+          dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
+    }; break;
 
-      case kNEWTAB_OPEN_AS_SIBLING:
-        parent      = getParentTab(currentTab);
-        insertAfter = getLastDescendantTab(parent);
-        break;
+    case Constants.kNEWTAB_OPEN_AS_SIBLING:
+      parent      = Tabs.getParentTab(currentTab);
+      insertAfter = Tabs.getLastDescendantTab(parent);
+      break;
 
-      case kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-        parent       = getParentTab(currentTab);
-        insertBefore = getNextSiblingTab(currentTab);
-        insertAfter  = getLastDescendantTab(currentTab);
-      }; break;
-    }
+    case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+      parent       = Tabs.getParentTab(currentTab);
+      insertBefore = Tabs.getNextSiblingTab(currentTab);
+      insertAfter  = Tabs.getLastDescendantTab(currentTab);
+    }; break;
+  }
 
-    if (parent &&
-        configs.inheritContextualIdentityToNewChildTab &&
-        !aOptions.cookieStoreId)
-      aOptions.cookieStoreId = parent.apiTab.cookieStoreId;
+  if (parent &&
+      configs.inheritContextualIdentityToNewChildTab &&
+      !options.cookieStoreId)
+    options.cookieStoreId = parent.apiTab.cookieStoreId;
 
-    openNewTab({
-      parent, insertBefore, insertAfter,
-      isOrphan,
-      inBackground:  !!aOptions.inBackground,
-      cookieStoreId: aOptions.cookieStoreId,
-      inRemote:      !!aOptions.inRemote
+  TabsOpen.openNewTab({
+    parent, insertBefore, insertAfter,
+    isOrphan,
+    windowId:      currentTab.apiTab.windowId,
+    inBackground:  !!options.inBackground,
+    cookieStoreId: options.cookieStoreId,
+    inRemote:      !!options.inRemote
+  });
+}
+
+export async function indent(tab, options = {}) {
+  const newParent = Tabs.getPreviousSiblingTab(tab);
+  if (!newParent ||
+      newParent == Tabs.getParentTab(tab))
+    return false;
+
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
+      broadcast: true,
+      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
-  },
+  await Tree.attachTabTo(tab, newParent, {
+    broadcast:   true,
+    forceExpand: true,
+    insertAfter: Tabs.getLastDescendantTab(newParent) || newParent
+  });
+  return true;
+}
 
-  showContainerSelector(aOptions = {}) {
-    if (aOptions.inRemote) {
-      return browser.runtime.sendMessage({
-        type:     kCOMMAND_SHOW_CONTAINER_SELECTOR,
-        windowId: activeTab.apiTab.windowId
-      });
-    }
-    const anchor = document.querySelector(`
-      :root.contextual-identity-selectable .contextual-identities-selector-anchor,
-      .newtab-button
-    `);
-    gContextualIdentitySelector.ui.open({ anchor });
-  },
+export async function outdent(tab, options = {}) {
+  const parent = Tabs.getParentTab(tab);
+  if (!parent)
+    return false;
 
-  indent: async function(aTab, aOptions = {}) {
-    const newParent = getPreviousSiblingTab(aTab);
-    if (!newParent ||
-        newParent == getParentTab(aTab))
-      return false;
+  const newParent = Tabs.getParentTab(parent);
+  if (newParent == Tabs.getParentTab(tab))
+    return false;
 
-    if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
-        broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-      });
-    await attachTabTo(aTab, newParent, {
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
+      broadcast: true,
+      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    });
+  if (newParent) {
+    await Tree.attachTabTo(tab, newParent, {
       broadcast:   true,
       forceExpand: true,
-      insertAfter: getLastDescendantTab(newParent) || newParent
+      insertAfter: Tabs.getLastDescendantTab(parent) || parent
     });
-    return true;
-  },
-
-  outdent: async function(aTab, aOptions = {}) {
-    const parent = getParentTab(aTab);
-    if (!parent)
-      return false;
-
-    let newParent = getParentTab(parent);
-    if (newParent == getParentTab(aTab))
-      return false;
-
-    if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
-        broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-      });
-    if (newParent) {
-      await attachTabTo(aTab, newParent, {
-        broadcast:   true,
-        forceExpand: true,
-        insertAfter: getLastDescendantTab(parent) || parent
-      });
-    }
-    else {
-      await detachTab(aTab, {
-        broadcast: true,
-      });
-      await moveTabAfter(aTab, getLastDescendantTab(parent) || parent, {
-        broadcast: true,
-      });
-    }
-    return true;
-  },
-
-  moveUp: async function(aTab, aOptions = {}) {
-    const previousTab = getPreviousTab(aTab);
-    if (!previousTab)
-      return false;
-
-    if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
-        broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-      });
-
-    await moveTabBefore(aTab, previousTab, {
-      broadcast: true
-    });
-    const index = getTabIndex(aTab);
-    await tryFixupTreeForInsertedTab(aTab, {
-      toIndex:   index,
-      fromIndex: index + 1,
-    });
-    return true;
-  },
-
-  moveDown: async function(aTab, aOptions = {}) {
-    const nextTab = getNextTab(aTab);
-    if (!nextTab)
-      return false;
-
-    if (!aOptions.followChildren)
-      detachAllChildren(aTab, {
-        broadcast: true,
-        behavior:  kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
-      });
-
-    await moveTabAfter(aTab, nextTab, {
-      broadcast: true
-    });
-    const index = getTabIndex(aTab);
-    await tryFixupTreeForInsertedTab(aTab, {
-      toIndex:   index,
-      fromIndex: index - 1,
-    });
-    return true;
   }
-};
+  else {
+    await Tree.detachTab(tab, {
+      broadcast: true,
+    });
+    await TabsMove.moveTabAfter(tab, Tabs.getLastDescendantTab(parent) || parent, {
+      broadcast: true,
+    });
+  }
+  return true;
+}
+
+export async function moveUp(tab, options = {}) {
+  const previousTab = Tabs.getPreviousTab(tab);
+  if (!previousTab)
+    return false;
+
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
+      broadcast: true,
+      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    });
+
+  await TabsMove.moveTabBefore(tab, previousTab, {
+    broadcast: true
+  });
+  await onMoveUp.dispatch(tab);
+  return true;
+}
+
+export async function moveDown(tab, options = {}) {
+  const nextTab = Tabs.getNextTab(tab);
+  if (!nextTab)
+    return false;
+
+  if (!options.followChildren)
+    Tree.detachAllChildren(tab, {
+      broadcast: true,
+      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
+    });
+
+  await TabsMove.moveTabAfter(tab, nextTab, {
+    broadcast: true
+  });
+  await onMoveDown.dispatch(tab);
+  return true;
+}

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "version": "2.4.21",
+  "version": "2.4.24",
   "author": "YUKI \"Piro\" Hiroshi",
   "description": "__MSG_extensionDescription__",
   "permissions": [
@@ -20,9 +20,9 @@
     "bookmarks"
   ],
   "icons": {
-    "16": "resources/16x16-light.svg",
-    "20": "resources/20x20-light.svg",
-    "24": "resources/24x24-light.svg",
+    "16": "resources/16x16.svg",
+    "20": "resources/20x20.svg",
+    "24": "resources/24x24.svg",
     "64": "resources/icon64.png",
     "94": "resources/icon94.png"
   },
@@ -32,9 +32,9 @@
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
     "default_icon": {
-      "16": "resources/16x16-light.svg",
-      "20": "resources/20x20-light.svg",
-      "24": "resources/24x24-light.svg"
+      "16": "resources/16x16.svg",
+      "20": "resources/20x20.svg",
+      "24": "resources/24x24.svg"
     },
     "browser_style": true,
     "theme_icons": [
@@ -85,8 +85,14 @@
     "closeOthers": {
       "description": "__MSG_context_closeOthers_label__"
     },
+    "collapseTree": {
+      "description": "__MSG_context_collapseTree_label__"
+    },
     "collapseAll": {
       "description": "__MSG_context_collapseAll_label__"
+    },
+    "expandTree": {
+      "description": "__MSG_context_expandTree_label__"
     },
     "expandAll": {
       "description": "__MSG_context_expandAll_label__"
@@ -175,7 +181,7 @@
   "applications": {
     "gecko": {
       "id": "treestyletab@piro.sakura.ne.jp",
-      "strict_min_version": "57.0"
+      "strict_min_version": "60.0"
     }
   }
 }

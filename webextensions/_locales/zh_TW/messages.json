@@ -55,11 +55,13 @@
       "title": { "content": "$1", "example": "標題" }
     }},
 
-  "bookmarkFolder_label": { "message": "$TITLE$ 等",
+  "bookmarkFolder_label_default": { "message": "$TITLE$ 等 (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "標題" }
+      "title": { "content": "$1", "example": "Title" },
+      "year":  { "content": "$2", "example": "2018" },
+      "month": { "content": "$3", "example": "06" },
+      "date":  { "content": "$4", "example": "21" }
     }},
-  "bookmarkFolder_label_default": { "message": "已加入書籤的樹" },
 
   "bookmarkTree_notification_success_title": { "message": "此樹已加入書籤" },
   "bookmarkTree_notification_success_message": { "message": "「$TITLE$」等 $COUNT$ 個分頁已加入「$PARENT$」內的新資料夾中",
@@ -299,7 +301,7 @@
   "config_logOnCollapseExpand_label": { "message": "輸出折疊展開樹的相關日誌" },
   "config_simulateSVGContextFill_label": { "message": "模擬 SVG 圖標以解決 Bug 1388193 及 Bug 1421329 (※可能會提高 CPU 用量。在 Bug 修正前，若想禁用此選項必須啟用「about:config」的「svg.context-properties.content.enabled」)" },
   "config_useCachedTree_label": { "message": "以快取加速樹狀結構初始化" },
-  "config_acccelaratedTabDuplication_label": { "message": "加快分頁複制(※動作會不穩定)" },
+  "config_acceleratedTabDuplication_label": { "message": "加快分頁複制(※動作會不穩定)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "\u200b" },
   "config_maximumAcceptableDelayForTabDuplication_after": { "message": "亳秒內未複制完成即中斷。" },
   "config_sidebarScrollbarPosition_caption": { "message": "捲軸位置" },

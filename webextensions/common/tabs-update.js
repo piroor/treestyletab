@@ -1,0 +1,345 @@
+/* ***** BEGIN LICENSE BLOCK ***** 
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Tree Style Tab.
+ *
+ * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
+ * Portions created by the Initial Developer are Copyright (C) 2011-2018
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
+ *                 wanabe <https://github.com/wanabe>
+ *                 Tetsuharu OHZEKI <https://github.com/saneyuki>
+ *                 Xidorn Quan <https://github.com/upsuper> (Firefox 40+ support)
+ *                 lv7777 (https://github.com/lv7777)
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ******/
+'use strict';
+
+import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+
+import {
+  log as internalLogger,
+  wait,
+  configs
+} from './common.js';
+
+import * as Constants from './constants.js';
+import * as ApiTabs from './api-tabs.js';
+import * as Tabs from './tabs.js';
+import * as ContextualIdentities from './contextual-identities.js';
+
+function log(...args) {
+  if (configs.logFor['common/tabs-update'] || configs.logOnUpdated)
+    internalLogger(...args);
+}
+
+export function updateTab(tab, newState = {}, options = {}) {
+  if ('url' in newState) {
+    tab.setAttribute(Constants.kCURRENT_URI, newState.url);
+    if (tab.dataset.discardURLAfterCompletelyLoaded &&
+        tab.dataset.discardURLAfterCompletelyLoaded != newState.url)
+      delete tab.dataset.discardURLAfterCompletelyLoaded;
+  }
+
+  // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
+  // so we need to see the complete tab object.
+  if (options.tab && Constants.kSHORTHAND_ABOUT_URI.test(options.tab.url)) {
+    const shorthand = RegExp.$1;
+    wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
+      browser.tabs.update(options.tab.id, {
+        url: options.tab.url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
+      }).catch(ApiTabs.handleMissingTabError);
+      tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+      Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+    });
+    return;
+  }
+  else if ('url' in newState &&
+           newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+    tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+    Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+    Tabs.onGroupTabDetected.dispatch(tab);
+  }
+  else if (tab.apiTab &&
+           tab.apiTab.status == 'complete' &&
+           tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0) {
+    Tabs.getSpecialTabState(tab).then(async (states) => {
+      if (tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0)
+        return;
+      // Detect group tab from different session - which can have different UUID for the URL.
+      const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
+      const pathPart = tab.apiTab.url.replace(PREFIX_REMOVER, '');
+      if (states.includes(Constants.kTAB_STATE_GROUP_TAB) &&
+          pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
+        const parameters = pathPart.replace(/^[^\?]+\?/, '');
+        await wait(100); // for safety
+        browser.tabs.update(tab.apiTab.id, {
+          url: `${Constants.kGROUP_TAB_URI}?${parameters}`
+        }).catch(ApiTabs.handleMissingTabError);
+        tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+      }
+      else {
+        Tabs.removeSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+        tab.classList.remove(Constants.kTAB_STATE_GROUP_TAB);
+      }
+    });
+  }
+
+  if (options.forceApply ||
+      'title' in newState) {
+    let visibleLabel = newState.title;
+    if (newState && newState.cookieStoreId) {
+      const identity = ContextualIdentities.get(newState.cookieStoreId);
+      if (identity)
+        visibleLabel = `${newState.title} - ${identity.name}`;
+    }
+    if (options.forceApply && tab.apiTab) {
+      browser.sessions.getTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD)
+        .then(unread => {
+          if (unread)
+            tab.classList.add(Constants.kTAB_STATE_UNREAD);
+          else
+            tab.classList.remove(Constants.kTAB_STATE_UNREAD);
+        });
+    }
+    else if (!Tabs.isActive(tab) && tab.apiTab) {
+      tab.classList.add(Constants.kTAB_STATE_UNREAD);
+      browser.sessions.setTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD, true);
+    }
+    Tabs.getTabLabelContent(tab).textContent = newState.title;
+    tab.dataset.label = visibleLabel;
+    Tabs.onLabelUpdated.dispatch(tab);
+  }
+
+  const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
+  const hasFavIcon       = 'favIconUrl' in newState;
+  const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab(newState);
+  if (options.forceApply || hasFavIcon || maybeImageTab) {
+    Tabs.onFaviconUpdated.dispatch(
+      tab,
+      Tabs.getSafeFaviconUrl(newState.favIconUrl ||
+                             maybeImageTab && newState.url)
+    );
+  }
+  else if (openerOfGroupTab &&
+           (openerOfGroupTab.apiTab.favIconUrl ||
+            TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
+    Tabs.onFaviconUpdated.dispatch(
+      tab,
+      Tabs.getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl ||
+                             openerOfGroupTab.apiTab.url)
+    );
+  }
+
+  if ('status' in newState) {
+    const reallyChanged = !tab.classList.contains(newState.status);
+    tab.classList.remove(newState.status == 'loading' ? 'complete' : 'loading');
+    tab.classList.add(newState.status);
+    if (newState.status == 'loading') {
+      tab.classList.remove(Constants.kTAB_STATE_BURSTING);
+    }
+    else if (!options.forceApply && reallyChanged) {
+      tab.classList.add(Constants.kTAB_STATE_BURSTING);
+      if (tab.delayedBurstEnd)
+        clearTimeout(tab.delayedBurstEnd);
+      tab.delayedBurstEnd = setTimeout(() => {
+        delete tab.delayedBurstEnd;
+        tab.classList.remove(Constants.kTAB_STATE_BURSTING);
+        if (!Tabs.isActive(tab))
+          tab.classList.add(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+      }, configs.burstDuration);
+    }
+    if (newState.status == 'complete' &&
+        tab.apiTab &&
+        tab.apiTab.url == tab.dataset.discardURLAfterCompletelyLoaded) {
+      if (configs.autoDiscardTabForUnexpectedFocus) {
+        log(' => discard accidentally restored tab ', tab.apiTab.id);
+        if (typeof browser.tabs.discard == 'function')
+          browser.tabs.discard(tab.apiTab.id);
+      }
+      delete tab.dataset.discardURLAfterCompletelyLoaded;
+    }
+    Tabs.onStateChanged.dispatch(tab);
+  }
+
+  if ((options.forceApply ||
+       'pinned' in newState) &&
+      newState.pinned != tab.classList.contains(Constants.kTAB_STATE_PINNED)) {
+    if (newState.pinned) {
+      tab.classList.add(Constants.kTAB_STATE_PINNED);
+      tab.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
+      Tabs.onPinned.dispatch(tab);
+    }
+    else {
+      tab.classList.remove(Constants.kTAB_STATE_PINNED);
+      Tabs.onUnpinned.dispatch(tab);
+    }
+  }
+
+  if (options.forceApply ||
+      'audible' in newState) {
+    if (newState.audible)
+      tab.classList.add(Constants.kTAB_STATE_AUDIBLE);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_AUDIBLE);
+  }
+
+  if (options.forceApply ||
+      'mutedInfo' in newState) {
+    if (newState.mutedInfo && newState.mutedInfo.muted)
+      tab.classList.add(Constants.kTAB_STATE_MUTED);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_MUTED);
+  }
+
+  if (tab.apiTab &&
+      tab.apiTab.audible &&
+      !tab.apiTab.mutedInfo.muted)
+    tab.classList.add(Constants.kTAB_STATE_SOUND_PLAYING);
+  else
+    tab.classList.remove(Constants.kTAB_STATE_SOUND_PLAYING);
+
+  /*
+  // On Firefox, "highlighted" is same to "activated" for now...
+  // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/onHighlighted
+  if (options.forceApply ||
+      'highlighted' in newState) {
+    if (newState.highlighted)
+      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+  }
+  */
+
+  if (options.forceApply ||
+      'cookieStoreId' in newState) {
+    for (const className of tab.classList) {
+      if (className.indexOf('contextual-identity-') == 0)
+        tab.classList.remove(className);
+    }
+    if (newState.cookieStoreId)
+      tab.classList.add(`contextual-identity-${newState.cookieStoreId}`);
+  }
+
+  if (options.forceApply ||
+      'incognito' in newState) {
+    if (newState.incognito)
+      tab.classList.add(Constants.kTAB_STATE_PRIVATE_BROWSING);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_PRIVATE_BROWSING);
+  }
+
+  if (options.forceApply ||
+      'hidden' in newState) {
+    if (newState.hidden) {
+      if (!tab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
+        tab.classList.add(Constants.kTAB_STATE_HIDDEN);
+        Tabs.onHidden.dispatch(tab);
+      }
+    }
+    else if (tab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
+      tab.classList.remove(Constants.kTAB_STATE_HIDDEN);
+      Tabs.onShown.dispatch(tab);
+    }
+  }
+
+  /*
+  // currently "selected" is not available on Firefox, so the class is used only by other addons.
+  if (options.forceApply ||
+      'selected' in newState) {
+    if (newState.selected)
+      tab.classList.add(Constants.kTAB_STATE_SELECTED);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_SELECTED);
+  }
+  */
+
+  if (options.forceApply ||
+      'discarded' in newState) {
+    wait(0).then(() => {
+      // Don't set this class immediately, because we need to know
+      // the newly focused tab *was* discarded on onTabClosed handler.
+      if (newState.discarded)
+        tab.classList.add(Constants.kTAB_STATE_DISCARDED);
+      else
+        tab.classList.remove(Constants.kTAB_STATE_DISCARDED);
+    });
+  }
+
+  updateTabDebugTooltip(tab);
+}
+
+export function updateTabDebugTooltip(tab) {
+  if (!configs.debug ||
+      !tab.apiTab)
+    return;
+  tab.dataset.label = `
+${tab.apiTab.title}
+#${tab.id}
+(${tab.className})
+uniqueId = <%${Constants.kPERSISTENT_ID}%>
+duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
+restored = <%restored%>
+tabId = ${tab.apiTab.id}
+windowId = ${tab.apiTab.windowId}
+`.trim();
+  tab.setAttribute('title', tab.dataset.label);
+  tab.uniqueId.then(uniqueId => {
+    // reget it because it can be removed from document.
+    tab = Tabs.getTabById(tab.apiTab);
+    if (!tab)
+      return;
+    tab.setAttribute('title',
+                     tab.dataset.label = tab.dataset.label
+                       .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
+                       .replace(`<%originalId%>`, uniqueId.originalId)
+                       .replace(`<%originalTabId%>`, uniqueId.originalTabId)
+                       .replace(`<%duplicated%>`, !!uniqueId.duplicated)
+                       .replace(`<%restored%>`, !!uniqueId.restored));
+  });
+}
+
+export function updateParentTab(parent) {
+  if (!Tabs.ensureLivingTab(parent))
+    return;
+
+  const children = Tabs.getChildTabs(parent);
+
+  if (children.some(Tabs.maybeSoundPlaying))
+    parent.classList.add(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+  else
+    parent.classList.remove(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+
+  if (children.some(Tabs.maybeMuted))
+    parent.classList.add(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+  else
+    parent.classList.remove(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+
+  updateParentTab(Tabs.getParentTab(parent));
+
+  Tabs.onParentTabUpdated.dispatch(parent);
+}
+

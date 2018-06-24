@@ -5,41 +5,14 @@
 <html class="left initializing">
   <head>
     <meta charset="UTF-8">
-    <script type="application/javascript" src="/common/tree/constants.js"></script>
-    <script type="application/javascript" src="/common/MenuUI.js"></script>
-    <script type="application/javascript" src="/common/fake-context-menu/constants.js"></script>
-    <script type="application/javascript" src="/common/handle-accel-key.js"></script>
-    <script type="application/javascript" src="/common/Configs.js"></script>
-    <script type="application/javascript" src="/common/common.js"></script>
-    <script type="application/javascript" src="/common/l10n.js"></script>
-    <script type="application/javascript" src="/common/xpath.js"></script>
-    <script type="application/javascript" src="/common/TabIdFixer.js"></script>
-    <script type="application/javascript" src="/common/TabFavIconHelper.js"></script>
-    <script type="application/javascript" src="/common/permissions.js"></script>
-    <script type="application/javascript" src="/common/RichConfirm.js"></script>
-    <script type="application/javascript" src="/common/MetricsData.js"></script>
-    <script type="application/javascript" src="/common/tree/base.js"></script>
-    <script type="application/javascript" src="/common/tree/api-tabs.js"></script>
-    <script type="application/javascript" src="/common/tree/get-tabs.js"></script>
-    <script type="application/javascript" src="/common/tree/tab-information.js"></script>
-    <script type="application/javascript" src="/common/tree/tree-operations.js"></script>
-    <script type="application/javascript" src="/common/tree/cache.js"></script>
-    <script type="application/javascript" src="/common/tree/contextual-identities.js"></script>
-    <script type="application/javascript" src="/common/tree/handlers.js"></script>
-    <script type="application/javascript" src="/common/commands.js"></script>
-    <script type="application/javascript" src="/sidebar/color.js"></script>
-    <script type="application/javascript" src="/sidebar/cache.js"></script>
-    <script type="application/javascript" src="/sidebar/scroll.js"></script>
-    <script type="application/javascript" src="/sidebar/pinned-tabs.js"></script>
-    <script type="application/javascript" src="/sidebar/handlers.js"></script>
-    <script type="application/javascript" src="/sidebar/drag-and-drop.js"></script>
-    <link rel="stylesheet" type="text/css" href="/sidebar/sidebar.css"/>
-    <script type="application/javascript" src="/common/fake-context-menu/sidebar.js"></script>
-    <link rel="stylesheet" type="text/css" href="/common/fake-context-menu/sidebar.css"/>
+    <script type="module" src="./index.js"></script>
+    <script type="module" src="/common/handle-accel-key.js"></script>
+    <link rel="stylesheet" type="text/css" href="./sidebar.css"/>
     <style id="size-definition" type="text/css"></style>
     <style id="contextual-identity-styling" type="text/css"></style>
     <link id="style-loader" rel="stylesheet" type="text/css" href=""/>
     <style id="browser-theme-definition" type="text/css"></style>
+    <style id="addons-style-rules" type="text/css"></style><!-- this is just a dummy to determine insertion position of actual style definitions -->
     <style id="user-style-rules" type="text/css"></style>
   </head>
   <body>
@@ -135,6 +108,5 @@
       <li id="context_closeTab" class="require-context-tab"
           title="__MSG_tabContextMenu_close_label__">__MSG_tabContextMenu_close_label__</li>
     </ul>
-    <script type="application/javascript" src="/sidebar/sidebar.js"></script>
   </body>
 </html>

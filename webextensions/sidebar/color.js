@@ -5,21 +5,32 @@
 */
 'use strict';
 
-function mixCSSColors(aBase, aOver) {
-  var base = parseCSSColor(aBase);
-  var over = parseCSSColor(aOver);
-  var mixed = mixColors(base, over);
-  return `rgb(${mixed.red}, ${mixed.green}, ${mixed.blue})`;
+import {
+  log as internalLogger,
+  configs
+} from '../common/common.js';
+
+// eslint-disable-next-line no-unused-vars
+function log(...args) {
+  if (configs.logFor['sidebar/color'])
+    internalLogger(...args);
 }
 
-function parseCSSColor(aColor, aBaseColor) {
+export function mixCSSColors(aBase, aOver, aAlpha = 1) {
+  const base = parseCSSColor(aBase);
+  const over = parseCSSColor(aOver);
+  const mixed = mixColors(base, over);
+  return `rgba(${mixed.red}, ${mixed.green}, ${mixed.blue}, ${aAlpha})`;
+}
+
+export function parseCSSColor(aColor, aBaseColor) {
   if (typeof aColor!= 'string')
     return aColor;
 
-  var red, green, blue, alpha;
+  let red, green, blue, alpha;
 
   // RRGGBB, RRGGBBAA
-  var parts = aColor.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i);
+  let parts = aColor.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i);
   if (parts) {
     red   = parseInt(parts[1], 16);
     green = parseInt(parts[2], 16);
@@ -47,7 +58,7 @@ function parseCSSColor(aColor, aBaseColor) {
     alpha = parts[4] ? parseFloat(parts[4]) : 1 ;
   }
 
-  var parsed = { red, green, blue, alpha };
+  const parsed = { red, green, blue, alpha };
 
   if (alpha < 1 && aBaseColor)
     return mixColors(parseCSSColor(aBaseColor), parsed);
@@ -56,17 +67,10 @@ function parseCSSColor(aColor, aBaseColor) {
 }
 
 function mixColors(aBase, aOver) {
-  var alpha = aOver.alpha;
-  var red   = Math.min(255, Math.round((aBase.red   * (1 - alpha)) + (aOver.red   * alpha)));
-  var green = Math.min(255, Math.round((aBase.green * (1 - alpha)) + (aOver.green * alpha)));
-  var blue  = Math.min(255, Math.round((aBase.blue  * (1 - alpha)) + (aOver.blue  * alpha)));
+  const alpha = aOver.alpha;
+  const red   = Math.min(255, Math.round((aBase.red   * (1 - alpha)) + (aOver.red   * alpha)));
+  const green = Math.min(255, Math.round((aBase.green * (1 - alpha)) + (aOver.green * alpha)));
+  const blue  = Math.min(255, Math.round((aBase.blue  * (1 - alpha)) + (aOver.blue  * alpha)));
   return { red, green, blue, alpha: 1 };
 }
 
-function getReadableForegroundColorFromBGColor(aColor) { // expected input: 'RRGGBB', 'RGB', 'rgb(...)'
-  var color = parseCSSColor(aColor);
-  if (!color)
-    return '-moz-fieldtext';
-  var brightness = (color.red * 0.299 + color.green * 0.587 + color.blue * 0.114) / 255;
-  return brightness < 0.5 ? 'white' : 'black';
-}

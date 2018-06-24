@@ -5,107 +5,22 @@
 */
 'use strict';
 
-var configs;
-var gLogContext = '?';
+import Configs from '../extlib/Configs.js';
 
-function log(aMessage, ...aArgs)
-{
-  if (!configs || !configs.debug)
-    return;
+/* global
+  uneval: false,
+ */
 
-  var nest   = (new Error()).stack.split('\n').length;
-  var indent = '';
-  for (let i = 0; i < nest; i++) {
-    indent += ' ';
-  }
-  console.log(`tst<${gLogContext}>: ${indent}${aMessage}`, ...aArgs);
-}
+import * as Constants from './constants.js';
 
-function dumpTab(aTab) {
-  if (!configs || !configs.debug)
-    return '';
-  if (!aTab || !aTab.apiTab)
-    return '<NULL>';
-  return `#${aTab.id}`;
-}
-
-async function wait(aTask = 0, aTimeout = 0) {
-  if (typeof aTask != 'function') {
-    aTimeout = aTask;
-    aTask    = null;
-  }
-  return new Promise((aResolve, aReject) => {
-    setTimeout(async () => {
-      if (aTask)
-        await aTask();
-      aResolve();
-    }, aTimeout);
-  });
-}
-
-function nextFrame() {
-  return new Promise((aResolve, aReject) => {
-    window.requestAnimationFrame(aResolve);
-  });
-}
-
-async function notify(aParams = {}) {
-  var id = await browser.notifications.create({
-    type:    'basic',
-    iconUrl: aParams.icon || kNOTIFICATION_DEFAULT_ICON,
-    title:   aParams.title,
-    message: aParams.message
-  });
-
-  var timeout = aParams.timeout;
-  if (typeof timeout != 'number')
-    timeout = configs.notificationTimeout;
-  if (timeout >= 0)
-    await wait(timeout);
-
-  await browser.notifications.clear(id);
-}
-
-function makeAsyncFunctionSequential(aFunction) {
-  return async function(...aArgs) {
-    return new Promise((aResolve, aReject) => {
-      makeAsyncFunctionSequential.tasks.push({
-        original: aFunction,
-        args:     aArgs,
-        resolve:  aResolve,
-        reject:   aReject,
-        context:  this
-      });
-      if (makeAsyncFunctionSequential.tasks.length == 1)
-        makeAsyncFunctionSequential.start();
-    });
-  };
-}
-makeAsyncFunctionSequential.tasks = [];
-makeAsyncFunctionSequential.start = async () => {
-  var task = makeAsyncFunctionSequential.tasks[0];
-  if (!task)
-    return;
-  try {
-    var result = await task.original.call(task.context, ...task.args);
-    task.resolve(result);
-  }
-  catch(e) {
-    task.reject(e);
-  }
-  finally {
-    makeAsyncFunctionSequential.tasks.shift();
-    makeAsyncFunctionSequential.start();
-  }
-};
-
-configs = new Configs({
+export const configs = new Configs({
   optionsExpandedSections: ['section-appearance'],
+  optionsExpandedGroups: [],
 
   // appearance
-  sidebarPosition: kTABBAR_POSITION_LEFT,
-  sidebarDirection: kTABBAR_DIRECTION_LTR,
-  sidebarScrollbarPosition: kTABBAR_SCROLLBAR_POSITION_AUTO,
+  sidebarPosition: Constants.kTABBAR_POSITION_LEFT,
+  sidebarDirection: Constants.kTABBAR_DIRECTION_LTR,
+  sidebarScrollbarPosition: Constants.kTABBAR_SCROLLBAR_POSITION_AUTO,
 
   style:
     /^Linux/i.test(navigator.platform) ? 'plain' :
@@ -116,20 +31,20 @@ configs = new Configs({
   faviconizePinnedTabs: true,
   faviconizedTabScale: 1.75,
 
-  counterRole: kCOUNTER_ROLE_CONTAINED_TABS,
+  counterRole: Constants.kCOUNTER_ROLE_CONTAINED_TABS,
 
   baseIndent: 12,
-  minIndent: kDEFAULT_MIN_INDENT,
+  minIndent: Constants.kDEFAULT_MIN_INDENT,
   maxTreeLevel: -1,
   indentAutoShrink: true,
   indentAutoShrinkOnlyForVisible: true,
 
-  scrollbarMode: /^Mac/i.test(navigator.platform) ? kTABBAR_SCROLLBAR_MODE_OVERLAY : kTABBAR_SCROLLBAR_MODE_NARROW,
+  scrollbarMode: /^Mac/i.test(navigator.platform) ? Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY : Constants.kTABBAR_SCROLLBAR_MODE_NARROW,
   narrowScrollbarSize: 8,
 
   showContextualIdentitiesSelector: false,
   showNewTabActionSelector: true,
-  longPressOnNewTabButton: kCONTEXTUAL_IDENTITY_SELECTOR,
+  longPressOnNewTabButton: Constants.kCONTEXTUAL_IDENTITY_SELECTOR,
   zoomable: false,
   showCollapsedDescendantsByTooltip: true,
 
@@ -141,7 +56,9 @@ configs = new Configs({
   context_closeTree: true,
   context_closeDescendants: false,
   context_closeOthers: false,
+  context_collapseTree: false,
   context_collapseAll: true,
+  context_expandTree: false,
   context_expandAll: true,
   context_bookmarkTree: true,
 
@@ -165,11 +82,11 @@ configs = new Configs({
 
   skipCollapsedTabsForTabSwitchingShortcuts: false,
 
-  parentTabBehaviorForChanges: kPARENT_TAB_BEHAVIOR_ALWAYS,
+  parentTabBehaviorForChanges: Constants.kPARENT_TAB_BEHAVIOR_ALWAYS,
 
   syncParentTabAndOpenerTab: true,
 
-  dropLinksOnTabBehavior: kDROPLINK_ASK,
+  dropLinksOnTabBehavior: Constants.kDROPLINK_ASK,
 
 
   // grouping
@@ -180,18 +97,18 @@ configs = new Configs({
 
 
   // behavior around newly opened tabs
-  insertNewChildAt: kINSERT_END,
-  insertNewTabFromPinnedTabAt: kINSERT_NO_CONTROL,
+  insertNewChildAt: Constants.kINSERT_END,
+  insertNewTabFromPinnedTabAt: Constants.kINSERT_NO_CONTROL,
 
-  scrollToNewTabMode: kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
+  scrollToNewTabMode: Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE,
   scrollLines: 3,
 
   autoAttach: true,
-  autoAttachOnOpenedWithOwner: kNEWTAB_OPEN_AS_CHILD,
-  autoAttachOnNewTabCommand: kNEWTAB_OPEN_AS_ORPHAN,
-  autoAttachOnNewTabButtonMiddleClick: kNEWTAB_OPEN_AS_CHILD,
-  autoAttachOnDuplicated: kNEWTAB_OPEN_AS_NEXT_SIBLING,
-  autoAttachSameSiteOrphan: kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnOpenedWithOwner: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnNewTabCommand: Constants.kNEWTAB_OPEN_AS_ORPHAN,
+  autoAttachOnNewTabButtonMiddleClick: Constants.kNEWTAB_OPEN_AS_CHILD,
+  autoAttachOnDuplicated: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
+  autoAttachSameSiteOrphan: Constants.kNEWTAB_OPEN_AS_CHILD,
   guessNewOrphanTabAsOpenedByNewTabCommand: true,
   guessNewOrphanTabAsOpenedByNewTabCommandUrl: 'about:newtab',
   inheritContextualIdentityToNewChildTab: false,
@@ -199,7 +116,7 @@ configs = new Configs({
 
 
   // behavior around closed tab
-  closeParentBehavior: kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+  closeParentBehavior: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
   promoteFirstChildForClosedRoot: true,
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
@@ -221,7 +138,10 @@ configs = new Configs({
 
 
   // misc.
-  acccelaratedTabDuplication: false,
+  bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
+  acceleratedTabOperations: true,
+  acceleratedTabCreation: false,
+  acceleratedTabDuplication: false,
   enableWorkaroundForBug1409262: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   acceptableDelayForInternalFocusMoving: 150,
@@ -269,9 +189,53 @@ configs = new Configs({
   debug:     false,
   logOnUpdated: false,
   logOnMouseEvent: false,
-  logOnScroll: false,
   logOnCollapseExpand: false,
-  logOnCache: false,
+  logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': true,/"
+    'background/background-cache': false,
+    'background/background': true,
+    'background/context-menu': false,
+    'background/handle-group-tabs': true,
+    'background/handle-misc': true,
+    'background/handle-moved-tabs': true,
+    'background/handle-new-tabs': true,
+    'background/handle-removed-tabs': true,
+    'background/handle-tab-focus': true,
+    'background/handle-tree-changes': true,
+    'background/tab-context-menu': false,
+    'background/tree-structure': true,
+    'common/api-tabs': false,
+    'common/api-tabs-listener': true,
+    'common/bookmarks': true,
+    'common/cache': false,
+    'common/command': true,
+    'common/contextual-identities': true,
+    'common/migration': true,
+    'common/permissions': true,
+    'common/sidebar-status': true,
+    'common/tabs-container': true,
+    'common/tabs-group': true,
+    'common/tabs-internal-operation': true,
+    'common/tabs-move': true,
+    'common/tabs-open': true,
+    'common/tabs-update': false,
+    'common/tabs': true,
+    'common/tree': true,
+    'common/tst-api': true,
+    'common/user-operation-blocker': true,
+    'sidebar/collapse-expand': false,
+    'sidebar/color': true,
+    'sidebar/drag-and-drop': true,
+    'sidebar/event-utils': true,
+    'sidebar/indent': true,
+    'sidebar/mouse-event-listener': false,
+    'sidebar/pinned-tabs': true,
+    'sidebar/scroll': false,
+    'sidebar/sidebar-cache': false,
+    'sidebar/sidebar-tabs': true,
+    'sidebar/sidebar': true,
+    'sidebar/size': true,
+    'sidebar/tab-context-menu': false
+  },
 
   importedConfigsFromLegacy: null,
   legacyConfigsNextMigrationVersion: 0,
@@ -295,5 +259,83 @@ configs = new Configs({
     minimumIntervalToProcessDragoverEvent
     cachedExternalAddons
     notifiedFeaturesVersion
-  `.trim().split('\n').map(aKey => aKey.trim()).filter(aKey => aKey && aKey.indexOf('//') != 0)
+  `.trim().split('\n').map(key => key.trim()).filter(key => key && key.indexOf('//') != 0)
 });
+
+configs.$loaded.then(() => {
+  log.forceStore = false;
+  if (!configs.debug)
+    log.logs = [];
+});
+
+
+export function log(message, ...args)
+{
+  const useConsole = configs && configs.debug;
+  const logging    = useConsole || log.forceStore;
+  if (!logging)
+    return;
+
+  const nest = (new Error()).stack.split('\n').length;
+  let indent = '';
+  for (let i = 0; i < nest; i++) {
+    indent += ' ';
+  }
+  const line = `tst<${log.context}>: ${indent}${message}`;
+  if (useConsole)
+    console.log(line, ...args);
+
+  log.logs.push(`${line} ${args.map(arg => uneval(arg)).join(', ')}`);
+  log.logs = log.logs.slice(-log.max);
+}
+log.context = '?';
+log.max  = 1000;
+log.logs = [];
+log.forceStore = true;
+
+configs.$logger = log;
+
+export function dumpTab(tab) {
+  if (!configs || !configs.debug)
+    return '';
+  if (!tab || !tab.apiTab)
+    return '<NULL>';
+  return `#${tab.id}`;
+}
+
+export async function wait(task = 0, timeout = 0) {
+  if (typeof task != 'function') {
+    timeout = task;
+    task    = null;
+  }
+  return new Promise((resolve, _aReject) => {
+    setTimeout(async () => {
+      if (task)
+        await task();
+      resolve();
+    }, timeout);
+  });
+}
+
+export function nextFrame() {
+  return new Promise((resolve, _aReject) => {
+    window.requestAnimationFrame(resolve);
+  });
+}
+
+export async function notify(params = {}) {
+  const id = await browser.notifications.create({
+    type:    'basic',
+    iconUrl: params.icon || Constants.kNOTIFICATION_DEFAULT_ICON,
+    title:   params.title,
+    message: params.message
+  });
+
+  let timeout = params.timeout;
+  if (typeof timeout != 'number')
+    timeout = configs.notificationTimeout;
+  if (timeout >= 0)
+    await wait(timeout);
+
+  await browser.notifications.clear(id);
+}

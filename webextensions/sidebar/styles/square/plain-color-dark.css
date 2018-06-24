@@ -27,3 +27,8 @@
 :root[color-scheme="system-color"] #background::after {
   content: none;
 }
+
+:root,
+#background {
+  background-image: none;
+}

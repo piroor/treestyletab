@@ -1,6 +1,32 @@
 # History
 
  - master/HEAD
+   * Apply more theme colors for "Plain", "Vertigo" and "Mixed" for other addons like "Firefox Color".
+   * Clear "dragging" state of tabs more aggressively.
+   * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
+   * Keep tree expanded after restoration, for restoration without cache.
+ - 2.4.24 (2018.6.3)
+   * Some context menu commands didn't work when animation effect is disabled, on 2.4.22 and 2.4.23. (regression)
+   * Fix 100% CPU usage problem on loading `about;treestyletab-group` on any existing group tab.
+   * Fix incompatibility with Conex. When Conex is installed, new tabs opened from dropped links were unexpectedly closed immediately.
+ - 2.4.23 (2018.6.1)
+   * Add [new API to notify sidebar is shown or hidden](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-the-tst-sidebar-is-shownhidden) for other addons.
+   * Apply correct favicon for restored tabs.
+   * Fix freezing after a tab is detached from a window by drag and drop.
+   * Make tabs more easily detachable by drag and drop.
+ - 2.4.22 (2018.5.30)
+   * Initialize sidebar more safely on browser's startup.
+   * Prevent needless flashing of the vertical scrollbar.
+   * Open new tabs from Ctrl-T as configured position more correctly.
+   * Don't attach new same site tab if it is originally opened as a blank tab intentionally.
+   * Close the fake context menu immediately when any item is clicked.
+   * Keyboard operations affects correctly for the fake context menu even if the cursor is on any separator.
+   * Refresh context menu automatically when items are modified while open.
+   * Remove extra context menu items if an external addon is unregistered.
+   * Make "Plain" theme more respectful of Firefox's default theme.
+   * More respect Firefox's default favicons for tabs without site-specific favicon.
+   * Add ability to collect logs while browser's startup process. You can print logs by running `log.logs.join('\n')` in the remote debugger, if you're running TST in the debug mode.
+   * Update `de` locale (by sicherist, thanks!)
  - 2.4.21 (2018.5.16)
    * Add ability to attach newly opened orphan tab to the current tab, when they have same website.
    * Add ability to collapse/expand configuration sections.

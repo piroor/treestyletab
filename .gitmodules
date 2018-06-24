@@ -1,33 +1,33 @@
 [submodule "makexpi"]
 	path = makexpi
 	url = https://github.com/piroor/makexpi.git
-[submodule "extlib/webextensions-lib-configs"]
-	path = extlib/webextensions-lib-configs
+[submodule "submodules/webextensions-lib-configs"]
+	path = submodules/webextensions-lib-configs
 	url = https://github.com/piroor/webextensions-lib-configs.git
-[submodule "extlib/webextensions-lib-options"]
-	path = extlib/webextensions-lib-options
+[submodule "submodules/webextensions-lib-options"]
+	path = submodules/webextensions-lib-options
 	url = https://github.com/piroor/webextensions-lib-options.git
-[submodule "extlib/webextensions-lib-l10n"]
-	path = extlib/webextensions-lib-l10n
+[submodule "submodules/webextensions-lib-l10n"]
+	path = submodules/webextensions-lib-l10n
 	url = https://github.com/piroor/webextensions-lib-l10n.git
-[submodule "extlib/fxaddonlib-inherit"]
-	path = extlib/fxaddonlib-inherit
+[submodule "submodules/fxaddonlib-inherit"]
+	path = submodules/fxaddonlib-inherit
 	url = https://github.com/piroor/fxaddonlib-inherit.git
-[submodule "extlib/JavaScript-MD5"]
-	path = extlib/JavaScript-MD5
+[submodule "submodules/JavaScript-MD5"]
+	path = submodules/JavaScript-MD5
 	url = https://github.com/blueimp/JavaScript-MD5.git
-[submodule "extlib/webextensions-lib-tab-favicon-helper"]
-	path = extlib/webextensions-lib-tab-favicon-helper
+[submodule "submodules/webextensions-lib-tab-favicon-helper"]
+	path = submodules/webextensions-lib-tab-favicon-helper
 	url = https://github.com/piroor/webextensions-lib-tab-favicon-helper.git
-[submodule "extlib/webextensions-lib-tab-id-fixer"]
-	path = extlib/webextensions-lib-tab-id-fixer
+[submodule "submodules/webextensions-lib-tab-id-fixer"]
+	path = submodules/webextensions-lib-tab-id-fixer
 	url = https://github.com/piroor/webextensions-lib-tab-id-fixer.git
-[submodule "extlib/webextensions-lib-rich-confirm"]
-	path = extlib/webextensions-lib-rich-confirm
+[submodule "submodules/webextensions-lib-rich-confirm"]
+	path = submodules/webextensions-lib-rich-confirm
 	url = https://github.com/piroor/webextensions-lib-rich-confirm.git
-[submodule "extlib/webextensions-lib-menu-ui"]
-	path = extlib/webextensions-lib-menu-ui
+[submodule "submodules/webextensions-lib-menu-ui"]
+	path = submodules/webextensions-lib-menu-ui
 	url = https://github.com/piroor/webextensions-lib-menu-ui.git
-[submodule "extlib/webextensions-lib-shortcut-customize-ui"]
-	path = extlib/webextensions-lib-shortcut-customize-ui
+[submodule "submodules/webextensions-lib-shortcut-customize-ui"]
+	path = submodules/webextensions-lib-shortcut-customize-ui
 	url = https://github.com/piroor/webextensions-lib-shortcut-customize-ui.git

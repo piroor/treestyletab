@@ -5,40 +5,65 @@
 */
 'use strict';
 
-gLogContext = 'Sidebar-?';
+import RichConfirm from '../extlib/RichConfirm.js';
+import TabIdFixer from '../extlib/TabIdFixer.js';
 
-var gInitializing = true;
-var gStyle;
-var gFaviconSize        = 0;
-var gFaviconizedTabSize = 0;
-var gTabHeight          = 0;
-var gRestoringTabCount = 0;
-var gExternalListenerAddons = null;
-var gAddonStyles = {};
-var gMetricsData = new MetricsData();
-gMetricsData.add('Loaded');
+import {
+  log as internalLogger,
+  nextFrame,
+  configs
+} from '../common/common.js';
+import * as Constants from '../common/constants.js';
+import * as ApiTabsListener from '../common/api-tabs-listener.js';
+import * as Tabs from '../common/tabs.js';
+import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
+import * as TabsUpdate from '../common/tabs-update.js';
+import * as TabsMove from '../common/tabs-move.js';
+import * as TabsContainer from '../common/tabs-container.js';
+import * as Tree from '../common/tree.js';
+import * as TSTAPI from '../common/tst-api.js';
+import * as ContextualIdentities from '../common/contextual-identities.js';
+import * as Commands from '../common/commands.js';
+import * as UserOperationBlocker from '../common/user-operation-blocker.js';
+import * as MetricsData from '../common/metrics-data.js';
+import EventListenerManager from '../common/EventListenerManager.js';
 
-window.addEventListener('pagehide', destroy, { once: true });
-window.addEventListener('load', init, { once: true });
+import * as SidebarCache from './sidebar-cache.js';
+import * as SidebarTabs from './sidebar-tabs.js';
+import * as PinnedTabs from './pinned-tabs.js';
+import * as DragAndDrop from './drag-and-drop.js';
+import * as RestoringTabCount from './restoring-tab-count.js';
+import * as Size from './size.js';
+import * as Color from './color.js';
+import * as Indent from './indent.js';
+import * as Scroll from './scroll.js';
+import * as TabContextMenu from './tab-context-menu.js';
 
-var gTabBar                     = document.querySelector('#tabbar');
-var gAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
-var gOutOfViewTabNotifier       = document.querySelector('#out-of-view-tab-notifier');
-var gAllTabs                    = document.querySelector('#all-tabs');
-var gMasterThrobber             = document.querySelector('#master-throbber');
-var gSizeDefinition             = document.querySelector('#size-definition');
-var gStyleLoader                = document.querySelector('#style-loader');
-var gBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
-var gUserStyleRules             = document.querySelector('#user-style-rules');
-var gContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
-var gContextualIdentitySelector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
-var gNewTabActionSelector       = document.getElementById(kNEWTAB_ACTION_SELECTOR);
+function log(...args) {
+  if (configs.logFor['sidebar/sidebar'])
+    internalLogger(...args);
+}
+
+export const onInit    = new EventListenerManager();
+export const onBuilt   = new EventListenerManager();
+export const onReady   = new EventListenerManager();
+
+
+let mStyle;
+let mTargetWindow = null;
+
+const mTabBar                     = document.querySelector('#tabbar');
+const mAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
+const mStyleLoader                = document.querySelector('#style-loader');
+const mBrowserThemeDefinition     = document.querySelector('#browser-theme-definition');
+const mUserStyleRules             = document.querySelector('#user-style-rules');
+const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity-styling');
 
 { // apply style ASAP!
   // allow customiation for platform specific styles with selectors like `:root[data-user-agent*="Windows NT 10"]`
   document.documentElement.dataset.userAgent = navigator.userAgent;
 
-  let style = location.search.match(/style=([^&]+)/);
+  const style = location.search.match(/style=([^&]+)/);
   if (style)
     applyStyle(style[1]);
   else
@@ -47,72 +72,65 @@ var gNewTabActionSelector       = document.getElementById(kNEWTAB_ACTION_SELECTO
   configs.$loaded.then(applyUserStyleRules);
 }
 
-blockUserOperations({ throbber: true });
+UserOperationBlocker.block({ throbber: true });
 
-async function init() {
-  gMetricsData.add('init start');
+export async function init() {
+  MetricsData.add('init start');
   log('initialize sidebar on load');
-  window.addEventListener('resize', onResize);
 
   await Promise.all([
     (async () => {
-      var apiTabs = await browser.tabs.query({
+      const apiTabs = await browser.tabs.query({
         active:        true,
         currentWindow: true
       });
-      gTargetWindow = apiTabs[0].windowId;
-      gLogContext   = `Sidebar-${gTargetWindow}`;
+      mTargetWindow = apiTabs[0].windowId;
+      Tabs.setWindow(mTargetWindow);
+      internalLogger.context   = `Sidebar-${mTargetWindow}`;
+
+      PinnedTabs.init();
+      Indent.init();
+      SidebarCache.init();
+      SidebarCache.onRestored.addListener(() => { DragAndDrop.clearDropPosition(); });
     })(),
     configs.$loaded
   ]);
-  gMetricsData.add('browser.tabs.query, configs.$loaded');
+  MetricsData.add('browser.tabs.query, configs.$loaded');
 
   onConfigChange('colorScheme');
   onConfigChange('simulateSVGContextFill');
+  onInit.dispatch();
 
   await Promise.all([
     waitUntilBackgroundIsReady(),
-    retrieveAllContextualIdentities()
+    ContextualIdentities.init()
   ]);
-  gMetricsData.add('applyStyle, waitUntilBackgroundIsReady and retrieveAllContextualIdentities');
+  MetricsData.add('applyStyle, waitUntilBackgroundIsReady and ContextualIdentities.init');
 
-  var cachedContents;
-  var restoredFromCache;
-  var scrollPosition;
-  await gMetricsData.addAsync('parallel initialization tasks', Promise.all([
-    gMetricsData.addAsync('main', async () => {
+  let cachedContents;
+  let restoredFromCache;
+  await MetricsData.addAsync('parallel initialization tasks', Promise.all([
+    MetricsData.addAsync('main', async () => {
       if (configs.useCachedTree)
-        await gMetricsData.addAsync('read cached sidebar contents', async () => {
-          cachedContents = await getEffectiveWindowCache();
+        await MetricsData.addAsync('read cached sidebar contents', async () => {
+          cachedContents = await SidebarCache.getEffectiveWindowCache();
         });
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
-      startObserveApiTabs();
+      ApiTabsListener.startListen();
 
-      browser.runtime.connect({ name: `${kCOMMAND_REQUEST_CONNECT_PREFIX}${gTargetWindow}` });
+      browser.runtime.connect({
+        name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${mTargetWindow}`
+      });
       if (browser.theme && browser.theme.getCurrent) // Firefox 58 and later
-        browser.theme.getCurrent(gTargetWindow).then(applyBrowserTheme);
+        browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
+      else
+        applyBrowserTheme();
 
       if (!restoredFromCache)
-        await gMetricsData.addAsync('inheritTreeStructure', async () => {
+        await MetricsData.addAsync('inheritTreeStructure', async () => {
           await inheritTreeStructure();
         });
-
-      document.addEventListener('mousedown', onMouseDown);
-      document.addEventListener('mouseup', onMouseUp);
-      document.addEventListener('click', onClick);
-      document.addEventListener('wheel', onWheel, { capture: true });
-      document.addEventListener('contextmenu', onContextMenu, { capture: true });
-      document.addEventListener('focus', onFocus);
-      document.addEventListener('blur', onBlur);
-      gTabBar.addEventListener('scroll', onScroll);
-      gTabBar.addEventListener('dblclick', onDblClick);
-      gTabBar.addEventListener('transitionend', onTransisionEnd);
-      gTabBar.addEventListener('overflow', onOverflow);
-      gTabBar.addEventListener('underflow', onUnderflow);
-      gMasterThrobber.addEventListener('animationiteration', synchronizeThrobberAnimation);
-      startListenDragEvents();
-      gMetricsData.add('start to listen events');
 
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
@@ -122,284 +140,204 @@ async function init() {
       onConfigChange('scrollbarMode');
       onConfigChange('showContextualIdentitiesSelector');
       onConfigChange('showNewTabActionSelector');
-      gMetricsData.add('apply configs');
 
-      browser.runtime.onMessage.addListener(onMessage);
-      browser.runtime.onMessageExternal.addListener(onMessageExternal);
+      document.addEventListener('focus', onFocus);
+      document.addEventListener('blur', onBlur);
+      window.addEventListener('resize', onResize);
+      mTabBar.addEventListener('transitionend', onTransisionEnd);
+
       if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
         browser.theme.onUpdated.addListener(onBrowserThemeChanged);
+
+      browser.runtime.onMessage.addListener(onMessage);
+
+      onBuilt.dispatch();
+
+      DragAndDrop.init();
+
+      MetricsData.add('onBuilt: start to listen events');
     }),
-    gMetricsData.addAsync('calculateDefaultSizes', async () => {
-      calculateDefaultSizes();
+    MetricsData.addAsync('Size.init', async () => {
+      Size.init();
       document.documentElement.classList.remove('initializing');
     }),
-    gMetricsData.addAsync('initializing contextual identities', async () => {
-      gContextualIdentitySelector.ui = new MenuUI({
-        root:       gContextualIdentitySelector,
-        appearance: 'panel',
-        onCommand:  onContextualIdentitySelect,
-        animationDuration: configs.animation ? configs.collapseDuration : 0.001
-      });
+    MetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
-      startObserveContextualIdentities();
-
-      gNewTabActionSelector.ui = new MenuUI({
-        root:       gNewTabActionSelector,
-        appearance: 'panel',
-        onCommand:  onNewTabActionSelect,
-        animationDuration: configs.animation ? configs.collapseDuration : 0.001
-      });
+      ContextualIdentities.startObserve();
     }),
-    gMetricsData.addAsync('tabContextMenu.init', async () => {
-      tabContextMenu.init();
+    MetricsData.addAsync('TabContextMenu.init', async () => {
+      TabContextMenu.init();
     }),
-    gMetricsData.addAsync('getting registered addons and scroll lock state', async () => {
-      var results = await browser.runtime.sendMessage([
-        { type: kCOMMAND_REQUEST_REGISTERED_ADDONS },
-        { type: kCOMMAND_REQUEST_SCROLL_LOCK_STATE }
-      ]);
-      var addons = results[0];
-      gExternalListenerAddons = addons;
-      gScrollLockedBy = results[1];
-      for (let id of Object.keys(addons)) {
-        let addon = addons[id];
-        if (addon.style)
-          installStyleForAddon(id, addon.style);
-      }
-      updateSpecialEventListenersForAPIListeners();
+    MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
+      await TSTAPI.initAsFrontend();
     }),
-    gMetricsData.addAsync('getting kWINDOW_STATE_SCROLL_POSITION', async () => {
-      scrollPosition = await browser.sessions.getWindowValue(gTargetWindow, kWINDOW_STATE_SCROLL_POSITION);
+    MetricsData.addAsync('Scroll.init', async () => {
+      Scroll.init();
     })
   ]));
 
-  if (typeof scrollPosition == 'number') {
-    log('restore scroll position');
-    cancelRunningScroll();
-    scrollTo({
-      position: scrollPosition,
-      justNow:  true
-    });
-    gMetricsData.add('applying scroll position');
-  }
-
-  gInitializing = false;
-
-  updateVisualMaxTreeLevel();
-  updateIndent({
-    force: true,
-    cache: cachedContents && cachedContents.indent
-  });
+  SidebarCache.startTracking();
+  Indent.updateRestoredTree(cachedContents && cachedContents.indent);
   if (!restoredFromCache) {
-    updateLoadingState();
-    synchronizeThrobberAnimation();
-    for (let tab of getAllTabs()) {
-      updateTabTwisty(tab);
-      updateTabClosebox(tab);
-      updateTabsCount(tab);
-      updateTabTooltip(tab);
-    }
-    reserveToUpdateCachedTabbar();
+    SidebarTabs.updateAll();
+    SidebarCache.reserveToUpdateCachedTabbar();
   }
   updateTabbarLayout({ justNow: true });
 
+  SidebarTabs.init();
+
   onConfigChange('animation');
+  onReady.dispatch();
 
-  unblockUserOperations({ throbber: true });
+  UserOperationBlocker.unblock({ throbber: true });
 
-  gMetricsData.add('init end');
-  log('Startup metrics: ', gMetricsData.toString());
+  MetricsData.add('init end');
+  log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
 }
 
-function destroy() {
-  configs.$removeObserver(onConfigChange);
-  browser.runtime.onMessage.removeListener(onMessage);
-  browser.runtime.onMessageExternal.removeListener(onMessageExternal);
-  if (browser.theme && browser.theme.onUpdated) // Firefox 58 and later
-    browser.theme.onUpdated.removeListener(onBrowserThemeChanged);
-  endListenDragEvents();
-  endObserveApiTabs();
-  endObserveContextualIdentities();
-  window.removeEventListener('resize', onResize);
-
-  document.removeEventListener('mousedown', onMouseDown);
-  document.removeEventListener('mouseup', onMouseUp);
-  document.removeEventListener('click', onClick);
-  document.removeEventListener('wheel', onWheel, { capture: true });
-  document.removeEventListener('contextmenu', onContextMenu, { capture: true });
-  document.removeEventListener('focus', onFocus);
-  document.removeEventListener('blur', onBlur);
-  gTabBar.removeEventListener('scroll', onScroll);
-  gTabBar.removeEventListener('dblclick', onDblClick);
-  gTabBar.removeEventListener('transitionend', onTransisionEnd);
-  gTabBar.removeEventListener('overflow', onOverflow);
-  gTabBar.removeEventListener('underflow', onUnderflow);
-  gMasterThrobber.removeEventListener('animationiteration', synchronizeThrobberAnimation);
-
-  if (onMouseMove.listening)
-    window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-  if (onMouseOver.listening)
-    window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-  if (onMouseOut.listening)
-    window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
-
-  gAllTabs = gTabBar = gAfterTabsForOverflowTabBar = gMasterThrobber = undefined;
-}
-
-function applyStyle(aStyle) {
-  gStyle = aStyle || configs.style;
-  switch (gStyle) {
+function applyStyle(style) {
+  mStyle = style || configs.style;
+  switch (mStyle) {
     case 'metal':
-      gStyleLoader.setAttribute('href', 'styles/metal/metal.css');
+      mStyleLoader.setAttribute('href', 'styles/metal/metal.css');
       break;
     case 'sidebar':
-      gStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
+      mStyleLoader.setAttribute('href', 'styles/sidebar/sidebar.css');
       break;
     case 'mixed':
-      gStyleLoader.setAttribute('href', 'styles/square/mixed.css');
+      mStyleLoader.setAttribute('href', 'styles/square/mixed.css');
       break;
     case 'vertigo':
-      gStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
+      mStyleLoader.setAttribute('href', 'styles/square/vertigo.css');
       break;
     case 'plain-dark':
-      gStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
+      mStyleLoader.setAttribute('href', 'styles/square/plain-dark.css');
       break;
     case 'plain':
     case 'flat': // for backward compatibility, fall back to plain.
-      gStyleLoader.setAttribute('href', 'styles/square/plain.css');
+      mStyleLoader.setAttribute('href', 'styles/square/plain.css');
       break;
     case 'highcontrast':
-      gStyleLoader.setAttribute('href', 'styles/square/highcontrast.css');
+      mStyleLoader.setAttribute('href', 'styles/square/highcontrast.css');
       break;
     default:
       // as the base of customization. see also:
       // https://github.com/piroor/treestyletab/issues/1604
-      gStyleLoader.setAttribute('href', 'data:text/css,');
+      mStyleLoader.setAttribute('href', 'data:text/css,');
       break;
   }
-  return new Promise((aResolve, aReject) => {
-    gStyleLoader.addEventListener('load', () => {
-      nextFrame().then(aResolve);
+  return new Promise((resolve, _aReject) => {
+    mStyleLoader.addEventListener('load', () => {
+      nextFrame().then(resolve);
     }, { once: true });
   });
 }
 
 function applyUserStyleRules() {
-  gUserStyleRules.textContent = configs.userStyleRules || '';
+  mUserStyleRules.textContent = configs.userStyleRules || '';
 }
 
 function applyBrowserTheme(aTheme) {
-  if (!aTheme.colors) {
-    gBrowserThemeDefinition.textContent = '';
-    return;
-  }
-  var baseColor    = aTheme.colors.accentcolor;
-  var toolbarColor = mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.4)');
-  if (aTheme.colors.toolbar)
-    toolbarColor = mixCSSColors(baseColor, aTheme.colors.toolbar);
-  gBrowserThemeDefinition.textContent = `
-    :root {
-      --browser-bg-base:         ${baseColor};
-      --browser-bg-less-lighter: ${mixCSSColors(baseColor, 'rgba(255, 255, 255, 0.25)')};
-      --browser-bg-lighter:      ${toolbarColor};
-      --browser-bg-more-lighter: ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)')};
-      --browser-bg-lightest:     ${mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)')};
-      --browser-bg-less-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.1)')};
-      --browser-bg-darker:       ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.25)')};
-      --browser-bg-more-darker:  ${mixCSSColors(baseColor, 'rgba(0, 0, 0, 0.5)')};
-      --browser-fg:              ${aTheme.colors.textcolor};
-      --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
-      --browser-header-url:      url(${JSON.stringify(aTheme.images.headerURL)});
-    }
-  `;
-}
+  log('applying theme ', aTheme);
 
-function calculateDefaultSizes() {
-  // first, calculate actual favicon size.
-  gFaviconSize = document.querySelector('#dummy-favicon-size-box').getBoundingClientRect().height;
-  var scale = Math.max(configs.faviconizedTabScale, 1);
-  gFaviconizedTabSize = parseInt(gFaviconSize * scale);
-  log('gFaviconSize / gFaviconizedTabSize ', gFaviconSize, gFaviconizedTabSize);
-  gSizeDefinition.textContent = `:root {
-    --favicon-size:         ${gFaviconSize}px;
-    --faviconized-tab-size: ${gFaviconizedTabSize}px;
-  }`;
-  var dummyTab = document.querySelector('#dummy-tab');
-  var dummyTabRect = dummyTab.getBoundingClientRect();
-  gTabHeight = dummyTabRect.height;
-  var dummyTabbar = document.querySelector('#dummy-tabs');
-  var dummyTabbarRect = dummyTabbar.getBoundingClientRect();
-  var scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
-  log('gTabHeight ', gTabHeight);
-  var baseColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
-  var highlightColor = parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
-  gSizeDefinition.textContent += `:root {
-    --tab-height: ${gTabHeight}px;
-    --scrollbar-size: ${scrollbarSize}px;
-    --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
-
-    --tab-burst-duration: ${configs.burstDuration}ms;
-    --indent-duration:    ${configs.indentDuration}ms;
-    --collapse-duration:  ${configs.collapseDuration}ms;
-    --out-of-view-tab-notify-duration: ${configs.outOfViewTabNotifyDuration}ms;
-
-    --face-highlight-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
-    --face-highlight-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
-    --face-highlight-more-more-lighter: ${mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
+  const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
+  const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
+  const defaultColors = `:root {
+    --face-highlight-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.35 }),)};
+    --face-highlight-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.2 }))};
+    --face-highlight-more-more-lighter: ${Color.mixCSSColors(baseColor, Object.assign({}, highlightColor, { alpha: 0.1 }))};
     --face-gradient-start-active: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.4);
     --face-gradient-start-inactive: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0.2);
     --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
   }`;
+
+  if (!aTheme || !aTheme.colors) {
+    mBrowserThemeDefinition.textContent = defaultColors;
+    return;
+  }
+  const extraColors = [];
+  let bgAlpha = 1;
+  if (aTheme.images) {
+    if (aTheme.images.headerURL)
+      extraColors.push(`--browser-header-url: url(${JSON.stringify(aTheme.images.headerURL)})`);
+    if (Array.isArray(aTheme.images.additional_backgrounds) &&
+        aTheme.images.additional_backgrounds.length > 0) {
+      extraColors.push(`--browser-bg-url: url(${JSON.stringify(aTheme.images.additional_backgrounds[0])})`);
+      bgAlpha = 0.75;
+    }
+  }
+  const themeBaseColor = Color.mixCSSColors(aTheme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
+  let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
+  if (aTheme.colors.toolbar)
+    toolbarColor = Color.mixCSSColors(themeBaseColor, aTheme.colors.toolbar);
+  if (aTheme.colors.tab_line)
+    extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
+  if (aTheme.colors.tab_loading)
+    extraColors.push(`--browser-loading-indicator: ${aTheme.colors.tab_loading}`);
+  mBrowserThemeDefinition.textContent = `
+    ${defaultColors}
+    :root {
+      --browser-bg-base:         ${themeBaseColor};
+      --browser-bg-less-lighter: ${Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
+      --browser-bg-lighter:      ${toolbarColor};
+      --browser-bg-more-lighter: ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.6)', bgAlpha)};
+      --browser-bg-lightest:     ${Color.mixCSSColors(toolbarColor, 'rgba(255, 255, 255, 0.85)', bgAlpha)};
+      --browser-bg-less-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
+      --browser-bg-darker:       ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
+      --browser-bg-more-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
+      --browser-fg:              ${aTheme.colors.textcolor};
+      --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
+      --browser-border:          ${Color.mixCSSColors(aTheme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
+      ${extraColors.join(';\n')}
+    }
+  `;
 }
 
 function updateContextualIdentitiesStyle() {
-  var definitions = [];
-  for (let id of Object.keys(gContextualIdentities)) {
-    let identity = gContextualIdentities[id];
-    if (!identity.colorCode)
-      continue;
+  const definitions = [];
+  ContextualIdentities.forEach(aIdentity => {
+    if (!aIdentity.colorCode)
+      return;
     definitions.push(`
-      .tab.contextual-identity-${id} .contextual-identity-marker {
-        background-color: ${identity.colorCode};
+      .tab.contextual-identity-${aIdentity.cookieStoreId} .contextual-identity-marker {
+        background-color: ${aIdentity.colorCode};
       }
     `);
-  }
-  gContextualIdentitiesStyle.textContent = definitions.join('\n');
+  });
+  mContextualIdentitiesStyle.textContent = definitions.join('\n');
 }
 
 function updateContextualIdentitiesSelector() {
-  const anchors = Array.slice(document.querySelectorAll(`.${kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
-  for (let anchor of anchors) {
-    if (identityIds.length == 0)
+  const anchors = Array.slice(document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
+  for (const anchor of anchors) {
+    if (ContextualIdentities.getCount() == 0)
       anchor.setAttribute('disabled', true);
     else
       anchor.removeAttribute('disabled');
   }
 
-  const selector = document.getElementById(kCONTEXTUAL_IDENTITY_SELECTOR);
+  const selector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
   const range    = document.createRange();
   range.selectNodeContents(selector);
   range.deleteContents();
 
-  const identityIds = Object.keys(gContextualIdentities);
-  const fragment    = document.createDocumentFragment();
-  for (let id of identityIds) {
-    const identity = gContextualIdentities[id];
+  const fragment = document.createDocumentFragment();
+  ContextualIdentities.forEach(aIdentity => {
     const item     = document.createElement('li');
-    item.dataset.value = id;
-    item.textContent = identity.name;
+    item.dataset.value = aIdentity.cookieStoreId;
+    item.textContent = aIdentity.name;
     const icon = document.createElement('span');
     icon.classList.add('icon');
-    if (identity.iconUrl) {
-      icon.style.backgroundColor = identity.colorCode || 'var(--tab-text)';
-      icon.style.mask = `url(${JSON.stringify(identity.iconUrl)}) no-repeat center / 100%`;
+    if (aIdentity.iconUrl) {
+      icon.style.backgroundColor = aIdentity.colorCode || 'var(--tab-text)';
+      icon.style.mask = `url(${JSON.stringify(aIdentity.iconUrl)}) no-repeat center / 100%`;
     }
     item.insertBefore(icon, item.firstChild);
     fragment.appendChild(item);
-  }
+  });
   if (configs.inheritContextualIdentityToNewChildTab) {
-    let defaultCotnainerItem = document.createElement('li');
+    const defaultCotnainerItem = document.createElement('li');
     defaultCotnainerItem.dataset.value = 'firefox-default';
     defaultCotnainerItem.textContent = browser.i18n.getMessage('tabbar_newTabWithContexualIdentity_default');
     const icon = document.createElement('span');
@@ -411,143 +349,72 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-function installStyleForAddon(aId, aStyle) {
-  if (!gAddonStyles[aId]) {
-    gAddonStyles[aId] = document.createElement('style');
-    gAddonStyles[aId].setAttribute('type', 'text/css');
-    document.head.insertBefore(gAddonStyles[aId], gUserStyleRules);
-  }
-  gAddonStyles[aId].textContent = aStyle;
-}
+export async function rebuildAll(cache) {
+  const apiTabs = await browser.tabs.query({ currentWindow: true });
+  TabsContainer.clearAll();
 
-function uninstallStyleForAddon(aId) {
-  if (!gAddonStyles[aId])
-    return;
-  document.head.removeChild(gAddonStyles[aId]);
-  delete gAddonStyles[aId];
-}
-
-function updateSpecialEventListenersForAPIListeners() {
-  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEMOVE).length > 0) != onMouseMove.listening) {
-    if (!onMouseMove.listening) {
-      window.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-      onMouseMove.listening = true;
-    }
-    else {
-      window.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-      onMouseMove.listening = false;
-    }
-  }
-
-  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
-    if (!onMouseOver.listening) {
-      window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-      onMouseOver.listening = true;
-    }
-    else {
-      window.removeEventListener('mouseover', onMouseOver, { capture: true, passive: true });
-      onMouseOver.listening = false;
-    }
-  }
-
-  if ((getListenersForTSTAPIMessageType(kTSTAPI_NOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
-    if (!onMouseOut.listening) {
-      window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
-      onMouseOut.listening = true;
-    }
-    else {
-      window.removeEventListener('mouseout', onMouseOut, { capture: true, passive: true });
-      onMouseOut.listening = false;
-    }
-  }
-}
-
-async function rebuildAll(aCache) {
-  var apiTabs = await browser.tabs.query({ currentWindow: true });
-  clearAllTabsContainers();
-
-  if (aCache) {
-    let restored = await restoreTabsFromCache(aCache, { tabs: apiTabs });
+  if (cache) {
+    const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs: apiTabs });
     if (restored) {
-      gMetricsData.add('rebuildAll (from cache)');
+      MetricsData.add('rebuildAll (from cache)');
       return true;
     }
   }
 
-  let container = buildTabsContainerFor(gTargetWindow);
-  for (let apiTab of apiTabs) {
+  const container = TabsContainer.buildFor(mTargetWindow);
+  for (const apiTab of apiTabs) {
     TabIdFixer.fixTab(apiTab);
-    let newTab = buildTab(apiTab, { existing: true, inRemote: true });
+    const newTab = Tabs.buildTab(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
-    updateTab(newTab, apiTab, { forceApply: true });
+    TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
   }
-  gAllTabs.appendChild(container);
-  gMetricsData.add('rebuildAll (from scratch)');
+  Tabs.allTabsContainer.appendChild(container);
+  MetricsData.add('rebuildAll (from scratch)');
   return false;
 }
 
 async function inheritTreeStructure() {
-  var response = await browser.runtime.sendMessage({
-    type:     kCOMMAND_PULL_TREE_STRUCTURE,
-    windowId: gTargetWindow
+  const response = await browser.runtime.sendMessage({
+    type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
+    windowId: mTargetWindow
   });
-  gMetricsData.add('inheritTreeStructure: kCOMMAND_PULL_TREE_STRUCTURE');
+  MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await applyTreeStructureToTabs(getAllTabs(gTargetWindow), response.structure);
-    gMetricsData.add('inheritTreeStructure: applyTreeStructureToTabs');
+    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), response.structure);
+    MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
   }
 }
 
 async function waitUntilBackgroundIsReady() {
   try {
-    let response = await browser.runtime.sendMessage({
-      type: kCOMMAND_PING_TO_BACKGROUND
+    const response = await browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_PING_TO_BACKGROUND
     });
     if (response)
       return;
   }
-  catch(e) {
+  catch(_e) {
   }
-  return new Promise((aResolve, aReject) => {
-    let onBackgroundIsReady = (aMessage, aSender, aRespond) => {
-      if (!aMessage ||
-          !aMessage.type ||
-          aMessage.type != kCOMMAND_PING_TO_SIDEBAR)
+  return new Promise((resolve, _aReject) => {
+    const onBackgroundIsReady = (message, _aSender, _aRespond) => {
+      if (!message ||
+          !message.type ||
+          message.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
         return;
       browser.runtime.onMessage.removeListener(onBackgroundIsReady);
-      aResolve();
+      resolve();
     };
     browser.runtime.onMessage.addListener(onBackgroundIsReady);
   });
 }
 
 
-function getTabTwisty(aTab) {
-  return aTab.querySelector(`.${kTWISTY}`);
-}
-function getTabFavicon(aTab) {
-  return aTab.querySelector(`.${kFAVICON}`);
-}
-function getTabThrobber(aTab) {
-  return aTab.querySelector(`.${kTHROBBER}`);
-}
-function getTabSoundButton(aTab) {
-  return aTab.querySelector(`.${kSOUND_BUTTON}`);
-}
-function getTabCounter(aTab) {
-  return aTab.querySelector(`.${kCOUNTER}`);
-}
-function getTabClosebox(aTab) {
-  return aTab.querySelector(`.${kCLOSEBOX}`);
-}
-
-
-async function confirmToCloseTabs(aCount, aOptions = {}) {
-  if (aCount <= 1 ||
+export async function confirmToCloseTabs(count, _aOptions = {}) {
+  if (count <= 1 ||
       !configs.warnOnCloseTabs)
     return true;
   const confirm = new RichConfirm({
-    message: browser.i18n.getMessage('warnOnCloseTabs_message', [aCount]),
+    message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
       browser.i18n.getMessage('warnOnCloseTabs_cancel')
@@ -566,166 +433,21 @@ async function confirmToCloseTabs(aCount, aOptions = {}) {
       return false;
   }
 }
+Commands.onTabsClosing.addListener(confirmToCloseTabs);
+TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
-function updateTabTwisty(aTab) {
-  var tooltip;
-  if (isSubtreeCollapsed(aTab))
-    tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
-  else
-    tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
-  getTabTwisty(aTab).setAttribute('title', tooltip);
-}
-
-function updateTabClosebox(aTab) {
-  var tooltip;
-  if (hasChildTabs(aTab) && isSubtreeCollapsed(aTab))
-    tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
-  else
-    tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
-  getTabClosebox(aTab).setAttribute('title', tooltip);
-}
-
-function updateTabsCount(aTab) {
-  var counter = getTabCounter(aTab);
-  if (!counter)
-    return;
-  var descendants = getDescendantTabs(aTab);
-  var count = descendants.length;
-  if (configs.counterRole == kCOUNTER_ROLE_ALL_TABS)
-    count += 1;
-  counter.textContent = count;
-}
-
-function collapseExpandAllSubtree(aParams = {}) {
-  var container = getTabsContainer(gTargetWindow);
-  var tabCondition = `.${kTAB_STATE_SUBTREE_COLLAPSED}`;
-  if (aParams.collapsed)
-    tabCondition = `:not(${tabCondition})`;
-  var tabs = container.querySelectorAll(`.tab:not([${kCHILDREN}="|"])${subtreeCondition}`);
-  for (let tab of tabs) {
-    collapseExpandSubtree(tab, aParams);
-  }
-}
-
-
-function reserveToUpdateVisualMaxTreeLevel() {
-  if (gInitializing)
-    return;
-  if (updateVisualMaxTreeLevel.waiting)
-    clearTimeout(updateVisualMaxTreeLevel.waiting);
-  updateVisualMaxTreeLevel.waiting = setTimeout(() => {
-    delete updateVisualMaxTreeLevel.waiting;
-    updateVisualMaxTreeLevel();
-  }, configs.collapseDuration * 1.5);
-}
-
-function updateVisualMaxTreeLevel() {
-  var maxLevel = getMaxTreeLevel(gTargetWindow, {
-    onlyVisible: configs.indentAutoShrinkOnlyForVisible
-  });
-  document.documentElement.setAttribute(kMAX_TREE_LEVEL, Math.max(1, maxLevel));
-}
-
-
-function reserveToUpdateIndent() {
-  if (gInitializing)
-    return;
-  //log('reserveToUpdateIndent');
-  if (reserveToUpdateIndent.waiting)
-    clearTimeout(reserveToUpdateIndent.waiting);
-  reserveToUpdateIndent.waiting = setTimeout(() => {
-    delete reserveToUpdateIndent.waiting;
-    updateIndent();
-  }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
-}
-
-var gIndentDefinition;
-var gLastMaxLevel  = -1;
-var gLastMaxIndent = -1;
-var gIndentProp = 'margin-left';
-
-function updateIndent(aOptions = {}) {
-  if (!aOptions.cache) {
-    let maxLevel  = getMaxTreeLevel(gTargetWindow);
-    let maxIndent = gTabBar.getBoundingClientRect().width * (0.33);
-    if (maxLevel <= gLastMaxLevel &&
-        maxIndent == gLastMaxIndent &&
-        !aOptions.force)
-      return;
-
-    gLastMaxLevel  = maxLevel + 5;
-    gLastMaxIndent = maxIndent;
-  }
-  else {
-    gLastMaxLevel  = aOptions.cache.lastMaxLevel;
-    gLastMaxIndent = aOptions.cache.lastMaxIndent;
-  }
-
-  if (!gIndentDefinition) {
-    gIndentDefinition = document.createElement('style');
-    gIndentDefinition.setAttribute('type', 'text/css');
-    document.head.appendChild(gIndentDefinition);
-  }
-
-  if (aOptions.cache) {
-    gIndentDefinition.textContent = aOptions.cache.definition;
-  }
-  else {
-    let indentToSelectors = {};
-    let defaultIndentToSelectors = {};
-    for (let i = 0; i <= gLastMaxLevel; i++) {
-      generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
-    }
-
-    let definitions = [];
-    for (let indentSet of [defaultIndentToSelectors, indentToSelectors]) {
-      let indents = Object.keys(indentSet);
-      indents.sort((aA, aB) => parseInt(aA) - parseInt(aB));
-      for (let indent of indents) {
-        definitions.push(`${indentSet[indent].join(',\n')} { ${gIndentProp}: ${indent}; }`);
-      }
-    }
-    gIndentDefinition.textContent = definitions.join('\n');
-  }
-}
-function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aDefaultIndentToSelectors) {
-  var indent     = configs.baseIndent * aMaxLevel;
-  var minIndent  = Math.max(kDEFAULT_MIN_INDENT, configs.minIndent);
-  var indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(gLastMaxIndent / aMaxLevel), minIndent));
-
-  var configuredMaxLevel = configs.maxTreeLevel;
-  if (configuredMaxLevel < 0)
-    configuredMaxLevel = Number.MAX_SAFE_INTEGER;
-
-  var base = `:root[${kMAX_TREE_LEVEL}="${aMaxLevel}"]:not(.initializing) .tab:not(.${kTAB_STATE_COLLAPSED_DONE})[${kLEVEL}]`;
-
-  // default indent for unhandled (deep) level tabs
-  let defaultIndent = `${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px`;
-  if (!aDefaultIndentToSelectors[defaultIndent])
-    aDefaultIndentToSelectors[defaultIndent] = [];
-  aDefaultIndentToSelectors[defaultIndent].push(`${base}:not([${kLEVEL}="0"])`);
-
-  for (let level = 1; level <= aMaxLevel; level++) {
-    let indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
-    if (!aIndentToSelectors[indent])
-      aIndentToSelectors[indent] = [];
-    aIndentToSelectors[indent].push(`${base}[${kLEVEL}="${level}"]`);
-  }
-}
-
-
-function reserveToUpdateTabbarLayout(aOptions = {}) {
+export function reserveToUpdateTabbarLayout(options = {}) {
   //log('reserveToUpdateTabbarLayout');
   if (reserveToUpdateTabbarLayout.waiting)
     clearTimeout(reserveToUpdateTabbarLayout.waiting);
-  if (aOptions.reason && !(reserveToUpdateTabbarLayout.reasons & aOptions.reason))
-    reserveToUpdateTabbarLayout.reasons |= aOptions.reason;
-  var timeout = aOptions.timeout || 10;
+  if (options.reason && !(reserveToUpdateTabbarLayout.reasons & options.reason))
+    reserveToUpdateTabbarLayout.reasons |= options.reason;
+  const timeout = options.timeout || 10;
   reserveToUpdateTabbarLayout.timeout = Math.max(timeout, reserveToUpdateTabbarLayout.timeout);
   reserveToUpdateTabbarLayout.waiting = setTimeout(() => {
     delete reserveToUpdateTabbarLayout.waiting;
-    var reasons = reserveToUpdateTabbarLayout.reasons;
+    const reasons = reserveToUpdateTabbarLayout.reasons;
     reserveToUpdateTabbarLayout.reasons = 0;
     reserveToUpdateTabbarLayout.timeout = 0;
     updateTabbarLayout({ reasons });
@@ -734,163 +456,530 @@ function reserveToUpdateTabbarLayout(aOptions = {}) {
 reserveToUpdateTabbarLayout.reasons = 0;
 reserveToUpdateTabbarLayout.timeout = 0;
 
-function updateTabbarLayout(aParams = {}) {
-  if (gRestoringTabCount > 1) {
+function updateTabbarLayout(params = {}) {
+  if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('updateTabbarLayout: skip until completely restored');
     reserveToUpdateTabbarLayout({
-      reason:  aParams.reasons,
-      timeout: Math.max(100, aParams.timeout)
+      reason:  params.reasons,
+      timeout: Math.max(100, params.timeout)
     });
     return;
   }
   //log('updateTabbarLayout');
-  var range = document.createRange();
-  range.selectNodeContents(gTabBar);
-  var containerHeight = gTabBar.getBoundingClientRect().height;
-  var contentHeight   = range.getBoundingClientRect().height;
+  const range = document.createRange();
+  range.selectNodeContents(mTabBar);
+  const containerHeight = mTabBar.getBoundingClientRect().height;
+  const contentHeight   = range.getBoundingClientRect().height;
   //log('height: ', { container: containerHeight, content: contentHeight });
-  var overflow = containerHeight < contentHeight;
-  if (overflow && !gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
+  const overflow = containerHeight < contentHeight;
+  if (overflow && !mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('overflow');
-    gTabBar.classList.add(kTABBAR_STATE_OVERFLOW);
-    let range = document.createRange();
-    range.selectNodeContents(gAfterTabsForOverflowTabBar);
-    range.setStartAfter(gOutOfViewTabNotifier);
-    let offset = range.getBoundingClientRect().height;
+    mTabBar.classList.add(Constants.kTABBAR_STATE_OVERFLOW);
+    const range = document.createRange();
+    range.selectNode(mAfterTabsForOverflowTabBar.querySelector('.newtab-button-box'));
+    const offset = range.getBoundingClientRect().height;
     range.detach();
-    gTabBar.style.bottom = `${offset}px`;
+    mTabBar.style.bottom = `${offset}px`;
     nextFrame().then(() => {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      var current = getCurrentTab();
-      if (!isTabInViewport(current)) {
+      const current = Tabs.getCurrentTab();
+      if (!Scroll.isTabInViewport(current)) {
         log('scroll to current tab on updateTabbarLayout');
-        scrollToTab(current);
+        Scroll.scrollToTab(current);
         return;
       }
-      var lastOpenedTab = getLastOpenedTab();
-      var reasons       = aParams.reasons || 0;
-      if (reasons & kTABBAR_UPDATE_REASON_TAB_OPEN &&
-          !isTabInViewport(lastOpenedTab)) {
+      const lastOpenedTab = Tabs.getLastOpenedTab();
+      const reasons       = params.reasons || 0;
+      if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
+          !Scroll.isTabInViewport(lastOpenedTab)) {
         log('scroll to last opened tab on updateTabbarLayout ', reasons);
-        scrollToTab(lastOpenedTab, {
+        Scroll.scrollToTab(lastOpenedTab, {
           anchor:            current,
           notifyOnOutOfView: true
         });
       }
     });
   }
-  else if (!overflow && gTabBar.classList.contains(kTABBAR_STATE_OVERFLOW)) {
+  else if (!overflow && mTabBar.classList.contains(Constants.kTABBAR_STATE_OVERFLOW)) {
     //log('underflow');
-    gTabBar.classList.remove(kTABBAR_STATE_OVERFLOW);
-    gTabBar.style.bottom = '';
+    mTabBar.classList.remove(Constants.kTABBAR_STATE_OVERFLOW);
+    mTabBar.style.bottom = '';
   }
 
-  if (aParams.justNow)
-    positionPinnedTabs(aParams);
+  if (params.justNow)
+    PinnedTabs.reposition(params);
   else
-    reserveToPositionPinnedTabs(aParams);
+    PinnedTabs.reserveToReposition(params);
 }
 
 
-function reserveToUpdateTabTooltip(aTab) {
-  if (gInitializing ||
-      !ensureLivingTab(aTab))
+function onFocus(_event) {
+  browser.runtime.sendMessage({
+    type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
+    windowId: mTargetWindow
+  });
+}
+
+function onBlur(_aEvent) {
+  browser.runtime.sendMessage({
+    type:     Constants.kNOTIFY_SIDEBAR_BLUR,
+    windowId: mTargetWindow
+  });
+}
+
+function onResize(_event) {
+  reserveToUpdateTabbarLayout({
+    reason: Constants.kTABBAR_UPDATE_REASON_RESIZE
+  });
+}
+
+function onTransisionEnd(event) {
+  if (event.pseudoElement || // ignore size change of pseudo elements because they won't change height of tabbar contents
+      !event.target.classList.contains('tab') || // ignore animations of twisty or something inside tabs
+      /opacity|color|text-shadow/.test(event.propertyName))
     return;
-  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
-    if (tab.reservedUpdateTabTooltip)
-      clearTimeout(tab.reservedUpdateTabTooltip);
+  //log('transitionend ', event);
+  reserveToUpdateTabbarLayout({
+    reason: Constants.kTABBAR_UPDATE_REASON_ANIMATION_END
+  });
+}
+
+function onBrowserThemeChanged(updateInfo) {
+  if (!updateInfo.windowId || // reset to default
+      updateInfo.windowId == mTargetWindow)
+    applyBrowserTheme(updateInfo.theme);
+}
+
+
+Tabs.onCreated.addListener((_tab, _info) => {
+  reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
+    timeout: configs.collapseDuration
+  });
+});
+
+Tabs.onRemoving.addListener((tab, closeInfo) => {
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, closeInfo);
+  if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
+      Tabs.isSubtreeCollapsed(tab))
+    Tree.collapseExpandSubtree(tab, {
+      collapsed: false
+    });
+
+  // We don't need to update children because they are controlled by bacgkround.
+  // However we still need to update the parent itself.
+  Tree.detachTab(tab, {
+    dontUpdateIndent: true
+  });
+
+  reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_CLOSE,
+    timeout: configs.collapseDuration
+  });
+});
+
+Tabs.onMoved.addListener((_tab, _info) => {
+  reserveToUpdateTabbarLayout({
+    reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
+    timeout: configs.collapseDuration
+  });
+});
+
+Tabs.onDetached.addListener((tab, _info) => {
+  if (!Tabs.ensureLivingTab(tab))
+    return;
+  // We don't need to update children because they are controlled by bacgkround.
+  // However we still need to update the parent itself.
+  Tree.detachTab(tab, {
+    dontUpdateIndent: true
+  });
+});
+
+Tabs.onRestoring.addListener(tab => {
+  if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
+    return;
+
+  const container = tab.parentNode;
+  // When we are restoring two or more tabs.
+  // (But we don't need do this again for third, fourth, and later tabs.)
+  if (container.restoredCount == 2)
+    UserOperationBlocker.block({ throbber: true });
+});
+
+// Tree restoration for "Restore Previous Session"
+Tabs.onWindowRestoring.addListener(async windowId => {
+  if (!configs.useCachedTree)
+    return;
+
+  log('Tabs.onWindowRestoring');
+  const container = Tabs.getTabsContainer(windowId);
+  const restoredCount = await container.allTabsRestored;
+  if (restoredCount == 1) {
+    log('Tabs.onWindowRestoring: single tab restored');
+    UserOperationBlocker.unblock({ throbber: true });
+    return;
   }
-  aTab.reservedUpdateTabTooltip = setTimeout(() => {
-    delete aTab.reservedUpdateTabTooltip;
-    updateTabAndAncestorsTooltip(aTab);
-  }, 100);
-}
 
-function updateTabAndAncestorsTooltip(aTab) {
-  if (!ensureLivingTab(aTab))
-    return;
-  for (let tab of [aTab].concat(getAncestorTabs(aTab))) {
-    updateTabTooltip(tab);
-  }
-}
-
-function updateTabTooltip(aTab) {
-  if (!ensureLivingTab(aTab))
-    return;
-
-  aTab.dataset.labelWithDescendants = getLabelWithDescendants(aTab);
-
-  if (configs.showCollapsedDescendantsByTooltip &&
-      isSubtreeCollapsed(aTab) &&
-      hasChildTabs(aTab)) {
-    aTab.setAttribute('title', aTab.dataset.labelWithDescendants);
+  log('Tabs.onWindowRestoring: continue');
+  const cache = await SidebarCache.getEffectiveWindowCache({
+    ignorePinnedTabs: true
+  });
+  if (!cache ||
+      (cache.offset &&
+       container.childNodes.length <= cache.offset)) {
+    log('Tabs.onWindowRestoring: no effective cache');
+    await inheritTreeStructure(); // fallback to classic method
+    UserOperationBlocker.unblock({ throbber: true });
     return;
   }
 
-  if (configs.debug)
-    return;
-
-  const label = getTabLabel(aTab);
-  if (isPinned(aTab) || label.classList.contains('overflow')) {
-    aTab.setAttribute('title', aTab.dataset.label);
+  log('Tabs.onWindowRestoring restore! ', cache);
+  MetricsData.add('Tabs.onWindowRestoring restore start');
+  cache.tabbar.tabsDirty = true;
+  const apiTabs = await browser.tabs.query({ windowId: windowId });
+  const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
+    offset: cache.offset || 0,
+    tabs:   apiTabs
+  });
+  if (!restored) {
+    await rebuildAll();
+    await inheritTreeStructure();
   }
-  else {
-    aTab.removeAttribute('title');
+  Indent.updateRestoredTree(restored && cache.offset == 0 ? cache.indent : null);
+  updateTabbarLayout({ justNow: true });
+  UserOperationBlocker.unblock({ throbber: true });
+  MetricsData.add('Tabs.onWindowRestoring restore end');
+});
+
+
+ContextualIdentities.onUpdated.addListener(() => {
+  updateContextualIdentitiesStyle();
+  updateContextualIdentitiesSelector();
+});
+
+
+function onConfigChange(changedKey) {
+  const rootClasses = document.documentElement.classList;
+  switch (changedKey) {
+    case 'debug': {
+      for (const tab of Tabs.getAllTabs()) {
+        TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
+      }
+      if (configs.debug)
+        rootClasses.add('debug');
+      else
+        rootClasses.remove('debug');
+    }; break;
+
+    case 'animation':
+      if (configs.animation)
+        rootClasses.add('animation');
+      else
+        rootClasses.remove('animation');
+      break;
+
+    case 'sidebarPosition':
+      if (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) {
+        rootClasses.add('right');
+        rootClasses.remove('left');
+      }
+      else {
+        rootClasses.add('left');
+        rootClasses.remove('right');
+      }
+      Indent.update({ force: true });
+      break;
+
+    case 'sidebarDirection':
+      if (configs.sidebarDirection == Constants.kTABBAR_DIRECTION_RTL) {
+        rootClasses.add('rtl');
+        rootClasses.remove('ltr');
+      }
+      else {
+        rootClasses.add('ltr');
+        rootClasses.remove('rtl');
+      }
+      break;
+
+    case 'sidebarScrollbarPosition': {
+      let position = configs.sidebarScrollbarPosition;
+      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_AUTO)
+        position = configs.sidebarPosition;
+      if (position == Constants.kTABBAR_SCROLLBAR_POSITION_RIGHT) {
+        rootClasses.add('right-scrollbar');
+        rootClasses.remove('left-scrollbar');
+      }
+      else {
+        rootClasses.add('left-scrollbar');
+        rootClasses.remove('right-scrollbar');
+      }
+      Indent.update({ force: true });
+    }; break;
+
+    case 'baseIndent':
+    case 'minIndent':
+    case 'maxTreeLevel':
+    case 'indentAutoShrink':
+    case 'indentAutoShrinkOnlyForVisible':
+      Indent.update({ force: true });
+      break;
+
+    case 'style':
+      location.reload();
+      break;
+
+    case 'scrollbarMode':
+      rootClasses.remove(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
+      rootClasses.remove(Constants.kTABBAR_STATE_NO_SCROLLBAR);
+      rootClasses.remove(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
+      switch (configs.scrollbarMode) {
+        default:
+        case Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT:
+          break;
+        case Constants.kTABBAR_SCROLLBAR_MODE_NARROW:
+          rootClasses.add(Constants.kTABBAR_STATE_NARROW_SCROLLBAR);
+          break;
+        case Constants.kTABBAR_SCROLLBAR_MODE_HIDE:
+          rootClasses.add(Constants.kTABBAR_STATE_NO_SCROLLBAR);
+          break;
+        case Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY:
+          rootClasses.add(Constants.kTABBAR_STATE_OVERLAY_SCROLLBAR);
+          break;
+      }
+      break;
+
+    case 'colorScheme':
+      document.documentElement.setAttribute('color-scheme', configs.colorScheme);
+      break;
+
+    case 'narrowScrollbarSize':
+      location.reload();
+      break;
+
+    case 'userStyleRules':
+      applyUserStyleRules()
+      break;
+
+    case 'inheritContextualIdentityToNewChildTab':
+      updateContextualIdentitiesSelector();
+      break;
+
+    case 'showContextualIdentitiesSelector':
+      if (configs[changedKey])
+        rootClasses.add(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      else
+        rootClasses.remove(Constants.kTABBAR_STATE_CONTEXTUAL_IDENTITY_SELECTABLE);
+      break;
+
+    case 'showNewTabActionSelector':
+      if (configs[changedKey])
+        rootClasses.add(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      else
+        rootClasses.remove(Constants.kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE);
+      break;
+
+    case 'simulateSVGContextFill':
+      if (configs[changedKey])
+        rootClasses.add('simulate-svg-context-fill');
+      else
+        rootClasses.remove('simulate-svg-context-fill');
+      break;
   }
 }
 
 
-function reserveToUpdateLoadingState() {
-  if (gInitializing)
-    return;
-  if (reserveToUpdateLoadingState.waiting)
-    clearTimeout(reserveToUpdateLoadingState.waiting);
-  reserveToUpdateLoadingState.waiting = setTimeout(() => {
-    delete reserveToUpdateLoadingState.waiting;
-    updateLoadingState();
-  }, 0);
+const mTreeChangesFromRemote = new Set();
+function waitUntilAllTreeChangesFromRemoteAreComplete() {
+  return Promise.all(Array.from(mTreeChangesFromRemote.values()));
 }
 
-function updateLoadingState() {
-  if (document.querySelector(`#${gTabBar.id} ${kSELECTOR_VISIBLE_TAB}.loading`))
-    document.documentElement.classList.add(kTABBAR_STATE_HAVE_LOADING_TAB);
-  else
-    document.documentElement.classList.remove(kTABBAR_STATE_HAVE_LOADING_TAB);
-}
-
-async function synchronizeThrobberAnimation() {
-  var toBeSynchronizedTabs = document.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.${kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
-  if (toBeSynchronizedTabs.length == 0)
+function onMessage(message, _sender, _respond) {
+  if (!message ||
+      typeof message.type != 'string' ||
+      message.type.indexOf('treestyletab:') != 0)
     return;
 
-  for (let tab of Array.slice(toBeSynchronizedTabs)) {
-    tab.classList.remove(kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+  //log('onMessage: ', message, sender);
+  switch (message.type) {
+    case Constants.kCOMMAND_PING_TO_SIDEBAR: {
+      if (message.windowId == mTargetWindow)
+        return Promise.resolve(true);
+    }; break;
+
+    case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
+      if (message.windowId == mTargetWindow)
+        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), message.structure);
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
+      RestoringTabCount.increment();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_RESTORED:
+      RestoringTabCount.decrement();
+      break;
+
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
+      const tab = Tabs.getTabById(message.tab);
+      if (tab)
+        Tabs.onFaviconUpdated.dispatch(tab, message.favIconUrl);
+    } break;
+
+    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
+      if (message.windowId == mTargetWindow) return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tab);
+        const tab = Tabs.getTabById(message.tab);
+        if (!tab)
+          return;
+        const params = {
+          collapsed: message.collapsed,
+          justNow:   message.justNow,
+          stack:     message.stack
+        };
+        if (message.manualOperation)
+          Tree.manualCollapseExpandSubtree(tab, params);
+        else
+          Tree.collapseExpandSubtree(tab, params);
+      })();
+    }; break;
+
+    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
+      if (message.windowId == mTargetWindow) return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tab);
+        const tab = Tabs.getTabById(message.tab);
+        if (!tab)
+          return;
+        // Tree's collapsed state can be changed before this message is delivered,
+        // so we should ignore obsolete messages.
+        if (message.byAncestor &&
+            message.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
+          return;
+        const params = {
+          collapsed:   message.collapsed,
+          justNow:     message.justNow,
+          broadcasted: true,
+          stack:       message.stack
+        };
+        Tree.collapseExpandTab(tab, params);
+      })();
+    }; break;
+
+    case Constants.kCOMMAND_MOVE_TABS_BEFORE:
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.nextTab]));
+        return TabsMove.moveTabsBefore(
+          message.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(message.nextTab),
+          message
+        ).then(tabs => tabs.map(tab => tab.id));
+      })();
+
+    case Constants.kCOMMAND_MOVE_TABS_AFTER:
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.previousTab]));
+        return TabsMove.moveTabsAfter(
+          message.tabs.map(Tabs.getTabById),
+          Tabs.getTabById(message.previousTab),
+          message
+        ).then(tabs => tabs.map(tab => tab.id));
+      })();
+
+    case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tabs);
+        return TabsInternalOperation.removeTabs(message.tabs.map(Tabs.getTabById), message.options);
+      })();
+
+    case Constants.kCOMMAND_ATTACH_TAB_TO: {
+      if (message.windowId == mTargetWindow) {
+        const promisedComplete = (async () => {
+          await Promise.all([
+            Tabs.waitUntilTabsAreCreated([
+              message.child,
+              message.parent,
+              message.insertBefore,
+              message.insertAfter
+            ]),
+            waitUntilAllTreeChangesFromRemoteAreComplete()
+          ]);
+          log('attach tab from remote ', message);
+          const child  = Tabs.getTabById(message.child);
+          const parent = Tabs.getTabById(message.parent);
+          if (child && parent)
+            await Tree.attachTabTo(child, parent, Object.assign({}, message, {
+              insertBefore: Tabs.getTabById(message.insertBefore),
+              insertAfter:  Tabs.getTabById(message.insertAfter),
+              inRemote:     false,
+              broadcast:    false
+            }));
+          mTreeChangesFromRemote.delete(promisedComplete);
+        })();
+        mTreeChangesFromRemote.add(promisedComplete);
+        return promisedComplete;
+      }
+    }; break;
+
+    case Constants.kCOMMAND_DETACH_TAB: {
+      if (message.windowId == mTargetWindow) {
+        const promisedComplete = (async () => {
+          await Promise.all([
+            Tabs.waitUntilTabsAreCreated(message.tab),
+            waitUntilAllTreeChangesFromRemoteAreComplete()
+          ]);
+          const tab = Tabs.getTabById(message.tab);
+          if (tab)
+            Tree.detachTab(tab, message);
+          mTreeChangesFromRemote.delete(promisedComplete);
+        })();
+        mTreeChangesFromRemote.add(promisedComplete);
+        return promisedComplete;
+      }
+    }; break;
+
+    case Constants.kCOMMAND_BLOCK_USER_OPERATIONS: {
+      if (message.windowId == mTargetWindow)
+        UserOperationBlocker.blockIn(mTargetWindow, message);
+    }; break;
+
+    case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS: {
+      if (message.windowId == mTargetWindow)
+        UserOperationBlocker.unblockIn(mTargetWindow, message);
+    }; break;
+
+    case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
+      if (!message.tabs.length)
+        break;
+      return (async () => {
+        await Tabs.waitUntilTabsAreCreated(message.tabs);
+        const add    = message.add || [];
+        const remove = message.remove || [];
+        log('apply broadcasted tab state ', message.tabs, {
+          add:    add.join(','),
+          remove: remove.join(',')
+        });
+        const modified = add.concat(remove);
+        for (let tab of message.tabs) {
+          tab = Tabs.getTabById(tab);
+          if (!tab)
+            continue;
+          add.forEach(state => tab.classList.add(state));
+          remove.forEach(state => tab.classList.remove(state));
+          if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
+            modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
+            modified.includes(Constants.kTAB_STATE_MUTED)) {
+            SidebarTabs.updateSoundButtonTooltip(tab);
+            if (message.bubbles)
+              TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
+          }
+        }
+      })();
+    }; break;
+
+    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
+      if (message.windowId == mTargetWindow)
+        return confirmToCloseTabs(message.count);
+    }; break;
   }
-  await nextFrame();
-  document.documentElement.classList.add(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
-  await nextFrame();
-  document.documentElement.classList.remove(kTABBAR_STATE_THROBBER_SYNCHRONIZING);
 }
-
-
-async function notifyOutOfViewTab(aTab) {
-  if (gRestoringTabCount > 1) {
-    log('notifyOutOfViewTab: skip until completely restored');
-    wait(100).then(() => notifyOutOfViewTab(aTab));
-    return;
-  }
-  await nextFrame();
-  cancelNotifyOutOfViewTab();
-  if (aTab && isTabInViewport(aTab))
-    return;
-  gOutOfViewTabNotifier.classList.add('notifying');
-  await wait(configs.outOfViewTabNotifyDuration);
-  cancelNotifyOutOfViewTab();
-}
-
-function cancelNotifyOutOfViewTab() {
-  gOutOfViewTabNotifier.classList.remove('notifying');
-}
-
