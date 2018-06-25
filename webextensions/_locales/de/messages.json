@@ -57,7 +57,7 @@
 
   "bookmarkFolder_label_default": { "message": "$TITLE$ und mehr (%YEAR%.%MONTH%.%DATE%)",
     "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
+      "title": { "content": "$1", "example": "Titel" },
       "year":  { "content": "$2", "example": "2018" },
       "month": { "content": "$3", "example": "06" },
       "date":  { "content": "$4", "example": "21" }
@@ -118,11 +118,13 @@
 
 
   "context_reloadTree_label": { "message": "Zweig neu la&den" },
-  "context_reloadDescendants_label": { "message": "Untergeordnete Tabs neu la&den" },
-  "context_closeTree_label": { "message": "Zweig s&chließen" },
-  "context_closeDescendants_label": { "message": "&Untergeordnete Tabs schließen" },
+  "context_reloadDescendants_label": { "message": "&Untergeordnete Tabs neu laden" },
+  "context_closeTree_label": { "message": "Zweig &schließen" },
+  "context_closeDescendants_label": { "message": "U&ntergeordnete Tabs schließen" },
   "context_closeOthers_label": { "message": "&Alle anderen Tabs außer diesen Zweig schließen" },
+  "context_collapseTree_label": { "message": "Di&esen Zweig zuklappen" },
   "context_collapseAll_label": { "message": "Alle &zuklappen" },
+  "context_expandTree_label": { "message": "Diesen Zweig auskla&ppen" },
   "context_expandAll_label": { "message": "Alle au&fklappen)" },
   "context_bookmarkTree_label": { "message": "&Lesezeichen für diesen Zweig anlegen…" },
 
@@ -273,6 +275,10 @@
   
   
   "config_advanced_caption": { "message": "Erweitert" },
+  
+  "config_bookmarkTreeFolderName_before": { "message": "Ordnernamen für \"Lesezeichen für diesen Zweig erstellen\":" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
+  "config_bookmarkTreeFolderName_description": { "message": "Verfügbare Platzhalter: %TITLE% (Titel des ersten Tabs), %URL% (URL des ersten Tabs), %YEAR% (Jahr, vierstellig), %MONTH% (Monat, zweistellig), %DATE% (Tag, zweistellig)" },
 
   "config_userStyleRules_label": { "message": "Style-Regeln für Sidebar-Inhalte" },
   "config_userStyleRules_description_before": { "message": "Für weitere Optionen siehe " },
@@ -314,13 +320,16 @@
 
   "config_debug_label": { "message": "Debug mode" },
   "config_log_caption":               { "message": "Detaillierte Logs" },
+  "config_logFor_common":     { "message": "Logs von gemeinesamen Modulen" },
+  "config_logFor_background": { "message": "Logs von Hintergrundmodulen" },
+  "config_logFor_sidebar":    { "message": "Logs von Sidebar-Modulen" },
+  "config_logFor_misc":       { "message": "Logs von soonstigen Modulen" },
   "config_logOnUpdated_label":        { "message": "Logs ausgeben von tabs.onUpdated" },
   "config_logOnMouseEvent_label":     { "message": "Logs ausgeben von mouse events" },
-  "config_logOnScroll_label":         { "message": "Logs ausgeben von auto scrolling" },
   "config_logOnCollapseExpand_label": { "message": "Logs ausgeben von collapse/expand" },
-  "config_logOnCache_label":          { "message": "Logs ausgeben von zwischengespeichertem Baum" },
   "config_simulateSVGContextFill_label": { "message": "Workaround für Bug 1388193 und Bug 1421329 aktivieren um SVG-Icons zu simulieren (*Kann die CPU-Last erhöhen. Um diese Option zu deaktivieren, aktiviere \"svg.context-properties.content.enabled\" via \"about:config\", bis diese Bugs behoben sind.)" },
   "config_useCachedTree_label": { "message": "Zweig-Wiederherstellung mit Cache optimieren" },
+  "config_acceleratedTabCreation_label": { "message": "Operationen zu neu geöffneten Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
   "config_acceleratedTabDuplication_label": { "message": "Operationen zum Duplizieren von Tabs beschleunigen (*HINWEIS: Du wirst unstabilies Verhalten rund um Tabs feststellen.)" },
   "config_maximumAcceptableDelayForTabDuplication_before": { "message": "Das Duplizieren von Tabs abbrechen, wenn es länger als" },
   "config_useCachedTree_description": { "message": "*Sollte es zu instabilem Verhalten der Baumstruktur kommen, kann es helfen, diese Einstellung zu deaktivieren und wieder zu aktivieren, um den Cache zu erneuern." },
