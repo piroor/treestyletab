@@ -186,17 +186,15 @@ async function onShortcutCommand(command) {
 
     case 'focusPrevious':
     case 'focusPreviousSilently': {
-      const nextFocused = Tabs.getPreviousSiblingTab(activeTab) ||
-        Tabs.getParentTab(activeTab) ||
-          Tabs.getLastVisibleTab(activeTab);
-      TabsInternalOperation.selectTab(nextFocused, { silently: /silently/.test(command) });
+      const nextFocused = Tabs.getPreviousVisibleTab(activeTab) ||
+        Tabs.getLastVisibleTab(activeTab);
+      TabsInternalOperation.selectTab(nextFocused, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
-      const nextFocused = Tabs.getNextSiblingTab(activeTab) ||
-        Tabs.getNextVisibleTab(Tabs.getLastDescendantTab(activeTab) || activeTab) ||
-          Tabs.getFirstVisibleTab(activeTab);
-      TabsInternalOperation.selectTab(nextFocused, { silently: /silently/.test(command) });
+      const nextFocused = Tabs.getNextVisibleTab(activeTab) ||
+        Tabs.getFirstVisibleTab(activeTab);
+      TabsInternalOperation.selectTab(nextFocused, { silently: /Silently/.test(command) });
     }; return;
     case 'focusParent':
       TabsInternalOperation.selectTab(Tabs.getParentTab(activeTab));
