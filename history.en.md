@@ -1,10 +1,30 @@
 # History
 
  - master/HEAD
+   * Totally reconstructed as ES modules, for better maintainability.
+   * Don't treat click action on closing tabs as clicking on the blank area of the tab bar.
+   * New commands "Collapse this Tree" and "Expand this Tree" for the context menu on tabs.
+   * New commands "Collapse this Tree", "Expand this Tree", "Focus to Parent Tab" and "Focus to First Child Tab" are now available for keybaord shortcuts.
+   * "Focus to Previous Tab" and "Focus to Next Tab" commands (for keyboard shortcuts) circulate focus of tabs.
+   * "Focus to Previous Tab" and "Focus to Next Tab" commands (for keyboard shortcuts) focus to actual previous/next tabs, instead of previous/next sibling tabs.
+   * "Focus to Previous Tab" and "Focus to Next Tab" commands now have default keyboard shortcut.
+   * Place small favicon for group tabs from pinned tabs over "folder" icon correctly.
+   * The parent group tab won't be bookmarked by the "Bookmark this Tree" command anymore.
+   * Add ability to configure default bookmark folder name, and it includes the date created at by default.
+   * Any pinned tab is now possible to be dragged and dropped between unpinned tabs. Opposite is also available.
+   * Pinned tabs are now possible to be teared off from the window by drag and drop.
+   * Updating of group tabs is now done without reloading of the tab itself.
+   * Unfocusing from the input field of the title of a group tab now applies the current value as its new title, instead of cancelling.
+   * Tabs opened from a bookmark folder are correctly grouped. (It was a regression on recent versions.)
+   * When a new tab is opened from a pinned tab, the tab bar will be scrolled to the new tab if possible.
+   * Focus to closest ancestor tab when the active tab is going to be collapsed correctly.
    * Apply more theme colors for "Plain", "Vertigo" and "Mixed" for other addons like "Firefox Color".
    * Clear "dragging" state of tabs more aggressively.
+   * Add ability to output log for each module.
    * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
    * Keep tree expanded after restoration, for restoration without cache.
+   * Update `de` locale (by sicherist, thanks!)
+   * Add `ru` and `uk` locales (by perdolka, thanks!)
  - 2.4.24 (2018.6.3)
    * Some context menu commands didn't work when animation effect is disabled, on 2.4.22 and 2.4.23. (regression)
    * Fix 100% CPU usage problem on loading `about;treestyletab-group` on any existing group tab.
