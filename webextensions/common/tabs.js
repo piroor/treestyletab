@@ -492,6 +492,14 @@ export function getLastTab(hint) {
   return tabs.length > 0 ? tabs[tabs.length - 1] : null;
 }
 
+export function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
+  const container = getTabsContainer(hint);
+  if (!container)
+    return null;
+  const tabs = container.querySelectorAll(kSELECTOR_VISIBLE_TAB);
+  return tabs.length > 0 ? tabs[tabs.length - 1] : null;
+}
+
 export function getLastOpenedTab(hint) {
   const tabs = getTabs(hint);
   return tabs.length > 0 ?
