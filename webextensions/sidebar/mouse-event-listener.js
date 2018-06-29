@@ -308,13 +308,16 @@ function getMouseEventTargetType(event) {
 }
 
 async function onMouseUp(event) {
-  const tab = EventUtils.getTabFromEvent(event);
+  const tab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
+  const livingTab = EventUtils.getTabFromEvent(event);
+  log('mouseup tab: ', tab, { living: !!livingTab });
+
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   EventUtils.cancelHandleMousedown(event.button);
   if (lastMousedown)
     await lastMousedown.promisedMousedownNotified;
 
-  const serializedTab = tab && TSTAPI.serializeTab(tab);
+  const serializedTab = livingTab && TSTAPI.serializeTab(livingTab);
   let promisedCanceled = Promise.resolve(false);
   if (serializedTab && lastMousedown) {
     const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
@@ -327,11 +330,11 @@ async function onMouseUp(event) {
     promisedCanceled = results.then(results => results.some(result => result.result));
   }
 
-  DragAndDrop.endMultiDrag(tab, event);
+  DragAndDrop.endMultiDrag(livingTab, event);
 
   if (!lastMousedown ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
-      (tab && tab != Tabs.getTabById(lastMousedown.detail.tab)))
+      (livingTab && livingTab != Tabs.getTabById(lastMousedown.detail.tab)))
     return;
 
   log('onMouseUp ', lastMousedown.detail);
@@ -341,18 +344,21 @@ async function onMouseUp(event) {
     return;
   }
 
-  if (tab) {
+  if (livingTab) {
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       log('middle click on a tab');
       //log('middle-click to close');
-      Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
+      Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(livingTab).length)
         .then(aConfirmed => {
           if (aConfirmed)
-            TabsInternalOperation.removeTab(tab, { inRemote: true });
+            TabsInternalOperation.removeTab(livingTab, { inRemote: true });
         });
     }
     return;
   }
+
+  if (tab) // ignore mouseup on closing tab or something
+    return;
 
   // following codes are for handlig of click event on the tab bar itself.
   const actionForNewTabCommand = lastMousedown.detail.isAccelClick ?
@@ -473,19 +479,25 @@ function onDblClick(event) {
   if (EventUtils.isEventFiredOnNewTabButton(event))
     return;
 
-  const tab = EventUtils.getTabFromEvent(event);
-  if (tab) {
+  const tab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
+  const livingTab = EventUtils.getTabFromEvent(event);
+  log('dblclick tab: ', tab, { living: !!livingTab });
+
+  if (livingTab) {
     if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
       event.preventDefault();
-      Tree.collapseExpandSubtree(tab, {
-        collapsed:       !Tabs.isSubtreeCollapsed(tab),
+      Tree.collapseExpandSubtree(livingTab, {
+        collapsed:       !Tabs.isSubtreeCollapsed(livingTab),
         manualOperation: true,
         inRemote:        true
       });
     }
     return;
   }
+
+  if (tab) // ignore dblclick on closing tab or something
+    return;
 
   event.stopPropagation();
   event.preventDefault();

@@ -388,12 +388,12 @@ export function getTabsContainer(hint) {
   return null;
 }
 
-export function getTabFromChild(node) {
+export function getTabFromChild(node, options = {}) {
   if (!node)
     return null;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return node && node.closest(kSELECTOR_LIVE_TAB);
+  return node && node.closest(options.force ? '.tab' : kSELECTOR_LIVE_TAB);
 }
 
 export function getTabById(idOrInfo) {
