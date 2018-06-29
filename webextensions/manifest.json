@@ -137,12 +137,14 @@
       "description": "__MSG_command_focusPrevious__"
     },
     "focusPreviousSilently": {
+      "suggested_key": { "default": "Ctrl+Shift+Up" },
       "description": "__MSG_command_focusPreviousSilently__"
     },
     "focusNext": {
       "description": "__MSG_command_focusNext__"
     },
     "focusNextSilently": {
+      "suggested_key": { "default": "Ctrl+Shift+Down" },
       "description": "__MSG_command_focusNextSilently__"
     },
     "focusParent": {
