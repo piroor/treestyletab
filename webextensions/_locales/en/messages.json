@@ -15,6 +15,8 @@
   "command_focusPreviousSilently": { "message": "Focus to Previous Tab (don't expand tree)" },
   "command_focusNext":             { "message": "Focus to Next Tab (expand tree)" },
   "command_focusNextSilently":     { "message": "Focus to Next Tab (don't expand tree)" },
+  "command_focusParent":           { "message": "Focus to Parent Tab" },
+  "command_focusFirstChild":       { "message": "Focus to First Child Tab" },
   "command_tabbarUp":              { "message": "Scroll Tabs Up by Line" },
   "command_tabbarPageUp":          { "message": "Scroll Tabs Up by Page" },
   "command_tabbarHome":            { "message": "Scroll Tabs to Top" },

@@ -196,6 +196,12 @@ async function onShortcutCommand(command) {
     case 'focusNextSilently':
       TabsInternalOperation.selectTab(Tabs.getNextSiblingTab(activeTab), { silently: true });
       return;
+    case 'focusParent':
+      TabsInternalOperation.selectTab(Tabs.getParentTab(activeTab));
+      return;
+    case 'focusFirstChild':
+      TabsInternalOperation.selectTab(Tabs.getFirstChildTab(activeTab));
+      return;
 
     case 'tabbarUp':
       browser.runtime.sendMessage({
