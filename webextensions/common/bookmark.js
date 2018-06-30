@@ -36,7 +36,7 @@ export async function bookmarkTabs(tabs, options = {}) {
     .replace(/%URL%/gi, tabs[0].apiTab.url)
     .replace(/%YEAR%/gi, now.getFullYear())
     .replace(/%MONTH%/gi, `0${now.getMonth() + 1}`.substr(-2))
-    .replace(/%DATE%/gi, `0${now.getDate() + 1}`.substr(-2));
+    .replace(/%DATE%/gi, `0${now.getDate()}`.substr(-2));
   const folderParams = { title };
   if (options.parentId) {
     folderParams.parentId = options.parentId;
