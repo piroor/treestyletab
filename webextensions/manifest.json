@@ -6,9 +6,9 @@
   "description": "__MSG_extensionDescription__",
   "permissions": [
     "activeTab",
-    "contextMenus",
     "contextualIdentities",
     "cookies",
+    "menus",
     "notifications",
     "sessions",
     "storage",

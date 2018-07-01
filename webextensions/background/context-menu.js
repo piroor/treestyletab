@@ -53,7 +53,7 @@ const mContextMenuItems = `
   });
 
 export async function refreshItems() {
-  browser.contextMenus.removeAll();
+  browser.menus.removeAll();
   TabContextMenu.onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
@@ -98,7 +98,7 @@ export async function refreshItems() {
     customItems.pop();
   }
   for (let i = 0, maxi = items.length; i < maxi; i++) {
-    browser.contextMenus.create(items[i]);
+    browser.menus.create(items[i]);
     TabContextMenu.onExternalMessage(customItems[i], browser.runtime);
   }
 }
@@ -147,5 +147,5 @@ export const onClick = (info, apiTab) => {
       break;
   }
 };
-browser.contextMenus.onClicked.addListener(onClick);
+browser.menus.onClicked.addListener(onClick);
 TabContextMenu.onTSTItemClick.addListener(onClick);
