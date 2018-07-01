@@ -153,7 +153,7 @@ export const onClick = (info, apiTab) => {
 browser.menus.onClicked.addListener(onClick);
 TabContextMenu.onTSTItemClick.addListener(onClick);
 
-browser.menus.onShown.addListener((info, tab) => {
+function onShown(info, tab) {
   if (!info.contexts.includes('tab'))
     return;
 
@@ -161,6 +161,7 @@ browser.menus.onShown.addListener((info, tab) => {
   const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
   const hasChild = Tabs.hasChildTabs(tab);
 
+  let updated = false;
   for (const item of mContextMenuItems) {
     if (!item.requireTree)
       continue;
@@ -183,12 +184,34 @@ browser.menus.onShown.addListener((info, tab) => {
     browser.menus.update(item.id, {
       enabled: item.enabled = newEnabled
     });
+    TabContextMenu.onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_UPDATE,
+      params: [
+        item.id,
+        { enabled: item.enabled }
+      ]
+    }, browser.runtime);
+    updated = true;
   }
 
-  mContextMenuItemsById.collapsed.checked = hasChild && subtreeCollapsed;
-  browser.menus.update('collapsed', {
-    checked: mContextMenuItemsById.collapsed.checked
-  });
+  const newChecked = hasChild && subtreeCollapsed;
+  if (newChecked != mContextMenuItemsById.collapsed.checked) {
+    mContextMenuItemsById.collapsed.checked = newChecked;
+    browser.menus.update('collapsed', {
+      checked: newChecked
+    });
+    TabContextMenu.onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_UPDATE,
+      params: [
+        'collapsed',
+        { checked: newChecked }
+      ]
+    }, browser.runtime);
+    updated = true;
+  }
 
-  browser.menus.refresh();
-});
+  if (updated)
+    browser.menus.refresh();
+}
+browser.menus.onShown.addListener(onShown);
+TabContextMenu.onTSTTabContextMenuShown.addListener(onShown);

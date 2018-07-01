@@ -25,6 +25,8 @@ function log(...args) {
 }
 
 export const onTSTItemClick = new EventListenerManager();
+export const onTSTTabContextMenuShown = new EventListenerManager();
+export const onTSTTabContextMenuHidden = new EventListenerManager();
 
 export function init() {
   browser.runtime.onMessage.addListener(onMessage);
@@ -90,6 +92,14 @@ function onMessage(message, _aSender) {
 
     case TSTAPI.kCONTEXT_MENU_CLICK:
       onTSTItemClick.dispatch(message.info, message.tab);
+      return;
+
+    case TSTAPI.kCONTEXT_MENU_SHOWN:
+      onTSTTabContextMenuShown.dispatch(message.info, message.tab);
+      return;
+
+    case TSTAPI.kCONTEXT_MENU_HIDDEN:
+      onTSTTabContextMenuHidden.dispatch();
       return;
   }
 }

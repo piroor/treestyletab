@@ -51,6 +51,8 @@ export function init() {
   mUI = new MenuUI({
     root: mMenu,
     onCommand,
+    //onShown,
+    onHidden,
     appearance:        'menu',
     animationDuration: configs.animation ? configs.collapseDuration : 0.001,
     subMenuOpenDelay:  configs.subMenuOpenDelay,
@@ -462,6 +464,39 @@ async function onCommand(item, event) {
   }
 }
 
+async function onShown(contextTab) {
+  const message = {
+    type: TSTAPI.kCONTEXT_MENU_SHOWN,
+    info: {
+      checked:          false,
+      editable:         false,
+      frameUrl:         null,
+      linkUrl:          null,
+      mediaType:        null,
+      pageUrl:          null,
+      selectionText:    null,
+      srcUrl:           null,
+      contexts:         ['tab'],
+      menuIds:          []
+    },
+    tab: contextTab || mContextTab || null
+  };
+  return Promise.all([
+    browser.runtime.sendMessage(message),
+    TSTAPI.sendMessage(message)
+  ]);
+}
+
+async function onHidden() {
+  const message = {
+    type: TSTAPI.kCONTEXT_MENU_HIDDEN
+  };
+  return Promise.all([
+    browser.runtime.sendMessage(message),
+    TSTAPI.sendMessage(message)
+  ]);
+}
+
 function onMessage(message, _aSender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
@@ -490,6 +525,7 @@ function onExternalMessage(message, sender) {
         const windowId = message.window || tab && tab.windowId;
         if (windowId != Tabs.getWindow())
           return;
+        await onShown(tab);
         return open({
           tab:      tab,
           windowId: windowId,
@@ -501,13 +537,14 @@ function onExternalMessage(message, sender) {
 }
 
 
-function onContextMenu(event) {
+async function onContextMenu(event) {
   if (!configs.fakeContextMenu)
     return;
   event.stopPropagation();
   event.preventDefault();
   const tab = EventUtils.getTabFromEvent(event);
-  open({
+  await onShown(tab && tab.apiTab);
+  await open({
     tab:  tab && tab.apiTab,
     left: event.clientX,
     top:  event.clientY

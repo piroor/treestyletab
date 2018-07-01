@@ -111,6 +111,8 @@ export const kCONTEXT_MENU_UPDATE     = 'fake-contextMenu-update';
 export const kCONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
 export const kCONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
 export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
+export const kCONTEXT_MENU_SHOWN      = 'fake-contextMenu-shown';
+export const kCONTEXT_MENU_HIDDEN     = 'fake-contextMenu-hidden';
 
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';
