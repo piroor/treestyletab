@@ -62,7 +62,7 @@ export async function refreshItems() {
   let normalItemAppeared = false;
   const items = [];
   const customItems = [];
-  for (let item of mContextMenuItems) {
+  for (const item of mContextMenuItems) {
     let id = item.id;
     if (item.isSeparator) {
       if (!normalItemAppeared)
