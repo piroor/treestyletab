@@ -526,6 +526,7 @@ function onExternalMessage(message, sender) {
         if (windowId != Tabs.getWindow())
           return;
         await onShown(tab);
+        await wait(25);
         return open({
           tab:      tab,
           windowId: windowId,
@@ -544,6 +545,7 @@ async function onContextMenu(event) {
   event.preventDefault();
   const tab = EventUtils.getTabFromEvent(event);
   await onShown(tab && tab.apiTab);
+  await wait(25);
   await open({
     tab:  tab && tab.apiTab,
     left: event.clientX,

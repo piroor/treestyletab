@@ -80,7 +80,7 @@ function reserveNotifyUpdated() {
       for (const handler of handlers) {
         handler();
       }
-    }, 100);
+    }, 10);
   });
 }
 
