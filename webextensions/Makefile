@@ -3,7 +3,7 @@ NPM_BIN_DIR := $(NPM_MOD_DIR)/.bin
 
 EXTERNAL_LIB_DIR := $(CURDIR)/extlib
 
-.PHONY: xpi install_dependency lint format install_extlib
+.PHONY: xpi install_dependency lint format update_extlib install_extlib
 
 all: xpi
 
