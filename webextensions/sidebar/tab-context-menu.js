@@ -439,7 +439,7 @@ async function onCommand(item, event) {
         const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
           info: {
-            checked:          false,
+            checked:          item.matches('.radio:not(.checked), .checkbox:not(.checked)'),
             editable:         false,
             frameUrl:         null,
             linkUrl:          null,
@@ -450,7 +450,7 @@ async function onCommand(item, event) {
             parentMenuItemId: null,
             selectionText:    null,
             srcUrl:           null,
-            wasChecked:       false
+            wasChecked:       item.matches('.radio.checked, .checkbox.checked')
           },
           tab: mContextTab || null
         };
@@ -459,6 +459,9 @@ async function onCommand(item, event) {
           await browser.runtime.sendMessage(message);
         else
           await browser.runtime.sendMessage(owner, message);
+
+        if (item.matches('.checked'))
+          item.classList.toggle('checked');
       }
     }; break;
   }
@@ -468,7 +471,6 @@ async function onShown(contextTab) {
   const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
-      checked:          false,
       editable:         false,
       frameUrl:         null,
       linkUrl:          null,
