@@ -37,20 +37,20 @@ const mContextMenuItems = `
   -----------------:separator
   collapsed:checkbox
 `.trim().split(/\s+/).map(definition => {
-  const [id, type] = definition.split(':');
-  const isSeparator = type == 'separator' || id.charAt(0) == '-';
-  const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`) || id;
-  return {
-    id,
-    title,
-    checked: false, // initialize as unchecked
-    // Access key is not supported by WE API.
-    // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
-    titleWithoutAccesskey: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
-    type: isSeparator ? 'separator' : type,
-    isSeparator
-  };
-});
+    const [id, type] = definition.split(':');
+    const isSeparator = type == 'separator' || id.charAt(0) == '-';
+    const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`) || id;
+    return {
+      id,
+      title,
+      checked: false, // initialize as unchecked
+      // Access key is not supported by WE API.
+      // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
+      titleWithoutAccesskey: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
+      type: isSeparator ? 'separator' : type,
+      isSeparator
+    };
+  });
 
 export async function refreshItems() {
   browser.contextMenus.removeAll();
