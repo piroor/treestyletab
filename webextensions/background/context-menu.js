@@ -21,20 +21,36 @@ function log(...args) {
 }
 
 const mContextMenuItems = `
-  reloadTree
-  reloadDescendants
-  -----------------
-  closeTree
-  closeDescendants
-  closeOthers
-  -----------------
-  collapseTree
-  collapseAll
-  expandTree
-  expandAll
-  -----------------
-  bookmarkTree
-`.trim().split(/\s+/);
+  reloadTree:normal
+  reloadDescendants:normal
+  -----------------:separator
+  closeTree:normal
+  closeDescendants:normal
+  closeOthers:normal
+  -----------------:separator
+  collapseTree:normal
+  collapseAll:normal
+  expandTree:normal
+  expandAll:normal
+  -----------------:separator
+  bookmarkTree:normal
+  -----------------:separator
+  collapsed:checkbox
+`.trim().split(/\s+/).map(definition => {
+  const [id, type] = definition.split(':');
+  const isSeparator = type == 'separator' || id.charAt(0) == '-';
+  const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`) || id;
+  return {
+    id,
+    title,
+    checked: false, // initialize as unchecked
+    // Access key is not supported by WE API.
+    // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
+    titleWithoutAccesskey: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
+    type: isSeparator ? 'separator' : type,
+    isSeparator
+  };
+});
 
 export async function refreshItems() {
   browser.contextMenus.removeAll();
@@ -44,9 +60,11 @@ export async function refreshItems() {
 
   let separatorsCount = 0;
   let normalItemAppeared = false;
-  for (let id of mContextMenuItems) {
-    const isSeparator = id.charAt(0) == '-';
-    if (isSeparator) {
+  const items = [];
+  const customItems = [];
+  for (let item of mContextMenuItems) {
+    let id = item.id;
+    if (item.isSeparator) {
       if (!normalItemAppeared)
         continue;
       normalItemAppeared = false;
@@ -57,22 +75,31 @@ export async function refreshItems() {
         continue;
       normalItemAppeared = true;
     }
-    const type  = isSeparator ? 'separator' : 'normal';
-    const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`);
-    browser.contextMenus.create({
-      id, type,
-      // Access key is not supported by WE API.
-      // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
-      title: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
+    items.push({
+      id,
+      type:     item.type,
+      checked:  item.checked,
+      title:    item.titleWithoutAccesskey,
       contexts: ['tab']
     });
-    TabContextMenu.onExternalMessage({
+    customItems.push({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: {
-        id, type, title,
+        id,
+        type:     item.type,
+        checked:  item.checked,
+        title:    item.title,
         contexts: ['tab']
       }
-    }, browser.runtime);
+    });
+  }
+  if (items[items.length - 1].type == 'separator') {
+    items.pop();
+    customItems.pop();
+  }
+  for (let i = 0, maxi = items.length; i < maxi; i++) {
+    browser.contextMenus.create(items[i]);
+    TabContextMenu.onExternalMessage(customItems[i], browser.runtime);
   }
 }
 
