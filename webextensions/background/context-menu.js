@@ -213,17 +213,17 @@ function onShown(info, tab) {
     updated = true;
   }
 
-  const newChecked = hasChild && subtreeCollapsed;
-  if (newChecked != mContextMenuItemsById.collapsed.checked) {
-    mContextMenuItemsById.collapsed.checked = newChecked;
+  const canExpand = hasChild && subtreeCollapsed;
+  if (canExpand != mContextMenuItemsById.collapsed.checked) {
+    mContextMenuItemsById.collapsed.checked = canExpand;
     browser.menus.update('collapsed', {
-      checked: newChecked
+      checked: canExpand
     });
     TabContextMenu.onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_UPDATE,
       params: [
         'collapsed',
-        { checked: newChecked }
+        { checked: canExpand }
       ]
     }, browser.runtime);
     updated = true;

@@ -114,6 +114,8 @@ export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
 export const kCONTEXT_MENU_SHOWN      = 'fake-contextMenu-shown';
 export const kCONTEXT_MENU_HIDDEN     = 'fake-contextMenu-hidden';
 
+export const kCONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'fake-contextMenu-item-checked-status-changed';
+
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';
 export const kCOMMAND_REQUEST_REGISTERED_ADDONS  = 'treestyletab:request-registered-addons';

@@ -101,6 +101,15 @@ function onMessage(message, _aSender) {
     case TSTAPI.kCONTEXT_MENU_HIDDEN:
       onTSTTabContextMenuHidden.dispatch();
       return;
+
+    case TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED:
+      for (const itemData of mExtraItems.get(message.ownerId)) {
+        if (!itemData.id != message.id)
+          continue;
+        itemData.checked = message.checked;
+        break;
+      }
+      return;
   }
 }
 
