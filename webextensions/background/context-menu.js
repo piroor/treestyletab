@@ -146,6 +146,13 @@ export const onClick = (info, apiTab) => {
       Commands.bookmarkTree(contextTab);
       break;
 
+    case 'collapsed':
+      if (info.wasChecked)
+        Commands.expandTree(contextTab);
+      else
+        Commands.collapseTree(contextTab);
+      break;
+
     default:
       break;
   }
