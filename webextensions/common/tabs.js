@@ -752,14 +752,13 @@ export function getPinnedTabs(hint) { // visible, pinned
   return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
 }
 
-/*
-function getUnpinnedTabs(hint) { // visible, not pinned
+
+export function getUnpinnedTabs(hint) { // visible, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
 }
-*/
 
 /*
 function getAllRootTabs(hint) {

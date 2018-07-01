@@ -37,6 +37,8 @@ const mContextMenuItems = `
   bookmarkTree:normal
   -----------------:separator
   collapsed:checkbox:requireTree
+  pinnedTab:radio
+  unpinnedTab:radio
 `.trim().split(/\s+/).map(definition => {
     const [id, type, requireTree] = definition.split(':');
     const isSeparator = type == 'separator' || id.charAt(0) == '-';
@@ -152,6 +154,16 @@ export const onClick = (info, apiTab) => {
       else
         Commands.collapseTree(contextTab);
       break;
+    case 'pinnedTab': {
+      const tabs = Tabs.getPinnedTabs(contextTab);
+      if (tabs.length > 0)
+        browser.tabs.update(tabs[0].apiTab.id, { active: true });
+    }; break;
+    case 'unpinnedTab': {
+      const tabs = Tabs.getUnpinnedTabs(contextTab);
+      if (tabs.length > 0)
+        browser.tabs.update(tabs[0].apiTab.id, { active: true });
+    }; break;
 
     default:
       break;

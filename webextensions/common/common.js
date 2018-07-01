@@ -61,7 +61,10 @@ export const configs = new Configs({
   context_expandTree: false,
   context_expandAll: true,
   context_bookmarkTree: true,
+
   context_collapsed: false,
+  context_pinnedTab: false,
+  context_unpinnedTab: false,
 
 
   // tree behavior
