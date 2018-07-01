@@ -20,35 +20,38 @@ function log(...args) {
     internalLogger(...args);
 }
 
+const mContextMenuItemsById = {};
 const mContextMenuItems = `
   reloadTree:normal
   reloadDescendants:normal
   -----------------:separator
   closeTree:normal
-  closeDescendants:normal
+  closeDescendants:normal:requireTree
   closeOthers:normal
   -----------------:separator
-  collapseTree:normal
+  collapseTree:normal:requireTree
   collapseAll:normal
-  expandTree:normal
+  expandTree:normal:requireTree
   expandAll:normal
   -----------------:separator
   bookmarkTree:normal
   -----------------:separator
-  collapsed:checkbox
+  collapsed:checkbox:requireTree
 `.trim().split(/\s+/).map(definition => {
-    const [id, type] = definition.split(':');
+    const [id, type, requireTree] = definition.split(':');
     const isSeparator = type == 'separator' || id.charAt(0) == '-';
     const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`) || id;
-    return {
+    return mContextMenuItemsById[id] = {
       id,
       title,
       checked: false, // initialize as unchecked
+      enabled: true,
       // Access key is not supported by WE API.
       // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
       titleWithoutAccesskey: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
       type: isSeparator ? 'separator' : type,
-      isSeparator
+      isSeparator,
+      requireTree: requireTree == 'requireTree'
     };
   });
 
@@ -71,7 +74,7 @@ export async function refreshItems() {
       id = `separator${separatorsCount++}`;
     }
     else {
-      if (!configs[`context_${id}`])
+      if (item.hidden || !configs[`context_${id}`])
         continue;
       normalItemAppeared = true;
     }
@@ -149,3 +152,43 @@ export const onClick = (info, apiTab) => {
 };
 browser.menus.onClicked.addListener(onClick);
 TabContextMenu.onTSTItemClick.addListener(onClick);
+
+browser.menus.onShown.addListener((info, tab) => {
+  if (!info.contexts.includes('tab'))
+    return;
+
+  tab = tab && Tabs.getTabById(tab.id);
+  const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
+  const hasChild = Tabs.hasChildTabs(tab);
+
+  for (const item of mContextMenuItems) {
+    if (!item.requireTree)
+      continue;
+
+    let newEnabled = hasChild;
+    switch (item.id) {
+      case 'collapseTree':
+        if (subtreeCollapsed)
+          newEnabled = false;
+        break;
+      case 'expandTree':
+        if (!subtreeCollapsed)
+          newEnabled = false;
+        break;
+    }
+
+    if (newEnabled == !!item.enabled)
+      continue;
+
+    browser.menus.update(item.id, {
+      enabled: item.enabled = newEnabled
+    });
+  }
+
+  mContextMenuItemsById.collapsed.checked = hasChild && subtreeCollapsed;
+  browser.menus.update('collapsed', {
+    checked: mContextMenuItemsById.collapsed.checked
+  });
+
+  browser.menus.refresh();
+});
