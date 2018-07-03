@@ -19,7 +19,8 @@ import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Bookmark from './bookmark.js';
 import * as Tree from './tree.js';
-import EventListenerManager from './EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['common/command'])

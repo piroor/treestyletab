@@ -15,7 +15,8 @@ import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
 import * as Tree from '../common/tree.js';
 import * as MetricsData from '../common/metrics-data.js';
-import EventListenerManager from '../common/EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['background/tree-structure'])

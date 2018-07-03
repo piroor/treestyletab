@@ -46,7 +46,7 @@ import {
   configs
 } from './common.js';
 
-import EventListenerManager from './EventListenerManager.js';
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['common/tabs'])

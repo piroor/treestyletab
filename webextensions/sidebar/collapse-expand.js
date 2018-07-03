@@ -46,12 +46,13 @@ import {
 } from '../common/common.js';
 import * as Constants from '../common/constants.js';
 import * as Tabs from '../common/tabs.js';
-import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as Sidebar from './sidebar.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as Scroll from './scroll.js';
 import * as Indent from './indent.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['sidebar/collapse-expand'] || configs.logOnCollapseExpand)

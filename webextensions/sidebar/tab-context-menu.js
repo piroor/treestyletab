@@ -25,7 +25,8 @@ import * as Tree from '../common/tree.js';
 import * as Bookmark from '../common/bookmark.js';
 import * as TSTAPI from '../common/tst-api.js';
 import * as EventUtils from './event-utils.js';
-import EventListenerManager from '../common/EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['sidebar/tab-context-menu'])

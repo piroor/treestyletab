@@ -31,3 +31,6 @@
 [submodule "submodules/webextensions-lib-shortcut-customize-ui"]
 	path = submodules/webextensions-lib-shortcut-customize-ui
 	url = https://github.com/piroor/webextensions-lib-shortcut-customize-ui.git
+[submodule "submodules/webextensions-lib-event-listener-manager"]
+	path = submodules/webextensions-lib-event-listener-manager
+	url = https://github.com/piroor/webextensions-lib-event-listener-manager.git

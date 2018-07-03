@@ -26,7 +26,6 @@ import * as ContextualIdentities from '../common/contextual-identities.js';
 import * as Commands from '../common/commands.js';
 import * as UserOperationBlocker from '../common/user-operation-blocker.js';
 import * as MetricsData from '../common/metrics-data.js';
-import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -38,6 +37,8 @@ import * as Color from './color.js';
 import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['sidebar/sidebar'])

@@ -58,7 +58,8 @@ import * as TabsMove from './tabs-move.js';
 import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as MetricsData from './metrics-data.js';
-import EventListenerManager from './EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['common/tree'])

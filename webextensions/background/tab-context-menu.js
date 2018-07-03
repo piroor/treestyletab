@@ -17,7 +17,8 @@ import {
   configs
 } from '../common/common.js';
 import * as TSTAPI from '../common/tst-api.js';
-import EventListenerManager from '../common/EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['background/tab-context-menu'])
