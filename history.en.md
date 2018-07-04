@@ -23,6 +23,7 @@
    * Add ability to output log for each module.
    * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
    * Keep tree expanded after restoration, for restoration without cache.
+   * Support [checkbox and radio type context menu items](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#add-new-item-to-the-context-menu-on-tabs) and [`browser.menus.onShown`/`browser.menus.onHidden`-like APIs](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#update-existing-item).
    * Update `de` locale (by sicherist, thanks!)
    * Add `ru` and `uk` locales (by perdolka, thanks!)
  - 2.4.24 (2018.6.3)

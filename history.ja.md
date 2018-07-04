@@ -23,6 +23,7 @@
    * タブの折り畳み状態の非同期な変更をより堅牢にした（以前は、内部的な折り畳み状態と表示上の状態が一致しない場合が発生していた）
    * キャッシュを使わずにツリーを復元した時に、ツリーが常に折り畳まれた状態になってしまっていたのを修正
    * モジュールごとのログ出力を可能にした
+   * [チェックボックス型とラジオボタン型のコンテキストメニュー項目](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#add-new-item-to-the-context-menu-on-tabs)と、[`browser.menus.onShown`/`browser.menus.onHidden`互換のAPI](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#update-existing-item)を追加した
    * `de`ロケール更新 (by sicherist, thanks!)
    * `ru`, `uk`ロケール追加 (by perdolka, thanks!)
  - 2.4.24 (2018.6.3)
