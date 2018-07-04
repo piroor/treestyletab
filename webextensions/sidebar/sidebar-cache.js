@@ -58,7 +58,6 @@ export async function getEffectiveWindowCache(options = {}) {
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
-      // eslint-disable-next-line prefer-const
       [cache, tabsDirty, collapsedDirty] = await Promise.all([
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),
