@@ -429,8 +429,8 @@ export async function sendMessage(message, options = {}) {
     }
   }
 
-  const spawned = spawnMessages(uniqueTargets, message);
-  return Promise.all(spawned);
+  const promisedResults = spawnMessages(uniqueTargets, message);
+  return Promise.all(promisedResults);
 }
 
 function* spawnMessages(targetSet, message) {
@@ -439,7 +439,7 @@ function* spawnMessages(targetSet, message) {
       const result = await browser.runtime.sendMessage(id, message);
       return {
         id,
-        result: result
+        result
       };
     }
     catch(e) {
