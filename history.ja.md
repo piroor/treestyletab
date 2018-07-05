@@ -22,6 +22,7 @@
    * タブの「ドラッグ中」の状態が意図せず残ってしまった場合に、クリック操作で必ず状態を戻すようにした
    * タブの折り畳み状態の非同期な変更をより堅牢にした（以前は、内部的な折り畳み状態と表示上の状態が一致しない場合が発生していた）
    * キャッシュを使わずにツリーを復元した時に、ツリーが常に折り畳まれた状態になってしまっていたのを修正
+   * セッション復元時に、折り畳まれているはずのツリーの配下に子孫のタブが表示されたままになる事がある問題を起こりにくくした
    * モジュールごとのログ出力を可能にした
    * [チェックボックス型とラジオボタン型のコンテキストメニュー項目](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#add-new-item-to-the-context-menu-on-tabs)と、[`browser.menus.onShown`/`browser.menus.onHidden`互換のAPI](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#update-existing-item)を追加した
    * `de`ロケール更新 (by sicherist, thanks!)

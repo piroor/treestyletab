@@ -20,6 +20,7 @@
    * Focus to closest ancestor tab when the active tab is going to be collapsed correctly.
    * Apply more theme colors for "Plain", "Vertigo" and "Mixed" for other addons like "Firefox Color".
    * Clear "dragging" state of tabs more aggressively.
+   * Introduce a failsafe for unexpectedly visible descendant tabs under collapsed tree on restored sesssions.
    * Add ability to output log for each module.
    * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
    * Keep tree expanded after restoration, for restoration without cache.
