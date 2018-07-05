@@ -417,32 +417,42 @@ export function getListenersForMessageType(type) {
 }
 
 export async function sendMessage(message, options = {}) {
-  const uniqueTargets = {};
+  const uniqueTargets = new Set();
   for (const addon of getListenersForMessageType(message.type)) {
-    uniqueTargets[addon.id] = true;
+    uniqueTargets.add(addon.id);
   }
   if (options.targets) {
     if (!Array.isArray(options.targets))
       options.targets = [options.targets];
     for (const id of options.targets) {
-      uniqueTargets[id] = true;
+      uniqueTargets.add(id);
     }
   }
-  return Promise.all(Object.keys(uniqueTargets).map(async (id) => {
+
+  const spawned = spawnMessages(uniqueTargets, message);
+  return Promise.all(spawned);
+}
+
+function* spawnMessages(targetSet, message) {
+  const send = async (id) => {
     try {
       const result = await browser.runtime.sendMessage(id, message);
       return {
-        id:     id,
+        id,
         result: result
       };
     }
     catch(e) {
       return {
-        id:    id,
+        id,
         error: e
       };
     }
-  }));
+  };
+
+  for (const id of targetSet) {
+    yield send(id);
+  }
 }
 
 
