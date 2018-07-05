@@ -496,7 +496,7 @@ async function onCommand(item, event) {
               radioItems = currentRadioItems;
           }
           if (radioItems) {
-            for (const itemData of Array.from(radioItems)) {
+            for (const itemData of radioItems) {
               itemData.checked = itemData.id == item.dataset.itemId;
               const radioItem = document.getElementById(`${item.dataset.itemOwnerId}-${itemData.id}`);
               if (radioItem) {

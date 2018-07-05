@@ -37,8 +37,7 @@ function removeAccesskeyMark(node) {
 
 function onChangeMasterChacekbox(event) {
   const container = event.currentTarget.closest('fieldset');
-  const checkboxes = container.querySelectorAll('p input[type="checkbox"]');
-  for (const checkbox of Array.from(checkboxes)) {
+  for (const checkbox of container.querySelectorAll('p input[type="checkbox"]')) {
     checkbox.checked = event.currentTarget.checked;
   }
   saveLogForConfig();
@@ -56,7 +55,7 @@ function getMasterCheckboxFromSlave(aSlave) {
 
 function saveLogForConfig() {
   const config = {};
-  for (const checkbox of Array.from(document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]'))) {
+  for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
     config[checkbox.id.replace(/^logFor-/, '')] = checkbox.checked;
   }
   configs.logFor = config;
@@ -75,20 +74,20 @@ window.addEventListener('DOMContentLoaded', () => {
   else
     document.documentElement.classList.remove('platform-mac');
 
-  for (const label of Array.from(document.querySelectorAll('#contextConfigs label'))) {
+  for (const label of document.querySelectorAll('#contextConfigs label')) {
     removeAccesskeyMark(label.lastChild);
   }
 
   ShortcutCustomizeUI.build().then(aUI => {
     document.getElementById('shortcuts').appendChild(aUI);
 
-    for (const item of Array.from(aUI.querySelectorAll('li > label:first-child'))) {
+    for (const item of aUI.querySelectorAll('li > label:first-child')) {
       removeAccesskeyMark(item.firstChild);
     }
   });
 
   configs.$loaded.then(() => {
-    for (const fieldset of Array.from(document.querySelectorAll('fieldset.collapsible'))) {
+    for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {
       if (configs.optionsExpandedGroups.includes(fieldset.id))
         fieldset.classList.remove('collapsed');
       else
@@ -117,7 +116,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    for (const heading of Array.from(document.querySelectorAll('body > section > h1'))) {
+    for (const heading of document.querySelectorAll('body > section > h1')) {
       const section = heading.parentNode;
       section.style.maxHeight = `${heading.offsetHeight}px`;
       if (!configs.optionsExpandedSections.includes(section.id))
@@ -145,11 +144,11 @@ window.addEventListener('DOMContentLoaded', () => {
     );
 
 
-    for (const checkbox of Array.from(document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]'))) {
+    for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
       checkbox.addEventListener('change', onChangeSlaveChacekbox);
       checkbox.checked = configs.logFor[checkbox.id.replace(/^logFor-/, '')];
     }
-    for (const checkbox of Array.from(document.querySelectorAll('legend input[type="checkbox"][id^="logFor-"]'))) {
+    for (const checkbox of document.querySelectorAll('legend input[type="checkbox"][id^="logFor-"]')) {
       checkbox.checked = isAllSlavesChecked(checkbox);
       checkbox.addEventListener('change', onChangeMasterChacekbox);
     }

@@ -793,7 +793,7 @@ function onConfigChange(changedKey) {
 
 const mTreeChangesFromRemote = new Set();
 function waitUntilAllTreeChangesFromRemoteAreComplete() {
-  return Promise.all(Array.from(mTreeChangesFromRemote.values()));
+  return Promise.all(mTreeChangesFromRemote.values());
 }
 
 function onMessage(message, _sender, _respond) {
