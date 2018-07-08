@@ -46,7 +46,7 @@ import {
   configs
 } from './common.js';
 
-import EventListenerManager from './EventListenerManager.js';
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['common/tabs'])
@@ -388,12 +388,12 @@ export function getTabsContainer(hint) {
   return null;
 }
 
-export function getTabFromChild(node) {
+export function getTabFromChild(node, options = {}) {
   if (!node)
     return null;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return node && node.closest(kSELECTOR_LIVE_TAB);
+  return node && node.closest(options.force ? '.tab' : kSELECTOR_LIVE_TAB);
 }
 
 export function getTabById(idOrInfo) {
@@ -489,6 +489,14 @@ export function getLastTab(hint) {
   if (!container)
     return null;
   const tabs = container.querySelectorAll(kSELECTOR_LIVE_TAB);
+  return tabs.length > 0 ? tabs[tabs.length - 1] : null;
+}
+
+export function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
+  const container = getTabsContainer(hint);
+  if (!container)
+    return null;
+  const tabs = container.querySelectorAll(kSELECTOR_VISIBLE_TAB);
   return tabs.length > 0 ? tabs[tabs.length - 1] : null;
 }
 
@@ -744,14 +752,13 @@ export function getPinnedTabs(hint) { // visible, pinned
   return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
 }
 
-/*
-function getUnpinnedTabs(hint) { // visible, not pinned
+
+export function getUnpinnedTabs(hint) { // visible, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
 }
-*/
 
 /*
 function getAllRootTabs(hint) {

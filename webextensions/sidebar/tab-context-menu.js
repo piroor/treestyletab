@@ -25,7 +25,8 @@ import * as Tree from '../common/tree.js';
 import * as Bookmark from '../common/bookmark.js';
 import * as TSTAPI from '../common/tst-api.js';
 import * as EventUtils from './event-utils.js';
-import EventListenerManager from '../common/EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['sidebar/tab-context-menu'])
@@ -51,6 +52,8 @@ export function init() {
   mUI = new MenuUI({
     root: mMenu,
     onCommand,
+    //onShown,
+    onHidden,
     appearance:        'menu',
     animationDuration: configs.animation ? configs.collapseDuration : 0.001,
     subMenuOpenDelay:  configs.subMenuOpenDelay,
@@ -434,10 +437,12 @@ async function onCommand(item, event) {
         }
         if (event.shiftKey)
           modifiers.push('Shift');
+        const checked    = item.matches('.radio, .checkbox:not(.checked)');
+        const wasChecked = item.matches('.radio.checked, .checkbox.checked');
         const message = {
           type: TSTAPI.kCONTEXT_MENU_CLICK,
           info: {
-            checked:          false,
+            checked,
             editable:         false,
             frameUrl:         null,
             linkUrl:          null,
@@ -448,7 +453,7 @@ async function onCommand(item, event) {
             parentMenuItemId: null,
             selectionText:    null,
             srcUrl:           null,
-            wasChecked:       false
+            wasChecked
           },
           tab: mContextTab || null
         };
@@ -457,9 +462,94 @@ async function onCommand(item, event) {
           await browser.runtime.sendMessage(message);
         else
           await browser.runtime.sendMessage(owner, message);
+
+        if (item.matches('.checkbox')) {
+          item.classList.toggle('checked');
+          for (const itemData of mExtraItems.get(item.dataset.itemOwnerId)) {
+            if (itemData.id != item.dataset.itemId)
+              continue;
+            itemData.checked = item.matches('.checked');
+            browser.runtime.sendMessage({
+              type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
+              id:      item.dataset.itemId,
+              ownerId: item.dataset.itemOwnerId,
+              checked: itemData.checked
+            });
+            break;
+          }
+          mIsDirty = true;
+        }
+        else if (item.matches('.radio')) {
+          const currentRadioItems = new Set();
+          let radioItems = null;
+          for (const itemData of mExtraItems.get(item.dataset.itemOwnerId)) {
+            if (itemData.type == 'radio') {
+              currentRadioItems.add(itemData);
+            }
+            else if (radioItems == currentRadioItems) {
+              break;
+            }
+            else {
+              currentRadioItems.clear();
+            }
+            if (itemData.id == item.dataset.itemId)
+              radioItems = currentRadioItems;
+          }
+          if (radioItems) {
+            for (const itemData of radioItems) {
+              itemData.checked = itemData.id == item.dataset.itemId;
+              const radioItem = document.getElementById(`${item.dataset.itemOwnerId}-${itemData.id}`);
+              if (radioItem) {
+                if (itemData.checked)
+                  radioItem.classList.add('checked');
+                else
+                  radioItem.classList.remove('checked');
+              }
+              browser.runtime.sendMessage({
+                type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
+                id:      item.dataset.itemId,
+                ownerId: item.dataset.itemOwnerId,
+                checked: itemData.checked
+              });
+            }
+          }
+          mIsDirty = true;
+        }
       }
     }; break;
   }
+}
+
+async function onShown(contextTab) {
+  const message = {
+    type: TSTAPI.kCONTEXT_MENU_SHOWN,
+    info: {
+      editable:         false,
+      frameUrl:         null,
+      linkUrl:          null,
+      mediaType:        null,
+      pageUrl:          null,
+      selectionText:    null,
+      srcUrl:           null,
+      contexts:         ['tab'],
+      menuIds:          []
+    },
+    tab: contextTab || mContextTab || null
+  };
+  return Promise.all([
+    browser.runtime.sendMessage(message),
+    TSTAPI.sendMessage(message)
+  ]);
+}
+
+async function onHidden() {
+  const message = {
+    type: TSTAPI.kCONTEXT_MENU_HIDDEN
+  };
+  return Promise.all([
+    browser.runtime.sendMessage(message),
+    TSTAPI.sendMessage(message)
+  ]);
 }
 
 function onMessage(message, _aSender) {
@@ -490,6 +580,8 @@ function onExternalMessage(message, sender) {
         const windowId = message.window || tab && tab.windowId;
         if (windowId != Tabs.getWindow())
           return;
+        await onShown(tab);
+        await wait(25);
         return open({
           tab:      tab,
           windowId: windowId,
@@ -501,13 +593,15 @@ function onExternalMessage(message, sender) {
 }
 
 
-function onContextMenu(event) {
+async function onContextMenu(event) {
   if (!configs.fakeContextMenu)
     return;
   event.stopPropagation();
   event.preventDefault();
   const tab = EventUtils.getTabFromEvent(event);
-  open({
+  await onShown(tab && tab.apiTab);
+  await wait(25);
+  await open({
     tab:  tab && tab.apiTab,
     left: event.clientX,
     top:  event.clientY

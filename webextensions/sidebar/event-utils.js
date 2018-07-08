@@ -78,24 +78,24 @@ export function isEventFiredOnClickable(event) {
 }
 
 
-export function getTabFromEvent(event) {
-  return Tabs.getTabFromChild(event.target);
+export function getTabFromEvent(event, options = {}) {
+  return Tabs.getTabFromChild(event.target, options);
 }
 
 function getTabsContainerFromEvent(event) {
   return Tabs.getTabsContainer(event.target);
 }
 
-export function getTabFromTabbarEvent(event) {
+export function getTabFromTabbarEvent(event, options = {}) {
   if (!configs.shouldDetectClickOnIndentSpaces ||
       isEventFiredOnClickable(event))
     return null;
-  return getTabFromCoordinates(event);
+  return getTabFromCoordinates(event, options);
 }
 
-function getTabFromCoordinates(event) {
+function getTabFromCoordinates(event, options = {}) {
   let tab = document.elementFromPoint(event.clientX, event.clientY);
-  tab = Tabs.getTabFromChild(tab);
+  tab = Tabs.getTabFromChild(tab, options);
   if (tab)
     return tab;
 
@@ -112,10 +112,25 @@ function getTabFromCoordinates(event) {
     containerRect.width - Size.getFavIconSize()
   ];
   for (const x of trialPoints) {
-    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY));
+    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY), options);
     if (tab)
       return tab;
   }
+
+  // document.elementFromPoint cannot find elements being in animation effect,
+  // so I try to find a tab from previous or next tab.
+  const height = Size.getTabHeight();
+  for (const x of trialPoints) {
+    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
+    if (tab)
+      return Tabs.getTabFromChild(tab.nextSibling, options);
+  }
+  for (const x of trialPoints) {
+    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);
+    if (tab)
+      return Tabs.getTabFromChild(tab.previousSibling, options);
+  }
+
   return null;
 }
 

@@ -23,6 +23,9 @@ function log(...args) {
 }
 
 export async function selectTab(tab, options = {}) {
+  tab = Tabs.ensureLivingTab(tab);
+  if (!tab)
+    return;
   log('selectTabInternally: ', dumpTab(tab));
   if (options.inRemote) {
     await browser.runtime.sendMessage({
@@ -76,6 +79,9 @@ export function removeTabs(tabs, options = {}) {
 }
 
 export function setTabFocused(tab) {
+  tab = Tabs.ensureLivingTab(tab);
+  if (!tab)
+    return [];
   const oldActiveTabs = clearOldActiveStateInWindow(tab.apiTab.windowId);
   tab.classList.add(Constants.kTAB_STATE_ACTIVE);
   tab.apiTab.active = true;

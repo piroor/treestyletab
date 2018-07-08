@@ -111,6 +111,10 @@ export const kCONTEXT_MENU_UPDATE     = 'fake-contextMenu-update';
 export const kCONTEXT_MENU_REMOVE     = 'fake-contextMenu-remove';
 export const kCONTEXT_MENU_REMOVE_ALL = 'fake-contextMenu-remove-all';
 export const kCONTEXT_MENU_CLICK      = 'fake-contextMenu-click';
+export const kCONTEXT_MENU_SHOWN      = 'fake-contextMenu-shown';
+export const kCONTEXT_MENU_HIDDEN     = 'fake-contextMenu-hidden';
+
+export const kCONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'fake-contextMenu-item-checked-status-changed';
 
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';
@@ -413,32 +417,42 @@ export function getListenersForMessageType(type) {
 }
 
 export async function sendMessage(message, options = {}) {
-  const uniqueTargets = {};
+  const uniqueTargets = new Set();
   for (const addon of getListenersForMessageType(message.type)) {
-    uniqueTargets[addon.id] = true;
+    uniqueTargets.add(addon.id);
   }
   if (options.targets) {
     if (!Array.isArray(options.targets))
       options.targets = [options.targets];
     for (const id of options.targets) {
-      uniqueTargets[id] = true;
+      uniqueTargets.add(id);
     }
   }
-  return Promise.all(Object.keys(uniqueTargets).map(async (id) => {
+
+  const promisedResults = spawnMessages(uniqueTargets, message);
+  return Promise.all(promisedResults);
+}
+
+function* spawnMessages(targetSet, message) {
+  const send = async (id) => {
     try {
       const result = await browser.runtime.sendMessage(id, message);
       return {
-        id:     id,
-        result: result
+        id,
+        result
       };
     }
     catch(e) {
       return {
-        id:    id,
+        id,
         error: e
       };
     }
-  }));
+  };
+
+  for (const id of targetSet) {
+    yield send(id);
+  }
 }
 
 

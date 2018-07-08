@@ -16,9 +16,10 @@ import * as Tabs from '../common/tabs.js';
 import * as Tree from '../common/tree.js';
 import * as MetricsData from '../common/metrics-data.js';
 import * as Cache from '../common/cache.js';
-import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as Indent from './indent.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['sidebar/sidebar-cache'])
@@ -57,7 +58,6 @@ export async function getEffectiveWindowCache(options = {}) {
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
-      // eslint-disable-next-line prefer-const
       [cache, tabsDirty, collapsedDirty] = await Promise.all([
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR),
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY),

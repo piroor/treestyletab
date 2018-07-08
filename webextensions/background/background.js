@@ -25,12 +25,13 @@ import * as TSTAPI from '../common/tst-api.js';
 import * as SidebarStatus from '../common/sidebar-status.js';
 import * as Commands from '../common/commands.js';
 import * as Migration from '../common/migration.js';
-import EventListenerManager from '../common/EventListenerManager.js';
 
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as ContextMenu from './context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['background/background'])

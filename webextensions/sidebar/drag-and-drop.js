@@ -536,6 +536,7 @@ async function handleDroppedNonTabItems(event, aDropActionInfo) {
     }
   }
   await TabsOpen.openURIsInTabs(uris, {
+    windowId:     Tabs.getWindow(),
     parent:       aDropActionInfo.parent,
     insertBefore: aDropActionInfo.insertBefore,
     insertAfter:  aDropActionInfo.insertAfter,

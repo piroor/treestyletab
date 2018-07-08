@@ -58,7 +58,8 @@ import * as TabsMove from './tabs-move.js';
 import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as MetricsData from './metrics-data.js';
-import EventListenerManager from './EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['common/tree'])
@@ -667,6 +668,13 @@ export async function collapseExpandTab(tab, params = {}) {
         dumpTab(tab), { stack: new Error().stack });
     params.collapsed = false;
   }
+
+  // When an asynchronous "expand" operation is processed after a
+  // synchronous "collapse" operation, it can produce an expanded
+  // child tab under "subtree-collapsed" parent. So this is a failsafe.
+  if (!params.collapsed &&
+      Tabs.getAncestorTabs(tab).some(ancestor => Tabs.isSubtreeCollapsed(ancestor)))
+    return;
 
   const stack = `${new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })

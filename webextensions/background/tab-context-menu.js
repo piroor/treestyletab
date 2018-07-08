@@ -17,7 +17,8 @@ import {
   configs
 } from '../common/common.js';
 import * as TSTAPI from '../common/tst-api.js';
-import EventListenerManager from '../common/EventListenerManager.js';
+
+import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
   if (configs.logFor['background/tab-context-menu'])
@@ -25,6 +26,8 @@ function log(...args) {
 }
 
 export const onTSTItemClick = new EventListenerManager();
+export const onTSTTabContextMenuShown = new EventListenerManager();
+export const onTSTTabContextMenuHidden = new EventListenerManager();
 
 export function init() {
   browser.runtime.onMessage.addListener(onMessage);
@@ -78,7 +81,7 @@ function reserveNotifyUpdated() {
       for (const handler of handlers) {
         handler();
       }
-    }, 100);
+    }, 10);
   });
 }
 
@@ -90,6 +93,23 @@ function onMessage(message, _aSender) {
 
     case TSTAPI.kCONTEXT_MENU_CLICK:
       onTSTItemClick.dispatch(message.info, message.tab);
+      return;
+
+    case TSTAPI.kCONTEXT_MENU_SHOWN:
+      onTSTTabContextMenuShown.dispatch(message.info, message.tab);
+      return;
+
+    case TSTAPI.kCONTEXT_MENU_HIDDEN:
+      onTSTTabContextMenuHidden.dispatch();
+      return;
+
+    case TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED:
+      for (const itemData of mExtraItems.get(message.ownerId)) {
+        if (!itemData.id != message.id)
+          continue;
+        itemData.checked = message.checked;
+        break;
+      }
       return;
   }
 }

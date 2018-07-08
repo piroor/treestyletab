@@ -3,7 +3,7 @@ NPM_BIN_DIR := $(NPM_MOD_DIR)/.bin
 
 EXTERNAL_LIB_DIR := $(CURDIR)/extlib
 
-.PHONY: xpi install_dependency lint format install_extlib
+.PHONY: xpi install_dependency lint format update_extlib install_extlib
 
 all: xpi
 
@@ -16,12 +16,15 @@ lint:
 format:
 	$(NPM_BIN_DIR)/eslint . --ext=.js --report-unused-disable-directives --fix
 
-xpi: install_extlib lint
+xpi: update_extlib install_extlib lint
 	rm -f ./*.xpi
 	zip -r -0 treestyletab-we.xpi manifest.json _locales common options background sidebar resources extlib -x '*/.*' >/dev/null 2>/dev/null
 
-install_extlib:
+update_extlib:
 	cd .. && git submodule update --init
+
+install_extlib:
+	cp ../submodules/webextensions-lib-event-listener-manager/EventListenerManager.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-tab-id-fixer/TabIdFixer.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabIdFixer;' >> $(EXTERNAL_LIB_DIR)/TabIdFixer.js
 	cp ../submodules/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabFavIconHelper;' >> $(EXTERNAL_LIB_DIR)/TabFavIconHelper.js
 	cp ../submodules/webextensions-lib-rich-confirm/RichConfirm.js $(EXTERNAL_LIB_DIR)/; echo 'export default RichConfirm;' >> $(EXTERNAL_LIB_DIR)/RichConfirm.js

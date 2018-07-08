@@ -15,6 +15,8 @@
   "command_focusPreviousSilently": { "message": "前のタブにフォーカスを移す（ツリーを展開しない）" },
   "command_focusNext":             { "message": "次のタブにフォーカスを移す（ツリーを展開する）" },
   "command_focusNextSilently":     { "message": "次のタブにフォーカスを移す（ツリーを展開しない）" },
+  "command_focusParent":           { "message": "親のタブにフォーカスを移す" },
+  "command_focusFirstChild":       { "message": "最初の子タブにフォーカスを移す" },
   "command_tabbarUp":              { "message": "タブの一覧を1行上にスクロール" },
   "command_tabbarPageUp":          { "message": "タブの一覧を1ページ上にスクロール" },
   "command_tabbarHome":            { "message": "タブの一覧を先頭までスクロール" },
