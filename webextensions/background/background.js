@@ -429,11 +429,14 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 Tabs.onUpdated.addListener((tab, changeInfo) => {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
-  if (tab && Constants.kSHORTHAND_ABOUT_URI.test(tab.apiTab.url)) {
+  const url = changeInfo.url ? changeInfo.url :
+    changeInfo.status == 'complete' && tab && tab.apiTab ? tab.apiTab.url : '';
+  if (tab &&
+      Constants.kSHORTHAND_ABOUT_URI.test(url)) {
     const shorthand = RegExp.$1;
     wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
       browser.tabs.update(tab.apiTab.id, {
-        url: tab.apiTab.url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
+        url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
       if (shorthand == 'group') {
         tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);

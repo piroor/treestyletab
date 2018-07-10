@@ -176,17 +176,19 @@ Tabs.onRemoved.addListener(async (tab, _closeInfo = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
+  const url = changeInfo.url ? changeInfo.url :
+    changeInfo.status == 'complete' && tab && tab.apiTab ? tab.apiTab.url : '';
   if (tab &&
       tab.apiTab &&
       tab.apiTab.status == 'complete' &&
-      tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0 &&
-      !Constants.kSHORTHAND_ABOUT_URI.test(tab.apiTab.url)) {
+      url.indexOf(Constants.kGROUP_TAB_URI) != 0 &&
+      !Constants.kSHORTHAND_ABOUT_URI.test(url)) {
     Tabs.getSpecialTabState(tab).then(async (states) => {
-      if (tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0)
+      if (url.indexOf(Constants.kGROUP_TAB_URI) == 0)
         return;
       // Detect group tab from different session - which can have different UUID for the URL.
       const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
-      const pathPart = tab.apiTab.url.replace(PREFIX_REMOVER, '');
+      const pathPart = url.replace(PREFIX_REMOVER, '');
       if (states.includes(Constants.kTAB_STATE_GROUP_TAB) &&
           pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
         const parameters = pathPart.replace(/^[^\?]+\?/, '');
