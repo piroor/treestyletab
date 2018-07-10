@@ -115,6 +115,12 @@ export function updateTab(tab, newState = {}, options = {}) {
                              openerOfGroupTab.apiTab.url)
     );
   }
+  else if (Tabs.isGroupTab(tab)) {
+    // "about:treestyletab-group" can set error icon for the favicon and
+    // reloading doesn't cloear that, so we need to clear favIconUrl manually.
+    tab.apiTab.favIconUrl = null;
+    Tabs.onFaviconUpdated.dispatch(tab, null);
+  }
 
   if ('status' in newState) {
     const reallyChanged = !tab.classList.contains(newState.status);
