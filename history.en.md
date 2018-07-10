@@ -13,6 +13,7 @@
    * Add ability to configure default bookmark folder name, and it includes the date created at by default.
    * Any pinned tab is now possible to be dragged and dropped between unpinned tabs. Opposite is also available.
    * Pinned tabs are now possible to be teared off from the window by drag and drop.
+   * Restore group tabs more safely. In old versions, restored group tab can lose its content.
    * Updating of group tabs is now done without reloading of the tab itself.
    * Unfocusing from the input field of the title of a group tab now applies the current value as its new title, instead of cancelling.
    * Tabs opened from a bookmark folder are correctly grouped. (It was a regression on recent versions.)
