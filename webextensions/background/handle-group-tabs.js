@@ -179,7 +179,8 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   if (tab &&
       tab.apiTab &&
       tab.apiTab.status == 'complete' &&
-      tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0) {
+      tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0 &&
+      !Constants.kSHORTHAND_ABOUT_URI.test(tab.apiTab.url)) {
     Tabs.getSpecialTabState(tab).then(async (states) => {
       if (tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0)
         return;
