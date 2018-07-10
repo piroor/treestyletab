@@ -436,7 +436,10 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   if (tab &&
       Constants.kSHORTHAND_ABOUT_URI.test(url)) {
     const shorthand = RegExp.$1;
-    wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
+    const oldUrl = apiTab.url;
+    wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
+      if (tab.apiTab.url != oldUrl)
+        return;
       browser.tabs.update(tab.apiTab.id, {
         url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
