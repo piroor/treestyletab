@@ -236,6 +236,8 @@ async function onUpdated(tabId, changeInfo, tab) {
 
     logUpdated('tabs.onUpdated ', tabId, changeInfo, tab, updatedTab.apiTab);
 
+    if ('url' in changeInfo)
+      changeInfo.previousUrl = updatedTab.apiTab.url;
     //updatedTab.apiTab = tab;
     /*
       Updated openerTabId is not notified via tabs.onUpdated due to

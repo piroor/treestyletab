@@ -429,8 +429,10 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 Tabs.onUpdated.addListener((tab, changeInfo) => {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
+  const apiTab = tab && tab.apiTab && tab.apiTab;
+  const status = changeInfo.status || apiTab && apiTab.status;
   const url = changeInfo.url ? changeInfo.url :
-    changeInfo.status == 'complete' && tab && tab.apiTab ? tab.apiTab.url : '';
+    status == 'complete' && apiTab ? apiTab.url : '';
   if (tab &&
       Constants.kSHORTHAND_ABOUT_URI.test(url)) {
     const shorthand = RegExp.$1;
