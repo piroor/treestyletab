@@ -15,6 +15,7 @@ import {
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
+import * as ApiTabs from '../common/api-tabs.js';
 import * as Tabs from '../common/tabs.js';
 import * as TabsOpen from '../common/tabs-open.js';
 import * as TabsGroup from '../common/tabs-group.js';
@@ -175,6 +176,32 @@ Tabs.onRemoved.addListener(async (tab, _closeInfo = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
+  if (tab &&
+      tab.apiTab &&
+      tab.apiTab.status == 'complete' &&
+      tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0) {
+    Tabs.getSpecialTabState(tab).then(async (states) => {
+      if (tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0)
+        return;
+      // Detect group tab from different session - which can have different UUID for the URL.
+      const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
+      const pathPart = tab.apiTab.url.replace(PREFIX_REMOVER, '');
+      if (states.includes(Constants.kTAB_STATE_GROUP_TAB) &&
+          pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
+        const parameters = pathPart.replace(/^[^\?]+\?/, '');
+        await wait(100); // for safety
+        browser.tabs.update(tab.apiTab.id, {
+          url: `${Constants.kGROUP_TAB_URI}?${parameters}`
+        }).catch(ApiTabs.handleMissingTabError);
+        tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+      }
+      else {
+        Tabs.removeSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+        tab.classList.remove(Constants.kTAB_STATE_GROUP_TAB);
+      }
+    });
+  }
+
   if (changeInfo.status || changeInfo.url)
     tryInitGroupTab(tab);
 

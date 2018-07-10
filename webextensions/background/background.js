@@ -9,12 +9,14 @@ import RichConfirm from '../extlib/RichConfirm.js';
 
 import {
   log as internalLogger,
+  wait,
   configs
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
 import * as ApiTabsListener from '../common/api-tabs-listener.js';
 import * as MetricsData from '../common/metrics-data.js';
+import * as ApiTabs from '../common/api-tabs.js';
 import * as Tabs from '../common/tabs.js';
 import * as TabsContainer from '../common/tabs-container.js';
 import * as TabsUpdate from '../common/tabs-update.js';
@@ -425,6 +427,19 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
+  // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
+  // so we need to see the complete tab object.
+  if (tab && Constants.kSHORTHAND_ABOUT_URI.test(tab.apiTab.url)) {
+    const shorthand = RegExp.$1;
+    wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
+      browser.tabs.update(tab.apiTab.id, {
+        url: tab.apiTab.url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
+      }).catch(ApiTabs.handleMissingTabError);
+      tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+      Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+    });
+  }
+
   if (changeInfo.status || changeInfo.url)
     tryStartHandleAccelKeyOnTab(tab);
 });
