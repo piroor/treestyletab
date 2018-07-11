@@ -113,7 +113,7 @@ function onMessage(message, _aSender) {
 }
 
 export function onExternalMessage(message, sender) {
-  log('tab-context-menu: API called:', message, sender);
+  log('API called:', message, { id: sender.id, url: sender.url });
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
       const items  = getItemsFor(sender.id);
