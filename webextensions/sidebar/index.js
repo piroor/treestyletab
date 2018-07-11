@@ -24,6 +24,9 @@ MetricsData.add('Loaded');
 
 window.addEventListener('load', Sidebar.init, { once: true });
 
+window.dumpMetricsData = () => {
+  console.log(MetricsData.toString());
+};
 window.dumpLogs = () => {
   console.log(log.logs.join('\n'));
 };
