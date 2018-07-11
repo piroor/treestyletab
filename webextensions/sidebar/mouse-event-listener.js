@@ -59,8 +59,7 @@ import * as DragAndDrop from './drag-and-drop.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/mouse-event-listener'] || configs.logOnMouseEvent)
-    internalLogger(...args);
+  internalLogger('sidebar/mouse-event-listener', ...args);
 }
 
 let mTargetWindow;

@@ -191,9 +191,6 @@ export const configs = new Configs({
 `.trim(),
 
   debug:     false,
-  logOnUpdated: false,
-  logOnMouseEvent: false,
-  logOnCollapseExpand: false,
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': true,/"
     'background/background-cache': false,
     'background/background': true,
@@ -273,9 +270,10 @@ configs.$loaded.then(() => {
 });
 
 
-export function log(message, ...args)
+export function log(module, ...args)
 {
-  const useConsole = configs && configs.debug;
+  const message    = module in configs ? `${module}: ${args.shift()}` : module ;
+  const useConsole = configs && configs.debug && (!(module in configs.$default.logFor) || configs.logFor[module]);
   const logging    = useConsole || log.forceStore;
   if (!logging)
     return;

@@ -41,8 +41,7 @@ import * as TabContextMenu from './tab-context-menu.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/sidebar'])
-    internalLogger(...args);
+  internalLogger('sidebar/sidebar', ...args);
 }
 
 export const onInit    = new EventListenerManager();

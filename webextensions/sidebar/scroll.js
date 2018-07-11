@@ -57,8 +57,7 @@ import * as EventUtils from './event-utils.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/scroll'])
-    internalLogger(...args);
+  internalLogger('sidebar/scroll', ...args);
 }
 
 

@@ -7,8 +7,7 @@
 
 import {
   log as internalLogger,
-  dumpTab,
-  configs
+  dumpTab
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
@@ -17,8 +16,7 @@ import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
 
 function log(...args) {
-  if (configs.logFor['common/tabs-group'])
-    internalLogger(...args);
+  internalLogger('common/tabs-group', ...args);
 }
 
 export function makeGroupTabURI(options = {}) {

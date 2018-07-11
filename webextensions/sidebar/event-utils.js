@@ -15,8 +15,7 @@ import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['sidebar/event-utils'])
-    internalLogger(...args);
+  internalLogger('sidebar/event-utils', ...args);
 }
 
 export function isMiddleClick(event) {

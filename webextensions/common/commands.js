@@ -23,8 +23,7 @@ import * as Tree from './tree.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['common/command'])
-    internalLogger(...args);
+  internalLogger('common/command', ...args);
 }
 
 export const onTabsClosing = new EventListenerManager();

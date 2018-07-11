@@ -55,8 +55,7 @@ import * as Indent from './indent.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/collapse-expand'] || configs.logOnCollapseExpand)
-    internalLogger(...args);
+  internalLogger('sidebar/collapse-expand', ...args);
 }
 
 

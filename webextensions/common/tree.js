@@ -62,12 +62,10 @@ import * as MetricsData from './metrics-data.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['common/tree'])
-    internalLogger(...args);
+  internalLogger('common/tree', ...args);
 }
 function logCollapseExpand(...args) {
-  if (configs.logOnCollapseExpand)
-    internalLogger(...args);
+  internalLogger('sidebar/collapse-expand', ...args);
 }
 
 

@@ -19,8 +19,7 @@ import * as MetricsData from '../common/metrics-data.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['background/tree-structure'])
-    internalLogger(...args);
+  internalLogger('background/tree-structure', ...args);
 }
 
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();

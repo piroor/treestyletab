@@ -19,8 +19,7 @@ import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
 
 function log(...args) {
-  if (configs.logFor['common/migration'])
-    internalLogger(...args);
+  internalLogger('common/migration', ...args);
 }
 
 export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;

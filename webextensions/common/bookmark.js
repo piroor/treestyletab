@@ -14,8 +14,7 @@ import * as Permissions from './permissions.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['common/bookmarks'])
-    internalLogger(...args);
+  internalLogger('common/bookmarks', ...args);
 }
 
 export async function bookmarkTabs(tabs, options = {}) {

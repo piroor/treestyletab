@@ -20,8 +20,7 @@ import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['sidebar/sidebar-tabs'])
-    internalLogger(...args);
+  internalLogger('sidebar/sidebar-tabs', ...args);
 }
 
 let mInitialized = false;

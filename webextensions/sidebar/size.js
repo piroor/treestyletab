@@ -11,8 +11,7 @@ import {
 } from '../common/common.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/size'])
-    internalLogger(...args);
+  internalLogger('sidebar/size', ...args);
 }
 
 let mTabHeight          = 0;

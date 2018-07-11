@@ -16,8 +16,7 @@ import * as TSTAPI from '../common/tst-api.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 function log(...args) {
-  if (configs.logFor['background/context-menu'])
-    internalLogger(...args);
+  internalLogger('background/context-menu', ...args);
 }
 
 const mContextMenuItemsById = {};

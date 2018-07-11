@@ -54,8 +54,7 @@ import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/drag-and-drop'])
-    internalLogger(...args);
+  internalLogger('sidebar/drag-and-drop', ...args);
 }
 
 

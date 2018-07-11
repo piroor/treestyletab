@@ -54,12 +54,10 @@ import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 
 function log(...args) {
-  if (configs.logFor['common/api-tabs-listener'])
-    internalLogger(...args);
+  internalLogger('common/api-tabs-listener', ...args);
 }
 function logUpdated(...args) {
-  if (configs.logOnUpdated)
-    internalLogger(...args);
+  internalLogger('common/tabs-update', ...args);
 }
 
 export function startListen() {

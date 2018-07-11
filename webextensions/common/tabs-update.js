@@ -51,8 +51,7 @@ import * as Tabs from './tabs.js';
 import * as ContextualIdentities from './contextual-identities.js';
 
 function log(...args) {
-  if (configs.logFor['common/tabs-update'] || configs.logOnUpdated)
-    internalLogger(...args);
+  internalLogger('common/tabs-update', ...args);
 }
 
 export function updateTab(tab, newState = {}, options = {}) {

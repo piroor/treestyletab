@@ -18,8 +18,7 @@ import * as Cache from '../common/cache.js';
 import * as MetricsData from '../common/metrics-data.js';
 
 function log(...args) {
-  if (configs.logFor['background/background-cache'])
-    internalLogger(...args);
+  internalLogger('background/background-cache', ...args);
 }
 
 let mActivated = false;

@@ -7,8 +7,7 @@
 
 import {
   log as internalLogger,
-  wait,
-  configs
+  wait
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
@@ -29,12 +28,10 @@ import * as BackgroundCache from './background-cache.js';
 import * as TreeStructure from './tree-structure.js';
 
 function log(...args) {
-  if (configs.logFor['background/handle-misc'])
-    internalLogger(...args);
+  internalLogger('background/handle-misc', ...args);
 }
 function logMouseEvent(...args) {
-  if (configs.logOnMouseEvent)
-    internalLogger(...args);
+  internalLogger('sidebar/mouse-event-listener', ...args);
 }
 
 

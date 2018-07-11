@@ -36,8 +36,7 @@ import * as TabContextMenu from './tab-context-menu.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['background/background'])
-    internalLogger(...args);
+  internalLogger('background/background', ...args);
 }
 
 export const onInit    = new EventListenerManager();

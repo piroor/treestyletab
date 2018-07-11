@@ -25,8 +25,7 @@ import * as Tree from '../common/tree.js';
 import * as TSTAPI from '../common/tst-api.js';
 
 function log(...args) {
-  if (configs.logFor['background/handle-group-tabs'])
-    internalLogger(...args);
+  internalLogger('background/handle-group-tabs', ...args);
 }
 
 // ====================================================================

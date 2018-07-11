@@ -9,8 +9,7 @@
 
 import {
   log as internalLogger,
-  dumpTab,
-  configs
+  dumpTab
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
@@ -18,8 +17,7 @@ import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 
 function log(...args) {
-  if (configs.logFor['common/tabs-internal-operation'])
-    internalLogger(...args);
+  internalLogger('common/tabs-internal-operation', ...args);
 }
 
 export async function selectTab(tab, options = {}) {

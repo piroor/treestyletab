@@ -29,8 +29,7 @@ import * as EventUtils from './event-utils.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/tab-context-menu'])
-    internalLogger(...args);
+  internalLogger('sidebar/tab-context-menu', ...args);
 }
 
 export const onTabsClosing = new EventListenerManager();
