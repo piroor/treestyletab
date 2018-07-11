@@ -141,8 +141,8 @@ function setDragData(aDragData) {
 
 /* helpers */
 
-function getDragDataFromOneTab(tab, options = {}) {
-  tab = Tabs.getTabFromChild(tab);
+function getDragDataFromOneTab(hint, options = {}) {
+  const tab = Tabs.getTabFromChild(hint);
   if (!tab)
     return {
       tabNode:  null,
