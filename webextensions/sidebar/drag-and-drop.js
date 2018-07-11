@@ -758,6 +758,7 @@ function onDragStart(event) {
 
   document.addEventListener('dragend', onDragEnd, { capture: true });
 }
+onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 
 let mLastDragOverTimestamp = null;
 
@@ -810,6 +811,7 @@ function onDragOver(event) {
     mLastDropPosition = null;
   }
 }
+onDragOver = EventUtils.wrapWithErrorHandler(onDragOver);
 
 function isEventFiredOnTabDropBlocker(event) {
   let node = event.target;
@@ -855,6 +857,7 @@ function onDragEnter(event) {
     dropEffect:    info.dropEffect
   });
 }
+onDragEnter = EventUtils.wrapWithErrorHandler(onDragEnter);
 
 function reserveToProcessLongHover(params = {}) {
   mLongHoverTimerNext = setTimeout(() => {
@@ -900,7 +903,7 @@ reserveToProcessLongHover.cancel = function() {
   clearTimeout(mLongHoverTimerNext);
 };
 
-function onDragLeave(_aEvent) {
+function onDragLeave(_event) {
   if (mDelayedDragLeave) {
     clearTimeout(mDelayedDragLeave);
     mDelayedDragLeave = null;
@@ -918,6 +921,7 @@ function onDragLeave(_aEvent) {
   clearTimeout(mLongHoverTimer);
   mLongHoverTimer = null;
 }
+onDragLeave = EventUtils.wrapWithErrorHandler(onDragLeave);
 
 function onDrop(event) {
   setTimeout(() => collapseAutoExpandedTabsWhileDragging(), 0);
@@ -956,6 +960,7 @@ function onDrop(event) {
   log('link or bookmark item is dropped');
   handleDroppedNonTabItems(event, dropActionInfo);
 }
+onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 function onDragEnd(event) {
   log('onDragEnd, mDraggingOnSelfWindow = ', mDraggingOnSelfWindow);
@@ -1037,6 +1042,7 @@ function onDragEnd(event) {
     inRemote:  true
   });
 }
+onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 
 
 /* drag on tabs API */

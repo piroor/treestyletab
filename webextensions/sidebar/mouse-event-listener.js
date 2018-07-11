@@ -157,6 +157,7 @@ function onMouseMove(event) {
     });
   }
 }
+onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
@@ -174,6 +175,7 @@ function onMouseOver(event) {
   }
   onMouseOver.lastTarget = tab && tab.id;
 }
+onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
 
 function onMouseOut(event) {
   const tab = EventUtils.getTabFromEvent(event);
@@ -191,6 +193,7 @@ function onMouseOut(event) {
   }
   onMouseOut.lastTarget = tab && tab.id;
 }
+onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
 
 function onMouseDown(event) {
   EventUtils.cancelHandleMousedown(event.button);
@@ -282,6 +285,7 @@ function onMouseDown(event) {
     }
   }, configs.startDragTimeout);
 }
+onMouseDown = EventUtils.wrapWithErrorHandler(onMouseDown);
 
 function getMouseEventTargetType(event) {
   if (EventUtils.getTabFromEvent(event))
@@ -392,6 +396,7 @@ async function onMouseUp(event) {
     });
   }
 }
+onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
 
 function onClick(event) {
   // clear unexpectedly left "dragging" state
@@ -460,6 +465,7 @@ function onClick(event) {
     return;
   }
 }
+onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function handleNewTabAction(event, options = {}) {
   log('handleNewTabAction');

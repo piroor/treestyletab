@@ -156,3 +156,23 @@ export function cancelHandleMousedown(aButton = null) {
   }
   return false;
 }
+
+
+export function wrapWithErrorHandler(func) {
+  return (...args) => {
+    try {
+      const result = func(...args);
+      if (result && result instanceof Promise)
+        return result.catch(e => {
+          console.log('Fatal async error: ', e);
+          throw e;
+        });
+      else
+        return result;
+    }
+    catch(e) {
+      console.log('Fatal error: ', e);
+      throw e;
+    }
+  };
+}
