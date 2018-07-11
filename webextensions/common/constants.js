@@ -59,7 +59,6 @@ export const kPARENT        = 'data-parent-id';
 export const kCHILDREN      = 'data-child-ids';
 export const kLEVEL         = 'data-level';
 export const kCLOSED_SET_ID = 'data-closed-set-id';
-export const kDROP_POSITION = 'data-drop-position';
 export const kCURRENT_URI   = 'data-current-uri';
 export const kMAX_TREE_LEVEL = 'data-max-tree-level';
 
@@ -134,8 +133,6 @@ export const kTAB_INTERNAL_STATES = [
 ];
 
 export const kTABBAR_STATE_OVERFLOW               = 'overflow';
-export const kTABBAR_STATE_TAB_DRAGGING           = 'tab-dragging';
-export const kTABBAR_STATE_LINK_DRAGGING          = 'link-dragging';
 export const kTABBAR_STATE_BLOCKING               = 'blocking';
 export const kTABBAR_STATE_BLOCKING_WITH_THROBBER = 'blocking-throbber';
 export const kTABBAR_STATE_HAVE_LOADING_TAB       = 'have-loading-tab';
@@ -170,10 +167,6 @@ export const kTABBAR_SCROLLBAR_MODE_DEFAULT = 0;
 export const kTABBAR_SCROLLBAR_MODE_NARROW  = 1;
 export const kTABBAR_SCROLLBAR_MODE_HIDE    = 2;
 export const kTABBAR_SCROLLBAR_MODE_OVERLAY = 3;
-
-export const kDROP_BEFORE  = 'before';
-export const kDROP_ON_SELF = 'self';
-export const kDROP_AFTER   = 'after';
 
 export const kACTION_MOVE   = 1 << 0;
 export const kACTION_ATTACH = 1 << 10;
