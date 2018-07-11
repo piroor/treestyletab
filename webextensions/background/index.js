@@ -28,3 +28,7 @@ log.context = 'BG';
 MetricsData.add('index: Loaded');
 
 window.addEventListener('DOMContentLoaded', Background.init, { once: true });
+
+window.dumpLogs = () => {
+  console.log(log.logs.join('\n'));
+};
