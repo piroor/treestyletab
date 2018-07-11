@@ -667,7 +667,7 @@ async function getDroppedLinksOnTabBehavior() {
 /* DOM event listeners */
 
 function onDragStart(event) {
-  log('onDragStart: start');
+  log('onDragStart: start ', event);
   clearDraggingTabsState(); // clear previous state anyway
 
   const dragData = getDragDataFromOneTab(event.target, {
