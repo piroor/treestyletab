@@ -30,3 +30,7 @@ window.dumpMetricsData = () => {
 window.dumpLogs = () => {
   return log.logs.join('\n');
 };
+
+// for old debugging method
+window.log = log;
+window.gMetricsData = MetricsData;
