@@ -291,7 +291,7 @@ export function log(module, ...args)
   log.logs = log.logs.slice(-log.max);
 }
 log.context = '?';
-log.max  = 1000;
+log.max  = 2000;
 log.logs = [];
 log.forceStore = true;
 
