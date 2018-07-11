@@ -667,18 +667,22 @@ async function getDroppedLinksOnTabBehavior() {
 /* DOM event listeners */
 
 function onDragStart(event) {
+  log('onDragStart: start');
   clearDraggingTabsState(); // clear previous state anyway
 
   const dragData = getDragDataFromOneTab(event.target, {
     shouldIgnoreDescendants: event.shiftKey
   });
-  if (!dragData.tabNode)
+  if (!dragData.tabNode) {
+    log('onDragStart: canceled / no dragged tab from drag data');
     return;
+  }
 
   const tab       = dragData.tabNode
   const mousedown = EventUtils.getLastMousedown(event.button);
 
   if (mousedown && mousedown.expired) {
+    log('onDragStart: canceled / expired');
     event.stopPropagation();
     event.preventDefault();
     mLastDragEnteredTarget = tab;
@@ -703,6 +707,7 @@ function onDragStart(event) {
   // dragging on clickable element will be expected to cancel the operation
   if (EventUtils.isEventFiredOnClosebox(event) ||
       EventUtils.isEventFiredOnClickable(event)) {
+    log('onDragStart: canceled / on undraggable element');
     event.stopPropagation();
     event.preventDefault();
     return;
