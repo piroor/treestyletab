@@ -757,6 +757,7 @@ function onDragStart(event) {
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
   document.addEventListener('dragend', onDragEnd, { capture: true });
+  log('onDragStart: started');
 }
 onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 
