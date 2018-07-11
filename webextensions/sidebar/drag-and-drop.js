@@ -778,6 +778,7 @@ function onDragOver(event) {
 
   if (isEventFiredOnTabDropBlocker(event) ||
       !info.canDrop) {
+    log('onDragOver: not droppable');
     dt.dropEffect = 'none';
     if (mLastDropPosition)
       clearDropPosition();
@@ -793,6 +794,7 @@ function onDragOver(event) {
     dropPositionTargetTab = info.targetTab;
 
   if (!dropPositionTargetTab) {
+    log('onDragOver: no drop target tab');
     dt.dropEffect = 'none';
     mLastDropPosition = null;
     return;
@@ -801,12 +803,14 @@ function onDragOver(event) {
   if (!info.draggedAPITab ||
       dropPositionTargetTab.apiTab.id != info.draggedAPITab.id) {
     const dropPosition = `${dropPositionTargetTab.id}:${info.dropPosition}`;
-    if (dropPosition == mLastDropPosition)
+    if (dropPosition == mLastDropPosition) {
+      log('onDragOver: no move');
       return;
+    }
     clearDropPosition();
     dropPositionTargetTab.setAttribute(kDROP_POSITION, info.dropPosition);
     mLastDropPosition = dropPosition;
-    log('set drop position to ', dropPosition);
+    log('onDragOver: set drop position to ', dropPosition);
   }
   else {
     mLastDropPosition = null;
