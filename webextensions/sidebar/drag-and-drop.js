@@ -698,10 +698,7 @@ function onDragStart(event) {
     return;
   }
 
-  if (!EventUtils.cancelHandleMousedown()) {
-    // this action is already handled as "click".
-    //return;
-  }
+  EventUtils.cancelHandleMousedown();
 
   // dragging on clickable element will be expected to cancel the operation
   if (EventUtils.isEventFiredOnClosebox(event) ||
