@@ -272,8 +272,9 @@ configs.$loaded.then(() => {
 
 export function log(module, ...args)
 {
-  const message    = module in configs ? `${module}: ${args.shift()}` : module ;
-  const useConsole = configs && configs.debug && (!(module in configs.$default.logFor) || configs.logFor[module]);
+  const isModuleLog = module in configs.$default.logFor;
+  const message    = isModuleLog ? args.shift() : module ;
+  const useConsole = configs && configs.debug && (!isModuleLog || configs.logFor[module]);
   const logging    = useConsole || log.forceStore;
   if (!logging)
     return;
@@ -283,7 +284,12 @@ export function log(module, ...args)
   for (let i = 0; i < nest; i++) {
     indent += ' ';
   }
-  const line = `tst<${log.context}>: ${indent}${message}`;
+  if (isModuleLog)
+    module = `${module}: `
+  else
+    module = '';
+
+  const line = `tst<${log.context}>: ${module}${indent}${message}`;
   if (useConsole)
     console.log(line, ...args);
 
