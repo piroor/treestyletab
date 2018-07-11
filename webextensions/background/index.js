@@ -30,8 +30,8 @@ MetricsData.add('index: Loaded');
 window.addEventListener('DOMContentLoaded', Background.init, { once: true });
 
 window.dumpMetricsData = () => {
-  console.log(MetricsData.toString());
+  return MetricsData.toString();
 };
 window.dumpLogs = () => {
-  console.log(log.logs.join('\n'));
+  return log.logs.join('\n');
 };
