@@ -29,8 +29,7 @@ import * as EventUtils from './event-utils.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/tab-context-menu'])
-    internalLogger(...args);
+  internalLogger('sidebar/tab-context-menu', ...args);
 }
 
 export const onTabsClosing = new EventListenerManager();
@@ -572,7 +571,7 @@ function importExtraItems(aItems) {
 }
 
 function onExternalMessage(message, sender) {
-  log('tab-context-menu: API called:', message, sender);
+  log('API called:', message, { id: sender.id, url: sender.url });
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
       return (async () => {

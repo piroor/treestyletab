@@ -13,8 +13,7 @@ import {
 } from './common.js';
 
 function log(...args) {
-  if (configs.logFor['common/permissions'])
-    internalLogger(...args);
+  internalLogger('common/permissions', ...args);
 }
 
 export const BOOKMARKS = { permissions: ['bookmarks'] };

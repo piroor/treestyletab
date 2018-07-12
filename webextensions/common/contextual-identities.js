@@ -6,16 +6,14 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['common/contextual-identities'])
-    internalLogger(...args);
+  internalLogger('common/contextual-identities', ...args);
 }
 
 const mContextualIdentities = new Map();

@@ -19,8 +19,7 @@ import * as TabsOpen from '../common/tabs-open.js';
 import * as Tree from '../common/tree.js';
 
 function log(...args) {
-  if (configs.logFor['background/handle-new-tabs'])
-    internalLogger(...args);
+  internalLogger('background/handle-new-tabs', ...args);
 }
 
 

@@ -19,8 +19,7 @@ import * as Tree from '../common/tree.js';
 import * as Background from './background.js';
 
 function log(...args) {
-  if (configs.logFor['background/handle-tree-changes'])
-    internalLogger(...args);
+  internalLogger('background/handle-tree-changes', ...args);
 }
 
 let mInitialized = false;

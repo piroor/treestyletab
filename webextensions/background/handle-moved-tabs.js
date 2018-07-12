@@ -21,8 +21,7 @@ import * as Commands from '../common/commands.js';
 import * as TreeStructure from './tree-structure.js';
 
 function log(...args) {
-  if (configs.logFor['background/handle-moved-tabs'])
-    internalLogger(...args);
+  internalLogger('background/handle-moved-tabs', ...args);
 }
 
 

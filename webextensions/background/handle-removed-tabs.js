@@ -8,8 +8,7 @@
 import {
   log as internalLogger,
   dumpTab,
-  wait,
-  configs
+  wait
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
@@ -24,8 +23,7 @@ import * as SidebarStatus from '../common/sidebar-status.js';
 import * as Background from './background.js';
 
 function log(...args) {
-  if (configs.logFor['background/handle-removed-tabs'])
-    internalLogger(...args);
+  internalLogger('background/handle-removed-tabs', ...args);
 }
 
 

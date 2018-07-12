@@ -51,8 +51,7 @@ import * as Tabs from './tabs.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['common/tst-api'])
-    internalLogger(...args);
+  internalLogger('common/tst-api', ...args);
 }
 
 export const kREGISTER_SELF         = 'register-self';

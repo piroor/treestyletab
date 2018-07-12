@@ -191,9 +191,6 @@ export const configs = new Configs({
 `.trim(),
 
   debug:     false,
-  logOnUpdated: false,
-  logOnMouseEvent: false,
-  logOnCollapseExpand: false,
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': true,/"
     'background/background-cache': false,
     'background/background': true,
@@ -273,9 +270,11 @@ configs.$loaded.then(() => {
 });
 
 
-export function log(message, ...args)
+export function log(module, ...args)
 {
-  const useConsole = configs && configs.debug;
+  const isModuleLog = module in configs.$default.logFor;
+  const message    = isModuleLog ? args.shift() : module ;
+  const useConsole = configs && configs.debug && (!isModuleLog || configs.logFor[module]);
   const logging    = useConsole || log.forceStore;
   if (!logging)
     return;
@@ -285,7 +284,12 @@ export function log(message, ...args)
   for (let i = 0; i < nest; i++) {
     indent += ' ';
   }
-  const line = `tst<${log.context}>: ${indent}${message}`;
+  if (isModuleLog)
+    module = `${module}: `
+  else
+    module = '';
+
+  const line = `tst<${log.context}>: ${module}${indent}${message}`;
   if (useConsole)
     console.log(line, ...args);
 
@@ -293,7 +297,7 @@ export function log(message, ...args)
   log.logs = log.logs.slice(-log.max);
 }
 log.context = '?';
-log.max  = 1000;
+log.max  = 2000;
 log.logs = [];
 log.forceStore = true;
 

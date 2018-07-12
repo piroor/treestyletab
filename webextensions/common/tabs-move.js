@@ -51,8 +51,7 @@ import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 
 function log(...args) {
-  if (configs.logFor['common/tabs-move'])
-    internalLogger(...args);
+  internalLogger('common/tabs-move', ...args);
 }
 
 export async function moveTabsBefore(tabs, referenceTab, options = {}) {

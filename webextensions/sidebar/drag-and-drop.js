@@ -54,14 +54,22 @@ import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/drag-and-drop'])
-    internalLogger(...args);
+  internalLogger('sidebar/drag-and-drop', ...args);
 }
 
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 const kBOOKMARK_FOLDER = 'x-moz-place:';
+
+const kDROP_BEFORE  = 'before';
+const kDROP_ON_SELF = 'self';
+const kDROP_AFTER   = 'after';
+
+const kDROP_POSITION = 'data-drop-position';
+
+const kTABBAR_STATE_TAB_DRAGGING  = 'tab-dragging';
+const kTABBAR_STATE_LINK_DRAGGING = 'link-dragging';
 
 let mLongHoverExpandedTabs = [];
 let mLongHoverTimer;
@@ -141,8 +149,8 @@ function setDragData(aDragData) {
 
 /* helpers */
 
-function getDragDataFromOneTab(tab, options = {}) {
-  tab = Tabs.getTabFromChild(tab);
+function getDragDataFromOneTab(hint, options = {}) {
+  const tab = Tabs.getTabFromChild(hint);
   if (!tab)
     return {
       tabNode:  null,
@@ -270,7 +278,7 @@ function getDropAction(event) {
     if (info.dragOverTab &&
         (Tabs.isHidden(info.dragOverTab) ||
          (Tabs.isCollapsed(info.dragOverTab) &&
-          info.dropPosition != Constants.kDROP_AFTER)))
+          info.dropPosition != kDROP_AFTER)))
       return false;
 
     return true;
@@ -284,13 +292,13 @@ function getDropAction(event) {
     if (event.clientY < info.firstTargetTab.getBoundingClientRect().top) {
       //log('dragging above the first tab');
       info.targetTab    = info.insertBefore = info.firstTargetTab;
-      info.dropPosition = Constants.kDROP_BEFORE;
+      info.dropPosition = kDROP_BEFORE;
       info.action       = action;
     }
     else if (event.clientY > info.lastTargetTab.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
       info.targetTab    = info.insertAfter = info.lastTargetTab;
-      info.dropPosition = Constants.kDROP_AFTER;
+      info.dropPosition = kDROP_AFTER;
       info.action       = action;
     }
     return info;
@@ -321,20 +329,20 @@ function getDropAction(event) {
   //  area: beforeOrAfterDropAreaSize
   //});
   if (eventCoordinate < targetTabCoordinate + beforeOrAfterDropAreaSize) {
-    info.dropPosition = Constants.kDROP_BEFORE;
+    info.dropPosition = kDROP_BEFORE;
     info.insertBefore = info.firstTargetTab;
   }
   else if (dropAreasCount == 2 ||
            eventCoordinate > targetTabCoordinate + targetTabSize - beforeOrAfterDropAreaSize) {
-    info.dropPosition = Constants.kDROP_AFTER;
+    info.dropPosition = kDROP_AFTER;
     info.insertAfter  = info.lastTargetTab;
   }
   else {
-    info.dropPosition = Constants.kDROP_ON_SELF;
+    info.dropPosition = kDROP_ON_SELF;
   }
 
   switch (info.dropPosition) {
-    case Constants.kDROP_ON_SELF: {
+    case kDROP_ON_SELF: {
       //log('drop position = on the tab');
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
@@ -347,7 +355,7 @@ function getDropAction(event) {
       });
     }; break;
 
-    case Constants.kDROP_BEFORE: {
+    case kDROP_BEFORE: {
       //log('drop position = before the tab');
       /* strategy
            +-----------------------------------------------------
@@ -390,7 +398,7 @@ function getDropAction(event) {
       //  log('insertBefore = ', dumpTab(info.insertBefore));
     }; break;
 
-    case Constants.kDROP_AFTER: {
+    case kDROP_AFTER: {
       //log('drop position = after the tab');
       /* strategy
            +-----------------------------------------------------
@@ -465,8 +473,8 @@ function getDropEffectFromDropAction(aActionInfo) {
 }
 
 export function clearDropPosition() {
-  for (const tab of document.querySelectorAll(`[${Constants.kDROP_POSITION}]`)) {
-    tab.removeAttribute(Constants.kDROP_POSITION)
+  for (const tab of document.querySelectorAll(`[${kDROP_POSITION}]`)) {
+    tab.removeAttribute(kDROP_POSITION)
   }
 }
 
@@ -477,9 +485,9 @@ export function clearDraggingTabsState() {
 }
 
 export function clearDraggingState() {
-  Tabs.getTabsContainer().classList.remove(Constants.kTABBAR_STATE_TAB_DRAGGING);
-  document.documentElement.classList.remove(Constants.kTABBAR_STATE_TAB_DRAGGING);
-  document.documentElement.classList.remove(Constants.kTABBAR_STATE_LINK_DRAGGING);
+  Tabs.getTabsContainer().classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
 }
 
 function isDraggingAllTabs(tab, tabs) {
@@ -517,7 +525,7 @@ async function handleDroppedNonTabItems(event, aDropActionInfo) {
 
   const dragOverTab = aDropActionInfo.dragOverTab;
   if (dragOverTab &&
-      aDropActionInfo.dropPosition == Constants.kDROP_ON_SELF &&
+      aDropActionInfo.dropPosition == kDROP_ON_SELF &&
       !Tabs.isLocked(dragOverTab) &&
       !Tabs.isPinned(dragOverTab)) {
     const behavior = await getDroppedLinksOnTabBehavior();
@@ -667,18 +675,22 @@ async function getDroppedLinksOnTabBehavior() {
 /* DOM event listeners */
 
 function onDragStart(event) {
+  log('onDragStart: start ', event);
   clearDraggingTabsState(); // clear previous state anyway
 
   const dragData = getDragDataFromOneTab(event.target, {
     shouldIgnoreDescendants: event.shiftKey
   });
-  if (!dragData.tabNode)
+  if (!dragData.tabNode) {
+    log('onDragStart: canceled / no dragged tab from drag data');
     return;
+  }
 
   const tab       = dragData.tabNode
   const mousedown = EventUtils.getLastMousedown(event.button);
 
   if (mousedown && mousedown.expired) {
+    log('onDragStart: canceled / expired');
     event.stopPropagation();
     event.preventDefault();
     mLastDragEnteredTarget = tab;
@@ -698,14 +710,12 @@ function onDragStart(event) {
     return;
   }
 
-  if (!EventUtils.cancelHandleMousedown()) {
-    // this action is already handled as "click".
-    //return;
-  }
+  EventUtils.cancelHandleMousedown();
 
   // dragging on clickable element will be expected to cancel the operation
   if (EventUtils.isEventFiredOnClosebox(event) ||
       EventUtils.isEventFiredOnClickable(event)) {
+    log('onDragStart: canceled / on undraggable element');
     event.stopPropagation();
     event.preventDefault();
     return;
@@ -743,11 +753,13 @@ function onDragStart(event) {
                     }),
                     index);
   });
-  Tabs.getTabsContainer(tab).classList.add(Constants.kTABBAR_STATE_TAB_DRAGGING);
-  document.documentElement.classList.add(Constants.kTABBAR_STATE_TAB_DRAGGING);
+  Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+  document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
   document.addEventListener('dragend', onDragEnd, { capture: true });
+  log('onDragStart: started');
 }
+onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 
 let mLastDragOverTimestamp = null;
 
@@ -766,6 +778,7 @@ function onDragOver(event) {
 
   if (isEventFiredOnTabDropBlocker(event) ||
       !info.canDrop) {
+    log('onDragOver: not droppable');
     dt.dropEffect = 'none';
     if (mLastDropPosition)
       clearDropPosition();
@@ -781,6 +794,7 @@ function onDragOver(event) {
     dropPositionTargetTab = info.targetTab;
 
   if (!dropPositionTargetTab) {
+    log('onDragOver: no drop target tab');
     dt.dropEffect = 'none';
     mLastDropPosition = null;
     return;
@@ -789,17 +803,20 @@ function onDragOver(event) {
   if (!info.draggedAPITab ||
       dropPositionTargetTab.apiTab.id != info.draggedAPITab.id) {
     const dropPosition = `${dropPositionTargetTab.id}:${info.dropPosition}`;
-    if (dropPosition == mLastDropPosition)
+    if (dropPosition == mLastDropPosition) {
+      log('onDragOver: no move');
       return;
+    }
     clearDropPosition();
-    dropPositionTargetTab.setAttribute(Constants.kDROP_POSITION, info.dropPosition);
+    dropPositionTargetTab.setAttribute(kDROP_POSITION, info.dropPosition);
     mLastDropPosition = dropPosition;
-    log('set drop position to ', dropPosition);
+    log('onDragOver: set drop position to ', dropPosition);
   }
   else {
     mLastDropPosition = null;
   }
 }
+onDragOver = EventUtils.wrapWithErrorHandler(onDragOver);
 
 function isEventFiredOnTabDropBlocker(event) {
   let node = event.target;
@@ -826,7 +843,7 @@ function onDragEnter(event) {
   const dt   = event.dataTransfer;
   dt.dropEffect = info.dropEffect;
   if (info.dropEffect == 'link')
-    document.documentElement.classList.add(Constants.kTABBAR_STATE_LINK_DRAGGING);
+    document.documentElement.classList.add(kTABBAR_STATE_LINK_DRAGGING);
 
   if (!configs.autoExpandOnLongHover ||
       !info.canDrop ||
@@ -845,6 +862,7 @@ function onDragEnter(event) {
     dropEffect:    info.dropEffect
   });
 }
+onDragEnter = EventUtils.wrapWithErrorHandler(onDragEnter);
 
 function reserveToProcessLongHover(params = {}) {
   mLongHoverTimerNext = setTimeout(() => {
@@ -854,7 +872,7 @@ function reserveToProcessLongHover(params = {}) {
 
       const dragOverTab = Tabs.getTabById(params.dragOverTabId);
       if (!dragOverTab ||
-          dragOverTab.getAttribute(Constants.kDROP_POSITION) != 'self')
+          dragOverTab.getAttribute(kDROP_POSITION) != 'self')
         return;
 
       // auto-switch for staying on tabs
@@ -890,7 +908,7 @@ reserveToProcessLongHover.cancel = function() {
   clearTimeout(mLongHoverTimerNext);
 };
 
-function onDragLeave(_aEvent) {
+function onDragLeave(_event) {
   if (mDelayedDragLeave) {
     clearTimeout(mDelayedDragLeave);
     mDelayedDragLeave = null;
@@ -908,6 +926,7 @@ function onDragLeave(_aEvent) {
   clearTimeout(mLongHoverTimer);
   mLongHoverTimer = null;
 }
+onDragLeave = EventUtils.wrapWithErrorHandler(onDragLeave);
 
 function onDrop(event) {
   setTimeout(() => collapseAutoExpandedTabsWhileDragging(), 0);
@@ -946,6 +965,7 @@ function onDrop(event) {
   log('link or bookmark item is dropped');
   handleDroppedNonTabItems(event, dropActionInfo);
 }
+onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 function onDragEnd(event) {
   log('onDragEnd, mDraggingOnSelfWindow = ', mDraggingOnSelfWindow);
@@ -1027,6 +1047,7 @@ function onDragEnd(event) {
     inRemote:  true
   });
 }
+onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 
 
 /* drag on tabs API */

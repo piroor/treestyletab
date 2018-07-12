@@ -15,8 +15,7 @@ import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['sidebar/event-utils'])
-    internalLogger(...args);
+  internalLogger('sidebar/event-utils', ...args);
 }
 
 export function isMiddleClick(event) {
@@ -156,4 +155,24 @@ export function cancelHandleMousedown(aButton = null) {
     return true;
   }
   return false;
+}
+
+
+export function wrapWithErrorHandler(func) {
+  return (...args) => {
+    try {
+      const result = func(...args);
+      if (result && result instanceof Promise)
+        return result.catch(e => {
+          console.log('Fatal async error: ', e);
+          throw e;
+        });
+      else
+        return result;
+    }
+    catch(e) {
+      console.log('Fatal error: ', e);
+      throw e;
+    }
+  };
 }

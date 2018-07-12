@@ -6,16 +6,14 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['common/user-operation-blocker'])
-    internalLogger(...args);
+  internalLogger('common/user-operation-blocker', ...args);
 }
 
 let mBlockingCount = 0;

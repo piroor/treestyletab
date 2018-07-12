@@ -6,16 +6,14 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
 import * as TSTAPI from './tst-api.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['common/sidebar-status'])
-    internalLogger(...args);
+  internalLogger('common/sidebar-status', ...args);
 }
 
 let mOpenState;

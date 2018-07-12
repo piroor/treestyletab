@@ -47,13 +47,11 @@ import {
 } from './common.js';
 
 import * as Constants from './constants.js';
-import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as ContextualIdentities from './contextual-identities.js';
 
 function log(...args) {
-  if (configs.logFor['common/tabs-update'] || configs.logOnUpdated)
-    internalLogger(...args);
+  internalLogger('common/tabs-update', ...args);
 }
 
 export function updateTab(tab, newState = {}, options = {}) {
@@ -64,48 +62,11 @@ export function updateTab(tab, newState = {}, options = {}) {
       delete tab.dataset.discardURLAfterCompletelyLoaded;
   }
 
-  // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
-  // so we need to see the complete tab object.
-  if (options.tab && Constants.kSHORTHAND_ABOUT_URI.test(options.tab.url)) {
-    const shorthand = RegExp.$1;
-    wait(0).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
-      browser.tabs.update(options.tab.id, {
-        url: options.tab.url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
-      }).catch(ApiTabs.handleMissingTabError);
-      tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
-      Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
-    });
-    return;
-  }
-  else if ('url' in newState &&
-           newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+  if ('url' in newState &&
+      newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
     Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
     Tabs.onGroupTabDetected.dispatch(tab);
-  }
-  else if (tab.apiTab &&
-           tab.apiTab.status == 'complete' &&
-           tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) != 0) {
-    Tabs.getSpecialTabState(tab).then(async (states) => {
-      if (tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0)
-        return;
-      // Detect group tab from different session - which can have different UUID for the URL.
-      const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
-      const pathPart = tab.apiTab.url.replace(PREFIX_REMOVER, '');
-      if (states.includes(Constants.kTAB_STATE_GROUP_TAB) &&
-          pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
-        const parameters = pathPart.replace(/^[^\?]+\?/, '');
-        await wait(100); // for safety
-        browser.tabs.update(tab.apiTab.id, {
-          url: `${Constants.kGROUP_TAB_URI}?${parameters}`
-        }).catch(ApiTabs.handleMissingTabError);
-        tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
-      }
-      else {
-        Tabs.removeSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
-        tab.classList.remove(Constants.kTAB_STATE_GROUP_TAB);
-      }
-    });
   }
 
   if (options.forceApply ||
@@ -152,6 +113,12 @@ export function updateTab(tab, newState = {}, options = {}) {
       Tabs.getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl ||
                              openerOfGroupTab.apiTab.url)
     );
+  }
+  else if (Tabs.isGroupTab(tab)) {
+    // "about:treestyletab-group" can set error icon for the favicon and
+    // reloading doesn't cloear that, so we need to clear favIconUrl manually.
+    tab.apiTab.favIconUrl = null;
+    Tabs.onFaviconUpdated.dispatch(tab, null);
   }
 
   if ('status' in newState) {

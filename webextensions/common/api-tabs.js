@@ -6,13 +6,11 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 
 function log(...args) {
-  if (configs.logFor['common/api-tabs'])
-    internalLogger(...args);
+  internalLogger('common/api-tabs', ...args);
 }
 
 export async function getIndexes(...queriedTabIds) {

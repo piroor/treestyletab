@@ -54,12 +54,10 @@ import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 
 function log(...args) {
-  if (configs.logFor['common/api-tabs-listener'])
-    internalLogger(...args);
+  internalLogger('common/api-tabs-listener', ...args);
 }
 function logUpdated(...args) {
-  if (configs.logOnUpdated)
-    internalLogger(...args);
+  internalLogger('common/tabs-update', ...args);
 }
 
 export function startListen() {
@@ -236,6 +234,8 @@ async function onUpdated(tabId, changeInfo, tab) {
 
     logUpdated('tabs.onUpdated ', tabId, changeInfo, tab, updatedTab.apiTab);
 
+    if ('url' in changeInfo)
+      changeInfo.previousUrl = updatedTab.apiTab.url;
     //updatedTab.apiTab = tab;
     /*
       Updated openerTabId is not notified via tabs.onUpdated due to

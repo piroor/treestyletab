@@ -16,8 +16,7 @@ import * as Tree from '../common/tree.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['sidebar/indent'])
-    internalLogger(...args);
+  internalLogger('sidebar/indent', ...args);
 }
 
 let mInitialized = false;

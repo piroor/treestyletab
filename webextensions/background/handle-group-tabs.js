@@ -15,6 +15,7 @@ import {
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
+import * as ApiTabs from '../common/api-tabs.js';
 import * as Tabs from '../common/tabs.js';
 import * as TabsOpen from '../common/tabs-open.js';
 import * as TabsGroup from '../common/tabs-group.js';
@@ -24,8 +25,7 @@ import * as Tree from '../common/tree.js';
 import * as TSTAPI from '../common/tst-api.js';
 
 function log(...args) {
-  if (configs.logFor['background/handle-group-tabs'])
-    internalLogger(...args);
+  internalLogger('background/handle-group-tabs', ...args);
 }
 
 // ====================================================================
@@ -175,7 +175,62 @@ Tabs.onRemoved.addListener(async (tab, _closeInfo = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
-  if (changeInfo.status || changeInfo.url)
+  const apiTab = tab && tab.apiTab && tab.apiTab;
+  const status = changeInfo.status || apiTab && apiTab.status;
+  const url = changeInfo.url ? changeInfo.url :
+    status == 'complete' && apiTab ? apiTab.url : '';
+  if (tab &&
+      apiTab &&
+      status == 'complete') {
+    if (url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+      tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+      Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+    }
+    else if (!Constants.kSHORTHAND_ABOUT_URI.test(url)) {
+      Tabs.getSpecialTabState(tab).then(async (states) => {
+        if (url.indexOf(Constants.kGROUP_TAB_URI) == 0)
+          return;
+        // Detect group tab from different session - which can have different UUID for the URL.
+        const PREFIX_REMOVER = /^moz-extension:\/\/[^\/]+/;
+        const pathPart = url.replace(PREFIX_REMOVER, '');
+        if (states.includes(Constants.kTAB_STATE_GROUP_TAB) &&
+            pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
+          const parameters = pathPart.replace(/^[^\?]+\?/, '');
+          const oldUrl = tab.apiTab.url;
+          await wait(100); // for safety
+          if (tab.apiTab.url != oldUrl)
+            return;
+          browser.tabs.update(tab.apiTab.id, {
+            url: `${Constants.kGROUP_TAB_URI}?${parameters}`
+          }).catch(ApiTabs.handleMissingTabError);
+          tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+        }
+        else {
+          Tabs.removeSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+          tab.classList.remove(Constants.kTAB_STATE_GROUP_TAB);
+        }
+      });
+    }
+  }
+  // restored tab can be replaced with blank tab. we need to restore it manually.
+  else if (changeInfo.url == 'about:blank' &&
+           changeInfo.previousUrl &&
+           changeInfo.previousUrl.indexOf(Constants.kGROUP_TAB_URI) == 0) {
+    const oldUrl = apiTab.url;
+    wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
+      if (tab.apiTab.url != oldUrl)
+        return;
+      browser.tabs.update(tab.apiTab.id, {
+        url: changeInfo.previousUrl
+      }).catch(ApiTabs.handleMissingTabError);
+      tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+      Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+    });
+  }
+
+  if (changeInfo.status ||
+      changeInfo.url ||
+      url.indexOf(Constants.kGROUP_TAB_URI) == 0)
     tryInitGroupTab(tab);
 
   const group = Tabs.getGroupTabForOpener(tab);

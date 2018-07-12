@@ -7,8 +7,7 @@
 
 import {
   log as internalLogger,
-  dumpTab,
-  configs
+  dumpTab
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
@@ -16,8 +15,7 @@ import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 
 function log(...args) {
-  if (configs.logFor['common/cache'])
-    internalLogger(...args);
+  internalLogger('common/cache', ...args);
 }
 
 export async function getWindowSignature(windowIdOrTabs) {

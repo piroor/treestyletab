@@ -49,8 +49,7 @@ import {
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['common/tabs'])
-    internalLogger(...args);
+  internalLogger('common/tabs', ...args);
 }
 
 

@@ -23,3 +23,14 @@ log.context = 'Sidebar-?';
 MetricsData.add('Loaded');
 
 window.addEventListener('load', Sidebar.init, { once: true });
+
+window.dumpMetricsData = () => {
+  return MetricsData.toString();
+};
+window.dumpLogs = () => {
+  return log.logs.join('\n');
+};
+
+// for old debugging method
+window.log = log;
+window.gMetricsData = MetricsData;

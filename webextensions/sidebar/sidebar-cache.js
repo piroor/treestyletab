@@ -22,8 +22,7 @@ import * as Indent from './indent.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/sidebar-cache'])
-    internalLogger(...args);
+  internalLogger('sidebar/sidebar-cache', ...args);
 }
 
 export const onRestored = new EventListenerManager();

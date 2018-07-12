@@ -39,8 +39,7 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
@@ -51,8 +50,7 @@ import * as Tree from './tree.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['common/tabs-open'])
-    internalLogger(...args);
+  internalLogger('common/tabs-open', ...args);
 }
 
 export async function loadURI(uRI, options = {}) {

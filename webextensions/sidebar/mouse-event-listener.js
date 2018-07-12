@@ -59,8 +59,7 @@ import * as DragAndDrop from './drag-and-drop.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 function log(...args) {
-  if (configs.logFor['sidebar/mouse-event-listener'] || configs.logOnMouseEvent)
-    internalLogger(...args);
+  internalLogger('sidebar/mouse-event-listener', ...args);
 }
 
 let mTargetWindow;
@@ -158,6 +157,7 @@ function onMouseMove(event) {
     });
   }
 }
+onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
@@ -175,6 +175,7 @@ function onMouseOver(event) {
   }
   onMouseOver.lastTarget = tab && tab.id;
 }
+onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
 
 function onMouseOut(event) {
   const tab = EventUtils.getTabFromEvent(event);
@@ -192,6 +193,7 @@ function onMouseOut(event) {
   }
   onMouseOut.lastTarget = tab && tab.id;
 }
+onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
 
 function onMouseDown(event) {
   EventUtils.cancelHandleMousedown(event.button);
@@ -202,7 +204,7 @@ function onMouseDown(event) {
   if (EventUtils.isEventFiredOnAnchor(event) &&
       !EventUtils.isAccelAction(event) &&
       event.button != 2) {
-    log('mouse down on a selector anchor');
+    log('onMouseDown: canceled / mouse down on a selector anchor');
     event.stopPropagation();
     event.preventDefault();
     const selector = document.getElementById(EventUtils.getElementTarget(event).closest('[data-menu-ui]').dataset.menuUi);
@@ -234,6 +236,7 @@ function onMouseDown(event) {
     return;
 
   if (mousedownDetail.isMiddleClick) {
+    log('onMouseDown: canceled / middle click');
     event.stopPropagation();
     event.preventDefault();
   }
@@ -282,6 +285,7 @@ function onMouseDown(event) {
     }
   }, configs.startDragTimeout);
 }
+onMouseDown = EventUtils.wrapWithErrorHandler(onMouseDown);
 
 function getMouseEventTargetType(event) {
   if (EventUtils.getTabFromEvent(event))
@@ -310,7 +314,7 @@ function getMouseEventTargetType(event) {
 async function onMouseUp(event) {
   const tab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
   const livingTab = EventUtils.getTabFromEvent(event);
-  log('mouseup tab: ', tab, { living: !!livingTab });
+  log('onMouseUp: ', tab, { living: !!livingTab });
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   EventUtils.cancelHandleMousedown(event.button);
@@ -340,13 +344,13 @@ async function onMouseUp(event) {
   log('onMouseUp ', lastMousedown.detail);
 
   if (await promisedCanceled) {
-    log('mouseup is canceled by other addons');
+    log('onMouseUp: canceled / by other addons');
     return;
   }
 
   if (livingTab) {
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
-      log('middle click on a tab');
+      log('onMouseUp: middle click on a tab');
       //log('middle-click to close');
       Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(livingTab).length)
         .then(aConfirmed => {
@@ -366,14 +370,14 @@ async function onMouseUp(event) {
     configs.autoAttachOnNewTabCommand;
   if (EventUtils.isEventFiredOnNewTabButton(event) &&
       lastMousedown.detail.button != 2) {
-    log('click on the new tab button');
+    log('onMouseUp: click on the new tab button');
     handleNewTabAction(event, {
       action: actionForNewTabCommand
     });
     return;
   }
 
-  log('notify as a blank area click to other addons');
+  log('onMouseUp: notify as a blank area click to other addons');
   let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     window: mTargetWindow,
@@ -386,12 +390,13 @@ async function onMouseUp(event) {
     return;
 
   if (lastMousedown.detail.isMiddleClick) { // Ctrl-click does nothing on Firefox's tab bar!
-    log('default action for middle click on the blank area');
+    log('onMouseUp: default action for middle click on the blank area');
     handleNewTabAction(event, {
       action: configs.autoAttachOnNewTabCommand
     });
   }
 }
+onMouseUp = EventUtils.wrapWithErrorHandler(onMouseUp);
 
 function onClick(event) {
   // clear unexpectedly left "dragging" state
@@ -408,6 +413,7 @@ function onClick(event) {
     return;
 
   if (EventUtils.isEventFiredOnNewTabButton(event)) {
+    log('onClick: canceled / on newtab button');
     event.stopPropagation();
     event.preventDefault();
     return;
@@ -459,6 +465,7 @@ function onClick(event) {
     return;
   }
 }
+onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function handleNewTabAction(event, options = {}) {
   log('handleNewTabAction');

@@ -13,16 +13,14 @@
 */
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from '../common/common.js';
 import * as TSTAPI from '../common/tst-api.js';
 
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['background/tab-context-menu'])
-    internalLogger(...args);
+  internalLogger('background/tab-context-menu', ...args);
 }
 
 export const onTSTItemClick = new EventListenerManager();
@@ -115,7 +113,7 @@ function onMessage(message, _aSender) {
 }
 
 export function onExternalMessage(message, sender) {
-  log('tab-context-menu: API called:', message, sender);
+  log('API called:', message, { id: sender.id, url: sender.url });
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
       const items  = getItemsFor(sender.id);

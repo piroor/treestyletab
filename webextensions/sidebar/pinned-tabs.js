@@ -49,8 +49,7 @@ import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
-  if (configs.logFor['sidebar/pinned-tabs'])
-    internalLogger(...args);
+  internalLogger('sidebar/pinned-tabs', ...args);
 }
 
 let mTargetWindow;

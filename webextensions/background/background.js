@@ -9,12 +9,14 @@ import RichConfirm from '../extlib/RichConfirm.js';
 
 import {
   log as internalLogger,
+  wait,
   configs
 } from '../common/common.js';
 
 import * as Constants from '../common/constants.js';
 import * as ApiTabsListener from '../common/api-tabs-listener.js';
 import * as MetricsData from '../common/metrics-data.js';
+import * as ApiTabs from '../common/api-tabs.js';
 import * as Tabs from '../common/tabs.js';
 import * as TabsContainer from '../common/tabs-container.js';
 import * as TabsUpdate from '../common/tabs-update.js';
@@ -34,8 +36,7 @@ import * as TabContextMenu from './tab-context-menu.js';
 import EventListenerManager from '../extlib/EventListenerManager.js';
 
 function log(...args) {
-  if (configs.logFor['background/background'])
-    internalLogger(...args);
+  internalLogger('background/background', ...args);
 }
 
 export const onInit    = new EventListenerManager();
@@ -425,6 +426,29 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
+  // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
+  // so we need to see the complete tab object.
+  const apiTab = tab && tab.apiTab && tab.apiTab;
+  const status = changeInfo.status || apiTab && apiTab.status;
+  const url = changeInfo.url ? changeInfo.url :
+    status == 'complete' && apiTab ? apiTab.url : '';
+  if (tab &&
+      Constants.kSHORTHAND_ABOUT_URI.test(url)) {
+    const shorthand = RegExp.$1;
+    const oldUrl = apiTab.url;
+    wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
+      if (tab.apiTab.url != oldUrl)
+        return;
+      browser.tabs.update(tab.apiTab.id, {
+        url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
+      }).catch(ApiTabs.handleMissingTabError);
+      if (shorthand == 'group') {
+        tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
+        Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+      }
+    });
+  }
+
   if (changeInfo.status || changeInfo.url)
     tryStartHandleAccelKeyOnTab(tab);
 });
