@@ -92,6 +92,7 @@ export function init() {
   document.addEventListener('dragover', onDragOver);
   document.addEventListener('dragenter', onDragEnter);
   document.addEventListener('dragleave', onDragLeave);
+  document.addEventListener('dragend', onDragEnd);
   document.addEventListener('drop', onDrop);
 
   browser.runtime.onMessage.addListener(onMessage);
@@ -756,7 +757,6 @@ function onDragStart(event) {
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
-  document.addEventListener('dragend', onDragEnd, { capture: true });
   log('onDragStart: started');
 }
 onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
@@ -969,8 +969,6 @@ onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 function onDragEnd(event) {
   log('onDragEnd, mDraggingOnSelfWindow = ', mDraggingOnSelfWindow);
-
-  document.removeEventListener('dragend', onDragEnd, { capture: true });
 
   // clear "dragging" status safely, because we possibly fail to get drag data from dataTransfer.
   clearDraggingTabsState();
