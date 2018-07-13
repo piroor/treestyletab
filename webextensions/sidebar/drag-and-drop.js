@@ -675,6 +675,8 @@ async function getDroppedLinksOnTabBehavior() {
 
 /* DOM event listeners */
 
+let mFinishCanceledDragOperation;
+
 function onDragStart(event) {
   log('onDragStart: start ', event);
   clearDraggingTabsState(); // clear previous state anyway
@@ -757,6 +759,14 @@ function onDragStart(event) {
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
+  // The drag operation can be canceled by something, then
+  // "dragend" event is not dispatched and TST wrongly keeps
+  // its "dragging" state. So we clear the dragging state with
+  // a delay. (This timer will be cleared immediately by dragover
+  // event, if the dragging operation is not canceled.)
+  // See also: https://github.com/piroor/treestyletab/issues/1778#issuecomment-404569842
+  mFinishCanceledDragOperation = setTimeout(finishDrag, 250);
+
   log('onDragStart: started');
 }
 onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
@@ -764,6 +774,11 @@ onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 let mLastDragOverTimestamp = null;
 
 function onDragOver(event) {
+  if (mFinishCanceledDragOperation) {
+    clearTimeout(mFinishCanceledDragOperation);
+    mFinishCanceledDragOperation = null;
+  }
+
   event.preventDefault(); // this is required to override default dragover actions!
   Scroll.autoScrollOnMouseEvent(event);
 
@@ -970,30 +985,14 @@ onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 function onDragEnd(event) {
   log('onDragEnd, mDraggingOnSelfWindow = ', mDraggingOnSelfWindow);
 
-  // clear "dragging" status safely, because we possibly fail to get drag data from dataTransfer.
-  clearDraggingTabsState();
-
   let dragData = event.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
-  const stillInSelfWindow = !!mDraggingOnSelfWindow;
-  mDraggingOnSelfWindow = false;
-
-  wait(100).then(() => {
-    mCurrentDragData = null;
-    browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-      windowId: Tabs.getWindow(),
-      dragData: null
-    });
-  });
-
   if (Array.isArray(dragData.apiTabs))
     dragData.tabNodes = dragData.apiTabs.map(Tabs.getTabById);
 
-  clearDropPosition();
-  mLastDropPosition = null;
-  clearDraggingState();
-  collapseAutoExpandedTabsWhileDragging();
+  const stillInSelfWindow = !!mDraggingOnSelfWindow;
+
+  finishDrag();
 
   if (event.dataTransfer.dropEffect != 'none' ||
       //event.shiftKey || // don't ignore shift-drop, because it can be used to drag a parent tab as an individual tab.
@@ -1046,6 +1045,27 @@ function onDragEnd(event) {
   });
 }
 onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
+
+function finishDrag() {
+  log('finishDrag');
+  clearDraggingTabsState();
+
+  mDraggingOnSelfWindow = false;
+
+  wait(100).then(() => {
+    mCurrentDragData = null;
+    browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
+      windowId: Tabs.getWindow(),
+      dragData: null
+    });
+  });
+
+  clearDropPosition();
+  mLastDropPosition = null;
+  clearDraggingState();
+  collapseAutoExpandedTabsWhileDragging();
+}
 
 
 /* drag on tabs API */
