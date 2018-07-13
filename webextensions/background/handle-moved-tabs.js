@@ -65,7 +65,7 @@ Tabs.onMoving.addListener((tab, moveInfo) => {
   return false;
 });
 
-async function tryFixupTreeForInsertedTab(tab, moveInfo) {
+async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   if (!Tree.shouldApplyTreeBehavior(moveInfo)) {
     Tree.detachAllChildren(tab, {
       behavior: Tree.getCloseParentBehaviorForTab(tab, {
@@ -138,7 +138,7 @@ Commands.onMoveDown.addListener(async tab => {
   });
 });
 
-TreeStructure.onTabAttachedFromRestoredInfo.addListener(tab => { tryFixupTreeForInsertedTab(tab); });
+TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { tryFixupTreeForInsertedTab(tab, moveInfo); });
 
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
