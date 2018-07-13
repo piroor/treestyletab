@@ -111,7 +111,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo) {
   }
 }
 
-Tabs.onMoved.addListener((tab, moveInfo) => {
+Tabs.onMoved.addListener((tab, moveInfo = {}) => {
   if (moveInfo.byInternalOperation ||
       Tabs.isDuplicating(tab)) {
     log('internal move');
@@ -154,7 +154,7 @@ function moveBack(tab, moveInfo) {
   });
 }
 
-async function detectTabActionFromNewPosition(tab, moveInfo) {
+async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
   const tree   = moveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(tab);
   const target = tree.target;
