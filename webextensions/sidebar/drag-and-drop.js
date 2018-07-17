@@ -1063,6 +1063,7 @@ function finishDrag() {
 
   clearDropPosition();
   mLastDropPosition = null;
+  mLastDragOverTimestamp = null;
   clearDraggingState();
   collapseAutoExpandedTabsWhileDragging();
 }
