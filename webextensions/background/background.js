@@ -183,6 +183,7 @@ async function rebuildAll() {
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
+      try {
       if (configs.useCachedTree) {
         restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
           insertionPoint,
@@ -206,6 +207,10 @@ async function rebuildAll() {
         tryStartHandleAccelKeyOnTab(newTab);
       }
       Tabs.allTabsContainer.appendChild(container);
+      }
+      catch(e) {
+        log(`failed to build tabs for ${window.id}`, e);
+      }
       restoredFromCache[window.id] = false;
     });
     for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {

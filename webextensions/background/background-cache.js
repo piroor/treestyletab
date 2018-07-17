@@ -30,15 +30,15 @@ export function activate() {
 
 export async function restoreWindowFromEffectiveWindowCache(windowId, options = {}) {
   MetricsData.add('restoreWindowFromEffectiveWindowCache start');
-  log('restoreWindowFromEffectiveWindowCache start');
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId} start`);
   const owner = options.owner || getWindowCacheOwner(windowId);
   if (!owner) {
-    log('restoreWindowFromEffectiveWindowCache fail: no owner');
+    log(`restoreWindowFromEffectiveWindowCache for ${windowId} fail: no owner`);
     return false;
   }
   cancelReservedCacheTree(windowId); // prevent to break cache before loading
   const apiTabs  = options.tabs || await browser.tabs.query({ windowId: windowId });
-  log('restoreWindowFromEffectiveWindowCache tabs: ', apiTabs);
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, apiTabs);
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const
@@ -47,14 +47,14 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
   let cachedSignature = cache && cache.signature;
-  log(`restoreWindowFromEffectiveWindowCache: got from the owner ${owner}`, {
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner ${owner}`, {
     cachedSignature, cache
   });
   if (cache &&
       cache.tabs &&
       cachedSignature &&
       cachedSignature != Cache.signatureFromTabsCache(cache.tabs)) {
-    log(`restoreWindowFromEffectiveWindowCache: cache for ${windowId} is broken.`, {
+    log(`restoreWindowFromEffectiveWindowCache for ${windowId}: cache is broken.`, {
       signature: cachedSignature,
       cache:     Cache.signatureFromTabsCache(cache.tabs)
     });
@@ -72,20 +72,20 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     actual: actualSignature,
     cached: cachedSignature
   });
-  log(`restoreWindowFromEffectiveWindowCache: verify cache for ${windowId}`, {
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId}: verify cache`, {
     cache, actualSignature, cachedSignature, signatureMatched
   });
   if (!cache ||
       cache.version != Constants.kBACKGROUND_CONTENTS_VERSION ||
       !signatureMatched) {
-    log(`restoreWindowFromEffectiveWindowCache: no effective cache for ${windowId}`);
+    log(`restoreWindowFromEffectiveWindowCache for ${windowId}: no effective cache`);
     clearWindowCache(owner);
     MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
     return false;
   }
   cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(part => !!part).length;
 
-  log(`restoreWindowFromEffectiveWindowCache: restore ${windowId} from cache`);
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restore from cache`);
 
   let insertionPoint  = options.insertionPoint;
   if (!insertionPoint) {
@@ -106,9 +106,9 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     insertionPoint.detach();
 
   if (restored)
-    MetricsData.add('restoreWindowFromEffectiveWindowCache success');
+    MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} success`);
   else
-    MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
+    MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} fail`);
 
   return restored;
 }
