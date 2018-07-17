@@ -198,6 +198,11 @@ async function rebuildAll() {
             return;
           }
         }
+      }
+      catch(e) {
+        log(`failed to restore tabs for ${window.id} from cache `, e);
+      }
+      try {
         log(`build tabs for ${window.id} from scratch`);
         const container = TabsContainer.buildFor(window.id);
         for (const apiTab of window.tabs) {
