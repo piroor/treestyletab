@@ -184,29 +184,29 @@ async function rebuildAll() {
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
       try {
-      if (configs.useCachedTree) {
-        restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
-          insertionPoint,
-          owner: window.tabs[window.tabs.length - 1],
-          tabs:  window.tabs
-        });
-        for (const tab of Tabs.getAllTabs(window.id)) {
-          tryStartHandleAccelKeyOnTab(tab);
+        if (configs.useCachedTree) {
+          restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
+            insertionPoint,
+            owner: window.tabs[window.tabs.length - 1],
+            tabs:  window.tabs
+          });
+          for (const tab of Tabs.getAllTabs(window.id)) {
+            tryStartHandleAccelKeyOnTab(tab);
+          }
+          if (restoredFromCache[window.id]) {
+            log(`window ${window.id} is restored from cache`);
+            return;
+          }
         }
-        if (restoredFromCache[window.id]) {
-          log(`window ${window.id} is restored from cache`);
-          return;
+        log(`build tabs for ${window.id} from scratch`);
+        const container = TabsContainer.buildFor(window.id);
+        for (const apiTab of window.tabs) {
+          const newTab = Tabs.buildTab(apiTab, { existing: true });
+          container.appendChild(newTab);
+          TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
+          tryStartHandleAccelKeyOnTab(newTab);
         }
-      }
-      log(`build tabs for ${window.id} from scratch`);
-      const container = TabsContainer.buildFor(window.id);
-      for (const apiTab of window.tabs) {
-        const newTab = Tabs.buildTab(apiTab, { existing: true });
-        container.appendChild(newTab);
-        TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
-        tryStartHandleAccelKeyOnTab(newTab);
-      }
-      Tabs.allTabsContainer.appendChild(container);
+        Tabs.allTabsContainer.appendChild(container);
       }
       catch(e) {
         log(`failed to build tabs for ${window.id}`, e);
