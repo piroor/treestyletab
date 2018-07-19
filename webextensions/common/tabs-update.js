@@ -97,12 +97,12 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
   const hasFavIcon       = 'favIconUrl' in newState;
-  const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab(newState);
+  const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab('url' in newState ? newState : tab.apiTab);
   if (options.forceApply || hasFavIcon || maybeImageTab) {
     Tabs.onFaviconUpdated.dispatch(
       tab,
       Tabs.getSafeFaviconUrl(newState.favIconUrl ||
-                             maybeImageTab && newState.url)
+                             maybeImageTab && (newState.url || tab.apiTab.url))
     );
   }
   else if (openerOfGroupTab &&
