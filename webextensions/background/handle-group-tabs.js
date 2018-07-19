@@ -150,7 +150,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
           browser.runtime.sendMessage({
             type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
             tab:        groupTab.id,
-            favIconUrl: Tabs.getSafeFaviconUrl(opener.apiTab.favIconUrl || opener.apiTab.url)
+            favIconUrl: opener.apiTab.favIconUrl || opener.apiTab.url
           });
         }
         newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);

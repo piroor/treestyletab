@@ -96,23 +96,17 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
-  const hasFavIcon       = 'favIconUrl' in newState;
-  const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab('url' in newState ? newState : tab.apiTab);
-  if (options.forceApply || hasFavIcon || maybeImageTab) {
-    Tabs.onFaviconUpdated.dispatch(
-      tab,
-      Tabs.getSafeFaviconUrl(newState.favIconUrl ||
-                             maybeImageTab && (newState.url || tab.apiTab.url))
-    );
+  if (openerOfGroupTab &&
+      (openerOfGroupTab.apiTab.favIconUrl ||
+       TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
+    Tabs.onFaviconUpdated.dispatch(tab,
+                                   openerOfGroupTab.apiTab.favIconUrl ||
+                                     openerOfGroupTab.apiTab.url);
   }
-  else if (openerOfGroupTab &&
-           (openerOfGroupTab.apiTab.favIconUrl ||
-            TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
-    Tabs.onFaviconUpdated.dispatch(
-      tab,
-      Tabs.getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl ||
-                             openerOfGroupTab.apiTab.url)
-    );
+  else if (options.forceApply ||
+           'favIconUrl' in newState ||
+           TabFavIconHelper.maybeImageTab('url' in newState ? newState : tab.apiTab)) {
+    Tabs.onFaviconUpdated.dispatch(tab);
   }
   else if (Tabs.isGroupTab(tab)) {
     // "about:treestyletab-group" can set error icon for the favicon and
