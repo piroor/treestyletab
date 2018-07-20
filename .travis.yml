@@ -6,7 +6,8 @@ notifications:
   recipients:
     - piro.outsider.reflex@gmail.com
 before_script:
-  - cd webextensions && npm install
+  - cd webextensions
+  - npm install
 script:
-  - cd webextensions && make lint
+  - make lint
 
