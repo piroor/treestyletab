@@ -1,5 +1,7 @@
 # Tree Style Tab (aka TST)
 
+[![Build Status](https://travis-ci.org/piroor/treestyletab.svg?branch=master)](https://travis-ci.org/piroor/treestyletab)
+
 This is a Firefox add-on which provides ability to operate tabs as "tree".
 
 New tabs opened from the current tab are automatically organized as "children" of the current.
