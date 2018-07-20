@@ -8,6 +8,8 @@ notifications:
 before_script:
   - cd webextensions
   - npm install
+  - make update_extlib
+  - make install_extlib
 script:
   - make lint
 
