@@ -31,26 +31,21 @@
   },
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "default_icon": {
-      "16": "resources/16x16.svg",
-      "20": "resources/20x20.svg",
-      "24": "resources/24x24.svg"
-    },
     "browser_style": true,
     "theme_icons": [
       {
-        "light": "resources/16x16-dark.svg",
-        "dark":  "resources/16x16-light.svg",
+        "light": "resources/16x16-dark.svg#toolbar",
+        "dark":  "resources/16x16-light.svg#toolbar",
         "size": 16
       },
       {
-        "light": "resources/20x20-dark.svg",
-        "dark":  "resources/20x20-light.svg",
+        "light": "resources/20x20-dark.svg#toolbar",
+        "dark":  "resources/20x20-light.svg#toolbar",
         "size": 20
       },
       {
-        "light": "resources/24x24-dark.svg",
-        "dark":  "resources/24x24-light.svg",
+        "light": "resources/24x24-dark.svg#toolbar",
+        "dark":  "resources/24x24-light.svg#toolbar",
         "size": 24
       }
     ]
