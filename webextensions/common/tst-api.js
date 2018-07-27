@@ -49,7 +49,6 @@ import {
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/tst-api', ...args);
 }
@@ -221,6 +220,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
 
   switch (mContext) {
     case kCONTEXT_BACKEND:
+      log('backend API message ', message, sender);
       switch (message.type) {
         case kPING:
           return Promise.resolve(true);
@@ -270,6 +270,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
       break;
 
     case kCONTEXT_FRONTEND:
+      log('frontend API message ', message, sender);
       break;
 
     default:
