@@ -5,17 +5,17 @@
 */
 'use strict';
 
-import Options from '../extlib/Options.js';
-import ShortcutCustomizeUI from '../extlib/ShortcutCustomizeUI.js';
+import Options from '/extlib/Options.js';
+import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 import '../extlib/l10n.js';
 
 import {
   log,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Permissions from '../common/permissions.js';
-import * as Migration from '../common/migration.js';
+import * as Permissions from '/common/permissions.js';
+import * as Migration from '/common/migration.js';
 
 log.context = 'Options';
 const options = new Options(configs);

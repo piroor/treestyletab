@@ -8,7 +8,7 @@
 import {
   log as internalLogger,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
 function log(...args) {
   internalLogger('sidebar/size', ...args);

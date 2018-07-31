@@ -9,14 +9,14 @@ import {
   log as internalLogger,
   dumpTab,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as ApiTabs from '../common/api-tabs.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as Tree from '../common/tree.js';
-import * as Commands from '../common/commands.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as Tree from '/common/tree.js';
+import * as Commands from '/common/commands.js';
 
 import * as TreeStructure from './tree-structure.js';
 

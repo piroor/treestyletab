@@ -11,22 +11,22 @@
  See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1376251
            https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
 */
-import MenuUI from '../extlib/MenuUI.js';
+import MenuUI from '/extlib/MenuUI.js';
 
 import {
   log as internalLogger,
   wait,
   notify,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as Tree from '../common/tree.js';
-import * as Bookmark from '../common/bookmark.js';
-import * as TSTAPI from '../common/tst-api.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as Tree from '/common/tree.js';
+import * as Bookmark from '/common/bookmark.js';
+import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('sidebar/tab-context-menu', ...args);

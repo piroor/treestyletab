@@ -38,7 +38,7 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import TabIdFixer from '../extlib/TabIdFixer.js';
+import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,

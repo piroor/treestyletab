@@ -5,35 +5,35 @@
 */
 'use strict';
 
-import RichConfirm from '../extlib/RichConfirm.js';
+import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
   log as internalLogger,
   wait,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as ApiTabsListener from '../common/api-tabs-listener.js';
-import * as MetricsData from '../common/metrics-data.js';
-import * as ApiTabs from '../common/api-tabs.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as TabsUpdate from '../common/tabs-update.js';
-import * as Tree from '../common/tree.js';
-import * as ContextualIdentities from '../common/contextual-identities.js';
-import * as Permissions from '../common/permissions.js';
-import * as TSTAPI from '../common/tst-api.js';
-import * as SidebarStatus from '../common/sidebar-status.js';
-import * as Commands from '../common/commands.js';
-import * as Migration from '../common/migration.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabsListener from '/common/api-tabs-listener.js';
+import * as MetricsData from '/common/metrics-data.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as TabsUpdate from '/common/tabs-update.js';
+import * as Tree from '/common/tree.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as Permissions from '/common/permissions.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as SidebarStatus from '/common/sidebar-status.js';
+import * as Commands from '/common/commands.js';
+import * as Migration from '/common/migration.js';
 
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as ContextMenu from './context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('background/background', ...args);

@@ -7,9 +7,9 @@ import '../extlib/TabIdFixer.js';
 
 import {
   log
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as MetricsData from '../common/metrics-data.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import * as Background from './background.js';
 import './handle-new-tabs.js';

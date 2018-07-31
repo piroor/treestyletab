@@ -5,27 +5,27 @@
 */
 'use strict';
 
-import RichConfirm from '../extlib/RichConfirm.js';
-import TabIdFixer from '../extlib/TabIdFixer.js';
+import RichConfirm from '/extlib/RichConfirm.js';
+import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
   nextFrame,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as ApiTabsListener from '../common/api-tabs-listener.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as TabsUpdate from '../common/tabs-update.js';
-import * as TabsMove from '../common/tabs-move.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
-import * as ContextualIdentities from '../common/contextual-identities.js';
-import * as Commands from '../common/commands.js';
-import * as UserOperationBlocker from '../common/user-operation-blocker.js';
-import * as MetricsData from '../common/metrics-data.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabsListener from '/common/api-tabs-listener.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsUpdate from '/common/tabs-update.js';
+import * as TabsMove from '/common/tabs-move.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as Commands from '/common/commands.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -38,7 +38,7 @@ import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar', ...args);

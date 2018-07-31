@@ -5,24 +5,24 @@
 */
 'use strict';
 
-import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 import {
   log as internalLogger,
   dumpTab,
   wait,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as ApiTabs from '../common/api-tabs.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsOpen from '../common/tabs-open.js';
-import * as TabsGroup from '../common/tabs-group.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsOpen from '/common/tabs-open.js';
+import * as TabsGroup from '/common/tabs-group.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 function log(...args) {
   internalLogger('background/handle-group-tabs', ...args);

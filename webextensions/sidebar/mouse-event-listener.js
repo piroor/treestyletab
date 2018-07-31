@@ -38,20 +38,20 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import MenuUI from '../extlib/MenuUI.js';
+import MenuUI from '/extlib/MenuUI.js';
 
 import {
   log as internalLogger,
   wait,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
-import * as Commands from '../common/commands.js';
-import * as MetricsData from '../common/metrics-data.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as Commands from '/common/commands.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';

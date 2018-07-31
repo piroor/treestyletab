@@ -44,12 +44,12 @@ import {
   nextFrame,
   dumpTab,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
 
 import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';

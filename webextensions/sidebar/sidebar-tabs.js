@@ -10,13 +10,13 @@ import {
   wait,
   nextFrame,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsUpdate from '../common/tabs-update.js';
-import * as Tree from '../common/tree.js';
-import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsUpdate from '/common/tabs-update.js';
+import * as Tree from '/common/tree.js';
+import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {

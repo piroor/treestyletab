@@ -8,11 +8,11 @@
 import {
   log as internalLogger,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as Tree from '../common/tree.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as Tree from '/common/tree.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {

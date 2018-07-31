@@ -20,7 +20,7 @@ import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Bookmark from './bookmark.js';
 import * as Tree from './tree.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('common/command', ...args);

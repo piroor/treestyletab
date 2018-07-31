@@ -38,7 +38,7 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 import {
   log as internalLogger,

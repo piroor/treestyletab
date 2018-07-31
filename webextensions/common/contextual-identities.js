@@ -9,7 +9,7 @@ import {
   log as internalLogger
 } from './common.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
