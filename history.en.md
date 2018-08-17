@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.5.0 (2018.8.17)
    * Totally reconstructed as ES modules, for better maintainability.
    * Don't treat click action on closing tabs as clicking on the blank area of the tab bar.
    * New commands "Collapse this Tree" and "Expand this Tree" for the context menu on tabs.
