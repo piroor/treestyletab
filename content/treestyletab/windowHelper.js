@@ -1,4 +1,5 @@
 var TreeStyleTabWindowHelper = { 
+  runningDelayedStartup : false,
 	
 	get service() 
 	{
@@ -8,30 +9,21 @@ var TreeStyleTabWindowHelper = {
 	preInit : function TSTWH_preInit() 
 	{
 		var source;
-		var target;
 		if ('gBrowserInit' in window) {
 			if (
-				'_delayedStartup' in gBrowserInit &&
-				(source = gBrowserInit._delayedStartup.toSource()) &&
-				source.indexOf('swapBrowsersAndCloseOther') > -1
-				) {
-				target = 'gBrowserInit._delayedStartup';
-			}
+				!('_delayedStartup' in gBrowserInit) ||
+				!(source = gBrowserInit._delayedStartup.toSource()) ||
+				source.indexOf('swapBrowsersAndCloseOther') == -1
+				)
+				dump('Tree Style Tab: failed to initialize startup function!');
 		}
-		if (!target)
-			dump('Tree Style Tab: failed to initialize startup function!');
-		if (source.indexOf('!MultipleTabService.tearOffSelectedTabsFromRemote()') > -1) {
-			eval(target+' = '+source.replace(
-				'!MultipleTabService.tearOffSelectedTabsFromRemote()',
-				'!TreeStyleTabService.tearOffSubtreeFromRemote() && $&'
-			));
-		}
-		else if (source.indexOf('gBrowser.swapBrowsersAndCloseOther') > -1) {
-			eval(target+' = '+source.replace(
-				'gBrowser.swapBrowsersAndCloseOther(gBrowser.selectedTab, uriToLoad);',
-				'if (!TreeStyleTabService.tearOffSubtreeFromRemote()) { $& }'
-			));
-		}
+    gBrowserInit.__treestyletab___delayedStartup = gBrowserInit._delayedStartup;
+    gBrowserInit._delayedStartup = function(...args) {
+      TreeStyleTabWindowHelper.runningDelayedStartup = true;
+      var retVal = this.__treestyletab___delayedStartup.apply(this, args);
+      TreeStyleTabWindowHelper.runningDelayedStartup = false;
+      return retVal;
+    };
 
 		eval('nsBrowserAccess.prototype.openURI = '+
 			nsBrowserAccess.prototype.openURI.toSource().replace(
@@ -113,6 +105,14 @@ var TreeStyleTabWindowHelper = {
 	{
 		this.overrideExtensionsBeforeBrowserInit(); // windowHelperHacks.js
 		this.overrideGlobalFunctions();
+		
+    gBrowser.__treestyletab__swapBrowsersAndCloseOther = gBrowser.swapBrowsersAndCloseOther;
+		gBrowser.swapBrowsersAndCloseOther = function(...args) {
+			if (TreeStyleTabWindowHelper.runningDelayedStartup &&
+				TreeStyleTabService.tearOffSubtreeFromRemote())
+				return;
+			return this.__treestyletab__swapBrowsersAndCloseOther.apply(this, args);
+		};
 	},
  
 	onAfterBrowserInit : function TSTWH_onAfterBrowserInit() 
@@ -277,12 +277,28 @@ var TreeStyleTabWindowHelper = {
 			)
 		);
 
-		eval('FullScreen.mouseoverToggle = '+
-			FullScreen.mouseoverToggle.toSource().replace(
-				'this._isChromeCollapsed = !aShow;',
-				'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
-			)
-		);
+    // pale moon 28 and above
+    if( 'showNavToolbox' in FullScreen ) {
+      eval('FullScreen.showNavToolbox = '+
+        FullScreen.showNavToolbox.toSource().replace(
+          'this._isChromeCollapsed = false;',
+          'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
+        )
+      );
+      eval('FullScreen.hideNavToolbox = '+
+        FullScreen.hideNavToolbox.toSource().replace(
+          'this._isChromeCollapsed = true;',
+          'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
+        )
+      );
+    } else {  // older versions
+      eval('FullScreen.mouseoverToggle = '+
+        FullScreen.mouseoverToggle.toSource().replace(
+          'this._isChromeCollapsed = !aShow;',
+          'gBrowser.treeStyleTab.updateFloatingTabbar(gBrowser.treeStyleTab.kTABBAR_UPDATE_BY_FULLSCREEN); $&'
+        )
+      );
+    }
 		eval('FullScreen.toggle = '+
 			FullScreen.toggle.toSource().replace(
 				'{',
@@ -362,7 +378,7 @@ var TreeStyleTabWindowHelper = {
 		tabbar.addEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
-		const nsIDOMNode = Ci.nsIDOMNode;
+		var nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.addEventListener('click', this.service, true);
@@ -380,7 +396,7 @@ var TreeStyleTabWindowHelper = {
 		tabbar.removeEventListener('click', this.service, true);
 
 		var newTabButton = document.getElementById('new-tab-button');
-		const nsIDOMNode = Ci.nsIDOMNode;
+		var nsIDOMNode = Ci.nsIDOMNode;
 		if (newTabButton &&
 			!(tabbar.compareDocumentPosition(newTabButton) & Ci.nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY))
 			newTabButton.parentNode.removeEventListener('click', this.service, true);
