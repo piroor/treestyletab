@@ -19,13 +19,17 @@
    * Tabs opened from a bookmark folder are correctly grouped. (It was a regression on recent versions.)
    * When a new tab is opened from a pinned tab, the tab bar will be scrolled to the new tab if possible.
    * Focus to closest ancestor tab when the active tab is going to be collapsed correctly.
+   * Show specified favicon as the tab icon, for a tab with an image file.
    * Apply more theme colors for "Plain", "Vertigo" and "Mixed" for other addons like "Firefox Color".
+   * Introduce 32px icons.
+   * Show toolbar button icons with opacity (by asamuzaK, thanks!)
    * Clear "dragging" state of tabs more aggressively.
    * Introduce a failsafe for unexpectedly visible descendant tabs under collapsed tree on restored sesssions.
    * Add ability to output log for each module.
    * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
    * Keep tree expanded after restoration, for restoration without cache.
    * Support [checkbox and radio type context menu items](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#add-new-item-to-the-context-menu-on-tabs) and [`browser.menus.onShown`/`browser.menus.onHidden`-like APIs](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#update-existing-item).
+   * Remove non-free color profile from some image files.
    * Update `de` locale (by sicherist, thanks!)
    * Add `ru` and `uk` locales (by perdolka, thanks!)
  - 2.4.24 (2018.6.3)
