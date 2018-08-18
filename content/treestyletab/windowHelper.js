@@ -473,7 +473,7 @@ var TreeStyleTabWindowHelper = {
 
 		eval('b.loadTabs = '+
 			b.loadTabs.toSource().replace(
-				'var tabNum = ',
+				/let|var tabNum = /,
 				'if (this.treeStyleTab.readiedToAttachNewTabGroup)\n' +
 				'  TreeStyleTabService.readyToOpenChildTab(firstTabAdded || this.selectedTab, true);\n' +
 				'$&'
