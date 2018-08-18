@@ -139,22 +139,18 @@
       "description": "__MSG_command_focusPrevious__"
     },
     "focusPreviousSilently": {
-      "suggested_key": { "default": "Ctrl+Alt+Up" },
       "description": "__MSG_command_focusPreviousSilently__"
     },
     "focusNext": {
       "description": "__MSG_command_focusNext__"
     },
     "focusNextSilently": {
-      "suggested_key": { "default": "Ctrl+Alt+Down" },
       "description": "__MSG_command_focusNextSilently__"
     },
     "focusParent": {
-      "suggested_key": { "default": "Ctrl+Alt+Left" },
       "description": "__MSG_command_focusParent__"
     },
     "focusFirstChild": {
-      "suggested_key": { "default": "Ctrl+Alt+Right" },
       "description": "__MSG_command_focusFirstChild__"
     },
     "tabbarUp": {
