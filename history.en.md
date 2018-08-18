@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Fix unexpected recursion around loading of favicons.
+   * Change default shortcuts to move focus around tree from Ctrl-Shift-Arrows to Ctrl-Alt-Arrows, due to collision to general shortcuts to select words in text fields.
  - 2.5.0 (2018.8.17)
    * Totally reconstructed as ES modules, for better maintainability.
    * Don't treat click action on closing tabs as clicking on the blank area of the tab bar.
