@@ -116,7 +116,10 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
+  const shouldListenMouseOut = TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0;
+  const shouldListenMouseOver = shouldListenMouseOut || TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0;
+
+  if (shouldListenMouseOver != onMouseOver.listening) {
     if (!onMouseOver.listening) {
       window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
       onMouseOver.listening = true;
@@ -127,7 +130,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
+  if (shouldListenMouseOut != onMouseOut.listening) {
     if (!onMouseOut.listening) {
       window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
       onMouseOut.listening = true;
@@ -161,6 +164,21 @@ onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
+  if (!tab || onMouseOver.lastTarget != tab.id) {
+    const lastMouseOutTab = Tabs.getTabById(onMouseOut.lastTarget);
+    if (lastMouseOutTab) {
+      TSTAPI.sendMessage({
+        type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
+        tab:      TSTAPI.serializeTab(lastMouseOutTab),
+        window:   mTargetWindow,
+        ctrlKey:  event.ctrlKey,
+        shiftKey: event.shiftKey,
+        altKey:   event.altKey,
+        metaKey:  event.metaKey,
+        dragging: DragAndDrop.isCapturingForDragging()
+      });
+    }
+  }
   if (tab && onMouseOver.lastTarget != tab.id) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
@@ -179,10 +197,16 @@ onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
 
 function onMouseOut(event) {
   const tab = EventUtils.getTabFromEvent(event);
-  if (tab && onMouseOut.lastTarget != tab.id) {
+  onMouseOut.lastTarget = tab && tab.id;
+  setTimeout(() => {
+    if (onMouseOver.lastTarget)
+      return;
+    const lastMouseOutTab = Tabs.getTabById(onMouseOut.lastTarget);
+    if (!lastMouseOutTab)
+      return;
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      TSTAPI.serializeTab(lastMouseOutTab),
       window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
@@ -190,8 +214,8 @@ function onMouseOut(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     });
-  }
-  onMouseOut.lastTarget = tab && tab.id;
+    onMouseOut.lastTarget = null;
+  }, 10);
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
 
