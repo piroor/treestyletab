@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="treestyletabforpm@oinkoink"
                    em:name="Tree Style Tabs for Pale Moon"
-                   em:version="0.0.2"
+                   em:version="0.0.3"
                    em:contributor="YUKI &quot;Piro&quot; Hiroshi (original author)"
                    em:creator="oinkoink"
                    em:description="Show tabs like a tree, with fixes for Pale Moon."
@@ -114,7 +114,7 @@
     <em:targetApplication>
       <RDF:Description em:id="{8de7fcbb-c55c-4fbe-bfc5-fc555c87dbc4}"
                        em:minVersion="26.5.0"
-                       em:maxVersion="27.*" />
+                       em:maxVersion="28.*" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>
