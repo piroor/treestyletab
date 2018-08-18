@@ -2,7 +2,7 @@
 
  - master/HEAD
    * Fix unexpected recursion around loading of favicons.
-   * Change default shortcuts to move focus around tree from Ctrl-Shift-Arrows to Ctrl-Alt-Arrows, due to collision to general shortcuts to select words in text fields.
+   * Remove default shortcuts to move focus around tree. Ctrl-Shift-Arrows are already used for general shortcuts to select words in text fields.
    * Fix misordernig of input fields to define keyboard shortcuts. (regression on 2.5.0)
  - 2.5.0 (2018.8.17)
    * Totally reconstructed as ES modules, for better maintainability.
