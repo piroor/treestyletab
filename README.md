@@ -33,8 +33,10 @@ There are [automated builds from latest codes](https://piro.sakura.ne.jp/xul/xpi
  * ["Renewed" version 2.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
  * ["Legacy" version 0.19.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab.xpi)
 
-Packages are not signed so you cannot try them on your Firefox if it is a released or beta version.
-On Nightly, you can try them by setting a secret preference `xpinstall.signatures.required` to `false` via `about:config`.
+Packages are not signed, and there are two methods to try it on your environment:
+
+ * Go to `about:debugging` and click "Load Temporary Add-on" button, then choose the downloaded file. The development build will be loaded and active until you restart your Firefox.
+ * If you want to try it as a regular addon instead of a temporary addon, you need to use [Nightly](https://www.mozilla.org/firefox/channel/desktop/) instead of stable Firefox or Firefox beta. On Nightly, go to `about:config` and set `xpinstall.signatures.required` to `false`. Then you'll be able to install such an unsinged addon.
 
 And, you can build custom development build locally. For example, here is steps to build XPI on Ubuntu (native, or WSL on Windows 10):
 
