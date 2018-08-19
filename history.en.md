@@ -1,10 +1,12 @@
 # History
 
  - master/HEAD
-   * Fix unexpected recursion around loading of favicons.
+   * Fix unexpected recursion around loading of favicons. (regression on 2.5.0)
    * Remove default shortcuts to move focus around tree. Ctrl-Shift-Arrows are already used for general shortcuts to select words in text fields.
-   * All keyboard shortcuts are now unassignable. When you click the "Reset" button, the shortcut becomme blank instead of restored to the default one. This is a workaround for [the bug 1475043](https://bugzilla.mozilla.org/show_bug.cgi?id=1475043).
+   * All keyboard shortcuts are now unassignable by hitting the Escape key on each field.
    * Fix misordernig of input fields to define keyboard shortcuts. (regression on 2.5.0)
+   * `tab-mouseout` API message is now delivered at correct timing.
+   * Updated zh-CN locale by YFdyh000, thanks!
  - 2.5.0 (2018.8.17)
    * Totally reconstructed as ES modules, for better maintainability.
    * Don't treat click action on closing tabs as clicking on the blank area of the tab bar.
