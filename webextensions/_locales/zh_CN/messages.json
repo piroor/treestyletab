@@ -1,202 +1,1083 @@
 {
-  "extensionName": { "message": "Tree Style Tab" },
-  "extensionDescription": { "message": "树状显示标签页。" },
+    "extensionName": {
+        "message": "Tree Style Tab",
+        "hash": "94c80eccdd67c127e1de28b71af57aee"
+    },
+    "extensionDescription": {
+        "message": "树状显示标签页。",
+        "hash": "1cf26efef213812fa419388efe44fea2"
+    },
+    "sidebarTitle": {
+        "message": "Tree Style Tab",
+        "hash": "94c80eccdd67c127e1de28b71af57aee"
+    },
+    "sidebarToggleDescription": {
+        "message": "切换“Tree Style Tab”侧栏",
+        "hash": "732286e74bb15a20b9999410d4be514c"
+    },
+    "command_indent": {
+        "message": "提升当前标签页",
+        "hash": "f5220f12d533b1a065e02c75f78b3214"
+    },
+    "command_outdent": {
+        "message": "降低当前标签页",
+        "hash": "ab5da17f574177cb4f0b19c41530cd98"
+    },
+    "command_tabMoveUp": {
+        "message": "上移当前标签页",
+        "hash": "d1ca1602c2ec3af0f04e79210ebe0899"
+    },
+    "command_treeMoveUp": {
+        "message": "上移当前标签树",
+        "hash": "696898278f05d19469437e259cbc2e51"
+    },
+    "command_tabMoveDown": {
+        "message": "下移当前标签页",
+        "hash": "bf2abb7937cb71d5a6478069dbd56c8f"
+    },
+    "command_treeMoveDown": {
+        "message": "下移当前标签树",
+        "hash": "d86bb88f7938ac6188285c91bc125b0a"
+    },
+    "command_focusPrevious": {
+        "message": "聚焦上一个标签页 (展开树)",
+        "hash": "6f8572d6b05c09124ec9807dde46b7ba"
+    },
+    "command_focusPreviousSilently": {
+        "message": "聚焦上一个标签页 (不展开树)",
+        "hash": "8f5030e436d894b555bf73760465c5bd"
+    },
+    "command_focusNext": {
+        "message": "聚焦下一个标签页 (展开树)",
+        "hash": "f086055dab3ea389786404afc4ec5ba3"
+    },
+    "command_focusNextSilently": {
+        "message": "聚焦下一个标签页 (不展开树)",
+        "hash": "f7f24e9d7ce8b25c9dabefb9ceb73f33"
+    },
+    "command_focusParent": {
+        "message": "聚焦父标签页",
+        "hash": "cfcf84997579f1d1ea13028a39250e5c"
+    },
+    "command_focusFirstChild": {
+        "message": "聚焦首个子标签页",
+        "hash": "2d322dc8c300823db21ee404cacd68a6"
+    },
+    "command_tabbarUp": {
+        "message": "标签页画面向上滚动一行",
+        "hash": "afa2d05acd138481d49861b5b78a68a4"
+    },
+    "command_tabbarPageUp": {
+        "message": "标签页画面向上滚动一页",
+        "hash": "bb7ae40b877576642310c562351ab933"
+    },
+    "command_tabbarHome": {
+        "message": "滚动标签页画面到顶部",
+        "hash": "a45ccc7cb37a94eff4f2e217f28fd680"
+    },
+    "command_tabbarDown": {
+        "message": "标签页画面向下滚动一行",
+        "hash": "28df3e5fae3401ad3de923ef2806f075"
+    },
+    "command_tabbarPageDown": {
+        "message": "标签页画面向下滚动一页",
+        "hash": "6446d1516a1a8804f217321273a5c450"
+    },
+    "command_tabbarEnd": {
+        "message": "滚动标签页画面到底部",
+        "hash": "025d1f54e7f530046d46445384cc6a94"
+    },
+    "tab_closebox_tab_tooltip": {
+        "message": "关闭标签页",
+        "hash": "d1f1cd1622da31c005a894c0637d041f"
+    },
+    "tab_closebox_tree_tooltip": {
+        "message": "关闭树",
+        "hash": "c92c35ca25e3c2ed25a49ec66487aa32"
+    },
+    "tab_soundButton_muted_tooltip": {
+        "message": "取消静音标签页",
+        "hash": "27c70476ec16e327fb5f54c26837d622"
+    },
+    "tab_soundButton_playing_tooltip": {
+        "message": "静音标签页",
+        "hash": "da346469df9a67311c3a3fd311284ca0"
+    },
+    "tab_twisty_expanded_tooltip": {
+        "message": "折叠树",
+        "hash": "75fe738244dff04075cc05be697e9726"
+    },
+    "tab_twisty_collapsed_tooltip": {
+        "message": "展开树",
+        "hash": "bb62647dddf7fa646b77daa82c893bd6"
+    },
+    "tab_tree_tooltip": {
+        "message": "$TREE$\n  ...和其余 $COUNT$ 个标签页",
+        "placeholders": {
+            "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
+            "count": { "content": "$2", "example": "3" }
+        },
+        "hash": "f7d2172e715235f06bcb735d83461315"
+    },
+    "tabbar_newTabButton_tooltip": {
+        "message": "打开一个新标签页",
+        "hash": "cdeaa496e27f481f501b51c5f07478f9"
+    },
+    "tabbar_newTabAction_tooltip": {
+        "message": "打开新标签页为…",
+        "hash": "4595cbc84085b40156711bb0df0f0ab8"
+    },
+    "tabbar_newTabAction_independent_label": {
+        "message": "独立标签页(&I)",
+        "hash": "ca4bd2b91e4654e46c36a6ac97117a41"
+    },
+    "tabbar_newTabAction_child_label": {
+        "message": "子标签页(&C)",
+        "hash": "7e09eb4867cc73c54adaf0616cf2cc09"
+    },
+    "tabbar_newTabAction_sibling_label": {
+        "message": "同级标签页(&S)",
+        "hash": "9a62ae35cd5efe267ad44685ffc0dd8c"
+    },
+    "tabbar_newTabAction_nextSibling_label": {
+        "message": "同级标签页（下一项）(&N)",
+        "hash": "fd32d2228b14e2742ef6fd21f643416a"
+    },
+    "tabbar_newTabWithContexualIdentity_tooltip": {
+        "message": "新建身份标签页",
+        "hash": "939c6fb543496a7a8485c982ad5530ce"
+    },
+    "tabbar_newTabWithContexualIdentity_default": {
+        "message": "默认",
+        "hash": "229c53203d001a81c6535deec232da82"
+    },
+    "groupTab_label": {
+        "message": "$TITLE$ 及更多",
+        "placeholders": {
+            "title": { "content": "$1", "example": "title" }
+        },
+        "hash": "631f9993dc81eb82f381ffff8c531551"
+    },
+    "groupTab_label_default": {
+        "message": "组",
+        "hash": "b5c9f35dc0d4f0c99422a5dd1a3e3b85"
+    },
+    "groupTab_temporary_label": {
+        "message": "没有更多子项时关闭此标签页",
+        "hash": "89d7be4226a3bd04e369948389994b6f"
+    },
+    "groupTab_fromPinnedTab_label": {
+        "message": "来自 $TITLE$ 的标签页",
+        "placeholders": {
+            "title": { "content": "$1", "example": "title" }
+        },
+        "hash": "4bfbdd0d863b718a743bf1b3e168195c"
+    },
+    "bookmarkFolder_label_default": {
+        "message": "$TITLE$ 及更多 (%YEAR%.%MONTH%.%DATE%)",
+        "placeholders": {
+            "title": { "content": "$1", "example": "Title" },
+            "year": { "content": "$2", "example": "2018" },
+            "month": { "content": "$3", "example": "06" },
+            "date": { "content": "$4", "example": "21" }
+        },
+        "hash": "b40bb671bfdc9d5b864f508435a929f0"
+    },
+    "bookmarkTree_notification_success_title": {
+        "message": "成功将树加入书签",
+        "hash": "44f13d2945d8eea2099b13c8c2c52524"
+    },
+    "bookmarkTree_notification_success_message": {
+        "message": "$COUNT$ 个标签页（包括“$TITLE$”）已加入书签，放入“$PARENT$”中的新文件夹。",
+        "placeholders": {
+            "title": { "content": "$1", "example": "Title" },
+            "count": { "content": "$2", "example": "2" },
+            "parent": { "content": "$3", "example": "Parent Folder" }
+        },
+        "hash": "a29cbb7a61501fed74fef4bd8cb6fde2"
+    },
+    "bookmarkTabs_notification_success_title": {
+        "message": "成功将标签页加入书签",
+        "hash": "ab61fa1fa1bf23847df2aba0cc9f8bf9"
+    },
+    "bookmarkTabs_notification_success_message": {
+        "message": "$COUNT$ 个标签页（包括“$TITLE$”）已加入书签，放入“$PARENT$”中的新文件夹。",
+        "placeholders": {
+            "title": { "content": "$1", "example": "Title" },
+            "count": { "content": "$2", "example": "2" },
+            "parent": { "content": "$3", "example": "Parent Folder" }
+        },
+        "hash": "a29cbb7a61501fed74fef4bd8cb6fde2"
+    },
+    "bookmark_notification_notPermitted_title": {
+        "message": "权限错误",
+        "hash": "5648aca0df76cc07ac7f3cf1b709dff2"
+    },
+    "bookmark_notification_notPermitted_message": {
+        "message": "获取创建书签的权限失败。请通过 Tree Style Tab 的配置授予权限。",
+        "hash": "8f7aa162ccaa13b8a1404b0955132851"
+    },
+    "dropLinksOnTabBehavior_message": {
+        "message": "如何打开这个？",
+        "hash": "ee6b8cf2133e9d31a007ecb60b76d06c"
+    },
+    "dropLinksOnTabBehavior_save": {
+        "message": "记住此选择",
+        "hash": "4478a6d39c91e5bfd95e7c3ae49ce6a1"
+    },
+    "dropLinksOnTabBehavior_load": {
+        "message": "加载到此标签页",
+        "hash": "2c74e7c662255ba282ca422212107723"
+    },
+    "dropLinksOnTabBehavior_newtab": {
+        "message": "打开新标签页",
+        "hash": "ef65d6f472c7fb18957f70ccba02e044"
+    },
+    "warnOnCloseTabs_message": {
+        "message": "您即将关闭 $NUMBER$ 个标签页。确定继续吗？",
+        "placeholders": {
+            "NUMBER": { "content": "$1", "example": "10" }
+        },
+        "hash": "e3c228fe083b75f07a680e0f2b8cdcfb"
+    },
+    "warnOnCloseTabs_warnAgain": {
+        "message": "当我尝试关闭多个标签页时警告我",
+        "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
+    },
+    "warnOnCloseTabs_close": {
+        "message": "关闭标签页",
+        "hash": "c37f1f0faf7bb6f56854ea5fa7d831ca"
+    },
+    "warnOnCloseTabs_cancel": {
+        "message": "取消",
+        "hash": "17aa19f18a894459ab6ff21156e8a341"
+    },
+    "message_startup_description_1": {
+        "message": "Tree Style Tab 目前基于 WebExtensions 技术以支持 Firefox 57 及后续版本。它提供一个侧栏以作为可选用的垂直标签栏。如果您没看到，按 ",
+        "hash": "2d5fd10f1fbb48da0cb8ad6175e72eee"
+    },
+    "message_startup_description_key": {
+        "message": "F1 键",
+        "hash": "59740234c0d7b86a96198e49361b2b40"
+    },
+    "message_startup_description_2": {
+        "message": "或单击工具栏中的 ",
+        "hash": "0030cd9d75c80a18085a4bda4ed6ac2d"
+    },
+    "message_startup_description_3": {
+        "message": " 按钮来激活 Tree Style Tab 侧栏面板。",
+        "hash": "073245a72ea5cb378794d40c049a9736"
+    },
+    "message_startup_migrateSessions_before": {
+        "message": "Firefox 56 或更早版本上的标签页树结构不会自动迁移。参见",
+        "hash": "5dc7bca90c3452838d7d30e4e58c0288"
+    },
+    "message_startup_migrateSessions_link_label": {
+        "message": "指南",
+        "hash": "f55aa58a8478642560f3fcc1f1b67f72"
+    },
+    "message_startup_migrateSessions_after": {
+        "message": "了解树信息的手动迁移方法。",
+        "hash": "d905a836615e096ddcdd4b5360fef509"
+    },
+    "migrateSessions_link_uri": {
+        "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x",
+        "hash": "76c95f19cf02750eb2cfa6fa58195a2b"
+    },
+    "message_startup_requestPermissions_description": {
+        "message": "⚠有些功能需要额外的权限。如果要激活这些功能，请手动授予权限。",
+        "hash": "579d612ed89439363c1b15dc629175bc"
+    },
+    "message_startup_requestPermissions_bookmarks": {
+        "message": "标签页右键菜单中的“将此树加入书签”（需要有权访问书签）",
+        "hash": "e0e9b0e8a6455329651674513a42b987"
+    },
+    "message_startup_requestPermissions_allUrls": {
+        "message": "通过键盘快捷键切换标签页焦点时，不展开折叠的树并且跳过折叠的后代（需要向网页注入脚本以检测键盘快捷键的操作）",
+        "hash": "118e680b2849b76975f6c98acc93f3b0"
+    },
+    "message_startup_userChromeCss_notify": {
+        "message": "如何隐藏顶部的标签页栏和侧栏的标题？",
+        "hash": "991184685e856081ec9ee06431fda2d2"
+    },
+    "message_startup_userChromeCss_description_1": {
+        "message": "由于 WebExtensions 的限制，Tree Style Tab 无法控制在 Firefox 顶部的标签页栏以及侧栏的标题。如果您十分需要定制它们，参见",
+        "hash": "2b5b9b8f63740c72ef3201e1f04c9c1a"
+    },
+    "message_startup_userChromeCss_description_link_label": {
+        "message": "通过 userChrome.css 定制的范例",
+        "hash": "0e83f18fdc12303add76071fcc95283b"
+    },
+    "message_startup_userChromeCss_description_link_uri": {
+        "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-userchromecss",
+        "hash": "8b48ddee04341ad2483aecd1c23cd16a"
+    },
+    "message_startup_userChromeCss_description_2": {
+        "message": "。",
+        "hash": "55d3613f3783aae27280892ae900a32c"
+    },
+    "message_startup_userChromeCss_description_note": {
+        "message": "但请注意，这是一种非常底层的功能定制，不能保证在后续的 Firefox 版本中仍正常工作。您需要自担风险，选用这种方式时，您最好知道自己这样做的效果，并且有能力在发生问题时排解故障。",
+        "hash": "1635d988a58a13b9acb45f273b819a9e"
+    },
+    "message_startup_userChromeCss_description_3": {
+        "message": " ",
+        "hash": "d905a836615e096ddcdd4b5360fef509"
+    },
+    "context_reloadTree_label": {
+        "message": "重新载入此树(&R)",
+        "hash": "bf043d3ae4b48903d9d6e067bdf04963"
+    },
+    "context_reloadDescendants_label": {
+        "message": "重新载入子项(&E)",
+        "hash": "e541119f39ec9f6294ba83c996bc07ed"
+    },
+    "context_closeTree_label": {
+        "message": "关闭此树(&C)",
+        "hash": "80429baecee5e9ff1db23f3e19d6fc26"
+    },
+    "context_closeDescendants_label": {
+        "message": "关闭子项(&L)",
+        "hash": "1067ddc54adc2501e74a65ecddf98ec7"
+    },
+    "context_closeOthers_label": {
+        "message": "关闭其他标签页（不含此树）(&O)",
+        "hash": "430ee315b4b7d5f7b3ef7043574ecb5c"
+    },
+    "context_collapseTree_label": {
+        "message": "折叠此树",
+        "hash": "ec430e447b0faaf9c19f29c5a4aeca0d"
+    },
+    "context_collapseAll_label": {
+        "message": "全部折叠(&P)",
+        "hash": "a4afcd42a5e734361d983f6f07b785fc"
+    },
+    "context_expandTree_label": {
+        "message": "展开此树(&A)",
+        "hash": "d304de6771a35b0a1a8427d21ae6cd73"
+    },
+    "context_expandAll_label": {
+        "message": "全部展开(&X)",
+        "hash": "f7c1013fa700568a2d6d13707c8aa179"
+    },
+    "context_bookmarkTree_label": {
+        "message": "将此树加入书签(&B)…",
+        "hash": "3ebdc5bea63419b433495f0e2468a70f"
+    },
+    "config_appearance_caption": {
+        "message": "外观",
+        "hash": "4e916e83dfa642d4d35d88b3910ef1ab"
+    },
+    "config_sidebarPosition_caption": {
+        "message": "侧栏内容的外观（适配侧栏位置）:",
+        "hash": "4ebc8117a682499bbea58a0440275635"
+    },
+    "config_sidebarPosition_left": {
+        "message": "左侧",
+        "hash": "91c14ea7ce7e54653b43b424b06dc84c"
+    },
+    "config_sidebarPosition_right": {
+        "message": "右侧",
+        "hash": "e36652d0c5eff2ca4f3cd7805a979d3f"
+    },
+    "config_sidebarPosition_description": {
+        "message": "*此配置不会更改侧栏本身的位置。您需要单击侧栏标题处的切换器，然后手动点击“移动侧栏到右侧”。",
+        "hash": "adbea9fc2751f205418a7f6b10e68b5f"
+    },
+    "config_sidebarDirection_caption": {
+        "message": "样式-文字方向：",
+        "hash": "df500379330e44d98c6ab41c6eb09f07"
+    },
+    "config_sidebarDirection_ltr": {
+        "message": "从左至右（LTR）",
+        "hash": "4fb680668e028ece5611db5ae4f2380c"
+    },
+    "config_sidebarDirection_rtl": {
+        "message": "从右至左（RTL）",
+        "hash": "f24b22d165c8a43ef76a792dedb56421"
+    },
+    "config_scrollbarMode_caption": {
+        "message": "滚动条:",
+        "hash": "530d55101bdb7724df5731f13a3b8d53"
+    },
+    "config_scrollbarMode_default": {
+        "message": "默认",
+        "hash": "229c53203d001a81c6535deec232da82"
+    },
+    "config_scrollbarMode_narrow": {
+        "message": "细条",
+        "hash": "32a5a3a3bde2563b5bc5bd3b1e9c74e9"
+    },
+    "config_scrollbarMode_overlay": {
+        "message": "覆盖",
+        "hash": "c45ab307b7cabb6ce72e66a9d58daa5b"
+    },
+    "config_scrollbarMode_hide": {
+        "message": "隐藏",
+        "hash": "1e807c0551dee0804860b9ae73434feb"
+    },
+    "config_scrollbarMode_descriptionForMac": {
+        "message": "*新版本的 macOS 上仅“覆盖”有效。",
+        "hash": "f04c2de6344741810e74c9ae94f6cb1a"
+    },
+    "config_style_caption": {
+        "message": "主题",
+        "hash": "9da24ca7508eb181c632829fd698be9a"
+    },
+    "config_style_plain": {
+        "message": "朴素",
+        "hash": "8c6d5fc3ce692d4e152f1d33e8b27f4b"
+    },
+    "config_style_plain_dark": {
+        "message": "朴素暗",
+        "hash": "2dbdf9ce20650a74290d53fe7723a0d5"
+    },
+    "config_style_vertigo": {
+        "message": "迷雾",
+        "hash": "a2f78364a5f70a2d183096bfa86747a4"
+    },
+    "config_style_mixed": {
+        "message": "错综",
+        "hash": "94f3f9ff6783cbe8ba55c5781259e736"
+    },
+    "config_style_metal": {
+        "message": "金属",
+        "hash": "4c5bad4b2e7156aad2fcfd23683a5913"
+    },
+    "config_style_sidebar": {
+        "message": "经典侧栏",
+        "hash": "d33b881939ebc1e7e552f119ae13938a"
+    },
+    "config_style_highcontrast": {
+        "message": "高对比度",
+        "hash": "eb7e1137e8f98f6a43c7735e56c098cc"
+    },
+    "config_style_none": {
+        "message": "无装饰（请通过“额外的侧栏内容样式规则”自行修饰所有内容",
+        "hash": "b3bdce307d5b8e975351562c05ed7805"
+    },
+    "config_colorScheme_caption": {
+        "message": "颜色方案：",
+        "hash": "116757b55afc8e038df21da385c437da"
+    },
+    "config_colorScheme_photon": {
+        "message": "Photon",
+        "hash": "311fd0d76e3c685954e10bbc330ac1da"
+    },
+    "config_colorScheme_systemColor": {
+        "message": "系统颜色",
+        "hash": "dab5540a8cd4047f9e3411859792c4eb"
+    },
+    "config_maxTreeLevel_before": {
+        "message": "缩进标签页，最多",
+        "hash": "f9e353339b4cf89bb31d4d79a6a660b8"
+    },
+    "config_maxTreeLevel_after": {
+        "message": "层（负值则为无限）",
+        "hash": "115e5096e63f0299e2f87713d16b9412"
+    },
+    "config_faviconizePinnedTabs_label": {
+        "message": "固定的标签页只显示图标",
+        "hash": "9da551bbd5004005faa75eff95cc8391"
+    },
+    "config_animation_label": {
+        "message": "启用动画效果",
+        "hash": "67af584b4338ca4351cee724f8b9f0a3"
+    },
+    "config_showCollapsedDescendantsByTooltip_label": {
+        "message": "标签页的悬停提示中显示折叠的后代",
+        "hash": "3023e54eb03305a2f90f23992f792916"
+    },
+    "config_context_caption": {
+        "message": "右键菜单",
+        "hash": "b3bfec7867f2835dbcb05a2f1cf5647f"
+    },
+    "config_fakeContextMenu_label": {
+        "message": "在侧栏上模拟标签页右键菜单",
+        "hash": "b869272d848c5a4292a0a62f1609d15b"
+    },
+    "config_extraItems_caption": {
+        "message": "额外右键菜单",
+        "hash": "a83ac69758c16df4fa1ff646c14f0ac4"
+    },
+    "config_newTab_caption": {
+        "message": "新建标签页行为",
+        "hash": "b22c55cb6f60c72fdf0cbaa5133d5b46"
+    },
+    "config_newTabButton_caption": {
+        "message": "“新标签页”按钮",
+        "hash": "59ffaaeaad123e56d04093b0ac284848"
+    },
+    "config_longPressOnNewTabButton_before": {
+        "message": "长按“新标签页”按钮来",
+        "hash": "89ae44f80ab4bdbfd178d935e407736c"
+    },
+    "config_longPressOnNewTabButton_newTabAction": {
+        "message": "指定新标签页打开位置",
+        "hash": "449f5d27874d1669f920c84d3850d7b8"
+    },
+    "config_longPressOnNewTabButton_contextualIdentities": {
+        "message": "选择容器",
+        "hash": "6d8ad3e2c064766892f8b6ebb8a0a1de"
+    },
+    "config_longPressOnNewTabButton_none": {
+        "message": "(无)",
+        "hash": "cb1e8ee431dcf1087099758e3a26c0ff"
+    },
+    "config_longPressOnNewTabButton_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_showNewTabActionSelector_label": {
+        "message": "在“新标签页”按钮上显示选择器按钮，从而指定新标签页打开位置",
+        "hash": "83ebf16c13a4efd1842684e5ded77a32"
+    },
+    "config_showContextualIdentitiesSelector_label": {
+        "message": "在“新标签页”按钮上显示容器选择器按钮",
+        "hash": "0d17c9f3e3fa174dc905042e7c80ac9d"
+    },
+    "config_newTabAction_caption": {
+        "message": "新建标签页的行为（其他工具栏按钮、键盘快捷键所带来）",
+        "hash": "d8b0ffdf90e488e7654b43de02fcb7a0"
+    },
+    "config_autoAttachOnNewTabCommand_before": {
+        "message": "新建空白标签页打开为",
+        "hash": "747c61c39b6f945e432226f6d4ab246d"
+    },
+    "config_autoAttachOnNewTabCommand_independent": {
+        "message": "一个独立的标签页",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnNewTabCommand_child": {
+        "message": "当前标签页的子项",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnNewTabCommand_sibling": {
+        "message": "当前标签页的同级节点",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnNewTabCommand_nextSibling": {
+        "message": "当前标签页的下方（同级）",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnNewTabCommand_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": {
+        "message": "新标签页带有下列网址时，猜测它是通过“新建标签页”命令（例如键盘快捷键）打开：",
+        "hash": "973eb0f005c681793a1ddb11df8e6834"
+    },
+    "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_before": {
+        "message": "中键单击“新建标签页”按钮时，新建空白标签页为",
+        "hash": "e30d945a6f78f16c27b7b6fe9a2cba74"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_independent": {
+        "message": "一个独立的标签页",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_child": {
+        "message": "当前标签页的子项",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_sibling": {
+        "message": "当前标签页的同级节点",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": {
+        "message": "当前标签页的下方（同级）",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnNewTabButtonMiddleClick_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_autoAttachOnDuplicated_before": {
+        "message": "中键单击“重新载入”按钮时，复制标签页为",
+        "hash": "042d298099acd3146d4127ed84a71bce"
+    },
+    "config_autoAttachOnDuplicated_independent": {
+        "message": "一个独立的标签页",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachOnDuplicated_child": {
+        "message": "当前标签页的子项",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachOnDuplicated_sibling": {
+        "message": "当前标签页的同级节点",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachOnDuplicated_nextSibling": {
+        "message": "当前标签页的下方（同级）",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachOnDuplicated_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_sameSiteOrphan_caption": {
+        "message": "通过地址栏或其他方法在新标签页打开同一网站的网页时",
+        "hash": "621d7d60f97d5334f1a2473923175f0f"
+    },
+    "config_autoAttachSameSiteOrphan_before": {
+        "message": "打开为",
+        "hash": "a2eb05501ce03de7aecfcb3e7eb7e5f3"
+    },
+    "config_autoAttachSameSiteOrphan_independent": {
+        "message": "一个独立标签页",
+        "hash": "d3308eb1f9ade09839b5b0ee7a54d1fa"
+    },
+    "config_autoAttachSameSiteOrphan_child": {
+        "message": "当前标签页的后代",
+        "hash": "f7d5d35f3294bc3884bce9a60970efae"
+    },
+    "config_autoAttachSameSiteOrphan_sibling": {
+        "message": "与当前标签页同级",
+        "hash": "b18a4d90bee23dc969e884b222c0c57c"
+    },
+    "config_autoAttachSameSiteOrphan_nextSibling": {
+        "message": "与当前标签页同级的下一项",
+        "hash": "98dcf1ec311682e253fe9675e33b268f"
+    },
+    "config_autoAttachSameSiteOrphan_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_inheritContextualIdentityToSameSiteOrphan_label": {
+        "message": "继承当前标签页的容器",
+        "hash": "05b8f966c86567dfc6b764aac8a83701"
+    },
+    "config_insertNewChildAt_caption": {
+        "message": "新建标签页的插入位置",
+        "hash": "1c30663590c21f4fc422a876cca96a7a"
+    },
+    "config_insertNewChildAt_noControl": {
+        "message": "不控制（尊重 Firefox 或其他标签页扩展的决定）",
+        "hash": "a9ad40068782c9923062b5cc735bdcb2"
+    },
+    "config_insertNewChildAt_first": {
+        "message": "插入到树的顶端，作为其首个子标签页",
+        "hash": "e94f2dec1cd7d4578a3257b46a320438"
+    },
+    "config_insertNewChildAt_end": {
+        "message": "追加到该树的末尾",
+        "hash": "949c062d31b8dd906735ea113469924b"
+    },
+    "config_insertNewTabFromPinnedTabAt_caption": {
+        "message": "从固定标签页打开的新标签页插入在",
+        "hash": "1b592c0035e4eba9b82695ac4726df67"
+    },
+    "config_insertNewTabFromPinnedTabAt_noControl": {
+        "message": "不控制（尊重 Firefox 或其他标签页扩展的决定）",
+        "hash": "a9ad40068782c9923062b5cc735bdcb2"
+    },
+    "config_insertNewTabFromPinnedTabAt_first": {
+        "message": "插入到树的顶端，作为其首个子标签页",
+        "hash": "e94f2dec1cd7d4578a3257b46a320438"
+    },
+    "config_insertNewTabFromPinnedTabAt_end": {
+        "message": "追加到该树的末尾",
+        "hash": "949c062d31b8dd906735ea113469924b"
+    },
+    "config_autoGroupNewTabs_before": {
+        "message": "\u200b",
+        "hash": "ee68a8bc30968b8e1744bfa5fab4c600"
+    },
+    "config_autoGroupNewTabs_after": {
+        "message": "毫秒后自动分组打开的标签页",
+        "hash": "d56ac1ec4670c8c1f4cf3d20bea43c00"
+    },
+    "config_autoGroupNewTabsDelayOnNewWindow_before": {
+        "message": "但新建窗口的",
+        "hash": "2eb9969ecbaf2144590626aa33b20dff"
+    },
+    "config_autoGroupNewTabsDelayOnNewWindow_after": {
+        "message": "毫秒内新建的标签页视为随该窗口打开的一部分，不做分组。",
+        "hash": "a6e268352f07d4449db8c955fca074d7"
+    },
+    "config_autoGroupNewTabsFromPinned_label": {
+        "message": "自动分组从同一个固定标签页打开的标签页",
+        "hash": "abba012cab7c175c944f08ff12c9b0c7"
+    },
+    "config_inheritContextualIdentityToNewChildTab_label": {
+        "message": "将父标签页的容器继承到新的空白标签页",
+        "hash": "be907fb73317eb2667f34326bb9d5cfa"
+    },
+    "config_treeBehavior_caption": {
+        "message": "树行为",
+        "hash": "048b4894caaceb748552f5e7e66385d9"
+    },
+    "config_moveFocusInTreeForClosedCurrentTab_caption": {
+        "message": "关闭的当前标签页为末尾的子标签页时",
+        "hash": "00cac5dadd1694410d4ba3e2c89fac88"
+    },
+    "config_moveFocusInTreeForClosedCurrentTab_true": {
+        "message": "聚焦到此树的上一个标签页",
+        "hash": "7a2fb5ca87884cd6b92939c501b83821"
+    },
+    "config_moveFocusInTreeForClosedCurrentTab_false": {
+        "message": "总是聚焦到下一个标签页（Firefox 默认设置）",
+        "hash": "ead4ae943d21148122bca2801a947a26"
+    },
+    "config_moveFocusInTreeForClosedCurrentTab_description": {
+        "message": "*Firefox 内置的 \"browser.tabs.selectOwnerOnClose\"=\"true\" 功能会提前生效。",
+        "hash": "a58ae4efccf268321d400001bdb29baa"
+    },
+    "config_parentTabBehaviorForChanges_caption": {
+        "message": "当父标签被树侧栏外部移动或关闭时",
+        "hash": "07be3edd829b943a39cdf0bb849da83e"
+    },
+    "config_parentTabBehaviorForChanges_always": {
+        "message": "始终视为对父节点的操作，一同移动或关闭子标签页，无论树侧栏是否可见。",
+        "hash": "b3bece02c01656abc194c3feaf498ae0"
+    },
+    "config_parentTabBehaviorForChanges_alwaysButOnlyWhenVisible": {
+        "message": "树侧栏可见时视为对父节点的操作。树侧栏不可见时视为对单独标签页的操作。",
+        "hash": "e0f5a03817108b07ad2a9cc68c604e43"
+    },
+    "config_parentTabBehaviorForChanges_onlyInSidebar": {
+        "message": "通过树侧栏操作时视为对父节点操作。通过外部操作时视为对单独标签页的操作。",
+        "hash": "59c30a1f4aef5a123828afd605a3276d"
+    },
+    "config_autoCollapseExpandSubtreeOnAttach_label": {
+        "message": "新树展开时，自动折叠其他树",
+        "hash": "96828b053684e85e4a60f07605d2cf53"
+    },
+    "config_autoCollapseExpandSubtreeOnSelect_label": {
+        "message": "标签页获得焦点时，自动展开该树并折叠其他树",
+        "hash": "fb8b0c2873c5f6881d656a7a6abb3a21"
+    },
+    "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": {
+        "message": "排除当前标签页关闭引发的焦点改变",
+        "hash": "69259746c1181dd703b53adceadd8850"
+    },
+    "config_collapseExpandSubtreeByDblClick_label": {
+        "message": "双击标签页折叠/展开树",
+        "hash": "5c8c2190a5ac75b7e4e214724becbccb"
+    },
+    "config_closeParentBehavior_caption": {
+        "message": "已展开树的父标签页被关闭时",
+        "hash": "09cc45d76c4a9194b53b63ae4f83608e"
+    },
+    "config_closeParentBehavior_close": {
+        "message": "关闭子标签页",
+        "hash": "8fec63dca0e9f13257d4cb0b0247e803"
+    },
+    "config_closeParentBehavior_replaceWithGroupTab": {
+        "message": "用虚构标签页替换已关闭的父标签页从而保留树",
+        "hash": "647fbebbedb16a43f51f65b0d768183d"
+    },
+    "config_closeParentBehavior_promoteFirst": {
+        "message": "将第一个子标签页作为新的父标签页",
+        "hash": "c467ea4c0e26fdf597ffbd89a3038be2"
+    },
+    "config_closeParentBehavior_promoteAll": {
+        "message": "所有子标签页的级别按被关闭的父标签页级别提升",
+        "hash": "72e7cea4b21df618010db1037b2c8634"
+    },
+    "config_promoteFirstChildForClosedRoot_label": {
+        "message": "如果被关闭的父标签页没有父项，则将首个子标签页提升为父项",
+        "hash": "2a67e1cc88eba17ca17abdf10af2c034"
+    },
+    "config_closeParentBehavior_detach": {
+        "message": "释放该树的子标签页",
+        "hash": "1312437055c8720e49ebe347501efb97"
+    },
+    "config_dropLinksOnTabBehavior_caption": {
+        "message": "拖放一个链接或网址到标签页时",
+        "hash": "1c973ccd4b2729ed3e7e0d8097c0c0e2"
+    },
+    "config_dropLinksOnTabBehavior_ask": {
+        "message": "总是询问我后续操作",
+        "hash": "5c169bb3439cb70347142770bfba6c32"
+    },
+    "config_dropLinksOnTabBehavior_load": {
+        "message": "加载网址到该标签页",
+        "hash": "707fff08c38cc08ff1459f27acbbf4a4"
+    },
+    "config_dropLinksOnTabBehavior_newtab": {
+        "message": "打开并新建为子标签页",
+        "hash": "ef65d6f472c7fb18957f70ccba02e044"
+    },
+    "config_warnOnCloseTabs_label": {
+        "message": "当我尝试关闭多个标签页时警告我",
+        "hash": "a0c7adddbcc8f4a8762cfeeca4e35270"
+    },
+    "config_shortcuts_caption": {
+        "message": "键盘快捷键",
+        "hash": "3e4c94412820831fbea1494aa4d5ecf4"
+    },
+    "config_advanced_caption": {
+        "message": "高级",
+        "hash": "61e6f7ef10c721f08bc36bee2b3f9bc0"
+    },
+    "config_bookmarkTreeFolderName_before": {
+        "message": "“将此树加入书签”时使用的文件夹名称",
+        "hash": "46d9ae37bed79016f68a06e41d246291"
+    },
+    "config_bookmarkTreeFolderName_after": {
+        "message": "\u200b",
+        "hash": "aa7906338dbdd2af4993295aa9112e97"
+    },
+    "config_bookmarkTreeFolderName_description": {
+        "message": "可用占位符：%TITLE%（首个标签页的标题）、%URL%（首个标签页的网址）、%YEAR%（四位数字的年份）、%MONTH%（两位数字的月份）、%DATE%（两位数字的日）",
+        "hash": "0bd538acab758e5199f3e273f973a86d"
+    },
+    "config_userStyleRules_label": {
+        "message": "侧栏内容的额外样式规则",
+        "hash": "0d2ad9050b3b2549d69092af9c751a0b"
+    },
+    "config_userStyleRules_description_before": {
+        "message": "更多选项参见",
+        "hash": "bc1357f01fd9f60f7fba1eb7fb3ee6c5"
+    },
+    "config_userStyleRules_description_link_label": {
+        "message": "TST wiki 上的代码片段",
+        "hash": "f32796817083629e1c085b1000817dab"
+    },
+    "config_userStyleRules_description_after": {
+        "message": "。",
+        "hash": "f204d2b226ad57ea450044457596d723"
+    },
+    "config_userStyleRules_description_link_uri": {
+        "message": "https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#for-version-2x",
+        "hash": "82f256d59ff8cbf7d9c455e6f22762fb"
+    },
+    "config_importedConfigsFromLegacy_label": {
+        "message": "迁移旧配置",
+        "hash": "d0bb1061019b974ece56e2affdc1800f"
+    },
+    "config_legacyConfigsNextMigrationVersion_before": {
+        "message": "下次启动时迁移",
+        "hash": "200fd7fa699b21a2b4f669932950daaf"
+    },
+    "config_legacyConfigsNextMigrationVersion_after": {
+        "message": "级配置",
+        "hash": "54ba48530d518a9b80cacee2e7a3a904"
+    },
+    "config_legacyConfigsNextMigrationVersion_currentLevel_before": {
+        "message": "（目前可用的配置级别为",
+        "hash": "80222a9eba39c2b7a36a98fd769c46b5"
+    },
+    "config_legacyConfigsNextMigrationVersion_currentLevel_after": {
+        "message": " 或更低）",
+        "hash": "9d55257c06f8ae1ac4c575fdb3c84c2f"
+    },
+    "config_importedConfigsFromLegacy_placeholder": {
+        "message": "在这里粘贴旧的配置数据",
+        "hash": "083a7e489ea9ec548d3d908ed6c65229"
+    },
+    "migration_configs_notification_title": {
+        "message": "Tree Style Tab：配置已成功迁移",
+        "hash": "b14c2a33db50d46cf0fdd10fe9d7623b"
+    },
+    "migration_configs_notification_message": {
+        "message": "旧版本的配置已成功应用。",
+        "hash": "69f776a336a044965dce8f7a94f28c2b"
+    },
+    "migration_configsFailed_notification_title": {
+        "message": "Tree Style Tab：迁移配置失败",
+        "hash": "a907c3b4a84852b33cc66aad1ae9beed"
+    },
+    "migration_configsFailed_notification_message": {
+        "message": "迁移遇到意外问题而已中止。",
+        "hash": "8f9f6bcff2f08638c03e92b7e2cbdf9b"
+    },
+    "config_importedTreeStructureFromLegacy_label": {
+        "message": "迁移旧树",
+        "hash": "c177fbd01221c591f8cdcf174396838c"
+    },
+    "config_migrateSessionStore_before": {
+        "message": "参见",
+        "hash": "ffa2f691138a82a53c1261b53e9cc5b9"
+    },
+    "config_migrateSessionStore_link_label": {
+        "message": "树迁移操作手册",
+        "hash": "f55aa58a8478642560f3fcc1f1b67f72"
+    },
+    "config_migrateSessionStore_after": {
+        "message": "了解如何操作。",
+        "hash": "9a19cb27ef6840032931d20966b7c641"
+    },
+    "config_migrateLegacyTreeStructure_label": {
+        "message": "下次启动时迁移旧树",
+        "hash": "f3262f70803a3dcaf3d739dfbf72516e"
+    },
+    "config_importedTreeStructureFromLegacy_placeholder": {
+        "message": "在这里粘贴旧树的迁移数据",
+        "hash": "41458261c7f415368020214ee78110d9"
+    },
+    "migration_tree_notification_title": {
+        "message": "Tree Style Tab：标签页树迁移成功",
+        "hash": "04d59a0c1e344a73244cb9714e52c188"
+    },
+    "migration_tree_notification_message_withSession": {
+        "message": "$COUNT$ 个窗口已成功恢复，具有先前的会话信息。",
+        "placeholders": {
+            "count": { "content": "$1", "example": "2" }
+        },
+        "hash": "680eba1f10d863f787b8912ec2c26c2d"
+    },
+    "migration_tree_notification_message_withoutSession": {
+        "message": "$COUNT$ 个窗口的树结构已恢复。没有恢复这些窗口中的标签页的会话信息。",
+        "placeholders": {
+            "count": { "content": "$1", "example": "2" }
+        },
+        "hash": "15387fdf236ee7f9a629852df9b69783"
+    },
+    "migration_treeFailed_notification_title": {
+        "message": "Tree Style Tab：迁移树的标签页失败",
+        "hash": "af540c031c00d938966c70ae42a5eb30"
+    },
+    "migration_treeFailed_notification_message": {
+        "message": "迁移遇到意外问题而已中止。",
+        "hash": "8f9f6bcff2f08638c03e92b7e2cbdf9b"
+    },
+    "config_debug_caption": {
+        "message": "开发",
+        "hash": "af84c3ce90181048c533886621f00ac2"
+    },
+    "config_debug_label": {
+        "message": "调试模式",
+        "hash": "09b9b4dc690b71222315f1191f9a1d1b"
+    },
+    "config_log_caption": {
+        "message": "详细日志",
+        "hash": "880217f9f62f4ec7e9b286cf42f011ee"
+    },
+    "config_logFor_common": {
+        "message": "通用模块的日志",
+        "hash": "d4dcd248ed4cba81d650930df2fd7dc1"
+    },
+    "config_logFor_background": {
+        "message": "后台模块的日志",
+        "hash": "3a70472f068085a0e6485ae457c37bb2"
+    },
+    "config_logFor_sidebar": {
+        "message": "侧栏模块的日志",
+        "hash": "3d0e771d5954b687e5240901080b990d"
+    },
+    "config_simulateSVGContextFill_label": {
+        "message": "激活对 Bug 1388193 和 Bug 1421329 的变通方法以模拟 SVG 图标（*这可能增加 CPU 使用率。要停用此选项，您需要在“about：config”中激活“svg.context-properties.content.enabled”，直到上述 bug 得到修复。）",
+        "hash": "e065910fa445595488431d7a8f16acab"
+    },
+    "config_useCachedTree_label": {
+        "message": "使用缓存来优化树的恢复",
+        "hash": "9534117353758560c571146bb2bf9997"
+    },
+    "config_useCachedTree_description": {
+        "message": "*当树相关的表现不稳定时，尝试取消此选项再重新勾选以刷新缓存。",
+        "hash": "9d15b5ec84fbfefc2361dfc9b6d07faf"
+    },
+    "config_acceleratedTabCreation_label": {
+        "message": "加速有关新建标签页的操作（*注意，您会看到标签页的“弹跳”表现。）",
+        "hash": "7ff05a0f0be2c1b3a45ff150d49c4b29"
+    },
+    "config_acceleratedTabDuplication_label": {
+        "message": "加速标签页复制操作（过程中会看到非稳定的变化）",
+        "hash": "92e7aa56a4b713f0b089219744280078"
+    },
+    "config_maximumAcceptableDelayForTabDuplication_before": {
+        "message": "中止复制标签页，如果按住超过",
+        "hash": "55dacfa185bc95de8863bf133d726af3"
+    },
+    "config_maximumAcceptableDelayForTabDuplication_after": {
+        "message": "毫秒。",
+        "hash": "6d3d5376435e2ec0d553be7bf90b615b"
+    },
+    "config_sidebarScrollbarPosition_caption": {
+        "message": "滚动条位置：",
+        "hash": "c62abfffd860a56649d6fc8cd7642439"
+    },
+    "config_sidebarScrollbarPosition_auto": {
+        "message": "自动",
+        "hash": "a91ee63a9deaf1088b86d1b620bb0549"
+    },
+    "config_sidebarScrollbarPosition_left": {
+        "message": "左侧",
+        "hash": "91c14ea7ce7e54653b43b424b06dc84c"
+    },
+    "config_sidebarScrollbarPosition_right": {
+        "message": "右侧",
+        "hash": "e36652d0c5eff2ca4f3cd7805a979d3f"
+    },
+    "config_requestPermissions_bookmarks": {
+        "message": "允许创建书签",
+        "hash": "b98ddf87ce4d55e8ca5e30e56e153185"
+    },
+    "config_requestPermissions_allUrls": {
+        "message": "通过键盘快捷键切换标签页的焦点时，不要展开折叠的树并跳过已折叠的后代。 （*您需要允许在网页上执行脚本。）",
+        "hash": "0b56b4253e7d159f95331e7b7fe84597"
+    },
+    "config_requestPermissions_fallbackToToolbarButton_title": {
+        "message": "点击“Tree Style Tab”的工具栏按钮",
+        "hash": "faffac27406925eaf44308423fce1d21"
+    },
+    "config_requestPermissions_fallbackToToolbarButton_message": {
+        "message": "由于 Firefox 的问题，您无法从此画面请求权限。请单击“Tree Style Tab”的工具栏按钮以授予权限。",
+        "hash": "00b8ca01e816366e976d197677b7c497"
+    },
+    "config_all_caption": {
+        "message": "所有配置",
+        "hash": "e0437bb7bd8d7ce28700078c6bb12418"
+    },
+    "tabContextMenu_reload_label": {
+        "message": "重新载入标签页(&R)",
+        "hash": "b47f1ba4fa9f6689bd27124978684636"
+    },
+    "tabContextMenu_mute_label": {
+        "message": "静音标签页(&M)",
+        "hash": "1ff23ae0ae540c6635e774388a77ea2f"
+    },
+    "tabContextMenu_unmute_label": {
+        "message": "取消静音标签页(&M)",
+        "hash": "c3ae3c72832dfedee6c48d0dc37eb954"
+    },
+    "tabContextMenu_pin_label": {
+        "message": "固定标签页(&P)",
+        "hash": "84f0158295ff8a14fd6062c7ec19c77c"
+    },
+    "tabContextMenu_unpin_label": {
+        "message": "取消固定标签页(&B)",
+        "hash": "b3df98de903f20828d11fae57bbeac1f"
+    },
+    "tabContextMenu_duplicate_label": {
+        "message": "创建标签页副本(&D)",
+        "hash": "80666f37f8702cba5b66d3e8d816ea5c"
+    },
+    "tabContextMenu_tearOff_label": {
+        "message": "移动到新窗口(&W)",
+        "hash": "e73bb254e78fb1b2a161d4c3961065a9"
+    },
+    "tabContextMenu_reloadAll_label": {
+        "message": "重新载入所有标签页(&A)",
+        "hash": "df293c6903c9c0d90d7e75c6d0eb5f9f"
+    },
+    "tabContextMenu_bookmarkAll_label": {
+        "message": "为全部标签页添加书签(&T)…",
+        "hash": "da48e2cbed383746950b8eeda47068db"
+    },
+    "tabContextMenu_closeAfter_label": {
+        "message": "关闭右侧标签页(&I)",
+        "hash": "a27d298eb90c46cd1d6f62a8e405f980"
+    },
+    "tabContextMenu_closeOther_label": {
+        "message": "关闭其他标签页(&O)",
+        "hash": "5a4db75f9254da8f39e41b929fc2c445"
+    },
+    "tabContextMenu_undoClose_label": {
+        "message": "撤销关闭标签页(&U)",
+        "hash": "21be8c6cad39fbee2150e4110e3c55ce"
+    },
+    "tabContextMenu_close_label": {
+        "message": "关闭标签页(&C)",
+        "hash": "517e4cda82f826395a14d6bda5b1c7a0"
+    },
 
-  "sidebarTitle": { "message": "Tree Style Tab" },
-  "sidebarToggleDescription": { "message": "切换“Tree Style Tab”侧栏" },
-
-  "tab_closebox_tab_tooltip": { "message": "关闭标签页" },
-  "tab_closebox_tree_tooltip": { "message": "关闭树" },
-  "tab_soundButton_muted_tooltip": { "message": "取消静音标签页" },
-  "tab_soundButton_playing_tooltip": { "message": "静音标签页" },
-  "tab_twisty_expanded_tooltip": { "message": "折叠树" },
-  "tab_twisty_collapsed_tooltip": { "message": "展开树" },
-  "tab_tree_tooltip": { "message": "$TREE$\n  ...和其余 $COUNT$ 个标签页",
-    "placeholders": {
-      "tree": { "content": "$1", "example": "* Tree\n  * Style\n    * Tab" },
-      "count": { "content": "$2", "example": "3" }
-    }},
-  "tabbar_newTabButton_tooltip": { "message": "打开一个新标签页" },
-  "tabbar_newTabWithContexualIdentity_tooltip": { "message": "新建身份标签页" },
-
-  "groupTab_label": { "message": "$TITLE$ 及更多",
-    "placeholders": {
-      "title": { "content": "$1", "example": "title" }
-    }},
-  "groupTab_label_default": { "message": "组" },
-
-  "bookmarkFolder_label_default": { "message": "$TITLE$ 及更多 (%YEAR%.%MONTH%.%DATE%)",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "year":  { "content": "$2", "example": "2018" },
-      "month": { "content": "$3", "example": "06" },
-      "date":  { "content": "$4", "example": "21" }
-    }},
-
-  "bookmarkTree_notification_title": { "message": "成功为树添加书签" },
-  "bookmarkTree_notification_message": { "message": "包括“$TITLE$”在内的 $COUNT$ 个标签页已添加为“$PARENT$”下的书签文件夹",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
-
-  "bookmarkTabs_notification_title": { "message": "成功为标签页添加书签" },
-  "bookmarkTabs_notification_message": { "message": "$COUNT$ 个标签页（包括“$TITLE$”）已加为书签，新文件夹位于“$PARENT$”。",
-    "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
-      "count": { "content": "$2", "example": "2" },
-      "parent": { "content": "$3", "example": "Parent Folder" }
-    }},
-
-  "message_updatedFromLegacy_description": { "message": "Tree Style Tab 目前基于 WebExtensions 技术以支持 Firefox 57 及后续版本。它提供一个侧栏以作为可选用的垂直标签栏。如果您没看到，按“F1”键或单击工具栏中的“Tree Style Tab”按钮来激活 Tree Style Tab 侧栏面板。" },
-
-
-  "context_reloadTree_label": { "message": "重新载入此树(&R)" },
-  "context_reloadDescendants_label": { "message": "重新载入子项(&E)" },
-  "context_closeTree_label": { "message": "关闭此树(&C)" },
-  "context_closeDescendants_label": { "message": "关闭子项(&L)" },
-  "context_closeOthers_label": { "message": "关闭其他标签页（不含此树）(&O)" },
-  "context_collapseAll_label": { "message": "全部折叠(&P)" },
-  "context_expandAll_label": { "message": "全部展开(&X)" },
-  "context_bookmarkTree_label": { "message": "将此树加为书签(&B)…" },
-
-
-  "config_appearance_caption": { "message": "外观" },
-
-  "config_sidebarPosition_caption": { "message": "侧栏内容的外观（适配侧栏位置）:" },
-  "config_sidebarPosition_left": { "message": "左侧" },
-  "config_sidebarPosition_right": { "message": "右侧" },
-
-  "config_scrollbarMode_caption": { "message": "Scrollbar:" },
-  "config_scrollbarMode_default": { "message": "Default" },
-  "config_scrollbarMode_narrow":  { "message": "Narrow" },
-  "config_scrollbarMode_hide":    { "message": "Hide" },
-
-  "config_style_caption": { "message": "主题" },
-  "config_style_plain": { "message": "朴素" },
-  "config_style_plain_dark": { "message": "朴素暗" },
-  "config_style_vertigo": { "message": "眩晕" },
-  "config_style_mixed": { "message": "错综" },
-  "config_style_metal": { "message": "金属" },
-  "config_style_sidebar": { "message": "侧栏" },
-
-  "config_maxTreeLevel_before": { "message": "缩进标签页，最多" },
-  "config_maxTreeLevel_after": { "message": "层（负值则为无限）" },
-
-  "config_faviconizePinnedTabs_label": { "message": "已固定标签页只显示图标" },
-
-  "config_animation_label": { "message": "启用动画效果" },
-
-
-  "config_extraItems_caption": { "message": "增加上下文菜单项" },
-
-
-  "config_newTab_caption": { "message": "新建标签页行为" },
-
-  "config_autoAttachOnNewTabCommand_before": { "message": "新建空白标签页打开为" },
-  "config_autoAttachOnNewTabCommand_independent": { "message": "一个独立的标签页" },
-  "config_autoAttachOnNewTabCommand_child": { "message": "当前标签页的子项" },
-  "config_autoAttachOnNewTabCommand_sibling": { "message": "当前标签页的同级节点" },
-  "config_autoAttachOnNewTabCommand_nextSibling": { "message": "当前标签页的下方（同级）" },
-  "config_autoAttachOnNewTabCommand_after": { "message": "\u200b" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_before": { "message": "新标签页带有下列网址时，猜测它是通过“新建标签页”命令（例如键盘快捷键）打开：" },
-  "config_guessNewOrphanTabAsOpenedByNewTabCommandUrl_after": { "message": "\u200b" },
-
-  "config_autoAttachOnNewTabButtonMiddleClick_before": { "message": "中键单击“新建标签页”按钮时，新建空白标签页为" },
-  "config_autoAttachOnNewTabButtonMiddleClick_independent": { "message": "一个独立的标签页" },
-  "config_autoAttachOnNewTabButtonMiddleClick_child": { "message": "当前标签页的子项" },
-  "config_autoAttachOnNewTabButtonMiddleClick_sibling": { "message": "当前标签页的同级节点" },
-  "config_autoAttachOnNewTabButtonMiddleClick_nextSibling": { "message": "当前标签页的下方（同级）" },
-  "config_autoAttachOnNewTabButtonMiddleClick_after": { "message": "\u200b" },
-
-  "config_autoAttachOnDuplicated_before": { "message": "中键单击“重新载入”按钮时，复制标签页为" },
-  "config_autoAttachOnDuplicated_independent": { "message": "一个独立的标签页" },
-  "config_autoAttachOnDuplicated_child": { "message": "当前标签页的子项" },
-  "config_autoAttachOnDuplicated_sibling": { "message": "当前标签页的同级节点" },
-  "config_autoAttachOnDuplicated_nextSibling": { "message": "当前标签页的下方（同级）" },
-  "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
-
-  "config_insertNewChildAt_caption": { "message": "新建标签页的插入位置" },
-  "config_insertNewChildAt_noControl": { "message": "不控制（尊重 Firefox 或其他标签页扩展的决定）" },
-  "config_insertNewChildAt_first": { "message": "插入到树的顶端，作为其首个子标签页" },
-  "config_insertNewChildAt_last": { "message": "放在树的最后" },
-
-  "config_insertNewTabFromPinnedTabAt_caption": { "message": "从固定标签页打开的新标签页插入在" },
-  "config_insertNewTabFromPinnedTabAt_noControl": { "message": "不控制（尊重 Firefox 或其他标签页扩展的决定）" },
-  "config_insertNewTabFromPinnedTabAt_first": { "message": "插入到树的顶端，作为其首个子标签页" },
-  "config_insertNewTabFromPinnedTabAt_last": { "message": "放在树的最后" },
-
-  "config_autoGroupNewTabs_before": { "message": "\u200b" },
-  "config_autoGroupNewTabs_after": { "message": "毫秒后自动分组打开的标签页" },
-
-
-  "config_treeBehavior_caption": { "message": "树行为" },
-
-  "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "新树展开时，自动折叠其他树" },
-  "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "标签页获得焦点时，自动展开该树并折叠其他树" },
-  "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": { "message": "排除当前标签页关闭引发的焦点改变" },
-  "config_collapseExpandSubtreeByDblClick_label": { "message": "双击标签页折叠/展开树" },
-
-  "config_closeParentBehavior_close": { "message": "关闭子标签页" },
-  "config_closeParentBehavior_replaceWithGroupTab": { "message": "用虚构标签页替换已关闭的父标签页从而保留树" },
-  "config_closeParentBehavior_promoteFirst": { "message": "将第一个子标签页作为新的父标签页" },
-  "config_closeParentBehavior_promoteAll": { "message": "所有子标签页的级别按被关闭的父标签页级别提升" },
-  "config_promoteFirstChildForClosedRoot_label": { "message": "如果被关闭的父标签页没有父项，则将首个子标签页提升为父项" },
-  "config_closeParentBehavior_detach": { "message": "释放该树的子标签页" },
-
-
-  "config_advanced_caption": { "message": "高级" },
-
-  "config_userStyleRules_label": { "message": "侧栏内容的额外样式规则" },
-
-  "config_importedConfigsFromLegacy_label": { "message": "迁移旧配置" },
-  "config_legacyConfigsNextMigrationVersion_before": { "message": "下次启动时迁移" },
-  "config_legacyConfigsNextMigrationVersion_after": { "message": "级配置" },
-  "config_legacyConfigsNextMigrationVersion_currentLevel_before": { "message": "（目前可用的配置级别为" },
-  "config_legacyConfigsNextMigrationVersion_currentLevel_after": { "message": " 或更低）" },
-  "config_importedConfigsFromLegacy_placeholder": { "message": "在这里粘贴旧的配置数据" },
-  "migration_configs_notification_title": { "message": "Tree Style Tab：配置已成功迁移" },
-  "migration_configs_notification_message": { "message": "旧版本的配置已成功应用。" },
-
-  "config_importedTreeStructureFromLegacy_label": { "message": "迁移旧树" },
-  "config_migrateLegacyTreeStructure_label": { "message": "下次启动时迁移旧树" },
-  "config_importedTreeStructureFromLegacy_placeholder": { "message": "在这里粘贴旧树的迁移数据" },
-  "migration_tree_notification_title": { "message": "Tree Style Tab：标签页树迁移成功" },
-  "migration_tree_notification_message_withSession": { "message": "$COUNT$ 个窗口已成功恢复，具有先前的会话信息。",
-    "placeholders": {
-      "count": { "content": "$1", "example": "2" }
-    }},
-  "migration_tree_notification_message_withoutSession": { "message": "$COUNT$ 个窗口的树结构已恢复。没有恢复这些窗口中的标签页的会话信息。",
-    "placeholders": {
-      "count": { "content": "$1", "example": "2" }
-    }},
-
-
-  "config_debug_caption": { "message": "开发" },
-  "config_debug_label": { "message": "调试模式" },
-  "config_acceleratedTabDuplication_label": { "message": "加速标签页复制操作（过程中会看到非稳定的变化）" },
-  "config_maximumAcceptableDelayForTabDuplication_before": { "message": "中止复制标签页，如果按住超过" },
-  "config_maximumAcceptableDelayForTabDuplication_after": { "message": "毫秒。" },
-
-  "config_all_caption": { "message": "所有配置" },
-
-
-  "tabContextMenu_reload_label":      { "message": "重新载入标签页(&R)" },
-  "tabContextMenu_mute_label":        { "message": "静音标签页(&M)" },
-  "tabContextMenu_unmute_label":      { "message": "取消静音标签页(&M)" },
-
-  "tabContextMenu_pin_label":         { "message": "固定标签页(&P)" },
-  "tabContextMenu_unpin_label":       { "message": "取消固定标签页(&B)" },
-  "tabContextMenu_duplicate_label":   { "message": "创建标签页副本(&D)" },
-  "tabContextMenu_tearOff_label":     { "message": "移动到新窗口(&W)" },
-
-  "tabContextMenu_reloadAll_label":   { "message": "重新载入所有标签页(&A)" },
-  "tabContextMenu_bookmarkAll_label": { "message": "为全部标签页添加书签(&T)…" },
-  "tabContextMenu_closeAfter_label":  { "message": "关闭右侧标签页(&I)" },
-  "tabContextMenu_closeOther_label":  { "message": "关闭其他标签页(&O)" },
-
-  "tabContextMenu_undoClose_label":   { "message": "撤销关闭标签页(&U)" },
-  "tabContextMenu_close_label":       { "message": "关闭标签页(&C)" }
+    "__WET_LOCALE__": { "message": "zh-CN" }
 }
