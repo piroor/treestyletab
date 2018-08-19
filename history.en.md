@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.5.1 (2018.8.19)
    * Fix unexpected recursion around loading of favicons. (regression on 2.5.0)
    * Remove default shortcuts to move focus around tree. Ctrl-Shift-Arrows are already used for general shortcuts to select words in text fields.
    * All keyboard shortcuts are now unassignable by hitting the Escape key on each field.
