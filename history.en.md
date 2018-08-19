@@ -4,7 +4,7 @@
  - 2.5.1 (2018.8.19)
    * Fix unexpected recursion around loading of favicons. (regression on 2.5.0)
    * Remove default shortcuts to move focus around tree. Ctrl-Shift-Arrows are already used for general shortcuts to select words in text fields.
-   * All keyboard shortcuts are now unassignable by hitting the Escape key on each field.
+   * All keyboard shortcuts are now deassignable by hitting the Escape key on each field.
    * Fix misordernig of input fields to define keyboard shortcuts. (regression on 2.5.0)
    * `tab-mouseout` API message is now delivered at correct timing.
    * Updated zh-CN locale by YFdyh000, thanks!
