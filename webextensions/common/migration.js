@@ -23,6 +23,7 @@ function log(...args) {
 }
 
 export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
+const kCONFIGS_VERSION = 1;
 const kFEATURES_VERSION = 3;
 
 export function migrateLegacyConfigs() {
@@ -281,6 +282,49 @@ export async function migrateLegacyTreeStructure() {
   }
 
   configs.migrateLegacyTreeStructure = false;
+}
+
+export function migrateConfigs() {
+  switch (configs.configsVersion) {
+    case 0:
+      browser.commands.getAll().then(commands => {
+        for (const command of commands) {
+          if (command.shortcut)
+            continue;
+          let shortcut;
+          switch (command.name) {
+            case '_execute_browser_action':
+              shortcut = 'F1';
+              break;
+            case 'tabbarUp':
+              shortcut = 'Alt+Shift+Up';
+              break;
+            case 'tabbarPageUp':
+              shortcut = 'Alt+Shift+PageUp';
+              break;
+            case 'tabbarHome':
+              shortcut = 'Alt+Shift+Home';
+              break;
+            case 'tabbarDown':
+              shortcut = 'Alt+Shift+Down';
+              break;
+            case 'tabbarPageDown':
+              shortcut = 'Alt+Shift+PageDown';
+              break;
+            case 'tabbarEnd':
+              shortcut = 'Alt+Shift+End';
+              break;
+          }
+          if (!shortcut)
+            continue;
+          browser.commands.update({
+            name:     command.name,
+            shortcut: shortcut
+          });
+        }
+      });
+  }
+  configs.configsVersion = kCONFIGS_VERSION;
 }
 
 export async function notifyNewFeatures() {

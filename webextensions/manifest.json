@@ -69,7 +69,6 @@
   },
   "commands": {
     "_execute_browser_action": {
-      "suggested_key": { "default": "F1" },
       "description": "__MSG_sidebarToggleDescription__"
     },
     "reloadTree": {
@@ -154,27 +153,21 @@
       "description": "__MSG_command_focusFirstChild__"
     },
     "tabbarUp": {
-      "suggested_key": { "default": "Alt+Shift+Up" },
       "description": "__MSG_command_tabbarUp__"
     },
     "tabbarPageUp": {
-      "suggested_key": { "default": "Alt+Shift+PageUp" },
       "description": "__MSG_command_tabbarPageUp__"
     },
     "tabbarHome": {
-      "suggested_key": { "default": "Alt+Shift+Home" },
       "description": "__MSG_command_tabbarHome__"
     },
     "tabbarDown": {
-      "suggested_key": { "default": "Alt+Shift+Down" },
       "description": "__MSG_command_tabbarDown__"
     },
     "tabbarPageDown": {
-      "suggested_key": { "default": "Alt+Shift+PageDown" },
       "description": "__MSG_command_tabbarPageDown__"
     },
     "tabbarEnd": {
-      "suggested_key": { "default": "Alt+Shift+End" },
       "description": "__MSG_command_tabbarEnd__"
     }
   },

@@ -240,6 +240,7 @@ export const configs = new Configs({
 
   importedConfigsFromLegacy: null,
   legacyConfigsNextMigrationVersion: 0,
+  configsVersion: 0,
   importedTreeStructureFromLegacy: null,
   migrateLegacyTreeStructure: true
 }, {

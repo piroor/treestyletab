@@ -58,7 +58,8 @@ export async function init() {
   MetricsData.add('configs.$loaded');
 
   Migration.migrateLegacyConfigs();
-  MetricsData.add('Migration.migrateLegacyConfigs');
+  Migration.migrateConfigs();
+  MetricsData.add('Migration.migrateLegacyConfigs, Migration.migrateConfigs');
 
   updatePanelUrl();
 
