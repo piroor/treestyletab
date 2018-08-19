@@ -69,7 +69,7 @@
   },
   "commands": {
     "_execute_browser_action": {
-      "description": "__MSG_sidebarToggleDescription__"
+      "description": "__MSG_sidebarToggleDescription__ (F1)"
     },
     "reloadTree": {
       "description": "__MSG_context_reloadTree_label__"
@@ -153,22 +153,22 @@
       "description": "__MSG_command_focusFirstChild__"
     },
     "tabbarUp": {
-      "description": "__MSG_command_tabbarUp__"
+      "description": "__MSG_command_tabbarUp__ (Alt+Shift+Up)"
     },
     "tabbarPageUp": {
-      "description": "__MSG_command_tabbarPageUp__"
+      "description": "__MSG_command_tabbarPageUp__ (Alt+Shift+PageUp)"
     },
     "tabbarHome": {
-      "description": "__MSG_command_tabbarHome__"
+      "description": "__MSG_command_tabbarHome__ (Alt+Shift+Home)"
     },
     "tabbarDown": {
-      "description": "__MSG_command_tabbarDown__"
+      "description": "__MSG_command_tabbarDown__ (Alt+Shift+Down)"
     },
     "tabbarPageDown": {
-      "description": "__MSG_command_tabbarPageDown__"
+      "description": "__MSG_command_tabbarPageDown__ (Alt+Shift+PageDown)"
     },
     "tabbarEnd": {
-      "description": "__MSG_command_tabbarEnd__"
+      "description": "__MSG_command_tabbarEnd__ (Alt+Shift+End)"
     }
   },
   "options_ui": {

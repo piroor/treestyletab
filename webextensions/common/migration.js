@@ -17,6 +17,7 @@ import * as TabsContainer from './tabs-container.js';
 import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
+import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 
 function log(...args) {
   internalLogger('common/migration', ...args);
@@ -287,42 +288,7 @@ export async function migrateLegacyTreeStructure() {
 export function migrateConfigs() {
   switch (configs.configsVersion) {
     case 0:
-      browser.commands.getAll().then(commands => {
-        for (const command of commands) {
-          if (command.shortcut)
-            continue;
-          let shortcut;
-          switch (command.name) {
-            case '_execute_browser_action':
-              shortcut = 'F1';
-              break;
-            case 'tabbarUp':
-              shortcut = 'Alt+Shift+Up';
-              break;
-            case 'tabbarPageUp':
-              shortcut = 'Alt+Shift+PageUp';
-              break;
-            case 'tabbarHome':
-              shortcut = 'Alt+Shift+Home';
-              break;
-            case 'tabbarDown':
-              shortcut = 'Alt+Shift+Down';
-              break;
-            case 'tabbarPageDown':
-              shortcut = 'Alt+Shift+PageDown';
-              break;
-            case 'tabbarEnd':
-              shortcut = 'Alt+Shift+End';
-              break;
-          }
-          if (!shortcut)
-            continue;
-          browser.commands.update({
-            name:     command.name,
-            shortcut: shortcut
-          });
-        }
-      });
+      ShortcutCustomizeUI.setDefaultShortcuts();
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }
