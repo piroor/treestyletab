@@ -318,23 +318,24 @@ async function onCommand(item, event) {
   if (event.button == 1)
     return;
 
+  const contextTab = mContextTab;
   wait(0).then(() => close()); // close the menu immediately!
 
   switch (item.id) {
     case 'context_reloadTab':
-      browser.tabs.reload(mContextTab.id);
+      browser.tabs.reload(contextTab.id);
       break;
     case 'context_toggleMuteTab-mute':
-      browser.tabs.update(mContextTab.id, { muted: true });
+      browser.tabs.update(contextTab.id, { muted: true });
       break;
     case 'context_toggleMuteTab-unmute':
-      browser.tabs.update(mContextTab.id, { muted: false });
+      browser.tabs.update(contextTab.id, { muted: false });
       break;
     case 'context_pinTab':
-      browser.tabs.update(mContextTab.id, { pinned: true });
+      browser.tabs.update(contextTab.id, { pinned: true });
       break;
     case 'context_unpinTab':
-      browser.tabs.update(mContextTab.id, { pinned: false });
+      browser.tabs.update(contextTab.id, { pinned: false });
       break;
     case 'context_duplicateTab':
       /*
@@ -344,9 +345,9 @@ async function onCommand(item, event) {
         duplicated tab. For more details, see also:
         https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
       */
-      // browser.tabs.duplicate(mContextTab.id);
+      // browser.tabs.duplicate(contextTab.id);
       return (async () => {
-        const sourceTab = Tabs.getTabById(mContextTab);
+        const sourceTab = Tabs.getTabById(contextTab);
         log('source tab: ', sourceTab, !!sourceTab.apiTab);
         const duplicatedTabs = await Tree.moveTabs([sourceTab], {
           duplicate:           true,
@@ -362,8 +363,8 @@ async function onCommand(item, event) {
       })();
     case 'context_openTabInWindow':
       await browser.windows.create({
-        tabId:     mContextTab.id,
-        incognito: mContextTab.incognito
+        tabId:     contextTab.id,
+        incognito: contextTab.incognito
       });
       break;
     case 'context_reloadAllTabs': {
@@ -393,7 +394,7 @@ async function onCommand(item, event) {
       let after = false;
       const closeAPITabs = [];
       for (const apiTab of apiTabs) {
-        if (apiTab.id == mContextTab.id) {
+        if (apiTab.id == contextTab.id) {
           after = true;
           continue;
         }
@@ -406,7 +407,7 @@ async function onCommand(item, event) {
       browser.tabs.remove(closeAPITabs.map(aPITab => aPITab.id));
     }; break;
     case 'context_closeOtherTabs': {
-      const apiTabId = mContextTab.id; // cache it for delayed tasks!
+      const apiTabId = contextTab.id; // cache it for delayed tasks!
       const apiTabs  = await browser.tabs.query({ windowId: mContextWindowId });
       const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && aPITab.id != apiTabId).map(aPITab => aPITab.id);
       const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: mContextWindowId })) === false;
@@ -420,7 +421,7 @@ async function onCommand(item, event) {
         browser.sessions.restore(sessions[0].tab.sessionId);
     }; break;
     case 'context_closeTab':
-      browser.tabs.remove(mContextTab.id);
+      browser.tabs.remove(contextTab.id);
       break;
 
     default: {
@@ -454,7 +455,7 @@ async function onCommand(item, event) {
             srcUrl:           null,
             wasChecked
           },
-          tab: mContextTab || null
+          tab: contextTab || null
         };
         const owner = item.getAttribute('data-item-owner-id');
         if (owner == browser.runtime.id)
