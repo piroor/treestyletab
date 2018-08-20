@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.5.2 (2018.8.20)
    * Some context menu commands become robust on slow situation.
  - 2.5.1 (2018.8.19)
    * Fix unexpected recursion around loading of favicons. (regression on 2.5.0)
