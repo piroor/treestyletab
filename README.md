@@ -180,7 +180,7 @@ Too high customizability for such rare usecases will just make you happy, but ot
 
 ### Keyboard shortcuts for TST's custom functions, for example, toggle show/hide of the sidebar, operations to modify tree, and so on
 
-Due to limitations of WebExtensions APIs, the keyboard shortcut to toggle show/hide the sidebar is not changable.
+Due to limitations of WebExtensions APIs, the keyboard shortcut to toggle show/hide the sidebar (F1) is not changable.
 See also:
 
  * [1215061 - Better keyboard shortcut support](https://bugzilla.mozilla.org/show_bug.cgi?id=1215061)
