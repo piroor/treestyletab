@@ -51,7 +51,7 @@
       "title": { "content": "$1", "example": "title" }
     }},
   "groupTab_label_default": { "message": "Group" },
-  "groupTab_temporary_label": { "message": "Close this tab when there is no more child" },
+  "groupTab_temporary_label": { "message": "Close this tab when there are no more child" },
   "groupTab_fromPinnedTab_label": { "message": "Tabs from $TITLE$",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
