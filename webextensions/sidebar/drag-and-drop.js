@@ -570,12 +570,12 @@ function retrieveURIsFromDragEvent(event) {
     if ('mozGetDataAt' in dt) {
       // this doesn't work anymore on Firefox 63 and later.
       // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1453153
-    for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
-      const urlData = dt.mozGetDataAt(dataType, i);
-      if (urlData) {
-        urls = urls.concat(retrieveURIsFromData(urlData, dataType));
+      for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
+        const urlData = dt.mozGetDataAt(dataType, i);
+        if (urlData) {
+          urls = urls.concat(retrieveURIsFromData(urlData, dataType));
+        }
       }
-    }
     }
     else {
       const urlData = dt.getData(dataType);
@@ -761,13 +761,13 @@ function onDragStart(event) {
     //  * droppable on bookmark toolbar and other Places based UI
     //  * undroppable on content area, desktop, and other application
     // so this won't block tearing off of tabs by drag-and-drop.
-    dt.mozSetDataAt(kTYPE_X_MOZ_PLACE,
-                    JSON.stringify({
-                      type:  kTYPE_X_MOZ_PLACE,
-                      uri:   aDraggedTab.apiTab.url,
-                      title: aDraggedTab.apiTab.title
-                    }),
-                    index);
+      dt.mozSetDataAt(kTYPE_X_MOZ_PLACE,
+                      JSON.stringify({
+                        type:  kTYPE_X_MOZ_PLACE,
+                        uri:   aDraggedTab.apiTab.url,
+                        title: aDraggedTab.apiTab.title
+                      }),
+                      index);
     }
     else if (index == 0) {
       dt.setData(kTYPE_X_MOZ_PLACE,
