@@ -60,7 +60,9 @@ function log(...args) {
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
 const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
-const kBOOKMARK_FOLDER = 'x-moz-place:';
+const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
+const kTYPE_URI_LIST    = 'text/uri-list';
+const kBOOKMARK_FOLDER  = 'x-moz-place:';
 
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';
@@ -558,9 +560,9 @@ function retrieveURIsFromDragEvent(event) {
   const dt    = event.dataTransfer;
   const types = [
     kTYPE_X_MOZ_PLACE,
-    'text/uri-list',
+    kTYPE_URI_LIST,
     'text/x-moz-text-internal',
-    'text/x-moz-url',
+    kTYPE_X_MOZ_URL,
     'text/plain',
     'application/x-moz-file'
   ];
@@ -625,7 +627,7 @@ function retrieveURIsFromData(aData, type) {
     //    return `${kBOOKMARK_FOLDER}${aData}`;
     //}; break;
 
-    case 'text/uri-list':
+    case kTYPE_URI_LIST:
       return aData
         .replace(/\r/g, '\n')
         .replace(/^\#.+$/gim, '')
@@ -741,7 +743,8 @@ function onDragStart(event) {
   dt.effectAllowed = 'copyMove';
 
   const sanitizedDragData = sanitizeDragData(dragData);
-  dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData));
+  dt.items.clear();
+  dt.items.add(JSON.stringify(sanitizedDragData), kTREE_DROP_TYPE);
 
   // Because addon cannot read drag data across private browsing mode,
   // we need to share detailed information of dragged tabs in different way!
@@ -752,32 +755,16 @@ function onDragStart(event) {
     dragData: sanitizedDragData
   });
 
-  dragData.tabNodes.map((aDraggedTab, index) => {
-    aDraggedTab.classList.add(Constants.kTAB_STATE_DRAGGING);
-    if ('mozSetDataAt' in dt) {
-      // this doesn't work anymore on Firefox 63 and later.
-      // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1453153
-    // this type will be...
-    //  * droppable on bookmark toolbar and other Places based UI
-    //  * undroppable on content area, desktop, and other application
-    // so this won't block tearing off of tabs by drag-and-drop.
-      dt.mozSetDataAt(kTYPE_X_MOZ_PLACE,
-                      JSON.stringify({
-                        type:  kTYPE_X_MOZ_PLACE,
-                        uri:   aDraggedTab.apiTab.url,
-                        title: aDraggedTab.apiTab.title
-                      }),
-                      index);
-    }
-    else if (index == 0) {
-      dt.setData(kTYPE_X_MOZ_PLACE,
-                 JSON.stringify({
-                   type:  kTYPE_X_MOZ_PLACE,
-                   uri:   aDraggedTab.apiTab.url,
-                   title: aDraggedTab.apiTab.title
-                 }));
-    }
-  });
+  const uriList = [];
+  const mozUrl  = [];
+  for (const draggedTab of dragData.tabNodes) {
+    draggedTab.classList.add(Constants.kTAB_STATE_DRAGGING);
+    uriList.push(`#${draggedTab.apiTab.title}\n${draggedTab.apiTab.url}`);
+    mozUrl.push(`${draggedTab.apiTab.url}\n${draggedTab.apiTab.title}`);
+  }
+  dt.items.add(uriList.join('\n'), kTYPE_URI_LIST);
+  dt.items.add(mozUrl.join('\n'), kTYPE_X_MOZ_URL);
+
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
