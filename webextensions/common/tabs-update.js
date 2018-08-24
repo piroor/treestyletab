@@ -227,16 +227,13 @@ export function updateTab(tab, newState = {}, options = {}) {
     }
   }
 
-  /*
-  // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (options.forceApply ||
-      'selected' in newState) {
+      'highlighted' in newState) {
     if (newState.selected)
-      tab.classList.add(Constants.kTAB_STATE_SELECTED);
+      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
     else
-      tab.classList.remove(Constants.kTAB_STATE_SELECTED);
+      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
   }
-  */
 
   if (options.forceApply ||
       'discarded' in newState) {
