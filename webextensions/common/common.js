@@ -149,7 +149,6 @@ export const configs = new Configs({
   enableWorkaroundForBug1409262: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   acceptableDelayForInternalFocusMoving: 150,
-  preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400,
   minimumIntervalToProcessDragoverEvent: 50,

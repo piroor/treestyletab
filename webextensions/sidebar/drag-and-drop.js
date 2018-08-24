@@ -1012,8 +1012,6 @@ function onDragEnd(event) {
   if (Array.isArray(dragData.apiTabs))
     dragData.tabNodes = dragData.apiTabs.map(Tabs.getTabById);
 
-  const stillInSelfWindow = !!mDraggingOnSelfWindow;
-
   finishDrag();
 
   if (event.dataTransfer.dropEffect != 'none' ||
@@ -1032,27 +1030,29 @@ function onDragEnd(event) {
     return;
   }
 
+  const windowX = window.mozInnerScreenX * window.devicePixelRatio;
+  const windowY = window.mozInnerScreenY * window.devicePixelRatio;
+  const offset  = dragData.tabNodes[0].getBoundingClientRect().height * window.devicePixelRatio / 2;
+  log('dragend at: ', {
+    windowX,
+    windowY,
+    windowW: window.innerWidth,
+    windowH: window.innerHeight,
+    eventX:  event.screenX,
+    eventY:  event.screenY,
+    offset
+  });
+  if (event.screenX >= windowX - offset &&
+      event.screenY >= windowY - offset &&
+      event.screenX <= windowX + window.innerWidth + offset &&
+      event.screenY <= windowY + window.innerHeight + offset) {
+    log('dropped near the tab bar (from coordinates): detaching is canceled');
+    return;
+  }
+
   log('trying to detach tab from window');
   event.stopPropagation();
   event.preventDefault();
-
-  if (stillInSelfWindow) {
-    log('dropped at tab bar: detaching is canceled');
-    return;
-  }
-
-  const now = Date.now();
-  const delta = now - mLastDragOverTimestamp;
-  log('LastDragOverTimestamp: ', {
-    last: mLastDragOverTimestamp,
-    now, delta,
-    timeout: configs.preventTearOffTabsTimeout
-  });
-  if (mLastDragOverTimestamp &&
-      delta < configs.preventTearOffTabsTimeout) {
-    log('dropped near the tab bar: detaching is canceled');
-    return;
-  }
 
   if (isDraggingAllCurrentTabs(dragData.tabNode)) {
     log('all tabs are dragged, so it is nonsence to tear off them from the window');
