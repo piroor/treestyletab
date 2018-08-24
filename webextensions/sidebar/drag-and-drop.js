@@ -590,25 +590,32 @@ function retrieveURIsFromData(aData, type) {
   switch (type) {
     case kTYPE_URI_LIST:
       return aData
-        .replace(/^\#.+$/gim, '')
+        .replace(/\r/g, '\n')
         .replace(/\n\n+/g, '\n')
-        .trim()
-        .split('\n');
+        .split('\n')
+        .filter(line => {
+          return line.charAt(0) != '#';
+        });
 
     case kTYPE_X_MOZ_URL:
       return aData
         .trim()
-        .split('\n')
-        .map((line, index) => {
-          return index % 2 == 0 ? line : '' ;
-        })
-        .join('\n')
+        .replace(/\r/g, '\n')
         .replace(/\n\n+/g, '\n')
-        .trim()
-        .split('\n');
+        .split('\n')
+        .filter((_line, index) => {
+          return index % 2 == 0;
+        });
 
     case 'text/plain':
-      return [aData.trim()];
+      return aData
+        .replace(/\r/g, '\n')
+        .replace(/\n\n+/g, '\n')
+        .trim()
+        .split('\n')
+        .filter(line => {
+          return /^\w+:\/\/.+/.test(line);
+        });
   }
   return [];
 }
