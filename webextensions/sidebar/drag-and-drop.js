@@ -59,7 +59,6 @@ function log(...args) {
 
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
-const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
 const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
 const kTYPE_URI_LIST    = 'text/uri-list';
 const kBOOKMARK_FOLDER  = 'x-moz-place:';
@@ -559,32 +558,15 @@ function retrieveURIsFromDragEvent(event) {
   log('retrieveURIsFromDragEvent');
   const dt    = event.dataTransfer;
   const types = [
-    kTYPE_X_MOZ_PLACE,
     kTYPE_URI_LIST,
-    'text/x-moz-text-internal',
     kTYPE_X_MOZ_URL,
-    'text/plain',
-    'application/x-moz-file'
+    'text/plain'
   ];
   let urls = [];
-  for (let i = 0; i < types.length; i++) {
-    const dataType = types[i];
-    if ('mozGetDataAt' in dt) {
-      // this doesn't work anymore on Firefox 63 and later.
-      // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1453153
-      for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
-        const urlData = dt.mozGetDataAt(dataType, i);
-        if (urlData) {
-          urls = urls.concat(retrieveURIsFromData(urlData, dataType));
-        }
-      }
-    }
-    else {
-      const urlData = dt.getData(dataType);
-      if (urlData) {
-        urls = urls.concat(retrieveURIsFromData(urlData, dataType));
-      }
-    }
+  for (const type of types) {
+    const urlData  = dt.getData(type);
+    if (urlData)
+      urls = urls.concat(retrieveURIsFromData(urlData, type));
     if (urls.length)
       break;
   }
@@ -606,41 +588,27 @@ function retrieveURIsFromDragEvent(event) {
 function retrieveURIsFromData(aData, type) {
   log('retrieveURIsFromData: ', type, aData);
   switch (type) {
-    //case kTYPE_X_MOZ_PLACE: {
-    //  const item = JSON.parse(aData);
-    //  if (item.type == 'text/x-moz-place-container') {
-    //    let children = item.children;
-    //    if (!children) {
-    //      children = item.children = retrieveBookmarksInFolder(item.id);
-    //      aData = JSON.stringify(item);
-    //    }
-    //    // When a blank folder is dropped, just open a dummy tab with the folder name.
-    //    if (children && children.length == 0) {
-    //      const uri = TabsGroup.makeGroupTabURI({ title: item.title });
-    //      return [uri];
-    //    }
-    //  }
-    //  const uri = item.uri;
-    //  if (uri)
-    //    return uri;
-    //  else
-    //    return `${kBOOKMARK_FOLDER}${aData}`;
-    //}; break;
-
     case kTYPE_URI_LIST:
       return aData
-        .replace(/\r/g, '\n')
         .replace(/^\#.+$/gim, '')
         .replace(/\n\n+/g, '\n')
+        .trim()
         .split('\n');
 
-    case 'text/unicode':
-    case 'text/plain':
-    case 'text/x-moz-text-internal':
-      return [aData.trim()];
+    case kTYPE_X_MOZ_URL:
+      return aData
+        .trim()
+        .split('\n')
+        .map((line, index) => {
+          return index % 2 == 0 ? line : '' ;
+        })
+        .join('\n')
+        .replace(/\n\n+/g, '\n')
+        .trim()
+        .split('\n');
 
-    //case 'application/x-moz-file':
-    //  return [getURLSpecFromFile(aData)];
+    case 'text/plain':
+      return [aData.trim()];
   }
   return [];
 }
