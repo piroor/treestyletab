@@ -164,22 +164,14 @@ onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
-  if (!tab || onMouseOver.lastTarget != tab.id) {
-    const lastMouseOutTab = Tabs.getTabById(onMouseOut.lastTarget);
-    if (lastMouseOutTab) {
-      TSTAPI.sendMessage({
-        type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-        tab:      TSTAPI.serializeTab(lastMouseOutTab),
-        window:   mTargetWindow,
-        ctrlKey:  event.ctrlKey,
-        shiftKey: event.shiftKey,
-        altKey:   event.altKey,
-        metaKey:  event.metaKey,
-        dragging: DragAndDrop.isCapturingForDragging()
-      });
-    }
-  }
-  if (tab && onMouseOver.lastTarget != tab.id) {
+
+  // We enter the tab element itself, but not from any of its children
+  const enterTabFromAncestor = event.target.classList.contains('tab') && !event.target.contains(event.relatedTarget);
+  // We enter the tab or any of its children from outside of the sidebar,
+  // which causes the relatedTarget (target of the mouseout event) to be null
+  const enterTabAndSidebar = tab && event.relatedTarget === null;
+
+  if (enterTabFromAncestor || enterTabAndSidebar) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
       tab:      TSTAPI.serializeTab(tab),
@@ -191,22 +183,22 @@ function onMouseOver(event) {
       dragging: DragAndDrop.isCapturingForDragging()
     });
   }
-  onMouseOver.lastTarget = tab && tab.id;
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
 
 function onMouseOut(event) {
   const tab = EventUtils.getTabFromEvent(event);
-  onMouseOut.lastTarget = tab && tab.id;
-  setTimeout(() => {
-    if (onMouseOver.lastTarget)
-      return;
-    const lastMouseOutTab = Tabs.getTabById(onMouseOut.lastTarget);
-    if (!lastMouseOutTab)
-      return;
+
+  // We leave the tab element itself, but not for one of its children
+  const leaveTabToAncestor = event.target.classList.contains('tab') && !event.target.contains(event.relatedTarget);
+  // We leave the sidebar directly from the tab or a child element of it,
+  // which causes the relatedTarget (target of the mouseover event) to be null
+  const leaveSidebarFromTab = tab && event.relatedTarget === null;
+
+  if (leaveTabToAncestor || leaveSidebarFromTab) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-      tab:      TSTAPI.serializeTab(lastMouseOutTab),
+      tab:      TSTAPI.serializeTab(tab),
       window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
@@ -214,8 +206,7 @@ function onMouseOut(event) {
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
     });
-    onMouseOut.lastTarget = null;
-  }, 10);
+  }
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
 
