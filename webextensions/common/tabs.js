@@ -803,7 +803,10 @@ export function getSelectedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`));
+  return Array.slice(container.querySelectorAll(`
+    ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED},
+    .${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED} ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}
+  `));
 }
 
 
@@ -1044,7 +1047,8 @@ export function isTemporaryGroupTab(tab) {
 
 export function isSelected(tab) {
   return ensureLivingTab(tab) &&
-           tab.classList.contains(Constants.kTAB_STATE_SELECTED);
+           (tab.classList.contains(Constants.kTAB_STATE_SELECTED) ||
+            tab.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED} .${Constants.kTAB_STATE_HIGHLIGHTED}`));
 }
 
 export function isHighlighted(tab) {
