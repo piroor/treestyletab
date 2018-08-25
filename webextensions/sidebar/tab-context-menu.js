@@ -40,6 +40,7 @@ let mMenu;
 let mContextTab      = null;
 let mLastOpenOptions = null;
 let mContextWindowId = null;
+let mLastContextualIdentity = null;
 let mLastMultiselected = false;
 let mIsDirty         = false;
 
@@ -90,6 +91,7 @@ async function rebuild() {
     return;
 
   updateMultiselectedLabel();
+  updateContextualIdentitiesSelector();
 
   const extraItemNodes = document.createDocumentFragment();
   for (const [id, extraItems] of mExtraItems.entries()) {
@@ -166,6 +168,32 @@ function updateMultiselectedLabel() {
   }
   labelRange.detach();
   mLastMultiselected = isMultiselected;
+}
+
+function updateContextualIdentitiesSelector() {
+  if (!mContextTab)
+    return;
+  const isDefault    = mContextTab.cookieStoreId == 'firefox-default';
+  const container    = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU);
+  const defaultItems = container.querySelectorAll('.contextual-identity-default');
+  const identities   = container.querySelectorAll('[data-value]');
+  if (isDefault) {
+    for (const item of defaultItems) {
+      item.style.display = 'none';
+    }
+    for (const item of identities) {
+      item.style.display = '';
+    }
+  }
+  else {
+    for (const item of defaultItems) {
+      item.style.display = '';
+    }
+    for (const item of identities) {
+      item.style.display = item.dataset.value == mContextTab.cookieStoreId ? 'none' : '' ;
+    }
+  }
+  mLastContextualIdentity = mContextTab.cookieStoreId;
 }
 
 function getAddonName(id) {
@@ -268,6 +296,8 @@ export async function open(options = {}) {
   mLastOpenOptions = options;
   mContextTab      = options.tab;
   mContextWindowId = options.windowId || (mContextTab && mContextTab.windowId);
+  if (mContextTab && mLastContextualIdentity != mContextTab.cookieStoreId)
+    mIsDirty = true;
   if (mLastMultiselected != Tabs.isMultiselected(Tabs.getTabById(mContextTab)))
     mIsDirty = true;
   await rebuild();

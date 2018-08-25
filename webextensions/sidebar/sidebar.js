@@ -358,6 +358,7 @@ function updateContextualIdentitiesSelectorInContextMenu() {
   range.setStartAfter(container.querySelector('.separator'));
   range.deleteContents();
 
+  let hasIdentity = false;
   const fragment = document.createDocumentFragment();
   ContextualIdentities.forEach(identity => {
     const item     = document.createElement('li');
@@ -368,9 +369,12 @@ function updateContextualIdentitiesSelectorInContextMenu() {
       item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
     }
     fragment.appendChild(item);
+    hasIdentity = true;
   });
   range.insertNode(fragment);
   range.detach();
+
+  container.parentNode.style.display = hasIdentity ? '' : 'none' ;
 }
 
 export async function rebuildAll(cache) {
