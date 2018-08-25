@@ -352,7 +352,7 @@ async function onCommand(item, event) {
         }
       }
       else {
-      browser.tabs.reload(contextTab.id);
+        browser.tabs.reload(contextTab.id);
       }
       break;
     case 'context_toggleMuteTab-mute':
@@ -362,7 +362,7 @@ async function onCommand(item, event) {
         }
       }
       else {
-      browser.tabs.update(contextTab.id, { muted: true });
+        browser.tabs.update(contextTab.id, { muted: true });
       }
       break;
     case 'context_toggleMuteTab-unmute':
@@ -372,7 +372,7 @@ async function onCommand(item, event) {
         }
       }
       else {
-      browser.tabs.update(contextTab.id, { muted: false });
+        browser.tabs.update(contextTab.id, { muted: false });
       }
       break;
     case 'context_pinTab':
@@ -382,7 +382,7 @@ async function onCommand(item, event) {
         }
       }
       else {
-      browser.tabs.update(contextTab.id, { pinned: true });
+        browser.tabs.update(contextTab.id, { pinned: true });
       }
       break;
     case 'context_unpinTab':
@@ -392,7 +392,7 @@ async function onCommand(item, event) {
         }
       }
       else {
-      browser.tabs.update(contextTab.id, { pinned: false });
+        browser.tabs.update(contextTab.id, { pinned: false });
       }
       break;
     case 'context_duplicateTab':
@@ -426,10 +426,10 @@ async function onCommand(item, event) {
         });
       }
       else {
-      await browser.windows.create({
-        tabId:     contextTab.id,
-        incognito: contextTab.incognito
-      });
+        await browser.windows.create({
+          tabId:     contextTab.id,
+          incognito: contextTab.incognito
+        });
       }
       break;
     case 'context_reloadAllTabs': {
@@ -501,7 +501,7 @@ async function onCommand(item, event) {
         }
       }
       else {
-      browser.tabs.remove(contextTab.id);
+        browser.tabs.remove(contextTab.id);
       }
       break;
 
