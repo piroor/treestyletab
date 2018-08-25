@@ -365,6 +365,7 @@ function updateContextualIdentitiesSelectorInContextMenu() {
     item.id = `context_reopenInContainer:${identity.cookieStoreId}`
     item.dataset.value = identity.cookieStoreId;
     item.textContent = identity.name.replace(/^([a-z0-9])/i, '&$1');
+    item.setAttribute('title', identity.name);
     if (identity.iconUrl) {
       item.dataset.icon = identity.iconUrl;
       item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
