@@ -361,5 +361,16 @@
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 
   "tabContextMenu_undoClose_label":   { "message": "&Undo Close Tab" },
-  "tabContextMenu_close_label":       { "message": "&Close Tab" }
+  "tabContextMenu_close_label":       { "message": "&Close Tab" },
+
+  "tabContextMenu_reload_label_multiselected":      { "message": "&Reload Selected Tabs" },
+  "tabContextMenu_mute_label_multiselected":        { "message": "M&ute Tabs" },
+  "tabContextMenu_unmute_label_multiselected":      { "message": "Unmute Ta&bs" },
+
+  "tabContextMenu_pin_label_multiselected":         { "message": "&Pin Tabs" },
+  "tabContextMenu_unpin_label_multiselected":       { "message": "Unpin Ta&bs" },
+
+  "tabContextMenu_bookmark_label_multiselected": { "message": "Boo&kmark Tabs…" },
+
+  "tabContextMenu_close_label_multiselected":       { "message": "Close &Selected Tabs" }
 }

@@ -40,6 +40,7 @@ let mMenu;
 let mContextTab      = null;
 let mLastOpenOptions = null;
 let mContextWindowId = null;
+let mLastMultiselected = false;
 let mIsDirty         = false;
 
 const mExtraItems = new Map();
@@ -87,6 +88,8 @@ async function rebuild() {
 
   if (mExtraItems.size == 0)
     return;
+
+  updateMultiselectedLabel();
 
   const extraItemNodes = document.createDocumentFragment();
   for (const [id, extraItems] of mExtraItems.entries()) {
@@ -148,6 +151,21 @@ async function rebuild() {
   separator.classList.add('separator');
   extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
   mMenu.appendChild(extraItemNodes);
+}
+
+function updateMultiselectedLabel() {
+  const isMultiselected = Tabs.isMultiselected(Tabs.getTabById(mContextTab));
+  const activeLabelAttribute = isMultiselected ? 'data-label-multiselected' : 'data-label-single' ;
+  const labelRange = document.createRange();
+  for (const item of mMenu.querySelectorAll(`[${activeLabelAttribute}]`)) {
+    const label = item.getAttribute(activeLabelAttribute);
+    item.setAttribute('title', label);
+    labelRange.selectNodeContents(item);
+    labelRange.deleteContents();
+    labelRange.insertNode(document.createTextNode(label));
+  }
+  labelRange.detach();
+  mLastMultiselected = isMultiselected;
 }
 
 function getAddonName(id) {
@@ -250,6 +268,8 @@ export async function open(options = {}) {
   mLastOpenOptions = options;
   mContextTab      = options.tab;
   mContextWindowId = options.windowId || (mContextTab && mContextTab.windowId);
+  if (mLastMultiselected != Tabs.isMultiselected(Tabs.getTabById(mContextTab)))
+    mIsDirty = true;
   await rebuild();
   if (mIsDirty) {
     return await open(options);

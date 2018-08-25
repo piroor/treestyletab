@@ -1056,6 +1056,12 @@ export function isHighlighted(tab) {
            tab.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED);
 }
 
+export function isMultiselected(tab) {
+  return isSelected(tab) &&
+           (tab.parentNode.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`).length > 1 ||
+            tab.parentNode.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED}`));
+}
+
 export function isLocked(_aTab) {
   return false;
 }
