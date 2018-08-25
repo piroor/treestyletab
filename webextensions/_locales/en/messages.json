@@ -353,6 +353,8 @@
   "tabContextMenu_pin_label":         { "message": "&Pin Tab" },
   "tabContextMenu_unpin_label":       { "message": "Unpin Ta&b" },
   "tabContextMenu_duplicate_label":   { "message": "&Duplicate Tab" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "R&eopen in Container" },
+  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "&No Container" },
   "tabContextMenu_tearOff_label":     { "message": "Move to New &Window" },
 
   "tabContextMenu_reloadAll_label":   { "message": "Reload &All Tabs" },

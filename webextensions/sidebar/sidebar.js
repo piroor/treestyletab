@@ -164,6 +164,7 @@ export async function init() {
     MetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
+      updateContextualIdentitiesSelectorInContextMenu();
       ContextualIdentities.startObserve();
     }),
     MetricsData.addAsync('TabContextMenu.init', async () => {
@@ -323,15 +324,15 @@ function updateContextualIdentitiesSelector() {
   range.deleteContents();
 
   const fragment = document.createDocumentFragment();
-  ContextualIdentities.forEach(aIdentity => {
+  ContextualIdentities.forEach(identity => {
     const item     = document.createElement('li');
-    item.dataset.value = aIdentity.cookieStoreId;
-    item.textContent = aIdentity.name;
+    item.dataset.value = identity.cookieStoreId;
+    item.textContent = identity.name;
     const icon = document.createElement('span');
     icon.classList.add('icon');
-    if (aIdentity.iconUrl) {
-      icon.style.backgroundColor = aIdentity.colorCode || 'var(--tab-text)';
-      icon.style.mask = `url(${JSON.stringify(aIdentity.iconUrl)}) no-repeat center / 100%`;
+    if (identity.iconUrl) {
+      icon.style.backgroundColor = identity.colorCode || 'var(--tab-text)';
+      icon.style.mask = `url(${JSON.stringify(identity.iconUrl)}) no-repeat center / 100%`;
     }
     item.insertBefore(icon, item.firstChild);
     fragment.appendChild(item);
@@ -345,6 +346,29 @@ function updateContextualIdentitiesSelector() {
     defaultCotnainerItem.insertBefore(icon, defaultCotnainerItem.firstChild);
     fragment.appendChild(defaultCotnainerItem);
   }
+  range.insertNode(fragment);
+  range.detach();
+}
+
+function updateContextualIdentitiesSelectorInContextMenu() {
+  const container = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU);
+
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  range.setStartAfter(container.querySelector('.separator'));
+  range.deleteContents();
+
+  const fragment = document.createDocumentFragment();
+  ContextualIdentities.forEach(identity => {
+    const item     = document.createElement('li');
+    item.dataset.value = identity.cookieStoreId;
+    item.textContent = identity.name.replace(/^([a-z0-9])/i, '&$1');
+    if (identity.iconUrl) {
+      item.dataset.icon = identity.iconUrl;
+      item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
+    }
+    fragment.appendChild(item);
+  });
   range.insertNode(fragment);
   range.detach();
 }
@@ -657,6 +681,7 @@ Tabs.onWindowRestoring.addListener(async windowId => {
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
+  updateContextualIdentitiesSelectorInContextMenu();
 });
 
 

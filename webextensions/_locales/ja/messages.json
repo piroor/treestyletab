@@ -353,6 +353,8 @@
   "tabContextMenu_pin_label":         { "message": "タブをピン留め(&P)" },
   "tabContextMenu_unpin_label":       { "message": "タブのピン留めを外す(&B)" },
   "tabContextMenu_duplicate_label":   { "message": "タブを複製(&D)" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "コンテナーを開きなおす(&E)" },
+  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "コンテナーなし(&N)" },
   "tabContextMenu_tearOff_label":     { "message": "新しいウィンドウへ移動(&W)" },
 
   "tabContextMenu_reloadAll_label":   { "message": "すべてのタブを再読み込み(&A)" },
