@@ -325,7 +325,7 @@ function updateContextualIdentitiesSelector() {
 
   const fragment = document.createDocumentFragment();
   ContextualIdentities.forEach(identity => {
-    const item     = document.createElement('li');
+    const item = document.createElement('li');
     item.dataset.value = identity.cookieStoreId;
     item.textContent = identity.name;
     const icon = document.createElement('span');
@@ -361,7 +361,7 @@ function updateContextualIdentitiesSelectorInContextMenu() {
   let hasIdentity = false;
   const fragment = document.createDocumentFragment();
   ContextualIdentities.forEach(identity => {
-    const item     = document.createElement('li');
+    const item = document.createElement('li');
     item.id = `context_reopenInContainer:${identity.cookieStoreId}`
     item.dataset.value = identity.cookieStoreId;
     item.textContent = identity.name.replace(/^([a-z0-9])/i, '&$1');
