@@ -341,21 +341,59 @@ async function onCommand(item, event) {
   const contextTab = mContextTab;
   wait(0).then(() => close()); // close the menu immediately!
 
+  const isMultiselected   = Tabs.isMultiselected(Tabs.getTabById(contextTab));
+  const multiselectedTabs = isMultiselected && Tabs.getSelectedTabs();
+
   switch (item.id) {
     case 'context_reloadTab':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.reload(tab.apiTab.id);
+        }
+      }
+      else {
       browser.tabs.reload(contextTab.id);
+      }
       break;
     case 'context_toggleMuteTab-mute':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { muted: true });
+        }
+      }
+      else {
       browser.tabs.update(contextTab.id, { muted: true });
+      }
       break;
     case 'context_toggleMuteTab-unmute':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { muted: false });
+        }
+      }
+      else {
       browser.tabs.update(contextTab.id, { muted: false });
+      }
       break;
     case 'context_pinTab':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { pinned: true });
+        }
+      }
+      else {
       browser.tabs.update(contextTab.id, { pinned: true });
+      }
       break;
     case 'context_unpinTab':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { pinned: false });
+        }
+      }
+      else {
       browser.tabs.update(contextTab.id, { pinned: false });
+      }
       break;
     case 'context_duplicateTab':
       /*
@@ -382,10 +420,17 @@ async function onCommand(item, event) {
         });
       })();
     case 'context_openTabInWindow':
+      if (multiselectedTabs) {
+        Tree.openNewWindowFromTabs(multiselectedTabs, {
+          inRemote:  true
+        });
+      }
+      else {
       await browser.windows.create({
         tabId:     contextTab.id,
         incognito: contextTab.incognito
       });
+      }
       break;
     case 'context_reloadAllTabs': {
       const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
@@ -394,7 +439,9 @@ async function onCommand(item, event) {
       }
     }; break;
     case 'context_bookmarkAllTabs': {
-      const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
+      const apiTabs = multiselectedTabs ?
+        multiselectedTabs.map(tab => tab.apiTab) :
+        await browser.tabs.query({ windowId: mContextWindowId }) ;
       const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
       if (folder)
         browser.bookmarks.get(folder.parentId).then(folders => {
@@ -413,8 +460,11 @@ async function onCommand(item, event) {
       const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
       let after = false;
       const closeAPITabs = [];
+      const keptTabIds = multiselectedTabs ?
+        multiselectedTabs.map(tab => tab.apiTab.id) :
+        [contextTab.id] ;
       for (const apiTab of apiTabs) {
-        if (apiTab.id == contextTab.id) {
+        if (keptTabIds.includes(apiTab.id)) {
           after = true;
           continue;
         }
@@ -427,9 +477,11 @@ async function onCommand(item, event) {
       browser.tabs.remove(closeAPITabs.map(aPITab => aPITab.id));
     }; break;
     case 'context_closeOtherTabs': {
-      const apiTabId = contextTab.id; // cache it for delayed tasks!
       const apiTabs  = await browser.tabs.query({ windowId: mContextWindowId });
-      const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && aPITab.id != apiTabId).map(aPITab => aPITab.id);
+      const keptTabIds = multiselectedTabs ?
+        multiselectedTabs.map(tab => tab.apiTab.id) :
+        [contextTab.id] ;
+      const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && !keptTabIds.includes(aPITab.id)).map(aPITab => aPITab.id);
       const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: mContextWindowId })) === false;
       if (canceled)
         return;
@@ -441,7 +493,16 @@ async function onCommand(item, event) {
         browser.sessions.restore(sessions[0].tab.sessionId);
     }; break;
     case 'context_closeTab':
+      if (multiselectedTabs) {
+        // close down to top, to keep tree structure of Tree Style Tab
+        multiselectedTabs.reverse();
+        for (const tab of multiselectedTabs) {
+          browser.tabs.remove(tab.apiTab.id);
+        }
+      }
+      else {
       browser.tabs.remove(contextTab.id);
+      }
       break;
 
     default: {
