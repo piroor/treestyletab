@@ -542,11 +542,14 @@ async function onCommand(item, event) {
           contextualIdentityMatch) {
         // Open in Container
         const contextTabElement = Tabs.getTabById(contextTab);
-        TabsOpen.openURIInTab(contextTab.url, {
+        const tab = await TabsOpen.openURIInTab(contextTab.url, {
           windowId:      contextTab.windowId,
-          opener:        Tabs.getParentTab(contextTabElement),
-          insertAfter:   contextTabElement,
           cookieStoreId: contextualIdentityMatch[1]
+        });
+        Tree.behaveAutoAttachedTab(tab, {
+          baseTab:  contextTabElement,
+          behavior: configs.autoAttachOnDuplicated,
+          inRemote: true
         });
         break;
       }
