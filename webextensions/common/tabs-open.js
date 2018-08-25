@@ -91,12 +91,12 @@ export function openNewTab(options = {}) {
   return openURIInTab(null, options);
 }
 
-export async function openURIInTab(uRI, options = {}) {
-  const tabs = await openURIsInTabs([uRI], options);
+export async function openURIInTab(uri, options = {}) {
+  const tabs = await openURIsInTabs([uri], options);
   return tabs[0];
 }
 
-export async function openURIsInTabs(uRIs, options = {}) {
+export async function openURIsInTabs(uris, options = {}) {
   if (!options.windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
@@ -104,7 +104,7 @@ export async function openURIsInTabs(uRIs, options = {}) {
     if (options.inRemote) {
       await browser.runtime.sendMessage(Object.assign({}, options, {
         type:          Constants.kCOMMAND_NEW_TABS,
-        uris:          uRIs,
+        uris,
         parent:        options.parent && options.parent.id,
         opener:        options.opener && options.opener.id,
         insertBefore:  options.insertBefore && options.insertBefore.id,
@@ -118,10 +118,10 @@ export async function openURIsInTabs(uRIs, options = {}) {
       await Tabs.waitUntilAllTabsAreCreated();
       const startIndex = Tabs.calculateNewTabIndex(options);
       const container  = Tabs.getTabsContainer(options.windowId);
-      TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', uRIs.length);
+      TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', uris.length);
       if (options.isOrphan)
-        TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', uRIs.length);
-      await Promise.all(uRIs.map(async (uRI, index) => {
+        TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', uris.length);
+      await Promise.all(uris.map(async (uRI, index) => {
         const params = {
           windowId: options.windowId,
           active:   index == 0 && !options.inBackground
