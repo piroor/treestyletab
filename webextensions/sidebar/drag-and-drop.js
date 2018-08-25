@@ -718,8 +718,7 @@ function onDragStart(event) {
   dt.effectAllowed = 'copyMove';
 
   const sanitizedDragData = sanitizeDragData(dragData);
-  dt.items.clear();
-  dt.items.add(JSON.stringify(sanitizedDragData), kTREE_DROP_TYPE);
+  dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData));
 
   // Because addon cannot read drag data across private browsing mode,
   // we need to share detailed information of dragged tabs in different way!
@@ -737,8 +736,8 @@ function onDragStart(event) {
     uriList.push(`#${draggedTab.apiTab.title}\n${draggedTab.apiTab.url}`);
     mozUrl.push(`${draggedTab.apiTab.url}\n${draggedTab.apiTab.title}`);
   }
-  dt.items.add(uriList.join('\n'), kTYPE_URI_LIST);
-  dt.items.add(mozUrl.join('\n'), kTYPE_X_MOZ_URL);
+  dt.setData(kTYPE_URI_LIST, uriList.join('\n'));
+  dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
 
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
