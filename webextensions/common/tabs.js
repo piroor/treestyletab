@@ -1047,6 +1047,11 @@ export function isSelected(tab) {
            tab.classList.contains(Constants.kTAB_STATE_SELECTED);
 }
 
+export function isHighlighted(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED);
+}
+
 export function isLocked(_aTab) {
   return false;
 }

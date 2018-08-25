@@ -142,6 +142,7 @@ export const kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE = 'newtab-action-selectable'
 export const kTABBAR_STATE_NARROW_SCROLLBAR       = 'narrow-scrollbar';
 export const kTABBAR_STATE_NO_SCROLLBAR           = 'no-scrollbar';
 export const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';
+export const kTABBAR_STATE_MULTIPLE_HIGHLIGHTED   = 'mutiple-highlighted';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';

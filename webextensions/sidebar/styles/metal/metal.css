@@ -171,3 +171,8 @@
   .newtab-action-selector-anchor:hover {
   border-image: url("tab-active-l.png") 10 5 10 10 fill / 10px 5px 10px 0;
 }
+
+
+.mutiple-highlighted .tab:not(.highlighted) {
+  opacity: 0.5;
+}

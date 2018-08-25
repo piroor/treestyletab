@@ -183,18 +183,6 @@ export function updateTab(tab, newState = {}, options = {}) {
   else
     tab.classList.remove(Constants.kTAB_STATE_SOUND_PLAYING);
 
-  /*
-  // On Firefox, "highlighted" is same to "activated" for now...
-  // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/onHighlighted
-  if (options.forceApply ||
-      'highlighted' in newState) {
-    if (newState.highlighted)
-      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
-    else
-      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
-  }
-  */
-
   if (options.forceApply ||
       'cookieStoreId' in newState) {
     for (const className of tab.classList) {
@@ -229,10 +217,12 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if (options.forceApply ||
       'highlighted' in newState) {
-    if (newState.selected)
+    if (newState.highlighted)
       tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
     else
       tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+
+    reserveToUpdateMultipleHighlighted(tab);
   }
 
   if (options.forceApply ||
@@ -278,6 +268,19 @@ windowId = ${tab.apiTab.windowId}
                        .replace(`<%duplicated%>`, !!uniqueId.duplicated)
                        .replace(`<%restored%>`, !!uniqueId.restored));
   });
+}
+
+function reserveToUpdateMultipleHighlighted(tab) {
+  const container = tab.parentNode;
+  if (container.reservedUpdateMultipleHighlighted)
+    clearTimeout(container.reservedUpdateMultipleHighlighted);
+  container.reservedUpdateMultipleHighlighted = setTimeout(() => {
+    container.reservedUpdateMultipleHighlighted = null;
+    if (container.querySelectorAll(`${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}`).length > 1)
+      container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    else
+      container.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  }, 10);
 }
 
 export function updateParentTab(parent) {

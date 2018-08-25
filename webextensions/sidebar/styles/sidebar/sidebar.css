@@ -221,6 +221,11 @@
 }
 
 
+.mutiple-highlighted .tab:not(.highlighted) {
+  opacity: 0.5;
+}
+
+
 
 /* changed from original SidebarStyleTab */
 
