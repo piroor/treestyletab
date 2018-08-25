@@ -537,15 +537,16 @@ async function onCommand(item, event) {
       break;
 
     default: {
+      const contextualIdentityMatch = item.id.match(/^context_reopenInContainer:(.+)$/);
       if (contextTab &&
-          /^context_reopenInContainer:/.test(item.id)) {
+          contextualIdentityMatch) {
         // Open in Container
         const contextTabElement = Tabs.getTabById(contextTab);
         TabsOpen.openURIInTab(contextTab.url, {
           windowId:      contextTab.windowId,
           opener:        Tabs.getParentTab(contextTabElement),
           insertAfter:   contextTabElement,
-          cookieStoreId: item.id.match(/^context_reopenInContainer:(.+)$/)[1]
+          cookieStoreId: contextualIdentityMatch[1]
         });
         break;
       }
