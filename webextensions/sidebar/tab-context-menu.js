@@ -21,6 +21,7 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
+import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -176,7 +177,7 @@ function updateContextualIdentitiesSelector() {
   const isDefault    = mContextTab.cookieStoreId == 'firefox-default';
   const container    = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU);
   const defaultItems = container.querySelectorAll('.contextual-identity-default');
-  const identities   = container.querySelectorAll('[data-value]');
+  const identities   = container.querySelectorAll('[data-value]:not(.contextual-identity-default)');
   if (isDefault) {
     for (const item of defaultItems) {
       item.style.display = 'none';
@@ -536,6 +537,18 @@ async function onCommand(item, event) {
       break;
 
     default: {
+      if (contextTab &&
+          /^context_reopenInContainer:/.test(item.id)) {
+        // Open in Container
+        const contextTabElement = Tabs.getTabById(contextTab);
+        TabsOpen.openURIInTab(contextTab.url, {
+          windowId:      contextTab.windowId,
+          opener:        Tabs.getParentTab(contextTabElement),
+          insertAfter:   contextTabElement,
+          cookieStoreId: item.id.match(/^context_reopenInContainer:(.+)$/)[1]
+        });
+        break;
+      }
       const id = item.getAttribute('data-item-id');
       if (id) {
         const modifiers = [];

@@ -362,6 +362,7 @@ function updateContextualIdentitiesSelectorInContextMenu() {
   const fragment = document.createDocumentFragment();
   ContextualIdentities.forEach(identity => {
     const item     = document.createElement('li');
+    item.id = `context_reopenInContainer:${identity.cookieStoreId}`
     item.dataset.value = identity.cookieStoreId;
     item.textContent = identity.name.replace(/^([a-z0-9])/i, '&$1');
     if (identity.iconUrl) {
