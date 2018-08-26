@@ -89,7 +89,7 @@ export async function updateSelectionByTabClick(tab, event) {
       indices = indices.filter(index => targetTabIndices.includes(index));
     indices = indices.concat(targetTabIndices.filter(index => !indices.includes(index)));
     try {
-    browser.tabs.highlight({ tabs: indices });
+      browser.tabs.highlight({ tabs: indices });
     }
     catch(_e) { // not implemented on old Firefox
       return false;
@@ -104,7 +104,7 @@ export async function updateSelectionByTabClick(tab, event) {
     else
       indices.push(tab.apiTab.index);
     try {
-    browser.tabs.highlight({ tabs: indices });
+      browser.tabs.highlight({ tabs: indices });
     }
     catch(_e) { // not implemented on old Firefox
       return false;
