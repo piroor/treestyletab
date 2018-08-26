@@ -20,10 +20,7 @@ Tabs.onUpdated.addListener((tab, info) => {
       !Tabs.isSubtreeCollapsed(tab))
     return;
 
-  const highlightIndices = Tabs.getSelectedTabs(tab)
-    .filter(tab => !Tabs.isActive(tab))
-    .map(tab => tab.apiTab.index);
-  const activeIndex = Tabs.getCurrentTab(tab).apiTab.index;
+  const highlightIndices = getCurrentSelectedIndices(tab);
   const treeTabs = Tabs.getDescendantTabs(tab).concat([tab]);
   if (info.highlighted) {
     for (const tab of treeTabs) {
@@ -38,8 +35,6 @@ Tabs.onUpdated.addListener((tab, info) => {
         highlightIndices.splice(index, 1);
     }
   }
-  highlightIndices.sort().reverse();
-  highlightIndices.unshift(activeIndex);
   log('onUpdated[highlighted] ', {
     highlighted: info.highlighted,
     highlightIndices
@@ -48,3 +43,67 @@ Tabs.onUpdated.addListener((tab, info) => {
     tabs: highlightIndices
   });
 });
+
+function getCurrentSelectedIndices(hint) {
+  const highlightIndices = Tabs.getSelectedTabs(hint)
+    .filter(tab => !Tabs.isActive(tab))
+    .map(tab => tab.apiTab.index);
+  const activeIndex = Tabs.getCurrentTab(hint).apiTab.index;
+  highlightIndices.unshift(activeIndex);
+  return highlightIndices;
+}
+
+const mLastClickedTabInWindow = new WeakMap();
+
+function getTabsBetween(begin, end) {
+  if (!begin || !begin.parentNode ||
+      !end || !end.parentNode)
+    throw new Error('getTabsBetween requires valid two tabs');
+  if (begin.parentNode != end.parentNode)
+    throw new Error('getTabsBetween requires two tabs in same window');
+
+  if (begin == end)
+    return [];
+  let inRange = false;
+  return Array.slice(begin.parentNode.children).filter(tab => {
+    if (tab == begin || tab == end) {
+      inRange = !inRange;
+      return false;
+    }
+    return inRange;
+  });
+}
+
+export async function updateSelectionByTabClick(tab, event) {
+  const ctrlKeyPressed = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
+  if (event.shiftKey) {
+    // select the clicked tab and tabs between last activated tab
+    const lastClickedTab   = mLastClickedTabInWindow.get(tab.parentNode) || Tabs.getCurrentTab(tab);
+    const betweenTabs      = getTabsBetween(lastClickedTab, tab, tab.parentNode.children);
+    const targetTabIndices = [lastClickedTab].concat(betweenTabs).map(tab => tab.apiTab.index);
+    if (tab != lastClickedTab)
+      targetTabIndices.push(tab.apiTab.index);
+
+    let indices = getCurrentSelectedIndices();
+    if (!ctrlKeyPressed)
+      indices = indices.filter(index => targetTabIndices.includes(index));
+    indices = indices.concat(targetTabIndices.filter(index => !indices.includes(index)));
+    browser.tabs.highlight({ tabs: indices });
+    return true;
+  }
+  else if (ctrlKeyPressed) {
+    // toggle selection of the tab and all collapsed descendants
+    const indices = getCurrentSelectedIndices();
+    if (Tabs.isHighlighted(tab))
+      indices.splice(indices.indexOf(tab.apiTab.index), 1);
+    else
+      indices.push(tab.apiTab.index);
+    browser.tabs.highlight({ tabs: indices });
+    mLastClickedTabInWindow.set(tab.parentNode, tab);
+    return true;
+  }
+  else {
+    mLastClickedTabInWindow.set(tab.parentNode, tab);
+    return false;
+  }
+}

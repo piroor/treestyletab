@@ -26,6 +26,7 @@ import * as Permissions from '/common/permissions.js';
 import * as Background from './background.js';
 import * as BackgroundCache from './background-cache.js';
 import * as TreeStructure from './tree-structure.js';
+import * as HandleTabMultiselect from './handle-tab-multiselect.js';
 
 function log(...args) {
   internalLogger('background/handle-misc', ...args);
@@ -381,8 +382,10 @@ function onMessage(message, sender) {
 
           logMouseEvent('Ready to select the tab');
 
-          // not canceled, then fallback to default "select tab"
-          if (message.button == 0)
+          // not canceled, then fallback to default behavior
+          const wasMultiselectionAction = await HandleTabMultiselect.updateSelectionByTabClick(tab, message);
+          if (message.button == 0 &&
+              !wasMultiselectionAction)
             TabsInternalOperation.selectTab(tab);
         });
 
