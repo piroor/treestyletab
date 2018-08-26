@@ -200,6 +200,7 @@ export const configs = new Configs({
     'background/handle-new-tabs': true,
     'background/handle-removed-tabs': true,
     'background/handle-tab-focus': true,
+    'background/handle-tab-multiselect': true,
     'background/handle-tree-changes': true,
     'background/tab-context-menu': false,
     'background/tree-structure': true,
