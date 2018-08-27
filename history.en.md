@@ -8,6 +8,7 @@
    * Don't tear off dragged tab(s) from the window when the dropped position is very near to the sidebar area itself.
    * Allow to drag a tree and drop it as a list of URLs.
    * Allow to open dropped URIs as tabs on the tree sidebar.
+   * Load embedded SVG images correctly as favicon.
  - 2.5.2 (2018.8.20)
    * Some context menu commands become robust on slow situation.
  - 2.5.1 (2018.8.19)
