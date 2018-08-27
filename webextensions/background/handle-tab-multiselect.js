@@ -68,18 +68,13 @@ export async function updateSelectionByTabClick(tab, event) {
     try {
       if (!ctrlKeyPressed) {
         const alreadySelectedTabs = Tabs.getSelectedTabs(tab);
-        log('clear old selection by shift-click: ', {
-          alreadySelectedTabs
-        });
+        log('clear old selection by shift-click: ', alreadySelectedTabs);
         for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.includes(alreadySelectedTab))
             browser.tabs.update(alreadySelectedTab.apiTab.id, { highlighted: false });
         }
       }
-      const alreadySelectedTabs = Tabs.getSelectedTabs(tab);
-      log('set selection by shift-click: ', {
-        targetTabs
-      });
+      log('set selection by shift-click: ', targetTabs);
       for (const toBeSelectedTab of targetTabs) {
         if (Tabs.isHighlighted(toBeSelectedTab))
           continue;
