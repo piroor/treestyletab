@@ -17,41 +17,17 @@ function log(...args) {
 
 Tabs.onUpdated.addListener((tab, info) => {
   if (!('highlighted' in info) ||
-      !Tabs.isSubtreeCollapsed(tab))
+      !Tabs.isSubtreeCollapsed(tab) ||
+      Tabs.isCollapsed(tab))
     return;
 
-  const highlightIndices = getCurrentSelectedIndices(tab);
-  const treeTabs = Tabs.getDescendantTabs(tab).concat([tab]);
-  if (info.highlighted) {
-    for (const tab of treeTabs) {
-      if (!highlightIndices.includes(tab.apiTab.index))
-        highlightIndices.push(tab.apiTab.index);
-    }
+  for (const descendant of Tabs.getDescendantTabs(tab)) {
+    browser.tabs.update(descendant.apiTab.id, {
+      highlighted: info.highlighted,
+      active:      Tabs.isActive(descendant)
+    });
   }
-  else {
-    for (const tab of treeTabs) {
-      const index = highlightIndices.indexOf(tab.apiTab.index);
-      if (index)
-        highlightIndices.splice(index, 1);
-    }
-  }
-  log('onUpdated[highlighted] ', {
-    highlighted: info.highlighted,
-    highlightIndices
-  });
-  browser.tabs.highlight({
-    tabs: highlightIndices
-  });
 });
-
-function getCurrentSelectedIndices(hint) {
-  const highlightIndices = Tabs.getSelectedTabs(hint)
-    .filter(tab => !Tabs.isActive(tab))
-    .map(tab => tab.apiTab.index);
-  const activeIndex = Tabs.getCurrentTab(hint).apiTab.index;
-  highlightIndices.unshift(activeIndex);
-  return highlightIndices;
-}
 
 const mLastClickedTabInWindow = new WeakMap();
 
@@ -80,16 +56,25 @@ export async function updateSelectionByTabClick(tab, event) {
     // select the clicked tab and tabs between last activated tab
     const lastClickedTab   = mLastClickedTabInWindow.get(tab.parentNode) || Tabs.getCurrentTab(tab);
     const betweenTabs      = getTabsBetween(lastClickedTab, tab, tab.parentNode.children);
-    const targetTabIndices = [lastClickedTab].concat(betweenTabs).map(tab => tab.apiTab.index);
+    const targetTabs       = [lastClickedTab].concat(betweenTabs);
     if (tab != lastClickedTab)
-      targetTabIndices.push(tab.apiTab.index);
+      targetTabs.push(tab);
 
-    let indices = getCurrentSelectedIndices();
-    if (!ctrlKeyPressed)
-      indices = indices.filter(index => targetTabIndices.includes(index));
-    indices = indices.concat(targetTabIndices.filter(index => !indices.includes(index)));
     try {
-      browser.tabs.highlight({ tabs: indices });
+      if (!ctrlKeyPressed) {
+        for (const alreadySelectedTab of Tabs.getSelectedTabs(tab)) {
+          if (!targetTabs.includes(alreadySelectedTab))
+            browser.tabs.update(alreadySelectedTab.apiTab.id, { highlighted: false });
+        }
+      }
+      for (const toBeSelectedTab of targetTabs) {
+        if (Tabs.isHighlighted(toBeSelectedTab))
+          continue;
+        browser.tabs.update(toBeSelectedTab.apiTab.id, {
+          highlighted: true,
+          active:      Tabs.isActive(toBeSelectedTab)
+        });
+      }
     }
     catch(_e) { // not implemented on old Firefox
       return false;
@@ -98,13 +83,11 @@ export async function updateSelectionByTabClick(tab, event) {
   }
   else if (ctrlKeyPressed) {
     // toggle selection of the tab and all collapsed descendants
-    const indices = getCurrentSelectedIndices();
-    if (Tabs.isHighlighted(tab))
-      indices.splice(indices.indexOf(tab.apiTab.index), 1);
-    else
-      indices.push(tab.apiTab.index);
     try {
-      browser.tabs.highlight({ tabs: indices });
+      browser.tabs.update(tab.apiTab.id, {
+        highlighted: !Tabs.isHighlighted(tab),
+        active:      Tabs.isActive(tab)
+      });
     }
     catch(_e) { // not implemented on old Firefox
       return false;
