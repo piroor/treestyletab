@@ -29,8 +29,6 @@ Tabs.onUpdated.addListener((tab, info) => {
   }
 });
 
-const mLastClickedTabInWindow = new WeakMap();
-
 function getTabsBetween(begin, end) {
   if (!begin || !begin.parentNode ||
       !end || !end.parentNode)
@@ -49,6 +47,8 @@ function getTabsBetween(begin, end) {
     return inRange;
   });
 }
+
+const mLastClickedTabInWindow = new WeakMap();
 
 export async function updateSelectionByTabClick(tab, event) {
   const ctrlKeyPressed = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
