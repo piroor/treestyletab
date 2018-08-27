@@ -21,7 +21,12 @@ Tabs.onUpdated.addListener((tab, info) => {
       Tabs.isCollapsed(tab))
     return;
 
-  for (const descendant of Tabs.getDescendantTabs(tab)) {
+  const collapsedDescendants = Tabs.getDescendantTabs(tab);
+  log('inherit highlighted state from root visible tab: ', {
+    highlighted: info.highlighted,
+    collapsedDescendants
+  });
+  for (const descendant of collapsedDescendants) {
     browser.tabs.update(descendant.apiTab.id, {
       highlighted: info.highlighted,
       active:      Tabs.isActive(descendant)
@@ -62,11 +67,19 @@ export async function updateSelectionByTabClick(tab, event) {
 
     try {
       if (!ctrlKeyPressed) {
-        for (const alreadySelectedTab of Tabs.getSelectedTabs(tab)) {
+        const alreadySelectedTabs = Tabs.getSelectedTabs(tab);
+        log('clear old selection by shift-click: ', {
+          alreadySelectedTabs
+        });
+        for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.includes(alreadySelectedTab))
             browser.tabs.update(alreadySelectedTab.apiTab.id, { highlighted: false });
         }
       }
+      const alreadySelectedTabs = Tabs.getSelectedTabs(tab);
+      log('set selection by shift-click: ', {
+        targetTabs
+      });
       for (const toBeSelectedTab of targetTabs) {
         if (Tabs.isHighlighted(toBeSelectedTab))
           continue;
@@ -84,6 +97,7 @@ export async function updateSelectionByTabClick(tab, event) {
   else if (ctrlKeyPressed) {
     // toggle selection of the tab and all collapsed descendants
     try {
+      log('change selection by ctrl-click: ', tab);
       browser.tabs.update(tab.apiTab.id, {
         highlighted: !Tabs.isHighlighted(tab),
         active:      Tabs.isActive(tab)
