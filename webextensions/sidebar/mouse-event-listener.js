@@ -244,6 +244,7 @@ function onMouseDown(event) {
   const mousedownDetail = {
     targetType:    getMouseEventTargetType(event),
     tab:           tab && tab.id,
+    soundButton:   EventUtils.isEventFiredOnSoundButton(event),
     closebox:      EventUtils.isEventFiredOnClosebox(event),
     button:        event.button,
     ctrlKey:       event.ctrlKey,
