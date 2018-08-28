@@ -222,7 +222,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     else
       tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
 
-    reserveToUpdateMultipleHighlighted(tab);
+    updateMultipleHighlighted(tab);
   }
 
   if (options.forceApply ||
@@ -278,17 +278,12 @@ windowId = ${tab.apiTab.windowId}
   });
 }
 
-function reserveToUpdateMultipleHighlighted(tab) {
+function updateMultipleHighlighted(tab) {
   const container = tab.parentNode;
-  if (container.reservedUpdateMultipleHighlighted)
-    clearTimeout(container.reservedUpdateMultipleHighlighted);
-  container.reservedUpdateMultipleHighlighted = setTimeout(() => {
-    container.reservedUpdateMultipleHighlighted = null;
-    if (container.querySelectorAll(`${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}`).length > 1)
-      container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-    else
-      container.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-  }, 10);
+  if (container.querySelector(`${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED} ~ ${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}`))
+    container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  else
+    container.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
 }
 
 export function updateParentTab(parent) {
