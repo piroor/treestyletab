@@ -420,12 +420,15 @@ function onMessage(message, sender) {
         const root = Tabs.getTabById(message.tab);
         if (!root)
           return;
-        const tabs = [root].concat(Tabs.getDescendantTabs(root));
+        const multiselected = Tabs.isMultiselected(root);
+        const tabs = multiselected ?
+          Tabs.getSelectedTabs(root) :
+          [root].concat(Tabs.getDescendantTabs(root)) ;
         for (const tab of tabs) {
           const playing = Tabs.isSoundPlaying(tab);
           const muted   = Tabs.isMuted(tab);
           log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
-          if (playing != message.muted)
+          if (!multiselected && playing != message.muted)
             continue;
 
           log(` => set muted=${message.muted}`);

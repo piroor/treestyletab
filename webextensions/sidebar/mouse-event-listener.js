@@ -480,9 +480,17 @@ function onClick(event) {
     //  event.preventDefault();
     //  return;
     //}
-    Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
+    const multiselected  = Tabs.isMultiselected(tab);
+    const tabsToBeClosed = multiselected ?
+      Tabs.getSelectedTabs(tab) :
+      Tree.getClosingTabsFromParent(tab) ;
+    Sidebar.confirmToCloseTabs(tabsToBeClosed.length)
       .then(aConfirmed => {
-        if (aConfirmed)
+        if (!aConfirmed)
+          return;
+        if (multiselected)
+          TabsInternalOperation.removeTabs(tabsToBeClosed, { inRemote: true });
+        else
           TabsInternalOperation.removeTab(tab, { inRemote: true });
       });
     return;
