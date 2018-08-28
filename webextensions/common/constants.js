@@ -113,6 +113,7 @@ export const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 export const kTAB_STATE_FAVICONIZED               = 'faviconized';
 export const kTAB_STATE_UNREAD                    = 'unread';
 export const kTAB_STATE_HIGHLIGHTED               = 'highlighted';
+export const kTAB_STATE_ATTENTION                 = 'attention';
 export const kTAB_STATE_DISCARDED                 = 'discarded';
 export const kTAB_STATE_SELECTED                  = 'selected';
 export const kTAB_STATE_DRAGGING                  = 'dragging';

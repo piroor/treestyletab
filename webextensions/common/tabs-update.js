@@ -226,6 +226,14 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if (options.forceApply ||
+      'attention' in newState) {
+    if (newState.attention)
+      tab.classList.add(Constants.kTAB_STATE_ATTENTION);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_ATTENTION);
+  }
+
+  if (options.forceApply ||
       'discarded' in newState) {
     wait(0).then(() => {
       // Don't set this class immediately, because we need to know
