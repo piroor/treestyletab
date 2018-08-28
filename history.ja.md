@@ -10,6 +10,7 @@
    * サイドバーにドロップされたURIの一覧について、タブとして開けるようにした
    * 組み込みのSVG画像のfaviconとしての読み込みに失敗する場合があったのを修正
    * [APIで`tab-mouseout`を通知するタイミングを修正した（by klemens, thanks!）](https://github.com/piroor/treestyletab/pull/2008)
+   * [ツールバーボタン無しで権限を設定できるようにした（by Lej77m thanks!)](https://github.com/piroor/treestyletab/pull/2011)
  - 2.5.2 (2018.8.20)
    * コンテキストメニューのいくつかの項目について、遅い環境でも安定して動くようにした
  - 2.5.1 (2018.8.19)

@@ -10,6 +10,7 @@
    * Allow to open dropped URIs as tabs on the tree sidebar.
    * Load embedded SVG images correctly as favicon.
    * [`tab-mouseout` API message is now delivered at correct timing, by klemens. Thanks!](https://github.com/piroor/treestyletab/pull/2008)
+   * [Allow to get permission without toolbar button, by Lej77. Thanks!](https://github.com/piroor/treestyletab/pull/2011)
  - 2.5.2 (2018.8.20)
    * Some context menu commands become robust on slow situation.
  - 2.5.1 (2018.8.19)
