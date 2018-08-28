@@ -93,7 +93,7 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
         configs.requestingPermissionsNatively = permissions;
         granted = await browser.permissions.request(permissions);
       } catch (error) {
-        alert(error);
+
       } finally {
         configs.requestingPermissionsNatively = null;
       }
