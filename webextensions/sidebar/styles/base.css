@@ -561,10 +561,8 @@ ul {
 }
 
 #contextual-identities-selector .icon {
-  display: inline-block;
-  height: 1em;
   margin-right: 0.2em;
-  width: 1em;
+  position: static;
 }
 
 

@@ -328,13 +328,8 @@ function updateContextualIdentitiesSelector() {
     const item = document.createElement('li');
     item.dataset.value = identity.cookieStoreId;
     item.textContent = identity.name;
-    const icon = document.createElement('span');
-    icon.classList.add('icon');
-    if (identity.iconUrl) {
-      icon.style.backgroundColor = identity.colorCode || 'var(--tab-text)';
-      icon.style.mask = `url(${JSON.stringify(identity.iconUrl)}) no-repeat center / 100%`;
-    }
-    item.insertBefore(icon, item.firstChild);
+    item.dataset.icon = identity.iconUrl;
+    item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
     fragment.appendChild(item);
   });
   if (configs.inheritContextualIdentityToNewChildTab) {
