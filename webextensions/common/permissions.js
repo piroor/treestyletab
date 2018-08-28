@@ -37,7 +37,7 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
     .then(granted => {
       checkbox.checked = granted;
     })
-    .catch(_aError => {
+    .catch(_error => {
       checkbox.setAttribute('readonly', true);
       checkbox.setAttribute('disabled', true);
       const label = checkbox.closest('label') || document.querySelector(`label[for=${checkbox.id}]`);
@@ -45,11 +45,11 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
         label.setAttribute('disabled', true);
     });
 
-  checkbox.addEventListener('change', _aEvent => {
+  checkbox.addEventListener('change', _event => {
     checkbox.requestPermissions()
   });
 
-  browser.runtime.onMessage.addListener((message, _aSender) => {
+  browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
         !message.type ||
         message.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
@@ -138,16 +138,18 @@ export function requestPostProcess() {
   configs.requestingPermissionsNatively = permissions;
 
   browser.browserAction.setBadgeText({ text: '' });
-  browser.permissions.request(permissions).then(granted => {
-    log('permission requested: ', permissions, granted);
-    if (granted)
-      browser.runtime.sendMessage({
-        type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
-        permissions: permissions
-      });
-  }).finally(() => {
-    configs.requestingPermissionsNatively = null;
-  });
+  browser.permissions.request(permissions)
+    .then(granted => {
+      log('permission requested: ', permissions, granted);
+      if (granted)
+        browser.runtime.sendMessage({
+          type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+          permissions: permissions
+        });
+    })
+    .finally(() => {
+      configs.requestingPermissionsNatively = null;
+    });
   return true;
 }
 
