@@ -262,6 +262,8 @@ export const configs = new Configs({
     minimumIntervalToProcessDragoverEvent
     cachedExternalAddons
     notifiedFeaturesVersion
+    requestingPermissions
+    requestingPermissionsNatively
   `.trim().split('\n').map(key => key.trim()).filter(key => key && key.indexOf('//') != 0)
 });
 
