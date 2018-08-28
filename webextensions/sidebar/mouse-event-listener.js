@@ -164,14 +164,18 @@ onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
+  const relatedTab = Tabs.getTabFromChild(event.relatedTarget);
 
   // We enter the tab element itself, but not from any of its children
   const enterTabFromAncestor = event.target.classList.contains('tab') && !event.target.contains(event.relatedTarget);
   // We enter the tab or any of its children from outside of the sidebar,
   // which causes the relatedTarget (target of the mouseout event) to be null
   const enterTabAndSidebar = tab && event.relatedTarget === null;
+  // We enter the tab or any of its children from another tab or any of its
+  // children, e.g. from close button to close button.
+  const enterTabFromOtherTab = tab && relatedTab && tab !== relatedTab;
 
-  if (enterTabFromAncestor || enterTabAndSidebar) {
+  if (enterTabFromAncestor || enterTabAndSidebar || enterTabFromOtherTab) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
       tab:      TSTAPI.serializeTab(tab),
@@ -188,14 +192,18 @@ onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
 
 function onMouseOut(event) {
   const tab = EventUtils.getTabFromEvent(event);
+  const relatedTab = Tabs.getTabFromChild(event.relatedTarget);
 
   // We leave the tab element itself, but not for one of its children
   const leaveTabToAncestor = event.target.classList.contains('tab') && !event.target.contains(event.relatedTarget);
   // We leave the sidebar directly from the tab or a child element of it,
   // which causes the relatedTarget (target of the mouseover event) to be null
   const leaveSidebarFromTab = tab && event.relatedTarget === null;
+  // We leave the tab or any of its children to another tab or any of its
+  // children, e.g. from close button to close button.
+  const leaveTabToOtherTab = tab && relatedTab && tab != relatedTab;
 
-  if (leaveTabToAncestor || leaveSidebarFromTab) {
+  if (leaveTabToAncestor || leaveSidebarFromTab || leaveTabToOtherTab) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
       tab:      TSTAPI.serializeTab(tab),
