@@ -187,8 +187,8 @@
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "choose container" },
   "config_longPressOnNewTabButton_none":                 { "message": "(nothing)" },
   "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
-  "config_showNewTabActionSelector_label":               { "message": "Show selector button on the \"New Tab\" button, to specify where the new tab is opened in" },
-  "config_showContextualIdentitiesSelector_label":       { "message": "Show container selector button on the \"New Tab\" button" },
+  "config_showNewTabActionSelector_label":               { "message": "Show selector button on the \"New Tab\" button, to specify where the new tab is opened in, when the button is pointed" },
+  "config_showContextualIdentitiesSelector_label":       { "message": "Show container selector button on the \"New Tab\" button, when the button is pointed" },
 
   "config_newTabAction_caption": { "message": "Behavior for new tab actions (other toolbar buttons, keyboard shortcuts, and others)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Open new blank tab as" },

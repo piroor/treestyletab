@@ -187,8 +187,8 @@
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "コンテナータブを開く" },
   "config_longPressOnNewTabButton_none":                 { "message": "何もしない" },
   "config_longPressOnNewTabButton_after":                { "message": "\u200b" },
-  "config_showNewTabActionSelector_label":               { "message": "関係を指定して新しいタブを開くためのボタンを表示する" },
-  "config_showContextualIdentitiesSelector_label":       { "message": "コンテナータブを選択するためのボタンを表示する" },
+  "config_showNewTabActionSelector_label":               { "message": "ボタンをポイントした時に、関係を指定して新しいタブを開くためのボタンを表示する" },
+  "config_showContextualIdentitiesSelector_label":       { "message": "ボタンをポイントした時に、コンテナータブを選択するためのボタンを表示する" },
 
   "config_newTabAction_caption": { "message": "新しいタブを開く操作の挙動（その他のツールバーボタン、キーボードショートカットなど）" },
   "config_autoAttachOnNewTabCommand_before": { "message": "新しい空のタブを" },
