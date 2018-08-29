@@ -248,7 +248,16 @@ export function updateTab(tab, newState = {}, options = {}) {
   updateTabDebugTooltip(tab);
 }
 
-async function onTabsHighlighted(highlightInfo) {
+function onTabsHighlighted(highlightInfo) {
+  if (updateTabsHighlighted.timer)
+    clearTimeout(updateTabsHighlighted.timer);
+  updateTabsHighlighted.timer = setTimeout(() => {
+    delete updateTabsHighlighted.timer;
+    updateTabsHighlighted(highlightInfo);
+  }, 50);
+}
+
+async function updateTabsHighlighted(highlightInfo) {
   const allTabs = Tabs.getTabsContainer(highlightInfo.windowId).children;
   let changed = false;
   for (const tab of allTabs) {
