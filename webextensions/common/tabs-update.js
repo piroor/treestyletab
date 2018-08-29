@@ -266,7 +266,7 @@ async function onTabsHighlighted(highlightInfo) {
     changed = true;
   }
   if (changed)
-    updateMultipleHighlighted(allTabs[0]);
+    updateMultipleHighlighted(highlightInfo.windowId);
 }
 
 export function updateTabDebugTooltip(tab) {
