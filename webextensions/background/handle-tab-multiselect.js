@@ -57,9 +57,10 @@ const mLastClickedTabInWindow = new WeakMap();
 
 export async function updateSelectionByTabClick(tab, event) {
   const ctrlKeyPressed = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
+  const activeTab = Tabs.getCurrentTab(tab);
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
-    const lastClickedTab   = mLastClickedTabInWindow.get(tab.parentNode) || Tabs.getCurrentTab(tab);
+    const lastClickedTab   = mLastClickedTabInWindow.get(tab.parentNode) || activeTab;
     const betweenTabs      = getTabsBetween(lastClickedTab, tab, tab.parentNode.children);
     const targetTabs       = [lastClickedTab].concat(betweenTabs);
     if (tab != lastClickedTab)
@@ -93,6 +94,17 @@ export async function updateSelectionByTabClick(tab, event) {
     // toggle selection of the tab and all collapsed descendants
     try {
       log('change selection by ctrl-click: ', tab);
+      if (!Tabs.isMultiselected(activeTab) &&
+          Tabs.isSubtreeCollapsed(activeTab)) {
+        // multiselect all collapsed descendants to prevent ony the root tab is dragged.
+        for (const descendant of Tabs.getDescendantTabs(activeTab)) {
+          if (!Tabs.isHighlighted(descendant))
+            browser.tabs.update(descendant.apiTab.id, {
+              highlighted: true,
+              active:      false
+            });
+        }
+      }
       browser.tabs.update(tab.apiTab.id, {
         highlighted: !Tabs.isHighlighted(tab),
         active:      Tabs.isActive(tab)
