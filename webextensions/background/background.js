@@ -76,6 +76,7 @@ export async function init() {
   MetricsData.add('Migration.migrateLegacyTreeStructure');
 
   ApiTabsListener.startListen();
+  TabsUpdate.startListen();
   ContextualIdentities.startObserve();
   onBuilt.dispatch();
 

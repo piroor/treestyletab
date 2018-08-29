@@ -69,7 +69,6 @@ export function startListen() {
   browser.tabs.onAttached.addListener(onAttached);
   browser.tabs.onDetached.addListener(onDetached);
   browser.windows.onRemoved.addListener(onWindowRemoved);
-  TabsUpdate.init();
 }
 
 export function endListen() {
@@ -81,7 +80,6 @@ export function endListen() {
   browser.tabs.onAttached.removeListener(onAttached);
   browser.tabs.onDetached.removeListener(onDetached);
   browser.windows.onRemoved.removeListener(onWindowRemoved);
-  TabsUpdate.destroy();
 }
 
 

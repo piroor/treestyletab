@@ -248,7 +248,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   updateTabDebugTooltip(tab);
 }
 
-async function updateHighlightedTabs(highlightInfo={}) {
+async function onTabsHighlighted(highlightInfo) {
   const allTabs = await browser.tabs.query({ windowId: highlightInfo.windowId });
   let changed = false;
   for (const tab of allTabs) {
@@ -328,9 +328,6 @@ export function updateParentTab(parent) {
   Tabs.onParentTabUpdated.dispatch(parent);
 }
 
-export function init() {
-  browser.tabs.onHighlighted.addListener(updateHighlightedTabs);
-}
-export function destroy() {
-  browser.tabs.onHighlighted.removeListener(updateHighlightedTabs);
+export function startListen() {
+  browser.tabs.onHighlighted.addListener(onTabsHighlighted);
 }
