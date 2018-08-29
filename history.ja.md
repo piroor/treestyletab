@@ -4,13 +4,15 @@
    * Firefox 63以降（[bug 1486050](https://bugzilla.mozilla.org/show_bug.cgi?id=1486050)が修正されて以降のバージョン）のネイティブの複数タブ選択に対応した
    * サイドバー上の偽コンテキストメニューについて、「コンテナーを開きなおす」相当の機能を実装した
    * Firefox 63（[bug 1453153](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153)が修正されて以降のバージョン）において再びタブのドラッグ操作を可能にした
+   * Firefox 63（[bug 1396684](https://bugzilla.mozilla.org/show_bug.cgi?id=1396684)が修正されて以降のバージョン）においてタブの`attention`属性をサイドバー内のタブに反映するようにした
    * 英語ロケールの文法ミスを修正
    * サイドバー領域の非常に近い範囲内でドロップされたタブについては、ウィンドウに切り離さないようにした
    * ツリーをドラッグしてURLの一覧としてドロップできるようにした
    * サイドバーにドロップされたURIの一覧について、タブとして開けるようにした
    * 組み込みのSVG画像のfaviconとしての読み込みに失敗する場合があったのを修正
-   * [APIで`tab-mouseout`を通知するタイミングを修正した（by klemens, thanks!）](https://github.com/piroor/treestyletab/pull/2008)
    * [ツールバーボタン無しで権限を設定できるようにした（by Lej77m thanks!)](https://github.com/piroor/treestyletab/pull/2011)
+   * [APIで`tab-mouseout`を通知するタイミングを修正した（by klemens, thanks!）](https://github.com/piroor/treestyletab/pull/2008)
+   * API経由で送られる`tab-mousedown`、`tab-mouseup`、および`tab-clicked`の型のメッセージについて、イベントがミュート/ミュート解除ボタンの上で起こったかどうかを示す`soundButton`を含めるようにした
  - 2.5.2 (2018.8.20)
    * コンテキストメニューのいくつかの項目について、遅い環境でも安定して動くようにした
  - 2.5.1 (2018.8.19)

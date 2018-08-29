@@ -4,13 +4,15 @@
    * Support native multiselection of tabs on Firefox 63 and later (after the [bug 1486050](https://bugzilla.mozilla.org/show_bug.cgi?id=1486050) is fixed).
    * Support "Reopen in Container" in the fake context menu on the sidebar.
    * Make tabs draggable on Firefox 63 and later (after the [bug 1453153](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153) is fixed).
+   * Apply `attention` attribute of tabs to sidebar's contents, on Firefox 63 and later (after the [bug 1396684](https://bugzilla.mozilla.org/show_bug.cgi?id=1396684) is fixed).
    * Fix gramatical mistake in en-US locale.
    * Don't tear off dragged tab(s) from the window when the dropped position is very near to the sidebar area itself.
    * Allow to drag a tree and drop it as a list of URLs.
    * Allow to open dropped URIs as tabs on the tree sidebar.
    * Load embedded SVG images correctly as favicon.
-   * [`tab-mouseout` API message is now delivered at correct timing, by klemens. Thanks!](https://github.com/piroor/treestyletab/pull/2008)
    * [Allow to get permission without toolbar button, by Lej77. Thanks!](https://github.com/piroor/treestyletab/pull/2011)
+   * [`tab-mouseout` API message is now delivered at correct timing, by klemens. Thanks!](https://github.com/piroor/treestyletab/pull/2008)
+   * Add `soundButton` attribute to notified API messages of `tab-mousedown`, `tab-mouseup` and `tab-clicked`. It indicates that the mute/unmute button is clicked or not.
  - 2.5.2 (2018.8.20)
    * Some context menu commands become robust on slow situation.
  - 2.5.1 (2018.8.19)
