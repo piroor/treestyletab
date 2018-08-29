@@ -357,15 +357,14 @@ export function getTabsContainer(hint) {
   if (typeof hint == 'number')
     return document.querySelector(`#window-${hint}`);
 
-  if (hint &&
-      typeof hint == 'object' &&
-      hint.dataset &&
-      hint.dataset.windowId)
-    return document.querySelector(`#window-${hint.dataset.windowId}`);
-
   const tab = getTabFromChild(hint);
   if (tab)
     return tab.parentNode;
+
+  if (hint &&
+      hint.dataset &&
+      hint.dataset.windowId)
+    return document.querySelector(`#window-${hint.dataset.windowId}`);
 
   return null;
 }
