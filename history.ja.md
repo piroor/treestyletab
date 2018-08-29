@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.5.3 (2018.8.30)
    * Firefox 63以降（[bug 1486050](https://bugzilla.mozilla.org/show_bug.cgi?id=1486050)が修正されて以降のバージョン）のネイティブの複数タブ選択に対応した
    * サイドバー上の偽コンテキストメニューについて、「コンテナーを開きなおす」相当の機能を実装した
    * Firefox 63（[bug 1453153](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153)が修正されて以降のバージョン）において再びタブのドラッグ操作を可能にした

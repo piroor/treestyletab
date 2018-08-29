@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.5.3 (2018.8.30)
    * Support native multiselection of tabs on Firefox 63 and later (after the [bug 1486050](https://bugzilla.mozilla.org/show_bug.cgi?id=1486050) is fixed).
    * Support "Reopen in Container" in the fake context menu on the sidebar.
    * Make tabs draggable on Firefox 63 and later (after the [bug 1453153](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153) is fixed).
