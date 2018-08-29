@@ -249,20 +249,19 @@ export function updateTab(tab, newState = {}, options = {}) {
 }
 
 async function onTabsHighlighted(highlightInfo) {
-  const allTabs = await browser.tabs.query({ windowId: highlightInfo.windowId });
+  const allTabs = Tabs.getTabsContainer(highlightInfo.windowId).children;
   let changed = false;
   for (const tab of allTabs) {
-    const highlighted = highlightInfo.tabIds.includes(tab.id);
-    const tabElement  = Tabs.getTabById(tab);
-    // log(`highlighted status of ${tab.id}: `, { tabElement, old: Tabs.isHighlighted(tabElement), new: highlighted });
-    if (Tabs.isHighlighted(tabElement) == highlighted)
+    const highlighted = highlightInfo.tabIds.includes(tab.apiTab.id);
+    // log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
+    if (Tabs.isHighlighted(tab) == highlighted)
       continue;
     if (highlighted)
-      tabElement.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
+      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
     else
-      tabElement.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
-    updateTabDebugTooltip(tabElement);
-    Tabs.onUpdated.dispatch(tabElement, { highlighted });
+      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+    updateTabDebugTooltip(tab);
+    Tabs.onUpdated.dispatch(tab, { highlighted });
     changed = true;
   }
   if (changed)
