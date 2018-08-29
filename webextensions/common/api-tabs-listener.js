@@ -63,25 +63,25 @@ function logUpdated(...args) {
 export function startListen() {
   browser.tabs.onActivated.addListener(onActivated);
   browser.tabs.onUpdated.addListener(onUpdated);
-  browser.tabs.onHighlighted.addListener(onHighlighted);
   browser.tabs.onCreated.addListener(onCreated);
   browser.tabs.onRemoved.addListener(onRemoved);
   browser.tabs.onMoved.addListener(onMoved);
   browser.tabs.onAttached.addListener(onAttached);
   browser.tabs.onDetached.addListener(onDetached);
   browser.windows.onRemoved.addListener(onWindowRemoved);
+  TabsUpdate.init();
 }
 
 export function endListen() {
   browser.tabs.onActivated.removeListener(onActivated);
   browser.tabs.onUpdated.removeListener(onUpdated);
-  browser.tabs.onHighlighted.removeListener(onHighlighted);
   browser.tabs.onCreated.removeListener(onCreated);
   browser.tabs.onRemoved.removeListener(onRemoved);
   browser.tabs.onMoved.removeListener(onMoved);
   browser.tabs.onAttached.removeListener(onAttached);
   browser.tabs.onDetached.removeListener(onDetached);
   browser.windows.onRemoved.removeListener(onWindowRemoved);
+  TabsUpdate.destroy();
 }
 
 
@@ -270,18 +270,6 @@ async function onUpdated(tabId, changeInfo, tab) {
   catch(e) {
     console.log(e);
     onCompleted();
-  }
-}
-
-async function onHighlighted(highlightInfo) {
-  log('onHighlighted ', highlightInfo);
-  const allTabs = await browser.tabs.query({ windowId: highlightInfo.windowId });
-  for (const tab of allTabs) {
-    const highlighted = highlightInfo.tabIds.includes(tab.id);
-    const tabElement  = Tabs.getTabById(tab);
-    // log(`highlighted status of ${tab.id}: `, { tabElement, old: Tabs.isHighlighted(tabElement), new: highlighted });
-    if (Tabs.isHighlighted(tabElement) != highlighted)
-      onUpdated(tab.id, { highlighted }, tab);
   }
 }
 

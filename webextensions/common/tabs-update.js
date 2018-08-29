@@ -248,6 +248,27 @@ export function updateTab(tab, newState = {}, options = {}) {
   updateTabDebugTooltip(tab);
 }
 
+async function updateHighlightedTabs(highlightInfo={}) {
+  const allTabs = await browser.tabs.query({ windowId: highlightInfo.windowId });
+  let changed = false;
+  for (const tab of allTabs) {
+    const highlighted = highlightInfo.tabIds.includes(tab.id);
+    const tabElement  = Tabs.getTabById(tab);
+    // log(`highlighted status of ${tab.id}: `, { tabElement, old: Tabs.isHighlighted(tabElement), new: highlighted });
+    if (Tabs.isHighlighted(tabElement) == highlighted)
+      continue;
+    if (highlighted)
+      tabElement.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
+    else
+      tabElement.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+    updateTabDebugTooltip(tabElement);
+    Tabs.onUpdated.dispatch(tabElement, { highlighted });
+    changed = true;
+  }
+  if (changed)
+    updateMultipleHighlighted(allTabs[0]);
+}
+
 export function updateTabDebugTooltip(tab) {
   if (!configs.debug ||
       !tab.apiTab)
@@ -278,8 +299,8 @@ windowId = ${tab.apiTab.windowId}
   });
 }
 
-function updateMultipleHighlighted(tab) {
-  const container = tab.parentNode;
+function updateMultipleHighlighted(hint) {
+  const container = Tabs.getTabsContainer(hint);
   if (container.querySelector(`${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED} ~ ${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}`))
     container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
   else
@@ -307,3 +328,9 @@ export function updateParentTab(parent) {
   Tabs.onParentTabUpdated.dispatch(parent);
 }
 
+export function init() {
+  browser.tabs.onHighlighted.addListener(updateHighlightedTabs);
+}
+export function destroy() {
+  browser.tabs.onHighlighted.removeListener(updateHighlightedTabs);
+}
