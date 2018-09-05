@@ -729,14 +729,12 @@ function onDragStart(event) {
     dragData: sanitizedDragData
   });
 
-  const uriList = [];
   const mozUrl  = [];
   for (const draggedTab of dragData.tabNodes) {
     draggedTab.classList.add(Constants.kTAB_STATE_DRAGGING);
-    uriList.push(`#${draggedTab.apiTab.title}\n${draggedTab.apiTab.url}`);
     mozUrl.push(`${draggedTab.apiTab.url}\n${draggedTab.apiTab.title}`);
   }
-  dt.setData(kTYPE_URI_LIST, uriList.join('\n'));
+  // This is required to create bookmarks by drag and drop.
   dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
 
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
