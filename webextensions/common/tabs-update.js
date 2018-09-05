@@ -258,9 +258,13 @@ function onTabsHighlighted(highlightInfo) {
 }
 
 async function updateTabsHighlighted(highlightInfo) {
-  const allTabs = Tabs.getTabsContainer(highlightInfo.windowId).children;
+  if (Tabs.hasCreatingTab())
+    await Tabs.waitUntilAllTabsAreCreated();
+  const container = Tabs.getTabsContainer(highlightInfo.windowId);
+  if (!container)
+    return;
   let changed = false;
-  for (const tab of allTabs) {
+  for (const tab of container.children) {
     const highlighted = highlightInfo.tabIds.includes(tab.apiTab.id);
     // log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
     if (Tabs.isHighlighted(tab) == highlighted)
@@ -309,6 +313,8 @@ windowId = ${tab.apiTab.windowId}
 
 function updateMultipleHighlighted(hint) {
   const container = Tabs.getTabsContainer(hint);
+  if (!container)
+    return;
   if (container.querySelector(`${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED} ~ ${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}`))
     container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
   else
