@@ -187,8 +187,8 @@
   "config_longPressOnNewTabButton_contextualIdentities": { "message": "eine Tab-Umgebung auszuwählen" },
   "config_longPressOnNewTabButton_none":                 { "message": "(nichts)" },
   "config_longPressOnNewTabButton_after":                { "message": "\u200b" },  
-  "config_showNewTabActionSelector_label": { "message": "Auswahl bei der Schaltfläche \"Neuer Tab \" anzeigen, wo der neue Tab geöffnet werden soll" },
-  "config_showContextualIdentitiesSelector_label": { "message": "Auswahl der Tab-Umgebung am \"Neuer Tab\"-Button anzeigen" },
+  "config_showNewTabActionSelector_label": { "message": "Auswahl wo der neue Tab geöffnet werden soll, auf der Schaltfläche \"Neuer Tab \" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
+  "config_showContextualIdentitiesSelector_label": { "message": "Auswahl der Tab-Umgebung auf der Schaltfläche \"Neuer Tab\" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
     
   "config_newTabAction_caption": { "message": "Verhalten für Aktionen, die einen neuen Tab öffnen (andere Symbolleisten-Schaltflächen, Tastenkombinationen und andere)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Neuen leeren Tab als " },
