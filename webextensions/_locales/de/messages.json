@@ -25,9 +25,12 @@
   "command_tabbarEnd":             { "message": "Zum letzten Tab scrollen" },
   
   "tab_closebox_tab_tooltip": { "message": "Tab schließen" },
+  "tab_closebox_tab_tooltip_multiselected": { "message": "Tabs schließen" },
   "tab_closebox_tree_tooltip": { "message": "Zweig schließen" },
   "tab_soundButton_muted_tooltip": { "message": "Stummschaltung für Tab aufheben" },
+  "tab_soundButton_muted_tooltip_multiselected": { "message": "Stummschaltung für Tabs aufheben" },
   "tab_soundButton_playing_tooltip": { "message": "Tab stumm schalten" },
+  "tab_soundButton_playing_tooltip_multiselected": { "message": "Tabs stumm schalten" },
   "tab_twisty_expanded_tooltip": { "message": "Zweig zuklappen" },
   "tab_twisty_collapsed_tooltip": { "message": "Zweig aufklappen" },
   "tab_tree_tooltip": { "message": "$TREE$\n  ...und $COUNT$ weitere(r) Tab (s)",
@@ -43,7 +46,7 @@
   "tabbar_newTabAction_sibling_label":     { "message": "Tab auf der Ebene de&s aktiven Tab" },
   "tabbar_newTabAction_nextSibling_label": { "message": "direkte&n Nachbar auf der Ebene des aktiven Tab" },
 
-  "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Neuer Container-Tab" },
+  "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Neuer Tab in Umgebung" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "Standard" },
 
   "groupTab_label": { "message": "$TITLE$ und mehr",
@@ -181,11 +184,11 @@
   "config_newTabButton_caption": { "message": "\"Neuer Tab\" Schaltfläche" },
   "config_longPressOnNewTabButton_before":               { "message": "Die Schaltfläche \"Neuer Tab\" lang gedrückt halten, um " },
   "config_longPressOnNewTabButton_newTabAction":         { "message": "auszuwählen, wo der neue Tab geöffnet werden soll" },
-  "config_longPressOnNewTabButton_contextualIdentities": { "message": "den Container auszuwählen" },
+  "config_longPressOnNewTabButton_contextualIdentities": { "message": "eine Tab-Umgebung auszuwählen" },
   "config_longPressOnNewTabButton_none":                 { "message": "(nichts)" },
   "config_longPressOnNewTabButton_after":                { "message": "\u200b" },  
-  "config_showNewTabActionSelector_label": { "message": "Auswahl bei der Schaltfläche \"Neuer Tab \" anzeigen, wo der neue Tab geöffnet werden soll" },
-  "config_showContextualIdentitiesSelector_label": { "message": "Containerauswahl am \"Neuer Tab\"-Button anzeigen" },
+  "config_showNewTabActionSelector_label": { "message": "Auswahl wo der neue Tab geöffnet werden soll, auf der Schaltfläche \"Neuer Tab \" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
+  "config_showContextualIdentitiesSelector_label": { "message": "Auswahl der Tab-Umgebung auf der Schaltfläche \"Neuer Tab\" anzeigen, wenn der Cursor auf die Schaltfläche zeigt" },
     
   "config_newTabAction_caption": { "message": "Verhalten für Aktionen, die einen neuen Tab öffnen (andere Symbolleisten-Schaltflächen, Tastenkombinationen und andere)" },
   "config_autoAttachOnNewTabCommand_before": { "message": "Neuen leeren Tab als " },
@@ -218,7 +221,7 @@
   "config_autoAttachSameSiteOrphan_sibling": { "message": "Tab auf der Ebene des aktiven Tab" },
   "config_autoAttachSameSiteOrphan_nextSibling": { "message": "direkten Nachbar auf der Ebene des aktiven Tab" },
   "config_autoAttachSameSiteOrphan_after": { "message": "\u200b" },
-  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Den Container vom aktuellen Tab erben" },
+  "config_inheritContextualIdentityToSameSiteOrphan_label": { "message": "Die Tab-Umgebung vom aktuellen Tab erben" },
   
   "config_insertNewChildAt_caption": { "message": "Einfügeposition neuer untergeordneter Tabs" },
   "config_insertNewChildAt_noControl": { "message": "Keine Voreinstellung (das Verhalten von Firefox oder anderer Tab-Add-Ons beibehalten)" },
@@ -237,7 +240,7 @@
 
   "config_autoGroupNewTabsFromPinned_label": { "message": "Tabs automatisch gruppieren, die aus dem gleichen angehefteten Tab heraus geöffnet werden" },
 
-  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Den Container des übergeordneten Tabs an einen neuen leeren Tab vererben" },
+  "config_inheritContextualIdentityToNewChildTab_label": { "message": "Die Tab-Umgebung des übergeordneten Tabs an einen neuen leeren Tab vererben" },
 
 
   "config_treeBehavior_caption": { "message": "Verhalten der Zweige" },
@@ -353,6 +356,8 @@
   "tabContextMenu_pin_label":         { "message": "Tab an&heften" },
   "tabContextMenu_unpin_label":       { "message": "Ta&b ablösen" },
   "tabContextMenu_duplicate_label":   { "message": "Tab &klonen" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "Öffn&en in Tab-Umgebung" },
+  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Kei&ne Tab-Umgebung" },
   "tabContextMenu_tearOff_label":     { "message": "I&n neues Fenster verschieben" },
 
   "tabContextMenu_reloadAll_label":   { "message": "Alle &Tabs neu laden" },
@@ -362,4 +367,15 @@
 
   "tabContextMenu_undoClose_label":   { "message": "&Geschlossenen Tab wiederherstellen" },
   "tabContextMenu_close_label":       { "message": "Tab s&chließen" }
+
+  "tabContextMenu_reload_label_multiselected":      { "message": "Ausgewählte &Tabs neu laden" },
+  "tabContextMenu_mute_label_multiselected":        { "message": "Tabs st&umm schalten" },
+  "tabContextMenu_unmute_label_multiselected":      { "message": "Stummschaltung für Ta&bs aufheben" },
+
+  "tabContextMenu_pin_label_multiselected":         { "message": "Tabs an&heften" },
+  "tabContextMenu_unpin_label_multiselected":       { "message": "Ta&bs ablösen" },
+
+  "tabContextMenu_bookmark_label_multiselected": { "message": "&Lesezeichen für Tabs erstellen..." },
+
+"tabContextMenu_close_label_multiselected": { "message": "Ausgewählte Tabs &schließen" }
 }
