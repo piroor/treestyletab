@@ -1,6 +1,29 @@
 # History
 
  - master/HEAD
+ - 2.5.3 (2018.8.30)
+   * Support native multiselection of tabs on Firefox 63 and later (after the [bug 1486050](https://bugzilla.mozilla.org/show_bug.cgi?id=1486050) is fixed).
+   * Support "Reopen in Container" in the fake context menu on the sidebar.
+   * Make tabs draggable on Firefox 63 and later (after the [bug 1453153](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153) is fixed).
+   * Apply `attention` attribute of tabs to sidebar's contents, on Firefox 63 and later (after the [bug 1396684](https://bugzilla.mozilla.org/show_bug.cgi?id=1396684) is fixed).
+   * Fix gramatical mistake in en-US locale.
+   * Don't tear off dragged tab(s) from the window when the dropped position is very near to the sidebar area itself.
+   * Allow to drag a tree and drop it as a list of URLs.
+   * Allow to open dropped URIs as tabs on the tree sidebar.
+   * Load embedded SVG images correctly as favicon.
+   * [Allow to get permission without toolbar button, by Lej77. Thanks!](https://github.com/piroor/treestyletab/pull/2011)
+   * [`tab-mouseout` API message is now delivered at correct timing, by klemens. Thanks!](https://github.com/piroor/treestyletab/pull/2008)
+   * Add `soundButton` attribute to notified API messages of `tab-mousedown`, `tab-mouseup` and `tab-clicked`. It indicates that the mute/unmute button is clicked or not.
+ - 2.5.2 (2018.8.20)
+   * Some context menu commands become robust on slow situation.
+ - 2.5.1 (2018.8.19)
+   * Fix unexpected recursion around loading of favicons. (regression on 2.5.0)
+   * Remove default shortcuts to move focus around tree. Ctrl-Shift-Arrows are already used for general shortcuts to select words in text fields.
+   * All keyboard shortcuts are now deassignable by hitting the Escape key on each field.
+   * Fix misordernig of input fields to define keyboard shortcuts. (regression on 2.5.0)
+   * `tab-mouseout` API message is now delivered at correct timing.
+   * Updated zh-CN locale by YFdyh000, thanks!
+ - 2.5.0 (2018.8.17)
    * Totally reconstructed as ES modules, for better maintainability.
    * Don't treat click action on closing tabs as clicking on the blank area of the tab bar.
    * New commands "Collapse this Tree" and "Expand this Tree" for the context menu on tabs.
@@ -19,13 +42,17 @@
    * Tabs opened from a bookmark folder are correctly grouped. (It was a regression on recent versions.)
    * When a new tab is opened from a pinned tab, the tab bar will be scrolled to the new tab if possible.
    * Focus to closest ancestor tab when the active tab is going to be collapsed correctly.
+   * Show specified favicon as the tab icon, for a tab with an image file.
    * Apply more theme colors for "Plain", "Vertigo" and "Mixed" for other addons like "Firefox Color".
+   * Introduce 32px icons.
+   * Show toolbar button icons with opacity (by asamuzaK, thanks!)
    * Clear "dragging" state of tabs more aggressively.
    * Introduce a failsafe for unexpectedly visible descendant tabs under collapsed tree on restored sesssions.
    * Add ability to output log for each module.
    * Make more robust for asynchronously updated collapsed state of tabs. (In old versions, internal state and visible state can be mismatched.)
    * Keep tree expanded after restoration, for restoration without cache.
    * Support [checkbox and radio type context menu items](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#add-new-item-to-the-context-menu-on-tabs) and [`browser.menus.onShown`/`browser.menus.onHidden`-like APIs](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#update-existing-item).
+   * Remove non-free color profile from some image files.
    * Update `de` locale (by sicherist, thanks!)
    * Add `ru` and `uk` locales (by perdolka, thanks!)
  - 2.4.24 (2018.6.3)

@@ -37,7 +37,7 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
     .then(granted => {
       checkbox.checked = granted;
     })
-    .catch(_aError => {
+    .catch(_error => {
       checkbox.setAttribute('readonly', true);
       checkbox.setAttribute('disabled', true);
       const label = checkbox.closest('label') || document.querySelector(`label[for=${checkbox.id}]`);
@@ -45,11 +45,11 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
         label.setAttribute('disabled', true);
     });
 
-  checkbox.addEventListener('change', _aEvent => {
+  checkbox.addEventListener('change', _event => {
     checkbox.requestPermissions()
   });
 
-  browser.runtime.onMessage.addListener((message, _aSender) => {
+  browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
         !message.type ||
         message.type != Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED ||
@@ -81,14 +81,37 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
         return;
       }
 
-      const granted = await isGranted(permissions);
+      checkbox.checked = false;
+      if (configs.requestingPermissionsNatively)
+        return;
+
+      // Following code will throw error on Firefox 60 and earlier (but not on Firefox ESR 60)
+      // due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
+      // Also must not have used await before calling browser.permissions.request or it will throw an error.
+      let granted;
+      try {
+        configs.requestingPermissionsNatively = permissions;
+        granted = await browser.permissions.request(permissions);
+      }
+      catch (_error) {
+      }
+      finally {
+        configs.requestingPermissionsNatively = null;
+      }
+
+      if (granted === undefined)
+        granted = await isGranted(permissions);
+      else if (!granted)
+        return;
+
       if (granted) {
-        options.onChanged(true);
+        checkbox.checked = true;
+        if (options.onChanged)
+          options.onChanged(true);
         return;
       }
 
       configs.requestingPermissions = permissions;
-      checkbox.checked = false;
       browser.browserAction.setBadgeText({ text: '!' });
       browser.browserAction.setPopup({ popup: '' });
 
@@ -98,14 +121,6 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
         icon:    'resources/24x24.svg'
       });
       return;
-
-      /*
-      // following codes don't work as expected due to https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-      if (!await browser.permissions.request(permissions)) {
-        checkbox.checked = false;
-        return;
-      }
-      */
     }
     catch(error) {
       console.log(error);
@@ -120,15 +135,21 @@ export function requestPostProcess() {
 
   const permissions = configs.requestingPermissions;
   configs.requestingPermissions = null;
+  configs.requestingPermissionsNatively = permissions;
+
   browser.browserAction.setBadgeText({ text: '' });
-  browser.permissions.request(permissions).then(granted => {
-    log('permission requested: ', permissions, granted);
-    if (granted)
-      browser.runtime.sendMessage({
-        type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
-        permissions: permissions
-      });
-  });
+  browser.permissions.request(permissions)
+    .then(granted => {
+      log('permission requested: ', permissions, granted);
+      if (granted)
+        browser.runtime.sendMessage({
+          type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
+          permissions: permissions
+        });
+    })
+    .finally(() => {
+      configs.requestingPermissionsNatively = null;
+    });
   return true;
 }
 

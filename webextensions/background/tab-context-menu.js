@@ -14,10 +14,10 @@
 
 import {
   log as internalLogger
-} from '../common/common.js';
-import * as TSTAPI from '../common/tst-api.js';
+} from '/common/common.js';
+import * as TSTAPI from '/common/tst-api.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('background/tab-context-menu', ...args);

@@ -43,16 +43,16 @@ import {
   dumpTab,
   nextFrame,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
 
 import * as Sidebar from './sidebar.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as Scroll from './scroll.js';
 import * as Indent from './indent.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('sidebar/collapse-expand', ...args);

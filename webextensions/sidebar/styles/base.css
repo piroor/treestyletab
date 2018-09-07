@@ -44,14 +44,14 @@
 }
 
 .tab.faviconized {
-  --unread-faviconized-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                                 var(--tab-highlighted-highlight) 3%,
-                                                 var(--tab-highlighted-glow) 10%,
-                                                 var(--tab-surface) 20%);
-  --unread-faviconized-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                                       var(--tab-highlighted-highlight) 3%,
-                                                       var(--tab-highlighted-glow) 10%,
-                                                       var(--tab-surface) 23%);
+  --attention-faviconized-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                                    var(--tab-highlighted-highlight) 3%,
+                                                    var(--tab-highlighted-glow) 10%,
+                                                    var(--tab-surface) 20%);
+  --attention-faviconized-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                                          var(--tab-highlighted-highlight) 3%,
+                                                          var(--tab-highlighted-glow) 10%,
+                                                          var(--tab-surface) 23%);
 }
 
 @keyframes blink {
@@ -317,12 +317,14 @@ ul {
   display: none;
 }
 
-.tab.faviconized.unread:not(.active):not(:hover) {
-  background-image: var(--unread-faviconized-gradient);
+.tab.faviconized.unread:not(.active):not(:hover),
+.tab.faviconized.attention:not(.active):not(:hover) {
+  background-image: var(--attention-faviconized-gradient);
 }
 
-.tab.faviconized.unread:not(.active):hover {
-  background-image: var(--unread-faviconized-gradient-hover);
+.tab.faviconized.unread:not(.active):hover,
+.tab.faviconized.attention:not(.active):hover {
+  background-image: var(--attention-faviconized-gradient-hover);
 }
 
 
@@ -559,10 +561,8 @@ ul {
 }
 
 #contextual-identities-selector .icon {
-  display: inline-block;
-  height: 1em;
   margin-right: 0.2em;
-  width: 1em;
+  position: static;
 }
 
 

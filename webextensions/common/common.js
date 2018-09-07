@@ -5,7 +5,7 @@
 */
 'use strict';
 
-import Configs from '../extlib/Configs.js';
+import Configs from '/extlib/Configs.js';
 
 /* global
   uneval: false,
@@ -149,7 +149,6 @@ export const configs = new Configs({
   enableWorkaroundForBug1409262: false,
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   acceptableDelayForInternalFocusMoving: 150,
-  preventTearOffTabsTimeout: 100,
   notificationTimeout: 10 * 1000,
   startDragTimeout: 400,
   minimumIntervalToProcessDragoverEvent: 50,
@@ -169,6 +168,7 @@ export const configs = new Configs({
   simulateSVGContextFill: true,
 
   requestingPermissions: null,
+  requestingPermissionsNatively: null,
 
   // https://dxr.mozilla.org/mozilla-central/rev/2535bad09d720e71a982f3f70dd6925f66ab8ec7/browser/base/content/browser.css#137
   newTabAnimationDuration: 100,
@@ -201,6 +201,7 @@ export const configs = new Configs({
     'background/handle-new-tabs': true,
     'background/handle-removed-tabs': true,
     'background/handle-tab-focus': true,
+    'background/handle-tab-multiselect': true,
     'background/handle-tree-changes': true,
     'background/tab-context-menu': false,
     'background/tree-structure': true,
@@ -240,6 +241,7 @@ export const configs = new Configs({
 
   importedConfigsFromLegacy: null,
   legacyConfigsNextMigrationVersion: 0,
+  configsVersion: 0,
   importedTreeStructureFromLegacy: null,
   migrateLegacyTreeStructure: true
 }, {
@@ -260,6 +262,8 @@ export const configs = new Configs({
     minimumIntervalToProcessDragoverEvent
     cachedExternalAddons
     notifiedFeaturesVersion
+    requestingPermissions
+    requestingPermissionsNatively
   `.trim().split('\n').map(key => key.trim()).filter(key => key && key.indexOf('//') != 0)
 });
 

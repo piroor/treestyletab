@@ -46,7 +46,7 @@ import {
   configs
 } from './common.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('common/tabs', ...args);
@@ -68,23 +68,6 @@ export function setWindow(targetWindow) {
 
 export function getWindow() {
   return mTargetWindow;
-}
-
-export function getSafeFaviconUrl(uRL) {
-  switch (uRL) {
-    case 'chrome://browser/skin/settings.svg':
-      return browser.extension.getURL('resources/icons/settings.svg');
-    case 'chrome://mozapps/skin/extensions/extensionGeneric-16.svg':
-      return browser.extension.getURL('resources/icons/extensionGeneric-16.svg');
-    case 'chrome://browser/skin/privatebrowsing/favicon.svg':
-      return browser.extension.getURL('resources/icons/privatebrowsing-favicon.svg');
-    default:
-      if (/^chrome:\/\//.test(uRL) &&
-          !/^chrome:\/\/branding\//.test(uRL))
-        return browser.extension.getURL('resources/icons/globe-16.svg');
-      break;
-  }
-  return uRL;
 }
 
 
@@ -374,15 +357,14 @@ export function getTabsContainer(hint) {
   if (typeof hint == 'number')
     return document.querySelector(`#window-${hint}`);
 
-  if (hint &&
-      typeof hint == 'object' &&
-      hint.dataset &&
-      hint.dataset.windowId)
-    return document.querySelector(`#window-${hint.dataset.windowId}`);
-
   const tab = getTabFromChild(hint);
   if (tab)
     return tab.parentNode;
+
+  if (hint &&
+      hint.dataset &&
+      hint.dataset.windowId)
+    return document.querySelector(`#window-${hint.dataset.windowId}`);
 
   return null;
 }
@@ -820,7 +802,10 @@ export function getSelectedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`));
+  return Array.slice(container.querySelectorAll(`
+    ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED},
+    .${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED} ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}
+  `));
 }
 
 
@@ -1061,7 +1046,19 @@ export function isTemporaryGroupTab(tab) {
 
 export function isSelected(tab) {
   return ensureLivingTab(tab) &&
-           tab.classList.contains(Constants.kTAB_STATE_SELECTED);
+           (tab.classList.contains(Constants.kTAB_STATE_SELECTED) ||
+            tab.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED} .${Constants.kTAB_STATE_HIGHLIGHTED}`));
+}
+
+export function isHighlighted(tab) {
+  return ensureLivingTab(tab) &&
+           tab.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED);
+}
+
+export function isMultiselected(tab) {
+  return isSelected(tab) &&
+           (tab.parentNode.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED}`) ||
+            tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED} ~ ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`));
 }
 
 export function isLocked(_aTab) {

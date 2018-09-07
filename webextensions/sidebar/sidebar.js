@@ -5,27 +5,27 @@
 */
 'use strict';
 
-import RichConfirm from '../extlib/RichConfirm.js';
-import TabIdFixer from '../extlib/TabIdFixer.js';
+import RichConfirm from '/extlib/RichConfirm.js';
+import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
   nextFrame,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as ApiTabsListener from '../common/api-tabs-listener.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as TabsUpdate from '../common/tabs-update.js';
-import * as TabsMove from '../common/tabs-move.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
-import * as ContextualIdentities from '../common/contextual-identities.js';
-import * as Commands from '../common/commands.js';
-import * as UserOperationBlocker from '../common/user-operation-blocker.js';
-import * as MetricsData from '../common/metrics-data.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabsListener from '/common/api-tabs-listener.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsUpdate from '/common/tabs-update.js';
+import * as TabsMove from '/common/tabs-move.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as Commands from '/common/commands.js';
+import * as UserOperationBlocker from '/common/user-operation-blocker.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -38,7 +38,7 @@ import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('sidebar/sidebar', ...args);
@@ -118,6 +118,7 @@ export async function init() {
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
       ApiTabsListener.startListen();
+      TabsUpdate.startListen();
 
       browser.runtime.connect({
         name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${mTargetWindow}`
@@ -164,6 +165,7 @@ export async function init() {
     MetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
+      updateContextualIdentitiesSelectorInContextMenu();
       ContextualIdentities.startObserve();
     }),
     MetricsData.addAsync('TabContextMenu.init', async () => {
@@ -323,17 +325,12 @@ function updateContextualIdentitiesSelector() {
   range.deleteContents();
 
   const fragment = document.createDocumentFragment();
-  ContextualIdentities.forEach(aIdentity => {
-    const item     = document.createElement('li');
-    item.dataset.value = aIdentity.cookieStoreId;
-    item.textContent = aIdentity.name;
-    const icon = document.createElement('span');
-    icon.classList.add('icon');
-    if (aIdentity.iconUrl) {
-      icon.style.backgroundColor = aIdentity.colorCode || 'var(--tab-text)';
-      icon.style.mask = `url(${JSON.stringify(aIdentity.iconUrl)}) no-repeat center / 100%`;
-    }
-    item.insertBefore(icon, item.firstChild);
+  ContextualIdentities.forEach(identity => {
+    const item = document.createElement('li');
+    item.dataset.value = identity.cookieStoreId;
+    item.textContent = identity.name;
+    item.dataset.icon = identity.iconUrl;
+    item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
     fragment.appendChild(item);
   });
   if (configs.inheritContextualIdentityToNewChildTab) {
@@ -347,6 +344,35 @@ function updateContextualIdentitiesSelector() {
   }
   range.insertNode(fragment);
   range.detach();
+}
+
+function updateContextualIdentitiesSelectorInContextMenu() {
+  const container = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU);
+
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  range.setStartAfter(container.querySelector('.separator'));
+  range.deleteContents();
+
+  let hasIdentity = false;
+  const fragment = document.createDocumentFragment();
+  ContextualIdentities.forEach(identity => {
+    const item = document.createElement('li');
+    item.id = `context_reopenInContainer:${identity.cookieStoreId}`
+    item.dataset.value = identity.cookieStoreId;
+    item.textContent = identity.name.replace(/^([a-z0-9])/i, '&$1');
+    item.setAttribute('title', identity.name);
+    if (identity.iconUrl) {
+      item.dataset.icon = identity.iconUrl;
+      item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
+    }
+    fragment.appendChild(item);
+    hasIdentity = true;
+  });
+  range.insertNode(fragment);
+  range.detach();
+
+  container.parentNode.style.display = hasIdentity ? '' : 'none' ;
 }
 
 export async function rebuildAll(cache) {
@@ -657,6 +683,7 @@ Tabs.onWindowRestoring.addListener(async windowId => {
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
+  updateContextualIdentitiesSelectorInContextMenu();
 });
 
 

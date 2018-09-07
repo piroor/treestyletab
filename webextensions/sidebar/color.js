@@ -7,7 +7,7 @@
 
 import {
   log as internalLogger
-} from '../common/common.js';
+} from '/common/common.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {

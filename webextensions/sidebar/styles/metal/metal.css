@@ -88,11 +88,11 @@
   margin: 1px 0 0 1px;
   padding: 2px 4px 2px 3px;
 }
-.tab.faviconized:not(.unread) {
+.tab.faviconized:not(.unread):not(.attention) {
   background: var(--tab-surface);
 }
 
-.tab.faviconized:not(.unread).active {
+.tab.faviconized:not(.unread):not(.attention).active {
   background-color: var(--tab-surface-active);
 }
 
@@ -170,4 +170,9 @@
   .after-tabs
   .newtab-action-selector-anchor:hover {
   border-image: url("tab-active-l.png") 10 5 10 10 fill / 10px 5px 10px 0;
+}
+
+
+.mutiple-highlighted .tab:not(.highlighted) {
+  opacity: 0.5;
 }

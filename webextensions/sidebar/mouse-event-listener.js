@@ -38,20 +38,20 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import MenuUI from '../extlib/MenuUI.js';
+import MenuUI from '/extlib/MenuUI.js';
 
 import {
   log as internalLogger,
   wait,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
-import * as Commands from '../common/commands.js';
-import * as MetricsData from '../common/metrics-data.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as Commands from '/common/commands.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
@@ -116,7 +116,10 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0) != onMouseOver.listening) {
+  const shouldListenMouseOut = TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0;
+  const shouldListenMouseOver = shouldListenMouseOut || TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOVER) > 0;
+
+  if (shouldListenMouseOver != onMouseOver.listening) {
     if (!onMouseOver.listening) {
       window.addEventListener('mouseover', onMouseOver, { capture: true, passive: true });
       onMouseOver.listening = true;
@@ -127,7 +130,7 @@ function updateSpecialEventListenersForAPIListeners() {
     }
   }
 
-  if ((TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_MOUSEOUT) > 0) != onMouseOut.listening) {
+  if (shouldListenMouseOut != onMouseOut.listening) {
     if (!onMouseOut.listening) {
       window.addEventListener('mouseout', onMouseOut, { capture: true, passive: true });
       onMouseOut.listening = true;
@@ -161,7 +164,15 @@ onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
-  if (tab && onMouseOver.lastTarget != tab.id) {
+
+  // We enter the tab or one of its children, but not from any of the tabs
+  // (other) children, so we are now starting to hover this tab (relatedTarget
+  // contains the target of the mouseout event or null if there is none). This
+  // also includes the case where we enter the tab directly without going
+  // through another tab or the sidebar, which causes relatedTarget to be null
+  const enterTabFromAncestor = tab && !tab.contains(event.relatedTarget);
+
+  if (enterTabFromAncestor) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
       tab:      TSTAPI.serializeTab(tab),
@@ -173,13 +184,20 @@ function onMouseOver(event) {
       dragging: DragAndDrop.isCapturingForDragging()
     });
   }
-  onMouseOver.lastTarget = tab && tab.id;
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
 
 function onMouseOut(event) {
   const tab = EventUtils.getTabFromEvent(event);
-  if (tab && onMouseOut.lastTarget != tab.id) {
+
+  // We leave the tab or any of its children, but not for one of the tabs
+  // (other) children, so we are no longer hovering this tab (relatedTarget
+  // contains the target of the mouseover event or null if there is none). This
+  // also includes the case where we leave the tab directly without going
+  // through another tab or the sidebar, which causes relatedTarget to be null
+  const leaveTabToAncestor = tab && !tab.contains(event.relatedTarget);
+
+  if (leaveTabToAncestor) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
       tab:      TSTAPI.serializeTab(tab),
@@ -191,7 +209,6 @@ function onMouseOut(event) {
       dragging: DragAndDrop.isCapturingForDragging()
     });
   }
-  onMouseOut.lastTarget = tab && tab.id;
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
 
@@ -221,6 +238,7 @@ function onMouseDown(event) {
   const mousedownDetail = {
     targetType:    getMouseEventTargetType(event),
     tab:           tab && tab.id,
+    soundButton:   EventUtils.isEventFiredOnSoundButton(event),
     closebox:      EventUtils.isEventFiredOnClosebox(event),
     button:        event.button,
     ctrlKey:       event.ctrlKey,
@@ -457,9 +475,17 @@ function onClick(event) {
     //  event.preventDefault();
     //  return;
     //}
-    Sidebar.confirmToCloseTabs(Tree.getClosingTabsFromParent(tab).length)
+    const multiselected  = Tabs.isMultiselected(tab);
+    const tabsToBeClosed = multiselected ?
+      Tabs.getSelectedTabs(tab) :
+      Tree.getClosingTabsFromParent(tab) ;
+    Sidebar.confirmToCloseTabs(tabsToBeClosed.length)
       .then(aConfirmed => {
-        if (aConfirmed)
+        if (!aConfirmed)
+          return;
+        if (multiselected)
+          TabsInternalOperation.removeTabs(tabsToBeClosed, { inRemote: true });
+        else
           TabsInternalOperation.removeTab(tab, { inRemote: true });
       });
     return;

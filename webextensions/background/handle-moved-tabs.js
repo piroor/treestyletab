@@ -9,14 +9,14 @@ import {
   log as internalLogger,
   dumpTab,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as ApiTabs from '../common/api-tabs.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as Tree from '../common/tree.js';
-import * as Commands from '../common/commands.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as Tree from '/common/tree.js';
+import * as Commands from '/common/commands.js';
 
 import * as TreeStructure from './tree-structure.js';
 
@@ -65,7 +65,7 @@ Tabs.onMoving.addListener((tab, moveInfo) => {
   return false;
 });
 
-async function tryFixupTreeForInsertedTab(tab, moveInfo) {
+async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   if (!Tree.shouldApplyTreeBehavior(moveInfo)) {
     Tree.detachAllChildren(tab, {
       behavior: Tree.getCloseParentBehaviorForTab(tab, {
@@ -111,7 +111,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo) {
   }
 }
 
-Tabs.onMoved.addListener((tab, moveInfo) => {
+Tabs.onMoved.addListener((tab, moveInfo = {}) => {
   if (moveInfo.byInternalOperation ||
       Tabs.isDuplicating(tab)) {
     log('internal move');
@@ -138,7 +138,7 @@ Commands.onMoveDown.addListener(async tab => {
   });
 });
 
-TreeStructure.onTabAttachedFromRestoredInfo.addListener(tab => { tryFixupTreeForInsertedTab(tab); });
+TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { tryFixupTreeForInsertedTab(tab, moveInfo); });
 
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
@@ -154,7 +154,7 @@ function moveBack(tab, moveInfo) {
   });
 }
 
-async function detectTabActionFromNewPosition(tab, moveInfo) {
+async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
   const tree   = moveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(tab);
   const target = tree.target;

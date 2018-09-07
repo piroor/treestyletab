@@ -8,9 +8,9 @@
 import {
   log as internalLogger,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
 import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -49,31 +49,38 @@ export function isEventFiredOnTwisty(event) {
   if (!tab || !Tabs.hasChildTabs(tab))
     return false;
 
-  return !!getElementTarget(event).closest(`.${Constants.kTWISTY}`);
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(`.${Constants.kTWISTY}`);
 }
 
 export function isEventFiredOnSoundButton(event) {
-  return !!getElementTarget(event).closest(`.${Constants.kSOUND_BUTTON}`);
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(`.${Constants.kSOUND_BUTTON}`);
 }
 
 export function isEventFiredOnClosebox(event) {
-  return !!getElementTarget(event).closest(`.${Constants.kCLOSEBOX}`);
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(`.${Constants.kCLOSEBOX}`);
 }
 
 export function isEventFiredOnNewTabButton(event) {
-  return !!getElementTarget(event).closest(`.${Constants.kNEWTAB_BUTTON}`);
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(`.${Constants.kNEWTAB_BUTTON}`);
 }
 
 export function isEventFiredOnMenuOrPanel(event) {
-  return !!getElementTarget(event).closest('ul.menu, ul.panel');
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest('ul.menu, ul.panel');
 }
 
 export function isEventFiredOnAnchor(event) {
-  return !!getElementTarget(event).closest(`[data-menu-ui]`);
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(`[data-menu-ui]`);
 }
 
 export function isEventFiredOnClickable(event) {
-  return !!getElementTarget(event).closest(`button, scrollbar, select`);
+  const target = getElementTarget(event);
+  return target && target.closest && !!target.closest(`button, scrollbar, select`);
 }
 
 

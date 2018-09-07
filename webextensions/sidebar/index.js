@@ -8,9 +8,9 @@ import '../extlib/TabIdFixer.js';
 
 import {
   log
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as MetricsData from '../common/metrics-data.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import * as Sidebar from './sidebar.js';
 import './mouse-event-listener.js';

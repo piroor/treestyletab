@@ -19,6 +19,14 @@ module.exports = {
     'webextensions': true,
   },
 
+  'settings': {
+    'import/resolver': {
+      'babel-module': {
+        'root': ['./'],
+      }
+    }
+  },
+
   'rules': {
     'no-const-assign': 'error',
     'prefer-const': ['warn', {

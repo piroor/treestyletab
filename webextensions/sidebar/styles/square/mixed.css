@@ -104,13 +104,13 @@
 }
 
 
-.tab:not(.active):hover .active-marker::before {
+.tab:not(.active):not(.highlighted):hover .active-marker::before {
   background-color: transparent;
   --tab-active-marker-start: rgba(0, 20, 20, 0.015);
   --tab-active-marker-end: rgba(0, 20, 20, 0.2);
 }
 
-:root.left .tab:not(.faviconized):not(.active):hover .active-marker::before {
+:root.left .tab:not(.faviconized):not(.active):not(.highlighted):hover .active-marker::before {
   background-image: -moz-linear-gradient(
                       left,
                       var(--tab-active-marker-start) 0,
@@ -118,7 +118,7 @@
                     );
 }
 
-:root.right .tab:not(.faviconized):not(.active):hover .active-marker::before {
+:root.right .tab:not(.faviconized):not(.active):not(.highlighted):hover .active-marker::before {
   background-image: -moz-linear-gradient(
                       right,
                       var(--tab-active-marker-start) 0,
@@ -126,7 +126,7 @@
                     );
 }
 
-.tab.faviconized:not(.active):hover .active-marker::before {
+.tab.faviconized:not(.active):not(.highlighted):hover .active-marker::before {
   background-image: -moz-linear-gradient(
                       top,
                       var(--tab-active-marker-start) 0,

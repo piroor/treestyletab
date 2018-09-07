@@ -38,7 +38,7 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 import {
   log as internalLogger,
@@ -96,23 +96,17 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
-  const hasFavIcon       = 'favIconUrl' in newState;
-  const maybeImageTab    = !hasFavIcon && TabFavIconHelper.maybeImageTab(newState);
-  if (options.forceApply || hasFavIcon || maybeImageTab) {
-    Tabs.onFaviconUpdated.dispatch(
-      tab,
-      Tabs.getSafeFaviconUrl(newState.favIconUrl ||
-                             maybeImageTab && newState.url)
-    );
+  if (openerOfGroupTab &&
+      (openerOfGroupTab.apiTab.favIconUrl ||
+       TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
+    Tabs.onFaviconUpdated.dispatch(tab,
+                                   openerOfGroupTab.apiTab.favIconUrl ||
+                                     openerOfGroupTab.apiTab.url);
   }
-  else if (openerOfGroupTab &&
-           (openerOfGroupTab.apiTab.favIconUrl ||
-            TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
-    Tabs.onFaviconUpdated.dispatch(
-      tab,
-      Tabs.getSafeFaviconUrl(openerOfGroupTab.apiTab.favIconUrl ||
-                             openerOfGroupTab.apiTab.url)
-    );
+  else if (options.forceApply ||
+           'favIconUrl' in newState ||
+           TabFavIconHelper.maybeImageTab('url' in newState ? newState : tab.apiTab)) {
+    Tabs.onFaviconUpdated.dispatch(tab);
   }
   else if (Tabs.isGroupTab(tab)) {
     // "about:treestyletab-group" can set error icon for the favicon and
@@ -189,18 +183,6 @@ export function updateTab(tab, newState = {}, options = {}) {
   else
     tab.classList.remove(Constants.kTAB_STATE_SOUND_PLAYING);
 
-  /*
-  // On Firefox, "highlighted" is same to "activated" for now...
-  // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/onHighlighted
-  if (options.forceApply ||
-      'highlighted' in newState) {
-    if (newState.highlighted)
-      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
-    else
-      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
-  }
-  */
-
   if (options.forceApply ||
       'cookieStoreId' in newState) {
     for (const className of tab.classList) {
@@ -233,16 +215,23 @@ export function updateTab(tab, newState = {}, options = {}) {
     }
   }
 
-  /*
-  // currently "selected" is not available on Firefox, so the class is used only by other addons.
   if (options.forceApply ||
-      'selected' in newState) {
-    if (newState.selected)
-      tab.classList.add(Constants.kTAB_STATE_SELECTED);
+      'highlighted' in newState) {
+    if (newState.highlighted)
+      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
     else
-      tab.classList.remove(Constants.kTAB_STATE_SELECTED);
+      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+
+    updateMultipleHighlighted(tab);
   }
-  */
+
+  if (options.forceApply ||
+      'attention' in newState) {
+    if (newState.attention)
+      tab.classList.add(Constants.kTAB_STATE_ATTENTION);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_ATTENTION);
+  }
 
   if (options.forceApply ||
       'discarded' in newState) {
@@ -257,6 +246,39 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   updateTabDebugTooltip(tab);
+}
+
+function onTabsHighlighted(highlightInfo) {
+  if (updateTabsHighlighted.timer)
+    clearTimeout(updateTabsHighlighted.timer);
+  updateTabsHighlighted.timer = setTimeout(() => {
+    delete updateTabsHighlighted.timer;
+    updateTabsHighlighted(highlightInfo);
+  }, 50);
+}
+
+async function updateTabsHighlighted(highlightInfo) {
+  if (Tabs.hasCreatingTab())
+    await Tabs.waitUntilAllTabsAreCreated();
+  const container = Tabs.getTabsContainer(highlightInfo.windowId);
+  if (!container)
+    return;
+  let changed = false;
+  for (const tab of container.children) {
+    const highlighted = highlightInfo.tabIds.includes(tab.apiTab.id);
+    // log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
+    if (Tabs.isHighlighted(tab) == highlighted)
+      continue;
+    if (highlighted)
+      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+    updateTabDebugTooltip(tab);
+    Tabs.onUpdated.dispatch(tab, { highlighted });
+    changed = true;
+  }
+  if (changed)
+    updateMultipleHighlighted(highlightInfo.windowId);
 }
 
 export function updateTabDebugTooltip(tab) {
@@ -289,6 +311,16 @@ windowId = ${tab.apiTab.windowId}
   });
 }
 
+function updateMultipleHighlighted(hint) {
+  const container = Tabs.getTabsContainer(hint);
+  if (!container)
+    return;
+  if (container.querySelector(`${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED} ~ ${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}`))
+    container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  else
+    container.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+}
+
 export function updateParentTab(parent) {
   if (!Tabs.ensureLivingTab(parent))
     return;
@@ -310,3 +342,6 @@ export function updateParentTab(parent) {
   Tabs.onParentTabUpdated.dispatch(parent);
 }
 
+export function startListen() {
+  browser.tabs.onHighlighted.addListener(onTabsHighlighted);
+}

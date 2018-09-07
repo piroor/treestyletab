@@ -5,35 +5,35 @@
 */
 'use strict';
 
-import RichConfirm from '../extlib/RichConfirm.js';
+import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
   log as internalLogger,
   wait,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as ApiTabsListener from '../common/api-tabs-listener.js';
-import * as MetricsData from '../common/metrics-data.js';
-import * as ApiTabs from '../common/api-tabs.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as TabsUpdate from '../common/tabs-update.js';
-import * as Tree from '../common/tree.js';
-import * as ContextualIdentities from '../common/contextual-identities.js';
-import * as Permissions from '../common/permissions.js';
-import * as TSTAPI from '../common/tst-api.js';
-import * as SidebarStatus from '../common/sidebar-status.js';
-import * as Commands from '../common/commands.js';
-import * as Migration from '../common/migration.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabsListener from '/common/api-tabs-listener.js';
+import * as MetricsData from '/common/metrics-data.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as TabsUpdate from '/common/tabs-update.js';
+import * as Tree from '/common/tree.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as Permissions from '/common/permissions.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as SidebarStatus from '/common/sidebar-status.js';
+import * as Commands from '/common/commands.js';
+import * as Migration from '/common/migration.js';
 
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as ContextMenu from './context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
-import EventListenerManager from '../extlib/EventListenerManager.js';
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('background/background', ...args);
@@ -58,7 +58,8 @@ export async function init() {
   MetricsData.add('configs.$loaded');
 
   Migration.migrateLegacyConfigs();
-  MetricsData.add('Migration.migrateLegacyConfigs');
+  Migration.migrateConfigs();
+  MetricsData.add('Migration.migrateLegacyConfigs, Migration.migrateConfigs');
 
   updatePanelUrl();
 
@@ -75,6 +76,7 @@ export async function init() {
   MetricsData.add('Migration.migrateLegacyTreeStructure');
 
   ApiTabsListener.startListen();
+  TabsUpdate.startListen();
   ContextualIdentities.startObserve();
   onBuilt.dispatch();
 
@@ -183,29 +185,39 @@ async function rebuildAll() {
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
-      if (configs.useCachedTree) {
-        restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
-          insertionPoint,
-          owner: window.tabs[window.tabs.length - 1],
-          tabs:  window.tabs
-        });
-        for (const tab of Tabs.getAllTabs(window.id)) {
-          tryStartHandleAccelKeyOnTab(tab);
-        }
-        if (restoredFromCache[window.id]) {
-          log(`window ${window.id} is restored from cache`);
-          return;
+      try {
+        if (configs.useCachedTree) {
+          restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
+            insertionPoint,
+            owner: window.tabs[window.tabs.length - 1],
+            tabs:  window.tabs
+          });
+          for (const tab of Tabs.getAllTabs(window.id)) {
+            tryStartHandleAccelKeyOnTab(tab);
+          }
+          if (restoredFromCache[window.id]) {
+            log(`window ${window.id} is restored from cache`);
+            return;
+          }
         }
       }
-      log(`build tabs for ${window.id} from scratch`);
-      const container = TabsContainer.buildFor(window.id);
-      for (const apiTab of window.tabs) {
-        const newTab = Tabs.buildTab(apiTab, { existing: true });
-        container.appendChild(newTab);
-        TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
-        tryStartHandleAccelKeyOnTab(newTab);
+      catch(e) {
+        log(`failed to restore tabs for ${window.id} from cache `, e);
       }
-      Tabs.allTabsContainer.appendChild(container);
+      try {
+        log(`build tabs for ${window.id} from scratch`);
+        const container = TabsContainer.buildFor(window.id);
+        for (const apiTab of window.tabs) {
+          const newTab = Tabs.buildTab(apiTab, { existing: true });
+          container.appendChild(newTab);
+          TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
+          tryStartHandleAccelKeyOnTab(newTab);
+        }
+        Tabs.allTabsContainer.appendChild(container);
+      }
+      catch(e) {
+        log(`failed to build tabs for ${window.id}`, e);
+      }
       restoredFromCache[window.id] = false;
     });
     for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {

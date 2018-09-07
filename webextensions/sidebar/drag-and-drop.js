@@ -37,18 +37,18 @@
 'use strict';
 
 
-import RichConfirm from '../extlib/RichConfirm.js';
+import RichConfirm from '/extlib/RichConfirm.js';
 
 import {
   log as internalLogger,
   wait,
   configs
-} from '../common/common.js';
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsOpen from '../common/tabs-open.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsOpen from '/common/tabs-open.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -59,8 +59,9 @@ function log(...args) {
 
 
 const kTREE_DROP_TYPE   = 'application/x-treestyletab-tree';
-const kTYPE_X_MOZ_PLACE = 'text/x-moz-place';
-const kBOOKMARK_FOLDER = 'x-moz-place:';
+const kTYPE_X_MOZ_URL   = 'text/x-moz-url';
+const kTYPE_URI_LIST    = 'text/uri-list';
+const kBOOKMARK_FOLDER  = 'x-moz-place:';
 
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';
@@ -92,6 +93,7 @@ export function init() {
   document.addEventListener('dragover', onDragOver);
   document.addEventListener('dragenter', onDragEnter);
   document.addEventListener('dragleave', onDragLeave);
+  document.addEventListener('dragend', onDragEnd);
   document.addEventListener('drop', onDrop);
 
   browser.runtime.onMessage.addListener(onMessage);
@@ -210,7 +212,7 @@ function getDropAction(event) {
     }
   };
   info.defineGetter('dragData', () => {
-    const dragData = event.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
+    const dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
     return (dragData && JSON.parse(dragData)) || mCurrentDragData;
   });
   info.defineGetter('draggedTab', () => {
@@ -556,22 +558,15 @@ function retrieveURIsFromDragEvent(event) {
   log('retrieveURIsFromDragEvent');
   const dt    = event.dataTransfer;
   const types = [
-    kTYPE_X_MOZ_PLACE,
-    'text/uri-list',
-    'text/x-moz-text-internal',
-    'text/x-moz-url',
-    'text/plain',
-    'application/x-moz-file'
+    kTYPE_URI_LIST,
+    kTYPE_X_MOZ_URL,
+    'text/plain'
   ];
   let urls = [];
-  for (let i = 0; i < types.length; i++) {
-    const dataType = types[i];
-    for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++) {
-      const urlData = dt.mozGetDataAt(dataType, i);
-      if (urlData) {
-        urls = urls.concat(retrieveURIsFromData(urlData, dataType));
-      }
-    }
+  for (const type of types) {
+    const urlData  = dt.getData(type);
+    if (urlData)
+      urls = urls.concat(retrieveURIsFromData(urlData, type));
     if (urls.length)
       break;
   }
@@ -593,41 +588,34 @@ function retrieveURIsFromDragEvent(event) {
 function retrieveURIsFromData(aData, type) {
   log('retrieveURIsFromData: ', type, aData);
   switch (type) {
-    //case kTYPE_X_MOZ_PLACE: {
-    //  const item = JSON.parse(aData);
-    //  if (item.type == 'text/x-moz-place-container') {
-    //    let children = item.children;
-    //    if (!children) {
-    //      children = item.children = retrieveBookmarksInFolder(item.id);
-    //      aData = JSON.stringify(item);
-    //    }
-    //    // When a blank folder is dropped, just open a dummy tab with the folder name.
-    //    if (children && children.length == 0) {
-    //      const uri = TabsGroup.makeGroupTabURI({ title: item.title });
-    //      return [uri];
-    //    }
-    //  }
-    //  const uri = item.uri;
-    //  if (uri)
-    //    return uri;
-    //  else
-    //    return `${kBOOKMARK_FOLDER}${aData}`;
-    //}; break;
-
-    case 'text/uri-list':
+    case kTYPE_URI_LIST:
       return aData
         .replace(/\r/g, '\n')
-        .replace(/^\#.+$/gim, '')
         .replace(/\n\n+/g, '\n')
-        .split('\n');
+        .split('\n')
+        .filter(line => {
+          return line.charAt(0) != '#';
+        });
 
-    case 'text/unicode':
+    case kTYPE_X_MOZ_URL:
+      return aData
+        .trim()
+        .replace(/\r/g, '\n')
+        .replace(/\n\n+/g, '\n')
+        .split('\n')
+        .filter((_line, index) => {
+          return index % 2 == 0;
+        });
+
     case 'text/plain':
-    case 'text/x-moz-text-internal':
-      return [aData.trim()];
-
-    //case 'application/x-moz-file':
-    //  return [getURLSpecFromFile(aData)];
+      return aData
+        .replace(/\r/g, '\n')
+        .replace(/\n\n+/g, '\n')
+        .trim()
+        .split('\n')
+        .filter(line => {
+          return /^\w+:\/\/.+/.test(line);
+        });
   }
   return [];
 }
@@ -673,6 +661,8 @@ async function getDroppedLinksOnTabBehavior() {
 
 
 /* DOM event listeners */
+
+let mFinishCanceledDragOperation;
 
 function onDragStart(event) {
   log('onDragStart: start ', event);
@@ -728,7 +718,7 @@ function onDragStart(event) {
   dt.effectAllowed = 'copyMove';
 
   const sanitizedDragData = sanitizeDragData(dragData);
-  dt.mozSetDataAt(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData), 0);
+  dt.setData(kTREE_DROP_TYPE, JSON.stringify(sanitizedDragData));
 
   // Because addon cannot read drag data across private browsing mode,
   // we need to share detailed information of dragged tabs in different way!
@@ -739,24 +729,25 @@ function onDragStart(event) {
     dragData: sanitizedDragData
   });
 
-  dragData.tabNodes.map((aDraggedTab, index) => {
-    aDraggedTab.classList.add(Constants.kTAB_STATE_DRAGGING);
-    // this type will be...
-    //  * droppable on bookmark toolbar and other Places based UI
-    //  * undroppable on content area, desktop, and other application
-    // so this won't block tearing off of tabs by drag-and-drop.
-    dt.mozSetDataAt(kTYPE_X_MOZ_PLACE,
-                    JSON.stringify({
-                      type:  kTYPE_X_MOZ_PLACE,
-                      uri:   aDraggedTab.apiTab.url,
-                      title: aDraggedTab.apiTab.title
-                    }),
-                    index);
-  });
+  const mozUrl  = [];
+  for (const draggedTab of dragData.tabNodes) {
+    draggedTab.classList.add(Constants.kTAB_STATE_DRAGGING);
+    mozUrl.push(`${draggedTab.apiTab.url}\n${draggedTab.apiTab.title}`);
+  }
+  // This is required to create bookmarks by drag and drop.
+  dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
+
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
-  document.addEventListener('dragend', onDragEnd, { capture: true });
+  // The drag operation can be canceled by something, then
+  // "dragend" event is not dispatched and TST wrongly keeps
+  // its "dragging" state. So we clear the dragging state with
+  // a delay. (This timer will be cleared immediately by dragover
+  // event, if the dragging operation is not canceled.)
+  // See also: https://github.com/piroor/treestyletab/issues/1778#issuecomment-404569842
+  mFinishCanceledDragOperation = setTimeout(finishDrag, 250);
+
   log('onDragStart: started');
 }
 onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
@@ -764,6 +755,11 @@ onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 let mLastDragOverTimestamp = null;
 
 function onDragOver(event) {
+  if (mFinishCanceledDragOperation) {
+    clearTimeout(mFinishCanceledDragOperation);
+    mFinishCanceledDragOperation = null;
+  }
+
   event.preventDefault(); // this is required to override default dragover actions!
   Scroll.autoScrollOnMouseEvent(event);
 
@@ -970,32 +966,12 @@ onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 function onDragEnd(event) {
   log('onDragEnd, mDraggingOnSelfWindow = ', mDraggingOnSelfWindow);
 
-  document.removeEventListener('dragend', onDragEnd, { capture: true });
-
-  // clear "dragging" status safely, because we possibly fail to get drag data from dataTransfer.
-  clearDraggingTabsState();
-
-  let dragData = event.dataTransfer.mozGetDataAt(kTREE_DROP_TYPE, 0);
+  let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
-  const stillInSelfWindow = !!mDraggingOnSelfWindow;
-  mDraggingOnSelfWindow = false;
-
-  wait(100).then(() => {
-    mCurrentDragData = null;
-    browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-      windowId: Tabs.getWindow(),
-      dragData: null
-    });
-  });
-
   if (Array.isArray(dragData.apiTabs))
     dragData.tabNodes = dragData.apiTabs.map(Tabs.getTabById);
 
-  clearDropPosition();
-  mLastDropPosition = null;
-  clearDraggingState();
-  collapseAutoExpandedTabsWhileDragging();
+  finishDrag();
 
   if (event.dataTransfer.dropEffect != 'none' ||
       //event.shiftKey || // don't ignore shift-drop, because it can be used to drag a parent tab as an individual tab.
@@ -1013,27 +989,29 @@ function onDragEnd(event) {
     return;
   }
 
+  const windowX = window.mozInnerScreenX * window.devicePixelRatio;
+  const windowY = window.mozInnerScreenY * window.devicePixelRatio;
+  const offset  = dragData.tabNodes[0].getBoundingClientRect().height * window.devicePixelRatio / 2;
+  log('dragend at: ', {
+    windowX,
+    windowY,
+    windowW: window.innerWidth,
+    windowH: window.innerHeight,
+    eventX:  event.screenX,
+    eventY:  event.screenY,
+    offset
+  });
+  if (event.screenX >= windowX - offset &&
+      event.screenY >= windowY - offset &&
+      event.screenX <= windowX + window.innerWidth + offset &&
+      event.screenY <= windowY + window.innerHeight + offset) {
+    log('dropped near the tab bar (from coordinates): detaching is canceled');
+    return;
+  }
+
   log('trying to detach tab from window');
   event.stopPropagation();
   event.preventDefault();
-
-  if (stillInSelfWindow) {
-    log('dropped at tab bar: detaching is canceled');
-    return;
-  }
-
-  const now = Date.now();
-  const delta = now - mLastDragOverTimestamp;
-  log('LastDragOverTimestamp: ', {
-    last: mLastDragOverTimestamp,
-    now, delta,
-    timeout: configs.preventTearOffTabsTimeout
-  });
-  if (mLastDragOverTimestamp &&
-      delta < configs.preventTearOffTabsTimeout) {
-    log('dropped near the tab bar: detaching is canceled');
-    return;
-  }
 
   if (isDraggingAllCurrentTabs(dragData.tabNode)) {
     log('all tabs are dragged, so it is nonsence to tear off them from the window');
@@ -1048,6 +1026,28 @@ function onDragEnd(event) {
   });
 }
 onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
+
+function finishDrag() {
+  log('finishDrag');
+  clearDraggingTabsState();
+
+  mDraggingOnSelfWindow = false;
+
+  wait(100).then(() => {
+    mCurrentDragData = null;
+    browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
+      windowId: Tabs.getWindow(),
+      dragData: null
+    });
+  });
+
+  clearDropPosition();
+  mLastDropPosition = null;
+  mLastDragOverTimestamp = null;
+  clearDraggingState();
+  collapseAutoExpandedTabsWhileDragging();
+}
 
 
 /* drag on tabs API */

@@ -9,16 +9,16 @@ import {
   log as internalLogger,
   dumpTab,
   wait
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as TabsOpen from '../common/tabs-open.js';
-import * as TabsGroup from '../common/tabs-group.js';
-import * as TabsContainer from '../common/tabs-container.js';
-import * as Tree from '../common/tree.js';
-import * as SidebarStatus from '../common/sidebar-status.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsOpen from '/common/tabs-open.js';
+import * as TabsGroup from '/common/tabs-group.js';
+import * as TabsContainer from '/common/tabs-container.js';
+import * as Tree from '/common/tree.js';
+import * as SidebarStatus from '/common/sidebar-status.js';
 
 import * as Background from './background.js';
 

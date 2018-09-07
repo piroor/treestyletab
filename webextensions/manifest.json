@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "version": "2.4.24",
+  "version": "2.5.3",
   "author": "YUKI \"Piro\" Hiroshi",
   "description": "__MSG_extensionDescription__",
   "permissions": [
@@ -23,6 +23,7 @@
     "16": "resources/16x16.svg",
     "20": "resources/20x20.svg",
     "24": "resources/24x24.svg",
+    "32": "resources/32x32.svg",
     "64": "resources/icon64.png",
     "94": "resources/icon94.png"
   },
@@ -31,27 +32,27 @@
   },
   "browser_action": {
     "default_title": "__MSG_sidebarTitle__",
-    "default_icon": {
-      "16": "resources/16x16.svg",
-      "20": "resources/20x20.svg",
-      "24": "resources/24x24.svg"
-    },
     "browser_style": true,
     "theme_icons": [
       {
-        "light": "resources/16x16-dark.svg",
-        "dark":  "resources/16x16-light.svg",
+        "light": "resources/16x16-dark.svg#toolbar",
+        "dark":  "resources/16x16-light.svg#toolbar",
         "size": 16
       },
       {
-        "light": "resources/20x20-dark.svg",
-        "dark":  "resources/20x20-light.svg",
+        "light": "resources/20x20-dark.svg#toolbar",
+        "dark":  "resources/20x20-light.svg#toolbar",
         "size": 20
       },
       {
-        "light": "resources/24x24-dark.svg",
-        "dark":  "resources/24x24-light.svg",
+        "light": "resources/24x24-dark.svg#toolbar",
+        "dark":  "resources/24x24-light.svg#toolbar",
         "size": 24
+      },
+      {
+        "light": "resources/32x32-dark.svg#toolbar",
+        "dark":  "resources/32x32-light.svg#toolbar",
+        "size": 32
       }
     ]
   },
@@ -60,15 +61,15 @@
     "default_icon": {
       "16": "resources/16x16-light.svg",
       "20": "resources/20x20-light.svg",
-      "24": "resources/24x24-light.svg"
+      "24": "resources/24x24-light.svg",
+      "32": "resources/32x32-light.svg"
     },
     "default_panel": "sidebar/sidebar.html",
     "browser_style": true
   },
   "commands": {
     "_execute_browser_action": {
-      "suggested_key": { "default": "F1" },
-      "description": "__MSG_sidebarToggleDescription__"
+      "description": "__MSG_sidebarToggleDescription__ (F1)"
     },
     "reloadTree": {
       "description": "__MSG_context_reloadTree_label__"
@@ -137,47 +138,37 @@
       "description": "__MSG_command_focusPrevious__"
     },
     "focusPreviousSilently": {
-      "suggested_key": { "default": "Ctrl+Shift+Up" },
       "description": "__MSG_command_focusPreviousSilently__"
     },
     "focusNext": {
       "description": "__MSG_command_focusNext__"
     },
     "focusNextSilently": {
-      "suggested_key": { "default": "Ctrl+Shift+Down" },
       "description": "__MSG_command_focusNextSilently__"
     },
     "focusParent": {
-      "suggested_key": { "default": "Ctrl+Shift+Left" },
       "description": "__MSG_command_focusParent__"
     },
     "focusFirstChild": {
-      "suggested_key": { "default": "Ctrl+Shift+Right" },
       "description": "__MSG_command_focusFirstChild__"
     },
     "tabbarUp": {
-      "suggested_key": { "default": "Alt+Shift+Up" },
-      "description": "__MSG_command_tabbarUp__"
+      "description": "__MSG_command_tabbarUp__ (Alt+Shift+Up)"
     },
     "tabbarPageUp": {
-      "suggested_key": { "default": "Alt+Shift+PageUp" },
-      "description": "__MSG_command_tabbarPageUp__"
+      "description": "__MSG_command_tabbarPageUp__ (Alt+Shift+PageUp)"
     },
     "tabbarHome": {
-      "suggested_key": { "default": "Alt+Shift+Home" },
-      "description": "__MSG_command_tabbarHome__"
+      "description": "__MSG_command_tabbarHome__ (Alt+Shift+Home)"
     },
     "tabbarDown": {
-      "suggested_key": { "default": "Alt+Shift+Down" },
-      "description": "__MSG_command_tabbarDown__"
+      "description": "__MSG_command_tabbarDown__ (Alt+Shift+Down)"
     },
     "tabbarPageDown": {
-      "suggested_key": { "default": "Alt+Shift+PageDown" },
-      "description": "__MSG_command_tabbarPageDown__"
+      "description": "__MSG_command_tabbarPageDown__ (Alt+Shift+PageDown)"
     },
     "tabbarEnd": {
-      "suggested_key": { "default": "Alt+Shift+End" },
-      "description": "__MSG_command_tabbarEnd__"
+      "description": "__MSG_command_tabbarEnd__ (Alt+Shift+End)"
     }
   },
   "options_ui": {

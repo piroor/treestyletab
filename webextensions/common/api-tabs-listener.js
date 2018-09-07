@@ -38,7 +38,7 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import TabIdFixer from '../extlib/TabIdFixer.js';
+import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
@@ -623,8 +623,8 @@ async function onMoved(tabId, moveInfo) {
             .join('\n')
             .replace(/^/gm, ' - ')));
       }
-      const startIndex = Math.min(moveInfo.fromIndex, moveInfo.toIndex);
-      const endIndex   = Math.max(moveInfo.fromIndex, moveInfo.toIndex);
+      const startIndex = Math.max(Math.min(moveInfo.fromIndex, moveInfo.toIndex), 0);
+      const endIndex   = Math.min(Math.max(moveInfo.fromIndex, moveInfo.toIndex), tabs.length - 1);
       for (let i = startIndex; i < endIndex; i++) {
         tabs[i].apiTab.index = i;
       }

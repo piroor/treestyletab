@@ -17,12 +17,14 @@ import * as TabsContainer from './tabs-container.js';
 import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
+import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 
 function log(...args) {
   internalLogger('common/migration', ...args);
 }
 
 export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
+const kCONFIGS_VERSION = 1;
 const kFEATURES_VERSION = 3;
 
 export function migrateLegacyConfigs() {
@@ -281,6 +283,14 @@ export async function migrateLegacyTreeStructure() {
   }
 
   configs.migrateLegacyTreeStructure = false;
+}
+
+export function migrateConfigs() {
+  switch (configs.configsVersion) {
+    case 0:
+      ShortcutCustomizeUI.setDefaultShortcuts();
+  }
+  configs.configsVersion = kCONFIGS_VERSION;
 }
 
 export async function notifyNewFeatures() {

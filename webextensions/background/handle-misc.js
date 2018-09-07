@@ -8,24 +8,25 @@
 import {
   log as internalLogger,
   wait
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as ApiTabs from '../common/api-tabs.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as TabsMove from '../common/tabs-move.js';
-import * as TabsOpen from '../common/tabs-open.js';
-import * as TabsGroup from '../common/tabs-group.js';
-import * as Tree from '../common/tree.js';
-import * as TSTAPI from '../common/tst-api.js';
-import * as SidebarStatus from '../common/sidebar-status.js';
-import * as Commands from '../common/commands.js';
-import * as Permissions from '../common/permissions.js';
+import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsMove from '/common/tabs-move.js';
+import * as TabsOpen from '/common/tabs-open.js';
+import * as TabsGroup from '/common/tabs-group.js';
+import * as Tree from '/common/tree.js';
+import * as TSTAPI from '/common/tst-api.js';
+import * as SidebarStatus from '/common/sidebar-status.js';
+import * as Commands from '/common/commands.js';
+import * as Permissions from '/common/permissions.js';
 
 import * as Background from './background.js';
 import * as BackgroundCache from './background-cache.js';
 import * as TreeStructure from './tree-structure.js';
+import * as HandleTabMultiselect from './handle-tab-multiselect.js';
 
 function log(...args) {
   internalLogger('background/handle-misc', ...args);
@@ -381,8 +382,10 @@ function onMessage(message, sender) {
 
           logMouseEvent('Ready to select the tab');
 
-          // not canceled, then fallback to default "select tab"
-          if (message.button == 0)
+          // not canceled, then fallback to default behavior
+          const wasMultiselectionAction = await HandleTabMultiselect.updateSelectionByTabClick(tab, message);
+          if (message.button == 0 &&
+              !wasMultiselectionAction)
             TabsInternalOperation.selectTab(tab);
         });
 
@@ -417,12 +420,15 @@ function onMessage(message, sender) {
         const root = Tabs.getTabById(message.tab);
         if (!root)
           return;
-        const tabs = [root].concat(Tabs.getDescendantTabs(root));
+        const multiselected = Tabs.isMultiselected(root);
+        const tabs = multiselected ?
+          Tabs.getSelectedTabs(root) :
+          [root].concat(Tabs.getDescendantTabs(root)) ;
         for (const tab of tabs) {
           const playing = Tabs.isSoundPlaying(tab);
           const muted   = Tabs.isMuted(tab);
           log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
-          if (playing != message.muted)
+          if (!multiselected && playing != message.muted)
             continue;
 
           log(` => set muted=${message.muted}`);

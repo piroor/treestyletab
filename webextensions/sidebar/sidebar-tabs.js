@@ -10,13 +10,13 @@ import {
   wait,
   nextFrame,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsUpdate from '../common/tabs-update.js';
-import * as Tree from '../common/tree.js';
-import TabFavIconHelper from '../extlib/TabFavIconHelper.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsUpdate from '/common/tabs-update.js';
+import * as Tree from '/common/tree.js';
+import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -66,7 +66,9 @@ function updateTwisty(tab) {
 
 function updateClosebox(tab) {
   let tooltip;
-  if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
+  if (Tabs.isMultiselected(tab))
+    tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip_multiselected');
+  else if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
@@ -168,10 +170,11 @@ async function synchronizeThrobberAnimation() {
 
 export function updateSoundButtonTooltip(tab) {
   let tooltip = '';
+  const suffix = Tabs.isMultiselected(tab) ? '_multiselected' : '' ;
   if (Tabs.maybeMuted(tab))
-    tooltip = browser.i18n.getMessage('tab_soundButton_muted_tooltip');
+    tooltip = browser.i18n.getMessage(`tab_soundButton_muted_tooltip${suffix}`);
   else if (Tabs.maybeSoundPlaying(tab))
-    tooltip = browser.i18n.getMessage('tab_soundButton_playing_tooltip');
+    tooltip = browser.i18n.getMessage(`tab_soundButton_playing_tooltip${suffix}`);
 
   getSoundButton(tab).setAttribute('title', tooltip);
 }
@@ -345,7 +348,27 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
 
 Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadingState(tab); });
 
-Tabs.onUpdated.addListener((tab, _info) => { updateSoundButtonTooltip(tab); });
+const mDelayedUpdateForHighlightChange = new WeakMap();
+
+Tabs.onUpdated.addListener(async (tab, info) => {
+  updateSoundButtonTooltip(tab);
+
+  if (!('highlighted' in info))
+    return;
+
+  updateClosebox(tab);
+
+  const activeTab = Tabs.getCurrentTab(tab);
+  let timer = mDelayedUpdateForHighlightChange.get(activeTab);
+  if (activeTab)
+    clearTimeout(activeTab);
+  timer = setTimeout(() => {
+    mDelayedUpdateForHighlightChange.delete(activeTab);
+    updateSoundButtonTooltip(activeTab);
+    updateClosebox(activeTab);
+  }, 100);
+  mDelayedUpdateForHighlightChange.set(activeTab, timer);
+});
 
 Tabs.onParentTabUpdated.addListener(tab => { updateSoundButtonTooltip(tab); });
 

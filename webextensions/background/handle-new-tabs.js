@@ -9,14 +9,14 @@ import {
   log as internalLogger,
   dumpTab,
   configs
-} from '../common/common.js';
+} from '/common/common.js';
 
-import * as Constants from '../common/constants.js';
-import * as Tabs from '../common/tabs.js';
-import * as TabsInternalOperation from '../common/tabs-internal-operation.js';
-import * as TabsMove from '../common/tabs-move.js';
-import * as TabsOpen from '../common/tabs-open.js';
-import * as Tree from '../common/tree.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
+import * as TabsMove from '/common/tabs-move.js';
+import * as TabsOpen from '/common/tabs-open.js';
+import * as Tree from '/common/tree.js';
 
 function log(...args) {
   internalLogger('background/handle-new-tabs', ...args);

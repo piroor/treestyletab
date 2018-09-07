@@ -22,10 +22,11 @@
               transform var(--tab-active-marker-animation);
 }
 
-.tab:not(.active):hover .active-marker::before {
+.tab:not(.active):not(.highlighted):hover .active-marker::before {
   background: var(--tab-active-marker-inactive);
 }
-.tab.active .active-marker::before {
+.tab.active .active-marker::before,
+.tab.highlighted .active-marker::before {
   background: var(--tab-active-marker);
 }
 
@@ -42,7 +43,8 @@
   right: 0;
 }
 .tab:not(.faviconized):hover .active-marker::before,
-.tab.active:not(.faviconized) .active-marker::before {
+.tab.active:not(.faviconized) .active-marker::before,
+.tab.highlighted:not(.faviconized) .active-marker::before {
   opacity: 1;
   transform: scaleY(1);
 }
@@ -55,7 +57,8 @@
   transform: scaleX(0);
 }
 .tab.faviconized:hover .active-marker::before,
-.tab.active.faviconized .active-marker::before {
+.tab.active.faviconized .active-marker::before,
+.tab.highlighted.faviconized .active-marker::before {
   opacity: 1;
   transform: scaleX(1);
 }

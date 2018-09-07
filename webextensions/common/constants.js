@@ -86,6 +86,7 @@ export const kNEWTAB_BUTTON   = 'newtab-button';
 export const kEXTRA_ITEMS_CONTAINER        = 'extra-items-container';
 export const kCONTEXTUAL_IDENTITY_MARKER   = 'contextual-identity-marker';
 export const kCONTEXTUAL_IDENTITY_SELECTOR = 'contextual-identities-selector';
+export const kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU = 'contextual-identities-selector-context';
 export const kNEWTAB_ACTION_SELECTOR       = 'newtab-action-selector';
 
 export const kTAB_STATE_ACTIVE                    = 'active';
@@ -112,6 +113,7 @@ export const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 export const kTAB_STATE_FAVICONIZED               = 'faviconized';
 export const kTAB_STATE_UNREAD                    = 'unread';
 export const kTAB_STATE_HIGHLIGHTED               = 'highlighted';
+export const kTAB_STATE_ATTENTION                 = 'attention';
 export const kTAB_STATE_DISCARDED                 = 'discarded';
 export const kTAB_STATE_SELECTED                  = 'selected';
 export const kTAB_STATE_DRAGGING                  = 'dragging';
@@ -142,6 +144,7 @@ export const kTABBAR_STATE_NEWTAB_ACTION_SELECTABLE = 'newtab-action-selectable'
 export const kTABBAR_STATE_NARROW_SCROLLBAR       = 'narrow-scrollbar';
 export const kTABBAR_STATE_NO_SCROLLBAR           = 'no-scrollbar';
 export const kTABBAR_STATE_OVERLAY_SCROLLBAR      = 'overlay-scrollbar';
+export const kTABBAR_STATE_MULTIPLE_HIGHLIGHTED   = 'mutiple-highlighted';
 
 export const kWINDOW_STATE_TREE_STRUCTURE  = 'tree-structure';
 export const kWINDOW_STATE_SCROLL_POSITION = 'scroll-position';
