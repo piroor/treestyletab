@@ -25,9 +25,12 @@
   "command_tabbarEnd":             { "message": "Zum letzten Tab scrollen" },
   
   "tab_closebox_tab_tooltip": { "message": "Tab schließen" },
+  "tab_closebox_tab_tooltip_multiselected": { "message": "Tabs schließen" },
   "tab_closebox_tree_tooltip": { "message": "Zweig schließen" },
   "tab_soundButton_muted_tooltip": { "message": "Stummschaltung für Tab aufheben" },
+  "tab_soundButton_muted_tooltip_multiselected": { "message": "Stummschaltung für Tabs aufheben" },
   "tab_soundButton_playing_tooltip": { "message": "Tab stumm schalten" },
+  "tab_soundButton_playing_tooltip_multiselected": { "message": "Tabs stumm schalten" },
   "tab_twisty_expanded_tooltip": { "message": "Zweig zuklappen" },
   "tab_twisty_collapsed_tooltip": { "message": "Zweig aufklappen" },
   "tab_tree_tooltip": { "message": "$TREE$\n  ...und $COUNT$ weitere(r) Tab (s)",
