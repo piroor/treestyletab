@@ -366,7 +366,7 @@
   "tabContextMenu_closeOther_label":  { "message": "&Andere Tabs schließen" },
 
   "tabContextMenu_undoClose_label":   { "message": "&Geschlossenen Tab wiederherstellen" },
-  "tabContextMenu_close_label":       { "message": "Tab s&chließen" }
+  "tabContextMenu_close_label":       { "message": "Tab s&chließen" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "Ausgewählte &Tabs neu laden" },
   "tabContextMenu_mute_label_multiselected":        { "message": "Tabs st&umm schalten" },
