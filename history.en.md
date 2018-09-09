@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Initialize tabs more safely on the startup.
+   * Allow to tear off dragged tree from the window by default, and now you need to do Shift-drag to create bookmarks/links from tabs dragged to outside.
+   * Default and shift-drag behavior for tabs dragged to outside are now switchable.
+   * [`tab-mouseover` and `tab-mouseout` API messages are now delivered correctly on edge cases, by klemens. Thanks!](https://github.com/piroor/treestyletab/pull/2008)
+   * Update `de` locale (by sicherist, thanks!)
  - 2.5.3 (2018.8.30)
    * Support native multiselection of tabs on Firefox 63 and later (after the [bug 1486050](https://bugzilla.mozilla.org/show_bug.cgi?id=1486050) is fixed).
    * Support "Reopen in Container" in the fake context menu on the sidebar.
