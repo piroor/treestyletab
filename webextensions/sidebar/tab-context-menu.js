@@ -370,6 +370,7 @@ async function onCommand(item, event) {
     return;
 
   const contextTab = mContextTab;
+  const contextWindowId = mContextWindowId;
   wait(0).then(() => close()); // close the menu immediately!
 
   const isMultiselected   = Tabs.isMultiselected(Tabs.getTabById(contextTab));
@@ -440,7 +441,7 @@ async function onCommand(item, event) {
         log('source tab: ', sourceTab, !!sourceTab.apiTab);
         const duplicatedTabs = await Tree.moveTabs([sourceTab], {
           duplicate:           true,
-          destinationWindowId: mContextWindowId,
+          destinationWindowId: contextWindowId,
           insertAfter:         sourceTab,
           inRemote:            true
         });
@@ -464,7 +465,7 @@ async function onCommand(item, event) {
       }
       break;
     case 'context_reloadAllTabs': {
-      const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       for (const apiTab of apiTabs) {
         browser.tabs.reload(apiTab.id);
       }
@@ -472,7 +473,7 @@ async function onCommand(item, event) {
     case 'context_bookmarkAllTabs': {
       const apiTabs = multiselectedTabs ?
         multiselectedTabs.map(tab => tab.apiTab) :
-        await browser.tabs.query({ windowId: mContextWindowId }) ;
+        await browser.tabs.query({ windowId: contextWindowId }) ;
       const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
       if (folder)
         browser.bookmarks.get(folder.parentId).then(folders => {
@@ -488,7 +489,7 @@ async function onCommand(item, event) {
         });
     }; break;
     case 'context_closeTabsToTheEnd': {
-      const apiTabs = await browser.tabs.query({ windowId: mContextWindowId });
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       let after = false;
       const closeAPITabs = [];
       const keptTabIds = multiselectedTabs ?
@@ -502,18 +503,18 @@ async function onCommand(item, event) {
         if (after && !apiTab.pinned)
           closeAPITabs.push(apiTab);
       }
-      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: mContextWindowId })) === false;
+      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: contextWindowId })) === false;
       if (canceled)
         return;
       browser.tabs.remove(closeAPITabs.map(aPITab => aPITab.id));
     }; break;
     case 'context_closeOtherTabs': {
-      const apiTabs  = await browser.tabs.query({ windowId: mContextWindowId });
+      const apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
       const keptTabIds = multiselectedTabs ?
         multiselectedTabs.map(tab => tab.apiTab.id) :
         [contextTab.id] ;
       const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && !keptTabIds.includes(aPITab.id)).map(aPITab => aPITab.id);
-      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: mContextWindowId })) === false;
+      const canceled = (await onTabsClosing.dispatch(closeAPITabs.length, { windowId: contextWindowId })) === false;
       if (canceled)
         return;
       browser.tabs.remove(closeAPITabs);
