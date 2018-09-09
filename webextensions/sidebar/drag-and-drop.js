@@ -738,8 +738,8 @@ function onDragStart(event) {
   if (event.shiftKey)
     allowBookmark = !allowBookmark;
   if (allowBookmark) {
-  // This is required to create bookmarks by drag and drop.
-  dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
+    // This is required to create bookmarks by drag and drop.
+    dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
   }
 
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
