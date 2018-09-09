@@ -732,6 +732,7 @@ async function onContextMenu(event) {
   await wait(25);
   await open({
     tab:  tab && tab.apiTab,
+    windowId: Tabs.getWindow(),
     left: event.clientX,
     top:  event.clientY
   });
