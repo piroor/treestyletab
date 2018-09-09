@@ -712,8 +712,8 @@ function onExternalMessage(message, sender) {
         await onShown(tab);
         await wait(25);
         return open({
-          tab:      tab,
-          windowId: windowId,
+          tab,
+          windowId,
           left:     message.left,
           top:      message.top
         });
