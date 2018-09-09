@@ -275,6 +275,10 @@
 
   "config_warnOnCloseTabs_label": { "message": "同時に複数のタブを閉じるときは確認する" },
 
+  "config_allowBookmarkCreationFromDraggedTree_caption": { "message": "ツリーがタブバーの外にドラッグされた時" },
+  "config_allowBookmarkCreationFromDraggedTree_false":   { "message": "通常は別ウィンドウに切り離し、Shift-ドラッグではリンクかブックマークを作成する" },
+  "config_allowBookmarkCreationFromDraggedTree_truye":   { "message": "通常はリンクかブックマークを作成し、Shift-ドラッグで別ウィンドウに切り離す" },
+
 
   "config_shortcuts_caption": { "message": "キーボードショートカット" },
 

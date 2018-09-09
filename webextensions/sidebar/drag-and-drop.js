@@ -734,8 +734,13 @@ function onDragStart(event) {
     draggedTab.classList.add(Constants.kTAB_STATE_DRAGGING);
     mozUrl.push(`${draggedTab.apiTab.url}\n${draggedTab.apiTab.title}`);
   }
+  let allowBookmark = configs.allowBookmarkCreationFromDraggedTree;
+  if (event.shiftKey)
+    allowBookmark = !allowBookmark;
+  if (allowBookmark) {
   // This is required to create bookmarks by drag and drop.
   dt.setData(kTYPE_X_MOZ_URL, mozUrl.join('\n'));
+  }
 
   Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
