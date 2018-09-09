@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.5.4 (2018.9.10)
    * Initialize tabs more safely on the startup.
    * Allow to tear off dragged tree from the window by default, and now you need to do Shift-drag to create bookmarks/links from tabs dragged to outside.
    * Default and shift-drag behavior for tabs dragged to outside are now switchable.
