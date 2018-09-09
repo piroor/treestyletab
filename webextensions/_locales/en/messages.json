@@ -133,6 +133,10 @@
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
 
+  "context_collapsed_label": { "message": "Collapsed (for testing of a checkbox type menu)" },
+  "context_pinnedTab_label": { "message": "Pinned (for testing of a radio type menu)" },
+  "context_unpinnedTab_label": { "message": "Unpinned (for testing of a radio type menu)" },
+
 
   "config_appearance_caption": { "message": "Appearance" },
 
