@@ -17,6 +17,7 @@
 #tabContextMenu[data-tab-states~="pinned"] #context_pinTab,
 #tabContextMenu:not([data-tab-states~="pinned"]) #context_unpinTab,
 #tabContextMenu[data-tab-states~="pinned"] #context_bookmarkAllTabs,
+#tabContextMenu[data-tab-states~="multiselected"] #context_duplicateTab,
 #tabContextMenu:not([data-tab-id]) .require-context-tab,
 #tabContextMenu:not([data-tab-id]) .extra,
 #tabContextMenu:not(.has-multiple-tabs) .require-multiple-tabs,
