@@ -48,7 +48,6 @@ import * as TabsContainer from './tabs-container.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/tabs-open', ...args);
 }
@@ -97,6 +96,7 @@ export async function openURIInTab(uri, options = {}) {
 }
 
 export async function openURIsInTabs(uris, options = {}) {
+  log('openURIsInTabs: ', { uris, options });
   if (!options.windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
@@ -117,6 +117,7 @@ export async function openURIsInTabs(uris, options = {}) {
     else {
       await Tabs.waitUntilAllTabsAreCreated();
       const startIndex = Tabs.calculateNewTabIndex(options);
+      log('startIndex: ', startIndex);
       const container  = Tabs.getTabsContainer(options.windowId);
       TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', uris.length);
       if (options.isOrphan)
@@ -137,6 +138,7 @@ export async function openURIsInTabs(uris, options = {}) {
         const apiTab = await browser.tabs.create(params);
         await Tabs.waitUntilTabsAreCreated(apiTab.id);
         const tab = Tabs.getTabById(apiTab);
+        log('created tab: ', tab);
         if (!tab)
           throw new Error('tab is already closed');
         if (!options.opener &&
@@ -156,6 +158,7 @@ export async function openURIsInTabs(uris, options = {}) {
           await TabsMove.moveTabInternallyAfter(tab, options.insertAfter, {
             broadcast: true
           });
+        log('tab is opened.');
         return tab.opened;
       }));
     }

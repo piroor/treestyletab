@@ -494,7 +494,7 @@ function onClick(event) {
 onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function handleNewTabAction(event, options = {}) {
-  log('handleNewTabAction');
+  log('handleNewTabAction ', { event, options });
 
   if (!configs.autoAttach && !('action' in options))
     options.action = Constants.kNEWTAB_DO_NOTHING;
