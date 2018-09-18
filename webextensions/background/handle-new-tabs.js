@@ -41,12 +41,12 @@ Tabs.onCreating.addListener((tab, info = {}) => {
     if (!info.maybeOrphan && possibleOpenerTab) {
       if (Tabs.isNewTabCommandTab(tab)) {
         if (!info.maybeOpenedWithPosition) {
-        log('behave as a tab opened by new tab command');
-        handleNewTabFromActiveTab(tab, {
-          possibleOpenerTab,
-          autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
-          inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
-        });
+          log('behave as a tab opened by new tab command');
+          handleNewTabFromActiveTab(tab, {
+            possibleOpenerTab,
+            autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
+            inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
+          });
         }
         return false;
       }
