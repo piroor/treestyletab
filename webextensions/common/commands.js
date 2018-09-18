@@ -172,7 +172,7 @@ export async function openNewTabAs(options = {}) {
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       parent       = Tabs.getParentTab(currentTab);
       insertBefore = Tabs.getNextSiblingTab(currentTab);
-      insertAfter  = Tabs.getLastDescendantTab(currentTab);
+      insertAfter  = Tabs.getLastDescendantTab(currentTab) || currentTab;
     }; break;
   }
 
