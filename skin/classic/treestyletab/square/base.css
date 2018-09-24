@@ -11,6 +11,7 @@
 	background: transparent !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	text-shadow: none !important;
 }
 .tabbrowser-strip[treestyletab-style~="border"]:not([treestyletab-tabbar-position="top"]) {
 	appearance: none;
