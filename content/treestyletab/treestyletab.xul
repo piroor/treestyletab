@@ -15,6 +15,7 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script src="res/stopRendering.js" type="application/javascript"/>
+<script src="res/bookmarkMultipleTabs.js" type="application/javascript"/>
 <script src="res/tabsDragUtils.js" type="application/javascript"/>
 <script src="treestyletab.js" type="application/javascript"/>
 <script src="windowHelper.js" type="application/javascript"/>
