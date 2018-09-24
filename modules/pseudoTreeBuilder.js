@@ -85,7 +85,7 @@ var PseudoTreeBuilder = {
 			'      }\n' +
 			'    });\n' +
 			'  event.target.dispatchEvent(customEvent);\n' +
-			'}').replace('%EVENT_TYPE%', this.kTAB_LINK_CLICK.quote()));
+			'}').replace('%EVENT_TYPE%', JSON.stringify(this.kTAB_LINK_CLICK)));
 
 		return tree;
 	},
