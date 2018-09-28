@@ -27,7 +27,7 @@ let mInitialized = false;
 
 export function init() {
   mInitialized = true;
-  document.querySelector('#master-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
+  document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   const tabbar = document.querySelector('#tabbar');
   tabbar.addEventListener('overflow', onOverflow);
@@ -161,9 +161,9 @@ async function synchronizeThrobberAnimation() {
   for (const tab of Array.slice(toBeSynchronizedTabs)) {
     tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   }
-  await nextFrame();
+
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
-  await nextFrame();
+  void document.documentElement.offsetWidth;
   document.documentElement.classList.remove(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
 }
 
