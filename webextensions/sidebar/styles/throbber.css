@@ -47,6 +47,7 @@
 
 :root:not(.throbber-synchronizing) .tab:not(.collapsed).loading:not(.throbber-unsynchronized) .throbber::before,
 :root:not(.throbber-synchronizing).have-loading-tab #master-throbber,
+:root.have-loading-tab #sync-throbber,
 :root.blocking-throbber #blocking-screen .throbber::before {
   animation: throbber 1.05s steps(60) infinite;
 }
