@@ -161,9 +161,9 @@ async function synchronizeThrobberAnimation() {
   for (const tab of Array.slice(toBeSynchronizedTabs)) {
     tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   }
-  await nextFrame();
+
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
-  await nextFrame();
+  void document.documentElement.offsetWidth;
   document.documentElement.classList.remove(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
 }
 
