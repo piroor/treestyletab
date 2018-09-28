@@ -27,7 +27,7 @@ let mInitialized = false;
 
 export function init() {
   mInitialized = true;
-  document.querySelector('#master-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
+  document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
   const tabbar = document.querySelector('#tabbar');
   tabbar.addEventListener('overflow', onOverflow);
