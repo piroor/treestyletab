@@ -215,6 +215,7 @@ export const configs = new Configs({
     'common/migration': true,
     'common/permissions': true,
     'common/sidebar-status': true,
+    'common/tab-context-menu': true,
     'common/tabs-container': true,
     'common/tabs-group': true,
     'common/tabs-internal-operation': true,
