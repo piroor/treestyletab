@@ -2,8 +2,8 @@
 
 cd "$(dirname "$0")"/resources/icons
 
-mkdir -p contexual-identities
-cd contexual-identities
+mkdir -p contextual-identities
+cd contextual-identities
 
 BASE='https://hg.mozilla.org/mozilla-central/raw-file/tip/browser/components/contextualidentity/content/'
 
