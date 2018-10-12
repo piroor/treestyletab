@@ -155,6 +155,15 @@ export async function onCommand(params = {}) {
     case 'context_bookmarkTab':
       if (!multiselectedTabs) {
         await Bookmark.bookmarkTab(contextTabElement);
+        notify({
+          title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
+          message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
+            contextTab.title,
+            1,
+            contextTab.title
+          ]),
+          icon:    Constants.kNOTIFICATION_DEFAULT_ICON
+        });
         return true;
       }
     case 'context_bookmarkAllTabs': {
