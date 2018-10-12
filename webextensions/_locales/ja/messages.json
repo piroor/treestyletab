@@ -372,7 +372,6 @@
   "tabContextMenu_tearOff_label":     { "message": "新しいウィンドウへ移動(&W)" },
 
   "tabContextMenu_reloadAll_label":   { "message": "すべてのタブを再読み込み(&A)" },
-  "tabContextMenu_bookmarkAll_label": { "message": "すべてのタブをブックマーク(&T)..." },
 
   "tabContextMenu_closeTabOptions_label": { "message": "タブをまとめて閉じる(&O)" },
   "tabContextMenu_closeAfter_label":  { "message": "右のタブをすべて閉じる(&I)" },
