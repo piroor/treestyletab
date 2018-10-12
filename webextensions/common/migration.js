@@ -294,9 +294,16 @@ export function migrateConfigs() {
 }
 
 export async function notifyNewFeatures() {
-  if (configs.notifiedFeaturesVersion >= kFEATURES_VERSION)
+  let featuresVersionOffset = 0;
+  const browserInfo = await browser.runtime.getBrowserInfo();
+  if (parseInt(browserInfo.version.split('.')[0]) >= 64)
+    featuresVersionOffset++;
+
+  const featuresVersion = kFEATURES_VERSION + featuresVersionOffset;
+
+  if (configs.notifiedFeaturesVersion >= featuresVersion)
     return;
-  configs.notifiedFeaturesVersion = kFEATURES_VERSION;
+  configs.notifiedFeaturesVersion = featuresVersion;
 
   browser.tabs.create({
     url:    Constants.kSHORTHAND_URIS.startup,
