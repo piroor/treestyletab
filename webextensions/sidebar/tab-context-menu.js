@@ -382,94 +382,94 @@ async function onCommand(item, event) {
   if (!id)
     return;
 
-        const modifiers = [];
-        if (event.metaKey)
-          modifiers.push('Command');
-        if (event.ctrlKey) {
-          modifiers.push('Ctrl');
-          if (/^Mac/i.test(navigator.platform))
-            modifiers.push('MacCtrl');
-        }
-        if (event.shiftKey)
-          modifiers.push('Shift');
-        const checked    = item.matches('.radio, .checkbox:not(.checked)');
-        const wasChecked = item.matches('.radio.checked, .checkbox.checked');
-        const message = {
-          type: TSTAPI.kCONTEXT_MENU_CLICK,
-          info: {
-            checked,
-            editable:         false,
-            frameUrl:         null,
-            linkUrl:          null,
-            mediaType:        null,
-            menuItemId:       id,
-            modifiers:        modifiers,
-            pageUrl:          null,
-            parentMenuItemId: null,
-            selectionText:    null,
-            srcUrl:           null,
-            wasChecked
-          },
-          tab: contextTab || null
-        };
-        const owner = item.getAttribute('data-item-owner-id');
-        if (owner == browser.runtime.id)
-          await browser.runtime.sendMessage(message);
-        else
-          await browser.runtime.sendMessage(owner, message);
+  const modifiers = [];
+  if (event.metaKey)
+    modifiers.push('Command');
+  if (event.ctrlKey) {
+    modifiers.push('Ctrl');
+    if (/^Mac/i.test(navigator.platform))
+      modifiers.push('MacCtrl');
+  }
+  if (event.shiftKey)
+    modifiers.push('Shift');
+  const checked    = item.matches('.radio, .checkbox:not(.checked)');
+  const wasChecked = item.matches('.radio.checked, .checkbox.checked');
+  const message = {
+    type: TSTAPI.kCONTEXT_MENU_CLICK,
+    info: {
+      checked,
+      editable:         false,
+      frameUrl:         null,
+      linkUrl:          null,
+      mediaType:        null,
+      menuItemId:       id,
+      modifiers:        modifiers,
+      pageUrl:          null,
+      parentMenuItemId: null,
+      selectionText:    null,
+      srcUrl:           null,
+      wasChecked
+    },
+    tab: contextTab || null
+  };
+  const owner = item.getAttribute('data-item-owner-id');
+  if (owner == browser.runtime.id)
+    await browser.runtime.sendMessage(message);
+  else
+    await browser.runtime.sendMessage(owner, message);
 
-        if (item.matches('.checkbox')) {
-          item.classList.toggle('checked');
-          for (const itemData of mExtraItems.get(item.dataset.itemOwnerId)) {
-            if (itemData.id != item.dataset.itemId)
-              continue;
-            itemData.checked = item.matches('.checked');
-            browser.runtime.sendMessage({
-              type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
-              id:      item.dataset.itemId,
-              ownerId: item.dataset.itemOwnerId,
-              checked: itemData.checked
-            });
-            break;
-          }
-          mIsDirty = true;
+  if (item.matches('.checkbox')) {
+    item.classList.toggle('checked');
+    for (const itemData of mExtraItems.get(item.dataset.itemOwnerId)) {
+      if (itemData.id != item.dataset.itemId)
+        continue;
+      itemData.checked = item.matches('.checked');
+      browser.runtime.sendMessage({
+        type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
+        id:      item.dataset.itemId,
+        ownerId: item.dataset.itemOwnerId,
+        checked: itemData.checked
+      });
+      break;
+    }
+    mIsDirty = true;
+  }
+  else if (item.matches('.radio')) {
+    const currentRadioItems = new Set();
+    let radioItems = null;
+    for (const itemData of mExtraItems.get(item.dataset.itemOwnerId)) {
+      if (itemData.type == 'radio') {
+        currentRadioItems.add(itemData);
+      }
+      else if (radioItems == currentRadioItems) {
+        break;
+      }
+      else {
+        currentRadioItems.clear();
+      }
+      if (itemData.id == item.dataset.itemId)
+        radioItems = currentRadioItems;
+    }
+    if (radioItems) {
+      for (const itemData of radioItems) {
+        itemData.checked = itemData.id == item.dataset.itemId;
+        const radioItem = document.getElementById(`${item.dataset.itemOwnerId}-${itemData.id}`);
+        if (radioItem) {
+          if (itemData.checked)
+            radioItem.classList.add('checked');
+          else
+            radioItem.classList.remove('checked');
         }
-        else if (item.matches('.radio')) {
-          const currentRadioItems = new Set();
-          let radioItems = null;
-          for (const itemData of mExtraItems.get(item.dataset.itemOwnerId)) {
-            if (itemData.type == 'radio') {
-              currentRadioItems.add(itemData);
-            }
-            else if (radioItems == currentRadioItems) {
-              break;
-            }
-            else {
-              currentRadioItems.clear();
-            }
-            if (itemData.id == item.dataset.itemId)
-              radioItems = currentRadioItems;
-          }
-          if (radioItems) {
-            for (const itemData of radioItems) {
-              itemData.checked = itemData.id == item.dataset.itemId;
-              const radioItem = document.getElementById(`${item.dataset.itemOwnerId}-${itemData.id}`);
-              if (radioItem) {
-                if (itemData.checked)
-                  radioItem.classList.add('checked');
-                else
-                  radioItem.classList.remove('checked');
-              }
-              browser.runtime.sendMessage({
-                type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
-                id:      item.dataset.itemId,
-                ownerId: item.dataset.itemOwnerId,
-                checked: itemData.checked
-              });
-            }
-          }
-          mIsDirty = true;
-        }
+        browser.runtime.sendMessage({
+          type:    TSTAPI.kCONTEXT_ITEM_CHECKED_STATUS_CHANGED,
+          id:      item.dataset.itemId,
+          ownerId: item.dataset.itemOwnerId,
+          checked: itemData.checked
+        });
+      }
+    }
+    mIsDirty = true;
+  }
 }
 
 async function onShown(contextTab) {
