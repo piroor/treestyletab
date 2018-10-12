@@ -56,13 +56,17 @@ const mContextMenuItems = `
     };
   });
 
+const kROOT_ITEM = 'treestyletab';
+
 export async function refreshItems() {
-  browser.menus.removeAll();
+  browser.menus.remove(kROOT_ITEM);
   TabContextMenu.onExternalMessage({
-    type: TSTAPI.kCONTEXT_MENU_REMOVE_ALL
+    type: TSTAPI.kCONTEXT_MENU_REMOVE,
+    params: kROOT_ITEM
   }, browser.runtime);
 
   const parentId = await browser.menus.create({
+    id:       kROOT_ITEM,
     type:     'normal',
     contexts: ['tab'],
     title:    browser.runtime.getManifest().name,
