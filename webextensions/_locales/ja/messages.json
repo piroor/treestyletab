@@ -360,14 +360,19 @@
   "tabContextMenu_unmute_label":      { "message": "タブのミュートを解除(&M)" },
 
   "tabContextMenu_pin_label":         { "message": "タブをピン留め(&P)" },
-  "tabContextMenu_unpin_label":       { "message": "タブのピン留めを外す(&B)" },
+  "tabContextMenu_unpin_label":       { "message": "タブのピン留めを外す(&P)" },
   "tabContextMenu_duplicate_label":   { "message": "タブを複製(&D)" },
+  "tabContextMenu_selectAllTabs_label": { "message": "すべてのタブを選択(&S)" },
+  "tabContextMenu_bookmark_label":    { "message": "タブをブックマーク(&B)" },
   "tabContextMenu_reopenInContainer_label":             { "message": "コンテナーを開きなおす(&E)" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "コンテナーなし(&N)" },
+  "tabContextMenu_moveTab_label":     { "message": "タブを移動(&V)" },
   "tabContextMenu_tearOff_label":     { "message": "新しいウィンドウへ移動(&W)" },
 
   "tabContextMenu_reloadAll_label":   { "message": "すべてのタブを再読み込み(&A)" },
   "tabContextMenu_bookmarkAll_label": { "message": "すべてのタブをブックマーク(&T)..." },
+
+  "tabContextMenu_closeTabOptions_label": { "message": "タブをまとめて閉じる(&O)" },
   "tabContextMenu_closeAfter_label":  { "message": "下のタブをすべて閉じる(&I)" },
   "tabContextMenu_closeOther_label":  { "message": "他のタブをすべて閉じる(&O)" },
 
@@ -375,13 +380,15 @@
   "tabContextMenu_close_label":       { "message": "タブを閉じる(&C)" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "選択したタブを再読み込み(&R)" },
-  "tabContextMenu_mute_label_multiselected":        { "message": "タブをミュート(&U)" },
-  "tabContextMenu_unmute_label_multiselected":      { "message": "タブのミュートを解除(&B)" },
+  "tabContextMenu_mute_label_multiselected":        { "message": "タブをミュート(&M)" },
+  "tabContextMenu_unmute_label_multiselected":      { "message": "タブのミュートを解除(&M)" },
 
   "tabContextMenu_pin_label_multiselected":         { "message": "タブをピン留め(&P)" },
-  "tabContextMenu_unpin_label_multiselected":       { "message": "タブのピン留めを外す(&B)" },
+  "tabContextMenu_unpin_label_multiselected":       { "message": "タブのピン留めを外す(&P)" },
 
-  "tabContextMenu_bookmark_label_multiselected": { "message": "タブをフックマーク(&K)…" },
+  "tabContextMenu_moveTab_label_multiselected": { "message": "選択したタブを移動(&V)" },
+
+  "tabContextMenu_bookmark_label_multiselected": { "message": "タブをブックマーク(&B)…" },
 
   "tabContextMenu_close_label_multiselected":       { "message": "選択したタブを閉じる(&S)" }
 }

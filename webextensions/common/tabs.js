@@ -719,7 +719,7 @@ export function getNormalTabs(hint) { // only visible, including collapsed, not 
   return Array.slice(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
 }
 
-function getVisibleTabs(hint) { // visible, not-collapsed, not-hidden
+export function getVisibleTabs(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return [];

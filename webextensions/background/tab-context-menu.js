@@ -43,9 +43,6 @@ const mItemsById = {
     title:              browser.i18n.getMessage('tabContextMenu_unmute_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_unmute_label_multiselected')
   },
-  'context_separator:afterMute': {
-    type: 'separator'
-  },
   'context_pinTab': {
     title:              browser.i18n.getMessage('tabContextMenu_pin_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_pin_label_multiselected')
@@ -57,30 +54,46 @@ const mItemsById = {
   'context_duplicateTab': {
     title: browser.i18n.getMessage('tabContextMenu_duplicate_label')
   },
+  'context_separator:afterDuplicate': {
+    type: 'separator'
+  },
+  'context_selectAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
+  },
+  'context_bookmarkTab': {
+    title:              browser.i18n.getMessage('tabContextMenu_bookmark_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_bookmark_label_multiselected')
+  },
   'context_reopenInContainer': {
     title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
   },
-  'context_openTabInWindow': {
-    title: browser.i18n.getMessage('tabContextMenu_tearOff_label')
+  'context_moveTab': {
+    title:              browser.i18n.getMessage('tabContextMenu_moveTab_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_moveTab_label_multiselected')
   },
-  'context_separator:afterOpenInWindow': {
+  'context_openTabInWindow': {
+    parentId: 'context_moveTab',
+    title:    browser.i18n.getMessage('tabContextMenu_tearOff_label')
+  },
+  'context_separator:afterSendTab': {
     type: 'separator'
   },
   'context_reloadAllTabs': {
     title: browser.i18n.getMessage('tabContextMenu_reloadAll_label')
   },
-  'context_bookmarkAllTabs': {
-    title:              browser.i18n.getMessage('tabContextMenu_bookmarkAll_label'),
-    titleMultiselected: browser.i18n.getMessage('tabContextMenu_bookmark_label_multiselected')
+  'context_separator:afterReloadAll': {
+    type: 'separator'
+  },
+  'context_closeTabOptions': {
+    title: browser.i18n.getMessage('tabContextMenu_closeTabOptions_label')
   },
   'context_closeTabsToTheEnd': {
-    title: browser.i18n.getMessage('tabContextMenu_closeAfter_label')
+    parentId: 'context_closeTabOptions',
+    title:    browser.i18n.getMessage('tabContextMenu_closeAfter_label')
   },
   'context_closeOtherTabs': {
-    title: browser.i18n.getMessage('tabContextMenu_closeOther_label')
-  },
-  'context_separator:afterCloseOther': {
-    type: 'separator'
+    parentId: 'context_closeTabOptions',
+    title:    browser.i18n.getMessage('tabContextMenu_closeOther_label')
   },
   'context_undoCloseTab': {
     title: browser.i18n.getMessage('tabContextMenu_undoClose_label')
@@ -108,13 +121,17 @@ export function init() {
     const item = mItemsById[id];
     item.lastTitle   = item.title;
     item.lastVisible = false;
-    browser.menus.create({
+    item.lastEnabled = true;
+    const info = {
       id,
       title:    item.title,
       type:     item.type || 'normal',
       contexts: ['tab'],
       visible:  false
-    });
+    };
+    if (item.parentId)
+      info.parentId = item.parentId;
+    browser.menus.create(info);
   }
   browser.menus.onShown.addListener(onShown);
   browser.menus.onClicked.addListener(onClick);
@@ -125,7 +142,8 @@ function updateItem(id, state = {}) {
   let modified = false;
   const item = mItemsById[id];
   const updateInfo = {
-    visible: !!state.visible
+    visible: !!state.visible,
+    enabled: 'enabled' in state ? !!state.enabled : true
   };
   const title = state.multiselected ? item.titleMultiselected || item.title : item.title;
   if (title) {
@@ -134,8 +152,10 @@ function updateItem(id, state = {}) {
     item.lastTitle = updateInfo.title;
   }
   if (!modified)
-    modified = updateInfo.visible != item.lastVisible;
+    modified = updateInfo.visible != item.lastVisible ||
+                 updateInfo.enabled != item.lastEnabled;
   item.lastVisible = updateInfo.visible;
+  item.lastEnabled = updateInfo.enabled;
   browser.menus.update(id, updateInfo);
   return modified;
 }
@@ -169,12 +189,6 @@ function onShown(info, contextApiTab) {
     visible: inSidebar && contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
-
-  updateItem('context_separator:afterMute', {
-    visible: inSidebar && visibleItemsCount > 0
-  }) && modifiedItemsCount++;
-  visibleItemsCount = 0;
-
   updateItem('context_pinTab', {
     visible: inSidebar && contextApiTab && !contextApiTab.pinned && ++visibleItemsCount,
     multiselected
@@ -187,42 +201,67 @@ function onShown(info, contextApiTab) {
     visible: inSidebar && contextApiTab && !multiselected && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
+
+  updateItem('context_separator:afterDuplicate', {
+    visible: inSidebar && visibleItemsCount > 0
+  }) && modifiedItemsCount++;
+  visibleItemsCount = 0;
+
+  updateItem('context_selectAllTabs', {
+    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    enabled: Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_bookmarkTab', {
+    visible: inSidebar && (!contextApiTab || !contextApiTab.pinned) && hasNormalTab && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
   updateItem('context_reopenInContainer', {
     visible: inSidebar && contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
+  updateItem('context_moveTab', {
+    visible: inSidebar && ++visibleItemsCount,
+    enabled: contextApiTab && hasMultipleTabs,
+    multiselected
+  }) && modifiedItemsCount++;
   updateItem('context_openTabInWindow', {
-    visible: inSidebar && contextApiTab && hasMultipleTabs && ++visibleItemsCount,
+    visible: inSidebar,
+    enabled: contextApiTab && hasMultipleTabs && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
 
-  updateItem('context_separator:afterOpenInWindow', {
+  updateItem('context_separator:afterSendTab', {
     visible: inSidebar && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
   updateItem('context_reloadAllTabs', {
-    visible: inSidebar && hasMultipleTabs && ++visibleItemsCount,
+    visible: inSidebar && ++visibleItemsCount,
+    enabled: hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
-  updateItem('context_bookmarkAllTabs', {
-    visible: inSidebar && (!contextApiTab || !contextApiTab.pinned) && hasNormalTab && ++visibleItemsCount,
-    multiselected
-  }) && modifiedItemsCount++;
-  updateItem('context_closeTabsToTheEnd', {
-    visible: inSidebar && contextApiTab && hasMultipleNormalTabs && ++visibleItemsCount,
-    multiselected
-  }) && modifiedItemsCount++;
-  updateItem('context_closeOtherTabs', {
-    visible: inSidebar && contextApiTab && hasMultipleNormalTabs && ++visibleItemsCount,
-    multiselected
-  });
 
-  updateItem('context_separator:afterCloseOther', {
+  updateItem('context_separator:afterReloadAll', {
     visible: inSidebar && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
+  updateItem('context_closeTabOptions', {
+    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    enabled: hasMultipleNormalTabs,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_closeTabsToTheEnd', {
+    visible: inSidebar && contextApiTab,
+    enabled: hasMultipleNormalTabs && Tabs.getNextTab(tab),
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_closeOtherTabs', {
+    visible: inSidebar && contextApiTab,
+    enabled: hasMultipleNormalTabs,
+    multiselected
+  });
   updateItem('context_undoCloseTab', {
     visible: inSidebar && ++visibleItemsCount,
     multiselected
@@ -243,9 +282,7 @@ function onShown(info, contextApiTab) {
 }
 
 async function onClick(info, contextApiTab) {
-  const window = await browser.windows.getLastFocused({
-    windowTypes: ['normal']
-  });
+  const window = await browser.windows.getLastFocused({});
   CommonTabContextMenu.onCommand({
     item: {
       id: info.menuItemId

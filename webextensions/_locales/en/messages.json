@@ -364,14 +364,19 @@
   "tabContextMenu_unmute_label":      { "message": "Un&mute Tab" },
 
   "tabContextMenu_pin_label":         { "message": "&Pin Tab" },
-  "tabContextMenu_unpin_label":       { "message": "Unpin Ta&b" },
+  "tabContextMenu_unpin_label":       { "message": "Un&pin Tab" },
   "tabContextMenu_duplicate_label":   { "message": "&Duplicate Tab" },
+  "tabContextMenu_selectAllTabs_label": { "message": "&Select All Tabs" },
+  "tabContextMenu_bookmark_label":    { "message": "&Bookmark Tab" },
   "tabContextMenu_reopenInContainer_label":             { "message": "R&eopen in Container" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "&No Container" },
+  "tabContextMenu_moveTab_label":     { "message": "Mo&ve Tab" },
   "tabContextMenu_tearOff_label":     { "message": "Move to New &Window" },
 
   "tabContextMenu_reloadAll_label":   { "message": "Reload &All Tabs" },
   "tabContextMenu_bookmarkAll_label": { "message": "Bookmark All &Tabs…" },
+
+  "tabContextMenu_closeTabOptions_label":   { "message": "Close Tab &Options" },
   "tabContextMenu_closeAfter_label":  { "message": "Close Tabs to the Bottom(&I)" },
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 
@@ -379,11 +384,13 @@
   "tabContextMenu_close_label":       { "message": "&Close Tab" },
 
   "tabContextMenu_reload_label_multiselected":      { "message": "&Reload Selected Tabs" },
-  "tabContextMenu_mute_label_multiselected":        { "message": "M&ute Tabs" },
-  "tabContextMenu_unmute_label_multiselected":      { "message": "Unmute Ta&bs" },
+  "tabContextMenu_mute_label_multiselected":        { "message": "&Mute Tabs" },
+  "tabContextMenu_unmute_label_multiselected":      { "message": "Un&mute Tabs" },
 
   "tabContextMenu_pin_label_multiselected":         { "message": "&Pin Tabs" },
-  "tabContextMenu_unpin_label_multiselected":       { "message": "Unpin Ta&bs" },
+  "tabContextMenu_unpin_label_multiselected":       { "message": "Un&pin Tabs" },
+
+  "tabContextMenu_moveTab_label_multiselected": { "message": "Mo&ve Tabs" },
 
   "tabContextMenu_bookmark_label_multiselected": { "message": "Boo&kmark Tabs…" },
 

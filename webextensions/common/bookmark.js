@@ -17,6 +17,26 @@ function log(...args) {
   internalLogger('common/bookmarks', ...args);
 }
 
+export async function bookmarkTab(tab, options = {}) {
+  try {
+    if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))
+      throw new Error('not permitted');
+  }
+  catch(_e) {
+    notify({
+      title:   browser.i18n.getMessage('bookmark_notification_notPermitted_title'),
+      message: browser.i18n.getMessage('bookmark_notification_notPermitted_message')
+    });
+    return null;
+  }
+  const item = await browser.bookmarks.create({
+    parentId: options.parentId || null,
+    title:    tab.apiTab.title,
+    url:      tab.apiTab.url
+  });
+  return item;
+}
+
 export async function bookmarkTabs(tabs, options = {}) {
   try {
     if (!(await Permissions.isGranted(Permissions.BOOKMARKS)))

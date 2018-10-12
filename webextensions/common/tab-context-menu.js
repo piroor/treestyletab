@@ -130,6 +130,18 @@ export async function onCommand(params = {}) {
         browser.tabs.reload(apiTab.id);
       }
     }; return true;
+    case 'context_selectAllTabs': {
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      browser.tabs.highlight({
+        windowId: contextWindowId,
+        tabs: apiTabs.map(tab => tab.index)
+      });
+    }; return true;
+    case 'context_bookmarkTab':
+      if (!multiselectedTabs) {
+        await Bookmark.bookmarkTab(Tabs.getTabById(contextTab));
+        return true;
+      }
     case 'context_bookmarkAllTabs': {
       const apiTabs = multiselectedTabs ?
         multiselectedTabs.map(tab => tab.apiTab) :
