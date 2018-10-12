@@ -371,6 +371,8 @@
   "tabContextMenu_reopenInContainer_label":             { "message": "R&eopen in Container" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "&No Container" },
   "tabContextMenu_moveTab_label":     { "message": "Mo&ve Tab" },
+  "tabContextMenu_moveTabToStart_label": { "message": "Move to &Start" },
+  "tabContextMenu_moveTabToEnd_label":   { "message": "Move to &End" },
   "tabContextMenu_tearOff_label":     { "message": "Move to New &Window" },
 
   "tabContextMenu_reloadAll_label":   { "message": "Reload &All Tabs" },

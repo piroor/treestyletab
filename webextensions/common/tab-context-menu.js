@@ -32,8 +32,9 @@ export async function onCommand(params = {}) {
   const item = params.item;
   const contextTab = params.tab;
   const contextWindowId = params.windowId;
+  const contextTabElement = Tabs.getTabById(contextTab);
 
-  const isMultiselected   = Tabs.isMultiselected(Tabs.getTabById(contextTab));
+  const isMultiselected   = Tabs.isMultiselected(contextTabElement);
   const multiselectedTabs = isMultiselected && Tabs.getSelectedTabs();
 
   switch (item.id) {
@@ -97,7 +98,7 @@ export async function onCommand(params = {}) {
       */
       // browser.tabs.duplicate(contextTab.id);
       return (async () => {
-        const sourceTab = Tabs.getTabById(contextTab);
+        const sourceTab = contextTabElement;
         log('source tab: ', sourceTab, !!sourceTab.apiTab);
         const duplicatedTabs = await Tree.moveTabs([sourceTab], {
           duplicate:           true,
@@ -111,6 +112,20 @@ export async function onCommand(params = {}) {
           inRemote: true
         });
       })();
+    case 'context_moveTabToStart': {
+      const tabs = contextTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
+      if (contextTabElement != tabs[0]) {
+        Tree.detachTab(contextTabElement, { broadcast: true });
+        Tree.moveTabSubtreeBefore(contextTabElement, tabs[0]);
+      }
+    }; return true;
+    case 'context_moveTabToEnd': {
+      const tabs = contextTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
+      if (contextTabElement != tabs[tabs.length-1]) {
+        Tree.detachTab(contextTabElement, { broadcast: true });
+        Tree.moveTabSubtreeAfter(contextTabElement, tabs[tabs.length-1]);
+      }
+    }; return true;
     case 'context_openTabInWindow':
       if (multiselectedTabs) {
         Tree.openNewWindowFromTabs(multiselectedTabs, {
@@ -139,7 +154,7 @@ export async function onCommand(params = {}) {
     }; return true;
     case 'context_bookmarkTab':
       if (!multiselectedTabs) {
-        await Bookmark.bookmarkTab(Tabs.getTabById(contextTab));
+        await Bookmark.bookmarkTab(contextTabElement);
         return true;
       }
     case 'context_bookmarkAllTabs': {
@@ -214,7 +229,6 @@ export async function onCommand(params = {}) {
       if (contextTab &&
           contextualIdentityMatch) {
         // Open in Container
-        const contextTabElement = Tabs.getTabById(contextTab);
         const tab = await TabsOpen.openURIInTab(contextTab.url, {
           windowId:      contextTab.windowId,
           cookieStoreId: contextualIdentityMatch[1]

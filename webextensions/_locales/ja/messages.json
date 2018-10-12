@@ -367,6 +367,8 @@
   "tabContextMenu_reopenInContainer_label":             { "message": "コンテナーを開きなおす(&E)" },
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "コンテナーなし(&N)" },
   "tabContextMenu_moveTab_label":     { "message": "タブを移動(&V)" },
+  "tabContextMenu_moveTabToStart_label": { "message": "先頭へ移動(&S)" },
+  "tabContextMenu_moveTabToEnd_label":   { "message": "末尾へ移動(&E)" },
   "tabContextMenu_tearOff_label":     { "message": "新しいウィンドウへ移動(&W)" },
 
   "tabContextMenu_reloadAll_label":   { "message": "すべてのタブを再読み込み(&A)" },

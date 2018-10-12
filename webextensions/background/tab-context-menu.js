@@ -71,6 +71,14 @@ const mItemsById = {
     title:              browser.i18n.getMessage('tabContextMenu_moveTab_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_moveTab_label_multiselected')
   },
+  'context_moveTabToStart': {
+    parentId: 'context_moveTab',
+    title:    browser.i18n.getMessage('tabContextMenu_moveTabToStart_label')
+  },
+  'context_moveTabToEnd': {
+    parentId: 'context_moveTab',
+    title:    browser.i18n.getMessage('tabContextMenu_moveTabToEnd_label')
+  },
   'context_openTabInWindow': {
     parentId: 'context_moveTab',
     title:    browser.i18n.getMessage('tabContextMenu_tearOff_label')
@@ -163,6 +171,10 @@ function updateItem(id, state = {}) {
 function onShown(info, contextApiTab) {
   const inSidebar             = info.viewType == 'sidebar';
   const tab                   = Tabs.getTabById(contextApiTab);
+  const previousTab           = Tabs.getPreviousTab(tab);
+  const previousSiblingTab    = Tabs.getPreviousSiblingTab(tab);
+  const nextTab               = Tabs.getNextTab(tab);
+  const nextSiblingTab        = Tabs.getNextSiblingTab(tab);
   const hasMultipleTabs       = Tabs.getTabs(tab).length > 1;
   const normalTabsCount       = Tabs.getNormalTabs(tab).length;
   const hasNormalTab          = normalTabsCount > 0;
@@ -225,9 +237,19 @@ function onShown(info, contextApiTab) {
     enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
+  updateItem('context_moveTabToStart', {
+    visible: inSidebar,
+    enabled: contextApiTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextApiTab.pinned),
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_moveTabToEnd', {
+    visible: inSidebar,
+    enabled: contextApiTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextApiTab.pinned),
+    multiselected
+  }) && modifiedItemsCount++;
   updateItem('context_openTabInWindow', {
     visible: inSidebar,
-    enabled: contextApiTab && hasMultipleTabs && ++visibleItemsCount,
+    enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
 
@@ -254,7 +276,7 @@ function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   updateItem('context_closeTabsToTheEnd', {
     visible: inSidebar && contextApiTab,
-    enabled: hasMultipleNormalTabs && Tabs.getNextTab(tab),
+    enabled: hasMultipleNormalTabs && nextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeOtherTabs', {
