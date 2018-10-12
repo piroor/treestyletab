@@ -176,17 +176,19 @@ function updateContextualIdentities() {
 
   ContextualIdentities.forEach(identity => {
     const id = `context_reopenInContainer:${identity.cookieStoreId}`;
-    browser.menus.create({
+    const icon = identity.icon && identity.color ?
+      `/resources/icons/contextual-identities/${identity.icon}.svg#${identity.color}` :
+      identity.iconUrl;
+    const item = {
       parentId: 'context_reopenInContainer',
       id:       id,
       title:    identity.name.replace(/^([a-z0-9])/i, '&$1'),
       contexts: ['tab']
-    });
+    };
+    if (icon)
+      item.icons = { 16: icon };
+    browser.menus.create(item);
     mContextualIdentityItems.add(id);
-    //if (identity.iconUrl) {
-    //  item.dataset.icon = identity.iconUrl;
-    //  item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
-    //}
   });
 }
 
