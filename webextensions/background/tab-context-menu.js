@@ -17,6 +17,7 @@ import {
 } from '/common/common.js';
 import * as Tabs from '/common/tabs.js';
 import * as TSTAPI from '/common/tst-api.js';
+import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as CommonTabContextMenu from '/common/tab-context-menu.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
@@ -116,7 +117,7 @@ const mItemsById = {
 };
 
 
-export function init() {
+export async function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onExternalMessage);
 
@@ -143,6 +144,50 @@ export function init() {
   }
   browser.menus.onShown.addListener(onShown);
   browser.menus.onClicked.addListener(onClick);
+
+  await ContextualIdentities.init();
+  updateContextualIdentities();
+  ContextualIdentities.onUpdated.addListener(() => {
+    updateContextualIdentities();
+  });
+}
+
+const mContextualIdentityItems = new Set();
+function updateContextualIdentities() {
+  for (const id of mContextualIdentityItems.values()) {
+    browser.menus.remove(id);
+  }
+  mContextualIdentityItems.clear();
+
+  browser.menus.create({
+    parentId: 'context_reopenInContainer',
+    id:       'context_reopenInContainer:firefox-default',
+    title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
+    contexts: ['tab']
+  });
+  mContextualIdentityItems.add('context_reopenInContainer:firefox-default');
+  browser.menus.create({
+    parentId: 'context_reopenInContainer',
+    id:       'context_reopenInContainer_separator',
+    type:     'separator',
+    contexts: ['tab']
+  });
+  mContextualIdentityItems.add('context_reopenInContainer_separator');
+
+  ContextualIdentities.forEach(identity => {
+    const id = `context_reopenInContainer:${identity.cookieStoreId}`;
+    browser.menus.create({
+      parentId: 'context_reopenInContainer',
+      id:       id,
+      title:    identity.name.replace(/^([a-z0-9])/i, '&$1'),
+      contexts: ['tab']
+    });
+    mContextualIdentityItems.add(id);
+    //if (identity.iconUrl) {
+    //  item.dataset.icon = identity.iconUrl;
+    //  item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
+    //}
+  });
 }
 
 
@@ -228,10 +273,21 @@ function onShown(info, contextApiTab) {
     visible: inSidebar && (!contextApiTab || !contextApiTab.pinned) && hasNormalTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
+  const showContextualIdentities = inSidebar && contextApiTab && mContextualIdentityItems.size > 2;
   updateItem('context_reopenInContainer', {
-    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    visible: showContextualIdentities && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
+  if (showContextualIdentities) {
+    for (const id of mContextualIdentityItems.values()) {
+      let visible = id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
+      if (id == 'context_reopenInContainer_separator')
+        visible = contextApiTab.cookieStoreId != 'firefox-default';
+      browser.menus.update(id, {
+        visible
+      });
+    }
+  }
   updateItem('context_moveTab', {
     visible: inSidebar && ++visibleItemsCount,
     enabled: contextApiTab && hasMultipleTabs,
