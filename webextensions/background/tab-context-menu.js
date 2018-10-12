@@ -15,7 +15,9 @@
 import {
   log as internalLogger
 } from '/common/common.js';
+import * as Tabs from '/common/tabs.js';
 import * as TSTAPI from '/common/tst-api.js';
+import * as CommonTabContextMenu from '/common/tab-context-menu.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -27,6 +29,72 @@ export const onTSTItemClick = new EventListenerManager();
 export const onTSTTabContextMenuShown = new EventListenerManager();
 export const onTSTTabContextMenuHidden = new EventListenerManager();
 
+
+const mItemsById = {
+  'context_reloadTab': {
+    title:              browser.i18n.getMessage('tabContextMenu_reload_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_reload_label_multiselected')
+  },
+  'context_toggleMuteTab-mute': {
+    title:              browser.i18n.getMessage('tabContextMenu_mute_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_mute_label_multiselected')
+  },
+  'context_toggleMuteTab-unmute': {
+    title:              browser.i18n.getMessage('tabContextMenu_unmute_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_unmute_label_multiselected')
+  },
+  'context_separator:afterMute': {
+    type: 'separator'
+  },
+  'context_pinTab': {
+    title:              browser.i18n.getMessage('tabContextMenu_pin_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_pin_label_multiselected')
+  },
+  'context_unpinTab': {
+    title:              browser.i18n.getMessage('tabContextMenu_unpin_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_unpin_label_multiselected')
+  },
+  'context_duplicateTab': {
+    title: browser.i18n.getMessage('tabContextMenu_duplicate_label')
+  },
+  'context_reopenInContainer': {
+    title: browser.i18n.getMessage('tabContextMenu_reopenInContainer_label')
+  },
+  'context_openTabInWindow': {
+    title: browser.i18n.getMessage('tabContextMenu_tearOff_label')
+  },
+  'context_separator:afterOpenInWindow': {
+    type: 'separator'
+  },
+  'context_reloadAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_reloadAll_label')
+  },
+  'context_bookmarkAllTabs': {
+    title:              browser.i18n.getMessage('tabContextMenu_bookmarkAll_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_bookmark_label_multiselected')
+  },
+  'context_closeTabsToTheEnd': {
+    title: browser.i18n.getMessage('tabContextMenu_closeAfter_label')
+  },
+  'context_closeOtherTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_closeOther_label')
+  },
+  'context_separator:afterCloseOther': {
+    type: 'separator'
+  },
+  'context_undoCloseTab': {
+    title: browser.i18n.getMessage('tabContextMenu_undoClose_label')
+  },
+  'context_closeTab': {
+    title:              browser.i18n.getMessage('tabContextMenu_close_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_close_label_multiselected')
+  },
+  'context_separator:afterTabContextItems': {
+    type: 'separator'
+  }
+};
+
+
 export function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onExternalMessage);
@@ -35,7 +103,161 @@ export function init() {
     browser.runtime.onMessage.removeListener(onMessage);
     browser.runtime.onMessageExternal.removeListener(onExternalMessage);
   }, { once: true });
+
+  for (const id of Object.keys(mItemsById)) {
+    const item = mItemsById[id];
+    item.lastTitle   = item.title;
+    item.lastVisible = false;
+    browser.menus.create({
+      id,
+      title:    item.title,
+      type:     item.type || 'normal',
+      contexts: ['tab'],
+      visible:  false
+    });
+  }
+  browser.menus.onShown.addListener(onShown);
+  browser.menus.onClicked.addListener(onClick);
 }
+
+
+function updateItem(id, state = {}) {
+  let modified = false;
+  const item = mItemsById[id];
+  const updateInfo = {
+    visible: !!state.visible
+  };
+  const title = state.multiselected ? item.titleMultiselected || item.title : item.title;
+  if (title) {
+    updateInfo.title = title;
+    modified = title != item.lastTitle;
+    item.lastTitle = updateInfo.title;
+  }
+  if (!modified)
+    modified = updateInfo.visible != item.lastVisible;
+  item.lastVisible = updateInfo.visible;
+  browser.menus.update(id, updateInfo);
+  return modified;
+}
+
+function onShown(info, contextApiTab) {
+  const inSidebar             = info.viewType == 'sidebar';
+  const tab                   = Tabs.getTabById(contextApiTab);
+  const hasMultipleTabs       = Tabs.getTabs(tab).length > 1;
+  const normalTabsCount       = Tabs.getNormalTabs(tab).length;
+  const hasNormalTab          = normalTabsCount > 0;
+  const hasMultipleNormalTabs = normalTabsCount > 1;
+  const multiselected         = Tabs.isMultiselected(tab);
+
+  let modifiedItemsCount = 0;
+  let visibleItemsCount = 0;
+
+  // ESLint reports "short circuit" error for following codes.
+  //   https://eslint.org/docs/rules/no-unused-expressions#allowshortcircuit
+  // To allow those usages, I disable the rule temporarily.
+  /* eslint-disable no-unused-expressions */
+
+  updateItem('context_reloadTab', {
+    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_toggleMuteTab-mute', {
+    visible: inSidebar && contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted) && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_toggleMuteTab-unmute', {
+    visible: inSidebar && contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+
+  updateItem('context_separator:afterMute', {
+    visible: inSidebar && visibleItemsCount > 0
+  }) && modifiedItemsCount++;
+  visibleItemsCount = 0;
+
+  updateItem('context_pinTab', {
+    visible: inSidebar && contextApiTab && !contextApiTab.pinned && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_unpinTab', {
+    visible: inSidebar && contextApiTab && contextApiTab.pinned && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_duplicateTab', {
+    visible: inSidebar && contextApiTab && !multiselected && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_reopenInContainer', {
+    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_openTabInWindow', {
+    visible: inSidebar && contextApiTab && hasMultipleTabs && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+
+  updateItem('context_separator:afterOpenInWindow', {
+    visible: inSidebar && visibleItemsCount > 0
+  }) && modifiedItemsCount++;
+  visibleItemsCount = 0;
+
+  updateItem('context_reloadAllTabs', {
+    visible: inSidebar && hasMultipleTabs && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_bookmarkAllTabs', {
+    visible: inSidebar && (!contextApiTab || !contextApiTab.pinned) && hasNormalTab && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_closeTabsToTheEnd', {
+    visible: inSidebar && contextApiTab && hasMultipleNormalTabs && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_closeOtherTabs', {
+    visible: inSidebar && contextApiTab && hasMultipleNormalTabs && ++visibleItemsCount,
+    multiselected
+  });
+
+  updateItem('context_separator:afterCloseOther', {
+    visible: inSidebar && visibleItemsCount > 0
+  }) && modifiedItemsCount++;
+  visibleItemsCount = 0;
+
+  updateItem('context_undoCloseTab', {
+    visible: inSidebar && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+  updateItem('context_closeTab', {
+    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    multiselected
+  }) && modifiedItemsCount++;
+
+  updateItem('context_separator:afterTabContextItems', {
+    visible: inSidebar && visibleItemsCount > 0
+  }) && modifiedItemsCount++;
+
+  /* eslint-enable no-unused-expressions */
+
+  if (modifiedItemsCount)
+    browser.menus.refresh();
+}
+
+async function onClick(info, contextApiTab) {
+  const window = await browser.windows.getLastFocused({
+    windowTypes: ['normal']
+  });
+  CommonTabContextMenu.onCommand({
+    item: {
+      id: info.menuItemId
+    },
+    event: {
+      button: 0
+    },
+    tab:      contextApiTab,
+    windowId: window.id
+  });
+}
+
 
 const mExtraItems = new Map();
 
