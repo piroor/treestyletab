@@ -62,6 +62,13 @@ export async function refreshItems() {
     type: TSTAPI.kCONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
 
+  let parentId = await browser.menus.create({
+    type:     'normal',
+    contexts: ['tab'],
+    title:    browser.runtime.getManifest().name,
+    icons:    browser.runtime.getManifest().icons
+  });
+
   let separatorsCount = 0;
   let normalItemAppeared = false;
   const items = [];
@@ -84,7 +91,8 @@ export async function refreshItems() {
       type:     item.type,
       checked:  item.checked,
       title:    item.titleWithoutAccesskey,
-      contexts: ['tab']
+      contexts: ['tab'],
+      parentId
     });
     customItems.push({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
