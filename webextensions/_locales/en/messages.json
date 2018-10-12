@@ -395,7 +395,7 @@
 
   "tabContextMenu_moveTab_label_multiselected": { "message": "Mo&ve Tabs" },
 
-  "tabContextMenu_bookmark_label_multiselected": { "message": "Boo&kmark Tabs…" },
+  "tabContextMenu_bookmark_label_multiselected": { "message": "&Bookmark Tabs…" },
 
   "tabContextMenu_close_label_multiselected":       { "message": "Close &Selected Tabs" }
 }
