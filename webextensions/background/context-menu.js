@@ -62,7 +62,7 @@ export async function refreshItems() {
     type: TSTAPI.kCONTEXT_MENU_REMOVE_ALL
   }, browser.runtime);
 
-  let parentId = await browser.menus.create({
+  const parentId = await browser.menus.create({
     type:     'normal',
     contexts: ['tab'],
     title:    browser.runtime.getManifest().name,
