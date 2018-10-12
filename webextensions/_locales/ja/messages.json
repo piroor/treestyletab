@@ -375,7 +375,8 @@
   "tabContextMenu_bookmarkAll_label": { "message": "すべてのタブをブックマーク(&T)..." },
 
   "tabContextMenu_closeTabOptions_label": { "message": "タブをまとめて閉じる(&O)" },
-  "tabContextMenu_closeAfter_label":  { "message": "下のタブをすべて閉じる(&I)" },
+  "tabContextMenu_closeAfter_label":  { "message": "右のタブをすべて閉じる(&I)" },
+  "tabContextMenu_closeTabsToBottom_label":  { "message": "下のタブをすべて閉じる(&B)" },
   "tabContextMenu_closeOther_label":  { "message": "他のタブをすべて閉じる(&O)" },
 
   "tabContextMenu_undoClose_label":   { "message": "閉じたタブを元に戻す(&U)" },

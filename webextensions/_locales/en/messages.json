@@ -379,7 +379,8 @@
   "tabContextMenu_bookmarkAll_label": { "message": "Bookmark All &Tabs…" },
 
   "tabContextMenu_closeTabOptions_label":   { "message": "Close Tab &Options" },
-  "tabContextMenu_closeAfter_label":  { "message": "Close Tabs to the Bottom(&I)" },
+  "tabContextMenu_closeAfter_label":  { "message": "Close Tabs to the R&ight" },
+  "tabContextMenu_closeTabsToBottom_label":  { "message": "Close Tabs to the &Bottom" },
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 
   "tabContextMenu_undoClose_label":   { "message": "&Undo Close Tab" },

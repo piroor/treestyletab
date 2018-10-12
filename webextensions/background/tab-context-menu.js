@@ -97,7 +97,7 @@ const mItemsById = {
   },
   'context_closeTabsToTheEnd': {
     parentId: 'context_closeTabOptions',
-    title:    browser.i18n.getMessage('tabContextMenu_closeAfter_label')
+    title:    browser.i18n.getMessage('tabContextMenu_closeTabsToBottom_label')
   },
   'context_closeOtherTabs': {
     parentId: 'context_closeTabOptions',
