@@ -85,9 +85,6 @@ async function rebuild() {
   if (mExtraItems.size == 0)
     return;
 
-  updateMultiselectedLabel();
-  updateContextualIdentitiesSelector();
-
   const extraItemNodes = document.createDocumentFragment();
   for (const [id, extraItems] of mExtraItems.entries()) {
     let addonItem = document.createElement('li');
@@ -102,6 +99,8 @@ async function rebuild() {
 
     const toBeBuiltItems = [];
     for (const item of extraItems) {
+      if (item.visible === false)
+        continue;
       if (item.contexts && !item.contexts.includes('tab'))
         continue;
       if (mContextTab &&
@@ -119,15 +118,27 @@ async function rebuild() {
     const knownItems   = {};
     for (const item of toBeBuiltItems) {
       const itemNode = buildExtraItem(item, id);
-      if (item.parentId && item.parentId in knownItems) {
+      if (item.parentId) {
+        if (item.parentId in knownItems) {
         const parent = knownItems[item.parentId];
         prepareAsSubmenu(parent);
         parent.lastChild.appendChild(itemNode);
+        }
+        else {
+          continue;
+        }
       }
       else {
         addonSubMenu.appendChild(itemNode);
       }
       knownItems[item.id] = itemNode;
+    }
+    if (id == browser.runtime.id) {
+      const range = document.createRange();
+      range.selectNodeContents(addonSubMenu);
+      extraItemNodes.appendChild(range.extractContents());
+      range.detach();
+      continue;
     }
     switch (addonSubMenu.childNodes.length) {
       case 0:
@@ -143,52 +154,7 @@ async function rebuild() {
   if (!extraItemNodes.hasChildNodes())
     return;
 
-  const separator = document.createElement('li');
-  separator.classList.add('extra');
-  separator.classList.add('separator');
-  extraItemNodes.insertBefore(separator, extraItemNodes.firstChild);
   mMenu.appendChild(extraItemNodes);
-}
-
-function updateMultiselectedLabel() {
-  const isMultiselected = Tabs.isMultiselected(Tabs.getTabById(mContextTab));
-  const activeLabelAttribute = isMultiselected ? 'data-label-multiselected' : 'data-label-single' ;
-  const labelRange = document.createRange();
-  for (const item of mMenu.querySelectorAll(`[${activeLabelAttribute}]`)) {
-    const label = item.getAttribute(activeLabelAttribute);
-    item.setAttribute('title', label);
-    labelRange.selectNodeContents(item);
-    labelRange.deleteContents();
-    labelRange.insertNode(document.createTextNode(label));
-  }
-  labelRange.detach();
-  mLastMultiselected = isMultiselected;
-}
-
-function updateContextualIdentitiesSelector() {
-  if (!mContextTab)
-    return;
-  const isDefault    = mContextTab.cookieStoreId == 'firefox-default';
-  const container    = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU);
-  const defaultItems = container.querySelectorAll('.contextual-identity-default');
-  const identities   = container.querySelectorAll('[data-value]:not(.contextual-identity-default)');
-  if (isDefault) {
-    for (const item of defaultItems) {
-      item.style.display = 'none';
-    }
-    for (const item of identities) {
-      item.style.display = '';
-    }
-  }
-  else {
-    for (const item of defaultItems) {
-      item.style.display = '';
-    }
-    for (const item of identities) {
-      item.style.display = item.dataset.value == mContextTab.cookieStoreId ? 'none' : '' ;
-    }
-  }
-  mLastContextualIdentity = mContextTab.cookieStoreId;
 }
 
 function getAddonName(id) {
@@ -484,7 +450,8 @@ async function onShown(contextTab) {
       selectionText:    null,
       srcUrl:           null,
       contexts:         ['tab'],
-      menuIds:          []
+      menuIds:          [],
+      viewType:         'sidebar'
     },
     tab: contextTab || mContextTab || null
   };

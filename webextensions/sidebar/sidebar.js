@@ -166,7 +166,6 @@ export async function init() {
     MetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
-      updateContextualIdentitiesSelectorInContextMenu();
       ContextualIdentities.startObserve();
     }),
     MetricsData.addAsync('TabContextMenu.init', async () => {
@@ -345,35 +344,6 @@ function updateContextualIdentitiesSelector() {
   }
   range.insertNode(fragment);
   range.detach();
-}
-
-function updateContextualIdentitiesSelectorInContextMenu() {
-  const container = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR_CONTEXT_MENU);
-
-  const range = document.createRange();
-  range.selectNodeContents(container);
-  range.setStartAfter(container.querySelector('.separator'));
-  range.deleteContents();
-
-  let hasIdentity = false;
-  const fragment = document.createDocumentFragment();
-  ContextualIdentities.forEach(identity => {
-    const item = document.createElement('li');
-    item.id = `context_reopenInContainer:${identity.cookieStoreId}`
-    item.dataset.value = identity.cookieStoreId;
-    item.textContent = identity.name.replace(/^([a-z0-9])/i, '&$1');
-    item.setAttribute('title', identity.name);
-    if (identity.iconUrl) {
-      item.dataset.icon = identity.iconUrl;
-      item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
-    }
-    fragment.appendChild(item);
-    hasIdentity = true;
-  });
-  range.insertNode(fragment);
-  range.detach();
-
-  container.parentNode.style.display = hasIdentity ? '' : 'none' ;
 }
 
 export async function rebuildAll(cache) {
@@ -684,7 +654,6 @@ Tabs.onWindowRestoring.addListener(async windowId => {
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();
   updateContextualIdentitiesSelector();
-  updateContextualIdentitiesSelectorInContextMenu();
 });
 
 

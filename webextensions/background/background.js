@@ -80,20 +80,20 @@ export async function init() {
   ContextualIdentities.startObserve();
   onBuilt.dispatch();
 
-  TabContextMenu.init();
+  TabContextMenu.init().then(() => {
+    ContextMenu.refreshItems();
+    configs.$addObserver(key => {
+      switch (key) {
+        case 'style':
+          updatePanelUrl();
+          break;
 
-  ContextMenu.refreshItems();
-  configs.$addObserver(key => {
-    switch (key) {
-      case 'style':
-        updatePanelUrl();
-        break;
-
-      default:
-        if (key.indexOf('context_') == 0)
-          ContextMenu.refreshItems();
-        break;
-    }
+        default:
+          if (key.indexOf('context_') == 0)
+            ContextMenu.refreshItems();
+          break;
+      }
+    });
   });
 
   Permissions.clearRequest();

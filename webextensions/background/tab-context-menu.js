@@ -116,6 +116,7 @@ const mItemsById = {
   }
 };
 
+let gNativeContextMenuAvailable = false;
 
 export async function init() {
   browser.runtime.onMessage.addListener(onMessage);
@@ -125,6 +126,9 @@ export async function init() {
     browser.runtime.onMessage.removeListener(onMessage);
     browser.runtime.onMessageExternal.removeListener(onExternalMessage);
   }, { once: true });
+
+  const browserInfo = await browser.runtime.getBrowserInfo();
+  gNativeContextMenuAvailable = parseInt(browserInfo.version.split('.')[0]) >= 64;
 
   for (const id of Object.keys(mItemsById)) {
     const item = mItemsById[id];
@@ -140,10 +144,17 @@ export async function init() {
     };
     if (item.parentId)
       info.parentId = item.parentId;
-    browser.menus.create(info);
+    if (gNativeContextMenuAvailable)
+      browser.menus.create(info);
+    onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: info
+    }, browser.runtime);
   }
-  browser.menus.onShown.addListener(onShown);
-  browser.menus.onClicked.addListener(onClick);
+  if (gNativeContextMenuAvailable) {
+    browser.menus.onShown.addListener(onShown);
+    browser.menus.onClicked.addListener(onClick);
+  }
 
   await ContextualIdentities.init();
   updateContextualIdentities();
@@ -155,24 +166,42 @@ export async function init() {
 const mContextualIdentityItems = new Set();
 function updateContextualIdentities() {
   for (const id of mContextualIdentityItems.values()) {
-    browser.menus.remove(id);
+    if (gNativeContextMenuAvailable)
+      browser.menus.remove(id);
+    onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_REMOVE,
+      params: id
+    }, browser.runtime);
   }
   mContextualIdentityItems.clear();
 
-  browser.menus.create({
+  const defaultItem = {
     parentId: 'context_reopenInContainer',
     id:       'context_reopenInContainer:firefox-default',
     title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
     contexts: ['tab']
-  });
-  mContextualIdentityItems.add('context_reopenInContainer:firefox-default');
-  browser.menus.create({
+  };
+  if (gNativeContextMenuAvailable)
+    browser.menus.create(defaultItem);
+  onExternalMessage({
+    type: TSTAPI.kCONTEXT_MENU_CREATE,
+    params: defaultItem
+  }, browser.runtime);
+  mContextualIdentityItems.add(defaultItem.id);
+
+  const defaultSeparator = {
     parentId: 'context_reopenInContainer',
-    id:       'context_reopenInContainer_separator',
-    type:     'separator',
+    id:       'context_reopenInContainer:firefox-default',
+    title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
     contexts: ['tab']
-  });
-  mContextualIdentityItems.add('context_reopenInContainer_separator');
+  };
+  if (gNativeContextMenuAvailable)
+    browser.menus.create(defaultSeparator);
+  onExternalMessage({
+    type: TSTAPI.kCONTEXT_MENU_CREATE,
+    params: defaultSeparator
+  }, browser.runtime);
+  mContextualIdentityItems.add(defaultSeparator.id);
 
   ContextualIdentities.forEach(identity => {
     const id = `context_reopenInContainer:${identity.cookieStoreId}`;
@@ -187,7 +216,12 @@ function updateContextualIdentities() {
     };
     if (icon)
       item.icons = { 16: icon };
-    browser.menus.create(item);
+    if (gNativeContextMenuAvailable)
+      browser.menus.create(item);
+    onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: item
+    }, browser.runtime);
     mContextualIdentityItems.add(id);
   });
 }
@@ -211,7 +245,12 @@ function updateItem(id, state = {}) {
                  updateInfo.enabled != item.lastEnabled;
   item.lastVisible = updateInfo.visible;
   item.lastEnabled = updateInfo.enabled;
-  browser.menus.update(id, updateInfo);
+  if (gNativeContextMenuAvailable)
+    browser.menus.update(id, updateInfo);
+  onExternalMessage({
+    type: TSTAPI.kCONTEXT_MENU_UPDATE,
+    params: [id, updateInfo]
+  }, browser.runtime);
   return modified;
 }
 
@@ -285,9 +324,14 @@ function onShown(info, contextApiTab) {
       let visible = id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
       if (id == 'context_reopenInContainer_separator')
         visible = contextApiTab.cookieStoreId != 'firefox-default';
-      browser.menus.update(id, {
-        visible
-      });
+      if (gNativeContextMenuAvailable)
+        browser.menus.update(id, {
+          visible
+        });
+      onExternalMessage({
+        type: TSTAPI.kCONTEXT_MENU_UPDATE,
+        params: [id, { visible }]
+      }, browser.runtime);
     }
   }
   updateItem('context_moveTab', {
@@ -357,7 +401,7 @@ function onShown(info, contextApiTab) {
 
   /* eslint-enable no-unused-expressions */
 
-  if (modifiedItemsCount)
+  if (gNativeContextMenuAvailable && modifiedItemsCount)
     browser.menus.refresh();
 }
 
@@ -433,6 +477,7 @@ function onMessage(message, _aSender) {
       return;
 
     case TSTAPI.kCONTEXT_MENU_SHOWN:
+      onShown(message.info, message.tab);
       onTSTTabContextMenuShown.dispatch(message.info, message.tab);
       return;
 

@@ -72,6 +72,15 @@ export async function refreshItems() {
     title:    browser.runtime.getManifest().name,
     icons:    browser.runtime.getManifest().icons
   });
+  TabContextMenu.onExternalMessage({
+    type: TSTAPI.kCONTEXT_MENU_CREATE,
+    params: {
+      id:       kROOT_ITEM,
+      contexts: ['tab'],
+      title:    browser.runtime.getManifest().name,
+      icons:    browser.runtime.getManifest().icons
+    }
+  }, browser.runtime);
 
   let separatorsCount = 0;
   let normalItemAppeared = false;
@@ -105,7 +114,8 @@ export async function refreshItems() {
         type:     item.type,
         checked:  item.checked,
         title:    item.title,
-        contexts: ['tab']
+        contexts: ['tab'],
+        parentId
       }
     });
   }
