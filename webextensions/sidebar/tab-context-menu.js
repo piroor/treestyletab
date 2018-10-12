@@ -18,7 +18,6 @@ import {
   wait,
   configs
 } from '/common/common.js';
-import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -35,8 +34,6 @@ let mMenu;
 let mContextTab      = null;
 let mLastOpenOptions = null;
 let mContextWindowId = null;
-let mLastContextualIdentity = null;
-let mLastMultiselected = false;
 let mIsDirty         = false;
 
 const mExtraItems = new Map();
@@ -257,10 +254,6 @@ export async function open(options = {}) {
   mLastOpenOptions = options;
   mContextTab      = options.tab;
   mContextWindowId = options.windowId || (mContextTab && mContextTab.windowId);
-  if (mContextTab && mLastContextualIdentity != mContextTab.cookieStoreId)
-    mIsDirty = true;
-  if (mLastMultiselected != Tabs.isMultiselected(Tabs.getTabById(mContextTab)))
-    mIsDirty = true;
   await rebuild();
   if (mIsDirty) {
     return await open(options);
