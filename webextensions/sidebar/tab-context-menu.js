@@ -117,9 +117,9 @@ async function rebuild() {
       const itemNode = buildExtraItem(item, id);
       if (item.parentId) {
         if (item.parentId in knownItems) {
-        const parent = knownItems[item.parentId];
-        prepareAsSubmenu(parent);
-        parent.lastChild.appendChild(itemNode);
+          const parent = knownItems[item.parentId];
+          prepareAsSubmenu(parent);
+          parent.lastChild.appendChild(itemNode);
         }
         else {
           continue;
