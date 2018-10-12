@@ -372,7 +372,7 @@
 
   "tabContextMenu_reloadAll_label":   { "message": "Reload &All Tabs" },
   "tabContextMenu_bookmarkAll_label": { "message": "Bookmark All &Tabs…" },
-  "tabContextMenu_closeAfter_label":  { "message": "Close Tabs to the R&ight" },
+  "tabContextMenu_closeAfter_label":  { "message": "Close Tabs to the Bottom(&I)" },
   "tabContextMenu_closeOther_label":  { "message": "Cl&ose Other Tabs" },
 
   "tabContextMenu_undoClose_label":   { "message": "&Undo Close Tab" },
