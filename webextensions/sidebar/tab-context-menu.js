@@ -298,26 +298,6 @@ function applyContext() {
       states.push('multiselected');
     mMenu.setAttribute('data-tab-states', states.join(' '));
   }
-
-  if (Tabs.getTabs().length > 1)
-    mMenu.classList.add('has-multiple-tabs');
-  else
-    mMenu.classList.remove('has-multiple-tabs');
-
-  switch (Tabs.getNormalTabs().length) {
-    case 0:
-      mMenu.classList.remove('has-normal-tabs');
-      mMenu.classList.remove('has-multiple-normal-tabs');
-      break;
-    case 1:
-      mMenu.classList.add('has-normal-tabs');
-      mMenu.classList.remove('has-multiple-normal-tabs');
-      break;
-    default:
-      mMenu.classList.add('has-normal-tabs');
-      mMenu.classList.add('has-multiple-normal-tabs');
-      break;
-  }
 }
 
 async function onCommand(item, event) {
