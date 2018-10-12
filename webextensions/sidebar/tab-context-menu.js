@@ -547,7 +547,8 @@ function onExternalMessage(message, sender) {
 
 async function onContextMenu(event) {
   const tab = EventUtils.getTabFromEvent(event);
-  if (tab && tab.apiTab &&
+  if (!event.ctrlKey &&
+      tab && tab.apiTab &&
       typeof browser.menus.overrideContext == 'function') {
     browser.menus.overrideContext({
       context: 'tab',
