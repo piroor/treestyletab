@@ -17,7 +17,8 @@
   ],
   "optional_permissions": [
     "<all_urls>",
-    "bookmarks"
+    "bookmarks",
+    "menus.overrideContext"
   ],
   "icons": {
     "16": "resources/16x16.svg",

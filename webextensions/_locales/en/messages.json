@@ -110,8 +110,9 @@
   "migrateSessions_link_uri": { "message": "https://github.com/piroor/treestyletab/wiki/How-to-convert-session-information-from-old-TST-0.19.x-to-new-TST-2.x" },
 
   "message_startup_requestPermissions_description": { "message": "⚠There are some features requiring extra permissions. If you want to activate them, please grant permissions manually." },
-  "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs (requires access to bookmarks.)" },
-  "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts (requires script injection to webpages for detection of keyboard operations.)" },
+  "message_startup_requestPermissions_bookmarks": { "message": "\"Bookmark This Tree\" in the context menu on tabs (requires access to bookmarks)" },
+  "message_startup_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts (requires script injection to webpages for detection of keyboard operations)" },
+  "message_startup_requestPermissions_menusOverrideContext": { "message": "Better compatibility with other addons which provide extra context menu items for tabs" },
 
   "message_startup_userChromeCss_notify": { "message": "How to hide top tab bar and sidebar header?" },
   "message_startup_userChromeCss_description_1": { "message": "Due to restrictions of WebExtensions, Tree Style Tab cannot control Firefox's top tab bar and the sidebar header. If you need to control them, see " },
@@ -350,6 +351,7 @@
 
   "config_requestPermissions_bookmarks": { "message": "Allow to create bookmarks" },
   "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
+  "config_requestPermissions_menusOverrideContext": { "message": "Better compatibility with other addons which provide extra context menu items for tabs" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Click the \"Tree Style Tab\" toolbar button" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Due to Firefox's bug, you cannot request permission from this screen. Please click the \"Tree Style Tab\" toolbar button to grant permissions." },

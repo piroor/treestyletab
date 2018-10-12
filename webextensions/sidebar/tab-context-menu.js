@@ -725,11 +725,19 @@ function onExternalMessage(message, sender) {
 
 
 async function onContextMenu(event) {
+  const tab = EventUtils.getTabFromEvent(event);
+  if (tab && tab.apiTab &&
+      typeof browser.menus.overrideContext == 'function') {
+    browser.menus.overrideContext({
+      context: 'tab',
+      tabId: tab.apiTab.id
+    });
+    return;
+  }
   if (!configs.fakeContextMenu)
     return;
   event.stopPropagation();
   event.preventDefault();
-  const tab = EventUtils.getTabFromEvent(event);
   await onShown(tab && tab.apiTab);
   await wait(25);
   await open({

@@ -142,6 +142,10 @@ window.addEventListener('DOMContentLoaded', () => {
       Permissions.BOOKMARKS,
       document.querySelector('#bookmarksPermissionGranted')
     );
+    Permissions.bindToCheckbox(
+      Permissions.MENUS_OVERRIDE_CONTEXT,
+      document.querySelector('#menusOverrideContextPermissionGranted')
+    );
 
 
     for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
