@@ -253,15 +253,16 @@ function updateItem(id, state = {}) {
   return modified;
 }
 
-function onShown(info, contextApiTab) {
+async function onShown(info, contextApiTab) {
   const inSidebar             = info.viewType == 'sidebar';
   const tab                   = Tabs.getTabById(contextApiTab);
+  const container             = tab ? tab.parentNode : Tabs.getTabsContainer((await browser.windows.getLastFocused({})).id);
   const previousTab           = Tabs.getPreviousTab(tab);
   const previousSiblingTab    = Tabs.getPreviousSiblingTab(tab);
   const nextTab               = Tabs.getNextTab(tab);
   const nextSiblingTab        = Tabs.getNextSiblingTab(tab);
-  const hasMultipleTabs       = Tabs.getTabs(tab).length > 1;
-  const normalTabsCount       = Tabs.getNormalTabs(tab).length;
+  const hasMultipleTabs       = Tabs.getTabs(tab || container).length > 1;
+  const normalTabsCount       = Tabs.getNormalTabs(tab || container).length;
   const hasNormalTab          = normalTabsCount > 0;
   const hasMultipleNormalTabs = normalTabsCount > 1;
   const multiselected         = Tabs.isMultiselected(tab);
