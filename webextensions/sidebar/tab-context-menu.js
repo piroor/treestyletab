@@ -134,6 +134,10 @@ async function rebuild() {
       knownItems[item.id] = itemNode;
     }
     if (id == browser.runtime.id) {
+      for (const item of addonSubMenu.children) {
+        if (item.nextSibling) // except the last "Tree Style Tab" menu
+          item.classList.remove('extra');
+      }
       const range = document.createRange();
       range.selectNodeContents(addonSubMenu);
       extraItemNodes.appendChild(range.extractContents());

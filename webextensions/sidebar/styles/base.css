@@ -587,6 +587,13 @@ ul {
 }
 
 
+/* fake context menu */
+
+#tabContextMenu:not([data-tab-id]) li.extra {
+  display: none !important;
+}
+
+
 /* blocking UI */
 
 #blocking-screen {

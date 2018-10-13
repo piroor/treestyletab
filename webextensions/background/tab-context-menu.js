@@ -401,7 +401,7 @@ function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterTabContextItems', {
-    visible: inSidebar && visibleItemsCount > 0
+    visible: inSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
 
   /* eslint-enable no-unused-expressions */
