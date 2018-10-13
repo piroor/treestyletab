@@ -131,14 +131,14 @@ export async function init() {
   for (const id of Object.keys(mItemsById)) {
     const item = mItemsById[id];
     item.lastTitle   = item.title;
-    item.lastVisible = false;
+    item.lastVisible = true;
     item.lastEnabled = true;
     const info = {
       id,
       title:    item.title,
       type:     item.type || 'normal',
       contexts: ['tab'],
-      visible:  false
+      viewTypes: ['sidebar']
     };
     if (item.parentId)
       info.parentId = item.parentId;
@@ -178,7 +178,8 @@ function updateContextualIdentities() {
     parentId: 'context_reopenInContainer',
     id:       'context_reopenInContainer:firefox-default',
     title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
-    contexts: ['tab']
+    contexts: ['tab'],
+    viewTypes: ['sidebar']
   };
   if (gNativeContextMenuAvailable)
     browser.menus.create(defaultItem);
@@ -192,7 +193,8 @@ function updateContextualIdentities() {
     parentId: 'context_reopenInContainer',
     id:       'context_reopenInContainer:firefox-default',
     title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
-    contexts: ['tab']
+    contexts: ['tab'],
+    viewTypes: ['sidebar']
   };
   if (gNativeContextMenuAvailable)
     browser.menus.create(defaultSeparator);
@@ -211,7 +213,8 @@ function updateContextualIdentities() {
       parentId: 'context_reopenInContainer',
       id:       id,
       title:    identity.name.replace(/^([a-z0-9])/i, '&$1'),
-      contexts: ['tab']
+      contexts: ['tab'],
+      viewTypes: ['sidebar']
     };
     if (icon)
       item.icons = { 16: icon };
@@ -254,7 +257,6 @@ function updateItem(id, state = {}) {
 }
 
 async function onShown(info, contextApiTab) {
-  const inSidebar             = info.viewType == 'sidebar';
   const tab                   = Tabs.getTabById(contextApiTab);
   const container             = tab ? tab.parentNode : Tabs.getTabsContainer((await browser.windows.getLastFocused({})).id);
   const previousTab           = Tabs.getPreviousTab(tab);
@@ -276,45 +278,45 @@ async function onShown(info, contextApiTab) {
   /* eslint-disable no-unused-expressions */
 
   updateItem('context_reloadTab', {
-    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    visible: contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
-    visible: inSidebar && contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted) && ++visibleItemsCount,
+    visible: contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted) && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-unmute', {
-    visible: inSidebar && contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted && ++visibleItemsCount,
+    visible: contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_pinTab', {
-    visible: inSidebar && contextApiTab && !contextApiTab.pinned && ++visibleItemsCount,
+    visible: contextApiTab && !contextApiTab.pinned && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_unpinTab', {
-    visible: inSidebar && contextApiTab && contextApiTab.pinned && ++visibleItemsCount,
+    visible: contextApiTab && contextApiTab.pinned && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_duplicateTab', {
-    visible: inSidebar && contextApiTab && !multiselected && ++visibleItemsCount,
+    visible: contextApiTab && !multiselected && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterDuplicate', {
-    visible: inSidebar && contextApiTab && visibleItemsCount > 0
+    visible: contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
   updateItem('context_selectAllTabs', {
-    visible: inSidebar && ++visibleItemsCount,
+    visible: ++visibleItemsCount,
     enabled: !contextApiTab || Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: inSidebar && (!contextApiTab || !contextApiTab.pinned) && hasNormalTab && ++visibleItemsCount,
+    visible: (!contextApiTab || !contextApiTab.pinned) && hasNormalTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
-  const showContextualIdentities = inSidebar && contextApiTab && mContextualIdentityItems.size > 2;
+  const showContextualIdentities = contextApiTab && mContextualIdentityItems.size > 2;
   updateItem('context_reopenInContainer', {
     visible: showContextualIdentities && ++visibleItemsCount,
     multiselected
@@ -335,68 +337,65 @@ async function onShown(info, contextApiTab) {
     }
   }
   updateItem('context_moveTab', {
-    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    visible: contextApiTab && ++visibleItemsCount,
     enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToStart', {
-    visible: inSidebar,
     enabled: contextApiTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextApiTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToEnd', {
-    visible: inSidebar,
     enabled: contextApiTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextApiTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_openTabInWindow', {
-    visible: inSidebar,
     enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterSendTab', {
-    visible: inSidebar && contextApiTab && visibleItemsCount > 0
+    visible: contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
   updateItem('context_reloadAllTabs', {
-    visible: inSidebar && ++visibleItemsCount,
+    visible: ++visibleItemsCount,
     enabled: hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterReloadAll', {
-    visible: inSidebar && contextApiTab && visibleItemsCount > 0
+    visible: contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
   updateItem('context_closeTabOptions', {
-    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    visible: contextApiTab && ++visibleItemsCount,
     enabled: hasMultipleNormalTabs,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTabsToTheEnd', {
-    visible: inSidebar && contextApiTab,
+    visible: contextApiTab,
     enabled: hasMultipleNormalTabs && nextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeOtherTabs', {
-    visible: inSidebar && contextApiTab,
+    visible: contextApiTab,
     enabled: hasMultipleNormalTabs,
     multiselected
   });
   updateItem('context_undoCloseTab', {
-    visible: inSidebar && ++visibleItemsCount,
+    visible: ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTab', {
-    visible: inSidebar && contextApiTab && ++visibleItemsCount,
+    visible: contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterTabContextItems', {
-    visible: inSidebar && contextApiTab && visibleItemsCount > 0
+    visible: contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
 
   /* eslint-enable no-unused-expressions */
