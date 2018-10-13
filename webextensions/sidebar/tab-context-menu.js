@@ -67,7 +67,7 @@ async function rebuild() {
 
   mIsDirty = false;
 
-  const firstExtraItem = mMenu.querySelector('.extra');
+  const firstExtraItem = mMenu.querySelector('.extra, .imitated');
   if (firstExtraItem) {
     const range = document.createRange();
     range.selectNodeContents(mMenu);
@@ -131,6 +131,7 @@ async function rebuild() {
       for (const item of addonSubMenu.children) {
         if (item.nextSibling) // except the last "Tree Style Tab" menu
           item.classList.remove('extra');
+          item.classList.add('imitated');
       }
       const range = document.createRange();
       range.selectNodeContents(addonSubMenu);
