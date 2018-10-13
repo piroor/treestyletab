@@ -340,7 +340,7 @@ function onShown(info, contextApiTab) {
     }
   }
   updateItem('context_moveTab', {
-    visible: inSidebar && ++visibleItemsCount,
+    visible: inSidebar && contextApiTab && ++visibleItemsCount,
     enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
