@@ -131,6 +131,7 @@ export async function init() {
     browser.runtime.onMessageExternal.removeListener(onExternalMessage);
   }, { once: true });
 
+  // Imitated native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
   const browserInfo = await browser.runtime.getBrowserInfo();
   gNativeContextMenuAvailable = parseInt(browserInfo.version.split('.')[0]) >= 64;
 

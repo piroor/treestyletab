@@ -5,12 +5,6 @@
 */
 'use strict';
 
-/*
- Workaround until native context menu becomes available.
- I have very less motivation to maintain this for future versions.
- See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1376251
-           https://bugzilla.mozilla.org/show_bug.cgi?id=1396031
-*/
 import MenuUI from '/extlib/MenuUI.js';
 
 import {
