@@ -416,7 +416,7 @@ async function onClick(info, contextApiTab) {
   const contextTabElement = Tabs.getTabById(contextApiTab);
 
   const isMultiselected   = Tabs.isMultiselected(contextTabElement);
-  const multiselectedTabs = isMultiselected && Tabs.getSelectedTabs();
+  const multiselectedTabs = isMultiselected && Tabs.getSelectedTabs(contextTabElement);
 
   switch (info.menuItemId) {
     case 'context_reloadTab':
@@ -494,18 +494,32 @@ async function onClick(info, contextApiTab) {
         });
       })();
     case 'context_moveTabToStart': {
-      const tabs = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
-      if (contextTabElement != tabs[0]) {
-        Tree.detachTab(contextTabElement, { broadcast: true });
-        Tree.moveTabSubtreeBefore(contextTabElement, tabs[0]);
-      }
+      const movedTabs = multiselectedTabs || [contextTabElement].concat(Tabs.getDescendantTabs(contextTabElement));
+      const allTabs   = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
+      const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
+      if (otherTabs.length > 0)
+        Tree.performTabsDragDrop({
+          windowId:            contextWindowId,
+          tabs:                movedTabs.map(tab => tab.apiTab),
+          action:              Constants.kACTION_MOVE | Constants.kACTION_DETACH,
+          insertBefore:        otherTabs[0],
+          destinationWindowId: contextWindowId,
+          duplicate:           false
+        });
     }; break;
     case 'context_moveTabToEnd': {
-      const tabs = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
-      if (contextTabElement != tabs[tabs.length-1]) {
-        Tree.detachTab(contextTabElement, { broadcast: true });
-        Tree.moveTabSubtreeAfter(contextTabElement, tabs[tabs.length-1]);
-      }
+      const movedTabs = multiselectedTabs || [contextTabElement].concat(Tabs.getDescendantTabs(contextTabElement));
+      const allTabs   = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
+      const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
+      if (otherTabs.length > 0)
+        Tree.performTabsDragDrop({
+          windowId:            contextWindowId,
+          tabs:                movedTabs.map(tab => tab.apiTab),
+          action:              Constants.kACTION_MOVE | Constants.kACTION_DETACH,
+          insertAfter:        otherTabs[otherTabs.length-1],
+          destinationWindowId: contextWindowId,
+          duplicate:           false
+        });
     }; break;
     case 'context_openTabInWindow':
       if (multiselectedTabs) {
