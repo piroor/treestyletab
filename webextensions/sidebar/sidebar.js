@@ -36,7 +36,6 @@ import * as Size from './size.js';
 import * as Color from './color.js';
 import * as Indent from './indent.js';
 import * as Scroll from './scroll.js';
-import * as CommonTabContextMenu from '/common/tab-context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
@@ -431,7 +430,7 @@ export async function confirmToCloseTabs(count, _aOptions = {}) {
   }
 }
 Commands.onTabsClosing.addListener(confirmToCloseTabs);
-CommonTabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
+TabContextMenu.onTabsClosing.addListener(confirmToCloseTabs);
 
 
 export function reserveToUpdateTabbarLayout(options = {}) {

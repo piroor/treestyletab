@@ -18,22 +18,25 @@ import {
   wait,
   configs
 } from '/common/common.js';
+import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
-import * as CommonTabContextMenu from '/common/tab-context-menu.js';
+
+import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
   internalLogger('sidebar/tab-context-menu', ...args);
 }
+
+export const onTabsClosing = new EventListenerManager();
 
 let mUI;
 let mMenu;
 
 let mContextTab      = null;
 let mLastOpenOptions = null;
-let mContextWindowId = null;
 let mIsDirty         = false;
 
 const mExtraItems = new Map();
@@ -253,7 +256,6 @@ export async function open(options = {}) {
   await close();
   mLastOpenOptions = options;
   mContextTab      = options.tab;
-  mContextWindowId = options.windowId || (mContextTab && mContextTab.windowId);
   await rebuild();
   if (mIsDirty) {
     return await open(options);
@@ -274,7 +276,6 @@ export async function close() {
   mMenu.removeAttribute('data-tab-id');
   mMenu.removeAttribute('data-tab-states');
   mContextTab      = null;
-  mContextWindowId = null;
   mLastOpenOptions = null;
 }
 
@@ -305,17 +306,7 @@ async function onCommand(item, event) {
     return;
 
   const contextTab = mContextTab;
-  const contextWindowId = mContextWindowId;
   wait(0).then(() => close()); // close the menu immediately!
-
-  const handled = await CommonTabContextMenu.onCommand({
-    item,
-    event,
-    tab:      contextTab,
-    windowId: contextWindowId
-  });
-  if (!handled)
-    return;
 
   const id = item.getAttribute('data-item-id');
   if (!id)
@@ -447,6 +438,9 @@ async function onHidden() {
 function onMessage(message, _aSender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
+    case Constants.kCOMMAND_NOTIFY_TABS_CLOSING:
+      return onTabsClosing.dispatch(message.count, { windowId: message.windowId });
+
     case TSTAPI.kCONTEXT_MENU_UPDATED: {
       importExtraItems(message.items);
       mIsDirty = true;
@@ -476,7 +470,6 @@ function onExternalMessage(message, sender) {
         await wait(25);
         return open({
           tab,
-          windowId,
           left:     message.left,
           top:      message.top
         });
@@ -504,7 +497,6 @@ async function onContextMenu(event) {
   await wait(25);
   await open({
     tab:  tab && tab.apiTab,
-    windowId: Tabs.getWindow(),
     left: event.clientX,
     top:  event.clientY
   });

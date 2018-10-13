@@ -13,12 +13,17 @@
 */
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  notify,
+  configs
 } from '/common/common.js';
+import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
+import * as TabsOpen from '/common/tabs-open.js';
+import * as Tree from '/common/tree.js';
+import * as Bookmark from '/common/bookmark.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
-import * as CommonTabContextMenu from '/common/tab-context-menu.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -29,7 +34,6 @@ function log(...args) {
 export const onTSTItemClick = new EventListenerManager();
 export const onTSTTabContextMenuShown = new EventListenerManager();
 export const onTSTTabContextMenuHidden = new EventListenerManager();
-
 
 const mItemsById = {
   'context_reloadTab': {
@@ -155,6 +159,7 @@ export async function init() {
     browser.menus.onShown.addListener(onShown);
     browser.menus.onClicked.addListener(onClick);
   }
+  onTSTItemClick.addListener(onClick);
 
   await ContextualIdentities.init();
   updateContextualIdentities();
@@ -406,17 +411,234 @@ function onShown(info, contextApiTab) {
 }
 
 async function onClick(info, contextApiTab) {
-  const window = await browser.windows.getLastFocused({});
-  CommonTabContextMenu.onCommand({
-    item: {
-      id: info.menuItemId
-    },
-    event: {
-      button: 0
-    },
-    tab:      contextApiTab,
-    windowId: window.id
-  });
+  const window            = await browser.windows.getLastFocused({});
+  const contextWindowId   = window.id;
+  const contextTabElement = Tabs.getTabById(contextApiTab);
+
+  const isMultiselected   = Tabs.isMultiselected(contextTabElement);
+  const multiselectedTabs = isMultiselected && Tabs.getSelectedTabs();
+
+  switch (info.menuItemId) {
+    case 'context_reloadTab':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.reload(tab.apiTab.id);
+        }
+      }
+      else {
+        browser.tabs.reload(contextApiTab.id);
+      }
+      break;
+    case 'context_toggleMuteTab-mute':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { muted: true });
+        }
+      }
+      else {
+        browser.tabs.update(contextApiTab.id, { muted: true });
+      }
+      break;
+    case 'context_toggleMuteTab-unmute':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { muted: false });
+        }
+      }
+      else {
+        browser.tabs.update(contextApiTab.id, { muted: false });
+      }
+      break;
+    case 'context_pinTab':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { pinned: true });
+        }
+      }
+      else {
+        browser.tabs.update(contextApiTab.id, { pinned: true });
+      }
+      break;
+    case 'context_unpinTab':
+      if (multiselectedTabs) {
+        for (const tab of multiselectedTabs) {
+          browser.tabs.update(tab.apiTab.id, { pinned: false });
+        }
+      }
+      else {
+        browser.tabs.update(contextApiTab.id, { pinned: false });
+      }
+      break;
+    case 'context_duplicateTab':
+      /*
+        Due to difference between Firefox's "duplicate tab" implementation,
+        TST sometimes fails to detect duplicated tabs based on its
+        session information. Thus we need to duplicate as an internally
+        duplicated tab. For more details, see also:
+        https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
+      */
+      // browser.tabs.duplicate(contextApiTab.id);
+      return (async () => {
+        const sourceTab = contextTabElement;
+        log('source tab: ', sourceTab, !!sourceTab.apiTab);
+        const duplicatedTabs = await Tree.moveTabs([sourceTab], {
+          duplicate:           true,
+          destinationWindowId: contextWindowId,
+          insertAfter:         sourceTab,
+          inRemote:            true
+        });
+        Tree.behaveAutoAttachedTab(duplicatedTabs[0], {
+          baseTab:  sourceTab,
+          behavior: configs.autoAttachOnDuplicated,
+          inRemote: true
+        });
+      })();
+    case 'context_moveTabToStart': {
+      const tabs = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
+      if (contextTabElement != tabs[0]) {
+        Tree.detachTab(contextTabElement, { broadcast: true });
+        Tree.moveTabSubtreeBefore(contextTabElement, tabs[0]);
+      }
+    }; break;
+    case 'context_moveTabToEnd': {
+      const tabs = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
+      if (contextTabElement != tabs[tabs.length-1]) {
+        Tree.detachTab(contextTabElement, { broadcast: true });
+        Tree.moveTabSubtreeAfter(contextTabElement, tabs[tabs.length-1]);
+      }
+    }; break;
+    case 'context_openTabInWindow':
+      if (multiselectedTabs) {
+        Tree.openNewWindowFromTabs(multiselectedTabs, {
+          inRemote:  true
+        });
+      }
+      else {
+        await browser.windows.create({
+          tabId:     contextApiTab.id,
+          incognito: contextApiTab.incognito
+        });
+      }
+      break;
+    case 'context_reloadAllTabs': {
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      for (const apiTab of apiTabs) {
+        browser.tabs.reload(apiTab.id);
+      }
+    }; break;
+    case 'context_selectAllTabs': {
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      browser.tabs.highlight({
+        windowId: contextWindowId,
+        tabs: apiTabs.map(tab => tab.index)
+      });
+    }; break;
+    case 'context_bookmarkTab':
+      if (!multiselectedTabs) {
+        await Bookmark.bookmarkTab(contextTabElement);
+        notify({
+          title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
+          message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
+            contextApiTab.title,
+            1,
+            contextApiTab.title
+          ]),
+          icon:    Constants.kNOTIFICATION_DEFAULT_ICON
+        });
+        break;
+      }
+    case 'context_bookmarkAllTabs': {
+      const apiTabs = multiselectedTabs ?
+        multiselectedTabs.map(tab => tab.apiTab) :
+        await browser.tabs.query({ windowId: contextWindowId }) ;
+      const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
+      if (folder)
+        browser.bookmarks.get(folder.parentId).then(folders => {
+          notify({
+            title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
+            message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
+              apiTabs[0].title,
+              apiTabs.length,
+              folders[0].title
+            ]),
+            icon:    Constants.kNOTIFICATION_DEFAULT_ICON
+          });
+        });
+    }; break;
+    case 'context_closeTabsToTheEnd': {
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      let after = false;
+      const closeAPITabs = [];
+      const keptTabIds = multiselectedTabs ?
+        multiselectedTabs.map(tab => tab.apiTab.id) :
+        [contextApiTab.id] ;
+      for (const apiTab of apiTabs) {
+        if (keptTabIds.includes(apiTab.id)) {
+          after = true;
+          continue;
+        }
+        if (after && !apiTab.pinned)
+          closeAPITabs.push(apiTab);
+      }
+      const canceled = (await browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
+        count:    closeAPITabs.length,
+        windowId: contextWindowId
+      })) === false
+      if (canceled)
+        break;
+      browser.tabs.remove(closeAPITabs.map(aPITab => aPITab.id));
+    }; break;
+    case 'context_closeOtherTabs': {
+      const apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
+      const keptTabIds = multiselectedTabs ?
+        multiselectedTabs.map(tab => tab.apiTab.id) :
+        [contextApiTab.id] ;
+      const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && !keptTabIds.includes(aPITab.id)).map(aPITab => aPITab.id);
+      const canceled = (await browser.runtime.sendMessage({
+        type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
+        count:    closeAPITabs.length,
+        windowId: contextWindowId
+      })) === false
+      if (canceled)
+        break;
+      browser.tabs.remove(closeAPITabs);
+    }; break;
+    case 'context_undoCloseTab': {
+      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
+      if (sessions.length && sessions[0].tab)
+        browser.sessions.restore(sessions[0].tab.sessionId);
+    }; break;
+    case 'context_closeTab':
+      if (multiselectedTabs) {
+        // close down to top, to keep tree structure of Tree Style Tab
+        multiselectedTabs.reverse();
+        for (const tab of multiselectedTabs) {
+          browser.tabs.remove(tab.apiTab.id);
+        }
+      }
+      else {
+        browser.tabs.remove(contextApiTab.id);
+      }
+      break;
+
+    default: {
+      const contextualIdentityMatch = info.menuItemId.match(/^context_reopenInContainer:(.+)$/);
+      if (contextApiTab &&
+          contextualIdentityMatch) {
+        // Open in Container
+        const tab = await TabsOpen.openURIInTab(contextApiTab.url, {
+          windowId:      contextApiTab.windowId,
+          cookieStoreId: contextualIdentityMatch[1]
+        });
+        Tree.behaveAutoAttachedTab(tab, {
+          baseTab:  contextTabElement,
+          behavior: configs.autoAttachOnDuplicated,
+          inRemote: true
+        });
+      }
+    }; break;
+  }
 }
 
 
