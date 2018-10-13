@@ -129,9 +129,10 @@ async function rebuild() {
     }
     if (id == browser.runtime.id) {
       for (const item of addonSubMenu.children) {
-        if (item.nextSibling) // except the last "Tree Style Tab" menu
-          item.classList.remove('extra');
-          item.classList.add('imitated');
+        if (!item.nextSibling) // except the last "Tree Style Tab" menu
+          continue;
+        item.classList.remove('extra');
+        item.classList.add('imitated');
       }
       const range = document.createRange();
       range.selectNodeContents(addonSubMenu);
