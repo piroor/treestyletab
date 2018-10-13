@@ -311,8 +311,8 @@ function onShown(info, contextApiTab) {
   visibleItemsCount = 0;
 
   updateItem('context_selectAllTabs', {
-    visible: inSidebar && contextApiTab && ++visibleItemsCount,
-    enabled: Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
+    visible: inSidebar && ++visibleItemsCount,
+    enabled: !contextApiTab || Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
