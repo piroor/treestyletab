@@ -306,7 +306,7 @@ function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterDuplicate', {
-    visible: inSidebar && visibleItemsCount > 0
+    visible: inSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
@@ -361,7 +361,7 @@ function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterSendTab', {
-    visible: inSidebar && visibleItemsCount > 0
+    visible: inSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
@@ -372,7 +372,7 @@ function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterReloadAll', {
-    visible: inSidebar && visibleItemsCount > 0
+    visible: inSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
