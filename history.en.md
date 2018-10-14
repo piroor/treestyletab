@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * [Better compatibility with extra context menu commands for tabs added by other addons, on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm)
+   * Sidebar panel is reloaded immediately after the cache system is disabled.
+   * Deactivate a context menu command "Duplicate Tab" for multiselected tabs. This respects to the behavior of Firefox's native one.
+   * Open new tab as specified relation correctly.
+   * Faster sync for tab loading throbbers. (by Lej77, thanks!)
+   * Add "Reset All Shortcuts" button to the options page.
  - 2.5.4 (2018.9.10)
    * Initialize tabs more safely on the startup.
    * Allow to tear off dragged tree from the window by default, and now you need to do Shift-drag to create bookmarks/links from tabs dragged to outside.
