@@ -37,8 +37,8 @@ export function isCopyAction(event) {
            (event.dataTransfer && event.dataTransfer.dropEffect == 'copy');
 }
 
-export function getElementTarget(event) {
-  const target = event.target;
+export function getElementTarget(eventOrTarget) {
+  const target = 'nodeType' in eventOrTarget ? eventOrTarget : eventOrTarget.target;
   if (target.nodeType == Node.TEXT_NODE)
     return target.parentNode;
   return target;

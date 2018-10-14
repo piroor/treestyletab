@@ -103,3 +103,51 @@
   left: 0;
   top: 0;
 }
+
+
+/* tab drag handle */
+
+#tab-drag-handle {
+  --handle-size: calc(var(--favicon-size) * 1.5);
+
+  direction: ltr;
+  height: var(--handle-size);
+  line-height: 1;
+  opacity: 0;
+  overflow: hidden;
+  position: fixed;
+  text-align: left;
+  transition: box-shadow var(--collapse-animation),
+              opacity    var(--collapse-animation);
+  z-index: 2000;
+}
+
+#tab-drag-handle.animating {
+  pointer-events: none;
+}
+
+#tab-drag-handle > span {
+  background: var(--tab-surface);
+  border-left: 1px solid var(--tab-border);
+  color: var(--tab-text);
+  display: table-cell;
+  height: var(--handle-size);
+  min-height: var(--handle-size);
+  min-width: var(--handle-size);
+  text-align: center;
+  vertical-align: middle;
+  width: var(--handle-size);
+}
+
+#tab-drag-handle > span:first-of-type {
+  border-left: none;
+}
+
+#tab-drag-handle:not(.has-child) .shouldIgnoreDescendants {
+  display: none;
+}
+
+#tab-drag-handle.shown {
+  box-shadow: 0.2em 0.2em 0.5em rgba(0, 0, 0, 0.5);
+  opacity: 1;
+}

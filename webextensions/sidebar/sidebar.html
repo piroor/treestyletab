@@ -56,6 +56,12 @@
     <div class="tab-drop-blocker" id="tab-drop-blocker-right"></div>
     <div class="tab-drop-blocker" id="tab-drop-blocker-bottom"></div>
     <div class="tab-drop-blocker" id="tab-drop-blocker-left"></div>
+    <div id="tab-drag-handle">
+      <span draggable="true" title="Start to drag for tearing off the whole tree">A</span>
+      <span draggable="true" class="allowBookmark" title="Start to drag for bookmarking the whole tree">B</span>
+      <span draggable="true" class="shouldIgnoreDescendants" title="Start to drag for tearing off this individual tab">C</span>
+      <span draggable="true" class="allowBookmark shouldIgnoreDescendants" title="Start to drag for bookmarking this individual tab">D</span>
+    </div>
     <div id="background"></div><!-- This is required to hide dummy elements without offscreen rendering outside of the viewport. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 -->
     <ul id="dummy-tabs">
       <span id="dummy-favicon-size-box"></span>
