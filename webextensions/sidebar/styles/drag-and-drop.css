@@ -110,8 +110,6 @@
 #tab-drag-handle {
   --handle-size: calc(var(--favicon-size) * 1.5);
 
-  background: var(--tab-surface);
-  color: var(--tab-text);
   direction: ltr;
   height: var(--handle-size);
   line-height: 1;
@@ -129,12 +127,15 @@
 }
 
 #tab-drag-handle > span {
+  background: var(--tab-surface);
   border-left: 1px solid var(--tab-border);
   display: table-cell;
   height: var(--handle-size);
   min-height: var(--handle-size);
   min-width: var(--handle-size);
+  opacity: 0.75;
   text-align: center;
+  transition: opacity    var(--collapse-animation);
   vertical-align: middle;
   width: var(--handle-size);
 }
@@ -148,7 +149,6 @@
   background: var(--tab-text);
   content: "";
   display: inline-block;
-  fill: var(--tab-text);
   height: var(--svg-small-icon-size);
   line-height: 1;
   margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
@@ -180,4 +180,13 @@
 #tab-drag-handle.shown {
   box-shadow: 0.2em 0.2em 0.5em rgba(0, 0, 0, 0.5);
   opacity: 1;
+}
+
+#tab-drag-handle > span:hover,
+#tab-drag-handle > span.active {
+  opacity: 1;
+}
+
+#tab-drag-handle > span.active {
+  border: calc(var(--favicon-size) / 8) solid var(--tab-text);
 }

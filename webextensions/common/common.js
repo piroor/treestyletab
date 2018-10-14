@@ -140,6 +140,7 @@ export const configs = new Configs({
   subMenuOpenDelay: 300,
   subMenuCloseDelay: 300,
   dragHandleDelay: 500,
+  dragHandleFeedbackDuration: 1000,
 
 
   // misc.

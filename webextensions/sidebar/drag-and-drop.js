@@ -1082,6 +1082,10 @@ function showTabDragHandle(tab) {
 
   mTabDragHandle.classList.remove('shown');
 
+  for (const activeItem of mTabDragHandle.querySelectorAll('.active')) {
+    activeItem.classList.remove('active');
+  }
+
   mTabDragHandle.dataset.targetTabId = tab.id;
   if (Tabs.hasChildTabs(tab))
     mTabDragHandle.classList.add('has-child');
@@ -1206,14 +1210,21 @@ function onTabDragHandleDragStart(event) {
   const targetTab = Tabs.getTabById(mTabDragHandle.dataset.targetTabId);
   log('onTabDragHandleDragStart: targetTab = ', mTabDragHandle.dataset.targetTabId, targetTab);
 
-  reserveToHideTabDragHandle();
-
-  if (!targetTab)
+  if (!targetTab) {
+    hideTabDragHandle();
     return;
+  }
 
   event.stopPropagation();
 
   const target = EventUtils.getElementTarget(event.target);
+  target.classList.add('active');
+  target.classList.add('animating');
+
+  setTimeout(() => {
+    hideTabDragHandle();
+  }, configs.dragHandleFeedbackDuration);
+
   return onDragStart(event, {
     target:                  targetTab,
     shouldIgnoreDescendants: !!target.closest('.shouldIgnoreDescendants'),
