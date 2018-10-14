@@ -284,7 +284,7 @@
   "config_allowBookmarkCreationFromDraggedTree_caption": { "message": "ツリーがタブバーの外にドラッグされた時" },
   "config_allowBookmarkCreationFromDraggedTree_false":   { "message": "別ウィンドウに切り離す（ブックマークの作成はできません）" },
   "config_allowBookmarkCreationFromDraggedTree_true":    { "message": "リンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
-  "config_showTabDragHandle_label":                      { "message": "タブの端に、目的を指定してドラッグ操作を開始するためのつまみを表示する" },
+  "config_showTabDragHandle_label":                      { "message": "タブの端で、目的を指定してドラッグ操作を開始するためのつまみを表示する" },
 
 
   "config_shortcuts_caption": { "message": "キーボードショートカット" },
