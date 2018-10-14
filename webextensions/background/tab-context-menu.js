@@ -114,7 +114,7 @@ const mItemsById = {
   }
 };
 
-let gNativeContextMenuAvailable = false;
+let mNativeContextMenuAvailable = false;
 
 //const SIDEBAR_URL_PATTERN = `moz-extension://${location.host}/*`;
 
@@ -129,7 +129,7 @@ export async function init() {
 
   // Imitated native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
   const browserInfo = await browser.runtime.getBrowserInfo();
-  gNativeContextMenuAvailable = parseInt(browserInfo.version.split('.')[0]) >= 64;
+  mNativeContextMenuAvailable = parseInt(browserInfo.version.split('.')[0]) >= 64;
 
   for (const id of Object.keys(mItemsById)) {
     const item = mItemsById[id];
@@ -146,14 +146,14 @@ export async function init() {
     };
     if (item.parentId)
       info.parentId = item.parentId;
-    if (gNativeContextMenuAvailable)
+    if (mNativeContextMenuAvailable)
       browser.menus.create(info);
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: info
     }, browser.runtime);
   }
-  if (gNativeContextMenuAvailable) {
+  if (mNativeContextMenuAvailable) {
     browser.menus.onShown.addListener(onShown);
     browser.menus.onClicked.addListener(onClick);
   }
@@ -169,7 +169,7 @@ export async function init() {
 const mContextualIdentityItems = new Set();
 function updateContextualIdentities() {
   for (const id of mContextualIdentityItems.values()) {
-    if (gNativeContextMenuAvailable)
+    if (mNativeContextMenuAvailable)
       browser.menus.remove(id);
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_REMOVE,
@@ -186,7 +186,7 @@ function updateContextualIdentities() {
     viewTypes: ['sidebar'],
     //documentUrlPatterns: [SIDEBAR_URL_PATTERN]
   };
-  if (gNativeContextMenuAvailable)
+  if (mNativeContextMenuAvailable)
     browser.menus.create(defaultItem);
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -202,7 +202,7 @@ function updateContextualIdentities() {
     viewTypes: ['sidebar'],
     //documentUrlPatterns: [SIDEBAR_URL_PATTERN]
   };
-  if (gNativeContextMenuAvailable)
+  if (mNativeContextMenuAvailable)
     browser.menus.create(defaultSeparator);
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -225,7 +225,7 @@ function updateContextualIdentities() {
     };
     if (icon)
       item.icons = { 16: icon };
-    if (gNativeContextMenuAvailable)
+    if (mNativeContextMenuAvailable)
       browser.menus.create(item);
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -254,7 +254,7 @@ function updateItem(id, state = {}) {
                  updateInfo.enabled != item.lastEnabled;
   item.lastVisible = updateInfo.visible;
   item.lastEnabled = updateInfo.enabled;
-  if (gNativeContextMenuAvailable)
+  if (mNativeContextMenuAvailable)
     browser.menus.update(id, updateInfo);
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_UPDATE,
@@ -334,7 +334,7 @@ async function onShown(info, contextApiTab) {
       let visible = id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
       if (id == 'context_reopenInContainer_separator')
         visible = contextApiTab.cookieStoreId != 'firefox-default';
-      if (gNativeContextMenuAvailable)
+      if (mNativeContextMenuAvailable)
         browser.menus.update(id, {
           visible
         });
@@ -408,7 +408,7 @@ async function onShown(info, contextApiTab) {
 
   /* eslint-enable no-unused-expressions */
 
-  if (gNativeContextMenuAvailable && modifiedItemsCount)
+  if (mNativeContextMenuAvailable && modifiedItemsCount)
     browser.menus.refresh();
 }
 
