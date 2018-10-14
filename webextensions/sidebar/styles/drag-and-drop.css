@@ -158,19 +158,19 @@
 }
 
 #tab-drag-handle > span#tab-drag-handle-tree-tearoff::before {
-  mask: url("/resources/icons/Window.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/tearoff-tree.svg") no-repeat center / 100%;
 }
 
 #tab-drag-handle > span#tab-drag-handle-tree-bookmark::before {
-  mask: url("/resources/icons/BookmarksMenu.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/bookmark-tree.svg") no-repeat center / 100%;
 }
 
 #tab-drag-handle > span#tab-drag-handle-tab-tearoff::before {
-  mask: url("/resources/icons/Window.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/tearoff-tab.svg") no-repeat center / 100%;
 }
 
 #tab-drag-handle > span#tab-drag-handle-tab-bookmark::before {
-  mask: url("/resources/icons/Bookmarks Menu.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/bookark-tab.svg") no-repeat center / 100%;
 }
 
 #tab-drag-handle:not(.has-child) > :not(.shouldIgnoreDescendants) {
