@@ -53,6 +53,7 @@
   "tabDragHandle_tree_bookmark_tooltip": { "message": "Start dragging to bookmark this tree" },
   "tabDragHandle_tab_tearoff_tooltip":   { "message": "Start dragging to detach this individual tab from the window" },
   "tabDragHandle_tab_bookmark_tooltip":  { "message": "Start dragging to bookmark this individual tab" },
+  "tabDragHandle_close_tooltip":         { "message": "Close drag handles" },
 
   "groupTab_label": { "message": "$TITLE$ and more",
     "placeholders": {

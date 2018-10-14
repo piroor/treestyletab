@@ -53,6 +53,7 @@
   "tabDragHandle_tree_bookmark_tooltip": { "message": "このツリーをブックマークするためにドラッグを開始する" },
   "tabDragHandle_tab_tearoff_tooltip":   { "message": "この単一のタブをウィンドウから切り離すためにドラッグを開始する" },
   "tabDragHandle_tab_bookmark_tooltip":  { "message": "この単一のタブをブックマークするためにドラッグを開始する" },
+  "tabDragHandle_close_tooltip":         { "message": "ドラッグ用のつまみを閉じる" },
 
   "groupTab_label": { "message": "$TITLE$ など",
     "placeholders": {

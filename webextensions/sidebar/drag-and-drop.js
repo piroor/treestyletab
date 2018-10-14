@@ -101,7 +101,7 @@ export function init() {
 
   document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
   document.addEventListener('scroll', () => hideTabDragHandle(), true);
-  mTabDragHandle.addEventListener('click', () => hideTabDragHandle());
+  mTabDragHandle.addEventListener('click', onTabDragHandleClick);
   mTabDragHandle.addEventListener('dragstart', onTabDragHandleDragStart);
 
   browser.runtime.onMessage.addListener(onMessage);
@@ -1086,7 +1086,8 @@ function showTabDragHandle(tab) {
 function reallyShowTabDragHandle(tab) {
   if (!configs.showTabDragHandle ||
       !Tabs.ensureLivingTab(tab) ||
-      !tab.matches(':hover'))
+      !tab.matches(':hover') ||
+      tab.id == mTabDragHandle.dataset.noShowTargetTabId)
     return;
 
   if (mTabDragHandle.showTimer) {
@@ -1102,6 +1103,7 @@ function reallyShowTabDragHandle(tab) {
   }
 
   mTabDragHandle.dataset.targetTabId = tab.id;
+  delete mTabDragHandle.dataset.noShowTargetTabId;
   if (Tabs.hasChildTabs(tab))
     mTabDragHandle.classList.add('has-child');
   else
@@ -1157,7 +1159,7 @@ function hideTabDragHandle() {
   }
   mTabDragHandle.classList.add('animating');
   mTabDragHandle.classList.remove('shown');
-  mTabDragHandle.dataset.targetTabId = '';
+  delete mTabDragHandle.dataset.targetTabId;
 }
 
 function reserveToHideTabDragHandle() {
@@ -1212,6 +1214,15 @@ function onMouseMove(event) {
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
+
+function onTabDragHandleClick(event) {
+  const target = EventUtils.getElementTarget(event.target);
+  if (target.closest('#tab-drag-handle-close'))
+    mTabDragHandle.dataset.noShowTargetTabId = mTabDragHandle.dataset.targetTabId;
+
+  hideTabDragHandle();
+}
+onTabDragHandleClick = EventUtils.wrapWithErrorHandler(onTabDragHandleClick);
 
 function onTabDragHandleDragStart(event) {
   // get target tab at first before it is cleared by hideTabDragHandle()
