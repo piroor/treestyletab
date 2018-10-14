@@ -1158,13 +1158,6 @@ function hideTabDragHandle() {
   mTabDragHandle.classList.add('animating');
   mTabDragHandle.classList.remove('shown');
   mTabDragHandle.dataset.targetTabId = '';
-  setTimeout(() => {
-    if (mTabDragHandle.classList.contains('shown'))
-      return;
-    mTabDragHandle.style.left =
-      mTabDragHandle.style.right =
-      mTabDragHandle.style.top = '';
-  }, configs.collapseDuration * 2);
 }
 
 function reserveToHideTabDragHandle() {
