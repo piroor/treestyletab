@@ -85,6 +85,21 @@ window.addEventListener('DOMContentLoaded', () => {
       removeAccesskeyMark(item.firstChild);
     }
   });
+  const resetAll = document.getElementById('shortcutsResetAll');
+  resetAll.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
+    for (const button of document.querySelectorAll('#shortcuts button')) {
+      button.click();
+    }
+  });
+  resetAll.addEventListener('keydown', event => {
+    if (event.key != 'Enter')
+      return;
+    for (const button of document.querySelectorAll('#shortcuts button')) {
+      button.click();
+    }
+  });
 
   configs.$loaded.then(() => {
     for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {

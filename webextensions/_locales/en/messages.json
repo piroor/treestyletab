@@ -286,6 +286,7 @@
 
 
   "config_shortcuts_caption": { "message": "Keyboard shortcuts" },
+  "config_shortcuts_resetAll": { "message": "Reset All Shortcuts" },
 
 
   "config_advanced_caption": { "message": "Advanced" },

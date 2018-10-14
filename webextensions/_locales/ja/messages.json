@@ -282,6 +282,7 @@
 
 
   "config_shortcuts_caption": { "message": "キーボードショートカット" },
+  "config_shortcuts_resetAll": { "message": "すべて初期値に戻す" },
 
 
   "config_advanced_caption": { "message": "詳細設定" },
