@@ -101,7 +101,7 @@ export function init() {
 
   document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
   document.addEventListener('scroll', () => hideTabDragHandle(), true);
-  mTabDragHandle.addEventListener('click', () => hideTabDragHandle());
+  document.addEventListener('click', () => hideTabDragHandle(), true);
   mTabDragHandle.addEventListener('dragstart', onTabDragHandleDragStart);
 
   browser.runtime.onMessage.addListener(onMessage);
