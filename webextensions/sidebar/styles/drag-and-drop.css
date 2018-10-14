@@ -162,7 +162,7 @@
 }
 
 #tab-drag-handle > span#tab-drag-handle-tree-bookmark::before {
-  mask: url("/resources/icons/Bookmarks Menu.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/BookmarksMenu.svg") no-repeat center / 100%;
 }
 
 #tab-drag-handle > span#tab-drag-handle-tab-tearoff::before {
