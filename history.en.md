@@ -7,6 +7,7 @@
    * Open new tab as specified relation correctly.
    * Faster sync for tab loading throbbers. (by Lej77, thanks!)
    * Add "Reset All Shortcuts" button to the options page.
+   * Never apply cached indent definition for different direction.
  - 2.5.4 (2018.9.10)
    * Initialize tabs more safely on the startup.
    * Allow to tear off dragged tree from the window by default, and now you need to do Shift-drag to create bookmarks/links from tabs dragged to outside.
