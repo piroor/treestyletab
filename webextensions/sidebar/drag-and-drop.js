@@ -1084,7 +1084,7 @@ function showTabDragHandle(tab) {
   }, 100);
 }
 function reallyShowTabDragHandle(tab) {
-  if (!configs.showDragHandle ||
+  if (!configs.showTabDragHandle ||
       !Tabs.ensureLivingTab(tab) ||
       !tab.matches(':hover'))
     return;
@@ -1147,7 +1147,7 @@ function reserveToShowTabDragHandle(tab) {
   mTabDragHandle.showTimer = setTimeout(() => {
     delete mTabDragHandle.showTimer;
     showTabDragHandle(tab);
-  }, configs.dragHandleDelay);
+  }, configs.tabDragHandleDelay);
 }
 
 function hideTabDragHandle() {
@@ -1172,7 +1172,7 @@ function reserveToHideTabDragHandle() {
 }
 
 function onMouseMove(event) {
-  if (!configs.showDragHandle)
+  if (!configs.showTabDragHandle)
     return;
 
   const tab    = EventUtils.getTabFromEvent(event);
@@ -1231,7 +1231,7 @@ function onTabDragHandleDragStart(event) {
 
   setTimeout(() => {
     hideTabDragHandle();
-  }, configs.dragHandleFeedbackDuration);
+  }, configs.tabDragHandleFeedbackDuration);
 
   return onDragStart(event, {
     target:                  targetTab,

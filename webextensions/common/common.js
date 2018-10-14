@@ -139,13 +139,13 @@ export const configs = new Configs({
   outOfViewTabNotifyDuration: 750,
   subMenuOpenDelay: 300,
   subMenuCloseDelay: 300,
-  dragHandleDelay: 750,
-  dragHandleFeedbackDuration: 1000,
+  tabDragHandleDelay: 750,
+  tabDragHandleFeedbackDuration: 1000,
 
 
   // misc.
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
-  showDragHandle: true,
+  showTabDragHandle: true,
   allowBookmarkCreationFromDraggedTree: false,
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
