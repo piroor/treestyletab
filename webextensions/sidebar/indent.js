@@ -66,7 +66,10 @@ export function update(options = {}) {
     document.head.appendChild(mIndentDefinition);
   }
 
-  if (options.cache) {
+  const indentProp = (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) ? 'margin-right' : 'margin-left';
+  if (options.cache &&
+      options.cache.definition &&
+      options.cache.definition.includes(indentProp)) {
     mIndentDefinition.textContent = options.cache.definition;
   }
   else {
@@ -76,7 +79,6 @@ export function update(options = {}) {
       generateIndentAndSelectorsForMaxLevel(i, indentToSelectors, defaultIndentToSelectors);
     }
 
-    const indentProp = (configs.sidebarPosition == Constants.kTABBAR_POSITION_RIGHT) ? 'margin-right' : 'margin-left';
     const definitions = [];
     for (const indentSet of [defaultIndentToSelectors, indentToSelectors]) {
       const indents = Object.keys(indentSet);
