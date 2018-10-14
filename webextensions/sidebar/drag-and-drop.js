@@ -1075,15 +1075,15 @@ function finishDrag() {
 
 /* tab drag handler */
 
-function showTabDragHandle(tab, coordinates) {
+function showTabDragHandle(tab) {
   if (showTabDragHandle.timer)
     clearTimeout(showTabDragHandle.timer);
   showTabDragHandle.timer = setTimeout(() => {
     delete showTabDragHandle.timer;
-    reallyShowTabDragHandle(tab, coordinates);
+    reallyShowTabDragHandle(tab);
   }, 100);
 }
-function reallyShowTabDragHandle(tab, coordinates) {
+function reallyShowTabDragHandle(tab) {
   if (!configs.showTabDragHandle ||
       !Tabs.ensureLivingTab(tab) ||
       !tab.matches(':hover'))
@@ -1107,17 +1107,20 @@ function reallyShowTabDragHandle(tab, coordinates) {
   else
     mTabDragHandle.classList.remove('has-child');
 
+  const x = parseInt(mTabDragHandle.dataset.lastX);
+  const y = parseInt(mTabDragHandle.dataset.lastY);
+
   if (Tabs.isPinned(tab) ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
     mTabDragHandle.style.right = '';
-    mTabDragHandle.style.left  = `${coordinates.x + 1}px`;
+    mTabDragHandle.style.left  = `${x + 1}px`;
   }
   else {
     mTabDragHandle.style.left  = '';
-    mTabDragHandle.style.right = `${coordinates.x - 1}px`;
+    mTabDragHandle.style.right = `${x - 1}px`;
   }
   mTabDragHandle.style.bottom = '';
-  mTabDragHandle.style.top    = `${coordinates.y + 1}px`;
+  mTabDragHandle.style.top    = `${y + 1}px`;
 
   // reposition
   const handlerRect = mTabDragHandle.getBoundingClientRect();
@@ -1130,7 +1133,7 @@ function reallyShowTabDragHandle(tab, coordinates) {
     mTabDragHandle.style.right = 0;
   }
   if (handlerRect.bottom > window.innerHeight)
-    mTabDragHandle.style.top = `${coordinates.y - handlerRect.height - 1}px`;
+    mTabDragHandle.style.top = `${y - handlerRect.height - 1}px`;
 
   mTabDragHandle.classList.add('animating');
   mTabDragHandle.classList.add('shown');
@@ -1140,14 +1143,14 @@ function reallyShowTabDragHandle(tab, coordinates) {
   }, configs.collapseDuration);
 }
 
-function reserveToShowTabDragHandle(tab, coordinates) {
+function reserveToShowTabDragHandle(tab) {
   if (mTabDragHandle.hideTimer) {
     clearTimeout(mTabDragHandle.hideTimer);
     delete mTabDragHandle.hideTimer;
   }
   mTabDragHandle.showTimer = setTimeout(() => {
     delete mTabDragHandle.showTimer;
-    showTabDragHandle(tab, coordinates);
+    showTabDragHandle(tab);
   }, configs.tabDragHandleDelay);
 }
 
@@ -1176,6 +1179,9 @@ function onMouseMove(event) {
   if (!configs.showTabDragHandle)
     return;
 
+  mTabDragHandle.dataset.lastX = event.clientX;
+  mTabDragHandle.dataset.lastY = event.clientY;
+
   const tab    = EventUtils.getTabFromEvent(event);
   const target = EventUtils.getElementTarget(event.target);
   if (tab) {
@@ -1203,7 +1209,7 @@ function onMouseMove(event) {
                         event.clientX <= tabRect.right &&
                         event.clientX >= tabRect.right - areaSize);
       if (onArea)
-        reserveToShowTabDragHandle(tab, { x: event.clientX, y: event.clientY });
+        reserveToShowTabDragHandle(tab);
       else
         reserveToHideTabDragHandle();
     }
