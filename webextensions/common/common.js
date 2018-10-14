@@ -139,7 +139,7 @@ export const configs = new Configs({
   outOfViewTabNotifyDuration: 750,
   subMenuOpenDelay: 300,
   subMenuCloseDelay: 300,
-  dragHandleDelay: 500,
+  dragHandleDelay: 750,
   dragHandleFeedbackDuration: 1000,
 
 
