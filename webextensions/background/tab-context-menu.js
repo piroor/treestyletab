@@ -265,7 +265,6 @@ async function onShown(info, contextApiTab) {
   const nextSiblingTab        = Tabs.getNextSiblingTab(tab);
   const hasMultipleTabs       = Tabs.getTabs(tab || container).length > 1;
   const normalTabsCount       = Tabs.getNormalTabs(tab || container).length;
-  const hasNormalTab          = normalTabsCount > 0;
   const hasMultipleNormalTabs = normalTabsCount > 1;
   const multiselected         = Tabs.isMultiselected(tab);
 
@@ -313,7 +312,7 @@ async function onShown(info, contextApiTab) {
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: (!contextApiTab || !contextApiTab.pinned) && hasNormalTab && ++visibleItemsCount,
+    visible: contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   const showContextualIdentities = contextApiTab && mContextualIdentityItems.size > 2;
