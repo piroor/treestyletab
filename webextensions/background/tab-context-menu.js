@@ -17,6 +17,7 @@ import * as Tree from '/common/tree.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
+import * as SidebarStatus from '/common/sidebar-status.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -264,7 +265,8 @@ function updateItem(id, state = {}) {
 
 async function onShown(info, contextApiTab) {
   const tab                   = Tabs.getTabById(contextApiTab);
-  const container             = tab ? tab.parentNode : Tabs.getTabsContainer((await browser.windows.getLastFocused({})).id);
+  const windowId              = contextApiTab ? contextApiTab.windowId : (await browser.windows.getLastFocused({})).id;
+  const container             = tab ? tab.parentNode : Tabs.getTabsContainer(windowId);
   const previousTab           = Tabs.getPreviousTab(tab);
   const previousSiblingTab    = Tabs.getPreviousSiblingTab(tab);
   const nextTab               = Tabs.getNextTab(tab);
@@ -273,6 +275,7 @@ async function onShown(info, contextApiTab) {
   const normalTabsCount       = Tabs.getNormalTabs(tab || container).length;
   const hasMultipleNormalTabs = normalTabsCount > 1;
   const multiselected         = Tabs.isMultiselected(tab);
+  const isTSTSidebar          = SidebarStatus.isOpen(windowId) && SidebarStatus.hasFocus(windowId);
 
   let modifiedItemsCount = 0;
   let visibleItemsCount = 0;
@@ -283,47 +286,47 @@ async function onShown(info, contextApiTab) {
   /* eslint-disable no-unused-expressions */
 
   updateItem('context_reloadTab', {
-    visible: contextApiTab && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
-    visible: contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted) && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted) && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-unmute', {
-    visible: contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_pinTab', {
-    visible: contextApiTab && !contextApiTab.pinned && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && !contextApiTab.pinned && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_unpinTab', {
-    visible: contextApiTab && contextApiTab.pinned && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && contextApiTab.pinned && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_duplicateTab', {
-    visible: contextApiTab && !multiselected && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && !multiselected && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterDuplicate', {
-    visible: contextApiTab && visibleItemsCount > 0
+    visible: isTSTSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
   updateItem('context_selectAllTabs', {
-    visible: ++visibleItemsCount,
+    visible: isTSTSidebar && ++visibleItemsCount,
     enabled: !contextApiTab || Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: contextApiTab && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   const showContextualIdentities = contextApiTab && mContextualIdentityItems.size > 2;
   updateItem('context_reopenInContainer', {
-    visible: showContextualIdentities && ++visibleItemsCount,
+    visible: isTSTSidebar && showContextualIdentities && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   if (showContextualIdentities) {
@@ -342,7 +345,7 @@ async function onShown(info, contextApiTab) {
     }
   }
   updateItem('context_moveTab', {
-    visible: contextApiTab && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
     enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
@@ -360,47 +363,47 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterSendTab', {
-    visible: contextApiTab && visibleItemsCount > 0
+    visible: isTSTSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
   updateItem('context_reloadAllTabs', {
-    visible: ++visibleItemsCount,
+    visible: isTSTSidebar && ++visibleItemsCount,
     enabled: hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterReloadAll', {
-    visible: contextApiTab && visibleItemsCount > 0
+    visible: isTSTSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
   updateItem('context_closeTabOptions', {
-    visible: contextApiTab && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
     enabled: hasMultipleNormalTabs,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTabsToTheEnd', {
-    visible: contextApiTab,
+    visible: isTSTSidebar && contextApiTab,
     enabled: hasMultipleNormalTabs && nextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeOtherTabs', {
-    visible: contextApiTab,
+    visible: isTSTSidebar && contextApiTab,
     enabled: hasMultipleNormalTabs,
     multiselected
   });
   updateItem('context_undoCloseTab', {
-    visible: ++visibleItemsCount,
+    visible: isTSTSidebar && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTab', {
-    visible: contextApiTab && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_separator:afterTabContextItems', {
-    visible: contextApiTab && visibleItemsCount > 0
+    visible: isTSTSidebar && contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
 
   /* eslint-enable no-unused-expressions */
