@@ -379,7 +379,7 @@ Tabs.onHidden.addListener(_tab => {
 function onConfigChange(changedKey) {
   switch (changedKey) {
     case 'useCachedTree':
-      if (!configs[changedKey]) {
+      if (configs[changedKey]) {
         reserveToUpdateCachedTabbar();
       }
       else {
