@@ -173,11 +173,7 @@
   mask: url("/sidebar/styles/icons/bookmark-tab.svg") no-repeat center / 100%;
 }
 
-#tab-drag-handle > span#tab-drag-handle-close::before {
-  mask: url("/sidebar/styles/icons/close-16.svg") no-repeat center / 100%;
-}
-
-#tab-drag-handle:not(.has-child) > :not(.shouldIgnoreDescendants):not(#tab-drag-handle-close) {
+#tab-drag-handle:not(.has-child) > :not(.shouldIgnoreDescendants) {
   display: none;
 }
 
