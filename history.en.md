@@ -2,6 +2,7 @@
 
  - master/HEAD
    * [Better compatibility with extra context menu commands for tabs added by other addons, on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm)
+   * Add [tab drag handler to start dragging of tabs with specific purpose](https://github.com/piroor/treestyletab/issues/2033#issuecomment-422757008). It will appear by pointing for a while around edge of each tab.
    * Sidebar panel is reloaded immediately after the cache system is disabled.
    * Deactivate a context menu command "Duplicate Tab" for multiselected tabs. This respects to the behavior of Firefox's native one.
    * Open new tab as specified relation correctly.
