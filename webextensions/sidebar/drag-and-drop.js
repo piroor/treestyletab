@@ -1076,10 +1076,24 @@ function finishDrag() {
 /* tab drag handler */
 
 function showTabDragHandle(tab) {
+  if (showTabDragHandle.timer)
+    clearTimeout(showTabDragHandle.timer);
+  showTabDragHandle.timer = setTimeout(() => {
+    delete showTabDragHandle.timer;
+    reallyShowTabDragHandle(tab);
+  }, 100);
+}
+function reallyShowTabDragHandle(tab) {
   if (!configs.showDragHandle ||
       !Tabs.ensureLivingTab(tab))
     return;
 
+  if (mTabDragHandle.showTimer) {
+    clearTimeout(mTabDragHandle.showTimer);
+    delete mTabDragHandle.showTimer;
+  }
+
+  mTabDragHandle.classList.remove('animating');
   mTabDragHandle.classList.remove('shown');
 
   for (const activeItem of mTabDragHandle.querySelectorAll('.active')) {
@@ -1116,8 +1130,8 @@ function showTabDragHandle(tab) {
 
   mTabDragHandle.style.top = `${tabRect.top + ((tabRect.height - handlerRect.height) / 2)}px`;
 
-  mTabDragHandle.classList.add('shown');
   mTabDragHandle.classList.add('animating');
+  mTabDragHandle.classList.add('shown');
   setTimeout(() => {
     if (mTabDragHandle.classList.contains('shown'))
       mTabDragHandle.classList.remove('animating');
@@ -1140,8 +1154,8 @@ function hideTabDragHandle() {
     clearTimeout(mTabDragHandle.showTimer);
     delete mTabDragHandle.showTimer;
   }
-  mTabDragHandle.classList.remove('shown');
   mTabDragHandle.classList.add('animating');
+  mTabDragHandle.classList.remove('shown');
   mTabDragHandle.dataset.targetTabId = '';
   setTimeout(() => {
     if (mTabDragHandle.classList.contains('shown'))

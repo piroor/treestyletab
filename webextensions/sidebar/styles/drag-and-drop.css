@@ -117,13 +117,13 @@
   overflow: hidden;
   position: fixed;
   text-align: left;
-  transition: box-shadow var(--collapse-animation),
-              opacity    var(--collapse-animation);
   z-index: 2000;
 }
 
 #tab-drag-handle.animating {
   pointer-events: none;
+  transition: box-shadow var(--collapse-animation),
+              opacity    var(--collapse-animation);
 }
 
 #tab-drag-handle > span {
