@@ -115,6 +115,8 @@ const mItemsById = {
 
 let gNativeContextMenuAvailable = false;
 
+//const SIDEBAR_URL_PATTERN = `moz-extension://${location.host}/*`;
+
 export async function init() {
   browser.runtime.onMessage.addListener(onMessage);
   browser.runtime.onMessageExternal.addListener(onExternalMessage);
@@ -138,7 +140,8 @@ export async function init() {
       title:    item.title,
       type:     item.type || 'normal',
       contexts: ['tab'],
-      viewTypes: ['sidebar']
+      viewTypes: ['sidebar'],
+      //documentUrlPatterns: [SIDEBAR_URL_PATTERN]
     };
     if (item.parentId)
       info.parentId = item.parentId;
@@ -179,7 +182,8 @@ function updateContextualIdentities() {
     id:       'context_reopenInContainer:firefox-default',
     title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
     contexts: ['tab'],
-    viewTypes: ['sidebar']
+    viewTypes: ['sidebar'],
+    //documentUrlPatterns: [SIDEBAR_URL_PATTERN]
   };
   if (gNativeContextMenuAvailable)
     browser.menus.create(defaultItem);
@@ -194,7 +198,8 @@ function updateContextualIdentities() {
     id:       'context_reopenInContainer:firefox-default',
     title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
     contexts: ['tab'],
-    viewTypes: ['sidebar']
+    viewTypes: ['sidebar'],
+    //documentUrlPatterns: [SIDEBAR_URL_PATTERN]
   };
   if (gNativeContextMenuAvailable)
     browser.menus.create(defaultSeparator);
@@ -214,7 +219,8 @@ function updateContextualIdentities() {
       id:       id,
       title:    identity.name.replace(/^([a-z0-9])/i, '&$1'),
       contexts: ['tab'],
-      viewTypes: ['sidebar']
+      viewTypes: ['sidebar'],
+      //documentUrlPatterns: [SIDEBAR_URL_PATTERN]
     };
     if (icon)
       item.icons = { 16: icon };
