@@ -49,6 +49,11 @@
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "新しいコンテナータブ" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "既定" },
 
+  "tabDragHandle_tree_tearoff_tooltip":  { "message": "このツリーをウィンドウから切り離すためにドラッグを開始する" },
+  "tabDragHandle_tree_bookmark_tooltip": { "message": "このツリーをブックマークするためにドラッグを開始する" },
+  "tabDragHandle_tab_tearoff_tooltip":   { "message": "この単一のタブをウィンドウから切り離すためにドラッグを開始する" },
+  "tabDragHandle_tab_bookmark_tooltip":  { "message": "この単一のタブをブックマークするためにドラッグを開始する" },
+
   "groupTab_label": { "message": "$TITLE$ など",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" }

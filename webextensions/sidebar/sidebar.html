@@ -57,10 +57,21 @@
     <div class="tab-drop-blocker" id="tab-drop-blocker-bottom"></div>
     <div class="tab-drop-blocker" id="tab-drop-blocker-left"></div>
     <div id="tab-drag-handle">
-      <span draggable="true" title="Start to drag for tearing off the whole tree">A</span>
-      <span draggable="true" class="allowBookmark" title="Start to drag for bookmarking the whole tree">B</span>
-      <span draggable="true" class="shouldIgnoreDescendants" title="Start to drag for tearing off this individual tab">C</span>
-      <span draggable="true" class="allowBookmark shouldIgnoreDescendants" title="Start to drag for bookmarking this individual tab">D</span>
+      <span id="tab-drag-handle-tree-tearoff"
+            draggable="true"
+            title="__MSG_tabDragHandle_tree_tearoff_tooltip__">A</span>
+      <span id="tab-drag-handle-tree-bookmark"
+            draggable="true"
+            class="allowBookmark"
+            title="__MSG_tabDragHandle_tree_bookmark_tooltip__">B</span>
+      <span id="tab-drag-handle-tab-tearoff"
+            draggable="true"
+            class="shouldIgnoreDescendants"
+            title="__MSG_tabDragHandle_tab_tearoff_tooltip__">C</span>
+      <span id="tab-drag-handle-tab-bookmark"
+            draggable="true"
+            class="allowBookmark shouldIgnoreDescendants"
+            title="__MSG_tabDragHandle_tab_bookmark_tooltip__">D</span>
     </div>
     <div id="background"></div><!-- This is required to hide dummy elements without offscreen rendering outside of the viewport. See also: https://github.com/piroor/treestyletab/issues/1703#issuecomment-354646405 -->
     <ul id="dummy-tabs">
