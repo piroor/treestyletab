@@ -1075,15 +1075,15 @@ function finishDrag() {
 
 /* tab drag handler */
 
-function showTabDragHandle(tab) {
+function showTabDragHandle(tab, coordinates) {
   if (showTabDragHandle.timer)
     clearTimeout(showTabDragHandle.timer);
   showTabDragHandle.timer = setTimeout(() => {
     delete showTabDragHandle.timer;
-    reallyShowTabDragHandle(tab);
+    reallyShowTabDragHandle(tab, coordinates);
   }, 100);
 }
-function reallyShowTabDragHandle(tab) {
+function reallyShowTabDragHandle(tab, coordinates) {
   if (!configs.showTabDragHandle ||
       !Tabs.ensureLivingTab(tab) ||
       !tab.matches(':hover') ||
@@ -1114,14 +1114,15 @@ function reallyShowTabDragHandle(tab) {
   if (Tabs.isPinned(tab) ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
     mTabDragHandle.style.right = '';
-    mTabDragHandle.style.left  = `${tabRect.left}px`;
+    mTabDragHandle.style.left  = `${Math.max(coordinates.x, tabRect.left)}px`;
   }
   else {
     mTabDragHandle.style.left  = '';
-    mTabDragHandle.style.right = `${containerRect.width - tabRect.width}px`;
+    mTabDragHandle.style.right = `${containerRect.width - Math.min(coordinates.x, tabRect.width)}px`;
   }
 
-  const handlerRect = mTabDragHandle.getBoundingClientRect();
+  // reposition
+  let handlerRect = mTabDragHandle.getBoundingClientRect();
   if (handlerRect.left < 0) {
     mTabDragHandle.style.right = '';
     mTabDragHandle.style.left  = 0;
@@ -1131,7 +1132,15 @@ function reallyShowTabDragHandle(tab) {
     mTabDragHandle.style.right = 0;
   }
 
-  mTabDragHandle.style.top = `${tabRect.top + ((tabRect.height - handlerRect.height) / 2)}px`;
+  mTabDragHandle.style.bottom = '';
+  mTabDragHandle.style.top    = `${Math.max(coordinates.y, tabRect.top + ((tabRect.height - handlerRect.height) / 2))}px`;
+
+  // reposition
+  handlerRect = mTabDragHandle.getBoundingClientRect();
+  if (handlerRect.bottom > containerRect.height) {
+    mTabDragHandle.style.top  = '';
+    mTabDragHandle.style.bottom = 0;
+  }
 
   mTabDragHandle.classList.add('animating');
   mTabDragHandle.classList.add('shown');
@@ -1141,14 +1150,14 @@ function reallyShowTabDragHandle(tab) {
   }, configs.collapseDuration);
 }
 
-function reserveToShowTabDragHandle(tab) {
+function reserveToShowTabDragHandle(tab, coordinates) {
   if (mTabDragHandle.hideTimer) {
     clearTimeout(mTabDragHandle.hideTimer);
     delete mTabDragHandle.hideTimer;
   }
   mTabDragHandle.showTimer = setTimeout(() => {
     delete mTabDragHandle.showTimer;
-    showTabDragHandle(tab);
+    showTabDragHandle(tab, coordinates);
   }, configs.tabDragHandleDelay);
 }
 
@@ -1195,7 +1204,7 @@ function onMouseMove(event) {
     }
     else {
       const tabRect  = tab.getBoundingClientRect();
-      const areaSize = Size.getFavIconSize() / 2;
+      const areaSize = Size.getFavIconSize();
       const onLeft   = Tabs.isPinned(tab) || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
       const onArea   = (onLeft &&
                         event.clientX >= tabRect.left &&
@@ -1204,7 +1213,7 @@ function onMouseMove(event) {
                         event.clientX <= tabRect.right &&
                         event.clientX >= tabRect.right - areaSize);
       if (onArea)
-        reserveToShowTabDragHandle(tab);
+        reserveToShowTabDragHandle(tab, { x: event.clientX, y: event.clientY });
       else
         reserveToHideTabDragHandle();
     }
