@@ -110,6 +110,8 @@
 #tab-drag-handle {
   --handle-size: calc(var(--favicon-size) * 1.5);
 
+  background: var(--tab-surface);
+  color: var(--tab-text);
   direction: ltr;
   height: var(--handle-size);
   line-height: 1;
@@ -127,9 +129,7 @@
 }
 
 #tab-drag-handle > span {
-  background: var(--tab-surface);
   border-left: 1px solid var(--tab-border);
-  color: var(--tab-text);
   display: table-cell;
   height: var(--handle-size);
   min-height: var(--handle-size);
@@ -141,6 +141,36 @@
 
 #tab-drag-handle > span:first-of-type {
   border-left: none;
+}
+
+#tab-drag-handle > span::before {
+  -moz-context-properties: fill;
+  background: var(--tab-text);
+  content: "";
+  display: inline-block;
+  fill: var(--tab-text);
+  height: var(--svg-small-icon-size);
+  line-height: 1;
+  margin-top: calc((var(--favicon-size) - var(--svg-small-icon-size)) / 2);
+  max-height: var(--favicon-size);
+  max-width: var(--favicon-size);
+  width: var(--svg-small-icon-size);
+}
+
+#tab-drag-handle > span#tab-drag-handle-tree-tearoff::before {
+  mask: url("/resources/icons/Window.svg") no-repeat center / 100%;
+}
+
+#tab-drag-handle > span#tab-drag-handle-tree-bookmark::before {
+  mask: url("/resources/icons/Bookmarks Menu.svg") no-repeat center / 100%;
+}
+
+#tab-drag-handle > span#tab-drag-handle-tab-tearoff::before {
+  mask: url("/resources/icons/Window.svg") no-repeat center / 100%;
+}
+
+#tab-drag-handle > span#tab-drag-handle-tab-bookmark::before {
+  mask: url("/resources/icons/Bookmarks Menu.svg") no-repeat center / 100%;
 }
 
 #tab-drag-handle:not(.has-child) > :not(.shouldIgnoreDescendants) {
