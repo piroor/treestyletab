@@ -170,7 +170,7 @@
 }
 
 #tab-drag-handle > span#tab-drag-handle-tab-bookmark::before {
-  mask: url("/resources/icons/bookark-tab.svg") no-repeat center / 100%;
+  mask: url("/resources/icons/bookmark-tab.svg") no-repeat center / 100%;
 }
 
 #tab-drag-handle:not(.has-child) > :not(.shouldIgnoreDescendants) {
