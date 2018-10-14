@@ -286,8 +286,9 @@
   "config_warnOnCloseTabs_label": { "message": "Warn me when I attempt to close multiple tabs" },
 
   "config_allowBookmarkCreationFromDraggedTree_caption": { "message": "When a tree is dragged outside of the tab bar" },
-  "config_allowBookmarkCreationFromDraggedTree_false":   { "message": "Tear off from the window by default, create links or bookmarks by Shift-drag" },
-  "config_allowBookmarkCreationFromDraggedTree_true":    { "message": "Create links or bookmarks by default, tear off from the window by Shift-drag" },
+  "config_allowBookmarkCreationFromDraggedTree_false":   { "message": "Detach from the window (but impossible to create bookmarks)" },
+  "config_allowBookmarkCreationFromDraggedTree_true":    { "message": "Create links or bookmarks (but impossible to detach from the window)" },
+  "config_showTabDragHandle_label":                      { "message": "Show drag handle on a edge of each tab, to start dragging for specific purpose" },
 
 
   "config_shortcuts_caption": { "message": "Keyboard shortcuts" },
