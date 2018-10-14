@@ -1085,7 +1085,8 @@ function showTabDragHandle(tab) {
 }
 function reallyShowTabDragHandle(tab) {
   if (!configs.showDragHandle ||
-      !Tabs.ensureLivingTab(tab))
+      !Tabs.ensureLivingTab(tab) ||
+      !tab.matches(':hover'))
     return;
 
   if (mTabDragHandle.showTimer) {
