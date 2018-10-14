@@ -36,7 +36,7 @@
 
 :root {
   --bg-color: #d4dde5;
-  --bg-color-nactive: #e8e8e8;
+  --bg-color-inactive: #e8e8e8;
   --shadow-color: #404040;
   --shadow-color-inactive: #868686;
   --tab-surface-active-color: #94A1C0;
@@ -72,7 +72,7 @@
 
 :root:-moz-window-inactive,
 :root:-moz-window-inactive #background {
-  background: var(--bg-color-nactive);
+  background: var(--bg-color-inactive);
 }
 
 /* Use the splitter to display the border of .tabs */
