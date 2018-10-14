@@ -1107,38 +1107,30 @@ function reallyShowTabDragHandle(tab, coordinates) {
   else
     mTabDragHandle.classList.remove('has-child');
 
-  const tabRect       = tab.getBoundingClientRect();
-  const containerRect = tab.parentNode.getBoundingClientRect();
   if (Tabs.isPinned(tab) ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
     mTabDragHandle.style.right = '';
-    mTabDragHandle.style.left  = `${Math.max(coordinates.x, tabRect.left)}px`;
+    mTabDragHandle.style.left  = `${coordinates.x + 1}px`;
   }
   else {
     mTabDragHandle.style.left  = '';
-    mTabDragHandle.style.right = `${containerRect.width - Math.min(coordinates.x, tabRect.width)}px`;
+    mTabDragHandle.style.right = `${coordinates.x - 1}px`;
   }
+  mTabDragHandle.style.bottom = '';
+  mTabDragHandle.style.top    = `${coordinates.y + 1}px`;
 
   // reposition
-  let handlerRect = mTabDragHandle.getBoundingClientRect();
+  const handlerRect = mTabDragHandle.getBoundingClientRect();
   if (handlerRect.left < 0) {
     mTabDragHandle.style.right = '';
     mTabDragHandle.style.left  = 0;
   }
-  else if (handlerRect.right > containerRect.width) {
+  else if (handlerRect.right > window.innerWidth) {
     mTabDragHandle.style.left  = '';
     mTabDragHandle.style.right = 0;
   }
-
-  mTabDragHandle.style.bottom = '';
-  mTabDragHandle.style.top    = `${Math.max(coordinates.y, tabRect.top + ((tabRect.height - handlerRect.height) / 2))}px`;
-
-  // reposition
-  handlerRect = mTabDragHandle.getBoundingClientRect();
-  if (handlerRect.bottom > containerRect.height) {
-    mTabDragHandle.style.top  = '';
-    mTabDragHandle.style.bottom = 0;
-  }
+  if (handlerRect.bottom > window.innerHeight)
+    mTabDragHandle.style.top = `${coordinates.y - handlerRect.height - 1}px`;
 
   mTabDragHandle.classList.add('animating');
   mTabDragHandle.classList.add('shown');
