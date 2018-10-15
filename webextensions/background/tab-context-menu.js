@@ -330,7 +330,7 @@ async function onShown(info, contextApiTab) {
         visible = contextApiTab.cookieStoreId != 'firefox-default';
       if (mNativeContextMenuAvailable)
         browser.menus.update(id, {
-          visible
+          visible: visible && isTSTSidebar
         });
       onExternalMessage({
         type: TSTAPI.kCONTEXT_MENU_UPDATE,
@@ -344,14 +344,17 @@ async function onShown(info, contextApiTab) {
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToStart', {
+    visible: isTSTSidebar,
     enabled: contextApiTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextApiTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToEnd', {
+    visible: isTSTSidebar,
     enabled: contextApiTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextApiTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_openTabInWindow', {
+    visible: isTSTSidebar,
     enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
