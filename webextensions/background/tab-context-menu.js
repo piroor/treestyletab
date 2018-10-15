@@ -677,7 +677,7 @@ async function notifyUpdated() {
   await browser.runtime.sendMessage({
     type:  TSTAPI.kCONTEXT_MENU_UPDATED,
     items: exportExtraItems()
-  });
+  }).catch(_error => {});
 }
 
 let mReservedNotifyUpdate;

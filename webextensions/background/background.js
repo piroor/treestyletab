@@ -123,7 +123,7 @@ export async function init() {
   // notify that the master process is ready.
   browser.runtime.sendMessage({
     type: Constants.kCOMMAND_PING_TO_SIDEBAR
-  });
+  }).catch(_error => {});
 
   Migration.notifyNewFeatures();
   log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
@@ -158,9 +158,9 @@ function waitUntilCompletelyRestored() {
 }
 
 function destroy() {
-  browser.runtime.sendMessage(browser.runtime.id, {
+  browser.runtime.sendMessage({
     type:  TSTAPI.kUNREGISTER_SELF
-  });
+  }).catch(_error => {});
 
   // This API doesn't work as expected because it is not notified to
   // other addons actually when browser.runtime.sendMessage() is called

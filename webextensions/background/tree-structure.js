@@ -145,7 +145,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
     tab:    tab.apiTab.id,
     window: tab.apiTab.windowId
-  });
+  }).catch(_error => {});
   let uniqueId, insertBefore, insertAfter, ancestors, children, collapsed;
   await Promise.all([
     (async () => {
@@ -254,7 +254,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
     tab:    tab.apiTab.id,
     window: tab.apiTab.windowId
-  });
+  }).catch(_error => {});
 }
 
 
