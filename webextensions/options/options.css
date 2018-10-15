@@ -117,3 +117,8 @@ body > section > h1:first-child ~ * {
 body > section.collapsed > h1:first-child ~ * {
   opacity: 0;
 }
+
+
+#defaultBookmarkParentChooser {
+  max-width: 100%;
+}

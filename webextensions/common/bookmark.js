@@ -189,6 +189,10 @@ export async function initFolderChoolser(anchor, params = {}) {
   delete anchor.dataset.value;
   anchor.textContent = browser.i18n.getMessage('bookmarkFolderChooser_unspecified');
 
+  anchor.style.overflow     = 'hidden';
+  anchor.style.textOverflow = 'ellipsis';
+  anchor.style.whiteSpace   = 'pre';
+
   let lastChosenId = null;
   if (params.defaultValue) {
     const item = await getItemById(params.defaultValue);
@@ -197,6 +201,7 @@ export async function initFolderChoolser(anchor, params = {}) {
       anchor.dataset.value = lastChosenId;
       anchor.dataset.title = item.title;
       anchor.textContent   = item.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+      anchor.setAttribute('title', anchor.textContent);
     }
   }
 
@@ -209,6 +214,7 @@ export async function initFolderChoolser(anchor, params = {}) {
         anchor.dataset.value = lastChosenId;
         anchor.dataset.title = item.dataset.title;
         anchor.textContent   = item.dataset.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+        anchor.setAttribute('title', anchor.textContent);
       }
       if (typeof params.onCommand == 'function')
         params.onCommand(item, event);

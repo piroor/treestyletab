@@ -594,6 +594,14 @@ ul {
 }
 
 
+/* bookmark dialog */
+
+.rich-confirm .bookmark-dialog input[type="text"],
+.rich-confirm .bookmark-dialog button {
+  max-width: 100%;
+}
+
+
 /* blocking UI */
 
 #blocking-screen {
