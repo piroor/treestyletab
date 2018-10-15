@@ -12,9 +12,24 @@ import {
 } from './common.js';
 import * as Permissions from './permissions.js';
 
+import MenuUI from '/extlib/MenuUI.js';
+
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/bookmarks', ...args);
+}
+
+async function getItemById(id) {
+  if (!id)
+    return null;
+  try {
+    const items = await browser.bookmarks.get(id);
+    if (items.length > 0)
+      return items[0];
+  }
+  catch(_error) {
+  }
+  return null;
 }
 
 export async function bookmarkTab(tab, options = {}) {
@@ -29,8 +44,9 @@ export async function bookmarkTab(tab, options = {}) {
     });
     return null;
   }
+  const parent = await getItemById(options.parentId || configs.defaultBookmarkParentId);
   const item = await browser.bookmarks.create({
-    parentId: options.parentId || null,
+    parentId: parent && parent.id,
     title:    tab.apiTab.title,
     url:      tab.apiTab.url
   });
@@ -57,11 +73,17 @@ export async function bookmarkTabs(tabs, options = {}) {
     .replace(/%MONTH%/gi, `0${now.getMonth() + 1}`.substr(-2))
     .replace(/%DATE%/gi, `0${now.getDate()}`.substr(-2));
   const folderParams = { title };
+  let parent;
   if (options.parentId) {
-    folderParams.parentId = options.parentId;
+    parent = await getItemById(options.parentId);
     if ('index' in options)
       folderParams.index = options.index;
   }
+  else {
+    parent = await getItemById(configs.defaultBookmarkParentId);
+  }
+  if (parent)
+    folderParams.parentId = parent.id;
   const folder = await browser.bookmarks.create(folderParams);
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const tab = tabs[i];
@@ -75,3 +97,89 @@ export async function bookmarkTabs(tabs, options = {}) {
   return folder;
 }
 
+export async function initFolderChoolser(anchor, params = {}) {
+  const tree = document.documentElement.appendChild(document.createElement('ul'));
+
+  delete anchor.dataset.id;
+  anchor.textContent = browser.i18n.getMessage('bookmarkFolderChooser_unspecified');
+
+  let lastChosenId = null;
+  if (params.defaultValue) {
+    const item = await getItemById(params.defaultValue);
+    if (item) {
+      lastChosenId         = item.id;
+      anchor.dataset.id    = lastChosenId;
+      anchor.dataset.title = item.title;
+      anchor.textContent   = item.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+    }
+  }
+
+  anchor.ui = new MenuUI({
+    root:       tree,
+    appearance: 'menu',
+    onCommand:  (item, event) => {
+      if (item.dataset.id) {
+        lastChosenId         = item.dataset.id;
+        anchor.dataset.id    = lastChosenId;
+        anchor.dataset.title = item.dataset.title;
+        anchor.textContent   = item.dataset.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
+      }
+      params.onCommand(item, event);
+      anchor.ui.close();
+    },
+    onShown:    () => {
+      for (const item of tree.querySelectorAll('.checked')) {
+        item.classList.remove('checked');
+      }
+      if (lastChosenId) {
+        const item = tree.querySelector(`.radio[data-id=${lastChosenId}]`);
+        if (item)
+          item.classList.add('checked');
+      }
+    },
+    animationDuration: configs.animation ? configs.collapseDuration : 0.001
+  });
+  anchor.addEventListener('click', () => {
+    anchor.ui.open({
+      anchor
+    });
+  });
+  anchor.addEventListener('keydown', event => {
+    if (event.key == 'Enter')
+      anchor.ui.open({
+        anchor
+      });
+  });
+
+  const generateFolderItem = (folder) => {
+    const item = document.createElement('li');
+    item.appendChild(document.createTextNode(folder.title));
+    item.setAttribute('title', folder.title || browser.i18n.getMessage('bookmarkFolderChooser_blank'));
+    item.dataset.id    = folder.id;
+    item.dataset.title = folder.title;
+    item.classList.add('radio');
+    const container = item.appendChild(document.createElement('ul'));
+    const useThisItem = container.appendChild(document.createElement('li'));
+    useThisItem.textContent   = browser.i18n.getMessage('bookmarkFolderChooser_useThisFolder');
+    useThisItem.dataset.id    = folder.id;
+    useThisItem.dataset.title = folder.title;
+    return item;
+  };
+
+  const buildItems = (items, container) => {
+    for (const item of items) {
+      if (item.type != 'folder')
+        continue;
+      const folderItem = generateFolderItem(item);
+      container.appendChild(folderItem);
+      if (item.children.length > 0) {
+        const separator = folderItem.lastChild.appendChild(document.createElement('li'));
+        separator.classList.add('separator');
+        buildItems(item.children, folderItem.lastChild);
+      }
+    }
+  };
+
+  const rootItems = await browser.bookmarks.getTree();
+  buildItems(rootItems[0].children, tree);
+}

@@ -16,6 +16,7 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';
+import * as Bookmark from '/common/bookmark.js';
 import * as Migration from '/common/migration.js';
 
 log.context = 'Options';
@@ -33,6 +34,8 @@ function onConfigChanged(key) {
 }
 
 function removeAccesskeyMark(node) {
+  if (!node.nodeValue)
+    return;
   node.nodeValue = node.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
 }
 
@@ -149,6 +152,15 @@ window.addEventListener('DOMContentLoaded', () => {
           configs.optionsExpandedSections = otherExpandedSections.concat([section.id]);
       });
     }
+
+    const defaultBookmarkParentChooser = document.getElementById('defaultBookmarkParentChooser');
+    Bookmark.initFolderChoolser(defaultBookmarkParentChooser, {
+      defaultValue: configs.defaultBookmarkParentId,
+      onCommand:    (item, _event) => {
+        if (item.dataset.id)
+          configs.defaultBookmarkParentId = item.dataset.id;
+      },
+    });
 
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = Migration.kLEGACY_CONFIGS_MIGRATION_VERSION;
 

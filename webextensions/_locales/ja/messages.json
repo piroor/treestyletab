@@ -111,6 +111,10 @@
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
+  "bookmarkFolderChooser_unspecified":   { "message": "(選択されていません)" },
+  "bookmarkFolderChooser_blank":         { "message": "(名前なし)" },
+  "bookmarkFolderChooser_useThisFolder": { "message": "このフォルダーを選択" },
+
   "message_startup_description_1": { "message": "Firefox 57以降のバージョン向けに、ツリー型タブがWebExtensionsベースで生まれ変わりました。縦型タブバーは切り替え可能なサイドバーパネルの一つになっています。もし表示されていない場合は、" },
   "message_startup_description_key": { "message": "「F1」キー" },
   "message_startup_description_2": { "message": "を押すかツールバー上の「" },
@@ -309,6 +313,9 @@
   "config_bookmarkTreeFolderName_before": { "message": "ツリーをブックマークする時のフォルダー名:" },
   "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
   "config_bookmarkTreeFolderName_description": { "message": "以下のプレースホルダを使用できます: %TITLE%（1つ目のタブのタイトル）, %URL%（1つ目のタブのURL）, %YEAR%（4桁の年）, %MONTH%（2桁の月）, %DATE%（2桁の日）" },
+
+  "config_defaultBookmarkParentId_label_before":  { "message": "ブックマークを" },
+  "config_defaultBookmarkParentId_label_after":   { "message": "の中に作成する" },
 
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },

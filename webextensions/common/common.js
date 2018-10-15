@@ -149,6 +149,7 @@ export const configs = new Configs({
 
   // misc.
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
+  defaultBookmarkParentId: 'unfiled_____',
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
   acceleratedTabDuplication: false,
