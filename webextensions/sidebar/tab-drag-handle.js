@@ -171,14 +171,14 @@ function onMouseMove(event) {
   const target = EventUtils.getElementTarget(event.target);
   if (tab) {
     const tabRect  = tab.getBoundingClientRect();
-    const areaSize = Size.getFavIconSize();
+    const areaSize = Size.getFavIconSize() * 1.5;
     const onLeft   = Tabs.isPinned(tab) || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
     const onArea   = (onLeft &&
                       event.clientX >= tabRect.left &&
-                      event.clientX <= tabRect.left + areaSize) ||
+                      event.clientX <= Math.min(tabRect.left + areaSize, tabRect.right)) ||
                      (!onLeft &&
                       event.clientX <= tabRect.right &&
-                      event.clientX >= tabRect.right - areaSize);
+                      event.clientX >= Math.max(tabRect.left, tabRect.right - areaSize));
     if (onArea) {
       if (mTargetTabId != tab.id)
         reserveToShow(tab);
