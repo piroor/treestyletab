@@ -274,12 +274,10 @@
   "config_promoteFirstChildForClosedRoot_label": { "message": "最上位の親タブを閉じた時だけは、最初の子タブを新しい親にする" },
   "config_closeParentBehavior_detach": { "message": "子孫のタブをツリーから解放する" },
 
-  "config_dropLinksOnTabBehavior_caption": { "message": "タブにリンクやURL文字列をドロップしたとき" },
-  "config_dropLinksOnTabBehavior_ask":     { "message": "どうするか常に訊ねる" },
-  "config_dropLinksOnTabBehavior_load":    { "message": "そのタブに読み込む" },
-  "config_dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
-
   "config_warnOnCloseTabs_label": { "message": "同時に複数のタブを閉じるときは確認する" },
+
+
+  "config_drag_caption": { "message": "ドラッグ＆ドロップ" },
 
   "config_tabDragBehavior_caption":       { "message": "ツリーがタブバーの外にドラッグされた時" },
   "config_tabDragBehavior_label":         { "message": "通常のドラッグ:" },
@@ -289,6 +287,11 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "タブ単体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "タブ単体からリンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
   "config_showTabDragHandle_label":       { "message": "タブの端で、目的を指定してドラッグ操作を開始するためのつまみを表示する" },
+
+  "config_dropLinksOnTabBehavior_caption": { "message": "タブにリンクやURL文字列をドロップしたとき" },
+  "config_dropLinksOnTabBehavior_ask":     { "message": "どうするか常に訊ねる" },
+  "config_dropLinksOnTabBehavior_load":    { "message": "そのタブに読み込む" },
+  "config_dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
 
 
   "config_shortcuts_caption": { "message": "キーボードショートカット" },

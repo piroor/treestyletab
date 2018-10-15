@@ -278,12 +278,10 @@
   "config_promoteFirstChildForClosedRoot_label": { "message": "Promote the first child tab as the new parent, if the closed parent has no parent" },
   "config_closeParentBehavior_detach": { "message": "Liberate child tabs from the tree" },
 
-  "config_dropLinksOnTabBehavior_caption": { "message": "When a link or URL string is dropped on a tab" },
-  "config_dropLinksOnTabBehavior_ask":     { "message": "Always ask me how to treat it" },
-  "config_dropLinksOnTabBehavior_load":    { "message": "Load to the tab" },
-  "config_dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
-
   "config_warnOnCloseTabs_label": { "message": "Warn me when I attempt to close multiple tabs" },
+
+
+  "config_drag_caption": { "message": "Drag and Drop" },
 
   "config_tabDragBehavior_caption":       { "message": "When a tree is dragged outside of the tab bar" },
   "config_tabDragBehavior_label":         { "message": "Drag:" },
@@ -293,6 +291,11 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "Detach Individual Tab from the window (but impossible to create bookmark)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Create link or bookmark from Individual Tab (but impossible to detach from the window)" },
   "config_showTabDragHandle_label":       { "message": "Show drag handle on a edge of each tab, to start dragging for specific purpose" },
+
+  "config_dropLinksOnTabBehavior_caption": { "message": "When a link or URL string is dropped on a tab" },
+  "config_dropLinksOnTabBehavior_ask":     { "message": "Always ask me how to treat it" },
+  "config_dropLinksOnTabBehavior_load":    { "message": "Load to the tab" },
+  "config_dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
 
 
   "config_shortcuts_caption": { "message": "Keyboard shortcuts" },
