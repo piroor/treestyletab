@@ -97,8 +97,18 @@ export async function bookmarkTabs(tabs, options = {}) {
   return folder;
 }
 
+let mChooserTree = null;
+
 export async function initFolderChoolser(anchor, params = {}) {
-  const tree = document.documentElement.appendChild(document.createElement('ul'));
+  if (!mChooserTree) {
+    mChooserTree = document.documentElement.appendChild(document.createElement('ul'));
+  }
+  else {
+    const range = document.createRange();
+    range.selectNodeContents(mChooserTree);
+    range.deleteContents();
+    range.detach();
+  }
 
   delete anchor.dataset.id;
   anchor.textContent = browser.i18n.getMessage('bookmarkFolderChooser_unspecified');
@@ -115,7 +125,7 @@ export async function initFolderChoolser(anchor, params = {}) {
   }
 
   anchor.ui = new MenuUI({
-    root:       tree,
+    root:       mChooserTree,
     appearance: 'menu',
     onCommand:  (item, event) => {
       if (item.dataset.id) {
@@ -128,11 +138,11 @@ export async function initFolderChoolser(anchor, params = {}) {
       anchor.ui.close();
     },
     onShown:    () => {
-      for (const item of tree.querySelectorAll('.checked')) {
+      for (const item of mChooserTree.querySelectorAll('.checked')) {
         item.classList.remove('checked');
       }
       if (lastChosenId) {
-        const item = tree.querySelector(`.radio[data-id=${lastChosenId}]`);
+        const item = mChooserTree.querySelector(`.radio[data-id=${lastChosenId}]`);
         if (item)
           item.classList.add('checked');
       }
@@ -181,5 +191,5 @@ export async function initFolderChoolser(anchor, params = {}) {
   };
 
   const rootItems = await browser.bookmarks.getTree();
-  buildItems(rootItems[0].children, tree);
+  buildItems(rootItems[0].children, mChooserTree);
 }
