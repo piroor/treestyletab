@@ -82,7 +82,7 @@
     }},
 
   "bookmarkTabs_notification_success_title": { "message": "複数のタブをブックマークしました" },
-  "bookmarkTabs_notification_success_message": { "message": "「$TITLE$」を含む$COUNT$個のタブを「$PARENT$」内の新しいフォルダーにブックマークしました。",
+  "bookmarkTabs_notification_success_message": { "message": "「$TITLE$」を含む$COUNT$個のタブを新しいフォルダー「$PARENT$」内にブックマークしました。",
     "placeholders": {
       "title": { "content": "$1", "example": "タイトル" },
       "count": { "content": "$2", "example": "2" },
