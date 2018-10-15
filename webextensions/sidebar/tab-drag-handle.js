@@ -47,7 +47,7 @@ function show(tab) {
   }, 100);
 }
 function doShow(tab) {
-  if (!configs.show ||
+  if (!configs.showTabDragHandle ||
       !Tabs.ensureLivingTab(tab) ||
       !tab.matches(':hover'))
     return;
@@ -146,7 +146,7 @@ function onMouseDown(event) {
 onMouseDown = EventUtils.wrapWithErrorHandler(onMouseDown);
 
 function onMouseMove(event) {
-  if (!configs.show)
+  if (!configs.showTabDragHandle)
     return;
 
   mLastX = event.clientX;
