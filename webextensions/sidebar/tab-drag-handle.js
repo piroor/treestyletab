@@ -19,9 +19,18 @@ function log(...args) {
   internalLogger('sidebar/tab-drag-handle', ...args);
 }
 
-const mTabDragHandle = document.querySelector('#tab-drag-handle');
+let mTabDragHandle;
+
+let mTargetTabId;
+let mLastX;
+let mLastY;
+
+let mShowTimer;
+let mHideTimer;
 
 export function init() {
+  mTabDragHandle = document.querySelector('#tab-drag-handle');
+
   document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
   document.addEventListener('scroll', () => hideTabDragHandle(), true);
   document.addEventListener('click', () => hideTabDragHandle(), true);
@@ -42,9 +51,9 @@ function reallyShowTabDragHandle(tab) {
       !tab.matches(':hover'))
     return;
 
-  if (mTabDragHandle.showTimer) {
-    clearTimeout(mTabDragHandle.showTimer);
-    delete mTabDragHandle.showTimer;
+  if (mShowTimer) {
+    clearTimeout(mShowTimer);
+    mShowTimer = null;
   }
 
   mTabDragHandle.classList.remove('animating');
@@ -54,14 +63,14 @@ function reallyShowTabDragHandle(tab) {
     activeItem.classList.remove('active');
   }
 
-  mTabDragHandle.dataset.targetTabId = tab.id;
+  mTargetTabId = tab.id;
   if (Tabs.hasChildTabs(tab))
     mTabDragHandle.classList.add('has-child');
   else
     mTabDragHandle.classList.remove('has-child');
 
-  const x = parseInt(mTabDragHandle.dataset.lastX);
-  const y = parseInt(mTabDragHandle.dataset.lastY);
+  const x = mLastX;
+  const y = mLastY;
 
   if (Tabs.isPinned(tab) ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
@@ -97,33 +106,33 @@ function reallyShowTabDragHandle(tab) {
 }
 
 function reserveToShowTabDragHandle(tab) {
-  if (mTabDragHandle.hideTimer) {
-    clearTimeout(mTabDragHandle.hideTimer);
-    delete mTabDragHandle.hideTimer;
+  if (mHideTimer) {
+    clearTimeout(mHideTimer);
+    mHideTimer = null;
   }
-  mTabDragHandle.showTimer = setTimeout(() => {
-    delete mTabDragHandle.showTimer;
+  mShowTimer = setTimeout(() => {
+    mShowTimer = null;
     showTabDragHandle(tab);
   }, configs.tabDragHandleDelay);
 }
 
 function hideTabDragHandle() {
-  if (mTabDragHandle.showTimer) {
-    clearTimeout(mTabDragHandle.showTimer);
-    delete mTabDragHandle.showTimer;
+  if (mShowTimer) {
+    clearTimeout(mShowTimer);
+    mShowTimer = null;
   }
   mTabDragHandle.classList.add('animating');
   mTabDragHandle.classList.remove('shown');
-  delete mTabDragHandle.dataset.targetTabId;
+  mTargetTabId = null;
 }
 
 function reserveToHideTabDragHandle() {
-  if (mTabDragHandle.showTimer) {
-    clearTimeout(mTabDragHandle.showTimer);
-    delete mTabDragHandle.showTimer;
+  if (mShowTimer) {
+    clearTimeout(mShowTimer);
+    mShowTimer = null;
   }
-  mTabDragHandle.hideTimer = setTimeout(() => {
-    delete mTabDragHandle.hideTimer;
+  mHideTimer = setTimeout(() => {
+    mHideTimer = null;
     hideTabDragHandle();
   }, configs.subMenuCloseDelay);
 }
@@ -132,8 +141,8 @@ function onMouseMove(event) {
   if (!configs.showTabDragHandle)
     return;
 
-  mTabDragHandle.dataset.lastX = event.clientX;
-  mTabDragHandle.dataset.lastY = event.clientY;
+  mLastX = event.clientX;
+  mLastY = event.clientY;
 
   // We need to use coordinates because elements with
   // "pointer-events:none" won't be found by element.closest().
@@ -143,9 +152,9 @@ function onMouseMove(event) {
       event.clientY >= dragHandlerRect.top &&
       event.clientX <= dragHandlerRect.right &&
       event.clientY <= dragHandlerRect.bottom) {
-    if (mTabDragHandle.hideTimer) {
-      clearTimeout(mTabDragHandle.hideTimer);
-      delete mTabDragHandle.hideTimer;
+    if (mHideTimer) {
+      clearTimeout(mHideTimer);
+      mHideTimer = null;
     }
     return;
   }
@@ -163,7 +172,7 @@ function onMouseMove(event) {
                       event.clientX <= tabRect.right &&
                       event.clientX >= tabRect.right - areaSize);
     if (onArea) {
-      if (mTabDragHandle.dataset.targetTabId != tab.id)
+      if (mTargetTabId != tab.id)
         reserveToShowTabDragHandle(tab);
     }
     else {
@@ -178,8 +187,8 @@ onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
 function onTabDragHandleDragStart(event) {
   // get target tab at first before it is cleared by hideTabDragHandle()
-  const targetTab = Tabs.getTabById(mTabDragHandle.dataset.targetTabId);
-  log('onTabDragHandleDragStart: targetTab = ', mTabDragHandle.dataset.targetTabId, targetTab);
+  const targetTab = Tabs.getTabById(mTargetTabId);
+  log('onTabDragHandleDragStart: targetTab = ', mTargetTabId, targetTab);
 
   if (!targetTab) {
     hideTabDragHandle();
