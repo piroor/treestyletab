@@ -213,10 +213,15 @@ function onDragStart(event) {
     hide();
   }, configs.tabDragHandleFeedbackDuration);
 
+  let behavior = 0;
+  if (!target.closest('.shouldIgnoreDescendants'))
+    behavior |= Constants.kDRAG_BEHAVIOR_WHOLE_TREE;
+  if (target.closest('.allowBookmark'))
+    behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
+
   return DragAndDrop.onDragStart(event, {
-    target:                  targetTab,
-    shouldIgnoreDescendants: !!target.closest('.shouldIgnoreDescendants'),
-    allowBookmark:           !!target.closest('.allowBookmark')
+    target: targetTab,
+    behavior
   });
 }
 onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);

@@ -669,8 +669,11 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   console.log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
 
-  const shouldIgnoreDescendants = 'shouldIgnoreDescendants' in options ? options.shouldIgnoreDescendants : event.shiftKey;
-  const allowBookmark = 'allowBookmark' in options ? options.allowBookmark : configs.allowBookmarkCreationFromDraggedTree;
+  const behavior = 'behavior' in options ? options.behavior :
+    event.shiftKey ? configs.tabDragBehaviorShift :
+      configs.tabDragBehavior;
+  const shouldIgnoreDescendants = !(behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE);
+  const allowBookmark           = !!(behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK);
 
   const dragData = getDragDataFromOneTab(options.target || event.target, {
     shouldIgnoreDescendants

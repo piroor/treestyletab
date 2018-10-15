@@ -92,6 +92,10 @@ export const configs = new Configs({
 
   dropLinksOnTabBehavior: Constants.kDROPLINK_ASK,
 
+  showTabDragHandle:    true,
+  tabDragBehavior:      Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
+  tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
+
 
   // grouping
   autoGroupNewTabs: true,
@@ -145,8 +149,6 @@ export const configs = new Configs({
 
   // misc.
   bookmarkTreeFolderName: browser.i18n.getMessage('bookmarkFolder_label_default', ['%TITLE%', '%YEAR%', '%MONTH%', '%DATE%']),
-  showTabDragHandle: true,
-  allowBookmarkCreationFromDraggedTree: false,
   acceleratedTabOperations: true,
   acceleratedTabCreation: false,
   acceleratedTabDuplication: false,

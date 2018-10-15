@@ -206,6 +206,9 @@ export const kINSERT_FIRST      = 0;
 export const kINSERT_END        = 1;
 export const kINSERT_NEAREST    = 2;
 
+export const kDRAG_BEHAVIOR_WHOLE_TREE     = 1 << 0;
+export const kDRAG_BEHAVIOR_ALLOW_BOOKMARK = 1 << 1;
+
 export const kNEWTAB_DO_NOTHING           = -1;
 export const kNEWTAB_OPEN_AS_ORPHAN       = 0;
 export const kNEWTAB_OPEN_AS_CHILD        = 1;
