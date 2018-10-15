@@ -291,7 +291,8 @@ function onMouseDown(event) {
       return;
     }
 
-    if (TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_DRAGREADY).length == 0)
+    if (TSTAPI.getListenersForMessageType(TSTAPI.kNOTIFY_TAB_DRAGREADY).length == 0 ||
+        EventUtils.getElementTarget(event).closest('#tab-drag-handle'))
       return;
 
     log('onMouseDown expired');
