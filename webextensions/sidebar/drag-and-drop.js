@@ -1161,7 +1161,7 @@ function hideTabDragHandle() {
   }
   mTabDragHandle.classList.add('animating');
   mTabDragHandle.classList.remove('shown');
-  mTabDragHandle.dataset.targetTabId = '';
+  delete mTabDragHandle.dataset.targetTabId;
 }
 
 function reserveToHideTabDragHandle() {
@@ -1182,23 +1182,24 @@ function onMouseMove(event) {
   mTabDragHandle.dataset.lastX = event.clientX;
   mTabDragHandle.dataset.lastY = event.clientY;
 
+  // We need to use coordinates because elements with
+  // "pointer-events:none" won't be found by element.closest().
+  const dragHandlerRect = mTabDragHandle.getBoundingClientRect();
+  if (mTabDragHandle.classList.contains('shown') &&
+      event.clientX >= dragHandlerRect.left &&
+      event.clientY >= dragHandlerRect.top &&
+      event.clientX <= dragHandlerRect.right &&
+      event.clientY <= dragHandlerRect.bottom) {
+    if (mTabDragHandle.hideTimer) {
+      clearTimeout(mTabDragHandle.hideTimer);
+      delete mTabDragHandle.hideTimer;
+    }
+    return;
+  }
+
   const tab    = EventUtils.getTabFromEvent(event);
   const target = EventUtils.getElementTarget(event.target);
   if (tab) {
-    // We need to use coordinates because elements with
-    // "pointer-events:none" won't be found by element.closest().
-    const dragHandlerRect = mTabDragHandle.getBoundingClientRect();
-    if (mTabDragHandle.classList.contains('shown') &&
-        event.clientX >= dragHandlerRect.left &&
-        event.clientY >= dragHandlerRect.top &&
-        event.clientX <= dragHandlerRect.right &&
-        event.clientY <= dragHandlerRect.bottom) {
-      if (mTabDragHandle.hideTimer) {
-        clearTimeout(mTabDragHandle.hideTimer);
-        delete mTabDragHandle.hideTimer;
-      }
-    }
-    else {
       const tabRect  = tab.getBoundingClientRect();
       const areaSize = Size.getFavIconSize();
       const onLeft   = Tabs.isPinned(tab) || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
@@ -1208,11 +1209,13 @@ function onMouseMove(event) {
                        (!onLeft &&
                         event.clientX <= tabRect.right &&
                         event.clientX >= tabRect.right - areaSize);
-      if (onArea)
-        reserveToShowTabDragHandle(tab);
-      else
+      if (onArea) {
+        if (mTabDragHandle.dataset.targetTabId != tab.id)
+          reserveToShowTabDragHandle(tab);
+      }
+      else {
         reserveToHideTabDragHandle();
-    }
+      }
   }
   else if (!target || !target.closest(`#${mTabDragHandle.id}`)) {
     reserveToHideTabDragHandle();
