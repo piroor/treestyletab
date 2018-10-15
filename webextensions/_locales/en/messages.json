@@ -74,7 +74,7 @@
     }},
 
   "bookmarkTree_notification_success_title": { "message": "Tree is Successfully Bookmarked" },
-  "bookmarkTree_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked in a new folder under \"$PARENT$.",
+  "bookmarkTree_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked under a new folder \"$PARENT$.",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
       "count": { "content": "$2", "example": "2" },
