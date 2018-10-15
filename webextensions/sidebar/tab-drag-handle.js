@@ -164,6 +164,7 @@ function onMouseMove(event) {
       clearTimeout(mHideTimer);
       mHideTimer = null;
     }
+    log('onMouseMove: on tab drag handler');
     return;
   }
 
@@ -180,14 +181,17 @@ function onMouseMove(event) {
                       event.clientX <= tabRect.right &&
                       event.clientX >= Math.max(tabRect.left, tabRect.right - areaSize));
     if (onArea) {
+      log('onMouseMove: on sensitive area / show');
       if (mTargetTabId != tab.id)
         reserveToShow(tab);
     }
     else {
+      log('onMouseMove: out of sensitive area / hide');
       reserveToHide();
     }
   }
   else if (!target || !target.closest(`#${mHandle.id}`)) {
+    log('onMouseMove: out of tabs, out of tab drag handle');
     reserveToHide();
   }
 }
