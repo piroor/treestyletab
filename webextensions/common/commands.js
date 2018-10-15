@@ -19,6 +19,7 @@ import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Bookmark from './bookmark.js';
 import * as Tree from './tree.js';
+import * as SidebarStatus from './sidebar-status.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -120,18 +121,26 @@ export async function bookmarkTree(root, options = {}) {
   if (tabs.length > 1 &&
       Tabs.isGroupTab(tabs[0]))
     tabs.shift();
+
+  const tab = tabs[0];
+  if (SidebarStatus.isOpen(tab.apiTab.windowId)) {
+    return browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
+      windowId: tab.apiTab.windowId,
+      tabs:     tabs.map(tab => tab.apiTab)
+    });
+  }
+
   const folder = await Bookmark.bookmarkTabs(tabs, options);
   if (!folder)
     return null;
-  browser.bookmarks.get(folder.parentId).then(folders => {
-    notify({
-      title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
-      message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
-        root.apiTab.title,
-        tabs.length,
-        folders[0].title
-      ])
-    });
+  notify({
+    title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
+    message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
+      root.apiTab.title,
+      tabs.length,
+      folder.title
+    ])
   });
   return folder;
 }

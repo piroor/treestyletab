@@ -24,6 +24,7 @@ import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as Commands from '/common/commands.js';
+import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as MetricsData from '/common/metrics-data.js';
 
@@ -979,5 +980,16 @@ function onMessage(message, _sender, _respond) {
       if (message.windowId == mTargetWindow)
         return confirmToCloseTabs(message.count);
     }; break;
+
+
+    case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
+      if (message.windowId != mTargetWindow)
+        return;
+      return Bookmark.bookmarkTab(Tabs.getTabById(message.tab), { showDialog: true });
+
+    case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
+      if (message.windowId != mTargetWindow)
+        return;
+      return Bookmark.bookmarkTabs(message.tabs.map(Tabs.getTabById), { showDialog: true });
   }
 }

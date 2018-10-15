@@ -13,6 +13,7 @@ import {
 import * as Permissions from './permissions.js';
 
 import MenuUI from '/extlib/MenuUI.js';
+import RichConfirm from '/extlib/RichConfirm.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -45,10 +46,38 @@ export async function bookmarkTab(tab, options = {}) {
     return null;
   }
   const parent = await getItemById(options.parentId || configs.defaultBookmarkParentId);
+
+  let title    = tab.apiTab.title;
+  let url      = tab.apiTab.url;
+  let parentId = parent && parent.id;
+  if (options.showDialog) {
+    try {
+      const result = await RichConfirm.show({
+        content: `
+          <div><label>Title:<input type="text" name="title" value=${JSON.stringify(title)}></label></div>
+          <div><label>URL:<input type="text" name="url" value=${JSON.stringify(url)}></label></div>
+          <div><label>Parent folder:<button name="parentId"></button></label></div>
+        `,
+        onShown(container) {
+          initFolderChoolser(container.querySelector('button'), {
+            defaultValue: parentId
+          });
+        },
+        buttons: ['OK', 'Cancel']
+      });
+      if (result.buttonIndex != 0)
+        return null;
+      title    = result.values.title;
+      url      = result.values.url;
+      parentId = result.values.parentId;
+    }
+    catch(_error) {
+      return null;
+    }
+  }
+
   const item = await browser.bookmarks.create({
-    parentId: parent && parent.id,
-    title:    tab.apiTab.title,
-    url:      tab.apiTab.url
+    parentId, title, url
   });
   return item;
 }
@@ -84,6 +113,31 @@ export async function bookmarkTabs(tabs, options = {}) {
   }
   if (parent)
     folderParams.parentId = parent.id;
+
+  if (options.showDialog) {
+    try {
+      const result = await RichConfirm.show({
+        content: `
+          <div><label>Title:<input type="text" name="title" value=${JSON.stringify(folderParams.title)}></label></div>
+          <div><label>Parent folder:<button name="parentId"></button></label></div>
+        `,
+        onShown(container) {
+          initFolderChoolser(container.querySelector('button'), {
+            defaultValue: folderParams.parentId
+          });
+        },
+        buttons: ['OK', 'Cancel']
+      });
+      if (result.buttonIndex != 0)
+        return null;
+      folderParams.title    = result.values.title;
+      folderParams.parentId = result.values.parentId;
+    }
+    catch(_error) {
+      return null;
+    }
+  }
+
   const folder = await browser.bookmarks.create(folderParams);
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const tab = tabs[i];
@@ -110,7 +164,7 @@ export async function initFolderChoolser(anchor, params = {}) {
     range.detach();
   }
 
-  delete anchor.dataset.id;
+  delete anchor.dataset.value;
   anchor.textContent = browser.i18n.getMessage('bookmarkFolderChooser_unspecified');
 
   let lastChosenId = null;
@@ -118,7 +172,7 @@ export async function initFolderChoolser(anchor, params = {}) {
     const item = await getItemById(params.defaultValue);
     if (item) {
       lastChosenId         = item.id;
-      anchor.dataset.id    = lastChosenId;
+      anchor.dataset.value = lastChosenId;
       anchor.dataset.title = item.title;
       anchor.textContent   = item.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
     }
@@ -127,17 +181,18 @@ export async function initFolderChoolser(anchor, params = {}) {
   anchor.ui = new MenuUI({
     root:       mChooserTree,
     appearance: 'menu',
-    onCommand:  (item, event) => {
+    onCommand(item, event) {
       if (item.dataset.id) {
         lastChosenId         = item.dataset.id;
-        anchor.dataset.id    = lastChosenId;
+        anchor.dataset.value = lastChosenId;
         anchor.dataset.title = item.dataset.title;
         anchor.textContent   = item.dataset.title || browser.i18n.getMessage('bookmarkFolderChooser_blank');
       }
-      params.onCommand(item, event);
+      if (typeof params.onCommand == 'function')
+        params.onCommand(item, event);
       anchor.ui.close();
     },
-    onShown:    () => {
+    onShown() {
       for (const item of mChooserTree.querySelectorAll('.checked')) {
         item.classList.remove('checked');
       }

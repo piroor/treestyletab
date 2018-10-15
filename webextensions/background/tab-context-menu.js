@@ -533,33 +533,49 @@ async function onClick(info, contextApiTab) {
     case 'context_bookmarkTab':
       if (!multiselectedTabs) {
         const tab = contextTabElement || Tabs.getCurrentTab(contextWindowId);
-        await Bookmark.bookmarkTab(tab);
-        notify({
-          title:   browser.i18n.getMessage('bookmarkTab_notification_success_title'),
-          message: browser.i18n.getMessage('bookmarkTab_notification_success_message', [
-            tab.apiTab.title
-          ]),
-          icon:    Constants.kNOTIFICATION_DEFAULT_ICON
-        });
+        if (SidebarStatus.isOpen(contextWindowId)) {
+          browser.runtime.sendMessage({
+            type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
+            windowId: contextWindowId,
+            tab:      tab.apiTab
+          });
+        }
+        else {
+          await Bookmark.bookmarkTab(tab);
+          notify({
+            title:   browser.i18n.getMessage('bookmarkTab_notification_success_title'),
+            message: browser.i18n.getMessage('bookmarkTab_notification_success_message', [
+              tab.apiTab.title
+            ]),
+            icon:    Constants.kNOTIFICATION_DEFAULT_ICON
+          });
+        }
         break;
       }
     case 'context_bookmarkAllTabs': {
       const apiTabs = multiselectedTabs ?
         multiselectedTabs.map(tab => tab.apiTab) :
         await browser.tabs.query({ windowId: contextWindowId }) ;
-      const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
-      if (folder)
-        browser.bookmarks.get(folder.parentId).then(folders => {
+      if (SidebarStatus.isOpen(contextWindowId)) {
+        browser.runtime.sendMessage({
+          type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
+          windowId: contextWindowId,
+          tabs:     apiTabs
+        });
+      }
+      else {
+        const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
+        if (folder)
           notify({
             title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
             message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
               apiTabs[0].title,
               apiTabs.length,
-              folders[0].title
+              folder.title
             ]),
             icon:    Constants.kNOTIFICATION_DEFAULT_ICON
           });
-        });
+      }
     }; break;
     case 'context_closeTabsToTheEnd': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
