@@ -31,6 +31,7 @@ let mHideTimer;
 export function init() {
   mHandle = document.querySelector('#tab-drag-handle');
 
+  document.addEventListener('mousedown', onMouseDown, true);
   document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
   document.addEventListener('scroll', () => hide(), true);
   document.addEventListener('click', () => hide(), true);
@@ -136,6 +137,13 @@ function reserveToHide() {
     hide();
   }, configs.subMenuCloseDelay);
 }
+
+function onMouseDown(event) {
+  const target = EventUtils.getElementTarget(event.target);
+  if (!target || !target.closest(`#${mHandle.id}`))
+    hide();
+}
+onMouseDown = EventUtils.wrapWithErrorHandler(onMouseDown);
 
 function onMouseMove(event) {
   if (!configs.show)
