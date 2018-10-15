@@ -269,7 +269,7 @@ async function onShown(info, contextApiTab) {
   const normalTabsCount       = Tabs.getNormalTabs(tab || container).length;
   const hasMultipleNormalTabs = normalTabsCount > 1;
   const multiselected         = Tabs.isMultiselected(tab);
-  const isTSTSidebar          = SidebarStatus.isOpen(windowId) && SidebarStatus.hasFocus(windowId);
+  const isTSTSidebar          = SidebarStatus.isOpen(windowId);
 
   let modifiedItemsCount = 0;
   let visibleItemsCount = 0;
