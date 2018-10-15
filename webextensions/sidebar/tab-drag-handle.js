@@ -19,7 +19,7 @@ function log(...args) {
   internalLogger('sidebar/tab-drag-handle', ...args);
 }
 
-let mTabDragHandle;
+let mHandle;
 
 let mTargetTabId;
 let mLastX;
@@ -29,24 +29,24 @@ let mShowTimer;
 let mHideTimer;
 
 export function init() {
-  mTabDragHandle = document.querySelector('#tab-drag-handle');
+  mHandle = document.querySelector('#tab-drag-handle');
 
   document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-  document.addEventListener('scroll', () => hideTabDragHandle(), true);
-  document.addEventListener('click', () => hideTabDragHandle(), true);
-  mTabDragHandle.addEventListener('dragstart', onTabDragHandleDragStart);
+  document.addEventListener('scroll', () => hide(), true);
+  document.addEventListener('click', () => hide(), true);
+  mHandle.addEventListener('dragstart', onDragStart);
 }
 
-function showTabDragHandle(tab) {
-  if (showTabDragHandle.timer)
-    clearTimeout(showTabDragHandle.timer);
-  showTabDragHandle.timer = setTimeout(() => {
-    delete showTabDragHandle.timer;
-    reallyShowTabDragHandle(tab);
+function show(tab) {
+  if (show.timer)
+    clearTimeout(show.timer);
+  show.timer = setTimeout(() => {
+    delete show.timer;
+    doShow(tab);
   }, 100);
 }
-function reallyShowTabDragHandle(tab) {
-  if (!configs.showTabDragHandle ||
+function doShow(tab) {
+  if (!configs.show ||
       !Tabs.ensureLivingTab(tab) ||
       !tab.matches(':hover'))
     return;
@@ -56,89 +56,89 @@ function reallyShowTabDragHandle(tab) {
     mShowTimer = null;
   }
 
-  mTabDragHandle.classList.remove('animating');
-  mTabDragHandle.classList.remove('shown');
+  mHandle.classList.remove('animating');
+  mHandle.classList.remove('shown');
 
-  for (const activeItem of mTabDragHandle.querySelectorAll('.active')) {
+  for (const activeItem of mHandle.querySelectorAll('.active')) {
     activeItem.classList.remove('active');
   }
 
   mTargetTabId = tab.id;
   if (Tabs.hasChildTabs(tab))
-    mTabDragHandle.classList.add('has-child');
+    mHandle.classList.add('has-child');
   else
-    mTabDragHandle.classList.remove('has-child');
+    mHandle.classList.remove('has-child');
 
   const x = mLastX;
   const y = mLastY;
 
   if (Tabs.isPinned(tab) ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
-    mTabDragHandle.style.right = '';
-    mTabDragHandle.style.left  = `${x + 1}px`;
+    mHandle.style.right = '';
+    mHandle.style.left  = `${x + 1}px`;
   }
   else {
-    mTabDragHandle.style.left  = '';
-    mTabDragHandle.style.right = `${x - 1}px`;
+    mHandle.style.left  = '';
+    mHandle.style.right = `${x - 1}px`;
   }
-  mTabDragHandle.style.bottom = '';
-  mTabDragHandle.style.top    = `${y + 1}px`;
+  mHandle.style.bottom = '';
+  mHandle.style.top    = `${y + 1}px`;
 
   // reposition
-  const handlerRect = mTabDragHandle.getBoundingClientRect();
+  const handlerRect = mHandle.getBoundingClientRect();
   if (handlerRect.left < 0) {
-    mTabDragHandle.style.right = '';
-    mTabDragHandle.style.left  = 0;
+    mHandle.style.right = '';
+    mHandle.style.left  = 0;
   }
   else if (handlerRect.right > window.innerWidth) {
-    mTabDragHandle.style.left  = '';
-    mTabDragHandle.style.right = 0;
+    mHandle.style.left  = '';
+    mHandle.style.right = 0;
   }
   if (handlerRect.bottom > window.innerHeight)
-    mTabDragHandle.style.top = `${y - handlerRect.height - 1}px`;
+    mHandle.style.top = `${y - handlerRect.height - 1}px`;
 
-  mTabDragHandle.classList.add('animating');
-  mTabDragHandle.classList.add('shown');
+  mHandle.classList.add('animating');
+  mHandle.classList.add('shown');
   setTimeout(() => {
-    if (mTabDragHandle.classList.contains('shown'))
-      mTabDragHandle.classList.remove('animating');
+    if (mHandle.classList.contains('shown'))
+      mHandle.classList.remove('animating');
   }, configs.collapseDuration);
 }
 
-function reserveToShowTabDragHandle(tab) {
+function reserveToShow(tab) {
   if (mHideTimer) {
     clearTimeout(mHideTimer);
     mHideTimer = null;
   }
   mShowTimer = setTimeout(() => {
     mShowTimer = null;
-    showTabDragHandle(tab);
+    show(tab);
   }, configs.tabDragHandleDelay);
 }
 
-function hideTabDragHandle() {
+function hide() {
   if (mShowTimer) {
     clearTimeout(mShowTimer);
     mShowTimer = null;
   }
-  mTabDragHandle.classList.add('animating');
-  mTabDragHandle.classList.remove('shown');
+  mHandle.classList.add('animating');
+  mHandle.classList.remove('shown');
   mTargetTabId = null;
 }
 
-function reserveToHideTabDragHandle() {
+function reserveToHide() {
   if (mShowTimer) {
     clearTimeout(mShowTimer);
     mShowTimer = null;
   }
   mHideTimer = setTimeout(() => {
     mHideTimer = null;
-    hideTabDragHandle();
+    hide();
   }, configs.subMenuCloseDelay);
 }
 
 function onMouseMove(event) {
-  if (!configs.showTabDragHandle)
+  if (!configs.show)
     return;
 
   mLastX = event.clientX;
@@ -146,8 +146,8 @@ function onMouseMove(event) {
 
   // We need to use coordinates because elements with
   // "pointer-events:none" won't be found by element.closest().
-  const dragHandlerRect = mTabDragHandle.getBoundingClientRect();
-  if (mTabDragHandle.classList.contains('shown') &&
+  const dragHandlerRect = mHandle.getBoundingClientRect();
+  if (mHandle.classList.contains('shown') &&
       event.clientX >= dragHandlerRect.left &&
       event.clientY >= dragHandlerRect.top &&
       event.clientX <= dragHandlerRect.right &&
@@ -173,25 +173,25 @@ function onMouseMove(event) {
                       event.clientX >= tabRect.right - areaSize);
     if (onArea) {
       if (mTargetTabId != tab.id)
-        reserveToShowTabDragHandle(tab);
+        reserveToShow(tab);
     }
     else {
-      reserveToHideTabDragHandle();
+      reserveToHide();
     }
   }
-  else if (!target || !target.closest(`#${mTabDragHandle.id}`)) {
-    reserveToHideTabDragHandle();
+  else if (!target || !target.closest(`#${mHandle.id}`)) {
+    reserveToHide();
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
-function onTabDragHandleDragStart(event) {
-  // get target tab at first before it is cleared by hideTabDragHandle()
+function onDragStart(event) {
+  // get target tab at first before it is cleared by hide()
   const targetTab = Tabs.getTabById(mTargetTabId);
-  log('onTabDragHandleDragStart: targetTab = ', mTargetTabId, targetTab);
+  log('onDragStart: targetTab = ', mTargetTabId, targetTab);
 
   if (!targetTab) {
-    hideTabDragHandle();
+    hide();
     return;
   }
 
@@ -202,7 +202,7 @@ function onTabDragHandleDragStart(event) {
   target.classList.add('animating');
 
   setTimeout(() => {
-    hideTabDragHandle();
+    hide();
   }, configs.tabDragHandleFeedbackDuration);
 
   return DragAndDrop.onDragStart(event, {
@@ -211,5 +211,5 @@ function onTabDragHandleDragStart(event) {
     allowBookmark:           !!target.closest('.allowBookmark')
   });
 }
-onTabDragHandleDragStart = EventUtils.wrapWithErrorHandler(onTabDragHandleDragStart);
+onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 
