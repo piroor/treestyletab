@@ -94,6 +94,7 @@ function doShow(tab) {
   const x = mLastX;
   const y = mLastY;
 
+  let handlerRect = mHandle.getBoundingClientRect();
   if (Tabs.isPinned(tab) ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
     mHandle.style.right = '';
@@ -103,11 +104,13 @@ function doShow(tab) {
     mHandle.style.left  = '';
     mHandle.style.right = `${x - 1}px`;
   }
+  // Tab drag handle shown at bottom-right of the cursor will be covered partially,
+  // by the tooltip for tab's title so we should move it up a little.
   mHandle.style.bottom = '';
-  mHandle.style.top    = `${y + 1}px`;
+  mHandle.style.top    = `${Math.max(0, Math.floor(y - (handlerRect.height / 2)))}px`;
 
   // reposition
-  const handlerRect = mHandle.getBoundingClientRect();
+  handlerRect = mHandle.getBoundingClientRect();
   if (handlerRect.left < 0) {
     mHandle.style.right = '';
     mHandle.style.left  = 0;
