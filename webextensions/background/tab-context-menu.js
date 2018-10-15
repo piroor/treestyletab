@@ -280,8 +280,8 @@ async function onShown(info, contextApiTab) {
   /* eslint-disable no-unused-expressions */
 
   updateItem('context_reloadTab', {
-    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
-    multiselected
+    visible: isTSTSidebar && ++visibleItemsCount,
+    multiselected: multiselected || !contextApiTab
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
     visible: isTSTSidebar && contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted) && ++visibleItemsCount,
@@ -315,8 +315,8 @@ async function onShown(info, contextApiTab) {
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
-    multiselected
+    visible: isTSTSidebar && ++visibleItemsCount,
+    multiselected: multiselected || !contextApiTab
   }) && modifiedItemsCount++;
   const showContextualIdentities = contextApiTab && mContextualIdentityItems.size > 2;
   updateItem('context_reopenInContainer', {
@@ -411,7 +411,8 @@ async function onClick(info, contextApiTab) {
         }
       }
       else {
-        browser.tabs.reload(contextApiTab.id);
+        const tab = contextTabElement || Tabs.getCurrentTab(contextWindowId);
+        browser.tabs.reload(tab.apiTab.id);
       }
       break;
     case 'context_toggleMuteTab-mute':
@@ -528,13 +529,14 @@ async function onClick(info, contextApiTab) {
     }; break;
     case 'context_bookmarkTab':
       if (!multiselectedTabs) {
-        await Bookmark.bookmarkTab(contextTabElement);
+        const tab = contextTabElement || Tabs.getCurrentTab(contextWindowId);
+        await Bookmark.bookmarkTab(tab);
         notify({
           title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
           message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
-            contextApiTab.title,
+            tab.apiTab.title,
             1,
-            contextApiTab.title
+            tab.apiTab.title
           ]),
           icon:    Constants.kNOTIFICATION_DEFAULT_ICON
         });
