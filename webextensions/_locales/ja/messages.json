@@ -81,6 +81,12 @@
       "parent": { "content": "$3", "example": "親フォルダー" }
     }},
 
+  "bookmarkTab_notification_success_title": { "message": "タブをブックマークしました" },
+  "bookmarkTab_notification_success_message": { "message": "「$TITLE$」をブックマークしました。",
+    "placeholders": {
+      "title": { "content": "$1", "example": "Title" }
+    }},
+
   "bookmarkTabs_notification_success_title": { "message": "複数のタブをブックマークしました" },
   "bookmarkTabs_notification_success_message": { "message": "「$TITLE$」を含む$COUNT$個のタブを新しいフォルダー「$PARENT$」内にブックマークしました。",
     "placeholders": {

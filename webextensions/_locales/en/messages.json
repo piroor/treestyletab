@@ -81,6 +81,12 @@
       "parent": { "content": "$3", "example": "Parent Folder" }
     }},
 
+  "bookmarkTab_notification_success_title": { "message": "Tab is Successfully Bookmarked" },
+  "bookmarkTab_notification_success_message": { "message": "\"$TITLE$\" is bookmarked.",
+    "placeholders": {
+      "title": { "content": "$1", "example": "Title" }
+    }},
+
   "bookmarkTabs_notification_success_title": { "message": "Tabs are Successfully Bookmarked" },
   "bookmarkTabs_notification_success_message": { "message": "$COUNT$ tabs including \"$TITLE$\" are bookmarked under a new folder \"$PARENT$\".",
     "placeholders": {

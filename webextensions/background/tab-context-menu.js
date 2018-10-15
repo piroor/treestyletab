@@ -535,10 +535,8 @@ async function onClick(info, contextApiTab) {
         const tab = contextTabElement || Tabs.getCurrentTab(contextWindowId);
         await Bookmark.bookmarkTab(tab);
         notify({
-          title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
-          message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
-            tab.apiTab.title,
-            1,
+          title:   browser.i18n.getMessage('bookmarkTab_notification_success_title'),
+          message: browser.i18n.getMessage('bookmarkTab_notification_success_message', [
             tab.apiTab.title
           ]),
           icon:    Constants.kNOTIFICATION_DEFAULT_ICON
