@@ -352,7 +352,7 @@
 
   "config_debug_caption": { "message": "Development" },
 
-  "config_link_startupPage_label": { "message": "Startup Page" },
+  "config_link_startupPage_label": { "message": "Page for Initial Startup" },
   "config_link_groupPage_label":   { "message": "Page for Group Tab" },
 
   "config_debug_label": { "message": "Debug mode" },
