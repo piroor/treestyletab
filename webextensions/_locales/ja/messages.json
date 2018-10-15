@@ -348,6 +348,9 @@
 
   "config_debug_caption": { "message": "開発用" },
 
+  "config_link_startupPage_label": { "message": "起動ページ" },
+  "config_link_groupPage_label":   { "message": "グループ化用タブのページ" },
+
   "config_debug_label": { "message": "デバッグモード" },
   "config_log_caption":               { "message": "詳細なログ" },
   "config_logFor_common":     { "message": "共通モジュールからのログ" },

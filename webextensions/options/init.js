@@ -14,6 +14,7 @@ import {
   configs
 } from '/common/common.js';
 
+import * as Constants from '/common/constants.js';
 import * as Permissions from '/common/permissions.js';
 import * as Migration from '/common/migration.js';
 
@@ -100,6 +101,9 @@ window.addEventListener('DOMContentLoaded', () => {
       button.click();
     }
   });
+
+  document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
+  document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
 
   configs.$loaded.then(() => {
     for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {

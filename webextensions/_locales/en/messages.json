@@ -352,6 +352,9 @@
 
   "config_debug_caption": { "message": "Development" },
 
+  "config_link_startupPage_label": { "message": "Startup Page" },
+  "config_link_groupPage_label":   { "message": "Page for Group Tab" },
+
   "config_debug_label": { "message": "Debug mode" },
   "config_log_caption":               { "message": "Detailed logging" },
   "config_logFor_common":     { "message": "Logs from common modules" },
