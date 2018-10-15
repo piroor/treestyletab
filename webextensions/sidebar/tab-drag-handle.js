@@ -132,6 +132,10 @@ function reserveToShow(tab) {
     clearTimeout(mHideTimer);
     mHideTimer = null;
   }
+  if (mShowTimer) {
+    clearTimeout(mShowTimer);
+    mShowTimer = null;
+  }
   mShowTimer = setTimeout(() => {
     mShowTimer = null;
     show(tab);
@@ -143,6 +147,10 @@ function hide() {
     clearTimeout(mShowTimer);
     mShowTimer = null;
   }
+  if (show.timer) {
+    clearTimeout(show.timer);
+    delete show.timer;
+  }
   mHandle.classList.add('animating');
   mHandle.classList.remove('shown');
   mTargetTabId = null;
@@ -152,6 +160,10 @@ function reserveToHide() {
   if (mShowTimer) {
     clearTimeout(mShowTimer);
     mShowTimer = null;
+  }
+  if (mHideTimer) {
+    clearTimeout(mHideTimer);
+    mHideTimer = null;
   }
   mHideTimer = setTimeout(() => {
     mHideTimer = null;
