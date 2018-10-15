@@ -479,6 +479,9 @@ function onExternalMessage(message, sender) {
 
 
 async function onContextMenu(event) {
+  if (EventUtils.getElementTarget(event).closest('input, textarea'))
+    return;
+
   const tab = EventUtils.getTabFromEvent(event);
   if (!event.ctrlKey &&
       tab && tab.apiTab &&
