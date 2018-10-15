@@ -111,6 +111,12 @@
   "warnOnCloseTabs_close":     { "message": "タブを閉じる" },
   "warnOnCloseTabs_cancel":    { "message": "キャンセル" },
 
+  "bookmarkDialog_title":    { "message": "名前:" },
+  "bookmarkDialog_url":      { "message": "場所:" },
+  "bookmarkDialog_parentId": { "message": "フォルダー:" },
+  "bookmarkDialog_accept":   { "message": "保存" },
+  "bookmarkDialog_cancel":   { "message": "キャンセル" },
+
   "bookmarkFolderChooser_unspecified":   { "message": "(選択されていません)" },
   "bookmarkFolderChooser_blank":         { "message": "(名前なし)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "このフォルダーを選択" },

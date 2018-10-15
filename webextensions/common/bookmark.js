@@ -14,6 +14,7 @@ import * as Permissions from './permissions.js';
 
 import MenuUI from '/extlib/MenuUI.js';
 import RichConfirm from '/extlib/RichConfirm.js';
+import l10n from '/extlib/l10n.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -54,16 +55,28 @@ export async function bookmarkTab(tab, options = {}) {
     try {
       const result = await RichConfirm.show({
         content: `
-          <div><label>Title:<input type="text" name="title" value=${JSON.stringify(title)}></label></div>
-          <div><label>URL:<input type="text" name="url" value=${JSON.stringify(url)}></label></div>
-          <div><label>Parent folder:<button name="parentId"></button></label></div>
+          <div><label>__MSG_bookmarkDialog_title__
+                      <input type="text"
+                             name="title"
+                             value=${JSON.stringify(title)}></label></div>
+          <div><label>__MSG_bookmarkDialog_url__
+                      <input type="text"
+                             name="url"
+                             value=${JSON.stringify(url)}></label></div>
+          <div><label>__MSG_bookmarkDialog_parentId__
+                      <button name="parentId"></button></label></div>
         `,
         onShown(container) {
+          l10n.updateDocument();
+          container.classList.add('bookmark-dialog');
           initFolderChoolser(container.querySelector('button'), {
             defaultValue: parentId
           });
         },
-        buttons: ['OK', 'Cancel']
+        buttons: [
+          browser.i18n.getMessage('bookmarkDialog_accept'),
+          browser.i18n.getMessage('bookmarkDialog_cancel')
+        ]
       });
       if (result.buttonIndex != 0)
         return null;
@@ -118,15 +131,24 @@ export async function bookmarkTabs(tabs, options = {}) {
     try {
       const result = await RichConfirm.show({
         content: `
-          <div><label>Title:<input type="text" name="title" value=${JSON.stringify(folderParams.title)}></label></div>
-          <div><label>Parent folder:<button name="parentId"></button></label></div>
+          <div><label>__MSG_bookmarkDialog_title__
+                      <input type="text"
+                             name="title"
+                             value=${JSON.stringify(folderParams.title)}></label></div>
+          <div><label>__MSG_bookmarkDialog_parentId__
+                      <button name="parentId"></button></label></div>
         `,
         onShown(container) {
+          l10n.updateDocument();
+          container.classList.add('bookmark-dialog');
           initFolderChoolser(container.querySelector('button'), {
             defaultValue: folderParams.parentId
           });
         },
-        buttons: ['OK', 'Cancel']
+        buttons: [
+          browser.i18n.getMessage('bookmarkDialog_accept'),
+          browser.i18n.getMessage('bookmarkDialog_cancel')
+        ]
       });
       if (result.buttonIndex != 0)
         return null;

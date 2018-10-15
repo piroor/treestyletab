@@ -111,6 +111,12 @@
   "warnOnCloseTabs_close":     { "message": "Close tabs" },
   "warnOnCloseTabs_cancel":    { "message": "Cancel" },
 
+  "bookmarkDialog_title":    { "message": "Name:" },
+  "bookmarkDialog_url":      { "message": "Location:" },
+  "bookmarkDialog_parentId": { "message": "Folder:" },
+  "bookmarkDialog_accept":   { "message": "Save" },
+  "bookmarkDialog_cancel":   { "message": "Cancel" },
+
   "bookmarkFolderChooser_unspecified":   { "message": "(unspecified)" },
   "bookmarkFolderChooser_blank":         { "message": "(no name)" },
   "bookmarkFolderChooser_useThisFolder": { "message": "Use this folder" },
