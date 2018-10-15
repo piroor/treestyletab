@@ -85,12 +85,6 @@ const mItemsById = {
   'context_separator:afterSendTab': {
     type: 'separator'
   },
-  'context_reloadAllTabs': {
-    title: browser.i18n.getMessage('tabContextMenu_reloadAll_label')
-  },
-  'context_separator:afterReloadAll': {
-    type: 'separator'
-  },
   'context_closeTabOptions': {
     title: browser.i18n.getMessage('tabContextMenu_closeTabOptions_label')
   },
@@ -367,17 +361,6 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
-  updateItem('context_reloadAllTabs', {
-    visible: isTSTSidebar && ++visibleItemsCount,
-    enabled: hasMultipleTabs,
-    multiselected
-  }) && modifiedItemsCount++;
-
-  updateItem('context_separator:afterReloadAll', {
-    visible: isTSTSidebar && contextApiTab && visibleItemsCount > 0
-  }) && modifiedItemsCount++;
-  visibleItemsCount = 0;
-
   updateItem('context_closeTabOptions', {
     visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
     enabled: hasMultipleNormalTabs,
@@ -536,12 +519,6 @@ async function onClick(info, contextApiTab) {
         });
       }
       break;
-    case 'context_reloadAllTabs': {
-      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
-      for (const apiTab of apiTabs) {
-        browser.tabs.reload(apiTab.id);
-      }
-    }; break;
     case 'context_selectAllTabs': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       browser.tabs.highlight({
