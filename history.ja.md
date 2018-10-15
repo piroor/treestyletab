@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+ - 2.6.0 (2018.10.16)
    * [Firefox 64以降において、タブのコンテキストメニューに機能を追加する他のアドオンとの互換性を向上した](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm)（これに伴い、タブのコンテキストメニューの項目をFirefox 64準拠の内容とした）
    * タブをサイドバーの外にドラッグした時の挙動について、通常のドラッグとShift-ドラッグのそれぞれに任意の挙動を設定できるようにした（初期状態では、Shift-ドラッグはツリー全体のタブからリンクまたはブックマークを作成）
    * [目的を指定してタブのドラッグを開始するためのつまみ](https://github.com/piroor/treestyletab/issues/2033#issuecomment-422757008)を追加した（タブの端の方をポイントしてしばらく待つと表示されます）

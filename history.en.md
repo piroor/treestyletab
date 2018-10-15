@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.6.0 (2018.10.16)
    * [Better compatibility with extra context menu commands for tabs added by other addons, on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm) And now imitated context menu have items compatible to Firefox 64 and later.
    * Add ability to change behavior of dragged tab to outside of the sidebar for each case: regular drag and Shift-drag. Shfit-drag of a tab will create bookmarks or links from all tabs in the tree, by default.
    * Add [tab drag handler to start dragging of tabs with specific purpose](https://github.com/piroor/treestyletab/issues/2033#issuecomment-422757008). It will appear by pointing for a while around edge of each tab.
