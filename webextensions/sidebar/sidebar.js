@@ -31,6 +31,7 @@ import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
 import * as DragAndDrop from './drag-and-drop.js';
+import * as TabDragHandle from './tab-drag-handle.js';
 import * as RestoringTabCount from './restoring-tab-count.js';
 import * as Size from './size.js';
 import * as Color from './color.js';
@@ -155,6 +156,7 @@ export async function init() {
       onBuilt.dispatch();
 
       DragAndDrop.init();
+      TabDragHandle.init();
 
       MetricsData.add('onBuilt: start to listen events');
     }),
