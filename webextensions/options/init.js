@@ -7,7 +7,7 @@
 
 import Options from '/extlib/Options.js';
 import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
-import '../extlib/l10n.js';
+import '/extlib/l10n.js';
 
 import {
   log,
