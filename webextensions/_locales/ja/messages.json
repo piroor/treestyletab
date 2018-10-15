@@ -281,10 +281,14 @@
 
   "config_warnOnCloseTabs_label": { "message": "同時に複数のタブを閉じるときは確認する" },
 
-  "config_allowBookmarkCreationFromDraggedTree_caption": { "message": "ツリーがタブバーの外にドラッグされた時" },
-  "config_allowBookmarkCreationFromDraggedTree_false":   { "message": "別ウィンドウに切り離す（ブックマークの作成はできません）" },
-  "config_allowBookmarkCreationFromDraggedTree_true":    { "message": "リンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
-  "config_showTabDragHandle_label":                      { "message": "タブの端で、目的を指定してドラッグ操作を開始するためのつまみを表示する" },
+  "config_tabDragBehavior_caption":       { "message": "ツリーがタブバーの外にドラッグされた時" },
+  "config_tabDragBehavior_label":         { "message": "通常のドラッグ:" },
+  "config_tabDragBehaviorShift_label":    { "message": "Shift-ドラッグ:" },
+  "config_tabDragBehavior_tearoff_tree":  { "message": "ツリー全体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
+  "config_tabDragBehavior_bookmark_tree": { "message": "ツリー全体のタブからリンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
+  "config_tabDragBehavior_tearoff_tab":   { "message": "タブ単体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
+  "config_tabDragBehavior_bookmark_tab":  { "message": "タブ単体からリンクかブックマークを作成する（別ウィンドウへの切り離しはできません）" },
+  "config_showTabDragHandle_label":       { "message": "タブの端で、目的を指定してドラッグ操作を開始するためのつまみを表示する" },
 
 
   "config_shortcuts_caption": { "message": "キーボードショートカット" },

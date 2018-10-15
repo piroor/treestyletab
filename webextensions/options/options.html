@@ -353,15 +353,21 @@
       </ul>
     </fieldset>
     <fieldset>
-      <legend>__MSG_config_allowBookmarkCreationFromDraggedTree_caption__</legend>
-      <ul>
-        <li><label><input type="radio"
-                          name="allowBookmarkCreationFromDraggedTree" value="false">
-              __MSG_config_allowBookmarkCreationFromDraggedTree_false__</label></li>
-        <li><label><input type="radio"
-                          name="allowBookmarkCreationFromDraggedTree" value="true">
-              __MSG_config_allowBookmarkCreationFromDraggedTree_true__</label></li>
-      </ul>
+      <legend>__MSG_config_tabDragBehavior_caption__</legend>
+      <p><label>__MSG_config_tabDragBehavior_label__</label>
+         <select id="tabDragBehavior">
+           <option value="1">__MSG_config_tabDragBehavior_tearoff_tree__</option>
+           <option value="3">__MSG_config_tabDragBehavior_bookmark_tree__</option>
+           <option value="0">__MSG_config_tabDragBehavior_tearoff_tab__</option>
+           <option value="2">__MSG_config_tabDragBehavior_bookmark_tab__</option>
+         </select></p>
+      <p><label>__MSG_config_tabDragBehaviorShift_label__</label>
+         <select id="tabDragBehaviorShift">
+           <option value="1">__MSG_config_tabDragBehavior_tearoff_tree__</option>
+           <option value="3">__MSG_config_tabDragBehavior_bookmark_tree__</option>
+           <option value="0">__MSG_config_tabDragBehavior_tearoff_tab__</option>
+           <option value="2">__MSG_config_tabDragBehavior_bookmark_tab__</option>
+         </select></p>
       <p><label><input id="showTabDragHandle"
                        type="checkbox">
                __MSG_config_showTabDragHandle_label__</label></p>
