@@ -240,7 +240,8 @@ export const configs = new Configs({
     'sidebar/sidebar-tabs': true,
     'sidebar/sidebar': true,
     'sidebar/size': true,
-    'sidebar/tab-context-menu': false
+    'sidebar/tab-context-menu': false,
+    'sidebar/tab-drag-handle': false
   },
 
   importedConfigsFromLegacy: null,
