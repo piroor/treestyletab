@@ -20,6 +20,7 @@ function log(...args) {
 }
 
 let mHandle;
+let mListening = false;
 
 let mTargetTabId;
 let mLastX;
@@ -31,11 +32,31 @@ let mHideTimer;
 export function init() {
   mHandle = document.querySelector('#tab-drag-handle');
 
-  document.addEventListener('mousedown', onMouseDown, true);
-  document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-  document.addEventListener('scroll', () => hide(), true);
-  document.addEventListener('click', () => hide(), true);
   mHandle.addEventListener('dragstart', onDragStart);
+
+  configs.$addObserver(onConfigChange);
+  onConfigChange('showTabDragHandle');
+}
+
+function onConfigChange(key) {
+  if (key != 'showTabDragHandle' ||
+      mListening == configs.showTabDragHandle)
+    return;
+
+  if (configs.showTabDragHandle) {
+    document.addEventListener('mousedown', onMouseDown, true);
+    document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+    document.addEventListener('scroll', hide, true);
+    document.addEventListener('click', hide, true);
+    mListening = true;
+  }
+  else {
+    document.removeEventListener('mousedown', onMouseDown, true);
+    document.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
+    document.removeEventListener('scroll', hide, true);
+    document.removeEventListener('click', hide, true);
+    mListening = false;
+  }
 }
 
 function show(tab) {
