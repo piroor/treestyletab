@@ -1200,22 +1200,22 @@ function onMouseMove(event) {
   const tab    = EventUtils.getTabFromEvent(event);
   const target = EventUtils.getElementTarget(event.target);
   if (tab) {
-      const tabRect  = tab.getBoundingClientRect();
-      const areaSize = Size.getFavIconSize();
-      const onLeft   = Tabs.isPinned(tab) || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
-      const onArea   = (onLeft &&
-                        event.clientX >= tabRect.left &&
-                        event.clientX <= tabRect.left + areaSize) ||
-                       (!onLeft &&
-                        event.clientX <= tabRect.right &&
-                        event.clientX >= tabRect.right - areaSize);
-      if (onArea) {
-        if (mTabDragHandle.dataset.targetTabId != tab.id)
-          reserveToShowTabDragHandle(tab);
-      }
-      else {
-        reserveToHideTabDragHandle();
-      }
+    const tabRect  = tab.getBoundingClientRect();
+    const areaSize = Size.getFavIconSize();
+    const onLeft   = Tabs.isPinned(tab) || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
+    const onArea   = (onLeft &&
+                      event.clientX >= tabRect.left &&
+                      event.clientX <= tabRect.left + areaSize) ||
+                     (!onLeft &&
+                      event.clientX <= tabRect.right &&
+                      event.clientX >= tabRect.right - areaSize);
+    if (onArea) {
+      if (mTabDragHandle.dataset.targetTabId != tab.id)
+        reserveToShowTabDragHandle(tab);
+    }
+    else {
+      reserveToHideTabDragHandle();
+    }
   }
   else if (!target || !target.closest(`#${mTabDragHandle.id}`)) {
     reserveToHideTabDragHandle();
