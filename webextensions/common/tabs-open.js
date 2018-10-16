@@ -52,13 +52,13 @@ function log(...args) {
   internalLogger('common/tabs-open', ...args);
 }
 
-export async function loadURI(uRI, options = {}) {
+export async function loadURI(uri, options = {}) {
   if (!options.windowId && !options.tab)
     throw new Error('missing loading target window or tab');
   if (options.inRemote) {
     await browser.runtime.sendMessage({
+      uri,
       type:    Constants.kCOMMAND_LOAD_URI,
-      uri:     uRI,
       options: Object.assign({}, options, {
         tab: options.tab && options.tab.id
       })
@@ -78,7 +78,7 @@ export async function loadURI(uRI, options = {}) {
       apiTabId = apiTabs[0].id;
     }
     await browser.tabs.update(apiTabId, {
-      url: uRI
+      url: uri
     }).catch(ApiTabs.handleMissingTabError);
   }
   catch(e) {
@@ -122,13 +122,13 @@ export async function openURIsInTabs(uris, options = {}) {
       TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', uris.length);
       if (options.isOrphan)
         TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', uris.length);
-      await Promise.all(uris.map(async (uRI, index) => {
+      await Promise.all(uris.map(async (uri, index) => {
         const params = {
           windowId: options.windowId,
           active:   index == 0 && !options.inBackground
         };
-        if (uRI)
-          params.url = uRI;
+        if (uri)
+          params.url = uri;
         if (options.opener)
           params.openerTabId = options.opener.apiTab.id;
         if (startIndex > -1)
