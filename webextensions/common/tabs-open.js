@@ -39,7 +39,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
@@ -51,6 +52,8 @@ import * as Tree from './tree.js';
 function log(...args) {
   internalLogger('common/tabs-open', ...args);
 }
+
+const SEARCH_PREFIX_MATCHER = /^about:treestyletab-search\?/;
 
 export async function loadURI(uri, options = {}) {
   if (!options.windowId && !options.tab)
@@ -77,9 +80,26 @@ export async function loadURI(uri, options = {}) {
       });
       apiTabId = apiTabs[0].id;
     }
-    await browser.tabs.update(apiTabId, {
-      url: uri
-    }).catch(ApiTabs.handleMissingTabError);
+    let searchQuery = null;
+    if (SEARCH_PREFIX_MATCHER.test(uri)) {
+      const query = uri.replace(SEARCH_PREFIX_MATCHER, '');
+      if (browser.search &&
+          typeof browser.search.search == 'function')
+        searchQuery = query;
+      else
+        uri = configs.defaultSearchEngine.replace(/%s/gi, query);
+    }
+    if (searchQuery) {
+      await browser.search.search({
+        query: searchQuery,
+        tabId: apiTabId
+      });
+    }
+    else {
+      await browser.tabs.update(apiTabId, {
+        url: uri
+      }).catch(ApiTabs.handleMissingTabError);
+    }
   }
   catch(e) {
     ApiTabs.handleMissingTabError(e);
@@ -127,8 +147,20 @@ export async function openURIsInTabs(uris, options = {}) {
           windowId: options.windowId,
           active:   index == 0 && !options.inBackground
         };
-        if (uri)
-          params.url = uri;
+        let searchQuery = null;
+        if (uri) {
+          if (SEARCH_PREFIX_MATCHER.test(uri)) {
+            const query = uri.replace(SEARCH_PREFIX_MATCHER, '');
+            if (browser.search &&
+                typeof browser.search.search == 'function')
+              searchQuery = query;
+            else
+              params.url = configs.defaultSearchEngine.replace(/%s/gi, query);
+          }
+          else {
+            params.url = uri;
+          }
+        }
         if (options.opener)
           params.openerTabId = options.opener.apiTab.id;
         if (startIndex > -1)
@@ -136,7 +168,13 @@ export async function openURIsInTabs(uris, options = {}) {
         if (options.cookieStoreId)
           params.cookieStoreId = options.cookieStoreId;
         const apiTab = await browser.tabs.create(params);
-        await Tabs.waitUntilTabsAreCreated(apiTab.id);
+        await Promise.all([
+          Tabs.waitUntilTabsAreCreated(apiTab.id),
+          searchQuery && browser.search.search({
+            query: searchQuery,
+            tabId: apiTab.id
+          })
+        ]);
         const tab = Tabs.getTabById(apiTab);
         log('created tab: ', tab);
         if (!tab)

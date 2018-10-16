@@ -133,6 +133,7 @@
   "message_startup_requestPermissions_description": { "message": "⚠以下の機能には追加の権限が必要です。機能を使いたい場合のみ権限を付与して下さい。" },
   "message_startup_requestPermissions_bookmarks": { "message": "コンテキストメニューの「このツリーをブックマーク」（ブックマークの操作の許可が必要）" },
   "message_startup_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（キー操作の検出のためにWebページ内でのスクリプトの実行許可が必要）" },
+  "message_startup_requestPermissions_search":    { "message": "URLでないテキストがタブバーにドロップされた時に既定の検索エンジンで検索する" },
   "message_startup_requestPermissions_menusOverrideContext": { "message": "タブのコンテキストメニューに項目を追加する他のアドオンとの互換性を向上する" },
 
   "message_startup_userChromeCss_notify": { "message": "タブバーとサイドバーのヘッダーを隠したい場合" },
@@ -383,6 +384,7 @@
 
   "config_requestPermissions_bookmarks": { "message": "ブックマークの作成を許可する" },
   "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },
+  "config_requestPermissions_search":    { "message": "URLでないテキストがタブバーにドロップされた時に既定の検索エンジンで検索する" },
   "config_requestPermissions_menusOverrideContext": { "message": "タブのコンテキストメニューに項目を追加する他のアドオンとの互換性を向上する" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "ツールバーの「ツリー型タブ」ボタンをクリックして下さい" },

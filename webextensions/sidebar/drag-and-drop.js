@@ -613,8 +613,8 @@ function retrieveURIsFromData(aData, type) {
         .replace(/\n\n+/g, '\n')
         .trim()
         .split('\n')
-        .filter(line => {
-          return /^\w+:\/\/.+/.test(line);
+        .map(line => {
+          return /^\w+:\/\/.+/.test(line) ? line : `about:treestyletab-search?${line}`;
         });
   }
   return [];
