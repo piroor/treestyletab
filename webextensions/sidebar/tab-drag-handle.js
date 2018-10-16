@@ -29,6 +29,8 @@ let mLastY;
 let mShowTimer;
 let mHideTimer;
 
+const HANDLE_MARGIN = 3;
+
 export function init() {
   mHandle = document.querySelector('#tab-drag-handle');
 
@@ -93,34 +95,30 @@ function doShow(tab) {
 
   const x = mLastX;
   const y = mLastY;
+  const offset = HANDLE_MARGIN; // this is required to allow clicking of the tab itself.
 
-  let handlerRect = mHandle.getBoundingClientRect();
+  let handleRect = mHandle.getBoundingClientRect();
   if (Tabs.isPinned(tab) ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
-    mHandle.style.right = '';
-    mHandle.style.left  = `${x + 1}px`;
+    mHandle.style.left = `${x + offset}px`;
   }
   else {
-    mHandle.style.left  = '';
-    mHandle.style.right = `${x - 1}px`;
+    mHandle.style.left = `${x - handleRect.width - offset}px`;
   }
   // Tab drag handle shown at bottom-right of the cursor will be covered partially,
   // by the tooltip for tab's title so we should move it up a little.
-  mHandle.style.bottom = '';
-  mHandle.style.top    = `${Math.max(0, Math.floor(y - (handlerRect.height / 2)))}px`;
+  mHandle.style.top = `${Math.max(0, Math.floor(y - (handleRect.height / 2)))}px`;
 
   // reposition
-  handlerRect = mHandle.getBoundingClientRect();
-  if (handlerRect.left < 0) {
-    mHandle.style.right = '';
-    mHandle.style.left  = 0;
+  handleRect = mHandle.getBoundingClientRect();
+  if (handleRect.left < 0) {
+    mHandle.style.left = `${x + offset}px`;
   }
-  else if (handlerRect.right > window.innerWidth) {
-    mHandle.style.left  = '';
-    mHandle.style.right = 0;
+  else if (handleRect.right > window.innerWidth) {
+    mHandle.style.left = `${x - handleRect.width - offset}px`;
   }
-  if (handlerRect.bottom > window.innerHeight)
-    mHandle.style.top = `${y - handlerRect.height - 1}px`;
+  if (handleRect.bottom > window.innerHeight)
+    mHandle.style.top = `${y - handleRect.height - offset}px`;
 
   mHandle.classList.add('animating');
   mHandle.classList.add('shown');
@@ -191,10 +189,10 @@ function onMouseMove(event) {
   // "pointer-events:none" won't be found by element.closest().
   const dragHandlerRect = mHandle.getBoundingClientRect();
   if (mHandle.classList.contains('shown') &&
-      event.clientX >= dragHandlerRect.left &&
-      event.clientY >= dragHandlerRect.top &&
-      event.clientX <= dragHandlerRect.right &&
-      event.clientY <= dragHandlerRect.bottom) {
+      event.clientX >= dragHandlerRect.left - HANDLE_MARGIN &&
+      event.clientY >= dragHandlerRect.top - HANDLE_MARGIN &&
+      event.clientX <= dragHandlerRect.right + HANDLE_MARGIN &&
+      event.clientY <= dragHandlerRect.bottom + HANDLE_MARGIN) {
     if (mHideTimer) {
       clearTimeout(mHideTimer);
       mHideTimer = null;
