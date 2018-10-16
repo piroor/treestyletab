@@ -35,7 +35,7 @@
 
 :root,
 #background {
-  background: var(--tabbar-bg);
+  background-color: var(--browser-background, var(--tabbar-bg));
   background-image: var(--browser-bg-url, none);
 }
 

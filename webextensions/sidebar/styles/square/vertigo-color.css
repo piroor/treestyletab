@@ -61,7 +61,7 @@
 
 :root,
 #background {
-  background: var(--tab-surface);
+  background-color: var(--browser-background, var(--tab-surface));
   background-image: var(--browser-bg-url, none);
 }
 

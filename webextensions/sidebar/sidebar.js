@@ -282,6 +282,7 @@ function applyBrowserTheme(aTheme) {
   mBrowserThemeDefinition.textContent = `
     ${defaultColors}
     :root {
+      --browser-background:      ${aTheme.colors.accentcolor};
       --browser-bg-base:         ${themeBaseColor};
       --browser-bg-less-lighter: ${Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
       --browser-bg-lighter:      ${toolbarColor};
