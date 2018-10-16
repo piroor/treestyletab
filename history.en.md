@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Search dropped non-URL text by the default search engine, if possible.
    * Hide [unexpectedly exposed dummy elements](https://github.com/piroor/treestyletab/issues/2050) correctly when any custom theme is applied.
  - 2.6.0 (2018.10.16)
    * [Better compatibility with extra context menu commands for tabs added by other addons, on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm) And now imitated context menu have items compatible to Firefox 64 and later.

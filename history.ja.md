@@ -1,6 +1,7 @@
 # 更新履歴
 
  - master/HEAD
+   * 可能であれば、URLでない文字列がドロップされた時に既定の検索エンジンで検索するようにした
    * テーマの配色が反映された時に[ダミー要素が意図せず露出してしまっていた](https://github.com/piroor/treestyletab/issues/2050)のを修正
  - 2.6.0 (2018.10.16)
    * [Firefox 64以降において、タブのコンテキストメニューに機能を追加する他のアドオンとの互換性を向上した](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm)（これに伴い、タブのコンテキストメニューの項目をFirefox 64準拠の内容とした）
