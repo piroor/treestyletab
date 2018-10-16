@@ -129,29 +129,26 @@ function doShow(tab) {
 }
 
 function reserveToShow(tab) {
-  if (mHideTimer) {
-    clearTimeout(mHideTimer);
-    mHideTimer = null;
-  }
   if (mShowTimer) {
     clearTimeout(mShowTimer);
     mShowTimer = null;
   }
+  if (mHideTimer &&
+      mTargetTabId == tab.id) {
+    clearTimeout(mHideTimer);
+    mHideTimer = null;
+  }
   mShowTimer = setTimeout(() => {
+    if (mHideTimer) {
+      clearTimeout(mHideTimer);
+      mHideTimer = null;
+    }
     mShowTimer = null;
     show(tab);
   }, configs.tabDragHandleDelay);
 }
 
 function hide() {
-  if (mShowTimer) {
-    clearTimeout(mShowTimer);
-    mShowTimer = null;
-  }
-  if (show.timer) {
-    clearTimeout(show.timer);
-    delete show.timer;
-  }
   mHandle.classList.add('animating');
   mHandle.classList.remove('shown');
   mTargetTabId = null;
@@ -214,9 +211,11 @@ function onMouseMove(event) {
                       event.clientX <= tabRect.right &&
                       event.clientX >= Math.max(tabRect.left, tabRect.right - areaSize));
     if (onArea) {
-      log('onMouseMove: on sensitive area / show');
-      if (mTargetTabId != tab.id)
+      if (mTargetTabId != tab.id) {
+        log('onMouseMove: on sensitive area / show');
+        reserveToHide();
         reserveToShow(tab);
+      }
     }
     else {
       log('onMouseMove: out of sensitive area / hide');
