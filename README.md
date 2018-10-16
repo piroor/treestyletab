@@ -139,16 +139,7 @@ TST is implemented as just a sidebar panel, so there is no chance to provide hor
 
 ### Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on
 
-Due to WebExtensions API's limitation, it is currently impossible to provide native context menu for tabs on the sidebar. See also:
-
- * [1280347 - Add ability to provide custom HTML elements working as alias of existing Firefox UI items, especially tabs](https://bugzilla.mozilla.org/show_bug.cgi?id=1280347)
- * [1376251 - Allow sidebar extensions access to native tab context menu](https://bugzilla.mozilla.org/show_bug.cgi?id=1376251)
-
-And, there is another bug for accesskey support of context menu items:
-
- * [1320462 - Add ability to set access key to context menu item](https://bugzilla.mozilla.org/show_bug.cgi?id=1320462)
-
-As described at the [migration story of TST](http://piro.sakura.ne.jp/latest/blosxom/mozilla/extension/treestyletab/2017-10-03_migration-we-en.htm#topic2017-10-03_migration-we-en), current context menu in the sidebar is just a workaround, until any genuine WebExtensions feature to do that is landed. So I have very less motivation to improve the fake context menu by myself, sorry...
+[It is available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)
 
 ### [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043) or Waterfox
 
@@ -158,15 +149,10 @@ To keep codes cleaner, I have to remove obsolete codes only for old versions of 
 
 If you require TST for Pale Moon or Waterfox, sorry but please fork this project and rollback to an old revision which can work on them. Actually, there seems to be [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab).
 
-### [Quick access to the configuration dialog](https://github.com/piroor/treestyletab/issues/1020), Adding new minor (trivial) options, and so on
+### Adding new minor (trivial) options more and more
 
-I have no plan to add a custom menu item to go to TST's configuration dialog - sorry but you have to go to the dialog via Firefox's Addons Manager always.
-If the configuration dialog is frequently required in your daily use, there is something implicit problem which must be solved in another way.
-Instead, please describe why you need such a fast pass to the configuration dialog.
-After the actual problem is solved, you won't need such a menu anymore.
-In other words, adding such a menu can disguise fatal problems which really should be solved.
-
-And, high customizability for details of features is out of TST's purpose.
+I won't increase number of configurations inifinitly, instead I hope to reduce them.
+High customizability for details of features is out of TST's purpose.
 I want to provide only very required options which are truly un-omitable.
 Too many optional features will kill this project, because they will cloud the important concept of TST and will bring together people who don't like my core vision about TST.
 Instead, sorry but please fork this project and modify it for your usecase.
@@ -179,19 +165,14 @@ Natural operations for GUI objects shoud be optimized for most major usecases.
 
 Too high customizability for such rare usecases will just make you happy, but others including me won't - they are just confused that "why such too much choices are here?"
 
-### Keyboard shortcuts for TST's custom functions, for example, toggle show/hide of the sidebar, operations to modify tree, and so on
+### Auto hide of the sidebar
 
-Due to limitations of WebExtensions APIs, the keyboard shortcut to toggle show/hide the sidebar (F1) is not changable.
-See also:
+Due to limitations of WebExtensions APIs, it is impossible.
+(But there is [a workaround based on userChrome.css](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#auto-showhide-sidebar-by-mouseover-hover).)
 
- * [1215061 - Better keyboard shortcut support](https://bugzilla.mozilla.org/show_bug.cgi?id=1215061)
- * [1303384 - UI for re-assigning command shortcuts](https://bugzilla.mozilla.org/show_bug.cgi?id=1303384 )
- * [1320332 - Support overriding existing keybinding through WebExtensions](https://bugzilla.mozilla.org/show_bug.cgi?id=1320332)
- * [1348589 - \[commands\] Support dynamic commands](https://bugzilla.mozilla.org/show_bug.cgi?id=1348589)
- * [1421811 - Provide a way for an extension to update the shortcut for its command](https://bugzilla.mozilla.org/show_bug.cgi?id=1421811)
+WebExtensions only allows to toggle visibility of the sidebar for [limited keyboard shortcuts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/commands#Key_combinations) or the toolbar button.
+Other arbitrary timing are disallowed, including `mouseover` and long-press of a key.
 
-And, because Firefox already have [very large number of keyboard shortcuts](https://support.mozilla.org/kb/keyboard-shortcuts-perform-firefox-tasks-quickly), I have no plan to provide various shortcuts for TST's each feature by default.
-In future versions, if generic keyboard shortcut customizability is introduced Firefox, I'll define optional commands for user-defined keyboard shortcuts.
 
 ### High-power management of tree, like [sorting child tabs](https://github.com/piroor/treestyletab/issues/94), [auto-modification of tree](https://github.com/piroor/treestyletab/issues/509), [renaming of tabs](https://github.com/piroor/treestyletab/issues/794), and so on
 
