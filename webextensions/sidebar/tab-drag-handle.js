@@ -164,10 +164,9 @@ function reserveToHide() {
     clearTimeout(mShowTimer);
     mShowTimer = null;
   }
-  if (mHideTimer) {
-    clearTimeout(mHideTimer);
-    mHideTimer = null;
-  }
+  // we don't need to throttle "hide" operation!
+  if (mHideTimer)
+    return;
   mHideTimer = setTimeout(() => {
     mHideTimer = null;
     hide();
