@@ -294,9 +294,9 @@ export function migrateConfigs() {
 }
 
 export async function notifyNewFeatures() {
+  /*
   let featuresVersionOffset = 0;
   const browserInfo = await browser.runtime.getBrowserInfo();
-  /*
   // "search" permission becomes available!
   if (parseInt(browserInfo.version.split('.')[0]) >= 63)
     featuresVersionOffset++;
@@ -305,7 +305,7 @@ export async function notifyNewFeatures() {
     featuresVersionOffset++;
   */
 
-  const featuresVersion = kFEATURES_VERSION + featuresVersionOffset;
+  const featuresVersion = kFEATURES_VERSION /*+ featuresVersionOffset*/;
 
   if (configs.notifiedFeaturesVersion >= featuresVersion)
     return;
