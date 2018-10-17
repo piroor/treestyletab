@@ -250,6 +250,7 @@ export async function initFolderChoolser(anchor, params = {}) {
     item.setAttribute('title', folder.title || browser.i18n.getMessage('bookmarkFolderChooser_blank'));
     item.dataset.id    = folder.id;
     item.dataset.title = folder.title;
+    item.classList.add('folder');
     item.classList.add('radio');
     const container = item.appendChild(document.createElement('ul'));
     const useThisItem = container.appendChild(document.createElement('li'));
@@ -260,18 +261,17 @@ export async function initFolderChoolser(anchor, params = {}) {
   };
 
   const buildItems = (items, container) => {
-    let itemsAdded = false;
     for (const item of items) {
       if (item.type != 'folder')
         continue;
       const folderItem = generateFolderItem(item);
       container.appendChild(folderItem);
-      itemsAdded = true;
       if (item.children.length > 0)
         buildItems(item.children, folderItem.lastChild);
     }
-    if (itemsAdded) {
-      const separator = container.insertBefore(document.createElement('li'), container.firstChild.nextSibling);
+    const firstFolderItem = container.querySelector('.folder');
+    if (firstFolderItem && firstFolderItem.previousSibling) {
+      const separator = container.insertBefore(document.createElement('li'), firstFolderItem);
       separator.classList.add('separator');
     }
   };
