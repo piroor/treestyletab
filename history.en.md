@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.6.1 (2018.10.17)
    * Search dropped non-URL text by the default search engine, if possible.
    * Hide [unexpectedly exposed dummy elements](https://github.com/piroor/treestyletab/issues/2050) correctly when any custom theme is applied.
  - 2.6.0 (2018.10.16)
