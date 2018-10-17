@@ -474,7 +474,8 @@ async function onClick(info, contextApiTab) {
         });
         Tree.behaveAutoAttachedTab(duplicatedTabs[0], {
           baseTab:  sourceTab,
-          behavior: configs.autoAttachOnDuplicated
+          behavior: configs.autoAttachOnDuplicated,
+          broadcast: true
         });
       })();
     case 'context_moveTabToStart': {
@@ -638,7 +639,8 @@ async function onClick(info, contextApiTab) {
         });
         Tree.behaveAutoAttachedTab(tab, {
           baseTab:  contextTabElement,
-          behavior: configs.autoAttachOnDuplicated
+          behavior: configs.autoAttachOnDuplicated,
+          broadcast: true
         });
       }
     }; break;
