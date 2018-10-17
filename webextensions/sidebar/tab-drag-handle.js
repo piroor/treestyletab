@@ -48,15 +48,15 @@ function onConfigChange(key) {
   if (configs.showTabDragHandle) {
     document.addEventListener('mousedown', onMouseDown, true);
     document.addEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-    document.addEventListener('scroll', hide, true);
-    document.addEventListener('click', hide, true);
+    document.addEventListener('scroll', onScroll, true);
+    document.addEventListener('click', onClick, true);
     mListening = true;
   }
   else {
     document.removeEventListener('mousedown', onMouseDown, true);
     document.removeEventListener('mousemove', onMouseMove, { capture: true, passive: true });
-    document.removeEventListener('scroll', hide, true);
-    document.removeEventListener('click', hide, true);
+    document.removeEventListener('scroll', onScroll, true);
+    document.removeEventListener('click', onClick, true);
     mListening = false;
   }
 }
@@ -228,6 +228,24 @@ function onMouseMove(event) {
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
+
+function onScroll() {
+  hide();
+  if (mShowTimer) {
+    clearTimeout(mShowTimer);
+    mShowTimer = null;
+  }
+}
+onScroll = EventUtils.wrapWithErrorHandler(onScroll);
+
+function onClick() {
+  hide();
+  if (mShowTimer) {
+    clearTimeout(mShowTimer);
+    mShowTimer = null;
+  }
+}
+onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function onDragStart(event) {
   // get target tab at first before it is cleared by hide()
