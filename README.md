@@ -198,7 +198,7 @@ In short: shift-dragging of tabs will allow you to drop tabs to the bookmarks to
 From [a change introduced at the bug 1453153 (affects on Firefox 63 and later)](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153), now Firefox doesn't allow addons to provide ability to do "creating bookmarks (or links) by drag and drop of tabs" and "detach a tab to a new window by dropping it outside of the window" in same time - those functionailities are quite exclusive.
 (For more technical details, see [my comment at the issue #2033](https://github.com/piroor/treestyletab/issues/2033#issuecomment-422157577).)
 
-This, now TST provides two different effects to gestures:
+Thus, now TST provides two different effects to gestures:
 
  * Dragging tabs to out of the tab bar: detach dropped tabs to a new window.
  * Shift-dragging tabs to out of the tab bar: create links or bookmarks from dropped tabs.
