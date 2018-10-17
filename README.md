@@ -191,6 +191,24 @@ It provides ability to select multiple tabs by Ctrl-Click or Shift-Click and you
 There is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
 See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) and [details of inspectation for the sidebar contents](https://github.com/piroor/treestyletab/issues/1725#issuecomment-359856516).
 
+### [I cannot drop tabs to the bookmarks toolbar to create bookmarks.](https://github.com/piroor/treestyletab/issues/2033)
+
+In short: shift-dragging of tabs will allow you to drop tabs to the bookmarks toolbar.
+
+From [a change introduced at the bug 1453153 (affects on Firefox 63 and later)](https://bugzilla.mozilla.org/show_bug.cgi?id=1453153), now Firefox doesn't allow addons to provide ability to do "creating bookmarks (or links) by drag and drop of tabs" and "detach a tab to a new window by dropping it outside of the window" in same time - those functionailities are quite exclusive.
+(For more technical details, see [my comment at the issue #2033](https://github.com/piroor/treestyletab/issues/2033#issuecomment-422157577).)
+
+This, now TST provides two different effects to gestures:
+
+ * Dragging tabs to out of the tab bar: detach dropped tabs to a new window.
+ * Shift-dragging tabs to out of the tab bar: create links or bookmarks from dropped tabs.
+
+You can switch these behaviors.
+Go to the "Drag and Drop" section of TST's options page.
+
+For more convenience, a small drag handles will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
+You can start dragging of the tab from one of handles, with specified effect for each without.any modifier key.
+
 ### [Donation](https://github.com/piroor/treestyletab/issues/761)
 
 Thanks, but sorry, I have no plan about any donation from some reasons.
