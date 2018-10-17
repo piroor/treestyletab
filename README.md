@@ -207,7 +207,7 @@ You can switch these behaviors.
 Please go to the "Drag and Drop" section of TST's options page.
 
 For more convenience, a small drag handles will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
-You can start dragging of the tab from one of handles, with specified effect for each without.any modifier key.
+You can start dragging of the tab from one of handles, with specified effect for each without any modifier key.
 
 ### [Donation](https://github.com/piroor/treestyletab/issues/761)
 
