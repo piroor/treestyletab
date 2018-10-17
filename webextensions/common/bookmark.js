@@ -260,16 +260,19 @@ export async function initFolderChoolser(anchor, params = {}) {
   };
 
   const buildItems = (items, container) => {
+    let itemsAdded = false;
     for (const item of items) {
       if (item.type != 'folder')
         continue;
       const folderItem = generateFolderItem(item);
       container.appendChild(folderItem);
-      if (item.children.length > 0) {
-        const separator = folderItem.lastChild.appendChild(document.createElement('li'));
-        separator.classList.add('separator');
+      itemsAdded = true;
+      if (item.children.length > 0)
         buildItems(item.children, folderItem.lastChild);
-      }
+    }
+    if (itemsAdded) {
+      const separator = container.insertBefore(document.createElement('li'), container.firstChild.nextSibling);
+      separator.classList.add('separator');
     }
   };
 
