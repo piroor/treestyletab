@@ -1,7 +1,8 @@
 # History
 
  - master/HEAD
-   * Fix unavailability of context menu commands: duplicate tab, reopen in container, and move to new window.
+ - 2.6.2 (2018.10.18)
+   * Fix unavailability of context menu commands: duplicate tab, reopen in container, and move to new window. (regression on 2.6.0)
    * Never show tab drag handle on the half left or right side of a faviconized tab.
    * Never show tab drag handle after the tab is clicked before the handle is shown.
    * Never show needless separater in bookmark folder chooser.
