@@ -108,7 +108,8 @@ const mItemsById = {
   }
 };
 
-let mNativeContextMenuAvailable = false;
+// Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
+const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
 
 //const SIDEBAR_URL_PATTERN = `moz-extension://${location.host}/*`;
 
@@ -120,10 +121,6 @@ export async function init() {
     browser.runtime.onMessage.removeListener(onMessage);
     browser.runtime.onMessageExternal.removeListener(onExternalMessage);
   }, { once: true });
-
-  // Imitated native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
-  const browserInfo = await browser.runtime.getBrowserInfo();
-  mNativeContextMenuAvailable = parseInt(browserInfo.version.split('.')[0]) >= 64;
 
   for (const id of Object.keys(mItemsById)) {
     const item = mItemsById[id];

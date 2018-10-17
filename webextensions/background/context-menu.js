@@ -19,6 +19,9 @@ function log(...args) {
   internalLogger('background/context-menu', ...args);
 }
 
+// Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
+const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
+
 const mContextMenuItemsById = {};
 const mContextMenuItems = `
   reloadTree:normal
@@ -103,7 +106,7 @@ export async function refreshItems() {
       id,
       type:     item.type,
       checked:  item.checked,
-      title:    item.titleWithoutAccesskey,
+      title:    mNativeContextMenuAvailable ? item.title : item.titleWithoutAccesskey,
       contexts: ['tab'],
       parentId
     });
