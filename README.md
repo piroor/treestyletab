@@ -204,7 +204,7 @@ Thus, now TST provides two different effects to gestures:
  * Shift-dragging tabs to out of the tab bar: create links or bookmarks from dropped tabs.
 
 You can switch these behaviors.
-Go to the "Drag and Drop" section of TST's options page.
+Please go to the "Drag and Drop" section of TST's options page.
 
 For more convenience, a small drag handles will appear when the cursor is hovering on left edge (or right edge for inverted appearance) of a tab for a while.
 You can start dragging of the tab from one of handles, with specified effect for each without.any modifier key.
