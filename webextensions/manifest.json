@@ -9,7 +9,9 @@
     "contextualIdentities",
     "cookies",
     "menus",
+    "menus.overrideContext",
     "notifications",
+    "search",
     "sessions",
     "storage",
     "tabs",
@@ -17,9 +19,7 @@
   ],
   "optional_permissions": [
     "<all_urls>",
-    "bookmarks",
-    "menus.overrideContext",
-    "search"
+    "bookmarks"
   ],
   "icons": {
     "16": "resources/16x16.svg",

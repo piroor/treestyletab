@@ -22,12 +22,4 @@ window.addEventListener('DOMContentLoaded', () => {
     Permissions.BOOKMARKS,
     document.querySelector('#bookmarksPermissionGranted')
   );
-  Permissions.bindToCheckbox(
-    Permissions.SEARCH,
-    document.querySelector('#searchPermissionGranted')
-  );
-  Permissions.bindToCheckbox(
-    Permissions.MENUS_OVERRIDE_CONTEXT,
-    document.querySelector('#menusOverrideContextPermissionGranted')
-  );
 }, { once: true });

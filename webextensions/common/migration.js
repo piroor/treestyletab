@@ -296,12 +296,14 @@ export function migrateConfigs() {
 export async function notifyNewFeatures() {
   let featuresVersionOffset = 0;
   const browserInfo = await browser.runtime.getBrowserInfo();
+  /*
   // "search" permission becomes available!
   if (parseInt(browserInfo.version.split('.')[0]) >= 63)
     featuresVersionOffset++;
   // "menus.overrideContext" permission becomes available!
   if (parseInt(browserInfo.version.split('.')[0]) >= 64)
     featuresVersionOffset++;
+  */
 
   const featuresVersion = kFEATURES_VERSION + featuresVersionOffset;
 
