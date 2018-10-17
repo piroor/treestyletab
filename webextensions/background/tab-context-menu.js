@@ -470,13 +470,11 @@ async function onClick(info, contextApiTab) {
         const duplicatedTabs = await Tree.moveTabs([sourceTab], {
           duplicate:           true,
           destinationWindowId: contextWindowId,
-          insertAfter:         sourceTab,
-          inRemote:            true
+          insertAfter:         sourceTab
         });
         Tree.behaveAutoAttachedTab(duplicatedTabs[0], {
           baseTab:  sourceTab,
-          behavior: configs.autoAttachOnDuplicated,
-          inRemote: true
+          behavior: configs.autoAttachOnDuplicated
         });
       })();
     case 'context_moveTabToStart': {
@@ -509,9 +507,7 @@ async function onClick(info, contextApiTab) {
     }; break;
     case 'context_openTabInWindow':
       if (multiselectedTabs) {
-        Tree.openNewWindowFromTabs(multiselectedTabs, {
-          inRemote:  true
-        });
+        Tree.openNewWindowFromTabs(multiselectedTabs);
       }
       else {
         await browser.windows.create({
@@ -642,8 +638,7 @@ async function onClick(info, contextApiTab) {
         });
         Tree.behaveAutoAttachedTab(tab, {
           baseTab:  contextTabElement,
-          behavior: configs.autoAttachOnDuplicated,
-          inRemote: true
+          behavior: configs.autoAttachOnDuplicated
         });
       }
     }; break;
