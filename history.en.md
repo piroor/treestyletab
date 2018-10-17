@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Never show tab drag handle on the half left or right side of a faviconized tab.
+   * Never show tab drag handle after the tab is clicked before the handle is shown.
+   * Never show needless separater in bookmark folder chooser.
  - 2.6.1 (2018.10.17)
    * Search dropped non-URL text by the default search engine, if possible.
    * Hide [unexpectedly exposed dummy elements](https://github.com/piroor/treestyletab/issues/2050) correctly when any custom theme is applied.
