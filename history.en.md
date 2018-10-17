@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Fix unavailability of context menu commands: duplicate tab, reopen in container, and move to new window.
    * Never show tab drag handle on the half left or right side of a faviconized tab.
    * Never show tab drag handle after the tab is clicked before the handle is shown.
    * Never show needless separater in bookmark folder chooser.
