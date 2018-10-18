@@ -323,6 +323,7 @@
   "config_tabDragBehavior_tearoff_tab":   { "message": "Detach Individual Tab from the window (but impossible to create bookmark)" },
   "config_tabDragBehavior_bookmark_tab":  { "message": "Create link or bookmark from Individual Tab (but impossible to detach from the window)" },
   "config_showTabDragHandle_label":       { "message": "Show drag handle on a edge of each tab, to start dragging for specific purpose" },
+  "config_showTabDragBehaviorNotification_label": { "message": "Show notification about what will happen on tabs dropped outside the sidebar, while tab dragging." },
 
   "config_dropLinksOnTabBehavior_caption": { "message": "When a link or URL string is dropped on a tab" },
   "config_dropLinksOnTabBehavior_ask":     { "message": "Always ask me how to treat it" },
