@@ -103,6 +103,23 @@
   "dropLinksOnTabBehavior_load":    { "message": "このタブに読み込む" },
   "dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
 
+  "tabDragBehaviorNotification_message_duration":  { "message": "15s" },
+
+  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "サイドバー外へのドロップで、すべてのタブが新しいウィンドウとして切り離されます。" },
+  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "サイドバー外へのドロップで、このタブが新しいウィンドウとして切り離されます。" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "サイドバー外へのドロップで、すべてのタブがリンクとして扱われます。ブックマークツールバーにドロップするとブックマークが作成されます。" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "サイドバー外へのドロップで、このタブがリンクとして扱われます。ブックマークツールバーにドロップするとブックマークが作成されます。" },
+
+  "tabDragBehaviorNotification_message_tree_tearoff_inverted_with_shift":  { "message": "すべてのタブをウィンドウから切り離すには、Shiftキーを押しながらドラッグして下さい。" },
+  "tabDragBehaviorNotification_message_tab_tearoff_inverted_with_shift":   { "message": "このタブをウィンドウから切り離すには、Shiftキーを押しながらドラッグして下さい。" },
+  "tabDragBehaviorNotification_message_tree_bookmark_inverted_with_shift": { "message": "すべてのタブからリンクまたはブックマークを作成するには、Shiftキーを押しながらドラッグして下さい。" },
+  "tabDragBehaviorNotification_message_tab_bookmark_inverted_with_shift":  { "message": "このタブからリンクまたはブックマークを作成するには、Shiftキーを押しながらドラッグして下さい。" },
+
+  "tabDragBehaviorNotification_message_tree_tearoff_inverted_without_shift":  { "message": "すべてのタブをウィンドウから切り離すには、Shiftキーを押さずにドラッグして下さい。" },
+  "tabDragBehaviorNotification_message_tab_tearoff_inverted_without_shift":   { "message": "このタブをウィンドウから切り離すには、Shiftキーを押さずにドラッグして下さい。" },
+  "tabDragBehaviorNotification_message_tree_bookmark_inverted_without_shift": { "message": "すべてのタブからリンクまたはブックマークを作成するには、Shiftキーを押さずにドラッグして下さい。" },
+  "tabDragBehaviorNotification_message_tab_bookmark_inverted_without_shift":  { "message": "このタブからリンクまたはブックマークを作成するには、Shiftキーを押さずにドラッグして下さい。" },
+
   "warnOnCloseTabs_message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }

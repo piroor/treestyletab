@@ -88,6 +88,8 @@ let mLastDropPosition      = null;
 let mDragTargetIsClosebox  = false;
 let mCurrentDragData       = null;
 
+let mDragBehaviorNotification;
+
 export function init() {
   document.addEventListener('dragstart', onDragStart); // eslint-disable-line no-use-before-define
   document.addEventListener('dragover', onDragOver);
@@ -97,6 +99,8 @@ export function init() {
   document.addEventListener('drop', onDrop);
 
   browser.runtime.onMessage.addListener(onMessage);
+
+  mDragBehaviorNotification = document.getElementById('tab-drag-notification');
 }
 
 
@@ -766,8 +770,37 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   // See also: https://github.com/piroor/treestyletab/issues/1778#issuecomment-404569842
   mFinishCanceledDragOperation = setTimeout(finishDrag, 250);
 
+  if (!('behavior' in options) &&
+      configs.showTabDragBehaviorNotification) {
+    const currentBehavior = event.shiftKey ? configs.tabDragBehaviorShift : configs.tabDragBehavior;
+    const invertedBehavior = event.shiftKey ? configs.tabDragBehavior : configs.tabDragBehaviorShift;
+    const invertSuffix = event.shiftKey ? 'without_shift' : 'with_shift';
+    mDragBehaviorNotification.firstChild.textContent = [
+      browser.i18n.getMessage(`tabDragBehaviorNotification_message_${getTabDragBehaviorNotificationMessageKeySuffix(currentBehavior, dragData.tabNodes.length)}`),
+      browser.i18n.getMessage(`tabDragBehaviorNotification_message_${getTabDragBehaviorNotificationMessageKeySuffix(invertedBehavior, dragData.tabNodes.length)}_inverted_${invertSuffix}`)
+    ].join('\n');
+    mDragBehaviorNotification.firstChild.style.animationDuration = browser.i18n.getMessage('tabDragBehaviorNotification_message_duration');
+    mDragBehaviorNotification.classList.remove('hiding');
+    mDragBehaviorNotification.classList.add('shown');
+  }
+
   log('onDragStart: started');
 });
+
+function getTabDragBehaviorNotificationMessageKeySuffix(behavior, count) {
+  if (behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE && count > 1) {
+    if (behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
+      return 'tree_bookmark';
+    else
+      return 'tree_tearoff';
+  }
+  else {
+    if (behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
+      return 'tab_bookmark';
+    else
+      return 'tab_tearoff';
+  }
+}
 
 let mLastDragOverTimestamp = null;
 
@@ -1047,6 +1080,12 @@ onDragEnd = EventUtils.wrapWithErrorHandler(onDragEnd);
 function finishDrag() {
   log('finishDrag');
   clearDraggingTabsState();
+
+  mDragBehaviorNotification.classList.add('hiding');
+  mDragBehaviorNotification.classList.remove('shown');
+  setTimeout(() => {
+    mDragBehaviorNotification.classList.remove('hiding');
+  }, configs.collapseDuration);
 
   mDraggingOnSelfWindow = false;
 

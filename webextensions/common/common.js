@@ -95,6 +95,7 @@ export const configs = new Configs({
   showTabDragHandle:    false,
   tabDragBehavior:      Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
   tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
+  showTabDragBehaviorNotification: true,
 
 
   // grouping
