@@ -68,20 +68,21 @@ export async function refreshItems() {
     params: kROOT_ITEM
   }, browser.runtime);
 
+  const manifest = browser.runtime.getManifest();
   const parentId = await browser.menus.create({
     id:       kROOT_ITEM,
     type:     'normal',
     contexts: ['tab'],
-    title:    browser.runtime.getManifest().name,
-    icons:    browser.runtime.getManifest().icons
+    title:    manifest.name,
+    icons:    manifest.icons
   });
   TabContextMenu.onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: {
       id:       kROOT_ITEM,
       contexts: ['tab'],
-      title:    browser.runtime.getManifest().name,
-      icons:    browser.runtime.getManifest().icons
+      title:    manifest.name,
+      icons:    manifest.icons
     }
   }, browser.runtime);
 
