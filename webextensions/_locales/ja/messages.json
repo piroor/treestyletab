@@ -104,21 +104,22 @@
   "dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
 
   "tabDragBehaviorNotification_message_duration":  { "message": "15s" },
-
-  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "サイドバー外へのドロップで、すべてのタブがウィンドウから切り離されます。" },
-  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "サイドバー外へのドロップで、このタブがウィンドウから切り離されます。" },
-  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "サイドバー外へのドロップですべてのタブがリンクとして扱われ、ブックマークを作成できます。" },
-  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "サイドバー外へのドロップでこのタブがリンクとして扱われ、ブックマークを作成できます。" },
-
-  "tabDragBehaviorNotification_message_tree_tearoff_inverted_with_shift":  { "message": "すべてのタブをウィンドウから切り離すには、Shiftキーを押しながらドラッグして下さい。" },
-  "tabDragBehaviorNotification_message_tab_tearoff_inverted_with_shift":   { "message": "このタブをウィンドウから切り離すには、Shiftキーを押しながらドラッグして下さい。" },
-  "tabDragBehaviorNotification_message_tree_bookmark_inverted_with_shift": { "message": "すべてのタブからリンクまたはブックマークを作成するには、Shiftキーを押しながらドラッグして下さい。" },
-  "tabDragBehaviorNotification_message_tab_bookmark_inverted_with_shift":  { "message": "このタブからリンクまたはブックマークを作成するには、Shiftキーを押しながらドラッグして下さい。" },
-
-  "tabDragBehaviorNotification_message_tree_tearoff_inverted_without_shift":  { "message": "すべてのタブをウィンドウから切り離すには、Shiftキーを押さずにドラッグして下さい。" },
-  "tabDragBehaviorNotification_message_tab_tearoff_inverted_without_shift":   { "message": "このタブをウィンドウから切り離すには、Shiftキーを押さずにドラッグして下さい。" },
-  "tabDragBehaviorNotification_message_tree_bookmark_inverted_without_shift": { "message": "すべてのタブからリンクまたはブックマークを作成するには、Shiftキーを押さずにドラッグして下さい。" },
-  "tabDragBehaviorNotification_message_tab_bookmark_inverted_without_shift":  { "message": "このタブからリンクまたはブックマークを作成するには、Shiftキーを押さずにドラッグして下さい。" },
+  "tabDragBehaviorNotification_message_base":  { "message": "サイドバー外へのドロップで、$RESULT$。",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_inverted_base_with_shift":  { "message": "Shiftキーを押しながらドラッグ開始すると、$RESULT$。",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_inverted_base_without_shift":  { "message": "Shiftキーを押さずにドラッグ開始すると、$RESULT$。",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "すべてのタブがウィンドウから切り離されます" },
+  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "このタブがウィンドウから切り離されます" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "すべてのタブからリンクまたはブックマークが作成されます" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "このタブからリンクまたはブックマークが作成されます" },
 
   "warnOnCloseTabs_message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
     "placeholders": {

@@ -103,22 +103,23 @@
   "dropLinksOnTabBehavior_load":    { "message": "Load to this tab" },
   "dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
 
-  "tabDragBehaviorNotification_message_duration":  { "message": "20s" },
-
-  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "Dropping outside of sidebar will detach tabs to a new window." },
-  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "Dropping outside of sidebar will detach this tab to a new window." },
-  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "Dropping outside of sidebar will treat tabs as links, and will create bookmarks in the toolbar." },
-  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "Dropping outside of sidebar will treat this tab as a link, and will create a bookmark in the toolbar." },
-
-  "tabDragBehaviorNotification_message_tree_tearoff_inverted_with_shift":  { "message": "To detach tabs from window, start dragging with Shift key." },
-  "tabDragBehaviorNotification_message_tab_tearoff_inverted_with_shift":   { "message": "To detach the tab from window, start dragging with Shift key." },
-  "tabDragBehaviorNotification_message_tree_bookmark_inverted_with_shift": { "message": "To create links of bookmarks from tabs, start dragging with Shift key." },
-  "tabDragBehaviorNotification_message_tab_bookmark_inverted_with_shift":  { "message": "To create a link of bookmark from the tab, start dragging with Shift key." },
-
-  "tabDragBehaviorNotification_message_tree_tearoff_inverted_without_shift":  { "message": "To detach tabs from window, start dragging without Shift key." },
-  "tabDragBehaviorNotification_message_tab_tearoff_inverted_without_shift":   { "message": "To detach the tab from window, start dragging without Shift key." },
-  "tabDragBehaviorNotification_message_tree_bookmark_inverted_without_shift": { "message": "To create links of bookmarks from tabs, start dragging without Shift key." },
-  "tabDragBehaviorNotification_message_tab_bookmark_inverted_without_shift":  { "message": "To create a link of bookmark from the tab, start dragging without Shift key." },
+  "tabDragBehaviorNotification_message_duration":  { "message": "15s" },
+  "tabDragBehaviorNotification_message_base":  { "message": "Dropping to outside of sidebar will $RESULT$.",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_inverted_base_with_shift":  { "message": "Shift-drag will $RESULT$.",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_inverted_base_without_shift":  { "message": "Dragging without Shift key will $RESULT$.",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "detach tabs from window" },
+  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "detach the tab from window" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "create links of bookmarks from tabs" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "create a link of bookmark from the tab" },
 
   "warnOnCloseTabs_message":   { "message": "You are about to close $NUMBER$ tabs. Are you sure you want to continue?",
     "placeholders": {

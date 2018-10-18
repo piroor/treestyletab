@@ -774,10 +774,15 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
       configs.showTabDragBehaviorNotification) {
     const currentBehavior = event.shiftKey ? configs.tabDragBehaviorShift : configs.tabDragBehavior;
     const invertedBehavior = event.shiftKey ? configs.tabDragBehavior : configs.tabDragBehaviorShift;
-    const invertSuffix = event.shiftKey ? 'without_shift' : 'with_shift';
+    const count            = dragData.tabNodes.length;
+    const currentResult    = getTabDragBehaviorNotificationMessageType(currentBehavior, count);
+    const invertedResult   = getTabDragBehaviorNotificationMessageType(invertedBehavior, count);
+    const invertSuffix     = event.shiftKey ? 'without_shift' : 'with_shift';
     mDragBehaviorNotification.firstChild.textContent = [
-      browser.i18n.getMessage(`tabDragBehaviorNotification_message_${getTabDragBehaviorNotificationMessageKeySuffix(currentBehavior, dragData.tabNodes.length)}`),
-      browser.i18n.getMessage(`tabDragBehaviorNotification_message_${getTabDragBehaviorNotificationMessageKeySuffix(invertedBehavior, dragData.tabNodes.length)}_inverted_${invertSuffix}`)
+      browser.i18n.getMessage(`tabDragBehaviorNotification_message_base`, [
+        browser.i18n.getMessage(`tabDragBehaviorNotification_message_${currentResult}`)]),
+      browser.i18n.getMessage(`tabDragBehaviorNotification_message_inverted_base_${invertSuffix}`, [
+        browser.i18n.getMessage(`tabDragBehaviorNotification_message_${invertedResult}`)]),
     ].join('\n');
     mDragBehaviorNotification.firstChild.style.animationDuration = browser.i18n.getMessage('tabDragBehaviorNotification_message_duration');
     mDragBehaviorNotification.classList.remove('hiding');
@@ -787,7 +792,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   log('onDragStart: started');
 });
 
-function getTabDragBehaviorNotificationMessageKeySuffix(behavior, count) {
+function getTabDragBehaviorNotificationMessageType(behavior, count) {
   if (behavior & Constants.kDRAG_BEHAVIOR_WHOLE_TREE && count > 1) {
     if (behavior & Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK)
       return 'tree_bookmark';
