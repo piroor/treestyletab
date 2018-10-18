@@ -54,21 +54,6 @@ export async function init() {
   onInit.dispatch();
   SidebarStatus.startWatchOpenState();
 
-  browser.runtime.getBrowserInfo().then(browserInfo => {
-    // This section should be removed and define those context-fill icons
-    // statically on manifest.json after Firefox ESR66 (or 67) is released.
-    // See also: https://github.com/piroor/treestyletab/issues/2053
-    if (parseInt(browserInfo.version.split('.')[0]) >= 62)
-      browser.browserAction.setIcon({
-        path: {
-          16: '/resources/16x16.svg',
-          20: '/resources/20x20.svg',
-          24: '/resources/24x24.svg',
-          32: '/resources/32x32.svg'
-        }
-      });
-  });
-
   await configs.$loaded;
   MetricsData.add('configs.$loaded');
 
@@ -507,3 +492,17 @@ Tree.onDetached.addListener(async (tab, detachInfo) => {
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 
+// This section should be removed and define those context-fill icons
+// statically on manifest.json after Firefox ESR66 (or 67) is released.
+// See also: https://github.com/piroor/treestyletab/issues/2053
+browser.runtime.getBrowserInfo().then(browserInfo => {
+  if (parseInt(browserInfo.version.split('.')[0]) >= 62)
+    browser.browserAction.setIcon({
+      path: {
+        16: '/resources/16x16.svg',
+        20: '/resources/20x20.svg',
+        24: '/resources/24x24.svg',
+        32: '/resources/32x32.svg'
+      }
+    });
+});
