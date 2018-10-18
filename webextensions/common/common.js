@@ -92,7 +92,7 @@ export const configs = new Configs({
 
   dropLinksOnTabBehavior: Constants.kDROPLINK_ASK,
 
-  showTabDragHandle:    true,
+  showTabDragHandle:    false,
   tabDragBehavior:      Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
   tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
 
