@@ -2,6 +2,7 @@
 
  - master/HEAD
    * Reintroduce "Bookmark All Tabs" and "Reload All Tabs" for Firefox 62 and older.
+   * Apply theme color to toolbar button icon only when it is intentionally activated with `svg.context-properties.content.enabled` = `true`.
  - 2.6.3 (2018.10.18)
    * Show notification message at bottom of the sidebar to describe what will happen when you drop tabs outside of the sidebar, while you are dragging tabs.
    * Deactivate tab drag handle by default.
