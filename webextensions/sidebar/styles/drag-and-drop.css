@@ -120,8 +120,12 @@
   z-index: 2000;
 }
 
+#tab-drag-handle:not(.shown),
 #tab-drag-handle.animating {
   pointer-events: none;
+}
+
+#tab-drag-handle.animating {
   transition: box-shadow var(--collapse-animation),
               opacity    var(--collapse-animation);
 }
