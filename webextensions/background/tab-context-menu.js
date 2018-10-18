@@ -56,15 +56,6 @@ const mItemsById = {
   'context_separator:afterDuplicate': {
     type: 'separator'
   },
-  'context_bookmarkAllTabs': {
-    title: browser.i18n.getMessage('tabContextMenu_bookmarkAll_label')
-  },
-  'context_reloadAllTabs': {
-    title: browser.i18n.getMessage('tabContextMenu_reloadAll_label')
-  },
-  'context_separator:afterReloadAll': {
-    type: 'separator'
-  },
   'context_selectAllTabs': {
     title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
   },
@@ -92,6 +83,15 @@ const mItemsById = {
     title:    browser.i18n.getMessage('tabContextMenu_tearOff_label')
   },
   'context_separator:afterSendTab': {
+    type: 'separator'
+  },
+  'context_bookmarkAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_bookmarkAll_label')
+  },
+  'context_reloadAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_reloadAll_label')
+  },
+  'context_separator:afterReloadAll': {
     type: 'separator'
   },
   'context_closeTabOptions': {
@@ -320,18 +320,6 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
-  // workaround for https://github.com/piroor/treestyletab/issues/2056
-  updateItem('context_bookmarkAllTabs', {
-    visible: !mNativeMultiselectionAvailable && ++visibleItemsCount
-  }) && modifiedItemsCount++;
-  updateItem('context_reloadAllTabs', {
-    visible: !mNativeMultiselectionAvailable && ++visibleItemsCount
-  }) && modifiedItemsCount++;
-  updateItem('context_separator:afterReloadAll', {
-    visible: !mNativeMultiselectionAvailable && visibleItemsCount > 0
-  }) && modifiedItemsCount++;
-  visibleItemsCount = 0;
-
   updateItem('context_selectAllTabs', {
     visible: mNativeMultiselectionAvailable && isTSTSidebar && ++visibleItemsCount,
     enabled: !contextApiTab || Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
@@ -384,6 +372,18 @@ async function onShown(info, contextApiTab) {
 
   updateItem('context_separator:afterSendTab', {
     visible: isTSTSidebar && contextApiTab && visibleItemsCount > 0
+  }) && modifiedItemsCount++;
+  visibleItemsCount = 0;
+
+  // workaround for https://github.com/piroor/treestyletab/issues/2056
+  updateItem('context_bookmarkAllTabs', {
+    visible: !mNativeMultiselectionAvailable && ++visibleItemsCount
+  }) && modifiedItemsCount++;
+  updateItem('context_reloadAllTabs', {
+    visible: !mNativeMultiselectionAvailable && ++visibleItemsCount
+  }) && modifiedItemsCount++;
+  updateItem('context_separator:afterReloadAll', {
+    visible: !mNativeMultiselectionAvailable && visibleItemsCount > 0
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
