@@ -496,13 +496,16 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpda
 // statically on manifest.json after Firefox ESR66 (or 67) is released.
 // See also: https://github.com/piroor/treestyletab/issues/2053
 browser.runtime.getBrowserInfo().then(browserInfo => {
-  if (parseInt(browserInfo.version.split('.')[0]) >= 62)
-    browser.browserAction.setIcon({
+  if (parseInt(browserInfo.version.split('.')[0]) >= 62) {
+    const icons = {
       path: {
         16: '/resources/16x16.svg',
         20: '/resources/20x20.svg',
         24: '/resources/24x24.svg',
         32: '/resources/32x32.svg'
       }
-    });
+    };
+    browser.browserAction.setIcon(icons);
+    browser.sidebarAction.setIcon(icons);
+  }
 });
