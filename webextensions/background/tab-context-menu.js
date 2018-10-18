@@ -56,6 +56,9 @@ const mItemsById = {
   'context_separator:afterDuplicate': {
     type: 'separator'
   },
+  'context_bookmarkSelected': {
+    title: browser.i18n.getMessage('tabContextMenu_bookmarkSelected_label')
+  },
   'context_selectAllTabs': {
     title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
   },
@@ -320,13 +323,16 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
+  updateItem('context_bookmarkSelected', {
+    visible: isTSTSidebar && !contextApiTab && mNativeMultiselectionAvailable && ++visibleItemsCount
+  }) && modifiedItemsCount++;
   updateItem('context_selectAllTabs', {
     visible: mNativeMultiselectionAvailable && isTSTSidebar && ++visibleItemsCount,
     enabled: !contextApiTab || Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: isTSTSidebar && (contextApiTab || mNativeMultiselectionAvailable) && ++visibleItemsCount,
+    visible: isTSTSidebar && contextApiTab && ++visibleItemsCount,
     multiselected: multiselected || !contextApiTab
   }) && modifiedItemsCount++;
   const showContextualIdentities = contextApiTab && mContextualIdentityItems.size > 2;

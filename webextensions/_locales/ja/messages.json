@@ -445,6 +445,7 @@
   "tabContextMenu_moveTab_label_multiselected": { "message": "選択したタブを移動(&V)" },
 
   "tabContextMenu_bookmark_label_multiselected": { "message": "タブをブックマーク(&B)…" },
+  "tabContextMenu_bookmarkSelected_label":       { "message": "選択したタブをブックマーク(&T)…" },
 
   "tabContextMenu_close_label_multiselected":       { "message": "選択したタブを閉じる(&S)" }
 }
