@@ -56,6 +56,15 @@ const mItemsById = {
   'context_separator:afterDuplicate': {
     type: 'separator'
   },
+  'context_bookmarkAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_bookmarkAll_label')
+  },
+  'context_reloadAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_reloadAll_label')
+  },
+  'context_separator:afterReloadAll': {
+    type: 'separator'
+  },
   'context_selectAllTabs': {
     title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
   },
@@ -110,6 +119,7 @@ const mItemsById = {
 
 // Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
 const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
+const mNativeMultiselectionAvailable = mNativeContextMenuAvailable;
 
 //const SIDEBAR_URL_PATTERN = `moz-extension://${location.host}/*`;
 
@@ -277,7 +287,7 @@ async function onShown(info, contextApiTab) {
   /* eslint-disable no-unused-expressions */
 
   updateItem('context_reloadTab', {
-    visible: isTSTSidebar && ++visibleItemsCount,
+    visible: isTSTSidebar && (contextApiTab || mNativeMultiselectionAvailable) && ++visibleItemsCount,
     multiselected: multiselected || !contextApiTab
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
@@ -306,13 +316,25 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
+  // workaround for https://github.com/piroor/treestyletab/issues/2056
+  updateItem('context_bookmarkAllTabs', {
+    visible: !mNativeMultiselectionAvailable && ++visibleItemsCount
+  }) && modifiedItemsCount++;
+  updateItem('context_reloadAllTabs', {
+    visible: !mNativeMultiselectionAvailable && ++visibleItemsCount
+  }) && modifiedItemsCount++;
+  updateItem('context_separator:afterReloadAll', {
+    visible: !mNativeMultiselectionAvailable && visibleItemsCount > 0
+  }) && modifiedItemsCount++;
+  visibleItemsCount = 0;
+
   updateItem('context_selectAllTabs', {
-    visible: isTSTSidebar && ++visibleItemsCount,
+    visible: mNativeMultiselectionAvailable && isTSTSidebar && ++visibleItemsCount,
     enabled: !contextApiTab || Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: isTSTSidebar && ++visibleItemsCount,
+    visible: isTSTSidebar && (contextApiTab || mNativeMultiselectionAvailable) && ++visibleItemsCount,
     multiselected: multiselected || !contextApiTab
   }) && modifiedItemsCount++;
   const showContextualIdentities = contextApiTab && mContextualIdentityItems.size > 2;
@@ -569,6 +591,12 @@ async function onClick(info, contextApiTab) {
             ]),
             icon:    Constants.kNOTIFICATION_DEFAULT_ICON
           });
+      }
+    }; break;
+    case 'context_reloadAllTabs': {
+      const apiTabs = await browser.tabs.query({ windowId: contextWindowId }) ;
+      for (const apiTab of apiTabs) {
+        browser.tabs.reload(apiTab.id);
       }
     }; break;
     case 'context_closeTabsToTheEnd': {
