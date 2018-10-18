@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Match color of icon for toolbar button and sidebar panel switcher to the current theme on Firefox 62 and later.
  - 2.6.2 (2018.10.18)
    * Fix unavailability of context menu commands: duplicate tab, reopen in container, and move to new window. (regression on 2.6.0)
    * Never show tab drag handle on the half left or right side of a faviconized tab.
