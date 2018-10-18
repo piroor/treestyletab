@@ -119,7 +119,7 @@ const mItemsById = {
 
 // Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
 const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
-const mNativeMultiselectionAvailable = mNativeContextMenuAvailable;
+let mNativeMultiselectionAvailable = true;
 
 //const SIDEBAR_URL_PATTERN = `moz-extension://${location.host}/*`;
 
@@ -131,6 +131,10 @@ export async function init() {
     browser.runtime.onMessage.removeListener(onMessage);
     browser.runtime.onMessageExternal.removeListener(onExternalMessage);
   }, { once: true });
+
+  browser.runtime.getBrowserInfo().then(browserInfo => {
+    mNativeMultiselectionAvailable = parseInt(browserInfo.version.split('.')[0]) >= 63;
+  });
 
   for (const id of Object.keys(mItemsById)) {
     const item = mItemsById[id];
