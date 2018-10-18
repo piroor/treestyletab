@@ -105,10 +105,10 @@
 
   "tabDragBehaviorNotification_message_duration":  { "message": "15s" },
 
-  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "サイドバー外へのドロップで、すべてのタブが新しいウィンドウとして切り離されます。" },
-  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "サイドバー外へのドロップで、このタブが新しいウィンドウとして切り離されます。" },
-  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "サイドバー外へのドロップで、すべてのタブがリンクとして扱われます。ブックマークツールバーにドロップするとブックマークが作成されます。" },
-  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "サイドバー外へのドロップで、このタブがリンクとして扱われます。ブックマークツールバーにドロップするとブックマークが作成されます。" },
+  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "サイドバー外へのドロップで、すべてのタブがウィンドウから切り離されます。" },
+  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "サイドバー外へのドロップで、このタブがウィンドウから切り離されます。" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "サイドバー外へのドロップですべてのタブがリンクとして扱われ、ブックマークを作成できます。" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "サイドバー外へのドロップでこのタブがリンクとして扱われ、ブックマークを作成できます。" },
 
   "tabDragBehaviorNotification_message_tree_tearoff_inverted_with_shift":  { "message": "すべてのタブをウィンドウから切り離すには、Shiftキーを押しながらドラッグして下さい。" },
   "tabDragBehaviorNotification_message_tab_tearoff_inverted_with_shift":   { "message": "このタブをウィンドウから切り離すには、Shiftキーを押しながらドラッグして下さい。" },
