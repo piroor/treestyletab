@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.6.3 (2018.10.18)
    * Show notification message at bottom of the sidebar to describe what will happen when you drop tabs outside of the sidebar, while you are dragging tabs.
    * Deactivate tab drag handle by default.
    * Match color of icon for toolbar button and sidebar panel switcher to the current theme on Firefox 62 and later.
