@@ -360,6 +360,8 @@
   "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Kei&ne Tab-Umgebung" },
   "tabContextMenu_tearOff_label":     { "message": "I&n neues Fenster verschieben" },
 
+  "tabContextMenu_reloadAll_label":   { "message": "Alle &Tabs neu laden" },
+  "tabContextMenu_bookmarkAll_label": { "message": "&Lesezeichen für alle Tabs hinzufügen…" },
   "tabContextMenu_closeAfter_label":  { "message": "&Rechte Tabs schließen" },
   "tabContextMenu_closeOther_label":  { "message": "&Andere Tabs schließen" },
 

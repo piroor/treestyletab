@@ -350,6 +350,8 @@
   "tabContextMenu_duplicate_label":   { "message": "Дублировать вкладку" },
   "tabContextMenu_tearOff_label":     { "message": "Переместить в новое окно" },
 
+  "tabContextMenu_reloadAll_label":   { "message": "Обновить все вкладки" },
+  "tabContextMenu_bookmarkAll_label": { "message": "Добавить все вкл. в закладки…" },
   "tabContextMenu_closeAfter_label":  { "message": "Закрыть вкладки справа" },
   "tabContextMenu_closeOther_label":  { "message": "Закрыть другие вкладки" },
 
