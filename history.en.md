@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Show notification message at bottom of the sidebar to describe what will happen when you drop tabs outside of the sidebar, while you are dragging tabs.
+   * Deactivate tab drag handle by default.
    * Match color of icon for toolbar button and sidebar panel switcher to the current theme on Firefox 62 and later.
  - 2.6.2 (2018.10.18)
    * Fix unavailability of context menu commands: duplicate tab, reopen in container, and move to new window. (regression on 2.6.0)
