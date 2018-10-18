@@ -211,6 +211,7 @@
   "config_faviconizePinnedTabs_label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
+  "config_applyThemeColorToIcon_label": { "message": "ツールバーのボタンにテーマの配色を反映する（※Firefox 62以降で、「about:config」で「svg.context-properties.content.enabled」を「true」に設定する必要があります）" },
 
 
   "config_context_caption": { "message": "コンテキストメニュー" },

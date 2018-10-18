@@ -495,10 +495,17 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpda
 // This section should be removed and define those context-fill icons
 // statically on manifest.json after Firefox ESR66 (or 67) is released.
 // See also: https://github.com/piroor/treestyletab/issues/2053
-browser.runtime.getBrowserInfo().then(browserInfo => {
-  if (parseInt(browserInfo.version.split('.')[0]) >= 62) {
+async function applyThemeColorToIcon() {
+  const browserInfo = await browser.runtime.getBrowserInfo();
+  if (configs.applyThemeColorToIcon &&
+      parseInt(browserInfo.version.split('.')[0]) >= 62) {
     const icons = { path: browser.runtime.getManifest().variable_color_icons };
     browser.browserAction.setIcon(icons);
     browser.sidebarAction.setIcon(icons);
   }
+}
+configs.$addObserver(key => {
+  if (key == 'applyThemeColorToIcon')
+    applyThemeColorToIcon();
 });
+configs.$loaded.then(applyThemeColorToIcon);

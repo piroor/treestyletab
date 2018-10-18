@@ -215,6 +215,7 @@
   "config_faviconizePinnedTabs_label": { "message": "Show pinned tabs only with their icon" },
   "config_animation_label": { "message": "Enable animation effects" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Show collapsed descendants in the tooltip on a tab" },
+  "config_applyThemeColorToIcon_label": { "message": "Apply theme color to the toolbar button (*You need to set \"svg.context-properties.content.enabled\" to \"true\" via \"about:config\" on Firefox 62 or later)" },
 
 
   "config_context_caption": { "message": "Context Menu" },
