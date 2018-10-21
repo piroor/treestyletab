@@ -200,8 +200,8 @@ From [a change introduced at the bug 1453153 (affects on Firefox 63 and later)](
 
 Thus, now TST provides two different effects to gestures:
 
- * Dragging tabs to out of the tab bar: detach dropped tabs to a new window.
- * Shift-dragging tabs to out of the tab bar: create links or bookmarks from dropped tabs.
+ * Dragging tabs to out of the tab bar: detach dropped tabs to a new window. You cannot drop tabs to the bookmark toolbar.
+ * Shift-dragging tabs to out of the tab bar: create links to the desktop from dropped tabs. You can drop tabs to the bookmark toolbar to create bookmarks.
 
 You can switch these behaviors.
 Please go to the "Drag and Drop" section of TST's options page.
