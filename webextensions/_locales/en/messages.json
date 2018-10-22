@@ -103,7 +103,7 @@
   "dropLinksOnTabBehavior_load":    { "message": "Load to this tab" },
   "dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
 
-  "tabDragBehaviorNotification_message_duration":  { "message": "18s" },
+  "tabDragBehaviorNotification_message_duration":  { "message": "16s" },
   "tabDragBehaviorNotification_message_base":  { "message": "Dropping to outside of sidebar will $RESULT$.",
     "placeholders": {
       "result": { "content": "$1", "example": "something happen" }
@@ -118,8 +118,8 @@
     }},
   "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "detach tabs from window" },
   "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "detach the tab from window" },
-  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "create links on the desktop from tabs, or create bookmarks on the bookmarks toolbar" },
-  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "create a link on the desktop from the tab, or create a bookmark on the bookmarks toolbar" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "create links or bookmarks at the place tabs are dropped to" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "create a link or a bookmark at the place the tab is dropped to" },
 
   "warnOnCloseTabs_message":   { "message": "You are about to close $NUMBER$ tabs. Are you sure you want to continue?",
     "placeholders": {

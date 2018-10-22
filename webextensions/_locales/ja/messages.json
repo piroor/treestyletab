@@ -103,7 +103,7 @@
   "dropLinksOnTabBehavior_load":    { "message": "このタブに読み込む" },
   "dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
 
-  "tabDragBehaviorNotification_message_duration":  { "message": "18s" },
+  "tabDragBehaviorNotification_message_duration":  { "message": "16s" },
   "tabDragBehaviorNotification_message_base":  { "message": "サイドバー外へのドロップで、$RESULT$。",
     "placeholders": {
       "result": { "content": "$1", "example": "something happen" }
@@ -118,8 +118,8 @@
     }},
   "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "すべてのタブがウィンドウから切り離されます" },
   "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "このタブがウィンドウから切り離されます" },
-  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "デスクトップ上ではすべてのタブからリンクが作成され、ブックマークツールバー上ではブックマークが作成されます" },
-  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "デスクトップ上ではこのタブからリンクが作成され、ブックマークツールバー上ではブックマークが作成されます" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "ドロップ位置にすべてのタブからリンクまたはブックマークが作成されます" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "ドロップ位置にこのタブからリンクまたはブックマークが作成されます" },
 
   "warnOnCloseTabs_message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
     "placeholders": {
