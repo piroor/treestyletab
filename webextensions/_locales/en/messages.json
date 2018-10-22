@@ -118,8 +118,8 @@
     }},
   "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "detach tabs from window" },
   "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "detach the tab from window" },
-  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "create links of bookmarks from tabs" },
-  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "create a link of bookmark from the tab" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "create links on the desktop from tabs, or create bookmarks on the bookmarks toolbar" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "create a link on the desktop from the tab, or create a bookmark on the bookmarks toolbar" },
 
   "warnOnCloseTabs_message":   { "message": "You are about to close $NUMBER$ tabs. Are you sure you want to continue?",
     "placeholders": {

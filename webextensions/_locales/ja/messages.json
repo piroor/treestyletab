@@ -118,8 +118,8 @@
     }},
   "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "すべてのタブがウィンドウから切り離されます" },
   "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "このタブがウィンドウから切り離されます" },
-  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "すべてのタブからリンクまたはブックマークが作成されます" },
-  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "このタブからリンクまたはブックマークが作成されます" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "デスクトップ上ではすべてのタブからリンクが作成され、ブックマークツールバー上ではブックマークが作成されます" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "デスクトップ上ではこのタブからリンクが作成され、ブックマークツールバー上ではブックマークが作成されます" },
 
   "warnOnCloseTabs_message":   { "message": "複数 ($NUMBER$) のタブを閉じようとしています。すべてのタブを閉じてよろしいですか？",
     "placeholders": {
