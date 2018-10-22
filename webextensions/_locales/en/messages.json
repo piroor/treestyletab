@@ -103,7 +103,7 @@
   "dropLinksOnTabBehavior_load":    { "message": "Load to this tab" },
   "dropLinksOnTabBehavior_newtab":  { "message": "Open new child tab" },
 
-  "tabDragBehaviorNotification_message_duration":  { "message": "15s" },
+  "tabDragBehaviorNotification_message_duration":  { "message": "18s" },
   "tabDragBehaviorNotification_message_base":  { "message": "Dropping to outside of sidebar will $RESULT$.",
     "placeholders": {
       "result": { "content": "$1", "example": "something happen" }

@@ -103,7 +103,7 @@
   "dropLinksOnTabBehavior_load":    { "message": "このタブに読み込む" },
   "dropLinksOnTabBehavior_newtab":  { "message": "新しい子タブで開く" },
 
-  "tabDragBehaviorNotification_message_duration":  { "message": "15s" },
+  "tabDragBehaviorNotification_message_duration":  { "message": "18s" },
   "tabDragBehaviorNotification_message_base":  { "message": "サイドバー外へのドロップで、$RESULT$。",
     "placeholders": {
       "result": { "content": "$1", "example": "something happen" }
