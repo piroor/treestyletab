@@ -124,7 +124,7 @@ const mItemsById = {
 const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
 let mNativeMultiselectionAvailable = true;
 
-const SIDEBAR_URL_PATTERN = `moz-extension://${location.host}/*`;
+const SIDEBAR_URL_PATTERN = mNativeContextMenuAvailable ? [`moz-extension://${location.host}/*`] : null;
 
 export async function init() {
   browser.runtime.onMessage.addListener(onMessage);
@@ -150,7 +150,7 @@ export async function init() {
       type:     item.type || 'normal',
       contexts: ['tab'],
       viewTypes: ['sidebar'],
-      documentUrlPatterns: [SIDEBAR_URL_PATTERN]
+      documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
     if (item.parentId)
       info.parentId = item.parentId;
@@ -192,7 +192,7 @@ function updateContextualIdentities() {
     title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
     contexts: ['tab'],
     viewTypes: ['sidebar'],
-    documentUrlPatterns: [SIDEBAR_URL_PATTERN]
+    documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
   if (mNativeContextMenuAvailable)
     browser.menus.create(defaultItem);
@@ -208,7 +208,7 @@ function updateContextualIdentities() {
     title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
     contexts: ['tab'],
     viewTypes: ['sidebar'],
-    documentUrlPatterns: [SIDEBAR_URL_PATTERN]
+    documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
   if (mNativeContextMenuAvailable)
     browser.menus.create(defaultSeparator);
@@ -229,7 +229,7 @@ function updateContextualIdentities() {
       title:    identity.name.replace(/^([a-z0-9])/i, '&$1'),
       contexts: ['tab'],
       viewTypes: ['sidebar'],
-      documentUrlPatterns: [SIDEBAR_URL_PATTERN]
+      documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
     if (icon)
       item.icons = { 16: icon };
