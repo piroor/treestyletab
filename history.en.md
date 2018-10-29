@@ -1,9 +1,11 @@
 # History
 
  - master/HEAD
+   * Fix broken context menu "Tree Stye Tab" after visibility of custom menu items are changed.
    * Fix impossibility of logging in to https://giffgaff.com and some websites.
    * Don't detach tab to window when dragging operation is canceled by ESC key.
    * Explain more details by the scrolling message, about what happens when dragged tabs are dropped.
+   * Fix compatibility problem of the API: remove menu items recirsively if it has any child item.
  - 2.6.4 (2018.10.19)
    * Reintroduce "Bookmark All Tabs" and "Reload All Tabs" for Firefox 62 and older. (They won't appear on Firefox 63 and later.)
    * Apply theme color to toolbar button icon only when it is intentionally activated with `svg.context-properties.content.enabled` = `true`.
