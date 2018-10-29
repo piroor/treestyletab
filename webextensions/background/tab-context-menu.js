@@ -757,6 +757,8 @@ function onMessage(message, _aSender) {
 }
 
 export function onExternalMessage(message, sender) {
+  if (!message)
+    return;
   log('API called:', message, { id: sender.id, url: sender.url });
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_CREATE: {
@@ -764,6 +766,9 @@ export function onExternalMessage(message, sender) {
       let params = message.params;
       if (Array.isArray(params))
         params = params[0];
+      const parent = params.parentId && items.filter(item => item.id == params.parentId)[0];
+      if (params.parentId && !parent)
+        break;
       let shouldAdd = true;
       if (params.id) {
         for (let i = 0, maxi = items.length; i < maxi; i++) {
@@ -775,8 +780,13 @@ export function onExternalMessage(message, sender) {
           break;
         }
       }
-      if (shouldAdd)
+      if (shouldAdd) {
         items.push(params);
+        if (parent && params.id) {
+          parent.children = parent.children || [];
+          parent.children.push(params.id);
+        }
+      }
       mExtraItems.set(sender.id, items);
       return reserveNotifyUpdated();
     }; break;
@@ -799,8 +809,19 @@ export function onExternalMessage(message, sender) {
       let id    = message.params;
       if (Array.isArray(id))
         id = id[0];
+      const item   = items.filter(item => item.id == id)[0];
+      if (!item)
+        break;
+      const parent = item.parentId && items.filter(item => item.id == item.parentId)[0];
       items = items.filter(item => item.id != id);
       mExtraItems.set(sender.id, items);
+      if (parent && parent.children)
+        parent.children = parent.children.filter(childId => childId != id);
+      if (item.children) {
+        for (const childId of item.children) {
+          onExternalMessage({ type: message.type, params: childId }, sender);
+        }
+      }
       return reserveNotifyUpdated();
     }; break;
 
