@@ -176,7 +176,10 @@ export async function init() {
 
 const mContextualIdentityItems = new Set();
 function updateContextualIdentities() {
-  for (const id of mContextualIdentityItems.values()) {
+  for (const item of mContextualIdentityItems.values()) {
+    const id = item.id;
+    if (id in mItemsById)
+      delete mItemsById[id];
     if (mNativeContextMenuAvailable)
       browser.menus.remove(id);
     onExternalMessage({
@@ -187,10 +190,10 @@ function updateContextualIdentities() {
   mContextualIdentityItems.clear();
 
   const defaultItem = {
-    parentId: 'context_reopenInContainer',
-    id:       'context_reopenInContainer:firefox-default',
-    title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
-    contexts: ['tab'],
+    parentId:  'context_reopenInContainer',
+    id:        'context_reopenInContainer:firefox-default',
+    title:     browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
+    contexts:  ['tab'],
     viewTypes: ['sidebar'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
@@ -200,13 +203,12 @@ function updateContextualIdentities() {
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: defaultItem
   }, browser.runtime);
-  mContextualIdentityItems.add(defaultItem.id);
+  mContextualIdentityItems.add(defaultItem);
 
   const defaultSeparator = {
-    parentId: 'context_reopenInContainer',
-    id:       'context_reopenInContainer:firefox-default',
-    title:    browser.i18n.getMessage('tabContextMenu_reopenInContainer_noContainer_label'),
-    contexts: ['tab'],
+    parentId:  'context_reopenInContainer',
+    id:        'context_reopenInContainer_separator',
+    contexts:  ['tab'],
     viewTypes: ['sidebar'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
   };
@@ -216,7 +218,7 @@ function updateContextualIdentities() {
     type: TSTAPI.kCONTEXT_MENU_CREATE,
     params: defaultSeparator
   }, browser.runtime);
-  mContextualIdentityItems.add(defaultSeparator.id);
+  mContextualIdentityItems.add(defaultSeparator);
 
   ContextualIdentities.forEach(identity => {
     const id = `context_reopenInContainer:${identity.cookieStoreId}`;
@@ -239,8 +241,13 @@ function updateContextualIdentities() {
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params: item
     }, browser.runtime);
-    mContextualIdentityItems.add(id);
+    mContextualIdentityItems.add(item);
   });
+  for (const item of mContextualIdentityItems.values()) {
+    mItemsById[item.id] = item;
+    item.lastVisible = true;
+    item.lastEnabled = true;
+  }
 }
 
 
@@ -334,24 +341,22 @@ async function onShown(info, contextApiTab) {
     visible: contextApiTab && ++visibleItemsCount,
     multiselected: multiselected || !contextApiTab
   }) && modifiedItemsCount++;
-  const showContextualIdentities = contextApiTab && mContextualIdentityItems.size > 2;
+
+  let showContextualIdentities = false;
+  for (const item of mContextualIdentityItems.values()) {
+    const id = item.id;
+    let visible = contextApiTab && id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
+    if (id == 'context_reopenInContainer_separator')
+      visible = contextApiTab && contextApiTab.cookieStoreId != 'firefox-default';
+    updateItem(id, { visible }) && modifiedItemsCount++;
+    if (visible)
+      showContextualIdentities = true;
+  }
   updateItem('context_reopenInContainer', {
-    visible: showContextualIdentities && ++visibleItemsCount,
+    visible: contextApiTab && showContextualIdentities && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
-  if (showContextualIdentities) {
-    for (const id of mContextualIdentityItems.values()) {
-      let visible = id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
-      if (id == 'context_reopenInContainer_separator')
-        visible = contextApiTab.cookieStoreId != 'firefox-default';
-      if (mNativeContextMenuAvailable)
-        browser.menus.update(id, { visible });
-      onExternalMessage({
-        type: TSTAPI.kCONTEXT_MENU_UPDATE,
-        params: [id, { visible }]
-      }, browser.runtime);
-    }
-  }
+
   updateItem('context_moveTab', {
     visible: contextApiTab && ++visibleItemsCount,
     enabled: contextApiTab && hasMultipleTabs,
