@@ -255,7 +255,7 @@ function updateItem(id, state = {}) {
   let modified = false;
   const item = mItemsById[id];
   const updateInfo = {
-    visible: !!state.visible,
+    visible: 'visible' in state ? !!state.visible : true,
     enabled: 'enabled' in state ? !!state.enabled : true
   };
   const title = state.multiselected ? item.titleMultiselected || item.title : item.title;
