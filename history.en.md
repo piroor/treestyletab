@@ -1,8 +1,9 @@
 # History
 
  - master/HEAD
+   * Fix inaccessibility of "Reopen in Container" sub menu when there is only one container.
    * Fix broken context menu "Tree Stye Tab" after visibility of custom menu items are changed.
-   * Fix impossibility of logging in to https://giffgaff.com and some websites.
+   * Fix impossibility of logging in to giffgaff.com and some websites.
    * Don't detach tab to window when dragging operation is canceled by ESC key.
    * Explain more details by the scrolling message, about what happens when dragged tabs are dropped.
    * Fix compatibility problem of the API: remove menu items recirsively if it has any child item.
