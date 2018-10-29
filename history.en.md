@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.6.5 (2018.10.30)
    * Fix inaccessibility of "Reopen in Container" sub menu when there is only one container.
    * Fix broken context menu "Tree Stye Tab" after visibility of custom menu items are changed.
    * Fix impossibility of logging in to giffgaff.com and some websites.
