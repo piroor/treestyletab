@@ -236,7 +236,7 @@ function matchesToCurrentTab(aPatterns) {
   return false;
 }
 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns
-const matchPattern = /^(?:(\*|http|https|file|ftp|app):\/\/([^\/]+|)\/?(.*))$/i;
+const matchPattern = /^(?:(\*|http|https|file|ftp|app|moz-extension):\/\/([^\/]+|)\/?(.*))$/i;
 function matchPatternToRegExp(aPattern) {
   if (aPattern === '<all_urls>')
     return (/^(?:https?|file|ftp|app):\/\//);
