@@ -273,6 +273,7 @@ async function updateTabsHighlighted(highlightInfo) {
       tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
     else
       tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+    tab.apiTab.highlighted = highlighted;
     updateTabDebugTooltip(tab);
     Tabs.onUpdated.dispatch(tab, { highlighted });
     changed = true;
