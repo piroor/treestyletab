@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+ - 2.6.6 (2018.10.31)
+   * Better compatibility with other addons using `documentUrlPatterns` with `moz-extension:` patterns.
+   * Fix wrong value of tabs' `highlighted` attribute gotten via TST's APIs.
  - 2.6.5 (2018.10.30)
    * Fix inaccessibility of "Reopen in Container" sub menu when there is only one container.
    * Fix broken context menu "Tree Stye Tab" after visibility of custom menu items are changed.
