@@ -97,9 +97,13 @@ async function rebuild() {
         continue;
       if (item.contexts && !item.contexts.includes('tab'))
         continue;
-      if (mContextTab &&
-          item.documentUrlPatterns &&
-          !matchesToCurrentTab(item.documentUrlPatterns))
+      if (item.documentUrlPatterns &&
+          (!item.viewTypes ||
+           !item.viewTypes.includes('sidebar') ||
+           item.documentUrlPatterns.some(pattern => !/^moz-extension:/.test(pattern)) ||
+           !matchesToPattern(location.href, item.documentUrlPatterns)) &&
+          mContextTab &&
+          !matchesToPattern(mContextTab.url, item.documentUrlPatterns))
         continue;
       toBeBuiltItems.push(item);
     }
@@ -189,18 +193,18 @@ function chooseIconForAddon(params) {
   return url;
 }
 
-function prepareAsSubmenu(aItemNode) {
-  if (aItemNode.querySelector('ul'))
-    return aItemNode;
-  aItemNode.appendChild(document.createElement('ul'));
-  return aItemNode;
+function prepareAsSubmenu(itemNode) {
+  if (itemNode.querySelector('ul'))
+    return itemNode;
+  itemNode.appendChild(document.createElement('ul'));
+  return itemNode;
 }
 
-function buildExtraItem(item, aOwnerAddonId) {
+function buildExtraItem(item, ownerAddonId) {
   const itemNode = document.createElement('li');
-  itemNode.setAttribute('id', `${aOwnerAddonId}-${item.id}`);
+  itemNode.setAttribute('id', `${ownerAddonId}-${item.id}`);
   itemNode.setAttribute('data-item-id', item.id);
-  itemNode.setAttribute('data-item-owner-id', aOwnerAddonId);
+  itemNode.setAttribute('data-item-owner-id', ownerAddonId);
   itemNode.classList.add('extra');
   itemNode.classList.add(item.type || 'normal');
   if (item.type == 'checkbox' || item.type == 'radio') {
@@ -215,9 +219,9 @@ function buildExtraItem(item, aOwnerAddonId) {
     itemNode.classList.add('disabled');
   else
     itemNode.classList.remove('disabled');;
-  const addon = TSTAPI.getAddon(aOwnerAddonId) || {};
+  const addon = TSTAPI.getAddon(ownerAddonId) || {};
   const icon = chooseIconForAddon({
-    id:         aOwnerAddonId,
+    id:         ownerAddonId,
     internalId: addon.internalId,
     icons:      item.icons || {}
   });
@@ -226,23 +230,23 @@ function buildExtraItem(item, aOwnerAddonId) {
   return itemNode;
 }
 
-function matchesToCurrentTab(aPatterns) {
-  if (!Array.isArray(aPatterns))
-    aPatterns = [aPatterns];
-  for (const pattern of aPatterns) {
-    if (matchPatternToRegExp(pattern).test(mContextTab.url))
+function matchesToPattern(url, patterns) {
+  if (!Array.isArray(patterns))
+    patterns = [patterns];
+  for (const pattern of patterns) {
+    if (matchPatternToRegExp(pattern).test(url))
       return true;
   }
   return false;
 }
 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Match_patterns
 const matchPattern = /^(?:(\*|http|https|file|ftp|app|moz-extension):\/\/([^\/]+|)\/?(.*))$/i;
-function matchPatternToRegExp(aPattern) {
-  if (aPattern === '<all_urls>')
+function matchPatternToRegExp(pattern) {
+  if (pattern === '<all_urls>')
     return (/^(?:https?|file|ftp|app):\/\//);
-  const match = matchPattern.exec(aPattern);
+  const match = matchPattern.exec(pattern);
   if (!match)
-    throw new TypeError(`"${aPattern}" is not a valid MatchPattern`);
+    throw new TypeError(`"${pattern}" is not a valid MatchPattern`);
 
   const [, scheme, host, path,] = match;
   return new RegExp('^(?:'
