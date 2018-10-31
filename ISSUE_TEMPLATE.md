@@ -39,5 +39,5 @@ E (selected)
 ## Environment
 
  * Platform (OS): 
- * Version of Firefox: 
- * Version (or revision) of Tree Style Tab: 
+ * Version of Firefox: <!-- put exact version like "63.0" instead of "latest", because there are multiple  "latest" versions for each "release", "beta" and "nightly" edition. -->
+ * Version (or revision) of Tree Style Tab: <!-- put exact version like "2.6.6" instead of "latest", because the "latest" version will change day by day. -->
