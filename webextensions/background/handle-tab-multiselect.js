@@ -91,24 +91,46 @@ export async function updateSelectionByTabClick(tab, event) {
     return true;
   }
   else if (ctrlKeyPressed) {
-    // toggle selection of the tab and all collapsed descendants
     try {
       log('change selection by ctrl-click: ', tab);
-      if (!Tabs.isMultiselected(activeTab) &&
-          Tabs.isSubtreeCollapsed(activeTab)) {
-        // multiselect all collapsed descendants to prevent ony the root tab is dragged.
-        for (const descendant of Tabs.getDescendantTabs(activeTab)) {
-          if (!Tabs.isHighlighted(descendant))
+      /* Special operation to toggle selection of collapsed descendants for the active tab.
+         - When there is no other multiselected foreign tab
+           => toggle multiselection only descendants.
+         - When there is one or more multiselected foreign tab
+           => toggle multiselection of the active tab and descendants.
+              => one of multiselected foreign tabs will be activated.
+         - When a foreign tab is highlighted and there is one or more unhighlighted descendants 
+           => highlight all descendants (to prevent ony the root tab is dragged).
+       */
+      let highlightedCount = Tabs.getSelectedTabs(tab).length;
+      let partiallyHighlighted = false;
+      if (Tabs.isSubtreeCollapsed(activeTab)) {
+        const descendants = Tabs.getDescendantTabs(activeTab);
+        const highlightedDescendants = descendants.filter(Tabs.isHighlighted);
+        partiallyHighlighted = (tab != activeTab && highlightedDescendants.length == 0) || (highlightedDescendants.length != descendants.length);
+        const highlighted = (tab != activeTab) || partiallyHighlighted || !Tabs.isHighlighted(descendants[0]);
+        if (tab == activeTab ||
+            partiallyHighlighted) {
+          for (const descendant of descendants) {
+            if (highlighted)
+              highlightedCount++;
+            else
+              highlightedCount--;
             browser.tabs.update(descendant.apiTab.id, {
-              highlighted: true,
-              active:      false
+              highlighted,
+              active: false
             });
+          }
         }
       }
-      browser.tabs.update(tab.apiTab.id, {
-        highlighted: !Tabs.isHighlighted(tab),
-        active:      Tabs.isActive(tab)
-      });
+      if (tab != activeTab ||
+          /* don't unhighlight only one highlighted active tab! */
+          (!partiallyHighlighted && highlightedCount > 1)) {
+        browser.tabs.update(tab.apiTab.id, {
+          highlighted: !Tabs.isHighlighted(tab),
+          active:      Tabs.isActive(tab)
+        });
+      }
     }
     catch(_e) { // not implemented on old Firefox
       return false;
