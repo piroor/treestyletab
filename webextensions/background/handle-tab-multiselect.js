@@ -86,7 +86,7 @@ export async function updateSelectionByTabClick(tab, event) {
       }
       if (tab != activeTab &&
           Tabs.isSubtreeCollapsed(activeTab)) {
-        // highlight all collapsed descendants of the active tab, to prevent ony the root tab is dragged.
+        // highlight all collapsed descendants of the active tab, to prevent only the root tab is dragged.
         for (const descendant of Tabs.getDescendantTabs(activeTab)) {
           browser.tabs.update(descendant.apiTab.id, {
             highlighted: true,
@@ -110,7 +110,7 @@ export async function updateSelectionByTabClick(tab, event) {
            => toggle multiselection of the active tab and descendants.
               => one of multiselected foreign tabs will be activated.
          - When a foreign tab is highlighted and there is one or more unhighlighted descendants 
-           => highlight all descendants (to prevent ony the root tab is dragged).
+           => highlight all descendants (to prevent only the root tab is dragged).
        */
       let highlightedCount = Tabs.getSelectedTabs(tab).length;
       let partiallyHighlighted = false;
