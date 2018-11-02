@@ -162,13 +162,19 @@ export async function initAsBackend() {
       return;
     notifiedAddons[id] = true;
     try {
-      const success = await browser.runtime.sendMessage(id, {
-        type: kNOTIFY_READY
+      id = await new Promise((resolve, reject) => {
+        browser.runtime.sendMessage(id, {
+          type: kNOTIFY_READY
+        }).then(() => resolve(id)).catch(reject);
+        setTimeout(() => {
+          reject(new Error(`TSTAPI.initAsBackend: addon ${id} does not respond.`));
+        }, 3000);
       });
-      if (success)
+      if (id)
         respondedAddons.push(id);
     }
-    catch(_e) {
+    catch(e) {
+      console.log(e);
     }
   }));
   configs.cachedExternalAddons = respondedAddons;
