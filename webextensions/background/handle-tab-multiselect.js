@@ -84,6 +84,16 @@ export async function updateSelectionByTabClick(tab, event) {
           active:      Tabs.isActive(toBeSelectedTab)
         });
       }
+      if (tab != activeTab &&
+          Tabs.isSubtreeCollapsed(activeTab)) {
+        // highlight all collapsed descendants of the active tab, to prevent ony the root tab is dragged.
+        for (const descendant of Tabs.getDescendantTabs(activeTab)) {
+          browser.tabs.update(descendant.apiTab.id, {
+            highlighted: true,
+            active:      false
+          });
+        }
+      }
     }
     catch(_e) { // not implemented on old Firefox
       return false;
