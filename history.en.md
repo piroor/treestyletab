@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 2.6.7 (2018.11.3)
+   * Toggle multiselection state of collapsed descendants under the active tab by Ctrl-click, when there is no selection in different tree.
+   * Select collapsed descendants under the active tab always, when non-active tab is Shift-clicked.
+   * Introduce timeout for waiting other addons initialized via API. This change will fix freezing of the startup triggered by illegal API responses from other addons.
  - 2.6.6 (2018.10.31)
    * Better compatibility with other addons using `documentUrlPatterns` with `moz-extension:` patterns.
    * Fix wrong value of tabs' `highlighted` attribute gotten via TST's APIs.
