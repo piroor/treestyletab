@@ -79,6 +79,7 @@ export async function init() {
   TabsUpdate.startListen();
   ContextualIdentities.startObserve();
   onBuilt.dispatch();
+  MetricsData.add('started listening');
 
   TabContextMenu.init().then(() => {
     ContextMenu.refreshItems();
@@ -95,6 +96,7 @@ export async function init() {
       }
     });
   });
+  MetricsData.add('started initializing of context menu');
 
   Permissions.clearRequest();
 
@@ -114,6 +116,7 @@ export async function init() {
   }
 
   await TSTAPI.initAsBackend();
+  MetricsData.add('TSTAPI.initAsBackend');
 
   mInitialized = true;
   onReady.dispatch();
