@@ -109,7 +109,8 @@ const mItemsById = {
     title:    browser.i18n.getMessage('tabContextMenu_closeOther_label')
   },
   'context_separator:closeTabOptions_beforeTreeItems': {
-    type: 'separator'
+    parentId: 'context_closeTabOptions',
+    type:     'separator'
   },
   'context_closeTabOptions_closeTree': {
     parentId: 'context_closeTabOptions',
