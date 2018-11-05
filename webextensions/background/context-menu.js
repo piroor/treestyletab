@@ -74,6 +74,11 @@ export async function refreshItems() {
   const customItems = [];
   for (const item of mContextMenuItems) {
     let id = item.id;
+    browser.menus.remove(id);
+    TabContextMenu.onExternalMessage({
+      type:   TSTAPI.kCONTEXT_MENU_REMOVE,
+      params: id
+    }, browser.runtime);
     if (item.isSeparator) {
       if (!normalItemAppeared)
         continue;
@@ -90,8 +95,7 @@ export async function refreshItems() {
       type:     item.type,
       checked:  item.checked,
       title:    mNativeContextMenuAvailable ? item.title : item.titleWithoutAccesskey,
-      contexts: ['tab'],
-      parentId: kROOT_ITEM
+      contexts: ['tab']
     });
     customItems.push({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -100,8 +104,7 @@ export async function refreshItems() {
         type:     item.type,
         checked:  item.checked,
         title:    item.title,
-        contexts: ['tab'],
-        parentId: kROOT_ITEM
+        contexts: ['tab']
       }
     });
   }
@@ -113,25 +116,28 @@ export async function refreshItems() {
   if (items.length == 0)
     return;
 
-  const manifest = browser.runtime.getManifest();
-  browser.menus.create({
-    id:       kROOT_ITEM,
-    type:     'normal',
-    contexts: ['tab'],
-    title:    manifest.name,
-    icons:    manifest.icons
-  });
-  TabContextMenu.onExternalMessage({
-    type: TSTAPI.kCONTEXT_MENU_CREATE,
-    params: {
+  const grouped = items.length > 1;
+  if (grouped) {
+    const manifest = browser.runtime.getManifest();
+    browser.menus.create({
       id:       kROOT_ITEM,
+      type:     'normal',
       contexts: ['tab'],
       title:    manifest.name,
       icons:    manifest.icons
-    }
-  }, browser.runtime);
-
+    });
+    TabContextMenu.onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params: {
+        id:       kROOT_ITEM,
+        contexts: ['tab'],
+        title:    manifest.name,
+        icons:    manifest.icons
+      }
+    }, browser.runtime);
+  }
   for (let i = 0, maxi = items.length; i < maxi; i++) {
+    items[i].parentId = customItems[i].params.parentId = grouped ? kROOT_ITEM : null ;
     browser.menus.create(items[i]);
     TabContextMenu.onExternalMessage(customItems[i], browser.runtime);
   }
