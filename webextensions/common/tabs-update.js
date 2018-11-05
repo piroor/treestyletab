@@ -255,8 +255,17 @@ export async function updateTabsHighlighted(highlightInfo) {
   if (!container)
     return;
   let changed = false;
+  const highlightedTabs   = [];
+  const unhighlightedTabs = [];
   for (const tab of container.children) {
-    const highlighted = highlightInfo.tabIds.includes(tab.apiTab.id);
+    if (highlightInfo.tabIds.includes(tab.apiTab.id))
+      highlightedTabs.push(tab);
+    else
+      unhighlightedTabs.push(tab);
+  }
+  // unhighlight all at first.
+  for (const tab of unhighlightedTabs.concat(highlightedTabs)) {
+    const highlighted = highlightedTabs.includes(tab);
     // log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
     if (Tabs.isHighlighted(tab) == highlighted)
       continue;

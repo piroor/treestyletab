@@ -18,7 +18,8 @@ function log(...args) {
 Tabs.onUpdated.addListener((tab, info) => {
   if (!('highlighted' in info) ||
       !Tabs.isSubtreeCollapsed(tab) ||
-      Tabs.isCollapsed(tab))
+      Tabs.isCollapsed(tab) ||
+      !Tabs.isMultiselected(tab))
     return;
 
   const collapsedDescendants = Tabs.getDescendantTabs(tab);
