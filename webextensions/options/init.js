@@ -36,7 +36,7 @@ function onConfigChanged(key) {
 function removeAccesskeyMark(node) {
   if (!node.nodeValue)
     return;
-  node.nodeValue = node.nodeValue.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
+  node.nodeValue = node.nodeValue.replace(/\(&[a-z]\)|&([a-z])/gi, '$1');
 }
 
 function onChangeMasterChacekbox(event) {
