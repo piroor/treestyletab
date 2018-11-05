@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.6.8 (2018.11.5)
    * Add ability to append "Close Tree" and similar items to the "Close Tab Options" submenu on the sidebar.
    * Hide needless "Tree Style Tab" item in the tab context menu if all items are deactivated.
    * Don't highlight (multiselect) collapsed children of a parent tab, when it is activated as a successor of a closed current tab or activated from a to-be-collapsed descendant.
