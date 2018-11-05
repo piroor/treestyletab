@@ -120,7 +120,6 @@ export async function init() {
 
       restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
       ApiTabsListener.startListen();
-      TabsUpdate.startListen();
 
       browser.runtime.connect({
         name: `${Constants.kCOMMAND_REQUEST_CONNECT_PREFIX}${mTargetWindow}`

@@ -63,6 +63,7 @@ function logUpdated(...args) {
 export function startListen() {
   browser.tabs.onActivated.addListener(onActivated);
   browser.tabs.onUpdated.addListener(onUpdated);
+  browser.tabs.onHighlighted.addListener(onHighlighted);
   browser.tabs.onCreated.addListener(onCreated);
   browser.tabs.onRemoved.addListener(onRemoved);
   browser.tabs.onMoved.addListener(onMoved);
@@ -74,6 +75,7 @@ export function startListen() {
 export function endListen() {
   browser.tabs.onActivated.removeListener(onActivated);
   browser.tabs.onUpdated.removeListener(onUpdated);
+  browser.tabs.onHighlighted.removeListener(onHighlighted);
   browser.tabs.onCreated.removeListener(onCreated);
   browser.tabs.onRemoved.removeListener(onRemoved);
   browser.tabs.onMoved.removeListener(onMoved);
@@ -269,6 +271,18 @@ async function onUpdated(tabId, changeInfo, tab) {
     console.log(e);
     onCompleted();
   }
+}
+
+const mTabsHighlightedTimers = new Map();
+function onHighlighted(highlightInfo) {
+  let timer = mTabsHighlightedTimers.get(highlightInfo.windowId);
+  if (timer)
+    clearTimeout(timer);
+  timer = setTimeout(() => {
+    mTabsHighlightedTimers.delete(highlightInfo.windowId);
+    TabsUpdate.updateTabsHighlighted(highlightInfo);
+  }, 50);
+  mTabsHighlightedTimers.set(highlightInfo.windowId, timer);
 }
 
 function onCreated(tab) {

@@ -248,16 +248,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   updateTabDebugTooltip(tab);
 }
 
-function onTabsHighlighted(highlightInfo) {
-  if (updateTabsHighlighted.timer)
-    clearTimeout(updateTabsHighlighted.timer);
-  updateTabsHighlighted.timer = setTimeout(() => {
-    delete updateTabsHighlighted.timer;
-    updateTabsHighlighted(highlightInfo);
-  }, 50);
-}
-
-async function updateTabsHighlighted(highlightInfo) {
+export async function updateTabsHighlighted(highlightInfo) {
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
   const container = Tabs.getTabsContainer(highlightInfo.windowId);
@@ -341,8 +332,4 @@ export function updateParentTab(parent) {
   updateParentTab(Tabs.getParentTab(parent));
 
   Tabs.onParentTabUpdated.dispatch(parent);
-}
-
-export function startListen() {
-  browser.tabs.onHighlighted.addListener(onTabsHighlighted);
 }
