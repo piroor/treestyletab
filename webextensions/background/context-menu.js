@@ -68,24 +68,6 @@ export async function refreshItems() {
     params: kROOT_ITEM
   }, browser.runtime);
 
-  const manifest = browser.runtime.getManifest();
-  const parentId = await browser.menus.create({
-    id:       kROOT_ITEM,
-    type:     'normal',
-    contexts: ['tab'],
-    title:    manifest.name,
-    icons:    manifest.icons
-  });
-  TabContextMenu.onExternalMessage({
-    type: TSTAPI.kCONTEXT_MENU_CREATE,
-    params: {
-      id:       kROOT_ITEM,
-      contexts: ['tab'],
-      title:    manifest.name,
-      icons:    manifest.icons
-    }
-  }, browser.runtime);
-
   let separatorsCount = 0;
   let normalItemAppeared = false;
   const items = [];
@@ -109,7 +91,7 @@ export async function refreshItems() {
       checked:  item.checked,
       title:    mNativeContextMenuAvailable ? item.title : item.titleWithoutAccesskey,
       contexts: ['tab'],
-      parentId
+      parentId: kROOT_ITEM
     });
     customItems.push({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -119,14 +101,36 @@ export async function refreshItems() {
         checked:  item.checked,
         title:    item.title,
         contexts: ['tab'],
-        parentId
+        parentId: kROOT_ITEM
       }
     });
   }
+
   if (items[items.length - 1].type == 'separator') {
     items.pop();
     customItems.pop();
   }
+  if (items.length == 0)
+    return;
+
+  const manifest = browser.runtime.getManifest();
+  browser.menus.create({
+    id:       kROOT_ITEM,
+    type:     'normal',
+    contexts: ['tab'],
+    title:    manifest.name,
+    icons:    manifest.icons
+  });
+  TabContextMenu.onExternalMessage({
+    type: TSTAPI.kCONTEXT_MENU_CREATE,
+    params: {
+      id:       kROOT_ITEM,
+      contexts: ['tab'],
+      title:    manifest.name,
+      icons:    manifest.icons
+    }
+  }, browser.runtime);
+
   for (let i = 0, maxi = items.length; i < maxi; i++) {
     browser.menus.create(items[i]);
     TabContextMenu.onExternalMessage(customItems[i], browser.runtime);
