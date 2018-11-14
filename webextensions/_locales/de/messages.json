@@ -160,7 +160,8 @@
   "config_style_metal": { "message": "Metal" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "Hoher Kontrast" },
-  "config_style_none": { "message": "Keine Designvorgabe (*Passe alles selbst über das Feld \"Style-Regeln für Sidebar-Inhalte\" an)" },
+  "config_style_none": { "message": "Keine Designvorgabe" },
+  "config_style_none_info": { "message": " (*Passe alles selbst über das Feld \"Style-Regeln für Sidebar-Inhalte\" an)" },
 
   "config_colorScheme_caption": { "message": "Farbschema:" },
   "config_colorScheme_photon": { "message": "Photon" },

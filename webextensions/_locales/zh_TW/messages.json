@@ -149,7 +149,8 @@
   "config_style_metal": { "message": "Metal" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "High Contrast" },
-  "config_style_none": { "message": "無裝飾(※在「額外的側邊欄樣式規則」中自行裝飾)" },
+  "config_style_none": { "message": "無裝飾" },
+  "config_style_none_info": { "message": "(※在「額外的側邊欄樣式規則」中自行裝飾)" },
 
   "config_colorScheme_caption": { "message": "配色方案:" },
   "config_colorScheme_photon": { "message": "Photon" },

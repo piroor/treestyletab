@@ -453,8 +453,12 @@
         "hash": "eb7e1137e8f98f6a43c7735e56c098cc"
     },
     "config_style_none": {
-        "message": "无装饰（请通过“额外的侧栏内容样式规则”自行修饰所有内容",
-        "hash": "b3bdce307d5b8e975351562c05ed7805"
+        "message": "无装饰",
+        "hash": ""
+    },
+    "config_style_none_info": {
+        "message": "（请通过“额外的侧栏内容样式规则”自行修饰所有内容",
+        "hash": ""
     },
     "config_colorScheme_caption": {
         "message": "颜色方案：",

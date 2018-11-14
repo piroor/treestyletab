@@ -153,7 +153,8 @@
   "config_style_metal": { "message": "Метал" },
   "config_style_sidebar": { "message": "Бічна панель" },
   "config_style_highcontrast": { "message": "Висококонтр." },
-  "config_style_none": { "message": "Без стилю (*Будь ласка, прикрасьте все самостійно через \"Додаткові правила стилю  бічної панелі\")" },
+  "config_style_none": { "message": "Без стилю" },
+  "config_style_none_info": { "message": " (*Будь ласка, прикрасьте все самостійно через \"Додаткові правила стилю  бічної панелі\")" },
 
   "config_colorScheme_caption": { "message": "Колірна схема:" },
   "config_colorScheme_photon": { "message": "Фотон" },

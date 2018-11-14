@@ -208,6 +208,7 @@ export const configs = new Configs({
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': true,/"
     'background/background-cache': false,
     'background/background': true,
+    'background/browser-action-menu': false,
     'background/context-menu': false,
     'background/handle-group-tabs': true,
     'background/handle-misc': true,

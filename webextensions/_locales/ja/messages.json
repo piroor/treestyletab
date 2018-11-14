@@ -199,7 +199,8 @@
   "config_style_metal": { "message": "Metal" },
   "config_style_sidebar": { "message": "Sidebar" },
   "config_style_highcontrast": { "message": "ハイコントラスト" },
-  "config_style_none": { "message": "装飾無し（※「サイドバー内用の追加のスタイル指定」でお好みの装飾を設定してください)" },
+  "config_style_none": { "message": "装飾無し" },
+  "config_style_none_info": { "message": "（※「サイドバー内用の追加のスタイル指定」でお好みの装飾を設定してください)" },
 
   "config_colorScheme_caption": { "message": "配色:" },
   "config_colorScheme_photon": { "message": "Photon" },
@@ -211,7 +212,8 @@
   "config_faviconizePinnedTabs_label": { "message": "ピン留めされたタブはアイコンのみ表示する" },
   "config_animation_label": { "message": "アニメーション効果を有効にする" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "タブのツールチップに折り畳まれた子孫タブの情報を含める" },
-  "config_applyThemeColorToIcon_label": { "message": "ツールバーのボタンにテーマの配色を反映する（※Firefox 62以降で、「about:config」で「svg.context-properties.content.enabled」を「true」に設定する必要があります）" },
+  "config_applyThemeColorToIcon_label": { "message": "ツールバーのボタンにテーマの配色を反映する" },
+  "config_applyThemeColorToIcon_label_info": { "message": "（※Firefox 62以降で、「about:config」で「svg.context-properties.content.enabled」を「true」に設定する必要があります）" },
 
 
   "config_context_caption": { "message": "コンテキストメニュー" },
