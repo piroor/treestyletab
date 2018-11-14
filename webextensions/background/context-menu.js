@@ -109,7 +109,7 @@ export async function refreshItems() {
     });
   }
 
-  if (items[items.length - 1].type == 'separator') {
+  if (items.length > 0 && items[items.length - 1].type == 'separator') {
     items.pop();
     customItems.pop();
   }
