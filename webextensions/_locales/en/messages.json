@@ -414,6 +414,8 @@
 
   "config_all_caption": { "message": "All Configs" },
 
+  "config_terms_delimiter": { "message": " " },
+
 
   "tabContextMenu_reload_label":      { "message": "&Reload Tab" },
   "tabContextMenu_mute_label":        { "message": "&Mute Tab" },

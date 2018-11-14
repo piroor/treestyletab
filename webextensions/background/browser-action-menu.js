@@ -15,6 +15,15 @@ function log(...args) {
 }
 
 const isMac = /^Mac/i.test(navigator.platform);
+const delimiter = browser.i18n.getMessage('config_terms_delimiter');
+
+function indent(level = 1) {
+  let result = '';
+  for (let i = 0, maxi = level; i < maxi; i++) {
+    result += '   ';
+  }
+  return result;
+}
 
 const mItems = [
   {
@@ -199,28 +208,28 @@ const mItems = [
         title: browser.i18n.getMessage('config_newTabButton_caption')
       },
       {
-        title: `  ${browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_before')}`,
+        title: indent() + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_before'),
         children: [
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_independent') + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
             value: 0,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_child') + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
             value: 1,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_sibling') + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
             value: 2,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_nextSibling') + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
             value: 3,
             type:  'radio',
@@ -229,22 +238,22 @@ const mItems = [
         ]
       },
       {
-        title:    `  ${browser.i18n.getMessage('config_longPressOnNewTabButton_before')}`,
+        title:    indent() + browser.i18n.getMessage('config_longPressOnNewTabButton_before'),
         children: [
           {
-            title: browser.i18n.getMessage('config_longPressOnNewTabButton_newTabAction') + browser.i18n.getMessage('config_longPressOnNewTabButton_after'),
+            title: browser.i18n.getMessage('config_longPressOnNewTabButton_newTabAction') + delimiter + browser.i18n.getMessage('config_longPressOnNewTabButton_after'),
             key:   'longPressOnNewTabButton',
             value: 'newtab-action-selector',
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_longPressOnNewTabButton_contextualIdentities') + browser.i18n.getMessage('config_longPressOnNewTabButton_after'),
+            title: browser.i18n.getMessage('config_longPressOnNewTabButton_contextualIdentities') + delimiter + browser.i18n.getMessage('config_longPressOnNewTabButton_after'),
             key:   'longPressOnNewTabButton',
             value: 'contextual-identities-selector',
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_longPressOnNewTabButton_none') + browser.i18n.getMessage('config_longPressOnNewTabButton_after'),
+            title: browser.i18n.getMessage('config_longPressOnNewTabButton_none') + delimiter + browser.i18n.getMessage('config_longPressOnNewTabButton_after'),
             key:   'longPressOnNewTabButton',
             value: '',
             type:  'radio'
@@ -266,28 +275,28 @@ const mItems = [
         title: browser.i18n.getMessage('config_newTabAction_caption')
       },
       {
-        title:    `  ${browser.i18n.getMessage('config_autoAttachOnNewTabCommand_before')}`,
+        title:    indent() + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_before'),
         children: [
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_independent') + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
             value: 0,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_child') + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
             value: 1,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_sibling') + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
             value: 2,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_nextSibling') + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
             value: 3,
             type:  'radio',
@@ -296,28 +305,28 @@ const mItems = [
         ]
       },
       {
-        title:    `  ${browser.i18n.getMessage('config_autoAttachOnDuplicated_before')}`,
+        title:    indent() + browser.i18n.getMessage('config_autoAttachOnDuplicated_before'),
         children: [
           {
-            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_independent') + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
             value: 0,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_child') + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
             value: 1,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_sibling') + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
             value: 2,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_nextSibling') + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
+            title: browser.i18n.getMessage('config_autoAttachOnDuplicated_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
             value: 3,
             type:  'radio',
@@ -335,25 +344,25 @@ const mItems = [
         title:    browser.i18n.getMessage('config_sameSiteOrphan_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_independent') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
+            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_independent') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
             value: 0,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_child') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
+            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_child') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
             value: 1,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_sibling') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
+            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
             value: 2,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_nextSibling') + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
+            title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
             value: 3,
             type:  'radio',
@@ -422,7 +431,7 @@ const mItems = [
       {
         dynamicTitle: true,
         get title() {
-          return browser.i18n.getMessage('config_autoGroupNewTabs_before') + configs.autoGroupNewTabsTimeout + browser.i18n.getMessage('config_autoGroupNewTabs_after');
+          return browser.i18n.getMessage('config_autoGroupNewTabs_before') + delimiter + configs.autoGroupNewTabsTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabs_after');
         },
         key:   'autoGroupNewTabs',
         type:  'checkbox'
@@ -443,7 +452,7 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title: `  ${browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label')}`,
+        title: indent() + browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label'),
         key:   'autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove',
         type:  'checkbox'
       },
@@ -497,7 +506,7 @@ const mItems = [
             type:  'radio'
           },
           {
-            title: `  ${browser.i18n.getMessage('config_promoteFirstChildForClosedRoot_label')}`,
+            title: indent() + browser.i18n.getMessage('config_promoteFirstChildForClosedRoot_label'),
             key:   'promoteFirstChildForClosedRoot',
             value: 1,
             type:  'checkbox'
@@ -542,7 +551,7 @@ const mItems = [
         title: browser.i18n.getMessage('config_tabDragBehavior_caption')
       },
       {
-        title:    `  ${browser.i18n.getMessage('config_tabDragBehavior_label')}`,
+        title:    indent() + browser.i18n.getMessage('config_tabDragBehavior_label'),
         children: [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
@@ -571,7 +580,7 @@ const mItems = [
         ]
       },
       {
-        title:    `  ${browser.i18n.getMessage('config_tabDragBehaviorShift_label')}`,
+        title:    indent() + browser.i18n.getMessage('config_tabDragBehaviorShift_label'),
         children: [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
@@ -636,7 +645,7 @@ const mItems = [
     ]
   },
   {
-    title:    `${browser.i18n.getMessage('config_advanced_caption')} / ${browser.i18n.getMessage('config_debug_caption')}`,
+    title:    browser.i18n.getMessage('config_advanced_caption') + ' / ' + browser.i18n.getMessage('config_debug_caption'),
     children: [
       {
         title: browser.i18n.getMessage('config_warnOnCloseTabs_label'),
