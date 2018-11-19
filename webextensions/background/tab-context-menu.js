@@ -97,31 +97,19 @@ const mItemsById = {
   'context_separator:afterReloadAll': {
     type: 'separator'
   },
-  'context_closeTabOptions': {
-    title: browser.i18n.getMessage('tabContextMenu_closeTabOptions_label')
-  },
   'context_closeTabsToTheEnd': {
-    parentId: 'context_closeTabOptions',
     title:    browser.i18n.getMessage('tabContextMenu_closeTabsToBottom_label')
   },
   'context_closeOtherTabs': {
-    parentId: 'context_closeTabOptions',
     title:    browser.i18n.getMessage('tabContextMenu_closeOther_label')
   },
-  'context_separator:closeTabOptions_beforeTreeItems': {
-    parentId: 'context_closeTabOptions',
-    type:     'separator'
-  },
   'context_closeTabOptions_closeTree': {
-    parentId: 'context_closeTabOptions',
     title:    browser.i18n.getMessage('context_closeTree_label')
   },
   'context_closeTabOptions_closeDescendants': {
-    parentId: 'context_closeTabOptions',
     title:    browser.i18n.getMessage('context_closeDescendants_label')
   },
   'context_closeTabOptions_closeOthers': {
-    parentId: 'context_closeTabOptions',
     title:    browser.i18n.getMessage('context_closeOthers_label')
   },
   'context_undoCloseTab': {
@@ -408,38 +396,29 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   visibleItemsCount = 0;
 
-  updateItem('context_closeTabOptions', {
-    visible: contextApiTab && ++visibleItemsCount,
-    enabled: hasMultipleNormalTabs,
-    multiselected
-  }) && modifiedItemsCount++;
   updateItem('context_closeTabsToTheEnd', {
-    visible: contextApiTab,
+    visible: contextApiTab && ++visibleItemsCount,
     enabled: hasMultipleNormalTabs && nextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeOtherTabs', {
-    visible: contextApiTab,
+    visible: contextApiTab && ++visibleItemsCount,
     enabled: hasMultipleNormalTabs,
     multiselected
   }) && modifiedItemsCount++;
   {
-    let shownTreeItemsCount = 0;
     const enabled = !multiselected && Tabs.hasChildTabs(tab);
     updateItem('context_closeTabOptions_closeTree', {
-      visible: contextApiTab && configs.context_closeTabOptions_closeTree && ++shownTreeItemsCount,
+      visible: contextApiTab && configs.context_closeTabOptions_closeTree && ++visibleItemsCount,
       enabled
     }) && modifiedItemsCount++;
     updateItem('context_closeTabOptions_closeDescendants', {
-      visible: contextApiTab && configs.context_closeTabOptions_closeDescendants && ++shownTreeItemsCount,
+      visible: contextApiTab && configs.context_closeTabOptions_closeDescendants && ++visibleItemsCount,
       enabled
     }) && modifiedItemsCount++;
     updateItem('context_closeTabOptions_closeOthers', {
-      visible: contextApiTab && configs.context_closeTabOptions_closeOthers && ++shownTreeItemsCount,
+      visible: contextApiTab && configs.context_closeTabOptions_closeOthers && ++visibleItemsCount,
       enabled
-    }) && modifiedItemsCount++;
-    updateItem('context_separator:closeTabOptions_beforeTreeItems', {
-      visible: shownTreeItemsCount > 0
     }) && modifiedItemsCount++;
   }
 
