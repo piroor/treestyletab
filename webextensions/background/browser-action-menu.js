@@ -195,6 +195,73 @@ const mItems = [
     title:    browser.i18n.getMessage('config_context_caption'),
     children: [
       {
+        title: browser.i18n.getMessage('context_closeTree_label'),
+        key:   'context_closeTabOptions_closeTree',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_closeDescendants_label'),
+        key:   'context_closeTabOptions_closeDescendants',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_closeOthers_label'),
+        key:   'context_closeTabOptions_closeOthers',
+        type:  'checkbox'
+      },
+      { type: 'separator' },
+      {
+        title: browser.i18n.getMessage('context_reloadTree_label'),
+        key:   'context_reloadTree',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_reloadDescendants_label'),
+        key:   'context_reloadDescendants',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_closeTree_label'),
+        key:   'context_closeTree',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_closeDescendants_label'),
+        key:   'context_closeDescendants',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_closeOthers_label'),
+        key:   'context_closeOthers',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_collapseTree_label'),
+        key:   'context_collapseTree',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_collapseAll_label'),
+        key:   'context_collapseAll',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_expandTree_label'),
+        key:   'context_expandTree',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_expandAll_label'),
+        key:   'context_expandAll',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('context_bookmarkTree_label'),
+        key:   'context_bookmarkTree',
+        type:  'checkbox'
+      },
+      { type: 'separator' },
+      {
         title: browser.i18n.getMessage('config_fakeContextMenu_label'),
         key:   'fakeContextMenu',
         type:  'checkbox'
