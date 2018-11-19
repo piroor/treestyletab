@@ -171,6 +171,7 @@
   "context_expandTree_label": { "message": "Exp&and this Tree" },
   "context_expandAll_label": { "message": "E&xpand All" },
   "context_bookmarkTree_label": { "message": "&Bookmark this Tree…" },
+  "context_topLevel_prefix": { "message": "Top level item: " },
 
   "context_collapsed_label": { "message": "Collapsed (for testing of a checkbox type menu)" },
   "context_pinnedTab_label": { "message": "Pinned (for testing of a radio type menu)" },

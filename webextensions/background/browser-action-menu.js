@@ -195,17 +195,17 @@ const mItems = [
     title:    browser.i18n.getMessage('config_context_caption'),
     children: [
       {
-        title: browser.i18n.getMessage('context_closeTree_label'),
+        title: browser.i18n.getMessage('context_topLevel_prefix') + browser.i18n.getMessage('context_closeTree_label'),
         key:   'context_closeTabOptions_closeTree',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_closeDescendants_label'),
+        title: browser.i18n.getMessage('context_topLevel_prefix') + browser.i18n.getMessage('context_closeDescendants_label'),
         key:   'context_closeTabOptions_closeDescendants',
         type:  'checkbox'
       },
       {
-        title: browser.i18n.getMessage('context_closeOthers_label'),
+        title: browser.i18n.getMessage('context_topLevel_prefix') + browser.i18n.getMessage('context_closeOthers_label'),
         key:   'context_closeTabOptions_closeOthers',
         type:  'checkbox'
       },

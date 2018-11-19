@@ -171,6 +171,7 @@
   "context_expandTree_label": { "message": "このツリーを展開(&A)" },
   "context_expandAll_label": { "message": "すべてのツリーを展開(&X)" },
   "context_bookmarkTree_label": { "message": "このツリーをブックマーク(&B)..." },
+  "context_topLevel_prefix": { "message": "トップレベルの項目: " },
 
 
   "config_appearance_caption": { "message": "外観" },
