@@ -837,7 +837,7 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(tab, overrideParams) {
     lastChildTabOfParent:      Tabs.getLastChildTab(parentTab),
     previousSiblingTab:        Tabs.getPreviousSiblingTab(tab),
     preDetectedNextFocusedTab: Tabs.getNextFocusedTab(tab),
-    serialized:                TSTAPI.serializeTab(tab),
+    promisedSerializedTab:     TSTAPI.serializeTab(tab),
     closeParentBehavior:       getCloseParentBehaviorForTab(tab, { parentTab })
   };
   if (overrideParams)
@@ -856,7 +856,7 @@ export async function tryMoveFocusFromClosingCurrentTabNow(tab, options = {}) {
     nextTabUrl, nextIsDiscarded,
     parentTab, firstChildTab, firstChildTabOfParent, lastChildTabOfParent,
     previousSiblingTab, preDetectedNextFocusedTab,
-    serialized, closeParentBehavior
+    promisedSerializedTab, closeParentBehavior
   } = params;
   let {
     nextTab,
@@ -871,7 +871,7 @@ export async function tryMoveFocusFromClosingCurrentTabNow(tab, options = {}) {
 
   const results = await TSTAPI.sendMessage({
     type:   TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
-    tab:    serialized,
+    tab:    await promisedSerializedTab,
     window: tab.apiTab.windowId
   });
   if (results.some(result => result.result)) // canceled

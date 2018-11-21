@@ -145,12 +145,12 @@ function updateSpecialEventListenersForAPIListeners() {
 
 /* handlers for DOM events */
 
-function onMouseMove(event) {
+async function onMouseMove(event) {
   const tab = EventUtils.getTabFromEvent(event);
   if (tab) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      await TSTAPI.serializeTab(tab),
       window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
@@ -162,7 +162,7 @@ function onMouseMove(event) {
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
 
-function onMouseOver(event) {
+async function onMouseOver(event) {
   const tab = EventUtils.getTabFromEvent(event);
 
   // We enter the tab or one of its children, but not from any of the tabs
@@ -175,7 +175,7 @@ function onMouseOver(event) {
   if (enterTabFromAncestor) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      await TSTAPI.serializeTab(tab),
       window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
@@ -187,7 +187,7 @@ function onMouseOver(event) {
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
 
-function onMouseOut(event) {
+async function onMouseOut(event) {
   const tab = EventUtils.getTabFromEvent(event);
 
   // We leave the tab or any of its children, but not for one of the tabs
@@ -200,7 +200,7 @@ function onMouseOut(event) {
   if (leaveTabToAncestor) {
     TSTAPI.sendMessage({
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
-      tab:      TSTAPI.serializeTab(tab),
+      tab:      await TSTAPI.serializeTab(tab),
       window:   mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
@@ -340,7 +340,7 @@ async function onMouseUp(event) {
   if (lastMousedown)
     await lastMousedown.promisedMousedownNotified;
 
-  const serializedTab = livingTab && TSTAPI.serializeTab(livingTab);
+  const serializedTab = livingTab && await TSTAPI.serializeTab(livingTab);
   let promisedCanceled = Promise.resolve(false);
   if (serializedTab && lastMousedown) {
     const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
