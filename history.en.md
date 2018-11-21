@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Use last effective favicon for discarded tabs in group tabs.
+   * Return last effective favicon information for discarded tabs, as a part of API responses.
+   * Show favicons with fixed size, in group tabs.
+   * Follow to changes of tab context menu introduced by the [bug 1502083](https://bugzilla.mozilla.org/show_bug.cgi?id=1502083).
+   * Add ability to change settings of TST from the context menu on the toolbar button.
+   * Suppress errors from blank context menu.
  - 2.6.8 (2018.11.5)
    * Add ability to append "Close Tree" and similar items to the "Close Tab Options" submenu on the sidebar.
    * Hide needless "Tree Style Tab" item in the tab context menu if all items are deactivated.
