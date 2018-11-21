@@ -701,12 +701,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     (async () => {
       // Run only this section asynchronously, because dataTransfer
       // must be processed synchronously.
-    TSTAPI.sendMessage({
-      type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
-      tab:    await TSTAPI.serializeTab(tab),
-      window: Tabs.getWindow(),
-      startOnClosebox
-    });
+      TSTAPI.sendMessage({
+        type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
+        tab:    await TSTAPI.serializeTab(tab),
+        window: Tabs.getWindow(),
+        startOnClosebox
+      });
     })();
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
