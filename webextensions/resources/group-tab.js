@@ -188,15 +188,20 @@
     link.dataset.tabId = tab.id;
 
     const icon = link.appendChild(document.createElement('img'));
-    icon.src = tab.effectiveFavIconUrl || tab.favIconUrl;
-    icon.onerror = () => {
-      item.classList.remove('favicon-loading');
+    if (tab.effectiveFavIconUrl || tab.favIconUrl) {
+      icon.src = tab.effectiveFavIconUrl || tab.favIconUrl;
+      icon.onerror = () => {
+        item.classList.remove('favicon-loading');
+        item.classList.add('use-default-favicon');
+      };
+      icon.onload = () => {
+        item.classList.remove('favicon-loading');
+      };
+      item.classList.add('favicon-loading');
+    }
+    else {
       item.classList.add('use-default-favicon');
-    };
-    icon.onload = () => {
-      item.classList.remove('favicon-loading');
-    };
-    item.classList.add('favicon-loading');
+    }
 
     const label = link.appendChild(document.createElement('span'));
     label.classList.add('label');
