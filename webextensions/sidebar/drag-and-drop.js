@@ -76,10 +76,8 @@ let mLongHoverExpandedTabs = [];
 let mLongHoverTimer;
 let mLongHoverTimerNext;
 
-let mDelayedDragEnter;
-let mDelayedDragLeave;
-
 let mDraggingOnSelfWindow = false;
+let mDraggingOnDraggedTabs = false;
 
 let mCapturingForDragging = false;
 let mReadyToCaptureMouseEvents = false;
@@ -670,7 +668,6 @@ let mFinishCanceledDragOperation;
 
 export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(event, options = {}) {
   log('onDragStart: start ', event, options);
-  console.log('onDragStart: start ', event, options);
   clearDraggingTabsState(); // clear previous state anyway
 
   const behavior = 'behavior' in options ? options.behavior :
@@ -723,6 +720,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   }
 
   mDraggingOnSelfWindow = true;
+  mDraggingOnDraggedTabs = true;
   mLastDropPosition = null;
 
   const dt = event.dataTransfer;
@@ -877,20 +875,22 @@ function isEventFiredOnTabDropBlocker(event) {
 }
 
 function onDragEnter(event) {
-  if (mDelayedDragEnter) {
-    clearTimeout(mDelayedDragEnter);
-    mDelayedDragEnter = null;
-  }
-  mDelayedDragEnter = setTimeout(() => {
-    mDelayedDragEnter = null;
-    mDraggingOnSelfWindow = true;
-    if (mDelayedDragLeave) {
-      clearTimeout(mDelayedDragLeave);
-      mDelayedDragLeave = null;
-    }
-  }, 10);
+  mDraggingOnSelfWindow = true;
 
   const info = getDropAction(event);
+  try {
+    const enteredTab = EventUtils.getTabFromEvent(event);
+    const leftTab    = Tabs.getTabFromChild(event.relatedTarget);
+    if (leftTab != enteredTab) {
+      mDraggingOnDraggedTabs = (
+        info.dragData &&
+        info.dragData.apiTabs.some(tab => tab.id == enteredTab.apiTab.id)
+      );
+    }
+  }
+  catch(_e) {
+  }
+
   const dt   = event.dataTransfer;
   dt.dropEffect = info.dropEffect;
   if (info.dropEffect == 'link')
@@ -959,20 +959,49 @@ reserveToProcessLongHover.cancel = function() {
   clearTimeout(mLongHoverTimerNext);
 };
 
-function onDragLeave(_event) {
-  if (mDelayedDragLeave) {
-    clearTimeout(mDelayedDragLeave);
-    mDelayedDragLeave = null;
+function onDragLeave(event) {
+  let leftFromTabBar = false;
+  try {
+    const info       = getDropAction(event);
+    const leftTab    = EventUtils.getTabFromEvent(event);
+    const enteredTab = Tabs.getTabFromChild(event.relatedTarget);
+    if (leftTab != enteredTab) {
+      if (info.dragData &&
+          info.dragData.apiTabs.some(tab => tab.id == leftTab.apiTab.id) &&
+          (!enteredTab ||
+           !info.dragData.apiTabs.every(tab => tab.id == enteredTab.apiTab.id))) {
+        onDragLeave.delayedLeftFromDraggedTabs = setTimeout(() => {
+          delete onDragLeave.delayedLeftFromDraggedTabs;
+          mDraggingOnDraggedTabs = false;
+        }, 10);
+      }
+      else {
+        leftFromTabBar = !enteredTab || enteredTab.ownerDocument != document;
+        if (onDragLeave.delayedLeftFromDraggedTabs) {
+          clearTimeout(onDragLeave.delayedLeftFromDraggedTabs);
+          delete onDragLeave.delayedLeftFromDraggedTabs;
+        }
+      }
+    }
   }
-  setTimeout(() => {
-    mDelayedDragLeave = setTimeout(() => {
-      mDelayedDragLeave = null;
+  catch(_e) {
+    leftFromTabBar = true;
+  }
+
+  if (leftFromTabBar) {
+    onDragLeave.delayedLeftFromTabBar = setTimeout(() => {
+      delete onDragLeave.delayedLeftFromTabBar;
       mDraggingOnSelfWindow = false;
+      mDraggingOnDraggedTabs = false;
       clearDropPosition();
       clearDraggingState();
       mLastDropPosition = null;
-    }, configs.preventTearOffTabsTimeout);
-  }, 10);
+    }, 10);
+  }
+  else if (onDragLeave.delayedLeftFromTabBar) {
+    clearTimeout(onDragLeave.delayedLeftFromTabBar);
+    delete onDragLeave.delayedLeftFromTabBar;
+  }
 
   clearTimeout(mLongHoverTimer);
   mLongHoverTimer = null;
@@ -1019,7 +1048,7 @@ function onDrop(event) {
 onDrop = EventUtils.wrapWithErrorHandler(onDrop);
 
 function onDragEnd(event) {
-  log('onDragEnd, mDraggingOnSelfWindow = ', mDraggingOnSelfWindow);
+  log('onDragEnd, ', { mDraggingOnSelfWindow, mDraggingOnDraggedTabs });
 
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
@@ -1037,10 +1066,11 @@ function onDragEnd(event) {
   }
 
   const dropTargetTab = EventUtils.getTabFromEvent(event);
-  if (dropTargetTab &&
-      dragData &&
-      dragData.tabNodes &&
-      !dragData.tabNodes.includes(dropTargetTab)) {
+  if (mDraggingOnDraggedTabs ||
+      (dropTargetTab &&
+       dragData &&
+       dragData.tabNodes &&
+       !dragData.tabNodes.includes(dropTargetTab))) {
     log('ignore drop on dragged tabs themselves');
     return;
   }
@@ -1109,6 +1139,8 @@ function finishDrag() {
   mLastDragOverTimestamp = null;
   clearDraggingState();
   collapseAutoExpandedTabsWhileDragging();
+  mDraggingOnSelfWindow = false;
+  mDraggingOnDraggedTabs = false;
 }
 
 
