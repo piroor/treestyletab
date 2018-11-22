@@ -698,12 +698,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
       mLastDragEnteredTarget = SidebarTabs.getClosebox(tab);
-      TSTAPI.sendMessage({
-        type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
-        tab:    TSTAPI.serializeTab(tab),
-        window: Tabs.getWindow(),
-        startOnClosebox
-      });
+    TSTAPI.sendMessage({
+      type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
+      tab:    TSTAPI.serializeTab(tab),
+      window: Tabs.getWindow(),
+      startOnClosebox
+    });
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
