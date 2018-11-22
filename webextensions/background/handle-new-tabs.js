@@ -49,7 +49,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
         if (!info.maybeOpenedWithPosition) {
           log('behave as a tab opened by new tab command');
           handleNewTabFromActiveTab(tab, {
-            possibleOpenerTab,
+            activeTab:                 possibleOpenerTab,
             autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
             inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
           });

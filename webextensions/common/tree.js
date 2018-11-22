@@ -487,7 +487,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       if (parent)
         await attachTabTo(tab, parent, {
           insertBefore: nextSibling,
-          insertAfter:  Tabs.getLastDescendantTab(baseTab),
+          insertAfter:  Tabs.getLastDescendantTab(baseTab) || baseTab,
           delayedMove:  true,
           inRemote:     options.inRemote,
           broadcast:    options.broadcast
