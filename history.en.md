@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Don't detach dragged tab to new window by dropping on dragged tabs themselves more concretely.
+   * Open new tab as the next sibling correctly, even if the the active tab is a child tab and there is no more following tab.
    * Use last effective favicon for discarded tabs in group tabs.
    * Return last effective favicon information for discarded tabs, as a part of `get-tree` API responses.
    * Show favicons with fixed size, in group tabs.
