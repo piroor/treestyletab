@@ -108,18 +108,18 @@ export function isCapturingForDragging() {
   return mCapturingForDragging;
 }
 
-export async function startMultiDrag(tab, aIsClosebox) {
+export function startMultiDrag(tab, aIsClosebox) {
   mReadyToCaptureMouseEvents = true;
   TSTAPI.sendMessage({
     type:   TSTAPI.kNOTIFY_TAB_DRAGREADY,
-    tab:    await TSTAPI.serializeTab(tab),
+    tab:    TSTAPI.serializeTab(tab),
     window: Tabs.getWindow(),
     startOnClosebox: aIsClosebox
   });
 }
 
-export async function endMultiDrag(tab, aCoordinates) {
-  const serializedTab = tab && await TSTAPI.serializeTab(tab);
+export function endMultiDrag(tab, aCoordinates) {
+  const serializedTab = tab && TSTAPI.serializeTab(tab);
   if (mCapturingForDragging) {
     window.removeEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.removeEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
@@ -698,16 +698,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
       mLastDragEnteredTarget = SidebarTabs.getClosebox(tab);
-    (async () => {
-      // Run only this section asynchronously, because dataTransfer
-      // must be processed synchronously.
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
-        tab:    await TSTAPI.serializeTab(tab),
+        tab:    TSTAPI.serializeTab(tab),
         window: Tabs.getWindow(),
         startOnClosebox
       });
-    })();
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
@@ -1118,7 +1114,7 @@ function finishDrag() {
 
 /* drag on tabs API */
 
-async function onTSTAPIDragEnter(event) {
+function onTSTAPIDragEnter(event) {
   Scroll.autoScrollOnMouseEvent(event);
   const tab = EventUtils.getTabFromEvent(event);
   let target = tab;
@@ -1131,7 +1127,7 @@ async function onTSTAPIDragEnter(event) {
     if (target != mLastDragEnteredTarget) {
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_TAB_DRAGENTER,
-        tab:    await TSTAPI.serializeTab(tab),
+        tab:    TSTAPI.serializeTab(tab),
         window: Tabs.getWindow()
       });
     }
@@ -1150,11 +1146,11 @@ function onTSTAPIDragExit(event) {
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
     target = SidebarTabs.getClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
-  target.onTSTAPIDragExitTimeout = setTimeout(async () => {
+  target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGEXIT,
-      tab:    await TSTAPI.serializeTab(tab),
+      tab:    TSTAPI.serializeTab(tab),
       window: Tabs.getWindow()
     });
   }, 10);

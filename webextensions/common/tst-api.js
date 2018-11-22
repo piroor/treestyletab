@@ -368,14 +368,10 @@ export async function notifyScrolled(params = {}) {
   const lockers = Object.keys(mScrollLockedBy);
   const tab     = params.tab;
   const window  = Tabs.getWindow();
-  const serializedTabs = await Promise.all(
-    [tab && serializeTab(tab)]
-      .concat(Tabs.getTabs(window).map(serializeTab))
-  );
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
-    tab:  serializedTabs[0],
-    tabs: serializedTabs.slice(1),
+    tab:  tab && serializeTab(tab),
+    tabs: Tabs.getTabs(window).map(serializeTab),
     window,
 
     deltaY:       params.event.deltaY,
@@ -405,17 +401,28 @@ export function isGroupingBlocked() {
 }
 
 
-export async function serializeTab(tab) {
-  const [effectiveFavIconUrl, ...children] = await Promise.all(
-    [TabFavIconHelper.getLastEffectiveFavIconURL(tab.apiTab)]
-      .concat(Tabs.getChildTabs(tab).map(serializeTab))
-  );
+export function serializeTab(tab) {
+  const children         = Tabs.getChildTabs(tab).map(serializeTab);
   const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.apiTab.id);
   return Object.assign({}, tab.apiTab, {
     states:   Array.slice(tab.classList).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(tab.getAttribute(Constants.kLEVEL) || 0),
-    effectiveFavIconUrl, children, ancestorTabIds
+    children, ancestorTabIds
   });
+}
+
+export async function serializeTabWithEffectiveFavIconUrl(tab) {
+  const serialized = serializeTab(tab);
+  const promises = [];
+  const preparePromiseForEffectiveFavIcon = tab => {
+    promises.push(TabFavIconHelper.getLastEffectiveFavIconURL(tab.apiTab).then(url => {
+      tab.effectiveFavIconUrl = url;
+    }));
+    tab.children.map(preparePromiseForEffectiveFavIcon);
+  };
+  preparePromiseForEffectiveFavIcon(serialized);
+  await Promise.all(promises);
+  return serialized;
 }
 
 export function getListenersForMessageType(type) {

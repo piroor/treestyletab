@@ -360,7 +360,7 @@ function onMessage(message, sender) {
           return;
 
         logMouseEvent('Sending message to listeners');
-        const serializedTab = await TSTAPI.serializeTab(tab);
+        const serializedTab = TSTAPI.serializeTab(tab);
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
           type:   TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
@@ -558,7 +558,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGET_TREE:
       return (async () => {
         const tabs    = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(TSTAPI.serializeTab));
+        const results = await Promise.all(tabs.map(TSTAPI.serializeTabWithEffectiveFavIconUrl));
         return TSTAPI.formatResult(results, message);
       })();
 
