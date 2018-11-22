@@ -886,10 +886,10 @@ function onDragEnter(event) {
         info.dragData &&
         info.dragData.apiTabs.some(tab => tab.id == enteredTab.apiTab.id)
       );
-      if (enteredTab.ownerDocument == document) {
-        Tabs.getTabsContainer(enteredTab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
-        document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
-      }
+    }
+    if (enteredTab.ownerDocument == document) {
+      Tabs.getTabsContainer(enteredTab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+      document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
     }
   }
   catch(_e) {
