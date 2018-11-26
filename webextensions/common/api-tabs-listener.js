@@ -299,7 +299,7 @@ async function onNewTabTracked(tab) {
   if (targetWindow && tab.windowId != targetWindow)
     return null;
 
-  log('onNewTabTracked: ', tab);
+  log(`onNewTabTracked(id=${tab.id}): `, tab);
 
   const container = getOrBuildTabsContainer(tab.windowId);
   const openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
@@ -320,7 +320,7 @@ async function onNewTabTracked(tab) {
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
-  log('onNewTabTracked: start to create tab for ', tab);
+  log(`onNewTabTracked(id=${tab.id}): start to create tab element`);
 
   try {
     const hasNextTab = !!Tabs.getAllTabs(container)[tab.index];
@@ -361,7 +361,7 @@ async function onNewTabTracked(tab) {
       container.restoredCount = container.restoredCount || 0;
       container.restoredCount++;
       if (!container.allTabsRestored) {
-        log('Maybe starting to restore window ', tab.id);
+        log(`onNewTabTracked(id=${tab.id}): Maybe starting to restore window`);
         container.allTabsRestored = new Promise((resolve, _aReject) => {
           let lastCount = container.restoredCount;
           const timer = setInterval(() => {
@@ -380,11 +380,11 @@ async function onNewTabTracked(tab) {
       }
       Tabs.onRestoring.dispatch(newTab);
       await container.allTabsRestored;
-      log('onNewTabTracked: continued for restored tab ', tab.id);
+      log(`onNewTabTracked(id=${tab.id}): continued for restored tab`);
     }
     if (!container.parentNode ||
         !newTab.parentNode) {
-      log(' => aborted ', tab.id);
+      log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
       return;
     }
@@ -401,7 +401,7 @@ async function onNewTabTracked(tab) {
     if (moved instanceof Promise)
       moved = await moved;
     moved = moved === false;
-    log('moved: ', moved);
+    log(`onNewTabTracked(id=${tab.id}): moved = `, moved);
 
     if (container.parentNode) { // it can be removed while waiting
       TabsContainer.incrementCounter(container, 'openingCount');
@@ -417,7 +417,7 @@ async function onNewTabTracked(tab) {
       return;
     }
 
-    log('uniqueId: ', uniqueId);
+    log(`onNewTabTracked(id=${tab.id}): uniqueId = `, uniqueId);
 
     Tabs.onCreated.dispatch(newTab, {
       openedWithPosition: openedWithPosition || moved,
