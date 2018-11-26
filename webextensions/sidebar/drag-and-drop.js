@@ -1088,8 +1088,10 @@ function onDragEnd(event) {
     windowY,
     windowW: window.innerWidth,
     windowH: window.innerHeight,
-    eventX:  event.screenX,
-    eventY:  event.screenY,
+    eventScreenX: event.screenX,
+    eventScreenY: event.screenY,
+    eventClientX: event.clientX,
+    eventClientY: event.clientY,
     offset
   });
   if (event.screenX >= windowX - offset &&
