@@ -26,7 +26,7 @@ function log(...args) {
 // this should return true if the tab is moved while processing
 Tabs.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
-    return true;
+    return false;
 
   log('Tabs.onCreating ', dumpTab(tab), info);
 
@@ -48,7 +48,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       if (Tabs.isNewTabCommandTab(tab)) {
         if (!info.maybeOpenedWithPosition) {
           log('behave as a tab opened by new tab command');
-          handleNewTabFromActiveTab(tab, {
+          return handleNewTabFromActiveTab(tab, {
             activeTab:                 possibleOpenerTab,
             autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
             inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
@@ -62,7 +62,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       tab.dataset.isNewTab = true;
     }
     log('behave as a tab opened with any URL');
-    return true;
+    return false;
   }
 
   log(`opener: ${dumpTab(opener)}, info.maybeOpenedWithPosition = ${info.maybeOpenedWithPosition}`);
@@ -72,28 +72,27 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       return false;
     }
     if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
-      TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab), {
+      return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab), {
         delayedMove: true,
         broadcast:   true
       });
     }
   }
   else if (!info.maybeOrphan && configs.autoAttach) {
-    Tree.behaveAutoAttachedTab(tab, {
+    return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
       behavior:  configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.maybeOpenedWithPosition,
       broadcast: true
     });
-    return false;
   }
-  return true;
+  return false;
 });
 
 async function handleNewTabFromActiveTab(tab, params = {}) {
   const activeTab = params.activeTab;
   log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), params);
-  await Tree.behaveAutoAttachedTab(tab, {
+  const moved = await Tree.behaveAutoAttachedTab(tab, {
     baseTab:   activeTab,
     behavior:  params.autoAttachBehavior,
     broadcast: true
@@ -103,7 +102,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
       !params.inheritContextualIdentity ||
       tab.apiTab.cookieStoreId != 'firefox-default' ||
       tab.apiTab.cookieStoreId == parent.apiTab.cookieStoreId)
-    return;
+    return moved;
   const cookieStoreId = activeTab.apiTab.cookieStoreId;
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
   await TabsOpen.openNewTab({
@@ -112,6 +111,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
     cookieStoreId
   });
   TabsInternalOperation.removeTab(tab);
+  return moved;
 }
 
 Tabs.onCreated.addListener((tab, info = {}) => {

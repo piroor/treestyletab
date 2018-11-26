@@ -427,12 +427,13 @@ export function detachAllChildren(tab, options = {}) {
   }
 }
 
+// returns moved (or not)
 export async function behaveAutoAttachedTab(tab, options = {}) {
   const baseTab = options.baseTab || Tabs.getCurrentTab(Tabs.getWindow() || tab);
   log('behaveAutoAttachedTab ', dumpTab(tab), dumpTab(baseTab), options);
   switch (options.behavior) {
     default:
-      break;
+      return false;
 
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
       detachTab(tab, {
@@ -440,22 +441,23 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         broadcast: options.broadcast
       });
       if (Tabs.getNextTab(tab))
-        await TabsMove.moveTabAfter(tab, Tabs.getLastTab(), {
+        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(), {
           delayedMove: true,
           inRemote: options.inRemote
         });
-      break;
+      return false;
 
-    case Constants.kNEWTAB_OPEN_AS_CHILD:
+    case Constants.kNEWTAB_OPEN_AS_CHILD: {
+      const dontMove = options.dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL;
       await attachTabTo(tab, baseTab, {
-        dontMove:    options.dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL,
+        dontMove,
         forceExpand: true,
         delayedMove: true,
         inRemote:    options.inRemote,
         broadcast:   options.broadcast
       });
-      return true;
-      break;
+      return !dontMove;
+    };
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING: {
       const parent = Tabs.getParentTab(baseTab);
@@ -465,26 +467,26 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           inRemote:  options.inRemote,
           broadcast: options.broadcast
         });
+        return true;
       }
       else {
         detachTab(tab, {
           inRemote:  options.inRemote,
           broadcast: options.broadcast
         });
-        await TabsMove.moveTabAfter(tab, Tabs.getLastTab(), {
+        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(), {
           delayedMove: true,
           inRemote: options.inRemote
         });
       }
-      return true;
-    }; break;
+    };
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       let nextSibling = Tabs.getNextSiblingTab(baseTab);
       if (nextSibling == tab)
         nextSibling = null;
       const parent = Tabs.getParentTab(baseTab);
-      if (parent)
+      if (parent) {
         await attachTabTo(tab, parent, {
           insertBefore: nextSibling,
           insertAfter:  Tabs.getLastDescendantTab(baseTab) || baseTab,
@@ -492,25 +494,27 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           inRemote:     options.inRemote,
           broadcast:    options.broadcast
         });
+        return true;
+      }
       else {
         detachTab(tab, {
           inRemote:  options.inRemote,
           broadcast: options.broadcast
         });
         if (nextSibling)
-          await TabsMove.moveTabBefore(tab, nextSibling, {
+          return TabsMove.moveTabBefore(tab, nextSibling, {
             delayedMove: true,
             inRemote:  options.inRemote,
             broadcast: options.broadcast
           });
         else
-          await TabsMove.moveTabAfter(tab, Tabs.getLastDescendantTab(baseTab), {
+          return TabsMove.moveTabAfter(tab, Tabs.getLastDescendantTab(baseTab), {
             delayedMove: true,
             inRemote:  options.inRemote,
             broadcast: options.broadcast
           });
       }
-    }; break;
+    };
   }
 }
 
