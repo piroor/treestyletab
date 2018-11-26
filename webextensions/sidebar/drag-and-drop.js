@@ -1059,7 +1059,8 @@ function onDragEnd(event) {
   if (Array.isArray(dragData.apiTabs))
     dragData.tabNodes = dragData.apiTabs.map(Tabs.getTabById);
 
-  finishDrag();
+  // Don't clear flags immediately, because they are referred by following operations in this function.
+  setTimeout(finishDrag, 0);
 
   if (event.dataTransfer.mozUserCancelled ||
       event.dataTransfer.dropEffect != 'none' ||
