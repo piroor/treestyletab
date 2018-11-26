@@ -85,7 +85,6 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       dontMove:  info.maybeOpenedWithPosition,
       broadcast: true
     }).then(moved => !moved);
-    return false;
   }
   return true;
 });
