@@ -128,7 +128,7 @@ export async function attachTabTo(child, parent, options = {}) {
     options.insertAfter  = refTabs.insertAfter;
   }
   options.insertAfter = options.insertAfter || parent;
-  log('reference tabs: ', {
+  log(`reference tabs for ${child.id}: `, {
     next: dumpTab(options.insertBefore),
     prev: dumpTab(options.insertAfter)
   });
@@ -140,7 +140,7 @@ export async function attachTabTo(child, parent, options = {}) {
     ignoreTabs:   [child]
   });
   const moved = newIndex != child.apiTab.index;
-  log('newIndex: ', newIndex);
+  log(`newIndex for ${child.id}: `, newIndex);
 
   const newlyAttached = (
     !parent.childTabs.includes(child) ||
