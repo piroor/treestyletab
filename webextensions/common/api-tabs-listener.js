@@ -440,11 +440,22 @@ async function onNewTabTracked(tab) {
       checkRecycledTab(container);
     }
 
-    if (tab.active &&
+    onTabCreated(uniqueId);
+
+    // tab can be changed while creating!
+    const renewedTab = await browser.tabs.get(tab.id);
+    const changedProps = {};
+    for (const key of Object.keys(renewedTab)) {
+      if (tab[key] != renewedTab[key])
+        changedProps[key] = renewedTab[key];
+    }
+    if (Object.keys(renewedTab).length > 0)
+      onUpdated(tab.id, changedProps, renewedTab);
+
+    if (renewedTab.active &&
         Tabs.getCurrentTabs().some(tabElement => tabElement != newTab && tabElement.parentNode == newTab.parentNode))
       onActivated({ tabId: tab.id, windowId: tab.windowId });
 
-    onTabCreated(uniqueId);
     return newTab;
   }
   catch(e) {
