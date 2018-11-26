@@ -23,10 +23,10 @@ function log(...args) {
 }
 
 
-// this should return true if the tab is moved while processing
+// this should return false if the tab is / may be moved while processing
 Tabs.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
-    return false;
+    return true;
 
   log('Tabs.onCreating ', dumpTab(tab), info);
 
@@ -52,7 +52,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
             activeTab:                 possibleOpenerTab,
             autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
             inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
-          });
+          }).then(moved => !moved);
         }
         return false;
       }
@@ -62,7 +62,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       tab.dataset.isNewTab = true;
     }
     log('behave as a tab opened with any URL');
-    return false;
+    return true;
   }
 
   log(`opener: ${dumpTab(opener)}, info.maybeOpenedWithPosition = ${info.maybeOpenedWithPosition}`);
@@ -75,7 +75,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab), {
         delayedMove: true,
         broadcast:   true
-      });
+      }).then(moved => !moved);
     }
   }
   else if (!info.maybeOrphan && configs.autoAttach) {
@@ -84,9 +84,10 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       behavior:  configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.maybeOpenedWithPosition,
       broadcast: true
-    });
+    }).then(moved => !moved);
+    return false;
   }
-  return false;
+  return true;
 });
 
 async function handleNewTabFromActiveTab(tab, params = {}) {

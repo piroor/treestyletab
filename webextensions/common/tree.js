@@ -75,10 +75,11 @@ export const onLevelChanged = new EventListenerManager();
 export const onSubtreeCollapsedStateChanging = new EventListenerManager();
 
 
+// return moved (or not)
 export async function attachTabTo(child, parent, options = {}) {
   if (!parent || !child) {
     log('missing information: ', dumpTab(parent), dumpTab(child));
-    return;
+    return false;
   }
 
   log('attachTabTo: ', {
@@ -101,16 +102,16 @@ export async function attachTabTo(child, parent, options = {}) {
 
   if (Tabs.isPinned(parent) || Tabs.isPinned(child)) {
     log('=> pinned tabs cannot be attached');
-    return;
+    return false;
   }
   if (parent.apiTab.windowId != child.apiTab.windowId) {
     log('=> could not attach tab to a parent in different window');
-    return;
+    return false;
   }
   const ancestors = [parent].concat(Tabs.getAncestorTabs(child));
   if (ancestors.includes(child)) {
     log('=> canceled for recursive request');
-    return;
+    return false;
   }
 
   if (options.dontMove) {
@@ -120,7 +121,9 @@ export async function attachTabTo(child, parent, options = {}) {
   }
 
   if (!options.insertBefore && !options.insertAfter) {
-    const refTabs = getReferenceTabsForNewChild(child, parent, options);
+    const refTabs = getReferenceTabsForNewChild(child, parent, Object.assign({}, options, {
+      ignoreTabs: [child]
+    }));
     options.insertBefore = refTabs.insertBefore;
     options.insertAfter  = refTabs.insertAfter;
   }
@@ -136,6 +139,7 @@ export async function attachTabTo(child, parent, options = {}) {
     insertAfter:  options.insertAfter,
     ignoreTabs:   [child]
   });
+  const moved = newIndex != child.apiTab.index;
   log('newIndex: ', newIndex);
 
   const newlyAttached = (
@@ -214,6 +218,8 @@ export async function attachTabTo(child, parent, options = {}) {
       stack:            new Error().stack
     });
   }
+
+  return moved;
 }
 
 export function getReferenceTabsForNewChild(child, parent, options = {}) {
@@ -436,6 +442,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       return false;
 
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
+      log(' => kNEWTAB_OPEN_AS_ORPHAN');
       detachTab(tab, {
         inRemote:  options.inRemote,
         broadcast: options.broadcast
@@ -447,19 +454,18 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         });
       return false;
 
-    case Constants.kNEWTAB_OPEN_AS_CHILD: {
-      const dontMove = options.dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL;
-      await attachTabTo(tab, baseTab, {
-        dontMove,
+    case Constants.kNEWTAB_OPEN_AS_CHILD:
+      log(' => kNEWTAB_OPEN_AS_CHILD');
+      return attachTabTo(tab, baseTab, {
+        dontMove:    options.dontMove || configs.insertNewChildAt == Constants.kINSERT_NO_CONTROL,
         forceExpand: true,
         delayedMove: true,
         inRemote:    options.inRemote,
         broadcast:   options.broadcast
       });
-      return !dontMove;
-    };
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING: {
+      log(' => kNEWTAB_OPEN_AS_SIBLING');
       const parent = Tabs.getParentTab(baseTab);
       if (parent) {
         await attachTabTo(tab, parent, {
@@ -482,19 +488,19 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
     };
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+      log(' => kNEWTAB_OPEN_AS_NEXT_SIBLING');
       let nextSibling = Tabs.getNextSiblingTab(baseTab);
       if (nextSibling == tab)
         nextSibling = null;
       const parent = Tabs.getParentTab(baseTab);
       if (parent) {
-        await attachTabTo(tab, parent, {
+        return attachTabTo(tab, parent, {
           insertBefore: nextSibling,
           insertAfter:  Tabs.getLastDescendantTab(baseTab) || baseTab,
           delayedMove:  true,
           inRemote:     options.inRemote,
           broadcast:    options.broadcast
         });
-        return true;
       }
       else {
         detachTab(tab, {

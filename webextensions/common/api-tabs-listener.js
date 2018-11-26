@@ -401,6 +401,7 @@ async function onNewTabTracked(tab) {
     if (moved instanceof Promise)
       moved = await moved;
     moved = moved === false;
+    log('moved: ', moved);
 
     if (container.parentNode) { // it can be removed while waiting
       TabsContainer.incrementCounter(container, 'openingCount');
