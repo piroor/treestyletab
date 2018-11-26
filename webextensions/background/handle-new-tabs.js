@@ -65,7 +65,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
     return true;
   }
 
-  log('opener: ', dumpTab(opener), info.maybeOpenedWithPosition);
+  log(`opener: ${dumpTab(opener)}, info.maybeOpenedWithPosition = ${info.maybeOpenedWithPosition}`);
   if (Tabs.isPinned(opener) &&
       opener.parentNode == tab.parentNode) {
     if (configs.autoGroupNewTabsFromPinned) {
