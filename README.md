@@ -231,7 +231,7 @@ Thanks, but sorry, I have no plan about any donation from some reasons.
 The largest reason is: because I want to keep me as the prime user of this project.
 I want to keep having a privilege to say "no" about requests not matched to my vision.
 My hand is already full to maintain this addon for my usecase.
-(Of course I know that donation is not a payment, but I'm afraid that I'll think about voices from people who did donation more seriously and it unconsciously conflict to my policies.)
+(Of course I know that donation is not payment, but I'm afraid that I'll think about voices from people who did donation more seriously and it unconsciously conflict to my policies.)
 
 And, I'm afraid of [social undermining](https://en.wikipedia.org/wiki/Social_undermining) also.
 
