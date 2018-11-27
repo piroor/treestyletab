@@ -487,7 +487,8 @@ async function onContextMenu(event) {
     return;
 
   const tab = EventUtils.getTabFromEvent(event);
-  if (!event.ctrlKey &&
+  const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
+  if (!modifierKeyPressed &&
       tab && tab.apiTab &&
       typeof browser.menus.overrideContext == 'function') {
     browser.menus.overrideContext({
