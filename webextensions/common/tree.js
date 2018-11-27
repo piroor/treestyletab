@@ -522,6 +522,42 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
   }
 }
 
+export async function behaveAutoAttachedTabs(tabs, options = {}) {
+  switch (options.behavior) {
+    default:
+      return false;
+
+    case Constants.kNEWTAB_OPEN_AS_ORPHAN:
+      if (options.baseTabs && !options.baseTab)
+        options.baseTab = options.baseTabs[options.baseTabs.length-1];
+      for (const tab of tabs) {
+        await behaveAutoAttachedTab(tab, options);
+      }
+      return false;
+
+    case Constants.kNEWTAB_OPEN_AS_CHILD: {
+      if (options.baseTabs && !options.baseTab)
+        options.baseTab = options.baseTabs[0];
+      let moved = false;
+      for (const tab of tabs) {
+        moved = (await behaveAutoAttachedTab(tab, options)) || moved;
+      }
+      return moved;
+    };
+
+    case Constants.kNEWTAB_OPEN_AS_SIBLING:
+    case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
+      if (options.baseTabs && !options.baseTab)
+        options.baseTab = options.baseTabs[options.baseTabs.length-1];
+      let moved = false;
+      for (const tab of tabs.reverse()) {
+        moved = (await behaveAutoAttachedTab(tab, options)) || moved;
+      }
+      return moved;
+    };
+  }
+}
+
 function updateTabsIndent(tabs, level = undefined) {
   if (!tabs)
     return;

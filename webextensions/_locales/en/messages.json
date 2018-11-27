@@ -450,6 +450,8 @@
   "tabContextMenu_pin_label_multiselected":         { "message": "&Pin Tabs" },
   "tabContextMenu_unpin_label_multiselected":       { "message": "Un&pin Tabs" },
 
+  "tabContextMenu_duplicate_label_multiselected":   { "message": "&Duplicate Tabs" },
+
   "tabContextMenu_moveTab_label_multiselected": { "message": "Mo&ve Tabs" },
 
   "tabContextMenu_bookmark_label_multiselected": { "message": "&Bookmark Tabs…" },

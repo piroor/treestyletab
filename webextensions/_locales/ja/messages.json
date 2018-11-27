@@ -443,6 +443,8 @@
   "tabContextMenu_mute_label_multiselected":        { "message": "タブをミュート(&M)" },
   "tabContextMenu_unmute_label_multiselected":      { "message": "タブのミュートを解除(&M)" },
 
+  "tabContextMenu_duplicate_label_multiselected":   { "message": "選択したタブを複製(&D)" },
+
   "tabContextMenu_pin_label_multiselected":         { "message": "タブをピン留め(&P)" },
   "tabContextMenu_unpin_label_multiselected":       { "message": "タブのピン留めを外す(&P)" },
 

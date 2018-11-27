@@ -51,7 +51,8 @@ const mItemsById = {
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_unpin_label_multiselected')
   },
   'context_duplicateTab': {
-    title: browser.i18n.getMessage('tabContextMenu_duplicate_label')
+    title:              browser.i18n.getMessage('tabContextMenu_duplicate_label'),
+    titleMultiselected: browser.i18n.getMessage('tabContextMenu_duplicate_label_multiselected')
   },
   'context_separator:afterDuplicate': {
     type: 'separator'
@@ -324,7 +325,7 @@ async function onShown(info, contextApiTab) {
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_duplicateTab', {
-    visible: contextApiTab && !multiselected && ++visibleItemsCount,
+    visible: contextApiTab && ++visibleItemsCount,
     multiselected
   }) && modifiedItemsCount++;
 
@@ -511,16 +512,16 @@ async function onClick(info, contextApiTab) {
       */
       // browser.tabs.duplicate(contextApiTab.id);
       return (async () => {
-        const sourceTab = contextTabElement;
-        log('source tab: ', sourceTab, !!sourceTab.apiTab);
-        const duplicatedTabs = await Tree.moveTabs([sourceTab], {
+        const sourceTabs = isMultiselected ? multiselectedTabs : [contextTabElement];
+        log('source tabs: ', sourceTabs);
+        const duplicatedTabs = await Tree.moveTabs(sourceTabs, {
           duplicate:           true,
           destinationWindowId: contextWindowId,
-          insertAfter:         sourceTab
+          insertAfter:         sourceTabs[sourceTabs.length-1]
         });
-        Tree.behaveAutoAttachedTab(duplicatedTabs[0], {
-          baseTab:  sourceTab,
-          behavior: configs.autoAttachOnDuplicated,
+        await Tree.behaveAutoAttachedTabs(duplicatedTabs, {
+          baseTabs:  sourceTabs,
+          behavior:  configs.autoAttachOnDuplicated,
           broadcast: true
         });
       })();
