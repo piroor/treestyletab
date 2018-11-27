@@ -136,6 +136,7 @@ export async function openURIsInTabs(uris, options = {}) {
     }
     else {
       await Tabs.waitUntilAllTabsAreCreated();
+      await TabsMove.waitUntilSynchronized();
       const startIndex = Tabs.calculateNewTabIndex(options);
       log('startIndex: ', startIndex);
       const container  = Tabs.getTabsContainer(options.windowId);

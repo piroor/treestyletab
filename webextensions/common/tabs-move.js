@@ -273,19 +273,37 @@ export async function moveTabInternallyAfter(tab, referenceTab, options = {}) {
   return moveTabsInternallyAfter([tab], referenceTab, options);
 }
 
+
+// ========================================================
+// Synchronize order of tab elements to browser's tabs
+
+let mPreviousSync;
+let mDelayedSync;
+let mDelayedSyncTimer;
+
+export async function waitUntilSynchronized() {
+  return mPreviousSync || mDelayedSync;
+}
+
 function syncTabsPositionToApiTabs(apiTabs) {
   syncTabsPositionToApiTabsInternal.movedApiTabs = syncTabsPositionToApiTabsInternal.movedApiTabs.concat(apiTabs);
-  if (syncTabsPositionToApiTabsInternal.delayed)
-    clearTimeout(syncTabsPositionToApiTabsInternal.delayed);
-  syncTabsPositionToApiTabsInternal.delayed = setTimeout(() => {
-    if (syncTabsPositionToApiTabsInternal.previousRun)
-      syncTabsPositionToApiTabsInternal.previousRun = syncTabsPositionToApiTabsInternal.previousRun.then(syncTabsPositionToApiTabsInternal);
-    else
-      syncTabsPositionToApiTabsInternal.previousRun = syncTabsPositionToApiTabsInternal();
-  }, 100);
+  if (mDelayedSyncTimer)
+    clearTimeout(mDelayedSyncTimer);
+  return mDelayedSync = new Promise((resolve, _reject) => {
+    mDelayedSyncTimer = setTimeout(() => {
+      mDelayedSync = undefined;
+      if (mPreviousSync)
+        mPreviousSync = mPreviousSync.then(syncTabsPositionToApiTabsInternal);
+      else
+        mPreviousSync = syncTabsPositionToApiTabsInternal();
+      mPreviousSync = mPreviousSync.then(resolve);
+    }, 100);
+  }).then(() => {
+    mPreviousSync = undefined;
+  });
 }
 async function syncTabsPositionToApiTabsInternal() {
-  delete syncTabsPositionToApiTabsInternal.delayed;
+  mDelayedSyncTimer = undefined;
 
   const movedApiTabs = syncTabsPositionToApiTabsInternal.movedApiTabs;
   syncTabsPositionToApiTabsInternal.movedApiTabs = [];
