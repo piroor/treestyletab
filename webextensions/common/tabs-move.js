@@ -133,12 +133,11 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
           continue;
         tab.apiTab.index = i;
       }
-
-      if (!options.broadcasted) {
-        if (options.delayedMove) // Wait until opening animation is finished.
-          await wait(configs.newTabAnimationDuration);
-        syncTabsPositionToApiTabs(tabs.map(tab => tab.apiTab));
-      }
+    }
+    if (!options.broadcasted) {
+      if (options.delayedMove) // Wait until opening animation is finished.
+        await wait(configs.newTabAnimationDuration);
+      syncTabsPositionToApiTabs(tabs.map(tab => tab.apiTab));
     }
   }
   catch(e) {
@@ -257,12 +256,11 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
           continue;
         tab.apiTab.index = i;
       }
-
-      if (!options.broadcasted) {
-        if (options.delayedMove) // Wait until opening animation is finished.
-          await wait(configs.newTabAnimationDuration);
-        syncTabsPositionToApiTabs(tabs.map(tab => tab.apiTab));
-      }
+    }
+    if (!options.broadcasted) {
+      if (options.delayedMove) // Wait until opening animation is finished.
+        await wait(configs.newTabAnimationDuration);
+      syncTabsPositionToApiTabs(tabs.map(tab => tab.apiTab));
     }
   }
   catch(e) {
@@ -279,7 +277,12 @@ function syncTabsPositionToApiTabs(apiTabs) {
   syncTabsPositionToApiTabsInternal.movedApiTabs = syncTabsPositionToApiTabsInternal.movedApiTabs.concat(apiTabs);
   if (syncTabsPositionToApiTabsInternal.delayed)
     clearTimeout(syncTabsPositionToApiTabsInternal.delayed);
-  syncTabsPositionToApiTabsInternal.delayed = setTimeout(syncTabsPositionToApiTabsInternal, 100);
+  syncTabsPositionToApiTabsInternal.delayed = setTimeout(() => {
+    if (syncTabsPositionToApiTabsInternal.previousRun)
+      syncTabsPositionToApiTabsInternal.previousRun = syncTabsPositionToApiTabsInternal.previousRun.then(syncTabsPositionToApiTabsInternal);
+    else
+      syncTabsPositionToApiTabsInternal.previousRun = syncTabsPositionToApiTabsInternal();
+  }, 100);
 }
 async function syncTabsPositionToApiTabsInternal() {
   delete syncTabsPositionToApiTabsInternal.delayed;
@@ -297,22 +300,31 @@ async function syncTabsPositionToApiTabsInternal() {
   }
   const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById);
   const apiTabs = tabs.sort(documentPositionComparator).map(tab => tab.apiTab);
+  log('syncTabsPositionToApiTabsInternal: rearrange ', apiTabs.map(apiTab => apiTab.id));
+  const movedLogs = [];
   for (const apiTab of apiTabs) {
+    if (Tabs.hasCreatingTab())
+      await Tabs.waitUntilAllTabsAreCreated();
+    if (Tabs.hasMovingTab())
+      await Tabs.waitUntilAllTabsAreMoved();
     try {
       const tab         = Tabs.getTabById(apiTab.id);
       const previousTab = Tabs.getPreviousTab(tab);
       const nextTab     = Tabs.getNextTab(tab);
       let fromIndex     = -1;
       let toIndex       = -1;
+      let movedInfo;
       if (previousTab) {
         [ fromIndex, toIndex ] = await ApiTabs.getIndexes(apiTab.id, previousTab.apiTab.id);
         if (fromIndex > toIndex)
           toIndex++;
+        movedInfo = ` (after tab ${previousTab.apiTab.id})`;
       }
       else if (nextTab) {
         [ fromIndex, toIndex ] = await ApiTabs.getIndexes(apiTab.id, nextTab.apiTab.id);
         if (fromIndex < toIndex)
           toIndex--;
+        movedInfo = ` (before tab ${nextTab.apiTab.id})`;
       }
       if (fromIndex != toIndex && toIndex > -1) {
         const count = movedTabsCounts.get(apiTab.windowId) || 0;
@@ -321,12 +333,14 @@ async function syncTabsPositionToApiTabsInternal() {
           windowId: apiTab.windowId,
           index:    toIndex
         }).catch(ApiTabs.handleMissingTabError);
+        movedLogs.push(`tab ${apiTab.id}, from ${fromIndex} to ${toIndex}${movedInfo}`);
       }
     }
     catch(e) {
       log('syncTabsPositionToApiTabsInternal: fatal error: ', e);
     }
   }
+   log('syncTabsPositionToApiTabsInternal: moved ', movedLogs);
   for (const windowId of toBeMovedTabsCounts.keys()) {
     const toBeMovedCount = toBeMovedTabsCounts.get(windowId) || 0;
     const movedCount     = movedTabsCounts.get(windowId) || 0;
