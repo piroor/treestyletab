@@ -328,8 +328,8 @@ async function syncTabsPositionToApiTabsInternal() {
     }
   }
   for (const windowId of toBeMovedTabsCounts.keys()) {
-    const toBeMovedCount = toBeMovedTabsCounts.get(windowId);
-    const movedCount     = movedTabsCounts.get(windowId);
+    const toBeMovedCount = toBeMovedTabsCounts.get(windowId) || 0;
+    const movedCount     = movedTabsCounts.get(windowId) || 0;
     const delta          = toBeMovedCount - movedCount;
     if (delta > 0) {
       const container = Tabs.getTabsContainer(windowId);
