@@ -1,7 +1,12 @@
 # History
 
  - master/HEAD
-   * Don't detach dragged tab to new window by dropping on dragged tabs themselves more concretely.
+   * Automatically re-discard accidentaly restored tabs for Ctrl-Tab/Ctrl-Shift-Tab.
+   * On Firefox 64 and later at macOS, new style context menu is available for Control-click. (Opening context menu with pressed ⌘ key will show old style context menu. On Windows or Linux, pression Ctrl key works as.)
+   * Activate last active tab correctly when multiple active tabs are opened at a time.
+   * Synchronize order of Firefox's native tabs and TST's sidebar more correctly when multiple tabs are opened at a time.
+   * Fix impossibility of logging in to giffgaff.com and some websites. (again)
+   * Tabs won't be detached to new window unexpectedly anymrore when tabs are dropped on the dragged tabs themselves.
    * Open new tab as the next sibling correctly, even if the the active tab is a child tab and there is no more following tab.
    * Use last effective favicon for discarded tabs in group tabs.
    * Return last effective favicon information for discarded tabs, as a part of `get-tree` API responses.
