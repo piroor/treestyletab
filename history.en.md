@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Activate context menu commands for selected tabs: "Reopen in Container" and "Duplicate Tabs".
+   * Never detach dropped tabs to new window if the drag action is started just for bookmarks or links.
    * Automatically re-discard accidentaly restored tabs for Ctrl-Tab/Ctrl-Shift-Tab.
    * On Firefox 64 and later at macOS, new style context menu is available for Control-click. (Opening context menu with pressed ⌘ key will show old style context menu. On Windows or Linux, pression Ctrl key works as.)
    * Activate last active tab correctly when multiple active tabs are opened at a time.
