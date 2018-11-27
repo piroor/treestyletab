@@ -57,9 +57,6 @@ function log(...args) {
 export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState) {
     tab.setAttribute(Constants.kCURRENT_URI, newState.url);
-    if (tab.dataset.discardURLAfterCompletelyLoaded &&
-        tab.dataset.discardURLAfterCompletelyLoaded != newState.url)
-      delete tab.dataset.discardURLAfterCompletelyLoaded;
   }
 
   if ('url' in newState &&
@@ -132,16 +129,6 @@ export function updateTab(tab, newState = {}, options = {}) {
         if (!Tabs.isActive(tab))
           tab.classList.add(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
-    }
-    if (newState.status == 'complete' &&
-        tab.apiTab &&
-        tab.apiTab.url == tab.dataset.discardURLAfterCompletelyLoaded) {
-      if (configs.autoDiscardTabForUnexpectedFocus) {
-        log(' => discard accidentally restored tab ', tab.apiTab.id);
-        if (typeof browser.tabs.discard == 'function')
-          browser.tabs.discard(tab.apiTab.id);
-      }
-      delete tab.dataset.discardURLAfterCompletelyLoaded;
     }
     Tabs.onStateChanged.dispatch(tab);
   }
@@ -266,7 +253,7 @@ export async function updateTabsHighlighted(highlightInfo) {
   // unhighlight all at first.
   for (const tab of unhighlightedTabs.concat(highlightedTabs)) {
     const highlighted = highlightedTabs.includes(tab);
-    // log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
+    log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
     if (Tabs.isHighlighted(tab) == highlighted)
       continue;
     if (highlighted)

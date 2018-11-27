@@ -166,7 +166,8 @@ export const configs = new Configs({
   startDragTimeout: 400,
   minimumIntervalToProcessDragoverEvent: 50,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
-  autoDiscardTabForUnexpectedFocus: false,
+  autoDiscardTabForUnexpectedFocus: true,
+  autoDiscardTabForUnexpectedFocusDelay: 500,
   knownExternalAddons: [
     'multipletab@piro.sakura.ne.jp'
   ],

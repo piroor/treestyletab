@@ -256,9 +256,7 @@ async function onUpdated(tabId, changeInfo, tab) {
       updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = tab.openerTabId;
     }
 
-    TabsUpdate.updateTab(updatedTab, changeInfo, {
-      tab: tab
-    });
+    TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
     TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab));
 
     const onUpdatedResult = Tabs.onUpdated.dispatch(updatedTab, changeInfo);

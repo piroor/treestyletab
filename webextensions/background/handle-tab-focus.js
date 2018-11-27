@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  wait,
   dumpTab,
   configs
 } from '/common/common.js';
@@ -95,6 +96,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     log('=> reaction for newly focused parent tab');
     handleNewActiveTab(tab, info);
   }
+  delete tab.dataset.discardOnCompletelyLoaded;
   container.lastFocusedTab = tab.id;
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
@@ -118,6 +120,42 @@ function handleNewActiveTab(tab, info = {}) {
       });
   }
 }
+
+Tabs.onUpdated.addListener((tab, changeInfo = {}) => {
+  if ('url' in changeInfo) {
+    if (tab.dataset.discardURLAfterCompletelyLoaded &&
+        tab.dataset.discardURLAfterCompletelyLoaded != changeInfo.url)
+      delete tab.dataset.discardURLAfterCompletelyLoaded;
+  }
+});
+
+Tabs.onStateChanged.addListener(tab => {
+  if (!tab.apiTab ||
+      tab.apiTab.status != 'complete')
+    return;
+
+  if (typeof browser.tabs.discard == 'function') {
+    if (tab.apiTab.url == tab.dataset.discardURLAfterCompletelyLoaded &&
+        configs.autoDiscardTabForUnexpectedFocus) {
+      log('Try to discard accidentally restored tab (on restored) ', tab.apiTab.id);
+      wait(configs.autoDiscardTabForUnexpectedFocusDelay).then(() => {
+        if (!Tabs.ensureLivingTab(tab) ||
+            tab.apiTab.active)
+          return;
+        if (tab.apiTab.status == 'complete')
+          browser.tabs.discard(tab.apiTab.id);
+        else
+          tab.dataset.discardOnCompletelyLoaded = true;
+      });
+    }
+    else if (tab.dataset.discardOnCompletelyLoaded && !tab.apiTab.active) {
+      log('Discard accidentally restored tab (on complete) ', tab.apiTab.id);
+      browser.tabs.discard(tab.apiTab.id);
+    }
+  }
+  delete tab.dataset.discardURLAfterCompletelyLoaded;
+  delete tab.dataset.discardOnCompletelyLoaded;
+});
 
 function setupDelayedExpand(tab) {
   if (!tab)
