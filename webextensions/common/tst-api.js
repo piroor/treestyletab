@@ -412,17 +412,17 @@ export function serializeTab(tab) {
 }
 
 export async function serializeTabWithEffectiveFavIconUrl(tab) {
-  const serialized = serializeTab(tab);
+  const serializedRoot = serializeTab(tab);
   const promises = [];
-  const preparePromiseForEffectiveFavIcon = tab => {
-    promises.push(TabFavIconHelper.getLastEffectiveFavIconURL(tab.apiTab).then(url => {
-      tab.effectiveFavIconUrl = url;
+  const preparePromiseForEffectiveFavIcon = serializedOneTab => {
+    promises.push(TabFavIconHelper.getLastEffectiveFavIconURL(serializedOneTab).then(url => {
+      serializedOneTab.effectiveFavIconUrl = url;
     }));
-    tab.children.map(preparePromiseForEffectiveFavIcon);
+    serializedOneTab.children.map(preparePromiseForEffectiveFavIcon);
   };
-  preparePromiseForEffectiveFavIcon(serialized);
+  preparePromiseForEffectiveFavIcon(serializedRoot);
   await Promise.all(promises);
-  return serialized;
+  return serializedRoot;
 }
 
 export function getListenersForMessageType(type) {
