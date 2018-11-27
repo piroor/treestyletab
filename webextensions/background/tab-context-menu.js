@@ -213,6 +213,7 @@ function updateContextualIdentities() {
   const defaultSeparator = {
     parentId:  'context_reopenInContainer',
     id:        'context_reopenInContainer_separator',
+    type:      'separator',
     contexts:  ['tab'],
     viewTypes: ['sidebar'],
     documentUrlPatterns: SIDEBAR_URL_PATTERN
