@@ -685,14 +685,16 @@ async function onClick(info, contextApiTab) {
       const contextualIdentityMatch = info.menuItemId.match(/^context_reopenInContainer:(.+)$/);
       if (contextApiTab &&
           contextualIdentityMatch) {
-        // Open in Container
-        const tab = await TabsOpen.openURIInTab(contextApiTab.url, {
+        // Reopen in Container
+        const sourceTabs = isMultiselected ? multiselectedTabs : [contextTabElement];
+        const tabs = await TabsOpen.openURIsInTabs(sourceTabs.map(tab => tab.apiTab.url), {
+          isOrphan:      true,
           windowId:      contextApiTab.windowId,
           cookieStoreId: contextualIdentityMatch[1]
         });
-        Tree.behaveAutoAttachedTab(tab, {
-          baseTab:  contextTabElement,
-          behavior: configs.autoAttachOnDuplicated,
+        await Tree.behaveAutoAttachedTabs(tabs, {
+          baseTabs:  sourceTabs,
+          behavior:  configs.autoAttachOnDuplicated,
           broadcast: true
         });
       }
