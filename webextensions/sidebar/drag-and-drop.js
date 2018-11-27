@@ -1062,6 +1062,11 @@ function onDragEnd(event) {
   // Don't clear flags immediately, because they are referred by following operations in this function.
   setTimeout(finishDrag, 0);
 
+  if (event.dataTransfer.getData(kTYPE_URI_LIST)) {
+    log('do nothing by TST for dropping just for bookmarking or linking');
+    return;
+  }
+
   if (event.dataTransfer.mozUserCancelled ||
       event.dataTransfer.dropEffect != 'none' ||
       //event.shiftKey || // don't ignore shift-drop, because it can be used to drag a parent tab as an individual tab.
