@@ -340,7 +340,7 @@ async function syncTabsPositionToApiTabsInternal() {
       log('syncTabsPositionToApiTabsInternal: fatal error: ', e);
     }
   }
-   log('syncTabsPositionToApiTabsInternal: moved ', movedLogs);
+  log('syncTabsPositionToApiTabsInternal: moved ', movedLogs);
   for (const windowId of toBeMovedTabsCounts.keys()) {
     const toBeMovedCount = toBeMovedTabsCounts.get(windowId) || 0;
     const movedCount     = movedTabsCounts.get(windowId) || 0;
