@@ -295,7 +295,7 @@ async function syncTabsPositionToApiTabsInternal() {
     const count = toBeMovedTabsCounts.get(apiTab.windowId) || 0;
     toBeMovedTabsCounts.set(apiTab.windowId, count + 1);
   }
-  const tabs = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById);
+  const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById);
   const apiTabs = tabs.sort(documentPositionComparator).map(tab => tab.apiTab);
   for (const apiTab of apiTabs) {
     try {
