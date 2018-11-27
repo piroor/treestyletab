@@ -302,8 +302,8 @@ async function syncTabsPositionToApiTabsInternal() {
       const tab         = Tabs.getTabById(apiTab.id);
       const previousTab = Tabs.getPreviousTab(tab);
       const nextTab     = Tabs.getNextTab(tab);
-      let fromIndex = -1;
-      let toIndex = -1;
+      let fromIndex     = -1;
+      let toIndex       = -1;
       if (previousTab) {
         [ fromIndex, toIndex ] = await ApiTabs.getIndexes(apiTab.id, previousTab.apiTab.id);
         if (fromIndex > toIndex)
