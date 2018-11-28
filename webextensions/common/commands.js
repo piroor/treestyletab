@@ -445,7 +445,7 @@ function detachTabsWithStructure(tabs, options = {}) {
 }
 
 export async function moveUp(tab, options = {}) {
-  const previousTab = Tabs.getPreviousTab(tab);
+  const previousTab = Tabs.getPreviousVisibleTab(tab);
   if (!previousTab)
     return false;
 
@@ -457,23 +457,29 @@ export async function moveUp(tab, options = {}) {
     await TabsMove.moveTabBefore(tab, previousTab, {
       broadcast: true
     });
+    await onMoveUp.dispatch(tab);
   }
   else {
-    await moveTabsWithStructure([tab], {
-      insertAfter: previousTab,
-      broadcast:   true
+    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+      insertBefore: previousTab
+    });
+    if (!referenceTabs.insertBefore && !referenceTabs.insertAfter)
+      return false;
+    await moveTabsWithStructure([tab].concat(Tabs.getDescendantTabs(tab)), {
+      attachTo:     referenceTabs.parent,
+      insertBefore: referenceTabs.insertBefore,
+      insertAfter:  referenceTabs.insertAfter,
+      broadcast:    true
     });
   }
-  await onMoveUp.dispatch(tab);
   return true;
 }
 
 export async function moveDown(tab, options = {}) {
-  const nextTab = Tabs.getNextTab(tab);
-  if (!nextTab)
-    return false;
-
   if (!options.followChildren) {
+    const nextTab = Tabs.getNextVisibleTab(tab);
+    if (!nextTab)
+      return false;
     Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
@@ -481,13 +487,23 @@ export async function moveDown(tab, options = {}) {
     await TabsMove.moveTabAfter(tab, nextTab, {
       broadcast: true
     });
+    await onMoveDown.dispatch(tab);
   }
   else {
-    await moveTabsWithStructure([tab], {
-      insertBefore: nextTab,
+    const nextTab = Tabs.getNextVisibleTab(Tabs.getLastDescendantTab(tab) || tab);
+    if (!nextTab)
+      return false;
+    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+      insertAfter: nextTab
+    });
+    if (!referenceTabs.insertBefore && !referenceTabs.insertAfter)
+      return false;
+    await moveTabsWithStructure([tab].concat(Tabs.getDescendantTabs(tab)), {
+      attachTo:     referenceTabs.parent,
+      insertBefore: referenceTabs.insertBefore,
+      insertAfter:  referenceTabs.insertAfter,
       broadcast:    true
     });
   }
-  await onMoveDown.dispatch(tab);
   return true;
 }
