@@ -43,7 +43,6 @@ import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import {
   log as internalLogger,
-  nextFrame,
   configs
 } from './common.js';
 
@@ -245,20 +244,6 @@ export async function waitUntilAllTabsAreCreated() {
 }
 
 export async function waitUntilTabsAreCreated(idOrIds) {
-  if (idOrIds) {
-    let waitingIds = Array.isArray(idOrIds) ? idOrIds.slice(0) : [idOrIds];
-    while (waitingIds.length > 0) {
-      waitingIds = waitingIds.filter(id =>
-        id &&
-          !mCreatingTabs.get(id) &&
-            !(document.getElementById(id) ||
-              document.querySelector(`li.tab[${Constants.kAPI_TAB_ID}="${id}"]`))
-      );
-      if (waitingIds.length == 0)
-        break;
-      await nextFrame();
-    }
-  }
   return waitUntilTabsAreOperated(idOrIds, mCreatingTabs)
     .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
 }

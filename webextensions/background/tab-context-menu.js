@@ -15,6 +15,7 @@ import * as Tabs from '/common/tabs.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
 import * as Bookmark from '/common/bookmark.js';
+import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 import * as SidebarStatus from '/common/sidebar-status.js';
@@ -531,13 +532,8 @@ async function onClick(info, contextApiTab) {
       const allTabs   = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
       const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
       if (otherTabs.length > 0)
-        Tree.performTabsDragDrop({
-          windowId:            contextWindowId,
-          tabs:                movedTabs.map(tab => tab.apiTab),
-          action:              Constants.kACTION_MOVE | Constants.kACTION_DETACH,
-          insertBefore:        otherTabs[0],
-          destinationWindowId: contextWindowId,
-          duplicate:           false
+        Commands.moveTabsWithStructure(movedTabs, {
+          insertBefore: otherTabs[0]
         });
     }; break;
     case 'context_moveTabToEnd': {
@@ -545,13 +541,8 @@ async function onClick(info, contextApiTab) {
       const allTabs   = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
       const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
       if (otherTabs.length > 0)
-        Tree.performTabsDragDrop({
-          windowId:            contextWindowId,
-          tabs:                movedTabs.map(tab => tab.apiTab),
-          action:              Constants.kACTION_MOVE | Constants.kACTION_DETACH,
-          insertAfter:        otherTabs[otherTabs.length-1],
-          destinationWindowId: contextWindowId,
-          duplicate:           false
+        Commands.moveTabsWithStructure(movedTabs, {
+          insertAfter: otherTabs[otherTabs.length-1]
         });
     }; break;
     case 'context_openTabInWindow':

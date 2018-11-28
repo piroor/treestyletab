@@ -168,9 +168,20 @@ export async function openURIsInTabs(uris, options = {}) {
           params.index = startIndex + index;
         if (options.cookieStoreId)
           params.cookieStoreId = options.cookieStoreId;
+        // Tabs opened with different container can take time to be tracked,
+        // then Tabs.waitUntilTabsAreCreated() may be resolved before it is
+        // tracked like as "the tab is already closed". So we wait until the
+        // tab is correctly tracked.
+        const promisedNewTabTracked = new Promise((resolve, _reject) => {
+          const listener = (tab) => {
+            Tabs.onCreating.removeListener(listener);
+            browser.tabs.get(tab.apiTab.id).then(resolve);
+          };
+          Tabs.onCreating.addListener(listener);
+        });
         const apiTab = await browser.tabs.create(params);
         await Promise.all([
-          Tabs.waitUntilTabsAreCreated(apiTab.id),
+          promisedNewTabTracked, // Tabs.waitUntilTabsAreCreated(apiTab.id),
           searchQuery && browser.search.search({
             query: searchQuery,
             tabId: apiTab.id

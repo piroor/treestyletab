@@ -524,7 +524,7 @@ function onMessage(message, sender) {
           message.insertAfter
         ]);
         log('perform tabs dragdrop requested: ', message);
-        return Tree.performTabsDragDrop(Object.assign({}, message, {
+        return Commands.performTabsDragDrop(Object.assign({}, message, {
           attachTo:     Tabs.getTabById(message.attachTo),
           insertBefore: Tabs.getTabById(message.insertBefore),
           insertAfter:  Tabs.getTabById(message.insertAfter)

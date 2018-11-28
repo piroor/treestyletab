@@ -1396,204 +1396,91 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 }
 
 
-
-
-// drag and drop helper
-
-export async function performTabsDragDrop(params = {}) {
-  const windowId = params.windowId || Tabs.getWindow();
-  const destinationWindowId = params.destinationWindowId || windowId;
-
-  if (params.inRemote) {
-    browser.runtime.sendMessage(Object.assign({}, params, {
-      type:         Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
-      windowId:     windowId,
-      attachTo:     params.attachTo && params.attachTo.id,
-      insertBefore: params.insertBefore && params.insertBefore.id,
-      insertAfter:  params.insertAfter && params.insertAfter.id,
-      inRemote:     false,
-      destinationWindowId
-    }));
-    return;
-  }
-
-  log('performTabsDragDrop ', {
-    tabs:                params.tabs.map(tab => tab.id),
-    windowId:            params.windowId,
-    destinationWindowId: params.destinationWindowId,
-    action:              params.action
-  });
-
-  let draggedTabs = params.tabs.map(Tabs.getTabById).filter(tab => !!tab);
-  if (!draggedTabs.length)
-    return;
-
-  // Basically tabs should not be dragged between regular window and private browsing window,
-  // so there are some codes to prevent shch operations. This is for failsafe.
-  if (Tabs.isPrivateBrowsing(draggedTabs[0]) != Tabs.isPrivateBrowsing(Tabs.getFirstTab(destinationWindowId)))
-    return;
-
-  let draggedRoots = Tabs.collectRootTabs(draggedTabs);
-
-  const draggedWholeTree = [].concat(draggedRoots);
-  for (const draggedRoot of draggedRoots) {
-    const descendants = Tabs.getDescendantTabs(draggedRoot);
-    for (const descendant of descendants) {
-      if (!draggedWholeTree.includes(descendant))
-        draggedWholeTree.push(descendant);
+export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
+  if (params.insertBefore) {
+    /* strategy
+         +-----------------------------------------------------
+         |     <= detach from parent, and move
+         |[TARGET  ]
+         +-----------------------------------------------------
+         |  [      ]
+         |     <= attach to the parent of the target, and move
+         |[TARGET  ]
+         +-----------------------------------------------------
+         |[        ]
+         |     <= attach to the parent of the target, and move
+         |[TARGET  ]
+         +-----------------------------------------------------
+         |[        ]
+         |     <= attach to the parent of the target (previous tab), and move
+         |  [TARGET]
+         +-----------------------------------------------------
+    */
+    const prevTab = Tabs.getPreviousVisibleTab(params.insertBefore);
+    if (!prevTab) {
+      // allow to move pinned tab to beside of another pinned tab
+      if (!tab || Tabs.isPinned(tab) == Tabs.isPinned(params.insertBefore)) {
+        return {
+          insertBefore: params.insertBefore
+        };
+      }
+      else {
+        return {};
+      }
+    }
+    else {
+      const prevLevel   = Number(prevTab.getAttribute(Constants.kLEVEL) || 0);
+      const targetLevel = Number(params.insertBefore.getAttribute(Constants.kLEVEL) || 0);
+      let parent = null;
+      if (tab && !Tabs.isPinned(tab))
+        parent = (prevLevel < targetLevel) ? prevTab : Tabs.getParentTab(params.insertBefore);
+      return {
+        parent,
+        insertAfter:  prevTab,
+        insertBefore: params.insertBefore
+      }
     }
   }
-  log('=> draggedTabs: ', draggedTabs.map(dumpTab).join(' / '));
-
-  if (draggedWholeTree.length != draggedTabs.length) {
-    log('=> partially dragged');
-    if (!params.duplicate)
-      await detachTabsFromTree(draggedTabs, {
-        broadcast: true
-      });
+  if (params.insertAfter) {
+    /* strategy
+         +-----------------------------------------------------
+         |[TARGET  ]
+         |     <= if the target has a parent, attach to it and and move
+         +-----------------------------------------------------
+         |  [TARGET]
+         |     <= attach to the parent of the target, and move
+         |[        ]
+         +-----------------------------------------------------
+         |[TARGET  ]
+         |     <= attach to the parent of the target, and move
+         |[        ]
+         +-----------------------------------------------------
+         |[TARGET  ]
+         |     <= attach to the target, and move
+         |  [      ]
+         +-----------------------------------------------------
+    */
+    const nextTab = Tabs.getNextVisibleTab(params.insertAfter);
+    if (!nextTab) {
+      return {
+        parent:      Tabs.getParentTab(params.insertAfter),
+        insertAfter: params.insertAfter
+      };
+    }
+    else {
+      const targetLevel = Number(params.insertAfter.getAttribute(Constants.kLEVEL) || 0);
+      const nextLevel   = Number(nextTab.getAttribute(Constants.kLEVEL) || 0);
+      let parent = null;
+      if (tab && !Tabs.isPinned(tab))
+        parent = (targetLevel < nextLevel) ? params.insertAfter : Tabs.getParentTab(params.insertAfter) ;
+      return {
+        parent,
+        insertBefore: nextTab,
+        insertAfter:  params.insertAfter
+      };
+    }
   }
-
-  while (params.insertBefore &&
-         draggedWholeTree.includes(params.insertBefore)) {
-    params.insertBefore = Tabs.getNextTab(params.insertBefore);
-  }
-  while (params.insertAfter &&
-         draggedWholeTree.includes(params.insertAfter)) {
-    params.insertAfter = Tabs.getPreviousTab(params.insertAfter);
-  }
-
-  if (params.duplicate ||
-      windowId != destinationWindowId) {
-    draggedTabs = await moveTabs(draggedTabs, {
-      destinationWindowId,
-      duplicate:    params.duplicate,
-      insertBefore: params.insertBefore,
-      insertAfter:  params.insertAfter
-    });
-    draggedRoots = Tabs.collectRootTabs(draggedTabs);
-  }
-
-  log('try attach/detach');
-  if (!params.attachTo) {
-    log('=> detach');
-    detachTabsOnDrop(draggedRoots, {
-      broadcast: true
-    });
-  }
-  else if (params.action & Constants.kACTION_ATTACH) {
-    log('=> attach');
-    await attachTabsOnDrop(draggedRoots, params.attachTo, {
-      insertBefore: params.insertBefore,
-      insertAfter:  params.insertAfter,
-      draggedTabs:  draggedTabs,
-      broadcast:    true
-    });
-  }
-  else {
-    log('=> just moved');
-  }
-
-  log('=> moving dragged tabs ', draggedTabs.map(dumpTab));
-  if (params.insertBefore)
-    await TabsMove.moveTabsBefore(draggedTabs, params.insertBefore);
-  else if (params.insertAfter)
-    await TabsMove.moveTabsAfter(draggedTabs, params.insertAfter);
-  else
-    log('=> already placed at expected position');
-
-  if (windowId != destinationWindowId) {
-    // Firefox always focuses to the dropped tab if it is dragged from another window.
-    // TST respects Firefox's the behavior.
-    browser.tabs.update(draggedTabs[0].apiTab.id, { active: true })
-      .catch(ApiTabs.handleMissingTabError);
-  }
-
-  /*
-  const treeStructure = getTreeStructureFromTabs(draggedTabs);
-
-  const newTabs;
-  const replacedGroupTabs = Tabs.doAndGetNewTabs(() => {
-    newTabs = moveTabsInternal(draggedTabs, {
-      duplicate    : params.duplicate,
-      insertBefore : params.insertBefore,
-      insertAfter  : params.insertAfter,
-      inRemote     : true
-    });
-  });
-  log('=> opened group tabs: ', replacedGroupTabs);
-  params.draggedTab.ownerDocument.defaultView.setTimeout(() => {
-    if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
-      return;
-    log('closing needless group tabs');
-    replacedGroupTabs.reverse().forEach(function(tab) {
-      log(' check: ', tab.label+'('+tab._tPos+') '+getLoadingURI(tab));
-      if (Tabs.isGroupTab(tab) &&
-        !Tabs.hasChildTabs(tab))
-        removeTab(tab);
-    }, this);
-  }, 0);
-  */
-
-  /*
-  if (newTabs.length && params.action & Constants.kACTION_ATTACH) {
-    Promise.all(newTabs.map((tab) => tab.__treestyletab__promisedDuplicatedTab))
-      .then((function() {
-        log('   => attach (last)');
-        await attachTabsOnDrop(
-          newTabs.filter(function(tab, index) {
-            return treeStructure[index] == -1;
-          }),
-          params.attachTo,
-          { insertBefore: params.insertBefore,
-            insertAfter:  params.insertAfter }
-        );
-      }).bind(this));
-  }
-  */
-
-  log('=> finished');
-}
-
-async function attachTabsOnDrop(tabs, parent, options = {}) {
-  log('attachTabsOnDrop: start ', tabs.map(dumpTab));
-  if (parent && !options.insertBefore && !options.insertAfter) {
-    const refTabs = getReferenceTabsForNewChild(tabs[0], parent, {
-      ignoreTabs: tabs
-    });
-    options.insertBefore = refTabs.insertBefore;
-    options.insertAfter  = refTabs.insertAfter;
-  }
-
-  if (options.insertBefore)
-    await TabsMove.moveTabsBefore(options.draggedTabs || tabs, options.insertBefore);
-  else if (options.insertAfter)
-    await TabsMove.moveTabsAfter(options.draggedTabs || tabs, options.insertAfter);
-
-  const memberOptions = Object.assign({}, options, {
-    insertBefore: null,
-    insertAfter:  null,
-    dontMove:     true,
-    forceExpand:  options.draggedTabs.some(Tabs.isActive)
-  });
-  for (const tab of tabs) {
-    if (parent)
-      attachTabTo(tab, parent, memberOptions);
-    else
-      detachTab(tab, memberOptions);
-    collapseExpandTabAndSubtree(tab, Object.assign({}, memberOptions, {
-      collapsed: false
-    }));
-  }
-}
-
-function detachTabsOnDrop(tabs, options = {}) {
-  log('detachTabsOnDrop: start ', tabs.map(dumpTab));
-  for (const tab of tabs) {
-    detachTab(tab, options);
-    collapseExpandTabAndSubtree(tab, Object.assign({}, options, {
-      collapsed: false
-    }));
-  }
+  throw new Error('calculateReferenceTabsFromInsertionPosition requires one of insertBefore or insertAfter parameter!');
 }
 
 
