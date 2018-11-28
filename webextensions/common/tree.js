@@ -1396,7 +1396,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 }
 
 
-export function calculateNewParentForInsertionPosition(tab, params = {}) {
+export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
   if (params.insertBefore) {
     /* strategy
          +-----------------------------------------------------
@@ -1480,7 +1480,7 @@ export function calculateNewParentForInsertionPosition(tab, params = {}) {
       };
     }
   }
-  throw new Error('calculateNewParentForInsertionPosition requires one of insertBefore or insertAfter parameter!');
+  throw new Error('calculateReferenceTabsFromInsertionPosition requires one of insertBefore or insertAfter parameter!');
 }
 
 
