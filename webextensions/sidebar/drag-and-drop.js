@@ -48,6 +48,7 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
+import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
@@ -1032,7 +1033,7 @@ function onDrop(event) {
   if (dropActionInfo.dragData &&
       dropActionInfo.dragData.apiTab) {
     log('there are dragged tabs');
-    Tree.performTabsDragDrop({
+    Commands.performTabsDragDrop({
       windowId:            dropActionInfo.dragData.windowId,
       tabs:                dropActionInfo.dragData.apiTabs,
       action:              dropActionInfo.action,

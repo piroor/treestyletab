@@ -251,20 +251,219 @@ export async function outdent(tab, options = {}) {
   return true;
 }
 
+// drag and drop helper
+export async function performTabsDragDrop(params = {}) {
+  const windowId = params.windowId || Tabs.getWindow();
+  const destinationWindowId = params.destinationWindowId || windowId;
+
+  if (params.inRemote) {
+    browser.runtime.sendMessage(Object.assign({}, params, {
+      type:         Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
+      windowId:     windowId,
+      attachTo:     params.attachTo && params.attachTo.id,
+      insertBefore: params.insertBefore && params.insertBefore.id,
+      insertAfter:  params.insertAfter && params.insertAfter.id,
+      inRemote:     false,
+      destinationWindowId
+    }));
+    return;
+  }
+
+  log('performTabsDragDrop ', {
+    tabs:                params.tabs.map(tab => tab.id),
+    windowId:            params.windowId,
+    destinationWindowId: params.destinationWindowId,
+    action:              params.action
+  });
+
+  const movedTabs = await moveTabsWithStructure(params.tabs, Object.assign({}, params, {
+    windowId, destinationWindowId
+  }));
+  if (windowId != destinationWindowId) {
+    // Firefox always focuses to the dropped (mvoed) tab if it is dragged from another window.
+    // TST respects Firefox's the behavior.
+    browser.tabs.update(movedTabs[0].apiTab.id, { active: true })
+      .catch(ApiTabs.handleMissingTabError);
+  }
+}
+
+// useful utility for general purpose
+export async function moveTabsWithStructure(tabs, params = {}) {
+  log('moveTabsWithStructure ', tabs.map(tab => tab.id));
+
+  let movedTabs = tabs.map(Tabs.getTabById).filter(tab => !!tab);
+  if (!movedTabs.length)
+    return [];
+
+  let movedRoots = Tabs.collectRootTabs(movedTabs);
+
+  const movedWholeTree = [].concat(movedRoots);
+  for (const movedRoot of movedRoots) {
+    const descendants = Tabs.getDescendantTabs(movedRoot);
+    for (const descendant of descendants) {
+      if (!movedWholeTree.includes(descendant))
+        movedWholeTree.push(descendant);
+    }
+  }
+  log('=> movedTabs: ', movedTabs.map(tab => tab.id).join(' / '));
+
+  while (params.insertBefore &&
+         movedWholeTree.includes(params.insertBefore)) {
+    params.insertBefore = Tabs.getNextTab(params.insertBefore);
+  }
+  while (params.insertAfter &&
+         movedWholeTree.includes(params.insertAfter)) {
+    params.insertAfter = Tabs.getPreviousTab(params.insertAfter);
+  }
+
+  const windowId = params.windowId || tabs[0].apiTab.windowId;
+  const destinationWindowId = params.destinationWindowId ||
+    params.insertBefore && params.insertBefore.apiTab.windowId || 
+      params.insertAfter && params.insertAfter.apiTab.windowId ||
+        windowId;
+
+  // Basically tabs should not be moved between regular window and private browsing window,
+  // so there are some codes to prevent shch operations. This is for failsafe.
+  if (Tabs.isPrivateBrowsing(movedTabs[0]) != Tabs.isPrivateBrowsing(Tabs.getFirstTab(destinationWindowId)))
+    return [];
+
+  if (movedWholeTree.length != movedTabs.length) {
+    log('=> partially moved');
+    if (!params.duplicate)
+      await Tree.detachTabsFromTree(movedTabs, {
+        broadcast: true
+      });
+  }
+
+  if (params.duplicate ||
+      windowId != destinationWindowId) {
+    movedTabs = await Tree.moveTabs(movedTabs, {
+      destinationWindowId,
+      duplicate:    params.duplicate,
+      insertBefore: params.insertBefore,
+      insertAfter:  params.insertAfter
+    });
+    movedRoots = Tabs.collectRootTabs(movedTabs);
+  }
+
+  log('try attach/detach');
+  if (!params.attachTo) {
+    log('=> detach');
+    detachTabsWithStructure(movedRoots, {
+      broadcast: true
+    });
+  }
+  else {
+    log('=> attach');
+    await attachTabsWithStructure(movedRoots, params.attachTo, {
+      insertBefore: params.insertBefore,
+      insertAfter:  params.insertAfter,
+      draggedTabs:  movedTabs,
+      broadcast:    true
+    });
+  }
+
+  log('=> moving tabs ', movedTabs.map(dumpTab));
+  if (params.insertBefore)
+    await TabsMove.moveTabsBefore(movedTabs, params.insertBefore);
+  else if (params.insertAfter)
+    await TabsMove.moveTabsAfter(movedTabs, params.insertAfter);
+  else
+    log('=> already placed at expected position');
+
+  /*
+  const treeStructure = getTreeStructureFromTabs(movedTabs);
+
+  const newTabs;
+  const replacedGroupTabs = Tabs.doAndGetNewTabs(() => {
+    newTabs = moveTabsInternal(movedTabs, {
+      duplicate    : params.duplicate,
+      insertBefore : params.insertBefore,
+      insertAfter  : params.insertAfter,
+      inRemote     : true
+    });
+  });
+  log('=> opened group tabs: ', replacedGroupTabs);
+  params.draggedTab.ownerDocument.defaultView.setTimeout(() => {
+    if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
+      return;
+    log('closing needless group tabs');
+    replacedGroupTabs.reverse().forEach(function(tab) {
+      log(' check: ', tab.label+'('+tab._tPos+') '+getLoadingURI(tab));
+      if (Tabs.isGroupTab(tab) &&
+        !Tabs.hasChildTabs(tab))
+        removeTab(tab);
+    }, this);
+  }, 0);
+  */
+
+  log('=> finished');
+
+  return movedTabs;
+}
+
+async function attachTabsWithStructure(tabs, parent, options = {}) {
+  log('attachTabsWithStructure: start ', tabs.map(dumpTab));
+  if (parent && !options.insertBefore && !options.insertAfter) {
+    const refTabs = Tree.getReferenceTabsForNewChild(tabs[0], parent, {
+      ignoreTabs: tabs
+    });
+    options.insertBefore = refTabs.insertBefore;
+    options.insertAfter  = refTabs.insertAfter;
+  }
+
+  if (options.insertBefore)
+    await TabsMove.moveTabsBefore(options.draggedTabs || tabs, options.insertBefore);
+  else if (options.insertAfter)
+    await TabsMove.moveTabsAfter(options.draggedTabs || tabs, options.insertAfter);
+
+  const memberOptions = Object.assign({}, options, {
+    insertBefore: null,
+    insertAfter:  null,
+    dontMove:     true,
+    forceExpand:  options.draggedTabs.some(Tabs.isActive)
+  });
+  for (const tab of tabs) {
+    if (parent)
+      Tree.attachTabTo(tab, parent, memberOptions);
+    else
+      Tree.detachTab(tab, memberOptions);
+    Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, memberOptions, {
+      collapsed: false
+    }));
+  }
+}
+
+function detachTabsWithStructure(tabs, options = {}) {
+  log('detachTabsWithStructure: start ', tabs.map(dumpTab));
+  for (const tab of tabs) {
+    Tree.detachTab(tab, options);
+    Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, options, {
+      collapsed: false
+    }));
+  }
+}
+
 export async function moveUp(tab, options = {}) {
   const previousTab = Tabs.getPreviousTab(tab);
   if (!previousTab)
     return false;
 
-  if (!options.followChildren)
+  if (!options.followChildren) {
     Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
-
-  await TabsMove.moveTabBefore(tab, previousTab, {
-    broadcast: true
-  });
+    await TabsMove.moveTabBefore(tab, previousTab, {
+      broadcast: true
+    });
+  }
+  else {
+    await moveTabsWithStructure([tab], {
+      insertAfter: previousTab,
+      broadcast:   true
+    });
+  }
   await onMoveUp.dispatch(tab);
   return true;
 }
@@ -274,15 +473,21 @@ export async function moveDown(tab, options = {}) {
   if (!nextTab)
     return false;
 
-  if (!options.followChildren)
+  if (!options.followChildren) {
     Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
-
-  await TabsMove.moveTabAfter(tab, nextTab, {
-    broadcast: true
-  });
+    await TabsMove.moveTabAfter(tab, nextTab, {
+      broadcast: true
+    });
+  }
+  else {
+    await moveTabsWithStructure([tab], {
+      insertBefore: nextTab,
+      broadcast:    true
+    });
+  }
   await onMoveDown.dispatch(tab);
   return true;
 }

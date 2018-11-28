@@ -54,6 +54,10 @@ function log(...args) {
   internalLogger('common/tabs-move', ...args);
 }
 
+
+// ========================================================
+// primitive methods for internal use
+
 export async function moveTabsBefore(tabs, referenceTab, options = {}) {
   log('moveTabsBefore: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
   if (!tabs.length ||
