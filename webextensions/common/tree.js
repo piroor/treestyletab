@@ -1396,6 +1396,93 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
 }
 
 
+export function calculateNewParentForInsertionPosition(tab, params = {}) {
+  if (params.insertBefore) {
+    /* strategy
+         +-----------------------------------------------------
+         |     <= detach from parent, and move
+         |[TARGET  ]
+         +-----------------------------------------------------
+         |  [      ]
+         |     <= attach to the parent of the target, and move
+         |[TARGET  ]
+         +-----------------------------------------------------
+         |[        ]
+         |     <= attach to the parent of the target, and move
+         |[TARGET  ]
+         +-----------------------------------------------------
+         |[        ]
+         |     <= attach to the parent of the target (previous tab), and move
+         |  [TARGET]
+         +-----------------------------------------------------
+    */
+    const prevTab = Tabs.getPreviousVisibleTab(params.insertBefore);
+    if (!prevTab) {
+      // allow to move pinned tab to beside of another pinned tab
+      if (!tab || Tabs.isPinned(tab) == Tabs.isPinned(params.insertBefore)) {
+        return {
+          insertBefore: params.insertBefore
+        };
+      }
+      else {
+        return {};
+      }
+    }
+    else {
+      const prevLevel   = Number(prevTab.getAttribute(Constants.kLEVEL) || 0);
+      const targetLevel = Number(params.insertBefore.getAttribute(Constants.kLEVEL) || 0);
+      let parent = null;
+      if (tab && !Tabs.isPinned(tab))
+        parent = (prevLevel < targetLevel) ? prevTab : Tabs.getParentTab(params.insertBefore);
+      return {
+        parent,
+        insertAfter:  prevTab,
+        insertBefore: params.insertBefore
+      }
+    }
+  }
+  if (params.insertAfter) {
+    /* strategy
+         +-----------------------------------------------------
+         |[TARGET  ]
+         |     <= if the target has a parent, attach to it and and move
+         +-----------------------------------------------------
+         |  [TARGET]
+         |     <= attach to the parent of the target, and move
+         |[        ]
+         +-----------------------------------------------------
+         |[TARGET  ]
+         |     <= attach to the parent of the target, and move
+         |[        ]
+         +-----------------------------------------------------
+         |[TARGET  ]
+         |     <= attach to the target, and move
+         |  [      ]
+         +-----------------------------------------------------
+    */
+    const nextTab = Tabs.getNextVisibleTab(params.insertAfter);
+    if (!nextTab) {
+      return {
+        parent:      Tabs.getParentTab(params.insertAfter),
+        insertAfter: params.insertAfter
+      };
+    }
+    else {
+      const targetLevel = Number(params.insertAfter.getAttribute(Constants.kLEVEL) || 0);
+      const nextLevel   = Number(nextTab.getAttribute(Constants.kLEVEL) || 0);
+      let parent = null;
+      if (tab && !Tabs.isPinned(tab))
+        parent = (targetLevel < nextLevel) ? params.insertAfter : Tabs.getParentTab(params.insertAfter) ;
+      return {
+        parent,
+        insertBefore: nextTab,
+        insertAfter:  params.insertAfter
+      };
+    }
+  }
+  throw new Error('calculateNewParentForInsertionPosition requires one of insertBefore or insertAfter parameter!');
+}
+
 
 // set/get tree structure
 

@@ -362,79 +362,33 @@ function getDropAction(event) {
 
     case kDROP_BEFORE: {
       //log('drop position = before the tab');
-      /* strategy
-           +-----------------------------------------------------
-           |     <= detach from parent, and move
-           |[TARGET  ]
-           +-----------------------------------------------------
-           |  [      ]
-           |     <= attach to the parent of the target, and move
-           |[TARGET  ]
-           +-----------------------------------------------------
-           |[        ]
-           |     <= attach to the parent of the target, and move
-           |[TARGET  ]
-           +-----------------------------------------------------
-           |[        ]
-           |     <= attach to the parent of the target (previous tab), and move
-           |  [TARGET]
-           +-----------------------------------------------------
-      */
-      const prevTab = Tabs.getPreviousVisibleTab(targetTab);
-      if (!prevTab) {
-        // allow to drop pinned tab to beside of another pinned tab
-        if (info.draggedAPITab && info.draggedAPITab.pinned) {
-          info.action       = Constants.kACTION_MOVE;
-          info.insertBefore = targetTab;
-        }
-        else {
-          info.action       = Constants.kACTION_MOVE | Constants.kACTION_DETACH;
-          info.insertBefore = info.firstTargetTab;
-        }
-      }
-      else {
-        const prevLevel   = Number(prevTab.getAttribute(Constants.kLEVEL) || 0);
-        const targetLevel = Number(targetTab.getAttribute(Constants.kLEVEL) || 0);
-        info.parent       = (prevLevel < targetLevel) ? prevTab : Tabs.getParentTab(targetTab) ;
-        info.action       = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
-        info.insertBefore = targetTab;
-      }
+      const referenceTabs = Tree.calculateNewParentForInsertionPosition(Tabs.getTabById(info.draggedAPITab), {
+        insertBefore: targetTab
+      });
+      if (referenceTabs.parent)
+        info.parent = referenceTabs.parent;
+      if (referenceTabs.insertBefore)
+        info.insertBefore = referenceTabs.insertBefore;
+      if (referenceTabs.insertAfter)
+        info.insertAfter = referenceTabs.insertAfter;
+      info.action = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
       //if (info.insertBefore)
       //  log('insertBefore = ', dumpTab(info.insertBefore));
     }; break;
 
     case kDROP_AFTER: {
       //log('drop position = after the tab');
-      /* strategy
-           +-----------------------------------------------------
-           |[TARGET  ]
-           |     <= if the target has a parent, attach to it and and move
-           +-----------------------------------------------------
-           |  [TARGET]
-           |     <= attach to the parent of the target, and move
-           |[        ]
-           +-----------------------------------------------------
-           |[TARGET  ]
-           |     <= attach to the parent of the target, and move
-           |[        ]
-           +-----------------------------------------------------
-           |[TARGET  ]
-           |     <= attach to the target, and move
-           |  [      ]
-           +-----------------------------------------------------
-      */
-      const nextTab = Tabs.getNextVisibleTab(targetTab);
-      if (!nextTab) {
-        info.action = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
-        info.parent = Tabs.getParentTab(targetTab);
-      }
-      else {
-        const targetLevel = Number(targetTab.getAttribute(Constants.kLEVEL) || 0);
-        const nextLevel   = Number(nextTab.getAttribute(Constants.kLEVEL) || 0);
-        info.parent       = (targetLevel < nextLevel) ? targetTab : Tabs.getParentTab(targetTab) ;
-        info.action       = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
-        info.insertBefore = nextTab;
-        info.insertAfter  = targetTab;
+      const referenceTabs = Tree.calculateNewParentForInsertionPosition(Tabs.getTabById(info.draggedAPITab), {
+        insertAfter: targetTab
+      });
+      if (referenceTabs.parent)
+        info.parent = referenceTabs.parent;
+      if (referenceTabs.insertBefore)
+        info.insertBefore = referenceTabs.insertBefore;
+      if (referenceTabs.insertAfter)
+        info.insertAfter = referenceTabs.insertAfter;
+      info.action = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
+      if (info.insertBefore) {
         /* strategy
              +-----------------------------------------------------
              |[TARGET   ]
@@ -443,7 +397,7 @@ function getDropAction(event) {
              +-----------------------------------------------------
         */
         if (info.draggedAPITab &&
-            info.draggedAPITab.id == nextTab.apiTab.id) {
+            info.draggedAPITab.id == info.insertBefore.apiTab.id) {
           info.action       = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
           info.parent       = Tabs.getParentTab(targetTab);
           info.defineGetter('insertBefore', () => {
