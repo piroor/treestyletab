@@ -43,7 +43,6 @@ import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import {
   log as internalLogger,
-  nextFrame,
   configs
 } from './common.js';
 
