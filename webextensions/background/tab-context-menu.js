@@ -741,7 +741,7 @@ function reserveNotifyUpdated() {
   });
 }
 
-function onMessage(message, _aSender) {
+function onMessage(message, _sender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_GET_ITEMS:
