@@ -253,20 +253,23 @@ export async function updateTabsHighlighted(highlightInfo) {
   // unhighlight all at first.
   for (const tab of unhighlightedTabs.concat(highlightedTabs)) {
     const highlighted = highlightedTabs.includes(tab);
-    log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
-    if (Tabs.isHighlighted(tab) == highlighted)
-      continue;
-    if (highlighted)
-      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
-    else
-      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
-    tab.apiTab.highlighted = highlighted;
-    updateTabDebugTooltip(tab);
-    Tabs.onUpdated.dispatch(tab, { highlighted });
-    changed = true;
+    changed = updateTabHighlighted(tab, highlighted) || changed;
   }
   if (changed)
     updateMultipleHighlighted(highlightInfo.windowId);
+}
+export async function updateTabHighlighted(tab, highlighted) {
+  log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
+  if (Tabs.isHighlighted(tab) == highlighted)
+    return false;
+  if (highlighted)
+    tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
+  else
+    tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+  tab.apiTab.highlighted = highlighted;
+  updateTabDebugTooltip(tab);
+  Tabs.onUpdated.dispatch(tab, { highlighted });
+  return true;
 }
 
 export function updateTabDebugTooltip(tab) {

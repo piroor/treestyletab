@@ -272,13 +272,25 @@ async function onUpdated(tabId, changeInfo, tab) {
 }
 
 const mTabsHighlightedTimers = new Map();
+const mLastHighlightedCount  = new Map();
 function onHighlighted(highlightInfo) {
   let timer = mTabsHighlightedTimers.get(highlightInfo.windowId);
   if (timer)
     clearTimeout(timer);
+  if ((mLastHighlightedCount.get(highlightInfo.windowId) || 0) <= 1 &&
+      highlightInfo.tabIds.length == 1) {
+    // simple active tab switching
+    const tabs = Tabs.getHighlightedTabs(highlightInfo.windowId).concat(highlightInfo.tabIds.map(Tabs.getTabById));
+    for (const tab of tabs) {
+      if (tab)
+        TabsUpdate.updateTabHighlighted(tab, highlightInfo.tabIds.includes(tab.apiTab.id));
+    }
+    return;
+  }
   timer = setTimeout(() => {
     mTabsHighlightedTimers.delete(highlightInfo.windowId);
     TabsUpdate.updateTabsHighlighted(highlightInfo);
+    mLastHighlightedCount.set(highlightInfo.windowId, highlightInfo.tabIds.length);
   }, 50);
   mTabsHighlightedTimers.set(highlightInfo.windowId, timer);
 }
@@ -768,6 +780,9 @@ async function onDetached(tabId, detachInfo) {
 }
 
 async function onWindowRemoved(windowId) {
+  mTabsHighlightedTimers.delete(windowId);
+  mLastHighlightedCount.delete(windowId);
+
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;

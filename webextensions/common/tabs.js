@@ -798,6 +798,15 @@ export function getDuplicatingTabs(hint) {
   return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DUPLICATING}`));
 }
 
+export function getHighlightedTabs(hint) {
+  const container = getTabsContainer(hint);
+  if (!container)
+    return [];
+  return Array.slice(container.querySelectorAll(`
+    ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}
+  `));
+}
+
 export function getSelectedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
