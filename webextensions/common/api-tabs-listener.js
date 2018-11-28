@@ -280,11 +280,7 @@ function onHighlighted(highlightInfo) {
   if ((mLastHighlightedCount.get(highlightInfo.windowId) || 0) <= 1 &&
       highlightInfo.tabIds.length == 1) {
     // simple active tab switching
-    const tabs = Tabs.getHighlightedTabs(highlightInfo.windowId).concat(highlightInfo.tabIds.map(Tabs.getTabById));
-    for (const tab of tabs) {
-      if (tab)
-        TabsUpdate.updateTabHighlighted(tab, highlightInfo.tabIds.includes(tab.apiTab.id));
-    }
+    TabsUpdate.updateTabsHighlighted(highlightInfo);
     return;
   }
   timer = setTimeout(() => {

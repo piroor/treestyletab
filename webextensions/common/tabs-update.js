@@ -241,6 +241,30 @@ export async function updateTabsHighlighted(highlightInfo) {
   const container = Tabs.getTabsContainer(highlightInfo.windowId);
   if (!container)
     return;
+
+  //const startAt = Date.now();
+
+  const unhighlightedSelectorFragments = [];
+  const highlightedSelectorFragments = [];
+  for (const id of highlightInfo.tabIds) {
+    unhighlightedSelectorFragments.push(`:not(#tab-${highlightInfo.windowId}-${id})`);
+    highlightedSelectorFragments.push(`#tab-${highlightInfo.windowId}-${id}:not(.${Constants.kTAB_STATE_HIGHLIGHTED})`);
+  }
+  const unhighlightedTabs = container.querySelectorAll(`
+    .${Constants.kTAB_STATE_HIGHLIGHTED}${unhighlightedSelectorFragments.join('')}
+  `);
+  const highlightedTabs = container.querySelectorAll(highlightedSelectorFragments.join(','));
+  for (const tab of unhighlightedTabs) {
+    updateTabHighlighted(tab, false);
+  }
+  for (const tab of highlightedTabs) {
+    updateTabHighlighted(tab, true);
+  }
+  if (unhighlightedTabs.lengtht > 0 ||
+      highlightedTabs.length > 0)
+    updateMultipleHighlighted(highlightInfo.windowId);
+
+  /*
   let changed = false;
   const highlightedTabs   = [];
   const unhighlightedTabs = [];
@@ -257,11 +281,14 @@ export async function updateTabsHighlighted(highlightInfo) {
   }
   if (changed)
     updateMultipleHighlighted(highlightInfo.windowId);
+  */
+
+  //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
 }
-export async function updateTabHighlighted(tab, highlighted) {
+async function updateTabHighlighted(tab, highlighted) {
   log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
-  if (Tabs.isHighlighted(tab) == highlighted)
-    return false;
+  //if (Tabs.isHighlighted(tab) == highlighted)
+  //  return false;
   if (highlighted)
     tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
   else
