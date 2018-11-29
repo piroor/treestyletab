@@ -250,6 +250,17 @@ async function onUpdated(tabId, changeInfo, tab) {
     for (const key of Object.keys(changeInfo)) {
       updatedTab.apiTab[key] = changeInfo[key];
     }
+    if (changeInfo.url) {
+      // On some edge cases (for example transition from
+      // "about:privatebrowsing" to "about:blank") internally changed
+      // "favIconUrl" is not notified, so we need to check actual
+      // favIconUrl manually.
+      // https://github.com/piroor/treestyletab/issues/1916
+      browser.tabs.get(tabId).then(apiTab => {
+        if (apiTab.favIconUrl != updatedTab.apiTab.favIconUrl)
+          onUpdated(tabId, { favIconUrl: apiTab.favIconUrl }, apiTab);
+      });
+    }
     if (configs.enableWorkaroundForBug1409262 &&
         tab.openerTabId != updatedTab.apiTab.TSTUpdatedOpenerTabId) {
       logUpdated(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.apiTab.TSTUpdatedOpenerTabId} => ${tab.openerTabId}`);
