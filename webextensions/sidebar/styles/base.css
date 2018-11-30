@@ -41,17 +41,16 @@
   --tab-highlighted-base: transparent;
 
   --scrollbar-placeholder-size: 1em;
-}
 
-.tab.faviconized {
-  --attention-faviconized-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                                    var(--tab-highlighted-highlight) 3%,
-                                                    var(--tab-highlighted-glow) 10%,
-                                                    var(--tab-surface) 20%);
-  --attention-faviconized-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
-                                                          var(--tab-highlighted-highlight) 3%,
-                                                          var(--tab-highlighted-glow) 10%,
-                                                          var(--tab-surface) 23%);
+  --attention-marker-offset: calc(0px - (var(--faviconized-tab-size) - var(--favicon-size)) / 2);
+  --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                               var(--tab-highlighted-highlight) 3%,
+                                               var(--tab-highlighted-glow) 10%,
+                                               rgba(255, 255, 255, 0) 20%);
+  --attention-marker-gradient-hover: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
+                                                     var(--tab-highlighted-highlight) 3%,
+                                                     var(--tab-highlighted-glow) 10%,
+                                                     rgba(255, 255, 255, 0) 23%);
 }
 
 @keyframes blink {
@@ -264,6 +263,8 @@ ul {
 
 .tab .active-marker,
 .tab .burster,
+.tab.faviconized.unread .favicon::before,
+.tab.attention .favicon::before,
 .tab .extra-items-container.behind {
   bottom: 0;
   left: 0;
@@ -278,7 +279,19 @@ ul {
 }
 
 .tab .burster {
-  z-index: 4000;
+  z-index: 4000;,
+}
+
+.tab.faviconized.unread .favicon::before,
+.tab.attention .favicon::before {
+  bottom: auto;
+  content: '';
+  height: var(--faviconized-tab-size);
+  left: var(--attention-marker-offset);
+  right: auto;
+  top: var(--attention-marker-offset);
+  width: var(--faviconized-tab-size);
+  z-index: 10;
 }
 
 .tab .extra-items-container.behind {
@@ -317,14 +330,14 @@ ul {
   display: none;
 }
 
-.tab.faviconized.unread:not(.active):not(:hover),
-.tab.faviconized.attention:not(.active):not(:hover) {
-  background-image: var(--attention-faviconized-gradient);
+.tab.faviconized.unread:not(.active):not(:hover) .favicon::before,
+.tab.attention:not(:hover) .favicon::before {
+  background-image: var(--attention-marker-gradient);
 }
 
-.tab.faviconized.unread:not(.active):hover,
-.tab.faviconized.attention:not(.active):hover {
-  background-image: var(--attention-faviconized-gradient-hover);
+.tab.faviconized.unread:not(.active):hover .favicon::before,
+.tab.attention:hover .favicon::before {
+  background-image: var(--attention-marker-gradient-hover);
 }
 
 

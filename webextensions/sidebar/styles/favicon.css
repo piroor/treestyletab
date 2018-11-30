@@ -15,12 +15,17 @@
   min-height: var(--favicon-size);
   min-width: var(--favicon-size);
   padding: 0;
+  position: relative;
   white-space: pre;
   width: var(--favicon-size);
 }
 .tab .favicon,
 .tab .favicon * {
   vertical-align: baseline;
+}
+.tab .favicon * {
+  position: relative;
+  z-index: 20;
 }
 
 .favicon-image {

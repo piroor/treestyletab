@@ -88,12 +88,10 @@
   margin: 1px 0 0 1px;
   padding: 2px 4px 2px 3px;
 }
-.tab.faviconized:not(.unread):not(.attention) {
-  background: var(--tab-surface);
-}
 
-.tab.faviconized:not(.unread):not(.attention).active {
-  background-color: var(--tab-surface-active);
+.tab.faviconized.unread .favicon::before,
+.tab.attention .favicon::before {
+  left: calc(var(--attention-marker-offset) + 3px);
 }
 
 
