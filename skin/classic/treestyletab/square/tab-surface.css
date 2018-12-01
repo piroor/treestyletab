@@ -13,8 +13,8 @@
   :-moz-any(.tab-background:not([pinned]),
             .tab-background[pinned]) {
 	background-color: var(--tst-tab-surface) !important;
-	background-image: -moz-linear-gradient(
-	                    top, 
+	background-image: linear-gradient(
+	                    to bottom,
 	                    rgba(0, 0, 0, 0.02) 0,
 	                    rgba(0, 0, 0, 0) 50%
 	                  ) !important;
@@ -25,8 +25,8 @@
   .tabbrowser-tab[visuallyselected="true"]
   .tab-background[selected="true"] {
 	background-color: var(--tst-tab-surface-selected) !important;
-	background-image: -moz-linear-gradient(
-	                    top,
+	background-image: linear-gradient(
+	                    to bottom,
 	                    rgba(4, 83, 227, 0.04) 0,
 	                    rgba(4, 83, 227, 0) 50%
 	                  ) !important;
@@ -40,8 +40,8 @@
   :-moz-any(.tab-background:not([pinned]),
             .tab-background[pinned]:not([titlechanged])) {
 	background-color: var(--tst-tab-surface-hover) !important;
-	background-image: -moz-linear-gradient(
-	                    top,
+	background-image: linear-gradient(
+	                    to bottom,
 	                    rgba(213, 224, 245, 1) 0,
 	                    rgba(213, 224, 245, 0.4) 50%
 	                  ) !important;
@@ -51,8 +51,8 @@
   .tabbrowser-tab:hover
   .tab-background[selected="true"] {
 	background-color: var(--tst-tab-surface-selected-hover) !important;
-	background-image: -moz-linear-gradient(
-	                    top,
+	background-image: linear-gradient(
+	                    to bottom,
 	                    rgba(199, 219, 252, 1) 0,
 	                    rgba(199, 219, 252, 0.4) 50%
 	                  ) !important;

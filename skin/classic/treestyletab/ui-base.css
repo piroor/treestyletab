@@ -405,7 +405,7 @@ tabbrowser:not([treestyletab-tabbar-position="top"])
 .tabbrowser-tabs[treestyletab-mode="vertical"]
   .tabbrowser-arrowscrollbox
   > .scrollbutton-down[treestyletab-notifybgtab-phase] {
-	background: -moz-linear-gradient(-90deg, rgba(255,255,255,0), Highlight);
+	background: linear-gradient(-90deg, rgba(255,255,255,0), Highlight);
 	border: 0 none;
 	bottom: 0;
 	box-shadow: none;

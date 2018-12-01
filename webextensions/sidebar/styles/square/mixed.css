@@ -59,45 +59,45 @@
 
 
 :root.left .tab:not(.faviconized).active {
-  background-image: -moz-linear-gradient(
-                      left,
+  background-image: linear-gradient(
+                      to right,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
 :root.left .tab:not(.faviconized):not(.collapsed):hover {
-  background-image: -moz-linear-gradient(
-                      left,
+  background-image: linear-gradient(
+                      to right,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 50%
                     );
 }
 
 :root.right .tab:not(.faviconized).active {
-  background-image: -moz-linear-gradient(
-                      right,
+  background-image: linear-gradient(
+                      to left,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 30%
                     );
 }
 :root.right .tab:not(.faviconized):not(.collapsed):hover {
-  background-image: -moz-linear-gradient(
-                      right,
+  background-image: linear-gradient(
+                      to left,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 50%
                     );
 }
 
 .tab.faviconized.active {
-  background-image: -moz-linear-gradient(
-                      top,
+  background-image: linear-gradient(
+                      to bottom,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 40%
                     );
 }
 .tab.faviconized:hover {
-  background-image: -moz-linear-gradient(
-                      top,
+  background-image: linear-gradient(
+                      to bottom,
                       var(--tab-surface-active-gradient-start) 0,
                       var(--tab-surface-active-gradient-end) 60%
                     );
@@ -111,24 +111,24 @@
 }
 
 :root.left .tab:not(.faviconized):not(.active):not(.highlighted):hover .active-marker::before {
-  background-image: -moz-linear-gradient(
-                      left,
+  background-image: linear-gradient(
+                      to right,
                       var(--tab-active-marker-start) 0,
                       var(--tab-active-marker-end) 30%
                     );
 }
 
 :root.right .tab:not(.faviconized):not(.active):not(.highlighted):hover .active-marker::before {
-  background-image: -moz-linear-gradient(
-                      right,
+  background-image: linear-gradient(
+                      to left,
                       var(--tab-active-marker-start) 0,
                       var(--tab-active-marker-end) 30%
                     );
 }
 
 .tab.faviconized:not(.active):not(.highlighted):hover .active-marker::before {
-  background-image: -moz-linear-gradient(
-                      top,
+  background-image: linear-gradient(
+                      to bottom,
                       var(--tab-active-marker-start) 0,
                       var(--tab-active-marker-end) 30%
                     );
