@@ -581,8 +581,8 @@ ul {
 
 #out-of-view-tab-notifier {
   background: transparent repeat-x bottom;
-  background-image: -moz-linear-gradient(
-                      bottom,
+  background-image: linear-gradient(
+                      to top,
                       var(--tab-highlighted-glow) 0,
                       transparent 100%
                     );
