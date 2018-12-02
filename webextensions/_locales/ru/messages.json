@@ -164,7 +164,7 @@
   "config_maxTreeLevel_after": { "message": "level(s) (*Отрицательное значение = \"бесконечно\")" },
 
   "config_faviconizePinnedTabs_label": { "message": "Показывать закрепленные вкладки только со значком" },
-  "config_animation_label": { "message": "Включить эффекты анимации" },
+  "config_animation_label": { "message": "Анимации" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Показывать свернутые дочерние элементы в подсказке на вкладке" },
 
 
