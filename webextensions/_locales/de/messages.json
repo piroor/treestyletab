@@ -171,7 +171,7 @@
   "config_maxTreeLevel_after": { "message": "Stufen (*Negative Werte bedeuten \"unbegrenzt\")" },
 
   "config_faviconizePinnedTabs_label": { "message": "Angeheftete Tabs nur mit Ihrem Symbol anzeigen" },
-  "config_animation_label": { "message": "Animationen aktivieren" },
+  "config_animation_label": { "message": "Animationen" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Eingeklappte untergeordnete Tabs als Tooltip anzeigen" },
 
   
