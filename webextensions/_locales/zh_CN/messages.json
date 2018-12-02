@@ -484,10 +484,7 @@
         "message": "固定的标签页只显示图标",
         "hash": "9da551bbd5004005faa75eff95cc8391"
     },
-    "config_animation_label": {
-        "message": "启用动画效果",
-        "hash": "67af584b4338ca4351cee724f8b9f0a3"
-    },
+    "config_animation_label": { "message": "动画" },
     "config_showCollapsedDescendantsByTooltip_label": {
         "message": "标签页的悬停提示中显示折叠的后代",
         "hash": "3023e54eb03305a2f90f23992f792916"
