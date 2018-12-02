@@ -164,7 +164,7 @@
   "config_maxTreeLevel_after": { "message": "рівня(ів) (*Від'ємне значення означає \"нескінченно\")" },
 
   "config_faviconizePinnedTabs_label": { "message": "Показувати закріплені вкладки тільки зі значком" },
-  "config_animation_label": { "message": "Ввімкнути ефекти анімації" },
+  "config_animation_label": { "message": "Анімації" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Показувати згорнуті дочірні елементи у підказці на вкладці" },
 
 
