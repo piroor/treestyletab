@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Reduce unexpected focusing to the next/previous when the current tab is closed, on Firefox 65 and later.
+   * Show "attention" mark for unpinned tabs.
+   * Optimize handling for updated "highlighted" status of tabs.
    * Activate context menu commands for selected tabs: "Reopen in Container" and "Duplicate Tabs".
    * Never detach dropped tabs to new window if the drag action is started just for bookmarks or links.
    * Automatically re-discard accidentaly restored tabs for Ctrl-Tab/Ctrl-Shift-Tab.
