@@ -150,26 +150,26 @@ async function onActivated(activeInfo) {
 
     let byCurrentTabRemove = !activeInfo.previousTabId;
     if (!('successorTabId' in newTab.apiTab)) { // on Firefox 64 or older
-    byCurrentTabRemove = mLastClosedWhileActiveResolvers.has(container);
-    if (byCurrentTabRemove) {
-      TabsContainer.incrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
-      mLastClosedWhileActiveResolvers.get(container)();
-      delete mLastClosedWhileActiveResolvers.delete(container);
-      const focusRedirected = await container.focusRedirectedForClosingCurrentTab;
-      delete container.focusRedirectedForClosingCurrentTab;
-      if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) // reduce count even if not redirected
-        TabsContainer.decrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
-      log('focusRedirected: ', focusRedirected);
-      if (focusRedirected) {
-        onCompleted();
-        return;
+      byCurrentTabRemove = mLastClosedWhileActiveResolvers.has(container);
+      if (byCurrentTabRemove) {
+        TabsContainer.incrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
+        mLastClosedWhileActiveResolvers.get(container)();
+        delete mLastClosedWhileActiveResolvers.delete(container);
+        const focusRedirected = await container.focusRedirectedForClosingCurrentTab;
+        delete container.focusRedirectedForClosingCurrentTab;
+        if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) // reduce count even if not redirected
+          TabsContainer.decrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
+        log('focusRedirected: ', focusRedirected);
+        if (focusRedirected) {
+          onCompleted();
+          return;
+        }
       }
-    }
-    else if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) { // treat as "redirected unintentional tab focus"
-      TabsContainer.decrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
-      byCurrentTabRemove  = true;
-      byInternalOperation = false;
-    }
+      else if (parseInt(container.dataset.tryingReforcusForClosingCurrentTabCount) > 0) { // treat as "redirected unintentional tab focus"
+        TabsContainer.decrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
+        byCurrentTabRemove  = true;
+        byInternalOperation = false;
+      }
     }
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
