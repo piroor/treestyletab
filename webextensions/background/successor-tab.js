@@ -115,11 +115,13 @@ Tabs.onActivated.addListener(async (tab, info = {}) => {
       const container = Tabs.getTabsContainer(info.windowId);
       const lastRelatedTabs = container.lastRelatedTabs;
       if (lastRelatedTabs) {
-        const lastRelatedTab = Tabs.getTabById(lastRelatedTabs[info.previousTabId]);
+        const lastRelatedTab = Tabs.getTabById(lastRelatedTabs.get(info.previousTabId));
         if (lastRelatedTab &&
-            !lastRelatedTab.apiTab.active &&
-            lastRelatedTab.lastSuccessorTabIdByOwner)
-          await tryClearOwnerSuccessor(lastRelatedTab);
+            !lastRelatedTab.apiTab.active) {
+          container.lastRelatedTabs.clear();
+          if (lastRelatedTab.lastSuccessorTabIdByOwner)
+            await tryClearOwnerSuccessor(lastRelatedTab);
+        }
       }
       if (tab.lastSuccessorTabIdByOwner)
         await tryClearOwnerSuccessor(tab);
@@ -141,8 +143,8 @@ Tabs.onCreating.addListener((tab, _info = {}) => {
   tab.lastSuccessorTabIdByOwner = true;
 
   const container = tab.parentNode;
-  const lastRelatedTabs = container.lastRelatedTabs || (container.lastRelatedTabs = {});
-  lastRelatedTabs[tab.apiTab.openerTabId] = tab.apiTab.id;
+  const lastRelatedTabs = container.lastRelatedTabs || new Map();
+  lastRelatedTabs.set(tab.apiTab.openerTabId, tab.apiTab.id);
   log(`set lastRelatedTab for ${tab.apiTab.openerTabId}: ${tab.id}`);
 
   if (!tab.apiTab.active) {
@@ -156,15 +158,13 @@ Tabs.onCreated.addListener((tab, _info = {}) => {
   update(Tabs.getCurrentTab(tab).apiTab.id);
 });
 
-Tabs.onRemoving.addListener((tab, info = {}) => {
-  const container = Tabs.getTabsContainer(info.windowId);
-  if (!container)
-    return;
+Tabs.onRemoving.addListener((tab, _info = {}) => {
+  const container = tab.parentNode;
   const lastRelatedTabs = container.lastRelatedTabs;
   if (!lastRelatedTabs)
     return;
 
-  const lastRelatedTab = Tabs.getTabById(lastRelatedTabs[tab.apiTab.id]);
+  const lastRelatedTab = Tabs.getTabById(lastRelatedTabs.get(tab.apiTab.id));
   if (lastRelatedTab &&
       !lastRelatedTab.apiTab.active &&
       lastRelatedTab.lastSuccessorTabIdByOwner)
@@ -174,15 +174,18 @@ Tabs.onRemoving.addListener((tab, info = {}) => {
 Tabs.onRemoved.addListener((tab, info = {}) => {
   if (!info.isWindowClosing)
     update(Tabs.getCurrentTab(info.windowId).apiTab.id);
-  const container = Tabs.getTabsContainer(info.windowId)
-  if (container) {
-    log(`clear lastRelatedTabs for ${info.windowId}`);
-    container.lastRelatedTabs = {};
-  }
+  const container = tab.parentNode;
+  log(`clear lastRelatedTabs for ${info.windowId}`);
+  container.lastRelatedTabs.clear();
 });
 
 Tabs.onMoved.addListener((tab, _info = {}) => {
   update(Tabs.getCurrentTab(tab).apiTab.id);
+
+  const container = tab.parentNode;
+  const lastRelatedTabs = container.lastRelatedTabs;
+  if (lastRelatedTabs)
+    container.lastRelatedTabs.clear();
 });
 
 Tabs.onAttached.addListener((_tab, info = {}) => {
