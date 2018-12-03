@@ -212,6 +212,13 @@ function onAttached(_tab, info = {}) {
 
 function onDetached(_tab, info = {}) {
   update(Tabs.getCurrentTab(info.oldWindowId).apiTab.id);
+
+  const container = Tabs.getTabsContainer(info.oldWindowId);
+  if (container) {
+    log(`clear lastRelatedTabs for ${info.windowId} by tabs.onDetached`);
+    if (container.lastRelatedTabs)
+      container.lastRelatedTabs.clear();
+  }
 }
 
 
