@@ -1262,12 +1262,12 @@ export async function moveTabs(tabs, options = {}) {
       log(' => ', toIndex);
       if (isAcrossWindows) {
         if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-        for (const tab of tabs) {
-          if (!Tabs.isActive(tab))
-            continue;
-          await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: tabs });
-          break;
-        }
+          for (const tab of tabs) {
+            if (!Tabs.isActive(tab))
+              continue;
+            await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: tabs });
+            break;
+          }
         }
         apiTabs = await ApiTabs.safeMoveAcrossWindows(apiTabIds, {
           windowId: destinationWindowId,

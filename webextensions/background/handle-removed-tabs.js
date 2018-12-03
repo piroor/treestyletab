@@ -45,16 +45,16 @@ Tabs.onRemoving.addListener(async (tab, closeInfo = {}) => {
     return;
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-  const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(tab) || tab.nextSibling;
-  Tree.tryMoveFocusFromClosingCurrentTab(tab, {
-    wasActive,
-    params: {
-      active:          wasActive,
-      nextTab:         nextTab && nextTab.id,
-      nextTabUrl:      nextTab && nextTab.apiTab.url,
-      nextIsDiscarded: Tabs.isDiscarded(nextTab)
-    }
-  });
+    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(tab) || tab.nextSibling;
+    Tree.tryMoveFocusFromClosingCurrentTab(tab, {
+      wasActive,
+      params: {
+        active:          wasActive,
+        nextTab:         nextTab && nextTab.id,
+        nextTabUrl:      nextTab && nextTab.apiTab.url,
+        nextIsDiscarded: Tabs.isDiscarded(nextTab)
+      }
+    });
   }
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
@@ -177,14 +177,14 @@ async function closeChildTabs(parent) {
 
 Tabs.onDetached.addListener((tab, info = {}) => {
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-  if (Tree.shouldApplyTreeBehavior(info)) {
-    Tree.tryMoveFocusFromClosingCurrentTabNow(tab, {
-      ignoredTabs: Tabs.getDescendantTabs(tab)
-    });
-    return;
-  }
+    if (Tree.shouldApplyTreeBehavior(info)) {
+      Tree.tryMoveFocusFromClosingCurrentTabNow(tab, {
+        ignoredTabs: Tabs.getDescendantTabs(tab)
+      });
+      return;
+    }
 
-  Tree.tryMoveFocusFromClosingCurrentTab(tab);
+    Tree.tryMoveFocusFromClosingCurrentTab(tab);
   }
 
   log('Tabs.onDetached ', dumpTab(tab));
