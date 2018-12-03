@@ -114,7 +114,7 @@ function getOrBuildTabsContainer(hint) {
   return container;
 }
 
-const mLastClosedWhileActiveResolvers = new WeakMap();
+const mLastClosedWhileActiveResolvers = new WeakMap(); // used only on Firefox 64 and older
 
 async function onActivated(activeInfo) {
   const targetWindow = Tabs.getWindow();
@@ -148,7 +148,9 @@ async function onActivated(activeInfo) {
     log('tabs.onActivated: ', dumpTab(newTab));
     const oldActiveTabs = TabsInternalOperation.setTabFocused(newTab);
 
-    let byCurrentTabRemove = mLastClosedWhileActiveResolvers.has(container);
+    let byCurrentTabRemove = !activeInfo.previousTabId;
+    if (!('successorTabId' in newTab.apiTab)) { // on Firefox 64 or older
+    byCurrentTabRemove = mLastClosedWhileActiveResolvers.has(container);
     if (byCurrentTabRemove) {
       TabsContainer.incrementCounter(container, 'tryingReforcusForClosingCurrentTabCount');
       mLastClosedWhileActiveResolvers.get(container)();
@@ -168,18 +170,19 @@ async function onActivated(activeInfo) {
       byCurrentTabRemove  = true;
       byInternalOperation = false;
     }
+    }
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onCompleted();
       return;
     }
 
-    let focusOverridden = Tabs.onActivating.dispatch(newTab, {
+    let focusOverridden = Tabs.onActivating.dispatch(newTab, Object.assign({}, activeInfo, {
       byCurrentTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
-    });
+    }));
     // don't do await if not needed, to process things synchronously
     if (focusOverridden instanceof Promise)
       focusOverridden = await focusOverridden;
@@ -194,13 +197,13 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    const onActivatedReuslt = Tabs.onActivated.dispatch(newTab, {
+    const onActivatedReuslt = Tabs.onActivated.dispatch(newTab, Object.assign({}, activeInfo, {
       oldActiveTabs,
       byCurrentTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
-    });
+    }));
     // don't do await if not needed, to process things synchronously
     if (onActivatedReuslt instanceof Promise)
       await onActivatedReuslt;
@@ -540,7 +543,8 @@ async function onRemoved(tabId, removeInfo) {
 
     Tabs.onStateChanged.dispatch(oldTab);
 
-    if (Tabs.isActive(oldTab)) {
+    if (Tabs.isActive(oldTab) &&
+        !('successorTabId' in oldTab.apiTab)) { // on Firefox 64 or older
       const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab);
       if (resolver)
         mLastClosedWhileActiveResolvers.set(container, resolver);
@@ -556,9 +560,9 @@ async function onRemoved(tabId, removeInfo) {
     oldTab[Constants.kTAB_STATE_REMOVING] = true;
     oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
 
-    const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, {
+    const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation
-    });
+    }));
     // don't do await if not needed, to process things synchronously
     if (onRemovedReuslt instanceof Promise)
       await onRemovedReuslt;
@@ -717,7 +721,7 @@ async function onAttached(tabId, attachInfo) {
     TabIdFixer.fixTab(apiTab);
 
     TabsInternalOperation.clearOldActiveStateInWindow(attachInfo.newWindowId);
-    const info = mTreeInfoForTabsMovingAcrossWindows.get(tabId);
+    const info = Object.assign({}, attachInfo, mTreeInfoForTabsMovingAcrossWindows.get(tabId));
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
     const newTab = await onNewTabTracked(apiTab);
@@ -762,11 +766,11 @@ async function onDetached(tabId, detachInfo) {
     if (byInternalOperation)
       TabsContainer.decrementCounter(oldTab.parentNode, 'toBeDetachedTabs');
 
-    const info = {
+    const info = Object.assign({}, detachInfo, {
       byInternalOperation,
       windowId:    detachInfo.oldWindowId,
       descendants: Tabs.getDescendantTabs(oldTab)
-    };
+    });
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 
     Tabs.onStateChanged.dispatch(oldTab);

@@ -219,6 +219,7 @@ export const configs = new Configs({
     'background/handle-tab-focus': true,
     'background/handle-tab-multiselect': true,
     'background/handle-tree-changes': true,
+    'background/successor-tab': true,
     'background/tab-context-menu': false,
     'background/tree-structure': true,
     'common/api-tabs': false,

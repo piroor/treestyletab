@@ -33,6 +33,7 @@ import * as BackgroundCache from './background-cache.js';
 import * as ContextMenu from './context-menu.js';
 import * as TabContextMenu from './tab-context-menu.js';
 import './browser-action-menu.js';
+import './successor-tab.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
