@@ -77,7 +77,9 @@ async function updateInternal(apiTabId) {
   }
   if (apiTab.active && !allowedNextFocusedTab && nextFocused) {
     log(`  ${tab.id} has its successor ${nextFocused.id}`);
-    browser.tabs.update(apiTab.id, { successorTabId: nextFocused.apiTab.id });
+    browser.tabs.update(apiTab.id, {
+      successorTabId: nextFocused.apiTab.id
+    });
     tab.lastSuccessorTabId = nextFocused.apiTab.id;
   }
   else {
@@ -86,7 +88,9 @@ async function updateInternal(apiTabId) {
       nextFocused:           nextFocused && nextFocused.id,
       allowedNextFocusedTab: allowedNextFocusedTab && allowedNextFocusedTab.id
     });
-    browser.tabs.update(apiTab.id, { successorTabId: -1 });
+    browser.tabs.update(apiTab.id, {
+      successorTabId: -1
+    });
   }
 }
 
