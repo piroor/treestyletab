@@ -20,6 +20,23 @@ function log(...args) {
 
 const mTabsToBeUpdated = new Set();
 
+// activate only on Firefox 65 and later
+if (typeof browser.tabs.moveInSuccession == 'function') {
+  Tabs.onActivated.addListener(onActivated);
+  Tabs.onCreating.addListener(onCreating);
+  Tabs.onCreated.addListener(onCreated);
+  Tabs.onRemoving.addListener(onRemoving);
+  Tabs.onRemoved.addListener(onRemoved);
+  Tabs.onMoved.addListener(onMoved);
+  Tabs.onAttached.addListener(onAttached);
+  Tabs.onDetached.addListener(onDetached);
+
+  Tree.onAttached.addListener(onTreeAttached);
+  Tree.onDetached.addListener(onTreeDetached);
+  Tree.onSubtreeCollapsedStateChanging.addListener(onSubtreeCollapsedStateChanging);
+}
+
+
 function update(apiTabId) {
   mTabsToBeUpdated.add(apiTabId);
   setTimeout(() => {
@@ -35,7 +52,6 @@ async function updateInternal(apiTabId) {
   const apiTab = await browser.tabs.get(apiTabId).catch(ApiTabs.handleMissingTabError);
   const tab = Tabs.getTabById(apiTabId);
   if (!apiTab ||
-      !('successorTabId' in apiTab) ||
       !tab ||
       !Tabs.ensureLivingTab(tab))
     return;
@@ -107,7 +123,7 @@ async function tryClearOwnerSuccessor(tab) {
 }
 
 
-Tabs.onActivated.addListener(async (tab, info = {}) => {
+async function onActivated(tab, info = {}) {
   update(tab.apiTab.id);
   if (info.previousTabId) {
     const tab = Tabs.getTabById(info.previousTabId);
@@ -128,12 +144,11 @@ Tabs.onActivated.addListener(async (tab, info = {}) => {
     }
     update(info.previousTabId);
   }
-});
+}
 
-Tabs.onCreating.addListener((tab, _info = {}) => {
+function onCreating(tab, _info = {}) {
   if (!configs.simulateSelectOwnerOnClose ||
-      !tab.apiTab.openerTabId ||
-      !('successorTabId' in tab.apiTab))
+      !tab.apiTab.openerTabId)
     return;
   log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${tab.apiTab.openerTabId})`);
   browser.tabs.update(tab.apiTab.id, {
@@ -152,13 +167,13 @@ Tabs.onCreating.addListener((tab, _info = {}) => {
     if (activeTab.lastSuccessorTabIdByOwner)
       tryClearOwnerSuccessor(activeTab);
   }
-});
+}
 
-Tabs.onCreated.addListener((tab, _info = {}) => {
+function onCreated(tab, _info = {}) {
   update(Tabs.getCurrentTab(tab).apiTab.id);
-});
+}
 
-Tabs.onRemoving.addListener((tab, _info = {}) => {
+function onRemoving(tab, _info = {}) {
   const container = tab.parentNode;
   const lastRelatedTabs = container.lastRelatedTabs;
   if (!lastRelatedTabs)
@@ -169,18 +184,18 @@ Tabs.onRemoving.addListener((tab, _info = {}) => {
       !lastRelatedTab.apiTab.active &&
       lastRelatedTab.lastSuccessorTabIdByOwner)
     tryClearOwnerSuccessor(lastRelatedTab);
-});
+}
 
-Tabs.onRemoved.addListener((tab, info = {}) => {
+function onRemoved(tab, info = {}) {
   if (!info.isWindowClosing)
     update(Tabs.getCurrentTab(info.windowId).apiTab.id);
   const container = tab.parentNode;
   log(`clear lastRelatedTabs for ${info.windowId} by tabs.onRemoved`);
   if (container.lastRelatedTabs)
     container.lastRelatedTabs.clear();
-});
+}
 
-Tabs.onMoved.addListener((tab, info = {}) => {
+function onMoved(tab, info = {}) {
   update(Tabs.getCurrentTab(tab).apiTab.id);
 
   if (!info.byInternalOperation) {
@@ -189,25 +204,25 @@ Tabs.onMoved.addListener((tab, info = {}) => {
     if (container.lastRelatedTabs)
       container.lastRelatedTabs.clear();
   }
-});
+}
 
-Tabs.onAttached.addListener((_tab, info = {}) => {
+function onAttached(_tab, info = {}) {
   update(Tabs.getCurrentTab(info.newWindowId).apiTab.id);
-});
+}
 
-Tabs.onDetached.addListener((_tab, info = {}) => {
+function onDetached(_tab, info = {}) {
   update(Tabs.getCurrentTab(info.oldWindowId).apiTab.id);
-});
+}
 
 
-Tree.onAttached.addListener((child, _info = {}) => {
+function onTreeAttached(child, _info = {}) {
   update(Tabs.getCurrentTab(child).apiTab.id);
-});
+}
 
-Tree.onDetached.addListener((child, _info = {}) => {
+function onTreeDetached(child, _info = {}) {
   update(Tabs.getCurrentTab(child).apiTab.id);
-});
+}
 
-Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info = {}) => {
+function onSubtreeCollapsedStateChanging(tab, _info = {}) {
   update(Tabs.getCurrentTab(tab).apiTab.id);
-});
+}
