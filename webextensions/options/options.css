@@ -91,7 +91,9 @@ body > section.collapsed > h1:first-child::before {
   -moz-user-input: disabled;
 }
 
-:root:not(.platform-mac) .available-only-on-mac {
+:root:not(.platform-mac) .available-only-on-mac,
+:root.successor-tab-support .without-successor-tab-support,
+:root:not(.successor-tab-support) .with-successor-tab-support {
   display: none;
 }
 

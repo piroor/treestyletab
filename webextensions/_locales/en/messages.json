@@ -296,6 +296,7 @@
   "config_moveFocusInTreeForClosedCurrentTab_true": { "message": "Focus to the previous tab in the tree" },
   "config_moveFocusInTreeForClosedCurrentTab_false": { "message": "Focus to the next tab always (Firefox's default)" },
   "config_moveFocusInTreeForClosedCurrentTab_description": { "message": "*Firefox's built-in behavior for \"browser.tabs.selectOwnerOnClose\"=\"true\" works prior to this config." },
+  "config_simulateSelectOwnerOnClose_label": { "message": "Move focus back to the opener tab if possible, when the current tab is closed (*simulation of Firefox's built-in behavior for \"browser.tabs.selectOwnerOnClose\"=\"true\", prior to the config above)" },
 
   "config_parentTabBehaviorForChanges_caption": { "message": "When a parent tab is moved or closed by someone from outside of the tree sidebar" },
   "config_parentTabBehaviorForChanges_always": { "message": "Treat as a parent always (move or close all descendant tabs also together), whether the tree sidebar is visible or not." },
