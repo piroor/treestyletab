@@ -809,6 +809,9 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
 // operate tabs based on tree information
 
 /*
+These functions are not used on Firefox 65 and later. We should remove
+them after Firefox 64 and older versions are completely outdated.
+
  * By https://bugzilla.mozilla.org/show_bug.cgi?id=1366290 when the
    current tab is closed, Firefox notifies tabs.onTabRemoved at first
    and tabs.onActivated at later.
@@ -1258,11 +1261,13 @@ export async function moveTabs(tabs, options = {}) {
         toIndex--;
       log(' => ', toIndex);
       if (isAcrossWindows) {
+        if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
         for (const tab of tabs) {
           if (!Tabs.isActive(tab))
             continue;
           await tryMoveFocusFromClosingCurrentTabNow(tab, { ignoredTabs: tabs });
           break;
+        }
         }
         apiTabs = await ApiTabs.safeMoveAcrossWindows(apiTabIds, {
           windowId: destinationWindowId,
