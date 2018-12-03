@@ -52,8 +52,18 @@ async function updateInternal(apiTabId) {
     }
   }
   delete tab.lastSuccessorTabId;
-  const allowedNextFocusedTab = Tabs.getFirstChildTab(tab) || Tabs.getNextSiblingTab(tab);
-  const nextFocused = Tabs.getPreviousSiblingTab(tab) || Tabs.getParentTab(tab);
+  let allowedNextFocusedTab = null;
+  let nextFocused           = null;
+  const parent = Tabs.getParentTab(tab);
+  if (parent || Tabs.getNextVisibleTab(tab)) { // prevent to focus to the next tab
+    allowedNextFocusedTab = Tabs.getFirstChildTab(tab) || Tabs.getNextSiblingTab(tab);
+    nextFocused = Tabs.getPreviousSiblingTab(tab) || parent;
+  }
+  else if (!parent) { // prevent to focus to the previous tab
+    nextFocused = Tabs.getPreviousVisibleTab(tab);
+    if (nextFocused == Tabs.getPreviousTab(tab))
+      nextFocused = null;
+  }
   if (apiTab.active && !allowedNextFocusedTab && nextFocused) {
     log(`  ${tab.id} has its successor ${nextFocused.id}`);
     browser.tabs.update(apiTab.id, { successorTabId: nextFocused.apiTab.id });
@@ -104,4 +114,8 @@ Tree.onAttached.addListener((child, _info = {}) => {
 
 Tree.onDetached.addListener((child, _info = {}) => {
   update(Tabs.getCurrentTab(child).apiTab.id);
+});
+
+Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info = {}) => {
+  update(Tabs.getCurrentTab(tab).apiTab.id);
 });
