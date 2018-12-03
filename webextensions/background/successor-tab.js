@@ -84,6 +84,39 @@ async function updateInternal(apiTabId) {
   }
 }
 
+async function tryClearOwnerSuccessor(tab) {
+  delete tab.lastSuccessorTabIdByOwner;
+  const apiTab = await browser.tabs.get(tab.apiTab.id).catch(ApiTabs.handleMissingTabError);
+  if (!apiTab || apiTab.successorTabId != tab.lastSuccessorTabId)
+    return;
+  log(`${tab.id} is unprepared for "selectOwnerOnClose" behavior`);
+  delete tab.lastSuccessorTabId;
+  browser.tabs.update(tab.apiTab.id, {
+    successorTabId: -1
+  });
+}
+
+
+Tabs.onActivated.addListener(async (tab, info = {}) => {
+  update(tab.apiTab.id);
+  if (info.previousTabId) {
+    const tab = Tabs.getTabById(info.previousTabId);
+    if (tab) {
+      const container = Tabs.getTabsContainer(info.windowId);
+      const lastRelatedTabs = container.lastRelatedTabs;
+      if (lastRelatedTabs) {
+        const lastRelatedTab = Tabs.getTabById(lastRelatedTabs[info.previousTabId]);
+        if (lastRelatedTab &&
+            !lastRelatedTab.apiTab.active &&
+            lastRelatedTab.lastSuccessorTabIdByOwner)
+          await tryClearOwnerSuccessor(lastRelatedTab);
+      }
+      if (tab.lastSuccessorTabIdByOwner)
+        await tryClearOwnerSuccessor(tab);
+    }
+    update(info.previousTabId);
+  }
+});
 
 Tabs.onCreating.addListener((tab, _info = {}) => {
   if (!configs.simulateSelectOwnerOnClose ||
@@ -96,24 +129,16 @@ Tabs.onCreating.addListener((tab, _info = {}) => {
   });
   tab.lastSuccessorTabId = tab.apiTab.openerTabId;
   tab.lastSuccessorTabIdByOwner = true;
-});
 
-Tabs.onActivated.addListener(async (tab, info = {}) => {
-  update(tab.apiTab.id);
-  if (info.previousTabId) {
-    const tab = Tabs.getTabById(info.previousTabId);
-    if (tab.lastSuccessorTabIdByOwner) {
-      delete tab.lastSuccessorTabIdByOwner;
-      const apiTab = await browser.tabs.get(info.previousTabId).catch(ApiTabs.handleMissingTabError);
-      if (apiTab && apiTab.successorTabId == tab.lastSuccessorTabId) {
-        log(`${tab.id} is unprepared for "selectOwnerOnClose" behavior`);
-        delete tab.lastSuccessorTabId;
-        browser.tabs.update(tab.apiTab.id, {
-          successorTabId: -1
-        });
-      }
-    }
-    update(info.previousTabId);
+  const container = tab.parentNode;
+  const lastRelatedTabs = container.lastRelatedTabs || (container.lastRelatedTabs = {});
+  lastRelatedTabs[tab.apiTab.openerTabId] = tab.apiTab.id;
+  log(`set lastRelatedTab for ${tab.apiTab.openerTabId}: ${tab.id}`);
+
+  if (!tab.apiTab.active) {
+    const activeTab = Tabs.getCurrentTab(tab);
+    if (activeTab.lastSuccessorTabIdByOwner)
+      tryClearOwnerSuccessor(activeTab);
   }
 });
 
@@ -121,9 +146,29 @@ Tabs.onCreated.addListener((tab, _info = {}) => {
   update(Tabs.getCurrentTab(tab).apiTab.id);
 });
 
-Tabs.onRemoved.addListener((_tab, info = {}) => {
+Tabs.onRemoving.addListener((tab, info = {}) => {
+  const container = Tabs.getTabsContainer(info.windowId);
+  if (!container)
+    return;
+  const lastRelatedTabs = container.lastRelatedTabs;
+  if (!lastRelatedTabs)
+    return;
+
+  const lastRelatedTab = Tabs.getTabById(lastRelatedTabs[tab.apiTab.id]);
+  if (lastRelatedTab &&
+      !lastRelatedTab.apiTab.active &&
+      lastRelatedTab.lastSuccessorTabIdByOwner)
+    tryClearOwnerSuccessor(lastRelatedTab);
+});
+
+Tabs.onRemoved.addListener((tab, info = {}) => {
   if (!info.isWindowClosing)
     update(Tabs.getCurrentTab(info.windowId).apiTab.id);
+  const container = Tabs.getTabsContainer(info.windowId)
+  if (container) {
+    log(`clear lastRelatedTabs for ${info.windowId}`);
+    container.lastRelatedTabs = {};
+  }
 });
 
 Tabs.onMoved.addListener((tab, _info = {}) => {
