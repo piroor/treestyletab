@@ -134,6 +134,7 @@ export const configs = new Configs({
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
   moveFocusInTreeForClosedCurrentTab: true,
+  simulateSelectOwnerOnClose: true,
   warnOnCloseTabs: true,
   lastConfirmedToCloseTabs: 0,
 

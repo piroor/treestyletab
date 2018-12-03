@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -39,6 +40,10 @@ async function updateInternal(apiTabId) {
       !Tabs.ensureLivingTab(tab))
     return;
   log('update: ', tab.id);
+  if (tab.lastSuccessorTabIdByOwner) {
+    log(`  ${tab.id} is already prepared for "selectOwnerOnClose" behavior (successor=${apiTab.successorTabId})`);
+    return;
+  }
   if (tab.lastSuccessorTabId) {
     log(`  ${tab.id} was controlled: `, {
       successorTabId: apiTab.successorTabId,
@@ -80,10 +85,36 @@ async function updateInternal(apiTabId) {
 }
 
 
-Tabs.onActivated.addListener((tab, info = {}) => {
+Tabs.onCreating.addListener((tab, _info = {}) => {
+  if (!configs.simulateSelectOwnerOnClose ||
+      !tab.apiTab.openerTabId ||
+      !('successorTabId' in tab.apiTab))
+    return;
+  log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${tab.apiTab.openerTabId})`);
+  browser.tabs.update(tab.apiTab.id, {
+    successorTabId: tab.apiTab.openerTabId
+  });
+  tab.lastSuccessorTabId = tab.apiTab.openerTabId;
+  tab.lastSuccessorTabIdByOwner = true;
+});
+
+Tabs.onActivated.addListener(async (tab, info = {}) => {
   update(tab.apiTab.id);
-  if (info.previousTabId)
+  if (info.previousTabId) {
+    const tab = Tabs.getTabById(info.previousTabId);
+    if (tab.lastSuccessorTabIdByOwner) {
+      delete tab.lastSuccessorTabIdByOwner;
+      const apiTab = await browser.tabs.get(info.previousTabId).catch(ApiTabs.handleMissingTabError);
+      if (apiTab && apiTab.successorTabId == tab.lastSuccessorTabId) {
+        log(`${tab.id} is unprepared for "selectOwnerOnClose" behavior`);
+        delete tab.lastSuccessorTabId;
+        browser.tabs.update(tab.apiTab.id, {
+          successorTabId: -1
+        });
+      }
+    }
     update(info.previousTabId);
+  }
 });
 
 Tabs.onCreated.addListener((tab, _info = {}) => {
