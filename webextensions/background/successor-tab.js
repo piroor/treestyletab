@@ -57,8 +57,21 @@ async function updateInternal(apiTabId) {
     return;
   log('update: ', tab.id);
   if (tab.lastSuccessorTabIdByOwner) {
-    log(`  ${tab.id} is already prepared for "selectOwnerOnClose" behavior (successor=${apiTab.successorTabId})`);
-    return;
+    const successor = Tabs.getTabById(apiTab.successorTabId);
+    if (successor) {
+      log(`  ${tab.id} is already prepared for "selectOwnerOnClose" behavior (successor=${apiTab.successorTabId})`);
+      if (Tabs.isPinned(successor))
+        return;
+      if (Tabs.getAncestorTabs(tab).includes(successor) ||
+          Tabs.getChildTabs(Tabs.getParentTab(tab)).includes(successor))
+        return;
+      log('  ${tab.id} is already detached from the owner\'s tree');
+      delete tab.lastSuccessorTabIdByOwner;
+      delete tab.lastSuccessorTabId;
+      browser.tabs.update(tab.apiTab.id, {
+        successorTabId: -1
+      });
+    }
   }
   if (tab.lastSuccessorTabId) {
     log(`  ${tab.id} was controlled: `, {
