@@ -534,13 +534,13 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_moveFocusInTreeForClosedCurrentTab_true'),
             key:   'moveFocusInTreeForClosedCurrentTab',
-            value: 'true',
+            value: true,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_moveFocusInTreeForClosedCurrentTab_false'),
             key:   'moveFocusInTreeForClosedCurrentTab',
-            value: 'false',
+            value: false,
             type:  'radio'
           }
         ]
