@@ -78,12 +78,10 @@ window.addEventListener('DOMContentLoaded', () => {
   else
     document.documentElement.classList.remove('platform-mac');
 
-  browser.tabs.query({ active: true }).then(tabs => {
-    if ('successorTabId' in tabs[0])
-      document.documentElement.classList.add('successor-tab-support');
-    else
-      document.documentElement.classList.remove('successor-tab-support');
-  });
+  if (typeof browser.tabs.moveInSuccession == 'function')
+    document.documentElement.classList.add('successor-tab-support');
+  else
+    document.documentElement.classList.remove('successor-tab-support');
 
   for (const label of document.querySelectorAll('#contextConfigs label')) {
     removeAccesskeyMark(label.lastChild);
