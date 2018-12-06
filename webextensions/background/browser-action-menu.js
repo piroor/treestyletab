@@ -546,6 +546,14 @@ const mItems = [
         ]
       },
       {
+        title: browser.i18n.getMessage('config_simulateSelectOwnerOnClose_label'),
+        key:   'simulateSelectOwnerOnClose',
+        type:  'checkbox',
+        get visible() {
+          return typeof browser.tabs.moveInSuccession == 'function';
+        }
+      },
+      {
         title:    browser.i18n.getMessage('config_closeParentBehavior_caption'),
         children: [
           {
@@ -790,6 +798,8 @@ browser.menus.onShown.addListener((info, _tab) => {
     }
     if (item.type == 'checkbox' || item.type == 'radio')
       params.checked = 'value' in item ? configs[item.key] == item.value : configs[item.key];
+    if ('visible' in item)
+      params.visible = item.visible;
     if ('checked' in params || 'title' in params) {
       browser.menus.update(item.id, params);
       updated = true;
