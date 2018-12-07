@@ -8,7 +8,7 @@
 :root {
   /* default size, they will be overridden. */
   --favicon-size: 16px;
-  --tab-height: 32px;
+  --tab-size: 32px;
   --faviconized-tab-size: 28px;
   --svg-small-icon-size: 16px;
 
@@ -232,7 +232,7 @@ ul {
 .tab.removing,
 .tab:not(.pinned).collapsed,
 .tab.duplicating {
-  margin-top: calc(0px - var(--tab-height));
+  margin-top: calc(0px - var(--tab-size));
   opacity: 0;
   pointer-events: none;
   z-index: -100;
@@ -286,11 +286,11 @@ ul {
 .tab.attention .favicon::before {
   bottom: auto;
   content: '';
-  height: var(--faviconized-tab-size);
+  height: var(--tab-size);
   left: var(--attention-marker-offset);
   right: auto;
   top: var(--attention-marker-offset);
-  width: var(--faviconized-tab-size);
+  width: var(--tab-size);
   z-index: 10;
 }
 
@@ -587,8 +587,8 @@ ul {
                       transparent 100%
                     );
   display: none;
-  margin-top: calc(0 - var(--tab-height));
-  min-height: var(--tab-height);
+  margin-top: calc(0 - var(--tab-size));
+  min-height: var(--tab-size);
   pointer-events: none;
   position: relative;
   opacity: 0;

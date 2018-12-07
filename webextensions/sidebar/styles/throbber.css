@@ -10,11 +10,11 @@
   --throbber-shadow-color: transparent;
   --throbber-size: var(--svg-small-icon-size);
   --tab-burster-size: 5px;
-  --tab-burster-translation: translate(calc(var(--tab-height) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
+  --tab-burster-translation: translate(calc(var(--tab-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
 
 .tab.faviconized {
-  --tab-burster-translation: translate(calc(var(--favicon-size) / 2), calc(var(--tab-height) / 2 - var(--tab-burster-size)));
+  --tab-burster-translation: translate(calc(var(--favicon-size) / 2), calc(var(--tab-size) / 2 - var(--tab-burster-size)));
 }
 
 @keyframes throbber {

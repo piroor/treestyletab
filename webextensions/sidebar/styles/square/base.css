@@ -42,8 +42,8 @@
 }
 
 .tab {
-  --tab-closebox-offset: calc((var(--tab-height) - 1em) / 2);
-  --tab-closebox-negative-offset: calc((1em - var(--tab-height)) / 2);
+  --tab-closebox-offset: calc((var(--tab-size) - 1em) / 2);
+  --tab-closebox-negative-offset: calc((1em - var(--tab-size)) / 2);
 }
 
 /* expand closebox to fill full height of tab */

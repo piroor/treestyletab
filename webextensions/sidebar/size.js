@@ -49,7 +49,7 @@ export function init() {
   const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('mTabHeight ', mTabHeight);
   sizeDefinition.textContent += `:root {
-    --tab-height: ${mTabHeight}px;
+    --tab-size: ${mTabHeight}px;
     --scrollbar-size: ${scrollbarSize}px;
     --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
 
