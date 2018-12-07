@@ -50,6 +50,7 @@ export function init() {
   log('mTabHeight ', mTabHeight);
   sizeDefinition.textContent += `:root {
     --tab-size: ${mTabHeight}px;
+    --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
     --scrollbar-size: ${scrollbarSize}px;
     --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
 
