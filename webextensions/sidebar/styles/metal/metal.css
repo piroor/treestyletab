@@ -91,7 +91,7 @@
 
 .tab.faviconized.unread .favicon::before,
 .tab.attention .favicon::before {
-  left: calc(var(--attention-marker-offset) + 3px);
+  left: calc(var(--attention-marker-x-offset) + 3px);
 }
 
 

@@ -41,8 +41,11 @@
   --tab-highlighted-base: transparent;
 
   --scrollbar-placeholder-size: 1em;
-
-  --attention-marker-offset: calc(0px - (var(--faviconized-tab-size) - var(--favicon-size)) / 2);
+}
+.tab {
+  --tab-current-size: var(--tab-size);
+  --attention-marker-x-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size)) / 2));
+  --attention-marker-y-offset: calc(0px - ((var(--tab-current-size) - var(--favicon-size)) / 2) + ((var(--tab-current-size) - var(--faviconized-tab-size))));
   --attention-marker-gradient: radial-gradient(circle farthest-corner at 50% calc(100% - 3px),
                                                var(--tab-highlighted-highlight) 3%,
                                                var(--tab-highlighted-glow) 10%,
@@ -286,11 +289,11 @@ ul {
 .tab.attention .favicon::before {
   bottom: auto;
   content: '';
-  height: var(--tab-size);
-  left: var(--attention-marker-offset);
+  height: var(--faviconized-tab-size);
+  left: var(--attention-marker-x-offset);
   right: auto;
-  top: var(--attention-marker-offset);
-  width: var(--tab-size);
+  top: var(--attention-marker-y-offset);
+  width: var(--faviconized-tab-size);
   z-index: 10;
 }
 
@@ -315,11 +318,12 @@ ul {
 }
 
 .tab.faviconized {
-  height: var(--faviconized-tab-size);
-  max-height: var(--faviconized-tab-size);
-  max-width: var(--faviconized-tab-size);
-  width: var(--faviconized-tab-size);
-  padding: calc((var(--faviconized-tab-size) - var(--favicon-size)) / 2);
+  --tab-current-size: var(--faviconized-tab-size);
+  height: var(--tab-current-size);
+  max-height: var(--tab-current-size);
+  max-width: var(--tab-current-size);
+  width: var(--tab-current-size);
+  padding: calc((var(--tab-current-size) - var(--favicon-size)) / 2);
 }
 
 .tab.pinned .closebox,
