@@ -38,8 +38,6 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
-
 import {
   log as internalLogger,
   wait,
@@ -94,15 +92,12 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
-      (openerOfGroupTab.apiTab.favIconUrl ||
-       TabFavIconHelper.maybeImageTab(openerOfGroupTab.apiTab))) {
+      openerOfGroupTab.apiTab.favIconUrl) {
     Tabs.onFaviconUpdated.dispatch(tab,
-                                   openerOfGroupTab.apiTab.favIconUrl ||
-                                     openerOfGroupTab.apiTab.url);
+                                   openerOfGroupTab.apiTab.favIconUrl);
   }
   else if (options.forceApply ||
-           'favIconUrl' in newState ||
-           TabFavIconHelper.maybeImageTab('url' in newState ? newState : tab.apiTab)) {
+           'favIconUrl' in newState) {
     Tabs.onFaviconUpdated.dispatch(tab);
   }
   else if (Tabs.isGroupTab(tab)) {

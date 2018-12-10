@@ -5,8 +5,6 @@
 */
 'use strict';
 
-import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
-
 import {
   log as internalLogger,
   dumpTab,
@@ -145,12 +143,11 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       const opener = Tabs.getOpenerFromGroupTab(groupTab);
       if (opener) {
         if (opener &&
-            (opener.apiTab.favIconUrl ||
-             TabFavIconHelper.maybeImageTab(opener.apiTab))) {
+            opener.apiTab.favIconUrl) {
           browser.runtime.sendMessage({
             type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
             tab:        groupTab.id,
-            favIconUrl: opener.apiTab.favIconUrl || opener.apiTab.url
+            favIconUrl: opener.apiTab.favIconUrl
           });
         }
         newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
