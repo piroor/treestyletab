@@ -102,6 +102,8 @@ export async function refreshItems() {
     type: TSTAPI.kCONTEXT_MENU_REMOVE,
     params: kROOT_ITEM
   }, browser.runtime);
+  if (mNativeContextMenuAvailable)
+    browser.menus.remove(`separatprBefore${kROOT_ITEM}`);
 
   let separatorsCount = 0;
   let normalItemAppeared = false;
@@ -150,6 +152,16 @@ export async function refreshItems() {
   }
   if (items.length == 0)
     return;
+
+  if (mNativeContextMenuAvailable) {
+    browser.menus.create({
+      id:        `separatprBefore${kROOT_ITEM}`,
+      type:      'separator',
+      contexts:  ['tab'],
+      viewTypes: ['sidebar'],
+      documentUrlPatterns: [`moz-extension://${location.host}/*`]
+    });
+  }
 
   const grouped = items.length > 1;
   if (grouped) {

@@ -120,9 +120,6 @@ const mItemsById = {
   'context_closeTab': {
     title:              browser.i18n.getMessage('tabContextMenu_close_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_close_label_multiselected')
-  },
-  'context_separator:afterTabContextItems': {
-    type: 'separator'
   }
 };
 
@@ -432,10 +429,6 @@ async function onShown(info, contextApiTab) {
   updateItem('context_closeTab', {
     visible: contextApiTab && ++visibleItemsCount,
     multiselected
-  }) && modifiedItemsCount++;
-
-  updateItem('context_separator:afterTabContextItems', {
-    visible: contextApiTab && visibleItemsCount > 0
   }) && modifiedItemsCount++;
 
   /* eslint-enable no-unused-expressions */
