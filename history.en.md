@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Redune needlessly duplicated separator in the context menu on Firefox 64 and later.
    * Reduce unexpected focusing to the next/previous when the current tab is closed, on Firefox 65 and later.
    * Show "attention" mark for unpinned tabs.
    * Optimize handling for updated "highlighted" status of tabs.
