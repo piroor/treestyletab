@@ -22,42 +22,77 @@ function log(...args) {
 // Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
 const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
 
-const mContextMenuItemsById = {};
-const mContextMenuItems = `
-  reloadTree:normal
-  reloadDescendants:normal
-  -----------------:separator
-  closeTree:normal
-  closeDescendants:normal:requireTree
-  closeOthers:normal
-  -----------------:separator
-  collapseTree:normal:requireTree
-  collapseAll:normal
-  expandTree:normal:requireTree
-  expandAll:normal
-  -----------------:separator
-  bookmarkTree:normal
-  -----------------:separator
-  collapsed:checkbox:requireTree
-  pinnedTab:radio
-  unpinnedTab:radio
-`.trim().split(/\s+/).map(definition => {
-    const [id, type, requireTree] = definition.split(':');
-    const isSeparator = type == 'separator' || id.charAt(0) == '-';
-    const title = isSeparator ? null : browser.i18n.getMessage(`context_${id}_label`) || id;
-    return mContextMenuItemsById[id] = {
-      id,
-      title,
-      checked: false, // initialize as unchecked
-      enabled: true,
-      // Access key is not supported by WE API.
-      // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
-      titleWithoutAccesskey: title && title.replace(/\(&[a-z]\)|&([a-z])/i, '$1'),
-      type: isSeparator ? 'separator' : type,
-      isSeparator,
-      requireTree: requireTree == 'requireTree'
-    };
-  });
+const mContextMenuItemsById = {
+  'reloadTree': {
+    title: browser.i18n.getMessage(`context_reloadTree_label`)
+  },
+  'reloadDescendants': {
+    title: browser.i18n.getMessage(`context_reloadDescendants_label`)
+  },
+  'separatorAfterReload': {
+    type: 'separator'
+  },
+  'closeTree': {
+    title: browser.i18n.getMessage(`context_closeTree_label`)
+  },
+  'closeDescendants': {
+    title:       browser.i18n.getMessage(`context_closeDescendants_label`),
+    requireTree: true,
+  },
+  'closeOthers': {
+    title: browser.i18n.getMessage(`context_closeOthers_label`)
+  },
+  'separatorAfterClose': {
+    type: 'separator'
+  },
+  'collapseTree': {
+    title:       browser.i18n.getMessage(`context_collapseTree_label`),
+    requireTree: true,
+  },
+  'collapseAll': {
+    title: browser.i18n.getMessage(`context_collapseAll_label`)
+  },
+  'expandTree': {
+    title:       browser.i18n.getMessage(`context_expandTree_label`),
+    requireTree: true,
+  },
+  'expandAll': {
+    title: browser.i18n.getMessage(`context_expandAll_label`)
+  },
+  'separatorAfterCollapseExpand': {
+    type: 'separator'
+  },
+  'bookmarkTree': {
+    title: browser.i18n.getMessage(`context_bookmarkTree_label`)
+  },
+  'separatorAfterBookmark': {
+    type: 'separator'
+  },
+  'collapsed': {
+    title:       browser.i18n.getMessage(`context_collapsed_label`),
+    requireTree: true,
+    type:        'checkbox'
+  },
+  'pinnedTab': {
+    title: browser.i18n.getMessage(`context_pinnedTab_label`),
+    type: 'radio'
+  },
+  'unpinnedTab': {
+    title: browser.i18n.getMessage(`context_unpinnedTab_label`),
+    type: 'radio'
+  }
+};
+const mContextMenuItems = Object.keys(mContextMenuItemsById).map(id => {
+  const item = mContextMenuItemsById[id];
+  item.id = id;
+  item.checked = false; // initialize as unchecked
+  item.enabled = true;
+  // Access key is not supported by WE API.
+  // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
+  item.titleWithoutAccesskey = item.title && item.title.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
+  item.type = item.type || 'normal';
+  return item;
+});
 
 const kROOT_ITEM = 'treestyletab';
 
@@ -79,7 +114,7 @@ export async function refreshItems() {
       type:   TSTAPI.kCONTEXT_MENU_REMOVE,
       params: id
     }, browser.runtime);
-    if (item.isSeparator) {
+    if (item.type == 'separator') {
       if (!normalItemAppeared)
         continue;
       normalItemAppeared = false;
