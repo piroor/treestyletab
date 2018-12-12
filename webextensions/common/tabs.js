@@ -431,7 +431,7 @@ export function getCurrentTab(hint) {
   return container && container.querySelector(`.${Constants.kTAB_STATE_ACTIVE}`);
 }
 export function getCurrentTabs() {
-  return Array.slice(document.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`));
+  return Array.from(document.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`));
 }
 
 export function getNextTab(tab) {
@@ -702,35 +702,35 @@ export function getAllTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(kSELECTOR_LIVE_TAB));
+  return Array.from(container.querySelectorAll(kSELECTOR_LIVE_TAB));
 }
 
 export function getTabs(hint) { // only visible, including collapsed and pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(kSELECTOR_CONTROLLABLE_TAB));
+  return Array.from(container.querySelectorAll(kSELECTOR_CONTROLLABLE_TAB));
 }
 
 export function getNormalTabs(hint) { // only visible, including collapsed, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
+  return Array.from(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
 }
 
 export function getVisibleTabs(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(kSELECTOR_VISIBLE_TAB));
+  return Array.from(container.querySelectorAll(kSELECTOR_VISIBLE_TAB));
 }
 
 export function getPinnedTabs(hint) { // visible, pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(kSELECTOR_PINNED_TAB));
+  return Array.from(container.querySelectorAll(kSELECTOR_PINNED_TAB));
 }
 
 
@@ -738,32 +738,32 @@ export function getUnpinnedTabs(hint) { // visible, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
 }
 
 /*
 function getAllRootTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${Constants.kPARENT}])`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${Constants.kPARENT}])`));
 }
 */
 
 export function getRootTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${Constants.kPARENT}])`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${Constants.kPARENT}])`));
 }
 
 /*
 function getVisibleRootTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${Constants.kPARENT}])`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${Constants.kPARENT}])`));
 }
 
 function getVisibleLoadingTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.loading`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.loading`));
 }
 */
 
@@ -779,7 +779,7 @@ export function collectRootTabs(tabs) {
 /*
 function getIndentedTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${Constants.kPARENT}]`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${Constants.kPARENT}]`));
 }
 
 function getVisibleIndentedTabs(hint) {
@@ -790,19 +790,19 @@ function getVisibleIndentedTabs(hint) {
 
 export function getDraggingTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DRAGGING}`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DRAGGING}`));
 }
 
 export function getDuplicatingTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.slice(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DUPLICATING}`));
+  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DUPLICATING}`));
 }
 
 export function getHighlightedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`
+  return Array.from(container.querySelectorAll(`
     ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}
   `));
 }
@@ -811,7 +811,7 @@ export function getSelectedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.slice(container.querySelectorAll(`
+  return Array.from(container.querySelectorAll(`
     ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED},
     .${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED} ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}
   `));
@@ -1105,7 +1105,7 @@ export function isAllTabsPlacedBefore(tabs, nextTab) {
   if (!nextTab && !getNextTab(tabs[tabs.length - 1]))
     return true;
 
-  tabs = Array.slice(tabs);
+  tabs = Array.from(tabs);
   let previousTab = tabs.shift();
   for (const tab of tabs) {
     if (tab.previousSibling != previousTab)
@@ -1123,7 +1123,7 @@ export function isAllTabsPlacedAfter(tabs, previousTab) {
   if (!previousTab && !getPreviousTab(tabs[0]))
     return true;
 
-  tabs = Array.slice(tabs).reverse();
+  tabs = Array.from(tabs).reverse();
   let nextTab = tabs.shift();
   for (const tab of tabs) {
     if (tab.nextSibling != nextTab)
