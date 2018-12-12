@@ -560,6 +560,13 @@ async function onRemoved(tabId, removeInfo) {
     oldTab[Constants.kTAB_STATE_REMOVING] = true;
     oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
 
+    let followingTab = oldTab.nextSibling;
+    let newIndex = oldTab.apiTab.index;
+    while (followingTab) {
+      followingTab.apiTab.index = newIndex++;
+      followingTab = followingTab.nextSibling;
+    }
+
     const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation
     }));
