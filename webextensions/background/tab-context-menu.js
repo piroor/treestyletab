@@ -526,7 +526,8 @@ async function onClick(info, contextApiTab) {
       const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
       if (otherTabs.length > 0)
         Commands.moveTabsWithStructure(movedTabs, {
-          insertBefore: otherTabs[0]
+          insertBefore: otherTabs[0],
+          broadcast:    true
         });
     }; break;
     case 'context_moveTabToEnd': {
@@ -535,7 +536,8 @@ async function onClick(info, contextApiTab) {
       const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
       if (otherTabs.length > 0)
         Commands.moveTabsWithStructure(movedTabs, {
-          insertAfter: otherTabs[otherTabs.length-1]
+          insertAfter: otherTabs[otherTabs.length-1],
+          broadcast:   true
         });
     }; break;
     case 'context_openTabInWindow':

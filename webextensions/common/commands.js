@@ -277,7 +277,8 @@ export async function performTabsDragDrop(params = {}) {
   });
 
   const movedTabs = await moveTabsWithStructure(params.tabs, Object.assign({}, params, {
-    windowId, destinationWindowId
+    windowId, destinationWindowId,
+    broadcast: true
   }));
   if (windowId != destinationWindowId) {
     // Firefox always focuses to the dropped (mvoed) tab if it is dragged from another window.
@@ -331,7 +332,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
     log('=> partially moved');
     if (!params.duplicate)
       await Tree.detachTabsFromTree(movedTabs, {
-        broadcast: true
+        broadcast: params.broadcast
       });
   }
 
@@ -341,7 +342,8 @@ export async function moveTabsWithStructure(tabs, params = {}) {
       destinationWindowId,
       duplicate:    params.duplicate,
       insertBefore: params.insertBefore,
-      insertAfter:  params.insertAfter
+      insertAfter:  params.insertAfter,
+      broadcast:    params.broadcast
     });
     movedRoots = Tabs.collectRootTabs(movedTabs);
   }
@@ -350,7 +352,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   if (!params.attachTo) {
     log('=> detach');
     detachTabsWithStructure(movedRoots, {
-      broadcast: true
+      broadcast: params.broadcast
     });
   }
   else {
@@ -359,15 +361,15 @@ export async function moveTabsWithStructure(tabs, params = {}) {
       insertBefore: params.insertBefore,
       insertAfter:  params.insertAfter,
       draggedTabs:  movedTabs,
-      broadcast:    true
+      broadcast:    params.broadcast
     });
   }
 
   log('=> moving tabs ', movedTabs.map(dumpTab));
   if (params.insertBefore)
-    await TabsMove.moveTabsBefore(movedTabs, params.insertBefore);
+    await TabsMove.moveTabsBefore(movedTabs, params.insertBefore, { broadcast: params.broadcast });
   else if (params.insertAfter)
-    await TabsMove.moveTabsAfter(movedTabs, params.insertAfter);
+    await TabsMove.moveTabsAfter(movedTabs, params.insertAfter, { broadcast: params.broadcast });
   else
     log('=> already placed at expected position');
 
@@ -413,9 +415,9 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
   }
 
   if (options.insertBefore)
-    await TabsMove.moveTabsBefore(options.draggedTabs || tabs, options.insertBefore);
+    await TabsMove.moveTabsBefore(options.draggedTabs || tabs, options.insertBefore, { broadcast: options.broadcast });
   else if (options.insertAfter)
-    await TabsMove.moveTabsAfter(options.draggedTabs || tabs, options.insertAfter);
+    await TabsMove.moveTabsAfter(options.draggedTabs || tabs, options.insertAfter, { broadcast: options.broadcast });
 
   const memberOptions = Object.assign({}, options, {
     insertBefore: null,
