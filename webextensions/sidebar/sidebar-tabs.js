@@ -377,7 +377,7 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
 
 Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadingState(tab); });
 
-Tabs.onUpdated.addListener(async (tab, info) => {
+Tabs.onUpdated.addListener((tab, info) => {
   reserveToUpdateSoundButtonTooltip(tab);
 
   if (!('highlighted' in info))
