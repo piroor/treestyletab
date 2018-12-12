@@ -377,6 +377,7 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
 
 Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadingState(tab); });
 
+let mReservedUpdateActiveTab;
 Tabs.onUpdated.addListener((tab, info) => {
   reserveToUpdateSoundButtonTooltip(tab);
 
@@ -385,11 +386,14 @@ Tabs.onUpdated.addListener((tab, info) => {
 
   reserveToUpdateCloseboxTooltip(tab);
 
-  if (!Tabs.isActive(tab)) {
-    const activeTab = Tabs.getCurrentTab(tab);
+  if (mReservedUpdateActiveTab)
+    clearTimeout(mReservedUpdateActiveTab);
+  mReservedUpdateActiveTab = setTimeout(() => {
+    mReservedUpdateActiveTab = null;
+    const activeTab = Tabs.getCurrentTab();
     reserveToUpdateSoundButtonTooltip(activeTab);
     reserveToUpdateCloseboxTooltip(activeTab);
-  }
+  }, 50);
 });
 
 Tabs.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
