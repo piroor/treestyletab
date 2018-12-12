@@ -367,8 +367,6 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
 
 Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadingState(tab); });
 
-const mDelayedUpdateForHighlightChange = new WeakMap();
-
 Tabs.onUpdated.addListener(async (tab, info) => {
   updateSoundButtonTooltip(tab);
 
