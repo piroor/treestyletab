@@ -172,6 +172,9 @@ Tabs.onRemoved.addListener(async (tab, _closeInfo = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
+  if ('url' in changeInfo ||
+      'previousUrl' in changeInfo ||
+      'state' in changeInfo) {
   const apiTab = tab && tab.apiTab && tab.apiTab;
   const status = changeInfo.status || apiTab && apiTab.status;
   const url = changeInfo.url ? changeInfo.url :
@@ -229,10 +232,13 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
       changeInfo.url ||
       url.indexOf(Constants.kGROUP_TAB_URI) == 0)
     tryInitGroupTab(tab);
+  }
 
+  if ('title' in changeInfo) {
   const group = Tabs.getGroupTabForOpener(tab);
   if (group)
     reserveToUpdateRelatedGroupTabs(group, ['title', 'tree']);
+  }
 });
 
 Tabs.onGroupTabDetected.addListener(tab => {

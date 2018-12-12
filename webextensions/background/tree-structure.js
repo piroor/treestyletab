@@ -28,7 +28,10 @@ export function startTracking() {
   Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
   Tabs.onRemoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
   Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
-  Tabs.onUpdated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onUpdated.addListener((tab, info) => {
+    if ('openerTabId' in info)
+      reserveToSaveTreeStructure(tab);
+  });
   Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
   Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
   Tree.onSubtreeCollapsedStateChanging.addListener(tab => { reserveToSaveTreeStructure(tab); });

@@ -137,7 +137,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
-  if (configs.syncParentTabAndOpenerTab) {
+  if ('openerTabId' in changeInfo && configs.syncParentTabAndOpenerTab) {
     Tabs.waitUntilAllTabsAreCreated().then(() => {
       const parent = Tabs.getOpenerTab(tab);
       if (!parent ||
@@ -152,8 +152,8 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     });
   }
 
-  if (tab.dataset.isNewTab &&
-      (changeInfo.url || changeInfo.status == 'complete')) {
+  if ((changeInfo.url || changeInfo.status == 'complete') &&
+      tab.dataset.isNewTab) {
     log('new tab ', dumpTab(tab));
     delete tab.dataset.isNewTab;
     const possibleOpenerTab = Tabs.getTabById(tab.dataset.possibleOpenerTab);
