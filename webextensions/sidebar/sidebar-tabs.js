@@ -54,7 +54,7 @@ export function getClosebox(tab) {
 }
 
 
-function reserveToUpdateTwistyTooltip(tab) {
+export function reserveToUpdateTwistyTooltip(tab) {
   if (tab.reservedUpdateTwistyTooltip)
     return;
   tab.reservedUpdateTwistyTooltip = () => {
@@ -73,7 +73,7 @@ function updateTwistyTooltip(tab) {
   getTwisty(tab).setAttribute('title', tooltip);
 }
 
-function reserveToUpdateCloseboxTooltip(tab) {
+export function reserveToUpdateCloseboxTooltip(tab) {
   if (tab.reservedUpdateCloseboxTooltip)
     return;
   tab.reservedUpdateCloseboxTooltip = () => {
@@ -106,18 +106,16 @@ function updateDescendantsCount(tab) {
 }
 
 
-function reserveToUpdateTooltip(tab) {
+export function reserveToUpdateTooltip(tab) {
   if (!mInitialized ||
-      !Tabs.ensureLivingTab(tab))
+      !Tabs.ensureLivingTab(tab) ||
+      tab.reservedUpdateTabTooltip)
     return;
-  for (const updateTab of [tab].concat(Tabs.getAncestorTabs(tab))) {
-    if (updateTab.reservedUpdateTabTooltip)
-      clearTimeout(updateTab.reservedUpdateTabTooltip);
-  }
-  tab.reservedUpdateTabTooltip = setTimeout(() => {
+  tab.reservedUpdateTabTooltip = () => {
     delete tab.reservedUpdateTabTooltip;
     updateTabAndAncestorsTooltip(tab);
-  }, 100);
+  };
+  tab.addEventListener('mouseover', tab.reservedUpdateTabTooltip, { once: true });
 }
 
 function updateTabAndAncestorsTooltip(tab) {
@@ -134,15 +132,38 @@ function updateTooltip(tab) {
 
   tab.dataset.labelWithDescendants = Tabs.getLabelWithDescendants(tab);
 
+  if (configs.debug) {
+    tab.dataset.label = `
+${tab.apiTab.title}
+#${tab.id}
+(${tab.className})
+uniqueId = <%${Constants.kPERSISTENT_ID}%>
+duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
+restored = <%restored%>
+tabId = ${tab.apiTab.id}
+windowId = ${tab.apiTab.windowId}
+`.trim();
+    tab.setAttribute('title', tab.dataset.label);
+    tab.uniqueId.then(uniqueId => {
+      if (!Tabs.ensureLivingTab(tab))
+        return;
+      tab.setAttribute('title',
+                       tab.dataset.label = tab.dataset.label
+                         .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
+                         .replace(`<%originalId%>`, uniqueId.originalId)
+                         .replace(`<%originalTabId%>`, uniqueId.originalTabId)
+                         .replace(`<%duplicated%>`, !!uniqueId.duplicated)
+                         .replace(`<%restored%>`, !!uniqueId.restored));
+    });
+    return;
+  }
+
   if (configs.showCollapsedDescendantsByTooltip &&
       Tabs.isSubtreeCollapsed(tab) &&
       Tabs.hasChildTabs(tab)) {
     tab.setAttribute('title', tab.dataset.labelWithDescendants);
     return;
   }
-
-  if (configs.debug)
-    return;
 
   const label = Tabs.getTabLabel(tab);
   if (Tabs.isPinned(tab) || label.classList.contains('overflow')) {
@@ -380,6 +401,7 @@ Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadin
 let mReservedUpdateActiveTab;
 Tabs.onUpdated.addListener((tab, info) => {
   reserveToUpdateSoundButtonTooltip(tab);
+  reserveToUpdateTooltip(tab);
 
   if (!('highlighted' in info))
     return;

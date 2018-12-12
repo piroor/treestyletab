@@ -170,11 +170,6 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
       TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
     }
   }
-  else {
-    for (const tab of tabs) {
-      TabsUpdate.updateTabDebugTooltip(tab);
-    }
-  }
 
   // update focused tab appearance
   browser.tabs.query({ windowId: tabs[0].apiTab.windowId, active: true })

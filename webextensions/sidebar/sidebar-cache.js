@@ -17,6 +17,7 @@ import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as Cache from '/common/cache.js';
 
+import * as SidebarTabs from './sidebar-tabs.js';
 import * as Indent from './indent.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
@@ -170,6 +171,12 @@ export async function restoreTabsFromCache(cache, params = {}) {
             justNow:   true
           });
         });
+      }
+      for (const tab of allTabs) {
+        SidebarTabs.reserveToUpdateTooltip(tab);
+        SidebarTabs.reserveToUpdateTwistyTooltip(tab);
+        SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
+        SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
       }
       onRestored.dispatch();
     }

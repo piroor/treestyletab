@@ -226,8 +226,6 @@ export function updateTab(tab, newState = {}, options = {}) {
         tab.classList.remove(Constants.kTAB_STATE_DISCARDED);
     });
   }
-
-  updateTabDebugTooltip(tab);
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
@@ -285,39 +283,8 @@ async function updateTabHighlighted(tab, highlighted) {
   else
     tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
   tab.apiTab.highlighted = highlighted;
-  updateTabDebugTooltip(tab);
   Tabs.onUpdated.dispatch(tab, { highlighted });
   return true;
-}
-
-export function updateTabDebugTooltip(tab) {
-  if (!configs.debug ||
-      !tab.apiTab)
-    return;
-  tab.dataset.label = `
-${tab.apiTab.title}
-#${tab.id}
-(${tab.className})
-uniqueId = <%${Constants.kPERSISTENT_ID}%>
-duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
-restored = <%restored%>
-tabId = ${tab.apiTab.id}
-windowId = ${tab.apiTab.windowId}
-`.trim();
-  tab.setAttribute('title', tab.dataset.label);
-  tab.uniqueId.then(uniqueId => {
-    // reget it because it can be removed from document.
-    tab = Tabs.getTabById(tab.apiTab);
-    if (!tab)
-      return;
-    tab.setAttribute('title',
-                     tab.dataset.label = tab.dataset.label
-                       .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
-                       .replace(`<%originalId%>`, uniqueId.originalId)
-                       .replace(`<%originalTabId%>`, uniqueId.originalTabId)
-                       .replace(`<%duplicated%>`, !!uniqueId.duplicated)
-                       .replace(`<%restored%>`, !!uniqueId.restored));
-  });
 }
 
 function updateMultipleHighlighted(hint) {
