@@ -54,6 +54,16 @@ export function getClosebox(tab) {
 }
 
 
+function reserveToUpdateTwisty(tab) {
+  if (tab.reservedUpdateTwisty)
+    return;
+  tab.reservedUpdateTwisty = () => {
+    delete tab.reservedUpdateTwisty;
+    updateTwisty(tab);
+  };
+  tab.addEventListener('mouseover', tab.reservedUpdateTwisty, { once: true });
+}
+
 function updateTwisty(tab) {
   let tooltip;
   if (Tabs.isSubtreeCollapsed(tab))
@@ -61,6 +71,16 @@ function updateTwisty(tab) {
   else
     tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
   getTwisty(tab).setAttribute('title', tooltip);
+}
+
+function reserveToUpdateClosebox(tab) {
+  if (tab.reservedUpdateClosebox)
+    return;
+  tab.reservedUpdateClosebox = () => {
+    delete tab.reservedUpdateClosebox;
+    updateClosebox(tab);
+  };
+  tab.addEventListener('mouseover', tab.reservedUpdateClosebox, { once: true });
 }
 
 function updateClosebox(tab) {
@@ -183,8 +203,8 @@ export function updateAll() {
   updateLoadingState();
   synchronizeThrobberAnimation();
   for (const tab of Tabs.getAllTabs()) {
-    updateTwisty(tab);
-    updateClosebox(tab);
+    reserveToUpdateTwisty(tab);
+    reserveToUpdateClosebox(tab);
     updateDescendantsCount(tab);
     updateTooltip(tab);
   }
@@ -355,18 +375,11 @@ Tabs.onUpdated.addListener(async (tab, info) => {
   if (!('highlighted' in info))
     return;
 
-  updateClosebox(tab);
+  reserveToUpdateClosebox(tab);
 
   const activeTab = Tabs.getCurrentTab(tab);
-  let timer = mDelayedUpdateForHighlightChange.get(activeTab);
-  if (activeTab)
-    clearTimeout(activeTab);
-  timer = setTimeout(() => {
-    mDelayedUpdateForHighlightChange.delete(activeTab);
-    updateSoundButtonTooltip(activeTab);
-    updateClosebox(activeTab);
-  }, 100);
-  mDelayedUpdateForHighlightChange.set(activeTab, timer);
+  updateSoundButtonTooltip(activeTab);
+  reserveToUpdateClosebox(activeTab);
 });
 
 Tabs.onParentTabUpdated.addListener(tab => { updateSoundButtonTooltip(tab); });
@@ -397,8 +410,8 @@ Tabs.onGroupTabDetected.addListener(tab => {
 Tree.onAttached.addListener((tab, info = {}) => {
   if (!mInitialized)
     return;
-  updateTwisty(info.parent);
-  updateClosebox(info.parent);
+  reserveToUpdateTwisty(info.parent);
+  reserveToUpdateClosebox(info.parent);
   if (info.newlyAttached) {
     const ancestors = [info.parent].concat(Tabs.getAncestorTabs(info.parent));
     for (const ancestor of ancestors) {
@@ -414,8 +427,8 @@ Tree.onDetached.addListener((_aTab, detachInfo = {}) => {
   const parent = detachInfo.oldParentTab;
   if (!parent)
     return;
-  updateTwisty(parent);
-  updateClosebox(parent);
+  reserveToUpdateTwisty(parent);
+  reserveToUpdateClosebox(parent);
   reserveToUpdateTooltip(parent);
   const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (const ancestor of ancestors) {
@@ -424,8 +437,8 @@ Tree.onDetached.addListener((_aTab, detachInfo = {}) => {
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
-  updateTwisty(tab);
-  updateClosebox(tab);
+  reserveToUpdateTwisty(tab);
+  reserveToUpdateClosebox(tab);
   if (mInitialized)
     reserveToUpdateTooltip(tab);
 });
