@@ -187,7 +187,17 @@ async function synchronizeThrobberAnimation() {
 }
 
 
-export function updateSoundButtonTooltip(tab) {
+export function reserveToUpdateSoundButtonTooltip(tab) {
+  if (tab.reservedUpdateSoundButtonTooltip)
+    return;
+  tab.reservedUpdateSoundButtonTooltip = () => {
+    delete tab.reservedUpdateSoundButtonTooltip;
+    updateSoundButtonTooltip(tab);
+  };
+  tab.addEventListener('mouseover', tab.reservedUpdateSoundButtonTooltip, { once: true });
+}
+
+function updateSoundButtonTooltip(tab) {
   let tooltip = '';
   const suffix = Tabs.isMultiselected(tab) ? '_multiselected' : '' ;
   if (Tabs.maybeMuted(tab))
@@ -368,7 +378,7 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
 Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadingState(tab); });
 
 Tabs.onUpdated.addListener(async (tab, info) => {
-  updateSoundButtonTooltip(tab);
+  reserveToUpdateSoundButtonTooltip(tab);
 
   if (!('highlighted' in info))
     return;
@@ -376,11 +386,11 @@ Tabs.onUpdated.addListener(async (tab, info) => {
   reserveToUpdateClosebox(tab);
 
   const activeTab = Tabs.getCurrentTab(tab);
-  updateSoundButtonTooltip(activeTab);
+  reserveToUpdateSoundButtonTooltip(activeTab);
   reserveToUpdateClosebox(activeTab);
 });
 
-Tabs.onParentTabUpdated.addListener(tab => { updateSoundButtonTooltip(tab); });
+Tabs.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
 
 Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
