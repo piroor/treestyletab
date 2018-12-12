@@ -120,8 +120,14 @@ const mItemsById = {
   'context_closeTab': {
     title:              browser.i18n.getMessage('tabContextMenu_close_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_close_label_multiselected')
+  },
+  'lastSeparatorBeforeExtraItems': {
+    type:     'separator',
+    fakeMenu: true
   }
 };
+
+const mExtraItems = new Map();
 
 // Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
 const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
@@ -157,7 +163,7 @@ export async function init() {
     };
     if (item.parentId)
       info.parentId = item.parentId;
-    if (mNativeContextMenuAvailable)
+    if (mNativeContextMenuAvailable && !item.fakeMenu)
       browser.menus.create(info);
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
@@ -431,6 +437,10 @@ async function onShown(info, contextApiTab) {
     multiselected
   }) && modifiedItemsCount++;
 
+  updateItem('lastSeparatorBeforeExtraItems', {
+    visible: Array.from(mExtraItems.values()).some(item => item.visible !== false) && ++visibleItemsCount
+  }) && modifiedItemsCount++;
+
   /* eslint-enable no-unused-expressions */
 
   if (mNativeContextMenuAvailable && modifiedItemsCount)
@@ -689,8 +699,6 @@ async function onClick(info, contextApiTab) {
   }
 }
 
-
-const mExtraItems = new Map();
 
 function getItemsFor(addonId) {
   if (mExtraItems.has(addonId)) {
