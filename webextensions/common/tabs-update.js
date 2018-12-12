@@ -239,16 +239,12 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   //const startAt = Date.now();
 
-  const unhighlightedSelectorFragments = [];
-  const highlightedSelectorFragments = [];
+  const idSelectors = [];
   for (const id of highlightInfo.tabIds) {
-    unhighlightedSelectorFragments.push(`:not(#tab-${highlightInfo.windowId}-${id})`);
-    highlightedSelectorFragments.push(`#tab-${highlightInfo.windowId}-${id}:not(.${Constants.kTAB_STATE_HIGHLIGHTED})`);
+    idSelectors.push(`#tab-${highlightInfo.windowId}-${id}`);
   }
-  const unhighlightedTabs = container.querySelectorAll(`
-    .${Constants.kTAB_STATE_HIGHLIGHTED}${unhighlightedSelectorFragments.join('')}
-  `);
-  const highlightedTabs = container.querySelectorAll(highlightedSelectorFragments.join(','));
+  const unhighlightedTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_HIGHLIGHTED}:not(:-moz-any(${idSelectors.join(', ')}))`);
+  const highlightedTabs = container.querySelectorAll(`:-moz-any(${idSelectors.join(',')}):not(.${Constants.kTAB_STATE_HIGHLIGHTED})`);
   for (const tab of unhighlightedTabs) {
     updateTabHighlighted(tab, false);
   }
