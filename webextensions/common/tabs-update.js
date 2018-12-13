@@ -243,13 +243,14 @@ export async function updateTabsHighlighted(highlightInfo) {
   }
   const unhighlightedTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_HIGHLIGHTED}:not(:-moz-any(${idSelectors.join(', ')}))`);
   const highlightedTabs = container.querySelectorAll(`:-moz-any(${idSelectors.join(',')}):not(.${Constants.kTAB_STATE_HIGHLIGHTED})`);
+  log('updateTabsHighlighted ', { updateTabsHighlighted, highlightedTabs, unhighlightedTabs});
   for (const tab of unhighlightedTabs) {
     updateTabHighlighted(tab, false);
   }
   for (const tab of highlightedTabs) {
     updateTabHighlighted(tab, true);
   }
-  if (unhighlightedTabs.lengtht > 0 ||
+  if (unhighlightedTabs.length > 0 ||
       highlightedTabs.length > 0)
     updateMultipleHighlighted(highlightInfo.windowId);
 
