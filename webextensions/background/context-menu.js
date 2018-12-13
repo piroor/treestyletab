@@ -102,10 +102,6 @@ export async function refreshItems() {
     type: TSTAPI.kCONTEXT_MENU_REMOVE,
     params: kROOT_ITEM
   }, browser.runtime);
-  TabContextMenu.onExternalMessage({
-    type: TSTAPI.kCONTEXT_MENU_REMOVE,
-    params: `separatprBefore${kROOT_ITEM}`
-  }, browser.runtime);
   if (mNativeContextMenuAvailable)
     browser.menus.remove(`separatprBefore${kROOT_ITEM}`);
 
@@ -157,14 +153,6 @@ export async function refreshItems() {
   if (items.length == 0)
     return;
 
-  TabContextMenu.onExternalMessage({
-    type: TSTAPI.kCONTEXT_MENU_CREATE,
-    params: {
-      id:       `separatprBefore${kROOT_ITEM}`,
-      contexts: ['tab'],
-      type:     'separator'
-    }
-  }, browser.runtime);
   if (mNativeContextMenuAvailable) {
     browser.menus.create({
       id:        `separatprBefore${kROOT_ITEM}`,
