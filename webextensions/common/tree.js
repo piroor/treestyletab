@@ -919,7 +919,8 @@ export async function tryMoveFocusFromClosingCurrentTabNow(tab, options = {}) {
   const results = await TSTAPI.sendMessage({
     type:   TSTAPI.kNOTIFY_TRY_MOVE_FOCUS_FROM_CLOSING_CURRENT_TAB,
     tab:    serializedTab,
-    window: tab.apiTab.windowId
+    window: tab.apiTab.windowId,
+    windowId: tab.apiTab.windowId
   });
   if (results.some(result => result.result)) // canceled
     return false;

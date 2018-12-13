@@ -364,7 +364,8 @@ function onMessage(message, sender) {
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
           type:   TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
           tab:    serializedTab,
-          window: tab.apiTab.windowId
+          window: tab.apiTab.windowId,
+          windowId: tab.apiTab.windowId
         }));
 
         // We must send tab-mouseup after tab-mousedown is notified.
@@ -374,7 +375,8 @@ function onMessage(message, sender) {
             await TSTAPI.sendMessage(Object.assign({}, message, {
               type:   TSTAPI.kNOTIFY_TAB_CLICKED,
               tab:    serializedTab,
-              window: tab.apiTab.windowId
+              window: tab.apiTab.windowId,
+              windowId: tab.apiTab.windowId
             }))
           );
           if (results.some(result => result.result)) // canceled

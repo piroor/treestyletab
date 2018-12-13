@@ -152,6 +152,7 @@ function onMouseMove(event) {
       type:     TSTAPI.kNOTIFY_TAB_MOUSEMOVE,
       tab:      TSTAPI.serializeTab(tab),
       window:   mTargetWindow,
+      windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
       altKey:   event.altKey,
@@ -177,6 +178,7 @@ function onMouseOver(event) {
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOVER,
       tab:      TSTAPI.serializeTab(tab),
       window:   mTargetWindow,
+      windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
       altKey:   event.altKey,
@@ -202,6 +204,7 @@ function onMouseOut(event) {
       type:     TSTAPI.kNOTIFY_TAB_MOUSEOUT,
       tab:      TSTAPI.serializeTab(tab),
       window:   mTargetWindow,
+      windowId: mTargetWindow,
       ctrlKey:  event.ctrlKey,
       shiftKey: event.shiftKey,
       altKey:   event.altKey,
@@ -270,6 +273,7 @@ function onMouseDown(event) {
       event.button != 0)
     mousedown.promisedMousedownNotified = browser.runtime.sendMessage(Object.assign({}, mousedownDetail, {
       type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
+      window:   mTargetWindow,
       windowId: mTargetWindow
     }));
 
@@ -346,7 +350,8 @@ async function onMouseUp(event) {
     const results = TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
       type:    TSTAPI.kNOTIFY_TAB_MOUSEUP,
       tab:     serializedTab,
-      window:  mTargetWindow
+      window:  mTargetWindow,
+      windowId: mTargetWindow
     }));
     // don't wait here, because we need process following common operations
     // even if this mouseup event is canceled.
@@ -400,10 +405,12 @@ async function onMouseUp(event) {
   let results = await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_MOUSEUP,
     window: mTargetWindow,
+    windowId: mTargetWindow
   }));
   results = results.concat(await TSTAPI.sendMessage(Object.assign({}, lastMousedown.detail, {
     type:   TSTAPI.kNOTIFY_TABBAR_CLICKED,
     window: mTargetWindow,
+    windowId: mTargetWindow
   })));
   if (results.some(result => result.result))// canceled
     return;
