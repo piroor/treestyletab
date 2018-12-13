@@ -373,6 +373,7 @@ export async function notifyScrolled(params = {}) {
     tab:  tab && serializeTab(tab),
     tabs: Tabs.getTabs(window).map(serializeTab),
     window,
+    windowId: window,
 
     deltaY:       params.event.deltaY,
     deltaMode:    params.event.deltaMode,
