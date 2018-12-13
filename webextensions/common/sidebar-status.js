@@ -59,14 +59,16 @@ export function startWatchOpenState() {
     mOpenState.set(windowId, true);
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_SIDEBAR_SHOW,
-      window: windowId
+      window: windowId,
+      windowId
     });
     port.onDisconnect.addListener(_message => {
       mOpenState.delete(windowId);
       mFocusState.delete(windowId);
       TSTAPI.sendMessage({
         type:   TSTAPI.kNOTIFY_SIDEBAR_HIDE,
-        window: windowId
+        window: windowId,
+        windowId
       });
     });
   });
