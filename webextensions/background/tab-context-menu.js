@@ -7,18 +7,13 @@
 
 import {
   log as internalLogger,
-  notify,
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
-import * as TabsOpen from '/common/tabs-open.js';
-import * as Tree from '/common/tree.js';
-import * as Bookmark from '/common/bookmark.js';
 import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
-import * as SidebarStatus from '/common/sidebar-status.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -512,59 +507,16 @@ async function onClick(info, contextApiTab) {
       }
       break;
     case 'context_duplicateTab':
-      /*
-        Due to difference between Firefox's "duplicate tab" implementation,
-        TST sometimes fails to detect duplicated tabs based on its
-        session information. Thus we need to duplicate as an internally
-        duplicated tab. For more details, see also:
-        https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
-      */
-      // browser.tabs.duplicate(contextApiTab.id);
-      return (async () => {
-        const sourceTabs = isMultiselected ? multiselectedTabs : [contextTabElement];
-        log('source tabs: ', sourceTabs);
-        const duplicatedTabs = await Tree.moveTabs(sourceTabs, {
-          duplicate:           true,
-          destinationWindowId: contextWindowId,
-          insertAfter:         sourceTabs[sourceTabs.length-1]
-        });
-        await Tree.behaveAutoAttachedTabs(duplicatedTabs, {
-          baseTabs:  sourceTabs,
-          behavior:  configs.autoAttachOnDuplicated,
-          broadcast: true
-        });
-      })();
-    case 'context_moveTabToStart': {
-      const movedTabs = multiselectedTabs || [contextTabElement].concat(Tabs.getDescendantTabs(contextTabElement));
-      const allTabs   = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
-      const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
-      if (otherTabs.length > 0)
-        Commands.moveTabsWithStructure(movedTabs, {
-          insertBefore: otherTabs[0],
-          broadcast:    true
-        });
-    }; break;
-    case 'context_moveTabToEnd': {
-      const movedTabs = multiselectedTabs || [contextTabElement].concat(Tabs.getDescendantTabs(contextTabElement));
-      const allTabs   = contextApiTab.pinned ? Tabs.getPinnedTabs(contextTabElement) : Tabs.getUnpinnedTabs(contextTabElement);
-      const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
-      if (otherTabs.length > 0)
-        Commands.moveTabsWithStructure(movedTabs, {
-          insertAfter: otherTabs[otherTabs.length-1],
-          broadcast:   true
-        });
-    }; break;
-    case 'context_openTabInWindow':
-      if (multiselectedTabs) {
-        Tree.openNewWindowFromTabs(multiselectedTabs);
-      }
-      else {
-        await browser.windows.create({
-          tabId:     contextApiTab.id,
-          incognito: contextApiTab.incognito
-        });
-      }
+      Commands.duplicateTab(contextTabElement, contextWindowId);
       break;
+    case 'context_moveTabToStart':
+      Commands.moveTabToStart(contextTabElement);
+      break;
+    case 'context_moveTabToEnd':
+      Commands.moveTabToEnd(contextTabElement);
+      break;
+    case 'context_openTabInWindow':
+      Commands.openTabInWindow(contextTabElement);
     case 'context_selectAllTabs': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       browser.tabs.highlight({
@@ -573,52 +525,11 @@ async function onClick(info, contextApiTab) {
       });
     }; break;
     case 'context_bookmarkTab':
-      if (!multiselectedTabs) {
-        const tab = contextTabElement || Tabs.getCurrentTab(contextWindowId);
-        if (SidebarStatus.isOpen(contextWindowId)) {
-          browser.runtime.sendMessage({
-            type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
-            windowId: contextWindowId,
-            tab:      tab.apiTab
-          });
-        }
-        else {
-          await Bookmark.bookmarkTab(tab);
-          notify({
-            title:   browser.i18n.getMessage('bookmarkTab_notification_success_title'),
-            message: browser.i18n.getMessage('bookmarkTab_notification_success_message', [
-              tab.apiTab.title
-            ]),
-            icon:    Constants.kNOTIFICATION_DEFAULT_ICON
-          });
-        }
-        break;
-      }
-    case 'context_bookmarkAllTabs': {
-      const apiTabs = multiselectedTabs ?
-        multiselectedTabs.map(tab => tab.apiTab) :
-        await browser.tabs.query({ windowId: contextWindowId }) ;
-      if (SidebarStatus.isOpen(contextWindowId)) {
-        browser.runtime.sendMessage({
-          type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
-          windowId: contextWindowId,
-          tabs:     apiTabs
-        });
-      }
-      else {
-        const folder = await Bookmark.bookmarkTabs(apiTabs.map(Tabs.getTabById));
-        if (folder)
-          notify({
-            title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
-            message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
-              apiTabs[0].title,
-              apiTabs.length,
-              folder.title
-            ]),
-            icon:    Constants.kNOTIFICATION_DEFAULT_ICON
-          });
-      }
-    }; break;
+      Commands.bookmarkTab(contextTabElement);
+      break;
+    case 'context_bookmarkAllTabs':
+      Commands.bookmarkTabs(Tabs.getTabs(contextTabElement));
+      break;
     case 'context_reloadAllTabs': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId }) ;
       for (const apiTab of apiTabs) {
@@ -685,20 +596,8 @@ async function onClick(info, contextApiTab) {
     default: {
       const contextualIdentityMatch = info.menuItemId.match(/^context_reopenInContainer:(.+)$/);
       if (contextApiTab &&
-          contextualIdentityMatch) {
-        // Reopen in Container
-        const sourceTabs = isMultiselected ? multiselectedTabs : [contextTabElement];
-        const tabs = await TabsOpen.openURIsInTabs(sourceTabs.map(tab => tab.apiTab.url), {
-          isOrphan:      true,
-          windowId:      contextApiTab.windowId,
-          cookieStoreId: contextualIdentityMatch[1]
-        });
-        await Tree.behaveAutoAttachedTabs(tabs, {
-          baseTabs:  sourceTabs,
-          behavior:  configs.autoAttachOnDuplicated,
-          broadcast: true
-        });
-      }
+          contextualIdentityMatch)
+        Commands.reopenInContainer(contextTabElement, contextualIdentityMatch[1]);
     }; break;
   }
 }

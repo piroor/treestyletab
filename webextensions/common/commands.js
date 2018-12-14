@@ -509,3 +509,129 @@ export async function moveDown(tab, options = {}) {
   }
   return true;
 }
+
+
+/* commands to simulate Firefox's native tab cocntext menu */
+
+export async function duplicateTab(sourceTab, destinationWindowId) {
+  /*
+    Due to difference between Firefox's "duplicate tab" implementation,
+    TST sometimes fails to detect duplicated tabs based on its
+    session information. Thus we need to duplicate as an internally
+    duplicated tab. For more details, see also:
+    https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
+  */
+  const isMultiselected   = Tabs.isMultiselected(sourceTab);
+  const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab) : [sourceTab];
+  log('source tabs: ', sourceTabs);
+  const duplicatedTabs = await Tree.moveTabs(sourceTabs, {
+    duplicate:           true,
+    destinationWindowId: destinationWindowId || sourceTabs[0].apiTab.windowId,
+    insertAfter:         sourceTabs[sourceTabs.length-1]
+  });
+  return Tree.behaveAutoAttachedTabs(duplicatedTabs, {
+    baseTabs:  sourceTabs,
+    behavior:  configs.autoAttachOnDuplicated,
+    broadcast: true
+  });
+}
+
+export function moveTabToStart(tab) {
+  const isMultiselected = Tabs.isMultiselected(tab);
+  const movedTabs = isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab));
+  const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab) : Tabs.getUnpinnedTabs(tab);
+  const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
+  if (otherTabs.length > 0)
+    moveTabsWithStructure(movedTabs, {
+      insertBefore: otherTabs[0],
+      broadcast:    true
+    });
+}
+
+export function moveTabToEnd(tab) {
+  const isMultiselected = Tabs.isMultiselected(tab);
+  const movedTabs = isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab));
+  const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab) : Tabs.getUnpinnedTabs(tab);
+  const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
+  if (otherTabs.length > 0)
+    moveTabsWithStructure(movedTabs, {
+      insertAfter: otherTabs[otherTabs.length-1],
+      broadcast:   true
+    });
+}
+
+export async function openTabInWindow(tab) {
+  if (Tabs.isMultiselected(tab)) {
+    Tree.openNewWindowFromTabs(Tabs.getSelectedTabs(tab));
+  }
+  else {
+    await browser.windows.create({
+      tabId:     tab.apiTab.id,
+      incognito: tab.apiTab.incognito
+    });
+  }
+}
+
+export async function bookmarkTab(tab) {
+  if (Tabs.isMultiselected(tab))
+    return bookmarkTabs(Tabs.getSelectedTabs(tab));
+
+  if (SidebarStatus.isOpen(tab.apiTab.windowId)) {
+    browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
+      windowId: tab.apiTab.windowId,
+      tab:      tab.apiTab
+    });
+  }
+  else {
+    await Bookmark.bookmarkTab(tab);
+    notify({
+      title:   browser.i18n.getMessage('bookmarkTab_notification_success_title'),
+      message: browser.i18n.getMessage('bookmarkTab_notification_success_message', [
+        tab.apiTab.title
+      ]),
+      icon:    Constants.kNOTIFICATION_DEFAULT_ICON
+    });
+  }
+}
+
+export async function bookmarkTabs(tabs) {
+  if (tabs.length == 0)
+    return;
+  const apiTabs = tabs.map(tab => tab.apiTab);
+  if (SidebarStatus.isOpen(apiTabs[0].windowId)) {
+    browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
+      windowId: apiTabs[0].windowId,
+      tabs:     apiTabs
+    });
+  }
+  else {
+    const folder = await Bookmark.bookmarkTabs(tabs);
+    if (folder)
+      notify({
+        title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
+        message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
+          apiTabs[0].title,
+          apiTabs.length,
+          folder.title
+        ]),
+        icon:    Constants.kNOTIFICATION_DEFAULT_ICON
+      });
+  }
+}
+
+export async function reopenInContainer(sourceTab, cookieStoreId) {
+  const isMultiselected   = Tabs.isMultiselected(sourceTab);
+  const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab) : [sourceTab];
+  const tabs = await TabsOpen.openURIsInTabs(sourceTabs.map(tab => tab.apiTab.url), {
+    isOrphan: true,
+    windowId: sourceTab.apiTab.windowId,
+    cookieStoreId
+  });
+  return Tree.behaveAutoAttachedTabs(tabs, {
+    baseTabs:  sourceTabs,
+    behavior:  configs.autoAttachOnDuplicated,
+    broadcast: true
+  });
+}
