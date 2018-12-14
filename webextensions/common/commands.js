@@ -553,7 +553,6 @@ export async function moveTabsToStart(movedTabs) {
       insertBefore: otherTabs[0],
       broadcast:    true
     });
-  return true;
 }
 
 export async function moveTabToEnd(tab, options = {}) {
@@ -572,7 +571,6 @@ export async function moveTabsToEnd(movedTabs) {
       insertAfter: otherTabs[otherTabs.length-1],
       broadcast:   true
     });
-  return true;
 }
 
 export async function openTabInWindow(tab, options = {}) {
