@@ -278,17 +278,17 @@ function onShown(info, tab) {
   for (const item of mContextMenuItems) {
     let newEnabled;
     if (item.requireTree) {
-    newEnabled = hasChild;
-    switch (item.id) {
-      case 'collapseTree':
-        if (subtreeCollapsed)
-          newEnabled = false;
-        break;
-      case 'expandTree':
-        if (!subtreeCollapsed)
-          newEnabled = false;
-        break;
-    }
+      newEnabled = hasChild;
+      switch (item.id) {
+        case 'collapseTree':
+          if (subtreeCollapsed)
+            newEnabled = false;
+          break;
+        case 'expandTree':
+          if (!subtreeCollapsed)
+            newEnabled = false;
+          break;
+      }
     }
     else if (item.requireMultiselected) {
       newEnabled = multiselected;
