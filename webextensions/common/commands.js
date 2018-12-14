@@ -537,28 +537,42 @@ export async function duplicateTab(sourceTab, options = {}) {
   return duplicatedTabs;
 }
 
-export function moveTabToStart(tab, options = {}) {
+export async function moveTabToStart(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  const movedTabs = isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab));
+  return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab)));
+}
+
+export async function moveTabsToStart(movedTabs) {
+  if (movedTabs.length === 0)
+    return;
+  const tab       = movedTabs[0];
   const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab) : Tabs.getUnpinnedTabs(tab);
   const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
   if (otherTabs.length > 0)
-    moveTabsWithStructure(movedTabs, {
+    await moveTabsWithStructure(movedTabs, {
       insertBefore: otherTabs[0],
       broadcast:    true
     });
+  return true;
 }
 
-export function moveTabToEnd(tab, options = {}) {
+export async function moveTabToEnd(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  const movedTabs = isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab));
+  return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab)));
+}
+
+export async function moveTabsToEnd(movedTabs) {
+  if (movedTabs.length === 0)
+    return;
+  const tab       = movedTabs[0];
   const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab) : Tabs.getUnpinnedTabs(tab);
   const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
   if (otherTabs.length > 0)
-    moveTabsWithStructure(movedTabs, {
+    await moveTabsWithStructure(movedTabs, {
       insertAfter: otherTabs[otherTabs.length-1],
       broadcast:   true
     });
+  return true;
 }
 
 export async function openTabInWindow(tab, options = {}) {

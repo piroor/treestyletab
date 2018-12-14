@@ -656,7 +656,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_TO_START:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.reverse().map(tab => Commands.moveTabToStart(tab, { multiselected: false })));
+        const results = await Commands.moveTabsToStart(tabs);
         return TSTAPI.formatResult(results, message);
       })();
 
@@ -670,7 +670,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_TO_END:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.reverse().map(tab => Commands.moveTabToEnd(tab, { multiselected: false })));
+        const results = await Commands.moveTabsToEnd(tabs);
         return TSTAPI.formatResult(results, message);
       })();
 
