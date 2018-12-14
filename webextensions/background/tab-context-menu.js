@@ -523,6 +523,7 @@ async function onClick(info, contextApiTab) {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       browser.tabs.highlight({
         windowId: contextWindowId,
+        populate: false,
         tabs: apiTabs.map(tab => tab.index)
       });
     }; break;
