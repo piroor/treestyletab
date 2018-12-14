@@ -649,6 +649,8 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
     const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTabOrTabs);
     sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTabOrTabs) : [sourceTabOrTabs];
   }
+  if (sourceTabs.length === 0)
+    return [];
   const tabs = await TabsOpen.openURIsInTabs(sourceTabs.map(tab => tab.apiTab.url), {
     isOrphan: true,
     windowId: sourceTabs[0].apiTab.windowId,
