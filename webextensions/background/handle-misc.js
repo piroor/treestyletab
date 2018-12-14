@@ -653,10 +653,24 @@ function onMessageExternal(message, sender) {
         return TSTAPI.formatResult(results, message);
       })();
 
+    case TSTAPI.kMOVE_TO_START:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const results = await Promise.all(tabs.reverse().map(tab => Commands.moveTabToStart(tab, { multiselected: false })));
+        return TSTAPI.formatResult(results, message);
+      })();
+
     case TSTAPI.kMOVE_DOWN:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const results = await Promise.all(tabs.map(tab => Commands.moveDown(tab, message)));
+        return TSTAPI.formatResult(results, message);
+      })();
+
+    case TSTAPI.kMOVE_TO_END:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const results = await Promise.all(tabs.reverse().map(tab => Commands.moveTabToEnd(tab, { multiselected: false })));
         return TSTAPI.formatResult(results, message);
       })();
 
