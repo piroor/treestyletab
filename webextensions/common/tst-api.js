@@ -542,6 +542,11 @@ async function getTabsFromWrongIds(aIds, sender) {
       case 'sendertab':
         if (sender.tab)
           return sender.tab;
+      case 'highlighted':
+      case 'multiselected': {
+        const tabs = tabsInActiveWindow.filter(tab => tab.highlighted);
+        return tabs.map(tab => TabIdFixer.fixTab(tab));
+      }
       default:
         const tabFromUniqueId = Tabs.getTabByUniqueId(id);
         return tabFromUniqueId || id;
