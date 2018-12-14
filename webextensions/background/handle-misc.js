@@ -722,6 +722,15 @@ function onMessageExternal(message, sender) {
         return groupTab.apiTab;
       })();
 
+    case TSTAPI.kOPEN_IN_NEW_WINDOW:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const windowId = await Commands.openTabsInWindow(tabs, {
+          multiselected: false
+        });
+        return windowId;
+      })();
+
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);

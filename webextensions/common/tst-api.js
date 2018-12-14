@@ -90,6 +90,7 @@ export const kMOVE_TO_END           = 'move-to-end';
 export const kFOCUS                 = 'focus';
 export const kDUPLICATE             = 'duplicate';
 export const kGROUP_TABS            = 'group-tabs';
+export const kOPEN_IN_NEW_WINDOW    = 'open-in-new-window';
 export const kGET_TREE_STRUCTURE    = 'get-tree-structure';
 export const kSET_TREE_STRUCTURE    = 'set-tree-structure';
 export const kCOLLAPSE_TREE         = 'collapse-tree';

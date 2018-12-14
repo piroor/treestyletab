@@ -563,14 +563,20 @@ export function moveTabToEnd(tab, options = {}) {
 
 export async function openTabInWindow(tab, options = {}) {
   if (options.multiselected !== false && Tabs.isMultiselected(tab)) {
-    Tree.openNewWindowFromTabs(Tabs.getSelectedTabs(tab));
+    return openTabsInWindow(Tabs.getSelectedTabs(tab));
   }
   else {
-    await browser.windows.create({
+    const window = await browser.windows.create({
       tabId:     tab.apiTab.id,
       incognito: tab.apiTab.incognito
     });
+    return window.id;
   }
+}
+
+export async function openTabsInWindow(tabs) {
+  const movedTabs = await Tree.openNewWindowFromTabs(tabs);
+  return movedTabs[0].apiTab.windowId;
 }
 
 export async function bookmarkTab(tab, options = {}) {
