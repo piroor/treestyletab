@@ -87,6 +87,10 @@
         "message": "滚动标签页画面到底部",
         "hash": "025d1f54e7f530046d46445384cc6a94"
     },
+    "command_groupSelectedTabs": {
+        "message": "为选中标签页创建新组",
+        "hash": "90a2b9f0d172cd3b0f9e2353c6287fe7"
+    },
     "tab_closebox_tab_tooltip": {
         "message": "关闭标签页",
         "hash": "d1f1cd1622da31c005a894c0637d041f"
@@ -363,6 +367,10 @@
     "context_bookmarkTree_label": {
         "message": "将此树加入书签(&B)…",
         "hash": "3ebdc5bea63419b433495f0e2468a70f"
+    },
+    "context_groupTabs_label": {
+        "message": "创建新组(&G)",
+        "hash": "e21f9144d4903adf990ecfe83b197bb0"
     },
     "config_appearance_caption": {
         "message": "外观",

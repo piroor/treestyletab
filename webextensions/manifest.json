@@ -124,6 +124,9 @@
     "newContainerTab": {
       "description": "__MSG_tabbar_newTabWithContexualIdentity_tooltip__"
     },
+    "groupSelectedTabs": {
+      "description": "__MSG_command_groupSelectedTabs__"
+    },
     "indent": {
       "description": "__MSG_command_indent__"
     },

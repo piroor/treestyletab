@@ -95,6 +95,7 @@ async function onShortcutCommand(command) {
     active:        true,
     currentWindow: true
   }))[0]);
+  const selectedTabs = Tabs.isMultiselected(activeTab) ? Tabs.getSelectedTabs(activeTab) : [];
 
   switch (command) {
     case '_execute_browser_action':
@@ -157,10 +158,16 @@ async function onShortcutCommand(command) {
       return;
 
     case 'newContainerTab':
-      return browser.runtime.sendMessage({
+      browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
         windowId: activeTab.apiTab.windowId
       });
+      return;
+
+    case 'groupSelectedTabs':
+      if (selectedTabs.length > 1)
+        TabsGroup.groupTabs(selectedTabs, { broadcast: true });
+      return;
 
     case 'indent':
       Commands.indent(activeTab, { followChildren: true });

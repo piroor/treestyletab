@@ -23,6 +23,7 @@
   "command_tabbarDown":            { "message": "タブの一覧を1行下にスクロール" },
   "command_tabbarPageDown":        { "message": "タブの一覧を1ページ下にスクロール" },
   "command_tabbarEnd":             { "message": "タブの一覧を末尾までスクロール" },
+  "command_groupSelectedTabs":     { "message": "選択中のタブを新しいグループにする" },
 
   "tab_closebox_tab_tooltip": { "message": "タブを閉じる" },
   "tab_closebox_tab_tooltip_multiselected": { "message": "選択されたタブを閉じる" },
@@ -171,6 +172,7 @@
   "context_expandTree_label": { "message": "このツリーを展開(&A)" },
   "context_expandAll_label": { "message": "すべてのツリーを展開(&X)" },
   "context_bookmarkTree_label": { "message": "このツリーをブックマーク(&B)..." },
+  "context_groupTabs_label": { "message": "これらのタブを新しいグループにする(&G)" },
   "context_topLevel_prefix": { "message": "トップレベルの項目: " },
 
 

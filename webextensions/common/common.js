@@ -61,6 +61,7 @@ export const configs = new Configs({
   context_expandTree: false,
   context_expandAll: true,
   context_bookmarkTree: true,
+  context_groupTabs: true,
 
   context_closeTabOptions_closeTree: false,
   context_closeTabOptions_closeDescendants: false,

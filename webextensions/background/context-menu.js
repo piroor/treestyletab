@@ -11,6 +11,7 @@ import {
 } from '/common/common.js';
 
 import * as Tabs from '/common/tabs.js';
+import * as TabsGroup from '/common/tabs-group.js';
 import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as TabContextMenu from './tab-context-menu.js';
@@ -64,6 +65,10 @@ const mContextMenuItemsById = {
   },
   'bookmarkTree': {
     title: browser.i18n.getMessage(`context_bookmarkTree_label`)
+  },
+  'groupTabs': {
+    title: browser.i18n.getMessage(`context_groupTabs_label`),
+    requireMultiselected: true
   },
   'separatorAfterBookmark': {
     type: 'separator'
@@ -194,6 +199,7 @@ export const onClick = (info, apiTab) => {
   log('context menu item clicked: ', info, apiTab);
 
   const contextTab = Tabs.getTabById(apiTab);
+  const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
 
   switch (info.menuItemId) {
     case 'reloadTree':
@@ -230,6 +236,11 @@ export const onClick = (info, apiTab) => {
       Commands.bookmarkTree(contextTab);
       break;
 
+    case 'groupTabs':
+      if (selectedTabs.length > 1)
+        TabsGroup.groupTabs(selectedTabs, { broadcast: true });
+      break;
+
     case 'collapsed':
       if (info.wasChecked)
         Commands.expandTree(contextTab);
@@ -261,13 +272,13 @@ function onShown(info, tab) {
   tab = tab && Tabs.getTabById(tab.id);
   const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
   const hasChild = Tabs.hasChildTabs(tab);
+  const multiselected = Tabs.isMultiselected(tab);
 
   let updated = false;
   for (const item of mContextMenuItems) {
-    if (!item.requireTree)
-      continue;
-
-    let newEnabled = hasChild;
+    let newEnabled;
+    if (item.requireTree) {
+    newEnabled = hasChild;
     switch (item.id) {
       case 'collapseTree':
         if (subtreeCollapsed)
@@ -277,6 +288,13 @@ function onShown(info, tab) {
         if (!subtreeCollapsed)
           newEnabled = false;
         break;
+    }
+    }
+    else if (item.requireMultiselected) {
+      newEnabled = multiselected;
+    }
+    else {
+      continue;
     }
 
     if (newEnabled == !!item.enabled)
