@@ -62,19 +62,22 @@ function logUpdated(...args) {
 
 export function startListen() {
   const targetWindow = Tabs.getWindow();
-  
+
   browser.tabs.onActivated.addListener(onActivated);
-  
+
   let hasOnUpdated = false;
   try {
     if (typeof targetWindow === 'number') {
       browser.tabs.onUpdated.addListener(onUpdated, { windowId: targetWindow });
       hasOnUpdated = true;
     }
-  } catch (error) { /* browser.tabs.onUpdated filter not supported (Firefox 60 or earlier) */ }
+  }
+  catch (_error) {
+    /* browser.tabs.onUpdated filter not supported (Firefox 60 or earlier) */
+  }
   if (!hasOnUpdated)
     browser.tabs.onUpdated.addListener(onUpdated);
-  
+
   browser.tabs.onHighlighted.addListener(onHighlighted);
   browser.tabs.onCreated.addListener(onCreated);
   browser.tabs.onRemoved.addListener(onRemoved);
