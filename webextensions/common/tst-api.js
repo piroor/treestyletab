@@ -552,7 +552,7 @@ async function getTabsFromWrongIds(aIds, sender) {
         return tabFromUniqueId || id;
     }
   }));
-  return tabOrAPITabOrIds.map(Tabs.getTabById).filter(tab => !!tab);
+  return tabOrAPITabOrIds.flat().map(Tabs.getTabById).filter(tab => !!tab);
 }
 
 export function formatResult(results, originalMessage) {
