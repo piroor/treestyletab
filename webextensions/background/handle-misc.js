@@ -656,8 +656,8 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_TO_START:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Commands.moveTabsToStart(tabs);
-        return TSTAPI.formatResult(results, message);
+        await Commands.moveTabsToStart(tabs);
+        return true;
       })();
 
     case TSTAPI.kMOVE_DOWN:
@@ -670,8 +670,8 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kMOVE_TO_END:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Commands.moveTabsToEnd(tabs);
-        return TSTAPI.formatResult(results, message);
+        await Commands.moveTabsToEnd(tabs);
+        return true;
       })();
 
     case TSTAPI.kFOCUS:
