@@ -23,6 +23,7 @@
    * Add ability to change settings of TST from the context menu on the toolbar button.
    * Suppress errors from blank context menu.
    * Add new APIs for other addons: `move-to-start`, `move-to-end`, `open-in-new-window` and `reopen-in-container`. They will help you to implement imitated tab context menu compatible to TST.
+   * Add new aliases `highlighted` and `multiselected` to specify tabs via APIs (available only on Firefox 63 and later.)
    * The `as` option of the `duplicate` API respects TST's configuration about duplicated tabs by default.
    * Some APIs now return window's id as `windowId`. For backward compatibility `window` is still available for those APIs.
  - 2.6.8 (2018.11.5)
