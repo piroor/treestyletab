@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mkdir -p "$(dirname "$0")"/resources/icons
 cd "$(dirname "$0")"/resources/icons
 
 mkdir -p contextual-identities
