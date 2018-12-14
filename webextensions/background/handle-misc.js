@@ -7,7 +7,8 @@
 
 import {
   log as internalLogger,
-  wait
+  wait,
+  configs
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -673,7 +674,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kDUPLICATE:
       return (async () => {
         const tabs   = await TSTAPI.getTargetTabs(message, sender);
-        let behavior = Constants.kNEWTAB_OPEN_AS_ORPHAN;
+        let behavior = configs.autoAttachOnDuplicated;
         switch (String(message.as || 'sibling').toLowerCase()) {
           case 'child':
             behavior = Constants.kNEWTAB_OPEN_AS_CHILD;
@@ -684,19 +685,17 @@ function onMessageExternal(message, sender) {
           case 'nextsibling':
             behavior = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
             break;
+          case 'orphan':
+            behavior = Constants.kNEWTAB_OPEN_AS_ORPHAN;
+            break;
           default:
             break;
         }
         for (const tab of tabs) {
-          const duplicatedTabs = await Tree.moveTabs([tab], {
-            duplicate:           true,
+          await Commands.duplicateTab(tab, {
             destinationWindowId: tab.apiTab.windowId,
-            insertAfter:         tab
-          });
-          await Tree.behaveAutoAttachedTab(duplicatedTabs[0], {
-            broadcast: true,
-            baseTab:   tab,
-            behavior
+            behavior,
+            multiselected: false
           });
         }
         return TSTAPI.formatResult(tabs.map(() => true), message);
