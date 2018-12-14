@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.0 (2018.12.14)
    * Add "Group Tabs" context menu item and keyboard shortcut command. They are moved from "Multiple Tab Handler".
    * Better performance around multiselection of large number of tabs.
    * Redune needlessly duplicated separator in the context menu on Firefox 64 and later.
