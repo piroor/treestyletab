@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.7.1 (2018.12.15)
+   * More optimization around tracking of tab updates and highlighitings (by Lej77, thanks!)
  - 2.7.0 (2018.12.14)
    * Add "Group Tabs" context menu item and keyboard shortcut command. They are moved from "Multiple Tab Handler".
    * Better performance around multiselection of large number of tabs.
