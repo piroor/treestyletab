@@ -93,6 +93,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       browser.tabs.highlight({
         windowId: tab.apiTab.windowId,
+        populate: false,
         tabs:     Array.from(highlightedTabIds).map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index)
       });
     }
@@ -145,6 +146,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       browser.tabs.highlight({
         windowId: tab.apiTab.windowId,
+        populate: false,
         tabs:     Array.from(highlightedTabIds).map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index)
       });
     }
