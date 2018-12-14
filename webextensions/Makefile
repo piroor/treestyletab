@@ -24,6 +24,7 @@ update_extlib:
 	cd .. && git submodule update --init
 
 install_extlib:
+	rm -f $(EXTERNAL_LIB_DIR)/*.js
 	cp ../submodules/webextensions-lib-event-listener-manager/EventListenerManager.js $(EXTERNAL_LIB_DIR)/
 	cp ../submodules/webextensions-lib-tab-id-fixer/TabIdFixer.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabIdFixer;' >> $(EXTERNAL_LIB_DIR)/TabIdFixer.js
 	cp ../submodules/webextensions-lib-tab-favicon-helper/TabFavIconHelper.js $(EXTERNAL_LIB_DIR)/; echo 'export default TabFavIconHelper;' >> $(EXTERNAL_LIB_DIR)/TabFavIconHelper.js
