@@ -731,6 +731,13 @@ function onMessageExternal(message, sender) {
         return windowId;
       })();
 
+    case TSTAPI.kREOPEN_IN_CONTAINER:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const reopenedTabs = await Commands.reopenInContainer(tabs, message.containerId || 'firefox-default');
+        return TSTAPI.formatResult(reopenedTabs.map(tab => tab.apiTab), message);
+      })();
+
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);

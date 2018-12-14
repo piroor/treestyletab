@@ -628,17 +628,24 @@ export async function bookmarkTabs(tabs) {
   }
 }
 
-export async function reopenInContainer(sourceTab, cookieStoreId, options = {}) {
-  const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTab);
-  const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab) : [sourceTab];
+export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options = {}) {
+  let sourceTabs;
+  if (Array.isArray(sourceTabOrTabs)) {
+    sourceTabs = sourceTabOrTabs;
+  }
+  else {
+    const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTabOrTabs);
+    sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTabOrTabs) : [sourceTabOrTabs];
+  }
   const tabs = await TabsOpen.openURIsInTabs(sourceTabs.map(tab => tab.apiTab.url), {
     isOrphan: true,
-    windowId: sourceTab.apiTab.windowId,
+    windowId: sourceTabs[0].apiTab.windowId,
     cookieStoreId
   });
-  return Tree.behaveAutoAttachedTabs(tabs, {
+  await Tree.behaveAutoAttachedTabs(tabs, {
     baseTabs:  sourceTabs,
     behavior:  configs.autoAttachOnDuplicated,
     broadcast: true
   });
+  return tabs;
 }
