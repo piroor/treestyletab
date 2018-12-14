@@ -507,7 +507,9 @@ async function onClick(info, contextApiTab) {
       }
       break;
     case 'context_duplicateTab':
-      Commands.duplicateTab(contextTabElement, contextWindowId);
+      Commands.duplicateTab(contextTabElement, {
+        destinationWindowId: contextWindowId
+      });
       break;
     case 'context_moveTabToStart':
       Commands.moveTabToStart(contextTabElement);
