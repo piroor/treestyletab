@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Add "Group Tabs" context menu item and keyboard shortcut command. They are moved from "Multiple Tab Handler".
    * Better performance around multiselection of large number of tabs.
    * Redune needlessly duplicated separator in the context menu on Firefox 64 and later.
    * Reduce unexpected focusing to the next/previous when the current tab is closed, on Firefox 65 and later.
@@ -21,6 +22,9 @@
    * Follow to changes of tab context menu introduced by the [bug 1502083](https://bugzilla.mozilla.org/show_bug.cgi?id=1502083).
    * Add ability to change settings of TST from the context menu on the toolbar button.
    * Suppress errors from blank context menu.
+   * Add new APIs for other addons: `move-to-start`, `move-to-end`, `open-in-new-window` and `reopen-in-container`. They will help you to implement imitated tab context menu compatible to TST.
+   * The `as` option of the `duplicate` API respects TST's configuration about duplicated tabs by default.
+   * Some APIs now return window's id as `windowId`. For backward compatibility `window` is still available for those APIs.
  - 2.6.8 (2018.11.5)
    * Add ability to append "Close Tree" and similar items to the "Close Tab Options" submenu on the sidebar.
    * Hide needless "Tree Style Tab" item in the tab context menu if all items are deactivated.
