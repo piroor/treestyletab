@@ -28,7 +28,8 @@ function log(...args) {
 Tabs.onCreated.addListener((tab, info = {}) => {
   if (info.duplicated ||
       info.restored ||
-      info.skipFixupTree)
+      info.skipFixupTree ||
+      tab.apiTab.openerTabId)
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.openedWithPosition &&
