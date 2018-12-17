@@ -29,7 +29,9 @@ Tabs.onCreated.addListener((tab, info = {}) => {
   if (info.duplicated ||
       info.restored ||
       info.skipFixupTree ||
-      tab.apiTab.openerTabId)
+      // do nothing for already attached tabs
+      (tab.apiTab.openerTabId &&
+       Tabs.getParentTab(tab) == Tabs.getTabById(tab.apiTab.openerTabId)))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.openedWithPosition &&
