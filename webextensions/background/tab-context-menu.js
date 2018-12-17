@@ -231,9 +231,6 @@ function updateContextualIdentities() {
 
   ContextualIdentities.forEach(identity => {
     const id = `context_reopenInContainer:${identity.cookieStoreId}`;
-    const icon = identity.icon && identity.color ?
-      `/resources/icons/contextual-identities/${identity.icon}.svg#${identity.color}` :
-      identity.iconUrl;
     const item = {
       parentId: 'context_reopenInContainer',
       id:       id,
@@ -242,8 +239,8 @@ function updateContextualIdentities() {
       viewTypes: ['sidebar'],
       documentUrlPatterns: SIDEBAR_URL_PATTERN
     };
-    if (icon)
-      item.icons = { 16: icon };
+    if (identity.iconUrl)
+      item.icons = { 16: identity.iconUrl };
     if (mNativeContextMenuAvailable)
       browser.menus.create(item);
     onExternalMessage({

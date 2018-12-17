@@ -332,7 +332,6 @@ function updateContextualIdentitiesSelector() {
     item.dataset.value = identity.cookieStoreId;
     item.textContent = identity.name;
     item.dataset.icon = identity.iconUrl;
-    item.dataset.iconColor = identity.colorCode || 'var(--tab-text)';
     fragment.appendChild(item);
   });
   if (configs.inheritContextualIdentityToNewChildTab) {

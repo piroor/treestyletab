@@ -53,15 +53,21 @@ export async function init() {
     return;
   const identities = await browser.contextualIdentities.query({});
   for (const identity of identities) {
-    mContextualIdentities.set(identity.cookieStoreId, identity);
+    mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   }
+}
+
+function fixupIcon(identity) {
+  if (identity.icon && identity.color)
+    identity.iconUrl = `/resources/icons/contextual-identities/${identity.icon}.svg#${identity.color}`;
+  return identity;
 }
 
 export const onUpdated = new EventListenerManager();
 
 function onContextualIdentityCreated(createdInfo) {
   const identity = createdInfo.contextualIdentity;
-  mContextualIdentities.set(identity.cookieStoreId, identity);
+  mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   onUpdated.dispatch();
 }
 
@@ -73,6 +79,6 @@ function onContextualIdentityRemoved(removedInfo) {
 
 function onContextualIdentityUpdated(updatedInfo) {
   const identity = updatedInfo.contextualIdentity;
-  mContextualIdentities.set(identity.cookieStoreId, identity);
+  mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   onUpdated.dispatch();
 }

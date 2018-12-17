@@ -577,9 +577,8 @@ ul {
   margin: 0.125em;
 }
 
-#contextual-identities-selector .icon {
-  margin-right: 0.2em;
-  position: static;
+#contextual-identities-selector li {
+  padding-left: calc(var(--favicon-size) + 0.2em);
 }
 
 
