@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Show colored icons for container selector on the new tab button again with Firefox 66 and later.
+   * Opened new tab from non-last tab were not attached to the opener tab unexlectedly. (regression on 2.7.0)
  - 2.7.1 (2018.12.15)
    * More optimization around tracking of tab updates and highlighitings (by Lej77, thanks!)
  - 2.7.0 (2018.12.14)
