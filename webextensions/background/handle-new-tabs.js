@@ -46,7 +46,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
            See also: https://github.com/piroor/treestyletab/issues/2054 */
         !Tabs.getNextTab(tab)) {
       if (Tabs.isNewTabCommandTab(tab)) {
-        if (!info.maybeOpenedWithPosition) {
+        if (!info.positionedBySelf) {
           log('behave as a tab opened by new tab command');
           return handleNewTabFromActiveTab(tab, {
             activeTab:                 possibleOpenerTab,
@@ -65,7 +65,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
     return true;
   }
 
-  log(`opener: ${dumpTab(opener)}, info.maybeOpenedWithPosition = ${info.maybeOpenedWithPosition}`);
+  log(`opener: ${dumpTab(opener)}, positionedBySelf = ${info.positionedBySelf}`);
   if (Tabs.isPinned(opener) &&
       opener.parentNode == tab.parentNode) {
     if (configs.autoGroupNewTabsFromPinned) {
@@ -82,7 +82,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
     return Tree.behaveAutoAttachedTab(tab, {
       baseTab:   opener,
       behavior:  configs.autoAttachOnOpenedWithOwner,
-      dontMove:  info.maybeOpenedWithPosition,
+      dontMove:  info.positionedBySelf,
       broadcast: true
     }).then(moved => !moved);
   }
@@ -130,7 +130,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
     Tree.behaveAutoAttachedTab(tab, {
       baseTab:   original,
       behavior:  configs.autoAttachOnDuplicated,
-      dontMove:  info.openedWithPosition,
+      dontMove:  info.positionedBySelf,
       broadcast: true
     });
   }

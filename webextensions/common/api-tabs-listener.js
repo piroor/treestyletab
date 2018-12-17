@@ -339,13 +339,13 @@ async function onNewTabTracked(tab) {
   log(`onNewTabTracked(id=${tab.id}): `, tab);
 
   const container = getOrBuildTabsContainer(tab.windowId);
-  const openedWithPosition   = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
+  const positionedBySelf     = parseInt(container.dataset.toBeOpenedTabsWithPositions) > 0;
   const duplicatedInternally = parseInt(container.dataset.duplicatingTabsCount) > 0;
   const maybeOrphan          = parseInt(container.dataset.toBeOpenedOrphanTabs) > 0;
   const activeTab            = Tabs.getCurrentTab(container);
 
   Tabs.onBeforeCreate.dispatch(tab, {
-    maybeOpenedWithPosition: openedWithPosition,
+    positionedBySelf,
     maybeOrphan,
     activeTab
   });
@@ -386,7 +386,7 @@ async function onNewTabTracked(tab) {
     // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
     const treeForActionDetection = Tabs.snapshotTreeForActionDetection(newTab);
 
-    if (openedWithPosition)
+    if (positionedBySelf)
       TabsContainer.decrementCounter(container, 'toBeOpenedTabsWithPositions');
     if (maybeOrphan)
       TabsContainer.decrementCounter(container, 'toBeOpenedOrphanTabs');
@@ -428,7 +428,7 @@ async function onNewTabTracked(tab) {
     }
 
     let moved = Tabs.onCreating.dispatch(newTab, {
-      maybeOpenedWithPosition: openedWithPosition,
+      positionedBySelf,
       maybeOrphan,
       restored,
       duplicated,
@@ -458,7 +458,7 @@ async function onNewTabTracked(tab) {
     log(`onNewTabTracked(id=${tab.id}): uniqueId = `, uniqueId);
 
     Tabs.onCreated.dispatch(newTab, {
-      openedWithPosition: openedWithPosition || moved,
+      positionedBySelf: positionedBySelf || moved,
       skipFixupTree: !nextTab,
       restored,
       duplicated,

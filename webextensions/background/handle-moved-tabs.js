@@ -34,7 +34,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
        Tabs.getParentTab(tab) == Tabs.getTabById(tab.apiTab.openerTabId)))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
-  if (!info.openedWithPosition &&
+  if (!info.positionedBySelf &&
       (Tabs.getNextNormalTab(tab) ||
        Tabs.getPreviousNormalTab(tab) ||
        (info.treeForActionDetection &&
