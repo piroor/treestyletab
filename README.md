@@ -101,23 +101,25 @@ Some Google Chrome extensions also provides similar feature.
 
 ## If you have any request, proposal, or unexpected trouble from bugs?
 
-All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).
+All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyletab/issues). However, there are some frequently **REJECTED** requests/proposals. Let's describe what are important points.
 
-However, there are some frequently **REJECTED** requests/proposals.
-I'm very sorry but this addon is strongly concentrated about "tree of tabs", so features not related to its name are out of purpose.
-Such features won't be added, even if many people love it.
+ * *TST is basically designed to be used as an alternative permanently-shown tab bar, instead of Firefox's native tab bar.*
+   * To avoid users' confusion, TST respects Firefox's built-in behavior and features around the tab bar - tab context menu, gestures, and so on.
+ * And, of course *TST is designed to work with "tree of tabs"*.
+   * TST's tree is designed to work as an extended memory for your brain. To satisfy this concept, TST is designed to guess relation of tabs automatically, from the context.
+   * Better usability around ungrouped flat tabs in a vertical tab bar is out of purpose.
 
-Moreover, basically this is my private project and the prime user is me.
-Of course I'm ready to merge pull requests by any contributor, but I possibly stay it unmerged when it can break my private usecase.
-Then I strongly recommend you to fork this project for your usecase freely.
+Any feature requiest unrelated to these points may be rejected, even if many people love it. Instead of adding more built-in features, I may add [public APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons) and [actually there are some implementations](#addons-extend-tst). If you need any new API, please file API proposals to the issue tracker.
 
 Here is a lis of some major requests which are reported multiple times but I marked them "won't fix".
 Note that some topics are just about "legacy" versions of TST.
 
-### Full support for the non-indented vertical tabs
-
-TST is basically designed to operate tabs as tree nodes, so "flat vertical tabs" is out of purpose.
-Instead there are some "vertical tabs" addons, see the "Similar projects" section.
+ * Full support for the non-indented vertical tabs. I recommend you to use [other addons providing vertical tab bar without tree](#similar-projects) instead.
+ * Full support for the horizontal tab bar. TST is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
+ * Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on. [It is available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)
+ * [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043) or Waterfox. TST is designed for latest release of Mozilla Firefox and Mozilla Firefox ESR, and other applications forked from Firefox are not supported. Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
+ 
+ And more:
 
 ### I don't need automatically organized tree, instead I just want to organize tree by myself
 
@@ -133,21 +135,6 @@ After that TST never attach new tabs to existing tree automatically.
 
 If you want to drag multiple tabs at once to organize tree, [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) will help you.
 
-### Full support for the horizontal tab bar
-
-TST is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
-
-### Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on
-
-[It is available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)
-
-### [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043) or Waterfox
-
-Both Pale Moon and Waterfox are based on old Firefox but TST supports only recent versions of official Firefox.
-Supporting for these forked Firefox means supporting for very old Firefox.
-To keep codes cleaner, I have to remove obsolete codes only for old versions of Firefox.
-
-If you require TST for Pale Moon or Waterfox, sorry but please fork this project and rollback to an old revision which can work on them. Actually, there seems to be [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab).
 
 ### Adding new minor (trivial) options more and more
 
