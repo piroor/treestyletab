@@ -8,7 +8,8 @@
 import {
   log as internalLogger,
   dumpTab,
-  wait
+  wait,
+  configs
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -96,12 +97,20 @@ Tabs.onRemoving.addListener(async (tab, closeInfo = {}) => {
 });
 
 async function tryGrantCloseTab(tab, closeParentBehavior) {
+  log('tryGrantClose: ', { alreadyGranted: configs.grantedRemovingTabIds, closing: tab.apiTab.id });
+  const alreadyGranted = configs.grantedRemovingTabIds.includes(tab.apiTab.id);
+  configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
+  if (alreadyGranted)
+    return true;
+
   const self = tryGrantCloseTab;
 
   self.closingTabIds.push(tab.id);
-  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
+  if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
     self.closingDescendantTabIds = self.closingDescendantTabIds
-      .concat(Tree.getClosingTabsFromParent(tab).map(tab => tab.id));
+      .concat(Tree.getClosingTabsFromParent(tab).map(tab => tab.apiTab.id));
+    self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
+  }
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
   await wait(0);
@@ -110,37 +119,35 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
 
   self.closingTabWasActive = self.closingTabWasActive || Tabs.isActive(tab);
 
-  let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
-    let foundTabs = {};
-    self.closingTabIds = self.closingTabIds
-      .filter(id => !foundTabs[id] && (foundTabs[id] = true)); // uniq
-
-    foundTabs = {};
-    self.closingDescendantTabIds = self.closingDescendantTabIds
-      .filter(id => !foundTabs[id] && (foundTabs[id] = true) && !self.closingTabIds.includes(id));
-
-    shouldRestoreCount = self.closingDescendantTabIds.length;
-    if (shouldRestoreCount > 0) {
-      return Background.confirmToCloseTabs(shouldRestoreCount + 1, {
+    self.closingTabIds = Array.from(new Set(self.closingTabIds));
+    self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds.filter(id => !self.closingTabIds.includes(id))));
+    const allClosingTabs = Array.from(new Set([tab.apiTab.id].concat(self.closingDescendantTabIds)));
+    if (allClosingTabs.length > 0) {
+      log('tryGrantClose: show confirmation for ', allClosingTabs);
+      return Background.confirmToCloseTabs(allClosingTabs, {
         windowId: tab.apiTab.windowId
       });
     }
     return true;
   })
     .then(async (granted) => {
+      // remove the closed tab itself because it is already closed!
+      configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
       if (granted)
         return true;
-      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 });
+      log('tryGrantClose: not granted');
+      const shouldRestoreCount = 1;
+      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount });
       const toBeRestoredTabs = [];
-      for (const session of sessions) {
+      for (const session of sessions.reverse()) {
         if (!session.tab)
           continue;
         toBeRestoredTabs.push(session.tab);
         if (toBeRestoredTabs.length == shouldRestoreCount)
           break;
       }
-      for (const tab of toBeRestoredTabs.reverse()) {
+      for (const tab of toBeRestoredTabs) {
         log('tryGrantClose: Tabrestoring session = ', tab);
         browser.sessions.restore(tab.sessionId);
         const tabs = await Tabs.waitUntilAllTabsAreCreated();

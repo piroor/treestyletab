@@ -104,6 +104,7 @@ export const kSCROLL_UNLOCK         = 'scroll-unlock';
 export const kNOTIFY_SCROLLED       = 'scrolled';
 export const kBLOCK_GROUPING        = 'block-grouping';
 export const kUNBLOCK_GROUPING      = 'unblock-grouping';
+export const kGRANT_REMOVE_TABS     = 'grant-remove-tabs';
 
 export const kCONTEXT_MENU_UPDATED    = 'fake-contextMenu-updated';
 export const kCONTEXT_MENU_GET_ITEMS  = 'fake-contextMenu-get-items';

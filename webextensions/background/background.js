@@ -61,6 +61,7 @@ export async function init() {
 
   Migration.migrateLegacyConfigs();
   Migration.migrateConfigs();
+  configs.grantedRemovingTabIds = []; // clear!
   MetricsData.add('Migration.migrateLegacyConfigs, Migration.migrateConfigs');
 
   updatePanelUrl();
@@ -384,7 +385,11 @@ async function updateSubtreeCollapsed(tab) {
   );
 }
 
-export async function confirmToCloseTabs(count, options = {}) {
+export async function confirmToCloseTabs(apiTabIds, options = {}) {
+  if (!apiTabIds.filter)
+    console.log('???', apiTabIds, new Error().stack);
+  apiTabIds = apiTabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
+  const count = apiTabIds.length;
   if (count <= 1 ||
       !configs.warnOnCloseTabs ||
       Date.now() - configs.lastConfirmedToCloseTabs < 500)
@@ -420,6 +425,8 @@ export async function confirmToCloseTabs(count, options = {}) {
     case 0:
       if (!result.checked)
         configs.warnOnCloseTabs = false;
+      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(apiTabIds)));
+      log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       return true;
     default:
       return false;

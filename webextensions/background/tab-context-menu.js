@@ -553,7 +553,7 @@ async function onClick(info, contextApiTab) {
       }
       const canceled = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        count:    closeAPITabs.length,
+        tabs:     closeAPITabs.map(tab => tab.id),
         windowId: contextWindowId
       })) === false
       if (canceled)
@@ -568,7 +568,7 @@ async function onClick(info, contextApiTab) {
       const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && !keptTabIds.includes(aPITab.id)).map(aPITab => aPITab.id);
       const canceled = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        count:    closeAPITabs.length,
+        tabs:     closeAPITabs.map(tab => tab.id),
         windowId: contextWindowId
       })) === false
       if (canceled)

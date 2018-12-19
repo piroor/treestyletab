@@ -138,6 +138,7 @@ export const configs = new Configs({
   simulateSelectOwnerOnClose: true,
   warnOnCloseTabs: true,
   lastConfirmedToCloseTabs: 0,
+  grantedRemovingTabIds: [],
 
 
   // animation
@@ -278,6 +279,7 @@ export const configs = new Configs({
     scrollbarMode
     narrowScrollbarSize
     lastConfirmedToCloseTabs
+    grantedRemovingTabIds
     subMenuOpenDelay
     subMenuCloseDelay
     minimumIntervalToProcessDragoverEvent

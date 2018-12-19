@@ -49,7 +49,7 @@ export function reloadDescendants(rootTab) {
 
 export async function closeTree(rootTab) {
   const tabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
-  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: rootTab.apiTab.windowId })) === false;
+  const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.apiTab.id), { windowId: rootTab.apiTab.windowId })) === false;
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
@@ -60,7 +60,7 @@ export async function closeTree(rootTab) {
 
 export async function closeDescendants(rootTab) {
   const tabs = Tabs.getDescendantTabs(rootTab);
-  const canceled = (await onTabsClosing.dispatch(tabs.length, { windowId: rootTab.apiTab.windowId })) === false;
+  const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.apiTab.id), { windowId: rootTab.apiTab.windowId })) === false;
   if (canceled)
     return;
   tabs.reverse(); // close bottom to top!
@@ -74,7 +74,7 @@ export async function closeOthers(rootTab) {
   const tabs          = Tabs.getNormalTabs(rootTab); // except pinned or hidden tabs
   tabs.reverse(); // close bottom to top!
   const closeTabs = tabs.filter(tab => !exceptionTabs.includes(tab));
-  const canceled = (await onTabsClosing.dispatch(closeTabs.length, { windowId: rootTab.apiTab.windowId })) === false;
+  const canceled = (await onTabsClosing.dispatch(closeTabs.map(tab => tab.apiTab.id), { windowId: rootTab.apiTab.windowId })) === false;
   if (canceled)
     return;
   for (const tab of closeTabs) {

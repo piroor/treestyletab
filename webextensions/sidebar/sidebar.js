@@ -407,10 +407,13 @@ async function waitUntilBackgroundIsReady() {
 }
 
 
-export async function confirmToCloseTabs(count, _aOptions = {}) {
+export async function confirmToCloseTabs(apiTabIds, _aOptions = {}) {
+  apiTabIds = apiTabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
+  const count = apiTabIds.length;
   if (count <= 1 ||
       !configs.warnOnCloseTabs)
     return true;
+
   const confirm = new RichConfirm({
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
@@ -426,6 +429,8 @@ export async function confirmToCloseTabs(count, _aOptions = {}) {
       if (!result.checked)
         configs.warnOnCloseTabs = false;
       configs.lastConfirmedToCloseTabs = Date.now();
+      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(apiTabIds)));
+      log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       return true;
     default:
       return false;
