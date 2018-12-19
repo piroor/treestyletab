@@ -805,18 +805,33 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   TabsContainer.decrementCounter(container, 'doingIntelligentlyCollapseExpandCount');
 }
 
-export function fixupSubtreeCollapsedState(tab, options = {}) {
+export async function fixupSubtreeCollapsedState(tab, options = {}) {
+  let fixed = false;
   if (!Tabs.hasChildTabs(tab))
-    return false;
-  const childrenCollapsed = Tabs.isCollapsed(Tabs.getFirstChildTab(tab));
+    return fixed;
+  const firstChild = Tabs.getFirstChildTab(tab);
+  const childrenCollapsed = Tabs.isCollapsed(firstChild);
   const collapsedStateMismatched = Tabs.isSubtreeCollapsed(tab) != childrenCollapsed;
-  log('fixupSubtreeCollapsedState: check collapsed state ', { tab: tab.id, collapsedStateMismatched });
-  if (!collapsedStateMismatched)
-    return false;
-  log('fixupSubtreeCollapsedState: set collapsed state ', { tab: tab.id, collapsed: childrenCollapsed });
-  collapseExpandSubtree(tab, Object.assign({}, options, {
-    collapsed: childrenCollapsed
-  }));
+  const nextIsFirstChild = Tabs.getNextTab(tab) == firstChild;
+  log('fixupSubtreeCollapsedState ', {
+    tab: tab.id,
+    childrenCollapsed,
+    collapsedStateMismatched,
+    nextIsFirstChild
+  });
+  if (collapsedStateMismatched) {
+    log(' => set collapsed state');
+    await collapseExpandSubtree(tab, Object.assign({}, options, {
+      collapsed: childrenCollapsed
+    }));
+    fixed = true;
+  }
+  if (!nextIsFirstChild) {
+    log(' => move child tabs');
+    await followDescendantsToMovedRoot(tab, options);
+    fixed = true;
+  }
+  return fixed;
 }
 
 
