@@ -267,4 +267,10 @@ Tabs.onRestored.addListener(tab => {
   reserveToAttachTabFromRestoredInfo(tab, {
     children: true
   });
+  reserveToAttachTabFromRestoredInfo.promisedDone.then(() => {
+    Tree.fixupSubtreeCollapsedState(tab, {
+      justNow:   true,
+      broadcast: true
+    });
+  });
 });

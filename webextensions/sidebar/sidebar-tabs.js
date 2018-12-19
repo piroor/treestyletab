@@ -324,6 +324,14 @@ Tabs.onCreated.addListener((tab, _info) => {
   tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
 });
 
+
+Tabs.onRestored.addListener(tab => {
+  Tree.fixupSubtreeCollapsedState(tab, {
+    justNow:  true,
+    inRemote: true
+  });
+});
+
 Tabs.onRemoving.addListener((_tab, _info) => {
   reserveToUpdateLoadingState();
 });

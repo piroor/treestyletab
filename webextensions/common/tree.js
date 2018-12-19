@@ -805,6 +805,20 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   TabsContainer.decrementCounter(container, 'doingIntelligentlyCollapseExpandCount');
 }
 
+export function fixupSubtreeCollapsedState(tab, options = {}) {
+  if (!Tabs.hasChildTabs(tab))
+    return false;
+  const childrenCollapsed = Tabs.isCollapsed(Tabs.getFirstChildTab(tab));
+  const collapsedStateMismatched = Tabs.isSubtreeCollapsed(tab) != childrenCollapsed;
+  log('fixupSubtreeCollapsedState: check collapsed state ', { tab: tab.id, collapsedStateMismatched });
+  if (!collapsedStateMismatched)
+    return false;
+  log('fixupSubtreeCollapsedState: set collapsed state ', { tab: tab.id, collapsed: childrenCollapsed });
+  collapseExpandSubtree(tab, Object.assign({}, options, {
+    collapsed: childrenCollapsed
+  }));
+}
+
 
 // operate tabs based on tree information
 
