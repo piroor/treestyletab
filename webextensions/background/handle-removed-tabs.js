@@ -119,10 +119,14 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
 
   self.closingTabWasActive = self.closingTabWasActive || Tabs.isActive(tab);
 
+  let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
     self.closingTabIds = Array.from(new Set(self.closingTabIds));
-    self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds.filter(id => !self.closingTabIds.includes(id))));
-    const allClosingTabs = Array.from(new Set([tab.apiTab.id].concat(self.closingDescendantTabIds)));
+    self.closingDescendantTabIds = self.closingDescendantTabIds.filter(id => !self.closingTabIds.includes(id))
+    self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
+    let allClosingTabs = [tab.apiTab.id].concat(self.closingDescendantTabIds);
+    allClosingTabs = Array.from(new Set(allClosingTabs));
+    shouldRestoreCount = self.closingTabIds.length;
     if (allClosingTabs.length > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);
       return Background.confirmToCloseTabs(allClosingTabs, {
@@ -136,18 +140,17 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
       if (granted)
         return true;
-      log('tryGrantClose: not granted');
-      const shouldRestoreCount = 1;
-      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount });
+      log(`tryGrantClose: not granted, restore ${shouldRestoreCount} tabs`);
+      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 });
       const toBeRestoredTabs = [];
-      for (const session of sessions.reverse()) {
+      for (const session of sessions) {
         if (!session.tab)
           continue;
         toBeRestoredTabs.push(session.tab);
         if (toBeRestoredTabs.length == shouldRestoreCount)
           break;
       }
-      for (const tab of toBeRestoredTabs) {
+      for (const tab of toBeRestoredTabs.reverse()) {
         log('tryGrantClose: Tabrestoring session = ', tab);
         browser.sessions.restore(tab.sessionId);
         const tabs = await Tabs.waitUntilAllTabsAreCreated();
