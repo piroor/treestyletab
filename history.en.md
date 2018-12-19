@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.3 (2018.12.20)
    * Better restoration of tree structure for tabs restored by "Undo Close Tab" feature.
    * Don't show confirmation multiple times for a set of closing tabs.
    * Stabilize menu item position for Firefox 64 and later.
