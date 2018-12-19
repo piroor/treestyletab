@@ -25,65 +25,72 @@ const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'fun
 
 const mContextMenuItemsById = {
   'reloadTree': {
-    title: browser.i18n.getMessage(`context_reloadTree_label`)
+    title: browser.i18n.getMessage('context_reloadTree_label')
   },
   'reloadDescendants': {
-    title: browser.i18n.getMessage(`context_reloadDescendants_label`)
+    title: browser.i18n.getMessage('context_reloadDescendants_label')
   },
   'separatorAfterReload': {
     type: 'separator'
   },
   'closeTree': {
-    title: browser.i18n.getMessage(`context_closeTree_label`)
+    title: browser.i18n.getMessage('context_closeTree_label')
   },
   'closeDescendants': {
-    title:       browser.i18n.getMessage(`context_closeDescendants_label`),
+    title:       browser.i18n.getMessage('context_closeDescendants_label'),
     requireTree: true,
   },
   'closeOthers': {
-    title: browser.i18n.getMessage(`context_closeOthers_label`)
+    title: browser.i18n.getMessage('context_closeOthers_label')
   },
   'separatorAfterClose': {
     type: 'separator'
   },
   'collapseTree': {
-    title:       browser.i18n.getMessage(`context_collapseTree_label`),
+    title:       browser.i18n.getMessage('context_collapseTree_label'),
     requireTree: true,
   },
   'collapseAll': {
-    title: browser.i18n.getMessage(`context_collapseAll_label`)
+    title: browser.i18n.getMessage('context_collapseAll_label')
   },
   'expandTree': {
-    title:       browser.i18n.getMessage(`context_expandTree_label`),
+    title:       browser.i18n.getMessage('context_expandTree_label'),
     requireTree: true,
   },
   'expandAll': {
-    title: browser.i18n.getMessage(`context_expandAll_label`)
+    title: browser.i18n.getMessage('context_expandAll_label')
   },
   'separatorAfterCollapseExpand': {
     type: 'separator'
   },
   'bookmarkTree': {
-    title: browser.i18n.getMessage(`context_bookmarkTree_label`)
+    title: browser.i18n.getMessage('context_bookmarkTree_label')
   },
   'groupTabs': {
-    title: browser.i18n.getMessage(`context_groupTabs_label`),
+    title: browser.i18n.getMessage('context_groupTabs_label'),
     requireMultiselected: true
   },
   'separatorAfterBookmark': {
-    type: 'separator'
+    type: 'separator',
+    get hidden() {
+      return !(
+        configs.context_collapsed ||
+        configs.context_pinnedTab ||
+        configs.context_unpinnedTab
+      );
+    }
   },
   'collapsed': {
-    title:       browser.i18n.getMessage(`context_collapsed_label`),
+    title:       browser.i18n.getMessage('context_collapsed_label'),
     requireTree: true,
     type:        'checkbox'
   },
   'pinnedTab': {
-    title: browser.i18n.getMessage(`context_pinnedTab_label`),
+    title: browser.i18n.getMessage('context_pinnedTab_label'),
     type: 'radio'
   },
   'unpinnedTab': {
-    title: browser.i18n.getMessage(`context_unpinnedTab_label`),
+    title: browser.i18n.getMessage('context_unpinnedTab_label'),
     type: 'radio'
   }
 };
@@ -96,19 +103,160 @@ const mContextMenuItems = Object.keys(mContextMenuItemsById).map(id => {
   // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=1320462
   item.titleWithoutAccesskey = item.title && item.title.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
   item.type = item.type || 'normal';
+  item.lastVisible = item.visible = false;
   return item;
 });
 
 const kROOT_ITEM = 'treestyletab';
 
-export async function refreshItems() {
+export function refreshItems() {
+  if (mNativeContextMenuAvailable) {
+    initItems();
+    updateItems();
+  }
+  else {
+    refreshItemsLegacy();
+  }
+}
+
+// for Firefox 63 and later
+let mInitialized = false;
+
+const mSeparator = {
+  id:        `separatprBefore${kROOT_ITEM}`,
+  type:      'separator',
+  contexts:  ['tab'],
+  viewTypes: ['sidebar'],
+  documentUrlPatterns: [`moz-extension://${location.host}/*`],
+  visible:   false
+};
+const manifest = browser.runtime.getManifest();
+const mRootItem = {
+  id:       kROOT_ITEM,
+  type:     'normal',
+  contexts: ['tab'],
+  title:    manifest.name,
+  icons:    manifest.icons,
+  visible:  false
+};
+
+function initItems() {
+  if (mInitialized)
+    return;
+
+  mInitialized = true;
+
+  browser.menus.create(mSeparator);
+  mSeparator.lastVisible = false;
+
+  browser.menus.create(mRootItem);
+  TabContextMenu.onExternalMessage({
+    type: TSTAPI.kCONTEXT_MENU_CREATE,
+    params: mRootItem
+  }, browser.runtime);
+  mRootItem.lastVisible = false;
+
+  for (const item of mContextMenuItems) {
+    const id = item.id;
+    const params = {
+      id,
+      type:     item.type,
+      checked:  item.checked,
+      title:    item.title,
+      contexts: ['tab'],
+      visible:  item.visible
+    };
+    browser.menus.create(params);
+    TabContextMenu.onExternalMessage({
+      type: TSTAPI.kCONTEXT_MENU_CREATE,
+      params
+    }, browser.runtime);
+    const groupedParams = Object.assign({}, params, {
+      id:       `grouped:${id}`,
+      parentId: kROOT_ITEM
+    });
+    browser.menus.create(groupedParams);
+    TabContextMenu.onExternalMessage({
+      type:   TSTAPI.kCONTEXT_MENU_CREATE,
+      params: groupedParams
+    }, browser.runtime);
+  }
+}
+
+function updateItems() {
+  let updated = false;
+  let visibleItemsCount = 0;
+  let visibleNormalItemsCount = 0;
+  for (const item of mContextMenuItems) {
+    const id = item.id;
+    let visible;
+    if (item.type == 'separator') {
+      visible = !item.hidden && visibleNormalItemsCount > 0;
+      visibleNormalItemsCount = 0;
+    }
+    else {
+      visible = !item.hidden && (!(`context_${id}` in configs) || configs[`context_${id}`]);
+      if (visible)
+        visibleNormalItemsCount++;
+    }
+    if (visible)
+      visibleItemsCount++;
+    if (visible == item.lastVisible)
+      continue;
+    browser.menus.update(`grouped:${id}`, { visible });
+    TabContextMenu.onExternalMessage({
+      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
+      params: [`grouped:${id}`, { visible }]
+    }, browser.runtime);
+    item.visible = visible;
+    updated = true;
+  }
+
+  const separatorVisible = visibleItemsCount > 0;
+  if (separatorVisible != mSeparator.lastVisible) {
+    browser.menus.update(mSeparator.id, { visible: separatorVisible });
+    TabContextMenu.onExternalMessage({ type: TSTAPI.kCONTEXT_MENU_UPDATE,
+      params: [mSeparator.id, { visible: separatorVisible }]
+    }, browser.runtime);
+    mSeparator.lastVisible = separatorVisible;
+    updated = true;
+  }
+
+  const grouped = visibleItemsCount > 1;
+  if (grouped != mRootItem.lastVisible) {
+    browser.menus.update(mRootItem.id, { visible: grouped });
+    TabContextMenu.onExternalMessage({
+      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
+      params: [mRootItem.id, { visible: grouped }]
+    }, browser.runtime);
+    mRootItem.lastVisible = grouped;
+    updated = true;
+  }
+
+  for (const item of mContextMenuItems) {
+    const visible = item.visible && !grouped;
+    if (visible == item.lastVisible)
+      continue;
+    browser.menus.update(item.id, { visible });
+    TabContextMenu.onExternalMessage({
+      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
+      params: [item.id, { visible }]
+    }, browser.runtime);
+    item.lastVisible = visible;
+    updated = true;
+  }
+
+  if (updated)
+    browser.menus.refresh();
+}
+
+// for Firefox 62 or olders
+function refreshItemsLegacy() {
   browser.menus.remove(kROOT_ITEM);
   TabContextMenu.onExternalMessage({
-    type: TSTAPI.kCONTEXT_MENU_REMOVE,
+    type:   TSTAPI.kCONTEXT_MENU_REMOVE,
     params: kROOT_ITEM
   }, browser.runtime);
-  if (mNativeContextMenuAvailable)
-    browser.menus.remove(`separatprBefore${kROOT_ITEM}`);
 
   let separatorsCount = 0;
   let normalItemAppeared = false;
@@ -136,7 +284,7 @@ export async function refreshItems() {
       id,
       type:     item.type,
       checked:  item.checked,
-      title:    mNativeContextMenuAvailable ? item.title : item.titleWithoutAccesskey,
+      title:    item.titleWithoutAccesskey,
       contexts: ['tab']
     });
     customItems.push({
@@ -157,16 +305,6 @@ export async function refreshItems() {
   }
   if (items.length == 0)
     return;
-
-  if (mNativeContextMenuAvailable) {
-    browser.menus.create({
-      id:        `separatprBefore${kROOT_ITEM}`,
-      type:      'separator',
-      contexts:  ['tab'],
-      viewTypes: ['sidebar'],
-      documentUrlPatterns: [`moz-extension://${location.host}/*`]
-    });
-  }
 
   const grouped = items.length > 1;
   if (grouped) {
@@ -201,7 +339,7 @@ export const onClick = (info, apiTab) => {
   const contextTab = Tabs.getTabById(apiTab);
   const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
 
-  switch (info.menuItemId) {
+  switch (info.menuItemId.replace(/^grouped:/, '')) {
     case 'reloadTree':
       Commands.reloadTree(contextTab);
       break;
@@ -300,32 +438,43 @@ function onShown(info, tab) {
     if (newEnabled == !!item.enabled)
       continue;
 
-    browser.menus.update(item.id, {
+    const params = {
       enabled: item.enabled = newEnabled
-    });
+    };
+
+    browser.menus.update(item.id, params);
     TabContextMenu.onExternalMessage({
-      type: TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: [
-        item.id,
-        { enabled: item.enabled }
-      ]
+      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
+      params: [item.id, params]
     }, browser.runtime);
+    if (mNativeContextMenuAvailable) {
+      browser.menus.update(`grouped:${item.id}`, params);
+      TabContextMenu.onExternalMessage({
+        type:   TSTAPI.kCONTEXT_MENU_UPDATE,
+        params: [`grouped:${item.id}`, params]
+      }, browser.runtime);
+    }
     updated = true;
   }
 
   const canExpand = hasChild && subtreeCollapsed;
   if (canExpand != mContextMenuItemsById.collapsed.checked) {
     mContextMenuItemsById.collapsed.checked = canExpand;
-    browser.menus.update('collapsed', {
+    const params = {
       checked: canExpand
-    });
+    };
+    browser.menus.update('collapsed', params);
     TabContextMenu.onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: [
-        'collapsed',
-        { checked: canExpand }
-      ]
+      params: ['collapsed', params]
     }, browser.runtime);
+    if (mNativeContextMenuAvailable) {
+      browser.menus.update(`grouped:collapsed`, params);
+      TabContextMenu.onExternalMessage({
+        type:   TSTAPI.kCONTEXT_MENU_UPDATE,
+        params: ['grouped:collapsed', params]
+      }, browser.runtime);
+    }
     updated = true;
   }
 
