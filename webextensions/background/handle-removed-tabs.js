@@ -184,6 +184,15 @@ async function closeChildTabs(parent) {
   //fireTabSubtreeClosedEvent(parent, tabs);
 }
 
+Tabs.onRemoved.addListener((tab, _info) => {
+  configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
+});
+
+browser.windows.onRemoved.addListener(windowId  => {
+  const removeTabIds = Tabs.getAllTabs(windowId).map(tab => tab.apiTab.id);
+  configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => !removeTabIds.includes(id));
+});
+
 
 Tabs.onDetached.addListener((tab, info = {}) => {
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
