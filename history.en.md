@@ -1,7 +1,11 @@
 # History
 
  - master/HEAD
-   * 
+   * Better restoration of tree structure for tabs restored by "Undo Close Tab" feature.
+   * Don't show confirmation multiple times for a set of closing tabs.
+   * Stabilize menu item position for Firefox 64 and later.
+   * Add new option to similate `browser.tabs.closeTabByDblclick`=`true` on Firefox 61 and later.
+   * Add new API `grant-to-remove-tabs` to suppress confirmation dialog.
  - 2.7.2 (2018.12.18)
    * Show colored icons for container selector on the new tab button again with Firefox 66 and later.
    * Opened new tab from non-last tab were not attached to the opener tab unexlectedly. (regression on 2.7.0)
