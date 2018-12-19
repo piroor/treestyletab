@@ -109,7 +109,7 @@ export async function loadTreeStructure(restoredFromCacheResults) {
   })));
 }
 
-function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
+async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
   if (reserveToAttachTabFromRestoredInfo.waiting)
     clearTimeout(reserveToAttachTabFromRestoredInfo.waiting);
   reserveToAttachTabFromRestoredInfo.tasks.push({ tab: tab, options: options });
@@ -136,6 +136,7 @@ function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     delete reserveToAttachTabFromRestoredInfo.promisedDone;
     Tabs.dumpAllTabs();
   }, 100);
+  return reserveToAttachTabFromRestoredInfo.promisedDone;
 }
 reserveToAttachTabFromRestoredInfo.waiting = null;
 reserveToAttachTabFromRestoredInfo.tasks   = [];
