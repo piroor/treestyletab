@@ -786,5 +786,13 @@ function onMessageExternal(message, sender) {
         });
         return true;
       })();
+
+    case TSTAPI.kGRANT_TO_REMOVE_TABS:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(tabs.filter(Tabs.ensureLivingTab).map(tab => tab.apiTab.id));
+        configs.grantedRemovingTabIds = Array.from(new Set(grantedRemovingTabIds));
+        return true;
+      })();
   }
 }
