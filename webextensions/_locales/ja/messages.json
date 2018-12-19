@@ -348,6 +348,8 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "ブックマークを" },
   "config_defaultBookmarkParentId_label_after":   { "message": "の中に作成する" },
 
+  "config_simulateCloseTabByDblclick_label": { "message": "ダブルクリックでタブを閉じる（※Firefox組み込みの機能である\"browser.tabs.closeTabByDblclick\"=\"true\"の再現）" },
+
   "config_userStyleRules_label": { "message": "サイドバー内用の追加のスタイル指定" },
   "config_userStyleRules_description_before": { "message": "\u200b" },
   "config_userStyleRules_description_link_label": { "message": "目的別の指定例" },

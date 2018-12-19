@@ -352,6 +352,8 @@
   "config_defaultBookmarkParentId_label_before":  { "message": "Create new bookmarks under" },
   "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
 
+  "config_simulateCloseTabByDblclick_label": { "message": "Close tab by double click (*simulation of Firefox's built-in behavior for \"browser.tabs.closeTabByDblclick\"=\"true\")" },
+
   "config_userStyleRules_label": { "message": "Extra style rules for sidebar contents" },
   "config_userStyleRules_description_before": { "message": "For more options, see " },
   "config_userStyleRules_description_link_label": { "message": "code snippets at TST wiki" },

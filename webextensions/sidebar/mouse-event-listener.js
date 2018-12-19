@@ -525,7 +525,17 @@ function onDblClick(event) {
   log('dblclick tab: ', tab, { living: !!livingTab });
 
   if (livingTab) {
-    if (configs.collapseExpandSubtreeByDblClick) {
+    if (configs.simulateCloseTabByDblclick &&
+        event.button == 0 &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey) {
+      event.stopPropagation();
+      event.preventDefault();
+      TabsInternalOperation.removeTab(livingTab, { inRemote: true });
+    }
+    else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
       event.preventDefault();
       Tree.collapseExpandSubtree(livingTab, {
