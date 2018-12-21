@@ -145,8 +145,7 @@ function getItemPlacementSignature(item) {
   if (item.placementSignature)
     return item.placementSignature;
   return item.placementSignature = JSON.stringify({
-    parentId: item.parentId || '',
-    fakeMenu: item.fakeMenu || ''
+    parentId: item.parentId
   });
 }
 export async function init() {
@@ -502,7 +501,7 @@ async function onShown(info, contextApiTab) {
   updateSeparator('context_separator:afterSendTab') && modifiedItemsCount++;
   updateSeparator('context_separator:afterReloadAll') && modifiedItemsCount++;
   updateSeparator('lastSeparatorBeforeExtraItems', {
-    hasVisibleFollowing: contextApiTab && Array.from(mExtraItems.values()).some(item => item.visible !== false)
+    hasVisibleFollowing: contextApiTab && Array.from(mExtraItems.values()).flat().some(item => !item.parentId && item.visible !== false)
   }) && modifiedItemsCount++;
 
   /* eslint-enable no-unused-expressions */
