@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.4 (2018.12.22)
    * Keep active tab while operations for multiselection.
    * On Firefox ESR60, new tabs opened from links were wrongly placed at the end of the tab bar.
    * Don't show needless separator in the context menu.
