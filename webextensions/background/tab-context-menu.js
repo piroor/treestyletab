@@ -119,10 +119,6 @@ const mItemsById = {
   'lastSeparatorBeforeExtraItems': {
     type:     'separator',
     fakeMenu: true
-  },
-  'groupTabs': {
-    type:     'separator',
-    fakeMenu: true
   }
 };
 
