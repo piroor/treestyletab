@@ -444,9 +444,11 @@ async function onShown(info, contextApiTab) {
 }
 
 async function onClick(info, contextApiTab) {
-  const window            = await browser.windows.getLastFocused({});
+  const window            = await browser.windows.getLastFocused({ populate: true });
   const contextWindowId   = window.id;
   const contextTabElement = Tabs.getTabById(contextApiTab);
+  const activeTab         = window.tabs.find(tab => tab.active);
+  const activeTabElement  = Tabs.getTabById(activeTab);
 
   const isMultiselected   = Tabs.isMultiselected(contextTabElement);
   const multiselectedTabs = isMultiselected && Tabs.getSelectedTabs(contextTabElement);
@@ -526,6 +528,9 @@ async function onClick(info, contextApiTab) {
     }; break;
     case 'context_bookmarkTab':
       Commands.bookmarkTab(contextTabElement);
+      break;
+    case 'context_bookmarkSelected':
+      Commands.bookmarkTab(contextTabElement || activeTabElement);
       break;
     case 'context_bookmarkAllTabs':
       Commands.bookmarkTabs(Tabs.getTabs(contextTabElement));
