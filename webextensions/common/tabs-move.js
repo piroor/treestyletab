@@ -53,6 +53,9 @@ import * as TabsContainer from './tabs-container.js';
 function log(...args) {
   internalLogger('common/tabs-move', ...args);
 }
+function logApiTabs(...args) {
+  internalLogger('common/api-tabs', ...args);
+}
 
 
 // ========================================================
@@ -351,6 +354,10 @@ async function syncTabsPositionToApiTabsInternal() {
       if (fromIndex != toIndex && toIndex > -1) {
         const count = movedTabsCounts.get(apiTab.windowId) || 0;
         movedTabsCounts.set(apiTab.windowId, count + 1);
+        logApiTabs(`tabs-move:syncTabsPositionToApiTabsInternal: browser.tabs.move() `, apiTab.id, {
+          windowId: apiTab.windowId,
+          index:    toIndex
+        });
         await browser.tabs.move(apiTab.id, {
           windowId: apiTab.windowId,
           index:    toIndex

@@ -23,6 +23,9 @@ import * as TreeStructure from './tree-structure.js';
 function log(...args) {
   internalLogger('background/handle-moved-tabs', ...args);
 }
+function logApiTabs(...args) {
+  internalLogger('common/api-tabs', ...args);
+}
 
 
 Tabs.onCreated.addListener((tab, info = {}) => {
@@ -147,6 +150,10 @@ function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
   const container = tab.parentNode;
   TabsContainer.incrementCounter(container, 'internalMovingCount');
+  logApiTabs(`handle-moved-tabs:moveBack: browser.tabs.move() `, tab.apiTab.id, {
+    windowId: moveInfo.windowId,
+    index:    moveInfo.fromIndex
+  });
   return browser.tabs.move(tab.apiTab.id, {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
