@@ -57,6 +57,7 @@ Tabs.onMoving.addListener((tab, moveInfo) => {
   const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
   if (!isNewlyOpenedTab ||
       moveInfo.byInternalOperation ||
+      moveInfo.alreadyMoved ||
       !positionControlled)
     return true;
 

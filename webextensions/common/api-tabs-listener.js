@@ -666,18 +666,20 @@ async function onMoved(tabId, moveInfo) {
       oldPreviousTab = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1];
       oldNextTab     = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex + 1 : moveInfo.fromIndex];
     }
-    const extendedMoveInfo = Object.assign({}, moveInfo, {
-      byInternalOperation,
-      oldPreviousTab,
-      oldNextTab
-    });
-    log('tabs.onMoved: ', dumpTab(movedTab), extendedMoveInfo, movedTab.apiTab);
 
     let alreadyMoved = false;
     if (parseInt(container.dataset.alreadyMovedTabsCount) > 0) {
       TabsContainer.decrementCounter(container, 'alreadyMovedTabsCount');
       alreadyMoved = true;
     }
+
+    const extendedMoveInfo = Object.assign({}, moveInfo, {
+      byInternalOperation,
+      alreadyMoved,
+      oldPreviousTab,
+      oldNextTab
+    });
+    log('tabs.onMoved: ', dumpTab(movedTab), extendedMoveInfo, movedTab.apiTab);
 
     let canceled = Tabs.onMoving.dispatch(movedTab, extendedMoveInfo);
     // don't do await if not needed, to process things synchronously
