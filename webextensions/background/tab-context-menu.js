@@ -450,8 +450,10 @@ async function onClick(info, contextApiTab) {
   const activeTab         = window.tabs.find(tab => tab.active);
   const activeTabElement  = Tabs.getTabById(activeTab);
 
-  const isMultiselected   = Tabs.isMultiselected(contextTabElement);
-  const multiselectedTabs = isMultiselected && Tabs.getSelectedTabs(contextTabElement);
+  let multiselectedTabs = Tabs.getSelectedTabs(contextTabElement || activeTabElement);
+  const isMultiselected = contextTabElement ? Tabs.isMultiselected(contextTabElement) : multiselectedTabs.length > 1;
+  if (!isMultiselected)
+    multiselectedTabs = null;
 
   switch (info.menuItemId) {
     case 'context_reloadTab':
