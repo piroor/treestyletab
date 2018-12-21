@@ -53,9 +53,6 @@ const mItemsById = {
   'context_separator:afterDuplicate': {
     type: 'separator'
   },
-  'context_bookmarkSelected': {
-    title: browser.i18n.getMessage('tabContextMenu_bookmarkSelected_label')
-  },
   'context_selectAllTabs': {
     title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
   },
@@ -116,6 +113,20 @@ const mItemsById = {
     title:              browser.i18n.getMessage('tabContextMenu_close_label'),
     titleMultiselected: browser.i18n.getMessage('tabContextMenu_close_label_multiselected')
   },
+
+  'noContextTab:context_reloadTab': {
+    title: browser.i18n.getMessage('tabContextMenu_reload_label_multiselected')
+  },
+  'noContextTab:context_bookmarkSelected': {
+    title: browser.i18n.getMessage('tabContextMenu_bookmarkSelected_label')
+  },
+  'noContextTab:context_selectAllTabs': {
+    title: browser.i18n.getMessage('tabContextMenu_selectAllTabs_label')
+  },
+  'noContextTab:context_undoCloseTab': {
+    title: browser.i18n.getMessage('tabContextMenu_undoClose_label')
+  },
+
   'lastSeparatorBeforeExtraItems': {
     type:     'separator',
     fakeMenu: true
@@ -363,8 +374,8 @@ async function onShown(info, contextApiTab) {
   /* eslint-disable no-unused-expressions */
 
   updateItem('context_reloadTab', {
-    visible: (contextApiTab || mNativeMultiselectionAvailable),
-    multiselected: multiselected || !contextApiTab
+    visible: contextApiTab,
+    multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
     visible: contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted),
@@ -387,12 +398,9 @@ async function onShown(info, contextApiTab) {
     multiselected
   }) && modifiedItemsCount++;
 
-  updateItem('context_bookmarkSelected', {
-    visible: !contextApiTab && mNativeMultiselectionAvailable
-  }) && modifiedItemsCount++;
   updateItem('context_selectAllTabs', {
-    visible: mNativeMultiselectionAvailable,
-    enabled: !contextApiTab || Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
+    visible: contextApiTab,
+    enabled: contextApiTab && Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
@@ -468,12 +476,26 @@ async function onShown(info, contextApiTab) {
   }
 
   updateItem('context_undoCloseTab', {
-    visible: true,
+    visible: contextApiTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTab', {
     visible: contextApiTab,
     multiselected
+  }) && modifiedItemsCount++;
+
+  updateItem('noContextTab:context_reloadTab', {
+    visible: !contextApiTab
+  }) && modifiedItemsCount++;
+  updateItem('noContextTab:context_bookmarkSelected', {
+    visible: !contextApiTab && mNativeMultiselectionAvailable
+  }) && modifiedItemsCount++;
+  updateItem('noContextTab:context_selectAllTabs', {
+    visible: !contextApiTab,
+    enabled: !contextApiTab && Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length
+  }) && modifiedItemsCount++;
+  updateItem('noContextTab:context_undoCloseTab', {
+    visible: !contextApiTab
   }) && modifiedItemsCount++;
 
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;
@@ -501,7 +523,7 @@ async function onClick(info, contextApiTab) {
   if (!isMultiselected)
     multiselectedTabs = null;
 
-  switch (info.menuItemId) {
+  switch (info.menuItemId.replace(/^noContextTab:/, '')) {
     case 'context_reloadTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
