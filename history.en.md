@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Keep active tab while operations for multiselection.
+   * On Firefox ESR60, new tabs opened from links were wrongly placed at the end of the tab bar.
+   * Don't show needless separator in the context menu.
+   * "Bookmark Selected Tabs" and "Reload Selected Tabs" in the context menu on non-tab area work correcty.
  - 2.7.3 (2018.12.20)
    * Better restoration of tree structure for tabs restored by "Undo Close Tab" feature.
    * Don't show confirmation multiple times for a set of closing tabs.
