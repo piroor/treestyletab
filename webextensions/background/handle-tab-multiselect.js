@@ -91,10 +91,15 @@ export async function updateSelectionByTabClick(tab, event) {
         }
       }
       // for better performance, we should not call browser.tabs.update() for each tab.
+      const indices = Array.from(highlightedTabIds)
+        .filter(apiTabId => apiTabId != activeTab.apiTab.id)
+        .map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index);
+      if (highlightedTabIds.has(activeTab.apiTab.id))
+        indices.unshift(activeTab.apiTab.index);
       browser.tabs.highlight({
         windowId: tab.apiTab.windowId,
         populate: false,
-        tabs:     Array.from(highlightedTabIds).map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index)
+        tabs:     indices
       });
     }
     catch(_e) { // not implemented on old Firefox
@@ -144,10 +149,15 @@ export async function updateSelectionByTabClick(tab, event) {
           highlightedTabIds.delete(tab.apiTab.id);
       }
       // for better performance, we should not call browser.tabs.update() for each tab.
+      const indices = Array.from(highlightedTabIds)
+        .filter(apiTabId => apiTabId != activeTab.apiTab.id)
+        .map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index);
+      if (highlightedTabIds.has(activeTab.apiTab.id))
+        indices.unshift(activeTab.apiTab.index);
       browser.tabs.highlight({
         windowId: tab.apiTab.windowId,
         populate: false,
-        tabs:     Array.from(highlightedTabIds).map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index)
+        tabs:     indices
       });
     }
     catch(_e) { // not implemented on old Firefox
