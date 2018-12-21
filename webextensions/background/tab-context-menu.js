@@ -523,7 +523,7 @@ async function onClick(info, contextApiTab) {
       browser.tabs.highlight({
         windowId: contextWindowId,
         populate: false,
-        tabs: apiTabs.map(tab => tab.index)
+        tabs:     [activeTab.index].concat(apiTabs.filter(tab => !tab.active).map(tab => tab.index))
       });
     }; break;
     case 'context_bookmarkTab':
