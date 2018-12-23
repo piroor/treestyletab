@@ -36,6 +36,18 @@ if (typeof browser.tabs.moveInSuccession == 'function') {
   Tree.onSubtreeCollapsedStateChanging.addListener(onSubtreeCollapsedStateChanging);
 }
 
+function setSuccessor(apiTabId, successorTabId = -1) {
+  if (!configs.moveFocusInTreeForClosedCurrentTab)
+    return;
+  browser.tabs.update(apiTabId, {
+    successorTabId
+  });
+}
+
+function clearSuccessor(apiTabId) {
+  setSuccessor(apiTabId, -1);
+}
+
 
 function update(apiTabId) {
   mTabsToBeUpdated.add(apiTabId);
@@ -68,9 +80,7 @@ async function updateInternal(apiTabId) {
       log('  ${tab.id} is already detached from the owner\'s tree');
       delete tab.lastSuccessorTabIdByOwner;
       delete tab.lastSuccessorTabId;
-      browser.tabs.update(tab.apiTab.id, {
-        successorTabId: -1
-      });
+      clearSuccessor(tab.apiTab.id);
     }
   }
   if (tab.lastSuccessorTabId) {
@@ -87,9 +97,7 @@ async function updateInternal(apiTabId) {
   }
   delete tab.lastSuccessorTabId;
   if (!configs.moveFocusInTreeForClosedCurrentTab) {
-    browser.tabs.update(apiTab.id, {
-      successorTabId: -1
-    });
+    clearSuccessor(apiTab.id);
     return;
   }
   let allowedNextFocusedTab = null;
@@ -106,9 +114,7 @@ async function updateInternal(apiTabId) {
   }
   if (apiTab.active && !allowedNextFocusedTab && nextFocused) {
     log(`  ${tab.id} has its successor ${nextFocused.id}`);
-    browser.tabs.update(apiTab.id, {
-      successorTabId: nextFocused.apiTab.id
-    });
+    setSuccessor(apiTab.id, nextFocused.apiTab.id);
     tab.lastSuccessorTabId = nextFocused.apiTab.id;
   }
   else {
@@ -117,9 +123,7 @@ async function updateInternal(apiTabId) {
       nextFocused:           nextFocused && nextFocused.id,
       allowedNextFocusedTab: allowedNextFocusedTab && allowedNextFocusedTab.id
     });
-    browser.tabs.update(apiTab.id, {
-      successorTabId: -1
-    });
+    clearSuccessor(apiTab.id);
   }
 }
 
@@ -130,9 +134,7 @@ async function tryClearOwnerSuccessor(tab) {
     return;
   log(`${tab.id} is unprepared for "selectOwnerOnClose" behavior`);
   delete tab.lastSuccessorTabId;
-  browser.tabs.update(tab.apiTab.id, {
-    successorTabId: -1
-  });
+  clearSuccessor(tab.apiTab.id);
 }
 
 
@@ -164,9 +166,7 @@ function onCreating(tab, _info = {}) {
       !tab.apiTab.openerTabId)
     return;
   log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${tab.apiTab.openerTabId})`);
-  browser.tabs.update(tab.apiTab.id, {
-    successorTabId: tab.apiTab.openerTabId
-  });
+  setSuccessor(tab.apiTab.id, tab.apiTab.openerTabId);
   tab.lastSuccessorTabId = tab.apiTab.openerTabId;
   tab.lastSuccessorTabIdByOwner = true;
 
