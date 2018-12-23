@@ -96,10 +96,8 @@ async function updateInternal(apiTabId) {
     }
   }
   delete tab.lastSuccessorTabId;
-  if (!configs.moveFocusInTreeForClosedCurrentTab) {
-    clearSuccessor(apiTab.id);
+  if (!configs.moveFocusInTreeForClosedCurrentTab)
     return;
-  }
   let allowedNextFocusedTab = null;
   let nextFocused           = null;
   const parent = Tabs.getParentTab(tab);
