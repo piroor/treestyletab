@@ -184,7 +184,7 @@ function updateItemsVisibility(items, forceVisible = null) {
     if (item.type == 'separator') {
       if (lastSeparator) {
         if (lastSeparator.lastVisible) {
-          updateItem(lastSeparator.id, { visible });
+          updateItem(lastSeparator.id, { visible: false });
           lastSeparator.lastVisible = false;
           updated = true;
         }
