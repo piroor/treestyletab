@@ -180,7 +180,6 @@ function updateItemsVisibility(items, forceVisible = null) {
   let visibleNormalItemsCount = 0;
   let lastSeparator;
   for (const item of items) {
-    let visible;
     if (item.type == 'separator') {
       if (lastSeparator) {
         if (lastSeparator.lastVisible) {
