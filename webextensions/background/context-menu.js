@@ -23,6 +23,8 @@ function log(...args) {
 // Imitation native context menu items depend on https://bugzilla.mozilla.org/show_bug.cgi?id=1280347
 const mNativeContextMenuAvailable = typeof browser.menus.overrideContext == 'function';
 
+const kROOT_ITEM = 'treestyletab';
+
 const mContextMenuItemsById = {
   'reloadTree': {
     title: browser.i18n.getMessage('context_reloadTree_label')
@@ -71,14 +73,7 @@ const mContextMenuItemsById = {
     requireMultiselected: true
   },
   'separatorAfterBookmark': {
-    type: 'separator',
-    get hidden() {
-      return !(
-        configs.context_collapsed ||
-        configs.context_pinnedTab ||
-        configs.context_unpinnedTab
-      );
-    }
+    type: 'separator'
   },
   'collapsed': {
     title:       browser.i18n.getMessage('context_collapsed_label'),
@@ -94,9 +89,12 @@ const mContextMenuItemsById = {
     type: 'radio'
   }
 };
-const mContextMenuItems = Object.keys(mContextMenuItemsById).map(id => {
+const mContextMenuItems = [];
+const mGroupedContextMenuItems = [];
+for (const id of Object.keys(mContextMenuItemsById)) {
   const item = mContextMenuItemsById[id];
   item.id = id;
+  item.configKey = `context_${id}`;
   item.checked = false; // initialize as unchecked
   item.enabled = true;
   // Access key is not supported by WE API.
@@ -104,19 +102,11 @@ const mContextMenuItems = Object.keys(mContextMenuItemsById).map(id => {
   item.titleWithoutAccesskey = item.title && item.title.replace(/\(&[a-z]\)|&([a-z])/i, '$1');
   item.type = item.type || 'normal';
   item.lastVisible = item.visible = false;
-  return item;
-});
-
-const kROOT_ITEM = 'treestyletab';
-
-export function refreshItems() {
-  if (mNativeContextMenuAvailable) {
-    initItems();
-    updateItems();
-  }
-  else {
-    refreshItemsLegacy();
-  }
+  mContextMenuItems.push(item);
+  mGroupedContextMenuItems.push(Object.assign({}, item, {
+    id:       `grouped:${id}`,
+    parentId: kROOT_ITEM
+  }));
 }
 
 // for Firefox 63 and later
@@ -156,7 +146,7 @@ function initItems() {
   }, browser.runtime);
   mRootItem.lastVisible = false;
 
-  for (const item of mContextMenuItems) {
+  for (const item of mContextMenuItems.concat(mGroupedContextMenuItems)) {
     const id = item.id;
     const params = {
       id,
@@ -166,92 +156,104 @@ function initItems() {
       contexts: ['tab'],
       visible:  item.visible
     };
+    if (item.parentId)
+      params.parentId = item.parentId;
     browser.menus.create(params);
     TabContextMenu.onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_CREATE,
       params
     }, browser.runtime);
-    const groupedParams = Object.assign({}, params, {
-      id:       `grouped:${id}`,
-      parentId: kROOT_ITEM
-    });
-    browser.menus.create(groupedParams);
-    TabContextMenu.onExternalMessage({
-      type:   TSTAPI.kCONTEXT_MENU_CREATE,
-      params: groupedParams
-    }, browser.runtime);
   }
+}
+
+function updateItem(id, params) {
+  browser.menus.update(id, params);
+  TabContextMenu.onExternalMessage({
+    type:   TSTAPI.kCONTEXT_MENU_UPDATE,
+    params: [id, params]
+  }, browser.runtime);
+}
+
+function updateItemsVisibility(items, forceVisible = null) {
+  let updated = false;
+  let visibleItemsCount = 0;
+  let visibleNormalItemsCount = 0;
+  let lastSeparator;
+  for (const item of items) {
+    let visible;
+    if (item.type == 'separator') {
+      if (lastSeparator) {
+        if (lastSeparator.lastVisible) {
+          updateItem(lastSeparator.id, { visible });
+          lastSeparator.lastVisible = false;
+          updated = true;
+        }
+      }
+      lastSeparator = item;
+    }
+    else {
+      let visible = !(item.configKey in configs) || configs[item.configKey];
+      if (forceVisible !== null)
+        visible = forceVisible;
+      if (visible) {
+        if (lastSeparator) {
+          updateItem(lastSeparator.id, { visible: visibleNormalItemsCount > 0 });
+          lastSeparator.lastVisible = true;
+          lastSeparator = null;
+          updated = true;
+          visibleNormalItemsCount = 0;
+        }
+        visibleNormalItemsCount++;
+        visibleItemsCount++;
+      }
+      if (visible == item.lastVisible)
+        continue;
+      updateItem(item.id, { visible });
+      item.lastVisible = visible;
+      updated = true;
+    }
+  }
+  if (lastSeparator && lastSeparator.lastVisible) {
+    updateItem(lastSeparator.id, { visible: false });
+    lastSeparator.lastVisible = false;
+    updated = true;
+  }
+  return { updated, visibleItemsCount };
 }
 
 function updateItems() {
   let updated = false;
-  let visibleItemsCount = 0;
-  let visibleNormalItemsCount = 0;
-  for (const item of mContextMenuItems) {
-    const id = item.id;
-    let visible;
-    if (item.type == 'separator') {
-      visible = !item.hidden && visibleNormalItemsCount > 0;
-      visibleNormalItemsCount = 0;
-    }
-    else {
-      visible = !item.hidden && (!(`context_${id}` in configs) || configs[`context_${id}`]);
-      if (visible)
-        visibleNormalItemsCount++;
-    }
-    if (visible)
-      visibleItemsCount++;
-    if (visible == item.lastVisible)
-      continue;
-    browser.menus.update(`grouped:${id}`, { visible });
-    TabContextMenu.onExternalMessage({
-      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: [`grouped:${id}`, { visible }]
-    }, browser.runtime);
-    item.visible = visible;
-    updated = true;
-  }
 
-  const separatorVisible = visibleItemsCount > 0;
+  const groupedItems = updateItemsVisibility(mGroupedContextMenuItems);
+  if (groupedItems.updated)
+    updated = true;
+
+  const separatorVisible = groupedItems.visibleItemsCount > 0;
   if (separatorVisible != mSeparator.lastVisible) {
-    browser.menus.update(mSeparator.id, { visible: separatorVisible });
-    TabContextMenu.onExternalMessage({ type: TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: [mSeparator.id, { visible: separatorVisible }]
-    }, browser.runtime);
+    updateItem(mSeparator.id, { visible: separatorVisible });
     mSeparator.lastVisible = separatorVisible;
     updated = true;
   }
 
-  const grouped = visibleItemsCount > 1;
+  const grouped = groupedItems.visibleItemsCount > 1;
   if (grouped != mRootItem.lastVisible) {
-    browser.menus.update(mRootItem.id, { visible: grouped });
-    TabContextMenu.onExternalMessage({
-      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: [mRootItem.id, { visible: grouped }]
-    }, browser.runtime);
+    updateItem(mRootItem.id, { visible: grouped });
     mRootItem.lastVisible = grouped;
     updated = true;
   }
 
-  for (const item of mContextMenuItems) {
-    const visible = item.visible && !grouped;
-    if (visible == item.lastVisible)
-      continue;
-    browser.menus.update(item.id, { visible });
-    TabContextMenu.onExternalMessage({
-      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: [item.id, { visible }]
-    }, browser.runtime);
-    item.lastVisible = visible;
+  const topLevelItems = updateItemsVisibility(mContextMenuItems, grouped ? false : null);
+  if (topLevelItems.updated)
     updated = true;
-  }
 
-  if (updated)
-    browser.menus.refresh();
+  return updated;
 }
 
 // for Firefox 62 or olders
-function refreshItemsLegacy() {
+export function refreshItems() {
+  if (mNativeContextMenuAvailable)
+    return;
+
   browser.menus.remove(kROOT_ITEM);
   TabContextMenu.onExternalMessage({
     type:   TSTAPI.kCONTEXT_MENU_REMOVE,
@@ -407,12 +409,17 @@ function onShown(info, tab) {
   if (!info.contexts.includes('tab'))
     return;
 
+  let updated = false;
+  if (mNativeContextMenuAvailable) {
+    initItems();
+    updated = updateItems();
+  }
+
   tab = tab && Tabs.getTabById(tab.id);
   const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
   const hasChild = Tabs.hasChildTabs(tab);
   const multiselected = Tabs.isMultiselected(tab);
 
-  let updated = false;
   for (const item of mContextMenuItems) {
     let newEnabled;
     if (item.requireTree) {
@@ -442,18 +449,8 @@ function onShown(info, tab) {
       enabled: item.enabled = newEnabled
     };
 
-    browser.menus.update(item.id, params);
-    TabContextMenu.onExternalMessage({
-      type:   TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: [item.id, params]
-    }, browser.runtime);
-    if (mNativeContextMenuAvailable) {
-      browser.menus.update(`grouped:${item.id}`, params);
-      TabContextMenu.onExternalMessage({
-        type:   TSTAPI.kCONTEXT_MENU_UPDATE,
-        params: [`grouped:${item.id}`, params]
-      }, browser.runtime);
-    }
+    updateItem(item.id, params);
+    updateItem(`grouped:${item.id}`, params);
     updated = true;
   }
 
@@ -463,18 +460,8 @@ function onShown(info, tab) {
     const params = {
       checked: canExpand
     };
-    browser.menus.update('collapsed', params);
-    TabContextMenu.onExternalMessage({
-      type: TSTAPI.kCONTEXT_MENU_UPDATE,
-      params: ['collapsed', params]
-    }, browser.runtime);
-    if (mNativeContextMenuAvailable) {
-      browser.menus.update(`grouped:collapsed`, params);
-      TabContextMenu.onExternalMessage({
-        type:   TSTAPI.kCONTEXT_MENU_UPDATE,
-        params: ['grouped:collapsed', params]
-      }, browser.runtime);
-    }
+    updateItem('collapsed', params);
+    updateItem(`grouped:collapsed`, params);
     updated = true;
   }
 
