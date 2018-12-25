@@ -45,7 +45,6 @@ import {
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
-import * as TabsContainer from './tabs-container.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 

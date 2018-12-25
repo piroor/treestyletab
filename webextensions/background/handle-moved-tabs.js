@@ -14,7 +14,6 @@ import {
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
-import * as TabsContainer from '/common/tabs-container.js';
 import * as Tree from '/common/tree.js';
 import * as Commands from '/common/commands.js';
 

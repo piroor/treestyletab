@@ -48,7 +48,6 @@ import {
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
-import * as TabsContainer from './tabs-container.js';
 
 function log(...args) {
   internalLogger('common/tabs-move', ...args);
