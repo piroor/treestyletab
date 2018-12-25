@@ -701,11 +701,11 @@ async function onMoved(tabId, moveInfo) {
             .map(tab => tab.id+(tab == movedTab ? '[MOVED]' : ''))
             .join('\n')
             .replace(/^/gm, ' - ')));
-      }
-      const startIndex = Math.max(Math.min(moveInfo.fromIndex, moveInfo.toIndex), 0);
-      const endIndex   = Math.min(Math.max(moveInfo.fromIndex, moveInfo.toIndex), tabs.length - 1);
-      for (let i = startIndex; i < endIndex; i++) {
-        tabs[i].apiTab.index = i;
+        const startIndex = Math.max(Math.min(moveInfo.fromIndex, moveInfo.toIndex), 0);
+        const endIndex   = Math.min(Math.max(moveInfo.fromIndex, moveInfo.toIndex), tabs.length - 1);
+        for (let i = startIndex; i < endIndex; i++) {
+          tabs[i].apiTab.index = i;
+        }
       }
       const onMovedResult = Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);
       // don't do await if not needed, to process things synchronously
