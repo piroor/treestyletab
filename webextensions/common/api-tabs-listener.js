@@ -693,7 +693,8 @@ async function onMoved(tabId, moveInfo) {
         newNextIndex++;
       const tabs    = Tabs.getAllTabs(movedTab);
       const nextTab = tabs[newNextIndex];
-      if (!alreadyMoved && movedTab.nextSibling != nextTab) {
+      if (!alreadyMoved &&
+          movedTab.nextSibling != nextTab) {
         container.insertBefore(movedTab, nextTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.slice(container.childNodes)
