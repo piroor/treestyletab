@@ -23,13 +23,27 @@ log.context = 'Options';
 const options = new Options(configs);
 
 function onConfigChanged(key) {
+  const value = configs[key];
   switch (key) {
     case 'debug':
-      if (configs.debug)
+      if (value)
         document.documentElement.classList.add('debugging');
       else
         document.documentElement.classList.remove('debugging');
       break;
+
+    case 'moveFocusInTreeForClosedCurrentTab': {
+      const checkbox = document.getElementById('simulateSelectOwnerOnClose');
+      const label = checkbox.parentNode;
+      if (value) {
+        checkbox.removeAttribute('disabled');
+        label.removeAttribute('disabled');
+      }
+      else {
+        checkbox.setAttribute('disabled', true);
+        label.setAttribute('disabled', true);
+      }
+    }; break;
   }
 }
 
@@ -191,5 +205,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('debug');
+    onConfigChanged('moveFocusInTreeForClosedCurrentTab');
   });
 }, { once: true });
