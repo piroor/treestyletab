@@ -340,7 +340,7 @@ export const onClick = (info, apiTab) => {
   const contextTab = Tabs.getTabById(apiTab);
   const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
 
-  switch (info.menuItemId.replace(/^grouped:/, '')) {
+  switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
     case 'reloadTree':
       Commands.reloadTree(contextTab);
       break;
