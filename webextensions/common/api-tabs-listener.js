@@ -630,7 +630,14 @@ async function onMoved(tabId, moveInfo) {
     return;
 
   const container = getOrBuildTabsContainer(moveInfo.windowId);
-  const byInternalOperation = container.internalMovingTabs.has(tabId);
+
+  // Firefox may move the tab between TabsMove.moveTabsInternallyBefore/After()
+  // and TabsMove.syncTabsPositionToApiTabs(). We should treat such a movement
+  // as an "internal" operation also, because we need to suppress "move back"
+  // and other fixup operations around tabs moved by foreign triggers, on such
+  // cases. Don't mind, the tab will be rearranged again by delayed
+  // TabsMove.syncTabsPositionToApiTabs() anyway!
+  const maybeInternalOperation = container.internalMovingTabs.has(tabId);
 
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilTabsAreCreated(tabId);
@@ -653,7 +660,7 @@ async function onMoved(tabId, moveInfo) {
        do following processes after the tab is completely pinned. */
     const movedTab = Tabs.getTabById({ tab: tabId, window: moveInfo.windowId });
     if (!movedTab) {
-      if (byInternalOperation)
+      if (maybeInternalOperation)
         container.internalMovingTabs.delete(tabId);
       completelyMoved();
       return;
@@ -674,7 +681,7 @@ async function onMoved(tabId, moveInfo) {
     }
 
     const extendedMoveInfo = Object.assign({}, moveInfo, {
-      byInternalOperation,
+      byInternalOperation: maybeInternalOperation,
       alreadyMoved,
       oldPreviousTab,
       oldNextTab
@@ -712,7 +719,7 @@ async function onMoved(tabId, moveInfo) {
       if (onMovedResult instanceof Promise)
         await onMovedResult;
     }
-    if (byInternalOperation)
+    if (maybeInternalOperation)
       container.internalMovingTabs.delete(tabId);
     completelyMoved();
   }
