@@ -288,8 +288,8 @@ Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
       container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-      container.openedNewTabs += `|${apiTab.id}`;
-      container.openedNewTabsOpeners += `|${openerApiTab && openerApiTab.id}`;
+      container.openedNewTabs.push(apiTab.id);
+      container.openedNewTabsOpeners.push(openerApiTab && openerApiTab.id);
     }
   }
   if (container.openedNewTabsTimeout)
@@ -309,18 +309,18 @@ async function onNewTabsTimeout(container) {
   if (Tabs.hasMovingTab())
     await Tabs.waitUntilAllTabsAreMoved();
 
-  const tabIds       = container.openedNewTabs.split('|').filter(part => part != '');
-  const tabOpenerIds = container.openedNewTabsOpeners.split('|').filter(part => part != '');
+  const tabIds       = container.openedNewTabs;
+  const tabOpenerIds = container.openedNewTabsOpeners;
   log('onNewTabsTimeout ', tabIds);
   let tabReferences = tabIds.map((id, index) => {
     return {
-      id:          parseInt(id),
-      openerTabId: parseInt(tabOpenerIds[index])
+      id,
+      openerTabId: tabOpenerIds[index]
     };
   });
 
-  container.openedNewTabs = '';
-  container.openedNewTabsOpeners = '';
+  container.openedNewTabs        = [];
+  container.openedNewTabsOpeners = [];
 
   tabReferences = tabReferences.filter(tabReference => tabReference.id != '');
   if (tabReferences.length == 0 ||

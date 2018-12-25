@@ -107,13 +107,14 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       following to this operation, we need to move tabs immediately.
     */
     const oldIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
+    const beforeAlreadyMovedTabsCount = container.alreadyMovedTabs.size;
     for (const tab of tabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab);
       const oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == referenceTab) // no move case
         continue;
-      container.internalMovingCount++;
-      container.alreadyMovedTabsCount++;
+      container.internalMovingTabs.add(tab.apiTab.id);
+      container.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, referenceTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
@@ -121,7 +122,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
-    if (container.alreadyMovedTabsCount <= 0) {
+    if (container.alreadyMovedTabs.size - beforeAlreadyMovedTabsCount == 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -230,13 +231,14 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     let nextTab = Tabs.getNextTab(referenceTab);
     if (tabs.includes(nextTab))
       nextTab = null;
+    const beforeAlreadyMovedTabsCount = container.alreadyMovedTabs.size;
     for (const tab of tabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab);
       const oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == nextTab) // no move case
         continue;
-      container.internalMovingCount++;
-      container.alreadyMovedTabsCount++;
+      container.internalMovingTabs.add(tab.apiTab.id);
+      container.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, nextTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
@@ -244,7 +246,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
-    if (container.alreadyMovedTabsCount <= 0) {
+    if (container.alreadyMovedTabs.size - beforeAlreadyMovedTabsCount == 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -314,13 +316,14 @@ async function syncTabsPositionToApiTabsInternal() {
   const movedApiTabs = syncTabsPositionToApiTabsInternal.movedApiTabs;
   syncTabsPositionToApiTabsInternal.movedApiTabs = [];
 
-  const uniqueApiTabs       = new Map();
-  const toBeMovedTabsCounts = new Map();
-  const movedTabsCounts     = new Map();
+  const uniqueApiTabs         = new Map();
+  const toBeMovedApiTabIdSets = new Map();
+  const movedApiTabIdSets     = new Map();
   for (const apiTab of movedApiTabs) {
     uniqueApiTabs.set(apiTab.id, apiTab);
-    const count = toBeMovedTabsCounts.get(apiTab.windowId) || 0;
-    toBeMovedTabsCounts.set(apiTab.windowId, count + 1);
+    const toBeMovedSet = toBeMovedApiTabIdSets.get(apiTab.windowId) || new Set();
+    toBeMovedSet.add(apiTab.id);
+    toBeMovedApiTabIdSets.set(apiTab.windowId, toBeMovedSet);
   }
   const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById);
   const apiTabs = tabs.sort(documentPositionComparator).map(tab => tab.apiTab);
@@ -351,8 +354,9 @@ async function syncTabsPositionToApiTabsInternal() {
         movedInfo = ` (before tab ${nextTab.apiTab.id})`;
       }
       if (fromIndex != toIndex && toIndex > -1) {
-        const count = movedTabsCounts.get(apiTab.windowId) || 0;
-        movedTabsCounts.set(apiTab.windowId, count + 1);
+        const movedSet = movedApiTabIdSets.get(apiTab.windowId) || new Set();
+        movedSet.add(apiTab.id);
+        movedApiTabIdSets.set(apiTab.windowId, movedSet);
         logApiTabs(`tabs-move:syncTabsPositionToApiTabsInternal: browser.tabs.move() `, apiTab.id, {
           windowId: apiTab.windowId,
           index:    toIndex
@@ -369,16 +373,6 @@ async function syncTabsPositionToApiTabsInternal() {
     }
   }
   log('syncTabsPositionToApiTabsInternal: moved ', movedLogs);
-  for (const windowId of toBeMovedTabsCounts.keys()) {
-    const toBeMovedCount = toBeMovedTabsCounts.get(windowId) || 0;
-    const movedCount     = movedTabsCounts.get(windowId) || 0;
-    const delta          = toBeMovedCount - movedCount;
-    if (delta > 0) {
-      const container = Tabs.getTabsContainer(windowId);
-      container.internalMovingCount -= delta;
-      container.alreadyMovedTabsCount -= delta;
-    }
-  }
 }
 syncTabsPositionToApiTabsInternal.movedApiTabs = [];
 

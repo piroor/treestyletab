@@ -1182,7 +1182,9 @@ export async function moveTabs(tabs, options = {}) {
         if (isAcrossWindows) {
           container.toBeOpenedTabsWithPositions += tabs.length;
           container.toBeOpenedOrphanTabs += tabs.length;
-          container.toBeAttachedTabs += tabs.length;
+          for (const tab of tabs) {
+            container.toBeAttachedTabs.add(tab.apiTab.id);
+          }
         }
       };
       if (newWindow) {
@@ -1208,8 +1210,11 @@ export async function moveTabs(tabs, options = {}) {
             sourceContainer.toBeOpenedOrphanTabs += tabs.length;
             sourceContainer.duplicatingTabsCount += tabs.length;
           }
-          if (isAcrossWindows)
-            sourceContainer.toBeDetachedTabs += tabs.length;
+          if (isAcrossWindows) {
+            for (const tab of tabs) {
+              sourceContainer.toBeDetachedTabs.add(tab.apiTab.id);
+            }
+          }
 
           log('preparing tabs');
           if (options.duplicate) {

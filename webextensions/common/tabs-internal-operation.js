@@ -69,7 +69,9 @@ export function removeTabs(tabs, options = {}) {
       return;
   }
   const container = tabs[0].parentNode;
-  container.internalClosingCount += tabs.length;
+  for (const tab of tabs) {
+    container.internalClosingTabs.add(tab.apiTab.id);
+  }
   if (options.broadcasted)
     return;
   return browser.tabs.remove(tabs.map(tab => tab.apiTab.id)).catch(ApiTabs.handleMissingTabError);

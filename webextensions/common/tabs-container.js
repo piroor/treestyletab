@@ -63,10 +63,11 @@ export function buildFor(windowId) {
 }
 
 export function init(container) {
-  container.internalMovingCount =
-    container.internalClosingCount =
-    container.alreadyMovedTabsCount =
-    container.subTreeMovingCount =
+  container.internalMovingTabs  = new Set();
+  container.alreadyMovedTabs    = new Set();
+  container.internalClosingTabs = new Set();
+
+  container.subTreeMovingCount =
     container.subTreeChildrenMovingCount =
     container.doingIntelligentlyCollapseExpandCount =
     container.internalFocusCount =
@@ -76,14 +77,16 @@ export function init(container) {
 
   container.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
 
-  container.openingCount  = 0;
-  container.openedNewTabs = '';
-  container.openedNewTabsOpeners = '';
+  container.openingTabs   = new Set();
+
+  container.openedNewTabs        = [];
+  container.openedNewTabsOpeners = [];
 
   container.toBeOpenedTabsWithPositions = 0;
   container.toBeOpenedOrphanTabs        = 0;
-  container.toBeAttachedTabs            = 0;
-  container.toBeDetachedTabs            = 0;
+
+  container.toBeAttachedTabs = new Set();
+  container.toBeDetachedTabs = new Set();
 }
 
 export function clearAll() {

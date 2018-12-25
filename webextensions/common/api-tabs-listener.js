@@ -442,11 +442,11 @@ async function onNewTabTracked(tab) {
     log(`onNewTabTracked(id=${tab.id}): moved = `, moved);
 
     if (container.parentNode) { // it can be removed while waiting
-      container.openingCount++;
+      container.openingTabs.add(tab.id);
       setTimeout(() => {
         if (!container.parentNode) // it can be removed while waiting
           return;
-        container.openingCount--;
+        container.openingTabs.delete(tab.id);
       }, 0);
     }
 
@@ -546,9 +546,9 @@ async function onRemoved(tabId, removeInfo) {
     return;
 
   const container = getOrBuildTabsContainer(removeInfo.windowId);
-  const byInternalOperation = container.internalClosingCount > 0;
+  const byInternalOperation = container.internalClosingTabs.has(tabId);
   if (byInternalOperation)
-    container.internalClosingCount--;
+    container.internalClosingTabs.delete(tabId);
 
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilAllTabsAreCreated();
@@ -630,7 +630,7 @@ async function onMoved(tabId, moveInfo) {
     return;
 
   const container = getOrBuildTabsContainer(moveInfo.windowId);
-  const byInternalOperation = container.internalMovingCount > 0;
+  const byInternalOperation = container.internalMovingTabs.has(tabId);
 
   if (Tabs.hasCreatingTab())
     await Tabs.waitUntilTabsAreCreated(tabId);
@@ -654,7 +654,7 @@ async function onMoved(tabId, moveInfo) {
     const movedTab = Tabs.getTabById({ tab: tabId, window: moveInfo.windowId });
     if (!movedTab) {
       if (byInternalOperation)
-        container.internalMovingCount--;
+        container.internalMovingTabs.delete(tabId);
       completelyMoved();
       return;
     }
@@ -668,8 +668,8 @@ async function onMoved(tabId, moveInfo) {
     }
 
     let alreadyMoved = false;
-    if ((container.alreadyMovedTabsCount || 0) > 0) {
-      container.alreadyMovedTabsCount--;
+    if (container.alreadyMovedTabs.has(tabId)) {
+      container.alreadyMovedTabs.delete(tabId);
       alreadyMoved = true;
     }
 
@@ -712,7 +712,7 @@ async function onMoved(tabId, moveInfo) {
         await onMovedResult;
     }
     if (byInternalOperation)
-      container.internalMovingCount--;
+      container.internalMovingTabs.delete(tabId);
     completelyMoved();
   }
   catch(e) {
@@ -754,9 +754,9 @@ async function onAttached(tabId, attachInfo) {
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
     const newTab = await onNewTabTracked(apiTab);
-    const byInternalOperation = newTab && newTab.parentNode.toBeAttachedTabs > 0;
+    const byInternalOperation = newTab && newTab.parentNode.toBeAttachedTabs.has(apiTab.id);
     if (byInternalOperation)
-      newTab.parentNode.toBeAttachedTabs--;
+      newTab.parentNode.toBeAttachedTabs.delete(apiTab.id);
     info.byInternalOperation = info.byInternalOperation || byInternalOperation;
 
     if (!byInternalOperation) { // we should process only tabs attached by others.
@@ -791,9 +791,9 @@ async function onDetached(tabId, detachInfo) {
       return;
     }
 
-    const byInternalOperation = oldTab.parentNode.toBeDetachedTabs > 0;
+    const byInternalOperation = oldTab.parentNode.toBeDetachedTabs.has(tabId);
     if (byInternalOperation)
-      oldTab.parentNode.toBeDetachedTabs--;
+      oldTab.parentNode.toBeDetachedTabs.delete(tabId);
 
     const info = Object.assign({}, detachInfo, {
       byInternalOperation,
