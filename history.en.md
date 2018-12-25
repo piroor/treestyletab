@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * "Close Tree" and other top level extra context menu items work correctly again. (regression on recent versions)
+   * Better compatibility with other addons which modify `successorTabId` of tabs. (Note that you need to choose "Tree Behavior" => "When the current tab is closed as a last child" => "Focus to the next tab always (Firefox's default)" manually to deactivate controlling by TST.)
+   * Control visibility of extra context menu items more correctly.
  - 2.7.4 (2018.12.22)
    * Keep active tab while operations for multiselection.
    * On Firefox ESR60, new tabs opened from links were wrongly placed at the end of the tab bar.
