@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Better handling of positioning for new tabs. On Firefox ESR60 running at a high-power PC, a tab moved by Firefox immediately after it was opened was placed to wrong position.
  - 2.7.5 (2018.12.25)
    * "Close Tree" and other top level extra context menu items work correctly again. (regression on recent versions)
    * Better compatibility with other addons which modify `successorTabId` of tabs. (Note that you need to choose "Tree Behavior" => "When the current tab is closed as a last child" => "Focus to the next tab always (Firefox's default)" manually to deactivate controlling by TST.)
