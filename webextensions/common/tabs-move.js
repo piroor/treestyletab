@@ -113,8 +113,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       const oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == referenceTab) // no move case
         continue;
-      TabsContainer.incrementCounter(container, 'internalMovingCount');
-      TabsContainer.incrementCounter(container, 'alreadyMovedTabsCount');
+      container.internalMovingCount++;
+      container.alreadyMovedTabsCount++;
       container.insertBefore(tab, referenceTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
@@ -122,7 +122,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
-    if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
+    if (container.alreadyMovedTabsCount <= 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -236,8 +236,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       const oldNextTab     = Tabs.getNextTab(tab);
       if (oldNextTab == nextTab) // no move case
         continue;
-      TabsContainer.incrementCounter(container, 'internalMovingCount');
-      TabsContainer.incrementCounter(container, 'alreadyMovedTabsCount');
+      container.internalMovingCount++;
+      container.alreadyMovedTabsCount++;
       container.insertBefore(tab, nextTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
@@ -245,7 +245,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
-    if (parseInt(container.dataset.alreadyMovedTabsCount) <= 0) {
+    if (container.alreadyMovedTabsCount <= 0) {
       log(' => actually nothing moved');
     }
     else {
@@ -376,8 +376,8 @@ async function syncTabsPositionToApiTabsInternal() {
     const delta          = toBeMovedCount - movedCount;
     if (delta > 0) {
       const container = Tabs.getTabsContainer(windowId);
-      TabsContainer.decrementCounter(container, 'internalMovingCount', delta);
-      TabsContainer.decrementCounter(container, 'alreadyMovedTabsCount', delta);
+      container.internalMovingCount -= delta;
+      container.alreadyMovedTabsCount -= delta;
     }
   }
 }

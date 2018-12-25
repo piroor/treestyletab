@@ -754,11 +754,11 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
 
   logCollapseExpand('collapseExpandTreesIntelligentlyFor');
   const container = Tabs.getTabsContainer(tab);
-  if (parseInt(container.dataset.doingIntelligentlyCollapseExpandCount) > 0) {
+  if (container.doingIntelligentlyCollapseExpandCount > 0) {
     logCollapseExpand('=> done by others');
     return;
   }
-  TabsContainer.incrementCounter(container, 'doingIntelligentlyCollapseExpandCount');
+  container.doingIntelligentlyCollapseExpandCount++;
 
   const expandedAncestors = `<${[tab].concat(Tabs.getAncestorTabs(tab))
     .map(ancestor => ancestor.id)
@@ -802,7 +802,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   collapseExpandSubtree(tab, Object.assign({}, options, {
     collapsed: false
   }));
-  TabsContainer.decrementCounter(container, 'doingIntelligentlyCollapseExpandCount');
+  container.doingIntelligentlyCollapseExpandCount--;
 }
 
 export async function fixupSubtreeCollapsedState(tab, options = {}) {
@@ -1077,7 +1077,7 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
 
   log('moveTabSubtreeBefore: ', dumpTab(tab), dumpTab(nextTab));
   const container = tab.parentNode;
-  TabsContainer.incrementCounter(container, 'subTreeMovingCount');
+  container.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyBefore(tab, nextTab, options);
     if (!Tabs.ensureLivingTab(tab)) // it is removed while waiting
@@ -1090,7 +1090,7 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
   await wait(0);
   if (!container.parentNode) // it was removed while waiting
     return;
-  TabsContainer.decrementCounter(container, 'subTreeMovingCount');
+  container.subTreeMovingCount--;
 }
 
 export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
@@ -1103,7 +1103,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
 
   log('moveTabSubtreeAfter: ', dumpTab(tab), dumpTab(previousTab));
   const container = tab.parentNode;
-  TabsContainer.incrementCounter(container, 'subTreeMovingCount');
+  container.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyAfter(tab, previousTab, options);
     if (!Tabs.ensureLivingTab(tab)) // it is removed while waiting
@@ -1116,7 +1116,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
   await wait(0);
   if (!container.parentNode) // it was removed while waiting
     return;
-  TabsContainer.decrementCounter(container, 'subTreeMovingCount');
+  container.subTreeMovingCount--;
 }
 
 export async function followDescendantsToMovedRoot(tab, options = {}) {
@@ -1125,11 +1125,11 @@ export async function followDescendantsToMovedRoot(tab, options = {}) {
 
   log('followDescendantsToMovedRoot: ', dumpTab(tab));
   const container = tab.parentNode;
-  TabsContainer.incrementCounter(container, 'subTreeChildrenMovingCount');
-  TabsContainer.incrementCounter(container, 'subTreeMovingCount');
+  container.subTreeChildrenMovingCount++;
+  container.subTreeMovingCount++;
   await TabsMove.moveTabsAfter(Tabs.getDescendantTabs(tab), tab, options);
-  TabsContainer.decrementCounter(container, 'subTreeChildrenMovingCount');
-  TabsContainer.decrementCounter(container, 'subTreeMovingCount');
+  container.subTreeChildrenMovingCount--;
+  container.subTreeMovingCount--;
 }
 
 export async function moveTabs(tabs, options = {}) {
@@ -1180,9 +1180,9 @@ export async function moveTabs(tabs, options = {}) {
           Tabs.allTabsContainer.appendChild(container);
         }
         if (isAcrossWindows) {
-          TabsContainer.incrementCounter(container, 'toBeOpenedTabsWithPositions', tabs.length);
-          TabsContainer.incrementCounter(container, 'toBeOpenedOrphanTabs', tabs.length);
-          TabsContainer.incrementCounter(container, 'toBeAttachedTabs', tabs.length);
+          container.toBeOpenedTabsWithPositions += tabs.length;
+          container.toBeOpenedOrphanTabs += tabs.length;
+          container.toBeAttachedTabs += tabs.length;
         }
       };
       if (newWindow) {
@@ -1204,12 +1204,12 @@ export async function moveTabs(tabs, options = {}) {
         (async () => {
           const sourceContainer = tabs[0].parentNode;
           if (options.duplicate) {
-            TabsContainer.incrementCounter(sourceContainer, 'toBeOpenedTabsWithPositions', tabs.length);
-            TabsContainer.incrementCounter(sourceContainer, 'toBeOpenedOrphanTabs', tabs.length);
-            TabsContainer.incrementCounter(sourceContainer, 'duplicatingTabsCount', tabs.length);
+            sourceContainer.toBeOpenedTabsWithPositions += tabs.length;
+            sourceContainer.toBeOpenedOrphanTabs += tabs.length;
+            sourceContainer.duplicatingTabsCount += tabs.length;
           }
           if (isAcrossWindows)
-            TabsContainer.incrementCounter(sourceContainer, 'toBeDetachedTabs', tabs.length);
+            sourceContainer.toBeDetachedTabs += tabs.length;
 
           log('preparing tabs');
           if (options.duplicate) {

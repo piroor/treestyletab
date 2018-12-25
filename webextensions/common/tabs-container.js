@@ -57,41 +57,33 @@ export function buildFor(windowId) {
   container.setAttribute('id', `window-${windowId}`);
   container.classList.add('tabs');
 
-  container.dataset.internalMovingCount =
-    container.dataset.internalClosingCount =
-    container.dataset.alreadyMovedTabsCount =
-    container.dataset.subTreeMovingCount =
-    container.dataset.subTreeChildrenMovingCount =
-    container.dataset.doingIntelligentlyCollapseExpandCount =
-    container.dataset.internalFocusCount =
-    container.dataset.internalSilentlyFocusCount =
-    container.dataset.tryingReforcusForClosingCurrentTabCount = // used only on Firefox 64 and older
-    container.dataset.duplicatingTabsCount = 0;
-
-  container.dataset.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
-
-  container.dataset.openingCount  = 0;
-  container.dataset.openedNewTabs = '';
-  container.dataset.openedNewTabsOpeners = '';
-
-  container.dataset.toBeOpenedTabsWithPositions = 0;
-  container.dataset.toBeOpenedOrphanTabs        = 0;
-  container.dataset.toBeAttachedTabs            = 0;
-  container.dataset.toBeDetachedTabs            = 0;
+  init(container);
 
   return container;
 }
 
-export function incrementCounter(container, name, delta) {
-  const count = parseInt(container.dataset[name]) + (delta || 1);
-  container.dataset[name] = count;
-  return count;
-}
+export function init(container) {
+  container.internalMovingCount =
+    container.internalClosingCount =
+    container.alreadyMovedTabsCount =
+    container.subTreeMovingCount =
+    container.subTreeChildrenMovingCount =
+    container.doingIntelligentlyCollapseExpandCount =
+    container.internalFocusCount =
+    container.internalSilentlyFocusCount =
+    container.tryingReforcusForClosingCurrentTabCount = // used only on Firefox 64 and older
+    container.duplicatingTabsCount = 0;
 
-export function decrementCounter(container, name, delta) {
-  const count = parseInt(container.dataset[name]) - (delta || 1);
-  container.dataset[name] = count;
-  return count;
+  container.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
+
+  container.openingCount  = 0;
+  container.openedNewTabs = '';
+  container.openedNewTabsOpeners = '';
+
+  container.toBeOpenedTabsWithPositions = 0;
+  container.toBeOpenedOrphanTabs        = 0;
+  container.toBeAttachedTabs            = 0;
+  container.toBeDetachedTabs            = 0;
 }
 
 export function clearAll() {

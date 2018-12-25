@@ -53,7 +53,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 Tabs.onMoving.addListener((tab, moveInfo) => {
   // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
   const container = Tabs.getTabsContainer(tab);
-  const isNewlyOpenedTab = parseInt(container.dataset.openingCount) > 0;
+  const isNewlyOpenedTab = container.openingCount > 0;
   const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
   if (!isNewlyOpenedTab ||
       moveInfo.byInternalOperation ||
@@ -150,7 +150,7 @@ TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { try
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
   const container = tab.parentNode;
-  TabsContainer.incrementCounter(container, 'internalMovingCount');
+  container.internalMovingCount++;
   logApiTabs(`handle-moved-tabs:moveBack: browser.tabs.move() `, tab.apiTab.id, {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
@@ -159,8 +159,8 @@ function moveBack(tab, moveInfo) {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
   }).catch(e => {
-    if (parseInt(container.dataset.internalMovingCount) > 0)
-      TabsContainer.decrementCounter(container, 'internalMovingCount');
+    if (container.internalMovingCount > 0)
+      container.internalMovingCount--;
     ApiTabs.handleMissingTabError(e);
   });
 }

@@ -35,14 +35,14 @@ export async function selectTab(tab, options = {}) {
     return;
   }
   const container = tab.parentNode;
-  TabsContainer.incrementCounter(container, 'internalFocusCount');
+  container.internalFocusCount++;
   if (options.silently)
-    TabsContainer.incrementCounter(container, 'internalSilentlyFocusCount');
+    container.internalSilentlyFocusCount++;
   return browser.tabs.update(tab.apiTab.id, { active: true })
     .catch(e => {
-      TabsContainer.decrementCounter(container, 'internalFocusCount');
+      container.internalFocusCount--;
       if (options.silently)
-        TabsContainer.decrementCounter(container, 'internalSilentlyFocusCount');
+        container.internalSilentlyFocusCount--;
       ApiTabs.handleMissingTabError(e);
     });
 }
@@ -70,7 +70,7 @@ export function removeTabs(tabs, options = {}) {
       return;
   }
   const container = tabs[0].parentNode;
-  TabsContainer.incrementCounter(container, 'internalClosingCount', tabs.length);
+  container.internalClosingCount += tabs.length;
   if (options.broadcasted)
     return;
   return browser.tabs.remove(tabs.map(tab => tab.apiTab.id)).catch(ApiTabs.handleMissingTabError);

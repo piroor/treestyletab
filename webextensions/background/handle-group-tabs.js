@@ -285,12 +285,12 @@ Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
       (configs.autoGroupNewTabs &&
        !openerApiTab &&
        !info.maybeOrphan)) {
-    if (parseInt(container.dataset.preventAutoGroupNewTabsUntil) > Date.now()) {
-      TabsContainer.incrementCounter(container, 'preventAutoGroupNewTabsUntil', configs.autoGroupNewTabsTimeout);
+    if (container.preventAutoGroupNewTabsUntil > Date.now()) {
+      container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-      container.dataset.openedNewTabs += `|${apiTab.id}`;
-      container.dataset.openedNewTabsOpeners += `|${openerApiTab && openerApiTab.id}`;
+      container.openedNewTabs += `|${apiTab.id}`;
+      container.openedNewTabsOpeners += `|${openerApiTab && openerApiTab.id}`;
     }
   }
   if (container.openedNewTabsTimeout)
@@ -310,8 +310,8 @@ async function onNewTabsTimeout(container) {
   if (Tabs.hasMovingTab())
     await Tabs.waitUntilAllTabsAreMoved();
 
-  const tabIds       = container.dataset.openedNewTabs.split('|').filter(part => part != '');
-  const tabOpenerIds = container.dataset.openedNewTabsOpeners.split('|').filter(part => part != '');
+  const tabIds       = container.openedNewTabs.split('|').filter(part => part != '');
+  const tabOpenerIds = container.openedNewTabsOpeners.split('|').filter(part => part != '');
   log('onNewTabsTimeout ', tabIds);
   let tabReferences = tabIds.map((id, index) => {
     return {
@@ -320,8 +320,8 @@ async function onNewTabsTimeout(container) {
     };
   });
 
-  container.dataset.openedNewTabs = '';
-  container.dataset.openedNewTabsOpeners = '';
+  container.openedNewTabs = '';
+  container.openedNewTabsOpeners = '';
 
   tabReferences = tabReferences.filter(tabReference => tabReference.id != '');
   if (tabReferences.length == 0 ||

@@ -11,6 +11,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
+import * as TabsContainer from './tabs-container.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 
@@ -108,6 +109,7 @@ export function restoreTabsFromCacheInternal(params) {
     insertionPoint.insertNode(fragment);
     container.id = `window-${params.windowId}`;
     container.dataset.windowId = params.windowId;
+    TabsContainer.init(container);
     tabElements = Array.slice(container.childNodes);
     if (!params.insertionPoint)
       insertionPoint.detach();
