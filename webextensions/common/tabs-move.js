@@ -316,14 +316,10 @@ async function syncTabsPositionToApiTabsInternal() {
   const movedApiTabs = syncTabsPositionToApiTabsInternal.movedApiTabs;
   syncTabsPositionToApiTabsInternal.movedApiTabs = [];
 
-  const uniqueApiTabs         = new Map();
-  const toBeMovedApiTabIdSets = new Map();
-  const movedApiTabIdSets     = new Map();
+  const uniqueApiTabs          = new Map();
+  const tabsIndexNeedToBeFixed = new Map();
   for (const apiTab of movedApiTabs) {
     uniqueApiTabs.set(apiTab.id, apiTab);
-    const toBeMovedSet = toBeMovedApiTabIdSets.get(apiTab.windowId) || new Set();
-    toBeMovedSet.add(apiTab.id);
-    toBeMovedApiTabIdSets.set(apiTab.windowId, toBeMovedSet);
   }
   const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById);
   const apiTabs = tabs.sort(documentPositionComparator).map(tab => tab.apiTab);
@@ -354,15 +350,16 @@ async function syncTabsPositionToApiTabsInternal() {
         movedInfo = ` (before tab ${nextTab.apiTab.id})`;
       }
       if (fromIndex != toIndex && toIndex > -1) {
-        const movedSet = movedApiTabIdSets.get(apiTab.windowId) || new Set();
-        movedSet.add(apiTab.id);
-        movedApiTabIdSets.set(apiTab.windowId, movedSet);
+        const tabsIndexNeedToBeFixedInWindow = tabsIndexNeedToBeFixed.get(apiTab.windowId) || new Set();
+        tabsIndexNeedToBeFixedInWindow.add(tab);
+        tabsIndexNeedToBeFixed.set(apiTab.windowId, tabsIndexNeedToBeFixedInWindow);
         logApiTabs(`tabs-move:syncTabsPositionToApiTabsInternal: browser.tabs.move() `, apiTab.id, {
           windowId: apiTab.windowId,
           index:    toIndex
         });
         tab.parentNode.internalMovingTabs.add(apiTab.id);
         tab.parentNode.alreadyMovedTabs.add(apiTab.id);
+        tab.apiTab.index = toIndex;
         await browser.tabs.move(apiTab.id, {
           windowId: apiTab.windowId,
           index:    toIndex
@@ -375,6 +372,19 @@ async function syncTabsPositionToApiTabsInternal() {
     }
   }
   log('syncTabsPositionToApiTabsInternal: moved ', movedLogs);
+
+  // fixup "index" of cached apiTab
+  for (const windowId of tabsIndexNeedToBeFixed.keys()) {
+    let tabs = tabsIndexNeedToBeFixed.get(windowId);
+    if (!tabs || tabs.length == 0)
+      continue;
+    tabs = Array.from(tabs).sort((a, b) => a.apiTab.index - b.apiTab.index);
+    let tab   = tabs[0];
+    let index = tab.apiTab.index;
+    while (tab = tab.nextSibling) {
+      tab.apiTab.index = ++index;
+    }
+  }
 }
 syncTabsPositionToApiTabsInternal.movedApiTabs = [];
 
