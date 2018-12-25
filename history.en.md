@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.6 (2018.12.26)
    * Better handling of positioning for new tabs. On Firefox ESR60 running at a high-power PC, a tab moved by Firefox immediately after it was opened was placed to wrong position.
  - 2.7.5 (2018.12.25)
    * "Close Tree" and other top level extra context menu items work correctly again. (regression on recent versions)
