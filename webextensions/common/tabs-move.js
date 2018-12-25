@@ -361,6 +361,7 @@ async function syncTabsPositionToApiTabsInternal() {
           windowId: apiTab.windowId,
           index:    toIndex
         });
+        tab.parentNode.internalMovingTabs.add(apiTab.id);
         await browser.tabs.move(apiTab.id, {
           windowId: apiTab.windowId,
           index:    toIndex
