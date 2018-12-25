@@ -374,3 +374,8 @@ export async function notify(params = {}) {
 
   await browser.notifications.clear(id);
 }
+
+// https://qiita.com/cocottejs/items/7afe6d5f27ee7c36c61f#comment-7d19ad58bef0ce6599d3
+export function uniq(array) {
+  return array.filter((elem, index, self) => self.indexOf(elem) === index);
+}

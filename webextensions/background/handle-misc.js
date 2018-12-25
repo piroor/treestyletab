@@ -8,7 +8,8 @@
 import {
   log as internalLogger,
   wait,
-  configs
+  configs,
+  uniq
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -791,7 +792,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(tabs.filter(Tabs.ensureLivingTab).map(tab => tab.apiTab.id));
-        configs.grantedRemovingTabIds = Array.from(new Set(grantedRemovingTabIds));
+        configs.grantedRemovingTabIds = uniq(grantedRemovingTabIds);
         return true;
       })();
   }

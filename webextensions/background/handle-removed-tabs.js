@@ -9,7 +9,8 @@ import {
   log as internalLogger,
   dumpTab,
   wait,
-  configs
+  configs,
+  uniq
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -108,7 +109,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN) {
     self.closingDescendantTabIds = self.closingDescendantTabIds
       .concat(Tree.getClosingTabsFromParent(tab).map(tab => tab.apiTab.id));
-    self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
+    self.closingDescendantTabIds = uniq(self.closingDescendantTabIds);
   }
 
   // this is required to wait until the closing tab is stored to the "recently closed" list
@@ -120,11 +121,10 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
 
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {
-    self.closingTabIds = Array.from(new Set(self.closingTabIds));
+    self.closingTabIds = uniq(self.closingTabIds);
     self.closingDescendantTabIds = self.closingDescendantTabIds.filter(id => !self.closingTabIds.includes(id))
-    self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
-    let allClosingTabs = [tab.apiTab.id].concat(self.closingDescendantTabIds);
-    allClosingTabs = Array.from(new Set(allClosingTabs));
+    self.closingDescendantTabIds = uniq(self.closingDescendantTabIds);
+    const allClosingTabs = uniq([tab.apiTab.id].concat(self.closingDescendantTabIds));
     shouldRestoreCount = self.closingTabIds.length;
     if (allClosingTabs.length > 0) {
       log('tryGrantClose: show confirmation for ', allClosingTabs);

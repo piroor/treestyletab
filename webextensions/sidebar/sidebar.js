@@ -11,7 +11,8 @@ import TabIdFixer from '/extlib/TabIdFixer.js';
 import {
   log as internalLogger,
   nextFrame,
-  configs
+  configs,
+  uniq
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabsListener from '/common/api-tabs-listener.js';
@@ -429,7 +430,7 @@ export async function confirmToCloseTabs(apiTabIds, _aOptions = {}) {
       if (!result.checked)
         configs.warnOnCloseTabs = false;
       configs.lastConfirmedToCloseTabs = Date.now();
-      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(apiTabIds)));
+      configs.grantedRemovingTabIds = uniq((configs.grantedRemovingTabIds || []).concat(apiTabIds));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       return true;
     default:
