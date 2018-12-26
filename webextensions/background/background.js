@@ -10,8 +10,7 @@ import RichConfirm from '/extlib/RichConfirm.js';
 import {
   log as internalLogger,
   wait,
-  configs,
-  uniq
+  configs
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
@@ -426,7 +425,7 @@ export async function confirmToCloseTabs(apiTabIds, options = {}) {
     case 0:
       if (!result.checked)
         configs.warnOnCloseTabs = false;
-      configs.grantedRemovingTabIds = uniq((configs.grantedRemovingTabIds || []).concat(apiTabIds));
+      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(apiTabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       return true;
     default:
