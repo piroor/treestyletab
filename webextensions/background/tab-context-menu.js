@@ -458,12 +458,12 @@ async function onShown(info, contextApiTab) {
     enabled: hasMultipleNormalTabs,
     multiselected
   }) && modifiedItemsCount++;
+  updateItem('context_closeTabOptions_closeTree', {
+    visible: contextApiTab && configs.context_closeTabOptions_closeTree,
+    enabled: !multiselected
+  }) && modifiedItemsCount++;
   {
     const enabled = !multiselected && Tabs.hasChildTabs(tab);
-    updateItem('context_closeTabOptions_closeTree', {
-      visible: contextApiTab && configs.context_closeTabOptions_closeTree,
-      enabled
-    }) && modifiedItemsCount++;
     updateItem('context_closeTabOptions_closeDescendants', {
       visible: contextApiTab && configs.context_closeTabOptions_closeDescendants,
       enabled
