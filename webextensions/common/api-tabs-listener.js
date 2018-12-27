@@ -575,9 +575,9 @@ async function onRemoved(tabId, removeInfo) {
         mLastClosedWhileActiveResolvers.set(container, resolver);
     }
 
-    const onRemovingResult = Tabs.onRemoving.dispatch(oldTab, {
+    const onRemovingResult = Tabs.onRemoving.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation
-    });
+    }));
     // don't do await if not needed, to process things synchronously
     if (onRemovingResult instanceof Promise)
       await onRemovingResult;

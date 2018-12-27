@@ -1033,13 +1033,13 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
   return behavior;
 }
 
-export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, info = {}) {
+export function getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo = {}) {
   return getCloseParentBehaviorForTab(tab, {
     keepChildren: (
-      info.keepChildren ||
+      removeInfo.keepChildren ||
       !shouldApplyTreeBehavior({
-        windowId:            info.windowId || tab.apiTab.windowId,
-        byInternalOperation: info.byInternalOperation
+        windowId:            removeInfo.windowId || tab.apiTab.windowId,
+        byInternalOperation: removeInfo.byInternalOperation
       })
     )
   });

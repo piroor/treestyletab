@@ -27,10 +27,12 @@ function log(...args) {
 }
 
 
-Tabs.onRemoving.addListener(async (tab, closeInfo = {}) => {
-  log('Tabs.onRemoving ', dumpTab(tab), tab.apiTab, closeInfo);
+Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
+  log('Tabs.onRemoving ', dumpTab(tab), tab.apiTab, removeInfo);
+  if (removeInfo.isWindowClosing)
+    return;
 
-  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, closeInfo);
+  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
   if (!SidebarStatus.isOpen(tab.apiTab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(tab))

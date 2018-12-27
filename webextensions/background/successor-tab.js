@@ -186,7 +186,10 @@ function onCreated(tab, _info = {}) {
     update(activeTab.apiTab.id);
 }
 
-function onRemoving(tab, _info = {}) {
+function onRemoving(tab, removeInfo = {}) {
+  if (removeInfo.isWindowClosing)
+    return;
+
   const container = tab.parentNode;
   const lastRelatedTabs = container.lastRelatedTabs;
   if (!lastRelatedTabs)

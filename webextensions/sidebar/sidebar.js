@@ -563,8 +563,11 @@ Tabs.onCreated.addListener((_tab, _info) => {
   });
 });
 
-Tabs.onRemoving.addListener((tab, closeInfo) => {
-  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, closeInfo);
+Tabs.onRemoving.addListener((tab, removeInfo) => {
+  if (removeInfo.isWindowClosing)
+    return;
+
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(tab))
     Tree.collapseExpandSubtree(tab, {
