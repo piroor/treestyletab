@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.7 (2018.12.28)
    * Don't restore unrelated closed tabs in a rest window, when a window is closed with tabs.
    * Fix broken handling of tabs updated after opened. (regression on 2.7.6)
    * Activate top-level "Close Tree" and "Close Other Tree" commands in the context menu for tabs with no child.
