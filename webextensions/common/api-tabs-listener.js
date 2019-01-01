@@ -266,7 +266,8 @@ async function onUpdated(tabId, changeInfo, tab) {
       outside of TST (in other words, by any other addon.)
     */
     for (const key of Object.keys(changeInfo)) {
-      updatedTab.apiTab[key] = changeInfo[key];
+      if (key != 'index')
+        updatedTab.apiTab[key] = changeInfo[key];
     }
     if (changeInfo.url ||
         changeInfo.status == 'complete') {
