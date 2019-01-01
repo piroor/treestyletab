@@ -53,6 +53,7 @@ export const kCOMMAND_BOOKMARK_TABS_WITH_DIALOG = 'treestyletab:bookmark-tabs-wi
 
 export const kNOTIFY_TAB_MOUSEDOWN  = 'treestyletab:tab-mousedown';
 export const kNOTIFY_TAB_MOUSEDOWN_CANCELED = 'treestyletab:tab-mousedown-canceled';
+export const kNOTIFY_TAB_MOUSEDOWN_EXPIRED  = 'treestyletab:tab-mousedown-expired';
 
 export const kNOTIFY_SIDEBAR_FOCUS = 'treestyletab:sidebar-focus';
 export const kNOTIFY_SIDEBAR_BLUR  = 'treestyletab:sidebar-blur';

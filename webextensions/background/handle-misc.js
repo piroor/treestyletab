@@ -807,10 +807,10 @@ function onMessageExternal(message, sender) {
         return true;
       })();
 
-    case TSTAPI.kCANCEL_DRAG:
+    case TSTAPI.kSTART_CUSTOM_DRAG:
       return (async () => {
         return browser.runtime.sendMessage({
-          type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
+          type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
           windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false })).id,
           button:   message.button || 0
         });

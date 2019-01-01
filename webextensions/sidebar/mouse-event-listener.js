@@ -303,7 +303,7 @@ function onMouseDown(event) {
         log('onMouseDown expired');
         mousedown.expired = true;
         onMessage({
-          type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
+          type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
           windowId: mTargetWindow,
           button:   event.button
         });
@@ -599,8 +599,13 @@ function onMessage(message, _sender, _respond) {
   //log('onMessage: ', message, sender);
   switch (message.type) {
     case Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED:
+      if (message.windowId == mTargetWindow)
+        EventUtils.cancelHandleMousedown(message.button || 0);
+      break;
+
+    case Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED:
       if (message.windowId == mTargetWindow) {
-        const lastMousedown = EventUtils.getLastMousedown(message.button);
+        const lastMousedown = EventUtils.getLastMousedown(message.button || 0);
         if (lastMousedown)
           lastMousedown.expired = true;
       }
