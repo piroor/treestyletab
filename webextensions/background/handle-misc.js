@@ -370,10 +370,8 @@ function onMessage(message, sender) {
         logMouseEvent('Sending message to listeners');
         const serializedTab = TSTAPI.serializeTab(tab);
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
-          type:   TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
-          tab:    serializedTab,
-          window: tab.apiTab.windowId,
-          windowId: tab.apiTab.windowId
+          type: TSTAPI.kNOTIFY_TAB_MOUSEDOWN,
+          tab:  serializedTab
         }));
 
         // We must send tab-mouseup after tab-mousedown is notified.
@@ -381,20 +379,32 @@ function onMessage(message, sender) {
         mousedownNotified.then(async (results) => {
           results = results.concat(
             await TSTAPI.sendMessage(Object.assign({}, message, {
-              type:   TSTAPI.kNOTIFY_TAB_CLICKED,
-              tab:    serializedTab,
-              window: tab.apiTab.windowId,
-              windowId: tab.apiTab.windowId
+              type: TSTAPI.kNOTIFY_TAB_CLICKED,
+              tab:  serializedTab
             }))
           );
-          if (results.some(result => result.result)) // canceled
-            return;
+          if (results.some(result => result.result))
+            return browser.runtime.sendMessage({
+              type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
+              windowId: message.windowId,
+              button:   message.button
+            });
 
-          logMouseEvent('Ready to select the tab');
+          logMouseEvent('Ready to handle click action on the tab');
 
           // not canceled, then fallback to default behavior
-          const wasMultiselectionAction = await HandleTabMultiselect.updateSelectionByTabClick(tab, message);
+          const onRegularArea = (
+            !message.twisty &&
+            !message.soundButton &&
+            !message.closebox
+          );
+          console.log('onRegularArea ', onRegularArea);
+          const wasMultiselectionAction = (
+            onRegularArea &&
+            await HandleTabMultiselect.updateSelectionByTabClick(tab, message)
+          );
           if (message.button == 0 &&
+              onRegularArea &&
               !wasMultiselectionAction)
             TabsInternalOperation.selectTab(tab, {
               keepMultiselection: tab.apiTab.highlighted
@@ -795,6 +805,15 @@ function onMessageExternal(message, sender) {
         const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(tabs.filter(Tabs.ensureLivingTab).map(tab => tab.apiTab.id));
         configs.grantedRemovingTabIds = Array.from(new Set(grantedRemovingTabIds));
         return true;
+      })();
+
+    case TSTAPI.kCANCEL_DRAG:
+      return (async () => {
+        return browser.runtime.sendMessage({
+          type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
+          windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false })).id,
+          button:   message.button || 0
+        });
       })();
   }
 }
