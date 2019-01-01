@@ -985,7 +985,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
       if (message.windowId == mTargetWindow)
-        return confirmToCloseTabs(message.count);
+        return confirmToCloseTabs(message.tabIds);
     }; break;
 
 

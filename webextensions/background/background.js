@@ -386,8 +386,6 @@ async function updateSubtreeCollapsed(tab) {
 }
 
 export async function confirmToCloseTabs(apiTabIds, options = {}) {
-  if (!apiTabIds.filter)
-    console.log('???', apiTabIds, new Error().stack);
   apiTabIds = apiTabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
   const count = apiTabIds.length;
   if (count <= 1 ||
@@ -408,7 +406,7 @@ export async function confirmToCloseTabs(apiTabIds, options = {}) {
        SidebarStatus.hasFocus(options.windowId)))
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
-      count:    count,
+      tabIds:   apiTabs.map(apiTab => apiTab.id),
       windowId: options.windowId
     });
 
@@ -432,7 +430,9 @@ export async function confirmToCloseTabs(apiTabIds, options = {}) {
       return false;
   }
 }
-Commands.onTabsClosing.addListener(confirmToCloseTabs);
+Commands.onTabsClosing.addListener(apiTabIds => {
+  confirmToCloseTabs(apiTabIds);
+});
 
 Tabs.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)
