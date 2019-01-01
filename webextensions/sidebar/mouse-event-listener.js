@@ -383,6 +383,18 @@ async function onMouseUp(event) {
             TabsInternalOperation.removeTab(livingTab, { inRemote: true });
         });
     }
+    else if (lastMousedown.detail.button == 0 &&
+             !lastMousedown.detail.altKey &&
+             !lastMousedown.detail.ctrlKey &&
+             !lastMousedown.detail.metaKey &&
+             !lastMousedown.detail.shiftKey) {
+      // clear selection by left click
+      browser.tabs.highlight({
+        windowId: tab.apiTab.windowId,
+        tabs:     [tab.apiTab.index],
+        populate: false
+      }).catch(_e => {});
+    }
     return;
   }
 

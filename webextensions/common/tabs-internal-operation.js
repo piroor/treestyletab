@@ -37,13 +37,25 @@ export async function selectTab(tab, options = {}) {
   container.internalFocusCount++;
   if (options.silently)
     container.internalSilentlyFocusCount++;
-  return browser.tabs.update(tab.apiTab.id, { active: true })
-    .catch(e => {
-      container.internalFocusCount--;
-      if (options.silently)
-        container.internalSilentlyFocusCount--;
-      ApiTabs.handleMissingTabError(e);
-    });
+  const onError = (e) => {
+    container.internalFocusCount--;
+    if (options.silently)
+      container.internalSilentlyFocusCount--;
+    ApiTabs.handleMissingTabError(e);
+  };
+  if (Tabs.isMultihighlighted(tab)) {
+    // switch active tab with highlighted state
+    const highlightedTabs = Tabs.getHighlightedTabs(tab);
+    const otherTabs       = highlightedTabs.filter(highlightedTab => highlightedTab != tab);
+    return browser.tabs.highlight({
+      windowId: tab.apiTab.windowId,
+      tabs:     [tab.apiTab.index].concat(otherTabs.map(tab => tab.apiTab.index)),
+      populate: false
+    }).catch(onError);
+  }
+  else {
+    return browser.tabs.update(tab.apiTab.id, { active: true }).catch(onError);
+  }
 }
 
 export function removeTab(tab, options = {}) {

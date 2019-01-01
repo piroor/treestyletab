@@ -1066,8 +1066,12 @@ export function isHighlighted(tab) {
 
 export function isMultiselected(tab) {
   return isSelected(tab) &&
-           (tab.parentNode.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED}`) ||
+           (isMultihighlighted(tab) ||
             !!tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED} ~ ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`));
+}
+
+export function isMultihighlighted(tab) {
+  return tab.parentNode.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED}`);
 }
 
 export function isLocked(_aTab) {
