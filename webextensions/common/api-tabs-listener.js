@@ -704,16 +704,16 @@ async function onMoved(tabId, moveInfo) {
       if (!alreadyMoved &&
           movedTab.nextSibling != nextTab) {
         container.insertBefore(movedTab, nextTab);
-        log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
-          Array.slice(container.childNodes)
-            .map(tab => tab.id+(tab == movedTab ? '[MOVED]' : ''))
-            .join('\n')
-            .replace(/^/gm, ' - ')));
         const startIndex = Math.max(Math.min(moveInfo.fromIndex, moveInfo.toIndex), 0);
         const endIndex   = Math.min(Math.max(moveInfo.fromIndex, moveInfo.toIndex), tabs.length - 1);
         for (let i = startIndex; i < endIndex; i++) {
           tabs[i].apiTab.index = i;
         }
+        log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
+          Array.slice(container.childNodes)
+            .map(tab => tab.id+(tab == movedTab ? '[MOVED]' : ''))
+            .join('\n')
+            .replace(/^/gm, ' - ')));
       }
       const onMovedResult = Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);
       // don't do await if not needed, to process things synchronously

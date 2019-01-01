@@ -126,11 +126,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       log(' => actually nothing moved');
     }
     else {
-      log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-        Array.slice(container.childNodes)
-          .map(tab => tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
-          .join('\n')
-          .replace(/^/gm, ' - ')));
       const newIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
       const minIndex = Math.min(...oldIndexes, ...newIndexes);
       const maxIndex = Math.max(...oldIndexes, ...newIndexes);
@@ -140,6 +135,11 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
           continue;
         tab.apiTab.index = i;
       }
+      log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
+        Array.slice(container.childNodes)
+          .map(tab => tab.apiTab.index+' '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
+          .join('\n')
+          .replace(/^/gm, ' - ')));
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -250,11 +250,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       log(' => actually nothing moved');
     }
     else {
-      log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-        Array.slice(container.childNodes)
-          .map(tab => tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
-          .join('\n')
-          .replace(/^/gm, ' - ')));
       const newIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
       const minIndex = Math.min(...oldIndexes, ...newIndexes);
       const maxIndex = Math.max(...oldIndexes, ...newIndexes);
@@ -264,6 +259,11 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
           continue;
         tab.apiTab.index = i;
       }
+      log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
+        Array.slice(container.childNodes)
+          .map(tab => tab.apiTab.index+' '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
+          .join('\n')
+          .replace(/^/gm, ' - ')));
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -360,6 +360,7 @@ async function syncTabsPositionToApiTabsInternal() {
         tab.parentNode.internalMovingTabs.add(apiTab.id);
         tab.parentNode.alreadyMovedTabs.add(apiTab.id);
         tab.apiTab.index = toIndex;
+        log('Tab node reindexed by syncTabsPositionToApiTabsInternal:\n'+tab.apiTab.index+' '+tab.id);
         await browser.tabs.move(apiTab.id, {
           windowId: apiTab.windowId,
           index:    toIndex
@@ -376,14 +377,19 @@ async function syncTabsPositionToApiTabsInternal() {
   // fixup "index" of cached apiTab
   for (const windowId of tabsIndexNeedToBeFixed.keys()) {
     let tabs = tabsIndexNeedToBeFixed.get(windowId);
-    if (!tabs || tabs.length == 0)
+    if (!tabs || tabs.size == 0)
       continue;
-    tabs = Array.from(tabs).sort((a, b) => a.apiTab.index - b.apiTab.index);
+    tabs = Array.from(tabs).sort(documentPositionComparator);
     let tab   = tabs[0];
     let index = tab.apiTab.index;
     while (tab = tab.nextSibling) {
       tab.apiTab.index = ++index;
     }
+    log('Tab nodes rearranged by syncTabsPositionToApiTabsInternal:\n'+(!configs.debug ? '' :
+      tabs
+        .map(tab => tab.apiTab.index+' '+tab.id)
+        .join('\n')
+        .replace(/^/gm, ' - ')));
   }
 }
 syncTabsPositionToApiTabsInternal.movedApiTabs = [];
