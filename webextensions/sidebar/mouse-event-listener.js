@@ -307,7 +307,7 @@ function onMouseDown(event) {
         mousedown.expired = true;
       }
     }
-  }, configs.startDragTimeout);
+  }, configs.longPressDuration);
 }
 onMouseDown = EventUtils.wrapWithErrorHandler(onMouseDown);
 
