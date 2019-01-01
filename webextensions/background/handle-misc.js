@@ -395,17 +395,10 @@ function onMessage(message, sender) {
           // not canceled, then fallback to default behavior
           const wasMultiselectionAction = await HandleTabMultiselect.updateSelectionByTabClick(tab, message);
           if (message.button == 0 &&
-              !wasMultiselectionAction) {
-            if (!tab.apiTab.highlighted) {
-              // clear multiselection when any unhighlighted tab is activated
-              browser.tabs.highlight({
-                windowId: tab.apiTab.windowId,
-                tabs:     [tab.apiTab.index],
-                populate: false
-              }).catch(_e => {});
-            }
-            TabsInternalOperation.selectTab(tab);
-          }
+              !wasMultiselectionAction)
+            TabsInternalOperation.selectTab(tab, {
+              keepMultiselection: tab.apiTab.highlighted
+            });
         });
 
         return true;

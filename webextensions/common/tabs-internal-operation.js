@@ -43,7 +43,7 @@ export async function selectTab(tab, options = {}) {
       container.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
-  if (Tabs.isMultihighlighted(tab)) {
+  if (Tabs.isMultihighlighted(tab) && options.keepMultiselection) {
     // switch active tab with highlighted state
     const highlightedTabs = Tabs.getHighlightedTabs(tab);
     const otherTabs       = highlightedTabs.filter(highlightedTab => highlightedTab != tab);
