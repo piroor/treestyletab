@@ -338,13 +338,15 @@ function getMouseEventTargetType(event) {
 }
 
 async function onMouseUp(event) {
-  if (EventUtils.isEventFiredOnMenuOrPanel(event) ||
-      EventUtils.isEventFiredOnAnchor(event))
-    return;
-
   const tab = EventUtils.getTabFromEvent(event, { force: true }) || EventUtils.getTabFromTabbarEvent(event, { force: true });
   const livingTab = EventUtils.getTabFromEvent(event);
   log('onMouseUp: ', tab, { living: !!livingTab });
+
+  DragAndDrop.endMultiDrag(livingTab, event);
+
+  if (EventUtils.isEventFiredOnMenuOrPanel(event) ||
+      EventUtils.isEventFiredOnAnchor(event))
+    return;
 
   const lastMousedown = EventUtils.getLastMousedown(event.button);
   EventUtils.cancelHandleMousedown(event.button);
@@ -364,8 +366,6 @@ async function onMouseUp(event) {
     // even if this mouseup event is canceled.
     promisedCanceled = results.then(results => results.some(result => result.result));
   }
-
-  DragAndDrop.endMultiDrag(livingTab, event);
 
   if (!lastMousedown ||
       lastMousedown.expired ||
