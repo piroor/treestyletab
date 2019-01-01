@@ -101,7 +101,12 @@ Some Google Chrome extensions also provides similar feature.
 
 ## If you have any request, proposal, or unexpected trouble from bugs?
 
-All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyletab/issues). However, there are some frequently **REJECTED** requests/proposals. Let's describe what are important points.
+All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyletab/issues).
+
+
+## FAQ / frequently rejected requests
+
+There are some frequently rejected requests/proposals. Let's describe what are important points.
 
  * *TST is basically designed to be used as an alternative permanently-shown tab bar, instead of Firefox's native tab bar.*
    * To avoid users' confusion, TST respects Firefox's built-in behavior and features around the tab bar - tab context menu, gestures, and so on.
@@ -109,7 +114,7 @@ All feedbacks are handled as [GitHub issues](https://github.com/piroor/treestyle
    * TST's tree is designed to work as an extended memory for your brain. To satisfy this concept, TST is designed to guess relation of tabs automatically, from the context.
    * Better usability around ungrouped flat tabs in a vertical tab bar is out of purpose.
 
-Any feature requiest unrelated to these points may be rejected, even if many people love it. Instead of adding more built-in features, I may add [public APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons) and [actually there are some implementations](#addons-extend-tst). If you need any new API, please file API proposals to the issue tracker.
+Any feature requiest unrelated to these points may be rejected, even if many people love it. Instead of adding more built-in features, I hope to make TST compatible with other tab related addons. If it is required for more better compatibility I add [public APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [actually there are some implementations](#addons-extend-tst). If you need any new API, please file API proposals to the issue tracker.
 
 Here is a lis of some major requests which are reported multiple times but I marked them "won't fix".
 Note that some topics are just about "legacy" versions of TST.
