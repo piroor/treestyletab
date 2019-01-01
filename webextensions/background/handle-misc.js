@@ -398,7 +398,6 @@ function onMessage(message, sender) {
             !message.soundButton &&
             !message.closebox
           );
-          console.log('onRegularArea ', onRegularArea);
           const wasMultiselectionAction = (
             onRegularArea &&
             await HandleTabMultiselect.updateSelectionByTabClick(tab, message)
