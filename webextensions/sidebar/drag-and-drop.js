@@ -752,6 +752,12 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     mDragBehaviorNotification.classList.add('shown');
   }
 
+  TSTAPI.sendMessage({
+    type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
+    tab:      TSTAPI.serializeTab(tab),
+    windowId: Tabs.getWindow()
+  });
+
   log('onDragStart: started');
 });
 
