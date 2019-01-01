@@ -504,6 +504,7 @@ export async function getTargetTabs(message, sender) {
 }
 
 async function getTabsFromWrongIds(aIds, sender) {
+  log('getTabsFromWrongIds ', aIds, sender);
   let tabsInActiveWindow = [];
   if (aIds.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
@@ -553,7 +554,15 @@ async function getTabsFromWrongIds(aIds, sender) {
         return tabFromUniqueId || id;
     }
   }));
-  return tabOrAPITabOrIds.flat().map(Tabs.getTabById).filter(tab => !!tab);
+  log('=> ', tabOrAPITabOrIds);
+
+  let flattenTabOrAPITabOrIds;
+  if (typeof Array.prototype.flat !== 'function') // Firefox 61 or older
+    flattenTabOrAPITabOrIds = tabOrAPITabOrIds.reduce((acc, val) => acc.concat(val), []);
+  else
+    flattenTabOrAPITabOrIds = tabOrAPITabOrIds.flat();
+
+  return flattenTabOrAPITabOrIds.map(Tabs.getTabById).filter(tab => !!tab);
 }
 
 export function formatResult(results, originalMessage) {

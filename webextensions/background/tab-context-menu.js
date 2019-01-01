@@ -498,8 +498,15 @@ async function onShown(info, contextApiTab) {
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;
   updateSeparator('context_separator:afterSendTab') && modifiedItemsCount++;
   updateSeparator('context_separator:afterReloadAll') && modifiedItemsCount++;
+
+  let flattenExtraItems;
+  if (typeof Array.prototype.flat !== 'function') // Firefox 61 or older
+    flattenExtraItems = Array.from(mExtraItems.values()).reduce((acc, val) => acc.concat(val), []);
+  else
+    flattenExtraItems = Array.from(mExtraItems.values()).flat();
+
   updateSeparator('lastSeparatorBeforeExtraItems', {
-    hasVisibleFollowing: contextApiTab && Array.from(mExtraItems.values()).flat().some(item => !item.parentId && item.visible !== false)
+    hasVisibleFollowing: contextApiTab && flattenExtraItems.some(item => !item.parentId && item.visible !== false)
   }) && modifiedItemsCount++;
 
   /* eslint-enable no-unused-expressions */
