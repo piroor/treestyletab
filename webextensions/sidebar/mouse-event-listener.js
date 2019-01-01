@@ -278,7 +278,7 @@ function onMouseDown(event) {
     }));
 
   EventUtils.setLastMousedown(event.button, mousedown);
-  mousedown.timeout = setTimeout(() => {
+  mousedown.timeout = setTimeout(async () => {
     if (!EventUtils.getLastMousedown(event.button))
       return;
 
@@ -299,11 +299,12 @@ function onMouseDown(event) {
         EventUtils.getElementTarget(event).closest('#tab-drag-handle'))
       return;
 
-    log('onMouseDown expired');
-    mousedown.expired = true;
-    if (event.button == 0) {
-      if (tab) {
-        DragAndDrop.startMultiDrag(tab, mousedown.detail.closebox);
+    if (event.button == 0 &&
+        tab) {
+      const results = await DragAndDrop.startMultiDrag(tab, mousedown.detail.closebox);
+      if (results.some(result => result.result !== false)) {
+        log('onMouseDown expired');
+        mousedown.expired = true;
       }
     }
   }, configs.startDragTimeout);

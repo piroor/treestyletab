@@ -107,10 +107,10 @@ export function isCapturingForDragging() {
   return mCapturingForDragging;
 }
 
-export function startMultiDrag(tab, aIsClosebox) {
+export async function startMultiDrag(tab, aIsClosebox) {
   mReadyToCaptureMouseEvents = true;
   const windowId = Tabs.getWindow();
-  TSTAPI.sendMessage({
+  return TSTAPI.sendMessage({
     type:   TSTAPI.kNOTIFY_TAB_DRAGREADY,
     tab:    TSTAPI.serializeTab(tab),
     window: windowId,
