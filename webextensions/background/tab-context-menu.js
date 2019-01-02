@@ -372,127 +372,133 @@ async function onShown(info, contextApiTab) {
   // To allow those usages, I disable the rule temporarily.
   /* eslint-disable no-unused-expressions */
 
+  const emulate = configs.emulateDefaultContextMenu;
+
   updateItem('context_reloadTab', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
-    visible: contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted),
+    visible: emulate && contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-unmute', {
-    visible: contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted,
+    visible: emulate && contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_pinTab', {
-    visible: contextApiTab && !contextApiTab.pinned,
+    visible: emulate && contextApiTab && !contextApiTab.pinned,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_unpinTab', {
-    visible: contextApiTab && contextApiTab.pinned,
+    visible: emulate && contextApiTab && contextApiTab.pinned,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_duplicateTab', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_selectAllTabs', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     enabled: contextApiTab && Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     multiselected: multiselected || !contextApiTab
   }) && modifiedItemsCount++;
 
   let showContextualIdentities = false;
   for (const item of mContextualIdentityItems.values()) {
     const id = item.id;
-    let visible = contextApiTab && id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
-    if (id == 'context_reopenInContainer_separator')
+    let visible;
+    if (!emulate)
+      visible = false;
+    else if (id == 'context_reopenInContainer_separator')
       visible = contextApiTab && contextApiTab.cookieStoreId != 'firefox-default';
+    else
+      visible = contextApiTab && id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
     updateItem(id, { visible }) && modifiedItemsCount++;
     if (visible)
       showContextualIdentities = true;
   }
   updateItem('context_reopenInContainer', {
-    visible: contextApiTab && showContextualIdentities,
+    visible: emulate && contextApiTab && showContextualIdentities,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_moveTab', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     enabled: contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToStart', {
-    enabled: contextApiTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextApiTab.pinned),
+    enabled: emulate && contextApiTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextApiTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToEnd', {
-    enabled: contextApiTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextApiTab.pinned),
+    enabled: emulate && contextApiTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextApiTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_openTabInWindow', {
-    enabled: contextApiTab && hasMultipleTabs,
+    enabled: emulate && contextApiTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
 
   // workaround for https://github.com/piroor/treestyletab/issues/2056
   updateItem('context_bookmarkAllTabs', {
-    visible: !mNativeMultiselectionAvailable
+    visible: emulate && !mNativeMultiselectionAvailable
   }) && modifiedItemsCount++;
   updateItem('context_reloadAllTabs', {
-    visible: !mNativeMultiselectionAvailable
+    visible: emulate && !mNativeMultiselectionAvailable
   }) && modifiedItemsCount++;
 
   updateItem('context_closeTabsToTheEnd', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     enabled: hasMultipleNormalTabs && nextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeOtherTabs', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     enabled: hasMultipleNormalTabs,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_closeTabOptions_closeTree', {
-    visible: contextApiTab && configs.context_closeTabOptions_closeTree,
+    visible: emulate && contextApiTab && configs.context_closeTabOptions_closeTree,
     enabled: !multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeDescendants', {
-    visible: contextApiTab && configs.context_closeTabOptions_closeDescendants,
+    visible: emulate && contextApiTab && configs.context_closeTabOptions_closeDescendants,
     enabled: !multiselected && Tabs.hasChildTabs(tab)
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeOthers', {
-    visible: contextApiTab && configs.context_closeTabOptions_closeOthers,
+    visible: emulate && contextApiTab && configs.context_closeTabOptions_closeOthers,
     enabled: !multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_undoCloseTab', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTab', {
-    visible: contextApiTab,
+    visible: emulate && contextApiTab,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('noContextTab:context_reloadTab', {
-    visible: !contextApiTab
+    visible: emulate && !contextApiTab
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_bookmarkSelected', {
-    visible: !contextApiTab && mNativeMultiselectionAvailable
+    visible: emulate && !contextApiTab && mNativeMultiselectionAvailable
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_selectAllTabs', {
-    visible: !contextApiTab,
+    visible: emulate && !contextApiTab,
     enabled: !contextApiTab && Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
-    visible: !contextApiTab
+    visible: emulate && !contextApiTab
   }) && modifiedItemsCount++;
 
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;

@@ -227,14 +227,14 @@ function updateItems() {
   if (groupedItems.updated)
     updated = true;
 
-  const separatorVisible = groupedItems.visibleItemsCount > 0;
+  const separatorVisible = configs.emulateDefaultContextMenu && groupedItems.visibleItemsCount > 0;
   if (separatorVisible != mSeparator.lastVisible) {
     updateItem(mSeparator.id, { visible: separatorVisible });
     mSeparator.lastVisible = separatorVisible;
     updated = true;
   }
 
-  const grouped = groupedItems.visibleItemsCount > 1;
+  const grouped = configs.emulateDefaultContextMenu && groupedItems.visibleItemsCount > 1;
   if (grouped != mRootItem.lastVisible) {
     updateItem(mRootItem.id, { visible: grouped });
     mRootItem.lastVisible = grouped;
@@ -307,7 +307,7 @@ export function refreshItems() {
   if (items.length == 0)
     return;
 
-  const grouped = items.length > 1;
+  const grouped = configs.emulateDefaultContextMenu && items.length > 1;
   if (grouped) {
     const manifest = browser.runtime.getManifest();
     browser.menus.create({
