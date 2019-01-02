@@ -23,7 +23,7 @@ function log(...args) {
 }
 
 export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
-const kCONFIGS_VERSION = 1;
+const kCONFIGS_VERSION = 2;
 const kFEATURES_VERSION = 3;
 
 export function migrateLegacyConfigs() {
@@ -288,6 +288,9 @@ export function migrateConfigs() {
   switch (configs.configsVersion) {
     case 0:
       ShortcutCustomizeUI.setDefaultShortcuts();
+
+    case 1:
+      configs.longPressDuration = configs.startDragTimeout;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

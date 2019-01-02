@@ -167,6 +167,7 @@ export const configs = new Configs({
   maximumAcceptableDelayForTabDuplication: 10 * 1000,
   acceptableDelayForInternalFocusMoving: 150,
   notificationTimeout: 10 * 1000,
+  startDragTimeout: 400, // obsolete, migrated to longPressDuration
   longPressDuration: 400,
   minimumIntervalToProcessDragoverEvent: 50,
   moveDroppedTabToNewWindowForUnhandledDragEvent: true, // see also: https://github.com/piroor/treestyletab/issues/1646
