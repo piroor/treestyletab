@@ -224,7 +224,7 @@
 
 
   "config_context_caption": { "message": "Context Menu" },
-  "config_fakeContextMenu_label": { "message": "Simulate Tab Context Menu on the sidebar" },
+  "config_emulateDefaultContextMenu_label": { "message": "Simulate Tab Context Menu on the sidebar" },
   "config_extraItems_caption": { "message": "Additional Context Menu Items" },
 
 

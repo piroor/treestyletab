@@ -291,6 +291,7 @@ export function migrateConfigs() {
 
     case 1:
       configs.longPressDuration = configs.startDragTimeout;
+      configs.emulateDefaultContextMenu = configs.emulateDefaultContextMenu;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

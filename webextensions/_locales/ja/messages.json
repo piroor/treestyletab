@@ -220,7 +220,7 @@
 
 
   "config_context_caption": { "message": "コンテキストメニュー" },
-  "config_fakeContextMenu_label": { "message": "サイドバー上でタブのコンテキストメニューを再現する" },
+  "config_emulateDefaultContextMenu_label": { "message": "サイドバー上でタブのコンテキストメニューを再現する" },
   "config_extraItems_caption": { "message": "コンテキストメニューに追加する項目" },
 
 

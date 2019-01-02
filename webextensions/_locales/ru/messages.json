@@ -169,7 +169,7 @@
 
 
   "config_context_caption": { "message": "Контекстное меню" },
-  "config_fakeContextMenu_label": { "message": "Имитация контекстного меню вкладок на боковой панели" },
+  "config_emulateDefaultContextMenu_label": { "message": "Имитация контекстного меню вкладок на боковой панели" },
   "config_extraItems_caption": { "message": "Дополнительные пункты контекстного меню" },
 
 

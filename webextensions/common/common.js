@@ -50,7 +50,8 @@ export const configs = new Configs({
 
 
   // context menu
-  fakeContextMenu: true,
+  fakeContextMenu: true, // obsolete, migrated to emulateDefaultContextMenu
+  emulateDefaultContextMenu: true,
   context_reloadTree: true,
   context_reloadDescendants: false,
   context_closeTree: true,

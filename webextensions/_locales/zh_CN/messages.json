@@ -504,7 +504,7 @@
         "message": "右键菜单",
         "hash": "b3bfec7867f2835dbcb05a2f1cf5647f"
     },
-    "config_fakeContextMenu_label": {
+    "config_emulateDefaultContextMenu_label": {
         "message": "在侧栏上模拟标签页右键菜单",
         "hash": "b869272d848c5a4292a0a62f1609d15b"
     },

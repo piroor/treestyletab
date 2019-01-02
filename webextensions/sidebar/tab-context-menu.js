@@ -497,7 +497,7 @@ async function onContextMenu(event) {
     });
     return;
   }
-  if (!configs.fakeContextMenu)
+  if (!configs.emulateDefaultContextMenu)
     return;
   event.stopPropagation();
   event.preventDefault();

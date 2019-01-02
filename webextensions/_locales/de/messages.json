@@ -176,7 +176,7 @@
 
   
   "config_context_caption": { "message": "Kontexmenü" },
-  "config_fakeContextMenu_label": { "message": "Tab-Kontextmenü in der Sidebar simulieren" },
+  "config_emulateDefaultContextMenu_label": { "message": "Tab-Kontextmenü in der Sidebar simulieren" },
   "config_extraItems_caption": { "message": "Zusätzliche Kontextmenü-Einträge" },
 
 
