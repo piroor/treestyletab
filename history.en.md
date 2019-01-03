@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Hide all imitation context menu commands when simulation of context menu is disabled, instead of disabling whole the context menu.
+   * Allow to drag already-multiselected tabs with long press even if Multiple Tab Handler is installed.
+   * Fix broken behavior around closing of tabs on Firefox ESR60.
+   * [Allow to cancel default behavior of clicking on twisty, sound button, and closebox on tabs via API.](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#when-a-tab-is-clicked)
  - 2.7.7 (2018.12.28)
    * Don't restore unrelated closed tabs in a rest window, when a window is closed with tabs.
    * Fix broken handling of tabs updated after opened. (regression on 2.7.6)
