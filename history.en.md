@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.8 (2019.1.3)
    * Hide all imitation context menu commands when simulation of context menu is disabled, instead of disabling whole the context menu.
    * Allow to drag already-multiselected tabs with long press even if Multiple Tab Handler is installed.
    * Fix broken behavior around closing of tabs on Firefox ESR60.
