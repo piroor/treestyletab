@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.9 (2019.1.4)
    * Fix broken focus of tabs after tabs are rearranged by others. (regression on recent versions)
  - 2.7.8 (2019.1.3)
    * Hide all imitation context menu commands when simulation of context menu is disabled, instead of disabling whole the context menu.
