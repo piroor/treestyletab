@@ -386,7 +386,7 @@ async function syncTabsPositionToApiTabsInternal() {
       tab.apiTab.index = ++index;
     }
     log('Tab nodes rearranged by syncTabsPositionToApiTabsInternal:\n'+(!configs.debug ? '' :
-      tabs
+      Array.from(tabs[0].parentNode.childNodes)
         .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[REARRANGED]' : ''))
         .join('\n')));
   }
