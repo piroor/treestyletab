@@ -389,7 +389,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   let index = allTabs.indexOf(tab);
   do {
     tab.apiTab.index = index++;
-  } while (tab = tab.nextSibling);
+  } while ((tab = tab.nextSibling));
   log(`Tab nodes rearranged by syncTabsPositionToApiTabsInternal(${windowId}):\n`+(!configs.debug ? '' :
     allTabs
       .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabsIndexNeedToBeFixed.has(tab) ? '[REARRANGED]' : ''))
