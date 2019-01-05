@@ -304,10 +304,10 @@ Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
 const mToBeGroupedTabSets = [];
 
 async function onNewTabsTimeout(container) {
-  if (Tabs.hasCreatingTab())
-    await Tabs.waitUntilAllTabsAreCreated();
-  if (Tabs.hasMovingTab())
-    await Tabs.waitUntilAllTabsAreMoved();
+  if (Tabs.hasCreatingTab(container.windowId))
+    await Tabs.waitUntilAllTabsAreCreated(container.windowId);
+  if (Tabs.hasMovingTab(container.windowId))
+    await Tabs.waitUntilAllTabsAreMoved(container.windowId);
 
   const tabIds       = container.openedNewTabs;
   const tabOpenerIds = container.openedNewTabsOpeners;

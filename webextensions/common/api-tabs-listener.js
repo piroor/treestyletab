@@ -151,7 +151,7 @@ async function onActivated(activeInfo) {
       container.internalSilentlyFocusCount--;
     const byTabDuplication = parseInt(container.dataset.duplicatingTabsCount) > 0;
 
-    if (Tabs.hasCreatingTab())
+    if (Tabs.hasCreatingTab(activeInfo.windowId))
       await Tabs.waitUntilTabsAreCreated(activeInfo.tabId);
 
     const newTab = Tabs.getTabById({ tab: activeInfo.tabId, window: activeInfo.windowId });
@@ -238,7 +238,7 @@ async function onUpdated(tabId, changeInfo, tab) {
   TabIdFixer.fixTab(tab);
   tabId = tab.id;
 
-  if (Tabs.hasCreatingTab())
+  if (Tabs.hasCreatingTab(tab.windowId))
     await Tabs.waitUntilTabsAreCreated(tabId);
 
   const [onCompleted, previous] = addTabOperationQueue();
@@ -351,8 +351,8 @@ async function onNewTabTracked(tab) {
     activeTab
   });
 
-  if (Tabs.hasCreatingTab())
-    await Tabs.waitUntilAllTabsAreCreated();
+  if (Tabs.hasCreatingTab(tab.windowId))
+    await Tabs.waitUntilAllTabsAreCreated(tab.windowId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -551,8 +551,8 @@ async function onRemoved(tabId, removeInfo) {
   if (byInternalOperation)
     container.internalClosingTabs.delete(tabId);
 
-  if (Tabs.hasCreatingTab())
-    await Tabs.waitUntilAllTabsAreCreated();
+  if (Tabs.hasCreatingTab(removeInfo.windowId))
+    await Tabs.waitUntilAllTabsAreCreated(removeInfo.windowId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -640,17 +640,17 @@ async function onMoved(tabId, moveInfo) {
   // TabsMove.syncTabsPositionToApiTabs() anyway!
   const maybeInternalOperation = container.internalMovingTabs.has(tabId);
 
-  if (Tabs.hasCreatingTab())
+  if (Tabs.hasCreatingTab(moveInfo.windowId))
     await Tabs.waitUntilTabsAreCreated(tabId);
-  if (Tabs.hasMovingTab())
-    await Tabs.waitUntilAllTabsAreMoved();
+  if (Tabs.hasMovingTab(moveInfo.windowId))
+    await Tabs.waitUntilAllTabsAreMoved(moveInfo.windowId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
-    const onTabMoved = Tabs.addMovingTabId(tabId);
+    const onTabMoved = Tabs.addMovingTabId(tabId, moveInfo.windowId);
     const completelyMoved = () => { onTabMoved(); onCompleted() };
 
     /* When a tab is pinned, tabs.onMoved may be notified before

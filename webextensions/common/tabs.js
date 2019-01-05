@@ -202,73 +202,153 @@ export const onWindowRestoring  = new EventListenerManager();
 export const onAttached         = new EventListenerManager();
 export const onDetached         = new EventListenerManager();
 
-async function waitUntilTabsAreOperated(idOrIds, slot) {
+function normalizeOperatingTabIds(idOrIds) {
   if (!Array.isArray(idOrIds))
     idOrIds = [idOrIds];
-  const operatingTabs = idOrIds
+  return idOrIds
     .map(id => parseInt(id))
     .filter(id => !!id)
-    .map(id => typeof id == 'string' ? parseInt(id.match(/^tab-\d+-(\d+)$/)[1]) : id)
-    .map(id => slot.get(id))
-    .filter(operating => !!operating);
-  if (operatingTabs.length)
-    return Promise.all(operatingTabs);
+    .map(id => typeof id == 'string' ? parseInt(id.match(/^tab-\d+-(\d+)$/)[1]) : id);
+}
+
+async function waitUntilTabsAreOperated(params = {}) {
+  const ids = params.ids && normalizeOperatingTabIds(params.ids);
+  let promises = [];
+  if (params.operatingTabsInWindow) {
+    if (ids) {
+      for (const id of ids) {
+        if (params.operatingTabsInWindow.has(id))
+          promises.push(params.operatingTabsInWindow.get(id));
+      }
+    }
+    else {
+      promises.splice(0, 0, ...params.operatingTabsInWindow.values());
+    }
+  }
+  else if (params.operatingTabs) {
+    for (const windowId of params.operatingTabs.keys()) {
+      const operatingTabsInWindow = params.operatingTabs.get(windowId);
+      if (ids) {
+        for (let i = ids.length - 1; i > -1; i--) {
+          const id = ids[i];
+          if (operatingTabsInWindow.has(id)) {
+            promises.push(operatingTabsInWindow.get(id));
+            ids.splice(i, 1);
+          }
+        }
+        if (ids.length == 0)
+          break;
+      }
+      else {
+        promises.splice(0, 0, ...operatingTabsInWindow.values());
+      }
+    }
+  }
+  else {
+    throw new Error('missing required parameter: operatingTabs or operatingTabsInWindow');
+  }
+  promises = promises.filter(operating => !!operating);
+  if (promises.length > 0)
+    return Promise.all(promises);
   return [];
+}
+
+export function hasOperatingTab(params = {}) {
+  if (!params.operatingTabs) {
+    throw new Error('missing required parameter: operatingTabs');
+  }
+  if (params.windowId) {
+    const operatingTabsInWindow = params.operatingTabs.get(params.windowId);
+    return operatingTabsInWindow ? operatingTabsInWindow.size > 0 : false;
+  }
+  for (const windowId of params.operatingTabs.keys()) {
+    if (params.operatingTabs.get(windowId).size > 0)
+      return true;
+  }
+  return false;
 }
 
 const mCreatingTabs = new Map();
 
 export function addCreatingTab(tab) {
   let onTabCreated;
+  const creatingTabs = mCreatingTabs.get(tab.apiTab.windowId) || new Map();
   if (configs.acceleratedTabCreation) {
-    mCreatingTabs.set(tab.apiTab.id, tab.uniqueId);
+    creatingTabs.set(tab.apiTab.id, tab.uniqueId);
     onTabCreated = () => {};
   }
   else {
-    mCreatingTabs.set(tab.apiTab.id, new Promise((resolve, _aReject) => {
+    creatingTabs.set(tab.apiTab.id, new Promise((resolve, _aReject) => {
       onTabCreated = (uniqueId) => { resolve(uniqueId); };
     }));
   }
+  mCreatingTabs.set(tab.apiTab.windowId, creatingTabs);
   tab.uniqueId.then(_aUniqueId => {
-    mCreatingTabs.delete(tab.apiTab.id);
+    creatingTabs.delete(tab.apiTab.id);
   });
   return onTabCreated;
 }
 
-export function hasCreatingTab() {
-  return mCreatingTabs.size > 0;
+export function hasCreatingTab(windowId = null) {
+  return hasOperatingTab({ operatingTabs: mCreatingTabs, windowId });
 }
 
-export async function waitUntilAllTabsAreCreated() {
-  return waitUntilTabsAreCreated(Array.from(mCreatingTabs.keys()));
+export async function waitUntilAllTabsAreCreated(windowId = null) {
+  const params = {};
+  if (windowId) {
+    params.operatingTabsInWindow = mCreatingTabs.get(windowId);
+    if (!params.operatingTabsInWindow)
+      return;
+  }
+  else {
+    params.operatingTabs = mCreatingTabs;
+  }
+  return waitUntilTabsAreOperated(params)
+    .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
 }
 
 export async function waitUntilTabsAreCreated(idOrIds) {
-  return waitUntilTabsAreOperated(idOrIds, mCreatingTabs)
+  return waitUntilTabsAreOperated({ ids: idOrIds, operatingTabs: mCreatingTabs })
     .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
 }
 
 const mMovingTabs = new Map();
 
-export function hasMovingTab() {
-  return mMovingTabs.size > 0;
+export function hasMovingTab(windowId = null) {
+  return hasOperatingTab({ operatingTabs: mMovingTabs, windowId });
 }
 
-export function addMovingTabId(tabId) {
+export function addMovingTabId(tabId, windowId) {
   let onTabMoved;
   const promisedMoved = new Promise((resolve, _aReject) => {
     onTabMoved = resolve;
   });
-  mMovingTabs.set(tabId, promisedMoved);
+  const movingTabs = mMovingTabs.get(windowId) || new Map();
+  movingTabs.set(tabId, promisedMoved);
+  mMovingTabs.set(windowId, movingTabs);
   promisedMoved.then(() => {
-    mMovingTabs.delete(tabId);
+    movingTabs.delete(tabId);
   });
   return onTabMoved;
 }
 
-export async function waitUntilAllTabsAreMoved() {
-  return waitUntilTabsAreOperated(Array.from(mMovingTabs.keys()), mMovingTabs);
+export async function waitUntilAllTabsAreMoved(windowId = null) {
+  const params = {};
+  if (windowId) {
+    params.operatingTabsInWindow = mMovingTabs.get(windowId);
+    if (!params.operatingTabsInWindow)
+      return;
+  }
+  else {
+    params.operatingTabs = mMovingTabs;
+  }
+  return waitUntilTabsAreOperated(params)
 }
+
+browser.windows.onRemoved.addListener(windowId => {
+  mCreatingTabs.delete(windowId);
+  mMovingTabs.delete(windowId);
+});
 
 
 //===================================================================

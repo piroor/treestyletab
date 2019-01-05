@@ -63,6 +63,8 @@ export function buildFor(windowId) {
 }
 
 export function init(container) {
+  container.windowId = parseInt(container.dataset.windowId);
+
   container.internalMovingTabs  = new Set();
   container.alreadyMovedTabs    = new Set();
   container.internalClosingTabs = new Set();

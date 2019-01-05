@@ -483,7 +483,7 @@ function* spawnMessages(targetSet, message) {
 
 
 export async function getTargetTabs(message, sender) {
-  await Tabs.waitUntilAllTabsAreCreated();
+  await Tabs.waitUntilAllTabsAreCreated(message.window || message.windowId);
   if (Array.isArray(message.tabs))
     return getTabsFromWrongIds(message.tabs, sender);
   if (message.window || message.windowId) {

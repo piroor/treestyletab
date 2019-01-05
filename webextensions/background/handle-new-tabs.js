@@ -138,7 +138,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
   if ('openerTabId' in changeInfo && configs.syncParentTabAndOpenerTab) {
-    Tabs.waitUntilAllTabsAreCreated().then(() => {
+    Tabs.waitUntilAllTabsAreCreated(tab.apiTab.windowId).then(() => {
       const parent = Tabs.getOpenerTab(tab);
       if (!parent ||
           parent.parentNode != tab.parentNode ||

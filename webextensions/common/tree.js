@@ -131,7 +131,7 @@ export async function attachTabTo(child, parent, options = {}) {
     prev: dumpTab(options.insertAfter)
   });
 
-  await Tabs.waitUntilAllTabsAreCreated();
+  await Tabs.waitUntilAllTabsAreCreated(child.apiTab.windowId);
   const newIndex = Tabs.calculateNewTabIndex({
     insertBefore: options.insertBefore,
     insertAfter:  options.insertAfter,
