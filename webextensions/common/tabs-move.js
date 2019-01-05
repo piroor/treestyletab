@@ -380,13 +380,14 @@ async function syncTabsPositionToApiTabsInternal() {
     if (!tabs || tabs.size == 0)
       continue;
     tabs = Array.from(tabs).sort(documentPositionComparator);
-    let tab   = tabs[0];
-    let index = tab.apiTab.index;
-    while (tab = tab.nextSibling) {
-      tab.apiTab.index = ++index;
-    }
+    let tab       = tabs[0];
+    const allTabs = Array.from(tabs[0].parentNode.childNodes);
+    let index     = allTabs.indexOf(tab);
+    do {
+      tab.apiTab.index = index++;
+    } while (tab = tab.nextSibling);
     log('Tab nodes rearranged by syncTabsPositionToApiTabsInternal:\n'+(!configs.debug ? '' :
-      Array.from(tabs[0].parentNode.childNodes)
+      allTabs
         .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[REARRANGED]' : ''))
         .join('\n')));
   }
