@@ -872,9 +872,18 @@ function onMessage(message, _sender, _respond) {
       })();
     }; break;
 
+    case Constants.kCOMMAND_SYNC_TABS_ORDER:
+      SidebarTabs.reserveToSyncTabsOrder();
+      break;
+
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.nextTab]));
+        // Broadcasted movement based on different number of tabs may
+        // break the order of tabs, so we need to synchronize complete order
+        // of tabs after all.
+        if (message.allTabsCount != Tabs.getAllTabs().length)
+          SidebarTabs.reserveToSyncTabsOrder();
         return TabsMove.moveTabsBefore(
           message.tabs.map(Tabs.getTabById),
           Tabs.getTabById(message.nextTab),
@@ -885,6 +894,11 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.previousTab]));
+        // Broadcasted movement based on different number of tabs may
+        // break the order of tabs, so we need to synchronize complete order
+        // of tabs after all.
+        if (message.allTabsCount != Tabs.getAllTabs().length)
+          SidebarTabs.reserveToSyncTabsOrder();
         return TabsMove.moveTabsAfter(
           message.tabs.map(Tabs.getTabById),
           Tabs.getTabById(message.previousTab),

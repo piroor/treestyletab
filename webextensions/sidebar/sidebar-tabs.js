@@ -17,7 +17,6 @@ import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
-// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('sidebar/sidebar-tabs', ...args);
 }
@@ -259,6 +258,64 @@ function onUnderflow(event) {
     reserveToUpdateTooltip(tab);
   }
 }
+
+
+
+export function reserveToSyncTabsOrder() {
+  if (reserveToSyncTabsOrder.timer)
+    clearTimeout(reserveToSyncTabsOrder.timer);
+  reserveToSyncTabsOrder.timer = setTimeout(() => {
+    delete reserveToSyncTabsOrder.timer;
+    syncTabsOrder();
+  }, 100);
+}
+reserveToSyncTabsOrder.retryCount = 0;
+
+async function syncTabsOrder() {
+  log('syncTabsOrder');
+  const windowId  = Tabs.getWindow();
+  const apiTabIds = await browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_PULL_TABS_ORDER,
+    windowId
+  });
+  const container = Tabs.getTabsContainer();
+  if (container.childNodes.length != apiTabIds.length) {
+    if (reserveToSyncTabsOrder.retryCount > 10)
+      throw new Error(`fatal error: mismatched number of tabs in the window ${windowId}`);
+    log('syncTabsOrder: retry');
+    reserveToSyncTabsOrder.retryCount++;
+    return reserveToSyncTabsOrder();
+  }
+  reserveToSyncTabsOrder.retryCount = 0;
+  const correctedTabs = new Set();
+  for (let i = 0, maxi = apiTabIds.length; i < maxi; i++) {
+    const id  = apiTabIds[i];
+    const tab = Tabs.getTabById(id);
+    if (!tab)
+      throw new Error(`fatal error: missing tab elemnt for the tab ${id} in the window ${windowId}`);
+    tab.apiTab.index = i;
+    const nextId  = apiTabIds[i + 1];
+    const nextTab = tab.nextSibling;
+    if (nextId) {
+      if (!nextTab || nextTab.apiTab.id != nextId) {
+        container.insertBefore(tab, container.childNodes[i + 1]);
+        correctedTabs.add(tab);
+      }
+    }
+    else if (nextTab) {
+      // last tab must not have its next tab, then move it to the end
+      container.appendChild(tab);
+      correctedTabs.add(tab);
+    }
+  }
+  if (correctedTabs.size > 0)
+    log('Tab nodes rearranged by syncTabsOrder:\n'+(!configs.debug ? '' :
+      Array.from(container.childNodes)
+        .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(correctedTabs.has(tab) ? '[CORRECTED]' : ''))
+        .join('\n')));
+}
+
+
 
 Tabs.onBuilt.addListener((tab, info) => {
   const label = Tabs.getTabLabel(tab);

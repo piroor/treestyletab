@@ -81,6 +81,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       !Tabs.ensureLivingTab(referenceTab))
     return [];
 
+  const container = tabs[0].parentNode;
+
   log('moveTabsInternallyBefore: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
   if (options.inRemote || options.broadcast) {
     const message = {
@@ -88,6 +90,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       windowId: tabs[0].apiTab.windowId,
       tabs:     tabs.map(tab => tab.id),
       nextTab:  referenceTab.id,
+      allTabsCount: container.childNodes.length,
       broadcasted: !!options.broadcast
     };
     if (options.inRemote) {
@@ -99,7 +102,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     }
   }
 
-  const container = tabs[0].parentNode;
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
@@ -202,6 +204,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       !Tabs.ensureLivingTab(referenceTab))
     return [];
 
+  const container = tabs[0].parentNode;
+
   log('moveTabsInternallyAfter: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
   if (options.inRemote || options.broadcast) {
     const message = {
@@ -209,6 +213,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       windowId:    tabs[0].apiTab.windowId,
       tabs:        tabs.map(tab => tab.id),
       previousTab: referenceTab.id,
+      allTabsCount: container.childNodes.length,
       broadcasted: !!options.broadcast
     };
     if (options.inRemote) {
@@ -220,7 +225,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     }
   }
 
-  const container = tabs[0].parentNode;
   try {
     /*
       Tab elements are moved by tabs.onMoved automatically, but
@@ -381,6 +385,14 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 
   if (tabsIndexNeedToBeFixed.size == 0)
     return;
+
+  // tabs.onMoved produced by this operation can break the order of tabs
+  // in the sidebar, so we need to synchronize complete order of tabs after
+  // all.
+  browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_SYNC_TABS_ORDER,
+    windowId
+  });
 
   // fixup "index" of cached apiTab
   const reindexedTabs = Array.from(tabsIndexNeedToBeFixed).sort(documentPositionComparator);
