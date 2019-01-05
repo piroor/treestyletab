@@ -711,9 +711,8 @@ async function onMoved(tabId, moveInfo) {
         }
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.slice(container.childNodes)
-            .map(tab => tab.apiTab.index+': '+tab.id+(tab == movedTab ? '[MOVED]' : ''))
-            .join('\n')
-            .replace(/^/gm, ' - ')),
+            .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tab == movedTab ? '[MOVED]' : ''))
+            .join('\n')),
             { moveInfo, startIndex, endIndex });
       }
       const onMovedResult = Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);

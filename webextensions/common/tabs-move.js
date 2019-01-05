@@ -137,9 +137,9 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       }
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
         Array.slice(container.childNodes)
-          .map(tab => tab.apiTab.index+' '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
-          .join('\n')
-          .replace(/^/gm, ' - ')));
+          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
+          .join('\n')),
+          { minIndex, maxIndex });
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -261,9 +261,9 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       }
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
         Array.slice(container.childNodes)
-          .map(tab => tab.apiTab.index+' '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
-          .join('\n')
-          .replace(/^/gm, ' - ')));
+          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
+          .join('\n')),
+          { minIndex, maxIndex });
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -387,9 +387,8 @@ async function syncTabsPositionToApiTabsInternal() {
     }
     log('Tab nodes rearranged by syncTabsPositionToApiTabsInternal:\n'+(!configs.debug ? '' :
       tabs
-        .map(tab => tab.apiTab.index+' '+tab.id)
-        .join('\n')
-        .replace(/^/gm, ' - ')));
+        .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[REARRANGED]' : ''))
+        .join('\n')));
   }
 }
 syncTabsPositionToApiTabsInternal.movedApiTabs = [];
