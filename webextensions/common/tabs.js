@@ -226,8 +226,7 @@ async function waitUntilTabsAreOperated(params = {}) {
     }
   }
   else if (params.operatingTabs) {
-    for (const windowId of params.operatingTabs.keys()) {
-      const operatingTabsInWindow = params.operatingTabs.get(windowId);
+    for (const operatingTabsInWindow of params.operatingTabs.values()) {
       if (ids) {
         for (let i = ids.length - 1; i > -1; i--) {
           const id = ids[i];
@@ -261,8 +260,8 @@ export function hasOperatingTab(params = {}) {
     const operatingTabsInWindow = params.operatingTabs.get(params.windowId);
     return operatingTabsInWindow ? operatingTabsInWindow.size > 0 : false;
   }
-  for (const windowId of params.operatingTabs.keys()) {
-    if (params.operatingTabs.get(windowId).size > 0)
+  for (const operatingTabsInWindow of params.operatingTabs.values()) {
+    if (operatingTabsInWindow.size > 0)
       return true;
   }
   return false;
