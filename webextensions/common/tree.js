@@ -337,7 +337,7 @@ export function detachTab(child, options = {}) {
 export async function detachTabsFromTree(tabs, options = {}) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-  tabs = Array.slice(tabs).reverse();
+  tabs = Array.from(tabs).reverse();
   const promisedAttach = [];
   for (const tab of tabs) {
     const children = Tabs.getChildTabs(tab);

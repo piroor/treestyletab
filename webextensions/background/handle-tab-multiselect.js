@@ -45,7 +45,7 @@ function getTabsBetween(begin, end) {
   if (begin == end)
     return [];
   let inRange = false;
-  return Array.slice(begin.parentNode.children).filter(tab => {
+  return Array.from(begin.parentNode.children).filter(tab => {
     if (tab == begin || tab == end) {
       inRange = !inRange;
       return false;

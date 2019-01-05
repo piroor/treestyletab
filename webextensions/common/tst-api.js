@@ -413,7 +413,7 @@ export function serializeTab(tab) {
   const children         = Tabs.getChildTabs(tab).map(serializeTab);
   const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.apiTab.id);
   return Object.assign({}, tab.apiTab, {
-    states:   Array.slice(tab.classList).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
+    states:   Array.from(tab.classList).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(tab.getAttribute(Constants.kLEVEL) || 0),
     children, ancestorTabIds
   });

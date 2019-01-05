@@ -136,7 +136,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         tab.apiTab.index = i;
       }
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-        Array.slice(container.childNodes)
+        Array.from(container.childNodes)
           .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')),
           { minIndex, maxIndex });
@@ -260,7 +260,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         tab.apiTab.index = i;
       }
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-        Array.slice(container.childNodes)
+        Array.from(container.childNodes)
           .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')),
           { minIndex, maxIndex });

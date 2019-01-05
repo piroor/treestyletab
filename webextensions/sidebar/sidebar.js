@@ -313,7 +313,7 @@ function updateContextualIdentitiesStyle() {
 }
 
 function updateContextualIdentitiesSelector() {
-  const anchors = Array.slice(document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`));
+  const anchors = document.querySelectorAll(`.${Constants.kCONTEXTUAL_IDENTITY_SELECTOR}-marker`);
   for (const anchor of anchors) {
     if (ContextualIdentities.getCount() == 0)
       anchor.setAttribute('disabled', true);

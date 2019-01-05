@@ -710,7 +710,7 @@ async function onMoved(tabId, moveInfo) {
           tabs[i].apiTab.index = i;
         }
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
-          Array.slice(container.childNodes)
+          Array.from(container.childNodes)
             .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tab == movedTab ? '[MOVED]' : ''))
             .join('\n')),
             { moveInfo, startIndex, endIndex });
