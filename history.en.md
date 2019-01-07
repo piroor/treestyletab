@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.10 (2019.1.7)
    * Fix broken focus of tabs after closing of tabs on slow environments. (regression on recent versions)
    * Fix broken order of multiple tabs opened at a time.
    * Deactivate configuration UI around bookmarks when the permission to access bookmarks is not granted.
