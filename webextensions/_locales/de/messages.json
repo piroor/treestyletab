@@ -341,7 +341,7 @@
   "config_sidebarScrollbarPosition_left": { "message": "Links" },
   "config_sidebarScrollbarPosition_right": { "message": "Rechts" },
   
-  "config_requestPermissions_bookmarks": { "message": "Erstellen von Lesezeichen erlauben" },
+  "config_requestPermissions_bookmarks": { "message": "Lesen und Erstellen von Lesezeichen zulassen" },
   "config_requestPermissions_allUrls":   { "message": "Beim Umschalten zwischen Tabs mit der Tastatur eingeklappte Zweige nicht ausklappen und eingeklappte untergeordnete Tabs überspringen. (*Du musst das Ausführen von Scripts auf Webseiten erlauben.)" },
   
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Klicke auf das \"Tree Style Tab\" Symbol in der Symbolleiste" },

@@ -333,7 +333,7 @@
   "config_sidebarScrollbarPosition_left": { "message": "Ліворуч" },
   "config_sidebarScrollbarPosition_right": { "message": "Праворуч" },
 
-  "config_requestPermissions_bookmarks": { "message": "Дозволити створення закладок" },
+  "config_requestPermissions_bookmarks": { "message": "Дозволити читання та створення закладок" },
   "config_requestPermissions_allUrls":   { "message": "Не розгортати згорнуте дерево і пропускати згорнуті дочірні вкл., перемикаючи фокус вкладок з допомогою гарячих клавіш. (*Необхідно дозволити виконання скриптів на веб-сторінках.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Натисніть \"Tree Style Tab\" кнопку панелі інструментів" },

@@ -310,7 +310,7 @@
   "config_sidebarScrollbarPosition_left": { "message": "左側" },
   "config_sidebarScrollbarPosition_right": { "message": "右側" },
 
-  "config_requestPermissions_bookmarks": { "message": "允許創建書籤" },
+  "config_requestPermissions_bookmarks": { "message": "允許閱讀和創建書籤" },
   "config_requestPermissions_allUrls":   { "message": "使用快捷鍵切換分頁時，不要展開折疊的樹(需要允許在網頁中執行腳本)。" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "點擊「Tree Style Tab」的工具列按鈕" },

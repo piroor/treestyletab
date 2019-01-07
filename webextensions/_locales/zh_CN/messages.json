@@ -1019,8 +1019,8 @@
         "hash": "e36652d0c5eff2ca4f3cd7805a979d3f"
     },
     "config_requestPermissions_bookmarks": {
-        "message": "允许创建书签",
-        "hash": "b98ddf87ce4d55e8ca5e30e56e153185"
+        "message": "允许读写书签",
+        "hash": ""
     },
     "config_requestPermissions_allUrls": {
         "message": "通过键盘快捷键切换标签页的焦点时，不要展开折叠的树并跳过已折叠的后代。 （*您需要允许在网页上执行脚本。）",

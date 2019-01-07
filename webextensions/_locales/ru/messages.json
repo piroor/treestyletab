@@ -333,7 +333,7 @@
   "config_sidebarScrollbarPosition_left": { "message": "Слева" },
   "config_sidebarScrollbarPosition_right": { "message": "Справа" },
 
-  "config_requestPermissions_bookmarks": { "message": "Разрешить создание закладок" },
+  "config_requestPermissions_bookmarks": { "message": "Разрешить читать и писать закладки" },
   "config_requestPermissions_allUrls":   { "message": "Не разворачивать свернутое дерево и пропускать свернутые дочерние вкл., переключая фокус вкладок с помощью горячих клавиш. (*Необходимо разрешить исполнение скриптов на веб-страницах.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Нажмите \"Tree Style Tab\" кнопку панели инструментов" },
