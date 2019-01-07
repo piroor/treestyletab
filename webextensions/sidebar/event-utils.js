@@ -129,7 +129,7 @@ function getTabFromCoordinates(event, options = {}) {
   for (const x of trialPoints) {
     const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
     if (tab)
-      return Tabs.getTabFromChild(tab.nextSibling, options);
+      return Tabs.getTabFromChild(Tabs.getNextTab(tab), options);
   }
   for (const x of trialPoints) {
     const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);

@@ -1197,7 +1197,7 @@ export function isAllTabsPlacedBefore(tabs, nextTab) {
   }
   return !nextTab ||
          !previousTab ||
-         previousTab.nextSibling == nextTab;
+         getNextTab(previousTab) == nextTab;
 }
 
 export function isAllTabsPlacedAfter(tabs, previousTab) {
@@ -1209,7 +1209,7 @@ export function isAllTabsPlacedAfter(tabs, previousTab) {
   tabs = Array.from(tabs).reverse();
   let nextTab = tabs.shift();
   for (const tab of tabs) {
-    if (tab.nextSibling != nextTab)
+    if (getNextTab(tab) != nextTab)
       return false;
     nextTab = tab;
   }

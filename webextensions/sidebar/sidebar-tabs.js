@@ -295,7 +295,7 @@ async function syncTabsOrder() {
       throw new Error(`fatal error: missing tab elemnt for the tab ${id} in the window ${windowId}`);
     tab.apiTab.index = i;
     const nextId  = apiTabIds[i + 1];
-    const nextTab = tab.nextSibling;
+    const nextTab = Tabs.getNextTab(tab);
     if (nextId) {
       if (!nextTab || nextTab.apiTab.id != nextId) {
         container.insertBefore(tab, container.childNodes[i + 1]);

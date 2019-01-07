@@ -702,7 +702,7 @@ async function onMoved(tabId, moveInfo) {
         newNextIndex++;
       const nextTab = Tabs.getAllTabs(movedTab)[newNextIndex];
       if (!alreadyMoved &&
-          movedTab.nextSibling != nextTab) {
+          Tabs.getNextTab(movedTab) != nextTab) {
         container.insertBefore(movedTab, nextTab);
         const tabs       = Tabs.getAllTabs(movedTab);
         const startIndex = Math.max(Math.min(moveInfo.fromIndex, moveInfo.toIndex), 0);
