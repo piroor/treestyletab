@@ -85,6 +85,28 @@ function isAllSlavesChecked(aMasger) {
   return Array.from(checkboxes).every(checkbox => checkbox.checked);
 }
 
+function updateBookmarksUI(enabled) {
+  const elements = document.querySelectorAll('.with-bookmarks-permission label, .with-bookmarks-permission input, .with-bookmarks-permission button');
+  if (enabled) {
+    for (const element of elements) {
+      element.removeAttribute('disabled');
+    }
+    const defaultBookmarkParentChooser = document.getElementById('defaultBookmarkParentChooser');
+    Bookmark.initFolderChoolser(defaultBookmarkParentChooser, {
+      defaultValue: configs.defaultBookmarkParentId,
+      onCommand:    (item, _event) => {
+        if (item.dataset.id)
+          configs.defaultBookmarkParentId = item.dataset.id;
+      },
+    });
+  }
+  else {
+    for (const element of elements) {
+      element.setAttribute('disabled', true);
+    }
+  }
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   if (/^Mac/i.test(navigator.platform))
@@ -172,14 +194,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    const defaultBookmarkParentChooser = document.getElementById('defaultBookmarkParentChooser');
-    Bookmark.initFolderChoolser(defaultBookmarkParentChooser, {
-      defaultValue: configs.defaultBookmarkParentId,
-      onCommand:    (item, _event) => {
-        if (item.dataset.id)
-          configs.defaultBookmarkParentId = item.dataset.id;
-      },
-    });
+    Permissions.isGranted(Permissions.BOOKMARKS).then(granted => updateBookmarksUI(granted));
 
     document.querySelector('#legacyConfigsNextMigrationVersion-currentLevel').textContent = Migration.kLEGACY_CONFIGS_MIGRATION_VERSION;
 
@@ -190,7 +205,8 @@ window.addEventListener('DOMContentLoaded', () => {
     );
     Permissions.bindToCheckbox(
       Permissions.BOOKMARKS,
-      document.querySelector('#bookmarksPermissionGranted')
+      document.querySelector('#bookmarksPermissionGranted'),
+      { onChanged: (granted) => updateBookmarksUI(granted) }
     );
 
 

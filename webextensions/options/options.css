@@ -26,7 +26,8 @@ ul p.sub {
 label[disabled="true"] {
   opacity: 0.5;
 }
-label[disabled="true"] input {
+label[disabled="true"] input,
+label[disabled="true"] button {
   opacity: 1;
 }
 
