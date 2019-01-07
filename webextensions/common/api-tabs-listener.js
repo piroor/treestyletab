@@ -504,11 +504,12 @@ async function onNewTabTracked(tab) {
 }
 
 function reindexFollowingTabs(startTab, startIndex) {
+  log('reindexFollowingTabs ', { startTab, startIndex });
   let followingTab = startTab;
   let newIndex = startIndex;
   while (followingTab) {
     followingTab.apiTab.index = newIndex++;
-    followingTab = followingTab.nextSibling;
+    followingTab = Tabs.getNextTab(followingTab);
   }
 }
 
@@ -586,7 +587,7 @@ async function onRemoved(tabId, removeInfo) {
     oldTab[Constants.kTAB_STATE_REMOVING] = true;
     oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
 
-    reindexFollowingTabs(oldTab.nextSibling, oldTab.apiTab.index);
+    reindexFollowingTabs(Tabs.getNextTab(oldTab), oldTab.apiTab.index);
 
     const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation
