@@ -83,11 +83,15 @@ export async function updateSelectionByTabClick(tab, event) {
           continue;
         highlightedTabIds.add(toBeSelectedTab.apiTab.id);
       }
-      if (tab != activeTab &&
-          Tabs.isSubtreeCollapsed(activeTab)) {
-        // highlight all collapsed descendants of the active tab, to prevent only the root tab is dragged.
-        for (const descendant of Tabs.getDescendantTabs(activeTab)) {
-          highlightedTabIds.add(descendant.apiTab.id);
+      for (const root of [tab, activeTab]) {
+        if (!Tabs.isSubtreeCollapsed(root))
+          continue;
+        if (root != activeTab &&
+            Tabs.isSubtreeCollapsed(activeTab)) {
+          // highlight all collapsed descendants of the active tab, to prevent only the root tab is dragged.
+          for (const descendant of Tabs.getDescendantTabs(root)) {
+            highlightedTabIds.add(descendant.apiTab.id);
+          }
         }
       }
       // for better performance, we should not call browser.tabs.update() for each tab.
@@ -121,13 +125,19 @@ export async function updateSelectionByTabClick(tab, event) {
        */
       let highlightedCount = Tabs.getSelectedTabs(tab).length;
       let partiallyHighlighted = false;
-      if (Tabs.isSubtreeCollapsed(activeTab)) {
-        const descendants = Tabs.getDescendantTabs(activeTab);
+      let rootTabs = [tab];
+      if (tab != activeTab)
+        rootTabs.push(activeTab);
+      for (const root of rootTabs) {
+        if (!Tabs.isSubtreeCollapsed(root))
+          continue;
+        const descendants = Tabs.getDescendantTabs(root);
         const highlightedDescendants = descendants.filter(Tabs.isHighlighted);
-        partiallyHighlighted = (tab != activeTab && highlightedDescendants.length == 0) || (highlightedDescendants.length != descendants.length);
-        const highlighted = (tab != activeTab) || partiallyHighlighted || !Tabs.isHighlighted(descendants[0]);
-        if (tab == activeTab ||
-            partiallyHighlighted) {
+        partiallyHighlighted = (root != activeTab && highlightedDescendants.length == 0) || (highlightedDescendants.length != descendants.length);
+        const highlighted = root == activeTab ? (partiallyHighlighted || !Tabs.isHighlighted(descendants[0])) : !Tabs.isHighlighted(root);
+        if (root != activeTab ||
+            partiallyHighlighted ||
+            !highlighted) {
           for (const descendant of descendants) {
             if (highlighted)
               highlightedCount++;
@@ -142,7 +152,7 @@ export async function updateSelectionByTabClick(tab, event) {
       }
       if (tab != activeTab ||
           /* don't unhighlight only one highlighted active tab! */
-          (!partiallyHighlighted && highlightedCount > 1)) {
+          (!partiallyHighlighted && highlightedCount > 1 && !Tabs.isSubtreeCollapsed(tab))) {
         if (!Tabs.isHighlighted(tab))
           highlightedTabIds.add(tab.apiTab.id);
         else
