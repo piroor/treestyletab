@@ -125,7 +125,7 @@ export async function updateSelectionByTabClick(tab, event) {
        */
       let highlightedCount = Tabs.getSelectedTabs(tab).length;
       let partiallyHighlighted = false;
-      let rootTabs = [tab];
+      const rootTabs = [tab];
       if (tab != activeTab)
         rootTabs.push(activeTab);
       for (const root of rootTabs) {
