@@ -55,11 +55,13 @@ function getTabsBetween(begin, end) {
 }
 
 const mLastClickedTabInWindow = new WeakMap();
+const mIsInSelectionSession   = new WeakMap();
 
 export async function updateSelectionByTabClick(tab, event) {
   const ctrlKeyPressed = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
   const activeTab = Tabs.getCurrentTab(tab);
   const highlightedTabIds = new Set(Tabs.getHighlightedTabs(tab).map(tab => tab.apiTab.id));
+  const inSelectionSession = mIsInSelectionSession.get(tab.parentNode);
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
     const lastClickedTab   = mLastClickedTabInWindow.get(tab.parentNode) || activeTab;
@@ -77,23 +79,24 @@ export async function updateSelectionByTabClick(tab, event) {
             highlightedTabIds.delete(alreadySelectedTab.apiTab.id);
         }
       }
+
       log('set selection by shift-click: ', targetTabs);
       for (const toBeSelectedTab of targetTabs) {
-        if (Tabs.isHighlighted(toBeSelectedTab))
-          continue;
         highlightedTabIds.add(toBeSelectedTab.apiTab.id);
       }
-      for (const root of [tab, activeTab]) {
+
+      const rootTabs = [tab];
+      if (tab != activeTab &&
+          !inSelectionSession)
+        rootTabs.push(activeTab);
+      for (const root of rootTabs) {
         if (!Tabs.isSubtreeCollapsed(root))
           continue;
-        if (root != activeTab &&
-            Tabs.isSubtreeCollapsed(activeTab)) {
-          // highlight all collapsed descendants of the active tab, to prevent only the root tab is dragged.
-          for (const descendant of Tabs.getDescendantTabs(root)) {
-            highlightedTabIds.add(descendant.apiTab.id);
-          }
+        for (const descendant of Tabs.getDescendantTabs(root)) {
+          highlightedTabIds.add(descendant.apiTab.id);
         }
       }
+
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(apiTabId => apiTabId != activeTab.apiTab.id)
@@ -109,6 +112,7 @@ export async function updateSelectionByTabClick(tab, event) {
     catch(_e) { // not implemented on old Firefox
       return false;
     }
+    mIsInSelectionSession.set(tab.parentNode, true);
     return true;
   }
   else if (ctrlKeyPressed) {
@@ -123,41 +127,48 @@ export async function updateSelectionByTabClick(tab, event) {
          - When a foreign tab is highlighted and there is one or more unhighlighted descendants 
            => highlight all descendants (to prevent only the root tab is dragged).
        */
-      let highlightedCount = Tabs.getSelectedTabs(tab).length;
-      let partiallyHighlighted = false;
-      const rootTabs = [tab];
-      if (tab != activeTab)
-        rootTabs.push(activeTab);
-      for (const root of rootTabs) {
-        if (!Tabs.isSubtreeCollapsed(root))
-          continue;
-        const descendants = Tabs.getDescendantTabs(root);
-        const highlightedDescendants = descendants.filter(Tabs.isHighlighted);
-        partiallyHighlighted = (root != activeTab && highlightedDescendants.length == 0) || (highlightedDescendants.length != descendants.length);
-        const highlighted = root == activeTab ? (partiallyHighlighted || !Tabs.isHighlighted(descendants[0])) : !Tabs.isHighlighted(root);
-        if (root != activeTab ||
-            partiallyHighlighted ||
-            !highlighted) {
-          for (const descendant of descendants) {
-            if (highlighted)
-              highlightedCount++;
-            else
-              highlightedCount--;
-            if (highlighted)
-              highlightedTabIds.add(descendant.apiTab.id);
-            else
-              highlightedTabIds.delete(descendant.apiTab.id);
+      const activeTabDescendants = Tabs.getDescendantTabs(activeTab);
+      let toBeHighlighted = !Tabs.isHighlighted(tab);
+      log('toBeHighlighted: ', toBeHighlighted);
+      if (tab == activeTab &&
+          Tabs.isSubtreeCollapsed(tab) &&
+          activeTabDescendants.length > 0) {
+        const highlightedCount  = activeTabDescendants.filter(Tabs.isHighlighted).length;
+        const partiallySelected = highlightedCount != 0 && highlightedCount != activeTabDescendants.length;
+        toBeHighlighted = partiallySelected || !Tabs.isHighlighted(activeTabDescendants[0]);
+        log(' => ', toBeHighlighted, { partiallySelected });
+      }
+      if (toBeHighlighted)
+        highlightedTabIds.add(tab.apiTab.id);
+      else
+        highlightedTabIds.delete(tab.apiTab.id);
+
+      if (Tabs.isSubtreeCollapsed(tab)) {
+        const descendants = tab == activeTab ? activeTabDescendants : Tabs.getDescendantTabs(tab);
+        for (const descendant of descendants) {
+          if (toBeHighlighted)
+            highlightedTabIds.add(descendant.apiTab.id);
+          else
+            highlightedTabIds.delete(descendant.apiTab.id);
+        }
+      }
+
+      if (tab == activeTab) {
+        if (highlightedTabIds.size == 0) {
+          log('Don\'t unhighlight only one highlighted active tab!');
+          highlightedTabIds.add(tab.apiTab.id);
+        }
+      }
+      else if (!inSelectionSession) {
+        log('Select active tab and its descendants, for new selection session');
+        highlightedTabIds.add(activeTab.apiTab.id);
+        if (Tabs.isSubtreeCollapsed(activeTab)) {
+          for (const descendant of activeTabDescendants) {
+            highlightedTabIds.add(descendant.apiTab.id);
           }
         }
       }
-      if (tab != activeTab ||
-          /* don't unhighlight only one highlighted active tab! */
-          (!partiallyHighlighted && highlightedCount > 1 && !Tabs.isSubtreeCollapsed(tab))) {
-        if (!Tabs.isHighlighted(tab))
-          highlightedTabIds.add(tab.apiTab.id);
-        else
-          highlightedTabIds.delete(tab.apiTab.id);
-      }
+
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(apiTabId => apiTabId != activeTab.apiTab.id)
@@ -174,10 +185,12 @@ export async function updateSelectionByTabClick(tab, event) {
       return false;
     }
     mLastClickedTabInWindow.set(tab.parentNode, tab);
+    mIsInSelectionSession.set(tab.parentNode, true);
     return true;
   }
   else {
     mLastClickedTabInWindow.set(tab.parentNode, tab);
+    mIsInSelectionSession.delete(tab.parentNode);
     return false;
   }
 }
