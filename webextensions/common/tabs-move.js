@@ -314,7 +314,7 @@ function syncTabsPositionToApiTabs(apiTabs) {
         previousSync = syncTabsPositionToApiTabsInternal(windowId);
       previousSync = previousSync.then(resolve);
       mPreviousSync.set(windowId, previousSync);
-    }, 100));
+    }, 250));
   }).then(() => {
     mPreviousSync.delete(windowId);
   });
