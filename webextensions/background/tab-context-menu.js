@@ -624,7 +624,7 @@ async function onClick(info, contextApiTab) {
     case 'context_closeTabsToTheEnd': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       let after = false;
-      const closeAPITabs = [];
+      const closeApiTabs = [];
       const keptTabIds = multiselectedTabs ?
         multiselectedTabs.map(tab => tab.apiTab.id) :
         [contextApiTab.id] ;
@@ -634,31 +634,31 @@ async function onClick(info, contextApiTab) {
           continue;
         }
         if (after && !apiTab.pinned)
-          closeAPITabs.push(apiTab);
+          closeApiTabs.push(apiTab);
       }
       const canceled = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs:     closeAPITabs.map(tab => tab.id),
+        tabs:     closeApiTabs.map(tab => tab.id),
         windowId: contextWindowId
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeAPITabs.map(aPITab => aPITab.id));
+      browser.tabs.remove(closeApiTabs.map(apiTab => apiTab.id));
     }; break;
     case 'context_closeOtherTabs': {
       const apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
       const keptTabIds = multiselectedTabs ?
         multiselectedTabs.map(tab => tab.apiTab.id) :
         [contextApiTab.id] ;
-      const closeAPITabs = apiTabs.filter(aPITab => !aPITab.pinned && !keptTabIds.includes(aPITab.id)).map(aPITab => aPITab.id);
+      const closeApiTabs = apiTabs.filter(apiTab => !apiTab.pinned && !keptTabIds.includes(apiTab.id)).map(apiTab => apiTab.id);
       const canceled = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs:     closeAPITabs.map(tab => tab.id),
+        tabs:     closeApiTabs.map(tab => tab.id),
         windowId: contextWindowId
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeAPITabs);
+      browser.tabs.remove(closeApiTabs);
     }; break;
     case 'context_undoCloseTab': {
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
