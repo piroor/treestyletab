@@ -278,9 +278,7 @@ function onMessage(message, sender) {
       })();
 
     case Constants.kCOMMAND_PULL_TABS_ORDER:
-      return (async () => {
-        return Tabs.getAllTabs(message.windowId).map(tab => tab.apiTab.id);
-      })();
+      return Promise.resolve(Tabs.getAllTabs(message.windowId).map(tab => tab.apiTab.id));
 
     case Constants.kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
