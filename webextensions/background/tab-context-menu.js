@@ -624,41 +624,45 @@ async function onClick(info, contextApiTab) {
     case 'context_closeTabsToTheEnd': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       let after = false;
-      const closeApiTabs = [];
-      const keptTabIds = multiselectedTabs ?
-        multiselectedTabs.map(tab => tab.apiTab.id) :
-        [contextApiTab.id] ;
+      const closeApiTabIds = [];
+      const keptTabIds = new Set(
+        multiselectedTabs ?
+          multiselectedTabs.map(tab => tab.apiTab.id) :
+          [contextApiTab.id]
+      );
       for (const apiTab of apiTabs) {
-        if (keptTabIds.includes(apiTab.id)) {
+        if (keptTabIds.has(apiTab.id)) {
           after = true;
           continue;
         }
         if (after && !apiTab.pinned)
-          closeApiTabs.push(apiTab);
+          closeApiTabIds.push(apiTab.id);
       }
       const canceled = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs:     closeApiTabs.map(tab => tab.id),
+        tabs:     closeApiTabIds,
         windowId: contextWindowId
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeApiTabs.map(apiTab => apiTab.id));
+      browser.tabs.remove(closeApiTabIds);
     }; break;
     case 'context_closeOtherTabs': {
       const apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
-      const keptTabIds = multiselectedTabs ?
-        multiselectedTabs.map(tab => tab.apiTab.id) :
-        [contextApiTab.id] ;
-      const closeApiTabs = apiTabs.filter(apiTab => !apiTab.pinned && !keptTabIds.includes(apiTab.id)).map(apiTab => apiTab.id);
+      const keptTabIds = new Set(
+        multiselectedTabs ?
+          multiselectedTabs.map(tab => tab.apiTab.id) :
+          [contextApiTab.id]
+      );
+      const closeApiTabIds = apiTabs.filter(apiTab => !apiTab.pinned && !keptTabIds.has(apiTab.id)).map(tab => tab.id);
       const canceled = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs:     closeApiTabs.map(tab => tab.id),
+        tabs:     closeApiTabIds,
         windowId: contextWindowId
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeApiTabs);
+      browser.tabs.remove(closeApiTabIds);
     }; break;
     case 'context_undoCloseTab': {
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
