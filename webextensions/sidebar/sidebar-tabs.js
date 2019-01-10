@@ -278,6 +278,7 @@ async function syncTabsOrder() {
     type: Constants.kCOMMAND_PULL_TABS_ORDER,
     windowId
   });
+  log('syncTabsOrder: apiTabIds = ', apiTabIds);
   const container = Tabs.getTabsContainer();
   if (container.childNodes.length != apiTabIds.length) {
     if (reserveToSyncTabsOrder.retryCount > 10)
@@ -294,24 +295,11 @@ async function syncTabsOrder() {
     if (!tab)
       throw new Error(`fatal error: missing tab elemnt for the tab ${id} in the window ${windowId}`);
     tab.apiTab.index = i;
-    if (i == 0 && Tabs.getPreviousTab(tab)) {
-      container.insertBefore(tab, Tabs.getFirstTab(tab));
-      correctedTabs.add(tab);
+    const tabs = container.childNodes;
+    if (tab == tabs[i])
       continue;
-    }
-    const nextId  = apiTabIds[i + 1];
-    const nextTab = Tabs.getNextTab(tab);
-    if (nextId) {
-      if (!nextTab || nextTab.apiTab.id != nextId) {
-        container.insertBefore(tab, container.childNodes[i + 1]);
-        correctedTabs.add(tab);
-      }
-    }
-    else if (nextTab) {
-      // last tab must not have its next tab, then move it to the end
-      container.appendChild(tab);
-      correctedTabs.add(tab);
-    }
+    container.insertBefore(tab, tabs[i]);
+    correctedTabs.add(tab);
   }
   if (correctedTabs.size > 0)
     log('Tab nodes rearranged by syncTabsOrder:\n'+(!configs.debug ? '' :
