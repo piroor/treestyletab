@@ -336,6 +336,8 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   const apiTabs = tabs.sort(documentPositionComparator).map(tab => tab.apiTab);
   log(`syncTabsPositionToApiTabsInternal(${windowId}): rearrange `, apiTabs.map(apiTab => apiTab.id));
   const movedLogs = [];
+  const toBeMovedTabIds = new Set();
+  let promisedComplete;
   for (const apiTab of apiTabs) {
     if (Tabs.hasCreatingTab(apiTab.windowId))
       await Tabs.waitUntilAllTabsAreCreated(apiTab.windowId);
@@ -361,6 +363,19 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         movedInfo = ` (before tab ${nextTab.apiTab.id})`;
       }
       if (fromIndex != toIndex && toIndex > -1) {
+        toBeMovedTabIds.add(apiTab.id);
+        if (!promisedComplete) {
+          promisedComplete = new Promise((resolve, _reject) => {
+            const onMoved = tabId => {
+              toBeMovedTabIds.delete(tabId);
+              if (toBeMovedTabIds.size == 0) {
+                browser.tabs.onMoved.removeListener(onMoved);
+                resolve();
+              }
+            };
+            browser.tabs.onMoved.addListener(onMoved);
+          });
+        }
         tabsIndexNeedToBeFixed.add(tab);
         logApiTabs(`tabs-move:syncTabsPositionToApiTabsInternal: browser.tabs.move() `, apiTab.id, {
           windowId: apiTab.windowId,
@@ -374,25 +389,24 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           windowId: apiTab.windowId,
           index:    toIndex
         }).catch(ApiTabs.handleMissingTabError);
-        movedLogs.push(`tab ${apiTab.id}, from ${fromIndex} to ${toIndex}${movedInfo}`);
+        movedLogs.push(`  - tab ${apiTab.id}, from ${fromIndex} to ${toIndex}${movedInfo}`);
       }
     }
     catch(e) {
       log(`syncTabsPositionToApiTabsInternal(${windowId}): fatal error: `, e);
     }
   }
-  log(`syncTabsPositionToApiTabsInternal(${windowId}): moved `, movedLogs);
+  log(`syncTabsPositionToApiTabsInternal(${windowId}): moved.\n${movedLogs.join('\n')}`);
+  if (configs.debug) {
+    browser.tabs.query({ windowId }).then(allApiTabs => {
+      log('syncTabsPositionToApiTabsInternal: allApiTabs (after):\n'+allApiTabs.map(apiTab => '  - '+apiTab.index+': tab-'+windowId+'-'+apiTab.id).join('\n'));
+    });
+  }
 
   if (tabsIndexNeedToBeFixed.size == 0)
     return;
 
-  // tabs.onMoved produced by this operation can break the order of tabs
-  // in the sidebar, so we need to synchronize complete order of tabs after
-  // all.
-  browser.runtime.sendMessage({
-    type: Constants.kCOMMAND_SYNC_TABS_ORDER,
-    windowId
-  });
+  await promisedComplete;
 
   // fixup "index" of cached apiTab
   const reindexedTabs = Array.from(tabsIndexNeedToBeFixed).sort(documentPositionComparator);
@@ -402,10 +416,18 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   do {
     tab.apiTab.index = index++;
   } while ((tab = Tabs.getNextTab(tab)));
-  log(`Tab nodes rearranged by syncTabsPositionToApiTabsInternal(${windowId}):\n`+(!configs.debug ? '' :
+  log(`Tabs rearranged by syncTabsPositionToApiTabsInternal(${windowId}):\n`+(!configs.debug ? '' :
     allTabs
       .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabsIndexNeedToBeFixed.has(tab) ? '[REARRANGED]' : ''))
       .join('\n')));
+
+  // tabs.onMoved produced by this operation can break the order of tabs
+  // in the sidebar, so we need to synchronize complete order of tabs after
+  // all.
+  browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_SYNC_TABS_ORDER,
+    windowId
+  });
 }
 
 function documentPositionComparator(a, b) {
