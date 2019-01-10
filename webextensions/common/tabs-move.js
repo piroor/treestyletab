@@ -332,7 +332,8 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   for (const apiTab of movedApiTabs) {
     uniqueApiTabs.set(apiTab.id, apiTab);
   }
-  const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById);
+  // Tabs may be removed while waiting.
+  const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById).filter(Tabs.ensureLivingTab);
   const apiTabs = tabs.sort(documentPositionComparator).map(tab => tab.apiTab);
   log(`syncTabsPositionToApiTabsInternal(${windowId}): rearrange `, apiTabs.map(apiTab => apiTab.id));
   const movedLogs = [];
@@ -344,7 +345,9 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
     if (Tabs.hasMovingTab(apiTab.windowId))
       await Tabs.waitUntilAllTabsAreMoved(apiTab.windowId);
     try {
-      const tab         = Tabs.getTabById(apiTab);
+      const tab = Tabs.getTabById(apiTab);
+      if (!tab) // Tab may be removed while waiting.
+        continue;
       const previousTab = Tabs.getPreviousTab(tab);
       const nextTab     = Tabs.getNextTab(tab);
       let fromIndex     = -1;
@@ -362,6 +365,8 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           toIndex--;
         movedInfo = ` (before tab ${nextTab.apiTab.id})`;
       }
+      if (!Tabs.ensureLivingTab(tab)) // Tab may be removed while waiting.
+        continue;
       if (fromIndex != toIndex && toIndex > -1) {
         toBeMovedTabIds.add(apiTab.id);
         if (!promisedComplete) {
@@ -408,8 +413,9 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 
   await promisedComplete;
 
-  // fixup "index" of cached apiTab
-  const reindexedTabs = Array.from(tabsIndexNeedToBeFixed).sort(documentPositionComparator);
+  // Fixup "index" of cached apiTab.
+  // Tab may be removed while waiting, so we need to isolate tabs before sorting.
+  const reindexedTabs = Array.from(tabsIndexNeedToBeFixed).filter(Tabs.ensureLivingTab).sort(documentPositionComparator);
   const allTabs       = Array.from(reindexedTabs[0].parentNode.childNodes);
   let tab   = reindexedTabs[0];
   let index = allTabs.indexOf(tab);
@@ -431,7 +437,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 }
 
 function documentPositionComparator(a, b) {
-  if (a === b)
+  if (a === b || !a || !b)
     return 0;
 
   const position = a.compareDocumentPosition(b);
