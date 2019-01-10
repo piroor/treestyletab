@@ -298,18 +298,18 @@ export function detachTab(child, options = {}) {
   const parent = Tabs.getParentTab(child);
 
   if (!parent)
-    log('parent is already removed, or orphan tab');
+    log(` => parent(${child.getAttribute(Constants.kPARENT)}) is already removed, or orphan tab`);
 
   if (parent) {
     parent.childTabs = parent.childTabs.filter(tab => tab != child);
     const childIds = parent.childTabs.map(tab => tab.id);
     if (childIds.length == 0) {
       parent.removeAttribute(Constants.kCHILDREN);
-      log('no more child');
+      log(' => no more child');
     }
     else {
       parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
-      log('rest children: ', childIds);
+      log(' => rest children: ', childIds);
     }
     TabsUpdate.updateParentTab(parent);
   }
