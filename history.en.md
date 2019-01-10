@@ -1,6 +1,11 @@
 # History
 
  - master/HEAD
+   * Fix broken order and focus of tabs after multiple tabs are opened at a time. (regression)
+   * Fix broken order and focus of tabs reopened immediately after they are opened. (regression)
+   * Fix odd multiselection behavior on Ctrl/Shift-click on collapsed tree. (regression)
+   * Fix broken tree after "Close Other Tabs" command.
+   * Show confirmation for closing multiple tabs correctly for context menu commands on the sidebar. (regression)
  - 2.7.10 (2019.1.7)
    * Fix broken focus of tabs after closing of tabs on slow environments. (regression on recent versions)
    * Fix broken order of multiple tabs opened at a time.
