@@ -584,13 +584,19 @@ async function onRemoved(tabId, removeInfo) {
     if (onRemovingResult instanceof Promise)
       await onRemovingResult;
 
+    // The removing tab may be attached to tree/someone attached to the removing tab.
+    // We need to clear them by onRemoved handlers.
+    const oldChildren = Tabs.getChildTabs(oldTab);
+    const oldParent   = Tabs.getParentTab(oldTab);
     oldTab[Constants.kTAB_STATE_REMOVING] = true;
     oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
 
     reindexFollowingTabs(Tabs.getNextTab(oldTab), oldTab.apiTab.index);
 
     const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
-      byInternalOperation
+      byInternalOperation,
+      oldChildren,
+      oldParent
     }));
     // don't do await if not needed, to process things synchronously
     if (onRemovedReuslt instanceof Promise)

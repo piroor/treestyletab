@@ -307,7 +307,8 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
 export function detachTab(child, options = {}) {
   log('detachTab: ', dumpTab(child), options,
       { stack: `${new Error().stack}\n${options.stack || ''}` });
-  const parent = Tabs.getParentTab(child);
+  // the "parent" option is used for removing child.
+  const parent = Tabs.ensureLivingTab(options.parent) || Tabs.getParentTab(child);
 
   if (!parent)
     log(` => parent(${child.getAttribute(Constants.kPARENT)}) is already removed, or orphan tab`);
@@ -372,7 +373,8 @@ export async function detachTabsFromTree(tabs, options = {}) {
 
 export function detachAllChildren(tab, options = {}) {
   log('detachAllChildren: ', dumpTab(tab));
-  const children = Tabs.getChildTabs(tab);
+  // the "children" option is used for removing tab.
+  const children = options.children ? options.children.map(Tabs.ensureLivingTab) : Tabs.getChildTabs(tab);
   if (!children.length)
     return;
   log(' => children to be detached: ', children.map(dumpTab));
@@ -384,7 +386,8 @@ export function detachAllChildren(tab, options = {}) {
 
   options.dontUpdateInsertionPositionInfo = true;
 
-  const parent = Tabs.getParentTab(tab);
+  // the "parent" option is used for removing tab.
+  const parent = Tabs.ensureLivingTab(options.parent) || Tabs.getParentTab(tab);
   if (Tabs.isGroupTab(tab) &&
       Tabs.getTabs(tab).filter(tab => tab.removing).length == children.length) {
     options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;

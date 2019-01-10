@@ -186,9 +186,28 @@ async function closeChildTabs(parent) {
   //fireTabSubtreeClosedEvent(parent, tabs);
 }
 
-Tabs.onRemoved.addListener((tab, _info) => {
+Tabs.onRemoved.addListener((tab, info) => {
   log('Tabs.onRemoved: removed ', dumpTab(tab));
+
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
+
+  // The removing tab may be attached to another tab or
+  // other tabs may be attached to the removing tab.
+  // We need to detach such relations always on this timing.
+  if (info.oldChildren.length > 0) {
+    Tree.detachAllChildren(tab, {
+      children:  info.oldChildren,
+      parent:    info.oldParent,
+      behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
+      broadcast: true
+    });
+  }
+  if (info.oldParent) {
+    Tree.detachTab(tab, {
+      parent:    info.oldParent,
+      broadcast: true
+    });
+  }
 });
 
 browser.windows.onRemoved.addListener(windowId  => {
