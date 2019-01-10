@@ -45,6 +45,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
   const wasActive = Tabs.isActive(tab);
   if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
     return;
+  log('Tabs.onRemoving: granted to close ', dumpTab(tab));
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(tab) || Tabs.getNextTab(tab);
@@ -186,6 +187,7 @@ async function closeChildTabs(parent) {
 }
 
 Tabs.onRemoved.addListener((tab, _info) => {
+  log('Tabs.onRemoved: removed ', dumpTab(tab));
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
 });
 

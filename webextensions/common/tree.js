@@ -77,6 +77,8 @@ export const onSubtreeCollapsedStateChanging = new EventListenerManager();
 
 // return moved (or not)
 export async function attachTabTo(child, parent, options = {}) {
+  parent = Tabs.ensureLivingTab(parent);
+  child = Tabs.ensureLivingTab(child);
   if (!parent || !child) {
     log('missing information: ', dumpTab(parent), dumpTab(child));
     return false;
@@ -132,6 +134,14 @@ export async function attachTabTo(child, parent, options = {}) {
   });
 
   await Tabs.waitUntilAllTabsAreCreated(child.apiTab.windowId);
+
+  parent = Tabs.ensureLivingTab(parent);
+  child = Tabs.ensureLivingTab(child);
+  if (!parent || !child) {
+    log('attachTabTo: parent or child is closed before attaching.');
+    return false;
+  }
+
   const newIndex = Tabs.calculateNewTabIndex({
     insertBefore: options.insertBefore,
     insertAfter:  options.insertAfter,
@@ -174,8 +184,10 @@ export async function attachTabTo(child, parent, options = {}) {
       broadcast: false
     }));
 
+    log('attachTabTo: setting child information: ', dumpTab(parent));
     parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
 
+    log('attachTabTo: setting parent information: ', dumpTab(child));
     child.setAttribute(Constants.kPARENT, parent.id);
     child.parentTab = parent;
     child.ancestorTabs = Tabs.getAncestorTabs(child, { force: true });
@@ -316,6 +328,7 @@ export function detachTab(child, options = {}) {
   child.removeAttribute(Constants.kPARENT);
   child.parentTab = null;
   child.ancestorTabs = [];
+  log('detachTab: parent information cleared: ', dumpTab(child));
 
   updateTabsIndent(child);
 
@@ -358,9 +371,11 @@ export async function detachTabsFromTree(tabs, options = {}) {
 }
 
 export function detachAllChildren(tab, options = {}) {
+  log('detachAllChildren: ', dumpTab(tab));
   const children = Tabs.getChildTabs(tab);
   if (!children.length)
     return;
+  log(' => children to be detached: ', children.map(dumpTab));
 
   if (!('behavior' in options))
     options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_SIMPLY_DETACH_ALL_CHILDREN;
