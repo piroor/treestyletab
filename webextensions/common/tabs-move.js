@@ -303,7 +303,7 @@ function syncTabsPositionToApiTabs(apiTabs) {
   const movedApiTabs = mMovedApiTabs.get(windowId) || [];
   mMovedApiTabs.set(windowId, movedApiTabs.concat(apiTabs));
   if (mDelayedSyncTimer.has(windowId))
-    clearTimeout(mDelayedSyncTimer.has(windowId));
+    clearTimeout(mDelayedSyncTimer.get(windowId));
   const delayedSync = new Promise((resolve, _reject) => {
     mDelayedSyncTimer.set(windowId, setTimeout(() => {
       mDelayedSync.delete(windowId);
