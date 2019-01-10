@@ -342,7 +342,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
     if (Tabs.hasMovingTab(apiTab.windowId))
       await Tabs.waitUntilAllTabsAreMoved(apiTab.windowId);
     try {
-      const tab         = Tabs.getTabById(apiTab.id);
+      const tab         = Tabs.getTabById(apiTab);
       const previousTab = Tabs.getPreviousTab(tab);
       const nextTab     = Tabs.getNextTab(tab);
       let fromIndex     = -1;
