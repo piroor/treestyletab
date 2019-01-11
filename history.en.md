@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * More stabilize synchronizing of tabs order.
+   * Wait until confirmation for closing of multiple tabs is done correctly.
  - 2.7.12 (2019.1.11)
    * Optimize synchronizing of tabs order by sequence matcher.
  - 2.7.11 (2019.1.11)
