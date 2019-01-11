@@ -438,9 +438,9 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
       type: Constants.kCOMMAND_SYNC_TABS_ORDER,
       windowId
     });
-  }
 
-  // Multiple times asynchronous tab move is unstable, so we retry again
-  // for safety until all tabs are completely synchronized.
-  syncTabsPositionToApiTabs([{ windowId }]);
+    // Multiple times asynchronous tab move is unstable, so we retry again
+    // for safety until all tabs are completely synchronized.
+    syncTabsPositionToApiTabs([{ windowId }]);
+  }
 }
