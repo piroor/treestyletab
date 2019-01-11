@@ -344,11 +344,16 @@ async function syncTabsOrder() {
     }
   }
 
-  if (movedTabs.size > 0 || reindexedTabs.size > 0)
+  if (movedTabs.size > 0 || reindexedTabs.size > 0) {
     log('Tab nodes rearranged and reindexed by syncTabsOrder:\n'+(!configs.debug ? '' :
       Array.from(allTabs)
         .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab) ? '[MOVED]' : '')+(reindexedTabs.has(tab) ? '[REINDEXED]' : '')+' '+tab.apiTab.title)
         .join('\n')));
+
+    // Asynchronously applied broadcasted movements can break the order
+    // of tabs, so for safety we retry until completely synchronized.
+    reserveToSyncTabsOrder();
+  }
 }
 
 
