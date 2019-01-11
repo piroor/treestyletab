@@ -301,6 +301,7 @@ export async function waitUntilSynchronized(windowId) {
 
 function syncTabsPositionToApiTabs(apiTabs) {
   const windowId = apiTabs[0].windowId;
+  //log(`syncTabsPositionToApiTabs(${windowId})`);
   const movedApiTabs = mMovedApiTabs.get(windowId) || [];
   mMovedApiTabs.set(windowId, movedApiTabs.concat(apiTabs));
   if (mDelayedSyncTimer.has(windowId))
@@ -324,6 +325,7 @@ function syncTabsPositionToApiTabs(apiTabs) {
 }
 async function syncTabsPositionToApiTabsInternal(windowId) {
   mDelayedSyncTimer.delete(windowId);
+  //log(`syncTabsPositionToApiTabsInternal(${windowId})`);
 
   const movedApiTabs = mMovedApiTabs.get(windowId) || [];
   mMovedApiTabs.delete(windowId);
@@ -358,29 +360,29 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 
       case 'insert':
       case 'replace':
-        const moveTabIds = apiTabIds.slice(toStart, toEnd);
+        //try {
+        let moveTabIds = apiTabIds.slice(toStart, toEnd);
         const referenceId = currentApiTabIds[fromStart] || null;
-        log(`syncTabsPositionToApiTabs: move ${moveTabIds.join(',')} before ${referenceId}`);
         let toIndex = -1;
+        let fromIndices;
+        //log(`syncTabsPositionToApiTabs: getting indices of ${[referenceId, ...moveTabIds].join(',')}`);
         if (referenceId) {
-          [ toIndex ] = await ApiTabs.getIndexes(referenceId);
+          [ toIndex, ...fromIndices ] = await ApiTabs.getIndexes(referenceId, ...moveTabIds);
         }
-        if (toIndex < 0) {
-          toIndex = apiTabIds.length - 1;
+        else {
+          fromIndices = await ApiTabs.getIndexes(...moveTabIds);
         }
-        const toBeMoved = new Set(moveTabIds);
-        const promisedComplete = new Promise((resolve, _reject) => {
-          const onMoved = tabId => {
-            if (!toBeMoved.has(tabId))
-              return;
-            toBeMoved.delete(tabId);
-            if (toBeMoved.size > 0)
-              return;
-            browser.tabs.onMoved.removeListener(onMoved);
-            resolve();
-          };
-          browser.tabs.onMoved.addListener(onMoved);
-        });
+        if (toIndex < 0)
+          toIndex = apiTabIds.length;
+        //log(`syncTabsPositionToApiTabs: got indices: ${[toIndex, ...fromIndices].join(',')}`);
+        moveTabIds = moveTabIds.filter((id, index) => fromIndices[index] > -1);
+        if (moveTabIds.length == 0)
+          continue;
+        fromIndices = fromIndices.filter(index => index > -1);
+        const fromIndex = fromIndices[0];
+        if (fromIndex < toIndex)
+          toIndex--;
+        log(`syncTabsPositionToApiTabs: move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
         for (const movedId of moveTabIds) {
           container.internalMovingTabs.add(movedId);
           container.alreadyMovedTabs.add(movedId);
@@ -394,11 +396,32 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           windowId,
           index: toIndex
         });
-        browser.tabs.move(moveTabIds, {
-          windowId,
-          index: toIndex
-        }).catch(ApiTabs.handleMissingTabError);
-        await promisedComplete;
+        const toBeMoved = new Set(moveTabIds);
+        await new Promise((resolve, reject) => {
+          const onMoved = tabId => {
+            if (!toBeMoved.has(tabId))
+              return;
+            toBeMoved.delete(tabId);
+            if (toBeMoved.size > 0)
+              return;
+            browser.tabs.onMoved.removeListener(onMoved);
+            resolve();
+          };
+          browser.tabs.onMoved.addListener(onMoved);
+          //log('syncTabsPositionToApiTabs: moving ' + moveTabIds.join(',') + ' to ' + toIndex);
+          browser.tabs.move(moveTabIds, {
+            windowId,
+            index: toIndex
+          }).catch(e => {
+            //log('syncTabsPositionToApiTabs: failed to move: ', String(e), e.stack);
+            browser.tabs.onMoved.removeListener(onMoved);
+            //reject(e);
+            resolve();
+          });
+        });
+        //}
+        //catch(e) {
+        //}
         break;
     }
   }
