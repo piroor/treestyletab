@@ -15,12 +15,12 @@
   --tab-surface-hover: #5a5a5b;
   --tab-surface-active: #474749;
   --tab-surface-active-hover: #707071;
-  --tab-active-marker: #0a84ff;
-  --tab-active-marker-inactive: rgba(255, 255, 255, 0.2);
+  --tab-highlighter: #0a84ff;
+  --tab-highlighter-inactive: rgba(255, 255, 255, 0.2);
   --dropmarker-color: var(--tab-text);
   --throbber-color: var(--tab-text);
 
-  --tab-highlighted-glow: var(--tab-active-marker);
+  --tab-highlighted-glow: var(--tab-highlighter);
   --tab-highlighted-highlight: white;
   --tabbar-bg: #0c0c0d;
 }

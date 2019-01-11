@@ -437,7 +437,7 @@ Tabs.onBuilt.addListener((tab, info) => {
   tab.appendChild(burster);
 
   const activeMarker = document.createElement('span');
-  activeMarker.classList.add(Constants.kACTIVE_MARKER);
+  activeMarker.classList.add(Constants.kHIGHLIGHTER);
   tab.appendChild(activeMarker);
 
   const identityMarker = document.createElement('span');

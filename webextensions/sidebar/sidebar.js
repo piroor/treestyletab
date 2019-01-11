@@ -275,7 +275,7 @@ function applyBrowserTheme(aTheme) {
   if (aTheme.colors.toolbar)
     toolbarColor = Color.mixCSSColors(themeBaseColor, aTheme.colors.toolbar);
   if (aTheme.colors.tab_line)
-    extraColors.push(`--browser-tab-active-marker: ${aTheme.colors.tab_line}`);
+    extraColors.push(`--browser-tab-highlighter: ${aTheme.colors.tab_line}`);
   if (aTheme.colors.tab_loading)
     extraColors.push(`--browser-loading-indicator: ${aTheme.colors.tab_loading}`);
   mBrowserThemeDefinition.textContent = `

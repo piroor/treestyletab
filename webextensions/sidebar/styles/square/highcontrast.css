@@ -112,6 +112,6 @@
 
 
 /* hide regular active tab marker */
-.active-marker::before {
+.highlighter::before {
   display: none !important;
 }

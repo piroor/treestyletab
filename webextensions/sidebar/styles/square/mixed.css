@@ -12,7 +12,7 @@
 @import url("shadow.css");
 
 :root:not([color-scheme="system-color"]) {
-  --tab-active-marker: var(--browser-tab-active-marker, #0a84ff);
+  --tab-highlighter: var(--browser-tab-highlighter, #0a84ff);
 }
 
 :root {
@@ -104,32 +104,32 @@
 }
 
 
-.tab:not(.active):not(.highlighted):hover .active-marker::before {
+.tab:not(.active):not(.highlighted):hover .highlighter::before {
   background-color: transparent;
-  --tab-active-marker-start: rgba(0, 20, 20, 0.015);
-  --tab-active-marker-end: rgba(0, 20, 20, 0.2);
+  --tab-highlighter-start: rgba(0, 20, 20, 0.015);
+  --tab-highlighter-end: rgba(0, 20, 20, 0.2);
 }
 
-:root.left .tab:not(.faviconized):not(.active):not(.highlighted):hover .active-marker::before {
+:root.left .tab:not(.faviconized):not(.active):not(.highlighted):hover .highlighter::before {
   background-image: linear-gradient(
                       to right,
-                      var(--tab-active-marker-start) 0,
-                      var(--tab-active-marker-end) 30%
+                      var(--tab-highlighter-start) 0,
+                      var(--tab-highlighter-end) 30%
                     );
 }
 
-:root.right .tab:not(.faviconized):not(.active):not(.highlighted):hover .active-marker::before {
+:root.right .tab:not(.faviconized):not(.active):not(.highlighted):hover .highlighter::before {
   background-image: linear-gradient(
                       to left,
-                      var(--tab-active-marker-start) 0,
-                      var(--tab-active-marker-end) 30%
+                      var(--tab-highlighter-start) 0,
+                      var(--tab-highlighter-end) 30%
                     );
 }
 
-.tab.faviconized:not(.active):not(.highlighted):hover .active-marker::before {
+.tab.faviconized:not(.active):not(.highlighted):hover .highlighter::before {
   background-image: linear-gradient(
                       to bottom,
-                      var(--tab-active-marker-start) 0,
-                      var(--tab-active-marker-end) 30%
+                      var(--tab-highlighter-start) 0,
+                      var(--tab-highlighter-end) 30%
                     );
 }

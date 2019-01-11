@@ -64,10 +64,10 @@
 
 /* show more-highlighter like as tree */
 
-.tab:not(.faviconized) .active-marker::after {
-   top: calc(var(--tab-active-marker-size) * 2);
+.tab:not(.faviconized) .highlighter::after {
+   top: calc(var(--tab-highlighter-size) * 2);
 }
 
-.tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .active-marker::after {
-  width: calc(var(--tab-active-marker-size) * 2);
+.tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .highlighter::after {
+  width: calc(var(--tab-highlighter-size) * 2);
 }

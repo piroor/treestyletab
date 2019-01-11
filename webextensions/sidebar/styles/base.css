@@ -264,7 +264,7 @@ ul {
   order: -1;
 }
 
-.tab .active-marker,
+.tab .highlighter,
 .tab .burster,
 .tab.faviconized.unread .favicon::before,
 .tab.attention .favicon::before,
@@ -277,7 +277,7 @@ ul {
   top: 0;
 }
 
-.tab .active-marker {
+.tab .highlighter {
   z-index: 5000;
 }
 
