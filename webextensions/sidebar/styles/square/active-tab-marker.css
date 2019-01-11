@@ -11,40 +11,54 @@
   --tab-active-marker-animation: 0.25s cubic-bezier(0.07, 0.95, 0, 1);
 }
 
-.active-marker::before {
+.active-marker::before,
+.tab:not(.faviconized) .active-marker::after {
   content: "";
   opacity: 0;
   position: absolute;
 }
 
-:root.animation .active-marker::before {
+:root.animation .active-marker::before,
+:root.animation .active-marker::after {
   transition: opacity var(--tab-active-marker-animation),
-              transform var(--tab-active-marker-animation);
+              transform var(--tab-active-marker-animation),
+              width var(--tab-active-marker-animation);
 }
 
-.tab:not(.active):not(.highlighted):hover .active-marker::before {
+.tab:not(.active):not(.highlighted):hover .active-marker::before,
+.tab:not(.active):not(.highlighted):not(.faviconized):hover .active-marker::after {
   background: var(--tab-active-marker-inactive);
 }
 .tab.active .active-marker::before,
-.tab.highlighted .active-marker::before {
+.tab.highlighted .active-marker::before,
+.tab:not(.faviconized).highlighted .active-marker::after {
   background: var(--tab-active-marker);
 }
 
-.tab:not(.faviconized) .active-marker::before {
+.tab:not(.faviconized) .active-marker::before,
+.tab:not(.faviconized) .active-marker::after {
   bottom: 0;
   top: 0;
   transform: scaleY(0);
   width: var(--tab-active-marker-size);
 }
-:root.left .tab:not(.faviconized) .active-marker::before {
+.tab:not(.faviconized) .active-marker::after {
+   top: calc(var(--tab-active-marker-size) * 2);
+}
+:root.left .tab:not(.faviconized) .active-marker::before,
+:root.left .tab:not(.faviconized) .active-marker::after {
   left: 0;
 }
-:root.right .tab:not(.faviconized) .active-marker::before {
+:root.right .tab:not(.faviconized) .active-marker::before,
+:root.right .tab:not(.faviconized) .active-marker::after {
   right: 0;
 }
 .tab:not(.faviconized):hover .active-marker::before,
+.tab:not(.faviconized):hover .active-marker::after,
 .tab.active:not(.faviconized) .active-marker::before,
-.tab.highlighted:not(.faviconized) .active-marker::before {
+.tab.active:not(.faviconized) .active-marker::after,
+.tab.highlighted:not(.faviconized) .active-marker::before,
+.tab.highlighted:not(.faviconized) .active-marker::after {
   opacity: 1;
   transform: scaleY(1);
 }
@@ -61,4 +75,19 @@
 .tab.highlighted.faviconized .active-marker::before {
   opacity: 1;
   transform: scaleX(1);
+}
+
+
+.tab:not(.some-descendants-highlighted):not(.all-descendants-highlighted) .active-marker::after {
+  opacity: 0;
+  width: 0;
+}
+
+.tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .active-marker::after {
+  opacity: 0.6;
+  width: calc(var(--tab-active-marker-size) * 2);
+}
+
+.tab[data-child-ids].subtree-collapsed.highlighted.all-descendants-highlighted .active-marker::after {
+  opacity: 1;
 }

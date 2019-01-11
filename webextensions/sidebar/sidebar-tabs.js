@@ -105,6 +105,45 @@ function updateDescendantsCount(tab) {
   counter.textContent = count;
 }
 
+function updateDescendantsHighlighted(tab) {
+  const children = Tabs.getChildTabs(tab);
+  if (!Tabs.hasChildTabs(tab)) {
+    tab.classList.remove(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    tab.classList.remove(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    return;
+  }
+  let someHighlighted = false;
+  let allHighlighted  = true;
+  for (const child of children) {
+    if (child.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED)) {
+      someHighlighted = true;
+      allHighlighted = (
+        allHighlighted &&
+        (!Tabs.hasChildTabs(child) ||
+         child.classList.contains(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
+      );
+    }
+    else {
+      if (!someHighlighted &&
+          child.classList.contains(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED)) {
+        someHighlighted = true;
+      }
+      allHighlighted = false;
+    }
+  }
+  if (someHighlighted) {
+    tab.classList.add(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    if (allHighlighted)
+      tab.classList.add(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    else
+      tab.classList.remove(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+  }
+  else {
+    tab.classList.remove(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    tab.classList.remove(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+  }
+}
+
 
 export function reserveToUpdateTooltip(tab) {
   if (!mInitialized ||
@@ -233,10 +272,13 @@ function updateSoundButtonTooltip(tab) {
 export function updateAll() {
   updateLoadingState();
   synchronizeThrobberAnimation();
-  for (const tab of Tabs.getAllTabs()) {
+  // We need to update from bottom to top, because
+  // updateDescendantsHighlighted() refers results of descendants.
+  for (const tab of Tabs.getAllTabs().reverse()) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
+    updateDescendantsHighlighted(tab);
     updateTooltip(tab);
   }
 }
@@ -522,6 +564,10 @@ Tabs.onUpdated.addListener((tab, info) => {
 
   reserveToUpdateCloseboxTooltip(tab);
 
+  for (const ancestor of Tabs.getAncestorTabs(tab)) {
+    updateDescendantsHighlighted(ancestor);
+  }
+
   if (mReservedUpdateActiveTab)
     clearTimeout(mReservedUpdateActiveTab);
   mReservedUpdateActiveTab = setTimeout(() => {
@@ -566,6 +612,7 @@ Tree.onAttached.addListener((tab, info = {}) => {
     const ancestors = [info.parent].concat(Tabs.getAncestorTabs(info.parent));
     for (const ancestor of ancestors) {
       updateDescendantsCount(ancestor);
+      updateDescendantsHighlighted(ancestor);
     }
   }
   reserveToUpdateTooltip(info.parent);
@@ -583,6 +630,7 @@ Tree.onDetached.addListener((_aTab, detachInfo = {}) => {
   const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (const ancestor of ancestors) {
     updateDescendantsCount(ancestor);
+    updateDescendantsHighlighted(ancestor);
   }
 });
 

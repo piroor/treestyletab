@@ -6,7 +6,7 @@
 'use strict';
 
 export const kBACKGROUND_CONTENTS_VERSION = 3;
-export const kSIDEBAR_CONTENTS_VERSION    = 5;
+export const kSIDEBAR_CONTENTS_VERSION    = 6;
 
 export const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-background';
 export const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';
@@ -119,6 +119,8 @@ export const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 export const kTAB_STATE_FAVICONIZED               = 'faviconized';
 export const kTAB_STATE_UNREAD                    = 'unread';
 export const kTAB_STATE_HIGHLIGHTED               = 'highlighted';
+export const kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED = 'some-descendants-highlighted';
+export const kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED  = 'all-descendants-highlighted';
 export const kTAB_STATE_ATTENTION                 = 'attention';
 export const kTAB_STATE_DISCARDED                 = 'discarded';
 export const kTAB_STATE_SELECTED                  = 'selected';
