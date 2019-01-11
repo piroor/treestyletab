@@ -437,4 +437,8 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
       windowId
     });
   }
+
+  // Multiple times asynchronous tab move is unstable, so we retry again
+  // for safety until all tabs are completely synchronized.
+  syncTabsPositionToApiTabs([{ windowId }]);
 }
