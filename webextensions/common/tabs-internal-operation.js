@@ -23,7 +23,7 @@ export async function selectTab(tab, options = {}) {
   tab = Tabs.ensureLivingTab(tab);
   if (!tab)
     return;
-  log('selectTabInternally: ', dumpTab(tab));
+  log('selectTabInternally: ', dumpTab(tab), tab.apiTab);
   if (options.inRemote) {
     await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,

@@ -402,6 +402,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         break;
     }
   }
+  log(`syncTabsPositionToApiTabs: rearrange completed.`);
 
   if (movedTabs.size > 0 || needToBeReindexedTabs.size > 0) {
     // tabs.onMoved produced by this operation can break the order of tabs
