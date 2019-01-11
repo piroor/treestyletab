@@ -334,7 +334,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   }
   // Tabs may be removed while waiting.
   const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById).filter(Tabs.ensureLivingTab);
-  const apiTabs = tabs.sort(documentPositionComparator).map(tab => tab.apiTab);
+  const apiTabs = Tabs.sort(tabs).map(tab => tab.apiTab);
   log(`syncTabsPositionToApiTabsInternal(${windowId}): rearrange `, apiTabs.map(apiTab => apiTab.id));
   const movedLogs = [];
   const toBeMovedTabIds = new Set();
@@ -410,7 +410,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 
   // Fixup "index" of cached apiTab.
   // Tab may be removed while waiting, so we need to isolate tabs before sorting.
-  const reindexedTabs = Array.from(tabsIndexNeedToBeFixed).filter(Tabs.ensureLivingTab).sort(documentPositionComparator);
+  const reindexedTabs = Tabs.sort(Array.from(tabsIndexNeedToBeFixed).filter(Tabs.ensureLivingTab));
   const allTabs       = Array.from(reindexedTabs[0].parentNode.childNodes);
   let tab   = reindexedTabs[0];
   let index = allTabs.indexOf(tab);
@@ -429,17 +429,4 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
     type: Constants.kCOMMAND_SYNC_TABS_ORDER,
     windowId
   });
-}
-
-function documentPositionComparator(a, b) {
-  if (a === b || !a || !b)
-    return 0;
-
-  const position = a.compareDocumentPosition(b);
-  if (position & Node.DOCUMENT_POSITION_FOLLOWING)
-    return -1;
-  if (position & Node.DOCUMENT_POSITION_PRECEDING)
-    return 1;
-
-  return 0;
 }

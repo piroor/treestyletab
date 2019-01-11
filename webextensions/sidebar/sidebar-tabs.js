@@ -15,6 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
+import { SequenceMatcher } from '/common/diff.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 function log(...args) {
@@ -288,23 +289,65 @@ async function syncTabsOrder() {
     return reserveToSyncTabsOrder();
   }
   reserveToSyncTabsOrder.retryCount = 0;
-  const correctedTabs = new Set();
-  for (let i = 0, maxi = apiTabIds.length; i < maxi; i++) {
-    const id  = apiTabIds[i];
-    const tab = Tabs.getTabById(id);
-    if (!tab)
-      throw new Error(`fatal error: missing tab elemnt for the tab ${id} in the window ${windowId}`);
-    tab.apiTab.index = i;
-    const tabs = container.childNodes;
-    if (tab == tabs[i])
-      continue;
-    container.insertBefore(tab, tabs[i]);
-    correctedTabs.add(tab);
+
+
+  const currentApiTabIds = Array.from(container.childNodes, tab => tab.apiTab.id);
+  const DOMElementsOperations = (new SequenceMatcher(currentApiTabIds, apiTabIds)).operations();
+  const movedTabs = new Set();
+  const needToBeReindexedTabs = new Set();
+  for (const operation of DOMElementsOperations) {
+    // eslint-disable-next-line no-unused-vars
+    const [tag, fromStart, _fromEnd, toStart, toEnd] = operation;
+    switch (tag) {
+      case 'equal':
+      case 'delete':
+        break;
+
+      case 'insert':
+      case 'replace':
+        const moveTabIds = apiTabIds.slice(toStart, toEnd);
+        const referenceId = currentApiTabIds[fromStart] || null;
+        log(`syncTabsOrder: move ${moveTabIds.join(',')} before ${referenceId}`);
+        const referenceTab = referenceId && Tabs.getTabById(referenceId);
+        let lastNextOfMovedTab = null;
+        for (let i = 0, maxi = moveTabIds.length; i < maxi; i++) {
+          const id = moveTabIds[i];
+          const tab = Tabs.getTabById(id);
+          if (!tab)
+            continue;
+          if (i == maxi - 1)
+            lastNextOfMovedTab = Tabs.getNextTab(tab);
+          container.insertBefore(tab, referenceTab);
+          movedTabs.add(tab);
+          needToBeReindexedTabs.add(tab);
+        }
+        if (lastNextOfMovedTab)
+          needToBeReindexedTabs.add(lastNextOfMovedTab);
+        break;
+    }
   }
-  if (correctedTabs.size > 0)
-    log('Tab nodes rearranged by syncTabsOrder:\n'+(!configs.debug ? '' :
-      Array.from(container.childNodes)
-        .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(correctedTabs.has(tab) ? '[CORRECTED]' : ''))
+
+  //const currentIndices = Array.from(container.childNodes, tab => tab.apiTab.index);
+  //const reindexOperations = (new SequenceMatcher(currentIndices, apiTabIds.map((_id, index) => index))).operations();
+  //log('syncTabsOrder: reindexOperations ', reindexOperations);
+
+  const firstReindexedTab = Tabs.sort(Array.from(needToBeReindexedTabs))[0];
+  const reindexedTabs = new Set();
+  const allTabs = container.childNodes;
+  if (firstReindexedTab) {
+    log('syncTabsOrder: firstReindexedTab ', firstReindexedTab.apiTab.id);
+    const lastCorrectIndexTab = Tabs.getPreviousTab(firstReindexedTab);
+    for (let i = lastCorrectIndexTab ? lastCorrectIndexTab.apiTab.index + 1 : 0, maxi = allTabs.length; i < maxi; i++) {
+      const tab = allTabs[i];
+      tab.apiTab.index = i;
+      reindexedTabs.add(tab);
+    }
+  }
+
+  if (movedTabs.size > 0 || reindexedTabs.size > 0)
+    log('Tab nodes rearranged and reindexed by syncTabsOrder:\n'+(!configs.debug ? '' :
+      Array.from(allTabs)
+        .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab) ? '[MOVED]' : '')+(reindexedTabs.has(tab) ? '[REINDEXED]' : ''))
         .join('\n')));
 }
 

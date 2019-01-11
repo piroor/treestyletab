@@ -70,6 +70,23 @@ export function getWindow() {
   return mTargetWindow;
 }
 
+export function sort(tabs) {
+  return tabs.sort(documentPositionComparator);
+}
+
+function documentPositionComparator(a, b) {
+  if (a === b || !a || !b)
+    return 0;
+
+  const position = a.compareDocumentPosition(b);
+  if (position & Node.DOCUMENT_POSITION_FOLLOWING)
+    return -1;
+  if (position & Node.DOCUMENT_POSITION_PRECEDING)
+    return 1;
+
+  return 0;
+}
+
 
 //===================================================================
 // Operate Tab ID
