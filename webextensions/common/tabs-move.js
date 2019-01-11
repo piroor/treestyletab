@@ -48,6 +48,7 @@ import {
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
+import { SequenceMatcher } from './diff.js';
 
 function log(...args) {
   internalLogger('common/tabs-move', ...args);
@@ -327,106 +328,110 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   const movedApiTabs = mMovedApiTabs.get(windowId) || [];
   mMovedApiTabs.delete(windowId);
 
-  const uniqueApiTabs          = new Map();
-  const tabsIndexNeedToBeFixed = new Set();
+  if (Tabs.hasCreatingTab(windowId))
+    await Tabs.waitUntilAllTabsAreCreated(windowId);
+  if (Tabs.hasMovingTab(windowId))
+    await Tabs.waitUntilAllTabsAreMoved(windowId);
+
+  const container = Tabs.getTabsContainer(windowId);
+
   for (const apiTab of movedApiTabs) {
-    uniqueApiTabs.set(apiTab.id, apiTab);
+    container.internalMovingTabs.delete(apiTab.id);
+    container.alreadyMovedTabs.delete(apiTab.id);
   }
+
   // Tabs may be removed while waiting.
-  const tabs    = Array.from(uniqueApiTabs.values()).map(Tabs.getTabById).filter(Tabs.ensureLivingTab);
-  const apiTabs = Tabs.sort(tabs).map(tab => tab.apiTab);
-  log(`syncTabsPositionToApiTabsInternal(${windowId}): rearrange `, apiTabs.map(apiTab => apiTab.id));
-  const movedLogs = [];
-  const toBeMovedTabIds = new Set();
-  for (const apiTab of apiTabs) {
-    if (Tabs.hasCreatingTab(apiTab.windowId))
-      await Tabs.waitUntilAllTabsAreCreated(apiTab.windowId);
-    if (Tabs.hasMovingTab(apiTab.windowId))
-      await Tabs.waitUntilAllTabsAreMoved(apiTab.windowId);
-    try {
-      const tab = Tabs.getTabById(apiTab);
-      if (!tab) // Tab may be removed while waiting.
-        continue;
-      const previousTab = Tabs.getPreviousTab(tab);
-      const nextTab     = Tabs.getNextTab(tab);
-      let fromIndex     = -1;
-      let toIndex       = -1;
-      let movedInfo;
-      if (previousTab) {
-        [ fromIndex, toIndex ] = await ApiTabs.getIndexes(apiTab.id, previousTab.apiTab.id);
-        if (fromIndex > toIndex)
-          toIndex++;
-        movedInfo = ` (after tab ${previousTab.apiTab.id})`;
-      }
-      else if (nextTab) {
-        [ fromIndex, toIndex ] = await ApiTabs.getIndexes(apiTab.id, nextTab.apiTab.id);
-        if (fromIndex < toIndex)
-          toIndex--;
-        movedInfo = ` (before tab ${nextTab.apiTab.id})`;
-      }
-      if (!Tabs.ensureLivingTab(tab)) // Tab may be removed while waiting.
-        continue;
-      if (fromIndex != toIndex && toIndex > -1) {
-        toBeMovedTabIds.add(apiTab.id);
+  const currentApiTabIds = (await browser.tabs.query({ windowId })).map(apiTab => apiTab.id);
+  const apiTabIds        = Array.from(container.childNodes, tab => tab.apiTab.id);
+  log(`syncTabsPositionToApiTabsInternal(${windowId}): rearrange `, { from: currentApiTabIds, to: apiTabIds });
+
+  const moveOperations = (new SequenceMatcher(currentApiTabIds, apiTabIds)).operations();
+  const movedTabs = new Set();
+  const needToBeReindexedTabs = new Set();
+  for (const operation of moveOperations) {
+    const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
+    log('syncTabsPositionToApiTabs: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
+    switch (tag) {
+      case 'equal':
+      case 'delete':
+        break;
+
+      case 'insert':
+      case 'replace':
+        const moveTabIds = apiTabIds.slice(toStart, toEnd);
+        const referenceId = currentApiTabIds[fromStart] || null;
+        log(`syncTabsPositionToApiTabs: move ${moveTabIds.join(',')} before ${referenceId}`);
+        let toIndex = -1;
+        if (referenceId) {
+          [ toIndex ] = await ApiTabs.getIndexes(referenceId);
+        }
+        if (toIndex < 0) {
+          toIndex = apiTabIds.length - 1;
+        }
+        const toBeMoved = new Set(moveTabIds);
         const promisedComplete = new Promise((resolve, _reject) => {
           const onMoved = tabId => {
-            if (tabId != apiTab.id)
+            if (!toBeMoved.has(tabId))
+              return;
+            toBeMoved.delete(tabId);
+            if (toBeMoved.size > 0)
               return;
             browser.tabs.onMoved.removeListener(onMoved);
             resolve();
           };
           browser.tabs.onMoved.addListener(onMoved);
         });
-        tabsIndexNeedToBeFixed.add(tab);
-        logApiTabs(`tabs-move:syncTabsPositionToApiTabsInternal: browser.tabs.move() `, apiTab.id, {
-          windowId: apiTab.windowId,
-          index:    toIndex
+        for (const movedId of moveTabIds) {
+          container.internalMovingTabs.add(movedId);
+          container.alreadyMovedTabs.add(movedId);
+          movedTabs.add(movedId);
+          needToBeReindexedTabs.add(movedId);
+          const nextId = apiTabIds.find((apiTab, index) => index > 1 && apiTabIds[index - 1] == movedId);
+          if (nextId)
+            needToBeReindexedTabs.add(nextId);
+        }
+        logApiTabs(`tabs-move:syncTabsPositionToApiTabsInternal: browser.tabs.move() `, moveTabIds, {
+          windowId,
+          index: toIndex
         });
-        tab.parentNode.internalMovingTabs.add(apiTab.id);
-        tab.parentNode.alreadyMovedTabs.add(apiTab.id);
-        tab.apiTab.index = toIndex;
-        log(`Tab node reindexed by syncTabsPositionToApiTabsInternal(${windowId}):\n`+tab.apiTab.index+' '+tab.id);
-        browser.tabs.move(apiTab.id, {
-          windowId: apiTab.windowId,
-          index:    toIndex
+        browser.tabs.move(moveTabIds, {
+          windowId,
+          index: toIndex
         }).catch(ApiTabs.handleMissingTabError);
         await promisedComplete;
-        movedLogs.push(`  - tab ${apiTab.id}, from ${fromIndex} to ${toIndex}${movedInfo}`);
-      }
-    }
-    catch(e) {
-      log(`syncTabsPositionToApiTabsInternal(${windowId}): fatal error: `, e);
+        break;
     }
   }
-  log(`syncTabsPositionToApiTabsInternal(${windowId}): moved.\n${movedLogs.join('\n')}`);
-  if (configs.debug) {
-    browser.tabs.query({ windowId }).then(allApiTabs => {
-      log('syncTabsPositionToApiTabsInternal: allApiTabs (after):\n'+allApiTabs.map(apiTab => '  - '+apiTab.index+': tab-'+windowId+'-'+apiTab.id).join('\n'));
+
+  if (movedTabs.size > 0 || needToBeReindexedTabs.size > 0) {
+    // tabs.onMoved produced by this operation can break the order of tabs
+    // in the sidebar, so we need to synchronize complete order of tabs after
+    // all.
+    browser.runtime.sendMessage({
+      type: Constants.kCOMMAND_SYNC_TABS_ORDER,
+      windowId
     });
   }
 
-  if (tabsIndexNeedToBeFixed.size == 0)
+  if (needToBeReindexedTabs.size == 0)
     return;
 
   // Fixup "index" of cached apiTab.
   // Tab may be removed while waiting, so we need to isolate tabs before sorting.
-  const reindexedTabs = Tabs.sort(Array.from(tabsIndexNeedToBeFixed).filter(Tabs.ensureLivingTab));
-  const allTabs       = Array.from(reindexedTabs[0].parentNode.childNodes);
-  let tab   = reindexedTabs[0];
-  let index = allTabs.indexOf(tab);
-  do {
-    tab.apiTab.index = index++;
-  } while ((tab = Tabs.getNextTab(tab)));
-  log(`Tabs rearranged by syncTabsPositionToApiTabsInternal(${windowId}):\n`+(!configs.debug ? '' :
-    allTabs
-      .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabsIndexNeedToBeFixed.has(tab) ? '[REARRANGED]' : ''))
-      .join('\n')));
+  const firstReindexedTab = Tabs.sort(Array.from(needToBeReindexedTabs, Tabs.getTabById).filter(Tabs.ensureLivingTab))[0];
+  const reindexedTabs = new Set();
+  const allTabs = container.childNodes;
+  if (firstReindexedTab) {
+    log('syncTabsOrder: firstReindexedTab ', firstReindexedTab.apiTab.id);
+    const lastCorrectIndexTab = Tabs.getPreviousTab(firstReindexedTab);
+    for (let i = lastCorrectIndexTab ? lastCorrectIndexTab.apiTab.index + 1 : 0, maxi = allTabs.length; i < maxi; i++) {
+      const tab = allTabs[i];
+      tab.apiTab.index = i;
+      reindexedTabs.add(tab);
+    }
+  }
 
-  // tabs.onMoved produced by this operation can break the order of tabs
-  // in the sidebar, so we need to synchronize complete order of tabs after
-  // all.
-  browser.runtime.sendMessage({
-    type: Constants.kCOMMAND_SYNC_TABS_ORDER,
-    windowId
-  });
+  log(`Tabs rearranged and reindexed by syncTabsPositionToApiTabsInternal(${windowId}):\n`+(!configs.debug ? '' :
+    Array.from(allTabs, tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab.apiTab.id) ? '[MOVED]' : '')+(reindexedTabs.has(tab.apiTab.id) ? '[REINDEXED]' : ''))
+      .join('\n')));
 }

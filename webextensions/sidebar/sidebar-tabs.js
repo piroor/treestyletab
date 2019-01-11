@@ -296,8 +296,8 @@ async function syncTabsOrder() {
   const movedTabs = new Set();
   const needToBeReindexedTabs = new Set();
   for (const operation of DOMElementsOperations) {
-    // eslint-disable-next-line no-unused-vars
-    const [tag, fromStart, _fromEnd, toStart, toEnd] = operation;
+    const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
+    log('syncTabsOrder: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
     switch (tag) {
       case 'equal':
       case 'delete':
