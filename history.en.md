@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Optimize synchronizing of tabs order by sequence matcher.
  - 2.7.11 (2019.1.11)
    * Fix broken order and focus of tabs after multiple tabs are opened at a time. (regression)
    * Fix broken order and focus of tabs reopened immediately after they are opened. (regression)
