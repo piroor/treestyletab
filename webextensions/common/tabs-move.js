@@ -338,7 +338,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   log(`syncTabsPositionToApiTabsInternal(${windowId}): rearrange `, apiTabs.map(apiTab => apiTab.id));
   const movedLogs = [];
   const toBeMovedTabIds = new Set();
-  let promisedComplete;
   for (const apiTab of apiTabs) {
     if (Tabs.hasCreatingTab(apiTab.windowId))
       await Tabs.waitUntilAllTabsAreCreated(apiTab.windowId);
@@ -369,18 +368,15 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         continue;
       if (fromIndex != toIndex && toIndex > -1) {
         toBeMovedTabIds.add(apiTab.id);
-        if (!promisedComplete) {
-          promisedComplete = new Promise((resolve, _reject) => {
-            const onMoved = tabId => {
-              toBeMovedTabIds.delete(tabId);
-              if (toBeMovedTabIds.size == 0) {
-                browser.tabs.onMoved.removeListener(onMoved);
-                resolve();
-              }
-            };
-            browser.tabs.onMoved.addListener(onMoved);
-          });
-        }
+        const promisedComplete = new Promise((resolve, _reject) => {
+          const onMoved = tabId => {
+            if (tabId != apiTab.id)
+              return;
+            browser.tabs.onMoved.removeListener(onMoved);
+            resolve();
+          };
+          browser.tabs.onMoved.addListener(onMoved);
+        });
         tabsIndexNeedToBeFixed.add(tab);
         logApiTabs(`tabs-move:syncTabsPositionToApiTabsInternal: browser.tabs.move() `, apiTab.id, {
           windowId: apiTab.windowId,
@@ -390,10 +386,11 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         tab.parentNode.alreadyMovedTabs.add(apiTab.id);
         tab.apiTab.index = toIndex;
         log(`Tab node reindexed by syncTabsPositionToApiTabsInternal(${windowId}):\n`+tab.apiTab.index+' '+tab.id);
-        await browser.tabs.move(apiTab.id, {
+        browser.tabs.move(apiTab.id, {
           windowId: apiTab.windowId,
           index:    toIndex
         }).catch(ApiTabs.handleMissingTabError);
+        await promisedComplete;
         movedLogs.push(`  - tab ${apiTab.id}, from ${fromIndex} to ${toIndex}${movedInfo}`);
       }
     }
@@ -410,8 +407,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 
   if (tabsIndexNeedToBeFixed.size == 0)
     return;
-
-  await promisedComplete;
 
   // Fixup "index" of cached apiTab.
   // Tab may be removed while waiting, so we need to isolate tabs before sorting.
