@@ -375,6 +375,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         if (toIndex < 0)
           toIndex = apiTabIds.length;
         //log(`syncTabsPositionToApiTabs: got indices: ${[toIndex, ...fromIndices].join(',')}`);
+        // ignore already removed tabs!
         moveTabIds = moveTabIds.filter((id, index) => fromIndices[index] > -1);
         if (moveTabIds.length == 0)
           continue;
