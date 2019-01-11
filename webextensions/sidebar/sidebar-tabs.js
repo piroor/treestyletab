@@ -331,16 +331,20 @@ async function syncTabsOrder() {
   //const reindexOperations = (new SequenceMatcher(currentIndices, apiTabIds.map((_id, index) => index))).operations();
   //log('syncTabsOrder: reindexOperations ', reindexOperations);
 
-  const firstReindexedTab = Tabs.sort(Array.from(needToBeReindexedTabs))[0];
+  const reindexTabs = Tabs.sort(Array.from(needToBeReindexedTabs));
+  const first = reindexTabs[0];
+  const last = reindexTabs[reindexTabs.length - 1];
   const reindexedTabs = new Set();
   const allTabs = container.childNodes;
-  if (firstReindexedTab) {
-    log('syncTabsOrder: firstReindexedTab ', firstReindexedTab.apiTab.id);
-    const lastCorrectIndexTab = Tabs.getPreviousTab(firstReindexedTab);
+  if (reindexTabs.length > 0) {
+    log('syncTabsOrder: reindex between ', { first: first.apiTab.id, last: last.apiTab.id });
+    const lastCorrectIndexTab = Tabs.getPreviousTab(first);
     for (let i = lastCorrectIndexTab ? lastCorrectIndexTab.apiTab.index + 1 : 0, maxi = allTabs.length; i < maxi; i++) {
       const tab = allTabs[i];
       tab.apiTab.index = i;
       reindexedTabs.add(tab);
+      if (tab == last)
+        break;
     }
   }
 
