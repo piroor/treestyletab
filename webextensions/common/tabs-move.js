@@ -347,6 +347,8 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   const apiTabIds        = Array.from(container.childNodes, tab => tab.apiTab.id);
   log(`syncTabsPositionToApiTabsInternal(${windowId}): rearrange `, { from: currentApiTabIds, to: apiTabIds });
 
+  let apiTabIdsForUpdatedIndices = Array.from(currentApiTabIds);
+
   const moveOperations = (new SequenceMatcher(currentApiTabIds, apiTabIds)).operations();
   const movedTabs = new Set();
   const needToBeReindexedTabs = new Set();
@@ -363,12 +365,9 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         let moveTabIds = apiTabIds.slice(toStart, toEnd);
         const referenceId = currentApiTabIds[fromStart] || null;
         let toIndex = -1;
-        let fromIndices;
+        let fromIndices = moveTabIds.map(id => apiTabIdsForUpdatedIndices.indexOf(id));
         if (referenceId) {
-          [ toIndex, ...fromIndices ] = await ApiTabs.getIndexes(referenceId, ...moveTabIds);
-        }
-        else {
-          fromIndices = await ApiTabs.getIndexes(...moveTabIds);
+          toIndex = apiTabIdsForUpdatedIndices.indexOf(referenceId);
         }
         if (toIndex < 0)
           toIndex = apiTabIds.length;
@@ -395,27 +394,14 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           index: toIndex
         });
         const toBeMoved = new Set(moveTabIds);
-        await new Promise((resolve, _reject) => {
-          const onMoved = tabId => {
-            if (!toBeMoved.has(tabId))
-              return;
-            toBeMoved.delete(tabId);
-            if (toBeMoved.size > 0)
-              return;
-            browser.tabs.onMoved.removeListener(onMoved);
-            resolve();
-          };
-          browser.tabs.onMoved.addListener(onMoved);
-          browser.tabs.move(moveTabIds, {
-            windowId,
-            index: toIndex
-          }).catch(e => {
-            log('syncTabsPositionToApiTabs: failed to move: ', String(e), e.stack);
-            browser.tabs.onMoved.removeListener(onMoved);
-            //reject(e);
-            resolve();
-          });
+        browser.tabs.move(moveTabIds, {
+          windowId,
+          index: toIndex
+        }).catch(e => {
+          log('syncTabsPositionToApiTabs: failed to move: ', String(e), e.stack);
         });
+        apiTabIdsForUpdatedIndices = apiTabIdsForUpdatedIndices.filter(id => !moveTabIds.includes(id));
+        apiTabIdsForUpdatedIndices.splice(toIndex, 0, ...moveTabIds);
         break;
     }
   }
