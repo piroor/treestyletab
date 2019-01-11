@@ -360,12 +360,10 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 
       case 'insert':
       case 'replace':
-        //try {
         let moveTabIds = apiTabIds.slice(toStart, toEnd);
         const referenceId = currentApiTabIds[fromStart] || null;
         let toIndex = -1;
         let fromIndices;
-        //log(`syncTabsPositionToApiTabs: getting indices of ${[referenceId, ...moveTabIds].join(',')}`);
         if (referenceId) {
           [ toIndex, ...fromIndices ] = await ApiTabs.getIndexes(referenceId, ...moveTabIds);
         }
@@ -374,7 +372,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         }
         if (toIndex < 0)
           toIndex = apiTabIds.length;
-        //log(`syncTabsPositionToApiTabs: got indices: ${[toIndex, ...fromIndices].join(',')}`);
         // ignore already removed tabs!
         moveTabIds = moveTabIds.filter((id, index) => fromIndices[index] > -1);
         if (moveTabIds.length == 0)
@@ -409,7 +406,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
             resolve();
           };
           browser.tabs.onMoved.addListener(onMoved);
-          //log('syncTabsPositionToApiTabs: moving ' + moveTabIds.join(',') + ' to ' + toIndex);
           browser.tabs.move(moveTabIds, {
             windowId,
             index: toIndex
@@ -420,9 +416,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
             resolve();
           });
         });
-        //}
-        //catch(e) {
-        //}
         break;
     }
   }
