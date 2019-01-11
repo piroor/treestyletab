@@ -19,6 +19,8 @@ function log(...args) {
   internalLogger('common/tabs-internal-operation', ...args);
 }
 
+const mMultiselectionSupport = typeof browser.menus.overrideContext == 'function';
+
 export async function selectTab(tab, options = {}) {
   tab = Tabs.ensureLivingTab(tab);
   if (!tab)
@@ -43,13 +45,22 @@ export async function selectTab(tab, options = {}) {
       container.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
-  if (Tabs.isMultihighlighted(tab) && options.keepMultiselection) {
-    // switch active tab with highlighted state
+  if (mMultiselectionSupport) {
+    let tabs = [tab.apiTab.index];
     const highlightedTabs = Tabs.getHighlightedTabs(tab);
-    const otherTabs       = highlightedTabs.filter(highlightedTab => highlightedTab != tab);
+    if (Tabs.isMultihighlighted(tab) &&
+        options.keepMultiselection &&
+        highlightedTabs.includes(tab)) {
+      // switch active tab with highlighted state
+      const otherTabs = highlightedTabs.filter(highlightedTab => highlightedTab != tab);
+      tabs = tabs.concat(otherTabs.map(tab => tab.apiTab.index));
+    }
+    else {
+      tab.parentNode.tabsToBeHighlightedAlone.add(tab.apiTab.id);
+    }
     return browser.tabs.highlight({
       windowId: tab.apiTab.windowId,
-      tabs:     [tab.apiTab.index].concat(otherTabs.map(tab => tab.apiTab.index)),
+      tabs,
       populate: false
     }).catch(onError);
   }

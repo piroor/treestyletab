@@ -284,7 +284,10 @@ async function updateTabHighlighted(tab, highlighted) {
   else
     tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
   tab.apiTab.highlighted = highlighted;
-  Tabs.onUpdated.dispatch(tab, { highlighted });
+  const inheritHighlighted = !tab.parentNode.tabsToBeHighlightedAlone.has(tab.apiTab.id);
+  if (!inheritHighlighted)
+    tab.parentNode.tabsToBeHighlightedAlone.delete(tab.apiTab.id);
+  Tabs.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;
 }
 

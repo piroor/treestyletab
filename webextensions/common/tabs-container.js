@@ -68,6 +68,7 @@ export function init(container) {
   container.internalMovingTabs  = new Set();
   container.alreadyMovedTabs    = new Set();
   container.internalClosingTabs = new Set();
+  container.tabsToBeHighlightedAlone = new Set();
 
   container.subTreeMovingCount =
     container.subTreeChildrenMovingCount =

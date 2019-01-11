@@ -15,11 +15,12 @@ function log(...args) {
   internalLogger('background/handle-tab-multiselect', ...args);
 }
 
-Tabs.onUpdated.addListener((tab, info) => {
+Tabs.onUpdated.addListener((tab, info, options = {}) => {
   if (!('highlighted' in info) ||
       !Tabs.isSubtreeCollapsed(tab) ||
       Tabs.isCollapsed(tab) ||
-      !Tabs.isMultiselected(tab))
+      !Tabs.isMultiselected(tab) ||
+      options.inheritHighlighted === false)
     return;
 
   const collapsedDescendants = Tabs.getDescendantTabs(tab);
