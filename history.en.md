@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.14 (2019.1.12)
    * Fix inifinite recursion function call at synchronizing of tabs order.
    * More optimize reindexing of synchronized tabs.
    * Highlight tabs more when they have collapsed but highlighted descendants.
