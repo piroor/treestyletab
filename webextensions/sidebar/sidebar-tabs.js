@@ -417,6 +417,15 @@ Tabs.onCreated.addListener((tab, _info) => {
   tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
 });
 
+Tabs.onTabElementMoved.addListener((tab, info) => {
+  if (!info.broadcasted) {
+    // Tab element movement triggered by sidebar itself can break order of
+    // tabs synchronized from the background, so for safetyl we trigger
+    // synchronization.
+    reserveToSyncTabsOrder();
+  }
+});
+
 
 Tabs.onRestored.addListener(tab => {
   Tree.fixupSubtreeCollapsedState(tab, {

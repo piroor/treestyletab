@@ -120,7 +120,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       container.insertBefore(tab, referenceTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
-        oldNextTab
+        oldNextTab,
+        broadcasted: !!options.broadcasted
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
@@ -245,7 +246,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       container.insertBefore(tab, nextTab);
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
-        oldNextTab
+        oldNextTab,
+        broadcasted: !!options.broadcasted
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
