@@ -386,7 +386,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           container.alreadyMovedTabs.add(movedId);
           movedTabs.add(movedId);
           needToBeReindexedTabs.add(movedId);
-          const nextId = apiTabIds.find((apiTab, index) => index > 1 && apiTabIds[index - 1] == movedId);
+          const nextId = apiTabIds.find((_id, index) => index > 1 && apiTabIds[index - 1] == movedId);
           if (nextId)
             needToBeReindexedTabs.add(nextId);
         }
