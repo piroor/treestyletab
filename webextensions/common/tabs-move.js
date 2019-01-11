@@ -397,7 +397,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           index: toIndex
         });
         const toBeMoved = new Set(moveTabIds);
-        await new Promise((resolve, reject) => {
+        await new Promise((resolve, _reject) => {
           const onMoved = tabId => {
             if (!toBeMoved.has(tabId))
               return;
@@ -413,7 +413,7 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
             windowId,
             index: toIndex
           }).catch(e => {
-            //log('syncTabsPositionToApiTabs: failed to move: ', String(e), e.stack);
+            log('syncTabsPositionToApiTabs: failed to move: ', String(e), e.stack);
             browser.tabs.onMoved.removeListener(onMoved);
             //reject(e);
             resolve();
