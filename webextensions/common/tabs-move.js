@@ -456,6 +456,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   }
 
   log(`Tabs rearranged and reindexed by syncTabsPositionToApiTabsInternal(${windowId}):\n`+(!configs.debug ? '' :
-    Array.from(allTabs, tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab.apiTab.id) ? '[MOVED]' : '')+(reindexedTabs.has(tab.apiTab.id) ? '[REINDEXED]' : ''))
+    Array.from(allTabs, tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab.apiTab.id) ? '[MOVED]' : '')+(reindexedTabs.has(tab.apiTab.id) ? '[REINDEXED]' : '')+' '+tab.apiTab.title)
       .join('\n')));
 }
