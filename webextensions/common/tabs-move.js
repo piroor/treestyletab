@@ -91,7 +91,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       windowId: tabs[0].apiTab.windowId,
       tabs:     tabs.map(tab => tab.id),
       nextTab:  referenceTab.id,
-      allTabsCount: container.childNodes.length,
       broadcasted: !!options.broadcast
     };
     if (options.inRemote) {
@@ -214,7 +213,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       windowId:    tabs[0].apiTab.windowId,
       tabs:        tabs.map(tab => tab.id),
       previousTab: referenceTab.id,
-      allTabsCount: container.childNodes.length,
       broadcasted: !!options.broadcast
     };
     if (options.inRemote) {
