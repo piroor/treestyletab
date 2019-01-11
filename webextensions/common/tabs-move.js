@@ -393,7 +393,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           windowId,
           index: toIndex
         });
-        const toBeMoved = new Set(moveTabIds);
         browser.tabs.move(moveTabIds, {
           windowId,
           index: toIndex
