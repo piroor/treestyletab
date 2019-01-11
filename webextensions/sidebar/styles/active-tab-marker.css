@@ -12,7 +12,8 @@
 }
 
 .active-marker::before,
-.tab:not(.faviconized) .active-marker::after {
+.tab:not(.faviconized).subtree-collapsed.some-descendants-highlighted .active-marker::after,
+.tab:not(.faviconized).subtree-collapsed.all-descendants-highlighted .active-marker::after {
   content: "";
   opacity: 0;
   position: absolute;
@@ -41,9 +42,6 @@
   top: 0;
   transform: scaleY(0);
   width: var(--tab-active-marker-size);
-}
-.tab:not(.faviconized) .active-marker::after {
-   top: calc(var(--tab-active-marker-size) * 2);
 }
 :root.left .tab:not(.faviconized) .active-marker::before,
 :root.left .tab:not(.faviconized) .active-marker::after {
@@ -78,14 +76,8 @@
 }
 
 
-.tab:not(.some-descendants-highlighted):not(.all-descendants-highlighted) .active-marker::after {
-  opacity: 0;
-  width: 0;
-}
-
 .tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .active-marker::after {
-  opacity: 0.6;
-  width: calc(var(--tab-active-marker-size) * 2);
+  opacity: 0.5;
 }
 
 .tab[data-child-ids].subtree-collapsed.highlighted.all-descendants-highlighted .active-marker::after {

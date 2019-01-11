@@ -174,3 +174,10 @@
 .mutiple-highlighted .tab:not(.highlighted) {
   opacity: 0.5;
 }
+
+
+/* hide regular active tab marker */
+.active-marker::before {
+  display: none !important;
+}
+

@@ -109,3 +109,9 @@
 :root.right-scrollbar.overlay-scrollbar #tabbar.overflow .tab:not(.pinned) {
   padding-right: var(--scrollbar-placeholder-size); /* it will be enough larger than the default padding */
 }
+
+
+/* hide regular active tab marker */
+.active-marker::before {
+  display: none !important;
+}

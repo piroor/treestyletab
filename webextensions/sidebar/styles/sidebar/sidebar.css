@@ -247,3 +247,10 @@
 .tab:not(:hover):not(.active)[multipletab-ready-to-close="true"] .closebox {
   visibility: visible;
 }
+
+
+
+/* hide regular active tab marker */
+.active-marker::before {
+  display: none !important;
+}

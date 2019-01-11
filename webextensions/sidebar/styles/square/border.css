@@ -60,3 +60,14 @@
 .tab.pinned.last-row {
   border-bottom-width: 0;
 }
+
+
+/* show more-highlighter like as tree */
+
+.tab:not(.faviconized) .active-marker::after {
+   top: calc(var(--tab-active-marker-size) * 2);
+}
+
+.tab[data-child-ids].subtree-collapsed.highlighted.some-descendants-highlighted .active-marker::after {
+  width: calc(var(--tab-active-marker-size) * 2);
+}
