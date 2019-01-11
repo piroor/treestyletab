@@ -22,7 +22,7 @@ export async function getIndexes(...queriedTabIds) {
     return browser.tabs.get(tabId)
       .catch(e => {
         handleMissingTabError(e);
-        return -1;
+        return null;
       });
   }));
   return indexes.map(tab => tab ? tab.index : -1);
