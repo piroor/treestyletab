@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+   * Fix inifinite recursion function call at synchronizing of tabs order.
+   * More optimize reindexing of synchronized tabs.
+   * Highlight tabs more when they have collapsed but highlighted descendants.
+   * Rename the class for the blue bar of active and highlighted tabs: `active-marker` to `highlighter`. You may need to update your custom user stylesheet.
  - 2.7.13 (2019.1.11)
    * More stabilize synchronizing of tabs order.
    * Wait until confirmation for closing of multiple tabs is done correctly.
