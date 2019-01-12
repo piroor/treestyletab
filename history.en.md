@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.7.16 (2019.1.13)
+   * Fix fatal error around API implementation. (regression on 2.7.15)
  - 2.7.15 (2019.1.13)
    * Add advanced option to support environments with Firefox's preference `browser.tabs.multiselect`=`false`.
    * Show confirmation dialog for closing multiple tabs only on the target window.
