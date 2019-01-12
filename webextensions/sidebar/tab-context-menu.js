@@ -443,7 +443,11 @@ function onMessage(message, _sender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TABS_CLOSING:
-      return Promise.resolve(onTabsClosing.dispatch(message.tabs, { windowId: message.windowId }));
+      // Don't respond to message for other windows, because
+      // the sender receives only the firstmost response.
+      if (message.windowId != Tabs.getWindow())
+        return;
+      return Promise.resolve(onTabsClosing.dispatch(message.tabs));
 
     case TSTAPI.kCONTEXT_MENU_UPDATED: {
       importExtraItems(message.items);
