@@ -478,6 +478,7 @@ export async function sendMessage(message, options = {}) {
   const promisedResults = spawnMessages(uniqueTargets, message);
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
+    return results;
   });
 }
 
