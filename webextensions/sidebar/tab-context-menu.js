@@ -439,7 +439,7 @@ async function onHidden() {
   ]);
 }
 
-function onMessage(message, _aSender) {
+function onMessage(message, _sender) {
   log('tab-context-menu: internally called:', message);
   switch (message.type) {
     case Constants.kCOMMAND_NOTIFY_TABS_CLOSING:
@@ -454,9 +454,9 @@ function onMessage(message, _aSender) {
   }
 }
 
-function importExtraItems(aItems) {
+function importExtraItems(importedItems) {
   mExtraItems.clear();
-  for (const [id, items] of Object.entries(aItems)) {
+  for (const [id, items] of Object.entries(importedItems)) {
     mExtraItems.set(id, items);
   }
 }

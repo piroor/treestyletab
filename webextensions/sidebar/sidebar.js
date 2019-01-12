@@ -407,7 +407,7 @@ async function waitUntilBackgroundIsReady() {
 }
 
 
-export async function confirmToCloseTabs(apiTabIds, _aOptions = {}) {
+export async function confirmToCloseTabs(apiTabIds, _options = {}) {
   apiTabIds = apiTabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
   const count = apiTabIds.length;
   if (count <= 1 ||
