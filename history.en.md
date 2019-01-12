@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Add advanced option to support environments with Firefox's preference `browser.tabs.multiselect`=`false`.
+   * Show confirmation dialog for closing multiple tabs only on the target window.
+   * Send API messages to the listener addon correctly even if it is initially registered with some listening message types and re-registered without the information.
  - 2.7.14 (2019.1.12)
    * Fix inifinite recursion function call at synchronizing of tabs order.
    * More optimize reindexing of synchronized tabs.
