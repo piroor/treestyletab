@@ -458,9 +458,15 @@ export function getListenersForMessageType(type) {
 
 export async function sendMessage(message, options = {}) {
   const uniqueTargets = new Set();
-  for (const addon of getListenersForMessageType(message.type)) {
+  const listenerAddons = getListenersForMessageType(message.type);
+  for (const addon of listenerAddons) {
     uniqueTargets.add(addon.id);
   }
+  log(`sendMessage: sending message for ${message.type}: `, {
+    message,
+    listenerAddons,
+    targets: options.targets
+  });
   if (options.targets) {
     if (!Array.isArray(options.targets))
       options.targets = [options.targets];
@@ -470,7 +476,9 @@ export async function sendMessage(message, options = {}) {
   }
 
   const promisedResults = spawnMessages(uniqueTargets, message);
-  return Promise.all(promisedResults);
+  return Promise.all(promisedResults).then(results => {
+    log(`sendMessage: got responses for ${message.type}: `, results);
+  });
 }
 
 function* spawnMessages(targetSet, message) {
