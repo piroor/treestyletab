@@ -9,6 +9,7 @@
 
 import {
   log as internalLogger,
+  configs,
   dumpTab
 } from './common.js';
 import * as Constants from './constants.js';
@@ -18,8 +19,6 @@ import * as Tabs from './tabs.js';
 function log(...args) {
   internalLogger('common/tabs-internal-operation', ...args);
 }
-
-const mMultiselectionSupport = typeof browser.menus.overrideContext == 'function';
 
 export async function selectTab(tab, options = {}) {
   tab = Tabs.ensureLivingTab(tab);
@@ -45,7 +44,7 @@ export async function selectTab(tab, options = {}) {
       container.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
-  if (mMultiselectionSupport) {
+  if (configs.supportTabsMultiselect) {
     let tabs = [tab.apiTab.index];
     const highlightedTabs = Tabs.getHighlightedTabs(tab);
     if (Tabs.isMultihighlighted(tab) &&

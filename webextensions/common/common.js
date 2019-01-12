@@ -137,6 +137,7 @@ export const configs = new Configs({
   promoteAllChildrenWhenClosedParentIsLastChild: true,
   moveFocusInTreeForClosedCurrentTab: true,
   simulateSelectOwnerOnClose: true,
+  supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',
   warnOnCloseTabs: true,
   lastConfirmedToCloseTabs: 0,
   grantedRemovingTabIds: [],

@@ -732,6 +732,16 @@ const mItems = [
         key:   'useCachedTree',
         type:  'checkbox'
       },
+      {
+        title: browser.i18n.getMessage('config_simulateCloseTabByDblclick_label'),
+        key:   'simulateCloseTabByDblclick',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('config_supportTabsMultiselect_label'),
+        key:   'supportTabsMultiselect',
+        type:  'checkbox'
+      },
       { type: 'separator' },
       {
         title: browser.i18n.getMessage('config_debug_label'),
