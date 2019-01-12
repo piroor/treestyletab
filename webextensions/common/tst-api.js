@@ -139,10 +139,35 @@ export function getAddon(id) {
 }
 
 function registerAddon(id, addon) {
+  log('addon is registered: ', id, addon);
+
+  // inherit properties from last effective value
+  const oldAddon = mAddons.get(id);
+  if (oldAddon) {
+    if (!('listeningTypes' in addon) && 'listeningTypes' in oldAddon)
+      addon.listeningTypes = oldAddon.listeningTypes;
+    if (!('style' in addon) && 'style' in oldAddon)
+      addon.style = oldAddon.style;
+  }
+
+  if (!addon.listeningTypes) {
+    // for backward compatibility, send all message types available on TST 2.4.16 by default.
+    addon.listeningTypes = [
+      kNOTIFY_READY,
+      kNOTIFY_SHUTDOWN,
+      kNOTIFY_TAB_CLICKED,
+      kNOTIFY_TAB_MOUSEDOWN,
+      kNOTIFY_TAB_MOUSEUP,
+      kNOTIFY_TABBAR_CLICKED,
+      kNOTIFY_TABBAR_MOUSEDOWN,
+      kNOTIFY_TABBAR_MOUSEUP
+    ];
+  }
   mAddons.set(id, addon);
 }
 
 function unregisterAddon(id) {
+  log('addon is unregistered: ', id, mAddons.get(id));
   mAddons.delete(id);
   delete mScrollLockedBy[id];
   delete mGroupingBlockedBy[id];
@@ -164,6 +189,7 @@ export async function initAsBackend() {
   const respondedAddons = [];
   const notifiedAddons = {};
   const notifyAddons = configs.knownExternalAddons.concat(configs.cachedExternalAddons);
+  log('initAsBackend: notifyAddons = ', respondedAddons);
   await Promise.all(notifyAddons.map(async id => {
     if (id in notifiedAddons)
       return;
@@ -184,10 +210,11 @@ export async function initAsBackend() {
       console.log(e);
     }
   }));
+  log('initAsBackend: respondedAddons = ', respondedAddons);
   configs.cachedExternalAddons = respondedAddons;
 }
 
-browser.runtime.onMessage.addListener((message, _aSender) => {
+browser.runtime.onMessage.addListener((message, _sender) => {
   if (!message ||
       typeof message.type != 'string')
     return;
@@ -240,19 +267,6 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
 
         case kREGISTER_SELF:
           return (async () => {
-            if (!message.listeningTypes) {
-              // for backward compatibility, send all message types available on TST 2.4.16 by default.
-              message.listeningTypes = [
-                kNOTIFY_READY,
-                kNOTIFY_SHUTDOWN,
-                kNOTIFY_TAB_CLICKED,
-                kNOTIFY_TAB_MOUSEDOWN,
-                kNOTIFY_TAB_MOUSEUP,
-                kNOTIFY_TABBAR_CLICKED,
-                kNOTIFY_TABBAR_MOUSEDOWN,
-                kNOTIFY_TABBAR_MOUSEUP
-              ];
-            }
             message.internalId = sender.url.replace(/^moz-extension:\/\/([^\/]+)\/.*$/, '$1');
             message.id = sender.id;
             registerAddon(sender.id, message);
