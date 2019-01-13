@@ -431,8 +431,8 @@ export async function confirmToCloseTabs(apiTabIds, options = {}) {
       return false;
   }
 }
-Commands.onTabsClosing.addListener(apiTabIds => {
-  return confirmToCloseTabs(apiTabIds);
+Commands.onTabsClosing.addListener((apiTabIds, options = {}) => {
+  return confirmToCloseTabs(apiTabIds, options);
 });
 
 Tabs.onCreated.addListener((tab, info = {}) => {
