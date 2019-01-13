@@ -388,6 +388,7 @@ async function updateSubtreeCollapsed(tab) {
 export async function confirmToCloseTabs(apiTabIds, options = {}) {
   apiTabIds = apiTabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
   const count = apiTabIds.length;
+  log('confirmToCloseTabs ', { apiTabIds, count, options });
   if (count <= 1 ||
       !configs.warnOnCloseTabs ||
       Date.now() - configs.lastConfirmedToCloseTabs < 500)

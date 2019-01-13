@@ -998,6 +998,7 @@ function onMessage(message, _sender, _respond) {
     }; break;
 
     case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
+      log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
       if (message.windowId == mTargetWindow)
         return confirmToCloseTabs(message.tabIds);
     }; break;

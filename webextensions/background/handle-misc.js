@@ -97,6 +97,7 @@ async function onShortcutCommand(command) {
     currentWindow: true
   }))[0]);
   const selectedTabs = Tabs.isMultiselected(activeTab) ? Tabs.getSelectedTabs(activeTab) : [];
+  log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
   switch (command) {
     case '_execute_browser_action':
