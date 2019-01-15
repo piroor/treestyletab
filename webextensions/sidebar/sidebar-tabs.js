@@ -550,6 +550,8 @@ Tabs.onStateChanged.addListener(tab => {
 
 Tabs.onLabelUpdated.addListener(tab => {
   reserveToUpdateTooltip(tab);
+  if (!tab.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
+    tab.titleUpdatedWhileCollapsed = true;
 });
 
 Tabs.onFaviconUpdated.addListener((tab, url) => {
@@ -560,9 +562,14 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
   });
 });
 
-Tabs.onCollapsedStateChanged.addListener((tab, _info) => {
+Tabs.onCollapsedStateChanged.addListener((tab, info) => {
+  if (info.collapsed)
+    return;
   reserveToUpdateLoadingState(tab);
-  updateLabelOverflow(tab);
+  if (tab.titleUpdatedWhileCollapsed) {
+    updateLabelOverflow(tab);
+    delete tab.titleUpdatedWhileCollapsed;
+  }
 });
 
 let mReservedUpdateActiveTab;
