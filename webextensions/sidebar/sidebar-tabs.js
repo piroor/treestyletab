@@ -283,6 +283,14 @@ export function updateAll() {
   }
 }
 
+export function updateLabelOverflow(tab) {
+  const label = Tabs.getTabLabel(tab);
+  if (!Tabs.isPinned(tab) &&
+      label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width)
+    label.classList.add('overflow');
+  else
+    label.classList.remove('overflow');
+}
 
 function onOverflow(event) {
   const tab = Tabs.getTabFromChild(event.target);
