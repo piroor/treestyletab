@@ -280,6 +280,8 @@ export function updateAll() {
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
     updateTooltip(tab);
+    if (!Tabs.isCollapsed(tab))
+      updateLabelOverflow(tab);
   }
 }
 
