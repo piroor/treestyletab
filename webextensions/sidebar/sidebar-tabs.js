@@ -560,7 +560,10 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
   });
 });
 
-Tabs.onCollapsedStateChanged.addListener((tab, _info) => { reserveToUpdateLoadingState(tab); });
+Tabs.onCollapsedStateChanged.addListener((tab, _info) => {
+  reserveToUpdateLoadingState(tab);
+  updateLabelOverflow(tab);
+});
 
 let mReservedUpdateActiveTab;
 Tabs.onUpdated.addListener((tab, info) => {
