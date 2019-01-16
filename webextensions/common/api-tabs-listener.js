@@ -364,6 +364,11 @@ async function onNewTabTracked(tab) {
     const newTab = Tabs.buildTab(tab, { inRemote: !!targetWindow });
     newTab.classList.add(Constants.kTAB_STATE_OPENING);
 
+    // New tab's index can become invalid because the value of "index" is same to
+    // the one given to browser.tabs.create() instead of actual index.
+    // See also: https://github.com/piroor/treestyletab/issues/2131
+    tab.index = Math.max(0, Math.min(tab.index, container.childNodes.length));
+
     const nextTab = Tabs.getAllTabs(container)[tab.index];
     container.insertBefore(newTab, nextTab);
 
