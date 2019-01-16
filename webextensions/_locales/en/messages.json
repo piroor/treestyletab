@@ -324,6 +324,7 @@
   "config_drag_caption": { "message": "Drag and Drop" },
 
   "config_tabDragBehavior_caption":       { "message": "When a tree is dragged outside of the tab bar" },
+  "config_tabDragBehavior_description":   { "message": "Due to Firefox's restrictions, you need to decide it when you start dragging: how tabs are treated on dropped outside of TST's sidebar. Shift key pressed on starting of dragging or the \"drag handle\" a small draggable tooltip appearing near the left (or right) edge of each tab are available to switch the action." },
   "config_tabDragBehavior_label":         { "message": "Drag:" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-Drag:" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "Detach Whole Tree from the window (but impossible to create bookmarks)" },

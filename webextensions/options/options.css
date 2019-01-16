@@ -52,13 +52,18 @@ label[disabled="true"] button {
 
 #style-radiogroup li img {
   max-width: 100px;
-  border: 1px solid ThreeDShadow;
 }
 
-li label img {
+label input[type="radio"] ~ img,
+label input[type="checkbox"] ~ img {
+  border: 1px solid ThreeDShadow;
   vertical-align: middle;
   margin-top: 0.15em;
   margin-bottom: 0.15em;
+}
+
+select {
+  max-width: 30em;
 }
 
 

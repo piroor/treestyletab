@@ -55,6 +55,7 @@ function log(...args) {
 
 export const kREGISTER_SELF         = 'register-self';
 export const kUNREGISTER_SELF       = 'unregister-self';
+export const kWAIT_FOR_SHUTDOWN     = 'wait-for-shutdown';
 export const kPING                  = 'ping';
 export const kNOTIFY_READY          = 'ready';
 export const kNOTIFY_SHUTDOWN       = 'shutdown'; // defined but not notified for now.
@@ -253,6 +254,12 @@ browser.runtime.onMessage.addListener((message, _sender) => {
   }
 });
 
+const mPromisedOnBeforeUnload = new Promise((resolve, _reject) => {
+  // If this promise doesn't do anything then there seems to be a timeout so it only works if TST is disabled within about 10 seconds after this promise is used as a response to a message. After that it will not throw an error for the waiting extension.
+  // If we use the following then the returned promise will be rejected when TST is disabled even for longer times:
+  window.addEventListener('beforeunload', () => resolve());
+});
+
 browser.runtime.onMessageExternal.addListener((message, sender) => {
   if (!message ||
       typeof message.type != 'string')
@@ -293,6 +300,9 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
             configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
             return true;
           })();
+
+        case kWAIT_FOR_SHUTDOWN:
+          return mPromisedOnBeforeUnload;
       }
       break;
 
