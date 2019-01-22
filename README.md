@@ -116,7 +116,7 @@ Please read some important points of this project at first:
    * TST's tree is designed to work as an extended memory for your brain. To satisfy this concept, TST is designed to guess relation of tabs automatically, from the context.
    * Better usability around ungrouped flat tabs in a vertical tab bar is out of purpose.
 
-Any feature requiest unrelated to these points may be rejected, even if many people love it. Instead of adding more built-in features, I hope to make TST compatible with other tab related addons. If it is required for more better compatibility I add [public APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [actually there are some implementations](#addons-extend-tst). If you need any new API, please file API proposals to the issue tracker.
+Any feature request unrelated to these points may be rejected, even if many people love it. Instead of adding more built-in features, I hope to make TST compatible with other tab related addons. If it is required for more better compatibility I add [public APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons), and [actually there are some implementations using this API](#addons-extend-tst). If you need any new API, please file API proposals to the issue tracker.
 
 ### Major FAQ
 
@@ -147,11 +147,11 @@ If you want to drag multiple tabs at once to organize tree, [Multiple Tab Handle
 
 ### Adding new minor (trivial) options more and more
 
-I won't increase number of configurations inifinitly, instead I hope to reduce them.
+I won't increase number of configurations inifinitely, instead I hope to reduce them.
 High customizability for details of features is out of TST's purpose.
 I want to provide only very required options which are truly un-omitable.
-Too many optional features will kill this project, because they will cloud the important concept of TST and will bring together people who don't like my core vision about TST.
-Instead, sorry but please fork this project and modify it for your usecase.
+Too many optional features would kill this project, because they would cloud the important concept of TST and would bring together people who don't like my core vision about TST.
+Instead, sorry but please fork this project and modify it for your use case.
 
 ### Adding new options to control where new tabs are opened from [links](https://github.com/piroor/treestyletab/issues/1052) or [bookmarks](https://github.com/piroor/treestyletab/issues/263)
 
@@ -159,7 +159,7 @@ In most cases - subjectively 99%, new tabs from links may be related to the sour
 For other rare cases - if you want to open the link in new sibling tab, or you want to open a bookmark as a child tab of the current, then you can do it by dragging a link or bookmark and drop it onto a tab or between tabs.
 Natural operations for GUI objects shoud be optimized for most major usecases.
 
-Too high customizability for such rare usecases will just make you happy, but others including me won't - they are just confused that "why such too much choices are here?"
+Too high customizability for such rare usecases would make just you happy, but others including me won't - they are just confused that "why are there so many choices to make?"
 
 ### Auto hide of the sidebar
 
@@ -185,7 +185,7 @@ It provides ability to select multiple tabs by Ctrl-Click or Shift-Click and you
 ### Configuration UI to change appearance of tabs in the vertical tab bar, for example, [color](https://github.com/piroor/treestyletab/issues/539), [height](https://github.com/piroor/treestyletab/issues/236), [visibility of the scrollbar](https://github.com/piroor/treestyletab/issues/514), [transparency of tabs](https://github.com/piroor/treestyletab/issues/651), and so on
 
 There is a plan to implement an input field to write custom CSS rules, so it will work like as `userChrome.css`.
-See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) and [details of inspectation for the sidebar contents](https://github.com/piroor/treestyletab/issues/1725#issuecomment-359856516).
+See the [code snippets](https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules) and [details of inspection for the sidebar contents](https://github.com/piroor/treestyletab/issues/1725#issuecomment-359856516).
 
 ### [I cannot drop tabs to the bookmarks toolbar to create bookmarks.](https://github.com/piroor/treestyletab/issues/2033)
 
@@ -218,19 +218,19 @@ TST can focus to the previous tab directly before the current tab is closed, onl
 
 Moreover, if TST always control focusing of tabs for the 1st case, it will conflict to Firefox's `browser.tabs.selectOwnerOnClose`=`true` behavior or other addon's behaviors. My development policy about TST is: being compatible to Firefox's native features and other addons, thus I won't introduce such a behavior breaking compatibility with others.
 
-However Firefox 64 will have [some new WebExtensions APIs about this point](https://bugzilla.mozilla.org/show_bug.cgi?id=1500479 "1500479 - Enhance browser.tabs API to support assigning tab successors"). After those APIs are land, TST will be updated to use them and you'll never see the "next tab is unexpectedly focused" behavior anymore.
+However Firefox 64 will have [some new WebExtensions APIs about this point](https://bugzilla.mozilla.org/show_bug.cgi?id=1500479 "1500479 - Enhance browser.tabs API to support assigning tab successors"). After those APIs land, TST will be updated to use them and you'll never see the "next tab is unexpectedly focused" behavior anymore.
 
 
 ### [Donation](https://github.com/piroor/treestyletab/issues/761)
 
 Thanks, but sorry, I have no plan about any donation from some reasons.
-The largest reason is: because I want to keep me as the prime user of this project.
-I want to keep having a privilege to say "no" about requests not matched to my vision.
-My hand is already full to maintain this addon for my usecase.
-(Of course I know that donation is not payment, but I'm afraid that I'll think about voices from people who did donation more seriously and it unconsciously conflict to my policies.)
+The biggest reason is: because I want to keep me as the prime user of this project.
+I want to keep having a privilege to say "no" about requests that do not match my vision.
+My hands are already full to maintain this addon for my use case.
+(Of course I know that donation is not payment, but I'm afraid that I would think about voices from people who did donation more seriously and it would unconsciously conflict with my policies.)
 
 And, I'm afraid of [social undermining](https://en.wikipedia.org/wiki/Social_undermining) also.
 
-Any other contribution for this project is welcome - translation, debugging, triaging of issues, and more.
-If you fixed a bug you met, please send a pull request - I'll merge it.
-If you have different plan about TST, please fork this project freely for your purpose, if needed.
+Any other contribution to this project is welcome - translation, debugging, triaging of issues, and more.
+If you have fixed a bug you met, please send a pull request - I'll merge it.
+If you have different plans about TST, please fork this project freely for your purpose, if needed.
