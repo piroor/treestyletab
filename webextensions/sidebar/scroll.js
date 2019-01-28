@@ -317,6 +317,8 @@ export async function scrollToTab(tab, options = {}) {
   // keep "last scrolled-to tab" information until the tab is
   // actually moved.
   await wait(configs.autoGroupNewTabsTimeout);
+  if (scrollToTab.stopped)
+    return;
   const retryOptions = { retryCount: options.retryCount || 0 };
   if (scrollToTab.lastTargetId == tab.id &&
       !isTabInViewport(tab) &&
@@ -399,8 +401,10 @@ async function onWheel(event) {
     return;
   }
 
-  if (!TSTAPI.isScrollLocked())
+  if (!TSTAPI.isScrollLocked()) {
+    cancelRunningScroll();
     return;
+  }
 
   event.stopImmediatePropagation();
   event.preventDefault();
