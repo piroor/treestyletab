@@ -370,7 +370,7 @@ function getDropAction(event) {
 
     case kDROP_BEFORE: {
       //log('drop position = before the tab');
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(Tabs.getTabById(info.draggedAPITab), {
+      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
         insertBefore: targetTab
       });
       if (referenceTabs.parent)
@@ -386,7 +386,7 @@ function getDropAction(event) {
 
     case kDROP_AFTER: {
       //log('drop position = after the tab');
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(Tabs.getTabById(info.draggedAPITab), {
+      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
         insertAfter: targetTab
       });
       if (referenceTabs.parent)
