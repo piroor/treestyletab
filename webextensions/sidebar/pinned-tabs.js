@@ -64,7 +64,7 @@ export function init() {
 export function reposition(options = {}) {
   //log('reposition');
   const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
-  if (!pinnedTabs.length) {
+  if (pinnedTabs.length == 0) {
     reset();
     document.documentElement.classList.remove('have-pinned-tabs');
     return;
@@ -76,14 +76,15 @@ export function reposition(options = {}) {
   const maxWidth       = containerWidth;
   const faviconized    = configs.faviconizePinnedTabs;
 
-  const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth ;
-  const height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() ;
+  const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth + Size.getTabXOffset();
+  const height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() + Size.getTabYOffset();
+  console.log('size ', { width, height });
   const maxCol = Math.max(1, Math.floor(maxWidth / width));
   const maxRow = Math.ceil(pinnedTabs.length / maxCol);
   let col    = 0;
   let row    = 0;
 
-  mTabBar.style.marginTop = `${height * maxRow}px`;
+  mTabBar.style.marginTop = `${height * maxRow + (faviconized ? 0 : Size.getTabYOffset())}px`;
   for (const item of pinnedTabs) {
     const style = item.style;
     if (options.justNow)

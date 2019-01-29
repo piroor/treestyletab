@@ -15,11 +15,21 @@ function log(...args) {
 }
 
 let mTabHeight          = 0;
+let mTabXOffset         = 0;
+let mTabYOffset         = 0;
 let mFavIconSize        = 0;
 let mFavIconizedTabSize = 0;
 
 export function getTabHeight() {
   return mTabHeight;
+}
+
+export function getTabXOffset() {
+  return mTabXOffset;
+}
+
+export function getTabYOffset() {
+  return mTabYOffset;
 }
 
 export function getFavIconSize() {
@@ -41,15 +51,22 @@ export function init() {
     --favicon-size:         ${mFavIconSize}px;
     --faviconized-tab-size: ${mFavIconizedTabSize}px;
   }`;
+
   const dummyTab = document.querySelector('#dummy-tab');
   const dummyTabRect = dummyTab.getBoundingClientRect();
   mTabHeight = dummyTabRect.height;
+  const style  = window.getComputedStyle(dummyTab);
+  mTabXOffset = parseFloat(style.marginLeft.replace(/px$/, '')) + parseFloat(style.marginRight.replace(/px$/, ''));
+  mTabYOffset = parseFloat(style.marginTop.replace(/px$/, '')) + parseFloat(style.marginBottom.replace(/px$/, ''));
+
   const dummyTabbar = document.querySelector('#dummy-tabs');
   const dummyTabbarRect = dummyTabbar.getBoundingClientRect();
   const scrollbarSize = dummyTabbarRect.width - dummyTabRect.width;
   log('mTabHeight ', mTabHeight);
   sizeDefinition.textContent += `:root {
     --tab-size: ${mTabHeight}px;
+    --tab-x-offset: ${mTabXOffset}px;
+    --tab-y-offset: ${mTabYOffset}px;
     --tab-height: var(--tab-size); /* for backward compatibility of custom user styles */
     --scrollbar-size: ${scrollbarSize}px;
     --narrow-scrollbar-size: ${configs.narrowScrollbarSize}px;
