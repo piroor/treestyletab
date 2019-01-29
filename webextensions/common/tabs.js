@@ -1040,53 +1040,46 @@ export function getOpenerFromGroupTab(groupTab) {
 
 export function isActive(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_ACTIVE) ||
-            !!(tab.apiTab && tab.apiTab.active));
+           !!(tab.apiTab && tab.apiTab.active);
 }
 
 export function isPinned(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_PINNED) ||
-            !!(tab.apiTab && tab.apiTab.pinned));
+           !!(tab.apiTab && tab.apiTab.pinned);
 }
 
 export function isAudible(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_AUDIBLE) ||
-            !!(tab.apiTab && tab.apiTab.audible));
+           !!(tab.apiTab && tab.apiTab.audible);
 }
 
 export function isSoundPlaying(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING) ||
-           !!(tab.apiTab && tab.apiTab.audible && !tab.apiTab.mutedInfo.muted));
+           !!(tab.apiTab && tab.apiTab.audible && !tab.apiTab.mutedInfo.muted);
 }
 
 export function maybeSoundPlaying(tab) {
   return ensureLivingTab(tab) &&
-         (tab.classList.contains(Constants.kTAB_STATE_SOUND_PLAYING) ||
+         (isSoundPlaying(tab) ||
           (tab.classList.contains(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
-           tab.hasAttribute(Constants.kCHILDREN)) ||
-          !!(tab.apiTab && tab.apiTab.audible && !tab.apiTab.mutedInfo.muted));
+           tab.hasAttribute(Constants.kCHILDREN)));
 }
 
 export function isMuted(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_MUTED) ||
-            !!(tab.apiTab && tab.apiTab.mutedInfo && tab.apiTab.mutedInfo.muted));
+           !!(tab.apiTab && tab.apiTab.mutedInfo && tab.apiTab.mutedInfo.muted);
 }
 
 export function maybeMuted(tab) {
   return ensureLivingTab(tab) &&
-         (tab.classList.contains(Constants.kTAB_STATE_MUTED) ||
+         (isMuted(tab) ||
           (tab.classList.contains(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
            tab.hasAttribute(Constants.kCHILDREN)));
 }
 
 export function isHidden(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_HIDDEN) ||
-            !!(tab.apiTab && tab.apiTab.hidden));
+           !!(tab.apiTab && tab.apiTab.hidden);
 }
 
 export function isCollapsed(tab) {
@@ -1096,14 +1089,12 @@ export function isCollapsed(tab) {
 
 export function isDiscarded(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_DISCARDED) ||
-            !!(tab.apiTab && tab.apiTab.discarded));
+           !!(tab.apiTab && tab.apiTab.discarded);
 }
 
 export function isPrivateBrowsing(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_PRIVATE_BROWSING) ||
-            !!(tab.apiTab && tab.apiTab.incognito));
+           !!(tab.apiTab && tab.apiTab.incognito);
 }
 
 export function isOpening(tab) {
@@ -1161,15 +1152,12 @@ export function isTemporaryGroupTab(tab) {
 export function isSelected(tab) {
   return ensureLivingTab(tab) &&
            (tab.classList.contains(Constants.kTAB_STATE_SELECTED) ||
-            tab.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED} .${Constants.kTAB_STATE_HIGHLIGHTED}`) ||
-            (isMultihighlighted(tab) &&
-             !!(tab.apiTab && tab.apiTab.highlighted)));
+            (isMultihighlighted(tab) && !!(tab.apiTab && tab.apiTab.highlighted)));
 }
 
 export function isHighlighted(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED) ||
-            !!(tab.apiTab && tab.apiTab.highlighted));
+           !!(tab.apiTab && tab.apiTab.highlighted);
 }
 
 export function isMultiselected(tab) {
