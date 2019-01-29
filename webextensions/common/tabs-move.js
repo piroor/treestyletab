@@ -108,8 +108,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    const oldIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
-    const beforeAlreadyMovedTabsCount = container.alreadyMovedTabs.size;
+    let movedTabsCount = 0;
     for (const tab of tabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab);
       const oldNextTab     = Tabs.getNextTab(tab);
@@ -118,6 +117,9 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       container.internalMovingTabs.add(tab.apiTab.id);
       container.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, referenceTab);
+      tab.apiTab.index = Tabs.getTabIndex(tab);
+      Tabs.track(tab.apiTab);
+      movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab,
@@ -125,24 +127,14 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
-    if (container.alreadyMovedTabs.size - beforeAlreadyMovedTabsCount == 0) {
+    if (movedTabsCount == 0) {
       log(' => actually nothing moved');
     }
     else {
-      const newIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
-      const minIndex = Math.min(...oldIndexes, ...newIndexes);
-      const maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
-        const tab = allTabs[i];
-        if (!tab)
-          continue;
-        tab.apiTab.index = i;
-      }
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
         Array.from(container.childNodes)
           .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
-          .join('\n')),
-          { minIndex, maxIndex });
+          .join('\n')));
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.
@@ -231,11 +223,10 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    const oldIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
     let nextTab = Tabs.getNextTab(referenceTab);
     if (tabs.includes(nextTab))
       nextTab = null;
-    const beforeAlreadyMovedTabsCount = container.alreadyMovedTabs.size;
+    let movedTabsCount = 0;
     for (const tab of tabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab);
       const oldNextTab     = Tabs.getNextTab(tab);
@@ -244,6 +235,9 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       container.internalMovingTabs.add(tab.apiTab.id);
       container.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, nextTab);
+      tab.apiTab.index = Tabs.getTabIndex(tab);
+      Tabs.track(tab.apiTab);
+      movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab,
@@ -251,24 +245,14 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       });
     }
     syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
-    if (container.alreadyMovedTabs.size - beforeAlreadyMovedTabsCount == 0) {
+    if (movedTabsCount == 0) {
       log(' => actually nothing moved');
     }
     else {
-      const newIndexes = [referenceTab].concat(tabs).map(Tabs.getTabIndex);
-      const minIndex = Math.min(...oldIndexes, ...newIndexes);
-      const maxIndex = Math.max(...oldIndexes, ...newIndexes);
-      for (let i = minIndex, allTabs = Tabs.getAllTabs(container); i <= maxIndex; i++) {
-        const tab = allTabs[i];
-        if (!tab)
-          continue;
-        tab.apiTab.index = i;
-      }
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
         Array.from(container.childNodes)
           .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
-          .join('\n')),
-          { minIndex, maxIndex });
+          .join('\n')));
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.

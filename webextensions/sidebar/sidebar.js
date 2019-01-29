@@ -88,6 +88,9 @@ export async function init() {
       });
       mTargetWindow = apiTabs[0].windowId;
       Tabs.setWindow(mTargetWindow);
+      for (const apiTab of apiTabs) {
+        Tabs.track(apiTab);
+      }
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
       PinnedTabs.init();
@@ -350,6 +353,10 @@ function updateContextualIdentitiesSelector() {
 export async function rebuildAll(cache) {
   const apiTabs = await browser.tabs.query({ currentWindow: true });
   TabsContainer.clearAll();
+  Tabs.untrackAll(apiTabs[0].windowId);
+  for (const apiTab of apiTabs) {
+    Tabs.track(apiTab);
+  }
 
   if (cache) {
     const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs: apiTabs });

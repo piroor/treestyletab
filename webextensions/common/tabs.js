@@ -58,6 +58,79 @@ let mTargetWindow;
 export const allTabsContainer = document.querySelector('#all-tabs');
 
 
+export const trackedWindows = new Map();
+export const trackedTabs = new Map();
+export const activeTabForWindow = new Map();
+export const highlightedTabsForWindow = new Map();
+
+export function track(apiTab) {
+  trackedTabs.set(apiTab.id, apiTab);
+  let window = trackedWindows.get(apiTab.windowId);
+  if (!window) {
+    window = {
+      tabs:  new Map(),
+      order: []
+    };
+    trackedWindows.set(apiTab.windowId, window);
+    highlightedTabsForWindow.set(apiTab.windowId, new Set());
+  }
+  if (window.tabs.has(apiTab.id)) { // already tracked: update
+    const index = window.order.indexOf(apiTab.id);
+    window.order.splice(index, 1);
+    window.order.splice(apiTab.index, 0, apiTab.id);
+    for (let i = Math.min(index, apiTab.index), maxi = Math.max(index, apiTab.index) + 1; i < maxi; i++) {
+      window.tabs.get(window.order[i]).index = i;
+    }
+  }
+  else { // not tracked yet: add
+    window.tabs.set(apiTab.id, apiTab);
+    window.order.splice(apiTab.index, 0, apiTab.id);
+    for (let i = apiTab.index + 1, maxi = window.order.length; i < maxi; i++) {
+      window.tabs.get(window.order[i]).index = i;
+    }
+  }
+}
+
+export function untrack(apiTabId) {
+  const apiTab = trackedTabs.get(apiTabId);
+  const window = trackedWindows.get(apiTab.windowId);
+  if (window) {
+    window.tabs.delete(apiTabId);
+    const index = window.order.indexOf(apiTab.id);
+    window.order.splice(index, 1);
+    if (window.tabs.size == 0) {
+      trackedWindows.delete(apiTab.windowId, window);
+    }
+    else {
+      for (let i = index, maxi = window.order.length; i < maxi; i++) {
+        window.tabs.get(window.order[i]).index = i;
+      }
+    }
+  }
+}
+
+export function untrackAll(windowId) {
+  if (windowId) {
+    const window = trackedWindows.get(windowId);
+    if (window) {
+      for (const id of window.tabs.keys()) {
+        trackedTabs.delete(id);
+      }
+      window.tabs.clear();
+      window.tabs = undefined;
+      window.order = undefined;
+      trackedWindows.delete(windowId);
+      activeTabForWindow.delete(windowId);
+      highlightedTabsForWindow.delete(windowId);
+    }
+  }
+  else {
+    trackedWindows.clear();
+    trackedTabs.clear();
+  }
+}
+
+
 //===================================================================
 // Tab Related Utilities
 //===================================================================

@@ -339,6 +339,8 @@ async function onNewTabTracked(tab) {
 
   log(`onNewTabTracked(id=${tab.id}): `, tab);
 
+  Tabs.track(tab);
+
   const container = getOrBuildTabsContainer(tab.windowId);
   const positionedBySelf     = container.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = container.duplicatingTabsCount > 0;
@@ -379,8 +381,13 @@ async function onNewTabTracked(tab) {
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
     const uniqueId = await newTab.uniqueId;
 
+    tab.uniqueId = uniqueId;
+    tab.element = newTab;
+
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
+      Tabs.untrack(tab.id);
+      delete tab.element;
       return;
     }
 
@@ -430,6 +437,8 @@ async function onNewTabTracked(tab) {
         !newTab.parentNode) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
+      Tabs.untrack(tab.id);
+      delete tab.element;
       return;
     }
 
@@ -458,6 +467,8 @@ async function onNewTabTracked(tab) {
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
+      Tabs.untrack(tab.id);
+      delete tab.element;
       return;
     }
 
@@ -616,6 +627,8 @@ async function onRemoved(tabId, removeInfo) {
 }
 function onRemovedComplete(tab) {
   clearTabRelationsForRemovedTab(tab);
+  Tabs.untrack(tab.apiTab.id);
+  delete tab.apiTab.element;
   const container = tab.parentNode;
   if (!container) // it was removed while waiting
     return;
@@ -715,17 +728,12 @@ async function onMoved(tabId, moveInfo) {
       if (!alreadyMoved &&
           Tabs.getNextTab(movedTab) != nextTab) {
         container.insertBefore(movedTab, nextTab);
-        const tabs       = Tabs.getAllTabs(movedTab);
-        const startIndex = Math.max(Math.min(moveInfo.fromIndex, moveInfo.toIndex), 0);
-        const endIndex   = Math.min(Math.max(moveInfo.fromIndex, moveInfo.toIndex), tabs.length - 1);
-        for (let i = startIndex; i <= endIndex; i++) {
-          tabs[i].apiTab.index = i;
-        }
+        Tabs.track(movedTab.apiTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.from(container.childNodes)
             .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tab == movedTab ? '[MOVED]' : ''))
             .join('\n')),
-            { moveInfo, startIndex, endIndex });
+            { moveInfo });
       }
       const onMovedResult = Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);
       // don't do await if not needed, to process things synchronously
@@ -833,6 +841,7 @@ async function onDetached(tabId, detachInfo) {
     container.removeChild(oldTab);
     if (!container.hasChildNodes())
       container.parentNode.removeChild(container);
+    Tabs.untrack(tabId);
 
     onCompleted();
   }

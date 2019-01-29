@@ -181,6 +181,7 @@ function destroy() {
 
 async function rebuildAll() {
   TabsContainer.clearAll();
+  Tabs.untrackAll();
   const windows = await browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
@@ -190,6 +191,9 @@ async function rebuildAll() {
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
+      for (const apiTab of window.tabs) {
+        Tabs.track(apiTab);
+      }
       try {
         if (configs.useCachedTree) {
           restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
