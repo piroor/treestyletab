@@ -1,6 +1,15 @@
 # History
 
  - master/HEAD
+   * Attach tabs opened from dropped links and bookmarks to existing tree correctly.
+   * Reduce needless margin around pinned but not faviconized tabs.
+   * Apply `discarded` status of restored tabs correctly.
+   * Cancel delayed scroll to specific tab, when the sidebar is scrolled by mouse wheel.
+   * Add screenshots for configs about drag and drop behavior.
+   * Track tabs opened with invalid (too large) index by other addons more safely.
+   * Update fade-out effect of too long tab labels, when tabs are expanded or restored.
+   * Show confirmation for closing multiple tabs on the active window when it is triggered with a keyboard shortcut.
+   * Introduce new API: [`wait-for-shutdown`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#wait-for-shutdown-type-message).
  - 2.7.16 (2019.1.13)
    * Fix fatal error around API implementation. (regression on 2.7.15)
  - 2.7.15 (2019.1.13)
