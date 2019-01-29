@@ -182,6 +182,11 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
   Tabs.updateUniqueId(tab);
   Tabs.initPromisedStatus(tab, true);
 
+  if (apiTab.discarded)
+    tab.classList.add(Constants.kTAB_STATE_DISCARDED);
+  else
+    tab.classList.remove(Constants.kTAB_STATE_DISCARDED);
+
   const idMap = options.idMap;
 
   log('fixupTabRestoredFromCache children: ', tab.getAttribute(Constants.kCHILDREN));
