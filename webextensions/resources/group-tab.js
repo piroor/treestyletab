@@ -25,6 +25,8 @@
   }
 
   function setTitle(title) {
+    if (!gTitle)
+      init();
     document.title = gTitle.textContent = gTitleField.value = title;
     updateParameters({ title });
   }
@@ -41,6 +43,8 @@
   }
 
   function enterTitleEdit() {
+    if (!gTitle)
+      init();
     gTitle.style.display = 'none';
     gTitleField.style.display = 'inline';
     gTitleField.select();
@@ -48,6 +52,8 @@
   }
 
   function exitTitleEdit() {
+    if (!gTitle)
+      init();
     gTitle.style.display = '';
     gTitleField.style.display = '';
   }
@@ -72,6 +78,8 @@
   }
 
   function init() {
+    if (gTitle)
+      return;
     gTitle = document.querySelector('#title');
     gTitleField = document.querySelector('#title-field');
 
