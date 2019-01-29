@@ -1490,7 +1490,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       const prevLevel   = Number(prevTab.getAttribute(Constants.kLEVEL) || 0);
       const targetLevel = Number(params.insertBefore.getAttribute(Constants.kLEVEL) || 0);
       let parent = null;
-      if (tab && !Tabs.isPinned(tab))
+      if (!tab || !Tabs.isPinned(tab))
         parent = (prevLevel < targetLevel) ? prevTab : Tabs.getParentTab(params.insertBefore);
       return {
         parent,
@@ -1529,7 +1529,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       const targetLevel = Number(params.insertAfter.getAttribute(Constants.kLEVEL) || 0);
       const nextLevel   = Number(nextTab.getAttribute(Constants.kLEVEL) || 0);
       let parent = null;
-      if (tab && !Tabs.isPinned(tab))
+      if (!tab || !Tabs.isPinned(tab))
         parent = (targetLevel < nextLevel) ? params.insertAfter : Tabs.getParentTab(params.insertAfter) ;
       return {
         parent,
