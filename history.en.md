@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.17 (2019.1.30)
    * Attach tabs opened from dropped links and bookmarks to existing tree correctly.
    * Reduce needless margin around pinned but not faviconized tabs.
    * Apply `discarded` status of restored tabs correctly.
