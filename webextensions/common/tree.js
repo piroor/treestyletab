@@ -453,6 +453,12 @@ export function detachAllChildren(tab, options = {}) {
 export async function behaveAutoAttachedTab(tab, options = {}) {
   const baseTab = options.baseTab || Tabs.getCurrentTab(Tabs.getWindow() || tab);
   log('behaveAutoAttachedTab ', dumpTab(tab), dumpTab(baseTab), options);
+  if (Tabs.isPinned(baseTab)) {
+    if (!Tabs.isPinned(tab))
+      return false;
+    options.behavior = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
+    log(' => override behavior for pinned tabs');
+  }
   switch (options.behavior) {
     default:
       return false;
