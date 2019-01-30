@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.7.18 (2019.1.30)
+   * Fix odd tab focus behavior after duplicating of pinned tabs via middle-click on the "Reload" button.
  - 2.7.17 (2019.1.30)
    * Attach tabs opened from dropped links and bookmarks to existing tree correctly.
    * Reduce needless margin around pinned but not faviconized tabs.
