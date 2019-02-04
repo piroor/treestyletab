@@ -32,3 +32,10 @@
 #background {
   background-image: none;
 }
+
+
+/* multiselection of tabs */
+
+.mutiple-highlighted > .tab.highlighted::after {
+  background: var(--tab-highlighter);
+}

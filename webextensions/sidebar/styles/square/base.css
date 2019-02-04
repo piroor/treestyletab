@@ -77,3 +77,27 @@
 .tab .closebox::after {
   position: relative;
 }
+
+
+/* multiselection of tabs */
+
+.mutiple-highlighted > .tab.highlighted::after {
+  background: Highlight;
+  bottom: 0;
+  content: " ";
+  display: block;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.mutiple-highlighted > .tab.highlighted::after {
+  opacity: 0.25;
+}
+
+.mutiple-highlighted > .tab.highlighted.${Constants.kSELECTED}::after {
+  opacity: 0.35;
+}
