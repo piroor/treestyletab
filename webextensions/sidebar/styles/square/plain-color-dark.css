@@ -23,6 +23,8 @@
   --tab-highlighted-glow: var(--tab-highlighter);
   --tab-highlighted-highlight: white;
   --tabbar-bg: #0c0c0d;
+
+  --multiselected-color: var(--tab-highlighter);
 }
 :root[color-scheme="system-color"] #background::after {
   content: none;
@@ -31,11 +33,4 @@
 :root,
 #background {
   background-image: none;
-}
-
-
-/* multiselection of tabs */
-
-.mutiple-highlighted > .tab.highlighted::after {
-  background: var(--tab-highlighter);
 }

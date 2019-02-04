@@ -56,6 +56,9 @@
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--dropmarker-border-color);
   --tab-highlighted-base: var(--bg-color);
+
+  --multiselected-color: var(--tab-surface-active-gradient);
+  --multiselected-color-opacity: 0.35;
 }
 
 .tab:not(.active) {
@@ -259,22 +262,15 @@
 /* multiselection of tabs */
 
 .mutiple-highlighted > .tab.highlighted::after {
-  background: var(--tab-surface-active-gradient);
+  background: var(--multiselected-color);
   bottom: 0;
   content: " ";
   display: block;
   left: 0;
+  opacity: var(--multiselected-color-opacity);
   pointer-events: none;
   position: absolute;
   right: 0;
   top: 0;
   z-index: 10;
-}
-
-.mutiple-highlighted > .tab.highlighted::after {
-  opacity: 0.35;
-}
-
-.mutiple-highlighted > .tab.highlighted.${Constants.kSELECTED}::after {
-  opacity: 0.45;
 }
