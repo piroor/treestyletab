@@ -57,6 +57,8 @@
   --tab-highlighted-base: var(--tab-surface);
 
   --throbber-color: var(--browser-loading-indicator, var(--browser-bg-lightest, var(--tab-highlighted-glow)));
+
+  --multiselected-color-opacity: 0.25;
 }
 
 :root,
