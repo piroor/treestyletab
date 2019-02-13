@@ -85,7 +85,7 @@
   "bookmarkTabs_notification_success_title": { "message": "Вкладки успешно добавлены в закладки" },
   "bookmarkTabs_notification_success_message": { "message": "$COUNT$ вкладок, включая \"$TITLE$\" добавлено в закладки, в новую папку под \"$PARENT$.",
     "placeholders": {
-      "title": { "content": "$1", "example": "Title" },
+      "title": { "content": "$1", "example": "Title" }
     }},
 
   "bookmarkTabs_notification_success_title": { "message": "Вкладки успешно добавлены в закладки" },
