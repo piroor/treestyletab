@@ -15,17 +15,23 @@
   "command_focusPreviousSilently": { "message": "Перейти на предыдущую вкладку (не разворачивать дерево)" },
   "command_focusNext":             { "message": "Перейти к следующей вкладке (развернуть дерево)" },
   "command_focusNextSilently":     { "message": "Перейти к следующей вкладке (не разворачивать дерево)" },
+  "command_focusParent":           { "message": "Перейти к родительской вкладке" },
+  "command_focusFirstChild":       { "message": "Перейти к первой дочерней вкладке" },  
   "command_tabbarUp":              { "message": "Листать вкладки вверх построчно" },
   "command_tabbarPageUp":          { "message": "Листать вкладки вверх постранично" },
   "command_tabbarHome":            { "message": "Листать вкладки вверх" },
   "command_tabbarDown":            { "message": "Листать вкладки вниз построчно" },
   "command_tabbarPageDown":        { "message": "Листать вкладки вниз постранично" },
   "command_tabbarEnd":             { "message": "Листать вкладки вниз" },
+  "command_groupSelectedTabs":     { "message": "Создать новую группу из выбранных вкладок" },
 
   "tab_closebox_tab_tooltip": { "message": "Закрыть вкладку" },
+  "tab_closebox_tab_tooltip_multiselected": { "message": "Закрыть вкладку" },
   "tab_closebox_tree_tooltip": { "message": "Закрыть дерево" },
-  "tab_soundButton_muted_tooltip": { "message": "Вкл.звук" },
-  "tab_soundButton_playing_tooltip": { "message": "Выкл.звук" },
+  "tab_soundButton_muted_tooltip": { "message": "Включить звук" },
+  "tab_soundButton_muted_tooltip_multiselected": { "message": "Включить звук" },
+  "tab_soundButton_playing_tooltip": { "message": "Выключить звук" },
+  "tab_soundButton_playing_tooltip_multiselected": { "message": "Выключить звук" },
   "tab_twisty_expanded_tooltip": { "message": "Свернуть дерево" },
   "tab_twisty_collapsed_tooltip": { "message": "Развернуть дерево" },
   "tab_tree_tooltip": { "message": "$TREE$\n  ...и $COUNT$ больше вкладок(ки)",
@@ -44,12 +50,17 @@
   "tabbar_newTabWithContexualIdentity_tooltip": { "message": "Новая вкладка контейнера" },
   "tabbar_newTabWithContexualIdentity_default": { "message": "По умолч." },
 
+  "tabDragHandle_tree_tearoff_tooltip":  { "message": "Начните перетаскивать, чтобы отделить это дерево от окна" },
+  "tabDragHandle_tree_bookmark_tooltip": { "message": "Начните перетаскивать, чтобы добавить это дерево в закладки" },
+  "tabDragHandle_tab_tearoff_tooltip":   { "message": "Начните перетаскивать, чтобы отделить эту вкладку от окна" },
+  "tabDragHandle_tab_bookmark_tooltip":  { "message": "Начните перетаскивать, чтобы добавить эту вкладку в закладки" },
+
   "groupTab_label": { "message": "$TITLE$ и больше",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
     }},
   "groupTab_label_default": { "message": "Группа" },
-  "groupTab_temporary_label": { "message": "Закрыть эту вкладку, когда не останется дочерних вклад." },
+  "groupTab_temporary_label": { "message": "Закрыть эту вкладку, когда не останется дочерних вкладок" },
   "groupTab_fromPinnedTab_label": { "message": "Вкладки с $TITLE$",
     "placeholders": {
       "title": { "content": "$1", "example": "title" }
@@ -64,7 +75,7 @@
     }},
 
   "bookmarkTree_notification_success_title": { "message": "Дерево успешно добавлено в закладки" },
-  "bookmarkTree_notification_success_message": { "message": "$COUNT$ - столько вкладок, включая \"$TITLE$\", добавлено в закладки, в новую папку под \"$PARENT$.",
+  "bookmarkTree_notification_success_message": { "message": "$COUNT$ — столько вкладок, включая \"$TITLE$\", добавлено в закладки, в новую папку под \"$PARENT$.",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
       "count": { "content": "$2", "example": "2" },
@@ -72,7 +83,13 @@
     }},
 
   "bookmarkTabs_notification_success_title": { "message": "Вкладки успешно добавлены в закладки" },
-  "bookmarkTabs_notification_success_message": { "message": "$COUNT$ - столько вкладок, включая \"$TITLE$\" добавлено в закладки, в новую папку под \"$PARENT$.",
+  "bookmarkTabs_notification_success_message": { "message": "$COUNT$ вкладок, включая \"$TITLE$\" добавлено в закладки, в новую папку под \"$PARENT$.",
+    "placeholders": {
+      "title": { "content": "$1", "example": "Title" },
+    }},
+
+  "bookmarkTabs_notification_success_title": { "message": "Вкладки успешно добавлены в закладки" },
+  "bookmarkTabs_notification_success_message": { "message": "$COUNT$ — столько вкладок, включая \"$TITLE$\" добавлено в закладки, в новую папку под \"$PARENT$.",
     "placeholders": {
       "title": { "content": "$1", "example": "Title" },
       "count": { "content": "$2", "example": "2" },
@@ -87,13 +104,41 @@
   "dropLinksOnTabBehavior_load":    { "message": "Загрузить в этой вкладке" },
   "dropLinksOnTabBehavior_newtab":  { "message": "Открыть новую дочернюю вкладку" },
 
+  "tabDragBehaviorNotification_message_duration":  { "message": "16s" },
+  "tabDragBehaviorNotification_message_base":  { "message": "Отпускание за пределами боковой панели $RESULT$.",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_inverted_base_with_shift":  { "message": "C зажатым Shift $RESULT$.",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_inverted_base_without_shift":  { "message": "Перетаскивание без Shift'a $RESULT$.",
+    "placeholders": {
+      "result": { "content": "$1", "example": "something happen" }
+    }},
+  "tabDragBehaviorNotification_message_tree_tearoff":  { "message": "отсоеденит вкладки от окна" },
+  "tabDragBehaviorNotification_message_tab_tearoff":   { "message": "отсоеденит вкладку от окна" },
+  "tabDragBehaviorNotification_message_tree_bookmark": { "message": "создаст ссылку или закладку там где вы отпустите вкладки" },
+  "tabDragBehaviorNotification_message_tab_bookmark":  { "message": "создаст ссылку или закладку там где вы отпустите вкладку" },
+
   "warnOnCloseTabs_message":   { "message": "Вы пытаетесь закрыть $NUMBER$ вкладки(ок). Уверены, что хотите продолжить?",
     "placeholders": {
       "NUMBER": { "content": "$1", "example": "10" }
     }},
   "warnOnCloseTabs_warnAgain": { "message": "Предупреждать когда я закрываю несколько вкладок" },
   "warnOnCloseTabs_close":     { "message": "Закрыть вкладки" },
-  "warnOnCloseTabs_cancel":    { "message": "Отменить" },
+  "warnOnCloseTabs_cancel":    { "message": "Отмена" },
+
+  "bookmarkDialog_title":    { "message": "Заголовок:" },
+  "bookmarkDialog_url":      { "message": "Адрес:" },
+  "bookmarkDialog_parentId": { "message": "Папка:" },
+  "bookmarkDialog_accept":   { "message": "Сохранить" },
+  "bookmarkDialog_cancel":   { "message": "Отмена" },
+
+  "bookmarkFolderChooser_unspecified":   { "message": "(не определено)" },
+  "bookmarkFolderChooser_blank":         { "message": "(без имени)" },
+  "bookmarkFolderChooser_useThisFolder": { "message": "использовать эту папку" },
 
   "message_startup_description_1": { "message": "Tree Style Tab возрождается на основе технологий WebExtensions для Firefox 57 и более поздних версий. Его вертикальная панель вкладок доступна в качестве одной из боковых панелей. Если вы ещё не видите её, нажмите " },
   "message_startup_description_key": { "message": "кнопку \"F1\" " },
@@ -122,9 +167,17 @@
   "context_closeTree_label": { "message": "Закрыть это дерево" },
   "context_closeDescendants_label": { "message": "Закрыть дочерние" },
   "context_closeOthers_label": { "message": "Закрыть другие вкладки, кроме этого дерева" },
+  "context_collapseTree_label": { "message": "Свернуть это дерево" },
   "context_collapseAll_label": { "message": "Свернуть все" },
+  "context_expandTree_label": { "message": "Развернуть это дерево" },
   "context_expandAll_label": { "message": "Развернуть все" },
   "context_bookmarkTree_label": { "message": "Добавить это дерево в закладки…" },
+  "context_groupTabs_label":    { "message": "Создать новую группу из вкладок" },
+  "context_topLevel_prefix": { "message": "Верхний элемент: " },
+
+  "context_collapsed_label": { "message": "Свернуто (проверка меню типа флажок" },
+  "context_pinnedTab_label": { "message": "Прикреплено (проверка меню типа переключатель" },
+  "context_unpinnedTab_label": { "message": "Откреплено (проверка меню типа переключатель" },
 
 
   "config_appearance_caption": { "message": "Вид" },
@@ -132,7 +185,7 @@
   "config_sidebarPosition_caption": { "message": "Стиль содержимого боковой панели:" },
   "config_sidebarPosition_left": { "message": "Слева" },
   "config_sidebarPosition_right": { "message": "Справа" },
-  "config_sidebarPosition_description": { "message": "*Эта конфигурация не меняет положение боковой панели. Вам нужно нажать переключатель в заголовке боковой панели и нажать \"Переместить боковую панель вправо\"." },
+  "config_sidebarPosition_description": { "message": "*Эта настройка не меняет положение боковой панели. Вам нужно нажать переключатель в заголовке боковой панели и нажать \"Переместить боковую панель вправо\"." },
 
   "config_sidebarDirection_caption": { "message": "Стиль направления текста:" },
   "config_sidebarDirection_ltr": { "message": "Слева направо" },
@@ -149,10 +202,10 @@
   "config_style_plain": { "message": "Простая" },
   "config_style_plain_dark": { "message": "Простая темная" },
   "config_style_vertigo": { "message": "Вертиго" },
-  "config_style_mixed": { "message": "Микс" },
+  "config_style_mixed": { "message": "Смешанная" },
   "config_style_metal": { "message": "Металл" },
   "config_style_sidebar": { "message": "Боковая панель" },
-  "config_style_highcontrast": { "message": "Высококонтр." },
+  "config_style_highcontrast": { "message": "Контрастная" },
   "config_style_none": { "message": "Без стиля" },
   "config_style_none_info": { "message": " (*Пожалуйста, украсьте все самостоятельно через \"Дополнительные правила стиля боковой панели\")" },
 
@@ -161,11 +214,13 @@
   "config_colorScheme_systemColor": { "message": "Системные цвета" },
 
   "config_maxTreeLevel_before": { "message": "Отступ вкладок до" },
-  "config_maxTreeLevel_after": { "message": "level(s) (*Отрицательное значение = \"бесконечно\")" },
+  "config_maxTreeLevel_after": { "message": "уровня(ей) (*Отрицательное значение = \"бесконечно\")" },
 
   "config_faviconizePinnedTabs_label": { "message": "Показывать закрепленные вкладки только со значком" },
   "config_animation_label": { "message": "Включить эффекты анимации" },
   "config_showCollapsedDescendantsByTooltip_label": { "message": "Показывать свернутые дочерние элементы в подсказке на вкладке" },
+  "config_applyThemeColorToIcon_label": { "message": "Применить цвета темы к кнопке на панели задач" },
+  "config_applyThemeColorToIcon_label_info": { "message": "(*Нужно установить \"svg.context-properties.content.enabled\" to \"true\" via \"about:config\" в Firefox 62 или старше)" },
 
 
   "config_context_caption": { "message": "Контекстное меню" },
@@ -227,8 +282,8 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "Добавить в верхнюю часть дерева, как первый дочерний элемент" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Добавить в конец дерева" },
 
-  "config_autoGroupNewTabs_before": { "message": "Auto-group tabs opened within" },
-  "config_autoGroupNewTabs_after": { "message": "msec" },
+  "config_autoGroupNewTabs_before": { "message": "Автоматически группировать вкладки открытые в течении" },
+  "config_autoGroupNewTabs_after": { "message": "мс" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "Автоматически группировать вкладки открытые в течении" },
   "config_autoGroupNewTabsDelayOnNewWindow_after": { "message": "мс когда новое окно открыто в составе вкладок открытых как \"домашняя страница\"." },
 
@@ -243,6 +298,7 @@
   "config_moveFocusInTreeForClosedCurrentTab_true": { "message": "Вернуться к предыдущей вкладке дерева" },
   "config_moveFocusInTreeForClosedCurrentTab_false": { "message": "Всегда возвращаться на следующую вкладку (По умолч. в Firefox)" },
   "config_moveFocusInTreeForClosedCurrentTab_description": { "message": "*Поведение Firefox's по умолч. для \"browser.tabs.selectOwnerOnClose\"=\"true\" сработает раньше этой конфигурации." },
+  "config_simulateSelectOwnerOnClose_label": { "message": "Переместить фокус назад на родительскую вкладку, после закрытия текущей (*Моделирование встроенного в Firefox поведения для \"browser.tabs.selectOwnerOnClose\"=\"true\", приорететно для настроек выше)" },
 
   "config_parentTabBehaviorForChanges_caption": { "message": "Когда родительская вкладка перемещается или закрывается кем-то извне боковой панели дерева" },
   "config_parentTabBehaviorForChanges_always": { "message": "Всегда действовать как с отцовской (переместить или закрыть все дочерние вкладки), независимо от того видима панель или нет." },
@@ -261,19 +317,44 @@
   "config_closeParentBehavior_promoteAll": { "message": "Назначить все дочерние вкладки на уровень закрытой родительской вкладки" },
   "config_promoteFirstChildForClosedRoot_label": { "message": "Назначить первую дочернюю вкладку как новую родительскую, если у закрытой родит.вкл. не было родит.вкл." },
   "config_closeParentBehavior_detach": { "message": "Освободить дочерние вкладки из дерева" },
-
-  "config_dropLinksOnTabBehavior_caption": { "message": "При перетаскивании ссылки или URL-в на вкладку" },
-  "config_dropLinksOnTabBehavior_ask":     { "message": "Всегда спрашивать что делать" },
-  "config_dropLinksOnTabBehavior_load":    { "message": "Загрузить во вкладке" },
-  "config_dropLinksOnTabBehavior_newtab":  { "message": "Открыть новую дочернюю вкладку" },
-
+  
   "config_warnOnCloseTabs_label": { "message": "Предупреждать когда я закрываю несколько вкладок" },
 
 
+  "config_drag_caption": { "message": "Перетаскивание" },
+
+  "config_tabDragBehavior_caption":       { "message": "Когда дерево перетаскивается за границы панели вкладок" },
+  "config_tabDragBehavior_description":   { "message": "Из-за ограничений Firefox, вам необходимо заранее определиться, как обрабатываются вкладки, перетаскиваемые за границы панели TST. Клавиша Shift, зажатая в начале перетаскивания, или  \"ручка для перетаскивания\", окошко появляющееся слева (или справа) на каждой вкладке, позволят сменить вид действия." },
+  "config_tabDragBehavior_label":         { "message": "Перетаскивание        :" },
+  "config_tabDragBehaviorShift_label":    { "message": "Перетаскивание с Shift:" },
+  "config_tabDragBehavior_tearoff_tree":  { "message": "Перенесет дерево в другое окно (невозможно создать закладку)" },
+  "config_tabDragBehavior_bookmark_tree": { "message": "Создаст закладки или сслыки из всего дерева (невозможно вынести за пределы окна)" },
+  "config_tabDragBehavior_tearoff_tab":   { "message": "Отсоеденит отдельную вкладку (невозможно создать закладку)" },
+  "config_tabDragBehavior_bookmark_tab":  { "message": "Создаст закладку, или ссылку (невозможно вынести за пределы окна)" },
+  "config_showTabDragHandle_label":       { "message": "Показывать помощника на каждой вкладке. Выберите задачу и начните перетаскивание" },
+  "config_showTabDragBehaviorNotification_label": { "message": "Показывать напоминание о том, что произойдет после отпускания вкладки за пределами боковой панели" },
+
+  "config_dropLinksOnTabBehavior_caption": { "message": "При перетаскивании ссылки или URL на вкладку" },
+  "config_dropLinksOnTabBehavior_ask":     { "message": "Всегда спрашивать что делать" },
+  "config_dropLinksOnTabBehavior_load":    { "message": "Загрузить во вкладке" },
+  "config_dropLinksOnTabBehavior_newtab":  { "message": "Открыть новую дочернюю вкладку" },
+  
+
   "config_shortcuts_caption": { "message": "Горячие клавиши" },
+  "config_shortcuts_resetAll": { "message": "Сбросить ВСЁ" },
 
 
   "config_advanced_caption": { "message": "Расширенные настр." },
+
+  "config_bookmarkTreeFolderName_before": { "message": "Имя папки для \"Добавить это дерево в закладки\":" },
+  "config_bookmarkTreeFolderName_after": { "message": "\u200b" },
+  "config_bookmarkTreeFolderName_description": { "message": "Доступные шаблоны: %TITLE% (заголовок первой вкладки), %URL% (Адрес первой вкладки), %YEAR% (год, 4 символа), %MONTH% (месяц, 2 символа), %DATE% (число, два символа)" },
+
+  "config_defaultBookmarkParentId_label_before":  { "message": "Создать новую закладку под" },
+  "config_defaultBookmarkParentId_label_after":   { "message": "\u200b" },
+
+  "config_simulateCloseTabByDblclick_label": { "message": "Закрывать вкладки двойным кликом (*имитация встроенного в Firefox поведения для \"browser.tabs.closeTabByDblclick\"=\"true\")" },
+  "config_supportTabsMultiselect_label": { "message": "Использовать интерфейс (API) выбора нескольких вкладок  (*зависит от встроенной настройки \"browser.tabs.multiselect\"=\"true\" on Firefox 63 and later)" },
 
   "config_userStyleRules_label": { "message": "Дополнительные правила стиля боковой панели" },
   "config_userStyleRules_description_before": { "message": "Для ознакомления с дополнительными возможностями " },
@@ -313,14 +394,14 @@
 
   "config_debug_caption": { "message": "Разработка" },
 
+  "config_link_startupPage_label": { "message": "Страница первого запуска" },
+  "config_link_groupPage_label":   { "message": "Страница для группы вкладок" },
+
   "config_debug_label": { "message": "Режим отладки" },
   "config_log_caption":               { "message": "Детальное логирование" },
-  "config_logOnUpdated_label":        { "message": "Печать логов из tabs.onUpdated" },
-  "config_logOnMouseEvent_label":     { "message": "Печать логов из mouse events" },
-  "config_logOnScroll_label":         { "message": "Печать логов из auto scrolling" },
-  "config_logOnCollapseExpand_label": { "message": "Печать логов из collapse/expand" },
-  "config_logOnCache_label":          { "message": "Печать логов из cached tree" },
-  "config_logOnFakeContextMenu_label": { "message": "Печать логов из fake context menu" },
+  "config_logFor_common":     { "message": "Печать логов из общих модулей" },
+  "config_logFor_background": { "message": "Печать логов из фоновых модулей" },
+  "config_logFor_sidebar":    { "message": "Печать логов из модулей боковой панели" },
   "config_simulateSVGContextFill_label": { "message": "Активировать обходной путь для бага 1388193 и бага 1421329 для симуляции SVG иконок (*Это может увеличить нагрузку на процессор. Для деактивации этой опции необходимо активировать \"svg.context-properties.content.enabled\" в \"about:config\", пока эти баги не будут исправлены.)" },
   "config_useCachedTree_label": { "message": "Оптимизация восстановления дерева с помощью кэша" },
   "config_useCachedTree_description": { "message": "*Пожалуйста, попробуйте снять флажок и установить повторно, чтобы обновить кэш, если поведение дерева нестабильно." },
@@ -341,6 +422,8 @@
 
   "config_all_caption": { "message": "Все Конфигурации" },
 
+  "config_terms_delimiter": { "message": " " },
+
 
   "tabContextMenu_reload_label":      { "message": "Обновить вкладку" },
   "tabContextMenu_mute_label":        { "message": "Выкл.звук" },
@@ -349,13 +432,37 @@
   "tabContextMenu_pin_label":         { "message": "Закрепить вкладку" },
   "tabContextMenu_unpin_label":       { "message": "Открепить вкладку" },
   "tabContextMenu_duplicate_label":   { "message": "Дублировать вкладку" },
+  "tabContextMenu_selectAllTabs_label": { "message": "Выбрать все вкладки" },
+  "tabContextMenu_bookmark_label":    { "message": "Добавить вкладку в закладки" },
+  "tabContextMenu_reopenInContainer_label":             { "message": "Открыть в контейнере" },
+  "tabContextMenu_reopenInContainer_noContainer_label": { "message": "Без контейнера" },
+  "tabContextMenu_moveTab_label":     { "message": "Переместить вкладку" },
+  "tabContextMenu_moveTabToStart_label": { "message": "Переместить в начало" },
+  "tabContextMenu_moveTabToEnd_label":   { "message": "Переместить в конец" },
   "tabContextMenu_tearOff_label":     { "message": "Переместить в новое окно" },
 
   "tabContextMenu_reloadAll_label":   { "message": "Обновить все вкладки" },
   "tabContextMenu_bookmarkAll_label": { "message": "Добавить все вкл. в закладки…" },
-  "tabContextMenu_closeAfter_label":  { "message": "Закрыть вкладки справа" },
+
+  "tabContextMenu_closeTabsToBottom_label":  { "message": "Закрыть вкладки снизу" },
   "tabContextMenu_closeOther_label":  { "message": "Закрыть другие вкладки" },
 
-  "tabContextMenu_undoClose_label":   { "message": "Отменить закрытие вкладки" },
-  "tabContextMenu_close_label":       { "message": "Закрыть вкладку" }
+  "tabContextMenu_undoClose_label":   { "message": "Восстановить закрытую вкладки" },
+  "tabContextMenu_close_label":       { "message": "Закрыть вкладку" },
+
+  "tabContextMenu_reload_label_multiselected":      { "message": "&Reload Selected Tabs" },
+  "tabContextMenu_mute_label_multiselected":        { "message": "Выкл. звук на выбранных вкладках" },
+  "tabContextMenu_unmute_label_multiselected":      { "message": "Вкл. звук на выбранных вкладках" },
+  
+  "tabContextMenu_pin_label_multiselected":         { "message": "Закрепить вкладки" },
+  "tabContextMenu_unpin_label_multiselected":       { "message": "Открепить вкладки" },
+
+  "tabContextMenu_duplicate_label_multiselected":   { "message": "Дублировать вкладки" },
+
+  "tabContextMenu_moveTab_label_multiselected": { "message": "Переместить вкладки" },
+
+  "tabContextMenu_bookmark_label_multiselected": { "message": "Добавить вкладки в закладки…" },
+  "tabContextMenu_bookmarkSelected_label":       { "message": "Добавить выбранные вкладки в закладки…" },
+
+  "tabContextMenu_close_label_multiselected":       { "message": "Закрыть выбраные вкладки" }
 }
