@@ -8,7 +8,7 @@ EXTERNAL_LIB_DIR := $(CURDIR)/extlib
 all: xpi
 
 install_dependency:
-	npm install
+	npm install --save-dev
 
 lint:
 	$(NPM_BIN_DIR)/eslint . --ext=.js --report-unused-disable-directives
