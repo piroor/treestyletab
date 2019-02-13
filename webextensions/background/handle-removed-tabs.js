@@ -188,8 +188,10 @@ async function closeChildTabs(parent) {
 
 Tabs.onRemoved.addListener((tab, info) => {
   log('Tabs.onRemoved: removed ', dumpTab(tab));
-
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
+
+  if (info.isWindowClosing)
+    return;
 
   // The removing tab may be attached to another tab or
   // other tabs may be attached to the removing tab.

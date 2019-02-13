@@ -26,7 +26,10 @@ export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
 export function startTracking() {
   Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
-  Tabs.onRemoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onRemoved.addListener((tab, info) => {
+    if (!info.isWindowClosing)
+      reserveToSaveTreeStructure(tab);
+  });
   Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
   Tabs.onUpdated.addListener((tab, info) => {
     if ('openerTabId' in info)
