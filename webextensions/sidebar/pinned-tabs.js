@@ -78,7 +78,6 @@ export function reposition(options = {}) {
 
   const width  = faviconized ? Size.getFavIconizedTabSize() : maxWidth + Size.getTabXOffset();
   const height = faviconized ? Size.getFavIconizedTabSize() : Size.getTabHeight() + Size.getTabYOffset();
-  console.log('size ', { width, height });
   const maxCol = Math.max(1, Math.floor(maxWidth / width));
   const maxRow = Math.ceil(pinnedTabs.length / maxCol);
   let col    = 0;
