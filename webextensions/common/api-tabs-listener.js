@@ -382,7 +382,7 @@ async function onNewTabTracked(tab) {
     // tries to move focus to a nearest visible ancestor, instead of this
     // new active tab.
     // See also: https://github.com/piroor/treestyletab/issues/2155
-    if (tab.active)
+    if (tab.active && activeTab)
       await onActivated({
         tabId:            tab.id,
         previousTabId:    activeTab.apiTab.id,
