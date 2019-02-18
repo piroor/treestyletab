@@ -206,8 +206,6 @@ Tabs.onAttached.addListener(async (tab, info = {}) => {
   });
   log('moved descendants: ', movedTabs.map(dumpTab));
   for (const movedTab of movedTabs) {
-    if (Tabs.getParentTab(movedTab))
-      continue;
     Tree.attachTabTo(movedTab, tab, {
       broadcast: true,
       dontMove:  true
