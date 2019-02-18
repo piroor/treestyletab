@@ -848,10 +848,17 @@ async function onDetached(tabId, detachInfo) {
       Tabs.onDetached.dispatch(oldTab, info);
 
     const container = oldTab.parentNode;
+    const nextTab   = oldTab.nextSibling;
+    const oldIndex  = oldTab.apiTab.index;
     clearTabRelationsForRemovedTab(oldTab);
     container.removeChild(oldTab);
-    if (!container.hasChildNodes())
+    if (container.hasChildNodes()) {
+      if (nextTab)
+        reindexFollowingTabs(nextTab, oldIndex);
+    }
+    else {
       container.parentNode.removeChild(container);
+    }
 
     onCompleted();
   }
