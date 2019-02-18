@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.7.19 (2019.2.19)
    * Disallow to drop a pinned tab after any unpinned tab / disallow to drop an unpinned tab before any pinned tab.
    * Restore original tree structure after a tree is moved to a new window via the "Move to New Window" command.
    * Fix broken focus of tabs after a tab is detached from a window.
