@@ -1,6 +1,12 @@
 # History
 
  - master/HEAD
+   * Disallow to drop a pinned tab after any unpinned tab / disallow to drop an unpinned tab before any pinned tab.
+   * Restore original tree structure after a tree is moved to a new window via the "Move to New Window" command.
+   * Fix broken focus of tabs after a tab is detached from a window.
+   * Handle new tab opened as the active tab more correctly.
+   * Reduce needless operations around saving tree structure for a closing window.
+   * Give more highlighted appearance for multiselected tabs. This change respecs Firefox's new appearance introduced by [the bug 1515686](https://bugzilla.mozilla.org/show_bug.cgi?id=1515686).
  - 2.7.18 (2019.1.30)
    * Fix odd tab focus behavior after duplicating of pinned tabs via middle-click on the "Reload" button.
  - 2.7.17 (2019.1.30)
