@@ -8,6 +8,7 @@
    * Handle new tab opened as the active tab more correctly.
    * Reduce needless operations around saving tree structure for a closing window.
    * Give more highlighted appearance for multiselected tabs. This change respecs Firefox's new appearance introduced by [the bug 1515686](https://bugzilla.mozilla.org/show_bug.cgi?id=1515686).
+   * ru locale is updated by trueR3W1ND, thanks!
  - 2.7.18 (2019.1.30)
    * Fix odd tab focus behavior after duplicating of pinned tabs via middle-click on the "Reload" button.
  - 2.7.17 (2019.1.30)
