@@ -375,6 +375,20 @@ async function onNewTabTracked(tab) {
     if (nextTab)
       reindexFollowingTabs(nextTab, tab.index + 1);
 
+    // We need to update "active" state of a new active tab immediately.
+    // Attaching of initial child tab (this new tab may become it) to an
+    // existing tab may produce collapsing of existing tree, and a
+    // collapsing tree may have the old active tab. On such cases TST
+    // tries to move focus to a nearest visible ancestor, instead of this
+    // new active tab.
+    // See also: https://github.com/piroor/treestyletab/issues/2155
+    if (tab.active)
+      await onActivated({
+        tabId:            tab.id,
+        previousTabId:    activeTab.apiTab.id,
+        windowId:         tab.windowId
+      });
+
     const onTabCreatedInner = Tabs.addCreatingTab(newTab);
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
     const uniqueId = await newTab.uniqueId;
