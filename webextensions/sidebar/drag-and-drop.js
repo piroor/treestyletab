@@ -67,6 +67,7 @@ const kBOOKMARK_FOLDER  = 'x-moz-place:';
 const kDROP_BEFORE  = 'before';
 const kDROP_ON_SELF = 'self';
 const kDROP_AFTER   = 'after';
+const kDROP_IMPOSSIBLE = 'impossible';
 
 const kDROP_POSITION = 'data-drop-position';
 
@@ -255,6 +256,9 @@ function getDropAction(event) {
     return info.targetTabs[info.targetTabs.length - 1];
   });
   info.defineGetter('canDrop', () => {
+    if (info.dropPosition == kDROP_IMPOSSIBLE)
+      return false;
+
     const draggedApiTab               = info.dragData && info.dragData.apiTab;
     const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
     if (draggedApiTab &&
@@ -307,12 +311,20 @@ function getDropAction(event) {
       info.targetTab    = info.insertBefore = info.firstTargetTab;
       info.dropPosition = kDROP_BEFORE;
       info.action       = action;
+      if (info.draggedAPITab &&
+          !info.draggedAPITab.pinned &&
+          Tabs.isPinned(info.targetTab))
+        info.dropPosition = kDROP_IMPOSSIBLE;
     }
     else if (event.clientY > info.lastTargetTab.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
       info.targetTab    = info.insertAfter = info.lastTargetTab;
       info.dropPosition = kDROP_AFTER;
       info.action       = action;
+      if (info.draggedAPITab &&
+          info.draggedAPITab.pinned &&
+          !Tabs.isPinned(info.targetTab))
+        info.dropPosition = kDROP_IMPOSSIBLE;
     }
     return info;
   }
@@ -366,6 +378,9 @@ function getDropAction(event) {
         // if (info.insertBefore)
         //  log('insertBefore = ', dumpTab(info.insertBefore));
       });
+      if (info.draggedAPITab &&
+          info.draggedAPITab.pinned != Tabs.isPinned(targetTab))
+        info.dropPosition = kDROP_IMPOSSIBLE;
     }; break;
 
     case kDROP_BEFORE: {
@@ -382,6 +397,9 @@ function getDropAction(event) {
       info.action = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
       //if (info.insertBefore)
       //  log('insertBefore = ', dumpTab(info.insertBefore));
+      if (info.draggedAPITab &&
+          info.draggedAPITab.pinned != Tabs.isPinned(targetTab))
+        info.dropPosition = kDROP_IMPOSSIBLE;
     }; break;
 
     case kDROP_AFTER: {
@@ -424,6 +442,9 @@ function getDropAction(event) {
           });
         }
       }
+      if (info.draggedAPITab &&
+          info.draggedAPITab.pinned != Tabs.isPinned(Tabs.getNextVisibleTab(targetTab)))
+        info.dropPosition = kDROP_IMPOSSIBLE;
     }; break;
   }
 
