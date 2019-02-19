@@ -522,11 +522,11 @@ export function getTabLabelContent(tab) {
 
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
-export function getCurrentTab(hint) {
+export function getActiveTab(hint) {
   const container = getTabsContainer(hint);
   return container && container.querySelector(`.${Constants.kTAB_STATE_ACTIVE}`);
 }
-export function getCurrentTabs() {
+export function getActiveTabs() {
   return Array.from(document.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`));
 }
 
@@ -1369,7 +1369,7 @@ function snapshotTree(targetTab, tabs) {
     const previous = getPreviousNormalTab(tab);
     item.previous = previous && previous.id;
   }
-  const activeTab = getCurrentTab(targetTab);
+  const activeTab = getActiveTab(targetTab);
   return {
     target:   snapshotById[targetTab.id],
     active:   activeTab && snapshotById[activeTab.id],

@@ -161,7 +161,7 @@ async function onActivated(activeInfo) {
     }
 
     log('tabs.onActivated: ', dumpTab(newTab));
-    const oldActiveTabs = TabsInternalOperation.setTabFocused(newTab);
+    const oldActiveTabs = TabsInternalOperation.setTabActive(newTab);
 
     let byCurrentTabRemove = !activeInfo.previousTabId;
     if (!('successorTabId' in newTab.apiTab)) { // on Firefox 64 or older
@@ -343,7 +343,7 @@ async function onNewTabTracked(tab) {
   const positionedBySelf     = container.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = container.duplicatingTabsCount > 0;
   const maybeOrphan          = container.toBeOpenedOrphanTabs > 0;
-  const activeTab            = Tabs.getCurrentTab(container);
+  const activeTab            = Tabs.getActiveTab(container);
 
   Tabs.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
@@ -383,7 +383,7 @@ async function onNewTabTracked(tab) {
     // new active tab.
     // See also: https://github.com/piroor/treestyletab/issues/2155
     if (tab.active)
-      TabsInternalOperation.setTabFocused(newTab);
+      TabsInternalOperation.setTabActive(newTab);
 
     const onTabCreatedInner = Tabs.addCreatingTab(newTab);
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
@@ -506,7 +506,7 @@ async function onNewTabTracked(tab) {
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
 
-    const currentActiveTab = Tabs.getCurrentTabs().find(tabElement => tabElement != newTab && tabElement.parentNode == newTab.parentNode);
+    const currentActiveTab = Tabs.getActiveTabs().find(tabElement => tabElement != newTab && tabElement.parentNode == newTab.parentNode);
     if (renewedTab.active &&
         currentActiveTab)
       onActivated({

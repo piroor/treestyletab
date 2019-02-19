@@ -99,7 +99,7 @@ export function removeTabs(tabs, options = {}) {
   return browser.tabs.remove(tabs.map(tab => tab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
 }
 
-export function setTabFocused(tab) {
+export function setTabActive(tab) {
   tab = Tabs.ensureLivingTab(tab);
   if (!tab)
     return [];

@@ -30,7 +30,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
 
   log('Tabs.onCreating ', dumpTab(tab), info);
 
-  const possibleOpenerTab = info.activeTab || Tabs.getCurrentTab(tab);
+  const possibleOpenerTab = info.activeTab || Tabs.getActiveTab(tab);
   const opener = Tabs.getOpenerTab(tab);
   if (opener)
     opener.uniqueId.then(uniqueId => {
