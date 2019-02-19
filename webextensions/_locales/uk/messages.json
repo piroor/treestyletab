@@ -239,10 +239,10 @@
 
   "config_treeBehavior_caption": { "message": "Поведінка дерева" },
 
-  "config_moveFocusInTreeForClosedCurrentTab_caption": { "message": "Коли поточна вкладка закривається як остання дочірня" },
-  "config_moveFocusInTreeForClosedCurrentTab_true": { "message": "Повернутись до попередньої вкладки дерева" },
-  "config_moveFocusInTreeForClosedCurrentTab_false": { "message": "Завжди повертатися на наступну вкладку (за замовч. Firefox)" },
-  "config_moveFocusInTreeForClosedCurrentTab_description": { "message": "*Поведінка Firefox's за замовч. для \"browser.tabs.selectOwnerOnClose\"=\"true\" спрацює раніше цієї конфігурації." },
+  "config_successorTabControlLevel_caption": { "message": "Коли поточна вкладка закривається як остання дочірня" },
+  "config_successorTabControlLevel_inTree": { "message": "Повернутись до попередньої вкладки дерева" },
+  "config_successorTabControlLevel_simulateDefault": { "message": "Завжди повертатися на наступну вкладку (за замовч. Firefox)" },
+  "config_successorTabControlLevel_legacyDescription": { "message": "*Поведінка Firefox's за замовч. для \"browser.tabs.selectOwnerOnClose\"=\"true\" спрацює раніше цієї конфігурації." },
 
   "config_parentTabBehaviorForChanges_caption": { "message": "Коли батьківська вкладка переміщається чи закривається кимось ззовні бічної панелі дерева" },
   "config_parentTabBehaviorForChanges_always": { "message": "Завжди діяти як з батьківською (перемістити чи закрити всі дочірні вкладки також), незалежно від того відобр. бічна панель дерева чи ні." },

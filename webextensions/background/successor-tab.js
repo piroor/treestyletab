@@ -10,6 +10,7 @@ import {
   configs
 } from '/common/common.js';
 
+import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
@@ -37,7 +38,7 @@ if (typeof browser.tabs.moveInSuccession == 'function') {
 }
 
 function setSuccessor(apiTabId, successorTabId = -1) {
-  if (!configs.moveFocusInTreeForClosedCurrentTab)
+  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
     return;
   browser.tabs.update(apiTabId, {
     successorTabId
@@ -92,9 +93,11 @@ async function updateInternal(apiTabId) {
     }
   }
   delete tab.lastSuccessorTabId;
+  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
+    return;
   let nextFocused = null;
   if (apiTab.active) {
-    if (configs.moveFocusInTreeForClosedCurrentTab)
+    if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
       nextFocused = Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab);
     else
       nextFocused = Tabs.getNextVisibleTab(tab) || Tabs.getPreviousVisibleTab(tab);
@@ -148,7 +151,8 @@ async function onActivated(tab, info = {}) {
 }
 
 function onCreating(tab, info = {}) {
-  if (!configs.simulateSelectOwnerOnClose ||
+  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER ||
+      !configs.simulateSelectOwnerOnClose ||
       !info.activeTab)
     return;
 

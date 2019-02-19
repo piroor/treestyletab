@@ -887,7 +887,7 @@ tab is focused after the current (active) tab is closed" means that the
 focus move is unintentional and TST can override it.
 */
 export function tryMoveFocusFromClosingCurrentTab(tab, options = {}) {
-  if (!configs.moveFocusInTreeForClosedCurrentTab)
+  if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
     return;
   log('tryMoveFocusFromClosingCurrentTab', dumpTab(tab), options);
   if (!options.wasActive && !Tabs.isActive(tab)) {
@@ -897,7 +897,7 @@ export function tryMoveFocusFromClosingCurrentTab(tab, options = {}) {
   tab.parentNode.focusRedirectedForClosingCurrentTab = tryMoveFocusFromClosingCurrentTabOnFocusRedirected(tab, options);
 }
 async function tryMoveFocusFromClosingCurrentTabOnFocusRedirected(tab, options = {}) {
-  if (!configs.moveFocusInTreeForClosedCurrentTab)
+  if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
     return false;
   log('tryMoveFocusFromClosingCurrentTabOnFocusRedirected ', dumpTab(tab), options);
 
@@ -946,7 +946,7 @@ function getTryMoveFocusFromClosingCurrentTabNowParams(tab, overrideParams) {
 }
 
 export async function tryMoveFocusFromClosingCurrentTabNow(tab, options = {}) {
-  if (!configs.moveFocusInTreeForClosedCurrentTab)
+  if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
     return false;
   const params = options.params || getTryMoveFocusFromClosingCurrentTabNowParams(tab);
   if (options.ignoredTabs)

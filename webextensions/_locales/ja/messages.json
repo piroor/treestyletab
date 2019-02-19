@@ -290,10 +290,11 @@
 
   "config_treeBehavior_caption": { "message": "ツリーの挙動" },
 
-  "config_moveFocusInTreeForClosedCurrentTab_caption": { "message": "現在のタブが最後の子タブだった時に、現在のタブを閉じた後は" },
-  "config_moveFocusInTreeForClosedCurrentTab_true": { "message": "ツリー内の1つ前のタブにフォーカスを移す" },
-  "config_moveFocusInTreeForClosedCurrentTab_false": { "message": "次のタブにフォーカスを移す（Firefox既定の動作）" },
-  "config_moveFocusInTreeForClosedCurrentTab_description": { "message": "※Firefox組み込みの機能である\"browser.tabs.selectOwnerOnClose\"=\"true\"の挙動の方が、この設定よりも優先的に反映されます。" },
+  "config_successorTabControlLevel_caption": { "message": "現在のタブが最後の子タブだった時に、現在のタブを閉じた後は" },
+  "config_successorTabControlLevel_inTree": { "message": "ツリー内の1つ前のタブにフォーカスを移す" },
+  "config_successorTabControlLevel_simulateDefault": { "message": "次のタブにフォーカスを移す（Firefox既定の動作）" },
+  "config_successorTabControlLevel_never": { "message": "フォーカスを制御しない（Firefoxまたは他のアドオンによる制御を尊重）" },
+  "config_successorTabControlLevel_legacyDescription": { "message": "※Firefox組み込みの機能である\"browser.tabs.selectOwnerOnClose\"=\"true\"の挙動の方が、この設定よりも優先的に反映されます。" },
   "config_simulateSelectOwnerOnClose_label": { "message": "現在のタブが閉じられた時、可能であればそのタブを開いた元のタブにフォーカスを戻す（※Firefox組み込みの機能である\"browser.tabs.selectOwnerOnClose\"=\"true\"の挙動の再現。上記の設定よりも優先的に反映されます。）" },
 
   "config_parentTabBehaviorForChanges_caption": { "message": "親のタブがツリー型タブのサイドバー以外の場所から移動されたり閉じられたりした場合の取り扱い" },

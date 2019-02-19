@@ -288,10 +288,10 @@
 
   "config_treeBehavior_caption": { "message": "Поведение дерева" },
 
-  "config_moveFocusInTreeForClosedCurrentTab_caption": { "message": "Когда текущая вкладка закрывается как последняя дочерняя" },
-  "config_moveFocusInTreeForClosedCurrentTab_true": { "message": "Вернуться к предыдущей вкладке дерева" },
-  "config_moveFocusInTreeForClosedCurrentTab_false": { "message": "Всегда возвращаться на следующую вкладку (По умолч. в Firefox)" },
-  "config_moveFocusInTreeForClosedCurrentTab_description": { "message": "*Поведение Firefox's по умолч. для \"browser.tabs.selectOwnerOnClose\"=\"true\" сработает раньше этой конфигурации." },
+  "config_successorTabControlLevel_caption": { "message": "Когда текущая вкладка закрывается как последняя дочерняя" },
+  "config_successorTabControlLevel_inTree": { "message": "Вернуться к предыдущей вкладке дерева" },
+  "config_successorTabControlLevel_simulateDefault": { "message": "Всегда возвращаться на следующую вкладку (По умолч. в Firefox)" },
+  "config_successorTabControlLevel_legacyDescription": { "message": "*Поведение Firefox's по умолч. для \"browser.tabs.selectOwnerOnClose\"=\"true\" сработает раньше этой конфигурации." },
   "config_simulateSelectOwnerOnClose_label": { "message": "Переместить фокус назад на родительскую вкладку, после закрытия текущей (*Моделирование встроенного в Firefox поведения для \"browser.tabs.selectOwnerOnClose\"=\"true\", приорететно для настроек выше)" },
 
   "config_parentTabBehaviorForChanges_caption": { "message": "Когда родительская вкладка перемещается или закрывается кем-то извне боковой панели дерева" },

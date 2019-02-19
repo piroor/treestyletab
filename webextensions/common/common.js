@@ -134,7 +134,8 @@ export const configs = new Configs({
   promoteFirstChildForClosedRoot: true,
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
-  moveFocusInTreeForClosedCurrentTab: true,
+  moveFocusInTreeForClosedCurrentTab: true, // obsolete, migrated to "successorTabControlLevel"
+  successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
   simulateSelectOwnerOnClose: true,
   supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',
   warnOnCloseTabs: true,

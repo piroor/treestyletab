@@ -32,16 +32,16 @@ function onConfigChanged(key) {
         document.documentElement.classList.remove('debugging');
       break;
 
-    case 'moveFocusInTreeForClosedCurrentTab': {
+    case 'successorTabControlLevel': {
       const checkbox = document.getElementById('simulateSelectOwnerOnClose');
       const label = checkbox.parentNode;
-      if (value) {
-        checkbox.removeAttribute('disabled');
-        label.removeAttribute('disabled');
-      }
-      else {
+      if (value == Constants.kSUCCESSOR_TAB_CONTROL_NEVER) {
         checkbox.setAttribute('disabled', true);
         label.setAttribute('disabled', true);
+      }
+      else {
+        checkbox.removeAttribute('disabled');
+        label.removeAttribute('disabled');
       }
     }; break;
   }
@@ -221,6 +221,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     options.buildUIForAllConfigs(document.querySelector('#group-allConfigs'));
     onConfigChanged('debug');
-    onConfigChanged('moveFocusInTreeForClosedCurrentTab');
+    onConfigChanged('successorTabControlLevel');
   });
 }, { once: true });

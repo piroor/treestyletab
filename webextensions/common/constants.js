@@ -213,6 +213,11 @@ export const kINSERT_FIRST      = 0;
 export const kINSERT_END        = 1;
 export const kINSERT_NEAREST    = 2;
 
+export const kSUCCESSOR_TAB_CONTROL_NEVER            = 0;
+export const kSUCCESSOR_TAB_CONTROL_SIMULATE_DEFAULT = 1;
+export const kSUCCESSOR_TAB_CONTROL_IN_TREE          = 2;
+
+export const kDRAG_BEHAVIOR_NONE           = 0;
 export const kDRAG_BEHAVIOR_WHOLE_TREE     = 1 << 0;
 export const kDRAG_BEHAVIOR_ALLOW_BOOKMARK = 1 << 1;
 
