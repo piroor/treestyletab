@@ -96,36 +96,30 @@ async function updateInternal(apiTabId) {
     }
   }
   delete tab.lastSuccessorTabId;
-  if (!configs.moveFocusInTreeForClosedCurrentTab)
-    return;
-  let allowedNextFocusedTab = null;
-  let nextFocused           = null;
-  const parent = Tabs.getParentTab(tab);
-  if (parent || Tabs.getNextVisibleTab(tab)) { // prevent to focus to the next tab
-    allowedNextFocusedTab = Tabs.getFirstChildTab(tab) || Tabs.getNextSiblingTab(tab);
-    nextFocused = Tabs.getPreviousSiblingTab(tab) || parent;
+  let nextFocused = null;
+  if (apiTab.active) {
+    if (configs.moveFocusInTreeForClosedCurrentTab)
+      nextFocused = Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab);
+    else
+      nextFocused = Tabs.getNextVisibleTab(tab) || Tabs.getPreviousVisibleTab(tab);
   }
-  else if (!parent) { // prevent to focus to the previous tab
-    nextFocused = Tabs.getPreviousVisibleTab(tab);
-    if (nextFocused == Tabs.getPreviousTab(tab))
-      nextFocused = null;
-  }
-  if (apiTab.active && !allowedNextFocusedTab && nextFocused) {
+  if (nextFocused) {
     log(`  ${tab.id} has its successor ${nextFocused.id}`);
     setSuccessor(apiTab.id, nextFocused.apiTab.id);
     tab.lastSuccessorTabId = nextFocused.apiTab.id;
   }
   else {
     log(`  ${tab.id} is not controlled `, {
-      active:                apiTab.active,
-      nextFocused:           nextFocused && nextFocused.id,
-      allowedNextFocusedTab: allowedNextFocusedTab && allowedNextFocusedTab.id
+      active:      apiTab.active,
+      nextFocused: nextFocused && nextFocused.id
     });
     clearSuccessor(apiTab.id);
   }
 }
 
 async function tryClearOwnerSuccessor(tab) {
+  if (!tab || !tab.lastSuccessorTabIdByOwner)
+    return;
   delete tab.lastSuccessorTabIdByOwner;
   const apiTab = await browser.tabs.get(tab.apiTab.id).catch(ApiTabs.handleMissingTabError);
   if (!apiTab || apiTab.successorTabId != tab.lastSuccessorTabId)
@@ -139,21 +133,19 @@ async function tryClearOwnerSuccessor(tab) {
 async function onActivated(tab, info = {}) {
   update(tab.apiTab.id);
   if (info.previousTabId) {
-    const tab = Tabs.getTabById(info.previousTabId);
-    if (tab) {
+    const previousTab = Tabs.getTabById(info.previousTabId);
+    if (previousTab) {
+      await tryClearOwnerSuccessor(previousTab);
       const container = Tabs.getTabsContainer(info.windowId);
       if (container.lastRelatedTabs) {
         const lastRelatedTab = Tabs.getTabById(container.lastRelatedTabs.get(info.previousTabId));
         if (lastRelatedTab &&
-            !lastRelatedTab.apiTab.active) {
-          log(`clear lastRelatedTabs for ${tab.apiTab.windowId} by tabs.onActivated`);
+            lastRelatedTab != tab) {
+          log(`clear lastRelatedTabs for the window ${info.windowId} by tabs.onActivated`);
           container.lastRelatedTabs.clear();
-          if (lastRelatedTab.lastSuccessorTabIdByOwner)
-            await tryClearOwnerSuccessor(lastRelatedTab);
+          await tryClearOwnerSuccessor(lastRelatedTab);
         }
       }
-      if (tab.lastSuccessorTabIdByOwner)
-        await tryClearOwnerSuccessor(tab);
     }
     update(info.previousTabId);
   }
@@ -163,21 +155,24 @@ function onCreating(tab, _info = {}) {
   if (!configs.simulateSelectOwnerOnClose ||
       !tab.apiTab.openerTabId)
     return;
-  log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${tab.apiTab.openerTabId})`);
-  setSuccessor(tab.apiTab.id, tab.apiTab.openerTabId);
-  tab.lastSuccessorTabId = tab.apiTab.openerTabId;
-  tab.lastSuccessorTabIdByOwner = true;
 
-  const container = tab.parentNode;
-  container.lastRelatedTabs = container.lastRelatedTabs || new Map();
-  container.lastRelatedTabs.set(tab.apiTab.openerTabId, tab.apiTab.id);
-  log(`set lastRelatedTab for ${tab.apiTab.openerTabId}: ${tab.id}`);
+  // don't use await here, to prevent that other onCreating handlers are treated async.
+  tryClearOwnerSuccessor(Tabs.getCurrentTab(tab)).then(() => {
+    log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${tab.apiTab.openerTabId})`);
+    setSuccessor(tab.apiTab.id, tab.apiTab.openerTabId);
+    tab.lastSuccessorTabId = tab.apiTab.openerTabId;
+    tab.lastSuccessorTabIdByOwner = true;
 
-  if (!tab.apiTab.active) {
-    const activeTab = Tabs.getCurrentTab(tab);
-    if (activeTab && activeTab.lastSuccessorTabIdByOwner)
-      tryClearOwnerSuccessor(activeTab);
-  }
+    const container = tab.parentNode;
+    container.lastRelatedTabs = container.lastRelatedTabs || new Map();
+
+    const lastRelatedTabId = container.lastRelatedTabs.get(tab.apiTab.openerTabId);
+    if (lastRelatedTabId)
+      tryClearOwnerSuccessor(Tabs.getTabById(lastRelatedTabId));
+
+    container.lastRelatedTabs.set(tab.apiTab.openerTabId, tab.apiTab.id);
+    log(`set lastRelatedTab for ${tab.apiTab.openerTabId}: ${tab.id}`);
+  });
 }
 
 function onCreated(tab, _info = {}) {
@@ -197,8 +192,7 @@ function onRemoving(tab, removeInfo = {}) {
 
   const lastRelatedTab = Tabs.getTabById(lastRelatedTabs.get(tab.apiTab.id));
   if (lastRelatedTab &&
-      !lastRelatedTab.apiTab.active &&
-      lastRelatedTab.lastSuccessorTabIdByOwner)
+      !lastRelatedTab.apiTab.active)
     tryClearOwnerSuccessor(lastRelatedTab);
 }
 
