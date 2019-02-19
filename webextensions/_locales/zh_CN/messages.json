@@ -764,7 +764,7 @@
         "message": "标签页获得焦点时，自动展开该树并折叠其他树",
         "hash": "fb8b0c2873c5f6881d656a7a6abb3a21"
     },
-    "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": {
+    "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": {
         "message": "排除当前标签页关闭引发的焦点改变",
         "hash": "69259746c1181dd703b53adceadd8850"
     },

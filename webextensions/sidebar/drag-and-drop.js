@@ -483,7 +483,7 @@ function isDraggingAllTabs(tab, tabs) {
   return draggingTabs.length == (tabs || Tabs.getAllTabs(tab)).length;
 }
  
-function isDraggingAllCurrentTabs(tab) {
+function isDraggingAllActiveTabs(tab) {
   return isDraggingAllTabs(tab, Tabs.getAllTabs(tab));
 }
 
@@ -1103,7 +1103,7 @@ function onDragEnd(event) {
   event.stopPropagation();
   event.preventDefault();
 
-  if (isDraggingAllCurrentTabs(dragData.tabNode)) {
+  if (isDraggingAllActiveTabs(dragData.tabNode)) {
     log('all tabs are dragged, so it is nonsence to tear off them from the window');
     return;
   }

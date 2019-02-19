@@ -163,26 +163,26 @@ async function onActivated(activeInfo) {
     log('tabs.onActivated: ', dumpTab(newTab));
     const oldActiveTabs = TabsInternalOperation.setTabActive(newTab);
 
-    let byCurrentTabRemove = !activeInfo.previousTabId;
+    let byActiveTabRemove = !activeInfo.previousTabId;
     if (!('successorTabId' in newTab.apiTab)) { // on Firefox 64 or older
-      byCurrentTabRemove = mLastClosedWhileActiveResolvers.has(container);
-      if (byCurrentTabRemove) {
-        container.tryingReforcusForClosingCurrentTabCount++;
+      byActiveTabRemove = mLastClosedWhileActiveResolvers.has(container);
+      if (byActiveTabRemove) {
+        container.tryingReforcusForClosingActiveTabCount++;
         mLastClosedWhileActiveResolvers.get(container)();
         delete mLastClosedWhileActiveResolvers.delete(container);
-        const focusRedirected = await container.focusRedirectedForClosingCurrentTab;
-        delete container.focusRedirectedForClosingCurrentTab;
-        if (container.tryingReforcusForClosingCurrentTabCount > 0) // reduce count even if not redirected
-          container.tryingReforcusForClosingCurrentTabCount--;
+        const focusRedirected = await container.focusRedirectedForClosingActiveTab;
+        delete container.focusRedirectedForClosingActiveTab;
+        if (container.tryingReforcusForClosingActiveTabCount > 0) // reduce count even if not redirected
+          container.tryingReforcusForClosingActiveTabCount--;
         log('focusRedirected: ', focusRedirected);
         if (focusRedirected) {
           onCompleted();
           return;
         }
       }
-      else if (container.tryingReforcusForClosingCurrentTabCount > 0) { // treat as "redirected unintentional tab focus"
-        container.tryingReforcusForClosingCurrentTabCount--;
-        byCurrentTabRemove  = true;
+      else if (container.tryingReforcusForClosingActiveTabCount > 0) { // treat as "redirected unintentional tab focus"
+        container.tryingReforcusForClosingActiveTabCount--;
+        byActiveTabRemove  = true;
         byInternalOperation = false;
       }
     }
@@ -193,7 +193,7 @@ async function onActivated(activeInfo) {
     }
 
     let focusOverridden = Tabs.onActivating.dispatch(newTab, Object.assign({}, activeInfo, {
-      byCurrentTabRemove,
+      byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
@@ -214,7 +214,7 @@ async function onActivated(activeInfo) {
 
     const onActivatedReuslt = Tabs.onActivated.dispatch(newTab, Object.assign({}, activeInfo, {
       oldActiveTabs,
-      byCurrentTabRemove,
+      byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently

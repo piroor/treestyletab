@@ -528,7 +528,7 @@ export async function getTargetTabs(message, sender) {
   }
   if (message.tab == '*' ||
       message.tabs == '*') {
-    const window = await browser.windows.getLastFocused({
+    const window = await browser.windows.getLastActive({
       windowTypes: ['normal']
     });
     return Tabs.getAllTabs(window.id);
@@ -542,7 +542,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   log('getTabsFromWrongIds ', aIds, sender);
   let tabsInActiveWindow = [];
   if (aIds.some(id => typeof id != 'number')) {
-    const window = await browser.windows.getLastFocused({
+    const window = await browser.windows.getLastActive({
       populate:    true,
       windowTypes: ['normal']
     });

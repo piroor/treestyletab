@@ -49,7 +49,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(tab) || Tabs.getNextTab(tab);
-    Tree.tryMoveFocusFromClosingCurrentTab(tab, {
+    Tree.tryMoveFocusFromClosingActiveTab(tab, {
       wasActive,
       params: {
         active:          wasActive,
@@ -221,13 +221,13 @@ browser.windows.onRemoved.addListener(windowId  => {
 Tabs.onDetached.addListener((tab, info = {}) => {
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     if (Tree.shouldApplyTreeBehavior(info)) {
-      Tree.tryMoveFocusFromClosingCurrentTabNow(tab, {
+      Tree.tryMoveFocusFromClosingActiveTabNow(tab, {
         ignoredTabs: Tabs.getDescendantTabs(tab)
       });
       return;
     }
 
-    Tree.tryMoveFocusFromClosingCurrentTab(tab);
+    Tree.tryMoveFocusFromClosingActiveTab(tab);
   }
 
   log('Tabs.onDetached ', dumpTab(tab));

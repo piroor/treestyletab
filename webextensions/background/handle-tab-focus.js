@@ -35,7 +35,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     delete tab.dataset.shouldReloadOnSelect;
   }
   const container = tab.parentNode;
-  cancelDelayedExpand(Tabs.getTabById(container.lastFocusedTab));
+  cancelDelayedExpand(Tabs.getTabById(container.lastActiveTab));
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
@@ -54,9 +54,9 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       });
       handleNewActiveTab(tab, info);
     }
-    else if (configs.autoExpandOnCollapsedChildFocused &&
+    else if (configs.autoExpandOnCollapsedChildActive &&
              !shouldSkipCollapsed) {
-      log('=> reaction for autoExpandOnCollapsedChildFocused');
+      log('=> reaction for autoExpandOnCollapsedChildActive');
       for (const ancestor of Tabs.getAncestorTabs(tab)) {
         Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
@@ -71,10 +71,10 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       if (!newSelection) // this seems invalid case...
         return false;
       if (shouldSkipCollapsed &&
-          container.lastFocusedTab == newSelection.id) {
+          container.lastActiveTab == newSelection.id) {
         newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab);
       }
-      container.lastFocusedTab = newSelection.id;
+      container.lastActiveTab = newSelection.id;
       if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
       TabsInternalOperation.selectTab(newSelection, { silently: true });
@@ -84,20 +84,20 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       return false;
     }
   }
-  else if (info.byCurrentTabRemove &&
+  else if (info.byActiveTabRemove &&
            (!configs.autoCollapseExpandSubtreeOnSelect ||
-            configs.autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove)) {
+            configs.autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove)) {
     log('=> reaction for removing current tab');
     return false;
   }
   else if (Tabs.hasChildTabs(tab) &&
            Tabs.isSubtreeCollapsed(tab) &&
            !shouldSkipCollapsed) {
-    log('=> reaction for newly focused parent tab');
+    log('=> reaction for newly active parent tab');
     handleNewActiveTab(tab, info);
   }
   delete tab.dataset.discardOnCompletelyLoaded;
-  container.lastFocusedTab = tab.id;
+  container.lastActiveTab = tab.id;
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
   return true;
@@ -236,7 +236,7 @@ function onMessage(message, sender) {
           cancelAllDelayedExpand(tab);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
-              tab.parentNode.lastFocusedTab == tab.id) {
+              tab.parentNode.lastActiveTab == tab.id) {
             Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true

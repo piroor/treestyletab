@@ -193,15 +193,15 @@ async function onShortcutCommand(command) {
 
     case 'focusPrevious':
     case 'focusPreviousSilently': {
-      const nextFocused = Tabs.getPreviousVisibleTab(activeTab) ||
+      const nextActive = Tabs.getPreviousVisibleTab(activeTab) ||
         Tabs.getLastVisibleTab(activeTab);
-      TabsInternalOperation.selectTab(nextFocused, { silently: /Silently/.test(command) });
+      TabsInternalOperation.selectTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
-      const nextFocused = Tabs.getNextVisibleTab(activeTab) ||
+      const nextActive = Tabs.getNextVisibleTab(activeTab) ||
         Tabs.getFirstVisibleTab(activeTab);
-      TabsInternalOperation.selectTab(nextFocused, { silently: /Silently/.test(command) });
+      TabsInternalOperation.selectTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusParent':
       TabsInternalOperation.selectTab(Tabs.getParentTab(activeTab));
@@ -814,7 +814,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         return browser.runtime.sendMessage({
           type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
-          windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false })).id,
+          windowId: message.windowId || (await browser.windows.getLastActive({ populate: false })).id,
           button:   message.button || 0
         });
       })();

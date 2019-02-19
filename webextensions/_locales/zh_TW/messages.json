@@ -235,7 +235,7 @@
 
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "創建新樹時自動折疊其他樹" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "切換分頁時，自動展開該樹並折疊其他樹" },
-  "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": { "message": "不包含關閉目前分頁造成的切換" },
+  "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "不包含關閉目前分頁造成的切換" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "雙擊分頁開關該樹" },
 
   "config_closeParentBehavior_caption": { "message": "關閉展開樹的父分頁時" },

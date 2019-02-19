@@ -997,7 +997,7 @@ export async function doAndGetNewTabs(asyncTask, hint) {
   return addedTabs;
 }
 
-export function getNextFocusedTab(tab, options = {}) { // if the current tab is closed...
+export function getNextActiveTab(tab, options = {}) { // if the current tab is closed...
   const ignoredTabs = (options.ignoredTabs || []).slice(0);
   let foundTab = tab;
   do {

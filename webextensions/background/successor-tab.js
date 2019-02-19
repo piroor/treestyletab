@@ -95,27 +95,27 @@ async function updateInternal(apiTabId) {
   delete tab.lastSuccessorTabId;
   if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
     return;
-  let nextFocused = null;
+  let nextActive = null;
   if (apiTab.active) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
       const firstChild = Tabs.getFirstChildTab(tab);
-      nextFocused = (
+      nextActive = (
         (firstChild && !Tabs.isCollapsed(firstChild) && firstChild) ||
         (Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab))
       );
     }
     else
-      nextFocused = Tabs.getNextVisibleTab(tab) || Tabs.getPreviousVisibleTab(tab);
+      nextActive = Tabs.getNextVisibleTab(tab) || Tabs.getPreviousVisibleTab(tab);
   }
-  if (nextFocused) {
-    log(`  ${tab.id} is under control: successor = ${nextFocused.id}`);
-    setSuccessor(apiTab.id, nextFocused.apiTab.id);
-    tab.lastSuccessorTabId = nextFocused.apiTab.id;
+  if (nextActive) {
+    log(`  ${tab.id} is under control: successor = ${nextActive.id}`);
+    setSuccessor(apiTab.id, nextActive.apiTab.id);
+    tab.lastSuccessorTabId = nextActive.apiTab.id;
   }
   else {
     log(`  ${tab.id} is out of control.`, {
       active:      apiTab.active,
-      nextFocused: nextFocused && nextFocused.id
+      nextActive: nextActive && nextActive.id
     });
     clearSuccessor(apiTab.id);
   }

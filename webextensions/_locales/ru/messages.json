@@ -301,7 +301,7 @@
 
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "Когда появится новое дерево, свернуть остальные автоматически" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "Когда вкладка получает фокус, развернуть её дерево и автоматически свернуть другие" },
-  "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": { "message": "За исключением перемещения фокуса, вызванного закрытием вкладки" },
+  "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "За исключением перемещения фокуса, вызванного закрытием вкладки" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Двойной клик, чтобы свернуть/развернуть дерево" },
 
   "config_closeParentBehavior_caption": { "message": "Когда родительская вкладка закрывается с развернутым деревом" },

@@ -219,7 +219,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       'discarded' in newState) {
     wait(0).then(() => {
       // Don't set this class immediately, because we need to know
-      // the newly focused tab *was* discarded on onTabClosed handler.
+      // the newly active tab *was* discarded on onTabClosed handler.
       if (newState.discarded)
         tab.classList.add(Constants.kTAB_STATE_DISCARDED);
       else

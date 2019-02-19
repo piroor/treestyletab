@@ -77,12 +77,12 @@ export const configs = new Configs({
 
   autoCollapseExpandSubtreeOnAttach: true,
   autoCollapseExpandSubtreeOnSelect: true,
-  autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove: true,
+  autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove: true,
 
   collapseExpandSubtreeByDblClick: false,
 
   autoExpandIntelligently: true,
-  autoExpandOnCollapsedChildFocused: true,
+  autoExpandOnCollapsedChildActive: true,
   autoExpandOnTabSwitchingShortcuts: true,
   autoExpandOnTabSwitchingShortcutsDelay: 800,
   autoExpandOnLongHover: true,
@@ -134,7 +134,7 @@ export const configs = new Configs({
   promoteFirstChildForClosedRoot: true,
   moveTabsToBottomWhenDetachedFromClosedParent: false,
   promoteAllChildrenWhenClosedParentIsLastChild: true,
-  moveFocusInTreeForClosedCurrentTab: true, // obsolete, migrated to "successorTabControlLevel"
+  moveFocusInTreeForClosedActiveTab: true, // obsolete, migrated to "successorTabControlLevel"
   successorTabControlLevel: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
   simulateSelectOwnerOnClose: true,
   supportTabsMultiselect: typeof browser.menus.overrideContext == 'function',

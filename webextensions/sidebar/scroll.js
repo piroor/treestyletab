@@ -440,13 +440,13 @@ Tabs.onCreated.addListener((tab, _info) => {
       const parent = Tabs.getParentTab(tab);
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
-      const focused = Tabs.isActive(tab);
+      const active = Tabs.isActive(tab);
       Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
         collapsed: false,
         anchor:    Tabs.getActiveTab(),
         last:      true
       });
-      if (!focused)
+      if (!active)
         notifyOutOfViewTab(tab);
     });
   }

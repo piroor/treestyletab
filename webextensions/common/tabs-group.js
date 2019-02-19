@@ -53,7 +53,7 @@ export async function groupTabs(tabs, options = {}) {
   });
   for (const tab of rootTabs) {
     await Tree.attachTabTo(tab, groupTab, {
-      forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
+      forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
       dontMove:  true,
       broadcast: !!options.broadcast
     });

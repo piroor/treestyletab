@@ -521,8 +521,8 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title: indent() + browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label'),
-        key:   'autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove',
+        title: indent() + browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label'),
+        key:   'autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove',
         type:  'checkbox'
       },
       {

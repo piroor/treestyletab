@@ -173,7 +173,7 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
     }
   }
 
-  // update focused tab appearance
+  // update active tab appearance
   browser.tabs.query({ windowId: tabs[0].apiTab.windowId, active: true })
     .then(activeTabs => TabsInternalOperation.setTabActive(Tabs.getTabById(activeTabs[0])));
 }
