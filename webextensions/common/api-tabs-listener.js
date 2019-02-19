@@ -384,9 +384,9 @@ async function onNewTabTracked(tab) {
     // See also: https://github.com/piroor/treestyletab/issues/2155
     if (tab.active && activeTab)
       await onActivated({
-        tabId:            tab.id,
-        previousTabId:    activeTab.apiTab.id,
-        windowId:         tab.windowId
+        tabId:         tab.id,
+        previousTabId: activeTab.apiTab.id,
+        windowId:      tab.windowId
       });
 
     const onTabCreatedInner = Tabs.addCreatingTab(newTab);
