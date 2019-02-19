@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+   * Don't produce needless scrolling when new active tab is inserted at non-last position. (regression on 2.7.19)
+   * Move focus to a visible child tab instead of a visible next sibling tab at first, when the active tab is closed. (regression on 2.7.20)
  - 2.7.20 (2019.2.19)
    * Add ability to deactivate focus control based on Successor Tabs API by TST completely.
    * Better simulation of `browser.tabs.selectOwnerOnClose`=`true` behavior on Firefox 65 and later.
