@@ -23,9 +23,8 @@ export const configs = new Configs({
   sidebarScrollbarPosition: Constants.kTABBAR_SCROLLBAR_POSITION_AUTO,
 
   style:
-    /^Linux/i.test(navigator.platform) ? 'plain' :
-      /^Mac/i.test(navigator.platform) ? 'sidebar' :
-        'mixed',
+    /^Mac/i.test(navigator.platform) ? 'sidebar' :
+      'mixed',
   colorScheme: /^Linux/i.test(navigator.platform) ? 'system-color' : 'photon' ,
 
   faviconizePinnedTabs: true,
