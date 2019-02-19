@@ -97,8 +97,13 @@ async function updateInternal(apiTabId) {
     return;
   let nextFocused = null;
   if (apiTab.active) {
-    if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
-      nextFocused = Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab);
+    if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
+      const firstChild = Tabs.getFirstChildTab(tab);
+      nextFocused = (
+        (firstChild && !Tabs.isCollapsed(firstChild) && firstChild) ||
+        (Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab))
+      );
+    }
     else
       nextFocused = Tabs.getNextVisibleTab(tab) || Tabs.getPreviousVisibleTab(tab);
   }
