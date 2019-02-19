@@ -1,6 +1,10 @@
 # History
 
  - master/HEAD
+ - 2.7.20 (2019.2.19)
+   * Add ability to deactivate focus control based on Successor Tabs API by TST completely.
+   * Better simulation of `browser.tabs.selectOwnerOnClose`=`true` behavior on Firefox 65 and later.
+   * Use "Mixed" theme as the default theme on Linux.
  - 2.7.19 (2019.2.19)
    * Disallow to drop a pinned tab after any unpinned tab / disallow to drop an unpinned tab before any pinned tab.
    * Restore original tree structure after a tree is moved to a new window via the "Move to New Window" command.
