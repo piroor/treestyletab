@@ -10,6 +10,8 @@ import {
   configs
 } from '/common/common.js';
 
+import * as Constants from '/common/constants.js';
+
 function log(...args) {
   internalLogger('background/browser-action-menu', ...args);
 }
@@ -35,13 +37,13 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_sidebarPosition_left'),
             key:   'sidebarPosition',
-            value: 1,
+            value: Constants.kTABBAR_POSITION_LEFT,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_sidebarPosition_right'),
             key:   'sidebarPosition',
-            value: 2,
+            value: Constants.kTABBAR_POSITION_RIGHT,
             type:  'radio'
           }
         ]
@@ -52,13 +54,13 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_sidebarDirection_ltr'),
             key:   'sidebarDirection',
-            value: 1,
+            value: Constants.kTABBAR_DIRECTION_LTR,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_sidebarDirection_rtl'),
             key:   'sidebarDirection',
-            value: 2,
+            value: Constants.kTABBAR_DIRECTION_RTL,
             type:  'radio'
           }
         ]
@@ -122,26 +124,26 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_scrollbarMode_default'),
             key:   'scrollbarMode',
-            value: 0,
+            value: Constants.kTABBAR_SCROLLBAR_MODE_DEFAULT,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_scrollbarMode_narrow'),
             key:   'scrollbarMode',
-            value: 1,
+            value: Constants.kTABBAR_SCROLLBAR_MODE_NARROW,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_scrollbarMode_overlay'),
             key:   'scrollbarMode',
-            value: 3,
+            value: Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY,
             type:  'radio',
             visible: isMac
           },
           {
             title: browser.i18n.getMessage('config_scrollbarMode_hide'),
             key:   'scrollbarMode',
-            value: 2,
+            value: Constants.kTABBAR_SCROLLBAR_MODE_HIDE,
             type:  'radio'
           }
         ]
@@ -152,19 +154,19 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_sidebarScrollbarPosition_auto'),
             key:   'sidebarScrollbarPosition',
-            value: 0,
+            value: Constants.kTABBAR_SCROLLBAR_POSITION_AUTO,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_sidebarScrollbarPosition_left'),
             key:   'sidebarScrollbarPosition',
-            value: 1,
+            value: Constants.kTABBAR_SCROLLBAR_POSITION_LEFT,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_sidebarScrollbarPosition_right'),
             key:   'sidebarScrollbarPosition',
-            value: 2,
+            value: Constants.kTABBAR_SCROLLBAR_POSITION_RIGHT,
             type:  'radio'
           }
         ]
@@ -280,25 +282,25 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
-            value: 0,
+            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
-            value: 1,
+            value: Constants.kNEWTAB_OPEN_AS_CHILD,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
-            value: 2,
+            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabButtonMiddleClick_after'),
             key:   'autoAttachOnNewTabButtonMiddleClick',
-            value: 3,
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
             type:  'radio',
             visible: isMac
           }
@@ -347,25 +349,25 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
-            value: 0,
+            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
-            value: 1,
+            value: Constants.kNEWTAB_OPEN_AS_CHILD,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
-            value: 2,
+            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnNewTabCommand_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnNewTabCommand_after'),
             key:   'autoAttachOnNewTabCommand',
-            value: 3,
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
             type:  'radio',
             visible: isMac
           }
@@ -377,25 +379,25 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_autoAttachOnDuplicated_independent') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
-            value: 0,
+            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnDuplicated_child') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
-            value: 1,
+            value: Constants.kNEWTAB_OPEN_AS_CHILD,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnDuplicated_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
-            value: 2,
+            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachOnDuplicated_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachOnDuplicated_after'),
             key:   'autoAttachOnDuplicated',
-            value: 3,
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
             type:  'radio',
             visible: isMac
           }
@@ -413,25 +415,25 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_independent') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
-            value: 0,
+            value: Constants.kNEWTAB_OPEN_AS_ORPHAN,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_child') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
-            value: 1,
+            value: Constants.kNEWTAB_OPEN_AS_CHILD,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_sibling') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
-            value: 2,
+            value: Constants.kNEWTAB_OPEN_AS_SIBLING,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_autoAttachSameSiteOrphan_before') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_nextSibling') + delimiter + browser.i18n.getMessage('config_autoAttachSameSiteOrphan_after'),
             key:   'autoAttachSameSiteOrphan',
-            value: 3,
+            value: Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING,
             type:  'radio',
             visible: isMac
           },
@@ -449,19 +451,19 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_insertNewChildAt_noControl'),
             key:   'insertNewChildAt',
-            value: -1,
+            value: Constants.kINSERT_NO_CONTROL,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_insertNewChildAt_first'),
             key:   'insertNewChildAt',
-            value: 0,
+            value: Constants.kINSERT_FIRST,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_insertNewChildAt_end'),
             key:   'insertNewChildAt',
-            value: 1,
+            value: Constants.kINSERT_END,
             type:  'radio'
           }
         ]
@@ -478,19 +480,19 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
             key:   'insertNewTabFromPinnedTabAt',
-            value: -1,
+            value: Constants.kINSERT_NO_CONTROL,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_first'),
             key:   'insertNewTabFromPinnedTabAt',
-            value: 0,
+            value: Constants.kINSERT_FIRST,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_end'),
             key:   'insertNewTabFromPinnedTabAt',
-            value: 1,
+            value: Constants.kINSERT_END,
             type:  'radio'
           }
         ]
@@ -519,8 +521,8 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title: indent() + browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label'),
-        key:   'autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove',
+        title: indent() + browser.i18n.getMessage('config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label'),
+        key:   'autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove',
         type:  'checkbox'
       },
       {
@@ -529,18 +531,24 @@ const mItems = [
         type:  'checkbox'
       },
       {
-        title:    browser.i18n.getMessage('config_moveFocusInTreeForClosedCurrentTab_caption'),
+        title:    browser.i18n.getMessage('config_successorTabControlLevel_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_moveFocusInTreeForClosedCurrentTab_true'),
-            key:   'moveFocusInTreeForClosedCurrentTab',
-            value: true,
+            title: browser.i18n.getMessage('config_successorTabControlLevel_inTree'),
+            key:   'successorTabControlLevel',
+            value: Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE,
             type:  'radio'
           },
           {
-            title: browser.i18n.getMessage('config_moveFocusInTreeForClosedCurrentTab_false'),
-            key:   'moveFocusInTreeForClosedCurrentTab',
-            value: false,
+            title: browser.i18n.getMessage('config_successorTabControlLevel_simulateDefault'),
+            key:   'successorTabControlLevel',
+            value: Constants.kSUCCESSOR_TAB_CONTROL_SIMULATE_DEFAULT,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_successorTabControlLevel_never'),
+            key:   'successorTabControlLevel',
+            value: Constants.kSUCCESSOR_TAB_CONTROL_NEVER,
             type:  'radio'
           }
         ]
@@ -559,37 +567,36 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_closeParentBehavior_close'),
             key:   'closeParentBehavior',
-            value: 2,
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_closeParentBehavior_replaceWithGroupTab'),
             key:   'closeParentBehavior',
-            value: 5,
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_closeParentBehavior_promoteFirst'),
             key:   'closeParentBehavior',
-            value: 3,
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_closeParentBehavior_promoteAll'),
             key:   'closeParentBehavior',
-            value: 0,
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN,
             type:  'radio'
           },
           {
             title: indent() + browser.i18n.getMessage('config_promoteFirstChildForClosedRoot_label'),
             key:   'promoteFirstChildForClosedRoot',
-            value: 1,
             type:  'checkbox'
           },
           {
             title: browser.i18n.getMessage('config_closeParentBehavior_detach'),
             key:   'closeParentBehavior',
-            value: 1,
+            value: Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN,
             type:  'radio'
           }
         ]
@@ -600,19 +607,19 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_parentTabBehaviorForChanges_always'),
             key:   'parentTabBehaviorForChanges',
-            value: 0,
+            value: Constants.kPARENT_TAB_BEHAVIOR_ALWAYS,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_parentTabBehaviorForChanges_alwaysButOnlyWhenVisible'),
             key:   'parentTabBehaviorForChanges',
-            value: 1,
+            value: Constants.kPARENT_TAB_BEHAVIOR_ONLY_WHEN_VISIBLE,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_parentTabBehaviorForChanges_onlyInSidebar'),
             key:   'parentTabBehaviorForChanges',
-            value: 2,
+            value: Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR,
             type:  'radio'
           }
         ]
@@ -631,25 +638,25 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
             key:   'tabDragBehavior',
-            value: 1,
+            value: Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tree'),
             key:   'tabDragBehavior',
-            value: 3,
+            value: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tab'),
             key:   'tabDragBehavior',
-            value: 0,
+            value: Constants.kDRAG_BEHAVIOR_NONE,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tab'),
             key:   'tabDragBehavior',
-            value: 2,
+            value: Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
             type:  'radio'
           }
         ]
@@ -660,25 +667,25 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tree'),
             key:   'tabDragBehaviorShift',
-            value: 1,
+            value: Constants.kDRAG_BEHAVIOR_WHOLE_TREE,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tree'),
             key:   'tabDragBehaviorShift',
-            value: 3,
+            value: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_tearoff_tab'),
             key:   'tabDragBehaviorShift',
-            value: 0,
+            value: Constants.kDRAG_BEHAVIOR_NONE,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_tabDragBehavior_bookmark_tab'),
             key:   'tabDragBehaviorShift',
-            value: 2,
+            value: Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
             type:  'radio'
           }
         ]
@@ -700,19 +707,19 @@ const mItems = [
           {
             title: browser.i18n.getMessage('config_dropLinksOnTabBehavior_ask'),
             key:   'dropLinksOnTabBehavior',
-            value: 0,
+            value: Constants.kDROPLINK_ASK,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_dropLinksOnTabBehavior_load'),
             key:   'dropLinksOnTabBehavior',
-            value: 1,
+            value: Constants.kDROPLINK_LOAD,
             type:  'radio'
           },
           {
             title: browser.i18n.getMessage('config_dropLinksOnTabBehavior_newtab'),
             key:   'dropLinksOnTabBehavior',
-            value: 2,
+            value: Constants.kDROPLINK_NEWTAB,
             type:  'radio'
           }
         ]

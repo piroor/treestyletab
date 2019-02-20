@@ -161,28 +161,28 @@ async function onActivated(activeInfo) {
     }
 
     log('tabs.onActivated: ', dumpTab(newTab));
-    const oldActiveTabs = TabsInternalOperation.setTabFocused(newTab);
+    const oldActiveTabs = TabsInternalOperation.setTabActive(newTab);
 
-    let byCurrentTabRemove = !activeInfo.previousTabId;
+    let byActiveTabRemove = !activeInfo.previousTabId;
     if (!('successorTabId' in newTab.apiTab)) { // on Firefox 64 or older
-      byCurrentTabRemove = mLastClosedWhileActiveResolvers.has(container);
-      if (byCurrentTabRemove) {
-        container.tryingReforcusForClosingCurrentTabCount++;
+      byActiveTabRemove = mLastClosedWhileActiveResolvers.has(container);
+      if (byActiveTabRemove) {
+        container.tryingReforcusForClosingActiveTabCount++;
         mLastClosedWhileActiveResolvers.get(container)();
         delete mLastClosedWhileActiveResolvers.delete(container);
-        const focusRedirected = await container.focusRedirectedForClosingCurrentTab;
-        delete container.focusRedirectedForClosingCurrentTab;
-        if (container.tryingReforcusForClosingCurrentTabCount > 0) // reduce count even if not redirected
-          container.tryingReforcusForClosingCurrentTabCount--;
+        const focusRedirected = await container.focusRedirectedForClosingActiveTab;
+        delete container.focusRedirectedForClosingActiveTab;
+        if (container.tryingReforcusForClosingActiveTabCount > 0) // reduce count even if not redirected
+          container.tryingReforcusForClosingActiveTabCount--;
         log('focusRedirected: ', focusRedirected);
         if (focusRedirected) {
           onCompleted();
           return;
         }
       }
-      else if (container.tryingReforcusForClosingCurrentTabCount > 0) { // treat as "redirected unintentional tab focus"
-        container.tryingReforcusForClosingCurrentTabCount--;
-        byCurrentTabRemove  = true;
+      else if (container.tryingReforcusForClosingActiveTabCount > 0) { // treat as "redirected unintentional tab focus"
+        container.tryingReforcusForClosingActiveTabCount--;
+        byActiveTabRemove  = true;
         byInternalOperation = false;
       }
     }
@@ -193,7 +193,7 @@ async function onActivated(activeInfo) {
     }
 
     let focusOverridden = Tabs.onActivating.dispatch(newTab, Object.assign({}, activeInfo, {
-      byCurrentTabRemove,
+      byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
@@ -214,7 +214,7 @@ async function onActivated(activeInfo) {
 
     const onActivatedReuslt = Tabs.onActivated.dispatch(newTab, Object.assign({}, activeInfo, {
       oldActiveTabs,
-      byCurrentTabRemove,
+      byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
       silently
@@ -345,7 +345,7 @@ async function onNewTabTracked(tab) {
   const positionedBySelf     = container.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = container.duplicatingTabsCount > 0;
   const maybeOrphan          = container.toBeOpenedOrphanTabs > 0;
-  const activeTab            = Tabs.getCurrentTab(container);
+  const activeTab            = Tabs.getActiveTab(container);
 
   Tabs.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
@@ -376,6 +376,16 @@ async function onNewTabTracked(tab) {
 
     if (nextTab)
       reindexFollowingTabs(nextTab, tab.index + 1);
+
+    // We need to update "active" state of a new active tab immediately.
+    // Attaching of initial child tab (this new tab may become it) to an
+    // existing tab may produce collapsing of existing tree, and a
+    // collapsing tree may have the old active tab. On such cases TST
+    // tries to move focus to a nearest visible ancestor, instead of this
+    // new active tab.
+    // See also: https://github.com/piroor/treestyletab/issues/2155
+    if (tab.active)
+      TabsInternalOperation.setTabActive(newTab);
 
     const onTabCreatedInner = Tabs.addCreatingTab(newTab);
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
@@ -507,9 +517,14 @@ async function onNewTabTracked(tab) {
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
 
+    const currentActiveTab = Tabs.getActiveTabs().find(tabElement => tabElement != newTab && tabElement.parentNode == newTab.parentNode);
     if (renewedTab.active &&
-        Tabs.getCurrentTabs().some(tabElement => tabElement != newTab && tabElement.parentNode == newTab.parentNode))
-      onActivated({ tabId: tab.id, windowId: tab.windowId });
+        currentActiveTab)
+      onActivated({
+        tabId:         tab.id,
+        windowId:      tab.windowId,
+        previousTabId: currentActiveTab.apiTab.id
+      });
 
     return newTab;
   }
@@ -837,11 +852,18 @@ async function onDetached(tabId, detachInfo) {
       Tabs.onDetached.dispatch(oldTab, info);
 
     const container = oldTab.parentNode;
+    const nextTab   = oldTab.nextSibling;
+    const oldIndex  = oldTab.apiTab.index;
     clearTabRelationsForRemovedTab(oldTab);
     container.removeChild(oldTab);
-    if (!container.hasChildNodes())
+    if (container.hasChildNodes()) {
+      if (nextTab)
+        reindexFollowingTabs(nextTab, oldIndex);
+    }
+    else {
       container.parentNode.removeChild(container);
-    Tabs.untrack(tabId);
+      Tabs.untrack(tabId);
+    }
 
     onCompleted();
   }

@@ -223,10 +223,10 @@
 
   "config_treeBehavior_caption": { "message": "樹行為"},
 
-  "config_moveFocusInTreeForClosedCurrentTab_caption": { "message": "關閉目前分頁時，若為最後一個子分頁則" },
-  "config_moveFocusInTreeForClosedCurrentTab_true": { "message": "切換到前一個分頁" },
-  "config_moveFocusInTreeForClosedCurrentTab_false": { "message": "切換到下一個分頁(Firefox 預設)" },
-  "config_moveFocusInTreeForClosedCurrentTab_description": { "message": "※ Firefox 內建設定「browser.tabs.selectOwnerOnClose」=「true」的行為優先於本設定。" },
+  "config_successorTabControlLevel_caption": { "message": "關閉目前分頁時，若為最後一個子分頁則" },
+  "config_successorTabControlLevel_inTree": { "message": "切換到前一個分頁" },
+  "config_successorTabControlLevel_simulateDefault": { "message": "切換到下一個分頁(Firefox 預設)" },
+  "config_successorTabControlLevel_legacyDescription": { "message": "※ Firefox 內建設定「browser.tabs.selectOwnerOnClose」=「true」的行為優先於本設定。" },
 
   "config_parentTabBehaviorForChanges_caption": { "message": "子分頁在 Tree Style Tab 側邊欄以外移動或關閉父分頁時" },
   "config_parentTabBehaviorForChanges_always": { "message": "隨父分頁一併移動或關閉，無論側邊欄顯示狀態" },
@@ -235,7 +235,7 @@
 
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "創建新樹時自動折疊其他樹" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "切換分頁時，自動展開該樹並折疊其他樹" },
-  "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": { "message": "不包含關閉目前分頁造成的切換" },
+  "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "不包含關閉目前分頁造成的切換" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "雙擊分頁開關該樹" },
 
   "config_closeParentBehavior_caption": { "message": "關閉展開樹的父分頁時" },

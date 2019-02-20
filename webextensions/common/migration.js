@@ -23,7 +23,7 @@ function log(...args) {
 }
 
 export const kLEGACY_CONFIGS_MIGRATION_VERSION = 3;
-const kCONFIGS_VERSION = 2;
+const kCONFIGS_VERSION = 3;
 const kFEATURES_VERSION = 3;
 
 export function migrateLegacyConfigs() {
@@ -69,10 +69,10 @@ export function migrateLegacyConfigs() {
 
         migrateLegacyConfig('autoCollapseExpandSubtreeOnAttach', values['extensions.treestyletab.autoCollapseExpandSubtreeOnAttach']);
         migrateLegacyConfig('autoCollapseExpandSubtreeOnSelect', values['extensions.treestyletab.autoCollapseExpandSubtreeOnSelect']);
-        migrateLegacyConfig('autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove', !values['extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onCurrentTabRemove']);
+        migrateLegacyConfig('autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove', !values['extensions.treestyletab.autoCollapseExpandSubtreeOnSelect.onActiveTabRemove']);
 
         migrateLegacyConfig('autoExpandIntelligently', values['extensions.treestyletab.autoExpand.intelligently']);
-        migrateLegacyConfig('autoExpandOnCollapsedChildFocused', values['extensions.treestyletab.autoExpandSubtreeOnCollapsedChildFocused']);
+        migrateLegacyConfig('autoExpandOnCollapsedChildActive', values['extensions.treestyletab.autoExpandSubtreeOnCollapsedChildActive']);
         migrateLegacyConfig('autoExpandOnLongHover', values['extensions.treestyletab.autoExpand.enabled']);
         migrateLegacyConfig('autoExpandOnLongHoverDelay', values['extensions.treestyletab.autoExpand.delay']);
         migrateLegacyConfig('autoExpandOnLongHoverRestoreIniitalState', values['extensions.treestyletab.autoExpand.collapseFinally']);
@@ -292,6 +292,10 @@ export function migrateConfigs() {
     case 1:
       configs.longPressDuration = configs.startDragTimeout;
       configs.emulateDefaultContextMenu = configs.emulateDefaultContextMenu;
+
+    case 2:
+      if (!configs.simulateSelectOwnerOnClose)
+        configs.successorTabControlLevel = Constants.kSUCCESSOR_TAB_CONTROL_NEVER;
   }
   configs.configsVersion = kCONFIGS_VERSION;
 }

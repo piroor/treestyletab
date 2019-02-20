@@ -56,6 +56,9 @@
   --tab-highlighted-highlight: white;
   --tab-highlighted-glow: var(--dropmarker-border-color);
   --tab-highlighted-base: var(--bg-color);
+
+  --multiselected-color: var(--tab-surface-active-gradient);
+  --multiselected-color-opacity: 0.35;
 }
 
 .tab:not(.active) {
@@ -253,4 +256,21 @@
 /* hide regular active tab marker */
 .highlighter::before {
   display: none !important;
+}
+
+
+/* multiselection of tabs */
+
+.mutiple-highlighted > .tab.highlighted::after {
+  background: var(--multiselected-color);
+  bottom: 0;
+  content: " ";
+  display: block;
+  left: 0;
+  opacity: var(--multiselected-color-opacity);
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
 }

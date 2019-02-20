@@ -193,21 +193,21 @@ async function onShortcutCommand(command) {
 
     case 'focusPrevious':
     case 'focusPreviousSilently': {
-      const nextFocused = Tabs.getPreviousVisibleTab(activeTab) ||
+      const nextActive = Tabs.getPreviousVisibleTab(activeTab) ||
         Tabs.getLastVisibleTab(activeTab);
-      TabsInternalOperation.selectTab(nextFocused, { silently: /Silently/.test(command) });
+      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
-      const nextFocused = Tabs.getNextVisibleTab(activeTab) ||
+      const nextActive = Tabs.getNextVisibleTab(activeTab) ||
         Tabs.getFirstVisibleTab(activeTab);
-      TabsInternalOperation.selectTab(nextFocused, { silently: /Silently/.test(command) });
+      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusParent':
-      TabsInternalOperation.selectTab(Tabs.getParentTab(activeTab));
+      TabsInternalOperation.activateTab(Tabs.getParentTab(activeTab));
       return;
     case 'focusFirstChild':
-      TabsInternalOperation.selectTab(Tabs.getFirstChildTab(activeTab));
+      TabsInternalOperation.activateTab(Tabs.getFirstChildTab(activeTab));
       return;
 
     case 'tabbarUp':
@@ -409,7 +409,7 @@ function onMessage(message, sender) {
           if (message.button == 0 &&
               onRegularArea &&
               !wasMultiselectionAction)
-            TabsInternalOperation.selectTab(tab, {
+            TabsInternalOperation.activateTab(tab, {
               keepMultiselection: tab.apiTab.highlighted
             });
         });
@@ -433,7 +433,7 @@ function onMessage(message, sender) {
         const tab = Tabs.getTabById(message.tab);
         if (!tab)
           return;
-        TabsInternalOperation.selectTab(tab, Object.assign({}, message.options, {
+        TabsInternalOperation.activateTab(tab, Object.assign({}, message.options, {
           inRemote: false
         }));
       })();
@@ -693,7 +693,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         for (const tab of tabs) {
-          TabsInternalOperation.selectTab(tab, {
+          TabsInternalOperation.activateTab(tab, {
             silently: message.silently
           });
         }

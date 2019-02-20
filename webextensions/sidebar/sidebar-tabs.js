@@ -592,9 +592,11 @@ Tabs.onUpdated.addListener((tab, info) => {
     clearTimeout(mReservedUpdateActiveTab);
   mReservedUpdateActiveTab = setTimeout(() => {
     mReservedUpdateActiveTab = null;
-    const activeTab = Tabs.getCurrentTab();
-    reserveToUpdateSoundButtonTooltip(activeTab);
-    reserveToUpdateCloseboxTooltip(activeTab);
+    const activeTab = Tabs.getActiveTab();
+    if (activeTab) {
+      reserveToUpdateSoundButtonTooltip(activeTab);
+      reserveToUpdateCloseboxTooltip(activeTab);
+    }
   }, 50);
 });
 

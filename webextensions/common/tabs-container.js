@@ -75,7 +75,7 @@ export function init(container) {
     container.doingIntelligentlyCollapseExpandCount =
     container.internalFocusCount =
     container.internalSilentlyFocusCount =
-    container.tryingReforcusForClosingCurrentTabCount = // used only on Firefox 64 and older
+    container.tryingReforcusForClosingActiveTabCount = // used only on Firefox 64 and older
     container.duplicatingTabsCount = 0;
 
   container.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;

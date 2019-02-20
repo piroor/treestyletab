@@ -20,11 +20,11 @@ function log(...args) {
   internalLogger('common/tabs-internal-operation', ...args);
 }
 
-export async function selectTab(tab, options = {}) {
+export async function activateTab(tab, options = {}) {
   tab = Tabs.ensureLivingTab(tab);
   if (!tab)
     return;
-  log('selectTabInternally: ', dumpTab(tab), tab.apiTab);
+  log('activateTabInternally: ', dumpTab(tab), tab.apiTab);
   if (options.inRemote) {
     await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
@@ -99,7 +99,7 @@ export function removeTabs(tabs, options = {}) {
   return browser.tabs.remove(tabs.map(tab => tab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
 }
 
-export function setTabFocused(tab) {
+export function setTabActive(tab) {
   tab = Tabs.ensureLivingTab(tab);
   if (!tab)
     return [];

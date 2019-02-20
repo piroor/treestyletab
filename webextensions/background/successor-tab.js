@@ -10,6 +10,7 @@ import {
   configs
 } from '/common/common.js';
 
+import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
@@ -37,7 +38,7 @@ if (typeof browser.tabs.moveInSuccession == 'function') {
 }
 
 function setSuccessor(apiTabId, successorTabId = -1) {
-  if (!configs.moveFocusInTreeForClosedCurrentTab)
+  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
     return;
   browser.tabs.update(apiTabId, {
     successorTabId
@@ -72,60 +73,57 @@ async function updateInternal(apiTabId) {
     const successor = Tabs.getTabById(apiTab.successorTabId);
     if (successor) {
       log(`  ${tab.id} is already prepared for "selectOwnerOnClose" behavior (successor=${apiTab.successorTabId})`);
-      if (Tabs.isPinned(successor))
-        return;
-      if (Tabs.getAncestorTabs(tab).includes(successor) ||
-          Tabs.getChildTabs(Tabs.getParentTab(tab)).includes(successor))
-        return;
-      log('  ${tab.id} is already detached from the owner\'s tree');
-      delete tab.lastSuccessorTabIdByOwner;
-      delete tab.lastSuccessorTabId;
-      clearSuccessor(tab.apiTab.id);
+      return;
     }
+    // clear broken information
+    delete tab.lastSuccessorTabIdByOwner;
+    delete tab.lastSuccessorTabId;
+    clearSuccessor(tab.apiTab.id);
   }
   if (tab.lastSuccessorTabId) {
-    log(`  ${tab.id} was controlled: `, {
+    log(`  ${tab.id} is under control: `, {
       successorTabId: apiTab.successorTabId,
       lastSuccessorTabId: tab.lastSuccessorTabId
     });
     if (apiTab.successorTabId != -1 &&
         apiTab.successorTabId != tab.lastSuccessorTabId) {
-      log(`  ${tab.id} is modified by someone!`);
+      log(`  ${tab.id}'s successor is modified by someone! Now it is out of control.`);
       delete tab.lastSuccessorTabId;
       return;
     }
   }
   delete tab.lastSuccessorTabId;
-  if (!configs.moveFocusInTreeForClosedCurrentTab)
+  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
     return;
-  let allowedNextFocusedTab = null;
-  let nextFocused           = null;
-  const parent = Tabs.getParentTab(tab);
-  if (parent || Tabs.getNextVisibleTab(tab)) { // prevent to focus to the next tab
-    allowedNextFocusedTab = Tabs.getFirstChildTab(tab) || Tabs.getNextSiblingTab(tab);
-    nextFocused = Tabs.getPreviousSiblingTab(tab) || parent;
+  let nextActive = null;
+  if (apiTab.active) {
+    if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
+      const firstChild = Tabs.getFirstChildTab(tab);
+      nextActive = (
+        (firstChild && !Tabs.isCollapsed(firstChild) && firstChild) ||
+        (Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab))
+      );
+    }
+    else
+      nextActive = Tabs.getNextVisibleTab(tab) || Tabs.getPreviousVisibleTab(tab);
   }
-  else if (!parent) { // prevent to focus to the previous tab
-    nextFocused = Tabs.getPreviousVisibleTab(tab);
-    if (nextFocused == Tabs.getPreviousTab(tab))
-      nextFocused = null;
-  }
-  if (apiTab.active && !allowedNextFocusedTab && nextFocused) {
-    log(`  ${tab.id} has its successor ${nextFocused.id}`);
-    setSuccessor(apiTab.id, nextFocused.apiTab.id);
-    tab.lastSuccessorTabId = nextFocused.apiTab.id;
+  if (nextActive) {
+    log(`  ${tab.id} is under control: successor = ${nextActive.id}`);
+    setSuccessor(apiTab.id, nextActive.apiTab.id);
+    tab.lastSuccessorTabId = nextActive.apiTab.id;
   }
   else {
-    log(`  ${tab.id} is not controlled `, {
-      active:                apiTab.active,
-      nextFocused:           nextFocused && nextFocused.id,
-      allowedNextFocusedTab: allowedNextFocusedTab && allowedNextFocusedTab.id
+    log(`  ${tab.id} is out of control.`, {
+      active:      apiTab.active,
+      nextActive: nextActive && nextActive.id
     });
     clearSuccessor(apiTab.id);
   }
 }
 
 async function tryClearOwnerSuccessor(tab) {
+  if (!tab || !tab.lastSuccessorTabIdByOwner)
+    return;
   delete tab.lastSuccessorTabIdByOwner;
   const apiTab = await browser.tabs.get(tab.apiTab.id).catch(ApiTabs.handleMissingTabError);
   if (!apiTab || apiTab.successorTabId != tab.lastSuccessorTabId)
@@ -139,49 +137,58 @@ async function tryClearOwnerSuccessor(tab) {
 async function onActivated(tab, info = {}) {
   update(tab.apiTab.id);
   if (info.previousTabId) {
-    const tab = Tabs.getTabById(info.previousTabId);
-    if (tab) {
+    const previousTab = Tabs.getTabById(info.previousTabId);
+    if (previousTab) {
+      await tryClearOwnerSuccessor(previousTab);
       const container = Tabs.getTabsContainer(info.windowId);
       if (container.lastRelatedTabs) {
         const lastRelatedTab = Tabs.getTabById(container.lastRelatedTabs.get(info.previousTabId));
         if (lastRelatedTab &&
-            !lastRelatedTab.apiTab.active) {
-          log(`clear lastRelatedTabs for ${tab.apiTab.windowId} by tabs.onActivated`);
+            lastRelatedTab != tab) {
+          log(`clear lastRelatedTabs for the window ${info.windowId} by tabs.onActivated`);
           container.lastRelatedTabs.clear();
-          if (lastRelatedTab.lastSuccessorTabIdByOwner)
-            await tryClearOwnerSuccessor(lastRelatedTab);
+          await tryClearOwnerSuccessor(lastRelatedTab);
         }
       }
-      if (tab.lastSuccessorTabIdByOwner)
-        await tryClearOwnerSuccessor(tab);
     }
     update(info.previousTabId);
   }
 }
 
-function onCreating(tab, _info = {}) {
-  if (!configs.simulateSelectOwnerOnClose ||
-      !tab.apiTab.openerTabId)
+function onCreating(tab, info = {}) {
+  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER ||
+      !configs.simulateSelectOwnerOnClose ||
+      !info.activeTab)
     return;
-  log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${tab.apiTab.openerTabId})`);
-  setSuccessor(tab.apiTab.id, tab.apiTab.openerTabId);
-  tab.lastSuccessorTabId = tab.apiTab.openerTabId;
-  tab.lastSuccessorTabIdByOwner = true;
 
-  const container = tab.parentNode;
-  container.lastRelatedTabs = container.lastRelatedTabs || new Map();
-  container.lastRelatedTabs.set(tab.apiTab.openerTabId, tab.apiTab.id);
-  log(`set lastRelatedTab for ${tab.apiTab.openerTabId}: ${tab.id}`);
+  // don't use await here, to prevent that other onCreating handlers are treated async.
+  tryClearOwnerSuccessor(info.activeTab).then(() => {
+    const ownerTabId = tab.apiTab.openerTabId || tab.apiTab.active ? info.activeTab.apiTab.id : null
+    if (!ownerTabId)
+      return;
 
-  if (!tab.apiTab.active) {
-    const activeTab = Tabs.getCurrentTab(tab);
-    if (activeTab && activeTab.lastSuccessorTabIdByOwner)
-      tryClearOwnerSuccessor(activeTab);
-  }
+    log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${ownerTabId})`);
+    setSuccessor(tab.apiTab.id, ownerTabId);
+    tab.lastSuccessorTabId = ownerTabId;
+    tab.lastSuccessorTabIdByOwner = true;
+
+    if (!tab.apiTab.openerTabId)
+      return;
+
+    const container = tab.parentNode;
+    container.lastRelatedTabs = container.lastRelatedTabs || new Map();
+
+    const lastRelatedTabId = container.lastRelatedTabs.get(tab.apiTab.openerTabId);
+    if (lastRelatedTabId)
+      tryClearOwnerSuccessor(Tabs.getTabById(lastRelatedTabId));
+
+    container.lastRelatedTabs.set(tab.apiTab.openerTabId, tab.apiTab.id);
+    log(`set lastRelatedTab for ${tab.apiTab.openerTabId}: ${tab.id}`);
+  });
 }
 
 function onCreated(tab, _info = {}) {
-  const activeTab = Tabs.getCurrentTab(tab);
+  const activeTab = Tabs.getActiveTab(tab);
   if (activeTab)
     update(activeTab.apiTab.id);
 }
@@ -197,13 +204,12 @@ function onRemoving(tab, removeInfo = {}) {
 
   const lastRelatedTab = Tabs.getTabById(lastRelatedTabs.get(tab.apiTab.id));
   if (lastRelatedTab &&
-      !lastRelatedTab.apiTab.active &&
-      lastRelatedTab.lastSuccessorTabIdByOwner)
+      !lastRelatedTab.apiTab.active)
     tryClearOwnerSuccessor(lastRelatedTab);
 }
 
 function onRemoved(tab, info = {}) {
-  const activeTab = Tabs.getCurrentTab(info.windowId);
+  const activeTab = Tabs.getActiveTab(info.windowId);
   if (activeTab && !info.isWindowClosing)
     update(activeTab.apiTab.id);
   const container = tab.parentNode;
@@ -213,7 +219,7 @@ function onRemoved(tab, info = {}) {
 }
 
 function onMoved(tab, info = {}) {
-  const activeTab = Tabs.getCurrentTab(tab);
+  const activeTab = Tabs.getActiveTab(tab);
   if (activeTab)
     update(activeTab.apiTab.id);
 
@@ -226,13 +232,13 @@ function onMoved(tab, info = {}) {
 }
 
 function onAttached(_tab, info = {}) {
-  const activeTab = Tabs.getCurrentTab(info.newWindowId);
+  const activeTab = Tabs.getActiveTab(info.newWindowId);
   if (activeTab)
     update(activeTab.apiTab.id);
 }
 
 function onDetached(_tab, info = {}) {
-  const activeTab = Tabs.getCurrentTab(info.oldWindowId);
+  const activeTab = Tabs.getActiveTab(info.oldWindowId);
   if (activeTab)
     update(activeTab.apiTab.id);
 
@@ -246,19 +252,19 @@ function onDetached(_tab, info = {}) {
 
 
 function onTreeAttached(child, _info = {}) {
-  const activeTab = Tabs.getCurrentTab(child);
+  const activeTab = Tabs.getActiveTab(child);
   if (activeTab)
     update(activeTab.apiTab.id);
 }
 
 function onTreeDetached(child, _info = {}) {
-  const activeTab = Tabs.getCurrentTab(child);
+  const activeTab = Tabs.getActiveTab(child);
   if (activeTab)
     update(activeTab.apiTab.id);
 }
 
 function onSubtreeCollapsedStateChanging(tab, _info = {}) {
-  const activeTab = Tabs.getCurrentTab(tab);
+  const activeTab = Tabs.getActiveTab(tab);
   if (activeTab)
     update(activeTab.apiTab.id);
 }

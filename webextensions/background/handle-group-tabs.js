@@ -482,7 +482,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.dataset.alreadyGroupedForPinnedOpener = true;
       await Tree.attachTabTo(child, parent, {
-        forceExpand: true, // this is required to avoid the group tab itself is focused from active tab in collapsed tree
+        forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
         insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tabs.getLastDescendantTab(parent),
         broadcast: true
       });

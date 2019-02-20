@@ -41,6 +41,9 @@
   --tab-highlighted-base: transparent;
 
   --scrollbar-placeholder-size: 1em;
+
+  --multiselected-color: transparent;
+  --multiselected-color-opacity: 0.15;
 }
 .tab {
   --tab-current-size: var(--tab-size);

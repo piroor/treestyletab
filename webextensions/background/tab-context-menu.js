@@ -541,7 +541,7 @@ async function onClick(info, contextApiTab) {
         }
       }
       else {
-        const tab = contextTabElement || Tabs.getCurrentTab(contextWindowId);
+        const tab = contextTabElement || Tabs.getActiveTab(contextWindowId);
         browser.tabs.reload(tab.apiTab.id);
       }
       break;

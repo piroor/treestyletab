@@ -30,7 +30,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
 
   log('Tabs.onCreating ', dumpTab(tab), info);
 
-  const possibleOpenerTab = info.activeTab || Tabs.getCurrentTab(tab);
+  const possibleOpenerTab = info.activeTab || Tabs.getActiveTab(tab);
   const opener = Tabs.getOpenerTab(tab);
   if (opener)
     opener.uniqueId.then(uniqueId => {
@@ -206,8 +206,6 @@ Tabs.onAttached.addListener(async (tab, info = {}) => {
   });
   log('moved descendants: ', movedTabs.map(dumpTab));
   for (const movedTab of movedTabs) {
-    if (Tabs.getParentTab(movedTab))
-      continue;
     Tree.attachTabTo(movedTab, tab, {
       broadcast: true,
       dontMove:  true

@@ -313,9 +313,9 @@
                      type="checkbox">
              __MSG_config_autoCollapseExpandSubtreeOnSelect_label__</label></p>
     <p class="sub">
-       <label><input id="autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove"
+       <label><input id="autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove"
                      type="checkbox">
-             __MSG_config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label__</label></p>
+             __MSG_config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label__</label></p>
     <p><label><input id="collapseExpandSubtreeByDblClick"
                      type="checkbox">
              __MSG_config_collapseExpandSubtreeByDblClick_label__</label></p>
@@ -324,16 +324,19 @@
               __MSG_config_requestPermissions_allUrls__</label></p>
 
     <fieldset>
-      <legend>__MSG_config_moveFocusInTreeForClosedCurrentTab_caption__</legend>
+      <legend>__MSG_config_successorTabControlLevel_caption__</legend>
       <ul>
         <li><label><input type="radio"
-                          name="moveFocusInTreeForClosedCurrentTab" value="true">
-              __MSG_config_moveFocusInTreeForClosedCurrentTab_true__</label></li>
+                          name="successorTabControlLevel" value="2">
+              __MSG_config_successorTabControlLevel_inTree__</label></li>
         <li><label><input type="radio"
-                          name="moveFocusInTreeForClosedCurrentTab" value="false">
-              __MSG_config_moveFocusInTreeForClosedCurrentTab_false__</label></li>
+                          name="successorTabControlLevel" value="1">
+              __MSG_config_successorTabControlLevel_simulateDefault__</label></li>
+        <li class="with-successor-tab-support"><label><input type="radio"
+                          name="successorTabControlLevel" value="0">
+              __MSG_config_successorTabControlLevel_never__</label></li>
       </ul>
-      <p class="without-successor-tab-support">__MSG_config_moveFocusInTreeForClosedCurrentTab_description__</p>
+      <p class="without-successor-tab-support">__MSG_config_successorTabControlLevel_legacyDescription__</p>
       <p class="with-successor-tab-support">
         <label><input id="simulateSelectOwnerOnClose"
                       type="checkbox">

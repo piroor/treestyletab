@@ -724,19 +724,19 @@
         "message": "树行为",
         "hash": "048b4894caaceb748552f5e7e66385d9"
     },
-    "config_moveFocusInTreeForClosedCurrentTab_caption": {
+    "config_successorTabControlLevel_caption": {
         "message": "关闭的当前标签页为末尾的子标签页时",
         "hash": "00cac5dadd1694410d4ba3e2c89fac88"
     },
-    "config_moveFocusInTreeForClosedCurrentTab_true": {
+    "config_successorTabControlLevel_inTree": {
         "message": "聚焦到此树的上一个标签页",
         "hash": "7a2fb5ca87884cd6b92939c501b83821"
     },
-    "config_moveFocusInTreeForClosedCurrentTab_false": {
+    "config_successorTabControlLevel_simulateDefault": {
         "message": "总是聚焦到下一个标签页（Firefox 默认设置）",
         "hash": "ead4ae943d21148122bca2801a947a26"
     },
-    "config_moveFocusInTreeForClosedCurrentTab_description": {
+    "config_successorTabControlLevel_legacyDescription": {
         "message": "*Firefox 内置的 \"browser.tabs.selectOwnerOnClose\"=\"true\" 功能会提前生效。",
         "hash": "a58ae4efccf268321d400001bdb29baa"
     },
@@ -764,7 +764,7 @@
         "message": "标签页获得焦点时，自动展开该树并折叠其他树",
         "hash": "fb8b0c2873c5f6881d656a7a6abb3a21"
     },
-    "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": {
+    "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": {
         "message": "排除当前标签页关闭引发的焦点改变",
         "hash": "69259746c1181dd703b53adceadd8850"
     },

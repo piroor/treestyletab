@@ -2,17 +2,17 @@
 
 [![Build Status](https://travis-ci.org/piroor/treestyletab.svg?branch=master)](https://travis-ci.org/piroor/treestyletab)
 
-This is a Firefox add-on which provides ability to operate tabs as "tree".
+This is a Firefox add-on which provides the ability to operate tabs as "tree".
 
 New tabs opened from the current tab are automatically organized as "children" of the current.
-Such "branches" are easily folded (collapsed) by clicking on down-triangle shown in a "parent" tab, so you don't need to be suffered from too many visible tabs anymore.
+Such "branches" are easily folded (collapsed) by clicking on down on the arrow shown in the "parent" tab, so you don't need to suffer from too many visible tabs anymore.
 If you want, you can restructure the tree via drag and drop.
 
  * Such a tree of tabs will behave like a visual browsing history for you.
    For example, if you see a list of search results for a topic, you'll open each search result link in new child tab.
    For more details you'll also open more descendant tabs from them.
-   You'll easily dig and dig deeply, without lose your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
- * Moreover, you'll treat tree of tabs just as "grouped tabs" for similar topics.
+   You'll easily dig and dig deeply, without losing your browsing trail - if you want to go back to the original search result, you just have to switch to the "root" tab.
+ * Moreover, you'll treat a tree of tabs just as "grouped tabs" for similar topics.
 
 Anyway this addon just provide uncolored "tree" feature.
 Please enjoy as you like!
@@ -28,17 +28,17 @@ TST has two main version lines: "renewed" (WebExtensions-based) and "legacy" (XU
 
 ## Development builds
 
-There are [automated builds from latest codes](https://piro.sakura.ne.jp/xul/xpi/nightly/).
+There are [automated builds from latest source code](https://piro.sakura.ne.jp/xul/xpi/nightly/).
 
  * ["Renewed" version 2.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab-we.xpi)
  * ["Legacy" version 0.19.x](https://piro.sakura.ne.jp/xul/xpi/nightly/treestyletab.xpi)
 
-Packages are not signed, and there are two methods to try it on your environment:
+Packages are not signed, and there are two methods to try them in your environment:
 
  * Go to `about:debugging` and click "Load Temporary Add-on" button, then choose the downloaded file. The development build will be loaded and active until you restart your Firefox.
- * If you want to try it as a regular addon instead of a temporary addon, you need to use [Nightly](https://www.mozilla.org/firefox/channel/desktop/) instead of stable Firefox or Firefox beta. On Nightly, go to `about:config` and set `xpinstall.signatures.required` to `false`. Then you'll be able to install such an unsinged addon.
+ * If you want to try it as a regular addon instead of a temporary addon, you need to use [Nightly](https://www.mozilla.org/firefox/channel/desktop/) instead of the stable Firefox or Firefox beta. On Nightly, go to `about:config` and set `xpinstall.signatures.required` to `false`. Then you will be able to install such an unsigned addon.
 
-And, you can build custom development build locally. For example, here is steps to build XPI on Ubuntu (native, or WSL on Windows 10):
+Also, you can build a custom development build locally. For example, here are the steps to build an XPI on Ubuntu (native, or WSL on Windows 10):
 
 ```bash
 $ sudo apt install git nodejs npm
@@ -48,7 +48,7 @@ $ make install_dependency
 $ make
 ```
 
-Steps to build specific revision (for example bb467286d58b3da90fd1b2e6ee8a8016e3377b97):
+Steps to build a specific revision (for example bb467286d58b3da90fd1b2e6ee8a8016e3377b97):
 
 ```
 $ cd treestyletab/webextensions
@@ -57,12 +57,12 @@ $ git submodule update
 $ make
 ```
 
-Then you'll see new `.xpi` files at the current directory. You can install such a development build via `about:debugging`. Click `Load Temporary Add-on` button and choose `treestyletab/manifest.json` or a built `.xpi` file.
+Then you will see new `.xpi` files in the current directory. You can install such a development build via `about:debugging`. Click the `Load Temporary Add-on` button and choose `treestyletab/manifest.json` or a built `.xpi` file.
 
 
-## Addons extend TST
+## Addons that extend TST
 
-TST provides some [APIs for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
+TST provides an [API for other addons](https://github.com/piroor/treestyletab/wiki/API-for-other-addons).
 Some addons provide extended behavior to TST's sidebar panel:
 
  * [Multiple Tab Handler](https://addons.mozilla.org/firefox/addon/multiple-tab-handler/) allows you to select multiple tabs and operate them at a time.
@@ -80,6 +80,7 @@ Some addons provide extended behavior to TST's sidebar panel:
  * [Bookmark Tree for Tree Style Tab](https://addons.mozilla.org/firefox/addon/bookmark-tree-for-tst/) allows you to bookmark and restore trees.
  * [TST Hoverswitch](https://addons.mozilla.org/firefox/addon/tst-hoverswitch/) allows you to switch tabs by hovering over them.
  * [TST Colored Tabs](https://addons.mozilla.org/firefox/addon/tst-colored-tabs/) gives custom background color for tabs based on their domain.
+ * [Add Last Active Class To Tab](https://addons.mozilla.org/firefox/addon/add-last-active-class-to-tab/) helps you to give custom appearance for the "previously active tab".
 
 
 ## Similar projects
@@ -123,10 +124,10 @@ Any feature request unrelated to these points may be rejected, even if many peop
 Here is a list of some major requests which are reported multiple times but I marked them "won't fix".
 Note that some topics are just about "legacy" versions of TST.
 
- * Full support for the non-indented vertical tabs. I recommend you to use [other addons providing vertical tab bar without tree](#similar-projects) instead.
- * Full support for the horizontal tab bar. TST is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
- * Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on. [It is available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)
- * [Support for Pale Moon](https://github.com/piroor/treestyletab/issues/1043) or Waterfox. TST is designed for latest release of Mozilla Firefox and Mozilla Firefox ESR, and other applications forked from Firefox are not supported. Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
+ * *[Never support for Pale Moon or Waterfox.](https://github.com/piroor/treestyletab/issues/1043)* TST is designed for latest release of Mozilla Firefox and Mozilla Firefox ESR, and other applications forked from Firefox are not supported. Please use [a forked version of TST for Pale Moon](https://github.com/oinkin/treestyletab) instead.
+ * *Never support for horizontal tab bar.* TST 2.x is implemented as just a sidebar panel, so there is no chance to provide horizontal version.
+ * *Poor support for the non-indented vertical tabs.* I recommend you to use [other addons providing vertical tab bar without tree](#similar-projects) instead.
+ * Better context menu on tabs - full featured, expanded outside of the sidebar, accesskeys, and so on, is [available on Firefox 64 and later.](https://piro.sakura.ne.jp/latest/blosxom/mozilla/xul/2018-10-14_override-context-on-fx64.htm#topic2018-10-14_override-context-on-fx64)
 
 And more:
 

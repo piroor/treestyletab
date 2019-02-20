@@ -294,10 +294,11 @@
 
   "config_treeBehavior_caption": { "message": "Tree Behavior" },
 
-  "config_moveFocusInTreeForClosedCurrentTab_caption": { "message": "When the current tab is closed as a last child" },
-  "config_moveFocusInTreeForClosedCurrentTab_true": { "message": "Focus to the previous tab in the tree" },
-  "config_moveFocusInTreeForClosedCurrentTab_false": { "message": "Focus to the next tab always (Firefox's default)" },
-  "config_moveFocusInTreeForClosedCurrentTab_description": { "message": "*Firefox's built-in behavior for \"browser.tabs.selectOwnerOnClose\"=\"true\" works prior to this config." },
+  "config_successorTabControlLevel_caption": { "message": "When the current tab is closed as a last child" },
+  "config_successorTabControlLevel_inTree": { "message": "Focus to the previous tab in the tree" },
+  "config_successorTabControlLevel_simulateDefault": { "message": "Focus to the next tab always (Firefox's default)" },
+  "config_successorTabControlLevel_never": { "message": "Never control focus (respect Firefox or other addon's control)" },
+  "config_successorTabControlLevel_legacyDescription": { "message": "*Firefox's built-in behavior for \"browser.tabs.selectOwnerOnClose\"=\"true\" works prior to this config." },
   "config_simulateSelectOwnerOnClose_label": { "message": "Move focus back to the opener tab if possible, when the current tab is closed (*simulation of Firefox's built-in behavior for \"browser.tabs.selectOwnerOnClose\"=\"true\", prior to the config above)" },
 
   "config_parentTabBehaviorForChanges_caption": { "message": "When a parent tab is moved or closed by someone from outside of the tree sidebar" },
@@ -307,7 +308,7 @@
 
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "When a new tree appears, collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
-  "config_autoCollapseExpandSubtreeOnSelectExceptCurrentTabRemove_label": { "message": "Except focus moving caused by current tab closing" },
+  "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by current tab closing" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Double-click on a tab to collapse/expand tree" },
 
   "config_closeParentBehavior_caption": { "message": "When a parent tab is closed with expanded tree" },
