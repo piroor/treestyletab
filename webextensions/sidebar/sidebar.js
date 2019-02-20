@@ -984,8 +984,8 @@ function onMessage(message, _sender, _respond) {
           tab = Tabs.getTabById(tab);
           if (!tab)
             continue;
-          add.forEach(state => tab.classList.add(state));
-          remove.forEach(state => tab.classList.remove(state));
+          add.forEach(state => Tabs.addState(tab, state));
+          remove.forEach(state => Tabs.removeState(tab, state));
           if (Tabs.hasState(modified, Constants.kTAB_STATE_AUDIBLE) ||
               Tabs.hasState(modified, Constants.kTAB_STATE_SOUND_PLAYING) ||
               Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {

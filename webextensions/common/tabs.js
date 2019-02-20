@@ -1314,6 +1314,10 @@ export function hasState(tab, state) {
   return tab && tab.apiTab && state in tab.apiTab.$TSTStates;
 }
 
+export function getStates(tab) {
+  return tab && tab.apiTab && tab.apiTab.$TSTStates ? Object.keys(tab.apiTab.$TSTStates) : [];
+}
+
 export function broadcastState(tabs, options = {}) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
