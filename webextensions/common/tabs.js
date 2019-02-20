@@ -130,6 +130,10 @@ export function untrackAll(windowId) {
   }
 }
 
+function isTracked(apiTabId) {
+  return trackedTabs.has(apiTabId);
+}
+
 
 //===================================================================
 // Tab Related Utilities
@@ -712,7 +716,8 @@ export function ensureLivingTab(tab) {
   if (!tab ||
       !tab.id ||
       !tab.parentNode ||
-      tab[Constants.kTAB_STATE_REMOVING])
+      tab[Constants.kTAB_STATE_REMOVING] ||
+      (tab.apiTab && !isTracked(tab.apiTab.id)))
     return null;
   return tab;
 }
@@ -865,7 +870,7 @@ export function getLastDescendantTab(root) {
 }
 
 
-// grab tags
+// grab tabs
 
 export function getAllTabs(hint) {
   const container = getTabsContainer(hint);
