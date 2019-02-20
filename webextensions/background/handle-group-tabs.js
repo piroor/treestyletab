@@ -182,7 +182,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
         apiTab &&
         status == 'complete') {
       if (url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-        Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+        Tabs.addStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
       }
       else if (!Constants.kSHORTHAND_ABOUT_URI.test(url)) {
         Tabs.getSpecialTabState(tab).then(async (states) => {
@@ -204,7 +204,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
             Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB);
           }
           else {
-            Tabs.removeSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+            Tabs.removeStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
           }
         });
       }
@@ -220,7 +220,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
         browser.tabs.update(tab.apiTab.id, {
           url: changeInfo.previousUrl
         }).catch(ApiTabs.handleMissingTabError);
-        Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+        Tabs.addStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
       });
     }
 

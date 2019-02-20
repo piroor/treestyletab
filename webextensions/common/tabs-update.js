@@ -59,7 +59,7 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-    Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+    Tabs.addStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
     Tabs.onGroupTabDetected.dispatch(tab);
   }
 

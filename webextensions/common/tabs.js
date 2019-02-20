@@ -1323,7 +1323,7 @@ export async function getSpecialTabState(tab) {
   return states || [];
 }
 
-export async function addSpecialTabState(tab, state) {
+export async function addStatePermanently(tab, state) {
   const states = await getSpecialTabState(tab);
   if (states.includes(state))
     return states;
@@ -1333,7 +1333,7 @@ export async function addSpecialTabState(tab, state) {
   return states;
 }
 
-export async function removeSpecialTabState(tab, state) {
+export async function removeStatePermanently(tab, state) {
   const states = await getSpecialTabState(tab);
   const index = states.indexOf(state);
   if (index < 0)

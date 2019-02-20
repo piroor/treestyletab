@@ -467,7 +467,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
         url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
       if (shorthand == 'group')
-        Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+        Tabs.addStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
     });
   }
 
