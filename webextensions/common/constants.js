@@ -73,7 +73,7 @@ export const kPERSISTENT_ANCESTORS     = 'ancestors';
 export const kPERSISTENT_CHILDREN      = 'children';
 export const kPERSISTENT_INSERT_BEFORE = 'insert-before';
 export const kPERSISTENT_INSERT_AFTER  = 'isnert-after';
-export const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed';
+export const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed'; // obsolete
 export const kPERSISTENT_SPECIAL_TAB_STATES = 'special-tab-states';
 
 export const kFAVICON         = 'favicon';

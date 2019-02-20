@@ -378,11 +378,10 @@ function reserveToUpdateSubtreeCollapsed(tab) {
 async function updateSubtreeCollapsed(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
-  browser.sessions.setTabValue(
-    tab.apiTab.id,
-    Constants.kPERSISTENT_SUBTREE_COLLAPSED,
-    Tabs.isSubtreeCollapsed(tab)
-  );
+  if (Tabs.isSubtreeCollapsed(tab))
+    Tabs.addStatePermanently(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  else
+    Tabs.removeStatePermanently(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
 export async function confirmToCloseTabs(apiTabIds, options = {}) {
