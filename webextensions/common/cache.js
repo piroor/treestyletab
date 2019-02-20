@@ -152,6 +152,7 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
     const apiTab = apiTabs[index];
     tab.id = Tabs.makeTabId(apiTab);
     tab.apiTab = apiTab;
+    apiTab.$TSTStates = apiTab.$TSTStates || {};
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     tab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);
     tab.setAttribute(Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
@@ -223,7 +224,7 @@ function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
     Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
     Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
   }
-  if (Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+  if (Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, { attribute: true }))
     Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
