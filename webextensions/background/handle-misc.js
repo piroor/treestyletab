@@ -485,7 +485,7 @@ function onMessage(message, sender) {
           // tabs.onUpdated is too slow, so users will be confused
           // from still-not-updated tabs (in other words, they tabs
           // are unresponsive for quick-clicks).
-          Tabs.broadcastTabState(tab, {
+          Tabs.broadcastState(tab, {
             add, remove,
             bubbles: !Tabs.hasChildTabs(tab)
           });
@@ -776,10 +776,10 @@ function onMessageExternal(message, sender) {
           states = [states];
         for (const tab of tabs) {
           for (const state of states) {
-            tab.classList.add(state);
+            Tabs.addState(tab, state);
           }
         }
-        Tabs.broadcastTabState(tabs, {
+        Tabs.broadcastState(tabs, {
           add: states
         });
         return true;
@@ -793,10 +793,10 @@ function onMessageExternal(message, sender) {
           states = [states];
         for (const tab of tabs) {
           for (const state of states) {
-            tab.classList.remove(state);
+            Tabs.removeState(tab, state);
           }
         }
-        Tabs.broadcastTabState(tabs, {
+        Tabs.broadcastState(tabs, {
           remove: states
         });
         return true;
