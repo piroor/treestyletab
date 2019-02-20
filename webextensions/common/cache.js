@@ -153,6 +153,7 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
     tab.id = Tabs.makeTabId(apiTab);
     tab.apiTab = apiTab;
     apiTab.$TSTStates = apiTab.$TSTStates || {};
+    apiTab.$TSTElement = tab;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     tab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);
     tab.setAttribute(Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
