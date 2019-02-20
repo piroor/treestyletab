@@ -814,7 +814,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         return browser.runtime.sendMessage({
           type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
-          windowId: message.windowId || (await browser.windows.getLastActive({ populate: false })).id,
+          windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false })).id,
           button:   message.button || 0
         });
       })();

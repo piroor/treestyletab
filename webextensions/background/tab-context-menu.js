@@ -354,7 +354,7 @@ function hasVisiblePrecedingItem(separator) {
 
 async function onShown(info, contextApiTab) {
   const tab                   = Tabs.getTabById(contextApiTab);
-  const windowId              = contextApiTab ? contextApiTab.windowId : (await browser.windows.getLastActive({})).id;
+  const windowId              = contextApiTab ? contextApiTab.windowId : (await browser.windows.getLastFocused({})).id;
   const container             = tab ? tab.parentNode : Tabs.getTabsContainer(windowId);
   const previousTab           = Tabs.getPreviousTab(tab);
   const previousSiblingTab    = Tabs.getPreviousSiblingTab(tab);
@@ -522,7 +522,7 @@ async function onShown(info, contextApiTab) {
 }
 
 async function onClick(info, contextApiTab) {
-  const window            = await browser.windows.getLastActive({ populate: true });
+  const window            = await browser.windows.getLastFocused({ populate: true });
   const contextWindowId   = window.id;
   const contextTabElement = Tabs.getTabById(contextApiTab);
   const activeTab         = window.tabs.find(tab => tab.active);
