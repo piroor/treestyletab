@@ -107,8 +107,7 @@ export function setTabActive(tab) {
   Tabs.addState(tab, Constants.kTAB_STATE_ACTIVE);
   tab.apiTab.active = true;
   Tabs.removeState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-  Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD);
-  browser.sessions.removeTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD);
+  Tabs.removeStatePermanently(tab, Constants.kTAB_STATE_UNREAD);
   return oldActiveTabs;
 }
 

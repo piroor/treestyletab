@@ -72,17 +72,15 @@ export function updateTab(tab, newState = {}, options = {}) {
         visibleLabel = `${newState.title} - ${identity.name}`;
     }
     if (options.forceApply && tab.apiTab) {
-      browser.sessions.getTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD)
-        .then(unread => {
-          if (unread)
-            Tabs.addState(tab, Constants.kTAB_STATE_UNREAD);
-          else
-            Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD);
-        });
+      Tabs.getPermanentStates(tab).then(states => {
+        if (states.includes(Constants.kTAB_STATE_UNREAD))
+          Tabs.addStatePermanently(tab, Constants.kTAB_STATE_UNREAD);
+        else
+          Tabs.addStatePermanently(tab, Constants.kTAB_STATE_UNREAD);
+      });
     }
     else if (!Tabs.isActive(tab) && tab.apiTab) {
-      Tabs.addState(tab, Constants.kTAB_STATE_UNREAD);
-      browser.sessions.setTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD, true);
+      Tabs.addStatePermanently(tab, Constants.kTAB_STATE_UNREAD);
     }
     Tabs.getTabLabelContent(tab).textContent = newState.title;
     tab.dataset.label = visibleLabel;
