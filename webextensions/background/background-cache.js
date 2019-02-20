@@ -118,31 +118,14 @@ function restoreTabsFromCache(windowId, params = {}) {
       params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  const restoredTabs = Cache.restoreTabsFromCacheInternal({
+  return Cache.restoreTabsFromCacheInternal({
     windowId:       windowId,
     tabs:           params.tabs,
     offset:         params.cache.offset || 0,
     cache:          params.cache.tabs,
     insertionPoint: params.insertionPoint,
     shouldUpdate:   true
-  });
-  for (const tab of restoredTabs) {
-    if (!tab.parentTab) // process only root tabs
-      fixupRestoredTab(tab);
-  }
-  return restoredTabs.length > 0;
-}
-
-function fixupRestoredTab(tab, shouldCollapse = false) {
-  if (shouldCollapse)
-    tab.classList.add(Constants.kTAB_STATE_COLLAPSED);
-  else
-    tab.classList.remove(Constants.kTAB_STATE_COLLAPSED);
-  if (!shouldCollapse)
-    shouldCollapse = tab.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-  for (const child of tab.childTabs) {
-    fixupRestoredTab(child, shouldCollapse);
-  }
+  }).length > 0;
 }
 
 

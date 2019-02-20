@@ -986,9 +986,9 @@ function onMessage(message, _sender, _respond) {
             continue;
           add.forEach(state => tab.classList.add(state));
           remove.forEach(state => tab.classList.remove(state));
-          if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
-            modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
-            modified.includes(Constants.kTAB_STATE_MUTED)) {
+          if (Tabs.hasState(modified, Constants.kTAB_STATE_AUDIBLE) ||
+              Tabs.hasState(modified, Constants.kTAB_STATE_SOUND_PLAYING) ||
+              Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
             if (message.bubbles)
               TabsUpdate.updateParentTab(Tabs.getParentTab(tab));

@@ -108,39 +108,39 @@ function updateDescendantsCount(tab) {
 function updateDescendantsHighlighted(tab) {
   const children = Tabs.getChildTabs(tab);
   if (!Tabs.hasChildTabs(tab)) {
-    tab.classList.remove(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-    tab.classList.remove(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
     return;
   }
   let someHighlighted = false;
   let allHighlighted  = true;
   for (const child of children) {
-    if (child.classList.contains(Constants.kTAB_STATE_HIGHLIGHTED)) {
+    if (Tabs.hasState(child, Constants.kTAB_STATE_HIGHLIGHTED)) {
       someHighlighted = true;
       allHighlighted = (
         allHighlighted &&
         (!Tabs.hasChildTabs(child) ||
-         child.classList.contains(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
+         Tabs.hasState(child, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
       );
     }
     else {
       if (!someHighlighted &&
-          child.classList.contains(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED)) {
+          Tabs.hasState(child, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED)) {
         someHighlighted = true;
       }
       allHighlighted = false;
     }
   }
   if (someHighlighted) {
-    tab.classList.add(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    Tabs.addState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
     if (allHighlighted)
-      tab.classList.add(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      Tabs.addState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
     else
-      tab.classList.remove(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
   }
   else {
-    tab.classList.remove(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-    tab.classList.remove(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
   }
 }
 
@@ -238,7 +238,7 @@ async function synchronizeThrobberAnimation() {
     return;
 
   for (const tab of toBeSynchronizedTabs) {
-    tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   }
 
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
@@ -470,7 +470,7 @@ Tabs.onBuilt.addListener((tab, info) => {
 });
 
 Tabs.onCreated.addListener((tab, _info) => {
-  tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+  Tabs.addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 });
 
 Tabs.onTabElementMoved.addListener((tab, info) => {
@@ -510,7 +510,7 @@ Tabs.onRemoved.addListener((tab, _info) => {
 const mTabWasVisibleBeforeMoving = new WeakMap();
 
 Tabs.onMoving.addListener((tab, _info) => {
-  tab.classList.add(Constants.kTAB_STATE_MOVING);
+  Tabs.addState(tab, Constants.kTAB_STATE_MOVING);
   if (!configs.animation ||
       Tabs.isPinned(tab) ||
       Tabs.isOpening(tab))
@@ -538,14 +538,14 @@ Tabs.onMoved.addListener(async (tab, _info) => {
     });
     await wait(configs.collapseDuration);
   }
-  tab.classList.remove(Constants.kTAB_STATE_MOVING);
+  Tabs.removeState(tab, Constants.kTAB_STATE_MOVING);
 });
 
 Tabs.onStateChanged.addListener(tab => {
   if (tab.apiTab.status == 'loading')
-    tab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    Tabs.addState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
-    tab.classList.remove(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   reserveToUpdateLoadingState();
 });

@@ -466,20 +466,20 @@ function onMessage(message, sender) {
           const remove = [];
           if (message.muted) {
             add.push(Constants.kTAB_STATE_MUTED);
-            tab.classList.add(Constants.kTAB_STATE_MUTED);
+            Tabs.addState(tab, Constants.kTAB_STATE_MUTED);
           }
           else {
             remove.push(Constants.kTAB_STATE_MUTED);
-            tab.classList.remove(Constants.kTAB_STATE_MUTED);
+            Tabs.removeState(tab, Constants.kTAB_STATE_MUTED);
           }
 
           if (Tabs.isAudible(tab) && !message.muted) {
             add.push(Constants.kTAB_STATE_SOUND_PLAYING);
-            tab.classList.add(Constants.kTAB_STATE_SOUND_PLAYING);
+            Tabs.addState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
           }
           else {
             remove.push(Constants.kTAB_STATE_SOUND_PLAYING);
-            tab.classList.remove(Constants.kTAB_STATE_SOUND_PLAYING);
+            Tabs.removeState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
           }
 
           // tabs.onUpdated is too slow, so users will be confused

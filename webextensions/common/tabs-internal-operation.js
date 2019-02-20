@@ -104,10 +104,10 @@ export function setTabActive(tab) {
   if (!tab)
     return [];
   const oldActiveTabs = clearOldActiveStateInWindow(tab.apiTab.windowId);
-  tab.classList.add(Constants.kTAB_STATE_ACTIVE);
+  Tabs.addState(tab, Constants.kTAB_STATE_ACTIVE);
   tab.apiTab.active = true;
-  tab.classList.remove(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-  tab.classList.remove(Constants.kTAB_STATE_UNREAD);
+  Tabs.removeState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+  Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD);
   browser.sessions.removeTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD);
   return oldActiveTabs;
 }
@@ -118,7 +118,7 @@ export function clearOldActiveStateInWindow(windowId) {
     return [];
   const oldTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`);
   for (const oldTab of oldTabs) {
-    oldTab.classList.remove(Constants.kTAB_STATE_ACTIVE);
+    Tabs.removeState(oldTab, Constants.kTAB_STATE_ACTIVE);
     if (oldTab.apiTab) // this function can be applied for cached tab.
       oldTab.apiTab.active = false;
   }

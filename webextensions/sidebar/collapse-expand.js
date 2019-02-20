@@ -77,7 +77,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   }
 
   if (tab.apiTab.status == 'loading')
-    tab.classList.add(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    Tabs.addState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   if (info.anchor && !Scroll.isTabInViewport(info.anchor))
     info.anchor = null;
@@ -99,8 +99,8 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   const canceller = (aNewToBeCollapsed) => {
     cancelled = true;
     if (aNewToBeCollapsed != toBeCollapsed) {
-      tab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
-      tab.classList.remove(Constants.kTAB_STATE_EXPANDING);
+      Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSING);
+      Tabs.removeState(tab, Constants.kTAB_STATE_EXPANDING);
     }
   };
   const onCompleted = (tab, info = {}) => {
@@ -121,9 +121,9 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
 
     //log('=> skip animation');
     if (toBeCollapsed)
-      tab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+      Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
     else
-      tab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+      Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
 
     const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
     onEndCollapseExpandCompletely(tab, {
@@ -149,11 +149,11 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   mUpdatingCollapsedStateCancellers.set(tab, canceller);
 
   if (toBeCollapsed) {
-    tab.classList.add(Constants.kTAB_STATE_COLLAPSING);
+    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSING);
   }
   else {
-    tab.classList.add(Constants.kTAB_STATE_EXPANDING);
-    tab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+    Tabs.addState(tab, Constants.kTAB_STATE_EXPANDING);
+    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
   }
 
   Sidebar.reserveToUpdateTabbarLayout({ reason });
@@ -183,16 +183,16 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
       }
 
       //log('=> finish animation for ', dumpTab(tab));
-      tab.classList.remove(Constants.kTAB_STATE_COLLAPSING);
-      tab.classList.remove(Constants.kTAB_STATE_EXPANDING);
+      Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSING);
+      Tabs.removeState(tab, Constants.kTAB_STATE_EXPANDING);
 
       // The collapsed state of the tab can be changed by different trigger,
       // so we must respect the actual status of the tab, instead of the
       // "expected status" given via arguments.
-      if (tab.classList.contains(Constants.kTAB_STATE_COLLAPSED))
-        tab.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+      if (Tabs.hasState(tab, Constants.kTAB_STATE_COLLAPSED))
+        Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
       else
-        tab.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+        Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
 
       onEndCollapseExpandCompletely(tab, {
         collapsed: toBeCollapsed,

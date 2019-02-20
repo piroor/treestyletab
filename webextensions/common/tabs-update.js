@@ -59,7 +59,6 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-    tab.classList.add(Constants.kTAB_STATE_GROUP_TAB);
     Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
     Tabs.onGroupTabDetected.dispatch(tab);
   }
@@ -76,13 +75,13 @@ export function updateTab(tab, newState = {}, options = {}) {
       browser.sessions.getTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD)
         .then(unread => {
           if (unread)
-            tab.classList.add(Constants.kTAB_STATE_UNREAD);
+            Tabs.addState(tab, Constants.kTAB_STATE_UNREAD);
           else
-            tab.classList.remove(Constants.kTAB_STATE_UNREAD);
+            Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD);
         });
     }
     else if (!Tabs.isActive(tab) && tab.apiTab) {
-      tab.classList.add(Constants.kTAB_STATE_UNREAD);
+      Tabs.addState(tab, Constants.kTAB_STATE_UNREAD);
       browser.sessions.setTabValue(tab.apiTab.id, Constants.kTAB_STATE_UNREAD, true);
     }
     Tabs.getTabLabelContent(tab).textContent = newState.title;
@@ -112,17 +111,17 @@ export function updateTab(tab, newState = {}, options = {}) {
     tab.classList.remove(newState.status == 'loading' ? 'complete' : 'loading');
     tab.classList.add(newState.status);
     if (newState.status == 'loading') {
-      tab.classList.remove(Constants.kTAB_STATE_BURSTING);
+      Tabs.removeState(tab, Constants.kTAB_STATE_BURSTING);
     }
     else if (!options.forceApply && reallyChanged) {
-      tab.classList.add(Constants.kTAB_STATE_BURSTING);
+      Tabs.addState(tab, Constants.kTAB_STATE_BURSTING);
       if (tab.delayedBurstEnd)
         clearTimeout(tab.delayedBurstEnd);
       tab.delayedBurstEnd = setTimeout(() => {
         delete tab.delayedBurstEnd;
-        tab.classList.remove(Constants.kTAB_STATE_BURSTING);
+        Tabs.removeState(tab, Constants.kTAB_STATE_BURSTING);
         if (!Tabs.isActive(tab))
-          tab.classList.add(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+          Tabs.addState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
     Tabs.onStateChanged.dispatch(tab);
@@ -130,14 +129,14 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if ((options.forceApply ||
        'pinned' in newState) &&
-      newState.pinned != tab.classList.contains(Constants.kTAB_STATE_PINNED)) {
+      newState.pinned != Tabs.hasState(tab, Constants.kTAB_STATE_PINNED)) {
     if (newState.pinned) {
-      tab.classList.add(Constants.kTAB_STATE_PINNED);
+      Tabs.addState(tab, Constants.kTAB_STATE_PINNED);
       tab.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
       Tabs.onPinned.dispatch(tab);
     }
     else {
-      tab.classList.remove(Constants.kTAB_STATE_PINNED);
+      Tabs.removeState(tab, Constants.kTAB_STATE_PINNED);
       Tabs.onUnpinned.dispatch(tab);
     }
   }
@@ -145,54 +144,54 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'audible' in newState) {
     if (newState.audible)
-      tab.classList.add(Constants.kTAB_STATE_AUDIBLE);
+      Tabs.addState(tab, Constants.kTAB_STATE_AUDIBLE);
     else
-      tab.classList.remove(Constants.kTAB_STATE_AUDIBLE);
+      Tabs.removeState(tab, Constants.kTAB_STATE_AUDIBLE);
   }
 
   if (options.forceApply ||
       'mutedInfo' in newState) {
     if (newState.mutedInfo && newState.mutedInfo.muted)
-      tab.classList.add(Constants.kTAB_STATE_MUTED);
+      Tabs.addState(tab, Constants.kTAB_STATE_MUTED);
     else
-      tab.classList.remove(Constants.kTAB_STATE_MUTED);
+      Tabs.removeState(tab, Constants.kTAB_STATE_MUTED);
   }
 
   if (tab.apiTab &&
       tab.apiTab.audible &&
       !tab.apiTab.mutedInfo.muted)
-    tab.classList.add(Constants.kTAB_STATE_SOUND_PLAYING);
+    Tabs.addState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
   else
-    tab.classList.remove(Constants.kTAB_STATE_SOUND_PLAYING);
+    Tabs.removeState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
 
   if (options.forceApply ||
       'cookieStoreId' in newState) {
     for (const className of tab.classList) {
       if (className.indexOf('contextual-identity-') == 0)
-        tab.classList.remove(className);
+        Tabs.removeState(tab, className);
     }
     if (newState.cookieStoreId)
-      tab.classList.add(`contextual-identity-${newState.cookieStoreId}`);
+      Tabs.addState(tab, `contextual-identity-${newState.cookieStoreId}`);
   }
 
   if (options.forceApply ||
       'incognito' in newState) {
     if (newState.incognito)
-      tab.classList.add(Constants.kTAB_STATE_PRIVATE_BROWSING);
+      Tabs.addState(tab, Constants.kTAB_STATE_PRIVATE_BROWSING);
     else
-      tab.classList.remove(Constants.kTAB_STATE_PRIVATE_BROWSING);
+      Tabs.removeState(tab, Constants.kTAB_STATE_PRIVATE_BROWSING);
   }
 
   if (options.forceApply ||
       'hidden' in newState) {
     if (newState.hidden) {
-      if (!tab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
-        tab.classList.add(Constants.kTAB_STATE_HIDDEN);
+      if (!Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
+        Tabs.addState(tab, Constants.kTAB_STATE_HIDDEN);
         Tabs.onHidden.dispatch(tab);
       }
     }
-    else if (tab.classList.contains(Constants.kTAB_STATE_HIDDEN)) {
-      tab.classList.remove(Constants.kTAB_STATE_HIDDEN);
+    else if (Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
+      Tabs.removeState(tab, Constants.kTAB_STATE_HIDDEN);
       Tabs.onShown.dispatch(tab);
     }
   }
@@ -200,9 +199,9 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'highlighted' in newState) {
     if (newState.highlighted)
-      tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
+      Tabs.addState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
     else
-      tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+      Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
 
     updateMultipleHighlighted(tab);
   }
@@ -210,9 +209,9 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'attention' in newState) {
     if (newState.attention)
-      tab.classList.add(Constants.kTAB_STATE_ATTENTION);
+      Tabs.addState(tab, Constants.kTAB_STATE_ATTENTION);
     else
-      tab.classList.remove(Constants.kTAB_STATE_ATTENTION);
+      Tabs.removeState(tab, Constants.kTAB_STATE_ATTENTION);
   }
 
   if (options.forceApply ||
@@ -221,9 +220,9 @@ export function updateTab(tab, newState = {}, options = {}) {
       // Don't set this class immediately, because we need to know
       // the newly active tab *was* discarded on onTabClosed handler.
       if (newState.discarded)
-        tab.classList.add(Constants.kTAB_STATE_DISCARDED);
+        Tabs.addState(tab, Constants.kTAB_STATE_DISCARDED);
       else
-        tab.classList.remove(Constants.kTAB_STATE_DISCARDED);
+        Tabs.removeState(tab, Constants.kTAB_STATE_DISCARDED);
     });
   }
 }
@@ -280,9 +279,9 @@ async function updateTabHighlighted(tab, highlighted) {
   //if (Tabs.isHighlighted(tab) == highlighted)
   //  return false;
   if (highlighted)
-    tab.classList.add(Constants.kTAB_STATE_HIGHLIGHTED);
+    Tabs.addState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
   else
-    tab.classList.remove(Constants.kTAB_STATE_HIGHLIGHTED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
   tab.apiTab.highlighted = highlighted;
   const inheritHighlighted = !tab.parentNode.tabsToBeHighlightedAlone.has(tab.apiTab.id);
   if (!inheritHighlighted)
@@ -308,14 +307,14 @@ export function updateParentTab(parent) {
   const children = Tabs.getChildTabs(parent);
 
   if (children.some(Tabs.maybeSoundPlaying))
-    parent.classList.add(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+    Tabs.addState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
   else
-    parent.classList.remove(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+    Tabs.removeState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
   if (children.some(Tabs.maybeMuted))
-    parent.classList.add(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+    Tabs.addState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
   else
-    parent.classList.remove(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+    Tabs.removeState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
 
   updateParentTab(Tabs.getParentTab(parent));
 
