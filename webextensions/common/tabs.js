@@ -1082,7 +1082,7 @@ export function maybeSoundPlaying(tab) {
   return ensureLivingTab(tab) &&
          (isSoundPlaying(tab) ||
           (hasState(tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
-           tab.hasAttribute(Constants.kCHILDREN)));
+           hasChildTabs(tab)));
 }
 
 export function isMuted(tab) {
@@ -1094,7 +1094,7 @@ export function maybeMuted(tab) {
   return ensureLivingTab(tab) &&
          (isMuted(tab) ||
           (hasState(tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
-           tab.hasAttribute(Constants.kCHILDREN)));
+           hasChildTabs(tab)));
 }
 
 export function isHidden(tab) {
