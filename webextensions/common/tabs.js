@@ -1117,26 +1117,6 @@ export function getOpenerFromGroupTab(groupTab) {
 // Tab Information
 //===================================================================
 
-export function addState(tab, state) {
-  if (!tab)
-    return;
-  tab.classList.add(state);
-  if (tab.apiTab)
-    tab.apiTab.$TSTStates[state] = true;
-}
-
-export function removeState(tab, state) {
-  if (!tab)
-    return;
-  tab.classList.remove(state);
-  if (tab.apiTab)
-    delete tab.apiTab.$TSTStates[state];
-}
-
-export function hasState(tab, state) {
-  return tab && tab.apiTab && state in tab.apiTab.$TSTStates;
-}
-
 export function isActive(tab) {
   return ensureLivingTab(tab) &&
            !!(tab.apiTab && tab.apiTab.active);
@@ -1161,7 +1141,7 @@ export function maybeSoundPlaying(tab) {
   return ensureLivingTab(tab) &&
          (isSoundPlaying(tab) ||
           (hasState(tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
-           tab.hasAttribute(Constants.kCHILDREN)));
+           hasChildTabs(tab)));
 }
 
 export function isMuted(tab) {
@@ -1173,7 +1153,7 @@ export function maybeMuted(tab) {
   return ensureLivingTab(tab) &&
          (isMuted(tab) ||
           (hasState(tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
-           tab.hasAttribute(Constants.kCHILDREN)));
+           hasChildTabs(tab)));
 }
 
 export function isHidden(tab) {
@@ -1385,7 +1365,39 @@ export function fetchClosedWhileActiveResolver(tab) {
 // Tab State
 //===================================================================
 
-export function broadcastTabState(tabs, options = {}) {
+export function addState(tab, state, options = {}) {
+  if (!tab)
+    return;
+  tab.classList.add(state);
+  if (tab.apiTab)
+    tab.apiTab.$TSTStates[state] = true;
+  if (options.broadcast)
+    broadcastState(tab, {
+      add: [state]
+    });
+}
+
+export function removeState(tab, state, options = {}) {
+  if (!tab)
+    return;
+  tab.classList.remove(state);
+  if (tab.apiTab)
+    delete tab.apiTab.$TSTStates[state];
+  if (options.broadcast)
+    broadcastState(tab, {
+      remove: [state]
+    });
+}
+
+export function hasState(tab, state) {
+  return tab && tab.apiTab && state in tab.apiTab.$TSTStates;
+}
+
+export function getStates(tab) {
+  return tab && tab.apiTab && tab.apiTab.$TSTStates ? Object.keys(tab.apiTab.$TSTStates) : [];
+}
+
+export function broadcastState(tabs, options = {}) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
   browser.runtime.sendMessage({
@@ -1397,13 +1409,13 @@ export function broadcastTabState(tabs, options = {}) {
   });
 }
 
-export async function getSpecialTabState(tab) {
+export async function getPermanentStates(tab) {
   const states = await browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
   return states || [];
 }
 
-export async function addSpecialTabState(tab, state) {
-  const states = await getSpecialTabState(tab);
+export async function addStatePermanently(tab, state) {
+  const states = await getPermanentStates(tab);
   if (states.includes(state))
     return states;
   states.push(state);
@@ -1412,8 +1424,8 @@ export async function addSpecialTabState(tab, state) {
   return states;
 }
 
-export async function removeSpecialTabState(tab, state) {
-  const states = await getSpecialTabState(tab);
+export async function removeStatePermanently(tab, state) {
+  const states = await getPermanentStates(tab);
   const index = states.indexOf(state);
   if (index < 0)
     return states;

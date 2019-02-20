@@ -59,7 +59,7 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-    Tabs.addSpecialTabState(tab, Constants.kTAB_STATE_GROUP_TAB);
+    Tabs.addStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
     Tabs.onGroupTabDetected.dispatch(tab);
   }
 
@@ -107,9 +107,9 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if ('status' in newState) {
-    const reallyChanged = !tab.classList.contains(newState.status);
-    tab.classList.remove(newState.status == 'loading' ? 'complete' : 'loading');
-    tab.classList.add(newState.status);
+    const reallyChanged = !Tabs.hasState(tab, newState.status);
+    Tabs.removeState(tab, newState.status == 'loading' ? 'complete' : 'loading');
+    Tabs.addState(tab, newState.status);
     if (newState.status == 'loading') {
       Tabs.removeState(tab, Constants.kTAB_STATE_BURSTING);
     }
@@ -166,9 +166,9 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if (options.forceApply ||
       'cookieStoreId' in newState) {
-    for (const className of tab.classList) {
-      if (className.indexOf('contextual-identity-') == 0)
-        Tabs.removeState(tab, className);
+    for (const state of Tabs.getStates(tab)) {
+      if (state.indexOf('contextual-identity-') == 0)
+        Tabs.removeState(tab, state);
     }
     if (newState.cookieStoreId)
       Tabs.addState(tab, `contextual-identity-${newState.cookieStoreId}`);

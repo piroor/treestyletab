@@ -1357,10 +1357,7 @@ export async function moveTabs(tabs, options = {}) {
         });
         if (options.duplicate) {
           for (const tab of newTabs) {
-            Tabs.removeState(tab, Constants.kTAB_STATE_DUPLICATING);
-            Tabs.broadcastTabState(tab, {
-              remove: [Constants.kTAB_STATE_DUPLICATING]
-            });
+            Tabs.removeState(tab, Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
           }
         }
         break;
