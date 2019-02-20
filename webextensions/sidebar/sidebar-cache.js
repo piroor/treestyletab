@@ -146,7 +146,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
     offset:       offset,
     cache:        cache.contents,
     shouldUpdate: cache.tabsDirty
-  });
+  }).length > 0;
 
   if (restored) {
     try {

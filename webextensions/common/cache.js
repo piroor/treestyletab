@@ -67,7 +67,7 @@ export function restoreTabsFromCacheInternal(params) {
     if (!container ||
         container.childNodes.length <= offset) {
       log('restoreTabsFromCacheInternal: missing container');
-      return false;
+      return [];
     }
     log(`restoreTabsFromCacheInternal: there is ${container.childNodes.length} tabs`);
     log('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
@@ -119,7 +119,7 @@ export function restoreTabsFromCacheInternal(params) {
   if (tabElements.length != apiTabs.length) {
     log('restoreTabsFromCacheInternal: Mismatched number of restored tabs?');
     container.parentNode.removeChild(container); // clear dirty tree!
-    return false;
+    return [];
   }
   try {
     fixupTabsRestoredFromCache(tabElements, apiTabs, {
@@ -132,7 +132,7 @@ export function restoreTabsFromCacheInternal(params) {
   }
   log('restoreTabsFromCacheInternal: done');
   Tabs.dumpAllTabs();
-  return true;
+  return tabElements;
 }
 
 function dumpCache(cache) {
