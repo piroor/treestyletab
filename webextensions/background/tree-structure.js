@@ -153,18 +153,19 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     tab:    tab.apiTab.id,
     window: tab.apiTab.windowId
   }).catch(_error => {});
-  let uniqueId, insertBefore, insertAfter, ancestors, children, collapsed;
+  let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
   await Promise.all([
     (async () => {
       uniqueId = options.uniqueId || await tab.uniqueId;
     })(),
     (async () => {
-      [insertBefore, insertAfter, ancestors, children, collapsed] = await Promise.all([
+      [insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
         browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
         browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
         browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
         browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED)
+        Tabs.getPermanentStates(tab),
+        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED) // for backward compatibility
       ]);
       ancestors = ancestors || [];
       children  = children  || [];
@@ -174,8 +175,14 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     insertBefore, insertAfter,
     ancestors: ancestors.join(', '),
     children:  children.join(', '),
+    states,
     collapsed
   });
+  if (collapsed && !states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED)) {
+    // migration
+    states.push(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    browser.sessions.removeTabValue(tab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED);
+  }
   insertBefore = Tabs.getTabByUniqueId(insertBefore);
   insertAfter  = Tabs.getTabByUniqueId(insertAfter);
   ancestors    = ancestors.map(Tabs.getTabByUniqueId);
@@ -254,7 +261,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   if (options.canCollapse || options.bulk) {
     Tree.collapseExpandSubtree(tab, {
       broadcast: true,
-      collapsed
+      collapsed: states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED)
     });
   }
   browser.runtime.sendMessage({
