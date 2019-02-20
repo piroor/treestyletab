@@ -1310,7 +1310,9 @@ export function removeState(tab, state, options = {}) {
     });
 }
 
-export function hasState(tab, state) {
+export function hasState(tab, state, options = {}) {
+  if (options.attribute && tab)
+    return tab.classList.contains(state);
   return tab && tab.apiTab && state in tab.apiTab.$TSTStates;
 }
 
