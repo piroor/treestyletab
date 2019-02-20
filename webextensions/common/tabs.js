@@ -64,6 +64,7 @@ export const activeTabForWindow = new Map();
 export const highlightedTabsForWindow = new Map();
 
 export function track(apiTab) {
+  apiTab.$TSTStates = {};
   trackedTabs.set(apiTab.id, apiTab);
   let window = trackedWindows.get(apiTab.windowId);
   if (!window) {
@@ -458,8 +459,8 @@ export function buildTab(apiTab, options = {}) {
   //tab.setAttribute(Constants.kCHILDREN, '');
   tab.classList.add('tab');
   if (apiTab.active)
-    tab.classList.add(Constants.kTAB_STATE_ACTIVE);
-  tab.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    addState(tab, Constants.kTAB_STATE_ACTIVE);
+  addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
   const labelContainer = document.createElement('span');
   labelContainer.classList.add(Constants.kLABEL);
@@ -469,9 +470,8 @@ export function buildTab(apiTab, options = {}) {
 
   onBuilt.dispatch(tab, options);
 
-  if (options.existing) {
-    tab.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
-  }
+  if (options.existing)
+    addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 
   if (apiTab.id)
     updateUniqueId(tab);
@@ -716,8 +716,8 @@ export function ensureLivingTab(tab) {
   if (!tab ||
       !tab.id ||
       !tab.parentNode ||
-      tab[Constants.kTAB_STATE_REMOVING] ||
-      (tab.apiTab && !isTracked(tab.apiTab.id)))
+      !isTracked(tab.apiTab.id) ||
+      hasState(tab, Constants.kTAB_STATE_REMOVING))
     return null;
   return tab;
 }
@@ -1116,6 +1116,26 @@ export function getOpenerFromGroupTab(groupTab) {
 // Tab Information
 //===================================================================
 
+export function addState(tab, state) {
+  if (!tab)
+    return;
+  tab.classList.add(state);
+  if (tab.apiTab)
+    tab.apiTab.$TSTStates[state] = true;
+}
+
+export function removeState(tab, state) {
+  if (!tab)
+    return;
+  tab.classList.remove(state);
+  if (tab.apiTab)
+    delete tab.apiTab.$TSTStates[state];
+}
+
+export function hasState(tab, state) {
+  return tab && tab.apiTab && state in tab.apiTab.$TSTStates;
+}
+
 export function isActive(tab) {
   return ensureLivingTab(tab) &&
            !!(tab.apiTab && tab.apiTab.active);
@@ -1139,7 +1159,7 @@ export function isSoundPlaying(tab) {
 export function maybeSoundPlaying(tab) {
   return ensureLivingTab(tab) &&
          (isSoundPlaying(tab) ||
-          (tab.classList.contains(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+          (hasState(tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
            tab.hasAttribute(Constants.kCHILDREN)));
 }
 
@@ -1151,7 +1171,7 @@ export function isMuted(tab) {
 export function maybeMuted(tab) {
   return ensureLivingTab(tab) &&
          (isMuted(tab) ||
-          (tab.classList.contains(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+          (hasState(tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
            tab.hasAttribute(Constants.kCHILDREN)));
 }
 
@@ -1162,7 +1182,7 @@ export function isHidden(tab) {
 
 export function isCollapsed(tab) {
   return ensureLivingTab(tab) &&
-           tab.classList.contains(Constants.kTAB_STATE_COLLAPSED);
+           hasState(tab, Constants.kTAB_STATE_COLLAPSED);
 }
 
 export function isDiscarded(tab) {
@@ -1177,12 +1197,12 @@ export function isPrivateBrowsing(tab) {
 
 export function isOpening(tab) {
   return ensureLivingTab(tab) &&
-           tab.classList.contains(Constants.kTAB_STATE_OPENING);
+           hasState(tab, Constants.kTAB_STATE_OPENING);
 }
 
 export function isDuplicating(tab) {
   return ensureLivingTab(tab) &&
-           tab.classList.contains(Constants.kTAB_STATE_DUPLICATING);
+           hasState(tab, Constants.kTAB_STATE_DUPLICATING);
 }
 
 export function isNewTabCommandTab(tab) {
@@ -1194,7 +1214,7 @@ export function isNewTabCommandTab(tab) {
 
 export function isSubtreeCollapsed(tab) {
   return ensureLivingTab(tab) &&
-           tab.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+         hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
 /*
@@ -1217,7 +1237,7 @@ export function isGroupTab(tab) {
   if (!tab)
     return false;
   assertInitializedTab(tab);
-  return tab.classList.contains(Constants.kTAB_STATE_GROUP_TAB) ||
+  return hasState(tab, Constants.kTAB_STATE_GROUP_TAB) ||
          tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
 }
 
@@ -1229,7 +1249,7 @@ export function isTemporaryGroupTab(tab) {
 
 export function isSelected(tab) {
   return ensureLivingTab(tab) &&
-           (tab.classList.contains(Constants.kTAB_STATE_SELECTED) ||
+           (hasState(tab, Constants.kTAB_STATE_SELECTED) ||
             (isMultihighlighted(tab) && !!(tab.apiTab && tab.apiTab.highlighted)));
 }
 
@@ -1386,6 +1406,7 @@ export async function addSpecialTabState(tab, state) {
   if (states.includes(state))
     return states;
   states.push(state);
+  addState(tab, state);
   await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
   return states;
 }
@@ -1396,6 +1417,7 @@ export async function removeSpecialTabState(tab, state) {
   if (index < 0)
     return states;
   states.splice(index, 1);
+  removeState(tab, state);
   await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
   return states;
 }

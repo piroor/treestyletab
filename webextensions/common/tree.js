@@ -646,11 +646,11 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
     return;
 
   if (params.collapsed) {
-    tab.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-    tab.classList.remove(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
   }
   else {
-    tab.classList.remove(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
@@ -685,7 +685,7 @@ export function manualCollapseExpandSubtree(tab, params = {}) {
   params.manualOperation = true;
   collapseExpandSubtree(tab, params);
   if (!params.collapsed) {
-    tab.classList.add(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY, true);
   }
 }
@@ -752,10 +752,12 @@ export async function collapseExpandTab(tab, params = {}) {
   });
   Tabs.onCollapsedStateChanging.dispatch(tab, collapseExpandInfo);
 
-  if (params.collapsed)
-    tab.classList.add(Constants.kTAB_STATE_COLLAPSED);
-  else
-    tab.classList.remove(Constants.kTAB_STATE_COLLAPSED);
+  if (params.collapsed) {
+    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED);
+  }
+  else {
+    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
+  }
 
   Tabs.onCollapsedStateChanged.dispatch(tab, collapseExpandInfo);
 
@@ -816,7 +818,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     }
     logCollapseExpand(`${dumpTab(collapseTab)}: dontCollapse = ${dontCollapse}`);
 
-    const manuallyExpanded = collapseTab.classList.contains(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    const manuallyExpanded = Tabs.hasState(collapseTab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
       collapseExpandSubtree(collapseTab, Object.assign({}, options, {
         collapsed: true
@@ -1355,7 +1357,7 @@ export async function moveTabs(tabs, options = {}) {
         });
         if (options.duplicate) {
           for (const tab of newTabs) {
-            tab.classList.remove(Constants.kTAB_STATE_DUPLICATING);
+            Tabs.removeState(tab, Constants.kTAB_STATE_DUPLICATING);
             Tabs.broadcastTabState(tab, {
               remove: [Constants.kTAB_STATE_DUPLICATING]
             });
@@ -1664,7 +1666,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
       }
     }
     if (parent) {
-      parent.classList.remove(Constants.kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
+      Tabs.removeState(parent, Constants.kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
       promises.push(attachTabTo(tab, parent, Object.assign({}, options, {
         dontExpand: true,
         dontMove:   true,

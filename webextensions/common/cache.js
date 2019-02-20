@@ -164,6 +164,10 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
       dirty: options.dirty
     });
   });
+  for (const tab of tabs) {
+    if (!tab.parentTab) // process only root tabs
+      fixupTreeCollapsedStateRestoredFromCache(tab);
+  }
   // step 3: update tabs based on restored information.
   // this step must be done after the step 2 is finished for all tabs
   // because updating operation can refer other tabs.
@@ -183,9 +187,9 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
   Tabs.initPromisedStatus(tab, true);
 
   if (apiTab.discarded)
-    tab.classList.add(Constants.kTAB_STATE_DISCARDED);
+    Tabs.addState(tab, Constants.kTAB_STATE_DISCARDED);
   else
-    tab.classList.remove(Constants.kTAB_STATE_DISCARDED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_DISCARDED);
 
   const idMap = options.idMap;
 
@@ -208,4 +212,24 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
     tab.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.getAttribute(Constants.kPARENT));
   tab.ancestorTabs = Tabs.getAncestorTabs(tab, { force: true });
+}
+
+function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
+  if (shouldCollapse) {
+    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED);
+    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
+  }
+  else {
+    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
+  }
+  if (Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  else
+    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  if (!shouldCollapse)
+    shouldCollapse = Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  for (const child of tab.childTabs) {
+    fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse);
+  }
 }

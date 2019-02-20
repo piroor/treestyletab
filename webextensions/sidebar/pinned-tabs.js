@@ -87,17 +87,17 @@ export function reposition(options = {}) {
   for (const item of pinnedTabs) {
     const style = item.style;
     if (options.justNow)
-      item.classList.remove(Constants.kTAB_STATE_ANIMATION_READY);
+      Tabs.removeState(item, Constants.kTAB_STATE_ANIMATION_READY);
 
     if (faviconized)
-      item.classList.add(Constants.kTAB_STATE_FAVICONIZED);
+      Tabs.addState(item, Constants.kTAB_STATE_FAVICONIZED);
     else
-      item.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
+      Tabs.removeState(item, Constants.kTAB_STATE_FAVICONIZED);
 
     if (row == maxRow - 1)
-      item.classList.add(Constants.kTAB_STATE_LAST_ROW);
+      Tabs.addState(item, Constants.kTAB_STATE_LAST_ROW);
     else
-      item.classList.remove(Constants.kTAB_STATE_LAST_ROW);
+      Tabs.removeState(item, Constants.kTAB_STATE_LAST_ROW);
 
     style.bottom = 'auto';
     style.left   = `${width * col}px`;
@@ -105,7 +105,7 @@ export function reposition(options = {}) {
     style.top    = `${height * row}px`;
 
     if (options.justNow)
-      item.classList.add(Constants.kTAB_STATE_ANIMATION_READY);
+      Tabs.addState(item, Constants.kTAB_STATE_ANIMATION_READY);
 
     /*
     log('pinned tab: ', {
@@ -141,8 +141,8 @@ function reset() {
 }
 
 function clearStyle(tab) {
-  tab.classList.remove(Constants.kTAB_STATE_FAVICONIZED);
-  tab.classList.remove(Constants.kTAB_STATE_LAST_ROW);
+  Tabs.removeState(tab, Constants.kTAB_STATE_FAVICONIZED);
+  Tabs.removeState(tab, Constants.kTAB_STATE_LAST_ROW);
   const style = tab.style;
   style.left = style.right = style.top = style.bottom;
 }

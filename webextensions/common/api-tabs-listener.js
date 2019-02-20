@@ -364,7 +364,7 @@ async function onNewTabTracked(tab) {
 
   try {
     const newTab = Tabs.buildTab(tab, { inRemote: !!targetWindow });
-    newTab.classList.add(Constants.kTAB_STATE_OPENING);
+    Tabs.addState(newTab, Constants.kTAB_STATE_OPENING);
 
     // New tab's index can become invalid because the value of "index" is same to
     // the one given to browser.tabs.create() instead of actual index.
@@ -494,13 +494,13 @@ async function onNewTabTracked(tab) {
       treeForActionDetection
     });
     wait(configs.newTabAnimationDuration).then(() => {
-      newTab.classList.remove(Constants.kTAB_STATE_OPENING);
+      Tabs.removeState(newTab, Constants.kTAB_STATE_OPENING);
     });
     Tabs.resolveOpened(newTab);
 
     if (!duplicated &&
         restored) {
-      newTab.classList.add(Constants.kTAB_STATE_RESTORED);
+      Tabs.addState(newTab, Constants.kTAB_STATE_RESTORED);
       Tabs.onRestored.dispatch(newTab);
       checkRecycledTab(container);
     }
@@ -563,10 +563,10 @@ function checkRecycledTab(container) {
       if (!Tabs.ensureLivingTab(tab) ||
           !uniqueId.restored ||
           uniqueId.id == currentId ||
-          tab.classList.contains(Constants.kTAB_STATE_RESTORED))
+          Tabs.hasState(tab, Constants.kTAB_STATE_RESTORED))
         return;
       log('A recycled tab is detected: ', dumpTab(tab));
-      tab.classList.add(Constants.kTAB_STATE_RESTORED);
+      Tabs.addState(tab, Constants.kTAB_STATE_RESTORED);
       Tabs.onRestored.dispatch(tab);
     });
   }
@@ -619,8 +619,7 @@ async function onRemoved(tabId, removeInfo) {
     // We need to clear them by onRemoved handlers.
     const oldChildren = Tabs.getChildTabs(oldTab);
     const oldParent   = Tabs.getParentTab(oldTab);
-    oldTab[Constants.kTAB_STATE_REMOVING] = true;
-    oldTab.classList.add(Constants.kTAB_STATE_REMOVING);
+    Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
 
     reindexFollowingTabs(Tabs.getNextTab(oldTab), oldTab.apiTab.index);
 
