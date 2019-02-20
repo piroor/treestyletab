@@ -379,9 +379,9 @@ async function updateSubtreeCollapsed(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
   if (Tabs.isSubtreeCollapsed(tab))
-    Tabs.addStatePermanently(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
   else
-    Tabs.removeStatePermanently(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
 }
 
 export async function confirmToCloseTabs(apiTabIds, options = {}) {
@@ -466,7 +466,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
         url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
       if (shorthand == 'group')
-        Tabs.addStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
+        Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
     });
   }
 

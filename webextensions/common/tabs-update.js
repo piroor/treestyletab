@@ -59,7 +59,7 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-    Tabs.addStatePermanently(tab, Constants.kTAB_STATE_GROUP_TAB);
+    Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
     Tabs.onGroupTabDetected.dispatch(tab);
   }
 
@@ -74,13 +74,13 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (options.forceApply && tab.apiTab) {
       Tabs.getPermanentStates(tab).then(states => {
         if (states.includes(Constants.kTAB_STATE_UNREAD))
-          Tabs.addStatePermanently(tab, Constants.kTAB_STATE_UNREAD);
+          Tabs.addState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
         else
-          Tabs.addStatePermanently(tab, Constants.kTAB_STATE_UNREAD);
+          Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
       });
     }
     else if (!Tabs.isActive(tab) && tab.apiTab) {
-      Tabs.addStatePermanently(tab, Constants.kTAB_STATE_UNREAD);
+      Tabs.addState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
     }
     Tabs.getTabLabelContent(tab).textContent = newState.title;
     tab.dataset.label = visibleLabel;

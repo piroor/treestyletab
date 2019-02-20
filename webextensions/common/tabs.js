@@ -1286,7 +1286,7 @@ export function fetchClosedWhileActiveResolver(tab) {
 // Tab State
 //===================================================================
 
-export function addState(tab, state, options = {}) {
+export async function addState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.add(state);
@@ -1296,9 +1296,16 @@ export function addState(tab, state, options = {}) {
     broadcastState(tab, {
       add: [state]
     });
+  if (options.permanently) {
+    const states = await getPermanentStates(tab);
+    if (!states.includes(state)) {
+      states.push(state);
+      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+    }
+  }
 }
 
-export function removeState(tab, state, options = {}) {
+export async function removeState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.remove(state);
@@ -1308,6 +1315,14 @@ export function removeState(tab, state, options = {}) {
     broadcastState(tab, {
       remove: [state]
     });
+  if (options.permanently) {
+    const states = await getPermanentStates(tab);
+    const index = states.indexOf(state);
+    if (index > -1) {
+      states.splice(index, 1);
+      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+    }
+  }
 }
 
 export function hasState(tab, state, options = {}) {
@@ -1335,27 +1350,6 @@ export function broadcastState(tabs, options = {}) {
 export async function getPermanentStates(tab) {
   const states = await browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
   return states || [];
-}
-
-export async function addStatePermanently(tab, state) {
-  const states = await getPermanentStates(tab);
-  if (states.includes(state))
-    return states;
-  states.push(state);
-  addState(tab, state);
-  await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
-  return states;
-}
-
-export async function removeStatePermanently(tab, state) {
-  const states = await getPermanentStates(tab);
-  const index = states.indexOf(state);
-  if (index < 0)
-    return states;
-  states.splice(index, 1);
-  removeState(tab, state);
-  await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
-  return states;
 }
 
 
