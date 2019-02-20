@@ -451,6 +451,7 @@ browser.windows.onRemoved.addListener(windowId => {
 
 export function buildTab(apiTab, options = {}) {
   log('build tab for ', apiTab);
+  apiTab.$TSTStates = apiTab.$TSTStates || {};
   const tab = document.createElement('li');
   tab.apiTab = apiTab;
   tab.setAttribute('id', makeTabId(apiTab));
