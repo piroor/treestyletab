@@ -1300,7 +1300,7 @@ export async function addState(tab, state, options = {}) {
     const states = await getPermanentStates(tab);
     if (!states.includes(state)) {
       states.push(state);
-      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_STATES, states);
     }
   }
 }
@@ -1320,7 +1320,7 @@ export async function removeState(tab, state, options = {}) {
     const index = states.indexOf(state);
     if (index > -1) {
       states.splice(index, 1);
-      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES, states);
+      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_STATES, states);
     }
   }
 }
@@ -1348,7 +1348,7 @@ export function broadcastState(tabs, options = {}) {
 }
 
 export async function getPermanentStates(tab) {
-  const states = await browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SPECIAL_TAB_STATES);
+  const states = await browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_STATES);
   return states || [];
 }
 
