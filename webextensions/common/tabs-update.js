@@ -54,7 +54,7 @@ function log(...args) {
 
 export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState) {
-    tab.setAttribute(Constants.kCURRENT_URI, newState.url);
+    Tabs.setAttribute(tab, Constants.kCURRENT_URI, newState.url);
   }
 
   if ('url' in newState &&

@@ -65,6 +65,7 @@ export const highlightedTabsForWindow = new Map();
 
 export function track(apiTab) {
   apiTab.$TSTStates = {};
+  apiTab.$TSTAttributes = {};
   trackedTabs.set(apiTab.id, apiTab);
   let window = trackedWindows.get(apiTab.windowId);
   if (!window) {
@@ -452,6 +453,7 @@ browser.windows.onRemoved.addListener(windowId => {
 export function buildTab(apiTab, options = {}) {
   log('build tab for ', apiTab);
   apiTab.$TSTStates = apiTab.$TSTStates || {};
+  apiTab.$TSTAttributes = apiTab.$TSTAttributes || {};
   const tab = document.createElement('li');
   tab.apiTab = apiTab;
   tab.setAttribute('id', makeTabId(apiTab));
@@ -1429,6 +1431,22 @@ export function broadcastState(tabs, options = {}) {
 export async function getPermanentStates(tab) {
   const states = await browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_STATES);
   return states || [];
+}
+
+export async function setAttribute(tab, attribute, value) {
+  if (!tab)
+    return;
+  tab.setAttribute(attribute, value);
+  if (tab.apiTab)
+    tab.apiTab.$TSTAttributes[attribute] = value;
+}
+
+export async function removeAttribute(tab, attribute) {
+  if (!tab)
+    return;
+  tab.removeAttribute(attribute);
+  if (tab.apiTab)
+    delete tab.apiTab.$TSTAttributes[attribute];
 }
 
 
