@@ -34,7 +34,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
   const opener = Tabs.getOpenerTab(tab);
   if (opener)
     opener.uniqueId.then(uniqueId => {
-      tab.dataset.originalOpenerTabId = uniqueId.id;
+      Tabs.setAttribute(tab, 'data-original-opener-tab-id', uniqueId.id);
     });
 
   if (!opener) {

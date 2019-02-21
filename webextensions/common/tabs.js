@@ -673,12 +673,6 @@ export function buildTab(apiTab, options = {}) {
 // Get Tabs
 //===================================================================
 
-export const kSELECTOR_LIVE_TAB         = `li.tab:not(.${Constants.kTAB_STATE_REMOVING})`;
-export const kSELECTOR_NORMAL_TAB       = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_HIDDEN}):not(.${Constants.kTAB_STATE_PINNED})`;
-export const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}):not(.${Constants.kTAB_STATE_HIDDEN})`;
-export const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_HIDDEN})`;
-export const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_PINNED}`;
-
 // basics
 function assertValidHint(hint) {
   if (!hint)
@@ -718,7 +712,10 @@ export function getTabFromChild(node, options = {}) {
     return null;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  return node && node.closest(options.force ? '.tab' : kSELECTOR_LIVE_TAB);
+  const tab = node.closest('.tab');
+  if (options.force)
+    return tab;
+  return ensureLivingTab(tab);
 }
 
 export function getTabById(idOrInfo) {
@@ -788,26 +785,26 @@ export function getNextTab(tab) {
   if (!tab || !tab.id)
     return null;
   assertValidHint(tab);
-  let next = tab;
-  while ((next = next.nextElementSibling)) {
-    if (next.matches(kSELECTOR_LIVE_TAB))
-      return next;
-  }
-  return null;
-  // don't use '~' selector, it is too slow...
-  //return document.querySelector(`#${tab.id} ~ ${kSELECTOR_LIVE_TAB}`);
+  return queryTab({
+    windowId: tab.apiTab.windowId,
+    living:   true,
+    index:    (index => tab.apiTab.index < index),
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getPreviousTab(tab) {
   if (!tab || !tab.id)
     return null;
   assertValidHint(tab);
-  let previous = tab;
-  while ((previous = previous.previousElementSibling)) {
-    if (previous.matches(kSELECTOR_LIVE_TAB))
-      return previous;
-  }
-  return null;
+  return queryTab({
+    windowId: tab.apiTab.windowId,
+    living:   true,
+    index:    (index => tab.apiTab.index < index),
+    last:     true,
+    element:  true
+  });
 }
 
 export function getFirstTab(hint) {
@@ -879,26 +876,26 @@ export function getNextNormalTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  let next = tab;
-  while ((next = next.nextElementSibling)) {
-    if (next.matches(kSELECTOR_NORMAL_TAB))
-      return next;
-  }
-  return null;
-  // don't use '~' selector, it is too slow...
-  //return document.querySelector(`#${tab.id} ~ ${kSELECTOR_NORMAL_TAB}`);
+  return queryTab({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    index:    (index => tab.apiTab.index < index),
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getPreviousNormalTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  let previous = tab;
-  while ((previous = previous.previousElementSibling)) {
-    if (previous.matches(kSELECTOR_NORMAL_TAB))
-      return previous;
-  }
-  return null;
+  return queryTab({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    index:    (index => tab.apiTab.index < index),
+    last:     true,
+    element:  true
+  });
 }
 
 
@@ -1348,26 +1345,26 @@ export function getNextVisibleTab(tab) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  let next = tab;
-  while ((next = next.nextElementSibling)) {
-    if (next.matches(kSELECTOR_VISIBLE_TAB))
-      return next;
-  }
-  return null;
-  // don't use '~' selector, it is too slow...
-  //return document.querySelector(`#${tab.id} ~ ${kSELECTOR_VISIBLE_TAB}`);
+  return queryTab({
+    windowId: tab.apiTab.windowId,
+    visible:  true,
+    index:    (index => tab.apiTab.index < index),
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getPreviousVisibleTab(tab) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  let previous = tab;
-  while ((previous = previous.previousElementSibling)) {
-    if (previous.matches(kSELECTOR_VISIBLE_TAB))
-      return previous;
-  }
-  return null;
+  return queryTab({
+    windowId: tab.apiTab.windowId,
+    visible:  true,
+    index:    (index => tab.apiTab.index < index),
+    last:     true,
+    element:  true
+  });
 }
 
 /*
@@ -1583,7 +1580,7 @@ export function isMultiselected(tab) {
 }
 
 export function isMultihighlighted(tab) {
-  return tab.parentNode.matches(`.${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED}`);
+  return tab.parentNode.classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
 }
 
 export function isLocked(_aTab) {

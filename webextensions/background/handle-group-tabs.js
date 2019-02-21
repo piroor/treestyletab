@@ -434,7 +434,15 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
             Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         // If there is not-yet grouped sibling, place next to it.
-        const siblings = tab.parentNode.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}[data-original-opener-tab-id="${tab.dataset.originalOpenerTabId}"]:not([data-already-grouped-for-pinned-opener])`);
+        const siblings = Tabs.queryTabs({
+          windowId:   tab.parentNode.windowId,
+          normal:     true,
+          attributes: [
+            'data-original-opener-tab-id', tab.dataset.originalOpenerTabId,
+            'data-already-grouped-for-pinned-opener', ''
+          ],
+          element:    true
+        });
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
         await Tree.moveTabSubtreeAfter(tab, Tabs.getLastDescendantTab(referenceTab) || referenceTab, {
           broadcast: true
@@ -477,7 +485,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     }
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
-      child.dataset.alreadyGroupedForPinnedOpener = true;
+      Tabs.setAttribute(child, 'data-already-grouped-for-pinned-opener', true);
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
         insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tabs.getLastDescendantTab(parent),

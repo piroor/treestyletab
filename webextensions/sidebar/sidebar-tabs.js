@@ -226,7 +226,12 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  if (document.querySelector(`#tabbar ${Tabs.kSELECTOR_VISIBLE_TAB}.loading`))
+  const loadingTab = Tabs.queryTab({
+    windowId: Tabs.getWindow(),
+    visible:  true,
+    status:   'loading'
+  });
+  if (loadingTab)
     document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
   else
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
