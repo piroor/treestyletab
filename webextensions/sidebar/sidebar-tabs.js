@@ -182,17 +182,17 @@ restored = <%restored%>
 tabId = ${tab.apiTab.id}
 windowId = ${tab.apiTab.windowId}
 `.trim();
-    tab.setAttribute('title', tab.dataset.label);
+    Tabs.setAttribute(tab, 'title', tab.dataset.label);
     tab.uniqueId.then(uniqueId => {
       if (!Tabs.ensureLivingTab(tab))
         return;
-      tab.setAttribute('title',
-                       tab.dataset.label = tab.dataset.label
-                         .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
-                         .replace(`<%originalId%>`, uniqueId.originalId)
-                         .replace(`<%originalTabId%>`, uniqueId.originalTabId)
-                         .replace(`<%duplicated%>`, !!uniqueId.duplicated)
-                         .replace(`<%restored%>`, !!uniqueId.restored));
+      Tabs.setAttribute(tab, 'title',
+                        tab.dataset.label = tab.dataset.label
+                          .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
+                          .replace(`<%originalId%>`, uniqueId.originalId)
+                          .replace(`<%originalTabId%>`, uniqueId.originalTabId)
+                          .replace(`<%duplicated%>`, !!uniqueId.duplicated)
+                          .replace(`<%restored%>`, !!uniqueId.restored));
     });
     return;
   }
@@ -200,16 +200,16 @@ windowId = ${tab.apiTab.windowId}
   if (configs.showCollapsedDescendantsByTooltip &&
       Tabs.isSubtreeCollapsed(tab) &&
       Tabs.hasChildTabs(tab)) {
-    tab.setAttribute('title', tab.dataset.labelWithDescendants);
+    Tabs.setAttribute(tab, 'title', tab.dataset.labelWithDescendants);
     return;
   }
 
   const label = Tabs.getTabLabel(tab);
   if (Tabs.isPinned(tab) || label.classList.contains('overflow')) {
-    tab.setAttribute('title', tab.dataset.label);
+    Tabs.setAttribute(tab, 'title', tab.dataset.label);
   }
   else {
-    tab.removeAttribute('title');
+    Tabs.removeAttribute(tab, 'title');
   }
 }
 

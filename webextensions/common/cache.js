@@ -156,8 +156,8 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
     apiTab.$TSTAttributes = apiTab.$TSTAttributes || {};
     apiTab.$TSTElement = tab;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
-    tab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);
-    tab.setAttribute(Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
+    Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, apiTab.id || -1);
+    Tabs.setAttribute(tab, Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
     idMap[oldId] = tab;
   });
   // step 2: restore information of tabs
@@ -202,17 +202,17 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
     .map(oldId => idMap[oldId])
     .filter(tab => !!tab);
   if (tab.childTabs.length > 0)
-    tab.setAttribute(Constants.kCHILDREN, `|${tab.childTabs.map(tab => tab.id).join('|')}|`);
+    Tabs.setAttribute(tab, Constants.kCHILDREN, `|${tab.childTabs.map(tab => tab.id).join('|')}|`);
   else
-    tab.removeAttribute(Constants.kCHILDREN);
+    Tabs.removeAttribute(tab, Constants.kCHILDREN);
   log('fixupTabRestoredFromCache children: => ', tab.getAttribute(Constants.kCHILDREN));
 
   log('fixupTabRestoredFromCache parent: ', tab.getAttribute(Constants.kPARENT));
   tab.parentTab = idMap[tab.getAttribute(Constants.kPARENT)] || null;
   if (tab.parentTab)
-    tab.setAttribute(Constants.kPARENT, tab.parentTab.id);
+    Tabs.setAttribute(tab, Constants.kPARENT, tab.parentTab.id);
   else
-    tab.removeAttribute(Constants.kPARENT);
+    Tabs.removeAttribute(tab, Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.getAttribute(Constants.kPARENT));
   tab.ancestorTabs = Tabs.getAncestorTabs(tab, { force: true });
 }

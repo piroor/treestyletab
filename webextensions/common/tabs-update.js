@@ -130,7 +130,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       newState.pinned != Tabs.hasState(tab, Constants.kTAB_STATE_PINNED)) {
     if (newState.pinned) {
       Tabs.addState(tab, Constants.kTAB_STATE_PINNED);
-      tab.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
+      Tabs.removeAttribute(tab, Constants.kLEVEL); // don't indent pinned tabs!
       Tabs.onPinned.dispatch(tab);
     }
     else {

@@ -185,10 +185,10 @@ export async function attachTabTo(child, parent, options = {}) {
     }));
 
     log('attachTabTo: setting child information: ', dumpTab(parent));
-    parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
+    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
 
     log('attachTabTo: setting parent information: ', dumpTab(child));
-    child.setAttribute(Constants.kPARENT, parent.id);
+    Tabs.setAttribute(child, Constants.kPARENT, parent.id);
     child.parentTab = parent;
     child.ancestorTabs = Tabs.getAncestorTabs(child, { force: true });
 
@@ -317,16 +317,16 @@ export function detachTab(child, options = {}) {
     parent.childTabs = parent.childTabs.filter(tab => tab != child);
     const childIds = parent.childTabs.map(tab => tab.id);
     if (childIds.length == 0) {
-      parent.removeAttribute(Constants.kCHILDREN);
+      Tabs.removeAttribute(parent, Constants.kCHILDREN);
       log(' => no more child');
     }
     else {
-      parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
+      Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
       log(' => rest children: ', childIds);
     }
     TabsUpdate.updateParentTab(parent);
   }
-  child.removeAttribute(Constants.kPARENT);
+  Tabs.removeAttribute(child, Constants.kPARENT);
   child.parentTab = null;
   child.ancestorTabs = [];
   log('detachTab: parent information cleared: ', dumpTab(child));
@@ -601,7 +601,7 @@ function updateTabsIndent(tabs, level = undefined) {
       continue;
 
     onLevelChanged.dispatch(item);
-    item.setAttribute(Constants.kLEVEL, level);
+    Tabs.setAttribute(item, Constants.kLEVEL, level);
     updateTabsIndent(Tabs.getChildTabs(item), level + 1);
   }
 }

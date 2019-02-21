@@ -305,7 +305,7 @@ export function updateUniqueId(tab) {
     inRemote: !!mTargetWindow
   }).then(uniqueId => {
     if (uniqueId && ensureLivingTab(tab)) // possibly removed from document while waiting
-      tab.setAttribute(Constants.kPERSISTENT_ID, uniqueId.id);
+      setAttribute(tab, Constants.kPERSISTENT_ID, uniqueId.id);
     return uniqueId || {};
   }).catch(error => {
     console.log(`FATAL ERROR: Failed to get unique id for a tab ${tab.apiTab.id}: `, String(error), error.stack);
@@ -513,10 +513,10 @@ export function buildTab(apiTab, options = {}) {
   const tab = document.createElement('li');
   apiTab.$TSTElement = tab;
   tab.apiTab = apiTab;
-  tab.setAttribute('id', makeTabId(apiTab));
-  tab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);
-  tab.setAttribute(Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
-  //tab.setAttribute(Constants.kCHILDREN, '');
+  setAttribute(tab, 'id', makeTabId(apiTab));
+  setAttribute(tab, Constants.kAPI_TAB_ID, apiTab.id || -1);
+  setAttribute(tab, Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
+  //setAttribute(tab, Constants.kCHILDREN, '');
   tab.classList.add('tab');
   if (apiTab.active)
     addState(tab, Constants.kTAB_STATE_ACTIVE);

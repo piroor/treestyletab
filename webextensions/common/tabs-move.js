@@ -170,7 +170,7 @@ function syncOrderOfChildTabs(parentTabs) {
       };
     }).sort((aA, aB) => aA.index - aB.index).map(item => item.tab);
     const childIds = parent.childTabs.map(tab => tab.id);
-    parent.setAttribute(Constants.kCHILDREN, `|${childIds.join('|')}|`);
+    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
     log('updateChildTabsInfo: ', childIds);
   }
   updatedParentTabs = undefined;
