@@ -137,6 +137,62 @@ function isTracked(apiTabId) {
 }
 
 
+const MATCHING_ATTRIBUTES = `
+windowId
+active
+url
+`.trim().split(/\s+/);
+
+export function queryTabs(conditions) {
+  const tabs = [];
+  TAB_MACHING:
+  for (const tab of trackedTabs.values()) {
+    for (const attribute of MATCHING_ATTRIBUTES) {
+      if (attribute in conditions &&
+          !matched(tab[attribute], conditions[attribute]))
+        continue TAB_MACHING;
+    }
+    if ('states' in conditions && tab.$TSTStates) {
+      for (let i = 0, maxi = conditions.states.length; i < maxi; i += 2) {
+        const state   = conditions.states[i];
+        const pattern = conditions.states[i+1];
+        if (!matched(tab.$TSTStates[state], pattern))
+          continue TAB_MACHING;
+      }
+    }
+    if ('attributes' in conditions && tab.$TSTAttributes) {
+      for (let i = 0, maxi = conditions.attributes.length; i < maxi; i += 2) {
+        const attribute = conditions.attributes[i];
+        const pattern   = conditions.attributes[i+1];
+        if (!matched(tab.$TSTAttributes[attribute], pattern))
+          continue TAB_MACHING;
+      }
+    }
+    tabs.push(tab);
+  }
+  return tabs;
+}
+
+function matched(value, pattern) {
+  if ((typeof pattern == 'string' ||
+       typeof pattern == 'number' ||
+       typeof pattern == 'boolean') &&
+      value != pattern)
+    return false;
+  if (Array.isArray(pattern) &&
+      !pattern.includes(value))
+    return false;
+  if (pattern instanceof RegExp &&
+      !pattern.test(value))
+    return false;
+  return true;
+}
+
+export function queryTabElements(conditions) {
+  return queryTabs(conditions).map(tab => tab.$TSTElement);
+}
+
+
 //===================================================================
 // Tab Related Utilities
 //===================================================================
