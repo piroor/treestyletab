@@ -72,16 +72,28 @@ export function track(apiTab) {
     window = {
       id:    apiTab.windowId,
       tabs:  new Map(),
-      get orderedTabs() {
+      getOrderedTabs(startId) {
+        let order = this.order;
+        if (startId) {
+          if (!this.tabs.has(startId))
+            return [];
+          order = order.slice(order.indexOf(startId));
+        }
         return (function*() {
-          for (const id of this.order) {
+          for (const id of order) {
             yield this.tabs.get(id);
           }
         }).call(this);
       },
-      get reversedOrderedTabs() {
+      getReversedOrderedTabs(startId) {
+        let order = this.order.slice(0).reverse();
+        if (startId) {
+          if (!this.tabs.has(startId))
+            return [];
+          order = order.slice(order.indexOf(startId));
+        }
         return (function*() {
-          for (const id of this.order.slice(0).reverse()) {
+          for (const id of order) {
             yield this.tabs.get(id);
           }
         }).call(this);
@@ -186,8 +198,8 @@ export function queryTabs(conditions) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
       const tabsIterator = !conditions.orderd ? window.tabs.values() :
-        conditions.last ? window.reversedOrderedTabs :
-          window.orderedTabs;
+        conditions.last ? window.getReversedOrderedTabs(conditions.fromId) :
+          window.getOrderedTabs(conditions.fromId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
     }
     return tabs;
@@ -291,8 +303,8 @@ export function queryTab(conditions) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
       const tabsIterator = !conditions.orderd ? window.tabs.values() :
-        conditions.last ? window.reversedOrderedTabs :
-          window.orderedTabs;
+        conditions.last ? window.getReversedOrderedTabs(conditions.fromId) :
+          window.getOrderedTabs(conditions.fromId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
       if (tabs.length > 0)
         break;
@@ -787,6 +799,7 @@ export function getNextTab(tab) {
   assertValidHint(tab);
   return queryTab({
     windowId: tab.apiTab.windowId,
+    fromId:   tab.apiTab.id,
     living:   true,
     index:    (index => tab.apiTab.index < index),
     ordered:  true,
@@ -800,8 +813,9 @@ export function getPreviousTab(tab) {
   assertValidHint(tab);
   return queryTab({
     windowId: tab.apiTab.windowId,
+    fromId:   tab.apiTab.id,
     living:   true,
-    index:    (index => tab.apiTab.index < index),
+    index:    (index => tab.apiTab.index > index),
     last:     true,
     element:  true
   });
@@ -878,6 +892,7 @@ export function getNextNormalTab(tab) {
   assertValidHint(tab);
   return queryTab({
     windowId: tab.apiTab.windowId,
+    fromId:   tab.apiTab.id,
     normal:   true,
     index:    (index => tab.apiTab.index < index),
     ordered:  true,
@@ -891,8 +906,9 @@ export function getPreviousNormalTab(tab) {
   assertValidHint(tab);
   return queryTab({
     windowId: tab.apiTab.windowId,
+    fromId:   tab.apiTab.id,
     normal:   true,
-    index:    (index => tab.apiTab.index < index),
+    index:    (index => tab.apiTab.index > index),
     last:     true,
     element:  true
   });
@@ -1347,6 +1363,7 @@ export function getNextVisibleTab(tab) { // visible, not-collapsed
   assertValidHint(tab);
   return queryTab({
     windowId: tab.apiTab.windowId,
+    fromId:   tab.apiTab.id,
     visible:  true,
     index:    (index => tab.apiTab.index < index),
     ordered:  true,
@@ -1360,8 +1377,9 @@ export function getPreviousVisibleTab(tab) { // visible, not-collapsed
   assertValidHint(tab);
   return queryTab({
     windowId: tab.apiTab.windowId,
+    fromId:   tab.apiTab.id,
     visible:  true,
-    index:    (index => tab.apiTab.index < index),
+    index:    (index => tab.apiTab.index > index),
     last:     true,
     element:  true
   });
