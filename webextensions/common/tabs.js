@@ -725,15 +725,17 @@ export function getTabById(idOrInfo) {
   if (!idOrInfo)
     return null;
 
-  if (idOrInfo.nodeType == Node.ELEMENT_NODE) // tab element itself
+  if (idOrInfo instanceof Element)
     return idOrInfo;
 
   if (typeof idOrInfo == 'string') { // tab-x-x
-    const tab = document.getElementById(idOrInfo);
-    if (tab)
-      return tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
-    else // possible unique id
-      return getTabByUniqueId(idOrInfo);
+    const matched = idOrInfo.match(/^tab-(\d+)-(\d+)$/);
+    if (matched) {
+      const tab = trackedTabs.get(parseInt(matched[2]));
+      return ensureLivingTab(tab) && tab.windowId == matched[1] && tab.$TSTElement;
+    }
+    // possible unique id
+    return getTabByUniqueId(idOrInfo);
   }
 
   if (typeof idOrInfo == 'number') { // tabs.Tab.id
@@ -742,16 +744,16 @@ export function getTabById(idOrInfo) {
   }
 
   if (idOrInfo.id && idOrInfo.windowId) { // tabs.Tab
-    const tab = document.getElementById(makeTabId(idOrInfo));
-    return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
+    const tab = trackedTabs.get(idOrInfo.id);
+    return ensureLivingTab(tab) && tab.windowId == idOrInfo.windowId && tab.$TSTElement;
   }
   else if (!idOrInfo.window) { // { tab: tabs.Tab.id }
     const tab = trackedTabs.get(idOrInfo.tab);
     return ensureLivingTab(tab) && tab.$TSTElement;
   }
   else { // { tab: tabs.Tab.id, window: windows.Window.id }
-    const tab = document.getElementById(`tab-${idOrInfo.window}-${idOrInfo.tab}`);
-    return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
+    const tab = trackedTabs.get(idOrInfo.tab);
+    return ensureLivingTab(tab) && tab.windowId == idOrInfo.window && tab.$TSTElement;
   }
 
   return null;
