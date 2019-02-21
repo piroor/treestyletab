@@ -1290,7 +1290,7 @@ export function getSelectedTabs(hint) {
     ordered:  true,
     element:  true
   });
-  if (!container.classList.has(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED))
+  if (!container.classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED))
     return selectedTabs;
 
   const highlightedTabs = queryTabs({
