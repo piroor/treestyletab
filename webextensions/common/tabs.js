@@ -38,7 +38,6 @@
  * ***** END LICENSE BLOCK ******/
 'use strict';
 
-import * as XPath from './xpath.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import {
@@ -265,6 +264,9 @@ function matched(value, pattern) {
     return false;
   if (Array.isArray(pattern) &&
       !pattern.includes(value))
+    return false;
+  if (typeof pattern == 'function' &&
+      !pattern(value))
     return false;
   if ((typeof pattern == 'string' ||
        typeof pattern == 'number' ||
@@ -672,12 +674,6 @@ export const kSELECTOR_NORMAL_TAB       = `${kSELECTOR_LIVE_TAB}:not(.${Constant
 export const kSELECTOR_VISIBLE_TAB      = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}):not(.${Constants.kTAB_STATE_HIDDEN})`;
 export const kSELECTOR_CONTROLLABLE_TAB = `${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_HIDDEN})`;
 export const kSELECTOR_PINNED_TAB       = `${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_PINNED}`;
-
-export const kXPATH_LIVE_TAB         = `li[${XPath.hasClass('tab')}][not(${XPath.hasClass(Constants.kTAB_STATE_REMOVING)})]`;
-//const kXPATH_NORMAL_TAB       = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})][not(${XPath.hasClass(Constants.kTAB_STATE_PINNED)})]`;
-//const kXPATH_VISIBLE_TAB      = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_COLLAPSED)})][not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
-//const kXPATH_CONTROLLABLE_TAB = `${kXPATH_LIVE_TAB}[not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})]`;
-//const kXPATH_PINNED_TAB       = `${kXPATH_LIVE_TAB}[${XPath.hasClass(Constants.kTAB_STATE_PINNED)}]`;
 
 // basics
 function assertValidHint(hint) {
@@ -1373,11 +1369,13 @@ function getVisibleIndex(tab) {
   if (!ensureLivingTab(tab))
     return -1;
   assertValidHint(tab);
-  return XPath.evaluate(
-    `count(preceding-sibling::${kXPATH_VISIBLE_TAB})`,
-    tab,
-    XPathResult.NUMBER_TYPE
-  ).numberValue;
+  const container = getTabsContainer(hint);
+  return Tabs.queryTabs({
+    windowId: container.windowId,
+    visible:  true,
+    index:    (index => tab.apiTab.index < index),
+    ordered:  true
+  ]).length;
 }
 */
 

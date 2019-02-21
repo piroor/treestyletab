@@ -47,7 +47,6 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
-import * as XPath from './xpath.js';
 import * as ApiTabs from './api-tabs.js';
 import * as SidebarStatus from './sidebar-status.js';
 import * as Tabs from './tabs.js';
@@ -786,30 +785,29 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   }
   container.doingIntelligentlyCollapseExpandCount++;
 
-  const expandedAncestors = `<${[tab].concat(Tabs.getAncestorTabs(tab))
-    .map(ancestor => ancestor.id)
-    .join('><')}>`;
-
-  const xpathResult = XPath.evaluate(
-    `child::${Tabs.kXPATH_LIVE_TAB}[
-       @${Constants.kCHILDREN} and
-       not(${XPath.hasClass(Constants.kTAB_STATE_COLLAPSED)}) and
-       not(${XPath.hasClass(Constants.kTAB_STATE_SUBTREE_COLLAPSED)}) and
-       not(contains("${expandedAncestors}", concat("<", @id, ">"))) and
-       not(${XPath.hasClass(Constants.kTAB_STATE_HIDDEN)})
-     ]`,
-    container
-  );
-  logCollapseExpand(`${xpathResult.snapshotLength} tabs can be collapsed`);
-  for (let i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++) {
+  const expandedAncestors = Tabs.getAncestorTabs(tab).map(ancestor => ancestor.id);
+  const collapseTabs = Tabs.queryTabs({
+    windowId:   container.windowId,
+    living:     true,
+    hidden:     false,
+    '!id':      expandedAncestors,
+    states:     [
+      Constants.kTAB_STATE_COLLAPSED,         false,
+      Constants.kTAB_STATE_SUBTREE_COLLAPSED, false
+    ],
+    attributes: [Constants.kCHILDREN, /./],
+    ordered:    true,
+    element:    true
+  });
+  logCollapseExpand(`${collapseTabs.length} tabs can be collapsed`);
+  for (const collapseTab of collapseTabs) {
     let dontCollapse = false;
-    const collapseTab  = xpathResult.snapshotItem(i);
-    const parentTab    = Tabs.getParentTab(collapseTab);
+    const parentTab = Tabs.getParentTab(collapseTab);
     if (parentTab) {
       dontCollapse = true;
       if (!Tabs.isSubtreeCollapsed(parentTab)) {
         for (const ancestor of Tabs.getAncestorTabs(collapseTab)) {
-          if (!expandedAncestors.includes(`<${ancestor.id}>`))
+          if (!expandedAncestors.includes(ancestor.id))
             continue;
           dontCollapse = false;
           break;

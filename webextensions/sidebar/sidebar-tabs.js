@@ -233,7 +233,12 @@ function updateLoadingState() {
 }
 
 async function synchronizeThrobberAnimation() {
-  const toBeSynchronizedTabs = document.querySelectorAll(`${Tabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
+  const toBeSynchronizedTabs = Tabs.queryTabs({
+    windowId: Tabs.getWindow(),
+    visible:  true,
+    states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true],
+    element:  true
+  });
   if (toBeSynchronizedTabs.length == 0)
     return;
 

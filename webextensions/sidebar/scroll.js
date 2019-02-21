@@ -332,10 +332,40 @@ export async function scrollToTab(tab, options = {}) {
 scrollToTab.lastTargetId = null;
 
 function getOffsetForAnimatingTab(tab) {
-  const allExpanding        = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
-  const followingExpanding  = document.querySelectorAll(`#${tab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
-  const allCollapsing       = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
-  const followingCollapsing = document.querySelectorAll(`#${tab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
+  const allExpanding = Tabs.queryTabs({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED, false,
+      Constants.kTAB_STATE_EXPANDING, true
+    ]
+  });
+  const followingExpanding = Tabs.queryTabs({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    index:    (value => tab.apiTab.index < value),
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED, false,
+      Constants.kTAB_STATE_EXPANDING, true
+    ]
+  });
+  const allCollapsing = Tabs.queryTabs({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED,  true,
+      Constants.kTAB_STATE_COLLAPSING, true
+    ]
+  });
+  const followingCollapsing = Tabs.queryTabs({
+    windowId: tab.apiTab.windowId,
+    index:    (value => tab.apiTab.index < value),
+    normal:   true,
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED,  true,
+      Constants.kTAB_STATE_COLLAPSING, true
+    ]
+  });
   const numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
   return numExpandingTabs * Size.getTabHeight();
 }
