@@ -392,7 +392,6 @@ async function onNewTabTracked(tab) {
     const uniqueId = await newTab.uniqueId;
 
     tab.$TSTUniqueId = uniqueId;
-    tab.$TSTElement = newTab;
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onTabCreated(uniqueId);

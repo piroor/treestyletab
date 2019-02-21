@@ -455,6 +455,7 @@ export function buildTab(apiTab, options = {}) {
   apiTab.$TSTStates = apiTab.$TSTStates || {};
   apiTab.$TSTAttributes = apiTab.$TSTAttributes || {};
   const tab = document.createElement('li');
+  apiTab.$TSTElement = tab;
   tab.apiTab = apiTab;
   tab.setAttribute('id', makeTabId(apiTab));
   tab.setAttribute(Constants.kAPI_TAB_ID, apiTab.id || -1);
