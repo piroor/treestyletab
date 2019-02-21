@@ -250,15 +250,6 @@ export async function updateTabsHighlighted(highlightInfo) {
     element:     true
   });
 
-  /*
-  const idSelectors = [];
-  for (const id of highlightInfo.tabIds) {
-    idSelectors.push(`#tab-${highlightInfo.windowId}-${id}`);
-  }
-  const unhighlightedTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_HIGHLIGHTED}:not(:-moz-any(${idSelectors.join(', ')}))`);
-  const highlightedTabs = container.querySelectorAll(`:-moz-any(${idSelectors.join(',')}):not(.${Constants.kTAB_STATE_HIGHLIGHTED})`);
-  */
-
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
 
   //log('updateTabsHighlighted ', { highlightedTabs, unhighlightedTabs});
