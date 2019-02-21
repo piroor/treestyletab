@@ -60,6 +60,7 @@ export const allTabsContainer = document.querySelector('#all-tabs');
 
 export const trackedWindows = new Map();
 export const trackedTabs = new Map();
+export const trackedTabsByUniqueId = new Map();
 export const activeTabForWindow = new Map();
 export const highlightedTabsForWindow = new Map();
 
@@ -70,6 +71,7 @@ export function track(apiTab) {
   let window = trackedWindows.get(apiTab.windowId);
   if (!window) {
     window = {
+      id:    apiTab.windowId,
       tabs:  new Map(),
       order: []
     };
@@ -115,8 +117,10 @@ export function untrackAll(windowId) {
   if (windowId) {
     const window = trackedWindows.get(windowId);
     if (window) {
-      for (const id of window.tabs.keys()) {
-        trackedTabs.delete(id);
+      for (const tab of window.tabs.values()) {
+        trackedTabs.delete(tab.id);
+        if (tab.$TSTUniqueId)
+          trackedTabsByUniqueId.delete(tab.$TSTUniqueId.id)
       }
       window.tabs.clear();
       window.tabs = undefined;
@@ -129,6 +133,7 @@ export function untrackAll(windowId) {
   else {
     trackedWindows.clear();
     trackedTabs.clear();
+    trackedTabsByUniqueId.clear();
   }
 }
 
@@ -541,6 +546,11 @@ export function buildTab(apiTab, options = {}) {
       originalId:    null,
       originalTabId: null
     });
+
+  tab.uniqueId.then(uniqueId => {
+    if (isTracked(apiTab.id))
+      apiTab.$TSTUniqueId = uniqueId;
+  });
 
   tab.childTabs = [];
   tab.parentTab = null;
