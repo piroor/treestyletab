@@ -268,9 +268,13 @@ function matched(value, pattern) {
   if (typeof pattern == 'function' &&
       !pattern(value))
     return false;
-  if ((typeof pattern == 'string' ||
-       typeof pattern == 'number' ||
-       typeof pattern == 'boolean') &&
+  if (typeof pattern == 'boolean' &&
+      !!value !== pattern)
+    return false;
+  if (typeof pattern == 'string' &&
+      String(value || '') != pattern)
+    return false;
+  if (typeof pattern == 'number' &&
       value != pattern)
     return false;
   return true;
