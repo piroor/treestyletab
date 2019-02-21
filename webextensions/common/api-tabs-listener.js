@@ -547,7 +547,7 @@ function reindexFollowingTabs(startTab, startIndex) {
 
 // "Recycled tab" is an existing but reused tab for session restoration.
 function checkRecycledTab(container) {
-  const possibleRecycledTabs = Tabs.queryTabElements({
+  const possibleRecycledTabs = Tabs.queryTabs({
     windowId: container.windowId,
     states: [
       Constants.kTAB_STATE_RESTORED, false,
@@ -555,7 +555,8 @@ function checkRecycledTab(container) {
     ],
     attributes: [
       Constants.kCURRENT_URI, new RegExp(`^(|${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}|about:blank|about:privatebrowsing)$`)
-    ]
+    ],
+    element: true
   });
   if (possibleRecycledTabs.length == 0)
     return;

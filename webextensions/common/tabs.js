@@ -73,6 +73,20 @@ export function track(apiTab) {
     window = {
       id:    apiTab.windowId,
       tabs:  new Map(),
+      get orderedTabs() {
+        return (function*() {
+          for (const id of this.order) {
+            yield this.tabs.get(id);
+          }
+        }).call(this);
+      },
+      get reversedOrderedTabs() {
+        return (function*() {
+          for (const id of this.order.slice(0).reverse()) {
+            yield this.tabs.get(id);
+          }
+        }).call(this);
+      },
       order: []
     };
     trackedWindows.set(apiTab.windowId, window);
@@ -141,20 +155,59 @@ function isTracked(apiTabId) {
   return trackedTabs.has(apiTabId);
 }
 
+// queryings
 
 const MATCHING_ATTRIBUTES = `
-windowId
 active
+attention
+audible
+autoDiscardable
+cookieStoreId
+discarded
+favIconUrl
+hidden
+highlighted
+id
+incognito
+index
+isArticle
+isInReaderMode
+pinned
+sessionId
+status
+successorId
+title
 url
 `.trim().split(/\s+/);
 
 export function queryTabs(conditions) {
-  const tabs = [];
+  if (conditions.windowId || conditions.orderd) {
+    let tabs = [];
+    for (const window of trackedWindows.values()) {
+      if (conditions.windowId && !matched(window.id, conditions.windowId))
+        continue;
+      const tabsIterator = !conditions.orderd ? window.tabs.values() :
+        conditions.last ? window.reversedOrderedTabs :
+          window.orderedTabs;
+      tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
+    }
+    return tabs;
+  }
+  else {
+    return extractMatchedTabs(trackedTabs.values(), conditions);
+  }
+}
+
+function extractMatchedTabs(tabs, conditions) {
+  const matchedTabs = [];
   TAB_MACHING:
-  for (const tab of trackedTabs.values()) {
+  for (const tab of tabs) {
     for (const attribute of MATCHING_ATTRIBUTES) {
       if (attribute in conditions &&
           !matched(tab[attribute], conditions[attribute]))
+        continue TAB_MACHING;
+      if (`!${attribute}` in conditions &&
+          matched(tab[attribute], conditions[`!${attribute}`]))
         continue TAB_MACHING;
     }
     if ('states' in conditions && tab.$TSTStates) {
@@ -173,28 +226,76 @@ export function queryTabs(conditions) {
           continue TAB_MACHING;
       }
     }
-    tabs.push(tab);
+
+    if ((conditions.living ||
+         conditions.normal ||
+         conditions.visible ||
+         conditions.controllable ||
+         conditions.pinned) &&
+        !ensureLivingTab(tab))
+      continue TAB_MACHING;
+    if (conditions.normal &&
+        (tab.hidden ||
+         tab.pinned))
+      continue TAB_MACHING;
+    if (conditions.visible &&
+        (tab.$TSTStates[Constants.kTAB_STATE_COLLAPSED] ||
+         tab.hidden))
+      continue TAB_MACHING;
+    if (conditions.controllable &&
+        tab.hidden)
+      continue TAB_MACHING;
+
+    const extracted = conditions.element ? tab.$TSTElement : tab;
+    if (extracted) {
+      matchedTabs.push(extracted);
+      if (conditions.first || conditions.last)
+        break TAB_MACHING;
+    }
   }
-  return tabs;
+  return matchedTabs;
 }
 
 function matched(value, pattern) {
+  if (pattern instanceof RegExp &&
+      !pattern.test(String(value)))
+    return false;
+  if (pattern instanceof Set &&
+      !pattern.has(value))
+    return false;
+  if (Array.isArray(pattern) &&
+      !pattern.includes(value))
+    return false;
   if ((typeof pattern == 'string' ||
        typeof pattern == 'number' ||
        typeof pattern == 'boolean') &&
       value != pattern)
     return false;
-  if (Array.isArray(pattern) &&
-      !pattern.includes(value))
-    return false;
-  if (pattern instanceof RegExp &&
-      !pattern.test(value))
-    return false;
   return true;
 }
 
-export function queryTabElements(conditions) {
-  return queryTabs(conditions).map(tab => tab.$TSTElement);
+export function queryTab(conditions) {
+  if (conditions.last)
+    conditions.orderd = true;
+  else
+    conditions.first = true;
+  let tabs = [];
+  if (conditions.windowId || conditions.orderd) {
+    for (const window of trackedWindows.values()) {
+      if (conditions.windowId && !matched(window.id, conditions.windowId))
+        continue;
+      const tabsIterator = !conditions.orderd ? window.tabs.values() :
+        conditions.last ? window.reversedOrderedTabs :
+          window.orderedTabs;
+      tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
+      if (tabs.length > 0)
+        break;
+    }
+  }
+  else {
+    tabs = extractMatchedTabs(trackedTabs.values(), conditions);
+  }
+  return tabs.length > 0 ? tabs[0] : null ;
 }
 
 
@@ -635,15 +736,18 @@ export function getTabById(idOrInfo) {
       return getTabByUniqueId(idOrInfo);
   }
 
-  if (typeof idOrInfo == 'number') // tabs.Tab.id
-    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${idOrInfo}"]`);
+  if (typeof idOrInfo == 'number') { // tabs.Tab.id
+    const tab = trackedTabs.get(idOrInfo);
+    return ensureLivingTab(tab) && tab.$TSTElement;
+  }
 
   if (idOrInfo.id && idOrInfo.windowId) { // tabs.Tab
     const tab = document.getElementById(makeTabId(idOrInfo));
     return tab && tab.matches(kSELECTOR_LIVE_TAB) ? tab : null ;
   }
   else if (!idOrInfo.window) { // { tab: tabs.Tab.id }
-    return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kAPI_TAB_ID}="${idOrInfo.tab}"]`);
+    const tab = trackedTabs.get(idOrInfo.tab);
+    return ensureLivingTab(tab) && tab.$TSTElement;
   }
   else { // { tab: tabs.Tab.id, window: windows.Window.id }
     const tab = document.getElementById(`tab-${idOrInfo.window}-${idOrInfo.tab}`);
@@ -656,7 +760,7 @@ export function getTabById(idOrInfo) {
 export function getTabByUniqueId(id) {
   if (!id)
     return null;
-  return document.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kPERSISTENT_ID}="${id}"]`);
+  return ensureLivingTab(trackedTabsByUniqueId.get(id));
 }
 
 export function getTabLabel(tab) {
@@ -671,10 +775,11 @@ export function getTabLabelContent(tab) {
 // a new window opened by the "move tab to new window" command.
 export function getActiveTab(hint) {
   const container = getTabsContainer(hint);
-  return container && container.querySelector(`.${Constants.kTAB_STATE_ACTIVE}`);
+  const tab = container && ensureLivingTab(activeTabForWindow.get(container.windowId));
+  return tab && tab.$TSTElement;
 }
 export function getActiveTabs() {
-  return Array.from(document.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`));
+  return Array.from(activeTabForWindow.values(), tab => ensureLivingTab(tab) && tab.$TSTElement);
 }
 
 export function getNextTab(tab) {
@@ -705,23 +810,38 @@ export function getPreviousTab(tab) {
 
 export function getFirstTab(hint) {
   const container = getTabsContainer(hint);
-  return container && container.querySelector(kSELECTOR_LIVE_TAB);
+  if (!container)
+    return null;
+  return queryTab({
+    windowId: container.windowId,
+    living:   true,
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getLastTab(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  const tabs = container.querySelectorAll(kSELECTOR_LIVE_TAB);
-  return tabs.length > 0 ? tabs[tabs.length - 1] : null;
+  return queryTab({
+    windowId: container.windowId,
+    living:   true,
+    last:     true,
+    element:  true
+  });
 }
 
 export function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  const tabs = container.querySelectorAll(kSELECTOR_VISIBLE_TAB);
-  return tabs.length > 0 ? tabs[tabs.length - 1] : null;
+  return queryTab({
+    windowId: container.windowId,
+    visible:  true,
+    last:     true,
+    element:  true
+  });
 }
 
 export function getLastOpenedTab(hint) {
@@ -784,11 +904,21 @@ export function getPreviousNormalTab(tab) {
 
 export function ensureLivingTab(tab) {
   if (!tab ||
-      !tab.id ||
-      !tab.parentNode ||
-      !isTracked(tab.apiTab.id) ||
-      hasState(tab, Constants.kTAB_STATE_REMOVING))
+      !tab.id)
     return null;
+  if (tab instanceof Element) {
+    if (!tab.parentNode ||
+        !isTracked(tab.apiTab.id) ||
+        hasState(tab, Constants.kTAB_STATE_REMOVING))
+      return null;
+  }
+  else {
+    if (!tab.$TSTElement ||
+        !tab.$TSTElement.parentNode ||
+        !isTracked(tab.id) ||
+        tab.$TSTStates[Constants.kTAB_STATE_REMOVING])
+      return null;
+  }
   return tab;
 }
 
@@ -946,35 +1076,60 @@ export function getAllTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(kSELECTOR_LIVE_TAB));
+  return queryTabs({
+    windowId: container.windowId,
+    living:   true,
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getTabs(hint) { // only visible, including collapsed and pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(kSELECTOR_CONTROLLABLE_TAB));
+  return queryTabs({
+    windowId:     container.windowId,
+    controllable: true,
+    ordered:      true,
+    element:      true
+  });
 }
 
 export function getNormalTabs(hint) { // only visible, including collapsed, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(kSELECTOR_NORMAL_TAB));
+  return queryTabs({
+    windowId: container.windowId,
+    normal:   true,
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getVisibleTabs(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(kSELECTOR_VISIBLE_TAB));
+  return queryTabs({
+    windowId: container.windowId,
+    visible:  true,
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getPinnedTabs(hint) { // visible, pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(kSELECTOR_PINNED_TAB));
+  return queryTabs({
+    windowId: container.windowId,
+    pinned:   true,
+    ordered:  true,
+    element:  true
+  });
 }
 
 
@@ -982,32 +1137,68 @@ export function getUnpinnedTabs(hint) { // visible, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not(.${Constants.kTAB_STATE_PINNED})`));
+  return queryTabs({
+    windowId: container.windowId,
+    living:   true,
+    pinned:   false,
+    ordered:  true,
+    element:  true
+  });
 }
 
 /*
 function getAllRootTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}:not([${Constants.kPARENT}])`));
+  if (!container)
+    return [];
+  return queryTabs({
+    windowId:   container.windowId,
+    living:     true,
+    ordered:    true,
+    attributes: [Constants.kPARENT, '']
+    element:    true
+  });
 }
 */
 
 export function getRootTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.from(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}:not([${Constants.kPARENT}])`));
+  if (!container)
+    return [];
+  return queryTabs({
+    windowId:     container.windowId,
+    controllable: true,
+    ordered:      true,
+    attributes:   [Constants.kPARENT, ''],
+    element:      true
+  });
 }
 
 /*
 function getVisibleRootTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.from(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}:not([${Constants.kPARENT}])`));
+  if (!container)
+    return [];
+  return queryTabs({
+    windowId:   container.windowId,
+    visible:    true,
+    ordered:    true,
+    attributes: [Constants.kPARENT, '']
+    element:    true
+  });
 }
 
 function getVisibleLoadingTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}.loading`));
+  return queryTabs({
+    windowId: container.windowId,
+    visible:  true,
+    status:   'loading',
+    ordered:  true,
+    element:  true
+  });
 }
 */
 
@@ -1023,42 +1214,94 @@ export function collectRootTabs(tabs) {
 /*
 function getIndentedTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.from(container.querySelectorAll(`${kSELECTOR_CONTROLLABLE_TAB}[${Constants.kPARENT}]`));
+  if (!container)
+    return [];
+  return queryTabs({
+    windowId:     container.windowId,
+    controllable: true,
+    attributes:   [Constants.kPARENT, /./],
+    ordered:      true,
+    element:      true
+  });
 }
 
 function getVisibleIndentedTabs(hint) {
   const container = getTabsContainer(hint);
-  return container.querySelectorAll(`${kSELECTOR_VISIBLE_TAB}[${Constants.kPARENT}]`);
+  if (!container)
+    return [];
+  return queryTabs({
+    windowId:   container.windowId,
+    visible:    true,
+    attributes: [Constants.kPARENT, /./],
+    ordered:    true,
+    element:    true
+  });
 }
 */
 
 export function getDraggingTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DRAGGING}`));
+  if (!container)
+    return [];
+  return queryTabs({
+    windowId: container.windowId,
+    living:   true,
+    states:   [Constants.kTAB_STATE_DRAGGING, true],
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getDuplicatingTabs(hint) {
   const container = getTabsContainer(hint);
-  return Array.from(container.querySelectorAll(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_DUPLICATING}`));
+  if (!container)
+    return [];
+  return queryTabs({
+    windowId: container.windowId,
+    living:   true,
+    states:   [Constants.kTAB_STATE_DUPLICATING, true],
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getHighlightedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(`
-    ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}
-  `));
+  return queryTabs({
+    windowId:    container.windowId,
+    living:      true,
+    highlighted: true,
+    ordered:     true,
+    element:     true
+  });
 }
 
 export function getSelectedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return Array.from(container.querySelectorAll(`
-    ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED},
-    .${Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED} ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}
-  `));
+
+  const selectedTabs = queryTabs({
+    windowId: container.windowId,
+    living:   true,
+    states:   [Constants.kTAB_STATE_SELECTED, true],
+    ordered:  true,
+    element:  true
+  });
+  if (!container.classList.has(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED))
+    return selectedTabs;
+
+  const highlightedTabs = queryTabs({
+    windowId:    container.windowId,
+    living:      true,
+    highlighted: true,
+    ordered:     true,
+    element:     true
+  });
+  return Array.from(new Set(selectedTabs.concat(highlightedTabs)))
+    .sort((a, b) => a.index - b.index);
 }
 
 
@@ -1067,12 +1310,22 @@ export function getSelectedTabs(hint) {
 
 export function getFirstNormalTab(hint) { // visible, not-collapsed, not-pinned
   const container = getTabsContainer(hint);
-  return container && container.querySelector(kSELECTOR_NORMAL_TAB);
+  return container && queryTab({
+    windowId: container.windowId,
+    normal:   true,
+    ordered:  true,
+    element:  true
+  });
 }
 
 export function getFirstVisibleTab(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
-  return container && container.querySelector(kSELECTOR_VISIBLE_TAB);
+  return container && queryTab({
+    windowId: container.windowId,
+    visible:  true,
+    ordered:  true,
+    element:  true
+  });
 }
 
 /*
@@ -1080,11 +1333,12 @@ function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return XPath.evaluate(
-    `child::${kXPATH_VISIBLE_TAB}[last()]`,
-    container,
-    XPathResult.FIRST_ORDERED_NODE_TYPE
-  ).singleNodeValue;
+  return container && queryTab({
+    windowId: container.windowId,
+    visible:  true,
+    last:     true,
+    element:  true
+  });
 }
 */
 
@@ -1167,9 +1421,15 @@ export function getGroupTabForOpener(opener) {
   const tab = (opener instanceof Element) ? opener : (getTabById(opener) || getTabByUniqueId(opener));
   if (!tab)
     return null;
-  return tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}$="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}"],
-                                       ${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}*="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}#"],
-                                       ${kSELECTOR_LIVE_TAB}[${Constants.kCURRENT_URI}*="openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}&"]`);
+  return queryTab({
+    windowId:   tab.parentNode.windowId,
+    living:     true,
+    attributes: [
+      Constants.kCURRENT_URI,
+      new RegExp(`openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}($|[#&])`)
+    ],
+    element:    true
+  });
 }
 
 export function getOpenerFromGroupTab(groupTab) {
@@ -1311,7 +1571,11 @@ export function isHighlighted(tab) {
 export function isMultiselected(tab) {
   return isSelected(tab) &&
            (isMultihighlighted(tab) ||
-            !!tab.parentNode.querySelector(`${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED} ~ ${kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_SELECTED}`));
+            queryTabs({
+              windowId: tab.apiTab.windowId,
+              living:   true,
+              states:   [Constants.kTAB_STATE_SELECTED, true]
+            }).length > 1);
 }
 
 export function isMultihighlighted(tab) {

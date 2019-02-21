@@ -115,7 +115,11 @@ export function clearOldActiveStateInWindow(windowId) {
   const container = Tabs.getTabsContainer(windowId);
   if (!container)
     return [];
-  const oldTabs = Tabs.queryTabElements({ windowId, active: true });
+  const oldTabs = Tabs.queryTabs({
+    windowId,
+    active:  true,
+    element: true
+  });
   for (const oldTab of oldTabs) {
     Tabs.removeState(oldTab, Constants.kTAB_STATE_ACTIVE);
     if (oldTab.apiTab) // this function can be applied for cached tab.
