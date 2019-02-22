@@ -747,6 +747,7 @@ async function onMoved(tabId, moveInfo) {
       if (!alreadyMoved &&
           Tabs.getNextTab(movedTab) != nextTab) {
         container.insertBefore(movedTab, nextTab);
+        movedTab.apiTab.index = nextTab ? nextTab.apiTab.index : 0;
         Tabs.track(movedTab.apiTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.from(container.childNodes)
