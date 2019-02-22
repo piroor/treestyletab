@@ -125,12 +125,12 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     reserveToAttachTabFromRestoredInfo.waiting = null;
     const tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
     reserveToAttachTabFromRestoredInfo.tasks = [];
-    const uniqueIds = await Promise.all(tasks.map(task => task.tab.uniqueId));
+    const uniqueIds = tasks.map(task => task.tab.$TST.uniqueId);
     const bulk = tasks.length > 1;
     await Promise.all(uniqueIds.map((uniqueId, index) => {
       const task = tasks[index];
       return attachTabFromRestoredInfo(task.tab, Object.assign({}, task.options, {
-        uniqueId: uniqueId,
+        uniqueId,
         bulk
       }));
     }));
@@ -153,24 +153,18 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     tab:    tab.apiTab.id,
     window: tab.apiTab.windowId
   }).catch(_error => {});
-  let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
-  await Promise.all([
-    (async () => {
-      uniqueId = options.uniqueId || await tab.uniqueId;
-    })(),
-    (async () => {
-      [insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
-        Tabs.getPermanentStates(tab),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED) // for backward compatibility
-      ]);
-      ancestors = ancestors || [];
-      children  = children  || [];
-    })()
+  const uniqueId = options.uniqueId || tab.$TST.uniqueId;
+  let insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
+  [insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
+    Tabs.getPermanentStates(tab),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED) // for backward compatibility
   ]);
+  ancestors = ancestors || [];
+  children  = children  || [];
   log(`persistent references for ${tab.id} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
     ancestors: ancestors.join(', '),

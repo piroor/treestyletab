@@ -270,9 +270,9 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.id);
-        const tab = Tabs.getTabById(message.id);
+        const tab = Tabs.trackedTabs.get(message.id);
         if (tab && !message.forceNew)
-          return tab.uniqueId;
+          return tab.$TST.uniqueId;
         return Tabs.requestUniqueId(message.id, {
           forceNew: message.forceNew
         });

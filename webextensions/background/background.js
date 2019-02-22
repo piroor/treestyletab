@@ -279,12 +279,10 @@ async function updateInsertionPosition(tab) {
 
   const prev = Tabs.getPreviousTab(tab);
   if (prev)
-    prev.uniqueId.then(id =>
-      browser.sessions.setTabValue(
-        tab.apiTab.id,
-        Constants.kPERSISTENT_INSERT_AFTER,
-        id.id
-      )
+    browser.sessions.setTabValue(
+      tab.apiTab.id,
+      Constants.kPERSISTENT_INSERT_AFTER,
+      prev.apiTab.$TST.uniqueId.id
     );
   else
     browser.sessions.removeTabValue(
@@ -294,12 +292,10 @@ async function updateInsertionPosition(tab) {
 
   const next = Tabs.getNextTab(tab);
   if (next)
-    next.uniqueId.then(id =>
-      browser.sessions.setTabValue(
-        tab.apiTab.id,
-        Constants.kPERSISTENT_INSERT_BEFORE,
-        id.id
-      )
+    browser.sessions.setTabValue(
+      tab.apiTab.id,
+      Constants.kPERSISTENT_INSERT_BEFORE,
+      next.apiTab.$TST.uniqueId.id
     );
   else
     browser.sessions.removeTabValue(
@@ -327,14 +323,10 @@ async function updateAncestors(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  const ancestorIds = await Promise.all(
-    Tabs.getAncestorTabs(tab)
-      .map(ancestor => ancestor.uniqueId)
-  );
   browser.sessions.setTabValue(
     tab.apiTab.id,
     Constants.kPERSISTENT_ANCESTORS,
-    ancestorIds.map(id => id.id)
+    Tabs.getAncestorTabs(tab, { element: false }).map(ancestor => ancestor.$TST.uniqueId.id)
   );
 }
 
@@ -356,14 +348,10 @@ async function updateChildren(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  const childIds = await Promise.all(
-    Tabs.getChildTabs(tab)
-      .map(child => child.uniqueId)
-  );
   browser.sessions.setTabValue(
     tab.apiTab.id,
     Constants.kPERSISTENT_CHILDREN,
-    childIds.map(id => id.id)
+    Tabs.getChildTabs(tab, { element: false }).map(child => child.$TST.uniqueId.id)
   );
 }
 

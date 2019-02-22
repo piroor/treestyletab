@@ -346,12 +346,12 @@ async function tryGroupNewTabs() {
         tab.apiTab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       return tab;
     });
-    const uniqueIds = await Promise.all(tabs.map(tab => tab.uniqueId));
+    const uniqueIds = tabs.map(tab => tab.$TST.uniqueId);
     tabs = tabs.filter((id, index) => {
       const uniqueId = uniqueIds[index];
       return !uniqueId.duplicated && !uniqueId.restored;
     });
-    tabs.sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
+    tabs.sort((a, b) => a.apiTab.index - b.apiTab.index);
 
     let newRootTabs = Tabs.collectRootTabs(tabs)
       .filter(tab => !Tabs.isGroupTab(tab));

@@ -446,20 +446,14 @@ export function makeTabId(apiTab) {
 }
 
 export async function requestUniqueId(tabOrId, options = {}) {
-  let tabId = tabOrId;
-  let tab   = null;
-  if (typeof tabOrId == 'number') {
-    tab = getTabById(tabOrId);
-  }
-  else {
-    tabId = tabOrId.apiTab.id;
-    tab   = tabOrId;
-  }
+  let tab = tabOrId;
+  if (typeof tabOrId == 'number')
+    tab = trackedTabs.get(tabOrId);
 
   if (options.inRemote) {
     return await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_REQUEST_UNIQUE_ID,
-      id:       tabId,
+      id:       tab.id,
       forceNew: !!options.forceNew
     });
   }
@@ -468,18 +462,18 @@ export async function requestUniqueId(tabOrId, options = {}) {
   let originalTabId = null;
   let duplicated    = false;
   if (!options.forceNew) {
-    let oldId = await browser.sessions.getTabValue(tabId, Constants.kPERSISTENT_ID);
+    let oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID);
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
     if (oldId) {
       // If the tab detected from stored tabId is different, it is duplicated tab.
       try {
-        const tabWithOldId = getTabById(oldId.tabId);
+        const tabWithOldId = trackedTabs.get(oldId.tabId);
         if (!tabWithOldId)
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-        originalId = tabWithOldId.getAttribute(Constants.kPERSISTENT_ID) /* (await tabWithOldId.uniqueId).id // don't try to wait this, because it sometime causes deadlock */;
-        duplicated = tab && tabWithOldId != tab && originalId == oldId.id;
+        originalId = (tabWithOldId.$TST.uniqueId || await tabWithOldId.$TST.element.uniqueId).id;
+        duplicated = tab && tabWithOldId.id != tab.id && originalId == oldId.id;
         if (duplicated)
           originalTabId = oldId.tabId;
         else
@@ -491,9 +485,9 @@ export async function requestUniqueId(tabOrId, options = {}) {
         // There is no live tab for the tabId, thus
         // this seems to be a tab restored from session.
         // We need to update the related tab id.
-        await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, {
+        await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, {
           id:    oldId.id,
-          tabId: tabId
+          tabId: tab.id
         });
         return {
           id:            oldId.id,
@@ -510,22 +504,22 @@ export async function requestUniqueId(tabOrId, options = {}) {
   const randomValue = Math.floor(Math.random() * 1000);
   const id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
   // tabId is for detecttion of duplicated tabs
-  await browser.sessions.setTabValue(tabId, Constants.kPERSISTENT_ID, { id, tabId });
+  await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, { id, tabId: tab.id });
   return { id, originalId, originalTabId, duplicated };
 }
 
-export function updateUniqueId(tab) {
-  tab.uniqueId = requestUniqueId(tab, {
+export function updateUniqueId(tabElement) {
+  tabElement.uniqueId = requestUniqueId(tabElement.apiTab, {
     inRemote: !!mTargetWindow
   }).then(uniqueId => {
-    if (uniqueId && ensureLivingTab(tab)) // possibly removed from document while waiting
-      setAttribute(tab, Constants.kPERSISTENT_ID, uniqueId.id);
+    if (uniqueId && ensureLivingTab(tabElement)) // possibly removed from document while waiting
+      setAttribute(tabElement, Constants.kPERSISTENT_ID, uniqueId.id);
     return uniqueId || {};
   }).catch(error => {
-    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tab.apiTab.id}: `, String(error), error.stack);
+    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tabElement.apiTab.id}: `, String(error), error.stack);
     return {};
   });
-  return tab.uniqueId;
+  return tabElement.uniqueId;
 }
 
 export async function getUniqueIds(apiTabs) {
