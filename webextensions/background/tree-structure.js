@@ -230,7 +230,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.apiTab.index,
-        fromIndex: Tabs.getTabIndex(Tabs.getLastTab(tab))
+        fromIndex: Tabs.getLastTab(tab).apiTab.index
       });
     }
   }

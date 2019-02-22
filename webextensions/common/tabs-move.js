@@ -165,7 +165,7 @@ function syncOrderOfChildTabs(parentTabs) {
       continue;
     parent.childTabs = parent.childTabs.map(tab => {
       return {
-        index: Tabs.getTabIndex(tab),
+        index: tab.apiTab.index,
         tab:   tab
       };
     }).sort((aA, aB) => aA.index - aB.index).map(item => item.tab);

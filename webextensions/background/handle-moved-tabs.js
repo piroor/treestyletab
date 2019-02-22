@@ -44,7 +44,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
          info.treeForActionDetection.target.previous))))
     tryFixupTreeForInsertedTab(tab, {
       toIndex:   tab.apiTab.index,
-      fromIndex: Tabs.getTabIndex(Tabs.getLastTab(tab)),
+      fromIndex: Tabs.getLastTab(tab).apiTab.index,
       treeForActionDetection: info.treeForActionDetection
     });
 });
@@ -129,18 +129,16 @@ Tabs.onMoved.addListener((tab, moveInfo = {}) => {
 });
 
 Commands.onMoveUp.addListener(async tab => {
-  const index = Tabs.getTabIndex(tab);
   await tryFixupTreeForInsertedTab(tab, {
-    toIndex:   index,
-    fromIndex: index + 1,
+    toIndex:   tab.apiTab.index,
+    fromIndex: tab.apiTab.index + 1,
   });
 });
 
 Commands.onMoveDown.addListener(async tab => {
-  const index = Tabs.getTabIndex(tab);
   await tryFixupTreeForInsertedTab(tab, {
-    toIndex:   index,
-    fromIndex: index - 1,
+    toIndex:   tab.apiTab.index,
+    fromIndex: tab.apiTab.index - 1,
   });
 });
 

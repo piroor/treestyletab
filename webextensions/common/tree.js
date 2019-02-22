@@ -287,7 +287,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
     insertAfter = Tabs.getPreviousTab(insertAfter);
   // disallow to place tab in invalid position
   if (insertBefore) {
-    if (Tabs.getTabIndex(insertBefore) <= Tabs.getTabIndex(parent)) {
+    if (insertBefore.apiTab.index <= parent.apiTab.index) {
       insertBefore = null;
     }
     //TODO: we need to reject more cases...
@@ -295,7 +295,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
   if (insertAfter) {
     const allTabsInTree = [parent].concat(descendants);
     const lastMember    = allTabsInTree[allTabsInTree.length - 1];
-    if (Tabs.getTabIndex(insertAfter) >= Tabs.getTabIndex(lastMember)) {
+    if (insertAfter.apiTab.index >= lastMember.apiTab.index) {
       insertAfter = lastMember;
     }
     //TODO: we need to reject more cases...

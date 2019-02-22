@@ -865,7 +865,7 @@ export function getLastOpenedTab(hint) {
     null ;
 }
 
-export function getTabIndex(tab, options = {}) {
+function getTabIndex(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return -1;
   assertValidHint(tab);
