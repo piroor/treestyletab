@@ -1020,6 +1020,9 @@ export function ensureLivingTab(tab) {
 }
 
 function assertInitializedTab(tab) {
+  if (!tab ||
+      tab.$TST && Constants.kTAB_STATE_REMOVING in tab.$TST.states)
+    return false;
   if (tab instanceof Element && !tab.apiTab)
     throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
   if (!tab.$TST)
@@ -1151,7 +1154,8 @@ export function getChildTabs(parent, options = {}) {
   if (!ensureLivingTab(parent))
     return [];
   assertValidHint(parent);
-  assertInitializedTab(parent);
+  if (!assertInitializedTab(parent))
+    return [];
   if (options.element === false)
     return parent.$TST.children;
   return parent.$TST.children.map(child => child.$TST.element);
@@ -1161,7 +1165,8 @@ export function getFirstChildTab(parent, options = {}) {
   if (!ensureLivingTab(parent))
     return null;
   assertValidHint(parent);
-  assertInitializedTab(parent);
+  if (!assertInitializedTab(parent))
+    return null;
   const children = parent.$TST.children;
   const child = children.length > 0 ? children[0] : null ;
   if (options.element === false)
@@ -1173,7 +1178,8 @@ export function getLastChildTab(parent, options = {}) {
   if (!ensureLivingTab(parent))
     return null;
   assertValidHint(parent);
-  assertInitializedTab(parent);
+  if (!assertInitializedTab(parent))
+    return null;
   const children = parent.$TST.children;
   const child = children.length > 0 ? children[children.length - 1] : null ;
   if (options.element === false)
@@ -1188,7 +1194,8 @@ function getChildTabIndex(child, parent, options = {}) {
     return -1;
   assertValidHint(child);
   assertValidHint(parent);
-  assertInitializedTab(parent);
+  if (!assertInitializedTab(parent))
+    return -1;
   const childIds = parent.$TST.childIds;
   return childIds.indexOf(child.apiTab.id);
 }
@@ -1198,7 +1205,8 @@ export function getDescendantTabs(root, options = {}) {
   if (!ensureLivingTab(root))
     return [];
   assertValidHint(root);
-  assertInitializedTab(root);
+  if (!assertInitializedTab(root))
+    return [];
 
   let descendants = [];
   const children = root.$TST.children;
@@ -1566,18 +1574,15 @@ export function getNextActiveTab(tab, options = {}) { // if the current tab is c
 
 
 export function getGroupTabForOpener(opener) {
-  const tabElement = (opener instanceof Element) ? opener : getTabElementById(opener);
-  const tab = tabElement ? tabElement.apiTab : getTabByUniqueId(opener);
+  const tab = (opener instanceof Element) ? opener.apiTab : opener;
   if (!tab)
     return null;
-  if (!tab.uniqueId)
-    console.log('not initialized ', tab);
   return query({
     windowId:   tab.windowId,
     living:     true,
     attributes: [
       Constants.kCURRENT_URI,
-      new RegExp(`openerTabId=${tab.uniqueId.id}($|[#&])`)
+      new RegExp(`openerTabId=${tab.$TST.uniqueId.id}($|[#&])`)
     ],
     element:    true
   });
@@ -1588,7 +1593,12 @@ export function getOpenerFromGroupTab(groupTabOrElement) {
     return null;
   const groupTab = groupTabOrElement.apiTab ? groupTabOrElement.apiTab : groupTabOrElement;
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
-  return matchedOpenerTabId && getTabElementById(matchedOpenerTabId[1]);
+  const tab = matchedOpenerTabId && trackedTabs.get(matchedOpenerTabId[1]);
+  if (!tab)
+    return null;
+  if (groupTabOrElement instanceof Element)
+    return tab.$TST.element;
+  return tab;
 }
 
 
