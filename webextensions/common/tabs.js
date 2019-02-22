@@ -46,7 +46,6 @@ import {
 } from './common.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
-import Tab from '/common/Tab.js';
 
 function log(...args) {
   internalLogger('common/tabs', ...args);
@@ -57,15 +56,55 @@ let mTargetWindow;
 
 export const allTabsContainer = document.querySelector('#all-tabs');
 
-
 export const trackedWindows = new Map();
 export const trackedTabs = new Map();
 export const trackedTabsByUniqueId = new Map();
 export const activeTabForWindow = new Map();
 export const highlightedTabsForWindow = new Map();
 
+
+//===================================================================
+// Tab Helper Class
+//===================================================================
+
+export class Tab {
+  constructor(tab) {
+    tab.$TST = this;
+    this.tab = tab;
+
+    this.element = null;
+
+    this.states     = {};
+    this.attributes = {};
+
+    this._parent   = null;
+    this._children = [];
+  }
+
+  set parent(tab) {
+    this._parent = tab && tab.id;
+  }
+  get parent() {
+    return this._parent && ensureLivingTab(trackedTabs.get(this._parent));
+  }
+
+  set children(tabs) {
+    this._children = tabs.map(tab => tab.id);
+  }
+  get children() {
+    return this._children.map(id => trackedTabs.get(id)).filter(ensureLivingTab);
+  }
+}
+
+
+//===================================================================
+// Tab Tracking
+//===================================================================
+
+
 export function track(apiTab) {
-  apiTab.$TST = apiTab.$TST || new Tab();
+  if (!apiTab.$TST)
+    new Tab(apiTab);
   trackedTabs.set(apiTab.id, apiTab);
   let window = trackedWindows.get(apiTab.windowId);
   if (!window) {
@@ -326,6 +365,7 @@ function fixupQuery(conditions) {
        !('living' in conditions))
     conditions.living = true;
 }
+
 
 
 //===================================================================
@@ -649,7 +689,8 @@ browser.windows.onRemoved.addListener(windowId => {
 
 export function buildTab(apiTab, options = {}) {
   log('build tab for ', apiTab);
-  apiTab.$TST = apiTab.$TST || new Tab();
+  if (!apiTab.$TST)
+    new Tab(apiTab);
   const tab = document.createElement('li');
   apiTab.$TST.element = tab;
   tab.apiTab = apiTab;

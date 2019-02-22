@@ -185,11 +185,11 @@ export async function attachTabTo(child, parent, options = {}) {
 
     log('attachTabTo: setting child information: ', dumpTab(parent));
     Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
-    parent.apiTab.$TST.children = parent.childTabs.map(tab => tab.apiTab.id);
+    parent.apiTab.$TST.children = parent.childTabs.map(tab => tab.apiTab);
 
     log('attachTabTo: setting parent information: ', dumpTab(child));
     Tabs.setAttribute(child, Constants.kPARENT, parent.id);
-    child.apiTab.$TST.parent = parent.apiTab.id;
+    child.apiTab.$TST.parent = parent.apiTab;
     child.parentTab = parent;
     child.ancestorTabs = Tabs.getAncestorTabs(child, { force: true });
 

@@ -14,8 +14,6 @@ import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 import * as TabsUpdate from './tabs-update.js';
 
-import Tab from './Tab.js';
-
 function log(...args) {
   internalLogger('common/cache', ...args);
 }
@@ -153,7 +151,8 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
     const apiTab = apiTabs[index];
     Tabs.setAttribute(tab, 'id', Tabs.makeTabId(apiTab));
     tab.apiTab = apiTab;
-    apiTab.$TST = apiTab.$TST || new Tab();
+    if (!apiTab.$TST)
+      new Tabs.Tab(apiTab);
     apiTab.$TST.element = tab;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, apiTab.id || -1);
