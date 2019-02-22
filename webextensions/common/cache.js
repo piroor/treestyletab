@@ -179,6 +179,36 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
       TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
     }
   }
+  else {
+    const states = [
+      'active',
+      'attention',
+      'audible',
+      'discarded',
+      'hidden',
+      'highlighted',
+      'pinned'
+    ];
+    for (const tab of tabs) {
+      for (const state of tab.classList) {
+        Tabs.addState(tab, state);
+      }
+      for (const state of states) {
+        if (tab.apiTab[state])
+          Tabs.addState(tab, state);
+        else
+          Tabs.removeState(tab, state);
+      }
+      if (tab.apiTab.status == 'loading') {
+        Tabs.addState(tab, 'loading');
+        Tabs.removeState(tab, 'complete');
+      }
+      else {
+        Tabs.addState(tab, 'complete');
+        Tabs.removeState(tab, 'loading');
+      }
+    }
+  }
 
   // update active tab appearance
   browser.tabs.query({ windowId: tabs[0].apiTab.windowId, active: true })
@@ -188,15 +218,6 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
 function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
   Tabs.updateUniqueId(tab);
   Tabs.initPromisedStatus(tab, true);
-
-  for (const state of tab.classList) {
-    Tabs.addState(tab, state);
-  }
-
-  if (apiTab.discarded)
-    Tabs.addState(tab, Constants.kTAB_STATE_DISCARDED);
-  else
-    Tabs.removeState(tab, Constants.kTAB_STATE_DISCARDED);
 
   const idMap = options.idMap;
 
