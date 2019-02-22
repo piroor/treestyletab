@@ -325,7 +325,7 @@ function extractMatchedTabs(tabs, conditions) {
          tab.pinned))
       continue TAB_MACHING;
     if (conditions.visible &&
-        (tab.$TST.states[Constants.kTAB_STATE_COLLAPSED] ||
+        (hasState(tab, Constants.kTAB_STATE_COLLAPSED) ||
          tab.hidden))
       continue TAB_MACHING;
     if (conditions.controllable &&
@@ -1013,7 +1013,7 @@ export function ensureLivingTab(tab) {
         !tab.$TST.element ||
         !tab.$TST.element.parentNode ||
         !isTracked(tab.id) ||
-        tab.$TST.states[Constants.kTAB_STATE_REMOVING])
+        hasState(tab, Constants.kTAB_STATE_REMOVING))
       return null;
   }
   return tab;
@@ -1021,7 +1021,7 @@ export function ensureLivingTab(tab) {
 
 function assertInitializedTab(tab) {
   if (!tab ||
-      tab.$TST && Constants.kTAB_STATE_REMOVING in tab.$TST.states)
+      tab.$TST && hasState(tab, Constants.kTAB_STATE_REMOVING))
     return false;
   if (tab instanceof Element && !tab.apiTab)
     throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
@@ -1646,7 +1646,7 @@ export function maybeSoundPlaying(tab) {
   if (tab instanceof Element)
     tab = tab.apiTab;
   return (isSoundPlaying(tab) ||
-          (Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER in tab.$TST.states &&
+          (hasState(tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
            hasChildTabs(tab)));
 }
 
@@ -1664,7 +1664,7 @@ export function maybeMuted(tab) {
   if (tab instanceof Element)
     tab = tab.apiTab;
   return (isMuted(tab) ||
-          (Constants.kTAB_STATE_HAS_MUTED_MEMBER in tab.$TST.states &&
+          (hasState(tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
            hasChildTabs(tab)));
 }
 
@@ -1677,11 +1677,8 @@ export function isHidden(tab) {
 }
 
 export function isCollapsed(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return !!(tab && Constants.kTAB_STATE_COLLAPSED in tab.$TST.states);
+  return ensureLivingTab(tab) &&
+         hasState(tab, Constants.kTAB_STATE_COLLAPSED);
 }
 
 export function isDiscarded(tab) {
@@ -1701,19 +1698,13 @@ export function isPrivateBrowsing(tab) {
 }
 
 export function isOpening(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return !!(tab && Constants.kTAB_STATE_OPENING in tab.$TST.states);
+  return ensureLivingTab(tab) &&
+         hasState(tab, Constants.kTAB_STATE_OPENING);
 }
 
 export function isDuplicating(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return !!(tab && Constants.kTAB_STATE_DUPLICATING in tab.$TST.states);
+  return ensureLivingTab(tab) &&
+         hasState(tab, Constants.kTAB_STATE_DUPLICATING);
 }
 
 export function isNewTabCommandTab(tab) {
@@ -1727,11 +1718,8 @@ export function isNewTabCommandTab(tab) {
 }
 
 export function isSubtreeCollapsed(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return !!(tab && Constants.kTAB_STATE_SUBTREE_COLLAPSED in tab.$TST.states);
+  return ensureLivingTab(tab) &&
+         hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 }
 
 /*
@@ -1757,8 +1745,8 @@ export function isGroupTab(tab) {
     tab = tab.apiTab;
   if (!assertInitializedTab(tab))
     return false;
-  return !!((tab && Constants.kTAB_STATE_GROUP_TAB in tab.$TST.states) ||
-            tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0);
+  return hasState(tab, Constants.kTAB_STATE_GROUP_TAB) ||
+         tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
 }
 
 export function isTemporaryGroupTab(tab) {
@@ -1774,8 +1762,8 @@ export function isSelected(tab) {
     return false;
   if (tab instanceof Element)
     tab = tab.apiTab;
-  return !!((tab && Constants.kTAB_STATE_SELECTED in tab.$TST.states) ||
-            (isMultihighlighted(tab) && !!(tab && tab.highlighted)));
+  return hasState(tab, Constants.kTAB_STATE_SELECTED) ||
+         (isMultihighlighted(tab) && !!(tab && tab.highlighted));
 }
 
 export function isHighlighted(tab) {
@@ -1949,15 +1937,19 @@ export async function removeState(tab, state, options = {}) {
     const index = states.indexOf(state);
     if (index > -1) {
       states.splice(index, 1);
-      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_STATES, states);
+      await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_STATES, states);
     }
   }
 }
 
-export function hasState(tab, state, options = {}) {
-  if (options.attribute && tab)
-    return tab.classList.contains(state);
-  return tab && tab.apiTab && state in tab.$TST.states;
+export function hasState(tab, state) {
+  if (!tab)
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  if (!tab.$TST)
+    return false;
+  return tab && state in tab.$TST.states;
 }
 
 export function getStates(tab) {
