@@ -555,24 +555,23 @@ function checkRecycledTab(container) {
     ],
     attributes: [
       Constants.kCURRENT_URI, new RegExp(`^(|${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}|about:blank|about:privatebrowsing)$`)
-    ],
-    element: true
+    ]
   });
   if (possibleRecycledTabs.length == 0)
     return;
 
   log(`Detecting recycled tabs for session restoration from ${possibleRecycledTabs.length} tabs`);
   for (const tab of possibleRecycledTabs) {
-    const currentId = tab.getAttribute(Constants.kPERSISTENT_ID);
+    const currentId = tab.uniqueId.id;
     Tabs.updateUniqueId(tab).then(uniqueId => {
       if (!Tabs.ensureLivingTab(tab) ||
           !uniqueId.restored ||
           uniqueId.id == currentId ||
-          Tabs.hasState(tab, Constants.kTAB_STATE_RESTORED))
+          Constants.kTAB_STATE_RESTORED in tab.$TST.states)
         return;
-      log('A recycled tab is detected: ', dumpTab(tab));
-      Tabs.addState(tab, Constants.kTAB_STATE_RESTORED);
-      Tabs.onRestored.dispatch(tab);
+      log('A recycled tab is detected: ', tab);
+      Tabs.addState(tab.$TST.element, Constants.kTAB_STATE_RESTORED);
+      Tabs.onRestored.dispatch(tab.$TST.element);
     });
   }
 }

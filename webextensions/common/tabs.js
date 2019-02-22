@@ -80,6 +80,20 @@ export class Tab {
     this.parentId    = null;
     this.ancestorIds = [];
     this.childIds    = [];
+
+    if (tab.id)
+      this.promisedUniqueId = updateUniqueId(tab);
+    else
+      this.promisedUniqueId = Promise.resolve({
+        id:            null,
+        originalId:    null,
+        originalTabId: null
+      });
+
+    this.promisedUniqueId.then(uniqueId => {
+      if (isTracked(tab.id))
+        this.uniqueId = uniqueId;
+    });
   }
 
   destroy() {
@@ -472,7 +486,7 @@ export async function requestUniqueId(tabOrId, options = {}) {
         const tabWithOldId = trackedTabs.get(oldId.tabId);
         if (!tabWithOldId)
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-        originalId = (tabWithOldId.$TST.uniqueId || await tabWithOldId.$TST.element.uniqueId).id;
+        originalId = (tabWithOldId.$TST.uniqueId || await tabWithOldId.$TST.promisedUniqueId).id;
         duplicated = tab && tabWithOldId.id != tab.id && originalId == oldId.id;
         if (duplicated)
           originalTabId = oldId.tabId;
@@ -508,18 +522,19 @@ export async function requestUniqueId(tabOrId, options = {}) {
   return { id, originalId, originalTabId, duplicated };
 }
 
-export function updateUniqueId(tabElement) {
-  tabElement.uniqueId = requestUniqueId(tabElement.apiTab, {
+export function updateUniqueId(tab) {
+  return requestUniqueId(tab, {
     inRemote: !!mTargetWindow
   }).then(uniqueId => {
-    if (uniqueId && ensureLivingTab(tabElement)) // possibly removed from document while waiting
-      setAttribute(tabElement, Constants.kPERSISTENT_ID, uniqueId.id);
+    if (uniqueId && ensureLivingTab(tab)) { // possibly removed from document while waiting
+      if (tab.$TST.element)
+        setAttribute(tab.$TST.element, Constants.kPERSISTENT_ID, uniqueId.id);
+    }
     return uniqueId || {};
   }).catch(error => {
-    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tabElement.apiTab.id}: `, String(error), error.stack);
+    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tab.id}: `, String(error), error.stack);
     return {};
   });
-  return tabElement.uniqueId;
 }
 
 export async function getUniqueIds(apiTabs) {
@@ -740,20 +755,6 @@ export function buildTab(apiTab, options = {}) {
 
   if (options.existing)
     addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
-
-  if (apiTab.id)
-    updateUniqueId(tab);
-  else
-    tab.uniqueId = Promise.resolve({
-      id:            null,
-      originalId:    null,
-      originalTabId: null
-    });
-
-  tab.uniqueId.then(uniqueId => {
-    if (isTracked(apiTab.id))
-      apiTab.$TST.uniqueId = uniqueId;
-  });
 
   initPromisedStatus(tab);
 

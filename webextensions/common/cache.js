@@ -197,7 +197,6 @@ const IGNORE_CLASS_STATES = new Set([
 ]);
 
 function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
-  Tabs.updateUniqueId(tab);
   Tabs.initPromisedStatus(tab, true);
 
   for (const state of tab.classList) {
