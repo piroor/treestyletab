@@ -777,7 +777,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   if (!tab)
     return;
 
-  logCollapseExpand('collapseExpandTreesIntelligentlyFor');
+  logCollapseExpand('collapseExpandTreesIntelligentlyFor ', tab);
   const container = Tabs.getTabsContainer(tab);
   if (container.doingIntelligentlyCollapseExpandCount > 0) {
     logCollapseExpand('=> done by others');
@@ -785,7 +785,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   }
   container.doingIntelligentlyCollapseExpandCount++;
 
-  const expandedAncestors = Tabs.getAncestorTabs(tab).map(ancestor => ancestor.id);
+  const expandedAncestors = Tabs.getAncestorTabs(tab).map(ancestor => ancestor.apiTab.id);
   const collapseTabs = Tabs.queryAll({
     windowId:   container.windowId,
     living:     true,
@@ -799,7 +799,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     ordered:    true,
     element:    true
   });
-  logCollapseExpand(`${collapseTabs.length} tabs can be collapsed`);
+  logCollapseExpand(`${collapseTabs.length} tabs can be collapsed, ancestors: `, expandedAncestors);
   for (const collapseTab of collapseTabs) {
     let dontCollapse = false;
     const parentTab = Tabs.getParentTab(collapseTab);
