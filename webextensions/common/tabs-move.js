@@ -117,7 +117,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       container.internalMovingTabs.add(tab.apiTab.id);
       container.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, referenceTab);
-      tab.apiTab.index = referenceTab ? referenceTab.apiTab.index : 0;
+      tab.apiTab.index = referenceTab ? referenceTab.apiTab.index : container.childNodes.length - 1;
       Tabs.track(tab.apiTab);
       movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
@@ -235,7 +235,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       container.internalMovingTabs.add(tab.apiTab.id);
       container.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, nextTab);
-      tab.apiTab.index = nextTab ? referenceTab.apiTab.index : 0;
+      tab.apiTab.index = nextTab ? referenceTab.apiTab.index : container.childNodes.length - 1;
       Tabs.track(tab.apiTab);
       movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
