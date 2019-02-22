@@ -1864,7 +1864,7 @@ export function isAllTabsPlacedBefore(tabs, nextTab) {
   tabs = Array.from(tabs);
   let previousTab = tabs.shift();
   for (const tab of tabs) {
-    if (tab.previousSibling != previousTab)
+    if (getPreviousTab(tab) != previousTab)
       return false;
     previousTab = tab;
   }
