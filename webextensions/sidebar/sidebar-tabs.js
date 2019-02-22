@@ -372,6 +372,7 @@ async function syncTabsOrder() {
 
   const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
   const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
+  log(`syncTabsOrder: rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(',') });
   for (const operation of DOMElementsOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
     log('syncTabsOrder: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
@@ -383,7 +384,7 @@ async function syncTabsOrder() {
       case 'insert':
       case 'replace':
         const moveTabIds = internalOrder.slice(toStart, toEnd);
-        const referenceTab = fromStart < elementsOrder.length-1 ? Tabs.getTabById(elementsOrder[fromStart+1]) : null;
+        const referenceTab = fromStart < elementsOrder.length ? Tabs.getTabById(elementsOrder[fromStart]) : null;
         log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
         for (const id of moveTabIds) {
           const tab = Tabs.getTabById(id);
