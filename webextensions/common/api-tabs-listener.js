@@ -391,9 +391,9 @@ async function onNewTabTracked(tab) {
       TabsInternalOperation.setTabActive(newTab);
     }
 
-    const onTabCreatedInner = Tabs.addCreatingTab(newTab);
+    const onTabCreatedInner = Tabs.addCreatingTab(tab);
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
-    const uniqueId = await newTab.uniqueId;
+    const uniqueId = await tab.$TST.promisedUniqueId;
 
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onTabCreated(uniqueId);

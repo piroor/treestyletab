@@ -646,19 +646,19 @@ const mCreatingTabs = new Map();
 
 export function addCreatingTab(tab) {
   let onTabCreated;
-  const creatingTabs = mCreatingTabs.get(tab.apiTab.windowId) || new Map();
+  const creatingTabs = mCreatingTabs.get(tab.windowId) || new Map();
   if (configs.acceleratedTabCreation) {
-    creatingTabs.set(tab.apiTab.id, tab.uniqueId);
+    creatingTabs.set(tab.id, tab.promisedUniqueId);
     onTabCreated = () => {};
   }
   else {
-    creatingTabs.set(tab.apiTab.id, new Promise((resolve, _aReject) => {
+    creatingTabs.set(tab.id, new Promise((resolve, _aReject) => {
       onTabCreated = (uniqueId) => { resolve(uniqueId); };
     }));
   }
-  mCreatingTabs.set(tab.apiTab.windowId, creatingTabs);
-  tab.uniqueId.then(_aUniqueId => {
-    creatingTabs.delete(tab.apiTab.id);
+  mCreatingTabs.set(tab.windowId, creatingTabs);
+  tab.promisedUniqueId.then(_aUniqueId => {
+    creatingTabs.delete(tab.id);
   });
   return onTabCreated;
 }
