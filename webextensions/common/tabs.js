@@ -192,6 +192,7 @@ url
 `.trim().split(/\s+/);
 
 export function queryAll(conditions) {
+  fixupQuery(conditions);
   if (conditions.windowId || conditions.ordered) {
     let tabs = [];
     for (const window of trackedWindows.values()) {
@@ -293,8 +294,7 @@ function matched(value, pattern) {
 }
 
 export function query(conditions) {
-  if (conditions.fromId)
-    conditions.ordered = true;
+  fixupQuery(conditions);
   if (conditions.last)
     conditions.ordered = true;
   else
@@ -316,6 +316,17 @@ export function query(conditions) {
     tabs = extractMatchedTabs(trackedTabs.values(), conditions);
   }
   return tabs.length > 0 ? tabs[0] : null ;
+}
+
+function fixupQuery(conditions) {
+  if (conditions.fromId)
+    conditions.ordered = true;
+  if ((conditions.normal ||
+       conditions.visible ||
+       conditions.controllable ||
+       conditions.pinned) &&
+       !('living' in conditions))
+    conditions.living = true;
 }
 
 
@@ -1087,64 +1098,64 @@ export function getLastDescendantTab(root) {
 
 // grab tabs
 
-export function getAllTabs(hint) {
+export function getAllTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({}, {
     windowId: container.windowId,
     living:   true,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
-export function getTabs(hint) { // only visible, including collapsed and pinned
+export function getTabs(hint, options = {}) { // only visible, including collapsed and pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({}, {
     windowId:     container.windowId,
     controllable: true,
     ordered:      true,
     element:      true
-  });
+  }, options));
 }
 
-export function getNormalTabs(hint) { // only visible, including collapsed, not pinned
+export function getNormalTabs(hint, options = {}) { // only visible, including collapsed, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({}, {
     windowId: container.windowId,
     normal:   true,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
-export function getVisibleTabs(hint) { // visible, not-collapsed, not-hidden
+export function getVisibleTabs(hint, options = {}) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({}, {
     windowId: container.windowId,
     visible:  true,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
-export function getPinnedTabs(hint) { // visible, pinned
+export function getPinnedTabs(hint, options = {}) { // visible, pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({}, {
     windowId: container.windowId,
     pinned:   true,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
 
@@ -1621,7 +1632,7 @@ export function getLabelWithDescendants(tab) {
 }
 
 export function getMaxTreeLevel(hint, options = {}) {
-  const tabs = options.onlyVisible ? getVisibleTabs(hint) : getTabs(hint) ;
+  const tabs = options.onlyVisible ? getVisibleTabs(hint, { ordered: false }) : getTabs(hint, { ordered: false }) ;
   let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.getAttribute(Constants.kLEVEL) || 0)));
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
