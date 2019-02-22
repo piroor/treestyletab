@@ -164,15 +164,10 @@ function syncOrderOfChildTabs(parentTabs) {
     if (!parent || updatedParentTabs.has(parent))
       continue;
     updatedParentTabs.set(parent, true);
-    if (parent.childTabs.length < 2)
+    if (parent.$TST.children.length < 2)
       continue;
-    parent.childTabs = parent.childTabs.map(tab => {
-      return {
-        index: tab.apiTab.index,
-        tab:   tab
-      };
-    }).sort((aA, aB) => aA.index - aB.index).map(item => item.tab);
-    const childIds = parent.childTabs.map(tab => tab.id);
+    parent.$TST.children = parent.$TST.children.sort((a, b) => a.index - b.index);
+    const childIds = parent.$TST.children.map(child => child.$TST.element.id);
     Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
     log('updateChildTabsInfo: ', childIds);
   }

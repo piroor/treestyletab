@@ -150,30 +150,28 @@ export async function attachTabTo(child, parent, options = {}) {
   log(`newIndex for ${child.id}: `, newIndex);
 
   const newlyAttached = (
-    !parent.childTabs.includes(child) ||
-    child.parentTab != parent
+    !parent.$TST.childIds.includes(child.apiTab.id) ||
+    child.$TST.parentId != parent.apiTab.id
   );
   if (!newlyAttached)
     log('=> already attached');
 
-  let childIds;
+  let childTabs;
   {
-    const expectedAllTabs = Tabs.getAllTabs(child).filter(tab => tab != child);
-    log('expectedAllTabs: ', expectedAllTabs.map(dumpTab));
+    const expectedAllTabs = Tabs.getAllTabs(child, { element: false }).filter(tab => tab.id != child.apiTab.id);
+    log('expectedAllTabs: ', expectedAllTabs.map(tab => tab.id));
     if (newIndex >= expectedAllTabs.length)
-      expectedAllTabs.push(child);
+      expectedAllTabs.push(child.apiTab);
     else
-      expectedAllTabs.splice(newIndex, 0, child);
-    log(' => ', expectedAllTabs.map(dumpTab));
+      expectedAllTabs.splice(newIndex, 0, child.apiTab);
+    log(' => ', expectedAllTabs.map(tab => tab.id));
 
-    const children = expectedAllTabs.filter(tab => {
-      return (tab == child ||
-                tab.parentTab == parent);
+    childTabs = expectedAllTabs.filter(tab => {
+      return (tab.id == child.apiTab.id ||
+                tab.$TST.parentId == parent.apiTab.id);
     });
-    parent.childTabs = children;
-    childIds = children.map(tab => tab.id);
   }
-  log('new children: ', childIds);
+  log('new children: ', childTabs);
 
   if (newlyAttached) {
     detachTab(child, Object.assign({}, options, {
@@ -184,14 +182,13 @@ export async function attachTabTo(child, parent, options = {}) {
     }));
 
     log('attachTabTo: setting child information: ', dumpTab(parent));
-    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
-    parent.apiTab.$TST.children = parent.childTabs.map(tab => tab.apiTab);
+    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childTabs.map(child => child.$TST.element.id).join('|')}|`);
+    parent.$TST.children = childTabs;
 
     log('attachTabTo: setting parent information: ', dumpTab(child));
     Tabs.setAttribute(child, Constants.kPARENT, parent.id);
-    child.apiTab.$TST.parent = parent.apiTab;
-    child.parentTab = parent;
-    child.ancestorTabs = Tabs.getAncestorTabs(child, { force: true });
+    child.$TST.parent = parent.apiTab.id;
+    child.$TST.ancestors = Tabs.getAncestorTabs(child, { force: true }).map(ancestor => ancestor.apiTab);
 
     const parentLevel = parseInt(parent.getAttribute(Constants.kLEVEL) || 0);
     if (!options.dontUpdateIndent) {
@@ -315,8 +312,8 @@ export function detachTab(child, options = {}) {
     log(` => parent(${child.getAttribute(Constants.kPARENT)}) is already removed, or orphan tab`);
 
   if (parent) {
-    parent.childTabs = parent.childTabs.filter(tab => tab != child);
-    const childIds = parent.childTabs.map(tab => tab.id);
+    parent.$TST.childIds = parent.$TST.childIds.filter(id => id != child.apiTab.id);
+    const childIds = parent.$TST.children.map(child => child.$TST.element.id);
     if (childIds.length == 0) {
       Tabs.removeAttribute(parent, Constants.kCHILDREN);
       log(' => no more child');
@@ -328,8 +325,8 @@ export function detachTab(child, options = {}) {
     TabsUpdate.updateParentTab(parent);
   }
   Tabs.removeAttribute(child, Constants.kPARENT);
-  child.parentTab = null;
-  child.ancestorTabs = [];
+  child.$TST.parent = null;
+  child.$TST.ancestors = [];
   log('detachTab: parent information cleared: ', dumpTab(child));
 
   updateTabsIndent(child);
@@ -797,7 +794,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
       Constants.kTAB_STATE_COLLAPSED,         false,
       Constants.kTAB_STATE_SUBTREE_COLLAPSED, false
     ],
-    attributes: [Constants.kCHILDREN, /./],
+    hasChild:   true,
     ordered:    true,
     element:    true
   });

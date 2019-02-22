@@ -154,6 +154,7 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
     if (!apiTab.$TST)
       new Tabs.Tab(apiTab);
     apiTab.$TST.element = tab;
+    tab.$TST = apiTab.$TST;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, apiTab.id || -1);
     Tabs.setAttribute(tab, Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
@@ -167,7 +168,7 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
     });
   });
   for (const tab of tabs) {
-    if (!tab.parentTab) // process only root tabs
+    if (!tab.$TST.parent) // process only root tabs
       fixupTreeCollapsedStateRestoredFromCache(tab);
   }
   // step 3: update tabs based on restored information.
@@ -222,24 +223,26 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
   const idMap = options.idMap;
 
   log('fixupTabRestoredFromCache children: ', tab.getAttribute(Constants.kCHILDREN));
-  tab.childTabs = (tab.getAttribute(Constants.kCHILDREN) || '')
+  const childTabs = (tab.getAttribute(Constants.kCHILDREN) || '')
     .split('|')
     .map(oldId => idMap[oldId])
     .filter(tab => !!tab);
-  if (tab.childTabs.length > 0)
-    Tabs.setAttribute(tab, Constants.kCHILDREN, `|${tab.childTabs.map(tab => tab.id).join('|')}|`);
+  apiTab.$TST.children = childTabs.map(tab => tab.apiTab.id);
+  if (childTabs.length > 0)
+    Tabs.setAttribute(tab, Constants.kCHILDREN, `|${childTabs.map(tab => tab.id).join('|')}|`);
   else
     Tabs.removeAttribute(tab, Constants.kCHILDREN);
   log('fixupTabRestoredFromCache children: => ', tab.getAttribute(Constants.kCHILDREN));
 
   log('fixupTabRestoredFromCache parent: ', tab.getAttribute(Constants.kPARENT));
-  tab.parentTab = idMap[tab.getAttribute(Constants.kPARENT)] || null;
-  if (tab.parentTab)
-    Tabs.setAttribute(tab, Constants.kPARENT, tab.parentTab.id);
+  const parentTab = idMap[tab.getAttribute(Constants.kPARENT)] || null;
+  apiTab.$TST.parent = parentTab && parentTab.apiTab.id;
+  if (parentTab)
+    Tabs.setAttribute(tab, Constants.kPARENT, parentTab.id);
   else
     Tabs.removeAttribute(tab, Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.getAttribute(Constants.kPARENT));
-  tab.ancestorTabs = Tabs.getAncestorTabs(tab, { force: true });
+  apiTab.$TST.ancestors = Tabs.getAncestorTabs(tab, { force: true, element: false });
 
   if (tab.dataset.alreadyGroupedForPinnedOpener)
     Tabs.setAttribute(tab, 'data-already-grouped-for-pinned-opener', tab.dataset.alreadyGroupedForPinnedOpener);
@@ -264,7 +267,7 @@ function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
     Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   if (!shouldCollapse)
     shouldCollapse = Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-  for (const child of tab.childTabs) {
-    fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse);
+  for (const child of tab.$TST.children) {
+    fixupTreeCollapsedStateRestoredFromCache(child.$TST.element, shouldCollapse);
   }
 }

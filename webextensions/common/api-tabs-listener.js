@@ -647,7 +647,8 @@ async function onRemoved(tabId, removeInfo) {
 function onRemovedComplete(tab) {
   clearTabRelationsForRemovedTab(tab);
   Tabs.untrack(tab.apiTab.id);
-  delete tab.apiTab.$TST.element;
+  tab.$TST.destroy();
+  delete tab.apiTab;
   const container = tab.parentNode;
   if (!container) // it was removed while waiting
     return;
@@ -656,15 +657,16 @@ function onRemovedComplete(tab) {
     container.parentNode.removeChild(container);
 }
 function clearTabRelationsForRemovedTab(tab) {
-  if (tab.parentTab) {
-    tab.parentTab.childTabs = tab.parentTab.childTabs.filter(child => child != tab);
-    tab.parentTab = null;
-    tab.ancestorTabs = [];
+  const parent = tab.$TST.parent;
+  if (parent) {
+    parent.$TST.childIds = parent.$TST.childIds.filter(childId => childId != tab.apiTab.id);
+    tab.$TST.parent = null;
+    tab.$TST.ancestors = [];
   }
-  for (const child of tab.childTabs) {
-    if (child.parentTab == tab) {
-      child.parentTab = null;
-      child.ancestorTabs = child.ancestorTabs.filter(ancestor => ancestor != tab);
+  for (const child of tab.$TST.children) {
+    if (child.$TST.parentId == tab.apiTab.id) {
+      child.$TST.parentId = null;
+      child.$TST.ancestors = child.$TST.ancestors.filter(ancestor => ancestor.id != tab.apiTab.id);
     }
   }
 }

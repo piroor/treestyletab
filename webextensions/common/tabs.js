@@ -77,22 +77,50 @@ export class Tab {
     this.states     = {};
     this.attributes = {};
 
-    this._parent   = null;
-    this._children = [];
+    this.parentId    = null;
+    this.ancestorIds = [];
+    this.childIds    = [];
+  }
+
+  destroy() {
+    if (this.element) {
+      delete this.element.$TST;
+      delete this.element;
+    }
+    delete this.tab.$TST;
+    delete this.tab;
   }
 
   set parent(tab) {
-    this._parent = tab && tab.id;
+    this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
+    return tab;
   }
   get parent() {
-    return this._parent && ensureLivingTab(trackedTabs.get(this._parent));
+    return this.parentId && ensureLivingTab(trackedTabs.get(this.parentId));
+  }
+
+  get hasParent() {
+    return !!this.parentId;
+  }
+
+  set ancestors(tabs) {
+    this.ancestorIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
+    return tabs;
+  }
+  get ancestors() {
+    return this.ancestorIds.map(id => trackedTabs.get(id)).filter(ensureLivingTab);
   }
 
   set children(tabs) {
-    this._children = tabs.map(tab => tab.id);
+    this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
+    return tabs;
   }
   get children() {
-    return this._children.map(id => trackedTabs.get(id)).filter(ensureLivingTab);
+    return this.childIds.map(id => trackedTabs.get(id)).filter(ensureLivingTab);
+  }
+
+  get hasChild() {
+    return this.childIds.length > 0;
   }
 }
 
@@ -100,7 +128,6 @@ export class Tab {
 //===================================================================
 // Tab Tracking
 //===================================================================
-
 
 export function track(apiTab) {
   if (!apiTab.$TST)
@@ -185,7 +212,7 @@ export function untrackAll(windowId) {
     if (window) {
       for (const tab of window.tabs.values()) {
         trackedTabs.delete(tab.id);
-        if (tab.$TST.uniqueId)
+        if (tab.$TST && tab.$TST.uniqueId)
           trackedTabsByUniqueId.delete(tab.$TST.uniqueId.id)
       }
       window.tabs.clear();
@@ -293,6 +320,12 @@ function extractMatchedTabs(tabs, conditions) {
       continue TAB_MACHING;
     if (conditions.controllable &&
         tab.hidden)
+      continue TAB_MACHING;
+    if ('hasChild' in conditions &&
+        conditions.hasChild != tab.$TST.hasChild)
+      continue TAB_MACHING;
+    if ('hasParent' in conditions &&
+        conditions.hasParent != tab.$TST.hasParent)
       continue TAB_MACHING;
 
     const extracted = conditions.element ? tab.$TST.element : tab;
@@ -693,11 +726,11 @@ export function buildTab(apiTab, options = {}) {
     new Tab(apiTab);
   const tab = document.createElement('li');
   apiTab.$TST.element = tab;
+  tab.$TST = apiTab.$TST;
   tab.apiTab = apiTab;
   setAttribute(tab, 'id', makeTabId(apiTab));
   setAttribute(tab, Constants.kAPI_TAB_ID, apiTab.id || -1);
   setAttribute(tab, Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
-  //setAttribute(tab, Constants.kCHILDREN, '');
   tab.classList.add('tab');
   if (apiTab.active)
     addState(tab, Constants.kTAB_STATE_ACTIVE);
@@ -727,10 +760,6 @@ export function buildTab(apiTab, options = {}) {
     if (isTracked(apiTab.id))
       apiTab.$TST.uniqueId = uniqueId;
   });
-
-  tab.childTabs = [];
-  tab.parentTab = null;
-  tab.ancestorTabs = [];
 
   initPromisedStatus(tab);
 
@@ -983,7 +1012,8 @@ export function ensureLivingTab(tab) {
       return null;
   }
   else {
-    if (!tab.$TST.element ||
+    if (!tab.$TST ||
+        !tab.$TST.element ||
         !tab.$TST.element.parentNode ||
         !isTracked(tab.id) ||
         tab.$TST.states[Constants.kTAB_STATE_REMOVING])
@@ -995,8 +1025,6 @@ export function ensureLivingTab(tab) {
 function assertInitializedTab(tab) {
   if (!tab.apiTab)
     throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
-  if (!tab.childTabs)
-    throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (missing priperty "childTabs")\n${new Error().stack}`);
   return true;
 }
 
@@ -1009,35 +1037,43 @@ export function getOpenerTab(tab) {
   return getTabById({ id: tab.apiTab.openerTabId, windowId: tab.apiTab.windowId });
 }
 
-export function getParentTab(child) {
+export function getParentTab(child, options = {}) {
   if (!ensureLivingTab(child))
     return null;
   assertValidHint(child);
-  return ensureLivingTab(child.parentTab);
+  const parent = child.$TST.parent;
+  if (options.element === false)
+    return parent;
+  return parent && parent.$TST.element;
 }
 
 export function getAncestorTabs(descendant, options = {}) {
-  if (!descendant)
+  if (!descendant || !descendant.apiTab)
     return [];
-  if (!options.force)
-    return (
-      // slice(0) is required to guard the cached array from destructive methods liek sort()!
-      descendant.ancestorTabs && descendant.ancestorTabs.slice(0) ||
-      []
-    );
+  if (!options.force) {
+    // slice(0) is required to guard the cached array from destructive methods liek sort()!
+    const ancestors = descendant.$TST.ancestors.slice(0);
+    if (options.element === false)
+      return ancestors;
+    return ancestors.map(ancestor => ancestor.$TST.element);
+  }
   const ancestors = [];
+  descendant = descendant.apiTab;
   while (true) {
-    const parent = getParentTab(descendant);
+    const parent = trackedTabs.get(descendant.$TST.parentId);
     if (!parent)
       break;
-    ancestors.push(parent);
+    if (options.element === false)
+      ancestors.push(parent);
+    else
+      ancestors.push(parent.$TST.element);
     descendant = parent;
   }
   return ancestors;
 }
 
-export function getVisibleAncestorOrSelf(descendant) {
-  for (const ancestor of getAncestorTabs(descendant)) {
+export function getVisibleAncestorOrSelf(descendant, options = {}) {
+  for (const ancestor of getAncestorTabs(descendant, options)) {
     if (!isCollapsed(ancestor))
       return ancestor;
   }
@@ -1046,96 +1082,136 @@ export function getVisibleAncestorOrSelf(descendant) {
   return null;
 }
 
-export function getRootTab(descendant) {
-  const ancestors = getAncestorTabs(descendant);
-  return ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
+export function getRootTab(descendant, options = {}) {
+  const ancestors = descendant.$TST.ancestors;
+  const root = ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
+  if (options.element === false)
+    return root;
+  return root.$TST.element;
 }
 
-function getSiblingTabs(tab) {
-  if (!ensureLivingTab(tab))
-    return [];
-  assertValidHint(tab);
-  if (!ensureLivingTab(tab.parentTab))
-    return getRootTabs(tab);
-  assertInitializedTab(tab);
-  assertInitializedTab(tab.parentTab);
-  return tab.parentTab.childTabs.filter(ensureLivingTab);
-}
-
-export function getNextSiblingTab(tab) {
+export function getNextSiblingTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const siblings = getSiblingTabs(tab);
-  const index = siblings.indexOf(tab);
-  return index < siblings.length - 1 ? siblings[index + 1] : null ;
+  const parent = tab.$TST.parent;
+  let sibling;
+  if (parent) {
+    const siblingIds = parent.$TST.childIds;
+    const index = siblingIds.indexOf(tab.apiTab.id);
+    const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
+    if (!siblingId)
+      return null;
+    sibling = trackedTabs.get(siblingId);
+  }
+  else {
+    sibling = query({
+      windowId:  tab.apiTab.windowId,
+      fromId:    tab.apiTab.id,
+      living:    true,
+      index:     (index => index > tab.apiTab.index),
+      hasParent: false,
+      first:     true
+    });
+  }
+  if (options.element === false)
+    return sibling;
+  return sibling && sibling.$TST.element;
 }
 
-export function getPreviousSiblingTab(tab) {
+export function getPreviousSiblingTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const siblings = getSiblingTabs(tab);
-  const index = siblings.indexOf(tab);
-  return index > 0 ? siblings[index - 1] : null ;
+  const parent = tab.$TST.parent;
+  let sibling;
+  if (parent) {
+    const siblingIds = parent.$TST.childIds;
+    const index = siblingIds.indexOf(tab.apiTab.id);
+    const siblingId = index > 0 ? siblingIds[index - 1] : null ;
+    if (!siblingId)
+      return null;
+    sibling = trackedTabs.get(siblingId);
+  }
+  else {
+    sibling = query({
+      windowId:  tab.apiTab.windowId,
+      fromId:    tab.apiTab.id,
+      living:    true,
+      index:     (index => index < tab.apiTab.index),
+      hasParent: false,
+      last:      true
+    });
+  }
+  if (options.element === false)
+    return sibling;
+  return sibling && sibling.$TST.element;
 }
 
-export function getChildTabs(parent) {
+export function getChildTabs(parent, options = {}) {
   if (!ensureLivingTab(parent))
     return [];
   assertValidHint(parent);
   assertInitializedTab(parent);
-  return parent.childTabs.filter(ensureLivingTab);
+  if (options.element === false)
+    return parent.$TST.children;
+  return parent.$TST.children.map(child => child.$TST.element);
 }
 
-export function getFirstChildTab(parent) {
+export function getFirstChildTab(parent, options = {}) {
   if (!ensureLivingTab(parent))
     return null;
   assertValidHint(parent);
   assertInitializedTab(parent);
-  const tabs = parent.childTabs.filter(ensureLivingTab);
-  return tabs.length > 0 ? tabs[0] : null ;
+  const children = parent.$TST.children;
+  const child = children.length > 0 ? children[0] : null ;
+  if (options.element === false)
+    return child;
+  return child && child.$TST.element;
 }
 
-export function getLastChildTab(parent) {
+export function getLastChildTab(parent, options = {}) {
   if (!ensureLivingTab(parent))
     return null;
   assertValidHint(parent);
   assertInitializedTab(parent);
-  const tabs = parent.childTabs.filter(ensureLivingTab);
-  return tabs.length > 0 ? tabs[tabs.length - 1] : null ;
+  const children = parent.$TST.children;
+  const child = children.length > 0 ? children[children.length - 1] : null ;
+  if (options.element === false)
+    return child;
+  return child && child.$TST.element;
 }
 
 /*
-function getChildTabIndex(child, parent) {
+function getChildTabIndex(child, parent, options = {}) {
   if (!ensureLivingTab(child) ||
       !ensureLivingTab(parent))
     return -1;
   assertValidHint(child);
   assertValidHint(parent);
   assertInitializedTab(parent);
-  const tabs = parent.childTabs.filter(ensureLivingTab);
-  return tabs.indexOf(child);
+  const childIds = parent.$TST.childIds;
+  return childIds.indexOf(child.apiTab.id);
 }
 */
 
-export function getDescendantTabs(root) {
+export function getDescendantTabs(root, options = {}) {
   if (!ensureLivingTab(root))
     return [];
   assertValidHint(root);
   assertInitializedTab(root);
 
   let descendants = [];
-  const children = root.childTabs.filter(ensureLivingTab);
+  const children = root.$TST.children;
   for (const child of children) {
-    descendants.push(child);
-    descendants = descendants.concat(getDescendantTabs(child));
+    descendants.push(options.element === false ? child : child.$TST.element);
+    descendants = descendants.concat(getDescendantTabs(child.$TST.element, options));
   }
   return descendants;
 }
 
-export function getLastDescendantTab(root) {
-  const descendants = getDescendantTabs(root);
+export function getLastDescendantTab(root, options = {}) {
+  const descendants = getDescendantTabs(root, options);
   return descendants.length ? descendants[descendants.length-1] : null ;
 }
 
@@ -1225,7 +1301,7 @@ function getAllRootTabs(hint, options = {}) {
     windowId:   container.windowId,
     living:     true,
     ordered:    true,
-    attributes: [Constants.kPARENT, '']
+    hasParent:  false
     element:    true
   }, options));
 }
@@ -1239,7 +1315,7 @@ export function getRootTabs(hint, options = {}) {
     windowId:     container.windowId,
     controllable: true,
     ordered:      true,
-    attributes:   [Constants.kPARENT, ''],
+    hasParent:    false,
     element:      true
   }, options));
 }
@@ -1253,7 +1329,7 @@ function getVisibleRootTabs(hint, options = {}) {
     windowId:   container.windowId,
     visible:    true,
     ordered:    true,
-    attributes: [Constants.kPARENT, '']
+    hasParent:  false,
     element:    true
   }, options));
 }
@@ -1276,8 +1352,8 @@ export function collectRootTabs(tabs) {
   return tabs.filter(tab => {
     if (!ensureLivingTab(tab))
       return false;
-    const parent = getParentTab(tab);
-    return !parent || !tabs.includes(parent);
+    const parent = tab.$TST.parent;
+    return !parent || !tabs.includes(parent.element);
   });
 }
 
@@ -1289,7 +1365,7 @@ function getIndentedTabs(hint, options = {}) {
   return queryAll(Object.assign({
     windowId:     container.windowId,
     controllable: true,
-    attributes:   [Constants.kPARENT, /./],
+    hasParent:    true,
     ordered:      true,
     element:      true
   }, options));
@@ -1302,7 +1378,7 @@ function getVisibleIndentedTabs(hint, options = {}) {
   return queryAll(Object.assign({
     windowId:   container.windowId,
     visible:    true,
-    attributes: [Constants.kPARENT, /./],
+    hasParent:  true,
     ordered:    true,
     element:    true
   }, options));
@@ -1662,7 +1738,7 @@ export function isLocked(_aTab) {
 export function hasChildTabs(parent) {
   if (!ensureLivingTab(parent))
     return false;
-  return parent.hasAttribute(Constants.kCHILDREN);
+  return parent.$TST.hasChild;
 }
 
 export function getLabelWithDescendants(tab) {
@@ -1775,8 +1851,8 @@ export async function addState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.add(state);
-  if (tab.apiTab && tab.apiTab.$TST.states)
-    tab.apiTab.$TST.states[state] = true;
+  if (tab.apiTab && tab.$TST.states)
+    tab.$TST.states[state] = true;
   if (options.broadcast)
     broadcastState(tab, {
       add: [state]
@@ -1794,8 +1870,8 @@ export async function removeState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.remove(state);
-  if (tab.apiTab && tab.apiTab.$TST.states)
-    delete tab.apiTab.$TST.states[state];
+  if (tab.apiTab && tab.$TST.states)
+    delete tab.$TST.states[state];
   if (options.broadcast)
     broadcastState(tab, {
       remove: [state]
@@ -1813,11 +1889,11 @@ export async function removeState(tab, state, options = {}) {
 export function hasState(tab, state, options = {}) {
   if (options.attribute && tab)
     return tab.classList.contains(state);
-  return tab && tab.apiTab && state in tab.apiTab.$TST.states;
+  return tab && tab.apiTab && state in tab.$TST.states;
 }
 
 export function getStates(tab) {
-  return tab && tab.apiTab && tab.apiTab.$TST.states ? Object.keys(tab.apiTab.$TST.states) : [];
+  return tab && tab.apiTab && tab.$TST.states ? Object.keys(tab.$TST.states) : [];
 }
 
 export function broadcastState(tabs, options = {}) {
@@ -1842,7 +1918,7 @@ export async function setAttribute(tab, attribute, value) {
     return;
   tab.setAttribute(attribute, value);
   if (tab.apiTab)
-    tab.apiTab.$TST.attributes[attribute] = value;
+    tab.$TST.attributes[attribute] = value;
 }
 
 export async function removeAttribute(tab, attribute) {
@@ -1850,7 +1926,7 @@ export async function removeAttribute(tab, attribute) {
     return;
   tab.removeAttribute(attribute);
   if (tab.apiTab)
-    delete tab.apiTab.$TST.attributes[attribute];
+    delete tab.$TST.attributes[attribute];
 }
 
 

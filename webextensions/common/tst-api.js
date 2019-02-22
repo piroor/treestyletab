@@ -436,7 +436,7 @@ export function isGroupingBlocked() {
 export function serializeTab(tab) {
   const children         = Tabs.getChildTabs(tab).map(serializeTab);
   const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.apiTab.id);
-  return Object.assign({}, tab.apiTab, {
+  return Object.assign({}, Tabs.sanitize(tab.apiTab), {
     states:   Tabs.getStates(tab).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(tab.getAttribute(Constants.kLEVEL) || 0),
     children, ancestorTabIds
@@ -543,8 +543,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   let tabsInActiveWindow = [];
   if (aIds.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
-      populate:    true,
-      windowTypes: ['normal']
+      populate: true
     });
     tabsInActiveWindow = window.tabs;
   }
