@@ -398,7 +398,7 @@ async function onNewTabTracked(tab) {
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      delete tab.$TSTElement;
+      delete tab.$TST.element;
       return;
     }
 
@@ -449,7 +449,7 @@ async function onNewTabTracked(tab) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      delete tab.$TSTElement;
+      delete tab.$TST.element;
       return;
     }
 
@@ -479,7 +479,7 @@ async function onNewTabTracked(tab) {
     if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      delete tab.$TSTElement;
+      delete tab.$TST.element;
       return;
     }
 
@@ -647,7 +647,7 @@ async function onRemoved(tabId, removeInfo) {
 function onRemovedComplete(tab) {
   clearTabRelationsForRemovedTab(tab);
   Tabs.untrack(tab.apiTab.id);
-  delete tab.apiTab.$TSTElement;
+  delete tab.apiTab.$TST.element;
   const container = tab.parentNode;
   if (!container) // it was removed while waiting
     return;

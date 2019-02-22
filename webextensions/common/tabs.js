@@ -46,6 +46,7 @@ import {
 } from './common.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
+import Tab from '/common/Tab.js';
 
 function log(...args) {
   internalLogger('common/tabs', ...args);
@@ -64,8 +65,7 @@ export const activeTabForWindow = new Map();
 export const highlightedTabsForWindow = new Map();
 
 export function track(apiTab) {
-  apiTab.$TSTStates = {};
-  apiTab.$TSTAttributes = {};
+  apiTab.$TST = apiTab.$TST || new Tab();
   trackedTabs.set(apiTab.id, apiTab);
   let window = trackedWindows.get(apiTab.windowId);
   if (!window) {
@@ -146,8 +146,8 @@ export function untrackAll(windowId) {
     if (window) {
       for (const tab of window.tabs.values()) {
         trackedTabs.delete(tab.id);
-        if (tab.$TSTUniqueId)
-          trackedTabsByUniqueId.delete(tab.$TSTUniqueId.id)
+        if (tab.$TST.uniqueId)
+          trackedTabsByUniqueId.delete(tab.$TST.uniqueId.id)
       }
       window.tabs.clear();
       window.tabs = undefined;
@@ -224,19 +224,19 @@ function extractMatchedTabs(tabs, conditions) {
           matched(tab[attribute], conditions[`!${attribute}`]))
         continue TAB_MACHING;
     }
-    if ('states' in conditions && tab.$TSTStates) {
+    if ('states' in conditions && tab.$TST.states) {
       for (let i = 0, maxi = conditions.states.length; i < maxi; i += 2) {
         const state   = conditions.states[i];
         const pattern = conditions.states[i+1];
-        if (!matched(tab.$TSTStates[state], pattern))
+        if (!matched(tab.$TST.states[state], pattern))
           continue TAB_MACHING;
       }
     }
-    if ('attributes' in conditions && tab.$TSTAttributes) {
+    if ('attributes' in conditions && tab.$TST.attributes) {
       for (let i = 0, maxi = conditions.attributes.length; i < maxi; i += 2) {
         const attribute = conditions.attributes[i];
         const pattern   = conditions.attributes[i+1];
-        if (!matched(tab.$TSTAttributes[attribute], pattern))
+        if (!matched(tab.$TST.attributes[attribute], pattern))
           continue TAB_MACHING;
       }
     }
@@ -249,14 +249,14 @@ function extractMatchedTabs(tabs, conditions) {
          tab.pinned))
       continue TAB_MACHING;
     if (conditions.visible &&
-        (tab.$TSTStates[Constants.kTAB_STATE_COLLAPSED] ||
+        (tab.$TST.states[Constants.kTAB_STATE_COLLAPSED] ||
          tab.hidden))
       continue TAB_MACHING;
     if (conditions.controllable &&
         tab.hidden)
       continue TAB_MACHING;
 
-    const extracted = conditions.element ? tab.$TSTElement : tab;
+    const extracted = conditions.element ? tab.$TST.element : tab;
     if (extracted) {
       matchedTabs.push(extracted);
       if (conditions.first || conditions.last)
@@ -358,11 +358,8 @@ function documentPositionComparator(a, b) {
 }
 
 export function sanitize(apiTab) {
-  apiTab = Object.assign({}, apiTab);
-  delete apiTab.$TSTElement;
-  delete apiTab.$TSTUniqueId;
-  delete apiTab.$TSTStates;
-  delete apiTab.$TSTAttributes;
+  apiTab = Object.assign({}, apiTab, { '$TST': null });
+  delete apiTab.$TST;
   return apiTab;
 }
 
@@ -652,10 +649,9 @@ browser.windows.onRemoved.addListener(windowId => {
 
 export function buildTab(apiTab, options = {}) {
   log('build tab for ', apiTab);
-  apiTab.$TSTStates = apiTab.$TSTStates || {};
-  apiTab.$TSTAttributes = apiTab.$TSTAttributes || {};
+  apiTab.$TST = apiTab.$TST || new Tab();
   const tab = document.createElement('li');
-  apiTab.$TSTElement = tab;
+  apiTab.$TST.element = tab;
   tab.apiTab = apiTab;
   setAttribute(tab, 'id', makeTabId(apiTab));
   setAttribute(tab, Constants.kAPI_TAB_ID, apiTab.id || -1);
@@ -688,7 +684,7 @@ export function buildTab(apiTab, options = {}) {
 
   tab.uniqueId.then(uniqueId => {
     if (isTracked(apiTab.id))
-      apiTab.$TSTUniqueId = uniqueId;
+      apiTab.$TST.uniqueId = uniqueId;
   });
 
   tab.childTabs = [];
@@ -761,7 +757,7 @@ export function getTabById(idOrInfo) {
     const matched = idOrInfo.match(/^tab-(\d+)-(\d+)$/);
     if (matched) {
       const tab = trackedTabs.get(parseInt(matched[2]));
-      return ensureLivingTab(tab) && tab.windowId == matched[1] && tab.$TSTElement;
+      return ensureLivingTab(tab) && tab.windowId == matched[1] && tab.$TST.element;
     }
     // possible unique id
     return getTabByUniqueId(idOrInfo);
@@ -769,20 +765,20 @@ export function getTabById(idOrInfo) {
 
   if (typeof idOrInfo == 'number') { // tabs.Tab.id
     const tab = trackedTabs.get(idOrInfo);
-    return ensureLivingTab(tab) && tab.$TSTElement;
+    return ensureLivingTab(tab) && tab.$TST.element;
   }
 
   if (idOrInfo.id && idOrInfo.windowId) { // tabs.Tab
     const tab = trackedTabs.get(idOrInfo.id);
-    return ensureLivingTab(tab) && tab.windowId == idOrInfo.windowId && tab.$TSTElement;
+    return ensureLivingTab(tab) && tab.windowId == idOrInfo.windowId && tab.$TST.element;
   }
   else if (!idOrInfo.window) { // { tab: tabs.Tab.id }
     const tab = trackedTabs.get(idOrInfo.tab);
-    return ensureLivingTab(tab) && tab.$TSTElement;
+    return ensureLivingTab(tab) && tab.$TST.element;
   }
   else { // { tab: tabs.Tab.id, window: windows.Window.id }
     const tab = trackedTabs.get(idOrInfo.tab);
-    return ensureLivingTab(tab) && tab.windowId == idOrInfo.window && tab.$TSTElement;
+    return ensureLivingTab(tab) && tab.windowId == idOrInfo.window && tab.$TST.element;
   }
 
   return null;
@@ -807,10 +803,10 @@ export function getTabLabelContent(tab) {
 export function getActiveTab(hint) {
   const container = getTabsContainer(hint);
   const tab = container && ensureLivingTab(activeTabForWindow.get(container.windowId));
-  return tab && tab.$TSTElement;
+  return tab && tab.$TST.element;
 }
 export function getActiveTabs() {
-  return Array.from(activeTabForWindow.values(), tab => ensureLivingTab(tab) && tab.$TSTElement);
+  return Array.from(activeTabForWindow.values(), tab => ensureLivingTab(tab) && tab.$TST.element);
 }
 
 export function getNextTab(tab, options = {}) {
@@ -946,10 +942,10 @@ export function ensureLivingTab(tab) {
       return null;
   }
   else {
-    if (!tab.$TSTElement ||
-        !tab.$TSTElement.parentNode ||
+    if (!tab.$TST.element ||
+        !tab.$TST.element.parentNode ||
         !isTracked(tab.id) ||
-        tab.$TSTStates[Constants.kTAB_STATE_REMOVING])
+        tab.$TST.states[Constants.kTAB_STATE_REMOVING])
       return null;
   }
   return tab;
@@ -1738,8 +1734,8 @@ export async function addState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.add(state);
-  if (tab.apiTab && tab.apiTab.$TSTStates)
-    tab.apiTab.$TSTStates[state] = true;
+  if (tab.apiTab && tab.apiTab.$TST.states)
+    tab.apiTab.$TST.states[state] = true;
   if (options.broadcast)
     broadcastState(tab, {
       add: [state]
@@ -1757,8 +1753,8 @@ export async function removeState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.remove(state);
-  if (tab.apiTab && tab.apiTab.$TSTStates)
-    delete tab.apiTab.$TSTStates[state];
+  if (tab.apiTab && tab.apiTab.$TST.states)
+    delete tab.apiTab.$TST.states[state];
   if (options.broadcast)
     broadcastState(tab, {
       remove: [state]
@@ -1776,11 +1772,11 @@ export async function removeState(tab, state, options = {}) {
 export function hasState(tab, state, options = {}) {
   if (options.attribute && tab)
     return tab.classList.contains(state);
-  return tab && tab.apiTab && state in tab.apiTab.$TSTStates;
+  return tab && tab.apiTab && state in tab.apiTab.$TST.states;
 }
 
 export function getStates(tab) {
-  return tab && tab.apiTab && tab.apiTab.$TSTStates ? Object.keys(tab.apiTab.$TSTStates) : [];
+  return tab && tab.apiTab && tab.apiTab.$TST.states ? Object.keys(tab.apiTab.$TST.states) : [];
 }
 
 export function broadcastState(tabs, options = {}) {
@@ -1805,7 +1801,7 @@ export async function setAttribute(tab, attribute, value) {
     return;
   tab.setAttribute(attribute, value);
   if (tab.apiTab)
-    tab.apiTab.$TSTAttributes[attribute] = value;
+    tab.apiTab.$TST.attributes[attribute] = value;
 }
 
 export async function removeAttribute(tab, attribute) {
@@ -1813,7 +1809,7 @@ export async function removeAttribute(tab, attribute) {
     return;
   tab.removeAttribute(attribute);
   if (tab.apiTab)
-    delete tab.apiTab.$TSTAttributes[attribute];
+    delete tab.apiTab.$TST.attributes[attribute];
 }
 
 

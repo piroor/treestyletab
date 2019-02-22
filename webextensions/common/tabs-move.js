@@ -124,8 +124,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       Tabs.track(tab.apiTab);
       movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
-        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TSTElement,
-        oldNextTab:     oldNextTab && oldNextTab.$TSTElement,
+        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TST.element,
+        oldNextTab:     oldNextTab && oldNextTab.$TST.element,
         broadcasted: !!options.broadcasted
       });
     }
@@ -238,7 +238,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         continue;
       container.internalMovingTabs.add(tab.apiTab.id);
       container.alreadyMovedTabs.add(tab.apiTab.id);
-      container.insertBefore(tab, nextTab && nextTab.$TSTElement);
+      container.insertBefore(tab, nextTab && nextTab.$TST.element);
       if (nextTab) {
         if (nextTab.index > tab.apiTab.index)
           tab.apiTab.index = nextTab.index - 1;
@@ -251,8 +251,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       Tabs.track(tab.apiTab);
       movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
-        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TSTElement,
-        oldNextTab:     oldNextTab && oldNextTab.$TSTElement,
+        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TST.element,
+        oldNextTab:     oldNextTab && oldNextTab.$TST.element,
         broadcasted: !!options.broadcasted
       });
     }
