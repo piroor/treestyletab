@@ -428,7 +428,11 @@ export function getWindow() {
 }
 
 export function sort(tabs) {
-  return tabs.sort(documentPositionComparator);
+  if (tabs.length == 0)
+    return tabs;
+  if (tabs[0] instanceof Element)
+    return tabs.sort(documentPositionComparator);
+  return tabs.sort((a, b) => a.index - b.index);
 }
 
 function documentPositionComparator(a, b) {
