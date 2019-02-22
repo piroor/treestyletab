@@ -249,7 +249,7 @@ onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function onDragStart(event) {
   // get target tab at first before it is cleared by hide()
-  const targetTab = Tabs.getTabById(mTargetTabId);
+  const targetTab = Tabs.getTabElementById(mTargetTabId);
   log('onDragStart: targetTab = ', mTargetTabId, targetTab);
 
   if (!targetTab) {

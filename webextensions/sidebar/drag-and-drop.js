@@ -229,7 +229,7 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTab', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return Tabs.getTabById(info.draggedAPITab);
+    return Tabs.getTabElementById(info.draggedAPITab);
   });
   info.defineGetter('draggedAPITab', () => {
     const dragData = info.dragData;
@@ -237,7 +237,7 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTabs', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return info.draggedAPITabs.map(Tabs.getTabById).filter(tab => !!tab);
+    return info.draggedAPITabs.map(Tabs.getTabElementById).filter(tab => !!tab);
   });
   info.defineGetter('draggedAPITabs', () => {
     const dragData = info.dragData;
@@ -282,7 +282,7 @@ function getDropAction(event) {
                    );
           */
           for (const apiTab of info.draggedAPITabs.slice().reverse()) {
-            const tab    = Tabs.getTabById(apiTab);
+            const tab    = Tabs.getTabElementById(apiTab);
             const parent = Tabs.getParentTab(tab);
             if (!parent && ancestors.includes(parent))
               return false;
@@ -917,7 +917,7 @@ function reserveToProcessLongHover(params = {}) {
     mLongHoverTimer = setTimeout(async () => {
       log('reservedProcessLongHover: ', params);
 
-      const dragOverTab = Tabs.getTabById(params.dragOverTabId);
+      const dragOverTab = Tabs.getTabElementById(params.dragOverTabId);
       if (!dragOverTab ||
           dragOverTab.getAttribute(kDROP_POSITION) != 'self')
         return;
@@ -1049,7 +1049,7 @@ function onDragEnd(event) {
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   if (Array.isArray(dragData.apiTabs))
-    dragData.tabNodes = dragData.apiTabs.map(Tabs.getTabById);
+    dragData.tabNodes = dragData.apiTabs.map(Tabs.getTabElementById);
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
   setTimeout(finishDrag, 0);

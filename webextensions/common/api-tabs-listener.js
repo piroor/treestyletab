@@ -156,7 +156,7 @@ async function onActivated(activeInfo) {
     if (Tabs.hasCreatingTab(activeInfo.windowId))
       await Tabs.waitUntilTabsAreCreated(activeInfo.tabId);
 
-    const newTab = Tabs.getTabById({ tab: activeInfo.tabId, window: activeInfo.windowId });
+    const newTab = Tabs.getTabElementById({ tab: activeInfo.tabId, window: activeInfo.windowId });
     if (!newTab) {
       onCompleted();
       return;
@@ -248,7 +248,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     await previous;
 
   try {
-    const updatedTab = Tabs.getTabById({ tab: tabId, window: tab.windowId });
+    const updatedTab = Tabs.getTabElementById({ tab: tabId, window: tab.windowId });
     if (!updatedTab) {
       onCompleted();
       return;
@@ -491,7 +491,7 @@ async function onNewTabTracked(tab) {
       restored,
       duplicated,
       duplicatedInternally,
-      originalTab: duplicated && Tabs.getTabById({ tab: uniqueId.originalTabId }),
+      originalTab: duplicated && Tabs.getTabElementById({ tab: uniqueId.originalTabId }),
       treeForActionDetection
     });
     wait(configs.newTabAnimationDuration).then(() => {
@@ -595,7 +595,7 @@ async function onRemoved(tabId, removeInfo) {
     await previous;
 
   try {
-    const oldTab = Tabs.getTabById({ tab: tabId, window: removeInfo.windowId });
+    const oldTab = Tabs.getTabElementById({ tab: tabId, window: removeInfo.windowId });
     if (!oldTab) {
       onCompleted();
       return;
@@ -704,7 +704,7 @@ async function onMoved(tabId, moveInfo) {
        tab bar to follow their parent pinning tab. To avoid this
        problem, we have to wait for a while with this "async" and
        do following processes after the tab is completely pinned. */
-    const movedTab = Tabs.getTabById({ tab: tabId, window: moveInfo.windowId });
+    const movedTab = Tabs.getTabElementById({ tab: tabId, window: moveInfo.windowId });
     if (!movedTab) {
       if (maybeInternalOperation)
         container.internalMovingTabs.delete(tabId);
@@ -843,7 +843,7 @@ async function onDetached(tabId, detachInfo) {
 
   try {
     log('tabs.onDetached, id: ', tabId, detachInfo);
-    const oldTab = Tabs.getTabById({ tab: tabId, window: detachInfo.oldWindowId });
+    const oldTab = Tabs.getTabElementById({ tab: tabId, window: detachInfo.oldWindowId });
     if (!oldTab) {
       onCompleted();
       return;

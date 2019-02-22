@@ -147,7 +147,7 @@ export async function bookmarkTree(root, options = {}) {
 
 
 export async function openNewTabAs(options = {}) {
-  const currentTab = options.baseTab || Tabs.getTabById((await browser.tabs.query({
+  const currentTab = options.baseTab || Tabs.getTabElementById((await browser.tabs.query({
     active:        true,
     currentWindow: true
   }))[0]);
@@ -292,7 +292,7 @@ export async function performTabsDragDrop(params = {}) {
 export async function moveTabsWithStructure(tabs, params = {}) {
   log('moveTabsWithStructure ', tabs.map(tab => tab.id));
 
-  let movedTabs = tabs.map(Tabs.getTabById).filter(tab => !!tab);
+  let movedTabs = tabs.map(Tabs.getTabElementById).filter(tab => !!tab);
   if (!movedTabs.length)
     return [];
 

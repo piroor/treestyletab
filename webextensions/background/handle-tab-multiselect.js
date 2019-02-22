@@ -101,7 +101,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(apiTabId => apiTabId != activeTab.apiTab.id)
-        .map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index);
+        .map(apiTabId => Tabs.getTabElementById(apiTabId).apiTab.index);
       if (highlightedTabIds.has(activeTab.apiTab.id))
         indices.unshift(activeTab.apiTab.index);
       browser.tabs.highlight({
@@ -173,7 +173,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(apiTabId => apiTabId != activeTab.apiTab.id)
-        .map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index);
+        .map(apiTabId => Tabs.getTabElementById(apiTabId).apiTab.index);
       if (highlightedTabIds.has(activeTab.apiTab.id))
         indices.unshift(activeTab.apiTab.index);
       browser.tabs.highlight({

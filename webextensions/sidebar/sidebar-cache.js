@@ -194,7 +194,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
 
 function updateWindowCache(key, value) {
   if (!mLastWindowCacheOwner ||
-      !Tabs.getTabById(mLastWindowCacheOwner))
+      !Tabs.getTabElementById(mLastWindowCacheOwner))
     return;
   if (value === undefined) {
     //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);

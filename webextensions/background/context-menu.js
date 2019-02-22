@@ -337,7 +337,7 @@ export function refreshItems() {
 export const onClick = (info, apiTab) => {
   log('context menu item clicked: ', info, apiTab);
 
-  const contextTab = Tabs.getTabById(apiTab);
+  const contextTab = Tabs.getTabElementById(apiTab);
   const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
@@ -414,7 +414,7 @@ function onShown(info, tab) {
     updated = updateItems();
   }
 
-  tab = tab && Tabs.getTabById(tab.id);
+  tab = tab && Tabs.getTabElementById(tab.id);
   const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
   const hasChild = Tabs.hasChildTabs(tab);
   const multiselected = Tabs.isMultiselected(tab);

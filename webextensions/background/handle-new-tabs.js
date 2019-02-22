@@ -151,11 +151,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
       tab.dataset.isNewTab) {
     log('new tab ', dumpTab(tab));
     delete tab.dataset.isNewTab;
-    const possibleOpenerTab = Tabs.getTabById(tab.dataset.possibleOpenerTab);
+    const possibleOpenerTab = Tabs.getTabElementById(tab.dataset.possibleOpenerTab);
     delete tab.dataset.possibleOpenerTab;
     log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     const toBeGroupedTabs = tab.parentNode.openedNewTabs
-      .map(Tabs.getTabById)
+      .map(Tabs.getTabElementById)
       .filter(tab => !!tab);
     log('toBeGroupedTabs ', toBeGroupedTabs.map(dumpTab));
     if (!Tabs.getParentTab(tab) &&

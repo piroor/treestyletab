@@ -505,8 +505,8 @@ function onMessage(message, _sender, _respond) {
           message.tab,
           message.parent
         ]);
-        const tab = Tabs.getTabById(message.tab);
-        if (tab && Tabs.isActive(Tabs.getTabById(message.parent)))
+        const tab = Tabs.getTabElementById(message.tab);
+        if (tab && Tabs.isActive(Tabs.getTabElementById(message.parent)))
           scrollToNewTab(tab);
       })();
 
@@ -554,7 +554,7 @@ function onMessageExternal(message, _aSender) {
         const currentWindow = Tabs.getWindow();
         if ('tab' in message) {
           await Tabs.waitUntilTabsAreCreated(message.tab);
-          params.tab = Tabs.getTabById(message.tab);
+          params.tab = Tabs.getTabElementById(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;
         }

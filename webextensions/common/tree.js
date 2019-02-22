@@ -1014,7 +1014,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
       Tabs.isActive(nextActiveTab))
     return false;
 
-  nextTab = Tabs.getTabById(nextTab);
+  nextTab = Tabs.getTabElementById(nextTab);
   if (Tabs.isActive(nextTab) &&
       nextIsDiscarded) {
     log('reserve to discard accidentally restored tab ', nextTab.apiTab.id, nextTabUrl || nextTab.apiTab.url);
@@ -1185,7 +1185,7 @@ export async function moveTabs(tabs, options = {}) {
       destinationWindowId: destinationWindowId,
       inRemote:            false
     }));
-    return (response.movedTabs || []).map(Tabs.getTabById).filter(tab => !!tab);
+    return (response.movedTabs || []).map(Tabs.getTabElementById).filter(tab => !!tab);
   }
 
   let movedTabs = tabs;
@@ -1341,7 +1341,7 @@ export async function moveTabs(tabs, options = {}) {
       const startTime = Date.now();
       const maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = apiTabs.map(apiTab => Tabs.getTabById(TabIdFixer.fixTab(apiTab)));
+        newTabs = apiTabs.map(apiTab => Tabs.getTabElementById(TabIdFixer.fixTab(apiTab)));
         newTabs = newTabs.filter(tab => !!tab);
         if (newTabs.length < tabs.length) {
           log('retrying: ', apiTabIds, newTabs.length, tabs.length);
@@ -1386,7 +1386,7 @@ export async function moveTabs(tabs, options = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = movedTabs.map(tab => Tabs.getTabById(tab.id));
+  movedTabs = movedTabs.map(tab => Tabs.getTabElementById(tab.id));
   movedTabs = movedTabs.filter(tab => !!tab);
 
   return movedTabs;
@@ -1410,7 +1410,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       top:       'top' in options ? parseInt(options.top) : null,
       inRemote:  false
     }));
-    return (response.movedTabs || []).map(Tabs.getTabById).filter(tab => !!tab);
+    return (response.movedTabs || []).map(Tabs.getTabElementById).filter(tab => !!tab);
   }
 
   log('opening new window');
@@ -1445,7 +1445,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       const removeTabs = [];
       for (const apiTab of allTabsInWindow) {
         if (!movedAPITabIds.includes(apiTab.id))
-          removeTabs.push(Tabs.getTabById(apiTab));
+          removeTabs.push(Tabs.getTabElementById(apiTab));
       }
       log('removing tabs: ', removeTabs.map(dumpTab));
       TabsInternalOperation.removeTabs(removeTabs);
@@ -1649,7 +1649,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 
     let parent = null;
     if (parentIndexInTree > -1) {
-      parent = Tabs.getTabById(parentTab);
+      parent = Tabs.getTabElementById(parentTab);
       if (parent) {
         //log('existing tabs in tree: ', {
         //  size:   tabsInTree.length,

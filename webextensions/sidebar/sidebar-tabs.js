@@ -384,10 +384,10 @@ async function syncTabsOrder() {
       case 'insert':
       case 'replace':
         const moveTabIds = internalOrder.slice(toStart, toEnd);
-        const referenceTab = fromStart < elementsOrder.length ? Tabs.getTabById(elementsOrder[fromStart]) : null;
+        const referenceTab = fromStart < elementsOrder.length ? Tabs.getTabElementById(elementsOrder[fromStart]) : null;
         log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
         for (const id of moveTabIds) {
-          const tab = Tabs.getTabById(id);
+          const tab = Tabs.getTabElementById(id);
           if (tab)
             tab.parentNode.insertBefore(tab, referenceTab);
         }

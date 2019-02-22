@@ -347,7 +347,7 @@ function onConfigChange(key) {
         for (const window of windows) {
           const owner = window.tabs[window.tabs.length - 1];
           if (configs[key]) {
-            reserveToCacheTree(Tabs.getTabById(owner));
+            reserveToCacheTree(Tabs.getTabElementById(owner));
           }
           else {
             clearWindowCache(owner);

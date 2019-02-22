@@ -815,7 +815,7 @@ export function getTabFromChild(node, options = {}) {
   return ensureLivingTab(tab);
 }
 
-export function getTabById(idOrInfo) {
+export function getTabElementById(idOrInfo) {
   if (!idOrInfo)
     return null;
 
@@ -1033,7 +1033,7 @@ export function getOpenerTab(tab) {
       !tab.apiTab.openerTabId ||
       tab.apiTab.openerTabId == tab.apiTab.id)
     return null;
-  return getTabById({ id: tab.apiTab.openerTabId, windowId: tab.apiTab.windowId });
+  return getTabElementById({ id: tab.apiTab.openerTabId, windowId: tab.apiTab.windowId });
 }
 
 export function getParentTab(child, options = {}) {
@@ -1543,7 +1543,7 @@ export async function doAndGetNewTabs(asyncTask, hint) {
   await asyncTask();
   const afterApiTabs = await browser.tabs.query(tabsQueryOptions);
   const addedApiTabs = afterApiTabs.filter(afterApiTab => !beforeApiIds.includes(afterApiTab.id));
-  const addedTabs    = addedApiTabs.map(getTabById);
+  const addedTabs    = addedApiTabs.map(getTabElementById);
   return addedTabs;
 }
 
@@ -1566,7 +1566,7 @@ export function getNextActiveTab(tab, options = {}) { // if the current tab is c
 
 
 export function getGroupTabForOpener(opener) {
-  const tab = (opener instanceof Element) ? opener : (getTabById(opener) || getTabByUniqueId(opener));
+  const tab = (opener instanceof Element) ? opener : (getTabElementById(opener) || getTabByUniqueId(opener));
   if (!tab)
     return null;
   return query({
@@ -1584,7 +1584,7 @@ export function getOpenerFromGroupTab(groupTab) {
   if (!isGroupTab(groupTab))
     return null;
   const matchedOpenerTabId = groupTab.apiTab.url.match(/openerTabId=([^&;]+)/);
-  return matchedOpenerTabId && getTabById(matchedOpenerTabId[1]);
+  return matchedOpenerTabId && getTabElementById(matchedOpenerTabId[1]);
 }
 
 

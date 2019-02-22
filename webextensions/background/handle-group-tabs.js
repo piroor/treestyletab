@@ -341,7 +341,7 @@ async function tryGroupNewTabs() {
   try {
     // extract only pure new tabs
     let tabs = tabReferences.map(tabReference => {
-      const tab = Tabs.getTabById(tabReference.id);
+      const tab = Tabs.getTabElementById(tabReference.id);
       if (tabReference.openerTabId)
         tab.apiTab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       return tab;

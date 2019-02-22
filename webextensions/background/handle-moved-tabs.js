@@ -33,7 +33,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
       info.skipFixupTree ||
       // do nothing for already attached tabs
       (tab.apiTab.openerTabId &&
-       Tabs.getParentTab(tab) == Tabs.getTabById(tab.apiTab.openerTabId)))
+       Tabs.getParentTab(tab) == Tabs.getTabElementById(tab.apiTab.openerTabId)))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.positionedBySelf &&
@@ -98,9 +98,9 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       return;
 
     case 'attach': {
-      await Tree.attachTabTo(tab, Tabs.getTabById(action.parent), {
-        insertBefore: Tabs.getTabById(action.insertBefore),
-        insertAfter:  Tabs.getTabById(action.insertAfter),
+      await Tree.attachTabTo(tab, Tabs.getTabElementById(action.parent), {
+        insertBefore: Tabs.getTabElementById(action.insertBefore),
+        insertAfter:  Tabs.getTabElementById(action.insertAfter),
         broadcast:    true
       });
       Tree.followDescendantsToMovedRoot(tab);

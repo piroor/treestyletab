@@ -568,12 +568,12 @@ async function getTabsFromWrongIds(aIds, sender) {
       }
       case 'nextsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getNextSiblingTab(Tabs.getTabById(tabs[0]));
+        return Tabs.getNextSiblingTab(Tabs.getTabElementById(tabs[0]));
       }
       case 'previoussibling':
       case 'prevsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getPreviousSiblingTab(Tabs.getTabById(tabs[0]));
+        return Tabs.getPreviousSiblingTab(Tabs.getTabElementById(tabs[0]));
       }
       case 'sendertab':
         if (sender.tab)
@@ -596,7 +596,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   else
     flattenTabOrAPITabOrIds = tabOrAPITabOrIds.flat();
 
-  return flattenTabOrAPITabOrIds.map(Tabs.getTabById).filter(tab => !!tab);
+  return flattenTabOrAPITabOrIds.map(Tabs.getTabElementById).filter(tab => !!tab);
 }
 
 export function formatResult(results, originalMessage) {

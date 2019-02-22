@@ -370,7 +370,7 @@ async function onMouseUp(event) {
   if (!lastMousedown ||
       lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
-      (livingTab && livingTab != Tabs.getTabById(lastMousedown.detail.tab)))
+      (livingTab && livingTab != Tabs.getTabElementById(lastMousedown.detail.tab)))
     return;
 
   log('onMouseUp ', lastMousedown.detail);

@@ -63,14 +63,14 @@ function update(apiTabId) {
 }
 async function updateInternal(apiTabId) {
   const apiTab = await browser.tabs.get(apiTabId).catch(ApiTabs.handleMissingTabError);
-  const tab = Tabs.getTabById(apiTabId);
+  const tab = Tabs.getTabElementById(apiTabId);
   if (!apiTab ||
       !tab ||
       !Tabs.ensureLivingTab(tab))
     return;
   log('update: ', tab.id);
   if (tab.lastSuccessorTabIdByOwner) {
-    const successor = Tabs.getTabById(apiTab.successorTabId);
+    const successor = Tabs.getTabElementById(apiTab.successorTabId);
     if (successor) {
       log(`  ${tab.id} is already prepared for "selectOwnerOnClose" behavior (successor=${apiTab.successorTabId})`);
       return;
@@ -137,12 +137,12 @@ async function tryClearOwnerSuccessor(tab) {
 async function onActivated(tab, info = {}) {
   update(tab.apiTab.id);
   if (info.previousTabId) {
-    const previousTab = Tabs.getTabById(info.previousTabId);
+    const previousTab = Tabs.getTabElementById(info.previousTabId);
     if (previousTab) {
       await tryClearOwnerSuccessor(previousTab);
       const container = Tabs.getTabsContainer(info.windowId);
       if (container.lastRelatedTabs) {
-        const lastRelatedTab = Tabs.getTabById(container.lastRelatedTabs.get(info.previousTabId));
+        const lastRelatedTab = Tabs.getTabElementById(container.lastRelatedTabs.get(info.previousTabId));
         if (lastRelatedTab &&
             lastRelatedTab != tab) {
           log(`clear lastRelatedTabs for the window ${info.windowId} by tabs.onActivated`);
@@ -180,7 +180,7 @@ function onCreating(tab, info = {}) {
 
     const lastRelatedTabId = container.lastRelatedTabs.get(tab.apiTab.openerTabId);
     if (lastRelatedTabId)
-      tryClearOwnerSuccessor(Tabs.getTabById(lastRelatedTabId));
+      tryClearOwnerSuccessor(Tabs.getTabElementById(lastRelatedTabId));
 
     container.lastRelatedTabs.set(tab.apiTab.openerTabId, tab.apiTab.id);
     log(`set lastRelatedTab for ${tab.apiTab.openerTabId}: ${tab.id}`);
@@ -202,7 +202,7 @@ function onRemoving(tab, removeInfo = {}) {
   if (!lastRelatedTabs)
     return;
 
-  const lastRelatedTab = Tabs.getTabById(lastRelatedTabs.get(tab.apiTab.id));
+  const lastRelatedTab = Tabs.getTabElementById(lastRelatedTabs.get(tab.apiTab.id));
   if (lastRelatedTab &&
       !lastRelatedTab.apiTab.active)
     tryClearOwnerSuccessor(lastRelatedTab);

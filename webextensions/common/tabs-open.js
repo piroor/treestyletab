@@ -186,7 +186,7 @@ export async function openURIsInTabs(uris, options = {}) {
             tabId: apiTab.id
           })
         ]);
-        const tab = Tabs.getTabById(apiTab);
+        const tab = Tabs.getTabElementById(apiTab);
         log('created tab: ', tab);
         if (!tab)
           throw new Error('tab is already closed');
