@@ -251,7 +251,7 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
   Tabs.setAttribute(tab, Constants.kLEVEL, tab.getAttribute(Constants.kLEVEL) || 0);
 }
 
-function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
+async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
   if (shouldCollapse) {
     Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED);
     Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
@@ -260,7 +260,9 @@ function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
     Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
     Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
   }
-  if (Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, { attribute: true }))
+  //if (tab.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+  const states = await Tabs.getPermanentStates(tab);
+  if (states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
     Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
