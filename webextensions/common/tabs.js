@@ -1906,8 +1906,13 @@ export function fetchClosedWhileActiveResolver(tab) {
 export async function addState(tab, state, options = {}) {
   if (!tab)
     return;
-  tab.classList.add(state);
-  if (tab.apiTab && tab.$TST.states)
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  if (!tab.$TST)
+    return;
+  if (tab.$TST.element)
+    tab.$TST.element.classList.add(state);
+  if (tab.$TST.states)
     tab.$TST.states[state] = true;
   if (options.broadcast)
     broadcastState(tab, {
@@ -1917,7 +1922,7 @@ export async function addState(tab, state, options = {}) {
     const states = await getPermanentStates(tab);
     if (!states.includes(state)) {
       states.push(state);
-      await browser.sessions.setTabValue(tab.apiTab.id, Constants.kPERSISTENT_STATES, states);
+      await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_STATES, states);
     }
   }
 }
@@ -1925,8 +1930,13 @@ export async function addState(tab, state, options = {}) {
 export async function removeState(tab, state, options = {}) {
   if (!tab)
     return;
-  tab.classList.remove(state);
-  if (tab.apiTab && tab.$TST.states)
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  if (!tab.$TST)
+    return;
+  if (tab.$TST.element)
+    tab.$TST.element.classList.remove(state);
+  if (tab.$TST.states)
     delete tab.$TST.states[state];
   if (options.broadcast)
     broadcastState(tab, {
