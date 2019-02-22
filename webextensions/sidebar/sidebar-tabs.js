@@ -345,7 +345,7 @@ async function syncTabsOrder() {
   log('syncTabsOrder: internalOrder = ', internalOrder);
 
   const trackedWindow = Tabs.trackedWindows.get(windowId);
-  if (internalOrder.sort().join(',') != trackedWindow.order.sort().join(',')) {
+  if (internalOrder.slice(0).sort().join(',') != trackedWindow.order.sort().join(',')) {
     if (reserveToSyncTabsOrder.retryCount > 10)
       throw new Error(`fatal error: mismatched tabs in the window ${windowId}`);
     log('syncTabsOrder: retry');
