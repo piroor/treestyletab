@@ -1908,7 +1908,7 @@ export async function addState(tab, state, options = {}) {
     return;
   if (tab instanceof Element)
     tab = tab.apiTab;
-  if (!tab.$TST)
+  if (!tab || !tab.$TST)
     return;
   if (tab.$TST.element)
     tab.$TST.element.classList.add(state);
@@ -1932,7 +1932,7 @@ export async function removeState(tab, state, options = {}) {
     return;
   if (tab instanceof Element)
     tab = tab.apiTab;
-  if (!tab.$TST)
+  if (!tab || !tab.$TST)
     return;
   if (tab.$TST.element)
     tab.$TST.element.classList.remove(state);
@@ -1957,13 +1957,13 @@ export function hasState(tab, state) {
     return false;
   if (tab instanceof Element)
     tab = tab.apiTab;
-  if (!tab.$TST)
+  if (!tab || !tab.$TST)
     return false;
   return tab && state in tab.$TST.states;
 }
 
 export function getStates(tab) {
-  return tab && tab.apiTab && tab.$TST.states ? Object.keys(tab.$TST.states) : [];
+  return tab && tab.$TST.states ? Object.keys(tab.$TST.states) : [];
 }
 
 export function broadcastState(tabs, options = {}) {
@@ -1979,24 +1979,38 @@ export function broadcastState(tabs, options = {}) {
 }
 
 export async function getPermanentStates(tab) {
-  const states = await browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_STATES);
+  if (!tab)
+    return [];
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  if (!tab || !tab.$TST)
+    return [];
+  const states = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_STATES);
   return states || [];
 }
 
 export async function setAttribute(tab, attribute, value) {
   if (!tab)
-    return;
-  tab.setAttribute(attribute, value);
-  if (tab.apiTab)
-    tab.$TST.attributes[attribute] = value;
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  if (!tab || !tab.$TST)
+    return false;
+  if (tab.$TST.element)
+    tab.$TST.element.setAttribute(attribute, value);
+  tab.$TST.attributes[attribute] = value;
 }
 
 export async function removeAttribute(tab, attribute) {
   if (!tab)
-    return;
-  tab.removeAttribute(attribute);
-  if (tab.apiTab)
-    delete tab.$TST.attributes[attribute];
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  if (!tab || !tab.$TST)
+    return false;
+  if (tab.$TST.element)
+    tab.$TST.element.removeAttribute(attribute);
+  delete tab.$TST.attributes[attribute];
 }
 
 
