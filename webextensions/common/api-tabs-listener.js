@@ -518,7 +518,7 @@ async function onNewTabTracked(tab) {
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
 
-    const currentActiveTab = Tabs.getActiveTabs().find(tabElement => tabElement != newTab && tabElement.parentNode == newTab.parentNode);
+    const currentActiveTab = Tabs.getActiveTabs().find(tabElement => tabElement && tabElement != newTab && tabElement.parentNode == newTab.parentNode);
     if (renewedTab.active &&
         currentActiveTab)
       onActivated({
