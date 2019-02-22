@@ -1753,10 +1753,11 @@ function shouldCloseLastTabSubtreeOf(tab) {
 export function isGroupTab(tab) {
   if (!tab)
     return false;
-  assertInitializedTab(tab);
   if (tab instanceof Element)
     tab = tab.apiTab;
-  return !!((tab && Constants.kTAB_STATE_SUBTREE_COLLAPSED in tab.$TST.states) ||
+  if (!assertInitializedTab(tab))
+    return false;
+  return !!((tab && Constants.kTAB_STATE_GROUP_TAB in tab.$TST.states) ||
             tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0);
 }
 
