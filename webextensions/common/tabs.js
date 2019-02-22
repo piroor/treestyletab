@@ -811,71 +811,71 @@ export function getActiveTabs() {
   return Array.from(activeTabForWindow.values(), tab => ensureLivingTab(tab) && tab.$TSTElement);
 }
 
-export function getNextTab(tab) {
+export function getNextTab(tab, options = {}) {
   if (!tab || !tab.id)
     return null;
   assertValidHint(tab);
-  return query({
+  return query(Object.assign({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     living:   true,
     index:    (index => index > tab.apiTab.index),
     element:  true
-  });
+  }, options));
 }
 
-export function getPreviousTab(tab) {
+export function getPreviousTab(tab, options = {}) {
   if (!tab || !tab.id)
     return null;
   assertValidHint(tab);
-  return query({
+  return query(Object.assign({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     living:   true,
     index:    (index => index < tab.apiTab.index),
     last:     true,
     element:  true
-  });
+  }, options));
 }
 
-export function getFirstTab(hint) {
+export function getFirstTab(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return query({
+  return query(Object.assing({
     windowId: container.windowId,
     living:   true,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
-export function getLastTab(hint) {
+export function getLastTab(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return query({
+  return query(Object.assign({
     windowId: container.windowId,
     living:   true,
     last:     true,
     element:  true
-  });
+  }, options));
 }
 
-export function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
+export function getLastVisibleTab(hint, options = {}) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return query({
+  return query(Object.assign({
     windowId: container.windowId,
     visible:  true,
     last:     true,
     element:  true
-  });
+  }, options));
 }
 
-export function getLastOpenedTab(hint) {
-  const tabs = getTabs(hint);
+export function getLastOpenedTab(hint, options = {}) {
+  const tabs = getTabs(hint, options = {});
   return tabs.length > 0 ?
     tabs.sort((a, b) => b.apiTab.id - a.apiTab.id)[0] :
     null ;
@@ -886,7 +886,7 @@ function getTabIndex(tab, options = {}) {
     return -1;
   assertValidHint(tab);
 
-  let tabs = getAllTabs(tab);
+  let tabs = getAllTabs(tab, options = {});
   if (Array.isArray(options.ignoreTabs) &&
       options.ignoreTabs.length > 0)
     tabs = tabs.filter(tab => !options.ignoreTabs.includes(tab));
@@ -903,31 +903,31 @@ export function calculateNewTabIndex(params) {
 }
 
 
-export function getNextNormalTab(tab) {
+export function getNextNormalTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return query({
+  return query(Object.assign({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     normal:   true,
     index:    (index => index > tab.apiTab.index),
     element:  true
-  });
+  }, options));
 }
 
-export function getPreviousNormalTab(tab) {
+export function getPreviousNormalTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return query({
+  return query(Object.assign({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     normal:   true,
     index:    (index => index < tab.apiTab.index),
     last:     true,
     element:  true
-  });
+  }, options));
 }
 
 
@@ -1107,7 +1107,7 @@ export function getAllTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll(Object.assign({}, {
+  return queryAll(Object.assign({
     windowId: container.windowId,
     living:   true,
     ordered:  true,
@@ -1119,7 +1119,7 @@ export function getTabs(hint, options = {}) { // only visible, including collaps
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll(Object.assign({}, {
+  return queryAll(Object.assign({
     windowId:     container.windowId,
     controllable: true,
     ordered:      true,
@@ -1131,7 +1131,7 @@ export function getNormalTabs(hint, options = {}) { // only visible, including c
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll(Object.assign({}, {
+  return queryAll(Object.assign({
     windowId: container.windowId,
     normal:   true,
     ordered:  true,
@@ -1143,7 +1143,7 @@ export function getVisibleTabs(hint, options = {}) { // visible, not-collapsed, 
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll(Object.assign({}, {
+  return queryAll(Object.assign({
     windowId: container.windowId,
     visible:  true,
     ordered:  true,
@@ -1155,7 +1155,7 @@ export function getPinnedTabs(hint, options = {}) { // visible, pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll(Object.assign({}, {
+  return queryAll(Object.assign({
     windowId: container.windowId,
     pinned:   true,
     ordered:  true,
@@ -1164,72 +1164,72 @@ export function getPinnedTabs(hint, options = {}) { // visible, pinned
 }
 
 
-export function getUnpinnedTabs(hint) { // visible, not pinned
+export function getUnpinnedTabs(hint, options = {}) { // visible, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId: container.windowId,
     living:   true,
     pinned:   false,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
 /*
-function getAllRootTabs(hint) {
+function getAllRootTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId:   container.windowId,
     living:     true,
     ordered:    true,
     attributes: [Constants.kPARENT, '']
     element:    true
-  });
+  }, options));
 }
 */
 
-export function getRootTabs(hint) {
+export function getRootTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId:     container.windowId,
     controllable: true,
     ordered:      true,
     attributes:   [Constants.kPARENT, ''],
     element:      true
-  });
+  }, options));
 }
 
 /*
-function getVisibleRootTabs(hint) {
+function getVisibleRootTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId:   container.windowId,
     visible:    true,
     ordered:    true,
     attributes: [Constants.kPARENT, '']
     element:    true
-  });
+  }, options));
 }
 
-function getVisibleLoadingTabs(hint) {
+function getVisibleLoadingTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId: container.windowId,
     visible:  true,
     status:   'loading',
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 */
 
@@ -1243,94 +1243,94 @@ export function collectRootTabs(tabs) {
 }
 
 /*
-function getIndentedTabs(hint) {
+function getIndentedTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId:     container.windowId,
     controllable: true,
     attributes:   [Constants.kPARENT, /./],
     ordered:      true,
     element:      true
-  });
+  }, options));
 }
 
-function getVisibleIndentedTabs(hint) {
+function getVisibleIndentedTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId:   container.windowId,
     visible:    true,
     attributes: [Constants.kPARENT, /./],
     ordered:    true,
     element:    true
-  });
+  }, options));
 }
 */
 
-export function getDraggingTabs(hint) {
+export function getDraggingTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId: container.windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DRAGGING, true],
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
-export function getDuplicatingTabs(hint) {
+export function getDuplicatingTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId: container.windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DUPLICATING, true],
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
-export function getHighlightedTabs(hint) {
+export function getHighlightedTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryAll({
+  return queryAll(Object.assign({
     windowId:    container.windowId,
     living:      true,
     highlighted: true,
     ordered:     true,
     element:     true
-  });
+  }, options));
 }
 
-export function getSelectedTabs(hint) {
+export function getSelectedTabs(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
 
-  const selectedTabs = queryAll({
+  const selectedTabs = queryAll(Object.assign({
     windowId: container.windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_SELECTED, true],
     ordered:  true,
     element:  true
-  });
+  }, options));
   if (!container.classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED))
     return selectedTabs;
 
-  const highlightedTabs = queryAll({
+  const highlightedTabs = queryAll(Object.assign({
     windowId:    container.windowId,
     living:      true,
     highlighted: true,
     ordered:     true,
     element:     true
-  });
+  }, options));
   return Array.from(new Set(selectedTabs.concat(highlightedTabs)))
     .sort((a, b) => a.index - b.index);
 }
@@ -1339,79 +1339,79 @@ export function getSelectedTabs(hint) {
 
 // misc.
 
-export function getFirstNormalTab(hint) { // visible, not-collapsed, not-pinned
+export function getFirstNormalTab(hint, options = {}) { // visible, not-collapsed, not-pinned
   const container = getTabsContainer(hint);
-  return container && query({
+  return container && query(Object.assign({
     windowId: container.windowId,
     normal:   true,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
-export function getFirstVisibleTab(hint) { // visible, not-collapsed, not-hidden
+export function getFirstVisibleTab(hint, options = {}) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
-  return container && query({
+  return container && query(Object.assign({
     windowId: container.windowId,
     visible:  true,
     ordered:  true,
     element:  true
-  });
+  }, options));
 }
 
 /*
-function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
+function getLastVisibleTab(hint, options = {}) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return container && query({
+  return container && query(Object.assign({
     windowId: container.windowId,
     visible:  true,
     last:     true,
     element:  true
-  });
+  }, options));
 }
 */
 
-export function getNextVisibleTab(tab) { // visible, not-collapsed
+export function getNextVisibleTab(tab, options = {}) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return query({
+  return query(Object.assign({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     visible:  true,
     index:    (index => index > tab.apiTab.index),
     element:  true
-  });
+  }, options));
 }
 
-export function getPreviousVisibleTab(tab) { // visible, not-collapsed
+export function getPreviousVisibleTab(tab, options = {}) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return query({
+  return query(Object.assign({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     visible:  true,
     index:    (index => index < tab.apiTab.index),
     last:     true,
     element:  true
-  });
+  }, options));
 }
 
 /*
-function getVisibleIndex(tab) {
+function getVisibleIndex(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return -1;
   assertValidHint(tab);
   const container = getTabsContainer(hint);
-  return Tabs.queryAll({
+  return Tabs.queryAll(Object.assign({
     windowId: container.windowId,
     visible:  true,
     index:    (index => index > tab.apiTab.index),
     ordered:  true
-  ]).length;
+  ], options)).length;
 }
 */
 
