@@ -239,11 +239,7 @@ function extractMatchedTabs(tabs, conditions) {
       }
     }
 
-    if ((conditions.living ||
-         conditions.normal ||
-         conditions.visible ||
-         conditions.controllable ||
-         conditions.pinned) &&
+    if (conditions.living &&
         !ensureLivingTab(tab))
       continue TAB_MACHING;
     if (conditions.normal &&
