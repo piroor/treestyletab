@@ -844,7 +844,7 @@ export function getFirstTab(hint, options = {}) {
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return query(Object.assing({
+  return query(Object.assign({
     windowId: container.windowId,
     living:   true,
     ordered:  true,
