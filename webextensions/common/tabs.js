@@ -1888,7 +1888,7 @@ export function isAllTabsPlacedAfter(tabs, previousTab) {
   }
   return !previousTab ||
          !nextTab ||
-         nextTab.previousSibling == previousTab;
+         getPreviousTab(nextTab) == previousTab;
 }
 
 
