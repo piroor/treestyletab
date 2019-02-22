@@ -81,22 +81,15 @@ export class Tab {
     this.ancestorIds = [];
     this.childIds    = [];
 
+    this.uniqueId = {
+      id:            null,
+      originalId:    null,
+      originalTabId: null
+    };
     if (tab.id)
       this.promisedUniqueId = updateUniqueId(tab);
     else
-      this.promisedUniqueId = Promise.resolve({
-        id:            null,
-        originalId:    null,
-        originalTabId: null
-      });
-
-    this.promisedUniqueId.then(uniqueId => {
-      if (!isTracked(tab.id))
-        return;
-      this.uniqueId = uniqueId;
-      if (uniqueId.id)
-        trackedTabsByUniqueId.set(uniqueId.id, tab);
-    });
+      this.promisedUniqueId = Promise.resolve(this.uniqueId);
   }
 
   destroy() {
@@ -534,6 +527,8 @@ export function updateUniqueId(tab) {
     inRemote: !!mTargetWindow
   }).then(uniqueId => {
     if (uniqueId && ensureLivingTab(tab)) { // possibly removed from document while waiting
+      tab.$TST.uniqueId = uniqueId;
+      trackedTabsByUniqueId.set(uniqueId.id, tab);
       if (tab.$TST.element)
         setAttribute(tab.$TST.element, Constants.kPERSISTENT_ID, uniqueId.id);
     }
