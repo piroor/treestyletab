@@ -153,9 +153,9 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     tab:    tab.apiTab.id,
     window: tab.apiTab.windowId
   }).catch(_error => {});
-  const uniqueId = options.uniqueId || tab.$TST.uniqueId;
-  let insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
-  [insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
+  let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
+  [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
+    options.uniqueId || tab.$TST.uniqueId || tab.$TST.promisedUniqueId,
     browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
     browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
     browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
@@ -182,19 +182,19 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   ancestors    = ancestors.map(Tabs.getTabByUniqueId);
   children     = children.map(Tabs.getTabByUniqueId);
   log(' => references: ', {
-    insertBefore: dumpTab(insertBefore),
-    insertAfter:  dumpTab(insertAfter),
-    ancestors:    ancestors.map(dumpTab).join(', '),
-    children:     children.map(dumpTab).join(', ')
+    insertBefore: insertBefore,
+    insertAfter:  insertAfter,
+    ancestors:    ancestors.map(tab => tab && tab.id).join(', '),
+    children:     children.map(tab => tab && tab.id).join(', ')
   });
   let attached = false;
   const active = Tabs.isActive(tab);
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
-    const done = Tree.attachTabTo(tab, ancestor, {
-      insertBefore,
-      insertAfter,
+    const done = Tree.attachTabTo(tab, ancestor.$TST.element, {
+      insertBefore: insertBefore && insertBefore.$TST.element,
+      insertAfter:  insertAfter && insertAfter.$TST.element,
       dontExpand:  !active,
       forceExpand: active,
       broadcast:   true
@@ -243,7 +243,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     for (const child of children) {
       if (!child)
         continue;
-      await Tree.attachTabTo(child, tab, {
+      await Tree.attachTabTo(child.$TST.element, tab, {
         dontExpand:  !Tabs.isActive(child),
         forceExpand: active,
         insertAt:    Constants.kINSERT_NEAREST,

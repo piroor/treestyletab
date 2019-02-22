@@ -585,7 +585,7 @@ async function getTabsFromWrongIds(aIds, sender) {
       }
       default:
         const tabFromUniqueId = Tabs.getTabByUniqueId(id);
-        return tabFromUniqueId || id;
+        return tabFromUniqueId && tabFromUniqueId.$TST.element || id;
     }
   }));
   log('=> ', tabOrAPITabOrIds);

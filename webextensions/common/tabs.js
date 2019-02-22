@@ -91,8 +91,11 @@ export class Tab {
       });
 
     this.promisedUniqueId.then(uniqueId => {
-      if (isTracked(tab.id))
-        this.uniqueId = uniqueId;
+      if (!isTracked(tab.id))
+        return;
+      this.uniqueId = uniqueId;
+      if (uniqueId.id)
+        trackedTabsByUniqueId.set(uniqueId.id, tab);
     });
   }
 
@@ -652,7 +655,7 @@ export function addCreatingTab(tab) {
   let onTabCreated;
   const creatingTabs = mCreatingTabs.get(tab.windowId) || new Map();
   if (configs.acceleratedTabCreation) {
-    creatingTabs.set(tab.id, tab.promisedUniqueId);
+    creatingTabs.set(tab.id, tab.$TST.promisedUniqueId);
     onTabCreated = () => {};
   }
   else {
@@ -661,7 +664,7 @@ export function addCreatingTab(tab) {
     }));
   }
   mCreatingTabs.set(tab.windowId, creatingTabs);
-  tab.promisedUniqueId.then(_aUniqueId => {
+  tab.$TST.promisedUniqueId.then(_aUniqueId => {
     creatingTabs.delete(tab.id);
   });
   return onTabCreated;
@@ -1022,8 +1025,10 @@ export function ensureLivingTab(tab) {
 }
 
 function assertInitializedTab(tab) {
-  if (!tab.apiTab)
+  if (tab instanceof Element && !tab.apiTab)
     throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
+  if (!tab.$TST)
+    throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no $TST helper)\n${new Error().stack}`);
   return true;
 }
 
