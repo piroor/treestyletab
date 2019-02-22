@@ -205,12 +205,10 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
     Tabs.addState(tab, state);
   }
   for (const state of NATIVE_STATES) {
-    if (apiTab[state]) {
+    if (apiTab[state])
       Tabs.addState(tab, state);
-      }
-    else {
+    else
       Tabs.removeState(tab, state);
-      }
   }
   if (apiTab.status == 'loading') {
     Tabs.addState(tab, 'loading');
