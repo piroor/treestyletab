@@ -179,45 +179,48 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
       TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
     }
   }
-  else {
-    const states = [
-      'active',
-      'attention',
-      'audible',
-      'discarded',
-      'hidden',
-      'highlighted',
-      'pinned'
-    ];
-    for (const tab of tabs) {
-      for (const state of tab.classList) {
-        Tabs.addState(tab, state);
-      }
-      for (const state of states) {
-        if (tab.apiTab[state])
-          Tabs.addState(tab, state);
-        else
-          Tabs.removeState(tab, state);
-      }
-      if (tab.apiTab.status == 'loading') {
-        Tabs.addState(tab, 'loading');
-        Tabs.removeState(tab, 'complete');
-      }
-      else {
-        Tabs.addState(tab, 'complete');
-        Tabs.removeState(tab, 'loading');
-      }
-    }
-  }
-
-  // update active tab appearance
-  browser.tabs.query({ windowId: tabs[0].apiTab.windowId, active: true })
-    .then(activeTabs => TabsInternalOperation.setTabActive(Tabs.getTabById(activeTabs[0])));
 }
+
+const NATIVE_STATES = new Set([
+  'active',
+  'attention',
+  'audible',
+  'discarded',
+  'hidden',
+  'highlighted',
+  'pinned'
+]);
+const IGNORE_CLASS_STATES = new Set([
+  'tab',
+  Constants.kTAB_STATE_ANIMATION_READY,
+  Constants.kTAB_STATE_SUBTREE_COLLAPSED
+]);
 
 function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
   Tabs.updateUniqueId(tab);
   Tabs.initPromisedStatus(tab, true);
+
+  for (const state of tab.classList) {
+    if (IGNORE_CLASS_STATES.has(state))
+      continue;
+    Tabs.addState(tab, state);
+  }
+  for (const state of NATIVE_STATES) {
+    if (apiTab[state]) {
+      Tabs.addState(tab, state);
+      }
+    else {
+      Tabs.removeState(tab, state);
+      }
+  }
+  if (apiTab.status == 'loading') {
+    Tabs.addState(tab, 'loading');
+    Tabs.removeState(tab, 'complete');
+  }
+  else {
+    Tabs.addState(tab, 'complete');
+    Tabs.removeState(tab, 'loading');
+  }
 
   const idMap = options.idMap;
 
@@ -245,8 +248,8 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
     Tabs.setAttribute(tab, 'data-already-grouped-for-pinned-opener', tab.dataset.alreadyGroupedForPinnedOpener);
   if (tab.dataset.originalOpenerTabId)
     Tabs.setAttribute(tab, 'data-original-opener-tab-id', tab.dataset.originalOpenerTabId);
-  Tabs.setAttribute(tab, Constants.kCURRENT_URI, tab.getAttribute(Constants.kCURRENT_URI));
-  Tabs.setAttribute(tab, Constants.kLEVEL, tab.getAttribute(Constants.kLEVEL));
+  Tabs.setAttribute(tab, Constants.kCURRENT_URI, tab.getAttribute(Constants.kCURRENT_URI) || apiTab.url);
+  Tabs.setAttribute(tab, Constants.kLEVEL, tab.getAttribute(Constants.kLEVEL) || 0);
 }
 
 function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
