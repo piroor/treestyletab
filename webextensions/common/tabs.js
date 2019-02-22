@@ -861,7 +861,7 @@ export function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
 export function getLastOpenedTab(hint) {
   const tabs = getTabs(hint);
   return tabs.length > 0 ?
-    tabs.sort((aA, aB) => aB.apiTab.id - aA.apiTab.id)[0] :
+    tabs.sort((a, b) => b.apiTab.id - a.apiTab.id)[0] :
     null ;
 }
 
