@@ -279,7 +279,7 @@ function onMessage(message, sender) {
       })();
 
     case Constants.kCOMMAND_PULL_TABS_ORDER:
-      return Promise.resolve(Tabs.getAllTabs(message.windowId).map(tab => tab.apiTab.id));
+      return Promise.resolve(Tabs.trackedWindows.get(message.windowId).order);
 
     case Constants.kCOMMAND_PULL_TREE_STRUCTURE:
       return (async () => {
