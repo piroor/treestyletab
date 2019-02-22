@@ -150,7 +150,7 @@ function fixupTabsRestoredFromCache(tabs, apiTabs, options = {}) {
   tabs.forEach((tab, index) => {
     const oldId = tab.id;
     const apiTab = apiTabs[index];
-    tab.id = Tabs.makeTabId(apiTab);
+    Tabs.setAttribute(tab, 'id', Tabs.makeTabId(apiTab));
     tab.apiTab = apiTab;
     apiTab.$TSTStates = apiTab.$TSTStates || {};
     apiTab.$TSTAttributes = apiTab.$TSTAttributes || {};
