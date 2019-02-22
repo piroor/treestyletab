@@ -154,6 +154,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     window: tab.apiTab.windowId
   }).catch(_error => {});
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
+  // eslint-disable-next-line prefer-const
   [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
     options.uniqueId || tab.$TST.uniqueId || tab.$TST.promisedUniqueId,
     browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
