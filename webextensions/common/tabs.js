@@ -191,7 +191,7 @@ title
 url
 `.trim().split(/\s+/);
 
-export function queryTabs(conditions) {
+export function queryAll(conditions) {
   if (conditions.windowId || conditions.orderd) {
     let tabs = [];
     for (const window of trackedWindows.values()) {
@@ -292,7 +292,7 @@ function matched(value, pattern) {
   return true;
 }
 
-export function queryTab(conditions) {
+export function query(conditions) {
   if (conditions.last)
     conditions.orderd = true;
   else
@@ -797,7 +797,7 @@ export function getNextTab(tab) {
   if (!tab || !tab.id)
     return null;
   assertValidHint(tab);
-  return queryTab({
+  return query({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     living:   true,
@@ -811,7 +811,7 @@ export function getPreviousTab(tab) {
   if (!tab || !tab.id)
     return null;
   assertValidHint(tab);
-  return queryTab({
+  return query({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     living:   true,
@@ -825,7 +825,7 @@ export function getFirstTab(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return queryTab({
+  return query({
     windowId: container.windowId,
     living:   true,
     ordered:  true,
@@ -837,7 +837,7 @@ export function getLastTab(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return queryTab({
+  return query({
     windowId: container.windowId,
     living:   true,
     last:     true,
@@ -849,7 +849,7 @@ export function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return queryTab({
+  return query({
     windowId: container.windowId,
     visible:  true,
     last:     true,
@@ -890,7 +890,7 @@ export function getNextNormalTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return queryTab({
+  return query({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     normal:   true,
@@ -904,7 +904,7 @@ export function getPreviousNormalTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return queryTab({
+  return query({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     normal:   true,
@@ -1091,7 +1091,7 @@ export function getAllTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     living:   true,
     ordered:  true,
@@ -1103,7 +1103,7 @@ export function getTabs(hint) { // only visible, including collapsed and pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId:     container.windowId,
     controllable: true,
     ordered:      true,
@@ -1115,7 +1115,7 @@ export function getNormalTabs(hint) { // only visible, including collapsed, not 
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     normal:   true,
     ordered:  true,
@@ -1127,7 +1127,7 @@ export function getVisibleTabs(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     visible:  true,
     ordered:  true,
@@ -1139,7 +1139,7 @@ export function getPinnedTabs(hint) { // visible, pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     pinned:   true,
     ordered:  true,
@@ -1152,7 +1152,7 @@ export function getUnpinnedTabs(hint) { // visible, not pinned
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     living:   true,
     pinned:   false,
@@ -1166,7 +1166,7 @@ function getAllRootTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId:   container.windowId,
     living:     true,
     ordered:    true,
@@ -1180,7 +1180,7 @@ export function getRootTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId:     container.windowId,
     controllable: true,
     ordered:      true,
@@ -1194,7 +1194,7 @@ function getVisibleRootTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId:   container.windowId,
     visible:    true,
     ordered:    true,
@@ -1207,7 +1207,7 @@ function getVisibleLoadingTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     visible:  true,
     status:   'loading',
@@ -1231,7 +1231,7 @@ function getIndentedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId:     container.windowId,
     controllable: true,
     attributes:   [Constants.kPARENT, /./],
@@ -1244,7 +1244,7 @@ function getVisibleIndentedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId:   container.windowId,
     visible:    true,
     attributes: [Constants.kPARENT, /./],
@@ -1258,7 +1258,7 @@ export function getDraggingTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DRAGGING, true],
@@ -1271,7 +1271,7 @@ export function getDuplicatingTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId: container.windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DUPLICATING, true],
@@ -1284,7 +1284,7 @@ export function getHighlightedTabs(hint) {
   const container = getTabsContainer(hint);
   if (!container)
     return [];
-  return queryTabs({
+  return queryAll({
     windowId:    container.windowId,
     living:      true,
     highlighted: true,
@@ -1298,7 +1298,7 @@ export function getSelectedTabs(hint) {
   if (!container)
     return [];
 
-  const selectedTabs = queryTabs({
+  const selectedTabs = queryAll({
     windowId: container.windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_SELECTED, true],
@@ -1308,7 +1308,7 @@ export function getSelectedTabs(hint) {
   if (!container.classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED))
     return selectedTabs;
 
-  const highlightedTabs = queryTabs({
+  const highlightedTabs = queryAll({
     windowId:    container.windowId,
     living:      true,
     highlighted: true,
@@ -1325,7 +1325,7 @@ export function getSelectedTabs(hint) {
 
 export function getFirstNormalTab(hint) { // visible, not-collapsed, not-pinned
   const container = getTabsContainer(hint);
-  return container && queryTab({
+  return container && query({
     windowId: container.windowId,
     normal:   true,
     ordered:  true,
@@ -1335,7 +1335,7 @@ export function getFirstNormalTab(hint) { // visible, not-collapsed, not-pinned
 
 export function getFirstVisibleTab(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
-  return container && queryTab({
+  return container && query({
     windowId: container.windowId,
     visible:  true,
     ordered:  true,
@@ -1348,7 +1348,7 @@ function getLastVisibleTab(hint) { // visible, not-collapsed, not-hidden
   const container = getTabsContainer(hint);
   if (!container)
     return null;
-  return container && queryTab({
+  return container && query({
     windowId: container.windowId,
     visible:  true,
     last:     true,
@@ -1361,7 +1361,7 @@ export function getNextVisibleTab(tab) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return queryTab({
+  return query({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     visible:  true,
@@ -1375,7 +1375,7 @@ export function getPreviousVisibleTab(tab) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  return queryTab({
+  return query({
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     visible:  true,
@@ -1391,7 +1391,7 @@ function getVisibleIndex(tab) {
     return -1;
   assertValidHint(tab);
   const container = getTabsContainer(hint);
-  return Tabs.queryTabs({
+  return Tabs.queryAll({
     windowId: container.windowId,
     visible:  true,
     index:    (index => tab.apiTab.index < index),
@@ -1440,7 +1440,7 @@ export function getGroupTabForOpener(opener) {
   const tab = (opener instanceof Element) ? opener : (getTabById(opener) || getTabByUniqueId(opener));
   if (!tab)
     return null;
-  return queryTab({
+  return query({
     windowId:   tab.parentNode.windowId,
     living:     true,
     attributes: [
@@ -1590,7 +1590,7 @@ export function isHighlighted(tab) {
 export function isMultiselected(tab) {
   return isSelected(tab) &&
            (isMultihighlighted(tab) ||
-            queryTabs({
+            queryAll({
               windowId: tab.apiTab.windowId,
               living:   true,
               states:   [Constants.kTAB_STATE_SELECTED, true]

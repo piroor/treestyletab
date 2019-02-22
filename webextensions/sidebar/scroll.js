@@ -332,7 +332,7 @@ export async function scrollToTab(tab, options = {}) {
 scrollToTab.lastTargetId = null;
 
 function getOffsetForAnimatingTab(tab) {
-  const allExpanding = Tabs.queryTabs({
+  const allExpanding = Tabs.queryAll({
     windowId: tab.apiTab.windowId,
     normal:   true,
     states:   [
@@ -340,7 +340,7 @@ function getOffsetForAnimatingTab(tab) {
       Constants.kTAB_STATE_EXPANDING, true
     ]
   });
-  const followingExpanding = Tabs.queryTabs({
+  const followingExpanding = Tabs.queryAll({
     windowId: tab.apiTab.windowId,
     normal:   true,
     index:    (value => tab.apiTab.index < value),
@@ -349,7 +349,7 @@ function getOffsetForAnimatingTab(tab) {
       Constants.kTAB_STATE_EXPANDING, true
     ]
   });
-  const allCollapsing = Tabs.queryTabs({
+  const allCollapsing = Tabs.queryAll({
     windowId: tab.apiTab.windowId,
     normal:   true,
     states:   [
@@ -357,7 +357,7 @@ function getOffsetForAnimatingTab(tab) {
       Constants.kTAB_STATE_COLLAPSING, true
     ]
   });
-  const followingCollapsing = Tabs.queryTabs({
+  const followingCollapsing = Tabs.queryAll({
     windowId: tab.apiTab.windowId,
     index:    (value => tab.apiTab.index < value),
     normal:   true,

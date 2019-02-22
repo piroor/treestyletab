@@ -226,7 +226,7 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  const loadingTab = Tabs.queryTab({
+  const loadingTab = Tabs.query({
     windowId: Tabs.getWindow(),
     visible:  true,
     status:   'loading'
@@ -238,7 +238,7 @@ function updateLoadingState() {
 }
 
 async function synchronizeThrobberAnimation() {
-  const toBeSynchronizedTabs = Tabs.queryTabs({
+  const toBeSynchronizedTabs = Tabs.queryAll({
     windowId: Tabs.getWindow(),
     visible:  true,
     states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true],

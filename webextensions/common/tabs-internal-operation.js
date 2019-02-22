@@ -115,7 +115,7 @@ export function clearOldActiveStateInWindow(windowId) {
   const container = Tabs.getTabsContainer(windowId);
   if (!container)
     return [];
-  const oldTabs = Tabs.queryTabs({
+  const oldTabs = Tabs.queryAll({
     windowId,
     active:  true,
     element: true

@@ -434,7 +434,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
             Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         // If there is not-yet grouped sibling, place next to it.
-        const siblings = Tabs.queryTabs({
+        const siblings = Tabs.queryAll({
           windowId:   tab.parentNode.windowId,
           normal:     true,
           attributes: [
