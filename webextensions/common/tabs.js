@@ -801,7 +801,7 @@ export function getNextTab(tab) {
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     living:   true,
-    index:    (index => tab.apiTab.index < index),
+    index:    (index => index > tab.apiTab.index),
     ordered:  true,
     element:  true
   });
@@ -815,7 +815,7 @@ export function getPreviousTab(tab) {
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     living:   true,
-    index:    (index => tab.apiTab.index > index),
+    index:    (index => index < tab.apiTab.index),
     last:     true,
     element:  true
   });
@@ -894,7 +894,7 @@ export function getNextNormalTab(tab) {
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     normal:   true,
-    index:    (index => tab.apiTab.index < index),
+    index:    (index => index > tab.apiTab.index),
     ordered:  true,
     element:  true
   });
@@ -908,7 +908,7 @@ export function getPreviousNormalTab(tab) {
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     normal:   true,
-    index:    (index => tab.apiTab.index > index),
+    index:    (index => index < tab.apiTab.index),
     last:     true,
     element:  true
   });
@@ -1365,7 +1365,7 @@ export function getNextVisibleTab(tab) { // visible, not-collapsed
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     visible:  true,
-    index:    (index => tab.apiTab.index < index),
+    index:    (index => index > tab.apiTab.index),
     ordered:  true,
     element:  true
   });
@@ -1379,7 +1379,7 @@ export function getPreviousVisibleTab(tab) { // visible, not-collapsed
     windowId: tab.apiTab.windowId,
     fromId:   tab.apiTab.id,
     visible:  true,
-    index:    (index => tab.apiTab.index > index),
+    index:    (index => index < tab.apiTab.index),
     last:     true,
     element:  true
   });
@@ -1394,7 +1394,7 @@ function getVisibleIndex(tab) {
   return Tabs.queryAll({
     windowId: container.windowId,
     visible:  true,
-    index:    (index => tab.apiTab.index < index),
+    index:    (index => index > tab.apiTab.index),
     ordered:  true
   ]).length;
 }
