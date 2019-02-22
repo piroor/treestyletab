@@ -1391,8 +1391,9 @@ export function collectRootTabs(tabs) {
   return tabs.filter(tab => {
     if (!ensureLivingTab(tab))
       return false;
+    const element = tab instanceof Element;
     const parent = tab.$TST.parent;
-    return !parent || !tabs.includes(parent.element);
+    return !parent || !tabs.includes(element ? parent.$TST.element : parent);
   });
 }
 
