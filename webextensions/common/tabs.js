@@ -1566,24 +1566,28 @@ export function getNextActiveTab(tab, options = {}) { // if the current tab is c
 
 
 export function getGroupTabForOpener(opener) {
-  const tab = (opener instanceof Element) ? opener : (getTabElementById(opener) || getTabByUniqueId(opener));
+  const tabElement = (opener instanceof Element) ? opener : getTabElementById(opener);
+  const tab = tabElement ? tabElement.apiTab : getTabByUniqueId(opener);
   if (!tab)
     return null;
+  if (!tab.uniqueId)
+    console.log('not initialized ', tab);
   return query({
-    windowId:   tab.parentNode.windowId,
+    windowId:   tab.windowId,
     living:     true,
     attributes: [
       Constants.kCURRENT_URI,
-      new RegExp(`openerTabId=${tab.getAttribute(Constants.kPERSISTENT_ID)}($|[#&])`)
+      new RegExp(`openerTabId=${tab.uniqueId.id}($|[#&])`)
     ],
     element:    true
   });
 }
 
-export function getOpenerFromGroupTab(groupTab) {
-  if (!isGroupTab(groupTab))
+export function getOpenerFromGroupTab(groupTabOrElement) {
+  if (!isGroupTab(groupTabOrElement))
     return null;
-  const matchedOpenerTabId = groupTab.apiTab.url.match(/openerTabId=([^&;]+)/);
+  const groupTab = groupTabOrElement.apiTab ? groupTabOrElement.apiTab : groupTabOrElement;
+  const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
   return matchedOpenerTabId && getTabElementById(matchedOpenerTabId[1]);
 }
 
@@ -1595,84 +1599,129 @@ export function getOpenerFromGroupTab(groupTab) {
 //===================================================================
 
 export function isActive(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.active);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.active);
 }
 
 export function isPinned(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.pinned);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.pinned);
 }
 
 export function isAudible(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.audible);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.audible);
 }
 
 export function isSoundPlaying(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.audible && !tab.apiTab.mutedInfo.muted);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.audible && !tab.mutedInfo.muted);
 }
 
 export function maybeSoundPlaying(tab) {
-  return ensureLivingTab(tab) &&
-         (isSoundPlaying(tab) ||
-          (hasState(tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return (isSoundPlaying(tab) ||
+          (Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER in tab.$TST.states &&
            hasChildTabs(tab)));
 }
 
 export function isMuted(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.mutedInfo && tab.apiTab.mutedInfo.muted);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.mutedInfo && tab.mutedInfo.muted);
 }
 
 export function maybeMuted(tab) {
-  return ensureLivingTab(tab) &&
-         (isMuted(tab) ||
-          (hasState(tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return (isMuted(tab) ||
+          (Constants.kTAB_STATE_HAS_MUTED_MEMBER in tab.$TST.states &&
            hasChildTabs(tab)));
 }
 
 export function isHidden(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.hidden);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.hidden);
 }
 
 export function isCollapsed(tab) {
-  return ensureLivingTab(tab) &&
-           hasState(tab, Constants.kTAB_STATE_COLLAPSED);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && Constants.kTAB_STATE_COLLAPSED in tab.$TST.states);
 }
 
 export function isDiscarded(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.discarded);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.discarded);
 }
 
 export function isPrivateBrowsing(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.incognito);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.incognito);
 }
 
 export function isOpening(tab) {
-  return ensureLivingTab(tab) &&
-           hasState(tab, Constants.kTAB_STATE_OPENING);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && Constants.kTAB_STATE_OPENING in tab.$TST.states);
 }
 
 export function isDuplicating(tab) {
-  return ensureLivingTab(tab) &&
-           hasState(tab, Constants.kTAB_STATE_DUPLICATING);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && Constants.kTAB_STATE_DUPLICATING in tab.$TST.states);
 }
 
 export function isNewTabCommandTab(tab) {
-  return ensureLivingTab(tab) &&
-           configs.guessNewOrphanTabAsOpenedByNewTabCommand &&
-           assertInitializedTab(tab) &&
-           tab.apiTab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+  if (!ensureLivingTab(tab) ||
+      !configs.guessNewOrphanTabAsOpenedByNewTabCommand ||
+      !assertInitializedTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return tab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
 }
 
 export function isSubtreeCollapsed(tab) {
-  return ensureLivingTab(tab) &&
-         hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && Constants.kTAB_STATE_SUBTREE_COLLAPSED in tab.$TST.states);
 }
 
 /*
@@ -1695,39 +1744,58 @@ export function isGroupTab(tab) {
   if (!tab)
     return false;
   assertInitializedTab(tab);
-  return hasState(tab, Constants.kTAB_STATE_GROUP_TAB) ||
-         tab.apiTab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!((tab && Constants.kTAB_STATE_SUBTREE_COLLAPSED in tab.$TST.states) ||
+            tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0);
 }
 
 export function isTemporaryGroupTab(tab) {
   if (!isGroupTab(tab))
     return false;
-  return /[&?]temporary=true/.test(tab.apiTab.url);
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return /[&?]temporary=true/.test(tab.url);
 }
 
 export function isSelected(tab) {
-  return ensureLivingTab(tab) &&
-           (hasState(tab, Constants.kTAB_STATE_SELECTED) ||
-            (isMultihighlighted(tab) && !!(tab.apiTab && tab.apiTab.highlighted)));
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!((tab && Constants.kTAB_STATE_SELECTED in tab.$TST.states) ||
+            (isMultihighlighted(tab) && !!(tab && tab.highlighted)));
 }
 
 export function isHighlighted(tab) {
-  return ensureLivingTab(tab) &&
-           !!(tab.apiTab && tab.apiTab.highlighted);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  return !!(tab && tab.highlighted);
 }
 
 export function isMultiselected(tab) {
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
   return isSelected(tab) &&
            (isMultihighlighted(tab) ||
             queryAll({
-              windowId: tab.apiTab.windowId,
+              windowId: tab.windowId,
               living:   true,
               states:   [Constants.kTAB_STATE_SELECTED, true]
             }).length > 1);
 }
 
 export function isMultihighlighted(tab) {
-  return tab.parentNode.classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  if (!ensureLivingTab(tab))
+    return false;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  const container = getTabsContainer(tab.windowId);
+  return !!(container && container.classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED));
 }
 
 export function isLocked(_aTab) {
@@ -1740,19 +1808,9 @@ export function hasChildTabs(parent) {
   return parent.$TST.hasChild;
 }
 
-export function getLabelWithDescendants(tab) {
-  const label = [`* ${tab.dataset.label}`];
-  for (const child of getChildTabs(tab)) {
-    if (!child.dataset.labelWithDescendants)
-      child.dataset.labelWithDescendants = getLabelWithDescendants(child);
-    label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
-  }
-  return label.join('\n');
-}
-
 export function getMaxTreeLevel(hint, options = {}) {
-  const tabs = options.onlyVisible ? getVisibleTabs(hint, { ordered: false }) : getTabs(hint, { ordered: false }) ;
-  let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.getAttribute(Constants.kLEVEL) || 0)));
+  const tabs = options.onlyVisible ? getVisibleTabs(hint, { ordered: false, element: false }) : getTabs(hint, { ordered: false, element: false }) ;
+  let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.$TST.attributes[Constants.kLEVEL] || 0)));
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
   return maxLevel;

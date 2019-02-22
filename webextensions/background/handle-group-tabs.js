@@ -406,7 +406,8 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       childrenOfPinnedTabs[opener.id] = tabs.concat([tab]);
       return true;
     }
-    const opener = Tabs.getTabByUniqueId(tab.dataset.originalOpenerTabId);
+    let opener = Tabs.getTabByUniqueId(tab.dataset.originalOpenerTabId);
+    opener = opener && opener.$TST.element;
     if (!Tabs.isPinned(opener))
       return false;
     // existing and not yet grouped tab

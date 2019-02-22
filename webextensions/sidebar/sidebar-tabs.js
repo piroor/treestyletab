@@ -169,7 +169,7 @@ function updateTooltip(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  tab.dataset.labelWithDescendants = Tabs.getLabelWithDescendants(tab);
+  tab.dataset.labelWithDescendants = getLabelWithDescendants(tab);
 
   if (configs.debug) {
     tab.dataset.label = `
@@ -211,6 +211,16 @@ windowId = ${tab.apiTab.windowId}
   else {
     Tabs.removeAttribute(tab, 'title');
   }
+}
+
+function getLabelWithDescendants(tab) {
+  const label = [`* ${tab.dataset.label}`];
+  for (const child of Tabs.getChildTabs(tab)) {
+    if (!child.dataset.labelWithDescendants)
+      child.dataset.labelWithDescendants = getLabelWithDescendants(child);
+    label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
+  }
+  return label.join('\n');
 }
 
 
