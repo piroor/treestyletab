@@ -110,6 +110,7 @@ export function track(apiTab) {
     for (let i = Math.min(index, apiTab.index), maxi = Math.max(index, apiTab.index) + 1; i < maxi; i++) {
       window.tabs.get(window.order[i]).index = i;
     }
+    //console.log('Tabs.track / updated order: ', window.order);
   }
   else { // not tracked yet: add
     window.tabs.set(apiTab.id, apiTab);
@@ -117,6 +118,7 @@ export function track(apiTab) {
     for (let i = apiTab.index + 1, maxi = window.order.length; i < maxi; i++) {
       window.tabs.get(window.order[i]).index = i;
     }
+    //console.log('Tabs.track / order: ', window.order);
   }
 }
 
