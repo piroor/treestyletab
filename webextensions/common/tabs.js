@@ -1731,7 +1731,7 @@ export async function addState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.add(state);
-  if (tab.apiTab)
+  if (tab.apiTab && tab.apiTab.$TSTStates)
     tab.apiTab.$TSTStates[state] = true;
   if (options.broadcast)
     broadcastState(tab, {
@@ -1750,7 +1750,7 @@ export async function removeState(tab, state, options = {}) {
   if (!tab)
     return;
   tab.classList.remove(state);
-  if (tab.apiTab)
+  if (tab.apiTab && tab.apiTab.$TSTStates)
     delete tab.apiTab.$TSTStates[state];
   if (options.broadcast)
     broadcastState(tab, {
