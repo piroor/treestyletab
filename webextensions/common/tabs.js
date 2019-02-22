@@ -293,6 +293,8 @@ function matched(value, pattern) {
 }
 
 export function query(conditions) {
+  if (conditions.fromId)
+    conditions.ordered = true;
   if (conditions.last)
     conditions.ordered = true;
   else
@@ -802,7 +804,6 @@ export function getNextTab(tab) {
     fromId:   tab.apiTab.id,
     living:   true,
     index:    (index => index > tab.apiTab.index),
-    ordered:  true,
     element:  true
   });
 }
@@ -895,7 +896,6 @@ export function getNextNormalTab(tab) {
     fromId:   tab.apiTab.id,
     normal:   true,
     index:    (index => index > tab.apiTab.index),
-    ordered:  true,
     element:  true
   });
 }
@@ -1366,7 +1366,6 @@ export function getNextVisibleTab(tab) { // visible, not-collapsed
     fromId:   tab.apiTab.id,
     visible:  true,
     index:    (index => index > tab.apiTab.index),
-    ordered:  true,
     element:  true
   });
 }
