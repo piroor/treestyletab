@@ -189,6 +189,10 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
   Tabs.updateUniqueId(tab);
   Tabs.initPromisedStatus(tab, true);
 
+  for (const state of tab.classList) {
+    Tabs.addState(tab, state);
+  }
+
   if (apiTab.discarded)
     Tabs.addState(tab, Constants.kTAB_STATE_DISCARDED);
   else
@@ -215,6 +219,13 @@ function fixupTabRestoredFromCache(tab, apiTab, options = {}) {
     Tabs.removeAttribute(tab, Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.getAttribute(Constants.kPARENT));
   tab.ancestorTabs = Tabs.getAncestorTabs(tab, { force: true });
+
+  if (tab.dataset.alreadyGroupedForPinnedOpener)
+    Tabs.setAttribute(tab, 'data-already-grouped-for-pinned-opener', tab.dataset.alreadyGroupedForPinnedOpener);
+  if (tab.dataset.originalOpenerTabId)
+    Tabs.setAttribute(tab, 'data-original-opener-tab-id', tab.dataset.originalOpenerTabId);
+  Tabs.setAttribute(tab, Constants.kCURRENT_URI, tab.getAttribute(Constants.kCURRENT_URI));
+  Tabs.setAttribute(tab, Constants.kLEVEL, tab.getAttribute(Constants.kLEVEL));
 }
 
 function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {

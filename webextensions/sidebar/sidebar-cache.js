@@ -173,6 +173,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
         });
       }
       for (const tab of allTabs) {
+        Tabs.setAttribute(tab, 'title', tab.getAttribute('title'));
         SidebarTabs.reserveToUpdateTooltip(tab);
         SidebarTabs.reserveToUpdateTwistyTooltip(tab);
         SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
