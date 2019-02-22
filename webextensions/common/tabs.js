@@ -192,12 +192,12 @@ url
 `.trim().split(/\s+/);
 
 export function queryAll(conditions) {
-  if (conditions.windowId || conditions.orderd) {
+  if (conditions.windowId || conditions.ordered) {
     let tabs = [];
     for (const window of trackedWindows.values()) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
-      const tabsIterator = !conditions.orderd ? window.tabs.values() :
+      const tabsIterator = !conditions.ordered ? window.tabs.values() :
         conditions.last ? window.getReversedOrderedTabs(conditions.fromId) :
           window.getOrderedTabs(conditions.fromId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
@@ -294,15 +294,15 @@ function matched(value, pattern) {
 
 export function query(conditions) {
   if (conditions.last)
-    conditions.orderd = true;
+    conditions.ordered = true;
   else
     conditions.first = true;
   let tabs = [];
-  if (conditions.windowId || conditions.orderd) {
+  if (conditions.windowId || conditions.ordered) {
     for (const window of trackedWindows.values()) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
-      const tabsIterator = !conditions.orderd ? window.tabs.values() :
+      const tabsIterator = !conditions.ordered ? window.tabs.values() :
         conditions.last ? window.getReversedOrderedTabs(conditions.fromId) :
           window.getOrderedTabs(conditions.fromId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
