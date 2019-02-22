@@ -110,19 +110,22 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     */
     let movedTabsCount = 0;
     for (const tab of tabs) {
-      const oldPreviousTab = Tabs.getPreviousTab(tab);
-      const oldNextTab     = Tabs.getNextTab(tab);
-      if (oldNextTab == referenceTab) // no move case
+      const oldPreviousTab = Tabs.getPreviousTab(tab, { living: false, element: false });
+      const oldNextTab     = Tabs.getNextTab(tab, { living: false, element: false });
+      if (oldNextTab && oldNextTab.id == referenceTab.apiTab.id) // no move case
         continue;
       container.internalMovingTabs.add(tab.apiTab.id);
       container.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, referenceTab);
-      tab.apiTab.index = referenceTab ? referenceTab.apiTab.index : Tabs.trackedWindows.get(container.windowId).tabs.size - 1;
+      if (referenceTab.apiTab.index > tab.apiTab.index)
+        tab.apiTab.index = referenceTab.apiTab.index - 1;
+      else
+        tab.apiTab.index = referenceTab.apiTab.index;
       Tabs.track(tab.apiTab);
       movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
-        oldPreviousTab,
-        oldNextTab,
+        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TSTElement,
+        oldNextTab:     oldNextTab && oldNextTab.$TSTElement,
         broadcasted: !!options.broadcasted
       });
     }
@@ -223,24 +226,33 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    let nextTab = Tabs.getNextTab(referenceTab);
-    if (tabs.includes(nextTab))
+    let nextTab = Tabs.getNextTab(referenceTab, { living: false, element: false });
+    if (nextTab && tabs.find(tab => tab.apiTab.id == nextTab.id))
       nextTab = null;
     let movedTabsCount = 0;
     for (const tab of tabs) {
-      const oldPreviousTab = Tabs.getPreviousTab(tab);
-      const oldNextTab     = Tabs.getNextTab(tab);
-      if (oldNextTab == nextTab) // no move case
+      const oldPreviousTab = Tabs.getPreviousTab(tab, { living: false, element: false });
+      const oldNextTab     = Tabs.getNextTab(tab, { living: false, element: false });
+      if ((!oldNextTab && !nextTab) ||
+          (oldNextTab && nextTab && oldNextTab.id == nextTab.id)) // no move case
         continue;
       container.internalMovingTabs.add(tab.apiTab.id);
       container.alreadyMovedTabs.add(tab.apiTab.id);
-      container.insertBefore(tab, nextTab);
-      tab.apiTab.index = nextTab ? referenceTab.apiTab.index : Tabs.trackedWindows.get(container.windowId).tabs.size - 1;
+      container.insertBefore(tab, nextTab && nextTab.$TSTElement);
+      if (nextTab) {
+        if (nextTab.index > tab.apiTab.index)
+          tab.apiTab.index = nextTab.index - 1;
+        else
+          tab.apiTab.index = nextTab.index;
+      }
+      else {
+        tab.apiTab.index = Tabs.trackedWindows.get(container.windowId).tabs.size - 1
+      }
       Tabs.track(tab.apiTab);
       movedTabsCount++;
       Tabs.onTabElementMoved.dispatch(tab, {
-        oldPreviousTab,
-        oldNextTab,
+        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TSTElement,
+        oldNextTab:     oldNextTab && oldNextTab.$TSTElement,
         broadcasted: !!options.broadcasted
       });
     }

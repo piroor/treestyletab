@@ -747,7 +747,15 @@ async function onMoved(tabId, moveInfo) {
       if (!alreadyMoved &&
           Tabs.getNextTab(movedTab) != nextTab) {
         container.insertBefore(movedTab, nextTab);
-        movedTab.apiTab.index = nextTab ? nextTab.apiTab.index : Tabs.trackedWindows.get(moveInfo.windowId).tabs.size - 1;
+        if (nextTab) {
+          if (nextTab.apiTab.index > movedTab.apiTab.index)
+            movedTab.apiTab.index = nextTab.apiTab.index - 1;
+          else
+            movedTab.apiTab.index = nextTab.apiTab.index;
+        }
+        else {
+          movedTab.apiTab.index = Tabs.trackedWindows.get(moveInfo.windowId).tabs.size - 1
+        }
         Tabs.track(movedTab.apiTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
           Array.from(container.childNodes)
