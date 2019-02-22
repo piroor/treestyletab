@@ -1,6 +1,8 @@
 # History
 
  - master/HEAD
+ - 2.7.23 (2019.2.22)
+   * Don't move focus to a tab in a collapsed tree and expand collapsed tree when a collapsed child is focused, when the session was restored.
  - 2.7.22 (2019.2.20)
    * Fix unavailable menu commands and shortcuts. (regression on 2.7.21)
  - 2.7.21 (2019.2.20)
