@@ -178,8 +178,8 @@ function getDragDataFromOneTab(hint, options = {}) {
   return {
     tabNode:  tab,
     tabNodes: draggedTabs,
-    apiTab:   tab.apiTab,
-    apiTabs:  draggedTabs.map(aDraggedTab => aDraggedTab.apiTab),
+    apiTab:   Tabs.sanitize(tab.apiTab),
+    apiTabs:  draggedTabs.map(aDraggedTab => Tabs.sanitize(aDraggedTab.apiTab)),
     windowId: tab.apiTab.windowId
   };
 }

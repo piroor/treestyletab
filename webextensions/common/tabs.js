@@ -359,6 +359,15 @@ function documentPositionComparator(a, b) {
   return 0;
 }
 
+export function sanitize(apiTab) {
+  apiTab = Object.assign({}, apiTab);
+  delete apiTab.$TSTElement;
+  delete apiTab.$TSTUniqueId;
+  delete apiTab.$TSTStates;
+  delete apiTab.$TSTAttributes;
+  return apiTab;
+}
+
 
 //===================================================================
 // Operate Tab ID
