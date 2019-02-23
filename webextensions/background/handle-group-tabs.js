@@ -395,7 +395,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // Second, collect tabs opened from pinned openers including existing tabs
   // (which were left ungrouped in previous process).
   const openerOf = {};
-  const unifiedRootTabs = Tabs.getAllTabs(rootTabs[0]).filter(tab => {
+  const unifiedRootTabs = Tabs.getAllTabs(rootTabs[0].apiTab.windowId).filter(tab => {
     if (Tabs.getParentTab(tab) ||
         tab.dataset.alreadyGroupedForPinnedOpener)
       return false;
@@ -430,7 +430,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // Move newly opened tabs to expected position before grouping!
   switch (configs.insertNewTabFromPinnedTabAt) {
     case Constants.kINSERT_FIRST:
-      const allPinnedTabs = Tabs.getPinnedTabs(rootTabs[0].parentNode);
+      const allPinnedTabs = Tabs.getPinnedTabs(rootTabs[0].apiTab.windowId);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
       for (const tab of unifiedRootTabs.slice(0).reverse()) {
         if (!pinnedOpeners.includes(openerOf[tab.id]) ||
@@ -456,7 +456,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       for (const tab of unifiedRootTabs) {
         if (Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
-        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.parentNode), {
+        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.apiTab.windowId), {
           broadcast: true
         });
       }

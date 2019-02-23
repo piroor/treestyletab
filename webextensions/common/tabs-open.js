@@ -211,6 +211,6 @@ export async function openURIsInTabs(uris, options = {}) {
         return tab.opened;
       }));
     }
-  });
+  }, options.windowId);
 }
 

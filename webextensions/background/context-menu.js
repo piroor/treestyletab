@@ -362,13 +362,13 @@ export const onClick = (info, apiTab) => {
       Commands.collapseTree(contextTab);
       break;
     case 'collapseAll':
-      Commands.collapseAll(contextTab);
+      Commands.collapseAll(apiTab.windowId);
       break;
     case 'expandTree':
       Commands.expandTree(contextTab);
       break;
     case 'expandAll':
-      Commands.expandAll(contextTab);
+      Commands.expandAll(apiTab.windowId);
       break;
 
     case 'bookmarkTree':
@@ -387,12 +387,12 @@ export const onClick = (info, apiTab) => {
         Commands.collapseTree(contextTab);
       break;
     case 'pinnedTab': {
-      const tabs = Tabs.getPinnedTabs(contextTab);
+      const tabs = Tabs.getPinnedTabs(apiTab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].apiTab.id, { active: true });
     }; break;
     case 'unpinnedTab': {
-      const tabs = Tabs.getUnpinnedTabs(contextTab);
+      const tabs = Tabs.getUnpinnedTabs(apiTab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].apiTab.id, { active: true });
     }; break;

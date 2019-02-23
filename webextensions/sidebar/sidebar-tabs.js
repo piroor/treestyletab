@@ -289,7 +289,7 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
-  for (const tab of Tabs.getAllTabs().reverse()) {
+  for (const tab of Tabs.getAllTabs(Tabs.getWindow()).reverse()) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
@@ -661,7 +661,7 @@ configs.$addObserver(aChangedKey => {
   switch (aChangedKey) {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
-        for (const tab of Tabs.getAllTabs()) {
+        for (const tab of Tabs.getAllTabs(Tabs.getWindow())) {
           reserveToUpdateTooltip(tab);
         }
       break;

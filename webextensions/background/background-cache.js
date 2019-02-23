@@ -175,11 +175,11 @@ async function getWindowCache(owner, key) {
   return browser.sessions.getTabValue(owner.id, key);
 }
 
-function getWindowCacheOwner(hint) {
-  const apiTab = Tabs.getLastTab(hint).apiTab;
+function getWindowCacheOwner(windowId) {
+  const tab = Tabs.getLastTab(windowId, { element: false });
   return {
-    id:       apiTab.id,
-    windowId: apiTab.windowId
+    id:       tab.id,
+    windowId: tab.windowId
   };
 }
 

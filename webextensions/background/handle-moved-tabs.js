@@ -44,7 +44,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
          info.treeForActionDetection.target.previous))))
     tryFixupTreeForInsertedTab(tab, {
       toIndex:   tab.apiTab.index,
-      fromIndex: Tabs.getLastTab(tab).apiTab.index,
+      fromIndex: Tabs.getLastTab(tab.apiTab.windowId, { element: false }).index,
       treeForActionDetection: info.treeForActionDetection
     });
 });

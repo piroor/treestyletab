@@ -355,13 +355,12 @@ function hasVisiblePrecedingItem(separator) {
 async function onShown(info, contextApiTab) {
   const tab                   = Tabs.getTabElementById(contextApiTab);
   const windowId              = contextApiTab ? contextApiTab.windowId : (await browser.windows.getLastFocused({})).id;
-  const container             = tab ? tab.parentNode : Tabs.getTabsContainer(windowId);
   const previousTab           = Tabs.getPreviousTab(tab);
   const previousSiblingTab    = Tabs.getPreviousSiblingTab(tab);
   const nextTab               = Tabs.getNextTab(tab);
   const nextSiblingTab        = Tabs.getNextSiblingTab(tab);
-  const hasMultipleTabs       = Tabs.getTabs(tab || container).length > 1;
-  const normalTabsCount       = Tabs.getNormalTabs(tab || container).length;
+  const hasMultipleTabs       = Tabs.getTabs(windowId).length > 1;
+  const normalTabsCount       = Tabs.getNormalTabs(windowId).length;
   const hasMultipleNormalTabs = normalTabsCount > 1;
   const multiselected         = Tabs.isMultiselected(tab);
 
@@ -401,7 +400,7 @@ async function onShown(info, contextApiTab) {
 
   updateItem('context_selectAllTabs', {
     visible: emulate && contextApiTab,
-    enabled: contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(tab).length,
+    enabled: contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
@@ -495,7 +494,7 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_selectAllTabs', {
     visible: emulate && !contextApiTab,
-    enabled: !contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(tab).length
+    enabled: !contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
     visible: emulate && !contextApiTab

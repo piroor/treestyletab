@@ -46,7 +46,7 @@ export async function activateTab(tab, options = {}) {
   };
   if (configs.supportTabsMultiselect) {
     let tabs = [tab.apiTab.index];
-    const highlightedTabs = Tabs.getHighlightedTabs(tab);
+    const highlightedTabs = Tabs.getHighlightedTabs(tab.apiTab.windowId);
     if (Tabs.isMultihighlighted(tab) &&
         options.keepMultiselection &&
         highlightedTabs.includes(tab)) {

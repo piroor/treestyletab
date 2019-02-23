@@ -71,7 +71,7 @@ export async function closeDescendants(rootTab) {
 
 export async function closeOthers(rootTab) {
   const exceptionTabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
-  const tabs          = Tabs.getNormalTabs(rootTab); // except pinned or hidden tabs
+  const tabs          = Tabs.getNormalTabs(rootTab.apiTab.windowId); // except pinned or hidden tabs
   tabs.reverse(); // close bottom to top!
   const closeTabs = tabs.filter(tab => !exceptionTabs.includes(tab));
   const canceled = (await onTabsClosing.dispatch(closeTabs.map(tab => tab.apiTab.id), { windowId: rootTab.apiTab.windowId })) === false;
@@ -92,8 +92,8 @@ export function collapseTree(rootTab) {
   });
 }
 
-export function collapseAll(hint) {
-  const tabs = Tabs.getNormalTabs(hint);
+export function collapseAll(windowId) {
+  const tabs = Tabs.getNormalTabs(windowId);
   for (const tab of tabs) {
     collapseTree(tab);
   }
@@ -109,8 +109,8 @@ export function expandTree(rootTab) {
   });
 }
 
-export function expandAll(hint) {
-  const tabs = Tabs.getNormalTabs(hint);
+export function expandAll(windowId) {
+  const tabs = Tabs.getNormalTabs(windowId);
   for (const tab of tabs) {
     expandTree(tab);
   }
@@ -161,7 +161,7 @@ export async function openNewTabAs(options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_ORPHAN:
       isOrphan    = true;
-      insertAfter = Tabs.getLastTab(currentTab);
+      insertAfter = Tabs.getLastTab(currentTab.apiTab.windowId);
       break;
 
     case Constants.kNEWTAB_OPEN_AS_CHILD: {
@@ -384,7 +384,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
       insertAfter  : params.insertAfter,
       inRemote     : true
     });
-  });
+  }, windowId);
   log('=> opened group tabs: ', replacedGroupTabs);
   params.draggedTab.ownerDocument.defaultView.setTimeout(() => {
     if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
@@ -546,7 +546,7 @@ export async function moveTabsToStart(movedTabs) {
   if (movedTabs.length === 0)
     return;
   const tab       = movedTabs[0];
-  const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab) : Tabs.getUnpinnedTabs(tab);
+  const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab.apiTab.windowId) : Tabs.getUnpinnedTabs(tab.apiTab.windowId);
   const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
   if (otherTabs.length > 0)
     await moveTabsWithStructure(movedTabs, {
@@ -564,7 +564,7 @@ export async function moveTabsToEnd(movedTabs) {
   if (movedTabs.length === 0)
     return;
   const tab       = movedTabs[0];
-  const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab) : Tabs.getUnpinnedTabs(tab);
+  const allTabs   = tab.apiTab.pinned ? Tabs.getPinnedTabs(tab.apiTab.windowId) : Tabs.getUnpinnedTabs(tab.apiTab.windowId);
   const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
   if (otherTabs.length > 0)
     await moveTabsWithStructure(movedTabs, {

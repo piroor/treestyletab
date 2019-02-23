@@ -154,7 +154,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: mTargetWindow
       })).structure;
-      const allTabs = Tabs.getAllTabs();
+      const allTabs = Tabs.getAllTabs(mTargetWindow);
       const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
         log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`);
@@ -232,7 +232,7 @@ async function getWindowCache(key) {
 }
 
 function getWindowCacheOwner() {
-  const tab = Tabs.getLastTab();
+  const tab = Tabs.getLastTab(mTargetWindow);
   return tab && tab.apiTab;
 }
 
@@ -287,7 +287,7 @@ async function updateCachedTabbar() {
     tabbar: {
       contents:        Tabs.allTabsContainer.innerHTML,
       style:           mTabBar.getAttribute('style'),
-      pinnedTabsCount: Tabs.getPinnedTabs(container).length
+      pinnedTabsCount: Tabs.getPinnedTabs(mTargetWindow).length
     },
     indent: Indent.getCacheInfo(),
     signature

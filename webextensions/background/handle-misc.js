@@ -122,13 +122,13 @@ async function onShortcutCommand(command) {
       Commands.collapseTree(activeTab);
       return;
     case 'collapseAll':
-      Commands.collapseAll(activeTab);
+      Commands.collapseAll(activeTab.apiTab.windowId);
       return;
     case 'expandTree':
       Commands.expandTree(activeTab);
       return;
     case 'expandAll':
-      Commands.expandAll(activeTab);
+      Commands.expandAll(activeTab.apiTab.windowId);
       return;
     case 'bookmarkTree':
       Commands.bookmarkTree(Tabs.trackedTabs.get(activeTab.apiTab.id));
@@ -194,13 +194,13 @@ async function onShortcutCommand(command) {
     case 'focusPrevious':
     case 'focusPreviousSilently': {
       const nextActive = Tabs.getPreviousVisibleTab(activeTab) ||
-        Tabs.getLastVisibleTab(activeTab);
+        Tabs.getLastVisibleTab(activeTab.apiTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
       const nextActive = Tabs.getNextVisibleTab(activeTab) ||
-        Tabs.getFirstVisibleTab(activeTab);
+        Tabs.getFirstVisibleTab(activeTab.apiTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusParent':

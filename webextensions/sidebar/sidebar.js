@@ -199,7 +199,7 @@ export async function init() {
   UserOperationBlocker.unblock({ throbber: true });
 
   MetricsData.add('init end');
-  log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tabs.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
 }
 
 function applyStyle(style) {
@@ -500,7 +500,7 @@ function updateTabbarLayout(params = {}) {
         Scroll.scrollToTab(current);
         return;
       }
-      const lastOpenedTab = Tabs.getLastOpenedTab();
+      const lastOpenedTab = Tabs.getLastOpenedTab(Tabs.getWindow());
       const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
@@ -677,7 +677,7 @@ function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
     case 'debug': {
-      for (const tab of Tabs.getAllTabs()) {
+      for (const tab of Tabs.getAllTabs(mTargetWindow)) {
         TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
       }
       if (configs.debug)

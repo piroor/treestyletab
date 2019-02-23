@@ -158,7 +158,7 @@ export async function attachTabTo(child, parent, options = {}) {
 
   let childTabs;
   {
-    const expectedAllTabs = Tabs.getAllTabs(child, { element: false }).filter(tab => tab.id != child.apiTab.id);
+    const expectedAllTabs = Tabs.getAllTabs(child.apiTab.windowId, { element: false }).filter(tab => tab.id != child.apiTab.id);
     log('expectedAllTabs: ', expectedAllTabs.map(tab => tab.id));
     if (newIndex >= expectedAllTabs.length)
       expectedAllTabs.push(child.apiTab);
@@ -250,7 +250,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         insertBefore = firstChild;
         break;
       case Constants.kINSERT_NEAREST: {
-        let allTabs = Tabs.getAllTabs(parent);
+        let allTabs = Tabs.getAllTabs(parent.apiTab.windowId);
         if (options.ignoreTabs)
           allTabs = allTabs.filter(tab => !options.ignoreTabs.includes(tab));
         const index = allTabs.indexOf(child);
@@ -387,7 +387,7 @@ export function detachAllChildren(tab, options = {}) {
   // the "parent" option is used for removing tab.
   const parent = Tabs.ensureLivingTab(options.parent) || Tabs.getParentTab(tab);
   if (Tabs.isGroupTab(tab) &&
-      Tabs.getTabs(tab).filter(tab => tab.removing).length == children.length) {
+      Tabs.getTabs(tab.apiTab.windowId).filter(tab => tab.removing).length == children.length) {
     options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     options.dontUpdateIndent = false;
   }
@@ -468,7 +468,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         broadcast: options.broadcast
       });
       if (Tabs.getNextTab(tab))
-        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(), {
+        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.apiTab.windowId), {
           delayedMove: true,
           inRemote: options.inRemote
         });
@@ -500,7 +500,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           inRemote:  options.inRemote,
           broadcast: options.broadcast
         });
-        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(), {
+        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.apiTab.windowId), {
           delayedMove: true,
           inRemote: options.inRemote
         });
@@ -1290,7 +1290,7 @@ export async function moveTabs(tabs, options = {}) {
       ]);
       log('moveTabs: all windows and tabs are ready, ', apiTabIds, destinationWindowId);
       // we must put moved tab at the first position by default, because pinned tabs cannot be placed after regular tabs.
-      let toIndex = 0; // Tabs.getAllTabs(container).length;
+      let toIndex = 0; // Tabs.getAllTabs(destinationWindowId).length;
       log('toIndex = ', toIndex);
       if (options.insertBefore &&
           options.insertBefore.apiTab.windowId == destinationWindowId) {

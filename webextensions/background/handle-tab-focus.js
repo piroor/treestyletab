@@ -72,7 +72,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
         return false;
       if (shouldSkipCollapsed &&
           container.lastActiveTab == newSelection.id) {
-        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab);
+        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab.apiTab.windowId);
       }
       container.lastActiveTab = newSelection.id;
       if (mMaybeTabSwitchingByShortcut)
@@ -180,8 +180,8 @@ function cancelDelayedExpand(tab) {
   delete tab.delayedExpand;
 }
 
-function cancelAllDelayedExpand(hint) {
-  for (const tab of Tabs.getAllTabs(hint)) {
+function cancelAllDelayedExpand(windowId) {
+  for (const tab of Tabs.getAllTabs(windowId)) {
     cancelDelayedExpand(tab);
   }
 }
@@ -233,7 +233,7 @@ function onMessage(message, sender) {
             await Tabs.waitUntilTabsAreCreated(apiTabs[0].id);
             tab = Tabs.getTabElementById(apiTabs[0]);
           }
-          cancelAllDelayedExpand(tab);
+          cancelAllDelayedExpand(tab.apiTab.windowId);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               tab.parentNode.lastActiveTab == tab.id) {

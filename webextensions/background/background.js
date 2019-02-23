@@ -131,7 +131,7 @@ export async function init() {
   }).catch(_error => {});
 
   Migration.notifyNewFeatures();
-  log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tabs.getAllTabs().length} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {

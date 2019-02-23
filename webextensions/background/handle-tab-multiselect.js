@@ -61,7 +61,7 @@ const mIsInSelectionSession   = new WeakMap();
 export async function updateSelectionByTabClick(tab, event) {
   const ctrlKeyPressed = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
   const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
-  const highlightedTabIds = new Set(Tabs.getHighlightedTabs(tab).map(tab => tab.apiTab.id));
+  const highlightedTabIds = new Set(Tabs.getHighlightedTabs(tab.apiTab.windowId).map(tab => tab.apiTab.id));
   const inSelectionSession = mIsInSelectionSession.get(tab.parentNode);
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab

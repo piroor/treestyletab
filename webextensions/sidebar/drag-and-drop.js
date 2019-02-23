@@ -247,10 +247,10 @@ function getDropAction(event) {
     return info.draggedAPITabs.map(apiTab => apiTab.id);
   });
   info.defineGetter('targetTabs', () => {
-    return Tabs.getAllTabs(targetTab);
+    return Tabs.getAllTabs(Tabs.getWindow());
   });
   info.defineGetter('firstTargetTab', () => {
-    return Tabs.getFirstNormalTab(targetTab) || info.targetTabs[0];
+    return Tabs.getFirstNormalTab(Tabs.getWindow()) || info.targetTabs[0];
   });
   info.defineGetter('lastTargetTab', () => {
     return info.targetTabs[info.targetTabs.length - 1];
@@ -262,7 +262,7 @@ function getDropAction(event) {
     const draggedApiTab               = info.dragData && info.dragData.apiTab;
     const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
     if (draggedApiTab &&
-        isPrivateBrowsingTabDragged != Tabs.isPrivateBrowsing(info.dragOverTab || Tabs.getFirstTab())) {
+        isPrivateBrowsingTabDragged != Tabs.isPrivateBrowsing(info.dragOverTab || Tabs.getFirstTab(draggedApiTab.windowId))) {
       return false;
     }
     else if (info.draggedAPITab) {
@@ -479,12 +479,12 @@ export function clearDraggingState() {
 }
 
 function isDraggingAllTabs(tab, tabs) {
-  const draggingTabs = Tabs.getDraggingTabs(tab);
-  return draggingTabs.length == (tabs || Tabs.getAllTabs(tab)).length;
+  const draggingTabs = Tabs.getDraggingTabs(tab.apiTab.windowId);
+  return draggingTabs.length == (tabs || Tabs.getAllTabs(tab.apiTab.windowId)).length;
 }
  
 function isDraggingAllActiveTabs(tab) {
-  return isDraggingAllTabs(tab, Tabs.getAllTabs(tab));
+  return isDraggingAllTabs(tab, Tabs.getAllTabs(tab.apiTab.windowId));
 }
 
 function collapseAutoExpandedTabsWhileDragging() {
