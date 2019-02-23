@@ -100,30 +100,22 @@ export function removeTabs(tabs, options = {}) {
 }
 
 export function setTabActive(tab) {
-  tab = Tabs.ensureLivingTab(tab);
-  if (!tab)
-    return [];
-  const oldActiveTabs = clearOldActiveStateInWindow(tab.apiTab.windowId);
+  const oldActiveTabs = clearOldActiveStateInWindow(tab.windowId);
   Tabs.addState(tab, Constants.kTAB_STATE_ACTIVE);
-  tab.apiTab.active = true;
+  tab.active = true;
   Tabs.removeState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
   Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
   return oldActiveTabs;
 }
 
 export function clearOldActiveStateInWindow(windowId) {
-  const container = Tabs.getTabsContainer(windowId);
-  if (!container)
-    return [];
   const oldTabs = Tabs.queryAll({
     windowId,
-    active:  true,
-    element: true
+    active:  true
   });
   for (const oldTab of oldTabs) {
     Tabs.removeState(oldTab, Constants.kTAB_STATE_ACTIVE);
-    if (oldTab.apiTab) // this function can be applied for cached tab.
-      oldTab.apiTab.active = false;
+    oldTab.active = false;
   }
   return oldTabs;
 }

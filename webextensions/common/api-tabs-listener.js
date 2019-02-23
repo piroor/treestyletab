@@ -156,17 +156,17 @@ async function onActivated(activeInfo) {
     if (Tabs.hasCreatingTab(activeInfo.windowId))
       await Tabs.waitUntilTabsAreCreated(activeInfo.tabId);
 
-    const newTab = Tabs.getTabElementById({ tab: activeInfo.tabId, window: activeInfo.windowId });
-    if (!newTab) {
+    const newActiveTab = Tabs.trackedTabs.get(activeInfo.tabId);
+    if (!newActiveTab) {
       onCompleted();
       return;
     }
 
-    log('tabs.onActivated: ', dumpTab(newTab));
-    const oldActiveTabs = TabsInternalOperation.setTabActive(newTab);
+    log('tabs.onActivated: ', newActiveTab);
+    const oldActiveTabs = TabsInternalOperation.setTabActive(newActiveTab);
 
     let byActiveTabRemove = !activeInfo.previousTabId;
-    if (!('successorTabId' in newTab.apiTab)) { // on Firefox 64 or older
+    if (!('successorTabId' in newActiveTab)) { // on Firefox 64 or older
       byActiveTabRemove = mLastClosedWhileActiveResolvers.has(container);
       if (byActiveTabRemove) {
         container.tryingReforcusForClosingActiveTabCount++;
@@ -189,12 +189,12 @@ async function onActivated(activeInfo) {
       }
     }
 
-    if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
       onCompleted();
       return;
     }
 
-    let focusOverridden = Tabs.onActivating.dispatch(newTab, Object.assign({}, activeInfo, {
+    let focusOverridden = Tabs.onActivating.dispatch(newActiveTab.$TST.element, Object.assign({}, activeInfo, {
       byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
@@ -209,13 +209,13 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
       onCompleted();
       return;
     }
 
-    const onActivatedReuslt = Tabs.onActivated.dispatch(newTab, Object.assign({}, activeInfo, {
-      oldActiveTabs,
+    const onActivatedReuslt = Tabs.onActivated.dispatch(newActiveTab.$TST.element, Object.assign({}, activeInfo, {
+      oldActiveTabs: oldActiveTabs.map(tab => tab.$TST.element),
       byActiveTabRemove,
       byTabDuplication,
       byInternalOperation,
@@ -388,7 +388,7 @@ async function onNewTabTracked(tab) {
     // See also: https://github.com/piroor/treestyletab/issues/2155
     if (tab.active) {
       Tabs.activeTabForWindow.set(tab.windowId, tab);
-      TabsInternalOperation.setTabActive(newTab);
+      TabsInternalOperation.setTabActive(tab);
     }
 
     const onTabCreatedInner = Tabs.addCreatingTab(tab);
