@@ -778,11 +778,11 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
 
   logCollapseExpand('collapseExpandTreesIntelligentlyFor ', tab);
   const container = Tabs.getTabsContainer(tab);
-  if (container.doingIntelligentlyCollapseExpandCount > 0) {
+  if (container.$TST.doingIntelligentlyCollapseExpandCount > 0) {
     logCollapseExpand('=> done by others');
     return;
   }
-  container.doingIntelligentlyCollapseExpandCount++;
+  container.$TST.doingIntelligentlyCollapseExpandCount++;
 
   const expandedAncestors = Tabs.getAncestorTabs(tab).map(ancestor => ancestor.apiTab.id);
   const collapseTabs = Tabs.queryAll({
@@ -825,7 +825,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   collapseExpandSubtree(tab, Object.assign({}, options, {
     collapsed: false
   }));
-  container.doingIntelligentlyCollapseExpandCount--;
+  container.$TST.doingIntelligentlyCollapseExpandCount--;
 }
 
 export async function fixupSubtreeCollapsedState(tab, options = {}) {
@@ -1100,7 +1100,7 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
 
   log('moveTabSubtreeBefore: ', dumpTab(tab), dumpTab(nextTab));
   const container = tab.parentNode;
-  container.subTreeMovingCount++;
+  container.$TST.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyBefore(tab, nextTab, options);
     if (!Tabs.ensureLivingTab(tab)) // it is removed while waiting
@@ -1113,7 +1113,7 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
   await wait(0);
   if (!container.parentNode) // it was removed while waiting
     return;
-  container.subTreeMovingCount--;
+  container.$TST.subTreeMovingCount--;
 }
 
 export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
@@ -1126,7 +1126,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
 
   log('moveTabSubtreeAfter: ', dumpTab(tab), dumpTab(previousTab));
   const container = tab.parentNode;
-  container.subTreeMovingCount++;
+  container.$TST.subTreeMovingCount++;
   try {
     await TabsMove.moveTabInternallyAfter(tab, previousTab, options);
     if (!Tabs.ensureLivingTab(tab)) // it is removed while waiting
@@ -1139,7 +1139,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
   await wait(0);
   if (!container.parentNode) // it was removed while waiting
     return;
-  container.subTreeMovingCount--;
+  container.$TST.subTreeMovingCount--;
 }
 
 export async function followDescendantsToMovedRoot(tab, options = {}) {
@@ -1148,11 +1148,11 @@ export async function followDescendantsToMovedRoot(tab, options = {}) {
 
   log('followDescendantsToMovedRoot: ', dumpTab(tab));
   const container = tab.parentNode;
-  container.subTreeChildrenMovingCount++;
-  container.subTreeMovingCount++;
+  container.$TST.subTreeChildrenMovingCount++;
+  container.$TST.subTreeMovingCount++;
   await TabsMove.moveTabsAfter(Tabs.getDescendantTabs(tab), tab, options);
-  container.subTreeChildrenMovingCount--;
-  container.subTreeMovingCount--;
+  container.$TST.subTreeChildrenMovingCount--;
+  container.$TST.subTreeMovingCount--;
 }
 
 export async function moveTabs(tabs, options = {}) {
@@ -1203,10 +1203,10 @@ export async function moveTabs(tabs, options = {}) {
           Tabs.allTabsContainer.appendChild(container);
         }
         if (isAcrossWindows) {
-          container.toBeOpenedTabsWithPositions += tabs.length;
-          container.toBeOpenedOrphanTabs += tabs.length;
+          container.$TST.toBeOpenedTabsWithPositions += tabs.length;
+          container.$TST.toBeOpenedOrphanTabs += tabs.length;
           for (const tab of tabs) {
-            container.toBeAttachedTabs.add(tab.apiTab.id);
+            container.$TST.toBeAttachedTabs.add(tab.apiTab.id);
           }
         }
       };
@@ -1229,13 +1229,13 @@ export async function moveTabs(tabs, options = {}) {
         (async () => {
           const sourceContainer = tabs[0].parentNode;
           if (options.duplicate) {
-            sourceContainer.toBeOpenedTabsWithPositions += tabs.length;
-            sourceContainer.toBeOpenedOrphanTabs += tabs.length;
-            sourceContainer.duplicatingTabsCount += tabs.length;
+            sourceContainer.$TST.toBeOpenedTabsWithPositions += tabs.length;
+            sourceContainer.$TST.toBeOpenedOrphanTabs += tabs.length;
+            sourceContainer.$TST.duplicatingTabsCount += tabs.length;
           }
           if (isAcrossWindows) {
             for (const tab of tabs) {
-              sourceContainer.toBeDetachedTabs.add(tab.apiTab.id);
+              sourceContainer.$TST.toBeDetachedTabs.add(tab.apiTab.id);
             }
           }
 

@@ -71,7 +71,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
       title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
       temporary: true
     });
-    tab.parentNode.toBeOpenedTabsWithPositions++;
+    tab.parentNode.$TST.toBeOpenedTabsWithPositions++;
     const groupTab = await TabsOpen.openURIInTab(uri, {
       windowId:     tab.apiTab.windowId,
       insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.

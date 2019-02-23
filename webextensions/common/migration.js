@@ -222,7 +222,7 @@ export async function migrateLegacyTreeStructure() {
         url: 'about:blank'
       });
       const container = Tabs.getTabsContainer(apiWindow.id);
-      container.toBeOpenedOrphanTabs += structure.length;
+      container.$TST.toBeOpenedOrphanTabs += structure.length;
       // restore tree
       let uris = structure.map(item => item.url);
       uris = uris.map(uRI => {

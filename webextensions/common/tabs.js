@@ -140,11 +140,39 @@ export class Tab {
   }
 }
 
-class Window {
+export class Window {
   constructor(windowId) {
     this.id    = windowId;
     this.tabs  = new Map();
     this.order = [];
+
+    this.element = null;
+
+    this.internalMovingTabs  = new Set();
+    this.alreadyMovedTabs    = new Set();
+    this.internalClosingTabs = new Set();
+    this.tabsToBeHighlightedAlone = new Set();
+
+    this.subTreeMovingCount =
+      this.subTreeChildrenMovingCount =
+      this.doingIntelligentlyCollapseExpandCount =
+      this.internalFocusCount =
+      this.internalSilentlyFocusCount =
+      this.tryingReforcusForClosingActiveTabCount = // used only on Firefox 64 and older
+      this.duplicatingTabsCount = 0;
+
+    this.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
+
+    this.openingTabs   = new Set();
+
+    this.openedNewTabs        = [];
+    this.openedNewTabsOpeners = [];
+
+    this.toBeOpenedTabsWithPositions = 0;
+    this.toBeOpenedOrphanTabs        = 0;
+
+    this.toBeAttachedTabs = new Set();
+    this.toBeDetachedTabs = new Set();
 
     trackedWindows.set(windowId, this);
     highlightedTabsForWindow.set(windowId, new Set());

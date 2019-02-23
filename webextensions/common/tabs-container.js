@@ -39,8 +39,7 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 
 import * as Tabs from './tabs.js';
@@ -64,32 +63,7 @@ export function buildFor(windowId) {
 
 export function init(container) {
   container.windowId = parseInt(container.dataset.windowId);
-
-  container.internalMovingTabs  = new Set();
-  container.alreadyMovedTabs    = new Set();
-  container.internalClosingTabs = new Set();
-  container.tabsToBeHighlightedAlone = new Set();
-
-  container.subTreeMovingCount =
-    container.subTreeChildrenMovingCount =
-    container.doingIntelligentlyCollapseExpandCount =
-    container.internalFocusCount =
-    container.internalSilentlyFocusCount =
-    container.tryingReforcusForClosingActiveTabCount = // used only on Firefox 64 and older
-    container.duplicatingTabsCount = 0;
-
-  container.preventAutoGroupNewTabsUntil = Date.now() + configs.autoGroupNewTabsDelayOnNewWindow;
-
-  container.openingTabs   = new Set();
-
-  container.openedNewTabs        = [];
-  container.openedNewTabsOpeners = [];
-
-  container.toBeOpenedTabsWithPositions = 0;
-  container.toBeOpenedOrphanTabs        = 0;
-
-  container.toBeAttachedTabs = new Set();
-  container.toBeDetachedTabs = new Set();
+  container.$TST = new Tabs.Window(container.windowId);
 }
 
 export function clearAll() {

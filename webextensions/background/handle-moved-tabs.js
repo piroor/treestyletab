@@ -52,7 +52,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 Tabs.onMoving.addListener((tab, moveInfo) => {
   // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
   const container = Tabs.getTabsContainer(tab);
-  const isNewlyOpenedTab = container.openingTabs.has(tab.apiTab.id);
+  const isNewlyOpenedTab = container.$TST.openingTabs.has(tab.apiTab.id);
   const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
   if (!isNewlyOpenedTab ||
       moveInfo.byInternalOperation ||
@@ -148,7 +148,7 @@ function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
   const id = tab.apiTab.id;
   const container = tab.parentNode;
-  container.internalMovingTabs.add(id);
+  container.$TST.internalMovingTabs.add(id);
   logApiTabs(`handle-moved-tabs:moveBack: browser.tabs.move() `, tab.apiTab.id, {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
@@ -157,8 +157,8 @@ function moveBack(tab, moveInfo) {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
   }).catch(e => {
-    if (container.internalMovingTabs.has(id))
-      container.internalMovingTabs.delete(id);
+    if (container.$TST.internalMovingTabs.has(id))
+      container.$TST.internalMovingTabs.delete(id);
     ApiTabs.handleMissingTabError(e);
   });
 }

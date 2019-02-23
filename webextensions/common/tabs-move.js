@@ -114,8 +114,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       const oldNextTab     = Tabs.getNextTab(tab, { living: false, element: false });
       if (oldNextTab && oldNextTab.id == referenceTab.apiTab.id) // no move case
         continue;
-      container.internalMovingTabs.add(tab.apiTab.id);
-      container.alreadyMovedTabs.add(tab.apiTab.id);
+      container.$TST.internalMovingTabs.add(tab.apiTab.id);
+      container.$TST.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, referenceTab);
       if (referenceTab.apiTab.index > tab.apiTab.index)
         tab.apiTab.index = referenceTab.apiTab.index - 1;
@@ -231,8 +231,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       if ((!oldNextTab && !nextTab) ||
           (oldNextTab && nextTab && oldNextTab.id == nextTab.id)) // no move case
         continue;
-      container.internalMovingTabs.add(tab.apiTab.id);
-      container.alreadyMovedTabs.add(tab.apiTab.id);
+      container.$TST.internalMovingTabs.add(tab.apiTab.id);
+      container.$TST.alreadyMovedTabs.add(tab.apiTab.id);
       container.insertBefore(tab, nextTab && nextTab.$TST.element);
       if (nextTab) {
         if (nextTab.index > tab.apiTab.index)
@@ -328,8 +328,8 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
   const container = Tabs.getTabsContainer(windowId);
 
   for (const apiTab of movedApiTabs) {
-    container.internalMovingTabs.delete(apiTab.id);
-    container.alreadyMovedTabs.delete(apiTab.id);
+    container.$TST.internalMovingTabs.delete(apiTab.id);
+    container.$TST.alreadyMovedTabs.delete(apiTab.id);
   }
 
   // Tabs may be removed while waiting.
@@ -398,8 +398,8 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           toIndex--;
         log(`syncTabsPositionToApiTabs(${windowId}): step1, move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
         for (const movedId of moveTabIds) {
-          container.internalMovingTabs.add(movedId);
-          container.alreadyMovedTabs.add(movedId);
+          container.$TST.internalMovingTabs.add(movedId);
+          container.$TST.alreadyMovedTabs.add(movedId);
           movedTabs.add(movedId);
         }
         logApiTabs(`tabs-move:syncTabsPositionToApiTabs(${windowId}): step1, browser.tabs.move() `, moveTabIds, {

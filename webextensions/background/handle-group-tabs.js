@@ -281,17 +281,17 @@ Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
       (configs.autoGroupNewTabs &&
        !openerApiTab &&
        !info.maybeOrphan)) {
-    if (container.preventAutoGroupNewTabsUntil > Date.now()) {
-      container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
+    if (container.$TST.preventAutoGroupNewTabsUntil > Date.now()) {
+      container.$TST.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-      container.openedNewTabs.push(apiTab.id);
-      container.openedNewTabsOpeners.push(openerApiTab && openerApiTab.id);
+      container.$TST.openedNewTabs.push(apiTab.id);
+      container.$TST.openedNewTabsOpeners.push(openerApiTab && openerApiTab.id);
     }
   }
-  if (container.openedNewTabsTimeout)
-    clearTimeout(container.openedNewTabsTimeout);
-  container.openedNewTabsTimeout = setTimeout(
+  if (container.$TST.openedNewTabsTimeout)
+    clearTimeout(container.$TST.openedNewTabsTimeout);
+  container.$TST.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
     configs.autoGroupNewTabsTimeout,
     container
@@ -306,8 +306,8 @@ async function onNewTabsTimeout(container) {
   if (Tabs.hasMovingTab(container.windowId))
     await Tabs.waitUntilAllTabsAreMoved(container.windowId);
 
-  const tabIds       = container.openedNewTabs;
-  const tabOpenerIds = container.openedNewTabsOpeners;
+  const tabIds       = container.$TST.openedNewTabs;
+  const tabOpenerIds = container.$TST.openedNewTabsOpeners;
   log('onNewTabsTimeout ', tabIds);
   let tabReferences = tabIds.map((id, index) => {
     return {
@@ -316,8 +316,8 @@ async function onNewTabsTimeout(container) {
     };
   });
 
-  container.openedNewTabs        = [];
-  container.openedNewTabsOpeners = [];
+  container.$TST.openedNewTabs        = [];
+  container.$TST.openedNewTabsOpeners = [];
 
   tabReferences = tabReferences.filter(tabReference => tabReference.id != '');
   if (tabReferences.length == 0 ||

@@ -139,9 +139,9 @@ export async function openURIsInTabs(uris, options = {}) {
       const startIndex = Tabs.calculateNewTabIndex(options);
       log('startIndex: ', startIndex);
       const container  = Tabs.getTabsContainer(options.windowId);
-      container.toBeOpenedTabsWithPositions += uris.length;
+      container.$TST.toBeOpenedTabsWithPositions += uris.length;
       if (options.isOrphan)
-        container.toBeOpenedOrphanTabs += uris.length;
+        container.$TST.toBeOpenedOrphanTabs += uris.length;
       await Promise.all(uris.map(async (uri, index) => {
         const params = {
           windowId: options.windowId,

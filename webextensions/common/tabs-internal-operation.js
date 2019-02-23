@@ -35,13 +35,13 @@ export async function activateTab(tab, options = {}) {
     return;
   }
   const container = tab.parentNode;
-  container.internalFocusCount++;
+  container.$TST.internalFocusCount++;
   if (options.silently)
-    container.internalSilentlyFocusCount++;
+    container.$TST.internalSilentlyFocusCount++;
   const onError = (e) => {
-    container.internalFocusCount--;
+    container.$TST.internalFocusCount--;
     if (options.silently)
-      container.internalSilentlyFocusCount--;
+      container.$TST.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
   if (configs.supportTabsMultiselect) {
@@ -55,7 +55,7 @@ export async function activateTab(tab, options = {}) {
       tabs = tabs.concat(otherTabs.map(tab => tab.apiTab.index));
     }
     else {
-      tab.parentNode.tabsToBeHighlightedAlone.add(tab.apiTab.id);
+      tab.parentNode.$TST.tabsToBeHighlightedAlone.add(tab.apiTab.id);
     }
     return browser.tabs.highlight({
       windowId: tab.apiTab.windowId,
@@ -92,7 +92,7 @@ export function removeTabs(tabs, options = {}) {
   }
   const container = tabs[0].parentNode;
   for (const tab of tabs) {
-    container.internalClosingTabs.add(tab.apiTab.id);
+    container.$TST.internalClosingTabs.add(tab.apiTab.id);
   }
   if (options.broadcasted)
     return;
