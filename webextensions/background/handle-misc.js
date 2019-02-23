@@ -545,15 +545,16 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          message.attachTo,
-          message.insertBefore,
-          message.insertAfter
+          message.attachToId,
+          message.insertBeforeId,
+          message.insertAfterId
         ]);
         log('perform tabs dragdrop requested: ', message);
         return Commands.performTabsDragDrop(Object.assign({}, message, {
-          attachTo:     message.attachTo && Tabs.trackedTabs.get(message.attachTo),
-          insertBefore: message.insertBefore && Tabs.trackedTabs.get(message.insertBefore),
-          insertAfter:  message.insertAfter && Tabs.trackedTabs.get(message.insertAfter)
+          tabs:         message.tabIds.map(id => Tabs.trackedTabs.get(id)),
+          attachTo:     message.attachToId && Tabs.trackedTabs.get(message.attachToId),
+          insertBefore: message.insertBeforeId && Tabs.trackedTabs.get(message.insertBeforeId),
+          insertAfter:  message.insertAfterId && Tabs.trackedTabs.get(message.insertAfterId)
         }));
       })();
 

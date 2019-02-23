@@ -264,12 +264,17 @@ export async function performTabsDragDrop(params = {}) {
 
   if (params.inRemote) {
     browser.runtime.sendMessage(Object.assign({}, params, {
-      type:         Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
-      windowId:     windowId,
-      attachTo:     params.attachTo && params.attachTo.id,
-      insertBefore: params.insertBefore && params.insertBefore.id,
-      insertAfter:  params.insertAfter && params.insertAfter.id,
-      inRemote:     false,
+      type:           Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
+      windowId:       windowId,
+      tabs:           null,
+      attachTo:       null,
+      insertBefore:   null,
+      insertAfter:    null,
+      tabIds:         params.tabs.map(tab => tab.id),
+      attachToId:     params.attachTo && params.attachTo.id,
+      insertBeforeId: params.insertBefore && params.insertBefore.id,
+      insertAfterId:  params.insertAfter && params.insertAfter.id,
+      inRemote:       false,
       destinationWindowId
     }));
     return;
@@ -419,13 +424,19 @@ export async function moveTabsWithStructure(tabs, params = {}) {
 }
 
 async function attachTabsWithStructure(tabs, parent, options = {}) {
-  log('attachTabsWithStructure: start ', tabs.map(tab => tab.id));
-  if (parent && !options.insertBefore && !options.insertAfter) {
-    const refTabs = Tree.getReferenceTabsForNewChild(tabs[0].$TST.element, parent && parent.$TST.element, {
-      ignoreTabs: tabs.map(tab => tab.$TST.element)
-    });
-    options.insertBefore = refTabs.insertBefore;
-    options.insertAfter  = refTabs.insertAfter;
+  log('attachTabsWithStructure: start ', tabs.map(tab => tab.id), parent && parent.id);
+  if (parent &&
+      !options.insertBefore &&
+      !options.insertAfter) {
+    const refTabs = Tree.getReferenceTabsForNewChild(
+      tabs[0].$TST.element,
+      parent && parent.$TST.element,
+      {
+        ignoreTabs: tabs.map(tab => tab.$TST.element)
+      }
+    );
+    options.insertBefore = refTabs.insertBefore && refTabs.insertBefore.apiTab;
+    options.insertAfter  = refTabs.insertAfter && refTabs.insertAfter.apiTab;
   }
 
   if (options.insertBefore)

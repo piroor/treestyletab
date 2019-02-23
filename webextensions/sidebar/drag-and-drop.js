@@ -245,9 +245,9 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTabs', () => {
     const dragData = info.dragData;
-    return (dragData && dragData.apiTabs).filter(aPITab => !!aPITab) || [];
+    return (dragData && dragData.apiTabs).filter(tab => !!tab) || [];
   });
-  info.defineGetter('draggedTabIDs', () => {
+  info.defineGetter('draggedTabIds', () => {
     return info.draggedTabs.map(apiTab => apiTab.id);
   });
   info.defineGetter('targetTabElements', () => {
@@ -272,7 +272,7 @@ function getDropAction(event) {
     if (info.dropPosition == kDROP_IMPOSSIBLE)
       return false;
 
-    const draggedTab               = info.dragData && info.dragData.apiTab;
+    const draggedTab = info.dragData && info.dragData.apiTab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
     if (draggedTab &&
         isPrivateBrowsingTabDragged != Tabs.isPrivateBrowsing(info.dragOverTab || Tabs.getFirstTab(draggedTab.windowId))) {
@@ -285,11 +285,11 @@ function getDropAction(event) {
           return false;
         }
         else if (info.dragOverTab) {
-          if (info.draggedTabIDs.includes(info.dragOverTab.id))
+          if (info.draggedTabIds.includes(info.dragOverTab.id))
             return false;
           const ancestors = Tabs.getAncestorTabs(info.dragOverTab);
           /* too many function call in this way, so I use alternative way for better performance.
-          return !info.draggedTabIDs.includes(info.dragOverTab.id) &&
+          return !info.draggedTabIds.includes(info.dragOverTab.id) &&
                    Tabs.collectRootTabs(info.draggedTabs).every(rootTab =>
                      !ancestors.includes(rootTab)
                    );
@@ -330,7 +330,7 @@ function getDropAction(event) {
     if (event.clientY < info.firstTargetTabElement.getBoundingClientRect().top) {
       //log('dragging above the first tab');
       info.targetTab    = info.insertBefore = info.firstTargetTab;
-      info.targetTabElement = info.firstTargetTabElement = info.targetTab.$TST.element;
+      info.targetTabElement = info.firstTargetTabElement = info.targetTab && info.targetTab.$TST.element;
       info.dropPosition = kDROP_BEFORE;
       info.action       = action;
       if (info.draggedTab &&
@@ -341,7 +341,7 @@ function getDropAction(event) {
     else if (event.clientY > info.lastTargetTabElement.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
       info.targetTab    = info.insertAfter = info.lastTargetTab;
-      info.targetTabElement = info.lastTargetTabElement = info.targetTab.$TST.element;
+      info.targetTabElement = info.lastTargetTabElement = info.targetTab && info.targetTab.$TST.element;
       info.dropPosition = kDROP_AFTER;
       info.action       = action;
       if (info.draggedTab &&
