@@ -43,11 +43,9 @@ import TabIdFixer from '/extlib/TabIdFixer.js';
 import {
   log as internalLogger,
   wait,
-  dumpTab,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
-import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import * as TabsContainer from './tabs-container.js';
 import * as TabsUpdate from './tabs-update.js';
@@ -130,6 +128,7 @@ function getTrackedWindow(windowId) {
   if (!container) {
     container = TabsContainer.buildFor(windowId);
     Tabs.allTabsContainer.appendChild(container);
+    window = container.$TST;
   }
 
   return window;
@@ -872,9 +871,7 @@ async function onDetached(tabId, detachInfo) {
     if (!byInternalOperation) // we should process only tabs detached by others.
       Tabs.onDetached.dispatch(oldTab.$TST.element, info);
 
-    const window    = Tabs.trackedWindows.get(oldTab.windowId);
-    const nextTab   = oldTab.$TST.element.nextSibling;
-    const oldIndex  = oldTab.index;
+    const window = Tabs.trackedWindows.get(oldTab.windowId);
     clearTabRelationsForRemovedTab(oldTab);
     window.element.removeChild(oldTab.$TST.element);
     if (targetWindow)
