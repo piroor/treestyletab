@@ -486,16 +486,16 @@ export async function moveUp(tab, options = {}) {
     await onMoveUp.dispatch(tab);
   }
   else {
-    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab.$TST.element, {
-      insertBefore: previousTab && previousTab.$TST.element
+    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+      insertBefore: previousTab
     });
     if (!referenceTabs.insertBefore &&
         !referenceTabs.insertAfter)
       return false;
     await moveTabsWithStructure([tab].concat(Tabs.getDescendantTabs(tab)), {
-      attachTo:     referenceTabs.parent.apiTab,
-      insertBefore: referenceTabs.insertBefore.apiTab,
-      insertAfter:  referenceTabs.insertAfter.apiTab,
+      attachTo:     referenceTabs.parent,
+      insertBefore: referenceTabs.insertBefore,
+      insertAfter:  referenceTabs.insertAfter,
       broadcast:    true
     });
   }
@@ -522,15 +522,15 @@ export async function moveDown(tab, options = {}) {
     const nextTab = Tabs.getNextVisibleTab(Tabs.getLastDescendantTab(tab) || tab);
     if (!nextTab)
       return false;
-    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab.$TST.element, {
-      insertAfter: nextTab && nextTab.$TST.element
+    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+      insertAfter: nextTab
     });
     if (!referenceTabs.insertBefore && !referenceTabs.insertAfter)
       return false;
     await moveTabsWithStructure([tab].concat(Tabs.getDescendantTabs(tab)), {
-      attachTo:     referenceTabs.parent.apiTab,
-      insertBefore: referenceTabs.insertBefore.apiTab,
-      insertAfter:  referenceTabs.insertAfter.apiTab,
+      attachTo:     referenceTabs.parent,
+      insertBefore: referenceTabs.insertBefore,
+      insertAfter:  referenceTabs.insertAfter,
       broadcast:    true
     });
   }

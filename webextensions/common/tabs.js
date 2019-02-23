@@ -2073,7 +2073,8 @@ export async function getPermanentStates(tab) {
   return states || [];
 }
 
-export async function setAttribute(tab, attribute, value) {
+
+export function setAttribute(tab, attribute, value) {
   if (!tab)
     return false;
   if (tab instanceof Element)
@@ -2085,7 +2086,17 @@ export async function setAttribute(tab, attribute, value) {
   tab.$TST.attributes[attribute] = value;
 }
 
-export async function removeAttribute(tab, attribute) {
+export function getAttribute(tab, attribute) {
+  if (!tab)
+    return null;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
+  if (!tab || !tab.$TST)
+    return null;
+  return tab.$TST.attributes[attribute];
+}
+
+export function removeAttribute(tab, attribute) {
   if (!tab)
     return false;
   if (tab instanceof Element)

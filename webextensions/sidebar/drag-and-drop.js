@@ -408,15 +408,15 @@ function getDropAction(event) {
 
     case kDROP_BEFORE: {
       //log('drop position = before the tab');
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTabElement, {
-        insertBefore: targetTabElement
+      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
+        insertBefore: targetTab
       });
       if (referenceTabs.parent)
-        info.parent = referenceTabs.parent.apiTab;
+        info.parent = referenceTabs.parent;
       if (referenceTabs.insertBefore)
-        info.insertBefore = referenceTabs.insertBefore.apiTab;
+        info.insertBefore = referenceTabs.insertBefore;
       if (referenceTabs.insertAfter)
-        info.insertAfter = referenceTabs.insertAfter.apiTab;
+        info.insertAfter = referenceTabs.insertAfter;
       info.action = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
       //if (info.insertBefore)
       //  log('insertBefore = ', dumpTab(info.insertBefore));
@@ -427,15 +427,15 @@ function getDropAction(event) {
 
     case kDROP_AFTER: {
       //log('drop position = after the tab');
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTabElement, {
-        insertAfter: targetTabElement
+      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
+        insertAfter: targetTab
       });
       if (referenceTabs.parent)
-        info.parent = referenceTabs.parent.apiTab;
+        info.parent = referenceTabs.parent;
       if (referenceTabs.insertBefore)
-        info.insertBefore = referenceTabs.insertBefore.apiTab;
+        info.insertBefore = referenceTabs.insertBefore;
       if (referenceTabs.insertAfter)
-        info.insertAfter = referenceTabs.insertAfter.apiTab;
+        info.insertAfter = referenceTabs.insertAfter;
       info.action = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
       if (info.insertBefore) {
         /* strategy

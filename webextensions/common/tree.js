@@ -1489,8 +1489,8 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       }
     }
     else {
-      const prevLevel   = Number(prevTab.getAttribute(Constants.kLEVEL) || 0);
-      const targetLevel = Number(params.insertBefore.getAttribute(Constants.kLEVEL) || 0);
+      const prevLevel   = Number(Tabs.getAttribute(prevTab, Constants.kLEVEL) || 0);
+      const targetLevel = Number(Tabs.getAttribute(params.insertBefore, Constants.kLEVEL) || 0);
       let parent = null;
       if (!tab || !Tabs.isPinned(tab))
         parent = (prevLevel < targetLevel) ? prevTab : Tabs.getParentTab(params.insertBefore);
@@ -1528,8 +1528,8 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       };
     }
     else {
-      const targetLevel = Number(params.insertAfter.getAttribute(Constants.kLEVEL) || 0);
-      const nextLevel   = Number(nextTab.getAttribute(Constants.kLEVEL) || 0);
+      const targetLevel = Number(Tabs.getAttribute(params.insertAfter, Constants.kLEVEL) || 0);
+      const nextLevel   = Number(Tabs.getAttribute(nextTab, Constants.kLEVEL) || 0);
       let parent = null;
       if (!tab || !Tabs.isPinned(tab))
         parent = (targetLevel < nextLevel) ? params.insertAfter : Tabs.getParentTab(params.insertAfter) ;
