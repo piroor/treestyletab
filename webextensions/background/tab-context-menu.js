@@ -607,13 +607,13 @@ async function onClick(info, contextApiTab) {
       });
     }; break;
     case 'context_bookmarkTab':
-      Commands.bookmarkTab(contextTabElement);
+      Commands.bookmarkTab(contextApiTab);
       break;
     case 'context_bookmarkSelected':
-      Commands.bookmarkTab(contextTabElement || activeTabElement);
+      Commands.bookmarkTab(contextApiTab || activeTab);
       break;
     case 'context_bookmarkAllTabs':
-      Commands.bookmarkTabs(Tabs.getTabs(contextTabElement));
+      Commands.bookmarkTabs(Tabs.getTabs(contextApiTab.windowId, { element: false }));
       break;
     case 'context_reloadAllTabs': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId }) ;

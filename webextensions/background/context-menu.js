@@ -372,7 +372,7 @@ export const onClick = (info, apiTab) => {
       break;
 
     case 'bookmarkTree':
-      Commands.bookmarkTree(contextTab);
+      Commands.bookmarkTree(apiTab);
       break;
 
     case 'groupTabs':

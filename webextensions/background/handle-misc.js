@@ -131,7 +131,7 @@ async function onShortcutCommand(command) {
       Commands.expandAll(activeTab);
       return;
     case 'bookmarkTree':
-      Commands.bookmarkTree(activeTab);
+      Commands.bookmarkTree(activeTab.apiTab);
       return;
 
     case 'newIndependentTab':

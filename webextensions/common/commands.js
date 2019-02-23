@@ -117,17 +117,17 @@ export function expandAll(hint) {
 }
 
 export async function bookmarkTree(root, options = {}) {
-  const tabs   = [root].concat(Tabs.getDescendantTabs(root));
+  const tabs = [root].concat(Tabs.getDescendantTabs(root));
   if (tabs.length > 1 &&
       Tabs.isGroupTab(tabs[0]))
     tabs.shift();
 
   const tab = tabs[0];
-  if (SidebarStatus.isOpen(tab.apiTab.windowId)) {
+  if (SidebarStatus.isOpen(tab.windowId)) {
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
-      windowId: tab.apiTab.windowId,
-      tabs:     tabs.map(tab => tab.apiTab)
+      windowId: tab.windowId,
+      tabs
     });
   }
 
@@ -137,7 +137,7 @@ export async function bookmarkTree(root, options = {}) {
   notify({
     title:   browser.i18n.getMessage('bookmarkTree_notification_success_title'),
     message: browser.i18n.getMessage('bookmarkTree_notification_success_message', [
-      root.apiTab.title,
+      root.title,
       tabs.length,
       folder.title
     ])
@@ -595,11 +595,11 @@ export async function bookmarkTab(tab, options = {}) {
   if (options.multiselected !== false && Tabs.isMultiselected(tab))
     return bookmarkTabs(Tabs.getSelectedTabs(tab));
 
-  if (SidebarStatus.isOpen(tab.apiTab.windowId)) {
+  if (SidebarStatus.isOpen(tab.windowId)) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
-      windowId: tab.apiTab.windowId,
-      tab:      tab.apiTab
+      windowId: tab.windowId,
+      tab:      tab
     });
   }
   else {
@@ -617,12 +617,11 @@ export async function bookmarkTab(tab, options = {}) {
 export async function bookmarkTabs(tabs) {
   if (tabs.length == 0)
     return;
-  const apiTabs = tabs.map(tab => tab.apiTab);
-  if (SidebarStatus.isOpen(apiTabs[0].windowId)) {
+  if (SidebarStatus.isOpen(tabs[0].windowId)) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
-      windowId: apiTabs[0].windowId,
-      tabs:     apiTabs
+      windowId: tabs[0].windowId,
+      tabs
     });
   }
   else {
@@ -631,8 +630,8 @@ export async function bookmarkTabs(tabs) {
       notify({
         title:   browser.i18n.getMessage('bookmarkTabs_notification_success_title'),
         message: browser.i18n.getMessage('bookmarkTabs_notification_success_message', [
-          apiTabs[0].title,
-          apiTabs.length,
+          tabs[0].title,
+          tabs.length,
           folder.title
         ]),
         icon:    Constants.kNOTIFICATION_DEFAULT_ICON
