@@ -527,7 +527,6 @@ async function onClick(info, contextApiTab) {
   const contextWindowId   = window.id;
   const contextTabElement = Tabs.getTabElementById(contextApiTab);
   const activeTab         = window.tabs.find(tab => tab.active);
-  const activeTabElement  = Tabs.getTabElementById(activeTab);
 
   let multiselectedTabs = Tabs.getSelectedTabs(windowId);
   const isMultiselected = contextTabElement ? Tabs.isMultiselected(contextTabElement) : multiselectedTabs.length > 1;
