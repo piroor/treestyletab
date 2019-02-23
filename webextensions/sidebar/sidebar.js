@@ -1014,11 +1014,11 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
       if (message.windowId != mTargetWindow)
         return;
-      return Bookmark.bookmarkTab(message.tab, { showDialog: true });
+      return Bookmark.bookmarkTab(Tabs.trackedTabs.get(message.tabId), { showDialog: true });
 
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
       if (message.windowId != mTargetWindow)
         return;
-      return Bookmark.bookmarkTabs(message.tabs, { showDialog: true });
+      return Bookmark.bookmarkTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), { showDialog: true });
   }
 }

@@ -96,7 +96,7 @@ async function onShortcutCommand(command) {
     active:        true,
     currentWindow: true
   }))[0]);
-  const selectedTabs = Tabs.isMultiselected(activeTab) ? Tabs.getSelectedTabs(activeTab) : [];
+  const selectedTabs = Tabs.isMultiselected(activeTab) ? Tabs.getSelectedTabs(activeTab.apiTab.windowId) : [];
   log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
   switch (command) {
@@ -131,7 +131,7 @@ async function onShortcutCommand(command) {
       Commands.expandAll(activeTab);
       return;
     case 'bookmarkTree':
-      Commands.bookmarkTree(activeTab.apiTab);
+      Commands.bookmarkTree(Tabs.trackedTabs.get(activeTab.apiTab.id));
       return;
 
     case 'newIndependentTab':
@@ -447,7 +447,7 @@ function onMessage(message, sender) {
           return;
         const multiselected = Tabs.isMultiselected(root);
         const tabs = multiselected ?
-          Tabs.getSelectedTabs(root) :
+          Tabs.getSelectedTabs(root.apiTab.windowId) :
           [root].concat(Tabs.getDescendantTabs(root)) ;
         for (const tab of tabs) {
           const playing = Tabs.isSoundPlaying(tab);

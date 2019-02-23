@@ -186,7 +186,7 @@ function getDragDataFromOneTab(hint, options = {}) {
 
 function getDraggedTabsFromOneTab(tab) {
   if (Tabs.isSelected(tab))
-    return Tabs.getSelectedTabs(tab);
+    return Tabs.getSelectedTabs(tab.apiTab.windowId, { element: true });
   return [tab].concat(Tabs.getDescendantTabs(tab));
 }
 

@@ -850,6 +850,8 @@ function assertValidHint(hint) {
     return;
   if (hint.parentNode)
     return;
+  if (hint.id && hint.$TST)
+    return;
   const error = new Error('FATAL ERROR: invalid hint is given');
   log(error.message, error.stack);
   throw error;
@@ -1331,17 +1333,17 @@ function getChildTabIndex(child, parent, options = {}) {
 
 export function getDescendantTabs(root, options = {}) {
   if (!ensureLivingTab(root))
-    return [];
+    return console.log('not living'), [];
   assertValidHint(root);
   if (!assertInitializedTab(root))
-    return [];
+    return console.log('not initialized'), [];
 
   const element = root instanceof Element || options.element;
   let descendants = [];
   const children = root.$TST.children;
   for (const child of children) {
     descendants.push(element ? child.$TST.element : child);
-    descendants = descendants.concat(getDescendantTabs(child.$TST.element, options));
+    descendants = descendants.concat(getDescendantTabs(child, options));
   }
   return descendants;
 }
@@ -1561,13 +1563,13 @@ export function getHighlightedTabs(hint, options = {}) {
   }, options));
 }
 
-export function getSelectedTabs(hint, options = {}) {
-  const container = getTabsContainer(hint);
+export function getSelectedTabs(windowId, options = {}) {
+  const container = getTabsContainer(windowId);
   if (!container)
     return [];
 
   const selectedTabs = queryAll(Object.assign({
-    windowId: container.windowId,
+    windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_SELECTED, true],
     ordered:  true,
@@ -1577,7 +1579,7 @@ export function getSelectedTabs(hint, options = {}) {
     return selectedTabs;
 
   const highlightedTabs = queryAll(Object.assign({
-    windowId:    container.windowId,
+    windowId,
     living:      true,
     highlighted: true,
     ordered:     true,

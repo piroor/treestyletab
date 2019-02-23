@@ -73,7 +73,7 @@ export async function updateSelectionByTabClick(tab, event) {
 
     try {
       if (!ctrlKeyPressed) {
-        const alreadySelectedTabs = Tabs.getSelectedTabs(tab);
+        const alreadySelectedTabs = Tabs.getSelectedTabs(tab.apiTab.windowId);
         log('clear old selection by shift-click: ', alreadySelectedTabs);
         for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.includes(alreadySelectedTab))

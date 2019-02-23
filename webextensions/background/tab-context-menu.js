@@ -401,7 +401,7 @@ async function onShown(info, contextApiTab) {
 
   updateItem('context_selectAllTabs', {
     visible: emulate && contextApiTab,
-    enabled: contextApiTab && Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length,
+    enabled: contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(tab).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
@@ -495,7 +495,7 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_selectAllTabs', {
     visible: emulate && !contextApiTab,
-    enabled: !contextApiTab && Tabs.getSelectedTabs(tab).length != Tabs.getVisibleTabs(tab).length
+    enabled: !contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(tab).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
     visible: emulate && !contextApiTab
@@ -523,12 +523,13 @@ async function onShown(info, contextApiTab) {
 
 async function onClick(info, contextApiTab) {
   const window            = await browser.windows.getLastFocused({ populate: true });
+  const windowId          = contextApiTab && contextApiTab.windowId || window.id;
   const contextWindowId   = window.id;
   const contextTabElement = Tabs.getTabElementById(contextApiTab);
   const activeTab         = window.tabs.find(tab => tab.active);
   const activeTabElement  = Tabs.getTabElementById(activeTab);
 
-  let multiselectedTabs = Tabs.getSelectedTabs(contextTabElement || activeTabElement);
+  let multiselectedTabs = Tabs.getSelectedTabs(windowId);
   const isMultiselected = contextTabElement ? Tabs.isMultiselected(contextTabElement) : multiselectedTabs.length > 1;
   if (!isMultiselected)
     multiselectedTabs = null;
@@ -607,10 +608,10 @@ async function onClick(info, contextApiTab) {
       });
     }; break;
     case 'context_bookmarkTab':
-      Commands.bookmarkTab(contextApiTab);
+      Commands.bookmarkTab(Tabs.trackedTabs.get(contextApiTab.id));
       break;
     case 'context_bookmarkSelected':
-      Commands.bookmarkTab(contextApiTab || activeTab);
+      Commands.bookmarkTab(Tabs.trackedTabs.get((contextApiTab || activeTab).id));
       break;
     case 'context_bookmarkAllTabs':
       Commands.bookmarkTabs(Tabs.getTabs(contextApiTab.windowId, { element: false }));

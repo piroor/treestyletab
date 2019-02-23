@@ -127,7 +127,7 @@ export async function bookmarkTree(root, options = {}) {
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tab.windowId,
-      tabs
+      tabIds:   tabs.map(tab => tab.id)
     });
   }
 
@@ -522,7 +522,7 @@ export async function duplicateTab(sourceTab, options = {}) {
     https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
   */
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTab);
-  const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab) : [sourceTab];
+  const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab.apiTab.windowId) : [sourceTab];
   log('source tabs: ', sourceTabs);
   const duplicatedTabs = await Tree.moveTabs(sourceTabs, {
     duplicate:           true,
@@ -539,7 +539,7 @@ export async function duplicateTab(sourceTab, options = {}) {
 
 export async function moveTabToStart(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab)));
+  return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab.apiTab.windowId) : [tab].concat(Tabs.getDescendantTabs(tab)));
 }
 
 export async function moveTabsToStart(movedTabs) {
@@ -557,7 +557,7 @@ export async function moveTabsToStart(movedTabs) {
 
 export async function moveTabToEnd(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab) : [tab].concat(Tabs.getDescendantTabs(tab)));
+  return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab.apiTab.windowId) : [tab].concat(Tabs.getDescendantTabs(tab)));
 }
 
 export async function moveTabsToEnd(movedTabs) {
@@ -575,7 +575,7 @@ export async function moveTabsToEnd(movedTabs) {
 
 export async function openTabInWindow(tab, options = {}) {
   if (options.multiselected !== false && Tabs.isMultiselected(tab)) {
-    return openTabsInWindow(Tabs.getSelectedTabs(tab));
+    return openTabsInWindow(Tabs.getSelectedTabs(tab.apiTab.windowId));
   }
   else {
     const window = await browser.windows.create({
@@ -593,13 +593,13 @@ export async function openTabsInWindow(tabs) {
 
 export async function bookmarkTab(tab, options = {}) {
   if (options.multiselected !== false && Tabs.isMultiselected(tab))
-    return bookmarkTabs(Tabs.getSelectedTabs(tab));
+    return bookmarkTabs(Tabs.getSelectedTabs(tab.windowId, { element: false }));
 
   if (SidebarStatus.isOpen(tab.windowId)) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
       windowId: tab.windowId,
-      tab:      tab
+      tabId:    tab.id
     });
   }
   else {
@@ -621,7 +621,7 @@ export async function bookmarkTabs(tabs) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tabs[0].windowId,
-      tabs
+      tabIds:   tabs.map(tab => tab.id)
     });
   }
   else {
@@ -646,7 +646,7 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
   }
   else {
     const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTabOrTabs);
-    sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTabOrTabs) : [sourceTabOrTabs];
+    sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTabOrTabs.apiTab.windowId) : [sourceTabOrTabs];
   }
   if (sourceTabs.length === 0)
     return [];
