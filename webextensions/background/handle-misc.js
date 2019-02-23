@@ -308,7 +308,7 @@ function onMessage(message, sender) {
           Tree.collapseExpandSubtree(tab, params);
         if (mInitialized)
           TreeStructure.reserveToSaveTreeStructure(tab);
-        BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
+        BackgroundCache.markWindowCacheDirtyFromTab(tab.apiTab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 
     case Constants.kCOMMAND_LOAD_URI:

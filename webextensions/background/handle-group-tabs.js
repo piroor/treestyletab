@@ -73,10 +73,10 @@ export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
-    if (tab.reservedCleanupNeedlessGroupTab)
-      clearTimeout(tab.reservedCleanupNeedlessGroupTab);
-    tab.reservedCleanupNeedlessGroupTab = setTimeout(() => {
-      delete tab.reservedCleanupNeedlessGroupTab;
+    if (tab.apiTab.$TST.reservedCleanupNeedlessGroupTab)
+      clearTimeout(tab.apiTab.$TST.reservedCleanupNeedlessGroupTab);
+    tab.apiTab.$TST.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+      delete tab.apiTab.$TST.reservedCleanupNeedlessGroupTab;
       cleanupNeedlssGroupTab(tab);
     }, 100);
   }
@@ -274,6 +274,8 @@ Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
   const openerId = apiTab.openerTabId;
   const openerApiTab = openerId && (await browser.tabs.get(openerId));
   const container = Tabs.getTabsContainer(apiTab.windowId);
+  if (!container)
+    return;
   if ((configs.autoGroupNewTabsFromPinned &&
        openerApiTab &&
        openerApiTab.pinned &&

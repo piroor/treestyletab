@@ -93,11 +93,19 @@ export class Tab {
   }
 
   destroy() {
+    if (this.reservedCleanupNeedlessGroupTab) {
+      clearTimeout(this.reservedCleanupNeedlessGroupTab);
+      delete this.reservedCleanupNeedlessGroupTab;
+    }
+
     trackedTabs.delete(this.id);
     if (this.uniqueId)
       trackedTabsByUniqueId.delete(this.uniqueId.id)
 
     if (this.element) {
+      if (this.element.parentNode) {
+        this.element.parentNode.removeChild(this.element);
+      }
       delete this.element.$TST;
       delete this.element;
     }
@@ -180,12 +188,21 @@ export class Window {
 
   destroy() {
     for (const tab of this.tabs.values()) {
-      tab.$TST.destroy();
+      if (tab.$TST)
+        tab.$TST.destroy();
     }
     this.tabs.clear();
     trackedWindows.delete(this.id, this);
     activeTabForWindow.delete(this.id);
     highlightedTabsForWindow.delete(this.id);
+
+    if (this.element) {
+      const element = this.element;
+      if (element.parentNode && !element.hasChildNodes())
+        element.parentNode.removeChild(element);
+      delete this.element;
+    }
+
     delete this.tabs;
     delete this.order;
     delete this.id;
@@ -240,7 +257,7 @@ export class Window {
     }
   }
 
-  untrackTab(tabId) {
+  detachTab(tabId) {
     const tab = trackedTabs.get(tabId);
     this.tabs.delete(tabId);
     const order = this.order;
@@ -254,6 +271,13 @@ export class Window {
         this.tabs.get(order[i]).index = i;
       }
     }
+    return tab;
+  }
+
+  untrackTab(tabId) {
+    const tab = this.detachTab(tabId);
+    if (tab)
+      tab.$TST.destroy();
   }
 }
 
@@ -584,7 +608,7 @@ export function updateUniqueId(tab) {
     }
     return uniqueId || {};
   }).catch(error => {
-    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tab.id}: `, String(error), error.stack);
+    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tab.id}: `, error);
     return {};
   });
 }
@@ -880,7 +904,7 @@ export function getTabFromChild(node, options = {}) {
     return null;
   if (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
-  const tab = node.closest('.tab');
+  const tab = node && node.closest('.tab');
   if (options.force)
     return tab;
   return ensureLivingTab(tab);

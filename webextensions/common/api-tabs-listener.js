@@ -116,17 +116,23 @@ function addTabOperationQueue() {
   return [onCompleted, previous];
 }
 
-function getOrBuildTabsContainer(hint) {
-  let container = Tabs.getTabsContainer(hint);
-  if (container)
-    return container;
+function getTrackedWindow(windowId) {
+  if (typeof windowId != 'number')
+    throw new Error(`The given ID seems invalid as an window id: ${windowId}`);
 
-  if (typeof hint != 'number')
-    throw new Error(`The given ID seems invalid as an window id: ${hint}`);
+  let window = Tabs.trackedWindows.get(windowId);
+  if (window &&
+      window.element &&
+      window.element.parentNode)
+    return window;
 
-  container = TabsContainer.buildFor(hint);
-  Tabs.allTabsContainer.appendChild(container);
-  return container;
+  let container = Tabs.getTabsContainer(windowId);
+  if (!container) {
+    container = TabsContainer.buildFor(windowId);
+    Tabs.allTabsContainer.appendChild(container);
+  }
+
+  return window;
 }
 
 const mLastClosedWhileActiveResolvers = new WeakMap(); // used only on Firefox 64 and older
@@ -143,21 +149,22 @@ async function onActivated(activeInfo) {
     await previous;
 
   try {
-    const container = getOrBuildTabsContainer(activeInfo.windowId);
+    const window = getTrackedWindow(activeInfo.windowId);
 
-    let byInternalOperation = container.$TST.internalFocusCount > 0;
+    let byInternalOperation = window.internalFocusCount > 0;
     if (byInternalOperation)
-      container.$TST.internalFocusCount--;
-    const silently = container.$TST.internalSilentlyFocusCount > 0;
+      window.internalFocusCount--;
+    const silently = window.internalSilentlyFocusCount > 0;
     if (silently)
-      container.$TST.internalSilentlyFocusCount--;
-    const byTabDuplication = parseInt(container.dataset.$TST.duplicatingTabsCount) > 0;
+      window.internalSilentlyFocusCount--;
+    const byTabDuplication = parseInt(window.duplicatingTabsCount) > 0;
 
     if (Tabs.hasCreatingTab(activeInfo.windowId))
       await Tabs.waitUntilTabsAreCreated(activeInfo.tabId);
 
     const newActiveTab = Tabs.trackedTabs.get(activeInfo.tabId);
-    if (!newActiveTab) {
+    if (!newActiveTab ||
+        !Tabs.ensureLivingTab(newActiveTab.$TST.element)) {
       onCompleted();
       return;
     }
@@ -167,29 +174,29 @@ async function onActivated(activeInfo) {
 
     let byActiveTabRemove = !activeInfo.previousTabId;
     if (!('successorTabId' in newActiveTab)) { // on Firefox 64 or older
-      byActiveTabRemove = mLastClosedWhileActiveResolvers.has(container);
+      byActiveTabRemove = mLastClosedWhileActiveResolvers.has(window.id);
       if (byActiveTabRemove) {
-        container.$TST.tryingReforcusForClosingActiveTabCount++;
-        mLastClosedWhileActiveResolvers.get(container)();
-        delete mLastClosedWhileActiveResolvers.delete(container);
-        const focusRedirected = await container.focusRedirectedForClosingActiveTab;
-        delete container.focusRedirectedForClosingActiveTab;
-        if (container.$TST.tryingReforcusForClosingActiveTabCount > 0) // reduce count even if not redirected
-          container.$TST.tryingReforcusForClosingActiveTabCount--;
+        window.tryingReforcusForClosingActiveTabCount++;
+        mLastClosedWhileActiveResolvers.get(window.id)();
+        delete mLastClosedWhileActiveResolvers.delete(window.id);
+        const focusRedirected = await window.focusRedirectedForClosingActiveTab;
+        delete window.focusRedirectedForClosingActiveTab;
+        if (window.tryingReforcusForClosingActiveTabCount > 0) // reduce count even if not redirected
+          window.tryingReforcusForClosingActiveTabCount--;
         log('focusRedirected: ', focusRedirected);
         if (focusRedirected) {
           onCompleted();
           return;
         }
       }
-      else if (container.$TST.tryingReforcusForClosingActiveTabCount > 0) { // treat as "redirected unintentional tab focus"
-        container.$TST.tryingReforcusForClosingActiveTabCount--;
+      else if (window.tryingReforcusForClosingActiveTabCount > 0) { // treat as "redirected unintentional tab focus"
+        window.tryingReforcusForClosingActiveTabCount--;
         byActiveTabRemove  = true;
         byInternalOperation = false;
       }
     }
 
-    if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newActiveTab.$TST.element)) { // it can be removed while waiting
       onCompleted();
       return;
     }
@@ -209,7 +216,7 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newActiveTab.$TST.element)) { // it can be removed while waiting
       onCompleted();
       return;
     }
@@ -248,16 +255,17 @@ async function onUpdated(tabId, changeInfo, tab) {
     await previous;
 
   try {
-    const updatedTab = Tabs.getTabElementById({ tab: tabId, window: tab.windowId });
-    if (!updatedTab) {
+    const updatedTab = Tabs.trackedTabs.get(tabId);
+    if (!updatedTab ||
+        !Tabs.ensureLivingTab(updatedTab.$TST.element)) {
       onCompleted();
       return;
     }
 
-    logUpdated('tabs.onUpdated ', tabId, changeInfo, tab, updatedTab.apiTab);
+    logUpdated('tabs.onUpdated ', tabId, changeInfo, tab, updatedTab);
 
     if ('url' in changeInfo)
-      changeInfo.previousUrl = updatedTab.apiTab.url;
+      changeInfo.previousUrl = updatedTab.url;
     //updatedTab.apiTab = tab;
     /*
       Updated openerTabId is not notified via tabs.onUpdated due to
@@ -269,7 +277,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     */
     for (const key of Object.keys(changeInfo)) {
       if (key != 'index')
-        updatedTab.apiTab[key] = changeInfo[key];
+        updatedTab[key] = changeInfo[key];
     }
     if (changeInfo.url ||
         changeInfo.status == 'complete') {
@@ -280,20 +288,20 @@ async function onUpdated(tabId, changeInfo, tab) {
       //    https://github.com/piroor/treestyletab/issues/1916
       //  * Reopen tab by Ctrl-Shift-T
       browser.tabs.get(tabId).then(apiTab => {
-        if (apiTab.favIconUrl != updatedTab.apiTab.favIconUrl)
+        if (apiTab.favIconUrl != updatedTab.favIconUrl)
           onUpdated(tabId, { favIconUrl: apiTab.favIconUrl }, apiTab);
       });
     }
     if (configs.enableWorkaroundForBug1409262 &&
-        tab.openerTabId != updatedTab.apiTab.TSTUpdatedOpenerTabId) {
-      logUpdated(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.apiTab.TSTUpdatedOpenerTabId} => ${tab.openerTabId}`);
-      updatedTab.apiTab.TSTUpdatedOpenerTabId = updatedTab.apiTab.openerTabId = tab.openerTabId;
+        tab.openerTabId != updatedTab.TSTUpdatedOpenerTabId) {
+      logUpdated(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.TSTUpdatedOpenerTabId} => ${tab.openerTabId}`);
+      updatedTab.TSTUpdatedOpenerTabId = updatedTab.openerTabId = tab.openerTabId;
     }
 
-    TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
-    TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab));
+    TabsUpdate.updateTab(updatedTab.$TST.element, changeInfo, { tab });
+    TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab.$TST.element));
 
-    const onUpdatedResult = Tabs.onUpdated.dispatch(updatedTab, changeInfo);
+    const onUpdatedResult = Tabs.onUpdated.dispatch(updatedTab.$TST.element, changeInfo);
     // don't do await if not needed, to process things synchronously
     if (onUpdatedResult instanceof Promise)
       await onUpdatedResult;
@@ -343,11 +351,11 @@ async function onNewTabTracked(tab) {
 
   Tabs.track(tab);
 
-  const container = getOrBuildTabsContainer(tab.windowId);
-  const positionedBySelf     = container.$TST.toBeOpenedTabsWithPositions > 0;
-  const duplicatedInternally = container.$TST.duplicatingTabsCount > 0;
-  const maybeOrphan          = container.$TST.toBeOpenedOrphanTabs > 0;
-  const activeTab            = Tabs.getActiveTab(container);
+  const window               = getTrackedWindow(tab.windowId);
+  const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
+  const duplicatedInternally = window.duplicatingTabsCount > 0;
+  const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
+  const activeTab            = Tabs.getActiveTab(window.id);
 
   Tabs.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
@@ -365,19 +373,16 @@ async function onNewTabTracked(tab) {
   log(`onNewTabTracked(id=${tab.id}): start to create tab element`);
 
   try {
-    const newTab = Tabs.buildTab(tab, { inRemote: !!targetWindow });
-    Tabs.addState(newTab, Constants.kTAB_STATE_OPENING);
+    const newTabElement = Tabs.buildTab(tab, { inRemote: !!targetWindow });
+    Tabs.addState(newTabElement, Constants.kTAB_STATE_OPENING);
 
     // New tab's index can become invalid because the value of "index" is same to
     // the one given to browser.tabs.create() instead of actual index.
     // See also: https://github.com/piroor/treestyletab/issues/2131
-    tab.index = Math.max(0, Math.min(tab.index, container.childNodes.length));
+    tab.index = Math.max(0, Math.min(tab.index, window.element.childNodes.length));
 
-    const nextTab = Tabs.getAllTabs(container)[tab.index];
-    container.insertBefore(newTab, nextTab);
-
-    if (nextTab)
-      reindexFollowingTabs(nextTab, tab.index + 1);
+    const nextTabElement = Tabs.getAllTabs(window.id)[tab.index];
+    window.element.insertBefore(newTabElement, nextTabElement);
 
     // We need to update "active" state of a new active tab immediately.
     // Attaching of initial child tab (this new tab may become it) to an
@@ -395,65 +400,63 @@ async function onNewTabTracked(tab) {
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
     const uniqueId = await tab.$TST.promisedUniqueId;
 
-    if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newTabElement)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      delete tab.$TST.element;
       return;
     }
 
-    TabsUpdate.updateTab(newTab, tab, {
+    TabsUpdate.updateTab(newTabElement, tab, {
       tab:        tab,
       forceApply: true
     });
 
     // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
-    const treeForActionDetection = Tabs.snapshotTreeForActionDetection(newTab);
+    const treeForActionDetection = Tabs.snapshotTreeForActionDetection(newTabElement);
 
     if (positionedBySelf)
-      container.$TST.toBeOpenedTabsWithPositions--;
+      window.toBeOpenedTabsWithPositions--;
     if (maybeOrphan)
-      container.$TST.toBeOpenedOrphanTabs--;
+      window.toBeOpenedOrphanTabs--;
     if (duplicatedInternally)
-      container.$TST.duplicatingTabsCount--;
+      window.duplicatingTabsCount--;
 
     const duplicated = duplicatedInternally || uniqueId.duplicated;
     const restored   = uniqueId.restored;
     if (restored) {
-      container.restoredCount = container.restoredCount || 0;
-      container.restoredCount++;
-      if (!container.allTabsRestored) {
+      window.restoredCount = window.restoredCount || 0;
+      window.restoredCount++;
+      if (!window.allTabsRestored) {
         log(`onNewTabTracked(id=${tab.id}): Maybe starting to restore window`);
-        container.allTabsRestored = new Promise((resolve, _aReject) => {
-          let lastCount = container.restoredCount;
+        window.allTabsRestored = new Promise((resolve, _aReject) => {
+          let lastCount = window.restoredCount;
           const timer = setInterval(() => {
-            if (lastCount != container.restoredCount) {
-              lastCount = container.restoredCount;
+            if (lastCount != window.restoredCount) {
+              lastCount = window.restoredCount;
               return;
             }
             clearTimeout(timer);
-            container.allTabsRestored = null;
-            container.restoredCount   = 0;
+            window.allTabsRestored = null;
+            window.restoredCount   = 0;
             log('All tabs are restored');
             resolve(lastCount);
           }, 200);
         });
-        container.allTabsRestored = Tabs.onWindowRestoring.dispatch(tab.windowId);
+        window.allTabsRestored = Tabs.onWindowRestoring.dispatch(tab.windowId);
       }
-      Tabs.onRestoring.dispatch(newTab);
-      await container.allTabsRestored;
+      Tabs.onRestoring.dispatch(newTabElement);
+      await window.allTabsRestored;
       log(`onNewTabTracked(id=${tab.id}): continued for restored tab`);
     }
-    if (!container.parentNode ||
-        !newTab.parentNode) {
+    if (!window.element.parentNode ||
+        !newTabElement.parentNode) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      delete tab.$TST.element;
       return;
     }
 
-    let moved = Tabs.onCreating.dispatch(newTab, {
+    let moved = Tabs.onCreating.dispatch(newTabElement, {
       positionedBySelf,
       maybeOrphan,
       restored,
@@ -467,27 +470,26 @@ async function onNewTabTracked(tab) {
     moved = moved === false;
     log(`onNewTabTracked(id=${tab.id}): moved = `, moved);
 
-    if (container.parentNode) { // it can be removed while waiting
-      container.$TST.openingTabs.add(tab.id);
+    if (window.element.parentNode) { // it can be removed while waiting
+      window.openingTabs.add(tab.id);
       setTimeout(() => {
-        if (!container.parentNode) // it can be removed while waiting
+        if (!window.parentNode) // it can be removed while waiting
           return;
-        container.$TST.openingTabs.delete(tab.id);
+        window.openingTabs.delete(tab.id);
       }, 0);
     }
 
-    if (!Tabs.ensureLivingTab(newTab)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newTabElement)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      delete tab.$TST.element;
       return;
     }
 
     log(`onNewTabTracked(id=${tab.id}): uniqueId = `, uniqueId);
 
-    Tabs.onCreated.dispatch(newTab, {
+    Tabs.onCreated.dispatch(newTabElement, {
       positionedBySelf: positionedBySelf || moved,
-      skipFixupTree: !nextTab,
+      skipFixupTree: !nextTabElement,
       restored,
       duplicated,
       duplicatedInternally,
@@ -495,15 +497,15 @@ async function onNewTabTracked(tab) {
       treeForActionDetection
     });
     wait(configs.newTabAnimationDuration).then(() => {
-      Tabs.removeState(newTab, Constants.kTAB_STATE_OPENING);
+      Tabs.removeState(newTabElement, Constants.kTAB_STATE_OPENING);
     });
-    Tabs.resolveOpened(newTab);
+    Tabs.resolveOpened(newTabElement);
 
     if (!duplicated &&
         restored) {
-      Tabs.addState(newTab, Constants.kTAB_STATE_RESTORED);
-      Tabs.onRestored.dispatch(newTab);
-      checkRecycledTab(container);
+      Tabs.addState(newTabElement, Constants.kTAB_STATE_RESTORED);
+      Tabs.onRestored.dispatch(newTabElement);
+      checkRecycledTab(window.id);
     }
 
     onTabCreated(uniqueId);
@@ -518,7 +520,7 @@ async function onNewTabTracked(tab) {
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
 
-    const currentActiveTab = Tabs.getActiveTabs().find(tabElement => tabElement && tabElement != newTab && tabElement.parentNode == newTab.parentNode);
+    const currentActiveTab = Tabs.getActiveTabs().find(tabElement => tabElement && tabElement != newTabElement && tabElement.parentNode == newTabElement.parentNode);
     if (renewedTab.active &&
         currentActiveTab)
       onActivated({
@@ -527,7 +529,7 @@ async function onNewTabTracked(tab) {
         previousTabId: currentActiveTab.apiTab.id
       });
 
-    return newTab;
+    return newTabElement;
   }
   catch(e) {
     console.log(e);
@@ -546,9 +548,9 @@ function reindexFollowingTabs(startTab, startIndex) {
 }
 
 // "Recycled tab" is an existing but reused tab for session restoration.
-function checkRecycledTab(container) {
+function checkRecycledTab(windowId) {
   const possibleRecycledTabs = Tabs.queryAll({
-    windowId: container.windowId,
+    windowId: windowId,
     states: [
       Constants.kTAB_STATE_RESTORED, false,
       Constants.kTAB_STATE_OPENING,  false
@@ -562,9 +564,13 @@ function checkRecycledTab(container) {
 
   log(`Detecting recycled tabs for session restoration from ${possibleRecycledTabs.length} tabs`);
   for (const tab of possibleRecycledTabs) {
+    if (!Tabs.ensureLivingTab(tab) ||
+        !Tabs.ensureLivingTab(tab.$TST.element))
+      continue;
     const currentId = tab.uniqueId.id;
     Tabs.updateUniqueId(tab).then(uniqueId => {
       if (!Tabs.ensureLivingTab(tab) ||
+          !Tabs.ensureLivingTab(tab.$TST.element) ||
           !uniqueId.restored ||
           uniqueId.id == currentId ||
           Constants.kTAB_STATE_RESTORED in tab.$TST.states)
@@ -582,10 +588,10 @@ async function onRemoved(tabId, removeInfo) {
   if (targetWindow && removeInfo.windowId != targetWindow)
     return;
 
-  const container = getOrBuildTabsContainer(removeInfo.windowId);
-  const byInternalOperation = container.$TST.internalClosingTabs.has(tabId);
+  const window              = getTrackedWindow(removeInfo.windowId);
+  const byInternalOperation = window.internalClosingTabs.has(tabId);
   if (byInternalOperation)
-    container.$TST.internalClosingTabs.delete(tabId);
+    window.internalClosingTabs.delete(tabId);
 
   if (Tabs.hasCreatingTab(removeInfo.windowId))
     await Tabs.waitUntilAllTabsAreCreated(removeInfo.windowId);
@@ -595,24 +601,24 @@ async function onRemoved(tabId, removeInfo) {
     await previous;
 
   try {
-    const oldTab = Tabs.getTabElementById({ tab: tabId, window: removeInfo.windowId });
+    const oldTab = Tabs.trackedTabs.get(tabId);
     if (!oldTab) {
       onCompleted();
       return;
     }
 
-    log('tabs.onRemoved, tab is found: ', dumpTab(oldTab));
+    log('tabs.onRemoved, tab is found: ', oldTab);
 
-    Tabs.onStateChanged.dispatch(oldTab);
+    Tabs.onStateChanged.dispatch(oldTab.$TST.element);
 
     if (Tabs.isActive(oldTab) &&
-        !('successorTabId' in oldTab.apiTab)) { // on Firefox 64 or older
-      const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab);
+        !('successorTabId' in oldTab)) { // on Firefox 64 or older
+      const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab.$TST.element);
       if (resolver)
-        mLastClosedWhileActiveResolvers.set(container, resolver);
+        mLastClosedWhileActiveResolvers.set(window, resolver);
     }
 
-    const onRemovingResult = Tabs.onRemoving.dispatch(oldTab, Object.assign({}, removeInfo, {
+    const onRemovingResult = Tabs.onRemoving.dispatch(oldTab.$TST.element, Object.assign({}, removeInfo, {
       byInternalOperation
     }));
     // don't do await if not needed, to process things synchronously
@@ -621,16 +627,16 @@ async function onRemoved(tabId, removeInfo) {
 
     // The removing tab may be attached to tree/someone attached to the removing tab.
     // We need to clear them by onRemoved handlers.
-    const oldChildren = Tabs.getChildTabs(oldTab);
-    const oldParent   = Tabs.getParentTab(oldTab);
+    const oldChildren = Tabs.getChildTabs(oldTab.id);
+    const oldParent   = Tabs.getParentTab(oldTab.id);
     Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
 
-    reindexFollowingTabs(Tabs.getNextTab(oldTab), oldTab.apiTab.index);
+    reindexFollowingTabs(Tabs.getNextTab(oldTab.$TST.element), oldTab.index);
 
-    const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
+    const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab.$TST.element, Object.assign({}, removeInfo, {
       byInternalOperation,
-      oldChildren,
-      oldParent
+      oldChildren: oldChildren.map(child => child.$TST.element),
+      oldParent:   oldParent && oldParent.$TST.element
     }));
     // don't do await if not needed, to process things synchronously
     if (onRemovedReuslt instanceof Promise)
@@ -645,27 +651,24 @@ async function onRemoved(tabId, removeInfo) {
 }
 function onRemovedComplete(tab) {
   clearTabRelationsForRemovedTab(tab);
-  Tabs.untrack(tab.apiTab.id);
-  tab.$TST.destroy();
-  delete tab.apiTab;
-  const container = tab.parentNode;
-  if (!container) // it was removed while waiting
-    return;
-  container.removeChild(tab);
-  if (!container.hasChildNodes())
-    container.parentNode.removeChild(container);
+  delete tab.$TST.element.apiTab;
+  const window = Tabs.trackedWindows.get(tab.windowId);
+  if (window)
+    window.untrackTab(tab.id);
+  else
+    Tabs.untrack(tab.id);
 }
 function clearTabRelationsForRemovedTab(tab) {
   const parent = tab.$TST.parent;
   if (parent) {
-    parent.$TST.childIds = parent.$TST.childIds.filter(childId => childId != tab.apiTab.id);
+    parent.$TST.childIds = parent.$TST.childIds.filter(childId => childId != tab.id);
     tab.$TST.parent = null;
     tab.$TST.ancestors = [];
   }
   for (const child of tab.$TST.children) {
-    if (child.$TST.parentId == tab.apiTab.id) {
+    if (child.$TST.parentId == tab.id) {
       child.$TST.parentId = null;
-      child.$TST.ancestors = child.$TST.ancestors.filter(ancestor => ancestor.id != tab.apiTab.id);
+      child.$TST.ancestors = child.$TST.ancestors.filter(ancestor => ancestor.id != tab.id);
     }
   }
 }
@@ -675,7 +678,7 @@ async function onMoved(tabId, moveInfo) {
   if (targetWindow && moveInfo.windowId != targetWindow)
     return;
 
-  const container = getOrBuildTabsContainer(moveInfo.windowId);
+  const window = getTrackedWindow(moveInfo.windowId);
 
   // Firefox may move the tab between TabsMove.moveTabsInternallyBefore/After()
   // and TabsMove.syncTabsPositionToApiTabs(). We should treat such a movement
@@ -683,7 +686,7 @@ async function onMoved(tabId, moveInfo) {
   // and other fixup operations around tabs moved by foreign triggers, on such
   // cases. Don't mind, the tab will be rearranged again by delayed
   // TabsMove.syncTabsPositionToApiTabs() anyway!
-  const maybeInternalOperation = container.$TST.internalMovingTabs.has(tabId);
+  const maybeInternalOperation = window.internalMovingTabs.has(tabId);
 
   if (Tabs.hasCreatingTab(moveInfo.windowId))
     await Tabs.waitUntilTabsAreCreated(tabId);
@@ -704,73 +707,74 @@ async function onMoved(tabId, moveInfo) {
        tab bar to follow their parent pinning tab. To avoid this
        problem, we have to wait for a while with this "async" and
        do following processes after the tab is completely pinned. */
-    const movedTab = Tabs.getTabElementById({ tab: tabId, window: moveInfo.windowId });
+    const movedTab = Tabs.trackedTabs.get(tabId);
     if (!movedTab) {
       if (maybeInternalOperation)
-        container.$TST.internalMovingTabs.delete(tabId);
+        window.internalMovingTabs.delete(tabId);
       completelyMoved();
       return;
     }
 
-    let oldPreviousTab = Tabs.getPreviousTab(movedTab);
-    let oldNextTab     = Tabs.getNextTab(movedTab);
-    if (movedTab.apiTab.index != moveInfo.toIndex) { // already moved
-      const tabs = Tabs.getAllTabs(container);
+    let oldPreviousTab = Tabs.getPreviousTab(tabId);
+    let oldNextTab     = Tabs.getNextTab(tabId);
+    if (movedTab.index != moveInfo.toIndex) { // already moved
+      const tabs = Tabs.getAllTabs(moveInfo.windowId);
       oldPreviousTab = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1];
       oldNextTab     = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex + 1 : moveInfo.fromIndex];
     }
 
     let alreadyMoved = false;
-    if (container.$TST.alreadyMovedTabs.has(tabId)) {
-      container.$TST.alreadyMovedTabs.delete(tabId);
+    if (window.alreadyMovedTabs.has(tabId)) {
+      window.alreadyMovedTabs.delete(tabId);
       alreadyMoved = true;
     }
 
     const extendedMoveInfo = Object.assign({}, moveInfo, {
       byInternalOperation: maybeInternalOperation,
       alreadyMoved,
-      oldPreviousTab,
-      oldNextTab
+      oldPreviousTab: oldPreviousTab && oldPreviousTab.$TST.element,
+      oldNextTab:     oldNextTab && oldNextTab.$TST.element
     });
-    log('tabs.onMoved: ', dumpTab(movedTab), extendedMoveInfo, movedTab.apiTab);
+    log('tabs.onMoved: ', movedTab, extendedMoveInfo);
 
-    let canceled = Tabs.onMoving.dispatch(movedTab, extendedMoveInfo);
+    let canceled = Tabs.onMoving.dispatch(movedTab.$TST.element, extendedMoveInfo);
     // don't do await if not needed, to process things synchronously
     if (canceled instanceof Promise)
       await canceled;
     canceled = canceled === false;
     if (!canceled &&
-        Tabs.ensureLivingTab(movedTab)) { // it is removed while waiting
+        Tabs.ensureLivingTab(movedTab) &&
+        Tabs.ensureLivingTab(movedTab.$TST.element)) { // it is removed while waiting
       let newNextIndex = extendedMoveInfo.toIndex;
       if (extendedMoveInfo.fromIndex < newNextIndex)
         newNextIndex++;
-      const nextTab = Tabs.getAllTabs(movedTab)[newNextIndex];
+      const nextTab = Tabs.getAllTabs(moveInfo.windowId)[newNextIndex];
       if (!alreadyMoved &&
-          Tabs.getNextTab(movedTab) != nextTab) {
-        container.insertBefore(movedTab, nextTab);
+          Tabs.getNextTab(movedTab.$TST.element) != nextTab) {
+        window.element.insertBefore(movedTab.$TST.element, nextTab);
         if (nextTab) {
-          if (nextTab.apiTab.index > movedTab.apiTab.index)
-            movedTab.apiTab.index = nextTab.apiTab.index - 1;
+          if (nextTab.apiTab.index > movedTab.index)
+            movedTab.index = nextTab.apiTab.index - 1;
           else
-            movedTab.apiTab.index = nextTab.apiTab.index;
+            movedTab.index = nextTab.apiTab.index;
         }
         else {
-          movedTab.apiTab.index = Tabs.trackedWindows.get(moveInfo.windowId).tabs.size - 1
+          movedTab.index = window.tabs.size - 1
         }
-        Tabs.track(movedTab.apiTab);
+        window.trackTab(movedTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
-          Array.from(container.childNodes)
-            .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tab == movedTab ? '[MOVED]' : ''))
+          Array.from(window.element.childNodes)
+            .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tab.apiTab.id == movedTab.id ? '[MOVED]' : ''))
             .join('\n')),
             { moveInfo });
       }
-      const onMovedResult = Tabs.onMoved.dispatch(movedTab, extendedMoveInfo);
+      const onMovedResult = Tabs.onMoved.dispatch(movedTab.$TST.element, extendedMoveInfo);
       // don't do await if not needed, to process things synchronously
       if (onMovedResult instanceof Promise)
         await onMovedResult;
     }
     if (maybeInternalOperation)
-      container.$TST.internalMovingTabs.delete(tabId);
+      window.internalMovingTabs.delete(tabId);
     completelyMoved();
   }
   catch(e) {
@@ -792,33 +796,35 @@ async function onAttached(tabId, attachInfo) {
 
   try {
     log('tabs.onAttached, id: ', tabId, attachInfo);
-    let apiTab;
-    await Promise.all([
-      (async () => {
-        apiTab = await browser.tabs.get(tabId).catch(ApiTabs.handleMissingTabError);
-        log(`New apiTab for attached tab ${tabId}: `, apiTab);
-      })(),
-      Tabs.waitUntilTabsAreCreated(tabId)
-    ]);
-    if (!apiTab) {
+    let tab = Tabs.trackedTabs.get(tabId);
+    const attachedTab = await browser.tabs.get(tabId);
+    if (!attachedTab) {
       onCompleted();
       return;
     }
 
-    TabIdFixer.fixTab(apiTab);
+    if (tab) {
+      tab.windowId = attachedTab.windowId
+      tab.index    = attachedTab.index;
+    }
+    else {
+      tab = attachedTab;
+      TabIdFixer.fixTab(tab);
+    }
 
     TabsInternalOperation.clearOldActiveStateInWindow(attachInfo.newWindowId);
     const info = Object.assign({}, attachInfo, mTreeInfoForTabsMovingAcrossWindows.get(tabId));
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
-    const newTab = await onNewTabTracked(apiTab);
-    const byInternalOperation = newTab && newTab.parentNode.$TST.toBeAttachedTabs.has(apiTab.id);
+    const window = Tabs.trackedWindows.get(attachInfo.newWindowId);
+    const newTabElement = await onNewTabTracked(tab);
+    const byInternalOperation = newTabElement && window.toBeAttachedTabs.has(tabId);
     if (byInternalOperation)
-      newTab.parentNode.$TST.toBeAttachedTabs.delete(apiTab.id);
+      window.toBeAttachedTabs.delete(tabId);
     info.byInternalOperation = info.byInternalOperation || byInternalOperation;
 
-    if (!byInternalOperation) { // we should process only tabs attached by others.
-      const onAttachedResult = Tabs.onAttached.dispatch(newTab, info);
+    if (!byInternalOperation && newTabElement) { // we should process only tabs attached by others.
+      const onAttachedResult = Tabs.onAttached.dispatch(newTabElement, info);
       // don't do await if not needed, to process things synchronously
       if (onAttachedResult instanceof Promise)
         await onAttachedResult;
@@ -843,41 +849,40 @@ async function onDetached(tabId, detachInfo) {
 
   try {
     log('tabs.onDetached, id: ', tabId, detachInfo);
-    const oldTab = Tabs.getTabElementById({ tab: tabId, window: detachInfo.oldWindowId });
+    const oldTab = Tabs.trackedTabs.get(tabId);
     if (!oldTab) {
       onCompleted();
       return;
     }
 
-    const byInternalOperation = oldTab.parentNode.$TST.toBeDetachedTabs.has(tabId);
+    const oldWindow           = Tabs.trackedWindows.get(detachInfo.oldWindowId);
+    const byInternalOperation = oldWindow.toBeDetachedTabs.has(tabId);
     if (byInternalOperation)
-      oldTab.parentNode.$TST.toBeDetachedTabs.delete(tabId);
+      oldWindow.toBeDetachedTabs.delete(tabId);
 
     const info = Object.assign({}, detachInfo, {
       byInternalOperation,
       windowId:    detachInfo.oldWindowId,
-      descendants: Tabs.getDescendantTabs(oldTab)
+      descendants: Tabs.getDescendantTabs(oldTab.$TST.element)
     });
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 
-    Tabs.onStateChanged.dispatch(oldTab);
+    Tabs.onStateChanged.dispatch(oldTab.$TST.element);
 
     if (!byInternalOperation) // we should process only tabs detached by others.
-      Tabs.onDetached.dispatch(oldTab, info);
+      Tabs.onDetached.dispatch(oldTab.$TST.element, info);
 
-    const container = oldTab.parentNode;
-    const nextTab   = oldTab.nextSibling;
-    const oldIndex  = oldTab.apiTab.index;
+    const window    = Tabs.trackedWindows.get(oldTab.windowId);
+    const nextTab   = oldTab.$TST.element.nextSibling;
+    const oldIndex  = oldTab.index;
     clearTabRelationsForRemovedTab(oldTab);
-    container.removeChild(oldTab);
-    if (container.hasChildNodes()) {
-      if (nextTab)
-        reindexFollowingTabs(nextTab, oldIndex);
-    }
-    else {
-      container.parentNode.removeChild(container);
-      Tabs.untrack(tabId);
-    }
+    window.element.removeChild(oldTab.$TST.element);
+    if (targetWindow)
+      window.untrackTab(oldTab.id);
+    else
+      window.detachTab(oldTab.id);
+    if (window.tabs.size == 0)
+      window.destroy();
 
     onCompleted();
   }
@@ -897,15 +902,9 @@ async function onWindowRemoved(windowId) {
 
   try {
     log('onWindowRemoved ', windowId);
-    const container = Tabs.getTabsContainer(windowId);
-    if (container) {
-      for (const tab of Tabs.getAllTabs(container)) {
-        if (!tab.reservedCleanupNeedlessGroupTab)
-          continue;
-        clearTimeout(container.reservedCleanupNeedlessGroupTab);
-        delete container.reservedCleanupNeedlessGroupTab;
-      }
-    }
+    const window = Tabs.trackedWindows.get(windowId);
+    if (window)
+      window.destroy();
 
     onCompleted();
   }

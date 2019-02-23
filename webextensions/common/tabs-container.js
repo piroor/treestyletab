@@ -63,7 +63,8 @@ export function buildFor(windowId) {
 
 export function init(container) {
   container.windowId = parseInt(container.dataset.windowId);
-  container.$TST = new Tabs.Window(container.windowId);
+  container.$TST = Tabs.trackedWindows.get(container.windowId) || new Tabs.Window(container.windowId);
+  container.$TST.element = container;
 }
 
 export function clearAll() {
