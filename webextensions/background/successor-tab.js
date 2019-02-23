@@ -109,8 +109,8 @@ async function updateInternal(tabId) {
   }
   if (nextActive) {
     log(`  ${tab.id} is under control: successor = ${nextActive.id}`);
-    setSuccessor(renewedTab.id, nextActive.apiTab.id);
-    tab.$TST.lastSuccessorTabId = nextActive.apiTab.id;
+    setSuccessor(renewedTab.id, nextActive.id);
+    tab.$TST.lastSuccessorTabId = nextActive.id;
   }
   else {
     log(`  ${tab.id} is out of control.`, {
