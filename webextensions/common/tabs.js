@@ -1171,17 +1171,21 @@ export function getParentTab(child, options = {}) {
   if (!ensureLivingTab(child))
     return null;
   assertValidHint(child);
+  const element = child instanceof Element || options.element;
+  if (child instanceof Element)
+    child = child.apiTab;
   const parent = child.$TST.parent;
-  if (child instanceof Element ||
-      options.element)
+  if (element)
     return parent && parent.$TST.element;
   return parent;
 }
 
 export function getAncestorTabs(descendant, options = {}) {
-  if (!descendant || !descendant.apiTab)
+  if (!descendant)
     return [];
   const element = descendant instanceof Element || options.element;
+  if (descendant instanceof Element)
+    descendant = descendant.apiTab;
   if (!options.force) {
     // slice(0) is required to guard the cached array from destructive methods liek sort()!
     const ancestors = descendant.$TST.ancestors.slice(0);
@@ -1190,15 +1194,11 @@ export function getAncestorTabs(descendant, options = {}) {
     return ancestors;
   }
   const ancestors = [];
-  descendant = descendant.apiTab;
   while (true) {
     const parent = trackedTabs.get(descendant.$TST.parentId);
     if (!parent)
       break;
-    if (element)
-      ancestors.push(parent.$TST.element);
-    else
-      ancestors.push(parent);
+    ancestors.push(element ? parent.$TST.element : parent);
     descendant = parent;
   }
   return ancestors;
@@ -1217,6 +1217,8 @@ export function getVisibleAncestorOrSelf(descendant, options = {}) {
 
 export function getRootTab(descendant, options = {}) {
   const element = descendant instanceof Element || options.element;
+  if (descendant instanceof Element)
+    descendant = descendant.apiTab;
   const ancestors = descendant.$TST.ancestors;
   const root = ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
   if (element)
@@ -1245,10 +1247,10 @@ export function getNextSiblingTab(tab, options = {}) {
   }
   else {
     sibling = query({
-      windowId:  tab.apiTab.windowId,
-      fromId:    tab.apiTab.id,
+      windowId:  tab.windowId,
+      fromId:    tab.id,
       living:    true,
-      index:     (index => index > tab.apiTab.index),
+      index:     (index => index > tab.index),
       hasParent: false,
       first:     true,
       element
@@ -1296,7 +1298,10 @@ export function getChildTabs(parent, options = {}) {
   assertValidHint(parent);
   if (!assertInitializedTab(parent))
     return [];
-  if (parent instanceof Element || options.element)
+  const element = parent instanceof Element || options.element;
+  if (parent instanceof Element)
+    parent = parent.apiTab;
+  if (element)
     return parent.$TST.children.map(child => child.$TST.element);
   return parent.$TST.children;
 }
@@ -1307,9 +1312,12 @@ export function getFirstChildTab(parent, options = {}) {
   assertValidHint(parent);
   if (!assertInitializedTab(parent))
     return null;
+  const element = parent instanceof Element || options.element;
+  if (parent instanceof Element)
+    parent = parent.apiTab;
   const children = parent.$TST.children;
   const child = children.length > 0 ? children[0] : null ;
-  if (parent instanceof Element || options.element)
+  if (element)
     return child && child.$TST.element;
   return child;
 }
@@ -1320,9 +1328,12 @@ export function getLastChildTab(parent, options = {}) {
   assertValidHint(parent);
   if (!assertInitializedTab(parent))
     return null;
+  const element = parent instanceof Element || options.element;
+  if (parent instanceof Element)
+    parent = parent.apiTab;
   const children = parent.$TST.children;
   const child = children.length > 0 ? children[children.length - 1] : null ;
-  if (parent instanceof Element || options.element)
+  if (element)
     return child && child.$TST.element;
   return child;
 }
@@ -1349,6 +1360,8 @@ export function getDescendantTabs(root, options = {}) {
     return console.log('not initialized'), [];
 
   const element = root instanceof Element || options.element;
+  if (root instanceof Element)
+    root = root.apiTab;
   let descendants = [];
   const children = root.$TST.children;
   for (const child of children) {
@@ -1471,6 +1484,8 @@ export function collectRootTabs(tabs) {
     if (!ensureLivingTab(tab))
       return false;
     const element = tab instanceof Element;
+    if (element)
+      tab = tab.apiTab;
     const parent = tab.$TST.parent;
     return !parent || !tabs.includes(element ? parent.$TST.element : parent);
   });
@@ -1664,30 +1679,34 @@ export function getNextActiveTab(tab, options = {}) { // if the current tab is c
 }
 
 
-export function getGroupTabForOpener(opener) {
-  const tab = (opener instanceof Element) ? opener.apiTab : opener;
-  if (!tab)
+export function getGroupTabForOpener(opener, options = {}) {
+  if (!opener)
     return null;
+  const element = opener instanceof Element || options.element;
+  if (opener instanceof Element)
+    opener = opener.apiTab;
   return query({
-    windowId:   tab.windowId,
+    windowId:   opener.windowId,
     living:     true,
     attributes: [
       Constants.kCURRENT_URI,
-      new RegExp(`openerTabId=${tab.$TST.uniqueId.id}($|[#&])`)
+      new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
     ],
-    element:    true
+    element
   });
 }
 
-export function getOpenerFromGroupTab(groupTabOrElement) {
-  if (!isGroupTab(groupTabOrElement))
+export function getOpenerFromGroupTab(groupTab, options = {}) {
+  if (!isGroupTab(groupTab))
     return null;
-  const groupTab = groupTabOrElement.apiTab ? groupTabOrElement.apiTab : groupTabOrElement;
+  const element = groupTab instanceof Element || options.element;
+  if (groupTab instanceof Element)
+    groupTab = groupTab.apiTab;
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
   const tab = matchedOpenerTabId && trackedTabs.get(matchedOpenerTabId[1]);
   if (!tab)
     return null;
-  if (groupTabOrElement instanceof Element)
+  if (element)
     return tab.$TST.element;
   return tab;
 }
