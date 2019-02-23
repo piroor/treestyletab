@@ -64,7 +64,7 @@ export const highlightedTabsForWindow = new Map();
 
 
 //===================================================================
-// Tab Helper Class
+// Helper Class
 //===================================================================
 
 export class Tab {
@@ -93,12 +93,18 @@ export class Tab {
   }
 
   destroy() {
+    trackedTabs.delete(this.id);
+    if (this.uniqueId)
+      trackedTabsByUniqueId.delete(this.uniqueId.id)
+
     if (this.element) {
       delete this.element.$TST;
       delete this.element;
     }
     delete this.tab.$TST;
     delete this.tab;
+    delete this.promisedUniqueId;
+    delete this.uniqueId;
   }
 
   set parent(tab) {
@@ -134,104 +140,120 @@ export class Tab {
   }
 }
 
+class Window {
+  constructor(windowId) {
+    this.id    = windowId;
+    this.tabs  = new Map();
+    this.order = [];
+
+    trackedWindows.set(windowId, this);
+    highlightedTabsForWindow.set(windowId, new Set());
+  }
+
+  destroy() {
+    for (const tab of this.tabs.values()) {
+      tab.$TST.destroy();
+    }
+    this.tabs.clear();
+    trackedWindows.delete(this.id, this);
+    activeTabForWindow.delete(this.id);
+    highlightedTabsForWindow.delete(this.id);
+    delete this.tabs;
+    delete this.order;
+    delete this.id;
+  }
+
+  getOrderedTabs(startId) {
+    let order = this.order;
+    if (startId) {
+      if (!this.tabs.has(startId))
+        return [];
+      order = order.slice(order.indexOf(startId));
+    }
+    return (function*() {
+      for (const id of order) {
+        yield this.tabs.get(id);
+      }
+    }).call(this);
+  }
+
+  getReversedOrderedTabs(startId) {
+    let order = this.order.slice(0).reverse();
+    if (startId) {
+      if (!this.tabs.has(startId))
+        return [];
+      order = order.slice(order.indexOf(startId));
+    }
+    return (function*() {
+      for (const id of order) {
+        yield this.tabs.get(id);
+      }
+    }).call(this);
+  }
+
+  trackTab(tab) {
+    const order = this.order;
+    if (this.tabs.has(tab.id)) { // already tracked: update
+      const index = order.indexOf(tab.id);
+      order.splice(index, 1);
+      order.splice(tab.index, 0, tab.id);
+      for (let i = Math.min(index, tab.index), maxi = Math.max(index, tab.index) + 1; i < maxi; i++) {
+        this.tabs.get(order[i]).index = i;
+      }
+      //console.log('Tabs.track / updated order: ', order);
+    }
+    else { // not tracked yet: add
+      this.tabs.set(tab.id, tab);
+      order.splice(tab.index, 0, tab.id);
+      for (let i = tab.index + 1, maxi = order.length; i < maxi; i++) {
+        this.tabs.get(order[i]).index = i;
+      }
+      //console.log('Tabs.track / order: ', order);
+    }
+  }
+
+  untrackTab(tabId) {
+    const tab = trackedTabs.get(tabId);
+    this.tabs.delete(tabId);
+    const order = this.order;
+    const index = order.indexOf(tab.id);
+    order.splice(index, 1);
+    if (this.tabs.size == 0) {
+      this.destroy();
+    }
+    else {
+      for (let i = index, maxi = order.length; i < maxi; i++) {
+        this.tabs.get(order[i]).index = i;
+      }
+    }
+  }
+}
+
 
 //===================================================================
 // Tab Tracking
 //===================================================================
 
-export function track(apiTab) {
-  if (!apiTab.$TST)
-    new Tab(apiTab);
-  trackedTabs.set(apiTab.id, apiTab);
-  let window = trackedWindows.get(apiTab.windowId);
-  if (!window) {
-    window = {
-      id:    apiTab.windowId,
-      tabs:  new Map(),
-      getOrderedTabs(startId) {
-        let order = this.order;
-        if (startId) {
-          if (!this.tabs.has(startId))
-            return [];
-          order = order.slice(order.indexOf(startId));
-        }
-        return (function*() {
-          for (const id of order) {
-            yield this.tabs.get(id);
-          }
-        }).call(this);
-      },
-      getReversedOrderedTabs(startId) {
-        let order = this.order.slice(0).reverse();
-        if (startId) {
-          if (!this.tabs.has(startId))
-            return [];
-          order = order.slice(order.indexOf(startId));
-        }
-        return (function*() {
-          for (const id of order) {
-            yield this.tabs.get(id);
-          }
-        }).call(this);
-      },
-      order: []
-    };
-    trackedWindows.set(apiTab.windowId, window);
-    highlightedTabsForWindow.set(apiTab.windowId, new Set());
-  }
-  if (window.tabs.has(apiTab.id)) { // already tracked: update
-    const index = window.order.indexOf(apiTab.id);
-    window.order.splice(index, 1);
-    window.order.splice(apiTab.index, 0, apiTab.id);
-    for (let i = Math.min(index, apiTab.index), maxi = Math.max(index, apiTab.index) + 1; i < maxi; i++) {
-      window.tabs.get(window.order[i]).index = i;
-    }
-    //console.log('Tabs.track / updated order: ', window.order);
-  }
-  else { // not tracked yet: add
-    window.tabs.set(apiTab.id, apiTab);
-    window.order.splice(apiTab.index, 0, apiTab.id);
-    for (let i = apiTab.index + 1, maxi = window.order.length; i < maxi; i++) {
-      window.tabs.get(window.order[i]).index = i;
-    }
-    //console.log('Tabs.track / order: ', window.order);
-  }
+export function track(tab) {
+  if (!tab.$TST)
+    new Tab(tab);
+  trackedTabs.set(tab.id, tab);
+  const window = trackedWindows.get(tab.windowId) || new Window(tab.windowId);
+  window.trackTab(tab);
 }
 
-export function untrack(apiTabId) {
-  const apiTab = trackedTabs.get(apiTabId);
-  const window = trackedWindows.get(apiTab.windowId);
-  if (window) {
-    window.tabs.delete(apiTabId);
-    const index = window.order.indexOf(apiTab.id);
-    window.order.splice(index, 1);
-    if (window.tabs.size == 0) {
-      trackedWindows.delete(apiTab.windowId, window);
-    }
-    else {
-      for (let i = index, maxi = window.order.length; i < maxi; i++) {
-        window.tabs.get(window.order[i]).index = i;
-      }
-    }
-  }
+export function untrack(tabId) {
+  const tab    = trackedTabs.get(tabId);
+  const window = trackedWindows.get(tab.windowId);
+  if (window)
+    window.untrackTab(tabId);
 }
 
 export function untrackAll(windowId) {
   if (windowId) {
     const window = trackedWindows.get(windowId);
-    if (window) {
-      for (const tab of window.tabs.values()) {
-        trackedTabs.delete(tab.id);
-        if (tab.$TST && tab.$TST.uniqueId)
-          trackedTabsByUniqueId.delete(tab.$TST.uniqueId.id)
-      }
-      window.tabs.clear();
-      window.tabs = undefined;
-      window.order = undefined;
-      trackedWindows.delete(windowId);
-      activeTabForWindow.delete(windowId);
-      highlightedTabsForWindow.delete(windowId);
-    }
+    if (window)
+      window.destroy();
   }
   else {
     trackedWindows.clear();
@@ -781,6 +803,29 @@ function assertValidHint(hint) {
   throw error;
 }
 
+export function getTrackedWindow(hint) {
+  assertValidHint(hint);
+
+  if (!hint)
+    hint = mTargetWindow || allTabsContainer.firstChild;
+
+  if (typeof hint == 'number')
+    return trackedWindows.get(hint);
+
+  if (hint instanceof Node) {
+    const tab = getTabFromChild(hint);
+    if (tab)
+      return trackedWindows.get(tab.apiTab.windowId);
+
+    if (hint &&
+        hint.dataset &&
+        hint.dataset.windowId)
+      return trackedWindows.get(parseInt(hint.dataset.windowId));
+  }
+
+  return null;
+}
+
 export function getTabsContainer(hint) {
   assertValidHint(hint);
 
@@ -868,8 +913,8 @@ export function getTabLabelContent(tab) {
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
 export function getActiveTab(hint) {
-  const container = getTabsContainer(hint);
-  const tab = container && ensureLivingTab(activeTabForWindow.get(container.windowId));
+  const window = getTrackedWindow(hint);
+  const tab = window && ensureLivingTab(activeTabForWindow.get(window.id));
   return tab && tab.$TST.element;
 }
 export function getActiveTabs() {
