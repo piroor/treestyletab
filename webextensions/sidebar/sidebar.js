@@ -574,16 +574,16 @@ Tabs.onRemoving.addListener((tab, removeInfo) => {
   if (removeInfo.isWindowClosing)
     return;
 
-  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab.$TST.element, removeInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(tab))
-    Tree.collapseExpandSubtree(tab, {
+    Tree.collapseExpandSubtree(tab.$TST.element, {
       collapsed: false
     });
 
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  Tree.detachTab(tab, {
+  Tree.detachTab(tab.$TST.element, {
     dontUpdateIndent: true
   });
 
@@ -605,7 +605,7 @@ Tabs.onDetached.addListener((tab, _info) => {
     return;
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  Tree.detachTab(tab, {
+  Tree.detachTab(tab.$TST.element, {
     dontUpdateIndent: true
   });
 });
@@ -614,10 +614,10 @@ Tabs.onRestoring.addListener(tab => {
   if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
     return;
 
-  const container = tab.parentNode;
+  const window = Tabs.trackedWindows.get(tab.windowId);
   // When we are restoring two or more tabs.
   // (But we don't need do this again for third, fourth, and later tabs.)
-  if (container.restoredCount == 2)
+  if (window.restoredCount == 2)
     UserOperationBlocker.block({ throbber: true });
 });
 
@@ -627,8 +627,8 @@ Tabs.onWindowRestoring.addListener(async windowId => {
     return;
 
   log('Tabs.onWindowRestoring');
-  const container = Tabs.getTabsContainer(windowId);
-  const restoredCount = await container.allTabsRestored;
+  const window = Tabs.trackedWindows.get(windowId);
+  const restoredCount = await window.allTabsRestored;
   if (restoredCount == 1) {
     log('Tabs.onWindowRestoring: single tab restored');
     UserOperationBlocker.unblock({ throbber: true });
@@ -641,7 +641,7 @@ Tabs.onWindowRestoring.addListener(async windowId => {
   });
   if (!cache ||
       (cache.offset &&
-       container.childNodes.length <= cache.offset)) {
+       window.element.childNodes.length <= cache.offset)) {
     log('Tabs.onWindowRestoring: no effective cache');
     await inheritTreeStructure(); // fallback to classic method
     UserOperationBlocker.unblock({ throbber: true });
@@ -651,10 +651,10 @@ Tabs.onWindowRestoring.addListener(async windowId => {
   log('Tabs.onWindowRestoring restore! ', cache);
   MetricsData.add('Tabs.onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
-  const apiTabs = await browser.tabs.query({ windowId: windowId });
+  const tabs     = await browser.tabs.query({ windowId });
   const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
     offset: cache.offset || 0,
-    tabs:   apiTabs
+    tabs
   });
   if (!restored) {
     await rebuildAll();

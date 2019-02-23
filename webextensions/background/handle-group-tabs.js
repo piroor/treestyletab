@@ -163,8 +163,8 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   }
 }
 
-Tabs.onRemoved.addListener(async (tab, _closeInfo = {}) => {
-  const ancestors = Tabs.getAncestorTabs(tab);
+Tabs.onRemoved.addListener((tab, _closeInfo = {}) => {
+  const ancestors = Tabs.getAncestorTabs(tab, { element: true });
   wait(0).then(() => {
     reserveToCleanupNeedlessGroupTab(ancestors);
   });
@@ -174,12 +174,10 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   if ('url' in changeInfo ||
       'previousUrl' in changeInfo ||
       'state' in changeInfo) {
-    const apiTab = tab && tab.apiTab && tab.apiTab;
-    const status = changeInfo.status || apiTab && apiTab.status;
+    const status = changeInfo.status || tab && tab.status;
     const url = changeInfo.url ? changeInfo.url :
-      status == 'complete' && apiTab ? apiTab.url : '';
+      status == 'complete' && tab ? tab.url : '';
     if (tab &&
-        apiTab &&
         status == 'complete') {
       if (url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
         Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
@@ -194,11 +192,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
           if (states.includes(Constants.kTAB_STATE_GROUP_TAB) &&
               pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
             const parameters = pathPart.replace(/^[^\?]+\?/, '');
-            const oldUrl = tab.apiTab.url;
+            const oldUrl = tab.url;
             await wait(100); // for safety
-            if (tab.apiTab.url != oldUrl)
+            if (tab.url != oldUrl)
               return;
-            browser.tabs.update(tab.apiTab.id, {
+            browser.tabs.update(tab.id, {
               url: `${Constants.kGROUP_TAB_URI}?${parameters}`
             }).catch(ApiTabs.handleMissingTabError);
             Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB);
@@ -213,11 +211,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     else if (changeInfo.url == 'about:blank' &&
              changeInfo.previousUrl &&
              changeInfo.previousUrl.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-      const oldUrl = apiTab.url;
+      const oldUrl = tab.url;
       wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
-        if (tab.apiTab.url != oldUrl)
+        if (tab.url != oldUrl)
           return;
-        browser.tabs.update(tab.apiTab.id, {
+        browser.tabs.update(tab.id, {
           url: changeInfo.previousUrl
         }).catch(ApiTabs.handleMissingTabError);
         Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
@@ -227,11 +225,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     if (changeInfo.status ||
         changeInfo.url ||
         url.indexOf(Constants.kGROUP_TAB_URI) == 0)
-      tryInitGroupTab(tab);
+      tryInitGroupTab(tab.$TST.element);
   }
 
   if ('title' in changeInfo) {
-    const group = Tabs.getGroupTabForOpener(tab);
+    const group = Tabs.getGroupTabForOpener(tab.$TST.element);
     if (group)
       reserveToUpdateRelatedGroupTabs(group, ['title', 'tree']);
   }
@@ -246,7 +244,7 @@ Tabs.onLabelUpdated.addListener(tab => {
 });
 
 Tabs.onActivating.addListener((tab, _info = {}) => {
-  tryInitGroupTab(tab);
+  tryInitGroupTab(tab.$TST.element);
 });
 
 Tree.onAttached.addListener((tab, _info = {}) => {
@@ -270,33 +268,33 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
 // auto-grouping of tabs
 // ====================================================================
 
-Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
-  const openerId = apiTab.openerTabId;
-  const openerApiTab = openerId && (await browser.tabs.get(openerId));
-  const container = Tabs.getTabsContainer(apiTab.windowId);
-  if (!container)
+Tabs.onBeforeCreate.addListener(async (tab, info) => {
+  const openerId  = tab.openerTabId;
+  const openerTab = openerId && (await browser.tabs.get(openerId));
+  const window    = Tabs.trackedWindows.get(tab.windowId);
+  if (!window)
     return;
   if ((configs.autoGroupNewTabsFromPinned &&
-       openerApiTab &&
-       openerApiTab.pinned &&
-       openerApiTab.windowId == apiTab.windowId) ||
+       openerTab &&
+       openerTab.pinned &&
+       openerTab.windowId == tab.windowId) ||
       (configs.autoGroupNewTabs &&
-       !openerApiTab &&
+       !openerTab &&
        !info.maybeOrphan)) {
-    if (container.$TST.preventAutoGroupNewTabsUntil > Date.now()) {
-      container.$TST.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
+    if (window.preventAutoGroupNewTabsUntil > Date.now()) {
+      window.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-      container.$TST.openedNewTabs.push(apiTab.id);
-      container.$TST.openedNewTabsOpeners.push(openerApiTab && openerApiTab.id);
+      window.openedNewTabs.push(tab.id);
+      window.openedNewTabsOpeners.push(openerTab && openerTab.id);
     }
   }
-  if (container.$TST.openedNewTabsTimeout)
-    clearTimeout(container.$TST.openedNewTabsTimeout);
-  container.$TST.openedNewTabsTimeout = setTimeout(
+  if (window.openedNewTabsTimeout)
+    clearTimeout(window.openedNewTabsTimeout);
+  window.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
     configs.autoGroupNewTabsTimeout,
-    container
+    window.element
   );
 });
 

@@ -28,9 +28,11 @@ Tabs.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
     return true;
 
-  log('Tabs.onCreating ', dumpTab(tab), info);
+  log('Tabs.onCreating ', tab.id, info);
 
-  const possibleOpenerTab = info.activeTab || Tabs.getActiveTab(tab.apiTab.windowId, { element: true });
+  tab = tab.$TST.element;
+
+  const possibleOpenerTab = (info.activeTab && info.activeTab.$TST.element) || Tabs.getActiveTab(tab.apiTab.windowId, { element: true });
   const opener = Tabs.getOpenerTab(tab);
   if (opener)
     Tabs.setAttribute(tab, 'data-original-opener-tab-id', opener.$TST.uniqueId.id);
@@ -55,9 +57,9 @@ Tabs.onCreating.addListener((tab, info = {}) => {
         return false;
       }
       else if (possibleOpenerTab != tab) {
-        tab.dataset.possibleOpenerTab = possibleOpenerTab.id;
+        tab.$TST.possibleOpenerTab = possibleOpenerTab.id;
       }
-      tab.dataset.isNewTab = true;
+      tab.$TST.isNewTab = true;
     }
     log('behave as a tab opened with any URL');
     return true;
@@ -116,14 +118,14 @@ Tabs.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)
     return;
   const original = info.originalTab;
-  log('duplicated ', dumpTab(tab), dumpTab(original));
+  log('duplicated ', tab.id, original && original.id);
   if (info.duplicatedInternally) {
     log('duplicated by internal operation');
     Tabs.addState(tab, Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
   }
   else {
-    Tree.behaveAutoAttachedTab(tab, {
-      baseTab:   original,
+    Tree.behaveAutoAttachedTab(tab.$TST.element, {
+      baseTab:   original && original.$TST.element,
       behavior:  configs.autoAttachOnDuplicated,
       dontMove:  info.positionedBySelf,
       broadcast: true
@@ -132,14 +134,15 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 });
 
 Tabs.onUpdated.addListener((tab, changeInfo) => {
-  if ('openerTabId' in changeInfo && configs.syncParentTabAndOpenerTab) {
-    Tabs.waitUntilAllTabsAreCreated(tab.apiTab.windowId).then(() => {
+  if ('openerTabId' in changeInfo &&
+      configs.syncParentTabAndOpenerTab) {
+    Tabs.waitUntilAllTabsAreCreated(tab.windowId).then(() => {
       const parent = Tabs.getOpenerTab(tab);
       if (!parent ||
-          parent.parentNode != tab.parentNode ||
+          parent.windowId != tab.windowId ||
           parent == Tabs.getParentTab(tab))
         return;
-      Tree.attachTabTo(tab, parent, {
+      Tree.attachTabTo(tab.$TST.element, parent.$TST.element, {
         insertAt:    Constants.kINSERT_NEAREST,
         forceExpand: Tabs.isActive(tab),
         broadcast:   true
@@ -148,35 +151,34 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   }
 
   if ((changeInfo.url || changeInfo.status == 'complete') &&
-      tab.dataset.isNewTab) {
-    log('new tab ', dumpTab(tab));
-    delete tab.dataset.isNewTab;
-    const possibleOpenerTab = Tabs.getTabElementById(tab.dataset.possibleOpenerTab);
-    delete tab.dataset.possibleOpenerTab;
-    log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
-    const toBeGroupedTabs = tab.parentNode.$TST.openedNewTabs
-      .map(Tabs.getTabElementById)
-      .filter(tab => !!tab);
-    log('toBeGroupedTabs ', toBeGroupedTabs.map(dumpTab));
+      tab.$TST.isNewTab) {
+    log('new tab ', tab.id);
+    delete tab.$TST.isNewTab;
+    const possibleOpenerTab = Tabs.getTabElementById(tab.$TST.possibleOpenerTab);
+    delete tab.$TST.possibleOpenerTab;
+    log('possibleOpenerTab ', possibleOpenerTab && possibleOpenerTab.id);
+    const window = Tabs.trackedWindows.get(tab.windowId);
+    const toBeGroupedTabs = window.openedNewTabs;
+    log('toBeGroupedTabs ', toBeGroupedTabs);
     if (!Tabs.getParentTab(tab) &&
         possibleOpenerTab &&
-        !toBeGroupedTabs.includes(tab)) {
+        !toBeGroupedTabs.includes(tab.id)) {
       if (Tabs.isNewTabCommandTab(tab)) {
         log('behave as a tab opened by new tab command (delayed)');
-        handleNewTabFromActiveTab(tab, {
-          activeTab:                 possibleOpenerTab,
+        handleNewTabFromActiveTab(tab.$TST.element, {
+          activeTab:                 possibleOpenerTab.$TST.element,
           autoAttachBehavior:        configs.autoAttachOnNewTabCommand,
           inheritContextualIdentity: configs.inheritContextualIdentityToNewChildTab
         });
       }
       else {
         const siteMatcher  = /^\w+:\/\/([^\/]+)(?:$|\/.*$)/;
-        const openerTabSite = possibleOpenerTab.apiTab.url.match(siteMatcher);
-        const newTabSite    = tab.apiTab.url.match(siteMatcher);
+        const openerTabSite = possibleOpenerTab.url.match(siteMatcher);
+        const newTabSite    = tab.url.match(siteMatcher);
         if (openerTabSite && newTabSite && openerTabSite[1] == newTabSite[1]) {
           log('behave as a tab opened from same site (delayed)');
-          handleNewTabFromActiveTab(tab, {
-            activeTab:                 possibleOpenerTab,
+          handleNewTabFromActiveTab(tab.$TST.element, {
+            activeTab:                 possibleOpenerTab.$TST.element,
             autoAttachBehavior:        configs.autoAttachSameSiteOrphan,
             inheritContextualIdentity: configs.inheritContextualIdentityToSameSiteOrphan
           });
@@ -192,16 +194,16 @@ Tabs.onAttached.addListener(async (tab, info = {}) => {
       !Tree.shouldApplyTreeBehavior(info))
     return;
 
-  log('Tabs.onAttached ', dumpTab(tab), info);
+  log('Tabs.onAttached ', tab.id, info);
 
-  log('descendants of attached tab: ', info.descendants.map(dumpTab));
-  const movedTabs = await Tree.moveTabs(info.descendants, {
-    destinationWindowId: tab.apiTab.windowId,
-    insertAfter:         tab
+  log('descendants of attached tab: ', info.descendants.map(tab => tab.id));
+  const movedTabs = await Tree.moveTabs(info.descendants.map(tab => tab.$TST.element), {
+    destinationWindowId: tab.windowId,
+    insertAfter:         tab.$TST.element
   });
   log('moved descendants: ', movedTabs.map(dumpTab));
   for (const movedTab of movedTabs) {
-    Tree.attachTabTo(movedTab, tab, {
+    Tree.attachTabTo(movedTab, tab.$TST.element, {
       broadcast: true,
       dontMove:  true
     });

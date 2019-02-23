@@ -231,7 +231,7 @@ async function rebuildAll() {
     });
     for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {
       if (!Tabs.isDiscarded(tab))
-        tab.dataset.shouldReloadOnSelect = true;
+        tab.apiTab.$TST.shouldReloadOnSelect = true;
     }
   }));
   insertionPoint.detach();
@@ -429,6 +429,7 @@ Commands.onTabsClosing.addListener((tabIds, options = {}) => {
 Tabs.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)
     return;
+  tab = tab.$TST.element;
   // Duplicated tab has its own tree structure information inherited
   // from the original tab, but they must be cleared.
   reserveToUpdateAncestors(tab);
@@ -443,18 +444,17 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 Tabs.onUpdated.addListener((tab, changeInfo) => {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
-  const apiTab = tab && tab.apiTab && tab.apiTab;
-  const status = changeInfo.status || apiTab && apiTab.status;
+  const status = changeInfo.status || tab && tab.status;
   const url = changeInfo.url ? changeInfo.url :
-    status == 'complete' && apiTab ? apiTab.url : '';
+    status == 'complete' && tab ? tab.url : '';
   if (tab &&
       Constants.kSHORTHAND_ABOUT_URI.test(url)) {
     const shorthand = RegExp.$1;
-    const oldUrl = apiTab.url;
+    const oldUrl = tab.url;
     wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
-      if (tab.apiTab.url != oldUrl)
+      if (tab.url != oldUrl)
         return;
-      browser.tabs.update(tab.apiTab.id, {
+      browser.tabs.update(tab.id, {
         url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
       if (shorthand == 'group')
@@ -463,7 +463,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   }
 
   if (changeInfo.status || changeInfo.url)
-    tryStartHandleAccelKeyOnTab(tab);
+    tryStartHandleAccelKeyOnTab(tab.$TST.element);
 });
 
 Tabs.onTabElementMoved.addListener((tab, info = {}) => {
@@ -478,11 +478,11 @@ Tabs.onTabElementMoved.addListener((tab, info = {}) => {
 
 Tabs.onMoved.addListener(async (tab, moveInfo) => {
   reserveToUpdateInsertionPosition([
-    tab,
-    moveInfo.oldPreviousTab,
-    moveInfo.oldNextTab,
-    Tabs.getPreviousTab(tab),
-    Tabs.getNextTab(tab)
+    tab.$TST.element,
+    moveInfo.oldPreviousTab && moveInfo.oldPreviousTab.$TST.element,
+    moveInfo.oldNextTab && moveInfo.oldNextTab.$TST.element,
+    Tabs.getPreviousTab(tab.$TST.element),
+    Tabs.getNextTab(tab.$TST.element)
   ]);
 });
 

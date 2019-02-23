@@ -247,7 +247,7 @@ async function cacheTree(windowId) {
 // update cache on events
 
 Tabs.onCreated.addListener((tab, _info = {}) => {
-  reserveToCacheTree((tab.apiTab || tab).windowId);
+  reserveToCacheTree(tab.windowId);
 });
 
 // Tree restoration for "Restore Previous Session"
@@ -293,7 +293,7 @@ Tabs.onMoved.addListener((_tab, info) => {
 });
 
 Tabs.onUpdated.addListener((tab, _info) => {
-  markWindowCacheDirtyFromTab((tab.apiTab || tab), Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
+  markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener(tab => {

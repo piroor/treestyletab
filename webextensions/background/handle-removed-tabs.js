@@ -7,7 +7,6 @@
 
 import {
   log as internalLogger,
-  dumpTab,
   wait,
   configs
 } from '/common/common.js';
@@ -28,71 +27,72 @@ function log(...args) {
 
 
 Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
-  log('Tabs.onRemoving ', dumpTab(tab), tab.apiTab, removeInfo);
+  log('Tabs.onRemoving ', tab.id, removeInfo);
   if (removeInfo.isWindowClosing)
     return;
 
   let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
-  if (!SidebarStatus.isOpen(tab.apiTab.windowId) &&
+  if (!SidebarStatus.isOpen(tab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(tab))
-    Tree.collapseExpandSubtree(tab, {
+    Tree.collapseExpandSubtree(tab.$TST.element, {
       collapsed: false,
       justNow:   true,
       broadcast: false // because the tab is going to be closed, broadcasted Tree.collapseExpandSubtree can be ignored.
     });
 
-  const wasActive = Tabs.isActive(tab);
+  const wasActive = tab.active;
   if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
     return;
-  log('Tabs.onRemoving: granted to close ', dumpTab(tab));
+  log('Tabs.onRemoving: granted to close ', tab.id);
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(tab) || Tabs.getNextTab(tab);
-    Tree.tryMoveFocusFromClosingActiveTab(tab, {
+    Tree.tryMoveFocusFromClosingActiveTab(tab.$TST.element, {
       wasActive,
       params: {
         active:          wasActive,
-        nextTab:         nextTab && nextTab.id,
-        nextTabUrl:      nextTab && nextTab.apiTab.url,
+        nextTab:         nextTab && nextTab.$TST.element.id,
+        nextTabUrl:      nextTab && nextTab.url,
         nextIsDiscarded: Tabs.isDiscarded(nextTab)
       }
     });
   }
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    await closeChildTabs(tab);
+    await closeChildTabs(tab.$TST.element);
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       Tabs.getChildTabs(tab).length > 1) {
     log('trying to replace the closing tab with a new group tab');
     const firstChild = Tabs.getFirstChildTab(tab);
     const uri = TabsGroup.makeGroupTabURI({
-      title:     browser.i18n.getMessage('groupTab_label', firstChild.apiTab.title),
+      title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
       temporary: true
     });
-    tab.parentNode.$TST.toBeOpenedTabsWithPositions++;
+    const window = Tabs.trackedWindows.get(tab.windowId);
+    window.toBeOpenedTabsWithPositions++;
     const groupTab = await TabsOpen.openURIInTab(uri, {
-      windowId:     tab.apiTab.windowId,
-      insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
+      windowId:     tab.windowId,
+      insertBefore: tab.$TST.element, // not firstChild, because the "tab" is disappeared from tree.
       inBackground: true
     });
-    log('group tab: ', dumpTab(groupTab));
+    log('group tab: ', groupTab.id);
     if (!groupTab) // the window is closed!
       return;
-    await Tree.attachTabTo(groupTab, tab, {
-      insertBefore: firstChild,
+    await Tree.attachTabTo(groupTab, tab.$TST.element, {
+      insertBefore: firstChild.$TST.element,
       broadcast:    true
     });
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
   }
 
-  Tree.detachAllChildren(tab, {
+  Tree.detachAllChildren(tab.$TST.element, {
     behavior:  closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
-  Tree.detachTab(tab, {
+  Tree.detachTab(tab.$TST.element, {
     dontUpdateIndent: true,
     broadcast:        true
   });
@@ -187,8 +187,8 @@ async function closeChildTabs(parent) {
 }
 
 Tabs.onRemoved.addListener((tab, info) => {
-  log('Tabs.onRemoved: removed ', dumpTab(tab));
-  configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.apiTab.id);
+  log('Tabs.onRemoved: removed ', tab.id);
+  configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.id);
 
   if (info.isWindowClosing)
     return;
@@ -197,7 +197,7 @@ Tabs.onRemoved.addListener((tab, info) => {
   // other tabs may be attached to the removing tab.
   // We need to detach such relations always on this timing.
   if (info.oldChildren.length > 0) {
-    Tree.detachAllChildren(tab, {
+    Tree.detachAllChildren(tab.$TST.element, {
       children:  info.oldChildren,
       parent:    info.oldParent,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD,
@@ -221,26 +221,26 @@ browser.windows.onRemoved.addListener(windowId  => {
 Tabs.onDetached.addListener((tab, info = {}) => {
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     if (Tree.shouldApplyTreeBehavior(info)) {
-      Tree.tryMoveFocusFromClosingActiveTabNow(tab, {
-        ignoredTabs: Tabs.getDescendantTabs(tab)
+      Tree.tryMoveFocusFromClosingActiveTabNow(tab.$TST.element, {
+        ignoredTabs: Tabs.getDescendantTabs(tab.$TST.element)
       });
       return;
     }
 
-    Tree.tryMoveFocusFromClosingActiveTab(tab);
+    Tree.tryMoveFocusFromClosingActiveTab(tab.$TST.element);
   }
 
-  log('Tabs.onDetached ', dumpTab(tab));
-  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, info);
+  log('Tabs.onDetached ', tab.id);
+  let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab.$TST.element, info);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;
 
-  Tree.detachAllChildren(tab, {
-    behavior: closeParentBehavior,
+  Tree.detachAllChildren(tab.$TST.element, {
+    behavior:  closeParentBehavior,
     broadcast: true
   });
   //reserveCloseRelatedTabs(toBeClosedTabs);
-  Tree.detachTab(tab, {
+  Tree.detachTab(tab.$TST.element, {
     dontUpdateIndent: true,
     broadcast:        true
   });

@@ -174,7 +174,7 @@ export async function openURIsInTabs(uris, options = {}) {
         const promisedNewTabTracked = new Promise((resolve, _reject) => {
           const listener = (tab) => {
             Tabs.onCreating.removeListener(listener);
-            browser.tabs.get(tab.apiTab.id).then(resolve);
+            browser.tabs.get(tab.id).then(resolve);
           };
           Tabs.onCreating.addListener(listener);
         });

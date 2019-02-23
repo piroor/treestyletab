@@ -248,8 +248,8 @@ export async function reserveToUpdateCachedTabbar() {
   if (Tabs.hasCreatingTab(mTargetWindow))
     await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
 
-  const container = Tabs.getTabsContainer(mTargetWindow);
-  if (container.allTabsRestored)
+  const window    = Tabs.trackedWindows.get(mTargetWindow);
+  if (window.allTabsRestored)
     return;
 
   log('reserveToUpdateCachedTabbar ', { stack: new Error().stack });
@@ -276,9 +276,9 @@ async function updateCachedTabbar() {
     return;
   if (Tabs.hasCreatingTab(mTargetWindow))
     await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
-  const container = Tabs.getTabsContainer(mTargetWindow);
+  const window    = Tabs.trackedWindows.get(mTargetWindow);
   const signature = await Cache.getWindowSignature(mTargetWindow);
-  if (container.allTabsRestored)
+  if (window.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);

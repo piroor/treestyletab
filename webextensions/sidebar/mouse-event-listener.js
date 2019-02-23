@@ -585,8 +585,8 @@ function onContextualIdentitySelect(item, event) {
 
 
 Tabs.onRemoved.addListener(async (tab, _info) => {
-  mUpdatingCollapsedStateCancellers.delete(tab);
-  mTabCollapsedStateChangedManagers.delete(tab);
+  mUpdatingCollapsedStateCancellers.delete(tab.$TST.element);
+  mTabCollapsedStateChangedManagers.delete(tab.$TST.element);
 });
 
 

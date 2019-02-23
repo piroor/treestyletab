@@ -122,7 +122,7 @@ export function updateTab(tab, newState = {}, options = {}) {
           Tabs.addState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
-    Tabs.onStateChanged.dispatch(tab);
+    Tabs.onStateChanged.dispatch(tab.apiTab);
   }
 
   if ((options.forceApply ||
@@ -275,7 +275,7 @@ async function updateTabHighlighted(tab, highlighted) {
   const inheritHighlighted = !tab.parentNode.$TST.tabsToBeHighlightedAlone.has(tab.apiTab.id);
   if (!inheritHighlighted)
     tab.parentNode.$TST.tabsToBeHighlightedAlone.delete(tab.apiTab.id);
-  Tabs.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
+  Tabs.onUpdated.dispatch(tab.apiTab, { highlighted }, { inheritHighlighted });
   return true;
 }
 

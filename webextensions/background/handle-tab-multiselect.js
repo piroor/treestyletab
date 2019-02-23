@@ -29,7 +29,7 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
     collapsedDescendants
   });
   for (const descendant of collapsedDescendants) {
-    browser.tabs.update(descendant.apiTab.id, {
+    browser.tabs.update(descendant.id, {
       highlighted: info.highlighted,
       active:      Tabs.isActive(descendant)
     });

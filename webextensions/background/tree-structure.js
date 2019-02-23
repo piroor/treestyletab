@@ -25,15 +25,15 @@ function log(...args) {
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
 export function startTracking() {
-  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
   Tabs.onRemoved.addListener((tab, info) => {
     if (!info.isWindowClosing)
-      reserveToSaveTreeStructure(tab);
+      reserveToSaveTreeStructure(tab.$TST.element);
   });
-  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
   Tabs.onUpdated.addListener((tab, info) => {
     if ('openerTabId' in info)
-      reserveToSaveTreeStructure(tab);
+      reserveToSaveTreeStructure(tab.$TST.element);
   });
   Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
   Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
@@ -268,12 +268,12 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 
 
 Tabs.onRestored.addListener(tab => {
-  log('onTabRestored ', dumpTab(tab), tab.apiTab);
-  reserveToAttachTabFromRestoredInfo(tab, {
+  log('onTabRestored ', tab.id);
+  reserveToAttachTabFromRestoredInfo(tab.$TST.element, {
     children: true
   });
   reserveToAttachTabFromRestoredInfo.promisedDone.then(() => {
-    Tree.fixupSubtreeCollapsedState(tab, {
+    Tree.fixupSubtreeCollapsedState(tab.$TST.element, {
       justNow:   true,
       broadcast: true
     });

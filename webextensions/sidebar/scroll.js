@@ -471,24 +471,24 @@ Tabs.onCreated.addListener((tab, _info) => {
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
       const active = Tabs.isActive(tab);
-      Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
+      Tree.collapseExpandTab(tab.$TST.element, { // this is called to scroll to the tab by the "last" parameter
         collapsed: false,
-        anchor:    Tabs.getActiveTab(tab.apiTab.windowId, { element: true }),
+        anchor:    Tabs.getActiveTab(tab.windowId, { element: true }),
         last:      true
       });
       if (!active)
-        notifyOutOfViewTab(tab);
+        notifyOutOfViewTab(tab.$TST.element);
     });
   }
   else {
     if (Tabs.isActive(tab))
-      scrollToNewTab(tab);
+      scrollToNewTab(tab.$TST.element);
     else
-      notifyOutOfViewTab(tab);
+      notifyOutOfViewTab(tab.$TST.element);
   }
 });
 
-Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab); });
+Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab.$TST.element); });
 
 Tabs.onUnpinned.addListener(tab => { scrollToTab(tab); });
 

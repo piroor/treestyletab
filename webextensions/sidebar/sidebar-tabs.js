@@ -478,7 +478,7 @@ Tabs.onTabElementMoved.addListener((tab, info) => {
 
 
 Tabs.onRestored.addListener(tab => {
-  Tree.fixupSubtreeCollapsedState(tab, {
+  Tree.fixupSubtreeCollapsedState(tab.$TST.element, {
     justNow:  true,
     inRemote: true
   });
@@ -493,9 +493,9 @@ Tabs.onRemoved.addListener((tab, _info) => {
       !configs.animation)
     return;
 
-  return new Promise(async (resolve, _aReject) => {
-    const tabRect = tab.getBoundingClientRect();
-    tab.style.marginLeft = `${tabRect.width}px`;
+  return new Promise(async (resolve, _reject) => {
+    const tabRect = tab.$TST.element.getBoundingClientRect();
+    tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
     await wait(configs.animation ? configs.collapseDuration : 0);
     resolve();
   });
@@ -509,8 +509,8 @@ Tabs.onMoving.addListener((tab, _info) => {
       Tabs.isPinned(tab) ||
       Tabs.isOpening(tab))
     return;
-  mTabWasVisibleBeforeMoving.set(tab, !Tabs.isCollapsed(tab));
-  Tree.collapseExpandTab(tab, {
+  mTabWasVisibleBeforeMoving.set(tab.$TST.element, !Tabs.isCollapsed(tab));
+  Tree.collapseExpandTab(tab.$TST.element, {
     collapsed: true,
     justNow:   true
   });
@@ -518,16 +518,16 @@ Tabs.onMoving.addListener((tab, _info) => {
 
 Tabs.onMoved.addListener(async (tab, _info) => {
   if (mInitialized)
-    reserveToUpdateTooltip(Tabs.getParentTab(tab));
+    reserveToUpdateTooltip(Tabs.getParentTab(tab.$TST.element));
 
-  const wasVisible = mTabWasVisibleBeforeMoving.get(tab);
-  mTabWasVisibleBeforeMoving.delete(tab);
+  const wasVisible = mTabWasVisibleBeforeMoving.get(tab.$TST.element);
+  mTabWasVisibleBeforeMoving.delete(tab.$TST.element);
 
   if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
     return;
 
   if (configs.animation && wasVisible) {
-    Tree.collapseExpandTab(tab, {
+    Tree.collapseExpandTab(tab.$TST.element, {
       collapsed: false
     });
     await wait(configs.collapseDuration);
@@ -536,7 +536,7 @@ Tabs.onMoved.addListener(async (tab, _info) => {
 });
 
 Tabs.onStateChanged.addListener(tab => {
-  if (tab.apiTab.status == 'loading')
+  if (tab.status == 'loading')
     Tabs.addState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
@@ -570,26 +570,26 @@ Tabs.onCollapsedStateChanged.addListener((tab, info) => {
 
 let mReservedUpdateActiveTab;
 Tabs.onUpdated.addListener((tab, info) => {
-  reserveToUpdateSoundButtonTooltip(tab);
-  reserveToUpdateTooltip(tab);
+  reserveToUpdateSoundButtonTooltip(tab.$TST.element);
+  reserveToUpdateTooltip(tab.$TST.element);
 
   if (!('highlighted' in info))
     return;
 
-  reserveToUpdateCloseboxTooltip(tab);
+  reserveToUpdateCloseboxTooltip(tab.$TST.element);
 
   for (const ancestor of Tabs.getAncestorTabs(tab)) {
-    updateDescendantsHighlighted(ancestor);
+    updateDescendantsHighlighted(ancestor.$TST.element);
   }
 
   if (mReservedUpdateActiveTab)
     clearTimeout(mReservedUpdateActiveTab);
   mReservedUpdateActiveTab = setTimeout(() => {
     mReservedUpdateActiveTab = null;
-    const activeTab = Tabs.getActiveTab(tab.apiTab.windowId, { element: true });
+    const activeTab = Tabs.getActiveTab(tab.windowId);
     if (activeTab) {
-      reserveToUpdateSoundButtonTooltip(activeTab);
-      reserveToUpdateCloseboxTooltip(activeTab);
+      reserveToUpdateSoundButtonTooltip(activeTab.$TST.element);
+      reserveToUpdateCloseboxTooltip(activeTab.$TST.element);
     }
   }, 50);
 });
@@ -600,7 +600,7 @@ Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(tab))
     return;
-  reserveToUpdateTooltip(Tabs.getParentTab(tab));
+  reserveToUpdateTooltip(Tabs.getParentTab(tab.$TST.element));
 });
 
 Tabs.onGroupTabDetected.addListener(tab => {

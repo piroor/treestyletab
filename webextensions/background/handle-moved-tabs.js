@@ -32,8 +32,8 @@ Tabs.onCreated.addListener((tab, info = {}) => {
       info.restored ||
       info.skipFixupTree ||
       // do nothing for already attached tabs
-      (tab.apiTab.openerTabId &&
-       Tabs.getParentTab(tab) == Tabs.getTabElementById(tab.apiTab.openerTabId)))
+      (tab.openerTabId &&
+       Tabs.getParentTab(tab) == Tabs.trackedTabs.get(tab.openerTabId)))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.positionedBySelf &&
@@ -43,16 +43,16 @@ Tabs.onCreated.addListener((tab, info = {}) => {
         (info.treeForActionDetection.target.next ||
          info.treeForActionDetection.target.previous))))
     tryFixupTreeForInsertedTab(tab, {
-      toIndex:   tab.apiTab.index,
-      fromIndex: Tabs.getLastTab(tab.apiTab.windowId, { element: false }).index,
+      toIndex:   tab.index,
+      fromIndex: Tabs.getLastTab(tab.windowId, { element: false }).index,
       treeForActionDetection: info.treeForActionDetection
     });
 });
 
 Tabs.onMoving.addListener((tab, moveInfo) => {
   // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
-  const container = Tabs.getTabsContainer(tab);
-  const isNewlyOpenedTab = container.$TST.openingTabs.has(tab.apiTab.id);
+  const window           = Tabs.trackedWindows.get(tab.windowId);
+  const isNewlyOpenedTab = window.openingTabs.has(tab.id);
   const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
   if (!isNewlyOpenedTab ||
       moveInfo.byInternalOperation ||
@@ -67,19 +67,19 @@ Tabs.onMoving.addListener((tab, moveInfo) => {
     return true;
 
   log('onTabMove for new child tab: move back '+moveInfo.toIndex+' => '+moveInfo.fromIndex);
-  moveBack(tab, moveInfo);
+  moveBack(tab.$TST.element, moveInfo);
   return false;
 });
 
 async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   if (!Tree.shouldApplyTreeBehavior(moveInfo)) {
-    Tree.detachAllChildren(tab, {
-      behavior: Tree.getCloseParentBehaviorForTab(tab, {
+    Tree.detachAllChildren(tab.$TST.element, {
+      behavior: Tree.getCloseParentBehaviorForTab(tab.$TST.element, {
         keepChildren: true
       }),
       broadcast: true
     });
-    Tree.detachTab(tab, {
+    Tree.detachTab(tab.$TST.element, {
       broadcast: true
     });
   }
@@ -94,25 +94,25 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   log('action: ', action);
   switch (action.action) {
     case 'moveBack':
-      moveBack(tab, moveInfo);
+      moveBack(tab.$TST.element, moveInfo);
       return;
 
     case 'attach': {
-      await Tree.attachTabTo(tab, Tabs.getTabElementById(action.parent), {
+      await Tree.attachTabTo(tab.$TST.element, Tabs.getTabElementById(action.parent), {
         insertBefore: Tabs.getTabElementById(action.insertBefore),
         insertAfter:  Tabs.getTabElementById(action.insertAfter),
         broadcast:    true
       });
-      Tree.followDescendantsToMovedRoot(tab);
+      Tree.followDescendantsToMovedRoot(tab.$TST.element);
     }; break;
 
     case 'detach': {
-      Tree.detachTab(tab, { broadcast: true });
-      Tree.followDescendantsToMovedRoot(tab);
+      Tree.detachTab(tab.$TST.element, { broadcast: true });
+      Tree.followDescendantsToMovedRoot(tab.$TST.element);
     }; break;
 
     default:
-      Tree.followDescendantsToMovedRoot(tab);
+      Tree.followDescendantsToMovedRoot(tab.$TST.element);
       break;
   }
 }
@@ -129,20 +129,20 @@ Tabs.onMoved.addListener((tab, moveInfo = {}) => {
 });
 
 Commands.onMoveUp.addListener(async tab => {
-  await tryFixupTreeForInsertedTab(tab.$TST.element, {
+  await tryFixupTreeForInsertedTab(tab, {
     toIndex:   tab.index,
     fromIndex: tab.index + 1,
   });
 });
 
 Commands.onMoveDown.addListener(async tab => {
-  await tryFixupTreeForInsertedTab(tab.$TST.element, {
+  await tryFixupTreeForInsertedTab(tab, {
     toIndex:   tab.index,
     fromIndex: tab.index - 1,
   });
 });
 
-TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { tryFixupTreeForInsertedTab(tab, moveInfo); });
+TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { tryFixupTreeForInsertedTab(tab.apiTab, moveInfo); });
 
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
@@ -164,8 +164,8 @@ function moveBack(tab, moveInfo) {
 }
 
 async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
-  log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
-  const tree   = moveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(tab);
+  log('detectTabActionFromNewPosition: ', tab.id, moveInfo);
+  const tree   = moveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(tab.$TST.element);
   const target = tree.target;
 
   const toIndex   = moveInfo.toIndex;
