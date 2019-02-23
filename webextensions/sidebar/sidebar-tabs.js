@@ -586,7 +586,7 @@ Tabs.onUpdated.addListener((tab, info) => {
     clearTimeout(mReservedUpdateActiveTab);
   mReservedUpdateActiveTab = setTimeout(() => {
     mReservedUpdateActiveTab = null;
-    const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
+    const activeTab = Tabs.getActiveTab(tab.apiTab.windowId, { element: true });
     if (activeTab) {
       reserveToUpdateSoundButtonTooltip(activeTab);
       reserveToUpdateCloseboxTooltip(activeTab);

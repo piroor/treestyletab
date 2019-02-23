@@ -359,7 +359,7 @@ async function onNewTabTracked(tab) {
   Tabs.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
     maybeOrphan,
-    activeTab
+    activeTab: activeTab && activeTab.$TST.element
   });
 
   if (Tabs.hasCreatingTab(tab.windowId))
@@ -461,7 +461,7 @@ async function onNewTabTracked(tab) {
       restored,
       duplicated,
       duplicatedInternally,
-      activeTab
+      activeTab: activeTab && activeTab.$TST.element
     });
     // don't do await if not needed, to process things synchronously
     if (moved instanceof Promise)
@@ -519,13 +519,13 @@ async function onNewTabTracked(tab) {
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
 
-    const currentActiveTab = Tabs.getActiveTabs().find(tabElement => tabElement && tabElement != newTabElement && tabElement.parentNode == newTabElement.parentNode);
+    const currentActiveTab = Tabs.getActiveTab(tab.windowId);
     if (renewedTab.active &&
-        currentActiveTab)
+        currentActiveTab.id != tab.id)
       onActivated({
         tabId:         tab.id,
         windowId:      tab.windowId,
-        previousTabId: currentActiveTab.apiTab.id
+        previousTabId: currentActiveTab.id
       });
 
     return newTabElement;

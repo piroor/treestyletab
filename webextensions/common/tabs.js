@@ -975,12 +975,17 @@ export function getTabLabelContent(tab) {
 
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
-export function getActiveTab(windowId) {
+export function getActiveTab(windowId, options = {}) {
   const tab = ensureLivingTab(activeTabForWindow.get(windowId));
-  return tab && tab.$TST.element;
+  if (options.element)
+    return tab && tab.$TST.element;
+  return tab;
 }
-export function getActiveTabs() {
-  return Array.from(activeTabForWindow.values(), tab => ensureLivingTab(tab) && tab.$TST.element);
+export function getActiveTabs(options = {}) {
+  const tabs = Array.from(activeTabForWindow.values(), ensureLivingTab);
+  if (options.element)
+    return tabs.map(tab => tab && tab.$TST.element);
+  return tabs;
 }
 
 export function getNextTab(tab, options = {}) {
@@ -1224,11 +1229,13 @@ export function getNextSiblingTab(tab, options = {}) {
     return null;
   assertValidHint(tab);
   const element = tab instanceof Element || options.element;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
   const parent = tab.$TST.parent;
   let sibling;
   if (parent) {
     const siblingIds = parent.$TST.childIds;
-    const index = siblingIds.indexOf(tab.apiTab.id);
+    const index = siblingIds.indexOf(tab.id);
     const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
     if (!siblingId)
       return null;
@@ -1255,11 +1262,13 @@ export function getPreviousSiblingTab(tab, options = {}) {
     return null;
   assertValidHint(tab);
   const element = tab instanceof Element || options.element;
+  if (tab instanceof Element)
+    tab = tab.apiTab;
   const parent = tab.$TST.parent;
   let sibling;
   if (parent) {
     const siblingIds = parent.$TST.childIds;
-    const index = siblingIds.indexOf(tab.apiTab.id);
+    const index = siblingIds.indexOf(tab.id);
     const siblingId = index > 0 ? siblingIds[index - 1] : null ;
     if (!siblingId)
       return null;
@@ -1269,10 +1278,10 @@ export function getPreviousSiblingTab(tab, options = {}) {
   }
   else {
     sibling = query({
-      windowId:  tab.apiTab.windowId,
-      fromId:    tab.apiTab.id,
+      windowId:  tab.windowId,
+      fromId:    tab.id,
       living:    true,
-      index:     (index => index < tab.apiTab.index),
+      index:     (index => index < tab.index),
       hasParent: false,
       last:      true,
       element
@@ -2158,7 +2167,7 @@ function snapshotTree(targetTab, tabs) {
   const activeTab = getActiveTab(targetTab.apiTab.windowId);
   return {
     target:   snapshotById[targetTab.id],
-    active:   activeTab && snapshotById[activeTab.id],
+    active:   activeTab && snapshotById[activeTab.$TST.element.id],
     tabs:     snapshotArray,
     tabsById: snapshotById
   };

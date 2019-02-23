@@ -190,7 +190,7 @@ function onCreating(tab, info = {}) {
 function onCreated(tab, _info = {}) {
   const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
   if (activeTab)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
 }
 
 function onRemoving(tab, removeInfo = {}) {
@@ -211,7 +211,7 @@ function onRemoving(tab, removeInfo = {}) {
 function onRemoved(tab, info = {}) {
   const activeTab = Tabs.getActiveTab(info.windowId);
   if (activeTab && !info.isWindowClosing)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
   const container = tab.parentNode;
   log(`clear lastRelatedTabs for ${info.windowId} by tabs.onRemoved`);
   if (container.lastRelatedTabs)
@@ -221,7 +221,7 @@ function onRemoved(tab, info = {}) {
 function onMoved(tab, info = {}) {
   const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
   if (activeTab)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
 
   if (!info.byInternalOperation) {
     log(`clear lastRelatedTabs for ${tab.apiTab.windowId} by tabs.onMoved`);
@@ -234,13 +234,13 @@ function onMoved(tab, info = {}) {
 function onAttached(_tab, info = {}) {
   const activeTab = Tabs.getActiveTab(info.newWindowId);
   if (activeTab)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
 }
 
 function onDetached(_tab, info = {}) {
   const activeTab = Tabs.getActiveTab(info.oldWindowId);
   if (activeTab)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
 
   const container = Tabs.getTabsContainer(info.oldWindowId);
   if (container) {
@@ -254,17 +254,17 @@ function onDetached(_tab, info = {}) {
 function onTreeAttached(child, _info = {}) {
   const activeTab = Tabs.getActiveTab(child.apiTab.windowId);
   if (activeTab)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
 }
 
 function onTreeDetached(child, _info = {}) {
   const activeTab = Tabs.getActiveTab(child.apiTab.windowId);
   if (activeTab)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
 }
 
 function onSubtreeCollapsedStateChanging(tab, _info = {}) {
   const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
   if (activeTab)
-    update(activeTab.apiTab.id);
+    update(activeTab.id);
 }

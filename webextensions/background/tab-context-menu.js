@@ -542,8 +542,8 @@ async function onClick(info, contextTab) {
         }
       }
       else {
-        const tab = contextTabElement || Tabs.getActiveTab(contextWindowId);
-        browser.tabs.reload(tab.apiTab.id);
+        const tab = contextTab || activeTab;
+        browser.tabs.reload(tab.id);
       }
       break;
     case 'context_toggleMuteTab-mute':
