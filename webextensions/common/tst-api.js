@@ -436,7 +436,7 @@ export function isGroupingBlocked() {
 export function serializeTab(tab) {
   const children         = Tabs.getChildTabs(tab).map(serializeTab);
   const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.apiTab.id);
-  return Object.assign({}, tab.apiTab, {
+  return Object.assign({}, Tabs.sanitize(tab.apiTab), {
     states:   Tabs.getStates(tab).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(tab.getAttribute(Constants.kLEVEL) || 0),
     children, ancestorTabIds
@@ -543,8 +543,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   let tabsInActiveWindow = [];
   if (aIds.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
-      populate:    true,
-      windowTypes: ['normal']
+      populate: true
     });
     tabsInActiveWindow = window.tabs;
   }
@@ -569,12 +568,12 @@ async function getTabsFromWrongIds(aIds, sender) {
       }
       case 'nextsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getNextSiblingTab(Tabs.getTabById(tabs[0]));
+        return Tabs.getNextSiblingTab(Tabs.getTabElementById(tabs[0]));
       }
       case 'previoussibling':
       case 'prevsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getPreviousSiblingTab(Tabs.getTabById(tabs[0]));
+        return Tabs.getPreviousSiblingTab(Tabs.getTabElementById(tabs[0]));
       }
       case 'sendertab':
         if (sender.tab)
@@ -586,7 +585,7 @@ async function getTabsFromWrongIds(aIds, sender) {
       }
       default:
         const tabFromUniqueId = Tabs.getTabByUniqueId(id);
-        return tabFromUniqueId || id;
+        return tabFromUniqueId && tabFromUniqueId.$TST.element || id;
     }
   }));
   log('=> ', tabOrAPITabOrIds);
@@ -597,7 +596,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   else
     flattenTabOrAPITabOrIds = tabOrAPITabOrIds.flat();
 
-  return flattenTabOrAPITabOrIds.map(Tabs.getTabById).filter(tab => !!tab);
+  return flattenTabOrAPITabOrIds.map(Tabs.getTabElementById).filter(tab => !!tab);
 }
 
 export function formatResult(results, originalMessage) {

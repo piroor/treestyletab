@@ -222,7 +222,7 @@ export async function migrateLegacyTreeStructure() {
         url: 'about:blank'
       });
       const container = Tabs.getTabsContainer(apiWindow.id);
-      container.toBeOpenedOrphanTabs += structure.length;
+      container.$TST.toBeOpenedOrphanTabs += structure.length;
       // restore tree
       let uris = structure.map(item => item.url);
       uris = uris.map(uRI => {
@@ -241,7 +241,7 @@ export async function migrateLegacyTreeStructure() {
       });
       const restApiTabs = apiWindow.tabs.slice(1);
       try {
-        await TabsInternalOperation.removeTab(Tabs.getTabById(apiWindow.tabs[0]));
+        await TabsInternalOperation.removeTab(Tabs.getTabElementById(apiWindow.tabs[0]));
         // apply pinned state
         for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
           if (!structure[i].pinned)

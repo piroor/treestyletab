@@ -95,7 +95,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       let nextTab = info.insertBefore;
       let prevTab = info.insertAfter;
       if (!nextTab && !prevTab) {
-        const tabs = Tabs.getAllTabs(tab);
+        const tabs = Tabs.getAllTabs(tab.apiTab.windowId);
         nextTab = tabs[info.newIndex];
         if (!nextTab)
           prevTab = tabs[info.newIndex - 1];

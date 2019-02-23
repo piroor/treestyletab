@@ -30,12 +30,13 @@ let mMaybeTabSwitchingByShortcut = false;
 
 Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focusing is overridden.
   log('Tabs.onActivating ', tab.id, info);
-  if (tab.dataset.shouldReloadOnSelect) {
-    browser.tabs.reload(tab.apiTab.id);
-    delete tab.dataset.shouldReloadOnSelect;
+  if (tab.$TST.shouldReloadOnSelect) {
+    browser.tabs.reload(tab.id);
+    delete tab.$TST.shouldReloadOnSelect;
   }
+  tab = tab.$TST.element;
   const container = tab.parentNode;
-  cancelDelayedExpand(Tabs.getTabById(container.lastActiveTab));
+  cancelDelayedExpand(Tabs.getTabElementById(container.lastActiveTab));
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
@@ -72,7 +73,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
         return false;
       if (shouldSkipCollapsed &&
           container.lastActiveTab == newSelection.id) {
-        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab);
+        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab.apiTab.windowId);
       }
       container.lastActiveTab = newSelection.id;
       if (mMaybeTabSwitchingByShortcut)
@@ -96,7 +97,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     log('=> reaction for newly active parent tab');
     handleNewActiveTab(tab, info);
   }
-  delete tab.dataset.discardOnCompletelyLoaded;
+  delete tab.$TST.discardOnCompletelyLoaded;
   container.lastActiveTab = tab.id;
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
@@ -123,38 +124,37 @@ function handleNewActiveTab(tab, info = {}) {
 
 Tabs.onUpdated.addListener((tab, changeInfo = {}) => {
   if ('url' in changeInfo) {
-    if (tab.dataset.discardURLAfterCompletelyLoaded &&
-        tab.dataset.discardURLAfterCompletelyLoaded != changeInfo.url)
-      delete tab.dataset.discardURLAfterCompletelyLoaded;
+    if (tab.$TST.discardURLAfterCompletelyLoaded &&
+        tab.$TST.discardURLAfterCompletelyLoaded != changeInfo.url)
+      delete tab.$TST.discardURLAfterCompletelyLoaded;
   }
 });
 
 Tabs.onStateChanged.addListener(tab => {
-  if (!tab.apiTab ||
-      tab.apiTab.status != 'complete')
+  if (tab.status != 'complete')
     return;
 
   if (typeof browser.tabs.discard == 'function') {
-    if (tab.apiTab.url == tab.dataset.discardURLAfterCompletelyLoaded &&
+    if (tab.url == tab.$TST.discardURLAfterCompletelyLoaded &&
         configs.autoDiscardTabForUnexpectedFocus) {
-      log('Try to discard accidentally restored tab (on restored) ', tab.apiTab.id);
+      log('Try to discard accidentally restored tab (on restored) ', tab.id);
       wait(configs.autoDiscardTabForUnexpectedFocusDelay).then(() => {
         if (!Tabs.ensureLivingTab(tab) ||
-            tab.apiTab.active)
+            tab.active)
           return;
-        if (tab.apiTab.status == 'complete')
-          browser.tabs.discard(tab.apiTab.id);
+        if (tab.status == 'complete')
+          browser.tabs.discard(tab.id);
         else
-          tab.dataset.discardOnCompletelyLoaded = true;
+          tab.$TST.discardOnCompletelyLoaded = true;
       });
     }
-    else if (tab.dataset.discardOnCompletelyLoaded && !tab.apiTab.active) {
-      log('Discard accidentally restored tab (on complete) ', tab.apiTab.id);
-      browser.tabs.discard(tab.apiTab.id);
+    else if (tab.$TST.discardOnCompletelyLoaded && !tab.active) {
+      log('Discard accidentally restored tab (on complete) ', tab.id);
+      browser.tabs.discard(tab.id);
     }
   }
-  delete tab.dataset.discardURLAfterCompletelyLoaded;
-  delete tab.dataset.discardOnCompletelyLoaded;
+  delete tab.$TST.discardURLAfterCompletelyLoaded;
+  delete tab.$TST.discardOnCompletelyLoaded;
 });
 
 function setupDelayedExpand(tab) {
@@ -180,8 +180,8 @@ function cancelDelayedExpand(tab) {
   delete tab.delayedExpand;
 }
 
-function cancelAllDelayedExpand(hint) {
-  for (const tab of Tabs.getAllTabs(hint)) {
+function cancelAllDelayedExpand(windowId) {
+  for (const tab of Tabs.getAllTabs(windowId)) {
     cancelDelayedExpand(tab);
   }
 }
@@ -227,13 +227,13 @@ function onMessage(message, sender) {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
           await Tabs.waitUntilTabsAreCreated(sender.tab);
-          let tab = sender.tab && Tabs.getTabById(sender.tab);
+          let tab = sender.tab && Tabs.getTabElementById(sender.tab);
           if (!tab) {
             const apiTabs = await browser.tabs.query({ currentWindow: true, active: true });
             await Tabs.waitUntilTabsAreCreated(apiTabs[0].id);
-            tab = Tabs.getTabById(apiTabs[0]);
+            tab = Tabs.getTabElementById(apiTabs[0]);
           }
-          cancelAllDelayedExpand(tab);
+          cancelAllDelayedExpand(tab.apiTab.windowId);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               tab.parentNode.lastActiveTab == tab.id) {

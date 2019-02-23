@@ -154,7 +154,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: mTargetWindow
       })).structure;
-      const allTabs = Tabs.getAllTabs();
+      const allTabs = Tabs.getAllTabs(mTargetWindow);
       const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
         log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`);
@@ -173,6 +173,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
         });
       }
       for (const tab of allTabs) {
+        Tabs.setAttribute(tab, 'title', tab.getAttribute('title'));
         SidebarTabs.reserveToUpdateTooltip(tab);
         SidebarTabs.reserveToUpdateTwistyTooltip(tab);
         SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
@@ -193,7 +194,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
 
 function updateWindowCache(key, value) {
   if (!mLastWindowCacheOwner ||
-      !Tabs.getTabById(mLastWindowCacheOwner))
+      !Tabs.getTabElementById(mLastWindowCacheOwner))
     return;
   if (value === undefined) {
     //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
@@ -231,7 +232,7 @@ async function getWindowCache(key) {
 }
 
 function getWindowCacheOwner() {
-  const tab = Tabs.getLastTab();
+  const tab = Tabs.getLastTab(mTargetWindow);
   return tab && tab.apiTab;
 }
 
@@ -247,8 +248,8 @@ export async function reserveToUpdateCachedTabbar() {
   if (Tabs.hasCreatingTab(mTargetWindow))
     await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
 
-  const container = Tabs.getTabsContainer(mTargetWindow);
-  if (container.allTabsRestored)
+  const window    = Tabs.trackedWindows.get(mTargetWindow);
+  if (window.allTabsRestored)
     return;
 
   log('reserveToUpdateCachedTabbar ', { stack: new Error().stack });
@@ -275,9 +276,9 @@ async function updateCachedTabbar() {
     return;
   if (Tabs.hasCreatingTab(mTargetWindow))
     await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
-  const container = Tabs.getTabsContainer(mTargetWindow);
+  const window    = Tabs.trackedWindows.get(mTargetWindow);
   const signature = await Cache.getWindowSignature(mTargetWindow);
-  if (container.allTabsRestored)
+  if (window.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });
   mLastWindowCacheOwner = getWindowCacheOwner(mTargetWindow);
@@ -286,7 +287,7 @@ async function updateCachedTabbar() {
     tabbar: {
       contents:        Tabs.allTabsContainer.innerHTML,
       style:           mTabBar.getAttribute('style'),
-      pinnedTabsCount: Tabs.getPinnedTabs(container).length
+      pinnedTabsCount: Tabs.getPinnedTabs(mTargetWindow).length
     },
     indent: Indent.getCacheInfo(),
     signature

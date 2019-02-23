@@ -48,8 +48,8 @@ export async function bookmarkTab(tab, options = {}) {
   }
   const parent = await getItemById(options.parentId || configs.defaultBookmarkParentId);
 
-  let title    = tab.apiTab.title;
-  let url      = tab.apiTab.url;
+  let title    = tab.title;
+  let url      = tab.url;
   let parentId = parent && parent.id;
   if (options.showDialog) {
     try {
@@ -109,8 +109,8 @@ export async function bookmarkTabs(tabs, options = {}) {
   }
   const now = new Date();
   const title = configs.bookmarkTreeFolderName
-    .replace(/%TITLE%/gi, tabs[0].apiTab.title)
-    .replace(/%URL%/gi, tabs[0].apiTab.url)
+    .replace(/%TITLE%/gi, tabs[0].title)
+    .replace(/%URL%/gi, tabs[0].url)
     .replace(/%YEAR%/gi, now.getFullYear())
     .replace(/%MONTH%/gi, `0${now.getMonth() + 1}`.substr(-2))
     .replace(/%DATE%/gi, `0${now.getDate()}`.substr(-2));
@@ -166,8 +166,8 @@ export async function bookmarkTabs(tabs, options = {}) {
     await browser.bookmarks.create({
       parentId: folder.id,
       index:    i,
-      title:    tab.apiTab.title,
-      url:      tab.apiTab.url
+      title:    tab.title,
+      url:      tab.url
     });
   }
   return folder;

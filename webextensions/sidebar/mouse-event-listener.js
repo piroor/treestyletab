@@ -370,7 +370,7 @@ async function onMouseUp(event) {
   if (!lastMousedown ||
       lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
-      (livingTab && livingTab != Tabs.getTabById(lastMousedown.detail.tab)))
+      (livingTab && livingTab != Tabs.getTabElementById(lastMousedown.detail.tab)))
     return;
 
   log('onMouseUp ', lastMousedown.detail);
@@ -418,7 +418,7 @@ async function onMouseUp(event) {
       //}
       const multiselected  = Tabs.isMultiselected(tab);
       const tabsToBeClosed = multiselected ?
-        Tabs.getSelectedTabs(tab) :
+        Tabs.getSelectedTabs(tab.apiTab.windowId, { element: true }) :
         Tree.getClosingTabsFromParent(tab) ;
       Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.apiTab.id))
         .then(confirmed => {
@@ -498,11 +498,11 @@ function handleNewTabAction(event, options = {}) {
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
-    baseTab:      Tabs.getActiveTab(mTargetWindow),
-    as:           options.action,
+    baseTab:       Tabs.activeTabForWindow.get(mTargetWindow),
+    as:            options.action,
     cookieStoreId: options.cookieStoreId,
-    inBackground: event.shiftKey,
-    inRemote:     true
+    inBackground:  event.shiftKey,
+    inRemote:      true
   });
 }
 
@@ -585,8 +585,8 @@ function onContextualIdentitySelect(item, event) {
 
 
 Tabs.onRemoved.addListener(async (tab, _info) => {
-  mUpdatingCollapsedStateCancellers.delete(tab);
-  mTabCollapsedStateChangedManagers.delete(tab);
+  mUpdatingCollapsedStateCancellers.delete(tab.$TST.element);
+  mTabCollapsedStateChangedManagers.delete(tab.$TST.element);
 });
 
 

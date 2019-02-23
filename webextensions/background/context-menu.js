@@ -337,8 +337,8 @@ export function refreshItems() {
 export const onClick = (info, apiTab) => {
   log('context menu item clicked: ', info, apiTab);
 
-  const contextTab = Tabs.getTabById(apiTab);
-  const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
+  const contextTab = Tabs.trackedTabs.get(apiTab.id);
+  const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab, { element: false }) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
     case 'reloadTree':
@@ -362,13 +362,13 @@ export const onClick = (info, apiTab) => {
       Commands.collapseTree(contextTab);
       break;
     case 'collapseAll':
-      Commands.collapseAll(contextTab);
+      Commands.collapseAll(contextTab.windowId);
       break;
     case 'expandTree':
       Commands.expandTree(contextTab);
       break;
     case 'expandAll':
-      Commands.expandAll(contextTab);
+      Commands.expandAll(contextTab.windowId);
       break;
 
     case 'bookmarkTree':
@@ -377,7 +377,7 @@ export const onClick = (info, apiTab) => {
 
     case 'groupTabs':
       if (selectedTabs.length > 1)
-        TabsGroup.groupTabs(selectedTabs, { broadcast: true });
+        TabsGroup.groupTabs(selectedTabs.map(tab => tab.$TST.element), { broadcast: true });
       break;
 
     case 'collapsed':
@@ -387,14 +387,14 @@ export const onClick = (info, apiTab) => {
         Commands.collapseTree(contextTab);
       break;
     case 'pinnedTab': {
-      const tabs = Tabs.getPinnedTabs(contextTab);
+      const tabs = Tabs.getPinnedTabs(contextTab.windowId, { element: false });
       if (tabs.length > 0)
-        browser.tabs.update(tabs[0].apiTab.id, { active: true });
+        browser.tabs.update(tabs[0].id, { active: true });
     }; break;
     case 'unpinnedTab': {
-      const tabs = Tabs.getUnpinnedTabs(contextTab);
+      const tabs = Tabs.getUnpinnedTabs(apiTab.windowId, { element: false });
       if (tabs.length > 0)
-        browser.tabs.update(tabs[0].apiTab.id, { active: true });
+        browser.tabs.update(tabs[0].id, { active: true });
     }; break;
 
     default:
@@ -414,7 +414,7 @@ function onShown(info, tab) {
     updated = updateItems();
   }
 
-  tab = tab && Tabs.getTabById(tab.id);
+  tab = tab && Tabs.trackedTabs.get(tab.id);
   const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
   const hasChild = Tabs.hasChildTabs(tab);
   const multiselected = Tabs.isMultiselected(tab);

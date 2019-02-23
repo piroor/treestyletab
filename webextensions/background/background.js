@@ -110,7 +110,7 @@ export async function init() {
   Tabs.getAllTabs().forEach(updateSubtreeCollapsed);
   for (const tab of Tabs.getActiveTabs()) {
     for (const ancestor of Tabs.getAncestorTabs(tab)) {
-      Tree.collapseExpandTabAndSubtree(ancestor, {
+      Tree.collapseExpandTabAndSubtree(ancestor.$TST.element, {
         collapsed: false,
         justNow:   true
       });
@@ -131,7 +131,7 @@ export async function init() {
   }).catch(_error => {});
 
   Migration.notifyNewFeatures();
-  log(`Startup metrics for ${Tabs.getTabs().length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tabs.getAllTabs().length} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {
@@ -181,6 +181,7 @@ function destroy() {
 
 async function rebuildAll() {
   TabsContainer.clearAll();
+  Tabs.untrackAll();
   const windows = await browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
@@ -190,6 +191,9 @@ async function rebuildAll() {
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
+      for (const apiTab of window.tabs) {
+        Tabs.track(apiTab);
+      }
       try {
         if (configs.useCachedTree) {
           restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
@@ -227,7 +231,7 @@ async function rebuildAll() {
     });
     for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {
       if (!Tabs.isDiscarded(tab))
-        tab.dataset.shouldReloadOnSelect = true;
+        tab.apiTab.$TST.shouldReloadOnSelect = true;
     }
   }));
   insertionPoint.detach();
@@ -275,12 +279,10 @@ async function updateInsertionPosition(tab) {
 
   const prev = Tabs.getPreviousTab(tab);
   if (prev)
-    prev.uniqueId.then(id =>
-      browser.sessions.setTabValue(
-        tab.apiTab.id,
-        Constants.kPERSISTENT_INSERT_AFTER,
-        id.id
-      )
+    browser.sessions.setTabValue(
+      tab.apiTab.id,
+      Constants.kPERSISTENT_INSERT_AFTER,
+      prev.apiTab.$TST.uniqueId.id
     );
   else
     browser.sessions.removeTabValue(
@@ -290,12 +292,10 @@ async function updateInsertionPosition(tab) {
 
   const next = Tabs.getNextTab(tab);
   if (next)
-    next.uniqueId.then(id =>
-      browser.sessions.setTabValue(
-        tab.apiTab.id,
-        Constants.kPERSISTENT_INSERT_BEFORE,
-        id.id
-      )
+    browser.sessions.setTabValue(
+      tab.apiTab.id,
+      Constants.kPERSISTENT_INSERT_BEFORE,
+      next.apiTab.$TST.uniqueId.id
     );
   else
     browser.sessions.removeTabValue(
@@ -323,14 +323,10 @@ async function updateAncestors(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  const ancestorIds = await Promise.all(
-    Tabs.getAncestorTabs(tab)
-      .map(ancestor => ancestor.uniqueId)
-  );
   browser.sessions.setTabValue(
     tab.apiTab.id,
     Constants.kPERSISTENT_ANCESTORS,
-    ancestorIds.map(id => id.id)
+    Tabs.getAncestorTabs(tab, { element: false }).map(ancestor => ancestor.$TST.uniqueId.id)
   );
 }
 
@@ -352,14 +348,10 @@ async function updateChildren(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  const childIds = await Promise.all(
-    Tabs.getChildTabs(tab)
-      .map(child => child.uniqueId)
-  );
   browser.sessions.setTabValue(
     tab.apiTab.id,
     Constants.kPERSISTENT_CHILDREN,
-    childIds.map(id => id.id)
+    Tabs.getChildTabs(tab, { element: false }).map(child => child.$TST.uniqueId.id)
   );
 }
 
@@ -430,13 +422,14 @@ export async function confirmToCloseTabs(apiTabIds, options = {}) {
       return false;
   }
 }
-Commands.onTabsClosing.addListener((apiTabIds, options = {}) => {
-  return confirmToCloseTabs(apiTabIds, options);
+Commands.onTabsClosing.addListener((tabIds, options = {}) => {
+  return confirmToCloseTabs(tabIds, options);
 });
 
 Tabs.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)
     return;
+  tab = tab.$TST.element;
   // Duplicated tab has its own tree structure information inherited
   // from the original tab, but they must be cleared.
   reserveToUpdateAncestors(tab);
@@ -451,18 +444,17 @@ Tabs.onCreated.addListener((tab, info = {}) => {
 Tabs.onUpdated.addListener((tab, changeInfo) => {
   // Loading of "about:(unknown type)" won't report new URL via tabs.onUpdated,
   // so we need to see the complete tab object.
-  const apiTab = tab && tab.apiTab && tab.apiTab;
-  const status = changeInfo.status || apiTab && apiTab.status;
+  const status = changeInfo.status || tab && tab.status;
   const url = changeInfo.url ? changeInfo.url :
-    status == 'complete' && apiTab ? apiTab.url : '';
+    status == 'complete' && tab ? tab.url : '';
   if (tab &&
       Constants.kSHORTHAND_ABOUT_URI.test(url)) {
     const shorthand = RegExp.$1;
-    const oldUrl = apiTab.url;
+    const oldUrl = tab.url;
     wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
-      if (tab.apiTab.url != oldUrl)
+      if (tab.url != oldUrl)
         return;
-      browser.tabs.update(tab.apiTab.id, {
+      browser.tabs.update(tab.id, {
         url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
       }).catch(ApiTabs.handleMissingTabError);
       if (shorthand == 'group')
@@ -471,7 +463,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   }
 
   if (changeInfo.status || changeInfo.url)
-    tryStartHandleAccelKeyOnTab(tab);
+    tryStartHandleAccelKeyOnTab(tab.$TST.element);
 });
 
 Tabs.onTabElementMoved.addListener((tab, info = {}) => {
@@ -486,11 +478,11 @@ Tabs.onTabElementMoved.addListener((tab, info = {}) => {
 
 Tabs.onMoved.addListener(async (tab, moveInfo) => {
   reserveToUpdateInsertionPosition([
-    tab,
-    moveInfo.oldPreviousTab,
-    moveInfo.oldNextTab,
-    Tabs.getPreviousTab(tab),
-    Tabs.getNextTab(tab)
+    tab.$TST.element,
+    moveInfo.oldPreviousTab && moveInfo.oldPreviousTab.$TST.element,
+    moveInfo.oldNextTab && moveInfo.oldNextTab.$TST.element,
+    Tabs.getPreviousTab(tab.$TST.element),
+    Tabs.getNextTab(tab.$TST.element)
   ]);
 });
 

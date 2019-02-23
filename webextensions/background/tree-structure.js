@@ -25,15 +25,15 @@ function log(...args) {
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
 export function startTracking() {
-  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
   Tabs.onRemoved.addListener((tab, info) => {
     if (!info.isWindowClosing)
-      reserveToSaveTreeStructure(tab);
+      reserveToSaveTreeStructure(tab.$TST.element);
   });
-  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
+  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
   Tabs.onUpdated.addListener((tab, info) => {
     if ('openerTabId' in info)
-      reserveToSaveTreeStructure(tab);
+      reserveToSaveTreeStructure(tab.$TST.element);
   });
   Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
   Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
@@ -125,12 +125,12 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     reserveToAttachTabFromRestoredInfo.waiting = null;
     const tasks = reserveToAttachTabFromRestoredInfo.tasks.slice(0);
     reserveToAttachTabFromRestoredInfo.tasks = [];
-    const uniqueIds = await Promise.all(tasks.map(task => task.tab.uniqueId));
+    const uniqueIds = tasks.map(task => task.tab.$TST.uniqueId);
     const bulk = tasks.length > 1;
     await Promise.all(uniqueIds.map((uniqueId, index) => {
       const task = tasks[index];
       return attachTabFromRestoredInfo(task.tab, Object.assign({}, task.options, {
-        uniqueId: uniqueId,
+        uniqueId,
         bulk
       }));
     }));
@@ -154,23 +154,18 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     window: tab.apiTab.windowId
   }).catch(_error => {});
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
-  await Promise.all([
-    (async () => {
-      uniqueId = options.uniqueId || await tab.uniqueId;
-    })(),
-    (async () => {
-      [insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
-        Tabs.getPermanentStates(tab),
-        browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED) // for backward compatibility
-      ]);
-      ancestors = ancestors || [];
-      children  = children  || [];
-    })()
+  // eslint-disable-next-line prefer-const
+  [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
+    options.uniqueId || tab.$TST.uniqueId || tab.$TST.promisedUniqueId,
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_BEFORE),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_INSERT_AFTER),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_ANCESTORS),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_CHILDREN),
+    Tabs.getPermanentStates(tab),
+    browser.sessions.getTabValue(tab.apiTab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED) // for backward compatibility
   ]);
+  ancestors = ancestors || [];
+  children  = children  || [];
   log(`persistent references for ${tab.id} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
     ancestors: ancestors.join(', '),
@@ -188,19 +183,19 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   ancestors    = ancestors.map(Tabs.getTabByUniqueId);
   children     = children.map(Tabs.getTabByUniqueId);
   log(' => references: ', {
-    insertBefore: dumpTab(insertBefore),
-    insertAfter:  dumpTab(insertAfter),
-    ancestors:    ancestors.map(dumpTab).join(', '),
-    children:     children.map(dumpTab).join(', ')
+    insertBefore: insertBefore,
+    insertAfter:  insertAfter,
+    ancestors:    ancestors.map(tab => tab && tab.id).join(', '),
+    children:     children.map(tab => tab && tab.id).join(', ')
   });
   let attached = false;
   const active = Tabs.isActive(tab);
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
-    const done = Tree.attachTabTo(tab, ancestor, {
-      insertBefore,
-      insertAfter,
+    const done = Tree.attachTabTo(tab, ancestor.$TST.element, {
+      insertBefore: insertBefore && insertBefore.$TST.element,
+      insertAfter:  insertAfter && insertAfter.$TST.element,
       dontExpand:  !active,
       forceExpand: active,
       broadcast:   true
@@ -230,7 +225,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.apiTab.index,
-        fromIndex: Tabs.getTabIndex(Tabs.getLastTab(tab))
+        fromIndex: Tabs.getLastTab(tab.apiTab.windowId, { element: false }).index
       });
     }
   }
@@ -249,7 +244,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     for (const child of children) {
       if (!child)
         continue;
-      await Tree.attachTabTo(child, tab, {
+      await Tree.attachTabTo(child.$TST.element, tab, {
         dontExpand:  !Tabs.isActive(child),
         forceExpand: active,
         insertAt:    Constants.kINSERT_NEAREST,
@@ -273,12 +268,12 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 
 
 Tabs.onRestored.addListener(tab => {
-  log('onTabRestored ', dumpTab(tab), tab.apiTab);
-  reserveToAttachTabFromRestoredInfo(tab, {
+  log('onTabRestored ', tab.id);
+  reserveToAttachTabFromRestoredInfo(tab.$TST.element, {
     children: true
   });
   reserveToAttachTabFromRestoredInfo.promisedDone.then(() => {
-    Tree.fixupSubtreeCollapsedState(tab, {
+    Tree.fixupSubtreeCollapsedState(tab.$TST.element, {
       justNow:   true,
       broadcast: true
     });

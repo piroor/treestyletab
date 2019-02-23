@@ -139,9 +139,9 @@ export async function openURIsInTabs(uris, options = {}) {
       const startIndex = Tabs.calculateNewTabIndex(options);
       log('startIndex: ', startIndex);
       const container  = Tabs.getTabsContainer(options.windowId);
-      container.toBeOpenedTabsWithPositions += uris.length;
+      container.$TST.toBeOpenedTabsWithPositions += uris.length;
       if (options.isOrphan)
-        container.toBeOpenedOrphanTabs += uris.length;
+        container.$TST.toBeOpenedOrphanTabs += uris.length;
       await Promise.all(uris.map(async (uri, index) => {
         const params = {
           windowId: options.windowId,
@@ -174,7 +174,7 @@ export async function openURIsInTabs(uris, options = {}) {
         const promisedNewTabTracked = new Promise((resolve, _reject) => {
           const listener = (tab) => {
             Tabs.onCreating.removeListener(listener);
-            browser.tabs.get(tab.apiTab.id).then(resolve);
+            browser.tabs.get(tab.id).then(resolve);
           };
           Tabs.onCreating.addListener(listener);
         });
@@ -186,7 +186,7 @@ export async function openURIsInTabs(uris, options = {}) {
             tabId: apiTab.id
           })
         ]);
-        const tab = Tabs.getTabById(apiTab);
+        const tab = Tabs.getTabElementById(apiTab);
         log('created tab: ', tab);
         if (!tab)
           throw new Error('tab is already closed');
@@ -211,6 +211,6 @@ export async function openURIsInTabs(uris, options = {}) {
         return tab.opened;
       }));
     }
-  });
+  }, options.windowId);
 }
 

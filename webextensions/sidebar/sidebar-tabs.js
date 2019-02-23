@@ -169,7 +169,7 @@ function updateTooltip(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  tab.dataset.labelWithDescendants = Tabs.getLabelWithDescendants(tab);
+  tab.dataset.labelWithDescendants = getLabelWithDescendants(tab);
 
   if (configs.debug) {
     tab.dataset.label = `
@@ -182,35 +182,40 @@ restored = <%restored%>
 tabId = ${tab.apiTab.id}
 windowId = ${tab.apiTab.windowId}
 `.trim();
-    tab.setAttribute('title', tab.dataset.label);
-    tab.uniqueId.then(uniqueId => {
-      if (!Tabs.ensureLivingTab(tab))
-        return;
-      tab.setAttribute('title',
-                       tab.dataset.label = tab.dataset.label
-                         .replace(`<%${Constants.kPERSISTENT_ID}%>`, uniqueId.id)
-                         .replace(`<%originalId%>`, uniqueId.originalId)
-                         .replace(`<%originalTabId%>`, uniqueId.originalTabId)
-                         .replace(`<%duplicated%>`, !!uniqueId.duplicated)
-                         .replace(`<%restored%>`, !!uniqueId.restored));
-    });
+    Tabs.setAttribute(tab, 'title',
+                      tab.dataset.label = tab.dataset.label
+                        .replace(`<%${Constants.kPERSISTENT_ID}%>`, tab.$TST.uniqueId.id)
+                        .replace(`<%originalId%>`, tab.$TST.uniqueId.originalId)
+                        .replace(`<%originalTabId%>`, tab.$TST.uniqueId.originalTabId)
+                        .replace(`<%duplicated%>`, !!tab.$TST.uniqueId.duplicated)
+                        .replace(`<%restored%>`, !!tab.$TST.uniqueId.restored));
     return;
   }
 
   if (configs.showCollapsedDescendantsByTooltip &&
       Tabs.isSubtreeCollapsed(tab) &&
       Tabs.hasChildTabs(tab)) {
-    tab.setAttribute('title', tab.dataset.labelWithDescendants);
+    Tabs.setAttribute(tab, 'title', tab.dataset.labelWithDescendants);
     return;
   }
 
   const label = Tabs.getTabLabel(tab);
   if (Tabs.isPinned(tab) || label.classList.contains('overflow')) {
-    tab.setAttribute('title', tab.dataset.label);
+    Tabs.setAttribute(tab, 'title', tab.dataset.label);
   }
   else {
-    tab.removeAttribute('title');
+    Tabs.removeAttribute(tab, 'title');
   }
+}
+
+function getLabelWithDescendants(tab) {
+  const label = [`* ${tab.dataset.label}`];
+  for (const child of Tabs.getChildTabs(tab)) {
+    if (!child.dataset.labelWithDescendants)
+      child.dataset.labelWithDescendants = getLabelWithDescendants(child);
+    label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
+  }
+  return label.join('\n');
 }
 
 
@@ -226,14 +231,24 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  if (document.querySelector(`#tabbar ${Tabs.kSELECTOR_VISIBLE_TAB}.loading`))
+  const loadingTab = Tabs.query({
+    windowId: Tabs.getWindow(),
+    visible:  true,
+    status:   'loading'
+  });
+  if (loadingTab)
     document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
   else
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
 }
 
 async function synchronizeThrobberAnimation() {
-  const toBeSynchronizedTabs = document.querySelectorAll(`${Tabs.kSELECTOR_VISIBLE_TAB}.${Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED}`);
+  const toBeSynchronizedTabs = Tabs.queryAll({
+    windowId: Tabs.getWindow(),
+    visible:  true,
+    states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true],
+    element:  true
+  });
   if (toBeSynchronizedTabs.length == 0)
     return;
 
@@ -274,7 +289,7 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
-  for (const tab of Tabs.getAllTabs().reverse()) {
+  for (const tab of Tabs.getAllTabs(Tabs.getWindow()).reverse()) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
@@ -327,13 +342,25 @@ reserveToSyncTabsOrder.retryCount = 0;
 async function syncTabsOrder() {
   log('syncTabsOrder');
   const windowId  = Tabs.getWindow();
-  const apiTabIds = await browser.runtime.sendMessage({
+  const internalOrder = await browser.runtime.sendMessage({
     type: Constants.kCOMMAND_PULL_TABS_ORDER,
     windowId
   });
-  log('syncTabsOrder: apiTabIds = ', apiTabIds);
+
+  log('syncTabsOrder: internalOrder = ', internalOrder);
+
+  const trackedWindow = Tabs.trackedWindows.get(windowId);
+  if (internalOrder.slice(0).sort().join(',') != trackedWindow.order.sort().join(',')) {
+    if (reserveToSyncTabsOrder.retryCount > 10)
+      throw new Error(`fatal error: mismatched tabs in the window ${windowId}`);
+    log('syncTabsOrder: retry');
+    reserveToSyncTabsOrder.retryCount++;
+    return reserveToSyncTabsOrder();
+  }
+  reserveToSyncTabsOrder.retryCount = 0;
+
   const container = Tabs.getTabsContainer();
-  if (container.childNodes.length != apiTabIds.length) {
+  if (container.childNodes.length != internalOrder.length) {
     if (reserveToSyncTabsOrder.retryCount > 10)
       throw new Error(`fatal error: mismatched number of tabs in the window ${windowId}`);
     log('syncTabsOrder: retry');
@@ -342,11 +369,15 @@ async function syncTabsOrder() {
   }
   reserveToSyncTabsOrder.retryCount = 0;
 
+  trackedWindow.order = internalOrder;
+  let count = 0;
+  for (const tab of trackedWindow.getOrderedTabs()) {
+    tab.index = count++;
+  }
 
-  const currentApiTabIds = Array.from(container.childNodes, tab => tab.apiTab.id);
-  const DOMElementsOperations = (new SequenceMatcher(currentApiTabIds, apiTabIds)).operations();
-  const movedTabs = new Set();
-  const needToBeReindexedTabs = new Set();
+  const elementsOrder = Array.from(container.childNodes, tab => tab.apiTab.id);
+  const DOMElementsOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
+  log(`syncTabsOrder: rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(',') });
   for (const operation of DOMElementsOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
     log('syncTabsOrder: operation ', { tag, fromStart, fromEnd, toStart, toEnd });
@@ -357,54 +388,17 @@ async function syncTabsOrder() {
 
       case 'insert':
       case 'replace':
-        const moveTabIds = apiTabIds.slice(toStart, toEnd);
-        const referenceId = currentApiTabIds[fromStart] || null;
-        log(`syncTabsOrder: move ${moveTabIds.join(',')} before ${referenceId}`);
-        const referenceTab = referenceId && Tabs.getTabById(referenceId);
-        let lastNextOfMovedTab = null;
-        for (let i = 0, maxi = moveTabIds.length; i < maxi; i++) {
-          const id = moveTabIds[i];
-          const tab = Tabs.getTabById(id);
-          if (!tab)
-            continue;
-          if (i == maxi - 1)
-            lastNextOfMovedTab = Tabs.getNextTab(tab);
-          container.insertBefore(tab, referenceTab);
-          movedTabs.add(tab);
-          needToBeReindexedTabs.add(tab);
+        const moveTabIds = internalOrder.slice(toStart, toEnd);
+        const referenceTab = fromStart < elementsOrder.length ? Tabs.getTabElementById(elementsOrder[fromStart]) : null;
+        log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
+        for (const id of moveTabIds) {
+          const tab = Tabs.getTabElementById(id);
+          if (tab)
+            tab.parentNode.insertBefore(tab, referenceTab);
         }
-        if (lastNextOfMovedTab)
-          needToBeReindexedTabs.add(lastNextOfMovedTab);
         break;
     }
   }
-
-  //const currentIndices = Array.from(container.childNodes, tab => tab.apiTab.index);
-  //const reindexOperations = (new SequenceMatcher(currentIndices, apiTabIds.map((_id, index) => index))).operations();
-  //log('syncTabsOrder: reindexOperations ', reindexOperations);
-
-  const reindexTabs = Tabs.sort(Array.from(needToBeReindexedTabs));
-  const first = reindexTabs[0];
-  const last = reindexTabs[reindexTabs.length - 1];
-  const reindexedTabs = new Set();
-  const allTabs = container.childNodes;
-  if (reindexTabs.length > 0) {
-    log('syncTabsOrder: reindex between ', { first: first.apiTab.id, last: last.apiTab.id });
-    const lastCorrectIndexTab = Tabs.getPreviousTab(first);
-    for (let i = lastCorrectIndexTab ? lastCorrectIndexTab.apiTab.index + 1 : 0, maxi = allTabs.length; i < maxi; i++) {
-      const tab = allTabs[i];
-      tab.apiTab.index = i;
-      reindexedTabs.add(tab);
-      if (tab == last)
-        break;
-    }
-  }
-
-  if (movedTabs.size > 0 || reindexedTabs.size > 0)
-    log('Tab nodes rearranged and reindexed by syncTabsOrder:\n'+(!configs.debug ? '' :
-      Array.from(allTabs)
-        .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab) ? '[MOVED]' : '')+(reindexedTabs.has(tab) ? '[REINDEXED]' : '')+' '+tab.apiTab.title)
-        .join('\n')));
 }
 
 
@@ -484,7 +478,7 @@ Tabs.onTabElementMoved.addListener((tab, info) => {
 
 
 Tabs.onRestored.addListener(tab => {
-  Tree.fixupSubtreeCollapsedState(tab, {
+  Tree.fixupSubtreeCollapsedState(tab.$TST.element, {
     justNow:  true,
     inRemote: true
   });
@@ -499,9 +493,9 @@ Tabs.onRemoved.addListener((tab, _info) => {
       !configs.animation)
     return;
 
-  return new Promise(async (resolve, _aReject) => {
-    const tabRect = tab.getBoundingClientRect();
-    tab.style.marginLeft = `${tabRect.width}px`;
+  return new Promise(async (resolve, _reject) => {
+    const tabRect = tab.$TST.element.getBoundingClientRect();
+    tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
     await wait(configs.animation ? configs.collapseDuration : 0);
     resolve();
   });
@@ -515,8 +509,8 @@ Tabs.onMoving.addListener((tab, _info) => {
       Tabs.isPinned(tab) ||
       Tabs.isOpening(tab))
     return;
-  mTabWasVisibleBeforeMoving.set(tab, !Tabs.isCollapsed(tab));
-  Tree.collapseExpandTab(tab, {
+  mTabWasVisibleBeforeMoving.set(tab.$TST.element, !Tabs.isCollapsed(tab));
+  Tree.collapseExpandTab(tab.$TST.element, {
     collapsed: true,
     justNow:   true
   });
@@ -524,16 +518,16 @@ Tabs.onMoving.addListener((tab, _info) => {
 
 Tabs.onMoved.addListener(async (tab, _info) => {
   if (mInitialized)
-    reserveToUpdateTooltip(Tabs.getParentTab(tab));
+    reserveToUpdateTooltip(Tabs.getParentTab(tab.$TST.element));
 
-  const wasVisible = mTabWasVisibleBeforeMoving.get(tab);
-  mTabWasVisibleBeforeMoving.delete(tab);
+  const wasVisible = mTabWasVisibleBeforeMoving.get(tab.$TST.element);
+  mTabWasVisibleBeforeMoving.delete(tab.$TST.element);
 
   if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
     return;
 
   if (configs.animation && wasVisible) {
-    Tree.collapseExpandTab(tab, {
+    Tree.collapseExpandTab(tab.$TST.element, {
       collapsed: false
     });
     await wait(configs.collapseDuration);
@@ -542,7 +536,7 @@ Tabs.onMoved.addListener(async (tab, _info) => {
 });
 
 Tabs.onStateChanged.addListener(tab => {
-  if (tab.apiTab.status == 'loading')
+  if (tab.status == 'loading')
     Tabs.addState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
@@ -576,26 +570,26 @@ Tabs.onCollapsedStateChanged.addListener((tab, info) => {
 
 let mReservedUpdateActiveTab;
 Tabs.onUpdated.addListener((tab, info) => {
-  reserveToUpdateSoundButtonTooltip(tab);
-  reserveToUpdateTooltip(tab);
+  reserveToUpdateSoundButtonTooltip(tab.$TST.element);
+  reserveToUpdateTooltip(tab.$TST.element);
 
   if (!('highlighted' in info))
     return;
 
-  reserveToUpdateCloseboxTooltip(tab);
+  reserveToUpdateCloseboxTooltip(tab.$TST.element);
 
   for (const ancestor of Tabs.getAncestorTabs(tab)) {
-    updateDescendantsHighlighted(ancestor);
+    updateDescendantsHighlighted(ancestor.$TST.element);
   }
 
   if (mReservedUpdateActiveTab)
     clearTimeout(mReservedUpdateActiveTab);
   mReservedUpdateActiveTab = setTimeout(() => {
     mReservedUpdateActiveTab = null;
-    const activeTab = Tabs.getActiveTab();
+    const activeTab = Tabs.getActiveTab(tab.windowId);
     if (activeTab) {
-      reserveToUpdateSoundButtonTooltip(activeTab);
-      reserveToUpdateCloseboxTooltip(activeTab);
+      reserveToUpdateSoundButtonTooltip(activeTab.$TST.element);
+      reserveToUpdateCloseboxTooltip(activeTab.$TST.element);
     }
   }, 50);
 });
@@ -606,7 +600,7 @@ Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(tab))
     return;
-  reserveToUpdateTooltip(Tabs.getParentTab(tab));
+  reserveToUpdateTooltip(Tabs.getParentTab(tab.$TST.element));
 });
 
 Tabs.onGroupTabDetected.addListener(tab => {
@@ -667,7 +661,7 @@ configs.$addObserver(aChangedKey => {
   switch (aChangedKey) {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
-        for (const tab of Tabs.getAllTabs()) {
+        for (const tab of Tabs.getAllTabs(Tabs.getWindow())) {
           reserveToUpdateTooltip(tab);
         }
       break;

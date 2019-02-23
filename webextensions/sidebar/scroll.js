@@ -221,7 +221,7 @@ export function scrollToNewTab(tab, options = {}) {
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
-    const current = Tabs.getActiveTab();
+    const current = Tabs.getActiveTab(Tabs.getWindow(), { element: true });
     scrollToTab(tab, Object.assign({}, options, {
       anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
@@ -332,10 +332,40 @@ export async function scrollToTab(tab, options = {}) {
 scrollToTab.lastTargetId = null;
 
 function getOffsetForAnimatingTab(tab) {
-  const allExpanding        = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
-  const followingExpanding  = document.querySelectorAll(`#${tab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}:not(.${Constants.kTAB_STATE_COLLAPSED}).${Constants.kTAB_STATE_EXPANDING}`);
-  const allCollapsing       = document.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
-  const followingCollapsing = document.querySelectorAll(`#${tab.id} ~ ${Tabs.kSELECTOR_NORMAL_TAB}.${Constants.kTAB_STATE_COLLAPSED}.${Constants.kTAB_STATE_COLLAPSING}`);
+  const allExpanding = Tabs.queryAll({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED, false,
+      Constants.kTAB_STATE_EXPANDING, true
+    ]
+  });
+  const followingExpanding = Tabs.queryAll({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    index:    (value => tab.apiTab.index < value),
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED, false,
+      Constants.kTAB_STATE_EXPANDING, true
+    ]
+  });
+  const allCollapsing = Tabs.queryAll({
+    windowId: tab.apiTab.windowId,
+    normal:   true,
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED,  true,
+      Constants.kTAB_STATE_COLLAPSING, true
+    ]
+  });
+  const followingCollapsing = Tabs.queryAll({
+    windowId: tab.apiTab.windowId,
+    index:    (value => tab.apiTab.index < value),
+    normal:   true,
+    states:   [
+      Constants.kTAB_STATE_COLLAPSED,  true,
+      Constants.kTAB_STATE_COLLAPSING, true
+    ]
+  });
   const numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
   return numExpandingTabs * Size.getTabHeight();
 }
@@ -441,24 +471,24 @@ Tabs.onCreated.addListener((tab, _info) => {
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
       const active = Tabs.isActive(tab);
-      Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
+      Tree.collapseExpandTab(tab.$TST.element, { // this is called to scroll to the tab by the "last" parameter
         collapsed: false,
-        anchor:    Tabs.getActiveTab(),
+        anchor:    Tabs.getActiveTab(tab.windowId, { element: true }),
         last:      true
       });
       if (!active)
-        notifyOutOfViewTab(tab);
+        notifyOutOfViewTab(tab.$TST.element);
     });
   }
   else {
     if (Tabs.isActive(tab))
-      scrollToNewTab(tab);
+      scrollToNewTab(tab.$TST.element);
     else
-      notifyOutOfViewTab(tab);
+      notifyOutOfViewTab(tab.$TST.element);
   }
 });
 
-Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab); });
+Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab.$TST.element); });
 
 Tabs.onUnpinned.addListener(tab => { scrollToTab(tab); });
 
@@ -475,8 +505,8 @@ function onMessage(message, _sender, _respond) {
           message.tab,
           message.parent
         ]);
-        const tab = Tabs.getTabById(message.tab);
-        if (tab && Tabs.isActive(Tabs.getTabById(message.parent)))
+        const tab = Tabs.getTabElementById(message.tab);
+        if (tab && Tabs.isActive(Tabs.getTabElementById(message.parent)))
           scrollToNewTab(tab);
       })();
 
@@ -524,7 +554,7 @@ function onMessageExternal(message, _aSender) {
         const currentWindow = Tabs.getWindow();
         if ('tab' in message) {
           await Tabs.waitUntilTabsAreCreated(message.tab);
-          params.tab = Tabs.getTabById(message.tab);
+          params.tab = Tabs.getTabElementById(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;
         }

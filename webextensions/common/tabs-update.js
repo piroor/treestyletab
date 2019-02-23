@@ -54,7 +54,7 @@ function log(...args) {
 
 export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState) {
-    tab.setAttribute(Constants.kCURRENT_URI, newState.url);
+    Tabs.setAttribute(tab, Constants.kCURRENT_URI, newState.url);
   }
 
   if ('url' in newState &&
@@ -122,7 +122,7 @@ export function updateTab(tab, newState = {}, options = {}) {
           Tabs.addState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
-    Tabs.onStateChanged.dispatch(tab);
+    Tabs.onStateChanged.dispatch(tab.apiTab);
   }
 
   if ((options.forceApply ||
@@ -130,7 +130,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       newState.pinned != Tabs.hasState(tab, Constants.kTAB_STATE_PINNED)) {
     if (newState.pinned) {
       Tabs.addState(tab, Constants.kTAB_STATE_PINNED);
-      tab.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
+      Tabs.removeAttribute(tab, Constants.kLEVEL); // don't indent pinned tabs!
       Tabs.onPinned.dispatch(tab);
     }
     else {
@@ -234,13 +234,25 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   //const startAt = Date.now();
 
-  const idSelectors = [];
-  for (const id of highlightInfo.tabIds) {
-    idSelectors.push(`#tab-${highlightInfo.windowId}-${id}`);
-  }
-  const unhighlightedTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_HIGHLIGHTED}:not(:-moz-any(${idSelectors.join(', ')}))`);
-  const highlightedTabs = container.querySelectorAll(`:-moz-any(${idSelectors.join(',')}):not(.${Constants.kTAB_STATE_HIGHLIGHTED})`);
-  log('updateTabsHighlighted ', { updateTabsHighlighted, highlightedTabs, unhighlightedTabs});
+  const tabIds = highlightInfo.tabIds; // new Set(highlightInfo.tabIds);
+  const unhighlightedTabs = Tabs.queryAll({
+    windowId:    highlightInfo.windowId,
+    '!id':       tabIds,
+    //id:          new RegExp(`^(?!(${highlightInfo.tabIds.join('|')})$)`),
+    highlighted: true,
+    element:     true
+  });
+  const highlightedTabs = Tabs.queryAll({
+    windowId:    highlightInfo.windowId,
+    id:          tabIds,
+    //id:          new RegExp(`^(${highlightInfo.tabIds.join('|')})$`),
+    highlighted: false,
+    element:     true
+  });
+
+  //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
+
+  //log('updateTabsHighlighted ', { highlightedTabs, unhighlightedTabs});
   for (const tab of unhighlightedTabs) {
     updateTabHighlighted(tab, false);
   }
@@ -250,27 +262,6 @@ export async function updateTabsHighlighted(highlightInfo) {
   if (unhighlightedTabs.length > 0 ||
       highlightedTabs.length > 0)
     updateMultipleHighlighted(highlightInfo.windowId);
-
-  /*
-  let changed = false;
-  const highlightedTabs   = [];
-  const unhighlightedTabs = [];
-  for (const tab of container.children) {
-    if (highlightInfo.tabIds.includes(tab.apiTab.id))
-      highlightedTabs.push(tab);
-    else
-      unhighlightedTabs.push(tab);
-  }
-  // unhighlight all at first.
-  for (const tab of unhighlightedTabs.concat(highlightedTabs)) {
-    const highlighted = highlightedTabs.includes(tab);
-    changed = updateTabHighlighted(tab, highlighted) || changed;
-  }
-  if (changed)
-    updateMultipleHighlighted(highlightInfo.windowId);
-  */
-
-  //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
 }
 async function updateTabHighlighted(tab, highlighted) {
   log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
@@ -281,10 +272,10 @@ async function updateTabHighlighted(tab, highlighted) {
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
   tab.apiTab.highlighted = highlighted;
-  const inheritHighlighted = !tab.parentNode.tabsToBeHighlightedAlone.has(tab.apiTab.id);
+  const inheritHighlighted = !tab.parentNode.$TST.tabsToBeHighlightedAlone.has(tab.apiTab.id);
   if (!inheritHighlighted)
-    tab.parentNode.tabsToBeHighlightedAlone.delete(tab.apiTab.id);
-  Tabs.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
+    tab.parentNode.$TST.tabsToBeHighlightedAlone.delete(tab.apiTab.id);
+  Tabs.onUpdated.dispatch(tab.apiTab, { highlighted }, { inheritHighlighted });
   return true;
 }
 
@@ -292,7 +283,12 @@ function updateMultipleHighlighted(hint) {
   const container = Tabs.getTabsContainer(hint);
   if (!container)
     return;
-  if (container.querySelector(`${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED} ~ ${Tabs.kSELECTOR_LIVE_TAB}.${Constants.kTAB_STATE_HIGHLIGHTED}`))
+  const highlightedTabs = Tabs.queryAll({
+    windowId:    container.windowId,
+    highlighted: true,
+    living:      true
+  });
+  if (highlightedTabs.length > 1)
     container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
   else
     container.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);

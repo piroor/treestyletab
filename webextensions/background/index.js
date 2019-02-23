@@ -10,6 +10,7 @@ import {
 } from '/common/common.js';
 
 import * as MetricsData from '/common/metrics-data.js';
+import * as Tabs from '/common/tabs.js';
 
 import * as Background from './background.js';
 import './handle-new-tabs.js';
@@ -40,3 +41,4 @@ window.dumpLogs = () => {
 // for old debugging method
 window.log = log;
 window.gMetricsData = MetricsData;
+window.Tabs = Tabs;

@@ -35,18 +35,18 @@ export async function activateTab(tab, options = {}) {
     return;
   }
   const container = tab.parentNode;
-  container.internalFocusCount++;
+  container.$TST.internalFocusCount++;
   if (options.silently)
-    container.internalSilentlyFocusCount++;
+    container.$TST.internalSilentlyFocusCount++;
   const onError = (e) => {
-    container.internalFocusCount--;
+    container.$TST.internalFocusCount--;
     if (options.silently)
-      container.internalSilentlyFocusCount--;
+      container.$TST.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
   if (configs.supportTabsMultiselect) {
     let tabs = [tab.apiTab.index];
-    const highlightedTabs = Tabs.getHighlightedTabs(tab);
+    const highlightedTabs = Tabs.getHighlightedTabs(tab.apiTab.windowId);
     if (Tabs.isMultihighlighted(tab) &&
         options.keepMultiselection &&
         highlightedTabs.includes(tab)) {
@@ -55,7 +55,7 @@ export async function activateTab(tab, options = {}) {
       tabs = tabs.concat(otherTabs.map(tab => tab.apiTab.index));
     }
     else {
-      tab.parentNode.tabsToBeHighlightedAlone.add(tab.apiTab.id);
+      tab.parentNode.$TST.tabsToBeHighlightedAlone.add(tab.apiTab.id);
     }
     return browser.tabs.highlight({
       windowId: tab.apiTab.windowId,
@@ -92,7 +92,7 @@ export function removeTabs(tabs, options = {}) {
   }
   const container = tabs[0].parentNode;
   for (const tab of tabs) {
-    container.internalClosingTabs.add(tab.apiTab.id);
+    container.$TST.internalClosingTabs.add(tab.apiTab.id);
   }
   if (options.broadcasted)
     return;
@@ -100,26 +100,22 @@ export function removeTabs(tabs, options = {}) {
 }
 
 export function setTabActive(tab) {
-  tab = Tabs.ensureLivingTab(tab);
-  if (!tab)
-    return [];
-  const oldActiveTabs = clearOldActiveStateInWindow(tab.apiTab.windowId);
+  const oldActiveTabs = clearOldActiveStateInWindow(tab.windowId);
   Tabs.addState(tab, Constants.kTAB_STATE_ACTIVE);
-  tab.apiTab.active = true;
+  tab.active = true;
   Tabs.removeState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
   Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
   return oldActiveTabs;
 }
 
 export function clearOldActiveStateInWindow(windowId) {
-  const container = Tabs.getTabsContainer(windowId);
-  if (!container)
-    return [];
-  const oldTabs = container.querySelectorAll(`.${Constants.kTAB_STATE_ACTIVE}`);
+  const oldTabs = Tabs.queryAll({
+    windowId,
+    active:  true
+  });
   for (const oldTab of oldTabs) {
     Tabs.removeState(oldTab, Constants.kTAB_STATE_ACTIVE);
-    if (oldTab.apiTab) // this function can be applied for cached tab.
-      oldTab.apiTab.active = false;
+    oldTab.active = false;
   }
   return oldTabs;
 }

@@ -29,7 +29,7 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
     collapsedDescendants
   });
   for (const descendant of collapsedDescendants) {
-    browser.tabs.update(descendant.apiTab.id, {
+    browser.tabs.update(descendant.id, {
       highlighted: info.highlighted,
       active:      Tabs.isActive(descendant)
     });
@@ -60,8 +60,8 @@ const mIsInSelectionSession   = new WeakMap();
 
 export async function updateSelectionByTabClick(tab, event) {
   const ctrlKeyPressed = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
-  const activeTab = Tabs.getActiveTab(tab);
-  const highlightedTabIds = new Set(Tabs.getHighlightedTabs(tab).map(tab => tab.apiTab.id));
+  const activeTab = Tabs.getActiveTab(tab.apiTab.windowId, { element: true });
+  const highlightedTabIds = new Set(Tabs.getHighlightedTabs(tab.apiTab.windowId).map(tab => tab.apiTab.id));
   const inSelectionSession = mIsInSelectionSession.get(tab.parentNode);
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
@@ -73,7 +73,7 @@ export async function updateSelectionByTabClick(tab, event) {
 
     try {
       if (!ctrlKeyPressed) {
-        const alreadySelectedTabs = Tabs.getSelectedTabs(tab);
+        const alreadySelectedTabs = Tabs.getSelectedTabs(tab.apiTab.windowId);
         log('clear old selection by shift-click: ', alreadySelectedTabs);
         for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.includes(alreadySelectedTab))
@@ -101,7 +101,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(apiTabId => apiTabId != activeTab.apiTab.id)
-        .map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index);
+        .map(apiTabId => Tabs.getTabElementById(apiTabId).apiTab.index);
       if (highlightedTabIds.has(activeTab.apiTab.id))
         indices.unshift(activeTab.apiTab.index);
       browser.tabs.highlight({
@@ -173,7 +173,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(apiTabId => apiTabId != activeTab.apiTab.id)
-        .map(apiTabId => Tabs.getTabById(apiTabId).apiTab.index);
+        .map(apiTabId => Tabs.getTabElementById(apiTabId).apiTab.index);
       if (highlightedTabIds.has(activeTab.apiTab.id))
         indices.unshift(activeTab.apiTab.index);
       browser.tabs.highlight({

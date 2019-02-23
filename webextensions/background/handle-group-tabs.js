@@ -73,10 +73,10 @@ export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
-    if (tab.reservedCleanupNeedlessGroupTab)
-      clearTimeout(tab.reservedCleanupNeedlessGroupTab);
-    tab.reservedCleanupNeedlessGroupTab = setTimeout(() => {
-      delete tab.reservedCleanupNeedlessGroupTab;
+    if (tab.apiTab.$TST.reservedCleanupNeedlessGroupTab)
+      clearTimeout(tab.apiTab.$TST.reservedCleanupNeedlessGroupTab);
+    tab.apiTab.$TST.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+      delete tab.apiTab.$TST.reservedCleanupNeedlessGroupTab;
       cleanupNeedlssGroupTab(tab);
     }, 100);
   }
@@ -163,8 +163,8 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   }
 }
 
-Tabs.onRemoved.addListener(async (tab, _closeInfo = {}) => {
-  const ancestors = Tabs.getAncestorTabs(tab);
+Tabs.onRemoved.addListener((tab, _closeInfo = {}) => {
+  const ancestors = Tabs.getAncestorTabs(tab, { element: true });
   wait(0).then(() => {
     reserveToCleanupNeedlessGroupTab(ancestors);
   });
@@ -174,12 +174,10 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   if ('url' in changeInfo ||
       'previousUrl' in changeInfo ||
       'state' in changeInfo) {
-    const apiTab = tab && tab.apiTab && tab.apiTab;
-    const status = changeInfo.status || apiTab && apiTab.status;
+    const status = changeInfo.status || tab && tab.status;
     const url = changeInfo.url ? changeInfo.url :
-      status == 'complete' && apiTab ? apiTab.url : '';
+      status == 'complete' && tab ? tab.url : '';
     if (tab &&
-        apiTab &&
         status == 'complete') {
       if (url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
         Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
@@ -194,11 +192,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
           if (states.includes(Constants.kTAB_STATE_GROUP_TAB) &&
               pathPart.split('?')[0] == Constants.kGROUP_TAB_URI.replace(PREFIX_REMOVER, '')) {
             const parameters = pathPart.replace(/^[^\?]+\?/, '');
-            const oldUrl = tab.apiTab.url;
+            const oldUrl = tab.url;
             await wait(100); // for safety
-            if (tab.apiTab.url != oldUrl)
+            if (tab.url != oldUrl)
               return;
-            browser.tabs.update(tab.apiTab.id, {
+            browser.tabs.update(tab.id, {
               url: `${Constants.kGROUP_TAB_URI}?${parameters}`
             }).catch(ApiTabs.handleMissingTabError);
             Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB);
@@ -213,11 +211,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     else if (changeInfo.url == 'about:blank' &&
              changeInfo.previousUrl &&
              changeInfo.previousUrl.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-      const oldUrl = apiTab.url;
+      const oldUrl = tab.url;
       wait(100).then(() => { // redirect with delay to avoid infinite loop of recursive redirections.
-        if (tab.apiTab.url != oldUrl)
+        if (tab.url != oldUrl)
           return;
-        browser.tabs.update(tab.apiTab.id, {
+        browser.tabs.update(tab.id, {
           url: changeInfo.previousUrl
         }).catch(ApiTabs.handleMissingTabError);
         Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
@@ -227,11 +225,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     if (changeInfo.status ||
         changeInfo.url ||
         url.indexOf(Constants.kGROUP_TAB_URI) == 0)
-      tryInitGroupTab(tab);
+      tryInitGroupTab(tab.$TST.element);
   }
 
   if ('title' in changeInfo) {
-    const group = Tabs.getGroupTabForOpener(tab);
+    const group = Tabs.getGroupTabForOpener(tab.$TST.element);
     if (group)
       reserveToUpdateRelatedGroupTabs(group, ['title', 'tree']);
   }
@@ -246,7 +244,7 @@ Tabs.onLabelUpdated.addListener(tab => {
 });
 
 Tabs.onActivating.addListener((tab, _info = {}) => {
-  tryInitGroupTab(tab);
+  tryInitGroupTab(tab.$TST.element);
 });
 
 Tree.onAttached.addListener((tab, _info = {}) => {
@@ -270,31 +268,33 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
 // auto-grouping of tabs
 // ====================================================================
 
-Tabs.onBeforeCreate.addListener(async (apiTab, info) => {
-  const openerId = apiTab.openerTabId;
-  const openerApiTab = openerId && (await browser.tabs.get(openerId));
-  const container = Tabs.getTabsContainer(apiTab.windowId);
+Tabs.onBeforeCreate.addListener(async (tab, info) => {
+  const openerId  = tab.openerTabId;
+  const openerTab = openerId && (await browser.tabs.get(openerId));
+  const window    = Tabs.trackedWindows.get(tab.windowId);
+  if (!window)
+    return;
   if ((configs.autoGroupNewTabsFromPinned &&
-       openerApiTab &&
-       openerApiTab.pinned &&
-       openerApiTab.windowId == apiTab.windowId) ||
+       openerTab &&
+       openerTab.pinned &&
+       openerTab.windowId == tab.windowId) ||
       (configs.autoGroupNewTabs &&
-       !openerApiTab &&
+       !openerTab &&
        !info.maybeOrphan)) {
-    if (container.preventAutoGroupNewTabsUntil > Date.now()) {
-      container.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
+    if (window.preventAutoGroupNewTabsUntil > Date.now()) {
+      window.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-      container.openedNewTabs.push(apiTab.id);
-      container.openedNewTabsOpeners.push(openerApiTab && openerApiTab.id);
+      window.openedNewTabs.push(tab.id);
+      window.openedNewTabsOpeners.push(openerTab && openerTab.id);
     }
   }
-  if (container.openedNewTabsTimeout)
-    clearTimeout(container.openedNewTabsTimeout);
-  container.openedNewTabsTimeout = setTimeout(
+  if (window.openedNewTabsTimeout)
+    clearTimeout(window.openedNewTabsTimeout);
+  window.openedNewTabsTimeout = setTimeout(
     onNewTabsTimeout,
     configs.autoGroupNewTabsTimeout,
-    container
+    window.element
   );
 });
 
@@ -306,8 +306,8 @@ async function onNewTabsTimeout(container) {
   if (Tabs.hasMovingTab(container.windowId))
     await Tabs.waitUntilAllTabsAreMoved(container.windowId);
 
-  const tabIds       = container.openedNewTabs;
-  const tabOpenerIds = container.openedNewTabsOpeners;
+  const tabIds       = container.$TST.openedNewTabs;
+  const tabOpenerIds = container.$TST.openedNewTabsOpeners;
   log('onNewTabsTimeout ', tabIds);
   let tabReferences = tabIds.map((id, index) => {
     return {
@@ -316,8 +316,8 @@ async function onNewTabsTimeout(container) {
     };
   });
 
-  container.openedNewTabs        = [];
-  container.openedNewTabsOpeners = [];
+  container.$TST.openedNewTabs        = [];
+  container.$TST.openedNewTabsOpeners = [];
 
   tabReferences = tabReferences.filter(tabReference => tabReference.id != '');
   if (tabReferences.length == 0 ||
@@ -341,17 +341,17 @@ async function tryGroupNewTabs() {
   try {
     // extract only pure new tabs
     let tabs = tabReferences.map(tabReference => {
-      const tab = Tabs.getTabById(tabReference.id);
+      const tab = Tabs.getTabElementById(tabReference.id);
       if (tabReference.openerTabId)
         tab.apiTab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       return tab;
     });
-    const uniqueIds = await Promise.all(tabs.map(tab => tab.uniqueId));
+    const uniqueIds = tabs.map(tab => tab.$TST.uniqueId);
     tabs = tabs.filter((id, index) => {
       const uniqueId = uniqueIds[index];
       return !uniqueId.duplicated && !uniqueId.restored;
     });
-    tabs.sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
+    tabs.sort((a, b) => a.apiTab.index - b.apiTab.index);
 
     let newRootTabs = Tabs.collectRootTabs(tabs)
       .filter(tab => !Tabs.isGroupTab(tab));
@@ -393,7 +393,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // Second, collect tabs opened from pinned openers including existing tabs
   // (which were left ungrouped in previous process).
   const openerOf = {};
-  const unifiedRootTabs = Tabs.getAllTabs(rootTabs[0]).filter(tab => {
+  const unifiedRootTabs = Tabs.getAllTabs(rootTabs[0].apiTab.windowId).filter(tab => {
     if (Tabs.getParentTab(tab) ||
         tab.dataset.alreadyGroupedForPinnedOpener)
       return false;
@@ -406,7 +406,8 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       childrenOfPinnedTabs[opener.id] = tabs.concat([tab]);
       return true;
     }
-    const opener = Tabs.getTabByUniqueId(tab.dataset.originalOpenerTabId);
+    let opener = Tabs.getTabByUniqueId(tab.dataset.originalOpenerTabId);
+    opener = opener && opener.$TST.element;
     if (!Tabs.isPinned(opener))
       return false;
     // existing and not yet grouped tab
@@ -427,14 +428,22 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // Move newly opened tabs to expected position before grouping!
   switch (configs.insertNewTabFromPinnedTabAt) {
     case Constants.kINSERT_FIRST:
-      const allPinnedTabs = Tabs.getPinnedTabs(rootTabs[0].parentNode);
+      const allPinnedTabs = Tabs.getPinnedTabs(rootTabs[0].apiTab.windowId);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
       for (const tab of unifiedRootTabs.slice(0).reverse()) {
         if (!pinnedOpeners.includes(openerOf[tab.id]) ||
             Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         // If there is not-yet grouped sibling, place next to it.
-        const siblings = tab.parentNode.querySelectorAll(`${Tabs.kSELECTOR_NORMAL_TAB}[data-original-opener-tab-id="${tab.dataset.originalOpenerTabId}"]:not([data-already-grouped-for-pinned-opener])`);
+        const siblings = Tabs.queryAll({
+          windowId:   tab.parentNode.windowId,
+          normal:     true,
+          attributes: [
+            'data-original-opener-tab-id', tab.dataset.originalOpenerTabId,
+            'data-already-grouped-for-pinned-opener', ''
+          ],
+          element:    true
+        });
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
         await Tree.moveTabSubtreeAfter(tab, Tabs.getLastDescendantTab(referenceTab) || referenceTab, {
           broadcast: true
@@ -445,7 +454,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       for (const tab of unifiedRootTabs) {
         if (Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
-        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.parentNode), {
+        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.apiTab.windowId), {
           broadcast: true
         });
       }
@@ -477,7 +486,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     }
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
-      child.dataset.alreadyGroupedForPinnedOpener = true;
+      Tabs.setAttribute(child, 'data-already-grouped-for-pinned-opener', true);
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
         insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tabs.getLastDescendantTab(parent),
