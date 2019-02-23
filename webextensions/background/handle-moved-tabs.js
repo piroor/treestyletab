@@ -129,16 +129,16 @@ Tabs.onMoved.addListener((tab, moveInfo = {}) => {
 });
 
 Commands.onMoveUp.addListener(async tab => {
-  await tryFixupTreeForInsertedTab(tab, {
-    toIndex:   tab.apiTab.index,
-    fromIndex: tab.apiTab.index + 1,
+  await tryFixupTreeForInsertedTab(tab.$TST.element, {
+    toIndex:   tab.index,
+    fromIndex: tab.index + 1,
   });
 });
 
 Commands.onMoveDown.addListener(async tab => {
-  await tryFixupTreeForInsertedTab(tab, {
-    toIndex:   tab.apiTab.index,
-    fromIndex: tab.apiTab.index - 1,
+  await tryFixupTreeForInsertedTab(tab.$TST.element, {
+    toIndex:   tab.index,
+    fromIndex: tab.index - 1,
   });
 });
 

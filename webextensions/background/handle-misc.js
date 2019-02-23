@@ -92,11 +92,11 @@ function onToolbarButtonClick(tab) {
 }
 
 async function onShortcutCommand(command) {
-  const activeTab = Tabs.getTabElementById((await browser.tabs.query({
+  const activeTab = Tabs.trackedTabs.get((await browser.tabs.query({
     active:        true,
     currentWindow: true
-  }))[0]);
-  const selectedTabs = Tabs.isMultiselected(activeTab) ? Tabs.getSelectedTabs(activeTab.apiTab.windowId) : [];
+  }))[0].id);
+  const selectedTabs = Tabs.isMultiselected(activeTab) ? Tabs.getSelectedTabs(activeTab.windowId, { element: false }) : [];
   log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
   switch (command) {
@@ -122,16 +122,16 @@ async function onShortcutCommand(command) {
       Commands.collapseTree(activeTab);
       return;
     case 'collapseAll':
-      Commands.collapseAll(activeTab.apiTab.windowId);
+      Commands.collapseAll(activeTab.windowId);
       return;
     case 'expandTree':
       Commands.expandTree(activeTab);
       return;
     case 'expandAll':
-      Commands.expandAll(activeTab.apiTab.windowId);
+      Commands.expandAll(activeTab.windowId);
       return;
     case 'bookmarkTree':
-      Commands.bookmarkTree(Tabs.trackedTabs.get(activeTab.apiTab.id));
+      Commands.bookmarkTree(activeTab);
       return;
 
     case 'newIndependentTab':
@@ -162,13 +162,13 @@ async function onShortcutCommand(command) {
     case 'newContainerTab':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
-        windowId: activeTab.apiTab.windowId
+        windowId: activeTab.windowId
       });
       return;
 
     case 'groupSelectedTabs':
       if (selectedTabs.length > 1)
-        TabsGroup.groupTabs(selectedTabs, { broadcast: true });
+        TabsGroup.groupTabs(selectedTabs.map(tab => tab.$TST.element), { broadcast: true });
       return;
 
     case 'indent':
@@ -194,18 +194,19 @@ async function onShortcutCommand(command) {
     case 'focusPrevious':
     case 'focusPreviousSilently': {
       const nextActive = Tabs.getPreviousVisibleTab(activeTab) ||
-        Tabs.getLastVisibleTab(activeTab.apiTab.windowId);
-      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
+        Tabs.getLastVisibleTab(activeTab.windowId, { element: false });
+      TabsInternalOperation.activateTab(nextActive.$TST.element, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
       const nextActive = Tabs.getNextVisibleTab(activeTab) ||
-        Tabs.getFirstVisibleTab(activeTab.apiTab.windowId);
-      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
+        Tabs.getFirstVisibleTab(activeTab.windowId, { element: false });
+      TabsInternalOperation.activateTab(nextActive.$TST.element, { silently: /Silently/.test(command) });
     }; return;
-    case 'focusParent':
-      TabsInternalOperation.activateTab(Tabs.getParentTab(activeTab));
-      return;
+    case 'focusParent': {
+      const parent = Tabs.getParentTab(activeTab);
+      TabsInternalOperation.activateTab(parent && parent.$TST.element);
+    }; return;
     case 'focusFirstChild':
       TabsInternalOperation.activateTab(Tabs.getFirstChildTab(activeTab));
       return;
@@ -213,21 +214,21 @@ async function onShortcutCommand(command) {
     case 'tabbarUp':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
+        windowId: activeTab.windowId,
         by:       'lineup'
       });
       return;
     case 'tabbarPageUp':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
+        windowId: activeTab.windowId,
         by:       'pageup'
       });
       return;
     case 'tabbarHome':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
+        windowId: activeTab.windowId,
         to:       'top'
       });
       return;
@@ -235,21 +236,21 @@ async function onShortcutCommand(command) {
     case 'tabbarDown':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
+        windowId: activeTab.windowId,
         by:       'linedown'
       });
       return;
     case 'tabbarPageDown':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
+        windowId: activeTab.windowId,
         by:       'pagedown'
       });
       return;
     case 'tabbarEnd':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
-        windowId: activeTab.apiTab.windowId,
+        windowId: activeTab.windowId,
         to:       'bottom'
       });
       return;
@@ -550,9 +551,9 @@ function onMessage(message, sender) {
         ]);
         log('perform tabs dragdrop requested: ', message);
         return Commands.performTabsDragDrop(Object.assign({}, message, {
-          attachTo:     Tabs.getTabElementById(message.attachTo),
-          insertBefore: Tabs.getTabElementById(message.insertBefore),
-          insertAfter:  Tabs.getTabElementById(message.insertAfter)
+          attachTo:     message.attachTo && Tabs.trackedTabs.get(message.attachTo),
+          insertBefore: message.insertBefore && Tabs.trackedTabs.get(message.insertBefore),
+          insertAfter:  message.insertAfter && Tabs.trackedTabs.get(message.insertAfter)
         }));
       })();
 
@@ -649,7 +650,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kDEMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.indent(tab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.indent(tab.apiTab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
@@ -657,35 +658,35 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kPROMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.outdent(tab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.outdent(tab.apiTab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_UP:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.moveUp(tab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.moveUp(tab.apiTab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_TO_START:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Commands.moveTabsToStart(tabs);
+        await Commands.moveTabsToStart(tabs.map(tab => tab.$TST.element));
         return true;
       })();
 
     case TSTAPI.kMOVE_DOWN:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.moveDown(tab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.moveDown(tab.apiTab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_TO_END:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Commands.moveTabsToEnd(tabs);
+        await Commands.moveTabsToEnd(tabs.map(tab => tab.apiTab));
         return true;
       })();
 
@@ -721,7 +722,7 @@ function onMessageExternal(message, sender) {
             break;
         }
         for (const tab of tabs) {
-          await Commands.duplicateTab(tab, {
+          await Commands.duplicateTab(tab.apiTab, {
             destinationWindowId: tab.apiTab.windowId,
             behavior,
             multiselected: false
@@ -740,7 +741,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const windowId = await Commands.openTabsInWindow(tabs, {
+        const windowId = await Commands.openTabsInWindow(tabs.map(tab => tab.apiTab), {
           multiselected: false
         });
         return windowId;
@@ -749,8 +750,8 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kREOPEN_IN_CONTAINER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const reopenedTabs = await Commands.reopenInContainer(tabs, message.containerId || 'firefox-default');
-        return TSTAPI.formatResult(reopenedTabs.map(tab => tab.apiTab), message);
+        const reopenedTabs = await Commands.reopenInContainer(tabs.map(tab => tab.apiTab), message.containerId || 'firefox-default');
+        return TSTAPI.formatResult(reopenedTabs, message);
       })();
 
     case TSTAPI.kGET_TREE_STRUCTURE:

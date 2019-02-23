@@ -519,8 +519,17 @@ function documentPositionComparator(a, b) {
 }
 
 export function sanitize(apiTab) {
-  apiTab = Object.assign({}, apiTab, { '$TST': null });
-  delete apiTab.$TST;
+  apiTab = Object.assign({}, apiTab, {
+    '$TST': Object.assign({}, apiTab.$TST, {
+      element:          null,
+      tab:              null,
+      promisedUniqueId: null,
+      destroy:          null,
+      parent:           null,
+      ancestors:        [],
+      children:         []
+    })
+  });
   return apiTab;
 }
 

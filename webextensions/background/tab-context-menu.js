@@ -352,9 +352,10 @@ function hasVisiblePrecedingItem(separator) {
   );
 }
 
-async function onShown(info, contextApiTab) {
-  const tab                   = Tabs.getTabElementById(contextApiTab);
-  const windowId              = contextApiTab ? contextApiTab.windowId : (await browser.windows.getLastFocused({})).id;
+async function onShown(info, contextTab) {
+  contextTab = contextTab && Tabs.trackedTabs.get(contextTab.id);
+  const tab                   = Tabs.getTabElementById(contextTab && contextTab.id);
+  const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({})).id;
   const previousTab           = Tabs.getPreviousTab(tab);
   const previousSiblingTab    = Tabs.getPreviousSiblingTab(tab);
   const nextTab               = Tabs.getNextTab(tab);
@@ -374,38 +375,38 @@ async function onShown(info, contextApiTab) {
   const emulate = configs.emulateDefaultContextMenu;
 
   updateItem('context_reloadTab', {
-    visible: emulate && contextApiTab,
+    visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-mute', {
-    visible: emulate && contextApiTab && (!contextApiTab.mutedInfo || !contextApiTab.mutedInfo.muted),
+    visible: emulate && contextTab && (!contextTab.mutedInfo || !contextTab.mutedInfo.muted),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_toggleMuteTab-unmute', {
-    visible: emulate && contextApiTab && contextApiTab.mutedInfo && contextApiTab.mutedInfo.muted,
+    visible: emulate && contextTab && contextTab.mutedInfo && contextTab.mutedInfo.muted,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_pinTab', {
-    visible: emulate && contextApiTab && !contextApiTab.pinned,
+    visible: emulate && contextTab && !contextTab.pinned,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_unpinTab', {
-    visible: emulate && contextApiTab && contextApiTab.pinned,
+    visible: emulate && contextTab && contextTab.pinned,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_duplicateTab', {
-    visible: emulate && contextApiTab,
+    visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_selectAllTabs', {
-    visible: emulate && contextApiTab,
-    enabled: contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length,
+    visible: emulate && contextTab,
+    enabled: contextTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
-    visible: emulate && contextApiTab,
-    multiselected: multiselected || !contextApiTab
+    visible: emulate && contextTab,
+    multiselected: multiselected || !contextTab
   }) && modifiedItemsCount++;
 
   let showContextualIdentities = false;
@@ -415,33 +416,33 @@ async function onShown(info, contextApiTab) {
     if (!emulate)
       visible = false;
     else if (id == 'context_reopenInContainer_separator')
-      visible = contextApiTab && contextApiTab.cookieStoreId != 'firefox-default';
+      visible = contextTab && contextTab.cookieStoreId != 'firefox-default';
     else
-      visible = contextApiTab && id != `context_reopenInContainer:${contextApiTab.cookieStoreId}`;
+      visible = contextTab && id != `context_reopenInContainer:${contextTab.cookieStoreId}`;
     updateItem(id, { visible }) && modifiedItemsCount++;
     if (visible)
       showContextualIdentities = true;
   }
   updateItem('context_reopenInContainer', {
-    visible: emulate && contextApiTab && showContextualIdentities,
+    visible: emulate && contextTab && showContextualIdentities,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_moveTab', {
-    visible: emulate && contextApiTab,
-    enabled: contextApiTab && hasMultipleTabs,
+    visible: emulate && contextTab,
+    enabled: contextTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToStart', {
-    enabled: emulate && contextApiTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextApiTab.pinned),
+    enabled: emulate && contextTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToEnd', {
-    enabled: emulate && contextApiTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextApiTab.pinned),
+    enabled: emulate && contextTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_openTabInWindow', {
-    enabled: emulate && contextApiTab && hasMultipleTabs,
+    enabled: emulate && contextTab && hasMultipleTabs,
     multiselected
   }) && modifiedItemsCount++;
 
@@ -454,50 +455,50 @@ async function onShown(info, contextApiTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_closeTabsToTheEnd', {
-    visible: emulate && contextApiTab,
+    visible: emulate && contextTab,
     enabled: hasMultipleNormalTabs && nextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeOtherTabs', {
-    visible: emulate && contextApiTab,
+    visible: emulate && contextTab,
     enabled: hasMultipleNormalTabs,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_closeTabOptions_closeTree', {
-    visible: emulate && contextApiTab && configs.context_closeTabOptions_closeTree,
+    visible: emulate && contextTab && configs.context_closeTabOptions_closeTree,
     enabled: !multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeDescendants', {
-    visible: emulate && contextApiTab && configs.context_closeTabOptions_closeDescendants,
+    visible: emulate && contextTab && configs.context_closeTabOptions_closeDescendants,
     enabled: !multiselected && Tabs.hasChildTabs(tab)
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeOthers', {
-    visible: emulate && contextApiTab && configs.context_closeTabOptions_closeOthers,
+    visible: emulate && contextTab && configs.context_closeTabOptions_closeOthers,
     enabled: !multiselected
   }) && modifiedItemsCount++;
 
   updateItem('context_undoCloseTab', {
-    visible: emulate && contextApiTab,
+    visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_closeTab', {
-    visible: emulate && contextApiTab,
+    visible: emulate && contextTab,
     multiselected
   }) && modifiedItemsCount++;
 
   updateItem('noContextTab:context_reloadTab', {
-    visible: emulate && !contextApiTab
+    visible: emulate && !contextTab
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_bookmarkSelected', {
-    visible: emulate && !contextApiTab && mNativeMultiselectionAvailable
+    visible: emulate && !contextTab && mNativeMultiselectionAvailable
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_selectAllTabs', {
-    visible: emulate && !contextApiTab,
-    enabled: !contextApiTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length
+    visible: emulate && !contextTab,
+    enabled: !contextTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
-    visible: emulate && !contextApiTab
+    visible: emulate && !contextTab
   }) && modifiedItemsCount++;
 
   updateSeparator('context_separator:afterDuplicate') && modifiedItemsCount++;
@@ -511,7 +512,7 @@ async function onShown(info, contextApiTab) {
     flattenExtraItems = Array.from(mExtraItems.values()).flat();
 
   updateSeparator('lastSeparatorBeforeExtraItems', {
-    hasVisibleFollowing: contextApiTab && flattenExtraItems.some(item => !item.parentId && item.visible !== false)
+    hasVisibleFollowing: contextTab && flattenExtraItems.some(item => !item.parentId && item.visible !== false)
   }) && modifiedItemsCount++;
 
   /* eslint-enable no-unused-expressions */
@@ -520,14 +521,15 @@ async function onShown(info, contextApiTab) {
     browser.menus.refresh();
 }
 
-async function onClick(info, contextApiTab) {
+async function onClick(info, contextTab) {
+  contextTab = contextTab && Tabs.trackedTabs.get(contextTab.id);
   const window            = await browser.windows.getLastFocused({ populate: true });
-  const windowId          = contextApiTab && contextApiTab.windowId || window.id;
+  const windowId          = contextTab && contextTab.windowId || window.id;
   const contextWindowId   = window.id;
-  const contextTabElement = Tabs.getTabElementById(contextApiTab);
-  const activeTab         = window.tabs.find(tab => tab.active);
+  const contextTabElement = Tabs.getTabElementById(contextTab);
+  const activeTab         = Tabs.activeTabForWindow.get(windowId);
 
-  let multiselectedTabs = Tabs.getSelectedTabs(windowId);
+  let multiselectedTabs = Tabs.getSelectedTabs(windowId, { element: false });
   const isMultiselected = contextTabElement ? Tabs.isMultiselected(contextTabElement) : multiselectedTabs.length > 1;
   if (!isMultiselected)
     multiselectedTabs = null;
@@ -536,7 +538,7 @@ async function onClick(info, contextApiTab) {
     case 'context_reloadTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.reload(tab.apiTab.id);
+          browser.tabs.reload(tab.id);
         }
       }
       else {
@@ -547,56 +549,56 @@ async function onClick(info, contextApiTab) {
     case 'context_toggleMuteTab-mute':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.apiTab.id, { muted: true });
+          browser.tabs.update(tab.id, { muted: true });
         }
       }
       else {
-        browser.tabs.update(contextApiTab.id, { muted: true });
+        browser.tabs.update(contextTab.id, { muted: true });
       }
       break;
     case 'context_toggleMuteTab-unmute':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.apiTab.id, { muted: false });
+          browser.tabs.update(tab.id, { muted: false });
         }
       }
       else {
-        browser.tabs.update(contextApiTab.id, { muted: false });
+        browser.tabs.update(contextTab.id, { muted: false });
       }
       break;
     case 'context_pinTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.apiTab.id, { pinned: true });
+          browser.tabs.update(tab.id, { pinned: true });
         }
       }
       else {
-        browser.tabs.update(contextApiTab.id, { pinned: true });
+        browser.tabs.update(contextTab.id, { pinned: true });
       }
       break;
     case 'context_unpinTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.apiTab.id, { pinned: false });
+          browser.tabs.update(tab.id, { pinned: false });
         }
       }
       else {
-        browser.tabs.update(contextApiTab.id, { pinned: false });
+        browser.tabs.update(contextTab.id, { pinned: false });
       }
       break;
     case 'context_duplicateTab':
-      Commands.duplicateTab(contextTabElement, {
+      Commands.duplicateTab(contextTab, {
         destinationWindowId: contextWindowId
       });
       break;
     case 'context_moveTabToStart':
-      Commands.moveTabToStart(contextTabElement);
+      Commands.moveTabToStart(contextTab);
       break;
     case 'context_moveTabToEnd':
-      Commands.moveTabToEnd(contextTabElement);
+      Commands.moveTabToEnd(contextTab);
       break;
     case 'context_openTabInWindow':
-      Commands.openTabInWindow(contextTabElement);
+      Commands.openTabInWindow(contextTab);
     case 'context_selectAllTabs': {
       const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
       browser.tabs.highlight({
@@ -606,36 +608,36 @@ async function onClick(info, contextApiTab) {
       });
     }; break;
     case 'context_bookmarkTab':
-      Commands.bookmarkTab(Tabs.trackedTabs.get(contextApiTab.id));
+      Commands.bookmarkTab(contextTab);
       break;
     case 'context_bookmarkSelected':
-      Commands.bookmarkTab(Tabs.trackedTabs.get((contextApiTab || activeTab).id));
+      Commands.bookmarkTab(contextTab || activeTab);
       break;
     case 'context_bookmarkAllTabs':
-      Commands.bookmarkTabs(Tabs.getTabs(contextApiTab.windowId, { element: false }));
+      Commands.bookmarkTabs(Tabs.getTabs(contextTab.windowId, { element: false }));
       break;
     case 'context_reloadAllTabs': {
-      const apiTabs = await browser.tabs.query({ windowId: contextWindowId }) ;
-      for (const apiTab of apiTabs) {
-        browser.tabs.reload(apiTab.id);
+      const tabs = await browser.tabs.query({ windowId: contextWindowId }) ;
+      for (const tab of tabs) {
+        browser.tabs.reload(tab.id);
       }
     }; break;
     case 'context_closeTabsToTheEnd': {
-      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      const tabs = await browser.tabs.query({ windowId: contextWindowId });
       let after = false;
       const closeApiTabIds = [];
       const keptTabIds = new Set(
         multiselectedTabs ?
-          multiselectedTabs.map(tab => tab.apiTab.id) :
-          [contextApiTab.id]
+          multiselectedTabs.map(tab => tab.id) :
+          [contextTab.id]
       );
-      for (const apiTab of apiTabs) {
-        if (keptTabIds.has(apiTab.id)) {
+      for (const tab of tabs) {
+        if (keptTabIds.has(tab.id)) {
           after = true;
           continue;
         }
-        if (after && !apiTab.pinned)
-          closeApiTabIds.push(apiTab.id);
+        if (after && !tab.pinned)
+          closeApiTabIds.push(tab.id);
       }
       const canceled = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
@@ -650,8 +652,8 @@ async function onClick(info, contextApiTab) {
       const apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
       const keptTabIds = new Set(
         multiselectedTabs ?
-          multiselectedTabs.map(tab => tab.apiTab.id) :
-          [contextApiTab.id]
+          multiselectedTabs.map(tab => tab.id) :
+          [contextTab.id]
       );
       const closeApiTabIds = apiTabs.filter(apiTab => !apiTab.pinned && !keptTabIds.has(apiTab.id)).map(tab => tab.id);
       const canceled = (await browser.runtime.sendMessage({
@@ -673,19 +675,19 @@ async function onClick(info, contextApiTab) {
         // close down to top, to keep tree structure of Tree Style Tab
         multiselectedTabs.reverse();
         for (const tab of multiselectedTabs) {
-          browser.tabs.remove(tab.apiTab.id);
+          browser.tabs.remove(tab.id);
         }
       }
       else {
-        browser.tabs.remove(contextApiTab.id);
+        browser.tabs.remove(contextTab.id);
       }
       break;
 
     default: {
       const contextualIdentityMatch = info.menuItemId.match(/^context_reopenInContainer:(.+)$/);
-      if (contextApiTab &&
+      if (contextTab &&
           contextualIdentityMatch)
-        Commands.reopenInContainer(contextTabElement, contextualIdentityMatch[1]);
+        Commands.reopenInContainer(contextTab, contextualIdentityMatch[1]);
     }; break;
   }
 }

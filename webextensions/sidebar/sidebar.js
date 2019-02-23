@@ -414,9 +414,9 @@ async function waitUntilBackgroundIsReady() {
 }
 
 
-export async function confirmToCloseTabs(apiTabIds, _options = {}) {
-  apiTabIds = apiTabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
-  const count = apiTabIds.length;
+export async function confirmToCloseTabs(tabIds, _options = {}) {
+  tabIds = tabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
+  const count = tabIds.length;
   if (count <= 1 ||
       !configs.warnOnCloseTabs)
     return true;
@@ -436,7 +436,7 @@ export async function confirmToCloseTabs(apiTabIds, _options = {}) {
       if (!result.checked)
         configs.warnOnCloseTabs = false;
       configs.lastConfirmedToCloseTabs = Date.now();
-      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(apiTabIds)));
+      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       return true;
     default:

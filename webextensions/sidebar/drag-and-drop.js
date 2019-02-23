@@ -201,10 +201,14 @@ function sanitizeDragData(aDragData) {
 }
 
 function getDropAction(event) {
-  const dragOverTab = EventUtils.getTabFromEvent(event);
-  const targetTab   = dragOverTab || EventUtils.getTabFromTabbarEvent(event);
+  const dragOverTabElement = EventUtils.getTabFromEvent(event);
+  const dragOverTab        = dragOverTabElement && dragOverTabElement.apiTab;
+  const targetTabElement   = dragOverTabElement || EventUtils.getTabFromTabbarEvent(event);
+  const targetTab          = targetTabElement && targetTabElement.apiTab;
   const info = {
+    dragOverTabElement,
     dragOverTab,
+    targetTabElement,
     targetTab,
     dropPosition:  null,
     action:        null,
@@ -227,30 +231,39 @@ function getDropAction(event) {
     const dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
     return (dragData && JSON.parse(dragData)) || mCurrentDragData;
   });
-  info.defineGetter('draggedTab', () => {
+  info.defineGetter('draggedTabElement', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return Tabs.getTabElementById(info.draggedAPITab);
+    return Tabs.getTabElementById(info.draggedTab);
   });
-  info.defineGetter('draggedAPITab', () => {
+  info.defineGetter('draggedTab', () => {
     const dragData = info.dragData;
     return dragData && dragData.apiTab;
   });
-  info.defineGetter('draggedTabs', () => {
+  info.defineGetter('draggedTabElements', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return info.draggedAPITabs.map(Tabs.getTabElementById).filter(tab => !!tab);
+    return info.draggedTabs.map(Tabs.getTabElementById).filter(tab => !!tab);
   });
-  info.defineGetter('draggedAPITabs', () => {
+  info.defineGetter('draggedTabs', () => {
     const dragData = info.dragData;
     return (dragData && dragData.apiTabs).filter(aPITab => !!aPITab) || [];
   });
-  info.defineGetter('draggedAPITabIDs', () => {
-    return info.draggedAPITabs.map(apiTab => apiTab.id);
+  info.defineGetter('draggedTabIDs', () => {
+    return info.draggedTabs.map(apiTab => apiTab.id);
+  });
+  info.defineGetter('targetTabElements', () => {
+    return Tabs.getAllTabs(Tabs.getWindow(), { element: true });
   });
   info.defineGetter('targetTabs', () => {
-    return Tabs.getAllTabs(Tabs.getWindow());
+    return Tabs.getAllTabs(Tabs.getWindow(), { element: false });
+  });
+  info.defineGetter('firstTargetTabElement', () => {
+    return Tabs.getFirstNormalTab(Tabs.getWindow(), { element: true }) || info.targetTabElements[0];
   });
   info.defineGetter('firstTargetTab', () => {
-    return Tabs.getFirstNormalTab(Tabs.getWindow()) || info.targetTabs[0];
+    return Tabs.getFirstNormalTab(Tabs.getWindow(), { element: false }) || info.targetTabs[0];
+  });
+  info.defineGetter('lastTargetTabElement', () => {
+    return info.targetTabElements[info.targetTabs.length - 1];
   });
   info.defineGetter('lastTargetTab', () => {
     return info.targetTabs[info.targetTabs.length - 1];
@@ -259,30 +272,29 @@ function getDropAction(event) {
     if (info.dropPosition == kDROP_IMPOSSIBLE)
       return false;
 
-    const draggedApiTab               = info.dragData && info.dragData.apiTab;
-    const isPrivateBrowsingTabDragged = draggedApiTab && draggedApiTab.incognito;
-    if (draggedApiTab &&
-        isPrivateBrowsingTabDragged != Tabs.isPrivateBrowsing(info.dragOverTab || Tabs.getFirstTab(draggedApiTab.windowId))) {
+    const draggedTab               = info.dragData && info.dragData.apiTab;
+    const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
+    if (draggedTab &&
+        isPrivateBrowsingTabDragged != Tabs.isPrivateBrowsing(info.dragOverTab || Tabs.getFirstTab(draggedTab.windowId))) {
       return false;
     }
-    else if (info.draggedAPITab) {
+    else if (info.draggedTab) {
       if (info.action & Constants.kACTION_ATTACH) {
         if (info.parent &&
-            info.parent.apiTab.id == info.draggedAPITab.id) {
+            info.parent.id == info.draggedTab.id) {
           return false;
         }
         else if (info.dragOverTab) {
-          if (info.draggedAPITabIDs.includes(info.dragOverTab.apiTab.id))
+          if (info.draggedTabIDs.includes(info.dragOverTab.id))
             return false;
           const ancestors = Tabs.getAncestorTabs(info.dragOverTab);
           /* too many function call in this way, so I use alternative way for better performance.
-          return !info.draggedAPITabIDs.includes(info.dragOverTab.apiTab.id) &&
+          return !info.draggedTabIDs.includes(info.dragOverTab.id) &&
                    Tabs.collectRootTabs(info.draggedTabs).every(rootTab =>
                      !ancestors.includes(rootTab)
                    );
           */
-          for (const apiTab of info.draggedAPITabs.slice().reverse()) {
-            const tab    = Tabs.getTabElementById(apiTab);
+          for (const tab of info.draggedTabs.slice().reverse()) {
             const parent = Tabs.getParentTab(tab);
             if (!parent && ancestors.includes(parent))
               return false;
@@ -302,27 +314,38 @@ function getDropAction(event) {
   });
   info.defineGetter('EventUtils.isCopyAction', () => EventUtils.isCopyAction(event));
   info.defineGetter('dropEffect', () => getDropEffectFromDropAction(info));
+  info.defineGetter('parentElement', () => {
+    return Tabs.getTabElementById(this.parent);
+  });
+  info.defineGetter('insertBeforeElement', () => {
+    return Tabs.getTabElementById(this.insertBefore);
+  });
+  info.defineGetter('insertAfterElement', () => {
+    return Tabs.getTabElementById(this.insertAfter);
+  });
 
   if (!targetTab) {
     //log('dragging on non-tab element');
     const action = Constants.kACTION_MOVE | Constants.kACTION_DETACH;
-    if (event.clientY < info.firstTargetTab.getBoundingClientRect().top) {
+    if (event.clientY < info.firstTargetTabElement.getBoundingClientRect().top) {
       //log('dragging above the first tab');
       info.targetTab    = info.insertBefore = info.firstTargetTab;
+      info.targetTabElement = info.firstTargetTabElement = info.targetTab.$TST.element;
       info.dropPosition = kDROP_BEFORE;
       info.action       = action;
-      if (info.draggedAPITab &&
-          !info.draggedAPITab.pinned &&
+      if (info.draggedTab &&
+          !info.draggedTab.pinned &&
           Tabs.isPinned(info.targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
     }
-    else if (event.clientY > info.lastTargetTab.getBoundingClientRect().bottom) {
+    else if (event.clientY > info.lastTargetTabElement.getBoundingClientRect().bottom) {
       //log('dragging below the last tab');
       info.targetTab    = info.insertAfter = info.lastTargetTab;
+      info.targetTabElement = info.lastTargetTabElement = info.targetTab.$TST.element;
       info.dropPosition = kDROP_AFTER;
       info.action       = action;
-      if (info.draggedAPITab &&
-          info.draggedAPITab.pinned &&
+      if (info.draggedTab &&
+          info.draggedTab.pinned &&
           !Tabs.isPinned(info.targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
     }
@@ -336,8 +359,8 @@ function getDropAction(event) {
    * have to ignore the [center] area.
    */
   const onPinnedTab         = Tabs.isPinned(targetTab);
-  const dropAreasCount      = (info.draggedAPITab && onPinnedTab) ? 2 : 3 ;
-  const targetTabRect       = targetTab.getBoundingClientRect();
+  const dropAreasCount      = (info.draggedTab && onPinnedTab) ? 2 : 3 ;
+  const targetTabRect       = targetTabElement.getBoundingClientRect();
   const targetTabCoordinate = onPinnedTab ? targetTabRect.left : targetTabRect.top ;
   const targetTabSize       = onPinnedTab ? targetTabRect.width : targetTabRect.height ;
   let beforeOrAfterDropAreaSize;
@@ -378,41 +401,41 @@ function getDropAction(event) {
         // if (info.insertBefore)
         //  log('insertBefore = ', dumpTab(info.insertBefore));
       });
-      if (info.draggedAPITab &&
-          info.draggedAPITab.pinned != Tabs.isPinned(targetTab))
+      if (info.draggedTab &&
+          info.draggedTab.pinned != Tabs.isPinned(targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
     }; break;
 
     case kDROP_BEFORE: {
       //log('drop position = before the tab');
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
-        insertBefore: targetTab
+      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTabElement, {
+        insertBefore: targetTabElement
       });
       if (referenceTabs.parent)
-        info.parent = referenceTabs.parent;
+        info.parent = referenceTabs.parent.apiTab;
       if (referenceTabs.insertBefore)
-        info.insertBefore = referenceTabs.insertBefore;
+        info.insertBefore = referenceTabs.insertBefore.apiTab;
       if (referenceTabs.insertAfter)
-        info.insertAfter = referenceTabs.insertAfter;
+        info.insertAfter = referenceTabs.insertAfter.apiTab;
       info.action = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
       //if (info.insertBefore)
       //  log('insertBefore = ', dumpTab(info.insertBefore));
-      if (info.draggedAPITab &&
-          info.draggedAPITab.pinned != Tabs.isPinned(targetTab))
+      if (info.draggedTab &&
+          info.draggedTab.pinned != Tabs.isPinned(targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
     }; break;
 
     case kDROP_AFTER: {
       //log('drop position = after the tab');
-      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
-        insertAfter: targetTab
+      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTabElement, {
+        insertAfter: targetTabElement
       });
       if (referenceTabs.parent)
-        info.parent = referenceTabs.parent;
+        info.parent = referenceTabs.parent.apiTab;
       if (referenceTabs.insertBefore)
-        info.insertBefore = referenceTabs.insertBefore;
+        info.insertBefore = referenceTabs.insertBefore.apiTab;
       if (referenceTabs.insertAfter)
-        info.insertAfter = referenceTabs.insertAfter;
+        info.insertAfter = referenceTabs.insertAfter.apiTab;
       info.action = Constants.kACTION_MOVE | (info.parent ? Constants.kACTION_ATTACH : Constants.kACTION_DETACH );
       if (info.insertBefore) {
         /* strategy
@@ -422,8 +445,8 @@ function getDropAction(event) {
              |  [DRAGGED]
              +-----------------------------------------------------
         */
-        if (info.draggedAPITab &&
-            info.draggedAPITab.id == info.insertBefore.apiTab.id) {
+        if (info.draggedTab &&
+            info.draggedTab.id == info.insertBefore.id) {
           info.action       = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
           info.parent       = Tabs.getParentTab(targetTab);
           info.defineGetter('insertBefore', () => {
@@ -442,8 +465,8 @@ function getDropAction(event) {
           });
         }
       }
-      if (info.draggedAPITab &&
-          info.draggedAPITab.pinned != Tabs.isPinned(Tabs.getNextVisibleTab(targetTab)))
+      if (info.draggedTab &&
+          info.draggedTab.pinned != Tabs.isPinned(Tabs.getNextVisibleTab(targetTab)))
         info.dropPosition = kDROP_IMPOSSIBLE;
     }; break;
   }
@@ -453,7 +476,7 @@ function getDropAction(event) {
 function getDropEffectFromDropAction(aActionInfo) {
   if (!aActionInfo.canDrop)
     return 'none';
-  if (!aActionInfo.draggedAPITab)
+  if (!aActionInfo.draggedTab)
     return 'link';
   if (aActionInfo.isCopyAction)
     return 'copy';
@@ -523,19 +546,19 @@ async function handleDroppedNonTabItems(event, aDropActionInfo) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SELECT_TAB,
         windowId: Tabs.getWindow(),
-        tab:      dragOverTab.id
+        tab:      aDropActionInfo.dragOverTabElement.id
       });
       await TabsOpen.loadURI(uris.shift(), {
-        tab:      dragOverTab,
+        tab:      aDropActionInfo.dragOverTabElement,
         inRemote: true
       });
     }
   }
   await TabsOpen.openURIsInTabs(uris, {
     windowId:     Tabs.getWindow(),
-    parent:       aDropActionInfo.parent,
-    insertBefore: aDropActionInfo.insertBefore,
-    insertAfter:  aDropActionInfo.insertAfter,
+    parent:       aDropActionInfo.parentElement,
+    insertBefore: aDropActionInfo.insertBeforeElement,
+    insertAfter:  aDropActionInfo.insertAfterElement,
     inRemote:     true
   });
 }
@@ -827,12 +850,12 @@ function onDragOver(event) {
     return;
   }
 
-  let dropPositionTargetTab = info.targetTab;
+  let dropPositionTargetTab = info.targetTabElement;
   while (Tabs.isCollapsed(dropPositionTargetTab)) {
     dropPositionTargetTab = Tabs.getPreviousTab(dropPositionTargetTab);
   }
   if (!dropPositionTargetTab)
-    dropPositionTargetTab = info.targetTab;
+    dropPositionTargetTab = info.targetTabElement;
 
   if (!dropPositionTargetTab) {
     log('onDragOver: no drop target tab');
@@ -841,8 +864,8 @@ function onDragOver(event) {
     return;
   }
 
-  if (!info.draggedAPITab ||
-      dropPositionTargetTab.apiTab.id != info.draggedAPITab.id) {
+  if (!info.draggedTab ||
+      dropPositionTargetTab.apiTab.id != info.draggedTab.id) {
     const dropPosition = `${dropPositionTargetTab.id}:${info.dropPosition}`;
     if (dropPosition == mLastDropPosition) {
       log('onDragOver: no move');
@@ -899,13 +922,13 @@ function onDragEnter(event) {
 
   reserveToProcessLongHover.cancel();
 
-  if (info.draggedAPITab &&
-      info.dragOverTab.apiTab.id == info.draggedAPITab.id)
+  if (info.draggedTab &&
+      info.dragOverTab.id == info.draggedTab.id)
     return;
 
   reserveToProcessLongHover({
-    dragOverTabId: info.targetTab.id,
-    draggedTabId:  info.draggedTab && info.draggedTab.id,
+    dragOverTabId: info.targetTabElement && info.targetTabElement.id,
+    draggedTabId:  info.draggedTabElement && info.draggedTabElement.id,
     dropEffect:    info.dropEffect
   });
 }
@@ -917,32 +940,32 @@ function reserveToProcessLongHover(params = {}) {
     mLongHoverTimer = setTimeout(async () => {
       log('reservedProcessLongHover: ', params);
 
-      const dragOverTab = Tabs.getTabElementById(params.dragOverTabId);
-      if (!dragOverTab ||
-          dragOverTab.getAttribute(kDROP_POSITION) != 'self')
+      const dragOverTabElement = Tabs.getTabElementById(params.dragOverTabId);
+      if (!dragOverTabElement ||
+          dragOverTabElement.getAttribute(kDROP_POSITION) != 'self')
         return;
 
       // auto-switch for staying on tabs
-      if (!Tabs.isActive(dragOverTab) &&
+      if (!Tabs.isActive(dragOverTabElement) &&
           params.dropEffect == 'link') {
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_SELECT_TAB,
           windowId: Tabs.getWindow(),
-          tab:      dragOverTab.id
+          tab:      dragOverTabElement.id
         });
       }
 
-      if (!Tree.shouldTabAutoExpanded(dragOverTab))
+      if (!Tree.shouldTabAutoExpanded(dragOverTabElement))
         return;
 
       // auto-expand for staying on a parent
       if (configs.autoExpandIntelligently) {
-        Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
+        Tree.collapseExpandTreesIntelligentlyFor(dragOverTabElement, { inRemote: true });
       }
       else {
         if (!mLongHoverExpandedTabs.includes(params.dragOverTabId))
           mLongHoverExpandedTabs.push(params.dragOverTabId);
-        Tree.collapseExpandSubtree(dragOverTab, {
+        Tree.collapseExpandSubtree(dragOverTabElement, {
           collapsed: false,
           inRemote:  true
         });
