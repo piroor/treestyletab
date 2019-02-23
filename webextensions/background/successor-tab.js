@@ -188,7 +188,7 @@ function onCreating(tab, info = {}) {
 }
 
 function onCreated(tab, _info = {}) {
-  const activeTab = Tabs.getActiveTab(tab);
+  const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
   if (activeTab)
     update(activeTab.apiTab.id);
 }
@@ -219,7 +219,7 @@ function onRemoved(tab, info = {}) {
 }
 
 function onMoved(tab, info = {}) {
-  const activeTab = Tabs.getActiveTab(tab);
+  const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
   if (activeTab)
     update(activeTab.apiTab.id);
 
@@ -252,19 +252,19 @@ function onDetached(_tab, info = {}) {
 
 
 function onTreeAttached(child, _info = {}) {
-  const activeTab = Tabs.getActiveTab(child);
+  const activeTab = Tabs.getActiveTab(child.apiTab.windowId);
   if (activeTab)
     update(activeTab.apiTab.id);
 }
 
 function onTreeDetached(child, _info = {}) {
-  const activeTab = Tabs.getActiveTab(child);
+  const activeTab = Tabs.getActiveTab(child.apiTab.windowId);
   if (activeTab)
     update(activeTab.apiTab.id);
 }
 
 function onSubtreeCollapsedStateChanging(tab, _info = {}) {
-  const activeTab = Tabs.getActiveTab(tab);
+  const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
   if (activeTab)
     update(activeTab.apiTab.id);
 }

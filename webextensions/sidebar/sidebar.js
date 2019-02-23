@@ -494,7 +494,7 @@ function updateTabbarLayout(params = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      const current = Tabs.getActiveTab();
+      const current = Tabs.getActiveTab(Tabs.getWindow());
       if (!Scroll.isTabInViewport(current)) {
         log('scroll to current tab on updateTabbarLayout');
         Scroll.scrollToTab(current);

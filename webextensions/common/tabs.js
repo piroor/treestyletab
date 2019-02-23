@@ -966,9 +966,8 @@ export function getTabLabelContent(tab) {
 
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
-export function getActiveTab(hint) {
-  const window = getTrackedWindow(hint);
-  const tab = window && ensureLivingTab(activeTabForWindow.get(window.id));
+export function getActiveTab(windowId) {
+  const tab = ensureLivingTab(activeTabForWindow.get(windowId));
   return tab && tab.$TST.element;
 }
 export function getActiveTabs() {
@@ -2198,7 +2197,7 @@ function snapshotTree(targetTab, tabs) {
     const previous = getPreviousNormalTab(tab);
     item.previous = previous && previous.id;
   }
-  const activeTab = getActiveTab(targetTab);
+  const activeTab = getActiveTab(targetTab.apiTab.windowId);
   return {
     target:   snapshotById[targetTab.id],
     active:   activeTab && snapshotById[activeTab.id],
