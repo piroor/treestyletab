@@ -1545,6 +1545,15 @@ export function getDraggingTabs(windowId, options = {}) {
   }, options));
 }
 
+export function getRemovingTabs(windowId, options = {}) {
+  return queryAll(Object.assign({
+    windowId,
+    states:   [Constants.kTAB_STATE_REMOVING, true],
+    ordered:  true,
+    element:  true
+  }, options));
+}
+
 export function getDuplicatingTabs(windowId, options = {}) {
   return queryAll(Object.assign({
     windowId,
@@ -1676,13 +1685,12 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
   if (windowId) {
     tabsQueryOptions.windowId = windowId;
   }
-  const beforeApiTabs = await browser.tabs.query(tabsQueryOptions);
-  const beforeApiIds  = beforeApiTabs.map(tab => tab.id);
+  const beforeTabs = await browser.tabs.query(tabsQueryOptions);
+  const beforeIds  = beforeTabs.map(tab => tab.id);
   await asyncTask();
-  const afterApiTabs = await browser.tabs.query(tabsQueryOptions);
-  const addedApiTabs = afterApiTabs.filter(afterApiTab => !beforeApiIds.includes(afterApiTab.id));
-  const addedTabs    = addedApiTabs.map(getTabElementById);
-  return addedTabs;
+  const afterTabs = await browser.tabs.query(tabsQueryOptions);
+  const addedTabs = afterTabs.filter(afterTab => !beforeIds.includes(afterTab.id));
+  return addedTabs.map(tab => trackedTabs.get(tab.id));
 }
 
 export function getNextActiveTab(tab, options = {}) { // if the current tab is closed...

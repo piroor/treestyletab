@@ -199,7 +199,7 @@ export async function migrateLegacyTreeStructure() {
 
       // found: apply only structure case
       const structure = structures[index];
-      const tabs      = Tabs.getAllTabs(window.id, { element: true });
+      const tabs      = Tabs.getAllTabs(window.id, { element: false });
       await Tree.applyTreeStructureToTabs(tabs, structure);
 
       restoredCountWithSession++;
@@ -231,10 +231,10 @@ export async function migrateLegacyTreeStructure() {
           return `about:blank?${uRI}`;
         return uRI;
       });
-      const tabElements = await TabsOpen.openURIsInTabs(uris, {
+      const tabs = await TabsOpen.openURIsInTabs(uris, {
         windowId: apiWindow.id
       });
-      Tree.applyTreeStructureToTabs(tabElements, structure);
+      Tree.applyTreeStructureToTabs(tabs, structure);
       // close initial blank tab
       apiWindow = await browser.windows.get(apiWindow.id, {
         populate: true

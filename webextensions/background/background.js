@@ -109,7 +109,7 @@ export async function init() {
   Tabs.getAllTabs().forEach(updateSubtreeCollapsed);
   for (const tab of Tabs.getActiveTabs()) {
     for (const ancestor of Tabs.getAncestorTabs(tab)) {
-      Tree.collapseExpandTabAndSubtree(ancestor.$TST.element, {
+      Tree.collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,
         justNow:   true
       });

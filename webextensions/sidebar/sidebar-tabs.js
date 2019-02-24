@@ -479,7 +479,7 @@ Tabs.onTabElementMoved.addListener((_tab, info) => {
 
 
 Tabs.onRestored.addListener(tab => {
-  Tree.fixupSubtreeCollapsedState(tab.$TST.element, {
+  Tree.fixupSubtreeCollapsedState(tab, {
     justNow:  true,
     inRemote: true
   });
@@ -511,7 +511,7 @@ Tabs.onMoving.addListener((tab, _info) => {
       Tabs.isOpening(tab))
     return;
   mTabWasVisibleBeforeMoving.set(tab.$TST.element, !Tabs.isCollapsed(tab));
-  Tree.collapseExpandTab(tab.$TST.element, {
+  Tree.collapseExpandTab(tab, {
     collapsed: true,
     justNow:   true
   });
@@ -528,7 +528,7 @@ Tabs.onMoved.addListener(async (tab, _info) => {
     return;
 
   if (configs.animation && wasVisible) {
-    Tree.collapseExpandTab(tab.$TST.element, {
+    Tree.collapseExpandTab(tab, {
       collapsed: false
     });
     await wait(configs.collapseDuration);

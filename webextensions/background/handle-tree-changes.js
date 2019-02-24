@@ -41,7 +41,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       mInitialized) {
     if (Tabs.isSubtreeCollapsed(info.parent) &&
         !info.forceExpand)
-      Tree.collapseExpandTabAndSubtree(tab.$TST.element, {
+      Tree.collapseExpandTabAndSubtree(tab, {
         collapsed: true,
         justNow:   true,
         broadcast: true
@@ -49,51 +49,39 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
 
     const isNewTreeCreatedManually = !info.justNow && Tabs.getChildTabs(parent).length == 1;
     if (info.forceExpand) {
-      Tree.collapseExpandSubtree(parent.$TST.element, Object.assign({}, info, {
-        parent:       parent.$TST.element,
-        insertBefore: info.insertBefore && info.insertBefore.$TST.element,
-        insertAfter:  info.insertAfter && info.insertAfter.$TST.element,
+      Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
         collapsed:    false,
         inRemote:     false
       }));
     }
     if (!info.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
-          (isNewTreeCreatedManually || Tree.shouldTabAutoExpanded(parent.$TST.element)))
-        Tree.collapseExpandTreesIntelligentlyFor(parent.$TST.element, {
+          (isNewTreeCreatedManually || Tree.shouldTabAutoExpanded(parent)))
+        Tree.collapseExpandTreesIntelligentlyFor(parent, {
           broadcast: true
         });
 
-      const newAncestors = [parent].concat(Tabs.getAncestorTabs(parent.$TST.element));
+      const newAncestors = [parent].concat(Tabs.getAncestorTabs(parent));
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
-          Tree.shouldTabAutoExpanded(parent.$TST.element) ||
+          Tree.shouldTabAutoExpanded(parent) ||
           info.forceExpand) {
         newAncestors.filter(Tabs.isSubtreeCollapsed).forEach(ancestor => {
           Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
-            parent:       parent.$TST.element,
-            insertBefore: info.insertBefore && info.insertBefore.$TST.element,
-            insertAfter:  info.insertAfter && info.insertAfter.$TST.element,
             collapsed:    false,
             broadcast:    true
           }));
         });
       }
       if (Tabs.isCollapsed(parent))
-        Tree.collapseExpandTabAndSubtree(tab.$TST.element, Object.assign({}, info, {
-          parent:       parent.$TST.element,
-          insertBefore: info.insertBefore && info.insertBefore.$TST.element,
-          insertAfter:  info.insertAfter && info.insertAfter.$TST.element,
+        Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
           collapsed:    true,
           broadcast:    true
         }));
     }
-    else if (Tree.shouldTabAutoExpanded(parent.$TST.element) ||
+    else if (Tree.shouldTabAutoExpanded(parent) ||
              Tabs.isCollapsed(parent)) {
-      Tree.collapseExpandTabAndSubtree(tab.$TST.element, Object.assign({}, info, {
-        parent:       parent.$TST.element,
-        insertBefore: info.insertBefore && info.insertBefore.$TST.element,
-        insertAfter:  info.insertAfter && info.insertAfter.$TST.element,
+      Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
         collapsed:    true,
         broadcast:    true
       }));
@@ -116,17 +104,11 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         prev: prevTab && prevTab.id
       });
       if (nextTab)
-        await Tree.moveTabSubtreeBefore(tab.$TST.element, nextTab.$TST.element, Object.assign({}, info, {
-          parent:       parent.$TST.element,
-          insertBefore: info.insertBefore && info.insertBefore.$TST.element,
-          insertAfter:  info.insertAfter && info.insertAfter.$TST.element,
+        await Tree.moveTabSubtreeBefore(tab, nextTab, Object.assign({}, info, {
           broadcast:    true
         }));
       else
-        await Tree.moveTabSubtreeAfter(tab.$TST.element, prevTab && prevTab.$TST.element, Object.assign({}, info, {
-          parent:       parent.$TST.element,
-          insertBefore: info.insertBefore && info.insertBefore.$TST.element,
-          insertAfter:  info.insertAfter && info.insertAfter.$TST.element,
+        await Tree.moveTabSubtreeAfter(tab, prevTab, Object.assign({}, info, {
           broadcast:    true
         }));
     })()

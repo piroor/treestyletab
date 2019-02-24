@@ -169,8 +169,8 @@ function getDragDataFromOneTab(hint, options = {}) {
     return {
       tabNode:  null,
       tabNodes: [],
-      apiTab:   null,
-      apiTabs:  [],
+      tab:      null,
+      tabs:     [],
       windowId: null
     };
 
@@ -178,8 +178,8 @@ function getDragDataFromOneTab(hint, options = {}) {
   return {
     tabNode:  tab,
     tabNodes: draggedTabs,
-    apiTab:   Tabs.sanitize(tab.apiTab),
-    apiTabs:  draggedTabs.map(aDraggedTab => Tabs.sanitize(aDraggedTab.apiTab)),
+    tab:      Tabs.sanitize(tab.apiTab),
+    tabs:     draggedTabs.map(aDraggedTab => Tabs.sanitize(aDraggedTab.apiTab)),
     windowId: tab.apiTab.windowId
   };
 }
@@ -194,8 +194,8 @@ function sanitizeDragData(aDragData) {
   return {
     tabNode:  null,
     tabNodes: [],
-    apiTab:   aDragData.apiTab,
-    apiTabs:  aDragData.apiTabs,
+    tab:      aDragData.tab,
+    tabs:     aDragData.tabs,
     windowId: aDragData.windowId
   };
 }
@@ -237,7 +237,7 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTab', () => {
     const dragData = info.dragData;
-    return dragData && dragData.apiTab;
+    return dragData && dragData.tab;
   });
   info.defineGetter('draggedTabElements', () => {
     // don't touch this if not needed, to reduce needless function call.
@@ -245,10 +245,10 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTabs', () => {
     const dragData = info.dragData;
-    return (dragData && dragData.apiTabs).filter(tab => !!tab) || [];
+    return (dragData && dragData.tabs).filter(tab => !!tab) || [];
   });
   info.defineGetter('draggedTabIds', () => {
-    return info.draggedTabs.map(apiTab => apiTab.id);
+    return info.draggedTabs.map(tab => tab.id);
   });
   info.defineGetter('targetTabElements', () => {
     return Tabs.getAllTabs(Tabs.getWindow(), { element: true });
@@ -272,7 +272,7 @@ function getDropAction(event) {
     if (info.dropPosition == kDROP_IMPOSSIBLE)
       return false;
 
-    const draggedTab = info.dragData && info.dragData.apiTab;
+    const draggedTab = info.dragData && info.dragData.tab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
     if (draggedTab &&
         isPrivateBrowsingTabDragged != Tabs.isPrivateBrowsing(info.dragOverTab || Tabs.getFirstTab(draggedTab.windowId))) {
@@ -899,7 +899,7 @@ function onDragEnter(event) {
     if (leftTab != enteredTab) {
       mDraggingOnDraggedTabs = (
         info.dragData &&
-        info.dragData.apiTabs.some(tab => tab.id == enteredTab.apiTab.id)
+        info.dragData.tabs.some(tab => tab.id == enteredTab.apiTab.id)
       );
     }
     if (enteredTab.ownerDocument == document) {
@@ -940,32 +940,32 @@ function reserveToProcessLongHover(params = {}) {
     mLongHoverTimer = setTimeout(async () => {
       log('reservedProcessLongHover: ', params);
 
-      const dragOverTabElement = Tabs.getTabElementById(params.dragOverTabId);
-      if (!dragOverTabElement ||
-          dragOverTabElement.getAttribute(kDROP_POSITION) != 'self')
+      const dragOverTab = Tabs.trackedTabs.get(params.dragOverTabId);
+      if (!dragOverTab ||
+          dragOverTab.$TST.element.getAttribute(kDROP_POSITION) != 'self')
         return;
 
       // auto-switch for staying on tabs
-      if (!Tabs.isActive(dragOverTabElement) &&
+      if (!Tabs.isActive(dragOverTab) &&
           params.dropEffect == 'link') {
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_SELECT_TAB,
           windowId: Tabs.getWindow(),
-          tab:      dragOverTabElement.id
+          tab:      dragOverTab.$TST.element.id
         });
       }
 
-      if (!Tree.shouldTabAutoExpanded(dragOverTabElement))
+      if (!Tree.shouldTabAutoExpanded(dragOverTab))
         return;
 
       // auto-expand for staying on a parent
       if (configs.autoExpandIntelligently) {
-        Tree.collapseExpandTreesIntelligentlyFor(dragOverTabElement, { inRemote: true });
+        Tree.collapseExpandTreesIntelligentlyFor(dragOverTab, { inRemote: true });
       }
       else {
         if (!mLongHoverExpandedTabs.includes(params.dragOverTabId))
           mLongHoverExpandedTabs.push(params.dragOverTabId);
-        Tree.collapseExpandSubtree(dragOverTabElement, {
+        Tree.collapseExpandSubtree(dragOverTab, {
           collapsed: false,
           inRemote:  true
         });
@@ -986,9 +986,9 @@ function onDragLeave(event) {
     const enteredTab = Tabs.getTabFromChild(event.relatedTarget);
     if (leftTab != enteredTab) {
       if (info.dragData &&
-          info.dragData.apiTabs.some(tab => tab.id == leftTab.apiTab.id) &&
+          info.dragData.tabs.some(tab => tab.id == leftTab.apiTab.id) &&
           (!enteredTab ||
-           !info.dragData.apiTabs.every(tab => tab.id == enteredTab.apiTab.id))) {
+           !info.dragData.tabs.every(tab => tab.id == enteredTab.apiTab.id))) {
         onDragLeave.delayedLeftFromDraggedTabs = setTimeout(() => {
           delete onDragLeave.delayedLeftFromDraggedTabs;
           mDraggingOnDraggedTabs = false;
@@ -1039,17 +1039,17 @@ function onDrop(event) {
   if (dt.dropEffect != 'link' &&
       dt.dropEffect != 'move' &&
       dropActionInfo.dragData &&
-      !dropActionInfo.dragData.apiTab) {
+      !dropActionInfo.dragData.tab) {
     log('invalid drop');
     return;
   }
 
   if (dropActionInfo.dragData &&
-      dropActionInfo.dragData.apiTab) {
+      dropActionInfo.dragData.tab) {
     log('there are dragged tabs');
     Commands.performTabsDragDrop({
       windowId:            dropActionInfo.dragData.windowId,
-      tabs:                dropActionInfo.dragData.apiTabs,
+      tabs:                dropActionInfo.dragData.tabs,
       action:              dropActionInfo.action,
       attachTo:            dropActionInfo.parent,
       insertBefore:        dropActionInfo.insertBefore,
@@ -1071,8 +1071,8 @@ function onDragEnd(event) {
 
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
-  if (Array.isArray(dragData.apiTabs))
-    dragData.tabNodes = dragData.apiTabs.map(Tabs.getTabElementById);
+  if (Array.isArray(dragData.tabs))
+    dragData.tabNodes = dragData.tabs.map(Tabs.getTabElementById);
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
   setTimeout(finishDrag, 0);
@@ -1131,7 +1131,7 @@ function onDragEnd(event) {
     return;
   }
 
-  Tree.openNewWindowFromTabs(dragData.tabNodes, {
+  Tree.openNewWindowFromTabs(dragData.tabs.map(tab => Tabs.trackedTabs.get(tab.id)), {
     duplicate: EventUtils.isAccelKeyPressed(event),
     left:      event.screenX,
     top:       event.screenY,

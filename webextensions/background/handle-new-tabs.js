@@ -72,15 +72,15 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       return false;
     }
     if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
-      return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.apiTab.windowId), {
+      return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.apiTab.windowId, { element: false }), {
         delayedMove: true,
         broadcast:   true
       }).then(moved => !moved);
     }
   }
   else if (!info.maybeOrphan && configs.autoAttach) {
-    return Tree.behaveAutoAttachedTab(tab, {
-      baseTab:   opener,
+    return Tree.behaveAutoAttachedTab(tab.apiTab, {
+      baseTab:   opener && opener.apiTab,
       behavior:  configs.autoAttachOnOpenedWithOwner,
       dontMove:  info.positionedBySelf,
       broadcast: true
@@ -92,8 +92,8 @@ Tabs.onCreating.addListener((tab, info = {}) => {
 async function handleNewTabFromActiveTab(tab, params = {}) {
   const activeTab = params.activeTab;
   log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), params);
-  const moved = await Tree.behaveAutoAttachedTab(tab, {
-    baseTab:   activeTab,
+  const moved = await Tree.behaveAutoAttachedTab(tab.apiTab, {
+    baseTab:   activeTab && activeTab.apiTab,
     behavior:  params.autoAttachBehavior,
     broadcast: true
   });
@@ -124,8 +124,8 @@ Tabs.onCreated.addListener((tab, info = {}) => {
     Tabs.addState(tab, Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
   }
   else {
-    Tree.behaveAutoAttachedTab(tab.$TST.element, {
-      baseTab:   original && original.$TST.element,
+    Tree.behaveAutoAttachedTab(tab, {
+      baseTab:   original,
       behavior:  configs.autoAttachOnDuplicated,
       dontMove:  info.positionedBySelf,
       broadcast: true
@@ -142,7 +142,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
           parent.windowId != tab.windowId ||
           parent == Tabs.getParentTab(tab))
         return;
-      Tree.attachTabTo(tab.$TST.element, parent.$TST.element, {
+      Tree.attachTabTo(tab, parent, {
         insertAt:    Constants.kINSERT_NEAREST,
         forceExpand: Tabs.isActive(tab),
         broadcast:   true
@@ -197,13 +197,13 @@ Tabs.onAttached.addListener(async (tab, info = {}) => {
   log('Tabs.onAttached ', tab.id, info);
 
   log('descendants of attached tab: ', info.descendants.map(tab => tab.id));
-  const movedTabs = await Tree.moveTabs(info.descendants.map(tab => tab.$TST.element), {
+  const movedTabs = await Tree.moveTabs(info.descendants, {
     destinationWindowId: tab.windowId,
-    insertAfter:         tab.$TST.element
+    insertAfter:         tab
   });
   log('moved descendants: ', movedTabs.map(dumpTab));
   for (const movedTab of movedTabs) {
-    Tree.attachTabTo(movedTab, tab.$TST.element, {
+    Tree.attachTabTo(movedTab, tab, {
       broadcast: true,
       dontMove:  true
     });

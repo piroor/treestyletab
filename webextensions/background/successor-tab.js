@@ -214,7 +214,7 @@ function onRemoved(tab, info = {}) {
   const activeTab = Tabs.getActiveTab(info.windowId);
   if (activeTab && !info.isWindowClosing)
     update(activeTab.id);
-  const window = Tabs.trackedWindows(info.windowId);
+  const window = Tabs.trackedWindows.get(info.windowId);
   log(`clear lastRelatedTabs for ${info.windowId} by tabs.onRemoved`);
   if (window.lastRelatedTabs)
     window.lastRelatedTabs.clear();

@@ -92,8 +92,10 @@ export function removeTabs(tabs, options = {}) {
       return;
   }
   const window = Tabs.trackedWindows.get(tabs[0].windowId);
-  for (const tab of tabs) {
-    window.internalClosingTabs.add(tab.id);
+  if (window) {
+    for (const tab of tabs) {
+      window.internalClosingTabs.add(tab.id);
+    }
   }
   if (options.broadcasted)
     return;

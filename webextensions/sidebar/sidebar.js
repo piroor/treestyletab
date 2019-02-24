@@ -384,7 +384,7 @@ async function inheritTreeStructure() {
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), response.structure);
+    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow, { element: false }), response.structure);
     MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
   }
 }
@@ -573,16 +573,16 @@ Tabs.onRemoving.addListener((tab, removeInfo) => {
   if (removeInfo.isWindowClosing)
     return;
 
-  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab.$TST.element, removeInfo);
+  const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
       Tabs.isSubtreeCollapsed(tab))
-    Tree.collapseExpandSubtree(tab.$TST.element, {
+    Tree.collapseExpandSubtree(tab, {
       collapsed: false
     });
 
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  Tree.detachTab(tab.$TST.element, {
+  Tree.detachTab(tab, {
     dontUpdateIndent: true
   });
 
@@ -604,7 +604,7 @@ Tabs.onDetached.addListener((tab, _info) => {
     return;
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
-  Tree.detachTab(tab.$TST.element, {
+  Tree.detachTab(tab, {
     dontUpdateIndent: true
   });
 });
@@ -822,7 +822,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
       if (message.windowId == mTargetWindow)
-        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), message.structure);
+        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow, { element: false }), message.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
@@ -841,8 +841,8 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (message.windowId == mTargetWindow) return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tab);
-        const tab = Tabs.getTabElementById(message.tab);
+        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
         const params = {
@@ -859,8 +859,8 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
       if (message.windowId == mTargetWindow) return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tab);
-        const tab = Tabs.getTabElementById(message.tab);
+        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
         // Tree's collapsed state can be changed before this message is delivered,
@@ -868,13 +868,12 @@ function onMessage(message, _sender, _respond) {
         if (message.byAncestor &&
             message.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
           return;
-        const params = {
+        Tree.collapseExpandTab(tab, {
           collapsed:   message.collapsed,
           justNow:     message.justNow,
           broadcasted: true,
           stack:       message.stack
-        };
-        Tree.collapseExpandTab(tab, params);
+        });
       })();
     }; break;
 
@@ -923,20 +922,20 @@ function onMessage(message, _sender, _respond) {
         const promisedComplete = (async () => {
           await Promise.all([
             Tabs.waitUntilTabsAreCreated([
-              message.child,
-              message.parent,
-              message.insertBefore,
-              message.insertAfter
+              message.childElementId,
+              message.parentElementId,
+              message.insertBeforeElementId,
+              message.insertAfterElementId
             ]),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
           log('attach tab from remote ', message);
-          const child  = Tabs.getTabElementById(message.child);
-          const parent = Tabs.getTabElementById(message.parent);
+          const child  = Tabs.trackedTabs.get(message.childId);
+          const parent = Tabs.trackedTabs.get(message.parentId);
           if (child && parent)
             await Tree.attachTabTo(child, parent, Object.assign({}, message, {
-              insertBefore: Tabs.getTabElementById(message.insertBefore),
-              insertAfter:  Tabs.getTabElementById(message.insertAfter),
+              insertBefore: Tabs.trackedTabs.get(message.insertBeforeId),
+              insertAfter:  Tabs.trackedTabs.get(message.insertAfterId),
               inRemote:     false,
               broadcast:    false
             }));
@@ -951,10 +950,10 @@ function onMessage(message, _sender, _respond) {
       if (message.windowId == mTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
-            Tabs.waitUntilTabsAreCreated(message.tab),
+            Tabs.waitUntilTabsAreCreated(message.tabElementId),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
-          const tab = Tabs.getTabElementById(message.tab);
+          const tab = Tabs.trackedTabs.get(message.tabId);
           if (tab)
             Tree.detachTab(tab, message);
           mTreeChangesFromRemote.delete(promisedComplete);

@@ -445,7 +445,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           element:    true
         });
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
-        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastDescendantTab(referenceTab) || referenceTab, {
+        await Tree.moveTabSubtreeAfter(tab.apiTab, Tabs.getLastDescendantTab(referenceTab, { element: false }) || (referenceTab && referenceTab.apiTab), {
           broadcast: true
         });
       }
@@ -454,7 +454,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       for (const tab of unifiedRootTabs) {
         if (Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
-        await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.apiTab.windowId), {
+        await Tree.moveTabSubtreeAfter(tab.apiTab, Tabs.getLastTab(tab.apiTab.windowId, { element: false }), {
           broadcast: true
         });
       }
@@ -487,9 +487,10 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       Tabs.setAttribute(child, 'data-already-grouped-for-pinned-opener', true);
-      await Tree.attachTabTo(child, parent, {
+      const insertAfter = configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tabs.getLastDescendantTab(parent);
+      await Tree.attachTabTo(child.apiTab, parent.apiTab, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
-        insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tabs.getLastDescendantTab(parent),
+        insertAfter: insertAfter && insertAfter.apiTab,
         broadcast: true
       });
     }

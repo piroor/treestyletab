@@ -7,7 +7,6 @@
 
 import {
   log as internalLogger,
-  dumpTab,
   notify,
   configs
 } from './common.js';
@@ -86,7 +85,7 @@ export function collapseTree(rootTab) {
   if (!Tabs.hasChildTabs(rootTab) ||
       Tabs.isSubtreeCollapsed(rootTab))
     return;
-  Tree.collapseExpandSubtree(rootTab.$TST.element, {
+  Tree.collapseExpandSubtree(rootTab, {
     collapsed: true,
     broadcast: true
   });
@@ -103,7 +102,7 @@ export function expandTree(rootTab) {
   if (!Tabs.hasChildTabs(rootTab) ||
       !Tabs.isSubtreeCollapsed(rootTab))
     return;
-  Tree.collapseExpandSubtree(rootTab.$TST.element, {
+  Tree.collapseExpandSubtree(rootTab, {
     collapsed: false,
     broadcast: true
   });
@@ -167,11 +166,11 @@ export async function openNewTabAs(options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_CHILD: {
       parent = currentTab;
-      const refTabs = Tree.getReferenceTabsForNewChild(parent.$TST.element);
-      insertBefore = refTabs.insertBefore && refTabs.insertBefore.apiTab;
-      insertAfter  = refTabs.insertAfter && refTabs.insertAfter.apiTab;
+      const refTabs = Tree.getReferenceTabsForNewChild(parent);
+      insertBefore = refTabs.insertBefore;
+      insertAfter  = refTabs.insertAfter;
       log('detected reference tabs: ',
-          dumpTab(parent), dumpTab(insertBefore), dumpTab(insertAfter));
+          { parent, insertBefore, insertAfter });
     }; break;
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING:
@@ -208,15 +207,15 @@ export async function indent(tab, options = {}) {
     return false;
 
   if (!options.followChildren)
-    Tree.detachAllChildren(tab.$TST.element, {
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
   const insertAfter = Tabs.getLastDescendantTab(newParent) || newParent;
-  await Tree.attachTabTo(tab.$TST.element, newParent.$TST.element, {
+  await Tree.attachTabTo(tab, newParent, {
     broadcast:   true,
     forceExpand: true,
-    insertAfter: insertAfter && insertAfter.$TST.element
+    insertAfter
   });
   return true;
 }
@@ -231,24 +230,24 @@ export async function outdent(tab, options = {}) {
     return false;
 
   if (!options.followChildren)
-    Tree.detachAllChildren(tab.$TST.element, {
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
   if (newParent) {
     const insertAfter = Tabs.getLastDescendantTab(parent) || parent;
-    await Tree.attachTabTo(tab.$TST.element, newParent.$TST.element, {
+    await Tree.attachTabTo(tab, newParent, {
       broadcast:   true,
       forceExpand: true,
-      insertAfter: insertAfter && insertAfter.$TST.element
+      insertAfter
     });
   }
   else {
-    await Tree.detachTab(tab.$TST.element, {
+    await Tree.detachTab(tab, {
       broadcast: true,
     });
     const insertAfter = Tabs.getLastDescendantTab(parent) || parent;
-    await TabsMove.moveTabAfter(tab.$TST.element, insertAfter && insertAfter.$TST.element, {
+    await TabsMove.moveTabAfter(tab, insertAfter, {
       broadcast: true,
     });
   }
@@ -340,18 +339,18 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   if (movedWholeTree.length != movedTabs.length) {
     log('=> partially moved');
     if (!params.duplicate)
-      await Tree.detachTabsFromTree(movedTabs.map(tab => tab.$TST.element), {
+      await Tree.detachTabsFromTree(movedTabs, {
         broadcast: params.broadcast
       });
   }
 
   if (params.duplicate ||
       windowId != destinationWindowId) {
-    movedTabs = await Tree.moveTabs(movedTabs.map(tab => tab.$TST.element), {
+    movedTabs = await Tree.moveTabs(movedTabs, {
       destinationWindowId,
       duplicate:    params.duplicate,
-      insertBefore: params.insertBefore && params.insertBefore.$TST.element,
-      insertAfter:  params.insertAfter && params.insertAfter.$TST.element,
+      insertBefore: params.insertBefore,
+      insertAfter:  params.insertAfter,
       broadcast:    params.broadcast
     });
     movedRoots = Tabs.collectRootTabs(movedTabs);
@@ -427,11 +426,9 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
       !options.insertBefore &&
       !options.insertAfter) {
     const refTabs = Tree.getReferenceTabsForNewChild(
-      tabs[0].$TST.element,
-      parent && parent.$TST.element,
-      {
-        ignoreTabs: tabs.map(tab => tab.$TST.element)
-      }
+      tabs[0],
+      parent,
+      { ignoreTabs: tabs }
     );
     options.insertBefore = refTabs.insertBefore && refTabs.insertBefore.apiTab;
     options.insertAfter  = refTabs.insertAfter && refTabs.insertAfter.apiTab;
@@ -458,10 +455,10 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
   });
   for (const tab of tabs) {
     if (parent)
-      Tree.attachTabTo(tab.$TST.element, parent.$TST.element, memberOptions);
+      Tree.attachTabTo(tab, parent, memberOptions);
     else
-      Tree.detachTab(tab.$TST.element, memberOptions);
-    Tree.collapseExpandTabAndSubtree(tab.$TST.element, Object.assign({}, memberOptions, {
+      Tree.detachTab(tab, memberOptions);
+    Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, memberOptions, {
       collapsed: false
     }));
   }
@@ -471,7 +468,7 @@ function detachTabsWithStructure(tabs, options = {}) {
   log('detachTabsWithStructure: start ', tabs.map(tab => tab.id));
   for (const tab of tabs) {
     Tree.detachTab(tab.$TST.element, options);
-    Tree.collapseExpandTabAndSubtree(tab.$TST.element, Object.assign({}, options, {
+    Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, options, {
       collapsed: false
     }));
   }
@@ -483,13 +480,13 @@ export async function moveUp(tab, options = {}) {
     return false;
 
   if (!options.followChildren) {
-    Tree.detachAllChildren(tab.$TST.element, {
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
     await TabsMove.moveTabBefore(
-      tab.$TST.element,
-      previousTab && previousTab.$TST.element,
+      tab,
+      previousTab,
       { broadcast: true }
     );
     await onMoveUp.dispatch(tab);
@@ -516,13 +513,13 @@ export async function moveDown(tab, options = {}) {
     const nextTab = Tabs.getNextVisibleTab(tab);
     if (!nextTab)
       return false;
-    Tree.detachAllChildren(tab.$TST.element, {
+    Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
     await TabsMove.moveTabAfter(
-      tab.$TST.element,
-      nextTab && nextTab.$TST.element,
+      tab,
+      nextTab,
       { broadcast: true }
     );
     await onMoveDown.dispatch(tab);
@@ -560,13 +557,13 @@ export async function duplicateTab(sourceTab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTab);
   const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab.windowId, { element: false }) : [sourceTab];
   log('source tabs: ', sourceTabs);
-  const duplicatedTabs = await Tree.moveTabs(sourceTabs.map(tab => tab.$TST.element), {
+  const duplicatedTabs = await Tree.moveTabs(sourceTabs, {
     duplicate:           true,
-    destinationWindowId: options.destinationWindowId || sourceTabs[0].apiTab.windowId,
-    insertAfter:         sourceTabs[sourceTabs.length-1].$TST.element
+    destinationWindowId: options.destinationWindowId || sourceTabs[0].windowId,
+    insertAfter:         sourceTabs[sourceTabs.length-1]
   });
-  await Tree.behaveAutoAttachedTabs(duplicatedTabs.map(tab => tab.$TST.element), {
-    baseTabs:  sourceTabs.map(tab => tab.$TST.element),
+  await Tree.behaveAutoAttachedTabs(duplicatedTabs, {
+    baseTabs:  sourceTabs,
     behavior:  typeof options.behavior == 'number' ? options.behavior : configs.autoAttachOnDuplicated,
     broadcast: true
   });
@@ -623,8 +620,8 @@ export async function openTabInWindow(tab, options = {}) {
 }
 
 export async function openTabsInWindow(tabs) {
-  const movedTabs = await Tree.openNewWindowFromTabs(tabs.map(tab => tab.$TST.element));
-  return movedTabs[0].apiTab.windowId;
+  const movedTabs = await Tree.openNewWindowFromTabs(tabs);
+  return movedTabs[0].windowId;
 }
 
 export async function bookmarkTab(tab, options = {}) {
@@ -691,8 +688,8 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
     windowId: sourceTabs[0].windowId,
     cookieStoreId
   });
-  await Tree.behaveAutoAttachedTabs(tabs.map(tab => tab.$TST.element), {
-    baseTabs:  sourceTabs.map(tab => tab.$TST.element),
+  await Tree.behaveAutoAttachedTabs(tabs, {
+    baseTabs:  sourceTabs,
     behavior:  configs.autoAttachOnDuplicated,
     broadcast: true
   });

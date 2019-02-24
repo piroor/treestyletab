@@ -202,9 +202,9 @@ export async function openURIsInTabs(uris, options = {}) {
         if (!options.opener &&
             options.parent &&
             !options.isOrphan)
-          await Tree.attachTabTo(tab.$TST.element, options.parent && options.parent.$TST.element, {
-            insertBefore: options.insertBefore && options.insertBefore.$TST.element,
-            insertAfter:  options.insertAfter && options.insertAfter.$TST.element,
+          await Tree.attachTabTo(tab, options.parent, {
+            insertBefore: options.insertBefore,
+            insertAfter:  options.insertAfter,
             forceExpand:  params.active,
             broadcast:    true
           });

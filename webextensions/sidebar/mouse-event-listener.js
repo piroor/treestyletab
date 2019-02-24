@@ -384,17 +384,17 @@ async function onMouseUp(event) {
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       log('onMouseUp: middle click on a tab');
       //log('middle-click to close');
-      const tabs = Tree.getClosingTabsFromParent(livingTab);
-      Sidebar.confirmToCloseTabs(tabs.map(tab => tab.apiTab.id))
+      const tabs = Tree.getClosingTabsFromParent(livingTab.apiTab);
+      Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
-            TabsInternalOperation.removeTab(livingTab, { inRemote: true });
+            TabsInternalOperation.removeTab(livingTab.apiTab, { inRemote: true });
         });
     }
     else if (lastMousedown.detail.twisty) {
       log('clicked on twisty');
       if (Tabs.hasChildTabs(tab))
-        Tree.collapseExpandSubtree(tab, {
+        Tree.collapseExpandSubtree(tab.apiTab, {
           collapsed:       !Tabs.isSubtreeCollapsed(tab),
           manualOperation: true,
           inRemote:        true
@@ -418,16 +418,16 @@ async function onMouseUp(event) {
       //}
       const multiselected  = Tabs.isMultiselected(tab);
       const tabsToBeClosed = multiselected ?
-        Tabs.getSelectedTabs(tab.apiTab.windowId, { element: true }) :
-        Tree.getClosingTabsFromParent(tab) ;
-      Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.apiTab.id))
+        Tabs.getSelectedTabs(tab.apiTab.windowId, { element: false }) :
+        Tree.getClosingTabsFromParent(tab.apiTab) ;
+      Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.id))
         .then(confirmed => {
           if (!confirmed)
             return;
           if (multiselected)
             TabsInternalOperation.removeTabs(tabsToBeClosed, { inRemote: true });
           else
-            TabsInternalOperation.removeTab(tab, { inRemote: true });
+            TabsInternalOperation.removeTab(tab.apiTab, { inRemote: true });
         });
     }
     else if (lastMousedown.detail.button == 0 &&
@@ -528,7 +528,7 @@ function onDblClick(event) {
     else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
       event.preventDefault();
-      Tree.collapseExpandSubtree(livingTab, {
+      Tree.collapseExpandSubtree(livingTab.apiTab, {
         collapsed:       !Tabs.isSubtreeCollapsed(livingTab),
         manualOperation: true,
         inRemote:        true

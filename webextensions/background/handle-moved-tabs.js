@@ -73,13 +73,13 @@ Tabs.onMoving.addListener((tab, moveInfo) => {
 
 async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   if (!Tree.shouldApplyTreeBehavior(moveInfo)) {
-    Tree.detachAllChildren(tab.$TST.element, {
-      behavior: Tree.getCloseParentBehaviorForTab(tab.$TST.element, {
+    Tree.detachAllChildren(tab, {
+      behavior: Tree.getCloseParentBehaviorForTab(tab, {
         keepChildren: true
       }),
       broadcast: true
     });
-    Tree.detachTab(tab.$TST.element, {
+    Tree.detachTab(tab, {
       broadcast: true
     });
   }
@@ -98,21 +98,24 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       return;
 
     case 'attach': {
-      await Tree.attachTabTo(tab.$TST.element, Tabs.getTabElementById(action.parent), {
-        insertBefore: Tabs.getTabElementById(action.insertBefore),
-        insertAfter:  Tabs.getTabElementById(action.insertAfter),
+      const parent       = Tabs.getTabElementById(action.parent);
+      const insertBefore = Tabs.getTabElementById(action.insertBefore);
+      const insertAfter  = Tabs.getTabElementById(action.insertAfter);
+      await Tree.attachTabTo(tab, parent && parent.apiTab, {
+        insertBefore: insertBefore && insertBefore.apiTab,
+        insertAfter:  insertAfter && insertAfter.apiTab,
         broadcast:    true
       });
-      Tree.followDescendantsToMovedRoot(tab.$TST.element);
+      Tree.followDescendantsToMovedRoot(tab);
     }; break;
 
     case 'detach': {
-      Tree.detachTab(tab.$TST.element, { broadcast: true });
-      Tree.followDescendantsToMovedRoot(tab.$TST.element);
+      Tree.detachTab(tab, { broadcast: true });
+      Tree.followDescendantsToMovedRoot(tab);
     }; break;
 
     default:
-      Tree.followDescendantsToMovedRoot(tab.$TST.element);
+      Tree.followDescendantsToMovedRoot(tab);
       break;
   }
 }

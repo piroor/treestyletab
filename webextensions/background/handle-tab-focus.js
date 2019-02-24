@@ -49,7 +49,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       // but actually happen on some environment:
       // https://github.com/piroor/treestyletab/issues/1717
       // So, always expand orphan collapsed tab as a failsafe.
-      Tree.collapseExpandTab(tab, {
+      Tree.collapseExpandTab(tab.apiTab, {
         collapsed: false,
         broadcast: true
       });
@@ -59,7 +59,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildActive');
       for (const ancestor of Tabs.getAncestorTabs(tab)) {
-        Tree.collapseExpandSubtree(ancestor, {
+        Tree.collapseExpandSubtree(ancestor.apiTab, {
           collapsed: false,
           broadcast: true
         });
@@ -81,7 +81,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       TabsInternalOperation.activateTab(newSelection.apiTab, { silently: true });
       log('Tabs.onActivating: discarded? ', dumpTab(tab), Tabs.isDiscarded(tab));
       if (Tabs.isDiscarded(tab))
-        tab.dataset.discardURLAfterCompletelyLoaded = tab.apiTab.url;
+        tab.$TST.discardURLAfterCompletelyLoaded = tab.apiTab.url;
       return false;
     }
   }
@@ -111,11 +111,11 @@ function handleNewActiveTab(tab, info = {}) {
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
-      Tree.collapseExpandTreesIntelligentlyFor(tab, {
+      Tree.collapseExpandTreesIntelligentlyFor(tab.apiTab, {
         broadcast: true
       });
     else
-      Tree.collapseExpandSubtree(tab, {
+      Tree.collapseExpandSubtree(tab.apiTab, {
         collapsed: false,
         broadcast: true
       });
@@ -166,7 +166,7 @@ function setupDelayedExpand(tab) {
       !Tabs.isSubtreeCollapsed(tab))
     return;
   tab.delayedExpand = setTimeout(() => {
-    Tree.collapseExpandTreesIntelligentlyFor(tab, {
+    Tree.collapseExpandTreesIntelligentlyFor(tab.apiTab, {
       broadcast: true
     });
   }, configs.autoExpandOnTabSwitchingShortcutsDelay);
@@ -237,7 +237,7 @@ function onMessage(message, sender) {
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
               tab.parentNode.lastActiveTab == tab.id) {
-            Tree.collapseExpandSubtree(tab, {
+            Tree.collapseExpandSubtree(tab.apiTab, {
               collapsed: false,
               broadcast: true
             });

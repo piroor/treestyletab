@@ -56,7 +56,7 @@ async function saveTreeStructure(windowId) {
   if (!container)
     return;
 
-  const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(windowId));
+  const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(windowId, { element: false }));
   browser.sessions.setWindowValue(
     windowId,
     Constants.kWINDOW_STATE_TREE_STRUCTURE,
@@ -93,7 +93,7 @@ export async function loadTreeStructure(restoredFromCacheResults) {
         windowStateCompletelyApplied = structure.length == tabs.length;
       }
       if (tabsOffset > -1) {
-        await Tree.applyTreeStructureToTabs(tabs.slice(tabsOffset), structure);
+        await Tree.applyTreeStructureToTabs(tabs.slice(tabsOffset).map(tab => tab.apiTab), structure);
         MetricsData.add('loadTreeStructure: Tree.applyTreeStructureToTabs');
       }
     }
@@ -193,9 +193,9 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
-    const done = Tree.attachTabTo(tab, ancestor.$TST.element, {
-      insertBefore: insertBefore && insertBefore.$TST.element,
-      insertAfter:  insertAfter && insertAfter.$TST.element,
+    const done = Tree.attachTabTo(tab.apiTab, ancestor, {
+      insertBefore,
+      insertAfter,
       dontExpand:  !active,
       forceExpand: active,
       broadcast:   true
@@ -210,7 +210,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', { child: dumpTab(tab), parent: dumpTab(opener) });
-      const done = Tree.attachTabTo(tab, opener, {
+      const done = Tree.attachTabTo(tab.apiTab, opener.apiTab, {
         dontExpand:  !active,
         forceExpand: active,
         broadcast:   true,
@@ -236,7 +236,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       Tabs.getParentTab(tab) &&
       // when not in-middle position of existing tree (safely detachable position)
       !Tabs.getNextSiblingTab(tab)) {
-    Tree.detachTab(tab, {
+    Tree.detachTab(tab.apiTab, {
       broadcast: true
     });
   }
@@ -244,7 +244,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     for (const child of children) {
       if (!child)
         continue;
-      await Tree.attachTabTo(child.$TST.element, tab, {
+      await Tree.attachTabTo(child, tab.apiTab, {
         dontExpand:  !Tabs.isActive(child),
         forceExpand: active,
         insertAt:    Constants.kINSERT_NEAREST,
@@ -254,7 +254,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   }
 
   if (options.canCollapse || options.bulk) {
-    Tree.collapseExpandSubtree(tab, {
+    Tree.collapseExpandSubtree(tab.apiTab, {
       broadcast: true,
       collapsed: states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED)
     });
@@ -273,7 +273,7 @@ Tabs.onRestored.addListener(tab => {
     children: true
   });
   reserveToAttachTabFromRestoredInfo.promisedDone.then(() => {
-    Tree.fixupSubtreeCollapsedState(tab.$TST.element, {
+    Tree.fixupSubtreeCollapsedState(tab, {
       justNow:   true,
       broadcast: true
     });
