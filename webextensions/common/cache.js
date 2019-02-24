@@ -174,8 +174,8 @@ function fixupTabsRestoredFromCache(tabElements, apiTabs, options = {}) {
   // this step must be done after the step 2 is finished for all tabs
   // because updating operation can refer other tabs.
   if (options.dirty) {
-    for (const tabElement of tabElements) {
-      TabsUpdate.updateTab(tabElement, tabElement.apiTab, { forceApply: true });
+    for (const tab of apiTabs) {
+      TabsUpdate.updateTab(tab, tab, { forceApply: true });
     }
   }
 }

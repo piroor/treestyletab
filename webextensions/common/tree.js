@@ -199,7 +199,7 @@ export async function attachTabTo(child, parent, options = {}) {
 
     //promoteTooDeepLevelTabs(child);
 
-    TabsUpdate.updateParentTab(parent);
+    TabsUpdate.updateParentTab(parent.apiTab);
   }
 
   onAttached.dispatch(child.apiTab, Object.assign({}, options, {
@@ -323,7 +323,7 @@ export function detachTab(child, options = {}) {
       Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
       log(' => rest children: ', childIds);
     }
-    TabsUpdate.updateParentTab(parent);
+    TabsUpdate.updateParentTab(parent.apiTab);
   }
   Tabs.removeAttribute(child, Constants.kPARENT);
   child.$TST.parent = null;

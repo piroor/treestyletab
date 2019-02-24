@@ -296,8 +296,8 @@ async function onUpdated(tabId, changeInfo, tab) {
       updatedTab.$TST.updatedOpenerTabId = updatedTab.openerTabId = tab.openerTabId;
     }
 
-    TabsUpdate.updateTab(updatedTab.$TST.element, changeInfo, { tab });
-    TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab.$TST.element));
+    TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
+    TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab));
 
     const onUpdatedResult = Tabs.onUpdated.dispatch(updatedTab, changeInfo);
     // don't do await if not needed, to process things synchronously
@@ -404,8 +404,8 @@ async function onNewTabTracked(tab) {
       return;
     }
 
-    TabsUpdate.updateTab(newTabElement, tab, {
-      tab:        tab,
+    TabsUpdate.updateTab(tab, tab, {
+      tab,
       forceApply: true
     });
 

@@ -546,6 +546,7 @@ Tabs.onStateChanged.addListener(tab => {
 });
 
 Tabs.onLabelUpdated.addListener(tab => {
+  Tabs.getTabLabelContent(tab.$TST.element).textContent = tab.title;
   reserveToUpdateTooltip(tab.$TST.element);
   if (!tab.$TST.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
     tab.$TST.titleUpdatedWhileCollapsed = true;
@@ -616,7 +617,7 @@ Tabs.onGroupTabDetected.addListener(tab => {
            browser.i18n.getMessage('groupTab_label_default');
   tab.title = title;
   wait(0).then(() => {
-    TabsUpdate.updateTab(tab.$TST.element, { title }, { tab });
+    TabsUpdate.updateTab(tab, { title }, { tab });
   });
 });
 

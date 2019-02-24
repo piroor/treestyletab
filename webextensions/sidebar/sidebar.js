@@ -370,7 +370,7 @@ export async function rebuildAll(cache) {
     TabIdFixer.fixTab(apiTab);
     const newTab = Tabs.buildTabElement(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
-    TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
+    TabsUpdate.updateTab(apiTab, apiTab, { forceApply: true });
   }
   Tabs.allElementsContainer.appendChild(container);
   MetricsData.add('rebuildAll (from scratch)');
@@ -676,8 +676,8 @@ function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
     case 'debug': {
-      for (const tab of Tabs.getAllTabs(mTargetWindow)) {
-        TabsUpdate.updateTab(tab, tab.apiTab, { forceApply: true });
+      for (const tab of Tabs.getAllTabs(mTargetWindow, { element: false })) {
+        TabsUpdate.updateTab(tab, tab, { forceApply: true });
       }
       if (configs.debug)
         rootClasses.add('debug');
@@ -997,7 +997,7 @@ function onMessage(message, _sender, _respond) {
               Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
             if (message.bubbles)
-              TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
+              TabsUpdate.updateParentTab(Tabs.getParentTab(tab, { element: false }));
           }
         }
       })();

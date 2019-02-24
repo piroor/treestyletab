@@ -60,7 +60,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
-    Tabs.onGroupTabDetected.dispatch(tab.apiTab);
+    Tabs.onGroupTabDetected.dispatch(tab);
   }
 
   if (options.forceApply ||
@@ -71,7 +71,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       if (identity)
         visibleLabel = `${newState.title} - ${identity.name}`;
     }
-    if (options.forceApply && tab.apiTab) {
+    if (options.forceApply) {
       Tabs.getPermanentStates(tab).then(states => {
         if (states.includes(Constants.kTAB_STATE_UNREAD))
           Tabs.addState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
@@ -79,29 +79,28 @@ export function updateTab(tab, newState = {}, options = {}) {
           Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
       });
     }
-    else if (!Tabs.isActive(tab) && tab.apiTab) {
+    else if (!Tabs.isActive(tab)) {
       Tabs.addState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
     }
-    Tabs.getTabLabelContent(tab).textContent = newState.title;
-    tab.dataset.label = visibleLabel;
-    Tabs.onLabelUpdated.dispatch(tab.apiTab);
+    tab.$TST.label = visibleLabel;
+    Tabs.onLabelUpdated.dispatch(tab);
   }
 
   const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
-      openerOfGroupTab.apiTab.favIconUrl) {
-    Tabs.onFaviconUpdated.dispatch(tab.apiTab,
-                                   openerOfGroupTab.apiTab.favIconUrl);
+      openerOfGroupTab.favIconUrl) {
+    Tabs.onFaviconUpdated.dispatch(tab,
+                                   openerOfGroupTab.favIconUrl);
   }
   else if (options.forceApply ||
            'favIconUrl' in newState) {
-    Tabs.onFaviconUpdated.dispatch(tab.apiTab);
+    Tabs.onFaviconUpdated.dispatch(tab);
   }
   else if (Tabs.isGroupTab(tab)) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
-    tab.apiTab.favIconUrl = null;
-    Tabs.onFaviconUpdated.dispatch(tab.apiTab, null);
+    tab.favIconUrl = null;
+    Tabs.onFaviconUpdated.dispatch(tab, null);
   }
 
   if ('status' in newState) {
@@ -113,16 +112,16 @@ export function updateTab(tab, newState = {}, options = {}) {
     }
     else if (!options.forceApply && reallyChanged) {
       Tabs.addState(tab, Constants.kTAB_STATE_BURSTING);
-      if (tab.delayedBurstEnd)
-        clearTimeout(tab.delayedBurstEnd);
-      tab.delayedBurstEnd = setTimeout(() => {
-        delete tab.delayedBurstEnd;
+      if (tab.$TST.delayedBurstEnd)
+        clearTimeout(tab.$TST.delayedBurstEnd);
+      tab.$TST.delayedBurstEnd = setTimeout(() => {
+        delete tab.$TST.delayedBurstEnd;
         Tabs.removeState(tab, Constants.kTAB_STATE_BURSTING);
         if (!Tabs.isActive(tab))
           Tabs.addState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
-    Tabs.onStateChanged.dispatch(tab.apiTab);
+    Tabs.onStateChanged.dispatch(tab);
   }
 
   if ((options.forceApply ||
@@ -131,11 +130,11 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.pinned) {
       Tabs.addState(tab, Constants.kTAB_STATE_PINNED);
       Tabs.removeAttribute(tab, Constants.kLEVEL); // don't indent pinned tabs!
-      Tabs.onPinned.dispatch(tab.apiTab);
+      Tabs.onPinned.dispatch(tab);
     }
     else {
       Tabs.removeState(tab, Constants.kTAB_STATE_PINNED);
-      Tabs.onUnpinned.dispatch(tab.apiTab);
+      Tabs.onUnpinned.dispatch(tab);
     }
   }
 
@@ -155,9 +154,8 @@ export function updateTab(tab, newState = {}, options = {}) {
       Tabs.removeState(tab, Constants.kTAB_STATE_MUTED);
   }
 
-  if (tab.apiTab &&
-      tab.apiTab.audible &&
-      !tab.apiTab.mutedInfo.muted)
+  if (tab.audible &&
+      !tab.mutedInfo.muted)
     Tabs.addState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
@@ -185,12 +183,12 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.hidden) {
       if (!Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
         Tabs.addState(tab, Constants.kTAB_STATE_HIDDEN);
-        Tabs.onHidden.dispatch(tab.apiTab);
+        Tabs.onHidden.dispatch(tab);
       }
     }
     else if (Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
       Tabs.removeState(tab, Constants.kTAB_STATE_HIDDEN);
-      Tabs.onShown.dispatch(tab.apiTab);
+      Tabs.onShown.dispatch(tab);
     }
   }
 
@@ -201,7 +199,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     else
       Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
 
-    updateMultipleHighlighted(tab);
+    updateMultipleHighlighted(tab.windowId);
   }
 
   if (options.forceApply ||
@@ -240,14 +238,14 @@ export async function updateTabsHighlighted(highlightInfo) {
     '!id':       tabIds,
     //id:          new RegExp(`^(?!(${highlightInfo.tabIds.join('|')})$)`),
     highlighted: true,
-    element:     true
+    element:     false
   });
   const highlightedTabs = Tabs.queryAll({
     windowId:    highlightInfo.windowId,
     id:          tabIds,
     //id:          new RegExp(`^(${highlightInfo.tabIds.join('|')})$`),
     highlighted: false,
-    element:     true
+    element:     false
   });
 
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
@@ -271,27 +269,33 @@ async function updateTabHighlighted(tab, highlighted) {
     Tabs.addState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
-  tab.apiTab.highlighted = highlighted;
-  const inheritHighlighted = !tab.parentNode.$TST.tabsToBeHighlightedAlone.has(tab.apiTab.id);
+  tab.highlighted = highlighted;
+  const window = Tabs.trackedWindows.get(tab.windowId);
+  const inheritHighlighted = !window.tabsToBeHighlightedAlone.has(tab.id);
   if (!inheritHighlighted)
-    tab.parentNode.$TST.tabsToBeHighlightedAlone.delete(tab.apiTab.id);
-  Tabs.onUpdated.dispatch(tab.apiTab, { highlighted }, { inheritHighlighted });
+    window.tabsToBeHighlightedAlone.delete(tab.id);
+  Tabs.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;
 }
 
-function updateMultipleHighlighted(hint) {
-  const container = Tabs.getTabsContainer(hint);
-  if (!container)
+function updateMultipleHighlighted(windowId) {
+  const window = Tabs.trackedWindows.get(windowId);
+  if (!window)
     return;
   const highlightedTabs = Tabs.queryAll({
-    windowId:    container.windowId,
+    windowId,
     highlighted: true,
-    living:      true
+    living:      true,
+    element:     false
   });
-  if (highlightedTabs.length > 1)
-    container.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-  else
-    container.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  if (highlightedTabs.length > 1) {
+    window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED] = true;
+    window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  }
+  else {
+    delete window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED];
+    window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  }
 }
 
 export function updateParentTab(parent) {
@@ -312,5 +316,5 @@ export function updateParentTab(parent) {
 
   updateParentTab(Tabs.getParentTab(parent));
 
-  Tabs.onParentTabUpdated.dispatch(parent.apiTab);
+  Tabs.onParentTabUpdated.dispatch(parent);
 }

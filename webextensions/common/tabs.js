@@ -1573,7 +1573,9 @@ export function getSelectedTabs(windowId, options = {}) {
     ordered:  true,
     element:  true
   }, options));
-  if (!getTabsContainer(windowId).classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED))
+  const window = trackedWindows.get(windowId);
+  if (!window ||
+      !window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED])
     return selectedTabs;
 
   const highlightedTabs = queryAll(Object.assign({
@@ -1925,8 +1927,8 @@ export function isMultihighlighted(tab) {
     return false;
   if (tab instanceof Element)
     tab = tab.apiTab;
-  const container = getTabsContainer(tab.windowId);
-  return !!(container && container.classList.contains(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED));
+  const window = trackedWindows.get(tab.windowId);
+  return !!(window && window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED]);
 }
 
 export function isLocked(_aTab) {
