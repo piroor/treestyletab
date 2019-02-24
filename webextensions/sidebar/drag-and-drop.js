@@ -391,23 +391,24 @@ function getDropAction(event) {
 
   switch (info.dropPosition) {
     case kDROP_ON_SELF: {
-      //log('drop position = on the tab');
+      log('drop position = on ', info.targetTab.id);
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
-      info.defineGetter('insertBefore', () => {
-        return configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-          (Tabs.getFirstChildTab(targetTab) || Tabs.getNextVisibleTab(targetTab)) :
-          (Tabs.getNextSiblingTab(targetTab) || Tabs.getNextTab(Tabs.getLastDescendantTab(targetTab) || targetTab));
-        // if (info.insertBefore)
-        //  log('insertBefore = ', dumpTab(info.insertBefore));
-      });
+      info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
+        (Tabs.getFirstChildTab(targetTab) || Tabs.getNextVisibleTab(targetTab)) :
+        (Tabs.getNextSiblingTab(targetTab) || Tabs.getNextTab(Tabs.getLastDescendantTab(targetTab) || targetTab));
+      info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
+        targetTab :
+        (Tabs.getLastDescendantTab(targetTab) || targetTab);
       if (info.draggedTab &&
           info.draggedTab.pinned != Tabs.isPinned(targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
+      if (configs.debug)
+        log(' calculated info: ', info);
     }; break;
 
     case kDROP_BEFORE: {
-      //log('drop position = before the tab');
+      log('drop position = before ', info.targetTab.id);
       const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
         insertBefore: targetTab
       });
@@ -423,10 +424,12 @@ function getDropAction(event) {
       if (info.draggedTab &&
           info.draggedTab.pinned != Tabs.isPinned(targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
+      if (configs.debug)
+        log(' calculated info: ', info);
     }; break;
 
     case kDROP_AFTER: {
-      //log('drop position = after the tab');
+      log('drop position = after ', info.targetTab.id);
       const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(info.draggedTab, {
         insertAfter: targetTab
       });
@@ -449,25 +452,21 @@ function getDropAction(event) {
             info.draggedTab.id == info.insertBefore.id) {
           info.action       = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
           info.parent       = Tabs.getParentTab(targetTab);
-          info.defineGetter('insertBefore', () => {
-            let insertBefore = Tabs.getNextSiblingTab(targetTab);
-            let ancestor     = info.parent;
-            while (ancestor && !insertBefore) {
-              insertBefore = Tabs.getNextSiblingTab(ancestor);
-              ancestor     = Tabs.getParentTab(ancestor);
-            }
-            //if (insertBefore)
-            //  log('insertBefore = ', dumpTab(insertBefore));
-            return insertBefore;
-          });
-          info.defineGetter('insertAfter', () => {
-            return Tabs.getLastDescendantTab(targetTab);
-          });
+          let insertBefore = Tabs.getNextSiblingTab(targetTab);
+          let ancestor     = info.parent;
+          while (ancestor && !insertBefore) {
+            insertBefore = Tabs.getNextSiblingTab(ancestor);
+            ancestor     = Tabs.getParentTab(ancestor);
+          }
+          info.insertBefore = insertBefore;
+          info.insertAfter  = Tabs.getLastDescendantTab(targetTab);
         }
       }
       if (info.draggedTab &&
           info.draggedTab.pinned != Tabs.isPinned(Tabs.getNextVisibleTab(targetTab)))
         info.dropPosition = kDROP_IMPOSSIBLE;
+      if (configs.debug)
+        log(' calculated info: ', info);
     }; break;
   }
 

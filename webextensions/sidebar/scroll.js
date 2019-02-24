@@ -502,12 +502,12 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          message.tab,
-          message.parent
+          message.tabElementId,
+          message.parentElementId
         ]);
-        const tab = Tabs.getTabElementById(message.tab);
-        if (tab && Tabs.isActive(Tabs.getTabElementById(message.parent)))
-          scrollToNewTab(tab);
+        const tab = Tabs.trackedTabs.get(message.tabId);
+        if (tab && Tabs.isActive(Tabs.trackedTabs.get(message.parentId)))
+          scrollToNewTab(tab.$TST.element);
       })();
 
     case Constants.kCOMMAND_SCROLL_TABBAR:

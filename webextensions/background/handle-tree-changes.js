@@ -119,9 +119,11 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     return;
 
   browser.runtime.sendMessage({
-    type:   Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY,
-    tab:    tab.$TST.element.id,
-    parent: parent.$TST.element.id,
+    type:          Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY,
+    tabId:         tab.id,
+    parentId:      parent.id,
+    tabElementId: tab.$TST.element.id,
+    parentElementId: parent.$TST.element.id,
     newlyAttached: info.newlyAttached
   });
 

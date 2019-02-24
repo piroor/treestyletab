@@ -115,6 +115,7 @@ export async function attachTabTo(child, parent, options = {}) {
   }
 
   if (options.dontMove) {
+    log('=> do not move');
     options.insertBefore = Tabs.getNextTab(child);
     if (!options.insertBefore)
       options.insertAfter = Tabs.getPreviousTab(child);
@@ -124,11 +125,12 @@ export async function attachTabTo(child, parent, options = {}) {
     const refTabs = getReferenceTabsForNewChild(child, parent, options);
     options.insertBefore = refTabs.insertBefore;
     options.insertAfter  = refTabs.insertAfter;
+    log('=> calculate reference tabs ', refTabs);
   }
   options.insertAfter = options.insertAfter || parent;
   log(`reference tabs for ${child.id}: `, {
-    next: dumpTab(options.insertBefore),
-    prev: dumpTab(options.insertAfter)
+    insertBefore: options.insertBefore,
+    insertAfter:  options.insertAfter
   });
 
   await Tabs.waitUntilAllTabsAreCreated(child.windowId);

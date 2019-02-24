@@ -271,6 +271,9 @@ export async function performTabsDragDrop(params = {}) {
       attachToId:     params.attachTo && params.attachTo.id,
       insertBeforeId: params.insertBefore && params.insertBefore.id,
       insertAfterId:  params.insertAfter && params.insertAfter.id,
+      attachToElementId:     params.attachTo && params.attachTo.$TST.element.id,
+      insertBeforeElementId: params.insertBefore && params.insertBefore.$TST.element.id,
+      insertAfterElementId:  params.insertAfter && params.insertAfter.$TST.element.id,
       inRemote:       false,
       destinationWindowId
     }));
@@ -279,6 +282,9 @@ export async function performTabsDragDrop(params = {}) {
 
   log('performTabsDragDrop ', {
     tabs:                params.tabs.map(tab => tab.id),
+    attachTo:            params.attachTo && params.attachTo.id,
+    insertBefore:        params.insertBefore && params.insertBefore.id,
+    insertAfter:         params.insertAfter && params.insertAfter.id,
     windowId:            params.windowId,
     destinationWindowId: params.destinationWindowId,
     action:              params.action
