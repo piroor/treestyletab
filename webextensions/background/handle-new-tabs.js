@@ -154,7 +154,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
       tab.$TST.isNewTab) {
     log('new tab ', tab.id);
     delete tab.$TST.isNewTab;
-    const possibleOpenerTab = Tabs.getTabElementById(tab.$TST.possibleOpenerTab);
+    const possibleOpenerTab = Tabs.trackedTabs.get(tab.$TST.possibleOpenerTab);
     delete tab.$TST.possibleOpenerTab;
     log('possibleOpenerTab ', possibleOpenerTab && possibleOpenerTab.id);
     const window = Tabs.trackedWindows.get(tab.windowId);
