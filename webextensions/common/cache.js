@@ -167,8 +167,8 @@ function fixupTabsRestoredFromCache(tabElements, apiTabs, options = {}) {
     });
   });
   for (const tabElement of tabElements) {
-    if (!tabElement) // process only root tabs
-      fixupTreeCollapsedStateRestoredFromCache(tabElement);
+    if (!tabElement.$TST.parent) // process only root tabs
+      fixupTreeCollapsedStateRestoredFromCache(tabElement.apiTab);
   }
   // step 3: update tabs based on restored information.
   // this step must be done after the step 2 is finished for all tabs
