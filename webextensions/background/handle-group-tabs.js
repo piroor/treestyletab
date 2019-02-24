@@ -365,7 +365,7 @@ async function tryGroupNewTabs() {
     }
     if (newRootTabs.length > 1 &&
         configs.autoGroupNewTabs)
-      await TabsGroup.groupTabs(newRootTabs, { broadcast: true });
+      await TabsGroup.groupTabs(newRootTabs.map(rootTab => rootTab.apiTab), { broadcast: true });
   }
   catch(e) {
     log('Error on tryGroupNewTabs: ', String(e), e.stack);

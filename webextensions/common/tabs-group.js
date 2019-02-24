@@ -6,8 +6,7 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  dumpTab
+  log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
@@ -32,31 +31,31 @@ export async function groupTabs(tabs, options = {}) {
   if (rootTabs.length <= 0)
     return null;
 
-  log('groupTabs: ', tabs.map(dumpTab));
+  log('groupTabs: ', tabs.map(tab => tab.id));
 
   const uri = makeGroupTabURI({
-    title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].apiTab.title),
+    title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].title),
     temporary: true
   });
-  const groupTab = await TabsOpen.openURIInTab(uri, {
-    windowId:     rootTabs[0].apiTab.windowId,
-    parent:       Tabs.getParentTab(rootTabs[0]),
-    insertBefore: rootTabs[0],
+  const groupTabElement = await TabsOpen.openURIInTab(uri, {
+    windowId:     rootTabs[0].windowId,
+    parent:       Tabs.getParentTab(rootTabs[0], { element: true }),
+    insertBefore: rootTabs[0].$TST.element,
     inBackground: true
   });
 
-  await Tree.detachTabsFromTree(tabs, {
+  await Tree.detachTabsFromTree(tabs.map(tab => tab.$TST.element), {
     broadcast: !!options.broadcast
   });
-  await TabsMove.moveTabsAfter(tabs.slice(1), tabs[0], {
+  await TabsMove.moveTabsAfter(tabs.slice(1).map(tab => tab.$TST.element), tabs[0].$TST.element, {
     broadcast: !!options.broadcast
   });
   for (const tab of rootTabs) {
-    await Tree.attachTabTo(tab, groupTab, {
+    await Tree.attachTabTo(tab.$TST.element, groupTabElement, {
       forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
       dontMove:  true,
       broadcast: !!options.broadcast
     });
   }
-  return groupTab;
+  return groupTabElement.apiTab;
 }

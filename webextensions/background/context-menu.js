@@ -377,7 +377,7 @@ export const onClick = (info, apiTab) => {
 
     case 'groupTabs':
       if (selectedTabs.length > 1)
-        TabsGroup.groupTabs(selectedTabs.map(tab => tab.$TST.element), { broadcast: true });
+        TabsGroup.groupTabs(selectedTabs, { broadcast: true });
       break;
 
     case 'collapsed':

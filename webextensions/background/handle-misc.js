@@ -168,7 +168,7 @@ async function onShortcutCommand(command) {
 
     case 'groupSelectedTabs':
       if (selectedTabs.length > 1)
-        TabsGroup.groupTabs(selectedTabs.map(tab => tab.$TST.element), { broadcast: true });
+        TabsGroup.groupTabs(selectedTabs, { broadcast: true });
       return;
 
     case 'indent':
@@ -734,9 +734,8 @@ function onMessageExternal(message, sender) {
 
     case TSTAPI.kGROUP_TABS:
       return (async () => {
-        const tabs     = await TSTAPI.getTargetTabs(message, sender);
-        const groupTab = await TabsGroup.groupTabs(tabs, { broadcast: true });
-        return groupTab.apiTab;
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        return TabsGroup.groupTabs(tabs.map(tab => tab.apiTab), { broadcast: true });
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
