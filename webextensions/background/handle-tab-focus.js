@@ -78,7 +78,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       container.lastActiveTab = newSelection.id;
       if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
-      TabsInternalOperation.activateTab(newSelection, { silently: true });
+      TabsInternalOperation.activateTab(newSelection.apiTab, { silently: true });
       log('Tabs.onActivating: discarded? ', dumpTab(tab), Tabs.isDiscarded(tab));
       if (Tabs.isDiscarded(tab))
         tab.dataset.discardURLAfterCompletelyLoaded = tab.apiTab.url;

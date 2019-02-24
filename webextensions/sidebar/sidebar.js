@@ -914,8 +914,8 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabs);
-        return TabsInternalOperation.removeTabs(message.tabs.map(Tabs.getTabElementById), message.options);
+        await Tabs.waitUntilTabsAreCreated(message.tabElementIds);
+        return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), message.options);
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {

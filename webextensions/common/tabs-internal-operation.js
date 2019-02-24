@@ -9,8 +9,7 @@
 
 import {
   log as internalLogger,
-  configs,
-  dumpTab
+  configs
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
@@ -24,47 +23,48 @@ export async function activateTab(tab, options = {}) {
   tab = Tabs.ensureLivingTab(tab);
   if (!tab)
     return;
-  log('activateTabInternally: ', dumpTab(tab), tab.apiTab);
+  log('activateTab: ', tab.id);
   if (options.inRemote) {
     await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
-      windowId: tab.apiTab.windowId,
-      tab:      tab.id,
+      windowId: tab.windowId,
+      tabId:    tab.id,
+      tabElementId: tab.$TST.element.id,
       options:  options
     });
     return;
   }
-  const container = tab.parentNode;
-  container.$TST.internalFocusCount++;
+  const window = Tabs.trackedWindows.get(tab.windowId);
+  window.internalFocusCount++;
   if (options.silently)
-    container.$TST.internalSilentlyFocusCount++;
+    window.internalSilentlyFocusCount++;
   const onError = (e) => {
-    container.$TST.internalFocusCount--;
+    window.internalFocusCount--;
     if (options.silently)
-      container.$TST.internalSilentlyFocusCount--;
+      window.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
   if (configs.supportTabsMultiselect) {
-    let tabs = [tab.apiTab.index];
-    const highlightedTabs = Tabs.getHighlightedTabs(tab.apiTab.windowId);
+    let tabs = [tab.index];
+    const highlightedTabs = Tabs.getHighlightedTabs(tab.windowId, { element: false });
     if (Tabs.isMultihighlighted(tab) &&
         options.keepMultiselection &&
-        highlightedTabs.includes(tab)) {
+        highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
       // switch active tab with highlighted state
-      const otherTabs = highlightedTabs.filter(highlightedTab => highlightedTab != tab);
-      tabs = tabs.concat(otherTabs.map(tab => tab.apiTab.index));
+      const otherTabs = highlightedTabs.filter(highlightedTab => highlightedTab.id != tab.id);
+      tabs = tabs.concat(otherTabs.map(tab => tab.index));
     }
     else {
-      tab.parentNode.$TST.tabsToBeHighlightedAlone.add(tab.apiTab.id);
+      window.tabsToBeHighlightedAlone.add(tab.id);
     }
     return browser.tabs.highlight({
-      windowId: tab.apiTab.windowId,
+      windowId: tab.windowId,
       tabs,
       populate: false
     }).catch(onError);
   }
   else {
-    return browser.tabs.update(tab.apiTab.id, { active: true }).catch(onError);
+    return browser.tabs.update(tab.id, { active: true }).catch(onError);
   }
 }
 
@@ -76,11 +76,12 @@ export function removeTabs(tabs, options = {}) {
   tabs = tabs.filter(Tabs.ensureLivingTab);
   if (!tabs.length)
     return;
-  log('removeTabsInternally: ', tabs.map(dumpTab));
+  log('removeTabsInternally: ', tabs.map(tab => tab.id));
   if (options.inRemote || options.broadcast) {
     browser.runtime.sendMessage({
       type:    Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-      tabs:    tabs.map(tab => tab.id),
+      tabIds:  tabs.map(tab => tab.id),
+      tabElementIds: tabs.map(tab => tab.$TST.element.id),
       options: Object.assign({}, options, {
         inRemote:    false,
         broadcast:   options.inRemote && !options.broadcast,
@@ -90,13 +91,13 @@ export function removeTabs(tabs, options = {}) {
     if (options.inRemote)
       return;
   }
-  const container = tabs[0].parentNode;
+  const window = Tabs.trackedWindows.get(tabs[0].windowId);
   for (const tab of tabs) {
-    container.$TST.internalClosingTabs.add(tab.apiTab.id);
+    window.internalClosingTabs.add(tab.id);
   }
   if (options.broadcasted)
     return;
-  return browser.tabs.remove(tabs.map(tab => tab.apiTab.id)).catch(ApiTabs.handleMissingTabError);
+  return browser.tabs.remove(tabs.map(tab => tab.id)).catch(ApiTabs.handleMissingTabError);
 }
 
 export function setTabActive(tab) {

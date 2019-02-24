@@ -195,20 +195,20 @@ async function onShortcutCommand(command) {
     case 'focusPreviousSilently': {
       const nextActive = Tabs.getPreviousVisibleTab(activeTab) ||
         Tabs.getLastVisibleTab(activeTab.windowId, { element: false });
-      TabsInternalOperation.activateTab(nextActive.$TST.element, { silently: /Silently/.test(command) });
+      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
       const nextActive = Tabs.getNextVisibleTab(activeTab) ||
         Tabs.getFirstVisibleTab(activeTab.windowId, { element: false });
-      TabsInternalOperation.activateTab(nextActive.$TST.element, { silently: /Silently/.test(command) });
+      TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusParent': {
       const parent = Tabs.getParentTab(activeTab);
-      TabsInternalOperation.activateTab(parent && parent.$TST.element);
+      TabsInternalOperation.activateTab(parent);
     }; return;
     case 'focusFirstChild':
-      TabsInternalOperation.activateTab(Tabs.getFirstChildTab(activeTab));
+      TabsInternalOperation.activateTab(Tabs.getFirstChildTab(activeTab, { element: false }));
       return;
 
     case 'tabbarUp':
@@ -360,8 +360,8 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabs);
-        return TabsInternalOperation.removeTabs(message.tabs.map(Tabs.getTabElementById), message.options);
+        await Tabs.waitUntilTabsAreCreated(message.tabElementIds);
+        return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), message.options);
       })();
 
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
@@ -410,7 +410,7 @@ function onMessage(message, sender) {
           if (message.button == 0 &&
               onRegularArea &&
               !wasMultiselectionAction)
-            TabsInternalOperation.activateTab(tab, {
+            TabsInternalOperation.activateTab(tab.apiTab, {
               keepMultiselection: tab.apiTab.highlighted
             });
         });
@@ -430,8 +430,8 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SELECT_TAB_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tab);
-        const tab = Tabs.getTabElementById(message.tab);
+        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
         TabsInternalOperation.activateTab(tab, Object.assign({}, message.options, {
@@ -695,7 +695,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         for (const tab of tabs) {
-          TabsInternalOperation.activateTab(tab, {
+          TabsInternalOperation.activateTab(tab.apiTab, {
             silently: message.silently
           });
         }

@@ -708,7 +708,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   if (params.collapsed && Tabs.isActive(tab)) {
     const newSelection = Tabs.getVisibleAncestorOrSelf(tab);
     logCollapseExpand('current tab is going to be collapsed, switch to ', dumpTab(newSelection));
-    TabsInternalOperation.activateTab(newSelection, { silently: true });
+    TabsInternalOperation.activateTab(newSelection.apiTab, { silently: true });
   }
 
   if (!Tabs.isSubtreeCollapsed(tab)) {
@@ -1023,7 +1023,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
   }
 
   log('focus to: ', dumpTab(nextActiveTab));
-  await TabsInternalOperation.activateTab(nextActiveTab);
+  await TabsInternalOperation.activateTab(nextActiveTab.apiTab);
   return true;
 }
 
