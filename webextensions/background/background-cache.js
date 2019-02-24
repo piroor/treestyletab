@@ -94,7 +94,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     if (window)
       insertionPoint.selectNode(window.element);
     else
-      insertionPoint.selectNodeContents(Tabs.allTabsContainer);
+      insertionPoint.selectNodeContents(Tabs.allElementsContainer);
     insertionPoint.collapse(false);
   }
   const restored = restoreTabsFromCache(windowId, {

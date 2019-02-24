@@ -50,7 +50,6 @@ import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as SidebarStatus from './sidebar-status.js';
 import * as Tabs from './tabs.js';
-import * as TabsContainer from './tabs-container.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsMove from './tabs-move.js';
@@ -1201,8 +1200,8 @@ export async function moveTabs(tabs, options = {}) {
       const prepareContainer = () => {
         container = Tabs.getTabsContainer(destinationWindowId);
         if (!container) {
-          container = TabsContainer.buildFor(destinationWindowId);
-          Tabs.allTabsContainer.appendChild(container);
+          container = Tabs.buildElementsContainerFor(destinationWindowId);
+          Tabs.allElementsContainer.appendChild(container);
         }
         if (isAcrossWindows) {
           container.$TST.toBeOpenedTabsWithPositions += tabs.length;

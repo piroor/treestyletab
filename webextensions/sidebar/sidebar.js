@@ -19,7 +19,6 @@ import * as Tabs from '/common/tabs.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsMove from '/common/tabs-move.js';
-import * as TabsContainer from '/common/tabs-container.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
@@ -352,7 +351,7 @@ function updateContextualIdentitiesSelector() {
 
 export async function rebuildAll(cache) {
   const apiTabs = await browser.tabs.query({ currentWindow: true });
-  TabsContainer.clearAll();
+  Tabs.clearAllElements();
   Tabs.untrackAll(apiTabs[0].windowId);
   for (const apiTab of apiTabs) {
     Tabs.track(apiTab);
@@ -366,14 +365,14 @@ export async function rebuildAll(cache) {
     }
   }
 
-  const container = TabsContainer.buildFor(mTargetWindow);
+  const container = Tabs.buildElementsContainerFor(mTargetWindow);
   for (const apiTab of apiTabs) {
     TabIdFixer.fixTab(apiTab);
-    const newTab = Tabs.buildTab(apiTab, { existing: true, inRemote: true });
+    const newTab = Tabs.buildTabElement(apiTab, { existing: true, inRemote: true });
     container.appendChild(newTab);
     TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
   }
-  Tabs.allTabsContainer.appendChild(container);
+  Tabs.allElementsContainer.appendChild(container);
   MetricsData.add('rebuildAll (from scratch)');
   return false;
 }

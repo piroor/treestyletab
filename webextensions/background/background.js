@@ -18,7 +18,6 @@ import * as ApiTabsListener from '/common/api-tabs-listener.js';
 import * as MetricsData from '/common/metrics-data.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
-import * as TabsContainer from '/common/tabs-container.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
@@ -180,14 +179,14 @@ function destroy() {
 }
 
 async function rebuildAll() {
-  TabsContainer.clearAll();
+  Tabs.clearAllElements();
   Tabs.untrackAll();
   const windows = await browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
   });
   const insertionPoint = document.createRange();
-  insertionPoint.selectNodeContents(Tabs.allTabsContainer);
+  insertionPoint.selectNodeContents(Tabs.allElementsContainer);
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
@@ -215,14 +214,14 @@ async function rebuildAll() {
       }
       try {
         log(`build tabs for ${window.id} from scratch`);
-        const container = TabsContainer.buildFor(window.id);
+        const container = Tabs.buildElementsContainerFor(window.id);
         for (const apiTab of window.tabs) {
-          const newTab = Tabs.buildTab(apiTab, { existing: true });
+          const newTab = Tabs.buildTabElement(apiTab, { existing: true });
           container.appendChild(newTab);
           TabsUpdate.updateTab(newTab, apiTab, { forceApply: true });
           tryStartHandleAccelKeyOnTab(newTab);
         }
-        Tabs.allTabsContainer.appendChild(container);
+        Tabs.allElementsContainer.appendChild(container);
       }
       catch(e) {
         log(`failed to build tabs for ${window.id}`, e);

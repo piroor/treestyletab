@@ -54,7 +54,7 @@ function log(...args) {
 
 let mTargetWindow;
 
-export const allTabsContainer = document.querySelector('#all-tabs');
+export const allElementsContainer = document.querySelector('#all-tabs');
 
 export const trackedWindows = new Map();
 export const trackedTabs = new Map();
@@ -814,19 +814,19 @@ browser.windows.onRemoved.addListener(windowId => {
 // Create Tabs
 //===================================================================
 
-export function buildTab(apiTab, options = {}) {
-  log('build tab for ', apiTab);
-  if (!apiTab.$TST)
-    new Tab(apiTab);
-  const tab = document.createElement('li');
-  apiTab.$TST.element = tab;
-  tab.$TST = apiTab.$TST;
-  tab.apiTab = apiTab;
-  setAttribute(tab, 'id', makeTabId(apiTab));
-  setAttribute(tab, Constants.kAPI_TAB_ID, apiTab.id || -1);
-  setAttribute(tab, Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
-  tab.classList.add('tab');
-  if (apiTab.active)
+export function buildTabElement(tab, options = {}) {
+  log('build tab element for ', tab);
+  if (!tab.$TST)
+    new Tab(tab);
+  const tabElement = document.createElement('li');
+  tab.$TST.element = tabElement;
+  tabElement.$TST = tab.$TST;
+  tabElement.apiTab = tab;
+  setAttribute(tab, 'id', makeTabId(tab));
+  setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
+  setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+  tabElement.classList.add('tab');
+  if (tab.active)
     addState(tab, Constants.kTAB_STATE_ACTIVE);
   addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
@@ -834,16 +834,40 @@ export function buildTab(apiTab, options = {}) {
   labelContainer.classList.add(Constants.kLABEL);
   const label = labelContainer.appendChild(document.createElement('span'));
   label.classList.add(`${Constants.kLABEL}-content`);
-  tab.appendChild(labelContainer);
+  tabElement.appendChild(labelContainer);
 
-  onTabElementBuilt.dispatch(apiTab, options);
+  onTabElementBuilt.dispatch(tab, options);
 
   if (options.existing)
     addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 
-  initPromisedStatus(apiTab);
+  initPromisedStatus(tab);
 
-  return tab;
+  return tabElement;
+}
+
+export function buildElementsContainerFor(windowId) {
+  const container = document.createElement('ul');
+  container.dataset.windowId = windowId;
+  container.setAttribute('id', `window-${windowId}`);
+  container.classList.add('tabs');
+
+  initElementsContainer(container);
+
+  return container;
+}
+
+export function initElementsContainer(container) {
+  container.windowId = parseInt(container.dataset.windowId);
+  container.$TST = trackedWindows.get(container.windowId) || new Window(container.windowId);
+  container.$TST.element = container;
+}
+
+export function clearAllElements() {
+  const range = document.createRange();
+  range.selectNodeContents(allElementsContainer);
+  range.deleteContents();
+  range.detach();
 }
 
 
@@ -870,7 +894,7 @@ export function getTrackedWindow(hint) {
   assertValidHint(hint);
 
   if (!hint)
-    hint = mTargetWindow || allTabsContainer.firstChild;
+    hint = mTargetWindow || allElementsContainer.firstChild;
 
   if (typeof hint == 'number')
     return trackedWindows.get(hint);
@@ -893,7 +917,7 @@ export function getTabsContainer(hint) {
   assertValidHint(hint);
 
   if (!hint)
-    hint = mTargetWindow || allTabsContainer.firstChild;
+    hint = mTargetWindow || allElementsContainer.firstChild;
 
   if (typeof hint == 'number')
     return document.querySelector(`#window-${hint}`);

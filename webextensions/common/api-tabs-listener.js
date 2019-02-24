@@ -47,7 +47,6 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
-import * as TabsContainer from './tabs-container.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 
@@ -126,8 +125,8 @@ function getTrackedWindow(windowId) {
 
   let container = Tabs.getTabsContainer(windowId);
   if (!container) {
-    container = TabsContainer.buildFor(windowId);
-    Tabs.allTabsContainer.appendChild(container);
+    container = Tabs.buildElementsContainerFor(windowId);
+    Tabs.allElementsContainer.appendChild(container);
     window = container.$TST;
   }
 
@@ -372,7 +371,7 @@ async function onNewTabTracked(tab) {
   log(`onNewTabTracked(id=${tab.id}): start to create tab element`);
 
   try {
-    const newTabElement = Tabs.buildTab(tab, { inRemote: !!targetWindow });
+    const newTabElement = Tabs.buildTabElement(tab, { inRemote: !!targetWindow });
     Tabs.addState(newTabElement, Constants.kTAB_STATE_OPENING);
 
     // New tab's index can become invalid because the value of "index" is same to
