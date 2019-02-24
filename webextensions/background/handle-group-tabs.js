@@ -77,7 +77,7 @@ export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
       clearTimeout(tab.apiTab.$TST.reservedCleanupNeedlessGroupTab);
     tab.apiTab.$TST.reservedCleanupNeedlessGroupTab = setTimeout(() => {
       delete tab.apiTab.$TST.reservedCleanupNeedlessGroupTab;
-      cleanupNeedlssGroupTab(tab);
+      cleanupNeedlssGroupTab(tab.apiTab);
     }, 100);
   }
 }
@@ -85,7 +85,7 @@ export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
 function cleanupNeedlssGroupTab(tabs) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-  log('trying to clanup needless temporary group tabs from ', tabs.map(dumpTab));
+  log('trying to clanup needless temporary group tabs from ', tabs.map(tab => tab.id));
   const tabsToBeRemoved = [];
   for (const tab of tabs) {
     if (!Tabs.isTemporaryGroupTab(tab))
@@ -97,7 +97,7 @@ function cleanupNeedlssGroupTab(tabs) {
       break;
     tabsToBeRemoved.push(tab);
   }
-  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
+  log('=> to be removed: ', tabsToBeRemoved.map(tab => tab.id));
   TabsInternalOperation.removeTabs(tabsToBeRemoved);
 }
 

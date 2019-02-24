@@ -60,7 +60,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
   }
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
-    await closeChildTabs(tab.$TST.element);
+    await closeChildTabs(tab);
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
       Tabs.getChildTabs(tab).length > 1) {

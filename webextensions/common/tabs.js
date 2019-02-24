@@ -1203,7 +1203,7 @@ export function getParentTab(child, options = {}) {
 }
 
 export function getAncestorTabs(descendant, options = {}) {
-  if (!descendant)
+  if (!descendant || !ensureLivingTab(descendant))
     return [];
   const element = descendant instanceof Element || options.element;
   if (descendant instanceof Element)
@@ -1238,6 +1238,8 @@ export function getVisibleAncestorOrSelf(descendant, options = {}) {
 }
 
 export function getRootTab(descendant, options = {}) {
+  if (!ensureLivingTab(descendant))
+    return null;
   const element = descendant instanceof Element || options.element;
   if (descendant instanceof Element)
     descendant = descendant.apiTab;
@@ -1376,10 +1378,10 @@ function getChildTabIndex(child, parent, options = {}) {
 
 export function getDescendantTabs(root, options = {}) {
   if (!ensureLivingTab(root))
-    return console.log('not living'), [];
+    return [];
   assertValidHint(root);
   if (!assertInitializedTab(root))
-    return console.log('not initialized'), [];
+    return [];
 
   const element = root instanceof Element || options.element;
   if (root instanceof Element)

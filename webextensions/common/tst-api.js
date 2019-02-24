@@ -547,7 +547,7 @@ async function getTabsFromWrongIds(aIds, sender) {
     });
     tabsInActiveWindow = window.tabs;
   }
-  const tabOrAPITabOrIds = await Promise.all(aIds.map(async (id) => {
+  const tabs = await Promise.all(aIds.map(async (id) => {
     switch (String(id).toLowerCase()) {
       case 'active':
       case 'current': {
@@ -587,15 +587,15 @@ async function getTabsFromWrongIds(aIds, sender) {
         return Tabs.getTabByUniqueId(id, { element: false });
     }
   }));
-  log('=> ', tabOrAPITabOrIds);
+  log('=> ', tabs);
 
-  let flattenTabOrAPITabOrIds;
+  let flattenTabs;
   if (typeof Array.prototype.flat !== 'function') // Firefox 61 or older
-    flattenTabOrAPITabOrIds = tabOrAPITabOrIds.reduce((acc, val) => acc.concat(val), []);
+    flattenTabs = tabs.reduce((acc, val) => acc.concat(val), []);
   else
-    flattenTabOrAPITabOrIds = tabOrAPITabOrIds.flat();
+    flattenTabs = tabs.flat();
 
-  return flattenTabOrAPITabOrIds.filter(tab => !!tab);
+  return flattenTabs.filter(tab => !!tab).map(tab => Tabs.trackedTabs.get(tab.id));
 }
 
 export function formatResult(results, originalMessage) {
