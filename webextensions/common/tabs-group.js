@@ -37,25 +37,25 @@ export async function groupTabs(tabs, options = {}) {
     title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].title),
     temporary: true
   });
-  const groupTabElement = await TabsOpen.openURIInTab(uri, {
+  const groupTab = (await TabsOpen.openURIInTab(uri, {
     windowId:     rootTabs[0].windowId,
     parent:       Tabs.getParentTab(rootTabs[0], { element: true }),
     insertBefore: rootTabs[0].$TST.element,
     inBackground: true
-  });
+  })).apiTab;
 
   await Tree.detachTabsFromTree(tabs.map(tab => tab.$TST.element), {
     broadcast: !!options.broadcast
   });
-  await TabsMove.moveTabsAfter(tabs.slice(1).map(tab => tab.$TST.element), tabs[0].$TST.element, {
+  await TabsMove.moveTabsAfter(tabs.slice(1), tabs[0], {
     broadcast: !!options.broadcast
   });
   for (const tab of rootTabs) {
-    await Tree.attachTabTo(tab.$TST.element, groupTabElement, {
+    await Tree.attachTabTo(tab.$TST.element, groupTab.$TST.element, {
       forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
       dontMove:  true,
       broadcast: !!options.broadcast
     });
   }
-  return groupTabElement.apiTab;
+  return groupTab;
 }

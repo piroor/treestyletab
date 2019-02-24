@@ -239,14 +239,14 @@ export async function migrateLegacyTreeStructure() {
       apiWindow = await browser.windows.get(apiWindow.id, {
         populate: true
       });
-      const restApiTabs = apiWindow.tabs.slice(1);
+      const restTabs = apiWindow.tabs.slice(1);
       try {
         await TabsInternalOperation.removeTab(Tabs.getTabElementById(apiWindow.tabs[0]));
         // apply pinned state
-        for (let i = 0, maxi = restApiTabs.length; i < maxi; i++) {
+        for (let i = 0, maxi = restTabs.length; i < maxi; i++) {
           if (!structure[i].pinned)
             break;
-          await browser.tabs.update(restApiTabs[i].id, {
+          await browser.tabs.update(restTabs[i].id, {
             pinned: true
           });
         }

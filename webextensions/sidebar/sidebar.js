@@ -884,10 +884,10 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.nextTab]));
+        await Tabs.waitUntilTabsAreCreated(message.tabElementIds.concat([message.nextTabElementId]));
         return TabsMove.moveTabsBefore(
-          message.tabs.map(Tabs.getTabElementById),
-          Tabs.getTabElementById(message.nextTab),
+          message.tabIds.map(id => Tabs.trackedTabs.get(id)),
+          message.nextTabId && Tabs.trackedTabs.get(message.nextTabId),
           message
         ).then(tabs => {
           // Asynchronously broadcasted movement can break the order of tabs,
@@ -899,10 +899,10 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabs.concat([message.previousTab]));
+        await Tabs.waitUntilTabsAreCreated(message.tabElementIds.concat([message.previousTabElementId]));
         return TabsMove.moveTabsAfter(
-          message.tabs.map(Tabs.getTabElementById),
-          Tabs.getTabElementById(message.previousTab),
+          message.tabIds.map(id => Tabs.trackedTabs.get(id)),
+          message.previousTabId && Tabs.trackedTabs.get(message.previousTabId),
           message
         ).then(tabs => {
           // Asynchronously broadcasted movement can break the order of tabs,

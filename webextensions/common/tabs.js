@@ -314,8 +314,8 @@ export function untrackAll(windowId) {
   }
 }
 
-function isTracked(apiTabId) {
-  return trackedTabs.has(apiTabId);
+function isTracked(tabId) {
+  return trackedTabs.has(tabId);
 }
 
 // queryings
@@ -518,19 +518,17 @@ function documentPositionComparator(a, b) {
   return 0;
 }
 
-export function sanitize(apiTab) {
-  apiTab = Object.assign({}, apiTab, {
-    '$TST': Object.assign({}, apiTab.$TST, {
-      element:          null,
-      tab:              null,
-      promisedUniqueId: null,
-      destroy:          null,
-      parent:           null,
-      ancestors:        [],
-      children:         []
-    })
+export function sanitize(tab) {
+  tab = Object.assign({}, tab, {
+    '$TST': JSON.parse(JSON.stringify({
+      states:      tab.$TST.states,
+      attributes:  tab.$TST.attributes,
+      parentId:    tab.$TST.parentId,
+      ancestorIds: tab.$TST.ancestorIds,
+      childIds:    tab.$TST.childIds
+    }))
   });
-  return apiTab;
+  return tab;
 }
 
 
@@ -538,8 +536,8 @@ export function sanitize(apiTab) {
 // Operate Tab ID
 //===================================================================
 
-export function makeTabId(apiTab) {
-  return `tab-${apiTab.windowId}-${apiTab.id}`;
+export function makeTabId(tab) {
+  return `tab-${tab.windowId}-${tab.id}`;
 }
 
 export async function requestUniqueId(tabOrId, options = {}) {
@@ -622,8 +620,8 @@ export function updateUniqueId(tab) {
   });
 }
 
-export async function getUniqueIds(apiTabs) {
-  const uniqueIds = await Promise.all(apiTabs.map(apiTab => browser.sessions.getTabValue(apiTab.id, Constants.kPERSISTENT_ID)));
+export async function getUniqueIds(tabs) {
+  const uniqueIds = await Promise.all(tabs.map(tab => browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID)));
   return uniqueIds.map(id => id && id.id || '?');
 }
 
@@ -1586,7 +1584,7 @@ export function getSelectedTabs(windowId, options = {}) {
     element:     true
   }, options));
   return Array.from(new Set(selectedTabs.concat(highlightedTabs)))
-    .sort((a, b) => a.apiTab.index - b.apiTab.index);
+    .sort(sort);
 }
 
 
@@ -1677,7 +1675,7 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
     tabsQueryOptions.windowId = windowId;
   }
   const beforeApiTabs = await browser.tabs.query(tabsQueryOptions);
-  const beforeApiIds  = beforeApiTabs.map(apiTab => apiTab.id);
+  const beforeApiIds  = beforeApiTabs.map(tab => tab.id);
   await asyncTask();
   const afterApiTabs = await browser.tabs.query(tabsQueryOptions);
   const addedApiTabs = afterApiTabs.filter(afterApiTab => !beforeApiIds.includes(afterApiTab.id));

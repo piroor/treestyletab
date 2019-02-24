@@ -41,7 +41,6 @@
 import {
   log as internalLogger,
   wait,
-  dumpTab,
   configs
 } from './common.js';
 
@@ -62,7 +61,7 @@ function logApiTabs(...args) {
 // primitive methods for internal use
 
 export async function moveTabsBefore(tabs, referenceTab, options = {}) {
-  log('moveTabsBefore: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  log('moveTabsBefore: ', tabs.map(tab => tab.id), referenceTab && referenceTab.id, options);
   if (!tabs.length ||
       !Tabs.ensureLivingTab(referenceTab))
     return [];
@@ -82,20 +81,22 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  const container = tabs[0].parentNode;
+  const window = Tabs.trackedWindows.get(tabs[0].windowId);
 
-  log('moveTabsInternallyBefore: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  log('moveTabsInternallyBefore: ', tabs.map(tab => tab.id), referenceTab.id, options);
   if (options.inRemote || options.broadcast) {
     const message = {
-      type:     Constants.kCOMMAND_MOVE_TABS_BEFORE,
-      windowId: tabs[0].apiTab.windowId,
-      tabs:     tabs.map(tab => tab.id),
-      nextTab:  referenceTab.id,
+      type:        Constants.kCOMMAND_MOVE_TABS_BEFORE,
+      windowId:    tabs[0].windowId,
+      tabIds:      tabs.map(tab => tab.id),
+      nextTabId:   referenceTab.id,
+      tabElementIds: tabs.map(tab => tab.$TST.element.id),
+      nextTabElementId: referenceTab.$TST.element.id,
       broadcasted: !!options.broadcast
     };
     if (options.inRemote) {
       const tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(Tabs.getTabElementById);
+      return tabIds.map(id => Tabs.trackedTabs.get(id));
     }
     else {
       browser.runtime.sendMessage(message);
@@ -112,18 +113,18 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     for (const tab of tabs) {
       const oldPreviousTab = Tabs.getPreviousTab(tab, { living: false, element: false });
       const oldNextTab     = Tabs.getNextTab(tab, { living: false, element: false });
-      if (oldNextTab && oldNextTab.id == referenceTab.apiTab.id) // no move case
+      if (oldNextTab && oldNextTab.id == referenceTab.id) // no move case
         continue;
-      container.$TST.internalMovingTabs.add(tab.apiTab.id);
-      container.$TST.alreadyMovedTabs.add(tab.apiTab.id);
-      container.insertBefore(tab, referenceTab);
-      if (referenceTab.apiTab.index > tab.apiTab.index)
-        tab.apiTab.index = referenceTab.apiTab.index - 1;
+      window.internalMovingTabs.add(tab.id);
+      window.alreadyMovedTabs.add(tab.id);
+      window.element.insertBefore(tab.$TST.element, referenceTab.$TST.element);
+      if (referenceTab.index > tab.index)
+        tab.index = referenceTab.index - 1;
       else
-        tab.apiTab.index = referenceTab.apiTab.index;
-      Tabs.track(tab.apiTab);
+        tab.index = referenceTab.index;
+      Tabs.track(tab);
       movedTabsCount++;
-      Tabs.onTabElementMoved.dispatch(tab.apiTab, {
+      Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab,
         broadcasted: !!options.broadcasted
@@ -135,14 +136,14 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-        Array.from(container.childNodes)
-          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
+        Array.from(window.element.childNodes)
+          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab.id) ? '[MOVED]' : ''))
           .join('\n')));
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.
         await wait(configs.newTabAnimationDuration);
-      syncTabsPositionToApiTabs(tabs.map(tab => tab.apiTab));
+      syncToNativeTabs(tabs);
     }
   }
   catch(e) {
@@ -175,7 +176,7 @@ function syncOrderOfChildTabs(parentTabs) {
 }
 
 export async function moveTabsAfter(tabs, referenceTab, options = {}) {
-  log('moveTabsAfter: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  log('moveTabsAfter: ', tabs.map(tab => tab.id), referenceTab && referenceTab.id, options);
   if (!tabs.length ||
       !Tabs.ensureLivingTab(referenceTab))
     return [];
@@ -195,20 +196,22 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  const container = tabs[0].parentNode;
+  const window = Tabs.trackedWindows.get(tabs[0].windowId);
 
-  log('moveTabsInternallyAfter: ', tabs.map(dumpTab), dumpTab(referenceTab), options);
+  log('moveTabsInternallyAfter: ', tabs.map(tab => tab.id), referenceTab.id, options);
   if (options.inRemote || options.broadcast) {
     const message = {
-      type:        Constants.kCOMMAND_MOVE_TABS_AFTER,
-      windowId:    tabs[0].apiTab.windowId,
-      tabs:        tabs.map(tab => tab.id),
-      previousTab: referenceTab.id,
-      broadcasted: !!options.broadcast
+      type:          Constants.kCOMMAND_MOVE_TABS_AFTER,
+      windowId:      tabs[0].windowId,
+      tabIds:        tabs.map(tab => tab.id),
+      previousTabId: referenceTab.id,
+      tabElementIds: tabs.map(tab => tab.$TST.element.id),
+      previousTabElementId: referenceTab.$TST.element.id,
+      broadcasted:   !!options.broadcast
     };
     if (options.inRemote) {
       const tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(Tabs.getTabElementById);
+      return tabIds.map(id => Tabs.trackedTabs.get(id));
     }
     else {
       browser.runtime.sendMessage(message);
@@ -222,7 +225,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       following to this operation, we need to move tabs immediately.
     */
     let nextTab = Tabs.getNextTab(referenceTab, { living: false, element: false });
-    if (nextTab && tabs.find(tab => tab.apiTab.id == nextTab.id))
+    if (nextTab && tabs.find(tab => tab.id == nextTab.id))
       nextTab = null;
     let movedTabsCount = 0;
     for (const tab of tabs) {
@@ -231,21 +234,21 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       if ((!oldNextTab && !nextTab) ||
           (oldNextTab && nextTab && oldNextTab.id == nextTab.id)) // no move case
         continue;
-      container.$TST.internalMovingTabs.add(tab.apiTab.id);
-      container.$TST.alreadyMovedTabs.add(tab.apiTab.id);
-      container.insertBefore(tab, nextTab && nextTab.$TST.element);
+      window.internalMovingTabs.add(tab.id);
+      window.alreadyMovedTabs.add(tab.id);
+      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
       if (nextTab) {
-        if (nextTab.index > tab.apiTab.index)
-          tab.apiTab.index = nextTab.index - 1;
+        if (nextTab.index > tab.index)
+          tab.index = nextTab.index - 1;
         else
-          tab.apiTab.index = nextTab.index;
+          tab.index = nextTab.index;
       }
       else {
-        tab.apiTab.index = Tabs.trackedWindows.get(container.windowId).tabs.size - 1
+        tab.index = window.tabs.size - 1
       }
-      Tabs.track(tab.apiTab);
+      Tabs.track(tab);
       movedTabsCount++;
-      Tabs.onTabElementMoved.dispatch(tab.apiTab, {
+      Tabs.onTabElementMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab,
         broadcasted: !!options.broadcasted
@@ -257,14 +260,14 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-        Array.from(container.childNodes)
-          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
+        Array.from(window.element.childNodes)
+          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab.id) ? '[MOVED]' : ''))
           .join('\n')));
     }
     if (!options.broadcasted) {
       if (options.delayedMove) // Wait until opening animation is finished.
         await wait(configs.newTabAnimationDuration);
-      syncTabsPositionToApiTabs(tabs.map(tab => tab.apiTab));
+      syncToNativeTabs(tabs);
     }
   }
   catch(e) {
@@ -281,7 +284,7 @@ export async function moveTabInternallyAfter(tab, referenceTab, options = {}) {
 // ========================================================
 // Synchronize order of tab elements to browser's tabs
 
-const mMovedApiTabs     = new Map();
+const mMovedTabs        = new Map();
 const mPreviousSync     = new Map();
 const mDelayedSync      = new Map();
 const mDelayedSyncTimer = new Map();
@@ -290,11 +293,11 @@ export async function waitUntilSynchronized(windowId) {
   return mPreviousSync.get(windowId) || mDelayedSync.get(windowId);
 }
 
-function syncTabsPositionToApiTabs(apiTabs) {
-  const windowId = apiTabs[0].windowId;
-  //log(`syncTabsPositionToApiTabs(${windowId})`);
-  const movedApiTabs = mMovedApiTabs.get(windowId) || [];
-  mMovedApiTabs.set(windowId, movedApiTabs.concat(apiTabs));
+function syncToNativeTabs(tabs) {
+  const windowId = tabs[0].windowId;
+  //log(`syncToNativeTabs(${windowId})`);
+  const movedTabs = mMovedTabs.get(windowId) || [];
+  mMovedTabs.set(windowId, movedTabs.concat(tabs));
   if (mDelayedSyncTimer.has(windowId))
     clearTimeout(mDelayedSyncTimer.get(windowId));
   const delayedSync = new Promise((resolve, _reject) => {
@@ -302,9 +305,9 @@ function syncTabsPositionToApiTabs(apiTabs) {
       mDelayedSync.delete(windowId);
       let previousSync = mPreviousSync.get(windowId);
       if (previousSync)
-        previousSync = previousSync.then(() => syncTabsPositionToApiTabsInternal(windowId));
+        previousSync = previousSync.then(() => syncToNativeTabsInternal(windowId));
       else
-        previousSync = syncTabsPositionToApiTabsInternal(windowId);
+        previousSync = syncToNativeTabsInternal(windowId);
       previousSync = previousSync.then(resolve);
       mPreviousSync.set(windowId, previousSync);
     }, 250));
@@ -314,36 +317,36 @@ function syncTabsPositionToApiTabs(apiTabs) {
   mDelayedSync.set(windowId, delayedSync);
   return delayedSync;
 }
-async function syncTabsPositionToApiTabsInternal(windowId) {
+async function syncToNativeTabsInternal(windowId) {
   mDelayedSyncTimer.delete(windowId);
 
-  const movedApiTabs = mMovedApiTabs.get(windowId) || [];
-  mMovedApiTabs.delete(windowId);
+  const oldMovedTabs = mMovedTabs.get(windowId) || [];
+  mMovedTabs.delete(windowId);
 
   if (Tabs.hasCreatingTab(windowId))
     await Tabs.waitUntilAllTabsAreCreated(windowId);
   if (Tabs.hasMovingTab(windowId))
     await Tabs.waitUntilAllTabsAreMoved(windowId);
 
-  const container = Tabs.getTabsContainer(windowId);
+  const window = Tabs.trackedWindows.get(windowId);
 
-  for (const apiTab of movedApiTabs) {
-    container.$TST.internalMovingTabs.delete(apiTab.id);
-    container.$TST.alreadyMovedTabs.delete(apiTab.id);
+  for (const tab of oldMovedTabs) {
+    window.internalMovingTabs.delete(tab.id);
+    window.alreadyMovedTabs.delete(tab.id);
   }
 
   // Tabs may be removed while waiting.
   const internalOrder   = Tabs.trackedWindows.get(windowId).order;
-  const elementsOrder   = Array.from(container.childNodes, tab => tab.apiTab.id);
+  const elementsOrder   = Array.from(window.element.childNodes, tabElement => tabElement.apiTab.id);
   const nativeTabsOrder = (await browser.tabs.query({ windowId })).map(apiTab => apiTab.id);
-  log(`syncTabsPositionToApiTabs(${windowId}): rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(','), nativeTabsOrder:nativeTabsOrder.join(',') });
+  log(`syncToNativeTabs(${windowId}): rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(','), nativeTabsOrder:nativeTabsOrder.join(',') });
 
   {
-    log(`syncTabsPositionToApiTabs(${windowId}): step0, internalOrder => elementsOrder`);
+    log(`syncToNativeTabs(${windowId}): step0, internalOrder => elementsOrder`);
     const moveOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
     for (const operation of moveOperations) {
       const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
-      log(`syncTabsPositionToApiTabs(${windowId}): step0, operation `, { tag, fromStart, fromEnd, toStart, toEnd });
+      log(`syncToNativeTabs(${windowId}): step0, operation `, { tag, fromStart, fromEnd, toStart, toEnd });
       switch (tag) {
         case 'equal':
         case 'delete':
@@ -361,17 +364,17 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           break;
       }
     }
-    log(`syncTabsPositionToApiTabs(${windowId}): step0, rearrange completed. `, Array.from(container.childNodes, tab => tab.apiTab.id));
+    log(`syncToNativeTabs(${windowId}): step0, rearrange completed. `, Array.from(window.element.childNodes, tab => tab.apiTab.id));
   }
 
-  log(`syncTabsPositionToApiTabs(${windowId}): step1, internalOrder => nativeTabsOrder`);
+  log(`syncToNativeTabs(${windowId}): step1, internalOrder => nativeTabsOrder`);
   let apiTabIdsForUpdatedIndices = Array.from(nativeTabsOrder);
 
   const moveOperations = (new SequenceMatcher(nativeTabsOrder, internalOrder)).operations();
   const movedTabs = new Set();
   for (const operation of moveOperations) {
     const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
-    log(`syncTabsPositionToApiTabs(${windowId}): operation `, { tag, fromStart, fromEnd, toStart, toEnd });
+    log(`syncToNativeTabs(${windowId}): operation `, { tag, fromStart, fromEnd, toStart, toEnd });
     switch (tag) {
       case 'equal':
       case 'delete':
@@ -396,13 +399,13 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
         const fromIndex = fromIndices[0];
         if (fromIndex < toIndex)
           toIndex--;
-        log(`syncTabsPositionToApiTabs(${windowId}): step1, move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
+        log(`syncToNativeTabs(${windowId}): step1, move ${moveTabIds.join(',')} before ${referenceId} / from = ${fromIndex}, to = ${toIndex}`);
         for (const movedId of moveTabIds) {
-          container.$TST.internalMovingTabs.add(movedId);
-          container.$TST.alreadyMovedTabs.add(movedId);
+          window.internalMovingTabs.add(movedId);
+          window.alreadyMovedTabs.add(movedId);
           movedTabs.add(movedId);
         }
-        logApiTabs(`tabs-move:syncTabsPositionToApiTabs(${windowId}): step1, browser.tabs.move() `, moveTabIds, {
+        logApiTabs(`tabs-move:syncToNativeTabs(${windowId}): step1, browser.tabs.move() `, moveTabIds, {
           windowId,
           index: toIndex
         });
@@ -410,19 +413,18 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
           windowId,
           index: toIndex
         }).catch(e => {
-          log(`syncTabsPositionToApiTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
+          log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
         });
         apiTabIdsForUpdatedIndices = apiTabIdsForUpdatedIndices.filter(id => !moveTabIds.includes(id));
         apiTabIdsForUpdatedIndices.splice(toIndex, 0, ...moveTabIds);
         break;
     }
   }
-  log(`syncTabsPositionToApiTabs(${windowId}): step1, rearrange completed.`);
+  log(`syncToNativeTabs(${windowId}): step1, rearrange completed.`);
 
-  const allTabs = container.childNodes;
   if (movedTabs.size > 0) {
-    log(`Tabs rearranged and reindexed by syncTabsPositionToApiTabs(${windowId}):\n`+(!configs.debug ? '' :
-      Array.from(allTabs, tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab.apiTab.id) ? '[MOVED]' : '')+' '+tab.apiTab.title)
+    log(`Tabs rearranged by syncToNativeTabs(${windowId}):\n`+(!configs.debug ? '' :
+      Array.from(window.element.childNodes, tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab.apiTab.id) ? '[MOVED]' : '')+' '+tab.apiTab.title)
         .join('\n')));
 
     // tabs.onMoved produced by this operation can break the order of tabs
@@ -435,6 +437,6 @@ async function syncTabsPositionToApiTabsInternal(windowId) {
 
     // Multiple times asynchronous tab move is unstable, so we retry again
     // for safety until all tabs are completely synchronized.
-    syncTabsPositionToApiTabs([{ windowId }]);
+    syncToNativeTabs([{ windowId }]);
   }
 }

@@ -1151,7 +1151,7 @@ export async function followDescendantsToMovedRoot(tab, options = {}) {
   const container = tab.parentNode;
   container.$TST.subTreeChildrenMovingCount++;
   container.$TST.subTreeMovingCount++;
-  await TabsMove.moveTabsAfter(Tabs.getDescendantTabs(tab), tab, options);
+  await TabsMove.moveTabsAfter(Tabs.getDescendantTabs(tab, { element: false }), tab.apiTab, options);
   container.$TST.subTreeChildrenMovingCount--;
   container.$TST.subTreeMovingCount--;
 }
@@ -1377,10 +1377,18 @@ export async function moveTabs(tabs, options = {}) {
 
 
   if (options.insertBefore) {
-    await TabsMove.moveTabsBefore(movedTabs, options.insertBefore, options);
+    await TabsMove.moveTabsBefore(
+      movedTabs.map(tabElement => tabElement.apiTab),
+      options.insertBefore && options.insertBefore.apiTab,
+      options
+    );
   }
   else if (options.insertAfter) {
-    await TabsMove.moveTabsAfter(movedTabs, options.insertAfter, options);
+    await TabsMove.moveTabsAfter(
+      movedTabs.map(tabElement => tabElement.apiTab),
+      options.insertAfter && options.insertAfter.apiTab,
+      options
+    );
   }
   else {
     log('no move: just duplicate or import');

@@ -147,7 +147,7 @@ export async function bookmarkTree(root, options = {}) {
 
 
 export async function openNewTabAs(options = {}) {
-  const currentTab = options.baseTab.apiTab ||
+  const currentTab = options.baseTab ||
     Tabs.trackedTabs.get((await browser.tabs.query({
       active:        true,
       currentWindow: true
@@ -379,14 +379,14 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   log('=> moving tabs ', movedTabs.map(tab => tab.id));
   if (params.insertBefore)
     await TabsMove.moveTabsBefore(
-      movedTabs.map(tab => tab.$TST.element),
-      params.insertBefore && params.insertBefore.$TST.element,
+      movedTabs,
+      params.insertBefore,
       { broadcast: params.broadcast }
     );
   else if (params.insertAfter)
     await TabsMove.moveTabsAfter(
-      movedTabs.map(tab => tab.$TST.element),
-      params.insertAfter && params.insertAfter.$TST.element,
+      movedTabs,
+      params.insertAfter,
       { broadcast: params.broadcast }
     );
   else
@@ -441,14 +441,14 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
 
   if (options.insertBefore)
     await TabsMove.moveTabsBefore(
-      (options.draggedTabs || tabs).map(tab => tab.$TST.element),
-      options.insertBefore && options.insertBefore.$TST.element,
+      options.draggedTabs || tabs,
+      options.insertBefore,
       { broadcast: options.broadcast }
     );
   else if (options.insertAfter)
     await TabsMove.moveTabsAfter(
-      (options.draggedTabs || tabs).map(tab => tab.$TST.element),
-      options.insertAfter && options.insertAfter.$TST.element,
+      options.draggedTabs || tabs,
+      options.insertAfter,
       { broadcast: options.broadcast }
     );
 
@@ -645,7 +645,7 @@ export async function bookmarkTab(tab, options = {}) {
     notify({
       title:   browser.i18n.getMessage('bookmarkTab_notification_success_title'),
       message: browser.i18n.getMessage('bookmarkTab_notification_success_message', [
-        tab.apiTab.title
+        tab.title
       ]),
       icon:    Constants.kNOTIFICATION_DEFAULT_ICON
     });
