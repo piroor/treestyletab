@@ -594,7 +594,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         for (const tab of tabs) {
-          Tree.collapseExpandSubtree(tab, {
+          Tree.collapseExpandSubtree(tab.$TST.element, {
             collapsed: true,
             broadcast: true
           });
@@ -606,7 +606,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         for (const tab of tabs) {
-          Tree.collapseExpandSubtree(tab, {
+          Tree.collapseExpandSubtree(tab.$TST.element, {
             collapsed: false,
             broadcast: true
           });
@@ -652,7 +652,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kDEMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.indent(tab.apiTab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.indent(tab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
@@ -660,35 +660,35 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kPROMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.outdent(tab.apiTab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.outdent(tab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_UP:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.moveUp(tab.apiTab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.moveUp(tab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_TO_START:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Commands.moveTabsToStart(tabs.map(tab => tab.$TST.element));
+        await Commands.moveTabsToStart(tabs);
         return true;
       })();
 
     case TSTAPI.kMOVE_DOWN:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const results = await Promise.all(tabs.map(tab => Commands.moveDown(tab.apiTab, message)));
+        const results = await Promise.all(tabs.map(tab => Commands.moveDown(tab, message)));
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_TO_END:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Commands.moveTabsToEnd(tabs.map(tab => tab.apiTab));
+        await Commands.moveTabsToEnd(tabs);
         return true;
       })();
 
@@ -696,7 +696,7 @@ function onMessageExternal(message, sender) {
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         for (const tab of tabs) {
-          TabsInternalOperation.activateTab(tab.apiTab, {
+          TabsInternalOperation.activateTab(tab, {
             silently: message.silently
           });
         }
@@ -724,8 +724,8 @@ function onMessageExternal(message, sender) {
             break;
         }
         for (const tab of tabs) {
-          await Commands.duplicateTab(tab.apiTab, {
-            destinationWindowId: tab.apiTab.windowId,
+          await Commands.duplicateTab(tab, {
+            destinationWindowId: tab.windowId,
             behavior,
             multiselected: false
           });
@@ -736,13 +736,13 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGROUP_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        return TabsGroup.groupTabs(tabs.map(tab => tab.apiTab), { broadcast: true });
+        return TabsGroup.groupTabs(tabs, { broadcast: true });
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const windowId = await Commands.openTabsInWindow(tabs.map(tab => tab.apiTab), {
+        const windowId = await Commands.openTabsInWindow(tabs, {
           multiselected: false
         });
         return windowId;
@@ -751,20 +751,20 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kREOPEN_IN_CONTAINER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const reopenedTabs = await Commands.reopenInContainer(tabs.map(tab => tab.apiTab), message.containerId || 'firefox-default');
+        const reopenedTabs = await Commands.reopenInContainer(tabs, message.containerId || 'firefox-default');
         return TSTAPI.formatResult(reopenedTabs, message);
       })();
 
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        return Promise.resolve(Tree.getTreeStructureFromTabs(tabs));
+        return Promise.resolve(Tree.getTreeStructureFromTabs(tabs.map(tab => tab.$TST.element)));
       })();
 
     case TSTAPI.kSET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Tree.applyTreeStructureToTabs(tabs, message.structure, {
+        await Tree.applyTreeStructureToTabs(tabs.map(tab => tab.$TST.element), message.structure, {
           broadcast: true
         });
         return Promise.resolve(true);
@@ -807,7 +807,7 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGRANT_TO_REMOVE_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(tabs.filter(Tabs.ensureLivingTab).map(tab => tab.apiTab.id));
+        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(tabs.filter(Tabs.ensureLivingTab).map(tab => tab.id));
         configs.grantedRemovingTabIds = Array.from(new Set(grantedRemovingTabIds));
         return true;
       })();

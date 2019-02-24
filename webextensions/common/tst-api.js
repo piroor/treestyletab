@@ -435,10 +435,10 @@ export function isGroupingBlocked() {
 
 export function serializeTab(tab) {
   const children         = Tabs.getChildTabs(tab).map(serializeTab);
-  const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.apiTab.id);
-  return Object.assign({}, Tabs.sanitize(tab.apiTab), {
+  const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.id);
+  return Object.assign({}, Tabs.sanitize(tab), {
     states:   Tabs.getStates(tab).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
-    indent:   parseInt(tab.getAttribute(Constants.kLEVEL) || 0),
+    indent:   parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0),
     children, ancestorTabIds
   });
 }
@@ -522,16 +522,16 @@ export async function getTargetTabs(message, sender) {
   if (message.window || message.windowId) {
     if (message.tab == '*' ||
         message.tabs == '*')
-      return Tabs.getAllTabs(message.window || message.windowId);
+      return Tabs.getAllTabs(message.window || message.windowId, { element: false });
     else
-      return Tabs.getRootTabs(message.window || message.windowId);
+      return Tabs.getRootTabs(message.window || message.windowId, { element: false });
   }
   if (message.tab == '*' ||
       message.tabs == '*') {
     const window = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     });
-    return Tabs.getAllTabs(window.id);
+    return Tabs.getAllTabs(window.id, { element: false });
   }
   if (message.tab)
     return getTabsFromWrongIds([message.tab], sender);
@@ -568,12 +568,12 @@ async function getTabsFromWrongIds(aIds, sender) {
       }
       case 'nextsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getNextSiblingTab(Tabs.getTabElementById(tabs[0]));
+        return Tabs.getNextSiblingTab(Tabs.trackedTabs.get(tabs[0].id));
       }
       case 'previoussibling':
       case 'prevsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getPreviousSiblingTab(Tabs.getTabElementById(tabs[0]));
+        return Tabs.getPreviousSiblingTab(Tabs.trackedTabs(tabs[0].id));
       }
       case 'sendertab':
         if (sender.tab)
@@ -584,8 +584,7 @@ async function getTabsFromWrongIds(aIds, sender) {
         return tabs.map(tab => TabIdFixer.fixTab(tab));
       }
       default:
-        const tabFromUniqueId = Tabs.getTabByUniqueId(id);
-        return tabFromUniqueId && tabFromUniqueId.$TST.element || id;
+        return Tabs.getTabByUniqueId(id, { element: false });
     }
   }));
   log('=> ', tabOrAPITabOrIds);
@@ -596,7 +595,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   else
     flattenTabOrAPITabOrIds = tabOrAPITabOrIds.flat();
 
-  return flattenTabOrAPITabOrIds.map(Tabs.getTabElementById).filter(tab => !!tab);
+  return flattenTabOrAPITabOrIds.filter(tab => !!tab);
 }
 
 export function formatResult(results, originalMessage) {
