@@ -1014,15 +1014,16 @@ export function getNextTab(tab, options = {}) {
   if (!tab || !tab.id)
     return null;
   assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   return query(Object.assign({
     windowId: tab.windowId,
     fromId:   tab.id,
     living:   true,
-    index:    (index => index > tab.index),
-    element
+    index:    (index => index > tab.index)
   }, options));
 }
 
@@ -1105,15 +1106,16 @@ export function getNextNormalTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   return query(Object.assign({
     windowId: tab.windowId,
     fromId:   tab.id,
     normal:   true,
-    index:    (index => index > tab.index),
-    element
+    index:    (index => index > tab.index)
   }, options));
 }
 
@@ -1121,7 +1123,9 @@ export function getPreviousNormalTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   return query(Object.assign({
@@ -1129,8 +1133,7 @@ export function getPreviousNormalTab(tab, options = {}) {
     fromId:   tab.id,
     normal:   true,
     index:    (index => index < tab.index),
-    last:     true,
-    element
+    last:     true
   }, options));
 }
 
@@ -1172,7 +1175,9 @@ function assertInitializedTab(tab) {
 export function getOpenerTab(tab, options = {}) {
   if (!tab)
     return null;
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   if (!ensureLivingTab(tab) ||
@@ -1184,7 +1189,7 @@ export function getOpenerTab(tab, options = {}) {
     windowId: tab.windowId,
     id:       tab.openerTabId,
     living:   true,
-    element
+    element:  options.element
   });
   return opener;
 }
@@ -1193,11 +1198,13 @@ export function getParentTab(child, options = {}) {
   if (!ensureLivingTab(child))
     return null;
   assertValidHint(child);
-  const element = child instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = child instanceof Element || options.element;
   if (child instanceof Element)
     child = child.apiTab;
   const parent = child.$TST.parent;
-  if (element)
+  if (options.element)
     return parent && parent.$TST.element;
   return parent;
 }
@@ -1205,13 +1212,15 @@ export function getParentTab(child, options = {}) {
 export function getAncestorTabs(descendant, options = {}) {
   if (!descendant || !ensureLivingTab(descendant))
     return [];
-  const element = descendant instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = descendant instanceof Element || options.element;
   if (descendant instanceof Element)
     descendant = descendant.apiTab;
   if (!options.force) {
     // slice(0) is required to guard the cached array from destructive methods liek sort()!
     const ancestors = descendant.$TST.ancestors.slice(0);
-    if (element)
+    if (options.element)
       return ancestors.map(ancestor => ancestor.$TST.element);
     return ancestors;
   }
@@ -1220,15 +1229,17 @@ export function getAncestorTabs(descendant, options = {}) {
     const parent = trackedTabs.get(descendant.$TST.parentId);
     if (!parent)
       break;
-    ancestors.push(element ? parent.$TST.element : parent);
+    ancestors.push(options.element ? parent.$TST.element : parent);
     descendant = parent;
   }
   return ancestors;
 }
 
 export function getVisibleAncestorOrSelf(descendant, options = {}) {
-  const element = descendant instanceof Element || options.element;
-  for (const ancestor of getAncestorTabs(descendant, Object.assign({}, options, { element }))) {
+  if (typeof options != 'object')
+    options = {};
+  options.element = descendant instanceof Element || options.element;
+  for (const ancestor of getAncestorTabs(descendant, options)) {
     if (!isCollapsed(ancestor))
       return ancestor;
   }
@@ -1240,12 +1251,14 @@ export function getVisibleAncestorOrSelf(descendant, options = {}) {
 export function getRootTab(descendant, options = {}) {
   if (!ensureLivingTab(descendant))
     return null;
-  const element = descendant instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = descendant instanceof Element || options.element;
   if (descendant instanceof Element)
     descendant = descendant.apiTab;
   const ancestors = descendant.$TST.ancestors;
   const root = ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
-  if (element)
+  if (options.element)
     return root.$TST.element;
   return root;
 }
@@ -1254,7 +1267,9 @@ export function getNextSiblingTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   const parent = tab.$TST.parent;
@@ -1266,7 +1281,7 @@ export function getNextSiblingTab(tab, options = {}) {
     if (!siblingId)
       return null;
     sibling = trackedTabs.get(siblingId);
-    if (element)
+    if (options.element)
       sibling = sibling && sibling.$TST.element;
   }
   else {
@@ -1277,7 +1292,7 @@ export function getNextSiblingTab(tab, options = {}) {
       index:     (index => index > tab.index),
       hasParent: false,
       first:     true,
-      element
+      element:   options.element
     });
   }
   return sibling;
@@ -1287,7 +1302,9 @@ export function getPreviousSiblingTab(tab, options = {}) {
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   const parent = tab.$TST.parent;
@@ -1299,7 +1316,7 @@ export function getPreviousSiblingTab(tab, options = {}) {
     if (!siblingId)
       return null;
     sibling = trackedTabs.get(siblingId);
-    if (element)
+    if (options.element)
       sibling = sibling && sibling.$TST.element;
   }
   else {
@@ -1310,7 +1327,7 @@ export function getPreviousSiblingTab(tab, options = {}) {
       index:     (index => index < tab.index),
       hasParent: false,
       last:      true,
-      element
+      element:   options.element
     });
   }
   return sibling;
@@ -1322,10 +1339,12 @@ export function getChildTabs(parent, options = {}) {
   assertValidHint(parent);
   if (!assertInitializedTab(parent))
     return [];
-  const element = parent instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = parent instanceof Element || options.element;
   if (parent instanceof Element)
     parent = parent.apiTab;
-  if (element)
+  if (options.element)
     return parent.$TST.children.map(child => child.$TST.element);
   return parent.$TST.children;
 }
@@ -1336,12 +1355,14 @@ export function getFirstChildTab(parent, options = {}) {
   assertValidHint(parent);
   if (!assertInitializedTab(parent))
     return null;
-  const element = parent instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = parent instanceof Element || options.element;
   if (parent instanceof Element)
     parent = parent.apiTab;
   const children = parent.$TST.children;
   const child = children.length > 0 ? children[0] : null ;
-  if (element)
+  if (options.element)
     return child && child.$TST.element;
   return child;
 }
@@ -1352,12 +1373,14 @@ export function getLastChildTab(parent, options = {}) {
   assertValidHint(parent);
   if (!assertInitializedTab(parent))
     return null;
-  const element = parent instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = parent instanceof Element || options.element;
   if (parent instanceof Element)
     parent = parent.apiTab;
   const children = parent.$TST.children;
   const child = children.length > 0 ? children[children.length - 1] : null ;
-  if (element)
+  if (options.element)
     return child && child.$TST.element;
   return child;
 }
@@ -1383,13 +1406,15 @@ export function getDescendantTabs(root, options = {}) {
   if (!assertInitializedTab(root))
     return [];
 
-  const element = root instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = root instanceof Element || options.element;
   if (root instanceof Element)
     root = root.apiTab;
   let descendants = [];
   const children = root.$TST.children;
   for (const child of children) {
-    descendants.push(element ? child.$TST.element : child);
+    descendants.push(options.element ? child.$TST.element : child);
     descendants = descendants.concat(getDescendantTabs(child, options));
   }
   return descendants;
@@ -1637,15 +1662,16 @@ export function getNextVisibleTab(tab, options = {}) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   return query(Object.assign({
     windowId: tab.windowId,
     fromId:   tab.id,
     visible:  true,
-    index:    (index => index > tab.index),
-    element
+    index:    (index => index > tab.index)
   }, options));
 }
 
@@ -1653,7 +1679,9 @@ export function getPreviousVisibleTab(tab, options = {}) { // visible, not-colla
   if (!ensureLivingTab(tab))
     return null;
   assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = tab instanceof Element || options.element;
   if (tab instanceof Element)
     tab = tab.apiTab;
   return query(Object.assign({
@@ -1661,8 +1689,7 @@ export function getPreviousVisibleTab(tab, options = {}) { // visible, not-colla
     fromId:   tab.id,
     visible:  true,
     index:    (index => index < tab.index),
-    last:     true,
-    element
+    last:     true
   }, options));
 }
 
@@ -1716,7 +1743,9 @@ export function getNextActiveTab(tab, options = {}) { // if the current tab is c
 export function getGroupTabForOpener(opener, options = {}) {
   if (!opener)
     return null;
-  const element = opener instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = opener instanceof Element || options.element;
   if (opener instanceof Element)
     opener = opener.apiTab;
   return query({
@@ -1726,21 +1755,23 @@ export function getGroupTabForOpener(opener, options = {}) {
       Constants.kCURRENT_URI,
       new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
     ],
-    element
+    element:    options.element
   });
 }
 
 export function getOpenerFromGroupTab(groupTab, options = {}) {
   if (!isGroupTab(groupTab))
     return null;
-  const element = groupTab instanceof Element || options.element;
+  if (typeof options != 'object')
+    options = {};
+  options.element = groupTab instanceof Element || options.element;
   if (groupTab instanceof Element)
     groupTab = groupTab.apiTab;
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
   const tab = matchedOpenerTabId && trackedTabs.get(matchedOpenerTabId[1]);
   if (!tab)
     return null;
-  if (element)
+  if (options.element)
     return tab.$TST.element;
   return tab;
 }

@@ -174,12 +174,12 @@ function getDragDataFromOneTab(hint, options = {}) {
       windowId: null
     };
 
-  const draggedTabs = options.shouldIgnoreDescendants ? [tab] : getDraggedTabsFromOneTab(tab);
+  const draggedTabElements = options.shouldIgnoreDescendants ? [tab] : getDraggedTabsFromOneTab(tab);
   return {
     tabNode:  tab,
-    tabNodes: draggedTabs,
+    tabNodes: draggedTabElements,
     tab:      Tabs.sanitize(tab.apiTab),
-    tabs:     draggedTabs.map(aDraggedTab => Tabs.sanitize(aDraggedTab.apiTab)),
+    tabs:     draggedTabElements.map(tab => Tabs.sanitize(tab.apiTab)),
     windowId: tab.apiTab.windowId
   };
 }
@@ -187,7 +187,7 @@ function getDragDataFromOneTab(hint, options = {}) {
 function getDraggedTabsFromOneTab(tab) {
   if (Tabs.isSelected(tab))
     return Tabs.getSelectedTabs(tab.apiTab.windowId, { element: true });
-  return [tab].concat(Tabs.getDescendantTabs(tab));
+  return [tab].concat(Tabs.getDescendantTabs(tab, { element: true }));
 }
 
 function sanitizeDragData(aDragData) {

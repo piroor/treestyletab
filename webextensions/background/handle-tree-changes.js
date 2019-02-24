@@ -39,33 +39,41 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   // tabs are also closed even if "forceExpand" is "true".
   if (info.newlyAttached &&
       mInitialized) {
+    log('newly attached tab');
     if (Tabs.isSubtreeCollapsed(info.parent) &&
-        !info.forceExpand)
+        !info.forceExpand) {
+      log('  the tree is collapsed, but keep collapsed by forceExpand option');
       Tree.collapseExpandTabAndSubtree(tab, {
         collapsed: true,
         justNow:   true,
         broadcast: true
       });
+    }
 
     const isNewTreeCreatedManually = !info.justNow && Tabs.getChildTabs(parent).length == 1;
     if (info.forceExpand) {
+      log('  expand by forceExpand option');
       Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
-        collapsed:    false,
-        inRemote:     false
+        collapsed: false,
+        inRemote:  false,
+        broadcast: true
       }));
     }
     if (!info.dontExpand) {
       if (configs.autoCollapseExpandSubtreeOnAttach &&
-          (isNewTreeCreatedManually || Tree.shouldTabAutoExpanded(parent)))
+          (isNewTreeCreatedManually || Tree.shouldTabAutoExpanded(parent))) {
+        log('  collapse others by collapseExpandTreesIntelligentlyFor');
         Tree.collapseExpandTreesIntelligentlyFor(parent, {
           broadcast: true
         });
+      }
 
       const newAncestors = [parent].concat(Tabs.getAncestorTabs(parent));
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
           Tree.shouldTabAutoExpanded(parent) ||
           info.forceExpand) {
+        log('  expand ancestor tabs');
         newAncestors.filter(Tabs.isSubtreeCollapsed).forEach(ancestor => {
           Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
             collapsed:    false,
@@ -73,14 +81,17 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
           }));
         });
       }
-      if (Tabs.isCollapsed(parent))
+      if (Tabs.isCollapsed(parent)) {
+        log('  collapse tab because the parent is collapsed');
         Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
           collapsed:    true,
           broadcast:    true
         }));
+      }
     }
     else if (Tree.shouldTabAutoExpanded(parent) ||
              Tabs.isCollapsed(parent)) {
+      log('  collapse auto expanded tree');
       Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
         collapsed:    true,
         broadcast:    true

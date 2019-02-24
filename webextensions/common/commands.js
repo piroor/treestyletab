@@ -150,7 +150,7 @@ export async function openNewTabAs(options = {}) {
     Tabs.trackedTabs.get((await browser.tabs.query({
       active:        true,
       currentWindow: true
-    })[0]).id);
+    }))[0].id);
 
   let parent, insertBefore, insertAfter;
   let isOrphan = false;
