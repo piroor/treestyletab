@@ -208,7 +208,7 @@ export async function openURIsInTabs(uris, options = {}) {
             broadcast: true
           });
         log('tab is opened.');
-        return tab.opened;
+        return tab.$TST.opened;
       }));
     }
   }, options.windowId);

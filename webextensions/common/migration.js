@@ -186,20 +186,20 @@ export async function migrateLegacyTreeStructure() {
 
     const messages = [];
 
-    const apiWindows = await browser.windows.getAll({
+    const windows = await browser.windows.getAll({
       populate:     true,
       windowTypes: ['normal']
     });
     let restoredCountWithSession = 0;
-    for (const apiWindow of apiWindows) {
-      const signature = getWindowSignatureFromTabs(apiWindow.tabs);
+    for (const window of windows) {
+      const signature = getWindowSignatureFromTabs(window.tabs);
       const index     = structureSignatures.indexOf(signature);
       if (index < 0)
         continue;
 
       // found: apply only structure case
       const structure = structures[index];
-      const tabs      = Tabs.getAllTabs(apiWindow.id);
+      const tabs      = Tabs.getAllTabs(window.id, { element: true });
       await Tree.applyTreeStructureToTabs(tabs, structure);
 
       restoredCountWithSession++;
@@ -221,8 +221,8 @@ export async function migrateLegacyTreeStructure() {
       let apiWindow = await browser.windows.create({
         url: 'about:blank'
       });
-      const container = Tabs.getTabsContainer(apiWindow.id);
-      container.$TST.toBeOpenedOrphanTabs += structure.length;
+      const window = Tabs.trackedWindows.get(apiWindow.id);
+      window.toBeOpenedOrphanTabs += structure.length;
       // restore tree
       let uris = structure.map(item => item.url);
       uris = uris.map(uRI => {
@@ -231,10 +231,10 @@ export async function migrateLegacyTreeStructure() {
           return `about:blank?${uRI}`;
         return uRI;
       });
-      const tabs = await TabsOpen.openURIsInTabs(uris, {
+      const tabElements = await TabsOpen.openURIsInTabs(uris, {
         windowId: apiWindow.id
       });
-      Tree.applyTreeStructureToTabs(tabs, structure);
+      Tree.applyTreeStructureToTabs(tabElements, structure);
       // close initial blank tab
       apiWindow = await browser.windows.get(apiWindow.id, {
         populate: true

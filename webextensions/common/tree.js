@@ -1350,7 +1350,7 @@ export async function moveTabs(tabs, options = {}) {
           await wait(100);
           continue;
         }
-        await Promise.all(newTabs.map(tab => tab.opened));
+        await Promise.all(newTabs.map(tab => tab.$TST.opened));
         await applyTreeStructureToTabs(newTabs, structure, {
           broadcast: true
         });

@@ -496,9 +496,9 @@ async function onNewTabTracked(tab) {
       treeForActionDetection
     });
     wait(configs.newTabAnimationDuration).then(() => {
-      Tabs.removeState(newTabElement, Constants.kTAB_STATE_OPENING);
+      Tabs.removeState(tab, Constants.kTAB_STATE_OPENING);
     });
-    Tabs.resolveOpened(newTabElement);
+    Tabs.resolveOpened(tab);
 
     if (!duplicated &&
         restored) {
@@ -612,7 +612,7 @@ async function onRemoved(tabId, removeInfo) {
 
     if (Tabs.isActive(oldTab) &&
         !('successorTabId' in oldTab)) { // on Firefox 64 or older
-      const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab.$TST.element);
+      const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab);
       if (resolver)
         mLastClosedWhileActiveResolvers.set(window, resolver);
     }

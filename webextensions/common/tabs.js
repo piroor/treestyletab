@@ -841,7 +841,7 @@ export function buildTab(apiTab, options = {}) {
   if (options.existing)
     addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 
-  initPromisedStatus(tab);
+  initPromisedStatus(apiTab);
 
   return tab;
 }
@@ -1981,32 +1981,32 @@ export function dumpAllTabs() {
 // Promised status of tabs
 //===================================================================
 
-const mOpenedResolvers = new WeakMap();
-const mClosedWhileActiveResolvers = new WeakMap();
+const mOpenedResolvers            = new Map();
+const mClosedWhileActiveResolvers = new Map();
 
 export function initPromisedStatus(tab, alreadyOpened = false) {
   if (alreadyOpened)
-    tab.opened = Promise.resolve(true);
+    tab.$TST.opened = Promise.resolve(true);
   else
-    tab.opened = new Promise((resolve, _aReject) => {
-      mOpenedResolvers.set(tab, resolve);
+    tab.$TST.opened = new Promise((resolve, _aReject) => {
+      mOpenedResolvers.set(tab.id, resolve);
     });
 
-  tab.closedWhileActive = new Promise((resolve, _aReject) => {
-    mClosedWhileActiveResolvers.set(tab, resolve);
+  tab.$TST.closedWhileActive = new Promise((resolve, _aReject) => {
+    mClosedWhileActiveResolvers.set(tab.id, resolve);
   });
 }
 
 export function resolveOpened(tab) {
-  if (!mOpenedResolvers.has(tab))
+  if (!mOpenedResolvers.has(tab.id))
     return;
-  mOpenedResolvers.get(tab)();
-  mOpenedResolvers.delete(tab);
+  mOpenedResolvers.get(tab.id)();
+  mOpenedResolvers.delete(tab.id);
 }
 
 export function fetchClosedWhileActiveResolver(tab) {
-  const resolver = mClosedWhileActiveResolvers.get(tab);
-  mClosedWhileActiveResolvers.delete(tab);
+  const resolver = mClosedWhileActiveResolvers.get(tab.id);
+  mClosedWhileActiveResolvers.delete(tab.id);
   return resolver;
 }
 
