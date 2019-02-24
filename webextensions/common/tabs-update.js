@@ -60,7 +60,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
-    Tabs.onGroupTabDetected.dispatch(tab);
+    Tabs.onGroupTabDetected.dispatch(tab.apiTab);
   }
 
   if (options.forceApply ||
@@ -84,24 +84,24 @@ export function updateTab(tab, newState = {}, options = {}) {
     }
     Tabs.getTabLabelContent(tab).textContent = newState.title;
     tab.dataset.label = visibleLabel;
-    Tabs.onLabelUpdated.dispatch(tab);
+    Tabs.onLabelUpdated.dispatch(tab.apiTab);
   }
 
   const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
       openerOfGroupTab.apiTab.favIconUrl) {
-    Tabs.onFaviconUpdated.dispatch(tab,
+    Tabs.onFaviconUpdated.dispatch(tab.apiTab,
                                    openerOfGroupTab.apiTab.favIconUrl);
   }
   else if (options.forceApply ||
            'favIconUrl' in newState) {
-    Tabs.onFaviconUpdated.dispatch(tab);
+    Tabs.onFaviconUpdated.dispatch(tab.apiTab);
   }
   else if (Tabs.isGroupTab(tab)) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
     tab.apiTab.favIconUrl = null;
-    Tabs.onFaviconUpdated.dispatch(tab, null);
+    Tabs.onFaviconUpdated.dispatch(tab.apiTab, null);
   }
 
   if ('status' in newState) {
@@ -131,11 +131,11 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.pinned) {
       Tabs.addState(tab, Constants.kTAB_STATE_PINNED);
       Tabs.removeAttribute(tab, Constants.kLEVEL); // don't indent pinned tabs!
-      Tabs.onPinned.dispatch(tab);
+      Tabs.onPinned.dispatch(tab.apiTab);
     }
     else {
       Tabs.removeState(tab, Constants.kTAB_STATE_PINNED);
-      Tabs.onUnpinned.dispatch(tab);
+      Tabs.onUnpinned.dispatch(tab.apiTab);
     }
   }
 
@@ -185,12 +185,12 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.hidden) {
       if (!Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
         Tabs.addState(tab, Constants.kTAB_STATE_HIDDEN);
-        Tabs.onHidden.dispatch(tab);
+        Tabs.onHidden.dispatch(tab.apiTab);
       }
     }
     else if (Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
       Tabs.removeState(tab, Constants.kTAB_STATE_HIDDEN);
-      Tabs.onShown.dispatch(tab);
+      Tabs.onShown.dispatch(tab.apiTab);
     }
   }
 
@@ -312,5 +312,5 @@ export function updateParentTab(parent) {
 
   updateParentTab(Tabs.getParentTab(parent));
 
-  Tabs.onParentTabUpdated.dispatch(parent);
+  Tabs.onParentTabUpdated.dispatch(parent.apiTab);
 }

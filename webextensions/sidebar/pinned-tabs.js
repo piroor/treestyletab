@@ -167,7 +167,7 @@ Tabs.onPinned.addListener(_tab => {
 });
 
 Tabs.onUnpinned.addListener(tab => {
-  clearStyle(tab);
+  clearStyle(tab.$TST.element);
   reserveToReposition();
 });
 

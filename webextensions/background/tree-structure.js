@@ -35,9 +35,9 @@ export function startTracking() {
     if ('openerTabId' in info)
       reserveToSaveTreeStructure(tab.$TST.element);
   });
-  Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
-  Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab); });
-  Tree.onSubtreeCollapsedStateChanging.addListener(tab => { reserveToSaveTreeStructure(tab); });
+  Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
+  Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
+  Tree.onSubtreeCollapsedStateChanging.addListener(tab => { reserveToSaveTreeStructure(tab.$TST.element); });
 }
 
 export function reserveToSaveTreeStructure(hint) {
@@ -223,7 +223,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
              (Tabs.getNextNormalTab(tab) ||
               Tabs.getPreviousNormalTab(tab))) {
       log(' attach from position');
-      onTabAttachedFromRestoredInfo.dispatch(tab, {
+      onTabAttachedFromRestoredInfo.dispatch(tab.apiTab, {
         toIndex:   tab.apiTab.index,
         fromIndex: Tabs.getLastTab(tab.apiTab.windowId, { element: false }).index
       });

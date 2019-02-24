@@ -254,19 +254,19 @@ function onDetached(_tab, info = {}) {
 
 
 function onTreeAttached(child, _info = {}) {
-  const activeTab = Tabs.getActiveTab(child.apiTab.windowId);
+  const activeTab = Tabs.getActiveTab(child.windowId);
   if (activeTab)
     update(activeTab.id);
 }
 
 function onTreeDetached(child, _info = {}) {
-  const activeTab = Tabs.getActiveTab(child.apiTab.windowId);
+  const activeTab = Tabs.getActiveTab(child.windowId);
   if (activeTab)
     update(activeTab.id);
 }
 
 function onSubtreeCollapsedStateChanging(tab, _info = {}) {
-  const activeTab = Tabs.getActiveTab(tab.apiTab.windowId);
+  const activeTab = Tabs.getActiveTab(tab.windowId);
   if (activeTab)
     update(activeTab.id);
 }

@@ -292,9 +292,9 @@ async function onUpdated(tabId, changeInfo, tab) {
       });
     }
     if (configs.enableWorkaroundForBug1409262 &&
-        tab.openerTabId != updatedTab.TSTUpdatedOpenerTabId) {
-      logUpdated(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.TSTUpdatedOpenerTabId} => ${tab.openerTabId}`);
-      updatedTab.TSTUpdatedOpenerTabId = updatedTab.openerTabId = tab.openerTabId;
+        tab.openerTabId != updatedTab.$TST.updatedOpenerTabId) {
+      logUpdated(`openerTabId of ${tabId} is changed by someone!: ${updatedTab.$TST.updatedOpenerTabId} => ${tab.openerTabId}`);
+      updatedTab.$TST.updatedOpenerTabId = updatedTab.openerTabId = tab.openerTabId;
     }
 
     TabsUpdate.updateTab(updatedTab.$TST.element, changeInfo, { tab });

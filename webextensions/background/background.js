@@ -376,10 +376,10 @@ async function updateSubtreeCollapsed(tab) {
     Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
 }
 
-export async function confirmToCloseTabs(apiTabIds, options = {}) {
-  apiTabIds = apiTabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
-  const count = apiTabIds.length;
-  log('confirmToCloseTabs ', { apiTabIds, count, options });
+export async function confirmToCloseTabs(tabIds, options = {}) {
+  tabIds = tabIds.filter(id => !configs.grantedRemovingTabIds.includes(id));
+  const count = tabIds.length;
+  log('confirmToCloseTabs ', { tabIds, count, options });
   if (count <= 1 ||
       !configs.warnOnCloseTabs ||
       Date.now() - configs.lastConfirmedToCloseTabs < 500)
@@ -415,7 +415,7 @@ export async function confirmToCloseTabs(apiTabIds, options = {}) {
     case 0:
       if (!result.checked)
         configs.warnOnCloseTabs = false;
-      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(apiTabIds)));
+      configs.grantedRemovingTabIds = Array.from(new Set((configs.grantedRemovingTabIds || []).concat(tabIds)));
       log('confirmToCloseTabs: granted ', configs.grantedRemovingTabIds);
       return true;
     default:
@@ -468,11 +468,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
 
 Tabs.onTabElementMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
-    tab,
-    Tabs.getPreviousTab(tab),
-    Tabs.getNextTab(tab),
-    info.oldPreviousTab,
-    info.oldNextTab
+    tab.$TST.element,
+    Tabs.getPreviousTab(tab.$TST.element),
+    Tabs.getNextTab(tab.$TST.element),
+    info.oldPreviousTab && info.oldPreviousTab.$TST.element,
+    info.oldNextTab && info.oldNextTab.$TST.element
   ]);
 });
 
@@ -487,11 +487,11 @@ Tabs.onMoved.addListener(async (tab, moveInfo) => {
 });
 
 Tree.onDetached.addListener(async (tab, detachInfo) => {
-  reserveToUpdateAncestors([tab].concat(Tabs.getDescendantTabs(tab)));
-  reserveToUpdateChildren(detachInfo.oldParentTab);
+  reserveToUpdateAncestors([tab.$TST.element].concat(Tabs.getDescendantTabs(tab.$TST.element)));
+  reserveToUpdateChildren(detachInfo.oldParentTab && detachInfo.oldParentTab.$TST.element);
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
+Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab.$TST.element); });
 
 // This section should be removed and define those context-fill icons
 // statically on manifest.json after Firefox ESR66 (or 67) is released.

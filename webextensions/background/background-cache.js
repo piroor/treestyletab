@@ -297,39 +297,39 @@ Tabs.onUpdated.addListener((tab, _info) => {
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener(tab => {
-  reserveToCacheTree((tab.apiTab || tab).windowId);
+  reserveToCacheTree(tab.windowId);
 });
 
 Tree.onAttached.addListener((tab, _info) => {
   wait(0).then(() => {
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-    reserveToCacheTree((tab.apiTab || tab).windowId);
+    // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+    // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+    reserveToCacheTree(tab.windowId);
   });
 });
 
 Tree.onDetached.addListener((tab, _info) => {
   wait(0).then(() => {
-  // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
-  // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
-    reserveToCacheTree((tab.apiTab || tab).windowId);
+    // "Restore Previous Session" closes some tabs at first and it causes tree changes, so we should not clear the old cache yet.
+    // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
+    reserveToCacheTree(tab.windowId);
   });
 });
 
 Tabs.onPinned.addListener(tab => {
-  reserveToCacheTree((tab.apiTab || tab).windowId);
+  reserveToCacheTree(tab.windowId);
 });
 
 Tabs.onUnpinned.addListener(tab => {
-  reserveToCacheTree((tab.apiTab || tab).windowId);
+  reserveToCacheTree(tab.windowId);
 });
 
 Tabs.onShown.addListener(tab => {
-  reserveToCacheTree((tab.apiTab || tab).windowId);
+  reserveToCacheTree(tab.windowId);
 });
 
 Tabs.onHidden.addListener(tab => {
-  reserveToCacheTree((tab.apiTab || tab).windowId);
+  reserveToCacheTree(tab.windowId);
 });
 
 function onConfigChange(key) {

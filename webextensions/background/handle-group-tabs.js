@@ -236,11 +236,11 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
 });
 
 Tabs.onGroupTabDetected.addListener(tab => {
-  tryInitGroupTab(tab);
+  tryInitGroupTab(tab.$TST.element);
 });
 
 Tabs.onLabelUpdated.addListener(tab => {
-  reserveToUpdateRelatedGroupTabs(tab, ['title', 'tree']);
+  reserveToUpdateRelatedGroupTabs(tab.$TST.element, ['title', 'tree']);
 });
 
 Tabs.onActivating.addListener((tab, _info = {}) => {
@@ -248,18 +248,18 @@ Tabs.onActivating.addListener((tab, _info = {}) => {
 });
 
 Tree.onAttached.addListener((tab, _info = {}) => {
-  reserveToUpdateRelatedGroupTabs(tab, ['tree']);
+  reserveToUpdateRelatedGroupTabs(tab.$TST.element, ['tree']);
 });
 
 Tree.onDetached.addListener((_tab, detachInfo) => {
   if (Tabs.isGroupTab(detachInfo.oldParentTab))
-    reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab);
-  reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab, ['tree']);
+    reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab.$TST.element);
+  reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab && detachInfo.oldParentTab.$TST.element, ['tree']);
 });
 
 /*
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { 
-  reserveToUpdateRelatedGroupTabs(tab);
+  reserveToUpdateRelatedGroupTabs(tab.$TST.element);
 });
 */
 

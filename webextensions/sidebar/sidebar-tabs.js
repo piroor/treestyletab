@@ -403,13 +403,14 @@ async function syncTabsOrder() {
 
 
 
-Tabs.onBuilt.addListener((tab, info) => {
-  const label = Tabs.getTabLabel(tab);
+Tabs.onTabElementBuilt.addListener((tab, info) => {
+  const tabElement = tab.$TST.element;
+  const label = Tabs.getTabLabel(tabElement);
 
   const twisty = document.createElement('span');
   twisty.classList.add(Constants.kTWISTY);
   twisty.setAttribute('title', browser.i18n.getMessage('tab_twisty_collapsed_tooltip'));
-  tab.insertBefore(twisty, label);
+  tabElement.insertBefore(twisty, label);
 
   const favicon = document.createElement('span');
   favicon.classList.add(Constants.kFAVICON);
@@ -420,40 +421,40 @@ Tabs.onBuilt.addListener((tab, info) => {
   defaultIcon.classList.add(Constants.kFAVICON_DEFAULT); // just for backward compatibility, and this should be removed from future versions
   const throbber = favicon.appendChild(document.createElement('span'));
   throbber.classList.add(Constants.kTHROBBER);
-  tab.insertBefore(favicon, label);
+  tabElement.insertBefore(favicon, label);
 
   const counter = document.createElement('span');
   counter.classList.add(Constants.kCOUNTER);
-  tab.appendChild(counter);
+  tabElement.appendChild(counter);
 
   const soundButton = document.createElement('button');
   soundButton.classList.add(Constants.kSOUND_BUTTON);
-  tab.appendChild(soundButton);
+  tabElement.appendChild(soundButton);
 
   const closebox = document.createElement('span');
   closebox.classList.add(Constants.kCLOSEBOX);
   closebox.setAttribute('title', browser.i18n.getMessage('tab_closebox_tab_tooltip'));
   closebox.setAttribute('draggable', true); // this is required to cancel click by dragging
-  tab.appendChild(closebox);
+  tabElement.appendChild(closebox);
 
   const burster = document.createElement('span');
   burster.classList.add(Constants.kBURSTER);
-  tab.appendChild(burster);
+  tabElement.appendChild(burster);
 
   const activeMarker = document.createElement('span');
   activeMarker.classList.add(Constants.kHIGHLIGHTER);
-  tab.appendChild(activeMarker);
+  tabElement.appendChild(activeMarker);
 
   const identityMarker = document.createElement('span');
   identityMarker.classList.add(Constants.kCONTEXTUAL_IDENTITY_MARKER);
-  tab.appendChild(identityMarker);
+  tabElement.appendChild(identityMarker);
 
   const extraItemsContainerBehind = document.createElement('span');
   extraItemsContainerBehind.classList.add(Constants.kEXTRA_ITEMS_CONTAINER);
   extraItemsContainerBehind.classList.add('behind');
-  tab.appendChild(extraItemsContainerBehind);
+  tabElement.appendChild(extraItemsContainerBehind);
 
-  tab.setAttribute('draggable', true);
+  tabElement.setAttribute('draggable', true);
 
   if (!info.existing && configs.animation) {
     Tree.collapseExpandTab(tab, {
@@ -467,7 +468,7 @@ Tabs.onCreated.addListener((tab, _info) => {
   Tabs.addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 });
 
-Tabs.onTabElementMoved.addListener((tab, info) => {
+Tabs.onTabElementMoved.addListener((_tab, info) => {
   if (!info.broadcasted) {
     // Tab element movement triggered by sidebar itself can break order of
     // tabs synchronized from the background, so for safetyl we trigger
@@ -545,15 +546,15 @@ Tabs.onStateChanged.addListener(tab => {
 });
 
 Tabs.onLabelUpdated.addListener(tab => {
-  reserveToUpdateTooltip(tab);
-  if (!tab.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
-    tab.titleUpdatedWhileCollapsed = true;
+  reserveToUpdateTooltip(tab.$TST.element);
+  if (!tab.$TST.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
+    tab.$TST.titleUpdatedWhileCollapsed = true;
 });
 
 Tabs.onFaviconUpdated.addListener((tab, url) => {
   TabFavIconHelper.loadToImage({
-    image: getFavIcon(tab).firstChild,
-    tab:   tab.apiTab,
+    image: getFavIcon(tab.$TST.element).firstChild,
+    tab,
     url
   });
 });
@@ -561,10 +562,10 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
 Tabs.onCollapsedStateChanged.addListener((tab, info) => {
   if (info.collapsed)
     return;
-  reserveToUpdateLoadingState(tab);
-  if (tab.titleUpdatedWhileCollapsed) {
-    updateLabelOverflow(tab);
-    delete tab.titleUpdatedWhileCollapsed;
+  reserveToUpdateLoadingState(tab.$TST.element);
+  if (tab.$TST.titleUpdatedWhileCollapsed) {
+    updateLabelOverflow(tab.$TST.element);
+    delete tab.$TST.titleUpdatedWhileCollapsed;
   }
 });
 
@@ -594,7 +595,7 @@ Tabs.onUpdated.addListener((tab, info) => {
   }, 50);
 });
 
-Tabs.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
+Tabs.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab.$TST.element); });
 
 Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
@@ -606,44 +607,44 @@ Tabs.onDetached.addListener((tab, _info) => {
 Tabs.onGroupTabDetected.addListener(tab => {
   // When a group tab is restored but pending, TST cannot update title of the tab itself.
   // For failsafe now we update the title based on its URL.
-  const uri = tab.apiTab.url;
+  const uri = tab.url;
   const parameters = uri.replace(/^[^\?]+/, '');
   let title = parameters.match(/[&?]title=([^&;]*)/);
   if (!title)
     title = parameters.match(/^\?([^&;]*)/);
   title = title && decodeURIComponent(title[1]) ||
            browser.i18n.getMessage('groupTab_label_default');
-  tab.apiTab.title = title;
+  tab.title = title;
   wait(0).then(() => {
-    TabsUpdate.updateTab(tab, { title }, { tab: tab.apiTab });
+    TabsUpdate.updateTab(tab.$TST.element, { title }, { tab });
   });
 });
 
-Tree.onAttached.addListener((tab, info = {}) => {
+Tree.onAttached.addListener((_tab, info = {}) => {
   if (!mInitialized)
     return;
-  reserveToUpdateTwistyTooltip(info.parent);
-  reserveToUpdateCloseboxTooltip(info.parent);
+  reserveToUpdateTwistyTooltip(info.parent.$TST.element);
+  reserveToUpdateCloseboxTooltip(info.parent.$TST.element);
   if (info.newlyAttached) {
-    const ancestors = [info.parent].concat(Tabs.getAncestorTabs(info.parent));
+    const ancestors = [info.parent.$TST.element].concat(Tabs.getAncestorTabs(info.parent.$TST.element));
     for (const ancestor of ancestors) {
       updateDescendantsCount(ancestor);
       updateDescendantsHighlighted(ancestor);
     }
   }
-  reserveToUpdateTooltip(info.parent);
+  reserveToUpdateTooltip(info.parent.$TST.element);
 });
 
-Tree.onDetached.addListener((_aTab, detachInfo = {}) => {
+Tree.onDetached.addListener((_tab, detachInfo = {}) => {
   if (!mInitialized)
     return;
   const parent = detachInfo.oldParentTab;
   if (!parent)
     return;
-  reserveToUpdateTwistyTooltip(parent);
-  reserveToUpdateCloseboxTooltip(parent);
-  reserveToUpdateTooltip(parent);
-  const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
+  reserveToUpdateTwistyTooltip(parent.$TST.element);
+  reserveToUpdateCloseboxTooltip(parent.$TST.element);
+  reserveToUpdateTooltip(parent.$TST.element);
+  const ancestors = [parent.$TST.element].concat(Tabs.getAncestorTabs(parent.$TST.element));
   for (const ancestor of ancestors) {
     updateDescendantsCount(ancestor);
     updateDescendantsHighlighted(ancestor);
@@ -651,17 +652,17 @@ Tree.onDetached.addListener((_aTab, detachInfo = {}) => {
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
-  reserveToUpdateTwistyTooltip(tab);
-  reserveToUpdateCloseboxTooltip(tab);
+  reserveToUpdateTwistyTooltip(tab.$TST.element);
+  reserveToUpdateCloseboxTooltip(tab.$TST.element);
   if (mInitialized)
-    reserveToUpdateTooltip(tab);
+    reserveToUpdateTooltip(tab.$TST.element);
 });
 
-configs.$addObserver(aChangedKey => {
-  switch (aChangedKey) {
+configs.$addObserver(changedKey => {
+  switch (changedKey) {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
-        for (const tab of Tabs.getAllTabs(Tabs.getWindow())) {
+        for (const tab of Tabs.getAllTabs(Tabs.getWindow(), { element: true })) {
           reserveToUpdateTooltip(tab);
         }
       break;

@@ -203,8 +203,10 @@ export async function attachTabTo(child, parent, options = {}) {
     TabsUpdate.updateParentTab(parent);
   }
 
-  onAttached.dispatch(child, Object.assign({}, options, {
-    parent: parent,
+  onAttached.dispatch(child.apiTab, Object.assign({}, options, {
+    parent:       parent.apiTab,
+    insertBefore: options.insertBefore && options.insertBefore.apiTab,
+    insertAfter:  options.insertAfter && options.insertAfter.apiTab,
     newIndex, newlyAttached
   }));
 
@@ -331,8 +333,8 @@ export function detachTab(child, options = {}) {
 
   updateTabsIndent(child);
 
-  onDetached.dispatch(child, {
-    oldParentTab: parent
+  onDetached.dispatch(child.apiTab, {
+    oldParentTab: parent.apiTab
   });
 
   if (options.inRemote || options.broadcast) {
@@ -598,7 +600,7 @@ function updateTabsIndent(tabs, level = undefined) {
     if (!item || Tabs.isPinned(item))
       continue;
 
-    onLevelChanged.dispatch(item);
+    onLevelChanged.dispatch(item.apiTab);
     Tabs.setAttribute(item, Constants.kLEVEL, level);
     updateTabsIndent(Tabs.getChildTabs(item), level + 1);
   }
@@ -676,7 +678,7 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
     }
   }
 
-  onSubtreeCollapsedStateChanging.dispatch(tab, { collapsed: params.collapsed });
+  onSubtreeCollapsedStateChanging.dispatch(tab.apiTab, { collapsed: params.collapsed });
 }
 
 export function manualCollapseExpandSubtree(tab, params = {}) {
@@ -745,10 +747,10 @@ export async function collapseExpandTab(tab, params = {}) {
   const last = params.last &&
                  (!Tabs.hasChildTabs(tab) || Tabs.isSubtreeCollapsed(tab));
   const collapseExpandInfo = Object.assign({}, params, {
-    anchor: last && params.anchor,
+    anchor: last && params.anchor && params.anchor.apiTab,
     last:   last
   });
-  Tabs.onCollapsedStateChanging.dispatch(tab, collapseExpandInfo);
+  Tabs.onCollapsedStateChanging.dispatch(tab.apiTab, collapseExpandInfo);
 
   if (params.collapsed) {
     Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED);
@@ -757,7 +759,7 @@ export async function collapseExpandTab(tab, params = {}) {
     Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
   }
 
-  Tabs.onCollapsedStateChanged.dispatch(tab, collapseExpandInfo);
+  Tabs.onCollapsedStateChanged.dispatch(tab.apiTab, collapseExpandInfo);
 
   if (params.broadcast && !params.broadcasted) {
     browser.runtime.sendMessage({

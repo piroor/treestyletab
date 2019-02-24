@@ -142,7 +142,7 @@ Commands.onMoveDown.addListener(async tab => {
   });
 });
 
-TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { tryFixupTreeForInsertedTab(tab.apiTab, moveInfo); });
+TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { tryFixupTreeForInsertedTab(tab, moveInfo); });
 
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);

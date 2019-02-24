@@ -123,9 +123,9 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         tab.apiTab.index = referenceTab.apiTab.index;
       Tabs.track(tab.apiTab);
       movedTabsCount++;
-      Tabs.onTabElementMoved.dispatch(tab, {
-        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TST.element,
-        oldNextTab:     oldNextTab && oldNextTab.$TST.element,
+      Tabs.onTabElementMoved.dispatch(tab.apiTab, {
+        oldPreviousTab,
+        oldNextTab,
         broadcasted: !!options.broadcasted
       });
     }
@@ -245,9 +245,9 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       }
       Tabs.track(tab.apiTab);
       movedTabsCount++;
-      Tabs.onTabElementMoved.dispatch(tab, {
-        oldPreviousTab: oldPreviousTab && oldPreviousTab.$TST.element,
-        oldNextTab:     oldNextTab && oldNextTab.$TST.element,
+      Tabs.onTabElementMoved.dispatch(tab.apiTab, {
+        oldPreviousTab,
+        oldNextTab,
         broadcasted: !!options.broadcasted
       });
     }

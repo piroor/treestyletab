@@ -632,7 +632,7 @@ export async function getUniqueIds(apiTabs) {
 // Event Handling
 //===================================================================
 
-export const onBuilt            = new EventListenerManager();
+export const onTabElementBuilt  = new EventListenerManager();
 export const onGroupTabDetected = new EventListenerManager();
 export const onLabelUpdated     = new EventListenerManager();
 export const onFaviconUpdated   = new EventListenerManager();
@@ -836,7 +836,7 @@ export function buildTab(apiTab, options = {}) {
   label.classList.add(`${Constants.kLABEL}-content`);
   tab.appendChild(labelContainer);
 
-  onBuilt.dispatch(tab, options);
+  onTabElementBuilt.dispatch(apiTab, options);
 
   if (options.existing)
     addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
