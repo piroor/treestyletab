@@ -44,7 +44,7 @@ export function blockIn(windowId, options = {}) {
   block(options);
 }
 
-export function unblock(_aOptions = {}) {
+export function unblock(_options = {}) {
   mBlockingThrobberCount--;
   if (mBlockingThrobberCount < 0)
     mBlockingThrobberCount = 0;
