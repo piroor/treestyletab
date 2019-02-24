@@ -314,22 +314,23 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_LOAD_URI:
       return TabsOpen.loadURI(message.uri, Object.assign({}, message.options, {
-        tab:      Tabs.getTabElementById(message.options.tab),
+        tab:      Tabs.trackedTabs.get(message.options.tabId),
         inRemote: false
       }));
 
     case Constants.kCOMMAND_NEW_TABS:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          message.parent,
-          message.insertBefore,
-          message.insertAfter
+          message.parentElementId,
+          message.insertBeforeElementId,
+          message.insertAfterElementId
         ]);
         log('new tabs requested: ', message);
         return await TabsOpen.openURIsInTabs(message.uris, Object.assign({}, message, {
-          parent:       Tabs.getTabElementById(message.parent),
-          insertBefore: Tabs.getTabElementById(message.insertBefore),
-          insertAfter:  Tabs.getTabElementById(message.insertAfter)
+          opener:       Tabs.trackedTabs.get(message.openerId),
+          parent:       Tabs.trackedTabs.get(message.parentId),
+          insertBefore: Tabs.trackedTabs.get(message.insertBeforeId),
+          insertAfter:  Tabs.trackedTabs.get(message.insertAfterId)
         }));
       })();
 

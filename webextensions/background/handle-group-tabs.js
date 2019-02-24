@@ -478,7 +478,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       });
       parent = await TabsOpen.openURIInTab(uri, {
         windowId:     opener.apiTab.windowId,
-        insertBefore: children[0],
+        insertBefore: children[0].apiTab,
         cookieStoreId: opener.apiTab.cookieStoreId,
         inBackground: true
       });

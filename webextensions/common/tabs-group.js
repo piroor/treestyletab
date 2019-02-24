@@ -39,8 +39,8 @@ export async function groupTabs(tabs, options = {}) {
   });
   const groupTab = (await TabsOpen.openURIInTab(uri, {
     windowId:     rootTabs[0].windowId,
-    parent:       Tabs.getParentTab(rootTabs[0], { element: true }),
-    insertBefore: rootTabs[0].$TST.element,
+    parent:       Tabs.getParentTab(rootTabs[0], { element: false }),
+    insertBefore: rootTabs[0],
     inBackground: true
   })).apiTab;
 

@@ -74,7 +74,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
     window.toBeOpenedTabsWithPositions++;
     const groupTab = await TabsOpen.openURIInTab(uri, {
       windowId:     tab.windowId,
-      insertBefore: tab.$TST.element, // not firstChild, because the "tab" is disappeared from tree.
+      insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
       inBackground: true
     });
     log('group tab: ', groupTab.id);

@@ -549,16 +549,16 @@ async function handleDroppedNonTabItems(event, aDropActionInfo) {
         tab:      aDropActionInfo.dragOverTabElement.id
       });
       await TabsOpen.loadURI(uris.shift(), {
-        tab:      aDropActionInfo.dragOverTabElement,
+        tab:      aDropActionInfo.dragOverTab,
         inRemote: true
       });
     }
   }
   await TabsOpen.openURIsInTabs(uris, {
     windowId:     Tabs.getWindow(),
-    parent:       aDropActionInfo.parentElement,
-    insertBefore: aDropActionInfo.insertBeforeElement,
-    insertAfter:  aDropActionInfo.insertAfterElement,
+    parent:       aDropActionInfo.parent,
+    insertBefore: aDropActionInfo.insertBefore,
+    insertAfter:  aDropActionInfo.insertAfter,
     inRemote:     true
   });
 }

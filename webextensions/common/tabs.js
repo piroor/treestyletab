@@ -1084,7 +1084,7 @@ function getTabIndex(tab, options = {}) {
 
   if (tab instanceof Element)
     tab = tab.apiTab;
-  let tabs = getAllTabs(tab.windowId, options = {});
+  let tabs = getAllTabs(tab.windowId, options);
   if (Array.isArray(options.ignoreTabs) &&
       options.ignoreTabs.length > 0)
     tabs = tabs.filter(tab => !options.ignoreTabs.includes(tab));

@@ -192,9 +192,7 @@ export async function openNewTabAs(options = {}) {
     options.cookieStoreId = parent.cookieStoreId;
 
   TabsOpen.openNewTab({
-    parent:        parent && parent.$TST.element,
-    insertBefore:  insertBefore && insertBefore.$TST.element,
-    insertAfter:   insertAfter && insertAfter.$TST.element,
+    parent, insertBefore, insertAfter,
     isOrphan,
     windowId:      currentTab.windowId,
     inBackground:  !!options.inBackground,

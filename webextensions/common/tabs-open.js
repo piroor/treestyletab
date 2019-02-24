@@ -62,22 +62,23 @@ export async function loadURI(uri, options = {}) {
       uri,
       type:    Constants.kCOMMAND_LOAD_URI,
       options: Object.assign({}, options, {
-        tab: options.tab && options.tab.id
+        tabId: options.tab && options.tab.id,
+        tab:   null
       })
     });
     return;
   }
   try {
-    let apiTabId;
+    let tabId;
     if (options.tab) {
-      apiTabId = options.tab.apiTab.id;
+      tabId = options.tab.id;
     }
     else {
-      const apiTabs = await browser.tabs.query({
+      const tabs = await browser.tabs.query({
         windowId: options.windowId,
         active:   true
       });
-      apiTabId = apiTabs[0].id;
+      tabId = tabs[0].id;
     }
     let searchQuery = null;
     if (SEARCH_PREFIX_MATCHER.test(uri)) {
@@ -91,11 +92,11 @@ export async function loadURI(uri, options = {}) {
     if (searchQuery) {
       await browser.search.search({
         query: searchQuery,
-        tabId: apiTabId
+        tabId
       });
     }
     else {
-      await browser.tabs.update(apiTabId, {
+      await browser.tabs.update(tabId, {
         url: uri
       }).catch(ApiTabs.handleMissingTabError);
     }
@@ -122,12 +123,20 @@ export async function openURIsInTabs(uris, options = {}) {
   return await Tabs.doAndGetNewTabs(async () => {
     if (options.inRemote) {
       await browser.runtime.sendMessage(Object.assign({}, options, {
-        type:          Constants.kCOMMAND_NEW_TABS,
+        type:           Constants.kCOMMAND_NEW_TABS,
         uris,
-        parent:        options.parent && options.parent.id,
-        opener:        options.opener && options.opener.id,
-        insertBefore:  options.insertBefore && options.insertBefore.id,
-        insertAfter:   options.insertAfter && options.insertAfter.id,
+        parent:         null,
+        parentId:       options.parent && options.parent.id,
+        opener:         null,
+        openerId:       options.opener && options.opener.id,
+        insertBefore:   null,
+        insertBeforeId: options.insertBefore && options.insertBefore.id,
+        insertAfter:    null,
+        insertAfterId:  options.insertAfter && options.insertAfter.id,
+        parentElementId:       options.parent && options.parent.$TST.element.id,
+        openerElementId:       options.opener && options.opener.$TST.element.id,
+        insertBeforeElementId: options.insertBefore && options.insertBefore.$TST.element.id,
+        insertAfterElementId:  options.insertAfter && options.insertAfter.$TST.element.id,
         cookieStoreId: options.cookieStoreId || null,
         isOrphan:      !!options.isOrphan,
         inRemote:      false
@@ -138,10 +147,10 @@ export async function openURIsInTabs(uris, options = {}) {
       await TabsMove.waitUntilSynchronized(options.windowId);
       const startIndex = Tabs.calculateNewTabIndex(options);
       log('startIndex: ', startIndex);
-      const container  = Tabs.getTabsContainer(options.windowId);
-      container.$TST.toBeOpenedTabsWithPositions += uris.length;
+      const window = Tabs.trackedWindows.get(options.windowId);
+      window.toBeOpenedTabsWithPositions += uris.length;
       if (options.isOrphan)
-        container.$TST.toBeOpenedOrphanTabs += uris.length;
+        window.toBeOpenedOrphanTabs += uris.length;
       await Promise.all(uris.map(async (uri, index) => {
         const params = {
           windowId: options.windowId,
@@ -162,7 +171,7 @@ export async function openURIsInTabs(uris, options = {}) {
           }
         }
         if (options.opener)
-          params.openerTabId = options.opener.apiTab.id;
+          params.openerTabId = options.opener.id;
         if (startIndex > -1)
           params.index = startIndex + index;
         if (options.cookieStoreId)
@@ -178,24 +187,24 @@ export async function openURIsInTabs(uris, options = {}) {
           };
           Tabs.onCreating.addListener(listener);
         });
-        const apiTab = await browser.tabs.create(params);
+        const createdTab = await browser.tabs.create(params);
         await Promise.all([
-          promisedNewTabTracked, // Tabs.waitUntilTabsAreCreated(apiTab.id),
+          promisedNewTabTracked, // Tabs.waitUntilTabsAreCreated(createdTab.id),
           searchQuery && browser.search.search({
             query: searchQuery,
-            tabId: apiTab.id
+            tabId: createdTab.id
           })
         ]);
-        const tab = Tabs.getTabElementById(apiTab);
+        const tab = Tabs.trackedTabs.get(createdTab.id);
         log('created tab: ', tab);
         if (!tab)
           throw new Error('tab is already closed');
         if (!options.opener &&
             options.parent &&
             !options.isOrphan)
-          await Tree.attachTabTo(tab, options.parent, {
-            insertBefore: options.insertBefore,
-            insertAfter:  options.insertAfter,
+          await Tree.attachTabTo(tab.$TST.element, options.parent && options.parent.$TST.element, {
+            insertBefore: options.insertBefore && options.insertBefore.$TST.element,
+            insertAfter:  options.insertAfter && options.insertAfter.$TST.element,
             forceExpand:  params.active,
             broadcast:    true
           });

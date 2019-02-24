@@ -333,7 +333,7 @@ export function detachTab(child, options = {}) {
   updateTabsIndent(child);
 
   onDetached.dispatch(child.apiTab, {
-    oldParentTab: parent.apiTab
+    oldParentTab: parent && parent.apiTab
   });
 
   if (options.inRemote || options.broadcast) {
@@ -614,11 +614,11 @@ export function shouldTabAutoExpanded(tab) {
 
 export async function collapseExpandSubtree(tab, params = {}) {
   params.collapsed = !!params.collapsed;
-  if (!tab)
+  if (!tab || !Tabs.ensureLivingTab(tab))
     return;
   const remoteParams = {
     type:            Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE,
-    windowId:        parseInt(tab.parentNode.dataset.windowId),
+    windowId:        tab.windowId,
     tab:             tab.id,
     collapsed:       params.collapsed,
     manualOperation: !!params.manualOperation,
