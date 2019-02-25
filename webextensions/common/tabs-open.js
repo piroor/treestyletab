@@ -106,7 +106,7 @@ export async function loadURI(uri, options = {}) {
   }
 }
 
-export function openNewTab(options = {}) {
+export async function openNewTab(options = {}) {
   return openURIInTab(null, options);
 }
 
@@ -120,9 +120,9 @@ export async function openURIsInTabs(uris, options = {}) {
   if (!options.windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
-  return await Tabs.doAndGetNewTabs(async () => {
+  return Tabs.doAndGetNewTabs(async () => {
     if (options.inRemote) {
-      await browser.runtime.sendMessage(Object.assign({}, options, {
+      const ids = await browser.runtime.sendMessage(Object.assign({}, options, {
         type:           Constants.kCOMMAND_NEW_TABS,
         uris,
         parent:         null,
@@ -137,6 +137,7 @@ export async function openURIsInTabs(uris, options = {}) {
         isOrphan:      !!options.isOrphan,
         inRemote:      false
       }));
+      return ids.map(id => Tabs.trackedTabs.get(id));
     }
     else {
       await Tabs.waitUntilAllTabsAreCreated(options.windowId);
@@ -147,7 +148,7 @@ export async function openURIsInTabs(uris, options = {}) {
       window.toBeOpenedTabsWithPositions += uris.length;
       if (options.isOrphan)
         window.toBeOpenedOrphanTabs += uris.length;
-      await Promise.all(uris.map(async (uri, index) => {
+      return Promise.all(uris.map(async (uri, index) => {
         const params = {
           windowId: options.windowId,
           active:   index == 0 && !options.inBackground
@@ -213,7 +214,8 @@ export async function openURIsInTabs(uris, options = {}) {
             broadcast: true
           });
         log('tab is opened.');
-        return tab.$TST.opened;
+        await tab.$TST.opened;
+        return tab;
       }));
     }
   }, options.windowId);

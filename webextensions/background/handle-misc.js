@@ -326,12 +326,12 @@ function onMessage(message, sender) {
           message.insertAfterId
         ]);
         log('new tabs requested: ', message);
-        return await TabsOpen.openURIsInTabs(message.uris, Object.assign({}, message, {
+        return TabsOpen.openURIsInTabs(message.uris, Object.assign({}, message, {
           opener:       Tabs.trackedTabs.get(message.openerId),
           parent:       Tabs.trackedTabs.get(message.parentId),
           insertBefore: Tabs.trackedTabs.get(message.insertBeforeId),
           insertAfter:  Tabs.trackedTabs.get(message.insertAfterId)
-        }));
+        })).then(tabs => tabs.map(tab => tab.id));
       })();
 
     case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS:
