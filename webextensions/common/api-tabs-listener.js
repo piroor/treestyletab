@@ -263,7 +263,6 @@ async function onUpdated(tabId, changeInfo, tab) {
 
     if ('url' in changeInfo)
       changeInfo.previousUrl = updatedTab.url;
-    //updatedTab.apiTab = tab;
     /*
       Updated openerTabId is not notified via tabs.onUpdated due to
       https://bugzilla.mozilla.org/show_bug.cgi?id=1409262 , so it can be
@@ -284,9 +283,9 @@ async function onUpdated(tabId, changeInfo, tab) {
       //  * Transition from "about:privatebrowsing" to "about:blank"
       //    https://github.com/piroor/treestyletab/issues/1916
       //  * Reopen tab by Ctrl-Shift-T
-      browser.tabs.get(tabId).then(apiTab => {
-        if (apiTab.favIconUrl != updatedTab.favIconUrl)
-          onUpdated(tabId, { favIconUrl: apiTab.favIconUrl }, apiTab);
+      browser.tabs.get(tabId).then(tab => {
+        if (tab.favIconUrl != updatedTab.favIconUrl)
+          onUpdated(tabId, { favIconUrl: tab.favIconUrl }, tab);
       });
     }
     if (configs.enableWorkaroundForBug1409262 &&

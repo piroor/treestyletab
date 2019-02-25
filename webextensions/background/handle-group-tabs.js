@@ -148,7 +148,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
             favIconUrl: opener.favIconUrl
           });
         }
-        newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.apiTab.title);
+        newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title);
       }
     }
 

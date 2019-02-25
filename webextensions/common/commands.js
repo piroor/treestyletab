@@ -294,7 +294,7 @@ export async function performTabsDragDrop(params = {}) {
   if (windowId != destinationWindowId) {
     // Firefox always focuses to the dropped (mvoed) tab if it is dragged from another window.
     // TST respects Firefox's the behavior.
-    browser.tabs.update(movedTabs[0].apiTab.id, { active: true })
+    browser.tabs.update(movedTabs[0].id, { active: true })
       .catch(ApiTabs.handleMissingTabError);
   }
 }
@@ -433,8 +433,8 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
       parent,
       { ignoreTabs: tabs }
     );
-    options.insertBefore = refTabs.insertBefore && refTabs.insertBefore.apiTab;
-    options.insertAfter  = refTabs.insertAfter && refTabs.insertAfter.apiTab;
+    options.insertBefore = refTabs.insertBefore;
+    options.insertAfter  = refTabs.insertAfter;
   }
 
   if (options.insertBefore)
