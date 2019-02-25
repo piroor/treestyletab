@@ -1602,8 +1602,7 @@ export function getSelectedTabs(windowId, options = {}) {
     ordered:     true,
     element:     true
   }, options));
-  return Array.from(new Set(selectedTabs.concat(highlightedTabs)))
-    .sort(sort);
+  return sort(Array.from(new Set(selectedTabs.concat(highlightedTabs))));
 }
 
 
