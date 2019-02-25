@@ -8,7 +8,6 @@
 import {
   log as internalLogger,
   wait,
-  dumpTab,
   configs
 } from '/common/common.js';
 
@@ -34,9 +33,8 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     browser.tabs.reload(tab.id);
     delete tab.$TST.shouldReloadOnSelect;
   }
-  tab = tab.$TST.element;
-  const container = tab.parentNode;
-  cancelDelayedExpand(Tabs.getTabElementById(container.lastActiveTab));
+  const window = Tabs.trackedWindows.get(tab.windowId);
+  cancelDelayedExpand(Tabs.getTabElementById(window.lastActiveTab));
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
@@ -49,7 +47,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       // but actually happen on some environment:
       // https://github.com/piroor/treestyletab/issues/1717
       // So, always expand orphan collapsed tab as a failsafe.
-      Tree.collapseExpandTab(tab.apiTab, {
+      Tree.collapseExpandTab(tab, {
         collapsed: false,
         broadcast: true
       });
@@ -59,7 +57,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildActive');
       for (const ancestor of Tabs.getAncestorTabs(tab)) {
-        Tree.collapseExpandSubtree(ancestor.apiTab, {
+        Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
           broadcast: true
         });
@@ -72,16 +70,16 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       if (!newSelection) // this seems invalid case...
         return false;
       if (shouldSkipCollapsed &&
-          container.lastActiveTab == newSelection.id) {
-        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab.apiTab.windowId);
+          window.lastActiveTab == newSelection.id) {
+        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab.windowId, { element: false });
       }
-      container.lastActiveTab = newSelection.id;
+      window.lastActiveTab = newSelection.id;
       if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(newSelection);
-      TabsInternalOperation.activateTab(newSelection.apiTab, { silently: true });
-      log('Tabs.onActivating: discarded? ', dumpTab(tab), Tabs.isDiscarded(tab));
+      TabsInternalOperation.activateTab(newSelection, { silently: true });
+      log('Tabs.onActivating: discarded? ', tab.id, Tabs.isDiscarded(tab));
       if (Tabs.isDiscarded(tab))
-        tab.$TST.discardURLAfterCompletelyLoaded = tab.apiTab.url;
+        tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
       return false;
     }
   }
@@ -98,24 +96,24 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     handleNewActiveTab(tab, info);
   }
   delete tab.$TST.discardOnCompletelyLoaded;
-  container.lastActiveTab = tab.id;
+  window.lastActiveTab = tab.id;
   if (mMaybeTabSwitchingByShortcut)
     setupDelayedExpand(tab);
   return true;
 });
 function handleNewActiveTab(tab, info = {}) {
-  log('handleNewActiveTab: ', dumpTab(tab), info);
+  log('handleNewActiveTab: ', tab.id, info);
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
   const canExpandTree           = shouldCollapseExpandNow && !info.silently;
   if (canExpandTree) {
     if (canCollapseTree &&
         configs.autoExpandIntelligently)
-      Tree.collapseExpandTreesIntelligentlyFor(tab.apiTab, {
+      Tree.collapseExpandTreesIntelligentlyFor(tab, {
         broadcast: true
       });
     else
-      Tree.collapseExpandSubtree(tab.apiTab, {
+      Tree.collapseExpandSubtree(tab, {
         collapsed: false,
         broadcast: true
       });
@@ -165,8 +163,8 @@ function setupDelayedExpand(tab) {
       !Tabs.hasChildTabs(tab) ||
       !Tabs.isSubtreeCollapsed(tab))
     return;
-  tab.delayedExpand = setTimeout(() => {
-    Tree.collapseExpandTreesIntelligentlyFor(tab.apiTab, {
+  tab.$TST.delayedExpand = setTimeout(() => {
+    Tree.collapseExpandTreesIntelligentlyFor(tab, {
       broadcast: true
     });
   }, configs.autoExpandOnTabSwitchingShortcutsDelay);
@@ -174,14 +172,14 @@ function setupDelayedExpand(tab) {
 
 function cancelDelayedExpand(tab) {
   if (!tab ||
-      !tab.delayedExpand)
+      !tab.$TST.delayedExpand)
     return;
-  clearTimeout(tab.delayedExpand);
-  delete tab.delayedExpand;
+  clearTimeout(tab.$TST.delayedExpand);
+  delete tab.$TST.delayedExpand;
 }
 
 function cancelAllDelayedExpand(windowId) {
-  for (const tab of Tabs.getAllTabs(windowId)) {
+  for (const tab of Tabs.getAllTabs(windowId, { element: false })) {
     cancelDelayedExpand(tab);
   }
 }
@@ -229,15 +227,15 @@ function onMessage(message, sender) {
           await Tabs.waitUntilTabsAreCreated(sender.tab.id);
           let tab = sender.tab && Tabs.getTabElementById(sender.tab.id);
           if (!tab) {
-            const apiTabs = await browser.tabs.query({ currentWindow: true, active: true });
-            await Tabs.waitUntilTabsAreCreated(apiTabs[0].id);
-            tab = Tabs.getTabElementById(apiTabs[0]);
+            const tabs = await browser.tabs.query({ currentWindow: true, active: true });
+            await Tabs.waitUntilTabsAreCreated(tabs[0].id);
+            tab = Tabs.getTabElementById(tabs[0]);
           }
-          cancelAllDelayedExpand(tab.apiTab.windowId);
+          cancelAllDelayedExpand(tab.windowId);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
-              tab.parentNode.lastActiveTab == tab.id) {
-            Tree.collapseExpandSubtree(tab.apiTab, {
+              Tabs.trackedWindows.get(tab.windowId).lastActiveTab == tab.id) {
+            Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true
             });
