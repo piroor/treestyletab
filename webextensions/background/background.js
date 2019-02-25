@@ -392,24 +392,24 @@ export async function confirmToCloseTabs(tabIds, options = {}) {
       Date.now() - configs.lastConfirmedToCloseTabs < 500)
     return true;
 
-  const apiTabs = await browser.tabs.query({
+  const tabs = await browser.tabs.query({
     active:   true,
     windowId: options.windowId
   });
 
   const granted = await Permissions.isGranted(Permissions.ALL_URLS);
   if (!granted ||
-      /^(about|chrome|resource):/.test(apiTabs[0].url) ||
+      /^(about|chrome|resource):/.test(tabs[0].url) ||
       (!options.showInTab &&
        SidebarStatus.isOpen(options.windowId) &&
        SidebarStatus.hasFocus(options.windowId)))
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
-      tabIds:   apiTabs.map(apiTab => apiTab.id),
+      tabIds:   tabs.map(apiTab => apiTab.id),
       windowId: options.windowId
     });
 
-  const result = await RichConfirm.showInTab(apiTabs[0].id, {
+  const result = await RichConfirm.showInTab(tabs[0].id, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
     buttons: [
       browser.i18n.getMessage('warnOnCloseTabs_close'),
