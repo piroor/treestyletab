@@ -397,6 +397,10 @@ function extractMatchedTabs(tabs, conditions) {
           matched(tab[attribute], conditions[`!${attribute}`]))
         continue TAB_MACHING;
     }
+
+    if (!tab.$TST)
+      continue TAB_MACHING;
+
     if ('states' in conditions && tab.$TST.states) {
       for (let i = 0, maxi = conditions.states.length; i < maxi; i += 2) {
         const state   = conditions.states[i];

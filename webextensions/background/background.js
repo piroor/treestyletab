@@ -266,6 +266,8 @@ export function reserveToUpdateInsertionPosition(tabOrTabs) {
     if (tab.$TST.reservedUpdateInsertionPosition)
       clearTimeout(tab.$TST.reservedUpdateInsertionPosition);
     tab.$TST.reservedUpdateInsertionPosition = setTimeout(() => {
+      if (!tab.$TST)
+        return;
       delete tab.$TST.reservedUpdateInsertionPosition;
       updateInsertionPosition(tab);
     }, 100);
@@ -312,6 +314,8 @@ export function reserveToUpdateAncestors(tabOrTabs) {
     if (tab.$TST.reservedUpdateAncestors)
       clearTimeout(tab.$TST.reservedUpdateAncestors);
     tab.$TST.reservedUpdateAncestors = setTimeout(() => {
+      if (!tab.$TST)
+        return;
       delete tab.$TST.reservedUpdateAncestors;
       updateAncestors(tab);
     }, 100);
@@ -337,6 +341,8 @@ export function reserveToUpdateChildren(tabOrTabs) {
     if (tab.$TST.reservedUpdateChildren)
       clearTimeout(tab.$TST.reservedUpdateChildren);
     tab.$TST.reservedUpdateChildren = setTimeout(() => {
+      if (!tab.$TST)
+        return;
       delete tab.$TST.reservedUpdateChildren;
       updateChildren(tab);
     }, 100);
@@ -361,6 +367,8 @@ function reserveToUpdateSubtreeCollapsed(tab) {
   if (tab.$TST.reservedUpdateSubtreeCollapsed)
     clearTimeout(tab.$TST.reservedUpdateSubtreeCollapsed);
   tab.$TST.reservedUpdateSubtreeCollapsed = setTimeout(() => {
+    if (!tab.$TST)
+      return;
     delete tab.$TST.reservedUpdateSubtreeCollapsed;
     updateSubtreeCollapsed(tab);
   }, 100);
