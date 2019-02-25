@@ -37,53 +37,53 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
 });
 
 function getTabsBetween(begin, end) {
-  if (!begin || !begin.parentNode ||
-      !end || !end.parentNode)
+  if (!begin || !Tabs.ensureLivingTab(begin) ||
+      !end || !Tabs.ensureLivingTab(end))
     throw new Error('getTabsBetween requires valid two tabs');
-  if (begin.parentNode != end.parentNode)
+  if (begin.windowId != end.windowId)
     throw new Error('getTabsBetween requires two tabs in same window');
 
   if (begin == end)
     return [];
-  let inRange = false;
-  return Array.from(begin.parentNode.children).filter(tab => {
-    if (tab == begin || tab == end) {
-      inRange = !inRange;
-      return false;
-    }
-    return inRange;
+  if (begin.index > end.index)
+    [begin, end] = [end, begin];
+  return Tabs.queryAll({
+    windowId: begin.windowId,
+    fromId:   begin.id,
+    index:    (index => index > begin.index && index < end.index),
+    element:  false
   });
 }
 
-const mLastClickedTabInWindow = new WeakMap();
-const mIsInSelectionSession   = new WeakMap();
+const mLastClickedTabInWindow = new Map();
+const mIsInSelectionSession   = new Map();
 
 export async function updateSelectionByTabClick(tab, event) {
-  const ctrlKeyPressed = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
-  const activeTab = Tabs.getActiveTab(tab.apiTab.windowId, { element: true });
-  const highlightedTabIds = new Set(Tabs.getHighlightedTabs(tab.apiTab.windowId).map(tab => tab.apiTab.id));
-  const inSelectionSession = mIsInSelectionSession.get(tab.parentNode);
+  const ctrlKeyPressed     = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
+  const activeTab          = Tabs.getActiveTab(tab.windowId, { element: false });
+  const highlightedTabIds  = new Set(Tabs.getHighlightedTabs(tab.windowId, { element: false }).map(tab => tab.id));
+  const inSelectionSession = mIsInSelectionSession.get(tab.windowId);
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
-    const lastClickedTab   = mLastClickedTabInWindow.get(tab.parentNode) || activeTab;
-    const betweenTabs      = getTabsBetween(lastClickedTab, tab, tab.parentNode.children);
+    const lastClickedTab   = mLastClickedTabInWindow.get(tab.windowId) || activeTab;
+    const betweenTabs      = getTabsBetween(lastClickedTab, tab);
     const targetTabs       = [lastClickedTab].concat(betweenTabs);
     if (tab != lastClickedTab)
       targetTabs.push(tab);
 
     try {
       if (!ctrlKeyPressed) {
-        const alreadySelectedTabs = Tabs.getSelectedTabs(tab.apiTab.windowId);
+        const alreadySelectedTabs = Tabs.getSelectedTabs(tab.windowId, { element: false });
         log('clear old selection by shift-click: ', alreadySelectedTabs);
         for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.includes(alreadySelectedTab))
-            highlightedTabIds.delete(alreadySelectedTab.apiTab.id);
+            highlightedTabIds.delete(alreadySelectedTab.id);
         }
       }
 
       log('set selection by shift-click: ', targetTabs);
       for (const toBeSelectedTab of targetTabs) {
-        highlightedTabIds.add(toBeSelectedTab.apiTab.id);
+        highlightedTabIds.add(toBeSelectedTab.id);
       }
 
       const rootTabs = [tab];
@@ -94,18 +94,18 @@ export async function updateSelectionByTabClick(tab, event) {
         if (!Tabs.isSubtreeCollapsed(root))
           continue;
         for (const descendant of Tabs.getDescendantTabs(root)) {
-          highlightedTabIds.add(descendant.apiTab.id);
+          highlightedTabIds.add(descendant.id);
         }
       }
 
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
-        .filter(apiTabId => apiTabId != activeTab.apiTab.id)
-        .map(apiTabId => Tabs.getTabElementById(apiTabId).apiTab.index);
-      if (highlightedTabIds.has(activeTab.apiTab.id))
-        indices.unshift(activeTab.apiTab.index);
+        .filter(id => id != activeTab.id)
+        .map(id => Tabs.trackedTabs.get(id).index);
+      if (highlightedTabIds.has(activeTab.id))
+        indices.unshift(activeTab.index);
       browser.tabs.highlight({
-        windowId: tab.apiTab.windowId,
+        windowId: tab.windowId,
         populate: false,
         tabs:     indices
       });
@@ -113,7 +113,7 @@ export async function updateSelectionByTabClick(tab, event) {
     catch(_e) { // not implemented on old Firefox
       return false;
     }
-    mIsInSelectionSession.set(tab.parentNode, true);
+    mIsInSelectionSession.set(tab.windowId, true);
     return true;
   }
   else if (ctrlKeyPressed) {
@@ -140,44 +140,44 @@ export async function updateSelectionByTabClick(tab, event) {
         log(' => ', toBeHighlighted, { partiallySelected });
       }
       if (toBeHighlighted)
-        highlightedTabIds.add(tab.apiTab.id);
+        highlightedTabIds.add(tab.id);
       else
-        highlightedTabIds.delete(tab.apiTab.id);
+        highlightedTabIds.delete(tab.id);
 
       if (Tabs.isSubtreeCollapsed(tab)) {
         const descendants = tab == activeTab ? activeTabDescendants : Tabs.getDescendantTabs(tab);
         for (const descendant of descendants) {
           if (toBeHighlighted)
-            highlightedTabIds.add(descendant.apiTab.id);
+            highlightedTabIds.add(descendant.id);
           else
-            highlightedTabIds.delete(descendant.apiTab.id);
+            highlightedTabIds.delete(descendant.id);
         }
       }
 
       if (tab == activeTab) {
         if (highlightedTabIds.size == 0) {
           log('Don\'t unhighlight only one highlighted active tab!');
-          highlightedTabIds.add(tab.apiTab.id);
+          highlightedTabIds.add(tab.id);
         }
       }
       else if (!inSelectionSession) {
         log('Select active tab and its descendants, for new selection session');
-        highlightedTabIds.add(activeTab.apiTab.id);
+        highlightedTabIds.add(activeTab.id);
         if (Tabs.isSubtreeCollapsed(activeTab)) {
           for (const descendant of activeTabDescendants) {
-            highlightedTabIds.add(descendant.apiTab.id);
+            highlightedTabIds.add(descendant.id);
           }
         }
       }
 
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
-        .filter(apiTabId => apiTabId != activeTab.apiTab.id)
-        .map(apiTabId => Tabs.getTabElementById(apiTabId).apiTab.index);
-      if (highlightedTabIds.has(activeTab.apiTab.id))
-        indices.unshift(activeTab.apiTab.index);
+        .filter(id => id != activeTab.id)
+        .map(id => Tabs.trackedTabs.get(id).index);
+      if (highlightedTabIds.has(activeTab.id))
+        indices.unshift(activeTab.index);
       browser.tabs.highlight({
-        windowId: tab.apiTab.windowId,
+        windowId: tab.windowId,
         populate: false,
         tabs:     indices
       });
@@ -185,13 +185,13 @@ export async function updateSelectionByTabClick(tab, event) {
     catch(_e) { // not implemented on old Firefox
       return false;
     }
-    mLastClickedTabInWindow.set(tab.parentNode, tab);
-    mIsInSelectionSession.set(tab.parentNode, true);
+    mLastClickedTabInWindow.set(tab.windowId, tab);
+    mIsInSelectionSession.set(tab.windowId, true);
     return true;
   }
   else {
-    mLastClickedTabInWindow.set(tab.parentNode, tab);
-    mIsInSelectionSession.delete(tab.parentNode);
+    mLastClickedTabInWindow.set(tab.windowId, tab);
+    mIsInSelectionSession.delete(tab.windowId);
     return false;
   }
 }
