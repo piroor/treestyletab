@@ -233,7 +233,7 @@ export const configs = new Configs({
     'common/api-tabs-listener': true,
     'common/bookmarks': true,
     'common/cache': false,
-    'common/command': true,
+    'common/commands': true,
     'common/contextual-identities': true,
     'common/migration': true,
     'common/permissions': true,

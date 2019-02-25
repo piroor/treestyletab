@@ -23,7 +23,7 @@ import * as SidebarStatus from './sidebar-status.js';
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
-  internalLogger('common/command', ...args);
+  internalLogger('common/commands', ...args);
 }
 
 export const onTabsClosing = new EventListenerManager();
