@@ -174,12 +174,12 @@ export async function restoreTabsFromCache(cache, params = {}) {
       }
       for (const tab of allTabs) {
         Tabs.setAttribute(tab, 'title', tab.getAttribute('title'));
-        SidebarTabs.reserveToUpdateTooltip(tab);
+        SidebarTabs.reserveToUpdateTooltip(tab.apiTab);
         SidebarTabs.reserveToUpdateTwistyTooltip(tab);
         SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
         SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
         if (!Tabs.isCollapsed(tab))
-          SidebarTabs.updateLabelOverflow(tab);
+          SidebarTabs.updateLabelOverflow(tab.apiTab);
       }
       onRestored.dispatch();
     }

@@ -146,15 +146,14 @@ function updateDescendantsHighlighted(tab) {
 
 
 export function reserveToUpdateTooltip(tab) {
-  if (!mInitialized ||
-      !Tabs.ensureLivingTab(tab) ||
-      tab.reservedUpdateTabTooltip)
+  if (!Tabs.ensureLivingTab(tab) ||
+      tab.$TST.reservedUpdateTabTooltip)
     return;
-  tab.reservedUpdateTabTooltip = () => {
-    delete tab.reservedUpdateTabTooltip;
+  tab.$TST.reservedUpdateTabTooltip = () => {
+    delete tab.$TST.reservedUpdateTabTooltip;
     updateTabAndAncestorsTooltip(tab);
   };
-  tab.addEventListener('mouseover', tab.reservedUpdateTabTooltip, { once: true });
+  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateTabTooltip, { once: true });
 }
 
 function updateTabAndAncestorsTooltip(tab) {
@@ -169,21 +168,19 @@ function updateTooltip(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  tab.dataset.labelWithDescendants = getLabelWithDescendants(tab);
-
   if (configs.debug) {
-    tab.dataset.label = `
-${tab.apiTab.title}
+    tab.$TST.tooltip = `
+${tab.title}
 #${tab.id}
 (${tab.className})
 uniqueId = <%${Constants.kPERSISTENT_ID}%>
 duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
 restored = <%restored%>
-tabId = ${tab.apiTab.id}
-windowId = ${tab.apiTab.windowId}
+tabId = ${tab.id}
+windowId = ${tab.windowId}
 `.trim();
     Tabs.setAttribute(tab, 'title',
-                      tab.dataset.label = tab.dataset.label
+                      tab.$TST.tooltip = tab.$TST.tooltip
                         .replace(`<%${Constants.kPERSISTENT_ID}%>`, tab.$TST.uniqueId.id)
                         .replace(`<%originalId%>`, tab.$TST.uniqueId.originalId)
                         .replace(`<%originalTabId%>`, tab.$TST.uniqueId.originalTabId)
@@ -192,30 +189,33 @@ windowId = ${tab.apiTab.windowId}
     return;
   }
 
+  tab.$TST.tooltip = tab.title;
+  tab.$TST.tooltipWithDescendants = getTooltipWithDescendants(tab);
+
   if (configs.showCollapsedDescendantsByTooltip &&
       Tabs.isSubtreeCollapsed(tab) &&
       Tabs.hasChildTabs(tab)) {
-    Tabs.setAttribute(tab, 'title', tab.dataset.labelWithDescendants);
+    Tabs.setAttribute(tab, 'title', tab.$TST.tooltipWithDescendants);
     return;
   }
 
-  const label = Tabs.getTabLabel(tab);
+  const label = Tabs.getTabLabel(tab.$TST.element);
   if (Tabs.isPinned(tab) || label.classList.contains('overflow')) {
-    Tabs.setAttribute(tab, 'title', tab.dataset.label);
+    Tabs.setAttribute(tab, 'title', tab.$TST.tooltip);
   }
   else {
     Tabs.removeAttribute(tab, 'title');
   }
 }
 
-function getLabelWithDescendants(tab) {
-  const label = [`* ${tab.dataset.label}`];
+function getTooltipWithDescendants(tab) {
+  const tooltip = [`* ${tab.$TST.tooltip}`];
   for (const child of Tabs.getChildTabs(tab)) {
-    if (!child.dataset.labelWithDescendants)
-      child.dataset.labelWithDescendants = getLabelWithDescendants(child);
-    label.push(child.dataset.labelWithDescendants.replace(/^/gm, '  '));
+    if (!child.$TST.tooltipWithDescendants)
+      child.$TST.tooltipWithDescendants = getTooltipWithDescendants(child);
+    tooltip.push(child.$TST.tooltipWithDescendants.replace(/^/gm, '  '));
   }
-  return label.join('\n');
+  return tooltip.join('\n');
 }
 
 
@@ -289,24 +289,25 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
-  for (const tab of Tabs.getAllTabs(Tabs.getWindow()).reverse()) {
+  for (const tab of Tabs.getAllTabs(Tabs.getWindow(), { element: true }).reverse()) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
-    updateTooltip(tab);
+    reserveToUpdateTooltip(tab.apiTab);
     if (!Tabs.isCollapsed(tab))
-      updateLabelOverflow(tab);
+      updateLabelOverflow(tab.apiTab);
   }
 }
 
 export function updateLabelOverflow(tab) {
-  const label = Tabs.getTabLabel(tab);
+  const label = Tabs.getTabLabel(tab.$TST.element);
   if (!Tabs.isPinned(tab) &&
       label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width)
     label.classList.add('overflow');
   else
     label.classList.remove('overflow');
+  reserveToUpdateTooltip(tab);
 }
 
 function onOverflow(event) {
@@ -519,7 +520,7 @@ Tabs.onMoving.addListener((tab, _info) => {
 
 Tabs.onMoved.addListener(async (tab, _info) => {
   if (mInitialized)
-    reserveToUpdateTooltip(Tabs.getParentTab(tab.$TST.element));
+    reserveToUpdateTooltip(Tabs.getParentTab(tab));
 
   const wasVisible = mTabWasVisibleBeforeMoving.get(tab.$TST.element);
   mTabWasVisibleBeforeMoving.delete(tab.$TST.element);
@@ -547,7 +548,7 @@ Tabs.onStateChanged.addListener(tab => {
 
 Tabs.onLabelUpdated.addListener(tab => {
   Tabs.getTabLabelContent(tab.$TST.element).textContent = tab.title;
-  reserveToUpdateTooltip(tab.$TST.element);
+  reserveToUpdateTooltip(tab);
   if (!tab.$TST.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
     tab.$TST.titleUpdatedWhileCollapsed = true;
 });
@@ -565,7 +566,7 @@ Tabs.onCollapsedStateChanged.addListener((tab, info) => {
     return;
   reserveToUpdateLoadingState(tab.$TST.element);
   if (tab.$TST.titleUpdatedWhileCollapsed) {
-    updateLabelOverflow(tab.$TST.element);
+    updateLabelOverflow(tab);
     delete tab.$TST.titleUpdatedWhileCollapsed;
   }
 });
@@ -573,7 +574,7 @@ Tabs.onCollapsedStateChanged.addListener((tab, info) => {
 let mReservedUpdateActiveTab;
 Tabs.onUpdated.addListener((tab, info) => {
   reserveToUpdateSoundButtonTooltip(tab.$TST.element);
-  reserveToUpdateTooltip(tab.$TST.element);
+  reserveToUpdateTooltip(tab);
 
   if (!('highlighted' in info))
     return;
@@ -602,7 +603,7 @@ Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(tab))
     return;
-  reserveToUpdateTooltip(Tabs.getParentTab(tab.$TST.element));
+  reserveToUpdateTooltip(Tabs.getParentTab(tab));
 });
 
 Tabs.onGroupTabDetected.addListener(tab => {
@@ -633,7 +634,7 @@ Tree.onAttached.addListener((_tab, info = {}) => {
       updateDescendantsHighlighted(ancestor);
     }
   }
-  reserveToUpdateTooltip(info.parent.$TST.element);
+  reserveToUpdateTooltip(info.parent);
 });
 
 Tree.onDetached.addListener((_tab, detachInfo = {}) => {
@@ -644,7 +645,7 @@ Tree.onDetached.addListener((_tab, detachInfo = {}) => {
     return;
   reserveToUpdateTwistyTooltip(parent.$TST.element);
   reserveToUpdateCloseboxTooltip(parent.$TST.element);
-  reserveToUpdateTooltip(parent.$TST.element);
+  reserveToUpdateTooltip(parent);
   const ancestors = [parent.$TST.element].concat(Tabs.getAncestorTabs(parent.$TST.element));
   for (const ancestor of ancestors) {
     updateDescendantsCount(ancestor);
@@ -656,14 +657,14 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
   reserveToUpdateTwistyTooltip(tab.$TST.element);
   reserveToUpdateCloseboxTooltip(tab.$TST.element);
   if (mInitialized)
-    reserveToUpdateTooltip(tab.$TST.element);
+    reserveToUpdateTooltip(tab);
 });
 
 configs.$addObserver(changedKey => {
   switch (changedKey) {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
-        for (const tab of Tabs.getAllTabs(Tabs.getWindow(), { element: true })) {
+        for (const tab of Tabs.getAllTabs(Tabs.getWindow(), { element: false })) {
           reserveToUpdateTooltip(tab);
         }
       break;
