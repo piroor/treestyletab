@@ -75,6 +75,8 @@ export const kPERSISTENT_INSERT_BEFORE = 'insert-before';
 export const kPERSISTENT_INSERT_AFTER  = 'isnert-after';
 export const kPERSISTENT_STATES        = 'special-tab-states';
 export const kPERSISTENT_SUBTREE_COLLAPSED = 'subtree-collapsed'; // obsolete
+export const kPERSISTENT_ORIGINAL_OPENER_TAB_ID            = 'data-original-opener-tab-id';
+export const kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER = 'data-already-grouped-for-pinned-opener';
 
 export const kFAVICON         = 'favicon';
 export const kFAVICON_IMAGE   = 'favicon-image';

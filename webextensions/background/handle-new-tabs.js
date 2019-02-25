@@ -35,7 +35,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
   const possibleOpenerTab = (info.activeTab && info.activeTab.$TST.element) || Tabs.getActiveTab(tab.apiTab.windowId, { element: true });
   const opener = Tabs.getOpenerTab(tab);
   if (opener)
-    Tabs.setAttribute(tab, 'data-original-opener-tab-id', opener.$TST.uniqueId.id);
+    Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
 
   if (!opener) {
     if (!info.maybeOrphan &&

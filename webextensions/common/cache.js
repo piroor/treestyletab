@@ -242,10 +242,8 @@ function fixupTabRestoredFromCache(tabElement, apiTab, options = {}) {
   log('fixupTabRestoredFromCache parent: => ', tabElement.getAttribute(Constants.kPARENT));
   apiTab.$TST.ancestors = Tabs.getAncestorTabs(apiTab, { force: true, element: false });
 
-  if (tabElement.dataset.alreadyGroupedForPinnedOpener)
-    Tabs.setAttribute(apiTab, 'data-already-grouped-for-pinned-opener', tabElement.dataset.alreadyGroupedForPinnedOpener);
-  if (tabElement.dataset.originalOpenerTabId)
-    Tabs.setAttribute(apiTab, 'data-original-opener-tab-id', tabElement.dataset.originalOpenerTabId);
+  Tabs.setAttribute(apiTab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
+  Tabs.setAttribute(apiTab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');
   Tabs.setAttribute(apiTab, Constants.kCURRENT_URI, tabElement.getAttribute(Constants.kCURRENT_URI) || apiTab.url);
   Tabs.setAttribute(apiTab, Constants.kLEVEL, tabElement.getAttribute(Constants.kLEVEL) || 0);
 }

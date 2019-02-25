@@ -835,9 +835,9 @@ function onMessage(message, _sender, _respond) {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
-      const tab = Tabs.getTabElementById(message.tab);
+      const tab = Tabs.trackedTabs.get(message.tabId);
       if (tab)
-        Tabs.onFaviconUpdated.dispatch(tab.apiTab, message.favIconUrl);
+        Tabs.onFaviconUpdated.dispatch(tab, message.favIconUrl);
     } break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
