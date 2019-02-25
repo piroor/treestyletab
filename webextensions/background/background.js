@@ -405,7 +405,7 @@ export async function confirmToCloseTabs(tabIds, options = {}) {
        SidebarStatus.hasFocus(options.windowId)))
     return browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
-      tabIds:   tabs.map(apiTab => apiTab.id),
+      tabIds:   tabs.map(tab => tab.id),
       windowId: options.windowId
     });
 
