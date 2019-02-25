@@ -1175,6 +1175,8 @@ export async function moveTabs(tabs, options = {}) {
       type:                Constants.kCOMMAND_MOVE_TABS,
       windowId:            windowId,
       tabIds:              tabs.map(tab => tab.id),
+      insertBefore:        null,
+      insertAfter:         null,
       insertBeforeId:      options.insertBefore && options.insertBefore.id,
       insertAfterId:       options.insertAfter && options.insertAfter.id,
       duplicate:           !!options.duplicate,

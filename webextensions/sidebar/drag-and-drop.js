@@ -190,13 +190,13 @@ function getDraggedTabsFromOneTab(tab) {
   return [tab].concat(Tabs.getDescendantTabs(tab, { element: true }));
 }
 
-function sanitizeDragData(aDragData) {
+function sanitizeDragData(dragData) {
   return {
     tabNode:  null,
     tabNodes: [],
-    tab:      aDragData.tab,
-    tabs:     aDragData.tabs,
-    windowId: aDragData.windowId
+    tab:      Tabs.sanitize(dragData.tab),
+    tabs:     dragData.tabs.map(Tabs.sanitize),
+    windowId: dragData.windowId
   };
 }
 
