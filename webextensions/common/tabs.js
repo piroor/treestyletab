@@ -279,6 +279,8 @@ export class Window {
 
   detachTab(tabId) {
     const tab = trackedTabs.get(tabId);
+    if (!tab)
+      return;
     tab.detach();
     this.tabs.delete(tabId);
     const order = this.order;
