@@ -615,7 +615,7 @@ async function onRemoved(tabId, removeInfo) {
     const oldParent   = Tabs.getParentTab(oldTab, { element: false });
     Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
 
-    Tabs.trackedWindows.get(removeInfo.windowId).detachTab(oldTab);
+    Tabs.trackedWindows.get(removeInfo.windowId).detachTab(oldTab.id);
 
     const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation,
