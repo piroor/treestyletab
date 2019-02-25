@@ -37,13 +37,13 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     return false;
   }
   cancelReservedCacheTree(windowId); // prevent to break cache before loading
-  const apiTabs  = options.tabs || await browser.tabs.query({ windowId: windowId });
-  log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, apiTabs);
+  const tabs  = options.tabs || await browser.tabs.query({ windowId: windowId });
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs);
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const
   let [actualSignature, cache] = await Promise.all([
-    Cache.getWindowSignature(apiTabs),
+    Cache.getWindowSignature(tabs),
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
   let cachedSignature = cache && cache.signature;
@@ -100,7 +100,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   const restored = restoreTabsFromCache(windowId, {
     insertionPoint,
     cache,
-    tabs: apiTabs
+    tabs
   });
   if (!options.insertionPoint)
     insertionPoint.detach();
@@ -134,7 +134,7 @@ async function updateWindowCache(owner, key, value) {
     return;
   if (value === undefined) {
     try {
-    //return browser.sessions.removeWindowValue(owner, key);
+      //return browser.sessions.removeWindowValue(owner.windowId, key);
       return browser.sessions.removeTabValue(owner.id || owner, key);
     }
     catch(e) {
@@ -143,7 +143,7 @@ async function updateWindowCache(owner, key, value) {
   }
   else {
     try {
-    //return browser.sessions.setWindowValue(owner, key, value);
+      //return browser.sessions.setWindowValue(owner.windowId, key, value);
       return browser.sessions.setTabValue(owner.id || owner, key, value);
     }
     catch(e) {
@@ -171,7 +171,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 }
 
 async function getWindowCache(owner, key) {
-  //return browser.sessions.getWindowValue(owner, key);
+  //return browser.sessions.getWindowValue(owner.windowId, key);
   return browser.sessions.getTabValue(owner.id, key);
 }
 
