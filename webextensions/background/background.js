@@ -106,8 +106,8 @@ export async function init() {
       BackgroundCache.reserveToCacheTree(parseInt(windowId));
   }
 
-  Tabs.getAllTabs().forEach(updateSubtreeCollapsed);
-  for (const tab of Tabs.getActiveTabs()) {
+  Tabs.getAllTabs(null, { element: false }).forEach(updateSubtreeCollapsed);
+  for (const tab of Tabs.getActiveTabs({ element: false })) {
     for (const ancestor of Tabs.getAncestorTabs(tab)) {
       Tree.collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,
@@ -130,7 +130,7 @@ export async function init() {
   }).catch(_error => {});
 
   Migration.notifyNewFeatures();
-  log(`Startup metrics for ${Tabs.getAllTabs().length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tabs.getAllTabs(null, { element: false }).length} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {
@@ -143,10 +143,10 @@ function waitUntilCompletelyRestored() {
   return new Promise((resolve, _aReject) => {
     let timeout;
     let resolver;
-    let onNewTabRestored = async (newApiTab, _info = {}) => {
+    let onNewTabRestored = async (tab, _info = {}) => {
       clearTimeout(timeout);
       log('new restored tab is detected.');
-      await browser.sessions.getTabValue(newApiTab.id, Constants.kPERSISTENT_ID);
+      await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID);
       //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
     };
@@ -190,8 +190,8 @@ async function rebuildAll() {
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
-      for (const apiTab of window.tabs) {
-        Tabs.track(apiTab);
+      for (const tab of window.tabs) {
+        Tabs.track(tab);
       }
       try {
         if (configs.useCachedTree) {
@@ -200,7 +200,7 @@ async function rebuildAll() {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs
           });
-          for (const tab of Tabs.getAllTabs(window.id)) {
+          for (const tab of Tabs.getAllTabs(window.id, { element: false })) {
             tryStartHandleAccelKeyOnTab(tab);
           }
           if (restoredFromCache[window.id]) {
@@ -216,10 +216,10 @@ async function rebuildAll() {
         log(`build tabs for ${window.id} from scratch`);
         const container = Tabs.buildElementsContainerFor(window.id);
         for (const tab of window.tabs) {
-          const newTab = Tabs.buildTabElement(tab, { existing: true });
-          container.appendChild(newTab);
+          const tabElement = Tabs.buildTabElement(tab, { existing: true });
+          container.appendChild(tabElement);
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
-          tryStartHandleAccelKeyOnTab(newTab);
+          tryStartHandleAccelKeyOnTab(tabElement);
         }
         Tabs.allElementsContainer.appendChild(container);
       }
@@ -228,9 +228,9 @@ async function rebuildAll() {
       }
       restoredFromCache[window.id] = false;
     });
-    for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {
+    for (const tab of Tabs.getAllTabs(window.id, { element: false }).filter(Tabs.isGroupTab)) {
       if (!Tabs.isDiscarded(tab))
-        tab.apiTab.$TST.shouldReloadOnSelect = true;
+        tab.$TST.shouldReloadOnSelect = true;
     }
   }));
   insertionPoint.detach();
@@ -242,11 +242,11 @@ export async function tryStartHandleAccelKeyOnTab(tab) {
     return;
   const granted = await Permissions.isGranted(Permissions.ALL_URLS);
   if (!granted ||
-      /^(about|chrome|resource):/.test(tab.apiTab.url))
+      /^(about|chrome|resource):/.test(tab.url))
     return;
   try {
     //log(`tryStartHandleAccelKeyOnTab: initialize tab ${tab.id}`);
-    browser.tabs.executeScript(tab.apiTab.id, {
+    browser.tabs.executeScript(tab.id, {
       file:            '/common/handle-accel-key.js',
       allFrames:       true,
       matchAboutBlank: true,
@@ -263,10 +263,10 @@ export function reserveToUpdateInsertionPosition(tabOrTabs) {
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
-    if (tab.reservedUpdateInsertionPosition)
-      clearTimeout(tab.reservedUpdateInsertionPosition);
-    tab.reservedUpdateInsertionPosition = setTimeout(() => {
-      delete tab.reservedUpdateInsertionPosition;
+    if (tab.$TST.reservedUpdateInsertionPosition)
+      clearTimeout(tab.$TST.reservedUpdateInsertionPosition);
+    tab.$TST.reservedUpdateInsertionPosition = setTimeout(() => {
+      delete tab.$TST.reservedUpdateInsertionPosition;
       updateInsertionPosition(tab);
     }, 100);
   }
@@ -279,26 +279,26 @@ async function updateInsertionPosition(tab) {
   const prev = Tabs.getPreviousTab(tab);
   if (prev)
     browser.sessions.setTabValue(
-      tab.apiTab.id,
+      tab.id,
       Constants.kPERSISTENT_INSERT_AFTER,
-      prev.apiTab.$TST.uniqueId.id
+      prev.$TST.uniqueId.id
     );
   else
     browser.sessions.removeTabValue(
-      tab.apiTab.id,
+      tab.id,
       Constants.kPERSISTENT_INSERT_AFTER
     );
 
   const next = Tabs.getNextTab(tab);
   if (next)
     browser.sessions.setTabValue(
-      tab.apiTab.id,
+      tab.id,
       Constants.kPERSISTENT_INSERT_BEFORE,
-      next.apiTab.$TST.uniqueId.id
+      next.$TST.uniqueId.id
     );
   else
     browser.sessions.removeTabValue(
-      tab.apiTab.id,
+      tab.id,
       Constants.kPERSISTENT_INSERT_BEFORE
     );
 }
@@ -309,10 +309,10 @@ export function reserveToUpdateAncestors(tabOrTabs) {
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
-    if (tab.reservedUpdateAncestors)
-      clearTimeout(tab.reservedUpdateAncestors);
-    tab.reservedUpdateAncestors = setTimeout(() => {
-      delete tab.reservedUpdateAncestors;
+    if (tab.$TST.reservedUpdateAncestors)
+      clearTimeout(tab.$TST.reservedUpdateAncestors);
+    tab.$TST.reservedUpdateAncestors = setTimeout(() => {
+      delete tab.$TST.reservedUpdateAncestors;
       updateAncestors(tab);
     }, 100);
   }
@@ -323,7 +323,7 @@ async function updateAncestors(tab) {
     return;
 
   browser.sessions.setTabValue(
-    tab.apiTab.id,
+    tab.id,
     Constants.kPERSISTENT_ANCESTORS,
     Tabs.getAncestorTabs(tab, { element: false }).map(ancestor => ancestor.$TST.uniqueId.id)
   );
@@ -334,10 +334,10 @@ export function reserveToUpdateChildren(tabOrTabs) {
   for (const tab of tabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
-    if (tab.reservedUpdateChildren)
-      clearTimeout(tab.reservedUpdateChildren);
-    tab.reservedUpdateChildren = setTimeout(() => {
-      delete tab.reservedUpdateChildren;
+    if (tab.$TST.reservedUpdateChildren)
+      clearTimeout(tab.$TST.reservedUpdateChildren);
+    tab.$TST.reservedUpdateChildren = setTimeout(() => {
+      delete tab.$TST.reservedUpdateChildren;
       updateChildren(tab);
     }, 100);
   }
@@ -348,7 +348,7 @@ async function updateChildren(tab) {
     return;
 
   browser.sessions.setTabValue(
-    tab.apiTab.id,
+    tab.id,
     Constants.kPERSISTENT_CHILDREN,
     Tabs.getChildTabs(tab, { element: false }).map(child => child.$TST.uniqueId.id)
   );
@@ -358,10 +358,10 @@ function reserveToUpdateSubtreeCollapsed(tab) {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(tab))
     return;
-  if (tab.reservedUpdateSubtreeCollapsed)
-    clearTimeout(tab.reservedUpdateSubtreeCollapsed);
-  tab.reservedUpdateSubtreeCollapsed = setTimeout(() => {
-    delete tab.reservedUpdateSubtreeCollapsed;
+  if (tab.$TST.reservedUpdateSubtreeCollapsed)
+    clearTimeout(tab.$TST.reservedUpdateSubtreeCollapsed);
+  tab.$TST.reservedUpdateSubtreeCollapsed = setTimeout(() => {
+    delete tab.$TST.reservedUpdateSubtreeCollapsed;
     updateSubtreeCollapsed(tab);
   }, 100);
 }
@@ -428,7 +428,6 @@ Commands.onTabsClosing.addListener((tabIds, options = {}) => {
 Tabs.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)
     return;
-  tab = tab.$TST.element;
   // Duplicated tab has its own tree structure information inherited
   // from the original tab, but they must be cleared.
   reserveToUpdateAncestors(tab);
@@ -462,35 +461,35 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   }
 
   if (changeInfo.status || changeInfo.url)
-    tryStartHandleAccelKeyOnTab(tab.$TST.element);
+    tryStartHandleAccelKeyOnTab(tab);
 });
 
 Tabs.onTabElementMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
-    tab.$TST.element,
-    Tabs.getPreviousTab(tab.$TST.element),
-    Tabs.getNextTab(tab.$TST.element),
-    info.oldPreviousTab && info.oldPreviousTab.$TST.element,
-    info.oldNextTab && info.oldNextTab.$TST.element
+    tab,
+    Tabs.getPreviousTab(tab),
+    Tabs.getNextTab(tab),
+    info.oldPreviousTab,
+    info.oldNextTab
   ]);
 });
 
 Tabs.onMoved.addListener(async (tab, moveInfo) => {
   reserveToUpdateInsertionPosition([
-    tab.$TST.element,
-    moveInfo.oldPreviousTab && moveInfo.oldPreviousTab.$TST.element,
-    moveInfo.oldNextTab && moveInfo.oldNextTab.$TST.element,
-    Tabs.getPreviousTab(tab.$TST.element),
-    Tabs.getNextTab(tab.$TST.element)
+    tab,
+    moveInfo.oldPreviousTab,
+    moveInfo.oldNextTab,
+    Tabs.getPreviousTab(tab),
+    Tabs.getNextTab(tab)
   ]);
 });
 
 Tree.onDetached.addListener(async (tab, detachInfo) => {
-  reserveToUpdateAncestors([tab.$TST.element].concat(Tabs.getDescendantTabs(tab.$TST.element)));
-  reserveToUpdateChildren(detachInfo.oldParentTab && detachInfo.oldParentTab.$TST.element);
+  reserveToUpdateAncestors([tab].concat(Tabs.getDescendantTabs(tab)));
+  reserveToUpdateChildren(detachInfo.oldParentTab);
 });
 
-Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab.$TST.element); });
+Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpdateSubtreeCollapsed(tab); });
 
 // This section should be removed and define those context-fill icons
 // statically on manifest.json after Firefox ESR66 (or 67) is released.

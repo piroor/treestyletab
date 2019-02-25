@@ -105,7 +105,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       let nextTab = info.insertBefore;
       let prevTab = info.insertAfter;
       if (!nextTab && !prevTab) {
-        const tabs = Tabs.getAllTabs(tab.windowId);
+        const tabs = Tabs.getAllTabs(tab.windowId, { element: false });
         nextTab = tabs[info.newIndex];
         if (!nextTab)
           prevTab = tabs[info.newIndex - 1];
@@ -137,12 +137,12 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   });
 
   if (info.newlyAttached)
-    Background.reserveToUpdateAncestors([tab.$TST.element].concat(Tabs.getDescendantTabs(tab.$TST.element)));
-  Background.reserveToUpdateChildren(parent.$TST.element);
+    Background.reserveToUpdateAncestors([tab].concat(Tabs.getDescendantTabs(tab)));
+  Background.reserveToUpdateChildren(parent);
   Background.reserveToUpdateInsertionPosition([
-    tab.$TST.element,
-    Tabs.getNextTab(tab.$TST.element),
-    Tabs.getPreviousTab(tab.$TST.element)
+    tab,
+    Tabs.getNextTab(tab),
+    Tabs.getPreviousTab(tab)
   ]);
 });
 
