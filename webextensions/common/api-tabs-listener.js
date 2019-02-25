@@ -377,8 +377,8 @@ async function onNewTabTracked(tab) {
     // See also: https://github.com/piroor/treestyletab/issues/2131
     tab.index = Math.max(0, Math.min(tab.index, window.element.childNodes.length));
 
-    const nextTabElement = Tabs.getAllTabs(window.id)[tab.index];
-    window.element.insertBefore(newTabElement, nextTabElement);
+    const nextTab = Tabs.getAllTabs(window.id, { element: false })[tab.index];
+    window.element.insertBefore(newTabElement, nextTab && nextTab.$TST.element);
 
     // We need to update "active" state of a new active tab immediately.
     // Attaching of initial child tab (this new tab may become it) to an
@@ -485,7 +485,7 @@ async function onNewTabTracked(tab) {
 
     Tabs.onCreated.dispatch(tab, {
       positionedBySelf: positionedBySelf || moved,
-      skipFixupTree: !nextTabElement,
+      skipFixupTree: !nextTab,
       restored,
       duplicated,
       duplicatedInternally,
