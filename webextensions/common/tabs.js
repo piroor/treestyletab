@@ -2218,12 +2218,12 @@ export function snapshotTreeForActionDetection(targetTab) {
   const tabs = getAncestorTabs(prevTab)
     .concat([prevTab, targetTab, nextTab, getParentTab(targetTab)])
     .filter(tab => ensureLivingTab(tab) && !foundTabs[tab.id] && (foundTabs[tab.id] = true)) // uniq
-    .sort((aA, aB) => aA.apiTab.index - aB.apiTab.index);
+    .sort((a, b) => a.index - b.index);
   return snapshotTree(targetTab, tabs);
 }
 
 function snapshotTree(targetTab, tabs) {
-  const allTabs = tabs || getTabs(targetTab.apiTab.windowId);
+  const allTabs = tabs || getTabs(targetTab.windowId);
 
   const snapshotById = {};
   function snapshotChild(tab) {
@@ -2231,13 +2231,13 @@ function snapshotTree(targetTab, tabs) {
       return null;
     return snapshotById[tab.id] = {
       id:            tab.id,
-      url:           tab.apiTab.url,
-      cookieStoreId: tab.apiTab.cookieStoreId,
+      url:           tab.url,
+      cookieStoreId: tab.cookieStoreId,
       active:        isActive(tab),
       children:      getChildTabs(tab).filter(child => !isHidden(child)).map(child => child.id),
       collapsed:     isSubtreeCollapsed(tab),
       pinned:        isPinned(tab),
-      level:         parseInt(tab.getAttribute(Constants.kLEVEL) || 0)
+      level:         parseInt(getAttribute(tab, Constants.kLEVEL) || 0)
     };
   }
   const snapshotArray = allTabs.map(tab => snapshotChild(tab));
@@ -2252,10 +2252,10 @@ function snapshotTree(targetTab, tabs) {
     const previous = getPreviousNormalTab(tab);
     item.previous = previous && previous.id;
   }
-  const activeTab = getActiveTab(targetTab.apiTab.windowId);
+  const activeTab = getActiveTab(targetTab.windowId, { element: false });
   return {
     target:   snapshotById[targetTab.id],
-    active:   activeTab && snapshotById[activeTab.$TST.element.id],
+    active:   activeTab && snapshotById[activeTab.id],
     tabs:     snapshotArray,
     tabsById: snapshotById
   };
