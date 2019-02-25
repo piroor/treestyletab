@@ -9,6 +9,7 @@ import {
   log as internalLogger,
   configs
 } from '/common/common.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Commands from '/common/commands.js';
@@ -535,52 +536,62 @@ async function onClick(info, contextTab) {
     case 'context_reloadTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.reload(tab.id);
+          browser.tabs.reload(tab.id)
+            .catch(ApiTabs.handleMissingTabError);
         }
       }
       else {
         const tab = contextTab || activeTab;
-        browser.tabs.reload(tab.id);
+        browser.tabs.reload(tab.id)
+          .catch(ApiTabs.handleMissingTabError);
       }
       break;
     case 'context_toggleMuteTab-mute':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.id, { muted: true });
+          browser.tabs.update(tab.id, { muted: true })
+            .catch(ApiTabs.handleMissingTabError);
         }
       }
       else {
-        browser.tabs.update(contextTab.id, { muted: true });
+        browser.tabs.update(contextTab.id, { muted: true })
+          .catch(ApiTabs.handleMissingTabError);
       }
       break;
     case 'context_toggleMuteTab-unmute':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.id, { muted: false });
+          browser.tabs.update(tab.id, { muted: false })
+            .catch(ApiTabs.handleMissingTabError);
         }
       }
       else {
-        browser.tabs.update(contextTab.id, { muted: false });
+        browser.tabs.update(contextTab.id, { muted: false })
+          .catch(ApiTabs.handleMissingTabError);
       }
       break;
     case 'context_pinTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.id, { pinned: true });
+          browser.tabs.update(tab.id, { pinned: true })
+            .catch(ApiTabs.handleMissingTabError);
         }
       }
       else {
-        browser.tabs.update(contextTab.id, { pinned: true });
+        browser.tabs.update(contextTab.id, { pinned: true })
+          .catch(ApiTabs.handleMissingTabError);
       }
       break;
     case 'context_unpinTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
-          browser.tabs.update(tab.id, { pinned: false });
+          browser.tabs.update(tab.id, { pinned: false })
+            .catch(ApiTabs.handleMissingTabError);
         }
       }
       else {
-        browser.tabs.update(contextTab.id, { pinned: false });
+        browser.tabs.update(contextTab.id, { pinned: false })
+          .catch(ApiTabs.handleMissingTabError);
       }
       break;
     case 'context_duplicateTab':
@@ -616,7 +627,8 @@ async function onClick(info, contextTab) {
     case 'context_reloadAllTabs': {
       const tabs = await browser.tabs.query({ windowId }) ;
       for (const tab of tabs) {
-        browser.tabs.reload(tab.id);
+        browser.tabs.reload(tab.id)
+          .catch(ApiTabs.handleMissingTabError);
       }
     }; break;
     case 'context_closeTabsToTheEnd': {
@@ -643,7 +655,8 @@ async function onClick(info, contextTab) {
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeTabIds);
+      browser.tabs.remove(closeTabIds)
+        .catch(ApiTabs.handleMissingTabError);
     }; break;
     case 'context_closeOtherTabs': {
       const tabs  = await browser.tabs.query({ windowId });
@@ -660,7 +673,8 @@ async function onClick(info, contextTab) {
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeTabIds);
+      browser.tabs.remove(closeTabIds)
+        .catch(ApiTabs.handleMissingTabError);
     }; break;
     case 'context_undoCloseTab': {
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
@@ -672,11 +686,13 @@ async function onClick(info, contextTab) {
         // close down to top, to keep tree structure of Tree Style Tab
         multiselectedTabs.reverse();
         for (const tab of multiselectedTabs) {
-          browser.tabs.remove(tab.id);
+          browser.tabs.remove(tab.id)
+            .catch(ApiTabs.handleMissingTabError);
         }
       }
       else {
-        browser.tabs.remove(contextTab.id);
+        browser.tabs.remove(contextTab.id)
+          .catch(ApiTabs.handleMissingTabError);
       }
       break;
 

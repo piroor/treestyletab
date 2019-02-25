@@ -9,6 +9,7 @@ import {
   log as internalLogger
 } from '/common/common.js';
 
+import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
 
 function log(...args) {
@@ -32,7 +33,7 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
     browser.tabs.update(descendant.id, {
       highlighted: info.highlighted,
       active:      Tabs.isActive(descendant)
-    });
+    }).catch(ApiTabs.handleMissingTabError);
   }
 });
 

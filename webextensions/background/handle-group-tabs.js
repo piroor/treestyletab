@@ -43,7 +43,7 @@ export async function tryInitGroupTab(tab) {
   try {
     const initialized = await browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
       code:  'window.initialized',
-    }));
+    })).catch(ApiTabs.handleMissingTabError);
     if (initialized[0])
       return;
   }
@@ -52,7 +52,7 @@ export async function tryInitGroupTab(tab) {
   try {
     const titleElementExists = await browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
       code:  '!!document.querySelector("#title")',
-    }));
+    })).catch(ApiTabs.handleMissingTabError);
     if (!titleElementExists[0] && tab.status == 'complete') // we need to load resources/group-tab.html at first.
       return browser.tabs.update(tab.id, { url: tab.url });
   }
@@ -61,10 +61,10 @@ export async function tryInitGroupTab(tab) {
   browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
     //file:  '/common/l10n.js'
     file:  '/extlib/l10n-classic.js' // ES module does not supported as a content script...
-  }));
+  })).catch(ApiTabs.handleMissingTabError);
   browser.tabs.executeScript(tab.id, Object.assign({}, scriptOptions, {
     file:  '/resources/group-tab.js'
-  }));
+  })).catch(ApiTabs.handleMissingTabError);
 }
 
 export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
@@ -133,7 +133,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       runAt:           'document_start',
       matchAboutBlank: true,
       code:            `window.updateTree()`,
-    });
+    }).catch(ApiTabs.handleMissingTabError);
 
   if (changedInfo.includes('title')) {
     let newTitle;
@@ -161,7 +161,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
         runAt:           'document_start',
         matchAboutBlank: true,
         code:            `window.setTitle(${JSON.stringify(newTitle)})`,
-      });
+      }).catch(ApiTabs.handleMissingTabError);
     }
   }
 }
@@ -273,7 +273,7 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
 
 Tabs.onBeforeCreate.addListener(async (tab, info) => {
   const openerId  = tab.openerTabId;
-  const openerTab = openerId && (await browser.tabs.get(openerId));
+  const openerTab = openerId && (await browser.tabs.get(openerId).catch(ApiTabs.handleMissingTabError));
   const window    = Tabs.trackedWindows.get(tab.windowId);
   if (!window)
     return;

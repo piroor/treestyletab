@@ -251,7 +251,7 @@ export async function tryStartHandleAccelKeyOnTab(tab) {
       allFrames:       true,
       matchAboutBlank: true,
       runAt:           'document_start'
-    });
+    }).catch(ApiTabs.handleMissingTabError);
   }
   catch(error) {
     console.log(error);

@@ -42,7 +42,7 @@ function setSuccessor(tabId, successorTabId = -1) {
     return;
   browser.tabs.update(tabId, {
     successorTabId
-  });
+  }).catch(ApiTabs.handleMissingTabError);
 }
 
 function clearSuccessor(tabId) {

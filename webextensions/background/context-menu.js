@@ -10,6 +10,7 @@ import {
   configs
 } from '/common/common.js';
 
+import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsGroup from '/common/tabs-group.js';
 import * as Commands from '/common/commands.js';
@@ -389,12 +390,14 @@ export const onClick = (info, apiTab) => {
     case 'pinnedTab': {
       const tabs = Tabs.getPinnedTabs(contextTab.windowId, { element: false });
       if (tabs.length > 0)
-        browser.tabs.update(tabs[0].id, { active: true });
+        browser.tabs.update(tabs[0].id, { active: true })
+          .catch(ApiTabs.handleMissingTabError);
     }; break;
     case 'unpinnedTab': {
       const tabs = Tabs.getUnpinnedTabs(apiTab.windowId, { element: false });
       if (tabs.length > 0)
-        browser.tabs.update(tabs[0].id, { active: true });
+        browser.tabs.update(tabs[0].id, { active: true })
+          .catch(ApiTabs.handleMissingTabError);
     }; break;
 
     default:

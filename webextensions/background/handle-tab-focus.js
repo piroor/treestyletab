@@ -11,6 +11,7 @@ import {
   configs
 } from '/common/common.js';
 
+import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
@@ -30,7 +31,8 @@ let mMaybeTabSwitchingByShortcut = false;
 Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focusing is overridden.
   log('Tabs.onActivating ', tab.id, info);
   if (tab.$TST.shouldReloadOnSelect) {
-    browser.tabs.reload(tab.id);
+    browser.tabs.reload(tab.id)
+      .catch(ApiTabs.handleMissingTabError);
     delete tab.$TST.shouldReloadOnSelect;
   }
   const window = Tabs.trackedWindows.get(tab.windowId);
@@ -141,14 +143,16 @@ Tabs.onStateChanged.addListener(tab => {
             tab.active)
           return;
         if (tab.status == 'complete')
-          browser.tabs.discard(tab.id);
+          browser.tabs.discard(tab.id)
+            .catch(ApiTabs.handleMissingTabError);
         else
           tab.$TST.discardOnCompletelyLoaded = true;
       });
     }
     else if (tab.$TST.discardOnCompletelyLoaded && !tab.active) {
       log('Discard accidentally restored tab (on complete) ', tab.id);
-      browser.tabs.discard(tab.id);
+      browser.tabs.discard(tab.id)
+        .catch(ApiTabs.handleMissingTabError);
     }
   }
   delete tab.$TST.discardURLAfterCompletelyLoaded;
