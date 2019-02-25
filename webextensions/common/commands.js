@@ -470,7 +470,7 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
 function detachTabsWithStructure(tabs, options = {}) {
   log('detachTabsWithStructure: start ', tabs.map(tab => tab.id));
   for (const tab of tabs) {
-    Tree.detachTab(tab.$TST.element, options);
+    Tree.detachTab(tab, options);
     Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, options, {
       collapsed: false
     }));
