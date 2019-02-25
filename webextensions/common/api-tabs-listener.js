@@ -626,7 +626,7 @@ async function onRemoved(tabId, removeInfo) {
     // don't do await if not needed, to process things synchronously
     if (onRemovedReuslt instanceof Promise)
       await onRemovedReuslt;
-    oldTab.destroy();
+    oldTab.$TST.destroy();
     onCompleted();
   }
   catch(e) {
