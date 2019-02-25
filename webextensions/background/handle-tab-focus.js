@@ -34,7 +34,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     delete tab.$TST.shouldReloadOnSelect;
   }
   const window = Tabs.trackedWindows.get(tab.windowId);
-  cancelDelayedExpand(Tabs.getTabElementById(window.lastActiveTab));
+  cancelDelayedExpand(Tabs.trackedTabs.get(window.lastActiveTab));
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
@@ -225,11 +225,11 @@ function onMessage(message, sender) {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
           await Tabs.waitUntilTabsAreCreated(sender.tab.id);
-          let tab = sender.tab && Tabs.getTabElementById(sender.tab.id);
+          let tab = sender.tab && Tabs.trackedTabs.get(sender.tab.id);
           if (!tab) {
             const tabs = await browser.tabs.query({ currentWindow: true, active: true });
             await Tabs.waitUntilTabsAreCreated(tabs[0].id);
-            tab = Tabs.getTabElementById(tabs[0]);
+            tab = Tabs.trackedTabs.get(tabs[0].id);
           }
           cancelAllDelayedExpand(tab.windowId);
           if (configs.autoCollapseExpandSubtreeOnSelect &&

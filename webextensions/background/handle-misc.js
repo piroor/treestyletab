@@ -421,7 +421,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_SELECT_TAB:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabId);
-        const tab = Tabs.getTabElementById(message.tabId);
+        const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
         browser.tabs.update(tab.id, { active: true })

@@ -233,7 +233,7 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTabElement', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return Tabs.getTabElementById(info.draggedTab);
+    return SidebarTabs.getTabElementById(info.draggedTab);
   });
   info.defineGetter('draggedTab', () => {
     const dragData = info.dragData;
@@ -241,7 +241,7 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTabElements', () => {
     // don't touch this if not needed, to reduce needless function call.
-    return info.draggedTabs.map(Tabs.getTabElementById).filter(tab => !!tab);
+    return info.draggedTabs.map(SidebarTabs.getTabElementById).filter(tab => !!tab);
   });
   info.defineGetter('draggedTabs', () => {
     const dragData = info.dragData;
@@ -315,13 +315,13 @@ function getDropAction(event) {
   info.defineGetter('EventUtils.isCopyAction', () => EventUtils.isCopyAction(event));
   info.defineGetter('dropEffect', () => getDropEffectFromDropAction(info));
   info.defineGetter('parentElement', () => {
-    return Tabs.getTabElementById(this.parent);
+    return SidebarTabs.getTabElementById(this.parent);
   });
   info.defineGetter('insertBeforeElement', () => {
-    return Tabs.getTabElementById(this.insertBefore);
+    return SidebarTabs.getTabElementById(this.insertBefore);
   });
   info.defineGetter('insertAfterElement', () => {
-    return Tabs.getTabElementById(this.insertAfter);
+    return SidebarTabs.getTabElementById(this.insertAfter);
   });
 
   if (!targetTab) {
@@ -1072,7 +1072,7 @@ function onDragEnd(event) {
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   if (Array.isArray(dragData.tabs))
-    dragData.tabNodes = dragData.tabs.map(Tabs.getTabElementById);
+    dragData.tabNodes = dragData.tabs.map(SidebarTabs.getTabElementById);
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
   setTimeout(finishDrag, 0);

@@ -33,6 +33,44 @@ export function init() {
   tabbar.addEventListener('underflow', onUnderflow);
 }
 
+export function getTabElementById(idOrInfo) {
+  if (!idOrInfo)
+    return null;
+
+  if (idOrInfo instanceof Element)
+    return idOrInfo;
+
+  if (typeof idOrInfo == 'string') { // tab-x-x
+    const matched = idOrInfo.match(/^tab-(\d+)-(\d+)$/);
+    if (matched) {
+      const tab = Tabs.trackedTabs.get(parseInt(matched[2]));
+      return Tabs.ensureLivingTab(tab) && tab.windowId == matched[1] && tab.$TST.element;
+    }
+    // possible unique id
+    return Tabs.getTabByUniqueId(idOrInfo);
+  }
+
+  if (typeof idOrInfo == 'number') { // tabs.Tab.id
+    const tab = Tabs.trackedTabs.get(idOrInfo);
+    return Tabs.ensureLivingTab(tab) && tab.$TST.element;
+  }
+
+  if (idOrInfo.id && idOrInfo.windowId) { // tabs.Tab
+    const tab = Tabs.trackedTabs.get(idOrInfo.id);
+    return Tabs.ensureLivingTab(tab) && tab.windowId == idOrInfo.windowId && tab.$TST.element;
+  }
+  else if (!idOrInfo.window) { // { tab: tabs.Tab.id }
+    const tab = Tabs.trackedTabs.get(idOrInfo.tab);
+    return Tabs.ensureLivingTab(tab) && tab.$TST.element;
+  }
+  else { // { tab: tabs.Tab.id, window: windows.Window.id }
+    const tab = Tabs.trackedTabs.get(idOrInfo.tab);
+    return Tabs.ensureLivingTab(tab) && tab.windowId == idOrInfo.window && tab.$TST.element;
+  }
+
+  return null;
+}
+
 export function getTabFromChild(node, options = {}) {
   if (typeof options != 'object')
     options = {};
@@ -411,10 +449,10 @@ async function syncTabsOrder() {
       case 'insert':
       case 'replace':
         const moveTabIds = internalOrder.slice(toStart, toEnd);
-        const referenceTab = fromStart < elementsOrder.length ? Tabs.getTabElementById(elementsOrder[fromStart]) : null;
+        const referenceTab = fromStart < elementsOrder.length ? getTabElementById(elementsOrder[fromStart]) : null;
         log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
         for (const id of moveTabIds) {
-          const tab = Tabs.getTabElementById(id);
+          const tab = getTabElementById(id);
           if (tab)
             tab.parentNode.insertBefore(tab, referenceTab);
         }

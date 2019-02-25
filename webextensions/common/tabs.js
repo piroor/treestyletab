@@ -891,44 +891,6 @@ function assertValidHint(hint) {
   throw error;
 }
 
-export function getTabElementById(idOrInfo) {
-  if (!idOrInfo)
-    return null;
-
-  if (idOrInfo instanceof Element)
-    return idOrInfo;
-
-  if (typeof idOrInfo == 'string') { // tab-x-x
-    const matched = idOrInfo.match(/^tab-(\d+)-(\d+)$/);
-    if (matched) {
-      const tab = trackedTabs.get(parseInt(matched[2]));
-      return ensureLivingTab(tab) && tab.windowId == matched[1] && tab.$TST.element;
-    }
-    // possible unique id
-    return getTabByUniqueId(idOrInfo);
-  }
-
-  if (typeof idOrInfo == 'number') { // tabs.Tab.id
-    const tab = trackedTabs.get(idOrInfo);
-    return ensureLivingTab(tab) && tab.$TST.element;
-  }
-
-  if (idOrInfo.id && idOrInfo.windowId) { // tabs.Tab
-    const tab = trackedTabs.get(idOrInfo.id);
-    return ensureLivingTab(tab) && tab.windowId == idOrInfo.windowId && tab.$TST.element;
-  }
-  else if (!idOrInfo.window) { // { tab: tabs.Tab.id }
-    const tab = trackedTabs.get(idOrInfo.tab);
-    return ensureLivingTab(tab) && tab.$TST.element;
-  }
-  else { // { tab: tabs.Tab.id, window: windows.Window.id }
-    const tab = trackedTabs.get(idOrInfo.tab);
-    return ensureLivingTab(tab) && tab.windowId == idOrInfo.window && tab.$TST.element;
-  }
-
-  return null;
-}
-
 export function getTabByUniqueId(id) {
   if (!id)
     return null;
