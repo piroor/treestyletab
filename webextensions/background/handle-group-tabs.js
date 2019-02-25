@@ -75,6 +75,8 @@ export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
     if (tab.$TST.reservedCleanupNeedlessGroupTab)
       clearTimeout(tab.$TST.reservedCleanupNeedlessGroupTab);
     tab.$TST.reservedCleanupNeedlessGroupTab = setTimeout(() => {
+      if (!tab.$TST)
+        return;
       delete tab.$TST.reservedCleanupNeedlessGroupTab;
       cleanupNeedlssGroupTab(tab);
     }, 100);
@@ -112,6 +114,8 @@ export function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
       tab.$TST.reservedUpdateRelatedGroupTabChangedInfo.add(info);
     }
     tab.$TST.reservedUpdateRelatedGroupTab = setTimeout(() => {
+      if (!tab.$TST)
+        return;
       delete tab.$TST.reservedUpdateRelatedGroupTab;
       updateRelatedGroupTab(tab, Array.from(tab.$TST.reservedUpdateRelatedGroupTabChangedInfo));
       delete tab.$TST.reservedUpdateRelatedGroupTabChangedInfo;
