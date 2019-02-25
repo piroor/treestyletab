@@ -436,11 +436,13 @@ export function isGroupingBlocked() {
 export function serializeTab(tab) {
   const children         = Tabs.getChildTabs(tab).map(serializeTab);
   const ancestorTabIds   = Tabs.getAncestorTabs(tab).map(tab => tab.id);
-  return Object.assign({}, Tabs.sanitize(tab), {
+  const serialized = Object.assign({}, Tabs.sanitize(tab.apiTab || tab), {
     states:   Tabs.getStates(tab).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0),
     children, ancestorTabIds
   });
+  // console.log(serialized, new Error().stack);
+  return serialized;
 }
 
 export async function serializeTabWithEffectiveFavIconUrl(tab) {
