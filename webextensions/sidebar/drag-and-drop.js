@@ -164,7 +164,7 @@ function setDragData(aDragData) {
 /* helpers */
 
 function getDragDataFromOneTab(hint, options = {}) {
-  const tab = Tabs.getTabFromChild(hint);
+  const tab = SidebarTabs.getTabFromChild(hint);
   if (!tab)
     return {
       tabNode:  null,
@@ -495,7 +495,8 @@ export function clearDraggingTabsState() {
 }
 
 export function clearDraggingState() {
-  Tabs.getTabsContainer().classList.remove(kTABBAR_STATE_TAB_DRAGGING);
+  const window = Tabs.trackedWindows.get(Tabs.getWindow());
+  window.element.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
 }
@@ -765,7 +766,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     dt.setDragImage(options.target, event.clientX - tabRect.left, event.clientY - tabRect.top);
   }
 
-  Tabs.getTabsContainer(tab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+  Tabs.trackedWindows.get(Tabs.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
   // The drag operation can be canceled by something, then
@@ -894,7 +895,7 @@ function onDragEnter(event) {
   const info = getDropAction(event);
   try {
     const enteredTab = EventUtils.getTabFromEvent(event);
-    const leftTab    = Tabs.getTabFromChild(event.relatedTarget);
+    const leftTab    = SidebarTabs.getTabFromChild(event.relatedTarget);
     if (leftTab != enteredTab) {
       mDraggingOnDraggedTabs = (
         info.dragData &&
@@ -902,7 +903,7 @@ function onDragEnter(event) {
       );
     }
     if (enteredTab.ownerDocument == document) {
-      Tabs.getTabsContainer(enteredTab).classList.add(kTABBAR_STATE_TAB_DRAGGING);
+      Tabs.trackedWindows.get(Tabs.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
       document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
     }
   }
@@ -982,7 +983,7 @@ function onDragLeave(event) {
   try {
     const info       = getDropAction(event);
     const leftTab    = EventUtils.getTabFromEvent(event);
-    const enteredTab = Tabs.getTabFromChild(event.relatedTarget);
+    const enteredTab = SidebarTabs.getTabFromChild(event.relatedTarget);
     if (leftTab != enteredTab) {
       if (info.dragData &&
           info.dragData.tabs.some(tab => tab.id == leftTab.apiTab.id) &&

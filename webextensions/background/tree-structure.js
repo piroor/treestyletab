@@ -25,35 +25,35 @@ function log(...args) {
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
 export function startTracking() {
-  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
+  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
   Tabs.onRemoved.addListener((tab, info) => {
     if (!info.isWindowClosing)
-      reserveToSaveTreeStructure(tab.$TST.element);
+      reserveToSaveTreeStructure(tab.windowId);
   });
-  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
+  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
   Tabs.onUpdated.addListener((tab, info) => {
     if ('openerTabId' in info)
-      reserveToSaveTreeStructure(tab.$TST.element);
+      reserveToSaveTreeStructure(tab.windowId);
   });
-  Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
-  Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.$TST.element); });
-  Tree.onSubtreeCollapsedStateChanging.addListener(tab => { reserveToSaveTreeStructure(tab.$TST.element); });
+  Tree.onAttached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
+  Tree.onDetached.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
+  Tree.onSubtreeCollapsedStateChanging.addListener(tab => { reserveToSaveTreeStructure(tab.windowId); });
 }
 
-export function reserveToSaveTreeStructure(hint) {
-  const container = Tabs.getTabsContainer(hint);
-  if (!container)
+export function reserveToSaveTreeStructure(windowId) {
+  const window = Tabs.trackedWindows.get(windowId);
+  if (!window)
     return;
 
-  if (container.waitingToSaveTreeStructure)
-    clearTimeout(container.waitingToSaveTreeStructure);
-  container.waitingToSaveTreeStructure = setTimeout(windowId => {
+  if (window.waitingToSaveTreeStructure)
+    clearTimeout(window.waitingToSaveTreeStructure);
+  window.waitingToSaveTreeStructure = setTimeout(() => {
     saveTreeStructure(windowId);
-  }, 150, parseInt(container.dataset.windowId));
+  }, 150);
 }
 async function saveTreeStructure(windowId) {
-  const container = Tabs.getTabsContainer(windowId);
-  if (!container)
+  const window = Tabs.trackedWindows.get(windowId);
+  if (!window)
     return;
 
   const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(windowId, { element: false }));

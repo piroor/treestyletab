@@ -308,7 +308,7 @@ function onMessage(message, sender) {
         else
           Tree.collapseExpandSubtree(tab, params);
         if (mInitialized)
-          TreeStructure.reserveToSaveTreeStructure(tab.$TST.element);
+          TreeStructure.reserveToSaveTreeStructure(tab.windowId);
         BackgroundCache.markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
       })();
 

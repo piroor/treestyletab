@@ -33,6 +33,27 @@ export function init() {
   tabbar.addEventListener('underflow', onUnderflow);
 }
 
+export function getTabFromChild(node, options = {}) {
+  if (typeof options != 'object')
+    options = {};
+  if (!node)
+    return null;
+  if (!(node instanceof Element))
+    node = node.parentNode;
+  const tab = node && node.closest('.tab');
+  if (options.force)
+    return tab;
+  return Tabs.ensureLivingTab(tab);
+}
+
+function getTabLabel(tab) {
+  return tab && tab.querySelector(`.${Constants.kLABEL}`);
+}
+
+function getTabLabelContent(tab) {
+  return tab && tab.querySelector(`.${Constants.kLABEL}-content`);
+}
+
 function getTwisty(tab) {
   return tab && tab.querySelector(`.${Constants.kTWISTY}`);
 }
@@ -199,7 +220,7 @@ windowId = ${tab.windowId}
     return;
   }
 
-  const label = Tabs.getTabLabel(tab.$TST.element);
+  const label = getTabLabel(tab.$TST.element);
   if (Tabs.isPinned(tab) || label.classList.contains('overflow')) {
     Tabs.setAttribute(tab, 'title', tab.$TST.tooltip);
   }
@@ -301,7 +322,7 @@ export function updateAll() {
 }
 
 export function updateLabelOverflow(tab) {
-  const label = Tabs.getTabLabel(tab.$TST.element);
+  const label = getTabLabel(tab.$TST.element);
   if (!Tabs.isPinned(tab) &&
       label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width)
     label.classList.add('overflow');
@@ -311,8 +332,8 @@ export function updateLabelOverflow(tab) {
 }
 
 function onOverflow(event) {
-  const tab = Tabs.getTabFromChild(event.target);
-  const label = Tabs.getTabLabel(tab);
+  const tab = getTabFromChild(event.target);
+  const label = getTabLabel(tab);
   if (event.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
     reserveToUpdateTooltip(tab);
@@ -320,8 +341,8 @@ function onOverflow(event) {
 }
 
 function onUnderflow(event) {
-  const tab = Tabs.getTabFromChild(event.target);
-  const label = Tabs.getTabLabel(tab);
+  const tab = getTabFromChild(event.target);
+  const label = getTabLabel(tab);
   if (event.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
     reserveToUpdateTooltip(tab);
@@ -360,7 +381,7 @@ async function syncTabsOrder() {
   }
   reserveToSyncTabsOrder.retryCount = 0;
 
-  const container = Tabs.getTabsContainer();
+  const container = trackedWindow.element;
   if (container.childNodes.length != internalOrder.length) {
     if (reserveToSyncTabsOrder.retryCount > 10)
       throw new Error(`fatal error: mismatched number of tabs in the window ${windowId}`);
@@ -406,7 +427,7 @@ async function syncTabsOrder() {
 
 Tabs.onTabElementBuilt.addListener((tab, info) => {
   const tabElement = tab.$TST.element;
-  const label = Tabs.getTabLabel(tabElement);
+  const label = getTabLabel(tabElement);
 
   const twisty = document.createElement('span');
   twisty.classList.add(Constants.kTWISTY);
@@ -547,7 +568,7 @@ Tabs.onStateChanged.addListener(tab => {
 });
 
 Tabs.onLabelUpdated.addListener(tab => {
-  Tabs.getTabLabelContent(tab.$TST.element).textContent = tab.title;
+  getTabLabelContent(tab.$TST.element).textContent = tab.title;
   reserveToUpdateTooltip(tab);
   if (!tab.$TST.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
     tab.$TST.titleUpdatedWhileCollapsed = true;

@@ -59,7 +59,7 @@ export function restoreTabsFromCacheInternal(params) {
   log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
   const offset    = params.offset || 0;
   const apiTabs   = params.tabs.slice(offset);
-  let container = Tabs.getTabsContainer(params.windowId);
+  let container = Tabs.trackedWindows.get(params.windowId).element;
   let tabElements;
   if (offset > 0) {
     if (!container ||
@@ -72,10 +72,10 @@ export function restoreTabsFromCacheInternal(params) {
     const insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
-    insertionPoint.setStartBefore(Tabs.getTabElementById(Tabs.makeTabId(apiTabs[0])));
-    insertionPoint.setEndAfter(Tabs.getTabElementById(Tabs.makeTabId(apiTabs[apiTabs.length - 1])));
+    insertionPoint.setStartBefore(Tabs.trackedTabs.get(apiTabs[0].id).$TST.element);
+    insertionPoint.setEndAfter(Tabs.trackedTabs.get(apiTabs[apiTabs.length - 1].id).$TST.element);
     insertionPoint.deleteContents();
-    const tabsMustBeRemoved = apiTabs.map(Tabs.getTabElementById);
+    const tabsMustBeRemoved = apiTabs.map(tab => Tabs.trackedTabs.get(tab.id).$TST.element);
     log('restoreTabsFromCacheInternal: cleared?: ',
         tabsMustBeRemoved.every(tab => !tab),
         tabsMustBeRemoved.map(dumpTab));

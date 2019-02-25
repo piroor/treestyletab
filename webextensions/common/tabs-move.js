@@ -351,11 +351,11 @@ async function syncToNativeTabsInternal(windowId) {
         case 'insert':
         case 'replace':
           const moveTabIds = internalOrder.slice(toStart, toEnd);
-          const referenceTab = fromStart < elementsOrder.length ? Tabs.getTabElementById(elementsOrder[fromStart]) : null;
+          const referenceTab = fromStart < elementsOrder.length ? Tabs.trackedTabs.get(elementsOrder[fromStart]) : null;
           for (const id of moveTabIds) {
-            const tab = Tabs.getTabElementById(id);
+            const tab = Tabs.trackedTabs.get(id);
             if (tab)
-              tab.parentNode.insertBefore(tab, referenceTab);
+              tab.$TST.element.parentNode.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element);
           }
           break;
       }

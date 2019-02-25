@@ -11,6 +11,7 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
+import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -85,11 +86,12 @@ export function isEventFiredOnClickable(event) {
 
 
 export function getTabFromEvent(event, options = {}) {
-  return Tabs.getTabFromChild(event.target, options);
+  return SidebarTabs.getTabFromChild(event.target, options);
 }
 
 function getTabsContainerFromEvent(event) {
-  return Tabs.getTabsContainer(event.target);
+  const tab = SidebarTabs.getTabFromChild(event.target);
+  return tab && tab.parentNode;
 }
 
 export function getTabFromTabbarEvent(event, options = {}) {
@@ -101,7 +103,7 @@ export function getTabFromTabbarEvent(event, options = {}) {
 
 function getTabFromCoordinates(event, options = {}) {
   let tab = document.elementFromPoint(event.clientX, event.clientY);
-  tab = Tabs.getTabFromChild(tab, options);
+  tab = SidebarTabs.getTabFromChild(tab, options);
   if (tab)
     return tab;
 
@@ -118,7 +120,7 @@ function getTabFromCoordinates(event, options = {}) {
     containerRect.width - Size.getFavIconSize()
   ];
   for (const x of trialPoints) {
-    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY), options);
+    const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY), options);
     if (tab)
       return tab;
   }
@@ -127,14 +129,14 @@ function getTabFromCoordinates(event, options = {}) {
   // so I try to find a tab from previous or next tab.
   const height = Size.getTabHeight();
   for (const x of trialPoints) {
-    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
+    const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
     if (tab)
-      return Tabs.getTabFromChild(Tabs.getNextTab(tab), options);
+      return SidebarTabs.getTabFromChild(Tabs.getNextTab(tab), options);
   }
   for (const x of trialPoints) {
-    const tab = Tabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);
+    const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);
     if (tab)
-      return Tabs.getTabFromChild(tab.previousSibling, options);
+      return SidebarTabs.getTabFromChild(tab.previousSibling, options);
   }
 
   return null;

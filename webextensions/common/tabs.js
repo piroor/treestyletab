@@ -891,63 +891,6 @@ function assertValidHint(hint) {
   throw error;
 }
 
-export function getTrackedWindow(hint) {
-  assertValidHint(hint);
-
-  if (!hint)
-    hint = mTargetWindow || allElementsContainer.firstChild;
-
-  if (typeof hint == 'number')
-    return trackedWindows.get(hint);
-
-  if (hint instanceof Node) {
-    const tab = getTabFromChild(hint);
-    if (tab)
-      return trackedWindows.get(tab.apiTab.windowId);
-
-    if (hint &&
-        hint.dataset &&
-        hint.dataset.windowId)
-      return trackedWindows.get(parseInt(hint.dataset.windowId));
-  }
-
-  return null;
-}
-
-export function getTabsContainer(hint) {
-  assertValidHint(hint);
-
-  if (!hint)
-    hint = mTargetWindow || allElementsContainer.firstChild;
-
-  if (typeof hint == 'number')
-    return document.querySelector(`#window-${hint}`);
-
-  const tab = getTabFromChild(hint);
-  if (tab)
-    return tab.parentNode;
-
-  if (hint &&
-      hint.dataset &&
-      hint.dataset.windowId)
-    return document.querySelector(`#window-${hint.dataset.windowId}`);
-
-  return null;
-}
-
-export function getTabFromChild(node, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  if (!node)
-    return null;
-  if (node.nodeType != Node.ELEMENT_NODE)
-    node = node.parentNode;
-  const tab = node && node.closest('.tab');
-  if (options.force)
-    return tab;
-  return ensureLivingTab(tab);
-}
-
 export function getTabElementById(idOrInfo) {
   if (!idOrInfo)
     return null;
@@ -990,14 +933,6 @@ export function getTabByUniqueId(id) {
   if (!id)
     return null;
   return ensureLivingTab(trackedTabsByUniqueId.get(id));
-}
-
-export function getTabLabel(tab) {
-  return tab && tab.querySelector(`.${Constants.kLABEL}`);
-}
-
-export function getTabLabelContent(tab) {
-  return tab && tab.querySelector(`.${Constants.kLABEL}-content`);
 }
 
 // Note that this function can return null if it is the first tab of

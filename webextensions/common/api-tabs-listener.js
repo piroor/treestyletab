@@ -123,9 +123,8 @@ function getTrackedWindow(windowId) {
       window.element.parentNode)
     return window;
 
-  let container = Tabs.getTabsContainer(windowId);
-  if (!container) {
-    container = Tabs.buildElementsContainerFor(windowId);
+  if (!window.element) {
+    const container = Tabs.buildElementsContainerFor(windowId);
     Tabs.allElementsContainer.appendChild(container);
     window = container.$TST;
   }

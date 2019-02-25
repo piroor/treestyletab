@@ -241,7 +241,7 @@ export async function migrateLegacyTreeStructure() {
       });
       const restTabs = apiWindow.tabs.slice(1);
       try {
-        await TabsInternalOperation.removeTab(Tabs.getTabElementById(apiWindow.tabs[0]));
+        await TabsInternalOperation.removeTab(Tabs.trackedTabs.get(apiWindow.tabs[0].id));
         // apply pinned state
         for (let i = 0, maxi = restTabs.length; i < maxi; i++) {
           if (!structure[i].pinned)

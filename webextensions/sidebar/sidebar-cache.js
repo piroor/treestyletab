@@ -133,7 +133,8 @@ export async function getEffectiveWindowCache(options = {}) {
 
 export async function restoreTabsFromCache(cache, params = {}) {
   const offset    = params.offset || 0;
-  const container = Tabs.getTabsContainer(mTargetWindow);
+  const window    = Tabs.trackedWindows.get(mTargetWindow);
+  const container = window.element;
   if (offset <= 0) {
     if (container)
       container.parentNode.removeChild(container);
@@ -159,7 +160,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
       if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
         log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`);
         restored = false;
-        const container = Tabs.getTabsContainer(mTargetWindow);
+        const container = window.element;
         if (container)
           container.parentNode.removeChild(container);
       }
