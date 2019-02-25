@@ -78,9 +78,10 @@ export function removeTabs(tabs, options = {}) {
   log('removeTabsInternally: ', tabs.map(tab => tab.id));
   if (options.inRemote || options.broadcast) {
     browser.runtime.sendMessage({
-      type:    Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
-      tabIds:  tabs.map(tab => tab.id),
-      options: Object.assign({}, options, {
+      type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
+      windowId: tabs[0].windowId,
+      tabIds:   tabs.map(tab => tab.id),
+      options:  Object.assign({}, options, {
         inRemote:    false,
         broadcast:   options.inRemote && !options.broadcast,
         broadcasted: !!options.broadcast

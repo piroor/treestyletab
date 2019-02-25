@@ -813,16 +813,17 @@ function onMessage(message, _sender, _respond) {
       message.type.indexOf('treestyletab:') != 0)
     return;
 
+  if (message.windowId &&
+      message.windowId != mTargetWindow)
+    return;
+
   //log('onMessage: ', message, sender);
   switch (message.type) {
-    case Constants.kCOMMAND_PING_TO_SIDEBAR: {
-      if (message.windowId == mTargetWindow)
-        return Promise.resolve(true);
-    }; break;
+    case Constants.kCOMMAND_PING_TO_SIDEBAR:
+      return Promise.resolve(true);
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
-      if (message.windowId == mTargetWindow)
-        Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow, { element: false }), message.structure);
+      Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow, { element: false }), message.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
@@ -839,8 +840,8 @@ function onMessage(message, _sender, _respond) {
         Tabs.onFaviconUpdated.dispatch(tab.apiTab, message.favIconUrl);
     } break;
 
-    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
-      if (message.windowId == mTargetWindow) return (async () => {
+    case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
+      return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabId);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
@@ -855,10 +856,9 @@ function onMessage(message, _sender, _respond) {
         else
           Tree.collapseExpandSubtree(tab, params);
       })();
-    }; break;
 
-    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
-      if (message.windowId == mTargetWindow) return (async () => {
+    case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
+      return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabId);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
@@ -875,7 +875,6 @@ function onMessage(message, _sender, _respond) {
           stack:       message.stack
         });
       })();
-    }; break;
 
     case Constants.kCOMMAND_SYNC_TABS_ORDER:
       SidebarTabs.reserveToSyncTabsOrder();
@@ -918,60 +917,54 @@ function onMessage(message, _sender, _respond) {
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {
-      if (message.windowId == mTargetWindow) {
-        const promisedComplete = (async () => {
-          await Promise.all([
-            Tabs.waitUntilTabsAreCreated([
-              message.childId,
-              message.parentId,
-              message.insertBeforeId,
-              message.insertAfterId
-            ]),
-            waitUntilAllTreeChangesFromRemoteAreComplete()
-          ]);
-          log('attach tab from remote ', message);
-          const child  = Tabs.trackedTabs.get(message.childId);
-          const parent = Tabs.trackedTabs.get(message.parentId);
-          if (child && parent)
-            await Tree.attachTabTo(child, parent, Object.assign({}, message, {
-              insertBefore: Tabs.trackedTabs.get(message.insertBeforeId),
-              insertAfter:  Tabs.trackedTabs.get(message.insertAfterId),
-              inRemote:     false,
-              broadcast:    false
-            }));
-          mTreeChangesFromRemote.delete(promisedComplete);
-        })();
-        mTreeChangesFromRemote.add(promisedComplete);
-        return promisedComplete;
-      }
+      const promisedComplete = (async () => {
+        await Promise.all([
+          Tabs.waitUntilTabsAreCreated([
+            message.childId,
+            message.parentId,
+            message.insertBeforeId,
+            message.insertAfterId
+          ]),
+          waitUntilAllTreeChangesFromRemoteAreComplete()
+        ]);
+        log('attach tab from remote ', message);
+        const child  = Tabs.trackedTabs.get(message.childId);
+        const parent = Tabs.trackedTabs.get(message.parentId);
+        if (child && parent)
+          await Tree.attachTabTo(child, parent, Object.assign({}, message, {
+            insertBefore: Tabs.trackedTabs.get(message.insertBeforeId),
+            insertAfter:  Tabs.trackedTabs.get(message.insertAfterId),
+            inRemote:     false,
+            broadcast:    false
+          }));
+        mTreeChangesFromRemote.delete(promisedComplete);
+      })();
+      mTreeChangesFromRemote.add(promisedComplete);
+      return promisedComplete;
     }; break;
 
     case Constants.kCOMMAND_DETACH_TAB: {
-      if (message.windowId == mTargetWindow) {
-        const promisedComplete = (async () => {
-          await Promise.all([
-            Tabs.waitUntilTabsAreCreated(message.tabId),
-            waitUntilAllTreeChangesFromRemoteAreComplete()
-          ]);
-          const tab = Tabs.trackedTabs.get(message.tabId);
-          if (tab)
-            Tree.detachTab(tab, message);
-          mTreeChangesFromRemote.delete(promisedComplete);
-        })();
-        mTreeChangesFromRemote.add(promisedComplete);
-        return promisedComplete;
-      }
+      const promisedComplete = (async () => {
+        await Promise.all([
+          Tabs.waitUntilTabsAreCreated(message.tabId),
+          waitUntilAllTreeChangesFromRemoteAreComplete()
+        ]);
+        const tab = Tabs.trackedTabs.get(message.tabId);
+        if (tab)
+          Tree.detachTab(tab, message);
+        mTreeChangesFromRemote.delete(promisedComplete);
+      })();
+      mTreeChangesFromRemote.add(promisedComplete);
+      return promisedComplete;
     }; break;
 
-    case Constants.kCOMMAND_BLOCK_USER_OPERATIONS: {
-      if (message.windowId == mTargetWindow)
-        UserOperationBlocker.blockIn(mTargetWindow, message);
-    }; break;
+    case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
+      UserOperationBlocker.blockIn(mTargetWindow, message);
+      break;
 
-    case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS: {
-      if (message.windowId == mTargetWindow)
-        UserOperationBlocker.unblockIn(mTargetWindow, message);
-    }; break;
+    case Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS:
+      UserOperationBlocker.unblockIn(mTargetWindow, message);
+      break;
 
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
       if (!message.tabs.length)
@@ -1002,21 +995,15 @@ function onMessage(message, _sender, _respond) {
       })();
     }; break;
 
-    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS: {
+    case Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS:
       log('kCOMMAND_CONFIRM_TO_CLOSE_TABS: ', { message, mTargetWindow });
-      if (message.windowId == mTargetWindow)
-        return confirmToCloseTabs(message.tabIds);
-    }; break;
+      return confirmToCloseTabs(message.tabIds);
 
 
     case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
-      if (message.windowId != mTargetWindow)
-        return;
       return Bookmark.bookmarkTab(Tabs.trackedTabs.get(message.tabId), { showDialog: true });
 
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
-      if (message.windowId != mTargetWindow)
-        return;
       return Bookmark.bookmarkTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), { showDialog: true });
   }
 }
