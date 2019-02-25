@@ -80,7 +80,9 @@ export async function loadTreeStructure(restoredFromCacheResults) {
     let uniqueIds = await Tabs.getUniqueIds(tabs);
     MetricsData.add('loadTreeStructure: read stored data');
     let windowStateCompletelyApplied = false;
-    if (structure && structure.length <= tabs.length) {
+    if (structure &&
+        structure.length > 0 &&
+        structure.length <= tabs.length) {
       uniqueIds = uniqueIds.map(id => id.id);
       let tabsOffset;
       if (structure[0].id) {
