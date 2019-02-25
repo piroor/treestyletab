@@ -410,8 +410,8 @@ function onMessage(message, sender) {
           if (message.button == 0 &&
               onRegularArea &&
               !wasMultiselectionAction)
-            TabsInternalOperation.activateTab(tab.apiTab, {
-              keepMultiselection: tab.apiTab.highlighted
+            TabsInternalOperation.activateTab(tab, {
+              keepMultiselection: tab.highlighted
             });
         });
 
@@ -443,13 +443,12 @@ function onMessage(message, sender) {
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabId);
         log('set muted state: ', message);
-        let root = Tabs.trackedTabs.get(message.tabId);
+        const root = Tabs.trackedTabs.get(message.tabId);
         if (!root)
           return;
-        root = root.$TST.element;
         const multiselected = Tabs.isMultiselected(root);
         const tabs = multiselected ?
-          Tabs.getSelectedTabs(root.apiTab.windowId) :
+          Tabs.getSelectedTabs(root.windowId, { element: false }) :
           [root].concat(Tabs.getDescendantTabs(root)) ;
         for (const tab of tabs) {
           const playing = Tabs.isSoundPlaying(tab);
@@ -460,7 +459,7 @@ function onMessage(message, sender) {
 
           log(` => set muted=${message.muted}`);
 
-          browser.tabs.update(tab.apiTab.id, {
+          browser.tabs.update(tab.id, {
             muted: message.muted
           }).catch(ApiTabs.handleMissingTabError);
 
@@ -562,10 +561,10 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
       return (async () => {
         if (JSON.stringify(message.permissions) == JSON.stringify(Permissions.ALL_URLS)) {
-          const apiTabs = await browser.tabs.query({});
-          await Tabs.waitUntilTabsAreCreated(apiTabs.map(aPITab => aPITab.id));
-          for (const apiTab of apiTabs) {
-            Background.tryStartHandleAccelKeyOnTab(Tabs.getTabElementById(apiTab));
+          const tabs = await browser.tabs.query({});
+          await Tabs.waitUntilTabsAreCreated(tabs.map(tab => tab.id));
+          for (const tab of tabs) {
+            Background.tryStartHandleAccelKeyOnTab(Tabs.trackedTabs.get(tab.id).$TST.element);
           }
         }
       })();
