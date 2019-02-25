@@ -161,7 +161,7 @@ async function onActivated(activeInfo) {
 
     const newActiveTab = Tabs.trackedTabs.get(activeInfo.tabId);
     if (!newActiveTab ||
-        !Tabs.ensureLivingTab(newActiveTab.$TST.element)) {
+        !Tabs.ensureLivingTab(newActiveTab)) {
       onCompleted();
       return;
     }
@@ -193,7 +193,7 @@ async function onActivated(activeInfo) {
       }
     }
 
-    if (!Tabs.ensureLivingTab(newActiveTab.$TST.element)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
       onCompleted();
       return;
     }
@@ -213,7 +213,7 @@ async function onActivated(activeInfo) {
       return;
     }
 
-    if (!Tabs.ensureLivingTab(newActiveTab.$TST.element)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
       onCompleted();
       return;
     }
@@ -254,7 +254,7 @@ async function onUpdated(tabId, changeInfo, tab) {
   try {
     const updatedTab = Tabs.trackedTabs.get(tabId);
     if (!updatedTab ||
-        !Tabs.ensureLivingTab(updatedTab.$TST.element)) {
+        !Tabs.ensureLivingTab(updatedTab)) {
       onCompleted();
       return;
     }
@@ -534,16 +534,6 @@ async function onNewTabTracked(tab) {
   }
 }
 
-function reindexFollowingTabs(startTab, startIndex) {
-  log('reindexFollowingTabs ', { startTab, startIndex });
-  let followingTab = startTab;
-  let newIndex = startIndex;
-  while (followingTab) {
-    followingTab.apiTab.index = newIndex++;
-    followingTab = Tabs.getNextTab(followingTab);
-  }
-}
-
 // "Recycled tab" is an existing but reused tab for session restoration.
 function checkRecycledTab(windowId) {
   const possibleRecycledTabs = Tabs.queryAll({
@@ -561,19 +551,17 @@ function checkRecycledTab(windowId) {
 
   log(`Detecting recycled tabs for session restoration from ${possibleRecycledTabs.length} tabs`);
   for (const tab of possibleRecycledTabs) {
-    if (!Tabs.ensureLivingTab(tab) ||
-        !Tabs.ensureLivingTab(tab.$TST.element))
+    if (!Tabs.ensureLivingTab(tab))
       continue;
     const currentId = tab.uniqueId.id;
     Tabs.updateUniqueId(tab).then(uniqueId => {
       if (!Tabs.ensureLivingTab(tab) ||
-          !Tabs.ensureLivingTab(tab.$TST.element) ||
           !uniqueId.restored ||
           uniqueId.id == currentId ||
           Constants.kTAB_STATE_RESTORED in tab.$TST.states)
         return;
       log('A recycled tab is detected: ', tab);
-      Tabs.addState(tab.$TST.element, Constants.kTAB_STATE_RESTORED);
+      Tabs.addState(tab, Constants.kTAB_STATE_RESTORED);
       Tabs.onRestored.dispatch(tab);
     });
   }
@@ -628,7 +616,7 @@ async function onRemoved(tabId, removeInfo) {
     const oldParent   = Tabs.getParentTab(oldTab, { element: false });
     Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
 
-    reindexFollowingTabs(Tabs.getNextTab(oldTab.$TST.element), oldTab.index);
+    Tabs.trackedWindows.get(removeInfo.windowId).detachTab(oldTab);
 
     const onRemovedReuslt = Tabs.onRemoved.dispatch(oldTab, Object.assign({}, removeInfo, {
       byInternalOperation,
@@ -638,35 +626,12 @@ async function onRemoved(tabId, removeInfo) {
     // don't do await if not needed, to process things synchronously
     if (onRemovedReuslt instanceof Promise)
       await onRemovedReuslt;
-    await onRemovedComplete(oldTab);
+    oldTab.destroy();
     onCompleted();
   }
   catch(e) {
     console.log(e);
     onCompleted();
-  }
-}
-function onRemovedComplete(tab) {
-  clearTabRelationsForRemovedTab(tab);
-  delete tab.$TST.element.apiTab;
-  const window = Tabs.trackedWindows.get(tab.windowId);
-  if (window)
-    window.untrackTab(tab.id);
-  else
-    Tabs.untrack(tab.id);
-}
-function clearTabRelationsForRemovedTab(tab) {
-  const parent = tab.$TST.parent;
-  if (parent) {
-    parent.$TST.childIds = parent.$TST.childIds.filter(childId => childId != tab.id);
-    tab.$TST.parent = null;
-    tab.$TST.ancestors = [];
-  }
-  for (const child of tab.$TST.children) {
-    if (child.$TST.parentId == tab.id) {
-      child.$TST.parentId = null;
-      child.$TST.ancestors = child.$TST.ancestors.filter(ancestor => ancestor.id != tab.id);
-    }
   }
 }
 
@@ -740,8 +705,7 @@ async function onMoved(tabId, moveInfo) {
       await canceled;
     canceled = canceled === false;
     if (!canceled &&
-        Tabs.ensureLivingTab(movedTab) &&
-        Tabs.ensureLivingTab(movedTab.$TST.element)) { // it is removed while waiting
+        Tabs.ensureLivingTab(movedTab)) { // it is removed while waiting
       let newNextIndex = extendedMoveInfo.toIndex;
       if (extendedMoveInfo.fromIndex < newNextIndex)
         newNextIndex++;
@@ -870,7 +834,6 @@ async function onDetached(tabId, detachInfo) {
       Tabs.onDetached.dispatch(oldTab, info);
 
     const window = Tabs.trackedWindows.get(oldTab.windowId);
-    clearTabRelationsForRemovedTab(oldTab);
     window.element.removeChild(oldTab.$TST.element);
     if (targetWindow)
       window.untrackTab(oldTab.id);

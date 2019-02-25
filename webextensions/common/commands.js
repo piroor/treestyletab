@@ -53,7 +53,7 @@ export async function closeTree(rootTab) {
     return;
   tabs.reverse(); // close bottom to top!
   for (const tab of tabs) {
-    TabsInternalOperation.removeTab(tab.$TST.element);
+    TabsInternalOperation.removeTab(tab);
   }
 }
 
@@ -64,7 +64,7 @@ export async function closeDescendants(rootTab) {
     return;
   tabs.reverse(); // close bottom to top!
   for (const tab of tabs) {
-    TabsInternalOperation.removeTab(tab.$TST.element);
+    TabsInternalOperation.removeTab(tab);
   }
 }
 
@@ -77,7 +77,7 @@ export async function closeOthers(rootTab) {
   if (canceled)
     return;
   for (const tab of closeTabs) {
-    TabsInternalOperation.removeTab(tab.$TST.element);
+    TabsInternalOperation.removeTab(tab);
   }
 }
 
@@ -94,7 +94,7 @@ export function collapseTree(rootTab) {
 export function collapseAll(windowId) {
   const tabs = Tabs.getNormalTabs(windowId);
   for (const tab of tabs) {
-    collapseTree(tab.$TST.element);
+    collapseTree(tab);
   }
 }
 
@@ -111,7 +111,7 @@ export function expandTree(rootTab) {
 export function expandAll(windowId) {
   const tabs = Tabs.getNormalTabs(windowId, { element: false });
   for (const tab of tabs) {
-    expandTree(tab.$TST.element);
+    expandTree(tab);
   }
 }
 
@@ -399,8 +399,8 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   const replacedGroupTabs = Tabs.doAndGetNewTabs(() => {
     newTabs = moveTabsInternal(movedTabs, {
       duplicate:    params.duplicate,
-      insertBefore: params.insertBefore && params.insertBefore.$TST.element,
-      insertAfter:  params.insertAfter && params.insertAfter.$TST.element,
+      insertBefore: params.insertBefore,
+      insertAfter:  params.insertAfter,
       inRemote:     true
     });
   }, windowId);

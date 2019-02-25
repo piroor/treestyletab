@@ -367,11 +367,10 @@ function onMessage(message, sender) {
       return (async () => {
         logMouseEvent('Constants.kNOTIFY_TAB_MOUSEDOWN');
         await Tabs.waitUntilTabsAreCreated(message.tabId);
-        let tab = Tabs.trackedTabs.get(message.tabId);
+        const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
 
-        tab = tab.$TST.element;
         logMouseEvent('Sending message to listeners');
         const serializedTab = TSTAPI.serializeTab(tab);
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
@@ -564,7 +563,7 @@ function onMessage(message, sender) {
           const tabs = await browser.tabs.query({});
           await Tabs.waitUntilTabsAreCreated(tabs.map(tab => tab.id));
           for (const tab of tabs) {
-            Background.tryStartHandleAccelKeyOnTab(Tabs.trackedTabs.get(tab.id).$TST.element);
+            Background.tryStartHandleAccelKeyOnTab(Tabs.trackedTabs.get(tab.id));
           }
         }
       })();

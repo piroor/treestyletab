@@ -71,6 +71,7 @@ export class Tab {
   constructor(tab) {
     tab.$TST = this;
     this.tab = tab;
+    this.id  = tab.id;
 
     this.element = null;
 
@@ -93,6 +94,8 @@ export class Tab {
   }
 
   destroy() {
+    this.detach();
+
     if (this.reservedCleanupNeedlessGroupTab) {
       clearTimeout(this.reservedCleanupNeedlessGroupTab);
       delete this.reservedCleanupNeedlessGroupTab;
@@ -107,6 +110,7 @@ export class Tab {
         this.element.parentNode.removeChild(this.element);
       }
       delete this.element.$TST;
+      delete this.element.apiTab;
       delete this.element;
     }
     delete this.tab.$TST;
@@ -145,6 +149,22 @@ export class Tab {
 
   get hasChild() {
     return this.childIds.length > 0;
+  }
+
+  detach() {
+    const parent = this.parent;
+    if (parent) {
+      this.childIds  = parent.$TST.childIds.filter(childId => childId != this.id);
+      this.parent    = null;
+      this.ancestors = [];
+    }
+    for (const child of this.children) {
+      if (child.$TST.parentId == this.id) {
+        child.$TST.parentId = null;
+        child.$TST.ancestors = child.$TST.ancestors.filter(ancestor => ancestor.id != this.id);
+      }
+    }
+    this.children = [];
   }
 }
 
@@ -259,6 +279,7 @@ export class Window {
 
   detachTab(tabId) {
     const tab = trackedTabs.get(tabId);
+    tab.detach();
     this.tabs.delete(tabId);
     const order = this.order;
     const index = order.indexOf(tab.id);

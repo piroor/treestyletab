@@ -266,6 +266,6 @@ async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = fa
   if (!shouldCollapse)
     shouldCollapse = Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   for (const child of tab.$TST.children) {
-    fixupTreeCollapsedStateRestoredFromCache(child.$TST.element, shouldCollapse);
+    fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse);
   }
 }
