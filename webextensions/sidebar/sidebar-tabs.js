@@ -209,7 +209,7 @@ windowId = ${tab.windowId}
 }
 
 function getTooltipWithDescendants(tab) {
-  const tooltip = [`* ${tab.$TST.tooltip}`];
+  const tooltip = [`* ${tab.$TST.tooltip || tab.title}`];
   for (const child of Tabs.getChildTabs(tab)) {
     if (!child.$TST.tooltipWithDescendants)
       child.$TST.tooltipWithDescendants = getTooltipWithDescendants(child);
