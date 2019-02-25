@@ -545,7 +545,7 @@ async function handleDroppedNonTabItems(event, aDropActionInfo) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SELECT_TAB,
         windowId: Tabs.getWindow(),
-        tab:      aDropActionInfo.dragOverTabElement.id
+        tabId:    aDropActionInfo.dragOverTab.id
       });
       await TabsOpen.loadURI(uris.shift(), {
         tab:      aDropActionInfo.dragOverTab,
@@ -950,7 +950,7 @@ function reserveToProcessLongHover(params = {}) {
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_SELECT_TAB,
           windowId: Tabs.getWindow(),
-          tab:      dragOverTab.$TST.element.id
+          tabId:    dragOverTab.id
         });
       }
 

@@ -90,8 +90,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       windowId:    tabs[0].windowId,
       tabIds:      tabs.map(tab => tab.id),
       nextTabId:   referenceTab.id,
-      tabElementIds: tabs.map(tab => tab.$TST.element.id),
-      nextTabElementId: referenceTab.$TST.element.id,
       broadcasted: !!options.broadcast
     };
     if (options.inRemote) {
@@ -137,7 +135,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     else {
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
         Array.from(window.element.childNodes)
-          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab.id) ? '[MOVED]' : ''))
+          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab) ? '[MOVED]' : ''))
           .join('\n')));
     }
     if (!options.broadcasted) {
@@ -205,8 +203,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       windowId:      tabs[0].windowId,
       tabIds:        tabs.map(tab => tab.id),
       previousTabId: referenceTab.id,
-      tabElementIds: tabs.map(tab => tab.$TST.element.id),
-      previousTabElementId: referenceTab.$TST.element.id,
       broadcasted:   !!options.broadcast
     };
     if (options.inRemote) {
@@ -261,7 +257,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     else {
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
         Array.from(window.element.childNodes)
-          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab.id) ? '[MOVED]' : ''))
+          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab) ? '[MOVED]' : ''))
           .join('\n')));
     }
     if (!options.broadcasted) {

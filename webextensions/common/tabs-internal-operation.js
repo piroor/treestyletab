@@ -29,7 +29,6 @@ export async function activateTab(tab, options = {}) {
       type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
       windowId: tab.windowId,
       tabId:    tab.id,
-      tabElementId: tab.$TST.element.id,
       options:  options
     });
     return;
@@ -81,7 +80,6 @@ export function removeTabs(tabs, options = {}) {
     browser.runtime.sendMessage({
       type:    Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,
       tabIds:  tabs.map(tab => tab.id),
-      tabElementIds: tabs.map(tab => tab.$TST.element.id),
       options: Object.assign({}, options, {
         inRemote:    false,
         broadcast:   options.inRemote && !options.broadcast,

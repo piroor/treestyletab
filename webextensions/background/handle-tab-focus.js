@@ -226,8 +226,8 @@ function onMessage(message, sender) {
       return (async () => {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
-          await Tabs.waitUntilTabsAreCreated(sender.tab);
-          let tab = sender.tab && Tabs.getTabElementById(sender.tab);
+          await Tabs.waitUntilTabsAreCreated(sender.tab.id);
+          let tab = sender.tab && Tabs.getTabElementById(sender.tab.id);
           if (!tab) {
             const apiTabs = await browser.tabs.query({ currentWindow: true, active: true });
             await Tabs.waitUntilTabsAreCreated(apiTabs[0].id);

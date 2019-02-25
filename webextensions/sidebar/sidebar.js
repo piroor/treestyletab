@@ -841,7 +841,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE: {
       if (message.windowId == mTargetWindow) return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
@@ -859,7 +859,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE: {
       if (message.windowId == mTargetWindow) return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
@@ -883,7 +883,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds.concat([message.nextTabElementId]));
+        await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.nextTabId]));
         return TabsMove.moveTabsBefore(
           message.tabIds.map(id => Tabs.trackedTabs.get(id)),
           message.nextTabId && Tabs.trackedTabs.get(message.nextTabId),
@@ -898,7 +898,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds.concat([message.previousTabElementId]));
+        await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.previousTabId]));
         return TabsMove.moveTabsAfter(
           message.tabIds.map(id => Tabs.trackedTabs.get(id)),
           message.previousTabId && Tabs.trackedTabs.get(message.previousTabId),
@@ -913,7 +913,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds);
+        await Tabs.waitUntilTabsAreCreated(message.tabIds);
         return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), message.options);
       })();
 
@@ -922,10 +922,10 @@ function onMessage(message, _sender, _respond) {
         const promisedComplete = (async () => {
           await Promise.all([
             Tabs.waitUntilTabsAreCreated([
-              message.childElementId,
-              message.parentElementId,
-              message.insertBeforeElementId,
-              message.insertAfterElementId
+              message.childId,
+              message.parentId,
+              message.insertBeforeId,
+              message.insertAfterId
             ]),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
@@ -950,7 +950,7 @@ function onMessage(message, _sender, _respond) {
       if (message.windowId == mTargetWindow) {
         const promisedComplete = (async () => {
           await Promise.all([
-            Tabs.waitUntilTabsAreCreated(message.tabElementId),
+            Tabs.waitUntilTabsAreCreated(message.tabId),
             waitUntilAllTreeChangesFromRemoteAreComplete()
           ]);
           const tab = Tabs.trackedTabs.get(message.tabId);
@@ -977,16 +977,16 @@ function onMessage(message, _sender, _respond) {
       if (!message.tabs.length)
         break;
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabs);
+        await Tabs.waitUntilTabsAreCreated(message.tabIds);
         const add    = message.add || [];
         const remove = message.remove || [];
-        log('apply broadcasted tab state ', message.tabs, {
+        log('apply broadcasted tab state ', message.tabIds, {
           add:    add.join(','),
           remove: remove.join(',')
         });
         const modified = add.concat(remove);
-        for (let tab of message.tabs) {
-          tab = Tabs.getTabElementById(tab);
+        for (const id of message.tabIds) {
+          const tab = Tabs.trackedTabs.get(id);
           if (!tab)
             continue;
           add.forEach(state => Tabs.addState(tab, state));
@@ -994,9 +994,9 @@ function onMessage(message, _sender, _respond) {
           if (Tabs.hasState(modified, Constants.kTAB_STATE_AUDIBLE) ||
               Tabs.hasState(modified, Constants.kTAB_STATE_SOUND_PLAYING) ||
               Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {
-            SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
+            SidebarTabs.reserveToUpdateSoundButtonTooltip(tab.$TST.element);
             if (message.bubbles)
-              TabsUpdate.updateParentTab(Tabs.getParentTab(tab, { element: false }));
+              TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
           }
         }
       })();

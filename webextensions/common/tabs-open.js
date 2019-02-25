@@ -133,10 +133,6 @@ export async function openURIsInTabs(uris, options = {}) {
         insertBeforeId: options.insertBefore && options.insertBefore.id,
         insertAfter:    null,
         insertAfterId:  options.insertAfter && options.insertAfter.id,
-        parentElementId:       options.parent && options.parent.$TST.element.id,
-        openerElementId:       options.opener && options.opener.$TST.element.id,
-        insertBeforeElementId: options.insertBefore && options.insertBefore.$TST.element.id,
-        insertAfterElementId:  options.insertAfter && options.insertAfter.$TST.element.id,
         cookieStoreId: options.cookieStoreId || null,
         isOrphan:      !!options.isOrphan,
         inRemote:      false

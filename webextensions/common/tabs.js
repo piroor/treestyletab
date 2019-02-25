@@ -2148,7 +2148,7 @@ export function broadcastState(tabs, options = {}) {
     tabs = [tabs];
   browser.runtime.sendMessage({
     type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabs:    tabs.map(tab => tab.id),
+    tabIds:  tabs.map(tab => tab.id),
     add:     options.add || [],
     remove:  options.remove || [],
     bubbles: !!options.bubbles

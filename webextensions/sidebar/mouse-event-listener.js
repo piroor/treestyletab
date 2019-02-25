@@ -272,6 +272,7 @@ function onMouseDown(event) {
     type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
     window:   mTargetWindow,
     windowId: mTargetWindow,
+    tabId:    tab && tab.apiTab.id
   }));
 
   EventUtils.setLastMousedown(event.button, mousedown);
@@ -405,7 +406,7 @@ async function onMouseUp(event) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
         windowId: mTargetWindow,
-        tab:      tab.id,
+        tabId:    tab.apiTab.id,
         muted:    Tabs.maybeSoundPlaying(tab)
       });
     }

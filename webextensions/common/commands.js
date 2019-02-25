@@ -271,9 +271,6 @@ export async function performTabsDragDrop(params = {}) {
       attachToId:     params.attachTo && params.attachTo.id,
       insertBeforeId: params.insertBefore && params.insertBefore.id,
       insertAfterId:  params.insertAfter && params.insertAfter.id,
-      attachToElementId:     params.attachTo && params.attachTo.$TST.element.id,
-      insertBeforeElementId: params.insertBefore && params.insertBefore.$TST.element.id,
-      insertAfterElementId:  params.insertAfter && params.insertAfter.$TST.element.id,
       inRemote:       false,
       destinationWindowId
     }));

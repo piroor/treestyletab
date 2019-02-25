@@ -502,8 +502,8 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          message.tabElementId,
-          message.parentElementId
+          message.tabId,
+          message.parentId
         ]);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (tab && Tabs.isActive(Tabs.trackedTabs.get(message.parentId)))
@@ -554,9 +554,10 @@ function onMessageExternal(message, _aSender) {
         const currentWindow = Tabs.getWindow();
         if ('tab' in message) {
           await Tabs.waitUntilTabsAreCreated(message.tab);
-          params.tab = Tabs.getTabElementById(message.tab);
+          params.tab = Tabs.trackedTabs.get(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;
+          params.tab = params.tab.$TST.element;
         }
         else {
           if (message.window != currentWindow)

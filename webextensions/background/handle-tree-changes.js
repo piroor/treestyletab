@@ -133,8 +133,6 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     type:          Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY,
     tabId:         tab.id,
     parentId:      parent.id,
-    tabElementId: tab.$TST.element.id,
-    parentElementId: parent.$TST.element.id,
     newlyAttached: info.newlyAttached
   });
 

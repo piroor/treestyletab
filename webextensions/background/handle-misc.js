@@ -293,7 +293,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
@@ -321,9 +321,9 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_NEW_TABS:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          message.parentElementId,
-          message.insertBeforeElementId,
-          message.insertAfterElementId
+          message.parentId,
+          message.insertBeforeId,
+          message.insertAfterId
         ]);
         log('new tabs requested: ', message);
         return await TabsOpen.openURIsInTabs(message.uris, Object.assign({}, message, {
@@ -337,7 +337,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS:
       return (async () => {
         log('new window requested: ', message);
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds);
+        await Tabs.waitUntilTabsAreCreated(message.tabIds);
         const tabs = message.tabIds.map(id => Tabs.trackedWindows.get(id));
         const movedTabs = await Tree.openNewWindowFromTabs(tabs, message);
         return { movedTabs: movedTabs.map(tab => tab.id) };
@@ -346,7 +346,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_MOVE_TABS:
       return (async () => {
         log('move tabs requested: ', message);
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds.concat([message.insertBeforeElementId, message.insertAfterElementId]));
+        await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.insertBeforeId, message.insertAfterId]));
         const movedTabs = await Tree.moveTabs(
           message.tabIds.map(id => Tabs.trackedTabs.get(id)),
           Object.assign({}, message, {
@@ -359,18 +359,19 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds);
+        await Tabs.waitUntilTabsAreCreated(message.tabIds);
         return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), message.options);
       })();
 
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
       return (async () => {
         logMouseEvent('Constants.kNOTIFY_TAB_MOUSEDOWN');
-        await Tabs.waitUntilTabsAreCreated(message.tab);
-        const tab = Tabs.getTabElementById(message.tab);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
+        let tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
 
+        tab = tab.$TST.element;
         logMouseEvent('Sending message to listeners');
         const serializedTab = TSTAPI.serializeTab(tab);
         const mousedownNotified = TSTAPI.sendMessage(Object.assign({}, message, {
@@ -419,17 +420,17 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SELECT_TAB:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tab);
-        const tab = Tabs.getTabElementById(message.tab);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
+        const tab = Tabs.getTabElementById(message.tabId);
         if (!tab)
           return;
-        browser.tabs.update(tab.apiTab.id, { active: true })
+        browser.tabs.update(tab.id, { active: true })
           .catch(ApiTabs.handleMissingTabError);
       })();
 
     case Constants.kCOMMAND_SELECT_TAB_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (!tab)
           return;
@@ -440,11 +441,12 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SET_SUBTREE_MUTED:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tab);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
         log('set muted state: ', message);
-        const root = Tabs.getTabElementById(message.tab);
+        let root = Tabs.trackedTabs.get(message.tabId);
         if (!root)
           return;
+        root = root.$TST.element;
         const multiselected = Tabs.isMultiselected(root);
         const tabs = multiselected ?
           Tabs.getSelectedTabs(root.apiTab.windowId) :
@@ -494,7 +496,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds.concat([message.nextTabElementId]));
+        await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.nextId]));
         return TabsMove.moveTabsBefore(
           message.tabIds.map(id => Tabs.trackedTabs.get(id)),
           message.nextTabId && Tabs.trackedTabs.get(message.nextTabId),
@@ -506,7 +508,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementIds.concat([message.previousTabElementId]));
+        await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.previousTabId]));
         return TabsMove.moveTabsAfter(
           message.tabIds.map(id => Tabs.trackedTabs.get(id)),
           message.previousTabId && Tabs.trackedTabs.get(message.previousTabId),
@@ -519,10 +521,10 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          message.childElementId,
-          message.parentElementId,
-          message.insertBeforeElementId,
-          message.insertAfterElementId
+          message.childId,
+          message.parentId,
+          message.insertBeforeId,
+          message.insertAfterId
         ]);
         const child  = Tabs.trackedTabs.get(message.childId);
         const parent = Tabs.trackedTabs.get(message.parentId);
@@ -535,7 +537,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_DETACH_TAB:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabElementId);
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (tab)
           await Tree.detachTab(tab);
@@ -544,9 +546,9 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated([
-          message.attachToElementId,
-          message.insertBeforeElementId,
-          message.insertAfterElementId
+          message.attachToId,
+          message.insertBeforeId,
+          message.insertAfterId
         ]);
         log('perform tabs dragdrop requested: ', message);
         return Commands.performTabsDragDrop(Object.assign({}, message, {
@@ -620,18 +622,16 @@ function onMessageExternal(message, sender) {
           message.insertBefore,
           message.insertAfter
         ]);
-        const child  = Tabs.getTabElementById(message.child);
-        const parent = Tabs.getTabElementById(message.parent);
+        const child  = Tabs.trackedTabs.get(message.child);
+        const parent = Tabs.trackedTabs.get(message.parent);
         if (!child ||
             !parent ||
-            child.parentNode != parent.parentNode)
+            child.windowId != parent.windowId)
           return false;
-        const insertBefore = Tabs.getTabElementById(message.insertBefore);
-        const insertAfter  = Tabs.getTabElementById(message.insertAfter);
-        await Tree.attachTabTo(child.apiTab, parent.apiTab, {
+        await Tree.attachTabTo(child, parent, {
           broadcast:    true,
-          insertBefore: insertBefore && insertBefore.apiTab,
-          insertAfter:  insertAfter && insertAfter.apiTab
+          insertBefore: Tabs.trackedTabs.get(message.insertBefore),
+          insertAfter:  Tabs.trackedTabs.get(message.insertAfter)
         });
         return true;
       })();
@@ -639,10 +639,10 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kDETACH:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tab);
-        const tab = Tabs.getTabElementById(message.tab);
+        const tab = Tabs.trackedTabs.get(message.tab);
         if (!tab)
           return false;
-        await Tree.detachTab(tab.apiTab, {
+        await Tree.detachTab(tab, {
           broadcast: true
         });
         return true;
