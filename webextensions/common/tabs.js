@@ -2045,11 +2045,11 @@ export function initPromisedStatus(tab, alreadyOpened = false) {
   if (alreadyOpened)
     tab.$TST.opened = Promise.resolve(true);
   else
-    tab.$TST.opened = new Promise((resolve, _aReject) => {
+    tab.$TST.opened = new Promise((resolve, _reject) => {
       mOpenedResolvers.set(tab.id, resolve);
     });
 
-  tab.$TST.closedWhileActive = new Promise((resolve, _aReject) => {
+  tab.$TST.closedWhileActive = new Promise((resolve, _reject) => {
     mClosedWhileActiveResolvers.set(tab.id, resolve);
   });
 }
