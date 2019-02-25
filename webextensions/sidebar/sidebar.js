@@ -967,7 +967,7 @@ function onMessage(message, _sender, _respond) {
       break;
 
     case Constants.kCOMMAND_BROADCAST_TAB_STATE: {
-      if (!message.tabs.length)
+      if (!message.tabIds.length)
         break;
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabIds);
