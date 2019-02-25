@@ -354,16 +354,15 @@ function hasVisiblePrecedingItem(separator) {
 
 async function onShown(info, contextTab) {
   contextTab = contextTab && Tabs.trackedTabs.get(contextTab.id);
-  const tab                   = Tabs.getTabElementById(contextTab && contextTab.id);
   const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({})).id;
-  const previousTab           = Tabs.getPreviousTab(tab);
-  const previousSiblingTab    = Tabs.getPreviousSiblingTab(tab);
-  const nextTab               = Tabs.getNextTab(tab);
-  const nextSiblingTab        = Tabs.getNextSiblingTab(tab);
+  const previousTab           = Tabs.getPreviousTab(contextTab);
+  const previousSiblingTab    = Tabs.getPreviousSiblingTab(contextTab);
+  const nextTab               = Tabs.getNextTab(contextTab);
+  const nextSiblingTab        = Tabs.getNextSiblingTab(contextTab);
   const hasMultipleTabs       = Tabs.getTabs(windowId).length > 1;
   const normalTabsCount       = Tabs.getNormalTabs(windowId).length;
   const hasMultipleNormalTabs = normalTabsCount > 1;
-  const multiselected         = Tabs.isMultiselected(tab);
+  const multiselected         = Tabs.isMultiselected(contextTab);
 
   let modifiedItemsCount = 0;
 
@@ -401,7 +400,7 @@ async function onShown(info, contextTab) {
 
   updateItem('context_selectAllTabs', {
     visible: emulate && contextTab,
-    enabled: contextTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length,
+    enabled: contextTab && Tabs.getSelectedTabs(windowId, { element: false }).length != Tabs.getVisibleTabs(windowId, { element: false }).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
@@ -471,7 +470,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeDescendants', {
     visible: emulate && contextTab && configs.context_closeTabOptions_closeDescendants,
-    enabled: !multiselected && Tabs.hasChildTabs(tab)
+    enabled: !multiselected && Tabs.hasChildTabs(contextTab)
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeOthers', {
     visible: emulate && contextTab && configs.context_closeTabOptions_closeOthers,
@@ -495,7 +494,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_selectAllTabs', {
     visible: emulate && !contextTab,
-    enabled: !contextTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length
+    enabled: !contextTab && Tabs.getSelectedTabs(windowId, { element: false }).length != Tabs.getVisibleTabs(windowId, { element: false }).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
     visible: emulate && !contextTab
@@ -523,14 +522,12 @@ async function onShown(info, contextTab) {
 
 async function onClick(info, contextTab) {
   contextTab = contextTab && Tabs.trackedTabs.get(contextTab.id);
-  const window            = await browser.windows.getLastFocused({ populate: true });
-  const windowId          = contextTab && contextTab.windowId || window.id;
-  const contextWindowId   = window.id;
-  const contextTabElement = Tabs.getTabElementById(contextTab);
-  const activeTab         = Tabs.activeTabForWindow.get(windowId);
+  const window    = await browser.windows.getLastFocused({ populate: true });
+  const windowId  = contextTab && contextTab.windowId || window.id;
+  const activeTab = Tabs.activeTabForWindow.get(windowId);
 
   let multiselectedTabs = Tabs.getSelectedTabs(windowId, { element: false });
-  const isMultiselected = contextTabElement ? Tabs.isMultiselected(contextTabElement) : multiselectedTabs.length > 1;
+  const isMultiselected = contextTab ? Tabs.isMultiselected(contextTab) : multiselectedTabs.length > 1;
   if (!isMultiselected)
     multiselectedTabs = null;
 
@@ -588,7 +585,7 @@ async function onClick(info, contextTab) {
       break;
     case 'context_duplicateTab':
       Commands.duplicateTab(contextTab, {
-        destinationWindowId: contextWindowId
+        destinationWindowId: windowId
       });
       break;
     case 'context_moveTabToStart':
@@ -600,11 +597,11 @@ async function onClick(info, contextTab) {
     case 'context_openTabInWindow':
       Commands.openTabInWindow(contextTab);
     case 'context_selectAllTabs': {
-      const apiTabs = await browser.tabs.query({ windowId: contextWindowId });
+      const tabs = await browser.tabs.query({ windowId });
       browser.tabs.highlight({
-        windowId: contextWindowId,
+        windowId,
         populate: false,
-        tabs:     [activeTab.index].concat(apiTabs.filter(tab => !tab.active).map(tab => tab.index))
+        tabs:     [activeTab.index].concat(tabs.filter(tab => !tab.active).map(tab => tab.index))
       });
     }; break;
     case 'context_bookmarkTab':
@@ -617,15 +614,15 @@ async function onClick(info, contextTab) {
       Commands.bookmarkTabs(Tabs.getTabs(contextTab.windowId, { element: false }));
       break;
     case 'context_reloadAllTabs': {
-      const tabs = await browser.tabs.query({ windowId: contextWindowId }) ;
+      const tabs = await browser.tabs.query({ windowId }) ;
       for (const tab of tabs) {
         browser.tabs.reload(tab.id);
       }
     }; break;
     case 'context_closeTabsToTheEnd': {
-      const tabs = await browser.tabs.query({ windowId: contextWindowId });
+      const tabs = await browser.tabs.query({ windowId });
       let after = false;
-      const closeApiTabIds = [];
+      const closeTabIds = [];
       const keptTabIds = new Set(
         multiselectedTabs ?
           multiselectedTabs.map(tab => tab.id) :
@@ -637,33 +634,33 @@ async function onClick(info, contextTab) {
           continue;
         }
         if (after && !tab.pinned)
-          closeApiTabIds.push(tab.id);
+          closeTabIds.push(tab.id);
       }
       const canceled = (await browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs:     closeApiTabIds,
-        windowId: contextWindowId
+        type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
+        tabs: closeTabIds,
+        windowId
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeApiTabIds);
+      browser.tabs.remove(closeTabIds);
     }; break;
     case 'context_closeOtherTabs': {
-      const apiTabs  = await browser.tabs.query({ windowId: contextWindowId });
+      const tabs  = await browser.tabs.query({ windowId });
       const keptTabIds = new Set(
         multiselectedTabs ?
           multiselectedTabs.map(tab => tab.id) :
           [contextTab.id]
       );
-      const closeApiTabIds = apiTabs.filter(apiTab => !apiTab.pinned && !keptTabIds.has(apiTab.id)).map(tab => tab.id);
+      const closeTabIds = tabs.filter(tab => !tab.pinned && !keptTabIds.has(tab.id)).map(tab => tab.id);
       const canceled = (await browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
-        tabs:     closeApiTabIds,
-        windowId: contextWindowId
+        type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
+        tabs: closeTabIds,
+        windowId
       })) === false
       if (canceled)
         break;
-      browser.tabs.remove(closeApiTabIds);
+      browser.tabs.remove(closeTabIds);
     }; break;
     case 'context_undoCloseTab': {
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
