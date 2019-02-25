@@ -219,7 +219,7 @@ async function rebuildAll() {
           const tabElement = Tabs.buildTabElement(tab, { existing: true });
           container.appendChild(tabElement);
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
-          tryStartHandleAccelKeyOnTab(tabElement);
+          tryStartHandleAccelKeyOnTab(tab);
         }
         Tabs.allElementsContainer.appendChild(container);
       }
