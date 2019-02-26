@@ -64,7 +64,7 @@ export async function getEffectiveWindowCache(options = {}) {
         getWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY)
       ]);
       cachedSignature = cache && cache.signature;
-      log(`getEffectiveWindowCache: got from the owner ${mLastWindowCacheOwner.id}`, {
+      log(`getEffectiveWindowCache: got from the owner `, mLastWindowCacheOwner, {
         cachedSignature, cache, tabsDirty, collapsedDirty
       });
       if (cache &&
