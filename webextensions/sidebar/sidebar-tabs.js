@@ -415,7 +415,7 @@ async function syncTabsOrder() {
         for (const id of moveTabIds) {
           const tab = Tabs.trackedTabs.get(id);
           if (tab)
-            tab.parentNode.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element);
+            tab.$TST.element.parentNode.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element);
         }
         break;
     }
