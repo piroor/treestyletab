@@ -108,7 +108,8 @@ function cancelRunningScroll() {
 }
 
 function calculateScrollDeltaForTab(tab) {
-  if (Tabs.isPinned(tab))
+  tab = Tabs.trackedTabs.get(tab && tab.id);
+  if (!tab || Tabs.isPinned(tab))
     return 0;
 
   const tabRect       = tab.$TST.element.getBoundingClientRect();
@@ -131,6 +132,7 @@ function calculateScrollDeltaForTab(tab) {
 }
 
 export function isTabInViewport(tab) {
+  tab = Tabs.trackedTabs.get(tab && tab.id);
   if (!Tabs.ensureLivingTab(tab))
     return false;
 
@@ -229,6 +231,7 @@ export function scrollToNewTab(tab, options = {}) {
 }
 
 function canScrollToTab(tab) {
+  tab = Tabs.trackedTabs.get(tab && tab.id);
   return (Tabs.ensureLivingTab(tab) &&
           !Tabs.isHidden(tab));
 }
@@ -388,6 +391,7 @@ autoScrollOnMouseEvent.areaSize = 20;
 
 
 async function notifyOutOfViewTab(tab) {
+  tab = Tabs.trackedTabs.get(tab && tab.id);
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('notifyOutOfViewTab: skip until completely restored');
     wait(100).then(() => notifyOutOfViewTab(tab));
