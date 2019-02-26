@@ -172,7 +172,7 @@ function onMouseOver(event) {
   // contains the target of the mouseout event or null if there is none). This
   // also includes the case where we enter the tab directly without going
   // through another tab or the sidebar, which causes relatedTarget to be null
-  const enterTabFromAncestor = tab && !tab.contains(event.relatedTarget);
+  const enterTabFromAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (enterTabFromAncestor) {
     TSTAPI.sendMessage({
@@ -198,7 +198,7 @@ function onMouseOut(event) {
   // contains the target of the mouseover event or null if there is none). This
   // also includes the case where we leave the tab directly without going
   // through another tab or the sidebar, which causes relatedTarget to be null
-  const leaveTabToAncestor = tab && !tab.contains(event.relatedTarget);
+  const leaveTabToAncestor = tab && !tab.$TST.element.contains(event.relatedTarget);
 
   if (leaveTabToAncestor) {
     TSTAPI.sendMessage({
@@ -273,7 +273,7 @@ function onMouseDown(event) {
     type:     Constants.kNOTIFY_TAB_MOUSEDOWN,
     window:   mTargetWindow,
     windowId: mTargetWindow,
-    tabId:    tab && tab.apiTab.id
+    tabId:    tab && tab.id
   }));
 
   EventUtils.setLastMousedown(event.button, mousedown);
@@ -300,7 +300,7 @@ function onMouseDown(event) {
 
     if (event.button == 0 &&
         tab) {
-      const results = await DragAndDrop.legacyStartMultiDrag(tab, mousedown.detail.closebox);
+      const results = await DragAndDrop.legacyStartMultiDrag(tab.$TST.element, mousedown.detail.closebox);
       if (results.some(result => result.result !== false)) {
         log('onMouseDown expired');
         mousedown.expired = true;
@@ -372,7 +372,7 @@ async function onMouseUp(event) {
   if (!lastMousedown ||
       lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
-      (livingTab && livingTab != SidebarTabs.getTabElementById(lastMousedown.detail.tab)))
+      (livingTab && livingTab != Tabs.trackedTabs.get(lastMousedown.detail.tab)))
     return;
 
   log('onMouseUp ', lastMousedown.detail);
@@ -386,17 +386,17 @@ async function onMouseUp(event) {
     if (lastMousedown.detail.isMiddleClick) { // Ctrl-click doesn't close tab on Firefox's tab bar!
       log('onMouseUp: middle click on a tab');
       //log('middle-click to close');
-      const tabs = Tree.getClosingTabsFromParent(livingTab.apiTab);
+      const tabs = Tree.getClosingTabsFromParent(livingTab);
       Sidebar.confirmToCloseTabs(tabs.map(tab => tab.id))
         .then(confirmed => {
           if (confirmed)
-            TabsInternalOperation.removeTab(livingTab.apiTab, { inRemote: true });
+            TabsInternalOperation.removeTab(livingTab, { inRemote: true });
         });
     }
     else if (lastMousedown.detail.twisty) {
       log('clicked on twisty');
       if (Tabs.hasChildTabs(tab))
-        Tree.collapseExpandSubtree(tab.apiTab, {
+        Tree.collapseExpandSubtree(tab, {
           collapsed:       !Tabs.isSubtreeCollapsed(tab),
           manualOperation: true,
           inRemote:        true
@@ -407,7 +407,7 @@ async function onMouseUp(event) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
         windowId: mTargetWindow,
-        tabId:    tab.apiTab.id,
+        tabId:    tab.id,
         muted:    Tabs.maybeSoundPlaying(tab)
       });
     }
@@ -420,8 +420,8 @@ async function onMouseUp(event) {
       //}
       const multiselected  = Tabs.isMultiselected(tab);
       const tabsToBeClosed = multiselected ?
-        Tabs.getSelectedTabs(tab.apiTab.windowId, { element: false }) :
-        Tree.getClosingTabsFromParent(tab.apiTab) ;
+        Tabs.getSelectedTabs(tab.windowId, { element: false }) :
+        Tree.getClosingTabsFromParent(tab) ;
       Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.id))
         .then(confirmed => {
           if (!confirmed)
@@ -429,7 +429,7 @@ async function onMouseUp(event) {
           if (multiselected)
             TabsInternalOperation.removeTabs(tabsToBeClosed, { inRemote: true });
           else
-            TabsInternalOperation.removeTab(tab.apiTab, { inRemote: true });
+            TabsInternalOperation.removeTab(tab, { inRemote: true });
         });
     }
     else if (lastMousedown.detail.button == 0 &&
@@ -439,8 +439,8 @@ async function onMouseUp(event) {
              !lastMousedown.detail.shiftKey) {
       // clear selection by left click
       browser.tabs.highlight({
-        windowId: tab.apiTab.windowId,
-        tabs:     [tab.apiTab.index],
+        windowId: tab.windowId,
+        tabs:     [tab.index],
         populate: false
       }).catch(_e => {});
     }
@@ -530,7 +530,7 @@ function onDblClick(event) {
     else if (configs.collapseExpandSubtreeByDblClick) {
       event.stopPropagation();
       event.preventDefault();
-      Tree.collapseExpandSubtree(livingTab.apiTab, {
+      Tree.collapseExpandSubtree(livingTab, {
         collapsed:       !Tabs.isSubtreeCollapsed(livingTab),
         manualOperation: true,
         inRemote:        true

@@ -236,7 +236,7 @@ function canScrollToTab(tab) {
 export async function scrollToTab(tab, options = {}) {
   scrollToTab.lastTargetId = null;
 
-  log('scrollToTab to ', tab.id, options.anchor && options.anchor.id, options,
+  log('scrollToTab to ', tab && tab.id, options.anchor && options.anchor.id, options,
       { stack: new Error().stack });
   cancelRunningScroll();
   if (!canScrollToTab(tab)) {
