@@ -894,8 +894,7 @@ export function initTab(tab, options = {}) {
   const trackedTab = trackedTabs.get(tab.id);
   if (trackedTab)
     tab = trackedTab;
-  else
-    tab.$TST = (trackedTab && trackedTab.$TST) || new Tab(tab);
+  tab.$TST = (trackedTab && trackedTab.$TST) || new Tab(tab);
 
   if (mBindToElement) {
     const tabElement = document.createElement('li');
