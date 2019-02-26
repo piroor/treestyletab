@@ -490,14 +490,15 @@ async function onContextMenu(event) {
   if (EventUtils.getElementTarget(event).closest('input, textarea'))
     return;
 
-  const tab = EventUtils.getTabFromEvent(event);
+  const tabElement = EventUtils.getTabFromEvent(event);
+  const tab = tabElement && tabElement.apiTab;
   const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
   if (!modifierKeyPressed &&
-      tab && tab.apiTab &&
+      tab &&
       typeof browser.menus.overrideContext == 'function') {
     browser.menus.overrideContext({
       context: 'tab',
-      tabId: tab.apiTab.id
+      tabId: tab.id
     });
     return;
   }
@@ -505,10 +506,10 @@ async function onContextMenu(event) {
     return;
   event.stopPropagation();
   event.preventDefault();
-  await onShown(tab && tab.apiTab);
+  await onShown(tab);
   await wait(25);
   await open({
-    tab:  tab && tab.apiTab,
+    tab,
     left: event.clientX,
     top:  event.clientY
   });
