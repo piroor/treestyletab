@@ -560,7 +560,7 @@ function checkRecycledTab(windowId) {
   for (const tab of possibleRecycledTabs) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
-    const currentId = tab.uniqueId.id;
+    const currentId = tab.$TST.uniqueId.id;
     Tabs.updateUniqueId(tab).then(uniqueId => {
       if (!Tabs.ensureLivingTab(tab) ||
           !uniqueId.restored ||
