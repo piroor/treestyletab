@@ -237,15 +237,13 @@ export async function updateTabsHighlighted(highlightInfo) {
     windowId:    highlightInfo.windowId,
     '!id':       tabIds,
     //id:          new RegExp(`^(?!(${highlightInfo.tabIds.join('|')})$)`),
-    highlighted: true,
-    element:     false
+    highlighted: true
   });
   const highlightedTabs = Tabs.queryAll({
     windowId:    highlightInfo.windowId,
     id:          tabIds,
     //id:          new RegExp(`^(${highlightInfo.tabIds.join('|')})$`),
-    highlighted: false,
-    element:     false
+    highlighted: false
   });
 
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
@@ -285,8 +283,7 @@ function updateMultipleHighlighted(windowId) {
   const highlightedTabs = Tabs.queryAll({
     windowId,
     highlighted: true,
-    living:      true,
-    element:     false
+    living:      true
   });
   if (highlightedTabs.length > 1) {
     window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED] = true;

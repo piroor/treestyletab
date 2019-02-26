@@ -1130,7 +1130,7 @@ export async function followDescendantsToMovedRoot(tab, options = {}) {
   const window = Tabs.trackedWindows.get(tab.windowId);
   window.subTreeChildrenMovingCount++;
   window.subTreeMovingCount++;
-  await TabsMove.moveTabsAfter(Tabs.getDescendantTabs(tab, { element: false }), tab, options);
+  await TabsMove.moveTabsAfter(Tabs.getDescendantTabs(tab), tab, options);
   window.subTreeChildrenMovingCount--;
   window.subTreeMovingCount--;
 }

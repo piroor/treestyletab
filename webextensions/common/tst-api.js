@@ -586,7 +586,7 @@ async function getTabsFromWrongIds(aIds, sender) {
         return tabs.map(tab => TabIdFixer.fixTab(tab));
       }
       default:
-        return Tabs.getTabByUniqueId(id, { element: false });
+        return Tabs.getTabByUniqueId(id);
     }
   }));
   log('=> ', tabs);

@@ -267,8 +267,7 @@ async function synchronizeThrobberAnimation() {
   const toBeSynchronizedTabs = Tabs.queryAll({
     windowId: Tabs.getWindow(),
     visible:  true,
-    states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true],
-    element:  false
+    states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true]
   });
   if (toBeSynchronizedTabs.length == 0)
     return;

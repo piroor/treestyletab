@@ -329,7 +329,7 @@ async function updateAncestors(tab) {
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_ANCESTORS,
-    Tabs.getAncestorTabs(tab, { element: false }).map(ancestor => ancestor.$TST.uniqueId.id)
+    Tabs.getAncestorTabs(tab).map(ancestor => ancestor.$TST.uniqueId.id)
   );
 }
 
@@ -356,7 +356,7 @@ async function updateChildren(tab) {
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_CHILDREN,
-    Tabs.getChildTabs(tab, { element: false }).map(child => child.$TST.uniqueId.id)
+    Tabs.getChildTabs(tab).map(child => child.$TST.uniqueId.id)
   );
 }
 

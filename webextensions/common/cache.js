@@ -239,7 +239,7 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
   else
     Tabs.removeAttribute(tab, Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tabElement.getAttribute(Constants.kPARENT));
-  tab.$TST.ancestors = Tabs.getAncestorTabs(tab, { force: true, element: false });
+  tab.$TST.ancestors = Tabs.getAncestorTabs(tab, { force: true });
 
   Tabs.setAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
   Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');

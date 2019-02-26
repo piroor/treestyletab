@@ -52,8 +52,7 @@ function getTabsBetween(begin, end) {
     windowId: begin.windowId,
     id:       (id => id != begin.id && id != end.id),
     fromId:   begin.id,
-    toId:     end.id,
-    element:  false
+    toId:     end.id
   });
 }
 

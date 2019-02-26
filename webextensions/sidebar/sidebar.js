@@ -498,7 +498,7 @@ function updateTabbarLayout(params = {}) {
         Scroll.scrollToTab(activeTab);
         return;
       }
-      const lastOpenedTab = Tabs.getLastOpenedTab(Tabs.getWindow(), { element: false });
+      const lastOpenedTab = Tabs.getLastOpenedTab(Tabs.getWindow());
       const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {

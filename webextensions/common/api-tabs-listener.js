@@ -611,8 +611,8 @@ async function onRemoved(tabId, removeInfo) {
 
     // The removing tab may be attached to tree/someone attached to the removing tab.
     // We need to clear them by onRemoved handlers.
-    const oldChildren = Tabs.getChildTabs(oldTab, { element: false });
-    const oldParent   = Tabs.getParentTab(oldTab, { element: false });
+    const oldChildren = Tabs.getChildTabs(oldTab);
+    const oldParent   = Tabs.getParentTab(oldTab);
     Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
 
     Tabs.trackedWindows.get(removeInfo.windowId).detachTab(oldTab.id);

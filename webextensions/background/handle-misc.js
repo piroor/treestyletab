@@ -208,7 +208,7 @@ async function onShortcutCommand(command) {
       TabsInternalOperation.activateTab(parent);
     }; return;
     case 'focusFirstChild':
-      TabsInternalOperation.activateTab(Tabs.getFirstChildTab(activeTab, { element: false }));
+      TabsInternalOperation.activateTab(Tabs.getFirstChildTab(activeTab));
       return;
 
     case 'tabbarUp':

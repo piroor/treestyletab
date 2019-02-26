@@ -98,7 +98,7 @@ async function updateInternal(tabId) {
   let nextActive = null;
   if (renewedTab.active) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
-      const firstChild = Tabs.getFirstChildTab(tab, { element: false });
+      const firstChild = Tabs.getFirstChildTab(tab);
       nextActive = (
         (firstChild && !Tabs.isCollapsed(firstChild) && firstChild) ||
         (Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab))

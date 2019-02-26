@@ -167,7 +167,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
 }
 
 Tabs.onRemoved.addListener((tab, _closeInfo = {}) => {
-  const ancestors = Tabs.getAncestorTabs(tab, { element: false });
+  const ancestors = Tabs.getAncestorTabs(tab);
   wait(0).then(() => {
     reserveToCleanupNeedlessGroupTab(ancestors);
   });
@@ -439,11 +439,10 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           attributes: [
             Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, Tabs.getAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID),
             Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, ''
-          ],
-          element:    false
+          ]
         });
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
-        await Tree.moveTabSubtreeAfter(tab, (Tabs.getLastDescendantTab(referenceTab, { element: false }) || referenceTab), {
+        await Tree.moveTabSubtreeAfter(tab, (Tabs.getLastDescendantTab(referenceTab) || referenceTab), {
           broadcast: true
         });
       }
