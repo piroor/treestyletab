@@ -232,7 +232,7 @@ function applyStyle(style) {
       mStyleLoader.setAttribute('href', 'data:text/css,');
       break;
   }
-  return new Promise((resolve, _aReject) => {
+  return new Promise((resolve, _reject) => {
     mStyleLoader.addEventListener('load', () => {
       nextFrame().then(resolve);
     }, { once: true });
@@ -243,8 +243,8 @@ function applyUserStyleRules() {
   mUserStyleRules.textContent = configs.userStyleRules || '';
 }
 
-function applyBrowserTheme(aTheme) {
-  log('applying theme ', aTheme);
+function applyBrowserTheme(theme) {
+  log('applying theme ', theme);
 
   const baseColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-favicon-size-box'), null).backgroundColor);
   const highlightColor = Color.parseCSSColor(window.getComputedStyle(document.querySelector('#dummy-highlight-color-box'), null).backgroundColor);
@@ -257,33 +257,33 @@ function applyBrowserTheme(aTheme) {
     --face-gradient-end: rgba(${baseColor.red}, ${baseColor.green}, ${baseColor.blue}, 0);
   }`;
 
-  if (!aTheme || !aTheme.colors) {
+  if (!theme || !theme.colors) {
     mBrowserThemeDefinition.textContent = defaultColors;
     return;
   }
   const extraColors = [];
   let bgAlpha = 1;
-  if (aTheme.images) {
-    if (aTheme.images.headerURL)
-      extraColors.push(`--browser-header-url: url(${JSON.stringify(aTheme.images.headerURL)})`);
-    if (Array.isArray(aTheme.images.additional_backgrounds) &&
-        aTheme.images.additional_backgrounds.length > 0) {
-      extraColors.push(`--browser-bg-url: url(${JSON.stringify(aTheme.images.additional_backgrounds[0])})`);
+  if (theme.images) {
+    if (theme.images.headerURL)
+      extraColors.push(`--browser-header-url: url(${JSON.stringify(theme.images.headerURL)})`);
+    if (Array.isArray(theme.images.additional_backgrounds) &&
+        theme.images.additional_backgrounds.length > 0) {
+      extraColors.push(`--browser-bg-url: url(${JSON.stringify(theme.images.additional_backgrounds[0])})`);
       bgAlpha = 0.75;
     }
   }
-  const themeBaseColor = Color.mixCSSColors(aTheme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
+  const themeBaseColor = Color.mixCSSColors(theme.colors.accentcolor, 'rgba(0, 0, 0, 0)', bgAlpha);
   let toolbarColor = Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.4)', bgAlpha);
-  if (aTheme.colors.toolbar)
-    toolbarColor = Color.mixCSSColors(themeBaseColor, aTheme.colors.toolbar);
-  if (aTheme.colors.tab_line)
-    extraColors.push(`--browser-tab-highlighter: ${aTheme.colors.tab_line}`);
-  if (aTheme.colors.tab_loading)
-    extraColors.push(`--browser-loading-indicator: ${aTheme.colors.tab_loading}`);
+  if (theme.colors.toolbar)
+    toolbarColor = Color.mixCSSColors(themeBaseColor, theme.colors.toolbar);
+  if (theme.colors.tab_line)
+    extraColors.push(`--browser-tab-highlighter: ${theme.colors.tab_line}`);
+  if (theme.colors.tab_loading)
+    extraColors.push(`--browser-loading-indicator: ${theme.colors.tab_loading}`);
   mBrowserThemeDefinition.textContent = `
     ${defaultColors}
     :root {
-      --browser-background:      ${aTheme.colors.accentcolor};
+      --browser-background:      ${theme.colors.accentcolor};
       --browser-bg-base:         ${themeBaseColor};
       --browser-bg-less-lighter: ${Color.mixCSSColors(themeBaseColor, 'rgba(255, 255, 255, 0.25)', bgAlpha)};
       --browser-bg-lighter:      ${toolbarColor};
@@ -292,9 +292,9 @@ function applyBrowserTheme(aTheme) {
       --browser-bg-less-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.1)', bgAlpha)};
       --browser-bg-darker:       ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.25)', bgAlpha)};
       --browser-bg-more-darker:  ${Color.mixCSSColors(themeBaseColor, 'rgba(0, 0, 0, 0.5)', bgAlpha)};
-      --browser-fg:              ${aTheme.colors.textcolor};
-      --browser-fg-active:       ${aTheme.colors.toolbar_text || aTheme.colors.textcolor};
-      --browser-border:          ${Color.mixCSSColors(aTheme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
+      --browser-fg:              ${theme.colors.textcolor};
+      --browser-fg-active:       ${theme.colors.toolbar_text || theme.colors.textcolor};
+      --browser-border:          ${Color.mixCSSColors(theme.colors.textcolor, 'rgba(0, 0, 0, 0)', 0.4)};
       ${extraColors.join(';\n')}
     }
   `;
@@ -493,13 +493,13 @@ function updateTabbarLayout(params = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      const current = Tabs.getActiveTab(Tabs.getWindow(), { element: true });
+      const current = Tabs.getActiveTab(Tabs.getWindow(), { element: false });
       if (!Scroll.isTabInViewport(current)) {
         log('scroll to current tab on updateTabbarLayout');
         Scroll.scrollToTab(current);
         return;
       }
-      const lastOpenedTab = Tabs.getLastOpenedTab(Tabs.getWindow());
+      const lastOpenedTab = Tabs.getLastOpenedTab(Tabs.getWindow(), { element: false });
       const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {

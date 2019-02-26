@@ -78,7 +78,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   if (tab.status == 'loading')
     Tabs.addState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
-  if (info.anchor && !Scroll.isTabInViewport(info.anchor.$TST.element))
+  if (info.anchor && !Scroll.isTabInViewport(info.anchor))
     info.anchor = null;
 
   const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
@@ -131,8 +131,8 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
     });
 
     if (info.last)
-      Scroll.scrollToTab(tab.$TST.element, {
-        anchor:            info.anchor && info.$TST.element,
+      Scroll.scrollToTab(tab, {
+        anchor:            info.anchor,
         notifyOnOutOfView: true
       });
   };
@@ -170,8 +170,8 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
 
     //log('start animation for ', dumpTab(tab));
     if (info.last)
-      Scroll.scrollToTab(tab.$TST.element, {
-        anchor:            info.anchor && info.anchor.$TST.element,
+      Scroll.scrollToTab(tab, {
+        anchor:            info.anchor,
         notifyOnOutOfView: true
       });
 
@@ -213,7 +213,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
 });
 function onEndCollapseExpandCompletely(tab, options = {}) {
   if (Tabs.isActive(tab) && !options.collapsed)
-    Scroll.scrollToTab(tab.$TST.element);
+    Scroll.scrollToTab(tab);
 
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)

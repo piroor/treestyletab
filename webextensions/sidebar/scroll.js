@@ -42,7 +42,6 @@ import {
   log as internalLogger,
   wait,
   nextFrame,
-  dumpTab,
   configs
 } from '/common/common.js';
 
@@ -112,7 +111,7 @@ function calculateScrollDeltaForTab(tab) {
   if (Tabs.isPinned(tab))
     return 0;
 
-  const tabRect       = tab.getBoundingClientRect();
+  const tabRect       = tab.$TST.element.getBoundingClientRect();
   const containerRect = mTabBar.getBoundingClientRect();
   const offset        = getOffsetForAnimatingTab(tab) + smoothScrollTo.currentOffset;
   let delta = 0;
@@ -122,7 +121,7 @@ function calculateScrollDeltaForTab(tab) {
   else if (containerRect.top > tabRect.top + offset) { // should scroll up
     delta = tabRect.top - containerRect.top + offset;
   }
-  log('calculateScrollDeltaForTab ', dumpTab(tab), {
+  log('calculateScrollDeltaForTab ', tab.id, {
     delta, offset,
     tabTop:          tabRect.top,
     tabBottom:       tabRect.bottom,
@@ -169,12 +168,12 @@ async function smoothScrollTo(params = {}) {
   const duration  = params.duration || configs.smoothScrollDuration;
   const startTime = Date.now();
 
-  return new Promise((resolve, aReject) => {
+  return new Promise((resolve, reject) => {
     const radian = 90 * Math.PI / 180;
     const scrollStep = () => {
       if (smoothScrollTo.stopped) {
         smoothScrollTo.currentOffset = 0;
-        aReject();
+        reject();
         return;
       }
       const nowTime = Date.now();
@@ -221,7 +220,7 @@ export function scrollToNewTab(tab, options = {}) {
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
-    const current = Tabs.getActiveTab(Tabs.getWindow(), { element: true });
+    const current = Tabs.getActiveTab(Tabs.getWindow(), { element: false });
     scrollToTab(tab, Object.assign({}, options, {
       anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
@@ -237,7 +236,7 @@ function canScrollToTab(tab) {
 export async function scrollToTab(tab, options = {}) {
   scrollToTab.lastTargetId = null;
 
-  log('scrollToTab to ', dumpTab(tab), dumpTab(options.anchor), options,
+  log('scrollToTab to ', tab.id, options.anchor && options.anchor.id, options,
       { stack: new Error().stack });
   cancelRunningScroll();
   if (!canScrollToTab(tab)) {
@@ -273,8 +272,8 @@ export async function scrollToTab(tab, options = {}) {
   scrollToTab.lastTargetId = tab.id;
 
   if (hasAnchor) {
-    const targetTabRect = tab.getBoundingClientRect();
-    const anchorTabRect = anchorTab.getBoundingClientRect();
+    const targetTabRect = tab.$TST.element.getBoundingClientRect();
+    const anchorTabRect = anchorTab.$TST.element.getBoundingClientRect();
     const containerRect = mTabBar.getBoundingClientRect();
     const offset        = getOffsetForAnimatingTab(tab);
     let delta = calculateScrollDeltaForTab(tab);
@@ -309,7 +308,7 @@ export async function scrollToTab(tab, options = {}) {
   }
   else {
     await scrollTo(Object.assign({}, options, {
-      tab: tab
+      tab
     }));
   }
   // A tab can be moved after the tabbar is scrolled to the tab.
@@ -332,41 +331,25 @@ export async function scrollToTab(tab, options = {}) {
 scrollToTab.lastTargetId = null;
 
 function getOffsetForAnimatingTab(tab) {
-  const allExpanding = Tabs.queryAll({
-    windowId: tab.apiTab.windowId,
+  const expanding = Tabs.queryAll({
+    windowId: tab.windowId,
+    toId:     tab.id,
     normal:   true,
     states:   [
       Constants.kTAB_STATE_COLLAPSED, false,
       Constants.kTAB_STATE_EXPANDING, true
     ]
   });
-  const followingExpanding = Tabs.queryAll({
-    windowId: tab.apiTab.windowId,
-    normal:   true,
-    index:    (value => tab.apiTab.index < value),
-    states:   [
-      Constants.kTAB_STATE_COLLAPSED, false,
-      Constants.kTAB_STATE_EXPANDING, true
-    ]
-  });
-  const allCollapsing = Tabs.queryAll({
-    windowId: tab.apiTab.windowId,
+  const collapsing = Tabs.queryAll({
+    windowId: tab.windowId,
+    toId:     tab.id,
     normal:   true,
     states:   [
       Constants.kTAB_STATE_COLLAPSED,  true,
       Constants.kTAB_STATE_COLLAPSING, true
     ]
   });
-  const followingCollapsing = Tabs.queryAll({
-    windowId: tab.apiTab.windowId,
-    index:    (value => tab.apiTab.index < value),
-    normal:   true,
-    states:   [
-      Constants.kTAB_STATE_COLLAPSED,  true,
-      Constants.kTAB_STATE_COLLAPSING, true
-    ]
-  });
-  const numExpandingTabs = (allExpanding.length - followingExpanding.length) - (allCollapsing.length - followingCollapsing.length);
+  const numExpandingTabs = expanding.length - collapsing.length;
   return numExpandingTabs * Size.getTabHeight();
 }
 
@@ -441,13 +424,13 @@ async function onWheel(event) {
 
   const tab = EventUtils.getTabFromEvent(event);
   TSTAPI.notifyScrolled({
-    tab:             tab && tab.$TST.element,
+    tab:             tab,
     scrollContainer: mTabBar,
     event:           event
   });
 }
 
-function onScroll(_aEvent) {
+function onScroll(_event) {
   reserveToSaveScrollPosition();
 }
 
@@ -478,18 +461,18 @@ Tabs.onCreated.addListener((tab, _info) => {
         last:      true
       });
       if (!active)
-        notifyOutOfViewTab(tab.$TST.element);
+        notifyOutOfViewTab(tab);
     });
   }
   else {
     if (Tabs.isActive(tab))
-      scrollToNewTab(tab.$TST.element);
+      scrollToNewTab(tab);
     else
-      notifyOutOfViewTab(tab.$TST.element);
+      notifyOutOfViewTab(tab);
   }
 });
 
-Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab.$TST.element); });
+Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab); });
 
 Tabs.onUnpinned.addListener(tab => { scrollToTab(tab); });
 
@@ -508,7 +491,7 @@ function onMessage(message, _sender, _respond) {
         ]);
         const tab = Tabs.trackedTabs.get(message.tabId);
         if (tab && Tabs.isActive(Tabs.trackedTabs.get(message.parentId)))
-          scrollToNewTab(tab.$TST.element);
+          scrollToNewTab(tab);
       })();
 
     case Constants.kCOMMAND_SCROLL_TABBAR:
@@ -558,7 +541,6 @@ function onMessageExternal(message, _aSender) {
           params.tab = Tabs.trackedTabs.get(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;
-          params.tab = params.tab.$TST.element;
         }
         else {
           if (message.window != currentWindow)
