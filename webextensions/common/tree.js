@@ -1177,13 +1177,8 @@ export async function moveTabs(tabs, options = {}) {
     UserOperationBlocker.blockIn(windowId, { throbber: true });
     try {
       let window;
-      const prepareContainer = () => {
-        window = Tabs.trackedWindows.get(destinationWindowId);
-        if (!window ||
-            (Tabs.boundToElement() &&
-             !window.element)) {
-          window = Tabs.initWindow(destinationWindowId);
-        }
+      const prepareWindow = () => {
+        window = Tabs.trackedWindows.get(destinationWindowId) || Tabs.initWindow(destinationWindowId);
         if (isAcrossWindows) {
           window.toBeOpenedTabsWithPositions += tabs.length;
           window.toBeOpenedOrphanTabs += tabs.length;
@@ -1196,12 +1191,12 @@ export async function moveTabs(tabs, options = {}) {
         newWindow = newWindow.then(window => {
           log('moveTabs: destination window is ready, ', window);
           destinationWindowId = window.id;
-          prepareContainer();
+          prepareWindow();
           return window;
         });
       }
       else {
-        prepareContainer();
+        prepareWindow();
       }
 
       let movedTabs   = tabs;
