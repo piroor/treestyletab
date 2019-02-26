@@ -264,8 +264,8 @@ const mItems = [
       },
       { type: 'separator' },
       {
-        title: browser.i18n.getMessage('config_fakeContextMenu_label'),
-        key:   'fakeContextMenu',
+        title: browser.i18n.getMessage('config_emulateDefaultContextMenu_label'),
+        key:   'emulateDefaultContextMenu',
         type:  'checkbox'
       }
     ]
