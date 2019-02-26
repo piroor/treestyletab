@@ -370,7 +370,7 @@ async function onNewTabTracked(tab) {
 
   try {
     const newTabElement = Tabs.buildTabElement(tab, { inRemote: !!targetWindow });
-    Tabs.addState(newTabElement, Constants.kTAB_STATE_OPENING);
+    Tabs.addState(tab, Constants.kTAB_STATE_OPENING);
 
     // New tab's index can become invalid because the value of "index" is same to
     // the one given to browser.tabs.create() instead of actual index.
@@ -396,7 +396,7 @@ async function onNewTabTracked(tab) {
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
     const uniqueId = await tab.$TST.promisedUniqueId;
 
-    if (!Tabs.ensureLivingTab(newTabElement)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
       return;
@@ -475,7 +475,7 @@ async function onNewTabTracked(tab) {
       }, 0);
     }
 
-    if (!Tabs.ensureLivingTab(newTabElement)) { // it can be removed while waiting
+    if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
       return;
@@ -499,7 +499,7 @@ async function onNewTabTracked(tab) {
 
     if (!duplicated &&
         restored) {
-      Tabs.addState(newTabElement, Constants.kTAB_STATE_RESTORED);
+      Tabs.addState(tab, Constants.kTAB_STATE_RESTORED);
       Tabs.onRestored.dispatch(tab);
       checkRecycledTab(window.id);
     }

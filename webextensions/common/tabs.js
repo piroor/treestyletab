@@ -649,8 +649,7 @@ export function updateUniqueId(tab) {
     if (uniqueId && ensureLivingTab(tab)) { // possibly removed from document while waiting
       tab.$TST.uniqueId = uniqueId;
       trackedTabsByUniqueId.set(uniqueId.id, tab);
-      if (tab.$TST.element)
-        setAttribute(tab.$TST.element, Constants.kPERSISTENT_ID, uniqueId.id);
+      setAttribute(tab, Constants.kPERSISTENT_ID, uniqueId.id);
     }
     return uniqueId || {};
   }).catch(error => {
@@ -913,17 +912,11 @@ export function clearAllElements() {
 //===================================================================
 
 // basics
-function assertValidHint(hint) {
-  if (!hint)
+function assertValidTab(tab) {
+  if (tab && tab.$TST)
     return;
-  if (/string|number/.test(typeof hint))
-    return;
-  if (hint.parentNode)
-    return;
-  if (hint.id && hint.$TST)
-    return;
-  const error = new Error('FATAL ERROR: invalid hint is given');
-  log(error.message, error.stack);
+  const error = new Error('FATAL ERROR: invalid tab is given');
+  console.log(error.message, tab, error.stack);
   throw error;
 }
 
@@ -942,63 +935,52 @@ export function getActiveTabs() {
   return Array.from(activeTabForWindow.values(), ensureLivingTab);
 }
 
-export function getNextTab(tab, options = {}) {
-  if (!tab || !tab.id)
+export function getNextTab(tab) {
+  if (!tab)
     return null;
-  assertValidHint(tab);
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return query(Object.assign({
+  assertValidTab(tab);
+  return query({
     windowId: tab.windowId,
     fromId:   tab.id,
     living:   true,
     index:    (index => index > tab.index)
-  }, options));
+  });
 }
 
-export function getPreviousTab(tab, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  if (!tab || !tab.id)
+export function getPreviousTab(tab) {
+  if (!tab)
     return null;
-  assertValidHint(tab);
-  const element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return query(Object.assign({
+  assertValidTab(tab);
+  return query({
     windowId: tab.windowId,
     fromId:   tab.id,
     living:   true,
     index:    (index => index < tab.index),
-    last:     true,
-    element
-  }, options));
+    last:     true
+  });
 }
 
 export function getFirstTab(windowId) {
   return query({
     windowId,
-    living:   true,
-    ordered:  true
+    living:  true,
+    ordered: true
   });
 }
 
 export function getLastTab(windowId) {
   return query({
     windowId,
-    living:   true,
-    last:     true
+    living: true,
+    last:   true
   });
 }
 
 export function getLastVisibleTab(windowId) { // visible, not-collapsed, not-hidden
   return query({
     windowId,
-    visible:  true,
-    last:     true,
+    visible: true,
+    last:    true,
   });
 }
 
@@ -1014,7 +996,7 @@ function getTabIndex(tab, options = {}) {
     options = {};
   if (!ensureLivingTab(tab))
     return -1;
-  assertValidHint(tab);
+  assertValidTab(tab);
 
   if (tab instanceof Element)
     tab = tab.apiTab;
@@ -1035,39 +1017,29 @@ export function calculateNewTabIndex(params) {
 }
 
 
-export function getNextNormalTab(tab, options = {}) {
+export function getNextNormalTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(tab);
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return query(Object.assign({
+  assertValidTab(tab);
+  return query({
     windowId: tab.windowId,
     fromId:   tab.id,
     normal:   true,
     index:    (index => index > tab.index)
-  }, options));
+  });
 }
 
-export function getPreviousNormalTab(tab, options = {}) {
+export function getPreviousNormalTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(tab);
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return query(Object.assign({
+  assertValidTab(tab);
+  return query({
     windowId: tab.windowId,
     fromId:   tab.id,
     normal:   true,
     index:    (index => index < tab.index),
     last:     true
-  }, options));
+  });
 }
 
 
@@ -1075,22 +1047,13 @@ export function getPreviousNormalTab(tab, options = {}) {
 
 export function ensureLivingTab(tab) {
   if (!tab ||
-      !tab.id)
+      !tab.id ||
+      !tab.$TST ||
+      !tab.$TST.element ||
+      !tab.$TST.element.parentNode ||
+      !isTracked(tab.id) ||
+      hasState(tab, Constants.kTAB_STATE_REMOVING))
     return null;
-  if (tab instanceof Element) {
-    if (!tab.parentNode ||
-        !isTracked(tab.apiTab.id) ||
-        hasState(tab, Constants.kTAB_STATE_REMOVING))
-      return null;
-  }
-  else {
-    if (!tab.$TST ||
-        !tab.$TST.element ||
-        !tab.$TST.element.parentNode ||
-        !isTracked(tab.id) ||
-        hasState(tab, Constants.kTAB_STATE_REMOVING))
-      return null;
-  }
   return tab;
 }
 
@@ -1113,6 +1076,7 @@ export function getOpenerTab(tab) {
       !tab.openerTabId ||
       tab.openerTabId == tab.id)
     return null;
+  assertValidTab(tab);
   const opener = query({
     windowId: tab.windowId,
     id:       tab.openerTabId,
@@ -1121,222 +1085,148 @@ export function getOpenerTab(tab) {
   return opener;
 }
 
-export function getParentTab(child, options = {}) {
+export function getParentTab(child) {
   if (!ensureLivingTab(child))
     return null;
-  assertValidHint(child);
-  if (typeof options != 'object')
-    options = {};
-  options.element = child instanceof Element || options.element;
-  if (child instanceof Element)
-    child = child.apiTab;
-  const parent = child.$TST.parent;
-  if (options.element)
-    return parent && parent.$TST.element;
-  return parent;
+  assertValidTab(child);
+  return child.$TST.parent;
 }
 
 export function getAncestorTabs(descendant, options = {}) {
   if (!descendant || !ensureLivingTab(descendant))
     return [];
-  if (typeof options != 'object')
-    options = {};
-  options.element = descendant instanceof Element || options.element;
-  if (descendant instanceof Element)
-    descendant = descendant.apiTab;
+  assertValidTab(descendant);
   if (!options.force) {
     // slice(0) is required to guard the cached array from destructive methods liek sort()!
-    const ancestors = descendant.$TST.ancestors.slice(0);
-    if (options.element)
-      return ancestors.map(ancestor => ancestor.$TST.element);
-    return ancestors;
+    return descendant.$TST.ancestors.slice(0);
   }
   const ancestors = [];
   while (true) {
     const parent = trackedTabs.get(descendant.$TST.parentId);
     if (!parent)
       break;
-    ancestors.push(options.element ? parent.$TST.element : parent);
+    ancestors.push(parent);
     descendant = parent;
   }
   return ancestors;
 }
 
-export function getVisibleAncestorOrSelf(descendant, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  options.element = descendant instanceof Element || options.element;
-  for (const ancestor of getAncestorTabs(descendant, options)) {
+export function getVisibleAncestorOrSelf(descendant) {
+  for (const ancestor of getAncestorTabs(descendant)) {
     if (!isCollapsed(ancestor))
       return ancestor;
   }
+  assertValidTab(descendant);
   if (!isCollapsed(descendant))
     return descendant;
   return null;
 }
 
-export function getRootTab(descendant, options = {}) {
+export function getRootTab(descendant) {
   if (!ensureLivingTab(descendant))
     return null;
-  if (typeof options != 'object')
-    options = {};
-  options.element = descendant instanceof Element || options.element;
-  if (descendant instanceof Element)
-    descendant = descendant.apiTab;
+  assertValidTab(descendant);
   const ancestors = descendant.$TST.ancestors;
-  const root = ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
-  if (options.element)
-    return root.$TST.element;
-  return root;
+  return ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
 }
 
-export function getNextSiblingTab(tab, options = {}) {
+export function getNextSiblingTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(tab);
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
+  assertValidTab(tab);
   const parent = tab.$TST.parent;
-  let sibling;
   if (parent) {
     const siblingIds = parent.$TST.childIds;
     const index = siblingIds.indexOf(tab.id);
     const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
     if (!siblingId)
       return null;
-    sibling = trackedTabs.get(siblingId);
-    if (options.element)
-      sibling = sibling && sibling.$TST.element;
+    return trackedTabs.get(siblingId);
   }
   else {
-    sibling = query({
+    return query({
       windowId:  tab.windowId,
       fromId:    tab.id,
       living:    true,
       index:     (index => index > tab.index),
       hasParent: false,
-      first:     true,
-      element:   options.element
+      first:     true
     });
   }
-  return sibling;
 }
 
-export function getPreviousSiblingTab(tab, options = {}) {
+export function getPreviousSiblingTab(tab) {
   if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(tab);
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
+  assertValidTab(tab);
   const parent = tab.$TST.parent;
-  let sibling;
   if (parent) {
     const siblingIds = parent.$TST.childIds;
     const index = siblingIds.indexOf(tab.id);
     const siblingId = index > 0 ? siblingIds[index - 1] : null ;
     if (!siblingId)
       return null;
-    sibling = trackedTabs.get(siblingId);
-    if (options.element)
-      sibling = sibling && sibling.$TST.element;
+    return trackedTabs.get(siblingId);
   }
   else {
-    sibling = query({
+    return query({
       windowId:  tab.windowId,
       fromId:    tab.id,
       living:    true,
       index:     (index => index < tab.index),
       hasParent: false,
-      last:      true,
-      element:   options.element
+      last:      true
     });
   }
-  return sibling;
 }
 
-export function getChildTabs(parent, options = {}) {
+export function getChildTabs(parent) {
   if (!ensureLivingTab(parent))
     return [];
-  assertValidHint(parent);
+  assertValidTab(parent);
   if (!assertInitializedTab(parent))
     return [];
-  if (typeof options != 'object')
-    options = {};
-  options.element = parent instanceof Element || options.element;
-  if (parent instanceof Element)
-    parent = parent.apiTab;
-  if (options.element)
-    return parent.$TST.children.map(child => child.$TST.element);
   return parent.$TST.children;
 }
 
-export function getFirstChildTab(parent, options = {}) {
+export function getFirstChildTab(parent) {
   if (!ensureLivingTab(parent))
     return null;
-  assertValidHint(parent);
+  assertValidTab(parent);
   if (!assertInitializedTab(parent))
     return null;
-  if (typeof options != 'object')
-    options = {};
-  options.element = parent instanceof Element || options.element;
-  if (parent instanceof Element)
-    parent = parent.apiTab;
   const children = parent.$TST.children;
-  const child = children.length > 0 ? children[0] : null ;
-  if (options.element)
-    return child && child.$TST.element;
-  return child;
+  return children.length > 0 ? children[0] : null ;
 }
 
-export function getLastChildTab(parent, options = {}) {
+export function getLastChildTab(parent) {
   if (!ensureLivingTab(parent))
     return null;
-  assertValidHint(parent);
+  assertValidTab(parent);
   if (!assertInitializedTab(parent))
     return null;
-  if (typeof options != 'object')
-    options = {};
-  options.element = parent instanceof Element || options.element;
-  if (parent instanceof Element)
-    parent = parent.apiTab;
   const children = parent.$TST.children;
-  const child = children.length > 0 ? children[children.length - 1] : null ;
-  if (options.element)
-    return child && child.$TST.element;
-  return child;
+  return children.length > 0 ? children[children.length - 1] : null ;
 }
 
-export function getDescendantTabs(root, options = {}) {
+export function getDescendantTabs(root) {
   if (!ensureLivingTab(root))
     return [];
-  assertValidHint(root);
+  assertValidTab(root);
   if (!assertInitializedTab(root))
     return [];
-
-  if (typeof options != 'object')
-    options = {};
-  options.element = root instanceof Element || options.element;
-  if (root instanceof Element)
-    root = root.apiTab;
   let descendants = [];
   const children = root.$TST.children;
   for (const child of children) {
-    descendants.push(options.element ? child.$TST.element : child);
-    descendants = descendants.concat(getDescendantTabs(child, options));
+    descendants.push(child);
+    descendants = descendants.concat(getDescendantTabs(child));
   }
   return descendants;
 }
 
-export function getLastDescendantTab(root, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  const descendants = getDescendantTabs(root, options);
+export function getLastDescendantTab(root) {
+  assertValidTab(root);
+  const descendants = getDescendantTabs(root);
   return descendants.length ? descendants[descendants.length-1] : null ;
 }
 
@@ -1487,39 +1377,29 @@ export function getFirstVisibleTab(windowId) { // visible, not-collapsed, not-hi
   });
 }
 
-export function getNextVisibleTab(tab, options = {}) { // visible, not-collapsed
+export function getNextVisibleTab(tab) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(tab);
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return query(Object.assign({
+  assertValidTab(tab);
+  return query({
     windowId: tab.windowId,
     fromId:   tab.id,
     visible:  true,
     index:    (index => index > tab.index)
-  }, options));
+  });
 }
 
-export function getPreviousVisibleTab(tab, options = {}) { // visible, not-collapsed
+export function getPreviousVisibleTab(tab) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
-  assertValidHint(tab);
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  return query(Object.assign({
+  assertValidTab(tab);
+  return query({
     windowId: tab.windowId,
     fromId:   tab.id,
     visible:  true,
     index:    (index => index < tab.index),
     last:     true
-  }, options));
+  });
 }
 
 export async function doAndGetNewTabs(asyncTask, windowId) {
@@ -1540,6 +1420,7 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
 export function getNextActiveTab(tab, options = {}) { // if the current tab is closed...
   if (typeof options != 'object')
     options = {};
+  assertValidTab(tab);
   const ignoredTabs = (options.ignoredTabs || []).slice(0);
   let foundTab = tab;
   do {
@@ -1560,6 +1441,7 @@ export function getNextActiveTab(tab, options = {}) { // if the current tab is c
 export function getGroupTabForOpener(opener) {
   if (!opener)
     return null;
+  assertValidTab(opener);
   return query({
     windowId:   opener.windowId,
     living:     true,
@@ -1573,6 +1455,7 @@ export function getGroupTabForOpener(opener) {
 export function getOpenerFromGroupTab(groupTab) {
   if (!isGroupTab(groupTab))
     return null;
+  assertValidTab(groupTab);
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
   return matchedOpenerTabId && trackedTabs.get(matchedOpenerTabId[1]);
 }
@@ -1868,12 +1751,7 @@ export function fetchClosedWhileActiveResolver(tab) {
 //===================================================================
 
 export async function addState(tab, state, options = {}) {
-  if (!tab)
-    return;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  if (!tab || !tab.$TST)
-    return;
+  assertValidTab(tab);
   if (tab.$TST.element)
     tab.$TST.element.classList.add(state);
   if (tab.$TST.states)
@@ -1892,12 +1770,7 @@ export async function addState(tab, state, options = {}) {
 }
 
 export async function removeState(tab, state, options = {}) {
-  if (!tab)
-    return;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
-  if (!tab || !tab.$TST)
-    return;
+  assertValidTab(tab);
   if (tab.$TST.element)
     tab.$TST.element.classList.remove(state);
   if (tab.$TST.states)
@@ -1917,16 +1790,13 @@ export async function removeState(tab, state, options = {}) {
 }
 
 export function hasState(tab, state) {
-  if (!tab)
-    return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   if (!tab || !tab.$TST)
     return false;
   return tab && state in tab.$TST.states;
 }
 
 export function getStates(tab) {
+  assertValidTab(tab);
   return tab && tab.$TST.states ? Object.keys(tab.$TST.states) : [];
 }
 
@@ -1943,46 +1813,34 @@ export function broadcastState(tabs, options = {}) {
 }
 
 export async function getPermanentStates(tab) {
-  if (!tab)
-    return [];
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   if (!tab || !tab.$TST)
     return [];
+  assertValidTab(tab);
   const states = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_STATES);
   return states || [];
 }
 
 
 export function setAttribute(tab, attribute, value) {
-  if (!tab)
-    return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   if (!tab || !tab.$TST)
-    return false;
+    return;
+  assertValidTab(tab);
   if (tab.$TST.element)
     tab.$TST.element.setAttribute(attribute, value);
   tab.$TST.attributes[attribute] = value;
 }
 
 export function getAttribute(tab, attribute) {
-  if (!tab)
-    return null;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   if (!tab || !tab.$TST)
     return null;
+  assertValidTab(tab);
   return tab.$TST.attributes[attribute];
 }
 
 export function removeAttribute(tab, attribute) {
-  if (!tab)
-    return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   if (!tab || !tab.$TST)
     return false;
+  assertValidTab(tab);
   if (tab.$TST.element)
     tab.$TST.element.removeAttribute(attribute);
   delete tab.$TST.attributes[attribute];
