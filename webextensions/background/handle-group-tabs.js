@@ -272,11 +272,12 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
 // ====================================================================
 
 Tabs.onBeforeCreate.addListener(async (tab, info) => {
-  const openerId  = tab.openerTabId;
-  const openerTab = openerId && (await browser.tabs.get(openerId).catch(ApiTabs.handleMissingTabError));
-  const window    = Tabs.trackedWindows.get(tab.windowId);
+  const window  = Tabs.trackedWindows.get(tab.windowId);
   if (!window)
     return;
+
+  const openerId  = tab.openerTabId;
+  const openerTab = openerId && (await browser.tabs.get(openerId).catch(ApiTabs.handleMissingTabError));
   if ((configs.autoGroupNewTabsFromPinned &&
        openerTab &&
        openerTab.pinned &&
@@ -288,8 +289,10 @@ Tabs.onBeforeCreate.addListener(async (tab, info) => {
       window.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-      window.openedNewTabs.push(tab.id);
-      window.openedNewTabsOpeners.push(openerTab && openerTab.id);
+      window.openedNewTabs.push({
+        id:       tab.id,
+        openerId: openerTab && openerTab.id
+      });
     }
   }
   if (window.openedNewTabsTimeout)
@@ -309,20 +312,12 @@ async function onNewTabsTimeout(window) {
   if (Tabs.hasMovingTab(window.id))
     await Tabs.waitUntilAllTabsAreMoved(window.id);
 
-  const tabIds       = window.openedNewTabs;
-  const tabOpenerIds = window.openedNewTabsOpeners;
-  log('onNewTabsTimeout ', tabIds);
-  let tabReferences = tabIds.map((id, index) => {
-    return {
-      id,
-      openerTabId: tabOpenerIds[index]
-    };
-  });
+  let tabReferences = window.openedNewTabs;
+  log('onNewTabsTimeout ', tabReferences);
 
-  window.openedNewTabs        = [];
-  window.openedNewTabsOpeners = [];
+  window.openedNewTabs = [];
 
-  tabReferences = tabReferences.filter(tabReference => tabReference.id != '');
+  tabReferences = tabReferences.filter(tabReference => !!tabReference.id);
   if (tabReferences.length == 0 ||
       TSTAPI.isGroupingBlocked())
     return;

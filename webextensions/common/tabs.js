@@ -193,8 +193,7 @@ export class Window {
 
     this.openingTabs   = new Set();
 
-    this.openedNewTabs        = [];
-    this.openedNewTabsOpeners = [];
+    this.openedNewTabs = [];
 
     this.toBeOpenedTabsWithPositions = 0;
     this.toBeOpenedOrphanTabs        = 0;
