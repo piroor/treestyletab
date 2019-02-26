@@ -13,7 +13,7 @@ import * as Tabs from './tabs.js';
 import * as TabsUpdate from './tabs-update.js';
 
 function log(...args) {
-  internalLogger('common/cache', ...args);
+  internalLogger('common/dom-cache', ...args);
 }
 
 export async function getWindowSignature(windowIdOrTabs) {

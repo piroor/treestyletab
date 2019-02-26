@@ -15,7 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
-import * as Cache from '/common/cache.js';
+import * as DOMCache from '/common/dom-cache.js';
 
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Indent from './indent.js';
@@ -70,10 +70,10 @@ export async function getEffectiveWindowCache(options = {}) {
       if (cache &&
           cache.tabs &&
           cachedSignature &&
-          cachedSignature != Cache.signatureFromTabsCache(cache.tabbar.contents)) {
+          cachedSignature != DOMCache.signatureFromTabsCache(cache.tabbar.contents)) {
         log('getEffectiveWindowCache: cache is broken.', {
           signature: cachedSignature,
-          cache:     Cache.signatureFromTabsCache(cache.tabbar.contents)
+          cache:     DOMCache.signatureFromTabsCache(cache.tabbar.contents)
         });
         cache = cachedSignature = null;
         clearWindowCache();
@@ -83,8 +83,8 @@ export async function getEffectiveWindowCache(options = {}) {
           cache.tabbar &&
           cache.tabbar.contents &&
           cachedSignature) {
-        cache.tabbar.contents = Cache.trimTabsCache(cache.tabbar.contents, cache.tabbar.pinnedTabsCount);
-        cachedSignature       = Cache.trimSignature(cachedSignature, cache.tabbar.pinnedTabsCount);
+        cache.tabbar.contents = DOMCache.trimTabsCache(cache.tabbar.contents, cache.tabbar.pinnedTabsCount);
+        cachedSignature       = DOMCache.trimSignature(cachedSignature, cache.tabbar.pinnedTabsCount);
       }
       MetricsData.add('getEffectiveWindowCache get ' + JSON.stringify({
         cache: !!cache,
@@ -103,11 +103,11 @@ export async function getEffectiveWindowCache(options = {}) {
       }
     })(),
     (async () => {
-      actualSignature = await Cache.getWindowSignature(mTargetWindow);
+      actualSignature = await DOMCache.getWindowSignature(mTargetWindow);
     })()
   ]);
 
-  const signatureMatched = Cache.matcheSignatures({
+  const signatureMatched = DOMCache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
@@ -140,7 +140,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
     mTabBar.setAttribute('style', cache.style);
   }
 
-  let restored = Cache.restoreTabsFromCacheInternal({
+  let restored = DOMCache.restoreTabsFromCacheInternal({
     windowId:     mTargetWindow,
     tabs:         params.tabs,
     offset:       offset,
@@ -275,7 +275,7 @@ async function updateCachedTabbar() {
   if (Tabs.hasCreatingTab(mTargetWindow))
     await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
   const window    = Tabs.trackedWindows.get(mTargetWindow);
-  const signature = await Cache.getWindowSignature(mTargetWindow);
+  const signature = await DOMCache.getWindowSignature(mTargetWindow);
   if (window.allTabsRestored)
     return;
   log('updateCachedTabbar ', { stack: new Error().stack });

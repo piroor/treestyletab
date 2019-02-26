@@ -14,7 +14,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
-import * as Cache from '/common/cache.js';
+import * as DOMCache from '/common/dom-cache.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 function log(...args) {
@@ -43,7 +43,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const
   let [actualSignature, cache] = await Promise.all([
-    Cache.getWindowSignature(tabs),
+    DOMCache.getWindowSignature(tabs),
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
   let cachedSignature = cache && cache.signature;
@@ -53,10 +53,10 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   if (cache &&
       cache.tabs &&
       cachedSignature &&
-      cachedSignature != Cache.signatureFromTabsCache(cache.tabs)) {
+      cachedSignature != DOMCache.signatureFromTabsCache(cache.tabs)) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: cache is broken.`, {
       signature: cachedSignature,
-      cache:     Cache.signatureFromTabsCache(cache.tabs)
+      cache:     DOMCache.signatureFromTabsCache(cache.tabs)
     });
     cache = cachedSignature = null;
     clearWindowCache(windowId);
@@ -65,10 +65,10 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
       cache &&
       cache.tabs &&
       cachedSignature) {
-    cache.tabs      = Cache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
-    cachedSignature = Cache.trimSignature(cachedSignature, cache.pinnedTabsCount);
+    cache.tabs      = DOMCache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
+    cachedSignature = DOMCache.trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
-  const signatureMatched = Cache.matcheSignatures({
+  const signatureMatched = DOMCache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
@@ -118,7 +118,7 @@ function restoreTabsFromCache(windowId, params = {}) {
       params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  return Cache.restoreTabsFromCacheInternal({
+  return DOMCache.restoreTabsFromCacheInternal({
     windowId:       windowId,
     tabs:           params.tabs,
     offset:         params.cache.offset || 0,
@@ -227,7 +227,7 @@ async function cacheTree(windowId) {
   if (!window ||
       !configs.useCachedTree)
     return;
-  const signature = await Cache.getWindowSignature(windowId);
+  const signature = await DOMCache.getWindowSignature(windowId);
   if (window.allTabsRestored)
     return;
   //log('save cache for ', windowId);
