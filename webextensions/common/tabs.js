@@ -988,37 +988,28 @@ export function getPreviousTab(tab, options = {}) {
   }, options));
 }
 
-export function getFirstTab(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return query(Object.assign({
+export function getFirstTab(windowId) {
+  return query({
     windowId,
     living:   true,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-export function getLastTab(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return query(Object.assign({
+export function getLastTab(windowId) {
+  return query({
     windowId,
     living:   true,
-    last:     true,
-    element:  true
-  }, options));
+    last:     true
+  });
 }
 
-export function getLastVisibleTab(windowId, options = {}) { // visible, not-collapsed, not-hidden
-  if (typeof options != 'object')
-    options = {};
-  return query(Object.assign({
+export function getLastVisibleTab(windowId) { // visible, not-collapsed, not-hidden
+  return query({
     windowId,
     visible:  true,
     last:     true,
-    element:  true
-  }, options));
+  });
 }
 
 export function getLastOpenedTab(windowId) {
@@ -1037,7 +1028,7 @@ function getTabIndex(tab, options = {}) {
 
   if (tab instanceof Element)
     tab = tab.apiTab;
-  let tabs = getAllTabs(tab.windowId, options);
+  let tabs = getAllTabs(tab.windowId);
   if (Array.isArray(options.ignoreTabs) &&
       options.ignoreTabs.length > 0)
     tabs = tabs.filter(tab => !options.ignoreTabs.includes(tab));
@@ -1382,15 +1373,12 @@ export function getLastDescendantTab(root, options = {}) {
 
 // grab tabs
 
-export function getAllTabs(windowId = null, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getAllTabs(windowId = null) {
+  return queryAll({
     windowId,
     living:   true,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
 export function getTabs(windowId, options = {}) { // only visible, including collapsed and pinned
@@ -1638,19 +1626,6 @@ export function getFirstVisibleTab(windowId, options = {}) { // visible, not-col
   }, options));
 }
 
-/*
-function getLastVisibleTab(windowId, options = {}) { // visible, not-collapsed, not-hidden
-  if (typeof options != 'object')
-    options = {};
-  return query(Object.assign({
-    windowId,
-    visible:  true,
-    last:     true,
-    element:  true
-  }, options));
-}
-*/
-
 export function getNextVisibleTab(tab, options = {}) { // visible, not-collapsed
   if (!ensureLivingTab(tab))
     return null;
@@ -1893,22 +1868,6 @@ export function isSubtreeCollapsed(tab) {
   return ensureLivingTab(tab) &&
          hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 }
-
-/*
-function shouldCloseTabSubtreeOf(tab) {
-  return (hasChildTabs(tab) &&
-          (configs.closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN ||
-           isSubtreeCollapsed(tab)));
-}
-*/
-
-/*
-function shouldCloseLastTabSubtreeOf(tab) {
-  return (ensureLivingTab(tab) &&
-          shouldCloseTabSubtreeOf(tab) &&
-          getDescendantTabs(tab).length + 1 == getAllTabs(tab.apiTab.windowId).length);
-}
-*/
 
 export function isGroupTab(tab) {
   if (!tab)

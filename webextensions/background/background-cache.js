@@ -176,7 +176,7 @@ async function getWindowCache(owner, key) {
 }
 
 function getWindowCacheOwner(windowId) {
-  const tab = Tabs.getLastTab(windowId, { element: false });
+  const tab = Tabs.getLastTab(windowId);
   return {
     id:       tab.id,
     windowId: tab.windowId

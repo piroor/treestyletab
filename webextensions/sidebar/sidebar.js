@@ -383,7 +383,7 @@ async function inheritTreeStructure() {
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow, { element: false }), response.structure);
+    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), response.structure);
     MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
   }
 }
@@ -675,7 +675,7 @@ function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
     case 'debug': {
-      for (const tab of Tabs.getAllTabs(mTargetWindow, { element: false })) {
+      for (const tab of Tabs.getAllTabs(mTargetWindow)) {
         TabsUpdate.updateTab(tab, tab, { forceApply: true });
       }
       if (configs.debug)
@@ -822,7 +822,7 @@ function onMessage(message, _sender, _respond) {
       return Promise.resolve(true);
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
-      Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow, { element: false }), message.structure);
+      Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), message.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:

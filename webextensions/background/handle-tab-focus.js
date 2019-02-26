@@ -183,7 +183,7 @@ function cancelDelayedExpand(tab) {
 }
 
 function cancelAllDelayedExpand(windowId) {
-  for (const tab of Tabs.getAllTabs(windowId, { element: false })) {
+  for (const tab of Tabs.getAllTabs(windowId)) {
     cancelDelayedExpand(tab);
   }
 }

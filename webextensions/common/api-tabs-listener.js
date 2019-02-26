@@ -377,7 +377,7 @@ async function onNewTabTracked(tab) {
     // See also: https://github.com/piroor/treestyletab/issues/2131
     tab.index = Math.max(0, Math.min(tab.index, window.element.childNodes.length));
 
-    const nextTab = Tabs.getAllTabs(window.id, { element: false })[tab.index];
+    const nextTab = Tabs.getAllTabs(window.id)[tab.index];
     window.element.insertBefore(newTabElement, nextTab && nextTab.$TST.element);
 
     // We need to update "active" state of a new active tab immediately.
@@ -708,7 +708,7 @@ async function onMoved(tabId, moveInfo) {
       let newNextIndex = extendedMoveInfo.toIndex;
       if (extendedMoveInfo.fromIndex < newNextIndex)
         newNextIndex++;
-      const nextTab = Tabs.getAllTabs(moveInfo.windowId, { element: false })[newNextIndex];
+      const nextTab = Tabs.getAllTabs(moveInfo.windowId)[newNextIndex];
       if (!alreadyMoved &&
           Tabs.getNextTab(movedTab) != nextTab) {
         window.element.insertBefore(movedTab.$TST.element, nextTab.$TST.element);

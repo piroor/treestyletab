@@ -237,7 +237,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         insertBefore = firstChild;
         break;
       case Constants.kINSERT_NEAREST: {
-        let allTabs = Tabs.getAllTabs(parent.windowId, { element: false });
+        let allTabs = Tabs.getAllTabs(parent.windowId);
         if (options.ignoreTabs)
           allTabs = allTabs.filter(tab => !options.ignoreTabs.includes(tab));
         const index = allTabs.indexOf(child);
@@ -455,7 +455,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         broadcast: options.broadcast
       });
       if (Tabs.getNextTab(tab))
-        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId, { element: false }), {
+        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId), {
           delayedMove: true,
           inRemote: options.inRemote
         });
@@ -487,7 +487,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           inRemote:  options.inRemote,
           broadcast: options.broadcast
         });
-        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId, { element: false }), {
+        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId), {
           delayedMove: true,
           inRemote: options.inRemote
         });
@@ -895,7 +895,7 @@ async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = 
   await tab.closedWhileActive;
   log('tryMoveFocusFromClosingActiveTabOnFocusRedirected: tabs.onActivated is fired');
 
-  const autoActiveTab = Tabs.getActiveTab(tab.windowId, { element: true });
+  const autoActiveTab = Tabs.getActiveTab(tab.windowId, { element: false });
   if (autoActiveTab != nextTab &&
       (autoActiveTab != previousTab ||
        (Tabs.getNextTab(autoActiveTab) &&
@@ -1152,7 +1152,7 @@ export async function moveTabs(tabs, options = {}) {
 
   const isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
-  options.insertAfter = options.insertAfter || Tabs.getLastTab(destinationWindowId, { element: false });
+  options.insertAfter = options.insertAfter || Tabs.getLastTab(destinationWindowId);
 
   if (options.inRemote) {
     const response = await browser.runtime.sendMessage(Object.assign({}, options, {

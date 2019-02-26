@@ -232,7 +232,7 @@ function getDropAction(event) {
     return info.draggedTabs.map(tab => tab.id);
   });
   info.defineGetter('targetTabs', () => {
-    return Tabs.getAllTabs(Tabs.getWindow(), { element: false });
+    return Tabs.getAllTabs(Tabs.getWindow());
   });
   info.defineGetter('firstTargetTab', () => {
     return Tabs.getFirstNormalTab(Tabs.getWindow(), { element: false }) || info.targetTabs[0];
@@ -464,11 +464,11 @@ export function clearDraggingState() {
 
 function isDraggingAllTabs(tab, tabs) {
   const draggingTabs = Tabs.getDraggingTabs(tab.windowId);
-  return draggingTabs.length == (tabs || Tabs.getAllTabs(tab.windowId, { element: false })).length;
+  return draggingTabs.length == (tabs || Tabs.getAllTabs(tab.windowId)).length;
 }
  
 function isDraggingAllActiveTabs(tab) {
-  return isDraggingAllTabs(tab, Tabs.getAllTabs(tab.windowId, { element: false }));
+  return isDraggingAllTabs(tab, Tabs.getAllTabs(tab.windowId));
 }
 
 function collapseAutoExpandedTabsWhileDragging() {

@@ -69,7 +69,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       return false;
     }
     if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
-      return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId, { element: false }), {
+      return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId), {
         delayedMove: true,
         broadcast:   true
       }).then(moved => !moved);

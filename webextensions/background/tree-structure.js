@@ -55,7 +55,7 @@ async function saveTreeStructure(windowId) {
   if (!window)
     return;
 
-  const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(windowId, { element: false }));
+  const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(windowId));
   browser.sessions.setWindowValue(
     windowId,
     Constants.kWINDOW_STATE_TREE_STRUCTURE,
@@ -75,7 +75,7 @@ export async function loadTreeStructure(restoredFromCacheResults) {
       log(`skip tree structure restoration for window ${window.id} (restored from cache)`);
       return;
     }
-    const tabs = Tabs.getAllTabs(window.id, { element: false });
+    const tabs = Tabs.getAllTabs(window.id);
     const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE);
     let uniqueIds = await Tabs.getUniqueIds(tabs);
     MetricsData.add('loadTreeStructure: read stored data');
@@ -226,7 +226,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,
-        fromIndex: Tabs.getLastTab(tab.windowId, { element: false }).index
+        fromIndex: Tabs.getLastTab(tab.windowId).index
       });
     }
   }

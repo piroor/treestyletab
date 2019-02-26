@@ -199,7 +199,7 @@ export async function migrateLegacyTreeStructure() {
 
       // found: apply only structure case
       const structure = structures[index];
-      const tabs      = Tabs.getAllTabs(window.id, { element: false });
+      const tabs      = Tabs.getAllTabs(window.id);
       await Tree.applyTreeStructureToTabs(tabs, structure);
 
       restoredCountWithSession++;

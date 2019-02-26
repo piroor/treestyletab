@@ -213,7 +213,7 @@ Tabs.onRemoved.addListener((tab, info) => {
 });
 
 browser.windows.onRemoved.addListener(windowId  => {
-  const removeTabIds = Tabs.getAllTabs(windowId, { element: false }).map(tab => tab.id);
+  const removeTabIds = Tabs.getAllTabs(windowId).map(tab => tab.id);
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => !removeTabIds.includes(id));
 });
 

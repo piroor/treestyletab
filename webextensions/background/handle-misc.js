@@ -194,7 +194,7 @@ async function onShortcutCommand(command) {
     case 'focusPrevious':
     case 'focusPreviousSilently': {
       const nextActive = Tabs.getPreviousVisibleTab(activeTab) ||
-        Tabs.getLastVisibleTab(activeTab.windowId, { element: false });
+        Tabs.getLastVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
@@ -287,7 +287,7 @@ function onMessage(message, sender) {
         while (!mInitialized) {
           await wait(10);
         }
-        const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(message.windowId, { element: false }));
+        const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(message.windowId));
         return { structure };
       })();
 

@@ -106,7 +106,7 @@ export async function init() {
       BackgroundCache.reserveToCacheTree(parseInt(windowId));
   }
 
-  Tabs.getAllTabs(null, { element: false }).forEach(updateSubtreeCollapsed);
+  Tabs.getAllTabs(null).forEach(updateSubtreeCollapsed);
   for (const tab of Tabs.getActiveTabs({ element: false })) {
     for (const ancestor of Tabs.getAncestorTabs(tab)) {
       Tree.collapseExpandTabAndSubtree(ancestor, {
@@ -130,7 +130,7 @@ export async function init() {
   }).catch(_error => {});
 
   Migration.notifyNewFeatures();
-  log(`Startup metrics for ${Tabs.getAllTabs(null, { element: false }).length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tabs.getAllTabs(null).length} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {
@@ -200,7 +200,7 @@ async function rebuildAll() {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs
           });
-          for (const tab of Tabs.getAllTabs(window.id, { element: false })) {
+          for (const tab of Tabs.getAllTabs(window.id)) {
             tryStartHandleAccelKeyOnTab(tab);
           }
           if (restoredFromCache[window.id]) {
@@ -228,7 +228,7 @@ async function rebuildAll() {
       }
       restoredFromCache[window.id] = false;
     });
-    for (const tab of Tabs.getAllTabs(window.id, { element: false }).filter(Tabs.isGroupTab)) {
+    for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {
       if (!Tabs.isDiscarded(tab))
         tab.$TST.shouldReloadOnSelect = true;
     }
