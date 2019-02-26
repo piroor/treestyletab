@@ -14,21 +14,21 @@ function log(...args) {
   internalLogger('sidebar/color', ...args);
 }
 
-export function mixCSSColors(aBase, aOver, aAlpha = 1) {
-  const base = parseCSSColor(aBase);
-  const over = parseCSSColor(aOver);
+export function mixCSSColors(base, over, alpha = 1) {
+  base = parseCSSColor(base);
+  over = parseCSSColor(over);
   const mixed = mixColors(base, over);
-  return `rgba(${mixed.red}, ${mixed.green}, ${mixed.blue}, ${aAlpha})`;
+  return `rgba(${mixed.red}, ${mixed.green}, ${mixed.blue}, ${alpha})`;
 }
 
-export function parseCSSColor(aColor, aBaseColor) {
-  if (typeof aColor!= 'string')
-    return aColor;
+export function parseCSSColor(color, baseColor) {
+  if (typeof color!= 'string')
+    return color;
 
   let red, green, blue, alpha;
 
   // RRGGBB, RRGGBBAA
-  let parts = aColor.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i);
+  let parts = color.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i);
   if (parts) {
     red   = parseInt(parts[1], 16);
     green = parseInt(parts[2], 16);
@@ -37,7 +37,7 @@ export function parseCSSColor(aColor, aBaseColor) {
   }
   if (!parts) {
     // RGB, RGBA
-    parts = aColor.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])([0-9a-f])?$/i);
+    parts = color.match(/^#?([0-9a-f])([0-9a-f])([0-9a-f])([0-9a-f])?$/i);
     if (parts) {
       red   = Math.min(255, Math.round(255 * (parseInt(parts[1], 16) / 16)));
       green = Math.min(255, Math.round(255 * (parseInt(parts[2], 16) / 16)));
@@ -47,9 +47,9 @@ export function parseCSSColor(aColor, aBaseColor) {
   }
   if (!parts) {
     // rgb(), rgba()
-    parts = aColor.match(/^rgba?\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)(?:\s*,\s*((?:0\.)?[0-9]+)\s*)?\)$/i);
+    parts = color.match(/^rgba?\(\s*([0-9]+)\s*,\s*([0-9]+)\s*,\s*([0-9]+)(?:\s*,\s*((?:0\.)?[0-9]+)\s*)?\)$/i);
     if (!parts)
-      return aColor;
+      return color;
     red   = parseInt(parts[1]);
     green = parseInt(parts[2]);
     blue  = parseInt(parts[3]);
@@ -58,17 +58,17 @@ export function parseCSSColor(aColor, aBaseColor) {
 
   const parsed = { red, green, blue, alpha };
 
-  if (alpha < 1 && aBaseColor)
-    return mixColors(parseCSSColor(aBaseColor), parsed);
+  if (alpha < 1 && baseColor)
+    return mixColors(parseCSSColor(baseColor), parsed);
 
   return parsed;
 }
 
-function mixColors(aBase, aOver) {
-  const alpha = aOver.alpha;
-  const red   = Math.min(255, Math.round((aBase.red   * (1 - alpha)) + (aOver.red   * alpha)));
-  const green = Math.min(255, Math.round((aBase.green * (1 - alpha)) + (aOver.green * alpha)));
-  const blue  = Math.min(255, Math.round((aBase.blue  * (1 - alpha)) + (aOver.blue  * alpha)));
+function mixColors(base, over) {
+  const alpha = over.alpha;
+  const red   = Math.min(255, Math.round((base.red   * (1 - alpha)) + (over.red   * alpha)));
+  const green = Math.min(255, Math.round((base.green * (1 - alpha)) + (over.green * alpha)));
+  const blue  = Math.min(255, Math.round((base.blue  * (1 - alpha)) + (over.blue  * alpha)));
   return { red, green, blue, alpha: 1 };
 }
 
