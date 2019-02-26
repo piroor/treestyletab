@@ -106,7 +106,7 @@ export function restoreTabsFromCacheInternal(params) {
     insertionPoint.insertNode(fragment);
     container.id = `window-${params.windowId}`;
     container.dataset.windowId = params.windowId;
-    Tabs.initWindow(params.windowId, container);
+    Tabs.initWindow(params.windowId);
     tabElements = Array.from(container.childNodes);
     if (!params.insertionPoint)
       insertionPoint.detach();

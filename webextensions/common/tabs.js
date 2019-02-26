@@ -701,7 +701,8 @@ export async function getUniqueIds(tabs) {
 // Event Handling
 //===================================================================
 
-export const onTabElementBuilt  = new EventListenerManager();
+export const onWindowInitialized = new EventListenerManager();
+export const onTabInitialized   = new EventListenerManager();
 export const onGroupTabDetected = new EventListenerManager();
 export const onLabelUpdated     = new EventListenerManager();
 export const onFaviconUpdated   = new EventListenerManager();
@@ -891,31 +892,11 @@ export function initTab(tab, options = {}) {
     tab = trackedTab;
   tab.$TST = (trackedTab && trackedTab.$TST) || new Tab(tab);
 
-  if (boundToElement()) {
-    const tabElement = document.createElement('li');
-    tab.$TST.element = tabElement;
-    tabElement.$TST = tab.$TST;
-    tabElement.apiTab = tab;
-  }
-
   if (tab.active)
     addState(tab, Constants.kTAB_STATE_ACTIVE);
   addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
-  if (boundToElement()) {
-    tab.$TST.element.classList.add('tab');
-    setAttribute(tab, 'id', makeTabId(tab));
-    setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
-    setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
-
-    const labelContainer = document.createElement('span');
-    labelContainer.classList.add(Constants.kLABEL);
-    const label = labelContainer.appendChild(document.createElement('span'));
-    label.classList.add(`${Constants.kLABEL}-content`);
-    tab.$TST.element.appendChild(labelContainer);
-
-    onTabElementBuilt.dispatch(tab, options);
-  }
+  onTabInitialized.dispatch(tab, options);
 
   if (options.existing)
     addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
@@ -925,23 +906,9 @@ export function initTab(tab, options = {}) {
   return tab;
 }
 
-export function initWindow(windowId, container = null) {
+export function initWindow(windowId) {
   const window = trackedWindows.get(windowId) || new Window(windowId);
-
-  if (boundToElement()) {
-    if (!container) {
-      container = document.getElementById(`window-${windowId}`);
-      if (!container) {
-        container = document.createElement('ul');
-        allElementsContainer.appendChild(container);
-      }
-    }
-    container.dataset.windowId = windowId;
-    container.setAttribute('id', `window-${windowId}`);
-    container.classList.add('tabs');
-    container.$TST = window;
-    container.$TST.element = container;
-  }
+  onWindowInitialized.dispatch(windowId);
   return window;
 }
 

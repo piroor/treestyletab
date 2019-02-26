@@ -422,11 +422,35 @@ async function syncTabsOrder() {
   }
 }
 
+Tabs.onWindowInitialized.addListener(windowId => {
+  let container = document.getElementById(`window-${windowId}`);
+  if (!container) {
+    container = document.createElement('ul');
+    Tabs.allElementsContainer.appendChild(container);
+  }
+  container.dataset.windowId = windowId;
+  container.setAttribute('id', `window-${windowId}`);
+  container.classList.add('tabs');
+  container.$TST = Tabs.trackedWindows.get(windowId);
+  container.$TST.element = container;
+});
 
+Tabs.onTabInitialized.addListener((tab, info) => {
+  const tabElement = document.createElement('li');
+  tab.$TST.element = tabElement;
+  tabElement.$TST = tab.$TST;
+  tabElement.apiTab = tab;
 
-Tabs.onTabElementBuilt.addListener((tab, info) => {
-  const tabElement = tab.$TST.element;
-  const label      = getLabel(tab);
+  tabElement.classList.add('tab');
+  Tabs.setAttribute(tab, 'id', Tabs.makeTabId(tab));
+  Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
+  Tabs.setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+
+  const label = document.createElement('span');
+  label.classList.add(Constants.kLABEL);
+  const labelContent = label.appendChild(document.createElement('span'));
+  labelContent.classList.add(`${Constants.kLABEL}-content`);
+  tabElement.appendChild(label);
 
   const twisty = document.createElement('span');
   twisty.classList.add(Constants.kTWISTY);
