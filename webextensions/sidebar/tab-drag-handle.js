@@ -14,7 +14,6 @@ import * as Tabs from '/common/tabs.js';
 import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
-import * as SidebarTabs from './sidebar-tabs.js';
 
 function log(...args) {
   internalLogger('sidebar/tab-drag-handle', ...args);
@@ -250,11 +249,10 @@ onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function onDragStart(event) {
   // get target tab at first before it is cleared by hide()
-  let targetTab = SidebarTabs.getTabElementById(mTargetTabId);
-  targetTab = targetTab.apiTab;
-  log('onDragStart: targetTab = ', mTargetTabId, targetTab);
+  const tab = Tabs.trackedTabs.get(mTargetTabId);
+  log('onDragStart: tab = ', mTargetTabId, tab);
 
-  if (!targetTab) {
+  if (!tab) {
     hide();
     return;
   }
@@ -275,10 +273,7 @@ function onDragStart(event) {
   if (target.closest('.allowBookmark'))
     behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
 
-  return DragAndDrop.onDragStart(event, {
-    tab: targetTab,
-    behavior
-  });
+  return DragAndDrop.onDragStart(event, { tab, behavior });
 }
 onDragStart = EventUtils.wrapWithErrorHandler(onDragStart);
 

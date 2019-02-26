@@ -6,8 +6,7 @@
 'use strict';
 
 import {
-  log as internalLogger,
-  dumpTab
+  log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
@@ -58,7 +57,7 @@ export function signatureFromTabsCache(cache) {
 export function restoreTabsFromCacheInternal(params) {
   log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
   const offset    = params.offset || 0;
-  const apiTabs   = params.tabs.slice(offset);
+  const tabs   = params.tabs.slice(offset);
   let container = Tabs.trackedWindows.get(params.windowId).element;
   let tabElements;
   if (offset > 0) {
@@ -68,17 +67,17 @@ export function restoreTabsFromCacheInternal(params) {
       return [];
     }
     log(`restoreTabsFromCacheInternal: there is ${container.childNodes.length} tabs`);
-    log('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, apiTabs[0].id);
+    log('restoreTabsFromCacheInternal: delete obsolete tabs, offset = ', offset, tabs[0].id);
     const insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
-    insertionPoint.setStartBefore(Tabs.trackedTabs.get(apiTabs[0].id).$TST.element);
-    insertionPoint.setEndAfter(Tabs.trackedTabs.get(apiTabs[apiTabs.length - 1].id).$TST.element);
+    insertionPoint.setStartBefore(Tabs.trackedTabs.get(tabs[0].id).$TST.element);
+    insertionPoint.setEndAfter(Tabs.trackedTabs.get(tabs[tabs.length - 1].id).$TST.element);
     insertionPoint.deleteContents();
-    const tabsMustBeRemoved = apiTabs.map(tab => Tabs.trackedTabs.get(tab.id).$TST.element);
+    const tabsMustBeRemoved = tabs.map(tab => Tabs.trackedTabs.get(tab.id));
     log('restoreTabsFromCacheInternal: cleared?: ',
         tabsMustBeRemoved.every(tab => !tab),
-        tabsMustBeRemoved.map(dumpTab));
+        tabsMustBeRemoved.map(tab => tab.id));
     log(`restoreTabsFromCacheInternal: => ${container.childNodes.length} tabs`);
     const matched = params.cache.match(/<li/g);
     log(`restoreTabsFromCacheInternal: restore ${matched.length} tabs from cache`);
@@ -113,14 +112,14 @@ export function restoreTabsFromCacheInternal(params) {
       insertionPoint.detach();
   }
 
-  log('restoreTabsFromCacheInternal: post process ', { tabElements, apiTabs });
-  if (tabElements.length != apiTabs.length) {
+  log('restoreTabsFromCacheInternal: post process ', { tabElements, tabs });
+  if (tabElements.length != tabs.length) {
     log('restoreTabsFromCacheInternal: Mismatched number of restored tabs?');
     container.parentNode.removeChild(container); // clear dirty tree!
     return [];
   }
   try {
-    fixupTabsRestoredFromCache(tabElements, apiTabs, {
+    fixupTabsRestoredFromCache(tabElements, tabs, {
       dirty: params.shouldUpdate
     });
   }
@@ -139,29 +138,29 @@ function dumpCache(cache) {
     .replace(/(<(li|ul))/g, '\n$1'));
 }
 
-function fixupTabsRestoredFromCache(tabElements, apiTabs, options = {}) {
-  if (tabElements.length != apiTabs.length)
-    throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${tabElements.length}, tabs.Tab=${apiTabs.length}`);
-  log('fixupTabsRestoredFromCache start ', { elements: tabElements.map(tabElement => tabElement.id), apiTabs: apiTabs });
+function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
+  if (tabElements.length != tabs.length)
+    throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, elements=${tabElements.length}, tabs.Tab=${tabs.length}`);
+  log('fixupTabsRestoredFromCache start ', { elements: tabElements.map(tabElement => tabElement.id), tabs });
   const idMap = {};
   // step 1: build a map from old id to new id
   tabElements.forEach((tabElement, index) => {
     const oldId = tabElement.id;
-    const apiTab = apiTabs[index];
-    tabElement.apiTab = apiTab;
-    if (!apiTab.$TST)
-      new Tabs.Tab(apiTab);
-    Tabs.setAttribute(apiTab, 'id', Tabs.makeTabId(apiTab));
-    apiTab.$TST.element = tabElement;
-    tabElement.$TST = apiTab.$TST;
+    const tab = tabs[index];
+    tabElement.apiTab = tab;
+    if (!tab.$TST)
+      new Tabs.Tab(tab);
+    Tabs.setAttribute(tab, 'id', Tabs.makeTabId(tab));
+    tab.$TST.element = tabElement;
+    tabElement.$TST = tab.$TST;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tabElement.id}`);
-    Tabs.setAttribute(apiTab, Constants.kAPI_TAB_ID, apiTab.id || -1);
-    Tabs.setAttribute(apiTab, Constants.kAPI_WINDOW_ID, apiTab.windowId || -1);
+    Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
+    Tabs.setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
     idMap[oldId] = tabElement;
   });
   // step 2: restore information of tabElements
   tabElements.forEach((tabElement, index) => {
-    fixupTabRestoredFromCache(tabElement, apiTabs[index], {
+    fixupTabRestoredFromCache(tabElement, tabs[index], {
       idMap: idMap,
       dirty: options.dirty
     });
@@ -174,7 +173,7 @@ function fixupTabsRestoredFromCache(tabElements, apiTabs, options = {}) {
   // this step must be done after the step 2 is finished for all tabs
   // because updating operation can refer other tabs.
   if (options.dirty) {
-    for (const tab of apiTabs) {
+    for (const tab of tabs) {
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
     }
   }
@@ -195,27 +194,27 @@ const IGNORE_CLASS_STATES = new Set([
   Constants.kTAB_STATE_SUBTREE_COLLAPSED
 ]);
 
-function fixupTabRestoredFromCache(tabElement, apiTab, options = {}) {
-  Tabs.initPromisedStatus(apiTab, true);
+function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
+  Tabs.initPromisedStatus(tab, true);
 
   for (const state of tabElement.classList) {
     if (IGNORE_CLASS_STATES.has(state))
       continue;
-    Tabs.addState(apiTab, state);
+    Tabs.addState(tab, state);
   }
   for (const state of NATIVE_STATES) {
-    if (apiTab[state])
-      Tabs.addState(apiTab, state);
+    if (tab[state])
+      Tabs.addState(tab, state);
     else
-      Tabs.removeState(apiTab, state);
+      Tabs.removeState(tab, state);
   }
-  if (apiTab.status == 'loading') {
-    Tabs.addState(apiTab, 'loading');
-    Tabs.removeState(apiTab, 'complete');
+  if (tab.status == 'loading') {
+    Tabs.addState(tab, 'loading');
+    Tabs.removeState(tab, 'complete');
   }
   else {
-    Tabs.addState(apiTab, 'complete');
-    Tabs.removeState(apiTab, 'loading');
+    Tabs.addState(tab, 'complete');
+    Tabs.removeState(tab, 'loading');
   }
 
   const idMap = options.idMap;
@@ -225,27 +224,27 @@ function fixupTabRestoredFromCache(tabElement, apiTab, options = {}) {
     .split('|')
     .map(oldId => idMap[oldId])
     .filter(tabElement => !!tabElement);
-  apiTab.$TST.children = childTabs.map(tabElement => tabElement.apiTab.id);
+  tab.$TST.children = childTabs.map(tabElement => tabElement.apiTab.id);
   if (childTabs.length > 0)
-    Tabs.setAttribute(apiTab, Constants.kCHILDREN, `|${childTabs.map(tabElement => tabElement.id).join('|')}|`);
+    Tabs.setAttribute(tab, Constants.kCHILDREN, `|${childTabs.map(tabElement => tabElement.id).join('|')}|`);
   else
-    Tabs.removeAttribute(apiTab, Constants.kCHILDREN);
+    Tabs.removeAttribute(tab, Constants.kCHILDREN);
   log('fixupTabRestoredFromCache children: => ', tabElement.getAttribute(Constants.kCHILDREN));
 
   log('fixupTabRestoredFromCache parent: ', tabElement.getAttribute(Constants.kPARENT));
   const parentTab = idMap[tabElement.getAttribute(Constants.kPARENT)] || null;
-  apiTab.$TST.parent = parentTab && parentTab.apiTab.id;
+  tab.$TST.parent = parentTab && parentTab.apiTab.id;
   if (parentTab)
-    Tabs.setAttribute(apiTab, Constants.kPARENT, parentTab.id);
+    Tabs.setAttribute(tab, Constants.kPARENT, parentTab.id);
   else
-    Tabs.removeAttribute(apiTab, Constants.kPARENT);
+    Tabs.removeAttribute(tab, Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tabElement.getAttribute(Constants.kPARENT));
-  apiTab.$TST.ancestors = Tabs.getAncestorTabs(apiTab, { force: true, element: false });
+  tab.$TST.ancestors = Tabs.getAncestorTabs(tab, { force: true, element: false });
 
-  Tabs.setAttribute(apiTab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
-  Tabs.setAttribute(apiTab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');
-  Tabs.setAttribute(apiTab, Constants.kCURRENT_URI, tabElement.getAttribute(Constants.kCURRENT_URI) || apiTab.url);
-  Tabs.setAttribute(apiTab, Constants.kLEVEL, tabElement.getAttribute(Constants.kLEVEL) || 0);
+  Tabs.setAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
+  Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');
+  Tabs.setAttribute(tab, Constants.kCURRENT_URI, tabElement.getAttribute(Constants.kCURRENT_URI) || tab.url);
+  Tabs.setAttribute(tab, Constants.kLEVEL, tabElement.getAttribute(Constants.kLEVEL) || 0);
 }
 
 async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {

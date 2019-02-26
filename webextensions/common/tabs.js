@@ -1021,12 +1021,10 @@ export function getLastVisibleTab(windowId, options = {}) { // visible, not-coll
   }, options));
 }
 
-export function getLastOpenedTab(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  const tabs = getTabs(windowId, options);
+export function getLastOpenedTab(windowId) {
+  const tabs = getTabs(windowId);
   return tabs.length > 0 ?
-    tabs.sort((a, b) => b.apiTab.id - a.apiTab.id)[0] :
+    tabs.sort((a, b) => b.id - a.id)[0] :
     null ;
 }
 

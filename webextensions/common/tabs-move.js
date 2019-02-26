@@ -334,7 +334,7 @@ async function syncToNativeTabsInternal(windowId) {
   // Tabs may be removed while waiting.
   const internalOrder   = Tabs.trackedWindows.get(windowId).order;
   const elementsOrder   = Array.from(window.element.childNodes, tabElement => tabElement.apiTab.id);
-  const nativeTabsOrder = (await browser.tabs.query({ windowId })).map(apiTab => apiTab.id);
+  const nativeTabsOrder = (await browser.tabs.query({ windowId })).map(tab => tab.id);
   log(`syncToNativeTabs(${windowId}): rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(','), nativeTabsOrder:nativeTabsOrder.join(',') });
 
   {
@@ -364,7 +364,7 @@ async function syncToNativeTabsInternal(windowId) {
   }
 
   log(`syncToNativeTabs(${windowId}): step1, internalOrder => nativeTabsOrder`);
-  let apiTabIdsForUpdatedIndices = Array.from(nativeTabsOrder);
+  let tabIdsForUpdatedIndices = Array.from(nativeTabsOrder);
 
   const moveOperations = (new SequenceMatcher(nativeTabsOrder, internalOrder)).operations();
   const movedTabs = new Set();
@@ -381,9 +381,9 @@ async function syncToNativeTabsInternal(windowId) {
         let moveTabIds = internalOrder.slice(toStart, toEnd);
         const referenceId = nativeTabsOrder[fromStart] || null;
         let toIndex = -1;
-        let fromIndices = moveTabIds.map(id => apiTabIdsForUpdatedIndices.indexOf(id));
+        let fromIndices = moveTabIds.map(id => tabIdsForUpdatedIndices.indexOf(id));
         if (referenceId) {
-          toIndex = apiTabIdsForUpdatedIndices.indexOf(referenceId);
+          toIndex = tabIdsForUpdatedIndices.indexOf(referenceId);
         }
         if (toIndex < 0)
           toIndex = internalOrder.length;
@@ -411,8 +411,8 @@ async function syncToNativeTabsInternal(windowId) {
         }).catch(e => {
           log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
         });
-        apiTabIdsForUpdatedIndices = apiTabIdsForUpdatedIndices.filter(id => !moveTabIds.includes(id));
-        apiTabIdsForUpdatedIndices.splice(toIndex, 0, ...moveTabIds);
+        tabIdsForUpdatedIndices = tabIdsForUpdatedIndices.filter(id => !moveTabIds.includes(id));
+        tabIdsForUpdatedIndices.splice(toIndex, 0, ...moveTabIds);
         break;
     }
   }

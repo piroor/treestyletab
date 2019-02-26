@@ -86,7 +86,7 @@ export function isEventFiredOnClickable(event) {
 
 
 export function getTabFromEvent(event, options = {}) {
-  return SidebarTabs.getTabFromChild(event.target, options);
+  return SidebarTabs.getTabFromDOMNode(event.target, options);
 }
 
 export function getTabFromTabbarEvent(event, options = {}) {
@@ -97,11 +97,11 @@ export function getTabFromTabbarEvent(event, options = {}) {
 }
 
 function getTabFromCoordinates(event, options = {}) {
-  let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(event.clientX, event.clientY), options);
+  let tab = SidebarTabs.getTabFromDOMNode(document.elementFromPoint(event.clientX, event.clientY), options);
   if (tab)
     return tab;
 
-  tab = SidebarTabs.getTabFromChild(event.target);
+  tab = SidebarTabs.getTabFromDOMNode(event.target);
   const container = tab && tab.$TST.element.parentNode;
   if (!container)
     return null;
@@ -115,7 +115,7 @@ function getTabFromCoordinates(event, options = {}) {
     containerRect.width - Size.getFavIconSize()
   ];
   for (const x of trialPoints) {
-    const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY), options);
+    const tab = SidebarTabs.getTabFromDOMNode(document.elementFromPoint(x, event.clientY), options);
     if (tab)
       return tab;
   }
@@ -124,14 +124,14 @@ function getTabFromCoordinates(event, options = {}) {
   // so I try to find a tab from previous or next tab.
   const height = Size.getTabHeight();
   for (const x of trialPoints) {
-    let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
-    tab = SidebarTabs.getTabFromChild(tab && tab.$TST.element.nextSibling, options);
+    let tab = SidebarTabs.getTabFromDOMNode(document.elementFromPoint(x, event.clientY - height), options);
+    tab = SidebarTabs.getTabFromDOMNode(tab && tab.$TST.element.nextSibling, options);
     if (tab)
       return tab;
   }
   for (const x of trialPoints) {
-    let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);
-    tab = SidebarTabs.getTabFromChild(tab && tab.$TST.element.previousSibling, options);
+    let tab = SidebarTabs.getTabFromDOMNode(document.elementFromPoint(x, event.clientY + height), options);
+    tab = SidebarTabs.getTabFromDOMNode(tab && tab.$TST.element.previousSibling, options);
     if (tab)
       return tab;
   }

@@ -856,7 +856,7 @@ function onDragEnter(event) {
   const info = getDropAction(event);
   try {
     const enteredTab = EventUtils.getTabFromEvent(event);
-    const leftTab    = SidebarTabs.getTabFromChild(event.relatedTarget);
+    const leftTab    = SidebarTabs.getTabFromDOMNode(event.relatedTarget);
     if (leftTab != enteredTab) {
       mDraggingOnDraggedTabs = (
         info.dragData &&
@@ -942,7 +942,7 @@ function onDragLeave(event) {
   try {
     const info       = getDropAction(event);
     const leftTab    = EventUtils.getTabFromEvent(event);
-    const enteredTab = SidebarTabs.getTabFromChild(event.relatedTarget);
+    const enteredTab = SidebarTabs.getTabFromDOMNode(event.relatedTarget);
     if (leftTab != enteredTab) {
       if (info.dragData &&
           info.dragData.tabs.some(tab => tab.id == leftTab.id) &&

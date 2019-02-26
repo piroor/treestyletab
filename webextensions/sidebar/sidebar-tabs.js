@@ -33,45 +33,7 @@ export function init() {
   tabbar.addEventListener('underflow', onUnderflow);
 }
 
-export function getTabElementById(idOrInfo) {
-  if (!idOrInfo)
-    return null;
-
-  if (idOrInfo instanceof Element)
-    return idOrInfo;
-
-  if (typeof idOrInfo == 'string') { // tab-x-x
-    const matched = idOrInfo.match(/^tab-(\d+)-(\d+)$/);
-    if (matched) {
-      const tab = Tabs.trackedTabs.get(parseInt(matched[2]));
-      return Tabs.ensureLivingTab(tab) && tab.windowId == matched[1] && tab.$TST.element;
-    }
-    // possible unique id
-    return Tabs.getTabByUniqueId(idOrInfo);
-  }
-
-  if (typeof idOrInfo == 'number') { // tabs.Tab.id
-    const tab = Tabs.trackedTabs.get(idOrInfo);
-    return Tabs.ensureLivingTab(tab) && tab.$TST.element;
-  }
-
-  if (idOrInfo.id && idOrInfo.windowId) { // tabs.Tab
-    const tab = Tabs.trackedTabs.get(idOrInfo.id);
-    return Tabs.ensureLivingTab(tab) && tab.windowId == idOrInfo.windowId && tab.$TST.element;
-  }
-  else if (!idOrInfo.window) { // { tab: tabs.Tab.id }
-    const tab = Tabs.trackedTabs.get(idOrInfo.tab);
-    return Tabs.ensureLivingTab(tab) && tab.$TST.element;
-  }
-  else { // { tab: tabs.Tab.id, window: windows.Window.id }
-    const tab = Tabs.trackedTabs.get(idOrInfo.tab);
-    return Tabs.ensureLivingTab(tab) && tab.windowId == idOrInfo.window && tab.$TST.element;
-  }
-
-  return null;
-}
-
-export function getTabFromChild(node, options = {}) {
+export function getTabFromDOMNode(node, options = {}) {
   if (typeof options != 'object')
     options = {};
   if (!node)
@@ -370,7 +332,7 @@ export function updateLabelOverflow(tab) {
 }
 
 function onOverflow(event) {
-  const tab   = getTabFromChild(event.target);
+  const tab   = getTabFromDOMNode(event.target);
   const label = getLabel(tab);
   if (event.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
@@ -379,7 +341,7 @@ function onOverflow(event) {
 }
 
 function onUnderflow(event) {
-  const tab   = getTabFromChild(event.target);
+  const tab   = getTabFromDOMNode(event.target);
   const label = getLabel(tab);
   if (event.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
@@ -449,12 +411,12 @@ async function syncTabsOrder() {
       case 'insert':
       case 'replace':
         const moveTabIds = internalOrder.slice(toStart, toEnd);
-        const referenceTab = fromStart < elementsOrder.length ? getTabElementById(elementsOrder[fromStart]) : null;
+        const referenceTab = fromStart < elementsOrder.length ? Tabs.trackedTabs.get(elementsOrder[fromStart]) : null;
         log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
         for (const id of moveTabIds) {
-          const tab = getTabElementById(id);
+          const tab = Tabs.trackedTabs.get(id);
           if (tab)
-            tab.parentNode.insertBefore(tab, referenceTab);
+            tab.parentNode.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element);
         }
         break;
     }

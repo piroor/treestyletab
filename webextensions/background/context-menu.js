@@ -335,10 +335,10 @@ export function refreshItems() {
   }
 }
 
-export const onClick = (info, apiTab) => {
-  log('context menu item clicked: ', info, apiTab);
+export const onClick = (info, tab) => {
+  log('context menu item clicked: ', info, tab);
 
-  const contextTab = Tabs.trackedTabs.get(apiTab.id);
+  const contextTab = Tabs.trackedTabs.get(tab.id);
   const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab, { element: false }) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
@@ -394,7 +394,7 @@ export const onClick = (info, apiTab) => {
           .catch(ApiTabs.handleMissingTabError);
     }; break;
     case 'unpinnedTab': {
-      const tabs = Tabs.getUnpinnedTabs(apiTab.windowId, { element: false });
+      const tabs = Tabs.getUnpinnedTabs(tab.windowId, { element: false });
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].id, { active: true })
           .catch(ApiTabs.handleMissingTabError);
