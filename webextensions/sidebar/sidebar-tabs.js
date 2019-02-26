@@ -524,7 +524,9 @@ Tabs.onCreated.addListener((tab, _info) => {
   Tabs.addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 });
 
-Tabs.onTabInternallyMoved.addListener((_tab, info) => {
+Tabs.onTabInternallyMoved.addListener((tab, info) => {
+  const window = Tabs.trackedWindows.get(tab.windowId);
+  window.element.insertBefore(tab.$TST.element, info.nextTab && info.nextTab.$TST.element);
   if (!info.broadcasted) {
     // Tab element movement triggered by sidebar itself can break order of
     // tabs synchronized from the background, so for safetyl we trigger

@@ -115,8 +115,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         continue;
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
-      if (Tabs.boundToElement())
-        window.element.insertBefore(tab.$TST.element, referenceTab.$TST.element);
       if (referenceTab.index > tab.index)
         tab.index = referenceTab.index - 1;
       else
@@ -124,6 +122,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       Tabs.track(tab);
       movedTabsCount++;
       Tabs.onTabInternallyMoved.dispatch(tab, {
+        nextTab: referenceTab,
         oldPreviousTab,
         oldNextTab,
         broadcasted: !!options.broadcasted
@@ -233,8 +232,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         continue;
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
-      if (Tabs.boundToElement())
-        window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
       if (nextTab) {
         if (nextTab.index > tab.index)
           tab.index = nextTab.index - 1;
@@ -247,6 +244,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       Tabs.track(tab);
       movedTabsCount++;
       Tabs.onTabInternallyMoved.dispatch(tab, {
+        nextTab,
         oldPreviousTab,
         oldNextTab,
         broadcasted: !!options.broadcasted
