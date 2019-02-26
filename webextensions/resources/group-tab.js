@@ -169,10 +169,10 @@
     let tree;
     if (tabs[1]) {
       tabs[1].children = tabs[0].children;
-      tree = buildTabElementChildren({ children: [tabs[1]] });
+      tree = buildChildren({ children: [tabs[1]] });
     }
     else
-      tree = buildTabElementChildren(tabs[0]);
+      tree = buildChildren(tabs[0]);
     if (tree) {
       container.appendChild(tree);
       reflow();
@@ -187,7 +187,7 @@
     });
   }
 
-  function buildTabElementItem(tab) {
+  function buildItem(tab) {
     const item = document.createElement('li');
 
     const link = item.appendChild(document.createElement('a'));
@@ -215,7 +215,7 @@
     label.classList.add('label');
     label.textContent = tab.title;
 
-    const children = buildTabElementChildren(tab);
+    const children = buildChildren(tab);
     if (!children)
       return item;
 
@@ -227,11 +227,11 @@
     return fragment;
   }
 
-  function buildTabElementChildren(tab) {
+  function buildChildren(tab) {
     if (tab.children && tab.children.length > 0) {
       const list = document.createElement('ul');
       for (const child of tab.children) {
-        list.appendChild(buildTabElementItem(child));
+        list.appendChild(buildItem(child));
       }
       return list;
     }
