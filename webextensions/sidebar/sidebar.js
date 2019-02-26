@@ -81,14 +81,14 @@ export async function init() {
 
   await Promise.all([
     (async () => {
-      const apiTabs = await browser.tabs.query({
+      const tabs = await browser.tabs.query({
         active:        true,
         currentWindow: true
       });
-      mTargetWindow = apiTabs[0].windowId;
+      mTargetWindow = tabs[0].windowId;
       Tabs.setWindow(mTargetWindow);
-      for (const apiTab of apiTabs) {
-        Tabs.track(apiTab);
+      for (const tab of tabs) {
+        Tabs.track(tab);
       }
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
@@ -302,12 +302,12 @@ function applyBrowserTheme(theme) {
 
 function updateContextualIdentitiesStyle() {
   const definitions = [];
-  ContextualIdentities.forEach(aIdentity => {
-    if (!aIdentity.colorCode)
+  ContextualIdentities.forEach(identity => {
+    if (!identity.colorCode)
       return;
     definitions.push(`
-      .tab.contextual-identity-${aIdentity.cookieStoreId} .contextual-identity-marker {
-        background-color: ${aIdentity.colorCode};
+      .tab.contextual-identity-${identity.cookieStoreId} .contextual-identity-marker {
+        background-color: ${identity.colorCode};
       }
     `);
   });
@@ -368,8 +368,7 @@ export async function rebuildAll(cache) {
   const container = Tabs.buildElementsContainerFor(mTargetWindow);
   for (const tab of tabs) {
     TabIdFixer.fixTab(tab);
-    const newTab = Tabs.buildTabElement(tab, { existing: true, inRemote: true });
-    container.appendChild(newTab);
+    container.appendChild(Tabs.buildTabElement(tab, { existing: true, inRemote: true }));
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
   Tabs.allElementsContainer.appendChild(container);
@@ -531,7 +530,7 @@ function onFocus(_event) {
   });
 }
 
-function onBlur(_aEvent) {
+function onBlur(_event) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_BLUR,
     windowId: mTargetWindow
