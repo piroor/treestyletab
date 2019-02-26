@@ -669,6 +669,19 @@ Tabs.onWindowRestoring.addListener(async windowId => {
   MetricsData.add('Tabs.onWindowRestoring restore end');
 });
 
+Tabs.onHighlightedTabsChanged.addListener(windowId => {
+  if (windowId != mTargetWindow)
+    return;
+  const window             = Tabs.trackedWindows.get(windowId);
+  const allHighlightedTabs = Tabs.highlightedTabsForWindow.get(windowId);
+  if (!window || !window.element || !allHighlightedTabs)
+    return;
+  if (allHighlightedTabs.size > 1)
+    window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  else
+    window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+});
+
 
 ContextualIdentities.onUpdated.addListener(() => {
   updateContextualIdentitiesStyle();

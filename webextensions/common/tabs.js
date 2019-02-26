@@ -710,6 +710,7 @@ export const onPinned           = new EventListenerManager();
 export const onUnpinned         = new EventListenerManager();
 export const onHidden           = new EventListenerManager();
 export const onShown            = new EventListenerManager();
+export const onHighlightedTabsChanged = new EventListenerManager();
 export const onParentTabUpdated = new EventListenerManager();
 export const onTabInternallyMoved     = new EventListenerManager();
 export const onCollapsedStateChanging = new EventListenerManager();

@@ -52,6 +52,8 @@ function log(...args) {
   internalLogger('common/tabs-update', ...args);
 }
 
+let mDelayedDispatchOnHighlightedTabsChanged;
+
 export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState) {
     Tabs.setAttribute(tab, Constants.kCURRENT_URI, newState.url);
@@ -203,7 +205,12 @@ export function updateTab(tab, newState = {}, options = {}) {
       highlightedTabs.delete(tab);
       Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
     }
-    updateMultipleHighlighted(tab.windowId);
+    if (mDelayedDispatchOnHighlightedTabsChanged)
+      clearTimeout(mDelayedDispatchOnHighlightedTabsChanged);
+    mDelayedDispatchOnHighlightedTabsChanged = setTimeout(windowId => {
+      mDelayedDispatchOnHighlightedTabsChanged = null;
+      Tabs.onHighlightedTabsChanged.dispatch(windowId);
+    }, 0, tab.windowId);
   }
 
   if (options.forceApply ||
@@ -265,7 +272,7 @@ export async function updateTabsHighlighted(highlightInfo) {
   }
   if (unhighlightedTabs.length > 0 ||
       highlightedTabs.length > 0)
-    updateMultipleHighlighted(highlightInfo.windowId);
+    Tabs.onHighlightedTabsChanged.dispatch(highlightInfo.windowId);
 }
 async function updateTabHighlighted(tab, highlighted) {
   log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
@@ -282,17 +289,6 @@ async function updateTabHighlighted(tab, highlighted) {
     window.tabsToBeHighlightedAlone.delete(tab.id);
   Tabs.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;
-}
-
-function updateMultipleHighlighted(windowId) {
-  const window             = Tabs.trackedWindows.get(windowId);
-  const allHighlightedTabs = Tabs.highlightedTabsForWindow.get(windowId);
-  if (!Tabs.boundToElement() || !window || !allHighlightedTabs)
-    return;
-  if (allHighlightedTabs.size > 1)
-    window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-  else
-    window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
 }
 
 export function updateParentTab(parent) {
