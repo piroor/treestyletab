@@ -151,6 +151,10 @@ export class Tab {
     return this.childIds.length > 0;
   }
 
+  sortChildren() {
+    this.childIds = sort(this.childIds.map(id => trackedTabs.get(id))).map(tab => tab.id);
+  }
+
   detach() {
     const parent = this.parent;
     if (parent) {
@@ -264,6 +268,8 @@ export class Window {
       for (let i = Math.min(index, tab.index), maxi = Math.max(index, tab.index) + 1; i < maxi; i++) {
         this.tabs.get(order[i]).index = i;
       }
+      if (tab.$TST.parentId)
+        tab.$TST.parent.$TST.sortChildren();
       //console.log('Tabs.track / updated order: ', order);
     }
     else { // not tracked yet: add

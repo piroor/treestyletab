@@ -157,23 +157,6 @@ export async function attachTabTo(child, parent, options = {}) {
   if (!newlyAttached)
     log('=> already attached');
 
-  let childTabs;
-  {
-    const expectedAllTabs = Tabs.getAllTabs(child.windowId, { element: false }).filter(tab => tab.id != child.id);
-    log('expectedAllTabs: ', expectedAllTabs.map(tab => tab.id));
-    if (newIndex >= expectedAllTabs.length)
-      expectedAllTabs.push(child);
-    else
-      expectedAllTabs.splice(newIndex, 0, child);
-    log(' => ', expectedAllTabs.map(tab => tab.id));
-
-    childTabs = expectedAllTabs.filter(tab => {
-      return (tab.id == child.id ||
-                tab.$TST.parentId == parent.id);
-    });
-  }
-  log('new children: ', childTabs);
-
   if (newlyAttached) {
     detachTab(child, Object.assign({}, options, {
       // Don't broadcast this detach operation, because this "attachTabTo" can be
@@ -183,8 +166,9 @@ export async function attachTabTo(child, parent, options = {}) {
     }));
 
     log('attachTabTo: setting child information to ', parent.id);
-    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childTabs.map(child => child.$TST.element.id).join('|')}|`);
-    parent.$TST.children = childTabs;
+    parent.$TST.childIds.push(child.id);
+    parent.$TST.sortChildren();
+    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${parent.$TST.children.map(child => child.$TST.element.id).join('|')}|`);
 
     log('attachTabTo: setting parent information to ', child.id);
     Tabs.setAttribute(child, Constants.kPARENT, parent.$TST.element.id);
