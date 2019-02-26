@@ -427,7 +427,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     case Constants.kINSERT_FIRST:
       const allPinnedTabs = Tabs.getPinnedTabs(rootTabs[0].windowId);
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
-      for (const tab of unifiedRootTabs.slice(0).reverse()) {
+      for (const tab of rootTabs.slice(0).reverse()) {
         if (!pinnedOpeners.includes(openerOf[tab.id]) ||
             Tabs.getGroupTabForOpener(openerOf[tab.id]))
           continue;
@@ -435,6 +435,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
         const siblings = Tabs.queryAll({
           windowId:   tab.windowId,
           normal:     true,
+          '!id':      tab.id,
           attributes: [
             Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, Tabs.getAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID),
             Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, ''
