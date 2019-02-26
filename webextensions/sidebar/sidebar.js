@@ -368,7 +368,8 @@ export async function rebuildAll(cache) {
   const container = Tabs.buildElementsContainerFor(mTargetWindow);
   for (const tab of tabs) {
     TabIdFixer.fixTab(tab);
-    container.appendChild(Tabs.buildTabElement(tab, { existing: true, inRemote: true }));
+    Tabs.initTab(tab, { existing: true, inRemote: true })
+    container.appendChild(tab.$TST.element);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
   Tabs.allElementsContainer.appendChild(container);

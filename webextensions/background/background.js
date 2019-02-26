@@ -216,8 +216,8 @@ async function rebuildAll() {
         log(`build tabs for ${window.id} from scratch`);
         const container = Tabs.buildElementsContainerFor(window.id);
         for (const tab of window.tabs) {
-          const tabElement = Tabs.buildTabElement(tab, { existing: true });
-          container.appendChild(tabElement);
+          Tabs.initTab(tab, { existing: true });
+          container.appendChild(tab.$TST.element);
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
           tryStartHandleAccelKeyOnTab(tab);
         }

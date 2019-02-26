@@ -850,8 +850,8 @@ browser.windows.onRemoved.addListener(windowId => {
 // Create Tabs
 //===================================================================
 
-export function buildTabElement(tab, options = {}) {
-  log('build tab element for ', tab);
+export function initTab(tab, options = {}) {
+  log('initalize tab ', tab);
   if (!tab.$TST)
     new Tab(tab);
   const tabElement = document.createElement('li');
@@ -879,7 +879,7 @@ export function buildTabElement(tab, options = {}) {
 
   initPromisedStatus(tab);
 
-  return tabElement;
+  return tab;
 }
 
 export function buildElementsContainerFor(windowId) {

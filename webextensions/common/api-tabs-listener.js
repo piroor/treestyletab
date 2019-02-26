@@ -369,7 +369,7 @@ async function onNewTabTracked(tab) {
   log(`onNewTabTracked(id=${tab.id}): start to create tab element`);
 
   try {
-    const newTabElement = Tabs.buildTabElement(tab, { inRemote: !!targetWindow });
+    Tabs.initTab(tab, { inRemote: !!targetWindow });
     Tabs.addState(tab, Constants.kTAB_STATE_OPENING);
 
     // New tab's index can become invalid because the value of "index" is same to
@@ -378,7 +378,8 @@ async function onNewTabTracked(tab) {
     tab.index = Math.max(0, Math.min(tab.index, window.element.childNodes.length));
 
     const nextTab = Tabs.getAllTabs(window.id)[tab.index];
-    window.element.insertBefore(newTabElement, nextTab && nextTab.$TST.element);
+    if (tab.$TST.element)
+      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
 
     // We need to update "active" state of a new active tab immediately.
     // Attaching of initial child tab (this new tab may become it) to an
@@ -445,7 +446,7 @@ async function onNewTabTracked(tab) {
       log(`onNewTabTracked(id=${tab.id}): continued for restored tab`);
     }
     if (!window.element.parentNode ||
-        !newTabElement.parentNode) {
+        (tab.$TST.element && !tab.$TST.element.parentNode)) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
@@ -525,7 +526,7 @@ async function onNewTabTracked(tab) {
         previousTabId: currentActiveTab.id
       });
 
-    return newTabElement;
+    return tab;
   }
   catch(e) {
     console.log(e);
@@ -711,7 +712,8 @@ async function onMoved(tabId, moveInfo) {
       const nextTab = Tabs.getAllTabs(moveInfo.windowId)[newNextIndex];
       if (!alreadyMoved &&
           Tabs.getNextTab(movedTab) != nextTab) {
-        window.element.insertBefore(movedTab.$TST.element, nextTab.$TST.element);
+        if (movedTab.$TST.element)
+          window.element.insertBefore(movedTab.$TST.element, nextTab.$TST.element);
         if (nextTab) {
           if (nextTab.index > movedTab.index)
             movedTab.index = nextTab.index - 1;
@@ -777,13 +779,13 @@ async function onAttached(tabId, attachInfo) {
     mTreeInfoForTabsMovingAcrossWindows.delete(tabId);
 
     const window = Tabs.trackedWindows.get(attachInfo.newWindowId);
-    const newTabElement = await onNewTabTracked(tab);
-    const byInternalOperation = newTabElement && window.toBeAttachedTabs.has(tabId);
+    await onNewTabTracked(tab);
+    const byInternalOperation = window.toBeAttachedTabs.has(tab.id);
     if (byInternalOperation)
-      window.toBeAttachedTabs.delete(tabId);
+      window.toBeAttachedTabs.delete(tab.id);
     info.byInternalOperation = info.byInternalOperation || byInternalOperation;
 
-    if (!byInternalOperation && newTabElement) { // we should process only tabs attached by others.
+    if (!byInternalOperation) { // we should process only tabs attached by others.
       const onAttachedResult = Tabs.onAttached.dispatch(tab, info);
       // don't do await if not needed, to process things synchronously
       if (onAttachedResult instanceof Promise)
@@ -833,7 +835,8 @@ async function onDetached(tabId, detachInfo) {
       Tabs.onDetached.dispatch(oldTab, info);
 
     const window = Tabs.trackedWindows.get(oldTab.windowId);
-    window.element.removeChild(oldTab.$TST.element);
+    if (oldTab.$TST.element)
+      window.element.removeChild(oldTab.$TST.element);
     if (targetWindow)
       window.untrackTab(oldTab.id);
     else
