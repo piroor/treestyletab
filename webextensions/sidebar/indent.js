@@ -35,11 +35,11 @@ export function init() {
   mInitialized = true;
 }
 
-export function updateRestoredTree(aCachedIndent) {
+export function updateRestoredTree(cachedIndent) {
   updateVisualMaxTreeLevel();
   update({
     force: true,
-    cache: aCachedIndent
+    cache: cachedIndent
   });
 }
 
@@ -90,27 +90,27 @@ export function update(options = {}) {
     mIndentDefinition.textContent = definitions.join('\n');
   }
 }
-function generateIndentAndSelectorsForMaxLevel(aMaxLevel, aIndentToSelectors, aDefaultIndentToSelectors) {
+function generateIndentAndSelectorsForMaxLevel(maxLevel, indentToSelectors, defaultIndentToSelectors) {
   const minIndent  = Math.max(Constants.kDEFAULT_MIN_INDENT, configs.minIndent);
-  const indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(mLastMaxIndent / aMaxLevel), minIndent));
+  const indentUnit = Math.min(configs.baseIndent, Math.max(Math.floor(mLastMaxIndent / maxLevel), minIndent));
 
   let configuredMaxLevel = configs.maxTreeLevel;
   if (configuredMaxLevel < 0)
     configuredMaxLevel = Number.MAX_SAFE_INTEGER;
 
-  const base = `:root[${Constants.kMAX_TREE_LEVEL}="${aMaxLevel}"]:not(.initializing) .tab:not(.${Constants.kTAB_STATE_COLLAPSED_DONE})[${Constants.kLEVEL}]`;
+  const base = `:root[${Constants.kMAX_TREE_LEVEL}="${maxLevel}"]:not(.initializing) .tab:not(.${Constants.kTAB_STATE_COLLAPSED_DONE})[${Constants.kLEVEL}]`;
 
   // default indent for unhandled (deep) level tabs
-  const defaultIndent = `${Math.min(aMaxLevel + 1, configuredMaxLevel) * indentUnit}px`;
-  if (!aDefaultIndentToSelectors[defaultIndent])
-    aDefaultIndentToSelectors[defaultIndent] = [];
-  aDefaultIndentToSelectors[defaultIndent].push(`${base}:not([${Constants.kLEVEL}="0"])`);
+  const defaultIndent = `${Math.min(maxLevel + 1, configuredMaxLevel) * indentUnit}px`;
+  if (!defaultIndentToSelectors[defaultIndent])
+    defaultIndentToSelectors[defaultIndent] = [];
+  defaultIndentToSelectors[defaultIndent].push(`${base}:not([${Constants.kLEVEL}="0"])`);
 
-  for (let level = 1; level <= aMaxLevel; level++) {
+  for (let level = 1; level <= maxLevel; level++) {
     const indent = `${Math.min(level, configuredMaxLevel) * indentUnit}px`;
-    if (!aIndentToSelectors[indent])
-      aIndentToSelectors[indent] = [];
-    aIndentToSelectors[indent].push(`${base}[${Constants.kLEVEL}="${level}"]`);
+    if (!indentToSelectors[indent])
+      indentToSelectors[indent] = [];
+    indentToSelectors[indent].push(`${base}[${Constants.kLEVEL}="${level}"]`);
   }
 }
 
