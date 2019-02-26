@@ -58,8 +58,8 @@ function log(...args) {
 }
 
 
-const mUpdatingCollapsedStateCancellers = new WeakMap();
-const mTabCollapsedStateChangedManagers = new WeakMap();
+const mUpdatingCollapsedStateCancellers = new Map();
+const mTabCollapsedStateChangedManagers = new Map();
 
 Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   const toBeCollapsed = info.collapsed;
@@ -83,15 +83,15 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
 
   const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
 
-  let manager = mTabCollapsedStateChangedManagers.get(tab.$TST.element);
+  let manager = mTabCollapsedStateChangedManagers.get(tab.id);
   if (!manager) {
     manager = new EventListenerManager();
-    mTabCollapsedStateChangedManagers.set(tab.$TST.element, manager);
+    mTabCollapsedStateChangedManagers.set(tab.id, manager);
   }
 
-  if (mUpdatingCollapsedStateCancellers.has(tab.$TST.element)) {
-    mUpdatingCollapsedStateCancellers.get(tab.$TST.element)(toBeCollapsed);
-    mUpdatingCollapsedStateCancellers.delete(tab.$TST.element);
+  if (mUpdatingCollapsedStateCancellers.has(tab.id)) {
+    mUpdatingCollapsedStateCancellers.get(tab.id)(toBeCollapsed);
+    mUpdatingCollapsedStateCancellers.delete(tab.id);
   }
 
   let cancelled = false;
@@ -108,7 +108,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
         !Tabs.ensureLivingTab(tab)) // do nothing for closed tab!
       return;
 
-    mUpdatingCollapsedStateCancellers.delete(tab.$TST.element);
+    mUpdatingCollapsedStateCancellers.delete(tab.id);
 
     const toBeCollapsed = info.collapsed;
     SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -125,7 +125,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
       Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
 
     const reason = toBeCollapsed ? Constants.kTABBAR_UPDATE_REASON_COLLAPSE : Constants.kTABBAR_UPDATE_REASON_EXPAND ;
-    onEndCollapseExpandCompletely(tab.$TST.element, {
+    onEndCollapseExpandCompletely(tab, {
       collapsed: toBeCollapsed,
       reason
     });
@@ -145,7 +145,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
     return;
   }
 
-  mUpdatingCollapsedStateCancellers.set(tab.$TST.element, canceller);
+  mUpdatingCollapsedStateCancellers.set(tab.id, canceller);
 
   if (toBeCollapsed) {
     Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSING);
@@ -193,7 +193,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
       else
         Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
 
-      onEndCollapseExpandCompletely(tab.$TST.element, {
+      onEndCollapseExpandCompletely(tab, {
         collapsed: toBeCollapsed,
         reason
       });
@@ -213,7 +213,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
 });
 function onEndCollapseExpandCompletely(tab, options = {}) {
   if (Tabs.isActive(tab) && !options.collapsed)
-    Scroll.scrollToTab(tab);
+    Scroll.scrollToTab(tab.$TST.element);
 
   if (configs.indentAutoShrink &&
       configs.indentAutoShrinkOnlyForVisible)
@@ -225,54 +225,7 @@ function onEndCollapseExpandCompletely(tab, options = {}) {
 }
 
 Tabs.onCollapsedStateChanged.addListener((tab, info = {}) => {
-  const manager = mTabCollapsedStateChangedManagers.get(tab.$TST.element);
+  const manager = mTabCollapsedStateChangedManagers.get(tab.id);
   if (manager)
     manager.dispatch(tab, info);
 });
-
-/*
-function onTabSubtreeCollapsedStateChangedManually(event) {
-  if (!configs.indentAutoShrink ||
-      !configs.indentAutoShrinkOnlyForVisible)
-    return;
-
-  cancelCheckTabsIndentOverflow();
-  if (!tab.checkTabsIndentOverflowOnMouseLeave) {
-    let stillOver = false;
-    let id = tab.id
-    tab.checkTabsIndentOverflowOnMouseLeave = function checkTabsIndentOverflowOnMouseLeave(event, aDelayed) {
-      if (event.type == 'mouseover') {
-        let node = EventUtils.getElementTarget(event);
-        if (node.closest(`#${id}`))
-            stillOver = true;
-          return;
-        }
-        else if (!aDelayed) {
-          if (stillOver) {
-            stillOver = false;
-          }
-          setTimeout(() => {
-            if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
-              return;
-            tab.checkTabsIndentOverflowOnMouseLeave(event, true);
-          }, 0);
-          return;
-        } else if (stillOver) {
-          return;
-        }
-        let x = event.clientX;
-        let y = event.clientY;
-        let rect = tab.getBoundingClientRect();
-        if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom)
-          return;
-        document.removeEventListener('mouseover', tab.checkTabsIndentOverflowOnMouseLeave, true);
-        document.removeEventListener('mouseout', tab.checkTabsIndentOverflowOnMouseLeave, true);
-        delete tab.checkTabsIndentOverflowOnMouseLeave;
-        checkTabsIndentOverflow();
-      };
-      document.addEventListener('mouseover', tab.checkTabsIndentOverflowOnMouseLeave, true);
-      document.addEventListener('mouseout', tab.checkTabsIndentOverflowOnMouseLeave, true);
-    }
-  }
-}
-*/
