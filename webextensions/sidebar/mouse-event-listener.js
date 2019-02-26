@@ -57,7 +57,6 @@ import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 import * as TabContextMenu from './tab-context-menu.js';
-import * as SidebarTabs from './sidebar-tabs.js';
 
 function log(...args) {
   internalLogger('sidebar/mouse-event-listener', ...args);
