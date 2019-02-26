@@ -117,20 +117,20 @@ function getTrackedWindow(windowId) {
   if (typeof windowId != 'number')
     throw new Error(`The given ID seems invalid as an window id: ${windowId}`);
 
-  let window = Tabs.trackedWindows.get(windowId);
+  const window = Tabs.trackedWindows.get(windowId);
   if (window &&
-      window.element &&
-      window.element.parentNode)
+      (!Tabs.boundToElement() ||
+       window.element))
     return window;
 
-  if (!window.element) {
-    const container = Tabs.buildElementsContainerFor(windowId);
-    Tabs.allElementsContainer.appendChild(container);
-    window = container.$TST;
-  }
-
-  return window;
+  return Tabs.initWindow(windowId);
 }
+
+function warnTabDestroyedWhileWaiting(tabId) {
+  if (configs.debug)
+    console.log(`WARNING: tab ${tabId} is destroyed while waiting. `, new Error().stack);
+}
+
 
 const mLastClosedWhileActiveResolvers = new WeakMap(); // used only on Firefox 64 and older
 
@@ -162,6 +162,7 @@ async function onActivated(activeInfo) {
     const newActiveTab = Tabs.trackedTabs.get(activeInfo.tabId);
     if (!newActiveTab ||
         !Tabs.ensureLivingTab(newActiveTab)) {
+      warnTabDestroyedWhileWaiting(activeInfo.tabId);
       onCompleted();
       return;
     }
@@ -195,6 +196,7 @@ async function onActivated(activeInfo) {
 
     if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
       onCompleted();
+      warnTabDestroyedWhileWaiting(activeInfo.tabId);
       return;
     }
 
@@ -215,6 +217,7 @@ async function onActivated(activeInfo) {
 
     if (!Tabs.ensureLivingTab(newActiveTab)) { // it can be removed while waiting
       onCompleted();
+      warnTabDestroyedWhileWaiting(activeInfo.tabId);
       return;
     }
 
@@ -256,6 +259,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     if (!updatedTab ||
         !Tabs.ensureLivingTab(updatedTab)) {
       onCompleted();
+      warnTabDestroyedWhileWaiting(tabId);
       return;
     }
 
@@ -369,16 +373,16 @@ async function onNewTabTracked(tab) {
   log(`onNewTabTracked(id=${tab.id}): start to create tab element`);
 
   try {
-    Tabs.initTab(tab, { inRemote: !!targetWindow });
+    tab = Tabs.initTab(tab, { inRemote: !!targetWindow });
     Tabs.addState(tab, Constants.kTAB_STATE_OPENING);
 
     // New tab's index can become invalid because the value of "index" is same to
     // the one given to browser.tabs.create() instead of actual index.
     // See also: https://github.com/piroor/treestyletab/issues/2131
-    tab.index = Math.max(0, Math.min(tab.index, window.element.childNodes.length));
+    tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
 
     const nextTab = Tabs.getAllTabs(window.id)[tab.index];
-    if (tab.$TST.element)
+    if (Tabs.boundToElement())
       window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
 
     // We need to update "active" state of a new active tab immediately.
@@ -400,6 +404,7 @@ async function onNewTabTracked(tab) {
     if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id);
       return;
     }
 
@@ -445,11 +450,13 @@ async function onNewTabTracked(tab) {
       await window.allTabsRestored;
       log(`onNewTabTracked(id=${tab.id}): continued for restored tab`);
     }
-    if (!window.element.parentNode ||
-        (tab.$TST.element && !tab.$TST.element.parentNode)) {
+    if (Tabs.boundToElement() &&
+        (!window.element.parentNode ||
+         !tab.$TST.element.parentNode)) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id);
       return;
     }
 
@@ -467,7 +474,8 @@ async function onNewTabTracked(tab) {
     moved = moved === false;
     log(`onNewTabTracked(id=${tab.id}): moved = `, moved);
 
-    if (window.element.parentNode) { // it can be removed while waiting
+    if (Tabs.boundToElement() &&
+        window.element.parentNode) { // it can be removed while waiting
       window.openingTabs.add(tab.id);
       setTimeout(() => {
         if (!window.parentNode) // it can be removed while waiting
@@ -479,6 +487,7 @@ async function onNewTabTracked(tab) {
     if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id);
       return;
     }
 
@@ -674,6 +683,7 @@ async function onMoved(tabId, moveInfo) {
       if (maybeInternalOperation)
         window.internalMovingTabs.delete(tabId);
       completelyMoved();
+      warnTabDestroyedWhileWaiting(tabId);
       return;
     }
 
@@ -712,7 +722,7 @@ async function onMoved(tabId, moveInfo) {
       const nextTab = Tabs.getAllTabs(moveInfo.windowId)[newNextIndex];
       if (!alreadyMoved &&
           Tabs.getNextTab(movedTab) != nextTab) {
-        if (movedTab.$TST.element)
+        if (Tabs.boundToElement())
           window.element.insertBefore(movedTab.$TST.element, nextTab.$TST.element);
         if (nextTab) {
           if (nextTab.index > movedTab.index)
@@ -725,8 +735,8 @@ async function onMoved(tabId, moveInfo) {
         }
         window.trackTab(movedTab);
         log('Tab nodes rearranged by tabs.onMoved listener:\n'+(!configs.debug ? '' :
-          Array.from(window.element.childNodes)
-            .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tab.apiTab.id == movedTab.id ? '[MOVED]' : ''))
+          Array.from(window.getOrderedTabs())
+            .map(tab => ' - '+tab.index+': '+tab.id+(tab.id == movedTab.id ? '[MOVED]' : ''))
             .join('\n')),
             { moveInfo });
       }
@@ -835,7 +845,7 @@ async function onDetached(tabId, detachInfo) {
       Tabs.onDetached.dispatch(oldTab, info);
 
     const window = Tabs.trackedWindows.get(oldTab.windowId);
-    if (oldTab.$TST.element)
+    if (Tabs.boundToElement())
       window.element.removeChild(oldTab.$TST.element);
     if (targetWindow)
       window.untrackTab(oldTab.id);

@@ -179,24 +179,23 @@ function destroy() {
 }
 
 async function rebuildAll() {
-  Tabs.clearAllElements();
-  Tabs.untrackAll();
   const windows = await browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
   });
-  const insertionPoint = document.createRange();
-  insertionPoint.selectNodeContents(Tabs.allElementsContainer);
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
+      const trackedWindow = Tabs.trackedWindows.get(window.id);
+      if (!trackedWindow)
+        Tabs.initWindow(window.id);
+
       for (const tab of window.tabs) {
         Tabs.track(tab);
       }
       try {
         if (configs.useCachedTree) {
           restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
-            insertionPoint,
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs
           });
@@ -214,14 +213,12 @@ async function rebuildAll() {
       }
       try {
         log(`build tabs for ${window.id} from scratch`);
-        const container = Tabs.buildElementsContainerFor(window.id);
-        for (const tab of window.tabs) {
-          Tabs.initTab(tab, { existing: true });
-          container.appendChild(tab.$TST.element);
+        Tabs.initWindow(window.id);
+        for (let tab of window.tabs) {
+          tab = Tabs.initTab(tab, { existing: true });
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
           tryStartHandleAccelKeyOnTab(tab);
         }
-        Tabs.allElementsContainer.appendChild(container);
       }
       catch(e) {
         log(`failed to build tabs for ${window.id}`, e);
@@ -233,7 +230,6 @@ async function rebuildAll() {
         tab.$TST.shouldReloadOnSelect = true;
     }
   }));
-  insertionPoint.detach();
   return restoredFromCache;
 }
 
@@ -472,7 +468,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     tryStartHandleAccelKeyOnTab(tab);
 });
 
-Tabs.onTabElementMoved.addListener((tab, info = {}) => {
+Tabs.onTabInternallyMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
     tab,
     Tabs.getPreviousTab(tab),

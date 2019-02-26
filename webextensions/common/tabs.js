@@ -62,6 +62,16 @@ export const trackedTabsByUniqueId    = new Map();
 export const activeTabForWindow       = new Map();
 export const highlightedTabsForWindow = new Map();
 
+let mBindToElement = false;
+
+export function bindToElement() {
+  mBindToElement = true;
+}
+
+export function boundToElement() {
+  return mBindToElement;
+}
+
 
 //===================================================================
 // Helper Class
@@ -69,18 +79,17 @@ export const highlightedTabsForWindow = new Map();
 
 export class Tab {
   constructor(tab) {
+    const alreadyTracked = trackedTabs.get(tab.id);
+    if (alreadyTracked)
+      return alreadyTracked.$TST;
+
     tab.$TST = this;
     this.tab = tab;
     this.id  = tab.id;
 
     this.element = null;
 
-    this.states     = {};
-    this.attributes = {};
-
-    this.parentId    = null;
-    this.ancestorIds = [];
-    this.childIds    = [];
+    this.clear();
 
     this.uniqueId = {
       id:            null,
@@ -91,6 +100,12 @@ export class Tab {
       this.promisedUniqueId = updateUniqueId(tab);
     else
       this.promisedUniqueId = Promise.resolve(this.uniqueId);
+
+    trackedTabs.set(tab.id, tab);
+
+    // eslint-disable-next-line no-use-before-define
+    const window = trackedWindows.get(tab.windowId) || new Window(tab.windowId);
+    window.trackTab(tab);
   }
 
   destroy() {
@@ -117,6 +132,15 @@ export class Tab {
     delete this.tab;
     delete this.promisedUniqueId;
     delete this.uniqueId;
+  }
+
+  clear() {
+    this.states     = {};
+    this.attributes = {};
+
+    this.parentId    = null;
+    this.ancestorIds = [];
+    this.childIds    = [];
   }
 
   set parent(tab) {
@@ -170,10 +194,25 @@ export class Tab {
     }
     this.children = [];
   }
+
+  export() {
+    return {
+      id:         this.id,
+      uniqueId:   this.uniqueId.id,
+      states:     Object.keys(this.states),
+      attributes: this.attributes,
+      parentId:   this.parentId,
+      childIds:   this.childIds
+    };
+  }
 }
 
 export class Window {
   constructor(windowId) {
+    const alreadyTracked = trackedWindows.get(windowId);
+    if (alreadyTracked)
+      return alreadyTracked;
+
     this.id    = windowId;
     this.tabs  = new Map();
     this.order = [];
@@ -264,6 +303,10 @@ export class Window {
   }
 
   trackTab(tab) {
+    const alreadyTracked = trackedTabs.get(tab.id);
+    if (alreadyTracked)
+      tab = alreadyTracked;
+
     const order = this.order;
     if (this.tabs.has(tab.id)) { // already tracked: update
       const index = order.indexOf(tab.id);
@@ -272,8 +315,9 @@ export class Window {
       for (let i = Math.min(index, tab.index), maxi = Math.max(index, tab.index) + 1; i < maxi; i++) {
         this.tabs.get(order[i]).index = i;
       }
-      if (tab.$TST.parentId)
-        tab.$TST.parent.$TST.sortChildren();
+      const parent = tab.$TST.parent;
+      if (parent)
+        parent.$TST.sortChildren();
       //console.log('Tabs.track / updated order: ', order);
     }
     else { // not tracked yet: add
@@ -284,12 +328,14 @@ export class Window {
       }
       //console.log('Tabs.track / order: ', order);
     }
+    return tab;
   }
 
   detachTab(tabId) {
     const tab = trackedTabs.get(tabId);
     if (!tab)
       return;
+
     tab.$TST.detach();
     this.tabs.delete(tabId);
     const order = this.order;
@@ -311,6 +357,14 @@ export class Window {
     if (tab)
       tab.$TST.destroy();
   }
+
+  export() {
+    const tabs = [];
+    for (const tab of this.getOrderedTabs()) {
+      tabs.push(tab.$TST.export());
+    }
+    return tabs;
+  }
 }
 
 
@@ -319,11 +373,9 @@ export class Window {
 //===================================================================
 
 export function track(tab) {
-  if (!tab.$TST)
-    new Tab(tab);
-  trackedTabs.set(tab.id, tab);
-  const window = trackedWindows.get(tab.windowId) || new Window(tab.windowId);
-  window.trackTab(tab);
+  const trackedTab = trackedTabs.get(tab.id);
+  if (!trackedTab)
+    tab.$TST = new Tab(tab);
 }
 
 export function untrack(tabId) {
@@ -331,19 +383,6 @@ export function untrack(tabId) {
   const window = trackedWindows.get(tab.windowId);
   if (window)
     window.untrackTab(tabId);
-}
-
-export function untrackAll(windowId) {
-  if (windowId) {
-    const window = trackedWindows.get(windowId);
-    if (window)
-      window.destroy();
-  }
-  else {
-    trackedWindows.clear();
-    trackedTabs.clear();
-    trackedTabsByUniqueId.clear();
-  }
 }
 
 function isTracked(tabId) {
@@ -678,7 +717,7 @@ export const onUnpinned         = new EventListenerManager();
 export const onHidden           = new EventListenerManager();
 export const onShown            = new EventListenerManager();
 export const onParentTabUpdated = new EventListenerManager();
-export const onTabElementMoved  = new EventListenerManager();
+export const onTabInternallyMoved     = new EventListenerManager();
 export const onCollapsedStateChanging = new EventListenerManager();
 export const onCollapsedStateChanged  = new EventListenerManager();
 
@@ -852,27 +891,37 @@ browser.windows.onRemoved.addListener(windowId => {
 
 export function initTab(tab, options = {}) {
   log('initalize tab ', tab);
-  if (!tab.$TST)
-    new Tab(tab);
-  const tabElement = document.createElement('li');
-  tab.$TST.element = tabElement;
-  tabElement.$TST = tab.$TST;
-  tabElement.apiTab = tab;
-  setAttribute(tab, 'id', makeTabId(tab));
-  setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
-  setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
-  tabElement.classList.add('tab');
+  const trackedTab = trackedTabs.get(tab.id);
+  if (trackedTab)
+    tab = trackedTab;
+  else
+    tab.$TST = (trackedTab && trackedTab.$TST) || new Tab(tab);
+
+  if (mBindToElement) {
+    const tabElement = document.createElement('li');
+    tab.$TST.element = tabElement;
+    tabElement.$TST = tab.$TST;
+    tabElement.apiTab = tab;
+  }
+
   if (tab.active)
     addState(tab, Constants.kTAB_STATE_ACTIVE);
   addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
-  const labelContainer = document.createElement('span');
-  labelContainer.classList.add(Constants.kLABEL);
-  const label = labelContainer.appendChild(document.createElement('span'));
-  label.classList.add(`${Constants.kLABEL}-content`);
-  tabElement.appendChild(labelContainer);
+  if (mBindToElement) {
+    tab.$TST.element.classList.add('tab');
+    setAttribute(tab, 'id', makeTabId(tab));
+    setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
+    setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
 
-  onTabElementBuilt.dispatch(tab, options);
+    const labelContainer = document.createElement('span');
+    labelContainer.classList.add(Constants.kLABEL);
+    const label = labelContainer.appendChild(document.createElement('span'));
+    label.classList.add(`${Constants.kLABEL}-content`);
+    tab.$TST.element.appendChild(labelContainer);
+
+    onTabElementBuilt.dispatch(tab, options);
+  }
 
   if (options.existing)
     addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
@@ -882,21 +931,24 @@ export function initTab(tab, options = {}) {
   return tab;
 }
 
-export function buildElementsContainerFor(windowId) {
-  const container = document.createElement('ul');
-  container.dataset.windowId = windowId;
-  container.setAttribute('id', `window-${windowId}`);
-  container.classList.add('tabs');
+export function initWindow(windowId, container = null) {
+  const window = trackedWindows.get(windowId) || new Window(windowId);
 
-  initElementsContainer(container);
-
-  return container;
-}
-
-export function initElementsContainer(container) {
-  container.windowId = parseInt(container.dataset.windowId);
-  container.$TST = trackedWindows.get(container.windowId) || new Window(container.windowId);
-  container.$TST.element = container;
+  if (boundToElement()) {
+    if (!container) {
+      container = document.getElementById(`window-${windowId}`);
+      if (!container) {
+        container = document.createElement('ul');
+        allElementsContainer.appendChild(container);
+      }
+    }
+    container.dataset.windowId = windowId;
+    container.setAttribute('id', `window-${windowId}`);
+    container.classList.add('tabs');
+    container.$TST = window;
+    container.$TST.element = container;
+  }
+  return window;
 }
 
 export function clearAllElements() {
@@ -1049,8 +1101,9 @@ export function ensureLivingTab(tab) {
   if (!tab ||
       !tab.id ||
       !tab.$TST ||
-      !tab.$TST.element ||
-      !tab.$TST.element.parentNode ||
+      (mBindToElement &&
+       (!tab.$TST.element ||
+        !tab.$TST.element.parentNode)) ||
       !isTracked(tab.id) ||
       hasState(tab, Constants.kTAB_STATE_REMOVING))
     return null;

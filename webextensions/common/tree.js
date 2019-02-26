@@ -168,10 +168,10 @@ export async function attachTabTo(child, parent, options = {}) {
     log('attachTabTo: setting child information to ', parent.id);
     parent.$TST.childIds.push(child.id);
     parent.$TST.sortChildren();
-    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${parent.$TST.children.map(child => child.$TST.element.id).join('|')}|`);
+    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
 
     log('attachTabTo: setting parent information to ', child.id);
-    Tabs.setAttribute(child, Constants.kPARENT, parent.$TST.element.id);
+    Tabs.setAttribute(child, Constants.kPARENT, parent.id);
     child.$TST.parent = parent.id;
     child.$TST.ancestors = Tabs.getAncestorTabs(child, { force: true });
 
@@ -1180,10 +1180,10 @@ export async function moveTabs(tabs, options = {}) {
       let window;
       const prepareContainer = () => {
         window = Tabs.trackedWindows.get(destinationWindowId);
-        if (!window || !window.element) {
-          const container = Tabs.buildElementsContainerFor(destinationWindowId);
-          Tabs.allElementsContainer.appendChild(container);
-          window = container.$TST;
+        if (!window ||
+            (Tabs.boundToElement() &&
+             !window.element)) {
+          window = Tabs.initWindow(destinationWindowId);
         }
         if (isAcrossWindows) {
           window.toBeOpenedTabsWithPositions += tabs.length;

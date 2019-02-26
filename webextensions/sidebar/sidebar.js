@@ -73,6 +73,8 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
   configs.$loaded.then(applyUserStyleRules);
 }
 
+Tabs.bindToElement();
+
 UserOperationBlocker.block({ throbber: true });
 
 export async function init() {
@@ -352,7 +354,11 @@ function updateContextualIdentitiesSelector() {
 export async function rebuildAll(cache) {
   const tabs = await browser.tabs.query({ currentWindow: true });
   Tabs.clearAllElements();
-  Tabs.untrackAll(tabs[0].windowId);
+
+  const trackedWindow = Tabs.trackedWindows.get(tabs[0].windowId);
+  if (!trackedWindow)
+    Tabs.initWindow(tabs[0].windowId);
+
   for (const tab of tabs) {
     Tabs.track(tab);
   }
@@ -365,14 +371,14 @@ export async function rebuildAll(cache) {
     }
   }
 
-  const container = Tabs.buildElementsContainerFor(mTargetWindow);
-  for (const tab of tabs) {
+  const window = Tabs.initWindow(mTargetWindow);
+  for (let tab of tabs) {
     TabIdFixer.fixTab(tab);
-    Tabs.initTab(tab, { existing: true, inRemote: true })
-    container.appendChild(tab.$TST.element);
+    tab = Tabs.initTab(tab, { existing: true, inRemote: true })
+    window.element.appendChild(tab.$TST.element);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
-  Tabs.allElementsContainer.appendChild(container);
+  Tabs.allElementsContainer.appendChild(window.element);
   MetricsData.add('rebuildAll (from scratch)');
   return false;
 }

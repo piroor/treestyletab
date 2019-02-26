@@ -115,14 +115,15 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         continue;
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
-      window.element.insertBefore(tab.$TST.element, referenceTab.$TST.element);
+      if (Tabs.boundToElement())
+        window.element.insertBefore(tab.$TST.element, referenceTab.$TST.element);
       if (referenceTab.index > tab.index)
         tab.index = referenceTab.index - 1;
       else
         tab.index = referenceTab.index;
       Tabs.track(tab);
       movedTabsCount++;
-      Tabs.onTabElementMoved.dispatch(tab, {
+      Tabs.onTabInternallyMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab,
         broadcasted: !!options.broadcasted
@@ -134,8 +135,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyBefore:\n'+(!configs.debug ? '' :
-        Array.from(window.element.childNodes)
-          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab) ? '[MOVED]' : ''))
+        Array.from(window.getOrderedTabs())
+          .map(tab => ' - '+tab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')));
     }
     if (!options.broadcasted) {
@@ -232,7 +233,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         continue;
       window.internalMovingTabs.add(tab.id);
       window.alreadyMovedTabs.add(tab.id);
-      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
+      if (Tabs.boundToElement())
+        window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
       if (nextTab) {
         if (nextTab.index > tab.index)
           tab.index = nextTab.index - 1;
@@ -244,7 +246,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       }
       Tabs.track(tab);
       movedTabsCount++;
-      Tabs.onTabElementMoved.dispatch(tab, {
+      Tabs.onTabInternallyMoved.dispatch(tab, {
         oldPreviousTab,
         oldNextTab,
         broadcasted: !!options.broadcasted
@@ -256,8 +258,8 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     }
     else {
       log('Tab nodes rearranged by moveTabsInternallyAfter:\n'+(!configs.debug ? '' :
-        Array.from(window.element.childNodes)
-          .map(tab => ' - '+tab.apiTab.index+': '+tab.id+(tabs.includes(tab.apiTab) ? '[MOVED]' : ''))
+        Array.from(window.getOrderedTabs())
+          .map(tab => ' - '+tab.index+': '+tab.id+(tabs.includes(tab) ? '[MOVED]' : ''))
           .join('\n')));
     }
     if (!options.broadcasted) {
@@ -333,35 +335,8 @@ async function syncToNativeTabsInternal(windowId) {
 
   // Tabs may be removed while waiting.
   const internalOrder   = Tabs.trackedWindows.get(windowId).order;
-  const elementsOrder   = Array.from(window.element.childNodes, tabElement => tabElement.apiTab.id);
   const nativeTabsOrder = (await browser.tabs.query({ windowId })).map(tab => tab.id);
-  log(`syncToNativeTabs(${windowId}): rearrange `, { internalOrder:internalOrder.join(','), elementsOrder:elementsOrder.join(','), nativeTabsOrder:nativeTabsOrder.join(',') });
-
-  {
-    log(`syncToNativeTabs(${windowId}): step0, internalOrder => elementsOrder`);
-    const moveOperations = (new SequenceMatcher(elementsOrder, internalOrder)).operations();
-    for (const operation of moveOperations) {
-      const [tag, fromStart, fromEnd, toStart, toEnd] = operation;
-      log(`syncToNativeTabs(${windowId}): step0, operation `, { tag, fromStart, fromEnd, toStart, toEnd });
-      switch (tag) {
-        case 'equal':
-        case 'delete':
-          break;
-
-        case 'insert':
-        case 'replace':
-          const moveTabIds = internalOrder.slice(toStart, toEnd);
-          const referenceTab = fromStart < elementsOrder.length ? Tabs.trackedTabs.get(elementsOrder[fromStart]) : null;
-          for (const id of moveTabIds) {
-            const tab = Tabs.trackedTabs.get(id);
-            if (tab)
-              tab.$TST.element.parentNode.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element);
-          }
-          break;
-      }
-    }
-    log(`syncToNativeTabs(${windowId}): step0, rearrange completed. `, Array.from(window.element.childNodes, tab => tab.apiTab.id));
-  }
+  log(`syncToNativeTabs(${windowId}): rearrange `, { internalOrder:internalOrder.join(','), nativeTabsOrder:nativeTabsOrder.join(',') });
 
   log(`syncToNativeTabs(${windowId}): step1, internalOrder => nativeTabsOrder`);
   let tabIdsForUpdatedIndices = Array.from(nativeTabsOrder);
@@ -419,10 +394,6 @@ async function syncToNativeTabsInternal(windowId) {
   log(`syncToNativeTabs(${windowId}): step1, rearrange completed.`);
 
   if (movedTabs.size > 0) {
-    log(`Tabs rearranged by syncToNativeTabs(${windowId}):\n`+(!configs.debug ? '' :
-      Array.from(window.element.childNodes, tab => ' - '+tab.apiTab.index+': '+tab.id+(movedTabs.has(tab.apiTab.id) ? '[MOVED]' : '')+' '+tab.apiTab.title)
-        .join('\n')));
-
     // tabs.onMoved produced by this operation can break the order of tabs
     // in the sidebar, so we need to synchronize complete order of tabs after
     // all.

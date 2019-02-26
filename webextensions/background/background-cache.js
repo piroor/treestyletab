@@ -14,7 +14,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
-import * as DOMCache from '/common/dom-cache.js';
+import * as JSONCache from '/common/json-cache.js';
 import * as MetricsData from '/common/metrics-data.js';
 
 function log(...args) {
@@ -43,20 +43,20 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const
   let [actualSignature, cache] = await Promise.all([
-    DOMCache.getWindowSignature(tabs),
+    JSONCache.getWindowSignature(tabs),
     getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
   ]);
   let cachedSignature = cache && cache.signature;
-  log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner ${owner}`, {
-    cachedSignature, cache
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner `, {
+    owner, cachedSignature, cache
   });
   if (cache &&
       cache.tabs &&
       cachedSignature &&
-      cachedSignature != DOMCache.signatureFromTabsCache(cache.tabs)) {
+      cachedSignature.join('\n') != JSONCache.signatureFromTabsCache(cache.tabs).join('\n')) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: cache is broken.`, {
       signature: cachedSignature,
-      cache:     DOMCache.signatureFromTabsCache(cache.tabs)
+      cache:     JSONCache.signatureFromTabsCache(cache.tabs)
     });
     cache = cachedSignature = null;
     clearWindowCache(windowId);
@@ -65,10 +65,10 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
       cache &&
       cache.tabs &&
       cachedSignature) {
-    cache.tabs      = DOMCache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
-    cachedSignature = DOMCache.trimSignature(cachedSignature, cache.pinnedTabsCount);
+    cache.tabs      = JSONCache.trimTabsCache(cache.tabs, cache.pinnedTabsCount);
+    cachedSignature = JSONCache.trimSignature(cachedSignature, cache.pinnedTabsCount);
   }
-  const signatureMatched = DOMCache.matcheSignatures({
+  const signatureMatched = JSONCache.matcheSignatures({
     actual: actualSignature,
     cached: cachedSignature
   });
@@ -83,28 +83,11 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     MetricsData.add('restoreWindowFromEffectiveWindowCache fail');
     return false;
   }
-  cache.offset = actualSignature.replace(cachedSignature, '').trim().split('\n').filter(part => !!part).length;
+  cache.offset = actualSignature.length - cachedSignature.length;
 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restore from cache`);
 
-  let insertionPoint  = options.insertionPoint;
-  if (!insertionPoint) {
-    insertionPoint = document.createRange();
-    const window = Tabs.trackedWindows.get(windowId);
-    if (window)
-      insertionPoint.selectNode(window.element);
-    else
-      insertionPoint.selectNodeContents(Tabs.allElementsContainer);
-    insertionPoint.collapse(false);
-  }
-  const restored = restoreTabsFromCache(windowId, {
-    insertionPoint,
-    cache,
-    tabs
-  });
-  if (!options.insertionPoint)
-    insertionPoint.detach();
-
+  const restored = restoreTabsFromCache(windowId, { cache, tabs });
   if (restored)
     MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} success`);
   else
@@ -118,13 +101,12 @@ function restoreTabsFromCache(windowId, params = {}) {
       params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  return DOMCache.restoreTabsFromCacheInternal({
-    windowId:       windowId,
-    tabs:           params.tabs,
-    offset:         params.cache.offset || 0,
-    cache:          params.cache.tabs,
-    insertionPoint: params.insertionPoint,
-    shouldUpdate:   true
+  return JSONCache.restoreTabsFromCacheInternal({
+    windowId:     windowId,
+    tabs:         params.tabs,
+    offset:       params.cache.offset || 0,
+    cache:        params.cache.tabs,
+    shouldUpdate: true
   }).length > 0;
 }
 
@@ -227,7 +209,7 @@ async function cacheTree(windowId) {
   if (!window ||
       !configs.useCachedTree)
     return;
-  const signature = await DOMCache.getWindowSignature(windowId);
+  const signature = await JSONCache.getWindowSignature(windowId);
   if (window.allTabsRestored)
     return;
   //log('save cache for ', windowId);
@@ -236,8 +218,8 @@ async function cacheTree(windowId) {
     return;
   log('cacheTree for window ', windowId, { stack: new Error().stack });
   updateWindowCache(window.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
-    version: Constants.kBACKGROUND_CONTENTS_VERSION,
-    tabs:    window.element.outerHTML,
+    version:         Constants.kBACKGROUND_CONTENTS_VERSION,
+    tabs:            Tabs.trackedWindows.get(windowId).export(),
     pinnedTabsCount: Tabs.getPinnedTabs(windowId).length,
     signature
   });

@@ -489,7 +489,7 @@ Tabs.onCreated.addListener((tab, _info) => {
   Tabs.addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 });
 
-Tabs.onTabElementMoved.addListener((_tab, info) => {
+Tabs.onTabInternallyMoved.addListener((_tab, info) => {
   if (!info.broadcasted) {
     // Tab element movement triggered by sidebar itself can break order of
     // tabs synchronized from the background, so for safetyl we trigger

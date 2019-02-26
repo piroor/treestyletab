@@ -287,11 +287,13 @@ function updateMultipleHighlighted(windowId) {
   });
   if (highlightedTabs.length > 1) {
     window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED] = true;
-    window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    if (Tabs.boundToElement())
+      window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
   }
   else {
     delete window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED];
-    window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+    if (Tabs.boundToElement())
+      window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
   }
 }
 
