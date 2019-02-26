@@ -194,11 +194,15 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if (options.forceApply ||
       'highlighted' in newState) {
-    if (newState.highlighted)
+    const highlightedTabs = Tabs.highlightedTabsForWindow.get(tab.windowId);
+    if (newState.highlighted) {
+      highlightedTabs.add(tab);
       Tabs.addState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
-    else
+    }
+    else {
+      highlightedTabs.delete(tab);
       Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
-
+    }
     updateMultipleHighlighted(tab.windowId);
   }
 
@@ -232,6 +236,8 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   //const startAt = Date.now();
 
+  const allHighlightedTabs = Tabs.highlightedTabsForWindow.get(highlightInfo.windowId);
+
   const tabIds = highlightInfo.tabIds; // new Set(highlightInfo.tabIds);
   const unhighlightedTabs = Tabs.queryAll({
     windowId:    highlightInfo.windowId,
@@ -250,9 +256,11 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   //log('updateTabsHighlighted ', { highlightedTabs, unhighlightedTabs});
   for (const tab of unhighlightedTabs) {
+    allHighlightedTabs.delete(tab);
     updateTabHighlighted(tab, false);
   }
   for (const tab of highlightedTabs) {
+    allHighlightedTabs.add(tab);
     updateTabHighlighted(tab, true);
   }
   if (unhighlightedTabs.length > 0 ||
@@ -277,24 +285,14 @@ async function updateTabHighlighted(tab, highlighted) {
 }
 
 function updateMultipleHighlighted(windowId) {
-  const window = Tabs.trackedWindows.get(windowId);
-  if (!window)
+  const window             = Tabs.trackedWindows.get(windowId);
+  const allHighlightedTabs = Tabs.highlightedTabsForWindow.get(windowId);
+  if (!Tabs.boundToElement() || !window || !allHighlightedTabs)
     return;
-  const highlightedTabs = Tabs.queryAll({
-    windowId,
-    highlighted: true,
-    living:      true
-  });
-  if (highlightedTabs.length > 1) {
-    window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED] = true;
-    if (Tabs.boundToElement())
-      window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-  }
-  else {
-    delete window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED];
-    if (Tabs.boundToElement())
-      window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
-  }
+  if (allHighlightedTabs.size > 1)
+    window.element.classList.add(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
+  else
+    window.element.classList.remove(Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED);
 }
 
 export function updateParentTab(parent) {

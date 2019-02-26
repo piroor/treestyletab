@@ -1396,18 +1396,12 @@ export function getSelectedTabs(windowId) {
     states:   [Constants.kTAB_STATE_SELECTED, true],
     ordered:  true
   });
-  const window = trackedWindows.get(windowId);
-  if (!window ||
-      !window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED])
+  const highlightedTabs = highlightedTabsForWindow.get(windowId);
+  if (!highlightedTabs ||
+      highlightedTabs.size < 2)
     return selectedTabs;
 
-  const highlightedTabs = queryAll({
-    windowId,
-    living:      true,
-    highlighted: true,
-    ordered:     true
-  });
-  return sort(Array.from(new Set(selectedTabs.concat(highlightedTabs))));
+  return sort(Array.from(new Set(...selectedTabs, ...highlightedTabs)));
 }
 
 
@@ -1689,8 +1683,8 @@ export function isMultihighlighted(tab) {
     return false;
   if (tab instanceof Element)
     tab = tab.apiTab;
-  const window = trackedWindows.get(tab.windowId);
-  return !!(window && window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED]);
+  const highlightedTabs = highlightedTabsForWindow.get(tab.windowId);
+  return !!(highlightedTabs && highlightedTabs.size > 1);
 }
 
 export function isLocked(_aTab) {
