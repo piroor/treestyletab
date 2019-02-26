@@ -401,7 +401,7 @@ async function onShown(info, contextTab) {
 
   updateItem('context_selectAllTabs', {
     visible: emulate && contextTab,
-    enabled: contextTab && Tabs.getSelectedTabs(windowId, { element: false }).length != Tabs.getVisibleTabs(windowId, { element: false }).length,
+    enabled: contextTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length,
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_bookmarkTab', {
@@ -495,7 +495,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_selectAllTabs', {
     visible: emulate && !contextTab,
-    enabled: !contextTab && Tabs.getSelectedTabs(windowId, { element: false }).length != Tabs.getVisibleTabs(windowId, { element: false }).length
+    enabled: !contextTab && Tabs.getSelectedTabs(windowId).length != Tabs.getVisibleTabs(windowId).length
   }) && modifiedItemsCount++;
   updateItem('noContextTab:context_undoCloseTab', {
     visible: emulate && !contextTab
@@ -527,7 +527,7 @@ async function onClick(info, contextTab) {
   const windowId  = contextTab && contextTab.windowId || window.id;
   const activeTab = Tabs.activeTabForWindow.get(windowId);
 
-  let multiselectedTabs = Tabs.getSelectedTabs(windowId, { element: false });
+  let multiselectedTabs = Tabs.getSelectedTabs(windowId);
   const isMultiselected = contextTab ? Tabs.isMultiselected(contextTab) : multiselectedTabs.length > 1;
   if (!isMultiselected)
     multiselectedTabs = null;
@@ -622,7 +622,7 @@ async function onClick(info, contextTab) {
       Commands.bookmarkTab(contextTab || activeTab);
       break;
     case 'context_bookmarkAllTabs':
-      Commands.bookmarkTabs(Tabs.getTabs(contextTab.windowId, { element: false }));
+      Commands.bookmarkTabs(Tabs.getTabs(contextTab.windowId));
       break;
     case 'context_reloadAllTabs': {
       const tabs = await browser.tabs.query({ windowId }) ;

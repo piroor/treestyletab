@@ -351,7 +351,7 @@ async function onNewTabTracked(tab) {
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
-  const activeTab            = Tabs.getActiveTab(window.id, { element: false });
+  const activeTab            = Tabs.getActiveTab(window.id);
 
   Tabs.onBeforeCreate.dispatch(tab, {
     positionedBySelf,

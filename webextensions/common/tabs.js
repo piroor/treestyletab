@@ -935,21 +935,11 @@ export function getTabByUniqueId(id) {
 
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
-export function getActiveTab(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  const tab = ensureLivingTab(activeTabForWindow.get(windowId));
-  if (options.element)
-    return tab && tab.$TST.element;
-  return tab;
+export function getActiveTab(windowId) {
+  return ensureLivingTab(activeTabForWindow.get(windowId));
 }
-export function getActiveTabs(options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  const tabs = Array.from(activeTabForWindow.values(), ensureLivingTab);
-  if (options.element)
-    return tabs.map(tab => tab && tab.$TST.element);
-  return tabs;
+export function getActiveTabs() {
+  return Array.from(activeTabForWindow.values(), ensureLivingTab);
 }
 
 export function getNextTab(tab, options = {}) {
@@ -1115,14 +1105,9 @@ function assertInitializedTab(tab) {
   return true;
 }
 
-export function getOpenerTab(tab, options = {}) {
+export function getOpenerTab(tab) {
   if (!tab)
     return null;
-  if (typeof options != 'object')
-    options = {};
-  options.element = tab instanceof Element || options.element;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   if (!ensureLivingTab(tab) ||
       !tab ||
       !tab.openerTabId ||
@@ -1131,8 +1116,7 @@ export function getOpenerTab(tab, options = {}) {
   const opener = query({
     windowId: tab.windowId,
     id:       tab.openerTabId,
-    living:   true,
-    element:  options.element
+    living:   true
   });
   return opener;
 }
@@ -1328,20 +1312,6 @@ export function getLastChildTab(parent, options = {}) {
   return child;
 }
 
-/*
-function getChildTabIndex(child, parent, options = {}) {
-  if (!ensureLivingTab(child) ||
-      !ensureLivingTab(parent))
-    return -1;
-  assertValidHint(child);
-  assertValidHint(parent);
-  if (!assertInitializedTab(parent))
-    return -1;
-  const childIds = parent.$TST.childIds;
-  return childIds.indexOf(child.apiTab.id);
-}
-*/
-
 export function getDescendantTabs(root, options = {}) {
   if (!ensureLivingTab(root))
     return [];
@@ -1381,222 +1351,120 @@ export function getAllTabs(windowId = null) {
   });
 }
 
-export function getTabs(windowId, options = {}) { // only visible, including collapsed and pinned
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getTabs(windowId) { // only visible, including collapsed and pinned
+  return queryAll({
     windowId,
     controllable: true,
-    ordered:      true,
-    element:      true
-  }, options));
+    ordered:      true
+  });
 }
 
-export function getNormalTabs(windowId, options = {}) { // only visible, including collapsed, not pinned
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getNormalTabs(windowId) { // only visible, including collapsed, not pinned
+  return queryAll({
     windowId,
     normal:   true,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-export function getVisibleTabs(windowId, options = {}) { // visible, not-collapsed, not-hidden
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getVisibleTabs(windowId) { // visible, not-collapsed, not-hidden
+  return queryAll({
     windowId,
     visible:  true,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-export function getPinnedTabs(windowId, options = {}) { // visible, pinned
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getPinnedTabs(windowId) { // visible, pinned
+  return queryAll({
     windowId,
     pinned:   true,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
 
-export function getUnpinnedTabs(windowId, options = {}) { // visible, not pinned
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getUnpinnedTabs(windowId) { // visible, not pinned
+  return queryAll({
     windowId,
     living:   true,
     pinned:   false,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-/*
-function getAllRootTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
-    windowId,
-    living:     true,
-    ordered:    true,
-    hasParent:  false
-    element:    true
-  }, options));
-}
-*/
-
-export function getRootTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getRootTabs(windowId) {
+  return queryAll({
     windowId,
     controllable: true,
     ordered:      true,
-    hasParent:    false,
-    element:      true
-  }, options));
+    hasParent:    false
+  });
 }
-
-/*
-function getVisibleRootTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
-    windowId,
-    visible:    true,
-    ordered:    true,
-    hasParent:  false,
-    element:    true
-  }, options));
-}
-
-function getVisibleLoadingTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
-    windowId,
-    visible:  true,
-    status:   'loading',
-    ordered:  true,
-    element:  true
-  }, options));
-}
-*/
 
 export function collectRootTabs(tabs) {
   return tabs.filter(tab => {
     if (!ensureLivingTab(tab))
       return false;
-    const element = tab instanceof Element;
-    if (element)
-      tab = tab.apiTab;
     const parent = tab.$TST.parent;
-    return !parent || !tabs.includes(element ? parent.$TST.element : parent);
+    return !parent || !tabs.includes(parent);
   });
 }
 
-/*
-function getIndentedTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
-    windowId,
-    controllable: true,
-    hasParent:    true,
-    ordered:      true,
-    element:      true
-  }, options));
-}
-
-function getVisibleIndentedTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
-    windowId,
-    visible:    true,
-    hasParent:  true,
-    ordered:    true,
-    element:    true
-  }, options));
-}
-*/
-
-export function getDraggingTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getDraggingTabs(windowId) {
+  return queryAll({
     windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DRAGGING, true],
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-export function getRemovingTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getRemovingTabs(windowId) {
+  return queryAll({
     windowId,
     states:   [Constants.kTAB_STATE_REMOVING, true],
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-export function getDuplicatingTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getDuplicatingTabs(windowId) {
+  return queryAll({
     windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DUPLICATING, true],
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-export function getHighlightedTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  return queryAll(Object.assign({
+export function getHighlightedTabs(windowId) {
+  return queryAll({
     windowId,
     living:      true,
     highlighted: true,
     ordered:     true,
     element:     true
-  }, options));
+  });
 }
 
-export function getSelectedTabs(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  const selectedTabs = queryAll(Object.assign({
+export function getSelectedTabs(windowId) {
+  const selectedTabs = queryAll({
     windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_SELECTED, true],
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
   const window = trackedWindows.get(windowId);
   if (!window ||
       !window[Constants.kTABBAR_STATE_MULTIPLE_HIGHLIGHTED])
     return selectedTabs;
 
-  const highlightedTabs = queryAll(Object.assign({
+  const highlightedTabs = queryAll({
     windowId,
     living:      true,
     highlighted: true,
-    ordered:     true,
-    element:     true
-  }, options));
+    ordered:     true
+  });
   return sort(Array.from(new Set(selectedTabs.concat(highlightedTabs))));
 }
 
@@ -1604,26 +1472,20 @@ export function getSelectedTabs(windowId, options = {}) {
 
 // misc.
 
-export function getFirstNormalTab(windowId, options = {}) { // visible, not-collapsed, not-pinned
-  if (typeof options != 'object')
-    options = {};
-  return query(Object.assign({
+export function getFirstNormalTab(windowId) { // visible, not-collapsed, not-pinned
+  return query({
     windowId,
     normal:   true,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
-export function getFirstVisibleTab(windowId, options = {}) { // visible, not-collapsed, not-hidden
-  if (typeof options != 'object')
-    options = {};
-  return query(Object.assign({
+export function getFirstVisibleTab(windowId) { // visible, not-collapsed, not-hidden
+  return query({
     windowId,
     visible:  true,
-    ordered:  true,
-    element:  true
-  }, options));
+    ordered:  true
+  });
 }
 
 export function getNextVisibleTab(tab, options = {}) { // visible, not-collapsed
@@ -1661,22 +1523,6 @@ export function getPreviousVisibleTab(tab, options = {}) { // visible, not-colla
   }, options));
 }
 
-/*
-function getVisibleIndex(tab, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  if (!ensureLivingTab(tab))
-    return -1;
-  assertValidHint(tab);
-  return queryAll(Object.assign({
-    windowId,
-    visible:  true,
-    index:    (index => index > tab.apiTab.index),
-    ordered:  true
-  ], options)).length;
-}
-*/
-
 export async function doAndGetNewTabs(asyncTask, windowId) {
   const tabsQueryOptions = {
     windowType: 'normal'
@@ -1712,40 +1558,24 @@ export function getNextActiveTab(tab, options = {}) { // if the current tab is c
 }
 
 
-export function getGroupTabForOpener(opener, options = {}) {
+export function getGroupTabForOpener(opener) {
   if (!opener)
     return null;
-  if (typeof options != 'object')
-    options = {};
-  options.element = opener instanceof Element || options.element;
-  if (opener instanceof Element)
-    opener = opener.apiTab;
   return query({
     windowId:   opener.windowId,
     living:     true,
     attributes: [
       Constants.kCURRENT_URI,
       new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
-    ],
-    element:    options.element
+    ]
   });
 }
 
-export function getOpenerFromGroupTab(groupTab, options = {}) {
+export function getOpenerFromGroupTab(groupTab) {
   if (!isGroupTab(groupTab))
     return null;
-  if (typeof options != 'object')
-    options = {};
-  options.element = groupTab instanceof Element || options.element;
-  if (groupTab instanceof Element)
-    groupTab = groupTab.apiTab;
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
-  const tab = matchedOpenerTabId && trackedTabs.get(matchedOpenerTabId[1]);
-  if (!tab)
-    return null;
-  if (options.element)
-    return tab.$TST.element;
-  return tab;
+  return matchedOpenerTabId && trackedTabs.get(matchedOpenerTabId[1]);
 }
 
 
@@ -1942,8 +1772,8 @@ export function getMaxTreeLevel(windowId, options = {}) {
   if (typeof options != 'object')
     options = {};
   const tabs = options.onlyVisible ?
-    getVisibleTabs(windowId, { ordered: false, element: false }) :
-    getTabs(windowId, { ordered: false, element: false }) ;
+    getVisibleTabs(windowId, { ordered: false }) :
+    getTabs(windowId, { ordered: false }) ;
   let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.$TST.attributes[Constants.kLEVEL] || 0)));
   if (configs.maxTreeLevel > -1)
     maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
@@ -2206,7 +2036,7 @@ function snapshotTree(targetTab, tabs) {
     const previous = getPreviousNormalTab(tab);
     item.previous = previous && previous.id;
   }
-  const activeTab = getActiveTab(targetTab.windowId, { element: false });
+  const activeTab = getActiveTab(targetTab.windowId);
   return {
     target:   snapshotById[targetTab.id],
     active:   activeTab && snapshotById[activeTab.id],

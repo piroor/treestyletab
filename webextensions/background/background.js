@@ -107,7 +107,7 @@ export async function init() {
   }
 
   Tabs.getAllTabs(null).forEach(updateSubtreeCollapsed);
-  for (const tab of Tabs.getActiveTabs({ element: false })) {
+  for (const tab of Tabs.getActiveTabs()) {
     for (const ancestor of Tabs.getAncestorTabs(tab)) {
       Tree.collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,

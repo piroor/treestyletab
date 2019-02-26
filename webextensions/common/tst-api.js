@@ -526,7 +526,7 @@ export async function getTargetTabs(message, sender) {
         message.tabs == '*')
       return Tabs.getAllTabs(message.window || message.windowId);
     else
-      return Tabs.getRootTabs(message.window || message.windowId, { element: false });
+      return Tabs.getRootTabs(message.window || message.windowId);
   }
   if (message.tab == '*' ||
       message.tabs == '*') {

@@ -181,7 +181,7 @@ function getDragDataFromOneTab(tab, options = {}) {
 
 function getDraggedTabsFromOneTab(tab) {
   if (Tabs.isSelected(tab))
-    return Tabs.getSelectedTabs(tab.windowId, { element: false });
+    return Tabs.getSelectedTabs(tab.windowId);
   return [tab].concat(Tabs.getDescendantTabs(tab));
 }
 
@@ -235,7 +235,7 @@ function getDropAction(event) {
     return Tabs.getAllTabs(Tabs.getWindow());
   });
   info.defineGetter('firstTargetTab', () => {
-    return Tabs.getFirstNormalTab(Tabs.getWindow(), { element: false }) || info.targetTabs[0];
+    return Tabs.getFirstNormalTab(Tabs.getWindow()) || info.targetTabs[0];
   });
   info.defineGetter('lastTargetTab', () => {
     return info.targetTabs[info.targetTabs.length - 1];

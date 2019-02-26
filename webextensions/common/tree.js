@@ -436,7 +436,7 @@ export function detachAllChildren(tab, options = {}) {
 
 // returns moved (or not)
 export async function behaveAutoAttachedTab(tab, options = {}) {
-  const baseTab = options.baseTab || Tabs.getActiveTab(Tabs.getWindow() || tab.windowId, { element: false });
+  const baseTab = options.baseTab || Tabs.getActiveTab(Tabs.getWindow() || tab.windowId);
   log('behaveAutoAttachedTab ', tab.id, baseTab.id, options);
   if (Tabs.isPinned(baseTab)) {
     if (!Tabs.isPinned(tab))
@@ -895,7 +895,7 @@ async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = 
   await tab.closedWhileActive;
   log('tryMoveFocusFromClosingActiveTabOnFocusRedirected: tabs.onActivated is fired');
 
-  const autoActiveTab = Tabs.getActiveTab(tab.windowId, { element: false });
+  const autoActiveTab = Tabs.getActiveTab(tab.windowId);
   if (autoActiveTab != nextTab &&
       (autoActiveTab != previousTab ||
        (Tabs.getNextTab(autoActiveTab) &&

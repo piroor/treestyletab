@@ -62,8 +62,8 @@ const mIsInSelectionSession   = new Map();
 
 export async function updateSelectionByTabClick(tab, event) {
   const ctrlKeyPressed     = event.ctrlKey || (event.metaKey && /^Mac/i.test(navigator.platform));
-  const activeTab          = Tabs.getActiveTab(tab.windowId, { element: false });
-  const highlightedTabIds  = new Set(Tabs.getHighlightedTabs(tab.windowId, { element: false }).map(tab => tab.id));
+  const activeTab          = Tabs.getActiveTab(tab.windowId);
+  const highlightedTabIds  = new Set(Tabs.getHighlightedTabs(tab.windowId).map(tab => tab.id));
   const inSelectionSession = mIsInSelectionSession.get(tab.windowId);
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
@@ -75,7 +75,7 @@ export async function updateSelectionByTabClick(tab, event) {
 
     try {
       if (!ctrlKeyPressed) {
-        const alreadySelectedTabs = Tabs.getSelectedTabs(tab.windowId, { element: false });
+        const alreadySelectedTabs = Tabs.getSelectedTabs(tab.windowId);
         log('clear old selection by shift-click: ', alreadySelectedTabs);
         for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.includes(alreadySelectedTab))

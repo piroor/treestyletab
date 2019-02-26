@@ -339,7 +339,7 @@ export const onClick = (info, tab) => {
   log('context menu item clicked: ', info, tab);
 
   const contextTab = Tabs.trackedTabs.get(tab.id);
-  const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab, { element: false }) : [];
+  const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
     case 'reloadTree':
@@ -388,13 +388,13 @@ export const onClick = (info, tab) => {
         Commands.collapseTree(contextTab);
       break;
     case 'pinnedTab': {
-      const tabs = Tabs.getPinnedTabs(contextTab.windowId, { element: false });
+      const tabs = Tabs.getPinnedTabs(contextTab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].id, { active: true })
           .catch(ApiTabs.handleMissingTabError);
     }; break;
     case 'unpinnedTab': {
-      const tabs = Tabs.getUnpinnedTabs(tab.windowId, { element: false });
+      const tabs = Tabs.getUnpinnedTabs(tab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].id, { active: true })
           .catch(ApiTabs.handleMissingTabError);

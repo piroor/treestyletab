@@ -63,7 +63,7 @@ export function init() {
 
 export function reposition(options = {}) {
   //log('reposition');
-  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow, { element: false });
+  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
   if (pinnedTabs.length == 0) {
     reset();
     document.documentElement.classList.remove('have-pinned-tabs');

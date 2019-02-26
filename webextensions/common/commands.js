@@ -70,7 +70,7 @@ export async function closeDescendants(rootTab) {
 
 export async function closeOthers(rootTab) {
   const exceptionTabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
-  const tabs          = Tabs.getNormalTabs(rootTab.windowId, { element: false }); // except pinned or hidden tabs
+  const tabs          = Tabs.getNormalTabs(rootTab.windowId); // except pinned or hidden tabs
   tabs.reverse(); // close bottom to top!
   const closeTabs = tabs.filter(tab => !exceptionTabs.includes(tab));
   const canceled = (await onTabsClosing.dispatch(closeTabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
@@ -109,7 +109,7 @@ export function expandTree(rootTab) {
 }
 
 export function expandAll(windowId) {
-  const tabs = Tabs.getNormalTabs(windowId, { element: false });
+  const tabs = Tabs.getNormalTabs(windowId);
   for (const tab of tabs) {
     expandTree(tab);
   }
@@ -558,7 +558,7 @@ export async function duplicateTab(sourceTab, options = {}) {
     https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
   */
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTab);
-  const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab.windowId, { element: false }) : [sourceTab];
+  const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab.windowId) : [sourceTab];
   log('source tabs: ', sourceTabs);
   const duplicatedTabs = await Tree.moveTabs(sourceTabs, {
     duplicate:           true,
@@ -575,14 +575,14 @@ export async function duplicateTab(sourceTab, options = {}) {
 
 export async function moveTabToStart(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab.windowId, { element: false }) : [tab].concat(Tabs.getDescendantTabs(tab)));
+  return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(Tabs.getDescendantTabs(tab)));
 }
 
 export async function moveTabsToStart(movedTabs) {
   if (movedTabs.length === 0)
     return;
   const tab       = movedTabs[0];
-  const allTabs   = tab.pinned ? Tabs.getPinnedTabs(tab.windowId, { element: false }) : Tabs.getUnpinnedTabs(tab.windowId, { element: false });
+  const allTabs   = tab.pinned ? Tabs.getPinnedTabs(tab.windowId) : Tabs.getUnpinnedTabs(tab.windowId);
   const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
   if (otherTabs.length > 0)
     await moveTabsWithStructure(movedTabs, {
@@ -593,14 +593,14 @@ export async function moveTabsToStart(movedTabs) {
 
 export async function moveTabToEnd(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab.windowId, { element: false }) : [tab].concat(Tabs.getDescendantTabs(tab)));
+  return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(Tabs.getDescendantTabs(tab)));
 }
 
 export async function moveTabsToEnd(movedTabs) {
   if (movedTabs.length === 0)
     return;
   const tab       = movedTabs[0];
-  const allTabs   = tab.pinned ? Tabs.getPinnedTabs(tab.windowId, { element: false }) : Tabs.getUnpinnedTabs(tab.windowId, { element: false });
+  const allTabs   = tab.pinned ? Tabs.getPinnedTabs(tab.windowId) : Tabs.getUnpinnedTabs(tab.windowId);
   const otherTabs = allTabs.filter(tab => !movedTabs.includes(tab));
   if (otherTabs.length > 0)
     await moveTabsWithStructure(movedTabs, {
@@ -611,7 +611,7 @@ export async function moveTabsToEnd(movedTabs) {
 
 export async function openTabInWindow(tab, options = {}) {
   if (options.multiselected !== false && Tabs.isMultiselected(tab)) {
-    return openTabsInWindow(Tabs.getSelectedTabs(tab.windowId, { element: false }));
+    return openTabsInWindow(Tabs.getSelectedTabs(tab.windowId));
   }
   else {
     const window = await browser.windows.create({
@@ -629,7 +629,7 @@ export async function openTabsInWindow(tabs) {
 
 export async function bookmarkTab(tab, options = {}) {
   if (options.multiselected !== false && Tabs.isMultiselected(tab))
-    return bookmarkTabs(Tabs.getSelectedTabs(tab.windowId, { element: false }));
+    return bookmarkTabs(Tabs.getSelectedTabs(tab.windowId));
 
   if (SidebarStatus.isOpen(tab.windowId)) {
     browser.runtime.sendMessage({
@@ -682,7 +682,7 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
   }
   else {
     const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTabOrTabs);
-    sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTabOrTabs.windowId, { element: false }) : [sourceTabOrTabs];
+    sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTabOrTabs.windowId) : [sourceTabOrTabs];
   }
   if (sourceTabs.length === 0)
     return [];

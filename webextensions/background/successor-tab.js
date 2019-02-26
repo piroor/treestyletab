@@ -190,7 +190,7 @@ function onCreating(tab, info = {}) {
 }
 
 function onCreated(tab, _info = {}) {
-  const activeTab = Tabs.getActiveTab(tab.windowId, { element: false });
+  const activeTab = Tabs.getActiveTab(tab.windowId);
   if (activeTab)
     update(activeTab.id);
 }
@@ -223,7 +223,7 @@ function onRemoved(tab, info = {}) {
 }
 
 function onMoved(tab, info = {}) {
-  const activeTab = Tabs.getActiveTab(tab.windowId, { element: false });
+  const activeTab = Tabs.getActiveTab(tab.windowId);
   if (activeTab)
     update(activeTab.id);
 
@@ -236,13 +236,13 @@ function onMoved(tab, info = {}) {
 }
 
 function onAttached(_tab, info = {}) {
-  const activeTab = Tabs.getActiveTab(info.newWindowId, { element: false });
+  const activeTab = Tabs.getActiveTab(info.newWindowId);
   if (activeTab)
     update(activeTab.id);
 }
 
 function onDetached(_tab, info = {}) {
-  const activeTab = Tabs.getActiveTab(info.oldWindowId, { element: false });
+  const activeTab = Tabs.getActiveTab(info.oldWindowId);
   if (activeTab)
     update(activeTab.id);
 

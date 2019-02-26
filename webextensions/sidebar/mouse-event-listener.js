@@ -416,7 +416,7 @@ async function onMouseUp(event) {
       //}
       const multiselected  = Tabs.isMultiselected(tab);
       const tabsToBeClosed = multiselected ?
-        Tabs.getSelectedTabs(tab.windowId, { element: false }) :
+        Tabs.getSelectedTabs(tab.windowId) :
         Tree.getClosingTabsFromParent(tab) ;
       Sidebar.confirmToCloseTabs(tabsToBeClosed.map(tab => tab.id))
         .then(confirmed => {
