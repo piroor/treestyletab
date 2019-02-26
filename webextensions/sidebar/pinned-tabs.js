@@ -63,7 +63,7 @@ export function init() {
 
 export function reposition(options = {}) {
   //log('reposition');
-  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
+  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow, { element: false });
   if (pinnedTabs.length == 0) {
     reset();
     document.documentElement.classList.remove('have-pinned-tabs');
@@ -84,20 +84,20 @@ export function reposition(options = {}) {
   let row    = 0;
 
   mTabBar.style.marginTop = `${height * maxRow + (faviconized ? 0 : Size.getTabYOffset())}px`;
-  for (const item of pinnedTabs) {
-    const style = item.style;
+  for (const tab of pinnedTabs) {
+    const style = tab.$TST.element.style;
     if (options.justNow)
-      Tabs.removeState(item, Constants.kTAB_STATE_ANIMATION_READY);
+      Tabs.removeState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 
     if (faviconized)
-      Tabs.addState(item, Constants.kTAB_STATE_FAVICONIZED);
+      Tabs.addState(tab, Constants.kTAB_STATE_FAVICONIZED);
     else
-      Tabs.removeState(item, Constants.kTAB_STATE_FAVICONIZED);
+      Tabs.removeState(tab, Constants.kTAB_STATE_FAVICONIZED);
 
     if (row == maxRow - 1)
-      Tabs.addState(item, Constants.kTAB_STATE_LAST_ROW);
+      Tabs.addState(tab, Constants.kTAB_STATE_LAST_ROW);
     else
-      Tabs.removeState(item, Constants.kTAB_STATE_LAST_ROW);
+      Tabs.removeState(tab, Constants.kTAB_STATE_LAST_ROW);
 
     style.bottom = 'auto';
     style.left   = `${width * col}px`;
@@ -105,11 +105,11 @@ export function reposition(options = {}) {
     style.top    = `${height * row}px`;
 
     if (options.justNow)
-      Tabs.addState(item, Constants.kTAB_STATE_ANIMATION_READY);
+      Tabs.addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
 
     /*
     log('pinned tab: ', {
-      tab:    dumpTab(item),
+      tab:    dumpTab(tab),
       col:    col,
       width:  width,
       height: height
@@ -143,7 +143,7 @@ function reset() {
 function clearStyle(tab) {
   Tabs.removeState(tab, Constants.kTAB_STATE_FAVICONIZED);
   Tabs.removeState(tab, Constants.kTAB_STATE_LAST_ROW);
-  const style = tab.style;
+  const style = tab.$TST.element.style;
   style.left = style.right = style.top = style.bottom;
 }
 
@@ -167,7 +167,7 @@ Tabs.onPinned.addListener(_tab => {
 });
 
 Tabs.onUnpinned.addListener(tab => {
-  clearStyle(tab.$TST.element);
+  clearStyle(tab);
   reserveToReposition();
 });
 
