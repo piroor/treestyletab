@@ -86,12 +86,8 @@ export function isEventFiredOnClickable(event) {
 
 
 export function getTabFromEvent(event, options = {}) {
-  return SidebarTabs.getTabFromChild(event.target, options);
-}
-
-function getTabsContainerFromEvent(event) {
-  const tab = SidebarTabs.getTabFromChild(event.target);
-  return tab && tab.parentNode;
+  const tabElement = SidebarTabs.getTabFromChild(event.target, options);
+  return tabElement && tabElement.apiTab;
 }
 
 export function getTabFromTabbarEvent(event, options = {}) {
@@ -105,9 +101,10 @@ function getTabFromCoordinates(event, options = {}) {
   let tab = document.elementFromPoint(event.clientX, event.clientY);
   tab = SidebarTabs.getTabFromChild(tab, options);
   if (tab)
-    return tab;
+    return tab.apiTab;
 
-  const container = getTabsContainerFromEvent(event);
+  const tabFromEvent = SidebarTabs.getTabFromChild(event.target);
+  const container = tabFromEvent && tabFromEvent.parentNode;
   if (!container)
     return null;
 
@@ -122,21 +119,21 @@ function getTabFromCoordinates(event, options = {}) {
   for (const x of trialPoints) {
     const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY), options);
     if (tab)
-      return tab;
+      return tab.apiTab;
   }
 
   // document.elementFromPoint cannot find elements being in animation effect,
   // so I try to find a tab from previous or next tab.
   const height = Size.getTabHeight();
   for (const x of trialPoints) {
-    const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
-    if (tab)
-      return SidebarTabs.getTabFromChild(Tabs.getNextTab(tab), options);
+    let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
+    tab = SidebarTabs.getTabFromChild(Tabs.getNextTab(tab), options);
+    return tab && tab.apiTab;
   }
   for (const x of trialPoints) {
-    const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);
-    if (tab)
-      return SidebarTabs.getTabFromChild(tab.previousSibling, options);
+    let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);
+    tab = SidebarTabs.getTabFromChild(tab.previousSibling, options);
+    return tab && tab.apiTab;
   }
 
   return null;
@@ -144,23 +141,23 @@ function getTabFromCoordinates(event, options = {}) {
 
 const lastMousedown = new Map();
 
-export function getLastMousedown(aButton) {
-  return lastMousedown.get(aButton);
+export function getLastMousedown(button) {
+  return lastMousedown.get(button);
 }
 
-export function setLastMousedown(aButton, aDetails) {
-  lastMousedown.set(aButton, aDetails);
+export function setLastMousedown(button, details) {
+  lastMousedown.set(button, details);
 }
 
-export function cancelHandleMousedown(aButton = null) {
-  if (!aButton && aButton !== 0) {
-    return Array.from(lastMousedown.keys()).filter(aButton => cancelHandleMousedown(aButton)).length > 0;
+export function cancelHandleMousedown(button = null) {
+  if (!button && button !== 0) {
+    return Array.from(lastMousedown.keys()).filter(button => cancelHandleMousedown(button)).length > 0;
   }
 
-  const lastMousedownForButton = lastMousedown.get(aButton);
+  const lastMousedownForButton = lastMousedown.get(button);
   if (lastMousedownForButton) {
     clearTimeout(lastMousedownForButton.timeout);
-    lastMousedown.delete(aButton);
+    lastMousedown.delete(button);
     return true;
   }
   return false;

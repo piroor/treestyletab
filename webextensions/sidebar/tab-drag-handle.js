@@ -202,7 +202,7 @@ function onMouseMove(event) {
   const tab    = EventUtils.getTabFromEvent(event);
   const target = EventUtils.getElementTarget(event.target);
   if (tab) {
-    const tabRect  = tab.getBoundingClientRect();
+    const tabRect  = tab.$TST.element.getBoundingClientRect();
     const areaSize = Math.min(Size.getFavIconSize() * 1.5, tabRect.width / 2);
     const onLeft   = Tabs.isPinned(tab) || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
     const onArea   = (onLeft &&
