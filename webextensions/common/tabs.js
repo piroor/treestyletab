@@ -912,15 +912,6 @@ export function initWindow(windowId) {
   return window;
 }
 
-export function clearAllElements() {
-  if (!boundToElement())
-    return;
-  const range = document.createRange();
-  range.selectNodeContents(allElementsContainer);
-  range.deleteContents();
-  range.detach();
-}
-
 
 //===================================================================
 // Get Tabs
@@ -1064,9 +1055,8 @@ export function ensureLivingTab(tab) {
   if (!tab ||
       !tab.id ||
       !tab.$TST ||
-      (boundToElement() &&
-       (!tab.$TST.element ||
-        !tab.$TST.element.parentNode)) ||
+      (tab.$TST.element &&
+       !tab.$TST.element.parentNode) ||
       !isTracked(tab.id) ||
       hasState(tab, Constants.kTAB_STATE_REMOVING))
     return null;

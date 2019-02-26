@@ -436,13 +436,20 @@ Tabs.onWindowInitialized.addListener(windowId => {
 });
 
 Tabs.onTabInitialized.addListener((tab, info) => {
-  const tabElement = document.createElement('li');
+  const id = Tabs.makeTabId(tab);
+  let tabElement = document.getElementById(id);
+  if (tabElement) {
+    tab.$TST.element = tabElement;
+    return;
+  }
+
+  tabElement = document.createElement('li');
   tab.$TST.element = tabElement;
   tabElement.$TST = tab.$TST;
   tabElement.apiTab = tab;
 
   tabElement.classList.add('tab');
-  Tabs.setAttribute(tab, 'id', Tabs.makeTabId(tab));
+  Tabs.setAttribute(tab, 'id', id);
   Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
   Tabs.setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
 
@@ -507,6 +514,10 @@ Tabs.onTabInitialized.addListener((tab, info) => {
       justNow:   true
     });
   }
+
+  const window  = Tabs.trackedWindows.get(tab.windowId);
+  const nextTab = Tabs.getAllTabs(window.id)[tab.index];
+  window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
 });
 
 Tabs.onCreated.addListener((tab, _info) => {

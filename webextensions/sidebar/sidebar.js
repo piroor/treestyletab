@@ -350,8 +350,12 @@ function updateContextualIdentitiesSelector() {
 }
 
 export async function rebuildAll(cache) {
+  const range = document.createRange();
+  range.selectNodeContents(Tabs.allElementsContainer);
+  range.deleteContents();
+  range.detach();
+
   const tabs = await browser.tabs.query({ currentWindow: true });
-  Tabs.clearAllElements();
 
   const trackedWindow = Tabs.trackedWindows.get(tabs[0].windowId);
   if (!trackedWindow)

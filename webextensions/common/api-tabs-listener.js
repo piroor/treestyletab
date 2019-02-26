@@ -373,17 +373,15 @@ async function onNewTabTracked(tab) {
   log(`onNewTabTracked(id=${tab.id}): start to create tab element`);
 
   try {
-    tab = Tabs.initTab(tab, { inRemote: !!targetWindow });
-    Tabs.addState(tab, Constants.kTAB_STATE_OPENING);
-
     // New tab's index can become invalid because the value of "index" is same to
     // the one given to browser.tabs.create() instead of actual index.
     // See also: https://github.com/piroor/treestyletab/issues/2131
     tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
 
+    tab = Tabs.initTab(tab, { inRemote: !!targetWindow });
+    Tabs.addState(tab, Constants.kTAB_STATE_OPENING);
+
     const nextTab = Tabs.getAllTabs(window.id)[tab.index];
-    if (Tabs.boundToElement())
-      window.element.insertBefore(tab.$TST.element, nextTab && nextTab.$TST.element);
 
     // We need to update "active" state of a new active tab immediately.
     // Attaching of initial child tab (this new tab may become it) to an
