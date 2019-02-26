@@ -250,7 +250,8 @@ onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function onDragStart(event) {
   // get target tab at first before it is cleared by hide()
-  const targetTab = SidebarTabs.getTabElementById(mTargetTabId);
+  let targetTab = SidebarTabs.getTabElementById(mTargetTabId);
+  targetTab = targetTab.apiTab;
   log('onDragStart: targetTab = ', mTargetTabId, targetTab);
 
   if (!targetTab) {
@@ -275,7 +276,7 @@ function onDragStart(event) {
     behavior |= Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK;
 
   return DragAndDrop.onDragStart(event, {
-    target: targetTab,
+    tab: targetTab,
     behavior
   });
 }

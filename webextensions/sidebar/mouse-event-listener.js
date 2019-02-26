@@ -68,9 +68,6 @@ const mTabBar = document.querySelector('#tabbar');
 const mContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUAL_IDENTITY_SELECTOR);
 const mNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
-const mUpdatingCollapsedStateCancellers = new WeakMap();
-const mTabCollapsedStateChangedManagers = new WeakMap();
-
 Sidebar.onInit.addListener(() => {
   mTargetWindow = Tabs.getWindow();
 });
@@ -299,7 +296,7 @@ function onMouseDown(event) {
 
     if (event.button == 0 &&
         tab) {
-      const results = await DragAndDrop.legacyStartMultiDrag(tab.$TST.element, mousedown.detail.closebox);
+      const results = await DragAndDrop.legacyStartMultiDrag(tab, mousedown.detail.closebox);
       if (results.some(result => result.result !== false)) {
         log('onMouseDown expired');
         mousedown.expired = true;
@@ -582,13 +579,6 @@ function onContextualIdentitySelect(item, event) {
   }
   mContextualIdentitySelector.ui.close();
 }
-
-
-
-Tabs.onRemoved.addListener(async (tab, _info) => {
-  mUpdatingCollapsedStateCancellers.delete(tab.$TST.element);
-  mTabCollapsedStateChangedManagers.delete(tab.$TST.element);
-});
 
 
 function onMessage(message, _sender, _respond) {
