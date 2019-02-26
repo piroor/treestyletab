@@ -73,7 +73,7 @@ function show(tab) {
 function doShow(tab) {
   if (!configs.showTabDragHandle ||
       !Tabs.ensureLivingTab(tab) ||
-      !tab.matches(':hover'))
+      !tab.$TST.element.matches(':hover'))
     return;
 
   if (mShowTimer) {
