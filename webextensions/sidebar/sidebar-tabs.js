@@ -664,6 +664,8 @@ Tabs.onDetached.addListener((tab, _info) => {
       !Tabs.ensureLivingTab(tab))
     return;
   reserveToUpdateTooltip(Tabs.getParentTab(tab));
+  if (tab.$TST.element.parentNode)
+    tab.$TST.element.parentNode.removeChild(tab.$TST.element);
 });
 
 Tabs.onGroupTabDetected.addListener(tab => {

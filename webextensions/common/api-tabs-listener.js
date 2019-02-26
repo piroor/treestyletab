@@ -842,15 +842,13 @@ async function onDetached(tabId, detachInfo) {
     if (!byInternalOperation) // we should process only tabs detached by others.
       Tabs.onDetached.dispatch(oldTab, info);
 
-    const window = Tabs.trackedWindows.get(oldTab.windowId);
-    if (Tabs.boundToElement())
-      window.element.removeChild(oldTab.$TST.element);
     if (targetWindow)
-      window.untrackTab(oldTab.id);
+      oldWindow.untrackTab(oldTab.id);
     else
-      window.detachTab(oldTab.id);
-    if (window.tabs.size == 0)
-      window.destroy();
+      oldWindow.detachTab(oldTab.id);
+    if (oldWindow.tabs &&
+        oldWindow.tabs.size == 0) // not destroyed yet case
+      oldWindow.destroy();
 
     onCompleted();
   }

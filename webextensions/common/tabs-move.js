@@ -304,6 +304,8 @@ async function syncToNativeTabsInternal(windowId) {
     await Tabs.waitUntilAllTabsAreMoved(windowId);
 
   const window = Tabs.trackedWindows.get(windowId);
+  if (!window) // already destroyed
+    return;
 
   for (const tab of oldMovedTabs) {
     window.internalMovingTabs.delete(tab.id);

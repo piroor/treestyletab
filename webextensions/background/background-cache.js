@@ -144,6 +144,8 @@ export function clearWindowCache(owner) {
 
 export function markWindowCacheDirtyFromTab(tab, akey) {
   const window = Tabs.trackedWindows.get(tab.windowId);
+  if (!window) // the window may be closed
+    return;
   if (window.markWindowCacheDirtyFromTabTimeout)
     clearTimeout(window.markWindowCacheDirtyFromTabTimeout);
   window.markWindowCacheDirtyFromTabTimeout = setTimeout(() => {
