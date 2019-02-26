@@ -480,12 +480,9 @@ function extractMatchedTabs(tabs, conditions) {
         conditions.hasParent != tab.$TST.hasParent)
       continue TAB_MACHING;
 
-    const extracted = conditions.element ? tab.$TST.element : tab;
-    if (extracted) {
-      matchedTabs.push(extracted);
-      if (conditions.first || conditions.last)
-        break TAB_MACHING;
-    }
+    matchedTabs.push(tab);
+    if (conditions.first || conditions.last)
+      break TAB_MACHING;
   }
   return matchedTabs;
 }
