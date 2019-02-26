@@ -86,8 +86,7 @@ export function isEventFiredOnClickable(event) {
 
 
 export function getTabFromEvent(event, options = {}) {
-  const tabElement = SidebarTabs.getTabFromChild(event.target, options);
-  return tabElement && tabElement.apiTab;
+  return SidebarTabs.getTabFromChild(event.target, options);
 }
 
 export function getTabFromTabbarEvent(event, options = {}) {
@@ -98,13 +97,12 @@ export function getTabFromTabbarEvent(event, options = {}) {
 }
 
 function getTabFromCoordinates(event, options = {}) {
-  let tab = document.elementFromPoint(event.clientX, event.clientY);
-  tab = SidebarTabs.getTabFromChild(tab, options);
+  let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(event.clientX, event.clientY), options);
   if (tab)
-    return tab.apiTab;
+    return tab;
 
-  const tabFromEvent = SidebarTabs.getTabFromChild(event.target);
-  const container = tabFromEvent && tabFromEvent.parentNode;
+  tab = SidebarTabs.getTabFromChild(event.target);
+  const container = tab && tab.$TST.element.parentNode;
   if (!container)
     return null;
 
@@ -119,7 +117,7 @@ function getTabFromCoordinates(event, options = {}) {
   for (const x of trialPoints) {
     const tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY), options);
     if (tab)
-      return tab.apiTab;
+      return tab;
   }
 
   // document.elementFromPoint cannot find elements being in animation effect,
@@ -127,13 +125,15 @@ function getTabFromCoordinates(event, options = {}) {
   const height = Size.getTabHeight();
   for (const x of trialPoints) {
     let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY - height), options);
-    tab = SidebarTabs.getTabFromChild(Tabs.getNextTab(tab), options);
-    return tab && tab.apiTab;
+    tab = SidebarTabs.getTabFromChild(tab && tab.$TST.element.nextSibling, options);
+    if (tab)
+      return tab;
   }
   for (const x of trialPoints) {
     let tab = SidebarTabs.getTabFromChild(document.elementFromPoint(x, event.clientY + height), options);
-    tab = SidebarTabs.getTabFromChild(tab.previousSibling, options);
-    return tab && tab.apiTab;
+    tab = SidebarTabs.getTabFromChild(tab && tab.$TST.element.previousSibling, options);
+    if (tab)
+      return tab;
   }
 
   return null;

@@ -490,8 +490,7 @@ async function onContextMenu(event) {
   if (EventUtils.getElementTarget(event).closest('input, textarea'))
     return;
 
-  const tabElement = EventUtils.getTabFromEvent(event);
-  const tab = tabElement && tabElement.apiTab;
+  const tab = EventUtils.getTabFromEvent(event);
   const modifierKeyPressed = /^Mac/i.test(navigator.platform) ? event.metaKey : event.ctrlKey;
   if (!modifierKeyPressed &&
       tab &&

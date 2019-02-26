@@ -80,47 +80,47 @@ export function getTabFromChild(node, options = {}) {
     node = node.parentNode;
   const tab = node && node.closest('.tab');
   if (options.force)
-    return tab;
-  return Tabs.ensureLivingTab(tab);
+    return tab && tab.apiTab;
+  return Tabs.ensureLivingTab(tab && tab.apiTab);
 }
 
-function getTabLabel(tab) {
-  return tab && tab.querySelector(`.${Constants.kLABEL}`);
+function getLabel(tab) {
+  return tab && tab.$TST.element.querySelector(`.${Constants.kLABEL}`);
 }
 
-function getTabLabelContent(tab) {
-  return tab && tab.querySelector(`.${Constants.kLABEL}-content`);
+function getLabelContent(tab) {
+  return tab && tab.$TST.element.querySelector(`.${Constants.kLABEL}-content`);
 }
 
 function getTwisty(tab) {
-  return tab && tab.querySelector(`.${Constants.kTWISTY}`);
+  return tab && tab.$TST.element.querySelector(`.${Constants.kTWISTY}`);
 }
 
 function getFavIcon(tab) {
-  return tab && tab.querySelector(`.${Constants.kFAVICON}`);
+  return tab && tab.$TST.element.querySelector(`.${Constants.kFAVICON}`);
 }
 
 function getSoundButton(tab) {
-  return tab && tab.querySelector(`.${Constants.kSOUND_BUTTON}`);
+  return tab && tab.$TST.element.querySelector(`.${Constants.kSOUND_BUTTON}`);
 }
 
 function getDescendantsCounter(tab) {
-  return tab && tab.querySelector(`.${Constants.kCOUNTER}`);
+  return tab && tab.$TST.element.querySelector(`.${Constants.kCOUNTER}`);
 }
 
 export function getClosebox(tab) {
-  return tab && tab.querySelector(`.${Constants.kCLOSEBOX}`);
+  return tab && tab.$TST.element.querySelector(`.${Constants.kCLOSEBOX}`);
 }
 
 
 export function reserveToUpdateTwistyTooltip(tab) {
-  if (tab.reservedUpdateTwistyTooltip)
+  if (tab.$TST.reservedUpdateTwistyTooltip)
     return;
-  tab.reservedUpdateTwistyTooltip = () => {
-    delete tab.reservedUpdateTwistyTooltip;
+  tab.$TST.reservedUpdateTwistyTooltip = () => {
+    delete tab.$TST.reservedUpdateTwistyTooltip;
     updateTwistyTooltip(tab);
   };
-  tab.addEventListener('mouseover', tab.reservedUpdateTwistyTooltip, { once: true });
+  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateTwistyTooltip, { once: true });
 }
 
 function updateTwistyTooltip(tab) {
@@ -133,13 +133,13 @@ function updateTwistyTooltip(tab) {
 }
 
 export function reserveToUpdateCloseboxTooltip(tab) {
-  if (tab.reservedUpdateCloseboxTooltip)
+  if (tab.$TST.reservedUpdateCloseboxTooltip)
     return;
-  tab.reservedUpdateCloseboxTooltip = () => {
-    delete tab.reservedUpdateCloseboxTooltip;
+  tab.$TST.reservedUpdateCloseboxTooltip = () => {
+    delete tab.$TST.reservedUpdateCloseboxTooltip;
     updateCloseboxTooltip(tab);
   };
-  tab.addEventListener('mouseover', tab.reservedUpdateCloseboxTooltip, { once: true });
+  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateCloseboxTooltip, { once: true });
 }
 
 function updateCloseboxTooltip(tab) {
@@ -258,7 +258,7 @@ windowId = ${tab.windowId}
     return;
   }
 
-  const label = getTabLabel(tab.$TST.element);
+  const label = getLabel(tab);
   if (Tabs.isPinned(tab) || label.classList.contains('overflow')) {
     Tabs.setAttribute(tab, 'title', tab.$TST.tooltip);
   }
@@ -306,7 +306,7 @@ async function synchronizeThrobberAnimation() {
     windowId: Tabs.getWindow(),
     visible:  true,
     states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true],
-    element:  true
+    element:  false
   });
   if (toBeSynchronizedTabs.length == 0)
     return;
@@ -322,13 +322,13 @@ async function synchronizeThrobberAnimation() {
 
 
 export function reserveToUpdateSoundButtonTooltip(tab) {
-  if (tab.reservedUpdateSoundButtonTooltip)
+  if (tab.$TST.reservedUpdateSoundButtonTooltip)
     return;
-  tab.reservedUpdateSoundButtonTooltip = () => {
-    delete tab.reservedUpdateSoundButtonTooltip;
+  tab.$TST.reservedUpdateSoundButtonTooltip = () => {
+    delete tab.$TST.reservedUpdateSoundButtonTooltip;
     updateSoundButtonTooltip(tab);
   };
-  tab.addEventListener('mouseover', tab.reservedUpdateSoundButtonTooltip, { once: true });
+  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateSoundButtonTooltip, { once: true });
 }
 
 function updateSoundButtonTooltip(tab) {
@@ -348,19 +348,19 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
-  for (const tab of Tabs.getAllTabs(Tabs.getWindow(), { element: true }).reverse()) {
+  for (const tab of Tabs.getAllTabs(Tabs.getWindow(), { element: false }).reverse()) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
-    reserveToUpdateTooltip(tab.apiTab);
+    reserveToUpdateTooltip(tab);
     if (!Tabs.isCollapsed(tab))
-      updateLabelOverflow(tab.apiTab);
+      updateLabelOverflow(tab);
   }
 }
 
 export function updateLabelOverflow(tab) {
-  const label = getTabLabel(tab.$TST.element);
+  const label = getLabel(tab);
   if (!Tabs.isPinned(tab) &&
       label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width)
     label.classList.add('overflow');
@@ -370,8 +370,8 @@ export function updateLabelOverflow(tab) {
 }
 
 function onOverflow(event) {
-  const tab = getTabFromChild(event.target);
-  const label = getTabLabel(tab);
+  const tab   = getTabFromChild(event.target);
+  const label = getLabel(tab);
   if (event.target == label && !Tabs.isPinned(tab)) {
     label.classList.add('overflow');
     reserveToUpdateTooltip(tab);
@@ -379,8 +379,8 @@ function onOverflow(event) {
 }
 
 function onUnderflow(event) {
-  const tab = getTabFromChild(event.target);
-  const label = getTabLabel(tab);
+  const tab   = getTabFromChild(event.target);
+  const label = getLabel(tab);
   if (event.target == label && !Tabs.isPinned(tab)) {
     label.classList.remove('overflow');
     reserveToUpdateTooltip(tab);
@@ -401,7 +401,7 @@ reserveToSyncTabsOrder.retryCount = 0;
 
 async function syncTabsOrder() {
   log('syncTabsOrder');
-  const windowId  = Tabs.getWindow();
+  const windowId      = Tabs.getWindow();
   const internalOrder = await browser.runtime.sendMessage({
     type: Constants.kCOMMAND_PULL_TABS_ORDER,
     windowId
@@ -465,7 +465,7 @@ async function syncTabsOrder() {
 
 Tabs.onTabElementBuilt.addListener((tab, info) => {
   const tabElement = tab.$TST.element;
-  const label = getTabLabel(tabElement);
+  const label      = getLabel(tab);
 
   const twisty = document.createElement('span');
   twisty.classList.add(Constants.kTWISTY);
@@ -562,7 +562,7 @@ Tabs.onRemoved.addListener((tab, _info) => {
   });
 });
 
-const mTabWasVisibleBeforeMoving = new WeakMap();
+const mTabWasVisibleBeforeMoving = new Map();
 
 Tabs.onMoving.addListener((tab, _info) => {
   Tabs.addState(tab, Constants.kTAB_STATE_MOVING);
@@ -570,7 +570,7 @@ Tabs.onMoving.addListener((tab, _info) => {
       Tabs.isPinned(tab) ||
       Tabs.isOpening(tab))
     return;
-  mTabWasVisibleBeforeMoving.set(tab.$TST.element, !Tabs.isCollapsed(tab));
+  mTabWasVisibleBeforeMoving.set(tab.id, !Tabs.isCollapsed(tab));
   Tree.collapseExpandTab(tab, {
     collapsed: true,
     justNow:   true
@@ -581,8 +581,8 @@ Tabs.onMoved.addListener(async (tab, _info) => {
   if (mInitialized)
     reserveToUpdateTooltip(Tabs.getParentTab(tab));
 
-  const wasVisible = mTabWasVisibleBeforeMoving.get(tab.$TST.element);
-  mTabWasVisibleBeforeMoving.delete(tab.$TST.element);
+  const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
+  mTabWasVisibleBeforeMoving.delete(tab.id);
 
   if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
     return;
@@ -606,7 +606,7 @@ Tabs.onStateChanged.addListener(tab => {
 });
 
 Tabs.onLabelUpdated.addListener(tab => {
-  getTabLabelContent(tab.$TST.element).textContent = tab.title;
+  getLabelContent(tab).textContent = tab.title;
   reserveToUpdateTooltip(tab);
   if (!tab.$TST.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
     tab.$TST.titleUpdatedWhileCollapsed = true;
@@ -614,7 +614,7 @@ Tabs.onLabelUpdated.addListener(tab => {
 
 Tabs.onFaviconUpdated.addListener((tab, url) => {
   TabFavIconHelper.loadToImage({
-    image: getFavIcon(tab.$TST.element).firstChild,
+    image: getFavIcon(tab).firstChild,
     tab,
     url
   });
@@ -623,7 +623,7 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
 Tabs.onCollapsedStateChanged.addListener((tab, info) => {
   if (info.collapsed)
     return;
-  reserveToUpdateLoadingState(tab.$TST.element);
+  reserveToUpdateLoadingState();
   if (tab.$TST.titleUpdatedWhileCollapsed) {
     updateLabelOverflow(tab);
     delete tab.$TST.titleUpdatedWhileCollapsed;
@@ -632,16 +632,16 @@ Tabs.onCollapsedStateChanged.addListener((tab, info) => {
 
 let mReservedUpdateActiveTab;
 Tabs.onUpdated.addListener((tab, info) => {
-  reserveToUpdateSoundButtonTooltip(tab.$TST.element);
+  reserveToUpdateSoundButtonTooltip(tab);
   reserveToUpdateTooltip(tab);
 
   if (!('highlighted' in info))
     return;
 
-  reserveToUpdateCloseboxTooltip(tab.$TST.element);
+  reserveToUpdateCloseboxTooltip(tab);
 
   for (const ancestor of Tabs.getAncestorTabs(tab)) {
-    updateDescendantsHighlighted(ancestor.$TST.element);
+    updateDescendantsHighlighted(ancestor);
   }
 
   if (mReservedUpdateActiveTab)
@@ -650,13 +650,13 @@ Tabs.onUpdated.addListener((tab, info) => {
     mReservedUpdateActiveTab = null;
     const activeTab = Tabs.getActiveTab(tab.windowId);
     if (activeTab) {
-      reserveToUpdateSoundButtonTooltip(activeTab.$TST.element);
-      reserveToUpdateCloseboxTooltip(activeTab.$TST.element);
+      reserveToUpdateSoundButtonTooltip(activeTab);
+      reserveToUpdateCloseboxTooltip(activeTab);
     }
   }, 50);
 });
 
-Tabs.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab.$TST.element); });
+Tabs.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
 
 Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
@@ -684,10 +684,10 @@ Tabs.onGroupTabDetected.addListener(tab => {
 Tree.onAttached.addListener((_tab, info = {}) => {
   if (!mInitialized)
     return;
-  reserveToUpdateTwistyTooltip(info.parent.$TST.element);
-  reserveToUpdateCloseboxTooltip(info.parent.$TST.element);
+  reserveToUpdateTwistyTooltip(info.parent);
+  reserveToUpdateCloseboxTooltip(info.parent);
   if (info.newlyAttached) {
-    const ancestors = [info.parent.$TST.element].concat(Tabs.getAncestorTabs(info.parent.$TST.element));
+    const ancestors = [info.parent].concat(Tabs.getAncestorTabs(info.parent));
     for (const ancestor of ancestors) {
       updateDescendantsCount(ancestor);
       updateDescendantsHighlighted(ancestor);
@@ -702,10 +702,10 @@ Tree.onDetached.addListener((_tab, detachInfo = {}) => {
   const parent = detachInfo.oldParentTab;
   if (!parent)
     return;
-  reserveToUpdateTwistyTooltip(parent.$TST.element);
-  reserveToUpdateCloseboxTooltip(parent.$TST.element);
+  reserveToUpdateTwistyTooltip(parent);
+  reserveToUpdateCloseboxTooltip(parent);
   reserveToUpdateTooltip(parent);
-  const ancestors = [parent.$TST.element].concat(Tabs.getAncestorTabs(parent.$TST.element));
+  const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
   for (const ancestor of ancestors) {
     updateDescendantsCount(ancestor);
     updateDescendantsHighlighted(ancestor);
@@ -713,8 +713,8 @@ Tree.onDetached.addListener((_tab, detachInfo = {}) => {
 });
 
 Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
-  reserveToUpdateTwistyTooltip(tab.$TST.element);
-  reserveToUpdateCloseboxTooltip(tab.$TST.element);
+  reserveToUpdateTwistyTooltip(tab);
+  reserveToUpdateCloseboxTooltip(tab);
   if (mInitialized)
     reserveToUpdateTooltip(tab);
 });

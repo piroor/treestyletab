@@ -174,9 +174,9 @@ export async function restoreTabsFromCache(cache, params = {}) {
       for (const tab of allTabs) {
         Tabs.setAttribute(tab, 'title', tab.$TST.element.getAttribute('title'));
         SidebarTabs.reserveToUpdateTooltip(tab);
-        SidebarTabs.reserveToUpdateTwistyTooltip(tab.$TST.element);
-        SidebarTabs.reserveToUpdateCloseboxTooltip(tab.$TST.element);
-        SidebarTabs.reserveToUpdateSoundButtonTooltip(tab.$TST.element);
+        SidebarTabs.reserveToUpdateTwistyTooltip(tab);
+        SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
+        SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
         if (!Tabs.isCollapsed(tab))
           SidebarTabs.updateLabelOverflow(tab);
       }

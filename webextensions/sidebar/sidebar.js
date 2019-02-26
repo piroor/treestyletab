@@ -987,7 +987,7 @@ function onMessage(message, _sender, _respond) {
           if (Tabs.hasState(modified, Constants.kTAB_STATE_AUDIBLE) ||
               Tabs.hasState(modified, Constants.kTAB_STATE_SOUND_PLAYING) ||
               Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {
-            SidebarTabs.reserveToUpdateSoundButtonTooltip(tab.$TST.element);
+            SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
             if (message.bubbles)
               TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
           }

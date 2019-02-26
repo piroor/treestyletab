@@ -662,7 +662,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     mLastDragEnteredTarget = tab.$TST.element;
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
-      mLastDragEnteredTarget = SidebarTabs.getClosebox(tab.$TST.element);
+      mLastDragEnteredTarget = SidebarTabs.getClosebox(tab);
     const windowId = Tabs.getWindow();
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
@@ -856,8 +856,7 @@ function onDragEnter(event) {
   const info = getDropAction(event);
   try {
     const enteredTab = EventUtils.getTabFromEvent(event);
-    let leftTab    = SidebarTabs.getTabFromChild(event.relatedTarget);
-    leftTab = leftTab && leftTab.apiTab;
+    const leftTab    = SidebarTabs.getTabFromChild(event.relatedTarget);
     if (leftTab != enteredTab) {
       mDraggingOnDraggedTabs = (
         info.dragData &&
@@ -943,8 +942,7 @@ function onDragLeave(event) {
   try {
     const info       = getDropAction(event);
     const leftTab    = EventUtils.getTabFromEvent(event);
-    let enteredTab = SidebarTabs.getTabFromChild(event.relatedTarget);
-    enteredTab = enteredTab && enteredTab.apiTab;
+    const enteredTab = SidebarTabs.getTabFromChild(event.relatedTarget);
     if (leftTab != enteredTab) {
       if (info.dragData &&
           info.dragData.tabs.some(tab => tab.id == leftTab.id) &&
@@ -1141,7 +1139,7 @@ function onTSTAPIDragEnter(event) {
   const tab = EventUtils.getTabFromEvent(event);
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = SidebarTabs.getClosebox(tab.$TST.element);
+    target = SidebarTabs.getClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
   if (tab &&
       (!mDragTargetIsClosebox ||
@@ -1167,7 +1165,7 @@ function onTSTAPIDragExit(event) {
     return;
   let target = tab.$TST.element;
   if (mDragTargetIsClosebox && EventUtils.isEventFiredOnClosebox(event))
-    target = SidebarTabs.getClosebox(tab.$TST.element);
+    target = SidebarTabs.getClosebox(tab);
   cancelDelayedTSTAPIDragExitOn(target);
   target.onTSTAPIDragExitTimeout = setTimeout(() => {
     delete target.onTSTAPIDragExitTimeout;
