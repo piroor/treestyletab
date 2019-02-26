@@ -15,6 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
+import * as DOMCache from '/common/dom-cache.js';
 import { SequenceMatcher } from '/common/diff.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
@@ -426,7 +427,7 @@ Tabs.onWindowInitialized.addListener(windowId => {
   let container = document.getElementById(`window-${windowId}`);
   if (!container) {
     container = document.createElement('ul');
-    Tabs.allElementsContainer.appendChild(container);
+    DOMCache.wholeContainer.appendChild(container);
   }
   container.dataset.windowId = windowId;
   container.setAttribute('id', `window-${windowId}`);
@@ -578,7 +579,7 @@ Tabs.onMoving.addListener((tab, _info) => {
   });
 });
 
-Tabs.onMoved.addListener(async (tab, _info) => {
+Tabs.onMoved.addListener(async (tab, info) => {
   if (mInitialized)
     reserveToUpdateTooltip(Tabs.getParentTab(tab));
 
@@ -587,6 +588,8 @@ Tabs.onMoved.addListener(async (tab, _info) => {
 
   if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
     return;
+
+  tab.$TST.element.parentNode.insertBefore(tab.$TST.element, info.nextTab && info.nextTab.$TST.element);
 
   if (configs.animation && wasVisible) {
     Tree.collapseExpandTab(tab, {

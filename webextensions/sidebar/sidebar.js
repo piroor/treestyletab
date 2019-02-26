@@ -26,6 +26,7 @@ import * as Commands from '/common/commands.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as MetricsData from '/common/metrics-data.js';
+import * as DOMCache from '/common/dom-cache.js';
 
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -351,7 +352,7 @@ function updateContextualIdentitiesSelector() {
 
 export async function rebuildAll(cache) {
   const range = document.createRange();
-  range.selectNodeContents(Tabs.allElementsContainer);
+  range.selectNodeContents(DOMCache.wholeContainer);
   range.deleteContents();
   range.detach();
 
@@ -380,7 +381,7 @@ export async function rebuildAll(cache) {
     window.element.appendChild(tab.$TST.element);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
-  Tabs.allElementsContainer.appendChild(window.element);
+  DOMCache.wholeContainer.appendChild(window.element);
   MetricsData.add('rebuildAll (from scratch)');
   return false;
 }

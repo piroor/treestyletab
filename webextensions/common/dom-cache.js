@@ -16,6 +16,8 @@ function log(...args) {
   internalLogger('common/dom-cache', ...args);
 }
 
+export const wholeContainer = document.querySelector('#all-tabs');
+
 export async function getWindowSignature(windowIdOrTabs) {
   if (typeof windowIdOrTabs == 'number') {
     windowIdOrTabs = await browser.tabs.query({ windowId: windowIdOrTabs });
@@ -97,7 +99,7 @@ export function restoreTabsFromCacheInternal(params) {
     dumpCache(params.cache);
     const insertionPoint = params.insertionPoint || (() => {
       const range = document.createRange();
-      range.selectNodeContents(Tabs.allElementsContainer);
+      range.selectNodeContents(wholeContainer);
       range.collapse(false);
       return range;
     })();

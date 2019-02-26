@@ -54,17 +54,11 @@ function log(...args) {
 
 let mTargetWindow;
 
-export const allElementsContainer = document.querySelector('#all-tabs');
-
 export const trackedWindows           = new Map();
 export const trackedTabs              = new Map();
 export const trackedTabsByUniqueId    = new Map();
 export const activeTabForWindow       = new Map();
 export const highlightedTabsForWindow = new Map();
-
-export function boundToElement() {
-  return !!allElementsContainer;
-}
 
 
 //===================================================================

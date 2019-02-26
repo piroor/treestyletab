@@ -117,13 +117,7 @@ function getTrackedWindow(windowId) {
   if (typeof windowId != 'number')
     throw new Error(`The given ID seems invalid as an window id: ${windowId}`);
 
-  const window = Tabs.trackedWindows.get(windowId);
-  if (window &&
-      (!Tabs.boundToElement() ||
-       window.element))
-    return window;
-
-  return Tabs.initWindow(windowId);
+  return Tabs.trackedWindows.get(windowId) || Tabs.initWindow(windowId);
 }
 
 function warnTabDestroyedWhileWaiting(tabId) {
@@ -448,9 +442,8 @@ async function onNewTabTracked(tab) {
       await window.allTabsRestored;
       log(`onNewTabTracked(id=${tab.id}): continued for restored tab`);
     }
-    if (Tabs.boundToElement() &&
-        (!window.element.parentNode ||
-         !tab.$TST.element.parentNode)) {
+    if (!Tabs.ensureLivingTab(tab) ||
+        !Tabs.trackedWindows.get(tab.windowId)) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
@@ -472,11 +465,11 @@ async function onNewTabTracked(tab) {
     moved = moved === false;
     log(`onNewTabTracked(id=${tab.id}): moved = `, moved);
 
-    if (Tabs.boundToElement() &&
-        window.element.parentNode) { // it can be removed while waiting
+    if (Tabs.ensureLivingTab(tab) &&
+        Tabs.trackedWindows.get(tab.windowId)) { // it can be removed while waiting
       window.openingTabs.add(tab.id);
       setTimeout(() => {
-        if (!window.parentNode) // it can be removed while waiting
+        if (!Tabs.trackedWindows.get(tab.windowId)) // it can be removed while waiting
           return;
         window.openingTabs.delete(tab.id);
       }, 0);
@@ -718,10 +711,9 @@ async function onMoved(tabId, moveInfo) {
       if (extendedMoveInfo.fromIndex < newNextIndex)
         newNextIndex++;
       const nextTab = Tabs.getAllTabs(moveInfo.windowId)[newNextIndex];
+      extendedMoveInfo.nextTab = nextTab;
       if (!alreadyMoved &&
           Tabs.getNextTab(movedTab) != nextTab) {
-        if (Tabs.boundToElement())
-          window.element.insertBefore(movedTab.$TST.element, nextTab.$TST.element);
         if (nextTab) {
           if (nextTab.index > movedTab.index)
             movedTab.index = nextTab.index - 1;
