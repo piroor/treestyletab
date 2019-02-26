@@ -439,7 +439,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
             Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, Tabs.getAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID),
             Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, ''
           ],
-          element:    true
+          element:    false
         });
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
         await Tree.moveTabSubtreeAfter(tab, (Tabs.getLastDescendantTab(referenceTab, { element: false }) || referenceTab), {
@@ -479,6 +479,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
         cookieStoreId: opener.cookieStoreId,
         inBackground: true
       });
+      log('opened group tab: ', parent);
       newGroupTabs.set(opener, true);
     }
     for (const child of children) {
