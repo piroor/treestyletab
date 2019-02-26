@@ -575,7 +575,7 @@ async function getTabsFromWrongIds(aIds, sender) {
       case 'previoussibling':
       case 'prevsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getPreviousSiblingTab(Tabs.trackedTabs(tabs[0].id));
+        return Tabs.getPreviousSiblingTab(Tabs.trackedTabs.get(tabs[0].id));
       }
       case 'sendertab':
         if (sender.tab)

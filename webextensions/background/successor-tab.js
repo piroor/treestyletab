@@ -227,7 +227,7 @@ function onMoved(tab, info = {}) {
 
   if (!info.byInternalOperation) {
     log(`clear lastRelatedTabs for ${tab.windowId} by tabs.onMoved`);
-    const window = Tabs.trackedWindows(info.windowId);
+    const window = Tabs.trackedWindows.get(info.windowId);
     if (window.lastRelatedTabs)
       window.lastRelatedTabs.clear();
   }
@@ -244,7 +244,7 @@ function onDetached(_tab, info = {}) {
   if (activeTab)
     update(activeTab.id);
 
-  const window = Tabs.trackedWindows(info.oldWindowId);
+  const window = Tabs.trackedWindows.get(info.oldWindowId);
   if (window) {
     log(`clear lastRelatedTabs for ${info.windowId} by tabs.onDetached`);
     if (window.lastRelatedTabs)
