@@ -26,8 +26,8 @@ import * as Commands from '/common/commands.js';
 import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as MetricsData from '/common/metrics-data.js';
-import * as DOMCache from '/common/dom-cache.js';
 
+import * as DOMCache from './dom-cache.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';

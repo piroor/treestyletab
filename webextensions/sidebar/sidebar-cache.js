@@ -15,8 +15,8 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
-import * as DOMCache from '/common/dom-cache.js';
 
+import * as DOMCache from './dom-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Indent from './indent.js';
 

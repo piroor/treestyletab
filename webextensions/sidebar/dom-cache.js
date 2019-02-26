@@ -7,13 +7,13 @@
 
 import {
   log as internalLogger
-} from './common.js';
-import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
-import * as TabsUpdate from './tabs-update.js';
+} from '/common/common.js';
+import * as Constants from '/common/constants.js';
+import * as Tabs from '/common/tabs.js';
+import * as TabsUpdate from '/common/tabs-update.js';
 
 function log(...args) {
-  internalLogger('common/dom-cache', ...args);
+  internalLogger('sidebar/dom-cache', ...args);
 }
 
 export const wholeContainer = document.querySelector('#all-tabs');

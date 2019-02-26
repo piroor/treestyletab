@@ -15,7 +15,7 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
-import * as DOMCache from '/common/dom-cache.js';
+import * as DOMCache from './dom-cache.js';
 import { SequenceMatcher } from '/common/diff.js';
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
