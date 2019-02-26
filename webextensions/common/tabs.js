@@ -62,14 +62,8 @@ export const trackedTabsByUniqueId    = new Map();
 export const activeTabForWindow       = new Map();
 export const highlightedTabsForWindow = new Map();
 
-let mBindToElement = false;
-
-export function bindToElement() {
-  mBindToElement = true;
-}
-
 export function boundToElement() {
-  return mBindToElement;
+  return !!allElementsContainer;
 }
 
 
@@ -896,7 +890,7 @@ export function initTab(tab, options = {}) {
     tab = trackedTab;
   tab.$TST = (trackedTab && trackedTab.$TST) || new Tab(tab);
 
-  if (mBindToElement) {
+  if (boundToElement()) {
     const tabElement = document.createElement('li');
     tab.$TST.element = tabElement;
     tabElement.$TST = tab.$TST;
@@ -907,7 +901,7 @@ export function initTab(tab, options = {}) {
     addState(tab, Constants.kTAB_STATE_ACTIVE);
   addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
-  if (mBindToElement) {
+  if (boundToElement()) {
     tab.$TST.element.classList.add('tab');
     setAttribute(tab, 'id', makeTabId(tab));
     setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
@@ -951,6 +945,8 @@ export function initWindow(windowId, container = null) {
 }
 
 export function clearAllElements() {
+  if (!boundToElement())
+    return;
   const range = document.createRange();
   range.selectNodeContents(allElementsContainer);
   range.deleteContents();
@@ -1100,7 +1096,7 @@ export function ensureLivingTab(tab) {
   if (!tab ||
       !tab.id ||
       !tab.$TST ||
-      (mBindToElement &&
+      (boundToElement() &&
        (!tab.$TST.element ||
         !tab.$TST.element.parentNode)) ||
       !isTracked(tab.id) ||

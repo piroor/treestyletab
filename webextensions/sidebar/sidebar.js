@@ -73,8 +73,6 @@ const mContextualIdentitiesStyle  = document.querySelector('#contextual-identity
   configs.$loaded.then(applyUserStyleRules);
 }
 
-Tabs.bindToElement();
-
 UserOperationBlocker.block({ throbber: true });
 
 export async function init() {
