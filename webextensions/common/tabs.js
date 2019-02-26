@@ -1354,7 +1354,7 @@ export function getSelectedTabs(windowId) {
       highlightedTabs.size < 2)
     return selectedTabs;
 
-  return sort(Array.from(new Set(...selectedTabs, ...highlightedTabs)));
+  return sort(Array.from(new Set(selectedTabs, ...Array.from(highlightedTabs))));
 }
 
 
