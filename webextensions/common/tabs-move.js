@@ -128,7 +128,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         broadcasted: !!options.broadcasted
       });
     }
-    syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
     if (movedTabsCount == 0) {
       log(' => actually nothing moved');
     }
@@ -152,25 +151,6 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
 }
 export async function moveTabInternallyBefore(tab, referenceTab, options = {}) {
   return moveTabsInternallyBefore([tab], referenceTab, options);
-}
-
-function syncOrderOfChildTabs(parentTabs) {
-  if (!Array.isArray(parentTabs))
-    parentTabs = [parentTabs];
-
-  let updatedParentTabs = new Map();
-  for (const parent of parentTabs) {
-    if (!parent || updatedParentTabs.has(parent))
-      continue;
-    updatedParentTabs.set(parent, true);
-    if (parent.$TST.children.length < 2)
-      continue;
-    parent.$TST.children = parent.$TST.children.sort((a, b) => a.index - b.index);
-    const childIds = parent.$TST.children.map(child => child.$TST.element.id);
-    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childIds.join('|')}|`);
-    log('updateChildTabsInfo: ', childIds);
-  }
-  updatedParentTabs = undefined;
 }
 
 export async function moveTabsAfter(tabs, referenceTab, options = {}) {
@@ -250,7 +230,6 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
         broadcasted: !!options.broadcasted
       });
     }
-    syncOrderOfChildTabs(tabs.map(Tabs.getParentTab));
     if (movedTabsCount == 0) {
       log(' => actually nothing moved');
     }

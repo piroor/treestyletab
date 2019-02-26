@@ -173,8 +173,8 @@ function getDragDataFromOneTab(tab, options = {}) {
 
   const draggedTabs = options.shouldIgnoreDescendants ? [tab] : getDraggedTabsFromOneTab(tab);
   return {
-    tab:      Tabs.sanitize(tab),
-    tabs:     draggedTabs.map(tab => Tabs.sanitize(tab)),
+    tab:      tab,
+    tabs:     draggedTabs,
     windowId: tab.windowId
   };
 }

@@ -685,8 +685,8 @@ async function onMoved(tabId, moveInfo) {
       return;
     }
 
-    let oldPreviousTab = Tabs.getPreviousTab(tabId);
-    let oldNextTab     = Tabs.getNextTab(tabId);
+    let oldPreviousTab = Tabs.getPreviousTab(movedTab);
+    let oldNextTab     = Tabs.getNextTab(movedTab);
     if (movedTab.index != moveInfo.toIndex) { // already moved
       const tabs = Tabs.getAllTabs(moveInfo.windowId);
       oldPreviousTab = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1];

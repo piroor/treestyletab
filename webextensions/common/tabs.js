@@ -368,8 +368,13 @@ export class Window {
 
 export function track(tab) {
   const trackedTab = trackedTabs.get(tab.id);
-  if (!trackedTab)
+  if (!trackedTab) {
     tab.$TST = new Tab(tab);
+  }
+  else {
+    const window = trackedWindows.get(tab.windowId);
+    window.trackTab(tab);
+  }
 }
 
 export function untrack(tabId) {

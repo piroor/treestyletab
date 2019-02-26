@@ -300,14 +300,13 @@ export function detachTab(child, options = {}) {
 
   if (parent) {
     parent.$TST.childIds = parent.$TST.childIds.filter(id => id != child.id);
-    const childElementIds = parent.$TST.children.map(child => child.$TST.element.id);
-    if (childElementIds.length == 0) {
+    if (parent.$TST.childIds.length == 0) {
       Tabs.removeAttribute(parent, Constants.kCHILDREN);
       log(' => no more child');
     }
     else {
-      Tabs.setAttribute(parent, Constants.kCHILDREN, `|${childElementIds.join('|')}|`);
-      log(' => rest children: ', childElementIds);
+      Tabs.setAttribute(parent, Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
+      log(' => rest children: ', parent.$TST.childIds);
     }
     TabsUpdate.updateParentTab(parent);
   }
