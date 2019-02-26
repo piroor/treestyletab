@@ -50,8 +50,9 @@ function getTabsBetween(begin, end) {
     [begin, end] = [end, begin];
   return Tabs.queryAll({
     windowId: begin.windowId,
+    id:       (id => id != begin.id && id != end.id),
     fromId:   begin.id,
-    index:    (index => index > begin.index && index < end.index),
+    toId:     end.id,
     element:  false
   });
 }

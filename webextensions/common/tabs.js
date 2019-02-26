@@ -231,7 +231,7 @@ export class Window {
     delete this.id;
   }
 
-  getOrderedTabs(startId) {
+  getOrderedTabs(startId, endId) {
     let order = this.order;
     if (startId) {
       if (!this.tabs.has(startId))
@@ -241,11 +241,13 @@ export class Window {
     return (function*() {
       for (const id of order) {
         yield this.tabs.get(id);
+        if (id == endId)
+          break;
       }
     }).call(this);
   }
 
-  getReversedOrderedTabs(startId) {
+  getReversedOrderedTabs(startId, endId) {
     let order = this.order.slice(0).reverse();
     if (startId) {
       if (!this.tabs.has(startId))
@@ -255,6 +257,8 @@ export class Window {
     return (function*() {
       for (const id of order) {
         yield this.tabs.get(id);
+        if (id == endId)
+          break;
       }
     }).call(this);
   }
@@ -379,8 +383,8 @@ export function queryAll(conditions) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
       const tabsIterator = !conditions.ordered ? window.tabs.values() :
-        conditions.last ? window.getReversedOrderedTabs(conditions.fromId) :
-          window.getOrderedTabs(conditions.fromId);
+        conditions.last ? window.getReversedOrderedTabs(conditions.fromId, conditions.toId) :
+          window.getOrderedTabs(conditions.fromId, conditions.toId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
     }
     return tabs;
@@ -491,8 +495,8 @@ export function query(conditions) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
       const tabsIterator = !conditions.ordered ? window.tabs.values() :
-        conditions.last ? window.getReversedOrderedTabs(conditions.fromId) :
-          window.getOrderedTabs(conditions.fromId);
+        conditions.last ? window.getReversedOrderedTabs(conditions.fromId, conditions.toId) :
+          window.getOrderedTabs(conditions.fromId, conditions.toId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
       if (tabs.length > 0)
         break;
@@ -505,7 +509,7 @@ export function query(conditions) {
 }
 
 function fixupQuery(conditions) {
-  if (conditions.fromId)
+  if (conditions.fromId || conditions.toId)
     conditions.ordered = true;
   if ((conditions.normal ||
        conditions.visible ||
