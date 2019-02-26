@@ -53,8 +53,8 @@ export async function getEffectiveWindowCache(options = {}) {
   let actualSignature;
   await Promise.all([
     (async () => {
-      const apiTabs = await browser.tabs.query({ currentWindow: true });
-      mLastWindowCacheOwner = apiTabs[apiTabs.length - 1];
+      const tabs = await browser.tabs.query({ currentWindow: true });
+      mLastWindowCacheOwner = Tabs.trackedTabs.get(tabs[tabs.length - 1].id);
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
@@ -132,12 +132,11 @@ export async function getEffectiveWindowCache(options = {}) {
 }
 
 export async function restoreTabsFromCache(cache, params = {}) {
-  const offset    = params.offset || 0;
-  const window    = Tabs.trackedWindows.get(mTargetWindow);
-  const container = window.element;
+  const offset = params.offset || 0;
+  const window = Tabs.trackedWindows.get(mTargetWindow);
   if (offset <= 0) {
-    if (container)
-      container.parentNode.removeChild(container);
+    if (window.element)
+      window.element.parentNode.removeChild(window.element);
     mTabBar.setAttribute('style', cache.style);
   }
 
@@ -155,32 +154,31 @@ export async function restoreTabsFromCache(cache, params = {}) {
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: mTargetWindow
       })).structure;
-      const allTabs = Tabs.getAllTabs(mTargetWindow);
-      const currentStructrue = Tree.getTreeStructureFromTabs(allTabs.map(tab => tab.apiTab));
+      const allTabs = Tabs.getAllTabs(mTargetWindow, { element: false });
+      const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
         log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`);
         restored = false;
-        const container = window.element;
-        if (container)
-          container.parentNode.removeChild(container);
+        if (window.element)
+          window.element.parentNode.removeChild(window.element);
       }
       if (restored && cache.collapsedDirty) {
         const structure = currentStructrue.reverse();
         allTabs.reverse().forEach((tab, index) => {
-          Tree.collapseExpandSubtree(tab.apiTab, {
+          Tree.collapseExpandSubtree(tab, {
             collapsed: structure[index].collapsed,
             justNow:   true
           });
         });
       }
       for (const tab of allTabs) {
-        Tabs.setAttribute(tab, 'title', tab.getAttribute('title'));
-        SidebarTabs.reserveToUpdateTooltip(tab.apiTab);
-        SidebarTabs.reserveToUpdateTwistyTooltip(tab);
-        SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
-        SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
+        Tabs.setAttribute(tab, 'title', tab.$TST.element.getAttribute('title'));
+        SidebarTabs.reserveToUpdateTooltip(tab);
+        SidebarTabs.reserveToUpdateTwistyTooltip(tab.$TST.element);
+        SidebarTabs.reserveToUpdateCloseboxTooltip(tab.$TST.element);
+        SidebarTabs.reserveToUpdateSoundButtonTooltip(tab.$TST.element);
         if (!Tabs.isCollapsed(tab))
-          SidebarTabs.updateLabelOverflow(tab.apiTab);
+          SidebarTabs.updateLabelOverflow(tab);
       }
       onRestored.dispatch();
     }
@@ -195,7 +193,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
 
 function updateWindowCache(key, value) {
   if (!mLastWindowCacheOwner ||
-      !SidebarTabs.getTabElementById(mLastWindowCacheOwner))
+      !Tabs.trackedTabs.get(mLastWindowCacheOwner.id))
     return;
   if (value === undefined) {
     //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
@@ -216,12 +214,12 @@ function clearWindowCache() {
   updateWindowCache(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-export function markWindowCacheDirty(akey) {
+export function markWindowCacheDirty(key) {
   if (markWindowCacheDirty.timeout)
     clearTimeout(markWindowCacheDirty.timeout);
   markWindowCacheDirty.timeout = setTimeout(() => {
     markWindowCacheDirty.timeout = null;
-    updateWindowCache(akey, true);
+    updateWindowCache(key, true);
   }, 250);
 }
 
@@ -233,8 +231,7 @@ async function getWindowCache(key) {
 }
 
 function getWindowCacheOwner() {
-  const tab = Tabs.getLastTab(mTargetWindow);
-  return tab && tab.apiTab;
+  return Tabs.getLastTab(mTargetWindow, { element: false });
 }
 
 export async function reserveToUpdateCachedTabbar() {
@@ -249,7 +246,7 @@ export async function reserveToUpdateCachedTabbar() {
   if (Tabs.hasCreatingTab(mTargetWindow))
     await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
 
-  const window    = Tabs.trackedWindows.get(mTargetWindow);
+  const window = Tabs.trackedWindows.get(mTargetWindow);
   if (window.allTabsRestored)
     return;
 

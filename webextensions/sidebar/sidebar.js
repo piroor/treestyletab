@@ -350,15 +350,15 @@ function updateContextualIdentitiesSelector() {
 }
 
 export async function rebuildAll(cache) {
-  const apiTabs = await browser.tabs.query({ currentWindow: true });
+  const tabs = await browser.tabs.query({ currentWindow: true });
   Tabs.clearAllElements();
-  Tabs.untrackAll(apiTabs[0].windowId);
-  for (const apiTab of apiTabs) {
-    Tabs.track(apiTab);
+  Tabs.untrackAll(tabs[0].windowId);
+  for (const tab of tabs) {
+    Tabs.track(tab);
   }
 
   if (cache) {
-    const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs: apiTabs });
+    const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs });
     if (restored) {
       MetricsData.add('rebuildAll (from cache)');
       return true;
@@ -366,11 +366,11 @@ export async function rebuildAll(cache) {
   }
 
   const container = Tabs.buildElementsContainerFor(mTargetWindow);
-  for (const apiTab of apiTabs) {
-    TabIdFixer.fixTab(apiTab);
-    const newTab = Tabs.buildTabElement(apiTab, { existing: true, inRemote: true });
+  for (const tab of tabs) {
+    TabIdFixer.fixTab(tab);
+    const newTab = Tabs.buildTabElement(tab, { existing: true, inRemote: true });
     container.appendChild(newTab);
-    TabsUpdate.updateTab(apiTab, apiTab, { forceApply: true });
+    TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
   Tabs.allElementsContainer.appendChild(container);
   MetricsData.add('rebuildAll (from scratch)');
@@ -399,8 +399,8 @@ async function waitUntilBackgroundIsReady() {
   }
   catch(_e) {
   }
-  return new Promise((resolve, _aReject) => {
-    const onBackgroundIsReady = (message, _aSender, _aRespond) => {
+  return new Promise((resolve, _reject) => {
+    const onBackgroundIsReady = (message, _sender, _respond) => {
       if (!message ||
           !message.type ||
           message.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
