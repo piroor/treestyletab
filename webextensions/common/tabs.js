@@ -1442,8 +1442,7 @@ export function getHighlightedTabs(windowId) {
     windowId,
     living:      true,
     highlighted: true,
-    ordered:     true,
-    element:     true
+    ordered:     true
   });
 }
 
