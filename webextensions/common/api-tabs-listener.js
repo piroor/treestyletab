@@ -586,6 +586,10 @@ async function onRemoved(tabId, removeInfo) {
 
     log('tabs.onRemoved, tab is found: ', oldTab);
 
+    // remove from "highlighted tabs" cache immediately, to prevent misdetection for "multiple highlighted".
+    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(removeInfo.windowId);
+    highlightedTabs.delete(oldTab);
+
     Tab.onStateChanged.dispatch(oldTab);
 
     if (oldTab.active &&

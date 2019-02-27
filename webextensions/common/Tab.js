@@ -76,8 +76,7 @@ export default class Tab {
       TabsStore.tabsByUniqueId.delete(this.uniqueId.id)
 
     const highlightedTabs = TabsStore.highlightedTabsForWindow.get(this.tab.windowId);
-    if (highlightedTabs.has(this.tab))
-      highlightedTabs.delete(this.tab);
+    highlightedTabs.delete(this.tab);
 
     if (this.element) {
       if (this.element.parentNode) {
