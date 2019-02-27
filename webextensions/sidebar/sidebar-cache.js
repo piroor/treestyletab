@@ -159,7 +159,10 @@ export async function restoreTabsFromCache(cache, params = {}) {
       const allTabs = Tab.getAllTabs(mTargetWindow);
       const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
-        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`);
+        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`, {
+          currentStructrue,
+          masterStructure
+        });
         restored = false;
         if (window.element)
           window.element.parentNode.removeChild(window.element);
