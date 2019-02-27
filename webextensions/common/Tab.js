@@ -517,7 +517,7 @@ Tab.dumpAll = (windowId) => {
     return;
   log('dumpAllTabs\n' +
     Tabs.getAllTabs(windowId).map(tab =>
-      Tab.getAncestor(tab).reverse().concat([tab])
+      Tab.getAncestors(tab).reverse().concat([tab])
         .map(tab => tab.id + (Tabs.isPinned(tab) ? ' [pinned]' : ''))
         .join(' => ')
     ).join('\n'));

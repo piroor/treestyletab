@@ -107,7 +107,7 @@ async function updateInternal(tabId) {
       );
     }
     else
-      successor = tab.$TST.mextVisible || tab.$TST.visiblePrevious;
+      successor = tab.$TST.visibleNext || tab.$TST.visiblePrevious;
   }
   if (successor) {
     log(`  ${tab.id} is under control: successor = ${successor.id}`);
