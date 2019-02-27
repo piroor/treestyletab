@@ -65,6 +65,8 @@ export const highlightedTabsForWindow = new Map();
 // Helper Class
 //===================================================================
 
+export const onTabTracked = new EventListenerManager();
+
 export class Tab {
   constructor(tab) {
     const alreadyTracked = trackedTabs.get(tab.id);
@@ -94,6 +96,10 @@ export class Tab {
     // eslint-disable-next-line no-use-before-define
     const window = trackedWindows.get(tab.windowId) || new Window(tab.windowId);
     window.trackTab(tab);
+
+    this.promisedUniqueId.then(() => {
+      onTabTracked.dispatch(tab);
+    });
   }
 
   destroy() {
@@ -107,6 +113,10 @@ export class Tab {
     trackedTabs.delete(this.id);
     if (this.uniqueId)
       trackedTabsByUniqueId.delete(this.uniqueId.id)
+
+    const highlightedTabs = highlightedTabsForWindow.get(this.tab.windowId);
+    if (highlightedTabs.has(this.tab))
+      highlightedTabs.delete(this.tab);
 
     if (this.element) {
       if (this.element.parentNode) {
@@ -836,6 +846,18 @@ export async function waitUntilAllTabsAreCreated(windowId = null) {
 export async function waitUntilTabsAreCreated(idOrIds) {
   return waitUntilTabsAreOperated({ ids: idOrIds, operatingTabs: mCreatingTabs })
     .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
+}
+
+export async function waitUntilTabsAreTracked(tabId) {
+  return new Promise((resolve, _reject) => {
+    const listener = (tab) => {
+      if (tab.id != tabId)
+        return;
+      onTabTracked.removeListener(listener);
+      resolve(tab);
+    };
+    onTabTracked.addListener(listener);
+  });
 }
 
 const mMovingTabs = new Map();

@@ -150,8 +150,8 @@ async function onActivated(activeInfo) {
       window.internalSilentlyFocusCount--;
     const byTabDuplication = parseInt(window.duplicatingTabsCount) > 0;
 
-    if (Tabs.hasCreatingTab(activeInfo.windowId))
-      await Tabs.waitUntilTabsAreCreated(activeInfo.tabId);
+    if (!Tabs.trackedTabs.get(activeInfo.tabId))
+      await Tabs.waitUntilTabsAreTracked(activeInfo.tabId);
 
     const newActiveTab = Tabs.trackedTabs.get(activeInfo.tabId);
     if (!newActiveTab ||
@@ -241,8 +241,8 @@ async function onUpdated(tabId, changeInfo, tab) {
   TabIdFixer.fixTab(tab);
   tabId = tab.id;
 
-  if (Tabs.hasCreatingTab(tab.windowId))
-    await Tabs.waitUntilTabsAreCreated(tabId);
+  if (!Tabs.trackedTabs.get(tabId))
+    await Tabs.waitUntilTabsAreTracked(tabId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -650,8 +650,8 @@ async function onMoved(tabId, moveInfo) {
   // TabsMove.syncTabsPositionToApiTabs() anyway!
   const maybeInternalOperation = window.internalMovingTabs.has(tabId);
 
-  if (Tabs.hasCreatingTab(moveInfo.windowId))
-    await Tabs.waitUntilTabsAreCreated(tabId);
+  if (!Tabs.trackedTabs.get(tabId))
+    await Tabs.waitUntilTabsAreTracked(tabId);
   if (Tabs.hasMovingTab(moveInfo.windowId))
     await Tabs.waitUntilAllTabsAreMoved(moveInfo.windowId);
 
