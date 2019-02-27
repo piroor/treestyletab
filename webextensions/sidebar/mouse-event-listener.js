@@ -393,7 +393,7 @@ async function onMouseUp(event) {
     }
     else if (lastMousedown.detail.twisty) {
       log('clicked on twisty');
-      if (Tabs.hasChildTabs(tab))
+      if (tab.$TST.hasChild)
         Tree.collapseExpandSubtree(tab, {
           collapsed:       !Tabs.isSubtreeCollapsed(tab),
           manualOperation: true,

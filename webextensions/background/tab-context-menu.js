@@ -473,7 +473,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeDescendants', {
     visible: emulate && contextTab && configs.context_closeTabOptions_closeDescendants,
-    enabled: !multiselected && Tabs.hasChildTabs(contextTab)
+    enabled: !multiselected && contextTab && contextTab.$TST.hasChild
   }) && modifiedItemsCount++;
   updateItem('context_closeTabOptions_closeOthers', {
     visible: emulate && contextTab && configs.context_closeTabOptions_closeOthers,

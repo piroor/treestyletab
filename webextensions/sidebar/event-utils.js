@@ -47,7 +47,7 @@ export function getElementTarget(eventOrTarget) {
 
 export function isEventFiredOnTwisty(event) {
   const tab = getTabFromEvent(event);
-  if (!tab || !Tabs.hasChildTabs(tab))
+  if (!tab || !tab.$TST.hasChild)
     return false;
 
   const target = getElementTarget(event);

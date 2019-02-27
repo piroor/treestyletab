@@ -500,7 +500,6 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
   const dragOverTab = dropActionInfo.dragOverTab;
   if (dragOverTab &&
       dropActionInfo.dropPosition == kDROP_ON_SELF &&
-      !Tabs.isLocked(dragOverTab) &&
       !dragOverTab.pinned) {
     const behavior = await getDroppedLinksOnTabBehavior();
     if (behavior <= Constants.kDROPLINK_ASK)

@@ -113,7 +113,7 @@ function updateCloseboxTooltip(tab) {
   let tooltip;
   if (Tabs.isMultiselected(tab))
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip_multiselected');
-  else if (Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab))
+  else if (tab.$TST.hasChild && Tabs.isSubtreeCollapsed(tab))
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
@@ -133,7 +133,7 @@ function updateDescendantsCount(tab) {
 
 function updateDescendantsHighlighted(tab) {
   const children = tab.$TST.children;
-  if (!Tabs.hasChildTabs(tab)) {
+  if (!tab.$TST.hasChild) {
     Tabs.removeState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
     Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
     return;
@@ -145,7 +145,7 @@ function updateDescendantsHighlighted(tab) {
       someHighlighted = true;
       allHighlighted = (
         allHighlighted &&
-        (!Tabs.hasChildTabs(child) ||
+        (!child.$TST.hasChild ||
          Tabs.hasState(child, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
       );
     }
@@ -220,7 +220,7 @@ windowId = ${tab.windowId}
 
   if (configs.showCollapsedDescendantsByTooltip &&
       Tabs.isSubtreeCollapsed(tab) &&
-      Tabs.hasChildTabs(tab)) {
+      tab.$TST.hasChild) {
     Tabs.setAttribute(tab, 'title', tab.$TST.tooltipWithDescendants);
     return;
   }

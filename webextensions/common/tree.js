@@ -597,7 +597,7 @@ function updateTabsIndent(tabs, level = undefined) {
 // collapse/expand tabs
 
 export function shouldTabAutoExpanded(tab) {
-  return Tabs.hasChildTabs(tab) && Tabs.isSubtreeCollapsed(tab);
+  return tab.$TST.hasChild && Tabs.isSubtreeCollapsed(tab);
 }
 
 export async function collapseExpandSubtree(tab, params = {}) {
@@ -732,7 +732,7 @@ export async function collapseExpandTab(tab, params = {}) {
   const stack = `${new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })
   const last = params.last &&
-                 (!Tabs.hasChildTabs(tab) || Tabs.isSubtreeCollapsed(tab));
+                 (!tab.$TST.hasChild || Tabs.isSubtreeCollapsed(tab));
   const collapseExpandInfo = Object.assign({}, params, {
     anchor: last && params.anchor,
     last:   last
@@ -818,7 +818,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
 
 export async function fixupSubtreeCollapsedState(tab, options = {}) {
   let fixed = false;
-  if (!Tabs.hasChildTabs(tab))
+  if (!tab.$TST.hasChild)
     return fixed;
   const firstChild = tab.$TST.firstChild;
   const childrenCollapsed = Tabs.isCollapsed(firstChild);
@@ -1126,7 +1126,7 @@ export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
 }
 
 export async function followDescendantsToMovedRoot(tab, options = {}) {
-  if (!Tabs.hasChildTabs(tab))
+  if (!tab.$TST.hasChild)
     return;
 
   log('followDescendantsToMovedRoot: ', dumpTab(tab));
@@ -1669,7 +1669,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
     const tab = tabs[i];
     const expanded = expandStates[i];
     collapseExpandSubtree(tab, Object.assign({}, options, {
-      collapsed: expanded === undefined ? !Tabs.hasChildTabs(tab) : !expanded ,
+      collapsed: expanded === undefined ? !tab.$TST.hasChild : !expanded ,
       justNow:   true,
       force:     true
     }));

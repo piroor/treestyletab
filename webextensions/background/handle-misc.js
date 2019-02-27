@@ -488,7 +488,7 @@ function onMessage(message, sender) {
           // are unresponsive for quick-clicks).
           Tabs.broadcastState(tab, {
             add, remove,
-            bubbles: !Tabs.hasChildTabs(tab)
+            bubbles: !tab.$TST.hasChild
           });
         }
       })();

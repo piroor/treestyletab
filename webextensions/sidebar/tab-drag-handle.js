@@ -90,7 +90,7 @@ function doShow(tab) {
   }
 
   mTargetTabId = tab.id;
-  if (Tabs.hasChildTabs(tab))
+  if (tab.$TST.hasChild)
     mHandle.classList.add('has-child');
   else
     mHandle.classList.remove('has-child');

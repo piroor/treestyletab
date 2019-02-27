@@ -421,7 +421,7 @@ function onShown(info, tab) {
 
   tab = tab && Tab.get(tab.id);
   const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
-  const hasChild = Tabs.hasChildTabs(tab);
+  const hasChild = tab.$TST.hasChild;
   const multiselected = Tabs.isMultiselected(tab);
 
   for (const item of mContextMenuItems) {

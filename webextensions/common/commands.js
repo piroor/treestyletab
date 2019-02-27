@@ -84,7 +84,7 @@ export async function closeOthers(rootTab) {
 }
 
 export function collapseTree(rootTab) {
-  if (!Tabs.hasChildTabs(rootTab) ||
+  if (!rootTab.$TST.hasChild ||
       Tabs.isSubtreeCollapsed(rootTab))
     return;
   Tree.collapseExpandSubtree(rootTab, {
@@ -101,7 +101,7 @@ export function collapseAll(windowId) {
 }
 
 export function expandTree(rootTab) {
-  if (!Tabs.hasChildTabs(rootTab) ||
+  if (!rootTab.$TST.hasChild ||
       !Tabs.isSubtreeCollapsed(rootTab))
     return;
   Tree.collapseExpandSubtree(rootTab, {
@@ -411,7 +411,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
     replacedGroupTabs.reverse().forEach(function(tab) {
       log(' check: ', tab.label+'('+tab.index+') '+getLoadingURI(tab));
       if (Tabs.isGroupTab(tab) &&
-        !Tabs.hasChildTabs(tab))
+        !tab.$TST.hasChild)
         removeTab(tab);
     }, this);
   }, 0);

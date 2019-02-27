@@ -900,16 +900,6 @@ export function isMultihighlighted(tab) {
   return !!(highlightedTabs && highlightedTabs.size > 1);
 }
 
-export function isLocked(_aTab) {
-  return false;
-}
-
-export function hasChildTabs(parent) {
-  if (!ensureLivingTab(parent))
-    return false;
-  return parent.$TST.hasChild;
-}
-
 export function getMaxTreeLevel(windowId, options = {}) {
   if (typeof options != 'object')
     options = {};
