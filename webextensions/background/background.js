@@ -355,7 +355,7 @@ async function updateChildren(tab) {
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_CHILDREN,
-    Tab.getChildren(tab).map(child => child.$TST.uniqueId.id)
+    tab.$TST.children.map(child => child.$TST.uniqueId.id)
   );
 }
 

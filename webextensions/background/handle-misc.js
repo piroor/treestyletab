@@ -205,12 +205,11 @@ async function onShortcutCommand(command) {
         Tabs.getFirstVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
-    case 'focusParent': {
-      const parent = Tab.getParent(activeTab);
-      TabsInternalOperation.activateTab(parent);
-    }; return;
+    case 'focusParent':
+      TabsInternalOperation.activateTab(activeTab.$TST.parent);
+      return;
     case 'focusFirstChild':
-      TabsInternalOperation.activateTab(Tab.getFirstChild(activeTab));
+      TabsInternalOperation.activateTab(activeTab.$TST.firstChild);
       return;
 
     case 'tabbarUp':

@@ -252,7 +252,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
           insertAfter  = lastDescendant;
         }
         else { // inside the tree
-          let children = Tab.getChildren(parent);
+          let children = parent.$TST.children;
           if (options.ignoreTabs)
             children = children.filter(tab => !options.ignoreTabs.includes(tab));
           for (const child of children) {
@@ -296,7 +296,7 @@ export function detachTab(child, options = {}) {
   log('detachTab: ', child.id, options,
       { stack: `${new Error().stack}\n${options.stack || ''}` });
   // the "parent" option is used for removing child.
-  const parent = Tabs.ensureLivingTab(options.parent) || Tab.getParent(child);
+  const parent = Tabs.ensureLivingTab(options.parent) || child.$TST.parent;
 
   if (!parent)
     log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
@@ -341,8 +341,8 @@ export async function detachTabsFromTree(tabs, options = {}) {
   tabs = Array.from(tabs).reverse();
   const promisedAttach = [];
   for (const tab of tabs) {
-    const children = Tab.getChildren(tab);
-    const parent   = Tab.getParent(tab);
+    const children = tab.$TST.children;
+    const parent   = tab.$TST.parent;
     for (const child of children) {
       if (!tabs.includes(child)) {
         if (parent)
@@ -361,7 +361,7 @@ export async function detachTabsFromTree(tabs, options = {}) {
 export function detachAllChildren(tab, options = {}) {
   log('detachAllChildren: ', tab.id);
   // the "children" option is used for removing tab.
-  const children = options.children ? options.children.map(Tabs.ensureLivingTab) : Tab.getChildren(tab);
+  const children = options.children ? options.children.map(Tabs.ensureLivingTab) : tab.$TST.children;
   if (!children.length)
     return;
   log(' => children to be detached: ', children.map(dumpTab));
@@ -374,7 +374,7 @@ export function detachAllChildren(tab, options = {}) {
   options.dontUpdateInsertionPositionInfo = true;
 
   // the "parent" option is used for removing tab.
-  const parent = Tabs.ensureLivingTab(options.parent) || Tab.getParent(tab);
+  const parent = Tabs.ensureLivingTab(options.parent) || tab.$TST.parent;
   if (Tabs.isGroupTab(tab) &&
       Tabs.getRemovingTabs(tab.windowId).length == children.length) {
     options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
@@ -384,7 +384,7 @@ export function detachAllChildren(tab, options = {}) {
   let nextTab = null;
   if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
       !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
-    nextTab = Tab.getNextSibling(Tab.getRoot(tab));
+    nextTab = Tab.getNextSibling(tab.$TST.root);
   }
 
   if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
@@ -475,7 +475,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING: {
       log(' => kNEWTAB_OPEN_AS_SIBLING');
-      const parent = Tab.getParent(baseTab);
+      const parent = baseTab.$TST.parent;
       if (parent) {
         await attachTabTo(tab, parent, {
           delayedMove: true,
@@ -501,7 +501,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       let nextSibling = Tab.getNextSibling(baseTab);
       if (nextSibling == tab)
         nextSibling = null;
-      const parent = Tab.getParent(baseTab);
+      const parent = baseTab.$TST.parent;
       if (parent) {
         return attachTabTo(tab, parent, {
           insertBefore: nextSibling,
@@ -589,7 +589,7 @@ function updateTabsIndent(tabs, level = undefined) {
 
     onLevelChanged.dispatch(item);
     Tabs.setAttribute(item, Constants.kLEVEL, level);
-    updateTabsIndent(Tab.getChildren(item), level + 1);
+    updateTabsIndent(item.$TST.children, level + 1);
   }
 }
 
@@ -641,7 +641,7 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
-  const childTabs = Tab.getChildren(tab);
+  const childTabs = tab.$TST.children;
   const lastExpandedTabIndex = childTabs.length - 1;
   for (let i = 0, maxi = childTabs.length; i < maxi; i++) {
     const childTab = childTabs[i];
@@ -681,7 +681,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   if (!tab)
     return;
 
-  const parent = Tab.getParent(tab);
+  const parent = tab.$TST.parent;
   if (!parent)
     return;
 
@@ -700,7 +700,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   }
 
   if (!Tabs.isSubtreeCollapsed(tab)) {
-    const children = Tab.getChildren(tab);
+    const children = tab.$TST.children;
     children.forEach((child, index) => {
       const last = params.last &&
                      (index == children.length - 1);
@@ -789,7 +789,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   logCollapseExpand(`${collapseTabs.length} tabs can be collapsed, ancestors: `, expandedAncestors);
   for (const collapseTab of collapseTabs) {
     let dontCollapse = false;
-    const parentTab = Tab.getParent(collapseTab);
+    const parentTab = collapseTab.$TST.parent;
     if (parentTab) {
       dontCollapse = true;
       if (!Tabs.isSubtreeCollapsed(parentTab)) {
@@ -820,7 +820,7 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
   let fixed = false;
   if (!Tabs.hasChildTabs(tab))
     return fixed;
-  const firstChild = Tab.getFirstChild(tab);
+  const firstChild = tab.$TST.firstChild;
   const childrenCollapsed = Tabs.isCollapsed(firstChild);
   const collapsedStateMismatched = Tabs.isSubtreeCollapsed(tab) != childrenCollapsed;
   const nextIsFirstChild = Tab.getNext(tab) == firstChild;
@@ -914,16 +914,16 @@ async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = 
   return tryMoveFocusFromClosingActiveTabNow(tab, { params });
 }
 function getTryMoveFocusFromClosingActiveTabNowParams(tab, overrideParams) {
-  const parentTab = Tab.getParent(tab);
+  const parentTab = tab.$TST.parent;
   const params = {
     active:                   Tabs.isActive(tab),
     pinned:                   Tabs.isPinned(tab),
     parentTab,
-    firstChildTab:            Tab.getFirstChild(tab),
-    firstChildTabOfParent:    Tab.getFirstChild(parentTab),
-    lastChildTabOfParent:     Tab.getLastChild(parentTab),
+    firstChildTab:            tab.$TST.firstChild,
+    firstChildTabOfParent:    parentTab && parentTab.$TST.firstChild,
+    lastChildTabOfParent:     parentTab && parentTab.$TST.lastChild,
     previousSiblingTab:       Tab.getPreviousSibling(tab),
-    preDetectedNextActiveTab: Tab.findSuccessor(tab),
+    preDetectedSuccessor:     tab.$TST.findSuccessor(),
     serializedTab:            TSTAPI.serializeTab(tab),
     closeParentBehavior:      getCloseParentBehaviorForTab(tab, { parentTab })
   };
@@ -942,7 +942,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
     active,
     nextTab, nextTabUrl, nextIsDiscarded,
     parentTab, firstChildTab, firstChildTabOfParent, lastChildTabOfParent,
-    previousSiblingTab, preDetectedNextActiveTab,
+    previousSiblingTab, preDetectedSuccessor,
     serializedTab, closeParentBehavior
   } = params;
   let {
@@ -964,41 +964,41 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
   if (results.some(result => result.result)) // canceled
     return false;
 
-  let nextActiveTab = null;
+  let successor = null;
   if (firstChildTab &&
       (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN ||
        closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD))
-    nextActiveTab = firstChildTab;
-  log('focus to first child?: ', !!nextActiveTab);
+    successor = firstChildTab;
+  log('focus to first child?: ', !!successor);
 
   ignoredTabs = ignoredTabs || [];
   if (parentTab) {
-    log(`tab=${tab.id}, parent=${parentTab.id}, nextActive=${nextActiveTab.id}, lastChildTabOfParent=${lastChildTabOfParent && lastChildTabOfParent.id}, previousSiblingTab=${previousSiblingTab && previousSiblingTab.id}`);
-    if (!nextActiveTab && tab == lastChildTabOfParent) {
+    log(`tab=${tab.id}, parent=${parentTab.id}, successor=${successor.id}, lastChildTabOfParent=${lastChildTabOfParent && lastChildTabOfParent.id}, previousSiblingTab=${previousSiblingTab && previousSiblingTab.id}`);
+    if (!successor && tab == lastChildTabOfParent) {
       if (tab == firstChildTabOfParent) { // this is the really last child
-        nextActiveTab = parentTab;
-        log('focus to parent?: ', !!nextActiveTab);
+        successor = parentTab;
+        log('focus to parent?: ', !!successor);
       }
       else {
-        nextActiveTab = previousSiblingTab;
-        log('focus to previous sibling?: ', !!nextActiveTab);
+        successor = previousSiblingTab;
+        log('focus to previous sibling?: ', !!successor);
       }
     }
-    if (nextActiveTab && ignoredTabs.includes(nextActiveTab))
-      nextActiveTab = Tab.findSuccessor(parentTab, { ignoredTabs });
+    if (successor && ignoredTabs.includes(successor))
+      successor = parentTab.$TST.findSuccessor({ ignoredTabs });
   }
-  else if (!nextActiveTab) {
-    nextActiveTab = preDetectedNextActiveTab;
-    log('focus to Tab.findSuccessor()?: ', !!nextActiveTab);
+  else if (!successor) {
+    successor = preDetectedSuccessor;
+    log('focus to parentTab.$TST.findSuccessor()?: ', !!successor);
   }
-  if (nextActiveTab && ignoredTabs.includes(nextActiveTab)) {
-    nextActiveTab = Tab.findSuccessor(nextActiveTab, { ignoredTabs });
-    log('focus to Tab.findSuccessor() again?: ', !!nextActiveTab);
+  if (successor && ignoredTabs.includes(successor)) {
+    successor = successor.$TST.findSuccessor({ ignoredTabs });
+    log('focus to successor.$TST.findSuccessor() again?: ', !!successor);
   }
 
-  if (!nextActiveTab ||
-      Tabs.isHidden(nextActiveTab) ||
-      Tabs.isActive(nextActiveTab))
+  if (!successor ||
+      Tabs.isHidden(successor) ||
+      Tabs.isActive(successor))
     return false;
 
   if (Tabs.isActive(nextTab) &&
@@ -1007,8 +1007,8 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
     nextTab.$TST.discardURLAfterCompletelyLoaded = nextTabUrl || nextTab.url;
   }
 
-  log('focus to: ', nextActiveTab.id);
-  await TabsInternalOperation.activateTab(nextActiveTab);
+  log('focus to: ', successor.id);
+  await TabsInternalOperation.activateTab(successor);
   return true;
 }
 
@@ -1019,7 +1019,7 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
   let behavior = configs.closeParentBehavior;
-  const parentTab = options.parent || Tab.getParent(tab);
+  const parentTab = options.parent || tab.$TST.parent;
 
   if (options.keepChildren &&
       behavior != Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
@@ -1035,7 +1035,7 @@ export function getCloseParentBehaviorForTab(tab, options = {}) {
   // This is similar to "taking by representation".
   if (behavior == Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD &&
       parentTab &&
-      Tab.getChildren(parentTab).length == 1 &&
+      parentTab.$TST.childIds.length == 1 &&
       configs.promoteAllChildrenWhenClosedParentIsLastChild)
     behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
 
@@ -1483,7 +1483,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       const targetLevel = Number(Tabs.getAttribute(params.insertBefore, Constants.kLEVEL) || 0);
       let parent = null;
       if (!tab || !Tabs.isPinned(tab))
-        parent = (prevLevel < targetLevel) ? prevTab : Tab.getParent(params.insertBefore);
+        parent = (prevLevel < targetLevel) ? prevTab : (params.insertBefore && params.insertBefore.$TST.parent);
       return {
         parent,
         insertAfter:  prevTab,
@@ -1513,7 +1513,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
     const nextTab = Tab.getNextVisible(params.insertAfter);
     if (!nextTab) {
       return {
-        parent:      Tab.getParent(params.insertAfter),
+        parent:      params.insertAfter && params.insertAfter.$TST.parent,
         insertAfter: params.insertAfter
       };
     }
@@ -1522,7 +1522,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       const nextLevel   = Number(Tabs.getAttribute(nextTab, Constants.kLEVEL) || 0);
       let parent = null;
       if (!tab || !Tabs.isPinned(tab))
-        parent = (targetLevel < nextLevel) ? params.insertAfter : Tab.getParent(params.insertAfter) ;
+        parent = (targetLevel < nextLevel) ? params.insertAfter : (params.insertAfter && params.insertAfter.$TST.parent) ;
       return {
         parent,
         insertBefore: nextTab,
@@ -1550,7 +1550,7 @@ export function getTreeStructureFromTabs(tabs, options = {}) {
   */
   return cleanUpTreeStructureArray(
     tabs.map((tab, index) => {
-      const parent = Tab.getParent(tab);
+      const parent = tab.$TST.parent;
       const indexInGivenTabs = parent ? tabs.indexOf(parent) : -1 ;
       return indexInGivenTabs >= index ? -1 : indexInGivenTabs ;
     }),
@@ -1686,7 +1686,7 @@ export function snapshotForActionDetection(targetTab) {
   const nextTab = Tab.getNextNormal(targetTab);
   const foundTabs = {};
   const tabs = Tab.getAncestors(prevTab)
-    .concat([prevTab, targetTab, nextTab, Tab.getParent(targetTab)])
+    .concat([prevTab, targetTab, nextTab, targetTab.$TST.parent])
     .filter(tab => Tabs.ensureLivingTab(tab) && !foundTabs[tab.id] && (foundTabs[tab.id] = true)) // uniq
     .sort((a, b) => a.index - b.index);
   return snapshotTree(targetTab, tabs);
@@ -1715,7 +1715,7 @@ function snapshotTree(targetTab, tabs) {
     const item = snapshotById[tab.id];
     if (!item)
       continue;
-    const parent = Tab.getParent(tab);
+    const parent = tab.$TST.parent;
     item.parent = parent && parent.id;
     const next = Tab.getNextNormal(tab);
     item.next = next && next.id;

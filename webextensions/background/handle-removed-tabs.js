@@ -65,9 +65,9 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
     await closeChildTabs(tab);
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
-      Tab.getChildren(tab).length > 1) {
+      tab.$TST.childIds.length > 1) {
     log('trying to replace the closing tab with a new group tab');
-    const firstChild = Tab.getFirstChild(tab);
+    const firstChild = tab.$TST.firstChild;
     const uri = TabsGroup.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
       temporary: true

@@ -290,7 +290,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     }
 
     TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
-    TabsUpdate.updateParentTab(Tab.getParent(updatedTab));
+    TabsUpdate.updateParentTab(updatedTab.$TST.parent);
 
     const onUpdatedResult = Tabs.onUpdated.dispatch(updatedTab, changeInfo);
     // don't do await if not needed, to process things synchronously
@@ -609,8 +609,8 @@ async function onRemoved(tabId, removeInfo) {
 
     // The removing tab may be attached to tree/someone attached to the removing tab.
     // We need to clear them by onRemoved handlers.
-    const oldChildren = Tab.getChildren(oldTab);
-    const oldParent   = Tab.getParent(oldTab);
+    const oldChildren = oldTab.$TST.children;
+    const oldParent   = oldTab.$TST.parent;
     Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
 
     Tabs.trackedWindows.get(removeInfo.windowId).detachTab(oldTab.id);

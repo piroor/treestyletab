@@ -297,7 +297,7 @@ export function updateParentTab(parent) {
   if (!Tabs.ensureLivingTab(parent))
     return;
 
-  const children = Tab.getChildren(parent);
+  const children = parent.$TST.children;
 
   if (children.some(Tabs.maybeSoundPlaying))
     Tabs.addState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
@@ -309,7 +309,7 @@ export function updateParentTab(parent) {
   else
     Tabs.removeState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
 
-  updateParentTab(Tab.getParent(parent));
+  updateParentTab(parent.$TST.parent);
 
   Tabs.onParentTabUpdated.dispatch(parent);
 }

@@ -176,12 +176,12 @@ export async function openNewTabAs(options = {}) {
     }; break;
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING:
-      parent      = Tab.getParent(currentTab);
+      parent      = currentTab.$TST.parent;
       insertAfter = Tab.getLastDescendant(parent);
       break;
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-      parent       = Tab.getParent(currentTab);
+      parent       = currentTab.$TST.parent;
       insertBefore = Tab.getNextSibling(currentTab);
       insertAfter  = Tab.getLastDescendant(currentTab) || currentTab;
     }; break;
@@ -205,7 +205,7 @@ export async function openNewTabAs(options = {}) {
 export async function indent(tab, options = {}) {
   const newParent = Tab.getPreviousSibling(tab);
   if (!newParent ||
-      newParent == Tab.getParent(tab))
+      newParent == tab.$TST.parent)
     return false;
 
   if (!options.followChildren)
@@ -223,14 +223,11 @@ export async function indent(tab, options = {}) {
 }
 
 export async function outdent(tab, options = {}) {
-  const parent = Tab.getParent(tab);
+  const parent = tab.$TST.parent;
   if (!parent)
     return false;
 
-  const newParent = Tab.getParent(parent);
-  if (newParent == Tab.getParent(tab))
-    return false;
-
+  const newParent = parent.$TST.parent;
   if (!options.followChildren)
     Tree.detachAllChildren(tab, {
       broadcast: true,

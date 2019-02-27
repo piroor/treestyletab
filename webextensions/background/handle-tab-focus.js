@@ -46,7 +46,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
   if (Tabs.isCollapsed(tab)) {
-    if (!Tab.getParent(tab)) {
+    if (!tab.$TST.parent) {
       // This is invalid case, generally never should happen,
       // but actually happen on some environment:
       // https://github.com/piroor/treestyletab/issues/1717

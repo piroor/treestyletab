@@ -209,7 +209,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     break;
   }
   if (!attached) {
-    const opener = Tab.getOpener(tab);
+    const opener = tab.$TST.opener;
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', { child: tab, parent: opener });
@@ -236,7 +236,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       // the restored tab is a roo tab
       ancestors.length == 0 &&
       // but attached to any parent based on its restored position
-      Tab.getParent(tab) &&
+      tab.$TST.parent &&
       // when not in-middle position of existing tree (safely detachable position)
       !Tab.getNextSibling(tab)) {
     Tree.detachTab(tab, {

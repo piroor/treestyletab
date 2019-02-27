@@ -132,7 +132,7 @@ function updateDescendantsCount(tab) {
 }
 
 function updateDescendantsHighlighted(tab) {
-  const children = Tab.getChildren(tab);
+  const children = tab.$TST.children;
   if (!Tabs.hasChildTabs(tab)) {
     Tabs.removeState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
     Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
@@ -236,7 +236,7 @@ windowId = ${tab.windowId}
 
 function getTooltipWithDescendants(tab) {
   const tooltip = [`* ${tab.$TST.tooltip || tab.title}`];
-  for (const child of Tab.getChildren(tab)) {
+  for (const child of tab.$TST.children) {
     if (!child.$TST.tooltipWithDescendants)
       child.$TST.tooltipWithDescendants = getTooltipWithDescendants(child);
     tooltip.push(child.$TST.tooltipWithDescendants.replace(/^/gm, '  '));
@@ -585,7 +585,7 @@ Tabs.onMoving.addListener((tab, _info) => {
 
 Tabs.onMoved.addListener(async (tab, info) => {
   if (mInitialized)
-    reserveToUpdateTooltip(Tab.getParent(tab));
+    reserveToUpdateTooltip(tab.$TST.parent);
 
   const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
   mTabWasVisibleBeforeMoving.delete(tab.id);
@@ -670,7 +670,7 @@ Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(tab))
     return;
-  reserveToUpdateTooltip(Tab.getParent(tab));
+  reserveToUpdateTooltip(tab.$TST.parent);
   if (tab.$TST.element.parentNode)
     tab.$TST.element.parentNode.removeChild(tab.$TST.element);
 });

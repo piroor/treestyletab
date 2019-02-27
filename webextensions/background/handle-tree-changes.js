@@ -52,7 +52,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       });
     }
 
-    const isNewTreeCreatedManually = !info.justNow && Tab.getChildren(parent).length == 1;
+    const isNewTreeCreatedManually = !info.justNow && parent.$TST.childIds.length == 1;
     if (info.forceExpand) {
       log('  expand by forceExpand option');
       Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
@@ -128,7 +128,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   ]);
 
   if (!Tabs.ensureLivingTab(tab) || // not removed while waiting
-      Tab.getParent(tab) != info.parent) // not detached while waiting
+      tab.$TST.parent != info.parent) // not detached while waiting
     return;
 
   browser.runtime.sendMessage({

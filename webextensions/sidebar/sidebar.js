@@ -1014,7 +1014,7 @@ function onMessage(message, _sender, _respond) {
               Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
             if (message.bubbles)
-              TabsUpdate.updateParentTab(Tab.getParent(tab));
+              TabsUpdate.updateParentTab(tab.$TST.parent);
           }
         }
       })();

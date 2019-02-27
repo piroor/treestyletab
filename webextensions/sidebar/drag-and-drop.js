@@ -269,7 +269,7 @@ function getDropAction(event) {
                    );
           */
           for (const tab of info.draggedTabs.slice(0).reverse()) {
-            const parent = Tab.getParent(tab);
+            const parent = tab.$TST.parent;
             if (!parent && ancestors.includes(parent))
               return false;
           }
@@ -358,7 +358,7 @@ function getDropAction(event) {
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-        (Tab.getFirstChild(targetTab) || Tab.getNextVisible(targetTab)) :
+        (targetTab && targetTab.$TST.firstChild || Tab.getNextVisible(targetTab)) :
         (Tab.getNextSibling(targetTab) || Tab.getNext(Tab.getLastDescendant(targetTab) || targetTab));
       info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
         targetTab :
@@ -414,12 +414,12 @@ function getDropAction(event) {
         if (info.draggedTab &&
             info.draggedTab.id == info.insertBefore.id) {
           info.action       = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
-          info.parent       = Tab.getParent(targetTab);
+          info.parent       = targetTab.$TST.parent;
           let insertBefore = Tab.getNextSibling(targetTab);
           let ancestor     = info.parent;
           while (ancestor && !insertBefore) {
             insertBefore = Tab.getNextSibling(ancestor);
-            ancestor     = Tab.getParent(ancestor);
+            ancestor     = ancestor.$TST.parent;
           }
           info.insertBefore = insertBefore;
           info.insertAfter  = Tab.getLastDescendant(targetTab);

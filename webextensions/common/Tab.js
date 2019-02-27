@@ -116,6 +116,11 @@ export default class Tab {
     return this.ancestorIds.map(id => Tab.get(id)).filter(Tabs.ensureLivingTab);
   }
 
+  get root() {
+    const ancestors = this.ancestors;
+    return ancestors.length > 0 ? ancestors[ancestors.length-1] : this.tab ;
+  }
+
   set children(tabs) {
     this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
     return tabs;
@@ -124,12 +129,52 @@ export default class Tab {
     return this.childIds.map(id => Tab.get(id)).filter(Tabs.ensureLivingTab);
   }
 
+  get firstChild() {
+    const children = this.children;
+    return children.length > 0 ? children[0] : null ;
+  }
+
+  get lastChild() {
+    const children = this.children;
+    return children.length > 0 ? children[children.length - 1] : null ;
+  }
+
   get hasChild() {
     return this.childIds.length > 0;
   }
 
   sortChildren() {
     this.childIds = Tabs.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
+  }
+
+  get opener() {
+    if (!this.tab.openerTabId ||
+        this.tab.openerTabId == this.tab.id)
+      return null;
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      id:       this.tab.openerTabId,
+      living:   true
+    });
+  }
+
+  findSuccessor(tab, options = {}) {
+    if (typeof options != 'object')
+      options = {};
+    const ignoredTabs = (options.ignoredTabs || []).slice(0);
+    let foundTab = tab;
+    do {
+      ignoredTabs.push(foundTab);
+      foundTab = Tab.getNextSibling(foundTab);
+    } while (foundTab && ignoredTabs.includes(foundTab));
+    if (!foundTab) {
+      foundTab = tab;
+      do {
+        ignoredTabs.push(foundTab);
+        foundTab = Tab.getPreviousVisible(foundTab);
+      } while (foundTab && ignoredTabs.includes(foundTab));
+    }
+    return foundTab;
   }
 
   detach() {
@@ -305,43 +350,6 @@ Tab.getPreviousVisibleTab = tab => { // visible, not-collapsed
 }
 
 
-Tab.getOpener = tab => {
-  if (!tab)
-    return null;
-  if (!Tabs.ensureLivingTab(tab) ||
-      !tab ||
-      !tab.openerTabId ||
-      tab.openerTabId == tab.id)
-    return null;
-  Tabs.assertValidTab(tab);
-  const opener = Tabs.query({
-    windowId: tab.windowId,
-    id:       tab.openerTabId,
-    living:   true
-  });
-  return opener;
-}
-
-Tab.findSuccessor = (tab, options = {}) => {
-  if (typeof options != 'object')
-    options = {};
-  Tabs.assertValidTab(tab);
-  const ignoredTabs = (options.ignoredTabs || []).slice(0);
-  let foundTab = tab;
-  do {
-    ignoredTabs.push(foundTab);
-    foundTab = Tab.getNextSibling(foundTab);
-  } while (foundTab && ignoredTabs.includes(foundTab));
-  if (!foundTab) {
-    foundTab = tab;
-    do {
-      ignoredTabs.push(foundTab);
-      foundTab = Tab.getPreviousVisible(foundTab);
-    } while (foundTab && ignoredTabs.includes(foundTab));
-  }
-  return foundTab;
-}
-
 Tab.getGroupTabForOpener = opener => {
   if (!opener)
     return null;
@@ -364,13 +372,6 @@ Tab.getOpenerFromGroupTab = groupTab => {
   return matchedOpenerTabId && Tab.get(matchedOpenerTabId[1]);
 }
 
-
-Tab.getParent = child => {
-  if (!Tabs.ensureLivingTab(child))
-    return null;
-  Tabs.assertValidTab(child);
-  return child.$TST.parent;
-}
 
 Tab.getAncestors = (descendant, options = {}) => {
   if (!descendant || !Tabs.ensureLivingTab(descendant))
@@ -402,43 +403,6 @@ Tab.getVisibleAncestorOrSelf = descendant => {
   if (!Tabs.isCollapsed(descendant))
     return descendant;
   return null;
-}
-
-Tab.getRoot = descendant => {
-  if (!Tabs.ensureLivingTab(descendant))
-    return null;
-  Tabs.assertValidTab(descendant);
-  const ancestors = descendant.$TST.ancestors;
-  return ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
-}
-
-Tab.getChildren = parent => {
-  if (!Tabs.ensureLivingTab(parent))
-    return [];
-  Tabs.assertValidTab(parent);
-  if (!Tabs.assertInitializedTab(parent))
-    return [];
-  return parent.$TST.children;
-}
-
-Tab.getFirstChild = parent => {
-  if (!Tabs.ensureLivingTab(parent))
-    return null;
-  Tabs.assertValidTab(parent);
-  if (!Tabs.assertInitializedTab(parent))
-    return null;
-  const children = parent.$TST.children;
-  return children.length > 0 ? children[0] : null ;
-}
-
-Tab.getLastChild = parent => {
-  if (!Tabs.ensureLivingTab(parent))
-    return null;
-  Tabs.assertValidTab(parent);
-  if (!Tabs.assertInitializedTab(parent))
-    return null;
-  const children = parent.$TST.children;
-  return children.length > 0 ? children[children.length - 1] : null ;
 }
 
 Tab.getDescendants = root => {

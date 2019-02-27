@@ -32,7 +32,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
   log('Tabs.onCreating ', tab.id, info);
 
   const possibleOpenerTab = info.activeTab || Tabs.getActiveTab(tab.windowId);
-  const opener = Tab.getOpener(tab);
+  const opener = tab.$TST.opener;
   if (opener) {
     Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
   }
@@ -96,7 +96,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
     behavior:  params.autoAttachBehavior,
     broadcast: true
   });
-  const parent = Tab.getParent(tab);
+  const parent = tab.$TST.parent;
   if (!parent ||
       !params.inheritContextualIdentity ||
       tab.cookieStoreId != 'firefox-default' ||
@@ -136,10 +136,10 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   if ('openerTabId' in changeInfo &&
       configs.syncParentTabAndOpenerTab) {
     Tabs.waitUntilAllTabsAreCreated(tab.windowId).then(() => {
-      const parent = Tab.getOpener(tab);
+      const parent = tab.$TST.opener;
       if (!parent ||
           parent.windowId != tab.windowId ||
-          parent == Tab.getParent(tab))
+          parent == tab.$TST.parent)
         return;
       Tree.attachTabTo(tab, parent, {
         insertAt:    Constants.kINSERT_NEAREST,
@@ -159,7 +159,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     const window = Tabs.trackedWindows.get(tab.windowId);
     const toBeGroupedTabs = window.openedNewTabs;
     log('toBeGroupedTabs ', toBeGroupedTabs);
-    if (!Tab.getParent(tab) &&
+    if (!tab.$TST.parent &&
         possibleOpenerTab &&
         !toBeGroupedTabs.includes(tab.id)) {
       if (Tabs.isNewTabCommandTab(tab)) {

@@ -457,7 +457,7 @@ function reserveToSaveScrollPosition() {
 Tabs.onCreated.addListener((tab, _info) => {
   if (configs.animation) {
     wait(10).then(() => { // wait until the tab is moved by TST itself
-      const parent = Tab.getParent(tab);
+      const parent = tab.$TST.parent;
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
       const active = Tabs.isActive(tab);

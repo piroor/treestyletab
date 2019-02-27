@@ -93,9 +93,9 @@ function cleanupNeedlssGroupTab(tabs) {
   for (const tab of tabs) {
     if (!Tabs.isTemporaryGroupTab(tab))
       break;
-    if (Tab.getChildren(tab).length > 1)
+    if (tab.$TST.childIds.length > 1)
       break;
-    const lastChild = Tab.getFirstChild(tab);
+    const lastChild = tab.$TST.firstChild;
     if (lastChild && !Tabs.isTemporaryGroupTab(lastChild))
       break;
     tabsToBeRemoved.push(tab);
@@ -140,11 +140,11 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   if (changedInfo.includes('title')) {
     let newTitle;
     if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(groupTab.title)) {
-      const firstChild = Tab.getFirstChild(groupTab);
+      const firstChild = groupTab.$TST.firstChild;
       newTitle = browser.i18n.getMessage('groupTab_label', firstChild.title);
     }
     else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(groupTab.title)) {
-      const opener = Tab.getOpenerFromGroupTab(groupTab);
+      const opener = groupTab.$TST.opener;
       if (opener) {
         if (opener &&
             opener.favIconUrl) {
@@ -358,7 +358,7 @@ async function tryGroupNewTabs() {
     if (newRootTabs.length <= 0)
       return;
 
-    const newRootTabsFromPinned = newRootTabs.filter(tab => Tabs.isPinned(Tab.getOpener(tab)));
+    const newRootTabsFromPinned = newRootTabs.filter(tab => Tabs.isPinned(tab.$TST.opener));
     if (newRootTabsFromPinned.length > 0) {
       newRootTabs = newRootTabs.filter(tab => !newRootTabsFromPinned.includes(tab));
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
@@ -384,7 +384,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   let pinnedOpeners = [];
   const childrenOfPinnedTabs = {};
   for (const tab of rootTabs) {
-    const opener = Tab.getOpener(tab);
+    const opener = tab.$TST.opener;
     if (!pinnedOpeners.includes(opener))
       pinnedOpeners.push(opener);
   }
@@ -394,11 +394,11 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // (which were left ungrouped in previous process).
   const openerOf = {};
   const unifiedRootTabs = Tabs.getAllTabs(rootTabs[0].windowId).filter(tab => {
-    if (Tab.getParent(tab) ||
+    if (tab.$TST.parent ||
         Tabs.getAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
       return false;
     if (rootTabs.includes(tab)) { // newly opened tab
-      const opener = Tab.getOpener(tab);
+      const opener = tab.$TST.opener;
       if (!opener)
         return false;
       openerOf[tab.id] = opener;
