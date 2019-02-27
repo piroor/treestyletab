@@ -1349,6 +1349,8 @@ export async function moveTabs(tabs, options = {}) {
       movedTabs = newTabs;
     }
     catch(e) {
+      if (configs.debug)
+        console.log('failed to move/duplicate tabs ', e, new Error().stack);
       throw e;
     }
     finally {

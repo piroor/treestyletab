@@ -74,14 +74,33 @@ export function handleMissingTabError(error) {
   //console.log('Invalid Tab ID error on: ' + error.stack);
 }
 
-export function createErrorHandler(handler) {
+export function handleUnloadedError(error) {
+  if (!error ||
+      !error.message ||
+      error.message.indexOf('can\'t access dead object') != 0)
+    throw error;
+}
+
+export function createErrorHandler(...handlers) {
   const stack = new Error().stack;
   return (error) => {
     try {
-      if (handler)
-        handler(error);
-      else
+      if (handlers.length > 0) {
+        let unhandledCount = 0;
+        handlers.forEach(handler => {
+          try {
+            handler(error);
+          }
+          catch(_error) {
+            unhandledCount++;
+          }
+        });
+        if (unhandledCount == handlers.length) // not handled
+          throw error;
+      }
+      else {
         throw error;
+      }
     }
     catch(newError){
       if (!configs.debug)
@@ -94,16 +113,32 @@ export function createErrorHandler(handler) {
   };
 }
 
-export function createErrorSuppressor(handler) {
+export function createErrorSuppressor(...handlers) {
   const stack = new Error().stack;
   return (error) => {
     try {
-      if (handler)
-        handler(error);
-      else
+      if (handlers.length > 0) {
+        let unhandledCount = 0;
+        handlers.forEach(handler => {
+          try {
+            handler(error);
+          }
+          catch(_error) {
+            unhandledCount++;
+          }
+        });
+        if (unhandledCount == handlers.length) // not handled
+          throw error;
+      }
+      else {
         throw error;
+      }
     }
     catch(newError){
+      if (error &&
+          error.message &&
+          error.message.indexOf('Could not establish connection. Receiving end does not exist.') == 0)
+        return;
       if (!configs.debug)
         return;
       if (error == newError)
