@@ -126,7 +126,10 @@ export default class Window {
       order.splice(index, 1);
       order.splice(tab.index, 0, tab.id);
       for (let i = Math.min(index, tab.index), maxi = Math.max(index, tab.index) + 1; i < maxi; i++) {
-        this.tabs.get(order[i]).index = i;
+        const tab = this.tabs.get(order[i]);
+        if (!tab)
+          throw new Error(`Unknown tab ${order[i]}`);
+        tab.index = i;
       }
       const parent = tab.$TST.parent;
       if (parent)
@@ -137,7 +140,10 @@ export default class Window {
       this.tabs.set(tab.id, tab);
       order.splice(tab.index, 0, tab.id);
       for (let i = tab.index + 1, maxi = order.length; i < maxi; i++) {
-        this.tabs.get(order[i]).index = i;
+        const tab = this.tabs.get(order[i]);
+        if (!tab)
+          throw new Error(`Unknown tab ${order[i]}`);
+        tab.index = i;
       }
       log(`tab ${tab.id} is newly tracked under the window ${this.id}: `, order);
     }
