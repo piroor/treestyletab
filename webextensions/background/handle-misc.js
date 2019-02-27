@@ -334,7 +334,7 @@ function onMessage(message, sender) {
       return (async () => {
         log('new window requested: ', message);
         await TabsStore.waitUntilTabsAreCreated(message.tabIds);
-        const tabs = message.tabIds.map(id => TabsStore.windows.get(id));
+        const tabs = message.tabIds.map(id => TabsStore.tabs.get(id));
         const movedTabs = await Tree.openNewWindowFromTabs(tabs, message);
         return { movedTabs: movedTabs.map(tab => tab.id) };
       })();

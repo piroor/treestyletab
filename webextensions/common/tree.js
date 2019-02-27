@@ -1388,7 +1388,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
   if (tabs.length == 0)
     return [];
 
-  log('openNewWindowFromTabs: ', tabs.map(tab => tab.id), options);
+  log('openNewWindowFromTabs: ', tabs, options);
 
   const windowId = parseInt(tabs[0].windowId || TabsStore.getWindow());
 

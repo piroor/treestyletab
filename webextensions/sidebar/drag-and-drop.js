@@ -1034,8 +1034,8 @@ function onDragEnd(event) {
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   if (dragData) {
-    dragData.tab  = dragData.tab || Tab.get(dragData.tabId);
-    dragData.tabs = dragData.tabs || dragData.tabIds.map(id => Tab.get(id));
+    dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
+    dragData.tabs = dragData.tabs && dragData.tabs.map(tab => tab && Tab.get(tab.id) || tab);
   }
 
   // Don't clear flags immediately, because they are referred by following operations in this function.
@@ -1051,16 +1051,6 @@ function onDragEnd(event) {
       //event.shiftKey || // don't ignore shift-drop, because it can be used to drag a parent tab as an individual tab.
       !configs.moveDroppedTabToNewWindowForUnhandledDragEvent) {
     log('dragged items are processed by someone: ', event.dataTransfer.dropEffect);
-    return;
-  }
-
-  const dropTargetTab = EventUtils.getTabFromEvent(event);
-  if (mDraggingOnDraggedTabs ||
-      (dropTargetTab &&
-       dragData &&
-       dragData.tabs &&
-       dragData.tabs.some(tab => tab.id == dropTargetTab.id))) {
-    log('ignore drop on dragged tabs themselves');
     return;
   }
 
