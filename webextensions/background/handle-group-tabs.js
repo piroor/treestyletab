@@ -257,8 +257,9 @@ Tree.onAttached.addListener((tab, _info = {}) => {
 });
 
 Tree.onDetached.addListener((_tab, detachInfo) => {
-  if (detachInfo.oldParentTab &&
-      detachInfo.oldParentTab.$TST.isGroupTab)
+  if (!detachInfo.oldParentTab)
+    return;
+  if (detachInfo.oldParentTab.$TST.isGroupTab)
     reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab);
   reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab, ['tree']);
 });

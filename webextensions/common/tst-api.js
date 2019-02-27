@@ -542,16 +542,16 @@ export async function getTargetTabs(message, sender) {
   return [];
 }
 
-async function getTabsFromWrongIds(aIds, sender) {
-  log('getTabsFromWrongIds ', aIds, sender);
+async function getTabsFromWrongIds(ids, sender) {
+  log('getTabsFromWrongIds ', ids, sender);
   let activeWindow = [];
-  if (aIds.some(id => typeof id != 'number')) {
+  if (ids.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
       populate: true
     });
     activeWindow = TabsStore.windows.get(window.id);
   }
-  const tabs = await Promise.all(aIds.map(async (id) => {
+  const tabs = await Promise.all(ids.map(async (id) => {
     switch (String(id).toLowerCase()) {
       case 'active':
       case 'current':
@@ -572,7 +572,7 @@ async function getTabsFromWrongIds(aIds, sender) {
       case 'multiselected':
         return Tab.getHighlightedTabs(activeWindow.id);
       default:
-        return Tab.getByUniqueId(id);
+        return Tab.get(id);
     }
   }));
   log('=> ', tabs);

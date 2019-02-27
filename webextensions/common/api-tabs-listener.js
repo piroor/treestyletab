@@ -545,7 +545,7 @@ function checkRecycledTab(windowId) {
     if (!TabsStore.ensureLivingTab(tab))
       continue;
     const currentId = tab.$TST.uniqueId.id;
-    tab.$TST.updateUniqueId({ inRemote: !!TabsStore.getWindow() }).then(uniqueId => {
+    tab.$TST.updateUniqueId().then(uniqueId => {
       if (!TabsStore.ensureLivingTab(tab) ||
           !uniqueId.restored ||
           uniqueId.id == currentId ||

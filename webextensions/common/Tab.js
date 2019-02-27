@@ -524,7 +524,7 @@ export default class Tab {
     if (this.states)
       this.states.add(state);
     if (options.broadcast)
-      this.broadcastState({
+      Tab.broadcastState(this.tab, {
         add: [state]
       });
     if (options.permanently) {
@@ -542,7 +542,7 @@ export default class Tab {
     if (this.states)
       this.states.delete(state);
     if (options.broadcast)
-      this.broadcastState({
+      Tab.broadcastState(this.tab, {
         remove: [state]
       });
     if (options.permanently) {
@@ -653,17 +653,17 @@ Tab.waitUntilTracked = async tabId => {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       // eslint-disable-next-line no-use-before-define
-      Tab.onTabTracked.removeListener(listener);
+      Tab.onTracked.removeListener(listener);
       reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out`));
     }, 2000);
     const listener = (tab) => {
       if (tab.id != tabId)
         return;
-      Tab.onTabTracked.removeListener(listener);
+      Tab.onTracked.removeListener(listener);
       clearTimeout(timeout);
       resolve(tab);
     };
-    Tab.onTabTracked.addListener(listener);
+    Tab.onTracked.addListener(listener);
   });
 };
 
@@ -860,9 +860,9 @@ Tab.collectRootTabs = tabs => {
 Tab.getDraggingTabs = windowId => {
   return TabsStore.queryAll({
     windowId,
-    living:   true,
-    states:   [Constants.kTAB_STATE_DRAGGING, true],
-    ordered:  true
+    living:  true,
+    states:  [Constants.kTAB_STATE_DRAGGING, true],
+    ordered: true
   });
 };
 
@@ -955,12 +955,14 @@ Tab.onDetached         = new EventListenerManager();
 Tab.broadcastState = (tabs, options = {}) => {
   if (!Array.isArray(tabs))
     tabs = [tabs];
+console.log(tabs);
   browser.runtime.sendMessage({
-    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabIds:  tabs.map(tab => tab.id),
-    add:     options.add || [],
-    remove:  options.remove || [],
-    bubbles: !!options.bubbles
+    type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
+    tabIds:   tabs.map(tab => tab.id),
+    windowId: tabs[0].windowId,
+    add:      options.add || [],
+    remove:   options.remove || [],
+    bubbles:  !!options.bubbles
   });
 };
 

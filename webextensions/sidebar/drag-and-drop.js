@@ -189,8 +189,8 @@ function getDraggedTabsFromOneTab(tab) {
 
 function sanitizeDragData(dragData) {
   return {
-    tabId:    dragData.tab.id,
-    tabIds:   dragData.tabs.map(tab => tab.id),
+    tab:      dragData.tab && dragData.tab.$TST.sanitized,
+    tabs:     dragData.tabs.map(tab => tab && tab.$TST.sanitized),
     windowId: dragData.windowId
   };
 }
@@ -224,11 +224,13 @@ function getDropAction(event) {
   });
   info.defineGetter('draggedTab', () => {
     const dragData = info.dragData;
-    return dragData && dragData.tab;
+    const tab      = dragData && dragData.tab;
+    return tab && Tab.get(tab.id) || tab;
   });
   info.defineGetter('draggedTabs', () => {
     const dragData = info.dragData;
-    return (dragData && dragData.tabs).filter(tab => !!tab) || [];
+    const tabs     = dragData && dragData.tabs;
+    return tabs && tabs.map(tab => tab && Tab.get(tab.id) || tab).filter(tab => !!tab) || [];
   });
   info.defineGetter('draggedTabIds', () => {
     return info.draggedTabs.map(tab => tab.id);
@@ -248,18 +250,21 @@ function getDropAction(event) {
 
     const draggedTab = info.dragData && info.dragData.tab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
+    const isPrivateBrowsingDropTarget = (info.dragOverTab || Tab.getFirstTab(TabsStore.getWindow())).incognito;
     if (draggedTab &&
-        (isPrivateBrowsingTabDragged != info.dragOverTab ||
-         Tab.getFirstTab(draggedTab.windowId).incognito)) {
+        isPrivateBrowsingTabDragged != isPrivateBrowsingDropTarget) {
       return false;
     }
     else if (info.draggedTab) {
       if (info.action & Constants.kACTION_ATTACH) {
+        if (info.draggedTab.windowId != TabsStore.getWindow()) {
+          return true;
+        }
         if (info.parent &&
             info.parent.id == info.draggedTab.id) {
           return false;
         }
-        else if (info.dragOverTab) {
+        if (info.dragOverTab) {
           if (info.draggedTabIds.includes(info.dragOverTab.id))
             return false;
           const ancestors = info.dragOverTab.$TST.ancestors;

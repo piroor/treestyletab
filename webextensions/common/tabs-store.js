@@ -100,7 +100,7 @@ function extractMatchedTabs(tabs, conditions) {
       for (let i = 0, maxi = conditions.states.length; i < maxi; i += 2) {
         const state   = conditions.states[i];
         const pattern = conditions.states[i+1];
-        if (!matched(tab.$TST.states[state], pattern))
+        if (!matched(tab.$TST.states.has(state), pattern))
           continue TAB_MACHING;
       }
     }

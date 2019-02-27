@@ -31,7 +31,7 @@ export async function request(tabOrId, options = {}) {
   if (typeof tabOrId == 'number')
     tab = TabsStore.tabs.get(tabOrId);
 
-  if (options.inRemote) {
+  if (TabsStore.getWindow()) {
     return await browser.runtime.sendMessage({
       type:  Constants.kCOMMAND_REQUEST_UNIQUE_ID,
       tabId: tab.id
