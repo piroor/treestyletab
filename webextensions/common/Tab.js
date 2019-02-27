@@ -955,7 +955,6 @@ Tab.onDetached         = new EventListenerManager();
 Tab.broadcastState = (tabs, options = {}) => {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-console.log(tabs);
   browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_BROADCAST_TAB_STATE,
     tabIds:   tabs.map(tab => tab.id),
