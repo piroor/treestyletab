@@ -474,7 +474,7 @@ function onMessage(message, sender) {
             Tabs.removeState(tab, Constants.kTAB_STATE_MUTED);
           }
 
-          if (Tabs.isAudible(tab) && !message.muted) {
+          if (tab.audible && !message.muted) {
             add.push(Constants.kTAB_STATE_SOUND_PLAYING);
             Tabs.addState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
           }
