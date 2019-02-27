@@ -10,7 +10,6 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Size from './size.js';
 
