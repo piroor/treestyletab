@@ -555,6 +555,10 @@ Tab.onRemoved.addListener((tab, _info) => {
     return;
 
   return new Promise(async (resolve, _reject) => {
+    if (!tab.$TST ||
+        !tab.$TST.element ||
+        !tab.$TST.element.parentNode)
+      return resolve();
     const tabRect = tab.$TST.element.getBoundingClientRect();
     tab.$TST.element.style.marginLeft = `${tabRect.width}px`;
     await wait(configs.animation ? configs.collapseDuration : 0);

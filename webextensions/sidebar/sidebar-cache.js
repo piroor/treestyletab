@@ -203,12 +203,12 @@ function updateWindowCache(key, value) {
   if (value === undefined) {
     //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
     //return browser.sessions.removeWindowValue(mLastWindowCacheOwner, key);
-    return browser.sessions.removeTabValue(mLastWindowCacheOwner.id, key);
+    return browser.sessions.removeTabValue(mLastWindowCacheOwner.id, key).catch(_error => {});
   }
   else {
     //log('updateWindowCache: set cache for ', mLastWindowCacheOwner, key);
     //return browser.sessions.setWindowValue(mLastWindowCacheOwner, key, value);
-    return browser.sessions.setTabValue(mLastWindowCacheOwner.id, key, value);
+    return browser.sessions.setTabValue(mLastWindowCacheOwner.id, key, value).catch(_error => {});
   }
 }
 

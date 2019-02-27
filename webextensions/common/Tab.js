@@ -535,7 +535,7 @@ export default class Tab {
       const states = await this.getPermanentStates();
       if (!states.includes(state)) {
         states.push(state);
-        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states);
+        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(_error => {});
       }
     }
   }
@@ -554,13 +554,13 @@ export default class Tab {
       const index = states.indexOf(state);
       if (index > -1) {
         states.splice(index, 1);
-        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states);
+        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(_error => {});
       }
     }
   }
 
   async getPermanentStates() {
-    const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES);
+    const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES).catch(_error => {});
     return states || [];
   }
 

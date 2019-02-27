@@ -129,7 +129,7 @@ async function updateWindowCache(owner, key, value) {
   else {
     try {
       //return browser.sessions.setWindowValue(owner.windowId, key, value);
-      return browser.sessions.setTabValue(owner.id || owner, key, value);
+      return browser.sessions.setTabValue(owner.id || owner, key, value).catch(_error => {});
     }
     catch(e) {
       console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
