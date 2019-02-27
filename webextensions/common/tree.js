@@ -1686,8 +1686,13 @@ export function snapshotForActionDetection(targetTab) {
   const prevTab = targetTab.$TST.nearestNormalPreceding;
   const nextTab = targetTab.$TST.nearestNormalFollowing;
   const foundTabs = {};
-  const tabs = prevTab.$TST.ancestors
-    .concat([prevTab, targetTab, nextTab, targetTab.$TST.parent])
+  const tabs = [].concat([
+    prevTab && prevTab.$TST.ancestors || [],
+    prevTab,
+    targetTab,
+    nextTab,
+    targetTab.$TST.parent
+  ])
     .filter(tab => TabsStore.ensureLivingTab(tab) && !foundTabs[tab.id] && (foundTabs[tab.id] = true)) // uniq
     .sort((a, b) => a.index - b.index);
   return snapshotTree(targetTab, tabs);
