@@ -435,9 +435,10 @@ export function isGroupingBlocked() {
 
 
 export function serializeTab(tab) {
+  tab = Tab.get(tab.id);
   const children       = tab.$TST.children.map(serializeTab);
   const ancestorTabIds = Tab.getAncestors(tab).map(tab => tab.id);
-  const serialized     = Object.assign({}, Tabs.sanitize(tab.apiTab || tab), {
+  const serialized     = Object.assign({}, Tabs.sanitize(tab), {
     states:   Tabs.getStates(tab).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0),
     children, ancestorTabIds
