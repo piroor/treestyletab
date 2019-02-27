@@ -574,7 +574,7 @@ Tabs.onMoving.addListener((tab, _info) => {
   Tabs.addState(tab, Constants.kTAB_STATE_MOVING);
   if (!configs.animation ||
       tab.pinned ||
-      Tabs.isOpening(tab))
+      tab.$TST.opening)
     return;
   mTabWasVisibleBeforeMoving.set(tab.id, !tab.$TST.collapsed);
   Tree.collapseExpandTab(tab, {

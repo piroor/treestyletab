@@ -120,7 +120,7 @@ export function expandAll(windowId) {
 export async function bookmarkTree(root, options = {}) {
   const tabs = [root].concat(root.$TST.descendants);
   if (tabs.length > 1 &&
-      Tabs.isGroupTab(tabs[0]))
+      tabs[0].$TST.isGroupTab)
     tabs.shift();
 
   const tab = tabs[0];
@@ -410,7 +410,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
     log('closing needless group tabs');
     replacedGroupTabs.reverse().forEach(function(tab) {
       log(' check: ', tab.label+'('+tab.index+') '+getLoadingURI(tab));
-      if (Tabs.isGroupTab(tab) &&
+      if (tab.$TST.isGroupTab &&
         !tab.$TST.hasChild)
         removeTab(tab);
     }, this);

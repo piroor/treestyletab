@@ -42,7 +42,6 @@ import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
-  wait,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
@@ -370,7 +369,6 @@ async function onNewTabTracked(tab) {
     tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
 
     tab = Tab.init(tab, { inRemote: !!targetWindow });
-    Tabs.addState(tab, Constants.kTAB_STATE_OPENING);
 
     const nextTab = Tabs.getAllTabs(window.id)[tab.index];
 
@@ -490,9 +488,6 @@ async function onNewTabTracked(tab) {
       originalTab: duplicated && Tab.get(uniqueId.originalTabId),
       treeForActionDetection
     });
-    wait(configs.newTabAnimationDuration).then(() => {
-      Tabs.removeState(tab, Constants.kTAB_STATE_OPENING);
-    });
     Tabs.resolveOpened(tab);
 
     if (!duplicated &&
@@ -536,8 +531,7 @@ function checkRecycledTab(windowId) {
   const possibleRecycledTabs = Tabs.queryAll({
     windowId: windowId,
     states: [
-      Constants.kTAB_STATE_RESTORED, false,
-      Constants.kTAB_STATE_OPENING,  false
+      Constants.kTAB_STATE_RESTORED, false
     ],
     attributes: [
       Constants.kCURRENT_URI, new RegExp(`^(|${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}|about:blank|about:privatebrowsing)$`)

@@ -35,7 +35,7 @@ function log(...args) {
   See also: https://github.com/piroor/treestyletab/issues/1670#issuecomment-350964087
 */
 export async function tryInitGroupTab(tab) {
-  if (!Tabs.isGroupTab(tab) &&
+  if (!tab.$TST.isGroupTab &&
       tab.url.indexOf(Constants.kGROUP_TAB_URI) != 0)
     return;
   const scriptOptions = {
@@ -91,12 +91,12 @@ function cleanupNeedlssGroupTab(tabs) {
   log('trying to clanup needless temporary group tabs from ', tabs.map(tab => tab.id));
   const tabsToBeRemoved = [];
   for (const tab of tabs) {
-    if (!Tabs.isTemporaryGroupTab(tab))
+    if (!tab.$TST.isTemporaryGroupTab)
       break;
     if (tab.$TST.childIds.length > 1)
       break;
     const lastChild = tab.$TST.firstChild;
-    if (lastChild && !Tabs.isTemporaryGroupTab(lastChild))
+    if (lastChild && !lastChild.$TST.isTemporaryGroupTab)
       break;
     tabsToBeRemoved.push(tab);
   }
@@ -107,7 +107,7 @@ function cleanupNeedlssGroupTab(tabs) {
 export function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
   const ancestorGroupTabs = [tab]
     .concat(Tab.getAncestors(tab))
-    .filter(Tabs.isGroupTab);
+    .filter(tab => tab.$TST.isGroupTab);
   for (const tab of ancestorGroupTabs) {
     if (tab.$TST.reservedUpdateRelatedGroupTab)
       clearTimeout(tab.$TST.reservedUpdateRelatedGroupTab);
@@ -257,7 +257,8 @@ Tree.onAttached.addListener((tab, _info = {}) => {
 });
 
 Tree.onDetached.addListener((_tab, detachInfo) => {
-  if (Tabs.isGroupTab(detachInfo.oldParentTab))
+  if (detachInfo.oldParentTab &&
+      detachInfo.oldParentTab.$TST.isGroupTab)
     reserveToCleanupNeedlessGroupTab(detachInfo.oldParentTab);
   reserveToUpdateRelatedGroupTabs(detachInfo.oldParentTab, ['tree']);
 });
@@ -354,7 +355,7 @@ async function tryGroupNewTabs() {
     tabs.sort(Tabs.sort);
 
     let newRootTabs = Tabs.collectRootTabs(tabs)
-      .filter(tab => !Tabs.isGroupTab(tab));
+      .filter(tab => !tab.$TST.isGroupTab);
     if (newRootTabs.length <= 0)
       return;
 

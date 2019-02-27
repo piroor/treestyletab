@@ -44,7 +44,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
            active tab aways, so we should skip all repositioning behavior.
            See also: https://github.com/piroor/treestyletab/issues/2054 */
         !tab.$TST.next) {
-      if (Tabs.isNewTabCommandTab(tab)) {
+      if (tab.$TST.isNewTabCommandTab) {
         if (!info.positionedBySelf) {
           log('behave as a tab opened by new tab command');
           return handleNewTabFromActiveTab(tab, {
@@ -162,7 +162,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     if (!tab.$TST.parent &&
         possibleOpenerTab &&
         !toBeGroupedTabs.includes(tab.id)) {
-      if (Tabs.isNewTabCommandTab(tab)) {
+      if (tab.$TST.isNewTabCommandTab) {
         log('behave as a tab opened by new tab command (delayed)');
         handleNewTabFromActiveTab(tab, {
           activeTab:                 possibleOpenerTab,

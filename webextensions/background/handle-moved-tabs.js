@@ -120,7 +120,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
 
 Tabs.onMoved.addListener((tab, moveInfo = {}) => {
   if (moveInfo.byInternalOperation ||
-      Tabs.isDuplicating(tab)) {
+      tab.$TST.duplicating) {
     log('internal move');
     return;
   }

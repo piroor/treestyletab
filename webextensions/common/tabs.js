@@ -831,40 +831,6 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
 // Tab Information
 //===================================================================
 
-
-export function isOpening(tab) {
-  return ensureLivingTab(tab) &&
-         hasState(tab, Constants.kTAB_STATE_OPENING);
-}
-
-export function isDuplicating(tab) {
-  return ensureLivingTab(tab) &&
-         hasState(tab, Constants.kTAB_STATE_DUPLICATING);
-}
-
-export function isNewTabCommandTab(tab) {
-  if (!ensureLivingTab(tab) ||
-      !configs.guessNewOrphanTabAsOpenedByNewTabCommand ||
-      !assertInitializedTab(tab))
-    return false;
-  return tab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
-}
-
-export function isGroupTab(tab) {
-  if (!tab)
-    return false;
-  if (!assertInitializedTab(tab))
-    return false;
-  return hasState(tab, Constants.kTAB_STATE_GROUP_TAB) ||
-         tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
-}
-
-export function isTemporaryGroupTab(tab) {
-  if (!isGroupTab(tab))
-    return false;
-  return /[&?]temporary=true/.test(tab.url);
-}
-
 export function isSelected(tab) {
   if (!ensureLivingTab(tab))
     return false;
@@ -912,12 +878,17 @@ const mOpenedResolvers            = new Map();
 const mClosedWhileActiveResolvers = new Map();
 
 export function initPromisedStatus(tab, alreadyOpened = false) {
-  if (alreadyOpened)
+  if (alreadyOpened) {
     tab.$TST.opened = Promise.resolve(true);
-  else
+    tab.$TST.opening = false;
+  }
+  else {
+    tab.$TST.opening = false;
     tab.$TST.opened = new Promise((resolve, _reject) => {
+      tab.$TST.opening = false;
       mOpenedResolvers.set(tab.id, resolve);
     });
+  }
 
   tab.$TST.closedWhileActive = new Promise((resolve, _reject) => {
     mClosedWhileActiveResolvers.set(tab.id, resolve);

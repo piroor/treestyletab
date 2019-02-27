@@ -102,7 +102,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   }
 
   await Promise.all([
-    Tabs.isOpening(tab) && tab.$TST.opened,
+    tab.$TST.opened,
     !info.dontMove && (async () => {
       let nextTab = info.insertBefore;
       let prevTab = info.insertAfter;

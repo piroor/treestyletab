@@ -375,7 +375,7 @@ export function detachAllChildren(tab, options = {}) {
 
   // the "parent" option is used for removing tab.
   const parent = Tabs.ensureLivingTab(options.parent) || tab.$TST.parent;
-  if (Tabs.isGroupTab(tab) &&
+  if (tab.$TST.isGroupTab &&
       Tabs.getRemovingTabs(tab.windowId).length == children.length) {
     options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     options.dontUpdateIndent = false;

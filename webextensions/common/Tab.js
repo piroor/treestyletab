@@ -131,6 +131,27 @@ export default class Tab {
     return following && following.pinned;
   }
 
+  get duplicating() {
+    return Tabs.hasState(this.tab, Constants.kTAB_STATE_DUPLICATING);
+  }
+
+  get isNewTabCommandTab() {
+    if (!configs.guessNewOrphanTabAsOpenedByNewTabCommand)
+      return false;
+    return this.tab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
+  }
+
+  get isGroupTab() {
+    return Tabs.hasState(this.tab, Constants.kTAB_STATE_GROUP_TAB) ||
+           this.tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
+  }
+
+  get isTemporaryGroupTab() {
+    if (!this.isGroupTab)
+      return false;
+    return /[&?]temporary=true/.test(this.tab.url);
+  }
+
   // neighbor tabs
 
   get next() {
@@ -517,7 +538,7 @@ Tab.getGroupTabForOpener = opener => {
 }
 
 Tab.getOpenerFromGroupTab = groupTab => {
-  if (!Tabs.isGroupTab(groupTab))
+  if (!groupTab.$TST.isGroupTab)
     return null;
   Tabs.assertValidTab(groupTab);
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);

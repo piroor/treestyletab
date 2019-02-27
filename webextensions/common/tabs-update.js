@@ -90,7 +90,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     Tabs.onLabelUpdated.dispatch(tab);
   }
 
-  const openerOfGroupTab = Tabs.isGroupTab(tab) && Tab.getOpenerFromGroupTab(tab);
+  const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
       openerOfGroupTab.favIconUrl) {
     Tabs.onFaviconUpdated.dispatch(tab,
@@ -100,7 +100,7 @@ export function updateTab(tab, newState = {}, options = {}) {
            'favIconUrl' in newState) {
     Tabs.onFaviconUpdated.dispatch(tab);
   }
-  else if (Tabs.isGroupTab(tab)) {
+  else if (tab.$TST.isGroupTab) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
     tab.favIconUrl = null;

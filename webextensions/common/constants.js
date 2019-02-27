@@ -127,7 +127,6 @@ export const kTAB_STATE_ATTENTION                 = 'attention';
 export const kTAB_STATE_DISCARDED                 = 'discarded';
 export const kTAB_STATE_SELECTED                  = 'selected';
 export const kTAB_STATE_DRAGGING                  = 'dragging';
-export const kTAB_STATE_OPENING                   = 'opening';
 export const kTAB_STATE_DUPLICATING               = 'duplicating';
 export const kTAB_STATE_RESTORED                  = 'restored';
 export const kTAB_STATE_THROBBER_UNSYNCHRONIZED   = 'throbber-unsynchronized';
@@ -136,7 +135,6 @@ export const kTAB_INTERNAL_STATES = [
   kTAB_STATE_LAST_ROW,
   kTAB_STATE_ANIMATION_READY,
   kTAB_STATE_COLLAPSED_DONE,
-  kTAB_STATE_OPENING,
   kTAB_STATE_DUPLICATING,
   kTAB_STATE_COLLAPSING,
   kTAB_STATE_EXPANDING,

@@ -228,7 +228,7 @@ async function rebuildAll() {
       }
       restoredFromCache[window.id] = false;
     });
-    for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {
+    for (const tab of Tabs.getAllTabs(window.id).filter(tab => tab.$TST.isGroupTab)) {
       if (!tab.discarded)
         tab.$TST.shouldReloadOnSelect = true;
     }
