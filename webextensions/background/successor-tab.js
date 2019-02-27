@@ -12,7 +12,7 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
@@ -25,14 +25,14 @@ const mTabsToBeUpdated = new Set();
 
 // activate only on Firefox 65 and later
 if (typeof browser.tabs.moveInSuccession == 'function') {
-  Tabs.onActivated.addListener(onActivated);
-  Tabs.onCreating.addListener(onCreating);
-  Tabs.onCreated.addListener(onCreated);
-  Tabs.onRemoving.addListener(onRemoving);
-  Tabs.onRemoved.addListener(onRemoved);
-  Tabs.onMoved.addListener(onMoved);
-  Tabs.onAttached.addListener(onAttached);
-  Tabs.onDetached.addListener(onDetached);
+  Tab.onActivated.addListener(onActivated);
+  Tab.onCreating.addListener(onCreating);
+  Tab.onCreated.addListener(onCreated);
+  Tab.onRemoving.addListener(onRemoving);
+  Tab.onRemoved.addListener(onRemoved);
+  Tab.onMoved.addListener(onMoved);
+  Tab.onAttached.addListener(onAttached);
+  Tab.onDetached.addListener(onDetached);
 
   Tree.onAttached.addListener(onTreeAttached);
   Tree.onDetached.addListener(onTreeDetached);
@@ -68,7 +68,7 @@ async function updateInternal(tabId) {
   const tab = Tab.get(tabId);
   if (!renewedTab ||
       !tab ||
-      !Tabs.ensureLivingTab(tab))
+      !TabsStore.ensureLivingTab(tab))
     return;
   log('update: ', tab.id);
   if (tab.$TST.lastSuccessorTabIdByOwner) {
@@ -144,7 +144,7 @@ async function onActivated(tab, info = {}) {
     const previousTab = Tab.get(info.previousTabId);
     if (previousTab) {
       await tryClearOwnerSuccessor(previousTab);
-      const window = Tabs.trackedWindows.get(info.windowId);
+      const window = TabsStore.windows.get(info.windowId);
       if (window.lastRelatedTabs) {
         const lastRelatedTab = Tab.get(window.lastRelatedTabs.get(info.previousTabId));
         if (lastRelatedTab &&
@@ -179,7 +179,7 @@ function onCreating(tab, info = {}) {
     if (!tab.openerTabId)
       return;
 
-    const window = Tabs.trackedWindows.get(tab.windowId);
+    const window = TabsStore.windows.get(tab.windowId);
     window.lastRelatedTabs = window.lastRelatedTabs || new Map();
 
     const lastRelatedTabId = window.lastRelatedTabs.get(tab.openerTabId);
@@ -201,7 +201,7 @@ function onRemoving(tab, removeInfo = {}) {
   if (removeInfo.isWindowClosing)
     return;
 
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   const lastRelatedTabs = window.lastRelatedTabs;
   if (!lastRelatedTabs)
     return;
@@ -216,7 +216,7 @@ function onRemoved(tab, info = {}) {
   const activeTab = Tab.getActiveTab(info.windowId);
   if (activeTab && !info.isWindowClosing)
     update(activeTab.id);
-  const window = Tabs.trackedWindows.get(info.windowId);
+  const window = TabsStore.windows.get(info.windowId);
   if (!window)
     return;
   log(`clear lastRelatedTabs for ${info.windowId} by tabs.onRemoved`);
@@ -231,7 +231,7 @@ function onMoved(tab, info = {}) {
 
   if (!info.byInternalOperation) {
     log(`clear lastRelatedTabs for ${tab.windowId} by tabs.onMoved`);
-    const window = Tabs.trackedWindows.get(info.windowId);
+    const window = TabsStore.windows.get(info.windowId);
     if (window.lastRelatedTabs)
       window.lastRelatedTabs.clear();
   }
@@ -248,7 +248,7 @@ function onDetached(_tab, info = {}) {
   if (activeTab)
     update(activeTab.id);
 
-  const window = Tabs.trackedWindows.get(info.oldWindowId);
+  const window = TabsStore.windows.get(info.oldWindowId);
   if (window) {
     log(`clear lastRelatedTabs for ${info.windowId} by tabs.onDetached`);
     if (window.lastRelatedTabs)

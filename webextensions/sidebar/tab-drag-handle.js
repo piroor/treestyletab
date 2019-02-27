@@ -10,7 +10,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
@@ -73,7 +73,7 @@ function show(tab) {
 }
 function doShow(tab) {
   if (!configs.showTabDragHandle ||
-      !Tabs.ensureLivingTab(tab) ||
+      !TabsStore.ensureLivingTab(tab) ||
       !tab.$TST.element.matches(':hover'))
     return;
 

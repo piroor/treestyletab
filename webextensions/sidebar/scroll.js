@@ -46,7 +46,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 
@@ -69,7 +69,7 @@ export async function init() {
   mTabBar               = document.querySelector('#tabbar');
   mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 
-  const scrollPosition = await browser.sessions.getWindowValue(Tabs.getWindow(), Constants.kWINDOW_STATE_SCROLL_POSITION);
+  const scrollPosition = await browser.sessions.getWindowValue(TabsStore.getWindow(), Constants.kWINDOW_STATE_SCROLL_POSITION);
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();
@@ -135,7 +135,7 @@ function calculateScrollDeltaForTab(tab) {
 
 export function isTabInViewport(tab) {
   tab = Tab.get(tab && tab.id);
-  if (!Tabs.ensureLivingTab(tab))
+  if (!TabsStore.ensureLivingTab(tab))
     return false;
 
   if (tab.pinned)
@@ -224,7 +224,7 @@ export function scrollToNewTab(tab, options = {}) {
     return;
 
   if (configs.scrollToNewTabMode == Constants.kSCROLL_TO_NEW_TAB_IF_POSSIBLE) {
-    const current = Tab.getActiveTab(Tabs.getWindow());
+    const current = Tab.getActiveTab(TabsStore.getWindow());
     scrollToTab(tab, Object.assign({}, options, {
       anchor:            isTabInViewport(current) && current,
       notifyOnOutOfView: true
@@ -234,7 +234,7 @@ export function scrollToNewTab(tab, options = {}) {
 
 function canScrollToTab(tab) {
   tab = Tab.get(tab && tab.id);
-  return (Tabs.ensureLivingTab(tab) &&
+  return (TabsStore.ensureLivingTab(tab) &&
           !tab.hidden);
 }
 
@@ -259,7 +259,7 @@ export async function scrollToTab(tab, options = {}) {
   cancelNotifyOutOfViewTab();
 
   const anchorTab = options.anchor;
-  const hasAnchor = Tabs.ensureLivingTab(anchorTab) && anchorTab != tab;
+  const hasAnchor = TabsStore.ensureLivingTab(anchorTab) && anchorTab != tab;
   const openedFromPinnedTab = hasAnchor && anchorTab.pinned;
 
   if (isTabInViewport(tab) &&
@@ -336,7 +336,7 @@ export async function scrollToTab(tab, options = {}) {
 scrollToTab.lastTargetId = null;
 
 function getOffsetForAnimatingTab(tab) {
-  const expanding = Tabs.queryAll({
+  const expanding = TabsStore.queryAll({
     windowId: tab.windowId,
     toId:     tab.id,
     normal:   true,
@@ -345,7 +345,7 @@ function getOffsetForAnimatingTab(tab) {
       Constants.kTAB_STATE_EXPANDING, true
     ]
   });
-  const collapsing = Tabs.queryAll({
+  const collapsing = TabsStore.queryAll({
     windowId: tab.windowId,
     toId:     tab.id,
     normal:   true,
@@ -446,7 +446,7 @@ function reserveToSaveScrollPosition() {
   reserveToSaveScrollPosition.reserved = setTimeout(() => {
     delete reserveToSaveScrollPosition.reserved;
     browser.sessions.setWindowValue(
-      Tabs.getWindow(),
+      TabsStore.getWindow(),
       Constants.kWINDOW_STATE_SCROLL_POSITION,
       mTabBar.scrollTop
     );
@@ -454,7 +454,7 @@ function reserveToSaveScrollPosition() {
 }
 
 
-Tabs.onCreated.addListener((tab, _info) => {
+Tab.onCreated.addListener((tab, _info) => {
   if (configs.animation) {
     wait(10).then(() => { // wait until the tab is moved by TST itself
       const parent = tab.$TST.parent;
@@ -478,9 +478,9 @@ Tabs.onCreated.addListener((tab, _info) => {
   }
 });
 
-Tabs.onActivated.addListener((tab, _info) => { scrollToTab(tab); });
+Tab.onActivated.addListener((tab, _info) => { scrollToTab(tab); });
 
-Tabs.onUnpinned.addListener(tab => { scrollToTab(tab); });
+Tab.onUnpinned.addListener(tab => { scrollToTab(tab); });
 
 
 function onMessage(message, _sender, _respond) {
@@ -491,7 +491,7 @@ function onMessage(message, _sender, _respond) {
   switch (message.type) {
     case Constants.kCOMMAND_TAB_ATTACHED_COMPLETELY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated([
+        await TabsStore.waitUntilTabsAreCreated([
           message.tabId,
           message.parentId
         ]);
@@ -502,7 +502,7 @@ function onMessage(message, _sender, _respond) {
       })();
 
     case Constants.kCOMMAND_SCROLL_TABBAR:
-      if (message.windowId != Tabs.getWindow())
+      if (message.windowId != TabsStore.getWindow())
         break;
       switch (String(message.by).toLowerCase()) {
         case 'lineup':
@@ -542,9 +542,9 @@ function onMessageExternal(message, _aSender) {
     case TSTAPI.kSCROLL:
       return (async () => {
         const params = {};
-        const currentWindow = Tabs.getWindow();
+        const currentWindow = TabsStore.getWindow();
         if ('tab' in message) {
-          await Tabs.waitUntilTabsAreCreated(message.tab);
+          await TabsStore.waitUntilTabsAreCreated(message.tab);
           params.tab = Tab.get(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;

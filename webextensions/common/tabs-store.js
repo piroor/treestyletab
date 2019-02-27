@@ -1,41 +1,8 @@
-/* ***** BEGIN LICENSE BLOCK ***** 
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is the Tree Style Tab.
- *
- * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2011-2017
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
- *                 wanabe <https://github.com/wanabe>
- *                 Tetsuharu OHZEKI <https://github.com/saneyuki>
- *                 Xidorn Quan <https://github.com/upsuper> (Firefox 40+ support)
- *                 lv7777 (https://github.com/lv7777)
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ******/
+ /*
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
 'use strict';
 
 import * as Constants from './constants.js';
@@ -43,8 +10,6 @@ import {
   log as internalLogger,
   configs
 } from './common.js';
-
-import EventListenerManager from '/extlib/EventListenerManager.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -67,15 +32,11 @@ export function getWindow() {
 // Tab Tracking
 //===================================================================
 
-export const trackedWindows           = new Map();
-export const trackedTabs              = new Map();
-export const trackedTabsByUniqueId    = new Map();
+export const windows                  = new Map();
+export const tabs                     = new Map();
+export const tabsByUniqueId           = new Map();
 export const activeTabForWindow       = new Map();
 export const highlightedTabsForWindow = new Map();
-
-function isTracked(tabId) {
-  return trackedTabs.has(tabId);
-}
 
 const MATCHING_ATTRIBUTES = `
 active
@@ -104,7 +65,7 @@ export function queryAll(conditions) {
   fixupQuery(conditions);
   if (conditions.windowId || conditions.ordered) {
     let tabs = [];
-    for (const window of trackedWindows.values()) {
+    for (const window of windows.values()) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
       const tabsIterator = !conditions.ordered ? window.tabs.values() :
@@ -115,7 +76,7 @@ export function queryAll(conditions) {
     return tabs;
   }
   else {
-    return extractMatchedTabs(trackedTabs.values(), conditions);
+    return extractMatchedTabs(tabs.values(), conditions);
   }
 }
 
@@ -213,7 +174,7 @@ export function query(conditions) {
     conditions.first = true;
   let tabs = [];
   if (conditions.windowId || conditions.ordered) {
-    for (const window of trackedWindows.values()) {
+    for (const window of windows.values()) {
       if (conditions.windowId && !matched(window.id, conditions.windowId))
         continue;
       const tabsIterator = !conditions.ordered ? window.tabs.values() :
@@ -225,7 +186,7 @@ export function query(conditions) {
     }
   }
   else {
-    tabs = extractMatchedTabs(trackedTabs.values(), conditions);
+    tabs = extractMatchedTabs(tabs.values(), conditions);
   }
   return tabs.length > 0 ? tabs[0] : null ;
 }
@@ -247,36 +208,6 @@ function fixupQuery(conditions) {
 //===================================================================
 // Event Handling
 //===================================================================
-
-export const onGroupTabDetected = new EventListenerManager();
-export const onLabelUpdated     = new EventListenerManager();
-export const onFaviconUpdated   = new EventListenerManager();
-export const onStateChanged     = new EventListenerManager();
-export const onPinned           = new EventListenerManager();
-export const onUnpinned         = new EventListenerManager();
-export const onHidden           = new EventListenerManager();
-export const onShown            = new EventListenerManager();
-export const onHighlightedTabsChanged = new EventListenerManager();
-export const onParentTabUpdated = new EventListenerManager();
-export const onTabInternallyMoved     = new EventListenerManager();
-export const onCollapsedStateChanging = new EventListenerManager();
-export const onCollapsedStateChanged  = new EventListenerManager();
-
-export const onBeforeCreate     = new EventListenerManager();
-export const onCreating         = new EventListenerManager();
-export const onCreated          = new EventListenerManager();
-export const onRemoving         = new EventListenerManager();
-export const onRemoved          = new EventListenerManager();
-export const onMoving           = new EventListenerManager();
-export const onMoved            = new EventListenerManager();
-export const onActivating       = new EventListenerManager();
-export const onActivated        = new EventListenerManager();
-export const onUpdated          = new EventListenerManager();
-export const onRestoring        = new EventListenerManager();
-export const onRestored         = new EventListenerManager();
-export const onWindowRestoring  = new EventListenerManager();
-export const onAttached         = new EventListenerManager();
-export const onDetached         = new EventListenerManager();
 
 function normalizeOperatingTabIds(idOrIds) {
   if (!Array.isArray(idOrIds))
@@ -379,12 +310,12 @@ export async function waitUntilAllTabsAreCreated(windowId = null) {
     params.operatingTabs = mCreatingTabs;
   }
   return waitUntilTabsAreOperated(params)
-    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && trackedTabsByUniqueId.get(uniqueId.id)));
+    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && tabsByUniqueId.get(uniqueId.id)));
 }
 
 export async function waitUntilTabsAreCreated(idOrIds) {
   return waitUntilTabsAreOperated({ ids: idOrIds, operatingTabs: mCreatingTabs })
-    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && trackedTabsByUniqueId.get(uniqueId.id)));
+    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && tabsByUniqueId.get(uniqueId.id)));
 }
 
 const mMovingTabs = new Map();
@@ -444,7 +375,7 @@ export function ensureLivingTab(tab) {
       !tab.$TST ||
       (tab.$TST.element &&
        !tab.$TST.element.parentNode) ||
-      !isTracked(tab.id) ||
+      !tabs.has(tab.id) ||
       tab.$TST.states.has(Constants.kTAB_STATE_REMOVING))
     return null;
   return tab;

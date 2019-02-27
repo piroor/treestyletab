@@ -12,7 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as TabsGroup from '/common/tabs-group.js';
@@ -28,7 +28,7 @@ function log(...args) {
 }
 
 
-Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
+Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   log('Tabs.onRemoving ', tab.id, removeInfo);
   if (removeInfo.isWindowClosing)
     return;
@@ -72,7 +72,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
       title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
       temporary: true
     });
-    const window = Tabs.trackedWindows.get(tab.windowId);
+    const window = TabsStore.windows.get(tab.windowId);
     window.toBeOpenedTabsWithPositions++;
     const groupTab = await TabsOpen.openURIInTab(uri, {
       windowId:     tab.windowId,
@@ -157,7 +157,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       for (const tab of toBeRestoredTabs.reverse()) {
         log('tryGrantClose: Tabrestoring session = ', tab);
         browser.sessions.restore(tab.sessionId);
-        const tabs = await Tabs.waitUntilAllTabsAreCreated();
+        const tabs = await TabsStore.waitUntilAllTabsAreCreated();
         await Promise.all(tabs.map(tab => tab.$TST.opened));
       }
       return false;
@@ -188,7 +188,7 @@ async function closeChildTabs(parent) {
   //fireTabSubtreeClosedEvent(parent, tabs);
 }
 
-Tabs.onRemoved.addListener((tab, info) => {
+Tab.onRemoved.addListener((tab, info) => {
   log('Tabs.onRemoved: removed ', tab.id);
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.id);
 
@@ -220,7 +220,7 @@ browser.windows.onRemoved.addListener(windowId  => {
 });
 
 
-Tabs.onDetached.addListener((tab, info = {}) => {
+Tab.onDetached.addListener((tab, info = {}) => {
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     if (Tree.shouldApplyTreeBehavior(info)) {
       Tree.tryMoveFocusFromClosingActiveTabNow(tab, {

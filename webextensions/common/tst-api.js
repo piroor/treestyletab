@@ -46,7 +46,7 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 
 import Tab from './Tab.js';
 
@@ -399,7 +399,7 @@ export function isScrollLocked() {
 export async function notifyScrolled(params = {}) {
   const lockers = Object.keys(mScrollLockedBy);
   const tab     = params.tab;
-  const window  = Tabs.getWindow();
+  const window  = TabsStore.getWindow();
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
     tab:  tab && serializeTab(tab),
@@ -520,7 +520,7 @@ function* spawnMessages(targetSet, message) {
 
 
 export async function getTargetTabs(message, sender) {
-  await Tabs.waitUntilAllTabsAreCreated(message.window || message.windowId);
+  await TabsStore.waitUntilAllTabsAreCreated(message.window || message.windowId);
   if (Array.isArray(message.tabs))
     return getTabsFromWrongIds(message.tabs, sender);
   if (message.window || message.windowId) {
@@ -549,7 +549,7 @@ async function getTabsFromWrongIds(aIds, sender) {
     const window = await browser.windows.getLastFocused({
       populate: true
     });
-    activeWindow = Tabs.trackedWindows.get(window.id);
+    activeWindow = TabsStore.windows.get(window.id);
   }
   const tabs = await Promise.all(aIds.map(async (id) => {
     switch (String(id).toLowerCase()) {

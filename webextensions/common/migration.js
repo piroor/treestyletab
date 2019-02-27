@@ -12,7 +12,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
@@ -224,7 +224,7 @@ export async function migrateLegacyTreeStructure() {
       let apiWindow = await browser.windows.create({
         url: 'about:blank'
       });
-      const window = Tabs.trackedWindows.get(apiWindow.id);
+      const window = TabsStore.windows.get(apiWindow.id);
       window.toBeOpenedOrphanTabs += structure.length;
       // restore tree
       let uris = structure.map(item => item.url);

@@ -11,7 +11,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
@@ -29,7 +29,7 @@ let mTargetWindow;
 let mTabBar;
 
 export function init() {
-  mTargetWindow = Tabs.getWindow();
+  mTargetWindow = TabsStore.getWindow();
   mTabBar       = document.querySelector('#tabbar');
 
   window.addEventListener('resize', reserveToUpdateIndent);
@@ -155,10 +155,10 @@ function getMaxTreeLevel(windowId, options = {}) {
   return maxLevel;
 }
 
-Tabs.onCreated.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
-Tabs.onRemoving.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
-Tabs.onShown.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
-Tabs.onHidden.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tab.onCreated.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tab.onRemoving.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tab.onShown.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
+Tab.onHidden.addListener((_tab) => { reserveToUpdateVisualMaxTreeLevel(); });
 Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });
 Tree.onDetached.addListener(async (_tab, detachInfo = {}) => {
   if (detachInfo.oldParentTab)
@@ -178,8 +178,8 @@ function reserveToUpdateIndent() {
   }, Math.max(configs.indentDuration, configs.collapseDuration) * 1.5);
 }
 
-Tabs.onShown.addListener(_tab => { reserveToUpdateIndent() });
-Tabs.onHidden.addListener(_tab => { reserveToUpdateIndent() });
+Tab.onShown.addListener(_tab => { reserveToUpdateIndent() });
+Tab.onHidden.addListener(_tab => { reserveToUpdateIndent() });
 Tree.onAttached.addListener((_tab, _info) => { reserveToUpdateIndent() });
 Tree.onDetached.addListener((_tab, _info) => { reserveToUpdateIndent() });
 Tree.onLevelChanged.addListener(_tab => { reserveToUpdateIndent() });

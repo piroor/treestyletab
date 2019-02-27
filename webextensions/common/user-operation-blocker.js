@@ -9,7 +9,7 @@ import {
   log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
@@ -29,7 +29,7 @@ export function block(options = {}) {
 }
 
 export function blockIn(windowId, options = {}) {
-  const window = Tabs.getWindow();
+  const window = TabsStore.getWindow();
   if (window && window != windowId)
     return;
 
@@ -59,7 +59,7 @@ export function unblock(_options = {}) {
 }
 
 export function unblockIn(windowId, options = {}) {
-  const window = Tabs.getWindow();
+  const window = TabsStore.getWindow();
   if (window && window != windowId)
     return;
 

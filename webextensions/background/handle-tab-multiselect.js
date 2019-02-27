@@ -10,7 +10,7 @@ import {
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 
 import Tab from '/common/Tab.js';
 
@@ -18,7 +18,7 @@ function log(...args) {
   internalLogger('background/handle-tab-multiselect', ...args);
 }
 
-Tabs.onUpdated.addListener((tab, info, options = {}) => {
+Tab.onUpdated.addListener((tab, info, options = {}) => {
   if (!('highlighted' in info) ||
       !tab.$TST.subtreeCollapsed ||
       tab.$TST.collapsed ||
@@ -40,8 +40,8 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
 });
 
 function getTabsBetween(begin, end) {
-  if (!begin || !Tabs.ensureLivingTab(begin) ||
-      !end || !Tabs.ensureLivingTab(end))
+  if (!begin || !TabsStore.ensureLivingTab(begin) ||
+      !end || !TabsStore.ensureLivingTab(end))
     throw new Error('getTabsBetween requires valid two tabs');
   if (begin.windowId != end.windowId)
     throw new Error('getTabsBetween requires two tabs in same window');
@@ -50,7 +50,7 @@ function getTabsBetween(begin, end) {
     return [];
   if (begin.index > end.index)
     [begin, end] = [end, begin];
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId: begin.windowId,
     id:       (id => id != begin.id && id != end.id),
     fromId:   begin.id,

@@ -44,7 +44,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import Tab from '/common/Tab.js';
 import * as Size from './size.js';
 
@@ -57,7 +57,7 @@ let mTargetWindow;
 let mTabBar;
 
 export function init() {
-  mTargetWindow = Tabs.getWindow();
+  mTargetWindow = TabsStore.getWindow();
   mTabBar       = document.querySelector('#tabbar');
   configs.$addObserver(onConfigChange);
 }
@@ -148,35 +148,35 @@ function clearStyle(tab) {
   style.left = style.right = style.top = style.bottom;
 }
 
-Tabs.onCreated.addListener((tab, _info) => {
+Tab.onCreated.addListener((tab, _info) => {
   if (tab.pinned)
     reserveToReposition();
 });
 
-Tabs.onRemoving.addListener((tab, _info) => {
+Tab.onRemoving.addListener((tab, _info) => {
   if (tab.pinned)
     reserveToReposition();
 });
 
-Tabs.onDetached.addListener((tab, _info) => {
+Tab.onDetached.addListener((tab, _info) => {
   if (tab.pinned)
     reserveToReposition();
 });
 
-Tabs.onPinned.addListener(_tab => {
+Tab.onPinned.addListener(_tab => {
   reserveToReposition();
 });
 
-Tabs.onUnpinned.addListener(tab => {
+Tab.onUnpinned.addListener(tab => {
   clearStyle(tab);
   reserveToReposition();
 });
 
-Tabs.onShown.addListener(_tab => {
+Tab.onShown.addListener(_tab => {
   reserveToReposition();
 });
 
-Tabs.onHidden.addListener(_tab => {
+Tab.onHidden.addListener(_tab => {
   reserveToReposition();
 });
 

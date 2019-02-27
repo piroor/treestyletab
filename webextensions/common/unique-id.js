@@ -9,7 +9,7 @@ import {
   log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import * as ApiTabs from './api-tabs.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -29,7 +29,7 @@ export async function request(tabOrId, options = {}) {
 
   let tab = tabOrId;
   if (typeof tabOrId == 'number')
-    tab = Tabs.trackedTabs.get(tabOrId);
+    tab = TabsStore.tabs.get(tabOrId);
 
   if (options.inRemote) {
     return await browser.runtime.sendMessage({
@@ -49,7 +49,7 @@ export async function request(tabOrId, options = {}) {
     if (oldId) {
       // If the tab detected from stored tabId is different, it is duplicated tab.
       try {
-        const tabWithOldId = Tabs.trackedTabs.get(oldId.tabId);
+        const tabWithOldId = TabsStore.tabs.get(oldId.tabId);
         if (!tabWithOldId)
           throw new Error(`Invalid tab ID: ${oldId.tabId}`);
         originalId = (tabWithOldId.$TST.uniqueId || await tabWithOldId.$TST.promisedUniqueId).id;

@@ -45,7 +45,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
 import * as Commands from '/common/commands.js';
@@ -112,7 +112,7 @@ export function isCapturingForDragging() {
 
 // for backward compatibility with Multiple Tab Handler 2.x on Firefox ESR60
 export async function legacyStartMultiDrag(tab, isClosebox) {
-  const windowId = Tabs.getWindow();
+  const windowId = TabsStore.getWindow();
   const results = await TSTAPI.sendMessage({
     type:   TSTAPI.kNOTIFY_TAB_DRAGREADY,
     tab:    TSTAPI.serializeTab(tab),
@@ -234,10 +234,10 @@ function getDropAction(event) {
     return info.draggedTabs.map(tab => tab.id);
   });
   info.defineGetter('targetTabs', () => {
-    return Tab.getAllTabs(Tabs.getWindow());
+    return Tab.getAllTabs(TabsStore.getWindow());
   });
   info.defineGetter('firstTargetTab', () => {
-    return Tab.getFirstNormalTab(Tabs.getWindow()) || info.targetTabs[0];
+    return Tab.getFirstNormalTab(TabsStore.getWindow()) || info.targetTabs[0];
   });
   info.defineGetter('lastTargetTab', () => {
     return info.targetTabs[info.targetTabs.length - 1];
@@ -452,13 +452,13 @@ export function clearDropPosition() {
 }
 
 export function clearDraggingTabsState() {
-  for (const tab of Tab.getDraggingTabs(Tabs.getWindow())) {
+  for (const tab of Tab.getDraggingTabs(TabsStore.getWindow())) {
     tab.$TST.removeState(Constants.kTAB_STATE_DRAGGING);
   }
 }
 
 export function clearDraggingState() {
-  const window = Tabs.trackedWindows.get(Tabs.getWindow());
+  const window = TabsStore.windows.get(TabsStore.getWindow());
   window.element.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
@@ -507,7 +507,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     if (behavior & Constants.kDROPLINK_LOAD) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SELECT_TAB,
-        windowId: Tabs.getWindow(),
+        windowId: TabsStore.getWindow(),
         tabId:    dropActionInfo.dragOverTab.id
       });
       await TabsOpen.loadURI(uris.shift(), {
@@ -517,7 +517,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
     }
   }
   await TabsOpen.openURIsInTabs(uris, {
-    windowId:     Tabs.getWindow(),
+    windowId:     TabsStore.getWindow(),
     parent:       dropActionInfo.parent,
     insertBefore: dropActionInfo.insertBefore,
     insertAfter:  dropActionInfo.insertAfter,
@@ -664,7 +664,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     const startOnClosebox = mDragTargetIsClosebox = mousedown.detail.closebox;
     if (startOnClosebox)
       mLastDragEnteredTarget = SidebarTabs.getClosebox(tab);
-    const windowId = Tabs.getWindow();
+    const windowId = TabsStore.getWindow();
     TSTAPI.sendMessage({
       type:   TSTAPI.kNOTIFY_TAB_DRAGSTART,
       tab:    TSTAPI.serializeTab(tab),
@@ -705,7 +705,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   mCurrentDragData = sanitizedDragData;
   browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-    windowId: Tabs.getWindow(),
+    windowId: TabsStore.getWindow(),
     dragData: sanitizedDragData
   });
 
@@ -728,7 +728,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     dt.setDragImage(options.tab.$TST.element, event.clientX - tabRect.left, event.clientY - tabRect.top);
   }
 
-  Tabs.trackedWindows.get(Tabs.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
+  TabsStore.windows.get(TabsStore.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
   document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
 
   // The drag operation can be canceled by something, then
@@ -761,7 +761,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   TSTAPI.sendMessage({
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
     tab:      TSTAPI.serializeTab(tab),
-    windowId: Tabs.getWindow()
+    windowId: TabsStore.getWindow()
   });
 
   log('onDragStart: started');
@@ -858,7 +858,7 @@ function onDragEnter(event) {
         info.dragData.tabs.some(tab => tab.id == enteredTab.id)
       );
     }
-    Tabs.trackedWindows.get(Tabs.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
+    TabsStore.windows.get(TabsStore.getWindow()).element.classList.add(kTABBAR_STATE_TAB_DRAGGING);
     document.documentElement.classList.add(kTABBAR_STATE_TAB_DRAGGING);
   }
   catch(_e) {
@@ -904,7 +904,7 @@ function reserveToProcessLongHover(params = {}) {
           params.dropEffect == 'link') {
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_SELECT_TAB,
-          windowId: Tabs.getWindow(),
+          windowId: TabsStore.getWindow(),
           tabId:    dragOverTab.id
         });
       }
@@ -949,7 +949,7 @@ function onDragLeave(event) {
         }, 10);
       }
       else {
-        leftFromTabBar = !enteredTab || enteredTab.windowId != Tabs.getWindow();
+        leftFromTabBar = !enteredTab || enteredTab.windowId != TabsStore.getWindow();
         if (onDragLeave.delayedLeftFromDraggedTabs) {
           clearTimeout(onDragLeave.delayedLeftFromDraggedTabs);
           delete onDragLeave.delayedLeftFromDraggedTabs;
@@ -1008,7 +1008,7 @@ function onDrop(event) {
       attachTo:            dropActionInfo.parent,
       insertBefore:        dropActionInfo.insertBefore,
       insertAfter:         dropActionInfo.insertAfter,
-      destinationWindowId: Tabs.getWindow(),
+      destinationWindowId: TabsStore.getWindow(),
       duplicate:           dt.dropEffect == 'copy',
       inRemote:            true
     });
@@ -1112,7 +1112,7 @@ function finishDrag() {
     mCurrentDragData = null;
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
-      windowId: Tabs.getWindow(),
+      windowId: TabsStore.getWindow(),
       dragData: null
     });
   });

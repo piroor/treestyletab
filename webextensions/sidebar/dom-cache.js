@@ -9,7 +9,7 @@ import {
   log as internalLogger
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as UniqueId from '/common/unique-id.js';
 
@@ -65,7 +65,7 @@ export function restoreTabsFromCacheInternal(params) {
   log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
   const offset    = params.offset || 0;
   const tabs   = params.tabs.slice(offset);
-  let container = Tabs.trackedWindows.get(params.windowId).element;
+  let container = TabsStore.windows.get(params.windowId).element;
   let tabElements;
   if (offset > 0) {
     if (!container ||

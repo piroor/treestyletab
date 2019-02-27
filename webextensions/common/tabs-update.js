@@ -45,7 +45,7 @@ import {
 } from './common.js';
 
 import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import * as ContextualIdentities from './contextual-identities.js';
 
 import Tab from './Tab.js';
@@ -64,7 +64,7 @@ export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
-    Tabs.onGroupTabDetected.dispatch(tab);
+    Tab.onGroupTabDetected.dispatch(tab);
   }
 
   if (options.forceApply ||
@@ -87,24 +87,24 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
     }
     tab.$TST.label = visibleLabel;
-    Tabs.onLabelUpdated.dispatch(tab);
+    Tab.onLabelUpdated.dispatch(tab);
   }
 
   const openerOfGroupTab = tab.$TST.isGroupTab && Tab.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
       openerOfGroupTab.favIconUrl) {
-    Tabs.onFaviconUpdated.dispatch(tab,
-                                   openerOfGroupTab.favIconUrl);
+    Tab.onFaviconUpdated.dispatch(tab,
+                                  openerOfGroupTab.favIconUrl);
   }
   else if (options.forceApply ||
            'favIconUrl' in newState) {
-    Tabs.onFaviconUpdated.dispatch(tab);
+    Tab.onFaviconUpdated.dispatch(tab);
   }
   else if (tab.$TST.isGroupTab) {
     // "about:treestyletab-group" can set error icon for the favicon and
     // reloading doesn't cloear that, so we need to clear favIconUrl manually.
     tab.favIconUrl = null;
-    Tabs.onFaviconUpdated.dispatch(tab, null);
+    Tab.onFaviconUpdated.dispatch(tab, null);
   }
 
   if ('status' in newState) {
@@ -125,7 +125,7 @@ export function updateTab(tab, newState = {}, options = {}) {
           tab.$TST.addState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
-    Tabs.onStateChanged.dispatch(tab);
+    Tab.onStateChanged.dispatch(tab);
   }
 
   if ((options.forceApply ||
@@ -134,11 +134,11 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.pinned) {
       tab.$TST.addState(Constants.kTAB_STATE_PINNED);
       tab.$TST.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
-      Tabs.onPinned.dispatch(tab);
+      Tab.onPinned.dispatch(tab);
     }
     else {
       tab.$TST.removeState(Constants.kTAB_STATE_PINNED);
-      Tabs.onUnpinned.dispatch(tab);
+      Tab.onUnpinned.dispatch(tab);
     }
   }
 
@@ -187,18 +187,18 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.hidden) {
       if (!tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
         tab.$TST.addState(Constants.kTAB_STATE_HIDDEN);
-        Tabs.onHidden.dispatch(tab);
+        Tab.onHidden.dispatch(tab);
       }
     }
     else if (tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
       tab.$TST.removeState(Constants.kTAB_STATE_HIDDEN);
-      Tabs.onShown.dispatch(tab);
+      Tab.onShown.dispatch(tab);
     }
   }
 
   if (options.forceApply ||
       'highlighted' in newState) {
-    const highlightedTabs = Tabs.highlightedTabsForWindow.get(tab.windowId);
+    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(tab.windowId);
     if (newState.highlighted) {
       highlightedTabs.add(tab);
       tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
@@ -211,7 +211,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       clearTimeout(mDelayedDispatchOnHighlightedTabsChanged);
     mDelayedDispatchOnHighlightedTabsChanged = setTimeout(windowId => {
       mDelayedDispatchOnHighlightedTabsChanged = null;
-      Tabs.onHighlightedTabsChanged.dispatch(windowId);
+      Tab.onHighlightedTabsChanged.dispatch(windowId);
     }, 0, tab.windowId);
   }
 
@@ -237,24 +237,24 @@ export function updateTab(tab, newState = {}, options = {}) {
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
-  if (Tabs.hasCreatingTab(highlightInfo.windowId))
-    await Tabs.waitUntilAllTabsAreCreated(highlightInfo.windowId);
-  const window = Tabs.trackedWindows.get(highlightInfo.windowId);
+  if (TabsStore.hasCreatingTab(highlightInfo.windowId))
+    await TabsStore.waitUntilAllTabsAreCreated(highlightInfo.windowId);
+  const window = TabsStore.windows.get(highlightInfo.windowId);
   if (!window)
     return;
 
   //const startAt = Date.now();
 
-  const allHighlightedTabs = Tabs.highlightedTabsForWindow.get(highlightInfo.windowId);
+  const allHighlightedTabs = TabsStore.highlightedTabsForWindow.get(highlightInfo.windowId);
 
   const tabIds = highlightInfo.tabIds; // new Set(highlightInfo.tabIds);
-  const unhighlightedTabs = Tabs.queryAll({
+  const unhighlightedTabs = TabsStore.queryAll({
     windowId:    highlightInfo.windowId,
     '!id':       tabIds,
     //id:          new RegExp(`^(?!(${highlightInfo.tabIds.join('|')})$)`),
     highlighted: true
   });
-  const highlightedTabs = Tabs.queryAll({
+  const highlightedTabs = TabsStore.queryAll({
     windowId:    highlightInfo.windowId,
     id:          tabIds,
     //id:          new RegExp(`^(${highlightInfo.tabIds.join('|')})$`),
@@ -274,7 +274,7 @@ export async function updateTabsHighlighted(highlightInfo) {
   }
   if (unhighlightedTabs.length > 0 ||
       highlightedTabs.length > 0)
-    Tabs.onHighlightedTabsChanged.dispatch(highlightInfo.windowId);
+    Tab.onHighlightedTabsChanged.dispatch(highlightInfo.windowId);
 }
 async function updateTabHighlighted(tab, highlighted) {
   log(`highlighted status of ${tab.id}: `, { old: tab.highlighted, new: highlighted });
@@ -285,16 +285,16 @@ async function updateTabHighlighted(tab, highlighted) {
   else
     tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
   tab.highlighted = highlighted;
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   const inheritHighlighted = !window.tabsToBeHighlightedAlone.has(tab.id);
   if (!inheritHighlighted)
     window.tabsToBeHighlightedAlone.delete(tab.id);
-  Tabs.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
+  Tab.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;
 }
 
 export function updateParentTab(parent) {
-  if (!Tabs.ensureLivingTab(parent))
+  if (!TabsStore.ensureLivingTab(parent))
     return;
 
   const children = parent.$TST.children;
@@ -311,5 +311,5 @@ export function updateParentTab(parent) {
 
   updateParentTab(parent.$TST.parent);
 
-  Tabs.onParentTabUpdated.dispatch(parent);
+  Tab.onParentTabUpdated.dispatch(parent);
 }

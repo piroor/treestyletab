@@ -9,7 +9,7 @@ import {
   log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as UniqueId from './unique-id.js';
 
@@ -54,7 +54,7 @@ export function signatureFromTabsCache(cache) {
 export function restoreTabsFromCacheInternal(params) {
   log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
   const offset = params.offset || 0;
-  const window = Tabs.trackedWindows.get(params.windowId);
+  const window = TabsStore.windows.get(params.windowId);
   const tabs   = params.tabs.slice(offset).map(tab => Tab.get(tab.id));
   if (offset > 0 &&
       tabs.length <= offset) {

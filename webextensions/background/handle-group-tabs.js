@@ -13,7 +13,7 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as TabsGroup from '/common/tabs-group.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
@@ -72,7 +72,7 @@ export async function tryInitGroupTab(tab) {
 export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
   const tabs = Array.isArray(tabOrTabs) ? tabOrTabs : [tabOrTabs] ;
   for (const tab of tabs) {
-    if (!Tabs.ensureLivingTab(tab))
+    if (!TabsStore.ensureLivingTab(tab))
       continue;
     if (tab.$TST.reservedCleanupNeedlessGroupTab)
       clearTimeout(tab.$TST.reservedCleanupNeedlessGroupTab);
@@ -126,7 +126,7 @@ export function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
 }
 
 async function updateRelatedGroupTab(groupTab, changedInfo = []) {
-  if (!Tabs.ensureLivingTab(groupTab))
+  if (!TabsStore.ensureLivingTab(groupTab))
     return;
 
   await tryInitGroupTab(groupTab);
@@ -168,14 +168,14 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   }
 }
 
-Tabs.onRemoved.addListener((tab, _closeInfo = {}) => {
+Tab.onRemoved.addListener((tab, _closeInfo = {}) => {
   const ancestors = tab.$TST.ancestors;
   wait(0).then(() => {
     reserveToCleanupNeedlessGroupTab(ancestors);
   });
 });
 
-Tabs.onUpdated.addListener((tab, changeInfo) => {
+Tab.onUpdated.addListener((tab, changeInfo) => {
   if ('url' in changeInfo ||
       'previousUrl' in changeInfo ||
       'state' in changeInfo) {
@@ -240,15 +240,15 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   }
 });
 
-Tabs.onGroupTabDetected.addListener(tab => {
+Tab.onGroupTabDetected.addListener(tab => {
   tryInitGroupTab(tab);
 });
 
-Tabs.onLabelUpdated.addListener(tab => {
+Tab.onLabelUpdated.addListener(tab => {
   reserveToUpdateRelatedGroupTabs(tab, ['title', 'tree']);
 });
 
-Tabs.onActivating.addListener((tab, _info = {}) => {
+Tab.onActivating.addListener((tab, _info = {}) => {
   tryInitGroupTab(tab);
 });
 
@@ -274,8 +274,8 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
 // auto-grouping of tabs
 // ====================================================================
 
-Tabs.onBeforeCreate.addListener(async (tab, info) => {
-  const window  = Tabs.trackedWindows.get(tab.windowId);
+Tab.onBeforeCreate.addListener(async (tab, info) => {
+  const window  = TabsStore.windows.get(tab.windowId);
   if (!window)
     return;
 
@@ -310,10 +310,10 @@ Tabs.onBeforeCreate.addListener(async (tab, info) => {
 const mToBeGroupedTabSets = [];
 
 async function onNewTabsTimeout(window) {
-  if (Tabs.hasCreatingTab(window.id))
-    await Tabs.waitUntilAllTabsAreCreated(window.id);
-  if (Tabs.hasMovingTab(window.id))
-    await Tabs.waitUntilAllTabsAreMoved(window.id);
+  if (TabsStore.hasCreatingTab(window.id))
+    await TabsStore.waitUntilAllTabsAreCreated(window.id);
+  if (TabsStore.hasMovingTab(window.id))
+    await TabsStore.waitUntilAllTabsAreMoved(window.id);
 
   let tabReferences = window.openedNewTabs;
   log('onNewTabsTimeout ', tabReferences);
@@ -435,7 +435,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
             Tab.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         // If there is not-yet grouped sibling, place next to it.
-        const siblings = Tabs.queryAll({
+        const siblings = TabsStore.queryAll({
           windowId:   tab.windowId,
           normal:     true,
           '!id':      tab.id,

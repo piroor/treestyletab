@@ -13,7 +13,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
@@ -447,7 +447,7 @@ function onMessage(message, _sender) {
     case Constants.kCOMMAND_NOTIFY_TABS_CLOSING:
       // Don't respond to message for other windows, because
       // the sender receives only the firstmost response.
-      if (message.windowId != Tabs.getWindow())
+      if (message.windowId != TabsStore.getWindow())
         return;
       return Promise.resolve(onTabsClosing.dispatch(message.tabs));
 
@@ -474,7 +474,7 @@ function onExternalMessage(message, sender) {
       return (async () => {
         const tab      = message.tab ? (await browser.tabs.get(message.tab)) : null ;
         const windowId = message.window || tab && tab.windowId;
-        if (windowId != Tabs.getWindow())
+        if (windowId != TabsStore.getWindow())
           return;
         await onShown(tab);
         await wait(25);
@@ -517,13 +517,13 @@ async function onContextMenu(event) {
 }
 
 // don't return promise, to avoid needless "await"
-Tabs.onRemoving.addListener((_tab, _info) => { close(); });
-Tabs.onMoving.addListener((_tab, _info) => { close(); });
-Tabs.onActivated.addListener((_tab, _info) => { close(); });
-Tabs.onCreating.addListener((_tab, _info) => { close(); });
-Tabs.onPinned.addListener(_tab => { close(); });
-Tabs.onUnpinned.addListener(_tab => { close(); });
-Tabs.onShown.addListener(_tab => { close(); });
-Tabs.onHidden.addListener(_tab => { close(); });
+Tab.onRemoving.addListener((_tab, _info) => { close(); });
+Tab.onMoving.addListener((_tab, _info) => { close(); });
+Tab.onActivated.addListener((_tab, _info) => { close(); });
+Tab.onCreating.addListener((_tab, _info) => { close(); });
+Tab.onPinned.addListener(_tab => { close(); });
+Tab.onUnpinned.addListener(_tab => { close(); });
+Tab.onShown.addListener(_tab => { close(); });
+Tab.onHidden.addListener(_tab => { close(); });
 Tree.onAttached.addListener((_tab, _info) => { close(); });
 Tree.onDetached.addListener((_tab, _info) => { close(); });

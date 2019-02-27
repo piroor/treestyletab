@@ -11,7 +11,7 @@ import {
 } from '/common/common.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
@@ -527,7 +527,7 @@ async function onClick(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
   const window    = await browser.windows.getLastFocused({ populate: true });
   const windowId  = contextTab && contextTab.windowId || window.id;
-  const activeTab = Tabs.activeTabForWindow.get(windowId);
+  const activeTab = TabsStore.activeTabForWindow.get(windowId);
 
   let multiselectedTabs = Tab.getSelectedTabs(windowId);
   const isMultiselected = contextTab ? contextTab.$TST.multiselected : multiselectedTabs.length > 1;

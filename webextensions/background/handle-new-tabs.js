@@ -11,7 +11,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsMove from '/common/tabs-move.js';
 import * as TabsOpen from '/common/tabs-open.js';
@@ -25,7 +25,7 @@ function log(...args) {
 
 
 // this should return false if the tab is / may be moved while processing
-Tabs.onCreating.addListener((tab, info = {}) => {
+Tab.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
     return true;
 
@@ -113,7 +113,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   return moved;
 }
 
-Tabs.onCreated.addListener((tab, info = {}) => {
+Tab.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)
     return;
   const original = info.originalTab;
@@ -132,10 +132,10 @@ Tabs.onCreated.addListener((tab, info = {}) => {
   }
 });
 
-Tabs.onUpdated.addListener((tab, changeInfo) => {
+Tab.onUpdated.addListener((tab, changeInfo) => {
   if ('openerTabId' in changeInfo &&
       configs.syncParentTabAndOpenerTab) {
-    Tabs.waitUntilAllTabsAreCreated(tab.windowId).then(() => {
+    TabsStore.waitUntilAllTabsAreCreated(tab.windowId).then(() => {
       const parent = tab.$TST.opener;
       if (!parent ||
           parent.windowId != tab.windowId ||
@@ -156,7 +156,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     const possibleOpenerTab = Tab.get(tab.$TST.possibleOpenerTab);
     delete tab.$TST.possibleOpenerTab;
     log('possibleOpenerTab ', possibleOpenerTab && possibleOpenerTab.id);
-    const window = Tabs.trackedWindows.get(tab.windowId);
+    const window = TabsStore.windows.get(tab.windowId);
     const toBeGroupedTabs = window.openedNewTabs;
     log('toBeGroupedTabs ', toBeGroupedTabs);
     if (!tab.$TST.parent &&
@@ -188,7 +188,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
 });
 
 
-Tabs.onAttached.addListener(async (tab, info = {}) => {
+Tab.onAttached.addListener(async (tab, info = {}) => {
   if (!info.windowId ||
       !Tree.shouldApplyTreeBehavior(info))
     return;

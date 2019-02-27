@@ -12,7 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as JSONCache from '/common/json-cache.js';
 import * as MetricsData from '/common/metrics-data.js';
@@ -145,7 +145,7 @@ export function clearWindowCache(owner) {
 }
 
 export function markWindowCacheDirtyFromTab(tab, akey) {
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   if (!window) // the window may be closed
     return;
   if (window.markWindowCacheDirtyFromTabTimeout)
@@ -174,7 +174,7 @@ export async function reserveToCacheTree(windowId) {
       !configs.useCachedTree)
     return;
 
-  const window = Tabs.trackedWindows.get(windowId);
+  const window = TabsStore.windows.get(windowId);
   if (!window)
     return;
 
@@ -182,8 +182,8 @@ export async function reserveToCacheTree(windowId) {
   // we are possibly restoring tabs. To avoid cache breakage before
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
-  if (Tabs.hasCreatingTab(windowId))
-    await Tabs.waitUntilAllTabsAreCreated(windowId);
+  if (TabsStore.hasCreatingTab(windowId))
+    await TabsStore.waitUntilAllTabsAreCreated(windowId);
 
   if (window.allTabsRestored)
     return;
@@ -199,7 +199,7 @@ export async function reserveToCacheTree(windowId) {
 }
 
 function cancelReservedCacheTree(windowId) {
-  const window = Tabs.trackedWindows.get(windowId);
+  const window = TabsStore.windows.get(windowId);
   if (window && window.waitingToCacheTree) {
     clearTimeout(window.waitingToCacheTree);
     delete window.waitingToCacheTree;
@@ -207,9 +207,9 @@ function cancelReservedCacheTree(windowId) {
 }
 
 async function cacheTree(windowId) {
-  if (Tabs.hasCreatingTab(windowId))
-    await Tabs.waitUntilAllTabsAreCreated(windowId);
-  const window = Tabs.trackedWindows.get(windowId);
+  if (TabsStore.hasCreatingTab(windowId))
+    await TabsStore.waitUntilAllTabsAreCreated(windowId);
+  const window = TabsStore.windows.get(windowId);
   if (!window ||
       !configs.useCachedTree)
     return;
@@ -223,7 +223,7 @@ async function cacheTree(windowId) {
   log('cacheTree for window ', windowId, { stack: new Error().stack });
   updateWindowCache(window.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version:         Constants.kBACKGROUND_CONTENTS_VERSION,
-    tabs:            Tabs.trackedWindows.get(windowId).export(),
+    tabs:            TabsStore.windows.get(windowId).export(),
     pinnedTabsCount: Tab.getPinnedTabs(windowId).length,
     signature
   });
@@ -232,17 +232,17 @@ async function cacheTree(windowId) {
 
 // update cache on events
 
-Tabs.onCreated.addListener((tab, _info = {}) => {
+Tab.onCreated.addListener((tab, _info = {}) => {
   reserveToCacheTree(tab.windowId);
 });
 
 // Tree restoration for "Restore Previous Session"
-Tabs.onWindowRestoring.addListener(async windowId => {
+Tab.onWindowRestoring.addListener(async windowId => {
   if (!configs.useCachedTree)
     return;
 
   log('Tabs.onWindowRestoring ', windowId);
-  const window = Tabs.trackedWindows.get(windowId);
+  const window = TabsStore.windows.get(windowId);
   const restoredCount = await window.allTabsRestored;
   if (restoredCount == 1) {
     log('Tabs.onWindowRestoring: single tab restored');
@@ -266,7 +266,7 @@ Tabs.onWindowRestoring.addListener(async windowId => {
   }
 });
 
-Tabs.onRemoved.addListener((_tab, info) => {
+Tab.onRemoved.addListener((_tab, info) => {
   wait(0).then(() => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
@@ -274,11 +274,11 @@ Tabs.onRemoved.addListener((_tab, info) => {
   });
 });
 
-Tabs.onMoved.addListener((_tab, info) => {
+Tab.onMoved.addListener((_tab, info) => {
   reserveToCacheTree(info.windowId);
 });
 
-Tabs.onUpdated.addListener((tab, _info) => {
+Tab.onUpdated.addListener((tab, _info) => {
   markWindowCacheDirtyFromTab(tab, Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
 });
 
@@ -302,19 +302,19 @@ Tree.onDetached.addListener((tab, _info) => {
   });
 });
 
-Tabs.onPinned.addListener(tab => {
+Tab.onPinned.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });
 
-Tabs.onUnpinned.addListener(tab => {
+Tab.onUnpinned.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });
 
-Tabs.onShown.addListener(tab => {
+Tab.onShown.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });
 
-Tabs.onHidden.addListener(tab => {
+Tab.onHidden.addListener(tab => {
   reserveToCacheTree(tab.windowId);
 });
 

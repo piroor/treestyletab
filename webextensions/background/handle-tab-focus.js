@@ -13,7 +13,7 @@ import {
 
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
 
@@ -30,14 +30,14 @@ let mTabSwitchedByShortcut       = false;
 let mMaybeTabSwitchingByShortcut = false;
 
 
-Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focusing is overridden.
+Tab.onActivating.addListener((tab, info = {}) => { // return true if this focusing is overridden.
   log('Tabs.onActivating ', tab.id, info);
   if (tab.$TST.shouldReloadOnSelect) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.handleMissingTabError);
     delete tab.$TST.shouldReloadOnSelect;
   }
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   cancelDelayedExpand(Tab.get(window.lastActiveTab));
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
@@ -124,7 +124,7 @@ function handleNewActiveTab(tab, info = {}) {
   }
 }
 
-Tabs.onUpdated.addListener((tab, changeInfo = {}) => {
+Tab.onUpdated.addListener((tab, changeInfo = {}) => {
   if ('url' in changeInfo) {
     if (tab.$TST.discardURLAfterCompletelyLoaded &&
         tab.$TST.discardURLAfterCompletelyLoaded != changeInfo.url)
@@ -132,7 +132,7 @@ Tabs.onUpdated.addListener((tab, changeInfo = {}) => {
   }
 });
 
-Tabs.onStateChanged.addListener(tab => {
+Tab.onStateChanged.addListener(tab => {
   if (tab.status != 'complete')
     return;
 
@@ -141,7 +141,7 @@ Tabs.onStateChanged.addListener(tab => {
         configs.autoDiscardTabForUnexpectedFocus) {
       log('Try to discard accidentally restored tab (on restored) ', tab.id);
       wait(configs.autoDiscardTabForUnexpectedFocusDelay).then(() => {
-        if (!Tabs.ensureLivingTab(tab) ||
+        if (!TabsStore.ensureLivingTab(tab) ||
             tab.active)
           return;
         if (tab.status == 'complete')
@@ -190,7 +190,7 @@ function cancelAllDelayedExpand(windowId) {
   }
 }
 
-Tabs.onCollapsedStateChanged.addListener((tab, info = {}) => {
+Tab.onCollapsedStateChanged.addListener((tab, info = {}) => {
   if (info.collapsed)
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
   else
@@ -230,17 +230,17 @@ function onMessage(message, sender) {
       return (async () => {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
-          await Tabs.waitUntilTabsAreCreated(sender.tab.id);
+          await TabsStore.waitUntilTabsAreCreated(sender.tab.id);
           let tab = sender.tab && Tab.get(sender.tab.id);
           if (!tab) {
             const tabs = await browser.tabs.query({ currentWindow: true, active: true });
-            await Tabs.waitUntilTabsAreCreated(tabs[0].id);
+            await TabsStore.waitUntilTabsAreCreated(tabs[0].id);
             tab = Tab.get(tabs[0].id);
           }
           cancelAllDelayedExpand(tab.windowId);
           if (configs.autoCollapseExpandSubtreeOnSelect &&
               tab &&
-              Tabs.trackedWindows.get(tab.windowId).lastActiveTab == tab.id) {
+              TabsStore.windows.get(tab.windowId).lastActiveTab == tab.id) {
             Tree.collapseExpandSubtree(tab, {
               collapsed: false,
               broadcast: true

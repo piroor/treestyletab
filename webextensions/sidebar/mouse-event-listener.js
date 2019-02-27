@@ -46,7 +46,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -71,7 +71,7 @@ const mContextualIdentitySelector = document.getElementById(Constants.kCONTEXTUA
 const mNewTabActionSelector       = document.getElementById(Constants.kNEWTAB_ACTION_SELECTOR);
 
 Sidebar.onInit.addListener(() => {
-  mTargetWindow = Tabs.getWindow();
+  mTargetWindow = TabsStore.getWindow();
 });
 
 Sidebar.onBuilt.addListener(async () => {
@@ -498,7 +498,7 @@ function handleNewTabAction(event, options = {}) {
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
-    baseTab:       Tabs.activeTabForWindow.get(mTargetWindow),
+    baseTab:       TabsStore.activeTabForWindow.get(mTargetWindow),
     as:            options.action,
     cookieStoreId: options.cookieStoreId,
     inBackground:  event.shiftKey,

@@ -46,7 +46,7 @@ import {
 
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import { SequenceMatcher } from './diff.js';
 
 import Tab from './Tab.js';
@@ -65,7 +65,7 @@ function logApiTabs(...args) {
 export async function moveTabsBefore(tabs, referenceTab, options = {}) {
   log('moveTabsBefore: ', tabs.map(tab => tab.id), referenceTab && referenceTab.id, options);
   if (!tabs.length ||
-      !Tabs.ensureLivingTab(referenceTab))
+      !TabsStore.ensureLivingTab(referenceTab))
     return [];
 
   if (referenceTab.$TST.isAllPlacedBeforeSelf(tabs)) {
@@ -80,10 +80,10 @@ export async function moveTabBefore(tab, referenceTab, options = {}) {
 
 async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
   if (!tabs.length ||
-      !Tabs.ensureLivingTab(referenceTab))
+      !TabsStore.ensureLivingTab(referenceTab))
     return [];
 
-  const window = Tabs.trackedWindows.get(tabs[0].windowId);
+  const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyBefore: ', tabs.map(tab => tab.id), referenceTab.id, options);
   if (options.inRemote || options.broadcast) {
@@ -123,7 +123,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         tab.index = referenceTab.index;
       Tab.track(tab);
       movedTabsCount++;
-      Tabs.onTabInternallyMoved.dispatch(tab, {
+      Tab.onTabInternallyMoved.dispatch(tab, {
         nextTab: referenceTab,
         oldPreviousTab,
         oldNextTab,
@@ -158,7 +158,7 @@ export async function moveTabInternallyBefore(tab, referenceTab, options = {}) {
 export async function moveTabsAfter(tabs, referenceTab, options = {}) {
   log('moveTabsAfter: ', tabs.map(tab => tab.id), referenceTab && referenceTab.id, options);
   if (!tabs.length ||
-      !Tabs.ensureLivingTab(referenceTab))
+      !TabsStore.ensureLivingTab(referenceTab))
     return [];
 
   if (referenceTab.$TST.isAllPlacedAfterSelf(tabs)) {
@@ -173,10 +173,10 @@ export async function moveTabAfter(tab, referenceTab, options = {}) {
 
 async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
   if (!tabs.length ||
-      !Tabs.ensureLivingTab(referenceTab))
+      !TabsStore.ensureLivingTab(referenceTab))
     return [];
 
-  const window = Tabs.trackedWindows.get(tabs[0].windowId);
+  const window = TabsStore.windows.get(tabs[0].windowId);
 
   log('moveTabsInternallyAfter: ', tabs.map(tab => tab.id), referenceTab.id, options);
   if (options.inRemote || options.broadcast) {
@@ -225,7 +225,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       }
       Tab.track(tab);
       movedTabsCount++;
-      Tabs.onTabInternallyMoved.dispatch(tab, {
+      Tab.onTabInternallyMoved.dispatch(tab, {
         nextTab,
         oldPreviousTab,
         oldNextTab,
@@ -300,12 +300,12 @@ async function syncToNativeTabsInternal(windowId) {
   const oldMovedTabs = mMovedTabs.get(windowId) || [];
   mMovedTabs.delete(windowId);
 
-  if (Tabs.hasCreatingTab(windowId))
-    await Tabs.waitUntilAllTabsAreCreated(windowId);
-  if (Tabs.hasMovingTab(windowId))
-    await Tabs.waitUntilAllTabsAreMoved(windowId);
+  if (TabsStore.hasCreatingTab(windowId))
+    await TabsStore.waitUntilAllTabsAreCreated(windowId);
+  if (TabsStore.hasMovingTab(windowId))
+    await TabsStore.waitUntilAllTabsAreMoved(windowId);
 
-  const window = Tabs.trackedWindows.get(windowId);
+  const window = TabsStore.windows.get(windowId);
   if (!window) // already destroyed
     return;
 
@@ -315,7 +315,7 @@ async function syncToNativeTabsInternal(windowId) {
   }
 
   // Tabs may be removed while waiting.
-  const internalOrder   = Tabs.trackedWindows.get(windowId).order;
+  const internalOrder   = TabsStore.windows.get(windowId).order;
   const nativeTabsOrder = (await browser.tabs.query({ windowId })).map(tab => tab.id);
   log(`syncToNativeTabs(${windowId}): rearrange `, { internalOrder:internalOrder.join(','), nativeTabsOrder:nativeTabsOrder.join(',') });
 

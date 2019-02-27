@@ -12,7 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 
@@ -37,7 +37,7 @@ let mTargetWindow;
 let mTabBar;
 
 export function init() {
-  mTargetWindow = Tabs.getWindow();
+  mTargetWindow = TabsStore.getWindow();
   mTabBar       = document.querySelector('#tabbar');
 }
 
@@ -135,7 +135,7 @@ export async function getEffectiveWindowCache(options = {}) {
 
 export async function restoreTabsFromCache(cache, params = {}) {
   const offset = params.offset || 0;
-  const window = Tabs.trackedWindows.get(mTargetWindow);
+  const window = TabsStore.windows.get(mTargetWindow);
   if (offset <= 0) {
     if (window.element)
       window.element.parentNode.removeChild(window.element);
@@ -245,10 +245,10 @@ export async function reserveToUpdateCachedTabbar() {
   // we are possibly restoring tabs. To avoid cache breakage before
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
-  if (Tabs.hasCreatingTab(mTargetWindow))
-    await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
+  if (TabsStore.hasCreatingTab(mTargetWindow))
+    await TabsStore.waitUntilAllTabsAreCreated(mTargetWindow);
 
-  const window = Tabs.trackedWindows.get(mTargetWindow);
+  const window = TabsStore.windows.get(mTargetWindow);
   if (window.allTabsRestored)
     return;
 
@@ -274,9 +274,9 @@ function cancelReservedUpdateCachedTabbar() {
 async function updateCachedTabbar() {
   if (!configs.useCachedTree)
     return;
-  if (Tabs.hasCreatingTab(mTargetWindow))
-    await Tabs.waitUntilAllTabsAreCreated(mTargetWindow);
-  const window    = Tabs.trackedWindows.get(mTargetWindow);
+  if (TabsStore.hasCreatingTab(mTargetWindow))
+    await TabsStore.waitUntilAllTabsAreCreated(mTargetWindow);
+  const window    = TabsStore.windows.get(mTargetWindow);
   const signature = await DOMCache.getWindowSignature(mTargetWindow);
   if (window.allTabsRestored)
     return;
@@ -295,37 +295,37 @@ async function updateCachedTabbar() {
 }
 
 
-Tabs.onFaviconUpdated.addListener((_tab, _url) => {
+Tab.onFaviconUpdated.addListener((_tab, _url) => {
   wait(0).then(() => {
     markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
-Tabs.onUpdated.addListener((_tab, _url) => {
+Tab.onUpdated.addListener((_tab, _url) => {
   wait(0).then(() => {
     markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
-Tabs.onLabelUpdated.addListener(_tab => {
+Tab.onLabelUpdated.addListener(_tab => {
   wait(0).then(() => {
     markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
-Tabs.onParentTabUpdated.addListener(async _tab => {
+Tab.onParentTabUpdated.addListener(async _tab => {
   wait(0).then(() => {
     markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });
 });
 
-Tabs.onCreated.addListener((_tab, _info) => {
+Tab.onCreated.addListener((_tab, _info) => {
   wait(0).then(() => {
     reserveToUpdateCachedTabbar();
   });
 });
 
-Tabs.onRemoved.addListener(async (_tab, _info) => {
+Tab.onRemoved.addListener(async (_tab, _info) => {
   // "Restore Previous Session" closes some tabs at first, so we should not clear the old cache yet.
   // See also: https://dxr.mozilla.org/mozilla-central/rev/5be384bcf00191f97d32b4ac3ecd1b85ec7b18e1/browser/components/sessionstore/SessionStore.jsm#3053
   await wait(0);
@@ -335,7 +335,7 @@ Tabs.onRemoved.addListener(async (_tab, _info) => {
   }
 });
 
-Tabs.onMoved.addListener((_tab, _info) => {
+Tab.onMoved.addListener((_tab, _info) => {
   reserveToUpdateCachedTabbar();
 });
 
@@ -347,8 +347,8 @@ Tree.onLevelChanged.addListener(_tab => {
   });
 });
 
-Tabs.onDetached.addListener(async (tab, _info) => {
-  if (!Tabs.ensureLivingTab(tab))
+Tab.onDetached.addListener(async (tab, _info) => {
+  if (!TabsStore.ensureLivingTab(tab))
     return;
   await wait(0);
   reserveToUpdateCachedTabbar();
@@ -370,19 +370,19 @@ Tree.onDetached.addListener((_tab, _info) => {
   });
 });
 
-Tabs.onPinned.addListener(_tab => {
+Tab.onPinned.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 
-Tabs.onUnpinned.addListener(_tab => {
+Tab.onUnpinned.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 
-Tabs.onShown.addListener(_tab => {
+Tab.onShown.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 
-Tabs.onHidden.addListener(_tab => {
+Tab.onHidden.addListener(_tab => {
   reserveToUpdateCachedTabbar();
 });
 

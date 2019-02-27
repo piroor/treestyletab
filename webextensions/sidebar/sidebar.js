@@ -15,7 +15,7 @@ import {
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
 import * as ApiTabsListener from '/common/api-tabs-listener.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as TabsMove from '/common/tabs-move.js';
@@ -90,7 +90,7 @@ export async function init() {
         currentWindow: true
       });
       mTargetWindow = tabs[0].windowId;
-      Tabs.setWindow(mTargetWindow);
+      TabsStore.setWindow(mTargetWindow);
       for (const tab of tabs) {
         Tab.track(tab);
       }
@@ -361,7 +361,7 @@ export async function rebuildAll(cache) {
 
   const tabs = await browser.tabs.query({ currentWindow: true });
 
-  const trackedWindow = Tabs.trackedWindows.get(tabs[0].windowId);
+  const trackedWindow = TabsStore.windows.get(tabs[0].windowId);
   if (!trackedWindow)
     Window.init(tabs[0].windowId);
 
@@ -505,13 +505,13 @@ function updateTabbarLayout(params = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      const activeTab = Tab.getActiveTab(Tabs.getWindow());
+      const activeTab = Tab.getActiveTab(TabsStore.getWindow());
       if (activeTab && !Scroll.isTabInViewport(activeTab)) {
         log('scroll to active tab on updateTabbarLayout');
         Scroll.scrollToTab(activeTab);
         return;
       }
-      const lastOpenedTab = Tab.getLastOpenedTab(Tabs.getWindow());
+      const lastOpenedTab = Tab.getLastOpenedTab(TabsStore.getWindow());
       const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
@@ -574,14 +574,14 @@ function onBrowserThemeChanged(updateInfo) {
 }
 
 
-Tabs.onCreated.addListener((_tab, _info) => {
+Tab.onCreated.addListener((_tab, _info) => {
   reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_OPEN,
     timeout: configs.collapseDuration
   });
 });
 
-Tabs.onRemoving.addListener((tab, removeInfo) => {
+Tab.onRemoving.addListener((tab, removeInfo) => {
   if (removeInfo.isWindowClosing)
     return;
 
@@ -604,15 +604,15 @@ Tabs.onRemoving.addListener((tab, removeInfo) => {
   });
 });
 
-Tabs.onMoved.addListener((_tab, _info) => {
+Tab.onMoved.addListener((_tab, _info) => {
   reserveToUpdateTabbarLayout({
     reason:  Constants.kTABBAR_UPDATE_REASON_TAB_MOVE,
     timeout: configs.collapseDuration
   });
 });
 
-Tabs.onDetached.addListener((tab, _info) => {
-  if (!Tabs.ensureLivingTab(tab))
+Tab.onDetached.addListener((tab, _info) => {
+  if (!TabsStore.ensureLivingTab(tab))
     return;
   // We don't need to update children because they are controlled by bacgkround.
   // However we still need to update the parent itself.
@@ -621,11 +621,11 @@ Tabs.onDetached.addListener((tab, _info) => {
   });
 });
 
-Tabs.onRestoring.addListener(tab => {
+Tab.onRestoring.addListener(tab => {
   if (!configs.useCachedTree) // we cannot know when we should unblock on no cache case...
     return;
 
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   // When we are restoring two or more tabs.
   // (But we don't need do this again for third, fourth, and later tabs.)
   if (window.restoredCount == 2)
@@ -633,12 +633,12 @@ Tabs.onRestoring.addListener(tab => {
 });
 
 // Tree restoration for "Restore Previous Session"
-Tabs.onWindowRestoring.addListener(async windowId => {
+Tab.onWindowRestoring.addListener(async windowId => {
   if (!configs.useCachedTree)
     return;
 
   log('Tabs.onWindowRestoring');
-  const window = Tabs.trackedWindows.get(windowId);
+  const window = TabsStore.windows.get(windowId);
   const restoredCount = await window.allTabsRestored;
   if (restoredCount == 1) {
     log('Tabs.onWindowRestoring: single tab restored');
@@ -677,11 +677,11 @@ Tabs.onWindowRestoring.addListener(async windowId => {
   MetricsData.add('Tabs.onWindowRestoring restore end');
 });
 
-Tabs.onHighlightedTabsChanged.addListener(windowId => {
+Tab.onHighlightedTabsChanged.addListener(windowId => {
   if (windowId != mTargetWindow)
     return;
-  const window             = Tabs.trackedWindows.get(windowId);
-  const allHighlightedTabs = Tabs.highlightedTabsForWindow.get(windowId);
+  const window             = TabsStore.windows.get(windowId);
+  const allHighlightedTabs = TabsStore.highlightedTabsForWindow.get(windowId);
   if (!window || !window.element || !allHighlightedTabs)
     return;
   if (allHighlightedTabs.size > 1)
@@ -862,12 +862,12 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
       const tab = Tab.get(message.tabId);
       if (tab)
-        Tabs.onFaviconUpdated.dispatch(tab, message.favIconUrl);
+        Tab.onFaviconUpdated.dispatch(tab, message.favIconUrl);
     } break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabId);
+        await TabsStore.waitUntilTabsAreCreated(message.tabId);
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -884,7 +884,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabId);
+        await TabsStore.waitUntilTabsAreCreated(message.tabId);
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -907,7 +907,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.nextTabId]));
+        await TabsStore.waitUntilTabsAreCreated(message.tabIds.concat([message.nextTabId]));
         return TabsMove.moveTabsBefore(
           message.tabIds.map(id => Tab.get(id)),
           message.nextTabId && Tab.get(message.nextTabId),
@@ -922,7 +922,7 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.previousTabId]));
+        await TabsStore.waitUntilTabsAreCreated(message.tabIds.concat([message.previousTabId]));
         return TabsMove.moveTabsAfter(
           message.tabIds.map(id => Tab.get(id)),
           message.previousTabId && Tab.get(message.previousTabId),
@@ -937,14 +937,14 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabIds);
+        await TabsStore.waitUntilTabsAreCreated(message.tabIds);
         return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)), message.options);
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {
       const promisedComplete = (async () => {
         await Promise.all([
-          Tabs.waitUntilTabsAreCreated([
+          TabsStore.waitUntilTabsAreCreated([
             message.childId,
             message.parentId,
             message.insertBeforeId,
@@ -971,7 +971,7 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_DETACH_TAB: {
       const promisedComplete = (async () => {
         await Promise.all([
-          Tabs.waitUntilTabsAreCreated(message.tabId),
+          TabsStore.waitUntilTabsAreCreated(message.tabId),
           waitUntilAllTreeChangesFromRemoteAreComplete()
         ]);
         const tab = Tab.get(message.tabId);
@@ -995,7 +995,7 @@ function onMessage(message, _sender, _respond) {
       if (!message.tabIds.length)
         break;
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.tabIds);
+        await TabsStore.waitUntilTabsAreCreated(message.tabIds);
         const add    = message.add || [];
         const remove = message.remove || [];
         log('apply broadcasted tab state ', message.tabIds, {

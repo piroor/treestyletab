@@ -12,7 +12,7 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 
 import Tab from '/common/Tab.js';
@@ -127,7 +127,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     })()
   ]);
 
-  if (!Tabs.ensureLivingTab(tab) || // not removed while waiting
+  if (!TabsStore.ensureLivingTab(tab) || // not removed while waiting
       tab.$TST.parent != info.parent) // not detached while waiting
     return;
 

@@ -44,7 +44,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
@@ -142,11 +142,11 @@ export async function openURIsInTabs(uris, options = {}) {
       return ids.map(id => Tab.get(id));
     }
     else {
-      await Tabs.waitUntilAllTabsAreCreated(options.windowId);
+      await TabsStore.waitUntilAllTabsAreCreated(options.windowId);
       await TabsMove.waitUntilSynchronized(options.windowId);
       const startIndex = Tab.calculateNewTabIndex(options);
       log('startIndex: ', startIndex);
-      const window = Tabs.trackedWindows.get(options.windowId);
+      const window = TabsStore.windows.get(options.windowId);
       window.toBeOpenedTabsWithPositions += uris.length;
       if (options.isOrphan)
         window.toBeOpenedOrphanTabs += uris.length;
@@ -176,19 +176,19 @@ export async function openURIsInTabs(uris, options = {}) {
         if (options.cookieStoreId)
           params.cookieStoreId = options.cookieStoreId;
         // Tabs opened with different container can take time to be tracked,
-        // then Tabs.waitUntilTabsAreCreated() may be resolved before it is
+        // then TabsStore.waitUntilTabsAreCreated() may be resolved before it is
         // tracked like as "the tab is already closed". So we wait until the
         // tab is correctly tracked.
         const promisedNewTabTracked = new Promise((resolve, _reject) => {
           const listener = (tab) => {
-            Tabs.onCreating.removeListener(listener);
+            Tab.onCreating.removeListener(listener);
             browser.tabs.get(tab.id).then(resolve);
           };
-          Tabs.onCreating.addListener(listener);
+          Tab.onCreating.addListener(listener);
         });
         const createdTab = await browser.tabs.create(params);
         await Promise.all([
-          promisedNewTabTracked, // Tabs.waitUntilTabsAreCreated(createdTab.id),
+          promisedNewTabTracked, // TabsStore.waitUntilTabsAreCreated(createdTab.id),
           searchQuery && browser.search.search({
             query: searchQuery,
             tabId: createdTab.id

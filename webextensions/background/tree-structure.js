@@ -11,7 +11,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 
@@ -26,13 +26,13 @@ function log(...args) {
 export const onTabAttachedFromRestoredInfo = new EventListenerManager();
 
 export function startTracking() {
-  Tabs.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
-  Tabs.onRemoved.addListener((tab, info) => {
+  Tab.onCreated.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
+  Tab.onRemoved.addListener((tab, info) => {
     if (!info.isWindowClosing)
       reserveToSaveTreeStructure(tab.windowId);
   });
-  Tabs.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
-  Tabs.onUpdated.addListener((tab, info) => {
+  Tab.onMoved.addListener((tab, _info) => { reserveToSaveTreeStructure(tab.windowId); });
+  Tab.onUpdated.addListener((tab, info) => {
     if ('openerTabId' in info)
       reserveToSaveTreeStructure(tab.windowId);
   });
@@ -42,7 +42,7 @@ export function startTracking() {
 }
 
 export function reserveToSaveTreeStructure(windowId) {
-  const window = Tabs.trackedWindows.get(windowId);
+  const window = TabsStore.windows.get(windowId);
   if (!window)
     return;
 
@@ -53,7 +53,7 @@ export function reserveToSaveTreeStructure(windowId) {
   }, 150);
 }
 async function saveTreeStructure(windowId) {
-  const window = Tabs.trackedWindows.get(windowId);
+  const window = TabsStore.windows.get(windowId);
   if (!window)
     return;
 
@@ -270,7 +270,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 }
 
 
-Tabs.onRestored.addListener(tab => {
+Tab.onRestored.addListener(tab => {
   log('onTabRestored ', tab.id);
   reserveToAttachTabFromRestoredInfo(tab, {
     children: true

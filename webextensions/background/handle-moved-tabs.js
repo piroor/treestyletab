@@ -12,7 +12,7 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as Commands from '/common/commands.js';
 
@@ -28,7 +28,7 @@ function logApiTabs(...args) {
 }
 
 
-Tabs.onCreated.addListener((tab, info = {}) => {
+Tab.onCreated.addListener((tab, info = {}) => {
   if (info.duplicated ||
       info.restored ||
       info.skipFixupTree ||
@@ -50,9 +50,9 @@ Tabs.onCreated.addListener((tab, info = {}) => {
     });
 });
 
-Tabs.onMoving.addListener((tab, moveInfo) => {
+Tab.onMoving.addListener((tab, moveInfo) => {
   // avoid TabMove produced by browser.tabs.insertRelatedAfterCurrent=true or something.
-  const window           = Tabs.trackedWindows.get(tab.windowId);
+  const window           = TabsStore.windows.get(tab.windowId);
   const isNewlyOpenedTab = window.openingTabs.has(tab.id);
   const positionControlled = configs.insertNewChildAt != Constants.kINSERT_NO_CONTROL;
   if (!isNewlyOpenedTab ||
@@ -118,7 +118,7 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
   }
 }
 
-Tabs.onMoved.addListener((tab, moveInfo = {}) => {
+Tab.onMoved.addListener((tab, moveInfo = {}) => {
   if (moveInfo.byInternalOperation ||
       tab.$TST.duplicating) {
     log('internal move');
@@ -148,7 +148,7 @@ TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { try
 function moveBack(tab, moveInfo) {
   log('Move back tab from unexpected move: ', tab.id, moveInfo);
   const id     = tab.id;
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   window.internalMovingTabs.add(id);
   logApiTabs(`handle-moved-tabs:moveBack: browser.tabs.move() `, tab.id, {
     windowId: moveInfo.windowId,

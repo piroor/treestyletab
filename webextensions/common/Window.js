@@ -10,7 +10,7 @@ import {
   configs
 } from './common.js';
 
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -20,7 +20,7 @@ function log(...args) {
 
 export default class Window {
   constructor(windowId) {
-    const alreadyTracked = Tabs.trackedWindows.get(windowId);
+    const alreadyTracked = TabsStore.windows.get(windowId);
     if (alreadyTracked)
       return alreadyTracked;
 
@@ -57,8 +57,8 @@ export default class Window {
     this.toBeAttachedTabs = new Set();
     this.toBeDetachedTabs = new Set();
 
-    Tabs.trackedWindows.set(windowId, this);
-    Tabs.highlightedTabsForWindow.set(windowId, new Set());
+    TabsStore.windows.set(windowId, this);
+    TabsStore.highlightedTabsForWindow.set(windowId, new Set());
   }
 
   destroy() {
@@ -67,9 +67,9 @@ export default class Window {
         tab.$TST.destroy();
     }
     this.tabs.clear();
-    Tabs.trackedWindows.delete(this.id, this);
-    Tabs.activeTabForWindow.delete(this.id);
-    Tabs.highlightedTabsForWindow.delete(this.id);
+    TabsStore.windows.delete(this.id, this);
+    TabsStore.activeTabForWindow.delete(this.id);
+    TabsStore.highlightedTabsForWindow.delete(this.id);
 
     if (this.element) {
       const element = this.element;
@@ -116,7 +116,7 @@ export default class Window {
   }
 
   trackTab(tab) {
-    const alreadyTracked = Tabs.trackedTabs.get(tab.id);
+    const alreadyTracked = TabsStore.tabs.get(tab.id);
     if (alreadyTracked)
       tab = alreadyTracked;
 
@@ -145,7 +145,7 @@ export default class Window {
   }
 
   detachTab(tabId) {
-    const tab = Tabs.trackedTabs.get(tabId);
+    const tab = TabsStore.tabs.get(tabId);
     if (!tab)
       return;
 
@@ -183,7 +183,7 @@ export default class Window {
 Window.onInitialized = new EventListenerManager();
 
 Window.init = windowId => {
-  const window = Tabs.trackedWindows.get(windowId) || new Window(windowId);
+  const window = TabsStore.windows.get(windowId) || new Window(windowId);
   Window.onInitialized.dispatch(windowId);
   return window;
 }

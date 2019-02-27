@@ -13,7 +13,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 
 import Tab from '/common/Tab.js';
 
@@ -22,7 +22,7 @@ function log(...args) {
 }
 
 export async function activateTab(tab, options = {}) {
-  tab = Tabs.ensureLivingTab(tab);
+  tab = TabsStore.ensureLivingTab(tab);
   if (!tab)
     return;
   log('activateTab: ', tab.id);
@@ -35,7 +35,7 @@ export async function activateTab(tab, options = {}) {
     });
     return;
   }
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   window.internalFocusCount++;
   if (options.silently)
     window.internalSilentlyFocusCount++;
@@ -74,7 +74,7 @@ export function removeTab(tab, options = {}) {
 }
 
 export function removeTabs(tabs, options = {}) {
-  tabs = tabs.filter(Tabs.ensureLivingTab);
+  tabs = tabs.filter(TabsStore.ensureLivingTab);
   if (!tabs.length)
     return;
   log('removeTabsInternally: ', tabs.map(tab => tab.id));
@@ -92,7 +92,7 @@ export function removeTabs(tabs, options = {}) {
     if (options.inRemote)
       return;
   }
-  const window = Tabs.trackedWindows.get(tabs[0].windowId);
+  const window = TabsStore.windows.get(tabs[0].windowId);
   if (window) {
     for (const tab of tabs) {
       window.internalClosingTabs.add(tab.id);
@@ -113,7 +113,7 @@ export function setTabActive(tab) {
 }
 
 export function clearOldActiveStateInWindow(windowId) {
-  const oldTabs = Tabs.queryAll({
+  const oldTabs = TabsStore.queryAll({
     windowId,
     active:  true
   });

@@ -11,7 +11,7 @@ import {
 } from './common.js';
 
 import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import * as UniqueId from './unique-id.js';
 
 import Window from './Window.js';
@@ -52,9 +52,9 @@ export default class Tab {
     else
       this.promisedUniqueId = Promise.resolve(this.uniqueId);
 
-    Tabs.trackedTabs.set(tab.id, tab);
+    TabsStore.tabs.set(tab.id, tab);
 
-    const window = Tabs.trackedWindows.get(tab.windowId) || new Window(tab.windowId);
+    const window = TabsStore.windows.get(tab.windowId) || new Window(tab.windowId);
     window.trackTab(tab);
 
     this.promisedUniqueId.then(() => {
@@ -70,11 +70,11 @@ export default class Tab {
       delete this.reservedCleanupNeedlessGroupTab;
     }
 
-    Tabs.trackedTabs.delete(this.id);
+    TabsStore.tabs.delete(this.id);
     if (this.uniqueId)
-      Tabs.trackedTabsByUniqueId.delete(this.uniqueId.id)
+      TabsStore.tabsByUniqueId.delete(this.uniqueId.id)
 
-    const highlightedTabs = Tabs.highlightedTabsForWindow.get(this.tab.windowId);
+    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(this.tab.windowId);
     if (highlightedTabs.has(this.tab))
       highlightedTabs.delete(this.tab);
 
@@ -103,9 +103,9 @@ export default class Tab {
 
   updateUniqueId(options = {}) {
     return UniqueId.request(this.tab, options).then(uniqueId => {
-      if (uniqueId && Tabs.ensureLivingTab(this.tab)) { // possibly removed from document while waiting
+      if (uniqueId && TabsStore.ensureLivingTab(this.tab)) { // possibly removed from document while waiting
         this.uniqueId = uniqueId;
-        Tabs.trackedTabsByUniqueId.set(uniqueId.id, this.tab);
+        TabsStore.tabsByUniqueId.set(uniqueId.id, this.tab);
         this.setAttribute(Constants.kPERSISTENT_ID, uniqueId.id);
       }
       return uniqueId || {};
@@ -116,7 +116,9 @@ export default class Tab {
   }
 
 
+  //===================================================================
   // status of tab
+  //===================================================================
 
   get soundPlaying() {
     return !!(this.tab.audible && !this.tab.mutedInfo.muted);
@@ -180,7 +182,7 @@ export default class Tab {
   get multiselected() {
     return this.selected &&
              (this.hasOtherHighlighted ||
-              Tabs.queryAll({
+              TabsStore.queryAll({
                 windowId: this.tab.windowId,
                 living:   true,
                 states:   [Constants.kTAB_STATE_SELECTED, true]
@@ -188,14 +190,16 @@ export default class Tab {
   }
 
   get hasOtherHighlighted() {
-    const highlightedTabs = Tabs.highlightedTabsForWindow.get(this.tab.windowId);
+    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(this.tab.windowId);
     return !!(highlightedTabs && highlightedTabs.size > 1);
   }
 
+  //===================================================================
   // neighbor tabs
+  //===================================================================
 
   get next() {
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       living:   true,
@@ -204,7 +208,7 @@ export default class Tab {
   }
 
   get previous() {
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       living:   true,
@@ -214,7 +218,7 @@ export default class Tab {
   }
 
   get anyNext() {
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       index:    (index => index > this.tab.index)
@@ -222,7 +226,7 @@ export default class Tab {
   }
 
   get anyPrevious() {
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       index:    (index => index < this.tab.index),
@@ -231,7 +235,7 @@ export default class Tab {
   }
 
   get nearestNormalFollowing() {
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       normal:   true,
@@ -240,7 +244,7 @@ export default class Tab {
   }
 
   get nearestNormalPreceding() {
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       normal:   true,
@@ -250,7 +254,7 @@ export default class Tab {
   }
 
   get nearestVisibleFollowing() { // visible, not-collapsed
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       visible:  true,
@@ -259,7 +263,7 @@ export default class Tab {
   }
 
   get nearestVisiblePreceding() { // visible, not-collapsed
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
       visible:  true,
@@ -268,7 +272,9 @@ export default class Tab {
     });
   }
 
+  //===================================================================
   // tree relations
+  //===================================================================
 
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
@@ -276,7 +282,7 @@ export default class Tab {
     return tab;
   }
   get parent() {
-    return this.parentId && Tabs.ensureLivingTab(Tab.get(this.parentId));
+    return this.parentId && TabsStore.ensureLivingTab(Tab.get(this.parentId));
   }
 
   get hasParent() {
@@ -288,7 +294,7 @@ export default class Tab {
     return tabs;
   }
   get ancestors() {
-    return this.ancestorIds.map(id => Tab.get(id)).filter(Tabs.ensureLivingTab);
+    return this.ancestorIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
   }
 
   updateAncestors() {
@@ -333,7 +339,7 @@ export default class Tab {
     return tabs;
   }
   get children() {
-    return this.childIds.map(id => Tab.get(id)).filter(Tabs.ensureLivingTab);
+    return this.childIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
   }
 
   get firstChild() {
@@ -380,7 +386,7 @@ export default class Tab {
       return Tab.get(siblingId);
     }
     else {
-      return Tabs.query({
+      return TabsStore.query({
         windowId:  this.tab.windowId,
         fromId:    this.tab.id,
         living:    true,
@@ -402,7 +408,7 @@ export default class Tab {
       return Tab.get(siblingId);
     }
     else {
-      return Tabs.query({
+      return TabsStore.query({
         windowId:  this.tab.windowId,
         fromId:    this.tab.id,
         living:    true,
@@ -413,13 +419,15 @@ export default class Tab {
     }
   }
 
+  //===================================================================
   // other relations
+  //===================================================================
 
   get opener() {
     if (!this.tab.openerTabId ||
         this.tab.openerTabId == this.tab.id)
       return null;
-    return Tabs.query({
+    return TabsStore.query({
       windowId: this.tab.windowId,
       id:       this.tab.openerTabId,
       living:   true
@@ -602,7 +610,9 @@ export default class Tab {
 }
 
 
+//===================================================================
 // tracking of tabs
+//===================================================================
 
 Tab.onTracked = new EventListenerManager();
 Tab.onInitialized   = new EventListenerManager();
@@ -613,30 +623,30 @@ Tab.track = tab => {
     tab.$TST = new Tab(tab);
   }
   else {
-    const window = Tabs.trackedWindows.get(tab.windowId);
+    const window = TabsStore.windows.get(tab.windowId);
     window.trackTab(tab);
   }
 };
 
 Tab.untrack = tabId => {
   const tab    = Tab.get(tabId);
-  const window = Tabs.trackedWindows.get(tab.windowId);
+  const window = TabsStore.windows.get(tab.windowId);
   if (window)
     window.untrackTab(tabId);
 };
 
 Tab.isTracked = tabId =>  {
-  return Tabs.trackedTabs.has(tabId);
+  return TabsStore.tabs.has(tabId);
 };
 
 Tab.get = tabId =>  {
-  return Tabs.trackedTabs.get(tabId);
+  return TabsStore.tabs.get(tabId);
 };
 
 Tab.getByUniqueId = id => {
   if (!id)
     return null;
-  return Tabs.ensureLivingTab(Tabs.trackedTabsByUniqueId.get(id));
+  return TabsStore.ensureLivingTab(TabsStore.tabsByUniqueId.get(id));
 };
 
 Tab.waitUntilTracked = async tabId => {
@@ -691,16 +701,18 @@ Tab.init = (tab, options = {}) => {
 };
 
 
+//===================================================================
 // get single tab
+//===================================================================
 
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
 Tab.getActiveTab = windowId => {
-  return Tabs.ensureLivingTab(Tabs.activeTabForWindow.get(windowId));
+  return TabsStore.ensureLivingTab(TabsStore.activeTabForWindow.get(windowId));
 };
 
 Tab.getFirstTab = windowId => {
-  return Tabs.query({
+  return TabsStore.query({
     windowId,
     living:  true,
     ordered: true
@@ -708,7 +720,7 @@ Tab.getFirstTab = windowId => {
 };
 
 Tab.getLastTab = windowId => {
-  return Tabs.query({
+  return TabsStore.query({
     windowId,
     living: true,
     last:   true
@@ -716,7 +728,7 @@ Tab.getLastTab = windowId => {
 };
 
 Tab.getLastVisibleTab = windowId => { // visible, not-collapsed, not-hidden
-  return Tabs.query({
+  return TabsStore.query({
     windowId,
     visible: true,
     last:    true,
@@ -731,7 +743,7 @@ Tab.getLastOpenedTab = windowId => {
 };
 
 Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
-  return Tabs.query({
+  return TabsStore.query({
     windowId,
     normal:   true,
     ordered:  true
@@ -739,7 +751,7 @@ Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
 };
 
 Tab.getFirstVisibleTab = windowId => { // visible, not-collapsed, not-hidden
-  return Tabs.query({
+  return TabsStore.query({
     windowId,
     visible:  true,
     ordered:  true
@@ -749,8 +761,8 @@ Tab.getFirstVisibleTab = windowId => { // visible, not-collapsed, not-hidden
 Tab.getGroupTabForOpener = opener => {
   if (!opener)
     return null;
-  Tabs.assertValidTab(opener);
-  return Tabs.query({
+  TabsStore.assertValidTab(opener);
+  return TabsStore.query({
     windowId:   opener.windowId,
     living:     true,
     attributes: [
@@ -763,20 +775,22 @@ Tab.getGroupTabForOpener = opener => {
 Tab.getOpenerFromGroupTab = groupTab => {
   if (!groupTab.$TST.isGroupTab)
     return null;
-  Tabs.assertValidTab(groupTab);
+  TabsStore.assertValidTab(groupTab);
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
   return matchedOpenerTabId && Tab.get(matchedOpenerTabId[1]);
 };
 
 
+//===================================================================
 // grap tabs
+//===================================================================
 
 Tab.getActiveTabs = () => {
-  return Array.from(Tabs.activeTabForWindow.values(), Tabs.ensureLivingTab);
+  return Array.from(TabsStore.activeTabForWindow.values(), TabsStore.ensureLivingTab);
 };
 
 Tab.getAllTabs = (windowId = null) => {
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     living:   true,
     ordered:  true
@@ -784,7 +798,7 @@ Tab.getAllTabs = (windowId = null) => {
 };
 
 Tab.getTabs = windowId => { // only visible, including collapsed and pinned
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     controllable: true,
     ordered:      true
@@ -792,7 +806,7 @@ Tab.getTabs = windowId => { // only visible, including collapsed and pinned
 };
 
 Tab.getNormalTabs = windowId => { // only visible, including collapsed, not pinned
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     normal:   true,
     ordered:  true
@@ -800,7 +814,7 @@ Tab.getNormalTabs = windowId => { // only visible, including collapsed, not pinn
 };
 
 Tab.getVisibleTabs = windowId => { // visible, not-collapsed, not-hidden
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     visible:  true,
     ordered:  true
@@ -808,7 +822,7 @@ Tab.getVisibleTabs = windowId => { // visible, not-collapsed, not-hidden
 };
 
 Tab.getPinnedTabs = windowId => { // visible, pinned
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     pinned:   true,
     ordered:  true
@@ -817,7 +831,7 @@ Tab.getPinnedTabs = windowId => { // visible, pinned
 
 
 Tab.getUnpinnedTabs = windowId => { // visible, not pinned
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     living:   true,
     pinned:   false,
@@ -826,7 +840,7 @@ Tab.getUnpinnedTabs = windowId => { // visible, not pinned
 };
 
 Tab.getRootTabs = windowId => {
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     controllable: true,
     ordered:      true,
@@ -836,7 +850,7 @@ Tab.getRootTabs = windowId => {
 
 Tab.collectRootTabs = tabs => {
   return tabs.filter(tab => {
-    if (!Tabs.ensureLivingTab(tab))
+    if (!TabsStore.ensureLivingTab(tab))
       return false;
     const parent = tab.$TST.parent;
     return !parent || !tabs.includes(parent);
@@ -844,7 +858,7 @@ Tab.collectRootTabs = tabs => {
 };
 
 Tab.getDraggingTabs = windowId => {
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DRAGGING, true],
@@ -853,7 +867,7 @@ Tab.getDraggingTabs = windowId => {
 };
 
 Tab.getRemovingTabs = windowId => {
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     states:   [Constants.kTAB_STATE_REMOVING, true],
     ordered:  true
@@ -861,7 +875,7 @@ Tab.getRemovingTabs = windowId => {
 };
 
 Tab.getDuplicatingTabs = windowId => {
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_DUPLICATING, true],
@@ -871,11 +885,11 @@ Tab.getDuplicatingTabs = windowId => {
 
 Tab.getHighlightedTabs = windowId => {
   if (windowId) {
-    const highlightedTabs = Tabs.highlightedTabsForWindow.get(windowId);
+    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(windowId);
     if (highlightedTabs)
       return Array.from(highlightedTabs);
   }
-  return Tabs.queryAll({
+  return TabsStore.queryAll({
     windowId,
     living:      true,
     highlighted: true,
@@ -884,13 +898,13 @@ Tab.getHighlightedTabs = windowId => {
 };
 
 Tab.getSelectedTabs = windowId => {
-  const selectedTabs = Tabs.queryAll({
+  const selectedTabs = TabsStore.queryAll({
     windowId,
     living:   true,
     states:   [Constants.kTAB_STATE_SELECTED, true],
     ordered:  true
   });
-  const highlightedTabs = Tabs.highlightedTabsForWindow.get(windowId);
+  const highlightedTabs = TabsStore.highlightedTabsForWindow.get(windowId);
   if (!highlightedTabs ||
       highlightedTabs.size < 2)
     return selectedTabs;
@@ -899,7 +913,44 @@ Tab.getSelectedTabs = windowId => {
 };
 
 
+//===================================================================
+// general tab events
+//===================================================================
+
+Tab.onGroupTabDetected = new EventListenerManager();
+Tab.onLabelUpdated     = new EventListenerManager();
+Tab.onFaviconUpdated   = new EventListenerManager();
+Tab.onStateChanged     = new EventListenerManager();
+Tab.onPinned           = new EventListenerManager();
+Tab.onUnpinned         = new EventListenerManager();
+Tab.onHidden           = new EventListenerManager();
+Tab.onShown            = new EventListenerManager();
+Tab.onHighlightedTabsChanged = new EventListenerManager();
+Tab.onParentTabUpdated = new EventListenerManager();
+Tab.onTabInternallyMoved     = new EventListenerManager();
+Tab.onCollapsedStateChanging = new EventListenerManager();
+Tab.onCollapsedStateChanged  = new EventListenerManager();
+
+Tab.onBeforeCreate     = new EventListenerManager();
+Tab.onCreating         = new EventListenerManager();
+Tab.onCreated          = new EventListenerManager();
+Tab.onRemoving         = new EventListenerManager();
+Tab.onRemoved          = new EventListenerManager();
+Tab.onMoving           = new EventListenerManager();
+Tab.onMoved            = new EventListenerManager();
+Tab.onActivating       = new EventListenerManager();
+Tab.onActivated        = new EventListenerManager();
+Tab.onUpdated          = new EventListenerManager();
+Tab.onRestoring        = new EventListenerManager();
+Tab.onRestored         = new EventListenerManager();
+Tab.onWindowRestoring  = new EventListenerManager();
+Tab.onAttached         = new EventListenerManager();
+Tab.onDetached         = new EventListenerManager();
+
+
+//===================================================================
 // utilities
+//===================================================================
 
 Tab.broadcastState = (tabs, options = {}) => {
   if (!Array.isArray(tabs))
@@ -916,9 +967,9 @@ Tab.broadcastState = (tabs, options = {}) => {
 function getTabIndex(tab, options = {}) {
   if (typeof options != 'object')
     options = {};
-  if (!Tabs.ensureLivingTab(tab))
+  if (!TabsStore.ensureLivingTab(tab))
     return -1;
-  Tabs.assertValidTab(tab);
+  TabsStore.assertValidTab(tab);
 
   let tabs = Tab.getAllTabs(tab.windowId);
   if (Array.isArray(options.ignoreTabs) &&

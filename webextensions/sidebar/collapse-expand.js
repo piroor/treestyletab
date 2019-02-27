@@ -44,7 +44,9 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
+
+import Tab from '/common/Tab.js';
 
 import * as Sidebar from './sidebar.js';
 import * as SidebarCache from './sidebar-cache.js';
@@ -61,11 +63,11 @@ function log(...args) {
 const mUpdatingCollapsedStateCancellers = new Map();
 const mTabCollapsedStateChangedManagers = new Map();
 
-Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
+Tab.onCollapsedStateChanging.addListener((tab, info = {}) => {
   const toBeCollapsed = info.collapsed;
 
   log('Tabs.onCollapsedStateChanging ', tab.id, info);
-  if (!Tabs.ensureLivingTab(tab)) // do nothing for closed tab!
+  if (!TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
     return;
 
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
@@ -105,7 +107,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   const onCompleted = (tab, info = {}) => {
     manager.removeListener(onCompleted);
     if (cancelled ||
-        !Tabs.ensureLivingTab(tab)) // do nothing for closed tab!
+        !TabsStore.ensureLivingTab(tab)) // do nothing for closed tab!
       return;
 
     mUpdatingCollapsedStateCancellers.delete(tab.id);
@@ -163,7 +165,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
 
   nextFrame().then(() => {
     if (cancelled ||
-        !Tabs.ensureLivingTab(tab)) { // it was removed while waiting
+        !TabsStore.ensureLivingTab(tab)) { // it was removed while waiting
       onCanceled();
       return;
     }
@@ -200,7 +202,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
     });
     tab.$TST.onEndCollapseExpandAnimation.timeout = setTimeout(() => {
       if (cancelled ||
-          !Tabs.ensureLivingTab(tab) ||
+          !TabsStore.ensureLivingTab(tab) ||
           !tab.$TST.onEndCollapseExpandAnimation) {
         onCanceled();
         return;
@@ -224,7 +226,7 @@ function onEndCollapseExpandCompletely(tab, options = {}) {
   SidebarCache.markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_COLLAPSED_DIRTY);
 }
 
-Tabs.onCollapsedStateChanged.addListener((tab, info = {}) => {
+Tab.onCollapsedStateChanged.addListener((tab, info = {}) => {
   const manager = mTabCollapsedStateChangedManagers.get(tab.id);
   if (manager)
     manager.dispatch(tab, info);

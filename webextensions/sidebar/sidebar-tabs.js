@@ -12,7 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tabs from '/common/tabs.js';
+import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
 import * as DOMCache from './dom-cache.js';
@@ -48,7 +48,7 @@ export function getTabFromDOMNode(node, options = {}) {
   const tab = node && node.closest('.tab');
   if (options.force)
     return tab && tab.apiTab;
-  return Tabs.ensureLivingTab(tab && tab.apiTab);
+  return TabsStore.ensureLivingTab(tab && tab.apiTab);
 }
 
 function getLabel(tab) {
@@ -172,7 +172,7 @@ function updateDescendantsHighlighted(tab) {
 
 
 export function reserveToUpdateTooltip(tab) {
-  if (!Tabs.ensureLivingTab(tab) ||
+  if (!TabsStore.ensureLivingTab(tab) ||
       tab.$TST.reservedUpdateTabTooltip)
     return;
   tab.$TST.reservedUpdateTabTooltip = () => {
@@ -183,7 +183,7 @@ export function reserveToUpdateTooltip(tab) {
 }
 
 function updateTabAndAncestorsTooltip(tab) {
-  if (!Tabs.ensureLivingTab(tab))
+  if (!TabsStore.ensureLivingTab(tab))
     return;
   for (const updateTab of [tab].concat(tab.$TST.ancestors)) {
     updateTooltip(updateTab);
@@ -191,7 +191,7 @@ function updateTabAndAncestorsTooltip(tab) {
 }
 
 function updateTooltip(tab) {
-  if (!Tabs.ensureLivingTab(tab))
+  if (!TabsStore.ensureLivingTab(tab))
     return;
 
   if (configs.debug) {
@@ -257,8 +257,8 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  const loadingTab = Tabs.query({
-    windowId: Tabs.getWindow(),
+  const loadingTab = TabsStore.query({
+    windowId: TabsStore.getWindow(),
     visible:  true,
     status:   'loading'
   });
@@ -269,8 +269,8 @@ function updateLoadingState() {
 }
 
 async function synchronizeThrobberAnimation() {
-  const toBeSynchronizedTabs = Tabs.queryAll({
-    windowId: Tabs.getWindow(),
+  const toBeSynchronizedTabs = TabsStore.queryAll({
+    windowId: TabsStore.getWindow(),
     visible:  true,
     states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true]
   });
@@ -314,7 +314,7 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
-  for (const tab of Tab.getAllTabs(Tabs.getWindow()).reverse()) {
+  for (const tab of Tab.getAllTabs(TabsStore.getWindow()).reverse()) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
@@ -367,7 +367,7 @@ reserveToSyncTabsOrder.retryCount = 0;
 
 async function syncTabsOrder() {
   log('syncTabsOrder');
-  const windowId      = Tabs.getWindow();
+  const windowId      = TabsStore.getWindow();
   const internalOrder = await browser.runtime.sendMessage({
     type: Constants.kCOMMAND_PULL_TABS_ORDER,
     windowId
@@ -375,7 +375,7 @@ async function syncTabsOrder() {
 
   log('syncTabsOrder: internalOrder = ', internalOrder);
 
-  const trackedWindow = Tabs.trackedWindows.get(windowId);
+  const trackedWindow = TabsStore.windows.get(windowId);
   if (internalOrder.slice(0).sort().join(',') != trackedWindow.order.sort().join(',')) {
     if (reserveToSyncTabsOrder.retryCount > 10)
       throw new Error(`fatal error: mismatched tabs in the window ${windowId}`);
@@ -436,7 +436,7 @@ Window.onInitialized.addListener(windowId => {
   container.dataset.windowId = windowId;
   container.setAttribute('id', `window-${windowId}`);
   container.classList.add('tabs');
-  container.$TST = Tabs.trackedWindows.get(windowId);
+  container.$TST = TabsStore.windows.get(windowId);
   container.$TST.element = container;
 });
 
@@ -520,16 +520,16 @@ Tab.onInitialized.addListener((tab, info) => {
     });
   }
 
-  const window  = Tabs.trackedWindows.get(tab.windowId);
+  const window  = TabsStore.windows.get(tab.windowId);
   const nextTab = Tab.getAllTabs(window.id)[tab.index];
   window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
 });
 
-Tabs.onCreated.addListener((tab, _info) => {
+Tab.onCreated.addListener((tab, _info) => {
   tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
 });
 
-Tabs.onTabInternallyMoved.addListener((tab, info) => {
+Tab.onTabInternallyMoved.addListener((tab, info) => {
   const tabElement  = tab.$TST.element;
   const nextElement = info.nextTab && info.nextTab.$TST.element;
   if (tabElement.nextSibling != nextElement)
@@ -544,18 +544,18 @@ Tabs.onTabInternallyMoved.addListener((tab, info) => {
 });
 
 
-Tabs.onRestored.addListener(tab => {
+Tab.onRestored.addListener(tab => {
   Tree.fixupSubtreeCollapsedState(tab, {
     justNow:  true,
     inRemote: true
   });
 });
 
-Tabs.onRemoving.addListener((_tab, _info) => {
+Tab.onRemoving.addListener((_tab, _info) => {
   reserveToUpdateLoadingState();
 });
 
-Tabs.onRemoved.addListener((tab, _info) => {
+Tab.onRemoved.addListener((tab, _info) => {
   if (tab.$TST.collapsed ||
       !configs.animation)
     return;
@@ -570,7 +570,7 @@ Tabs.onRemoved.addListener((tab, _info) => {
 
 const mTabWasVisibleBeforeMoving = new Map();
 
-Tabs.onMoving.addListener((tab, _info) => {
+Tab.onMoving.addListener((tab, _info) => {
   tab.$TST.addState(Constants.kTAB_STATE_MOVING);
   if (!configs.animation ||
       tab.pinned ||
@@ -583,14 +583,14 @@ Tabs.onMoving.addListener((tab, _info) => {
   });
 });
 
-Tabs.onMoved.addListener(async (tab, info) => {
+Tab.onMoved.addListener(async (tab, info) => {
   if (mInitialized)
     reserveToUpdateTooltip(tab.$TST.parent);
 
   const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
   mTabWasVisibleBeforeMoving.delete(tab.id);
 
-  if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
+  if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
     return;
 
   tab.$TST.element.parentNode.insertBefore(tab.$TST.element, info.nextTab && info.nextTab.$TST.element);
@@ -604,7 +604,7 @@ Tabs.onMoved.addListener(async (tab, info) => {
   tab.$TST.removeState(Constants.kTAB_STATE_MOVING);
 });
 
-Tabs.onStateChanged.addListener(tab => {
+Tab.onStateChanged.addListener(tab => {
   if (tab.status == 'loading')
     tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
@@ -613,14 +613,14 @@ Tabs.onStateChanged.addListener(tab => {
   reserveToUpdateLoadingState();
 });
 
-Tabs.onLabelUpdated.addListener(tab => {
+Tab.onLabelUpdated.addListener(tab => {
   getLabelContent(tab).textContent = tab.title;
   reserveToUpdateTooltip(tab);
   if (!tab.$TST.titleUpdatedWhileCollapsed && tab.$TST.collapsed)
     tab.$TST.titleUpdatedWhileCollapsed = true;
 });
 
-Tabs.onFaviconUpdated.addListener((tab, url) => {
+Tab.onFaviconUpdated.addListener((tab, url) => {
   TabFavIconHelper.loadToImage({
     image: getFavIcon(tab).firstChild,
     tab,
@@ -628,7 +628,7 @@ Tabs.onFaviconUpdated.addListener((tab, url) => {
   });
 });
 
-Tabs.onCollapsedStateChanged.addListener((tab, info) => {
+Tab.onCollapsedStateChanged.addListener((tab, info) => {
   if (info.collapsed)
     return;
   reserveToUpdateLoadingState();
@@ -639,7 +639,7 @@ Tabs.onCollapsedStateChanged.addListener((tab, info) => {
 });
 
 let mReservedUpdateActiveTab;
-Tabs.onUpdated.addListener((tab, info) => {
+Tab.onUpdated.addListener((tab, info) => {
   reserveToUpdateSoundButtonTooltip(tab);
   reserveToUpdateTooltip(tab);
 
@@ -664,18 +664,18 @@ Tabs.onUpdated.addListener((tab, info) => {
   }, 50);
 });
 
-Tabs.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
+Tab.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
 
-Tabs.onDetached.addListener((tab, _info) => {
+Tab.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
-      !Tabs.ensureLivingTab(tab))
+      !TabsStore.ensureLivingTab(tab))
     return;
   reserveToUpdateTooltip(tab.$TST.parent);
   if (tab.$TST.element.parentNode)
     tab.$TST.element.parentNode.removeChild(tab.$TST.element);
 });
 
-Tabs.onGroupTabDetected.addListener(tab => {
+Tab.onGroupTabDetected.addListener(tab => {
   // When a group tab is restored but pending, TST cannot update title of the tab itself.
   // For failsafe now we update the title based on its URL.
   const uri = tab.url;
@@ -733,7 +733,7 @@ configs.$addObserver(changedKey => {
   switch (changedKey) {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
-        for (const tab of Tab.getAllTabs(Tabs.getWindow())) {
+        for (const tab of Tab.getAllTabs(TabsStore.getWindow())) {
           reserveToUpdateTooltip(tab);
         }
       break;

@@ -12,7 +12,7 @@ import {
 } from './common.js';
 import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
-import * as Tabs from './tabs.js';
+import * as TabsStore from './tabs-store.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
@@ -255,7 +255,7 @@ export async function outdent(tab, options = {}) {
 
 // drag and drop helper
 export async function performTabsDragDrop(params = {}) {
-  const windowId = params.windowId || Tabs.getWindow();
+  const windowId = params.windowId || TabsStore.getWindow();
   const destinationWindowId = params.destinationWindowId || windowId;
 
   if (params.inRemote) {
@@ -405,7 +405,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
   }, windowId);
   log('=> opened group tabs: ', replacedGroupTabs);
   params.draggedTab.ownerDocument.defaultView.setTimeout(() => {
-    if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
+    if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
       return;
     log('closing needless group tabs');
     replacedGroupTabs.reverse().forEach(function(tab) {
