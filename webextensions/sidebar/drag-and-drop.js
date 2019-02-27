@@ -189,8 +189,8 @@ function getDraggedTabsFromOneTab(tab) {
 
 function sanitizeDragData(dragData) {
   return {
-    tab:      Tabs.sanitize(dragData.tab),
-    tabs:     dragData.tabs.map(Tabs.sanitize),
+    tabId:    dragData.tab.id,
+    tabIds:   dragData.tabs.map(tab => tab.id),
     windowId: dragData.windowId
   };
 }
@@ -1026,8 +1026,8 @@ function onDragEnd(event) {
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   if (dragData) {
-    dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
-    dragData.tabs = dragData.tabs.map(tab => Tab.get(tab.id) || tab);
+    dragData.tab  = dragData.tab || Tab.get(dragData.tabId);
+    dragData.tabs = dragData.tabs || dragData.tabIds.map(id => Tab.get(id));
   }
 
   // Don't clear flags immediately, because they are referred by following operations in this function.

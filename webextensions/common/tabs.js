@@ -54,6 +54,15 @@ function log(...args) {
 
 let mTargetWindow;
 
+export function setWindow(targetWindow) {
+  return mTargetWindow = targetWindow;
+}
+
+export function getWindow() {
+  return mTargetWindow;
+}
+
+
 //===================================================================
 // Tab Tracking
 //===================================================================
@@ -233,52 +242,6 @@ function fixupQuery(conditions) {
 }
 
 
-
-//===================================================================
-// Tab Related Utilities
-//===================================================================
-
-export function setWindow(targetWindow) {
-  return mTargetWindow = targetWindow;
-}
-
-export function getWindow() {
-  return mTargetWindow;
-}
-
-export function sort(tabs) {
-  if (tabs.length == 0)
-    return tabs;
-  if (tabs[0] instanceof Element)
-    return tabs.sort(documentPositionComparator);
-  return tabs.sort((a, b) => a.index - b.index);
-}
-
-function documentPositionComparator(a, b) {
-  if (a === b || !a || !b)
-    return 0;
-
-  const position = a.compareDocumentPosition(b);
-  if (position & Node.DOCUMENT_POSITION_FOLLOWING)
-    return -1;
-  if (position & Node.DOCUMENT_POSITION_PRECEDING)
-    return 1;
-
-  return 0;
-}
-
-export function sanitize(tab) {
-  tab = Object.assign({}, tab, {
-    '$TST': JSON.parse(JSON.stringify({
-      states:      tab.$TST.states,
-      attributes:  tab.$TST.attributes,
-      parentId:    tab.$TST.parentId,
-      ancestorIds: tab.$TST.ancestorIds,
-      childIds:    tab.$TST.childIds
-    }))
-  });
-  return tab;
-}
 
 
 //===================================================================

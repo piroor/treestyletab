@@ -347,7 +347,7 @@ export default class Tab {
   }
 
   sortChildren() {
-    this.childIds = Tabs.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
+    this.childIds = Tab.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
   }
 
   get hasChild() {
@@ -583,6 +583,11 @@ export default class Tab {
     return resolver;
   }
 
+  get sanitized() {
+    return Object.assign({}, this.tab, {
+      '$TST': null
+    });
+  }
 
   export() {
     return {
@@ -595,6 +600,9 @@ export default class Tab {
     };
   }
 }
+
+
+// tracking of tabs
 
 Tab.onTracked = new EventListenerManager();
 Tab.onInitialized   = new EventListenerManager();
@@ -887,9 +895,23 @@ Tab.getSelectedTabs = windowId => {
       highlightedTabs.size < 2)
     return selectedTabs;
 
-  return Tabs.sort(Array.from(new Set(selectedTabs, ...Array.from(highlightedTabs))));
+  return Tab.sort(Array.from(new Set(selectedTabs, ...Array.from(highlightedTabs))));
 };
 
+
+// utilities
+
+Tab.broadcastState = (tabs, options = {}) => {
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
+  browser.runtime.sendMessage({
+    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
+    tabIds:  tabs.map(tab => tab.id),
+    add:     options.add || [],
+    remove:  options.remove || [],
+    bubbles: !!options.bubbles
+  });
+};
 
 function getTabIndex(tab, options = {}) {
   if (typeof options != 'object')
@@ -926,25 +948,16 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
   await asyncTask();
   const afterTabs = await browser.tabs.query(tabsQueryOptions);
   const addedTabs = afterTabs.filter(afterTab => !beforeIds.includes(afterTab.id));
-  return addedTabs.map(tab => Tabs.trackedTabs.get(tab.id));
+  return addedTabs.map(tab => Tab.get(tab.id));
 };
 
-
-
-Tab.broadcastState = (tabs, options = {}) => {
-  if (!Array.isArray(tabs))
-    tabs = [tabs];
-  browser.runtime.sendMessage({
-    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabIds:  tabs.map(tab => tab.id),
-    add:     options.add || [],
-    remove:  options.remove || [],
-    bubbles: !!options.bubbles
-  });
+Tab.sort = tabs => {
+  if (tabs.length == 0)
+    return tabs;
+  return tabs.sort((a, b) => a.index - b.index);
 };
 
-
-Tab.dumpAll = (windowId) => {
+Tab.dumpAll = windowId => {
   if (!configs.debug)
     return;
   log('dumpAllTabs\n' +

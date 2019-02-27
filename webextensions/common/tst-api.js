@@ -438,7 +438,7 @@ export function serializeTab(tab) {
   tab = Tab.get(tab.id);
   const children       = tab.$TST.children.map(serializeTab);
   const ancestorTabIds = tab.$TST.ancestors.map(tab => tab.id);
-  const serialized     = Object.assign({}, Tabs.sanitize(tab), {
+  const serialized     = Object.assign({}, tab.$TST.sanitized, {
     states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
     children, ancestorTabIds

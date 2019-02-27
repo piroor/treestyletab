@@ -352,7 +352,7 @@ async function tryGroupNewTabs() {
       const uniqueId = uniqueIds[index];
       return !uniqueId.duplicated && !uniqueId.restored;
     });
-    tabs.sort(Tabs.sort);
+    Tab.sort(tabs);
 
     let newRootTabs = Tab.collectRootTabs(tabs)
       .filter(tab => !tab.$TST.isGroupTab);
