@@ -1009,9 +1009,9 @@ function onMessage(message, _sender, _respond) {
             continue;
           add.forEach(state => tab.$TST.addState(state));
           remove.forEach(state => tab.$TST.removeState(state));
-          if (modified.$TST.states.has(Constants.kTAB_STATE_AUDIBLE) ||
-              modified.$TST.states.has(Constants.kTAB_STATE_SOUND_PLAYING) ||
-              modified.$TST.states.has(Constants.kTAB_STATE_MUTED)) {
+          if (modified.includes(Constants.kTAB_STATE_AUDIBLE) ||
+              modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
+              modified.includes(Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
             if (message.bubbles)
               TabsUpdate.updateParentTab(tab.$TST.parent);
