@@ -18,6 +18,8 @@ import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as EventUtils from './event-utils.js';
 
+import Tab from '/common/Tab.js';
+
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
@@ -299,7 +301,7 @@ function applyContext() {
       states.push('discarded');
     if (mContextTab.incognito)
       states.push('incognito');
-    if (Tabs.isMultiselected(Tabs.trackedTabs.get(mContextTab)))
+    if (Tabs.isMultiselected(Tab.get(mContextTab)))
       states.push('multiselected');
     mMenu.setAttribute('data-tab-states', states.join(' '));
   }

@@ -16,6 +16,9 @@ import * as Tabs from './tabs.js';
 import * as TabsOpen from './tabs-open.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 import * as Tree from './tree.js';
+
+import Tab from './Tab.js';
+
 import ShortcutCustomizeUI from '/extlib/ShortcutCustomizeUI.js';
 
 function log(...args) {
@@ -241,7 +244,7 @@ export async function migrateLegacyTreeStructure() {
       });
       const restTabs = apiWindow.tabs.slice(1);
       try {
-        await TabsInternalOperation.removeTab(Tabs.trackedTabs.get(apiWindow.tabs[0].id));
+        await TabsInternalOperation.removeTab(Tab.get(apiWindow.tabs[0].id));
         // apply pinned state
         for (let i = 0, maxi = restTabs.length; i < maxi; i++) {
           if (!structure[i].pinned)

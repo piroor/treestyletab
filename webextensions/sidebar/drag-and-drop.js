@@ -54,6 +54,8 @@ import * as Scroll from './scroll.js';
 import * as EventUtils from './event-utils.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('sidebar/drag-and-drop', ...args);
 }
@@ -899,7 +901,7 @@ function reserveToProcessLongHover(params = {}) {
     mLongHoverTimer = setTimeout(async () => {
       log('reservedProcessLongHover: ', params);
 
-      const dragOverTab = Tabs.trackedTabs.get(params.dragOverTabId);
+      const dragOverTab = Tab.get(params.dragOverTabId);
       if (!dragOverTab ||
           dragOverTab.$TST.element.getAttribute(kDROP_POSITION) != 'self')
         return;
@@ -1031,8 +1033,8 @@ function onDragEnd(event) {
   let dragData = event.dataTransfer.getData(kTREE_DROP_TYPE);
   dragData = (dragData && JSON.parse(dragData)) || mCurrentDragData;
   if (dragData) {
-    dragData.tab  = dragData.tab && Tabs.trackedTabs.get(dragData.tab.id) || dragData.tab;
-    dragData.tabs = dragData.tabs.map(tab => Tabs.trackedTabs.get(tab.id) || tab);
+    dragData.tab  = dragData.tab && Tab.get(dragData.tab.id) || dragData.tab;
+    dragData.tabs = dragData.tabs.map(tab => Tab.get(tab.id) || tab);
   }
 
   // Don't clear flags immediately, because they are referred by following operations in this function.

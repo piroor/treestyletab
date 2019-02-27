@@ -49,6 +49,8 @@ import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 import { SequenceMatcher } from './diff.js';
 
+import Tab from './Tab.js';
+
 function log(...args) {
   internalLogger('common/tabs-move', ...args);
 }
@@ -94,7 +96,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     };
     if (options.inRemote) {
       const tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(id => Tabs.trackedTabs.get(id));
+      return tabIds.map(id => Tab.get(id));
     }
     else {
       browser.runtime.sendMessage(message);
@@ -119,7 +121,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
         tab.index = referenceTab.index - 1;
       else
         tab.index = referenceTab.index;
-      Tabs.track(tab);
+      Tab.track(tab);
       movedTabsCount++;
       Tabs.onTabInternallyMoved.dispatch(tab, {
         nextTab: referenceTab,
@@ -187,7 +189,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
     };
     if (options.inRemote) {
       const tabIds = await browser.runtime.sendMessage(message);
-      return tabIds.map(id => Tabs.trackedTabs.get(id));
+      return tabIds.map(id => Tab.get(id));
     }
     else {
       browser.runtime.sendMessage(message);
@@ -221,7 +223,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       else {
         tab.index = window.tabs.size - 1
       }
-      Tabs.track(tab);
+      Tab.track(tab);
       movedTabsCount++;
       Tabs.onTabInternallyMoved.dispatch(tab, {
         nextTab,

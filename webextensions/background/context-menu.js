@@ -17,6 +17,8 @@ import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as TabContextMenu from './tab-context-menu.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('background/context-menu', ...args);
 }
@@ -338,7 +340,7 @@ export function refreshItems() {
 export const onClick = (info, tab) => {
   log('context menu item clicked: ', info, tab);
 
-  const contextTab = Tabs.trackedTabs.get(tab.id);
+  const contextTab = Tab.get(tab.id);
   const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
@@ -417,7 +419,7 @@ function onShown(info, tab) {
     updated = updateItems();
   }
 
-  tab = tab && Tabs.trackedTabs.get(tab.id);
+  tab = tab && Tab.get(tab.id);
   const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
   const hasChild = Tabs.hasChildTabs(tab);
   const multiselected = Tabs.isMultiselected(tab);

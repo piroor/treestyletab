@@ -12,6 +12,8 @@ import {
 import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('background/handle-tab-multiselect', ...args);
 }
@@ -102,7 +104,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(id => id != activeTab.id)
-        .map(id => Tabs.trackedTabs.get(id).index);
+        .map(id => Tab.get(id).index);
       if (highlightedTabIds.has(activeTab.id))
         indices.unshift(activeTab.index);
       browser.tabs.highlight({
@@ -174,7 +176,7 @@ export async function updateSelectionByTabClick(tab, event) {
       // for better performance, we should not call browser.tabs.update() for each tab.
       const indices = Array.from(highlightedTabIds)
         .filter(id => id != activeTab.id)
-        .map(id => Tabs.trackedTabs.get(id).index);
+        .map(id => Tab.get(id).index);
       if (highlightedTabIds.has(activeTab.id))
         indices.unshift(activeTab.index);
       browser.tabs.highlight({

@@ -53,6 +53,8 @@ import * as TSTAPI from '/common/tst-api.js';
 import * as Commands from '/common/commands.js';
 import * as MetricsData from '/common/metrics-data.js';
 
+import Tab from '/common/Tab.js';
+
 import * as Sidebar from './sidebar.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
@@ -368,7 +370,7 @@ async function onMouseUp(event) {
   if (!lastMousedown ||
       lastMousedown.expired ||
       lastMousedown.detail.targetType != getMouseEventTargetType(event) ||
-      (livingTab && livingTab != Tabs.trackedTabs.get(lastMousedown.detail.tab)))
+      (livingTab && livingTab != Tab.get(lastMousedown.detail.tab)))
     return;
 
   log('onMouseUp ', lastMousedown.detail);

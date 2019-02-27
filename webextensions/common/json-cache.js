@@ -12,6 +12,8 @@ import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 import * as TabsUpdate from './tabs-update.js';
 
+import Tab from './Tab.js';
+
 function log(...args) {
   internalLogger('common/json-cache', ...args);
 }
@@ -51,7 +53,7 @@ export function restoreTabsFromCacheInternal(params) {
   log(`restoreTabsFromCacheInternal: restore tabs for ${params.windowId} from cache`);
   const offset = params.offset || 0;
   const window = Tabs.trackedWindows.get(params.windowId);
-  const tabs   = params.tabs.slice(offset).map(tab => Tabs.trackedTabs.get(tab.id));
+  const tabs   = params.tabs.slice(offset).map(tab => Tab.get(tab.id));
   if (offset > 0 &&
       tabs.length <= offset) {
     log('restoreTabsFromCacheInternal: missing window');
@@ -85,7 +87,7 @@ function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
   tabs = tabs.map((tab, index) => {
     const cachedTab = cachedTabs[index];
     const oldId     = cachedTab.id;
-    tab = Tabs.initTab(tab);
+    tab = Tab.init(tab);
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     idMap.set(oldId, tab);
     return tab;

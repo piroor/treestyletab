@@ -16,6 +16,8 @@ import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 
+import Tab from '/common/Tab.js';
+
 import * as DOMCache from './dom-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as Indent from './indent.js';
@@ -54,7 +56,7 @@ export async function getEffectiveWindowCache(options = {}) {
   await Promise.all([
     (async () => {
       const tabs = await browser.tabs.query({ currentWindow: true });
-      mLastWindowCacheOwner = Tabs.trackedTabs.get(tabs[tabs.length - 1].id);
+      mLastWindowCacheOwner = Tab.get(tabs[tabs.length - 1].id);
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
@@ -193,7 +195,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
 
 function updateWindowCache(key, value) {
   if (!mLastWindowCacheOwner ||
-      !Tabs.trackedTabs.get(mLastWindowCacheOwner.id))
+      !Tab.get(mLastWindowCacheOwner.id))
     return;
   if (value === undefined) {
     //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);

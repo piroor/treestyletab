@@ -17,6 +17,8 @@ import * as TabsMove from '/common/tabs-move.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('background/handle-new-tabs', ...args);
 }
@@ -151,7 +153,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
       tab.$TST.isNewTab) {
     log('new tab ', tab.id);
     delete tab.$TST.isNewTab;
-    const possibleOpenerTab = Tabs.trackedTabs.get(tab.$TST.possibleOpenerTab);
+    const possibleOpenerTab = Tab.get(tab.$TST.possibleOpenerTab);
     delete tab.$TST.possibleOpenerTab;
     log('possibleOpenerTab ', possibleOpenerTab && possibleOpenerTab.id);
     const window = Tabs.trackedWindows.get(tab.windowId);

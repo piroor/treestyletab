@@ -15,6 +15,8 @@ import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
 import * as DragAndDrop from './drag-and-drop.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('sidebar/tab-drag-handle', ...args);
 }
@@ -249,7 +251,7 @@ onClick = EventUtils.wrapWithErrorHandler(onClick);
 
 function onDragStart(event) {
   // get target tab at first before it is cleared by hide()
-  const tab = Tabs.trackedTabs.get(mTargetTabId);
+  const tab = Tab.get(mTargetTabId);
   log('onDragStart: tab = ', mTargetTabId, tab);
 
   if (!tab) {

@@ -49,6 +49,8 @@ import {
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 
+import Tab from './Tab.js';
+
 function log(...args) {
   internalLogger('common/tst-api', ...args);
 }
@@ -570,12 +572,12 @@ async function getTabsFromWrongIds(aIds, sender) {
       }
       case 'nextsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getNextSiblingTab(Tabs.trackedTabs.get(tabs[0].id));
+        return Tabs.getNextSiblingTab(Tab.get(tabs[0].id));
       }
       case 'previoussibling':
       case 'prevsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getPreviousSiblingTab(Tabs.trackedTabs.get(tabs[0].id));
+        return Tabs.getPreviousSiblingTab(Tab.get(tabs[0].id));
       }
       case 'sendertab':
         if (sender.tab)
@@ -597,7 +599,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   else
     flattenTabs = tabs.flat();
 
-  return flattenTabs.filter(tab => !!tab).map(tab => Tabs.trackedTabs.get(tab.id));
+  return flattenTabs.filter(tab => !!tab).map(tab => Tab.get(tab.id));
 }
 
 export function formatResult(results, originalMessage) {

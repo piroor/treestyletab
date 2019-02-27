@@ -50,6 +50,8 @@ import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 
+import Tab from '/common/Tab.js';
+
 import * as Size from './size.js';
 import * as EventUtils from './event-utils.js';
 
@@ -108,7 +110,7 @@ function cancelRunningScroll() {
 }
 
 function calculateScrollDeltaForTab(tab) {
-  tab = Tabs.trackedTabs.get(tab && tab.id);
+  tab = Tab.get(tab && tab.id);
   if (!tab || Tabs.isPinned(tab))
     return 0;
 
@@ -132,7 +134,7 @@ function calculateScrollDeltaForTab(tab) {
 }
 
 export function isTabInViewport(tab) {
-  tab = Tabs.trackedTabs.get(tab && tab.id);
+  tab = Tab.get(tab && tab.id);
   if (!Tabs.ensureLivingTab(tab))
     return false;
 
@@ -231,7 +233,7 @@ export function scrollToNewTab(tab, options = {}) {
 }
 
 function canScrollToTab(tab) {
-  tab = Tabs.trackedTabs.get(tab && tab.id);
+  tab = Tab.get(tab && tab.id);
   return (Tabs.ensureLivingTab(tab) &&
           !Tabs.isHidden(tab));
 }
@@ -391,7 +393,7 @@ autoScrollOnMouseEvent.areaSize = 20;
 
 
 async function notifyOutOfViewTab(tab) {
-  tab = Tabs.trackedTabs.get(tab && tab.id);
+  tab = Tab.get(tab && tab.id);
   if (RestoringTabCount.hasMultipleRestoringTabs()) {
     log('notifyOutOfViewTab: skip until completely restored');
     wait(100).then(() => notifyOutOfViewTab(tab));
@@ -493,8 +495,8 @@ function onMessage(message, _sender, _respond) {
           message.tabId,
           message.parentId
         ]);
-        const tab = Tabs.trackedTabs.get(message.tabId);
-        if (tab && Tabs.isActive(Tabs.trackedTabs.get(message.parentId)))
+        const tab = Tab.get(message.tabId);
+        if (tab && Tabs.isActive(Tab.get(message.parentId)))
           scrollToNewTab(tab);
       })();
 
@@ -542,7 +544,7 @@ function onMessageExternal(message, _aSender) {
         const currentWindow = Tabs.getWindow();
         if ('tab' in message) {
           await Tabs.waitUntilTabsAreCreated(message.tab);
-          params.tab = Tabs.trackedTabs.get(message.tab);
+          params.tab = Tab.get(message.tab);
           if (!params.tab || params.tab.windowId != currentWindow)
             return;
         }

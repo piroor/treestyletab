@@ -27,6 +27,9 @@ import * as Bookmark from '/common/bookmark.js';
 import * as UserOperationBlocker from '/common/user-operation-blocker.js';
 import * as MetricsData from '/common/metrics-data.js';
 
+import Tab from '/common/Tab.js';
+import Window from '/common/Window.js';
+
 import * as DOMCache from './dom-cache.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
@@ -89,7 +92,7 @@ export async function init() {
       mTargetWindow = tabs[0].windowId;
       Tabs.setWindow(mTargetWindow);
       for (const tab of tabs) {
-        Tabs.track(tab);
+        Tab.track(tab);
       }
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
 
@@ -360,10 +363,10 @@ export async function rebuildAll(cache) {
 
   const trackedWindow = Tabs.trackedWindows.get(tabs[0].windowId);
   if (!trackedWindow)
-    Tabs.initWindow(tabs[0].windowId);
+    Window.init(tabs[0].windowId);
 
   for (const tab of tabs) {
-    Tabs.track(tab);
+    Tab.track(tab);
   }
 
   if (cache) {
@@ -374,10 +377,10 @@ export async function rebuildAll(cache) {
     }
   }
 
-  const window = Tabs.initWindow(mTargetWindow);
+  const window = Window.init(mTargetWindow);
   for (let tab of tabs) {
     TabIdFixer.fixTab(tab);
-    tab = Tabs.initTab(tab, { existing: true, inRemote: true })
+    tab = Tab.init(tab, { existing: true, inRemote: true })
     window.element.appendChild(tab.$TST.element);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
@@ -857,7 +860,7 @@ function onMessage(message, _sender, _respond) {
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
-      const tab = Tabs.trackedTabs.get(message.tabId);
+      const tab = Tab.get(message.tabId);
       if (tab)
         Tabs.onFaviconUpdated.dispatch(tab, message.favIconUrl);
     } break;
@@ -865,7 +868,7 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabId);
-        const tab = Tabs.trackedTabs.get(message.tabId);
+        const tab = Tab.get(message.tabId);
         if (!tab)
           return;
         const params = {
@@ -882,7 +885,7 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabId);
-        const tab = Tabs.trackedTabs.get(message.tabId);
+        const tab = Tab.get(message.tabId);
         if (!tab)
           return;
         // Tree's collapsed state can be changed before this message is delivered,
@@ -906,8 +909,8 @@ function onMessage(message, _sender, _respond) {
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.nextTabId]));
         return TabsMove.moveTabsBefore(
-          message.tabIds.map(id => Tabs.trackedTabs.get(id)),
-          message.nextTabId && Tabs.trackedTabs.get(message.nextTabId),
+          message.tabIds.map(id => Tab.get(id)),
+          message.nextTabId && Tab.get(message.nextTabId),
           message
         ).then(tabs => {
           // Asynchronously broadcasted movement can break the order of tabs,
@@ -921,8 +924,8 @@ function onMessage(message, _sender, _respond) {
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabIds.concat([message.previousTabId]));
         return TabsMove.moveTabsAfter(
-          message.tabIds.map(id => Tabs.trackedTabs.get(id)),
-          message.previousTabId && Tabs.trackedTabs.get(message.previousTabId),
+          message.tabIds.map(id => Tab.get(id)),
+          message.previousTabId && Tab.get(message.previousTabId),
           message
         ).then(tabs => {
           // Asynchronously broadcasted movement can break the order of tabs,
@@ -935,7 +938,7 @@ function onMessage(message, _sender, _respond) {
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
         await Tabs.waitUntilTabsAreCreated(message.tabIds);
-        return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), message.options);
+        return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)), message.options);
       })();
 
     case Constants.kCOMMAND_ATTACH_TAB_TO: {
@@ -950,12 +953,12 @@ function onMessage(message, _sender, _respond) {
           waitUntilAllTreeChangesFromRemoteAreComplete()
         ]);
         log('attach tab from remote ', message);
-        const child  = Tabs.trackedTabs.get(message.childId);
-        const parent = Tabs.trackedTabs.get(message.parentId);
+        const child  = Tab.get(message.childId);
+        const parent = Tab.get(message.parentId);
         if (child && parent)
           await Tree.attachTabTo(child, parent, Object.assign({}, message, {
-            insertBefore: Tabs.trackedTabs.get(message.insertBeforeId),
-            insertAfter:  Tabs.trackedTabs.get(message.insertAfterId),
+            insertBefore: Tab.get(message.insertBeforeId),
+            insertAfter:  Tab.get(message.insertAfterId),
             inRemote:     false,
             broadcast:    false
           }));
@@ -971,7 +974,7 @@ function onMessage(message, _sender, _respond) {
           Tabs.waitUntilTabsAreCreated(message.tabId),
           waitUntilAllTreeChangesFromRemoteAreComplete()
         ]);
-        const tab = Tabs.trackedTabs.get(message.tabId);
+        const tab = Tab.get(message.tabId);
         if (tab)
           Tree.detachTab(tab, message);
         mTreeChangesFromRemote.delete(promisedComplete);
@@ -1001,7 +1004,7 @@ function onMessage(message, _sender, _respond) {
         });
         const modified = add.concat(remove);
         for (const id of message.tabIds) {
-          const tab = Tabs.trackedTabs.get(id);
+          const tab = Tab.get(id);
           if (!tab)
             continue;
           add.forEach(state => Tabs.addState(tab, state));
@@ -1023,9 +1026,9 @@ function onMessage(message, _sender, _respond) {
 
 
     case Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG:
-      return Bookmark.bookmarkTab(Tabs.trackedTabs.get(message.tabId), { showDialog: true });
+      return Bookmark.bookmarkTab(Tab.get(message.tabId), { showDialog: true });
 
     case Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG:
-      return Bookmark.bookmarkTabs(message.tabIds.map(id => Tabs.trackedTabs.get(id)), { showDialog: true });
+      return Bookmark.bookmarkTabs(message.tabIds.map(id => Tab.get(id)), { showDialog: true });
   }
 }

@@ -17,6 +17,8 @@ import * as Tabs from '/common/tabs.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
 
+import Tab from '/common/Tab.js';
+
 import * as Background from './background.js';
 
 function log(...args) {
@@ -36,7 +38,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     delete tab.$TST.shouldReloadOnSelect;
   }
   const window = Tabs.trackedWindows.get(tab.windowId);
-  cancelDelayedExpand(Tabs.trackedTabs.get(window.lastActiveTab));
+  cancelDelayedExpand(Tab.get(window.lastActiveTab));
   const shouldSkipCollapsed = (
     !info.byInternalOperation &&
     mMaybeTabSwitchingByShortcut &&
@@ -229,11 +231,11 @@ function onMessage(message, sender) {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
           await Tabs.waitUntilTabsAreCreated(sender.tab.id);
-          let tab = sender.tab && Tabs.trackedTabs.get(sender.tab.id);
+          let tab = sender.tab && Tab.get(sender.tab.id);
           if (!tab) {
             const tabs = await browser.tabs.query({ currentWindow: true, active: true });
             await Tabs.waitUntilTabsAreCreated(tabs[0].id);
-            tab = Tabs.trackedTabs.get(tabs[0].id);
+            tab = Tab.get(tabs[0].id);
           }
           cancelAllDelayedExpand(tab.windowId);
           if (configs.autoCollapseExpandSubtreeOnSelect &&

@@ -27,6 +27,9 @@ import * as SidebarStatus from '/common/sidebar-status.js';
 import * as Commands from '/common/commands.js';
 import * as Migration from '/common/migration.js';
 
+import Tab from '/common/Tab.js';
+import Window from '/common/Window.js';
+
 import * as TreeStructure from './tree-structure.js';
 import * as BackgroundCache from './background-cache.js';
 import * as ContextMenu from './context-menu.js';
@@ -188,10 +191,10 @@ async function rebuildAll() {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
       const trackedWindow = Tabs.trackedWindows.get(window.id);
       if (!trackedWindow)
-        Tabs.initWindow(window.id);
+        Window.init(window.id);
 
       for (const tab of window.tabs) {
-        Tabs.track(tab);
+        Tab.track(tab);
       }
       try {
         if (configs.useCachedTree) {
@@ -213,9 +216,9 @@ async function rebuildAll() {
       }
       try {
         log(`build tabs for ${window.id} from scratch`);
-        Tabs.initWindow(window.id);
+        Window.init(window.id);
         for (let tab of window.tabs) {
-          tab = Tabs.initTab(tab, { existing: true });
+          tab = Tab.init(tab, { existing: true });
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
           tryStartHandleAccelKeyOnTab(tab);
         }

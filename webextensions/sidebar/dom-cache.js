@@ -12,6 +12,9 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 
+import Tab from '/common/Tab.js';
+import Window from '/common/Window.js';
+
 function log(...args) {
   internalLogger('sidebar/dom-cache', ...args);
 }
@@ -73,10 +76,10 @@ export function restoreTabsFromCacheInternal(params) {
     const insertionPoint = document.createRange();
     insertionPoint.selectNodeContents(container);
     // for safety, now I use actual ID string instead of short way.
-    insertionPoint.setStartBefore(Tabs.trackedTabs.get(tabs[0].id).$TST.element);
-    insertionPoint.setEndAfter(Tabs.trackedTabs.get(tabs[tabs.length - 1].id).$TST.element);
+    insertionPoint.setStartBefore(Tab.get(tabs[0].id).$TST.element);
+    insertionPoint.setEndAfter(Tab.get(tabs[tabs.length - 1].id).$TST.element);
     insertionPoint.deleteContents();
-    const tabsMustBeRemoved = tabs.map(tab => Tabs.trackedTabs.get(tab.id));
+    const tabsMustBeRemoved = tabs.map(tab => Tab.get(tab.id));
     log('restoreTabsFromCacheInternal: cleared?: ',
         tabsMustBeRemoved.every(tab => !tab),
         tabsMustBeRemoved.map(tab => tab.id));
@@ -108,7 +111,7 @@ export function restoreTabsFromCacheInternal(params) {
     insertionPoint.insertNode(fragment);
     container.id = `window-${params.windowId}`;
     container.dataset.windowId = params.windowId;
-    Tabs.initWindow(params.windowId);
+    Window.init(params.windowId);
     tabElements = Array.from(container.childNodes);
     if (!params.insertionPoint)
       insertionPoint.detach();
@@ -148,7 +151,7 @@ function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   // step 1: build a map from old id to new id
   tabs = tabElements.map((tabElement, index) => {
     const oldId = tabElement.id;
-    const tab = Tabs.initTab(tabs[index]);
+    const tab = Tab.init(tabs[index]);
     tabElement.apiTab = tab;
     Tabs.setAttribute(tab, 'id', Tabs.makeTabId(tab));
     tab.$TST.element = tabElement;

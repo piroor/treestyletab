@@ -15,6 +15,8 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('background/successor-tab', ...args);
 }
@@ -63,14 +65,14 @@ function update(tabId) {
 }
 async function updateInternal(tabId) {
   const renewedTab = await browser.tabs.get(tabId).catch(ApiTabs.handleMissingTabError);
-  const tab = Tabs.trackedTabs.get(tabId);
+  const tab = Tab.get(tabId);
   if (!renewedTab ||
       !tab ||
       !Tabs.ensureLivingTab(tab))
     return;
   log('update: ', tab.id);
   if (tab.$TST.lastSuccessorTabIdByOwner) {
-    const successor = Tabs.trackedTabs.get(renewedTab.successorTabId);
+    const successor = Tab.get(renewedTab.successorTabId);
     if (successor) {
       log(`  ${tab.id} is already prepared for "selectOwnerOnClose" behavior (successor=${renewedTab.successorTabId})`);
       return;
@@ -139,12 +141,12 @@ async function tryClearOwnerSuccessor(tab) {
 async function onActivated(tab, info = {}) {
   update(tab.id);
   if (info.previousTabId) {
-    const previousTab = Tabs.trackedTabs.get(info.previousTabId);
+    const previousTab = Tab.get(info.previousTabId);
     if (previousTab) {
       await tryClearOwnerSuccessor(previousTab);
       const window = Tabs.trackedWindows.get(info.windowId);
       if (window.lastRelatedTabs) {
-        const lastRelatedTab = Tabs.trackedTabs.get(window.lastRelatedTabs.get(info.previousTabId));
+        const lastRelatedTab = Tab.get(window.lastRelatedTabs.get(info.previousTabId));
         if (lastRelatedTab &&
             lastRelatedTab.id != tab.id) {
           log(`clear lastRelatedTabs for the window ${info.windowId} by tabs.onActivated`);
@@ -182,7 +184,7 @@ function onCreating(tab, info = {}) {
 
     const lastRelatedTabId = window.lastRelatedTabs.get(tab.openerTabId);
     if (lastRelatedTabId)
-      tryClearOwnerSuccessor(Tabs.trackedTabs.get(lastRelatedTabId));
+      tryClearOwnerSuccessor(Tab.get(lastRelatedTabId));
 
     window.lastRelatedTabs.set(tab.openerTabId, tab.id);
     log(`set lastRelatedTab for ${tab.openerTabId}: ${tab.id}`);
@@ -204,7 +206,7 @@ function onRemoving(tab, removeInfo = {}) {
   if (!lastRelatedTabs)
     return;
 
-  const lastRelatedTab = Tabs.trackedTabs.get(lastRelatedTabs.get(tab.id));
+  const lastRelatedTab = Tab.get(lastRelatedTabs.get(tab.id));
   if (lastRelatedTab &&
       !lastRelatedTab.active)
     tryClearOwnerSuccessor(lastRelatedTab);

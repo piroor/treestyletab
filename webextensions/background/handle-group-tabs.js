@@ -20,6 +20,8 @@ import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('background/handle-group-tabs', ...args);
 }
@@ -339,7 +341,7 @@ async function tryGroupNewTabs() {
   try {
     // extract only pure new tabs
     let tabs = tabReferences.map(tabReference => {
-      const tab = Tabs.trackedTabs.get(tabReference.id);
+      const tab = Tab.get(tabReference.id);
       if (tabReference.openerTabId)
         tab.openerTabId = parseInt(tabReference.openerTabId); // restore the opener information
       return tab;

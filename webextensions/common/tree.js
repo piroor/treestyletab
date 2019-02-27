@@ -57,6 +57,9 @@ import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
 import * as MetricsData from './metrics-data.js';
 
+import Tab from './Tab.js';
+import Window from './Window.js';
+
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
@@ -1166,7 +1169,7 @@ export async function moveTabs(tabs, options = {}) {
       destinationWindowId: destinationWindowId,
       inRemote:            false
     }));
-    return (response.movedTabs || []).map(id => Tabs.trackedTabs.get(id)).filter(tab => !!tab);
+    return (response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }
 
   let movedTabs = tabs;
@@ -1178,7 +1181,7 @@ export async function moveTabs(tabs, options = {}) {
     try {
       let window;
       const prepareWindow = () => {
-        window = Tabs.trackedWindows.get(destinationWindowId) || Tabs.initWindow(destinationWindowId);
+        window = Window.init(destinationWindowId);
         if (isAcrossWindows) {
           window.toBeOpenedTabsWithPositions += tabs.length;
           window.toBeOpenedOrphanTabs += tabs.length;
@@ -1261,7 +1264,7 @@ export async function moveTabs(tabs, options = {}) {
             else {
               movedTabs = await promisedDuplicatedTabs;
             }
-            movedTabs = movedTabs.map(tab => Tabs.trackedTabs.get(tab.id));
+            movedTabs = movedTabs.map(tab => Tab.get(tab.id));
             movedTabIds = movedTabs.map(tab => tab.id);
           }
         })()
@@ -1309,7 +1312,7 @@ export async function moveTabs(tabs, options = {}) {
           windowId: destinationWindowId,
           index:    toIndex
         });
-        movedTabs   = movedTabs.map(tab => Tabs.trackedTabs.get(tab.id));
+        movedTabs   = movedTabs.map(tab => Tab.get(tab.id));
         movedTabIds = movedTabs.map(tab => tab.id);
         log('moved across windows: ', movedTabIds);
       }
@@ -1320,7 +1323,7 @@ export async function moveTabs(tabs, options = {}) {
       const startTime = Date.now();
       const maxDelay = configs.maximumAcceptableDelayForTabDuplication;
       while (Date.now() - startTime < maxDelay) {
-        newTabs = movedTabs.map(tab => Tabs.trackedTabs.get(TabIdFixer.fixTab(tab).id));
+        newTabs = movedTabs.map(tab => Tab.get(TabIdFixer.fixTab(tab).id));
         newTabs = newTabs.filter(tab => !!tab);
         if (newTabs.length < tabs.length) {
           log('retrying: ', movedTabIds, newTabs.length, tabs.length);
@@ -1354,7 +1357,7 @@ export async function moveTabs(tabs, options = {}) {
   }
 
 
-  movedTabs = movedTabs.map(tab => Tabs.trackedTabs.get(tab.id));
+  movedTabs = movedTabs.map(tab => Tab.get(tab.id));
   movedTabs = movedTabs.filter(tab => !!tab);
   if (options.insertBefore) {
     await TabsMove.moveTabsBefore(
@@ -1375,7 +1378,7 @@ export async function moveTabs(tabs, options = {}) {
   }
   // Tabs can be removed while waiting, so we need to
   // refresh the array of tabs.
-  movedTabs = movedTabs.map(tab => Tabs.trackedTabs.get(tab.id));
+  movedTabs = movedTabs.map(tab => Tab.get(tab.id));
   movedTabs = movedTabs.filter(tab => !!tab);
 
   return movedTabs;
@@ -1399,7 +1402,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       top:       'top' in options ? parseInt(options.top) : null,
       inRemote:  false
     }));
-    return (response.movedTabs || []).map(id => Tabs.trackedTabs.get(id)).filter(tab => !!tab);
+    return (response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }
 
   log('opening new window');
@@ -1433,7 +1436,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       const allTabsInWindow = window.tabs.map(tab => TabIdFixer.fixTab(tab));
       const removeTabs      = allTabsInWindow
         .filter(tab => !movedTabIds.includes(tab.id))
-        .map(tab => Tabs.trackedTabs.get(tab.id));
+        .map(tab => Tab.get(tab.id));
       log('removing tabs: ', removeTabs.map(tab => tab.id));
       TabsInternalOperation.removeTabs(removeTabs);
       UserOperationBlocker.unblockIn(newWindow.id);
@@ -1636,7 +1639,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 
     let parent = null;
     if (parentIndexInTree > -1) {
-      parent = Tabs.trackedTabs.get(parentTab);
+      parent = Tab.get(parentTab);
       if (parent) {
         //log('existing tabs in tree: ', {
         //  size:   tabsInTree.length,

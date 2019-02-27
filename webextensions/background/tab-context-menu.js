@@ -16,6 +16,8 @@ import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
 import * as ContextualIdentities from '/common/contextual-identities.js';
 
+import Tab from '/common/Tab.js';
+
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
@@ -354,7 +356,7 @@ function hasVisiblePrecedingItem(separator) {
 }
 
 async function onShown(info, contextTab) {
-  contextTab = contextTab && Tabs.trackedTabs.get(contextTab.id);
+  contextTab = contextTab && Tab.get(contextTab.id);
   const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({})).id;
   const previousTab           = Tabs.getPreviousTab(contextTab);
   const previousSiblingTab    = Tabs.getPreviousSiblingTab(contextTab);
@@ -522,7 +524,7 @@ async function onShown(info, contextTab) {
 }
 
 async function onClick(info, contextTab) {
-  contextTab = contextTab && Tabs.trackedTabs.get(contextTab.id);
+  contextTab = contextTab && Tab.get(contextTab.id);
   const window    = await browser.windows.getLastFocused({ populate: true });
   const windowId  = contextTab && contextTab.windowId || window.id;
   const activeTab = Tabs.activeTabForWindow.get(windowId);

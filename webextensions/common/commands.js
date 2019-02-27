@@ -20,6 +20,8 @@ import * as Bookmark from './bookmark.js';
 import * as Tree from './tree.js';
 import * as SidebarStatus from './sidebar-status.js';
 
+import Tab from './Tab.js';
+
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
@@ -147,7 +149,7 @@ export async function bookmarkTree(root, options = {}) {
 
 export async function openNewTabAs(options = {}) {
   const currentTab = options.baseTab ||
-    Tabs.trackedTabs.get((await browser.tabs.query({
+    Tab.get((await browser.tabs.query({
       active:        true,
       currentWindow: true
     }))[0].id);

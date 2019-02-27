@@ -50,6 +50,9 @@ import * as Tabs from './tabs.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
 
+import Tab from './Tab.js';
+import Window from './Window.js';
+
 function log(...args) {
   internalLogger('common/api-tabs-listener', ...args);
 }
@@ -113,13 +116,6 @@ function addTabOperationQueue() {
   return [onCompleted, previous];
 }
 
-function getTrackedWindow(windowId) {
-  if (typeof windowId != 'number')
-    throw new Error(`The given ID seems invalid as an window id: ${windowId}`);
-
-  return Tabs.trackedWindows.get(windowId) || Tabs.initWindow(windowId);
-}
-
 function warnTabDestroyedWhileWaiting(tabId, tab) {
   if (configs.debug)
     console.log(`WARNING: tab ${tabId} is destroyed while waiting. `, tab, new Error().stack);
@@ -133,14 +129,14 @@ async function onActivated(activeInfo) {
   if (targetWindow && activeInfo.windowId != targetWindow)
     return;
 
-  Tabs.activeTabForWindow.set(activeInfo.windowId, Tabs.trackedTabs.get(activeInfo.tabId));
+  Tabs.activeTabForWindow.set(activeInfo.windowId, Tab.get(activeInfo.tabId));
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
-    const window = getTrackedWindow(activeInfo.windowId);
+    const window = Window.init(activeInfo.windowId);
 
     let byInternalOperation = window.internalFocusCount > 0;
     if (byInternalOperation)
@@ -150,10 +146,10 @@ async function onActivated(activeInfo) {
       window.internalSilentlyFocusCount--;
     const byTabDuplication = parseInt(window.duplicatingTabsCount) > 0;
 
-    if (!Tabs.trackedTabs.get(activeInfo.tabId))
-      await Tabs.waitUntilTabsAreTracked(activeInfo.tabId);
+    if (!Tab.isTracked(activeInfo.tabId))
+      await Tab.waitUntilTracked(activeInfo.tabId);
 
-    const newActiveTab = Tabs.trackedTabs.get(activeInfo.tabId);
+    const newActiveTab = Tab.get(activeInfo.tabId);
     if (!newActiveTab ||
         !Tabs.ensureLivingTab(newActiveTab)) {
       warnTabDestroyedWhileWaiting(activeInfo.tabId);
@@ -241,15 +237,15 @@ async function onUpdated(tabId, changeInfo, tab) {
   TabIdFixer.fixTab(tab);
   tabId = tab.id;
 
-  if (!Tabs.trackedTabs.get(tabId))
-    await Tabs.waitUntilTabsAreTracked(tabId);
+  if (!Tab.isTracked(tabId))
+    await Tab.waitUntilTracked(tabId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
-    const updatedTab = Tabs.trackedTabs.get(tabId);
+    const updatedTab = Tab.get(tabId);
     if (!updatedTab ||
         !Tabs.ensureLivingTab(updatedTab)) {
       onCompleted();
@@ -343,9 +339,9 @@ async function onNewTabTracked(tab) {
 
   log(`onNewTabTracked(id=${tab.id}): `, tab);
 
-  Tabs.track(tab);
+  Tab.track(tab);
 
-  const window               = getTrackedWindow(tab.windowId);
+  const window               = Window.init(tab.windowId);
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
@@ -372,7 +368,7 @@ async function onNewTabTracked(tab) {
     // See also: https://github.com/piroor/treestyletab/issues/2131
     tab.index = Math.max(0, Math.min(tab.index, window.tabs.size));
 
-    tab = Tabs.initTab(tab, { inRemote: !!targetWindow });
+    tab = Tab.init(tab, { inRemote: !!targetWindow });
     Tabs.addState(tab, Constants.kTAB_STATE_OPENING);
 
     const nextTab = Tabs.getAllTabs(window.id)[tab.index];
@@ -395,7 +391,7 @@ async function onNewTabTracked(tab) {
 
     if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
-      Tabs.untrack(tab.id);
+      Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
     }
@@ -446,7 +442,7 @@ async function onNewTabTracked(tab) {
         !Tabs.trackedWindows.get(tab.windowId)) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
-      Tabs.untrack(tab.id);
+      Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
     }
@@ -477,7 +473,7 @@ async function onNewTabTracked(tab) {
 
     if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
-      Tabs.untrack(tab.id);
+      Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
     }
@@ -490,7 +486,7 @@ async function onNewTabTracked(tab) {
       restored,
       duplicated,
       duplicatedInternally,
-      originalTab: duplicated && Tabs.trackedTabs.get(uniqueId.originalTabId),
+      originalTab: duplicated && Tab.get(uniqueId.originalTabId),
       treeForActionDetection
     });
     wait(configs.newTabAnimationDuration).then(() => {
@@ -573,7 +569,7 @@ async function onRemoved(tabId, removeInfo) {
   if (targetWindow && removeInfo.windowId != targetWindow)
     return;
 
-  const window              = getTrackedWindow(removeInfo.windowId);
+  const window              = Window.init(removeInfo.windowId);
   const byInternalOperation = window.internalClosingTabs.has(tabId);
   if (byInternalOperation)
     window.internalClosingTabs.delete(tabId);
@@ -586,7 +582,7 @@ async function onRemoved(tabId, removeInfo) {
     await previous;
 
   try {
-    const oldTab = Tabs.trackedTabs.get(tabId);
+    const oldTab = Tab.get(tabId);
     if (!oldTab) {
       onCompleted();
       return;
@@ -640,7 +636,7 @@ async function onMoved(tabId, moveInfo) {
   if (targetWindow && moveInfo.windowId != targetWindow)
     return;
 
-  const window = getTrackedWindow(moveInfo.windowId);
+  const window = Window.init(moveInfo.windowId);
 
   // Firefox may move the tab between TabsMove.moveTabsInternallyBefore/After()
   // and TabsMove.syncTabsPositionToApiTabs(). We should treat such a movement
@@ -650,8 +646,8 @@ async function onMoved(tabId, moveInfo) {
   // TabsMove.syncTabsPositionToApiTabs() anyway!
   const maybeInternalOperation = window.internalMovingTabs.has(tabId);
 
-  if (!Tabs.trackedTabs.get(tabId))
-    await Tabs.waitUntilTabsAreTracked(tabId);
+  if (!Tab.isTracked(tabId))
+    await Tab.waitUntilTracked(tabId);
   if (Tabs.hasMovingTab(moveInfo.windowId))
     await Tabs.waitUntilAllTabsAreMoved(moveInfo.windowId);
 
@@ -669,7 +665,7 @@ async function onMoved(tabId, moveInfo) {
        tab bar to follow their parent pinning tab. To avoid this
        problem, we have to wait for a while with this "async" and
        do following processes after the tab is completely pinned. */
-    const movedTab = Tabs.trackedTabs.get(tabId);
+    const movedTab = Tab.get(tabId);
     if (!movedTab) {
       if (maybeInternalOperation)
         window.internalMovingTabs.delete(tabId);
@@ -758,7 +754,7 @@ async function onAttached(tabId, attachInfo) {
 
   try {
     log('tabs.onAttached, id: ', tabId, attachInfo);
-    let tab = Tabs.trackedTabs.get(tabId);
+    let tab = Tab.get(tabId);
     const attachedTab = await browser.tabs.get(tabId);
     if (!attachedTab) {
       onCompleted();
@@ -811,7 +807,7 @@ async function onDetached(tabId, detachInfo) {
 
   try {
     log('tabs.onDetached, id: ', tabId, detachInfo);
-    const oldTab = Tabs.trackedTabs.get(tabId);
+    const oldTab = Tab.get(tabId);
     if (!oldTab) {
       onCompleted();
       return;

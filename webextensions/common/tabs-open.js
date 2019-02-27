@@ -48,6 +48,8 @@ import * as Tabs from './tabs.js';
 import * as TabsMove from './tabs-move.js';
 import * as Tree from './tree.js';
 
+import Tab from './Tab.js';
+
 function log(...args) {
   internalLogger('common/tabs-open', ...args);
 }
@@ -137,7 +139,7 @@ export async function openURIsInTabs(uris, options = {}) {
         isOrphan:      !!options.isOrphan,
         inRemote:      false
       }));
-      return ids.map(id => Tabs.trackedTabs.get(id));
+      return ids.map(id => Tab.get(id));
     }
     else {
       await Tabs.waitUntilAllTabsAreCreated(options.windowId);
@@ -192,7 +194,7 @@ export async function openURIsInTabs(uris, options = {}) {
             tabId: createdTab.id
           })
         ]);
-        const tab = Tabs.trackedTabs.get(createdTab.id);
+        const tab = Tab.get(createdTab.id);
         log('created tab: ', tab);
         if (!tab)
           throw new Error('tab is already closed');

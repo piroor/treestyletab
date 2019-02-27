@@ -17,6 +17,10 @@ import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
 import * as DOMCache from './dom-cache.js';
 import { SequenceMatcher } from '/common/diff.js';
+
+import Tab from '/common/Tab.js';
+import Window from '/common/Window.js';
+
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
 
 function log(...args) {
@@ -411,10 +415,10 @@ async function syncTabsOrder() {
       case 'insert':
       case 'replace':
         const moveTabIds = internalOrder.slice(toStart, toEnd);
-        const referenceTab = fromStart < elementsOrder.length ? Tabs.trackedTabs.get(elementsOrder[fromStart]) : null;
+        const referenceTab = fromStart < elementsOrder.length ? Tab.get(elementsOrder[fromStart]) : null;
         log(`syncTabsOrder: move ${moveTabIds.join(',')} before `, referenceTab);
         for (const id of moveTabIds) {
-          const tab = Tabs.trackedTabs.get(id);
+          const tab = Tab.get(id);
           if (tab)
             tab.$TST.element.parentNode.insertBefore(tab.$TST.element, referenceTab && referenceTab.$TST.element);
         }
@@ -423,7 +427,7 @@ async function syncTabsOrder() {
   }
 }
 
-Tabs.onWindowInitialized.addListener(windowId => {
+Window.onInitialized.addListener(windowId => {
   let container = document.getElementById(`window-${windowId}`);
   if (!container) {
     container = document.createElement('ul');
@@ -436,7 +440,7 @@ Tabs.onWindowInitialized.addListener(windowId => {
   container.$TST.element = container;
 });
 
-Tabs.onTabInitialized.addListener((tab, info) => {
+Tab.onInitialized.addListener((tab, info) => {
   const id = Tabs.makeTabId(tab);
   let tabElement = document.getElementById(id);
   if (tabElement) {

@@ -16,6 +16,8 @@ import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as Commands from '/common/commands.js';
 
+import Tab from '/common/Tab.js';
+
 import * as TreeStructure from './tree-structure.js';
 
 function log(...args) {
@@ -32,7 +34,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
       info.skipFixupTree ||
       // do nothing for already attached tabs
       (tab.openerTabId &&
-       Tabs.getParentTab(tab) == Tabs.trackedTabs.get(tab.openerTabId)))
+       Tabs.getParentTab(tab) == Tab.get(tab.openerTabId)))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.positionedBySelf &&
@@ -97,9 +99,9 @@ async function tryFixupTreeForInsertedTab(tab, moveInfo = {}) {
       return;
 
     case 'attach': {
-      await Tree.attachTabTo(tab, Tabs.trackedTabs.get(action.parent), {
-        insertBefore: Tabs.trackedTabs.get(action.insertBefore),
-        insertAfter:  Tabs.trackedTabs.get(action.insertAfter),
+      await Tree.attachTabTo(tab, Tab.get(action.parent), {
+        insertBefore: Tab.get(action.insertBefore),
+        insertAfter:  Tab.get(action.insertAfter),
         broadcast:    true
       });
       Tree.followDescendantsToMovedRoot(tab);
