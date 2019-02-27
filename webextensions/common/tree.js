@@ -1128,7 +1128,7 @@ export async function followDescendantsToMovedRoot(tab, options = {}) {
   if (!tab.$TST.hasChild)
     return;
 
-  log('followDescendantsToMovedRoot: ', dumpTab(tab));
+  log('followDescendantsToMovedRoot: ', tab);
   const window = TabsStore.windows.get(tab.windowId);
   window.subTreeChildrenMovingCount++;
   window.subTreeMovingCount++;

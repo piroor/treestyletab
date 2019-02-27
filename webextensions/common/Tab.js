@@ -460,6 +460,8 @@ export default class Tab {
 
   // if all tabs are aldeardy placed at there, we don't need to move them.
   isAllPlacedBeforeSelf(tabs) {
+    if (tabs.length == 0)
+      return true;
     let nextTab = this.tab;
     if (tabs[tabs.length - 1] == nextTab)
       nextTab = nextTab.$TST.next;
@@ -479,6 +481,8 @@ export default class Tab {
   }
 
   isAllPlacedAfterSelf(tabs) {
+    if (tabs.length == 0)
+      return true;
     let previousTab = this.tab;
     if (tabs[0] == previousTab)
       previousTab = previousTab.$TST.previous;
