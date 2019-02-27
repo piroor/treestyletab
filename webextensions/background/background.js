@@ -229,7 +229,7 @@ async function rebuildAll() {
       restoredFromCache[window.id] = false;
     });
     for (const tab of Tabs.getAllTabs(window.id).filter(Tabs.isGroupTab)) {
-      if (!Tabs.isDiscarded(tab))
+      if (!tab.discarded)
         tab.$TST.shouldReloadOnSelect = true;
     }
   }));

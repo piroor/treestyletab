@@ -54,7 +54,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
         active:          wasActive,
         nextTab:         nextTab,
         nextTabUrl:      nextTab && nextTab.url,
-        nextIsDiscarded: Tabs.isDiscarded(nextTab)
+        nextIsDiscarded: nextTab && nextTab.discarded
       }
     });
   }

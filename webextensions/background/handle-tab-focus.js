@@ -81,8 +81,8 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
       if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(successor);
       TabsInternalOperation.activateTab(successor, { silently: true });
-      log('Tabs.onActivating: discarded? ', tab.id, Tabs.isDiscarded(tab));
-      if (Tabs.isDiscarded(tab))
+      log('Tabs.onActivating: discarded? ', tab.id, tab.discarded);
+      if (tab.discarded)
         tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
       return false;
     }
