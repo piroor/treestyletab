@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from '/common/common.js';
 
@@ -146,7 +147,7 @@ Commands.onMoveDown.addListener(async tab => {
 TreeStructure.onTabAttachedFromRestoredInfo.addListener((tab, moveInfo) => { tryFixupTreeForInsertedTab(tab, moveInfo); });
 
 function moveBack(tab, moveInfo) {
-  log('Move back tab from unexpected move: ', tab.id, moveInfo);
+  log('Move back tab from unexpected move: ', dumpTab(tab), moveInfo);
   const id     = tab.id;
   const window = TabsStore.windows.get(tab.windowId);
   window.internalMovingTabs.add(id);
@@ -165,7 +166,7 @@ function moveBack(tab, moveInfo) {
 }
 
 async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
-  log('detectTabActionFromNewPosition: ', tab.id, moveInfo);
+  log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
   const tree   = moveInfo.treeForActionDetection || Tree.snapshotForActionDetection(tab);
   const target = tree.target;
 
@@ -178,8 +179,8 @@ async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
 
   const prevTab = tree.tabsById[target.previous];
   const nextTab = tree.tabsById[target.next];
-  log('prevTab: ', prevTab && prevTab.id);
-  log('nextTab: ', nextTab && nextTab.id);
+  log('prevTab: ', dumpTab(prevTab));
+  log('nextTab: ', dumpTab(nextTab));
 
   const prevParent = prevTab && tree.tabsById[prevTab.parent];
   const nextParent = nextTab && tree.tabsById[nextTab.parent];

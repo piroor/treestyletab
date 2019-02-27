@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  dumpTab
 } from './common.js';
 import * as Constants from './constants.js';
 import * as TabsMove from './tabs-move.js';
@@ -32,7 +33,7 @@ export async function groupTabs(tabs, options = {}) {
   if (rootTabs.length <= 0)
     return null;
 
-  log('groupTabs: ', tabs.map(tab => tab.id));
+  log('groupTabs: ', tabs.map(dumpTab));
 
   const uri = makeGroupTabURI({
     title:     browser.i18n.getMessage('groupTab_label', rootTabs[0].title),

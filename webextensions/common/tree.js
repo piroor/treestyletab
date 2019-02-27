@@ -1142,7 +1142,7 @@ export async function moveTabs(tabs, options = {}) {
   if (tabs.length == 0)
     return [];
 
-  log('moveTabs: ', tabs.map(tab => tab.id), options);
+  log('moveTabs: ', tabs.map(dumpTab), options);
 
   const windowId = parseInt(tabs[0].windowId || TabsStore.getWindow());
 
@@ -1233,7 +1233,7 @@ export async function moveTabs(tabs, options = {}) {
                 return null;
               }
             })).then(tabs => {
-              log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, tabs.map(tab => tab.id));
+              log(`ids from API responses are resolved in ${Date.now() - startTime}msec: `, tabs.map(dumpTab));
               return tabs;
             });
             if (configs.acceleratedTabDuplication) {
@@ -1431,13 +1431,13 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
   log('closing needless tabs');
   browser.windows.get(newWindow.id, { populate: true })
     .then(window => {
-      log('moved tabs: ', movedTabs.map(tab => tab.id));
+      log('moved tabs: ', movedTabs.map(dumpTab));
       const movedTabIds     = movedTabs.map(tab => tab.id);
       const allTabsInWindow = window.tabs.map(tab => TabIdFixer.fixTab(tab));
       const removeTabs      = allTabsInWindow
         .filter(tab => !movedTabIds.includes(tab.id))
         .map(tab => Tab.get(tab.id));
-      log('removing tabs: ', removeTabs.map(tab => tab.id));
+      log('removing tabs: ', removeTabs.map(dumpTab));
       TabsInternalOperation.removeTabs(removeTabs);
       UserOperationBlocker.unblockIn(newWindow.id);
     });
@@ -1599,7 +1599,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 
   MetricsData.add('applyTreeStructureToTabs: start');
 
-  log('applyTreeStructureToTabs: ', tabs.map(tab => tab.id), treeStructure, options);
+  log('applyTreeStructureToTabs: ', tabs.map(dumpTab), treeStructure, options);
   tabs = tabs.slice(0, treeStructure.length);
   treeStructure = treeStructure.slice(0, tabs.length);
 

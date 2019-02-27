@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from '/common/common.js';
 
@@ -70,11 +71,11 @@ async function updateInternal(tabId) {
       !tab ||
       !TabsStore.ensureLivingTab(tab))
     return;
-  log('update: ', tab.id);
+  log('update: ', dumpTab(tab));
   if (tab.$TST.lastSuccessorTabIdByOwner) {
     const successor = Tab.get(renewedTab.successorTabId);
     if (successor) {
-      log(`  ${tab.id} is already prepared for "selectOwnerOnClose" behavior (successor=${renewedTab.successorTabId})`);
+      log(`  ${dumpTab(tab)} is already prepared for "selectOwnerOnClose" behavior (successor=${renewedTab.successorTabId})`);
       return;
     }
     // clear broken information
@@ -83,13 +84,13 @@ async function updateInternal(tabId) {
     clearSuccessor(tab.id);
   }
   if (tab.$TST.lastSuccessorTabId) {
-    log(`  ${tab.id} is under control: `, {
+    log(`  ${dumpTab(tab)} is under control: `, {
       successorTabId: renewedTab.successorTabId,
       lastSuccessorTabId: tab.lastSuccessorTabId
     });
     if (renewedTab.successorTabId != -1 &&
         renewedTab.successorTabId != tab.$TST.lastSuccessorTabId) {
-      log(`  ${tab.id}'s successor is modified by someone! Now it is out of control.`);
+      log(`  ${dumpTab(tab)}'s successor is modified by someone! Now it is out of control.`);
       delete tab.$TST.lastSuccessorTabId;
       return;
     }
@@ -110,12 +111,12 @@ async function updateInternal(tabId) {
       successor = tab.$TST.nearestVisibleFollowing || tab.$TST.nearestVisiblePreceding;
   }
   if (successor) {
-    log(`  ${tab.id} is under control: successor = ${successor.id}`);
+    log(`  ${dumpTab(tab)} is under control: successor = ${successor.id}`);
     setSuccessor(renewedTab.id, successor.id);
     tab.$TST.lastSuccessorTabId = successor.id;
   }
   else {
-    log(`  ${tab.id} is out of control.`, {
+    log(`  ${dumpTab(tab)} is out of control.`, {
       active:    renewedTab.active,
       successor: successor && successor.id
     });
@@ -132,7 +133,7 @@ async function tryClearOwnerSuccessor(tab) {
   if (!renewedTab ||
       renewedTab.successorTabId != tab.lastSuccessorTabId)
     return;
-  log(`${tab.id} is unprepared for "selectOwnerOnClose" behavior`);
+  log(`${dumpTab(tab)} is unprepared for "selectOwnerOnClose" behavior`);
   delete tab.$TST.lastSuccessorTabId;
   clearSuccessor(tab.id);
 }
@@ -171,7 +172,7 @@ function onCreating(tab, info = {}) {
     if (!ownerTabId)
       return;
 
-    log(`${tab.id} is prepared for "selectOwnerOnClose" behavior (successor=${ownerTabId})`);
+    log(`${dumpTab(tab)} is prepared for "selectOwnerOnClose" behavior (successor=${ownerTabId})`);
     setSuccessor(tab.id, ownerTabId);
     tab.$TST.lastSuccessorTabId = ownerTabId;
     tab.$TST.lastSuccessorTabIdByOwner = true;
@@ -187,7 +188,7 @@ function onCreating(tab, info = {}) {
       tryClearOwnerSuccessor(Tab.get(lastRelatedTabId));
 
     window.lastRelatedTabs.set(tab.openerTabId, tab.id);
-    log(`set lastRelatedTab for ${tab.openerTabId}: ${tab.id}`);
+    log(`set lastRelatedTab for ${tab.openerTabId}: ${dumpTab(tab)}`);
   });
 }
 

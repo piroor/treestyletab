@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from '/common/common.js';
 
@@ -169,7 +170,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
-  log(`persistent references for ${tab.id} (${uniqueId.id}): `, {
+  log(`persistent references for ${dumpTab(tab)} (${uniqueId.id}): `, {
     insertBefore, insertAfter,
     ancestors: ancestors.join(', '),
     children:  children.join(', '),
@@ -186,10 +187,10 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   ancestors    = ancestors.map(Tab.getByUniqueId);
   children     = children.map(Tab.getByUniqueId);
   log(' => references: ', {
-    insertBefore: insertBefore,
-    insertAfter:  insertAfter,
-    ancestors:    ancestors.map(tab => tab && tab.id).join(', '),
-    children:     children.map(tab => tab && tab.id).join(', ')
+    insertBefore: dumpTab(insertBefore),
+    insertAfter:  dumpTab(insertAfter),
+    ancestors:    ancestors.map(dumpTab).join(', '),
+    children:     children.map(dumpTab).join(', ')
   });
   let attached = false;
   const active = tab.active;
@@ -271,7 +272,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
 
 
 Tab.onRestored.addListener(tab => {
-  log('onTabRestored ', tab.id);
+  log('onTabRestored ', dumpTab(tab));
   reserveToAttachTabFromRestoredInfo(tab, {
     children: true
   });

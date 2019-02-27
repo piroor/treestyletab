@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from './common.js';
 
@@ -31,7 +32,7 @@ export default class Tab {
     if (alreadyTracked)
       return alreadyTracked.$TST;
 
-    log(`tab ${tab.id} is newly tracked: `, tab);
+    log(`tab ${dumpTab(tab)} is newly tracked: `, tab);
 
     tab.$TST = this;
     this.tab = tab;
@@ -110,7 +111,7 @@ export default class Tab {
       }
       return uniqueId || {};
     }).catch(error => {
-      console.log(`FATAL ERROR: Failed to get unique id for a tab ${this.tab.id}: `, error);
+      console.log(`FATAL ERROR: Failed to get unique id for a tab ${dumpTab(this.tab)}: `, error);
       return {};
     });
   }

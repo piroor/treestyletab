@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   wait,
   configs
 } from '/common/common.js';
@@ -40,7 +41,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   }
   cancelReservedCacheTree(windowId); // prevent to break cache before loading
   const tabs  = options.tabs || await browser.tabs.query({ windowId: windowId });
-  log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs);
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const

@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   wait,
   configs
 } from '/common/common.js';
@@ -88,7 +89,7 @@ export function reserveToCleanupNeedlessGroupTab(tabOrTabs) {
 function cleanupNeedlssGroupTab(tabs) {
   if (!Array.isArray(tabs))
     tabs = [tabs];
-  log('trying to clanup needless temporary group tabs from ', tabs.map(tab => tab.id));
+  log('trying to clanup needless temporary group tabs from ', tabs.map(dumpTab));
   const tabsToBeRemoved = [];
   for (const tab of tabs) {
     if (!tab.$TST.isTemporaryGroupTab)
@@ -100,7 +101,7 @@ function cleanupNeedlssGroupTab(tabs) {
       break;
     tabsToBeRemoved.push(tab);
   }
-  log('=> to be removed: ', tabsToBeRemoved.map(tab => tab.id));
+  log('=> to be removed: ', tabsToBeRemoved.map(dumpTab));
   TabsInternalOperation.removeTabs(tabsToBeRemoved);
 }
 
@@ -390,7 +391,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     if (!pinnedOpeners.includes(opener))
       pinnedOpeners.push(opener);
   }
-  log('pinnedOpeners ', pinnedOpeners.map(tab => tab.id));
+  log('pinnedOpeners ', pinnedOpeners.map(dumpTab));
 
   // Second, collect tabs opened from pinned openers including existing tabs
   // (which were left ungrouped in previous process).
@@ -424,7 +425,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   pinnedOpeners = pinnedOpeners.filter(opener => {
     return childrenOfPinnedTabs[opener.id].length > 1 || Tab.getGroupTabForOpener(opener);
   });
-  log(' => ', pinnedOpeners.map(tab => tab.id));
+  log(' => ', pinnedOpeners.map(dumpTab));
 
   // Move newly opened tabs to expected position before grouping!
   switch (configs.insertNewTabFromPinnedTabAt) {
@@ -469,7 +470,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   const newGroupTabs = new Map();
   for (const opener of pinnedOpeners) {
     const children = childrenOfPinnedTabs[opener.id].sort((a, b) => a.index - b.index);
-    log(`trying to group children of ${opener.id}: `, children.map(child => child.id));
+    log(`trying to group children of ${dumpTab(opener)}: `, children.map(dumpTab));
     let parent = Tab.getGroupTabForOpener(opener);
     if (!parent) {
       const uri = TabsGroup.makeGroupTabURI({
@@ -483,7 +484,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
         cookieStoreId: opener.cookieStoreId,
         inBackground: true
       });
-      log('opened group tab: ', parent);
+      log('opened group tab: ', dumpTab(parent));
       newGroupTabs.set(opener, true);
     }
     for (const child of children) {

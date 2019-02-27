@@ -40,6 +40,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   wait,
   configs
 } from './common.js';
@@ -277,7 +278,7 @@ export async function updateTabsHighlighted(highlightInfo) {
     Tab.onHighlightedTabsChanged.dispatch(highlightInfo.windowId);
 }
 async function updateTabHighlighted(tab, highlighted) {
-  log(`highlighted status of ${tab.id}: `, { old: tab.highlighted, new: highlighted });
+  log(`highlighted status of ${dumpTab(tab)}: `, { old: tab.highlighted, new: highlighted });
   //if (tab.highlighted == highlighted)
   //  return false;
   if (highlighted)

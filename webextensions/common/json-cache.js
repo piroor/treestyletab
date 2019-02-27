@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  dumpTab
 } from './common.js';
 import * as Constants from './constants.js';
 import * as TabsStore from './tabs-store.js';
@@ -83,7 +84,7 @@ export function restoreTabsFromCacheInternal(params) {
 function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
   if (tabs.length != cachedTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, tabs=${tabs.length}, cachedTabs=${cachedTabs.length}`);
-  log('fixupTabsRestoredFromCache start ', { tabs: tabs.map(tab => tab.id), cachedTabs });
+  log('fixupTabsRestoredFromCache start ', { tabs: tabs.map(dumpTab), cachedTabs });
   const idMap = new Map();
   // step 1: build a map from old id to new id
   tabs = tabs.map((tab, index) => {

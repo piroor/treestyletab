@@ -42,6 +42,7 @@ import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
@@ -328,7 +329,7 @@ function onCreated(tab) {
   if (targetWindow && tab.windowId != targetWindow)
     return;
 
-  log('tabs.onCreated: ', tab.id);
+  log('tabs.onCreated: ', dumpTab(tab));
   return onNewTabTracked(tab);
 }
 
@@ -337,7 +338,7 @@ async function onNewTabTracked(tab) {
   if (targetWindow && tab.windowId != targetWindow)
     return null;
 
-  log(`onNewTabTracked(id=${tab.id}): `, tab);
+  log(`onNewTabTracked(i${dumpTab(tab)}): `, tab);
 
   Tab.track(tab);
 
@@ -360,7 +361,7 @@ async function onNewTabTracked(tab) {
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
-  log(`onNewTabTracked(id=${tab.id}): start to create tab element`);
+  log(`onNewTabTracked(${dumpTab(tab)}): start to create tab element`);
 
   try {
     // New tab's index can become invalid because the value of "index" is same to
@@ -416,7 +417,7 @@ async function onNewTabTracked(tab) {
       window.restoredCount = window.restoredCount || 0;
       window.restoredCount++;
       if (!window.allTabsRestored) {
-        log(`onNewTabTracked(id=${tab.id}): Maybe starting to restore window`);
+        log(`onNewTabTracked(${dumpTab(tab)}): Maybe starting to restore window`);
         window.allTabsRestored = new Promise((resolve, _aReject) => {
           let lastCount = window.restoredCount;
           const timer = setInterval(() => {
@@ -435,11 +436,11 @@ async function onNewTabTracked(tab) {
       }
       Tab.onRestoring.dispatch(tab);
       await window.allTabsRestored;
-      log(`onNewTabTracked(id=${tab.id}): continued for restored tab`);
+      log(`onNewTabTracked(${dumpTab(tab)}): continued for restored tab`);
     }
     if (!TabsStore.ensureLivingTab(tab) ||
         !TabsStore.windows.get(tab.windowId)) {
-      log(`onNewTabTracked(id=${tab.id}):  => aborted`);
+      log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
       onTabCreated(uniqueId);
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
@@ -458,7 +459,7 @@ async function onNewTabTracked(tab) {
     if (moved instanceof Promise)
       moved = await moved;
     moved = moved === false;
-    log(`onNewTabTracked(id=${tab.id}): moved = `, moved);
+    log(`onNewTabTracked(${dumpTab(tab)}): moved = `, moved);
 
     if (TabsStore.ensureLivingTab(tab) &&
         TabsStore.windows.get(tab.windowId)) { // it can be removed while waiting
@@ -477,7 +478,7 @@ async function onNewTabTracked(tab) {
       return;
     }
 
-    log(`onNewTabTracked(id=${tab.id}): uniqueId = `, uniqueId);
+    log(`onNewTabTracked(${dumpTab(tab)}): uniqueId = `, uniqueId);
 
     Tab.onCreated.dispatch(tab, {
       positionedBySelf: positionedBySelf || moved,
@@ -551,7 +552,7 @@ function checkRecycledTab(windowId) {
           uniqueId.id == currentId ||
           Constants.kTAB_STATE_RESTORED in tab.$TST.states)
         return;
-      log('A recycled tab is detected: ', tab);
+      log('A recycled tab is detected: ', dumpTab(tab));
       tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
       Tab.onRestored.dispatch(tab);
     });

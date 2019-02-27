@@ -339,9 +339,9 @@ configs.$logger = log;
 export function dumpTab(tab) {
   if (!configs || !configs.debug)
     return '';
-  if (!tab || !tab.apiTab)
+  if (!tab)
     return '<NULL>';
-  return `#${tab.id}`;
+  return `#${tab.id}(${!!tab.$TST ? 'tracked' : '!tracked'})`;
 }
 
 export async function wait(task = 0, timeout = 0) {

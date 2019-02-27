@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from '/common/common.js';
 
@@ -112,9 +113,9 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         if (!nextTab)
           prevTab = tabs[info.newIndex - 1];
       }
-      log('move newly attached child: ', tab.id, {
-        next: nextTab && nextTab.id,
-        prev: prevTab && prevTab.id
+      log('move newly attached child: ', dumpTab(tab), {
+        next: dumpTab(nextTab),
+        prev: dumpTab(prevTab)
       });
       if (nextTab)
         await Tree.moveTabSubtreeBefore(tab, nextTab, Object.assign({}, info, {

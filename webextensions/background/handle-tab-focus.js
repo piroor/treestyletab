@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   wait,
   configs
 } from '/common/common.js';
@@ -31,7 +32,7 @@ let mMaybeTabSwitchingByShortcut = false;
 
 
 Tab.onActivating.addListener((tab, info = {}) => { // return true if this focusing is overridden.
-  log('Tabs.onActivating ', tab.id, info);
+  log('Tabs.onActivating ', dumpTab(tab), info);
   if (tab.$TST.shouldReloadOnSelect) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.handleMissingTabError);
@@ -81,7 +82,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return true if this focusi
       if (mMaybeTabSwitchingByShortcut)
         setupDelayedExpand(successor);
       TabsInternalOperation.activateTab(successor, { silently: true });
-      log('Tabs.onActivating: discarded? ', tab.id, tab.discarded);
+      log('Tabs.onActivating: discarded? ', dumpTab(tab), tab && tab.discarded);
       if (tab.discarded)
         tab.$TST.discardURLAfterCompletelyLoaded = tab.url;
       return false;
@@ -106,7 +107,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return true if this focusi
   return true;
 });
 function handleNewActiveTab(tab, info = {}) {
-  log('handleNewActiveTab: ', tab.id, info);
+  log('handleNewActiveTab: ', dumpTab(tab), info);
   const shouldCollapseExpandNow = configs.autoCollapseExpandSubtreeOnSelect;
   const canCollapseTree         = shouldCollapseExpandNow;
   const canExpandTree           = shouldCollapseExpandNow && !info.silently;
@@ -139,7 +140,7 @@ Tab.onStateChanged.addListener(tab => {
   if (typeof browser.tabs.discard == 'function') {
     if (tab.url == tab.$TST.discardURLAfterCompletelyLoaded &&
         configs.autoDiscardTabForUnexpectedFocus) {
-      log('Try to discard accidentally restored tab (on restored) ', tab.id);
+      log('Try to discard accidentally restored tab (on restored) ', dumpTab(tab));
       wait(configs.autoDiscardTabForUnexpectedFocusDelay).then(() => {
         if (!TabsStore.ensureLivingTab(tab) ||
             tab.active)
@@ -152,7 +153,7 @@ Tab.onStateChanged.addListener(tab => {
       });
     }
     else if (tab.$TST.discardOnCompletelyLoaded && !tab.active) {
-      log('Discard accidentally restored tab (on complete) ', tab.id);
+      log('Discard accidentally restored tab (on complete) ', dumpTab(tab));
       browser.tabs.discard(tab.id)
         .catch(ApiTabs.handleMissingTabError);
     }

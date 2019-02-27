@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from '/common/common.js';
 
@@ -29,7 +30,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   if (info.duplicatedInternally)
     return true;
 
-  log('Tabs.onCreating ', tab.id, info);
+  log('Tabs.onCreating ', dumpTab(tab), info);
 
   const possibleOpenerTab = info.activeTab || Tab.getActiveTab(tab.windowId);
   const opener = tab.$TST.opener;
@@ -64,7 +65,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
     return true;
   }
 
-  log(`opener: ${opener && opener.id}, positionedBySelf = ${info.positionedBySelf}`);
+  log(`opener: ${dumpTab(opener)}, positionedBySelf = ${info.positionedBySelf}`);
   if (opener && opener.pinned &&
       opener.windowId == tab.windowId) {
     if (configs.autoGroupNewTabsFromPinned) {
@@ -90,7 +91,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
 
 async function handleNewTabFromActiveTab(tab, params = {}) {
   const activeTab = params.activeTab;
-  log('handleNewTabFromActiveTab: activeTab = ', activeTab.id, params);
+  log('handleNewTabFromActiveTab: activeTab = ', dumpTab(activeTab), params);
   const moved = await Tree.behaveAutoAttachedTab(tab, {
     baseTab:   activeTab,
     behavior:  params.autoAttachBehavior,
@@ -117,7 +118,7 @@ Tab.onCreated.addListener((tab, info = {}) => {
   if (!info.duplicated)
     return;
   const original = info.originalTab;
-  log('duplicated ', tab.id, original && original.id);
+  log('duplicated ', dumpTab(tab), dumpTab(original));
   if (info.duplicatedInternally) {
     log('duplicated by internal operation');
     tab.$TST.addState(Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
@@ -151,11 +152,11 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 
   if ((changeInfo.url || changeInfo.status == 'complete') &&
       tab.$TST.isNewTab) {
-    log('new tab ', tab.id);
+    log('new tab ', dumpTab(tab));
     delete tab.$TST.isNewTab;
     const possibleOpenerTab = Tab.get(tab.$TST.possibleOpenerTab);
     delete tab.$TST.possibleOpenerTab;
-    log('possibleOpenerTab ', possibleOpenerTab && possibleOpenerTab.id);
+    log('possibleOpenerTab ', dumpTab(possibleOpenerTab.id));
     const window = TabsStore.windows.get(tab.windowId);
     const toBeGroupedTabs = window.openedNewTabs;
     log('toBeGroupedTabs ', toBeGroupedTabs);
@@ -193,14 +194,14 @@ Tab.onAttached.addListener(async (tab, info = {}) => {
       !Tree.shouldApplyTreeBehavior(info))
     return;
 
-  log('Tabs.onAttached ', tab.id, info);
+  log('Tabs.onAttached ', dumpTab(tab), info);
 
-  log('descendants of attached tab: ', info.descendants.map(tab => tab.id));
+  log('descendants of attached tab: ', info.descendants.map(dumpTab));
   const movedTabs = await Tree.moveTabs(info.descendants, {
     destinationWindowId: tab.windowId,
     insertAfter:         tab
   });
-  log('moved descendants: ', movedTabs.map(tab => tab.id));
+  log('moved descendants: ', movedTabs.map(dumpTab));
   for (const movedTab of movedTabs) {
     Tree.attachTabTo(movedTab, tab, {
       broadcast: true,

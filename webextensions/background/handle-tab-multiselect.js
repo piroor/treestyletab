@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  dumpTab
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
@@ -77,14 +78,14 @@ export async function updateSelectionByTabClick(tab, event) {
     try {
       if (!ctrlKeyPressed) {
         const alreadySelectedTabs = Tab.getSelectedTabs(tab.windowId);
-        log('clear old selection by shift-click: ', alreadySelectedTabs);
+        log('clear old selection by shift-click: ', alreadySelectedTabs.map(dumpTab));
         for (const alreadySelectedTab of alreadySelectedTabs) {
           if (!targetTabs.includes(alreadySelectedTab))
             highlightedTabIds.delete(alreadySelectedTab.id);
         }
       }
 
-      log('set selection by shift-click: ', targetTabs);
+      log('set selection by shift-click: ', targetTabs.map(dumpTab));
       for (const toBeSelectedTab of targetTabs) {
         highlightedTabIds.add(toBeSelectedTab.id);
       }
@@ -121,7 +122,7 @@ export async function updateSelectionByTabClick(tab, event) {
   }
   else if (ctrlKeyPressed) {
     try {
-      log('change selection by ctrl-click: ', tab);
+      log('change selection by ctrl-click: ', dumpTab(tab));
       /* Special operation to toggle selection of collapsed descendants for the active tab.
          - When there is no other multiselected foreign tab
            => toggle multiselection only descendants.

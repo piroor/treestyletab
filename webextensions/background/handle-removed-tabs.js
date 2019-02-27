@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   wait,
   configs
 } from '/common/common.js';
@@ -29,7 +30,7 @@ function log(...args) {
 
 
 Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
-  log('Tabs.onRemoving ', tab.id, removeInfo);
+  log('Tabs.onRemoving ', dumpTab(tab), removeInfo);
   if (removeInfo.isWindowClosing)
     return;
 
@@ -46,7 +47,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   const wasActive = tab.active;
   if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
     return;
-  log('Tabs.onRemoving: granted to close ', tab.id);
+  log('Tabs.onRemoving: granted to close ', dumpTab(tab));
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && tab.$TST.nextSibling || tab.$TST.next;
@@ -79,7 +80,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       insertBefore: tab, // not firstChild, because the "tab" is disappeared from tree.
       inBackground: true
     });
-    log('group tab: ', groupTab.id);
+    log('group tab: ', dumpTab(groupTab));
     if (!groupTab) // the window is closed!
       return;
     await Tree.attachTabTo(groupTab, tab, {
@@ -101,7 +102,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
 });
 
 async function tryGrantCloseTab(tab, closeParentBehavior) {
-  log('tryGrantClose: ', { alreadyGranted: configs.grantedRemovingTabIds, closing: tab.id });
+  log('tryGrantClose: ', { alreadyGranted: configs.grantedRemovingTabIds, closing: dumpTab(tab) });
   const alreadyGranted = configs.grantedRemovingTabIds.includes(tab.id);
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.id);
   if (alreadyGranted)
@@ -155,7 +156,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
           break;
       }
       for (const tab of toBeRestoredTabs.reverse()) {
-        log('tryGrantClose: Tabrestoring session = ', tab);
+        log('tryGrantClose: Tabrestoring session = ', dumpTab(tab));
         browser.sessions.restore(tab.sessionId);
         const tabs = await TabsStore.waitUntilAllTabsAreCreated();
         await Promise.all(tabs.map(tab => tab.$TST.opened));
@@ -189,7 +190,7 @@ async function closeChildTabs(parent) {
 }
 
 Tab.onRemoved.addListener((tab, info) => {
-  log('Tabs.onRemoved: removed ', tab.id);
+  log('Tabs.onRemoved: removed ', dumpTab(tab));
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => id != tab.id);
 
   if (info.isWindowClosing)
@@ -232,7 +233,7 @@ Tab.onDetached.addListener((tab, info = {}) => {
     Tree.tryMoveFocusFromClosingActiveTab(tab);
   }
 
-  log('Tabs.onDetached ', tab.id);
+  log('Tabs.onDetached ', dumpTab(tab));
   let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, info);
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     closeParentBehavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD;

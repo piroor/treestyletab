@@ -9,6 +9,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from './common.js';
 import * as Constants from './constants.js';
@@ -25,7 +26,7 @@ export async function activateTab(tab, options = {}) {
   tab = TabsStore.ensureLivingTab(tab);
   if (!tab)
     return;
-  log('activateTab: ', tab.id);
+  log('activateTab: ', dumpTab(tab));
   if (options.inRemote) {
     await browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_SELECT_TAB_INTERNALLY,
@@ -77,7 +78,7 @@ export function removeTabs(tabs, options = {}) {
   tabs = tabs.filter(TabsStore.ensureLivingTab);
   if (!tabs.length)
     return;
-  log('removeTabsInternally: ', tabs.map(tab => tab.id));
+  log('removeTabsInternally: ', tabs.map(dumpTab));
   if (options.inRemote || options.broadcast) {
     browser.runtime.sendMessage({
       type:     Constants.kCOMMAND_REMOVE_TABS_INTERNALLY,

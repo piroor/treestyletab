@@ -7,6 +7,7 @@
 
 import {
   log as internalLogger,
+  dumpTab,
   configs
 } from './common.js';
 
@@ -134,7 +135,7 @@ export default class Window {
       const parent = tab.$TST.parent;
       if (parent)
         parent.$TST.sortChildren();
-      log(`tab ${tab.id} is re-tracked under the window ${this.id}: `, order);
+      log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
     }
     else { // not tracked yet: add
       this.tabs.set(tab.id, tab);
@@ -145,7 +146,7 @@ export default class Window {
           throw new Error(`Unknown tab ${order[i]}`);
         tab.index = i;
       }
-      log(`tab ${tab.id} is newly tracked under the window ${this.id}: `, order);
+      log(`tab ${dumpTab(tab)} is newly tracked under the window ${this.id}: `, order);
     }
     return tab;
   }
