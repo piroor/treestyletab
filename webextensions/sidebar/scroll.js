@@ -458,7 +458,7 @@ Tabs.onCreated.addListener((tab, _info) => {
   if (configs.animation) {
     wait(10).then(() => { // wait until the tab is moved by TST itself
       const parent = tab.$TST.parent;
-      if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
+      if (parent && parent.$TST.subtreeCollapsed) // possibly collapsed by other trigger intentionally
         return;
       const active = tab.active;
       Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter

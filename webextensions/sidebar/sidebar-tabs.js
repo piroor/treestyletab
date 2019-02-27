@@ -92,7 +92,7 @@ export function reserveToUpdateTwistyTooltip(tab) {
 
 function updateTwistyTooltip(tab) {
   let tooltip;
-  if (Tabs.isSubtreeCollapsed(tab))
+  if (tab.$TST.subtreeCollapsed)
     tooltip = browser.i18n.getMessage('tab_twisty_collapsed_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_twisty_expanded_tooltip');
@@ -113,7 +113,7 @@ function updateCloseboxTooltip(tab) {
   let tooltip;
   if (Tabs.isMultiselected(tab))
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip_multiselected');
-  else if (tab.$TST.hasChild && Tabs.isSubtreeCollapsed(tab))
+  else if (tab.$TST.hasChild && tab.$TST.subtreeCollapsed)
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
   else
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip');
@@ -219,7 +219,7 @@ windowId = ${tab.windowId}
   tab.$TST.tooltipWithDescendants = getTooltipWithDescendants(tab);
 
   if (configs.showCollapsedDescendantsByTooltip &&
-      Tabs.isSubtreeCollapsed(tab) &&
+      tab.$TST.subtreeCollapsed &&
       tab.$TST.hasChild) {
     Tabs.setAttribute(tab, 'title', tab.$TST.tooltipWithDescendants);
     return;

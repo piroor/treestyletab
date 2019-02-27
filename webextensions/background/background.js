@@ -376,7 +376,7 @@ function reserveToUpdateSubtreeCollapsed(tab) {
 async function updateSubtreeCollapsed(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
-  if (Tabs.isSubtreeCollapsed(tab))
+  if (tab.$TST.subtreeCollapsed)
     Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });
   else
     Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, { permanently: true });

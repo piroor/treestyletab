@@ -850,11 +850,6 @@ export function isNewTabCommandTab(tab) {
   return tab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
 }
 
-export function isSubtreeCollapsed(tab) {
-  return ensureLivingTab(tab) &&
-         hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-}
-
 export function isGroupTab(tab) {
   if (!tab)
     return false;

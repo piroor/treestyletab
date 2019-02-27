@@ -420,7 +420,7 @@ function onShown(info, tab) {
   }
 
   tab = tab && Tab.get(tab.id);
-  const subtreeCollapsed = Tabs.isSubtreeCollapsed(tab);
+  const subtreeCollapsed = tab.$TST.subtreeCollapsed;
   const hasChild = tab.$TST.hasChild;
   const multiselected = Tabs.isMultiselected(tab);
 

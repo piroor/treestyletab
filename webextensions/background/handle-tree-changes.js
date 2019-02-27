@@ -42,7 +42,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   if (info.newlyAttached &&
       mInitialized) {
     log('newly attached tab');
-    if (Tabs.isSubtreeCollapsed(info.parent) &&
+    if (info.parent.$TST.subtreeCollapsed &&
         !info.forceExpand) {
       log('  the tree is collapsed, but keep collapsed by forceExpand option');
       Tree.collapseExpandTabAndSubtree(tab, {
@@ -76,7 +76,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
           Tree.shouldTabAutoExpanded(parent) ||
           info.forceExpand) {
         log('  expand ancestor tabs');
-        newAncestors.filter(Tabs.isSubtreeCollapsed).forEach(ancestor => {
+        newAncestors.filter(ancestor => ancestor.$TST.subtreeCollapsed).forEach(ancestor => {
           Tree.collapseExpandSubtree(ancestor, Object.assign({}, info, {
             collapsed:    false,
             broadcast:    true

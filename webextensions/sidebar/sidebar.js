@@ -587,7 +587,7 @@ Tabs.onRemoving.addListener((tab, removeInfo) => {
 
   const closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      Tabs.isSubtreeCollapsed(tab))
+      tab.$TST.subtreeCollapsed)
     Tree.collapseExpandSubtree(tab, {
       collapsed: false
     });
@@ -891,7 +891,7 @@ function onMessage(message, _sender, _respond) {
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (message.byAncestor &&
-            message.collapsed != Tab.getAncestors(tab).some(Tabs.isSubtreeCollapsed))
+            message.collapsed != Tab.getAncestors(tab).some(ancestor => ancestor.$TST.subtreeCollapsed))
           return;
         Tree.collapseExpandTab(tab, {
           collapsed:   message.collapsed,

@@ -199,6 +199,10 @@ export default class Tab {
     return Tabs.hasState(this.tab, Constants.kTAB_STATE_COLLAPSED);
   }
 
+  get subtreeCollapsed() {
+    return Tabs.hasState(this.tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  }
+
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
     return tab;

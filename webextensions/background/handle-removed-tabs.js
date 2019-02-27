@@ -34,7 +34,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
   let closeParentBehavior = Tree.getCloseParentBehaviorForTabWithSidebarOpenState(tab, removeInfo);
   if (!SidebarStatus.isOpen(tab.windowId) &&
       closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN &&
-      Tabs.isSubtreeCollapsed(tab))
+      tab.$TST.subtreeCollapsed)
     Tree.collapseExpandSubtree(tab, {
       collapsed: false,
       justNow:   true,

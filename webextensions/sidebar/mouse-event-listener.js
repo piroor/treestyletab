@@ -395,7 +395,7 @@ async function onMouseUp(event) {
       log('clicked on twisty');
       if (tab.$TST.hasChild)
         Tree.collapseExpandSubtree(tab, {
-          collapsed:       !Tabs.isSubtreeCollapsed(tab),
+          collapsed:       !tab.$TST.subtreeCollapsed,
           manualOperation: true,
           inRemote:        true
         });
@@ -529,7 +529,7 @@ function onDblClick(event) {
       event.stopPropagation();
       event.preventDefault();
       Tree.collapseExpandSubtree(livingTab, {
-        collapsed:       !Tabs.isSubtreeCollapsed(livingTab),
+        collapsed:       !livingTab.$TST.subtreeCollapsed,
         manualOperation: true,
         inRemote:        true
       });

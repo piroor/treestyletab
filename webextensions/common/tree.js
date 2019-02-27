@@ -597,7 +597,7 @@ function updateTabsIndent(tabs, level = undefined) {
 // collapse/expand tabs
 
 export function shouldTabAutoExpanded(tab) {
-  return tab.$TST.hasChild && Tabs.isSubtreeCollapsed(tab);
+  return tab.$TST.hasChild && tab.$TST.subtreeCollapsed;
 }
 
 export async function collapseExpandSubtree(tab, params = {}) {
@@ -621,7 +621,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
   if (!Tabs.ensureLivingTab(tab)) // it was removed while waiting
     return;
   params.stack = `${new Error().stack}\n${params.stack || ''}`;
-  logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), Tabs.isSubtreeCollapsed(tab), params);
+  logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
   await Promise.all([
     collapseExpandSubtreeInternal(tab, params),
     params.broadcast && browser.runtime.sendMessage(remoteParams)
@@ -629,7 +629,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
 }
 function collapseExpandSubtreeInternal(tab, params = {}) {
   if (!params.force &&
-      Tabs.isSubtreeCollapsed(tab) == params.collapsed)
+      tab.$TST.subtreeCollapsed == params.collapsed)
     return;
 
   if (params.collapsed) {
@@ -699,7 +699,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
     TabsInternalOperation.activateTab(newSelection, { silently: true });
   }
 
-  if (!Tabs.isSubtreeCollapsed(tab)) {
+  if (!tab.$TST.subtreeCollapsed) {
     const children = tab.$TST.children;
     children.forEach((child, index) => {
       const last = params.last &&
@@ -726,13 +726,13 @@ export async function collapseExpandTab(tab, params = {}) {
   // synchronous "collapse" operation, it can produce an expanded
   // child tab under "subtree-collapsed" parent. So this is a failsafe.
   if (!params.collapsed &&
-      Tab.getAncestors(tab).some(ancestor => Tabs.isSubtreeCollapsed(ancestor)))
+      Tab.getAncestors(tab).some(ancestor => ancestor.$TST.subtreeCollapsed))
     return;
 
   const stack = `${new Error().stack}\n${params.stack || ''}`;
   logCollapseExpand(`collapseExpandTab ${tab.id} `, params, { stack })
   const last = params.last &&
-                 (!tab.$TST.hasChild || Tabs.isSubtreeCollapsed(tab));
+                 (!tab.$TST.hasChild || tab.$TST.subtreeCollapsed);
   const collapseExpandInfo = Object.assign({}, params, {
     anchor: last && params.anchor,
     last:   last
@@ -756,7 +756,7 @@ export async function collapseExpandTab(tab, params = {}) {
       justNow:   params.justNow,
       collapsed: params.collapsed,
       stack:     stack,
-      byAncestor: Tab.getAncestors(tab).some(Tabs.isSubtreeCollapsed) == params.collapsed
+      byAncestor: Tab.getAncestors(tab).some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
     });
   }
 }
@@ -792,7 +792,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     const parentTab = collapseTab.$TST.parent;
     if (parentTab) {
       dontCollapse = true;
-      if (!Tabs.isSubtreeCollapsed(parentTab)) {
+      if (!parentTab.$TST.subtreeCollapsed) {
         for (const ancestor of Tab.getAncestors(collapseTab)) {
           if (!expandedAncestors.includes(ancestor.id))
             continue;
@@ -822,7 +822,7 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
     return fixed;
   const firstChild = tab.$TST.firstChild;
   const childrenCollapsed = firstChild.$TST.collapsed;
-  const collapsedStateMismatched = Tabs.isSubtreeCollapsed(tab) != childrenCollapsed;
+  const collapsedStateMismatched = tab.$TST.subtreeCollapsed != childrenCollapsed;
   const nextIsFirstChild = tab.$TST.next == firstChild;
   log('fixupSubtreeCollapsedState ', {
     tab: tab.id,
@@ -1015,7 +1015,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
 
 export function getCloseParentBehaviorForTab(tab, options = {}) {
   if (!options.asIndividualTab &&
-      Tabs.isSubtreeCollapsed(tab) &&
+      tab.$TST.subtreeCollapsed &&
       !options.keepChildren)
     return Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN;
 
@@ -1562,7 +1562,7 @@ export function getTreeStructureFromTabs(tabs, options = {}) {
     const item = {
       id:        Tabs.getAttribute(tab, Constants.kPERSISTENT_ID),
       parent:    parentIndex,
-      collapsed: Tabs.isSubtreeCollapsed(tab)
+      collapsed: tab.$TST.subtreeCollapsed
     };
     if (options.full) {
       item.title  = tab.title;
@@ -1707,7 +1707,7 @@ function snapshotTree(targetTab, tabs) {
       cookieStoreId: tab.cookieStoreId,
       active:        tab.active,
       children:      tab.$TST.children.filter(child => !child.hidden).map(child => child.id),
-      collapsed:     Tabs.isSubtreeCollapsed(tab),
+      collapsed:     tab.$TST.subtreeCollapsed,
       pinned:        tab.pinned,
       level:         parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0)
     };

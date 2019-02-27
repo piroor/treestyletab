@@ -94,7 +94,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     return false;
   }
   else if (tab.$TST.hasChild &&
-           Tabs.isSubtreeCollapsed(tab) &&
+           tab.$TST.subtreeCollapsed &&
            !shouldSkipCollapsed) {
     log('=> reaction for newly active parent tab');
     handleNewActiveTab(tab, info);
@@ -167,7 +167,7 @@ function setupDelayedExpand(tab) {
   cancelDelayedExpand(tab);
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
-      !Tabs.isSubtreeCollapsed(tab))
+      !tab.$TST.subtreeCollapsed)
     return;
   tab.$TST.delayedExpand = setTimeout(() => {
     Tree.collapseExpandTreesIntelligentlyFor(tab, {

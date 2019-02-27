@@ -85,7 +85,7 @@ export async function closeOthers(rootTab) {
 
 export function collapseTree(rootTab) {
   if (!rootTab.$TST.hasChild ||
-      Tabs.isSubtreeCollapsed(rootTab))
+      rootTab.$TST.subtreeCollapsed)
     return;
   Tree.collapseExpandSubtree(rootTab, {
     collapsed: true,
@@ -102,7 +102,7 @@ export function collapseAll(windowId) {
 
 export function expandTree(rootTab) {
   if (!rootTab.$TST.hasChild ||
-      !Tabs.isSubtreeCollapsed(rootTab))
+      !rootTab.$TST.subtreeCollapsed)
     return;
   Tree.collapseExpandSubtree(rootTab, {
     collapsed: false,

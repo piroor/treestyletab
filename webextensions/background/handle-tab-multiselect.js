@@ -20,7 +20,7 @@ function log(...args) {
 
 Tabs.onUpdated.addListener((tab, info, options = {}) => {
   if (!('highlighted' in info) ||
-      !Tabs.isSubtreeCollapsed(tab) ||
+      !tab.$TST.subtreeCollapsed ||
       tab.$TST.collapsed ||
       !Tabs.isMultiselected(tab) ||
       options.inheritHighlighted === false)
@@ -94,7 +94,7 @@ export async function updateSelectionByTabClick(tab, event) {
           !inSelectionSession)
         rootTabs.push(activeTab);
       for (const root of rootTabs) {
-        if (!Tabs.isSubtreeCollapsed(root))
+        if (!root.$TST.subtreeCollapsed)
           continue;
         for (const descendant of root.$TST.descendants) {
           highlightedTabIds.add(descendant.id);
@@ -135,7 +135,7 @@ export async function updateSelectionByTabClick(tab, event) {
       let toBeHighlighted = !tab.highlighted;
       log('toBeHighlighted: ', toBeHighlighted);
       if (tab == activeTab &&
-          Tabs.isSubtreeCollapsed(tab) &&
+          tab.$TST.subtreeCollapsed &&
           activeTabDescendants.length > 0) {
         const highlightedCount  = activeTabDescendants.filter(tab => tab.highlighted).length;
         const partiallySelected = highlightedCount != 0 && highlightedCount != activeTabDescendants.length;
@@ -147,7 +147,7 @@ export async function updateSelectionByTabClick(tab, event) {
       else
         highlightedTabIds.delete(tab.id);
 
-      if (Tabs.isSubtreeCollapsed(tab)) {
+      if (tab.$TST.subtreeCollapsed) {
         const descendants = tab == activeTab ? activeTabDescendants : tab.$TST.descendants;
         for (const descendant of descendants) {
           if (toBeHighlighted)
@@ -166,7 +166,7 @@ export async function updateSelectionByTabClick(tab, event) {
       else if (!inSelectionSession) {
         log('Select active tab and its descendants, for new selection session');
         highlightedTabIds.add(activeTab.id);
-        if (Tabs.isSubtreeCollapsed(activeTab)) {
+        if (activeTab.$TST.subtreeCollapsed) {
           for (const descendant of activeTabDescendants) {
             highlightedTabIds.add(descendant.id);
           }
