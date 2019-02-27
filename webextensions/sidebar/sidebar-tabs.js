@@ -124,7 +124,7 @@ function updateDescendantsCount(tab) {
   const counter = getDescendantsCounter(tab);
   if (!counter)
     return;
-  const descendants = Tab.getDescendants(tab);
+  const descendants = tab.$TST.descendants;
   let count = descendants.length;
   if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
     count += 1;

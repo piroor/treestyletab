@@ -139,7 +139,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   });
 
   if (info.newlyAttached)
-    Background.reserveToUpdateAncestors([tab].concat(Tab.getDescendants(tab)));
+    Background.reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
   Background.reserveToUpdateChildren(parent);
   Background.reserveToUpdateInsertionPosition([
     tab,

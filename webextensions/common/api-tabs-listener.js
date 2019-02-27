@@ -822,7 +822,7 @@ async function onDetached(tabId, detachInfo) {
     const info = Object.assign({}, detachInfo, {
       byInternalOperation,
       windowId:    detachInfo.oldWindowId,
-      descendants: Tab.getDescendants(oldTab)
+      descendants: oldTab.$TST.descendants
     });
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 

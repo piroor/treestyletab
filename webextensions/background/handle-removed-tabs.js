@@ -176,7 +176,7 @@ tryGrantCloseTab.closingTabWasActive        = false;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
 async function closeChildTabs(parent) {
-  const tabs = Tab.getDescendants(parent);
+  const tabs = parent.$TST.descendants;
   //if (!fireTabSubtreeClosingEvent(parent, tabs))
   //  return;
 
@@ -224,7 +224,7 @@ Tabs.onDetached.addListener((tab, info = {}) => {
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     if (Tree.shouldApplyTreeBehavior(info)) {
       Tree.tryMoveFocusFromClosingActiveTabNow(tab, {
-        ignoredTabs: Tab.getDescendants(tab)
+        ignoredTabs: tab.$TST.descendants
       });
       return;
     }

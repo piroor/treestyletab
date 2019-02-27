@@ -184,7 +184,7 @@ function getDragDataFromOneTab(tab, options = {}) {
 function getDraggedTabsFromOneTab(tab) {
   if (Tabs.isSelected(tab))
     return Tabs.getSelectedTabs(tab.windowId);
-  return [tab].concat(Tab.getDescendants(tab));
+  return [tab].concat(tab.$TST.descendants);
 }
 
 function sanitizeDragData(dragData) {
@@ -359,10 +359,10 @@ function getDropAction(event) {
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
         (targetTab && targetTab.$TST.firstChild || Tab.getNextVisible(targetTab)) :
-        (Tab.getNextSibling(targetTab) || Tab.getNext(Tab.getLastDescendant(targetTab) || targetTab));
+        (Tab.getNextSibling(targetTab) || Tab.getNext(targetTab.$TST.lastDescendant || targetTab));
       info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
         targetTab :
-        (Tab.getLastDescendant(targetTab) || targetTab);
+        (targetTab.$TST.lastDescendant || targetTab);
       if (info.draggedTab &&
           info.draggedTab.pinned != Tabs.isPinned(targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
@@ -422,7 +422,7 @@ function getDropAction(event) {
             ancestor     = ancestor.$TST.parent;
           }
           info.insertBefore = insertBefore;
-          info.insertAfter  = Tab.getLastDescendant(targetTab);
+          info.insertAfter  = targetTab.$TST.lastDescendant;
         }
       }
       if (info.draggedTab &&

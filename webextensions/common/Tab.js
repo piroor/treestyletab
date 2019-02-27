@@ -143,6 +143,21 @@ export default class Tab {
     return this.childIds.length > 0;
   }
 
+  get descendants() {
+    let descendants = [];
+    const children = this.children;
+    for (const child of children) {
+      descendants.push(child);
+      descendants = descendants.concat(child.$TST.descendants);
+    }
+    return descendants;
+  }
+
+  get lastDescendant() {
+    const descendants = this.descendants;
+    return descendants.length ? descendants[descendants.length-1] : null ;
+  }
+
   sortChildren() {
     this.childIds = Tabs.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
   }
@@ -175,6 +190,45 @@ export default class Tab {
       } while (foundTab && ignoredTabs.includes(foundTab));
     }
     return foundTab;
+  }
+
+  // if all tabs are aldeardy placed at there, we don't need to move them.
+  isAllPlacedBeforeSelf(tabs) {
+    let nextTab = this.tab;
+    if (tabs[tabs.length - 1] == nextTab)
+      nextTab = Tab.getNext(nextTab);
+    if (!nextTab && !Tab.getNext(tabs[tabs.length - 1]))
+      return true;
+
+    tabs = Array.from(tabs);
+    let previousTab = tabs.shift();
+    for (const tab of tabs) {
+      if (Tab.getPrevious(tab) != previousTab)
+        return false;
+      previousTab = tab;
+    }
+    return !nextTab ||
+           !previousTab ||
+           Tab.getNext(previousTab) == nextTab;
+  }
+
+  isAllPlacedAfterSelf(tabs) {
+    let previousTab = this.tab;
+    if (tabs[0] == previousTab)
+      previousTab = Tab.getPrevious(previousTab);
+    if (!previousTab && !Tab.getPrevious(tabs[0]))
+      return true;
+
+    tabs = Array.from(tabs).reverse();
+    let nextTab = tabs.shift();
+    for (const tab of tabs) {
+      if (Tab.getNext(tab) != nextTab)
+        return false;
+      nextTab = tab;
+    }
+    return !previousTab ||
+           !nextTab ||
+           Tab.getPrevious(nextTab) == previousTab;
   }
 
   detach() {
@@ -405,27 +459,6 @@ Tab.getVisibleAncestorOrSelf = descendant => {
   return null;
 }
 
-Tab.getDescendants = root => {
-  if (!Tabs.ensureLivingTab(root))
-    return [];
-  Tabs.assertValidTab(root);
-  if (!Tabs.assertInitializedTab(root))
-    return [];
-  let descendants = [];
-  const children = root.$TST.children;
-  for (const child of children) {
-    descendants.push(child);
-    descendants = descendants.concat(Tab.getDescendants(child));
-  }
-  return descendants;
-}
-
-Tab.getLastDescendant = root => {
-  Tabs.assertValidTab(root);
-  const descendants = Tab.getDescendants(root);
-  return descendants.length ? descendants[descendants.length-1] : null ;
-}
-
 Tab.getNextSibling = tab => {
   if (!Tabs.ensureLivingTab(tab))
     return null;
@@ -474,44 +507,6 @@ Tab.getPreviousSibling = tab => {
       last:      true
     });
   }
-}
-
-
-// if all tabs are aldeardy placed at there, we don't need to move them.
-Tab.isAllPlacedBefore = (tabs, nextTab) => {
-  if (tabs[tabs.length - 1] == nextTab)
-    nextTab = Tab.getNext(nextTab);
-  if (!nextTab && !Tab.getNext(tabs[tabs.length - 1]))
-    return true;
-
-  tabs = Array.from(tabs);
-  let previousTab = tabs.shift();
-  for (const tab of tabs) {
-    if (Tab.getPrevious(tab) != previousTab)
-      return false;
-    previousTab = tab;
-  }
-  return !nextTab ||
-         !previousTab ||
-         Tab.getNext(previousTab) == nextTab;
-}
-
-Tab.isAllPlacedAfter = (tabs, previousTab) => {
-  if (tabs[0] == previousTab)
-    previousTab = Tab.getPrevious(previousTab);
-  if (!previousTab && !Tab.getPrevious(tabs[0]))
-    return true;
-
-  tabs = Array.from(tabs).reverse();
-  let nextTab = tabs.shift();
-  for (const tab of tabs) {
-    if (Tab.getNext(tab) != nextTab)
-      return false;
-    nextTab = tab;
-  }
-  return !previousTab ||
-         !nextTab ||
-         Tab.getPrevious(nextTab) == previousTab;
 }
 
 

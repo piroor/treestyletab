@@ -444,7 +444,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           ]
         });
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
-        await Tree.moveTabSubtreeAfter(tab, (Tab.getLastDescendant(referenceTab) || referenceTab), {
+        await Tree.moveTabSubtreeAfter(tab, (referenceTab && referenceTab.$TST.lastDescendant || referenceTab), {
           broadcast: true
         });
       }
@@ -489,7 +489,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       Tabs.setAttribute(child, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
-        insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tab.getLastDescendant(parent),
+        insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : parent.$TST.lastDescendant,
         broadcast:   true
       });
     }

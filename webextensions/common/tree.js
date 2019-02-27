@@ -224,7 +224,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
   let insertAt = options.insertAt;
   if (typeof insertAt !== 'number')
     insertAt = configs.insertNewChildAt;
-  let descendants = Tab.getDescendants(parent);
+  let descendants = parent.$TST.descendants;
   if (options.ignoreTabs)
     descendants = descendants.filter(tab => !options.ignoreTabs.includes(tab));
   let insertBefore, insertAfter;
@@ -505,7 +505,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
       if (parent) {
         return attachTabTo(tab, parent, {
           insertBefore: nextSibling,
-          insertAfter:  Tab.getLastDescendant(baseTab) || baseTab,
+          insertAfter:  baseTab.$TST.lastDescendant || baseTab,
           delayedMove:  true,
           inRemote:     options.inRemote,
           broadcast:    options.broadcast
@@ -523,7 +523,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
             broadcast: options.broadcast
           });
         else
-          return TabsMove.moveTabAfter(tab, Tab.getLastDescendant(baseTab), {
+          return TabsMove.moveTabAfter(tab, baseTab.$TST.lastDescendant, {
             delayedMove: true,
             inRemote:  options.inRemote,
             broadcast: options.broadcast
@@ -1072,14 +1072,14 @@ export function getClosingTabsFromParent(tab) {
   });
   if (closeParentBehavior != Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     return [tab];
-  return [tab].concat(Tab.getDescendants(tab));
+  return [tab].concat(tab.$TST.descendants);
 }
 
 
 export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
   if (!tab)
     return;
-  if (Tab.isAllPlacedBefore([tab].concat(Tab.getDescendants(tab)), nextTab)) {
+  if (nextTab && nextTab.$TST.isAllPlacedBeforeSelf([tab].concat(tab.$TST.descendants))) {
     log('moveTabSubtreeBefore:no need to move');
     return;
   }
@@ -1103,7 +1103,7 @@ export async function moveTabSubtreeBefore(tab, nextTab, options = {}) {
 export async function moveTabSubtreeAfter(tab, previousTab, options = {}) {
   if (!tab)
     return;
-  if (Tab.isAllPlacedAfter([tab].concat(Tab.getDescendants(tab)), previousTab)) {
+  if (previousTab && previousTab.$TST.isAllPlacedAfterSelf([tab].concat(tab.$TST.descendants))) {
     log('moveTabSubtreeAfter:no need to move');
     return;
   }
@@ -1132,7 +1132,7 @@ export async function followDescendantsToMovedRoot(tab, options = {}) {
   const window = Tabs.trackedWindows.get(tab.windowId);
   window.subTreeChildrenMovingCount++;
   window.subTreeMovingCount++;
-  await TabsMove.moveTabsAfter(Tab.getDescendants(tab), tab, options);
+  await TabsMove.moveTabsAfter(tab.$TST.descendants, tab, options);
   window.subTreeChildrenMovingCount--;
   window.subTreeMovingCount--;
 }

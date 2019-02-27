@@ -68,7 +68,7 @@ export async function moveTabsBefore(tabs, referenceTab, options = {}) {
       !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  if (Tab.isAllPlacedBefore(tabs, referenceTab)) {
+  if (referenceTab.$TST.isAllPlacedBeforeSelf(tabs)) {
     log('moveTabsBefore:no need to move');
     return [];
   }
@@ -161,7 +161,7 @@ export async function moveTabsAfter(tabs, referenceTab, options = {}) {
       !Tabs.ensureLivingTab(referenceTab))
     return [];
 
-  if (Tab.isAllPlacedAfter(tabs, referenceTab)) {
+  if (referenceTab.$TST.isAllPlacedAfterSelf(tabs)) {
     log('moveTabsAfter:no need to move');
     return [];
   }

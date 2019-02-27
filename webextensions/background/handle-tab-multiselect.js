@@ -26,7 +26,7 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
       options.inheritHighlighted === false)
     return;
 
-  const collapsedDescendants = Tab.getDescendants(tab);
+  const collapsedDescendants = tab.$TST.descendants;
   log('inherit highlighted state from root visible tab: ', {
     highlighted: info.highlighted,
     collapsedDescendants
@@ -96,7 +96,7 @@ export async function updateSelectionByTabClick(tab, event) {
       for (const root of rootTabs) {
         if (!Tabs.isSubtreeCollapsed(root))
           continue;
-        for (const descendant of Tab.getDescendants(root)) {
+        for (const descendant of root.$TST.descendants) {
           highlightedTabIds.add(descendant.id);
         }
       }
@@ -131,7 +131,7 @@ export async function updateSelectionByTabClick(tab, event) {
          - When a foreign tab is highlighted and there is one or more unhighlighted descendants 
            => highlight all descendants (to prevent only the root tab is dragged).
        */
-      const activeTabDescendants = Tab.getDescendants(activeTab);
+      const activeTabDescendants = activeTab.$TST.descendants;
       let toBeHighlighted = !Tabs.isHighlighted(tab);
       log('toBeHighlighted: ', toBeHighlighted);
       if (tab == activeTab &&
@@ -148,7 +148,7 @@ export async function updateSelectionByTabClick(tab, event) {
         highlightedTabIds.delete(tab.id);
 
       if (Tabs.isSubtreeCollapsed(tab)) {
-        const descendants = tab == activeTab ? activeTabDescendants : Tab.getDescendants(tab);
+        const descendants = tab == activeTab ? activeTabDescendants : tab.$TST.descendants;
         for (const descendant of descendants) {
           if (toBeHighlighted)
             highlightedTabIds.add(descendant.id);

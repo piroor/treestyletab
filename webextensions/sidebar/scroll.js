@@ -360,7 +360,7 @@ function getOffsetForAnimatingTab(tab) {
 
 /*
 function scrollToTabSubtree(tab) {
-  return scrollToTab(Tab.getLastDescendant(tab), {
+  return scrollToTab(tab.$TST.lastDescendant, {
     anchor:            tab,
     notifyOnOutOfView: true
   });
