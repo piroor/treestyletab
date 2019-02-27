@@ -120,9 +120,9 @@ function getTrackedWindow(windowId) {
   return Tabs.trackedWindows.get(windowId) || Tabs.initWindow(windowId);
 }
 
-function warnTabDestroyedWhileWaiting(tabId) {
+function warnTabDestroyedWhileWaiting(tabId, tab) {
   if (configs.debug)
-    console.log(`WARNING: tab ${tabId} is destroyed while waiting. `, new Error().stack);
+    console.log(`WARNING: tab ${tabId} is destroyed while waiting. `, tab, new Error().stack);
 }
 
 
@@ -253,7 +253,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     if (!updatedTab ||
         !Tabs.ensureLivingTab(updatedTab)) {
       onCompleted();
-      warnTabDestroyedWhileWaiting(tabId);
+      warnTabDestroyedWhileWaiting(tabId, updatedTab);
       return;
     }
 
@@ -396,7 +396,7 @@ async function onNewTabTracked(tab) {
     if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      warnTabDestroyedWhileWaiting(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
     }
 
@@ -447,7 +447,7 @@ async function onNewTabTracked(tab) {
       log(`onNewTabTracked(id=${tab.id}):  => aborted`);
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      warnTabDestroyedWhileWaiting(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
     }
 
@@ -478,7 +478,7 @@ async function onNewTabTracked(tab) {
     if (!Tabs.ensureLivingTab(tab)) { // it can be removed while waiting
       onTabCreated(uniqueId);
       Tabs.untrack(tab.id);
-      warnTabDestroyedWhileWaiting(tab.id);
+      warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
     }
 
@@ -674,7 +674,7 @@ async function onMoved(tabId, moveInfo) {
       if (maybeInternalOperation)
         window.internalMovingTabs.delete(tabId);
       completelyMoved();
-      warnTabDestroyedWhileWaiting(tabId);
+      warnTabDestroyedWhileWaiting(tabId, movedTab);
       return;
     }
 
