@@ -153,12 +153,12 @@ function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
     const oldId = tabElement.id;
     const tab = Tab.init(tabs[index]);
     tabElement.apiTab = tab;
-    Tabs.setAttribute(tab, 'id', Tabs.makeTabId(tab));
+    tab.$TST.setAttribute('id', Tabs.makeTabId(tab));
     tab.$TST.element = tabElement;
     tabElement.$TST = tab.$TST;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tabElement.id}`);
-    Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
-    Tabs.setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+    tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
+    tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
     idMap[oldId] = tabElement;
     return tab;
   });
@@ -204,21 +204,21 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
   for (const state of tabElement.classList) {
     if (IGNORE_CLASS_STATES.has(state))
       continue;
-    Tabs.addState(tab, state);
+    tab.$TST.addState(state);
   }
   for (const state of NATIVE_STATES) {
     if (tab[state])
-      Tabs.addState(tab, state);
+      tab.$TST.addState(state);
     else
-      Tabs.removeState(tab, state);
+      tab.$TST.removeState(state);
   }
   if (tab.status == 'loading') {
-    Tabs.addState(tab, 'loading');
-    Tabs.removeState(tab, 'complete');
+    tab.$TST.addState('loading');
+    tab.$TST.removeState('complete');
   }
   else {
-    Tabs.addState(tab, 'complete');
-    Tabs.removeState(tab, 'loading');
+    tab.$TST.addState('complete');
+    tab.$TST.removeState('loading');
   }
 
   const idMap = options.idMap;
@@ -230,44 +230,44 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
     .filter(tabElement => !!tabElement);
   tab.$TST.children = childTabs.map(tabElement => tabElement.apiTab.id);
   if (childTabs.length > 0)
-    Tabs.setAttribute(tab, Constants.kCHILDREN, `|${childTabs.map(tabElement => tabElement.id).join('|')}|`);
+    tab.$TST.setAttribute(Constants.kCHILDREN, `|${childTabs.map(tabElement => tabElement.id).join('|')}|`);
   else
-    Tabs.removeAttribute(tab, Constants.kCHILDREN);
+    tab.$TST.removeAttribute(Constants.kCHILDREN);
   log('fixupTabRestoredFromCache children: => ', tabElement.getAttribute(Constants.kCHILDREN));
 
   log('fixupTabRestoredFromCache parent: ', tabElement.getAttribute(Constants.kPARENT));
   const parentTab = idMap[tabElement.getAttribute(Constants.kPARENT)] || null;
   tab.$TST.parent = parentTab && parentTab.apiTab.id;
   if (parentTab)
-    Tabs.setAttribute(tab, Constants.kPARENT, parentTab.id);
+    tab.$TST.setAttribute(Constants.kPARENT, parentTab.id);
   else
-    Tabs.removeAttribute(tab, Constants.kPARENT);
+    tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tabElement.getAttribute(Constants.kPARENT));
   tab.$TST.ancestors = Tab.getAncestors(tab, { force: true });
 
-  Tabs.setAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
-  Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');
-  Tabs.setAttribute(tab, Constants.kCURRENT_URI, tabElement.getAttribute(Constants.kCURRENT_URI) || tab.url);
-  Tabs.setAttribute(tab, Constants.kLEVEL, tabElement.getAttribute(Constants.kLEVEL) || 0);
+  tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
+  tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');
+  tab.$TST.setAttribute(Constants.kCURRENT_URI, tabElement.getAttribute(Constants.kCURRENT_URI) || tab.url);
+  tab.$TST.setAttribute(Constants.kLEVEL, tabElement.getAttribute(Constants.kLEVEL) || 0);
 }
 
 async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
   if (shouldCollapse) {
-    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED);
-    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
   else {
-    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
-    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
   //if (tab.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
-  const states = await Tabs.getPermanentStates(tab);
+  const states = await tab.$TST.getPermanentStates();
   if (states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
-    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   else
-    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   if (!shouldCollapse)
-    shouldCollapse = Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    shouldCollapse = tab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   for (const child of tab.$TST.children) {
     fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse);
   }

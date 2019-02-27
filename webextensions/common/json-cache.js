@@ -136,24 +136,24 @@ function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
 
   for (const state of NATIVE_STATES) {
     if (tab[state])
-      Tabs.addState(tab, state);
+      tab.$TST.addState(state);
     else
-      Tabs.removeState(tab, state);
+      tab.$TST.removeState(state);
   }
   if (tab.status == 'loading') {
-    Tabs.addState(tab, 'loading');
-    Tabs.removeState(tab, 'complete');
+    tab.$TST.addState('loading');
+    tab.$TST.removeState('complete');
   }
   else {
-    Tabs.addState(tab, 'complete');
-    Tabs.removeState(tab, 'loading');
+    tab.$TST.addState('complete');
+    tab.$TST.removeState('loading');
   }
 
   for (const state of cachedTab.states) {
     if (NATIVE_STATES.has(state) ||
         IGNORE_STATES.has(state))
       continue;
-    Tabs.addState(tab, state);
+    tab.$TST.addState(state);
   }
 
   const idMap = options.idMap;
@@ -164,43 +164,43 @@ function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
     .filter(tab => !!tab);
   tab.$TST.children = childTabs;
   if (childTabs.length > 0)
-    Tabs.setAttribute(tab, Constants.kCHILDREN, `|${childTabs.map(tab => tab.id).join('|')}|`);
+    tab.$TST.setAttribute(Constants.kCHILDREN, `|${childTabs.map(tab => tab.id).join('|')}|`);
   else
-    Tabs.removeAttribute(tab, Constants.kCHILDREN);
+    tab.$TST.removeAttribute(Constants.kCHILDREN);
   log('fixupTabRestoredFromCache children: => ', tab.$TST.childIds);
 
   log('fixupTabRestoredFromCache parent: ', cachedTab.parentId);
   const parentTab = idMap.get(cachedTab.parentId) || null;
   tab.$TST.parent = parentTab;
   if (parentTab)
-    Tabs.setAttribute(tab, Constants.kPARENT, parentTab.id);
+    tab.$TST.setAttribute(Constants.kPARENT, parentTab.id);
   else
-    Tabs.removeAttribute(tab, Constants.kPARENT);
+    tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
   tab.$TST.ancestors = Tab.getAncestors(tab, { force: true });
 
-  Tabs.setAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, cachedTab.attributes[Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER] || '');
-  Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, cachedTab.attributes[Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID] || '');
-  Tabs.setAttribute(tab, Constants.kCURRENT_URI, cachedTab.attributes[Constants.kCURRENT_URI] || tab.url);
-  Tabs.setAttribute(tab, Constants.kLEVEL, cachedTab.attributes[Constants.kLEVEL] || 0);
+  tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, cachedTab.attributes[Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER] || '');
+  tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, cachedTab.attributes[Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID] || '');
+  tab.$TST.setAttribute(Constants.kCURRENT_URI, cachedTab.attributes[Constants.kCURRENT_URI] || tab.url);
+  tab.$TST.setAttribute(Constants.kLEVEL, cachedTab.attributes[Constants.kLEVEL] || 0);
 }
 
 async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
   if (shouldCollapse) {
-    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED);
-    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
   else {
-    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
-    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED_DONE);
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
-  const states = await Tabs.getPermanentStates(tab);
+  const states = await tab.$TST.getPermanentStates();
   if (states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
-    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   else
-    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   if (!shouldCollapse)
-    shouldCollapse = Tabs.hasState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    shouldCollapse = tab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   for (const child of tab.$TST.children) {
     fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse);
   }

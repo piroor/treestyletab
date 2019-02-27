@@ -492,7 +492,7 @@ async function onNewTabTracked(tab) {
 
     if (!duplicated &&
         restored) {
-      Tabs.addState(tab, Constants.kTAB_STATE_RESTORED);
+      tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
       Tabs.onRestored.dispatch(tab);
       checkRecycledTab(window.id);
     }
@@ -552,7 +552,7 @@ function checkRecycledTab(windowId) {
           Constants.kTAB_STATE_RESTORED in tab.$TST.states)
         return;
       log('A recycled tab is detected: ', tab);
-      Tabs.addState(tab, Constants.kTAB_STATE_RESTORED);
+      tab.$TST.addState(Constants.kTAB_STATE_RESTORED);
       Tabs.onRestored.dispatch(tab);
     });
   }
@@ -605,7 +605,7 @@ async function onRemoved(tabId, removeInfo) {
     // We need to clear them by onRemoved handlers.
     const oldChildren = oldTab.$TST.children;
     const oldParent   = oldTab.$TST.parent;
-    Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
+    oldTab.$TST.addState(Constants.kTAB_STATE_REMOVING);
 
     Tabs.trackedWindows.get(removeInfo.windowId).detachTab(oldTab.id);
 

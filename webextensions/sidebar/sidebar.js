@@ -1007,11 +1007,11 @@ function onMessage(message, _sender, _respond) {
           const tab = Tab.get(id);
           if (!tab)
             continue;
-          add.forEach(state => Tabs.addState(tab, state));
-          remove.forEach(state => Tabs.removeState(tab, state));
-          if (Tabs.hasState(modified, Constants.kTAB_STATE_AUDIBLE) ||
-              Tabs.hasState(modified, Constants.kTAB_STATE_SOUND_PLAYING) ||
-              Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {
+          add.forEach(state => tab.$TST.addState(state));
+          remove.forEach(state => tab.$TST.removeState(state));
+          if (modified.$TST.states.has(Constants.kTAB_STATE_AUDIBLE) ||
+              modified.$TST.states.has(Constants.kTAB_STATE_SOUND_PLAYING) ||
+              modified.$TST.states.has(Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
             if (message.bubbles)
               TabsUpdate.updateParentTab(tab.$TST.parent);

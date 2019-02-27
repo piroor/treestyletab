@@ -164,7 +164,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_AFTER),
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ANCESTORS),
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_CHILDREN),
-    Tabs.getPermanentStates(tab),
+    tab.$TST.getPermanentStates(),
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED) // for backward compatibility
   ]);
   ancestors = ancestors || [];

@@ -58,12 +58,12 @@ let mDelayedDispatchOnHighlightedTabsChanged;
 
 export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState) {
-    Tabs.setAttribute(tab, Constants.kCURRENT_URI, newState.url);
+    tab.$TST.setAttribute(Constants.kCURRENT_URI, newState.url);
   }
 
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-    Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
+    tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
     Tabs.onGroupTabDetected.dispatch(tab);
   }
 
@@ -76,15 +76,15 @@ export function updateTab(tab, newState = {}, options = {}) {
         visibleLabel = `${newState.title} - ${identity.name}`;
     }
     if (options.forceApply) {
-      Tabs.getPermanentStates(tab).then(states => {
+      tab.$TST.getPermanentStates().then(states => {
         if (states.includes(Constants.kTAB_STATE_UNREAD))
-          Tabs.addState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
+          tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
         else
-          Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
+          tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
       });
     }
     else if (!tab.active) {
-      Tabs.addState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
+      tab.$TST.addState(Constants.kTAB_STATE_UNREAD, { permanently: true });
     }
     tab.$TST.label = visibleLabel;
     Tabs.onLabelUpdated.dispatch(tab);
@@ -108,21 +108,21 @@ export function updateTab(tab, newState = {}, options = {}) {
   }
 
   if ('status' in newState) {
-    const reallyChanged = !Tabs.hasState(tab, newState.status);
-    Tabs.removeState(tab, newState.status == 'loading' ? 'complete' : 'loading');
-    Tabs.addState(tab, newState.status);
+    const reallyChanged = !tab.$TST.states.has(newState.status);
+    tab.$TST.removeState(newState.status == 'loading' ? 'complete' : 'loading');
+    tab.$TST.addState(newState.status);
     if (newState.status == 'loading') {
-      Tabs.removeState(tab, Constants.kTAB_STATE_BURSTING);
+      tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
     }
     else if (!options.forceApply && reallyChanged) {
-      Tabs.addState(tab, Constants.kTAB_STATE_BURSTING);
+      tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
       if (tab.$TST.delayedBurstEnd)
         clearTimeout(tab.$TST.delayedBurstEnd);
       tab.$TST.delayedBurstEnd = setTimeout(() => {
         delete tab.$TST.delayedBurstEnd;
-        Tabs.removeState(tab, Constants.kTAB_STATE_BURSTING);
+        tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
         if (!tab.active)
-          Tabs.addState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+          tab.$TST.addState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }
     Tabs.onStateChanged.dispatch(tab);
@@ -130,14 +130,14 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if ((options.forceApply ||
        'pinned' in newState) &&
-      newState.pinned != Tabs.hasState(tab, Constants.kTAB_STATE_PINNED)) {
+      newState.pinned != tab.$TST.states.has(Constants.kTAB_STATE_PINNED)) {
     if (newState.pinned) {
-      Tabs.addState(tab, Constants.kTAB_STATE_PINNED);
-      Tabs.removeAttribute(tab, Constants.kLEVEL); // don't indent pinned tabs!
+      tab.$TST.addState(Constants.kTAB_STATE_PINNED);
+      tab.$TST.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
       Tabs.onPinned.dispatch(tab);
     }
     else {
-      Tabs.removeState(tab, Constants.kTAB_STATE_PINNED);
+      tab.$TST.removeState(Constants.kTAB_STATE_PINNED);
       Tabs.onUnpinned.dispatch(tab);
     }
   }
@@ -145,53 +145,53 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'audible' in newState) {
     if (newState.audible)
-      Tabs.addState(tab, Constants.kTAB_STATE_AUDIBLE);
+      tab.$TST.addState(Constants.kTAB_STATE_AUDIBLE);
     else
-      Tabs.removeState(tab, Constants.kTAB_STATE_AUDIBLE);
+      tab.$TST.removeState(Constants.kTAB_STATE_AUDIBLE);
   }
 
   if (options.forceApply ||
       'mutedInfo' in newState) {
     if (newState.mutedInfo && newState.mutedInfo.muted)
-      Tabs.addState(tab, Constants.kTAB_STATE_MUTED);
+      tab.$TST.addState(Constants.kTAB_STATE_MUTED);
     else
-      Tabs.removeState(tab, Constants.kTAB_STATE_MUTED);
+      tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
   }
 
   if (tab.audible &&
       !tab.mutedInfo.muted)
-    Tabs.addState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
+    tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
   else
-    Tabs.removeState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
+    tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
 
   if (options.forceApply ||
       'cookieStoreId' in newState) {
-    for (const state of Tabs.getStates(tab)) {
+    for (const state of tab.$TST.states) {
       if (state.indexOf('contextual-identity-') == 0)
-        Tabs.removeState(tab, state);
+        tab.$TST.removeState(state);
     }
     if (newState.cookieStoreId)
-      Tabs.addState(tab, `contextual-identity-${newState.cookieStoreId}`);
+      tab.$TST.addState(`contextual-identity-${newState.cookieStoreId}`);
   }
 
   if (options.forceApply ||
       'incognito' in newState) {
     if (newState.incognito)
-      Tabs.addState(tab, Constants.kTAB_STATE_PRIVATE_BROWSING);
+      tab.$TST.addState(Constants.kTAB_STATE_PRIVATE_BROWSING);
     else
-      Tabs.removeState(tab, Constants.kTAB_STATE_PRIVATE_BROWSING);
+      tab.$TST.removeState(Constants.kTAB_STATE_PRIVATE_BROWSING);
   }
 
   if (options.forceApply ||
       'hidden' in newState) {
     if (newState.hidden) {
-      if (!Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
-        Tabs.addState(tab, Constants.kTAB_STATE_HIDDEN);
+      if (!tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
+        tab.$TST.addState(Constants.kTAB_STATE_HIDDEN);
         Tabs.onHidden.dispatch(tab);
       }
     }
-    else if (Tabs.hasState(tab, Constants.kTAB_STATE_HIDDEN)) {
-      Tabs.removeState(tab, Constants.kTAB_STATE_HIDDEN);
+    else if (tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
+      tab.$TST.removeState(Constants.kTAB_STATE_HIDDEN);
       Tabs.onShown.dispatch(tab);
     }
   }
@@ -201,11 +201,11 @@ export function updateTab(tab, newState = {}, options = {}) {
     const highlightedTabs = Tabs.highlightedTabsForWindow.get(tab.windowId);
     if (newState.highlighted) {
       highlightedTabs.add(tab);
-      Tabs.addState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
+      tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
     }
     else {
       highlightedTabs.delete(tab);
-      Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
+      tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
     }
     if (mDelayedDispatchOnHighlightedTabsChanged)
       clearTimeout(mDelayedDispatchOnHighlightedTabsChanged);
@@ -218,9 +218,9 @@ export function updateTab(tab, newState = {}, options = {}) {
   if (options.forceApply ||
       'attention' in newState) {
     if (newState.attention)
-      Tabs.addState(tab, Constants.kTAB_STATE_ATTENTION);
+      tab.$TST.addState(Constants.kTAB_STATE_ATTENTION);
     else
-      Tabs.removeState(tab, Constants.kTAB_STATE_ATTENTION);
+      tab.$TST.removeState(Constants.kTAB_STATE_ATTENTION);
   }
 
   if (options.forceApply ||
@@ -229,9 +229,9 @@ export function updateTab(tab, newState = {}, options = {}) {
       // Don't set this class immediately, because we need to know
       // the newly active tab *was* discarded on onTabClosed handler.
       if (newState.discarded)
-        Tabs.addState(tab, Constants.kTAB_STATE_DISCARDED);
+        tab.$TST.addState(Constants.kTAB_STATE_DISCARDED);
       else
-        Tabs.removeState(tab, Constants.kTAB_STATE_DISCARDED);
+        tab.$TST.removeState(Constants.kTAB_STATE_DISCARDED);
     });
   }
 }
@@ -281,9 +281,9 @@ async function updateTabHighlighted(tab, highlighted) {
   //if (tab.highlighted == highlighted)
   //  return false;
   if (highlighted)
-    Tabs.addState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
+    tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
   else
-    Tabs.removeState(tab, Constants.kTAB_STATE_HIGHLIGHTED);
+    tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
   tab.highlighted = highlighted;
   const window = Tabs.trackedWindows.get(tab.windowId);
   const inheritHighlighted = !window.tabsToBeHighlightedAlone.has(tab.id);
@@ -300,14 +300,14 @@ export function updateParentTab(parent) {
   const children = parent.$TST.children;
 
   if (children.some(child => child.$TST.maybeSoundPlaying))
-    Tabs.addState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+    parent.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
   else
-    Tabs.removeState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+    parent.$TST.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
   if (children.some(child => child.$TST.maybeMuted))
-    Tabs.addState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+    parent.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
   else
-    Tabs.removeState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+    parent.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
 
   updateParentTab(parent.$TST.parent);
 

@@ -35,6 +35,7 @@ export default class Tab {
 
     this.element = null;
 
+    this.states = new Set();
     this.clear();
 
     this.uniqueId = {
@@ -81,14 +82,14 @@ export default class Tab {
       delete this.element.apiTab;
       delete this.element;
     }
-    delete this.tab.$TST;
+    delete this;
     delete this.tab;
     delete this.promisedUniqueId;
     delete this.uniqueId;
   }
 
   clear() {
-    this.states     = {};
+    this.states.clear();
     this.attributes = {};
 
     this.parentId    = null;
@@ -104,7 +105,7 @@ export default class Tab {
 
   get maybeSoundPlaying() {
     return (this.soundPlaying ||
-            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+            (this.states.has(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
              this.hasChild));
   }
 
@@ -114,16 +115,16 @@ export default class Tab {
 
   get maybeMuted() {
     return (this.muted ||
-            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+            (this.states.has(Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
              this.hasChild));
   }
 
   get collapsed() {
-    return Tabs.hasState(this.tab, Constants.kTAB_STATE_COLLAPSED);
+    return this.states.has(Constants.kTAB_STATE_COLLAPSED);
   }
 
   get subtreeCollapsed() {
-    return Tabs.hasState(this.tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    return this.states.has(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
 
   get precedesPinned() {
@@ -132,7 +133,7 @@ export default class Tab {
   }
 
   get duplicating() {
-    return Tabs.hasState(this.tab, Constants.kTAB_STATE_DUPLICATING);
+    return this.states.has(Constants.kTAB_STATE_DUPLICATING);
   }
 
   get isNewTabCommandTab() {
@@ -142,7 +143,7 @@ export default class Tab {
   }
 
   get isGroupTab() {
-    return Tabs.hasState(this.tab, Constants.kTAB_STATE_GROUP_TAB) ||
+    return this.states.has(Constants.kTAB_STATE_GROUP_TAB) ||
            this.tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
   }
 
@@ -153,7 +154,7 @@ export default class Tab {
   }
 
   get selected() {
-    return Tabs.hasState(this.tab, Constants.kTAB_STATE_SELECTED) ||
+    return this.states.has(Constants.kTAB_STATE_SELECTED) ||
              (this.hasOtherHighlighted && !!(this.tab && this.tab.highlighted));
   }
 
@@ -462,6 +463,71 @@ export default class Tab {
     this.children = [];
   }
 
+
+  //===================================================================
+  // State
+  //===================================================================
+
+  async addState(state, options = {}) {
+    if (this.element)
+      this.element.classList.add(state);
+    if (this.states)
+      this.states.add(state);
+    if (options.broadcast)
+      this.broadcastState({
+        add: [state]
+      });
+    if (options.permanently) {
+      const states = await this.getPermanentStates();
+      if (!states.includes(state)) {
+        states.push(state);
+        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states);
+      }
+    }
+  }
+
+  async removeState(state, options = {}) {
+    if (this.element)
+      this.element.classList.remove(state);
+    if (this.states)
+      this.states.delete(state);
+    if (options.broadcast)
+      this.broadcastState({
+        remove: [state]
+      });
+    if (options.permanently) {
+      const states = await this.getPermanentStates();
+      const index = states.indexOf(state);
+      if (index > -1) {
+        states.splice(index, 1);
+        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states);
+      }
+    }
+  }
+
+  async getPermanentStates() {
+    const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES);
+    return states || [];
+  }
+
+
+  setAttribute(attribute, value) {
+    if (this.element)
+      this.element.setAttribute(attribute, value);
+    this.attributes[attribute] = value;
+  }
+
+  getAttribute(attribute) {
+    return this.attributes[attribute];
+  }
+
+  removeAttribute(attribute) {
+    if (this.element)
+      this.element.removeAttribute(attribute);
+    delete this.attributes[attribute];
+  }
+
+
   export() {
     return {
       id:         this.id,
@@ -529,13 +595,13 @@ Tab.init = (tab, options = {}) => {
   tab.$TST = (trackedTab && trackedTab.$TST) || new Tab(tab);
 
   if (tab.active)
-    Tabs.addState(tab, Constants.kTAB_STATE_ACTIVE);
-  Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.$TST.addState(Constants.kTAB_STATE_ACTIVE);
+  tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
   Tab.onInitialized.dispatch(tab, options);
 
   if (options.existing)
-    Tabs.addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
+    tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
 
   Tabs.initPromisedStatus(tab);
 
@@ -596,6 +662,19 @@ Tab.getVisibleAncestorOrSelf = descendant => {
   if (!descendant.$TST.collapsed)
     return descendant;
   return null;
+}
+
+
+Tab.broadcastState = (tabs, options = {}) => {
+  if (!Array.isArray(tabs))
+    tabs = [tabs];
+  browser.runtime.sendMessage({
+    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
+    tabIds:  tabs.map(tab => tab.id),
+    add:     options.add || [],
+    remove:  options.remove || [],
+    bubbles: !!options.bubbles
+  });
 }
 
 

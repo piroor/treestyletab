@@ -152,7 +152,7 @@ function extractMatchedTabs(tabs, conditions) {
          tab.pinned))
       continue TAB_MACHING;
     if (conditions.visible &&
-        (hasState(tab, Constants.kTAB_STATE_COLLAPSED) ||
+        (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) ||
          tab.hidden))
       continue TAB_MACHING;
     if (conditions.controllable &&
@@ -363,7 +363,7 @@ export function updateUniqueId(tab) {
     if (uniqueId && ensureLivingTab(tab)) { // possibly removed from document while waiting
       tab.$TST.uniqueId = uniqueId;
       trackedTabsByUniqueId.set(uniqueId.id, tab);
-      setAttribute(tab, Constants.kPERSISTENT_ID, uniqueId.id);
+      tab.$TST.setAttribute(Constants.kPERSISTENT_ID, uniqueId.id);
     }
     return uniqueId || {};
   }).catch(error => {
@@ -652,14 +652,14 @@ export function ensureLivingTab(tab) {
       (tab.$TST.element &&
        !tab.$TST.element.parentNode) ||
       !isTracked(tab.id) ||
-      hasState(tab, Constants.kTAB_STATE_REMOVING))
+      tab.$TST.states.has(Constants.kTAB_STATE_REMOVING))
     return null;
   return tab;
 }
 
 export function assertInitializedTab(tab) {
   if (!tab ||
-      tab.$TST && hasState(tab, Constants.kTAB_STATE_REMOVING))
+      tab.$TST && tab.$TST.states.has(Constants.kTAB_STATE_REMOVING))
     return false;
   if (tab instanceof Element && !tab.apiTab)
     throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
@@ -874,106 +874,5 @@ export function fetchClosedWhileActiveResolver(tab) {
   const resolver = mClosedWhileActiveResolvers.get(tab.id);
   mClosedWhileActiveResolvers.delete(tab.id);
   return resolver;
-}
-
-
-//===================================================================
-// Tab State
-//===================================================================
-
-export async function addState(tab, state, options = {}) {
-  assertValidTab(tab);
-  if (tab.$TST.element)
-    tab.$TST.element.classList.add(state);
-  if (tab.$TST.states)
-    tab.$TST.states[state] = true;
-  if (options.broadcast)
-    broadcastState(tab, {
-      add: [state]
-    });
-  if (options.permanently) {
-    const states = await getPermanentStates(tab);
-    if (!states.includes(state)) {
-      states.push(state);
-      await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_STATES, states);
-    }
-  }
-}
-
-export async function removeState(tab, state, options = {}) {
-  assertValidTab(tab);
-  if (tab.$TST.element)
-    tab.$TST.element.classList.remove(state);
-  if (tab.$TST.states)
-    delete tab.$TST.states[state];
-  if (options.broadcast)
-    broadcastState(tab, {
-      remove: [state]
-    });
-  if (options.permanently) {
-    const states = await getPermanentStates(tab);
-    const index = states.indexOf(state);
-    if (index > -1) {
-      states.splice(index, 1);
-      await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_STATES, states);
-    }
-  }
-}
-
-export function hasState(tab, state) {
-  if (!tab || !tab.$TST)
-    return false;
-  return tab && state in tab.$TST.states;
-}
-
-export function getStates(tab) {
-  assertValidTab(tab);
-  return tab && tab.$TST.states ? Object.keys(tab.$TST.states) : [];
-}
-
-export function broadcastState(tabs, options = {}) {
-  if (!Array.isArray(tabs))
-    tabs = [tabs];
-  browser.runtime.sendMessage({
-    type:    Constants.kCOMMAND_BROADCAST_TAB_STATE,
-    tabIds:  tabs.map(tab => tab.id),
-    add:     options.add || [],
-    remove:  options.remove || [],
-    bubbles: !!options.bubbles
-  });
-}
-
-export async function getPermanentStates(tab) {
-  if (!tab || !tab.$TST)
-    return [];
-  assertValidTab(tab);
-  const states = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_STATES);
-  return states || [];
-}
-
-
-export function setAttribute(tab, attribute, value) {
-  if (!tab || !tab.$TST)
-    return;
-  assertValidTab(tab);
-  if (tab.$TST.element)
-    tab.$TST.element.setAttribute(attribute, value);
-  tab.$TST.attributes[attribute] = value;
-}
-
-export function getAttribute(tab, attribute) {
-  if (!tab || !tab.$TST)
-    return null;
-  assertValidTab(tab);
-  return tab.$TST.attributes[attribute];
-}
-
-export function removeAttribute(tab, attribute) {
-  if (!tab || !tab.$TST)
-    return false;
-  assertValidTab(tab);
-  if (tab.$TST.element)
-    tab.$TST.element.removeAttribute(attribute);
-  delete tab.$TST.attributes[attribute];
 }
 

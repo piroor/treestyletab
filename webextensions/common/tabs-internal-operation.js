@@ -103,10 +103,10 @@ export function removeTabs(tabs, options = {}) {
 
 export function setTabActive(tab) {
   const oldActiveTabs = clearOldActiveStateInWindow(tab.windowId);
-  Tabs.addState(tab, Constants.kTAB_STATE_ACTIVE);
+  tab.$TST.addState(Constants.kTAB_STATE_ACTIVE);
   tab.active = true;
-  Tabs.removeState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-  Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
+  tab.$TST.removeState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+  tab.$TST.removeState(Constants.kTAB_STATE_UNREAD, { permanently: true });
   return oldActiveTabs;
 }
 
@@ -116,7 +116,7 @@ export function clearOldActiveStateInWindow(windowId) {
     active:  true
   });
   for (const oldTab of oldTabs) {
-    Tabs.removeState(oldTab, Constants.kTAB_STATE_ACTIVE);
+    oldTab.$TST.removeState(Constants.kTAB_STATE_ACTIVE);
     oldTab.active = false;
   }
   return oldTabs;

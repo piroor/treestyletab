@@ -134,39 +134,39 @@ function updateDescendantsCount(tab) {
 function updateDescendantsHighlighted(tab) {
   const children = tab.$TST.children;
   if (!tab.$TST.hasChild) {
-    Tabs.removeState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-    Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    tab.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    tab.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
     return;
   }
   let someHighlighted = false;
   let allHighlighted  = true;
   for (const child of children) {
-    if (Tabs.hasState(child, Constants.kTAB_STATE_HIGHLIGHTED)) {
+    if (child.$TST.states.has(Constants.kTAB_STATE_HIGHLIGHTED)) {
       someHighlighted = true;
       allHighlighted = (
         allHighlighted &&
         (!child.$TST.hasChild ||
-         Tabs.hasState(child, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
+         child.$TST.states.has(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED))
       );
     }
     else {
       if (!someHighlighted &&
-          Tabs.hasState(child, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED)) {
+          child.$TST.states.has(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED)) {
         someHighlighted = true;
       }
       allHighlighted = false;
     }
   }
   if (someHighlighted) {
-    Tabs.addState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    tab.$TST.addState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
     if (allHighlighted)
-      Tabs.addState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      tab.$TST.addState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
     else
-      Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+      tab.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
   }
   else {
-    Tabs.removeState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
-    Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
+    tab.$TST.removeState(Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
+    tab.$TST.removeState(Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
   }
 }
 
@@ -205,13 +205,13 @@ restored = <%restored%>
 tabId = ${tab.id}
 windowId = ${tab.windowId}
 `.trim();
-    Tabs.setAttribute(tab, 'title',
-                      tab.$TST.tooltip = tab.$TST.tooltip
-                        .replace(`<%${Constants.kPERSISTENT_ID}%>`, tab.$TST.uniqueId.id)
-                        .replace(`<%originalId%>`, tab.$TST.uniqueId.originalId)
-                        .replace(`<%originalTabId%>`, tab.$TST.uniqueId.originalTabId)
-                        .replace(`<%duplicated%>`, !!tab.$TST.uniqueId.duplicated)
-                        .replace(`<%restored%>`, !!tab.$TST.uniqueId.restored));
+    tab.$TST.setAttribute('title',
+                          tab.$TST.tooltip = tab.$TST.tooltip
+                            .replace(`<%${Constants.kPERSISTENT_ID}%>`, tab.$TST.uniqueId.id)
+                            .replace(`<%originalId%>`, tab.$TST.uniqueId.originalId)
+                            .replace(`<%originalTabId%>`, tab.$TST.uniqueId.originalTabId)
+                            .replace(`<%duplicated%>`, !!tab.$TST.uniqueId.duplicated)
+                            .replace(`<%restored%>`, !!tab.$TST.uniqueId.restored));
     return;
   }
 
@@ -221,16 +221,16 @@ windowId = ${tab.windowId}
   if (configs.showCollapsedDescendantsByTooltip &&
       tab.$TST.subtreeCollapsed &&
       tab.$TST.hasChild) {
-    Tabs.setAttribute(tab, 'title', tab.$TST.tooltipWithDescendants);
+    tab.$TST.setAttribute('title', tab.$TST.tooltipWithDescendants);
     return;
   }
 
   const label = getLabel(tab);
   if (tab.pinned || label.classList.contains('overflow')) {
-    Tabs.setAttribute(tab, 'title', tab.$TST.tooltip);
+    tab.$TST.setAttribute('title', tab.$TST.tooltip);
   }
   else {
-    Tabs.removeAttribute(tab, 'title');
+    tab.$TST.removeAttribute('title');
   }
 }
 
@@ -278,7 +278,7 @@ async function synchronizeThrobberAnimation() {
     return;
 
   for (const tab of toBeSynchronizedTabs) {
-    Tabs.removeState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   }
 
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
@@ -454,9 +454,9 @@ Tab.onInitialized.addListener((tab, info) => {
   tabElement.apiTab = tab;
 
   tabElement.classList.add('tab');
-  Tabs.setAttribute(tab, 'id', id);
-  Tabs.setAttribute(tab, Constants.kAPI_TAB_ID, tab.id || -1);
-  Tabs.setAttribute(tab, Constants.kAPI_WINDOW_ID, tab.windowId || -1);
+  tab.$TST.setAttribute('id', id);
+  tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
+  tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
 
   const label = document.createElement('span');
   label.classList.add(Constants.kLABEL);
@@ -526,7 +526,7 @@ Tab.onInitialized.addListener((tab, info) => {
 });
 
 Tabs.onCreated.addListener((tab, _info) => {
-  Tabs.addState(tab, Constants.kTAB_STATE_ANIMATION_READY);
+  tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
 });
 
 Tabs.onTabInternallyMoved.addListener((tab, info) => {
@@ -571,7 +571,7 @@ Tabs.onRemoved.addListener((tab, _info) => {
 const mTabWasVisibleBeforeMoving = new Map();
 
 Tabs.onMoving.addListener((tab, _info) => {
-  Tabs.addState(tab, Constants.kTAB_STATE_MOVING);
+  tab.$TST.addState(Constants.kTAB_STATE_MOVING);
   if (!configs.animation ||
       tab.pinned ||
       tab.$TST.opening)
@@ -601,14 +601,14 @@ Tabs.onMoved.addListener(async (tab, info) => {
     });
     await wait(configs.collapseDuration);
   }
-  Tabs.removeState(tab, Constants.kTAB_STATE_MOVING);
+  tab.$TST.removeState(Constants.kTAB_STATE_MOVING);
 });
 
 Tabs.onStateChanged.addListener(tab => {
   if (tab.status == 'loading')
-    Tabs.addState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
   else
-    Tabs.removeState(tab, Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
 
   reserveToUpdateLoadingState();
 });

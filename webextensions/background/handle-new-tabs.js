@@ -34,7 +34,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
   const possibleOpenerTab = info.activeTab || Tabs.getActiveTab(tab.windowId);
   const opener = tab.$TST.opener;
   if (opener) {
-    Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
+    tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
   }
   else {
     if (!info.maybeOrphan &&
@@ -120,7 +120,7 @@ Tabs.onCreated.addListener((tab, info = {}) => {
   log('duplicated ', tab.id, original && original.id);
   if (info.duplicatedInternally) {
     log('duplicated by internal operation');
-    Tabs.addState(tab, Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
+    tab.$TST.addState(Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
   }
   else {
     Tree.behaveAutoAttachedTab(tab, {

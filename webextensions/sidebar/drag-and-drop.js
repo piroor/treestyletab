@@ -453,7 +453,7 @@ export function clearDropPosition() {
 
 export function clearDraggingTabsState() {
   for (const tab of Tabs.getDraggingTabs(Tabs.getWindow())) {
-    Tabs.removeState(tab, Constants.kTAB_STATE_DRAGGING);
+    tab.$TST.removeState(Constants.kTAB_STATE_DRAGGING);
   }
 }
 
@@ -712,7 +712,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
   const mozUrl  = [];
   const urlList = [];
   for (const draggedTab of dragData.tabs) {
-    Tabs.addState(draggedTab, Constants.kTAB_STATE_DRAGGING);
+    draggedTab.$TST.addState(Constants.kTAB_STATE_DRAGGING);
     mozUrl.push(`${draggedTab.url}\n${draggedTab.title}`);
     urlList.push(`#${draggedTab.title}\n${draggedTab.url}`);
   }

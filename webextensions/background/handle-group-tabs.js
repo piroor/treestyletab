@@ -185,10 +185,10 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     if (tab &&
         status == 'complete') {
       if (url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
-        Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
+        tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
       }
       else if (!Constants.kSHORTHAND_ABOUT_URI.test(url)) {
-        Tabs.getPermanentStates(tab).then(async (states) => {
+        tab.$TST.getPermanentStates().then(async (states) => {
           if (url.indexOf(Constants.kGROUP_TAB_URI) == 0)
             return;
           // Detect group tab from different session - which can have different UUID for the URL.
@@ -204,10 +204,10 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
             browser.tabs.update(tab.id, {
               url: `${Constants.kGROUP_TAB_URI}?${parameters}`
             }).catch(ApiTabs.handleMissingTabError);
-            Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB);
+            tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB);
           }
           else {
-            Tabs.removeState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
+            tab.$TST.removeState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
           }
         });
       }
@@ -223,7 +223,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
         browser.tabs.update(tab.id, {
           url: changeInfo.previousUrl
         }).catch(ApiTabs.handleMissingTabError);
-        Tabs.addState(tab, Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
+        tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
       });
     }
 
@@ -396,7 +396,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   const openerOf = {};
   const unifiedRootTabs = Tabs.getAllTabs(rootTabs[0].windowId).filter(tab => {
     if (tab.$TST.parent ||
-        Tabs.getAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
+        tab.$TST.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
       return false;
     if (rootTabs.includes(tab)) { // newly opened tab
       const opener = tab.$TST.opener;
@@ -407,7 +407,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       childrenOfPinnedTabs[opener.id] = tabs.concat([tab]);
       return true;
     }
-    const opener = Tabs.getTabByUniqueId(Tabs.getAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID));
+    const opener = Tabs.getTabByUniqueId(tab.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID));
     if (!opener.pinned)
       return false;
     // existing and not yet grouped tab
@@ -440,7 +440,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           normal:     true,
           '!id':      tab.id,
           attributes: [
-            Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, Tabs.getAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID),
+            Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tab.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID),
             Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, ''
           ]
         });
@@ -474,7 +474,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       const uri = TabsGroup.makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title),
         temporary:   true,
-        openerTabId: Tabs.getAttribute(opener, Constants.kPERSISTENT_ID)
+        openerTabId: opener.$TST.getAttribute(Constants.kPERSISTENT_ID)
       });
       parent = await TabsOpen.openURIInTab(uri, {
         windowId:     opener.windowId,
@@ -487,7 +487,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     }
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
-      Tabs.setAttribute(child, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
+      child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
         insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : parent.$TST.lastDescendant,

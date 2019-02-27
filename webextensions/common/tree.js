@@ -88,7 +88,7 @@ export async function attachTabTo(child, parent, options = {}) {
   log('attachTabTo: ', {
     child:            child.id,
     parent:           parent.id,
-    children:         Tabs.getAttribute(parent, Constants.kCHILDREN),
+    children:         parent.$TST.getAttribute(Constants.kCHILDREN),
     insertAt:         options.insertAt,
     insertBefore:     options.insertBefore && options.insertBefore.id,
     insertAfter:      options.insertAfter && options.insertAfter.id,
@@ -171,14 +171,14 @@ export async function attachTabTo(child, parent, options = {}) {
     log('attachTabTo: setting child information to ', parent.id);
     parent.$TST.childIds.push(child.id);
     parent.$TST.sortChildren();
-    Tabs.setAttribute(parent, Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
+    parent.$TST.setAttribute(Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
 
     log('attachTabTo: setting parent information to ', child.id);
-    Tabs.setAttribute(child, Constants.kPARENT, parent.id);
+    child.$TST.setAttribute(Constants.kPARENT, parent.id);
     child.$TST.parent = parent.id;
     child.$TST.ancestors = Tab.getAncestors(child, { force: true });
 
-    const parentLevel = parseInt(Tabs.getAttribute(parent, Constants.kLEVEL) || 0);
+    const parentLevel = parseInt(parent.$TST.getAttribute(Constants.kLEVEL) || 0);
     if (!options.dontUpdateIndent) {
       updateTabsIndent(child, parentLevel + 1);
     }
@@ -304,16 +304,16 @@ export function detachTab(child, options = {}) {
   if (parent) {
     parent.$TST.childIds = parent.$TST.childIds.filter(id => id != child.id);
     if (parent.$TST.childIds.length == 0) {
-      Tabs.removeAttribute(parent, Constants.kCHILDREN);
+      parent.$TST.removeAttribute(Constants.kCHILDREN);
       log(' => no more child');
     }
     else {
-      Tabs.setAttribute(parent, Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
+      parent.$TST.setAttribute(Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
       log(' => rest children: ', parent.$TST.childIds);
     }
     TabsUpdate.updateParentTab(parent);
   }
-  Tabs.removeAttribute(child, Constants.kPARENT);
+  child.$TST.removeAttribute(Constants.kPARENT);
   child.$TST.parent = null;
   child.$TST.ancestors = [];
   log('detachTab: parent information cleared: ', child.id);
@@ -588,7 +588,7 @@ function updateTabsIndent(tabs, level = undefined) {
       continue;
 
     onLevelChanged.dispatch(item);
-    Tabs.setAttribute(item, Constants.kLEVEL, level);
+    item.$TST.setAttribute(Constants.kLEVEL, level);
     updateTabsIndent(item.$TST.children, level + 1);
   }
 }
@@ -633,11 +633,11 @@ function collapseExpandSubtreeInternal(tab, params = {}) {
     return;
 
   if (params.collapsed) {
-    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
   }
   else {
-    Tabs.removeState(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
   //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED, params.collapsed);
 
@@ -672,7 +672,7 @@ export function manualCollapseExpandSubtree(tab, params = {}) {
   params.manualOperation = true;
   collapseExpandSubtree(tab, params);
   if (!params.collapsed) {
-    Tabs.addState(tab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     //setTabValue(tab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY, true);
   }
 }
@@ -740,10 +740,10 @@ export async function collapseExpandTab(tab, params = {}) {
   Tabs.onCollapsedStateChanging.dispatch(tab, collapseExpandInfo);
 
   if (params.collapsed) {
-    Tabs.addState(tab, Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
   }
   else {
-    Tabs.removeState(tab, Constants.kTAB_STATE_COLLAPSED);
+    tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
   }
 
   Tabs.onCollapsedStateChanged.dispatch(tab, collapseExpandInfo);
@@ -803,7 +803,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     }
     logCollapseExpand(`${collapseTab.id}: dontCollapse = ${dontCollapse}`);
 
-    const manuallyExpanded = Tabs.hasState(collapseTab, Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
+    const manuallyExpanded = collapseTab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_EXPANDED_MANUALLY);
     if (!dontCollapse && !manuallyExpanded)
       collapseExpandSubtree(collapseTab, Object.assign({}, options, {
         collapsed: true
@@ -1337,7 +1337,7 @@ export async function moveTabs(tabs, options = {}) {
         });
         if (options.duplicate) {
           for (const tab of newTabs) {
-            Tabs.removeState(tab, Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
+            tab.$TST.removeState(Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
           }
         }
         break;
@@ -1481,8 +1481,8 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       }
     }
     else {
-      const prevLevel   = Number(Tabs.getAttribute(prevTab, Constants.kLEVEL) || 0);
-      const targetLevel = Number(Tabs.getAttribute(params.insertBefore, Constants.kLEVEL) || 0);
+      const prevLevel   = Number(prevTab.$TST.getAttribute(Constants.kLEVEL) || 0);
+      const targetLevel = Number(params.insertBefore.$TST.getAttribute(Constants.kLEVEL) || 0);
       let parent = null;
       if (!tab || !tab.pinned)
         parent = (prevLevel < targetLevel) ? prevTab : (params.insertBefore && params.insertBefore.$TST.parent);
@@ -1520,8 +1520,8 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       };
     }
     else {
-      const targetLevel = Number(Tabs.getAttribute(params.insertAfter, Constants.kLEVEL) || 0);
-      const nextLevel   = Number(Tabs.getAttribute(nextTab, Constants.kLEVEL) || 0);
+      const targetLevel = Number(params.insertAfter.$TST.getAttribute(Constants.kLEVEL) || 0);
+      const nextLevel   = Number(nextTab.$TST.getAttribute(Constants.kLEVEL) || 0);
       let parent = null;
       if (!tab || !tab.pinned)
         parent = (targetLevel < nextLevel) ? params.insertAfter : (params.insertAfter && params.insertAfter.$TST.parent) ;
@@ -1560,7 +1560,7 @@ export function getTreeStructureFromTabs(tabs, options = {}) {
   ).map((parentIndex, index) => {
     const tab = tabs[index];
     const item = {
-      id:        Tabs.getAttribute(tab, Constants.kPERSISTENT_ID),
+      id:        tab.$TST.getAttribute(Constants.kPERSISTENT_ID),
       parent:    parentIndex,
       collapsed: tab.$TST.subtreeCollapsed
     };
@@ -1652,7 +1652,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
       }
     }
     if (parent) {
-      Tabs.removeState(parent, Constants.kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
+      parent.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED); // prevent focus changing by "current tab attached to collapsed tree"
       promises.push(attachTabTo(tab, parent, Object.assign({}, options, {
         dontExpand: true,
         dontMove:   true,
@@ -1709,7 +1709,7 @@ function snapshotTree(targetTab, tabs) {
       children:      tab.$TST.children.filter(child => !child.hidden).map(child => child.id),
       collapsed:     tab.$TST.subtreeCollapsed,
       pinned:        tab.pinned,
-      level:         parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0)
+      level:         parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0)
     };
   }
   const snapshotArray = allTabs.map(tab => snapshotChild(tab));

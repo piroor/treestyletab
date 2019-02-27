@@ -467,26 +467,26 @@ function onMessage(message, sender) {
           const remove = [];
           if (message.muted) {
             add.push(Constants.kTAB_STATE_MUTED);
-            Tabs.addState(tab, Constants.kTAB_STATE_MUTED);
+            tab.$TST.addState(Constants.kTAB_STATE_MUTED);
           }
           else {
             remove.push(Constants.kTAB_STATE_MUTED);
-            Tabs.removeState(tab, Constants.kTAB_STATE_MUTED);
+            tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
           }
 
           if (tab.audible && !message.muted) {
             add.push(Constants.kTAB_STATE_SOUND_PLAYING);
-            Tabs.addState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
+            tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
           }
           else {
             remove.push(Constants.kTAB_STATE_SOUND_PLAYING);
-            Tabs.removeState(tab, Constants.kTAB_STATE_SOUND_PLAYING);
+            tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
           }
 
           // tabs.onUpdated is too slow, so users will be confused
           // from still-not-updated tabs (in other words, they tabs
           // are unresponsive for quick-clicks).
-          Tabs.broadcastState(tab, {
+          Tab.broadcastState(tab, {
             add, remove,
             bubbles: !tab.$TST.hasChild
           });
@@ -777,10 +777,10 @@ function onMessageExternal(message, sender) {
           states = [states];
         for (const tab of tabs) {
           for (const state of states) {
-            Tabs.addState(tab, state);
+            tab.$TST.addState(state);
           }
         }
-        Tabs.broadcastState(tabs, {
+        Tab.broadcastState(tabs, {
           add: states
         });
         return true;
@@ -794,10 +794,10 @@ function onMessageExternal(message, sender) {
           states = [states];
         for (const tab of tabs) {
           for (const state of states) {
-            Tabs.removeState(tab, state);
+            tab.$TST.removeState(state);
           }
         }
-        Tabs.broadcastState(tabs, {
+        Tab.broadcastState(tabs, {
           remove: states
         });
         return true;
