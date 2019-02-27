@@ -453,7 +453,7 @@ async function attachTabsWithStructure(tabs, parent, options = {}) {
     insertBefore: null,
     insertAfter:  null,
     dontMove:     true,
-    forceExpand:  options.draggedTabs.some(Tabs.isActive)
+    forceExpand:  options.draggedTabs.some(tab => tab.active)
   });
   for (const tab of tabs) {
     if (parent)

@@ -831,24 +831,6 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
 // Tab Information
 //===================================================================
 
-export function isActive(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.active);
-}
-
-export function isPinned(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.pinned);
-}
-
-export function isAudible(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.audible);
-}
-
 export function isSoundPlaying(tab) {
   if (!ensureLivingTab(tab))
     return false;
@@ -877,21 +859,9 @@ export function maybeMuted(tab) {
            hasChildTabs(tab)));
 }
 
-export function isHidden(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.hidden);
-}
-
 export function isCollapsed(tab) {
   return ensureLivingTab(tab) &&
          hasState(tab, Constants.kTAB_STATE_COLLAPSED);
-}
-
-export function isDiscarded(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.discarded);
 }
 
 export function isPrivateBrowsing(tab) {
@@ -943,12 +913,6 @@ export function isSelected(tab) {
     return false;
   return hasState(tab, Constants.kTAB_STATE_SELECTED) ||
          (isMultihighlighted(tab) && !!(tab && tab.highlighted));
-}
-
-export function isHighlighted(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.highlighted);
 }
 
 export function isMultiselected(tab) {
