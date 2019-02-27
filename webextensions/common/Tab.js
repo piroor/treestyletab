@@ -96,6 +96,43 @@ export default class Tab {
     this.childIds    = [];
   }
 
+  // status of tab
+
+  get soundPlaying() {
+    return !!(this.tab.audible && !this.tab.mutedInfo.muted);
+  }
+
+  get maybeSoundPlaying() {
+    return (this.soundPlaying ||
+            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+             this.hasChild));
+  }
+
+  get muted() {
+    return !!(this.tab.mutedInfo && this.tab.mutedInfo.muted);
+  }
+
+  get maybeMuted() {
+    return (this.muted ||
+            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+             this.hasChild));
+  }
+
+  get collapsed() {
+    return Tabs.hasState(this.tab, Constants.kTAB_STATE_COLLAPSED);
+  }
+
+  get subtreeCollapsed() {
+    return Tabs.hasState(this.tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  }
+
+  get precedesPinned() {
+    const following = this.nearestVisibleFollowing;
+    return following && following.pinned;
+  }
+
+  // neighbor tabs
+
   get next() {
     return Tabs.query({
       windowId: this.tab.windowId,
@@ -170,38 +207,7 @@ export default class Tab {
     });
   }
 
-  get precedesPinned() {
-    const following = this.nearestVisibleFollowing;
-    return following && following.pinned;
-  }
-
-  get soundPlaying() {
-    return !!(this.tab.audible && !this.tab.mutedInfo.muted);
-  }
-
-  get maybeSoundPlaying() {
-    return (this.soundPlaying ||
-            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
-             this.hasChild));
-  }
-
-  get muted() {
-    return !!(this.tab.mutedInfo && this.tab.mutedInfo.muted);
-  }
-
-  get maybeMuted() {
-    return (this.muted ||
-            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
-             this.hasChild));
-  }
-
-  get collapsed() {
-    return Tabs.hasState(this.tab, Constants.kTAB_STATE_COLLAPSED);
-  }
-
-  get subtreeCollapsed() {
-    return Tabs.hasState(this.tab, Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-  }
+  // tree relations
 
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
@@ -256,6 +262,10 @@ export default class Tab {
     return children.length > 0 ? children[children.length - 1] : null ;
   }
 
+  sortChildren() {
+    this.childIds = Tabs.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
+  }
+
   get hasChild() {
     return this.childIds.length > 0;
   }
@@ -273,10 +283,6 @@ export default class Tab {
   get lastDescendant() {
     const descendants = this.descendants;
     return descendants.length ? descendants[descendants.length-1] : null ;
-  }
-
-  sortChildren() {
-    this.childIds = Tabs.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
   }
 
   get nextSibling() {
@@ -322,6 +328,8 @@ export default class Tab {
       });
     }
   }
+
+  // other relations
 
   get opener() {
     if (!this.tab.openerTabId ||
