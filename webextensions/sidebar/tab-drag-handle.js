@@ -100,7 +100,7 @@ function doShow(tab) {
   const offset = HANDLE_MARGIN; // this is required to allow clicking of the tab itself.
 
   let handleRect = mHandle.getBoundingClientRect();
-  if (Tabs.isPinned(tab) ||
+  if (tab.pinned ||
       configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT) {
     mHandle.style.left = `${x + offset}px`;
   }
@@ -205,7 +205,7 @@ function onMouseMove(event) {
   if (tab) {
     const tabRect  = tab.$TST.element.getBoundingClientRect();
     const areaSize = Math.min(Size.getFavIconSize() * 1.5, tabRect.width / 2);
-    const onLeft   = Tabs.isPinned(tab) || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
+    const onLeft   = tab.pinned || configs.sidebarPosition == Constants.kTABBAR_POSITION_LEFT;
     const onArea   = (onLeft &&
                       event.clientX >= tabRect.left &&
                       event.clientX <= Math.min(tabRect.left + areaSize, tabRect.right)) ||

@@ -111,7 +111,7 @@ function cancelRunningScroll() {
 
 function calculateScrollDeltaForTab(tab) {
   tab = Tab.get(tab && tab.id);
-  if (!tab || Tabs.isPinned(tab))
+  if (!tab || tab.pinned)
     return 0;
 
   const tabRect       = tab.$TST.element.getBoundingClientRect();
@@ -138,7 +138,7 @@ export function isTabInViewport(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return false;
 
-  if (Tabs.isPinned(tab))
+  if (tab.pinned)
     return true;
 
   return calculateScrollDeltaForTab(tab) == 0;
@@ -260,7 +260,7 @@ export async function scrollToTab(tab, options = {}) {
 
   const anchorTab = options.anchor;
   const hasAnchor = Tabs.ensureLivingTab(anchorTab) && anchorTab != tab;
-  const openedFromPinnedTab = hasAnchor && Tabs.isPinned(anchorTab);
+  const openedFromPinnedTab = hasAnchor && anchorTab.pinned;
 
   if (isTabInViewport(tab) &&
       (!hasAnchor ||

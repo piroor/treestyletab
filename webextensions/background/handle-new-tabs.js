@@ -65,7 +65,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
   }
 
   log(`opener: ${opener && opener.id}, positionedBySelf = ${info.positionedBySelf}`);
-  if (Tabs.isPinned(opener) &&
+  if (opener && opener.pinned &&
       opener.windowId == tab.windowId) {
     if (configs.autoGroupNewTabsFromPinned) {
       return false;

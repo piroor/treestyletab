@@ -299,7 +299,7 @@ function getDropAction(event) {
       info.action       = action;
       if (info.draggedTab &&
           !info.draggedTab.pinned &&
-          Tabs.isPinned(info.targetTab))
+          info.targetTab.pinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
     }
     else if (event.clientY > info.lastTargetTab.$TST.element.getBoundingClientRect().bottom) {
@@ -309,7 +309,7 @@ function getDropAction(event) {
       info.action       = action;
       if (info.draggedTab &&
           info.draggedTab.pinned &&
-          !Tabs.isPinned(info.targetTab))
+          !info.targetTab.pinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
     }
     return info;
@@ -321,7 +321,7 @@ function getDropAction(event) {
    * So, if a tab is dragged and the target tab is pinned, then, we
    * have to ignore the [center] area.
    */
-  const onPinnedTab         = Tabs.isPinned(targetTab);
+  const onPinnedTab         = targetTab.pinned;
   const dropAreasCount      = (info.draggedTab && onPinnedTab) ? 2 : 3 ;
   const targetTabRect       = targetTab.$TST.element.getBoundingClientRect();
   const targetTabCoordinate = onPinnedTab ? targetTabRect.left : targetTabRect.top ;
@@ -364,7 +364,7 @@ function getDropAction(event) {
         targetTab :
         (targetTab.$TST.lastDescendant || targetTab);
       if (info.draggedTab &&
-          info.draggedTab.pinned != Tabs.isPinned(targetTab))
+          info.draggedTab.pinned != targetTab.pinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (configs.debug)
         log(' calculated info: ', info);
@@ -385,7 +385,7 @@ function getDropAction(event) {
       //if (info.insertBefore)
       //  log('insertBefore = ', dumpTab(info.insertBefore));
       if (info.draggedTab &&
-          info.draggedTab.pinned != Tabs.isPinned(targetTab))
+          info.draggedTab.pinned != targetTab.pinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (configs.debug)
         log(' calculated info: ', info);
@@ -426,7 +426,7 @@ function getDropAction(event) {
         }
       }
       if (info.draggedTab &&
-          info.draggedTab.pinned != Tabs.isPinned(targetTab.$TST.nearestVisibleFollowing))
+          info.draggedTab.pinned != targetTab.$TST.precedesPinned)
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (configs.debug)
         log(' calculated info: ', info);
@@ -501,7 +501,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
   if (dragOverTab &&
       dropActionInfo.dropPosition == kDROP_ON_SELF &&
       !Tabs.isLocked(dragOverTab) &&
-      !Tabs.isPinned(dragOverTab)) {
+      !dragOverTab.pinned) {
     const behavior = await getDroppedLinksOnTabBehavior();
     if (behavior <= Constants.kDROPLINK_ASK)
       return;

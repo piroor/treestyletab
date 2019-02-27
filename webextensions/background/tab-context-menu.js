@@ -436,11 +436,11 @@ async function onShown(info, contextTab) {
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToStart', {
-    enabled: emulate && contextTab && hasMultipleTabs && (previousSiblingTab || previousTab) && (Tabs.isPinned(previousSiblingTab || previousTab) == contextTab.pinned),
+    enabled: emulate && contextTab && hasMultipleTabs && (previousSiblingTab || previousTab) && ((previousSiblingTab || previousTab).pinned == contextTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_moveTabToEnd', {
-    enabled: emulate && contextTab && hasMultipleTabs && (nextSiblingTab || nextTab) && (Tabs.isPinned(nextSiblingTab || nextTab) == contextTab.pinned),
+    enabled: emulate && contextTab && hasMultipleTabs && (nextSiblingTab || nextTab) && ((nextSiblingTab || nextTab).pinned == contextTab.pinned),
     multiselected
   }) && modifiedItemsCount++;
   updateItem('context_openTabInWindow', {

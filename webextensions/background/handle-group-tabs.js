@@ -358,7 +358,7 @@ async function tryGroupNewTabs() {
     if (newRootTabs.length <= 0)
       return;
 
-    const newRootTabsFromPinned = newRootTabs.filter(tab => Tabs.isPinned(tab.$TST.opener));
+    const newRootTabsFromPinned = newRootTabs.filter(tab => tab.$TST.hasPinnedOpener);
     if (newRootTabsFromPinned.length > 0) {
       newRootTabs = newRootTabs.filter(tab => !newRootTabsFromPinned.includes(tab));
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
@@ -407,7 +407,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       return true;
     }
     const opener = Tabs.getTabByUniqueId(Tabs.getAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID));
-    if (!Tabs.isPinned(opener))
+    if (!opener.pinned)
       return false;
     // existing and not yet grouped tab
     if (!pinnedOpeners.includes(opener))

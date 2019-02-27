@@ -226,7 +226,7 @@ windowId = ${tab.windowId}
   }
 
   const label = getLabel(tab);
-  if (Tabs.isPinned(tab) || label.classList.contains('overflow')) {
+  if (tab.pinned || label.classList.contains('overflow')) {
     Tabs.setAttribute(tab, 'title', tab.$TST.tooltip);
   }
   else {
@@ -327,7 +327,7 @@ export function updateAll() {
 
 export function updateLabelOverflow(tab) {
   const label = getLabel(tab);
-  if (!Tabs.isPinned(tab) &&
+  if (!tab.pinned &&
       label.firstChild.getBoundingClientRect().width > label.getBoundingClientRect().width)
     label.classList.add('overflow');
   else
@@ -338,7 +338,7 @@ export function updateLabelOverflow(tab) {
 function onOverflow(event) {
   const tab   = getTabFromDOMNode(event.target);
   const label = getLabel(tab);
-  if (event.target == label && !Tabs.isPinned(tab)) {
+  if (event.target == label && !tab.pinned) {
     label.classList.add('overflow');
     reserveToUpdateTooltip(tab);
   }
@@ -347,7 +347,7 @@ function onOverflow(event) {
 function onUnderflow(event) {
   const tab   = getTabFromDOMNode(event.target);
   const label = getLabel(tab);
-  if (event.target == label && !Tabs.isPinned(tab)) {
+  if (event.target == label && !tab.pinned) {
     label.classList.remove('overflow');
     reserveToUpdateTooltip(tab);
   }
@@ -573,7 +573,7 @@ const mTabWasVisibleBeforeMoving = new Map();
 Tabs.onMoving.addListener((tab, _info) => {
   Tabs.addState(tab, Constants.kTAB_STATE_MOVING);
   if (!configs.animation ||
-      Tabs.isPinned(tab) ||
+      tab.pinned ||
       Tabs.isOpening(tab))
     return;
   mTabWasVisibleBeforeMoving.set(tab.id, !Tabs.isCollapsed(tab));

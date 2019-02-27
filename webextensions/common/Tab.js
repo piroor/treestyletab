@@ -170,6 +170,11 @@ export default class Tab {
     });
   }
 
+  get precedesPinned() {
+    const following = this.nearestVisibleFollowing;
+    return following && following.pinned;
+  }
+
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
     return tab;
@@ -299,6 +304,11 @@ export default class Tab {
       id:       this.tab.openerTabId,
       living:   true
     });
+  }
+
+  get hasPinnedOpener() {
+    const opener = this.opener;
+    return opener && opener.pinned;
   }
 
   findSuccessor(tab, options = {}) {
@@ -518,7 +528,7 @@ Tab.dumpAll = (windowId) => {
   log('dumpAllTabs\n' +
     Tabs.getAllTabs(windowId).map(tab =>
       Tab.getAncestors(tab).reverse().concat([tab])
-        .map(tab => tab.id + (Tabs.isPinned(tab) ? ' [pinned]' : ''))
+        .map(tab => tab.id + (tab.pinned ? ' [pinned]' : ''))
         .join(' => ')
     ).join('\n'));
 }

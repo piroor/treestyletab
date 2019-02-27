@@ -103,7 +103,7 @@ export async function attachTabTo(child, parent, options = {}) {
     stack:            `${new Error().stack}\n${options.stack || ''}`
   });
 
-  if (Tabs.isPinned(parent) || Tabs.isPinned(child)) {
+  if (parent.pinned || child.pinned) {
     log('=> pinned tabs cannot be attached');
     return false;
   }
@@ -440,8 +440,8 @@ export function detachAllChildren(tab, options = {}) {
 export async function behaveAutoAttachedTab(tab, options = {}) {
   const baseTab = options.baseTab || Tabs.getActiveTab(Tabs.getWindow() || tab.windowId);
   log('behaveAutoAttachedTab ', tab.id, baseTab.id, options);
-  if (Tabs.isPinned(baseTab)) {
-    if (!Tabs.isPinned(tab))
+  if (baseTab.pinned) {
+    if (!tab.pinned)
       return false;
     options.behavior = Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING;
     log(' => override behavior for pinned tabs');
@@ -584,7 +584,7 @@ function updateTabsIndent(tabs, level = undefined) {
 
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const item = tabs[i];
-    if (!item || Tabs.isPinned(item))
+    if (!item || item.pinned)
       continue;
 
     onLevelChanged.dispatch(item);
@@ -716,7 +716,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
 }
 
 export async function collapseExpandTab(tab, params = {}) {
-  if (Tabs.isPinned(tab) && params.collapsed) {
+  if (tab.pinned && params.collapsed) {
     log('CAUTION: a pinned tab is going to be collapsed, but canceled.',
         dumpTab(tab), { stack: new Error().stack });
     params.collapsed = false;
@@ -918,7 +918,7 @@ function getTryMoveFocusFromClosingActiveTabNowParams(tab, overrideParams) {
   const parentTab = tab.$TST.parent;
   const params = {
     active:                   tab.active,
-    pinned:                   Tabs.isPinned(tab),
+    pinned:                   tab.pinned,
     parentTab,
     firstChildTab:            tab.$TST.firstChild,
     firstChildTabOfParent:    parentTab && parentTab.$TST.firstChild,
@@ -1470,7 +1470,8 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
     const prevTab = params.insertBefore && params.insertBefore.$TST.nearestVisiblePreceding;
     if (!prevTab) {
       // allow to move pinned tab to beside of another pinned tab
-      if (!tab || Tabs.isPinned(tab) == Tabs.isPinned(params.insertBefore)) {
+      if (!tab ||
+          tab.pinned == (params.insertBefore && params.insertBefore.pinned)) {
         return {
           insertBefore: params.insertBefore
         };
@@ -1483,7 +1484,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       const prevLevel   = Number(Tabs.getAttribute(prevTab, Constants.kLEVEL) || 0);
       const targetLevel = Number(Tabs.getAttribute(params.insertBefore, Constants.kLEVEL) || 0);
       let parent = null;
-      if (!tab || !Tabs.isPinned(tab))
+      if (!tab || !tab.pinned)
         parent = (prevLevel < targetLevel) ? prevTab : (params.insertBefore && params.insertBefore.$TST.parent);
       return {
         parent,
@@ -1522,7 +1523,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
       const targetLevel = Number(Tabs.getAttribute(params.insertAfter, Constants.kLEVEL) || 0);
       const nextLevel   = Number(Tabs.getAttribute(nextTab, Constants.kLEVEL) || 0);
       let parent = null;
-      if (!tab || !Tabs.isPinned(tab))
+      if (!tab || !tab.pinned)
         parent = (targetLevel < nextLevel) ? params.insertAfter : (params.insertAfter && params.insertAfter.$TST.parent) ;
       return {
         parent,
@@ -1566,7 +1567,7 @@ export function getTreeStructureFromTabs(tabs, options = {}) {
     if (options.full) {
       item.title  = tab.title;
       item.url    = tab.url;
-      item.pinned = Tabs.isPinned(tab);
+      item.pinned = tab.pinned;
     }
     return item;
   });
@@ -1698,7 +1699,7 @@ function snapshotTree(targetTab, tabs) {
 
   const snapshotById = {};
   function snapshotChild(tab) {
-    if (!Tabs.ensureLivingTab(tab) || Tabs.isPinned(tab) || tab.hidden)
+    if (!Tabs.ensureLivingTab(tab) || tab.pinned || tab.hidden)
       return null;
     return snapshotById[tab.id] = {
       id:            tab.id,
@@ -1707,7 +1708,7 @@ function snapshotTree(targetTab, tabs) {
       active:        tab.active,
       children:      tab.$TST.children.filter(child => !child.hidden).map(child => child.id),
       collapsed:     Tabs.isSubtreeCollapsed(tab),
-      pinned:        Tabs.isPinned(tab),
+      pinned:        tab.pinned,
       level:         parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0)
     };
   }
