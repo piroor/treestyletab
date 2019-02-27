@@ -436,8 +436,8 @@ export function isGroupingBlocked() {
 
 
 export function serializeTab(tab) {
-  const children       = Tabs.getChildTabs(tab).map(serializeTab);
-  const ancestorTabIds = Tabs.getAncestorTabs(tab).map(tab => tab.id);
+  const children       = Tab.getChildren(tab).map(serializeTab);
+  const ancestorTabIds = Tab.getAncestors(tab).map(tab => tab.id);
   const serialized     = Object.assign({}, Tabs.sanitize(tab.apiTab || tab), {
     states:   Tabs.getStates(tab).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0),
@@ -528,7 +528,7 @@ export async function getTargetTabs(message, sender) {
         message.tabs == '*')
       return Tabs.getAllTabs(message.window || message.windowId);
     else
-      return Tabs.getRootTabs(message.window || message.windowId);
+      return Tab.getRoots(message.window || message.windowId);
   }
   if (message.tab == '*' ||
       message.tabs == '*') {
@@ -572,12 +572,12 @@ async function getTabsFromWrongIds(aIds, sender) {
       }
       case 'nextsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getNextSiblingTab(Tab.get(tabs[0].id));
+        return Tab.getNextSibling(Tab.get(tabs[0].id));
       }
       case 'previoussibling':
       case 'prevsibling': {
         const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tabs.getPreviousSiblingTab(Tab.get(tabs[0].id));
+        return Tab.getPreviousSibling(Tab.get(tabs[0].id));
       }
       case 'sendertab':
         if (sender.tab)

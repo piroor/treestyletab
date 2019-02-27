@@ -49,6 +49,7 @@ import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
+import * as Tree from './tree.js';
 
 import Tab from './Tab.js';
 import Window from './Window.js';
@@ -289,7 +290,7 @@ async function onUpdated(tabId, changeInfo, tab) {
     }
 
     TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
-    TabsUpdate.updateParentTab(Tabs.getParentTab(updatedTab));
+    TabsUpdate.updateParentTab(Tab.getParent(updatedTab));
 
     const onUpdatedResult = Tabs.onUpdated.dispatch(updatedTab, changeInfo);
     // don't do await if not needed, to process things synchronously
@@ -402,7 +403,7 @@ async function onNewTabTracked(tab) {
     });
 
     // tabs can be removed and detached while waiting, so cache them here for `detectTabActionFromNewPosition()`.
-    const treeForActionDetection = Tabs.snapshotTreeForActionDetection(tab);
+    const treeForActionDetection = Tree.snapshotForActionDetection(tab);
 
     if (positionedBySelf)
       window.toBeOpenedTabsWithPositions--;
@@ -608,8 +609,8 @@ async function onRemoved(tabId, removeInfo) {
 
     // The removing tab may be attached to tree/someone attached to the removing tab.
     // We need to clear them by onRemoved handlers.
-    const oldChildren = Tabs.getChildTabs(oldTab);
-    const oldParent   = Tabs.getParentTab(oldTab);
+    const oldChildren = Tab.getChildren(oldTab);
+    const oldParent   = Tab.getParent(oldTab);
     Tabs.addState(oldTab, Constants.kTAB_STATE_REMOVING);
 
     Tabs.trackedWindows.get(removeInfo.windowId).detachTab(oldTab.id);
@@ -674,8 +675,8 @@ async function onMoved(tabId, moveInfo) {
       return;
     }
 
-    let oldPreviousTab = Tabs.getPreviousTab(movedTab);
-    let oldNextTab     = Tabs.getNextTab(movedTab);
+    let oldPreviousTab = Tab.getPrevious(movedTab);
+    let oldNextTab     = Tab.getNext(movedTab);
     if (movedTab.index != moveInfo.toIndex) { // already moved
       const tabs = Tabs.getAllTabs(moveInfo.windowId);
       oldPreviousTab = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1];
@@ -709,7 +710,7 @@ async function onMoved(tabId, moveInfo) {
       const nextTab = Tabs.getAllTabs(moveInfo.windowId)[newNextIndex];
       extendedMoveInfo.nextTab = nextTab;
       if (!alreadyMoved &&
-          Tabs.getNextTab(movedTab) != nextTab) {
+          Tab.getNext(movedTab) != nextTab) {
         if (nextTab) {
           if (nextTab.index > movedTab.index)
             movedTab.index = nextTab.index - 1;
@@ -821,7 +822,7 @@ async function onDetached(tabId, detachInfo) {
     const info = Object.assign({}, detachInfo, {
       byInternalOperation,
       windowId:    detachInfo.oldWindowId,
-      descendants: Tabs.getDescendantTabs(oldTab)
+      descendants: Tab.getDescendants(oldTab)
     });
     mTreeInfoForTabsMovingAcrossWindows.set(tabId, info);
 

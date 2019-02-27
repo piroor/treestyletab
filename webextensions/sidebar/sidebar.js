@@ -891,7 +891,7 @@ function onMessage(message, _sender, _respond) {
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (message.byAncestor &&
-            message.collapsed != Tabs.getAncestorTabs(tab).some(Tabs.isSubtreeCollapsed))
+            message.collapsed != Tab.getAncestors(tab).some(Tabs.isSubtreeCollapsed))
           return;
         Tree.collapseExpandTab(tab, {
           collapsed:   message.collapsed,
@@ -1014,7 +1014,7 @@ function onMessage(message, _sender, _respond) {
               Tabs.hasState(modified, Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
             if (message.bubbles)
-              TabsUpdate.updateParentTab(Tabs.getParentTab(tab));
+              TabsUpdate.updateParentTab(Tab.getParent(tab));
           }
         }
       })();

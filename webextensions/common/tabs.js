@@ -47,6 +47,7 @@ import {
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
+// eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('common/tabs', ...args);
 }
@@ -564,7 +565,7 @@ browser.windows.onRemoved.addListener(windowId => {
 //===================================================================
 
 // basics
-function assertValidTab(tab) {
+export function assertValidTab(tab) {
   if (tab && tab.$TST)
     return;
   const error = new Error('FATAL ERROR: invalid tab is given');
@@ -585,31 +586,6 @@ export function getActiveTab(windowId) {
 }
 export function getActiveTabs() {
   return Array.from(activeTabForWindow.values(), ensureLivingTab);
-}
-
-export function getNextTab(tab) {
-  if (!tab)
-    return null;
-  assertValidTab(tab);
-  return query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    living:   true,
-    index:    (index => index > tab.index)
-  });
-}
-
-export function getPreviousTab(tab) {
-  if (!tab)
-    return null;
-  assertValidTab(tab);
-  return query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    living:   true,
-    index:    (index => index < tab.index),
-    last:     true
-  });
 }
 
 export function getFirstTab(windowId) {
@@ -667,32 +643,6 @@ export function calculateNewTabIndex(params) {
 }
 
 
-export function getNextNormalTab(tab) {
-  if (!ensureLivingTab(tab))
-    return null;
-  assertValidTab(tab);
-  return query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    normal:   true,
-    index:    (index => index > tab.index)
-  });
-}
-
-export function getPreviousNormalTab(tab) {
-  if (!ensureLivingTab(tab))
-    return null;
-  assertValidTab(tab);
-  return query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    normal:   true,
-    index:    (index => index < tab.index),
-    last:     true
-  });
-}
-
-
 // tree basics
 
 export function ensureLivingTab(tab) {
@@ -707,7 +657,7 @@ export function ensureLivingTab(tab) {
   return tab;
 }
 
-function assertInitializedTab(tab) {
+export function assertInitializedTab(tab) {
   if (!tab ||
       tab.$TST && hasState(tab, Constants.kTAB_STATE_REMOVING))
     return false;
@@ -716,168 +666,6 @@ function assertInitializedTab(tab) {
   if (!tab.$TST)
     throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no $TST helper)\n${new Error().stack}`);
   return true;
-}
-
-export function getOpenerTab(tab) {
-  if (!tab)
-    return null;
-  if (!ensureLivingTab(tab) ||
-      !tab ||
-      !tab.openerTabId ||
-      tab.openerTabId == tab.id)
-    return null;
-  assertValidTab(tab);
-  const opener = query({
-    windowId: tab.windowId,
-    id:       tab.openerTabId,
-    living:   true
-  });
-  return opener;
-}
-
-export function getParentTab(child) {
-  if (!ensureLivingTab(child))
-    return null;
-  assertValidTab(child);
-  return child.$TST.parent;
-}
-
-export function getAncestorTabs(descendant, options = {}) {
-  if (!descendant || !ensureLivingTab(descendant))
-    return [];
-  assertValidTab(descendant);
-  if (!options.force) {
-    // slice(0) is required to guard the cached array from destructive methods liek sort()!
-    return descendant.$TST.ancestors.slice(0);
-  }
-  const ancestors = [];
-  while (true) {
-    const parent = trackedTabs.get(descendant.$TST.parentId);
-    if (!parent)
-      break;
-    ancestors.push(parent);
-    descendant = parent;
-  }
-  return ancestors;
-}
-
-export function getVisibleAncestorOrSelf(descendant) {
-  for (const ancestor of getAncestorTabs(descendant)) {
-    if (!isCollapsed(ancestor))
-      return ancestor;
-  }
-  assertValidTab(descendant);
-  if (!isCollapsed(descendant))
-    return descendant;
-  return null;
-}
-
-export function getRootTab(descendant) {
-  if (!ensureLivingTab(descendant))
-    return null;
-  assertValidTab(descendant);
-  const ancestors = descendant.$TST.ancestors;
-  return ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
-}
-
-export function getNextSiblingTab(tab) {
-  if (!ensureLivingTab(tab))
-    return null;
-  assertValidTab(tab);
-  const parent = tab.$TST.parent;
-  if (parent) {
-    const siblingIds = parent.$TST.childIds;
-    const index = siblingIds.indexOf(tab.id);
-    const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
-    if (!siblingId)
-      return null;
-    return trackedTabs.get(siblingId);
-  }
-  else {
-    return query({
-      windowId:  tab.windowId,
-      fromId:    tab.id,
-      living:    true,
-      index:     (index => index > tab.index),
-      hasParent: false,
-      first:     true
-    });
-  }
-}
-
-export function getPreviousSiblingTab(tab) {
-  if (!ensureLivingTab(tab))
-    return null;
-  assertValidTab(tab);
-  const parent = tab.$TST.parent;
-  if (parent) {
-    const siblingIds = parent.$TST.childIds;
-    const index = siblingIds.indexOf(tab.id);
-    const siblingId = index > 0 ? siblingIds[index - 1] : null ;
-    if (!siblingId)
-      return null;
-    return trackedTabs.get(siblingId);
-  }
-  else {
-    return query({
-      windowId:  tab.windowId,
-      fromId:    tab.id,
-      living:    true,
-      index:     (index => index < tab.index),
-      hasParent: false,
-      last:      true
-    });
-  }
-}
-
-export function getChildTabs(parent) {
-  if (!ensureLivingTab(parent))
-    return [];
-  assertValidTab(parent);
-  if (!assertInitializedTab(parent))
-    return [];
-  return parent.$TST.children;
-}
-
-export function getFirstChildTab(parent) {
-  if (!ensureLivingTab(parent))
-    return null;
-  assertValidTab(parent);
-  if (!assertInitializedTab(parent))
-    return null;
-  const children = parent.$TST.children;
-  return children.length > 0 ? children[0] : null ;
-}
-
-export function getLastChildTab(parent) {
-  if (!ensureLivingTab(parent))
-    return null;
-  assertValidTab(parent);
-  if (!assertInitializedTab(parent))
-    return null;
-  const children = parent.$TST.children;
-  return children.length > 0 ? children[children.length - 1] : null ;
-}
-
-export function getDescendantTabs(root) {
-  if (!ensureLivingTab(root))
-    return [];
-  assertValidTab(root);
-  if (!assertInitializedTab(root))
-    return [];
-  let descendants = [];
-  const children = root.$TST.children;
-  for (const child of children) {
-    descendants.push(child);
-    descendants = descendants.concat(getDescendantTabs(child));
-  }
-  return descendants;
-}
-
-export function getLastDescendantTab(root) {
-  assertValidTab(root);
-  const descendants = getDescendantTabs(root);
-  return descendants.length ? descendants[descendants.length-1] : null ;
 }
 
 
@@ -1021,31 +809,6 @@ export function getFirstVisibleTab(windowId) { // visible, not-collapsed, not-hi
   });
 }
 
-export function getNextVisibleTab(tab) { // visible, not-collapsed
-  if (!ensureLivingTab(tab))
-    return null;
-  assertValidTab(tab);
-  return query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    visible:  true,
-    index:    (index => index > tab.index)
-  });
-}
-
-export function getPreviousVisibleTab(tab) { // visible, not-collapsed
-  if (!ensureLivingTab(tab))
-    return null;
-  assertValidTab(tab);
-  return query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    visible:  true,
-    index:    (index => index < tab.index),
-    last:     true
-  });
-}
-
 export async function doAndGetNewTabs(asyncTask, windowId) {
   const tabsQueryOptions = {
     windowType: 'normal'
@@ -1059,49 +822,6 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
   const afterTabs = await browser.tabs.query(tabsQueryOptions);
   const addedTabs = afterTabs.filter(afterTab => !beforeIds.includes(afterTab.id));
   return addedTabs.map(tab => trackedTabs.get(tab.id));
-}
-
-export function getNextActiveTab(tab, options = {}) { // if the current tab is closed...
-  if (typeof options != 'object')
-    options = {};
-  assertValidTab(tab);
-  const ignoredTabs = (options.ignoredTabs || []).slice(0);
-  let foundTab = tab;
-  do {
-    ignoredTabs.push(foundTab);
-    foundTab = getNextSiblingTab(foundTab);
-  } while (foundTab && ignoredTabs.includes(foundTab));
-  if (!foundTab) {
-    foundTab = tab;
-    do {
-      ignoredTabs.push(foundTab);
-      foundTab = getPreviousVisibleTab(foundTab);
-    } while (foundTab && ignoredTabs.includes(foundTab));
-  }
-  return foundTab;
-}
-
-
-export function getGroupTabForOpener(opener) {
-  if (!opener)
-    return null;
-  assertValidTab(opener);
-  return query({
-    windowId:   opener.windowId,
-    living:     true,
-    attributes: [
-      Constants.kCURRENT_URI,
-      new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
-    ]
-  });
-}
-
-export function getOpenerFromGroupTab(groupTab) {
-  if (!isGroupTab(groupTab))
-    return null;
-  assertValidTab(groupTab);
-  const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
-  return matchedOpenerTabId && trackedTabs.get(matchedOpenerTabId[1]);
 }
 
 
@@ -1272,55 +992,6 @@ export function getMaxTreeLevel(windowId, options = {}) {
   return maxLevel;
 }
 
-// if all tabs are aldeardy placed at there, we don't need to move them.
-export function isAllTabsPlacedBefore(tabs, nextTab) {
-  if (tabs[tabs.length - 1] == nextTab)
-    nextTab = getNextTab(nextTab);
-  if (!nextTab && !getNextTab(tabs[tabs.length - 1]))
-    return true;
-
-  tabs = Array.from(tabs);
-  let previousTab = tabs.shift();
-  for (const tab of tabs) {
-    if (getPreviousTab(tab) != previousTab)
-      return false;
-    previousTab = tab;
-  }
-  return !nextTab ||
-         !previousTab ||
-         getNextTab(previousTab) == nextTab;
-}
-
-export function isAllTabsPlacedAfter(tabs, previousTab) {
-  if (tabs[0] == previousTab)
-    previousTab = getPreviousTab(previousTab);
-  if (!previousTab && !getPreviousTab(tabs[0]))
-    return true;
-
-  tabs = Array.from(tabs).reverse();
-  let nextTab = tabs.shift();
-  for (const tab of tabs) {
-    if (getNextTab(tab) != nextTab)
-      return false;
-    nextTab = tab;
-  }
-  return !previousTab ||
-         !nextTab ||
-         getPreviousTab(nextTab) == previousTab;
-}
-
-
-export function dumpAllTabs() {
-  if (!configs.debug)
-    return;
-  log('dumpAllTabs\n' +
-    getAllTabs(mTargetWindow).map(tab =>
-      getAncestorTabs(tab).reverse().concat([tab])
-        .map(tab => tab.id + (isPinned(tab) ? ' [pinned]' : ''))
-        .join(' => ')
-    ).join('\n'));
-}
-
 
 //===================================================================
 // Promised status of tabs
@@ -1456,58 +1127,3 @@ export function removeAttribute(tab, attribute) {
   delete tab.$TST.attributes[attribute];
 }
 
-
-
-//===================================================================
-// Take snapshot
-//===================================================================
-
-export function snapshotTreeForActionDetection(targetTab) {
-  const prevTab = getPreviousNormalTab(targetTab);
-  const nextTab = getNextNormalTab(targetTab);
-  const foundTabs = {};
-  const tabs = getAncestorTabs(prevTab)
-    .concat([prevTab, targetTab, nextTab, getParentTab(targetTab)])
-    .filter(tab => ensureLivingTab(tab) && !foundTabs[tab.id] && (foundTabs[tab.id] = true)) // uniq
-    .sort((a, b) => a.index - b.index);
-  return snapshotTree(targetTab, tabs);
-}
-
-function snapshotTree(targetTab, tabs) {
-  const allTabs = tabs || getTabs(targetTab.windowId);
-
-  const snapshotById = {};
-  function snapshotChild(tab) {
-    if (!ensureLivingTab(tab) || isPinned(tab) || isHidden(tab))
-      return null;
-    return snapshotById[tab.id] = {
-      id:            tab.id,
-      url:           tab.url,
-      cookieStoreId: tab.cookieStoreId,
-      active:        isActive(tab),
-      children:      getChildTabs(tab).filter(child => !isHidden(child)).map(child => child.id),
-      collapsed:     isSubtreeCollapsed(tab),
-      pinned:        isPinned(tab),
-      level:         parseInt(getAttribute(tab, Constants.kLEVEL) || 0)
-    };
-  }
-  const snapshotArray = allTabs.map(tab => snapshotChild(tab));
-  for (const tab of allTabs) {
-    const item = snapshotById[tab.id];
-    if (!item)
-      continue;
-    const parent = getParentTab(tab);
-    item.parent = parent && parent.id;
-    const next = getNextNormalTab(tab);
-    item.next = next && next.id;
-    const previous = getPreviousNormalTab(tab);
-    item.previous = previous && previous.id;
-  }
-  const activeTab = getActiveTab(targetTab.windowId);
-  return {
-    target:   snapshotById[targetTab.id],
-    active:   activeTab && snapshotById[activeTab.id],
-    tabs:     snapshotArray,
-    tabsById: snapshotById
-  };
-}

@@ -111,7 +111,7 @@ export async function init() {
 
   Tabs.getAllTabs(null).forEach(updateSubtreeCollapsed);
   for (const tab of Tabs.getActiveTabs()) {
-    for (const ancestor of Tabs.getAncestorTabs(tab)) {
+    for (const ancestor of Tab.getAncestors(tab)) {
       Tree.collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,
         justNow:   true
@@ -277,7 +277,7 @@ async function updateInsertionPosition(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  const prev = Tabs.getPreviousTab(tab);
+  const prev = Tab.getPrevious(tab);
   if (prev)
     browser.sessions.setTabValue(
       tab.id,
@@ -290,7 +290,7 @@ async function updateInsertionPosition(tab) {
       Constants.kPERSISTENT_INSERT_AFTER
     );
 
-  const next = Tabs.getNextTab(tab);
+  const next = Tab.getNext(tab);
   if (next)
     browser.sessions.setTabValue(
       tab.id,
@@ -328,7 +328,7 @@ async function updateAncestors(tab) {
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_ANCESTORS,
-    Tabs.getAncestorTabs(tab).map(ancestor => ancestor.$TST.uniqueId.id)
+    Tab.getAncestors(tab).map(ancestor => ancestor.$TST.uniqueId.id)
   );
 }
 
@@ -355,7 +355,7 @@ async function updateChildren(tab) {
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_CHILDREN,
-    Tabs.getChildTabs(tab).map(child => child.$TST.uniqueId.id)
+    Tab.getChildren(tab).map(child => child.$TST.uniqueId.id)
   );
 }
 
@@ -441,8 +441,8 @@ Tabs.onCreated.addListener((tab, info = {}) => {
   reserveToUpdateChildren(tab);
   reserveToUpdateInsertionPosition([
     tab,
-    Tabs.getNextTab(tab),
-    Tabs.getPreviousTab(tab)
+    Tab.getNext(tab),
+    Tab.getPrevious(tab)
   ]);
 });
 
@@ -474,8 +474,8 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
 Tabs.onTabInternallyMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
     tab,
-    Tabs.getPreviousTab(tab),
-    Tabs.getNextTab(tab),
+    Tab.getPrevious(tab),
+    Tab.getNext(tab),
     info.oldPreviousTab,
     info.oldNextTab
   ]);
@@ -486,13 +486,13 @@ Tabs.onMoved.addListener(async (tab, moveInfo) => {
     tab,
     moveInfo.oldPreviousTab,
     moveInfo.oldNextTab,
-    Tabs.getPreviousTab(tab),
-    Tabs.getNextTab(tab)
+    Tab.getPrevious(tab),
+    Tab.getNext(tab)
   ]);
 });
 
 Tree.onDetached.addListener(async (tab, detachInfo) => {
-  reserveToUpdateAncestors([tab].concat(Tabs.getDescendantTabs(tab)));
+  reserveToUpdateAncestors([tab].concat(Tab.getDescendants(tab)));
   reserveToUpdateChildren(detachInfo.oldParentTab);
 });
 

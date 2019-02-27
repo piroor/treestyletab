@@ -14,6 +14,8 @@ import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
 
+import Tab from './Tab.js';
+
 function log(...args) {
   internalLogger('common/tabs-group', ...args);
 }
@@ -39,7 +41,7 @@ export async function groupTabs(tabs, options = {}) {
   });
   const groupTab = await TabsOpen.openURIInTab(uri, {
     windowId:     rootTabs[0].windowId,
-    parent:       Tabs.getParentTab(rootTabs[0]),
+    parent:       Tab.getParent(rootTabs[0]),
     insertBefore: rootTabs[0],
     inBackground: true
   });

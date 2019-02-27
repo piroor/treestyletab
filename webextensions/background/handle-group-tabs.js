@@ -93,9 +93,9 @@ function cleanupNeedlssGroupTab(tabs) {
   for (const tab of tabs) {
     if (!Tabs.isTemporaryGroupTab(tab))
       break;
-    if (Tabs.getChildTabs(tab).length > 1)
+    if (Tab.getChildren(tab).length > 1)
       break;
-    const lastChild = Tabs.getFirstChildTab(tab);
+    const lastChild = Tab.getFirstChild(tab);
     if (lastChild && !Tabs.isTemporaryGroupTab(lastChild))
       break;
     tabsToBeRemoved.push(tab);
@@ -106,7 +106,7 @@ function cleanupNeedlssGroupTab(tabs) {
 
 export function reserveToUpdateRelatedGroupTabs(tab, changedInfo) {
   const ancestorGroupTabs = [tab]
-    .concat(Tabs.getAncestorTabs(tab))
+    .concat(Tab.getAncestors(tab))
     .filter(Tabs.isGroupTab);
   for (const tab of ancestorGroupTabs) {
     if (tab.$TST.reservedUpdateRelatedGroupTab)
@@ -140,11 +140,11 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
   if (changedInfo.includes('title')) {
     let newTitle;
     if (Constants.kGROUP_TAB_DEFAULT_TITLE_MATCHER.test(groupTab.title)) {
-      const firstChild = Tabs.getFirstChildTab(groupTab);
+      const firstChild = Tab.getFirstChild(groupTab);
       newTitle = browser.i18n.getMessage('groupTab_label', firstChild.title);
     }
     else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(groupTab.title)) {
-      const opener = Tabs.getOpenerFromGroupTab(groupTab);
+      const opener = Tab.getOpenerFromGroupTab(groupTab);
       if (opener) {
         if (opener &&
             opener.favIconUrl) {
@@ -169,7 +169,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
 }
 
 Tabs.onRemoved.addListener((tab, _closeInfo = {}) => {
-  const ancestors = Tabs.getAncestorTabs(tab);
+  const ancestors = Tab.getAncestors(tab);
   wait(0).then(() => {
     reserveToCleanupNeedlessGroupTab(ancestors);
   });
@@ -234,7 +234,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   }
 
   if ('title' in changeInfo) {
-    const group = Tabs.getGroupTabForOpener(tab);
+    const group = Tab.getGroupTabForOpener(tab);
     if (group)
       reserveToUpdateRelatedGroupTabs(group, ['title', 'tree']);
   }
@@ -358,7 +358,7 @@ async function tryGroupNewTabs() {
     if (newRootTabs.length <= 0)
       return;
 
-    const newRootTabsFromPinned = newRootTabs.filter(tab => Tabs.isPinned(Tabs.getOpenerTab(tab)));
+    const newRootTabsFromPinned = newRootTabs.filter(tab => Tabs.isPinned(Tab.getOpener(tab)));
     if (newRootTabsFromPinned.length > 0) {
       newRootTabs = newRootTabs.filter(tab => !newRootTabsFromPinned.includes(tab));
       await tryGroupNewTabsFromPinnedOpener(newRootTabsFromPinned);
@@ -384,7 +384,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   let pinnedOpeners = [];
   const childrenOfPinnedTabs = {};
   for (const tab of rootTabs) {
-    const opener = Tabs.getOpenerTab(tab);
+    const opener = Tab.getOpener(tab);
     if (!pinnedOpeners.includes(opener))
       pinnedOpeners.push(opener);
   }
@@ -394,11 +394,11 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // (which were left ungrouped in previous process).
   const openerOf = {};
   const unifiedRootTabs = Tabs.getAllTabs(rootTabs[0].windowId).filter(tab => {
-    if (Tabs.getParentTab(tab) ||
+    if (Tab.getParent(tab) ||
         Tabs.getAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
       return false;
     if (rootTabs.includes(tab)) { // newly opened tab
-      const opener = Tabs.getOpenerTab(tab);
+      const opener = Tab.getOpener(tab);
       if (!opener)
         return false;
       openerOf[tab.id] = opener;
@@ -420,7 +420,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
 
   // Ignore pinned openeres which has no child tab to be grouped.
   pinnedOpeners = pinnedOpeners.filter(opener => {
-    return childrenOfPinnedTabs[opener.id].length > 1 || Tabs.getGroupTabForOpener(opener);
+    return childrenOfPinnedTabs[opener.id].length > 1 || Tab.getGroupTabForOpener(opener);
   });
   log(' => ', pinnedOpeners.map(tab => tab.id));
 
@@ -431,7 +431,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       const lastPinnedTab = allPinnedTabs[allPinnedTabs.length - 1];
       for (const tab of rootTabs.slice(0).reverse()) {
         if (!pinnedOpeners.includes(openerOf[tab.id]) ||
-            Tabs.getGroupTabForOpener(openerOf[tab.id]))
+            Tab.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         // If there is not-yet grouped sibling, place next to it.
         const siblings = Tabs.queryAll({
@@ -444,14 +444,14 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           ]
         });
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
-        await Tree.moveTabSubtreeAfter(tab, (Tabs.getLastDescendantTab(referenceTab) || referenceTab), {
+        await Tree.moveTabSubtreeAfter(tab, (Tab.getLastDescendant(referenceTab) || referenceTab), {
           broadcast: true
         });
       }
       break;
     case Constants.kINSERT_END:
       for (const tab of unifiedRootTabs) {
-        if (Tabs.getGroupTabForOpener(openerOf[tab.id]))
+        if (Tab.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         await Tree.moveTabSubtreeAfter(tab, Tabs.getLastTab(tab.windowId), {
           broadcast: true
@@ -468,7 +468,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   for (const opener of pinnedOpeners) {
     const children = childrenOfPinnedTabs[opener.id].sort((a, b) => a.index - b.index);
     log(`trying to group children of ${opener.id}: `, children.map(child => child.id));
-    let parent = Tabs.getGroupTabForOpener(opener);
+    let parent = Tab.getGroupTabForOpener(opener);
     if (!parent) {
       const uri = TabsGroup.makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title),
@@ -489,7 +489,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       Tabs.setAttribute(child, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
-        insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tabs.getLastDescendantTab(parent),
+        insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : Tab.getLastDescendant(parent),
         broadcast:   true
       });
     }

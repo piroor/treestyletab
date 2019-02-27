@@ -32,7 +32,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
   log('Tabs.onCreating ', tab.id, info);
 
   const possibleOpenerTab = info.activeTab || Tabs.getActiveTab(tab.windowId);
-  const opener = Tabs.getOpenerTab(tab);
+  const opener = Tab.getOpener(tab);
   if (opener) {
     Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
   }
@@ -43,7 +43,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
            next tab. In this case the tab is expected to be placed next to the
            active tab aways, so we should skip all repositioning behavior.
            See also: https://github.com/piroor/treestyletab/issues/2054 */
-        !Tabs.getNextTab(tab)) {
+        !Tab.getNext(tab)) {
       if (Tabs.isNewTabCommandTab(tab)) {
         if (!info.positionedBySelf) {
           log('behave as a tab opened by new tab command');
@@ -96,7 +96,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
     behavior:  params.autoAttachBehavior,
     broadcast: true
   });
-  const parent = Tabs.getParentTab(tab);
+  const parent = Tab.getParent(tab);
   if (!parent ||
       !params.inheritContextualIdentity ||
       tab.cookieStoreId != 'firefox-default' ||
@@ -136,10 +136,10 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
   if ('openerTabId' in changeInfo &&
       configs.syncParentTabAndOpenerTab) {
     Tabs.waitUntilAllTabsAreCreated(tab.windowId).then(() => {
-      const parent = Tabs.getOpenerTab(tab);
+      const parent = Tab.getOpener(tab);
       if (!parent ||
           parent.windowId != tab.windowId ||
-          parent == Tabs.getParentTab(tab))
+          parent == Tab.getParent(tab))
         return;
       Tree.attachTabTo(tab, parent, {
         insertAt:    Constants.kINSERT_NEAREST,
@@ -159,7 +159,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
     const window = Tabs.trackedWindows.get(tab.windowId);
     const toBeGroupedTabs = window.openedNewTabs;
     log('toBeGroupedTabs ', toBeGroupedTabs);
-    if (!Tabs.getParentTab(tab) &&
+    if (!Tab.getParent(tab) &&
         possibleOpenerTab &&
         !toBeGroupedTabs.includes(tab.id)) {
       if (Tabs.isNewTabCommandTab(tab)) {

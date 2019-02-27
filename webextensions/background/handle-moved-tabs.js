@@ -34,12 +34,12 @@ Tabs.onCreated.addListener((tab, info = {}) => {
       info.skipFixupTree ||
       // do nothing for already attached tabs
       (tab.openerTabId &&
-       Tabs.getParentTab(tab) == Tab.get(tab.openerTabId)))
+       Tab.getParent(tab) == Tab.get(tab.openerTabId)))
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.positionedBySelf &&
-      (Tabs.getNextNormalTab(tab) ||
-       Tabs.getPreviousNormalTab(tab) ||
+      (Tab.getNextNormal(tab) ||
+       Tab.getPreviousNormal(tab) ||
        (info.treeForActionDetection &&
         (info.treeForActionDetection.target.next ||
          info.treeForActionDetection.target.previous))))
@@ -61,7 +61,7 @@ Tabs.onMoving.addListener((tab, moveInfo) => {
       !positionControlled)
     return true;
 
-  const opener = Tabs.getOpenerTab(tab);
+  const opener = Tab.getOpener(tab);
   // if there is no valid opener, it can be a restored initial tab in a restored window
   // and can be just moved as a part of window restoration process.
   if (!opener)
@@ -166,7 +166,7 @@ function moveBack(tab, moveInfo) {
 
 async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   log('detectTabActionFromNewPosition: ', tab.id, moveInfo);
-  const tree   = moveInfo.treeForActionDetection || Tabs.snapshotTreeForActionDetection(tab);
+  const tree   = moveInfo.treeForActionDetection || Tree.snapshotForActionDetection(tab);
   const target = tree.target;
 
   const toIndex   = moveInfo.toIndex;

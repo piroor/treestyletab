@@ -46,7 +46,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
   if (Tabs.isCollapsed(tab)) {
-    if (!Tabs.getParentTab(tab)) {
+    if (!Tab.getParent(tab)) {
       // This is invalid case, generally never should happen,
       // but actually happen on some environment:
       // https://github.com/piroor/treestyletab/issues/1717
@@ -60,7 +60,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     else if (configs.autoExpandOnCollapsedChildActive &&
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildActive');
-      for (const ancestor of Tabs.getAncestorTabs(tab)) {
+      for (const ancestor of Tab.getAncestors(tab)) {
         Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
           broadcast: true
@@ -70,12 +70,12 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     }
     else {
       log('=> reaction for focusing collapsed descendant');
-      let newSelection = Tabs.getVisibleAncestorOrSelf(tab);
+      let newSelection = Tab.getVisibleAncestorOrSelf(tab);
       if (!newSelection) // this seems invalid case...
         return false;
       if (shouldSkipCollapsed &&
           window.lastActiveTab == newSelection.id) {
-        newSelection = Tabs.getNextVisibleTab(newSelection) || Tabs.getFirstVisibleTab(tab.windowId);
+        newSelection = Tab.getNextVisible(newSelection) || Tabs.getFirstVisibleTab(tab.windowId);
       }
       window.lastActiveTab = newSelection.id;
       if (mMaybeTabSwitchingByShortcut)

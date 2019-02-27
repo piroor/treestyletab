@@ -48,6 +48,8 @@ import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 import * as ContextualIdentities from './contextual-identities.js';
 
+import Tab from './Tab.js';
+
 function log(...args) {
   internalLogger('common/tabs-update', ...args);
 }
@@ -88,7 +90,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     Tabs.onLabelUpdated.dispatch(tab);
   }
 
-  const openerOfGroupTab = Tabs.isGroupTab(tab) && Tabs.getOpenerFromGroupTab(tab);
+  const openerOfGroupTab = Tabs.isGroupTab(tab) && Tab.getOpenerFromGroupTab(tab);
   if (openerOfGroupTab &&
       openerOfGroupTab.favIconUrl) {
     Tabs.onFaviconUpdated.dispatch(tab,
@@ -295,7 +297,7 @@ export function updateParentTab(parent) {
   if (!Tabs.ensureLivingTab(parent))
     return;
 
-  const children = Tabs.getChildTabs(parent);
+  const children = Tab.getChildren(parent);
 
   if (children.some(Tabs.maybeSoundPlaying))
     Tabs.addState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
@@ -307,7 +309,7 @@ export function updateParentTab(parent) {
   else
     Tabs.removeState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
 
-  updateParentTab(Tabs.getParentTab(parent));
+  updateParentTab(Tab.getParent(parent));
 
   Tabs.onParentTabUpdated.dispatch(parent);
 }

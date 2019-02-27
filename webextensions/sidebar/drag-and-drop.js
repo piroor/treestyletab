@@ -184,7 +184,7 @@ function getDragDataFromOneTab(tab, options = {}) {
 function getDraggedTabsFromOneTab(tab) {
   if (Tabs.isSelected(tab))
     return Tabs.getSelectedTabs(tab.windowId);
-  return [tab].concat(Tabs.getDescendantTabs(tab));
+  return [tab].concat(Tab.getDescendants(tab));
 }
 
 function sanitizeDragData(dragData) {
@@ -261,7 +261,7 @@ function getDropAction(event) {
         else if (info.dragOverTab) {
           if (info.draggedTabIds.includes(info.dragOverTab.id))
             return false;
-          const ancestors = Tabs.getAncestorTabs(info.dragOverTab);
+          const ancestors = Tab.getAncestors(info.dragOverTab);
           /* too many function call in this way, so I use alternative way for better performance.
           return !info.draggedTabIds.includes(info.dragOverTab.id) &&
                    Tabs.collectRootTabs(info.draggedTabs).every(rootTab =>
@@ -269,7 +269,7 @@ function getDropAction(event) {
                    );
           */
           for (const tab of info.draggedTabs.slice(0).reverse()) {
-            const parent = Tabs.getParentTab(tab);
+            const parent = Tab.getParent(tab);
             if (!parent && ancestors.includes(parent))
               return false;
           }
@@ -358,11 +358,11 @@ function getDropAction(event) {
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-        (Tabs.getFirstChildTab(targetTab) || Tabs.getNextVisibleTab(targetTab)) :
-        (Tabs.getNextSiblingTab(targetTab) || Tabs.getNextTab(Tabs.getLastDescendantTab(targetTab) || targetTab));
+        (Tab.getFirstChild(targetTab) || Tab.getNextVisible(targetTab)) :
+        (Tab.getNextSibling(targetTab) || Tab.getNext(Tab.getLastDescendant(targetTab) || targetTab));
       info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
         targetTab :
-        (Tabs.getLastDescendantTab(targetTab) || targetTab);
+        (Tab.getLastDescendant(targetTab) || targetTab);
       if (info.draggedTab &&
           info.draggedTab.pinned != Tabs.isPinned(targetTab))
         info.dropPosition = kDROP_IMPOSSIBLE;
@@ -414,19 +414,19 @@ function getDropAction(event) {
         if (info.draggedTab &&
             info.draggedTab.id == info.insertBefore.id) {
           info.action       = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
-          info.parent       = Tabs.getParentTab(targetTab);
-          let insertBefore = Tabs.getNextSiblingTab(targetTab);
+          info.parent       = Tab.getParent(targetTab);
+          let insertBefore = Tab.getNextSibling(targetTab);
           let ancestor     = info.parent;
           while (ancestor && !insertBefore) {
-            insertBefore = Tabs.getNextSiblingTab(ancestor);
-            ancestor     = Tabs.getParentTab(ancestor);
+            insertBefore = Tab.getNextSibling(ancestor);
+            ancestor     = Tab.getParent(ancestor);
           }
           info.insertBefore = insertBefore;
-          info.insertAfter  = Tabs.getLastDescendantTab(targetTab);
+          info.insertAfter  = Tab.getLastDescendant(targetTab);
         }
       }
       if (info.draggedTab &&
-          info.draggedTab.pinned != Tabs.isPinned(Tabs.getNextVisibleTab(targetTab)))
+          info.draggedTab.pinned != Tabs.isPinned(Tab.getNextVisible(targetTab)))
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (configs.debug)
         log(' calculated info: ', info);
@@ -815,7 +815,7 @@ function onDragOver(event) {
 
   let dropPositionTargetTab = info.targetTab;
   while (Tabs.isCollapsed(dropPositionTargetTab)) {
-    dropPositionTargetTab = Tabs.getPreviousTab(dropPositionTargetTab);
+    dropPositionTargetTab = Tab.getPrevious(dropPositionTargetTab);
   }
   if (!dropPositionTargetTab)
     dropPositionTargetTab = info.targetTab;

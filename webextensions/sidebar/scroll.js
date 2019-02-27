@@ -360,7 +360,7 @@ function getOffsetForAnimatingTab(tab) {
 
 /*
 function scrollToTabSubtree(tab) {
-  return scrollToTab(Tabs.getLastDescendantTab(tab), {
+  return scrollToTab(Tab.getLastDescendant(tab), {
     anchor:            tab,
     notifyOnOutOfView: true
   });
@@ -457,7 +457,7 @@ function reserveToSaveScrollPosition() {
 Tabs.onCreated.addListener((tab, _info) => {
   if (configs.animation) {
     wait(10).then(() => { // wait until the tab is moved by TST itself
-      const parent = Tabs.getParentTab(tab);
+      const parent = Tab.getParent(tab);
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
       const active = Tabs.isActive(tab);

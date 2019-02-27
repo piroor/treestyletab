@@ -195,22 +195,22 @@ async function onShortcutCommand(command) {
 
     case 'focusPrevious':
     case 'focusPreviousSilently': {
-      const nextActive = Tabs.getPreviousVisibleTab(activeTab) ||
+      const nextActive = Tab.getPreviousVisible(activeTab) ||
         Tabs.getLastVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
-      const nextActive = Tabs.getNextVisibleTab(activeTab) ||
+      const nextActive = Tab.getNextVisible(activeTab) ||
         Tabs.getFirstVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusParent': {
-      const parent = Tabs.getParentTab(activeTab);
+      const parent = Tab.getParent(activeTab);
       TabsInternalOperation.activateTab(parent);
     }; return;
     case 'focusFirstChild':
-      TabsInternalOperation.activateTab(Tabs.getFirstChildTab(activeTab));
+      TabsInternalOperation.activateTab(Tab.getFirstChild(activeTab));
       return;
 
     case 'tabbarUp':
@@ -450,7 +450,7 @@ function onMessage(message, sender) {
         const multiselected = Tabs.isMultiselected(root);
         const tabs = multiselected ?
           Tabs.getSelectedTabs(root.windowId) :
-          [root].concat(Tabs.getDescendantTabs(root)) ;
+          [root].concat(Tab.getDescendants(root)) ;
         for (const tab of tabs) {
           const playing = Tabs.isSoundPlaying(tab);
           const muted   = Tabs.isMuted(tab);

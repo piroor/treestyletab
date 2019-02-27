@@ -100,14 +100,14 @@ async function updateInternal(tabId) {
   let nextActive = null;
   if (renewedTab.active) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
-      const firstChild = Tabs.getFirstChildTab(tab);
+      const firstChild = Tab.getFirstChild(tab);
       nextActive = (
         (firstChild && !Tabs.isCollapsed(firstChild) && firstChild) ||
-        (Tabs.getNextSiblingTab(tab) || Tabs.getPreviousVisibleTab(tab))
+        (Tab.getNextSibling(tab) || Tab.getPreviousVisible(tab))
       );
     }
     else
-      nextActive = Tabs.getNextVisibleTab(tab) || Tabs.getPreviousVisibleTab(tab);
+      nextActive = Tab.getNextVisible(tab) || Tab.getPreviousVisible(tab);
   }
   if (nextActive) {
     log(`  ${tab.id} is under control: successor = ${nextActive.id}`);

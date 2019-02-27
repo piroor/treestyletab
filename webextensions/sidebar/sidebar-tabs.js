@@ -124,7 +124,7 @@ function updateDescendantsCount(tab) {
   const counter = getDescendantsCounter(tab);
   if (!counter)
     return;
-  const descendants = Tabs.getDescendantTabs(tab);
+  const descendants = Tab.getDescendants(tab);
   let count = descendants.length;
   if (configs.counterRole == Constants.kCOUNTER_ROLE_ALL_TABS)
     count += 1;
@@ -132,7 +132,7 @@ function updateDescendantsCount(tab) {
 }
 
 function updateDescendantsHighlighted(tab) {
-  const children = Tabs.getChildTabs(tab);
+  const children = Tab.getChildren(tab);
   if (!Tabs.hasChildTabs(tab)) {
     Tabs.removeState(tab, Constants.kTAB_STATE_SOME_DESCENDANTS_HIGHLIGHTED);
     Tabs.removeState(tab, Constants.kTAB_STATE_ALL_DESCENDANTS_HIGHLIGHTED);
@@ -185,7 +185,7 @@ export function reserveToUpdateTooltip(tab) {
 function updateTabAndAncestorsTooltip(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
-  for (const updateTab of [tab].concat(Tabs.getAncestorTabs(tab))) {
+  for (const updateTab of [tab].concat(Tab.getAncestors(tab))) {
     updateTooltip(updateTab);
   }
 }
@@ -236,7 +236,7 @@ windowId = ${tab.windowId}
 
 function getTooltipWithDescendants(tab) {
   const tooltip = [`* ${tab.$TST.tooltip || tab.title}`];
-  for (const child of Tabs.getChildTabs(tab)) {
+  for (const child of Tab.getChildren(tab)) {
     if (!child.$TST.tooltipWithDescendants)
       child.$TST.tooltipWithDescendants = getTooltipWithDescendants(child);
     tooltip.push(child.$TST.tooltipWithDescendants.replace(/^/gm, '  '));
@@ -585,7 +585,7 @@ Tabs.onMoving.addListener((tab, _info) => {
 
 Tabs.onMoved.addListener(async (tab, info) => {
   if (mInitialized)
-    reserveToUpdateTooltip(Tabs.getParentTab(tab));
+    reserveToUpdateTooltip(Tab.getParent(tab));
 
   const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
   mTabWasVisibleBeforeMoving.delete(tab.id);
@@ -648,7 +648,7 @@ Tabs.onUpdated.addListener((tab, info) => {
 
   reserveToUpdateCloseboxTooltip(tab);
 
-  for (const ancestor of Tabs.getAncestorTabs(tab)) {
+  for (const ancestor of Tab.getAncestors(tab)) {
     updateDescendantsHighlighted(ancestor);
   }
 
@@ -670,7 +670,7 @@ Tabs.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
       !Tabs.ensureLivingTab(tab))
     return;
-  reserveToUpdateTooltip(Tabs.getParentTab(tab));
+  reserveToUpdateTooltip(Tab.getParent(tab));
   if (tab.$TST.element.parentNode)
     tab.$TST.element.parentNode.removeChild(tab.$TST.element);
 });
@@ -697,7 +697,7 @@ Tree.onAttached.addListener((_tab, info = {}) => {
   reserveToUpdateTwistyTooltip(info.parent);
   reserveToUpdateCloseboxTooltip(info.parent);
   if (info.newlyAttached) {
-    const ancestors = [info.parent].concat(Tabs.getAncestorTabs(info.parent));
+    const ancestors = [info.parent].concat(Tab.getAncestors(info.parent));
     for (const ancestor of ancestors) {
       updateDescendantsCount(ancestor);
       updateDescendantsHighlighted(ancestor);
@@ -715,7 +715,7 @@ Tree.onDetached.addListener((_tab, detachInfo = {}) => {
   reserveToUpdateTwistyTooltip(parent);
   reserveToUpdateCloseboxTooltip(parent);
   reserveToUpdateTooltip(parent);
-  const ancestors = [parent].concat(Tabs.getAncestorTabs(parent));
+  const ancestors = [parent].concat(Tab.getAncestors(parent));
   for (const ancestor of ancestors) {
     updateDescendantsCount(ancestor);
     updateDescendantsHighlighted(ancestor);

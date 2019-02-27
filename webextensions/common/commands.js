@@ -33,7 +33,7 @@ export const onMoveUp      = new EventListenerManager();
 export const onMoveDown    = new EventListenerManager();
 
 export function reloadTree(rootTab) {
-  const tabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  const tabs = [rootTab].concat(Tab.getDescendants(rootTab));
   for (const tab of tabs) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.handleMissingTabError);
@@ -41,7 +41,7 @@ export function reloadTree(rootTab) {
 }
 
 export function reloadDescendants(rootTab) {
-  const tabs = Tabs.getDescendantTabs(rootTab);
+  const tabs = Tab.getDescendants(rootTab);
   for (const tab of tabs) {
     browser.tabs.reload(tab.id)
       .catch(ApiTabs.handleMissingTabError);
@@ -49,7 +49,7 @@ export function reloadDescendants(rootTab) {
 }
 
 export async function closeTree(rootTab) {
-  const tabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  const tabs = [rootTab].concat(Tab.getDescendants(rootTab));
   const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
   if (canceled)
     return;
@@ -60,7 +60,7 @@ export async function closeTree(rootTab) {
 }
 
 export async function closeDescendants(rootTab) {
-  const tabs = Tabs.getDescendantTabs(rootTab);
+  const tabs = Tab.getDescendants(rootTab);
   const canceled = (await onTabsClosing.dispatch(tabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
   if (canceled)
     return;
@@ -71,7 +71,7 @@ export async function closeDescendants(rootTab) {
 }
 
 export async function closeOthers(rootTab) {
-  const exceptionTabs = [rootTab].concat(Tabs.getDescendantTabs(rootTab));
+  const exceptionTabs = [rootTab].concat(Tab.getDescendants(rootTab));
   const tabs          = Tabs.getNormalTabs(rootTab.windowId); // except pinned or hidden tabs
   tabs.reverse(); // close bottom to top!
   const closeTabs = tabs.filter(tab => !exceptionTabs.includes(tab));
@@ -118,7 +118,7 @@ export function expandAll(windowId) {
 }
 
 export async function bookmarkTree(root, options = {}) {
-  const tabs = [root].concat(Tabs.getDescendantTabs(root));
+  const tabs = [root].concat(Tab.getDescendants(root));
   if (tabs.length > 1 &&
       Tabs.isGroupTab(tabs[0]))
     tabs.shift();
@@ -176,14 +176,14 @@ export async function openNewTabAs(options = {}) {
     }; break;
 
     case Constants.kNEWTAB_OPEN_AS_SIBLING:
-      parent      = Tabs.getParentTab(currentTab);
-      insertAfter = Tabs.getLastDescendantTab(parent);
+      parent      = Tab.getParent(currentTab);
+      insertAfter = Tab.getLastDescendant(parent);
       break;
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
-      parent       = Tabs.getParentTab(currentTab);
-      insertBefore = Tabs.getNextSiblingTab(currentTab);
-      insertAfter  = Tabs.getLastDescendantTab(currentTab) || currentTab;
+      parent       = Tab.getParent(currentTab);
+      insertBefore = Tab.getNextSibling(currentTab);
+      insertAfter  = Tab.getLastDescendant(currentTab) || currentTab;
     }; break;
   }
 
@@ -203,9 +203,9 @@ export async function openNewTabAs(options = {}) {
 }
 
 export async function indent(tab, options = {}) {
-  const newParent = Tabs.getPreviousSiblingTab(tab);
+  const newParent = Tab.getPreviousSibling(tab);
   if (!newParent ||
-      newParent == Tabs.getParentTab(tab))
+      newParent == Tab.getParent(tab))
     return false;
 
   if (!options.followChildren)
@@ -213,7 +213,7 @@ export async function indent(tab, options = {}) {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
-  const insertAfter = Tabs.getLastDescendantTab(newParent) || newParent;
+  const insertAfter = Tab.getLastDescendant(newParent) || newParent;
   await Tree.attachTabTo(tab, newParent, {
     broadcast:   true,
     forceExpand: true,
@@ -223,12 +223,12 @@ export async function indent(tab, options = {}) {
 }
 
 export async function outdent(tab, options = {}) {
-  const parent = Tabs.getParentTab(tab);
+  const parent = Tab.getParent(tab);
   if (!parent)
     return false;
 
-  const newParent = Tabs.getParentTab(parent);
-  if (newParent == Tabs.getParentTab(tab))
+  const newParent = Tab.getParent(parent);
+  if (newParent == Tab.getParent(tab))
     return false;
 
   if (!options.followChildren)
@@ -237,7 +237,7 @@ export async function outdent(tab, options = {}) {
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
   if (newParent) {
-    const insertAfter = Tabs.getLastDescendantTab(parent) || parent;
+    const insertAfter = Tab.getLastDescendant(parent) || parent;
     await Tree.attachTabTo(tab, newParent, {
       broadcast:   true,
       forceExpand: true,
@@ -248,7 +248,7 @@ export async function outdent(tab, options = {}) {
     await Tree.detachTab(tab, {
       broadcast: true,
     });
-    const insertAfter = Tabs.getLastDescendantTab(parent) || parent;
+    const insertAfter = Tab.getLastDescendant(parent) || parent;
     await TabsMove.moveTabAfter(tab, insertAfter, {
       broadcast: true,
     });
@@ -313,7 +313,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
 
   const movedWholeTree = [].concat(movedRoots);
   for (const movedRoot of movedRoots) {
-    const descendants = Tabs.getDescendantTabs(movedRoot);
+    const descendants = Tab.getDescendants(movedRoot);
     for (const descendant of descendants) {
       if (!movedWholeTree.includes(descendant))
         movedWholeTree.push(descendant);
@@ -323,11 +323,11 @@ export async function moveTabsWithStructure(tabs, params = {}) {
 
   while (params.insertBefore &&
          movedWholeTree.includes(params.insertBefore)) {
-    params.insertBefore = Tabs.getNextTab(params.insertBefore);
+    params.insertBefore = Tab.getNext(params.insertBefore);
   }
   while (params.insertAfter &&
          movedWholeTree.includes(params.insertAfter)) {
-    params.insertAfter = Tabs.getPreviousTab(params.insertAfter);
+    params.insertAfter = Tab.getPrevious(params.insertAfter);
   }
 
   const windowId = params.windowId || tabs[0].windowId;
@@ -480,7 +480,7 @@ function detachTabsWithStructure(tabs, options = {}) {
 }
 
 export async function moveUp(tab, options = {}) {
-  const previousTab = Tabs.getPreviousVisibleTab(tab);
+  const previousTab = Tab.getPreviousVisible(tab);
   if (!previousTab)
     return false;
 
@@ -503,7 +503,7 @@ export async function moveUp(tab, options = {}) {
     if (!referenceTabs.insertBefore &&
         !referenceTabs.insertAfter)
       return false;
-    await moveTabsWithStructure([tab].concat(Tabs.getDescendantTabs(tab)), {
+    await moveTabsWithStructure([tab].concat(Tab.getDescendants(tab)), {
       attachTo:     referenceTabs.parent,
       insertBefore: referenceTabs.insertBefore,
       insertAfter:  referenceTabs.insertAfter,
@@ -515,7 +515,7 @@ export async function moveUp(tab, options = {}) {
 
 export async function moveDown(tab, options = {}) {
   if (!options.followChildren) {
-    const nextTab = Tabs.getNextVisibleTab(tab);
+    const nextTab = Tab.getNextVisible(tab);
     if (!nextTab)
       return false;
     Tree.detachAllChildren(tab, {
@@ -530,7 +530,7 @@ export async function moveDown(tab, options = {}) {
     await onMoveDown.dispatch(tab);
   }
   else {
-    const nextTab = Tabs.getNextVisibleTab(Tabs.getLastDescendantTab(tab) || tab);
+    const nextTab = Tab.getNextVisible(Tab.getLastDescendant(tab) || tab);
     if (!nextTab)
       return false;
     const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
@@ -538,7 +538,7 @@ export async function moveDown(tab, options = {}) {
     });
     if (!referenceTabs.insertBefore && !referenceTabs.insertAfter)
       return false;
-    await moveTabsWithStructure([tab].concat(Tabs.getDescendantTabs(tab)), {
+    await moveTabsWithStructure([tab].concat(Tab.getDescendants(tab)), {
       attachTo:     referenceTabs.parent,
       insertBefore: referenceTabs.insertBefore,
       insertAfter:  referenceTabs.insertAfter,
@@ -577,7 +577,7 @@ export async function duplicateTab(sourceTab, options = {}) {
 
 export async function moveTabToStart(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(Tabs.getDescendantTabs(tab)));
+  return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(Tab.getDescendants(tab)));
 }
 
 export async function moveTabsToStart(movedTabs) {
@@ -595,7 +595,7 @@ export async function moveTabsToStart(movedTabs) {
 
 export async function moveTabToEnd(tab, options = {}) {
   const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
-  return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(Tabs.getDescendantTabs(tab)));
+  return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(Tab.getDescendants(tab)));
 }
 
 export async function moveTabsToEnd(movedTabs) {

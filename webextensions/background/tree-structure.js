@@ -15,6 +15,8 @@ import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
 
+import Tab from '/common/Tab.js';
+
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
 function log(...args) {
@@ -109,7 +111,7 @@ export async function loadTreeStructure(restoredFromCacheResults) {
       await reserveToAttachTabFromRestoredInfo.promisedDone;
       MetricsData.add('loadTreeStructure: attachTabFromRestoredInfo');
     }
-    Tabs.dumpAllTabs();
+    Tab.dumpAll();
   })));
 }
 
@@ -138,7 +140,7 @@ async function reserveToAttachTabFromRestoredInfo(tab, options = {}) {
     reserveToAttachTabFromRestoredInfo.onDone();
     delete reserveToAttachTabFromRestoredInfo.onDone;
     delete reserveToAttachTabFromRestoredInfo.promisedDone;
-    Tabs.dumpAllTabs();
+    Tab.dumpAll();
   }, 100);
   return reserveToAttachTabFromRestoredInfo.promisedDone;
 }
@@ -207,7 +209,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     break;
   }
   if (!attached) {
-    const opener = Tabs.getOpenerTab(tab);
+    const opener = Tab.getOpener(tab);
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', { child: tab, parent: opener });
@@ -221,8 +223,8 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
         await done;
     }
     else if (!options.bulk &&
-             (Tabs.getNextNormalTab(tab) ||
-              Tabs.getPreviousNormalTab(tab))) {
+             (Tab.getNextNormal(tab) ||
+              Tab.getPreviousNormal(tab))) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,
@@ -234,9 +236,9 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       // the restored tab is a roo tab
       ancestors.length == 0 &&
       // but attached to any parent based on its restored position
-      Tabs.getParentTab(tab) &&
+      Tab.getParent(tab) &&
       // when not in-middle position of existing tree (safely detachable position)
-      !Tabs.getNextSiblingTab(tab)) {
+      !Tab.getNextSibling(tab)) {
     Tree.detachTab(tab, {
       broadcast: true
     });

@@ -19,6 +19,8 @@ import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as SidebarStatus from '/common/sidebar-status.js';
 
+import Tab from '/common/Tab.js';
+
 import * as Background from './background.js';
 
 function log(...args) {
@@ -47,7 +49,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
   log('Tabs.onRemoving: granted to close ', tab.id);
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tabs.getNextSiblingTab(tab) || Tabs.getNextTab(tab);
+    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tab.getNextSibling(tab) || Tab.getNext(tab);
     Tree.tryMoveFocusFromClosingActiveTab(tab, {
       wasActive,
       params: {
@@ -63,9 +65,9 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
     await closeChildTabs(tab);
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB &&
-      Tabs.getChildTabs(tab).length > 1) {
+      Tab.getChildren(tab).length > 1) {
     log('trying to replace the closing tab with a new group tab');
-    const firstChild = Tabs.getFirstChildTab(tab);
+    const firstChild = Tab.getFirstChild(tab);
     const uri = TabsGroup.makeGroupTabURI({
       title:     browser.i18n.getMessage('groupTab_label', firstChild.title),
       temporary: true
@@ -174,7 +176,7 @@ tryGrantCloseTab.closingTabWasActive        = false;
 tryGrantCloseTab.promisedGrantedToCloseTabs = null;
 
 async function closeChildTabs(parent) {
-  const tabs = Tabs.getDescendantTabs(parent);
+  const tabs = Tab.getDescendants(parent);
   //if (!fireTabSubtreeClosingEvent(parent, tabs))
   //  return;
 
@@ -222,7 +224,7 @@ Tabs.onDetached.addListener((tab, info = {}) => {
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     if (Tree.shouldApplyTreeBehavior(info)) {
       Tree.tryMoveFocusFromClosingActiveTabNow(tab, {
-        ignoredTabs: Tabs.getDescendantTabs(tab)
+        ignoredTabs: Tab.getDescendants(tab)
       });
       return;
     }

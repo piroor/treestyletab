@@ -15,6 +15,8 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 
+import Tab from '/common/Tab.js';
+
 import * as Background from './background.js';
 
 function log(...args) {
@@ -50,7 +52,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       });
     }
 
-    const isNewTreeCreatedManually = !info.justNow && Tabs.getChildTabs(parent).length == 1;
+    const isNewTreeCreatedManually = !info.justNow && Tab.getChildren(parent).length == 1;
     if (info.forceExpand) {
       log('  expand by forceExpand option');
       Tree.collapseExpandSubtree(parent, Object.assign({}, info, {
@@ -68,7 +70,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         });
       }
 
-      const newAncestors = [parent].concat(Tabs.getAncestorTabs(parent));
+      const newAncestors = [parent].concat(Tab.getAncestors(parent));
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
           Tree.shouldTabAutoExpanded(parent) ||
@@ -126,7 +128,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   ]);
 
   if (!Tabs.ensureLivingTab(tab) || // not removed while waiting
-      Tabs.getParentTab(tab) != info.parent) // not detached while waiting
+      Tab.getParent(tab) != info.parent) // not detached while waiting
     return;
 
   browser.runtime.sendMessage({
@@ -137,12 +139,12 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   });
 
   if (info.newlyAttached)
-    Background.reserveToUpdateAncestors([tab].concat(Tabs.getDescendantTabs(tab)));
+    Background.reserveToUpdateAncestors([tab].concat(Tab.getDescendants(tab)));
   Background.reserveToUpdateChildren(parent);
   Background.reserveToUpdateInsertionPosition([
     tab,
-    Tabs.getNextTab(tab),
-    Tabs.getPreviousTab(tab)
+    Tab.getNext(tab),
+    Tab.getPrevious(tab)
   ]);
 });
 

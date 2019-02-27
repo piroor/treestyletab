@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from './common.js';
 
 import * as Constants from './constants.js';
@@ -226,3 +227,338 @@ Tab.init = (tab, options = {}) => {
 
   return tab;
 }
+
+
+Tab.getNext = tab => {
+  if (!tab)
+    return null;
+  Tabs.assertValidTab(tab);
+  return Tabs.query({
+    windowId: tab.windowId,
+    fromId:   tab.id,
+    living:   true,
+    index:    (index => index > tab.index)
+  });
+}
+
+Tab.getPrevious = tab => {
+  if (!tab)
+    return null;
+  Tabs.assertValidTab(tab);
+  return Tabs.query({
+    windowId: tab.windowId,
+    fromId:   tab.id,
+    living:   true,
+    index:    (index => index < tab.index),
+    last:     true
+  });
+}
+
+Tab.getNextNormal = tab => {
+  if (!Tabs.ensureLivingTab(tab))
+    return null;
+  Tabs.assertValidTab(tab);
+  return Tabs.query({
+    windowId: tab.windowId,
+    fromId:   tab.id,
+    normal:   true,
+    index:    (index => index > tab.index)
+  });
+}
+
+Tab.getPreviousNormal = tab => {
+  if (!Tabs.ensureLivingTab(tab))
+    return null;
+  Tabs.assertValidTab(tab);
+  return Tabs.query({
+    windowId: tab.windowId,
+    fromId:   tab.id,
+    normal:   true,
+    index:    (index => index < tab.index),
+    last:     true
+  });
+}
+
+Tab.getNextVisibleTab = tab => { // visible, not-collapsed
+  if (!Tabs.ensureLivingTab(tab))
+    return null;
+  Tabs.assertValidTab(tab);
+  return Tabs.query({
+    windowId: tab.windowId,
+    fromId:   tab.id,
+    visible:  true,
+    index:    (index => index > tab.index)
+  });
+}
+
+Tab.getPreviousVisibleTab = tab => { // visible, not-collapsed
+  if (!Tabs.ensureLivingTab(tab))
+    return null;
+  Tabs.assertValidTab(tab);
+  return Tabs.query({
+    windowId: tab.windowId,
+    fromId:   tab.id,
+    visible:  true,
+    index:    (index => index < tab.index),
+    last:     true
+  });
+}
+
+
+Tab.getOpener = tab => {
+  if (!tab)
+    return null;
+  if (!Tabs.ensureLivingTab(tab) ||
+      !tab ||
+      !tab.openerTabId ||
+      tab.openerTabId == tab.id)
+    return null;
+  Tabs.assertValidTab(tab);
+  const opener = Tabs.query({
+    windowId: tab.windowId,
+    id:       tab.openerTabId,
+    living:   true
+  });
+  return opener;
+}
+
+Tab.findSuccessor = (tab, options = {}) => {
+  if (typeof options != 'object')
+    options = {};
+  Tabs.assertValidTab(tab);
+  const ignoredTabs = (options.ignoredTabs || []).slice(0);
+  let foundTab = tab;
+  do {
+    ignoredTabs.push(foundTab);
+    foundTab = Tab.getNextSibling(foundTab);
+  } while (foundTab && ignoredTabs.includes(foundTab));
+  if (!foundTab) {
+    foundTab = tab;
+    do {
+      ignoredTabs.push(foundTab);
+      foundTab = Tab.getPreviousVisible(foundTab);
+    } while (foundTab && ignoredTabs.includes(foundTab));
+  }
+  return foundTab;
+}
+
+Tab.getGroupTabForOpener = opener => {
+  if (!opener)
+    return null;
+  Tabs.assertValidTab(opener);
+  return Tabs.query({
+    windowId:   opener.windowId,
+    living:     true,
+    attributes: [
+      Constants.kCURRENT_URI,
+      new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
+    ]
+  });
+}
+
+Tab.getOpenerFromGroupTab = groupTab => {
+  if (!Tabs.isGroupTab(groupTab))
+    return null;
+  Tabs.assertValidTab(groupTab);
+  const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
+  return matchedOpenerTabId && Tab.get(matchedOpenerTabId[1]);
+}
+
+
+Tab.getParent = child => {
+  if (!Tabs.ensureLivingTab(child))
+    return null;
+  Tabs.assertValidTab(child);
+  return child.$TST.parent;
+}
+
+Tab.getAncestors = (descendant, options = {}) => {
+  if (!descendant || !Tabs.ensureLivingTab(descendant))
+    return [];
+  Tabs.assertValidTab(descendant);
+  if (!options.force) {
+    // slice(0) is required to guard the cached array from destructive methods liek sort()!
+    return descendant.$TST.ancestors.slice(0);
+  }
+  const ancestors = [];
+  while (true) {
+    const parent = Tab.get(descendant.$TST.parentId);
+    if (!parent)
+      break;
+    ancestors.push(parent);
+    descendant = parent;
+  }
+  return ancestors;
+}
+
+Tab.getVisibleAncestorOrSelf = descendant => {
+  if (!Tabs.ensureLivingTab(descendant))
+    return null;
+  for (const ancestor of descendant.$TST.ancestors) {
+    if (!Tabs.isCollapsed(ancestor))
+      return ancestor;
+  }
+  Tabs.assertValidTab(descendant);
+  if (!Tabs.isCollapsed(descendant))
+    return descendant;
+  return null;
+}
+
+Tab.getRoot = descendant => {
+  if (!Tabs.ensureLivingTab(descendant))
+    return null;
+  Tabs.assertValidTab(descendant);
+  const ancestors = descendant.$TST.ancestors;
+  return ancestors.length > 0 ? ancestors[ancestors.length-1] : descendant ;
+}
+
+Tab.getChildren = parent => {
+  if (!Tabs.ensureLivingTab(parent))
+    return [];
+  Tabs.assertValidTab(parent);
+  if (!Tabs.assertInitializedTab(parent))
+    return [];
+  return parent.$TST.children;
+}
+
+Tab.getFirstChild = parent => {
+  if (!Tabs.ensureLivingTab(parent))
+    return null;
+  Tabs.assertValidTab(parent);
+  if (!Tabs.assertInitializedTab(parent))
+    return null;
+  const children = parent.$TST.children;
+  return children.length > 0 ? children[0] : null ;
+}
+
+Tab.getLastChild = parent => {
+  if (!Tabs.ensureLivingTab(parent))
+    return null;
+  Tabs.assertValidTab(parent);
+  if (!Tabs.assertInitializedTab(parent))
+    return null;
+  const children = parent.$TST.children;
+  return children.length > 0 ? children[children.length - 1] : null ;
+}
+
+Tab.getDescendants = root => {
+  if (!Tabs.ensureLivingTab(root))
+    return [];
+  Tabs.assertValidTab(root);
+  if (!Tabs.assertInitializedTab(root))
+    return [];
+  let descendants = [];
+  const children = root.$TST.children;
+  for (const child of children) {
+    descendants.push(child);
+    descendants = descendants.concat(Tab.getDescendants(child));
+  }
+  return descendants;
+}
+
+Tab.getLastDescendant = root => {
+  Tabs.assertValidTab(root);
+  const descendants = Tab.getDescendants(root);
+  return descendants.length ? descendants[descendants.length-1] : null ;
+}
+
+Tab.getNextSibling = tab => {
+  if (!Tabs.ensureLivingTab(tab))
+    return null;
+  Tabs.assertValidTab(tab);
+  const parent = tab.$TST.parent;
+  if (parent) {
+    const siblingIds = parent.$TST.childIds;
+    const index = siblingIds.indexOf(tab.id);
+    const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
+    if (!siblingId)
+      return null;
+    return Tab.get(siblingId);
+  }
+  else {
+    return Tabs.query({
+      windowId:  tab.windowId,
+      fromId:    tab.id,
+      living:    true,
+      index:     (index => index > tab.index),
+      hasParent: false,
+      first:     true
+    });
+  }
+}
+
+Tab.getPreviousSibling = tab => {
+  if (!Tabs.ensureLivingTab(tab))
+    return null;
+  Tabs.assertValidTab(tab);
+  const parent = tab.$TST.parent;
+  if (parent) {
+    const siblingIds = parent.$TST.childIds;
+    const index = siblingIds.indexOf(tab.id);
+    const siblingId = index > 0 ? siblingIds[index - 1] : null ;
+    if (!siblingId)
+      return null;
+    return Tab.get(siblingId);
+  }
+  else {
+    return Tabs.query({
+      windowId:  tab.windowId,
+      fromId:    tab.id,
+      living:    true,
+      index:     (index => index < tab.index),
+      hasParent: false,
+      last:      true
+    });
+  }
+}
+
+
+// if all tabs are aldeardy placed at there, we don't need to move them.
+Tab.isAllPlacedBefore = (tabs, nextTab) => {
+  if (tabs[tabs.length - 1] == nextTab)
+    nextTab = Tab.getNext(nextTab);
+  if (!nextTab && !Tab.getNext(tabs[tabs.length - 1]))
+    return true;
+
+  tabs = Array.from(tabs);
+  let previousTab = tabs.shift();
+  for (const tab of tabs) {
+    if (Tab.getPrevious(tab) != previousTab)
+      return false;
+    previousTab = tab;
+  }
+  return !nextTab ||
+         !previousTab ||
+         Tab.getNext(previousTab) == nextTab;
+}
+
+Tab.isAllPlacedAfter = (tabs, previousTab) => {
+  if (tabs[0] == previousTab)
+    previousTab = Tab.getPrevious(previousTab);
+  if (!previousTab && !Tab.getPrevious(tabs[0]))
+    return true;
+
+  tabs = Array.from(tabs).reverse();
+  let nextTab = tabs.shift();
+  for (const tab of tabs) {
+    if (Tab.getNext(tab) != nextTab)
+      return false;
+    nextTab = tab;
+  }
+  return !previousTab ||
+         !nextTab ||
+         Tab.getPrevious(nextTab) == previousTab;
+}
+
+
+Tab.dumpAll = (windowId) => {
+  if (!configs.debug)
+    return;
+  log('dumpAllTabs\n' +
+    Tabs.getAllTabs(windowId).map(tab =>
+      Tab.getAncestor(tab).reverse().concat([tab])
+        .map(tab => tab.id + (Tabs.isPinned(tab) ? ' [pinned]' : ''))
+        .join(' => ')
+    ).join('\n'));
+}
+

@@ -74,7 +74,7 @@ export function restoreTabsFromCacheInternal(params) {
     throw e;
   }
   log('restoreTabsFromCacheInternal: done');
-  Tabs.dumpAllTabs();
+  Tab.dumpAll();
   return tabs;
 }
 
@@ -177,7 +177,7 @@ function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
   else
     Tabs.removeAttribute(tab, Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
-  tab.$TST.ancestors = Tabs.getAncestorTabs(tab, { force: true });
+  tab.$TST.ancestors = Tab.getAncestors(tab, { force: true });
 
   Tabs.setAttribute(tab, Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, cachedTab.attributes[Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER] || '');
   Tabs.setAttribute(tab, Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, cachedTab.attributes[Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID] || '');
