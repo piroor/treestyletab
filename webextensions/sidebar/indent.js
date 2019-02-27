@@ -14,6 +14,8 @@ import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as Tree from '/common/tree.js';
 
+import Tab from '/common/Tab.js';
+
 // eslint-disable-next-line no-unused-vars
 function log(...args) {
   internalLogger('sidebar/indent', ...args);
@@ -45,7 +47,7 @@ export function updateRestoredTree(cachedIndent) {
 
 export function update(options = {}) {
   if (!options.cache) {
-    const maxLevel  = Tabs.getMaxTreeLevel(mTargetWindow);
+    const maxLevel  = getMaxTreeLevel(mTargetWindow);
     const maxIndent = mTabBar.getBoundingClientRect().width * (0.33);
     if (maxLevel <= mLastMaxLevel &&
         maxIndent == mLastMaxIndent &&
@@ -135,10 +137,22 @@ export function reserveToUpdateVisualMaxTreeLevel() {
 }
 
 function updateVisualMaxTreeLevel() {
-  const maxLevel = Tabs.getMaxTreeLevel(mTargetWindow, {
+  const maxLevel = getMaxTreeLevel(mTargetWindow, {
     onlyVisible: configs.indentAutoShrinkOnlyForVisible
   });
   document.documentElement.setAttribute(Constants.kMAX_TREE_LEVEL, Math.max(1, maxLevel));
+}
+
+function getMaxTreeLevel(windowId, options = {}) {
+  if (typeof options != 'object')
+    options = {};
+  const tabs = options.onlyVisible ?
+    Tab.getVisibleTabs(windowId, { ordered: false }) :
+    Tab.getTabs(windowId, { ordered: false }) ;
+  let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.$TST.attributes[Constants.kLEVEL] || 0)));
+  if (configs.maxTreeLevel > -1)
+    maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
+  return maxLevel;
 }
 
 Tabs.onCreated.addListener((_tab, _info) => { reserveToUpdateVisualMaxTreeLevel(); });

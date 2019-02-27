@@ -345,7 +345,7 @@ async function onNewTabTracked(tab) {
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
-  const activeTab            = Tabs.getActiveTab(window.id);
+  const activeTab            = Tab.getActiveTab(window.id);
 
   Tabs.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
@@ -370,7 +370,7 @@ async function onNewTabTracked(tab) {
 
     tab = Tab.init(tab, { inRemote: !!targetWindow });
 
-    const nextTab = Tabs.getAllTabs(window.id)[tab.index];
+    const nextTab = Tab.getAllTabs(window.id)[tab.index];
 
     // We need to update "active" state of a new active tab immediately.
     // Attaching of initial child tab (this new tab may become it) to an
@@ -488,7 +488,7 @@ async function onNewTabTracked(tab) {
       originalTab: duplicated && Tab.get(uniqueId.originalTabId),
       treeForActionDetection
     });
-    Tabs.resolveOpened(tab);
+    tab.$TST.resolveOpened();
 
     if (!duplicated &&
         restored) {
@@ -509,7 +509,7 @@ async function onNewTabTracked(tab) {
     if (Object.keys(renewedTab).length > 0)
       onUpdated(tab.id, changedProps, renewedTab);
 
-    const currentActiveTab = Tabs.getActiveTab(tab.windowId);
+    const currentActiveTab = Tab.getActiveTab(tab.windowId);
     if (renewedTab.active &&
         currentActiveTab.id != tab.id)
       onActivated({
@@ -545,7 +545,7 @@ function checkRecycledTab(windowId) {
     if (!Tabs.ensureLivingTab(tab))
       continue;
     const currentId = tab.$TST.uniqueId.id;
-    Tabs.updateUniqueId(tab).then(uniqueId => {
+    tab.$TST.updateUniqueId({ inRemote: !!Tabs.getWindow() }).then(uniqueId => {
       if (!Tabs.ensureLivingTab(tab) ||
           !uniqueId.restored ||
           uniqueId.id == currentId ||
@@ -589,7 +589,7 @@ async function onRemoved(tabId, removeInfo) {
 
     if (oldTab.active &&
         !('successorTabId' in oldTab)) { // on Firefox 64 or older
-      const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab);
+      const resolver = oldTab.$TST.fetchClosedWhileActiveResolver();
       if (resolver)
         mLastClosedWhileActiveResolvers.set(window, resolver);
     }
@@ -672,7 +672,7 @@ async function onMoved(tabId, moveInfo) {
     let oldPreviousTab = movedTab.$TST.previous;
     let oldNextTab     = movedTab.$TST.next;
     if (movedTab.index != moveInfo.toIndex) { // already moved
-      const tabs = Tabs.getAllTabs(moveInfo.windowId);
+      const tabs = Tab.getAllTabs(moveInfo.windowId);
       oldPreviousTab = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1];
       oldNextTab     = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex + 1 : moveInfo.fromIndex];
     }
@@ -701,7 +701,7 @@ async function onMoved(tabId, moveInfo) {
       let newNextIndex = extendedMoveInfo.toIndex;
       if (extendedMoveInfo.fromIndex < newNextIndex)
         newNextIndex++;
-      const nextTab = Tabs.getAllTabs(moveInfo.windowId)[newNextIndex];
+      const nextTab = Tab.getAllTabs(moveInfo.windowId)[newNextIndex];
       extendedMoveInfo.nextTab = nextTab;
       if (!alreadyMoved &&
           movedTab.$TST.next != nextTab) {

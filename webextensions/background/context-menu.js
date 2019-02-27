@@ -11,7 +11,6 @@ import {
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
-import * as Tabs from '/common/tabs.js';
 import * as TabsGroup from '/common/tabs-group.js';
 import * as Commands from '/common/commands.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -341,7 +340,7 @@ export const onClick = (info, tab) => {
   log('context menu item clicked: ', info, tab);
 
   const contextTab = Tab.get(tab.id);
-  const selectedTabs = contextTab.$TST.multiselected ? Tabs.getSelectedTabs(contextTab) : [];
+  const selectedTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
     case 'reloadTree':
@@ -390,13 +389,13 @@ export const onClick = (info, tab) => {
         Commands.collapseTree(contextTab);
       break;
     case 'pinnedTab': {
-      const tabs = Tabs.getPinnedTabs(contextTab.windowId);
+      const tabs = Tab.getPinnedTabs(contextTab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].id, { active: true })
           .catch(ApiTabs.handleMissingTabError);
     }; break;
     case 'unpinnedTab': {
-      const tabs = Tabs.getUnpinnedTabs(tab.windowId);
+      const tabs = Tab.getUnpinnedTabs(tab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].id, { active: true })
           .catch(ApiTabs.handleMissingTabError);

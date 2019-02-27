@@ -183,7 +183,7 @@ function getDragDataFromOneTab(tab, options = {}) {
 
 function getDraggedTabsFromOneTab(tab) {
   if (tab.$TST.selected)
-    return Tabs.getSelectedTabs(tab.windowId);
+    return Tab.getSelectedTabs(tab.windowId);
   return [tab].concat(tab.$TST.descendants);
 }
 
@@ -234,10 +234,10 @@ function getDropAction(event) {
     return info.draggedTabs.map(tab => tab.id);
   });
   info.defineGetter('targetTabs', () => {
-    return Tabs.getAllTabs(Tabs.getWindow());
+    return Tab.getAllTabs(Tabs.getWindow());
   });
   info.defineGetter('firstTargetTab', () => {
-    return Tabs.getFirstNormalTab(Tabs.getWindow()) || info.targetTabs[0];
+    return Tab.getFirstNormalTab(Tabs.getWindow()) || info.targetTabs[0];
   });
   info.defineGetter('lastTargetTab', () => {
     return info.targetTabs[info.targetTabs.length - 1];
@@ -249,7 +249,7 @@ function getDropAction(event) {
     const draggedTab = info.dragData && info.dragData.tab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
     if (draggedTab &&
-        isPrivateBrowsingTabDragged != info.dragOverTab || Tabs.getFirstTab(draggedTab.windowId).incognito) {
+        isPrivateBrowsingTabDragged != info.dragOverTab || Tab.getFirstTab(draggedTab.windowId).incognito) {
       return false;
     }
     else if (info.draggedTab) {
@@ -261,10 +261,10 @@ function getDropAction(event) {
         else if (info.dragOverTab) {
           if (info.draggedTabIds.includes(info.dragOverTab.id))
             return false;
-          const ancestors = Tab.getAncestors(info.dragOverTab);
+          const ancestors = info.dragOverTab.$TST.ancestors;
           /* too many function call in this way, so I use alternative way for better performance.
           return !info.draggedTabIds.includes(info.dragOverTab.id) &&
-                   Tabs.collectRootTabs(info.draggedTabs).every(rootTab =>
+                   Tab.collectRootTabs(info.draggedTabs).every(rootTab =>
                      !ancestors.includes(rootTab)
                    );
           */
@@ -452,7 +452,7 @@ export function clearDropPosition() {
 }
 
 export function clearDraggingTabsState() {
-  for (const tab of Tabs.getDraggingTabs(Tabs.getWindow())) {
+  for (const tab of Tab.getDraggingTabs(Tabs.getWindow())) {
     tab.$TST.removeState(Constants.kTAB_STATE_DRAGGING);
   }
 }
@@ -465,12 +465,12 @@ export function clearDraggingState() {
 }
 
 function isDraggingAllTabs(tab, tabs) {
-  const draggingTabs = Tabs.getDraggingTabs(tab.windowId);
-  return draggingTabs.length == (tabs || Tabs.getAllTabs(tab.windowId)).length;
+  const draggingTabs = Tab.getDraggingTabs(tab.windowId);
+  return draggingTabs.length == (tabs || Tab.getAllTabs(tab.windowId)).length;
 }
  
 function isDraggingAllActiveTabs(tab) {
-  return isDraggingAllTabs(tab, Tabs.getAllTabs(tab.windowId));
+  return isDraggingAllTabs(tab, Tab.getAllTabs(tab.windowId));
 }
 
 function collapseAutoExpandedTabsWhileDragging() {

@@ -19,6 +19,8 @@ import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as SidebarStatus from '/common/sidebar-status.js';
 
+import Tab from '/common/Tab.js';
+
 import * as Background from './background.js';
 
 function log(...args) {
@@ -213,7 +215,7 @@ Tabs.onRemoved.addListener((tab, info) => {
 });
 
 browser.windows.onRemoved.addListener(windowId  => {
-  const removeTabIds = Tabs.getAllTabs(windowId).map(tab => tab.id);
+  const removeTabIds = Tab.getAllTabs(windowId).map(tab => tab.id);
   configs.grantedRemovingTabIds = configs.grantedRemovingTabIds.filter(id => !removeTabIds.includes(id));
 });
 

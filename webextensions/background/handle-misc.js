@@ -98,7 +98,7 @@ async function onShortcutCommand(command) {
     active:        true,
     currentWindow: true
   }))[0].id);
-  const selectedTabs = activeTab.$TST.multiselected ? Tabs.getSelectedTabs(activeTab.windowId) : [];
+  const selectedTabs = activeTab.$TST.multiselected ? Tab.getSelectedTabs(activeTab.windowId) : [];
   log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
   switch (command) {
@@ -196,13 +196,13 @@ async function onShortcutCommand(command) {
     case 'focusPrevious':
     case 'focusPreviousSilently': {
       const nextActive = activeTab.$TST.nearestVisiblePreceding ||
-        Tabs.getLastVisibleTab(activeTab.windowId);
+        Tab.getLastVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
       const nextActive = activeTab.$TST.nearestVisibleFollowing ||
-        Tabs.getFirstVisibleTab(activeTab.windowId);
+        Tab.getFirstVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusParent':
@@ -271,13 +271,8 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
-        await Tabs.waitUntilTabsAreCreated(message.id);
-        const tab = Tab.get(message.id);
-        if (tab && !message.forceNew)
-          return tab.$TST.uniqueId;
-        return Tabs.requestUniqueId(message.id, {
-          forceNew: message.forceNew
-        });
+        await Tabs.waitUntilTabsAreCreated(message.tabId);
+        return Tab.get(message.tabId).promisedUniqueId;
       })();
 
     case Constants.kCOMMAND_PULL_TABS_ORDER:
@@ -288,7 +283,7 @@ function onMessage(message, sender) {
         while (!mInitialized) {
           await wait(10);
         }
-        const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(message.windowId));
+        const structure = Tree.getTreeStructureFromTabs(Tab.getAllTabs(message.windowId));
         return { structure };
       })();
 
@@ -448,7 +443,7 @@ function onMessage(message, sender) {
           return;
         const multiselected = root.$TST.multiselected;
         const tabs = multiselected ?
-          Tabs.getSelectedTabs(root.windowId) :
+          Tab.getSelectedTabs(root.windowId) :
           [root].concat(root.$TST.descendants) ;
         for (const tab of tabs) {
           const playing = tab.$TST.soundPlaying;

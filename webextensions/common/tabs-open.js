@@ -122,7 +122,7 @@ export async function openURIsInTabs(uris, options = {}) {
   if (!options.windowId)
     throw new Error('missing loading target window\n' + new Error().stack);
 
-  return Tabs.doAndGetNewTabs(async () => {
+  return Tab.doAndGetNewTabs(async () => {
     if (options.inRemote) {
       const ids = await browser.runtime.sendMessage(Object.assign({}, options, {
         type:           Constants.kCOMMAND_NEW_TABS,
@@ -144,7 +144,7 @@ export async function openURIsInTabs(uris, options = {}) {
     else {
       await Tabs.waitUntilAllTabsAreCreated(options.windowId);
       await TabsMove.waitUntilSynchronized(options.windowId);
-      const startIndex = Tabs.calculateNewTabIndex(options);
+      const startIndex = Tab.calculateNewTabIndex(options);
       log('startIndex: ', startIndex);
       const window = Tabs.trackedWindows.get(options.windowId);
       window.toBeOpenedTabsWithPositions += uris.length;

@@ -9,10 +9,11 @@ import {
   log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
-import * as Tabs from './tabs.js';
 import * as TabsMove from './tabs-move.js';
 import * as TabsOpen from './tabs-open.js';
 import * as Tree from './tree.js';
+
+import Tab from './Tab.js';
 
 function log(...args) {
   internalLogger('common/tabs-group', ...args);
@@ -27,7 +28,7 @@ export function makeGroupTabURI(options = {}) {
 }
 
 export async function groupTabs(tabs, options = {}) {
-  const rootTabs = Tabs.collectRootTabs(tabs);
+  const rootTabs = Tab.collectRootTabs(tabs);
   if (rootTabs.length <= 0)
     return null;
 

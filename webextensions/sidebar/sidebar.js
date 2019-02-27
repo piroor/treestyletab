@@ -202,7 +202,7 @@ export async function init() {
   UserOperationBlocker.unblock({ throbber: true });
 
   MetricsData.add('init end');
-  log(`Startup metrics for ${Tabs.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
 }
 
 function applyStyle(style) {
@@ -396,7 +396,7 @@ async function inheritTreeStructure() {
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response.structure) {
-    await Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), response.structure);
+    await Tree.applyTreeStructureToTabs(Tab.getAllTabs(mTargetWindow), response.structure);
     MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
   }
 }
@@ -505,13 +505,13 @@ function updateTabbarLayout(params = {}) {
       // Tab at the end of the tab bar can be hidden completely or
       // partially (newly opened in small tab bar, or scrolled out when
       // the window is shrunken), so we need to scroll to it explicitely.
-      const activeTab = Tabs.getActiveTab(Tabs.getWindow());
+      const activeTab = Tab.getActiveTab(Tabs.getWindow());
       if (activeTab && !Scroll.isTabInViewport(activeTab)) {
         log('scroll to active tab on updateTabbarLayout');
         Scroll.scrollToTab(activeTab);
         return;
       }
-      const lastOpenedTab = Tabs.getLastOpenedTab(Tabs.getWindow());
+      const lastOpenedTab = Tab.getLastOpenedTab(Tabs.getWindow());
       const reasons       = params.reasons || 0;
       if (reasons & Constants.kTABBAR_UPDATE_REASON_TAB_OPEN &&
           !Scroll.isTabInViewport(lastOpenedTab)) {
@@ -701,7 +701,7 @@ function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
     case 'debug': {
-      for (const tab of Tabs.getAllTabs(mTargetWindow)) {
+      for (const tab of Tab.getAllTabs(mTargetWindow)) {
         TabsUpdate.updateTab(tab, tab, { forceApply: true });
       }
       if (configs.debug)
@@ -848,7 +848,7 @@ function onMessage(message, _sender, _respond) {
       return Promise.resolve(true);
 
     case Constants.kCOMMAND_PUSH_TREE_STRUCTURE:
-      Tree.applyTreeStructureToTabs(Tabs.getAllTabs(mTargetWindow), message.structure);
+      Tree.applyTreeStructureToTabs(Tab.getAllTabs(mTargetWindow), message.structure);
       break;
 
     case Constants.kCOMMAND_NOTIFY_TAB_RESTORING:
@@ -891,7 +891,7 @@ function onMessage(message, _sender, _respond) {
         // Tree's collapsed state can be changed before this message is delivered,
         // so we should ignore obsolete messages.
         if (message.byAncestor &&
-            message.collapsed != Tab.getAncestors(tab).some(ancestor => ancestor.$TST.subtreeCollapsed))
+            message.collapsed != tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed))
           return;
         Tree.collapseExpandTab(tab, {
           collapsed:   message.collapsed,

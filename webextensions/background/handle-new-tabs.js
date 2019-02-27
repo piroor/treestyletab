@@ -31,7 +31,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
 
   log('Tabs.onCreating ', tab.id, info);
 
-  const possibleOpenerTab = info.activeTab || Tabs.getActiveTab(tab.windowId);
+  const possibleOpenerTab = info.activeTab || Tab.getActiveTab(tab.windowId);
   const opener = tab.$TST.opener;
   if (opener) {
     tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
@@ -71,7 +71,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
       return false;
     }
     if (configs.insertNewTabFromPinnedTabAt == Constants.kINSERT_END) {
-      return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId), {
+      return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
         delayedMove: true,
         broadcast:   true
       }).then(moved => !moved);

@@ -15,6 +15,8 @@ import * as Constants from './constants.js';
 import * as ApiTabs from './api-tabs.js';
 import * as Tabs from './tabs.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('common/tabs-internal-operation', ...args);
 }
@@ -45,7 +47,7 @@ export async function activateTab(tab, options = {}) {
   };
   if (configs.supportTabsMultiselect) {
     let tabs = [tab.index];
-    const highlightedTabs = Tabs.getHighlightedTabs(tab.windowId);
+    const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
     if (tab.$TST.hasOtherHighlighted &&
         options.keepMultiselection &&
         highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {

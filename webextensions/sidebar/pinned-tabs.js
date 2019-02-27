@@ -45,6 +45,7 @@ import {
 
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
+import Tab from '/common/Tab.js';
 import * as Size from './size.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -63,7 +64,7 @@ export function init() {
 
 export function reposition(options = {}) {
   //log('reposition');
-  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
+  const pinnedTabs = Tab.getPinnedTabs(mTargetWindow);
   if (pinnedTabs.length == 0) {
     reset();
     document.documentElement.classList.remove('have-pinned-tabs');
@@ -136,7 +137,7 @@ export function reserveToReposition(options = {}) {
 
 function reset() {
   mTabBar.style.marginTop = '';
-  const pinnedTabs = Tabs.getPinnedTabs(mTargetWindow);
+  const pinnedTabs = Tab.getPinnedTabs(mTargetWindow);
   pinnedTabs.forEach(clearStyle);
 }
 

@@ -11,6 +11,7 @@ import {
 import * as Constants from './constants.js';
 import * as Tabs from './tabs.js';
 import * as TabsUpdate from './tabs-update.js';
+import * as UniqueId from './unique-id.js';
 
 import Tab from './Tab.js';
 
@@ -19,10 +20,11 @@ function log(...args) {
 }
 
 export async function getWindowSignature(windowIdOrTabs) {
+  let tabs = windowIdOrTabs;
   if (typeof windowIdOrTabs == 'number') {
-    windowIdOrTabs = await browser.tabs.query({ windowId: windowIdOrTabs });
+    tabs = await browser.tabs.query({ windowId: windowIdOrTabs });
   }
-  return Tabs.getUniqueIds(windowIdOrTabs);
+  return UniqueId.getFromTabs(tabs);
 }
 
 export function trimSignature(signature, ignoreCount) {
@@ -87,7 +89,7 @@ function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
   tabs = tabs.map((tab, index) => {
     const cachedTab = cachedTabs[index];
     const oldId     = cachedTab.id;
-    tab = Tab.init(tab);
+    tab = Tab.init(tab, { existing: true });
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     idMap.set(oldId, tab);
     return tab;
@@ -130,8 +132,6 @@ const IGNORE_STATES = new Set([
 ]);
 
 function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
-  Tabs.initPromisedStatus(tab, true);
-
   tab.$TST.clear();
 
   for (const state of NATIVE_STATES) {
@@ -177,7 +177,6 @@ function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
   else
     tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
-  tab.$TST.ancestors = Tab.getAncestors(tab, { force: true });
 
   tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, cachedTab.attributes[Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER] || '');
   tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, cachedTab.attributes[Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID] || '');

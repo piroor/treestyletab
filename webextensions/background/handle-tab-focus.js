@@ -60,7 +60,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     else if (configs.autoExpandOnCollapsedChildActive &&
              !shouldSkipCollapsed) {
       log('=> reaction for autoExpandOnCollapsedChildActive');
-      for (const ancestor of Tab.getAncestors(tab)) {
+      for (const ancestor of tab.$TST.ancestors) {
         Tree.collapseExpandSubtree(ancestor, {
           collapsed: false,
           broadcast: true
@@ -70,12 +70,12 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     }
     else {
       log('=> reaction for focusing collapsed descendant');
-      let successor = Tab.getVisibleAncestorOrSelf(tab);
+      let successor = tab.$TST.nearestVisibleAncestorOrSelf;
       if (!successor) // this seems invalid case...
         return false;
       if (shouldSkipCollapsed &&
           window.lastActiveTab == successor.id) {
-        successor = successor.$TST.nearestVisibleFollowing || Tabs.getFirstVisibleTab(tab.windowId);
+        successor = successor.$TST.nearestVisibleFollowing || Tab.getFirstVisibleTab(tab.windowId);
       }
       window.lastActiveTab = successor.id;
       if (mMaybeTabSwitchingByShortcut)
@@ -185,7 +185,7 @@ function cancelDelayedExpand(tab) {
 }
 
 function cancelAllDelayedExpand(windowId) {
-  for (const tab of Tabs.getAllTabs(windowId)) {
+  for (const tab of Tab.getAllTabs(windowId)) {
     cancelDelayedExpand(tab);
   }
 }

@@ -57,7 +57,7 @@ async function saveTreeStructure(windowId) {
   if (!window)
     return;
 
-  const structure = Tree.getTreeStructureFromTabs(Tabs.getAllTabs(windowId));
+  const structure = Tree.getTreeStructureFromTabs(Tab.getAllTabs(windowId));
   browser.sessions.setWindowValue(
     windowId,
     Constants.kWINDOW_STATE_TREE_STRUCTURE,
@@ -77,9 +77,9 @@ export async function loadTreeStructure(restoredFromCacheResults) {
       log(`skip tree structure restoration for window ${window.id} (restored from cache)`);
       return;
     }
-    const tabs = Tabs.getAllTabs(window.id);
+    const tabs = Tab.getAllTabs(window.id);
     const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE);
-    let uniqueIds = await Tabs.getUniqueIds(tabs);
+    let uniqueIds = tabs.map(tab => tab.$TST.uniqueId && tab.$TST.uniqueId || '?');
     MetricsData.add('loadTreeStructure: read stored data');
     let windowStateCompletelyApplied = false;
     if (structure &&
@@ -181,10 +181,10 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     states.push(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
     browser.sessions.removeTabValue(tab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED);
   }
-  insertBefore = Tabs.getTabByUniqueId(insertBefore);
-  insertAfter  = Tabs.getTabByUniqueId(insertAfter);
-  ancestors    = ancestors.map(Tabs.getTabByUniqueId);
-  children     = children.map(Tabs.getTabByUniqueId);
+  insertBefore = Tab.getByUniqueId(insertBefore);
+  insertAfter  = Tab.getByUniqueId(insertAfter);
+  ancestors    = ancestors.map(Tab.getByUniqueId);
+  children     = children.map(Tab.getByUniqueId);
   log(' => references: ', {
     insertBefore: insertBefore,
     insertAfter:  insertAfter,
@@ -228,7 +228,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,
-        fromIndex: Tabs.getLastTab(tab.windowId).index
+        fromIndex: Tab.getLastTab(tab.windowId).index
       });
     }
   }

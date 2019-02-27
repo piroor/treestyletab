@@ -70,7 +70,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
         });
       }
 
-      const newAncestors = [parent].concat(Tab.getAncestors(parent));
+      const newAncestors = [parent].concat(parent.$TST.ancestors);
       if (configs.autoCollapseExpandSubtreeOnSelect ||
           isNewTreeCreatedManually ||
           Tree.shouldTabAutoExpanded(parent) ||
@@ -107,7 +107,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       let nextTab = info.insertBefore;
       let prevTab = info.insertAfter;
       if (!nextTab && !prevTab) {
-        const tabs = Tabs.getAllTabs(tab.windowId);
+        const tabs = Tab.getAllTabs(tab.windowId);
         nextTab = tabs[info.newIndex];
         if (!nextTab)
           prevTab = tabs[info.newIndex - 1];

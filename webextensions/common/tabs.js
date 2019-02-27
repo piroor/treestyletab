@@ -39,7 +39,6 @@
 'use strict';
 
 import * as Constants from './constants.js';
-import * as ApiTabs from './api-tabs.js';
 import {
   log as internalLogger,
   configs
@@ -283,102 +282,6 @@ export function sanitize(tab) {
 
 
 //===================================================================
-// Operate Tab ID
-//===================================================================
-
-export function makeTabId(tab) {
-  return `tab-${tab.windowId}-${tab.id}`;
-}
-
-export async function requestUniqueId(tabOrId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-
-  let tab = tabOrId;
-  if (typeof tabOrId == 'number')
-    tab = trackedTabs.get(tabOrId);
-
-  if (options.inRemote) {
-    return await browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_REQUEST_UNIQUE_ID,
-      id:       tab.id,
-      forceNew: !!options.forceNew
-    });
-  }
-
-  let originalId    = null;
-  let originalTabId = null;
-  let duplicated    = false;
-  if (!options.forceNew) {
-    let oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID);
-    if (oldId && !oldId.tabId) // ignore broken information!
-      oldId = null;
-
-    if (oldId) {
-      // If the tab detected from stored tabId is different, it is duplicated tab.
-      try {
-        const tabWithOldId = trackedTabs.get(oldId.tabId);
-        if (!tabWithOldId)
-          throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-        originalId = (tabWithOldId.$TST.uniqueId || await tabWithOldId.$TST.promisedUniqueId).id;
-        duplicated = tab && tabWithOldId.id != tab.id && originalId == oldId.id;
-        if (duplicated)
-          originalTabId = oldId.tabId;
-        else
-          throw new Error(`Invalid tab ID: ${oldId.tabId}`);
-      }
-      catch(e) {
-        ApiTabs.handleMissingTabError(e);
-        // It fails if the tab doesn't exist.
-        // There is no live tab for the tabId, thus
-        // this seems to be a tab restored from session.
-        // We need to update the related tab id.
-        await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, {
-          id:    oldId.id,
-          tabId: tab.id
-        });
-        return {
-          id:            oldId.id,
-          originalId:    null,
-          originalTabId: oldId.tabId,
-          restored:      true
-        };
-      }
-    }
-  }
-
-  const adjective   = Constants.kID_ADJECTIVES[Math.floor(Math.random() * Constants.kID_ADJECTIVES.length)];
-  const noun        = Constants.kID_NOUNS[Math.floor(Math.random() * Constants.kID_NOUNS.length)];
-  const randomValue = Math.floor(Math.random() * 1000);
-  const id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
-  // tabId is for detecttion of duplicated tabs
-  await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, { id, tabId: tab.id });
-  return { id, originalId, originalTabId, duplicated };
-}
-
-export function updateUniqueId(tab) {
-  return requestUniqueId(tab, {
-    inRemote: !!mTargetWindow
-  }).then(uniqueId => {
-    if (uniqueId && ensureLivingTab(tab)) { // possibly removed from document while waiting
-      tab.$TST.uniqueId = uniqueId;
-      trackedTabsByUniqueId.set(uniqueId.id, tab);
-      tab.$TST.setAttribute(Constants.kPERSISTENT_ID, uniqueId.id);
-    }
-    return uniqueId || {};
-  }).catch(error => {
-    console.log(`FATAL ERROR: Failed to get unique id for a tab ${tab.id}: `, error);
-    return {};
-  });
-}
-
-export async function getUniqueIds(tabs) {
-  const uniqueIds = await Promise.all(tabs.map(tab => browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID)));
-  return uniqueIds.map(id => id && id.id || '?');
-}
-
-
-//===================================================================
 // Event Handling
 //===================================================================
 
@@ -513,12 +416,12 @@ export async function waitUntilAllTabsAreCreated(windowId = null) {
     params.operatingTabs = mCreatingTabs;
   }
   return waitUntilTabsAreOperated(params)
-    .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
+    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && trackedTabsByUniqueId.get(uniqueId.id)));
 }
 
 export async function waitUntilTabsAreCreated(idOrIds) {
   return waitUntilTabsAreOperated({ ids: idOrIds, operatingTabs: mCreatingTabs })
-    .then(aUniqueIds => aUniqueIds.map(uniqueId => getTabByUniqueId(uniqueId.id)));
+    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && trackedTabsByUniqueId.get(uniqueId.id)));
 }
 
 const mMovingTabs = new Map();
@@ -561,10 +464,9 @@ browser.windows.onRemoved.addListener(windowId => {
 
 
 //===================================================================
-// Get Tabs
+// Utilities
 //===================================================================
 
-// basics
 export function assertValidTab(tab) {
   if (tab && tab.$TST)
     return;
@@ -572,78 +474,6 @@ export function assertValidTab(tab) {
   console.log(error.message, tab, error.stack);
   throw error;
 }
-
-export function getTabByUniqueId(id) {
-  if (!id)
-    return null;
-  return ensureLivingTab(trackedTabsByUniqueId.get(id));
-}
-
-// Note that this function can return null if it is the first tab of
-// a new window opened by the "move tab to new window" command.
-export function getActiveTab(windowId) {
-  return ensureLivingTab(activeTabForWindow.get(windowId));
-}
-export function getActiveTabs() {
-  return Array.from(activeTabForWindow.values(), ensureLivingTab);
-}
-
-export function getFirstTab(windowId) {
-  return query({
-    windowId,
-    living:  true,
-    ordered: true
-  });
-}
-
-export function getLastTab(windowId) {
-  return query({
-    windowId,
-    living: true,
-    last:   true
-  });
-}
-
-export function getLastVisibleTab(windowId) { // visible, not-collapsed, not-hidden
-  return query({
-    windowId,
-    visible: true,
-    last:    true,
-  });
-}
-
-export function getLastOpenedTab(windowId) {
-  const tabs = getTabs(windowId);
-  return tabs.length > 0 ?
-    tabs.sort((a, b) => b.id - a.id)[0] :
-    null ;
-}
-
-function getTabIndex(tab, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  if (!ensureLivingTab(tab))
-    return -1;
-  assertValidTab(tab);
-
-  let tabs = getAllTabs(tab.windowId);
-  if (Array.isArray(options.ignoreTabs) &&
-      options.ignoreTabs.length > 0)
-    tabs = tabs.filter(tab => !options.ignoreTabs.includes(tab));
-
-  return tabs.indexOf(tab);
-}
-
-export function calculateNewTabIndex(params) {
-  if (params.insertBefore)
-    return getTabIndex(params.insertBefore, params);
-  if (params.insertAfter)
-    return getTabIndex(params.insertAfter, params) + 1;
-  return -1;
-}
-
-
-// tree basics
 
 export function ensureLivingTab(tab) {
   if (!tab ||
@@ -656,223 +486,3 @@ export function ensureLivingTab(tab) {
     return null;
   return tab;
 }
-
-export function assertInitializedTab(tab) {
-  if (!tab ||
-      tab.$TST && tab.$TST.states.has(Constants.kTAB_STATE_REMOVING))
-    return false;
-  if (tab instanceof Element && !tab.apiTab)
-    throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no API tab information)\n${new Error().stack}`);
-  if (!tab.$TST)
-    throw new Error(`FATAL ERROR: the tab ${tab.id} is not initialized yet correctly! (no $TST helper)\n${new Error().stack}`);
-  return true;
-}
-
-
-// grab tabs
-
-export function getAllTabs(windowId = null) {
-  return queryAll({
-    windowId,
-    living:   true,
-    ordered:  true
-  });
-}
-
-export function getTabs(windowId) { // only visible, including collapsed and pinned
-  return queryAll({
-    windowId,
-    controllable: true,
-    ordered:      true
-  });
-}
-
-export function getNormalTabs(windowId) { // only visible, including collapsed, not pinned
-  return queryAll({
-    windowId,
-    normal:   true,
-    ordered:  true
-  });
-}
-
-export function getVisibleTabs(windowId) { // visible, not-collapsed, not-hidden
-  return queryAll({
-    windowId,
-    visible:  true,
-    ordered:  true
-  });
-}
-
-export function getPinnedTabs(windowId) { // visible, pinned
-  return queryAll({
-    windowId,
-    pinned:   true,
-    ordered:  true
-  });
-}
-
-
-export function getUnpinnedTabs(windowId) { // visible, not pinned
-  return queryAll({
-    windowId,
-    living:   true,
-    pinned:   false,
-    ordered:  true
-  });
-}
-
-export function getRootTabs(windowId) {
-  return queryAll({
-    windowId,
-    controllable: true,
-    ordered:      true,
-    hasParent:    false
-  });
-}
-
-export function collectRootTabs(tabs) {
-  return tabs.filter(tab => {
-    if (!ensureLivingTab(tab))
-      return false;
-    const parent = tab.$TST.parent;
-    return !parent || !tabs.includes(parent);
-  });
-}
-
-export function getDraggingTabs(windowId) {
-  return queryAll({
-    windowId,
-    living:   true,
-    states:   [Constants.kTAB_STATE_DRAGGING, true],
-    ordered:  true
-  });
-}
-
-export function getRemovingTabs(windowId) {
-  return queryAll({
-    windowId,
-    states:   [Constants.kTAB_STATE_REMOVING, true],
-    ordered:  true
-  });
-}
-
-export function getDuplicatingTabs(windowId) {
-  return queryAll({
-    windowId,
-    living:   true,
-    states:   [Constants.kTAB_STATE_DUPLICATING, true],
-    ordered:  true
-  });
-}
-
-export function getHighlightedTabs(windowId) {
-  return queryAll({
-    windowId,
-    living:      true,
-    highlighted: true,
-    ordered:     true
-  });
-}
-
-export function getSelectedTabs(windowId) {
-  const selectedTabs = queryAll({
-    windowId,
-    living:   true,
-    states:   [Constants.kTAB_STATE_SELECTED, true],
-    ordered:  true
-  });
-  const highlightedTabs = highlightedTabsForWindow.get(windowId);
-  if (!highlightedTabs ||
-      highlightedTabs.size < 2)
-    return selectedTabs;
-
-  return sort(Array.from(new Set(selectedTabs, ...Array.from(highlightedTabs))));
-}
-
-
-
-// misc.
-
-export function getFirstNormalTab(windowId) { // visible, not-collapsed, not-pinned
-  return query({
-    windowId,
-    normal:   true,
-    ordered:  true
-  });
-}
-
-export function getFirstVisibleTab(windowId) { // visible, not-collapsed, not-hidden
-  return query({
-    windowId,
-    visible:  true,
-    ordered:  true
-  });
-}
-
-export async function doAndGetNewTabs(asyncTask, windowId) {
-  const tabsQueryOptions = {
-    windowType: 'normal'
-  };
-  if (windowId) {
-    tabsQueryOptions.windowId = windowId;
-  }
-  const beforeTabs = await browser.tabs.query(tabsQueryOptions);
-  const beforeIds  = beforeTabs.map(tab => tab.id);
-  await asyncTask();
-  const afterTabs = await browser.tabs.query(tabsQueryOptions);
-  const addedTabs = afterTabs.filter(afterTab => !beforeIds.includes(afterTab.id));
-  return addedTabs.map(tab => trackedTabs.get(tab.id));
-}
-
-
-export function getMaxTreeLevel(windowId, options = {}) {
-  if (typeof options != 'object')
-    options = {};
-  const tabs = options.onlyVisible ?
-    getVisibleTabs(windowId, { ordered: false }) :
-    getTabs(windowId, { ordered: false }) ;
-  let maxLevel = Math.max(...tabs.map(tab => parseInt(tab.$TST.attributes[Constants.kLEVEL] || 0)));
-  if (configs.maxTreeLevel > -1)
-    maxLevel = Math.min(maxLevel, configs.maxTreeLevel);
-  return maxLevel;
-}
-
-
-//===================================================================
-// Promised status of tabs
-//===================================================================
-
-const mOpenedResolvers            = new Map();
-const mClosedWhileActiveResolvers = new Map();
-
-export function initPromisedStatus(tab, alreadyOpened = false) {
-  if (alreadyOpened) {
-    tab.$TST.opened = Promise.resolve(true);
-    tab.$TST.opening = false;
-  }
-  else {
-    tab.$TST.opening = false;
-    tab.$TST.opened = new Promise((resolve, _reject) => {
-      tab.$TST.opening = false;
-      mOpenedResolvers.set(tab.id, resolve);
-    });
-  }
-
-  tab.$TST.closedWhileActive = new Promise((resolve, _reject) => {
-    mClosedWhileActiveResolvers.set(tab.id, resolve);
-  });
-}
-
-export function resolveOpened(tab) {
-  if (!mOpenedResolvers.has(tab.id))
-    return;
-  mOpenedResolvers.get(tab.id)();
-  mOpenedResolvers.delete(tab.id);
-}
-
-export function fetchClosedWhileActiveResolver(tab) {
-  const resolver = mClosedWhileActiveResolvers.get(tab.id);
-  mClosedWhileActiveResolvers.delete(tab.id);
-  return resolver;
-}
-

@@ -11,6 +11,7 @@ import {
 import * as Constants from '/common/constants.js';
 import * as Tabs from '/common/tabs.js';
 import * as TabsUpdate from '/common/tabs-update.js';
+import * as UniqueId from '/common/unique-id.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -22,10 +23,11 @@ function log(...args) {
 export const wholeContainer = document.querySelector('#all-tabs');
 
 export async function getWindowSignature(windowIdOrTabs) {
+  let tabs = windowIdOrTabs;
   if (typeof windowIdOrTabs == 'number') {
-    windowIdOrTabs = await browser.tabs.query({ windowId: windowIdOrTabs });
+    tabs = await browser.tabs.query({ windowId: windowIdOrTabs });
   }
-  const uniqueIds = await Tabs.getUniqueIds(windowIdOrTabs);
+  const uniqueIds = await UniqueId.getFromTabs(tabs);
   return uniqueIds.join('\n');
 }
 
@@ -151,9 +153,9 @@ function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   // step 1: build a map from old id to new id
   tabs = tabElements.map((tabElement, index) => {
     const oldId = tabElement.id;
-    const tab = Tab.init(tabs[index]);
+    const tab = Tab.init(tabs[index], { existing: true });
     tabElement.apiTab = tab;
-    tab.$TST.setAttribute('id', Tabs.makeTabId(tab));
+    tab.$TST.setAttribute('id', `tab-${tab.id}`);
     tab.$TST.element = tabElement;
     tabElement.$TST = tab.$TST;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tabElement.id}`);
@@ -199,8 +201,6 @@ const IGNORE_CLASS_STATES = new Set([
 ]);
 
 function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
-  Tabs.initPromisedStatus(tab, true);
-
   for (const state of tabElement.classList) {
     if (IGNORE_CLASS_STATES.has(state))
       continue;
@@ -243,7 +243,6 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
   else
     tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tabElement.getAttribute(Constants.kPARENT));
-  tab.$TST.ancestors = Tab.getAncestors(tab, { force: true });
 
   tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
   tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');

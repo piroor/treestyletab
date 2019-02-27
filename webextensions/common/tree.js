@@ -111,7 +111,7 @@ export async function attachTabTo(child, parent, options = {}) {
     log('=> could not attach tab to a parent in different window');
     return false;
   }
-  const ancestors = [parent].concat(Tab.getAncestors(child));
+  const ancestors = [parent].concat(child.$TST.ancestors);
   if (ancestors.includes(child)) {
     log('=> canceled for recursive request');
     return false;
@@ -145,7 +145,7 @@ export async function attachTabTo(child, parent, options = {}) {
     return false;
   }
 
-  const newIndex = Tabs.calculateNewTabIndex({
+  const newIndex = Tab.calculateNewTabIndex({
     insertBefore: options.insertBefore,
     insertAfter:  options.insertAfter,
     ignoreTabs:   [child]
@@ -176,7 +176,6 @@ export async function attachTabTo(child, parent, options = {}) {
     log('attachTabTo: setting parent information to ', child.id);
     child.$TST.setAttribute(Constants.kPARENT, parent.id);
     child.$TST.parent = parent.id;
-    child.$TST.ancestors = Tab.getAncestors(child, { force: true });
 
     const parentLevel = parseInt(parent.$TST.getAttribute(Constants.kLEVEL) || 0);
     if (!options.dontUpdateIndent) {
@@ -240,7 +239,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         insertBefore = firstChild;
         break;
       case Constants.kINSERT_NEAREST: {
-        let allTabs = Tabs.getAllTabs(parent.windowId);
+        let allTabs = Tab.getAllTabs(parent.windowId);
         if (options.ignoreTabs)
           allTabs = allTabs.filter(tab => !options.ignoreTabs.includes(tab));
         const index = allTabs.indexOf(child);
@@ -376,7 +375,7 @@ export function detachAllChildren(tab, options = {}) {
   // the "parent" option is used for removing tab.
   const parent = Tabs.ensureLivingTab(options.parent) || tab.$TST.parent;
   if (tab.$TST.isGroupTab &&
-      Tabs.getRemovingTabs(tab.windowId).length == children.length) {
+      Tab.getRemovingTabs(tab.windowId).length == children.length) {
     options.behavior = Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_ALL_CHILDREN;
     options.dontUpdateIndent = false;
   }
@@ -438,7 +437,7 @@ export function detachAllChildren(tab, options = {}) {
 
 // returns moved (or not)
 export async function behaveAutoAttachedTab(tab, options = {}) {
-  const baseTab = options.baseTab || Tabs.getActiveTab(Tabs.getWindow() || tab.windowId);
+  const baseTab = options.baseTab || Tab.getActiveTab(Tabs.getWindow() || tab.windowId);
   log('behaveAutoAttachedTab ', tab.id, baseTab.id, options);
   if (baseTab.pinned) {
     if (!tab.pinned)
@@ -457,7 +456,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         broadcast: options.broadcast
       });
       if (tab.$TST.next)
-        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId), {
+        return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
           delayedMove: true,
           inRemote: options.inRemote
         });
@@ -489,7 +488,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
           inRemote:  options.inRemote,
           broadcast: options.broadcast
         });
-        return TabsMove.moveTabAfter(tab, Tabs.getLastTab(tab.windowId), {
+        return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
           delayedMove: true,
           inRemote: options.inRemote
         });
@@ -580,7 +579,7 @@ function updateTabsIndent(tabs, level = undefined) {
     return;
 
   if (level === undefined)
-    level = Tab.getAncestors(tabs[0]).length;
+    level = tabs[0].$TST.ancestors.length;
 
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const item = tabs[i];
@@ -694,7 +693,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   //fireCustomEvent(Constants.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, tab, true, false, data);
 
   if (params.collapsed && tab.active) {
-    const newSelection = Tab.getVisibleAncestorOrSelf(tab);
+    const newSelection = tab.$TST.nearestVisibleAncestorOrSelf;
     logCollapseExpand('current tab is going to be collapsed, switch to ', newSelection.id);
     TabsInternalOperation.activateTab(newSelection, { silently: true });
   }
@@ -726,7 +725,7 @@ export async function collapseExpandTab(tab, params = {}) {
   // synchronous "collapse" operation, it can produce an expanded
   // child tab under "subtree-collapsed" parent. So this is a failsafe.
   if (!params.collapsed &&
-      Tab.getAncestors(tab).some(ancestor => ancestor.$TST.subtreeCollapsed))
+      tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed))
     return;
 
   const stack = `${new Error().stack}\n${params.stack || ''}`;
@@ -756,7 +755,7 @@ export async function collapseExpandTab(tab, params = {}) {
       justNow:   params.justNow,
       collapsed: params.collapsed,
       stack:     stack,
-      byAncestor: Tab.getAncestors(tab).some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
+      byAncestor: tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
     });
   }
 }
@@ -773,7 +772,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
   }
   window.doingIntelligentlyCollapseExpandCount++;
 
-  const expandedAncestors = [tab.id].concat(Tab.getAncestors(tab).map(ancestor => ancestor.id));
+  const expandedAncestors = [tab.id].concat(tab.$TST.ancestors.map(ancestor => ancestor.id));
   const collapseTabs = Tabs.queryAll({
     windowId:   tab.windowId,
     living:     true,
@@ -793,7 +792,7 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
     if (parentTab) {
       dontCollapse = true;
       if (!parentTab.$TST.subtreeCollapsed) {
-        for (const ancestor of Tab.getAncestors(collapseTab)) {
+        for (const ancestor of collapseTab.$TST.ancestors) {
           if (!expandedAncestors.includes(ancestor.id))
             continue;
           dontCollapse = false;
@@ -897,7 +896,7 @@ async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = 
   await tab.closedWhileActive;
   log('tryMoveFocusFromClosingActiveTabOnFocusRedirected: tabs.onActivated is fired');
 
-  const oldSuccessor = Tabs.getActiveTab(tab.windowId);
+  const oldSuccessor = Tab.getActiveTab(tab.windowId);
   const nextOfOldSuccessor = oldSuccessor && oldSuccessor.$TST.next;
   if (oldSuccessor != nextTab &&
       (oldSuccessor != previousTab ||
@@ -1155,7 +1154,7 @@ export async function moveTabs(tabs, options = {}) {
 
   const isAcrossWindows = windowId != destinationWindowId || !!newWindow;
 
-  options.insertAfter = options.insertAfter || Tabs.getLastTab(destinationWindowId);
+  options.insertAfter = options.insertAfter || Tab.getLastTab(destinationWindowId);
 
   if (options.inRemote) {
     const response = await browser.runtime.sendMessage(Object.assign({}, options, {
@@ -1245,7 +1244,7 @@ export async function moveTabs(tabs, options = {}) {
               const promisedDuplicatingTabs = (async () => {
                 while (true) {
                   await wait(100);
-                  const tabs = Tabs.getDuplicatingTabs(windowId);
+                  const tabs = Tab.getDuplicatingTabs(windowId);
                   if (tabs.length < movedTabIds.length)
                     continue; // not opened yet
                   const tabIds = tabs.map(tab => tab.id);
@@ -1272,7 +1271,7 @@ export async function moveTabs(tabs, options = {}) {
       ]);
       log('moveTabs: all windows and tabs are ready, ', movedTabIds, destinationWindowId);
       // we must put moved tab at the first position by default, because pinned tabs cannot be placed after regular tabs.
-      let toIndex = 0; // Tabs.getAllTabs(destinationWindowId).length;
+      let toIndex = 0; // Tab.getAllTabs(destinationWindowId).length;
       log('toIndex = ', toIndex);
       if (options.insertBefore &&
           options.insertBefore.windowId == destinationWindowId) {
@@ -1687,7 +1686,7 @@ export function snapshotForActionDetection(targetTab) {
   const prevTab = targetTab.$TST.nearestNormalPreceding;
   const nextTab = targetTab.$TST.nearestNormalFollowing;
   const foundTabs = {};
-  const tabs = Tab.getAncestors(prevTab)
+  const tabs = prevTab.$TST.ancestors
     .concat([prevTab, targetTab, nextTab, targetTab.$TST.parent])
     .filter(tab => Tabs.ensureLivingTab(tab) && !foundTabs[tab.id] && (foundTabs[tab.id] = true)) // uniq
     .sort((a, b) => a.index - b.index);
@@ -1695,7 +1694,7 @@ export function snapshotForActionDetection(targetTab) {
 }
 
 function snapshotTree(targetTab, tabs) {
-  const allTabs = tabs || Tabs.getTabs(targetTab.windowId);
+  const allTabs = tabs || Tab.getTabs(targetTab.windowId);
 
   const snapshotById = {};
   function snapshotChild(tab) {
@@ -1724,7 +1723,7 @@ function snapshotTree(targetTab, tabs) {
     const previous = tab.$TST.nearestNormalPreceding;
     item.previous = previous && previous.id;
   }
-  const activeTab = Tabs.getActiveTab(targetTab.windowId);
+  const activeTab = Tab.getActiveTab(targetTab.windowId);
   return {
     target:   snapshotById[targetTab.id],
     active:   activeTab && snapshotById[activeTab.id],

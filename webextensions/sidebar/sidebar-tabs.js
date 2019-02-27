@@ -185,7 +185,7 @@ export function reserveToUpdateTooltip(tab) {
 function updateTabAndAncestorsTooltip(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
-  for (const updateTab of [tab].concat(Tab.getAncestors(tab))) {
+  for (const updateTab of [tab].concat(tab.$TST.ancestors)) {
     updateTooltip(updateTab);
   }
 }
@@ -314,7 +314,7 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
-  for (const tab of Tabs.getAllTabs(Tabs.getWindow()).reverse()) {
+  for (const tab of Tab.getAllTabs(Tabs.getWindow()).reverse()) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
@@ -441,7 +441,7 @@ Window.onInitialized.addListener(windowId => {
 });
 
 Tab.onInitialized.addListener((tab, info) => {
-  const id = Tabs.makeTabId(tab);
+  const id = `tab-${tab.id}`;
   let tabElement = document.getElementById(id);
   if (tabElement) {
     tab.$TST.element = tabElement;
@@ -521,7 +521,7 @@ Tab.onInitialized.addListener((tab, info) => {
   }
 
   const window  = Tabs.trackedWindows.get(tab.windowId);
-  const nextTab = Tabs.getAllTabs(window.id)[tab.index];
+  const nextTab = Tab.getAllTabs(window.id)[tab.index];
   window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
 });
 
@@ -648,7 +648,7 @@ Tabs.onUpdated.addListener((tab, info) => {
 
   reserveToUpdateCloseboxTooltip(tab);
 
-  for (const ancestor of Tab.getAncestors(tab)) {
+  for (const ancestor of tab.$TST.ancestors) {
     updateDescendantsHighlighted(ancestor);
   }
 
@@ -656,7 +656,7 @@ Tabs.onUpdated.addListener((tab, info) => {
     clearTimeout(mReservedUpdateActiveTab);
   mReservedUpdateActiveTab = setTimeout(() => {
     mReservedUpdateActiveTab = null;
-    const activeTab = Tabs.getActiveTab(tab.windowId);
+    const activeTab = Tab.getActiveTab(tab.windowId);
     if (activeTab) {
       reserveToUpdateSoundButtonTooltip(activeTab);
       reserveToUpdateCloseboxTooltip(activeTab);
@@ -697,7 +697,7 @@ Tree.onAttached.addListener((_tab, info = {}) => {
   reserveToUpdateTwistyTooltip(info.parent);
   reserveToUpdateCloseboxTooltip(info.parent);
   if (info.newlyAttached) {
-    const ancestors = [info.parent].concat(Tab.getAncestors(info.parent));
+    const ancestors = [info.parent].concat(info.parent.$TST.ancestors);
     for (const ancestor of ancestors) {
       updateDescendantsCount(ancestor);
       updateDescendantsHighlighted(ancestor);
@@ -715,7 +715,7 @@ Tree.onDetached.addListener((_tab, detachInfo = {}) => {
   reserveToUpdateTwistyTooltip(parent);
   reserveToUpdateCloseboxTooltip(parent);
   reserveToUpdateTooltip(parent);
-  const ancestors = [parent].concat(Tab.getAncestors(parent));
+  const ancestors = [parent].concat(parent.$TST.ancestors);
   for (const ancestor of ancestors) {
     updateDescendantsCount(ancestor);
     updateDescendantsHighlighted(ancestor);
@@ -733,7 +733,7 @@ configs.$addObserver(changedKey => {
   switch (changedKey) {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
-        for (const tab of Tabs.getAllTabs(Tabs.getWindow())) {
+        for (const tab of Tab.getAllTabs(Tabs.getWindow())) {
           reserveToUpdateTooltip(tab);
         }
       break;

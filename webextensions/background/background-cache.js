@@ -17,6 +17,8 @@ import * as Tree from '/common/tree.js';
 import * as JSONCache from '/common/json-cache.js';
 import * as MetricsData from '/common/metrics-data.js';
 
+import Tab from '/common/Tab.js';
+
 function log(...args) {
   internalLogger('background/background-cache', ...args);
 }
@@ -160,7 +162,7 @@ async function getWindowCache(owner, key) {
 }
 
 function getWindowCacheOwner(windowId) {
-  const tab = Tabs.getLastTab(windowId);
+  const tab = Tab.getLastTab(windowId);
   return {
     id:       tab.id,
     windowId: tab.windowId
@@ -222,7 +224,7 @@ async function cacheTree(windowId) {
   updateWindowCache(window.lastWindowCacheOwner, Constants.kWINDOW_STATE_CACHED_TABS, {
     version:         Constants.kBACKGROUND_CONTENTS_VERSION,
     tabs:            Tabs.trackedWindows.get(windowId).export(),
-    pinnedTabsCount: Tabs.getPinnedTabs(windowId).length,
+    pinnedTabsCount: Tab.getPinnedTabs(windowId).length,
     signature
   });
 }

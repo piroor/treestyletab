@@ -109,9 +109,9 @@ export async function init() {
       BackgroundCache.reserveToCacheTree(parseInt(windowId));
   }
 
-  Tabs.getAllTabs(null).forEach(updateSubtreeCollapsed);
-  for (const tab of Tabs.getActiveTabs()) {
-    for (const ancestor of Tab.getAncestors(tab)) {
+  Tab.getAllTabs(null).forEach(updateSubtreeCollapsed);
+  for (const tab of Tab.getActiveTabs()) {
+    for (const ancestor of tab.$TST.ancestors) {
       Tree.collapseExpandTabAndSubtree(ancestor, {
         collapsed: false,
         justNow:   true
@@ -133,7 +133,7 @@ export async function init() {
   }).catch(_error => {});
 
   Migration.notifyNewFeatures();
-  log(`Startup metrics for ${Tabs.getAllTabs(null).length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${Tab.getAllTabs(null).length} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {
@@ -202,7 +202,7 @@ async function rebuildAll() {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs
           });
-          for (const tab of Tabs.getAllTabs(window.id)) {
+          for (const tab of Tab.getAllTabs(window.id)) {
             tryStartHandleAccelKeyOnTab(tab);
           }
           if (restoredFromCache[window.id]) {
@@ -228,7 +228,7 @@ async function rebuildAll() {
       }
       restoredFromCache[window.id] = false;
     });
-    for (const tab of Tabs.getAllTabs(window.id).filter(tab => tab.$TST.isGroupTab)) {
+    for (const tab of Tab.getAllTabs(window.id).filter(tab => tab.$TST.isGroupTab)) {
       if (!tab.discarded)
         tab.$TST.shouldReloadOnSelect = true;
     }
@@ -328,7 +328,7 @@ async function updateAncestors(tab) {
   browser.sessions.setTabValue(
     tab.id,
     Constants.kPERSISTENT_ANCESTORS,
-    Tab.getAncestors(tab).map(ancestor => ancestor.$TST.uniqueId.id)
+    tab.$TST.ancestors.map(ancestor => ancestor.$TST.uniqueId.id)
   );
 }
 

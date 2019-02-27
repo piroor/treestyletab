@@ -403,7 +403,7 @@ export async function notifyScrolled(params = {}) {
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
     tab:  tab && serializeTab(tab),
-    tabs: Tabs.getTabs(window).map(serializeTab),
+    tabs: Tab.getTabs(window).map(serializeTab),
     window,
     windowId: window,
 
@@ -437,7 +437,7 @@ export function isGroupingBlocked() {
 export function serializeTab(tab) {
   tab = Tab.get(tab.id);
   const children       = tab.$TST.children.map(serializeTab);
-  const ancestorTabIds = Tab.getAncestors(tab).map(tab => tab.id);
+  const ancestorTabIds = tab.$TST.ancestors.map(tab => tab.id);
   const serialized     = Object.assign({}, Tabs.sanitize(tab), {
     states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
     indent:   parseInt(tab.$TST.getAttribute(Constants.kLEVEL) || 0),
@@ -526,7 +526,7 @@ export async function getTargetTabs(message, sender) {
   if (message.window || message.windowId) {
     if (message.tab == '*' ||
         message.tabs == '*')
-      return Tabs.getAllTabs(message.window || message.windowId);
+      return Tab.getAllTabs(message.window || message.windowId);
     else
       return Tab.getRoots(message.window || message.windowId);
   }
@@ -535,7 +535,7 @@ export async function getTargetTabs(message, sender) {
     const window = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     });
-    return Tabs.getAllTabs(window.id);
+    return Tab.getAllTabs(window.id);
   }
   if (message.tab)
     return getTabsFromWrongIds([message.tab], sender);
@@ -555,24 +555,24 @@ async function getTabsFromWrongIds(aIds, sender) {
     switch (String(id).toLowerCase()) {
       case 'active':
       case 'current':
-        return Tabs.getActiveTab(activeWindow.id);
+        return Tab.getActiveTab(activeWindow.id);
       case 'next':
-        return Tabs.getActiveTab(activeWindow.id).$TST.next;
+        return Tab.getActiveTab(activeWindow.id).$TST.next;
       case 'previous':
       case 'prev':
-        return Tabs.getActiveTab(activeWindow.id).$TST.previous;
+        return Tab.getActiveTab(activeWindow.id).$TST.previous;
       case 'nextsibling':
-        return Tabs.getActiveTab(activeWindow.id).$TST.nextSibling;
+        return Tab.getActiveTab(activeWindow.id).$TST.nextSibling;
       case 'previoussibling':
       case 'prevsibling':
-        return Tabs.getActiveTab(activeWindow.id).$TST.previousSibling;
+        return Tab.getActiveTab(activeWindow.id).$TST.previousSibling;
       case 'sendertab':
         return sender.tab || null;
       case 'highlighted':
       case 'multiselected':
-        return Tabs.getHighlightedTabs(activeWindow.id);
+        return Tab.getHighlightedTabs(activeWindow.id);
       default:
-        return Tabs.getTabByUniqueId(id);
+        return Tab.getByUniqueId(id);
     }
   }));
   log('=> ', tabs);
