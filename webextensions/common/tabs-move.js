@@ -63,7 +63,7 @@ function logApiTabs(...args) {
 // primitive methods for internal use
 
 export async function moveTabsBefore(tabs, referenceTab, options = {}) {
-  log('moveTabsBefore: ', tabs.map(tab => tab.id), referenceTab && referenceTab.id, options);
+  log('moveTabsBefore: ', tabs, referenceTab, options);
   if (!tabs.length ||
       !TabsStore.ensureLivingTab(referenceTab))
     return [];
@@ -85,7 +85,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
 
   const window = TabsStore.windows.get(tabs[0].windowId);
 
-  log('moveTabsInternallyBefore: ', tabs.map(tab => tab.id), referenceTab.id, options);
+  log('moveTabsInternallyBefore: ', tabs, referenceTab, options);
   if (options.inRemote || options.broadcast) {
     const message = {
       type:        Constants.kCOMMAND_MOVE_TABS_BEFORE,
@@ -156,7 +156,7 @@ export async function moveTabInternallyBefore(tab, referenceTab, options = {}) {
 }
 
 export async function moveTabsAfter(tabs, referenceTab, options = {}) {
-  log('moveTabsAfter: ', tabs.map(tab => tab.id), referenceTab && referenceTab.id, options);
+  log('moveTabsAfter: ', tabs, referenceTab, options);
   if (!tabs.length ||
       !TabsStore.ensureLivingTab(referenceTab))
     return [];
@@ -178,7 +178,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
 
   const window = TabsStore.windows.get(tabs[0].windowId);
 
-  log('moveTabsInternallyAfter: ', tabs.map(tab => tab.id), referenceTab.id, options);
+  log('moveTabsInternallyAfter: ', tabs, referenceTab, options);
   if (options.inRemote || options.broadcast) {
     const message = {
       type:          Constants.kCOMMAND_MOVE_TABS_AFTER,
