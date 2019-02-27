@@ -384,7 +384,7 @@ export function detachAllChildren(tab, options = {}) {
   let nextTab = null;
   if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
       !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
-    nextTab = tab.$TST.nextRoot;
+    nextTab = tab.$TST.nearestFollowingRoot;
   }
 
   if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
@@ -1467,7 +1467,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          |  [TARGET]
          +-----------------------------------------------------
     */
-    const prevTab = params.insertBefore && params.insertBefore.$TST.visiblePrevious;
+    const prevTab = params.insertBefore && params.insertBefore.$TST.nearestVisiblePreceding;
     if (!prevTab) {
       // allow to move pinned tab to beside of another pinned tab
       if (!tab || Tabs.isPinned(tab) == Tabs.isPinned(params.insertBefore)) {
@@ -1511,7 +1511,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          |  [      ]
          +-----------------------------------------------------
     */
-    const nextTab = params.insertAfter && params.insertAfter.$TST.visibleNext;
+    const nextTab = params.insertAfter && params.insertAfter.$TST.nearestVisibleFollowing;
     if (!nextTab) {
       return {
         parent:      params.insertAfter && params.insertAfter.$TST.parent,
@@ -1683,8 +1683,8 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 //===================================================================
 
 export function snapshotForActionDetection(targetTab) {
-  const prevTab = targetTab.$TST.normalPrevious;
-  const nextTab = targetTab.$TST.normalNext;
+  const prevTab = targetTab.$TST.nearestNormalPreceding;
+  const nextTab = targetTab.$TST.nearestNormalFollowing;
   const foundTabs = {};
   const tabs = Tab.getAncestors(prevTab)
     .concat([prevTab, targetTab, nextTab, targetTab.$TST.parent])
@@ -1718,9 +1718,9 @@ function snapshotTree(targetTab, tabs) {
       continue;
     const parent = tab.$TST.parent;
     item.parent = parent && parent.id;
-    const next = tab.$TST.normalNext;
+    const next = tab.$TST.nearestNormalFollowing;
     item.next = next && next.id;
-    const previous = tab.$TST.normalPrevious;
+    const previous = tab.$TST.nearestNormalPreceding;
     item.previous = previous && previous.id;
   }
   const activeTab = Tabs.getActiveTab(targetTab.windowId);

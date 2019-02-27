@@ -132,7 +132,7 @@ export default class Tab {
     });
   }
 
-  get normalNext() {
+  get nearestNormalFollowing() {
     return Tabs.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -141,7 +141,7 @@ export default class Tab {
     });
   }
 
-  get normalPrevious() {
+  get nearestNormalPreceding() {
     return Tabs.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -151,7 +151,7 @@ export default class Tab {
     });
   }
 
-  get visibleNext() { // visible, not-collapsed
+  get nearestVisibleFollowing() { // visible, not-collapsed
     return Tabs.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -160,7 +160,7 @@ export default class Tab {
     });
   }
 
-  get visiblePrevious() { // visible, not-collapsed
+  get nearestVisiblePreceding() { // visible, not-collapsed
     return Tabs.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -195,12 +195,12 @@ export default class Tab {
     return ancestors.length > 0 ? ancestors[ancestors.length-1] : this.tab ;
   }
 
-  get nextRoot() {
+  get nearestFollowingRoot() {
     const root = this.root;
     return root && root.$TST.nextSibling;
   }
 
-  get nextForeigner() {
+  get nearestFollowingForeigner() {
     const base = this.lastDescendant || this.tab;
     return base && base.$TST.next;
   }
@@ -314,7 +314,7 @@ export default class Tab {
       foundTab = tab;
       do {
         ignoredTabs.push(foundTab);
-        foundTab = foundTab.$TST.visiblePrevious;
+        foundTab = foundTab.$TST.nearestVisiblePreceding;
       } while (foundTab && ignoredTabs.includes(foundTab));
     }
     return foundTab;

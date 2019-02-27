@@ -102,12 +102,12 @@ async function updateInternal(tabId) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
       const firstChild = tab.$TST.firstChild;
       successor = (
-        (firstChild && !Tabs.isCollapsed(firstChild) && firstChild) ||
-        (tab.$TST.extSibling || tab.$TST.reviousVisible)
+        (!Tabs.isCollapsed(firstChild) && firstChild) ||
+        (tab.$TST.nextSibling || tab.$TST.nearestVisiblePreceding)
       );
     }
     else
-      successor = tab.$TST.visibleNext || tab.$TST.visiblePrevious;
+      successor = tab.$TST.nearestVisibleFollowing || tab.$TST.nearestVisiblePreceding;
   }
   if (successor) {
     log(`  ${tab.id} is under control: successor = ${successor.id}`);

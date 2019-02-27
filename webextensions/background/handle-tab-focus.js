@@ -75,7 +75,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
         return false;
       if (shouldSkipCollapsed &&
           window.lastActiveTab == successor.id) {
-        successor = successor.$TST.visibleNext || Tabs.getFirstVisibleTab(tab.windowId);
+        successor = successor.$TST.nearestVisibleFollowing || Tabs.getFirstVisibleTab(tab.windowId);
       }
       window.lastActiveTab = successor.id;
       if (mMaybeTabSwitchingByShortcut)

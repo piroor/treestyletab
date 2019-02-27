@@ -358,8 +358,8 @@ function getDropAction(event) {
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.visibleNext) :
-        (targetTab.$TST.nextSibling || targetTab.$TST.nextForeigner);
+        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.nearestVisibleFollowing) :
+        (targetTab.$TST.nextSibling || targetTab.$TST.nearestFollowingForeigner);
       info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
         targetTab :
         (targetTab.$TST.lastDescendant || targetTab);
@@ -426,7 +426,7 @@ function getDropAction(event) {
         }
       }
       if (info.draggedTab &&
-          info.draggedTab.pinned != Tabs.isPinned(targetTab.$TST.visibleNext))
+          info.draggedTab.pinned != Tabs.isPinned(targetTab.$TST.nearestVisibleFollowing))
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (configs.debug)
         log(' calculated info: ', info);
@@ -813,7 +813,7 @@ function onDragOver(event) {
     return;
   }
 
-  const dropPositionTargetTab = info.targetTab && info.targetTab.$TST.visiblePrevious || info.targetTab;
+  const dropPositionTargetTab = info.targetTab && info.targetTab.$TST.nearestVisiblePreceding || info.targetTab;
   if (!dropPositionTargetTab) {
     log('onDragOver: no drop target tab');
     dt.dropEffect = 'none';

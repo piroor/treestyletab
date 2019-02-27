@@ -477,7 +477,7 @@ function detachTabsWithStructure(tabs, options = {}) {
 }
 
 export async function moveUp(tab, options = {}) {
-  const previousTab = tab.$TST.visiblePrevious;
+  const previousTab = tab.$TST.nearestVisiblePreceding;
   if (!previousTab)
     return false;
 
@@ -512,7 +512,7 @@ export async function moveUp(tab, options = {}) {
 
 export async function moveDown(tab, options = {}) {
   if (!options.followChildren) {
-    const nextTab = tab.$TST.visibleNext;
+    const nextTab = tab.$TST.nearestVisibleFollowing;
     if (!nextTab)
       return false;
     Tree.detachAllChildren(tab, {
@@ -527,7 +527,7 @@ export async function moveDown(tab, options = {}) {
     await onMoveDown.dispatch(tab);
   }
   else {
-    const nextTab = tab.$TST.nextForeigner;
+    const nextTab = tab.$TST.nearestFollowingForeigner;
     if (!nextTab)
       return false;
     const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {

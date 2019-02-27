@@ -38,8 +38,8 @@ Tabs.onCreated.addListener((tab, info = {}) => {
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.positionedBySelf &&
-      (tab.$TST.normalNext ||
-       tab.$TST.normalPrevious ||
+      (tab.$TST.nearestNormalFollowing ||
+       tab.$TST.nearestNormalPreceding ||
        (info.treeForActionDetection &&
         (info.treeForActionDetection.target.next ||
          info.treeForActionDetection.target.previous))))
