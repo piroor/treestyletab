@@ -192,7 +192,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     children:     children.map(tab => tab && tab.id).join(', ')
   });
   let attached = false;
-  const active = Tabs.isActive(tab);
+  const active = tab.active;
   for (const ancestor of ancestors) {
     if (!ancestor)
       continue;
@@ -248,7 +248,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       if (!child)
         continue;
       await Tree.attachTabTo(child, tab, {
-        dontExpand:  !Tabs.isActive(child),
+        dontExpand:  !child.active,
         forceExpand: active,
         insertAt:    Constants.kINSERT_NEAREST,
         broadcast:   true

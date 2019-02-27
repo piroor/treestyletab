@@ -901,7 +901,7 @@ function reserveToProcessLongHover(params = {}) {
         return;
 
       // auto-switch for staying on tabs
-      if (!Tabs.isActive(dragOverTab) &&
+      if (!dragOverTab.active &&
           params.dropEffect == 'link') {
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_SELECT_TAB,

@@ -693,7 +693,7 @@ export function collapseExpandTabAndSubtree(tab, params = {}) {
   ///* PUBLIC API */
   //fireCustomEvent(Constants.kEVENT_TYPE_TAB_COLLAPSED_STATE_CHANGED, tab, true, false, data);
 
-  if (params.collapsed && Tabs.isActive(tab)) {
+  if (params.collapsed && tab.active) {
     const newSelection = Tab.getVisibleAncestorOrSelf(tab);
     logCollapseExpand('current tab is going to be collapsed, switch to ', newSelection.id);
     TabsInternalOperation.activateTab(newSelection, { silently: true });
@@ -877,7 +877,7 @@ export function tryMoveFocusFromClosingActiveTab(tab, options = {}) {
   if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
     return;
   log('tryMoveFocusFromClosingActiveTab', tab.id, options);
-  if (!options.wasActive && !Tabs.isActive(tab)) {
+  if (!options.wasActive && !tab.active) {
     log(' => not active tab');
     return;
   }
@@ -917,7 +917,7 @@ async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = 
 function getTryMoveFocusFromClosingActiveTabNowParams(tab, overrideParams) {
   const parentTab = tab.$TST.parent;
   const params = {
-    active:                   Tabs.isActive(tab),
+    active:                   tab.active,
     pinned:                   Tabs.isPinned(tab),
     parentTab,
     firstChildTab:            tab.$TST.firstChild,
@@ -999,10 +999,10 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
 
   if (!successor ||
       Tabs.isHidden(successor) ||
-      Tabs.isActive(successor))
+      successor.active)
     return false;
 
-  if (Tabs.isActive(nextTab) &&
+  if (nextTab.active &&
       nextIsDiscarded) {
     log('reserve to discard accidentally restored tab ', nextTab.id, nextTabUrl || nextTab.url);
     nextTab.$TST.discardURLAfterCompletelyLoaded = nextTabUrl || nextTab.url;
@@ -1303,7 +1303,7 @@ export async function moveTabs(tabs, options = {}) {
       if (isAcrossWindows) {
         if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
           for (const tab of tabs) {
-            if (!Tabs.isActive(tab))
+            if (!tab.active)
               continue;
             await tryMoveFocusFromClosingActiveTabNow(tab, { ignoredTabs: tabs });
             break;
@@ -1704,7 +1704,7 @@ function snapshotTree(targetTab, tabs) {
       id:            tab.id,
       url:           tab.url,
       cookieStoreId: tab.cookieStoreId,
-      active:        Tabs.isActive(tab),
+      active:        tab.active,
       children:      tab.$TST.children.filter(child => !Tabs.isHidden(child)).map(child => child.id),
       collapsed:     Tabs.isSubtreeCollapsed(tab),
       pinned:        Tabs.isPinned(tab),

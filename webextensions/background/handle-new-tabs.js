@@ -143,7 +143,7 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
         return;
       Tree.attachTabTo(tab, parent, {
         insertAt:    Constants.kINSERT_NEAREST,
-        forceExpand: Tabs.isActive(tab),
+        forceExpand: tab.active,
         broadcast:   true
       });
     });

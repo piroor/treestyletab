@@ -460,7 +460,7 @@ Tabs.onCreated.addListener((tab, _info) => {
       const parent = tab.$TST.parent;
       if (parent && Tabs.isSubtreeCollapsed(parent)) // possibly collapsed by other trigger intentionally
         return;
-      const active = Tabs.isActive(tab);
+      const active = tab.active;
       Tree.collapseExpandTab(tab, { // this is called to scroll to the tab by the "last" parameter
         collapsed: false,
         anchor:    Tabs.getActiveTab(tab.windowId),
@@ -471,7 +471,7 @@ Tabs.onCreated.addListener((tab, _info) => {
     });
   }
   else {
-    if (Tabs.isActive(tab))
+    if (tab.active)
       scrollToNewTab(tab);
     else
       notifyOutOfViewTab(tab);
@@ -496,7 +496,8 @@ function onMessage(message, _sender, _respond) {
           message.parentId
         ]);
         const tab = Tab.get(message.tabId);
-        if (tab && Tabs.isActive(Tab.get(message.parentId)))
+        const parent = Tab.get(message.parentId);
+        if (tab && parent && parent.active)
           scrollToNewTab(tab);
       })();
 

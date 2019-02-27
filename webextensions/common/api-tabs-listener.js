@@ -593,7 +593,7 @@ async function onRemoved(tabId, removeInfo) {
 
     Tabs.onStateChanged.dispatch(oldTab);
 
-    if (Tabs.isActive(oldTab) &&
+    if (oldTab.active &&
         !('successorTabId' in oldTab)) { // on Firefox 64 or older
       const resolver = Tabs.fetchClosedWhileActiveResolver(oldTab);
       if (resolver)

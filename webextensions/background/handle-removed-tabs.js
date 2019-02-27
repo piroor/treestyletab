@@ -119,7 +119,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
   if (self.promisedGrantedToCloseTabs)
     return self.promisedGrantedToCloseTabs;
 
-  self.closingTabWasActive = self.closingTabWasActive || Tabs.isActive(tab);
+  self.closingTabWasActive = self.closingTabWasActive || tab.active;
 
   let shouldRestoreCount;
   self.promisedGrantedToCloseTabs = wait(10).then(async () => {

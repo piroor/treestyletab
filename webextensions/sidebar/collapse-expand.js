@@ -212,7 +212,7 @@ Tabs.onCollapsedStateChanging.addListener((tab, info = {}) => {
   });
 });
 function onEndCollapseExpandCompletely(tab, options = {}) {
-  if (Tabs.isActive(tab) && !options.collapsed)
+  if (tab.active && !options.collapsed)
     Scroll.scrollToTab(tab);
 
   if (configs.indentAutoShrink &&

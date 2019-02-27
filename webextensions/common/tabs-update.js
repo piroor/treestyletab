@@ -83,7 +83,7 @@ export function updateTab(tab, newState = {}, options = {}) {
           Tabs.removeState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
       });
     }
-    else if (!Tabs.isActive(tab)) {
+    else if (!tab.active) {
       Tabs.addState(tab, Constants.kTAB_STATE_UNREAD, { permanently: true });
     }
     tab.$TST.label = visibleLabel;
@@ -121,7 +121,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.delayedBurstEnd = setTimeout(() => {
         delete tab.$TST.delayedBurstEnd;
         Tabs.removeState(tab, Constants.kTAB_STATE_BURSTING);
-        if (!Tabs.isActive(tab))
+        if (!tab.active)
           Tabs.addState(tab, Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
       }, configs.burstDuration);
     }

@@ -34,7 +34,7 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
   for (const descendant of collapsedDescendants) {
     browser.tabs.update(descendant.id, {
       highlighted: info.highlighted,
-      active:      Tabs.isActive(descendant)
+      active:      descendant.active
     }).catch(ApiTabs.handleMissingTabError);
   }
 });
