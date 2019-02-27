@@ -235,7 +235,7 @@ export function scrollToNewTab(tab, options = {}) {
 function canScrollToTab(tab) {
   tab = Tab.get(tab && tab.id);
   return (Tabs.ensureLivingTab(tab) &&
-          !Tabs.isHidden(tab));
+          !tab.hidden);
 }
 
 export async function scrollToTab(tab, options = {}) {

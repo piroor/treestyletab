@@ -279,7 +279,7 @@ function getDropAction(event) {
     }
 
     if (info.dragOverTab &&
-        (Tabs.isHidden(info.dragOverTab) ||
+        (info.dragOverTab.hidden ||
          (Tabs.isCollapsed(info.dragOverTab) &&
           info.dropPosition != kDROP_AFTER)))
       return false;

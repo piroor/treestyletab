@@ -998,7 +998,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
   }
 
   if (!successor ||
-      Tabs.isHidden(successor) ||
+      successor.hidden ||
       successor.active)
     return false;
 
@@ -1698,14 +1698,14 @@ function snapshotTree(targetTab, tabs) {
 
   const snapshotById = {};
   function snapshotChild(tab) {
-    if (!Tabs.ensureLivingTab(tab) || Tabs.isPinned(tab) || Tabs.isHidden(tab))
+    if (!Tabs.ensureLivingTab(tab) || Tabs.isPinned(tab) || tab.hidden)
       return null;
     return snapshotById[tab.id] = {
       id:            tab.id,
       url:           tab.url,
       cookieStoreId: tab.cookieStoreId,
       active:        tab.active,
-      children:      tab.$TST.children.filter(child => !Tabs.isHidden(child)).map(child => child.id),
+      children:      tab.$TST.children.filter(child => !child.hidden).map(child => child.id),
       collapsed:     Tabs.isSubtreeCollapsed(tab),
       pinned:        Tabs.isPinned(tab),
       level:         parseInt(Tabs.getAttribute(tab, Constants.kLEVEL) || 0)
