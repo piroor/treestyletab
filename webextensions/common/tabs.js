@@ -849,11 +849,17 @@ export async function waitUntilTabsAreCreated(idOrIds) {
 }
 
 export async function waitUntilTabsAreTracked(tabId) {
-  return new Promise((resolve, _reject) => {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      // eslint-disable-next-line no-use-before-define
+      onTabTracked.removeListener(listener);
+      reject(new Error(`waitUntilTabsAreTracked for ${tabId} is timed out`));
+    }, 2000);
     const listener = (tab) => {
       if (tab.id != tabId)
         return;
       onTabTracked.removeListener(listener);
+      clearTimeout(timeout);
       resolve(tab);
     };
     onTabTracked.addListener(listener);
