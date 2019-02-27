@@ -136,7 +136,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       runAt:           'document_start',
       matchAboutBlank: true,
       code:            `window.updateTree && window.updateTree()`,
-    }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
+    }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError, ApiTabs.handleUnloadedError));
 
   if (changedInfo.includes('title')) {
     let newTitle;
