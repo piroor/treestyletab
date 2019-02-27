@@ -451,8 +451,8 @@ function onMessage(message, sender) {
           Tabs.getSelectedTabs(root.windowId) :
           [root].concat(root.$TST.descendants) ;
         for (const tab of tabs) {
-          const playing = Tabs.isSoundPlaying(tab);
-          const muted   = Tabs.isMuted(tab);
+          const playing = tab.$TST.soundPlaying;
+          const muted   = tab.$TST.muted;
           log(`tab ${tab.id}: playing=${playing}, muted=${muted}`);
           if (!multiselected && playing != message.muted)
             continue;

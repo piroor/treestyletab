@@ -831,34 +831,6 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
 // Tab Information
 //===================================================================
 
-export function isSoundPlaying(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.audible && !tab.mutedInfo.muted);
-}
-
-export function maybeSoundPlaying(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return (isSoundPlaying(tab) ||
-          (hasState(tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
-           hasChildTabs(tab)));
-}
-
-export function isMuted(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.mutedInfo && tab.mutedInfo.muted);
-}
-
-export function maybeMuted(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return (isMuted(tab) ||
-          (hasState(tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
-           hasChildTabs(tab)));
-}
-
 export function isCollapsed(tab) {
   return ensureLivingTab(tab) &&
          hasState(tab, Constants.kTAB_STATE_COLLAPSED);

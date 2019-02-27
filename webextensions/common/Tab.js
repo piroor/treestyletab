@@ -175,6 +175,26 @@ export default class Tab {
     return following && following.pinned;
   }
 
+  get soundPlaying() {
+    return !!(this.tab.audible && !this.tab.mutedInfo.muted);
+  }
+
+  get maybeSoundPlaying() {
+    return (this.soundPlaying ||
+            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
+             this.hasChild));
+  }
+
+  get muted() {
+    return !!(this.tab.mutedInfo && this.tab.mutedInfo.muted);
+  }
+
+  get maybeMuted() {
+    return (this.muted ||
+            (Tabs.hasState(this.tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
+             this.hasChild));
+  }
+
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
     return tab;

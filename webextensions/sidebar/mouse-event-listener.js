@@ -406,7 +406,7 @@ async function onMouseUp(event) {
         type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
         windowId: mTargetWindow,
         tabId:    tab.id,
-        muted:    Tabs.maybeSoundPlaying(tab)
+        muted:    tab.maybeSoundPlaying
       });
     }
     else if (lastMousedown.detail.closebox) {

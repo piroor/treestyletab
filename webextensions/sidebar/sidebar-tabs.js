@@ -300,9 +300,9 @@ export function reserveToUpdateSoundButtonTooltip(tab) {
 function updateSoundButtonTooltip(tab) {
   let tooltip = '';
   const suffix = Tabs.isMultiselected(tab) ? '_multiselected' : '' ;
-  if (Tabs.maybeMuted(tab))
+  if (tab.$TST.maybeMuted)
     tooltip = browser.i18n.getMessage(`tab_soundButton_muted_tooltip${suffix}`);
-  else if (Tabs.maybeSoundPlaying(tab))
+  else if (tab.$TST.maybeSoundPlaying)
     tooltip = browser.i18n.getMessage(`tab_soundButton_playing_tooltip${suffix}`);
 
   getSoundButton(tab).setAttribute('title', tooltip);

@@ -299,12 +299,12 @@ export function updateParentTab(parent) {
 
   const children = parent.$TST.children;
 
-  if (children.some(Tabs.maybeSoundPlaying))
+  if (children.some(child => child.$TST.maybeSoundPlaying))
     Tabs.addState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
   else
     Tabs.removeState(parent, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
 
-  if (children.some(Tabs.maybeMuted))
+  if (children.some(child => child.$TST.maybeMuted))
     Tabs.addState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
   else
     Tabs.removeState(parent, Constants.kTAB_STATE_HAS_MUTED_MEMBER);
