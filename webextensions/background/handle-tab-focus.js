@@ -45,7 +45,7 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     configs.skipCollapsedTabsForTabSwitchingShortcuts
   );
   mTabSwitchedByShortcut = mMaybeTabSwitchingByShortcut;
-  if (Tabs.isCollapsed(tab)) {
+  if (tab.$TST.collapsed) {
     if (!tab.$TST.parent) {
       // This is invalid case, generally never should happen,
       // but actually happen on some environment:

@@ -831,10 +831,6 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
 // Tab Information
 //===================================================================
 
-export function isCollapsed(tab) {
-  return ensureLivingTab(tab) &&
-         hasState(tab, Constants.kTAB_STATE_COLLAPSED);
-}
 
 export function isOpening(tab) {
   return ensureLivingTab(tab) &&

@@ -821,7 +821,7 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
   if (!tab.$TST.hasChild)
     return fixed;
   const firstChild = tab.$TST.firstChild;
-  const childrenCollapsed = Tabs.isCollapsed(firstChild);
+  const childrenCollapsed = firstChild.$TST.collapsed;
   const collapsedStateMismatched = Tabs.isSubtreeCollapsed(tab) != childrenCollapsed;
   const nextIsFirstChild = tab.$TST.next == firstChild;
   log('fixupSubtreeCollapsedState ', {
@@ -1617,7 +1617,7 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const tab = tabs[i];
     /*
-    if (Tabs.isCollapsed(tab))
+    if (tab.$TST.collapsed)
       collapseExpandTabAndSubtree(tab, Object.assign({}, options, {
         collapsed: false,
         justNow: true

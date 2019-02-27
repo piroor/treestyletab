@@ -280,7 +280,7 @@ function getDropAction(event) {
 
     if (info.dragOverTab &&
         (info.dragOverTab.hidden ||
-         (Tabs.isCollapsed(info.dragOverTab) &&
+         (info.dragOverTab.$TST.collapsed &&
           info.dropPosition != kDROP_AFTER)))
       return false;
 

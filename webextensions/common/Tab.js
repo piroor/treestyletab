@@ -195,6 +195,10 @@ export default class Tab {
              this.hasChild));
   }
 
+  get collapsed() {
+    return Tabs.hasState(this.tab, Constants.kTAB_STATE_COLLAPSED);
+  }
+
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
     return tab;
@@ -532,11 +536,11 @@ Tab.getVisibleAncestorOrSelf = descendant => {
   if (!Tabs.ensureLivingTab(descendant))
     return null;
   for (const ancestor of descendant.$TST.ancestors) {
-    if (!Tabs.isCollapsed(ancestor))
+    if (!ancestor.$TST.collapsed)
       return ancestor;
   }
   Tabs.assertValidTab(descendant);
-  if (!Tabs.isCollapsed(descendant))
+  if (!descendant.$TST.collapsed)
     return descendant;
   return null;
 }

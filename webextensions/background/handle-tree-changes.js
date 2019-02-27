@@ -83,7 +83,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
           }));
         });
       }
-      if (Tabs.isCollapsed(parent)) {
+      if (parent.$TST.collapsed) {
         log('  collapse tab because the parent is collapsed');
         Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
           collapsed:    true,
@@ -92,7 +92,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       }
     }
     else if (Tree.shouldTabAutoExpanded(parent) ||
-             Tabs.isCollapsed(parent)) {
+             parent.$TST.collapsed) {
       log('  collapse auto expanded tree');
       Tree.collapseExpandTabAndSubtree(tab, Object.assign({}, info, {
         collapsed:    true,

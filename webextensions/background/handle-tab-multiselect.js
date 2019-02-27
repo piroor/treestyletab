@@ -21,7 +21,7 @@ function log(...args) {
 Tabs.onUpdated.addListener((tab, info, options = {}) => {
   if (!('highlighted' in info) ||
       !Tabs.isSubtreeCollapsed(tab) ||
-      Tabs.isCollapsed(tab) ||
+      tab.$TST.collapsed ||
       !Tabs.isMultiselected(tab) ||
       options.inheritHighlighted === false)
     return;

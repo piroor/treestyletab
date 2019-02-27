@@ -320,7 +320,7 @@ export function updateAll() {
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
     reserveToUpdateTooltip(tab);
-    if (!Tabs.isCollapsed(tab))
+    if (!tab.$TST.collapsed)
       updateLabelOverflow(tab);
   }
 }
@@ -556,7 +556,7 @@ Tabs.onRemoving.addListener((_tab, _info) => {
 });
 
 Tabs.onRemoved.addListener((tab, _info) => {
-  if (Tabs.isCollapsed(tab) ||
+  if (tab.$TST.collapsed ||
       !configs.animation)
     return;
 
@@ -576,7 +576,7 @@ Tabs.onMoving.addListener((tab, _info) => {
       tab.pinned ||
       Tabs.isOpening(tab))
     return;
-  mTabWasVisibleBeforeMoving.set(tab.id, !Tabs.isCollapsed(tab));
+  mTabWasVisibleBeforeMoving.set(tab.id, !tab.$TST.collapsed);
   Tree.collapseExpandTab(tab, {
     collapsed: true,
     justNow:   true
@@ -616,7 +616,7 @@ Tabs.onStateChanged.addListener(tab => {
 Tabs.onLabelUpdated.addListener(tab => {
   getLabelContent(tab).textContent = tab.title;
   reserveToUpdateTooltip(tab);
-  if (!tab.$TST.titleUpdatedWhileCollapsed && Tabs.isCollapsed(tab))
+  if (!tab.$TST.titleUpdatedWhileCollapsed && tab.$TST.collapsed)
     tab.$TST.titleUpdatedWhileCollapsed = true;
 });
 

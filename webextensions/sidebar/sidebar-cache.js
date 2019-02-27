@@ -179,7 +179,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
         SidebarTabs.reserveToUpdateTwistyTooltip(tab);
         SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
         SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
-        if (!Tabs.isCollapsed(tab))
+        if (!tab.$TST.collapsed)
           SidebarTabs.updateLabelOverflow(tab);
       }
       onRestored.dispatch();
