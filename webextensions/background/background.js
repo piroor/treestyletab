@@ -277,7 +277,7 @@ async function updateInsertionPosition(tab) {
   if (!Tabs.ensureLivingTab(tab))
     return;
 
-  const prev = Tab.getPrevious(tab);
+  const prev = tab.$TST.previous;
   if (prev)
     browser.sessions.setTabValue(
       tab.id,
@@ -290,7 +290,7 @@ async function updateInsertionPosition(tab) {
       Constants.kPERSISTENT_INSERT_AFTER
     );
 
-  const next = Tab.getNext(tab);
+  const next = tab.$TST.next;
   if (next)
     browser.sessions.setTabValue(
       tab.id,
@@ -441,8 +441,8 @@ Tabs.onCreated.addListener((tab, info = {}) => {
   reserveToUpdateChildren(tab);
   reserveToUpdateInsertionPosition([
     tab,
-    Tab.getNext(tab),
-    Tab.getPrevious(tab)
+    tab.$TST.next,
+    tab.$TST.previous
   ]);
 });
 
@@ -474,8 +474,8 @@ Tabs.onUpdated.addListener((tab, changeInfo) => {
 Tabs.onTabInternallyMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
     tab,
-    Tab.getPrevious(tab),
-    Tab.getNext(tab),
+    tab.$TST.previous,
+    tab.$TST.next,
     info.oldPreviousTab,
     info.oldNextTab
   ]);
@@ -486,8 +486,8 @@ Tabs.onMoved.addListener(async (tab, moveInfo) => {
     tab,
     moveInfo.oldPreviousTab,
     moveInfo.oldNextTab,
-    Tab.getPrevious(tab),
-    Tab.getNext(tab)
+    tab.$TST.previous,
+    tab.$TST.next
   ]);
 });
 

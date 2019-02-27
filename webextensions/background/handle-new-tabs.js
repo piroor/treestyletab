@@ -43,7 +43,7 @@ Tabs.onCreating.addListener((tab, info = {}) => {
            next tab. In this case the tab is expected to be placed next to the
            active tab aways, so we should skip all repositioning behavior.
            See also: https://github.com/piroor/treestyletab/issues/2054 */
-        !Tab.getNext(tab)) {
+        !tab.$TST.next) {
       if (Tabs.isNewTabCommandTab(tab)) {
         if (!info.positionedBySelf) {
           log('behave as a tab opened by new tab command');

@@ -19,8 +19,6 @@ import * as TabsGroup from '/common/tabs-group.js';
 import * as Tree from '/common/tree.js';
 import * as SidebarStatus from '/common/sidebar-status.js';
 
-import Tab from '/common/Tab.js';
-
 import * as Background from './background.js';
 
 function log(...args) {
@@ -49,7 +47,7 @@ Tabs.onRemoving.addListener(async (tab, removeInfo = {}) => {
   log('Tabs.onRemoving: granted to close ', tab.id);
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && Tab.getNextSibling(tab) || Tab.getNext(tab);
+    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && tab.$TST.nextSibling || tab.$TST.next;
     Tree.tryMoveFocusFromClosingActiveTab(tab, {
       wasActive,
       params: {

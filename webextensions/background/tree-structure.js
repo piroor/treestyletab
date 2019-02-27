@@ -223,8 +223,8 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
         await done;
     }
     else if (!options.bulk &&
-             (Tab.getNextNormal(tab) ||
-              Tab.getPreviousNormal(tab))) {
+             (tab.$TST.normalNext ||
+              tab.$TST.normalPrevious)) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,
@@ -238,7 +238,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       // but attached to any parent based on its restored position
       tab.$TST.parent &&
       // when not in-middle position of existing tree (safely detachable position)
-      !Tab.getNextSibling(tab)) {
+      !tab.$TST.nextSibling) {
     Tree.detachTab(tab, {
       broadcast: true
     });

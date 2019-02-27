@@ -143,8 +143,8 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   Background.reserveToUpdateChildren(parent);
   Background.reserveToUpdateInsertionPosition([
     tab,
-    Tab.getNext(tab),
-    Tab.getPrevious(tab)
+    tab.$TST.next,
+    tab.$TST.previous
   ]);
 });
 

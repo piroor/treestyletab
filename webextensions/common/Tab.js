@@ -96,6 +96,80 @@ export default class Tab {
     this.childIds    = [];
   }
 
+  get next() {
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      living:   true,
+      index:    (index => index > this.tab.index)
+    });
+  }
+
+  get previous() {
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      living:   true,
+      index:    (index => index < this.tab.index),
+      last:     true
+    });
+  }
+
+  get anyNext() {
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      index:    (index => index > this.tab.index)
+    });
+  }
+
+  get anyPrevious() {
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      index:    (index => index < this.tab.index),
+      last:     true
+    });
+  }
+
+  get normalNext() {
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      normal:   true,
+      index:    (index => index > this.tab.index)
+    });
+  }
+
+  get normalPrevious() {
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      normal:   true,
+      index:    (index => index < this.tab.index),
+      last:     true
+    });
+  }
+
+  get visibleNext() { // visible, not-collapsed
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      visible:  true,
+      index:    (index => index > this.tab.index)
+    });
+  }
+
+  get visiblePrevious() { // visible, not-collapsed
+    return Tabs.query({
+      windowId: this.tab.windowId,
+      fromId:   this.tab.id,
+      visible:  true,
+      index:    (index => index < this.tab.index),
+      last:     true
+    });
+  }
+
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
     return tab;
@@ -119,6 +193,16 @@ export default class Tab {
   get root() {
     const ancestors = this.ancestors;
     return ancestors.length > 0 ? ancestors[ancestors.length-1] : this.tab ;
+  }
+
+  get nextRoot() {
+    const root = this.root;
+    return root && root.$TST.nextSibling;
+  }
+
+  get nextForeigner() {
+    const base = this.lastDescendant || this.tab;
+    return base && base.$TST.next;
   }
 
   set children(tabs) {
@@ -162,6 +246,50 @@ export default class Tab {
     this.childIds = Tabs.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
   }
 
+  get nextSibling() {
+    const parent = this.parent;
+    if (parent) {
+      const siblingIds = parent.$TST.childIds;
+      const index = siblingIds.indexOf(this.tab.id);
+      const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
+      if (!siblingId)
+        return null;
+      return Tab.get(siblingId);
+    }
+    else {
+      return Tabs.query({
+        windowId:  this.tab.windowId,
+        fromId:    this.tab.id,
+        living:    true,
+        index:     (index => index > this.tab.index),
+        hasParent: false,
+        first:     true
+      });
+    }
+  }
+
+  get previousSibling() {
+    const parent = this.parent;
+    if (parent) {
+      const siblingIds = parent.$TST.childIds;
+      const index = siblingIds.indexOf(this.tab.id);
+      const siblingId = index > 0 ? siblingIds[index - 1] : null ;
+      if (!siblingId)
+        return null;
+      return Tab.get(siblingId);
+    }
+    else {
+      return Tabs.query({
+        windowId:  this.tab.windowId,
+        fromId:    this.tab.id,
+        living:    true,
+        index:     (index => index < this.tab.index),
+        hasParent: false,
+        last:      true
+      });
+    }
+  }
+
   get opener() {
     if (!this.tab.openerTabId ||
         this.tab.openerTabId == this.tab.id)
@@ -180,13 +308,13 @@ export default class Tab {
     let foundTab = tab;
     do {
       ignoredTabs.push(foundTab);
-      foundTab = Tab.getNextSibling(foundTab);
+      foundTab = foundTab.$TST.next;
     } while (foundTab && ignoredTabs.includes(foundTab));
     if (!foundTab) {
       foundTab = tab;
       do {
         ignoredTabs.push(foundTab);
-        foundTab = Tab.getPreviousVisible(foundTab);
+        foundTab = foundTab.$TST.visiblePrevious;
       } while (foundTab && ignoredTabs.includes(foundTab));
     }
     return foundTab;
@@ -196,39 +324,39 @@ export default class Tab {
   isAllPlacedBeforeSelf(tabs) {
     let nextTab = this.tab;
     if (tabs[tabs.length - 1] == nextTab)
-      nextTab = Tab.getNext(nextTab);
-    if (!nextTab && !Tab.getNext(tabs[tabs.length - 1]))
+      nextTab = nextTab.$TST.next;
+    if (!nextTab && !tabs[tabs.length - 1].$TST.next)
       return true;
 
     tabs = Array.from(tabs);
     let previousTab = tabs.shift();
     for (const tab of tabs) {
-      if (Tab.getPrevious(tab) != previousTab)
+      if (tab.$TST.previous != previousTab)
         return false;
       previousTab = tab;
     }
     return !nextTab ||
            !previousTab ||
-           Tab.getNext(previousTab) == nextTab;
+           previousTab.$TST.next == nextTab;
   }
 
   isAllPlacedAfterSelf(tabs) {
     let previousTab = this.tab;
     if (tabs[0] == previousTab)
-      previousTab = Tab.getPrevious(previousTab);
-    if (!previousTab && !Tab.getPrevious(tabs[0]))
+      previousTab = previousTab.$TST.previous;
+    if (!previousTab && !tabs[0].$TST.previous)
       return true;
 
     tabs = Array.from(tabs).reverse();
     let nextTab = tabs.shift();
     for (const tab of tabs) {
-      if (Tab.getNext(tab) != nextTab)
+      if (tab.$TST.next != nextTab)
         return false;
       nextTab = tab;
     }
     return !previousTab ||
            !nextTab ||
-           Tab.getPrevious(nextTab) == previousTab;
+           nextTab.$TST.previous == previousTab;
   }
 
   detach() {
@@ -328,82 +456,6 @@ Tab.init = (tab, options = {}) => {
 }
 
 
-Tab.getNext = tab => {
-  if (!tab)
-    return null;
-  Tabs.assertValidTab(tab);
-  return Tabs.query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    living:   true,
-    index:    (index => index > tab.index)
-  });
-}
-
-Tab.getPrevious = tab => {
-  if (!tab)
-    return null;
-  Tabs.assertValidTab(tab);
-  return Tabs.query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    living:   true,
-    index:    (index => index < tab.index),
-    last:     true
-  });
-}
-
-Tab.getNextNormal = tab => {
-  if (!Tabs.ensureLivingTab(tab))
-    return null;
-  Tabs.assertValidTab(tab);
-  return Tabs.query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    normal:   true,
-    index:    (index => index > tab.index)
-  });
-}
-
-Tab.getPreviousNormal = tab => {
-  if (!Tabs.ensureLivingTab(tab))
-    return null;
-  Tabs.assertValidTab(tab);
-  return Tabs.query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    normal:   true,
-    index:    (index => index < tab.index),
-    last:     true
-  });
-}
-
-Tab.getNextVisibleTab = tab => { // visible, not-collapsed
-  if (!Tabs.ensureLivingTab(tab))
-    return null;
-  Tabs.assertValidTab(tab);
-  return Tabs.query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    visible:  true,
-    index:    (index => index > tab.index)
-  });
-}
-
-Tab.getPreviousVisibleTab = tab => { // visible, not-collapsed
-  if (!Tabs.ensureLivingTab(tab))
-    return null;
-  Tabs.assertValidTab(tab);
-  return Tabs.query({
-    windowId: tab.windowId,
-    fromId:   tab.id,
-    visible:  true,
-    index:    (index => index < tab.index),
-    last:     true
-  });
-}
-
-
 Tab.getGroupTabForOpener = opener => {
   if (!opener)
     return null;
@@ -457,56 +509,6 @@ Tab.getVisibleAncestorOrSelf = descendant => {
   if (!Tabs.isCollapsed(descendant))
     return descendant;
   return null;
-}
-
-Tab.getNextSibling = tab => {
-  if (!Tabs.ensureLivingTab(tab))
-    return null;
-  Tabs.assertValidTab(tab);
-  const parent = tab.$TST.parent;
-  if (parent) {
-    const siblingIds = parent.$TST.childIds;
-    const index = siblingIds.indexOf(tab.id);
-    const siblingId = index < siblingIds.length - 1 ? siblingIds[index + 1] : null ;
-    if (!siblingId)
-      return null;
-    return Tab.get(siblingId);
-  }
-  else {
-    return Tabs.query({
-      windowId:  tab.windowId,
-      fromId:    tab.id,
-      living:    true,
-      index:     (index => index > tab.index),
-      hasParent: false,
-      first:     true
-    });
-  }
-}
-
-Tab.getPreviousSibling = tab => {
-  if (!Tabs.ensureLivingTab(tab))
-    return null;
-  Tabs.assertValidTab(tab);
-  const parent = tab.$TST.parent;
-  if (parent) {
-    const siblingIds = parent.$TST.childIds;
-    const index = siblingIds.indexOf(tab.id);
-    const siblingId = index > 0 ? siblingIds[index - 1] : null ;
-    if (!siblingId)
-      return null;
-    return Tab.get(siblingId);
-  }
-  else {
-    return Tabs.query({
-      windowId:  tab.windowId,
-      fromId:    tab.id,
-      living:    true,
-      index:     (index => index < tab.index),
-      hasParent: false,
-      last:      true
-    });
-  }
 }
 
 

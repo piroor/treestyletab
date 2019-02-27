@@ -182,7 +182,7 @@ export async function openNewTabAs(options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       parent       = currentTab.$TST.parent;
-      insertBefore = Tab.getNextSibling(currentTab);
+      insertBefore = currentTab.$TST.nextSibling;
       insertAfter  = currentTab.$TST.lastDescendant || currentTab;
     }; break;
   }
@@ -203,7 +203,7 @@ export async function openNewTabAs(options = {}) {
 }
 
 export async function indent(tab, options = {}) {
-  const newParent = Tab.getPreviousSibling(tab);
+  const newParent = tab.$TST.previousSibling;
   if (!newParent ||
       newParent == tab.$TST.parent)
     return false;
@@ -320,11 +320,11 @@ export async function moveTabsWithStructure(tabs, params = {}) {
 
   while (params.insertBefore &&
          movedWholeTree.includes(params.insertBefore)) {
-    params.insertBefore = Tab.getNext(params.insertBefore);
+    params.insertBefore = params.insertBefore && params.insertBefore.$TST.next;
   }
   while (params.insertAfter &&
          movedWholeTree.includes(params.insertAfter)) {
-    params.insertAfter = Tab.getPrevious(params.insertAfter);
+    params.insertAfter = params.insertAfter && params.insertAfter.$TST.previous;
   }
 
   const windowId = params.windowId || tabs[0].windowId;
@@ -477,7 +477,7 @@ function detachTabsWithStructure(tabs, options = {}) {
 }
 
 export async function moveUp(tab, options = {}) {
-  const previousTab = Tab.getPreviousVisible(tab);
+  const previousTab = tab.$TST.visiblePrevious;
   if (!previousTab)
     return false;
 
@@ -512,7 +512,7 @@ export async function moveUp(tab, options = {}) {
 
 export async function moveDown(tab, options = {}) {
   if (!options.followChildren) {
-    const nextTab = Tab.getNextVisible(tab);
+    const nextTab = tab.$TST.visibleNext;
     if (!nextTab)
       return false;
     Tree.detachAllChildren(tab, {
@@ -527,7 +527,7 @@ export async function moveDown(tab, options = {}) {
     await onMoveDown.dispatch(tab);
   }
   else {
-    const nextTab = Tab.getNextVisible(tab.$TST.lastDescendant || tab);
+    const nextTab = tab.$TST.nextForeigner;
     if (!nextTab)
       return false;
     const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {

@@ -70,17 +70,17 @@ Tabs.onActivating.addListener((tab, info = {}) => { // return true if this focus
     }
     else {
       log('=> reaction for focusing collapsed descendant');
-      let newSelection = Tab.getVisibleAncestorOrSelf(tab);
-      if (!newSelection) // this seems invalid case...
+      let successor = Tab.getVisibleAncestorOrSelf(tab);
+      if (!successor) // this seems invalid case...
         return false;
       if (shouldSkipCollapsed &&
-          window.lastActiveTab == newSelection.id) {
-        newSelection = Tab.getNextVisible(newSelection) || Tabs.getFirstVisibleTab(tab.windowId);
+          window.lastActiveTab == successor.id) {
+        successor = successor.$TST.visibleNext || Tabs.getFirstVisibleTab(tab.windowId);
       }
-      window.lastActiveTab = newSelection.id;
+      window.lastActiveTab = successor.id;
       if (mMaybeTabSwitchingByShortcut)
-        setupDelayedExpand(newSelection);
-      TabsInternalOperation.activateTab(newSelection, { silently: true });
+        setupDelayedExpand(successor);
+      TabsInternalOperation.activateTab(successor, { silently: true });
       log('Tabs.onActivating: discarded? ', tab.id, Tabs.isDiscarded(tab));
       if (Tabs.isDiscarded(tab))
         tab.$TST.discardURLAfterCompletelyLoaded = tab.url;

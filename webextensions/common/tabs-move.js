@@ -111,8 +111,8 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
     */
     let movedTabsCount = 0;
     for (const tab of tabs) {
-      const oldPreviousTab = Tab.getPrevious(tab, { living: false });
-      const oldNextTab     = Tab.getNext(tab, { living: false });
+      const oldPreviousTab = tab.$TST.anyPrevious;
+      const oldNextTab     = tab.$TST.anyNext;
       if (oldNextTab && oldNextTab.id == referenceTab.id) // no move case
         continue;
       window.internalMovingTabs.add(tab.id);
@@ -202,13 +202,13 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       the operation is asynchronous. To help synchronous operations
       following to this operation, we need to move tabs immediately.
     */
-    let nextTab = Tab.getNext(referenceTab, { living: false });
+    let nextTab = referenceTab.$TST.anyNext;
     if (nextTab && tabs.find(tab => tab.id == nextTab.id))
       nextTab = null;
     let movedTabsCount = 0;
     for (const tab of tabs) {
-      const oldPreviousTab = Tab.getPrevious(tab, { living: false });
-      const oldNextTab     = Tab.getNext(tab, { living: false });
+      const oldPreviousTab = tab.$TST.anyPrevious;
+      const oldNextTab     = tab.$TST.anyNext;
       if ((!oldNextTab && !nextTab) ||
           (oldNextTab && nextTab && oldNextTab.id == nextTab.id)) // no move case
         continue;

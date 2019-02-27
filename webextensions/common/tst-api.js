@@ -39,7 +39,6 @@
 'use strict';
 
 import TabFavIconHelper from '/extlib/TabFavIconHelper.js';
-import TabIdFixer from '/extlib/TabIdFixer.js';
 
 import {
   log as internalLogger,
@@ -544,49 +543,33 @@ export async function getTargetTabs(message, sender) {
 
 async function getTabsFromWrongIds(aIds, sender) {
   log('getTabsFromWrongIds ', aIds, sender);
-  let tabsInActiveWindow = [];
+  let activeWindow = [];
   if (aIds.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
       populate: true
     });
-    tabsInActiveWindow = window.tabs;
+    activeWindow = Tabs.trackedWindows.get(window.id);
   }
   const tabs = await Promise.all(aIds.map(async (id) => {
     switch (String(id).toLowerCase()) {
       case 'active':
-      case 'current': {
-        const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return TabIdFixer.fixTab(tabs[0]);
-      }
-      case 'next': {
-        const tabs = tabsInActiveWindow.filter((tab, index) =>
-          index > 0 && tabsInActiveWindow[index - 1].active);
-        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
-      }
+      case 'current':
+        return Tabs.getActiveTab(activeWindow.id);
+      case 'next':
+        return Tabs.getActiveTab(activeWindow.id).$TST.next;
       case 'previous':
-      case 'prev': {
-        const maxIndex = tabsInActiveWindow.length - 1;
-        const tabs = tabsInActiveWindow.filter((tab, index) =>
-          index < maxIndex && tabsInActiveWindow[index + 1].active);
-        return tabs.length > 0 ? TabIdFixer.fixTab(tabs[0]) : null ;
-      }
-      case 'nextsibling': {
-        const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tab.getNextSibling(Tab.get(tabs[0].id));
-      }
+      case 'prev':
+        return Tabs.getActiveTab(activeWindow.id).$TST.previous;
+      case 'nextsibling':
+        return Tabs.getActiveTab(activeWindow.id).$TST.nextSibling;
       case 'previoussibling':
-      case 'prevsibling': {
-        const tabs = tabsInActiveWindow.filter(tab => tab.active);
-        return Tab.getPreviousSibling(Tab.get(tabs[0].id));
-      }
+      case 'prevsibling':
+        return Tabs.getActiveTab(activeWindow.id).$TST.previousSibling;
       case 'sendertab':
-        if (sender.tab)
-          return sender.tab;
+        return sender.tab || null;
       case 'highlighted':
-      case 'multiselected': {
-        const tabs = tabsInActiveWindow.filter(tab => tab.highlighted);
-        return tabs.map(tab => TabIdFixer.fixTab(tab));
-      }
+      case 'multiselected':
+        return Tabs.getHighlightedTabs(activeWindow.id);
       default:
         return Tabs.getTabByUniqueId(id);
     }
@@ -599,7 +582,7 @@ async function getTabsFromWrongIds(aIds, sender) {
   else
     flattenTabs = tabs.flat();
 
-  return flattenTabs.filter(tab => !!tab).map(tab => Tab.get(tab.id));
+  return flattenTabs.filter(tab => !!tab);
 }
 
 export function formatResult(results, originalMessage) {

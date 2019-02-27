@@ -97,27 +97,27 @@ async function updateInternal(tabId) {
   delete tab.$TST.lastSuccessorTabId;
   if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
     return;
-  let nextActive = null;
+  let successor = null;
   if (renewedTab.active) {
     if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE) {
       const firstChild = tab.$TST.firstChild;
-      nextActive = (
+      successor = (
         (firstChild && !Tabs.isCollapsed(firstChild) && firstChild) ||
-        (Tab.getNextSibling(tab) || Tab.getPreviousVisible(tab))
+        (tab.$TST.extSibling || tab.$TST.reviousVisible)
       );
     }
     else
-      nextActive = Tab.getNextVisible(tab) || Tab.getPreviousVisible(tab);
+      successor = tab.$TST.mextVisible || tab.$TST.visiblePrevious;
   }
-  if (nextActive) {
-    log(`  ${tab.id} is under control: successor = ${nextActive.id}`);
-    setSuccessor(renewedTab.id, nextActive.id);
-    tab.$TST.lastSuccessorTabId = nextActive.id;
+  if (successor) {
+    log(`  ${tab.id} is under control: successor = ${successor.id}`);
+    setSuccessor(renewedTab.id, successor.id);
+    tab.$TST.lastSuccessorTabId = successor.id;
   }
   else {
     log(`  ${tab.id} is out of control.`, {
-      active:     renewedTab.active,
-      nextActive: nextActive && nextActive.id
+      active:    renewedTab.active,
+      successor: successor && successor.id
     });
     clearSuccessor(renewedTab.id);
   }
