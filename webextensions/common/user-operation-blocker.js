@@ -9,6 +9,7 @@ import {
   log as internalLogger
 } from './common.js';
 import * as Constants from './constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -38,7 +39,7 @@ export function blockIn(windowId, options = {}) {
       type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
       windowId: windowId,
       throbber: !!options.throbber
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
     return;
   }
   block(options);
@@ -68,7 +69,7 @@ export function unblockIn(windowId, options = {}) {
       type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
       windowId: windowId,
       throbber: !!options.throbber
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
     return;
   }
   unblock(options);

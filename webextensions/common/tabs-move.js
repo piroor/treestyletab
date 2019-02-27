@@ -95,11 +95,11 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       broadcasted: !!options.broadcast
     };
     if (options.inRemote) {
-      const tabIds = await browser.runtime.sendMessage(message);
+      const tabIds = await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorHandler());
       return tabIds.map(id => Tab.get(id));
     }
     else {
-      browser.runtime.sendMessage(message).catch(_error => {});
+      browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
     }
   }
 
@@ -188,11 +188,11 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       broadcasted:   !!options.broadcast
     };
     if (options.inRemote) {
-      const tabIds = await browser.runtime.sendMessage(message);
+      const tabIds = await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorHandler());
       return tabIds.map(id => Tab.get(id));
     }
     else {
-      browser.runtime.sendMessage(message).catch(_error => {});
+      browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
     }
   }
 
@@ -316,7 +316,7 @@ async function syncToNativeTabsInternal(windowId) {
 
   // Tabs may be removed while waiting.
   const internalOrder   = TabsStore.windows.get(windowId).order;
-  const nativeTabsOrder = (await browser.tabs.query({ windowId })).map(tab => tab.id);
+  const nativeTabsOrder = (await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler())).map(tab => tab.id);
   log(`syncToNativeTabs(${windowId}): rearrange `, { internalOrder:internalOrder.join(','), nativeTabsOrder:nativeTabsOrder.join(',') });
 
   log(`syncToNativeTabs(${windowId}): step1, internalOrder => nativeTabsOrder`);
@@ -364,9 +364,10 @@ async function syncToNativeTabsInternal(windowId) {
         browser.tabs.move(moveTabIds, {
           windowId,
           index: toIndex
-        }).catch(e => {
+        }).catch(ApiTabs.createErrorHandler(e => {
           log(`syncToNativeTabs(${windowId}): step1, failed to move: `, String(e), e.stack);
-        });
+          throw e;
+        }));
         tabIdsForUpdatedIndices = tabIdsForUpdatedIndices.filter(id => !moveTabIds.includes(id));
         tabIdsForUpdatedIndices.splice(toIndex, 0, ...moveTabIds);
         break;
@@ -381,7 +382,7 @@ async function syncToNativeTabsInternal(windowId) {
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_SYNC_TABS_ORDER,
       windowId
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
 
     // Multiple times asynchronous tab move is unstable, so we retry again
     // for safety until all tabs are completely synchronized.

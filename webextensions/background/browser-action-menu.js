@@ -11,6 +11,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 
 function log(...args) {
   internalLogger('background/browser-action-menu', ...args);
@@ -818,12 +819,12 @@ browser.menus.onShown.addListener((info, _tab) => {
     if ('visible' in item)
       params.visible = item.visible;
     if ('checked' in params || 'title' in params) {
-      browser.menus.update(item.id, params);
+      browser.menus.update(item.id, params).catch(ApiTabs.createErrorSuppressor());
       updated = true;
     }
   }
   if (updated)
-    browser.menus.refresh();
+    browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 });
 
 browser.menus.onClicked.addListener((info, _tab) => {

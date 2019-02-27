@@ -12,6 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
@@ -365,7 +366,7 @@ async function syncTabsOrder() {
   const internalOrder = await browser.runtime.sendMessage({
     type: Constants.kCOMMAND_PULL_TABS_ORDER,
     windowId
-  });
+  }).catch(ApiTabs.createErrorHandler());
 
   log('syncTabsOrder: internalOrder = ', internalOrder);
 

@@ -33,7 +33,7 @@ export async function activateTab(tab, options = {}) {
       windowId: tab.windowId,
       tabId:    tab.id,
       options:  options
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
     return;
   }
   const window = TabsStore.windows.get(tab.windowId);
@@ -63,10 +63,10 @@ export async function activateTab(tab, options = {}) {
       windowId: tab.windowId,
       tabs,
       populate: false
-    }).catch(onError);
+    }).catch(ApiTabs.createErrorHandler(onError));
   }
   else {
-    return browser.tabs.update(tab.id, { active: true }).catch(onError);
+    return browser.tabs.update(tab.id, { active: true }).catch(ApiTabs.createErrorHandler(onError));
   }
 }
 
@@ -89,7 +89,7 @@ export function removeTabs(tabs, options = {}) {
         broadcast:   options.inRemote && !options.broadcast,
         broadcasted: !!options.broadcast
       })
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
     if (options.inRemote)
       return;
   }
@@ -101,7 +101,7 @@ export function removeTabs(tabs, options = {}) {
   }
   if (options.broadcasted)
     return;
-  return browser.tabs.remove(tabs.map(tab => tab.id)).catch(ApiTabs.handleMissingTabError);
+  return browser.tabs.remove(tabs.map(tab => tab.id)).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
 
 export function setTabActive(tab) {

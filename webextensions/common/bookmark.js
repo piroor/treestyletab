@@ -11,6 +11,7 @@ import {
   notify
 } from './common.js';
 import * as Permissions from './permissions.js';
+import * as ApiTabs from '/common/api-tabs.js';
 
 import MenuUI from '/extlib/MenuUI.js';
 import RichConfirm from '/extlib/RichConfirm.js';
@@ -25,7 +26,7 @@ async function getItemById(id) {
   if (!id)
     return null;
   try {
-    const items = await browser.bookmarks.get(id);
+    const items = await browser.bookmarks.get(id).catch(ApiTabs.createErrorHandler());
     if (items.length > 0)
       return items[0];
   }
@@ -91,7 +92,7 @@ export async function bookmarkTab(tab, options = {}) {
 
   const item = await browser.bookmarks.create({
     parentId, title, url
-  });
+  }).catch(ApiTabs.createErrorHandler());
   return item;
 }
 
@@ -160,7 +161,7 @@ export async function bookmarkTabs(tabs, options = {}) {
     }
   }
 
-  const folder = await browser.bookmarks.create(folderParams);
+  const folder = await browser.bookmarks.create(folderParams).catch(ApiTabs.createErrorHandler());
   for (let i = 0, maxi = tabs.length; i < maxi; i++) {
     const tab = tabs[i];
     await browser.bookmarks.create({
@@ -168,7 +169,7 @@ export async function bookmarkTabs(tabs, options = {}) {
       index:    i,
       title:    tab.title,
       url:      tab.url
-    });
+    }).catch(ApiTabs.createErrorSuppressor());
   }
   return folder;
 }
@@ -276,6 +277,6 @@ export async function initFolderChoolser(anchor, params = {}) {
     }
   };
 
-  const rootItems = await browser.bookmarks.getTree();
+  const rootItems = await browser.bookmarks.getTree().catch(ApiTabs.createErrorHandler());
   buildItems(rootItems[0].children, mChooserTree);
 }

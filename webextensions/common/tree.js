@@ -213,7 +213,7 @@ export async function attachTabTo(child, parent, options = {}) {
       justNow:          !!options.justNow,
       broadcasted:      !!options.broadcast,
       stack:            new Error().stack
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
   }
 
   return moved;
@@ -330,7 +330,7 @@ export function detachTab(child, options = {}) {
       tabId:       child.id,
       broadcasted: !!options.broadcast,
       stack:       new Error().stack
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
   }
 }
 
@@ -614,7 +614,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     stack:           new Error().stack
   };
   if (params.inRemote) {
-    await browser.runtime.sendMessage(remoteParams).catch(_error => {});
+    await browser.runtime.sendMessage(remoteParams).catch(ApiTabs.createErrorSuppressor());
     return;
   }
   if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
@@ -623,7 +623,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
   await Promise.all([
     collapseExpandSubtreeInternal(tab, params),
-    params.broadcast && browser.runtime.sendMessage(remoteParams).catch(_error => {})
+    params.broadcast && browser.runtime.sendMessage(remoteParams).catch(ApiTabs.createErrorSuppressor())
   ]);
 }
 function collapseExpandSubtreeInternal(tab, params = {}) {
@@ -756,7 +756,7 @@ export async function collapseExpandTab(tab, params = {}) {
       collapsed: params.collapsed,
       stack:     stack,
       byAncestor: tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
   }
 }
 
@@ -1168,7 +1168,7 @@ export async function moveTabs(tabs, options = {}) {
       duplicate:           !!options.duplicate,
       destinationWindowId: destinationWindowId,
       inRemote:            false
-    }));
+    })).catch(ApiTabs.createErrorHandler());
     return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }
 
@@ -1226,7 +1226,7 @@ export async function moveTabs(tabs, options = {}) {
             // (See also https://bugzilla.mozilla.org/show_bug.cgi?id=1394376 )
             const promisedDuplicatedTabs = Promise.all(movedTabIds.map(async (id, _index) => {
               try {
-                return await browser.tabs.duplicate(id);
+                return await browser.tabs.duplicate(id).catch(ApiTabs.createErrorHandler());
               }
               catch(e) {
                 ApiTabs.handleMissingTabError(e);
@@ -1276,7 +1276,7 @@ export async function moveTabs(tabs, options = {}) {
       if (options.insertBefore &&
           options.insertBefore.windowId == destinationWindowId) {
         try {
-          const latestTab = await browser.tabs.get(options.insertBefore.id);
+          const latestTab = await browser.tabs.get(options.insertBefore.id).catch(ApiTabs.createErrorHandler());
           toIndex = latestTab.index;
         }
         catch(e) {
@@ -1287,7 +1287,7 @@ export async function moveTabs(tabs, options = {}) {
       else if (options.insertAfter &&
                options.insertAfter.windowId == destinationWindowId) {
         try {
-          const latestTab = await browser.tabs.get(options.insertAfter.id);
+          const latestTab = await browser.tabs.get(options.insertAfter.id).catch(ApiTabs.createErrorHandler());
           toIndex = latestTab.index + 1;
         }
         catch(e) {
@@ -1401,7 +1401,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       left:      'left' in options ? parseInt(options.left) : null,
       top:       'top' in options ? parseInt(options.top) : null,
       inRemote:  false
-    }));
+    })).catch(ApiTabs.createErrorHandler());
     return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }
 
@@ -1422,7 +1422,8 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       log('openNewWindowFromTabs: new window is ready, ', newWindow);
       UserOperationBlocker.blockIn(newWindow.id);
       return newWindow;
-    });
+    })
+    .catch(ApiTabs.createErrorHandler());
   tabs = tabs.filter(TabsStore.ensureLivingTab);
   const movedTabs = await moveTabs(tabs, Object.assign({}, options, {
     destinationPromisedNewWindow: promsiedNewWindow
@@ -1440,7 +1441,8 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       log('removing tabs: ', removeTabs.map(dumpTab));
       TabsInternalOperation.removeTabs(removeTabs);
       UserOperationBlocker.unblockIn(newWindow.id);
-    });
+    })
+    .catch(ApiTabs.createErrorSuppressor());
 
   return movedTabs;
 }

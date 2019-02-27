@@ -13,6 +13,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -57,10 +58,10 @@ export function init() {
 
   browser.runtime.sendMessage({
     type: TSTAPI.kCONTEXT_MENU_GET_ITEMS
-  }).then(aItems => {
-    importExtraItems(aItems);
+  }).then(items => {
+    importExtraItems(items);
     mIsDirty = true;
-  });
+  }).catch(ApiTabs.createErrorSuppressor());
 }
 
 async function rebuild() {
@@ -350,9 +351,9 @@ async function onCommand(item, event) {
   };
   const owner = item.getAttribute('data-item-owner-id');
   if (owner == browser.runtime.id)
-    await browser.runtime.sendMessage(message).catch(_error => {});
+    await browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor());
   else
-    await browser.runtime.sendMessage(owner, message).catch(_error => {});
+    await browser.runtime.sendMessage(owner, message).catch(ApiTabs.createErrorSuppressor());
 
   if (item.matches('.checkbox')) {
     item.classList.toggle('checked');
@@ -365,7 +366,7 @@ async function onCommand(item, event) {
         id:      item.dataset.itemId,
         ownerId: item.dataset.itemOwnerId,
         checked: itemData.checked
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       break;
     }
     mIsDirty = true;
@@ -401,7 +402,7 @@ async function onCommand(item, event) {
           id:      item.dataset.itemId,
           ownerId: item.dataset.itemOwnerId,
           checked: itemData.checked
-        }).catch(_error => {});
+        }).catch(ApiTabs.createErrorSuppressor());
       }
     }
     mIsDirty = true;
@@ -426,8 +427,8 @@ async function onShown(contextTab) {
     tab: contextTab || mContextTab || null
   };
   return Promise.all([
-    browser.runtime.sendMessage(message).catch(_error => {}),
-    TSTAPI.sendMessage(message).catch(_error => {})
+    browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
+    TSTAPI.sendMessage(message)
   ]);
 }
 
@@ -436,8 +437,8 @@ async function onHidden() {
     type: TSTAPI.kCONTEXT_MENU_HIDDEN
   };
   return Promise.all([
-    browser.runtime.sendMessage(message).catch(_error => {}),
-    TSTAPI.sendMessage(message).catch(_error => {})
+    browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),
+    TSTAPI.sendMessage(message)
   ]);
 }
 
@@ -472,7 +473,7 @@ function onExternalMessage(message, sender) {
   switch (message.type) {
     case TSTAPI.kCONTEXT_MENU_OPEN:
       return (async () => {
-        const tab      = message.tab ? (await browser.tabs.get(message.tab)) : null ;
+        const tab      = message.tab ? (await browser.tabs.get(message.tab).catch(ApiTabs.createErrorHandler())) : null ;
         const windowId = message.window || tab && tab.windowId;
         if (windowId != TabsStore.getWindow())
           return;

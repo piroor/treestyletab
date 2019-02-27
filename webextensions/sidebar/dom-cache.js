@@ -9,6 +9,7 @@ import {
   log as internalLogger
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as UniqueId from '/common/unique-id.js';
@@ -25,7 +26,7 @@ export const wholeContainer = document.querySelector('#all-tabs');
 export async function getWindowSignature(windowIdOrTabs) {
   let tabs = windowIdOrTabs;
   if (typeof windowIdOrTabs == 'number') {
-    tabs = await browser.tabs.query({ windowId: windowIdOrTabs });
+    tabs = await browser.tabs.query({ windowId: windowIdOrTabs }).catch(ApiTabs.createErrorHandler());
   }
   const uniqueIds = await UniqueId.getFromTabs(tabs);
   return uniqueIds.join('\n');

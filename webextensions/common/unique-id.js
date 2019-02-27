@@ -35,14 +35,14 @@ export async function request(tabOrId, options = {}) {
     return await browser.runtime.sendMessage({
       type:  Constants.kCOMMAND_REQUEST_UNIQUE_ID,
       tabId: tab.id
-    });
+    }).catch(ApiTabs.createErrorHandler());
   }
 
   let originalId    = null;
   let originalTabId = null;
   let duplicated    = false;
   if (!options.forceNew) {
-    let oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID);
+    let oldId = await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler());
     if (oldId && !oldId.tabId) // ignore broken information!
       oldId = null;
 
@@ -68,7 +68,7 @@ export async function request(tabOrId, options = {}) {
         await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, {
           id:    oldId.id,
           tabId: tab.id
-        });
+        }).catch(ApiTabs.createErrorSuppressor());
         return {
           id:            oldId.id,
           originalId:    null,
@@ -84,11 +84,13 @@ export async function request(tabOrId, options = {}) {
   const randomValue = Math.floor(Math.random() * 1000);
   const id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
   // tabId is for detecttion of duplicated tabs
-  await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, { id, tabId: tab.id });
+  await browser.sessions.setTabValue(tab.id, Constants.kPERSISTENT_ID, { id, tabId: tab.id }).catch(ApiTabs.createErrorSuppressor());
   return { id, originalId, originalTabId, duplicated };
 }
 
 export async function getFromTabs(tabs) {
-  const uniqueIds = await Promise.all(tabs.map(tab => browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID)));
+  const uniqueIds = await Promise.all(tabs.map(tab =>
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
+  ));
   return uniqueIds.map(id => id && id.id || '?');
 }

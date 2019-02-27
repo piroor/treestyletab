@@ -169,7 +169,7 @@ function initItems() {
 }
 
 function updateItem(id, params) {
-  browser.menus.update(id, params);
+  browser.menus.update(id, params).catch(ApiTabs.createErrorSuppressor());
   TabContextMenu.onExternalMessage({
     type:   TSTAPI.kCONTEXT_MENU_UPDATE,
     params: [id, params]
@@ -255,7 +255,7 @@ export function refreshItems() {
   if (mNativeContextMenuAvailable)
     return;
 
-  browser.menus.remove(kROOT_ITEM);
+  browser.menus.remove(kROOT_ITEM).catch(ApiTabs.createErrorSuppressor());
   TabContextMenu.onExternalMessage({
     type:   TSTAPI.kCONTEXT_MENU_REMOVE,
     params: kROOT_ITEM
@@ -267,7 +267,7 @@ export function refreshItems() {
   const customItems = [];
   for (const item of mContextMenuItems) {
     let id = item.id;
-    browser.menus.remove(id);
+    browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
     TabContextMenu.onExternalMessage({
       type:   TSTAPI.kCONTEXT_MENU_REMOVE,
       params: id
@@ -392,13 +392,13 @@ export const onClick = (info, tab) => {
       const tabs = Tab.getPinnedTabs(contextTab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].id, { active: true })
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }; break;
     case 'unpinnedTab': {
       const tabs = Tab.getUnpinnedTabs(tab.windowId);
       if (tabs.length > 0)
         browser.tabs.update(tabs[0].id, { active: true })
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }; break;
 
     default:
@@ -469,7 +469,7 @@ function onShown(info, tab) {
   }
 
   if (updated)
-    browser.menus.refresh();
+    browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
 browser.menus.onShown.addListener(onShown);
 TabContextMenu.onTSTTabContextMenuShown.addListener(onShown);

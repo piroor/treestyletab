@@ -192,7 +192,7 @@ export async function migrateLegacyTreeStructure() {
     const windows = await browser.windows.getAll({
       populate:     true,
       windowTypes: ['normal']
-    });
+    }).catch(ApiTabs.createErrorHandler());
     let restoredCountWithSession = 0;
     for (const window of windows) {
       const signature = getWindowSignatureFromTabs(window.tabs);
@@ -223,7 +223,7 @@ export async function migrateLegacyTreeStructure() {
     // prepare new window with tabs
       let apiWindow = await browser.windows.create({
         url: 'about:blank'
-      });
+      }).catch(ApiTabs.createErrorHandler());
       const window = TabsStore.windows.get(apiWindow.id);
       window.toBeOpenedOrphanTabs += structure.length;
       // restore tree
@@ -241,7 +241,7 @@ export async function migrateLegacyTreeStructure() {
       // close initial blank tab
       apiWindow = await browser.windows.get(apiWindow.id, {
         populate: true
-      });
+      }).catch(ApiTabs.createErrorHandler());
       const restTabs = apiWindow.tabs.slice(1);
       try {
         await TabsInternalOperation.removeTab(Tab.get(apiWindow.tabs[0].id));
@@ -251,7 +251,7 @@ export async function migrateLegacyTreeStructure() {
             break;
           await browser.tabs.update(restTabs[i].id, {
             pinned: true
-          });
+          }).catch(ApiTabs.createErrorHandler());
         }
       }
       catch(e) {
@@ -306,7 +306,7 @@ export function migrateConfigs() {
 export async function notifyNewFeatures() {
   /*
   let featuresVersionOffset = 0;
-  const browserInfo = await browser.runtime.getBrowserInfo();
+  const browserInfo = await browser.runtime.getBrowserInfo().catch(ApiTabs.createErrorHandler());
   // "search" permission becomes available!
   if (parseInt(browserInfo.version.split('.')[0]) >= 63)
     featuresVersionOffset++;
@@ -324,5 +324,5 @@ export async function notifyNewFeatures() {
   browser.tabs.create({
     url:    Constants.kSHORTHAND_URIS.startup,
     active: true
-  });
+  }).catch(ApiTabs.createErrorSuppressor());
 }

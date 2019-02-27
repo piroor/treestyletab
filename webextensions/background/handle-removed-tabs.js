@@ -13,6 +13,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as TabsOpen from '/common/tabs-open.js';
@@ -146,7 +147,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       if (granted)
         return true;
       log(`tryGrantClose: not granted, restore ${shouldRestoreCount} tabs`);
-      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 });
+      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 }).catch(ApiTabs.createErrorHandler());
       const toBeRestoredTabs = [];
       for (const session of sessions) {
         if (!session.tab)
@@ -157,7 +158,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       }
       for (const tab of toBeRestoredTabs.reverse()) {
         log('tryGrantClose: Tabrestoring session = ', dumpTab(tab));
-        browser.sessions.restore(tab.sessionId);
+        browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
         const tabs = await TabsStore.waitUntilAllTabsAreCreated();
         await Promise.all(tabs.map(tab => tab.$TST.opened));
       }

@@ -130,7 +130,7 @@ export async function init() {
   // notify that the master process is ready.
   browser.runtime.sendMessage({
     type: Constants.kCOMMAND_PING_TO_SIDEBAR
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 
   Migration.notifyNewFeatures();
   log(`Startup metrics for ${Tab.getAllTabs(null).length} tabs: `, MetricsData.toString());
@@ -149,7 +149,7 @@ function waitUntilCompletelyRestored() {
     let onNewTabRestored = async (tab, _info = {}) => {
       clearTimeout(timeout);
       log('new restored tab is detected.');
-      await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID);
+      await browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorSuppressor());
       //uniqueId = uniqueId && uniqueId.id || '?'; // not used
       timeout = setTimeout(resolver, 100);
     };
@@ -167,14 +167,14 @@ function waitUntilCompletelyRestored() {
 function destroy() {
   browser.runtime.sendMessage({
     type:  TSTAPI.kUNREGISTER_SELF
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 
   // This API doesn't work as expected because it is not notified to
   // other addons actually when browser.runtime.sendMessage() is called
   // on pagehide or something unloading event.
   TSTAPI.sendMessage({
     type: TSTAPI.kNOTIFY_SHUTDOWN
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 
   onDestroy.dispatch();
   ApiTabsListener.endListen();
@@ -185,7 +185,7 @@ async function rebuildAll() {
   const windows = await browser.windows.getAll({
     populate:    true,
     windowTypes: ['normal']
-  });
+  }).catch(ApiTabs.createErrorHandler());
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
     await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
@@ -250,7 +250,7 @@ export async function tryStartHandleAccelKeyOnTab(tab) {
       allFrames:       true,
       matchAboutBlank: true,
       runAt:           'document_start'
-    }).catch(ApiTabs.handleMissingTabError);
+    }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
   }
   catch(error) {
     console.log(error);
@@ -283,12 +283,12 @@ async function updateInsertionPosition(tab) {
       tab.id,
       Constants.kPERSISTENT_INSERT_AFTER,
       prev.$TST.uniqueId.id
-    );
+    ).catch(ApiTabs.createErrorSuppressor());
   else
     browser.sessions.removeTabValue(
       tab.id,
       Constants.kPERSISTENT_INSERT_AFTER
-    );
+    ).catch(ApiTabs.createErrorSuppressor());
 
   const next = tab.$TST.next;
   if (next)
@@ -296,12 +296,12 @@ async function updateInsertionPosition(tab) {
       tab.id,
       Constants.kPERSISTENT_INSERT_BEFORE,
       next.$TST.uniqueId.id
-    );
+    ).catch(ApiTabs.createErrorSuppressor());
   else
     browser.sessions.removeTabValue(
       tab.id,
       Constants.kPERSISTENT_INSERT_BEFORE
-    );
+    ).catch(ApiTabs.createErrorSuppressor());
 }
 
 
@@ -329,7 +329,7 @@ async function updateAncestors(tab) {
     tab.id,
     Constants.kPERSISTENT_ANCESTORS,
     tab.$TST.ancestors.map(ancestor => ancestor.$TST.uniqueId.id)
-  );
+  ).catch(ApiTabs.createErrorSuppressor());
 }
 
 export function reserveToUpdateChildren(tabOrTabs) {
@@ -356,7 +356,7 @@ async function updateChildren(tab) {
     tab.id,
     Constants.kPERSISTENT_CHILDREN,
     tab.$TST.children.map(child => child.$TST.uniqueId.id)
-  );
+  ).catch(ApiTabs.createErrorSuppressor());
 }
 
 function reserveToUpdateSubtreeCollapsed(tab) {
@@ -394,7 +394,7 @@ export async function confirmToCloseTabs(tabIds, options = {}) {
   const tabs = await browser.tabs.query({
     active:   true,
     windowId: options.windowId
-  });
+  }).catch(ApiTabs.createErrorHandler());
 
   const granted = await Permissions.isGranted(Permissions.ALL_URLS);
   if (!granted ||
@@ -406,7 +406,7 @@ export async function confirmToCloseTabs(tabIds, options = {}) {
       type:     Constants.kCOMMAND_CONFIRM_TO_CLOSE_TABS,
       tabIds:   tabs.map(tab => tab.id),
       windowId: options.windowId
-    });
+    }).catch(ApiTabs.createErrorHandler());
 
   const result = await RichConfirm.showInTab(tabs[0].id, {
     message: browser.i18n.getMessage('warnOnCloseTabs_message', [count]),
@@ -461,7 +461,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
         return;
       browser.tabs.update(tab.id, {
         url: url.replace(Constants.kSHORTHAND_ABOUT_URI, Constants.kSHORTHAND_URIS[shorthand] || 'about:blank')
-      }).catch(ApiTabs.handleMissingTabError);
+      }).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
       if (shorthand == 'group')
         tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
     });
@@ -502,7 +502,7 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => { reserveToUpda
 // statically on manifest.json after Firefox ESR66 (or 67) is released.
 // See also: https://github.com/piroor/treestyletab/issues/2053
 async function applyThemeColorToIcon() {
-  const browserInfo = await browser.runtime.getBrowserInfo();
+  const browserInfo = await browser.runtime.getBrowserInfo().catch(ApiTabs.createErrorHandler());
   if (configs.applyThemeColorToIcon &&
       parseInt(browserInfo.version.split('.')[0]) >= 62) {
     const icons = { path: browser.runtime.getManifest().variable_color_icons };

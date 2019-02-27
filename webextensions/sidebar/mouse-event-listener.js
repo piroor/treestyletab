@@ -46,6 +46,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
 import * as Tree from '/common/tree.js';
@@ -272,7 +273,7 @@ function onMouseDown(event) {
     window:   mTargetWindow,
     windowId: mTargetWindow,
     tabId:    tab && tab.id
-  }));
+  })).catch(ApiTabs.createErrorHandler());
 
   EventUtils.setLastMousedown(event.button, mousedown);
   mousedown.timeout = setTimeout(async () => {
@@ -407,7 +408,7 @@ async function onMouseUp(event) {
         windowId: mTargetWindow,
         tabId:    tab.id,
         muted:    tab.maybeSoundPlaying
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
     }
     else if (lastMousedown.detail.closebox) {
       log('clicked on closebox');
@@ -440,7 +441,7 @@ async function onMouseUp(event) {
         windowId: tab.windowId,
         tabs:     [tab.index],
         populate: false
-      }).catch(_e => {});
+      }).catch(ApiTabs.createErrorSuppressor());
     }
     return;
   }

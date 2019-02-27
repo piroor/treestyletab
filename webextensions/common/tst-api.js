@@ -46,6 +46,7 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 
 import Tab from './Tab.js';
@@ -200,7 +201,7 @@ export async function initAsBackend() {
       id = await new Promise((resolve, reject) => {
         browser.runtime.sendMessage(id, {
           type: kNOTIFY_READY
-        }).then(() => resolve(id)).catch(reject);
+        }).then(() => resolve(id)).catch(ApiTabs.createErrorHandler(reject));
         setTimeout(() => {
           reject(new Error(`TSTAPI.initAsBackend: addon ${id} does not respond.`));
         }, 3000);
@@ -282,7 +283,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
               type:    kCOMMAND_BROADCAST_API_REGISTERED,
               sender:  sender,
               message: message
-            }).catch(_error => {});
+            }).catch(ApiTabs.createErrorSuppressor());
             const index = configs.cachedExternalAddons.indexOf(sender.id);
             if (index < 0)
               configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
@@ -295,7 +296,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
               type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
               sender:  sender,
               message: message
-            }).catch(_error => {});
+            }).catch(ApiTabs.createErrorSuppressor());
             unregisterAddon(sender.id);
             delete mScrollLockedBy[sender.id];
             configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
@@ -493,13 +494,13 @@ export async function sendMessage(message, options = {}) {
   return Promise.all(promisedResults).then(results => {
     log(`sendMessage: got responses for ${message.type}: `, results);
     return results;
-  });
+  }).catch(ApiTabs.createErrorHandler());
 }
 
 function* spawnMessages(targetSet, message) {
   const send = async (id) => {
     try {
-      const result = await browser.runtime.sendMessage(id, message);
+      const result = await browser.runtime.sendMessage(id, message).catch(ApiTabs.createErrorHandler());
       return {
         id,
         result
@@ -534,7 +535,7 @@ export async function getTargetTabs(message, sender) {
       message.tabs == '*') {
     const window = await browser.windows.getLastFocused({
       windowTypes: ['normal']
-    });
+    }).catch(ApiTabs.createErrorHandler());
     return Tab.getAllTabs(window.id);
   }
   if (message.tab)
@@ -548,7 +549,7 @@ async function getTabsFromWrongIds(ids, sender) {
   if (ids.some(id => typeof id != 'number')) {
     const window = await browser.windows.getLastFocused({
       populate: true
-    });
+    }).catch(ApiTabs.createErrorHandler());
     activeWindow = TabsStore.windows.get(window.id);
   }
   const tabs = await Promise.all(ids.map(async (id) => {

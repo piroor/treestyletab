@@ -5,12 +5,13 @@
 */
 'use strict';
 
-import * as Constants from './constants.js';
 import {
   log as internalLogger,
   notify,
   configs
 } from './common.js';
+import * as Constants from './constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 
 function log(...args) {
   internalLogger('common/permissions', ...args);
@@ -27,7 +28,7 @@ export function clearRequest() {
 
 export function isGranted(permissions) {
   try {
-    return browser.permissions.contains(permissions);
+    return browser.permissions.contains(permissions).catch(ApiTabs.createErrorHandler());
   }
   catch(_e) {
     return Promise.reject(new Error('unsupported permission'));
@@ -77,7 +78,7 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
   checkbox.requestPermissions = async () => {
     try {
       if (!checkbox.checked) {
-        await browser.permissions.remove(permissions);
+        await browser.permissions.remove(permissions).catch(ApiTabs.createErrorSuppressor());
         if (options.onChanged)
           options.onChanged(false);
         return;
@@ -93,7 +94,7 @@ export function bindToCheckbox(permissions, checkbox, options = {}) {
       let granted;
       try {
         configs.requestingPermissionsNatively = permissions;
-        granted = await browser.permissions.request(permissions);
+        granted = await browser.permissions.request(permissions).catch(ApiTabs.createErrorHandler());
       }
       catch (_error) {
       }
@@ -149,6 +150,7 @@ export function requestPostProcess() {
           permissions: permissions
         }).catch(_error => {});
     })
+    .catch(ApiTabs.createErrorSuppressor())
     .finally(() => {
       configs.requestingPermissionsNatively = null;
     });

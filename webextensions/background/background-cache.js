@@ -13,6 +13,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as JSONCache from '/common/json-cache.js';
@@ -40,7 +41,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     return false;
   }
   cancelReservedCacheTree(windowId); // prevent to break cache before loading
-  const tabs  = options.tabs || await browser.tabs.query({ windowId: windowId });
+  const tabs  = options.tabs || await browser.tabs.query({ windowId: windowId }).catch(ApiTabs.createErrorHandler());
   log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([
@@ -119,8 +120,8 @@ async function updateWindowCache(owner, key, value) {
     return;
   if (value === undefined) {
     try {
-      //return browser.sessions.removeWindowValue(owner.windowId, key);
-      return browser.sessions.removeTabValue(owner.id || owner, key);
+      //return browser.sessions.removeWindowValue(owner.windowId, key).catch(ApiTabs.createErrorSuppressor());
+      return browser.sessions.removeTabValue(owner.id || owner, key).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
     }
     catch(e) {
       console.log(new Error('fatal error: failed to delete window cache'), e, owner, key, value);
@@ -128,8 +129,8 @@ async function updateWindowCache(owner, key, value) {
   }
   else {
     try {
-      //return browser.sessions.setWindowValue(owner.windowId, key, value);
-      return browser.sessions.setTabValue(owner.id || owner, key, value).catch(_error => {});
+      //return browser.sessions.setWindowValue(owner.windowId, key, value).catch(ApiTabs.createErrorSuppressor());
+      return browser.sessions.setTabValue(owner.id || owner, key, value).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
     }
     catch(e) {
       console.log(new Error('fatal error: failed to update window cache'), e, owner, key, value);
@@ -159,7 +160,7 @@ export function markWindowCacheDirtyFromTab(tab, akey) {
 
 async function getWindowCache(owner, key) {
   //return browser.sessions.getWindowValue(owner.windowId, key);
-  return browser.sessions.getTabValue(owner.id, key);
+  return browser.sessions.getTabValue(owner.id, key).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
 
 function getWindowCacheOwner(windowId) {
@@ -253,7 +254,7 @@ Tab.onWindowRestoring.addListener(async windowId => {
   log('Tabs.onWindowRestoring: continue ', windowId);
   MetricsData.add('Tabs.onWindowRestoring restore start');
 
-  const tabs = await browser.tabs.query({ windowId });
+  const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
   try {
     await restoreWindowFromEffectiveWindowCache(windowId, {
       ignorePinnedTabs: true,
@@ -336,7 +337,7 @@ function onConfigChange(key) {
             location.reload();
           }
         }
-      });
+      }).catch(ApiTabs.createErrorSuppressor());
       break;
   }
 }

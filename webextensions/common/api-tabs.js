@@ -6,7 +6,8 @@
 'use strict';
 
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from './common.js';
 
 function log(...args) {
@@ -71,4 +72,44 @@ export function handleMissingTabError(error) {
   // otherwise, this error is caused from a tab already closed.
   // we just ignore it.
   //console.log('Invalid Tab ID error on: ' + error.stack);
+}
+
+export function createErrorHandler(handler) {
+  const stack = new Error().stack;
+  return (error) => {
+    try {
+      if (handler)
+        handler(error);
+      else
+        throw error;
+    }
+    catch(newError){
+      if (!configs.debug)
+        throw newError;
+      if (error == newError)
+        console.log('Unhandled Error: ', error, stack);
+      else
+        console.log('Unhandled Error: ', error, newError, stack);
+    }
+  };
+}
+
+export function createErrorSuppressor(handler) {
+  const stack = new Error().stack;
+  return (error) => {
+    try {
+      if (handler)
+        handler(error);
+      else
+        throw error;
+    }
+    catch(newError){
+      if (!configs.debug)
+        return;
+      if (error == newError)
+        console.log('Unhandled Error: ', error, stack);
+      else
+        console.log('Unhandled Error: ', error, newError, stack);
+    }
+  };
 }

@@ -37,7 +37,7 @@ export function reloadTree(rootTab) {
   const tabs = [rootTab].concat(rootTab.$TST.descendants);
   for (const tab of tabs) {
     browser.tabs.reload(tab.id)
-      .catch(ApiTabs.handleMissingTabError);
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 }
 
@@ -45,7 +45,7 @@ export function reloadDescendants(rootTab) {
   const tabs = rootTab.$TST.descendants;
   for (const tab of tabs) {
     browser.tabs.reload(tab.id)
-      .catch(ApiTabs.handleMissingTabError);
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 }
 
@@ -130,7 +130,7 @@ export async function bookmarkTree(root, options = {}) {
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tab.windowId,
       tabIds:   tabs.map(tab => tab.id)
-    });
+    }).catch(ApiTabs.createErrorHandler());
   }
 
   const folder = await Bookmark.bookmarkTabs(tabs, options);
@@ -153,7 +153,7 @@ export async function openNewTabAs(options = {}) {
     Tab.get((await browser.tabs.query({
       active:        true,
       currentWindow: true
-    }))[0].id);
+    }).catch(ApiTabs.createErrorHandler()))[0].id);
 
   let parent, insertBefore, insertAfter;
   let isOrphan = false;
@@ -273,7 +273,7 @@ export async function performTabsDragDrop(params = {}) {
       insertAfterId:  params.insertAfter && params.insertAfter.id,
       inRemote:       false,
       destinationWindowId
-    })).catch(_error => {});
+    })).catch(ApiTabs.createErrorSuppressor());
     return;
   }
 
@@ -297,7 +297,7 @@ export async function performTabsDragDrop(params = {}) {
     // Firefox always focuses to the dropped (mvoed) tab if it is dragged from another window.
     // TST respects Firefox's the behavior.
     browser.tabs.update(movedTabs[0].id, { active: true })
-      .catch(ApiTabs.handleMissingTabError);
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 }
 
@@ -619,7 +619,7 @@ export async function openTabInWindow(tab, options = {}) {
     const window = await browser.windows.create({
       tabId:     tab.id,
       incognito: tab.incognito
-    });
+    }).catch(ApiTabs.createErrorHandler());
     return window.id;
   }
 }
@@ -638,7 +638,7 @@ export async function bookmarkTab(tab, options = {}) {
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
       windowId: tab.windowId,
       tabId:    tab.id
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
   }
   else {
     await Bookmark.bookmarkTab(tab);
@@ -660,7 +660,7 @@ export async function bookmarkTabs(tabs) {
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tabs[0].windowId,
       tabIds:   tabs.map(tab => tab.id)
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
   }
   else {
     const folder = await Bookmark.bookmarkTabs(tabs);

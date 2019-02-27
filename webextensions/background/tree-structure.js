@@ -12,6 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
@@ -63,14 +64,14 @@ async function saveTreeStructure(windowId) {
     windowId,
     Constants.kWINDOW_STATE_TREE_STRUCTURE,
     structure
-  );
+  ).catch(ApiTabs.createErrorSuppressor());
 }
 
 export async function loadTreeStructure(restoredFromCacheResults) {
   log('loadTreeStructure');
   const windows = await browser.windows.getAll({
     windowTypes: ['normal']
-  });
+  }).catch(ApiTabs.createErrorHandler());
   MetricsData.add('loadTreeStructure: browser.windows.getAll');
   return MetricsData.addAsync('loadTreeStructure: restoration for windows', Promise.all(windows.map(async window => {
     if (restoredFromCacheResults &&
@@ -79,7 +80,7 @@ export async function loadTreeStructure(restoredFromCacheResults) {
       return;
     }
     const tabs = Tab.getAllTabs(window.id);
-    const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE);
+    const structure = await browser.sessions.getWindowValue(window.id, Constants.kWINDOW_STATE_TREE_STRUCTURE).catch(ApiTabs.createErrorHandler());
     let uniqueIds = tabs.map(tab => tab.$TST.uniqueId && tab.$TST.uniqueId || '?');
     MetricsData.add('loadTreeStructure: read stored data');
     let windowStateCompletelyApplied = false;
@@ -156,17 +157,17 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORING,
     tab:    tab.id,
     window: tab.windowId
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
   let uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed /* for backward compatibility */;
   // eslint-disable-next-line prefer-const
   [uniqueId, insertBefore, insertAfter, ancestors, children, states, collapsed] = await Promise.all([
     options.uniqueId || tab.$TST.uniqueId || tab.$TST.promisedUniqueId,
-    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_BEFORE),
-    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_AFTER),
-    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ANCESTORS),
-    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_CHILDREN),
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_BEFORE).catch(ApiTabs.createErrorHandler()),
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_INSERT_AFTER).catch(ApiTabs.createErrorHandler()),
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ANCESTORS).catch(ApiTabs.createErrorHandler()),
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_CHILDREN).catch(ApiTabs.createErrorHandler()),
     tab.$TST.getPermanentStates(),
-    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED) // for backward compatibility
+    browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED).catch(ApiTabs.createErrorHandler()) // for backward compatibility
   ]);
   ancestors = ancestors || [];
   children  = children  || [];
@@ -180,7 +181,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
   if (collapsed && !states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED)) {
     // migration
     states.push(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-    browser.sessions.removeTabValue(tab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED);
+    browser.sessions.removeTabValue(tab.id, Constants.kPERSISTENT_SUBTREE_COLLAPSED).catch(ApiTabs.createErrorSuppressor());
   }
   insertBefore = Tab.getByUniqueId(insertBefore);
   insertAfter  = Tab.getByUniqueId(insertAfter);
@@ -267,7 +268,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     type:   Constants.kCOMMAND_NOTIFY_TAB_RESTORED,
     tab:    tab.id,
     window: tab.windowId
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 }
 
 

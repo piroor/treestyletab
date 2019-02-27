@@ -45,6 +45,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsOpen from '/common/tabs-open.js';
 import * as Tree from '/common/tree.js';
@@ -515,7 +516,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
         type:     Constants.kCOMMAND_SELECT_TAB,
         windowId: TabsStore.getWindow(),
         tabId:    dropActionInfo.dragOverTab.id
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       await TabsOpen.loadURI(uris.shift(), {
         tab:      dropActionInfo.dragOverTab,
         inRemote: true
@@ -713,7 +714,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
     windowId: TabsStore.getWindow(),
     dragData: sanitizedDragData
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 
   const mozUrl  = [];
   const urlList = [];
@@ -914,7 +915,7 @@ function reserveToProcessLongHover(params = {}) {
           type:     Constants.kCOMMAND_SELECT_TAB,
           windowId: TabsStore.getWindow(),
           tabId:    dragOverTab.id
-        }).catch(_error => {});
+        }).catch(ApiTabs.createErrorSuppressor());
       }
 
       if (!Tree.shouldTabAutoExpanded(dragOverTab))
@@ -1112,7 +1113,7 @@ function finishDrag() {
       type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
       windowId: TabsStore.getWindow(),
       dragData: null
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
   });
 
   clearDropPosition();

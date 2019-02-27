@@ -8,6 +8,7 @@
 import {
   log as internalLogger
 } from './common.js';
+import * as ApiTabs from '/common/api-tabs.js';
 
 import EventListenerManager from '/extlib/EventListenerManager.js';
 
@@ -51,7 +52,7 @@ export function endObserve() {
 export async function init() {
   if (!browser.contextualIdentities)
     return;
-  const identities = await browser.contextualIdentities.query({});
+  const identities = await browser.contextualIdentities.query({}).catch(ApiTabs.createErrorHandler());
   for (const identity of identities) {
     mContextualIdentities.set(identity.cookieStoreId, fixupIcon(identity));
   }

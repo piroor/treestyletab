@@ -46,6 +46,7 @@ import {
   configs
 } from './common.js';
 import * as Constants from './constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
@@ -281,7 +282,7 @@ async function onUpdated(tabId, changeInfo, tab) {
       browser.tabs.get(tabId).then(tab => {
         if (tab.favIconUrl != updatedTab.favIconUrl)
           onUpdated(tabId, { favIconUrl: tab.favIconUrl }, tab);
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
     }
     if (configs.enableWorkaroundForBug1409262 &&
         tab.openerTabId != updatedTab.$TST.updatedOpenerTabId) {
@@ -501,7 +502,7 @@ async function onNewTabTracked(tab) {
     onTabCreated(uniqueId);
 
     // tab can be changed while creating!
-    const renewedTab = await browser.tabs.get(tab.id);
+    const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
     const changedProps = {};
     for (const key of Object.keys(renewedTab)) {
       if (tab[key] != renewedTab[key])
@@ -755,7 +756,7 @@ async function onAttached(tabId, attachInfo) {
   try {
     log('tabs.onAttached, id: ', tabId, attachInfo);
     let tab = Tab.get(tabId);
-    const attachedTab = await browser.tabs.get(tabId);
+    const attachedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler());
     if (!attachedTab) {
       onCompleted();
       return;

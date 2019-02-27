@@ -33,7 +33,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     tab.openerTabId = parent.id;
     tab.$TST.updatedOpenerTabId = tab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(tab.id, { openerTabId: parent.id })
-      .catch(ApiTabs.handleMissingTabError);
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 
   // Because the tab is possibly closing for "reopen" operation,
@@ -137,7 +137,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     tabId:         tab.id,
     parentId:      parent.id,
     newlyAttached: info.newlyAttached
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 
   if (info.newlyAttached)
     Background.reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));
@@ -155,7 +155,7 @@ Tree.onDetached.addListener((tab, _detachInfo) => {
     tab.openerTabId = tab.id;
     tab.$TST.updatedOpenerTabId = tab.openerTabId; // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=1409262
     browser.tabs.update(tab.id, { openerTabId: tab.id }) // set self id instead of null, because it requires any valid tab id...
-      .catch(ApiTabs.handleMissingTabError);
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 });
 

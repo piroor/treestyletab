@@ -46,6 +46,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as TSTAPI from '/common/tst-api.js';
@@ -69,7 +70,7 @@ export async function init() {
   mTabBar               = document.querySelector('#tabbar');
   mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
 
-  const scrollPosition = await browser.sessions.getWindowValue(TabsStore.getWindow(), Constants.kWINDOW_STATE_SCROLL_POSITION);
+  const scrollPosition = await browser.sessions.getWindowValue(TabsStore.getWindow(), Constants.kWINDOW_STATE_SCROLL_POSITION).catch(ApiTabs.createErrorHandler());
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();
@@ -449,7 +450,7 @@ function reserveToSaveScrollPosition() {
       TabsStore.getWindow(),
       Constants.kWINDOW_STATE_SCROLL_POSITION,
       mTabBar.scrollTop
-    );
+    ).catch(ApiTabs.createErrorSuppressor());
   }, 150);
 }
 

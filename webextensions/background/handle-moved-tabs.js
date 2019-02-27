@@ -158,11 +158,11 @@ function moveBack(tab, moveInfo) {
   return browser.tabs.move(tab.id, {
     windowId: moveInfo.windowId,
     index:    moveInfo.fromIndex
-  }).catch(e => {
+  }).catch(ApiTabs.createErrorHandler(e => {
     if (window.internalMovingTabs.has(id))
       window.internalMovingTabs.delete(id);
     ApiTabs.handleMissingTabError(e);
-  });
+  }));
 }
 
 async function detectTabActionFromNewPosition(tab, moveInfo = {}) {

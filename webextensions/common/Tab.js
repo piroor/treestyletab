@@ -12,6 +12,7 @@ import {
 } from './common.js';
 
 import * as Constants from './constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as UniqueId from './unique-id.js';
 
@@ -535,7 +536,7 @@ export default class Tab {
       const states = await this.getPermanentStates();
       if (!states.includes(state)) {
         states.push(state);
-        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(_error => {});
+        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
   }
@@ -554,13 +555,13 @@ export default class Tab {
       const index = states.indexOf(state);
       if (index > -1) {
         states.splice(index, 1);
-        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(_error => {});
+        await browser.sessions.setTabValue(this.tab.id, Constants.kPERSISTENT_STATES, states).catch(ApiTabs.createErrorSuppressor());
       }
     }
   }
 
   async getPermanentStates() {
-    const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES).catch(_error => {});
+    const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES).catch(ApiTabs.createErrorHandler());
     return states || [];
   }
 
@@ -966,7 +967,7 @@ Tab.broadcastState = (tabs, options = {}) => {
     add:      options.add || [],
     remove:   options.remove || [],
     bubbles:  !!options.bubbles
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 };
 
 function getTabIndex(tab, options = {}) {
@@ -999,10 +1000,10 @@ Tab.doAndGetNewTabs = async (asyncTask, windowId) => {
   if (windowId) {
     tabsQueryOptions.windowId = windowId;
   }
-  const beforeTabs = await browser.tabs.query(tabsQueryOptions);
+  const beforeTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
   const beforeIds  = beforeTabs.map(tab => tab.id);
   await asyncTask();
-  const afterTabs = await browser.tabs.query(tabsQueryOptions);
+  const afterTabs = await browser.tabs.query(tabsQueryOptions).catch(ApiTabs.createErrorHandler());
   const addedTabs = afterTabs.filter(afterTab => !beforeIds.includes(afterTab.id));
   return addedTabs.map(tab => Tab.get(tab.id));
 };

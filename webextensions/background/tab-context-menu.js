@@ -162,7 +162,7 @@ export async function init() {
 
   browser.runtime.getBrowserInfo().then(browserInfo => {
     mNativeMultiselectionAvailable = parseInt(browserInfo.version.split('.')[0]) >= 63;
-  });
+  }).catch(ApiTabs.createErrorSuppressor());
 
   const itemIds = Object.keys(mItemsById);
   for (const id of itemIds) {
@@ -241,7 +241,7 @@ function updateContextualIdentities() {
     if (id in mItemsById)
       delete mItemsById[id];
     if (mNativeContextMenuAvailable)
-      browser.menus.remove(id);
+      browser.menus.remove(id).catch(ApiTabs.createErrorSuppressor());
     onExternalMessage({
       type: TSTAPI.kCONTEXT_MENU_REMOVE,
       params: id
@@ -328,7 +328,7 @@ function updateItem(id, state = {}) {
   item.lastVisible = updateInfo.visible;
   item.lastEnabled = updateInfo.enabled;
   if (mNativeContextMenuAvailable)
-    browser.menus.update(id, updateInfo);
+    browser.menus.update(id, updateInfo).catch(ApiTabs.createErrorSuppressor());
   onExternalMessage({
     type: TSTAPI.kCONTEXT_MENU_UPDATE,
     params: [id, updateInfo]
@@ -357,7 +357,7 @@ function hasVisiblePrecedingItem(separator) {
 
 async function onShown(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
-  const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({})).id;
+  const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({}).catch(ApiTabs.createErrorHandler())).id;
   const previousTab           = contextTab && contextTab.$TST.previous;
   const previousSiblingTab    = contextTab && contextTab.$TST.previousSibling;
   const nextTab               = contextTab && contextTab.$TST.next;
@@ -520,12 +520,12 @@ async function onShown(info, contextTab) {
   /* eslint-enable no-unused-expressions */
 
   if (mNativeContextMenuAvailable && modifiedItemsCount)
-    browser.menus.refresh();
+    browser.menus.refresh().catch(ApiTabs.createErrorSuppressor());
 }
 
 async function onClick(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
-  const window    = await browser.windows.getLastFocused({ populate: true });
+  const window    = await browser.windows.getLastFocused({ populate: true }).catch(ApiTabs.createErrorHandler());
   const windowId  = contextTab && contextTab.windowId || window.id;
   const activeTab = TabsStore.activeTabForWindow.get(windowId);
 
@@ -539,61 +539,61 @@ async function onClick(info, contextTab) {
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
           browser.tabs.reload(tab.id)
-            .catch(ApiTabs.handleMissingTabError);
+            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         }
       }
       else {
         const tab = contextTab || activeTab;
         browser.tabs.reload(tab.id)
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
     case 'context_toggleMuteTab-mute':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
           browser.tabs.update(tab.id, { muted: true })
-            .catch(ApiTabs.handleMissingTabError);
+            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         }
       }
       else {
         browser.tabs.update(contextTab.id, { muted: true })
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
     case 'context_toggleMuteTab-unmute':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
           browser.tabs.update(tab.id, { muted: false })
-            .catch(ApiTabs.handleMissingTabError);
+            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         }
       }
       else {
         browser.tabs.update(contextTab.id, { muted: false })
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
     case 'context_pinTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
           browser.tabs.update(tab.id, { pinned: true })
-            .catch(ApiTabs.handleMissingTabError);
+            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         }
       }
       else {
         browser.tabs.update(contextTab.id, { pinned: true })
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
     case 'context_unpinTab':
       if (multiselectedTabs) {
         for (const tab of multiselectedTabs) {
           browser.tabs.update(tab.id, { pinned: false })
-            .catch(ApiTabs.handleMissingTabError);
+            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         }
       }
       else {
         browser.tabs.update(contextTab.id, { pinned: false })
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
     case 'context_duplicateTab':
@@ -610,12 +610,12 @@ async function onClick(info, contextTab) {
     case 'context_openTabInWindow':
       Commands.openTabInWindow(contextTab);
     case 'context_selectAllTabs': {
-      const tabs = await browser.tabs.query({ windowId });
+      const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       browser.tabs.highlight({
         windowId,
         populate: false,
         tabs:     [activeTab.index].concat(tabs.filter(tab => !tab.active).map(tab => tab.index))
-      });
+      }).catch(ApiTabs.createErrorSuppressor());
     }; break;
     case 'context_bookmarkTab':
       Commands.bookmarkTab(contextTab);
@@ -627,14 +627,14 @@ async function onClick(info, contextTab) {
       Commands.bookmarkTabs(Tab.getTabs(contextTab.windowId));
       break;
     case 'context_reloadAllTabs': {
-      const tabs = await browser.tabs.query({ windowId }) ;
+      const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       for (const tab of tabs) {
         browser.tabs.reload(tab.id)
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
     }; break;
     case 'context_closeTabsToTheEnd': {
-      const tabs = await browser.tabs.query({ windowId });
+      const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       let after = false;
       const closeTabIds = [];
       const keptTabIds = new Set(
@@ -654,14 +654,14 @@ async function onClick(info, contextTab) {
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
         tabs: closeTabIds,
         windowId
-      })) === false
+      }).catch(ApiTabs.createErrorHandler())) === false
       if (canceled)
         break;
       browser.tabs.remove(closeTabIds)
-        .catch(ApiTabs.handleMissingTabError);
+        .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }; break;
     case 'context_closeOtherTabs': {
-      const tabs  = await browser.tabs.query({ windowId });
+      const tabs  = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       const keptTabIds = new Set(
         multiselectedTabs ?
           multiselectedTabs.map(tab => tab.id) :
@@ -672,16 +672,16 @@ async function onClick(info, contextTab) {
         type: Constants.kCOMMAND_NOTIFY_TABS_CLOSING,
         tabs: closeTabIds,
         windowId
-      })) === false
+      }).catch(ApiTabs.createErrorHandler())) === false
       if (canceled)
         break;
       browser.tabs.remove(closeTabIds)
-        .catch(ApiTabs.handleMissingTabError);
+        .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }; break;
     case 'context_undoCloseTab': {
-      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 });
+      const sessions = await browser.sessions.getRecentlyClosed({ maxResults: 1 }).catch(ApiTabs.createErrorHandler());
       if (sessions.length && sessions[0].tab)
-        browser.sessions.restore(sessions[0].tab.sessionId);
+        browser.sessions.restore(sessions[0].tab.sessionId).catch(ApiTabs.createErrorSuppressor());
     }; break;
     case 'context_closeTab':
       if (multiselectedTabs) {
@@ -689,12 +689,12 @@ async function onClick(info, contextTab) {
         multiselectedTabs.reverse();
         for (const tab of multiselectedTabs) {
           browser.tabs.remove(tab.id)
-            .catch(ApiTabs.handleMissingTabError);
+            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         }
       }
       else {
         browser.tabs.remove(contextTab.id)
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       }
       break;
 
@@ -729,7 +729,7 @@ async function notifyUpdated() {
   await browser.runtime.sendMessage({
     type:  TSTAPI.kCONTEXT_MENU_UPDATED,
     items: exportExtraItems()
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 }
 
 let mReservedNotifyUpdate;

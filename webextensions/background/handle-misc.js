@@ -97,7 +97,7 @@ async function onShortcutCommand(command) {
   const activeTab = Tab.get((await browser.tabs.query({
     active:        true,
     currentWindow: true
-  }))[0].id);
+  }).catch(ApiTabs.createErrorHandler()))[0].id);
   const selectedTabs = activeTab.$TST.multiselected ? Tab.getSelectedTabs(activeTab.windowId) : [];
   log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
@@ -165,7 +165,7 @@ async function onShortcutCommand(command) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
         windowId: activeTab.windowId
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       return;
 
     case 'groupSelectedTabs':
@@ -217,21 +217,21 @@ async function onShortcutCommand(command) {
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'lineup'
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       return;
     case 'tabbarPageUp':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pageup'
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       return;
     case 'tabbarHome':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'top'
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       return;
 
     case 'tabbarDown':
@@ -239,21 +239,21 @@ async function onShortcutCommand(command) {
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'linedown'
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       return;
     case 'tabbarPageDown':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pagedown'
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       return;
     case 'tabbarEnd':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'bottom'
-      }).catch(_error => {});
+      }).catch(ApiTabs.createErrorSuppressor());
       return;
   }
 }
@@ -388,7 +388,7 @@ function onMessage(message, sender) {
               type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
               windowId: message.windowId,
               button:   message.button
-            }).catch(_error => {});
+            }).catch(ApiTabs.createErrorSuppressor());
 
           logMouseEvent('Ready to handle click action on the tab');
 
@@ -420,7 +420,7 @@ function onMessage(message, sender) {
         if (!tab)
           return;
         browser.tabs.update(tab.id, { active: true })
-          .catch(ApiTabs.handleMissingTabError);
+          .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
       })();
 
     case Constants.kCOMMAND_SELECT_TAB_INTERNALLY:
@@ -456,7 +456,7 @@ function onMessage(message, sender) {
 
           browser.tabs.update(tab.id, {
             muted: message.muted
-          }).catch(ApiTabs.handleMissingTabError);
+          }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 
           const add = [];
           const remove = [];
@@ -556,7 +556,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED:
       return (async () => {
         if (JSON.stringify(message.permissions) == JSON.stringify(Permissions.ALL_URLS)) {
-          const tabs = await browser.tabs.query({});
+          const tabs = await browser.tabs.query({}).catch(ApiTabs.createErrorHandler());
           await TabsStore.waitUntilTabsAreCreated(tabs.map(tab => tab.id));
           for (const tab of tabs) {
             Background.tryStartHandleAccelKeyOnTab(Tab.get(tab.id));
@@ -810,9 +810,9 @@ function onMessageExternal(message, sender) {
       return (async () => {
         return browser.runtime.sendMessage({
           type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
-          windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false })).id,
+          windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false }).catch(ApiTabs.createErrorHandler())).id,
           button:   message.button || 0
-        }).catch(_error => {});
+        }).catch(ApiTabs.createErrorSuppressor());
       })();
   }
 }

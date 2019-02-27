@@ -36,7 +36,7 @@ Tab.onUpdated.addListener((tab, info, options = {}) => {
     browser.tabs.update(descendant.id, {
       highlighted: info.highlighted,
       active:      descendant.active
-    }).catch(ApiTabs.handleMissingTabError);
+    }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   }
 });
 
@@ -112,7 +112,7 @@ export async function updateSelectionByTabClick(tab, event) {
         windowId: tab.windowId,
         populate: false,
         tabs:     indices
-      });
+      }).catch(ApiTabs.createErrorSuppressor());
     }
     catch(_e) { // not implemented on old Firefox
       return false;
@@ -184,7 +184,7 @@ export async function updateSelectionByTabClick(tab, event) {
         windowId: tab.windowId,
         populate: false,
         tabs:     indices
-      });
+      }).catch(ApiTabs.createErrorSuppressor());
     }
     catch(_e) { // not implemented on old Firefox
       return false;

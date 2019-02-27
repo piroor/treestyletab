@@ -12,6 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as Tree from '/common/tree.js';
 import * as MetricsData from '/common/metrics-data.js';
@@ -55,7 +56,7 @@ export async function getEffectiveWindowCache(options = {}) {
   let actualSignature;
   await Promise.all([
     (async () => {
-      const tabs = await browser.tabs.query({ currentWindow: true });
+      const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
       mLastWindowCacheOwner = Tab.get(tabs[tabs.length - 1].id);
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
@@ -155,7 +156,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
       const masterStructure = (await browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
         windowId: mTargetWindow
-      })).structure;
+      }).catch(ApiTabs.createErrorHandler())).structure;
       const allTabs = Tab.getAllTabs(mTargetWindow);
       const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
@@ -202,13 +203,13 @@ function updateWindowCache(key, value) {
     return;
   if (value === undefined) {
     //log('updateWindowCache: delete cache from ', mLastWindowCacheOwner, key);
-    //return browser.sessions.removeWindowValue(mLastWindowCacheOwner, key);
-    return browser.sessions.removeTabValue(mLastWindowCacheOwner.id, key).catch(_error => {});
+    //return browser.sessions.removeWindowValue(mLastWindowCacheOwner, key).catch(ApiTabs.createErrorSuppressor());
+    return browser.sessions.removeTabValue(mLastWindowCacheOwner.id, key).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
   }
   else {
     //log('updateWindowCache: set cache for ', mLastWindowCacheOwner, key);
-    //return browser.sessions.setWindowValue(mLastWindowCacheOwner, key, value);
-    return browser.sessions.setTabValue(mLastWindowCacheOwner.id, key, value).catch(_error => {});
+    //return browser.sessions.setWindowValue(mLastWindowCacheOwner, key, value).catch(ApiTabs.createErrorSuppressor());
+    return browser.sessions.setTabValue(mLastWindowCacheOwner.id, key, value).catch(ApiTabs.createErrorSuppressor(ApiTabs.handleMissingTabError));
   }
 }
 
@@ -231,8 +232,8 @@ export function markWindowCacheDirty(key) {
 async function getWindowCache(key) {
   if (!mLastWindowCacheOwner)
     return null;
-  //return browser.sessions.getWindowValue(mLastWindowCacheOwner, key);
-  return browser.sessions.getTabValue(mLastWindowCacheOwner.id, key);
+  //return browser.sessions.getWindowValue(mLastWindowCacheOwner, key).catch(ApiTabs.createErrorHandler());
+  return browser.sessions.getTabValue(mLastWindowCacheOwner.id, key).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
 
 function getWindowCacheOwner() {

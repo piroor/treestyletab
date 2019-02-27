@@ -35,7 +35,7 @@ Tab.onActivating.addListener((tab, info = {}) => { // return true if this focusi
   log('Tabs.onActivating ', dumpTab(tab), info);
   if (tab.$TST.shouldReloadOnSelect) {
     browser.tabs.reload(tab.id)
-      .catch(ApiTabs.handleMissingTabError);
+      .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     delete tab.$TST.shouldReloadOnSelect;
   }
   const window = TabsStore.windows.get(tab.windowId);
@@ -147,7 +147,7 @@ Tab.onStateChanged.addListener(tab => {
           return;
         if (tab.status == 'complete')
           browser.tabs.discard(tab.id)
-            .catch(ApiTabs.handleMissingTabError);
+            .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
         else
           tab.$TST.discardOnCompletelyLoaded = true;
       });
@@ -155,7 +155,7 @@ Tab.onStateChanged.addListener(tab => {
     else if (tab.$TST.discardOnCompletelyLoaded && !tab.active) {
       log('Discard accidentally restored tab (on complete) ', dumpTab(tab));
       browser.tabs.discard(tab.id)
-        .catch(ApiTabs.handleMissingTabError);
+        .catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }
   }
   delete tab.$TST.discardURLAfterCompletelyLoaded;
@@ -234,7 +234,7 @@ function onMessage(message, sender) {
           await TabsStore.waitUntilTabsAreCreated(sender.tab.id);
           let tab = sender.tab && Tab.get(sender.tab.id);
           if (!tab) {
-            const tabs = await browser.tabs.query({ currentWindow: true, active: true });
+            const tabs = await browser.tabs.query({ currentWindow: true, active: true }).catch(ApiTabs.createErrorHandler());
             await TabsStore.waitUntilTabsAreCreated(tabs[0].id);
             tab = Tab.get(tabs[0].id);
           }

@@ -67,7 +67,7 @@ export async function loadURI(uri, options = {}) {
         tabId: options.tab && options.tab.id,
         tab:   null
       })
-    }).catch(_error => {});
+    }).catch(ApiTabs.createErrorSuppressor());
     return;
   }
   try {
@@ -79,7 +79,7 @@ export async function loadURI(uri, options = {}) {
       const tabs = await browser.tabs.query({
         windowId: options.windowId,
         active:   true
-      });
+      }).catch(ApiTabs.createErrorHandler());
       tabId = tabs[0].id;
     }
     let searchQuery = null;
@@ -95,12 +95,12 @@ export async function loadURI(uri, options = {}) {
       await browser.search.search({
         query: searchQuery,
         tabId
-      });
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }
     else {
       await browser.tabs.update(tabId, {
         url: uri
-      }).catch(ApiTabs.handleMissingTabError);
+      }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
     }
   }
   catch(e) {
@@ -138,7 +138,7 @@ export async function openURIsInTabs(uris, options = {}) {
         cookieStoreId: options.cookieStoreId || null,
         isOrphan:      !!options.isOrphan,
         inRemote:      false
-      }));
+      })).catch(ApiTabs.createErrorHandler());
       return ids.map(id => Tab.get(id));
     }
     else {
@@ -179,20 +179,22 @@ export async function openURIsInTabs(uris, options = {}) {
         // then TabsStore.waitUntilTabsAreCreated() may be resolved before it is
         // tracked like as "the tab is already closed". So we wait until the
         // tab is correctly tracked.
-        const promisedNewTabTracked = new Promise((resolve, _reject) => {
+        const promisedNewTabTracked = new Promise((resolve, reject) => {
           const listener = (tab) => {
             Tab.onCreating.removeListener(listener);
-            browser.tabs.get(tab.id).then(resolve);
+            browser.tabs.get(tab.id)
+              .then(resolve)
+              .catch(ApiTabs.createErrorSuppressor(reject));
           };
           Tab.onCreating.addListener(listener);
         });
-        const createdTab = await browser.tabs.create(params);
+        const createdTab = await browser.tabs.create(params).catch(ApiTabs.createErrorHandler());
         await Promise.all([
           promisedNewTabTracked, // TabsStore.waitUntilTabsAreCreated(createdTab.id),
           searchQuery && browser.search.search({
             query: searchQuery,
             tabId: createdTab.id
-          })
+          }).catch(ApiTabs.createErrorHandler())
         ]);
         const tab = Tab.get(createdTab.id);
         log('created tab: ', tab);

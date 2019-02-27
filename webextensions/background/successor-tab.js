@@ -45,7 +45,7 @@ function setSuccessor(tabId, successorTabId = -1) {
     return;
   browser.tabs.update(tabId, {
     successorTabId
-  }).catch(ApiTabs.handleMissingTabError);
+  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
 }
 
 function clearSuccessor(tabId) {
@@ -65,7 +65,7 @@ function update(tabId) {
   }, 100);
 }
 async function updateInternal(tabId) {
-  const renewedTab = await browser.tabs.get(tabId).catch(ApiTabs.handleMissingTabError);
+  const renewedTab = await browser.tabs.get(tabId).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   const tab = Tab.get(tabId);
   if (!renewedTab ||
       !tab ||
@@ -129,7 +129,7 @@ async function tryClearOwnerSuccessor(tab) {
       !tab.$TST.lastSuccessorTabIdByOwner)
     return;
   delete tab.$TST.lastSuccessorTabIdByOwner;
-  const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.handleMissingTabError);
+  const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
   if (!renewedTab ||
       renewedTab.successorTabId != tab.lastSuccessorTabId)
     return;

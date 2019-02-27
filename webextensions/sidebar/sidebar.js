@@ -14,6 +14,7 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as ApiTabsListener from '/common/api-tabs-listener.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsInternalOperation from '/common/tabs-internal-operation.js';
@@ -88,7 +89,7 @@ export async function init() {
       const tabs = await browser.tabs.query({
         active:        true,
         currentWindow: true
-      });
+      }).catch(ApiTabs.createErrorHandler());
       mTargetWindow = tabs[0].windowId;
       TabsStore.setWindow(mTargetWindow);
       for (const tab of tabs) {
@@ -359,7 +360,7 @@ export async function rebuildAll(cache) {
   range.deleteContents();
   range.detach();
 
-  const tabs = await browser.tabs.query({ currentWindow: true });
+  const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
 
   const trackedWindow = TabsStore.windows.get(tabs[0].windowId);
   if (!trackedWindow)
@@ -393,7 +394,7 @@ async function inheritTreeStructure() {
   const response = await browser.runtime.sendMessage({
     type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
     windowId: mTargetWindow
-  });
+  }).catch(ApiTabs.createErrorHandler());
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
   if (response && response.structure) {
     await Tree.applyTreeStructureToTabs(Tab.getAllTabs(mTargetWindow), response.structure);
@@ -405,7 +406,7 @@ async function waitUntilBackgroundIsReady() {
   try {
     const response = await browser.runtime.sendMessage({
       type: Constants.kCOMMAND_PING_TO_BACKGROUND
-    });
+    }).catch(ApiTabs.createErrorHandler());
     if (response)
       return;
   }
@@ -540,14 +541,14 @@ function onFocus(_event) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
     windowId: mTargetWindow
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 }
 
 function onBlur(_event) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_BLUR,
     windowId: mTargetWindow
-  }).catch(_error => {});
+  }).catch(ApiTabs.createErrorSuppressor());
 }
 
 function onResize(_event) {
@@ -662,7 +663,7 @@ Tab.onWindowRestoring.addListener(async windowId => {
   log('Tabs.onWindowRestoring restore! ', cache);
   MetricsData.add('Tabs.onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
-  const tabs     = await browser.tabs.query({ windowId });
+  const tabs     = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
   const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
     offset: cache.offset || 0,
     tabs

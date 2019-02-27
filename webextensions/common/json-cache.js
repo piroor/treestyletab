@@ -10,6 +10,7 @@ import {
   dumpTab
 } from './common.js';
 import * as Constants from './constants.js';
+import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsUpdate from './tabs-update.js';
 import * as UniqueId from './unique-id.js';
@@ -23,7 +24,7 @@ function log(...args) {
 export async function getWindowSignature(windowIdOrTabs) {
   let tabs = windowIdOrTabs;
   if (typeof windowIdOrTabs == 'number') {
-    tabs = await browser.tabs.query({ windowId: windowIdOrTabs });
+    tabs = await browser.tabs.query({ windowId: windowIdOrTabs }).catch(ApiTabs.createErrorHandler());
   }
   return UniqueId.getFromTabs(tabs);
 }
