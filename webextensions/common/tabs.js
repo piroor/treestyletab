@@ -864,12 +864,6 @@ export function isCollapsed(tab) {
          hasState(tab, Constants.kTAB_STATE_COLLAPSED);
 }
 
-export function isPrivateBrowsing(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return !!(tab && tab.incognito);
-}
-
 export function isOpening(tab) {
   return ensureLivingTab(tab) &&
          hasState(tab, Constants.kTAB_STATE_OPENING);

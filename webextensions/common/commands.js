@@ -335,7 +335,7 @@ export async function moveTabsWithStructure(tabs, params = {}) {
 
   // Basically tabs should not be moved between regular window and private browsing window,
   // so there are some codes to prevent shch operations. This is for failsafe.
-  if (Tabs.isPrivateBrowsing(movedTabs[0]) != Tabs.isPrivateBrowsing(Tabs.getFirstTab(destinationWindowId)))
+  if (movedTabs[0].incognito != Tabs.getFirstTab(destinationWindowId).incognito)
     return [];
 
   if (movedWholeTree.length != movedTabs.length) {

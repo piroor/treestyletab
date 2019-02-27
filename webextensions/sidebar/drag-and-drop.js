@@ -249,7 +249,7 @@ function getDropAction(event) {
     const draggedTab = info.dragData && info.dragData.tab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
     if (draggedTab &&
-        isPrivateBrowsingTabDragged != Tabs.isPrivateBrowsing(info.dragOverTab || Tabs.getFirstTab(draggedTab.windowId))) {
+        isPrivateBrowsingTabDragged != info.dragOverTab || Tabs.getFirstTab(draggedTab.windowId).incognito) {
       return false;
     }
     else if (info.draggedTab) {
