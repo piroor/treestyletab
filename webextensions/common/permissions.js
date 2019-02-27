@@ -147,7 +147,7 @@ export function requestPostProcess() {
         browser.runtime.sendMessage({
           type:        Constants.kCOMMAND_NOTIFY_PERMISSIONS_GRANTED,
           permissions: permissions
-        });
+        }).catch(_error => {});
     })
     .finally(() => {
       configs.requestingPermissionsNatively = null;

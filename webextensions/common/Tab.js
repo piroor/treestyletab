@@ -966,7 +966,7 @@ Tab.broadcastState = (tabs, options = {}) => {
     add:      options.add || [],
     remove:   options.remove || [],
     bubbles:  !!options.bubbles
-  });
+  }).catch(_error => {});
 };
 
 function getTabIndex(tab, options = {}) {

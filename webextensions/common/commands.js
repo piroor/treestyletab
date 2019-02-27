@@ -273,7 +273,7 @@ export async function performTabsDragDrop(params = {}) {
       insertAfterId:  params.insertAfter && params.insertAfter.id,
       inRemote:       false,
       destinationWindowId
-    }));
+    })).catch(_error => {});
     return;
   }
 
@@ -638,7 +638,7 @@ export async function bookmarkTab(tab, options = {}) {
       type:     Constants.kCOMMAND_BOOKMARK_TAB_WITH_DIALOG,
       windowId: tab.windowId,
       tabId:    tab.id
-    });
+    }).catch(_error => {});
   }
   else {
     await Bookmark.bookmarkTab(tab);
@@ -660,7 +660,7 @@ export async function bookmarkTabs(tabs) {
       type:     Constants.kCOMMAND_BOOKMARK_TABS_WITH_DIALOG,
       windowId: tabs[0].windowId,
       tabIds:   tabs.map(tab => tab.id)
-    });
+    }).catch(_error => {});
   }
   else {
     const folder = await Bookmark.bookmarkTabs(tabs);

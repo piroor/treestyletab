@@ -67,7 +67,7 @@ export async function loadURI(uri, options = {}) {
         tabId: options.tab && options.tab.id,
         tab:   null
       })
-    });
+    }).catch(_error => {});
     return;
   }
   try {

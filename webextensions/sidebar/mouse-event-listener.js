@@ -157,7 +157,7 @@ function onMouseMove(event) {
       altKey:   event.altKey,
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
-    });
+    }).catch(_error => {});
   }
 }
 onMouseMove = EventUtils.wrapWithErrorHandler(onMouseMove);
@@ -183,7 +183,7 @@ function onMouseOver(event) {
       altKey:   event.altKey,
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
-    });
+    }).catch(_error => {});
   }
 }
 onMouseOver = EventUtils.wrapWithErrorHandler(onMouseOver);
@@ -209,7 +209,7 @@ function onMouseOut(event) {
       altKey:   event.altKey,
       metaKey:  event.metaKey,
       dragging: DragAndDrop.isCapturingForDragging()
-    });
+    }).catch(_error => {});
   }
 }
 onMouseOut = EventUtils.wrapWithErrorHandler(onMouseOut);
@@ -364,7 +364,7 @@ async function onMouseUp(event) {
     }));
     // don't wait here, because we need process following common operations
     // even if this mouseup event is canceled.
-    promisedCanceled = results.then(results => results.some(result => result.result));
+    promisedCanceled = results.then(results => results.some(result => result && result.result));
   }
 
   if (!lastMousedown ||
@@ -407,7 +407,7 @@ async function onMouseUp(event) {
         windowId: mTargetWindow,
         tabId:    tab.id,
         muted:    tab.maybeSoundPlaying
-      });
+      }).catch(_error => {});
     }
     else if (lastMousedown.detail.closebox) {
       log('clicked on closebox');

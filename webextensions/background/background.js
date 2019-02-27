@@ -174,7 +174,7 @@ function destroy() {
   // on pagehide or something unloading event.
   TSTAPI.sendMessage({
     type: TSTAPI.kNOTIFY_SHUTDOWN
-  });
+  }).catch(_error => {});
 
   onDestroy.dispatch();
   ApiTabsListener.endListen();

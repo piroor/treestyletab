@@ -153,7 +153,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
             type:       Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED,
             tab:        groupTab.id,
             favIconUrl: opener.favIconUrl
-          });
+          }).catch(_error => {});
         }
         newTitle = browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title);
       }

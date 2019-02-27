@@ -99,7 +99,7 @@ async function moveTabsInternallyBefore(tabs, referenceTab, options = {}) {
       return tabIds.map(id => Tab.get(id));
     }
     else {
-      browser.runtime.sendMessage(message);
+      browser.runtime.sendMessage(message).catch(_error => {});
     }
   }
 
@@ -192,7 +192,7 @@ async function moveTabsInternallyAfter(tabs, referenceTab, options = {}) {
       return tabIds.map(id => Tab.get(id));
     }
     else {
-      browser.runtime.sendMessage(message);
+      browser.runtime.sendMessage(message).catch(_error => {});
     }
   }
 
@@ -381,7 +381,7 @@ async function syncToNativeTabsInternal(windowId) {
     browser.runtime.sendMessage({
       type: Constants.kCOMMAND_SYNC_TABS_ORDER,
       windowId
-    });
+    }).catch(_error => {});
 
     // Multiple times asynchronous tab move is unstable, so we retry again
     // for safety until all tabs are completely synchronized.

@@ -137,7 +137,7 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
     tabId:         tab.id,
     parentId:      parent.id,
     newlyAttached: info.newlyAttached
-  });
+  }).catch(_error => {});
 
   if (info.newlyAttached)
     Background.reserveToUpdateAncestors([tab].concat(tab.$TST.descendants));

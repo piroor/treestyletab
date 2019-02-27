@@ -38,7 +38,7 @@ export function blockIn(windowId, options = {}) {
       type:     Constants.kCOMMAND_BLOCK_USER_OPERATIONS,
       windowId: windowId,
       throbber: !!options.throbber
-    });
+    }).catch(_error => {});
     return;
   }
   block(options);
@@ -68,7 +68,7 @@ export function unblockIn(windowId, options = {}) {
       type:     Constants.kCOMMAND_UNBLOCK_USER_OPERATIONS,
       windowId: windowId,
       throbber: !!options.throbber
-    });
+    }).catch(_error => {});
     return;
   }
   unblock(options);

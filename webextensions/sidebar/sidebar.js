@@ -395,7 +395,7 @@ async function inheritTreeStructure() {
     windowId: mTargetWindow
   });
   MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
-  if (response.structure) {
+  if (response && response.structure) {
     await Tree.applyTreeStructureToTabs(Tab.getAllTabs(mTargetWindow), response.structure);
     MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
   }
@@ -540,14 +540,14 @@ function onFocus(_event) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_FOCUS,
     windowId: mTargetWindow
-  });
+  }).catch(_error => {});
 }
 
 function onBlur(_event) {
   browser.runtime.sendMessage({
     type:     Constants.kNOTIFY_SIDEBAR_BLUR,
     windowId: mTargetWindow
-  });
+  }).catch(_error => {});
 }
 
 function onResize(_event) {

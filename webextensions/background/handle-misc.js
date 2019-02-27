@@ -165,7 +165,7 @@ async function onShortcutCommand(command) {
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SHOW_CONTAINER_SELECTOR,
         windowId: activeTab.windowId
-      });
+      }).catch(_error => {});
       return;
 
     case 'groupSelectedTabs':
@@ -217,21 +217,21 @@ async function onShortcutCommand(command) {
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'lineup'
-      });
+      }).catch(_error => {});
       return;
     case 'tabbarPageUp':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pageup'
-      });
+      }).catch(_error => {});
       return;
     case 'tabbarHome':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'top'
-      });
+      }).catch(_error => {});
       return;
 
     case 'tabbarDown':
@@ -239,21 +239,21 @@ async function onShortcutCommand(command) {
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'linedown'
-      });
+      }).catch(_error => {});
       return;
     case 'tabbarPageDown':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         by:       'pagedown'
-      });
+      }).catch(_error => {});
       return;
     case 'tabbarEnd':
       browser.runtime.sendMessage({
         type:     Constants.kCOMMAND_SCROLL_TABBAR,
         windowId: activeTab.windowId,
         to:       'bottom'
-      });
+      }).catch(_error => {});
       return;
   }
 }
@@ -383,12 +383,12 @@ function onMessage(message, sender) {
               tab:  serializedTab
             }))
           );
-          if (results.some(result => result.result))
+          if (results.some(result => result && result.result))
             return browser.runtime.sendMessage({
               type:     Constants.kNOTIFY_TAB_MOUSEDOWN_CANCELED,
               windowId: message.windowId,
               button:   message.button
-            });
+            }).catch(_error => {});
 
           logMouseEvent('Ready to handle click action on the tab');
 
@@ -812,7 +812,7 @@ function onMessageExternal(message, sender) {
           type:     Constants.kNOTIFY_TAB_MOUSEDOWN_EXPIRED,
           windowId: message.windowId || (await browser.windows.getLastFocused({ populate: false })).id,
           button:   message.button || 0
-        });
+        }).catch(_error => {});
       })();
   }
 }

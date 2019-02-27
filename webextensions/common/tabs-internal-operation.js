@@ -33,7 +33,7 @@ export async function activateTab(tab, options = {}) {
       windowId: tab.windowId,
       tabId:    tab.id,
       options:  options
-    });
+    }).catch(_error => {});
     return;
   }
   const window = TabsStore.windows.get(tab.windowId);
@@ -89,7 +89,7 @@ export function removeTabs(tabs, options = {}) {
         broadcast:   options.inRemote && !options.broadcast,
         broadcasted: !!options.broadcast
       })
-    });
+    }).catch(_error => {});
     if (options.inRemote)
       return;
   }

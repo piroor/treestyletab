@@ -120,7 +120,7 @@ export async function legacyStartMultiDrag(tab, isClosebox) {
     windowId,
     startOnClosebox: isClosebox
   });
-  if (results.every(result => result.result !== false)) {
+  if (results.every(result => result && result.result !== false)) {
     mReadyToCaptureMouseEvents = true;
   }
   return results;
@@ -140,7 +140,7 @@ export function endMultiDrag(tab, coordinates) {
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
       clientY: coordinates.clientY
-    });
+    }).catch(_error => {});
 
     mLastDragEnteredTarget = null;
   }
@@ -152,7 +152,7 @@ export function endMultiDrag(tab, coordinates) {
       windowId: tab && tab.windowId,
       clientX: coordinates.clientX,
       clientY: coordinates.clientY
-    });
+    }).catch(_error => {});
   }
   mCapturingForDragging = false;
   mReadyToCaptureMouseEvents = false;
@@ -515,7 +515,7 @@ async function handleDroppedNonTabItems(event, dropActionInfo) {
         type:     Constants.kCOMMAND_SELECT_TAB,
         windowId: TabsStore.getWindow(),
         tabId:    dropActionInfo.dragOverTab.id
-      });
+      }).catch(_error => {});
       await TabsOpen.loadURI(uris.shift(), {
         tab:      dropActionInfo.dragOverTab,
         inRemote: true
@@ -677,7 +677,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
       window: windowId,
       windowId,
       startOnClosebox
-    });
+    }).catch(_error => {});
     window.addEventListener('mouseover', onTSTAPIDragEnter, { capture: true });
     window.addEventListener('mouseout',  onTSTAPIDragExit, { capture: true });
     document.body.setCapture(false);
@@ -713,7 +713,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
     windowId: TabsStore.getWindow(),
     dragData: sanitizedDragData
-  });
+  }).catch(_error => {});
 
   const mozUrl  = [];
   const urlList = [];
@@ -768,7 +768,7 @@ export const onDragStart = EventUtils.wrapWithErrorHandler(function onDragStart(
     type:     TSTAPI.kNOTIFY_NATIVE_TAB_DRAGSTART,
     tab:      TSTAPI.serializeTab(tab),
     windowId: TabsStore.getWindow()
-  });
+  }).catch(_error => {});
 
   log('onDragStart: started');
 });
@@ -914,7 +914,7 @@ function reserveToProcessLongHover(params = {}) {
           type:     Constants.kCOMMAND_SELECT_TAB,
           windowId: TabsStore.getWindow(),
           tabId:    dragOverTab.id
-        });
+        }).catch(_error => {});
       }
 
       if (!Tree.shouldTabAutoExpanded(dragOverTab))
@@ -1112,7 +1112,7 @@ function finishDrag() {
       type:     Constants.kCOMMAND_BROADCAST_CURRENT_DRAG_DATA,
       windowId: TabsStore.getWindow(),
       dragData: null
-    });
+    }).catch(_error => {});
   });
 
   clearDropPosition();
@@ -1143,7 +1143,7 @@ function onTSTAPIDragEnter(event) {
         tab:      TSTAPI.serializeTab(tab),
         window:   tab.windowId,
         windowId: tab.windowId
-      });
+      }).catch(_error => {});
     }
   }
   mLastDragEnteredTarget = target;
@@ -1167,7 +1167,7 @@ function onTSTAPIDragExit(event) {
       tab:      TSTAPI.serializeTab(tab),
       window:   tab.windowId,
       windowId: tab.windowId
-    });
+    }).catch(_error => {});
   }, 10);
 }
 

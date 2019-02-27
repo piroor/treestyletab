@@ -282,7 +282,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
               type:    kCOMMAND_BROADCAST_API_REGISTERED,
               sender:  sender,
               message: message
-            });
+            }).catch(_error => {});
             const index = configs.cachedExternalAddons.indexOf(sender.id);
             if (index < 0)
               configs.cachedExternalAddons = configs.cachedExternalAddons.concat([sender.id]);
@@ -295,7 +295,7 @@ browser.runtime.onMessageExternal.addListener((message, sender) => {
               type:    kCOMMAND_BROADCAST_API_UNREGISTERED,
               sender:  sender,
               message: message
-            });
+            }).catch(_error => {});
             unregisterAddon(sender.id);
             delete mScrollLockedBy[sender.id];
             configs.cachedExternalAddons = configs.cachedExternalAddons.filter(id => id != sender.id);
@@ -423,7 +423,7 @@ export async function notifyScrolled(params = {}) {
     targets: lockers
   });
   for (const result of results) {
-    if (result.error || result.result === undefined)
+    if (!result || result.error || result.result === undefined)
       delete mScrollLockedBy[result.id];
   }
 }

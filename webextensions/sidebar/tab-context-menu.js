@@ -350,9 +350,9 @@ async function onCommand(item, event) {
   };
   const owner = item.getAttribute('data-item-owner-id');
   if (owner == browser.runtime.id)
-    await browser.runtime.sendMessage(message);
+    await browser.runtime.sendMessage(message).catch(_error => {});
   else
-    await browser.runtime.sendMessage(owner, message);
+    await browser.runtime.sendMessage(owner, message).catch(_error => {});
 
   if (item.matches('.checkbox')) {
     item.classList.toggle('checked');
@@ -365,7 +365,7 @@ async function onCommand(item, event) {
         id:      item.dataset.itemId,
         ownerId: item.dataset.itemOwnerId,
         checked: itemData.checked
-      });
+      }).catch(_error => {});
       break;
     }
     mIsDirty = true;
@@ -401,7 +401,7 @@ async function onCommand(item, event) {
           id:      item.dataset.itemId,
           ownerId: item.dataset.itemOwnerId,
           checked: itemData.checked
-        });
+        }).catch(_error => {});
       }
     }
     mIsDirty = true;
@@ -426,8 +426,8 @@ async function onShown(contextTab) {
     tab: contextTab || mContextTab || null
   };
   return Promise.all([
-    browser.runtime.sendMessage(message),
-    TSTAPI.sendMessage(message)
+    browser.runtime.sendMessage(message).catch(_error => {}),
+    TSTAPI.sendMessage(message).catch(_error => {})
   ]);
 }
 
@@ -436,8 +436,8 @@ async function onHidden() {
     type: TSTAPI.kCONTEXT_MENU_HIDDEN
   };
   return Promise.all([
-    browser.runtime.sendMessage(message),
-    TSTAPI.sendMessage(message)
+    browser.runtime.sendMessage(message).catch(_error => {}),
+    TSTAPI.sendMessage(message).catch(_error => {})
   ]);
 }
 

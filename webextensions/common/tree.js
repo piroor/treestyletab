@@ -213,7 +213,7 @@ export async function attachTabTo(child, parent, options = {}) {
       justNow:          !!options.justNow,
       broadcasted:      !!options.broadcast,
       stack:            new Error().stack
-    });
+    }).catch(_error => {});
   }
 
   return moved;
@@ -330,7 +330,7 @@ export function detachTab(child, options = {}) {
       tabId:       child.id,
       broadcasted: !!options.broadcast,
       stack:       new Error().stack
-    });
+    }).catch(_error => {});
   }
 }
 
@@ -614,7 +614,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
     stack:           new Error().stack
   };
   if (params.inRemote) {
-    await browser.runtime.sendMessage(remoteParams);
+    await browser.runtime.sendMessage(remoteParams).catch(_error => {});
     return;
   }
   if (!TabsStore.ensureLivingTab(tab)) // it was removed while waiting
@@ -623,7 +623,7 @@ export async function collapseExpandSubtree(tab, params = {}) {
   logCollapseExpand('collapseExpandSubtree: ', dumpTab(tab), tab.$TST.subtreeCollapsed, params);
   await Promise.all([
     collapseExpandSubtreeInternal(tab, params),
-    params.broadcast && browser.runtime.sendMessage(remoteParams)
+    params.broadcast && browser.runtime.sendMessage(remoteParams).catch(_error => {})
   ]);
 }
 function collapseExpandSubtreeInternal(tab, params = {}) {
@@ -756,7 +756,7 @@ export async function collapseExpandTab(tab, params = {}) {
       collapsed: params.collapsed,
       stack:     stack,
       byAncestor: tab.$TST.ancestors.some(ancestor => ancestor.$TST.subtreeCollapsed) == params.collapsed
-    });
+    }).catch(_error => {});
   }
 }
 
@@ -961,7 +961,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
     window: tab.windowId,
     windowId: tab.windowId
   });
-  if (results.some(result => result.result)) // canceled
+  if (results.some(result => result && result.result)) // canceled
     return false;
 
   let successor = null;
@@ -1169,7 +1169,7 @@ export async function moveTabs(tabs, options = {}) {
       destinationWindowId: destinationWindowId,
       inRemote:            false
     }));
-    return (response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
+    return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }
 
   let movedTabs = tabs;
@@ -1402,7 +1402,7 @@ export async function openNewWindowFromTabs(tabs, options = {}) {
       top:       'top' in options ? parseInt(options.top) : null,
       inRemote:  false
     }));
-    return (response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
+    return (response && response.movedTabs || []).map(id => Tab.get(id)).filter(tab => !!tab);
   }
 
   log('opening new window');
