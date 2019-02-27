@@ -1022,8 +1022,6 @@ function getTabIndex(tab, options = {}) {
     return -1;
   assertValidTab(tab);
 
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   let tabs = getAllTabs(tab.windowId);
   if (Array.isArray(options.ignoreTabs) &&
       options.ignoreTabs.length > 0)
@@ -1488,40 +1486,30 @@ export function getOpenerFromGroupTab(groupTab) {
 export function isActive(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.active);
 }
 
 export function isPinned(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.pinned);
 }
 
 export function isAudible(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.audible);
 }
 
 export function isSoundPlaying(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.audible && !tab.mutedInfo.muted);
 }
 
 export function maybeSoundPlaying(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return (isSoundPlaying(tab) ||
           (hasState(tab, Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER) &&
            hasChildTabs(tab)));
@@ -1530,16 +1518,12 @@ export function maybeSoundPlaying(tab) {
 export function isMuted(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.mutedInfo && tab.mutedInfo.muted);
 }
 
 export function maybeMuted(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return (isMuted(tab) ||
           (hasState(tab, Constants.kTAB_STATE_HAS_MUTED_MEMBER) &&
            hasChildTabs(tab)));
@@ -1548,8 +1532,6 @@ export function maybeMuted(tab) {
 export function isHidden(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.hidden);
 }
 
@@ -1561,16 +1543,12 @@ export function isCollapsed(tab) {
 export function isDiscarded(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.discarded);
 }
 
 export function isPrivateBrowsing(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.incognito);
 }
 
@@ -1589,8 +1567,6 @@ export function isNewTabCommandTab(tab) {
       !configs.guessNewOrphanTabAsOpenedByNewTabCommand ||
       !assertInitializedTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return tab.url == configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl;
 }
 
@@ -1602,8 +1578,6 @@ export function isSubtreeCollapsed(tab) {
 export function isGroupTab(tab) {
   if (!tab)
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   if (!assertInitializedTab(tab))
     return false;
   return hasState(tab, Constants.kTAB_STATE_GROUP_TAB) ||
@@ -1613,16 +1587,12 @@ export function isGroupTab(tab) {
 export function isTemporaryGroupTab(tab) {
   if (!isGroupTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return /[&?]temporary=true/.test(tab.url);
 }
 
 export function isSelected(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return hasState(tab, Constants.kTAB_STATE_SELECTED) ||
          (isMultihighlighted(tab) && !!(tab && tab.highlighted));
 }
@@ -1630,16 +1600,12 @@ export function isSelected(tab) {
 export function isHighlighted(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return !!(tab && tab.highlighted);
 }
 
 export function isMultiselected(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   return isSelected(tab) &&
            (isMultihighlighted(tab) ||
             queryAll({
@@ -1652,8 +1618,6 @@ export function isMultiselected(tab) {
 export function isMultihighlighted(tab) {
   if (!ensureLivingTab(tab))
     return false;
-  if (tab instanceof Element)
-    tab = tab.apiTab;
   const highlightedTabs = highlightedTabsForWindow.get(tab.windowId);
   return !!(highlightedTabs && highlightedTabs.size > 1);
 }
