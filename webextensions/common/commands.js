@@ -291,6 +291,8 @@ export async function performTabsDragDrop(params = {}) {
     windowId, destinationWindowId,
     broadcast: true
   }));
+  if (movedTabs.length == 0)
+    return;
   if (windowId != destinationWindowId) {
     // Firefox always focuses to the dropped (mvoed) tab if it is dragged from another window.
     // TST respects Firefox's the behavior.
@@ -624,7 +626,7 @@ export async function openTabInWindow(tab, options = {}) {
 
 export async function openTabsInWindow(tabs) {
   const movedTabs = await Tree.openNewWindowFromTabs(tabs);
-  return movedTabs[0].windowId;
+  return movedTabs.length > 0 ? movedTabs[0].windowId : null;
 }
 
 export async function bookmarkTab(tab, options = {}) {
