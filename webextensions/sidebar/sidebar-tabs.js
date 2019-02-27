@@ -198,20 +198,14 @@ function updateTooltip(tab) {
     tab.$TST.tooltip = `
 ${tab.title}
 #${tab.id}
-(${tab.className})
-uniqueId = <%${Constants.kPERSISTENT_ID}%>
-duplicated = <%duplicated%> / <%originalTabId%> / <%originalId%>
-restored = <%restored%>
+(${tab.$TST.element.className})
+uniqueId = <${tab.$TST.uniqueId.id}>
+duplicated = <${!!tab.$TST.uniqueId.duplicated}> / <${tab.$TST.uniqueId.originalTabId}> / <${tab.$TST.uniqueId.originalId}>
+restored = <${!!tab.$TST.uniqueId.restored}>
 tabId = ${tab.id}
 windowId = ${tab.windowId}
 `.trim();
-    tab.$TST.setAttribute('title',
-                          tab.$TST.tooltip = tab.$TST.tooltip
-                            .replace(`<%${Constants.kPERSISTENT_ID}%>`, tab.$TST.uniqueId.id)
-                            .replace(`<%originalId%>`, tab.$TST.uniqueId.originalId)
-                            .replace(`<%originalTabId%>`, tab.$TST.uniqueId.originalTabId)
-                            .replace(`<%duplicated%>`, !!tab.$TST.uniqueId.duplicated)
-                            .replace(`<%restored%>`, !!tab.$TST.uniqueId.restored));
+    tab.$TST.setAttribute('title', tab.$TST.tooltip);
     return;
   }
 
