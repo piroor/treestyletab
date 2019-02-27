@@ -416,7 +416,7 @@ async function onMouseUp(event) {
       //  event.preventDefault();
       //  return;
       //}
-      const multiselected  = Tabs.isMultiselected(tab);
+      const multiselected  = tab.$TST.multiselected;
       const tabsToBeClosed = multiselected ?
         Tabs.getSelectedTabs(tab.windowId) :
         Tree.getClosingTabsFromParent(tab) ;

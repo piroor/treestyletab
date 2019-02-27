@@ -301,7 +301,7 @@ function applyContext() {
       states.push('discarded');
     if (mContextTab.incognito)
       states.push('incognito');
-    if (Tabs.isMultiselected(Tab.get(mContextTab)))
+    if (Tab.get(mContextTab).$TST.multiselected)
       states.push('multiselected');
     mMenu.setAttribute('data-tab-states', states.join(' '));
   }

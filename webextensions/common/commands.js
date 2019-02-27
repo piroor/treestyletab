@@ -556,7 +556,7 @@ export async function duplicateTab(sourceTab, options = {}) {
     duplicated tab. For more details, see also:
     https://github.com/piroor/treestyletab/issues/1437#issuecomment-334952194
   */
-  const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTab);
+  const isMultiselected = options.multiselected === false ? false : sourceTab.$TST.multiselected;
   const sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTab.windowId) : [sourceTab];
   log('source tabs: ', sourceTabs);
   const duplicatedTabs = await Tree.moveTabs(sourceTabs, {
@@ -573,7 +573,7 @@ export async function duplicateTab(sourceTab, options = {}) {
 }
 
 export async function moveTabToStart(tab, options = {}) {
-  const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
+  const isMultiselected = options.multiselected === false ? false : tab.$TST.multiselected;
   return moveTabsToStart(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(tab.$TST.descendants));
 }
 
@@ -591,7 +591,7 @@ export async function moveTabsToStart(movedTabs) {
 }
 
 export async function moveTabToEnd(tab, options = {}) {
-  const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(tab);
+  const isMultiselected = options.multiselected === false ? false : tab.$TST.multiselected;
   return moveTabsToEnd(isMultiselected ? Tabs.getSelectedTabs(tab.windowId) : [tab].concat(tab.$TST.descendants));
 }
 
@@ -609,7 +609,7 @@ export async function moveTabsToEnd(movedTabs) {
 }
 
 export async function openTabInWindow(tab, options = {}) {
-  if (options.multiselected !== false && Tabs.isMultiselected(tab)) {
+  if (options.multiselected !== false && tab.$TST.multiselected) {
     return openTabsInWindow(Tabs.getSelectedTabs(tab.windowId));
   }
   else {
@@ -627,7 +627,7 @@ export async function openTabsInWindow(tabs) {
 }
 
 export async function bookmarkTab(tab, options = {}) {
-  if (options.multiselected !== false && Tabs.isMultiselected(tab))
+  if (options.multiselected !== false && tab.$TST.multiselected)
     return bookmarkTabs(Tabs.getSelectedTabs(tab.windowId));
 
   if (SidebarStatus.isOpen(tab.windowId)) {
@@ -680,7 +680,7 @@ export async function reopenInContainer(sourceTabOrTabs, cookieStoreId, options 
     sourceTabs = sourceTabOrTabs;
   }
   else {
-    const isMultiselected = options.multiselected === false ? false : Tabs.isMultiselected(sourceTabOrTabs);
+    const isMultiselected = options.multiselected === false ? false : sourceTabOrTabs.$TST.multiselected;
     sourceTabs = isMultiselected ? Tabs.getSelectedTabs(sourceTabOrTabs.windowId) : [sourceTabOrTabs];
   }
   if (sourceTabs.length === 0)

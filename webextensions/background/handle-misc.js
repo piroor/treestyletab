@@ -98,7 +98,7 @@ async function onShortcutCommand(command) {
     active:        true,
     currentWindow: true
   }))[0].id);
-  const selectedTabs = Tabs.isMultiselected(activeTab) ? Tabs.getSelectedTabs(activeTab.windowId) : [];
+  const selectedTabs = activeTab.$TST.multiselected ? Tabs.getSelectedTabs(activeTab.windowId) : [];
   log('onShortcutCommand ', { command, activeTab, selectedTabs });
 
   switch (command) {
@@ -446,7 +446,7 @@ function onMessage(message, sender) {
         const root = Tab.get(message.tabId);
         if (!root)
           return;
-        const multiselected = Tabs.isMultiselected(root);
+        const multiselected = root.$TST.multiselected;
         const tabs = multiselected ?
           Tabs.getSelectedTabs(root.windowId) :
           [root].concat(root.$TST.descendants) ;

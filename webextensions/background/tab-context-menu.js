@@ -365,7 +365,7 @@ async function onShown(info, contextTab) {
   const hasMultipleTabs       = Tabs.getTabs(windowId).length > 1;
   const normalTabsCount       = Tabs.getNormalTabs(windowId).length;
   const hasMultipleNormalTabs = normalTabsCount > 1;
-  const multiselected         = Tabs.isMultiselected(contextTab);
+  const multiselected         = contextTab && contextTab.$TST.multiselected;
 
   let modifiedItemsCount = 0;
 
@@ -530,7 +530,7 @@ async function onClick(info, contextTab) {
   const activeTab = Tabs.activeTabForWindow.get(windowId);
 
   let multiselectedTabs = Tabs.getSelectedTabs(windowId);
-  const isMultiselected = contextTab ? Tabs.isMultiselected(contextTab) : multiselectedTabs.length > 1;
+  const isMultiselected = contextTab ? contextTab.$TST.multiselected : multiselectedTabs.length > 1;
   if (!isMultiselected)
     multiselectedTabs = null;
 

@@ -341,7 +341,7 @@ export const onClick = (info, tab) => {
   log('context menu item clicked: ', info, tab);
 
   const contextTab = Tab.get(tab.id);
-  const selectedTabs = Tabs.isMultiselected(contextTab) ? Tabs.getSelectedTabs(contextTab) : [];
+  const selectedTabs = contextTab.$TST.multiselected ? Tabs.getSelectedTabs(contextTab) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
     case 'reloadTree':
@@ -422,7 +422,7 @@ function onShown(info, tab) {
   tab = tab && Tab.get(tab.id);
   const subtreeCollapsed = tab.$TST.subtreeCollapsed;
   const hasChild = tab.$TST.hasChild;
-  const multiselected = Tabs.isMultiselected(tab);
+  const multiselected = tab.$TST.multiselected;
 
   for (const item of mContextMenuItems) {
     let newEnabled;

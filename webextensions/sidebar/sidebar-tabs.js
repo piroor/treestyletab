@@ -111,7 +111,7 @@ export function reserveToUpdateCloseboxTooltip(tab) {
 
 function updateCloseboxTooltip(tab) {
   let tooltip;
-  if (Tabs.isMultiselected(tab))
+  if (tab.$TST.multiselected)
     tooltip = browser.i18n.getMessage('tab_closebox_tab_tooltip_multiselected');
   else if (tab.$TST.hasChild && tab.$TST.subtreeCollapsed)
     tooltip = browser.i18n.getMessage('tab_closebox_tree_tooltip');
@@ -299,7 +299,7 @@ export function reserveToUpdateSoundButtonTooltip(tab) {
 
 function updateSoundButtonTooltip(tab) {
   let tooltip = '';
-  const suffix = Tabs.isMultiselected(tab) ? '_multiselected' : '' ;
+  const suffix = tab.$TST.multiselected ? '_multiselected' : '' ;
   if (tab.$TST.maybeMuted)
     tooltip = browser.i18n.getMessage(`tab_soundButton_muted_tooltip${suffix}`);
   else if (tab.$TST.maybeSoundPlaying)

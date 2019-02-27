@@ -182,7 +182,7 @@ function getDragDataFromOneTab(tab, options = {}) {
 }
 
 function getDraggedTabsFromOneTab(tab) {
-  if (Tabs.isSelected(tab))
+  if (tab.$TST.selected)
     return Tabs.getSelectedTabs(tab.windowId);
   return [tab].concat(tab.$TST.descendants);
 }

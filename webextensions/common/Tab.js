@@ -152,6 +152,26 @@ export default class Tab {
     return /[&?]temporary=true/.test(this.tab.url);
   }
 
+  get selected() {
+    return Tabs.hasState(this.tab, Constants.kTAB_STATE_SELECTED) ||
+             (this.hasOtherHighlighted && !!(this.tab && this.tab.highlighted));
+  }
+
+  get multiselected() {
+    return this.selected &&
+             (this.hasOtherHighlighted ||
+              Tabs.queryAll({
+                windowId: this.tab.windowId,
+                living:   true,
+                states:   [Constants.kTAB_STATE_SELECTED, true]
+              }).length > 1);
+  }
+
+  get hasOtherHighlighted() {
+    const highlightedTabs = Tabs.highlightedTabsForWindow.get(this.tab.windowId);
+    return !!(highlightedTabs && highlightedTabs.size > 1);
+  }
+
   // neighbor tabs
 
   get next() {

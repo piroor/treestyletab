@@ -825,38 +825,6 @@ export async function doAndGetNewTabs(asyncTask, windowId) {
 }
 
 
-
-
-//===================================================================
-// Tab Information
-//===================================================================
-
-export function isSelected(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return hasState(tab, Constants.kTAB_STATE_SELECTED) ||
-         (isMultihighlighted(tab) && !!(tab && tab.highlighted));
-}
-
-export function isMultiselected(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  return isSelected(tab) &&
-           (isMultihighlighted(tab) ||
-            queryAll({
-              windowId: tab.windowId,
-              living:   true,
-              states:   [Constants.kTAB_STATE_SELECTED, true]
-            }).length > 1);
-}
-
-export function isMultihighlighted(tab) {
-  if (!ensureLivingTab(tab))
-    return false;
-  const highlightedTabs = highlightedTabsForWindow.get(tab.windowId);
-  return !!(highlightedTabs && highlightedTabs.size > 1);
-}
-
 export function getMaxTreeLevel(windowId, options = {}) {
   if (typeof options != 'object')
     options = {};

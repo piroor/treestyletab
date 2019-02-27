@@ -46,7 +46,7 @@ export async function activateTab(tab, options = {}) {
   if (configs.supportTabsMultiselect) {
     let tabs = [tab.index];
     const highlightedTabs = Tabs.getHighlightedTabs(tab.windowId);
-    if (Tabs.isMultihighlighted(tab) &&
+    if (tab.$TST.hasOtherHighlighted &&
         options.keepMultiselection &&
         highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
       // switch active tab with highlighted state

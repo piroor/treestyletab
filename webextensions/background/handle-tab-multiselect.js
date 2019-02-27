@@ -22,7 +22,7 @@ Tabs.onUpdated.addListener((tab, info, options = {}) => {
   if (!('highlighted' in info) ||
       !tab.$TST.subtreeCollapsed ||
       tab.$TST.collapsed ||
-      !Tabs.isMultiselected(tab) ||
+      !tab.$TST.multiselected ||
       options.inheritHighlighted === false)
     return;
 
