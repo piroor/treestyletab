@@ -277,8 +277,8 @@ export async function updateTabsHighlighted(highlightInfo) {
     Tabs.onHighlightedTabsChanged.dispatch(highlightInfo.windowId);
 }
 async function updateTabHighlighted(tab, highlighted) {
-  log(`highlighted status of ${tab.id}: `, { old: Tabs.isHighlighted(tab), new: highlighted });
-  //if (Tabs.isHighlighted(tab) == highlighted)
+  log(`highlighted status of ${tab.id}: `, { old: tab.highlighted, new: highlighted });
+  //if (tab.highlighted == highlighted)
   //  return false;
   if (highlighted)
     Tabs.addState(tab, Constants.kTAB_STATE_HIGHLIGHTED);

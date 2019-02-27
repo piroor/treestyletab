@@ -132,14 +132,14 @@ export async function updateSelectionByTabClick(tab, event) {
            => highlight all descendants (to prevent only the root tab is dragged).
        */
       const activeTabDescendants = activeTab.$TST.descendants;
-      let toBeHighlighted = !Tabs.isHighlighted(tab);
+      let toBeHighlighted = !tab.highlighted;
       log('toBeHighlighted: ', toBeHighlighted);
       if (tab == activeTab &&
           Tabs.isSubtreeCollapsed(tab) &&
           activeTabDescendants.length > 0) {
-        const highlightedCount  = activeTabDescendants.filter(Tabs.isHighlighted).length;
+        const highlightedCount  = activeTabDescendants.filter(tab => tab.highlighted).length;
         const partiallySelected = highlightedCount != 0 && highlightedCount != activeTabDescendants.length;
-        toBeHighlighted = partiallySelected || !Tabs.isHighlighted(activeTabDescendants[0]);
+        toBeHighlighted = partiallySelected || !activeTabDescendants[0].highlighted;
         log(' => ', toBeHighlighted, { partiallySelected });
       }
       if (toBeHighlighted)
