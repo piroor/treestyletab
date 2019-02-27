@@ -249,7 +249,8 @@ function getDropAction(event) {
     const draggedTab = info.dragData && info.dragData.tab;
     const isPrivateBrowsingTabDragged = draggedTab && draggedTab.incognito;
     if (draggedTab &&
-        isPrivateBrowsingTabDragged != info.dragOverTab || Tab.getFirstTab(draggedTab.windowId).incognito) {
+        (isPrivateBrowsingTabDragged != info.dragOverTab ||
+         Tab.getFirstTab(draggedTab.windowId).incognito)) {
       return false;
     }
     else if (info.draggedTab) {
@@ -812,7 +813,9 @@ function onDragOver(event) {
     return;
   }
 
-  const dropPositionTargetTab = info.targetTab && info.targetTab.$TST.nearestVisiblePreceding || info.targetTab;
+  let dropPositionTargetTab = info.targetTab;
+  if (dropPositionTargetTab && dropPositionTargetTab.$TST.collapsed)
+    dropPositionTargetTab = info.targetTab.$TST.nearestVisiblePreceding || info.targetTab;
   if (!dropPositionTargetTab) {
     log('onDragOver: no drop target tab');
     dt.dropEffect = 'none';
