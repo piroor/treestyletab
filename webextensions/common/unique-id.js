@@ -32,7 +32,7 @@ export async function request(tabOrId, options = {}) {
     tab = TabsStore.tabs.get(tabOrId);
 
   if (TabsStore.getWindow()) {
-    return await browser.runtime.sendMessage({
+    return browser.runtime.sendMessage({
       type:  Constants.kCOMMAND_REQUEST_UNIQUE_ID,
       tabId: tab.id
     }).catch(ApiTabs.createErrorHandler());

@@ -272,7 +272,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
         await TabsStore.waitUntilTabsAreCreated(message.tabId);
-        return Tab.get(message.tabId).promisedUniqueId;
+        return Tab.get(message.tabId).$TST.promisedUniqueId;
       })();
 
     case Constants.kCOMMAND_PULL_TABS_ORDER:
