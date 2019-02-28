@@ -1553,17 +1553,18 @@ export function getTreeStructureFromTabs(tabs, options = {}) {
     [E]     => -1 (parent is not in this tree, and this creates another tree)
       [F]   => 0 (parent is 1st item in this another tree)
   */
+  const tabIds = tabs.map(tab => tab.id);
   return cleanUpTreeStructureArray(
     tabs.map((tab, index) => {
-      const parent = tab.$TST.parent;
-      const indexInGivenTabs = parent ? tabs.indexOf(parent) : -1 ;
+      const parentId = tab.$TST.parentId;
+      const indexInGivenTabs = parent ? tabIds.indexOf(parentId) : -1 ;
       return indexInGivenTabs >= index ? -1 : indexInGivenTabs ;
     }),
     -1
   ).map((parentIndex, index) => {
     const tab = tabs[index];
     const item = {
-      id:        tab.$TST.getAttribute(Constants.kPERSISTENT_ID),
+      id:        tab.$TST.uniqueId.id,
       parent:    parentIndex,
       collapsed: tab.$TST.subtreeCollapsed
     };

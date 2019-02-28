@@ -153,15 +153,21 @@ export async function restoreTabsFromCache(cache, params = {}) {
 
   if (restored) {
     try {
-      const masterStructure = (await browser.runtime.sendMessage({
-        type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
-        windowId: mTargetWindow
-      }).catch(ApiTabs.createErrorHandler())).structure;
       const allTabs = Tab.getAllTabs(mTargetWindow);
-      const currentStructrue = Tree.getTreeStructureFromTabs(allTabs);
-      if (currentStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
+      const [masterStructure, _uniqueIds] = await Promise.all([
+        (async () => {
+          const masterStructure = await browser.runtime.sendMessage({
+            type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
+            windowId: mTargetWindow
+          }).catch(ApiTabs.createErrorHandler());
+          return masterStructure.structure;
+        })(),
+        Promise.all(allTabs.map(tab => tab.$TST.promisedUniqueId))
+      ]);
+      const restoredStructrue = Tree.getTreeStructureFromTabs(allTabs);
+      if (restoredStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
         log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`, {
-          currentStructrue,
+          restoredStructrue,
           masterStructure
         });
         restored = false;
@@ -171,7 +177,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
       }
       if (restored) {
         if (cache.collapsedDirty) {
-          const structure = currentStructrue.reverse();
+          const structure = restoredStructrue.reverse();
           allTabs.reverse().forEach((tab, index) => {
             Tree.collapseExpandSubtree(tab, {
               collapsed: structure[index].collapsed,

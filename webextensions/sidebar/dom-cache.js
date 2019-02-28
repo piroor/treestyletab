@@ -153,13 +153,13 @@ function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   const idMap = {};
   // step 1: build a map from old id to new id
   tabs = tabElements.map((tabElement, index) => {
-    const oldId = tabElement.id;
+    const oldId = parseInt(tabElement.getAttribute(Constants.kAPI_TAB_ID));
     const tab = Tab.init(tabs[index], { existing: true });
     tabElement.apiTab = tab;
     tab.$TST.setAttribute('id', `tab-${tab.id}`);
     tab.$TST.element = tabElement;
     tabElement.$TST = tab.$TST;
-    log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tabElement.id}`);
+    log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
     tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
     idMap[oldId] = tabElement;
@@ -234,7 +234,7 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
     tab.$TST.setAttribute(Constants.kCHILDREN, `|${childTabs.map(tabElement => tabElement.id).join('|')}|`);
   else
     tab.$TST.removeAttribute(Constants.kCHILDREN);
-  log('fixupTabRestoredFromCache children: => ', tabElement.getAttribute(Constants.kCHILDREN));
+  log('fixupTabRestoredFromCache children: => ', tab.$TST.childIds);
 
   log('fixupTabRestoredFromCache parent: ', tabElement.getAttribute(Constants.kPARENT));
   const parentTab = idMap[tabElement.getAttribute(Constants.kPARENT)] || null;
@@ -243,12 +243,14 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
     tab.$TST.setAttribute(Constants.kPARENT, parentTab.id);
   else
     tab.$TST.removeAttribute(Constants.kPARENT);
-  log('fixupTabRestoredFromCache parent: => ', tabElement.getAttribute(Constants.kPARENT));
+  log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
 
   tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '');
   tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '');
   tab.$TST.setAttribute(Constants.kCURRENT_URI, tabElement.getAttribute(Constants.kCURRENT_URI) || tab.url);
   tab.$TST.setAttribute(Constants.kLEVEL, tabElement.getAttribute(Constants.kLEVEL) || 0);
+  tab.$TST.uniqueId.id = tabElement.getAttribute(Constants.kPERSISTENT_ID) || tab.$TST.uniqueId.id;
+  tab.$TST.setAttribute(Constants.kPERSISTENT_ID, tab.$TST.uniqueId.id);
 }
 
 async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
