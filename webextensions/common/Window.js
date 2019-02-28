@@ -59,6 +59,7 @@ export default class Window {
     this.toBeDetachedTabs = new Set();
 
     TabsStore.windows.set(windowId, this);
+    TabsStore.activeTabsForWindow.set(windowId, new Set());
     TabsStore.highlightedTabsForWindow.set(windowId, new Set());
   }
 
@@ -70,6 +71,7 @@ export default class Window {
     this.tabs.clear();
     TabsStore.windows.delete(this.id, this);
     TabsStore.activeTabForWindow.delete(this.id);
+    TabsStore.activeTabsForWindow.delete(this.id);
     TabsStore.highlightedTabsForWindow.delete(this.id);
 
     if (this.element) {

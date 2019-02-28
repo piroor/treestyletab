@@ -32,10 +32,13 @@ export function getWindow() {
 // Tab Tracking
 //===================================================================
 
-export const windows                  = new Map();
-export const tabs                     = new Map();
-export const tabsByUniqueId           = new Map();
+export const windows        = new Map();
+export const tabs           = new Map();
+export const tabsByUniqueId = new Map();
+
+// indexes for better performance
 export const activeTabForWindow       = new Map();
+export const activeTabsForWindow      = new Map();
 export const highlightedTabsForWindow = new Map();
 
 const MATCHING_ATTRIBUTES = `
