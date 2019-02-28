@@ -13,7 +13,6 @@ import * as Constants from './constants.js';
 import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsUpdate from './tabs-update.js';
-import * as UniqueId from './unique-id.js';
 
 import Tab from './Tab.js';
 
@@ -26,7 +25,7 @@ export async function getWindowSignature(windowIdOrTabs) {
   if (typeof windowIdOrTabs == 'number') {
     tabs = await browser.tabs.query({ windowId: windowIdOrTabs }).catch(ApiTabs.createErrorHandler());
   }
-  return UniqueId.getFromTabs(tabs);
+  return Promise.all(tabs.map(tab => Tab.get(tab.id).$TST.promisedUniqueId.then(id => id.id || '?')));
 }
 
 export function trimSignature(signature, ignoreCount) {

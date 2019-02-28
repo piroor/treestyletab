@@ -156,7 +156,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     delete tab.$TST.isNewTab;
     const possibleOpenerTab = Tab.get(tab.$TST.possibleOpenerTab);
     delete tab.$TST.possibleOpenerTab;
-    log('possibleOpenerTab ', dumpTab(possibleOpenerTab.id));
+    log('possibleOpenerTab ', dumpTab(possibleOpenerTab));
     const window = TabsStore.windows.get(tab.windowId);
     const toBeGroupedTabs = window.openedNewTabs;
     log('toBeGroupedTabs ', toBeGroupedTabs);

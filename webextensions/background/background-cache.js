@@ -41,7 +41,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
     return false;
   }
   cancelReservedCacheTree(windowId); // prevent to break cache before loading
-  const tabs  = options.tabs || await browser.tabs.query({ windowId: windowId }).catch(ApiTabs.createErrorHandler());
+  const tabs = options.tabs || await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
   log(`restoreWindowFromEffectiveWindowCache for ${windowId} tabs: `, tabs.map(dumpTab));
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([

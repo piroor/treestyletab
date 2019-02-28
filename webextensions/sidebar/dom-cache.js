@@ -29,7 +29,7 @@ export async function getWindowSignature(windowIdOrTabs) {
     tabs = await browser.tabs.query({ windowId: windowIdOrTabs }).catch(ApiTabs.createErrorHandler());
   }
   const uniqueIds = await UniqueId.getFromTabs(tabs);
-  return uniqueIds.join('\n');
+  return uniqueIds.map(id => id && id.id || '?').join('\n');
 }
 
 export function trimSignature(signature, ignoreCount) {

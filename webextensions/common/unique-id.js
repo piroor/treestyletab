@@ -17,11 +17,68 @@ function log(...args) {
   internalLogger('common/unique-id', ...args);
 }
 
-
-
 //===================================================================
 // Unique Tab ID
 //===================================================================
+
+// for generated IDs
+const kID_ADJECTIVES = `
+Agile
+Breezy
+Cheerful
+Dapper
+Edgy
+Feisty
+Gutsy
+Hoary
+Intrepid
+Jaunty
+Karmic
+Lucid
+Marveric
+Natty
+Oneiric
+Precise
+Quantal
+Raring
+Saucy
+Trusty
+Utopic
+Vivid
+Warty
+Xenial
+Yakkety
+Zesty
+`.toLowerCase().trim().split(/\s+/);
+
+const kID_NOUNS = `
+Alpaca
+Badger
+Cat
+Drake
+Eft
+Fawn
+Gibbon
+Heron
+Ibis
+Jackalope
+Koala
+Lynx
+Meerkat
+Narwhal
+Ocelot
+Pangolin
+Quetzal
+Ringtail
+Salamander
+Tahr
+Unicorn
+Vervet
+Werwolf
+Xerus
+Yak
+Zapus
+`.toLowerCase().trim().split(/\s+/);
 
 export async function request(tabOrId, options = {}) {
   if (typeof options != 'object')
@@ -79,8 +136,8 @@ export async function request(tabOrId, options = {}) {
     }
   }
 
-  const adjective   = Constants.kID_ADJECTIVES[Math.floor(Math.random() * Constants.kID_ADJECTIVES.length)];
-  const noun        = Constants.kID_NOUNS[Math.floor(Math.random() * Constants.kID_NOUNS.length)];
+  const adjective   = kID_ADJECTIVES[Math.floor(Math.random() * kID_ADJECTIVES.length)];
+  const noun        = kID_NOUNS[Math.floor(Math.random() * kID_NOUNS.length)];
   const randomValue = Math.floor(Math.random() * 1000);
   const id          = `tab-${adjective}-${noun}-${Date.now()}-${randomValue}`;
   // tabId is for detecttion of duplicated tabs
@@ -89,8 +146,7 @@ export async function request(tabOrId, options = {}) {
 }
 
 export async function getFromTabs(tabs) {
-  const uniqueIds = await Promise.all(tabs.map(tab =>
+  return Promise.all(tabs.map(tab =>
     browser.sessions.getTabValue(tab.id, Constants.kPERSISTENT_ID).catch(ApiTabs.createErrorHandler())
   ));
-  return uniqueIds.map(id => id && id.id || '?');
 }
