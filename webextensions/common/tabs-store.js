@@ -71,6 +71,7 @@ export function queryAll(conditions) {
   queryLogs.push(conditions);
   queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
   fixupQuery(conditions);
+  const startAt = 0;
   if (conditions.windowId || conditions.ordered) {
     let tabs = [];
     for (const window of windows.values()) {
@@ -82,10 +83,13 @@ export function queryAll(conditions) {
           window.getOrderedTabs(conditions.fromId, conditions.toId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
     }
+    conditions.elasped = Date.now() - startAt;
     return tabs;
   }
   else {
-    return extractMatchedTabs(conditions.tabs || tabs.values(), conditions);
+    const matchedTabs = extractMatchedTabs(conditions.tabs || tabs.values(), conditions);
+    conditions.elasped = Date.now() - startAt;
+    return matchedTabs;
   }
 }
 
@@ -183,6 +187,7 @@ export function query(conditions) {
     conditions.ordered = true;
   else
     conditions.first = true;
+  const startAt = 0;
   let tabs = [];
   if (conditions.windowId || conditions.ordered) {
     for (const window of windows.values()) {
@@ -200,6 +205,7 @@ export function query(conditions) {
   else {
     tabs = extractMatchedTabs(conditions.tabs ||tabs.values(), conditions);
   }
+  conditions.elasped = Date.now() - startAt;
   return tabs.length > 0 ? tabs[0] : null ;
 }
 
