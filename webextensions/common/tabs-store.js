@@ -41,6 +41,9 @@ export const activeTabForWindow       = new Map();
 export const activeTabsForWindow      = new Map();
 export const highlightedTabsForWindow = new Map();
 
+export const queryLogs = [];
+const MAX_LOGS = 100000;
+
 const MATCHING_ATTRIBUTES = `
 active
 attention
@@ -65,6 +68,8 @@ url
 `.trim().split(/\s+/);
 
 export function queryAll(conditions) {
+  queryLogs.push(conditions);
+  queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
   fixupQuery(conditions);
   if (conditions.windowId || conditions.ordered) {
     let tabs = [];
@@ -171,6 +176,8 @@ function matched(value, pattern) {
 }
 
 export function query(conditions) {
+  queryLogs.push(conditions);
+  queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
   fixupQuery(conditions);
   if (conditions.last)
     conditions.ordered = true;
