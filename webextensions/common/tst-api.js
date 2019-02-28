@@ -553,6 +553,8 @@ async function getTabsFromWrongIds(ids, sender) {
     activeWindow = TabsStore.windows.get(window.id);
   }
   const tabs = await Promise.all(ids.map(async (id) => {
+    if (id && typeof id == 'object' && typeof id.id == 'number') // tabs.Tab
+      id = id.id;
     switch (String(id).toLowerCase()) {
       case 'active':
       case 'current':
