@@ -367,6 +367,7 @@ export async function rebuildAll(cache) {
     Window.init(tabs[0].windowId);
 
   for (const tab of tabs) {
+    TabIdFixer.fixTab(tab);
     Tab.track(tab);
   }
 
@@ -379,9 +380,10 @@ export async function rebuildAll(cache) {
   }
 
   const window = Window.init(mTargetWindow);
+  window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
   for (let tab of tabs) {
-    TabIdFixer.fixTab(tab);
-    tab = Tab.init(tab, { existing: true, inRemote: true })
+    tab = Tab.init(tab, { existing: true, inRemote: true });
+    tab.$TST.clear(); // clear dirty restored states
     window.element.appendChild(tab.$TST.element);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
     if (tab.active)

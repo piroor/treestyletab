@@ -165,28 +165,31 @@ export async function restoreTabsFromCache(cache, params = {}) {
           masterStructure
         });
         restored = false;
-        if (window.element)
+        if (window.element &&
+            window.element.parentNode)
           window.element.parentNode.removeChild(window.element);
       }
-      if (restored && cache.collapsedDirty) {
-        const structure = currentStructrue.reverse();
-        allTabs.reverse().forEach((tab, index) => {
-          Tree.collapseExpandSubtree(tab, {
-            collapsed: structure[index].collapsed,
-            justNow:   true
+      if (restored) {
+        if (cache.collapsedDirty) {
+          const structure = currentStructrue.reverse();
+          allTabs.reverse().forEach((tab, index) => {
+            Tree.collapseExpandSubtree(tab, {
+              collapsed: structure[index].collapsed,
+              justNow:   true
+            });
           });
-        });
+        }
+        SidebarTabs.updateAll();
+        onRestored.dispatch();
       }
-      for (const tab of allTabs) {
-        tab.$TST.setAttribute('title', tab.$TST.element.getAttribute('title'));
-        SidebarTabs.reserveToUpdateTooltip(tab);
-        SidebarTabs.reserveToUpdateTwistyTooltip(tab);
-        SidebarTabs.reserveToUpdateCloseboxTooltip(tab);
-        SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
-        if (!tab.$TST.collapsed)
-          SidebarTabs.updateLabelOverflow(tab);
+      else {
+        if (window.element && window.element.parentNode)
+          window.element.parentNode.removeChild(window.element);
+        window.element = null;
+        for (const tab of window.tabs.values()) {
+          tab.$TST.element = null;
+        }
       }
-      onRestored.dispatch();
     }
     catch(e) {
       log(String(e), e.stack);
