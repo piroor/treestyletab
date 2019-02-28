@@ -71,7 +71,7 @@ export function queryAll(conditions) {
   queryLogs.push(conditions);
   queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
   fixupQuery(conditions);
-  const startAt = 0;
+  const startAt = Date.now();
   if (conditions.windowId || conditions.ordered) {
     let tabs = [];
     for (const window of windows.values()) {
@@ -187,7 +187,7 @@ export function query(conditions) {
     conditions.ordered = true;
   else
     conditions.first = true;
-  const startAt = 0;
+  const startAt = Date.now();
   let tabs = [];
   if (conditions.windowId || conditions.ordered) {
     for (const window of windows.values()) {
