@@ -384,6 +384,8 @@ export async function rebuildAll(cache) {
     tab = Tab.init(tab, { existing: true, inRemote: true })
     window.element.appendChild(tab.$TST.element);
     TabsUpdate.updateTab(tab, tab, { forceApply: true });
+    if (tab.active)
+      TabsInternalOperation.setTabActive(tab);
   }
   DOMCache.wholeContainer.appendChild(window.element);
   MetricsData.add('rebuildAll (from scratch)');
