@@ -57,7 +57,7 @@ export async function getEffectiveWindowCache(options = {}) {
   await Promise.all([
     (async () => {
       const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
-      mLastWindowCacheOwner = Tab.get(tabs[tabs.length - 1].id);
+      mLastWindowCacheOwner = tabs[tabs.length - 1];
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
       let tabsDirty, collapsedDirty;
