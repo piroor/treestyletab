@@ -154,7 +154,7 @@ export async function restoreTabsFromCache(cache, params = {}) {
   if (restored) {
     try {
       const allTabs = Tab.getAllTabs(mTargetWindow);
-      const [masterStructure, _uniqueIds] = await Promise.all([
+      const [masterStructure] = await Promise.all([
         (async () => {
           const masterStructure = await browser.runtime.sendMessage({
             type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
@@ -162,7 +162,8 @@ export async function restoreTabsFromCache(cache, params = {}) {
           }).catch(ApiTabs.createErrorHandler());
           return masterStructure.structure;
         })(),
-        Promise.all(allTabs.map(tab => tab.$TST.promisedUniqueId))
+        // this should be here to wait until they are synchronized from the background page
+        ...allTabs.map(tab => tab.$TST.promisedUniqueId)
       ]);
       const restoredStructrue = Tree.getTreeStructureFromTabs(allTabs);
       if (restoredStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
