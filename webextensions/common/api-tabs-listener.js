@@ -381,10 +381,8 @@ async function onNewTabTracked(tab) {
     // tries to move focus to a nearest visible ancestor, instead of this
     // new active tab.
     // See also: https://github.com/piroor/treestyletab/issues/2155
-    if (tab.active) {
-      TabsStore.activeTabForWindow.set(tab.windowId, tab);
+    if (tab.active)
       TabsInternalOperation.setTabActive(tab);
-    }
 
     const onTabCreatedInner = TabsStore.addCreatingTab(tab);
     const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };

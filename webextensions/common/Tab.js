@@ -59,6 +59,14 @@ export default class Tab {
     const window = TabsStore.windows.get(tab.windowId) || new Window(tab.windowId);
     window.trackTab(tab);
 
+    if (tab.active) {
+      TabsStore.activeTabForWindow.set(tab.windowId, tab);
+      TabsStore.activeTabsForWindow.get(tab.windowId).add(tab);
+    }
+    else {
+      TabsStore.activeTabsForWindow.get(tab.windowId).delete(tab);
+    }
+
     this.promisedUniqueId.then(() => {
       Tab.onTracked.dispatch(tab);
     });
