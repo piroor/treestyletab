@@ -107,7 +107,8 @@ export default class Tab {
 
     this.parentId = null;
     this.childIds = [];
-    this.invalidateCachedTree();
+    this.cachedAncestorIds   = null;
+    this.cachedDescendantIds = null;
   }
 
   updateUniqueId(options = {}) {
@@ -285,12 +286,8 @@ export default class Tab {
   // tree relations
   //===================================================================
 
-  invalidateCachedTree() {
-    this.cachedAncestorIds   = null;
-    this.cachedDescendantIds = null;
-  }
-
   set parent(tab) {
+    const oldParent = this.parent;
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
     this.invalidateCachedAncestors();
     const parent = this.parent;
@@ -301,6 +298,8 @@ export default class Tab {
     else {
       this.removeAttribute(Constants.kPARENT);
     }
+    if (oldParent)
+      oldParent.$TST.invalidateCachedDescendants();
     return tab;
   }
   get parent() {
@@ -365,13 +364,14 @@ export default class Tab {
   }
 
   set children(tabs) {
+    const oldChildren = this.children;
     this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
     this.sortChildren();
     if (this.childIds.length > 0)
       this.setAttribute(Constants.kCHILDREN, `|${this.childIds.join('|')}|`);
     else
       this.removeAttribute(Constants.kCHILDREN);
-    for (const child of this.children) {
+    for (const child of this.children.concat(oldChildren)) {
       child.$TST.invalidateCachedAncestors();
     }
     return tabs;
@@ -555,18 +555,7 @@ export default class Tab {
   }
 
   detach() {
-    const parent = this.parent;
-    if (parent) {
-      this.childIds  = parent.$TST.childIds.filter(childId => childId != this.id);
-      this.parent    = null;
-      this.invalidateCachedTree();
-    }
-    for (const child of this.children) {
-      if (child.$TST.parentId == this.id) {
-        child.$TST.parentId = null;
-        child.$TST.invalidateCachedTree();
-      }
-    }
+    this.parent   = null;
     this.children = [];
   }
 
