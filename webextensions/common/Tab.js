@@ -419,8 +419,9 @@ export default class Tab {
 
   invalidateCachedDescendants() {
     this.cachedDescendantIds = null;
-    if (this.parentId)
-      this.parent.$TST.invalidateCachedDescendants();
+    const parent = this.parent;
+    if (parent)
+      parent.$TST.invalidateCachedDescendants();
   }
 
   get lastDescendant() {
