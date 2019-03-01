@@ -101,6 +101,8 @@ export default class Tab {
 
     TabsStore.removeHighlightedTab(this.tab);
     TabsStore.removeGroupTab(this.tab);
+    TabsStore.removeCollapsingTab(this.tab);
+    TabsStore.removeExpandingTab(this.tab);
 
     if (this.element) {
       if (this.element.parentNode) {

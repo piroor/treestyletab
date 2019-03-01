@@ -60,8 +60,10 @@ export default class Window {
 
     TabsStore.windows.set(windowId, this);
     TabsStore.activeTabsForWindow.set(windowId, new Set());
-    TabsStore.highlightedTabsForWindow.set(windowId, new Set());
-    TabsStore.groupTabsForWindow.set(windowId, new Set());
+    TabsStore.highlightedTabsForWindow.set(windowId, new Map());
+    TabsStore.groupTabsForWindow.set(windowId, new Map());
+    TabsStore.collapsingTabsForWindow.set(windowId, new Map());
+    TabsStore.expandingTabsForWindow.set(windowId, new Map());
   }
 
   destroy() {
@@ -75,6 +77,8 @@ export default class Window {
     TabsStore.activeTabsForWindow.delete(this.id);
     TabsStore.highlightedTabsForWindow.delete(this.id);
     TabsStore.groupTabsForWindow.delete(this.id);
+    TabsStore.collapsingTabsForWindow.delete(this.id);
+    TabsStore.expandingTabsForWindow.delete(this.id);
 
     if (this.element) {
       const element = this.element;
@@ -88,20 +92,26 @@ export default class Window {
     delete this.id;
   }
 
-  getOrderedTabs(startId, endId) {
+  getOrderedTabs(startId, endId, tabs) {
     const orderedIds = this.sliceOrder(startId, endId, this.orderedIds);
+    tabs = tabs || this.tabs;
     return (function*() {
       for (const id of orderedIds) {
-        yield this.tabs.get(id);
+        const tab = tabs.get(id);
+        if (tab)
+          yield tab;
       }
     }).call(this);
   }
 
-  getReversedOrderedTabs(startId, endId) {
+  getReversedOrderedTabs(startId, endId, tabs) {
     const orderedIds = this.sliceOrder(startId, endId, this.order.slice(0).reverse());
+    tabs = tabs || this.tabs;
     return (function*() {
       for (const id of orderedIds) {
-        yield this.tabs.get(id);
+        const tab = tabs.get(id);
+        if (tab)
+          yield tab;
       }
     }).call(this);
   }
@@ -170,6 +180,8 @@ export default class Window {
 
     TabsStore.removeHighlightedTab(tab);
     TabsStore.removeGroupTab(tab);
+    TabsStore.removeCollapsingTab(tab);
+    TabsStore.removeExpandingTab(tab);
 
     tab.$TST.detach();
     this.tabs.delete(tabId);

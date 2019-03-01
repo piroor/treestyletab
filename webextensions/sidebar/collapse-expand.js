@@ -102,6 +102,8 @@ Tab.onCollapsedStateChanging.addListener((tab, info = {}) => {
     if (aNewToBeCollapsed != toBeCollapsed) {
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSING);
       tab.$TST.removeState(Constants.kTAB_STATE_EXPANDING);
+      TabsStore.removeCollapsingTab(tab);
+      TabsStore.removeExpandingTab(tab);
     }
   };
   const onCompleted = (tab, info = {}) => {
@@ -151,10 +153,12 @@ Tab.onCollapsedStateChanging.addListener((tab, info = {}) => {
 
   if (toBeCollapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSING);
+    TabsStore.addCollapsingTab(tab);
   }
   else {
     tab.$TST.addState(Constants.kTAB_STATE_EXPANDING);
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
+    TabsStore.addExpandingTab(tab);
   }
 
   Sidebar.reserveToUpdateTabbarLayout({ reason });
@@ -186,6 +190,8 @@ Tab.onCollapsedStateChanging.addListener((tab, info = {}) => {
       //log('=> finish animation for ', dumpTab(tab));
       tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSING);
       tab.$TST.removeState(Constants.kTAB_STATE_EXPANDING);
+      TabsStore.removeCollapsingTab(tab);
+      TabsStore.removeExpandingTab(tab);
 
       // The collapsed state of the tab can be changed by different trigger,
       // so we must respect the actual status of the tab, instead of the

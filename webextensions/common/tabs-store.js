@@ -41,7 +41,8 @@ export const activeTabForWindow       = new Map();
 export const activeTabsForWindow      = new Map();
 export const highlightedTabsForWindow = new Map();
 export const groupTabsForWindow       = new Map();
-export const tabsForQuery             = new Map();
+export const collapsingTabsForWindow  = new Map();
+export const expandingTabsForWindow   = new Map();
 
 export const queryLogs = [];
 const MAX_LOGS = 100000;
@@ -69,90 +70,95 @@ title
 url
 `.trim().split(/\s+/);
 
-export function queryAll(conditions) {
+export function queryAll(query) {
   if (configs.loggingQueries) {
-    queryLogs.push(conditions);
+    queryLogs.push(query);
     queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
   }
-  fixupQuery(conditions);
+  fixupQuery(query);
   const startAt = Date.now();
-  if (conditions.windowId || conditions.ordered) {
+  if (query.windowId || query.ordered) {
     let tabs = [];
     for (const window of windows.values()) {
-      if (conditions.windowId && !matched(window.id, conditions.windowId))
+      if (query.windowId && !matched(window.id, query.windowId))
         continue;
-      const tabsIterator = conditions.tabs ||
-        !conditions.ordered ? window.tabs.values() :
-        conditions.last ? window.getReversedOrderedTabs(conditions.fromId, conditions.toId) :
-          window.getOrderedTabs(conditions.fromId, conditions.toId);
-      tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
+      const sourceTabs = sourceTabsForQuery(query, window);
+      tabs = tabs.concat(extractMatchedTabs(sourceTabs, query));
     }
-    conditions.elapsed = Date.now() - startAt;
+    query.elapsed = Date.now() - startAt;
     return tabs;
   }
   else {
-    const matchedTabs = extractMatchedTabs(conditions.tabs || tabs.values(), conditions);
-    conditions.elapsed = Date.now() - startAt;
+    const matchedTabs = extractMatchedTabs(query.tabs || tabs.values(), query);
+    query.elapsed = Date.now() - startAt;
     return matchedTabs;
   }
 }
 
-function extractMatchedTabs(tabs, conditions) {
+function sourceTabsForQuery(query, window) {
+  if (!query.ordered)
+    return query.tabs && query.tabs.values() || window.tabs.values();
+  if (query.last)
+    return window.getReversedOrderedTabs(query.fromId, query.toId, query.tabs);
+  return window.getOrderedTabs(query.fromId, query.toId, query.tabs);
+}
+
+function extractMatchedTabs(tabs, query) {
   const matchedTabs = [];
   TAB_MACHING:
   for (const tab of tabs) {
     for (const attribute of MATCHING_ATTRIBUTES) {
-      if (attribute in conditions &&
-          !matched(tab[attribute], conditions[attribute]))
+      if (attribute in query &&
+          !matched(tab[attribute], query[attribute]))
         continue TAB_MACHING;
-      if (`!${attribute}` in conditions &&
-          matched(tab[attribute], conditions[`!${attribute}`]))
+      if (`!${attribute}` in query &&
+          matched(tab[attribute], query[`!${attribute}`]))
         continue TAB_MACHING;
     }
 
     if (!tab.$TST)
       continue TAB_MACHING;
 
-    if ('states' in conditions && tab.$TST.states) {
-      for (let i = 0, maxi = conditions.states.length; i < maxi; i += 2) {
-        const state   = conditions.states[i];
-        const pattern = conditions.states[i+1];
+    if ('states' in query && tab.$TST.states) {
+      for (let i = 0, maxi = query.states.length; i < maxi; i += 2) {
+        const state   = query.states[i];
+        const pattern = query.states[i+1];
         if (!matched(tab.$TST.states.has(state), pattern))
           continue TAB_MACHING;
       }
     }
-    if ('attributes' in conditions && tab.$TST.attributes) {
-      for (let i = 0, maxi = conditions.attributes.length; i < maxi; i += 2) {
-        const attribute = conditions.attributes[i];
-        const pattern   = conditions.attributes[i+1];
+    if ('attributes' in query && tab.$TST.attributes) {
+      for (let i = 0, maxi = query.attributes.length; i < maxi; i += 2) {
+        const attribute = query.attributes[i];
+        const pattern   = query.attributes[i+1];
         if (!matched(tab.$TST.attributes[attribute], pattern))
           continue TAB_MACHING;
       }
     }
 
-    if (conditions.living &&
+    if (query.living &&
         !ensureLivingTab(tab))
       continue TAB_MACHING;
-    if (conditions.normal &&
+    if (query.normal &&
         (tab.hidden ||
          tab.pinned))
       continue TAB_MACHING;
-    if (conditions.visible &&
+    if (query.visible &&
         (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) ||
          tab.hidden))
       continue TAB_MACHING;
-    if (conditions.controllable &&
+    if (query.controllable &&
         tab.hidden)
       continue TAB_MACHING;
-    if ('hasChild' in conditions &&
-        conditions.hasChild != tab.$TST.hasChild)
+    if ('hasChild' in query &&
+        query.hasChild != tab.$TST.hasChild)
       continue TAB_MACHING;
-    if ('hasParent' in conditions &&
-        conditions.hasParent != tab.$TST.hasParent)
+    if ('hasParent' in query &&
+        query.hasParent != tab.$TST.hasParent)
       continue TAB_MACHING;
 
     matchedTabs.push(tab);
-    if (conditions.first || conditions.last)
+    if (query.first || query.last)
       break TAB_MACHING;
   }
   return matchedTabs;
@@ -183,47 +189,44 @@ function matched(value, pattern) {
   return true;
 }
 
-export function query(conditions) {
+export function query(query) {
   if (configs.loggingQueries) {
-    queryLogs.push(conditions);
+    queryLogs.push(query);
     queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
   }
-  fixupQuery(conditions);
-  if (conditions.last)
-    conditions.ordered = true;
+  fixupQuery(query);
+  if (query.last)
+    query.ordered = true;
   else
-    conditions.first = true;
+    query.first = true;
   const startAt = Date.now();
   let tabs = [];
-  if (conditions.windowId || conditions.ordered) {
+  if (query.windowId || query.ordered) {
     for (const window of windows.values()) {
-      if (conditions.windowId && !matched(window.id, conditions.windowId))
+      if (query.windowId && !matched(window.id, query.windowId))
         continue;
-      const tabsIterator = conditions.tabs ||
-        !conditions.ordered ? window.tabs.values() :
-        conditions.last ? window.getReversedOrderedTabs(conditions.fromId, conditions.toId) :
-          window.getOrderedTabs(conditions.fromId, conditions.toId);
-      tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
+      const sourceTabs = sourceTabsForQuery(query, window);
+      tabs = tabs.concat(extractMatchedTabs(sourceTabs, query));
       if (tabs.length > 0)
         break;
     }
   }
   else {
-    tabs = extractMatchedTabs(conditions.tabs ||tabs.values(), conditions);
+    tabs = extractMatchedTabs(query.tabs ||tabs.values(), query);
   }
-  conditions.elapsed = Date.now() - startAt;
+  query.elapsed = Date.now() - startAt;
   return tabs.length > 0 ? tabs[0] : null ;
 }
 
-function fixupQuery(conditions) {
-  if (conditions.fromId || conditions.toId)
-    conditions.ordered = true;
-  if ((conditions.normal ||
-       conditions.visible ||
-       conditions.controllable ||
-       conditions.pinned) &&
-       !('living' in conditions))
-    conditions.living = true;
+function fixupQuery(query) {
+  if (query.fromId || query.toId)
+    query.ordered = true;
+  if ((query.normal ||
+       query.visible ||
+       query.controllable ||
+       query.pinned) &&
+       !('living' in query))
+    query.living = true;
 }
 
 
@@ -231,27 +234,49 @@ function fixupQuery(conditions) {
 // Cache for optimization
 //===================================================================
 
+function addCachedTab(tab, store) {
+  const tabs = store.get(tab.windowId);
+  tabs.set(tab.id, tab);
+}
+
+function removeCachedTab(tab, store) {
+  const tabs = store.get(tab.windowId);
+  if (tabs)
+    tabs.delete(tab.id);
+}
+
 export function addHighlightedTab(tab) {
-  const tabs = highlightedTabsForWindow.get(tab.windowId);
-  tabs.add(tab);
+  addCachedTab(tab, highlightedTabsForWindow);
 }
 
 export function removeHighlightedTab(tab) {
-  const tabs = highlightedTabsForWindow.get(tab.windowId);
-  if (tabs)
-    tabs.delete(tab);
+  removeCachedTab(tab, highlightedTabsForWindow);
 }
 
 export function addGroupTab(tab) {
-  const tabs = groupTabsForWindow.get(tab.windowId);
-  tabs.add(tab);
+  addCachedTab(tab, groupTabsForWindow);
 }
 
 export function removeGroupTab(tab) {
-  const tabs = groupTabsForWindow.get(tab.windowId);
-  if (tabs)
-    tabs.delete(tab);
+  removeCachedTab(tab, groupTabsForWindow);
 }
+
+export function addCollapsingTab(tab) {
+  addCachedTab(tab, collapsingTabsForWindow);
+}
+
+export function removeCollapsingTab(tab) {
+  removeCachedTab(tab, collapsingTabsForWindow);
+}
+
+export function addExpandingTab(tab) {
+  addCachedTab(tab, expandingTabsForWindow);
+}
+
+export function removeExpandingTab(tab) {
+  removeCachedTab(tab, expandingTabsForWindow);
+}
+
 
 
 //===================================================================

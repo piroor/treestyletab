@@ -284,11 +284,11 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   //log('updateTabsHighlighted ', { highlightedTabs, unhighlightedTabs});
   for (const tab of unhighlightedTabs) {
-    allHighlightedTabs.delete(tab);
+    allHighlightedTabs.delete(tab.id);
     updateTabHighlighted(tab, false);
   }
   for (const tab of highlightedTabs) {
-    allHighlightedTabs.add(tab);
+    allHighlightedTabs.set(tab.id, tab);
     updateTabHighlighted(tab, true);
   }
   if (unhighlightedTabs.length > 0 ||
