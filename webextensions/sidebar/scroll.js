@@ -324,9 +324,14 @@ export async function scrollToTab(tab, options = {}) {
   await wait(configs.autoGroupNewTabsTimeout);
   if (scrollToTab.stopped)
     return;
-  const retryOptions = { retryCount: options.retryCount || 0 };
+  const retryOptions = {
+    retryCount: options.retryCount || 0,
+    anchor:     options.anchor
+  };
   if (scrollToTab.lastTargetId == tab.id &&
       !isTabInViewport(tab) &&
+      (!options.anchor ||
+       !isTabInViewport(options.anchor)) &&
       retryOptions.retryCount < 3) {
     retryOptions.retryCount++;
     return scrollToTab(tab, retryOptions);
