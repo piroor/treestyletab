@@ -234,7 +234,7 @@ browser.runtime.onMessage.addListener((message, _sender) => {
   browser.runtime.sendMessage({
     type: Constants.kCOMMAND_RESPONSE_QUERY_LOGS,
     logs: JSON.parse(JSON.stringify(queryLogs)),
-    windwoId: mTargetWindow || 'background'
+    windowId: mTargetWindow || 'background'
   });
 });
 

@@ -39,6 +39,8 @@ function analyze() {
     log = fromString(toString(log));
     delete log.elasped;
     delete log.elapsed;
+    log.source = (typeof log.windowId == 'number') ? 'sidebar' : log.windowId;
+    delete log.windowId;
     if (log.fromId) log.fromId = 'given';
     if (log.toId) log.toId = 'given';
     for (const key of ['id', '!id']) {
