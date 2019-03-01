@@ -68,7 +68,7 @@ export function updateTab(tab, newState = {}, options = {}) {
     TabsStore.addGroupTab(tab);
     Tab.onGroupTabDetected.dispatch(tab);
   }
-  else if (tab.$TST.hasState(Constants.kTAB_STATE_GROUP_TAB) &&
+  else if (tab.$TST.states.has(Constants.kTAB_STATE_GROUP_TAB) &&
            !tab.$TST.hasGroupTabURL) {
     TabsStore.removeGroupTab(tab);
   }
