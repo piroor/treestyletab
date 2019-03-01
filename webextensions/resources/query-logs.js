@@ -87,7 +87,7 @@ function analyze() {
   }
 
   const results = [];
-  results.push('Slowest query:\n' + toString(logs.sort((a,b) => (b.elasped || b.elapsed || 0) - (a.elasped || a.elapsed || 0))[0]));
+  results.push('Top 10 slowest queries:\n' + logs.sort((a,b) => (b.elasped || b.elapsed || 0) - (a.elasped || a.elapsed || 0)).slice(0, 10).map(toString).join('\n'));
   results.push('Count of query tyepes:\n' + uniq(normalizedLogs).sort((a, b) => b.count - a.count).map(toString).join('\n'));
   results.push('Sorted in total elapsed time:\n' + uniq(normalizedLogs).sort((a, b) => b.totalElapsed - a.totalElapsed).map(toString).join('\n'));
   document.getElementById('results').textContent = '`\n' + results.join('\n') + '\n`';
