@@ -177,8 +177,7 @@ function updateDescendantsHighlighted(tab) {
 
 
 export async function reserveToUpdateTooltip(tab) {
-  if (!TabsStore.ensureLivingTab(tab) ||
-      tab.$TST.reservedUpdateTabTooltip)
+  if (tab.$TST.reservedUpdateTabTooltip)
     return;
   tab.$TST.reservedUpdateTabTooltip = () => {
     delete tab.$TST.reservedUpdateTabTooltip;
