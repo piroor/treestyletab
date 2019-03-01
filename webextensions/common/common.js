@@ -213,6 +213,7 @@ export const configs = new Configs({
 `.trim(),
 
   debug:     false,
+  loggingQueries: false,
   logFor: { // git grep configs.logFor | grep -v common.js | cut -d "'" -f 2 | sed -e "s/^/    '/" -e "s/$/': true,/"
     'background/background-cache': false,
     'background/background': true,

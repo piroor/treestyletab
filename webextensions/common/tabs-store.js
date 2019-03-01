@@ -7,7 +7,8 @@
 
 import * as Constants from './constants.js';
 import {
-  log as internalLogger
+  log as internalLogger,
+  configs
 } from './common.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -67,8 +68,10 @@ url
 `.trim().split(/\s+/);
 
 export function queryAll(conditions) {
-  queryLogs.push(conditions);
-  queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
+  if (configs.loggingQueries) {
+    queryLogs.push(conditions);
+    queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
+  }
   fixupQuery(conditions);
   const startAt = Date.now();
   if (conditions.windowId || conditions.ordered) {
@@ -179,8 +182,10 @@ function matched(value, pattern) {
 }
 
 export function query(conditions) {
-  queryLogs.push(conditions);
-  queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
+  if (configs.loggingQueries) {
+    queryLogs.push(conditions);
+    queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
+  }
   fixupQuery(conditions);
   if (conditions.last)
     conditions.ordered = true;
