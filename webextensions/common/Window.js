@@ -87,35 +87,37 @@ export default class Window {
   }
 
   getOrderedTabs(startId, endId) {
-    const order = this._sliceOrder(this.order, startId, endId);
+    const orderedIds = this.sliceOrder(startId, endId, this.orderedIds);
     return (function*() {
-      for (const id of order) {
+      for (const id of orderedIds) {
         yield this.tabs.get(id);
       }
     }).call(this);
   }
 
   getReversedOrderedTabs(startId, endId) {
-    const order = this._sliceOrder(this.order.slice(0).reverse(), startId, endId);
+    const orderedIds = this.sliceOrder(startId, endId, this.order.slice(0).reverse());
     return (function*() {
-      for (const id of order) {
+      for (const id of orderedIds) {
         yield this.tabs.get(id);
       }
     }).call(this);
   }
 
-  _sliceOrder(order, startId, endId) {
+  sliceOrder(startId, endId, orderedIds) {
+    if (!orderedIds)
+      orderedIds = this.order;
     if (startId) {
       if (!this.tabs.has(startId))
         return [];
-      order = order.slice(order.indexOf(startId));
+      orderedIds = orderedIds.slice(orderedIds.indexOf(startId));
     }
     if (endId) {
       if (!this.tabs.has(startId))
         return [];
-      order = order.slice(0, order.indexOf(endId) + 1);
+      orderedIds = orderedIds.slice(0, orderedIds.indexOf(endId) + 1);
     }
-    return order;
+    return orderedIds;
   }
 
   trackTab(tab) {
