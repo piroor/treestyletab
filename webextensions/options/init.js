@@ -107,6 +107,12 @@ function updateBookmarksUI(enabled) {
   }
 }
 
+async function showQueryLogs() {
+  browser.tabs.create({
+    url: '/resources/query-logs.html'
+  });
+}
+
 configs.$addObserver(onConfigChanged);
 window.addEventListener('DOMContentLoaded', () => {
   if (/^Mac/i.test(navigator.platform))
@@ -144,6 +150,18 @@ window.addEventListener('DOMContentLoaded', () => {
     for (const button of document.querySelectorAll('#shortcuts button')) {
       button.click();
     }
+  });
+
+  const showQueryLogsButton = document.getElementById('showQueryLogsButton');
+  showQueryLogsButton.addEventListener('click', event => {
+    if (event.button != 0)
+      return;
+    showQueryLogs();
+  });
+  showQueryLogsButton.addEventListener('keydown', event => {
+    if (event.key != 'Enter')
+      return;
+    showQueryLogs();
   });
 
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);

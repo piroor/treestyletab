@@ -37,6 +37,8 @@ export const kCOMMAND_NOTIFY_TABS_CLOSING            = 'treestyletab:notify-tabs
 export const kCOMMAND_BROADCAST_CURRENT_DRAG_DATA    = 'treestyletab:broadcast-current-drag-data';
 export const kCOMMAND_SHOW_CONTAINER_SELECTOR        = 'treestyletab:show-container-selector';
 export const kCOMMAND_SCROLL_TABBAR                  = 'treestyletab:scroll-tabbar';
+export const kCOMMAND_REQUEST_QUERY_LOGS             = 'treestyletab:request-query-logs';
+export const kCOMMAND_RESPONSE_QUERY_LOGS            = 'treestyletab:response-query-logs';
 
 export const kCOMMAND_SELECT_TAB              = 'treestyletab:select-tab';
 export const kCOMMAND_SET_SUBTREE_MUTED       = 'treestyletab:set-subtree-muted';

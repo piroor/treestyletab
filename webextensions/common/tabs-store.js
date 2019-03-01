@@ -225,6 +225,20 @@ function fixupQuery(conditions) {
 }
 
 
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message ||
+      typeof message != 'object' ||
+      message.type != Constants.kCOMMAND_REQUEST_QUERY_LOGS)
+    return;
+
+  browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_RESPONSE_QUERY_LOGS,
+    logs: JSON.parse(JSON.stringify(queryLogs)),
+    windwoId: mTargetWindow || 'background'
+  });
+});
+
+
 //===================================================================
 // Utilities
 //===================================================================
