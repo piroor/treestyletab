@@ -371,7 +371,7 @@ export default class Tab {
       this.setAttribute(Constants.kCHILDREN, `|${this.childIds.join('|')}|`);
     else
       this.removeAttribute(Constants.kCHILDREN);
-    for (const child of this.children.concat(oldChildren)) {
+    for (const child of Array.from(new Set(this.children.concat(oldChildren)))) {
       child.$TST.invalidateCachedAncestors();
     }
     return tabs;
