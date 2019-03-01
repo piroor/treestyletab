@@ -85,12 +85,12 @@ export function queryAll(conditions) {
           window.getOrderedTabs(conditions.fromId, conditions.toId);
       tabs = tabs.concat(extractMatchedTabs(tabsIterator, conditions));
     }
-    conditions.elasped = Date.now() - startAt;
+    conditions.elapsed = Date.now() - startAt;
     return tabs;
   }
   else {
     const matchedTabs = extractMatchedTabs(conditions.tabs || tabs.values(), conditions);
-    conditions.elasped = Date.now() - startAt;
+    conditions.elapsed = Date.now() - startAt;
     return matchedTabs;
   }
 }
@@ -209,7 +209,7 @@ export function query(conditions) {
   else {
     tabs = extractMatchedTabs(conditions.tabs ||tabs.values(), conditions);
   }
-  conditions.elasped = Date.now() - startAt;
+  conditions.elapsed = Date.now() - startAt;
   return tabs.length > 0 ? tabs[0] : null ;
 }
 
