@@ -271,7 +271,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId);
         return Tab.get(message.tabId).$TST.promisedUniqueId;
       })();
 
@@ -289,7 +289,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId);
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -316,7 +316,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_NEW_TABS:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated([
+        await Tab.waitUntilTracked([
           message.parentId,
           message.insertBeforeId,
           message.insertAfterId
@@ -333,7 +333,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_NEW_WINDOW_FROM_TABS:
       return (async () => {
         log('new window requested: ', message);
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds);
+        await Tab.waitUntilTracked(message.tabIds);
         const tabs = message.tabIds.map(id => TabsStore.tabs.get(id));
         const movedTabs = await Tree.openNewWindowFromTabs(tabs, message);
         return { movedTabs: movedTabs.map(tab => tab.id) };
@@ -342,7 +342,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_MOVE_TABS:
       return (async () => {
         log('move tabs requested: ', message);
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds.concat([message.insertBeforeId, message.insertAfterId]));
+        await Tab.waitUntilTracked(message.tabIds.concat([message.insertBeforeId, message.insertAfterId]));
         const movedTabs = await Tree.moveTabs(
           message.tabIds.map(id => Tab.get(id)),
           Object.assign({}, message, {
@@ -355,14 +355,14 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds);
+        await Tab.waitUntilTracked(message.tabIds);
         return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)), message.options);
       })();
 
     case Constants.kNOTIFY_TAB_MOUSEDOWN:
       return (async () => {
         logMouseEvent('Constants.kNOTIFY_TAB_MOUSEDOWN');
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId);
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -415,7 +415,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SELECT_TAB:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId);
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -425,7 +425,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SELECT_TAB_INTERNALLY:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId);
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -436,7 +436,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_SET_SUBTREE_MUTED:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId);
         log('set muted state: ', message);
         const root = Tab.get(message.tabId);
         if (!root)
@@ -487,7 +487,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds.concat([message.nextId]));
+        await Tab.waitUntilTracked(message.tabIds.concat([message.nextId]));
         return TabsMove.moveTabsBefore(
           message.tabIds.map(id => Tab.get(id)),
           message.nextTabId && Tab.get(message.nextTabId),
@@ -499,7 +499,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds.concat([message.previousTabId]));
+        await Tab.waitUntilTracked(message.tabIds.concat([message.previousTabId]));
         return TabsMove.moveTabsAfter(
           message.tabIds.map(id => Tab.get(id)),
           message.previousTabId && Tab.get(message.previousTabId),
@@ -511,7 +511,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_ATTACH_TAB_TO:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated([
+        await Tab.waitUntilTracked([
           message.childId,
           message.parentId,
           message.insertBeforeId,
@@ -528,7 +528,7 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_DETACH_TAB:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId);
         const tab = Tab.get(message.tabId);
         if (tab)
           await Tree.detachTab(tab);
@@ -536,11 +536,11 @@ function onMessage(message, sender) {
 
     case Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated([
+        await Tab.waitUntilTracked(message.tabIds.concat([
           message.attachToId,
           message.insertBeforeId,
           message.insertAfterId
-        ]);
+        ]));
         log('perform tabs dragdrop requested: ', message);
         return Commands.performTabsDragDrop(Object.assign({}, message, {
           tabs:         message.tabIds.map(id => Tab.get(id)),
@@ -554,7 +554,7 @@ function onMessage(message, sender) {
       return (async () => {
         if (JSON.stringify(message.permissions) == JSON.stringify(Permissions.ALL_URLS)) {
           const tabs = await browser.tabs.query({}).catch(ApiTabs.createErrorHandler());
-          await TabsStore.waitUntilTabsAreCreated(tabs.map(tab => tab.id));
+          await Tab.waitUntilTracked(tabs.map(tab => tab.id));
           for (const tab of tabs) {
             Background.tryStartHandleAccelKeyOnTab(Tab.get(tab.id));
           }
@@ -607,7 +607,7 @@ function onMessageExternal(message, sender) {
 
     case TSTAPI.kATTACH:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated([
+        await Tab.waitUntilTracked([
           message.child,
           message.parent,
           message.insertBefore,
@@ -629,7 +629,7 @@ function onMessageExternal(message, sender) {
 
     case TSTAPI.kDETACH:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tab);
+        await Tab.waitUntilTracked(message.tab);
         const tab = Tab.get(message.tab);
         if (!tab)
           return false;

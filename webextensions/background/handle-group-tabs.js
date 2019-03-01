@@ -312,8 +312,8 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
 const mToBeGroupedTabSets = [];
 
 async function onNewTabsTimeout(window) {
-  if (TabsStore.hasCreatingTab(window.id))
-    await TabsStore.waitUntilAllTabsAreCreated(window.id);
+  if (Tab.needToWaitTracked(window.id))
+    await Tab.waitUntilTrackedAll(window.id);
   if (TabsStore.hasMovingTab(window.id))
     await TabsStore.waitUntilAllTabsAreMoved(window.id);
 

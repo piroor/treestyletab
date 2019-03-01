@@ -7,8 +7,7 @@
 
 import * as Constants from './constants.js';
 import {
-  log as internalLogger,
-  configs
+  log as internalLogger
 } from './common.js';
 
 // eslint-disable-next-line no-unused-vars
@@ -292,50 +291,6 @@ export function hasOperatingTab(params = {}) {
   return false;
 }
 
-const mCreatingTabs = new Map();
-
-export function addCreatingTab(tab) {
-  let onTabCreated;
-  const creatingTabs = mCreatingTabs.get(tab.windowId) || new Map();
-  if (configs.acceleratedTabCreation) {
-    creatingTabs.set(tab.id, tab.$TST.promisedUniqueId);
-    onTabCreated = () => {};
-  }
-  else {
-    creatingTabs.set(tab.id, new Promise((resolve, _aReject) => {
-      onTabCreated = (uniqueId) => { resolve(uniqueId); };
-    }));
-  }
-  mCreatingTabs.set(tab.windowId, creatingTabs);
-  tab.$TST.promisedUniqueId.then(_aUniqueId => {
-    creatingTabs.delete(tab.id);
-  });
-  return onTabCreated;
-}
-
-export function hasCreatingTab(windowId = null) {
-  return hasOperatingTab({ operatingTabs: mCreatingTabs, windowId });
-}
-
-export async function waitUntilAllTabsAreCreated(windowId = null) {
-  const params = {};
-  if (windowId) {
-    params.operatingTabsInWindow = mCreatingTabs.get(windowId);
-    if (!params.operatingTabsInWindow)
-      return;
-  }
-  else {
-    params.operatingTabs = mCreatingTabs;
-  }
-  return waitUntilTabsAreOperated(params)
-    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && tabsByUniqueId.get(uniqueId.id)));
-}
-
-export async function waitUntilTabsAreCreated(idOrIds) {
-  return waitUntilTabsAreOperated({ ids: idOrIds, operatingTabs: mCreatingTabs })
-    .then(aUniqueIds => aUniqueIds.map(uniqueId => uniqueId && tabsByUniqueId.get(uniqueId.id)));
-}
-
 const mMovingTabs = new Map();
 
 export function hasMovingTab(windowId = null) {
@@ -370,7 +325,6 @@ export async function waitUntilAllTabsAreMoved(windowId = null) {
 }
 
 browser.windows.onRemoved.addListener(windowId => {
-  mCreatingTabs.delete(windowId);
   mMovingTabs.delete(windowId);
 });
 

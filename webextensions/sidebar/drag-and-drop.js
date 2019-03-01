@@ -1018,8 +1018,7 @@ function onDrop(event) {
       insertBefore:        dropActionInfo.insertBefore,
       insertAfter:         dropActionInfo.insertAfter,
       destinationWindowId: TabsStore.getWindow(),
-      duplicate:           dt.dropEffect == 'copy',
-      inRemote:            true
+      duplicate:           dt.dropEffect == 'copy'
     });
     return;
   }

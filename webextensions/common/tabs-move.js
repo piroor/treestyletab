@@ -300,8 +300,8 @@ async function syncToNativeTabsInternal(windowId) {
   const oldMovedTabs = mMovedTabs.get(windowId) || [];
   mMovedTabs.delete(windowId);
 
-  if (TabsStore.hasCreatingTab(windowId))
-    await TabsStore.waitUntilAllTabsAreCreated(windowId);
+  if (Tab.needToWaitTracked(windowId))
+    await Tab.waitUntilTrackedAll(windowId);
   if (TabsStore.hasMovingTab(windowId))
     await TabsStore.waitUntilAllTabsAreMoved(windowId);
 

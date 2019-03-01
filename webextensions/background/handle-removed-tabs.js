@@ -159,7 +159,7 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       for (const tab of toBeRestoredTabs.reverse()) {
         log('tryGrantClose: Tabrestoring session = ', dumpTab(tab));
         browser.sessions.restore(tab.sessionId).catch(ApiTabs.createErrorSuppressor());
-        const tabs = await TabsStore.waitUntilAllTabsAreCreated();
+        const tabs = await Tab.waitUntilTrackedAll();
         await Promise.all(tabs.map(tab => tab.$TST.opened));
       }
       return false;

@@ -27,6 +27,9 @@ function log(...args) {
 const mOpenedResolvers            = new Map();
 const mClosedWhileActiveResolvers = new Map();
 
+const mIncompletelyTrackedTabs          = new Set();
+const mIncompletelyTrackedTabsPerWindow = new Map();
+
 export default class Tab {
   constructor(tab) {
     const alreadyTracked = Tab.get(tab.id);
@@ -40,6 +43,9 @@ export default class Tab {
     this.id  = tab.id;
 
     this.element = null;
+    this.promisedElement = new Promise((resolve, _reject) => {
+      this._promisedElementResolver = resolve;
+    });
 
     this.states = new Set();
     this.clear();
@@ -67,7 +73,13 @@ export default class Tab {
       TabsStore.activeTabsForWindow.get(tab.windowId).delete(tab);
     }
 
+    const incompletelyTrackedTabsPerWindow = mIncompletelyTrackedTabsPerWindow.get(tab.windowId) || new Set();
+    mIncompletelyTrackedTabs.add(tab);
+    incompletelyTrackedTabsPerWindow.add(tab);
+    mIncompletelyTrackedTabsPerWindow.set(tab.windowId, incompletelyTrackedTabsPerWindow);
     this.promisedUniqueId.then(() => {
+      mIncompletelyTrackedTabs.delete(tab);
+      incompletelyTrackedTabsPerWindow.delete(tab);
       Tab.onTracked.dispatch(tab);
     });
   }
@@ -109,6 +121,19 @@ export default class Tab {
     this.childIds = [];
     this.cachedAncestorIds   = null;
     this.cachedDescendantIds = null;
+  }
+
+  bindElement(element) {
+    this.element = element;
+    setTimeout(() => { // wait until initialization processes are completed
+      this._promisedElementResolver(element);
+      if (!element) { // reset for the next binding
+        this.promisedElement = new Promise((resolve, _reject) => {
+          this._promisedElementResolver = resolve;
+        });
+      }
+      Tab.onElementBound.dispatch(this.tab);
+    }, 0);
   }
 
   updateUniqueId(options = {}) {
@@ -682,8 +707,10 @@ export default class Tab {
 // tracking of tabs
 //===================================================================
 
-Tab.onTracked = new EventListenerManager();
-Tab.onInitialized   = new EventListenerManager();
+Tab.onTracked      = new EventListenerManager();
+Tab.onDestroyed    = new EventListenerManager();
+Tab.onInitialized  = new EventListenerManager();
+Tab.onElementBound = new EventListenerManager();
 
 Tab.track = tab => {
   const trackedTab = Tab.get(tab.id);
@@ -717,21 +744,76 @@ Tab.getByUniqueId = id => {
   return TabsStore.ensureLivingTab(TabsStore.tabsByUniqueId.get(id));
 };
 
-Tab.waitUntilTracked = async tabId => {
+browser.windows.onRemoved.addListener(windowId => {
+  mIncompletelyTrackedTabs.delete(windowId);
+});
+
+Tab.needToWaitTracked = (windowId) => {
+  const tabs = windowId ? mIncompletelyTrackedTabsPerWindow.get(windowId) : mIncompletelyTrackedTabs;
+  return tabs && tabs.size > 0;
+};
+
+Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
+  const tabs = windowId ? mIncompletelyTrackedTabsPerWindow.get(windowId) : mIncompletelyTrackedTabs;
+  return tabs && Tab.waitUntilTracked(Array.from(tabs, tab => tab.id), options);
+};
+
+Tab.waitUntilTracked = async (tabId, options = {}) => {
+  if (!tabId)
+    return null;
+  if (Array.isArray(tabId))
+    return Promise.all(tabId.map(id => Tab.waitUntilTracked(id, options)));
+  const tab = Tab.get(tabId);
+  if (tab) {
+    if (options.element)
+      return tab.$TST.promisedElement;
+    return tab;
+  }
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
+      if (options.element) // eslint-disable-next-line no-use-before-define
+        Tab.onElementBound.removeListener(onTracked);
+      else // eslint-disable-next-line no-use-before-define
+        Tab.onTracked.removeListener(onTracked);
       // eslint-disable-next-line no-use-before-define
-      Tab.onTracked.removeListener(listener);
-      reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out`));
-    }, 2000);
-    const listener = (tab) => {
+      Tab.onDestroyed.removeListener(onDestroyed);
+      reject(new Error(`Tab.waitUntilTracked for ${tabId} is timed out (in ${TabsStore.getWindow() || 'bg'})`));
+    }, 10000); // Tabs.moveTabs() between windows may take much time
+    const onDestroyed = (tab) => {
       if (tab.id != tabId)
         return;
-      Tab.onTracked.removeListener(listener);
-      clearTimeout(timeout);
-      resolve(tab);
+      if (options.element) // eslint-disable-next-line no-use-before-define
+        Tab.onElementBound.removeListener(onTracked);
+      else // eslint-disable-next-line no-use-before-define
+        Tab.onTracked.removeListener(onTracked);
+      Tab.onDestroyed.removeListener(onDestroyed);
+      reject(new Error(`Tab.waitUntilTracked: ${tabId} is removed while waiting (in ${TabsStore.getWindow() || 'bg'})`));
     };
-    Tab.onTracked.addListener(listener);
+    const onTracked = (tab) => {
+      if (tab.id != tabId)
+        return;
+      if (options.element)
+        Tab.onElementBound.removeListener(onTracked);
+      else
+        Tab.onTracked.removeListener(onTracked);
+      Tab.onDestroyed.removeListener(onDestroyed);
+      clearTimeout(timeout);
+      console.log('TAB IS READY WITH ELEMENT (on tracked)?: ', tab.$TST.element);
+      if (options.element) {
+        if (tab.$TST.element)
+          resolve(tab);
+        else
+          tab.$TST.promisedElement.then(() => resolve(tab));
+      }
+      else {
+        resolve(tab);
+      }
+    };
+    if (options.element)
+      Tab.onElementBound.addListener(onTracked);
+    else
+      Tab.onTracked.addListener(onTracked);
+    Tab.onDestroyed.addListener(onDestroyed);
   });
 };
 

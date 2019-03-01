@@ -142,7 +142,7 @@ export async function openURIsInTabs(uris, options = {}) {
       return ids.map(id => Tab.get(id));
     }
     else {
-      await TabsStore.waitUntilAllTabsAreCreated(options.windowId);
+      await Tab.waitUntilTrackedAll(options.windowId);
       await TabsMove.waitUntilSynchronized(options.windowId);
       const startIndex = Tab.calculateNewTabIndex(options);
       log('startIndex: ', startIndex);

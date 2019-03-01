@@ -832,9 +832,19 @@ function onConfigChange(changedKey) {
 }
 
 
-const mTreeChangesFromRemote = new Set();
-function waitUntilAllTreeChangesFromRemoteAreComplete() {
-  return Promise.all(mTreeChangesFromRemote.values());
+const mLastTreeChangeFromRemote = Promise.resolve();new Set();
+function doTreeChangeFromRemote(task) {
+  const previousPromisedComplete = mLastTreeChangeFromRemote;
+  return new Promise(async (resolve, reject) => {
+    try {
+      await previousPromisedComplete;
+      await task();
+      resolve();
+    }
+    catch(error) {
+      reject(error);
+    }
+  });
 }
 
 function onMessage(message, _sender, _respond) {
@@ -864,15 +874,18 @@ function onMessage(message, _sender, _respond) {
       RestoringTabCount.decrement();
       break;
 
-    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED: {
-      const tab = Tab.get(message.tabId);
-      if (tab)
-        Tab.onFaviconUpdated.dispatch(tab, message.favIconUrl);
-    } break;
+    case Constants.kCOMMAND_NOTIFY_TAB_FAVICON_UPDATED:
+      (async () => {
+        await Tab.waitUntilTracked(message.tabId, { element: true });
+        const tab = Tab.get(message.tabId);
+        if (tab)
+          Tab.onFaviconUpdated.dispatch(tab, message.favIconUrl);
+      })();
+      break;
 
     case Constants.kCOMMAND_CHANGE_SUBTREE_COLLAPSED_STATE:
-      return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+      return doTreeChangeFromRemote(async () => {
+        await Tab.waitUntilTracked(message.tabId, { element: true });
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -885,11 +898,11 @@ function onMessage(message, _sender, _respond) {
           Tree.manualCollapseExpandSubtree(tab, params);
         else
           Tree.collapseExpandSubtree(tab, params);
-      })();
+      });
 
     case Constants.kCOMMAND_CHANGE_TAB_COLLAPSED_STATE:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabId);
+        await Tab.waitUntilTracked(message.tabId, { element: true });
         const tab = Tab.get(message.tabId);
         if (!tab)
           return;
@@ -912,7 +925,8 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_BEFORE:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds.concat([message.nextTabId]));
+        const tabIds = message.tabIds.concat([message.nextTabId]);
+        await Tab.waitUntilTracked(tabIds, { element: true });
         return TabsMove.moveTabsBefore(
           message.tabIds.map(id => Tab.get(id)),
           message.nextTabId && Tab.get(message.nextTabId),
@@ -927,7 +941,8 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_MOVE_TABS_AFTER:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds.concat([message.previousTabId]));
+        const tabIds = message.tabIds.concat([message.previousTabId]);
+        await Tab.waitUntilTracked(tabIds, { element: true });
         return TabsMove.moveTabsAfter(
           message.tabIds.map(id => Tab.get(id)),
           message.previousTabId && Tab.get(message.previousTabId),
@@ -942,20 +957,19 @@ function onMessage(message, _sender, _respond) {
 
     case Constants.kCOMMAND_REMOVE_TABS_INTERNALLY:
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds);
+        await Tab.waitUntilTracked(message.tabIds, { element: true });
         return TabsInternalOperation.removeTabs(message.tabIds.map(id => Tab.get(id)), message.options);
       })();
 
-    case Constants.kCOMMAND_ATTACH_TAB_TO: {
-      const promisedComplete = (async () => {
+    case Constants.kCOMMAND_ATTACH_TAB_TO:
+      return doTreeChangeFromRemote(async () => {
         await Promise.all([
-          TabsStore.waitUntilTabsAreCreated([
+          await Tab.waitUntilTracked([
             message.childId,
             message.parentId,
             message.insertBeforeId,
             message.insertAfterId
-          ]),
-          waitUntilAllTreeChangesFromRemoteAreComplete()
+          ], { element: true })
         ]);
         log('attach tab from remote ', message);
         const child  = Tab.get(message.childId);
@@ -967,26 +981,15 @@ function onMessage(message, _sender, _respond) {
             inRemote:     false,
             broadcast:    false
           }));
-        mTreeChangesFromRemote.delete(promisedComplete);
-      })();
-      mTreeChangesFromRemote.add(promisedComplete);
-      return promisedComplete;
-    }; break;
+      });
 
-    case Constants.kCOMMAND_DETACH_TAB: {
-      const promisedComplete = (async () => {
-        await Promise.all([
-          TabsStore.waitUntilTabsAreCreated(message.tabId),
-          waitUntilAllTreeChangesFromRemoteAreComplete()
-        ]);
+    case Constants.kCOMMAND_DETACH_TAB:
+      return doTreeChangeFromRemote(async () => {
+        await Tab.waitUntilTracked(message.tabId, { element: true });
         const tab = Tab.get(message.tabId);
         if (tab)
           Tree.detachTab(tab, message);
-        mTreeChangesFromRemote.delete(promisedComplete);
-      })();
-      mTreeChangesFromRemote.add(promisedComplete);
-      return promisedComplete;
-    }; break;
+      });
 
     case Constants.kCOMMAND_BLOCK_USER_OPERATIONS:
       UserOperationBlocker.blockIn(mTargetWindow, message);
@@ -1000,7 +1003,7 @@ function onMessage(message, _sender, _respond) {
       if (!message.tabIds.length)
         break;
       return (async () => {
-        await TabsStore.waitUntilTabsAreCreated(message.tabIds);
+        await Tab.waitUntilTracked(message.tabIds, { element: true });
         const add    = message.add || [];
         const remove = message.remove || [];
         log('apply broadcasted tab state ', message.tabIds, {

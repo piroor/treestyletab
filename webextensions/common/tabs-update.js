@@ -252,8 +252,8 @@ export function updateTab(tab, newState = {}, options = {}) {
 }
 
 export async function updateTabsHighlighted(highlightInfo) {
-  if (TabsStore.hasCreatingTab(highlightInfo.windowId))
-    await TabsStore.waitUntilAllTabsAreCreated(highlightInfo.windowId);
+  if (Tab.needToWaitTracked(highlightInfo.windowId))
+    await Tab.waitUntilTrackedAll(highlightInfo.windowId);
   const window = TabsStore.windows.get(highlightInfo.windowId);
   if (!window)
     return;

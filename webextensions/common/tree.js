@@ -135,7 +135,7 @@ export async function attachTabTo(child, parent, options = {}) {
     insertAfter:  options.insertAfter
   });
 
-  await TabsStore.waitUntilAllTabsAreCreated(child.windowId);
+  await Tab.waitUntilTrackedAll(child.windowId);
 
   parent = TabsStore.ensureLivingTab(parent);
   child = TabsStore.ensureLivingTab(child);
@@ -189,6 +189,7 @@ export async function attachTabTo(child, parent, options = {}) {
   }));
 
   if (options.inRemote || options.broadcast) {
+    console.log('BROADCAST ATTACH MESSAGE TO ',child.windowId);
     browser.runtime.sendMessage({
       type:             Constants.kCOMMAND_ATTACH_TAB_TO,
       windowId:         child.windowId,
@@ -1296,6 +1297,9 @@ export async function moveTabs(tabs, options = {}) {
         });
         movedTabs   = movedTabs.map(tab => Tab.get(tab.id));
         movedTabIds = movedTabs.map(tab => tab.id);
+        for (const tab of movedTabs) {
+          tab.windowId = destinationWindowId;
+        }
         log('moved across windows: ', movedTabIds);
       }
 

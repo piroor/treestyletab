@@ -149,7 +149,7 @@ async function onActivated(activeInfo) {
     const byTabDuplication = parseInt(window.duplicatingTabsCount) > 0;
 
     if (!Tab.isTracked(activeInfo.tabId))
-      await Tab.waitUntilTracked(activeInfo.tabId);
+      await Tab.waitUntilTracked(activeInfo.tabId, { element: !!TabsStore.getWindow() });
 
     const newActiveTab = Tab.get(activeInfo.tabId);
     if (!newActiveTab ||
@@ -240,7 +240,7 @@ async function onUpdated(tabId, changeInfo, tab) {
   tabId = tab.id;
 
   if (!Tab.isTracked(tabId))
-    await Tab.waitUntilTracked(tabId);
+    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getWindow() });
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -354,8 +354,8 @@ async function onNewTabTracked(tab) {
     activeTab
   });
 
-  if (TabsStore.hasCreatingTab(tab.windowId))
-    await TabsStore.waitUntilAllTabsAreCreated(tab.windowId);
+  if (Tab.needToWaitTracked(tab.windowId))
+    await Tab.waitUntilTrackedAll(tab.windowId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -383,12 +383,10 @@ async function onNewTabTracked(tab) {
     if (tab.active)
       TabsInternalOperation.setTabActive(tab);
 
-    const onTabCreatedInner = TabsStore.addCreatingTab(tab);
-    const onTabCreated = (uniqueId) => { onTabCreatedInner(uniqueId); onCompleted(); };
     const uniqueId = await tab.$TST.promisedUniqueId;
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
-      onTabCreated(uniqueId);
+      onCompleted(uniqueId);
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
@@ -439,7 +437,7 @@ async function onNewTabTracked(tab) {
     if (!TabsStore.ensureLivingTab(tab) ||
         !TabsStore.windows.get(tab.windowId)) {
       log(`onNewTabTracked(${dumpTab(tab)}):  => aborted`);
-      onTabCreated(uniqueId);
+      onCompleted(uniqueId);
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
@@ -470,7 +468,7 @@ async function onNewTabTracked(tab) {
     }
 
     if (!TabsStore.ensureLivingTab(tab)) { // it can be removed while waiting
-      onTabCreated(uniqueId);
+      onCompleted(uniqueId);
       Tab.untrack(tab.id);
       warnTabDestroyedWhileWaiting(tab.id, tab);
       return;
@@ -496,7 +494,7 @@ async function onNewTabTracked(tab) {
       checkRecycledTab(window.id);
     }
 
-    onTabCreated(uniqueId);
+    onCompleted(uniqueId);
 
     // tab can be changed while creating!
     const renewedTab = await browser.tabs.get(tab.id).catch(ApiTabs.createErrorHandler());
@@ -568,8 +566,8 @@ async function onRemoved(tabId, removeInfo) {
   if (byInternalOperation)
     window.internalClosingTabs.delete(tabId);
 
-  if (TabsStore.hasCreatingTab(removeInfo.windowId))
-    await TabsStore.waitUntilAllTabsAreCreated(removeInfo.windowId);
+  if (Tab.needToWaitTracked(removeInfo.windowId))
+    await Tab.waitUntilTrackedAll(removeInfo.windowId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
@@ -645,7 +643,7 @@ async function onMoved(tabId, moveInfo) {
   const maybeInternalOperation = window.internalMovingTabs.has(tabId);
 
   if (!Tab.isTracked(tabId))
-    await Tab.waitUntilTracked(tabId);
+    await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getWindow() });
   if (TabsStore.hasMovingTab(moveInfo.windowId))
     await TabsStore.waitUntilAllTabsAreMoved(moveInfo.windowId);
 
@@ -760,7 +758,7 @@ async function onAttached(tabId, attachInfo) {
     }
 
     if (tab) {
-      tab.windowId = attachedTab.windowId
+      tab.windowId = attachInfo.newWindowId
       tab.index    = attachedTab.index;
     }
     else {

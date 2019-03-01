@@ -259,7 +259,7 @@ export async function performTabsDragDrop(params = {}) {
   const windowId = params.windowId || TabsStore.getWindow();
   const destinationWindowId = params.destinationWindowId || windowId;
 
-  if (params.inRemote) {
+  if (TabsStore.getWindow()) {
     browser.runtime.sendMessage(Object.assign({}, params, {
       type:           Constants.kCOMMAND_PERFORM_TABS_DRAG_DROP,
       windowId:       windowId,
@@ -271,7 +271,6 @@ export async function performTabsDragDrop(params = {}) {
       attachToId:     params.attachTo && params.attachTo.id,
       insertBeforeId: params.insertBefore && params.insertBefore.id,
       insertAfterId:  params.insertAfter && params.insertAfter.id,
-      inRemote:       false,
       destinationWindowId
     })).catch(ApiTabs.createErrorSuppressor());
     return;

@@ -231,11 +231,11 @@ function onMessage(message, sender) {
       return (async () => {
         if (mTabSwitchedByShortcut &&
             configs.skipCollapsedTabsForTabSwitchingShortcuts) {
-          await TabsStore.waitUntilTabsAreCreated(sender.tab.id);
+          await Tab.waitUntilTracked(sender.tab.id);
           let tab = sender.tab && Tab.get(sender.tab.id);
           if (!tab) {
             const tabs = await browser.tabs.query({ currentWindow: true, active: true }).catch(ApiTabs.createErrorHandler());
-            await TabsStore.waitUntilTabsAreCreated(tabs[0].id);
+            await Tab.waitUntilTracked(tabs[0].id);
             tab = Tab.get(tabs[0].id);
           }
           cancelAllDelayedExpand(tab.windowId);

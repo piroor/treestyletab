@@ -184,8 +184,8 @@ export async function reserveToCacheTree(windowId) {
   // we are possibly restoring tabs. To avoid cache breakage before
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
-  if (TabsStore.hasCreatingTab(windowId))
-    await TabsStore.waitUntilAllTabsAreCreated(windowId);
+  if (Tab.needToWaitTracked(windowId))
+    await Tab.waitUntilTrackedAll(windowId);
 
   if (window.allTabsRestored)
     return;
@@ -209,8 +209,8 @@ function cancelReservedCacheTree(windowId) {
 }
 
 async function cacheTree(windowId) {
-  if (TabsStore.hasCreatingTab(windowId))
-    await TabsStore.waitUntilAllTabsAreCreated(windowId);
+  if (Tab.needToWaitTracked(windowId))
+    await Tab.waitUntilTrackedAll(windowId);
   const window = TabsStore.windows.get(windowId);
   if (!window ||
       !configs.useCachedTree)

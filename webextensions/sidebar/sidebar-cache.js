@@ -259,8 +259,8 @@ export async function reserveToUpdateCachedTabbar() {
   // we are possibly restoring tabs. To avoid cache breakage before
   // restoration, we must wait until we know whether there is any other
   // restoring tab or not.
-  if (TabsStore.hasCreatingTab(mTargetWindow))
-    await TabsStore.waitUntilAllTabsAreCreated(mTargetWindow);
+  if (Tab.needToWaitTracked(null))
+    await Tab.waitUntilTrackedAll(null, { element: true });
 
   const window = TabsStore.windows.get(mTargetWindow);
   if (window.allTabsRestored)
@@ -288,8 +288,8 @@ function cancelReservedUpdateCachedTabbar() {
 async function updateCachedTabbar() {
   if (!configs.useCachedTree)
     return;
-  if (TabsStore.hasCreatingTab(mTargetWindow))
-    await TabsStore.waitUntilAllTabsAreCreated(mTargetWindow);
+  if (Tab.needToWaitTracked(mTargetWindow))
+    await Tab.waitUntilTrackedAll(mTargetWindow);
   const window    = TabsStore.windows.get(mTargetWindow);
   const signature = await DOMCache.getWindowSignature(mTargetWindow);
   if (window.allTabsRestored)

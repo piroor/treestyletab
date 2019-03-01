@@ -81,14 +81,16 @@ export function getClosebox(tab) {
 }
 
 
-export function reserveToUpdateTwistyTooltip(tab) {
+export async function reserveToUpdateTwistyTooltip(tab) {
   if (tab.$TST.reservedUpdateTwistyTooltip)
     return;
   tab.$TST.reservedUpdateTwistyTooltip = () => {
     delete tab.$TST.reservedUpdateTwistyTooltip;
     updateTwistyTooltip(tab);
   };
-  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateTwistyTooltip, { once: true });
+  const element = await tab.$TST.promisedElement;
+  if (element)
+    element.addEventListener('mouseover', tab.$TST.reservedUpdateTwistyTooltip, { once: true });
 }
 
 function updateTwistyTooltip(tab) {
@@ -100,14 +102,16 @@ function updateTwistyTooltip(tab) {
   getTwisty(tab).setAttribute('title', tooltip);
 }
 
-export function reserveToUpdateCloseboxTooltip(tab) {
+export async function reserveToUpdateCloseboxTooltip(tab) {
   if (tab.$TST.reservedUpdateCloseboxTooltip)
     return;
   tab.$TST.reservedUpdateCloseboxTooltip = () => {
     delete tab.$TST.reservedUpdateCloseboxTooltip;
     updateCloseboxTooltip(tab);
   };
-  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateCloseboxTooltip, { once: true });
+  const element = await tab.$TST.promisedElement;
+  if (element)
+    element.addEventListener('mouseover', tab.$TST.reservedUpdateCloseboxTooltip, { once: true });
 }
 
 function updateCloseboxTooltip(tab) {
@@ -172,7 +176,7 @@ function updateDescendantsHighlighted(tab) {
 }
 
 
-export function reserveToUpdateTooltip(tab) {
+export async function reserveToUpdateTooltip(tab) {
   if (!TabsStore.ensureLivingTab(tab) ||
       tab.$TST.reservedUpdateTabTooltip)
     return;
@@ -180,7 +184,9 @@ export function reserveToUpdateTooltip(tab) {
     delete tab.$TST.reservedUpdateTabTooltip;
     updateTabAndAncestorsTooltip(tab);
   };
-  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateTabTooltip, { once: true });
+  const element = await tab.$TST.promisedElement;
+  if (element)
+    element.addEventListener('mouseover', tab.$TST.reservedUpdateTabTooltip, { once: true });
 }
 
 function updateTabAndAncestorsTooltip(tab) {
@@ -282,14 +288,16 @@ async function synchronizeThrobberAnimation() {
 }
 
 
-export function reserveToUpdateSoundButtonTooltip(tab) {
+export async function reserveToUpdateSoundButtonTooltip(tab) {
   if (tab.$TST.reservedUpdateSoundButtonTooltip)
     return;
   tab.$TST.reservedUpdateSoundButtonTooltip = () => {
     delete tab.$TST.reservedUpdateSoundButtonTooltip;
     updateSoundButtonTooltip(tab);
   };
-  tab.$TST.element.addEventListener('mouseover', tab.$TST.reservedUpdateSoundButtonTooltip, { once: true });
+  const element = await tab.$TST.promisedElement;
+  if (element)
+    element.addEventListener('mouseover', tab.$TST.reservedUpdateSoundButtonTooltip, { once: true });
 }
 
 function updateSoundButtonTooltip(tab) {
@@ -439,12 +447,12 @@ Tab.onInitialized.addListener((tab, info) => {
   const id = `tab-${tab.id}`;
   let tabElement = document.getElementById(id);
   if (tabElement) {
-    tab.$TST.element = tabElement;
+    tab.$TST.bindElement(tabElement);
     return;
   }
 
   tabElement = document.createElement('li');
-  tab.$TST.element = tabElement;
+  tab.$TST.bindElement(tabElement);
   tabElement.$TST = tab.$TST;
   tabElement.apiTab = tab;
 
@@ -524,7 +532,9 @@ Tab.onCreated.addListener((tab, _info) => {
   tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
 });
 
-Tab.onTabInternallyMoved.addListener((tab, info) => {
+Tab.onTabInternallyMoved.addListener(async (tab, info) => {
+  if (!tab.$TST.element)
+    await Tab.waitUntilTracked(tab.id, { element: true });
   const tabElement  = tab.$TST.element;
   const nextElement = info.nextTab && info.nextTab.$TST.element;
   if (tabElement.nextSibling != nextElement)
@@ -583,6 +593,8 @@ Tab.onMoving.addListener((tab, _info) => {
 });
 
 Tab.onMoved.addListener(async (tab, info) => {
+  if (!tab.$TST.element)
+    await Tab.waitUntilTracked(tab.id, { element: true });
   if (mInitialized)
     reserveToUpdateTooltip(tab.$TST.parent);
 
