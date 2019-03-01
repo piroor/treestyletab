@@ -823,7 +823,7 @@ Tab.getOpenerFromGroupTab = groupTab => {
     return null;
   TabsStore.assertValidTab(groupTab);
   const matchedOpenerTabId = groupTab.url.match(/openerTabId=([^&;]+)/);
-  return matchedOpenerTabId && Tab.get(matchedOpenerTabId[1]);
+  return matchedOpenerTabId && Tab.getByUniqueId(matchedOpenerTabId[1]);
 };
 
 

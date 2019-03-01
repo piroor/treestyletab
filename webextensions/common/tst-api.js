@@ -575,7 +575,7 @@ async function getTabsFromWrongIds(ids, sender) {
       case 'multiselected':
         return Tab.getHighlightedTabs(activeWindow.id);
       default:
-        return Tab.get(id);
+        return Tab.get(id) || Tab.getByUniqueId(id);
     }
   }));
   log('=> ', tabs);
