@@ -1018,8 +1018,6 @@ function onMessage(message, _sender, _respond) {
               modified.includes(Constants.kTAB_STATE_SOUND_PLAYING) ||
               modified.includes(Constants.kTAB_STATE_MUTED)) {
             SidebarTabs.reserveToUpdateSoundButtonTooltip(tab);
-            if (message.bubbles)
-              TabsUpdate.updateParentTab(tab.$TST.parent);
           }
         }
       })();

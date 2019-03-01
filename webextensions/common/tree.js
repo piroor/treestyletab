@@ -51,7 +51,6 @@ import * as ApiTabs from './api-tabs.js';
 import * as SidebarStatus from './sidebar-status.js';
 import * as TabsStore from './tabs-store.js';
 import * as TabsInternalOperation from './tabs-internal-operation.js';
-import * as TabsUpdate from './tabs-update.js';
 import * as TabsMove from './tabs-move.js';
 import * as TSTAPI from './tst-api.js';
 import * as UserOperationBlocker from './user-operation-blocker.js';
@@ -180,13 +179,6 @@ export async function attachTabTo(child, parent, options = {}) {
     if (!options.dontUpdateIndent) {
       updateTabsIndent(child, parentLevel + 1);
     }
-    //updateTabAsParent(parent);
-    //if (shouldInheritIndent && !options.dontUpdateIndent)
-    //  this.inheritTabIndent(child, parent);
-
-    //promoteTooDeepLevelTabs(child);
-
-    TabsUpdate.updateParentTab(parent);
   }
 
   onAttached.dispatch(child, Object.assign({}, options, {
@@ -299,13 +291,11 @@ export function detachTab(child, options = {}) {
   if (!parent)
     log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
 
+  // we need to set children and parent via setters, to invalidate cached information.
   if (parent) {
-    // we need to set its children via the "children" setter, to invalidate cached information.
     parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
-    TabsUpdate.updateParentTab(parent);
+    log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
   }
-  child.$TST.removeAttribute(Constants.kPARENT);
-  // we need to clear its parent via the "parent" setter, to invalidate cached information.
   child.$TST.parent = null;
   log('detachTab: parent information cleared: ', child.id);
 

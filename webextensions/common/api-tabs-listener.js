@@ -291,7 +291,6 @@ async function onUpdated(tabId, changeInfo, tab) {
     }
 
     TabsUpdate.updateTab(updatedTab, changeInfo, { tab });
-    TabsUpdate.updateParentTab(updatedTab.$TST.parent);
 
     const onUpdatedResult = Tab.onUpdated.dispatch(updatedTab, changeInfo);
     // don't do await if not needed, to process things synchronously

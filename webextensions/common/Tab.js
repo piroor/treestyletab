@@ -294,6 +294,7 @@ export default class Tab {
     if (parent) {
       this.setAttribute(Constants.kPARENT, parent.id);
       parent.$TST.invalidateCachedDescendants();
+      parent.$TST.inheritSoundStateFromChildren();
     }
     else {
       this.removeAttribute(Constants.kPARENT);
@@ -605,6 +606,26 @@ export default class Tab {
   async getPermanentStates() {
     const states = await browser.sessions.getTabValue(this.tab.id, Constants.kPERSISTENT_STATES).catch(ApiTabs.createErrorHandler());
     return states || [];
+  }
+
+  inheritSoundStateFromChildren() {
+    const children = this.children;
+
+    if (children.some(child => child.maybeSoundPlaying))
+      this.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+    else
+      this.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
+
+    if (children.some(child => child.maybeMuted))
+      this.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+    else
+      this.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
+
+    const parent = this.parent;
+    if (parent)
+      parent.$TST.inheritSoundStateFromChildren();
+
+    Tab.onSoundStateChanged.dispatch(this.tab);
   }
 
 
@@ -973,7 +994,7 @@ Tab.onUnpinned         = new EventListenerManager();
 Tab.onHidden           = new EventListenerManager();
 Tab.onShown            = new EventListenerManager();
 Tab.onHighlightedTabsChanged = new EventListenerManager();
-Tab.onParentTabUpdated = new EventListenerManager();
+Tab.onSoundStateChanged = new EventListenerManager();
 Tab.onTabInternallyMoved     = new EventListenerManager();
 Tab.onCollapsedStateChanging = new EventListenerManager();
 Tab.onCollapsedStateChanged  = new EventListenerManager();
@@ -1007,8 +1028,7 @@ Tab.broadcastState = (tabs, options = {}) => {
     tabIds:   tabs.map(tab => tab.id),
     windowId: tabs[0].windowId,
     add:      options.add || [],
-    remove:   options.remove || [],
-    bubbles:  !!options.bubbles
+    remove:   options.remove || []
   }).catch(ApiTabs.createErrorSuppressor());
 };
 

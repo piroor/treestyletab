@@ -481,10 +481,7 @@ function onMessage(message, sender) {
           // tabs.onUpdated is too slow, so users will be confused
           // from still-not-updated tabs (in other words, they tabs
           // are unresponsive for quick-clicks).
-          Tab.broadcastState(tab, {
-            add, remove,
-            bubbles: !tab.$TST.hasChild
-          });
+          Tab.broadcastState(tab, { add, remove });
         }
       })();
 

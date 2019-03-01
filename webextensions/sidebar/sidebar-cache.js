@@ -327,7 +327,7 @@ Tab.onLabelUpdated.addListener(_tab => {
   });
 });
 
-Tab.onParentTabUpdated.addListener(async _tab => {
+Tab.onSoundStateChanged.addListener(async _tab => {
   wait(0).then(() => {
     markWindowCacheDirty(Constants.kWINDOW_STATE_CACHED_SIDEBAR_TABS_DIRTY);
   });

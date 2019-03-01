@@ -663,7 +663,7 @@ Tab.onUpdated.addListener((tab, info) => {
   }, 50);
 });
 
-Tab.onParentTabUpdated.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
+Tab.onSoundStateChanged.addListener(tab => { reserveToUpdateSoundButtonTooltip(tab); });
 
 Tab.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||

@@ -151,19 +151,33 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.removeState(Constants.kTAB_STATE_AUDIBLE);
   }
 
+  let soundStateChanged = false;
+
   if (options.forceApply ||
       'mutedInfo' in newState) {
+    soundStateChanged = true;
     if (newState.mutedInfo && newState.mutedInfo.muted)
       tab.$TST.addState(Constants.kTAB_STATE_MUTED);
     else
       tab.$TST.removeState(Constants.kTAB_STATE_MUTED);
   }
 
-  if (tab.audible &&
-      !tab.mutedInfo.muted)
-    tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
-  else
-    tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
+  if (options.forceApply ||
+      soundStateChanged ||
+      'audible' in newState) {
+    soundStateChanged = true;
+    if (tab.audible &&
+        !tab.mutedInfo.muted)
+      tab.$TST.addState(Constants.kTAB_STATE_SOUND_PLAYING);
+    else
+      tab.$TST.removeState(Constants.kTAB_STATE_SOUND_PLAYING);
+  }
+
+  if (soundStateChanged) {
+    const parent = this.parent;
+    if (parent)
+      parent.inheritSoundStateFromChildren();
+  }
 
   if (options.forceApply ||
       'cookieStoreId' in newState) {
@@ -292,25 +306,4 @@ async function updateTabHighlighted(tab, highlighted) {
     window.tabsToBeHighlightedAlone.delete(tab.id);
   Tab.onUpdated.dispatch(tab, { highlighted }, { inheritHighlighted });
   return true;
-}
-
-export function updateParentTab(parent) {
-  if (!TabsStore.ensureLivingTab(parent))
-    return;
-
-  const children = parent.$TST.children;
-
-  if (children.some(child => child.$TST.maybeSoundPlaying))
-    parent.$TST.addState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-  else
-    parent.$TST.removeState(Constants.kTAB_STATE_HAS_SOUND_PLAYING_MEMBER);
-
-  if (children.some(child => child.$TST.maybeMuted))
-    parent.$TST.addState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-  else
-    parent.$TST.removeState(Constants.kTAB_STATE_HAS_MUTED_MEMBER);
-
-  updateParentTab(parent.$TST.parent);
-
-  Tab.onParentTabUpdated.dispatch(parent);
 }
