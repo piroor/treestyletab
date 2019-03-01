@@ -27,8 +27,13 @@ function log(...args) {
 const mOpenedResolvers            = new Map();
 const mClosedWhileActiveResolvers = new Map();
 
-const mIncompletelyTrackedTabs          = new Set();
-const mIncompletelyTrackedTabsPerWindow = new Map();
+const mIncompletelyTrackedTabs = new Map();
+const mMovingTabs              = new Map();
+
+browser.windows.onRemoved.addListener(windowId => {
+  mIncompletelyTrackedTabs.delete(windowId);
+  mMovingTabs.delete(windowId);
+});
 
 export default class Tab {
   constructor(tab) {
@@ -73,12 +78,10 @@ export default class Tab {
       TabsStore.activeTabsForWindow.get(tab.windowId).delete(tab);
     }
 
-    const incompletelyTrackedTabsPerWindow = mIncompletelyTrackedTabsPerWindow.get(tab.windowId) || new Set();
-    mIncompletelyTrackedTabs.add(tab);
+    const incompletelyTrackedTabsPerWindow = mIncompletelyTrackedTabs.get(tab.windowId) || new Set();
     incompletelyTrackedTabsPerWindow.add(tab);
-    mIncompletelyTrackedTabsPerWindow.set(tab.windowId, incompletelyTrackedTabsPerWindow);
+    mIncompletelyTrackedTabs.set(tab.windowId, incompletelyTrackedTabsPerWindow);
     this.promisedUniqueId.then(() => {
-      mIncompletelyTrackedTabs.delete(tab);
       incompletelyTrackedTabsPerWindow.delete(tab);
       Tab.onTracked.dispatch(tab);
     });
@@ -134,6 +137,20 @@ export default class Tab {
       }
       Tab.onElementBound.dispatch(this.tab);
     }, 0);
+  }
+
+  startMoving() {
+    let onTabMoved;
+    const promisedMoved = new Promise((resolve, _reject) => {
+      onTabMoved = resolve;
+    });
+    const movingTabs = mMovingTabs.get(this.tab.windowId) || new Set();
+    movingTabs.add(promisedMoved);
+    mMovingTabs.set(this.tab.windowId, movingTabs);
+    promisedMoved.then(() => {
+      movingTabs.delete(promisedMoved);
+    });
+    return onTabMoved;
   }
 
   updateUniqueId(options = {}) {
@@ -744,18 +761,32 @@ Tab.getByUniqueId = id => {
   return TabsStore.ensureLivingTab(TabsStore.tabsByUniqueId.get(id));
 };
 
-browser.windows.onRemoved.addListener(windowId => {
-  mIncompletelyTrackedTabs.delete(windowId);
-});
-
 Tab.needToWaitTracked = (windowId) => {
-  const tabs = windowId ? mIncompletelyTrackedTabsPerWindow.get(windowId) : mIncompletelyTrackedTabs;
-  return tabs && tabs.size > 0;
+  if (windowId) {
+    const tabs = mIncompletelyTrackedTabs.get(windowId);
+    return tabs && tabs.size > 0;
+  }
+  for (const tabs of mIncompletelyTrackedTabs.values()) {
+    if (tabs && tabs.size > 0)
+      return true;
+  }
+  return false;
 };
 
 Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
-  const tabs = windowId ? mIncompletelyTrackedTabsPerWindow.get(windowId) : mIncompletelyTrackedTabs;
-  return tabs && Tab.waitUntilTracked(Array.from(tabs, tab => tab.id), options);
+  const tabSets = [];
+  if (windowId) {
+    tabSets.push(mIncompletelyTrackedTabs.get(windowId));
+  }
+  else {
+    for (const tabs of mIncompletelyTrackedTabs.values()) {
+      tabSets.push(tabs);
+    }
+  }
+  return Promise.all(tabSets.map(tabs => {
+    if (tabs)
+      return Tab.waitUntilTracked(Array.from(tabs, tab => tab.id), options);
+  }));
 };
 
 Tab.waitUntilTracked = async (tabId, options = {}) => {
@@ -798,7 +829,6 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
         Tab.onTracked.removeListener(onTracked);
       Tab.onDestroyed.removeListener(onDestroyed);
       clearTimeout(timeout);
-      console.log('TAB IS READY WITH ELEMENT (on tracked)?: ', tab.$TST.element);
       if (options.element) {
         if (tab.$TST.element)
           resolve(tab);
@@ -815,6 +845,31 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
       Tab.onTracked.addListener(onTracked);
     Tab.onDestroyed.addListener(onDestroyed);
   });
+};
+
+Tab.needToWaitMoved = (windowId) => {
+  if (windowId) {
+    const tabs = mMovingTabs.get(windowId);
+    return tabs && tabs.size > 0;
+  }
+  for (const tabs of mMovingTabs.values()) {
+    if (tabs && tabs.size > 0)
+      return true;
+  }
+  return false;
+};
+
+Tab.waitUntilMovedAll = async windowId => {
+  const tabSets = [];
+  if (windowId) {
+    tabSets.push(mMovingTabs.get(windowId));
+  }
+  else {
+    for (const tabs of mMovingTabs.values()) {
+      tabSets.push(tabs);
+    }
+  }
+  return Promise.all(tabSets.map(tabs => tabs && Promise.all(tabs)));
 };
 
 Tab.init = (tab, options = {}) => {

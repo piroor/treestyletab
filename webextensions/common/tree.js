@@ -189,7 +189,6 @@ export async function attachTabTo(child, parent, options = {}) {
   }));
 
   if (options.inRemote || options.broadcast) {
-    console.log('BROADCAST ATTACH MESSAGE TO ',child.windowId);
     browser.runtime.sendMessage({
       type:             Constants.kCOMMAND_ATTACH_TAB_TO,
       windowId:         child.windowId,

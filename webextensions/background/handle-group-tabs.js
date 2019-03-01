@@ -314,8 +314,8 @@ const mToBeGroupedTabSets = [];
 async function onNewTabsTimeout(window) {
   if (Tab.needToWaitTracked(window.id))
     await Tab.waitUntilTrackedAll(window.id);
-  if (TabsStore.hasMovingTab(window.id))
-    await TabsStore.waitUntilAllTabsAreMoved(window.id);
+  if (Tab.needToWaitMoved(window.id))
+    await Tab.waitUntilMovedAll(window.id);
 
   let tabReferences = window.openedNewTabs;
   log('onNewTabsTimeout ', tabReferences);

@@ -302,8 +302,8 @@ async function syncToNativeTabsInternal(windowId) {
 
   if (Tab.needToWaitTracked(windowId))
     await Tab.waitUntilTrackedAll(windowId);
-  if (TabsStore.hasMovingTab(windowId))
-    await TabsStore.waitUntilAllTabsAreMoved(windowId);
+  if (Tab.needToWaitMoved(windowId))
+    await Tab.waitUntilMovedAll(windowId);
 
   const window = TabsStore.windows.get(windowId);
   if (!window) // already destroyed

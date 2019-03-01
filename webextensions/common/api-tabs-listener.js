@@ -644,16 +644,16 @@ async function onMoved(tabId, moveInfo) {
 
   if (!Tab.isTracked(tabId))
     await Tab.waitUntilTracked(tabId, { element: !!TabsStore.getWindow() });
-  if (TabsStore.hasMovingTab(moveInfo.windowId))
-    await TabsStore.waitUntilAllTabsAreMoved(moveInfo.windowId);
+  if (Tab.needToWaitMoved(moveInfo.windowId))
+    await Tab.waitUntilMovedAll(moveInfo.windowId);
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
     await previous;
 
   try {
-    const onTabMoved = TabsStore.addMovingTabId(tabId, moveInfo.windowId);
-    const completelyMoved = () => { onTabMoved(); onCompleted() };
+    const finishMoving = Tab.get(tabId).$TST.startMoving();
+    const completelyMoved = () => { finishMoving(); onCompleted() };
 
     /* When a tab is pinned, tabs.onMoved may be notified before
        tabs.onUpdated(pinned=true) is notified. As the result,
