@@ -69,7 +69,7 @@
     const title     = aParameters.title || getTitle() || '';
     const temporary = String(gTemporaryCheck.checked);
 
-    let opener    = getOpenerTabId();
+    let opener = getOpenerTabId();
     opener = opener ? `&openerTabId=${opener}` : '';
 
     let uri = location.href.split('?')[0];
