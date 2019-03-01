@@ -239,7 +239,7 @@ export function addHighlightedTab(tab) {
 export function removeHighlightedTab(tab) {
   const tabs = highlightedTabsForWindow.get(tab.windowId);
   if (tabs)
-    tabs.remove(tab);
+    tabs.delete(tab);
 }
 
 export function addGroupTab(tab) {
@@ -250,7 +250,7 @@ export function addGroupTab(tab) {
 export function removeGroupTab(tab) {
   const tabs = groupTabsForWindow.get(tab.windowId);
   if (tabs)
-    tabs.remove(tab);
+    tabs.delete(tab);
 }
 
 
