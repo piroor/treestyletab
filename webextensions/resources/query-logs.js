@@ -5,7 +5,7 @@
 */
 'use strict';
 
-(() => {
+window.addEventListener('DOMContentLoaded', () => {
   browser.runtime.onMessage.addListener((message, _sender) => {
     if (!message ||
         typeof message != 'object' ||
@@ -20,7 +20,7 @@
     analyze();
   });
   browser.runtime.sendMessage({ type: 'treestyletab:request-query-logs' });
-})();
+}, { once: true });
 
 function analyze() {
   const logs = JSON.parse(`[${document.getElementById('queryLogs').textContent.replace(/,\s*$/, '')}]`);
