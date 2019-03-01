@@ -89,7 +89,7 @@ export function queryAll(query) {
     return tabs;
   }
   else {
-    const matchedTabs = extractMatchedTabs(query.tabs || tabs.values(), query);
+    const matchedTabs = extractMatchedTabs((query.tabs || tabs).values(), query);
     query.elapsed = Date.now() - startAt;
     return matchedTabs;
   }
@@ -212,7 +212,7 @@ export function query(query) {
     }
   }
   else {
-    tabs = extractMatchedTabs(query.tabs ||tabs.values(), query);
+    tabs = extractMatchedTabs((query.tabs ||tabs).values(), query);
   }
   query.elapsed = Date.now() - startAt;
   return tabs.length > 0 ? tabs[0] : null ;
