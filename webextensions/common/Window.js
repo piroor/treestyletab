@@ -135,8 +135,10 @@ export default class Window {
         tab.index = i;
       }
       const parent = tab.$TST.parent;
-      if (parent)
+      if (parent) {
         parent.$TST.sortChildren();
+        parent.$TST.invalidateCachedAncestors();
+      }
       log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
     }
     else { // not tracked yet: add

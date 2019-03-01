@@ -169,12 +169,11 @@ export async function attachTabTo(child, parent, options = {}) {
     }));
 
     log('attachTabTo: setting child information to ', parent.id);
-    parent.$TST.childIds.push(child.id);
-    parent.$TST.sortChildren();
-    parent.$TST.setAttribute(Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
+    // we need to set its children via the "children" setter, to invalidate cached information.
+    parent.$TST.children = parent.$TST.childIds.concat([child.id]);
 
     log('attachTabTo: setting parent information to ', child.id);
-    child.$TST.setAttribute(Constants.kPARENT, parent.id);
+    // we need to set its parent via the "parent" setter, to invalidate cached information.
     child.$TST.parent = parent.id;
 
     const parentLevel = parseInt(parent.$TST.getAttribute(Constants.kLEVEL) || 0);
@@ -301,20 +300,13 @@ export function detachTab(child, options = {}) {
     log(` => parent(${child.$TST.parentId}) is already removed, or orphan tab`);
 
   if (parent) {
-    parent.$TST.childIds = parent.$TST.childIds.filter(id => id != child.id);
-    if (parent.$TST.childIds.length == 0) {
-      parent.$TST.removeAttribute(Constants.kCHILDREN);
-      log(' => no more child');
-    }
-    else {
-      parent.$TST.setAttribute(Constants.kCHILDREN, `|${parent.$TST.childIds.join('|')}|`);
-      log(' => rest children: ', parent.$TST.childIds);
-    }
+    // we need to set its children via the "children" setter, to invalidate cached information.
+    parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
     TabsUpdate.updateParentTab(parent);
   }
   child.$TST.removeAttribute(Constants.kPARENT);
+  // we need to clear its parent via the "parent" setter, to invalidate cached information.
   child.$TST.parent = null;
-  child.$TST.ancestors = [];
   log('detachTab: parent information cleared: ', child.id);
 
   updateTabsIndent(child);

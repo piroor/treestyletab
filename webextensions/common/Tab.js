@@ -105,9 +105,9 @@ export default class Tab {
     this.states.clear();
     this.attributes = {};
 
-    this.parentId    = null;
-    this.ancestorIds = [];
-    this.childIds    = [];
+    this.parentId = null;
+    this.childIds = [];
+    this.invalidateCachedTree();
   }
 
   updateUniqueId(options = {}) {
@@ -285,9 +285,22 @@ export default class Tab {
   // tree relations
   //===================================================================
 
+  invalidateCachedTree() {
+    this.cachedAncestorIds   = null;
+    this.cachedDescendantIds = null;
+  }
+
   set parent(tab) {
     this.parentId = tab && (typeof tab == 'number' ? tab : tab.id);
-    this.updateAncestors();
+    this.invalidateCachedAncestors();
+    const parent = this.parent;
+    if (parent) {
+      this.setAttribute(Constants.kPARENT, parent.id);
+      parent.$TST.invalidateCachedDescendants();
+    }
+    else {
+      this.removeAttribute(Constants.kPARENT);
+    }
     return tab;
   }
   get parent() {
@@ -298,23 +311,31 @@ export default class Tab {
     return !!this.parentId;
   }
 
-  set ancestors(tabs) {
-    this.ancestorIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
-    return tabs;
-  }
   get ancestors() {
-    return this.ancestorIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+    if (!this.cachedAncestorIds)
+      return this.updateAncestors();
+    return this.cachedAncestorIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
   }
 
   updateAncestors() {
-    this.ancestorIds = [];
+    const ancestors = [];
+    this.cachedAncestorIds = [];
     let descendant = this.tab;
     while (true) {
       const parent = Tab.get(descendant.$TST.parentId);
       if (!parent)
         break;
-      this.ancestorIds.push(parent.id);
+      ancestors.push(parent);
+      this.cachedAncestorIds.push(parent.id);
       descendant = parent;
+    }
+    return ancestors;
+  }
+
+  invalidateCachedAncestors() {
+    this.cachedAncestorIds = null;
+    for (const child of this.children) {
+      child.$TST.invalidateCachedAncestors();
     }
   }
 
@@ -345,6 +366,14 @@ export default class Tab {
 
   set children(tabs) {
     this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
+    this.sortChildren();
+    if (this.childIds.length > 0)
+      this.setAttribute(Constants.kCHILDREN, `|${this.childIds.join('|')}|`);
+    else
+      this.removeAttribute(Constants.kCHILDREN);
+    for (const child of this.children) {
+      child.$TST.invalidateCachedAncestors();
+    }
     return tabs;
   }
   get children() {
@@ -363,6 +392,7 @@ export default class Tab {
 
   sortChildren() {
     this.childIds = Tab.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
+    this.invalidateCachedDescendants();
   }
 
   get hasChild() {
@@ -370,13 +400,27 @@ export default class Tab {
   }
 
   get descendants() {
+    if (!this.cachedDescendantIds)
+      return this.updateDescendants();
+    return this.cachedDescendantIds.map(id => Tab.get(id)).filter(TabsStore.ensureLivingTab);
+  }
+
+  updateDescendants() {
     let descendants = [];
-    const children = this.children;
-    for (const child of children) {
+    this.cachedDescendantIds = [];
+    for (const child of this.children) {
       descendants.push(child);
       descendants = descendants.concat(child.$TST.descendants);
+      this.cachedDescendantIds.push(child.id);
+      this.cachedDescendantIds = this.cachedDescendantIds.concat(child.$TST.cachedDescendantIds);
     }
     return descendants;
+  }
+
+  invalidateCachedDescendants() {
+    this.cachedDescendantIds = null;
+    if (this.parentId)
+      this.parent.$TST.invalidateCachedDescendants();
   }
 
   get lastDescendant() {
@@ -515,12 +559,12 @@ export default class Tab {
     if (parent) {
       this.childIds  = parent.$TST.childIds.filter(childId => childId != this.id);
       this.parent    = null;
-      this.ancestors = [];
+      this.invalidateCachedTree();
     }
     for (const child of this.children) {
       if (child.$TST.parentId == this.id) {
         child.$TST.parentId = null;
-        child.$TST.ancestors = child.$TST.ancestors.filter(ancestor => ancestor.id != this.id);
+        child.$TST.invalidateCachedTree();
       }
     }
     this.children = [];
