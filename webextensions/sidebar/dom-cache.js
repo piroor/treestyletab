@@ -154,9 +154,10 @@ function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   // step 1: build a map from old id to new id
   tabs = tabElements.map((tabElement, index) => {
     const oldId = parseInt(tabElement.getAttribute(Constants.kAPI_TAB_ID));
+    tabElement.setAttribute('id', `tab-${tabs[index].id}`); // set tab element's id before initialization, to associate the tab element correctly
     const tab = Tab.init(tabs[index], { existing: true });
     tabElement.apiTab = tab;
-    tab.$TST.setAttribute('id', `tab-${tab.id}`);
+    tab.$TST.setAttribute('id', tabElement.id);
     tab.$TST.element = tabElement;
     tabElement.$TST = tab.$TST;
     log(`fixupTabsRestoredFromCache: remap ${oldId} => ${tab.id}`);
