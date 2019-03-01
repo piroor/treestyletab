@@ -93,7 +93,7 @@ export default class Window {
   }
 
   getOrderedTabs(startId, endId, tabs) {
-    const orderedIds = this.sliceOrder(startId, endId, this.orderedIds);
+    const orderedIds = this.sliceOrder(startId, endId);
     tabs = tabs || this.tabs;
     return (function*() {
       for (const id of orderedIds) {
@@ -125,7 +125,7 @@ export default class Window {
       orderedIds = orderedIds.slice(orderedIds.indexOf(startId));
     }
     if (endId) {
-      if (!this.tabs.has(startId))
+      if (!this.tabs.has(endId))
         return [];
       orderedIds = orderedIds.slice(0, orderedIds.indexOf(endId) + 1);
     }
