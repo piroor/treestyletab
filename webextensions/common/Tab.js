@@ -99,9 +99,8 @@ export default class Tab {
     if (this.uniqueId)
       TabsStore.tabsByUniqueId.delete(this.uniqueId.id)
 
-    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(this.tab.windowId);
-    if (highlightedTabs)
-      highlightedTabs.delete(this.tab);
+    TabsStore.removeHighlightedTab(this.tab);
+    TabsStore.removeGroupTab(this.tab);
 
     if (this.element) {
       if (this.element.parentNode) {
@@ -218,7 +217,11 @@ export default class Tab {
 
   get isGroupTab() {
     return this.states.has(Constants.kTAB_STATE_GROUP_TAB) ||
-           this.tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
+           this.hasGroupTabURL;
+  }
+
+  get hasGroupTabURL() {
+    return this.tab.url.indexOf(Constants.kGROUP_TAB_URI) == 0;
   }
 
   get isTemporaryGroupTab() {
@@ -969,8 +972,8 @@ Tab.getGroupTabForOpener = opener => {
     return null;
   TabsStore.assertValidTab(opener);
   return TabsStore.query({
-    windowId:   opener.windowId,
-    living:     true,
+    tabs:   TabsStore.groupTabsForWindow.get(opener.windowId),
+    living: true,
     attributes: [
       Constants.kCURRENT_URI,
       new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)

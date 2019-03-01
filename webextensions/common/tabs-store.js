@@ -40,6 +40,8 @@ export const tabsByUniqueId = new Map();
 export const activeTabForWindow       = new Map();
 export const activeTabsForWindow      = new Map();
 export const highlightedTabsForWindow = new Map();
+export const groupTabsForWindow       = new Map();
+export const tabsForQuery             = new Map();
 
 export const queryLogs = [];
 const MAX_LOGS = 100000;
@@ -225,18 +227,31 @@ function fixupQuery(conditions) {
 }
 
 
-browser.runtime.onMessage.addListener((message, _sender) => {
-  if (!message ||
-      typeof message != 'object' ||
-      message.type != Constants.kCOMMAND_REQUEST_QUERY_LOGS)
-    return;
+//===================================================================
+// Cache for optimization
+//===================================================================
 
-  browser.runtime.sendMessage({
-    type: Constants.kCOMMAND_RESPONSE_QUERY_LOGS,
-    logs: JSON.parse(JSON.stringify(queryLogs)),
-    windowId: mTargetWindow || 'background'
-  });
-});
+export function addHighlightedTab(tab) {
+  const tabs = highlightedTabsForWindow.get(tab.windowId);
+  tabs.add(tab);
+}
+
+export function removeHighlightedTab(tab) {
+  const tabs = highlightedTabsForWindow.get(tab.windowId);
+  if (tabs)
+    tabs.remove(tab);
+}
+
+export function addGroupTab(tab) {
+  const tabs = groupTabsForWindow.get(tab.windowId);
+  tabs.add(tab);
+}
+
+export function removeGroupTab(tab) {
+  const tabs = groupTabsForWindow.get(tab.windowId);
+  if (tabs)
+    tabs.remove(tab);
+}
 
 
 //===================================================================
@@ -262,3 +277,21 @@ export function ensureLivingTab(tab) {
     return null;
   return tab;
 }
+
+
+//===================================================================
+// Logging
+//===================================================================
+
+browser.runtime.onMessage.addListener((message, _sender) => {
+  if (!message ||
+      typeof message != 'object' ||
+      message.type != Constants.kCOMMAND_REQUEST_QUERY_LOGS)
+    return;
+
+  browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_RESPONSE_QUERY_LOGS,
+    logs: JSON.parse(JSON.stringify(queryLogs)),
+    windowId: mTargetWindow || 'background'
+  });
+});

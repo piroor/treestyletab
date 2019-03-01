@@ -61,6 +61,7 @@ export default class Window {
     TabsStore.windows.set(windowId, this);
     TabsStore.activeTabsForWindow.set(windowId, new Set());
     TabsStore.highlightedTabsForWindow.set(windowId, new Set());
+    TabsStore.groupTabsForWindow.set(windowId, new Set());
   }
 
   destroy() {
@@ -73,6 +74,7 @@ export default class Window {
     TabsStore.activeTabForWindow.delete(this.id);
     TabsStore.activeTabsForWindow.delete(this.id);
     TabsStore.highlightedTabsForWindow.delete(this.id);
+    TabsStore.groupTabsForWindow.delete(this.id);
 
     if (this.element) {
       const element = this.element;
@@ -141,6 +143,10 @@ export default class Window {
         parent.$TST.sortChildren();
         parent.$TST.invalidateCachedAncestors();
       }
+      if (tab.highlighted)
+        TabsStore.addHighlightedTab(tab);
+      if (tab.$TST.isGroupTab)
+        TabsStore.addGroupTab(tab);
       log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
     }
     else { // not tracked yet: add
@@ -161,6 +167,9 @@ export default class Window {
     const tab = TabsStore.tabs.get(tabId);
     if (!tab)
       return;
+
+    TabsStore.removeHighlightedTab(tab);
+    TabsStore.removeGroupTab(tab);
 
     tab.$TST.detach();
     this.tabs.delete(tabId);

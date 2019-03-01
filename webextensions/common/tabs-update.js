@@ -65,7 +65,12 @@ export function updateTab(tab, newState = {}, options = {}) {
   if ('url' in newState &&
       newState.url.indexOf(Constants.kGROUP_TAB_URI) == 0) {
     tab.$TST.addState(Constants.kTAB_STATE_GROUP_TAB, { permanently: true });
+    TabsStore.addGroupTab(tab);
     Tab.onGroupTabDetected.dispatch(tab);
+  }
+  else if (tab.$TST.hasState(Constants.kTAB_STATE_GROUP_TAB) &&
+           !tab.$TST.hasGroupTabURL) {
+    TabsStore.removeGroupTab(tab);
   }
 
   if (options.forceApply ||
@@ -213,13 +218,12 @@ export function updateTab(tab, newState = {}, options = {}) {
 
   if (options.forceApply ||
       'highlighted' in newState) {
-    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(tab.windowId);
     if (newState.highlighted) {
-      highlightedTabs.add(tab);
+      TabsStore.addHighlightedTab(tab);
       tab.$TST.addState(Constants.kTAB_STATE_HIGHLIGHTED);
     }
     else {
-      highlightedTabs.delete(tab);
+      TabsStore.removeHighlightedTab(tab);
       tab.$TST.removeState(Constants.kTAB_STATE_HIGHLIGHTED);
     }
     if (mDelayedDispatchOnHighlightedTabsChanged)
