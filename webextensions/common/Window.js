@@ -159,16 +159,7 @@ export default class Window {
         parent.$TST.sortChildren();
         parent.$TST.invalidateCachedAncestors();
       }
-      if (!tab.hidden && !tab.$TST.collapsed)
-        TabsStore.addVisibleTab(tab);
-      if (tab.highlighted)
-        TabsStore.addHighlightedTab(tab);
-      if (tab.pinned)
-        TabsStore.addPinnedTab(tab);
-      else
-        TabsStore.addUnpinnedTab(tab);
-      if (tab.$TST.isGroupTab)
-        TabsStore.addGroupTab(tab);
+      tab.$TST.updateCachesForQuery();
       log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
     }
     else { // not tracked yet: add

@@ -121,6 +121,32 @@ export default class Tab {
     delete this.uniqueId;
   }
 
+  updateCachesForQuery() {
+    if (this.tab.hidden || this.collapsed)
+      TabsStore.removeVisibleTab(this.tab);
+    else
+      TabsStore.addVisibleTab(this.tab);
+
+    if (this.tab.highlighted)
+      TabsStore.addHighlightedTab(this.tab);
+    else
+      TabsStore.removeHighlightedTab(this.tab);
+
+    if (this.tab.pinned) {
+      TabsStore.removeUnpinnedTab(this.tab);
+      TabsStore.addPinnedTab(this.tab);
+    }
+    else {
+      TabsStore.removePinnedTab(this.tab);
+      TabsStore.addUnpinnedTab(this.tab);
+    }
+
+    if (this.isGroupTab)
+      TabsStore.addGroupTab(this.tab);
+    else
+      TabsStore.removeGroupTab(this.tab);
+  }
+
   clear() {
     this.states.clear();
     this.attributes = {};
