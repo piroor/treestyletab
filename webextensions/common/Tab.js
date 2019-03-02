@@ -969,7 +969,7 @@ Tab.getLastTab = windowId => {
 
 Tab.getLastVisibleTab = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.query({
-    windowId,
+    tabs:    TabsStore.visibleTabsForWindow.get(windowId),
     visible: true,
     last:    true,
   });
@@ -984,17 +984,17 @@ Tab.getLastOpenedTab = windowId => {
 
 Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
   return TabsStore.query({
-    windowId,
-    normal:   true,
-    ordered:  true
+    tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
+    normal:  true,
+    ordered: true
   });
 };
 
 Tab.getFirstVisibleTab = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.query({
-    windowId,
-    visible:  true,
-    ordered:  true
+    tabs:    TabsStore.visibleTabsForWindow.get(windowId),
+    visible: true,
+    ordered: true
   });
 };
 
