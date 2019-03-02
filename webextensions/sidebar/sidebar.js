@@ -181,24 +181,28 @@ export async function init() {
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
       await TSTAPI.initAsFrontend();
+    })
+  ]));
+
+  await MetricsData.addAsync('parallel initialization post process', Promise.all([
+    MetricsData.addAsync('main', async () => {
+      SidebarCache.startTracking();
+      Indent.updateRestoredTree(cachedContents && cachedContents.indent);
+      if (!restoredFromCache) {
+        SidebarTabs.updateAll();
+        SidebarCache.reserveToUpdateCachedTabbar();
+      }
+      updateTabbarLayout({ justNow: true });
+
+      SidebarTabs.init();
+
+      onConfigChange('animation');
+      onReady.dispatch();
     }),
     MetricsData.addAsync('Scroll.init', async () => {
       Scroll.init();
     })
   ]));
-
-  SidebarCache.startTracking();
-  Indent.updateRestoredTree(cachedContents && cachedContents.indent);
-  if (!restoredFromCache) {
-    SidebarTabs.updateAll();
-    SidebarCache.reserveToUpdateCachedTabbar();
-  }
-  updateTabbarLayout({ justNow: true });
-
-  SidebarTabs.init();
-
-  onConfigChange('animation');
-  onReady.dispatch();
 
   UserOperationBlocker.unblock({ throbber: true });
 
