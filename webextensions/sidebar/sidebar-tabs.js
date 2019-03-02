@@ -594,7 +594,8 @@ Tab.onMoving.addListener((tab, _info) => {
 Tab.onMoved.addListener(async (tab, info) => {
   if (!tab.$TST.element)
     await Tab.waitUntilTracked(tab.id, { element: true });
-  if (mInitialized)
+  if (mInitialized &&
+      tab.$TST.parent)
     reserveToUpdateTooltip(tab.$TST.parent);
 
   const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
