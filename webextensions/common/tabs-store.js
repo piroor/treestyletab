@@ -237,6 +237,7 @@ export const collapsingTabsForWindow  = new Map();
 export const expandingTabsForWindow   = new Map();
 export const draggingTabsForWindow    = new Map();
 export const duplicatingTabsForWindow = new Map();
+export const unsynchronizedTabsForWindow = new Map();
 
 export function prepareIndexesForWindow(windowId) {
   activeTabsForWindow.set(windowId, new Set());
@@ -249,6 +250,7 @@ export function prepareIndexesForWindow(windowId) {
   expandingTabsForWindow.set(windowId, new Map());
   draggingTabsForWindow.set(windowId, new Map());
   duplicatingTabsForWindow.set(windowId, new Map());
+  unsynchronizedTabsForWindow.set(windowId, new Map());
 }
 
 export function unprepareIndexesForWindow(windowId) {
@@ -261,6 +263,7 @@ export function unprepareIndexesForWindow(windowId) {
   groupTabsForWindow.delete(windowId);
   collapsingTabsForWindow.delete(windowId);
   expandingTabsForWindow.delete(windowId);
+  unsynchronizedTabsForWindow.delete(windowId);
 }
 
 export function updateIndexesForTab(tab) {
@@ -304,6 +307,7 @@ export function removeTabFromIndexes(tab) {
   removeExpandingTab(tab);
   removeDuplicatingTab(tab);
   removeDraggingTab(tab);
+  removeUnsynchronizedTab(tab);
 }
 
 function addTabToIndex(tab, indexes) {
@@ -378,6 +382,13 @@ export function addDraggingTab(tab) {
 }
 export function removeDraggingTab(tab) {
   removeTabFromIndex(tab, draggingTabsForWindow);
+}
+
+export function addUnsynchronizedTab(tab) {
+  addTabToIndex(tab, unsynchronizedTabsForWindow);
+}
+export function removeUnsynchronizedTab(tab) {
+  removeTabFromIndex(tab, unsynchronizedTabsForWindow);
 }
 
 

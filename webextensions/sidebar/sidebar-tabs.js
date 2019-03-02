@@ -270,15 +270,15 @@ function updateLoadingState() {
 
 async function synchronizeThrobberAnimation() {
   const toBeSynchronizedTabs = TabsStore.queryAll({
-    windowId: TabsStore.getWindow(),
-    visible:  true,
-    states:   [Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED, true]
+    tabs:    TabsStore.unsynchronizedTabsForWindow.get(TabsStore.getWindow()),
+    visible: true
   });
   if (toBeSynchronizedTabs.length == 0)
     return;
 
   for (const tab of toBeSynchronizedTabs) {
     tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    TabsStore.removeUnsynchronizedTab(tab);
   }
 
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
@@ -616,10 +616,14 @@ Tab.onMoved.addListener(async (tab, info) => {
 });
 
 Tab.onStateChanged.addListener(tab => {
-  if (tab.status == 'loading')
+  if (tab.status == 'loading') {
     tab.$TST.addState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
-  else
+    TabsStore.addUnsynchronizedTab(tab);
+  }
+  else {
     tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
+    TabsStore.removeUnsynchronizedTab(tab);
+  }
 
   reserveToUpdateLoadingState();
 });
