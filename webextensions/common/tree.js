@@ -1324,6 +1324,7 @@ export async function moveTabs(tabs, options = {}) {
         if (options.duplicate) {
           for (const tab of newTabs) {
             tab.$TST.removeState(Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
+            TabsStore.removeDuplicatingTab(tab);
           }
         }
         break;

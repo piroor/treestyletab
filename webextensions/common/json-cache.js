@@ -105,7 +105,7 @@ function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
   for (const tab of tabs) {
     if (!tab.$TST.parent) // process only root tabs
       fixupTreeCollapsedStateRestoredFromCache(tab);
-    tab.$TST.updateCachesForQuery();
+    TabsStore.updateIndexesForTab(tab);
   }
   // step 3: update tabs based on restored information.
   // this step must be done after the step 2 is finished for all tabs

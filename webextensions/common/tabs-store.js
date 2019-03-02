@@ -36,17 +36,6 @@ export const windows        = new Map();
 export const tabs           = new Map();
 export const tabsByUniqueId = new Map();
 
-// indexes for better performance
-export const activeTabForWindow       = new Map();
-export const activeTabsForWindow      = new Map();
-export const visibleTabsForWindow     = new Map();
-export const highlightedTabsForWindow = new Map();
-export const pinnedTabsForWindow      = new Map();
-export const unpinnedTabsForWindow    = new Map();
-export const groupTabsForWindow       = new Map();
-export const collapsingTabsForWindow  = new Map();
-export const expandingTabsForWindow   = new Map();
-
 export const queryLogs = [];
 const MAX_LOGS = 100000;
 
@@ -234,67 +223,161 @@ function fixupQuery(query) {
 
 
 //===================================================================
-// Cache for optimization
+// Indexes for optimization
 //===================================================================
 
-function addCachedTab(tab, store) {
-  const tabs = store.get(tab.windowId);
+export const activeTabForWindow       = new Map();
+export const activeTabsForWindow      = new Map();
+export const visibleTabsForWindow     = new Map();
+export const highlightedTabsForWindow = new Map();
+export const pinnedTabsForWindow      = new Map();
+export const unpinnedTabsForWindow    = new Map();
+export const groupTabsForWindow       = new Map();
+export const collapsingTabsForWindow  = new Map();
+export const expandingTabsForWindow   = new Map();
+export const draggingTabsForWindow    = new Map();
+export const duplicatingTabsForWindow = new Map();
+
+export function prepareIndexesForWindow(windowId) {
+  activeTabsForWindow.set(windowId, new Set());
+  visibleTabsForWindow.set(windowId, new Map());
+  highlightedTabsForWindow.set(windowId, new Map());
+  pinnedTabsForWindow.set(windowId, new Map());
+  unpinnedTabsForWindow.set(windowId, new Map());
+  groupTabsForWindow.set(windowId, new Map());
+  collapsingTabsForWindow.set(windowId, new Map());
+  expandingTabsForWindow.set(windowId, new Map());
+  draggingTabsForWindow.set(windowId, new Map());
+  duplicatingTabsForWindow.set(windowId, new Map());
+}
+
+export function unprepareIndexesForWindow(windowId) {
+  activeTabForWindow.delete(windowId);
+  activeTabsForWindow.delete(windowId);
+  visibleTabsForWindow.delete(windowId);
+  highlightedTabsForWindow.delete(windowId);
+  pinnedTabsForWindow.delete(windowId);
+  unpinnedTabsForWindow.delete(windowId);
+  groupTabsForWindow.delete(windowId);
+  collapsingTabsForWindow.delete(windowId);
+  expandingTabsForWindow.delete(windowId);
+}
+
+export function updateIndexesForTab(tab) {
+  if (tab.hidden || tab.$TST.collapsed)
+    removeVisibleTab(tab);
+  else
+    addVisibleTab(tab);
+
+  if (tab.highlighted)
+    addHighlightedTab(tab);
+  else
+    removeHighlightedTab(tab);
+
+  if (tab.pinned) {
+    removeUnpinnedTab(tab);
+    addPinnedTab(tab);
+  }
+  else {
+    removePinnedTab(tab);
+    addUnpinnedTab(tab);
+  }
+
+  if (tab.$TST.isGroupTab)
+    addGroupTab(tab);
+  else
+    removeGroupTab(tab);
+
+  if (tab.$TST.duplicating)
+    addDuplicatingTab(tab);
+  else
+    removeDuplicatingTab(tab);
+}
+
+export function removeTabFromIndexes(tab) {
+  removeVisibleTab(tab);
+  removeHighlightedTab(tab);
+  removePinnedTab(tab);
+  removeUnpinnedTab(tab);
+  removeGroupTab(tab);
+  removeCollapsingTab(tab);
+  removeExpandingTab(tab);
+  removeDuplicatingTab(tab);
+  removeDraggingTab(tab);
+}
+
+function addTabToIndex(tab, indexes) {
+  const tabs = indexes.get(tab.windowId);
   tabs.set(tab.id, tab);
 }
 
-function removeCachedTab(tab, store) {
-  const tabs = store.get(tab.windowId);
+function removeTabFromIndex(tab, indexes) {
+  const tabs = indexes.get(tab.windowId);
   if (tabs)
     tabs.delete(tab.id);
 }
 
 export function addVisibleTab(tab) {
-  addCachedTab(tab, visibleTabsForWindow);
+  addTabToIndex(tab, visibleTabsForWindow);
 }
 export function removeVisibleTab(tab) {
-  removeCachedTab(tab, visibleTabsForWindow);
+  removeTabFromIndex(tab, visibleTabsForWindow);
 }
 
 export function addHighlightedTab(tab) {
-  addCachedTab(tab, highlightedTabsForWindow);
+  addTabToIndex(tab, highlightedTabsForWindow);
 }
 export function removeHighlightedTab(tab) {
-  removeCachedTab(tab, highlightedTabsForWindow);
+  removeTabFromIndex(tab, highlightedTabsForWindow);
 }
 
 export function addPinnedTab(tab) {
-  addCachedTab(tab, pinnedTabsForWindow);
+  addTabToIndex(tab, pinnedTabsForWindow);
 }
 export function removePinnedTab(tab) {
-  removeCachedTab(tab, pinnedTabsForWindow);
+  removeTabFromIndex(tab, pinnedTabsForWindow);
 }
 
 export function addUnpinnedTab(tab) {
-  addCachedTab(tab, unpinnedTabsForWindow);
+  addTabToIndex(tab, unpinnedTabsForWindow);
 }
 export function removeUnpinnedTab(tab) {
-  removeCachedTab(tab, unpinnedTabsForWindow);
+  removeTabFromIndex(tab, unpinnedTabsForWindow);
 }
 
 export function addGroupTab(tab) {
-  addCachedTab(tab, groupTabsForWindow);
+  addTabToIndex(tab, groupTabsForWindow);
 }
 export function removeGroupTab(tab) {
-  removeCachedTab(tab, groupTabsForWindow);
+  removeTabFromIndex(tab, groupTabsForWindow);
 }
 
 export function addCollapsingTab(tab) {
-  addCachedTab(tab, collapsingTabsForWindow);
+  addTabToIndex(tab, collapsingTabsForWindow);
 }
 export function removeCollapsingTab(tab) {
-  removeCachedTab(tab, collapsingTabsForWindow);
+  removeTabFromIndex(tab, collapsingTabsForWindow);
 }
 
 export function addExpandingTab(tab) {
-  addCachedTab(tab, expandingTabsForWindow);
+  addTabToIndex(tab, expandingTabsForWindow);
 }
 export function removeExpandingTab(tab) {
-  removeCachedTab(tab, expandingTabsForWindow);
+  removeTabFromIndex(tab, expandingTabsForWindow);
+}
+
+export function addDuplicatingTab(tab) {
+  addTabToIndex(tab, duplicatingTabsForWindow);
+}
+export function removeDuplicatingTab(tab) {
+  removeTabFromIndex(tab, duplicatingTabsForWindow);
+}
+
+export function addDraggingTab(tab) {
+  addTabToIndex(tab, draggingTabsForWindow);
+}
+export function removeDraggingTab(tab) {
+  removeTabFromIndex(tab, draggingTabsForWindow);
 }
 
 

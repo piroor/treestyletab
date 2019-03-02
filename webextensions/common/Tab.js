@@ -97,15 +97,9 @@ export default class Tab {
 
     TabsStore.tabs.delete(this.id);
     if (this.uniqueId)
-      TabsStore.tabsByUniqueId.delete(this.uniqueId.id)
+      TabsStore.tabsByUniqueId.delete(this.uniqueId.id);
 
-    TabsStore.removeVisibleTab(this.tab);
-    TabsStore.removeHighlightedTab(this.tab);
-    TabsStore.removePinnedTab(this.tab);
-    TabsStore.removeUnpinnedTab(this.tab);
-    TabsStore.removeGroupTab(this.tab);
-    TabsStore.removeCollapsingTab(this.tab);
-    TabsStore.removeExpandingTab(this.tab);
+    TabsStore.removeTabFromIndexes(this.tab);
 
     if (this.element) {
       if (this.element.parentNode) {
@@ -119,32 +113,6 @@ export default class Tab {
     delete this.tab;
     delete this.promisedUniqueId;
     delete this.uniqueId;
-  }
-
-  updateCachesForQuery() {
-    if (this.tab.hidden || this.collapsed)
-      TabsStore.removeVisibleTab(this.tab);
-    else
-      TabsStore.addVisibleTab(this.tab);
-
-    if (this.tab.highlighted)
-      TabsStore.addHighlightedTab(this.tab);
-    else
-      TabsStore.removeHighlightedTab(this.tab);
-
-    if (this.tab.pinned) {
-      TabsStore.removeUnpinnedTab(this.tab);
-      TabsStore.addPinnedTab(this.tab);
-    }
-    else {
-      TabsStore.removePinnedTab(this.tab);
-      TabsStore.addUnpinnedTab(this.tab);
-    }
-
-    if (this.isGroupTab)
-      TabsStore.addGroupTab(this.tab);
-    else
-      TabsStore.removeGroupTab(this.tab);
   }
 
   clear() {
@@ -1098,9 +1066,8 @@ Tab.collectRootTabs = tabs => {
 
 Tab.getDraggingTabs = windowId => {
   return TabsStore.queryAll({
-    windowId,
+    tabs:    TabsStore.draggingTabsForWindow.get(windowId),
     living:  true,
-    states:  [Constants.kTAB_STATE_DRAGGING, true],
     ordered: true
   });
 };
@@ -1115,10 +1082,9 @@ Tab.getRemovingTabs = windowId => {
 
 Tab.getDuplicatingTabs = windowId => {
   return TabsStore.queryAll({
-    windowId,
-    living:   true,
-    states:   [Constants.kTAB_STATE_DUPLICATING, true],
-    ordered:  true
+    tabs:    TabsStore.duplicatingTabsForWindow.get(windowId),
+    living:  true,
+    ordered: true
   });
 };
 

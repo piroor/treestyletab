@@ -122,6 +122,7 @@ Tab.onCreated.addListener((tab, info = {}) => {
   if (info.duplicatedInternally) {
     log('duplicated by internal operation');
     tab.$TST.addState(Constants.kTAB_STATE_DUPLICATING, { broadcast: true });
+    TabsStore.addDuplicatingTab(tab);
   }
   else {
     Tree.behaveAutoAttachedTab(tab, {
