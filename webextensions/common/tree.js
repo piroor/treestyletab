@@ -722,9 +722,11 @@ export async function collapseExpandTab(tab, params = {}) {
 
   if (params.collapsed) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
+    TabsStore.removeVisibleTab(tab);
   }
   else {
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
+    TabsStore.addVisibleTab(tab);
   }
 
   Tab.onCollapsedStateChanged.dispatch(tab, collapseExpandInfo);

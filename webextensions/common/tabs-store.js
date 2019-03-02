@@ -39,7 +39,10 @@ export const tabsByUniqueId = new Map();
 // indexes for better performance
 export const activeTabForWindow       = new Map();
 export const activeTabsForWindow      = new Map();
+export const visibleTabsForWindow     = new Map();
 export const highlightedTabsForWindow = new Map();
+export const pinnedTabsForWindow      = new Map();
+export const unpinnedTabsForWindow    = new Map();
 export const groupTabsForWindow       = new Map();
 export const collapsingTabsForWindow  = new Map();
 export const expandingTabsForWindow   = new Map();
@@ -245,18 +248,37 @@ function removeCachedTab(tab, store) {
     tabs.delete(tab.id);
 }
 
+export function addVisibleTab(tab) {
+  addCachedTab(tab, visibleTabsForWindow);
+}
+export function removeVisibleTab(tab) {
+  removeCachedTab(tab, visibleTabsForWindow);
+}
+
 export function addHighlightedTab(tab) {
   addCachedTab(tab, highlightedTabsForWindow);
 }
-
 export function removeHighlightedTab(tab) {
   removeCachedTab(tab, highlightedTabsForWindow);
+}
+
+export function addPinnedTab(tab) {
+  addCachedTab(tab, pinnedTabsForWindow);
+}
+export function removePinnedTab(tab) {
+  removeCachedTab(tab, pinnedTabsForWindow);
+}
+
+export function addUnpinnedTab(tab) {
+  addCachedTab(tab, unpinnedTabsForWindow);
+}
+export function removeUnpinnedTab(tab) {
+  removeCachedTab(tab, unpinnedTabsForWindow);
 }
 
 export function addGroupTab(tab) {
   addCachedTab(tab, groupTabsForWindow);
 }
-
 export function removeGroupTab(tab) {
   removeCachedTab(tab, groupTabsForWindow);
 }
@@ -264,7 +286,6 @@ export function removeGroupTab(tab) {
 export function addCollapsingTab(tab) {
   addCachedTab(tab, collapsingTabsForWindow);
 }
-
 export function removeCollapsingTab(tab) {
   removeCachedTab(tab, collapsingTabsForWindow);
 }
@@ -272,7 +293,6 @@ export function removeCollapsingTab(tab) {
 export function addExpandingTab(tab) {
   addCachedTab(tab, expandingTabsForWindow);
 }
-
 export function removeExpandingTab(tab) {
   removeCachedTab(tab, expandingTabsForWindow);
 }

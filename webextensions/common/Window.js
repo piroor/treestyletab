@@ -60,7 +60,10 @@ export default class Window {
 
     TabsStore.windows.set(windowId, this);
     TabsStore.activeTabsForWindow.set(windowId, new Set());
+    TabsStore.visibleTabsForWindow.set(windowId, new Map());
     TabsStore.highlightedTabsForWindow.set(windowId, new Map());
+    TabsStore.pinnedTabsForWindow.set(windowId, new Map());
+    TabsStore.unpinnedTabsForWindow.set(windowId, new Map());
     TabsStore.groupTabsForWindow.set(windowId, new Map());
     TabsStore.collapsingTabsForWindow.set(windowId, new Map());
     TabsStore.expandingTabsForWindow.set(windowId, new Map());
@@ -75,7 +78,10 @@ export default class Window {
     TabsStore.windows.delete(this.id, this);
     TabsStore.activeTabForWindow.delete(this.id);
     TabsStore.activeTabsForWindow.delete(this.id);
+    TabsStore.visibleTabsForWindow.delete(this.id);
     TabsStore.highlightedTabsForWindow.delete(this.id);
+    TabsStore.pinnedTabsForWindow.delete(this.id);
+    TabsStore.unpinnedTabsForWindow.delete(this.id);
     TabsStore.groupTabsForWindow.delete(this.id);
     TabsStore.collapsingTabsForWindow.delete(this.id);
     TabsStore.expandingTabsForWindow.delete(this.id);
@@ -153,8 +159,14 @@ export default class Window {
         parent.$TST.sortChildren();
         parent.$TST.invalidateCachedAncestors();
       }
+      if (!tab.hidden && !tab.$TST.collapsed)
+        TabsStore.addVisibleTab(tab);
       if (tab.highlighted)
         TabsStore.addHighlightedTab(tab);
+      if (tab.pinned)
+        TabsStore.addPinnedTab(tab);
+      else
+        TabsStore.addUnpinnedTab(tab);
       if (tab.$TST.isGroupTab)
         TabsStore.addGroupTab(tab);
       log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
@@ -178,7 +190,10 @@ export default class Window {
     if (!tab)
       return;
 
+    TabsStore.removeVisibleTab(tab);
     TabsStore.removeHighlightedTab(tab);
+    TabsStore.removePinnedTab(tab);
+    TabsStore.removeUnpinnedTab(tab);
     TabsStore.removeGroupTab(tab);
     TabsStore.removeCollapsingTab(tab);
     TabsStore.removeExpandingTab(tab);

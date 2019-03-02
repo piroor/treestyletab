@@ -99,7 +99,10 @@ export default class Tab {
     if (this.uniqueId)
       TabsStore.tabsByUniqueId.delete(this.uniqueId.id)
 
+    TabsStore.removeVisibleTab(this.tab);
     TabsStore.removeHighlightedTab(this.tab);
+    TabsStore.removePinnedTab(this.tab);
+    TabsStore.removeUnpinnedTab(this.tab);
     TabsStore.removeGroupTab(this.tab);
     TabsStore.removeCollapsingTab(this.tab);
     TabsStore.removeExpandingTab(this.tab);
@@ -1018,35 +1021,34 @@ Tab.getTabs = windowId => { // only visible, including collapsed and pinned
 
 Tab.getNormalTabs = windowId => { // only visible, including collapsed, not pinned
   return TabsStore.queryAll({
-    windowId,
-    normal:   true,
-    ordered:  true
+    tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
+    normal:  true,
+    ordered: true
   });
 };
 
 Tab.getVisibleTabs = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.queryAll({
-    windowId,
-    visible:  true,
-    ordered:  true
+    tabs:    TabsStore.visibleTabsForWindow.get(windowId),
+    living:  true,
+    ordered: true
   });
 };
 
 Tab.getPinnedTabs = windowId => { // visible, pinned
   return TabsStore.queryAll({
-    windowId,
-    pinned:   true,
-    ordered:  true
+    tabs:    TabsStore.pinnedTabsForWindow.get(windowId),
+    living:  true,
+    ordered: true
   });
 };
 
 
 Tab.getUnpinnedTabs = windowId => { // visible, not pinned
   return TabsStore.queryAll({
-    windowId,
-    living:   true,
-    pinned:   false,
-    ordered:  true
+    tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
+    living:  true,
+    ordered: true
   });
 };
 
@@ -1095,16 +1097,10 @@ Tab.getDuplicatingTabs = windowId => {
 };
 
 Tab.getHighlightedTabs = windowId => {
-  if (windowId) {
-    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(windowId);
-    if (highlightedTabs)
-      return Array.from(highlightedTabs);
-  }
   return TabsStore.queryAll({
-    windowId,
-    living:      true,
-    highlighted: true,
-    ordered:     true
+    tabs:    TabsStore.highlightedTabsForWindow.get(windowId),
+    living:  true,
+    ordered: true
   });
 };
 

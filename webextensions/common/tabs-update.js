@@ -140,10 +140,14 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.pinned) {
       tab.$TST.addState(Constants.kTAB_STATE_PINNED);
       tab.$TST.removeAttribute(Constants.kLEVEL); // don't indent pinned tabs!
+      TabsStore.removeUnpinnedTab(tab);
+      TabsStore.addPinnedTab(tab);
       Tab.onPinned.dispatch(tab);
     }
     else {
       tab.$TST.removeState(Constants.kTAB_STATE_PINNED);
+      TabsStore.removePinnedTab(tab);
+      TabsStore.addUnpinnedTab(tab);
       Tab.onUnpinned.dispatch(tab);
     }
   }
@@ -207,11 +211,14 @@ export function updateTab(tab, newState = {}, options = {}) {
     if (newState.hidden) {
       if (!tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
         tab.$TST.addState(Constants.kTAB_STATE_HIDDEN);
+        TabsStore.removeVisibleTab(tab);
         Tab.onHidden.dispatch(tab);
       }
     }
     else if (tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
       tab.$TST.removeState(Constants.kTAB_STATE_HIDDEN);
+      if (!tab.$TST.collapsed)
+        TabsStore.addVisibleTab(tab);
       Tab.onShown.dispatch(tab);
     }
   }

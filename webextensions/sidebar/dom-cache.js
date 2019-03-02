@@ -208,12 +208,6 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
       continue;
     tab.$TST.addState(state);
   }
-  for (const state of NATIVE_STATES) {
-    if (tab[state])
-      tab.$TST.addState(state);
-    else
-      tab.$TST.removeState(state);
-  }
   if (tab.status == 'loading') {
     tab.$TST.addState('loading');
     tab.$TST.removeState('complete');
@@ -222,6 +216,23 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
     tab.$TST.addState('complete');
     tab.$TST.removeState('loading');
   }
+  if (!tab.hidden)
+    TabsStore.addVisibleTab(tab);
+  if (tab.highlighted)
+    TabsStore.addHighlightedTab(tab);
+  if (tab.pinned)
+    TabsStore.addPinnedTab(tab);
+  else
+    TabsStore.addUnpinnedTab(tab);
+
+  for (const state of NATIVE_STATES) {
+    if (tab[state])
+      tab.$TST.addState(state);
+    else
+      tab.$TST.removeState(state);
+  }
+  if (tab.$TST.isGroupTab)
+    TabsStore.addGroupTab(tab);
 
   const idMap = options.idMap;
 
@@ -256,10 +267,13 @@ function fixupTabRestoredFromCache(tabElement, tab, options = {}) {
 
 async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
   if (shouldCollapse) {
+    if (!tab.hidden)
+      TabsStore.removeVisibleTab(tab);
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
   else {
+    TabsStore.addVisibleTab(tab);
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
