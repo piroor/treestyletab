@@ -228,7 +228,9 @@ function fixupQuery(query) {
 
 export const activeTabForWindow       = new Map();
 export const activeTabsForWindow      = new Map();
+export const removingTabsForWindow    = new Map();
 export const visibleTabsForWindow     = new Map();
+export const selectedTabsForWindow    = new Map();
 export const highlightedTabsForWindow = new Map();
 export const pinnedTabsForWindow      = new Map();
 export const unpinnedTabsForWindow    = new Map();
@@ -237,11 +239,14 @@ export const collapsingTabsForWindow  = new Map();
 export const expandingTabsForWindow   = new Map();
 export const draggingTabsForWindow    = new Map();
 export const duplicatingTabsForWindow = new Map();
+export const toBeGroupedTabsForWindow = new Map();
 export const unsynchronizedTabsForWindow = new Map();
 
 export function prepareIndexesForWindow(windowId) {
   activeTabsForWindow.set(windowId, new Set());
+  removingTabsForWindow.set(windowId, new Map());
   visibleTabsForWindow.set(windowId, new Map());
+  selectedTabsForWindow.set(windowId, new Map());
   highlightedTabsForWindow.set(windowId, new Map());
   pinnedTabsForWindow.set(windowId, new Map());
   unpinnedTabsForWindow.set(windowId, new Map());
@@ -250,19 +255,23 @@ export function prepareIndexesForWindow(windowId) {
   expandingTabsForWindow.set(windowId, new Map());
   draggingTabsForWindow.set(windowId, new Map());
   duplicatingTabsForWindow.set(windowId, new Map());
+  toBeGroupedTabsForWindow.set(windowId, new Map());
   unsynchronizedTabsForWindow.set(windowId, new Map());
 }
 
 export function unprepareIndexesForWindow(windowId) {
   activeTabForWindow.delete(windowId);
   activeTabsForWindow.delete(windowId);
+  removingTabsForWindow.delete(windowId);
   visibleTabsForWindow.delete(windowId);
+  selectedTabsForWindow.delete(windowId);
   highlightedTabsForWindow.delete(windowId);
   pinnedTabsForWindow.delete(windowId);
   unpinnedTabsForWindow.delete(windowId);
   groupTabsForWindow.delete(windowId);
   collapsingTabsForWindow.delete(windowId);
   expandingTabsForWindow.delete(windowId);
+  toBeGroupedTabsForWindow.delete(windowId);
   unsynchronizedTabsForWindow.delete(windowId);
 }
 
@@ -271,6 +280,11 @@ export function updateIndexesForTab(tab) {
     removeVisibleTab(tab);
   else
     addVisibleTab(tab);
+
+  if (tab.$TST.states.has(Constants.kTAB_STATE_SELECTED))
+    addSelectedTab(tab);
+  else
+    removeSelectedTab(tab);
 
   if (tab.highlighted)
     addHighlightedTab(tab);
@@ -295,10 +309,18 @@ export function updateIndexesForTab(tab) {
     addDuplicatingTab(tab);
   else
     removeDuplicatingTab(tab);
+
+  if (tab.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) &&
+      !tab.$TST.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
+    addToBeGroupedTab(tab);
+  else
+    removeToBeGroupedTab(tab);
 }
 
 export function removeTabFromIndexes(tab) {
+  removeRemovingTab(tab);
   removeVisibleTab(tab);
+  removeSelectedTab(tab);
   removeHighlightedTab(tab);
   removePinnedTab(tab);
   removeUnpinnedTab(tab);
@@ -307,6 +329,7 @@ export function removeTabFromIndexes(tab) {
   removeExpandingTab(tab);
   removeDuplicatingTab(tab);
   removeDraggingTab(tab);
+  removeToBeGroupedTab(tab);
   removeUnsynchronizedTab(tab);
 }
 
@@ -321,11 +344,25 @@ function removeTabFromIndex(tab, indexes) {
     tabs.delete(tab.id);
 }
 
+export function addRemovingTab(tab) {
+  addTabToIndex(tab, removingTabsForWindow);
+}
+export function removeRemovingTab(tab) {
+  removeTabFromIndex(tab, removingTabsForWindow);
+}
+
 export function addVisibleTab(tab) {
   addTabToIndex(tab, visibleTabsForWindow);
 }
 export function removeVisibleTab(tab) {
   removeTabFromIndex(tab, visibleTabsForWindow);
+}
+
+export function addSelectedTab(tab) {
+  addTabToIndex(tab, selectedTabsForWindow);
+}
+export function removeSelectedTab(tab) {
+  removeTabFromIndex(tab, selectedTabsForWindow);
 }
 
 export function addHighlightedTab(tab) {
@@ -382,6 +419,13 @@ export function addDraggingTab(tab) {
 }
 export function removeDraggingTab(tab) {
   removeTabFromIndex(tab, draggingTabsForWindow);
+}
+
+export function addToBeGroupedTab(tab) {
+  addTabToIndex(tab, toBeGroupedTabsForWindow);
+}
+export function removeToBeGroupedTab(tab) {
+  removeTabFromIndex(tab, toBeGroupedTabsForWindow);
 }
 
 export function addUnsynchronizedTab(tab) {

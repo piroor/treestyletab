@@ -36,6 +36,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   const opener = tab.$TST.opener;
   if (opener) {
     tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
+    TabsStore.addToBeGroupedTab(tab);
   }
   else {
     if (!info.maybeOrphan &&

@@ -238,9 +238,8 @@ export default class Tab {
     return this.selected &&
              (this.hasOtherHighlighted ||
               TabsStore.queryAll({
-                windowId: this.tab.windowId,
-                living:   true,
-                states:   [Constants.kTAB_STATE_SELECTED, true]
+                tabs:   TabsStore.selectedTabsForWindow.get(this.tab.windowId),
+                living: true
               }).length > 1);
   }
 
@@ -616,6 +615,8 @@ export default class Tab {
       this.element.classList.add(state);
     if (this.states)
       this.states.add(state);
+    if (state == Constants.kTAB_STATE_SELECTED)
+      TabsStore.addSelectedTab(this.tab);
     if (options.broadcast)
       Tab.broadcastState(this.tab, {
         add: [state]
@@ -634,6 +635,8 @@ export default class Tab {
       this.element.classList.remove(state);
     if (this.states)
       this.states.delete(state);
+    if (state == Constants.kTAB_STATE_SELECTED)
+      TabsStore.removeSelectedTab(this.tab);
     if (options.broadcast)
       Tab.broadcastState(this.tab, {
         remove: [state]
@@ -1074,9 +1077,8 @@ Tab.getDraggingTabs = windowId => {
 
 Tab.getRemovingTabs = windowId => {
   return TabsStore.queryAll({
-    windowId,
-    states:   [Constants.kTAB_STATE_REMOVING, true],
-    ordered:  true
+    tabs:    TabsStore.removingTabsForWindow.get(windowId),
+    ordered: true
   });
 };
 
@@ -1098,10 +1100,9 @@ Tab.getHighlightedTabs = windowId => {
 
 Tab.getSelectedTabs = windowId => {
   const selectedTabs = TabsStore.queryAll({
-    windowId,
-    living:   true,
-    states:   [Constants.kTAB_STATE_SELECTED, true],
-    ordered:  true
+    tabs:    TabsStore.selectedTabsForWindow.get(windowId),
+    living:  true,
+    ordered: true
   });
   const highlightedTabs = TabsStore.highlightedTabsForWindow.get(windowId);
   if (!highlightedTabs ||

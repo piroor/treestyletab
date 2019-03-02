@@ -438,7 +438,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
           continue;
         // If there is not-yet grouped sibling, place next to it.
         const siblings = TabsStore.queryAll({
-          windowId:   tab.windowId,
+          tabs:       TabsStore.toBeGroupedTabsForWindow.get(tab.windowId),
           normal:     true,
           '!id':      tab.id,
           attributes: [
@@ -490,6 +490,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     for (const child of children) {
       // Prevent the tab to be grouped again after it is ungrouped manually.
       child.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, true);
+      TabsStore.removeToBeGroupedTab(child);
       await Tree.attachTabTo(child, parent, {
         forceExpand: true, // this is required to avoid the group tab itself is active from active tab in collapsed tree
         insertAfter: configs.insertNewChildAt == Constants.kINSERT_FIRST ? parent : parent.$TST.lastDescendant,

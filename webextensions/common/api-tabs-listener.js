@@ -607,6 +607,7 @@ async function onRemoved(tabId, removeInfo) {
     const oldChildren = oldTab.$TST.children;
     const oldParent   = oldTab.$TST.parent;
     oldTab.$TST.addState(Constants.kTAB_STATE_REMOVING);
+    TabsStore.addRemovingTab(oldTab);
 
     TabsStore.windows.get(removeInfo.windowId).detachTab(oldTab.id);
 
