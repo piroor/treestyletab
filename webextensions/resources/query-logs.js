@@ -41,8 +41,12 @@ function analyze() {
     delete log.elapsed;
     log.source = (typeof log.windowId == 'number') ? 'sidebar' : log.windowId;
     delete log.windowId;
-    if (log.fromId) log.fromId = 'given';
-    if (log.toId) log.toId = 'given';
+    if (log.indexedTabs)
+      log.indexedTabs = log.indexedTabs.replace(/\s+in window \d+$/i, '');
+    if (log.fromId)
+      log.fromId = 'given';
+    if (log.toId)
+      log.toId = 'given';
     for (const key of ['id', '!id']) {
       if (log[key])
         log[key] = Array.isArray(log[key]) ? 'array' : (typeof log[key]);

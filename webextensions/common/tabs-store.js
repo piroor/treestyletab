@@ -66,6 +66,8 @@ export function queryAll(query) {
   if (configs.loggingQueries) {
     queryLogs.push(query);
     queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
+    if (query.tabs && query.tabs.name)
+      query.indexedTabs = query.tabs.name;
   }
   fixupQuery(query);
   const startAt = Date.now();
@@ -185,6 +187,8 @@ export function query(query) {
   if (configs.loggingQueries) {
     queryLogs.push(query);
     queryLogs.splice(0, Math.max(0, queryLogs.length - MAX_LOGS));
+    if (query.tabs && query.tabs.name)
+      query.indexedTabs = query.tabs.name;
   }
   fixupQuery(query);
   if (query.last)
@@ -242,21 +246,27 @@ export const duplicatingTabsForWindow = new Map();
 export const toBeGroupedTabsForWindow = new Map();
 export const unsynchronizedTabsForWindow = new Map();
 
+function createMapWithName(name) {
+  const map = new Map();
+  map.name = name;
+  return map;
+}
+
 export function prepareIndexesForWindow(windowId) {
   activeTabsForWindow.set(windowId, new Set());
-  removingTabsForWindow.set(windowId, new Map());
-  visibleTabsForWindow.set(windowId, new Map());
-  selectedTabsForWindow.set(windowId, new Map());
-  highlightedTabsForWindow.set(windowId, new Map());
-  pinnedTabsForWindow.set(windowId, new Map());
-  unpinnedTabsForWindow.set(windowId, new Map());
-  groupTabsForWindow.set(windowId, new Map());
-  collapsingTabsForWindow.set(windowId, new Map());
-  expandingTabsForWindow.set(windowId, new Map());
-  draggingTabsForWindow.set(windowId, new Map());
-  duplicatingTabsForWindow.set(windowId, new Map());
-  toBeGroupedTabsForWindow.set(windowId, new Map());
-  unsynchronizedTabsForWindow.set(windowId, new Map());
+  removingTabsForWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
+  visibleTabsForWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
+  selectedTabsForWindow.set(windowId, createMapWithName(`selected tabs in window ${windowId}`));
+  highlightedTabsForWindow.set(windowId, createMapWithName(`highlighted tabs in window ${windowId}`));
+  pinnedTabsForWindow.set(windowId, createMapWithName(`pinned tabs in window ${windowId}`));
+  unpinnedTabsForWindow.set(windowId, createMapWithName(`unpinned tabs in window ${windowId}`));
+  groupTabsForWindow.set(windowId, createMapWithName(`group tabs in window ${windowId}`));
+  collapsingTabsForWindow.set(windowId, createMapWithName(`collapsing tabs in window ${windowId}`));
+  expandingTabsForWindow.set(windowId, createMapWithName(`expanding tabs in window ${windowId}`));
+  draggingTabsForWindow.set(windowId, createMapWithName(`dragging tabs in window ${windowId}`));
+  duplicatingTabsForWindow.set(windowId, createMapWithName(`duplicating tabs in window ${windowId}`));
+  toBeGroupedTabsForWindow.set(windowId, createMapWithName(`to-be-grouped tabs in window ${windowId}`));
+  unsynchronizedTabsForWindow.set(windowId, createMapWithName(`unsynchronized tabs in window ${windowId}`));
 }
 
 export function unprepareIndexesForWindow(windowId) {
