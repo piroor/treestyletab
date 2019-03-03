@@ -524,7 +524,7 @@ Tab.onInitialized.addListener((tab, info) => {
   }
 
   const window  = TabsStore.windows.get(tab.windowId);
-  const nextTab = Tab.getAllTabs(window.id)[tab.index];
+  const nextTab = Tab.getTabAt(window.id, tab.index);
   window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
 });
 

@@ -236,14 +236,11 @@ function getDropAction(event) {
   info.defineGetter('draggedTabIds', () => {
     return info.draggedTabs.map(tab => tab.id);
   });
-  info.defineGetter('targetTabs', () => {
-    return Tab.getAllTabs(TabsStore.getWindow());
-  });
   info.defineGetter('firstTargetTab', () => {
-    return Tab.getFirstNormalTab(TabsStore.getWindow()) || info.targetTabs[0];
+    return Tab.getFirstNormalTab(TabsStore.getWindow()) || Tab.getFirstTab(TabsStore.getWindow());
   });
   info.defineGetter('lastTargetTab', () => {
-    return info.targetTabs[info.targetTabs.length - 1];
+    return Tab.getLastTab(TabsStore.getWindow());
   });
   info.defineGetter('canDrop', () => {
     if (info.dropPosition == kDROP_IMPOSSIBLE)
