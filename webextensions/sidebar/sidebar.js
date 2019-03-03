@@ -836,10 +836,10 @@ function onConfigChange(changedKey) {
 }
 
 
-const mLastTreeChangeFromRemote = Promise.resolve();new Set();
+let mLastTreeChangeFromRemote = Promise.resolve();
 function doTreeChangeFromRemote(task) {
   const previousPromisedComplete = mLastTreeChangeFromRemote;
-  return new Promise(async (resolve, reject) => {
+  return mLastTreeChangeFromRemote = new Promise(async (resolve, reject) => {
     try {
       await previousPromisedComplete;
       await task();
