@@ -200,6 +200,12 @@ export default class Tab {
     return this.states.has(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
 
+  get isSubtreeCollapsable() {
+    return this.hasChild &&
+           !this.collapsed &&
+           !this.subtreeCollapsed;
+  }
+
   get precedesPinned() {
     const following = this.nearestVisibleFollowing;
     return following && following.pinned;
@@ -416,10 +422,15 @@ export default class Tab {
     const oldChildren = this.children;
     this.childIds = tabs.map(tab => typeof tab == 'number' ? tab : tab && tab.id).filter(id => id);
     this.sortChildren();
-    if (this.childIds.length > 0)
+    if (this.childIds.length > 0) {
       this.setAttribute(Constants.kCHILDREN, `|${this.childIds.join('|')}|`);
-    else
+      if (this.isSubtreeCollapsable)
+        TabsStore.addSubtreeCollapsableTab(this.tab);
+    }
+    else {
       this.removeAttribute(Constants.kCHILDREN);
+      TabsStore.removeSubtreeCollapsableTab(this.tab);
+    }
     for (const child of Array.from(new Set(this.children.concat(oldChildren)))) {
       if (this.childIds.includes(child.id))
         child.$TST.invalidateCachedAncestors();
@@ -622,8 +633,18 @@ export default class Tab {
       this.element.classList.add(state);
     if (this.states)
       this.states.add(state);
+
     if (state == Constants.kTAB_STATE_SELECTED)
       TabsStore.addSelectedTab(this.tab);
+
+    if (state == Constants.kTAB_STATE_COLLAPSED ||
+        state == Constants.kTAB_STATE_SUBTREE_COLLAPSED) {
+      if (this.isSubtreeCollapsable)
+        TabsStore.addSubtreeCollapsableTab(this.tab);
+      else
+        TabsStore.removeSubtreeCollapsableTab(this.tab);
+    }
+
     if (options.broadcast)
       Tab.broadcastState(this.tab, {
         add: [state]
@@ -642,8 +663,18 @@ export default class Tab {
       this.element.classList.remove(state);
     if (this.states)
       this.states.delete(state);
+
     if (state == Constants.kTAB_STATE_SELECTED)
       TabsStore.removeSelectedTab(this.tab);
+
+    if (state == Constants.kTAB_STATE_COLLAPSED ||
+        state == Constants.kTAB_STATE_SUBTREE_COLLAPSED) {
+      if (this.isSubtreeCollapsable)
+        TabsStore.addSubtreeCollapsableTab(this.tab);
+      else
+        TabsStore.removeSubtreeCollapsableTab(this.tab);
+    }
+
     if (options.broadcast)
       Tab.broadcastState(this.tab, {
         remove: [state]

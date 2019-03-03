@@ -759,16 +759,12 @@ export function collapseExpandTreesIntelligentlyFor(tab, options = {}) {
 
   const expandedAncestors = [tab.id].concat(tab.$TST.ancestors.map(ancestor => ancestor.id));
   const collapseTabs = TabsStore.queryAll({
-    windowId:   tab.windowId,
-    living:     true,
-    hidden:     false,
-    '!id':      expandedAncestors,
-    states:     [
-      Constants.kTAB_STATE_COLLAPSED,         false,
-      Constants.kTAB_STATE_SUBTREE_COLLAPSED, false
-    ],
-    hasChild:   true,
-    ordered:    true
+    windowId: tab.windowId,
+    tabs:     TabsStore.subtreeCollapsableTabsForWindow.get(tab.windowId),
+    living:   true,
+    hidden:   false,
+    '!id':    expandedAncestors,
+    ordered:  true
   });
   logCollapseExpand(`${collapseTabs.length} tabs can be collapsed, ancestors: `, expandedAncestors);
   for (const collapseTab of collapseTabs) {
