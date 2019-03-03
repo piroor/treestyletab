@@ -344,8 +344,8 @@ export default class Tab {
     else {
       this.removeAttribute(Constants.kPARENT);
     }
-    if (oldParent)
-      oldParent.$TST.invalidateCachedDescendants();
+    if (oldParent && oldParent.id != this.parentId)
+      oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.tab.id);
     return tab;
   }
   get parent() {
@@ -418,7 +418,10 @@ export default class Tab {
     else
       this.removeAttribute(Constants.kCHILDREN);
     for (const child of Array.from(new Set(this.children.concat(oldChildren)))) {
-      child.$TST.invalidateCachedAncestors();
+      if (this.childIds.includes(child.id))
+        child.$TST.invalidateCachedAncestors();
+      else
+        child.$TST.parent = null;
     }
     return tabs;
   }

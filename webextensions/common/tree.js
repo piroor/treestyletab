@@ -296,8 +296,9 @@ export function detachTab(child, options = {}) {
     parent.$TST.children = parent.$TST.childIds.filter(id => id != child.id);
     log('detachTab: children information is updated ', parent.id, parent.$TST.childIds);
   }
-  child.$TST.parent = null;
-  log('detachTab: parent information cleared: ', child.id);
+  // We don't need to clear its parent information, because the old parent's
+  // "children" setter removes the parent ifself from the detached child
+  // automatically.
 
   updateTabsIndent(child);
 
