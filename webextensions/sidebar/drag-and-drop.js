@@ -472,13 +472,10 @@ export function clearDraggingState() {
   document.documentElement.classList.remove(kTABBAR_STATE_LINK_DRAGGING);
 }
 
-function isDraggingAllTabs(tab, tabs) {
-  const draggingTabs = Tab.getDraggingTabs(tab.windowId);
-  return draggingTabs.length == (tabs || Tab.getAllTabs(tab.windowId)).length;
-}
- 
 function isDraggingAllActiveTabs(tab) {
-  return isDraggingAllTabs(tab, Tab.getAllTabs(tab.windowId));
+  const draggingTabsCount = TabsStore.draggingTabsForWindow.get(tab.windowId).size;
+  const allTabsCount      = TabsStore.windows.get(tab.windowId).tabs.size;
+  return draggingTabsCount == allTabsCount;
 }
 
 function collapseAutoExpandedTabsWhileDragging() {
