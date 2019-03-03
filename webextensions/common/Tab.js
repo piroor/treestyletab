@@ -1064,6 +1064,7 @@ Tab.getTabAt = (windowId, index) => {
   return TabsStore.query({
     windowId,
     tabs,
+    controllable: true,
     fromIndex:    index - (allTabs.size - tabs.size),
     logicalIndex: index,
     first:        true
@@ -1073,8 +1074,9 @@ Tab.getTabAt = (windowId, index) => {
 Tab.getTabs = windowId => { // only visible, including collapsed and pinned
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.controllableTabsForWindow.get(windowId),
-    ordered: true
+    tabs:         TabsStore.controllableTabsForWindow.get(windowId),
+    controllable: true,
+    ordered:      true
   });
 };
 
