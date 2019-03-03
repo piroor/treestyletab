@@ -259,8 +259,8 @@ function reserveToUpdateLoadingState() {
 function updateLoadingState() {
   const loadingTab = TabsStore.query({
     windowId: TabsStore.getWindow(),
-    visible:  true,
-    status:   'loading'
+    tabs:     TabsStore.loadingTabsForWindow.get(TabsStore.getWindow()),
+    visible:  true
   });
   if (loadingTab)
     document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);

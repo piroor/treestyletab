@@ -119,17 +119,21 @@ export function updateTab(tab, newState = {}, options = {}) {
     tab.$TST.addState(newState.status);
     if (newState.status == 'loading') {
       tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
+      TabsStore.addLoadingTab(tab);
     }
-    else if (!options.forceApply && reallyChanged) {
-      tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
-      if (tab.$TST.delayedBurstEnd)
-        clearTimeout(tab.$TST.delayedBurstEnd);
-      tab.$TST.delayedBurstEnd = setTimeout(() => {
-        delete tab.$TST.delayedBurstEnd;
-        tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
-        if (!tab.active)
-          tab.$TST.addState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
-      }, configs.burstDuration);
+    else {
+      TabsStore.removeLoadingTab(tab);
+      if (!options.forceApply && reallyChanged) {
+        tab.$TST.addState(Constants.kTAB_STATE_BURSTING);
+        if (tab.$TST.delayedBurstEnd)
+          clearTimeout(tab.$TST.delayedBurstEnd);
+        tab.$TST.delayedBurstEnd = setTimeout(() => {
+          delete tab.$TST.delayedBurstEnd;
+          tab.$TST.removeState(Constants.kTAB_STATE_BURSTING);
+          if (!tab.active)
+            tab.$TST.addState(Constants.kTAB_STATE_NOT_ACTIVATED_SINCE_LOAD);
+        }, configs.burstDuration);
+      }
     }
     Tab.onStateChanged.dispatch(tab);
   }

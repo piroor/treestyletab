@@ -247,6 +247,7 @@ export const toBeExpandedTabsForWindow = new Map();
 export const draggingTabsForWindow    = new Map();
 export const duplicatingTabsForWindow = new Map();
 export const toBeGroupedTabsForWindow = new Map();
+export const loadingTabsForWindow     = new Map();
 export const unsynchronizedTabsForWindow = new Map();
 
 function createMapWithName(name) {
@@ -272,6 +273,7 @@ export function prepareIndexesForWindow(windowId) {
   draggingTabsForWindow.set(windowId, createMapWithName(`dragging tabs in window ${windowId}`));
   duplicatingTabsForWindow.set(windowId, createMapWithName(`duplicating tabs in window ${windowId}`));
   toBeGroupedTabsForWindow.set(windowId, createMapWithName(`to-be-grouped tabs in window ${windowId}`));
+  loadingTabsForWindow.set(windowId, createMapWithName(`loading tabs in window ${windowId}`));
   unsynchronizedTabsForWindow.set(windowId, createMapWithName(`unsynchronized tabs in window ${windowId}`));
 }
 
@@ -291,6 +293,7 @@ export function unprepareIndexesForWindow(windowId) {
   expandingTabsForWindow.delete(windowId);
   toBeExpandedTabsForWindow.delete(windowId);
   toBeGroupedTabsForWindow.delete(windowId);
+  loadingTabsForWindow.delete(windowId);
   unsynchronizedTabsForWindow.delete(windowId);
 }
 
@@ -339,6 +342,11 @@ export function updateIndexesForTab(tab) {
     removeRootTab(tab);
   else
     addRootTab(tab);
+
+  if (tab.status == 'loading')
+    addLoadingTab(tab);
+  else
+    removeLoadingTab(tab);
 }
 
 export function removeTabFromIndexes(tab) {
@@ -357,6 +365,7 @@ export function removeTabFromIndexes(tab) {
   removeDuplicatingTab(tab);
   removeDraggingTab(tab);
   removeToBeGroupedTab(tab);
+  removeLoadingTab(tab);
   removeUnsynchronizedTab(tab);
 }
 
@@ -478,6 +487,13 @@ export function addToBeGroupedTab(tab) {
 }
 export function removeToBeGroupedTab(tab) {
   removeTabFromIndex(tab, toBeGroupedTabsForWindow);
+}
+
+export function addLoadingTab(tab) {
+  addTabToIndex(tab, loadingTabsForWindow);
+}
+export function removeLoadingTab(tab) {
+  removeTabFromIndex(tab, loadingTabsForWindow);
 }
 
 export function addUnsynchronizedTab(tab) {
