@@ -938,6 +938,7 @@ Tab.getActiveTab = windowId => {
 Tab.getFirstTab = windowId => {
   return TabsStore.query({
     windowId,
+    tabs:    TabsStore.livingTabsForWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -946,6 +947,7 @@ Tab.getFirstTab = windowId => {
 Tab.getLastTab = windowId => {
   return TabsStore.query({
     windowId,
+    tabs:   TabsStore.livingTabsForWindow.get(windowId),
     living: true,
     last:   true
   });
@@ -1025,11 +1027,23 @@ Tab.getAllTabs = (windowId = null) => {
   });
 };
 
+Tab.getTabAt = (windowId, index) => {
+  const tabs    = TabsStore.controllableTabsForWindow.get(windowId);
+  const allTabs = TabsStore.windows.get(windowId).tabs;
+  return TabsStore.query({
+    windowId,
+    tabs,
+    fromIndex:    index - (allTabs.size - tabs.size),
+    logicalIndex: index,
+    first:        true
+  });
+};
+
 Tab.getTabs = windowId => { // only visible, including collapsed and pinned
   return TabsStore.queryAll({
     windowId,
-    controllable: true,
-    ordered:      true
+    tabs:    TabsStore.controllableTabsForWindow.get(windowId),
+    ordered: true
   });
 };
 

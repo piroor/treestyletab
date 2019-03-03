@@ -216,6 +216,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       if (!tab.$TST.states.has(Constants.kTAB_STATE_HIDDEN)) {
         tab.$TST.addState(Constants.kTAB_STATE_HIDDEN);
         TabsStore.removeVisibleTab(tab);
+        TabsStore.removeControllableTab(tab);
         Tab.onHidden.dispatch(tab);
       }
     }
@@ -223,6 +224,7 @@ export function updateTab(tab, newState = {}, options = {}) {
       tab.$TST.removeState(Constants.kTAB_STATE_HIDDEN);
       if (!tab.$TST.collapsed)
         TabsStore.addVisibleTab(tab);
+      TabsStore.addControllableTab(tab);
       Tab.onShown.dispatch(tab);
     }
   }

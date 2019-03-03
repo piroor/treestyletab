@@ -92,13 +92,23 @@ export function queryAll(query) {
 function sourceTabsForQuery(query, window) {
   if (!query.ordered)
     return query.tabs && query.tabs.values() || window.tabs.values();
+  let fromId;
+  if (typeof query.index == 'number')
+    fromId = window.order[query.index];
+  if (typeof query.fromIndex == 'number')
+    fromId = window.order[query.fromIndex];
+  if (typeof fromId != 'number')
+    fromId = query.fromId;
   if (query.last)
-    return window.getReversedOrderedTabs(query.fromId, query.toId, query.tabs);
-  return window.getOrderedTabs(query.fromId, query.toId, query.tabs);
+    return window.getReversedOrderedTabs(fromId, query.toId, query.tabs);
+  return window.getOrderedTabs(fromId, query.toId, query.tabs);
 }
 
 function extractMatchedTabs(tabs, query) {
   const matchedTabs = [];
+  let firstTime     = true;
+  let logicalIndex  = 0;
+
   TAB_MACHING:
   for (const tab of tabs) {
     for (const attribute of MATCHING_ATTRIBUTES) {
@@ -149,6 +159,14 @@ function extractMatchedTabs(tabs, query) {
       continue TAB_MACHING;
     if ('hasParent' in query &&
         query.hasParent != tab.$TST.hasParent)
+      continue TAB_MACHING;
+
+    if (!firstTime) {
+      logicalIndex++;
+    }
+    firstTime = true;
+    if ('logicalIndex' in query &&
+        query.logicalIndex != logicalIndex)
       continue TAB_MACHING;
 
     matchedTabs.push(tab);
@@ -215,7 +233,11 @@ export function query(query) {
 }
 
 function fixupQuery(query) {
-  if (query.fromId || query.toId)
+  if (query.fromId ||
+      query.toId ||
+      typeof query.index == 'number' ||
+      typeof query.fromIndex == 'number' ||
+      typeof query.logicalIndex == 'number')
     query.ordered = true;
   if ((query.normal ||
        query.visible ||
@@ -232,6 +254,8 @@ function fixupQuery(query) {
 
 export const activeTabForWindow       = new Map();
 export const activeTabsForWindow      = new Map();
+export const livingTabsForWindow      = new Map();
+export const controllableTabsForWindow = new Map();
 export const removingTabsForWindow    = new Map();
 export const removedTabsForWindow     = new Map();
 export const visibleTabsForWindow     = new Map();
@@ -258,6 +282,8 @@ function createMapWithName(name) {
 
 export function prepareIndexesForWindow(windowId) {
   activeTabsForWindow.set(windowId, new Set());
+  livingTabsForWindow.set(windowId, createMapWithName(`living tabs in window ${windowId}`));
+  controllableTabsForWindow.set(windowId, createMapWithName(`controllable tabs in window ${windowId}`));
   removingTabsForWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
   removedTabsForWindow.set(windowId, createMapWithName(`removed tabs in window ${windowId}`));
   visibleTabsForWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
@@ -280,6 +306,8 @@ export function prepareIndexesForWindow(windowId) {
 export function unprepareIndexesForWindow(windowId) {
   activeTabForWindow.delete(windowId);
   activeTabsForWindow.delete(windowId);
+  livingTabsForWindow.delete(windowId);
+  controllableTabsForWindow.delete(windowId);
   removingTabsForWindow.delete(windowId);
   removedTabsForWindow.delete(windowId);
   visibleTabsForWindow.delete(windowId);
@@ -298,6 +326,13 @@ export function unprepareIndexesForWindow(windowId) {
 }
 
 export function updateIndexesForTab(tab) {
+  addLivingTab(tab);
+
+  if (!tab.hidden)
+    addControllableTab(tab);
+  else
+    removeControllableTab(tab);
+
   if (tab.hidden || tab.$TST.collapsed)
     removeVisibleTab(tab);
   else
@@ -350,6 +385,8 @@ export function updateIndexesForTab(tab) {
 }
 
 export function removeTabFromIndexes(tab) {
+  removeLivingTab(tab);
+  removeControllableTab(tab);
   removeRemovingTab(tab);
   //removeRemovedTab(tab);
   removeVisibleTab(tab);
@@ -380,8 +417,25 @@ function removeTabFromIndex(tab, indexes) {
     tabs.delete(tab.id);
 }
 
+export function addLivingTab(tab) {
+  addTabToIndex(tab, livingTabsForWindow);
+}
+export function removeLivingTab(tab) {
+  removeTabFromIndex(tab, livingTabsForWindow);
+}
+
+export function addControllableTab(tab) {
+  addTabToIndex(tab, controllableTabsForWindow);
+}
+export function removeControllableTab(tab) {
+  removeTabFromIndex(tab, controllableTabsForWindow);
+}
+
 export function addRemovingTab(tab) {
   addTabToIndex(tab, removingTabsForWindow);
+  removeLivingTab(tab);
+  removeControllableTab(tab);
+  removeVisibleTab(tab);
 }
 export function removeRemovingTab(tab) {
   removeTabFromIndex(tab, removingTabsForWindow);
