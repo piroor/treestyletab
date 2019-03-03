@@ -80,6 +80,7 @@ export default class Tab {
 
     TabsStore.addLivingTab(tab);
     TabsStore.addControllableTab(tab);
+    TabsStore.addRootTab(tab);
 
     const incompletelyTrackedTabsPerWindow = mIncompletelyTrackedTabs.get(tab.windowId) || new Set();
     incompletelyTrackedTabsPerWindow.add(tab);
