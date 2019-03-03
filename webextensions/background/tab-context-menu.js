@@ -609,6 +609,7 @@ async function onClick(info, contextTab) {
       break;
     case 'context_openTabInWindow':
       Commands.openTabInWindow(contextTab);
+      break;
     case 'context_selectAllTabs': {
       const tabs = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
       browser.tabs.highlight({
