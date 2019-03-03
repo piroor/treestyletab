@@ -3,6 +3,7 @@
  - master/HEAD
    * Reconstruct tab management system based on JS objects instead of DOM elements. This aims to make future improvements more easy: performance optimization for too much number of tabs, and stabilization around multiple parallel asynchronous operations.
    * Add ability to collect performance logs of tab queryings. It will help more future optimizations for too much number of tabs. (Please note that you need to activate logging manually, via the checkbox at the "Development" section in the options page.)
+   * Don't multiselect all tabs after the context menu command "Move to New Window" in "Move Tabs" is invoked.
  - 2.7.23 (2019.2.22)
    * Don't move focus to a tab in a collapsed tree and expand collapsed tree when a collapsed child is focused, when the session was restored.
  - 2.7.22 (2019.2.20)
