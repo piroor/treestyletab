@@ -78,9 +78,7 @@ export default class Tab {
       TabsStore.activeTabsForWindow.get(tab.windowId).delete(tab);
     }
 
-    TabsStore.addLivingTab(tab);
-    TabsStore.addControllableTab(tab);
-    TabsStore.addRootTab(tab);
+    TabsStore.updateIndexesForTab(tab);
 
     const incompletelyTrackedTabsPerWindow = mIncompletelyTrackedTabs.get(tab.windowId) || new Set();
     incompletelyTrackedTabsPerWindow.add(tab);
