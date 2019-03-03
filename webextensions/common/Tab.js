@@ -239,8 +239,9 @@ export default class Tab {
     return this.selected &&
              (this.hasOtherHighlighted ||
               TabsStore.queryAll({
-                tabs:   TabsStore.selectedTabsForWindow.get(this.tab.windowId),
-                living: true
+                windowId: this.tab.windowId,
+                tabs:     TabsStore.selectedTabsForWindow.get(this.tab.windowId),
+                living:   true
               }).length > 1);
   }
 
@@ -952,6 +953,7 @@ Tab.getLastTab = windowId => {
 
 Tab.getLastVisibleTab = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.query({
+    windowId,
     tabs:    TabsStore.visibleTabsForWindow.get(windowId),
     visible: true,
     last:    true,
@@ -967,6 +969,7 @@ Tab.getLastOpenedTab = windowId => {
 
 Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
   return TabsStore.query({
+    windowId,
     tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
     normal:  true,
     ordered: true
@@ -975,6 +978,7 @@ Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
 
 Tab.getFirstVisibleTab = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.query({
+    windowId,
     tabs:    TabsStore.visibleTabsForWindow.get(windowId),
     visible: true,
     ordered: true
@@ -986,8 +990,9 @@ Tab.getGroupTabForOpener = opener => {
     return null;
   TabsStore.assertValidTab(opener);
   return TabsStore.query({
-    tabs:   TabsStore.groupTabsForWindow.get(opener.windowId),
-    living: true,
+    windowId:   opener.windowId,
+    tabs:       TabsStore.groupTabsForWindow.get(opener.windowId),
+    living:     true,
     attributes: [
       Constants.kCURRENT_URI,
       new RegExp(`openerTabId=${opener.$TST.uniqueId.id}($|[#&])`)
@@ -1030,6 +1035,7 @@ Tab.getTabs = windowId => { // only visible, including collapsed and pinned
 
 Tab.getNormalTabs = windowId => { // only visible, including collapsed, not pinned
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
     normal:  true,
     ordered: true
@@ -1038,6 +1044,7 @@ Tab.getNormalTabs = windowId => { // only visible, including collapsed, not pinn
 
 Tab.getVisibleTabs = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.visibleTabsForWindow.get(windowId),
     living:  true,
     ordered: true
@@ -1046,6 +1053,7 @@ Tab.getVisibleTabs = windowId => { // visible, not-collapsed, not-hidden
 
 Tab.getPinnedTabs = windowId => { // visible, pinned
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.pinnedTabsForWindow.get(windowId),
     living:  true,
     ordered: true
@@ -1055,6 +1063,7 @@ Tab.getPinnedTabs = windowId => { // visible, pinned
 
 Tab.getUnpinnedTabs = windowId => { // visible, not pinned
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
     living:  true,
     ordered: true
@@ -1063,6 +1072,7 @@ Tab.getUnpinnedTabs = windowId => { // visible, not pinned
 
 Tab.getRootTabs = windowId => {
   return TabsStore.queryAll({
+    windowId,
     tabs:         TabsStore.rootTabsForWindow.get(windowId),
     controllable: true,
     ordered:      true
@@ -1080,6 +1090,7 @@ Tab.collectRootTabs = tabs => {
 
 Tab.getGroupTabs = windowId => {
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.groupTabsForWindow.get(windowId),
     living:  true,
     ordered: true
@@ -1088,6 +1099,7 @@ Tab.getGroupTabs = windowId => {
 
 Tab.getDraggingTabs = windowId => {
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.draggingTabsForWindow.get(windowId),
     living:  true,
     ordered: true
@@ -1096,6 +1108,7 @@ Tab.getDraggingTabs = windowId => {
 
 Tab.getRemovingTabs = windowId => {
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.removingTabsForWindow.get(windowId),
     ordered: true
   });
@@ -1103,6 +1116,7 @@ Tab.getRemovingTabs = windowId => {
 
 Tab.getDuplicatingTabs = windowId => {
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.duplicatingTabsForWindow.get(windowId),
     living:  true,
     ordered: true
@@ -1111,6 +1125,7 @@ Tab.getDuplicatingTabs = windowId => {
 
 Tab.getHighlightedTabs = windowId => {
   return TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.highlightedTabsForWindow.get(windowId),
     living:  true,
     ordered: true
@@ -1119,6 +1134,7 @@ Tab.getHighlightedTabs = windowId => {
 
 Tab.getSelectedTabs = windowId => {
   const selectedTabs = TabsStore.queryAll({
+    windowId,
     tabs:    TabsStore.selectedTabsForWindow.get(windowId),
     living:  true,
     ordered: true

@@ -526,7 +526,7 @@ async function onNewTabTracked(tab) {
 // "Recycled tab" is an existing but reused tab for session restoration.
 function checkRecycledTab(windowId) {
   const possibleRecycledTabs = TabsStore.queryAll({
-    windowId: windowId,
+    windowId,
     states: [
       Constants.kTAB_STATE_RESTORED, false
     ],

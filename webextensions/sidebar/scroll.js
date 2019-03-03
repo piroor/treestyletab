@@ -343,14 +343,16 @@ scrollToTab.lastTargetId = null;
 
 function getOffsetForAnimatingTab(tab) {
   const expanding = TabsStore.queryAll({
-    tabs:   TabsStore.expandingTabsForWindow.get(tab.windowId),
-    toId:   tab.id,
-    normal: true
+    windowId: tab.windowId,
+    tabs:     TabsStore.expandingTabsForWindow.get(tab.windowId),
+    toId:     tab.id,
+    normal:   true
   });
   const collapsing = TabsStore.queryAll({
-    tabs:   TabsStore.collapsingTabsForWindow.get(tab.windowId),
-    toId:   tab.id,
-    normal: true
+    windowId: tab.windowId,
+    tabs:     TabsStore.collapsingTabsForWindow.get(tab.windowId),
+    toId:     tab.id,
+    normal:   true
   });
   const numExpandingTabs = expanding.length - collapsing.length;
   return numExpandingTabs * Size.getTabHeight();

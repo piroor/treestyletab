@@ -270,8 +270,9 @@ function updateLoadingState() {
 
 async function synchronizeThrobberAnimation() {
   const toBeSynchronizedTabs = TabsStore.queryAll({
-    tabs:    TabsStore.unsynchronizedTabsForWindow.get(TabsStore.getWindow()),
-    visible: true
+    windowId: TabsStore.getWindow(),
+    tabs:     TabsStore.unsynchronizedTabsForWindow.get(TabsStore.getWindow()),
+    visible:  true
   });
   if (toBeSynchronizedTabs.length == 0)
     return;
