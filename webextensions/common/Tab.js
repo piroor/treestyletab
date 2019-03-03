@@ -88,6 +88,7 @@ export default class Tab {
   }
 
   destroy() {
+    Tab.onDestroyed.dispatch(this.tab);
     this.detach();
 
     if (this.reservedCleanupNeedlessGroupTab) {
