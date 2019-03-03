@@ -371,7 +371,7 @@ async function onNewTabTracked(tab) {
 
     tab = Tab.init(tab, { inRemote: !!targetWindow });
 
-    const nextTab = Tab.getAllTabs(window.id)[tab.index];
+    const nextTab = Tab.getTabAt(window.id, tab.index);
 
     // We need to update "active" state of a new active tab immediately.
     // Attaching of initial child tab (this new tab may become it) to an
@@ -676,9 +676,8 @@ async function onMoved(tabId, moveInfo) {
     let oldPreviousTab = movedTab.$TST.previous;
     let oldNextTab     = movedTab.$TST.next;
     if (movedTab.index != moveInfo.toIndex) { // already moved
-      const tabs = Tab.getAllTabs(moveInfo.windowId);
-      oldPreviousTab = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1];
-      oldNextTab     = tabs[moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex + 1 : moveInfo.fromIndex];
+      oldPreviousTab = Tab.getTabAt(moveInfo.windowId, moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex : moveInfo.fromIndex - 1);
+      oldNextTab     = Tab.getTabAt(moveInfo.windowId, moveInfo.toIndex < moveInfo.fromIndex ? moveInfo.fromIndex + 1 : moveInfo.fromIndex);
     }
 
     let alreadyMoved = false;
@@ -705,7 +704,7 @@ async function onMoved(tabId, moveInfo) {
       let newNextIndex = extendedMoveInfo.toIndex;
       if (extendedMoveInfo.fromIndex < newNextIndex)
         newNextIndex++;
-      const nextTab = Tab.getAllTabs(moveInfo.windowId)[newNextIndex];
+      const nextTab = Tab.getTabAt(moveInfo.windowId, newNextIndex);
       extendedMoveInfo.nextTab = nextTab;
       if (!alreadyMoved &&
           movedTab.$TST.next != nextTab) {
