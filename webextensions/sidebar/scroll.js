@@ -277,7 +277,7 @@ export async function scrollToTab(tab, options = {}) {
   cancelNotifyOutOfViewTab();
   scrollToTab.lastTargetId = tab.id;
 
-  if (hasAnchor) {
+  if (hasAnchor && !anchorTab.pinned) {
     const targetTabRect = tab.$TST.element.getBoundingClientRect();
     const anchorTabRect = anchorTab.$TST.element.getBoundingClientRect();
     const containerRect = mTabBar.getBoundingClientRect();
