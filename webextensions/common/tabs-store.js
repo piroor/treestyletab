@@ -243,6 +243,7 @@ export const rootTabsForWindow        = new Map();
 export const groupTabsForWindow       = new Map();
 export const collapsingTabsForWindow  = new Map();
 export const expandingTabsForWindow   = new Map();
+export const toBeExpandedTabsForWindow = new Map();
 export const draggingTabsForWindow    = new Map();
 export const duplicatingTabsForWindow = new Map();
 export const toBeGroupedTabsForWindow = new Map();
@@ -267,6 +268,7 @@ export function prepareIndexesForWindow(windowId) {
   groupTabsForWindow.set(windowId, createMapWithName(`group tabs in window ${windowId}`));
   collapsingTabsForWindow.set(windowId, createMapWithName(`collapsing tabs in window ${windowId}`));
   expandingTabsForWindow.set(windowId, createMapWithName(`expanding tabs in window ${windowId}`));
+  toBeExpandedTabsForWindow.set(windowId, createMapWithName(`to-be-expanded tabs in window ${windowId}`));
   draggingTabsForWindow.set(windowId, createMapWithName(`dragging tabs in window ${windowId}`));
   duplicatingTabsForWindow.set(windowId, createMapWithName(`duplicating tabs in window ${windowId}`));
   toBeGroupedTabsForWindow.set(windowId, createMapWithName(`to-be-grouped tabs in window ${windowId}`));
@@ -287,6 +289,7 @@ export function unprepareIndexesForWindow(windowId) {
   groupTabsForWindow.delete(windowId);
   collapsingTabsForWindow.delete(windowId);
   expandingTabsForWindow.delete(windowId);
+  toBeExpandedTabsForWindow.delete(windowId);
   toBeGroupedTabsForWindow.delete(windowId);
   unsynchronizedTabsForWindow.delete(windowId);
 }
@@ -350,6 +353,7 @@ export function removeTabFromIndexes(tab) {
   removeGroupTab(tab);
   removeCollapsingTab(tab);
   removeExpandingTab(tab);
+  removeToBeExpandedTab(tab);
   removeDuplicatingTab(tab);
   removeDraggingTab(tab);
   removeToBeGroupedTab(tab);
@@ -446,6 +450,13 @@ export function addExpandingTab(tab) {
 }
 export function removeExpandingTab(tab) {
   removeTabFromIndex(tab, expandingTabsForWindow);
+}
+
+export function addToBeExpandedTab(tab) {
+  addTabToIndex(tab, toBeExpandedTabsForWindow);
+}
+export function removeToBeExpandedTab(tab) {
+  removeTabFromIndex(tab, toBeExpandedTabsForWindow);
 }
 
 export function addDuplicatingTab(tab) {

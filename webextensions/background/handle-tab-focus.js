@@ -166,11 +166,14 @@ function setupDelayedExpand(tab) {
   if (!tab)
     return;
   cancelDelayedExpand(tab);
+  TabsStore.removeToBeExpandedTab(tab);
   if (!configs.autoExpandOnTabSwitchingShortcuts ||
       !tab.$TST.hasChild ||
       !tab.$TST.subtreeCollapsed)
     return;
+  TabsStore.addToBeExpandedTab(tab);
   tab.$TST.delayedExpand = setTimeout(() => {
+    TabsStore.removeToBeExpandedTab(tab);
     Tree.collapseExpandTreesIntelligentlyFor(tab, {
       broadcast: true
     });
@@ -183,11 +186,11 @@ function cancelDelayedExpand(tab) {
     return;
   clearTimeout(tab.$TST.delayedExpand);
   delete tab.$TST.delayedExpand;
+  TabsStore.removeToBeExpandedTab(tab);
 }
 
 function cancelAllDelayedExpand(windowId) {
-  const window = TabsStore.windows.get(windowId);
-  for (const tab of window.tabs.values()) {
+  for (const tab of TabsStore.toBeExpandedTabsForWindow.get(windowId)) {
     cancelDelayedExpand(tab);
   }
 }
