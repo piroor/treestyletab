@@ -134,7 +134,7 @@ export async function init() {
   }).catch(ApiTabs.createErrorSuppressor());
 
   Migration.notifyNewFeatures();
-  log(`Startup metrics for ${Tab.getAllTabs(null).length} tabs: `, MetricsData.toString());
+  log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());
 }
 
 function updatePanelUrl() {
@@ -231,7 +231,7 @@ async function rebuildAll() {
       }
       restoredFromCache[window.id] = false;
     });
-    for (const tab of Tab.getAllTabs(window.id).filter(tab => tab.$TST.isGroupTab)) {
+    for (const tab of Tab.getGroupTabs(window.id)) {
       if (!tab.discarded)
         tab.$TST.shouldReloadOnSelect = true;
     }

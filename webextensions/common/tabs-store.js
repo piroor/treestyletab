@@ -239,6 +239,7 @@ export const selectedTabsForWindow    = new Map();
 export const highlightedTabsForWindow = new Map();
 export const pinnedTabsForWindow      = new Map();
 export const unpinnedTabsForWindow    = new Map();
+export const rootTabsForWindow        = new Map();
 export const groupTabsForWindow       = new Map();
 export const collapsingTabsForWindow  = new Map();
 export const expandingTabsForWindow   = new Map();
@@ -256,12 +257,13 @@ function createMapWithName(name) {
 export function prepareIndexesForWindow(windowId) {
   activeTabsForWindow.set(windowId, new Set());
   removingTabsForWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
-  removedTabsForWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
+  removedTabsForWindow.set(windowId, createMapWithName(`removed tabs in window ${windowId}`));
   visibleTabsForWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
   selectedTabsForWindow.set(windowId, createMapWithName(`selected tabs in window ${windowId}`));
   highlightedTabsForWindow.set(windowId, createMapWithName(`highlighted tabs in window ${windowId}`));
   pinnedTabsForWindow.set(windowId, createMapWithName(`pinned tabs in window ${windowId}`));
   unpinnedTabsForWindow.set(windowId, createMapWithName(`unpinned tabs in window ${windowId}`));
+  rootTabsForWindow.set(windowId, createMapWithName(`root tabs in window ${windowId}`));
   groupTabsForWindow.set(windowId, createMapWithName(`group tabs in window ${windowId}`));
   collapsingTabsForWindow.set(windowId, createMapWithName(`collapsing tabs in window ${windowId}`));
   expandingTabsForWindow.set(windowId, createMapWithName(`expanding tabs in window ${windowId}`));
@@ -281,6 +283,7 @@ export function unprepareIndexesForWindow(windowId) {
   highlightedTabsForWindow.delete(windowId);
   pinnedTabsForWindow.delete(windowId);
   unpinnedTabsForWindow.delete(windowId);
+  rootTabsForWindow.delete(windowId);
   groupTabsForWindow.delete(windowId);
   collapsingTabsForWindow.delete(windowId);
   expandingTabsForWindow.delete(windowId);
@@ -328,6 +331,11 @@ export function updateIndexesForTab(tab) {
     addToBeGroupedTab(tab);
   else
     removeToBeGroupedTab(tab);
+
+  if (tab.$TST.parent)
+    removeRootTab(tab);
+  else
+    addRootTab(tab);
 }
 
 export function removeTabFromIndexes(tab) {
@@ -338,6 +346,7 @@ export function removeTabFromIndexes(tab) {
   removeHighlightedTab(tab);
   removePinnedTab(tab);
   removeUnpinnedTab(tab);
+  removeRootTab(tab);
   removeGroupTab(tab);
   removeCollapsingTab(tab);
   removeExpandingTab(tab);
@@ -409,6 +418,13 @@ export function addUnpinnedTab(tab) {
 }
 export function removeUnpinnedTab(tab) {
   removeTabFromIndex(tab, unpinnedTabsForWindow);
+}
+
+export function addRootTab(tab) {
+  addTabToIndex(tab, rootTabsForWindow);
+}
+export function removeRootTab(tab) {
+  removeTabFromIndex(tab, rootTabsForWindow);
 }
 
 export function addGroupTab(tab) {

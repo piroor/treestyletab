@@ -340,9 +340,11 @@ export default class Tab {
       this.setAttribute(Constants.kPARENT, parent.id);
       parent.$TST.invalidateCachedDescendants();
       parent.$TST.inheritSoundStateFromChildren();
+      TabsStore.removeRootTab(this.tab);
     }
     else {
       this.removeAttribute(Constants.kPARENT);
+      TabsStore.addRootTab(this.tab);
     }
     if (oldParent && oldParent.id != this.parentId)
       oldParent.$TST.children = oldParent.$TST.childIds.filter(id => id != this.tab.id);
@@ -1061,10 +1063,9 @@ Tab.getUnpinnedTabs = windowId => { // visible, not pinned
 
 Tab.getRootTabs = windowId => {
   return TabsStore.queryAll({
-    windowId,
+    tabs:         TabsStore.rootTabsForWindow.get(windowId),
     controllable: true,
-    ordered:      true,
-    hasParent:    false
+    ordered:      true
   });
 };
 
@@ -1074,6 +1075,14 @@ Tab.collectRootTabs = tabs => {
       return false;
     const parent = tab.$TST.parent;
     return !parent || !tabs.includes(parent);
+  });
+};
+
+Tab.getGroupTabs = windowId => {
+  return TabsStore.queryAll({
+    tabs:    TabsStore.groupTabsForWindow.get(windowId),
+    living:  true,
+    ordered: true
   });
 };
 

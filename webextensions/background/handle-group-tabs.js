@@ -396,9 +396,8 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   // Second, collect tabs opened from pinned openers including existing tabs
   // (which were left ungrouped in previous process).
   const openerOf = {};
-  const unifiedRootTabs = Tab.getAllTabs(rootTabs[0].windowId).filter(tab => {
-    if (tab.$TST.parent ||
-        tab.$TST.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
+  const unifiedRootTabs = Tab.getRootTabs(rootTabs[0].windowId).filter(tab => {
+    if (tab.$TST.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
       return false;
     if (rootTabs.includes(tab)) { // newly opened tab
       const opener = tab.$TST.opener;
