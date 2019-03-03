@@ -108,9 +108,9 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
       let nextTab = info.insertBefore;
       let prevTab = info.insertAfter;
       if (!nextTab && !prevTab) {
-        nextTab = Tab.getTabAt(info.newIndex);
+        nextTab = Tab.getTabAt(tab.windowId, info.newIndex);
         if (!nextTab)
-          prevTab = Tab.getTabAt(info.newIndex - 1);
+          prevTab = Tab.getTabAt(tab.windowId, info.newIndex - 1);
       }
       log('move newly attached child: ', dumpTab(tab), {
         next: dumpTab(nextTab),
