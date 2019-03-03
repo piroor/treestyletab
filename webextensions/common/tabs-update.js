@@ -279,17 +279,11 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   const tabIds = highlightInfo.tabIds; // new Set(highlightInfo.tabIds);
   const unhighlightedTabs = TabsStore.queryAll({
-    windowId:    highlightInfo.windowId,
-    '!id':       tabIds,
-    //id:          new RegExp(`^(?!(${highlightInfo.tabIds.join('|')})$)`),
-    highlighted: true
+    windowId: highlightInfo.windowId,
+    tabs:     allHighlightedTabs,
+    '!id':    tabIds
   });
-  const highlightedTabs = TabsStore.queryAll({
-    windowId:    highlightInfo.windowId,
-    id:          tabIds,
-    //id:          new RegExp(`^(${highlightInfo.tabIds.join('|')})$`),
-    highlighted: false
-  });
+  const highlightedTabs = tabIds.map(id => window.tabs.get(id)).filter(tab => !tab.highlighted);
 
   //console.log(`updateTabsHighlighted: ${Date.now() - startAt}ms`);
 
