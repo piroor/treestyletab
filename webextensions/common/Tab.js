@@ -1253,10 +1253,15 @@ function getTabIndex(tab, options = {}) {
     return -1;
   TabsStore.assertValidTab(tab);
 
-  let tabs = Tab.getAllTabs(tab.windowId);
+  const query = {
+    windowId: tab.windowId,
+    tabs:     TabsStore.livingTabsForWindow.get(tab.windowId),
+    ordered:  true
+  };
   if (Array.isArray(options.ignoreTabs) &&
       options.ignoreTabs.length > 0)
-    tabs = tabs.filter(tab => !options.ignoreTabs.includes(tab));
+    query['!id'] = options.ignoreTabs.map(tab => tab.id);
+  const tabs = TabsStore.queryAll(query);
 
   return tabs.indexOf(tab);
 }
