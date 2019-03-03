@@ -233,6 +233,7 @@ function fixupQuery(query) {
 export const activeTabForWindow       = new Map();
 export const activeTabsForWindow      = new Map();
 export const removingTabsForWindow    = new Map();
+export const removedTabsForWindow     = new Map();
 export const visibleTabsForWindow     = new Map();
 export const selectedTabsForWindow    = new Map();
 export const highlightedTabsForWindow = new Map();
@@ -255,6 +256,7 @@ function createMapWithName(name) {
 export function prepareIndexesForWindow(windowId) {
   activeTabsForWindow.set(windowId, new Set());
   removingTabsForWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
+  removedTabsForWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
   visibleTabsForWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
   selectedTabsForWindow.set(windowId, createMapWithName(`selected tabs in window ${windowId}`));
   highlightedTabsForWindow.set(windowId, createMapWithName(`highlighted tabs in window ${windowId}`));
@@ -273,6 +275,7 @@ export function unprepareIndexesForWindow(windowId) {
   activeTabForWindow.delete(windowId);
   activeTabsForWindow.delete(windowId);
   removingTabsForWindow.delete(windowId);
+  removedTabsForWindow.delete(windowId);
   visibleTabsForWindow.delete(windowId);
   selectedTabsForWindow.delete(windowId);
   highlightedTabsForWindow.delete(windowId);
@@ -329,6 +332,7 @@ export function updateIndexesForTab(tab) {
 
 export function removeTabFromIndexes(tab) {
   removeRemovingTab(tab);
+  //removeRemovedTab(tab);
   removeVisibleTab(tab);
   removeSelectedTab(tab);
   removeHighlightedTab(tab);
@@ -359,6 +363,17 @@ export function addRemovingTab(tab) {
 }
 export function removeRemovingTab(tab) {
   removeTabFromIndex(tab, removingTabsForWindow);
+}
+
+export function addRemovedTab(tab) {
+  addTabToIndex(tab, removedTabsForWindow);
+  setTimeout(removeRemovedTab, 100000, {
+    id:       tab.id,
+    windowId: tab.windowId
+  });
+}
+function removeRemovedTab(tab) {
+  removeTabFromIndex(tab, removedTabsForWindow);
 }
 
 export function addVisibleTab(tab) {

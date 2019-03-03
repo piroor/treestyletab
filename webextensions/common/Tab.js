@@ -802,6 +802,12 @@ Tab.waitUntilTrackedAll = async (windowId, options = {}) => {
 Tab.waitUntilTracked = async (tabId, options = {}) => {
   if (!tabId)
     return null;
+  const windowId = TabsStore.getWindow();
+  if (windowId) {
+    const tabs = TabsStore.removedTabsForWindow.get(windowId);
+    if (tabs && tabs.has(tabId))
+      return null; // already removed tab
+  }
   if (Array.isArray(tabId))
     return Promise.all(tabId.map(id => Tab.waitUntilTracked(id, options)));
   const tab = Tab.get(tabId);

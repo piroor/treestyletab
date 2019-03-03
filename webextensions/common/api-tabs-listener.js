@@ -586,6 +586,8 @@ async function onRemoved(tabId, removeInfo) {
     TabsStore.removeHighlightedTab(oldTab);
     TabsStore.removeGroupTab(oldTab);
 
+    TabsStore.addRemovedTab(oldTab);
+
     Tab.onStateChanged.dispatch(oldTab);
 
     if (oldTab.active &&
@@ -827,6 +829,7 @@ async function onDetached(tabId, detachInfo) {
     if (!byInternalOperation) // we should process only tabs detached by others.
       Tab.onDetached.dispatch(oldTab, info);
 
+    TabsStore.addRemovedTab(oldTab);
     if (targetWindow)
       oldWindow.untrackTab(oldTab.id);
     else
