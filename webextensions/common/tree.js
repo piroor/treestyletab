@@ -230,9 +230,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         insertBefore = firstChild;
         break;
       case Constants.kINSERT_NEAREST: {
-        let allTabs = Tab.getAllTabs(parent.windowId);
-        if (options.ignoreTabs)
-          allTabs = allTabs.filter(tab => !options.ignoreTabs.includes(tab));
+        const allTabs = Tab.getOtherTabs(parent.windowId, options.ignoreTabs);
         const index = allTabs.indexOf(child);
         if (index < allTabs.indexOf(firstChild)) {
           insertBefore = firstChild;

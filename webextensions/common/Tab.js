@@ -1249,24 +1249,25 @@ Tab.broadcastState = (tabs, options = {}) => {
   }).catch(ApiTabs.createErrorSuppressor());
 };
 
+Tab.getOtherTabs = (windowId, ignoreTabs) => {
+  const query = {
+    windowId: windowId,
+    tabs:     TabsStore.livingTabsForWindow.get(windowId),
+    ordered:  true
+  };
+  if (Array.isArray(ignoreTabs) &&
+      ignoreTabs.length > 0)
+    query['!id'] = ignoreTabs.map(tab => tab.id);
+  return TabsStore.queryAll(query);
+};
+
 function getTabIndex(tab, options = {}) {
   if (typeof options != 'object')
     options = {};
   if (!TabsStore.ensureLivingTab(tab))
     return -1;
   TabsStore.assertValidTab(tab);
-
-  const query = {
-    windowId: tab.windowId,
-    tabs:     TabsStore.livingTabsForWindow.get(tab.windowId),
-    ordered:  true
-  };
-  if (Array.isArray(options.ignoreTabs) &&
-      options.ignoreTabs.length > 0)
-    query['!id'] = options.ignoreTabs.map(tab => tab.id);
-  const tabs = TabsStore.queryAll(query);
-
-  return tabs.indexOf(tab);
+  return Tab.getOtherTabs(tab.windowId, options.ignoreTabs).indexOf(tab);
 }
 
 Tab.calculateNewTabIndex = params => {
