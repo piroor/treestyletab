@@ -78,6 +78,9 @@ export default class Tab {
       TabsStore.activeTabsForWindow.get(tab.windowId).delete(tab);
     }
 
+    TabsStore.addLivingTab(tab);
+    TabsStore.addControllableTab(tab);
+
     const incompletelyTrackedTabsPerWindow = mIncompletelyTrackedTabs.get(tab.windowId) || new Set();
     incompletelyTrackedTabsPerWindow.add(tab);
     mIncompletelyTrackedTabs.set(tab.windowId, incompletelyTrackedTabsPerWindow);
@@ -1065,7 +1068,7 @@ Tab.getTabAt = (windowId, index) => {
     windowId,
     tabs,
     controllable: true,
-    fromIndex:    index - (allTabs.size - tabs.size),
+    fromIndex:    Math.max(0, index - (allTabs.size - tabs.size)),
     logicalIndex: index,
     first:        true
   });
