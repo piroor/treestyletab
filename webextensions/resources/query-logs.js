@@ -47,6 +47,10 @@ function analyze() {
       log.fromId = 'given';
     if (log.toId)
       log.toId = 'given';
+    if (log.fromIndex)
+      log.fromIndex = 'given';
+    if (log.logicalIndex)
+      log.logicalIndex = 'given';
     for (const key of ['id', '!id']) {
       if (log[key])
         log[key] = Array.isArray(log[key]) ? 'array' : (typeof log[key]);
