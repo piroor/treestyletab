@@ -6,6 +6,7 @@
    * Don't multiselect all tabs after the context menu command "Move to New Window" in "Move Tabs" is invoked.
    * Add ability to change overflow style of too long tab label, for better performance.
    * Better compatibility with [Conex](https://addons.mozilla.org/firefox/addon/conex/).
+   * Add new APIs [`move-before` and `move-after`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#move-tree-to-different-position) to move tabs safely.
  - 2.7.23 (2019.2.22)
    * Don't move focus to a tab in a collapsed tree and expand collapsed tree when a collapsed child is focused, when the session was restored.
  - 2.7.22 (2019.2.20)

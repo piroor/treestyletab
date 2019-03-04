@@ -6,6 +6,7 @@
    * タブのコンテキストメニューから「タブを移動」で「タブを新しいウィンドウに移動」した後にすべてのタブが選択されてしまっていたのを修正
    * 動作速度を優先させたい場合のために、タブのラベルが長すぎる場合の省略方法を変更できるようにした
    * [Conex](https://addons.mozilla.org/firefox/addon/conex/)との互換性を向上
+   * タブをより安全に移動させるための[`move-before`および`move-after`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#move-tree-to-different-position) APIを追加
  - 2.7.23 (2019.2.22)
    * セッション復元後に、折り畳まれたツリー内のタブがフォーカスされてもツリーが自動展開されなかったり、現在のタブを閉じた後に折り畳まれたツリー内のタブにフォーカスが移動したりする問題を修正
  - 2.7.22 (2019.2.20)
