@@ -37,6 +37,7 @@ export const configs = new Configs({
   maxTreeLevel: -1,
   indentAutoShrink: true,
   indentAutoShrinkOnlyForVisible: true,
+  labelOverflowStyle: 'fade',
 
   scrollbarMode: /^Mac/i.test(navigator.platform) ? Constants.kTABBAR_SCROLLBAR_MODE_OVERLAY : Constants.kTABBAR_SCROLLBAR_MODE_NARROW,
   narrowScrollbarSize: 8,

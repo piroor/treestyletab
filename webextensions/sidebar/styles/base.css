@@ -353,14 +353,18 @@ ul {
 .tab .label {
   flex-grow: 1;
   overflow: hidden;
-  /* text-overflow: ".."; *//* instead of "ellipsis" */;
   white-space: nowrap;
 }
-.tab .label.overflow {
+
+:root:not([data-label-overflow="fade"]) .tab .label {
+  text-overflow: ".."; /*ellipsis*/;
+}
+
+:root[data-label-overflow="fade"] .tab .label.overflow {
   mask-image: linear-gradient(to left, transparent 0, black 2em);
 }
-.tab .label.overflow:dir(rtl),
-:root.rtl .tab .label.overflow {
+:root[data-label-overflow="fade"] .tab .label.overflow:dir(rtl),
+:root[data-label-overflow="fade"].rtl .tab .label.overflow {
   direction: rtl;
   mask-image: linear-gradient(to right, transparent 0, black 2em);
 }

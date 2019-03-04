@@ -34,9 +34,9 @@ export function init() {
   mInitialized = true;
   document.querySelector('#sync-throbber').addEventListener('animationiteration', synchronizeThrobberAnimation);
 
-  const tabbar = document.querySelector('#tabbar');
-  tabbar.addEventListener('overflow', onOverflow);
-  tabbar.addEventListener('underflow', onUnderflow);
+  document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
+  if (configs.labelOverflowStyle == 'fade')
+    startObserveTabsOverflow();
 }
 
 export function getTabFromDOMNode(node, options = {}) {
@@ -323,9 +323,28 @@ export function updateAll() {
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
     reserveToUpdateTooltip(tab);
-    if (!tab.$TST.collapsed)
+    if (configs.labelOverflowStyle == 'fade' &&
+        !tab.$TST.collapsed)
       updateLabelOverflow(tab);
   }
+}
+
+function startObserveTabsOverflow() {
+  const tabbar = document.getElementById('tabbar');
+  if (tabbar._observingTabsOverflow)
+    return;
+  tabbar.addEventListener('overflow', onOverflow);
+  tabbar.addEventListener('underflow', onUnderflow);
+  tabbar._observingTabsOverflow = true;
+}
+
+function endObserveTabsOverflow() {
+  const tabbar = document.getElementById('tabbar');
+  if (!tabbar._observingTabsOverflow)
+    return;
+  tabbar.removeEventListener('overflow', onOverflow);
+  tabbar.removeEventListener('underflow', onUnderflow);
+  tabbar._observingTabsOverflow = false;
 }
 
 export function updateLabelOverflow(tab) {
@@ -632,7 +651,9 @@ Tab.onStateChanged.addListener(tab => {
 Tab.onLabelUpdated.addListener(tab => {
   getLabelContent(tab).textContent = tab.title;
   reserveToUpdateTooltip(tab);
-  if (!tab.$TST.titleUpdatedWhileCollapsed && tab.$TST.collapsed)
+  if (configs.labelOverflowStyle == 'fade' &&
+      !tab.$TST.titleUpdatedWhileCollapsed &&
+      tab.$TST.collapsed)
     tab.$TST.titleUpdatedWhileCollapsed = true;
 });
 
@@ -648,7 +669,8 @@ Tab.onCollapsedStateChanged.addListener((tab, info) => {
   if (info.collapsed)
     return;
   reserveToUpdateLoadingState();
-  if (tab.$TST.titleUpdatedWhileCollapsed) {
+  if (configs.labelOverflowStyle == 'fade' &&
+      tab.$TST.titleUpdatedWhileCollapsed) {
     updateLabelOverflow(tab);
     delete tab.$TST.titleUpdatedWhileCollapsed;
   }
@@ -752,6 +774,19 @@ configs.$addObserver(changedKey => {
         for (const tab of Tab.getAllTabs(TabsStore.getWindow())) {
           reserveToUpdateTooltip(tab);
         }
+      break;
+
+    case 'labelOverflowStyle':
+      document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
+      if (configs.labelOverflowStyle == 'fade') {
+        for (const tab of Tab.getVisibleTabs(TabsStore.getWindow())) {
+          updateLabelOverflow(tab);
+        }
+        startObserveTabsOverflow();
+      }
+      else {
+        endObserveTabsOverflow();
+      }
       break;
   }
 });

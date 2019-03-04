@@ -69,6 +69,7 @@ export const kLEVEL         = 'data-level';
 export const kCLOSED_SET_ID = 'data-closed-set-id';
 export const kCURRENT_URI   = 'data-current-uri';
 export const kMAX_TREE_LEVEL = 'data-max-tree-level';
+export const kLABEL_OVERFLOW = 'data-label-overflow';
 
 export const kPERSISTENT_ID            = 'data-persistent-id';
 export const kPERSISTENT_ANCESTORS     = 'ancestors';
