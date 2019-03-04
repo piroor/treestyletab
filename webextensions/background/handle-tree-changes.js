@@ -180,6 +180,10 @@ function reserveDetachHiddenTab(tab) {
             dontMove:  true,
             broadcast: true
           });
+          Tree.collapseExpandTabAndSubtree(nearestVisibleAncestor, {
+            collapsed: false,
+            broadcast: true
+          });
         }
         else {
           await Tree.detachTab(descendant, {
