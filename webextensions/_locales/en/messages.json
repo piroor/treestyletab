@@ -307,7 +307,7 @@
   "config_parentTabBehaviorForChanges_onlyInSidebar": { "message": "Treat as a parent by operations inside the tree sidebar. / Treat just as a solo tab, by operations outside the tree sidebar." },
 
   "config_fixupTreeOnTabVisibilityChanged_caption": { "message": "When visibility of tabs are changed by other addons" },
-  "config_fixupTreeOnTabVisibilityChanged_fix":     { "message": "Fix up tree structure automatically, for visible tabs (*Recommended if you use another addon to switch tab groups)" },
+  "config_fixupTreeOnTabVisibilityChanged_fix":     { "message": "Fix up tree structure with visible tabs automatically (*Recommended if you use another addon to switch tab groups)" },
   "config_fixupTreeOnTabVisibilityChanged_keep":    { "message": "Keep tree structure including hidden tabs (*Recommended if you use another addon which changes temporary visibility of tabs)" },
 
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "When a new tree appears, collapse others automatically" },
