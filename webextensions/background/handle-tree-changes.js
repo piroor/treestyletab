@@ -159,19 +159,43 @@ Tree.onDetached.addListener((tab, _detachInfo) => {
 });
 
 function reserveDetachHiddenTab(tab) {
-  if (tab.$TST.reservedDetachHiddenTab)
-    clearTimeout(tab.$TST.reservedDetachHiddenTab);
-  tab.$TST.reservedDetachHiddenTab = setTimeout(() => {
-    if (!TabsStore.ensureLivingTab(tab))
-      return;
-    delete tab.$TST.reservedDetachHiddenTab;
-    if (tab.$TST.hasParent &&
-        !tab.$TST.parent.hidden)
-      Tree.detachTab(tab, {
-        broadcast: true
-      });
+  reserveDetachHiddenTab.tabs.add(tab);
+  if (reserveDetachHiddenTab.reserved)
+    clearTimeout(reserveDetachHiddenTab.reserved);
+  reserveDetachHiddenTab.reserved = setTimeout(async () => {
+    delete reserveDetachHiddenTab.reserved;
+    const tabs = new Set(Tab.sort(Array.from(reserveDetachHiddenTab.tabs)));
+    reserveDetachHiddenTab.tabs.clear();
+    for (const tab of tabs) {
+      if (!TabsStore.ensureLivingTab(tab))
+        continue;
+      for (const descendant of tab.$TST.descendants) {
+        if (descendant.hidden)
+          continue;
+        const nearestVisibleAncestor = descendant.$TST.ancestors.find(ancestor => !ancestor.$TST.hidden && !tabs.has(ancestor));
+        if (nearestVisibleAncestor) {
+          if (nearestVisibleAncestor == descendant.$TST.parent)
+            continue;
+          await Tree.attachTabTo(descendant, nearestVisibleAncestor, {
+            dontMove:  true,
+            broadcast: true
+          });
+        }
+        else {
+          await Tree.detachTab(descendant, {
+            broadcast: true
+          });
+        }
+      }
+      if (tab.$TST.hasParent &&
+          !tab.$TST.parent.hidden)
+        await Tree.detachTab(tab, {
+          broadcast: true
+        });
+    }
   }, 100);
 }
+reserveDetachHiddenTab.tabs = new Set();
 
 Tab.onHidden.addListener(tab => {
   if (configs.fixupTreeOnTabVisibilityChanged)
@@ -180,28 +204,33 @@ Tab.onHidden.addListener(tab => {
 
 function reserveAttachShownTab(tab) {
   tab.$TST.addState(Constants.kTAB_STATE_SHOWING);
-  if (tab.$TST.reservedAttachShownTab)
-    clearTimeout(tab.$TST.reservedAttachShownTab);
-  tab.$TST.reservedAttachShownTab = setTimeout(async () => {
-    if (!TabsStore.ensureLivingTab(tab))
-      return;
-    delete tab.$TST.reservedAttachShownTab;
-    if (tab.$TST.hasParent)
-      return;
-    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
-      insertAfter:  tab.$TST.nearestVisiblePreceding,
-      insertBefore: tab.$TST.nearestFollowingForeigner
-    });
-    if (referenceTabs.parent) {
-      await Tree.attachTabTo(tab, referenceTabs.parent, {
-        insertBefore: referenceTabs.insertBefore,
-        insertAfter:  referenceTabs.insertAfter,
-        broadcast:    true
+  reserveAttachShownTab.tabs.add(tab);
+  if (reserveAttachShownTab.reserved)
+    clearTimeout(reserveAttachShownTab.reserved);
+  reserveAttachShownTab.reserved = setTimeout(async () => {
+    delete reserveAttachShownTab.reserved;
+    const tabs = new Set(Tab.sort(Array.from(reserveAttachShownTab.tabs)));
+    reserveAttachShownTab.tabs.clear();
+    for (const tab of tabs) {
+      if (!TabsStore.ensureLivingTab(tab) ||
+          tab.$TST.hasParent)
+        continue;
+      const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+        insertAfter:  tab.$TST.nearestVisiblePreceding,
+        insertBefore: tab.$TST.nearestFollowingForeigner
       });
+      if (referenceTabs.parent) {
+        await Tree.attachTabTo(tab, referenceTabs.parent, {
+          insertBefore: referenceTabs.insertBefore,
+          insertAfter:  referenceTabs.insertAfter,
+          broadcast:    true
+        });
+      }
       tab.$TST.removeState(Constants.kTAB_STATE_SHOWING);
     }
   }, 100);
 }
+reserveAttachShownTab.tabs = new Set();
 
 Tab.onShown.addListener(tab => {
   if (configs.fixupTreeOnTabVisibilityChanged)
