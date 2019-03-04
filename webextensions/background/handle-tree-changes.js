@@ -158,6 +158,54 @@ Tree.onDetached.addListener((tab, _detachInfo) => {
   }
 });
 
+function reserveDetachHiddenTab(tab) {
+  if (tab.$TST.reservedDetachHiddenTab)
+    clearTimeout(tab.$TST.reservedDetachHiddenTab);
+  tab.$TST.reservedDetachHiddenTab = setTimeout(() => {
+    if (!TabsStore.ensureLivingTab(tab))
+      return;
+    delete tab.$TST.reservedDetachHiddenTab;
+    if (tab.$TST.hasParent &&
+        !tab.$TST.parent.hidden)
+      Tree.detachTab(tab, {
+        broadcast: true
+      });
+  }, 100);
+}
+
+Tab.onHidden.addListener(tab => {
+  reserveDetachHiddenTab(tab);
+});
+
+function reserveAttachShownTab(tab) {
+  if (tab.$TST.reservedAttachShownTab)
+    clearTimeout(tab.$TST.reservedAttachShownTab);
+  tab.$TST.reservedAttachShownTab = setTimeout(async () => {
+    if (!TabsStore.ensureLivingTab(tab))
+      return;
+    delete tab.$TST.reservedAttachShownTab;
+    if (tab.$TST.hasParent)
+      return;
+    const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
+      insertAfter:  tab.$TST.nearestVisiblePreceding,
+      insertBefore: tab.$TST.nearestFollowingForeigner
+    });
+    if (referenceTabs.parent) {
+      await Tree.attachTabTo(tab, referenceTabs.parent, {
+        insertBefore: referenceTabs.insertBefore,
+        insertAfter:  referenceTabs.insertAfter,
+        broadcast:    true
+      });
+      tab.$TST.removeState(Constants.kTAB_STATE_SHOWING);
+    }
+  }, 100);
+}
+
+Tab.onShown.addListener(tab => {
+  tab.$TST.addState(Constants.kTAB_STATE_SHOWING);
+  reserveAttachShownTab(tab);
+});
+
 Background.onReady.addListener(() => {
   mInitialized = true;
 });

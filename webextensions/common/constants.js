@@ -119,6 +119,7 @@ export const kTAB_STATE_COLLAPSED_DONE            = 'collapsed-completely';
 export const kTAB_STATE_COLLAPSING                = 'collapsing';
 export const kTAB_STATE_EXPANDING                 = 'expanding';
 export const kTAB_STATE_MOVING                    = 'moving';
+export const kTAB_STATE_SHOWING                   = 'showing';
 export const kTAB_STATE_SUBTREE_COLLAPSED         = 'subtree-collapsed';
 export const kTAB_STATE_SUBTREE_EXPANDED_MANUALLY = 'subtree-expanded-manually';
 export const kTAB_STATE_FAVICONIZED               = 'faviconized';
@@ -142,6 +143,7 @@ export const kTAB_INTERNAL_STATES = [
   kTAB_STATE_COLLAPSING,
   kTAB_STATE_EXPANDING,
   kTAB_STATE_MOVING,
+  kTAB_STATE_SHOWING,
   kTAB_STATE_THROBBER_UNSYNCHRONIZED
 ];
 

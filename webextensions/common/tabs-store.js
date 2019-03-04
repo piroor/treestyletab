@@ -152,14 +152,17 @@ function extractMatchedTabs(tabs, query, offset) {
       continue TAB_MACHING;
     if (query.normal &&
         (tab.hidden ||
+         tab.$TST.states.has(Constants.kTAB_STATE_SHOWING) ||
          tab.pinned))
       continue TAB_MACHING;
     if (query.visible &&
         (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) ||
-         tab.hidden))
+         tab.hidden ||
+         tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
       continue TAB_MACHING;
     if (query.controllable &&
-        tab.hidden)
+        (tab.hidden ||
+         tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
       continue TAB_MACHING;
     if ('hasChild' in query &&
         query.hasChild != tab.$TST.hasChild)

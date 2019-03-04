@@ -265,8 +265,9 @@ export default class Tab {
   get next() {
     return TabsStore.query({
       windowId: this.tab.windowId,
+      tabs:     TabsStore.controllableTabsInWindow.get(this.tab.windowId),
       fromId:   this.tab.id,
-      living:   true,
+      controllable: true,
       index:    (index => index > this.tab.index)
     });
   }
@@ -274,8 +275,9 @@ export default class Tab {
   get previous() {
     return TabsStore.query({
       windowId: this.tab.windowId,
+      tabs:     TabsStore.controllableTabsInWindow.get(this.tab.windowId),
       fromId:   this.tab.id,
-      living:   true,
+      controllable: true,
       index:    (index => index < this.tab.index),
       last:     true
     });
