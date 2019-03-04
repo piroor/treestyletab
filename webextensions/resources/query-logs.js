@@ -39,6 +39,7 @@ function analyze() {
     log = fromString(toString(log));
     delete log.elasped;
     delete log.elapsed;
+    delete log.tabs;
     log.source = (typeof log.windowId == 'number') ? 'sidebar' : log.windowId;
     delete log.windowId;
     if (log.indexedTabs)
