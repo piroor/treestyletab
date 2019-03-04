@@ -482,6 +482,30 @@ export async function moveUp(tab, options = {}) {
   const previousTab = tab.$TST.nearestVisiblePreceding;
   if (!previousTab)
     return false;
+  const moved = await moveBefore(tab, Object.assign({}, options, {
+    referenceTabId: previousTab.id
+  }));
+  if (moved && !options.followChildren)
+    await onMoveUp.dispatch(tab);
+  return moved;
+}
+
+export async function moveDown(tab, options = {}) {
+  const nextTab = options.followChildren ? tab.$TST.nearestFollowingForeigner : tab.$TST.nearestVisibleFollowing;
+  if (!nextTab)
+    return false;
+  const moved = await moveAfter(tab, Object.assign({}, options, {
+    referenceTabId: nextTab.id
+  }));
+  if (moved && !options.followChildren)
+    await onMoveDown.dispatch(tab);
+  return moved;
+}
+
+export async function moveBefore(tab, options = {}) {
+  const insertBefore = Tab.get(options.referenceTabId || options.referenceTab) || null;
+  if (!insertBefore)
+    return false;
 
   if (!options.followChildren) {
     Tree.detachAllChildren(tab, {
@@ -490,14 +514,13 @@ export async function moveUp(tab, options = {}) {
     });
     await TabsMove.moveTabBefore(
       tab,
-      previousTab,
+      insertBefore,
       { broadcast: true }
     );
-    await onMoveUp.dispatch(tab);
   }
   else {
     const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
-      insertBefore: previousTab
+      insertBefore
     });
     if (!referenceTabs.insertBefore &&
         !referenceTabs.insertAfter)
@@ -512,28 +535,25 @@ export async function moveUp(tab, options = {}) {
   return true;
 }
 
-export async function moveDown(tab, options = {}) {
+export async function moveAfter(tab, options = {}) {
+  const insertAfter = Tab.get(options.referenceTabId || options.referenceTab) || null;
+  if (!insertAfter)
+    return false;
+
   if (!options.followChildren) {
-    const nextTab = tab.$TST.nearestVisibleFollowing;
-    if (!nextTab)
-      return false;
     Tree.detachAllChildren(tab, {
       broadcast: true,
       behavior:  Constants.kCLOSE_PARENT_BEHAVIOR_PROMOTE_FIRST_CHILD
     });
     await TabsMove.moveTabAfter(
       tab,
-      nextTab,
+      insertAfter,
       { broadcast: true }
     );
-    await onMoveDown.dispatch(tab);
   }
   else {
-    const nextTab = tab.$TST.nearestFollowingForeigner;
-    if (!nextTab)
-      return false;
     const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
-      insertAfter: nextTab
+      insertAfter
     });
     if (!referenceTabs.insertBefore && !referenceTabs.insertAfter)
       return false;

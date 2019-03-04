@@ -683,6 +683,20 @@ function onMessageExternal(message, sender) {
         return true;
       })();
 
+    case TSTAPI.kMOVE_BEFORE:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const results = await Promise.all(tabs.map(tab => Commands.moveBefore(tab, message)));
+        return TSTAPI.formatResult(results, message);
+      })();
+
+    case TSTAPI.kMOVE_AFTER:
+      return (async () => {
+        const tabs = await TSTAPI.getTargetTabs(message, sender);
+        const results = await Promise.all(tabs.map(tab => Commands.moveAfter(tab, message)));
+        return TSTAPI.formatResult(results, message);
+      })();
+
     case TSTAPI.kFOCUS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
