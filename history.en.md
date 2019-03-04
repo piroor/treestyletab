@@ -5,6 +5,7 @@
    * Add ability to collect performance logs of tab queryings. It will help more future optimizations for too much number of tabs. (Please note that you need to activate logging manually, via the checkbox at the "Development" section in the options page.)
    * Don't multiselect all tabs after the context menu command "Move to New Window" in "Move Tabs" is invoked.
    * Add ability to change overflow style of too long tab label, for better performance.
+   * Add ability to fix up tree structure with visible tabs when tabs are hidden by other addons. (*Please remind that the option is disabled by default and you need to activate it manually.)
    * Better compatibility with [Conex](https://addons.mozilla.org/firefox/addon/conex/).
    * Add new APIs [`move-before` and `move-after`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#move-tree-to-different-position) to move tabs safely.
  - 2.7.23 (2019.2.22)
