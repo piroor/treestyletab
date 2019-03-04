@@ -412,6 +412,9 @@
   "config_sidebarScrollbarPosition_auto": { "message": "自動" },
   "config_sidebarScrollbarPosition_left": { "message": "左側" },
   "config_sidebarScrollbarPosition_right": { "message": "右側" },
+  "config_labelOverflowStyle_caption": { "message": "タブのラベルが長すぎる場合:" },
+  "config_labelOverflowStyle_fade":    { "message": "フェードアウトする（視認性を重視）" },
+  "config_labelOverflowStyle_crop":    { "message": "「..」で切り取る（動作速度を重視）" },
 
   "config_requestPermissions_bookmarks": { "message": "ブックマークの読み取りと作成を許可する" },
   "config_requestPermissions_allUrls":   { "message": "キーボードショートカットでのタブ切り替え中は、折り畳まれた子孫タブにはフォーカスせず、折り畳まれたツリーも展開しない（※Webページ内でのスクリプトの実行を許可する必要があります）" },

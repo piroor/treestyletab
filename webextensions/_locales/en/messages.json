@@ -416,6 +416,9 @@
   "config_sidebarScrollbarPosition_auto": { "message": "Auto" },
   "config_sidebarScrollbarPosition_left": { "message": "Left side" },
   "config_sidebarScrollbarPosition_right": { "message": "Right side" },
+  "config_labelOverflowStyle_caption": { "message": "Too long label of tabs:" },
+  "config_labelOverflowStyle_fade":    { "message": "Fade Out (Better Visibility)" },
+  "config_labelOverflowStyle_crop":    { "message": "Crop with \"..\" (Better Performance)" },
 
   "config_requestPermissions_bookmarks": { "message": "Allow to read and create bookmarks" },
   "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
