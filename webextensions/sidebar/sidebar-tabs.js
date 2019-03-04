@@ -331,20 +331,20 @@ export function updateAll() {
 
 function startObserveTabsOverflow() {
   const tabbar = document.getElementById('tabbar');
-  if (tabbar._observingTabsOverflow)
+  if (tabbar.$observingTabsOverflow)
     return;
   tabbar.addEventListener('overflow', onOverflow);
   tabbar.addEventListener('underflow', onUnderflow);
-  tabbar._observingTabsOverflow = true;
+  tabbar.$observingTabsOverflow = true;
 }
 
 function endObserveTabsOverflow() {
   const tabbar = document.getElementById('tabbar');
-  if (!tabbar._observingTabsOverflow)
+  if (!tabbar.$observingTabsOverflow)
     return;
   tabbar.removeEventListener('overflow', onOverflow);
   tabbar.removeEventListener('underflow', onUnderflow);
-  tabbar._observingTabsOverflow = false;
+  tabbar.$observingTabsOverflow = false;
 }
 
 export function updateLabelOverflow(tab) {
