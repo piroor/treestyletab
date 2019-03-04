@@ -190,7 +190,7 @@ function cancelDelayedExpand(tab) {
 }
 
 function cancelAllDelayedExpand(windowId) {
-  for (const tab of TabsStore.toBeExpandedTabsForWindow.get(windowId)) {
+  for (const tab of TabsStore.toBeExpandedTabsInWindow.get(windowId)) {
     cancelDelayedExpand(tab);
   }
 }

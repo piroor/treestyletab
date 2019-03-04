@@ -259,27 +259,27 @@ function fixupQuery(query) {
 //===================================================================
 
 export const activeTabForWindow       = new Map();
-export const activeTabsForWindow      = new Map();
-export const livingTabsForWindow      = new Map();
-export const controllableTabsForWindow = new Map();
-export const removingTabsForWindow    = new Map();
-export const removedTabsForWindow     = new Map();
-export const visibleTabsForWindow     = new Map();
-export const selectedTabsForWindow    = new Map();
-export const highlightedTabsForWindow = new Map();
-export const pinnedTabsForWindow      = new Map();
-export const unpinnedTabsForWindow    = new Map();
-export const rootTabsForWindow        = new Map();
-export const groupTabsForWindow       = new Map();
-export const collapsingTabsForWindow  = new Map();
-export const expandingTabsForWindow   = new Map();
-export const toBeExpandedTabsForWindow = new Map();
-export const subtreeCollapsableTabsForWindow = new Map();
-export const draggingTabsForWindow    = new Map();
-export const duplicatingTabsForWindow = new Map();
-export const toBeGroupedTabsForWindow = new Map();
-export const loadingTabsForWindow     = new Map();
-export const unsynchronizedTabsForWindow = new Map();
+export const activeTabsInWindow      = new Map();
+export const livingTabsInWindow      = new Map();
+export const controllableTabsInWindow = new Map();
+export const removingTabsInWindow    = new Map();
+export const removedTabsInWindow     = new Map();
+export const visibleTabsInWindow     = new Map();
+export const selectedTabsInWindow    = new Map();
+export const highlightedTabsInWindow = new Map();
+export const pinnedTabsInWindow      = new Map();
+export const unpinnedTabsInWindow    = new Map();
+export const rootTabsInWindow        = new Map();
+export const groupTabsInWindow       = new Map();
+export const collapsingTabsInWindow  = new Map();
+export const expandingTabsInWindow   = new Map();
+export const toBeExpandedTabsInWindow = new Map();
+export const subtreeCollapsableTabsInWindow = new Map();
+export const draggingTabsInWindow    = new Map();
+export const duplicatingTabsInWindow = new Map();
+export const toBeGroupedTabsInWindow = new Map();
+export const loadingTabsInWindow     = new Map();
+export const unsynchronizedTabsInWindow = new Map();
 
 function createMapWithName(name) {
   const map = new Map();
@@ -288,50 +288,50 @@ function createMapWithName(name) {
 }
 
 export function prepareIndexesForWindow(windowId) {
-  activeTabsForWindow.set(windowId, new Set());
-  livingTabsForWindow.set(windowId, createMapWithName(`living tabs in window ${windowId}`));
-  controllableTabsForWindow.set(windowId, createMapWithName(`controllable tabs in window ${windowId}`));
-  removingTabsForWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
-  removedTabsForWindow.set(windowId, createMapWithName(`removed tabs in window ${windowId}`));
-  visibleTabsForWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
-  selectedTabsForWindow.set(windowId, createMapWithName(`selected tabs in window ${windowId}`));
-  highlightedTabsForWindow.set(windowId, createMapWithName(`highlighted tabs in window ${windowId}`));
-  pinnedTabsForWindow.set(windowId, createMapWithName(`pinned tabs in window ${windowId}`));
-  unpinnedTabsForWindow.set(windowId, createMapWithName(`unpinned tabs in window ${windowId}`));
-  rootTabsForWindow.set(windowId, createMapWithName(`root tabs in window ${windowId}`));
-  groupTabsForWindow.set(windowId, createMapWithName(`group tabs in window ${windowId}`));
-  collapsingTabsForWindow.set(windowId, createMapWithName(`collapsing tabs in window ${windowId}`));
-  expandingTabsForWindow.set(windowId, createMapWithName(`expanding tabs in window ${windowId}`));
-  toBeExpandedTabsForWindow.set(windowId, createMapWithName(`to-be-expanded tabs in window ${windowId}`));
-  subtreeCollapsableTabsForWindow.set(windowId, createMapWithName(`collapsable parent tabs in window ${windowId}`));
-  draggingTabsForWindow.set(windowId, createMapWithName(`dragging tabs in window ${windowId}`));
-  duplicatingTabsForWindow.set(windowId, createMapWithName(`duplicating tabs in window ${windowId}`));
-  toBeGroupedTabsForWindow.set(windowId, createMapWithName(`to-be-grouped tabs in window ${windowId}`));
-  loadingTabsForWindow.set(windowId, createMapWithName(`loading tabs in window ${windowId}`));
-  unsynchronizedTabsForWindow.set(windowId, createMapWithName(`unsynchronized tabs in window ${windowId}`));
+  activeTabsInWindow.set(windowId, new Set());
+  livingTabsInWindow.set(windowId, createMapWithName(`living tabs in window ${windowId}`));
+  controllableTabsInWindow.set(windowId, createMapWithName(`controllable tabs in window ${windowId}`));
+  removingTabsInWindow.set(windowId, createMapWithName(`removing tabs in window ${windowId}`));
+  removedTabsInWindow.set(windowId, createMapWithName(`removed tabs in window ${windowId}`));
+  visibleTabsInWindow.set(windowId, createMapWithName(`visible tabs in window ${windowId}`));
+  selectedTabsInWindow.set(windowId, createMapWithName(`selected tabs in window ${windowId}`));
+  highlightedTabsInWindow.set(windowId, createMapWithName(`highlighted tabs in window ${windowId}`));
+  pinnedTabsInWindow.set(windowId, createMapWithName(`pinned tabs in window ${windowId}`));
+  unpinnedTabsInWindow.set(windowId, createMapWithName(`unpinned tabs in window ${windowId}`));
+  rootTabsInWindow.set(windowId, createMapWithName(`root tabs in window ${windowId}`));
+  groupTabsInWindow.set(windowId, createMapWithName(`group tabs in window ${windowId}`));
+  collapsingTabsInWindow.set(windowId, createMapWithName(`collapsing tabs in window ${windowId}`));
+  expandingTabsInWindow.set(windowId, createMapWithName(`expanding tabs in window ${windowId}`));
+  toBeExpandedTabsInWindow.set(windowId, createMapWithName(`to-be-expanded tabs in window ${windowId}`));
+  subtreeCollapsableTabsInWindow.set(windowId, createMapWithName(`collapsable parent tabs in window ${windowId}`));
+  draggingTabsInWindow.set(windowId, createMapWithName(`dragging tabs in window ${windowId}`));
+  duplicatingTabsInWindow.set(windowId, createMapWithName(`duplicating tabs in window ${windowId}`));
+  toBeGroupedTabsInWindow.set(windowId, createMapWithName(`to-be-grouped tabs in window ${windowId}`));
+  loadingTabsInWindow.set(windowId, createMapWithName(`loading tabs in window ${windowId}`));
+  unsynchronizedTabsInWindow.set(windowId, createMapWithName(`unsynchronized tabs in window ${windowId}`));
 }
 
 export function unprepareIndexesForWindow(windowId) {
   activeTabForWindow.delete(windowId);
-  activeTabsForWindow.delete(windowId);
-  livingTabsForWindow.delete(windowId);
-  controllableTabsForWindow.delete(windowId);
-  removingTabsForWindow.delete(windowId);
-  removedTabsForWindow.delete(windowId);
-  visibleTabsForWindow.delete(windowId);
-  selectedTabsForWindow.delete(windowId);
-  highlightedTabsForWindow.delete(windowId);
-  pinnedTabsForWindow.delete(windowId);
-  unpinnedTabsForWindow.delete(windowId);
-  rootTabsForWindow.delete(windowId);
-  groupTabsForWindow.delete(windowId);
-  collapsingTabsForWindow.delete(windowId);
-  expandingTabsForWindow.delete(windowId);
-  toBeExpandedTabsForWindow.delete(windowId);
-  subtreeCollapsableTabsForWindow.delete(windowId);
-  toBeGroupedTabsForWindow.delete(windowId);
-  loadingTabsForWindow.delete(windowId);
-  unsynchronizedTabsForWindow.delete(windowId);
+  activeTabsInWindow.delete(windowId);
+  livingTabsInWindow.delete(windowId);
+  controllableTabsInWindow.delete(windowId);
+  removingTabsInWindow.delete(windowId);
+  removedTabsInWindow.delete(windowId);
+  visibleTabsInWindow.delete(windowId);
+  selectedTabsInWindow.delete(windowId);
+  highlightedTabsInWindow.delete(windowId);
+  pinnedTabsInWindow.delete(windowId);
+  unpinnedTabsInWindow.delete(windowId);
+  rootTabsInWindow.delete(windowId);
+  groupTabsInWindow.delete(windowId);
+  collapsingTabsInWindow.delete(windowId);
+  expandingTabsInWindow.delete(windowId);
+  toBeExpandedTabsInWindow.delete(windowId);
+  subtreeCollapsableTabsInWindow.delete(windowId);
+  toBeGroupedTabsInWindow.delete(windowId);
+  loadingTabsInWindow.delete(windowId);
+  unsynchronizedTabsInWindow.delete(windowId);
 }
 
 export function updateIndexesForTab(tab) {
@@ -435,148 +435,148 @@ function removeTabFromIndex(tab, indexes) {
 }
 
 export function addLivingTab(tab) {
-  addTabToIndex(tab, livingTabsForWindow);
+  addTabToIndex(tab, livingTabsInWindow);
 }
 export function removeLivingTab(tab) {
-  removeTabFromIndex(tab, livingTabsForWindow);
+  removeTabFromIndex(tab, livingTabsInWindow);
 }
 
 export function addControllableTab(tab) {
-  addTabToIndex(tab, controllableTabsForWindow);
+  addTabToIndex(tab, controllableTabsInWindow);
 }
 export function removeControllableTab(tab) {
-  removeTabFromIndex(tab, controllableTabsForWindow);
+  removeTabFromIndex(tab, controllableTabsInWindow);
 }
 
 export function addRemovingTab(tab) {
-  addTabToIndex(tab, removingTabsForWindow);
+  addTabToIndex(tab, removingTabsInWindow);
   removeTabFromIndexes(tab);
 }
 export function removeRemovingTab(tab) {
-  removeTabFromIndex(tab, removingTabsForWindow);
+  removeTabFromIndex(tab, removingTabsInWindow);
 }
 
 export function addRemovedTab(tab) {
-  addTabToIndex(tab, removedTabsForWindow);
+  addTabToIndex(tab, removedTabsInWindow);
   setTimeout(removeRemovedTab, 100000, {
     id:       tab.id,
     windowId: tab.windowId
   });
 }
 function removeRemovedTab(tab) {
-  removeTabFromIndex(tab, removedTabsForWindow);
+  removeTabFromIndex(tab, removedTabsInWindow);
 }
 
 export function addVisibleTab(tab) {
-  addTabToIndex(tab, visibleTabsForWindow);
+  addTabToIndex(tab, visibleTabsInWindow);
 }
 export function removeVisibleTab(tab) {
-  removeTabFromIndex(tab, visibleTabsForWindow);
+  removeTabFromIndex(tab, visibleTabsInWindow);
 }
 
 export function addSelectedTab(tab) {
-  addTabToIndex(tab, selectedTabsForWindow);
+  addTabToIndex(tab, selectedTabsInWindow);
 }
 export function removeSelectedTab(tab) {
-  removeTabFromIndex(tab, selectedTabsForWindow);
+  removeTabFromIndex(tab, selectedTabsInWindow);
 }
 
 export function addHighlightedTab(tab) {
-  addTabToIndex(tab, highlightedTabsForWindow);
+  addTabToIndex(tab, highlightedTabsInWindow);
 }
 export function removeHighlightedTab(tab) {
-  removeTabFromIndex(tab, highlightedTabsForWindow);
+  removeTabFromIndex(tab, highlightedTabsInWindow);
 }
 
 export function addPinnedTab(tab) {
-  addTabToIndex(tab, pinnedTabsForWindow);
+  addTabToIndex(tab, pinnedTabsInWindow);
 }
 export function removePinnedTab(tab) {
-  removeTabFromIndex(tab, pinnedTabsForWindow);
+  removeTabFromIndex(tab, pinnedTabsInWindow);
 }
 
 export function addUnpinnedTab(tab) {
-  addTabToIndex(tab, unpinnedTabsForWindow);
+  addTabToIndex(tab, unpinnedTabsInWindow);
 }
 export function removeUnpinnedTab(tab) {
-  removeTabFromIndex(tab, unpinnedTabsForWindow);
+  removeTabFromIndex(tab, unpinnedTabsInWindow);
 }
 
 export function addRootTab(tab) {
-  addTabToIndex(tab, rootTabsForWindow);
+  addTabToIndex(tab, rootTabsInWindow);
 }
 export function removeRootTab(tab) {
-  removeTabFromIndex(tab, rootTabsForWindow);
+  removeTabFromIndex(tab, rootTabsInWindow);
 }
 
 export function addGroupTab(tab) {
-  addTabToIndex(tab, groupTabsForWindow);
+  addTabToIndex(tab, groupTabsInWindow);
 }
 export function removeGroupTab(tab) {
-  removeTabFromIndex(tab, groupTabsForWindow);
+  removeTabFromIndex(tab, groupTabsInWindow);
 }
 
 export function addCollapsingTab(tab) {
-  addTabToIndex(tab, collapsingTabsForWindow);
+  addTabToIndex(tab, collapsingTabsInWindow);
 }
 export function removeCollapsingTab(tab) {
-  removeTabFromIndex(tab, collapsingTabsForWindow);
+  removeTabFromIndex(tab, collapsingTabsInWindow);
 }
 
 export function addExpandingTab(tab) {
-  addTabToIndex(tab, expandingTabsForWindow);
+  addTabToIndex(tab, expandingTabsInWindow);
 }
 export function removeExpandingTab(tab) {
-  removeTabFromIndex(tab, expandingTabsForWindow);
+  removeTabFromIndex(tab, expandingTabsInWindow);
 }
 
 export function addToBeExpandedTab(tab) {
-  addTabToIndex(tab, toBeExpandedTabsForWindow);
+  addTabToIndex(tab, toBeExpandedTabsInWindow);
 }
 export function removeToBeExpandedTab(tab) {
-  removeTabFromIndex(tab, toBeExpandedTabsForWindow);
+  removeTabFromIndex(tab, toBeExpandedTabsInWindow);
 }
 
 export function addSubtreeCollapsableTab(tab) {
-  addTabToIndex(tab, subtreeCollapsableTabsForWindow);
+  addTabToIndex(tab, subtreeCollapsableTabsInWindow);
 }
 export function removeSubtreeCollapsableTab(tab) {
-  removeTabFromIndex(tab, subtreeCollapsableTabsForWindow);
+  removeTabFromIndex(tab, subtreeCollapsableTabsInWindow);
 }
 
 export function addDuplicatingTab(tab) {
-  addTabToIndex(tab, duplicatingTabsForWindow);
+  addTabToIndex(tab, duplicatingTabsInWindow);
 }
 export function removeDuplicatingTab(tab) {
-  removeTabFromIndex(tab, duplicatingTabsForWindow);
+  removeTabFromIndex(tab, duplicatingTabsInWindow);
 }
 
 export function addDraggingTab(tab) {
-  addTabToIndex(tab, draggingTabsForWindow);
+  addTabToIndex(tab, draggingTabsInWindow);
 }
 export function removeDraggingTab(tab) {
-  removeTabFromIndex(tab, draggingTabsForWindow);
+  removeTabFromIndex(tab, draggingTabsInWindow);
 }
 
 export function addToBeGroupedTab(tab) {
-  addTabToIndex(tab, toBeGroupedTabsForWindow);
+  addTabToIndex(tab, toBeGroupedTabsInWindow);
 }
 export function removeToBeGroupedTab(tab) {
-  removeTabFromIndex(tab, toBeGroupedTabsForWindow);
+  removeTabFromIndex(tab, toBeGroupedTabsInWindow);
 }
 
 export function addLoadingTab(tab) {
-  addTabToIndex(tab, loadingTabsForWindow);
+  addTabToIndex(tab, loadingTabsInWindow);
 }
 export function removeLoadingTab(tab) {
-  removeTabFromIndex(tab, loadingTabsForWindow);
+  removeTabFromIndex(tab, loadingTabsInWindow);
 }
 
 export function addUnsynchronizedTab(tab) {
-  addTabToIndex(tab, unsynchronizedTabsForWindow);
+  addTabToIndex(tab, unsynchronizedTabsInWindow);
 }
 export function removeUnsynchronizedTab(tab) {
-  removeTabFromIndex(tab, unsynchronizedTabsForWindow);
+  removeTabFromIndex(tab, unsynchronizedTabsInWindow);
 }
 
 

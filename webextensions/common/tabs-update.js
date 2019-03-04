@@ -277,7 +277,7 @@ export async function updateTabsHighlighted(highlightInfo) {
 
   //const startAt = Date.now();
 
-  const allHighlightedTabs = TabsStore.highlightedTabsForWindow.get(highlightInfo.windowId);
+  const allHighlightedTabs = TabsStore.highlightedTabsInWindow.get(highlightInfo.windowId);
 
   const tabIds = highlightInfo.tabIds; // new Set(highlightInfo.tabIds);
   const unhighlightedTabs = TabsStore.queryAll({

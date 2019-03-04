@@ -470,7 +470,7 @@ export function clearDraggingState() {
 }
 
 function isDraggingAllActiveTabs(tab) {
-  const draggingTabsCount = TabsStore.draggingTabsForWindow.get(tab.windowId).size;
+  const draggingTabsCount = TabsStore.draggingTabsInWindow.get(tab.windowId).size;
   const allTabsCount      = TabsStore.windows.get(tab.windowId).tabs.size;
   return draggingTabsCount == allTabsCount;
 }

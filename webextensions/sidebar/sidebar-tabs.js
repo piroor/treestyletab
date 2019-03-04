@@ -259,7 +259,7 @@ function reserveToUpdateLoadingState() {
 function updateLoadingState() {
   const loadingTab = TabsStore.query({
     windowId: TabsStore.getWindow(),
-    tabs:     TabsStore.loadingTabsForWindow.get(TabsStore.getWindow()),
+    tabs:     TabsStore.loadingTabsInWindow.get(TabsStore.getWindow()),
     visible:  true
   });
   if (loadingTab)
@@ -271,7 +271,7 @@ function updateLoadingState() {
 async function synchronizeThrobberAnimation() {
   const toBeSynchronizedTabs = TabsStore.queryAll({
     windowId: TabsStore.getWindow(),
-    tabs:     TabsStore.unsynchronizedTabsForWindow.get(TabsStore.getWindow()),
+    tabs:     TabsStore.unsynchronizedTabsInWindow.get(TabsStore.getWindow()),
     visible:  true
   });
   if (toBeSynchronizedTabs.length == 0)

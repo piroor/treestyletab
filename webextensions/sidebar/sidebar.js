@@ -690,7 +690,7 @@ Tab.onHighlightedTabsChanged.addListener(windowId => {
   if (windowId != mTargetWindow)
     return;
   const window             = TabsStore.windows.get(windowId);
-  const allHighlightedTabs = TabsStore.highlightedTabsForWindow.get(windowId);
+  const allHighlightedTabs = TabsStore.highlightedTabsInWindow.get(windowId);
   if (!window || !window.element || !allHighlightedTabs)
     return;
   if (allHighlightedTabs.size > 1)

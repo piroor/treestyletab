@@ -72,10 +72,10 @@ export default class Tab {
 
     if (tab.active) {
       TabsStore.activeTabForWindow.set(tab.windowId, tab);
-      TabsStore.activeTabsForWindow.get(tab.windowId).add(tab);
+      TabsStore.activeTabsInWindow.get(tab.windowId).add(tab);
     }
     else {
-      TabsStore.activeTabsForWindow.get(tab.windowId).delete(tab);
+      TabsStore.activeTabsInWindow.get(tab.windowId).delete(tab);
     }
 
     TabsStore.updateIndexesForTab(tab);
@@ -248,13 +248,13 @@ export default class Tab {
              (this.hasOtherHighlighted ||
               TabsStore.queryAll({
                 windowId: this.tab.windowId,
-                tabs:     TabsStore.selectedTabsForWindow.get(this.tab.windowId),
+                tabs:     TabsStore.selectedTabsInWindow.get(this.tab.windowId),
                 living:   true
               }).length > 1);
   }
 
   get hasOtherHighlighted() {
-    const highlightedTabs = TabsStore.highlightedTabsForWindow.get(this.tab.windowId);
+    const highlightedTabs = TabsStore.highlightedTabsInWindow.get(this.tab.windowId);
     return !!(highlightedTabs && highlightedTabs.size > 1);
   }
 
@@ -840,7 +840,7 @@ Tab.waitUntilTracked = async (tabId, options = {}) => {
     return null;
   const windowId = TabsStore.getWindow();
   if (windowId) {
-    const tabs = TabsStore.removedTabsForWindow.get(windowId);
+    const tabs = TabsStore.removedTabsInWindow.get(windowId);
     if (tabs && tabs.has(tabId))
       return null; // already removed tab
   }
@@ -971,7 +971,7 @@ Tab.getActiveTab = windowId => {
 Tab.getFirstTab = windowId => {
   return TabsStore.query({
     windowId,
-    tabs:    TabsStore.livingTabsForWindow.get(windowId),
+    tabs:    TabsStore.livingTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -980,7 +980,7 @@ Tab.getFirstTab = windowId => {
 Tab.getLastTab = windowId => {
   return TabsStore.query({
     windowId,
-    tabs:   TabsStore.livingTabsForWindow.get(windowId),
+    tabs:   TabsStore.livingTabsInWindow.get(windowId),
     living: true,
     last:   true
   });
@@ -989,7 +989,7 @@ Tab.getLastTab = windowId => {
 Tab.getLastVisibleTab = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.query({
     windowId,
-    tabs:    TabsStore.visibleTabsForWindow.get(windowId),
+    tabs:    TabsStore.visibleTabsInWindow.get(windowId),
     visible: true,
     last:    true,
   });
@@ -1005,7 +1005,7 @@ Tab.getLastOpenedTab = windowId => {
 Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
   return TabsStore.query({
     windowId,
-    tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
+    tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
     normal:  true,
     ordered: true
   });
@@ -1014,7 +1014,7 @@ Tab.getFirstNormalTab = windowId => { // visible, not-collapsed, not-pinned
 Tab.getFirstVisibleTab = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.query({
     windowId,
-    tabs:    TabsStore.visibleTabsForWindow.get(windowId),
+    tabs:    TabsStore.visibleTabsInWindow.get(windowId),
     visible: true,
     ordered: true
   });
@@ -1026,7 +1026,7 @@ Tab.getGroupTabForOpener = opener => {
   TabsStore.assertValidTab(opener);
   return TabsStore.query({
     windowId:   opener.windowId,
-    tabs:       TabsStore.groupTabsForWindow.get(opener.windowId),
+    tabs:       TabsStore.groupTabsInWindow.get(opener.windowId),
     living:     true,
     attributes: [
       Constants.kCURRENT_URI,
@@ -1061,7 +1061,7 @@ Tab.getAllTabs = (windowId = null) => {
 };
 
 Tab.getTabAt = (windowId, index) => {
-  const tabs    = TabsStore.controllableTabsForWindow.get(windowId);
+  const tabs    = TabsStore.controllableTabsInWindow.get(windowId);
   const allTabs = TabsStore.windows.get(windowId).tabs;
   return TabsStore.query({
     windowId,
@@ -1076,7 +1076,7 @@ Tab.getTabAt = (windowId, index) => {
 Tab.getTabs = windowId => { // only visible, including collapsed and pinned
   return TabsStore.queryAll({
     windowId,
-    tabs:         TabsStore.controllableTabsForWindow.get(windowId),
+    tabs:         TabsStore.controllableTabsInWindow.get(windowId),
     controllable: true,
     ordered:      true
   });
@@ -1085,7 +1085,7 @@ Tab.getTabs = windowId => { // only visible, including collapsed and pinned
 Tab.getNormalTabs = windowId => { // only visible, including collapsed, not pinned
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
+    tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
     normal:  true,
     ordered: true
   });
@@ -1094,7 +1094,7 @@ Tab.getNormalTabs = windowId => { // only visible, including collapsed, not pinn
 Tab.getVisibleTabs = windowId => { // visible, not-collapsed, not-hidden
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.visibleTabsForWindow.get(windowId),
+    tabs:    TabsStore.visibleTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -1103,7 +1103,7 @@ Tab.getVisibleTabs = windowId => { // visible, not-collapsed, not-hidden
 Tab.getPinnedTabs = windowId => { // visible, pinned
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.pinnedTabsForWindow.get(windowId),
+    tabs:    TabsStore.pinnedTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -1113,7 +1113,7 @@ Tab.getPinnedTabs = windowId => { // visible, pinned
 Tab.getUnpinnedTabs = windowId => { // visible, not pinned
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.unpinnedTabsForWindow.get(windowId),
+    tabs:    TabsStore.unpinnedTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -1122,7 +1122,7 @@ Tab.getUnpinnedTabs = windowId => { // visible, not pinned
 Tab.getRootTabs = windowId => {
   return TabsStore.queryAll({
     windowId,
-    tabs:         TabsStore.rootTabsForWindow.get(windowId),
+    tabs:         TabsStore.rootTabsInWindow.get(windowId),
     controllable: true,
     ordered:      true
   });
@@ -1140,7 +1140,7 @@ Tab.collectRootTabs = tabs => {
 Tab.getGroupTabs = windowId => {
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.groupTabsForWindow.get(windowId),
+    tabs:    TabsStore.groupTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -1149,7 +1149,7 @@ Tab.getGroupTabs = windowId => {
 Tab.getDraggingTabs = windowId => {
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.draggingTabsForWindow.get(windowId),
+    tabs:    TabsStore.draggingTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -1158,7 +1158,7 @@ Tab.getDraggingTabs = windowId => {
 Tab.getRemovingTabs = windowId => {
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.removingTabsForWindow.get(windowId),
+    tabs:    TabsStore.removingTabsInWindow.get(windowId),
     ordered: true
   });
 };
@@ -1166,7 +1166,7 @@ Tab.getRemovingTabs = windowId => {
 Tab.getDuplicatingTabs = windowId => {
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.duplicatingTabsForWindow.get(windowId),
+    tabs:    TabsStore.duplicatingTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -1175,7 +1175,7 @@ Tab.getDuplicatingTabs = windowId => {
 Tab.getHighlightedTabs = windowId => {
   return TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.highlightedTabsForWindow.get(windowId),
+    tabs:    TabsStore.highlightedTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
@@ -1184,11 +1184,11 @@ Tab.getHighlightedTabs = windowId => {
 Tab.getSelectedTabs = windowId => {
   const selectedTabs = TabsStore.queryAll({
     windowId,
-    tabs:    TabsStore.selectedTabsForWindow.get(windowId),
+    tabs:    TabsStore.selectedTabsInWindow.get(windowId),
     living:  true,
     ordered: true
   });
-  const highlightedTabs = TabsStore.highlightedTabsForWindow.get(windowId);
+  const highlightedTabs = TabsStore.highlightedTabsInWindow.get(windowId);
   if (!highlightedTabs ||
       highlightedTabs.size < 2)
     return selectedTabs;
@@ -1251,7 +1251,7 @@ Tab.broadcastState = (tabs, options = {}) => {
 Tab.getOtherTabs = (windowId, ignoreTabs) => {
   const query = {
     windowId: windowId,
-    tabs:     TabsStore.livingTabsForWindow.get(windowId),
+    tabs:     TabsStore.livingTabsInWindow.get(windowId),
     ordered:  true
   };
   if (Array.isArray(ignoreTabs) &&
