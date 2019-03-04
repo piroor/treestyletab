@@ -302,6 +302,10 @@
   "config_parentTabBehaviorForChanges_alwaysButOnlyWhenVisible": { "message": "サイドバーが表示されている時は常に親タブとして扱う / サイドバーが表示されていない場合は単体のタブとして扱う" },
   "config_parentTabBehaviorForChanges_onlyInSidebar": { "message": "サイドバー上で操作された時は親タブとして扱う / サイドバー外で操作された時は単体のタブとして扱う" },
 
+  "config_fixupTreeOnTabVisibilityChanged_caption": { "message": "タブの表示・非表示が他のアドオンによって切り替えられた場合" },
+  "config_fixupTreeOnTabVisibilityChanged_fix":     { "message": "表示中のタブに基づいてツリー構造を自動的に修正する（※タブのグループを切り替えるアドオンとの併用時に推奨）" },
+  "config_fixupTreeOnTabVisibilityChanged_keep":    { "message": "非表示のタブも含めてツリー構造を維持する（※一時的にタブを非表示にするアドオンとの併用時に推奨）" },
+
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "新しいツリーが作られた時は、自動的に他のツリーを折り畳む" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "タブを切り替えた時は、フォーカスされたタブのツリーを自動的に展開して、他のツリーを折り畳む" },
   "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "現在のタブを閉じてタブのフォーカスが切り替わった場合を除く" },

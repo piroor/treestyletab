@@ -174,10 +174,12 @@ function reserveDetachHiddenTab(tab) {
 }
 
 Tab.onHidden.addListener(tab => {
-  reserveDetachHiddenTab(tab);
+  if (configs.fixupTreeOnTabVisibilityChanged)
+    reserveDetachHiddenTab(tab);
 });
 
 function reserveAttachShownTab(tab) {
+  tab.$TST.addState(Constants.kTAB_STATE_SHOWING);
   if (tab.$TST.reservedAttachShownTab)
     clearTimeout(tab.$TST.reservedAttachShownTab);
   tab.$TST.reservedAttachShownTab = setTimeout(async () => {
@@ -202,8 +204,8 @@ function reserveAttachShownTab(tab) {
 }
 
 Tab.onShown.addListener(tab => {
-  tab.$TST.addState(Constants.kTAB_STATE_SHOWING);
-  reserveAttachShownTab(tab);
+  if (configs.fixupTreeOnTabVisibilityChanged)
+    reserveAttachShownTab(tab);
 });
 
 Background.onReady.addListener(() => {

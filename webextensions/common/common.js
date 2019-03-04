@@ -103,6 +103,8 @@ export const configs = new Configs({
   tabDragBehaviorShift: Constants.kDRAG_BEHAVIOR_WHOLE_TREE | Constants.kDRAG_BEHAVIOR_ALLOW_BOOKMARK,
   showTabDragBehaviorNotification: true,
 
+  fixupTreeOnTabVisibilityChanged: false,
+
 
   // grouping
   autoGroupNewTabs: true,
