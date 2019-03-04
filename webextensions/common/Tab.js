@@ -933,7 +933,19 @@ Tab.init = (tab, options = {}) => {
 
   if (tab.active)
     tab.$TST.addState(Constants.kTAB_STATE_ACTIVE);
-  tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+
+  // When a new "child" tab was opened and the "parent" tab was closed
+  // immediately by someone outside of TST, both new "child" and the
+  // "parent" were closed by TST because all new tabs had
+  // "subtree-collapsed" state initially and such an action was detected
+  // as "closing of a collapsed tree".
+  // The initial state was introduced in old versions, but I forgot why
+  // it was required. "When new child tab is attached, collapse other
+  // tree" behavior works as expected even if the initial state is not
+  // there. Thus I remove the initial state for now, to avoid the
+  // annoying problem.
+  // See also: https://github.com/piroor/treestyletab/issues/2162
+  // tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
 
   Tab.onInitialized.dispatch(tab, options);
 
