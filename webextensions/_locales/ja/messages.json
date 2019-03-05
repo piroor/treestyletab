@@ -327,7 +327,7 @@
   "config_drag_caption": { "message": "ドラッグ＆ドロップ" },
 
   "config_tabDragBehavior_caption":       { "message": "ツリーがタブバーの外にドラッグされた時" },
-  "config_tabDragBehavior_description":   { "message": "Firefoxの制限のため、タブバー外へのドロップ後にタブをどう取り扱うかは、ドラッグ操作開始時に決定する必要があります。ドロップ後のタブの取り扱いは、ドラッグ開始時に押すShiftキー、またはタブの左（または右）端付近に表示されるドラッグ用つまみはによって決定できます。" },
+  "config_tabDragBehavior_description":   { "message": "Firefoxの制限のため、タブバー外へのドロップ後にタブをどう取り扱うかは、ドラッグ操作開始時に決定する必要があります。ドロップ後のタブの取り扱いは、ドラッグ開始時に押すShiftキー、またはタブの左（または右）端付近に表示されるドラッグ用つまみによって決定できます。" },
   "config_tabDragBehavior_label":         { "message": "通常のドラッグ:" },
   "config_tabDragBehaviorShift_label":    { "message": "Shift-ドラッグ:" },
   "config_tabDragBehavior_tearoff_tree":  { "message": "ツリー全体を別ウィンドウに切り離す（ブックマークの作成はできません）" },
