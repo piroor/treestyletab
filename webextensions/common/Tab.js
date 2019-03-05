@@ -246,11 +246,7 @@ export default class Tab {
   get multiselected() {
     return this.selected &&
              (this.hasOtherHighlighted ||
-              TabsStore.queryAll({
-                windowId: this.tab.windowId,
-                tabs:     TabsStore.selectedTabsInWindow.get(this.tab.windowId),
-                living:   true
-              }).length > 1);
+              TabsStore.selectedTabsInWindow.get(this.tab.windowId).size > 1);
   }
 
   get hasOtherHighlighted() {
