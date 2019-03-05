@@ -173,6 +173,23 @@ const mItems = [
         ]
       },
       {
+        title:    browser.i18n.getMessage('config_labelOverflowStyle_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_labelOverflowStyle_fade'),
+            key:   'labelOverflowStyle',
+            value: 'fade',
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_labelOverflowStyle_crop'),
+            key:   'labelOverflowStyle',
+            value: 'crop',
+            type:  'radio'
+          }
+        ]
+      },
+      {
         title: browser.i18n.getMessage('config_faviconizePinnedTabs_label'),
         key:   'faviconizePinnedTabs',
         type:  'checkbox'
