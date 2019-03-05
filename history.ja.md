@@ -6,6 +6,7 @@
    * タブのコンテキストメニューから「タブを移動」で「タブを新しいウィンドウに移動」した後にすべてのタブが選択されてしまっていたのを修正
    * 動作速度を優先させたい場合のために、タブのラベルが長すぎる場合の省略方法を変更できるようにした
    * タブが他のアドオンによって隠されたときにツリー構造を自動修正できるようにした（※このオプションは初期状態で無効のため、必要に応じて手動で有効に切り替えてください）
+   * キーボードショートカットを除く全設定のインポートとエクスポートに対応（設定→開発用→デバッグモード→すべての設定→Import/Export）
    * [Conex](https://addons.mozilla.org/firefox/addon/conex/)との互換性を向上
    * タブをより安全に移動させるための[`move-before`および`move-after`](https://github.com/piroor/treestyletab/wiki/API-for-other-addons#move-tree-to-different-position) APIを追加
  - 2.7.23 (2019.2.22)
