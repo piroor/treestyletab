@@ -1215,7 +1215,7 @@ Tab.getSelectedTabs = windowId => {
       highlightedTabs.size < 2)
     return selectedTabs;
 
-  return Tab.sort(Array.from(new Set(selectedTabs, ...Array.from(highlightedTabs.values()))));
+  return Tab.sort(Array.from(new Set([...selectedTabs, ...Array.from(highlightedTabs.values())])));
 };
 
 
