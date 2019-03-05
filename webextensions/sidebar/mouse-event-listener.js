@@ -407,7 +407,7 @@ async function onMouseUp(event) {
         type:     Constants.kCOMMAND_SET_SUBTREE_MUTED,
         windowId: mTargetWindow,
         tabId:    tab.id,
-        muted:    tab.maybeSoundPlaying
+        muted:    tab.$TST.maybeSoundPlaying
       }).catch(ApiTabs.createErrorSuppressor());
     }
     else if (lastMousedown.detail.closebox) {
