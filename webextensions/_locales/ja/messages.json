@@ -278,6 +278,8 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "ツリーの最初の位置に挿入する" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "ツリーの末尾に追加する" },
 
+  "config_groupTab_caption": { "message": "タブを自動的にグループ化する" },
+
   "config_autoGroupNewTabs_before": { "message": "\u200b" },
   "config_autoGroupNewTabs_after": { "message": "ミリ秒以内に連続して開かれたタブを自動的にグループ化する" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "ただし、新しいウィンドウが開かれてから" },

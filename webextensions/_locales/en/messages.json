@@ -282,6 +282,8 @@
   "config_insertNewTabFromPinnedTabAt_first": { "message": "Insert to the top of the tree, as the first child" },
   "config_insertNewTabFromPinnedTabAt_end": { "message": "Append to the end of the tree" },
 
+  "config_groupTab_caption": { "message": "Auto-grouping of tabs" },
+
   "config_autoGroupNewTabs_before": { "message": "Auto-group tabs opened within" },
   "config_autoGroupNewTabs_after": { "message": "msec" },
   "config_autoGroupNewTabsDelayOnNewWindow_before": { "message": "But don't group new tabs opened within" },
