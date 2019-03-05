@@ -527,12 +527,10 @@ async function onNewTabTracked(tab) {
 function checkRecycledTab(windowId) {
   const possibleRecycledTabs = TabsStore.queryAll({
     windowId,
-    states: [
-      Constants.kTAB_STATE_RESTORED, false
-    ],
-    attributes: [
-      Constants.kCURRENT_URI, new RegExp(`^(|${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}|about:blank|about:privatebrowsing)$`)
-    ]
+    tabs:       TabsStore.livingTabsInWindow.get(windowId),
+    living:     true,
+    states:     [Constants.kTAB_STATE_RESTORED, false],
+    attributes: [Constants.kCURRENT_URI, new RegExp(`^(|${configs.guessNewOrphanTabAsOpenedByNewTabCommandUrl}|about:blank|about:privatebrowsing)$`)]
   });
   if (possibleRecycledTabs.length == 0)
     return;

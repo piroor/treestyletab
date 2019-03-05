@@ -53,6 +53,7 @@ function getTabsBetween(begin, end) {
     [begin, end] = [end, begin];
   return TabsStore.queryAll({
     windowId: begin.windowId,
+    tabs:     TabsStore.controllableTabsInWindow.get(begin.windowId),
     id:       (id => id != begin.id && id != end.id),
     fromId:   begin.id,
     toId:     end.id

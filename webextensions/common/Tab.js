@@ -303,6 +303,7 @@ export default class Tab {
   get nearestNormalFollowingTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
+      tabs:     TabsStore.unpinnedTabsInWindow.get(this.tab.windowId),
       fromId:   this.tab.id,
       normal:   true,
       index:    (index => index > this.tab.index)
@@ -312,6 +313,7 @@ export default class Tab {
   get nearestNormalPrecedingTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
+      tabs:     TabsStore.unpinnedTabsInWindow.get(this.tab.windowId),
       fromId:   this.tab.id,
       normal:   true,
       index:    (index => index < this.tab.index),
@@ -322,6 +324,7 @@ export default class Tab {
   get nearestVisibleFollowingTab() { // visible, not-collapsed
     return TabsStore.query({
       windowId: this.tab.windowId,
+      tabs:     TabsStore.visibleTabsInWindow.get(this.tab.windowId),
       fromId:   this.tab.id,
       visible:  true,
       index:    (index => index > this.tab.index)
@@ -331,6 +334,7 @@ export default class Tab {
   get nearestVisiblePrecedingTab() { // visible, not-collapsed
     return TabsStore.query({
       windowId: this.tab.windowId,
+      tabs:     TabsStore.visibleTabsInWindow.get(this.tab.windowId),
       fromId:   this.tab.id,
       visible:  true,
       index:    (index => index < this.tab.index),
@@ -509,6 +513,7 @@ export default class Tab {
     else {
       return TabsStore.query({
         windowId:  this.tab.windowId,
+        tabs:      TabsStore.rootTabsInWindow.get(this.tab.windowId),
         fromId:    this.tab.id,
         living:    true,
         index:     (index => index > this.tab.index),
@@ -531,6 +536,7 @@ export default class Tab {
     else {
       return TabsStore.query({
         windowId:  this.tab.windowId,
+        tabs:      TabsStore.rootTabsInWindow.get(this.tab.windowId),
         fromId:    this.tab.id,
         living:    true,
         index:     (index => index < this.tab.index),
@@ -550,6 +556,7 @@ export default class Tab {
       return null;
     return TabsStore.query({
       windowId: this.tab.windowId,
+      tabs:     TabsStore.livingTabsInWindow.get(this.tab.windowId),
       id:       this.tab.openerTabId,
       living:   true
     });
@@ -1069,6 +1076,7 @@ Tab.getActiveTabs = () => {
 Tab.getAllTabs = (windowId = null) => {
   return TabsStore.queryAll({
     windowId,
+    tabs:     windowId && TabsStore.livingTabsInWindow.get(windowId),
     living:   true,
     ordered:  true
   });
