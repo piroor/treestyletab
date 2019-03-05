@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.8.0 (2019.3.5)
    * Reconstruct tab management system based on JS objects instead of DOM elements. This aims to make future improvements more easy: performance optimization for too much number of tabs, and stabilization around multiple parallel asynchronous operations.
    * Add ability to collect performance logs of tab queryings. It will help more future optimizations for too much number of tabs. (Please note that you need to activate logging manually, via the checkbox at the "Development" section in the options page.)
    * Don't multiselect all tabs after the context menu command "Move to New Window" in "Move Tabs" is invoked.
