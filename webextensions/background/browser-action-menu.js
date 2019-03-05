@@ -473,12 +473,6 @@ const mItems = [
         title:    browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
         children: [
           {
-            title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
-            key:   'autoGroupNewTabsFromPinned',
-            type:  'checkbox'
-          },
-          { type:  'separator' },
-          {
             title: browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_noControl'),
             key:   'insertNewTabFromPinnedTabAt',
             value: Constants.kINSERT_NO_CONTROL,
@@ -498,12 +492,21 @@ const mItems = [
           }
         ]
       },
+      { type: 'separator' },
+      {
+        title: browser.i18n.getMessage('config_groupTab_caption')
+      },
       {
         dynamicTitle: true,
         get title() {
-          return browser.i18n.getMessage('config_autoGroupNewTabs_before') + delimiter + configs.autoGroupNewTabsTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabs_after');
+          return indent() + browser.i18n.getMessage('config_autoGroupNewTabs_before') + delimiter + configs.autoGroupNewTabsTimeout + delimiter + browser.i18n.getMessage('config_autoGroupNewTabs_after');
         },
         key:   'autoGroupNewTabs',
+        type:  'checkbox'
+      },
+      {
+        title: indent() + browser.i18n.getMessage('config_insertNewTabFromPinnedTabAt_caption'),
+        key:   'autoGroupNewTabsFromPinned',
         type:  'checkbox'
       }
     ]
@@ -621,6 +624,23 @@ const mItems = [
             title: browser.i18n.getMessage('config_parentTabBehaviorForChanges_onlyInSidebar'),
             key:   'parentTabBehaviorForChanges',
             value: Constants.kPARENT_TAB_BEHAVIOR_ONLY_ON_SIDEBAR,
+            type:  'radio'
+          }
+        ]
+      },
+      {
+        title:    browser.i18n.getMessage('config_fixupTreeOnTabVisibilityChanged_caption'),
+        children: [
+          {
+            title: browser.i18n.getMessage('config_fixupTreeOnTabVisibilityChanged_fix'),
+            key:   'fixupTreeOnTabVisibilityChanged',
+            value: true,
+            type:  'radio'
+          },
+          {
+            title: browser.i18n.getMessage('config_fixupTreeOnTabVisibilityChanged_keep'),
+            key:   'fixupTreeOnTabVisibilityChanged',
+            value: false,
             type:  'radio'
           }
         ]
@@ -748,6 +768,11 @@ const mItems = [
       {
         title: browser.i18n.getMessage('config_supportTabsMultiselect_label'),
         key:   'supportTabsMultiselect',
+        type:  'checkbox'
+      },
+      {
+        title: browser.i18n.getMessage('config_loggingQueries_label'),
+        key:   'loggingQueries',
         type:  'checkbox'
       },
       { type: 'separator' },
