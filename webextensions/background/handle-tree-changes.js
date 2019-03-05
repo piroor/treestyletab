@@ -143,8 +143,8 @@ Tree.onAttached.addListener(async (tab, info = {}) => {
   Background.reserveToUpdateChildren(parent);
   Background.reserveToUpdateInsertionPosition([
     tab,
-    tab.$TST.next,
-    tab.$TST.previous
+    tab.$TST.nextTab,
+    tab.$TST.previousTab
   ]);
 });
 
@@ -220,8 +220,8 @@ function reserveAttachShownTab(tab) {
           tab.$TST.hasParent)
         continue;
       const referenceTabs = Tree.calculateReferenceTabsFromInsertionPosition(tab, {
-        insertAfter:  tab.$TST.nearestVisiblePreceding,
-        insertBefore: tab.$TST.nearestFollowingForeigner
+        insertAfter:  tab.$TST.nearestVisiblePrecedingTab,
+        insertBefore: tab.$TST.nearestFollowingForeignerTab
       });
       if (referenceTabs.parent) {
         await Tree.attachTabTo(tab, referenceTabs.parent, {

@@ -280,7 +280,7 @@ async function updateInsertionPosition(tab) {
   if (!TabsStore.ensureLivingTab(tab))
     return;
 
-  const prev = tab.$TST.previous;
+  const prev = tab.$TST.previousTab;
   if (prev)
     browser.sessions.setTabValue(
       tab.id,
@@ -293,7 +293,7 @@ async function updateInsertionPosition(tab) {
       Constants.kPERSISTENT_INSERT_AFTER
     ).catch(ApiTabs.createErrorSuppressor());
 
-  const next = tab.$TST.next;
+  const next = tab.$TST.nextTab;
   if (next)
     browser.sessions.setTabValue(
       tab.id,
@@ -444,8 +444,8 @@ Tab.onCreated.addListener((tab, info = {}) => {
   reserveToUpdateChildren(tab);
   reserveToUpdateInsertionPosition([
     tab,
-    tab.$TST.next,
-    tab.$TST.previous
+    tab.$TST.nextTab,
+    tab.$TST.previousTab
   ]);
 });
 
@@ -477,8 +477,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
 Tab.onTabInternallyMoved.addListener((tab, info = {}) => {
   reserveToUpdateInsertionPosition([
     tab,
-    tab.$TST.previous,
-    tab.$TST.next,
+    tab.$TST.previousTab,
+    tab.$TST.nextTab,
     info.oldPreviousTab,
     info.oldNextTab
   ]);
@@ -489,8 +489,8 @@ Tab.onMoved.addListener(async (tab, moveInfo) => {
     tab,
     moveInfo.oldPreviousTab,
     moveInfo.oldNextTab,
-    tab.$TST.previous,
-    tab.$TST.next
+    tab.$TST.previousTab,
+    tab.$TST.nextTab
   ]);
 });
 

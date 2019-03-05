@@ -183,7 +183,7 @@ export async function openNewTabAs(options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       parent       = currentTab.$TST.parent;
-      insertBefore = currentTab.$TST.nextSibling;
+      insertBefore = currentTab.$TST.nextSiblingTab;
       insertAfter  = currentTab.$TST.lastDescendant || currentTab;
     }; break;
   }
@@ -204,7 +204,7 @@ export async function openNewTabAs(options = {}) {
 }
 
 export async function indent(tab, options = {}) {
-  const newParent = tab.$TST.previousSibling;
+  const newParent = tab.$TST.previousSiblingTab;
   if (!newParent ||
       newParent == tab.$TST.parent)
     return false;
@@ -322,11 +322,11 @@ export async function moveTabsWithStructure(tabs, params = {}) {
 
   while (params.insertBefore &&
          movedWholeTree.includes(params.insertBefore)) {
-    params.insertBefore = params.insertBefore && params.insertBefore.$TST.next;
+    params.insertBefore = params.insertBefore && params.insertBefore.$TST.nextTab;
   }
   while (params.insertAfter &&
          movedWholeTree.includes(params.insertAfter)) {
-    params.insertAfter = params.insertAfter && params.insertAfter.$TST.previous;
+    params.insertAfter = params.insertAfter && params.insertAfter.$TST.previousTab;
   }
 
   const windowId = params.windowId || tabs[0].windowId;
@@ -479,7 +479,7 @@ function detachTabsWithStructure(tabs, options = {}) {
 }
 
 export async function moveUp(tab, options = {}) {
-  const previousTab = tab.$TST.nearestVisiblePreceding;
+  const previousTab = tab.$TST.nearestVisiblePrecedingTab;
   if (!previousTab)
     return false;
   const moved = await moveBefore(tab, Object.assign({}, options, {
@@ -491,7 +491,7 @@ export async function moveUp(tab, options = {}) {
 }
 
 export async function moveDown(tab, options = {}) {
-  const nextTab = options.followChildren ? tab.$TST.nearestFollowingForeigner : tab.$TST.nearestVisibleFollowing;
+  const nextTab = options.followChildren ? tab.$TST.nearestFollowingForeignerTab : tab.$TST.nearestVisibleFollowingTab;
   if (!nextTab)
     return false;
   const moved = await moveAfter(tab, Object.assign({}, options, {

@@ -145,7 +145,7 @@ async function updateRelatedGroupTab(groupTab, changedInfo = []) {
       newTitle = browser.i18n.getMessage('groupTab_label', firstChild.title);
     }
     else if (Constants.kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER.test(groupTab.title)) {
-      const opener = groupTab.$TST.opener;
+      const opener = groupTab.$TST.openerTab;
       if (opener) {
         if (opener &&
             opener.favIconUrl) {
@@ -387,7 +387,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
   let pinnedOpeners = [];
   const childrenOfPinnedTabs = {};
   for (const tab of rootTabs) {
-    const opener = tab.$TST.opener;
+    const opener = tab.$TST.openerTab;
     if (!pinnedOpeners.includes(opener))
       pinnedOpeners.push(opener);
   }
@@ -400,7 +400,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
     if (tab.$TST.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER))
       return false;
     if (rootTabs.includes(tab)) { // newly opened tab
-      const opener = tab.$TST.opener;
+      const opener = tab.$TST.openerTab;
       if (!opener)
         return false;
       openerOf[tab.id] = opener;

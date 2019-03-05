@@ -39,8 +39,8 @@ Tab.onCreated.addListener((tab, info = {}) => {
     return;
   // if the tab is opened inside existing tree by someone, we must fixup the tree.
   if (!info.positionedBySelf &&
-      (tab.$TST.nearestNormalFollowing ||
-       tab.$TST.nearestNormalPreceding ||
+      (tab.$TST.nearestNormalFollowingTab ||
+       tab.$TST.nearestNormalPrecedingTab ||
        (info.treeForActionDetection &&
         (info.treeForActionDetection.target.next ||
          info.treeForActionDetection.target.previous))))
@@ -62,7 +62,7 @@ Tab.onMoving.addListener((tab, moveInfo) => {
       !positionControlled)
     return true;
 
-  const opener = tab.$TST.opener;
+  const opener = tab.$TST.openerTab;
   // if there is no valid opener, it can be a restored initial tab in a restored window
   // and can be just moved as a part of window restoration process.
   if (!opener)

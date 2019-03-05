@@ -51,7 +51,7 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
   log('Tabs.onRemoving: granted to close ', dumpTab(tab));
 
   if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
-    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && tab.$TST.nextSibling || tab.$TST.next;
+    const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && tab.$TST.nextSiblingTab || tab.$TST.nextTab;
     Tree.tryMoveFocusFromClosingActiveTab(tab, {
       wasActive,
       params: {

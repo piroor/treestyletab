@@ -104,11 +104,11 @@ async function updateInternal(tabId) {
       const firstChild = tab.$TST.firstChild;
       successor = (
         (firstChild && !firstChild.$TST.collapsed && firstChild) ||
-        (tab.$TST.nextSibling || tab.$TST.nearestVisiblePreceding)
+        (tab.$TST.nextSiblingTab || tab.$TST.nearestVisiblePrecedingTab)
       );
     }
     else
-      successor = tab.$TST.nearestVisibleFollowing || tab.$TST.nearestVisiblePreceding;
+      successor = tab.$TST.nearestVisibleFollowingTab || tab.$TST.nearestVisiblePrecedingTab;
   }
   if (successor) {
     log(`  ${dumpTab(tab)} is under control: successor = ${successor.id}`);

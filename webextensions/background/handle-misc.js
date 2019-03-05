@@ -195,13 +195,13 @@ async function onShortcutCommand(command) {
 
     case 'focusPrevious':
     case 'focusPreviousSilently': {
-      const nextActive = activeTab.$TST.nearestVisiblePreceding ||
+      const nextActive = activeTab.$TST.nearestVisiblePrecedingTab ||
         Tab.getLastVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;
     case 'focusNext':
     case 'focusNextSilently': {
-      const nextActive = activeTab.$TST.nearestVisibleFollowing ||
+      const nextActive = activeTab.$TST.nearestVisibleFollowingTab ||
         Tab.getFirstVisibleTab(activeTab.windowId);
       TabsInternalOperation.activateTab(nextActive, { silently: /Silently/.test(command) });
     }; return;

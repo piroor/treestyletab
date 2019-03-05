@@ -362,8 +362,8 @@ function getDropAction(event) {
       info.action       = Constants.kACTION_ATTACH;
       info.parent       = targetTab;
       info.insertBefore = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
-        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.nearestVisibleFollowing) :
-        (targetTab.$TST.nextSibling || targetTab.$TST.nearestFollowingForeigner);
+        (targetTab && targetTab.$TST.firstChild || targetTab.$TST.nearestVisibleFollowingTab) :
+        (targetTab.$TST.nextSiblingTab || targetTab.$TST.nearestFollowingForeignerTab);
       info.insertAfter  = configs.insertNewChildAt == Constants.kINSERT_FIRST ?
         targetTab :
         (targetTab.$TST.lastDescendant || targetTab);
@@ -419,10 +419,10 @@ function getDropAction(event) {
             info.draggedTab.id == info.insertBefore.id) {
           info.action      = Constants.kACTION_MOVE | Constants.kACTION_ATTACH;
           info.parent      = targetTab.$TST.parent;
-          let insertBefore = targetTab.$TST.nextSibling;
+          let insertBefore = targetTab.$TST.nextSiblingTab;
           let ancestor     = info.parent;
           while (ancestor && !insertBefore) {
-            insertBefore = ancestor.$TST.nextSibling;
+            insertBefore = ancestor.$TST.nextSiblingTab;
             ancestor     = ancestor.$TST.parent;
           }
           info.insertBefore = insertBefore;
@@ -430,7 +430,7 @@ function getDropAction(event) {
         }
       }
       if (info.draggedTab &&
-          info.draggedTab.pinned != targetTab.$TST.precedesPinned)
+          info.draggedTab.pinned != targetTab.$TST.precedesPinnedTab)
         info.dropPosition = kDROP_IMPOSSIBLE;
       if (configs.debug)
         log(' calculated info: ', info);
@@ -817,7 +817,7 @@ function onDragOver(event) {
 
   let dropPositionTargetTab = info.targetTab;
   if (dropPositionTargetTab && dropPositionTargetTab.$TST.collapsed)
-    dropPositionTargetTab = info.targetTab.$TST.nearestVisiblePreceding || info.targetTab;
+    dropPositionTargetTab = info.targetTab.$TST.nearestVisiblePrecedingTab || info.targetTab;
   if (!dropPositionTargetTab) {
     log('onDragOver: no drop target tab');
     dt.dropEffect = 'none';

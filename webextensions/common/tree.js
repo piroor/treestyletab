@@ -118,9 +118,9 @@ export async function attachTabTo(child, parent, options = {}) {
 
   if (options.dontMove) {
     log('=> do not move');
-    options.insertBefore = child.$TST.next;
+    options.insertBefore = child.$TST.nextTab;
     if (!options.insertBefore)
-      options.insertAfter = child.$TST.previous;
+      options.insertAfter = child.$TST.previousTab;
   }
 
   if (!options.insertBefore && !options.insertAfter) {
@@ -259,9 +259,9 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
     insertAfter = parent;
   }
   if (insertBefore == child)
-    insertBefore = insertBefore && insertBefore.$TST.next;
+    insertBefore = insertBefore && insertBefore.$TST.nextTab;
   if (insertAfter == child)
-    insertAfter = insertAfter && insertAfter.$TST.previous;
+    insertAfter = insertAfter && insertAfter.$TST.previousTab;
   // disallow to place tab in invalid position
   if (insertBefore) {
     if (insertBefore.index <= parent.index) {
@@ -364,7 +364,7 @@ export function detachAllChildren(tab, options = {}) {
   let nextTab = null;
   if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_DETACH_ALL_CHILDREN &&
       !configs.moveTabsToBottomWhenDetachedFromClosedParent) {
-    nextTab = tab.$TST.nearestFollowingRoot;
+    nextTab = tab.$TST.nearestFollowingRootTab;
   }
 
   if (options.behavior == Constants.kCLOSE_PARENT_BEHAVIOR_REPLACE_WITH_GROUP_TAB) {
@@ -436,7 +436,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
         inRemote:  options.inRemote,
         broadcast: options.broadcast
       });
-      if (tab.$TST.next)
+      if (tab.$TST.nextTab)
         return TabsMove.moveTabAfter(tab, Tab.getLastTab(tab.windowId), {
           delayedMove: true,
           inRemote: options.inRemote
@@ -478,7 +478,7 @@ export async function behaveAutoAttachedTab(tab, options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_NEXT_SIBLING: {
       log(' => kNEWTAB_OPEN_AS_NEXT_SIBLING');
-      let nextSibling = baseTab.$TST.nextSibling;
+      let nextSibling = baseTab.$TST.nextSiblingTab;
       if (nextSibling == tab)
         nextSibling = null;
       const parent = baseTab.$TST.parent;
@@ -801,7 +801,7 @@ export async function fixupSubtreeCollapsedState(tab, options = {}) {
   const firstChild = tab.$TST.firstChild;
   const childrenCollapsed = firstChild.$TST.collapsed;
   const collapsedStateMismatched = tab.$TST.subtreeCollapsed != childrenCollapsed;
-  const nextIsFirstChild = tab.$TST.next == firstChild;
+  const nextIsFirstChild = tab.$TST.nextTab == firstChild;
   log('fixupSubtreeCollapsedState ', {
     tab: tab.id,
     childrenCollapsed,
@@ -869,14 +869,14 @@ async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = 
   // The tab can be closed while we waiting.
   // Thus we need to get tabs related to tab at first.
   const params      = getTryMoveFocusFromClosingActiveTabNowParams(tab, options.params);
-  const nextTab     = tab.$TST.next;
-  const previousTab = tab.$TST.previous;
+  const nextTab     = tab.$TST.nextTab;
+  const previousTab = tab.$TST.previousTab;
 
   await tab.closedWhileActive;
   log('tryMoveFocusFromClosingActiveTabOnFocusRedirected: tabs.onActivated is fired');
 
   const oldSuccessor = Tab.getActiveTab(tab.windowId);
-  const nextOfOldSuccessor = oldSuccessor && oldSuccessor.$TST.next;
+  const nextOfOldSuccessor = oldSuccessor && oldSuccessor.$TST.nextTab;
   if (oldSuccessor != nextTab &&
       (oldSuccessor != previousTab ||
        (nextOfOldSuccessor &&
@@ -901,7 +901,7 @@ function getTryMoveFocusFromClosingActiveTabNowParams(tab, overrideParams) {
     firstChildTab:            tab.$TST.firstChild,
     firstChildTabOfParent:    parentTab && parentTab.$TST.firstChild,
     lastChildTabOfParent:     parentTab && parentTab.$TST.lastChild,
-    previousSiblingTab:       tab.$TST.previousSibling,
+    previousSiblingTab:       tab.$TST.previousSiblingTab,
     preDetectedSuccessor:     tab.$TST.findSuccessor(),
     serializedTab:            TSTAPI.serializeTab(tab),
     closeParentBehavior:      getCloseParentBehaviorForTab(tab, { parentTab })
@@ -1453,7 +1453,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          |  [TARGET]
          +-----------------------------------------------------
     */
-    const prevTab = params.insertBefore && params.insertBefore.$TST.nearestVisiblePreceding;
+    const prevTab = params.insertBefore && params.insertBefore.$TST.nearestVisiblePrecedingTab;
     if (!prevTab) {
       // allow to move pinned tab to beside of another pinned tab
       if (!tab ||
@@ -1498,7 +1498,7 @@ export function calculateReferenceTabsFromInsertionPosition(tab, params = {}) {
          |  [      ]
          +-----------------------------------------------------
     */
-    const nextTab = params.insertAfter && params.insertAfter.$TST.nearestVisibleFollowing;
+    const nextTab = params.insertAfter && params.insertAfter.$TST.nearestVisibleFollowingTab;
     if (!nextTab) {
       return {
         parent:      params.insertAfter && params.insertAfter.$TST.parent,
@@ -1671,8 +1671,8 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 //===================================================================
 
 export function snapshotForActionDetection(targetTab) {
-  const prevTab = targetTab.$TST.nearestNormalPreceding;
-  const nextTab = targetTab.$TST.nearestNormalFollowing;
+  const prevTab = targetTab.$TST.nearestNormalPrecedingTab;
+  const nextTab = targetTab.$TST.nearestNormalFollowingTab;
   const foundTabs = {};
   const tabs = [].concat([
     prevTab && prevTab.$TST.ancestors || [],
@@ -1711,9 +1711,9 @@ function snapshotTree(targetTab, tabs) {
       continue;
     const parent = tab.$TST.parent;
     item.parent = parent && parent.id;
-    const next = tab.$TST.nearestNormalFollowing;
+    const next = tab.$TST.nearestNormalFollowingTab;
     item.next = next && next.id;
-    const previous = tab.$TST.nearestNormalPreceding;
+    const previous = tab.$TST.nearestNormalPrecedingTab;
     item.previous = previous && previous.id;
   }
   const activeTab = Tab.getActiveTab(targetTab.windowId);

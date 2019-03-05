@@ -33,7 +33,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
   log('Tabs.onCreating ', dumpTab(tab), info);
 
   const possibleOpenerTab = info.activeTab || Tab.getActiveTab(tab.windowId);
-  const opener = tab.$TST.opener;
+  const opener = tab.$TST.openerTab;
   if (opener) {
     tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener.$TST.uniqueId.id);
     TabsStore.addToBeGroupedTab(tab);
@@ -45,7 +45,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
            next tab. In this case the tab is expected to be placed next to the
            active tab aways, so we should skip all repositioning behavior.
            See also: https://github.com/piroor/treestyletab/issues/2054 */
-        !tab.$TST.next) {
+        !tab.$TST.nextTab) {
       if (tab.$TST.isNewTabCommandTab) {
         if (!info.positionedBySelf) {
           log('behave as a tab opened by new tab command');
@@ -139,7 +139,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
   if ('openerTabId' in changeInfo &&
       configs.syncParentTabAndOpenerTab) {
     Tab.waitUntilTrackedAll(tab.windowId).then(() => {
-      const parent = tab.$TST.opener;
+      const parent = tab.$TST.openerTab;
       if (!parent ||
           parent.windowId != tab.windowId ||
           parent == tab.$TST.parent)

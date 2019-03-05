@@ -208,8 +208,8 @@ export default class Tab {
            !this.subtreeCollapsed;
   }
 
-  get precedesPinned() {
-    const following = this.nearestVisibleFollowing;
+  get precedesPinnedTab() {
+    const following = this.nearestVisibleFollowingTab;
     return following && following.pinned;
   }
 
@@ -262,7 +262,7 @@ export default class Tab {
   // neighbor tabs
   //===================================================================
 
-  get next() {
+  get nextTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.controllableTabsInWindow.get(this.tab.windowId),
@@ -272,7 +272,7 @@ export default class Tab {
     });
   }
 
-  get previous() {
+  get previousTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       tabs:     TabsStore.controllableTabsInWindow.get(this.tab.windowId),
@@ -283,7 +283,7 @@ export default class Tab {
     });
   }
 
-  get anyNext() {
+  get unsafeNextTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -291,7 +291,7 @@ export default class Tab {
     });
   }
 
-  get anyPrevious() {
+  get unsafePreviousTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -300,7 +300,7 @@ export default class Tab {
     });
   }
 
-  get nearestNormalFollowing() {
+  get nearestNormalFollowingTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -309,7 +309,7 @@ export default class Tab {
     });
   }
 
-  get nearestNormalPreceding() {
+  get nearestNormalPrecedingTab() {
     return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -319,7 +319,7 @@ export default class Tab {
     });
   }
 
-  get nearestVisibleFollowing() { // visible, not-collapsed
+  get nearestVisibleFollowingTab() { // visible, not-collapsed
     return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -328,7 +328,7 @@ export default class Tab {
     });
   }
 
-  get nearestVisiblePreceding() { // visible, not-collapsed
+  get nearestVisiblePrecedingTab() { // visible, not-collapsed
     return TabsStore.query({
       windowId: this.tab.windowId,
       fromId:   this.tab.id,
@@ -397,7 +397,7 @@ export default class Tab {
     }
   }
 
-  get root() {
+  get rootTab() {
     const ancestors = this.ancestors;
     return ancestors.length > 0 ? ancestors[ancestors.length-1] : this.tab ;
   }
@@ -412,14 +412,14 @@ export default class Tab {
     return null;
   }
 
-  get nearestFollowingRoot() {
-    const root = this.root;
-    return root && root.$TST.nextSibling;
+  get nearestFollowingRootTab() {
+    const root = this.rootTab;
+    return root && root.$TST.nextSiblingTab;
   }
 
-  get nearestFollowingForeigner() {
+  get nearestFollowingForeignerTab() {
     const base = this.lastDescendant || this.tab;
-    return base && base.$TST.next;
+    return base && base.$TST.nextTab;
   }
 
   set children(tabs) {
@@ -496,7 +496,7 @@ export default class Tab {
     return descendants.length ? descendants[descendants.length-1] : null ;
   }
 
-  get nextSibling() {
+  get nextSiblingTab() {
     const parent = this.parent;
     if (parent) {
       const siblingIds = parent.$TST.childIds;
@@ -518,7 +518,7 @@ export default class Tab {
     }
   }
 
-  get previousSibling() {
+  get previousSiblingTab() {
     const parent = this.parent;
     if (parent) {
       const siblingIds = parent.$TST.childIds;
@@ -544,7 +544,7 @@ export default class Tab {
   // other relations
   //===================================================================
 
-  get opener() {
+  get openerTab() {
     if (!this.tab.openerTabId ||
         this.tab.openerTabId == this.tab.id)
       return null;
@@ -556,7 +556,7 @@ export default class Tab {
   }
 
   get hasPinnedOpener() {
-    const opener = this.opener;
+    const opener = this.openerTab;
     return opener && opener.pinned;
   }
 
@@ -567,13 +567,13 @@ export default class Tab {
     let foundTab = tab;
     do {
       ignoredTabs.push(foundTab);
-      foundTab = foundTab.$TST.next;
+      foundTab = foundTab.$TST.nextTab;
     } while (foundTab && ignoredTabs.includes(foundTab));
     if (!foundTab) {
       foundTab = tab;
       do {
         ignoredTabs.push(foundTab);
-        foundTab = foundTab.$TST.nearestVisiblePreceding;
+        foundTab = foundTab.$TST.nearestVisiblePrecedingTab;
       } while (foundTab && ignoredTabs.includes(foundTab));
     }
     return foundTab;
@@ -585,20 +585,20 @@ export default class Tab {
       return true;
     let nextTab = this.tab;
     if (tabs[tabs.length - 1] == nextTab)
-      nextTab = nextTab.$TST.next;
-    if (!nextTab && !tabs[tabs.length - 1].$TST.next)
+      nextTab = nextTab.$TST.nextTab;
+    if (!nextTab && !tabs[tabs.length - 1].$TST.nextTab)
       return true;
 
     tabs = Array.from(tabs);
     let previousTab = tabs.shift();
     for (const tab of tabs) {
-      if (tab.$TST.previous != previousTab)
+      if (tab.$TST.previousTab != previousTab)
         return false;
       previousTab = tab;
     }
     return !nextTab ||
            !previousTab ||
-           previousTab.$TST.next == nextTab;
+           previousTab.$TST.nextTab == nextTab;
   }
 
   isAllPlacedAfterSelf(tabs) {
@@ -606,20 +606,20 @@ export default class Tab {
       return true;
     let previousTab = this.tab;
     if (tabs[0] == previousTab)
-      previousTab = previousTab.$TST.previous;
-    if (!previousTab && !tabs[0].$TST.previous)
+      previousTab = previousTab.$TST.previousTab;
+    if (!previousTab && !tabs[0].$TST.previousTab)
       return true;
 
     tabs = Array.from(tabs).reverse();
     let nextTab = tabs.shift();
     for (const tab of tabs) {
-      if (tab.$TST.next != nextTab)
+      if (tab.$TST.nextTab != nextTab)
         return false;
       nextTab = tab;
     }
     return !previousTab ||
            !nextTab ||
-           nextTab.$TST.previous == previousTab;
+           nextTab.$TST.previousTab == previousTab;
   }
 
   detach() {

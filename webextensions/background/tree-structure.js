@@ -211,7 +211,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
     break;
   }
   if (!attached) {
-    const opener = tab.$TST.opener;
+    const opener = tab.$TST.openerTab;
     if (opener &&
         configs.syncParentTabAndOpenerTab) {
       log(' attach to opener: ', { child: tab, parent: opener });
@@ -225,8 +225,8 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
         await done;
     }
     else if (!options.bulk &&
-             (tab.$TST.nearestNormalFollowing ||
-              tab.$TST.nearestNormalPreceding)) {
+             (tab.$TST.nearestNormalFollowingTab ||
+              tab.$TST.nearestNormalPrecedingTab)) {
       log(' attach from position');
       onTabAttachedFromRestoredInfo.dispatch(tab, {
         toIndex:   tab.index,
@@ -240,7 +240,7 @@ async function attachTabFromRestoredInfo(tab, options = {}) {
       // but attached to any parent based on its restored position
       tab.$TST.parent &&
       // when not in-middle position of existing tree (safely detachable position)
-      !tab.$TST.nextSibling) {
+      !tab.$TST.nextSiblingTab) {
     Tree.detachTab(tab, {
       broadcast: true
     });

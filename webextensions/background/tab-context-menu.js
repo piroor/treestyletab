@@ -358,10 +358,10 @@ function hasVisiblePrecedingItem(separator) {
 async function onShown(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
   const windowId              = contextTab ? contextTab.windowId : (await browser.windows.getLastFocused({}).catch(ApiTabs.createErrorHandler())).id;
-  const previousTab           = contextTab && contextTab.$TST.previous;
-  const previousSiblingTab    = contextTab && contextTab.$TST.previousSibling;
-  const nextTab               = contextTab && contextTab.$TST.next;
-  const nextSiblingTab        = contextTab && contextTab.$TST.nextSibling;
+  const previousTab           = contextTab && contextTab.$TST.previousTab;
+  const previousSiblingTab    = contextTab && contextTab.$TST.previousSiblingTab;
+  const nextTab               = contextTab && contextTab.$TST.nextTab;
+  const nextSiblingTab        = contextTab && contextTab.$TST.nextSiblingTab;
   const hasMultipleTabs       = Tab.getTabs(windowId).length > 1;
   const normalTabsCount       = Tab.getNormalTabs(windowId).length;
   const hasMultipleNormalTabs = normalTabsCount > 1;
