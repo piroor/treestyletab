@@ -585,7 +585,8 @@ ul {
 }
 
 #contextual-identities-selector li {
-  padding-left: calc(var(--favicon-size) + 0.2em);
+  /* (default padding defined in MenuUI.js) + (icon size) + (margin between icon and label) */
+  padding-left: calc((1em - 16px + 0.5em) + var(--favicon-size) + 0.2em);
 }
 
 
