@@ -169,7 +169,7 @@ export async function openNewTabAs(options = {}) {
 
     case Constants.kNEWTAB_OPEN_AS_CHILD: {
       parent = currentTab;
-      const refTabs = Tree.getReferenceTabsForNewChild(parent);
+      const refTabs = Tree.getReferenceTabsForNewChild(null, parent);
       insertBefore = refTabs.insertBefore;
       insertAfter  = refTabs.insertAfter;
       log('detected reference tabs: ',
