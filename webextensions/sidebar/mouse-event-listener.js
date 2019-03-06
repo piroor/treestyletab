@@ -435,7 +435,8 @@ async function onMouseUp(event) {
              !lastMousedown.detail.altKey &&
              !lastMousedown.detail.ctrlKey &&
              !lastMousedown.detail.metaKey &&
-             !lastMousedown.detail.shiftKey) {
+             !lastMousedown.detail.shiftKey &&
+             typeof browser.tabs.highlight == 'function') {
       // clear selection by left click
       browser.tabs.highlight({
         windowId: tab.windowId,

@@ -46,7 +46,8 @@ export async function activateTab(tab, options = {}) {
       window.internalSilentlyFocusCount--;
     ApiTabs.handleMissingTabError(e);
   };
-  if (configs.supportTabsMultiselect) {
+  if (configs.supportTabsMultiselect &&
+      typeof browser.tabs.highlight == 'function') {
     let tabs = [tab.index];
     const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
     if (tab.$TST.hasOtherHighlighted &&
