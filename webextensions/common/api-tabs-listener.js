@@ -338,15 +338,18 @@ async function onNewTabTracked(tab) {
   if (targetWindow && tab.windowId != targetWindow)
     return null;
 
-  log(`onNewTabTracked(i${dumpTab(tab)}): `, tab);
-
-  Tab.track(tab);
-
   const window               = Window.init(tab.windowId);
   const positionedBySelf     = window.toBeOpenedTabsWithPositions > 0;
   const duplicatedInternally = window.duplicatingTabsCount > 0;
   const maybeOrphan          = window.toBeOpenedOrphanTabs > 0;
   const activeTab            = Tab.getActiveTab(window.id);
+
+  // We need to track new tab after getting old active tab. Otherwise, this
+  // operation updates the latest active tab in the window amd it becomes
+  // impossible to know which tab was previously active.
+  Tab.track(tab);
+
+  log(`onNewTabTracked(i${dumpTab(tab)}): `, tab, { window, positionedBySelf, duplicatedInternally, maybeOrphan, activeTab });
 
   Tab.onBeforeCreate.dispatch(tab, {
     positionedBySelf,
