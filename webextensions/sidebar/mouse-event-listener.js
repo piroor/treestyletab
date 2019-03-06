@@ -499,7 +499,7 @@ function handleNewTabAction(event, options = {}) {
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
-    baseTab:       TabsStore.activeTabForWindow.get(mTargetWindow),
+    baseTab:       TabsStore.activeTabInWindow.get(mTargetWindow),
     as:            options.action,
     cookieStoreId: options.cookieStoreId,
     inBackground:  event.shiftKey,

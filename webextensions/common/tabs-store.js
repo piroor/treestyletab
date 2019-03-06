@@ -261,7 +261,7 @@ function fixupQuery(query) {
 // Indexes for optimization
 //===================================================================
 
-export const activeTabForWindow       = new Map();
+export const activeTabInWindow       = new Map();
 export const activeTabsInWindow      = new Map();
 export const livingTabsInWindow      = new Map();
 export const controllableTabsInWindow = new Map();
@@ -315,7 +315,7 @@ export function prepareIndexesForWindow(windowId) {
 }
 
 export function unprepareIndexesForWindow(windowId) {
-  activeTabForWindow.delete(windowId);
+  activeTabInWindow.delete(windowId);
   activeTabsInWindow.delete(windowId);
   livingTabsInWindow.delete(windowId);
   controllableTabsInWindow.delete(windowId);

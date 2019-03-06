@@ -131,7 +131,7 @@ async function onActivated(activeInfo) {
   if (targetWindow && activeInfo.windowId != targetWindow)
     return;
 
-  TabsStore.activeTabForWindow.set(activeInfo.windowId, Tab.get(activeInfo.tabId));
+  TabsStore.activeTabInWindow.set(activeInfo.windowId, Tab.get(activeInfo.tabId));
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)
