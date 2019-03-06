@@ -211,12 +211,15 @@ export async function attachTabTo(child, parent, options = {}) {
 }
 
 export function getReferenceTabsForNewChild(child, parent, options = {}) {
+  log('getReferenceTabsForNewChild ', child, parent, options);
   let insertAt = options.insertAt;
   if (typeof insertAt !== 'number')
     insertAt = configs.insertNewChildAt;
+  log('  insertAt = ', insertAt);
   let descendants = parent.$TST.descendants;
   if (options.ignoreTabs)
     descendants = descendants.filter(tab => !options.ignoreTabs.includes(tab));
+  log('  descendants = ', descendants);
   let insertBefore, insertAfter;
   if (descendants.length > 0) {
     const firstChild     = descendants[0];
@@ -225,9 +228,11 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
       case Constants.kINSERT_END:
       default:
         insertAfter = lastDescendant;
+        log('  insert after lastDescendant (insertAt=kINSERT_END)');
         break;
       case Constants.kINSERT_FIRST:
         insertBefore = firstChild;
+        log('  insert before firstChild (insertAt=kINSERT_FIRST)');
         break;
       case Constants.kINSERT_NEAREST: {
         const allTabs = Tab.getOtherTabs(parent.windowId, options.ignoreTabs);
@@ -235,9 +240,11 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
         if (index < allTabs.indexOf(firstChild)) {
           insertBefore = firstChild;
           insertAfter  = parent;
+          log('  insert between parent and firstChild (insertAt=kINSERT_NEAREST)');
         }
         else if (index > allTabs.indexOf(lastDescendant)) {
           insertAfter  = lastDescendant;
+          log('  insert after lastDescendant (insertAt=kINSERT_NEAREST)');
         }
         else { // inside the tree
           let children = parent.$TST.children;
@@ -247,25 +254,34 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
             if (index > allTabs.indexOf(child))
               continue;
             insertBefore = child;
+            log('  insert before nearest following child (insertAt=kINSERT_NEAREST)');
             break;
           }
-          if (!insertBefore)
+          if (!insertBefore) {
             insertAfter = lastDescendant;
+            log('  insert after lastDescendant (insertAt=kINSERT_NEAREST)');
+          }
         }
       }; break;
     }
   }
   else {
     insertAfter = parent;
+    log('  insert after parent');
   }
-  if (insertBefore == child)
+  if (insertBefore == child) {
     insertBefore = insertBefore && insertBefore.$TST.nextTab;
-  if (insertAfter == child)
+    log('  => insert before next tab of the child tab itelf');
+  }
+  if (insertAfter == child) {
     insertAfter = insertAfter && insertAfter.$TST.previousTab;
+    log('  => insert after previous tab of the child tab itelf');
+  }
   // disallow to place tab in invalid position
   if (insertBefore) {
     if (insertBefore.index <= parent.index) {
       insertBefore = null;
+      log('  => do not put before a tab preceding to the parent');
     }
     //TODO: we need to reject more cases...
   }
@@ -274,6 +290,7 @@ export function getReferenceTabsForNewChild(child, parent, options = {}) {
     const lastMember    = allTabsInTree[allTabsInTree.length - 1];
     if (insertAfter.index >= lastMember.index) {
       insertAfter = lastMember;
+      log('  => do not put after the last tab in the tree');
     }
     //TODO: we need to reject more cases...
   }
