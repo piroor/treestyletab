@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.8.1 (2019.3.6)
    * Fix behavior around newly opened tabs depending on old active tab information. The previous active tab was unexpectedly misdetected. (regression on 2.8.0)
    * Mute/unmute by clicking on the "sound playing" icon in each tab correctly. (regression on 2.8.0)
    * Tree strucutre is correctly maintained when new tab is opened at middle of existing tree. (regression on 2.8.0)
