@@ -1675,15 +1675,14 @@ export async function applyTreeStructureToTabs(tabs, treeStructure, options = {}
 export function snapshotForActionDetection(targetTab) {
   const prevTab = targetTab.$TST.nearestNormalPrecedingTab;
   const nextTab = targetTab.$TST.nearestNormalFollowingTab;
-  const foundTabs = {};
-  const tabs = [].concat([
-    prevTab && prevTab.$TST.ancestors || [],
+  const tabs = Array.from(new Set([
+    ...(prevTab && prevTab.$TST.ancestors || []),
     prevTab,
     targetTab,
     nextTab,
     targetTab.$TST.parent
-  ])
-    .filter(tab => TabsStore.ensureLivingTab(tab) && !foundTabs[tab.id] && (foundTabs[tab.id] = true)) // uniq
+  ]))
+    .filter(TabsStore.ensureLivingTab)
     .sort((a, b) => a.index - b.index);
   return snapshotTree(targetTab, tabs);
 }
