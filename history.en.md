@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Fix ability to open new tab as a child of the current tab. (regression on 2.8.0)
+   * Fix ability to open context menu on the sidebar, at Firefox ESR60. (regression on 2.8.0)
+   * Don't attach new tab to the old current tab when they have same domain but the new tab is opened with position, for example a link dropped to the sidebar.
  - 2.8.1 (2019.3.6)
    * Fix behavior around newly opened tabs depending on old active tab information. The previous active tab was unexpectedly misdetected. (regression on 2.8.0)
    * Mute/unmute by clicking on the "sound playing" icon in each tab correctly. (regression on 2.8.0)
