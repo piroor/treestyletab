@@ -402,7 +402,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_selectAllTabs', {
-    visible: emulate && contextTab,
+    visible: mNativeContextMenuAvailable && emulate && contextTab,
     enabled: contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length,
     multiselected
   }) && modifiedItemsCount++;
