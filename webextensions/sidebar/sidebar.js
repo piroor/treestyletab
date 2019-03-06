@@ -391,7 +391,7 @@ export async function rebuildAll(cache) {
 
   const window = Window.init(mTargetWindow);
   window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
-  for (let tab of tabs) {
+  for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inRemote: true });
     trackedTab.$TST.clear(); // clear dirty restored states
     window.element.appendChild(trackedTab.$TST.element);
