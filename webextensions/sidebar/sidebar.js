@@ -57,6 +57,7 @@ export const onReady   = new EventListenerManager();
 
 let mStyle;
 let mTargetWindow = null;
+let mInitialized = false;
 
 const mTabBar                     = document.querySelector('#tabbar');
 const mAfterTabsForOverflowTabBar = document.querySelector('#tabbar ~ .after-tabs');
@@ -204,6 +205,7 @@ export async function init() {
     })
   ]));
 
+  mInitialized = true;
   UserOperationBlocker.unblock({ throbber: true });
 
   MetricsData.add('init end');
@@ -364,7 +366,7 @@ export async function rebuildAll(cache) {
   range.deleteContents();
   range.detach();
 
-  const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
+  let tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
 
   const trackedWindow = TabsStore.windows.get(tabs[0].windowId);
   if (!trackedWindow)
@@ -383,15 +385,21 @@ export async function rebuildAll(cache) {
     }
   }
 
+  // Re-get tabs before rebuilding tree, because they can be modified while
+  // waiting for SidebarCache.restoreTabsFromCache().
+  tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
+
   const window = Window.init(mTargetWindow);
   window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
-  for (let tab of tabs) {
-    tab = Tab.init(tab, { existing: true, inRemote: true });
-    tab.$TST.clear(); // clear dirty restored states
-    window.element.appendChild(tab.$TST.element);
-    TabsUpdate.updateTab(tab, tab, { forceApply: true });
+  for (const tab of tabs) {
+    const trackedTab = Tab.init(tab, { existing: true, inRemote: true });
+    trackedTab.$TST.clear(); // clear dirty restored states
+    window.element.appendChild(trackedTab.$TST.element);
+    // update tab based on current status
+    console.log('UPDATING: ', tab.id, tab.url, tab.active, tab.highlighted);
+    TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     if (tab.active)
-      TabsInternalOperation.setTabActive(tab);
+      TabsInternalOperation.setTabActive(trackedTab);
   }
   DOMCache.wholeContainer.appendChild(window.element);
   MetricsData.add('rebuildAll (from scratch)');
@@ -710,8 +718,13 @@ function onConfigChange(changedKey) {
   const rootClasses = document.documentElement.classList;
   switch (changedKey) {
     case 'debug': {
-      for (const tab of Tab.getAllTabs(mTargetWindow)) {
-        TabsUpdate.updateTab(tab, tab, { forceApply: true });
+      if (mInitialized) {
+        // We have no need to re-update tabs on the startup process.
+        // Moreover, we should not re-update tabs at the time to avoid
+        // breaking of initialized tab states.
+        for (const tab of Tab.getAllTabs(mTargetWindow)) {
+          TabsUpdate.updateTab(tab, tab, { forceApply: true });
+        }
       }
       if (configs.debug)
         rootClasses.add('debug');

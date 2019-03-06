@@ -435,7 +435,8 @@ async function onMouseUp(event) {
              !lastMousedown.detail.altKey &&
              !lastMousedown.detail.ctrlKey &&
              !lastMousedown.detail.metaKey &&
-             !lastMousedown.detail.shiftKey) {
+             !lastMousedown.detail.shiftKey &&
+             typeof browser.tabs.highlight == 'function') {
       // clear selection by left click
       browser.tabs.highlight({
         windowId: tab.windowId,
@@ -499,7 +500,7 @@ function handleNewTabAction(event, options = {}) {
     options.action = Constants.kNEWTAB_DO_NOTHING;
 
   Commands.openNewTabAs({
-    baseTab:       TabsStore.activeTabForWindow.get(mTargetWindow),
+    baseTab:       TabsStore.activeTabInWindow.get(mTargetWindow),
     as:            options.action,
     cookieStoreId: options.cookieStoreId,
     inBackground:  event.shiftKey,

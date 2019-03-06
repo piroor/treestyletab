@@ -1,6 +1,16 @@
 # History
 
  - master/HEAD
+ - 2.8.2 (2019.3.6)
+   * Fix ability to open new tab as a child of the current tab. (regression on 2.8.0)
+   * Fix ability to open context menu on the sidebar, at Firefox ESR60. (regression on 2.8.0)
+   * Don't attach new tab to the old current tab when they have same domain but the new tab is opened with position, for example a link dropped to the sidebar.
+   * Don't highlight two tabs on the initial startup: old active tab and newly opened notification tab.
+ - 2.8.1 (2019.3.6)
+   * Fix behavior around newly opened tabs depending on old active tab information. The previous active tab was unexpectedly misdetected. (regression on 2.8.0)
+   * Mute/unmute by clicking on the "sound playing" icon in each tab correctly. (regression on 2.8.0)
+   * Tree strucutre is correctly maintained when new tab is opened at middle of existing tree. (regression on 2.8.0)
+   * Update shortcut config menu items on the toolbar button, following to changes on 2.8.0.
  - 2.8.0 (2019.3.5)
    * Reconstruct tab management system based on JS objects instead of DOM elements. This aims to make future improvements more easy: performance optimization for too much number of tabs, and stabilization around multiple parallel asynchronous operations.
    * Add ability to collect performance logs of tab queryings. It will help more future optimizations for too much number of tabs. (Please note that you need to activate logging manually, via the checkbox at the "Development" section in the options page.)

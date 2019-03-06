@@ -262,7 +262,7 @@ function matchPatternToRegExp(pattern) {
 export async function open(options = {}) {
   await close();
   mLastOpenOptions = options;
-  mContextTab      = options.tab;
+  mContextTab      = Tab.get(options.tab.id);
   await rebuild();
   if (mIsDirty) {
     return await open(options);
@@ -296,13 +296,13 @@ function applyContext() {
       states.push('pinned');
     if (mContextTab.audible)
       states.push('audible');
-    if (mContextTab.mutedInfo && mContextTab.mutedInfo.muted)
+    if (mContextTab.$TST.muted)
       states.push('muted');
     if (mContextTab.discarded)
       states.push('discarded');
     if (mContextTab.incognito)
       states.push('incognito');
-    if (Tab.get(mContextTab).$TST.multiselected)
+    if (mContextTab.$TST.multiselected)
       states.push('multiselected');
     mMenu.setAttribute('data-tab-states', states.join(' '));
   }
@@ -347,7 +347,7 @@ async function onCommand(item, event) {
       srcUrl:           null,
       wasChecked
     },
-    tab: contextTab || null
+    tab: contextTab && contextTab.$TST.sanitize|| null
   };
   const owner = item.getAttribute('data-item-owner-id');
   if (owner == browser.runtime.id)
@@ -410,6 +410,7 @@ async function onCommand(item, event) {
 }
 
 async function onShown(contextTab) {
+  contextTab = contextTab || mContextTab
   const message = {
     type: TSTAPI.kCONTEXT_MENU_SHOWN,
     info: {
@@ -424,7 +425,7 @@ async function onShown(contextTab) {
       menuIds:          [],
       viewType:         'sidebar'
     },
-    tab: contextTab || mContextTab || null
+    tab: contextTab && contextTab.$TST.sanitized || null
   };
   return Promise.all([
     browser.runtime.sendMessage(message).catch(ApiTabs.createErrorSuppressor()),

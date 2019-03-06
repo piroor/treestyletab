@@ -402,7 +402,7 @@ async function onShown(info, contextTab) {
   }) && modifiedItemsCount++;
 
   updateItem('context_selectAllTabs', {
-    visible: emulate && contextTab,
+    visible: mNativeContextMenuAvailable && emulate && contextTab,
     enabled: contextTab && Tab.getSelectedTabs(windowId).length != Tab.getVisibleTabs(windowId).length,
     multiselected
   }) && modifiedItemsCount++;
@@ -527,7 +527,7 @@ async function onClick(info, contextTab) {
   contextTab = contextTab && Tab.get(contextTab.id);
   const window    = await browser.windows.getLastFocused({ populate: true }).catch(ApiTabs.createErrorHandler());
   const windowId  = contextTab && contextTab.windowId || window.id;
-  const activeTab = TabsStore.activeTabForWindow.get(windowId);
+  const activeTab = TabsStore.activeTabInWindow.get(windowId);
 
   let multiselectedTabs = Tab.getSelectedTabs(windowId);
   const isMultiselected = contextTab ? contextTab.$TST.multiselected : multiselectedTabs.length > 1;

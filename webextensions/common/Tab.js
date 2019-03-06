@@ -71,7 +71,7 @@ export default class Tab {
     window.trackTab(tab);
 
     if (tab.active) {
-      TabsStore.activeTabForWindow.set(tab.windowId, tab);
+      TabsStore.activeTabInWindow.set(tab.windowId, tab);
       TabsStore.activeTabsInWindow.get(tab.windowId).add(tab);
     }
     else {
@@ -982,7 +982,7 @@ Tab.init = (tab, options = {}) => {
 // Note that this function can return null if it is the first tab of
 // a new window opened by the "move tab to new window" command.
 Tab.getActiveTab = windowId => {
-  return TabsStore.ensureLivingTab(TabsStore.activeTabForWindow.get(windowId));
+  return TabsStore.ensureLivingTab(TabsStore.activeTabInWindow.get(windowId));
 };
 
 Tab.getFirstTab = windowId => {
@@ -1066,7 +1066,7 @@ Tab.getOpenerFromGroupTab = groupTab => {
 //===================================================================
 
 Tab.getActiveTabs = () => {
-  return Array.from(TabsStore.activeTabForWindow.values(), TabsStore.ensureLivingTab);
+  return Array.from(TabsStore.activeTabInWindow.values(), TabsStore.ensureLivingTab);
 };
 
 Tab.getAllTabs = (windowId = null) => {

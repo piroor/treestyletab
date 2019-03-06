@@ -43,7 +43,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
         possibleOpenerTab &&
         /* New tab opened with browser.tabs.insertAfterCurrent=true may have
            next tab. In this case the tab is expected to be placed next to the
-           active tab aways, so we should skip all repositioning behavior.
+           active tab always, so we should skip all repositioning behavior.
            See also: https://github.com/piroor/treestyletab/issues/2054 */
         !tab.$TST.nextTab) {
       if (tab.$TST.isNewTabCommandTab) {
@@ -63,6 +63,7 @@ Tab.onCreating.addListener((tab, info = {}) => {
       tab.$TST.isNewTab = true;
     }
     log('behave as a tab opened with any URL');
+    tab.$TST.positionedBySelf = info.positionedBySelf;
     return true;
   }
 
@@ -164,7 +165,8 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     log('toBeGroupedTabs ', toBeGroupedTabs);
     if (!tab.$TST.parent &&
         possibleOpenerTab &&
-        !toBeGroupedTabs.includes(tab.id)) {
+        !toBeGroupedTabs.includes(tab.id) &&
+        !tab.$TST.positionedBySelf) {
       if (tab.$TST.isNewTabCommandTab) {
         log('behave as a tab opened by new tab command (delayed)');
         handleNewTabFromActiveTab(tab, {

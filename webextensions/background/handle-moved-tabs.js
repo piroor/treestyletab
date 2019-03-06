@@ -169,6 +169,7 @@ async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
   log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
   const tree   = moveInfo.treeForActionDetection || Tree.snapshotForActionDetection(tab);
   const target = tree.target;
+  log('  calculate new position: ', tab, tree);
 
   const toIndex   = moveInfo.toIndex;
   const fromIndex = moveInfo.fromIndex;
