@@ -1,6 +1,9 @@
 # History
 
  - master/HEAD
+   * Fix behavior around newly opened tabs depending on old active tab information. The previous active tab was unexpectedly misdetected. (regression on 2.8.0)
+   * Mute/unmute by clicking on the "sound playing" icon in each tab correctly. (regression on 2.8.0)
+   * Update shortcut config menu items on the toolbar button, following to changes on 2.8.0.
  - 2.8.0 (2019.3.5)
    * Reconstruct tab management system based on JS objects instead of DOM elements. This aims to make future improvements more easy: performance optimization for too much number of tabs, and stabilization around multiple parallel asynchronous operations.
    * Add ability to collect performance logs of tab queryings. It will help more future optimizations for too much number of tabs. (Please note that you need to activate logging manually, via the checkbox at the "Development" section in the options page.)
