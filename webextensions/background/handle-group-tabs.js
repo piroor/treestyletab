@@ -476,7 +476,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
       const uri = TabsGroup.makeGroupTabURI({
         title:       browser.i18n.getMessage('groupTab_fromPinnedTab_label', opener.title),
         temporary:   true,
-        openerTabId: opener.$TST.getAttribute(Constants.kPERSISTENT_ID)
+        openerTabId: opener.$TST.uniqueId.id
       });
       parent = await TabsOpen.openURIInTab(uri, {
         windowId:     opener.windowId,
