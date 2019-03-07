@@ -9,6 +9,7 @@ import {
   wait,
   configs
 } from '/common/common.js';
+import { is, ok, ng } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
 
 import * as Utils from './utils.js';
@@ -50,6 +51,7 @@ export async function testAutoFixupForHiddenTabs() {
     G: { index: 7, cookieStoreId: 'firefox-container-1', openerTabId: 'F' },
     H: { index: 8, cookieStoreId: 'firefox-default', openerTabId: 'A' }
   }, { windowId: win.id });
-  await wait(3 * 1000);
+  await wait(1 * 1000);
+  is('OK', 'NG');
 }
 

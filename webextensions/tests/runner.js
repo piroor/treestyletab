@@ -45,16 +45,36 @@ async function runAll() {
     for (const name of Object.keys(tests)) {
       if (!name.startsWith('test'))
         continue;
+      let shouldTearDown = true;
       try {
         if (typeof setup == 'function')
           await setup();
         await tests[name]();
-        if (typeof teardown == 'function')
+        if (typeof teardown == 'function') {
           await teardown();
+          shouldTearDown = false;
+        }
         log(`${name}: succeess`);
       }
       catch(error) {
-        log(`${name}: error`, error);
+        try {
+          if (shouldTearDown &&
+              typeof teardown == 'function') {
+            await teardown();
+          }
+          throw error;
+        }
+        catch(error) {
+          if (error && error.name == 'AssertionError')
+            log(`${name}: failure`, {
+              message:  error.extraMessage,
+              expected: error.expected,
+              actual:   error.actual,
+              stack:    error.stack
+            });
+          else
+            log(`${name}: error`, error);
+        }
       }
     }
   }
@@ -65,7 +85,7 @@ function log(message, ...extra) {
   item.textContent = message;
   if (extra.length > 0) {
     item.appendChild(document.createElement('br'));
-    item.appendChild(document.createText(JSON.stringify(extra)));
+    item.appendChild(document.createTextNode(JSON.stringify(extra, null, 2)));
   }
 }
 
