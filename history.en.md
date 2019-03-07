@@ -3,6 +3,7 @@
  - master/HEAD
    * Tabs moved from any other window were misdetected as internally invisible and not used as a successor of other tabs. (regression on 2.8.0)
    * Add a shortcut config menu item for the overflow style of tab label.
+   * Import/export configs via the common file dialog.
  - 2.8.2 (2019.3.6)
    * Fix ability to open new tab as a child of the current tab. (regression on 2.8.0)
    * Fix ability to open context menu on the sidebar, at Firefox ESR60. (regression on 2.8.0)
