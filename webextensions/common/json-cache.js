@@ -25,7 +25,8 @@ export async function getWindowSignature(windowIdOrTabs) {
   if (typeof windowIdOrTabs == 'number') {
     tabs = await browser.tabs.query({ windowId: windowIdOrTabs }).catch(ApiTabs.createErrorHandler());
   }
-  return Promise.all(tabs.map(tab => Tab.get(tab.id).$TST.promisedUniqueId.then(id => id.id || '?')));
+  tabs = tabs.map(tab => Tab.get(tab.id)).filter(tab => !!tab);
+  return Promise.all(tabs.map(tab => tab.$TST.promisedUniqueId.then(id => id.id || '?')));
 }
 
 export function trimSignature(signature, ignoreCount) {
