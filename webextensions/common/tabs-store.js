@@ -428,7 +428,8 @@ export function removeTabFromIndexes(tab) {
 
 function addTabToIndex(tab, indexes) {
   const tabs = indexes.get(tab.windowId);
-  tabs.set(tab.id, tab);
+  if (tabs)
+    tabs.set(tab.id, tab);
 }
 
 function removeTabFromIndex(tab, indexes) {
