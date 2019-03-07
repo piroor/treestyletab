@@ -70,6 +70,10 @@ export default class Tab {
     const window = TabsStore.windows.get(tab.windowId) || new Window(tab.windowId);
     window.trackTab(tab);
 
+    // Don't update indexes here, instead Window.prototype.trackTab()
+    // updates indexes because indexes are bound to windows.
+    // TabsStore.updateIndexesForTab(tab);
+
     if (tab.active) {
       TabsStore.activeTabInWindow.set(tab.windowId, tab);
       TabsStore.activeTabsInWindow.get(tab.windowId).add(tab);
@@ -77,8 +81,6 @@ export default class Tab {
     else {
       TabsStore.activeTabsInWindow.get(tab.windowId).delete(tab);
     }
-
-    TabsStore.updateIndexesForTab(tab);
 
     const incompletelyTrackedTabsPerWindow = mIncompletelyTrackedTabs.get(tab.windowId) || new Set();
     incompletelyTrackedTabsPerWindow.add(tab);

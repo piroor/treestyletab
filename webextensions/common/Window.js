@@ -144,7 +144,6 @@ export default class Window {
         parent.$TST.sortChildren();
         parent.$TST.invalidateCachedAncestors();
       }
-      TabsStore.updateIndexesForTab(tab);
       log(`tab ${dumpTab(tab)} is re-tracked under the window ${this.id}: `, order);
     }
     else { // not tracked yet: add
@@ -158,6 +157,7 @@ export default class Window {
       }
       log(`tab ${dumpTab(tab)} is newly tracked under the window ${this.id}: `, order);
     }
+    TabsStore.updateIndexesForTab(tab);
     return tab;
   }
 
