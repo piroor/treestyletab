@@ -396,7 +396,6 @@ export async function rebuildAll(cache) {
     trackedTab.$TST.clear(); // clear dirty restored states
     window.element.appendChild(trackedTab.$TST.element);
     // update tab based on current status
-    console.log('UPDATING: ', tab.id, tab.url, tab.active, tab.highlighted);
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
