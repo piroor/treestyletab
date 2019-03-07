@@ -419,9 +419,9 @@ function onShown(info, tab) {
   }
 
   tab = tab && Tab.get(tab.id);
-  const subtreeCollapsed = tab.$TST.subtreeCollapsed;
-  const hasChild = tab.$TST.hasChild;
-  const multiselected = tab.$TST.multiselected;
+  const subtreeCollapsed = tab && tab.$TST.subtreeCollapsed;
+  const hasChild = tab && tab.$TST.hasChild;
+  const multiselected = tab && tab.$TST.multiselected;
 
   for (const item of mContextMenuItems) {
     let newEnabled;
