@@ -166,6 +166,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('link-startupPage').setAttribute('href', Constants.kSHORTHAND_URIS.startup);
   document.getElementById('link-groupPage').setAttribute('href', Constants.kSHORTHAND_URIS.group);
+  document.getElementById('link-runTests').setAttribute('href', Constants.kSHORTHAND_URIS.testRunner);
 
   configs.$loaded.then(() => {
     for (const fieldset of document.querySelectorAll('fieldset.collapsible')) {

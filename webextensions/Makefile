@@ -18,7 +18,7 @@ format:
 
 xpi: update_extlib install_extlib lint
 	rm -f ./*.xpi
-	zip -r -0 treestyletab-we.xpi manifest.json _locales common options background sidebar resources extlib -x '*/.*' >/dev/null 2>/dev/null
+	zip -r -0 treestyletab-we.xpi manifest.json _locales common options background sidebar resources extlib tests -x '*/.*' >/dev/null 2>/dev/null
 
 update_extlib:
 	cd .. && git submodule update --init

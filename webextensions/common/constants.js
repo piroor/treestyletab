@@ -252,7 +252,8 @@ export const kGROUP_TAB_FROM_PINNED_DEFAULT_TITLE_MATCHER = new RegExp(`^${brows
 export const kSHORTHAND_ABOUT_URI = /^about:treestyletab-([^\?]+)/;
 export const kSHORTHAND_URIS = {
   group:   kGROUP_TAB_URI,
-  startup: browser.extension.getURL('resources/startup.html')
+  startup: browser.extension.getURL('resources/startup.html'),
+  testRunner: browser.extension.getURL('tests/runner.html')
 };
 
 export const kNOTIFICATION_DEFAULT_ICON = '/resources/icon64.png';

@@ -794,7 +794,9 @@ Tab.track = tab => {
 };
 
 Tab.untrack = tabId => {
-  const tab    = Tab.get(tabId);
+  const tab = Tab.get(tabId);
+  if (!tab) // already untracked
+    return;
   const window = TabsStore.windows.get(tab.windowId);
   if (window)
     window.untrackTab(tabId);
