@@ -453,6 +453,28 @@ function reserveToSaveScrollPosition() {
   }, 150);
 }
 
+function reserveToScrollToTab(tab) {
+  if (reserveToScrollToTab.reserved)
+    clearTimeout(reserveToScrollToTab.reserved);
+  reserveToScrollToTab.reservedTabId = tab.id;
+  reserveToScrollToTab.reserved = setTimeout(() => {
+    delete reserveToScrollToTab.reservedTabId;
+    delete reserveToScrollToTab.reserved;
+    scrollToTab(tab);
+  }, 100);
+}
+
+function reserveToScrollToNewTab(tab) {
+  if (reserveToScrollToNewTab.reserved)
+    clearTimeout(reserveToScrollToNewTab.reserved);
+  reserveToScrollToNewTab.reservedTabId = tab.id;
+  reserveToScrollToNewTab.reserved = setTimeout(() => {
+    delete reserveToScrollToNewTab.reservedTabId;
+    delete reserveToScrollToNewTab.reserved;
+    scrollToNewTab(tab);
+  }, 100);
+}
+
 
 Tab.onCreated.addListener((tab, _info) => {
   if (configs.animation) {
@@ -472,15 +494,24 @@ Tab.onCreated.addListener((tab, _info) => {
   }
   else {
     if (tab.active)
-      scrollToNewTab(tab);
+      reserveToScrollToNewTab(tab);
     else
       notifyOutOfViewTab(tab);
   }
 });
 
-Tab.onActivated.addListener((tab, _info) => { scrollToTab(tab); });
+Tab.onActivated.addListener((tab, _info) => { reserveToScrollToTab(tab); });
+Tab.onUnpinned.addListener(tab => { reserveToScrollToTab(tab); });
 
-Tab.onUnpinned.addListener(tab => { scrollToTab(tab); });
+function reReserveScrollingForTab(tab) {
+  if (reserveToScrollToTab.reservedTabId == tab.id)
+    reserveToScrollToTab(tab);
+  if (reserveToScrollToNewTab.reservedTabId == tab.id)
+    reserveToScrollToNewTab(tab);
+}
+
+Tab.onMoving.addListener((tab, _info) => { reReserveScrollingForTab(tab); });
+Tab.onTabInternallyMoved.addListener((tab, _info) => { reReserveScrollingForTab(tab); });
 
 
 function onMessage(message, _sender, _respond) {
@@ -498,7 +529,7 @@ function onMessage(message, _sender, _respond) {
         const tab = Tab.get(message.tabId);
         const parent = Tab.get(message.parentId);
         if (tab && parent && parent.active)
-          scrollToNewTab(tab);
+          reserveToScrollToNewTab(tab);
       })();
 
     case Constants.kCOMMAND_SCROLL_TABBAR:
