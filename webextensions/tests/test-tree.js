@@ -6,7 +6,6 @@
 'use strict';
 
 import {
-  wait,
   configs
 } from '/common/common.js';
 import { is, ok, ng } from '/tests/assert.js';
@@ -56,15 +55,16 @@ export async function testAutoFixupForHiddenTabs() {
   tabs = await Utils.refreshTabs(tabs);
   {
     const { A, B, C, D, E, F, G, H } = tabs;
-    is([`${A.id}`,
-        `${A.id} => ${B.id}`,
-        `${A.id} => ${B.id} => ${C.id}`,
-        `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
-        `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
-        `${A.id} => ${F.id}`,
-        `${A.id} => ${F.id} => ${G.id}`,
-        `${A.id} => ${H.id}`],
-       Utils.treeStructure(Object.values(tabs)));
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${B.id} => ${C.id}`,
+      `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
+      `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
+      `${A.id} => ${F.id}`,
+      `${A.id} => ${F.id} => ${G.id}`,
+      `${A.id} => ${H.id}`
+    ], Utils.treeStructure(Object.values(tabs)));
 
     await browser.tabs.hide([B.id, C.id, F.id, G.id]);
   }
@@ -72,15 +72,16 @@ export async function testAutoFixupForHiddenTabs() {
   tabs = await Utils.refreshTabs(tabs);
   {
     const { A, B, C, D, E, F, G, H } = tabs;
-    is([`${A.id}`,
-        `${B.id}`,
-        `${B.id} => ${C.id}`,
-        `${A.id} => ${D.id}`,
-        `${A.id} => ${D.id} => ${E.id}`,
-        `${F.id}`,
-        `${F.id} => ${G.id}`,
-        `${A.id} => ${H.id}`],
-       Utils.treeStructure(Object.values(tabs)));
+    is([
+      `${A.id}`,
+      `${B.id}`,
+      `${B.id} => ${C.id}`,
+      `${A.id} => ${D.id}`,
+      `${A.id} => ${D.id} => ${E.id}`,
+      `${F.id}`,
+      `${F.id} => ${G.id}`,
+      `${A.id} => ${H.id}`
+    ], Utils.treeStructure(Object.values(tabs)));
 
     await browser.tabs.show([B.id, C.id, F.id, G.id]);
   }
@@ -88,15 +89,16 @@ export async function testAutoFixupForHiddenTabs() {
   tabs = await Utils.refreshTabs(tabs);
   {
     const { A, B, C, D, E, F, G, H } = tabs;
-    is([`${A.id}`,
-        `${A.id} => ${B.id}`,
-        `${A.id} => ${B.id} => ${C.id}`,
-        `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
-        `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
-        `${A.id} => ${F.id}`,
-        `${A.id} => ${F.id} => ${G.id}`,
-        `${A.id} => ${H.id}`],
-       Utils.treeStructure(Object.values(tabs)));
+    is([
+      `${A.id}`,
+      `${A.id} => ${B.id}`,
+      `${A.id} => ${B.id} => ${C.id}`,
+      `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
+      `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
+      `${A.id} => ${F.id}`,
+      `${A.id} => ${F.id} => ${G.id}`,
+      `${A.id} => ${H.id}`
+    ], Utils.treeStructure(Object.values(tabs)));
   }
 }
 
