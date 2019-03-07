@@ -2,6 +2,8 @@
 
  - master/HEAD
    * Tabs moved from any other window were misdetected as internally invisible and not used as a successor of other tabs. (regression on 2.8.0)
+   * Don't produce needless scrolling of the sidebar when a new tab is opened outside of the visible area and moved into the visible area immediately.
+   * Don't open needless duplicated group tabs to bind three or more child tabs opened from same pinned tab.
    * Add a shortcut config menu item for the overflow style of tab label.
    * Import/export configs via the common file dialog.
  - 2.8.2 (2019.3.6)
