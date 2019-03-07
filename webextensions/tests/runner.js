@@ -10,6 +10,7 @@ import {
 } from '/common/common.js';
 
 import * as TestTree from './test-tree.js';
+import { Diff } from '/common/diff.js';
 
 let mLogs;
 
@@ -66,27 +67,50 @@ async function runAll() {
         }
         catch(error) {
           if (error && error.name == 'AssertionError')
-            log(`${name}: failure`, {
-              message:  error.extraMessage,
-              expected: error.expected,
-              actual:   error.actual,
-              stack:    error.stack
-            });
+            logFailure(`${name}: failure`, error);
           else
-            log(`${name}: error`, error);
+            logError(`${name}: error`, error);
         }
       }
     }
   }
 }
 
-function log(message, ...extra) {
+function log(message, error) {
   const item = mLogs.appendChild(document.createElement('li'));
   item.textContent = message;
-  if (extra.length > 0) {
+}
+
+function logError(message, error) {
+  const item = mLogs.appendChild(document.createElement('li'));
+  item.classList.add('error');
+  item.textContent = message;
+  if (error) {
     item.appendChild(document.createElement('br'));
-    item.appendChild(document.createTextNode(JSON.stringify(extra, null, 2)));
+    item.appendChild(document.createTextNode(error.toString()));
+
+    const stack = item.appendChild(document.createElement('pre'));
+    stack.classList.add('stack');
+    stack.textContent = error.stack;
   }
+}
+
+function logFailure(title, error) {
+  const item = mLogs.appendChild(document.createElement('li'));
+  item.classList.add('failure');
+  item.textContent = title;
+  if (error.message) {
+    item.appendChild(document.createElement('br'));
+    item.appendChild(document.createTextNode(error.message));
+  }
+
+  const stack = item.appendChild(document.createElement('pre'));
+  stack.classList.add('stack');
+  stack.textContent = error.stack;
+
+  const diff = item.appendChild(document.createElement('pre'));
+  diff.classList.add('diff');
+  diff.innerHTML = Diff.readable(error.expected, error.actual, true);
 }
 
 window.addEventListener('DOMContentLoaded', run, { once: true });

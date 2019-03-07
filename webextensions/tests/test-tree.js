@@ -30,6 +30,7 @@ export async function testAutoFixupForHiddenTabs() {
   configs.fixupTreeOnTabVisibilityChanged = true;
   configs.inheritContextualIdentityToNewChildTab = false;
   configs.inheritContextualIdentityToSameSiteOrphan = false;
+  let tabs;
 
   /*
   - A
@@ -41,7 +42,7 @@ export async function testAutoFixupForHiddenTabs() {
       - G (with the "Personal" container)
     - H
   */
-  /*const tabs =*/ await Utils.createTabs({
+  tabs = await Utils.createTabs({
     A: { index: 1, cookieStoreId: 'firefox-default' },
     B: { index: 2, cookieStoreId: 'firefox-container-1', openerTabId: 'A' },
     C: { index: 3, cookieStoreId: 'firefox-container-1', openerTabId: 'B' },
@@ -51,7 +52,51 @@ export async function testAutoFixupForHiddenTabs() {
     G: { index: 7, cookieStoreId: 'firefox-container-1', openerTabId: 'F' },
     H: { index: 8, cookieStoreId: 'firefox-default', openerTabId: 'A' }
   }, { windowId: win.id });
-  await wait(1 * 1000);
-  is('OK', 'NG');
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E, F, G, H } = tabs;
+    is([`${A.id}`,
+        `${A.id} => ${B.id}`,
+        `${A.id} => ${B.id} => ${C.id}`,
+        `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
+        `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
+        `${A.id} => ${F.id}`,
+        `${A.id} => ${F.id} => ${G.id}`,
+        `${A.id} => ${H.id}`],
+       Utils.treeStructure(Object.values(tabs)));
+
+    await browser.tabs.hide([B.id, C.id, F.id, G.id]);
+  }
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E, F, G, H } = tabs;
+    is([`${A.id}`,
+        `${B.id}`,
+        `${B.id} => ${C.id}`,
+        `${A.id} => ${D.id}`,
+        `${A.id} => ${D.id} => ${E.id}`,
+        `${F.id}`,
+        `${F.id} => ${G.id}`,
+        `${A.id} => ${H.id}`],
+       Utils.treeStructure(Object.values(tabs)));
+
+    await browser.tabs.show([B.id, C.id, F.id, G.id]);
+  }
+
+  tabs = await Utils.refreshTabs(tabs);
+  {
+    const { A, B, C, D, E, F, G, H } = tabs;
+    is([`${A.id}`,
+        `${A.id} => ${B.id}`,
+        `${A.id} => ${B.id} => ${C.id}`,
+        `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
+        `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
+        `${A.id} => ${F.id}`,
+        `${A.id} => ${F.id} => ${G.id}`,
+        `${A.id} => ${H.id}`],
+       Utils.treeStructure(Object.values(tabs)));
+  }
 }
 

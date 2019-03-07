@@ -32,3 +32,33 @@ export async function createTabs(definitions, commonParams = {}) {
 
   throw new Error('Invalid tab definitions: ', definitions);
 }
+
+export async function refreshTabs(tabs) {
+  if (Array.isArray(tabs))
+    return Promise.all(tabs.map(tab => browser.tabs.get(tab.id)));
+
+  if (typeof tabs == 'object') {
+    const refreshedTabs = {};
+    for (const name of Object.keys(tabs)) {
+      refreshedTabs[name] = await browser.tabs.get(tabs[name].id);
+    }
+    return tabs;
+  }
+
+  throw new Error('Invalid tab collection: ', tabs);
+}
+
+export function treeStructure(tabs) {
+  const tabsById = {};
+  for (const tab of tabs) {
+    tabsById[tab.id] = tab;
+  }
+  const outputNestedRelation = (tab) => {
+    if (!tab)
+      return '?';
+    if (tab.openerTabId)
+      return `${outputNestedRelation(tabsById[tab.openerTabId])} => ${tab.id}`;
+    return `${tab.id}`;
+  };
+  return tabs.map(outputNestedRelation);
+}

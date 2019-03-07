@@ -7,8 +7,35 @@
     <meta charset="UTF-8">
     <script type="module" src="./runner.js"></script>
     <style type="text/css">
-      ul#logs li {
+      body {
+        background: white;
+        color: black;
+      }
+
+      pre {
         white-space: pre-wrap;
+      }
+
+      ul#logs li.failure {
+        background: pink;
+      }
+
+      ul#logs li.error {
+        background: orange;
+      }
+
+      .diff {
+        background: white;
+        padding: 0.5em;
+      }
+      .diff .line {
+        display: block;
+      }
+      .diff .deleted {
+        background: pink;
+      }
+      .diff .inserted {
+        background: lime;
       }
     </style>
   </head>
