@@ -262,7 +262,7 @@ function matchPatternToRegExp(pattern) {
 export async function open(options = {}) {
   await close();
   mLastOpenOptions = options;
-  mContextTab      = Tab.get(options.tab.id);
+  mContextTab      = options.tab && Tab.get(options.tab.id);
   await rebuild();
   if (mIsDirty) {
     return await open(options);
