@@ -81,9 +81,13 @@ async function runAll() {
   }
 }
 
-function log(message, error) {
+function log(message, ...extra) {
   const item = mLogs.appendChild(document.createElement('li'));
   item.textContent = message;
+  if (extra.length > 0) {
+    item.appendChild(document.createElement('br'));
+    item.appendChild(document.createTextNode(JSON.stringify(extra)));
+  }
 }
 
 function logError(message, error) {
