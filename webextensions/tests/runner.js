@@ -60,7 +60,7 @@ async function runAll() {
           await teardown();
           shouldTearDown = false;
         }
-        log(`${name}: succeess`);
+        log(`${name}: success`);
       }
       catch(error) {
         try {
