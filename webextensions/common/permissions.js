@@ -19,8 +19,7 @@ function log(...args) {
 
 export const BOOKMARKS = { permissions: ['bookmarks'] };
 export const ALL_URLS = { origins: ['<all_urls>'] };
-export const SEARCH = { permissions: ['search'] };
-export const MENUS_OVERRIDE_CONTEXT = { permissions: ['menus.overrideContext'] };
+export const TAB_HIDE = { permissions: ['tabHide'] };
 
 export function clearRequest() {
   configs.requestingPermissions = null;

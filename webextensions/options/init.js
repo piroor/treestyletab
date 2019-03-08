@@ -227,6 +227,10 @@ window.addEventListener('DOMContentLoaded', () => {
       document.querySelector('#bookmarksPermissionGranted'),
       { onChanged: (granted) => updateBookmarksUI(granted) }
     );
+    Permissions.bindToCheckbox(
+      Permissions.TAB_HIDE,
+      document.querySelector('#tabHidePermissionGranted')
+    );
 
 
     for (const checkbox of document.querySelectorAll('p input[type="checkbox"][id^="logFor-"]')) {
