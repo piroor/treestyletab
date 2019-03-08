@@ -5,6 +5,8 @@
 */
 'use strict';
 
+import * as Constants from '/common/constants.js';
+
 export async function createTab(params = {}) {
   return browser.tabs.create(params);
 }
@@ -35,14 +37,25 @@ export async function createTabs(definitions, commonParams = {}) {
 
 export async function refreshTabs(tabs) {
   if (Array.isArray(tabs))
-    return Promise.all(tabs.map(tab => browser.tabs.get(tab.id)));
+    return browser.runtime.sendMessage({
+      type:   Constants.kCOMMAND_PULL_TABS,
+      tabIds: tabs.map(tab => tab.id)
+    });
 
   if (typeof tabs == 'object') {
+    const refreshedTabsArray = await browser.runtime.sendMessage({
+      type:   Constants.kCOMMAND_PULL_TABS,
+      tabIds: Object.values(tabs).map(tab => tab.id)
+    });
     const refreshedTabs = {};
+    const idToName = {};
     for (const name of Object.keys(tabs)) {
-      refreshedTabs[name] = await browser.tabs.get(tabs[name].id);
+      idToName[tabs[name].id] = name;
     }
-    return tabs;
+    for (const tab of refreshedTabsArray) {
+      refreshedTabs[idToName[tab.id]] = tab;
+    }
+    return refreshedTabs;
   }
 
   throw new Error('Invalid tab collection: ', tabs);
@@ -56,7 +69,7 @@ export function treeStructure(tabs) {
   const outputNestedRelation = (tab) => {
     if (!tab)
       return '?';
-    if (tab.openerTabId)
+    if (tab.openerTabId && tab.openerTabId != tab.id)
       return `${outputNestedRelation(tabsById[tab.openerTabId])} => ${tab.id}`;
     return `${tab.id}`;
   };

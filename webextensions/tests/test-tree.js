@@ -6,6 +6,7 @@
 'use strict';
 
 import {
+  wait,
   configs
 } from '/common/common.js';
 import { is, ok, ng } from '/tests/assert.js';
@@ -64,9 +65,11 @@ export async function testAutoFixupForHiddenTabs() {
       `${A.id} => ${F.id}`,
       `${A.id} => ${F.id} => ${G.id}`,
       `${A.id} => ${H.id}`
-    ], Utils.treeStructure(Object.values(tabs)));
+    ], Utils.treeStructure(Object.values(tabs)),
+       'tabs should be initialized with specified structure');
 
     await browser.tabs.hide([B.id, C.id, F.id, G.id]);
+    await wait(150);
   }
 
   tabs = await Utils.refreshTabs(tabs);
@@ -81,9 +84,11 @@ export async function testAutoFixupForHiddenTabs() {
       `${F.id}`,
       `${F.id} => ${G.id}`,
       `${A.id} => ${H.id}`
-    ], Utils.treeStructure(Object.values(tabs)));
+    ], Utils.treeStructure(Object.values(tabs)),
+       'hidden tabs should be detached from the tree');
 
     await browser.tabs.show([B.id, C.id, F.id, G.id]);
+    await wait(150);
   }
 
   tabs = await Utils.refreshTabs(tabs);
@@ -93,12 +98,13 @@ export async function testAutoFixupForHiddenTabs() {
       `${A.id}`,
       `${A.id} => ${B.id}`,
       `${A.id} => ${B.id} => ${C.id}`,
-      `${A.id} => ${B.id} => ${C.id} => ${D.id}`,
-      `${A.id} => ${B.id} => ${C.id} => ${D.id} => ${E.id}`,
+      `${A.id} => ${D.id}`,
+      `${A.id} => ${D.id} => ${E.id}`,
       `${A.id} => ${F.id}`,
       `${A.id} => ${F.id} => ${G.id}`,
       `${A.id} => ${H.id}`
-    ], Utils.treeStructure(Object.values(tabs)));
+    ], Utils.treeStructure(Object.values(tabs)),
+       'shown tabs should be attached to the tree');
   }
 }
 

@@ -9,16 +9,21 @@ import {
   configs
 } from '/common/common.js';
 
-import * as TestTree from './test-tree.js';
+import * as ApiTabsListener from '/common/api-tabs-listener.js';
 import { Diff } from '/common/diff.js';
+
+import * as TestTree from './test-tree.js';
 
 let mLogs;
 
 async function run() {
+  await configs.$loaded;
+  ApiTabsListener.startListen();
   mLogs = document.getElementById('logs');
   const configValues = backupConfigs();
   restoreConfigs(configs.$default);
   await runAll();
+  ApiTabsListener.endListen();
   restoreConfigs(configValues);
 }
 
@@ -27,7 +32,7 @@ function backupConfigs() {
   for (const key of Object.keys(configs.$default).sort()) {
     values[key] = configs[key];
   }
-  return values;
+  return JSON.parse(JSON.stringify(values));
 }
 
 function restoreConfigs(values) {

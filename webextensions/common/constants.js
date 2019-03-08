@@ -12,6 +12,7 @@ export const kCOMMAND_PING_TO_BACKGROUND             = 'treestyletab:ping-to-bac
 export const kCOMMAND_PING_TO_SIDEBAR                = 'treestyletab:ping-to-sidebar';
 export const kCOMMAND_REQUEST_CONNECT_PREFIX         = 'treestyletab:request-connect-from:';
 export const kCOMMAND_REQUEST_UNIQUE_ID              = 'treestyletab:request-unique-id';
+export const kCOMMAND_PULL_TABS                      = 'treestyletab:pull-tabs';
 export const kCOMMAND_SYNC_TABS_ORDER                = 'treestyletab:sync-tabs-order';
 export const kCOMMAND_PULL_TABS_ORDER                = 'treestyletab:pull-tabs-order';
 export const kCOMMAND_PUSH_TREE_STRUCTURE            = 'treestyletab:push-tree-structure';

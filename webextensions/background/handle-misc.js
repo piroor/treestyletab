@@ -275,6 +275,12 @@ function onMessage(message, sender) {
         return Tab.get(message.tabId).$TST.promisedUniqueId;
       })();
 
+    case Constants.kCOMMAND_PULL_TABS:
+      return Promise.resolve(message.tabIds.map(id => {
+        const tab = Tab.get(id);
+        return tab && tab.$TST.sanitized;
+      }));
+
     case Constants.kCOMMAND_PULL_TABS_ORDER:
       return Promise.resolve(TabsStore.windows.get(message.windowId).order);
 
