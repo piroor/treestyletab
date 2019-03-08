@@ -9,7 +9,7 @@ import {
   wait,
   configs
 } from '/common/common.js';
-import { is, ok, ng } from '/tests/assert.js';
+import { is /*, ok, ng*/ } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
 
 import * as Utils from './utils.js';
