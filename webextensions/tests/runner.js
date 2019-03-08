@@ -112,11 +112,13 @@ function logFailure(title, error) {
   stack.classList.add('stack');
   stack.textContent = error.stack;
 
-  const expectedBlock = item.appendChild(document.createElement('fieldset'));
-  expectedBlock.appendChild(document.createElement('legend')).textContent = 'Expected';
-  const expected = expectedBlock.appendChild(document.createElement('pre'));
-  expected.classList.add('expected');
-  expected.textContent = error.expected.trim();
+  if ('expected' in error) {
+    const expectedBlock = item.appendChild(document.createElement('fieldset'));
+    expectedBlock.appendChild(document.createElement('legend')).textContent = 'Expected';
+    const expected = expectedBlock.appendChild(document.createElement('pre'));
+    expected.classList.add('expected');
+    expected.textContent = error.expected.trim();
+  }
 
   const actualBlock = item.appendChild(document.createElement('fieldset'));
   actualBlock.appendChild(document.createElement('legend')).textContent = 'Actual';
@@ -124,11 +126,13 @@ function logFailure(title, error) {
   actual.classList.add('actual');
   actual.textContent = error.actual.trim();
 
-  const diffBlock = item.appendChild(document.createElement('fieldset'));
-  diffBlock.appendChild(document.createElement('legend')).textContent = 'Difference';
-  const diff = diffBlock.appendChild(document.createElement('pre'));
-  diff.classList.add('diff');
-  diff.innerHTML = Diff.readable(error.expected, error.actual, true);
+  if ('expected' in error) {
+    const diffBlock = item.appendChild(document.createElement('fieldset'));
+    diffBlock.appendChild(document.createElement('legend')).textContent = 'Difference';
+    const diff = diffBlock.appendChild(document.createElement('pre'));
+    diff.classList.add('diff');
+    diff.innerHTML = Diff.readable(error.expected, error.actual, true);
+  }
 }
 
 window.addEventListener('DOMContentLoaded', run, { once: true });
