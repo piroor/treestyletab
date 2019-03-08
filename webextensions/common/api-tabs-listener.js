@@ -674,6 +674,13 @@ async function onMoved(tabId, moveInfo) {
       return;
     }
 
+    // Old versions of Firefox (ex. ESR60) doesn't open a new tab at the
+    // position it should be placed at, instead they are moved immediately
+    // after tabs.onCreated. Then TST is still processing the newly opened
+    // tab, so we need to wait completion of the handling of the new tab.
+    if (!movedTab.$TST.openedCompletely)
+      await movedTab.$TST.opened;
+
     let oldPreviousTab = movedTab.$TST.previousTab;
     let oldNextTab     = movedTab.$TST.nextTab;
     if (movedTab.index != moveInfo.toIndex) { // already moved

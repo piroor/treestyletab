@@ -962,12 +962,16 @@ Tab.init = (tab, options = {}) => {
     tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);
     tab.$TST.opened = Promise.resolve(true);
     tab.$TST.opening = false;
+    tab.$TST.openedCompletely = true;
   }
   else {
-    tab.$TST.opening = false;
+    tab.$TST.opening = true;
+    tab.$TST.openedCompletely = false;
     tab.$TST.opened = new Promise((resolve, _reject) => {
       tab.$TST.opening = false;
       mOpenedResolvers.set(tab.id, resolve);
+    }).then(() => {
+      tab.$TST.openedCompletely = true;
     });
   }
 
