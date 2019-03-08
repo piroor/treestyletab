@@ -84,10 +84,12 @@ function log(message, error) {
 function logError(message, error) {
   const item = mLogs.appendChild(document.createElement('li'));
   item.classList.add('error');
-  item.textContent = message;
+  const description = item.appendChild(document.createElement('div'));
+  description.classList.add('description');
+  description.textContent = message;
   if (error) {
-    item.appendChild(document.createElement('br'));
-    item.appendChild(document.createTextNode(error.toString()));
+    description.appendChild(document.createElement('br'));
+    description.appendChild(document.createTextNode(error.toString()));
 
     const stack = item.appendChild(document.createElement('pre'));
     stack.classList.add('stack');
@@ -98,17 +100,33 @@ function logError(message, error) {
 function logFailure(title, error) {
   const item = mLogs.appendChild(document.createElement('li'));
   item.classList.add('failure');
-  item.textContent = title;
+  const description = item.appendChild(document.createElement('div'));
+  description.classList.add('description');
+  description.textContent = title;
   if (error.message) {
-    item.appendChild(document.createElement('br'));
-    item.appendChild(document.createTextNode(error.message));
+    description.appendChild(document.createElement('br'));
+    description.appendChild(document.createTextNode(error.message));
   }
 
   const stack = item.appendChild(document.createElement('pre'));
   stack.classList.add('stack');
   stack.textContent = error.stack;
 
-  const diff = item.appendChild(document.createElement('pre'));
+  const expectedBlock = item.appendChild(document.createElement('fieldset'));
+  expectedBlock.appendChild(document.createElement('legend')).textContent = 'Expected';
+  const expected = expectedBlock.appendChild(document.createElement('pre'));
+  expected.classList.add('expected');
+  expected.textContent = error.expected.trim();
+
+  const actualBlock = item.appendChild(document.createElement('fieldset'));
+  actualBlock.appendChild(document.createElement('legend')).textContent = 'Actual';
+  const actual = actualBlock.appendChild(document.createElement('pre'));
+  actual.classList.add('actual');
+  actual.textContent = error.actual.trim();
+
+  const diffBlock = item.appendChild(document.createElement('fieldset'));
+  diffBlock.appendChild(document.createElement('legend')).textContent = 'Difference';
+  const diff = diffBlock.appendChild(document.createElement('pre'));
   diff.classList.add('diff');
   diff.innerHTML = Diff.readable(error.expected, error.actual, true);
 }
