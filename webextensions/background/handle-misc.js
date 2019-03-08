@@ -278,7 +278,7 @@ function onMessage(message, sender) {
     case Constants.kCOMMAND_PULL_TABS:
       return Promise.resolve(message.tabIds.map(id => {
         const tab = Tab.get(id);
-        return tab && tab.$TST.sanitized;
+        return tab && tab.$TST.export(true);
       }));
 
     case Constants.kCOMMAND_PULL_TABS_ORDER:

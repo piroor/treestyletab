@@ -6,6 +6,7 @@
 'use strict';
 
 import * as Constants from '/common/constants.js';
+import Tab from '/common/Tab.js';
 
 export async function createTab(params = {}) {
   return browser.tabs.create(params);
@@ -36,11 +37,13 @@ export async function createTabs(definitions, commonParams = {}) {
 }
 
 export async function refreshTabs(tabs) {
-  if (Array.isArray(tabs))
-    return browser.runtime.sendMessage({
+  if (Array.isArray(tabs)) {
+    tabs = await browser.runtime.sendMessage({
       type:   Constants.kCOMMAND_PULL_TABS,
       tabIds: tabs.map(tab => tab.id)
     });
+    return tabs.map(tab => Tab.import(tab));
+  }
 
   if (typeof tabs == 'object') {
     const refreshedTabsArray = await browser.runtime.sendMessage({
@@ -53,7 +56,7 @@ export async function refreshTabs(tabs) {
       idToName[tabs[name].id] = name;
     }
     for (const tab of refreshedTabsArray) {
-      refreshedTabs[idToName[tab.id]] = tab;
+      refreshedTabs[idToName[tab.id]] = Tab.import(tab);
     }
     return refreshedTabs;
   }

@@ -760,8 +760,8 @@ export default class Tab {
     });
   }
 
-  export() {
-    return {
+  export(full) {
+    const exported = {
       id:         this.id,
       uniqueId:   this.uniqueId.id,
       states:     Object.keys(this.states),
@@ -769,6 +769,44 @@ export default class Tab {
       parentId:   this.parentId,
       childIds:   this.childIds
     };
+    if (full)
+      return Object.assign({}, this.sanitized, { $TST: exported });
+    return exported;
+  }
+
+  apply(exported) { // not optimized and unsafe yet!
+    TabsStore.removeTabFromIndexes(this.tab);
+
+    for (const key of Object.keys(exported)) {
+      if (key == '$TST')
+        continue;
+      if (key in this.tab)
+        this.tab[key] = exported[key];
+    }
+
+    this.uniqueId = { id: exported.$TST.id };
+
+    for (const state of this.states) {
+      if (!exported.$TST.states.includes(state))
+        this.removeState(state);
+    }
+    for (const state of exported.$TST.states) {
+      this.addState(state)
+    }
+
+    for (const name of Object.keys(this.attributes)) {
+      if (!(name in exported.$TST.attributes))
+        this.removeAttribute(name);
+    }
+    this.attributes = {};
+    for (const name of Object.keys(exported.$TST.attributes)) {
+      this.setAttribute(name, exported.$TST.attributes[name]);
+    }
+
+    this.parent   = exported.$TST.parentId;
+    this.children = exported.$TST.chuldIds || [];
+
+    TabsStore.updateIndexesForTab(this.tab);
   }
 }
 
@@ -980,6 +1018,13 @@ Tab.init = (tab, options = {}) => {
   });
 
   return tab;
+};
+
+Tab.import = tab => {
+  const existingTab = Tab.get(tab.id);
+  if (existingTab)
+    existingTab.$TST.apply(tab);
+  return existingTab;
 };
 
 

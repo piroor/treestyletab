@@ -190,10 +190,10 @@ export default class Window {
       tab.$TST.destroy();
   }
 
-  export() {
+  export(full) {
     const tabs = [];
     for (const tab of this.getOrderedTabs()) {
-      tabs.push(tab.$TST.export());
+      tabs.push(tab.$TST.export(full));
     }
     return tabs;
   }
