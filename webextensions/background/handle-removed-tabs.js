@@ -45,23 +45,23 @@ Tab.onRemoving.addListener(async (tab, removeInfo = {}) => {
       broadcast: false // because the tab is going to be closed, broadcasted Tree.collapseExpandSubtree can be ignored.
     });
 
-  const wasActive = tab.active;
-  if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
-    return;
-  log('Tabs.onRemoving: granted to close ', dumpTab(tab));
-
-  if (typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
+  if (tab.active &&
+      typeof browser.tabs.moveInSuccession != 'function') { // on Firefox 64 or older
     const nextTab = closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN && tab.$TST.nextSiblingTab || tab.$TST.nextTab;
     Tree.tryMoveFocusFromClosingActiveTab(tab, {
-      wasActive,
+      wasActive: tab.active,
       params: {
-        active:          wasActive,
+        active:          tab.active,
         nextTab:         nextTab,
         nextTabUrl:      nextTab && nextTab.url,
         nextIsDiscarded: nextTab && nextTab.discarded
       }
     });
   }
+
+  if (!(await tryGrantCloseTab(tab, closeParentBehavior)))
+    return;
+  log('Tabs.onRemoving: granted to close ', dumpTab(tab));
 
   if (closeParentBehavior == Constants.kCLOSE_PARENT_BEHAVIOR_CLOSE_ALL_CHILDREN)
     await closeChildTabs(tab);
@@ -118,8 +118,6 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
     self.closingDescendantTabIds = Array.from(new Set(self.closingDescendantTabIds));
   }
 
-  // this is required to wait until the closing tab is stored to the "recently closed" list
-  await wait(0);
   if (self.promisedGrantedToCloseTabs)
     return self.promisedGrantedToCloseTabs;
 
@@ -147,6 +145,8 @@ async function tryGrantCloseTab(tab, closeParentBehavior) {
       if (granted)
         return true;
       log(`tryGrantClose: not granted, restore ${shouldRestoreCount} tabs`);
+      // this is required to wait until the closing tab is stored to the "recently closed" list
+      await wait(0);
       const sessions = await browser.sessions.getRecentlyClosed({ maxResults: shouldRestoreCount * 2 }).catch(ApiTabs.createErrorHandler());
       const toBeRestoredTabs = [];
       for (const session of sessions) {

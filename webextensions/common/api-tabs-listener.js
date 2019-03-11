@@ -124,7 +124,7 @@ function warnTabDestroyedWhileWaiting(tabId, tab) {
 }
 
 
-const mLastClosedWhileActiveResolvers = new WeakMap(); // used only on Firefox 64 and older
+const mLastClosedWhileActiveResolvers = new Map(); // used only on Firefox 64 and older
 
 async function onActivated(activeInfo) {
   const targetWindow = TabsStore.getWindow();
@@ -165,6 +165,7 @@ async function onActivated(activeInfo) {
     let byActiveTabRemove = !activeInfo.previousTabId;
     if (!('successorTabId' in newActiveTab)) { // on Firefox 64 or older
       byActiveTabRemove = mLastClosedWhileActiveResolvers.has(window.id);
+      log('byActiveTabRemove = ', byActiveTabRemove);
       if (byActiveTabRemove) {
         window.tryingReforcusForClosingActiveTabCount++;
         mLastClosedWhileActiveResolvers.get(window.id)();
@@ -595,7 +596,7 @@ async function onRemoved(tabId, removeInfo) {
         !('successorTabId' in oldTab)) { // on Firefox 64 or older
       const resolver = oldTab.$TST.fetchClosedWhileActiveResolver();
       if (resolver)
-        mLastClosedWhileActiveResolvers.set(window, resolver);
+        mLastClosedWhileActiveResolvers.set(window.id, resolver);
     }
 
     const onRemovingResult = Tab.onRemoving.dispatch(oldTab, Object.assign({}, removeInfo, {
@@ -856,6 +857,7 @@ async function onDetached(tabId, detachInfo) {
 async function onWindowRemoved(windowId) {
   mTabsHighlightedTimers.delete(windowId);
   mLastHighlightedCount.delete(windowId);
+  mLastClosedWhileActiveResolvers.delete(windowId); // used only on Firefox 64 and older
 
   const [onCompleted, previous] = addTabOperationQueue();
   if (!configs.acceleratedTabOperations && previous)

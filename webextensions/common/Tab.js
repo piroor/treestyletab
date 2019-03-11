@@ -565,17 +565,17 @@ export default class Tab {
     return opener && opener.pinned;
   }
 
-  findSuccessor(tab, options = {}) {
+  findSuccessor(options = {}) {
     if (typeof options != 'object')
       options = {};
     const ignoredTabs = (options.ignoredTabs || []).slice(0);
-    let foundTab = tab;
+    let foundTab = this.tab;
     do {
       ignoredTabs.push(foundTab);
       foundTab = foundTab.$TST.nextTab;
     } while (foundTab && ignoredTabs.includes(foundTab));
     if (!foundTab) {
-      foundTab = tab;
+      foundTab = this.tab;
       do {
         ignoredTabs.push(foundTab);
         foundTab = foundTab.$TST.nearestVisiblePrecedingTab;

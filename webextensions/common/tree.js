@@ -878,7 +878,8 @@ export function tryMoveFocusFromClosingActiveTab(tab, options = {}) {
     log(' => not active tab');
     return;
   }
-  tab.parentNode.focusRedirectedForClosingActiveTab = tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options);
+  const window = TabsStore.windows.get(tab.windowId);
+  window.focusRedirectedForClosingActiveTab = tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options);
 }
 async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = {}) {
   if (configs.successorTabControlLevel != Constants.kSUCCESSOR_TAB_CONTROL_IN_TREE)
@@ -891,7 +892,7 @@ async function tryMoveFocusFromClosingActiveTabOnFocusRedirected(tab, options = 
   const nextTab     = tab.$TST.nextTab;
   const previousTab = tab.$TST.previousTab;
 
-  await tab.closedWhileActive;
+  await tab.$TST.closedWhileActive;
   log('tryMoveFocusFromClosingActiveTabOnFocusRedirected: tabs.onActivated is fired');
 
   const oldSuccessor = Tab.getActiveTab(tab.windowId);
@@ -971,7 +972,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
 
   ignoredTabs = ignoredTabs || [];
   if (parentTab) {
-    log(`tab=${tab.id}, parent=${parentTab.id}, successor=${successor.id}, lastChildTabOfParent=${lastChildTabOfParent && lastChildTabOfParent.id}, previousSiblingTab=${previousSiblingTab && previousSiblingTab.id}`);
+    log(`tab=${dumpTab(tab)}, parent=${dumpTab(parentTab)}, successor=${dumpTab(successor)}, lastChildTabOfParent=${dumpTab(lastChildTabOfParent)}, previousSiblingTab=${dumpTab(previousSiblingTab)}`);
     if (!successor && tab == lastChildTabOfParent) {
       if (tab == firstChildTabOfParent) { // this is the really last child
         successor = parentTab;
