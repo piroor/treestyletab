@@ -6,6 +6,7 @@
 'use strict';
 
 import {
+  nextFrame,
   configs
 } from '/common/common.js';
 
@@ -21,10 +22,9 @@ async function run() {
   ApiTabsListener.startListen();
   mLogs = document.getElementById('logs');
   const configValues = backupConfigs();
-  restoreConfigs(configs.$default);
   await runAll();
   ApiTabsListener.endListen();
-  restoreConfigs(configValues);
+  await restoreConfigs(configValues);
 }
 
 function backupConfigs() {
@@ -35,10 +35,12 @@ function backupConfigs() {
   return JSON.parse(JSON.stringify(values));
 }
 
-function restoreConfigs(values) {
+async function restoreConfigs(values) {
   for (const key of Object.keys(values)) {
     configs[key] = values[key];
   }
+  // wait until updated configs are delivered to other namespaces
+  await nextFrame();
 }
 
 async function runAll() {
@@ -51,6 +53,7 @@ async function runAll() {
     for (const name of Object.keys(tests)) {
       if (!name.startsWith('test'))
         continue;
+      await restoreConfigs(configs.$default);
       let shouldTearDown = true;
       try {
         if (typeof setup == 'function')
