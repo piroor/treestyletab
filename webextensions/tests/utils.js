@@ -12,7 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
-import * as Tree from '/common/tree.js';
+//import * as Tree from '/common/tree.js';
 import Tab from '/common/Tab.js';
 
 export async function createTab(params = {}) {
@@ -115,7 +115,7 @@ export async function tabsOrder(tabs) {
       type:   Constants.kCOMMAND_PULL_TABS,
       tabIds: Object.values(tabs).map(tab => tab.id)
     });
-    return Tab.sort(tabs).map(tab => tab.id);
+    return Tab.sort(refreshedTabsArray).map(tab => tab.id);
   }
 
   throw new Error('Invalid tab collection: ', tabs);
