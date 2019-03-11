@@ -130,6 +130,8 @@ export async function setConfigs(values) {
 }
 
 export async function doAndGetNewTabs(task, queryToFindTabs) {
+  if (!queryToFindTabs || Object.keys(queryToFindTabs).length == 0)
+    throw new Error(`doAndGetNewTabs requires valid query to find tabs. given query: ${JSON.stringify(queryToFindTabs)}`);
   await wait(150); // wait until currently opened tabs are completely tracked
   const oldAllTabIds = (await browser.tabs.query(queryToFindTabs)).map(tab => tab.id);
   await task();
