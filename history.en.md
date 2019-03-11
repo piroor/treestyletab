@@ -1,6 +1,13 @@
 # History
 
  - master/HEAD
+   * Context menu on blank area in the sidebar came back. (regression on recent versions)
+   * Context menu commands work again on Firefox ESR60. (regression on recent versions)
+   * New tab opened with Ctrl-T is correctly reopened with the container same to its parent tab. (regression on recent versions)
+   * New tab is opened as a child of the active tab as specified, on Firefox ESR60. (regression on recent versions)
+   * Control successor tabs for the active tab correctly, on Firefox ESR60. (regression on recent versions)
+   * Update tooltip of tabs correctly, on the "crop" mode. (regression on recent versions)
+   * On Firefox ESR60, focus to previously visible tab instead of previous sibling tab when the last child tab is closed. (This has been the new behavior at TST 2.8.0, on Firefox 65 and later.)
  - 2.8.3 (2019.3.7)
    * Tabs moved from any other window were misdetected as internally invisible and not used as a successor of other tabs. (regression on 2.8.0)
    * Don't produce needless scrolling of the sidebar when a new tab is opened outside of the visible area and moved into the visible area immediately.
