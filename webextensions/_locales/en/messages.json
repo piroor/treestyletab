@@ -263,7 +263,7 @@
   "config_autoAttachOnDuplicated_nextSibling": { "message": "the next sibling of the current tab" },
   "config_autoAttachOnDuplicated_after": { "message": "\u200b" },
 
-  "config_sameSiteOrphan_caption": { "message": "When new tab with a website same to current tab is opened from the location bar (or others)" },
+  "config_sameSiteOrphan_caption": { "message": "When new tab with a website same to the current tab is opened from the location bar (or others)" },
   "config_autoAttachSameSiteOrphan_before": { "message": "Open as" },
   "config_autoAttachSameSiteOrphan_independent": { "message": "an independent tab" },
   "config_autoAttachSameSiteOrphan_child": { "message": "a child of the current tab" },
@@ -314,7 +314,7 @@
 
   "config_autoCollapseExpandSubtreeOnAttach_label": { "message": "When a new tree appears, collapse others automatically" },
   "config_autoCollapseExpandSubtreeOnSelect_label": { "message": "When a tab gets focus, expand its tree and collapse others automatically" },
-  "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by current tab closing" },
+  "config_autoCollapseExpandSubtreeOnSelectExceptActiveTabRemove_label": { "message": "Except focus moving caused by closing of the current tab" },
   "config_collapseExpandSubtreeByDblClick_label": { "message": "Double-click on a tab to collapse/expand tree" },
 
   "config_closeParentBehavior_caption": { "message": "When a parent tab is closed with expanded tree" },
