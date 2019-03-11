@@ -3,6 +3,7 @@
  - master/HEAD
    * Context menu on blank area in the sidebar came back. (regression on recent versions)
    * Context menu commands work again on Firefox ESR60. (regression on recent versions)
+   * Extra context menu commands correctly work for multiselected tabs, not for all tabs. (regression on recent versions)
    * New tab opened with Ctrl-T is correctly reopened with the container same to its parent tab. (regression on recent versions)
    * New tab is opened as a child of the active tab as specified, on Firefox ESR60. (regression on recent versions)
    * Control successor tabs for the active tab correctly, on Firefox ESR60. (regression on recent versions)
