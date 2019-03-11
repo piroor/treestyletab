@@ -6,8 +6,7 @@
 'use strict';
 
 import {
-  wait,
-  configs
+  wait
 } from '/common/common.js';
 import { is /*, ok, ng*/ } from '/tests/assert.js';
 //import Tab from '/common/Tab.js';
@@ -27,9 +26,12 @@ export async function teardown() {
 
 
 export async function testAutoFixupForHiddenTabs() {
-  configs.fixupTreeOnTabVisibilityChanged = true;
-  configs.inheritContextualIdentityToNewChildTab = false;
-  configs.inheritContextualIdentityToSameSiteOrphan = false;
+  await Utils.setConfigs({
+    fixupTreeOnTabVisibilityChanged: true,
+    inheritContextualIdentityToNewChildTab: false,
+    inheritContextualIdentityToSameSiteOrphan: false
+  });
+
   let tabs;
 
   /*
@@ -68,8 +70,19 @@ export async function testAutoFixupForHiddenTabs() {
     ], Utils.treeStructure(Object.values(tabs)),
        'tabs should be initialized with specified structure');
 
-    await browser.tabs.hide([B.id, C.id, F.id, G.id]);
-    await wait(150);
+    await new Promise(resolve => {
+      // wait until tabs are updated by TST
+      let count = 0;
+      const onUpdated = (tabId, changeInfo, _tab) => {
+        if ('hidden' in changeInfo)
+          count++;
+        if (count == 4)
+          resolve();
+      };
+      browser.tabs.onUpdated.addListener(onUpdated);
+      browser.tabs.hide([B.id, C.id, F.id, G.id]);
+    });
+    await wait(250);
   }
 
   tabs = await Utils.refreshTabs(tabs);
@@ -87,8 +100,19 @@ export async function testAutoFixupForHiddenTabs() {
     ], Utils.treeStructure(Object.values(tabs)),
        'hidden tabs should be detached from the tree');
 
-    await browser.tabs.show([B.id, C.id, F.id, G.id]);
-    await wait(150);
+    await new Promise(resolve => {
+      // wait until tabs are updated by TST
+      let count = 0;
+      const onUpdated = (tabId, changeInfo, _tab) => {
+        if ('hidden' in changeInfo)
+          count++;
+        if (count == 4)
+          resolve();
+      };
+      browser.tabs.onUpdated.addListener(onUpdated);
+      browser.tabs.show([B.id, C.id, F.id, G.id]);
+    });
+    await wait(250);
   }
 
   tabs = await Utils.refreshTabs(tabs);

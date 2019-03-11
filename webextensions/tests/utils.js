@@ -5,6 +5,12 @@
 */
 'use strict';
 
+import {
+  wait,
+  nextFrame,
+  configs
+} from '/common/common.js';
+
 import * as Constants from '/common/constants.js';
 import Tab from '/common/Tab.js';
 
@@ -77,4 +83,12 @@ export function treeStructure(tabs) {
     return `${tab.id}`;
   };
   return tabs.map(outputNestedRelation);
+}
+
+export async function setConfigs(values) {
+  for (const key of Object.keys(values)) {
+    configs[key] = values[key];
+  }
+  // wait until updated configs are delivered to other namespaces
+  await nextFrame();
 }
