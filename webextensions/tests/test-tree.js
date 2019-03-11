@@ -68,7 +68,7 @@ export async function testAutoFixupForHiddenTabs() {
       `${A.id} => ${F.id} => ${G.id}`,
       `${A.id} => ${H.id}`
     ], Utils.treeStructure(Object.values(tabs)),
-       'tabs should be initialized with specified structure');
+       'tabs must be initialized with specified structure');
 
     await new Promise(resolve => {
       // wait until tabs are updated by TST
@@ -82,7 +82,7 @@ export async function testAutoFixupForHiddenTabs() {
       browser.tabs.onUpdated.addListener(onUpdated);
       browser.tabs.hide([B.id, C.id, F.id, G.id]);
     });
-    await wait(250);
+    await wait(1000);
   }
 
   tabs = await Utils.refreshTabs(tabs);
@@ -98,7 +98,7 @@ export async function testAutoFixupForHiddenTabs() {
       `${F.id} => ${G.id}`,
       `${A.id} => ${H.id}`
     ], Utils.treeStructure(Object.values(tabs)),
-       'hidden tabs should be detached from the tree');
+       'hidden tabs must be detached from the tree');
 
     await new Promise(resolve => {
       // wait until tabs are updated by TST
@@ -112,7 +112,7 @@ export async function testAutoFixupForHiddenTabs() {
       browser.tabs.onUpdated.addListener(onUpdated);
       browser.tabs.show([B.id, C.id, F.id, G.id]);
     });
-    await wait(250);
+    await wait(1000);
   }
 
   tabs = await Utils.refreshTabs(tabs);
@@ -128,7 +128,7 @@ export async function testAutoFixupForHiddenTabs() {
       `${A.id} => ${F.id} => ${G.id}`,
       `${A.id} => ${H.id}`
     ], Utils.treeStructure(Object.values(tabs)),
-       'shown tabs should be attached to the tree');
+       'shown tabs must be attached to the tree');
   }
 }
 

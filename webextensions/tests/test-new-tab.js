@@ -41,7 +41,7 @@ export async function testInheritContainerFromAutoAttachedParent() {
       windowId:      win.id,
       cookieStoreId: 'firefox-default'
     });
-    await wait(500); // wait until new tab is reopened by TST
+    await wait(1000); // wait until new tab is reopened by TST
   }, { windowId: win.id });
   is({
     newTabsCount:    1,
@@ -51,7 +51,7 @@ export async function testInheritContainerFromAutoAttachedParent() {
     newTabsCount:    newTabs.length,
     newTabParent:    newTabs.length > 0 && newTabs[0].openerTabId,
     newTabContainer: newTabs.length > 0 && newTabs[0].cookieStoreId
-  });
+  }, 'a new tab implicitly attached to the active tab must inherit the contianer of the old active tab.');
 }
 
 export async function testDoNotInheritContainerFromExplicitParent() {
@@ -69,7 +69,7 @@ export async function testDoNotInheritContainerFromExplicitParent() {
       cookieStoreId: 'firefox-default',
       openerTabId:   parent.id
     });
-    await wait(500); // wait until new tab is reopened by TST
+    await wait(1000); // wait until new tab is reopened by TST
   }, { windowId: win.id });
   is({
     newTabsCount:    1,
@@ -79,6 +79,6 @@ export async function testDoNotInheritContainerFromExplicitParent() {
     newTabsCount:    newTabs.length,
     newTabParent:    newTabs.length > 0 && newTabs[0].openerTabId,
     newTabContainer: newTabs.length > 0 && newTabs[0].cookieStoreId
-  });
+  }, 'a new tab explicitly attached to the active tab must not inherit the contianer of the old active tab.');
 }
 
