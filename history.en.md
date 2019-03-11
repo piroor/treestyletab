@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+ - 2.8.4 (2019.3.12)
    * Context menu on blank area in the sidebar came back. (regression on recent versions)
    * Context menu commands work again on Firefox ESR60. (regression on recent versions)
    * Extra context menu commands correctly work for multiselected tabs, not for all tabs. (regression on recent versions)
