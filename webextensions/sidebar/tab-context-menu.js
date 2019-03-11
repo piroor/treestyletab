@@ -347,7 +347,7 @@ async function onCommand(item, event) {
       srcUrl:           null,
       wasChecked
     },
-    tab: contextTab && contextTab.$TST.sanitize|| null
+    tab: contextTab && contextTab.$TST.sanitized|| null
   };
   const owner = item.getAttribute('data-item-owner-id');
   if (owner == browser.runtime.id)
