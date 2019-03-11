@@ -11,6 +11,7 @@ import '/extlib/l10n.js';
 
 import {
   log,
+  wait,
   configs
 } from '/common/common.js';
 
@@ -229,7 +230,38 @@ window.addEventListener('DOMContentLoaded', () => {
     );
     Permissions.bindToCheckbox(
       Permissions.TAB_HIDE,
-      document.querySelector('#tabHidePermissionGranted')
+      document.querySelector('#tabHidePermissionGranted'),
+      { onChanged: async (granted) => {
+        if (granted) {
+          // try to hide/show the tab to ensure the permission is really granted
+          const activeTabs = await browser.tabs.query({ active: true, currentWindow: true });
+          const tab = await browser.tabs.create({ active: false, windowId: activeTabs[0].windowId });
+          await wait(200);
+          let aborted = false;
+          const onRemoved = tabId => {
+            if (tabId != tab.id)
+              return;
+            aborted = true;
+            browser.tabs.onRemoved.removeListener(onRemoved);
+            // eslint-disable-next-line no-use-before-define
+            browser.tabs.onUpdated.removeListener(onUpdated);
+          };
+          const onUpdated = async (tabId, changeInfo, tab) => {
+            console.log('ON UPDATED ', {tabId, changeInfo, tab});
+            if (tabId != tab.id ||
+                !('hidden' in changeInfo))
+              return;
+            await wait(60 * 1000);
+            if (aborted)
+              return;
+            await browser.tabs.show([tab.id]);
+            await browser.tabs.remove(tab.id);
+          };
+          browser.tabs.onRemoved.addListener(onRemoved);
+          browser.tabs.onUpdated.addListener(onUpdated);
+          await browser.tabs.hide([tab.id]);
+        }
+      }}
     );
 
 

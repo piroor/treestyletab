@@ -429,7 +429,7 @@
 
   "config_requestPermissions_bookmarks": { "message": "Allow to read and create bookmarks" },
   "config_requestPermissions_allUrls":   { "message": "Don't expand collapsed tree and skip collapsed descendants, while switching focus of tabs via keyboard shortcuts. (*You need to allow executing scripts on webpages.)" },
-  "config_requestPermissions_tabHide":   { "message": "Allow to show/hide individual tabs" },
+  "config_requestPermissions_tabHide":   { "message": "Allow to show/hide individual tabs (*You must uncheck and re-check this before running tests, to ensure the permission is truly granted.)" },
 
   "config_requestPermissions_fallbackToToolbarButton_title": { "message": "Click the \"Tree Style Tab\" toolbar button" },
   "config_requestPermissions_fallbackToToolbarButton_message": { "message": "Due to Firefox's bug, you cannot request permission from this screen. Please click the \"Tree Style Tab\" toolbar button to grant permissions." },
