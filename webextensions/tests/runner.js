@@ -14,6 +14,7 @@ import * as ApiTabsListener from '/common/api-tabs-listener.js';
 import { Diff } from '/common/diff.js';
 
 import * as TestTree from './test-tree.js';
+import * as TestNewTab from './test-new-tab.js';
 
 let mLogs;
 
@@ -45,7 +46,8 @@ async function restoreConfigs(values) {
 
 async function runAll() {
   const testCases = [
-    TestTree
+    TestTree,
+    TestNewTab
   ];
   for (const tests of testCases) {
     const setup    = tests.setUp || tests.setup;
