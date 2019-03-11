@@ -37,6 +37,12 @@ export function init() {
   document.documentElement.setAttribute(Constants.kLABEL_OVERFLOW, configs.labelOverflowStyle);
   if (configs.labelOverflowStyle == 'fade')
     startObserveTabsOverflow();
+
+  window.addEventListener('mouseover', event => {
+    const tab = getTabFromDOMNode(event.target);
+    if (tab)
+      updateTabAndAncestorsTooltip(tab);
+  });
 }
 
 export function getTabFromDOMNode(node, options = {}) {
@@ -176,18 +182,6 @@ function updateDescendantsHighlighted(tab) {
 }
 
 
-export async function reserveToUpdateTooltip(tab) {
-  if (tab.$TST.reservedUpdateTabTooltip)
-    return;
-  tab.$TST.reservedUpdateTabTooltip = () => {
-    delete tab.$TST.reservedUpdateTabTooltip;
-    updateTabAndAncestorsTooltip(tab);
-  };
-  const element = await tab.$TST.promisedElement;
-  if (element)
-    element.addEventListener('mouseover', tab.$TST.reservedUpdateTabTooltip, { once: true });
-}
-
 function updateTabAndAncestorsTooltip(tab) {
   if (!TabsStore.ensureLivingTab(tab))
     return;
@@ -197,8 +191,16 @@ function updateTabAndAncestorsTooltip(tab) {
 }
 
 function updateTooltip(tab) {
-  if (!TabsStore.ensureLivingTab(tab))
+  if (!TabsStore.ensureLivingTab(tab) ||
+      !tab.$TST.tooltipIsDirty)
     return;
+
+  // on the "fade" mode, overflow style was already updated,
+  // so we don' need to update the status here.
+  if (configs.labelOverflowStyle != 'fade')
+    updateLabelOverflow(tab);
+
+  tab.$TST.tooltipIsDirty = false;
 
   if (configs.debug) {
     tab.$TST.tooltip = `
@@ -322,7 +324,7 @@ export function updateAll() {
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
     updateDescendantsHighlighted(tab);
-    reserveToUpdateTooltip(tab);
+    tab.$TST.tooltipIsDirty = true;
     if (configs.labelOverflowStyle == 'fade' &&
         !tab.$TST.collapsed)
       updateLabelOverflow(tab);
@@ -354,7 +356,7 @@ export function updateLabelOverflow(tab) {
     label.classList.add('overflow');
   else
     label.classList.remove('overflow');
-  reserveToUpdateTooltip(tab);
+  tab.$TST.tooltipIsDirty = true;
 }
 
 function onOverflow(event) {
@@ -362,7 +364,7 @@ function onOverflow(event) {
   const label = getLabel(tab);
   if (event.target == label && !tab.pinned) {
     label.classList.add('overflow');
-    reserveToUpdateTooltip(tab);
+    tab.$TST.tooltipIsDirty = true;
   }
 }
 
@@ -371,7 +373,7 @@ function onUnderflow(event) {
   const label = getLabel(tab);
   if (event.target == label && !tab.pinned) {
     label.classList.remove('overflow');
-    reserveToUpdateTooltip(tab);
+    tab.$TST.tooltipIsDirty = true;
   }
 }
 
@@ -616,7 +618,7 @@ Tab.onMoved.addListener(async (tab, info) => {
     await Tab.waitUntilTracked(tab.id, { element: true });
   if (mInitialized &&
       tab.$TST.parent)
-    reserveToUpdateTooltip(tab.$TST.parent);
+    tab.$TST.parent.$TST.tooltipIsDirty = true;
 
   const wasVisible = mTabWasVisibleBeforeMoving.get(tab.id);
   mTabWasVisibleBeforeMoving.delete(tab.id);
@@ -650,11 +652,11 @@ Tab.onStateChanged.addListener(tab => {
 
 Tab.onLabelUpdated.addListener(tab => {
   getLabelContent(tab).textContent = tab.title;
-  reserveToUpdateTooltip(tab);
+  tab.$TST.tooltipIsDirty = true;
   if (configs.labelOverflowStyle == 'fade' &&
-      !tab.$TST.titleUpdatedWhileCollapsed &&
+      !tab.$TST.labelIsDirty &&
       tab.$TST.collapsed)
-    tab.$TST.titleUpdatedWhileCollapsed = true;
+    tab.$TST.labelIsDirty = true;
 });
 
 Tab.onFaviconUpdated.addListener((tab, url) => {
@@ -670,16 +672,16 @@ Tab.onCollapsedStateChanged.addListener((tab, info) => {
     return;
   reserveToUpdateLoadingState();
   if (configs.labelOverflowStyle == 'fade' &&
-      tab.$TST.titleUpdatedWhileCollapsed) {
+      tab.$TST.labelIsDirty) {
     updateLabelOverflow(tab);
-    delete tab.$TST.titleUpdatedWhileCollapsed;
+    delete tab.$TST.labelIsDirty;
   }
 });
 
 let mReservedUpdateActiveTab;
 Tab.onUpdated.addListener((tab, info) => {
   reserveToUpdateSoundButtonTooltip(tab);
-  reserveToUpdateTooltip(tab);
+  tab.$TST.tooltiplIsDirty = true;
 
   if (!('highlighted' in info))
     return;
@@ -708,7 +710,7 @@ Tab.onDetached.addListener((tab, _info) => {
   if (!mInitialized ||
       !TabsStore.ensureLivingTab(tab))
     return;
-  reserveToUpdateTooltip(tab.$TST.parent);
+  tab.$TST.tooltipIsDirty = true;
   if (tab.$TST.element.parentNode)
     tab.$TST.element.parentNode.removeChild(tab.$TST.element);
 });
@@ -741,7 +743,7 @@ Tree.onAttached.addListener((_tab, info = {}) => {
       updateDescendantsHighlighted(ancestor);
     }
   }
-  reserveToUpdateTooltip(info.parent);
+  info.parent.$TST.tooltipIsDirty = true;
 });
 
 Tree.onDetached.addListener((_tab, detachInfo = {}) => {
@@ -752,7 +754,7 @@ Tree.onDetached.addListener((_tab, detachInfo = {}) => {
     return;
   reserveToUpdateTwistyTooltip(parent);
   reserveToUpdateCloseboxTooltip(parent);
-  reserveToUpdateTooltip(parent);
+  parent.$TST.tooltipIsDirty = true;
   const ancestors = [parent].concat(parent.$TST.ancestors);
   for (const ancestor of ancestors) {
     updateDescendantsCount(ancestor);
@@ -764,7 +766,19 @@ Tree.onSubtreeCollapsedStateChanging.addListener((tab, _info) => {
   reserveToUpdateTwistyTooltip(tab);
   reserveToUpdateCloseboxTooltip(tab);
   if (mInitialized)
-    reserveToUpdateTooltip(tab);
+    tab.$TST.tooltipIsDirty = true;
+});
+
+let mDelayedResized = null;
+window.addEventListener('resize', () => {
+  if (mDelayedResized)
+    clearTimeout(mDelayedResized);
+  mDelayedResized = setTimeout(() => {
+    mDelayedResized = null;
+    for (const tab of Tab.getAllTabs(TabsStore.getWindow())) {
+      tab.$TST.tooltipIsDirty = true;
+    }
+  }, 250);
 });
 
 configs.$addObserver(changedKey => {
@@ -772,7 +786,7 @@ configs.$addObserver(changedKey => {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
         for (const tab of Tab.getAllTabs(TabsStore.getWindow())) {
-          reserveToUpdateTooltip(tab);
+          tab.$TST.tooltipIsDirty = true;
         }
       break;
 
