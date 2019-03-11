@@ -12,6 +12,7 @@ import {
 } from '/common/common.js';
 
 import * as Constants from '/common/constants.js';
+import * as Tree from '/common/tree.js';
 import Tab from '/common/Tab.js';
 
 export async function createTab(params = {}) {
@@ -19,27 +20,40 @@ export async function createTab(params = {}) {
 }
 
 export async function createTabs(definitions, commonParams = {}) {
-  if (Array.isArray(definitions))
-    return Promise.all(definitions.map((definition, index) => {
+  const oldAutoGroupNewTabs = configs.autoGroupNewTabs;
+  if (oldAutoGroupNewTabs)
+    await setConfigs({ autoGroupNewTabs: false });
+
+  let tabs;
+  if (Array.isArray(definitions)) {
+    tabs = Promise.all(definitions.map((definition, index) => {
       if (!definition.url)
         definition.url = `about:blank?${index}`;
-      createTab(Object.assign({}, commonParams, definition));
+      const params = Object.assign({}, commonParams, definition);
+      return createTab(params);
     }));
+  }
 
   if (typeof definitions == 'object') {
-    const tabs = {};
+    tabs = {};
     for (const name of Object.keys(definitions)) {
       const definition = definitions[name];
       if (definition.openerTabId in tabs)
         definition.openerTabId = tabs[definition.openerTabId].id;
       if (!definition.url)
         definition.url = `about:blank?${name}`;
-      tabs[name] = await createTab(Object.assign({}, commonParams, definition));
+      const params = Object.assign({}, commonParams, definition);
+      tabs[name] = await createTab(params);
     }
-    return tabs;
   }
 
-  throw new Error('Invalid tab definitions: ', definitions);
+  if (!tabs)
+    throw new Error('Invalid tab definitions: ', definitions);
+
+  if (oldAutoGroupNewTabs)
+    await setConfigs({ autoGroupNewTabs: oldAutoGroupNewTabs });
+
+  return tabs;
 }
 
 export async function refreshTabs(tabs) {
@@ -80,9 +94,31 @@ export function treeStructure(tabs) {
       return '?';
     if (tab.openerTabId && tab.openerTabId != tab.id)
       return `${outputNestedRelation(tabsById[tab.openerTabId])} => ${tab.id}`;
+    else if (tab.$TST && tab.$TST.parentId && tab.$TST.parentId != tab.id)
+      return `${outputNestedRelation(tabsById[tab.$TST.parentId])} => ${tab.id}`;
     return `${tab.id}`;
   };
   return tabs.map(outputNestedRelation);
+}
+
+export async function tabsOrder(tabs) {
+  if (Array.isArray(tabs)) {
+    tabs = await browser.runtime.sendMessage({
+      type:   Constants.kCOMMAND_PULL_TABS,
+      tabIds: tabs.map(tab => tab.id || tab)
+    });
+    return Tab.sort(tabs).map(tab => tab.id);
+  }
+
+  if (typeof tabs == 'object') {
+    const refreshedTabsArray = await browser.runtime.sendMessage({
+      type:   Constants.kCOMMAND_PULL_TABS,
+      tabIds: Object.values(tabs).map(tab => tab.id)
+    });
+    return Tab.sort(tabs).map(tab => tab.id);
+  }
+
+  throw new Error('Invalid tab collection: ', tabs);
 }
 
 export async function setConfigs(values) {
