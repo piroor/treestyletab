@@ -340,7 +340,7 @@ export const onClick = (info, tab) => {
   log('context menu item clicked: ', info, tab);
 
   const contextTab = Tab.get(tab.id);
-  const selectedTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab) : [];
+  const selectedTabs = contextTab.$TST.multiselected ? Tab.getSelectedTabs(contextTab.windowId) : [];
 
   switch (info.menuItemId.replace(/^(?:grouped:|context_closeTabOptions_)/, '')) {
     case 'reloadTree':
