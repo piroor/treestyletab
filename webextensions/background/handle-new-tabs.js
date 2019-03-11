@@ -108,6 +108,7 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
   const cookieStoreId = activeTab.cookieStoreId;
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
   await TabsOpen.openNewTab({
+    windowId: activeTab.windowId,
     parent,
     insertBefore: tab,
     cookieStoreId
