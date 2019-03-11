@@ -921,7 +921,7 @@ function getTryMoveFocusFromClosingActiveTabNowParams(tab, overrideParams) {
     firstChildTab:            tab.$TST.firstChild,
     firstChildTabOfParent:    parentTab && parentTab.$TST.firstChild,
     lastChildTabOfParent:     parentTab && parentTab.$TST.lastChild,
-    previousSiblingTab:       tab.$TST.previousSiblingTab,
+    nearestVisiblePrecedingTab: tab.$TST.nearestVisiblePrecedingTab,
     preDetectedSuccessor:     tab.$TST.findSuccessor(),
     serializedTab:            TSTAPI.serializeTab(tab),
     closeParentBehavior:      getCloseParentBehaviorForTab(tab, { parentTab })
@@ -941,7 +941,7 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
     active,
     nextTab, nextTabUrl, nextIsDiscarded,
     parentTab, firstChildTab, firstChildTabOfParent, lastChildTabOfParent,
-    previousSiblingTab, preDetectedSuccessor,
+    nearestVisiblePrecedingTab, preDetectedSuccessor,
     serializedTab, closeParentBehavior
   } = params;
   let {
@@ -972,15 +972,15 @@ export async function tryMoveFocusFromClosingActiveTabNow(tab, options = {}) {
 
   ignoredTabs = ignoredTabs || [];
   if (parentTab) {
-    log(`tab=${dumpTab(tab)}, parent=${dumpTab(parentTab)}, successor=${dumpTab(successor)}, lastChildTabOfParent=${dumpTab(lastChildTabOfParent)}, previousSiblingTab=${dumpTab(previousSiblingTab)}`);
+    log(`tab=${dumpTab(tab)}, parent=${dumpTab(parentTab)}, successor=${dumpTab(successor)}, lastChildTabOfParent=${dumpTab(lastChildTabOfParent)}, nearestVisiblePrecedingTab=${dumpTab(nearestVisiblePrecedingTab)}`);
     if (!successor && tab == lastChildTabOfParent) {
       if (tab == firstChildTabOfParent) { // this is the really last child
         successor = parentTab;
         log('focus to parent?: ', !!successor);
       }
       else {
-        successor = previousSiblingTab;
-        log('focus to previous sibling?: ', !!successor);
+        successor = nearestVisiblePrecedingTab;
+        log('focus to visible preceding?: ', !!successor);
       }
     }
     if (successor && ignoredTabs.includes(successor))
