@@ -17,11 +17,13 @@ import * as TestNewTab from './test-new-tab.js';
 import * as TestSuccessor from './test-successor.js';
 import * as TestTree from './test-tree.js';
 
+let mResults;
 let mLogs;
 
 async function run() {
   await configs.$loaded;
   ApiTabsListener.startListen();
+  mResults = document.getElementById('results');
   mLogs = document.getElementById('logs');
   const configValues = backupConfigs();
   await runAll();
@@ -59,6 +61,7 @@ async function runAll() {
         continue;
       await restoreConfigs(configs.$default);
       let shouldTearDown = true;
+      const result = mResults.appendChild(document.createElement('span'));
       try {
         if (typeof setup == 'function')
           await setup();
@@ -67,7 +70,9 @@ async function runAll() {
           await teardown();
           shouldTearDown = false;
         }
-        log(`${name}: success`);
+        result.classList.add('success');
+        result.setAttribute('title', `Success: ${name}`);
+        result.textContent = '.';
       }
       catch(error) {
         try {
@@ -78,31 +83,32 @@ async function runAll() {
           throw error;
         }
         catch(error) {
-          if (error && error.name == 'AssertionError')
-            logFailure(`${name}: failure`, error);
-          else
-            logError(`${name}: error`, error);
+          if (error && error.name == 'AssertionError') {
+            logFailure(name, error);
+            result.classList.add('failure');
+            result.setAttribute('title', `Failure: ${name}`);
+            result.textContent = 'F';
+          }
+          else {
+            logError(name, error);
+            result.classList.add('error');
+            result.setAttribute('title', `Error: ${name}`);
+            result.textContent = 'E';
+          }
         }
       }
     }
   }
+  const result = mResults.appendChild(document.createElement('span'));
+  result.textContent = 'Done.';
 }
 
-function log(message, ...extra) {
-  const item = mLogs.appendChild(document.createElement('li'));
-  item.textContent = message;
-  if (extra.length > 0) {
-    item.appendChild(document.createElement('br'));
-    item.appendChild(document.createTextNode(JSON.stringify(extra)));
-  }
-}
-
-function logError(message, error) {
+function logError(name, error) {
   const item = mLogs.appendChild(document.createElement('li'));
   item.classList.add('error');
   const description = item.appendChild(document.createElement('div'));
   description.classList.add('description');
-  description.textContent = message;
+  description.textContent = name;
   if (error) {
     description.appendChild(document.createElement('br'));
     description.appendChild(document.createTextNode(error.toString()));
@@ -113,12 +119,12 @@ function logError(message, error) {
   }
 }
 
-function logFailure(title, error) {
+function logFailure(name, error) {
   const item = mLogs.appendChild(document.createElement('li'));
   item.classList.add('failure');
   const description = item.appendChild(document.createElement('div'));
   description.classList.add('description');
-  description.textContent = title;
+  description.textContent = name;
   if (error.message) {
     description.appendChild(document.createElement('br'));
     description.appendChild(document.createTextNode(error.message));
