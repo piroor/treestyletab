@@ -247,7 +247,6 @@ window.addEventListener('DOMContentLoaded', () => {
             browser.tabs.onUpdated.removeListener(onUpdated);
           };
           const onUpdated = async (tabId, changeInfo, tab) => {
-            console.log('ON UPDATED ', {tabId, changeInfo, tab});
             if (tabId != tab.id ||
                 !('hidden' in changeInfo))
               return;
