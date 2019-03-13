@@ -154,7 +154,7 @@
 
 
   async function updateTree() {
-    let runAt = updateTree.lastRun = Date.now();
+    const runAt = updateTree.lastRun = Date.now();
 
     const container = document.getElementById('tabs');
     const range = document.createRange();
