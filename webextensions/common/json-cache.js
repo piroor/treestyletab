@@ -130,27 +130,27 @@ const IGNORE_STATES = new Set([
 
 function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
   tab.$TST.clear();
+  tab.$TST.states = new Set(cachedTab.states);
+  tab.$TST.attributes = cachedTab.attributes;
+
+  for (const state of IGNORE_STATES) {
+    tab.$TST.removeState(state);
+  }
+
+  for (const state of NATIVE_STATES) {
+    if (tab[state] == cachedTab.states.includes(state))
+      continue;
+    if (tab[state])
+      tab.$TST.addState(state);
+    else
+      tab.$TST.removeState(state);
+  }
 
   for (const state of NATIVE_STATES) {
     if (tab[state])
       tab.$TST.addState(state);
     else
       tab.$TST.removeState(state);
-  }
-  if (tab.status == 'loading') {
-    tab.$TST.addState('loading');
-    tab.$TST.removeState('complete');
-  }
-  else {
-    tab.$TST.addState('complete');
-    tab.$TST.removeState('loading');
-  }
-
-  for (const state of cachedTab.states) {
-    if (NATIVE_STATES.has(state) ||
-        IGNORE_STATES.has(state))
-      continue;
-    tab.$TST.addState(state);
   }
 
   const idMap = options.idMap;
@@ -174,11 +174,6 @@ function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
   else
     tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
-
-  tab.$TST.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, cachedTab.attributes[Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER] || '');
-  tab.$TST.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, cachedTab.attributes[Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID] || '');
-  tab.$TST.setAttribute(Constants.kCURRENT_URI, cachedTab.attributes[Constants.kCURRENT_URI] || tab.url);
-  tab.$TST.setAttribute(Constants.kLEVEL, cachedTab.attributes[Constants.kLEVEL] || 0);
 }
 
 async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
