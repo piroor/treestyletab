@@ -128,7 +128,7 @@ export const kCONTEXT_ITEM_CHECKED_STATUS_CHANGED = 'fake-contextMenu-item-check
 
 export const kCOMMAND_BROADCAST_API_REGISTERED   = 'treestyletab:broadcast-registered';
 export const kCOMMAND_BROADCAST_API_UNREGISTERED = 'treestyletab:broadcast-unregistered';
-export const kCOMMAND_REQUEST_REGISTERED_ADDONS  = 'treestyletab:request-registered-addons';
+export const kCOMMAND_REQUEST_INITIALIZE         = 'treestyletab:request-initialize';
 export const kCOMMAND_REQUEST_CONTROL_STATE      = 'treestyletab:request-control-state';
 
 const kCONTEXT_BACKEND  = 1;
@@ -227,8 +227,12 @@ browser.runtime.onMessage.addListener((message, _sender) => {
   switch (mContext) {
     case kCONTEXT_BACKEND:
       switch (message.type) {
-        case kCOMMAND_REQUEST_REGISTERED_ADDONS:
-          return Promise.resolve(exportAddons());
+        case kCOMMAND_REQUEST_INITIALIZE:
+          return Promise.resolve({
+            addons:         exportAddons(),
+            scrollLocked:   mScrollLockedBy,
+            groupingLocked: mGroupingBlockedBy
+          });
 
         case kCOMMAND_REQUEST_CONTROL_STATE:
           return Promise.resolve({
@@ -346,22 +350,21 @@ function exportAddons() {
 }
 
 export async function initAsFrontend() {
-  let addons;
+  let response;
   while (true) {
-    addons = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_REGISTERED_ADDONS });
-    if (addons)
+    response = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_INITIALIZE });
+    if (response)
       break;
     await wait(10);
   }
-  importAddons(addons);
+  importAddons(response.addons);
   for (const [id, addon] of getAddons()) {
     if (addon.style)
       installStyleForAddon(id, addon.style);
   }
   mContext = kCONTEXT_FRONTEND;
-  const state = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_CONTROL_STATE });
-  mScrollLockedBy    = state.scrollLocked;
-  mGroupingBlockedBy = state.groupingLocked;
+  mScrollLockedBy    = response.scrollLocked;
+  mGroupingBlockedBy = response.groupingLocked;
 }
 
 function importAddons(addons) {
