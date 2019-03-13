@@ -91,7 +91,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restore from cache`);
 
-  const restored = restoreTabsFromCache(windowId, { cache, tabs });
+  const restored = await restoreTabsFromCache(windowId, { cache, tabs });
   if (restored)
     MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} success`);
   else
@@ -100,7 +100,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   return restored;
 }
 
-function restoreTabsFromCache(windowId, params = {}) {
+async function restoreTabsFromCache(windowId, params = {}) {
   if (!params.cache ||
       params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
