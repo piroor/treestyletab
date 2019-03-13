@@ -2,6 +2,7 @@
 <!-- This Source Code Form is subject to the terms of the Mozilla Public
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<html>
 <meta charset="UTF-8">
 <link rel="favicon" href="">
 <title></title>
@@ -121,6 +122,50 @@
     margin: 0 0 0 20px;
     padding: 0;
   }
+
+
+  :root {
+    --throbber-size: 1em;
+  }
+
+  @keyframes throbber {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+
+  :root:not(.updating) .throbber {
+    display: none !important;
+  }
+
+  :root.updating .throbber {
+    display: inline-block;
+    font-size: var(--throbber-size);
+    height: var(--throbber-size);
+    max-height: var(--throbber-size);
+    max-width: var(--throbber-size);
+    overflow: hidden;
+    padding: 0;
+    pointer-events: none;
+    position: relative;
+    width: var(--throbber-size);
+
+    position: absolute;
+    top: calc(50% - var(--throbber-size));
+    left: calc(50% - var(--throbber-size));
+    transform: scale(2, 2);
+  }
+
+  :root.updating .throbber::before {
+    animation: throbber 1.05s steps(60) infinite;
+    background: Highlight;
+    box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.35);
+    content: "";
+    fill: Highlight;
+    height: var(--throbber-size);
+    position: absolute;
+    width: calc(var(--throbber-size) * 60);
+    mask: url("/sidebar/styles/throbber.svg") no-repeat left center / 100%;
+  }
 </style>
 <!--
   Don't load scripts dynamically, to prevent the tab is closed by Firefox.
@@ -134,4 +179,6 @@
 <p><label><input id="temporary" type="checkbox">__MSG_groupTab_temporary_label__</label></p>
 </header>
 <div id="tabs"></div>
+<span class="throbber"></span>
 </main>
+</html>

@@ -154,18 +154,23 @@
 
 
   async function updateTree() {
-    const tabs = await browser.runtime.sendMessage({
-      type: 'treestyletab:api:get-tree',
-      tabs: [
-        'senderTab',
-        getOpenerTabId()
-      ]
-    });
     const container = document.getElementById('tabs');
     const range = document.createRange();
     range.selectNodeContents(container);
     range.deleteContents();
     range.detach();
+
+    document.documentElement.classList.add('updating');
+
+    const tabs = await browser.runtime.sendMessage({
+      type: 'treestyletab:api:get-tree',
+      tabs: [
+        'senderTab',
+        getOpenerTabId()
+      ],
+      interval: 50
+    });
+
     let tree;
     if (tabs[1]) {
       tabs[1].children = tabs[0].children;
@@ -177,6 +182,8 @@
       container.appendChild(tree);
       reflow();
     }
+
+    document.documentElement.classList.remove('updating');
   }
 
   function reflow() {
