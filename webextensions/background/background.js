@@ -191,7 +191,7 @@ async function rebuildAll() {
   }).catch(ApiTabs.createErrorHandler());
   const restoredFromCache = {};
   await Promise.all(windows.map(async (window) => {
-    await MetricsData.addAsync(`rebuild ${window.id}`, async () => {
+    await MetricsData.addAsync(`rebuild window ${window.id}`, async () => {
       const trackedWindow = TabsStore.windows.get(window.id);
       if (!trackedWindow)
         Window.init(window.id);
@@ -202,6 +202,7 @@ async function rebuildAll() {
       }
       try {
         if (configs.useCachedTree) {
+          log(`trying to restore window ${window.id} from cache`);
           restoredFromCache[window.id] = await BackgroundCache.restoreWindowFromEffectiveWindowCache(window.id, {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs

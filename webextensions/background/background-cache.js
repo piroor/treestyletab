@@ -97,6 +97,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   else
     MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} fail`);
 
+  log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restored = ${restored}`);
   return restored;
 }
 
@@ -105,13 +106,13 @@ async function restoreTabsFromCache(windowId, params = {}) {
       params.cache.version != Constants.kBACKGROUND_CONTENTS_VERSION)
     return false;
 
-  return JSONCache.restoreTabsFromCacheInternal({
+  return (await JSONCache.restoreTabsFromCacheInternal({
     windowId:     windowId,
     tabs:         params.tabs,
     offset:       params.cache.offset || 0,
     cache:        params.cache.tabs,
     shouldUpdate: true
-  }).length > 0;
+  })).length > 0;
 }
 
 

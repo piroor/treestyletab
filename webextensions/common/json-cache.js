@@ -106,7 +106,7 @@ async function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
   const promisedComplete = [];
   for (const tab of tabs) {
     if (!tab.$TST.parent) // process only root tabs
-      promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(tab, false, promisedComplete));
+      promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(tab, false));
     TabsStore.updateIndexesForTab(tab);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
@@ -183,7 +183,7 @@ function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
   tab.$TST.setAttribute(Constants.kLEVEL, cachedTab.attributes[Constants.kLEVEL] || 0);
 }
 
-async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false, promises = []) {
+async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
   if (shouldCollapse) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
@@ -199,7 +199,9 @@ async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = fa
     tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   if (!shouldCollapse)
     shouldCollapse = tab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  const promisedComplete = [];
   for (const child of tab.$TST.children) {
-    promises.push(fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse, promises));
+    promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse));
   }
+  await Promise.all(promisedComplete);
 }
