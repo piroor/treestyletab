@@ -77,13 +77,25 @@ export function queryAll(query) {
       if (query.windowId && !matched(window.id, query.windowId))
         continue;
       const [sourceTabs, offset] = sourceTabsForQuery(query, window);
-      tabs = tabs.concat(extractMatchedTabs(sourceTabs, query, offset));
+      tabs = tabs.concat(query.iterator ? getMatchedTabsIterator(sourceTabs, query, offset) : extractMatchedTabs(sourceTabs, query, offset));
     }
     query.elapsed = Date.now() - startAt;
-    return tabs;
+    if (query.iterator) {
+      return (function* () {
+        for (const tabsIterator of tabs) {
+          for (const tab of tabsIterator) {
+            yield tab;
+          }
+        }
+      })();
+    }
+    else {
+      return tabs;
+    }
   }
   else {
-    const matchedTabs = extractMatchedTabs((query.tabs || tabs).values(), query);
+    const sourceTabs = (query.tabs || tabs).values();
+    const matchedTabs = query.iterator ? getMatchedTabsIterator(sourceTabs, query) : extractMatchedTabs(sourceTabs, query);
     query.elapsed = Date.now() - startAt;
     return matchedTabs;
   }
@@ -115,74 +127,99 @@ function extractMatchedTabs(tabs, query, offset) {
   const matchedTabs = [];
   let firstTime     = true;
   let logicalIndex  = offset || 0;
-
-  TAB_MACHING:
   for (const tab of tabs) {
-    for (const attribute of MATCHING_ATTRIBUTES) {
-      if (attribute in query &&
-          !matched(tab[attribute], query[attribute]))
-        continue TAB_MACHING;
-      if (`!${attribute}` in query &&
-          matched(tab[attribute], query[`!${attribute}`]))
-        continue TAB_MACHING;
-    }
-
-    if (!tab.$TST)
-      continue TAB_MACHING;
-
-    if ('states' in query && tab.$TST.states) {
-      for (let i = 0, maxi = query.states.length; i < maxi; i += 2) {
-        const state   = query.states[i];
-        const pattern = query.states[i+1];
-        if (!matched(tab.$TST.states.has(state), pattern))
-          continue TAB_MACHING;
-      }
-    }
-    if ('attributes' in query && tab.$TST.attributes) {
-      for (let i = 0, maxi = query.attributes.length; i < maxi; i += 2) {
-        const attribute = query.attributes[i];
-        const pattern   = query.attributes[i+1];
-        if (!matched(tab.$TST.attributes[attribute], pattern))
-          continue TAB_MACHING;
-      }
-    }
-
-    if (query.living &&
-        !ensureLivingTab(tab))
-      continue TAB_MACHING;
-    if (query.normal &&
-        (tab.hidden ||
-         tab.$TST.states.has(Constants.kTAB_STATE_SHOWING) ||
-         tab.pinned))
-      continue TAB_MACHING;
-    if (query.visible &&
-        (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) ||
-         tab.hidden ||
-         tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
-      continue TAB_MACHING;
-    if (query.controllable &&
-        (tab.hidden ||
-         tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
-      continue TAB_MACHING;
-    if ('hasChild' in query &&
-        query.hasChild != tab.$TST.hasChild)
-      continue TAB_MACHING;
-    if ('hasParent' in query &&
-        query.hasParent != tab.$TST.hasParent)
-      continue TAB_MACHING;
+    if (!matchedWithQuery(tab, query))
+      continue;
 
     if (!firstTime)
       logicalIndex++;
     firstTime = false;
     if ('logicalIndex' in query &&
         !matched(logicalIndex, query.logicalIndex))
-      continue TAB_MACHING;
+      continue;
 
     matchedTabs.push(tab);
     if (query.first || query.last)
-      break TAB_MACHING;
+      break;
   }
   return matchedTabs;
+}
+
+function* getMatchedTabsIterator(tabs, query, offset) {
+  let firstTime     = true;
+  let logicalIndex  = offset || 0;
+  for (const tab of tabs) {
+    if (!matchedWithQuery(tab, query))
+      continue;
+
+    if (!firstTime)
+      logicalIndex++;
+    firstTime = false;
+    if ('logicalIndex' in query &&
+        !matched(logicalIndex, query.logicalIndex))
+      continue;
+
+    yield tab;
+    if (query.first || query.last)
+      break;
+  }
+}
+
+function matchedWithQuery(tab, query) {
+  for (const attribute of MATCHING_ATTRIBUTES) {
+    if (attribute in query &&
+        !matched(tab[attribute], query[attribute]))
+      return false;
+    if (`!${attribute}` in query &&
+        matched(tab[attribute], query[`!${attribute}`]))
+      return false;
+  }
+
+  if (!tab.$TST)
+    return false;
+
+  if ('states' in query && tab.$TST.states) {
+    for (let i = 0, maxi = query.states.length; i < maxi; i += 2) {
+      const state   = query.states[i];
+      const pattern = query.states[i+1];
+      if (!matched(tab.$TST.states.has(state), pattern))
+        return false;
+    }
+  }
+  if ('attributes' in query && tab.$TST.attributes) {
+    for (let i = 0, maxi = query.attributes.length; i < maxi; i += 2) {
+      const attribute = query.attributes[i];
+      const pattern   = query.attributes[i+1];
+      if (!matched(tab.$TST.attributes[attribute], pattern))
+        return false;
+    }
+  }
+
+  if (query.living &&
+      !ensureLivingTab(tab))
+    return false;
+  if (query.normal &&
+      (tab.hidden ||
+       tab.$TST.states.has(Constants.kTAB_STATE_SHOWING) ||
+       tab.pinned))
+    return false;
+  if (query.visible &&
+      (tab.$TST.states.has(Constants.kTAB_STATE_COLLAPSED) ||
+       tab.hidden ||
+       tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
+    return false;
+  if (query.controllable &&
+      (tab.hidden ||
+       tab.$TST.states.has(Constants.kTAB_STATE_SHOWING)))
+    return false;
+  if ('hasChild' in query &&
+      query.hasChild != tab.$TST.hasChild)
+    return false;
+  if ('hasParent' in query &&
+      query.hasParent != tab.$TST.hasParent)
+    return false;
+
+  return true;
 }
 
 function matched(value, pattern) {
