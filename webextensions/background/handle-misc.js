@@ -583,35 +583,33 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGET_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const promisedResults = [];
-        for (const tab of tabs) {
-          promisedResults.push(TSTAPI.serializeTabWithEffectiveFavIconUrl(tab));
-        }
-        const results = await Promise.all(promisedResults);
+        const results = await TSTAPI.doProgressively(
+          tabs,
+          tab => TSTAPI.serializeTabWithEffectiveFavIconUrl(tab),
+          message.interval
+        );
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kCOLLAPSE_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        for (const tab of tabs) {
-          Tree.collapseExpandSubtree(tab, {
-            collapsed: true,
-            broadcast: true
-          });
-        }
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => Tree.collapseExpandSubtree(tab, { collapsed: true, broadcast: true }),
+          message.interval
+        );
         return true;
       })();
 
     case TSTAPI.kEXPAND_TREE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        for (const tab of tabs) {
-          Tree.collapseExpandSubtree(tab, {
-            collapsed: false,
-            broadcast: true
-          });
-        }
+        await TSTAPI.doProgressively(
+          tabs,
+          tab => Tree.collapseExpandSubtree(tab, { collapsed: false, broadcast: true }),
+          message.interval
+        );
         return true;
       })();
 
@@ -653,11 +651,11 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kDEMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const promisedResults = [];
-        for (const tab of tabs) {
-          promisedResults.push(Commands.indent(tab, message));
-        }
-        const results = await Promise.all(promisedResults);
+        const results = await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.indent(tab, message),
+          message.interval
+        );
         return TSTAPI.formatResult(results, message);
       })();
 
@@ -665,81 +663,86 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kPROMOTE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const promisedResults = [];
-        for (const tab of tabs) {
-          promisedResults.push(Commands.outdent(tab, message));
-        }
-        const results = await Promise.all(promisedResults);
+        const results = await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.outdent(tab, message),
+          message.interval
+        );
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_UP:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const promisedResults = [];
-        for (const tab of tabs) {
-          promisedResults.push(Commands.moveUp(tab, message));
-        }
-        const results = await Promise.all(promisedResults);
+        const results = await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.moveUp(tab, message),
+          message.interval
+        );
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_TO_START:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Commands.moveTabsToStart(Array.from(tabs));
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        await Commands.moveTabsToStart(tabsArray);
         return true;
       })();
 
     case TSTAPI.kMOVE_DOWN:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const promisedResults = [];
-        for (const tab of tabs) {
-          promisedResults.push(Commands.moveDown(tab, message));
-        }
-        const results = await Promise.all(promisedResults);
+        const results = await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.moveDown(tab, message),
+          message.interval
+        );
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_TO_END:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Commands.moveTabsToEnd(Array.from(tabs));
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        await Commands.moveTabsToEnd(tabsArray);
         return true;
       })();
 
     case TSTAPI.kMOVE_BEFORE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const promisedResults = [];
-        for (const tab of tabs) {
-          promisedResults.push(Commands.moveBefore(tab, message));
-        }
-        const results = await Promise.all(promisedResults);
+        const results = await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.moveBefore(tab, message),
+          message.interval
+        );
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kMOVE_AFTER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const promisedResults = [];
-        for (const tab of tabs) {
-          promisedResults.push(Commands.moveAfter(tab, message));
-        }
-        const results = await Promise.all(promisedResults);
+        const results = await TSTAPI.doProgressively(
+          tabs,
+          tab => Commands.moveAfter(tab, message),
+          message.interval
+        );
         return TSTAPI.formatResult(results, message);
       })();
 
     case TSTAPI.kFOCUS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        for (const tab of tabs) {
-          TabsInternalOperation.activateTab(tab, {
-            silently: message.silently
-          });
-        }
-        return TSTAPI.formatResult(tabs.map(() => true), message);
+        const tabsArray = await TSTAPI.doProgressively(
+          tabs,
+          tab => {
+            TabsInternalOperation.activateTab(tab, { silently: message.silently });
+            return tab;
+          },
+          message.interval
+        );
+        return TSTAPI.formatResult(tabsArray.map(() => true), message);
       })();
 
     case TSTAPI.kDUPLICATE:
@@ -762,26 +765,32 @@ function onMessageExternal(message, sender) {
           default:
             break;
         }
-        for (const tab of tabs) {
-          await Commands.duplicateTab(tab, {
-            destinationWindowId: tab.windowId,
-            behavior,
-            multiselected: false
-          });
-        }
-        return TSTAPI.formatResult(tabs.map(() => true), message);
+        const tabsArray = await TSTAPI.doProgressively(
+          tabs,
+          async tab => {
+            return Commands.duplicateTab(tab, {
+              destinationWindowId: tab.windowId,
+              behavior,
+              multiselected: false
+            });
+          },
+          message.interval
+        );
+        return TSTAPI.formatResult(tabsArray.map(() => true), message);
       })();
 
     case TSTAPI.kGROUP_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        return TabsGroup.groupTabs(Array.from(tabs), { broadcast: true });
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        return TabsGroup.groupTabs(tabsArray, { broadcast: true });
       })();
 
     case TSTAPI.kOPEN_IN_NEW_WINDOW:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const windowId = await Commands.openTabsInWindow(Array.from(tabs), {
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        const windowId = await Commands.openTabsInWindow(tabsArray, {
           multiselected: false
         });
         return windowId;
@@ -790,20 +799,23 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kREOPEN_IN_CONTAINER:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const reopenedTabs = await Commands.reopenInContainer(Array.from(tabs), message.containerId || 'firefox-default');
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        const reopenedTabs = await Commands.reopenInContainer(tabsArray, message.containerId || 'firefox-default');
         return TSTAPI.formatResult(reopenedTabs, message);
       })();
 
     case TSTAPI.kGET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        return Promise.resolve(Tree.getTreeStructureFromTabs(Array.from(tabs)));
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        return Promise.resolve(Tree.getTreeStructureFromTabs(tabsArray));
       })();
 
     case TSTAPI.kSET_TREE_STRUCTURE:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        await Tree.applyTreeStructureToTabs(Array.from(tabs), message.structure, {
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        await Tree.applyTreeStructureToTabs(tabsArray, message.structure, {
           broadcast: true
         });
         return Promise.resolve(true);
@@ -815,13 +827,16 @@ function onMessageExternal(message, sender) {
         let states = message.state || message.states;
         if (!Array.isArray(states))
           states = [states];
-        const tabsArray = [];
-        for (const tab of tabs) {
-          tabsArray.push(tab);
-          for (const state of states) {
-            tab.$TST.addState(state);
-          }
-        }
+        const tabsArray = await TSTAPI.doProgressively(
+          tabs,
+          tab => {
+            for (const state of states) {
+              tab.$TST.addState(state);
+            }
+            return tab;
+          },
+          message.interval
+        );
         Tab.broadcastState(tabsArray, {
           add: states
         });
@@ -834,13 +849,16 @@ function onMessageExternal(message, sender) {
         let states = message.state || message.states;
         if (!Array.isArray(states))
           states = [states];
-        const tabsArray = [];
-        for (const tab of tabs) {
-          tabsArray.push(tab);
-          for (const state of states) {
-            tab.$TST.removeState(state);
-          }
-        }
+        const tabsArray = await TSTAPI.doProgressively(
+          tabs,
+          tab => {
+            for (const state of states) {
+              tab.$TST.removeState(state);
+            }
+            return tab;
+          },
+          message.interval
+        );
         Tab.broadcastState(tabsArray, {
           remove: states
         });
@@ -850,7 +868,8 @@ function onMessageExternal(message, sender) {
     case TSTAPI.kGRANT_TO_REMOVE_TABS:
       return (async () => {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
-        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(Array.from(tabs).filter(TabsStore.ensureLivingTab).map(tab => tab.id));
+        const tabsArray = await TSTAPI.doProgressively(tabs, tab => tab, message.interval);
+        const grantedRemovingTabIds = configs.grantedRemovingTabIds.concat(tabsArray.filter(TabsStore.ensureLivingTab).map(tab => tab.id));
         configs.grantedRemovingTabIds = Array.from(new Set(grantedRemovingTabIds));
         return true;
       })();
