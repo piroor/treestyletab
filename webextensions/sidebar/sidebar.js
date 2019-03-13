@@ -138,7 +138,7 @@ export async function init() {
           windowId: mTargetWindow
         }),
         configs.useCachedTree && MetricsData.addAsync('read cached sidebar contents', async () => {
-          cachedContents = await SidebarCache.getEffectiveWindowCache();
+          cachedContents = await SidebarCache.getEffectiveWindowCache({ tabs: nativeTabs });
         })
       ]);
       restoredFromCache = await rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar);

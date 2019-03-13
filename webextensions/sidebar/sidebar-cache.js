@@ -56,7 +56,7 @@ export async function getEffectiveWindowCache(options = {}) {
   let actualSignature;
   await Promise.all([
     (async () => {
-      const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
+      const tabs = options.tabs || await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
       mLastWindowCacheOwner = tabs[tabs.length - 1];
       // We cannot define constants with variables at a time like:
       //   [cache, const tabsDirty, const collapsedDirty] = await Promise.all([
@@ -153,17 +153,6 @@ export async function restoreTabsFromCache(cache, params = {}) {
 
   if (restored) {
     try {
-      if (cache.collapsedDirty) {
-        const allTabs = Tab.getAllTabs(mTargetWindow);
-        const restoredStructrue = Tree.getTreeStructureFromTabs(allTabs);
-        const structure = restoredStructrue.reverse();
-        allTabs.reverse().forEach((tab, index) => {
-          Tree.collapseExpandSubtree(tab, {
-            collapsed: structure[index].collapsed,
-            justNow:   true
-          });
-        });
-      }
       SidebarTabs.updateAll();
       onRestored.dispatch();
     }
