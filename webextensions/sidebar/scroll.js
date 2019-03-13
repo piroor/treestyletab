@@ -66,11 +66,9 @@ function log(...args) {
 let mTabBar;
 let mOutOfViewTabNotifier;
 
-export async function init() {
+export function init(scrollPosition) {
   mTabBar               = document.querySelector('#tabbar');
   mOutOfViewTabNotifier = document.querySelector('#out-of-view-tab-notifier');
-
-  const scrollPosition = await browser.sessions.getWindowValue(TabsStore.getWindow(), Constants.kWINDOW_STATE_SCROLL_POSITION).catch(ApiTabs.createErrorHandler());
   if (typeof scrollPosition == 'number') {
     log('restore scroll position');
     cancelRunningScroll();

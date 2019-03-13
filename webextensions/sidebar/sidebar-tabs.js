@@ -538,10 +538,110 @@ Tab.onInitialized.addListener((tab, info) => {
     });
   }
 
+  applyStatesToElement(tab);
+
   const window  = TabsStore.windows.get(tab.windowId);
   const nextTab = Tab.getTabAt(window.id, tab.index);
   window.element.insertBefore(tabElement, nextTab && nextTab.$TST.element);
 });
+
+const NATIVE_STATES = new Set([
+  'active',
+  'attention',
+  'audible',
+  'discarded',
+  'hidden',
+  'highlighted',
+  'pinned'
+]);
+const IGNORE_CLASS_STATES = new Set([
+  'tab',
+  Constants.kTAB_STATE_ANIMATION_READY,
+  Constants.kTAB_STATE_SUBTREE_COLLAPSED
+]);
+
+export function applyStatesToElement(tab) {
+  const tabElement = tab.$TST.element;
+
+  for (const state of tabElement.classList) {
+    if (IGNORE_CLASS_STATES.has(state) ||
+        NATIVE_STATES.has(state))
+      continue;
+    if (!tab.$TST.states.has(state))
+      tabElement.classList.remove(state);
+  }
+  for (const state of tab.$TST.states) {
+    if (IGNORE_CLASS_STATES.has(state))
+      continue;
+    if (!tabElement.classList.contains(state))
+      tabElement.classList.add(state);
+  }
+
+  for (const state of NATIVE_STATES) {
+    if (tab[state] == tabElement.classList.contains(state))
+      continue;
+    if (tab[state])
+      tabElement.classList.add(state);
+    else
+      tabElement.classList.remove(state);
+  }
+
+  if (tab.$TST.childIds.length > 0)
+    tabElement.setAttribute(Constants.kCHILDREN, `|${tab.$TST.childIds.join('|')}|`);
+  else
+    tabElement.removeAttribute(Constants.kCHILDREN);
+
+  if (tab.$TST.parentId)
+    tabElement.setAttribute(Constants.kPARENT, tab.$TST.parentId);
+  else
+    tabElement.removeAttribute(Constants.kPARENT);
+
+  const alreadyGrouped = tab.$TST.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) || '';
+  if (tabElement.getAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER) != alreadyGrouped)
+    tabElement.setAttribute(Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, alreadyGrouped);
+
+  const opener = tab.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) || '';
+  if (tabElement.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID) != opener)
+    tabElement.setAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, opener);
+
+  const uri = tab.$TST.getAttribute(Constants.kCURRENT_URI) || tab.url;
+  if (tabElement.getAttribute(Constants.kCURRENT_URI) != uri)
+    tabElement.setAttribute(Constants.kCURRENT_URI, uri);
+
+  const level = tab.$TST.getAttribute(Constants.kLEVEL) || 0;
+  if (tabElement.getAttribute(Constants.kLEVEL) != level)
+    tabElement.setAttribute(Constants.kLEVEL, level);
+
+  const id = tab.$TST.uniqueId.id;
+  if (tabElement.getAttribute(Constants.kPERSISTENT_ID) != id)
+    tabElement.setAttribute(Constants.kPERSISTENT_ID, id);
+
+  if (tab.$TST.subtreeCollapsed) {
+    if (!tabElement.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+      tabElement.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  }
+  else {
+    if (tabElement.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+      tabElement.classList.remove(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+  }
+
+  const parent = tab.$TST.parent;
+  if (tab.$TST.collapsed ||
+      (parent &&
+       (parent.$TST.collapsed ||
+        parent.$TST.subtreeCollapsed))) {
+    if (!tabElement.classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
+      tabElement.classList.add(Constants.kTAB_STATE_COLLAPSED);
+      tabElement.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+    }
+  }
+  else {
+    if (tabElement.classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
+      tabElement.classList.remove(Constants.kTAB_STATE_COLLAPSED);
+      tabElement.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+    }
+  }
+}
 
 Tab.onCreated.addListener((tab, _info) => {
   tab.$TST.addState(Constants.kTAB_STATE_ANIMATION_READY);

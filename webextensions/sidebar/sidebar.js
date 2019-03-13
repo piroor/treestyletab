@@ -85,23 +85,25 @@ export async function init() {
   MetricsData.add('init start');
   log('initialize sidebar on load');
 
-  await Promise.all([
+  const [nativeTabs] = await Promise.all([
     (async () => {
-      const tabs = await browser.tabs.query({
-        active:        true,
-        currentWindow: true
-      }).catch(ApiTabs.createErrorHandler());
+      const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
       mTargetWindow = tabs[0].windowId;
       TabsStore.setWindow(mTargetWindow);
-      for (const tab of tabs) {
-        Tab.track(tab);
-      }
       internalLogger.context   = `Sidebar-${mTargetWindow}`;
+
+      // Track only the first tab for now, because it is required to initialize
+      // the container and it will be used by the SidebarCache module.
+      TabIdFixer.fixTab(tabs[0]);
+      Tab.track(tabs[0]);
 
       PinnedTabs.init();
       Indent.init();
+
       SidebarCache.init();
       SidebarCache.onRestored.addListener(() => { DragAndDrop.clearDropPosition(); });
+
+      return tabs;
     })(),
     configs.$loaded
   ]);
@@ -111,26 +113,33 @@ export async function init() {
   onConfigChange('simulateSVGContextFill');
   onInit.dispatch();
 
+  const promisedScrollPosition = browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION).catch(ApiTabs.createErrorHandler());
+
   await Promise.all([
     waitUntilBackgroundIsReady(),
-    ContextualIdentities.init()
+    ContextualIdentities.init(),
+    (async () => {
+      // waitUntilBackgroundIsReady() takes time on the startup,
+      // so here is best to initialize tabs.
+      for (const tab of nativeTabs.slice(1)) {
+        TabIdFixer.fixTab(tab);
+        Tab.track(tab);
+      }
+    })()
   ]);
-  MetricsData.add('applyStyle, waitUntilBackgroundIsReady and ContextualIdentities.init');
+  MetricsData.add('waitUntilBackgroundIsReady, ContextualIdentities.init, and tabs tracking');
 
   let cachedContents;
   let restoredFromCache;
   await MetricsData.addAsync('parallel initialization tasks', Promise.all([
     MetricsData.addAsync('main', async () => {
-      if (configs.useCachedTree)
-        await MetricsData.addAsync('read cached sidebar contents', async () => {
-          cachedContents = await SidebarCache.getEffectiveWindowCache();
-        });
-
-      const [nativeTabs, importedTabs] = await Promise.all([
-        browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler()),
+      const [importedTabs] = await Promise.all([
         browser.runtime.sendMessage({
           type:     Constants.kCOMMAND_PULL_TABS,
           windowId: mTargetWindow
+        }),
+        configs.useCachedTree && MetricsData.addAsync('read cached sidebar contents', async () => {
+          cachedContents = await SidebarCache.getEffectiveWindowCache();
         })
       ]);
       restoredFromCache = await rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar);
@@ -143,11 +152,6 @@ export async function init() {
         browser.theme.getCurrent(mTargetWindow).then(applyBrowserTheme);
       else
         applyBrowserTheme();
-
-      if (!restoredFromCache)
-        await MetricsData.addAsync('inheritTreeStructure', async () => {
-          await inheritTreeStructure();
-        });
 
       configs.$addObserver(onConfigChange);
       onConfigChange('debug');
@@ -177,7 +181,6 @@ export async function init() {
     }),
     MetricsData.addAsync('Size.init', async () => {
       Size.init();
-      document.documentElement.classList.remove('initializing');
     }),
     MetricsData.addAsync('initializing contextual identities', async () => {
       updateContextualIdentitiesStyle();
@@ -188,7 +191,7 @@ export async function init() {
       TabContextMenu.init();
     }),
     MetricsData.addAsync('getting registered addons and scroll lock state', async () => {
-      await TSTAPI.initAsFrontend();
+      return TSTAPI.initAsFrontend()
     })
   ]));
 
@@ -208,10 +211,11 @@ export async function init() {
       onReady.dispatch();
     }),
     MetricsData.addAsync('Scroll.init', async () => {
-      Scroll.init();
+      Scroll.init(await promisedScrollPosition);
     })
   ]));
 
+  document.documentElement.classList.remove('initializing');
   mInitialized = true;
   UserOperationBlocker.unblock({ throbber: true });
 
@@ -378,10 +382,6 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   if (!trackedWindow)
     Window.init(mTargetWindow);
 
-  for (const tab of tabs) {
-    TabIdFixer.fixTab(tab);
-    Tab.track(tab);
-  }
   tabs = importedTabs.map(importedTab => Tab.import(importedTab));
 
   if (cache) {
@@ -400,8 +400,6 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   window.element.parentNode.removeChild(window.element); // remove from the document for better pefromance
   for (const tab of tabs) {
     const trackedTab = Tab.init(tab, { existing: true, inRemote: true });
-    trackedTab.$TST.clear(); // clear dirty restored states
-    window.element.appendChild(trackedTab.$TST.element);
     // update tab based on current status
     TabsUpdate.updateTab(trackedTab, tab, { forceApply: true });
     if (tab.active)
@@ -410,18 +408,6 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   DOMCache.wholeContainer.appendChild(window.element);
   MetricsData.add('rebuildAll (from scratch)');
   return false;
-}
-
-async function inheritTreeStructure() {
-  const response = await browser.runtime.sendMessage({
-    type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
-    windowId: mTargetWindow
-  }).catch(ApiTabs.createErrorHandler());
-  MetricsData.add('inheritTreeStructure: Constants.kCOMMAND_PULL_TREE_STRUCTURE');
-  if (response && response.structure) {
-    await Tree.applyTreeStructureToTabs(Tab.getAllTabs(mTargetWindow), response.structure);
-    MetricsData.add('inheritTreeStructure: Tree.applyTreeStructureToTabs');
-  }
 }
 
 async function waitUntilBackgroundIsReady() {
@@ -677,7 +663,6 @@ Tab.onWindowRestoring.addListener(async windowId => {
       (cache.offset &&
        window.element.childNodes.length <= cache.offset)) {
     log('Tabs.onWindowRestoring: no effective cache');
-    await inheritTreeStructure(); // fallback to classic method
     UserOperationBlocker.unblock({ throbber: true });
     return;
   }
@@ -685,14 +670,16 @@ Tab.onWindowRestoring.addListener(async windowId => {
   log('Tabs.onWindowRestoring restore! ', cache);
   MetricsData.add('Tabs.onWindowRestoring restore start');
   cache.tabbar.tabsDirty = true;
-  const tabs     = await browser.tabs.query({ windowId }).catch(ApiTabs.createErrorHandler());
+  const importedTabs = await browser.runtime.sendMessage({
+    type: Constants.kCOMMAND_PULL_TABS,
+    windowId
+  });
   const restored = await SidebarCache.restoreTabsFromCache(cache.tabbar, {
     offset: cache.offset || 0,
-    tabs
+    tabs:   importedTabs.map(importedTab => Tab.import(importedTab))
   });
   if (!restored) {
     await rebuildAll();
-    await inheritTreeStructure();
   }
   Indent.updateRestoredTree(restored && cache.offset == 0 ? cache.indent : null);
   updateTabbarLayout({ justNow: true });
