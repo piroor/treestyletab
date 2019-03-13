@@ -347,8 +347,10 @@ function exportAddons() {
 
 export async function initAsFrontend() {
   let addons;
-  while (!addons) {
+  while (true) {
     addons = await browser.runtime.sendMessage({ type: kCOMMAND_REQUEST_REGISTERED_ADDONS });
+    if (addons)
+      break;
     await wait(10);
   }
   importAddons(addons);
