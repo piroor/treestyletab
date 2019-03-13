@@ -54,13 +54,14 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner `, {
     owner, cachedSignature, cache
   });
+  const signatureGeneratedFromCache = JSONCache.signatureFromTabsCache(cache.tabs).join('\n');
   if (cache &&
       cache.tabs &&
       cachedSignature &&
-      cachedSignature.join('\n') != JSONCache.signatureFromTabsCache(cache.tabs).join('\n')) {
+      cachedSignature.join('\n') != signatureGeneratedFromCache) {
     log(`restoreWindowFromEffectiveWindowCache for ${windowId}: cache is broken.`, {
-      signature: cachedSignature,
-      cache:     JSONCache.signatureFromTabsCache(cache.tabs)
+      cachedSignature: cachedSignature.join('\n'),
+      signatureGeneratedFromCache
     });
     cache = cachedSignature = null;
     clearWindowCache(windowId);

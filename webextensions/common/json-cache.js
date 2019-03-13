@@ -50,7 +50,7 @@ export function matcheSignatures(signatures) {
 }
 
 export function signatureFromTabsCache(cache) {
-  return cache.map(tab => tab.uniqueId);
+  return cache.map(tab => tab.uniqueId.id || tab.uniqueId);
 }
 
 export async function restoreTabsFromCacheInternal(params) {

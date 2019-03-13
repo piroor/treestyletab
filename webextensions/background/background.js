@@ -207,13 +207,12 @@ async function rebuildAll() {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs
           });
+          log(`window ${window.id}: restored from cache?: `, restoredFromCache[window.id]);
           for (const tab of Tab.getAllTabs(window.id, { iterator: true })) {
             tryStartHandleAccelKeyOnTab(tab);
           }
-          if (restoredFromCache[window.id]) {
-            log(`window ${window.id} is restored from cache`);
+          if (restoredFromCache[window.id])
             return;
-          }
         }
       }
       catch(e) {
