@@ -111,6 +111,10 @@ button {
   overflow-y: scroll;
 }
 
+:root.initializing #tabbar {
+  opacity: 0;
+}
+
 :root.animation #tabbar {
   transition: margin-top var(--collapse-animation);
 }
