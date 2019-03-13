@@ -55,7 +55,7 @@ export async function getEffectiveWindowCache(options = {}) {
   let cachedSignature;
   let actualSignature;
   await Promise.all([
-    (async () => {
+    MetricsData.addAsync('getEffectiveWindowCache main', async () => {
       const tabs = options.tabs || await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
       mLastWindowCacheOwner = tabs[tabs.length - 1];
       // We cannot define constants with variables at a time like:
@@ -104,10 +104,10 @@ export async function getEffectiveWindowCache(options = {}) {
         log('getEffectiveWindowCache: invalid cache ', cache);
         cache = null;
       }
-    })(),
-    (async () => {
-      actualSignature = await DOMCache.getWindowSignature(mTargetWindow);
-    })()
+    }),
+    MetricsData.addAsync('getEffectiveWindowCache getWindowSignature', async () => {
+      actualSignature = await DOMCache.getWindowSignature(options.tabs || mTargetWindow);
+    })
   ]);
 
   const signatureMatched = DOMCache.matcheSignatures({
