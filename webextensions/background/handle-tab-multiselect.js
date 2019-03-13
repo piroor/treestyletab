@@ -11,7 +11,6 @@ import {
 } from '/common/common.js';
 
 import * as ApiTabs from '/common/api-tabs.js';
-import * as TabsStore from '/common/tabs-store.js';
 
 import Tab from '/common/Tab.js';
 
@@ -40,26 +39,6 @@ Tab.onUpdated.addListener((tab, info, options = {}) => {
   }
 });
 
-function getTabsBetween(begin, end) {
-  if (!begin || !TabsStore.ensureLivingTab(begin) ||
-      !end || !TabsStore.ensureLivingTab(end))
-    throw new Error('getTabsBetween requires valid two tabs');
-  if (begin.windowId != end.windowId)
-    throw new Error('getTabsBetween requires two tabs in same window');
-
-  if (begin == end)
-    return [];
-  if (begin.index > end.index)
-    [begin, end] = [end, begin];
-  return TabsStore.queryAll({
-    windowId: begin.windowId,
-    tabs:     TabsStore.controllableTabsInWindow.get(begin.windowId),
-    id:       (id => id != begin.id && id != end.id),
-    fromId:   begin.id,
-    toId:     end.id
-  });
-}
-
 const mLastClickedTabInWindow = new Map();
 const mIsInSelectionSession   = new Map();
 
@@ -71,7 +50,7 @@ export async function updateSelectionByTabClick(tab, event) {
   if (event.shiftKey) {
     // select the clicked tab and tabs between last activated tab
     const lastClickedTab   = mLastClickedTabInWindow.get(tab.windowId) || activeTab;
-    const betweenTabs      = getTabsBetween(lastClickedTab, tab);
+    const betweenTabs      = Tab.getTabsBetween(lastClickedTab, tab);
     const targetTabs       = [lastClickedTab].concat(betweenTabs);
     if (tab != lastClickedTab)
       targetTabs.push(tab);

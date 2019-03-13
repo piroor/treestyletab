@@ -436,16 +436,7 @@ async function tryGroupNewTabsFromPinnedOpener(rootTabs) {
             Tab.getGroupTabForOpener(openerOf[tab.id]))
           continue;
         // If there is not-yet grouped sibling, place next to it.
-        const siblings = TabsStore.queryAll({
-          windowId:   tab.windowId,
-          tabs:       TabsStore.toBeGroupedTabsInWindow.get(tab.windowId),
-          normal:     true,
-          '!id':      tab.id,
-          attributes: [
-            Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID, tab.$TST.getAttribute(Constants.kPERSISTENT_ORIGINAL_OPENER_TAB_ID),
-            Constants.kPERSISTENT_ALREADY_GROUPED_FOR_PINNED_OPENER, ''
-          ]
-        });
+        const siblings = tab.$TST.needToBeGroupedSiblings;
         const referenceTab = siblings.length > 0 ? siblings[siblings.length - 1] : lastPinnedTab ;
         await Tree.moveTabSubtreeAfter(tab, (referenceTab && referenceTab.$TST.lastDescendant || referenceTab), {
           broadcast: true

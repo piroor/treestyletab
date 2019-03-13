@@ -259,23 +259,14 @@ function reserveToUpdateLoadingState() {
 }
 
 function updateLoadingState() {
-  const loadingTab = TabsStore.query({
-    windowId: TabsStore.getWindow(),
-    tabs:     TabsStore.loadingTabsInWindow.get(TabsStore.getWindow()),
-    visible:  true
-  });
-  if (loadingTab)
+  if (Tab.hasLoadingTab(TabsStore.getWindow()))
     document.documentElement.classList.add(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
   else
     document.documentElement.classList.remove(Constants.kTABBAR_STATE_HAVE_LOADING_TAB);
 }
 
 async function synchronizeThrobberAnimation() {
-  const toBeSynchronizedTabs = TabsStore.queryAll({
-    windowId: TabsStore.getWindow(),
-    tabs:     TabsStore.unsynchronizedTabsInWindow.get(TabsStore.getWindow()),
-    visible:  true
-  });
+  const toBeSynchronizedTabs = Tab.getNeedToBeSynchronizedTabs(TabsStore.getWindow());
   if (toBeSynchronizedTabs.length == 0)
     return;
 
