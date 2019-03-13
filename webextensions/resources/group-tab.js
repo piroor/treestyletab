@@ -154,6 +154,8 @@
 
 
   async function updateTree() {
+    let runAt = updateTree.lastRun = Date.now();
+
     const container = document.getElementById('tabs');
     const range = document.createRange();
     range.selectNodeContents(container);
@@ -170,6 +172,10 @@
       ],
       interval: 50
     });
+
+    // called again while waiting
+    if (runAt != updateTree.lastRun)
+      return;
 
     let tree;
     if (tabs[1]) {
