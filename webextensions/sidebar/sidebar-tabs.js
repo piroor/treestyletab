@@ -16,7 +16,6 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as Tree from '/common/tree.js';
-import * as DOMCache from './dom-cache.js';
 import { SequenceMatcher } from '/common/diff.js';
 
 import Tab from '/common/Tab.js';
@@ -29,6 +28,8 @@ function log(...args) {
 }
 
 let mInitialized = false;
+
+export const wholeContainer = document.querySelector('#all-tabs');
 
 export function init() {
   mInitialized = true;
@@ -446,7 +447,7 @@ Window.onInitialized.addListener(windowId => {
   let container = document.getElementById(`window-${windowId}`);
   if (!container) {
     container = document.createElement('ul');
-    DOMCache.wholeContainer.appendChild(container);
+    wholeContainer.appendChild(container);
   }
   container.dataset.windowId = windowId;
   container.setAttribute('id', `window-${windowId}`);

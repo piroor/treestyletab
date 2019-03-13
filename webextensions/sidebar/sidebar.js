@@ -31,7 +31,6 @@ import * as MetricsData from '/common/metrics-data.js';
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
 
-import * as DOMCache from './dom-cache.js';
 import * as SidebarCache from './sidebar-cache.js';
 import * as SidebarTabs from './sidebar-tabs.js';
 import * as PinnedTabs from './pinned-tabs.js';
@@ -374,7 +373,7 @@ function updateContextualIdentitiesSelector() {
 
 export async function rebuildAll(tabs, importedTabs, cache) {
   const range = document.createRange();
-  range.selectNodeContents(DOMCache.wholeContainer);
+  range.selectNodeContents(SidebarTabs.wholeContainer);
   range.deleteContents();
   range.detach();
 
@@ -405,7 +404,7 @@ export async function rebuildAll(tabs, importedTabs, cache) {
     if (tab.active)
       TabsInternalOperation.setTabActive(trackedTab);
   }
-  DOMCache.wholeContainer.appendChild(window.element);
+  SidebarTabs.wholeContainer.appendChild(window.element);
   MetricsData.add('rebuildAll (from scratch)');
   return false;
 }

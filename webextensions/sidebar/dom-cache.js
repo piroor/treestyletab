@@ -24,8 +24,6 @@ function log(...args) {
   internalLogger('sidebar/dom-cache', ...args);
 }
 
-export const wholeContainer = document.querySelector('#all-tabs');
-
 export async function getWindowSignature(windowIdOrTabs) {
   let tabs = windowIdOrTabs;
   if (typeof windowIdOrTabs == 'number') {
@@ -110,7 +108,7 @@ export async function restoreTabsFromCacheInternal(params) {
       dumpCache(params.cache);
     const insertionPoint = params.insertionPoint || (() => {
       const range = document.createRange();
-      range.selectNodeContents(wholeContainer);
+      range.selectNodeContents(SidebarTabs.wholeContainer);
       range.collapse(false);
       return range;
     })();
