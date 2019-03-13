@@ -49,17 +49,17 @@ export async function activateTab(tab, options = {}) {
   if (configs.supportTabsMultiselect &&
       typeof browser.tabs.highlight == 'function') {
     let tabs = [tab.index];
-    const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
     if (tab.$TST.hasOtherHighlighted &&
-        options.keepMultiselection &&
-        highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
-      // switch active tab with highlighted state
-      const otherTabs = highlightedTabs.filter(highlightedTab => highlightedTab.id != tab.id);
-      tabs = tabs.concat(otherTabs.map(tab => tab.index));
+        options.keepMultiselection) {
+      const highlightedTabs = Tab.getHighlightedTabs(tab.windowId);
+      if (highlightedTabs.some(highlightedTab => highlightedTab.id == tab.id)) {
+        // switch active tab with highlighted state
+        const otherTabs = highlightedTabs.filter(highlightedTab => highlightedTab.id != tab.id);
+        tabs = tabs.concat(otherTabs.map(tab => tab.index));
+      }
     }
-    else {
+    if (tabs.length == 1)
       window.tabsToBeHighlightedAlone.add(tab.id);
-    }
     return browser.tabs.highlight({
       windowId: tab.windowId,
       tabs,

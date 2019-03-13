@@ -118,7 +118,7 @@ function sourceTabsForQuery(query, window) {
     fromId = query.fromId;
     offset = window.order.indexOf(query.fromId);
   }
-  if (query.last)
+  if (query.last || query.reversed)
     return [window.getReversedOrderedTabs(fromId, query.toId, query.tabs), offset];
   return [window.getOrderedTabs(fromId, query.toId, query.tabs), offset];
 }

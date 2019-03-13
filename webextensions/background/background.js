@@ -110,7 +110,9 @@ export async function init() {
       BackgroundCache.reserveToCacheTree(parseInt(windowId));
   }
 
-  Tab.getAllTabs(null).forEach(updateSubtreeCollapsed);
+  for (const tab of Tab.getAllTabs(null, { iterator: true })) {
+    updateSubtreeCollapsed(tab);
+  }
   for (const tab of Tab.getActiveTabs()) {
     for (const ancestor of tab.$TST.ancestors) {
       Tree.collapseExpandTabAndSubtree(ancestor, {
@@ -204,7 +206,7 @@ async function rebuildAll() {
             owner: window.tabs[window.tabs.length - 1],
             tabs:  window.tabs
           });
-          for (const tab of Tab.getAllTabs(window.id)) {
+          for (const tab of Tab.getAllTabs(window.id, { iterator: true })) {
             tryStartHandleAccelKeyOnTab(tab);
           }
           if (restoredFromCache[window.id]) {
@@ -231,7 +233,7 @@ async function rebuildAll() {
       }
       restoredFromCache[window.id] = false;
     });
-    for (const tab of Tab.getGroupTabs(window.id)) {
+    for (const tab of Tab.getGroupTabs(window.id, { iterator: true })) {
       if (!tab.discarded)
         tab.$TST.shouldReloadOnSelect = true;
     }

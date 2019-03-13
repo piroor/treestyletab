@@ -73,9 +73,12 @@ export async function closeDescendants(rootTab) {
 
 export async function closeOthers(rootTab) {
   const exceptionTabs = [rootTab].concat(rootTab.$TST.descendants);
-  const tabs          = Tab.getNormalTabs(rootTab.windowId); // except pinned or hidden tabs
-  tabs.reverse(); // close bottom to top!
-  const closeTabs = tabs.filter(tab => !exceptionTabs.includes(tab));
+  const tabs          = Tab.getNormalTabs(rootTab.windowId, { iterator: true, reversed: true }); // except pinned or hidden tabs, close bottom to top!
+  const closeTabs     = [];
+  for (const tab of tabs) {
+    if (!exceptionTabs.includes(tab))
+      closeTabs.push(tab);
+  }
   const canceled = (await onTabsClosing.dispatch(closeTabs.map(tab => tab.id), { windowId: rootTab.windowId })) === false;
   if (canceled)
     return;
@@ -95,8 +98,7 @@ export function collapseTree(rootTab) {
 }
 
 export function collapseAll(windowId) {
-  const tabs = Tab.getNormalTabs(windowId);
-  for (const tab of tabs) {
+  for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
     collapseTree(tab);
   }
 }
@@ -112,8 +114,7 @@ export function expandTree(rootTab) {
 }
 
 export function expandAll(windowId) {
-  const tabs = Tab.getNormalTabs(windowId);
-  for (const tab of tabs) {
+  for (const tab of Tab.getNormalTabs(windowId, { iterator: true })) {
     expandTree(tab);
   }
 }

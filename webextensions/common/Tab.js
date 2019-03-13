@@ -1322,7 +1322,20 @@ Tab.getSelectedTabs = (windowId, options = {}) => {
       highlightedTabs.size < 2)
     return selectedTabs;
 
-  return Tab.sort(Array.from(new Set([...selectedTabs, ...Array.from(highlightedTabs.values())])));
+  if (options.iterator)
+    return (function* () {
+      const alreadyReturnedTabs = new Set();
+      for (const tab of selectedTabs) {
+        yield tab;
+        alreadyReturnedTabs.add(tab);
+      }
+      for (const tab of highlightedTabs.values()) {
+        if (!alreadyReturnedTabs.has(tab))
+          yield tab;
+      }
+    })();
+  else
+    return Tab.sort(Array.from(new Set([...selectedTabs, ...Array.from(highlightedTabs.values())])));
 };
 
 Tab.getNeedToBeSynchronizedTabs = (windowId, options = {}) => {
@@ -1339,6 +1352,22 @@ Tab.hasLoadingTab = windowId => {
     tabs:     TabsStore.loadingTabsInWindow.get(windowId),
     visible:  true
   });
+};
+
+Tab.hasMultipleTabs = (windowId, options = {}) => {
+  const tabs = TabsStore.queryAll(Object.assign({
+    windowId,
+    tabs:   TabsStore.livingTabsInWindow.get(windowId),
+    living: true
+  }, options, { iterator: true }));
+  let count = 0;
+  // eslint-disable-next-line no-unused-vars
+  for (const tab of tabs) {
+    count++;
+    if (count > 1)
+      return true;
+  }
+  return false;
 };
 
 // "Recycled tab" is an existing but reused tab for session restoration.
@@ -1457,11 +1486,12 @@ Tab.sort = tabs => {
 Tab.dumpAll = windowId => {
   if (!configs.debug)
     return;
-  log('dumpAllTabs\n' +
-    Tab.getAllTabs(windowId).map(tab =>
-      tab.$TST.ancestors.reverse().concat([tab])
-        .map(tab => tab.id + (tab.pinned ? ' [pinned]' : ''))
-        .join(' => ')
-    ).join('\n'));
+  const output = ['dumpAllTabs'];
+  for (const tab of Tab.getAllTabs(windowId, {iterator: true })) {
+    output.push(tab.$TST.ancestors.reverse().concat([tab])
+      .map(tab => tab.id + (tab.pinned ? ' [pinned]' : ''))
+      .join(' => '));
+  }
+  log(output.join('\n'));
 };
 

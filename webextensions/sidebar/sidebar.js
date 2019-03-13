@@ -209,7 +209,8 @@ export async function init() {
   UserOperationBlocker.unblock({ throbber: true });
 
   MetricsData.add('init end');
-  log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
+  if (configs.debug)
+    log(`Startup metrics for ${Tab.getTabs(mTargetWindow).length} tabs: `, MetricsData.toString());
 }
 
 function applyStyle(style) {
@@ -721,7 +722,7 @@ function onConfigChange(changedKey) {
         // We have no need to re-update tabs on the startup process.
         // Moreover, we should not re-update tabs at the time to avoid
         // breaking of initialized tab states.
-        for (const tab of Tab.getAllTabs(mTargetWindow)) {
+        for (const tab of Tab.getAllTabs(mTargetWindow, { iterator: true })) {
           TabsUpdate.updateTab(tab, tab, { forceApply: true });
         }
       }

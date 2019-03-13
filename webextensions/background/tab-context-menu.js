@@ -362,9 +362,8 @@ async function onShown(info, contextTab) {
   const previousSiblingTab    = contextTab && contextTab.$TST.previousSiblingTab;
   const nextTab               = contextTab && contextTab.$TST.nextTab;
   const nextSiblingTab        = contextTab && contextTab.$TST.nextSiblingTab;
-  const hasMultipleTabs       = Tab.getTabs(windowId).length > 1;
-  const normalTabsCount       = Tab.getNormalTabs(windowId).length;
-  const hasMultipleNormalTabs = normalTabsCount > 1;
+  const hasMultipleTabs       = Tab.hasMultipleTabs(windowId);
+  const hasMultipleNormalTabs = Tab.hasMultipleTabs(windowId, { normal: true });
   const multiselected         = contextTab && contextTab.$TST.multiselected;
 
   let modifiedItemsCount = 0;

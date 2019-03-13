@@ -137,8 +137,9 @@ export function reserveToReposition(options = {}) {
 
 function reset() {
   mTabBar.style.marginTop = '';
-  const pinnedTabs = Tab.getPinnedTabs(mTargetWindow);
-  pinnedTabs.forEach(clearStyle);
+  for (const tab of Tab.getPinnedTabs(mTargetWindow, { iterator: true })) {
+    clearStyle(tab);
+  }
 }
 
 function clearStyle(tab) {

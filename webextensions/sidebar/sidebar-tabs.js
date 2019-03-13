@@ -266,14 +266,14 @@ function updateLoadingState() {
 }
 
 async function synchronizeThrobberAnimation() {
-  const toBeSynchronizedTabs = Tab.getNeedToBeSynchronizedTabs(TabsStore.getWindow());
-  if (toBeSynchronizedTabs.length == 0)
-    return;
-
-  for (const tab of toBeSynchronizedTabs) {
+  let processedCount = 0;
+  for (const tab of Tab.getNeedToBeSynchronizedTabs(TabsStore.getWindow(), { iterator: true })) {
     tab.$TST.removeState(Constants.kTAB_STATE_THROBBER_UNSYNCHRONIZED);
     TabsStore.removeUnsynchronizedTab(tab);
+    processedCount++;
   }
+  if (processedCount == 0)
+    return;
 
   document.documentElement.classList.add(Constants.kTABBAR_STATE_THROBBER_SYNCHRONIZING);
   void document.documentElement.offsetWidth;
@@ -310,7 +310,7 @@ export function updateAll() {
   synchronizeThrobberAnimation();
   // We need to update from bottom to top, because
   // updateDescendantsHighlighted() refers results of descendants.
-  for (const tab of Tab.getAllTabs(TabsStore.getWindow()).reverse()) {
+  for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true, reverse: true })) {
     reserveToUpdateTwistyTooltip(tab);
     reserveToUpdateCloseboxTooltip(tab);
     updateDescendantsCount(tab);
@@ -766,7 +766,7 @@ window.addEventListener('resize', () => {
     clearTimeout(mDelayedResized);
   mDelayedResized = setTimeout(() => {
     mDelayedResized = null;
-    for (const tab of Tab.getAllTabs(TabsStore.getWindow())) {
+    for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true })) {
       tab.$TST.tooltipIsDirty = true;
     }
   }, 250);
@@ -776,7 +776,7 @@ configs.$addObserver(changedKey => {
   switch (changedKey) {
     case 'showCollapsedDescendantsByTooltip':
       if (mInitialized)
-        for (const tab of Tab.getAllTabs(TabsStore.getWindow())) {
+        for (const tab of Tab.getAllTabs(TabsStore.getWindow(), { iterator: true })) {
           tab.$TST.tooltipIsDirty = true;
         }
       break;

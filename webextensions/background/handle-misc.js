@@ -449,7 +449,7 @@ function onMessage(message, sender) {
           return;
         const multiselected = root.$TST.multiselected;
         const tabs = multiselected ?
-          Tab.getSelectedTabs(root.windowId) :
+          Tab.getSelectedTabs(root.windowId, { iterator: true }) :
           [root].concat(root.$TST.descendants) ;
         for (const tab of tabs) {
           const playing = tab.$TST.soundPlaying;

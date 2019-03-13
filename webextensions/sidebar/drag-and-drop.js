@@ -456,7 +456,7 @@ export function clearDropPosition() {
 }
 
 export function clearDraggingTabsState() {
-  for (const tab of Tab.getDraggingTabs(TabsStore.getWindow())) {
+  for (const tab of Tab.getDraggingTabs(TabsStore.getWindow(), { iterator: true })) {
     tab.$TST.removeState(Constants.kTAB_STATE_DRAGGING);
     TabsStore.removeDraggingTab(tab);
   }
