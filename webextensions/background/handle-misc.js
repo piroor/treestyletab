@@ -276,6 +276,13 @@ function onMessage(message, sender) {
       })();
 
     case Constants.kCOMMAND_PULL_TABS:
+      if (message.windowId) {
+        const tabs = [];
+        for (const tab of Tab.getAllTabs(message.windowId, { iterator: true })) {
+          tabs.push(tab.$TST.export(true));
+        }
+        return Promise.resolve(tabs);
+      }
       return Promise.resolve(message.tabIds.map(id => {
         const tab = Tab.get(id);
         return tab && tab.$TST.export(true);

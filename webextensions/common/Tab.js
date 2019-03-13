@@ -460,7 +460,7 @@ export default class Tab {
   }
 
   sortChildren() {
-    this.childIds = Tab.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab.id);
+    this.childIds = Tab.sort(this.childIds.map(id => Tab.get(id))).map(tab => tab && tab.id);
     this.invalidateCachedDescendants();
   }
 
@@ -777,8 +777,8 @@ export default class Tab {
   export(full) {
     const exported = {
       id:         this.id,
-      uniqueId:   this.uniqueId.id,
-      states:     Object.keys(this.states),
+      uniqueId:   this.uniqueId,
+      states:     Array.from(this.states),
       attributes: this.attributes,
       parentId:   this.parentId,
       childIds:   this.childIds
@@ -798,27 +798,13 @@ export default class Tab {
         this.tab[key] = exported[key];
     }
 
-    this.uniqueId = { id: exported.$TST.id };
+    this.uniqueId = exported.$TST.uniqueId;
 
-    for (const state of this.states) {
-      if (!exported.$TST.states.includes(state))
-        this.removeState(state);
-    }
-    for (const state of exported.$TST.states) {
-      this.addState(state)
-    }
-
-    for (const name of Object.keys(this.attributes)) {
-      if (!(name in exported.$TST.attributes))
-        this.removeAttribute(name);
-    }
-    this.attributes = {};
-    for (const name of Object.keys(exported.$TST.attributes)) {
-      this.setAttribute(name, exported.$TST.attributes[name]);
-    }
+    this.states     = new Set(exported.$TST.states);
+    this.attributes = exported.$TST.attributes;
 
     this.parent   = exported.$TST.parentId;
-    this.children = exported.$TST.chuldIds || [];
+    this.children = exported.$TST.childIds || [];
 
     TabsStore.updateIndexesForTab(this.tab);
   }

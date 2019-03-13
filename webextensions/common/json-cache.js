@@ -97,20 +97,18 @@ async function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
     return tab;
   });
   // step 2: restore information of tabs
+  const promisedComplete = [];
   tabs.forEach((tab, index) => {
     fixupTabRestoredFromCache(tab, cachedTabs[index], {
       idMap: idMap,
       dirty: options.dirty
     });
-  });
-  const promisedComplete = [];
-  for (const tab of tabs) {
     if (!tab.$TST.parent) // process only root tabs
-      promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(tab, false));
+      promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(tab, false)); // we can call this here, because child tabs are always referred after "await" for tab.$TST.getPermanentStates().
     TabsStore.updateIndexesForTab(tab);
     if (options.dirty)
       TabsUpdate.updateTab(tab, tab, { forceApply: true });
-  }
+  });
   await Promise.all(promisedComplete);
 }
 

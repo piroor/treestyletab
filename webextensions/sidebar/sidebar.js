@@ -126,7 +126,14 @@ export async function init() {
           cachedContents = await SidebarCache.getEffectiveWindowCache();
         });
 
-      restoredFromCache = await rebuildAll(cachedContents && cachedContents.tabbar);
+      const [nativeTabs, importedTabs] = await Promise.all([
+        browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler()),
+        browser.runtime.sendMessage({
+          type:     Constants.kCOMMAND_PULL_TABS,
+          windowId: mTargetWindow
+        })
+      ]);
+      restoredFromCache = await rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar);
       ApiTabsListener.startListen();
 
       browser.runtime.connect({
@@ -361,22 +368,21 @@ function updateContextualIdentitiesSelector() {
   range.detach();
 }
 
-export async function rebuildAll(cache) {
+export async function rebuildAll(tabs, importedTabs, cache) {
   const range = document.createRange();
   range.selectNodeContents(DOMCache.wholeContainer);
   range.deleteContents();
   range.detach();
 
-  let tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
-
-  const trackedWindow = TabsStore.windows.get(tabs[0].windowId);
+  const trackedWindow = TabsStore.windows.get(mTargetWindow);
   if (!trackedWindow)
-    Window.init(tabs[0].windowId);
+    Window.init(mTargetWindow);
 
   for (const tab of tabs) {
     TabIdFixer.fixTab(tab);
     Tab.track(tab);
   }
+  tabs = importedTabs.map(importedTab => Tab.import(importedTab));
 
   if (cache) {
     const restored = await SidebarCache.restoreTabsFromCache(cache, { tabs });
