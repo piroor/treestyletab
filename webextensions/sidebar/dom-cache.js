@@ -14,6 +14,7 @@ import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
 import * as UniqueId from '/common/unique-id.js';
+import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
@@ -27,9 +28,12 @@ function log(...args) {
 export async function getWindowSignature(windowIdOrTabs) {
   let tabs = windowIdOrTabs;
   if (typeof windowIdOrTabs == 'number') {
-    tabs = await browser.tabs.query({ windowId: windowIdOrTabs }).catch(ApiTabs.createErrorHandler());
+    tabs = await browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_PULL_TABS,
+      windowId: windowIdOrTabs
+    });
   }
-  const uniqueIds = await UniqueId.getFromTabs(tabs);
+  const uniqueIds = tabs.map(tab => tab.$TST.uniqueId);
   return uniqueIds.map(id => id && id.id || '?').join('\n');
 }
 

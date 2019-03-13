@@ -84,6 +84,7 @@ export async function init() {
   MetricsData.add('init start');
   log('initialize sidebar on load');
 
+  let promisedAllTabsTracked;
   const [nativeTabs] = await Promise.all([
     (async () => {
       const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
@@ -95,6 +96,18 @@ export async function init() {
       // the container and it will be used by the SidebarCache module.
       TabIdFixer.fixTab(tabs[0]);
       Tab.track(tabs[0]);
+
+      promisedAllTabsTracked = MetricsData.addAsync('track all tabs', async () => {
+        let count = 0;
+        for (const tab of tabs.slice(1)) {
+          TabIdFixer.fixTab(tab);
+          Tab.track(tab);
+          if (count++ > 100) {
+            count = 0;
+            await nextFrame();
+          }
+        }
+      });
 
       PinnedTabs.init();
       Indent.init();
@@ -113,20 +126,13 @@ export async function init() {
   onInit.dispatch();
 
   const promisedScrollPosition = browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION).catch(ApiTabs.createErrorHandler());
+  const promisedInitializedContextualIdentities = ContextualIdentities.init();
 
   await Promise.all([
     waitUntilBackgroundIsReady(),
-    ContextualIdentities.init(),
-    (async () => {
-      // waitUntilBackgroundIsReady() takes time on the startup,
-      // so here is best to initialize tabs.
-      for (const tab of nativeTabs.slice(1)) {
-        TabIdFixer.fixTab(tab);
-        Tab.track(tab);
-      }
-    })()
+    promisedAllTabsTracked
   ]);
-  MetricsData.add('waitUntilBackgroundIsReady, ContextualIdentities.init, and tabs tracking');
+  MetricsData.add('waitUntilBackgroundIsReady and tabs tracking');
 
   let cachedContents;
   let restoredFromCache;
@@ -182,6 +188,7 @@ export async function init() {
       Size.init();
     }),
     MetricsData.addAsync('initializing contextual identities', async () => {
+      await promisedInitializedContextualIdentities;
       updateContextualIdentitiesStyle();
       updateContextualIdentitiesSelector();
       ContextualIdentities.startObserve();

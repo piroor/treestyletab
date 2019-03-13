@@ -799,6 +799,7 @@ export default class Tab {
     }
 
     this.uniqueId = exported.$TST.uniqueId;
+    this.promisedUniqueId = Promise.resolve(this.uniqueId);
 
     this.states     = new Set(exported.$TST.states);
     this.attributes = exported.$TST.attributes;
@@ -822,13 +823,17 @@ Tab.onElementBound = new EventListenerManager();
 
 Tab.track = tab => {
   const trackedTab = Tab.get(tab.id);
-  if (!trackedTab) {
-    tab.$TST = new Tab(tab);
+  if (!trackedTab ||
+      !(tab.$TST instanceof Tab)) {
+    new Tab(tab);
   }
   else {
+    if (trackedTab)
+      tab = trackedTab;
     const window = TabsStore.windows.get(tab.windowId);
     window.trackTab(tab);
   }
+  return trackedTab || tab;
 };
 
 Tab.untrack = tabId => {
