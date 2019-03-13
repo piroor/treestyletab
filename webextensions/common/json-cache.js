@@ -108,16 +108,10 @@ async function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
     if (!tab.$TST.parent) // process only root tabs
       promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(tab, false, promisedComplete));
     TabsStore.updateIndexesForTab(tab);
+    if (options.dirty)
+      TabsUpdate.updateTab(tab, tab, { forceApply: true });
   }
   await Promise.all(promisedComplete);
-  // step 3: update tabs based on restored information.
-  // this step must be done after the step 2 is finished for all tabs
-  // because updating operation can refer other tabs.
-  if (options.dirty) {
-    for (const tab of tabs) {
-      TabsUpdate.updateTab(tab, tab, { forceApply: true });
-    }
-  }
 }
 
 const NATIVE_STATES = new Set([
