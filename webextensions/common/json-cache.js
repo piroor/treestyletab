@@ -69,7 +69,7 @@ export async function restoreTabsFromCacheInternal(params) {
     return [];
   }
   try {
-    await fixupTabsRestoredFromCache(tabs, params.cache, {
+    await fixupTabsRestoredFromCache(tabs, params.permanentStates, params.cache, {
       dirty: params.shouldUpdate
     });
   }
@@ -82,7 +82,7 @@ export async function restoreTabsFromCacheInternal(params) {
   return tabs;
 }
 
-async function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
+async function fixupTabsRestoredFromCache(tabs, permanentStates, cachedTabs, options = {}) {
   if (tabs.length != cachedTabs.length)
     throw new Error(`fixupTabsRestoredFromCache: Mismatched number of tabs restored from cache, tabs=${tabs.length}, cachedTabs=${cachedTabs.length}`);
   log('fixupTabsRestoredFromCache start ', { tabs: tabs.map(dumpTab), cachedTabs });
@@ -97,61 +97,22 @@ async function fixupTabsRestoredFromCache(tabs, cachedTabs, options = {}) {
     return tab;
   });
   // step 2: restore information of tabs
-  const promisedComplete = [];
   tabs.forEach((tab, index) => {
-    fixupTabRestoredFromCache(tab, cachedTabs[index], {
+    fixupTabRestoredFromCache(tab, permanentStates[index], cachedTabs[index], {
       idMap: idMap,
       dirty: options.dirty
     });
     if (!tab.$TST.parent) // process only root tabs
-      promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(tab, false)); // we can call this here, because child tabs are always referred after "await" for tab.$TST.getPermanentStates().
+      fixupTreeCollapsedStateRestoredFromCache(tab, false);
     TabsStore.updateIndexesForTab(tab);
-    if (options.dirty)
-      TabsUpdate.updateTab(tab, tab, { forceApply: true });
+    TabsUpdate.updateTab(tab, tab, { forceApply: true });
   });
-  await Promise.all(promisedComplete);
 }
 
-const NATIVE_STATES = new Set([
-  'active',
-  'attention',
-  'audible',
-  'discarded',
-  'hidden',
-  'highlighted',
-  'pinned',
-  'loading',
-  'complete'
-]);
-const IGNORE_STATES = new Set([
-  Constants.kTAB_STATE_ANIMATION_READY,
-  Constants.kTAB_STATE_SUBTREE_COLLAPSED
-]);
-
-function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
+function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, options = {}) {
   tab.$TST.clear();
-  tab.$TST.states = new Set(cachedTab.states);
+  tab.$TST.states = new Set([...cachedTab.states, ...permanentStates]);
   tab.$TST.attributes = cachedTab.attributes;
-
-  for (const state of IGNORE_STATES) {
-    tab.$TST.removeState(state);
-  }
-
-  for (const state of NATIVE_STATES) {
-    if (tab[state] == cachedTab.states.includes(state))
-      continue;
-    if (tab[state])
-      tab.$TST.addState(state);
-    else
-      tab.$TST.removeState(state);
-  }
-
-  for (const state of NATIVE_STATES) {
-    if (tab[state])
-      tab.$TST.addState(state);
-    else
-      tab.$TST.removeState(state);
-  }
 
   const idMap = options.idMap;
 
@@ -176,7 +137,7 @@ function fixupTabRestoredFromCache(tab, cachedTab, options = {}) {
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
 }
 
-async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
+function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = false) {
   if (shouldCollapse) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
@@ -185,16 +146,9 @@ async function fixupTreeCollapsedStateRestoredFromCache(tab, shouldCollapse = fa
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.removeState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
-  const states = await tab.$TST.getPermanentStates();
-  if (states.includes(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
-    tab.$TST.addState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-  else
-    tab.$TST.removeState(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   if (!shouldCollapse)
-    shouldCollapse = tab.$TST.states.has(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
-  const promisedComplete = [];
+    shouldCollapse = tab.$TST.subtreeCollapsed;
   for (const child of tab.$TST.children) {
-    promisedComplete.push(fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse));
+    fixupTreeCollapsedStateRestoredFromCache(child, shouldCollapse);
   }
-  await Promise.all(promisedComplete);
 }

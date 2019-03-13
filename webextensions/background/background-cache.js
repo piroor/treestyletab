@@ -46,9 +46,10 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
   // We cannot define constants with variables at a time like:
   //   [const actualSignature, let cache] = await Promise.all([
   // eslint-disable-next-line prefer-const
-  let [actualSignature, cache] = await Promise.all([
+  let [actualSignature, cache, ...permanentStates] = await Promise.all([
     JSONCache.getWindowSignature(tabs),
-    getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS)
+    getWindowCache(owner, Constants.kWINDOW_STATE_CACHED_TABS),
+    ...tabs.map(tab => tab.$TST.getPermanentStates())
   ]);
   let cachedSignature = cache && cache.signature;
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: got from the owner `, {
@@ -92,7 +93,7 @@ export async function restoreWindowFromEffectiveWindowCache(windowId, options = 
 
   log(`restoreWindowFromEffectiveWindowCache for ${windowId}: restore from cache`);
 
-  const restored = await restoreTabsFromCache(windowId, { cache, tabs });
+  const restored = await restoreTabsFromCache(windowId, { cache, tabs, permanentStates });
   if (restored)
     MetricsData.add(`restoreWindowFromEffectiveWindowCache for ${windowId} success`);
   else
@@ -110,6 +111,7 @@ async function restoreTabsFromCache(windowId, params = {}) {
   return (await JSONCache.restoreTabsFromCacheInternal({
     windowId:     windowId,
     tabs:         params.tabs,
+    permanentStates: params.permanentStates,
     offset:       params.cache.offset || 0,
     cache:        params.cache.tabs,
     shouldUpdate: true
