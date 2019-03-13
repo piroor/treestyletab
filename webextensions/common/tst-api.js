@@ -533,9 +533,9 @@ export async function getTargetTabs(message, sender) {
         message.tabId == '*' ||
         message.tabs == '*' ||
         message.tabIds == '*')
-      return Tab.getAllTabs(message.window || message.windowId);
+      return Tab.getAllTabs(message.window || message.windowId, { iterator: true });
     else
-      return Tab.getRoots(message.window || message.windowId);
+      return Tab.getRoots(message.window || message.windowId, { iterator: true });
   }
   if (message.tab == '*' ||
       message.tabId == '*' ||
@@ -544,7 +544,7 @@ export async function getTargetTabs(message, sender) {
     const window = await browser.windows.getLastFocused({
       windowTypes: ['normal']
     }).catch(ApiTabs.createErrorHandler());
-    return Tab.getAllTabs(window.id);
+    return Tab.getAllTabs(window.id, { iterator: true });
   }
   if (message.tab || message.tabId)
     return getTabsFromWrongIds([message.tab || message.tabId], sender);
