@@ -10,11 +10,8 @@ import {
   configs
 } from '/common/common.js';
 import * as Constants from '/common/constants.js';
-import * as ApiTabs from '/common/api-tabs.js';
 import * as TabsStore from '/common/tabs-store.js';
 import * as TabsUpdate from '/common/tabs-update.js';
-import * as UniqueId from '/common/unique-id.js';
-import * as MetricsData from '/common/metrics-data.js';
 
 import Tab from '/common/Tab.js';
 import Window from '/common/Window.js';
