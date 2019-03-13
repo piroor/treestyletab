@@ -456,6 +456,9 @@ Window.onInitialized.addListener(windowId => {
 });
 
 Tab.onInitialized.addListener((tab, info) => {
+  if (tab.$TST.element) // restored from cache
+    return;
+
   const id = `tab-${tab.id}`;
   let tabElement = document.getElementById(id);
   if (tabElement) {

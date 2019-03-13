@@ -143,58 +143,29 @@ export async function restoreTabsFromCache(cache, params = {}) {
     mTabBar.setAttribute('style', cache.style);
   }
 
-  let [masterStructure, restored] = await Promise.all([
-    browser.runtime.sendMessage({
-      type:     Constants.kCOMMAND_PULL_TREE_STRUCTURE,
-      windowId: mTargetWindow
-    }).catch(ApiTabs.createErrorHandler()),
-    (async () => {
-      return (await DOMCache.restoreTabsFromCacheInternal({
-        windowId:     mTargetWindow,
-        tabs:         params.tabs,
-        offset:       offset,
-        cache:        cache.contents,
-        shouldUpdate: cache.tabsDirty
-      })).length > 0;
-    })()
-  ]);
+  const restored = (await DOMCache.restoreTabsFromCacheInternal({
+    windowId:     mTargetWindow,
+    tabs:         params.tabs,
+    offset:       offset,
+    cache:        cache.contents,
+    shouldUpdate: cache.tabsDirty
+  })).length > 0;
 
   if (restored) {
     try {
-      masterStructure = masterStructure.structure;
-      const allTabs = Tab.getAllTabs(mTargetWindow);
-      const restoredStructrue = Tree.getTreeStructureFromTabs(allTabs);
-      if (restoredStructrue.map(item => item.parent).join(',') != masterStructure.map(item => item.parent).join(',')) {
-        log(`restoreTabsFromCache: failed to restore tabs, mismatched tree for ${mTargetWindow}. fallback to regular way.`, {
-          restoredStructrue,
-          masterStructure
-        });
-        restored = false;
-        if (window.element &&
-            window.element.parentNode)
-          window.element.parentNode.removeChild(window.element);
-      }
-      if (restored) {
-        if (cache.collapsedDirty) {
-          const structure = restoredStructrue.reverse();
-          allTabs.reverse().forEach((tab, index) => {
-            Tree.collapseExpandSubtree(tab, {
-              collapsed: structure[index].collapsed,
-              justNow:   true
-            });
+      if (cache.collapsedDirty) {
+        const allTabs = Tab.getAllTabs(mTargetWindow);
+        const restoredStructrue = Tree.getTreeStructureFromTabs(allTabs);
+        const structure = restoredStructrue.reverse();
+        allTabs.reverse().forEach((tab, index) => {
+          Tree.collapseExpandSubtree(tab, {
+            collapsed: structure[index].collapsed,
+            justNow:   true
           });
-        }
-        SidebarTabs.updateAll();
-        onRestored.dispatch();
+        });
       }
-      else {
-        if (window.element && window.element.parentNode)
-          window.element.parentNode.removeChild(window.element);
-        window.element = null;
-        for (const tab of window.tabs.values()) {
-          tab.$TST.element = null;
-        }
-      }
+      SidebarTabs.updateAll();
+      onRestored.dispatch();
     }
     catch(e) {
       log(String(e), e.stack);

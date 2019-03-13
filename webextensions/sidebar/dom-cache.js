@@ -130,9 +130,12 @@ export async function restoreTabsFromCacheInternal(params) {
     return [];
   }
   try {
+    const parent = container.parentNode;
+    parent.removeChild(container); // remove from DOM tree to optimize
     await fixupTabsRestoredFromCache(tabElements, tabs, {
       dirty: params.shouldUpdate
     });
+    parent.appendChild(container);
   }
   catch(e) {
     log(String(e), e.stack);
@@ -157,10 +160,11 @@ async function fixupTabsRestoredFromCache(tabElements, tabs, options = {}) {
   // step 1: build a map from old id to new id
   tabElements.forEach((tabElement, index) => {
     tabElement.setAttribute('id', `tab-${tabs[index].id}`); // set tab element's id before initialization, to associate the tab element correctly
-    const tab = Tab.init(tabs[index], { existing: true });
+    const tab = tabs[index];
+    tab.$TST.bindElement(tabElement);
     tabElement.apiTab = tab;
+    Tab.init(tab, { existing: true });
     tab.$TST.setAttribute('id', tabElement.id);
-    tab.$TST.element = tabElement;
     tabElement.$TST = tab.$TST;
     tab.$TST.setAttribute(Constants.kAPI_TAB_ID, tab.id || -1);
     tab.$TST.setAttribute(Constants.kAPI_WINDOW_ID, tab.windowId || -1);
