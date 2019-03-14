@@ -139,10 +139,9 @@ function fixupTabRestoredFromCache(tab, permanentStates, cachedTab, options = {}
     tab.$TST.removeAttribute(Constants.kPARENT);
   log('fixupTabRestoredFromCache parent: => ', tab.$TST.parentId);
 
-  if (tab.$TST.collapsed ||
-      (parentTab &&
-       (parentTab.$TST.collapsed ||
-        parentTab.$TST.subtreeCollapsed))) {
+  if (parentTab &&
+      (parentTab.$TST.collapsed ||
+       parentTab.$TST.subtreeCollapsed)) {
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED);
     tab.$TST.addState(Constants.kTAB_STATE_COLLAPSED_DONE);
   }
