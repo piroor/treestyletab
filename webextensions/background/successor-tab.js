@@ -41,7 +41,9 @@ if (typeof browser.tabs.moveInSuccession == 'function') {
 }
 
 function setSuccessor(tabId, successorTabId = -1) {
-  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER)
+  if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER ||
+      !Tab.get(tabId) ||
+      !Tab.get(successorTabId))
     return;
   browser.tabs.update(tabId, {
     successorTabId
