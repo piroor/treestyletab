@@ -116,7 +116,7 @@ export async function init() {
       SidebarCache.onRestored.addListener(() => { DragAndDrop.clearDropPosition(); });
 
       return tabs;
-    })(),
+    }),
     configs.$loaded
   ]);
   MetricsData.add('browser.tabs.query finish, SidebarCache initialized, configs are loaded.');
@@ -193,9 +193,7 @@ export async function init() {
     MetricsData.addAsync('parallel initialization: TabContextMenu', async () => {
       TabContextMenu.init();
     }),
-    MetricsData.addAsync('parallel initialization: API for other addons', async () => {
-      return TSTAPI.initAsFrontend()
-    })
+    MetricsData.addAsync('parallel initialization: API for other addons', TSTAPI.initAsFrontend())
   ]));
 
   await MetricsData.addAsync('parallel initialization: post process', Promise.all([
