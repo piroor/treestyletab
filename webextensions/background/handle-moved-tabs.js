@@ -166,6 +166,9 @@ function moveBack(tab, moveInfo) {
 }
 
 async function detectTabActionFromNewPosition(tab, moveInfo = {}) {
+  if (tab.pinned)
+    return tab.$TST.parentId ? { action: 'detach' } : { action: 'move' };
+
   log('detectTabActionFromNewPosition: ', dumpTab(tab), moveInfo);
   const tree   = moveInfo.treeForActionDetection || Tree.snapshotForActionDetection(tab);
   const target = tree.target;
