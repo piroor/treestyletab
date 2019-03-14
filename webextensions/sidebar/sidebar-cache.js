@@ -158,10 +158,11 @@ export async function restoreTabsFromCache(cache, params = {}) {
 
   if (restored) {
     try {
-      MetricsData.add('restoreTabsFromCache: updating restored tabs: start');
+      MetricsData.add('restoreTabsFromCache: updating restored tabs');
       SidebarTabs.updateAll();
+      MetricsData.add('restoreTabsFromCache: dispatching onRestored');
       onRestored.dispatch();
-      MetricsData.add('restoreTabsFromCache: updating restored tabs: done');
+      MetricsData.add('restoreTabsFromCache: done');
     }
     catch(e) {
       log(String(e), e.stack);

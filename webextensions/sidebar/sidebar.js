@@ -87,7 +87,7 @@ export async function init() {
   let promisedAllTabsTracked;
   const [nativeTabs] = await Promise.all([
     MetricsData.addAsync('getting native tabs', async () => {
-      const tabs = await browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler());
+      const tabs = await MetricsData.addAsync('browser.tabs.query', browser.tabs.query({ currentWindow: true }).catch(ApiTabs.createErrorHandler()));
       mTargetWindow = tabs[0].windowId;
       TabsStore.setWindow(mTargetWindow);
       internalLogger.context   = `Sidebar-${mTargetWindow}`;

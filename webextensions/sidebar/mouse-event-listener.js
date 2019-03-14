@@ -81,7 +81,7 @@ Sidebar.onBuilt.addListener(async () => {
   document.addEventListener('click', onClick);
   mTabBar.addEventListener('dblclick', onDblClick);
 
-  MetricsData.add('apply configs');
+  MetricsData.add('mouse-event-listener: Sidebar.onBuilt: apply configs');
 
   browser.runtime.onMessage.addListener(onMessage);
 
