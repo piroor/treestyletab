@@ -391,7 +391,7 @@ export async function rebuildAll(tabs, importedTabs, cache) {
 
   // Re-get tabs before rebuilding tree, because they can be modified while
   // waiting for SidebarCache.restoreTabsFromCache().
-  MetricsData.addAsync('rebuildAll: re-import tabs before rebuilding tree', async () => {
+  await MetricsData.addAsync('rebuildAll: re-import tabs before rebuilding tree', async () => {
     const [nativeTabs, importedTabs] = await Promise.all([
       browser.tabs.query({ windowId: mTargetWindow }).catch(ApiTabs.createErrorHandler()),
       browser.runtime.sendMessage({
@@ -399,9 +399,9 @@ export async function rebuildAll(tabs, importedTabs, cache) {
         windowId: mTargetWindow
       })
     ]);
-    tabs = nativeTabs.forEach((tab, index) => {
+    tabs = nativeTabs.map((tab, index) => {
       Tab.track(tab);
-      return Tab.import(importedTabs[index]);
+      return importedTabs[index] && Tab.import(importedTabs[index]) || tab;
     });
   });
 
