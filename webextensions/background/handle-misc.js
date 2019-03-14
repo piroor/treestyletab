@@ -585,7 +585,7 @@ function onMessageExternal(message, sender) {
         const tabs = await TSTAPI.getTargetTabs(message, sender);
         const results = await TSTAPI.doProgressively(
           tabs,
-          tab => TSTAPI.serializeTabWithEffectiveFavIconUrl(tab),
+          tab => TSTAPI.serializeTabWithEffectiveFavIconUrl(tab, message.interval),
           message.interval
         );
         return TSTAPI.formatResult(results, message);

@@ -410,8 +410,8 @@ export async function notifyScrolled(params = {}) {
   const window  = TabsStore.getWindow();
   const results = await sendMessage({
     type: kNOTIFY_SCROLLED,
-    tab:  tab && serializeTab(tab),
-    tabs: Tab.getTabs(window).map(serializeTab),
+    tab:  tab && await serializeTab(tab),
+    tabs: await Promise.all(Tab.getTabs(window).map(serializeTab)),
     window,
     windowId: window,
 
@@ -442,9 +442,13 @@ export function isGroupingBlocked() {
 }
 
 
-export function serializeTab(tab) {
+export async function serializeTab(tab, interval) {
   tab = Tab.get(tab.id);
-  const children       = tab.$TST.children.map(serializeTab);
+  const children = await doProgressively(
+    tab.$TST.children,
+    tab => serializeTab(tab, interval),
+    interval
+  );
   const ancestorTabIds = tab.$TST.ancestors.map(tab => tab.id);
   const serialized     = Object.assign({}, tab.$TST.sanitized, {
     states:   Array.from(tab.$TST.states).filter(state => !Constants.kTAB_INTERNAL_STATES.includes(state)),
@@ -455,8 +459,8 @@ export function serializeTab(tab) {
   return serialized;
 }
 
-export async function serializeTabWithEffectiveFavIconUrl(tab) {
-  const serializedRoot = serializeTab(tab);
+export async function serializeTabWithEffectiveFavIconUrl(tab, interval) {
+  const serializedRoot = await serializeTab(tab, interval);
   const promises = [];
   const preparePromiseForEffectiveFavIcon = serializedOneTab => {
     promises.push(TabFavIconHelper.getLastEffectiveFavIconURL(serializedOneTab).then(url => {
