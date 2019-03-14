@@ -297,7 +297,7 @@ Tab.onBeforeCreate.addListener(async (tab, info) => {
       window.preventAutoGroupNewTabsUntil += configs.autoGroupNewTabsTimeout;
     }
     else {
-      window.openedNewTabs.push({
+      window.openedNewTabs.set(tab.id, {
         id:       tab.id,
         openerId: openerTab && openerTab.id
       });
@@ -320,10 +320,10 @@ async function onNewTabsTimeout(window) {
   if (Tab.needToWaitMoved(window.id))
     await Tab.waitUntilMovedAll(window.id);
 
-  let tabReferences = window.openedNewTabs;
+  let tabReferences = Array.from(window.openedNewTabs.values());
   log('onNewTabsTimeout ', tabReferences);
 
-  window.openedNewTabs = [];
+  window.openedNewTabs.clear();
 
   tabReferences = tabReferences.filter(tabReference => !!tabReference.id);
   if (tabReferences.length == 0 ||

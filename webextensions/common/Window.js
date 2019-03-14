@@ -50,7 +50,7 @@ export default class Window {
 
     this.openingTabs   = new Set();
 
-    this.openedNewTabs = [];
+    this.openedNewTabs = new Map();
 
     this.toBeOpenedTabsWithPositions = 0;
     this.toBeOpenedOrphanTabs        = 0;

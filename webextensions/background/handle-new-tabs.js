@@ -107,6 +107,10 @@ async function handleNewTabFromActiveTab(tab, params = {}) {
     return moved;
   const cookieStoreId = activeTab.cookieStoreId;
   log('handleNewTabFromActiveTab: reopen with inherited contextual identity ', cookieStoreId);
+  // We need to prevent grouping of this original tab and the reopened tab
+  // by the "multiple tab opened in XXX msec" feature.
+  const window = TabsStore.windows.get(tab.windowId);
+  window.openedNewTabs.delete(tab.id);
   await TabsOpen.openNewTab({
     windowId: activeTab.windowId,
     parent,
@@ -166,7 +170,7 @@ Tab.onUpdated.addListener((tab, changeInfo) => {
     log('toBeGroupedTabs ', toBeGroupedTabs);
     if (!tab.$TST.parent &&
         possibleOpenerTab &&
-        !toBeGroupedTabs.includes(tab.id) &&
+        !toBeGroupedTabs.has(tab.id) &&
         !tab.$TST.positionedBySelf) {
       if (tab.$TST.isNewTabCommandTab) {
         log('behave as a tab opened by new tab command (delayed)');
