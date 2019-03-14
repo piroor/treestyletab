@@ -134,9 +134,15 @@ export async function init() {
   TreeStructure.startTracking();
 
   // notify that the master process is ready.
-  browser.runtime.sendMessage({
-    type: Constants.kCOMMAND_PING_TO_SIDEBAR
-  }).catch(ApiTabs.createErrorSuppressor());
+  for (const window of TabsStore.windows.values()) {
+    if (SidebarStatus.isOpen(window.id))
+      continue;
+    browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_PING_TO_SIDEBAR,
+      windowId: window.id,
+      tabs:     window.export(true) // send tabs together to optimizie further initialization tasks in the sidebar
+    }).catch(ApiTabs.createErrorSuppressor());
+  }
 
   Migration.notifyNewFeatures();
   log(`Startup metrics for ${TabsStore.tabs.size} tabs: `, MetricsData.toString());

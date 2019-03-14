@@ -128,24 +128,19 @@ export async function init() {
   const promisedScrollPosition = browser.sessions.getWindowValue(mTargetWindow, Constants.kWINDOW_STATE_SCROLL_POSITION).catch(ApiTabs.createErrorHandler());
   const promisedInitializedContextualIdentities = ContextualIdentities.init();
 
-  await MetricsData.addAsync('waitUntilBackgroundIsReady and waiting for promisedAllTabsTracked', Promise.all([
-    waitUntilBackgroundIsReady(),
-    promisedAllTabsTracked
-  ]));
+  const [importedTabs] = await Promise.all([
+    MetricsData.addAsync('importTabsFromBackground()', importTabsFromBackground()),
+    MetricsData.addAsync('promisedAllTabsTracked', promisedAllTabsTracked)
+  ]);
 
   let cachedContents;
   let restoredFromCache;
   await MetricsData.addAsync('parallel initialization', Promise.all([
     MetricsData.addAsync('parallel initialization: main', async () => {
-      const [importedTabs] = await Promise.all([
-        browser.runtime.sendMessage({
-          type:     Constants.kCOMMAND_PULL_TABS,
-          windowId: mTargetWindow
-        }),
-        configs.useCachedTree && MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', async () => {
-          cachedContents = await SidebarCache.getEffectiveWindowCache({ tabs: nativeTabs });
-        })
-      ]);
+      if (configs.useCachedTree)
+        await MetricsData.addAsync('parallel initialization: main: read cached sidebar contents', async () => {
+          cachedContents = await SidebarCache.getEffectiveWindowCache({ tabs: importedTabs });
+        });
       restoredFromCache = await MetricsData.addAsync('parallel initialization: main: rebuildAll', rebuildAll(nativeTabs, importedTabs, cachedContents && cachedContents.tabbar));
       ApiTabsListener.startListen();
 
@@ -418,27 +413,29 @@ export async function rebuildAll(tabs, importedTabs, cache) {
   return false;
 }
 
-async function waitUntilBackgroundIsReady() {
+async function importTabsFromBackground() {
   try {
-    const response = await browser.runtime.sendMessage({
-      type: Constants.kCOMMAND_PING_TO_BACKGROUND
-    }).catch(ApiTabs.createErrorHandler());
-    if (response)
-      return;
+    const importedTabs = await MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_BACKGROUND', browser.runtime.sendMessage({
+      type:     Constants.kCOMMAND_PING_TO_BACKGROUND,
+      windowId: mTargetWindow
+    }).catch(ApiTabs.createErrorHandler()));
+    if (importedTabs)
+      return importedTabs;
   }
   catch(_e) {
   }
-  return new Promise((resolve, _reject) => {
+  return MetricsData.addAsync('importTabsFromBackground: kCOMMAND_PING_TO_SIDEBAR', new Promise((resolve, _reject) => {
     const onBackgroundIsReady = (message, _sender, _respond) => {
       if (!message ||
           !message.type ||
-          message.type != Constants.kCOMMAND_PING_TO_SIDEBAR)
+          message.type != Constants.kCOMMAND_PING_TO_SIDEBAR ||
+          message.windowId != mTargetWindow)
         return;
       browser.runtime.onMessage.removeListener(onBackgroundIsReady);
-      resolve();
+      resolve(message.tabs);
     };
     browser.runtime.onMessage.addListener(onBackgroundIsReady);
-  });
+  }));
 }
 
 

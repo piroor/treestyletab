@@ -266,23 +266,16 @@ function onMessage(message, sender) {
 
   //log('onMessage: ', message, sender);
   switch (message.type) {
-    case Constants.kCOMMAND_PING_TO_BACKGROUND:
-      return Promise.resolve(true);
-
     case Constants.kCOMMAND_REQUEST_UNIQUE_ID:
       return (async () => {
         await Tab.waitUntilTracked(message.tabId);
         return Tab.get(message.tabId).$TST.promisedUniqueId;
       })();
 
+    case Constants.kCOMMAND_PING_TO_BACKGROUND: // return tabs as the pong, to optimizie further initialization tasks in the sidebar
     case Constants.kCOMMAND_PULL_TABS:
-      if (message.windowId) {
-        const tabs = [];
-        for (const tab of Tab.getAllTabs(message.windowId, { iterator: true })) {
-          tabs.push(tab.$TST.export(true));
-        }
-        return Promise.resolve(tabs);
-      }
+      if (message.windowId)
+        return Promise.resolve(TabsStore.windows.get(message.windowId).export(true));
       return Promise.resolve(message.tabIds.map(id => {
         const tab = Tab.get(id);
         return tab && tab.$TST.export(true);
