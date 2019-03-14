@@ -563,28 +563,29 @@ const IGNORE_CLASS_STATES = new Set([
 
 export function applyStatesToElement(tab) {
   const tabElement = tab.$TST.element;
+  const classList = tabElement.classList;
 
-  for (const state of tabElement.classList) {
+  for (const state of classList) {
     if (IGNORE_CLASS_STATES.has(state) ||
         NATIVE_STATES.has(state))
       continue;
     if (!tab.$TST.states.has(state))
-      tabElement.classList.remove(state);
+      classList.remove(state);
   }
   for (const state of tab.$TST.states) {
     if (IGNORE_CLASS_STATES.has(state))
       continue;
-    if (!tabElement.classList.contains(state))
-      tabElement.classList.add(state);
+    if (!classList.contains(state))
+      classList.add(state);
   }
 
   for (const state of NATIVE_STATES) {
-    if (tab[state] == tabElement.classList.contains(state))
+    if (tab[state] == classList.contains(state))
       continue;
     if (tab[state])
-      tabElement.classList.add(state);
+      classList.add(state);
     else
-      tabElement.classList.remove(state);
+      classList.remove(state);
   }
 
   if (tab.$TST.childIds.length > 0)
@@ -618,27 +619,27 @@ export function applyStatesToElement(tab) {
     tabElement.setAttribute(Constants.kPERSISTENT_ID, id);
 
   if (tab.$TST.subtreeCollapsed) {
-    if (!tabElement.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
-      tabElement.classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    if (!classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+      classList.add(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
   else {
-    if (tabElement.classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
-      tabElement.classList.remove(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
+    if (classList.contains(Constants.kTAB_STATE_SUBTREE_COLLAPSED))
+      classList.remove(Constants.kTAB_STATE_SUBTREE_COLLAPSED);
   }
 
   const parent = tab.$TST.parent;
   if (parent &&
       (parent.$TST.collapsed ||
        parent.$TST.subtreeCollapsed)) {
-    if (!tabElement.classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
-      tabElement.classList.add(Constants.kTAB_STATE_COLLAPSED);
-      tabElement.classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
+    if (!classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
+      classList.add(Constants.kTAB_STATE_COLLAPSED);
+      classList.add(Constants.kTAB_STATE_COLLAPSED_DONE);
     }
   }
   else {
-    if (tabElement.classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
-      tabElement.classList.remove(Constants.kTAB_STATE_COLLAPSED);
-      tabElement.classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
+    if (classList.contains(Constants.kTAB_STATE_COLLAPSED)) {
+      classList.remove(Constants.kTAB_STATE_COLLAPSED);
+      classList.remove(Constants.kTAB_STATE_COLLAPSED_DONE);
     }
   }
 }
