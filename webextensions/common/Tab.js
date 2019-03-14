@@ -978,6 +978,11 @@ Tab.waitUntilMovedAll = async windowId => {
 
 Tab.init = (tab, options = {}) => {
   log('initalize tab ', tab);
+  if (!tab) {
+    const error = new Error('Fatal error: invalid tab is given to Tab.init()');
+    console.log(error, error.stack);
+    throw error;
+  }
   const trackedTab = Tab.get(tab.id);
   if (trackedTab)
     tab = trackedTab;
