@@ -665,13 +665,6 @@ Tab.onTabInternallyMoved.addListener(async (tab, info) => {
 });
 
 
-Tab.onRestored.addListener(tab => {
-  Tree.fixupSubtreeCollapsedState(tab, {
-    justNow:  true,
-    inRemote: true
-  });
-});
-
 Tab.onRemoving.addListener((_tab, _info) => {
   reserveToUpdateLoadingState();
 });
