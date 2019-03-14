@@ -42,6 +42,7 @@ Tab.onCreated.addListener((tab, info = {}) => {
       (tab.$TST.nearestNormalFollowingTab ||
        tab.$TST.nearestNormalPrecedingTab ||
        (info.treeForActionDetection &&
+        info.treeForActionDetection.target &&
         (info.treeForActionDetection.target.next ||
          info.treeForActionDetection.target.previous))))
     tryFixupTreeForInsertedTab(tab, {

@@ -41,7 +41,7 @@ if (typeof browser.tabs.moveInSuccession == 'function') {
 }
 
 function setSuccessor(tabId, successorTabId = -1) {
-  const tab = Tab.get(tabId);
+  const tab          = Tab.get(tabId);
   const successorTab = Tab.get(successorTabId);
   if (configs.successorTabControlLevel == Constants.kSUCCESSOR_TAB_CONTROL_NEVER ||
       !tab ||
@@ -50,7 +50,13 @@ function setSuccessor(tabId, successorTabId = -1) {
     return;
   browser.tabs.update(tabId, {
     successorTabId
-  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError));
+  }).catch(ApiTabs.createErrorHandler(ApiTabs.handleMissingTabError, error => {
+    // ignore error for already closed tab
+    if (!error ||
+        !error.message ||
+        error.message.indexOf('Invalid successorTabId') != 0)
+      throw error;
+  }));
 }
 
 function clearSuccessor(tabId) {
