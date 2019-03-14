@@ -442,7 +442,7 @@ export function isGroupingBlocked() {
 }
 
 
-export async function serializeTab(tab, interval) {
+export async function serializeTab(tab) {
   tab = Tab.get(tab.id);
   const serialized = serializeTabInternal(tab);
   serialized.children = tab.$TST.children.map(serializeTab);
